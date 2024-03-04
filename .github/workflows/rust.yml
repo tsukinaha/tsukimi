@@ -13,14 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install GTK4
-        run: sudo apt install libgtk-4-dev build-essential gtk4
-      - name: gdk4
-        run: sudo apt install librust-gdk4-sys-dev
-      - name: Set PKG_CONFIG_PATH
-        run: echo "PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig" >> $GITHUB_ENV
       - name: Install dependencies
-        run: sudo apt-get install libpango1.0-dev
+        run: sudo apt install libgtk-4-dev build-essential
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
