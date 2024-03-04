@@ -1,0 +1,13 @@
+child {
+    margin: 9px;
+    width: 150px;
+    height: 300px;
+}
+row{
+    margin:9px;
+    border-radius:7px;
+   }
+   
+picture {
+    border-radius:7px;
+}
