@@ -13,9 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install GTK4
+        run: sudo apt install libgtk-4-dev
       - name: Install dependencies
         run: sudo apt-get install libpango1.0-dev
-        run: sudo apt install libgtk-4-dev
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
