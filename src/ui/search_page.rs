@@ -7,7 +7,7 @@ use gtk::{gio, pango, prelude::*, Stack};
 use gtk::{Box, Button, Entry, Label, Orientation, ScrolledWindow};
 use std::cell::Ref;
 
-pub fn create_page1(searchstack:Stack,backbutton:Button) -> Stack {
+pub fn create_page1(searchstack: Stack, backbutton: Button) -> Stack {
     let hbox = Box::new(Orientation::Horizontal, 10);
     let vbox = Box::new(Orientation::Vertical, 5);
     let store = gio::ListStore::new::<BoxedAnyObject>();
@@ -22,14 +22,28 @@ pub fn create_page1(searchstack:Stack,backbutton:Button) -> Stack {
         let vbox = Box::new(Orientation::Vertical, 5);
         let overlay = gtk::Overlay::new();
         let imgbox = crate::ui::image::set_image(result.Id.clone());
+        imgbox.set_size_request(187, 275);
         overlay.set_child(Some(&imgbox));
         overlay.set_size_request(187, 275);
         vbox.append(&overlay);
         let label = Label::new(Some(&result.Name));
+        let markup = format!(
+            "{}",
+            result.Name
+        );
+        label.set_markup(markup.as_str());
         label.set_wrap(true);
         label.set_size_request(-1, 24);
         label.set_ellipsize(pango::EllipsizeMode::End);
+        let labeltype = Label::new(Some(&result.Type));
+        let markup = format!(
+            "<span color='lightgray' font='10'>{}</span>",
+            result.Type
+        );
+        labeltype.set_markup(markup.as_str());
+        labeltype.set_size_request(-1, 24);
         vbox.append(&label);
+        vbox.append(&labeltype);
         listitem.set_child(Some(&vbox));
     });
 
@@ -60,17 +74,19 @@ pub fn create_page1(searchstack:Stack,backbutton:Button) -> Stack {
         }),
     );
 
-    entry.connect_activate(clone!(@strong sender,@weak entry,@weak search_button => move |_| {
-        search_button.set_label("搜索中...");
-        let search_content = entry.text().to_string();
-        network::runtime().spawn(clone!(@strong sender => async move {
-            let search_results = network::search(search_content).await.unwrap_or_else(|e| {
-                eprintln!("Error: {}", e);
-                Vec::<SearchResult>::new()
-            });
-            sender.send(search_results).await.expect("search results not received.");
-        }));
-    }));
+    entry.connect_activate(
+        clone!(@strong sender,@weak entry,@weak search_button => move |_| {
+            search_button.set_label("搜索中...");
+            let search_content = entry.text().to_string();
+            network::runtime().spawn(clone!(@strong sender => async move {
+                let search_results = network::search(search_content).await.unwrap_or_else(|e| {
+                    eprintln!("Error: {}", e);
+                    Vec::<SearchResult>::new()
+                });
+                sender.send(search_results).await.expect("search results not received.");
+            }));
+        }),
+    );
 
     hbox.append(&search_button);
     hbox.set_halign(gtk::Align::Center);
@@ -87,8 +103,10 @@ pub fn create_page1(searchstack:Stack,backbutton:Button) -> Stack {
             search_button.set_label("搜索");
             store.remove_all();
             for result in search_results {
-                let object = BoxedAnyObject::new(result);
-                store.append(&object);
+                if result.Type == "Series" || result.Type == "Movie" {
+                    let object = BoxedAnyObject::new(result);
+                    store.append(&object);
+                }
             }
         }
     }));
@@ -101,12 +119,19 @@ pub fn create_page1(searchstack:Stack,backbutton:Button) -> Stack {
         let result: Ref<SearchResult> = item.borrow();
         let stack_clone = searchstack.clone();
         let result_clone = result.clone();
-        let item_page = itempage(stack_clone,result);
+        let item_page;
+
+        if result.Type == "Movie" {
+            item_page = crate::ui::movie_page::movie_page(result);
+        } else {
+            item_page = crate::ui::item_page::itempage(stack_clone, result);
+        }
+
         let id = result_clone.Id;
         let pagename = format!("item_page_{}", id);
         if searchstack.child_by_name(&pagename).is_none() {
             searchstack.add_named(&item_page, Some(&pagename));
-        } 
+        }
         backbutton.set_visible(true);
         searchstack.set_visible_child_name(&pagename);
     }));

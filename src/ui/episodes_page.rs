@@ -1,8 +1,4 @@
 use crate::ui::network;
-
-
-
-
 use gtk::glib::{self, clone, BoxedAnyObject};
 use gtk::{gio, prelude::*, Stack};
 use gtk::{Box, Orientation};
@@ -25,8 +21,9 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
     );
     label.set_markup(markup.as_str());
 
+    let playbackinfovbox = Box::new(Orientation::Vertical, 5);
     let playbackinfobox = Box::new(Orientation::Vertical, 5);
-    playbackinfobox.set_hexpand(true);
+    playbackinfovbox.set_hexpand(true);
     let overview = gtk::Inscription::new(Some(&series_info.Overview));
     overview.set_nat_lines(6);
     overview.set_hexpand(true);
@@ -41,11 +38,12 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
         sender.send(playbackinfo).await.expect("The channel needs to be open.");
     }));
 
-    glib::spawn_future_local(clone!(@strong playbackinfobox => async move {
+    glib::spawn_future_local(clone!(@strong playbackinfobox,@strong playbackinfovbox => async move {
         while let Ok(playbackinfo) = receiver.recv().await {
             let mediadropsel = super::new_dropsel::newmediadropsel(playbackinfo);
             playbackinfobox.append(&mediadropsel);
-            playbackinfobox.append(&overview);
+            playbackinfovbox.append(&playbackinfobox);
+            playbackinfovbox.append(&overview);
         }
     }));
 
@@ -54,9 +52,9 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
     let vbox = Box::new(Orientation::Vertical, 5);
     vbox.append(&overlay);
     introbox.append(&vbox);
-    introbox.append(&playbackinfobox);
+    introbox.append(&playbackinfovbox);
     introbox.set_hexpand(true);
-    introbox.set_size_request(-1, 320);
+    introbox.set_size_request(-1, 340);
 
     let vbox = Box::new(Orientation::Vertical, 5);
     vbox.append(&introbox);

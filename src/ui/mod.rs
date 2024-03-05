@@ -5,6 +5,7 @@ mod settings_page;
 mod episodes_page;
 mod new_dropsel;
 mod image;
+mod movie_page;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
 use gtk::{Application, ApplicationWindow, HeaderBar, Stack, StackSwitcher};

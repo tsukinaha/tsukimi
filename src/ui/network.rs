@@ -206,7 +206,7 @@ pub async fn get_image(id: String) -> Result<Vec<u8>,Error> {
 
     loop {
         attempts += 1;
-        let result = reqwest::get(&format!("{}:{}/emby/Items/{}/Images/Primary?maxHeight=250&maxWidth=500&quality=90", server_info.domain, server_info.port, id)).await;
+        let result = reqwest::get(&format!("{}:{}/emby/Items/{}/Images/Primary", server_info.domain, server_info.port, id)).await;
 
         match result {
             Ok(response) => {
@@ -298,4 +298,24 @@ pub fn mpv_play_withsub(url: String,suburl: String,name: String) {
     let url = format!("{}:{}/emby{}", server_info.domain,server_info.port, url);
     command.arg(titlename).arg(osdname).arg(sub).arg(url);
     command.spawn().expect("mpv failed to start");
+}
+
+pub async fn get_item_overview(id: String) -> Result<String,Error> {
+    let server_info = get_server_info();
+    let client = reqwest::Client::new();
+    let url = format!("{}:{}/emby/Users/{}/{}", server_info.domain,server_info.port,server_info.user_id,id);
+    let params = [
+        ("Fields", "ShareLevel"),
+        ("X-Emby-Client", "Emby+Web"),
+        ("X-Emby-Device-Name", "Tsukimi"),
+        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
+        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    let response = client.get(&url).query(&params).send().await?;
+    let json: serde_json::Value = response.json().await?;
+    let overview: String = serde_json::from_value(json["Overview"].clone()).unwrap();
+    println!("{:?}",overview);
+    Ok(overview)
 }
