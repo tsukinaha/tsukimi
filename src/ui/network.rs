@@ -297,7 +297,7 @@ pub fn mpv_play_withsub(url: String,suburl: String,name: String) {
     let sub = format!("--sub-file={}:{}/emby{}" ,server_info.domain,server_info.port, suburl);
     let url = format!("{}:{}/emby{}", server_info.domain,server_info.port, url);
     command.arg(titlename).arg(osdname).arg(sub).arg(url);
-    command.spawn().expect("mpv failed to start");
+    let _ = command.spawn().expect("mpv failed to start").wait();
 }
 
 pub async fn get_item_overview(id: String) -> Result<String,Error> {
@@ -318,4 +318,19 @@ pub async fn get_item_overview(id: String) -> Result<String,Error> {
     let overview: String = serde_json::from_value(json["Overview"].clone()).unwrap();
     println!("{:?}",overview);
     Ok(overview)
+}
+
+pub async fn markwatched(id: String) {
+    let server_info = get_server_info();
+    let client = reqwest::Client::new();
+    let url = format!("{}:{}/emby/Users/{}/PlayedItems/{}", server_info.domain,server_info.port,server_info.user_id,id);
+    let params = [
+        ("X-Emby-Client", "Emby+Web"),
+        ("X-Emby-Device-Name", "Tsukimi"),
+        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
+        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    let _ = client.post(&url).query(&params).send().await;
 }

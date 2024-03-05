@@ -83,6 +83,19 @@ pub fn newmediadropsel(playbackinfo: network::Media) -> gtk::Box {
         let nameselected = nameselected.and_downcast_ref::<gtk::StringObject>().unwrap();
         let nameselected = nameselected.string();
         let subselected = subdropdown.selected_item();
+        if subselected.is_none() {
+            for media in playback_info.MediaSources.clone() {
+                if media.Name == nameselected {
+                    let directurl = media.DirectStreamUrl.clone();
+                    let name = media.Name.clone();
+                    network::runtime().spawn(async move {
+                        network::markwatched(name).await;
+                    });
+                    network::mpv_play(directurl.expect("no url"),media.Name.clone());
+                }
+            }
+            return;
+        }
         let subselected = subselected.and_downcast_ref::<gtk::StringObject>().unwrap();
         let subselected = subselected.string();
         for media in playback_info.MediaSources.clone() {
@@ -94,8 +107,16 @@ pub fn newmediadropsel(playbackinfo: network::Media) -> gtk::Box {
                             let directurl = media.DirectStreamUrl.clone();
                             if mediastream.IsExternal == true {
                                 let suburl = mediastream.DeliveryUrl.clone();
+                                let name = media.Name.clone();
+                                network::runtime().spawn(async move {
+                                    network::markwatched(name).await;
+                                });
                                 network::mpv_play_withsub(directurl.expect("no url"),suburl.expect("no url"),media.Name.clone());
                             } else {
+                                let name = media.Name.clone();
+                                network::runtime().spawn(async move {
+                                    network::markwatched(name).await;
+                                });
                                 network::mpv_play(directurl.expect("no url"),media.Name.clone());
                             }
                         }
