@@ -90,7 +90,7 @@ pub fn newmediadropsel(playbackinfo: network::Media,id:String) -> gtk::Box {
                     let name = id.clone();
                     let sourceid = media.Id.clone();
                     network::runtime().spawn(async move {
-                        let json = network::markwatched(name,sourceid).await;
+                        let _ = network::markwatched(name,sourceid).await;
                     });
                     network::mpv_play(directurl.expect("no url"),media.Name.clone());
                 }
@@ -111,14 +111,14 @@ pub fn newmediadropsel(playbackinfo: network::Media,id:String) -> gtk::Box {
                                 let name = id.clone();
                                 let sourceid = media.Id.clone();
                                 network::runtime().spawn(async move {
-                                    let json = network::markwatched(name,sourceid).await;
+                                    let _  = network::markwatched(name,sourceid).await;
                                 });
                                 let _ = network::mpv_play_withsub(directurl.expect("no url"),suburl.expect("no url"),media.Name.clone());
                             } else {
                                 let name = id.clone();
                                 let sourceid = media.Id.clone();
                                 network::runtime().spawn(async move {
-                                    let json = network::markwatched(name,sourceid).await;
+                                    let _  = network::markwatched(name,sourceid).await;
                                 });
                                 let _ = network::mpv_play(directurl.expect("no url"),media.Name.clone());
                             }

@@ -6,6 +6,7 @@ mod episodes_page;
 mod new_dropsel;
 mod image;
 mod movie_page;
+mod home_page;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
 use gtk::{Application, ApplicationWindow, HeaderBar, Stack, StackSwitcher};
@@ -37,6 +38,9 @@ pub fn build_ui(app: &Application) {
         backbuttonclone.set_visible(false);
         searchstackclone.set_visible_child_name("page1");
     });
+
+    let homepage = home_page::create_page();
+    stack.add_titled(&homepage, Some("page0"), "Home");
 
     let labelsearch = search_page::create_page1(searchstack,backbutton);   
     stack.add_titled(&labelsearch, Some("page1"), "Search");

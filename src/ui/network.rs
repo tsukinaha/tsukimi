@@ -342,3 +342,48 @@ pub async fn markwatched(id: String,sourceid:String) -> Result<(String),Error>{
     let text = response.text().await?;
     Ok(text)
 }
+
+
+#[derive(Deserialize,Debug,Clone)]
+pub struct Resume {
+    pub Name: String,
+    pub Type: String,
+    pub Id: String,
+    pub SeriesId: Option<String>,
+    pub IndexNumber: Option<u32>,
+    pub ParentIndexNumber: Option<u32>,
+}
+
+struct ResumeModel{
+    resume: Vec<Resume>,
+}
+
+pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
+    let mut model = ResumeModel {
+        resume: Vec::new(),
+    };
+    let server_info = get_server_info();
+
+    let client = reqwest::Client::new();
+    let url = format!("{}:{}/emby/Users/{}/Items/Resume", server_info.domain,server_info.port, server_info.user_id);
+    let params = [
+        ("Recursive", "true"),
+        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear"),
+        ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+        ("ImageTypeLimit", "1"),
+        ("MediaTypes", "Video"),
+        ("Limit", "12"),
+        ("X-Emby-Client", "Emby+Web"),
+        ("X-Emby-Device-Name", "Tsukimi"),
+        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
+        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+
+    let response = client.get(&url).query(&params).send().await?;
+    let json: serde_json::Value = response.json().await?;
+    let items: Vec<Resume> = serde_json::from_value(json["Items"].clone()).unwrap();
+    model.resume = items;
+    Ok(model.resume)
+}
