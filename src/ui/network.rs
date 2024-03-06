@@ -316,21 +316,29 @@ pub async fn get_item_overview(id: String) -> Result<String,Error> {
     let response = client.get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let overview: String = serde_json::from_value(json["Overview"].clone()).unwrap();
-    println!("{:?}",overview);
     Ok(overview)
 }
 
-pub async fn markwatched(id: String) {
+pub async fn markwatched(id: String,sourceid:String) -> Result<(String),Error>{
     let server_info = get_server_info();
     let client = reqwest::Client::new();
-    let url = format!("{}:{}/emby/Users/{}/PlayedItems/{}", server_info.domain,server_info.port,server_info.user_id,id);
+    let url = format!("{}:{}/emby/Users/{}/PlayingItems/{}", server_info.domain,server_info.port,server_info.user_id,id);
+    println!("{}",url);
     let params = [
         ("X-Emby-Client", "Emby+Web"),
         ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
+        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b114514"),
         ("X-Emby-Client-Version", "4.8.0.54"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
+        ("reqformat", "json"),
     ];
-    let _ = client.post(&url).query(&params).send().await;
+    let inplay = json!({
+        "UserId": &server_info.user_id,
+        "Id": &id,
+        "MediaSourceId": &sourceid,
+    });
+    let response = client.post(&url).query(&params).json(&inplay).send().await?;
+    let text = response.text().await?;
+    Ok(text)
 }

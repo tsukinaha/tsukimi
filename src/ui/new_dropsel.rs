@@ -2,7 +2,7 @@ use super::network;
 use gtk::prelude::*;
 use gtk::Orientation;
 
-pub fn newmediadropsel(playbackinfo: network::Media) -> gtk::Box {
+pub fn newmediadropsel(playbackinfo: network::Media,id:String) -> gtk::Box {
     let vbox = gtk::Box::new(Orientation::Vertical, 5);
     let namelist = gtk::StringList::new(&[]);
     let audiolist = gtk::StringList::new(&[]);
@@ -87,9 +87,10 @@ pub fn newmediadropsel(playbackinfo: network::Media) -> gtk::Box {
             for media in playback_info.MediaSources.clone() {
                 if media.Name == nameselected {
                     let directurl = media.DirectStreamUrl.clone();
-                    let name = media.Name.clone();
+                    let name = id.clone();
+                    let sourceid = media.Id.clone();
                     network::runtime().spawn(async move {
-                        network::markwatched(name).await;
+                        let json = network::markwatched(name,sourceid).await;
                     });
                     network::mpv_play(directurl.expect("no url"),media.Name.clone());
                 }
@@ -107,17 +108,19 @@ pub fn newmediadropsel(playbackinfo: network::Media) -> gtk::Box {
                             let directurl = media.DirectStreamUrl.clone();
                             if mediastream.IsExternal == true {
                                 let suburl = mediastream.DeliveryUrl.clone();
-                                let name = media.Name.clone();
+                                let name = id.clone();
+                                let sourceid = media.Id.clone();
                                 network::runtime().spawn(async move {
-                                    network::markwatched(name).await;
+                                    let json = network::markwatched(name,sourceid).await;
                                 });
-                                network::mpv_play_withsub(directurl.expect("no url"),suburl.expect("no url"),media.Name.clone());
+                                let _ = network::mpv_play_withsub(directurl.expect("no url"),suburl.expect("no url"),media.Name.clone());
                             } else {
-                                let name = media.Name.clone();
+                                let name = id.clone();
+                                let sourceid = media.Id.clone();
                                 network::runtime().spawn(async move {
-                                    network::markwatched(name).await;
+                                    let json = network::markwatched(name,sourceid).await;
                                 });
-                                network::mpv_play(directurl.expect("no url"),media.Name.clone());
+                                let _ = network::mpv_play(directurl.expect("no url"),media.Name.clone());
                             }
                         }
                     }
