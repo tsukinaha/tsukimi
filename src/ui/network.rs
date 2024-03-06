@@ -352,6 +352,7 @@ pub struct Resume {
     pub IndexNumber: Option<u32>,
     pub ParentIndexNumber: Option<u32>,
     pub ParentThumbItemId: Option<String>,
+    pub SeriesName: Option<String>,
 }
 
 struct ResumeModel{

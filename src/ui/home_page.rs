@@ -9,7 +9,6 @@ use std::cell::{Ref, RefCell};
 use super::image;
 
 pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
-    let hbox = Box::new(Orientation::Horizontal, 10);
     let vbox = Box::new(Orientation::Vertical, 5);
     let store = gio::ListStore::new::<BoxedAnyObject>();
     let store_clone = store.clone();
@@ -32,19 +31,27 @@ pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
                 imgbox = crate::ui::image::set_backdropimage(result.SeriesId.as_ref().expect("").to_string());
             }
         }
-        imgbox.set_size_request(300, 169);
+        imgbox.set_size_request(290, 169);
         overlay.set_child(Some(&imgbox));
-        overlay.set_size_request(300, 169);
+        overlay.set_size_request(290, 169);
         vbox.append(&overlay);
         let label = Label::new(Some(&result.Name));
-        let markup = format!("{}", result.Name);
-        label.set_markup(markup.as_str());
+        let labeltype = Label::new(Some(&result.Type));
+        if result.Type == "Episode" {
+            let markup = format!("{}",result.SeriesName.as_ref().expect("").clone());
+            label.set_markup(markup.as_str());
+            let markup = format!("<span color='lightgray' font='10'>S{}E{}: {}</span>", result.ParentIndexNumber.as_ref().expect("").clone(), result.IndexNumber.as_ref().expect("").clone(), result.Name);
+            labeltype.set_markup(markup.as_str());
+        } else {
+            let markup = format!("{}", result.Name);
+            label.set_markup(markup.as_str());
+            let markup = format!("<span color='lightgray' font='10'>{}</span>", result.Type);
+            labeltype.set_markup(markup.as_str());
+        }
         label.set_wrap(true);
         label.set_size_request(-1, 24);
         label.set_ellipsize(pango::EllipsizeMode::End);
-        let labeltype = Label::new(Some(&result.Type));
-        let markup = format!("<span color='lightgray' font='10'>{}</span>", result.Type);
-        labeltype.set_markup(markup.as_str());
+        
         labeltype.set_size_request(-1, 24);
         vbox.append(&label);
         vbox.append(&labeltype);
@@ -53,7 +60,18 @@ pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
 
     let gridview = gtk::GridView::new(Some(sel), Some(gridfactory));
     let scrolled_window = ScrolledWindow::new();
-    scrolled_window.set_child(Some(&gridview));
+    let historybox = Box::new(Orientation::Vertical, 5);
+    let label = gtk::Label::new(Some("Continue Watching"));
+    let markup = format!(
+        "<b>Continue Watching</b>",
+    );
+    label.set_markup(markup.as_str());
+    label.set_halign(gtk::Align::Start);
+    label.set_margin_start(10);
+    label.set_margin_top(15);
+    historybox.append(&label);
+    historybox.append(&gridview);
+    scrolled_window.set_child(Some(&historybox));
     scrolled_window.set_vexpand(true);
 
     let (sender, receiver) = bounded::<Vec<network::Resume>>(1);
@@ -65,13 +83,6 @@ pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
         });
         sender.send(search_results).await.expect("search results not received.");
     }));
-
-    hbox.set_halign(gtk::Align::Center);
-
-    let spacer = Label::new(None);
-    spacer.set_size_request(-1, 5);
-    vbox.append(&spacer);
-    vbox.append(&hbox);
 
     vbox.append(&scrolled_window);
 

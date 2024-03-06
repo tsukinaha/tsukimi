@@ -1,12 +1,8 @@
-
-
 use gtk::gdk_pixbuf::Pixbuf;
 use gtk::gio::{Cancellable, MemoryInputStream};
-
 use gtk::glib::{self, clone};
 use gtk::{prelude::*};
 use gtk::{Box, Orientation};
-
 use std::collections::{HashMap};
 use std::sync::Mutex;
 extern crate lazy_static;
@@ -22,6 +18,7 @@ pub fn set_image(id:String) -> Box {
     let (sender, receiver) = async_channel::bounded::<Vec<u8>>(1);
 
     let image = gtk::Picture::new();
+    image.set_halign(gtk::Align::Center);
 
     let bytes = {
         let image_map = IMAGE_MAP.lock().unwrap();
@@ -56,6 +53,7 @@ pub fn set_image(id:String) -> Box {
             let cancellable= Some(&cancellable);
             let pixbuf = Pixbuf::from_stream(&stream, cancellable).unwrap();
             image.set_pixbuf(Some(&pixbuf));
+            image.set_can_shrink(true);
         }
     }));
 
@@ -70,6 +68,7 @@ pub fn set_thumbimage(id:String) -> Box {
     let (sender, receiver) = async_channel::bounded::<Vec<u8>>(1);
 
     let image = gtk::Picture::new();
+    image.set_halign(gtk::Align::Center);
 
     let bytes = {
         let image_map = IMAGE_MAP.lock().unwrap();
@@ -104,6 +103,7 @@ pub fn set_thumbimage(id:String) -> Box {
             let cancellable= Some(&cancellable);
             let pixbuf = Pixbuf::from_stream(&stream, cancellable).unwrap();
             image.set_pixbuf(Some(&pixbuf));
+            image.set_can_shrink(true);
         }
     }));
 
@@ -117,6 +117,7 @@ pub fn set_backdropimage(id:String) -> Box {
     let (sender, receiver) = async_channel::bounded::<Vec<u8>>(1);
 
     let image = gtk::Picture::new();
+    image.set_halign(gtk::Align::Center);
 
     let bytes = {
         let image_map = IMAGE_MAP.lock().unwrap();
@@ -151,9 +152,11 @@ pub fn set_backdropimage(id:String) -> Box {
             let cancellable= Some(&cancellable);
             let pixbuf = Pixbuf::from_stream(&stream, cancellable).unwrap();
             image.set_pixbuf(Some(&pixbuf));
+            image.set_can_shrink(true);
         }
     }));
 
     imgbox.append(&image);
     imgbox
 }
+
