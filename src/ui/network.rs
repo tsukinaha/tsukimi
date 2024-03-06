@@ -275,7 +275,6 @@ pub async fn playbackinfo(id:String) -> Result<Media,Error> {
     let response = client.post(&url).query(&params).json(&profile).send().await?;
     let json: serde_json::Value = response.json().await?;
     let mediainfo:Media = serde_json::from_value(json.clone()).unwrap();
-    println!("{:?}",mediainfo);
     Ok(mediainfo)
 }
 
@@ -352,6 +351,7 @@ pub struct Resume {
     pub SeriesId: Option<String>,
     pub IndexNumber: Option<u32>,
     pub ParentIndexNumber: Option<u32>,
+    pub ParentThumbItemId: Option<String>,
 }
 
 struct ResumeModel{
@@ -386,4 +386,66 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
     let items: Vec<Resume> = serde_json::from_value(json["Items"].clone()).unwrap();
     model.resume = items;
     Ok(model.resume)
+}
+
+pub async fn get_thumbimage(id: String) -> Result<Vec<u8>,Error> {
+    let server_info = get_server_info();
+    let mut attempts = 0;
+
+    loop {
+        attempts += 1;
+        let result = reqwest::get(&format!("{}:{}/emby/Items/{}/Images/Thumb", server_info.domain, server_info.port, id)).await;
+
+        match result {
+            Ok(response) => {
+                let bytes_result = response.bytes().await;
+                match bytes_result {
+                    Ok(bytes) => return Ok(bytes.to_vec()),
+                    Err(e) => {
+                        eprintln!("加载错误");
+                        if attempts >= 3 {
+                            return Err(e.into());
+                        }
+                    }
+                }
+            }
+            Err(e) => {
+                eprintln!("加载错误");
+                if attempts >= 3 {
+                    return Err(e.into());
+                }
+            }
+        }
+    }
+}
+
+pub async fn get_backdropimage(id: String) -> Result<Vec<u8>,Error> {
+    let server_info = get_server_info();
+    let mut attempts = 0;
+
+    loop {
+        attempts += 1;
+        let result = reqwest::get(&format!("{}:{}/emby/Items/{}/Images/Backdrop", server_info.domain, server_info.port, id)).await;
+
+        match result {
+            Ok(response) => {
+                let bytes_result = response.bytes().await;
+                match bytes_result {
+                    Ok(bytes) => return Ok(bytes.to_vec()),
+                    Err(e) => {
+                        eprintln!("加载错误");
+                        if attempts >= 3 {
+                            return Err(e.into());
+                        }
+                    }
+                }
+            }
+            Err(e) => {
+                eprintln!("加载错误");
+                if attempts >= 3 {
+                    return Err(e.into());
+                }
+            }
+        }
+    }
 }

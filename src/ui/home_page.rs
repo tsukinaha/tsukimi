@@ -1,15 +1,14 @@
-use crate::ui::item_page::itempage;
-use crate::ui::network::{self, Resume};
 use crate::ui::network::SearchResult;
+use crate::ui::network::{self, Resume};
 use async_channel::bounded;
 use gtk::glib::{self, clone, BoxedAnyObject};
 use gtk::{gio, pango, prelude::*, Stack};
-use gtk::{Box, Button, Entry, Label, Orientation, ScrolledWindow};
+use gtk::{Box, Button, Label, Orientation, ScrolledWindow};
 use std::cell::{Ref, RefCell};
 
-use super::network::SeriesInfo;
+use super::image;
 
-pub fn create_page() -> Stack {
+pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
     let hbox = Box::new(Orientation::Horizontal, 10);
     let vbox = Box::new(Orientation::Vertical, 5);
     let store = gio::ListStore::new::<BoxedAnyObject>();
@@ -23,10 +22,19 @@ pub fn create_page() -> Stack {
         let result: Ref<Resume> = entry.borrow();
         let vbox = Box::new(Orientation::Vertical, 5);
         let overlay = gtk::Overlay::new();
-        let imgbox = crate::ui::image::set_image(result.Id.clone());
-        imgbox.set_size_request(187, 275);
+        let imgbox ;
+        if result.ParentThumbItemId.is_some() {
+            imgbox = crate::ui::image::set_thumbimage(result.ParentThumbItemId.as_ref().expect("").clone());
+        } else {
+            if result.Type == "Movie" {
+                imgbox = crate::ui::image::set_backdropimage(result.Id.clone());
+            } else {
+                imgbox = crate::ui::image::set_backdropimage(result.SeriesId.as_ref().expect("").to_string());
+            }
+        }
+        imgbox.set_size_request(300, 169);
         overlay.set_child(Some(&imgbox));
-        overlay.set_size_request(187, 275);
+        overlay.set_size_request(300, 169);
         vbox.append(&overlay);
         let label = Label::new(Some(&result.Name));
         let markup = format!("{}", result.Name);
@@ -77,8 +85,6 @@ pub fn create_page() -> Stack {
         }
     }));
 
-    let homestack = Stack::new();
-
     gridview.connect_activate(clone!(@weak homestack=>move |gridview, position| {
         let model = gridview.model().unwrap();
         let item = model.item(position).and_downcast::<BoxedAnyObject>().unwrap();
@@ -94,6 +100,7 @@ pub fn create_page() -> Stack {
         let result_cell = RefCell::new(result1);
         if result.Type == "Movie" {
             item_page = crate::ui::movie_page::movie_page(result_cell.borrow());
+            backbutton.set_visible(true);
         } else {
             let series = network::SeriesInfo {
                 Id: result.Id.clone(),
@@ -104,6 +111,7 @@ pub fn create_page() -> Stack {
             };
             let series_cell = RefCell::new(series);
             item_page = crate::ui::episodes_page::episodes_page(stack_clone,series_cell.borrow(),result.SeriesId.as_ref().expect("no series id").to_string());
+            backbutton.set_visible(true);
         }
 
         let id = result_clone.Id;

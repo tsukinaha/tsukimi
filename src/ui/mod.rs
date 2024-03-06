@@ -27,6 +27,9 @@ pub fn build_ui(app: &Application) {
 
     let searchstack = Stack::new(); 
     let searchstackclone = searchstack.clone();
+    let homestack = Stack::new();
+    let homestackclone = homestack.clone();
+    homestack.set_transition_type(gtk::StackTransitionType::Crossfade);
     let backbutton = gtk::Button::new();
     
     header.pack_start(&backbutton);
@@ -37,9 +40,10 @@ pub fn build_ui(app: &Application) {
     backbutton.connect_clicked(move |_| {
         backbuttonclone.set_visible(false);
         searchstackclone.set_visible_child_name("page1");
+        homestackclone.set_visible_child_name("page0");
     });
 
-    let homepage = home_page::create_page();
+    let homepage = home_page::create_page(homestack,backbutton.clone());
     stack.add_titled(&homepage, Some("page0"), "Home");
 
     let labelsearch = search_page::create_page1(searchstack,backbutton);   
