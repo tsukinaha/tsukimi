@@ -283,8 +283,9 @@ pub fn mpv_play(url: String,name: String) {
     let server_info = get_server_info();
     let titlename = format!("--force-media-title={}", name);
     let osdname = format!("--osd-playing-msg={}", name);
+    let forcewindow = format!("--force-window=immediate");
     let url = format!("{}:{}/emby{}", server_info.domain,server_info.port, url);
-    command.arg(titlename).arg(osdname).arg(url);
+    command.arg(forcewindow).arg(titlename).arg(osdname).arg(url);
     command.spawn().expect("mpv failed to start");
 }
 
@@ -293,9 +294,10 @@ pub fn mpv_play_withsub(url: String,suburl: String,name: String) {
     let server_info = get_server_info();
     let titlename = format!("--force-media-title={}", name);
     let osdname = format!("--osd-playing-msg={}", name);
+    let forcewindow = format!("--force-window=immediate");
     let sub = format!("--sub-file={}:{}/emby{}" ,server_info.domain,server_info.port, suburl);
     let url = format!("{}:{}/emby{}", server_info.domain,server_info.port, url);
-    command.arg(titlename).arg(osdname).arg(sub).arg(url);
+    command.arg(forcewindow).arg(titlename).arg(osdname).arg(sub).arg(url);
     let _ = command.spawn().expect("mpv failed to start").wait();
 }
 
