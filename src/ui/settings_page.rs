@@ -1,4 +1,5 @@
-use gtk::glib::home_dir;
+use async_channel::bounded;
+use gtk::glib::{self, home_dir};
 use gtk::prelude::*;
 use gtk::{Box, Button, Entry, Label, Orientation};
 use serde::Serialize;
@@ -84,45 +85,22 @@ pub fn create_page2() -> Box {
 
     let hbox = Box::new(Orientation::Horizontal, 20);
 
-    let servername_entry_clone = servername_entry.clone();
-    let port_entry_clone = port_entry.clone();
-    let username_entry_clone = username_entry.clone();
-    let password_entry_clone = password_entry.clone();
-
-    let save_button = Button::with_label("保存");
-    save_button.set_size_request(200, -1);
-    save_button.connect_clicked(move |_| {
-        let domain = servername_entry_clone.text().to_string();
-        let username = username_entry_clone.text().to_string();
-        let password = password_entry_clone.text().to_string();
-        let port = port_entry_clone.text().to_string();
-        let config = Config {
-            domain,
-            username,
-            password,
-            port,
-            user_id: "".to_string(),
-            access_token: "".to_string(),
-        };
-        let yaml = to_string(&config).unwrap();
-        let mut path = home_dir();
-        path.push(".config");
-        path.push("fpv.yaml");
-        write(path, yaml).unwrap();
-    });
-    hbox.append(&save_button);
-
     let login_button = Button::with_label("登录");
     login_button.set_size_request(200, -1);
 
-    login_button.connect_clicked(move |_| {
+    login_button.connect_clicked(move |login_button| {
         let servername = servername_entry.text().to_string();
         let port = port_entry.text().to_string();
         let username = username_entry.text().to_string();
         let password = password_entry.text().to_string();
-        tokio::spawn(async {
+        login_button.set_label("登录中");
+        let login_button = login_button.clone();
+        glib::MainContext::default().spawn_local(async move {
             match network::login(servername, username, password, port).await {
-                Ok(_) => println!("Login successful"),
+                Ok(_) => {
+                    login_button.set_label("登录成功");
+                    println!("Login successful");
+                },
                 Err(e) => eprintln!("Error: {}", e),
             }
         });

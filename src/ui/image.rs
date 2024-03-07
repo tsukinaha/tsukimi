@@ -1,17 +1,15 @@
 use gtk::gdk_pixbuf::Pixbuf;
 use gtk::gio::{Cancellable, MemoryInputStream};
 use gtk::glib::{self, clone};
-use gtk::{prelude::*};
+use gtk::prelude::*;
 use gtk::{Box, Orientation};
-use std::collections::{HashMap};
 use std::num::NonZeroUsize;
 use std::sync::Mutex;
 use lru::LruCache;
 extern crate lazy_static;
 use lazy_static::lazy_static;
-
 lazy_static! {
-    static ref IMAGE_MAP: Mutex<LruCache<String, Vec<u8>>> = Mutex::new(LruCache::new(NonZeroUsize::new(50).unwrap())); 
+    static ref IMAGE_MAP: Mutex<LruCache<String, Vec<u8>>> = Mutex::new(LruCache::new(NonZeroUsize::new(100).unwrap())); 
 }
 
 pub fn set_image(id:String) -> Box {

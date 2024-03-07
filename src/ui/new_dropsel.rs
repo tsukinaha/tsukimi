@@ -1,3 +1,4 @@
+
 use super::network;
 use gtk::prelude::*;
 use gtk::Orientation;
@@ -75,7 +76,6 @@ pub fn newmediadropsel(playbackinfo: network::Media,id:String) -> gtk::Box {
     vbox.append(&audiodropdown);
     vbox.append(&subdropdown);
     
-
     let playbutton = gtk::Button::with_label("播放");
     playbutton.set_size_request(400, 30);
     playbutton.connect_clicked(move |_| {

@@ -7,7 +7,9 @@ mod new_dropsel;
 mod image;
 mod movie_page;
 mod home_page;
+use gtk::ffi::gtk_widget_show;
 use gtk::gdk::Display;
+use gtk::subclass::popover;
 use gtk::{prelude::*, CssProvider};
 use gtk::{Application, ApplicationWindow, HeaderBar, Stack, StackSwitcher};
 
@@ -43,14 +45,22 @@ pub fn build_ui(app: &Application) {
         homestackclone.set_visible_child_name("page0");
     });
 
+    let viewmorebutton = gtk::Button::new();
+    viewmorebutton.set_icon_name("view-more-symbolic");
+    viewmorebutton.connect_clicked(move |_| {
+        let window = gtk::Window::new();
+        window.set_title(Some("Settings"));
+        window.set_default_size(700, 400);
+        window.set_child(Some(&settings_page::create_page2()));
+        window.set_visible(true);
+    });
+    header.pack_end(&viewmorebutton);
+
     let homepage = home_page::create_page(homestack,backbutton.clone());
     stack.add_titled(&homepage, Some("page0"), "Home");
 
     let labelsearch = search_page::create_page1(searchstack,backbutton);   
     stack.add_titled(&labelsearch, Some("page1"), "Search");
-
-    let labelsettings = settings_page::create_page2();
-    stack.add_titled(&labelsettings, Some("page2"), "Server Settings");
 
     let stack_switcher = StackSwitcher::new();
     stack_switcher.set_stack(Some(&stack));
