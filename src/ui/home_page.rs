@@ -116,7 +116,7 @@ pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
                 Name: result.Name.clone(),
                 ParentIndexNumber: result.ParentIndexNumber.clone().expect("msg"),
                 IndexNumber: result.IndexNumber.clone().expect("msg"), 
-                Overview: "".to_string(),
+                Overview: None,
             };
             let series_cell = RefCell::new(series);
             item_page = crate::ui::episodes_page::episodes_page(stack_clone,series_cell.borrow(),result.SeriesId.as_ref().expect("no series id").to_string());

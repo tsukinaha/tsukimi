@@ -58,14 +58,16 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
         let seriesinfo: Ref<network::SeriesInfo> = entry.borrow();
         let vbox = Box::new(Orientation::Vertical, 5);
         let label = gtk::Label::new(Some(&seriesinfo.Name));
-        let overview = gtk::Inscription::new(Some(&seriesinfo.Overview));
         label.set_halign(gtk::Align::Start);
         let markup = format!("<b>S{}E{}: {}</b>", seriesinfo.ParentIndexNumber, seriesinfo.IndexNumber, seriesinfo.Name);
         label.set_markup(markup.as_str());
-        overview.set_nat_lines(6);
-        overview.set_hexpand(true);
         vbox.append(&label);
-        vbox.append(&overview);
+        if seriesinfo.Overview.is_some() {
+            let overview = gtk::Inscription::new(Some(&seriesinfo.Overview.as_ref().unwrap()));
+            overview.set_nat_lines(6);
+            overview.set_hexpand(true);
+            vbox.append(&overview);
+        }
         let hbox = Box::new(Orientation::Horizontal, 10);
         let imgbox = crate::ui::image::set_image(seriesinfo.Id.clone());
         imgbox.set_size_request(250, 141);

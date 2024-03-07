@@ -24,10 +24,6 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
     let playbackinfovbox = Box::new(Orientation::Vertical, 5);
     let playbackinfobox = Box::new(Orientation::Vertical, 5);
     playbackinfovbox.set_hexpand(true);
-    let overview = gtk::Inscription::new(Some(&series_info.Overview));
-    overview.set_nat_lines(6);
-    overview.set_hexpand(true);
-    overview.set_valign(gtk::Align::Start);
     playbackinfobox.append(&label);
 
     let (sender, receiver) = async_channel::bounded::<network::Media>(1);
@@ -39,12 +35,19 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
     }));
 
     let series_id = series_info.Id.clone();
+    let seriesoverview = series_info.Overview.clone();
     glib::spawn_future_local(clone!(@strong playbackinfobox,@strong playbackinfovbox => async move {
         while let Ok(playbackinfo) = receiver.recv().await {
             let mediadropsel = super::new_dropsel::newmediadropsel(playbackinfo, series_id.clone());
             playbackinfobox.append(&mediadropsel);
             playbackinfovbox.append(&playbackinfobox);
-            playbackinfovbox.append(&overview);
+            if seriesoverview.is_some() {
+                let overview = gtk::Inscription::new(Some(&seriesoverview.as_ref().unwrap()));
+                    overview.set_nat_lines(6);
+                    overview.set_hexpand(true);
+                    overview.set_valign(gtk::Align::Start);
+                    playbackinfovbox.append(&overview);
+            }
         }
     }));
 
@@ -72,17 +75,20 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
         let seriesinfo: Ref<network::SeriesInfo> = entry.borrow();
         let vbox = Box::new(Orientation::Vertical, 5);
         let label = gtk::Label::new(Some(&seriesinfo.Name));
-        let overview = gtk::Inscription::new(Some(&seriesinfo.Overview));
         label.set_halign(gtk::Align::Start);
         let markup = format!(
             "<b>S{}E{}: {}</b>",
             seriesinfo.ParentIndexNumber, seriesinfo.IndexNumber, seriesinfo.Name
         );
         label.set_markup(markup.as_str());
-        overview.set_nat_lines(6);
-        overview.set_hexpand(true);
         vbox.append(&label);
-        vbox.append(&overview);
+
+        if seriesinfo.Overview.is_some() {
+            let overview = gtk::Inscription::new(Some(&seriesinfo.Overview.as_ref().unwrap()));
+            overview.set_nat_lines(6);
+            overview.set_hexpand(true);
+            vbox.append(&overview);
+        }
         let id = seriesinfo.Id.clone();
         let imgbox = set_image(id);
         imgbox.set_size_request(250, 141);

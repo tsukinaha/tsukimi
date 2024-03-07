@@ -4,12 +4,14 @@ use gtk::glib::{self, clone};
 use gtk::{prelude::*};
 use gtk::{Box, Orientation};
 use std::collections::{HashMap};
+use std::num::NonZeroUsize;
 use std::sync::Mutex;
+use lru::LruCache;
 extern crate lazy_static;
 use lazy_static::lazy_static;
 
 lazy_static! {
-    static ref IMAGE_MAP: Mutex<HashMap<String, Vec<u8>>> = Mutex::new(HashMap::new());
+    static ref IMAGE_MAP: Mutex<LruCache<String, Vec<u8>>> = Mutex::new(LruCache::new(NonZeroUsize::new(50).unwrap())); 
 }
 
 pub fn set_image(id:String) -> Box {
@@ -21,12 +23,8 @@ pub fn set_image(id:String) -> Box {
     image.set_halign(gtk::Align::Center);
 
     let bytes = {
-        let image_map = IMAGE_MAP.lock().unwrap();
-        if let Some(bytes) = image_map.get(&id) {
-            Some(bytes.clone())
-        } else {
-            None
-        }
+        let mut image_map = IMAGE_MAP.lock().unwrap();
+        image_map.get(&id).cloned()
     };
 
     if let Some(bytes) = bytes {
@@ -39,7 +37,7 @@ pub fn set_image(id:String) -> Box {
             let bytes = crate::ui::network::get_image(id.clone()).await.expect("msg");
             {
                 let mut image_map = IMAGE_MAP.lock().unwrap();
-                image_map.insert(id.clone(), bytes.clone());
+                image_map.put(id.clone(), bytes.clone());
             }
             sender.send(bytes).await.expect("The channel needs to be open.");
         }));
@@ -71,12 +69,8 @@ pub fn set_thumbimage(id:String) -> Box {
     image.set_halign(gtk::Align::Center);
 
     let bytes = {
-        let image_map = IMAGE_MAP.lock().unwrap();
-        if let Some(bytes) = image_map.get(&id) {
-            Some(bytes.clone())
-        } else {
-            None
-        }
+        let mut image_map = IMAGE_MAP.lock().unwrap();
+        image_map.get(&id).cloned()
     };
 
     if let Some(bytes) = bytes {
@@ -89,7 +83,7 @@ pub fn set_thumbimage(id:String) -> Box {
             let bytes = crate::ui::network::get_thumbimage(id.clone()).await.expect("msg");
             {
                 let mut image_map = IMAGE_MAP.lock().unwrap();
-                image_map.insert(id.clone(), bytes.clone());
+                image_map.put(id.clone(), bytes.clone());
             }
             sender.send(bytes).await.expect("The channel needs to be open.");
         }));
@@ -120,12 +114,8 @@ pub fn set_backdropimage(id:String) -> Box {
     image.set_halign(gtk::Align::Center);
 
     let bytes = {
-        let image_map = IMAGE_MAP.lock().unwrap();
-        if let Some(bytes) = image_map.get(&id) {
-            Some(bytes.clone())
-        } else {
-            None
-        }
+        let mut image_map = IMAGE_MAP.lock().unwrap();
+        image_map.get(&id).cloned()
     };
 
     if let Some(bytes) = bytes {
@@ -138,7 +128,7 @@ pub fn set_backdropimage(id:String) -> Box {
             let bytes = crate::ui::network::get_backdropimage(id.clone()).await.expect("msg");
             {
                 let mut image_map = IMAGE_MAP.lock().unwrap();
-                image_map.insert(id.clone(), bytes.clone());
+                image_map.put(id.clone(), bytes.clone());
             }
             sender.send(bytes).await.expect("The channel needs to be open.");
         }));
@@ -159,4 +149,3 @@ pub fn set_backdropimage(id:String) -> Box {
     imgbox.append(&image);
     imgbox
 }
-

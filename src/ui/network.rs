@@ -169,7 +169,7 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
 pub struct SeriesInfo {
     pub Name: String,
     pub Id: String,
-    pub Overview: String,
+    pub Overview: Option<String>,
     pub IndexNumber: u32,
     pub ParentIndexNumber: u32,
 }
@@ -275,7 +275,7 @@ pub async fn playbackinfo(id:String) -> Result<Media,Error> {
     let response = client.post(&url).query(&params).json(&profile).send().await?;
     let json: serde_json::Value = response.json().await?;
     let mediainfo:Media = serde_json::from_value(json.clone()).unwrap();
-    Ok(mediainfo)
+    return Ok(mediainfo)
 }
 
 pub fn mpv_play(url: String,name: String) {
@@ -405,7 +405,6 @@ pub async fn get_thumbimage(id: String) -> Result<Vec<u8>,Error> {
                 match bytes_result {
                     Ok(bytes) => return Ok(bytes.to_vec()),
                     Err(e) => {
-                        eprintln!("加载错误");
                         if attempts >= 3 {
                             return Err(e.into());
                         }
@@ -413,7 +412,6 @@ pub async fn get_thumbimage(id: String) -> Result<Vec<u8>,Error> {
                 }
             }
             Err(e) => {
-                eprintln!("加载错误");
                 if attempts >= 3 {
                     return Err(e.into());
                 }
