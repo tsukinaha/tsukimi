@@ -6,8 +6,6 @@ use gtk::{gio, pango, prelude::*, Stack};
 use gtk::{Box, Button, Label, Orientation, ScrolledWindow};
 use std::cell::{Ref, RefCell};
 
-use super::image;
-
 pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
     let vbox = Box::new(Orientation::Vertical, 5);
     let store = gio::ListStore::new::<BoxedAnyObject>();
