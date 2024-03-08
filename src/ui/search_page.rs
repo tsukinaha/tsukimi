@@ -1,4 +1,3 @@
-use crate::ui::item_page::itempage;
 use crate::ui::network;
 use crate::ui::network::SearchResult;
 use async_channel::bounded;
@@ -117,18 +116,16 @@ pub fn create_page1(searchstack: Stack, backbutton: Button) -> Stack {
         let model = gridview.model().unwrap();
         let item = model.item(position).and_downcast::<BoxedAnyObject>().unwrap();
         let result: Ref<SearchResult> = item.borrow();
-        let stack_clone = searchstack.clone();
-        let result_clone = result.clone();
+        searchstack.remove(&searchstack.child_by_name("item_page").unwrap());
         let item_page;
 
         if result.Type == "Movie" {
             item_page = crate::ui::movie_page::movie_page(result);
         } else {
-            item_page = crate::ui::item_page::itempage(stack_clone, result);
+            item_page = crate::ui::item_page::itempage(searchstack.clone(), result);
         }
 
-        let id = result_clone.Id;
-        let pagename = format!("item_page_{}", id);
+        let pagename = format!("item_page");
         if searchstack.child_by_name(&pagename).is_none() {
             searchstack.add_named(&item_page, Some(&pagename));
         }

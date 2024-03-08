@@ -1,55 +1,32 @@
-use gtk::gdk_pixbuf::Pixbuf;
-use gtk::gio::{Cancellable, MemoryInputStream};
 use gtk::glib::{self, clone};
-use gtk::prelude::*;
+use gtk::{prelude::*, PackType};
 use gtk::{Box, Orientation};
-use std::num::NonZeroUsize;
-use std::sync::Mutex;
-use lru::LruCache;
-extern crate lazy_static;
-use lazy_static::lazy_static;
-lazy_static! {
-    static ref IMAGE_MAP: Mutex<LruCache<String, Vec<u8>>> = Mutex::new(LruCache::new(NonZeroUsize::new(100).unwrap())); 
-}
-
+use std::path::PathBuf;
 pub fn set_image(id:String) -> Box {
     let imgbox = Box::new(Orientation::Vertical, 5);
 
-    let (sender, receiver) = async_channel::bounded::<Vec<u8>>(1);
+    let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Center);
 
-    let bytes = {
-        let mut image_map = IMAGE_MAP.lock().unwrap();
-        image_map.get(&id).cloned()
-    };
-
-    if let Some(bytes) = bytes {
-        let sender_clone = sender.clone();
-        crate::ui::network::runtime().spawn(async move {
-            sender_clone.send(bytes).await.expect("The channel needs to be open.");
-        });
+    let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), id);
+    let pathbuf = PathBuf::from(&path);
+    let idfuture = id.clone();
+    if pathbuf.exists() {
+        image.set_file(Some(&gtk::gio::File::for_path(&path)));
     } else {
-        crate::ui::network::runtime().spawn(clone!(@strong sender =>async move {
-            let bytes = crate::ui::network::get_image(id.clone()).await.expect("msg");
-            {
-                let mut image_map = IMAGE_MAP.lock().unwrap();
-                image_map.put(id.clone(), bytes.clone());
-            }
-            sender.send(bytes).await.expect("The channel needs to be open.");
-        }));
+        crate::ui::network::runtime().spawn(async move {
+            let id = crate::ui::network::get_image(id.clone()).await.expect("msg");
+            sender.send(id.clone()).await.expect("The channel needs to be open.");
+        });
     }
 
-    glib::spawn_future_local(clone!(@strong image => async move {
-        while let Ok(bytes) = receiver.recv().await {
-            let bytes = glib::Bytes::from(&bytes.to_vec());
-            let stream = MemoryInputStream::from_bytes(&bytes);
-            let cancellable = Cancellable::new();
-            let cancellable= Some(&cancellable);
-            let pixbuf = Pixbuf::from_stream(&stream, cancellable).unwrap();
-            image.set_pixbuf(Some(&pixbuf));
-            image.set_can_shrink(true);
+    glib::spawn_future_local(clone!(@weak image => async move {
+        while let Ok(_) = receiver.recv().await {
+            let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), idfuture);
+            let file = gtk::gio::File::for_path(&path);
+            image.set_file(Some(&file));
         }
     }));
 
@@ -61,41 +38,28 @@ pub fn set_image(id:String) -> Box {
 pub fn set_thumbimage(id:String) -> Box {
     let imgbox = Box::new(Orientation::Vertical, 5);
 
-    let (sender, receiver) = async_channel::bounded::<Vec<u8>>(1);
+    let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Center);
 
-    let bytes = {
-        let mut image_map = IMAGE_MAP.lock().unwrap();
-        image_map.get(&id).cloned()
-    };
-
-    if let Some(bytes) = bytes {
-        let sender_clone = sender.clone();
-        crate::ui::network::runtime().spawn(async move {
-            sender_clone.send(bytes).await.expect("The channel needs to be open.");
-        });
+    let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), id);
+    let pathbuf = PathBuf::from(&path);
+    let idfuture = id.clone();
+    if pathbuf.exists() {
+        image.set_file(Some(&gtk::gio::File::for_path(&path)));
     } else {
-        crate::ui::network::runtime().spawn(clone!(@strong sender =>async move {
-            let bytes = crate::ui::network::get_thumbimage(id.clone()).await.expect("msg");
-            {
-                let mut image_map = IMAGE_MAP.lock().unwrap();
-                image_map.put(id.clone(), bytes.clone());
-            }
-            sender.send(bytes).await.expect("The channel needs to be open.");
-        }));
+        crate::ui::network::runtime().spawn(async move {
+            let id = crate::ui::network::get_thumbimage(id.clone()).await.expect("msg");
+            sender.send(id.clone()).await.expect("The channel needs to be open.");
+        });
     }
 
-    glib::spawn_future_local(clone!(@strong image => async move {
-        while let Ok(bytes) = receiver.recv().await {
-            let bytes = glib::Bytes::from(&bytes.to_vec());
-            let stream = MemoryInputStream::from_bytes(&bytes);
-            let cancellable = Cancellable::new();
-            let cancellable= Some(&cancellable);
-            let pixbuf = Pixbuf::from_stream(&stream, cancellable).unwrap();
-            image.set_pixbuf(Some(&pixbuf));
-            image.set_can_shrink(true);
+    glib::spawn_future_local(clone!(@weak image => async move {
+        while let Ok(_) = receiver.recv().await {
+            let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), idfuture);
+            let file = gtk::gio::File::for_path(&path);
+            image.set_file(Some(&file));
         }
     }));
 
@@ -106,41 +70,28 @@ pub fn set_thumbimage(id:String) -> Box {
 pub fn set_backdropimage(id:String) -> Box {
     let imgbox = Box::new(Orientation::Vertical, 5);
 
-    let (sender, receiver) = async_channel::bounded::<Vec<u8>>(1);
+    let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Center);
 
-    let bytes = {
-        let mut image_map = IMAGE_MAP.lock().unwrap();
-        image_map.get(&id).cloned()
-    };
-
-    if let Some(bytes) = bytes {
-        let sender_clone = sender.clone();
-        crate::ui::network::runtime().spawn(async move {
-            sender_clone.send(bytes).await.expect("The channel needs to be open.");
-        });
+    let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), id);
+    let pathbuf = PathBuf::from(&path);
+    let idfuture = id.clone();
+    if pathbuf.exists() {
+        image.set_file(Some(&gtk::gio::File::for_path(&path)));
     } else {
-        crate::ui::network::runtime().spawn(clone!(@strong sender =>async move {
-            let bytes = crate::ui::network::get_backdropimage(id.clone()).await.expect("msg");
-            {
-                let mut image_map = IMAGE_MAP.lock().unwrap();
-                image_map.put(id.clone(), bytes.clone());
-            }
-            sender.send(bytes).await.expect("The channel needs to be open.");
-        }));
+        crate::ui::network::runtime().spawn(async move {
+            let id = crate::ui::network::get_backdropimage(id.clone()).await.expect("msg");
+            sender.send(id.clone()).await.expect("The channel needs to be open.");
+        });
     }
 
-    glib::spawn_future_local(clone!(@strong image => async move {
-        while let Ok(bytes) = receiver.recv().await {
-            let bytes = glib::Bytes::from(&bytes.to_vec());
-            let stream = MemoryInputStream::from_bytes(&bytes);
-            let cancellable = Cancellable::new();
-            let cancellable= Some(&cancellable);
-            let pixbuf = Pixbuf::from_stream(&stream, cancellable).unwrap();
-            image.set_pixbuf(Some(&pixbuf));
-            image.set_can_shrink(true);
+    glib::spawn_future_local(clone!(@weak image => async move {
+        while let Ok(_) = receiver.recv().await {
+            let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), idfuture);
+            let file = gtk::gio::File::for_path(&path);
+            image.set_file(Some(&file));
         }
     }));
 

@@ -1,8 +1,7 @@
-use std::cell::Ref;
 
-use gtk::{gio, glib::{self, clone}, prelude::*, Box, Orientation};
+use gtk::{ glib::{self, clone}, prelude::*, Box, Orientation};
 
-use super::{image::set_image, network::{self, get_item_overview, runtime, SearchResult}};
+use super::{image::set_image, network::{self,  runtime, SearchResult}};
 
 pub fn movie_page(result: std::cell::Ref<'_, SearchResult>) -> Box{
     let pagebox = Box::new(Orientation::Vertical, 5);

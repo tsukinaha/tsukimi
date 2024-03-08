@@ -7,11 +7,10 @@ mod new_dropsel;
 mod image;
 mod movie_page;
 mod home_page;
-use gtk::ffi::gtk_widget_show;
 use gtk::gdk::Display;
-use gtk::subclass::popover;
 use gtk::{prelude::*, CssProvider};
 use gtk::{Application, ApplicationWindow, HeaderBar, Stack, StackSwitcher};
+use gtk::glib::{self, clone};
 
 pub fn build_ui(app: &Application) {
     let window = ApplicationWindow::builder()
@@ -28,9 +27,7 @@ pub fn build_ui(app: &Application) {
     stack.set_transition_type(gtk::StackTransitionType::SlideLeftRight);
 
     let searchstack = Stack::new(); 
-    let searchstackclone = searchstack.clone();
     let homestack = Stack::new();
-    let homestackclone = homestack.clone();
     homestack.set_transition_type(gtk::StackTransitionType::Crossfade);
     let backbutton = gtk::Button::new();
     
@@ -39,11 +36,11 @@ pub fn build_ui(app: &Application) {
     backbutton.set_icon_name("go-previous-symbolic");
     backbutton.set_visible(false);
     let backbuttonclone = backbutton.clone();
-    backbutton.connect_clicked(move |_| {
+    backbutton.connect_clicked(clone!(@weak searchstack,@weak homestack => move |_| {
         backbuttonclone.set_visible(false);
-        searchstackclone.set_visible_child_name("page1");
-        homestackclone.set_visible_child_name("page0");
-    });
+        searchstack.set_visible_child_name("page1");
+        homestack.set_visible_child_name("page0");
+    }));
 
     let viewmorebutton = gtk::Button::new();
     viewmorebutton.set_icon_name("view-more-symbolic");
@@ -68,7 +65,7 @@ pub fn build_ui(app: &Application) {
     window.set_titlebar(Some(&header));
     window.set_child(Some(&stack));
 
-    window.show();
+    window.set_visible(true);
 }
 
 pub fn load_css(){

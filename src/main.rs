@@ -2,8 +2,7 @@ use gtk::prelude::*;
 use gtk::Application;
 mod ui;
 
-#[tokio::main]
-async fn main() {
+fn main() {
     let app = Application::builder()
         .application_id("moe.tsuna.tsukimi")
         .build();

@@ -2,10 +2,11 @@ use crate::ui::network;
 use crate::ui::network::SearchResult;
 use gtk::gdk_pixbuf::Pixbuf;
 use gtk::gio::{Cancellable, MemoryInputStream};
-use gtk::glib::{self, clone, BoxedAnyObject};
+use gtk::glib::{self, clone,  BoxedAnyObject};
 use gtk::{gio, prelude::*, Stack};
 use gtk::{Box, Orientation};
 use std::cell::Ref;
+use std::fmt::format;
 use super::episodes_page;
 use super::network::{get_image, runtime};
 
@@ -19,20 +20,17 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
 
     let series_id = result.Id.clone();
     
-    let (sender, receiver) = async_channel::bounded::<Vec<u8>>(1);
+    let (sender, receiver) = async_channel::bounded::<String>(1);
     runtime().spawn(clone!(@strong sender =>async move {
-        let bytes = get_image(series_id).await.expect("msg");
-        sender.send(bytes).await.expect("The channel needs to be open.");
+        let id = get_image(series_id).await.expect("msg");
+        sender.send(id).await.expect("The channel needs to be open.");
     }));
 
     glib::spawn_future_local(clone!(@strong intropic => async move {
-        while let Ok(bytes) = receiver.recv().await {
-            let bytes = glib::Bytes::from(&bytes.to_vec());
-            let stream = MemoryInputStream::from_bytes(&bytes);
-            let cancellable = Cancellable::new();
-            let cancellable= Some(&cancellable);
-            let pixbuf = Pixbuf::from_stream(&stream, cancellable).unwrap();
-            intropic.set_pixbuf(Some(&pixbuf));
+        while let Ok(id) = receiver.recv().await {
+            let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), id);
+            let file = gtk::gio::File::for_path(&path);
+            intropic.set_file(Some(&file));
         }
     }));
 
@@ -83,14 +81,14 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
         let model = listview.model().unwrap();
         let item = model.item(position).and_downcast::<BoxedAnyObject>().unwrap();
         let series_info: Ref<network::SeriesInfo> = item.borrow();
-        let stackclone = stack.clone();
-        let id = series_info.Id.clone();
         let resultid = resultid.clone();
-        let episodes_page = episodes_page::episodes_page(stackclone, series_info,resultid);
-        let pagename = format!("episodes_page_{}", id);
+        let episodes_page = episodes_page::episodes_page(stack.clone(), series_info,resultid);
+        let pagename = format!("episodes_page");
         if stack.child_by_name(&pagename).is_none() {
-            stack.add_named(&episodes_page, Some(&pagename));
-        } 
+        } else {
+            stack.remove(&stack.child_by_name(&pagename).unwrap());
+        }
+        stack.add_named(&episodes_page, Some(&pagename));
         stack.set_visible_child_name(&pagename);
     });
 

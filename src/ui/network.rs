@@ -1,20 +1,21 @@
 use crate::ui::settings_page::Config;
-use gtk::{gdk_pixbuf};
+use gtk::gdk_pixbuf;
 
+use dirs::home_dir;
+use gdk_pixbuf::Pixbuf;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::Error;
 use serde_json::json;
 use serde_json::Value;
 use serde_yaml::to_string;
-use tokio::runtime::Runtime;
-use gdk_pixbuf::Pixbuf;
-use std::env::home_dir;
-use std::fs::write;
 use std::fs::File;
-use std::io::{Read};
+use std::fs::{self, write};
+use std::io::{Read, Write};
+use std::path::PathBuf;
+use tokio::runtime::Runtime;
 
-use std::sync::OnceLock;
 use serde::{Deserialize, Serialize};
+use std::sync::OnceLock;
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();
@@ -87,14 +88,14 @@ pub async fn login(
     Ok(())
 }
 
-#[derive(Deserialize,Debug,Clone)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct SearchResult {
     pub Name: String,
     pub Type: String,
     pub Id: String,
 }
 
-struct SearchModel{
+struct SearchModel {
     search_results: Vec<SearchResult>,
 }
 
@@ -115,7 +116,6 @@ pub fn get_server_info() -> ServerInfo {
     let mut path = home_dir().unwrap();
     path.push(".config");
     path.push("tsukimi.yaml");
-
 
     if path.exists() {
         let mut file = File::open(path).unwrap();
@@ -138,9 +138,15 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
     let server_info = get_server_info();
 
     let client = reqwest::Client::new();
-    let url = format!("{}:{}/emby/Users/{}/Items", server_info.domain,server_info.port, server_info.user_id);
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items",
+        server_info.domain, server_info.port, server_info.user_id
+    );
     let params = [
-        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate"),
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+        ),
         ("StartIndex", "0"),
         ("SortBy", "SortName"),
         ("SortOrder", "Ascending"),
@@ -165,7 +171,7 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
     Ok(model.search_results)
 }
 
-#[derive(Deserialize,Debug,Clone)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct SeriesInfo {
     pub Name: String,
     pub Id: String,
@@ -178,10 +184,13 @@ pub struct seriesimage {
     pub image: Option<Pixbuf>,
 }
 
-pub async fn get_series_info (id: String) -> Result<Vec<SeriesInfo>,Error> {
+pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
     let server_info = get_server_info();
     let client = reqwest::Client::new();
-    let url = format!("{}:{}/emby/Shows/{}/Episodes", server_info.domain,server_info.port, id);
+    let url = format!(
+        "{}:{}/emby/Shows/{}/Episodes",
+        server_info.domain, server_info.port, id
+    );
     let params = [
         ("Fields", "Overview"),
         ("EnableTotalRecordCount", "true"),
@@ -200,19 +209,35 @@ pub async fn get_series_info (id: String) -> Result<Vec<SeriesInfo>,Error> {
     Ok(seriesinfo)
 }
 
-pub async fn get_image(id: String) -> Result<Vec<u8>,Error> {
+pub async fn get_image(id: String) -> Result<String, Error> {
     let server_info = get_server_info();
     let mut attempts = 0;
 
     loop {
         attempts += 1;
-        let result = reqwest::get(&format!("{}:{}/emby/Items/{}/Images/Primary", server_info.domain, server_info.port, id)).await;
+        let result = reqwest::get(&format!(
+            "{}:{}/emby/Items/{}/Images/Primary",
+            server_info.domain, server_info.port, id
+        ))
+        .await;
 
         match result {
             Ok(response) => {
                 let bytes_result = response.bytes().await;
                 match bytes_result {
-                    Ok(bytes) => return Ok(bytes.to_vec()),
+                    Ok(bytes) => {
+                        let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
+                        let pathbuf = PathBuf::from(path_str);
+                        if pathbuf.exists() {
+                            fs::write(pathbuf.join(format!("{}.png",id)), &bytes).unwrap();
+                        } else {
+                            fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
+                                .unwrap();
+                            
+                            fs::write(pathbuf.join(format!("{}.png",id)),&bytes).unwrap();
+                        }
+                        return Ok(id);
+                    }
                     Err(e) => {
                         eprintln!("加载错误");
                         if attempts >= 3 {
@@ -231,7 +256,7 @@ pub async fn get_image(id: String) -> Result<Vec<u8>,Error> {
     }
 }
 
-#[derive(Serialize, Deserialize,Debug,Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MediaStream {
     pub DisplayTitle: Option<String>,
     pub Type: String,
@@ -239,24 +264,27 @@ pub struct MediaStream {
     pub IsExternal: bool,
 }
 
-#[derive(Serialize, Deserialize,Debug,Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MediaSource {
     pub Id: String,
     pub Name: String,
     pub DirectStreamUrl: Option<String>,
-    pub MediaStreams: Vec<MediaStream>,  
+    pub MediaStreams: Vec<MediaStream>,
 }
 
-#[derive(Serialize, Deserialize,Debug,Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Media {
     pub MediaSources: Vec<MediaSource>,
 }
 
-pub async fn playbackinfo(id:String) -> Result<Media,Error> {
+pub async fn playbackinfo(id: String) -> Result<Media, Error> {
     let server_info = get_server_info();
     let client = reqwest::Client::new();
-    let url = format!("{}:{}/emby/Items/{}/PlaybackInfo", server_info.domain,server_info.port,id);
-    
+    let url = format!(
+        "{}:{}/emby/Items/{}/PlaybackInfo",
+        server_info.domain, server_info.port, id
+    );
+
     let params = [
         ("StartTimeTicks", "0"),
         ("UserId", &server_info.user_id),
@@ -272,39 +300,59 @@ pub async fn playbackinfo(id:String) -> Result<Media,Error> {
         ("reqformat", "json"),
     ];
     let profile = serde_json::json!({"DeviceProfile":{"MaxStaticBitrate":140000000,"MaxStreamingBitrate":140000000,"MusicStreamingTranscodingBitrate":192000,"DirectPlayProfiles":[{"Container":"mp4,m4v","Type":"Video","VideoCodec":"h264,av1,vp8,vp9","AudioCodec":"mp3,aac,opus,flac,vorbis"},{"Container":"mkv","Type":"Video","VideoCodec":"h264,av1,vp8,vp9","AudioCodec":"mp3,aac,opus,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"3gp","Type":"Video","VideoCodec":"","AudioCodec":"mp3,aac,opus,flac,vorbis"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"mp3,aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"aac","Type":"Audio","AudioCodec":"aac"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Streaming","Protocol":"hls","MaxAudioChannels":"2","MinSegments":"1","BreakOnNonKeyFrames":true},{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"opus","Type":"Audio","AudioCodec":"opus","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"wav","Type":"Audio","AudioCodec":"wav","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"opus","Type":"Audio","AudioCodec":"opus","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"wav","Type":"Audio","AudioCodec":"wav","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mkv","Type":"Video","AudioCodec":"mp3,aac,opus,flac,vorbis","VideoCodec":"h264,av1,vp8,vp9","Context":"Static","MaxAudioChannels":"2","CopyTimestamps":true},{"Container":"m4s,ts","Type":"Video","AudioCodec":"mp3,aac","VideoCodec":"h264","Context":"Streaming","Protocol":"hls","MaxAudioChannels":"2","MinSegments":"1","BreakOnNonKeyFrames":true,"ManifestSubtitles":"vtt"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis","VideoCodec":"vpx","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp4","Type":"Video","AudioCodec":"mp3,aac,opus,flac,vorbis","VideoCodec":"h264","Context":"Static","Protocol":"http"}],"ContainerProfiles":[],"CodecProfiles":[{"Type":"VideoAudio","Codec":"aac","Conditions":[{"Condition":"Equals","Property":"IsSecondaryAudio","Value":"false","IsRequired":"false"}]},{"Type":"VideoAudio","Conditions":[{"Condition":"Equals","Property":"IsSecondaryAudio","Value":"false","IsRequired":"false"}]},{"Type":"Video","Codec":"h264","Conditions":[{"Condition":"EqualsAny","Property":"VideoProfile","Value":"high|main|baseline|constrained baseline|high 10","IsRequired":false},{"Condition":"LessThanEqual","Property":"VideoLevel","Value":"62","IsRequired":false}]},{"Type":"Video","Codec":"hevc","Conditions":[]}],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[{"Type":"Video","Container":"m4v","MimeType":"video/mp4"}]}});
-    let response = client.post(&url).query(&params).json(&profile).send().await?;
+    let response = client
+        .post(&url)
+        .query(&params)
+        .json(&profile)
+        .send()
+        .await?;
     let json: serde_json::Value = response.json().await?;
-    let mediainfo:Media = serde_json::from_value(json.clone()).unwrap();
-    return Ok(mediainfo)
+    let mediainfo: Media = serde_json::from_value(json.clone()).unwrap();
+    return Ok(mediainfo);
 }
 
-pub fn mpv_play(url: String,name: String) {
+pub fn mpv_play(url: String, name: String) {
     let mut command = std::process::Command::new("mpv");
     let server_info = get_server_info();
     let titlename = format!("--force-media-title={}", name);
     let osdname = format!("--osd-playing-msg={}", name);
     let forcewindow = format!("--force-window=immediate");
-    let url = format!("{}:{}/emby{}", server_info.domain,server_info.port, url);
-    command.arg(forcewindow).arg(titlename).arg(osdname).arg(url);
+    let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
+    command
+        .arg(forcewindow)
+        .arg(titlename)
+        .arg(osdname)
+        .arg(url);
     command.spawn().expect("mpv failed to start");
 }
 
-pub fn mpv_play_withsub(url: String,suburl: String,name: String) {
+pub fn mpv_play_withsub(url: String, suburl: String, name: String) {
     let mut command = std::process::Command::new("mpv");
     let server_info = get_server_info();
     let titlename = format!("--force-media-title={}", name);
     let osdname = format!("--osd-playing-msg={}", name);
     let forcewindow = format!("--force-window=immediate");
-    let sub = format!("--sub-file={}:{}/emby{}" ,server_info.domain,server_info.port, suburl);
-    let url = format!("{}:{}/emby{}", server_info.domain,server_info.port, url);
-    command.arg(forcewindow).arg(titlename).arg(osdname).arg(sub).arg(url);
+    let sub = format!(
+        "--sub-file={}:{}/emby{}",
+        server_info.domain, server_info.port, suburl
+    );
+    let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
+    command
+        .arg(forcewindow)
+        .arg(titlename)
+        .arg(osdname)
+        .arg(sub)
+        .arg(url);
     let _ = command.spawn().expect("mpv failed to start").wait();
 }
 
-pub async fn get_item_overview(id: String) -> Result<String,Error> {
+pub async fn get_item_overview(id: String) -> Result<String, Error> {
     let server_info = get_server_info();
     let client = reqwest::Client::new();
-    let url = format!("{}:{}/emby/Users/{}/{}", server_info.domain,server_info.port,server_info.user_id,id);
+    let url = format!(
+        "{}:{}/emby/Users/{}/{}",
+        server_info.domain, server_info.port, server_info.user_id, id
+    );
     let params = [
         ("Fields", "ShareLevel"),
         ("X-Emby-Client", "Emby+Web"),
@@ -320,11 +368,14 @@ pub async fn get_item_overview(id: String) -> Result<String,Error> {
     Ok(overview)
 }
 
-pub async fn markwatched(id: String,sourceid:String) -> Result<(String),Error>{
+pub async fn markwatched(id: String, sourceid: String) -> Result<(String), Error> {
     let server_info = get_server_info();
     let client = reqwest::Client::new();
-    let url = format!("{}:{}/emby/Users/{}/PlayingItems/{}", server_info.domain,server_info.port,server_info.user_id,id);
-    println!("{}",url);
+    let url = format!(
+        "{}:{}/emby/Users/{}/PlayingItems/{}",
+        server_info.domain, server_info.port, server_info.user_id, id
+    );
+    println!("{}", url);
     let params = [
         ("X-Emby-Client", "Emby+Web"),
         ("X-Emby-Device-Name", "Tsukimi"),
@@ -339,13 +390,17 @@ pub async fn markwatched(id: String,sourceid:String) -> Result<(String),Error>{
         "Id": &id,
         "MediaSourceId": &sourceid,
     });
-    let response = client.post(&url).query(&params).json(&inplay).send().await?;
+    let response = client
+        .post(&url)
+        .query(&params)
+        .json(&inplay)
+        .send()
+        .await?;
     let text = response.text().await?;
     Ok(text)
 }
 
-
-#[derive(Deserialize,Debug,Clone)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Resume {
     pub Name: String,
     pub Type: String,
@@ -357,21 +412,25 @@ pub struct Resume {
     pub SeriesName: Option<String>,
 }
 
-struct ResumeModel{
+struct ResumeModel {
     resume: Vec<Resume>,
 }
 
 pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
-    let mut model = ResumeModel {
-        resume: Vec::new(),
-    };
+    let mut model = ResumeModel { resume: Vec::new() };
     let server_info = get_server_info();
 
     let client = reqwest::Client::new();
-    let url = format!("{}:{}/emby/Users/{}/Items/Resume", server_info.domain,server_info.port, server_info.user_id);
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items/Resume",
+        server_info.domain, server_info.port, server_info.user_id
+    );
     let params = [
         ("Recursive", "true"),
-        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear"),
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+        ),
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
         ("ImageTypeLimit", "1"),
         ("MediaTypes", "Video"),
@@ -391,19 +450,35 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
     Ok(model.resume)
 }
 
-pub async fn get_thumbimage(id: String) -> Result<Vec<u8>,Error> {
+pub async fn get_thumbimage(id: String) -> Result<String, Error> {
     let server_info = get_server_info();
     let mut attempts = 0;
 
     loop {
         attempts += 1;
-        let result = reqwest::get(&format!("{}:{}/emby/Items/{}/Images/Thumb", server_info.domain, server_info.port, id)).await;
+        let result = reqwest::get(&format!(
+            "{}:{}/emby/Items/{}/Images/Thumb",
+            server_info.domain, server_info.port, id
+        ))
+        .await;
 
         match result {
             Ok(response) => {
                 let bytes_result = response.bytes().await;
                 match bytes_result {
-                    Ok(bytes) => return Ok(bytes.to_vec()),
+                    Ok(bytes) => {
+                        let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
+                        let pathbuf = PathBuf::from(path_str);
+                        if pathbuf.exists() {
+                            fs::write(pathbuf.join(format!("{}.png",id)), &bytes).unwrap();
+                        } else {
+                            fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
+                                .unwrap();
+                            
+                            fs::write(pathbuf.join(format!("{}.png",id)),&bytes).unwrap();
+                        }
+                        return Ok(id);
+                    },
                     Err(e) => {
                         if attempts >= 3 {
                             return Err(e.into());
@@ -420,19 +495,35 @@ pub async fn get_thumbimage(id: String) -> Result<Vec<u8>,Error> {
     }
 }
 
-pub async fn get_backdropimage(id: String) -> Result<Vec<u8>,Error> {
+pub async fn get_backdropimage(id: String) -> Result<String, Error> {
     let server_info = get_server_info();
     let mut attempts = 0;
 
     loop {
         attempts += 1;
-        let result = reqwest::get(&format!("{}:{}/emby/Items/{}/Images/Backdrop", server_info.domain, server_info.port, id)).await;
+        let result = reqwest::get(&format!(
+            "{}:{}/emby/Items/{}/Images/Backdrop",
+            server_info.domain, server_info.port, id
+        ))
+        .await;
 
         match result {
             Ok(response) => {
                 let bytes_result = response.bytes().await;
                 match bytes_result {
-                    Ok(bytes) => return Ok(bytes.to_vec()),
+                    Ok(bytes) => {
+                        let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
+                        let pathbuf = PathBuf::from(path_str);
+                        if pathbuf.exists() {
+                            fs::write(pathbuf.join(format!("{}.png",id)), &bytes).unwrap();
+                        } else {
+                            fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
+                                .unwrap();
+                            
+                            fs::write(pathbuf.join(format!("{}.png",id)),&bytes).unwrap();
+                        }
+                        return Ok(id);
+                    },
                     Err(e) => {
                         eprintln!("加载错误");
                         if attempts >= 3 {

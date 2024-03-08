@@ -4,8 +4,8 @@ use gtk::{gio, prelude::*, Stack};
 use gtk::{Box, Orientation};
 use std::cell::Ref;
 
-use super::image::set_image;
-use super::network::{runtime};
+use super::image;
+use super::network::runtime;
 
 pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, seriesid: String) -> Box {
     let pagebox = Box::new(Orientation::Vertical, 5);
@@ -13,7 +13,7 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
     let introbox = Box::new(Orientation::Horizontal, 10);
     introbox.set_margin_start(9);
     let overlay = gtk::Overlay::new();
-    let intropic = set_image(series_info.Id.clone());
+    let intropic = image::set_image(series_info.Id.clone());
     let label = gtk::Label::new(Some(&series_info.Name));
     let markup = format!(
         "<b>S{}E{}: {}</b>",
@@ -90,7 +90,7 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
             vbox.append(&overview);
         }
         let id = seriesinfo.Id.clone();
-        let imgbox = set_image(id);
+        let imgbox = image::set_image(id);
         imgbox.set_size_request(250, 141);
         imgbox.set_homogeneous(true);
         hbox.append(&imgbox);
@@ -111,10 +111,12 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
         let id = series_info.Id.clone();
         let seriesid = seriesidclone.clone();
         let episodes_page = episodes_page(stackclone, series_info, seriesid);
-        let pagename = format!("episodes_page_{}", id);
-        if stack.child_by_name(&pagename).is_none() {
-            stack.add_named(&episodes_page, Some(&pagename));
+        let pagename = format!("episodes_page");
+        if stack.child_by_name(&pagename).is_none() { 
+        } else {
+            stack.remove(&stack.child_by_name(&pagename).unwrap());
         }
+        stack.add_named(&episodes_page, Some(&pagename));
         stack.set_visible_child_name(&pagename);
     });
 

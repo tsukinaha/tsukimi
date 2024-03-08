@@ -1,10 +1,8 @@
-use async_channel::bounded;
-use gtk::glib::{self, home_dir};
+use gtk::glib;
+use dirs::home_dir;
 use gtk::prelude::*;
 use gtk::{Box, Button, Entry, Label, Orientation};
 use serde::Serialize;
-use serde_yaml::to_string;
-use std::fs::write;
 use serde::Deserialize;
 use std::fs::File;
 use std::io::BufReader;
@@ -68,8 +66,8 @@ pub fn create_page2() -> Box {
     hbox.append(&password_entry);
     hbox.set_halign(gtk::Align::Center);
     vbox.append(&hbox);
-
-    let path = home_dir().join(".config/fpv.yaml");
+    let path = home_dir().unwrap()
+                                    .join(".config/fpv.yaml");
 
     let file = File::open(&path).expect("Unable to open file");
     let reader = BufReader::new(file);
