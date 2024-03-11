@@ -434,7 +434,7 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
         ("ImageTypeLimit", "1"),
         ("MediaTypes", "Video"),
-        ("Limit", "12"),
+        ("Limit", "8"),
         ("X-Emby-Client", "Emby+Web"),
         ("X-Emby-Device-Name", "Tsukimi"),
         ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),

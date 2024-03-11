@@ -39,7 +39,21 @@ pub fn build_ui(app: &Application) {
     backbutton.connect_clicked(clone!(@weak searchstack,@weak homestack => move |_| {
         backbuttonclone.set_visible(false);
         searchstack.set_visible_child_name("page1");
+        let episodes = format!("episodes_page");
+        let item = format!("item_page");
+        if searchstack.child_by_name(&episodes).is_some() {
+            searchstack.remove(&searchstack.child_by_name(&episodes).unwrap());
+        }
+        if searchstack.child_by_name(&item).is_some() {
+            searchstack.remove(&searchstack.child_by_name(&item).unwrap());
+        }
         homestack.set_visible_child_name("page0");
+        if homestack.child_by_name(&episodes).is_some() {
+            homestack.remove(&homestack.child_by_name(&episodes).unwrap());
+        }
+        if homestack.child_by_name(&item).is_some() {
+            homestack.remove(&homestack.child_by_name(&item).unwrap());
+        }
     }));
 
     let viewmorebutton = gtk::Button::new();

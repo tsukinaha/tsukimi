@@ -56,6 +56,8 @@ pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
         listitem.set_child(Some(&vbox));
     });
 
+    gridfactory.connect_unbind(move |_factory, _item| {
+    });
     let gridview = gtk::GridView::new(Some(sel), Some(gridfactory));
     let scrolled_window = ScrolledWindow::new();
     let historybox = Box::new(Orientation::Vertical, 5);

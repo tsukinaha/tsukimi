@@ -108,12 +108,10 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
             .unwrap();
         let series_info: Ref<network::SeriesInfo> = item.borrow();
         let stackclone = stack.clone();
-        let id = series_info.Id.clone();
         let seriesid = seriesidclone.clone();
         let episodes_page = episodes_page(stackclone, series_info, seriesid);
         let pagename = format!("episodes_page");
-        if stack.child_by_name(&pagename).is_none() { 
-        } else {
+        if stack.child_by_name(&pagename).is_some() {
             stack.remove(&stack.child_by_name(&pagename).unwrap());
         }
         stack.add_named(&episodes_page, Some(&pagename));
