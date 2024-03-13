@@ -56,6 +56,12 @@ pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
         listitem.set_child(Some(&vbox));
     });
 
+
+    gridfactory.connect_unbind(move |_factory, item| {
+        let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
+        listitem.set_child(None::<&gtk::Widget>);
+    });
+
     gridfactory.connect_unbind(move |_factory, _item| {
     });
     let gridview = gtk::GridView::new(Some(sel), Some(gridfactory));
@@ -70,7 +76,14 @@ pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
     label.set_margin_start(10);
     label.set_margin_top(15);
     historybox.append(&label);
-    historybox.append(&gridview);
+
+    let revealer = gtk::Revealer::new();
+    revealer.set_transition_type(gtk::RevealerTransitionType::Crossfade);
+    revealer.set_transition_duration(600);
+    revealer.set_child(Some(&gridview));
+    revealer.set_reveal_child(false);
+
+    historybox.append(&revealer);
     scrolled_window.set_child(Some(&historybox));
     scrolled_window.set_vexpand(true);
 
@@ -86,6 +99,7 @@ pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
 
     vbox.append(&scrolled_window);
 
+    
     glib::spawn_future_local(clone!(@weak gridview,@weak store=> async move {
         while let Ok(search_results) = receiver.recv().await {
             store.remove_all();
@@ -93,6 +107,7 @@ pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
                 let object = BoxedAnyObject::new(result);
                 store.append(&object);
             }
+            revealer.set_reveal_child(true);
         }
     }));
 

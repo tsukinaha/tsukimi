@@ -43,7 +43,7 @@ pub fn set_thumbimage(id:String) -> Box {
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Center);
 
-    let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), id);
+    let path = format!("{}/.local/share/tsukimi/t{}.png",dirs::home_dir().expect("msg").display(), id);
     let pathbuf = PathBuf::from(&path);
     let idfuture = id.clone();
     if pathbuf.exists() {
@@ -57,7 +57,7 @@ pub fn set_thumbimage(id:String) -> Box {
 
     glib::spawn_future_local(clone!(@weak image => async move {
         while let Ok(_) = receiver.recv().await {
-            let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), idfuture);
+            let path = format!("{}/.local/share/tsukimi/t{}.png",dirs::home_dir().expect("msg").display(), idfuture);
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
         }
@@ -75,7 +75,7 @@ pub fn set_backdropimage(id:String) -> Box {
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Center);
 
-    let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), id);
+    let path = format!("{}/.local/share/tsukimi/b{}.png",dirs::home_dir().expect("msg").display(), id);
     let pathbuf = PathBuf::from(&path);
     let idfuture = id.clone();
     if pathbuf.exists() {
@@ -87,9 +87,9 @@ pub fn set_backdropimage(id:String) -> Box {
         });
     }
 
-    glib::spawn_future_local(clone!(@weak image => async move {
+    glib::spawn_future_local(clone!(@weak image=> async move {
         while let Ok(_) = receiver.recv().await {
-            let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), idfuture);
+            let path = format!("{}/.local/share/tsukimi/b{}.png",dirs::home_dir().expect("msg").display(), idfuture);
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
         }

@@ -75,6 +75,11 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
         listitem.set_child(Some(&hbox));
     });
 
+    listfactory.connect_unbind(move |_factory, item| {
+        let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
+        listitem.set_child(None::<&gtk::Widget>);
+    });
+
     let resultid = result.Id.clone();
     let listview = gtk::ListView::new(Some(sel), Some(listfactory));
     listview.connect_activate(move |listview, position| {
@@ -93,7 +98,14 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
     });
 
     let scrolled_window = gtk::ScrolledWindow::new();
-    vbox.append(&listview);
+
+    let revealer = gtk::Revealer::new();
+    revealer.set_transition_type(gtk::RevealerTransitionType::Crossfade);
+    revealer.set_transition_duration(600);
+    revealer.set_child(Some(&listview));
+    revealer.set_reveal_child(false);
+
+    vbox.append(&revealer);
     scrolled_window.set_child(Some(&vbox));
     scrolled_window.set_vexpand(true);
     pagebox.append(&scrolled_window);
@@ -119,6 +131,7 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
             let object = BoxedAnyObject::new(info);
             store.append(&object);
         }
+        revealer.set_reveal_child(true);
     });
 
     pagebox

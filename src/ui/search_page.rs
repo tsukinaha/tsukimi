@@ -116,7 +116,7 @@ pub fn create_page1(searchstack: Stack, backbutton: Button) -> Stack {
         let model = gridview.model().unwrap();
         let item = model.item(position).and_downcast::<BoxedAnyObject>().unwrap();
         let result: Ref<SearchResult> = item.borrow();
-        searchstack.remove(&searchstack.child_by_name("item_page").unwrap());
+        
         let item_page;
 
         if result.Type == "Movie" {
@@ -128,6 +128,8 @@ pub fn create_page1(searchstack: Stack, backbutton: Button) -> Stack {
         let pagename = format!("item_page");
         if searchstack.child_by_name(&pagename).is_none() {
             searchstack.add_named(&item_page, Some(&pagename));
+        } else {
+            searchstack.remove(&searchstack.child_by_name("item_page").unwrap());
         }
         backbutton.set_visible(true);
         searchstack.set_visible_child_name(&pagename);

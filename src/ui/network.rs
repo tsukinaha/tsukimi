@@ -470,12 +470,12 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
                         let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
                         let pathbuf = PathBuf::from(path_str);
                         if pathbuf.exists() {
-                            fs::write(pathbuf.join(format!("{}.png",id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("t{}.png",id)), &bytes).unwrap();
                         } else {
                             fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
                                 .unwrap();
                             
-                            fs::write(pathbuf.join(format!("{}.png",id)),&bytes).unwrap();
+                            fs::write(pathbuf.join(format!("t{}.png",id)),&bytes).unwrap();
                         }
                         return Ok(id);
                     },
@@ -515,12 +515,12 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
                         let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
                         let pathbuf = PathBuf::from(path_str);
                         if pathbuf.exists() {
-                            fs::write(pathbuf.join(format!("{}.png",id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("b{}.png",id)), &bytes).unwrap();
                         } else {
                             fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
                                 .unwrap();
                             
-                            fs::write(pathbuf.join(format!("{}.png",id)),&bytes).unwrap();
+                            fs::write(pathbuf.join(format!("b{}.png",id)),&bytes).unwrap();
                         }
                         return Ok(id);
                     },

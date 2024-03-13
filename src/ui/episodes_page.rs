@@ -58,7 +58,7 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
     introbox.append(&vbox);
     introbox.append(&playbackinfovbox);
     introbox.set_hexpand(true);
-    introbox.set_size_request(-1, 340);
+    introbox.set_size_request(-1, 330);
 
     let vbox = Box::new(Orientation::Vertical, 5);
     vbox.append(&introbox);
@@ -98,6 +98,10 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
         listitem.set_child(Some(&hbox));
     });
 
+    listfactory.connect_unbind(move |_factory, item| {
+        let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
+        listitem.set_child(None::<&gtk::Widget>);
+    });
     let seriesidclone = seriesid.clone();
     let listview = gtk::ListView::new(Some(sel), Some(listfactory));
     listview.connect_activate(move |listview, position| {
@@ -125,7 +129,14 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
     label.set_margin_start(11);
     label.set_halign(gtk::Align::Start);
     vbox.append(&label);
-    vbox.append(&listview);
+
+    let revealer = gtk::Revealer::new();
+    revealer.set_transition_type(gtk::RevealerTransitionType::Crossfade);
+    revealer.set_transition_duration(1000);
+    revealer.set_child(Some(&listview));
+    revealer.set_reveal_child(false);
+
+    vbox.append(&revealer);
     scrolled_window.set_child(Some(&vbox));
     scrolled_window.set_vexpand(true);
     pagebox.append(&scrolled_window);
@@ -151,6 +162,7 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
             let object = BoxedAnyObject::new(info);
             store.append(&object);
         }
+        revealer.set_reveal_child(true);
     });
 
     pagebox

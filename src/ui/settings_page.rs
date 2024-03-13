@@ -72,10 +72,8 @@ pub fn create_page2() -> Box {
     let file = File::open(&path).expect("Unable to open file");
     let reader = BufReader::new(file);
 
-    // 使用 serde_yaml::from_reader 函数来解析文件
     let config: Config = serde_yaml::from_reader(reader).expect("Unable to parse YAML file");
 
-    // 将设置填入到对应的 Entry 中
     servername_entry.set_text(&config.domain);
     port_entry.set_text(&config.port);
     username_entry.set_text(&config.username);
