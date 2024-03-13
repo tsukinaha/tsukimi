@@ -10,7 +10,7 @@ use serde_json::Value;
 use serde_yaml::to_string;
 use std::fs::File;
 use std::fs::{self, write};
-use std::io::{Read, Write};
+use std::io::Read;
 use std::path::PathBuf;
 use tokio::runtime::Runtime;
 

@@ -1,5 +1,5 @@
 use gtk::glib::{self, clone};
-use gtk::{prelude::*, PackType};
+use gtk::prelude::*;
 use gtk::{Box, Orientation};
 use std::path::PathBuf;
 pub fn set_image(id:String) -> Box {

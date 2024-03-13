@@ -1,12 +1,9 @@
 use crate::ui::network;
 use crate::ui::network::SearchResult;
-use gtk::gdk_pixbuf::Pixbuf;
-use gtk::gio::{Cancellable, MemoryInputStream};
 use gtk::glib::{self, clone,  BoxedAnyObject};
 use gtk::{gio, prelude::*, Stack};
 use gtk::{Box, Orientation};
 use std::cell::Ref;
-use std::fmt::format;
 use super::episodes_page;
 use super::network::{get_image, runtime};
 
