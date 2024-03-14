@@ -8,6 +8,8 @@ use std::fs::File;
 use std::io::BufReader;
 use crate::ui::network;
 
+use super::network::runtime;
+
 #[derive(Serialize,Debug, Deserialize)]
 pub struct Config {
     pub domain: String,
@@ -67,18 +69,17 @@ pub fn create_page2() -> Box {
     hbox.set_halign(gtk::Align::Center);
     vbox.append(&hbox);
     let path = home_dir().unwrap()
-                                    .join(".config/fpv.yaml");
-
-    let file = File::open(&path).expect("Unable to open file");
-    let reader = BufReader::new(file);
-
-    let config: Config = serde_yaml::from_reader(reader).expect("Unable to parse YAML file");
-
-    servername_entry.set_text(&config.domain);
-    port_entry.set_text(&config.port);
-    username_entry.set_text(&config.username);
-    password_entry.set_text(&config.password);
-
+                                    .join(".config/tsukimi.yaml");
+    if path.exists() {
+        let file = File::open(&path).expect("Unable to open file");
+        let reader = BufReader::new(file);
+        let config: Config = serde_yaml::from_reader(reader).expect("Unable to parse YAML file");
+        servername_entry.set_text(&config.domain);
+        port_entry.set_text(&config.port);
+        username_entry.set_text(&config.username);
+        password_entry.set_text(&config.password);
+    } 
+    
     let hbox = Box::new(Orientation::Horizontal, 20);
 
     let login_button = Button::with_label("登录");
@@ -91,13 +92,21 @@ pub fn create_page2() -> Box {
         let password = password_entry.text().to_string();
         login_button.set_label("登录中");
         let login_button = login_button.clone();
-        glib::MainContext::default().spawn_local(async move {
+
+        let (sender, receiver) = async_channel::bounded::<String>(1);
+
+        runtime().spawn(async move {
             match network::login(servername, username, password, port).await {
                 Ok(_) => {
-                    login_button.set_label("登录成功");
-                    println!("Login successful");
+                    sender.send("1".to_string()).await.expect("The channel needs to be open.");
                 },
                 Err(e) => eprintln!("Error: {}", e),
+            }
+        });
+        glib::MainContext::default().spawn_local(async move {
+            while let Ok(_) = receiver.recv().await {
+                login_button.set_label("登录成功");
+                println!("Login successful");
             }
         });
     });

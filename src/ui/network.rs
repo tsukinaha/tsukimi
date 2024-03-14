@@ -368,7 +368,7 @@ pub async fn get_item_overview(id: String) -> Result<String, Error> {
     Ok(overview)
 }
 
-pub async fn markwatched(id: String, sourceid: String) -> Result<(String), Error> {
+pub async fn markwatched(id: String, sourceid: String) -> Result<String, Error> {
     let server_info = get_server_info();
     let client = reqwest::Client::new();
     let url = format!(
