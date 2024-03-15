@@ -17,7 +17,7 @@ pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
         let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
         let entry = listitem.item().and_downcast::<BoxedAnyObject>().unwrap();
         let result: Ref<Resume> = entry.borrow();
-        let vbox = Box::new(Orientation::Vertical, 5);
+        let vbox = Box::new(Orientation::Vertical, 0);
         let overlay = gtk::Overlay::new();
         let imgbox ;
         if result.ParentThumbItemId.is_some() {
@@ -47,10 +47,10 @@ pub fn create_page(homestack: Stack, backbutton: Button) -> Stack {
             labeltype.set_markup(markup.as_str());
         }
         label.set_wrap(true);
-        label.set_size_request(-1, 24);
+        label.set_size_request(-1, 5);
         label.set_ellipsize(pango::EllipsizeMode::End);
-        
-        labeltype.set_size_request(-1, 24);
+        labeltype.set_ellipsize(pango::EllipsizeMode::End);
+        label.set_size_request(-1, 5);
         vbox.append(&label);
         vbox.append(&labeltype);
         listitem.set_child(Some(&vbox));

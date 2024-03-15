@@ -1,7 +1,6 @@
 child {
     margin: 9px;
-    width: 150px;
-    height: 300px;
+    border-radius:15px;
 }
 row{
     margin:9px;
@@ -10,4 +9,16 @@ row{
    
 picture {
     border-radius:10px;
+}
+
+listview {
+    background-color: rgba(0,0,0,0);
+}
+ 
+gridview {
+    background-color: rgba(0,0,0,0);
+}
+  
+gridview > child box {
+    margin:0px;
 }
