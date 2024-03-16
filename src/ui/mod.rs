@@ -7,6 +7,7 @@ mod new_dropsel;
 mod image;
 mod movie_page;
 mod home_page;
+mod widgets;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
 use gtk::{Application, ApplicationWindow, HeaderBar, Stack, StackSwitcher};
