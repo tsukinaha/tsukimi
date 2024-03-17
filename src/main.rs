@@ -10,7 +10,7 @@ fn main() -> glib::ExitCode {
         .expect("Failed to register resources.");
 
     // Create a new application
-    let app = Application::builder().application_id(APP_ID).build();
+    let app = adw::Application::builder().application_id(APP_ID).build();
     // Load the CSS from the resource file
     app.connect_startup(|_| ui::load_css());
     // Connect to "activate" signal of `app`
