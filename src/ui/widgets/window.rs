@@ -3,7 +3,7 @@ use gtk::prelude::EditableExt;
 mod imp{
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
-    use gtk::{prelude::*, HeaderBar};
+    use gtk::{prelude::*, HeaderBar, ToggleButton};
     use gtk::subclass::prelude::*;
     use gtk::{glib, Button, CompositeTemplate, Stack};
 
@@ -20,7 +20,9 @@ mod imp{
         #[template_child]
         pub passwordentry: TemplateChild<adw::EntryRow>,
         #[template_child]
-        pub stack: TemplateChild<Stack>,
+        pub stack: TemplateChild<gtk::Stack>,
+        #[template_child]
+        pub inwindow: TemplateChild<gtk::ScrolledWindow>,
     }
 
     // The central trait for subclassing a GObject
@@ -38,9 +40,24 @@ mod imp{
                 None,
                 |window, _, _| async move {
                     window.login().await;
-                    window.homepage();
+                    window.mainpage();
                 },
             );
+            klass.install_action(
+                "win.home",
+                None,
+                move |win, _action, _parameter| {
+                    win.homepage();
+                },
+            );
+            klass.install_action(
+                "win.search",
+                None,
+                move |win, _action, _parameter| {
+                    win.searchpage();
+                },
+            );
+            
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -90,9 +107,21 @@ impl Window {
         imp::Window::from_obj(self)
     }
 
-    fn homepage(&self) {
+    fn mainpage(&self) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("main");
+    }
+
+    fn homepage(&self) {
+        let imp = self.imp();
+        let stack = crate::ui::home_page::create_page();
+        imp.inwindow.set_child(Some(&stack));
+    }
+
+    fn searchpage(&self) {
+        let imp = self.imp();
+        let stack = crate::ui::search_page::create_page1();
+        imp.inwindow.set_child(Some(&stack));
     }
 
     async fn login(&self) {

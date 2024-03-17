@@ -6,13 +6,15 @@ use gtk::{gio, pango, prelude::*, Stack};
 use gtk::{Box, Button, Entry, Label, Orientation, ScrolledWindow};
 use std::cell::Ref;
 
-pub fn create_page1(searchstack: Stack, backbutton: Button) -> Stack {
+pub fn create_page1() -> Stack {
     let hbox = Box::new(Orientation::Horizontal, 10);
     let vbox = Box::new(Orientation::Vertical, 5);
     let store = gio::ListStore::new::<BoxedAnyObject>();
     let store_clone = store.clone();
     let sel = gtk::SingleSelection::new(Some(store_clone));
     let gridfactory = gtk::SignalListItemFactory::new();
+    let backbutton = Button::with_label("Back");
+    let searchstack = Stack::new();
 
     gridfactory.connect_bind(move |_factory, item| {
         let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
