@@ -133,13 +133,13 @@
                         <property name="content">
                           <object class="GtkScrolledWindow">
                             <property name="child">
-                              <object class="GtkListBox" id="collections_list">
+                              <object class="GtkListBox" id="selectlist">
                                 <property name="selection-mode">browse</property>
                                 <style>
                                   <class name="navigation-sidebar" />
                                 </style>
                                 <child>
-                                  <object class="AdwActionRow">
+                                  <object class="AdwActionRow" id="homerow">
                                     <property name="title">Home</property>
                                     <child type="suffix">
                                       <object class="GtkButton">
@@ -156,7 +156,6 @@
                                 <child>
                                   <object class="AdwActionRow">
                                     <property name="title">History</property>
-                                    <property name="action-name">win.searchpage</property>
                                   </object>
                                 </child>
                                 <child>
@@ -177,7 +176,6 @@
                                 <child>
                                   <object class="AdwActionRow">
                                     <property name="title">Settings</property>
-                                    <property name="action-name">win.show-settings</property>
                                   </object>
                                 </child>
                               </object>

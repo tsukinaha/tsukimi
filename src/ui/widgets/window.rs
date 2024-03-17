@@ -22,6 +22,8 @@ mod imp {
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
         #[template_child]
+        pub selectlist: TemplateChild<gtk::ListBox>,
+        #[template_child]
         pub inwindow: TemplateChild<gtk::ScrolledWindow>,
     }
 
@@ -39,11 +41,11 @@ mod imp {
                 window.login().await;
                 window.mainpage();
             });
-            klass.install_action("win.home", None, move |win, _action, _parameter| {
-                win.homepage();
+            klass.install_action("win.home", None, move |window, _action, _parameter| {
+                window.homepage();
             });
-            klass.install_action("win.search", None, move |win, _action, _parameter| {
-                win.searchpage();
+            klass.install_action("win.search", None, move |window, _action, _parameter| {
+                window.searchpage();
             });
         }
 
@@ -57,6 +59,27 @@ mod imp {
         fn constructed(&self) {
             // Call "constructed" on parent
             self.parent_constructed();
+            let obj = self.obj().clone();
+            self.selectlist.connect_row_selected(move |_, row| {
+                if let Some(row) = row {
+                    let num = row.index();
+                    match num {
+                        0 => {
+                            obj.homepage();
+                        }
+                        1 => {
+                            obj.homepage();
+                        }
+                        2 => {
+                            obj.searchpage();
+                        }
+                        3 => {
+                            println!("Settings");
+                        }
+                        _ => {}
+                    }
+                }
+            });
         }
     }
 
