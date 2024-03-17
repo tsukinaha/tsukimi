@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="HorizonItem" parent="GtkApplicationWindow">
+  <property name="valign">start</property>
+    <child>
+      <object class="GtkOverlay" id="overlay">
+        <child>
+            <object class="GtkPicture" id="picture">
+            </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkLabel" id="line1">
+      </object>
+      <object class="GtkLabel" id="line2">
+      </object>
+    </child>
+  </template>
+</interface>
