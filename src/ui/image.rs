@@ -2,7 +2,6 @@ use gtk::glib::{self, clone};
 use gtk::prelude::*;
 use gtk::{Box, Orientation};
 use std::env;
-// use std::path::PathBuf;
 
 pub fn set_image(id: String) -> Box {
     let imgbox = Box::new(Orientation::Vertical, 5);
@@ -23,8 +22,6 @@ pub fn set_image(id: String) -> Box {
         .join("thumbnails")
         .join(format!("{}.png", id));
 
-    // let pathbuf = PathBuf::from(&path);
-    // let idfuture = id.clone();
     if pathbuf.exists() {
         image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
     } else {
@@ -41,7 +38,6 @@ pub fn set_image(id: String) -> Box {
 
     glib::spawn_future_local(clone!(@weak image => async move {
         while let Ok(_) = receiver.recv().await {
-            // let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), idfuture);
             let file = gtk::gio::File::for_path(&pathbuf);
             image.set_file(Some(&file));
         }
@@ -70,13 +66,6 @@ pub fn set_thumbimage(id: String) -> Box {
         .join("thumbnails")
         .join(format!("t{}.png", id));
 
-    // let path = format!(
-    //     "{}/.local/share/tsukimi/t{}.png",
-    //     dirs::home_dir().expect("msg").display(),
-    //     id
-    // );
-    // let pathbuf = PathBuf::from(&path);
-    // let idfuture = id.clone();
     if pathbuf.exists() {
         image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
     } else {
@@ -93,7 +82,6 @@ pub fn set_thumbimage(id: String) -> Box {
 
     glib::spawn_future_local(clone!(@weak image => async move {
         while let Ok(_) = receiver.recv().await {
-            // let path = format!("{}/.local/share/tsukimi/t{}.png",dirs::home_dir().expect("msg").display(), idfuture);
             let file = gtk::gio::File::for_path(&pathbuf);
             image.set_file(Some(&file));
         }
@@ -122,13 +110,6 @@ pub fn set_backdropimage(id: String) -> Box {
         .join("thumbnails")
         .join(format!("b{}.png", id));
 
-    // let path = format!(
-    //     "{}/.local/share/tsukimi/b{}.png",
-    //     dirs::home_dir().expect("msg").display(),
-    //     id
-    // );
-    // let pathbuf = PathBuf::from(&path);
-    // let idfuture = id.clone();
     if pathbuf.exists() {
         image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
     } else {
@@ -145,7 +126,6 @@ pub fn set_backdropimage(id: String) -> Box {
 
     glib::spawn_future_local(clone!(@weak image=> async move {
         while let Ok(_) = receiver.recv().await {
-            // let path = format!("{}/.local/share/tsukimi/b{}.png",dirs::home_dir().expect("msg").display(), idfuture);
             let file = gtk::gio::File::for_path(&pathbuf);
             image.set_file(Some(&file));
         }

@@ -1,25 +1,12 @@
-use crate::ui::network;
-// use dirs::home_dir;
+use super::config::Config;
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::{Box, Button, Entry, Label, Orientation};
-use serde::Deserialize;
-use serde::Serialize;
 use std::env;
 use std::fs::File;
 use std::io::BufReader;
 
-use super::network::runtime;
-
-#[derive(Serialize, Debug, Deserialize)]
-pub struct Config {
-    pub domain: String,
-    pub username: String,
-    pub password: String,
-    pub port: String,
-    pub user_id: String,
-    pub access_token: String,
-}
+use super::network::{self, runtime};
 
 #[allow(unused)]
 pub fn create_page2() -> Box {
@@ -72,7 +59,7 @@ pub fn create_page2() -> Box {
     vbox.append(&hbox);
 
     #[cfg(unix)]
-    let path = home_dir().unwrap().join(".config/tsukimi.yaml");
+    let path = dirs::home_dir().unwrap().join(".config/tsukimi.yaml");
 
     #[cfg(windows)]
     let path = env::current_dir()

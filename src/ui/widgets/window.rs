@@ -3,6 +3,7 @@ use gtk::subclass::prelude::*;
 mod imp {
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
+    use gtk::prelude::ListBoxRowExt;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
     // use gtk::{prelude::*, Button, Stack, HeaderBar, ToggleButton};

@@ -2,7 +2,6 @@ use super::episodes_page;
 use super::network::{get_image, runtime};
 use crate::ui::network;
 use crate::ui::network::SearchResult;
-// use dirs::home_dir;
 use gtk::glib::{self, clone, BoxedAnyObject};
 use gtk::{gio, prelude::*, Stack};
 use gtk::{Box, Orientation};
@@ -43,7 +42,6 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
 
     glib::spawn_future_local(clone!(@strong intropic => async move {
         while let Ok(id) = receiver.recv().await {
-            // let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), id);
             let path = path_thumb(id);
             let file = gtk::gio::File::for_path(&path);
             intropic.set_file(Some(&file));
