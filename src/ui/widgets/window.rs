@@ -5,7 +5,7 @@ mod imp{
     use glib::subclass::InitializingObject;
     use gtk::{prelude::*, HeaderBar};
     use gtk::subclass::prelude::*;
-    use gtk::{glib, Button, CompositeTemplate};
+    use gtk::{glib, Button, CompositeTemplate, Stack};
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -19,13 +19,15 @@ mod imp{
         pub nameentry: TemplateChild<adw::EntryRow>,
         #[template_child]
         pub passwordentry: TemplateChild<adw::EntryRow>,
+        #[template_child]
+        pub stack: TemplateChild<Stack>,
     }
 
     // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for Window {
         // `NAME` needs to match `class` attribute of template
-        const NAME: &'static str = "MyGtkAppWindow";
+        const NAME: &'static str = "AppWindow";
         type Type = super::Window;
         type ParentType = adw::ApplicationWindow;
 
@@ -36,6 +38,7 @@ mod imp{
                 None,
                 |window, _, _| async move {
                     window.login().await;
+                    window.homepage();
                 },
             );
         }
@@ -85,6 +88,11 @@ impl Window {
 
     fn imp(&self) -> &imp::Window {
         imp::Window::from_obj(self)
+    }
+
+    fn homepage(&self) {
+        let imp = self.imp();
+        imp.stack.set_visible_child_name("main");
     }
 
     async fn login(&self) {

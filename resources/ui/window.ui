@@ -28,7 +28,7 @@
       <attribute name="action">win.show-help-overlay</attribute>
     </item>
   </menu>
-  <template class="MyGtkAppWindow" parent="AdwApplicationWindow">
+  <template class="AppWindow" parent="AdwApplicationWindow">
     <property name="title" translatable="yes">Login</property>
     <property name="width-request">360</property>
     <property name="height-request">200</property>
@@ -62,7 +62,6 @@
                           <object class="GtkBox">
                             <property name="orientation">vertical</property>
                             <property name="spacing">12</property>
-                            <property name="width-request">600</property>
                             <property name="halign">center</property>
                             <child>
                               <object class="AdwEntryRow" id="serverentry">
@@ -111,10 +110,10 @@
             <property name="name">main</property>
             <property name="child">
               <object class="AdwNavigationSplitView" id="split_view">
-                <property name="min-sidebar-width">200</property>
+                <property name="min-sidebar-width">100</property>
                 <property name="sidebar">
                   <object class="AdwNavigationPage">
-                    <property name="title" bind-source="MyGtkAppWindow" bind-property="title" bind-flags="sync-create" />
+                    <property name="title" translatable="yes">Tsukimi</property>
                     <property name="child">
                       <object class="AdwToolbarView">
                         <child type="top">
@@ -128,6 +127,8 @@
                             </child>
                           </object>
                         </child>
+                        <child>
+                        </child>
                         <property name="content">
                           <object class="GtkScrolledWindow">
                             <property name="child">
@@ -135,6 +136,27 @@
                                 <style>
                                   <class name="navigation-sidebar" />
                                 </style>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title">Home</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title">History</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title">Search</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title">Settings</property>
+                                  </object>
+                                </child>
+                                  
                               </object>
                             </property>
                           </object>

@@ -3,6 +3,5 @@
   <gresource prefix="/moe/tsukimi/">
     <file compressed="true" preprocess="xml-stripblanks">horizon_item.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">window.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">window1.ui</file>
   </gresource>
 </gresources>
