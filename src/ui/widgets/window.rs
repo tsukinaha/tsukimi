@@ -1,11 +1,11 @@
-use gtk::subclass::prelude::*;
 use gtk::prelude::EditableExt;
-mod imp{
+use gtk::subclass::prelude::*;
+mod imp {
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
-    use gtk::{prelude::*, HeaderBar, ToggleButton};
     use gtk::subclass::prelude::*;
-    use gtk::{glib, Button, CompositeTemplate, Stack};
+    use gtk::{glib, CompositeTemplate};
+    // use gtk::{prelude::*, Button, Stack, HeaderBar, ToggleButton};
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -35,29 +35,16 @@ mod imp{
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
-            klass.install_action_async(
-                "win.login",
-                None,
-                |window, _, _| async move {
-                    window.login().await;
-                    window.mainpage();
-                },
-            );
-            klass.install_action(
-                "win.home",
-                None,
-                move |win, _action, _parameter| {
-                    win.homepage();
-                },
-            );
-            klass.install_action(
-                "win.search",
-                None,
-                move |win, _action, _parameter| {
-                    win.searchpage();
-                },
-            );
-            
+            klass.install_action_async("win.login", None, |window, _, _| async move {
+                window.login().await;
+                window.mainpage();
+            });
+            klass.install_action("win.home", None, move |win, _action, _parameter| {
+                win.homepage();
+            });
+            klass.install_action("win.search", None, move |win, _action, _parameter| {
+                win.searchpage();
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -82,7 +69,6 @@ mod imp{
     // Trait shared by all application windows
     impl ApplicationWindowImpl for Window {}
     impl AdwApplicationWindowImpl for Window {}
-
 }
 
 use glib::Object;
@@ -135,8 +121,11 @@ impl Window {
         runtime().spawn(async move {
             match crate::ui::network::login(server, name, password, port).await {
                 Ok(_) => {
-                    sender.send("1".to_string()).await.expect("The channel needs to be open.");
-                },
+                    sender
+                        .send("1".to_string())
+                        .await
+                        .expect("The channel needs to be open.");
+                }
                 Err(e) => eprintln!("Error: {}", e),
             }
         });

@@ -1,14 +1,15 @@
-use gtk::{gio, glib};
 use glib::Object;
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
+// use gtk::prelude::*;
+// use gtk::subclass::prelude::*;
+use gtk::{gio, glib};
 
-mod imp{
-    use std::cell::RefCell;
+mod imp {
+    // use std::cell::RefCell;
 
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;
-    use gtk::{gio, glib, CompositeTemplate, Entry, Label, Picture};
+    use gtk::{glib, CompositeTemplate, Label, Picture};
+    // use gtk::{gio,Entry};
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]

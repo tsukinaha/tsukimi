@@ -28,19 +28,13 @@ pub fn create_page1() -> Stack {
         overlay.set_size_request(187, 275);
         vbox.append(&overlay);
         let label = Label::new(Some(&result.Name));
-        let markup = format!(
-            "{}",
-            result.Name
-        );
+        let markup = format!("{}", result.Name);
         label.set_markup(markup.as_str());
         label.set_wrap(true);
         label.set_size_request(-1, 24);
         label.set_ellipsize(pango::EllipsizeMode::End);
         let labeltype = Label::new(Some(&result.Type));
-        let markup = format!(
-            "<span color='lightgray' font='10'>{}</span>",
-            result.Type
-        );
+        let markup = format!("<span color='lightgray' font='10'>{}</span>", result.Type);
         labeltype.set_markup(markup.as_str());
         labeltype.set_size_request(-1, 24);
         vbox.append(&label);
@@ -118,7 +112,7 @@ pub fn create_page1() -> Stack {
         let model = gridview.model().unwrap();
         let item = model.item(position).and_downcast::<BoxedAnyObject>().unwrap();
         let result: Ref<SearchResult> = item.borrow();
-        
+
         let item_page;
 
         if result.Type == "Movie" {

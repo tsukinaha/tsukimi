@@ -28,7 +28,7 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
 
     let (sender, receiver) = async_channel::bounded::<network::Media>(1);
     let series_id = series_info.Id.clone();
-    
+
     runtime().spawn(clone!(@strong sender =>async move {
         let playbackinfo = network::playbackinfo(series_id).await.expect("msg");
         sender.send(playbackinfo).await.expect("The channel needs to be open.");
@@ -36,20 +36,22 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
 
     let series_id = series_info.Id.clone();
     let seriesoverview = series_info.Overview.clone();
-    glib::spawn_future_local(clone!(@strong playbackinfobox,@strong playbackinfovbox => async move {
-        while let Ok(playbackinfo) = receiver.recv().await {
-            let mediadropsel = super::new_dropsel::newmediadropsel(playbackinfo, series_id.clone());
-            playbackinfobox.append(&mediadropsel);
-            playbackinfovbox.append(&playbackinfobox);
-            if seriesoverview.is_some() {
-                let overview = gtk::Inscription::new(Some(&seriesoverview.as_ref().unwrap()));
-                    overview.set_nat_lines(6);
-                    overview.set_hexpand(true);
-                    overview.set_valign(gtk::Align::Start);
-                    playbackinfovbox.append(&overview);
+    glib::spawn_future_local(
+        clone!(@strong playbackinfobox,@strong playbackinfovbox => async move {
+            while let Ok(playbackinfo) = receiver.recv().await {
+                let mediadropsel = super::new_dropsel::newmediadropsel(playbackinfo, series_id.clone());
+                playbackinfobox.append(&mediadropsel);
+                playbackinfovbox.append(&playbackinfobox);
+                if seriesoverview.is_some() {
+                    let overview = gtk::Inscription::new(Some(&seriesoverview.as_ref().unwrap()));
+                        overview.set_nat_lines(6);
+                        overview.set_hexpand(true);
+                        overview.set_valign(gtk::Align::Start);
+                        playbackinfovbox.append(&overview);
+                }
             }
-        }
-    }));
+        }),
+    );
 
     overlay.set_child(Some(&intropic));
     overlay.set_size_request(300, 169);

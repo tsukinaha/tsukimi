@@ -1,11 +1,14 @@
+use super::episodes_page;
+use super::network::{get_image, runtime};
 use crate::ui::network;
 use crate::ui::network::SearchResult;
-use gtk::glib::{self, clone,  BoxedAnyObject};
+// use dirs::home_dir;
+use gtk::glib::{self, clone, BoxedAnyObject};
 use gtk::{gio, prelude::*, Stack};
 use gtk::{Box, Orientation};
 use std::cell::Ref;
-use super::episodes_page;
-use super::network::{get_image, runtime};
+use std::env;
+use std::path::PathBuf;
 
 pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
     let pagebox = Box::new(Orientation::Vertical, 5);
@@ -16,16 +19,32 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
     intropic.set_size_request(221, 325);
 
     let series_id = result.Id.clone();
-    
+
     let (sender, receiver) = async_channel::bounded::<String>(1);
     runtime().spawn(clone!(@strong sender =>async move {
         let id = get_image(series_id).await.expect("msg");
         sender.send(id).await.expect("The channel needs to be open.");
     }));
 
+    fn path_thumb(id: String) -> PathBuf {
+        #[cfg(unix)]
+        let path_thum = dirs::home_dir()
+            .unwrap()
+            .join(format!(".local/share/tsukimi/{}.png", id));
+
+        #[cfg(windows)]
+        let path_thum = env::current_dir()
+            .unwrap()
+            .join("thumbnails")
+            .join(format!("{}.png", id));
+
+        return path_thum;
+    }
+
     glib::spawn_future_local(clone!(@strong intropic => async move {
         while let Ok(id) = receiver.recv().await {
-            let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), id);
+            // let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), id);
+            let path = path_thumb(id);
             let file = gtk::gio::File::for_path(&path);
             intropic.set_file(Some(&file));
         }
@@ -54,7 +73,10 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
         let vbox = Box::new(Orientation::Vertical, 5);
         let label = gtk::Label::new(Some(&seriesinfo.Name));
         label.set_halign(gtk::Align::Start);
-        let markup = format!("<b>S{}E{}: {}</b>", seriesinfo.ParentIndexNumber, seriesinfo.IndexNumber, seriesinfo.Name);
+        let markup = format!(
+            "<b>S{}E{}: {}</b>",
+            seriesinfo.ParentIndexNumber, seriesinfo.IndexNumber, seriesinfo.Name
+        );
         label.set_markup(markup.as_str());
         vbox.append(&label);
         if seriesinfo.Overview.is_some() {
@@ -81,10 +103,13 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
     let listview = gtk::ListView::new(Some(sel), Some(listfactory));
     listview.connect_activate(move |listview, position| {
         let model = listview.model().unwrap();
-        let item = model.item(position).and_downcast::<BoxedAnyObject>().unwrap();
+        let item = model
+            .item(position)
+            .and_downcast::<BoxedAnyObject>()
+            .unwrap();
         let series_info: Ref<network::SeriesInfo> = item.borrow();
         let resultid = resultid.clone();
-        let episodes_page = episodes_page::episodes_page(stack.clone(), series_info,resultid);
+        let episodes_page = episodes_page::episodes_page(stack.clone(), series_info, resultid);
         let pagename = format!("episodes_page");
         if stack.child_by_name(&pagename).is_none() {
         } else {

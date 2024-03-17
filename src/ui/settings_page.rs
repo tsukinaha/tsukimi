@@ -1,16 +1,17 @@
+use crate::ui::network;
+// use dirs::home_dir;
 use gtk::glib;
-use dirs::home_dir;
 use gtk::prelude::*;
 use gtk::{Box, Button, Entry, Label, Orientation};
-use serde::Serialize;
 use serde::Deserialize;
+use serde::Serialize;
+use std::env;
 use std::fs::File;
 use std::io::BufReader;
-use crate::ui::network;
 
 use super::network::runtime;
 
-#[derive(Serialize,Debug, Deserialize)]
+#[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
     pub domain: String,
     pub username: String,
@@ -20,6 +21,7 @@ pub struct Config {
     pub access_token: String,
 }
 
+#[allow(unused)]
 pub fn create_page2() -> Box {
     let vbox = Box::new(Orientation::Vertical, 10);
 
@@ -68,8 +70,16 @@ pub fn create_page2() -> Box {
     hbox.append(&password_entry);
     hbox.set_halign(gtk::Align::Center);
     vbox.append(&hbox);
-    let path = home_dir().unwrap()
-                                    .join(".config/tsukimi.yaml");
+
+    #[cfg(unix)]
+    let path = home_dir().unwrap().join(".config/tsukimi.yaml");
+
+    #[cfg(windows)]
+    let path = env::current_dir()
+        .unwrap()
+        .join("config")
+        .join("tsukimi.yaml");
+
     if path.exists() {
         let file = File::open(&path).expect("Unable to open file");
         let reader = BufReader::new(file);
@@ -78,8 +88,8 @@ pub fn create_page2() -> Box {
         port_entry.set_text(&config.port);
         username_entry.set_text(&config.username);
         password_entry.set_text(&config.password);
-    } 
-    
+    }
+
     let hbox = Box::new(Orientation::Horizontal, 20);
 
     let login_button = Button::with_label("登录");
@@ -98,8 +108,11 @@ pub fn create_page2() -> Box {
         runtime().spawn(async move {
             match network::login(servername, username, password, port).await {
                 Ok(_) => {
-                    sender.send("1".to_string()).await.expect("The channel needs to be open.");
-                },
+                    sender
+                        .send("1".to_string())
+                        .await
+                        .expect("The channel needs to be open.");
+                }
                 Err(e) => eprintln!("Error: {}", e),
             }
         });

@@ -1,13 +1,13 @@
 use gtk::prelude::*;
-use gtk::{gio, glib, Application};
+use gtk::{gio, glib};
+// use gtk::Application;
 mod ui;
 
 const APP_ID: &str = "moe.tsuna.tsukimi";
 
 fn main() -> glib::ExitCode {
     // Register and include resources
-    gio::resources_register_include!("tsukimi.gresource")
-        .expect("Failed to register resources.");
+    gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
 
     // Create a new application
     let app = adw::Application::builder().application_id(APP_ID).build();

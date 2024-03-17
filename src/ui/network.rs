@@ -1,17 +1,20 @@
-use crate::ui::settings_page::Config;
-use gtk::gdk_pixbuf;
+#![allow(non_snake_case)]
+#![allow(non_camel_case_types)]
 
-use dirs::home_dir;
+use crate::ui::settings_page::Config;
+// use dirs::home_dir;
 use gdk_pixbuf::Pixbuf;
+use gtk::gdk_pixbuf;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::Error;
 use serde_json::json;
 use serde_json::Value;
 use serde_yaml::to_string;
+use std::env;
 use std::fs::File;
 use std::fs::{self, write};
 use std::io::Read;
-use std::path::PathBuf;
+// use std::path::PathBuf;
 use tokio::runtime::Runtime;
 
 use serde::{Deserialize, Serialize};
@@ -28,7 +31,9 @@ pub async fn login(
     password: String,
     port: String,
 ) -> Result<(), Error> {
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .proxy(reqwest::Proxy::all("http://127.0.0.1:1081")?)
+        .build()?;
 
     let mut headers = HeaderMap::new();
     headers.insert("X-Emby-Client", HeaderValue::from_static("Emby Web"));
@@ -38,7 +43,7 @@ pub async fn login(
     );
     headers.insert(
         "X-Emby-Device-Id",
-        HeaderValue::from_static("23956a32-6628-47d0-a57d-b47a1f57aa02"),
+        HeaderValue::from_static("e193c931-9add-488b-8b02-cc9f76815f2f"),
     );
     headers.insert(
         "X-Emby-Client-Version",
@@ -80,9 +85,16 @@ pub async fn login(
         access_token: access_token.to_string(),
     };
     let yaml = to_string(&config).unwrap();
-    let mut path = home_dir().unwrap();
-    path.push(".config");
-    path.push("tsukimi.yaml");
+
+    #[cfg(unix)]
+    let mut path = home_dir().unwrap().join(".config").join("tsukimi.yaml");
+
+    #[cfg(windows)]
+    let path = env::current_dir()
+        .unwrap()
+        .join("config")
+        .join("tsukimi.yaml");
+
     write(path, yaml).unwrap();
 
     Ok(())
@@ -113,9 +125,14 @@ pub fn get_server_info() -> ServerInfo {
         access_token: String::new(),
         port: String::new(),
     };
-    let mut path = home_dir().unwrap();
-    path.push(".config");
-    path.push("tsukimi.yaml");
+    #[cfg(unix)]
+    let mut path = home_dir().unwrap().join(".config").join("tsukimi.yaml");
+
+    #[cfg(windows)]
+    let path = env::current_dir()
+        .unwrap()
+        .join("config")
+        .join("tsukimi.yaml");
 
     if path.exists() {
         let mut file = File::open(path).unwrap();
@@ -137,7 +154,9 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
     };
     let server_info = get_server_info();
 
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .proxy(reqwest::Proxy::all("http://127.0.0.1:1081")?)
+        .build()?;
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server_info.domain, server_info.port, server_info.user_id
@@ -156,9 +175,9 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
         ("SearchTerm", &searchinfo),
         ("GroupProgramsBySeries", "true"),
         ("Limit", "50"),
-        ("X-Emby-Client", "Emby+Web"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
+        ("X-Emby-Client", "Emby Web"),
+        ("X-Emby-Device-Name", "Google Chrome"),
+        ("X-Emby-Device-Id", "e193c931-9add-488b-8b02-cc9f76815f2f"),
         ("X-Emby-Client-Version", "4.8.0.54"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
@@ -180,13 +199,16 @@ pub struct SeriesInfo {
     pub ParentIndexNumber: u32,
 }
 
+#[allow(unused)]
 pub struct seriesimage {
     pub image: Option<Pixbuf>,
 }
 
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
     let server_info = get_server_info();
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .proxy(reqwest::Proxy::all("http://127.0.0.1:1081")?)
+        .build()?;
     let url = format!(
         "{}:{}/emby/Shows/{}/Episodes",
         server_info.domain, server_info.port, id
@@ -196,9 +218,9 @@ pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
         ("EnableTotalRecordCount", "true"),
         ("EnableImages", "true"),
         ("UserId", &server_info.user_id),
-        ("X-Emby-Client", "Emby+Web"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
+        ("X-Emby-Client", "Emby Web"),
+        ("X-Emby-Device-Name", "Google Chrome"),
+        ("X-Emby-Device-Id", "e193c931-9add-488b-8b02-cc9f76815f2f"),
         ("X-Emby-Client-Version", "4.8.0.54"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
@@ -226,15 +248,26 @@ pub async fn get_image(id: String) -> Result<String, Error> {
                 let bytes_result = response.bytes().await;
                 match bytes_result {
                     Ok(bytes) => {
-                        let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
-                        let pathbuf = PathBuf::from(path_str);
+                        #[cfg(unix)]
+                        let mut pathbuf = home_dir().unwrap().join(".local/share/tsukimi");
+
+                        #[cfg(windows)]
+                        let pathbuf = env::current_dir().unwrap().join("thumbnails");
+
                         if pathbuf.exists() {
-                            fs::write(pathbuf.join(format!("{}.png",id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
                         } else {
-                            fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
-                                .unwrap();
-                            
-                            fs::write(pathbuf.join(format!("{}.png",id)),&bytes).unwrap();
+                            #[cfg(unix)]
+                            fs::create_dir_all(format!(
+                                "{}/.local/share/tsukimi/",
+                                home_dir().expect("msg").display()
+                            ))
+                            .unwrap();
+
+                            #[cfg(windows)]
+                            fs::create_dir_all(&pathbuf).unwrap();
+
+                            fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
                         }
                         return Ok(id);
                     }
@@ -279,7 +312,9 @@ pub struct Media {
 
 pub async fn playbackinfo(id: String) -> Result<Media, Error> {
     let server_info = get_server_info();
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .proxy(reqwest::Proxy::all("http://127.0.0.1:1081")?)
+        .build()?;
     let url = format!(
         "{}:{}/emby/Items/{}/PlaybackInfo",
         server_info.domain, server_info.port, id
@@ -291,9 +326,9 @@ pub async fn playbackinfo(id: String) -> Result<Media, Error> {
         ("AutoOpenLiveStream", "true"),
         ("IsPlayback", "true"),
         ("MaxStreamingBitrate", "4000000"),
-        ("X-Emby-Client", "Emby+Web"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
+        ("X-Emby-Client", "Emby Web"),
+        ("X-Emby-Device-Name", "Google Chrome"),
+        ("X-Emby-Device-Id", "e193c931-9add-488b-8b02-cc9f76815f2f"),
         ("X-Emby-Client-Version", "4.8.0.54"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
@@ -312,7 +347,7 @@ pub async fn playbackinfo(id: String) -> Result<Media, Error> {
 }
 
 pub fn mpv_play(url: String, name: String) {
-    let mut command = std::process::Command::new("mpv");
+    let mut command = std::process::Command::new("mpv.exe");
     let server_info = get_server_info();
     let titlename = format!("--force-media-title={}", name);
     let osdname = format!("--osd-playing-msg={}", name);
@@ -327,7 +362,7 @@ pub fn mpv_play(url: String, name: String) {
 }
 
 pub fn mpv_play_withsub(url: String, suburl: String, name: String) {
-    let mut command = std::process::Command::new("mpv");
+    let mut command = std::process::Command::new("mpv.exe");
     let server_info = get_server_info();
     let titlename = format!("--force-media-title={}", name);
     let osdname = format!("--osd-playing-msg={}", name);
@@ -346,18 +381,21 @@ pub fn mpv_play_withsub(url: String, suburl: String, name: String) {
     let _ = command.spawn().expect("mpv failed to start").wait();
 }
 
+#[allow(unused)]
 pub async fn get_item_overview(id: String) -> Result<String, Error> {
     let server_info = get_server_info();
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .proxy(reqwest::Proxy::all("http://127.0.0.1:1081")?)
+        .build()?;
     let url = format!(
         "{}:{}/emby/Users/{}/{}",
         server_info.domain, server_info.port, server_info.user_id, id
     );
     let params = [
         ("Fields", "ShareLevel"),
-        ("X-Emby-Client", "Emby+Web"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
+        ("X-Emby-Client", "Emby Web"),
+        ("X-Emby-Device-Name", "Google Chrome"),
+        ("X-Emby-Device-Id", "e193c931-9add-488b-8b02-cc9f76815f2f"),
         ("X-Emby-Client-Version", "4.8.0.54"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
@@ -370,15 +408,17 @@ pub async fn get_item_overview(id: String) -> Result<String, Error> {
 
 pub async fn markwatched(id: String, sourceid: String) -> Result<String, Error> {
     let server_info = get_server_info();
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .proxy(reqwest::Proxy::all("http://127.0.0.1:1081")?)
+        .build()?;
     let url = format!(
         "{}:{}/emby/Users/{}/PlayingItems/{}",
         server_info.domain, server_info.port, server_info.user_id, id
     );
     println!("{}", url);
     let params = [
-        ("X-Emby-Client", "Emby+Web"),
-        ("X-Emby-Device-Name", "Tsukimi"),
+        ("X-Emby-Client", "Emby Web"),
+        ("X-Emby-Device-Name", "Google Chrome"),
         ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b114514"),
         ("X-Emby-Client-Version", "4.8.0.54"),
         ("X-Emby-Token", &server_info.access_token),
@@ -420,7 +460,9 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
     let mut model = ResumeModel { resume: Vec::new() };
     let server_info = get_server_info();
 
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .proxy(reqwest::Proxy::all("http://127.0.0.1:1081")?)
+        .build()?;
     let url = format!(
         "{}:{}/emby/Users/{}/Items/Resume",
         server_info.domain, server_info.port, server_info.user_id
@@ -435,9 +477,9 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
         ("ImageTypeLimit", "1"),
         ("MediaTypes", "Video"),
         ("Limit", "8"),
-        ("X-Emby-Client", "Emby+Web"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
+        ("X-Emby-Client", "Emby Web"),
+        ("X-Emby-Device-Name", "Google Chrome"),
+        ("X-Emby-Device-Id", "e193c931-9add-488b-8b02-cc9f76815f2f"),
         ("X-Emby-Client-Version", "4.8.0.54"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
@@ -467,18 +509,28 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
                 let bytes_result = response.bytes().await;
                 match bytes_result {
                     Ok(bytes) => {
-                        let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
-                        let pathbuf = PathBuf::from(path_str);
+                        #[cfg(unix)]
+                        let pathbuf = home_dir().unwrap().join(".local/share/tsukimi");
+
+                        #[cfg(windows)]
+                        let pathbuf = env::current_dir().unwrap().join("thumbnails");
+
                         if pathbuf.exists() {
-                            fs::write(pathbuf.join(format!("t{}.png",id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
                         } else {
-                            fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
-                                .unwrap();
-                            
-                            fs::write(pathbuf.join(format!("t{}.png",id)),&bytes).unwrap();
+                            #[cfg(unix)]
+                            fs::create_dir_all(format!(
+                                "{}/.local/share/tsukimi/",
+                                home_dir().expect("msg").display()
+                            ))
+                            .unwrap();
+                            #[cfg(windows)]
+                            fs::create_dir_all(&pathbuf).unwrap();
+
+                            fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
                         }
                         return Ok(id);
-                    },
+                    }
                     Err(e) => {
                         if attempts >= 3 {
                             return Err(e.into());
@@ -512,18 +564,28 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
                 let bytes_result = response.bytes().await;
                 match bytes_result {
                     Ok(bytes) => {
-                        let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
-                        let pathbuf = PathBuf::from(path_str);
+                        #[cfg(unix)]
+                        let pathbuf = home_dir().unwrap().join(".local/share/tsukimi");
+
+                        #[cfg(windows)]
+                        let pathbuf = env::current_dir().unwrap().join("thumbnails");
+
                         if pathbuf.exists() {
-                            fs::write(pathbuf.join(format!("b{}.png",id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("b{}.png", id)), &bytes).unwrap();
                         } else {
-                            fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
-                                .unwrap();
-                            
-                            fs::write(pathbuf.join(format!("b{}.png",id)),&bytes).unwrap();
+                            #[cfg(unix)]
+                            fs::create_dir_all(format!(
+                                "{}/.local/share/tsukimi/",
+                                home_dir().expect("msg").display()
+                            ))
+                            .unwrap();
+                            #[cfg(windows)]
+                            fs::create_dir_all(&pathbuf).unwrap();
+
+                            fs::write(pathbuf.join(format!("b{}.png", id)), &bytes).unwrap();
                         }
                         return Ok(id);
-                    },
+                    }
                     Err(e) => {
                         eprintln!("加载错误");
                         if attempts >= 3 {

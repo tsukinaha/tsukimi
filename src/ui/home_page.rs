@@ -21,14 +21,18 @@ pub fn create_page() -> Stack {
         let result: Ref<Resume> = entry.borrow();
         let vbox = Box::new(Orientation::Vertical, 0);
         let overlay = gtk::Overlay::new();
-        let imgbox ;
+        let imgbox;
         if result.ParentThumbItemId.is_some() {
-            imgbox = crate::ui::image::set_thumbimage(result.ParentThumbItemId.as_ref().expect("").clone());
+            imgbox = crate::ui::image::set_thumbimage(
+                result.ParentThumbItemId.as_ref().expect("").clone(),
+            );
         } else {
             if result.Type == "Movie" {
                 imgbox = crate::ui::image::set_backdropimage(result.Id.clone());
             } else {
-                imgbox = crate::ui::image::set_backdropimage(result.SeriesId.as_ref().expect("").to_string());
+                imgbox = crate::ui::image::set_backdropimage(
+                    result.SeriesId.as_ref().expect("").to_string(),
+                );
             }
         }
         imgbox.set_size_request(290, 169);
@@ -38,9 +42,14 @@ pub fn create_page() -> Stack {
         let label = Label::new(Some(&result.Name));
         let labeltype = Label::new(Some(&result.Type));
         if result.Type == "Episode" {
-            let markup = format!("{}",result.SeriesName.as_ref().expect("").clone());
+            let markup = format!("{}", result.SeriesName.as_ref().expect("").clone());
             label.set_markup(markup.as_str());
-            let markup = format!("<span color='lightgray' font='10'>S{}E{}: {}</span>", result.ParentIndexNumber.as_ref().expect("").clone(), result.IndexNumber.as_ref().expect("").clone(), result.Name);
+            let markup = format!(
+                "<span color='lightgray' font='10'>S{}E{}: {}</span>",
+                result.ParentIndexNumber.as_ref().expect("").clone(),
+                result.IndexNumber.as_ref().expect("").clone(),
+                result.Name
+            );
             labeltype.set_markup(markup.as_str());
         } else {
             let markup = format!("{}", result.Name);
@@ -58,21 +67,17 @@ pub fn create_page() -> Stack {
         listitem.set_child(Some(&vbox));
     });
 
-
     gridfactory.connect_unbind(move |_factory, item| {
         let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
         listitem.set_child(None::<&gtk::Widget>);
     });
 
-    gridfactory.connect_unbind(move |_factory, _item| {
-    });
+    gridfactory.connect_unbind(move |_factory, _item| {});
     let gridview = gtk::GridView::new(Some(sel), Some(gridfactory));
     let scrolled_window = ScrolledWindow::new();
     let historybox = Box::new(Orientation::Vertical, 5);
     let label = gtk::Label::new(Some("Continue Watching"));
-    let markup = format!(
-        "<b>Continue Watching</b>",
-    );
+    let markup = format!("<b>Continue Watching</b>",);
     label.set_markup(markup.as_str());
     label.set_halign(gtk::Align::Start);
     label.set_margin_start(10);
@@ -101,7 +106,6 @@ pub fn create_page() -> Stack {
 
     vbox.append(&scrolled_window);
 
-    
     glib::spawn_future_local(clone!(@weak gridview,@weak store=> async move {
         while let Ok(search_results) = receiver.recv().await {
             store.remove_all();
