@@ -22,3 +22,7 @@ gridview {
 gridview > child box {
     margin:0px;
 }
+
+list {
+    background-color: rgba(0, 0, 0, 0);
+}

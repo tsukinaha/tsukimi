@@ -28,6 +28,10 @@ mod imp{
         pub inwindow: TemplateChild<gtk::ScrolledWindow>,
         #[template_child]
         pub loginbutton: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub insidestack: TemplateChild<gtk::Stack>,
+        #[template_child]
+        pub proxyentry: TemplateChild<adw::EntryRow>,
     }
 
     // The central trait for subclassing a GObject
@@ -68,7 +72,13 @@ mod imp{
                     window.placeholder();
                 },
             );
-            
+            klass.install_action(
+                "win.proxy",
+                None,
+                move |window, _action, _parameter| {
+                    window.proxy();
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -83,6 +93,7 @@ mod imp{
             self.parent_constructed();
             let obj = self.obj().clone();
             obj.loginenter();
+
             self.selectlist.connect_row_selected(move |_, row| {
                 if let Some(row) = row {
                     let num = row.index();
@@ -91,13 +102,13 @@ mod imp{
                             obj.homepage();
                         }
                         1 => {
-                            obj.homepage();
+                            obj.historypage();
                         }
                         2 => {
                             obj.searchpage();
                         }
                         3 => {
-                            println!("Settings");
+                            obj.settingspage();
                         }
                         _ => {}
                     }
@@ -153,13 +164,50 @@ impl Window {
     fn homepage(&self) {
         let imp = self.imp();
         let stack = crate::ui::home_page::create_page();
-        imp.inwindow.set_child(Some(&stack));
+        let pagename = format!("homepage");
+        if stack.child_by_name(&pagename).is_some() {
+            stack.remove(&stack.child_by_name(&pagename).unwrap());
+        }
+        let pagename = format!("searchpage");
+        if stack.child_by_name(&pagename).is_some() {
+            stack.remove(&stack.child_by_name(&pagename).unwrap());
+        }
+        if imp.insidestack.child_by_name("homepage").is_none() {
+            imp.insidestack.add_titled(&stack, Some("homepage"), "home");
+        }
+        imp.insidestack.set_visible_child_name("homepage");
+    }
+
+    fn historypage(&self) {
+        let imp = self.imp();
+        imp.insidestack.set_visible_child_name("title2");
     }
 
     fn searchpage(&self) {
         let imp = self.imp();
         let stack = crate::ui::search_page::create_page1();
-        imp.inwindow.set_child(Some(&stack));
+        let pagename = format!("homepage");
+        if stack.child_by_name(&pagename).is_some() {
+            stack.remove(&stack.child_by_name(&pagename).unwrap());
+        }
+        let pagename = format!("searchpage");
+        if stack.child_by_name(&pagename).is_some() {
+            stack.remove(&stack.child_by_name(&pagename).unwrap());
+        }
+        if imp.insidestack.child_by_name("searchpage").is_none() {
+            imp.insidestack.add_titled(&stack, Some("searchpage"), "search");
+        }
+        imp.insidestack.set_visible_child_name("searchpage");
+    }
+
+    fn settingspage(&self) {
+        let imp = self.imp();
+        imp.insidestack.set_visible_child_name("title");
+    }
+
+    fn proxy(&self) {
+        let imp = self.imp();
+        let proxy = imp.proxyentry.text().to_string();
     }
 
     async fn login(&self) {
