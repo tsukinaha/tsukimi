@@ -1,32 +1,33 @@
 label {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .large-font {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 child {
-    margin: 9px;
-    border-radius:15px;
+  margin: 9px;
+  border-radius: 15px;
 }
-row{
-    margin:9px;
-    border-radius:10px;
-   }
-   
+
+row {
+  margin: 9px;
+  border-radius: 10px;
+}
+
 picture {
-    border-radius:10px;
+  border-radius: 10px;
 }
 
 listview {
-    background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
 }
- 
+
 gridview {
-    background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
 }
-  
+
 gridview > child box {
-    margin:0px;
+  margin: 0px;
 }

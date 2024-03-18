@@ -85,6 +85,16 @@
                               </object>
                             </child>
                             <child>
+                              <object class="AdwEntryRow" id="proxyentry">
+                                <property name="title" translatable="yes">Proxy</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwEntryRow" id="mpventry">
+                                <property name="title" translatable="yes">MPV</property>
+                              </object>
+                            </child>
+                            <child>
                               <object class="GtkButton" id="loginbutton">
                                 <property name="label" translatable="yes">_Link Start</property>
                                 <property name="use-underline">True</property>

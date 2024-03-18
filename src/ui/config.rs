@@ -1,5 +1,3 @@
-#[cfg(unix)]
-use dirs::home_dir;
 use serde::{Deserialize, Serialize};
 use std::env;
 
@@ -11,13 +9,13 @@ pub struct Config {
     pub port: String,
     pub user_id: String,
     pub access_token: String,
-    pub proxy: Option<String>,
-    pub mpv: Option<String>,
+    pub proxy: String,
+    pub mpv: String,
 }
 
-fn get_proxy_info() -> Result<String, Box<dyn std::error::Error>> {
+fn get_proxy_info() -> String {
     #[cfg(unix)]
-    let config_path = home_dir().unwrap().join(".config/tsukimi.yaml");
+    let config_path = dirs::home_dir().unwrap().join(".config/tsukimi.yaml");
 
     #[cfg(windows)]
     let config_path = env::current_dir()
@@ -27,11 +25,7 @@ fn get_proxy_info() -> Result<String, Box<dyn std::error::Error>> {
 
     let data = std::fs::read_to_string(&config_path).unwrap();
     let config: Config = serde_yaml::from_str(&data).unwrap();
-
-    match config.proxy {
-        Some(proxy) => Ok(proxy.clone()),
-        None => Err("no proxy is found!".into()),
-    }
+    return config.proxy;
 }
 
 fn client_with_proxy(proxy: String) -> reqwest::Client {
@@ -43,9 +37,10 @@ fn client_with_proxy(proxy: String) -> reqwest::Client {
 }
 
 pub fn client() -> reqwest::Client {
-    match get_proxy_info() {
-        Ok(e) => client_with_proxy(e),
-        Err(_) => reqwest::Client::new(),
+    if get_proxy_info().is_empty() {
+        return reqwest::Client::new();
+    } else {
+        return client_with_proxy(get_proxy_info());
     }
 }
 
@@ -59,7 +54,7 @@ fn default_mpv() -> String {
 
 pub fn mpv() -> String {
     #[cfg(unix)]
-    let config_path = home_dir().unwrap().join(".config/tsukimi.yaml");
+    let config_path = dirs::home_dir().unwrap().join(".config/tsukimi.yaml");
 
     #[cfg(windows)]
     let config_path = env::current_dir()
@@ -70,10 +65,10 @@ pub fn mpv() -> String {
     let data = std::fs::read_to_string(&config_path).unwrap();
     let config: Config = serde_yaml::from_str(&data).unwrap();
 
-    let mpv = match config.mpv {
-        Some(mpv) => mpv,
-        None => default_mpv(),
-    };
-
-    return mpv;
+    let mpv = config.mpv;
+    if mpv.is_empty() {
+        return default_mpv();
+    } else {
+        return mpv;
+    }
 }

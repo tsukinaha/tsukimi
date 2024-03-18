@@ -6,7 +6,6 @@ mod imp {
     use gtk::prelude::ListBoxRowExt;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
-    // use gtk::{prelude::*, Button, Stack, HeaderBar, ToggleButton};
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -20,6 +19,10 @@ mod imp {
         pub nameentry: TemplateChild<adw::EntryRow>,
         #[template_child]
         pub passwordentry: TemplateChild<adw::EntryRow>,
+        #[template_child]
+        pub proxyentry: TemplateChild<adw::EntryRow>,
+        #[template_child]
+        pub mpventry: TemplateChild<adw::EntryRow>,
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
         #[template_child]
@@ -140,10 +143,13 @@ impl Window {
         let port = imp.portentry.text().to_string();
         let name = imp.nameentry.text().to_string();
         let password = imp.passwordentry.text().to_string();
+        let proxy = imp.proxyentry.text().to_string();
+        let mpv = imp.mpventry.text().to_string();
+
         let (sender, receiver) = async_channel::bounded::<String>(1);
 
         runtime().spawn(async move {
-            match crate::ui::network::login(server, name, password, port).await {
+            match crate::ui::network::login(server, name, password, port, proxy, mpv).await {
                 Ok(_) => {
                     sender
                         .send("1".to_string())

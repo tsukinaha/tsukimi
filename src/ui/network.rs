@@ -29,6 +29,8 @@ pub async fn login(
     username: String,
     password: String,
     port: String,
+    proxy: String,
+    mpv: String,
 ) -> Result<(), Error> {
     let client = client();
 
@@ -80,7 +82,8 @@ pub async fn login(
         port,
         user_id: user_id.to_string(),
         access_token: access_token.to_string(),
-        ..Default::default()
+        proxy,
+        mpv,
     };
     let yaml = to_string(&config).unwrap();
 
@@ -542,7 +545,7 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
                 match bytes_result {
                     Ok(bytes) => {
                         #[cfg(unix)]
-                        let pathbuf = home_dir().unwrap().join(".local/share/tsukimi");
+                        let pathbuf = dirs::home_dir().unwrap().join(".local/share/tsukimi");
 
                         #[cfg(windows)]
                         let pathbuf = env::current_dir().unwrap().join("thumbnails");

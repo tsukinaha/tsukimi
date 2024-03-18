@@ -7,7 +7,7 @@ mod movie_page;
 mod network;
 mod new_dropsel;
 mod search_page;
-mod settings_page;
+// mod settings_page;
 mod widgets;
 
 use gtk::gdk::Display;
