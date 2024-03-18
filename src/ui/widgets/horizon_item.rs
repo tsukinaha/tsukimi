@@ -13,7 +13,7 @@ mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/moe/tsukimi/horizon_item.ui")]
+    #[template(resource = "/moe/tsukimi/settings.ui")]
     pub struct HorizonItem {
         #[template_child]
         pub picture: TemplateChild<Picture>,

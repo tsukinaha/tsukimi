@@ -29,8 +29,6 @@ pub async fn login(
     username: String,
     password: String,
     port: String,
-    proxy: String,
-    mpv: String,
 ) -> Result<(), Error> {
     let client = client();
 
@@ -82,8 +80,7 @@ pub async fn login(
         port,
         user_id: user_id.to_string(),
         access_token: access_token.to_string(),
-        proxy,
-        mpv,
+        ..Default::default()
     };
     let yaml = to_string(&config).unwrap();
 

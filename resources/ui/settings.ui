@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwActionRow" class="AccountRow">
+    <object class="AdwActionRow" id="homerow">
+      <property name="title">Home</property>
+      <child type="suffix">
+        <object class="GtkButton">
+          <property name="valign">center</property>
+          <property name="icon-name">object-rotate-left-symbolic</property>
+          <property name="action-name">win.home</property>
+          <style>
+            <class name="flat" />
+          </style>
+        </object>
+      </child>
+    </object>
+  </template>
+</interface>

@@ -1,31 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <menu id="main-menu">
-    <submenu>
-      <attribute name="label" translatable="yes">_Filter</attribute>
-      <item>
-        <attribute name="label" translatable="yes">_All</attribute>
-        <attribute name="action">win.filter</attribute>
-        <attribute name="target">All</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">_Open</attribute>
-        <attribute name="action">win.filter</attribute>
-        <attribute name="target">Open</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">_Done</attribute>
-        <attribute name="action">win.filter</attribute>
-        <attribute name="target">Done</attribute>
-      </item>
-    </submenu>
     <item>
-      <attribute name="label" translatable="yes">_Remove Done Tasks</attribute>
-      <attribute name="action">win.remove-done-tasks</attribute>
+      <attribute name="label" translatable="yes">Logout</attribute>
+      <attribute name="action">win.relogin</attribute>
     </item>
     <item>
-      <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
-      <attribute name="action">win.show-help-overlay</attribute>
+      <attribute name="label" translatable="yes">About</attribute>
+      <attribute name="action">win.about</attribute>
     </item>
   </menu>
   <template class="AppWindow" parent="AdwApplicationWindow">
@@ -82,16 +64,6 @@
                             <child>
                               <object class="AdwEntryRow" id="passwordentry">
                                 <property name="title" translatable="yes">Password</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="AdwEntryRow" id="proxyentry">
-                                <property name="title" translatable="yes">Proxy</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="AdwEntryRow" id="mpventry">
-                                <property name="title" translatable="yes">MPV</property>
                               </object>
                             </child>
                             <child>
@@ -216,32 +188,52 @@
                         <property name="content">
                           <object class="GtkScrolledWindow" id="inwindow">
                             <property name="child">
-                              <object class="AdwClamp">
-                                <property name="maximum-size">400</property>
-                                <property name="tightening-threshold">300</property>
-                                <property name="child">
-                                  <object class="GtkBox">
-                                    <property name="orientation">vertical</property>
-                                    <property name="margin-start">12</property>
-                                    <property name="margin-end">12</property>
-                                    <property name="spacing">12</property>
-                                    <child>
-                                      <object class="GtkEntry" id="entry">
-                                        <property name="placeholder-text" translatable="yes">Enter a Task…</property>
-                                        <property name="secondary-icon-name">list-add-symbolic</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkListBox" id="tasks_list">
-                                        <property name="visible">False</property>
-                                        <property name="selection-mode">none</property>
+                              <object class="GtkStack" id="insidestack">
+                                <property name="hexpand">True</property>
+                                <property name="transition-type">crossfade</property>
+                                <child>
+                                  <object class="GtkStackPage">
+                                    <property name="name">title</property>
+                                    <property name="child">
+                                      <object class="GtkListBox" id="settingslist">
+                                        <property name="selection-mode">browse</property>
                                         <style>
-                                          <class name="boxed-list" />
+                                          <class name="flat" />
                                         </style>
+                                        <child>
+                                          <object class="AdwEntryRow" id="proxyentry">
+                                            <property name="title" translatable="yes">HTTP Proxy</property>
+                                            <property name="show-apply-button">True</property>
+                                            <property name="action-name">win.proxy</property>
+                                          </object>
+                                        </child>
                                       </object>
-                                    </child>
+                                    </property>
                                   </object>
-                                </property>
+                                </child>
+                                <child>
+                                  <object class="GtkStackPage">
+                                    <property name="name">title2</property>
+                                    <property name="child">
+                                      <object class="GtkBox">
+                                        <property name="orientation">vertical</property>
+                                        <style>
+                                          <class name="flat" />
+                                        </style>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label" translatable="yes">Continue Watching</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkGridView">
+                                            
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
                               </object>
                             </property>
                           </object>
