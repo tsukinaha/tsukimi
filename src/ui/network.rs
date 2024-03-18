@@ -1,8 +1,8 @@
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
 
-use super::config::Config;
 use super::config::{client, mpv};
+use super::config::{get_proxy_info, Config};
 use gdk_pixbuf::Pixbuf;
 use gtk::gdk_pixbuf;
 use reqwest::header::{HeaderMap, HeaderValue};
@@ -343,11 +343,21 @@ pub fn mpv_play(url: String, name: String) {
     let osdname = format!("--osd-playing-msg={}", name);
     let forcewindow = format!("--force-window=immediate");
     let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
-    command
-        .arg(forcewindow)
-        .arg(titlename)
-        .arg(osdname)
-        .arg(url);
+    if get_proxy_info().is_empty() {
+        command
+            .arg(forcewindow)
+            .arg(titlename)
+            .arg(osdname)
+            .arg(url);
+    } else {
+        let proxy = format!("--http-proxy={}", get_proxy_info());
+        command
+            .arg(forcewindow)
+            .arg(titlename)
+            .arg(osdname)
+            .arg(proxy)
+            .arg(url);
+    }
     command.spawn().expect("mpv failed to start");
 }
 
@@ -362,12 +372,29 @@ pub fn mpv_play_withsub(url: String, suburl: String, name: String) {
         server_info.domain, server_info.port, suburl
     );
     let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
-    command
-        .arg(forcewindow)
-        .arg(titlename)
-        .arg(osdname)
-        .arg(sub)
-        .arg(url);
+    if get_proxy_info().is_empty() {
+        command
+            .arg(forcewindow)
+            .arg(titlename)
+            .arg(osdname)
+            .arg(sub)
+            .arg(url);
+    } else {
+        let proxy = format!("--http-proxy={}", get_proxy_info());
+        command
+            .arg(forcewindow)
+            .arg(titlename)
+            .arg(osdname)
+            .arg(proxy)
+            .arg(sub)
+            .arg(url);
+    }
+    // command
+    //     .arg(forcewindow)
+    //     .arg(titlename)
+    //     .arg(osdname)
+    //     .arg(sub)
+    //     .arg(url);
     let _ = command.spawn().expect("mpv failed to start").wait();
 }
 

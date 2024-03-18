@@ -11,7 +11,9 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
     let pagebox = Box::new(Orientation::Vertical, 5);
 
     let introbox = Box::new(Orientation::Horizontal, 10);
-    introbox.set_margin_start(9);
+    introbox.set_margin_start(15);
+    introbox.set_margin_end(15);
+    introbox.set_margin_top(15);
     let overlay = gtk::Overlay::new();
     let intropic = image::set_image(series_info.Id.clone());
     let label = gtk::Label::new(Some(&series_info.Name));

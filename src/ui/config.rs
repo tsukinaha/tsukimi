@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::env;
+use std::fs::File;
+use std::io::BufReader;
 
 #[derive(Serialize, Debug, Deserialize, Default)]
 pub struct Config {
@@ -13,7 +15,28 @@ pub struct Config {
     pub mpv: String,
 }
 
-fn get_proxy_info() -> String {
+pub fn set_proxy(proxy: String) {
+    #[cfg(unix)]
+    let config_path = dirs::home_dir().unwrap().join(".config/tsukimi.yaml");
+
+    #[cfg(windows)]
+    let config_path = env::current_dir()
+        .unwrap()
+        .join("config")
+        .join("tsukimi.yaml");
+
+    let file = File::open(&config_path).expect("failed to open config file");
+    let data = BufReader::new(file);
+    let mut config: Config = serde_yaml::from_reader(data).expect("failed to parse YAML");
+
+    config.proxy = proxy;
+
+    let new_config = serde_yaml::to_string(&config).unwrap();
+
+    std::fs::write(config_path, new_config).expect("写入代理配置失败");
+}
+
+pub fn get_proxy_info() -> String {
     #[cfg(unix)]
     let config_path = dirs::home_dir().unwrap().join(".config/tsukimi.yaml");
 

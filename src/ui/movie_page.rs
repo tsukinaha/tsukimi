@@ -12,7 +12,8 @@ use super::{
 pub fn movie_page(result: std::cell::Ref<'_, SearchResult>) -> Box {
     let pagebox = Box::new(Orientation::Vertical, 5);
     let introbox = Box::new(Orientation::Horizontal, 10);
-    introbox.set_margin_start(9);
+    introbox.set_margin_start(11);
+    introbox.set_margin_end(11);
     let overlay = gtk::Overlay::new();
     let intropic = set_image(result.Id.clone());
     let label = gtk::Label::new(Some(&result.Name));

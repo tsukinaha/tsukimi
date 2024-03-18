@@ -14,6 +14,7 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
 
     let introbox = Box::new(Orientation::Horizontal, 10);
     introbox.set_margin_start(11);
+    introbox.set_margin_end(11);
     let intropic = gtk::Picture::new();
     intropic.set_size_request(221, 325);
 

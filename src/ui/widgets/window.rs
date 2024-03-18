@@ -1,8 +1,10 @@
+use crate::ui::config::set_proxy;
 #[cfg(unix)]
 use dirs::home_dir;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use std::env;
+
 mod imp {
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
