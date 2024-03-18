@@ -9,9 +9,7 @@ mod search_page;
 mod settings_page;
 mod widgets;
 use gtk::gdk::Display;
-use gtk::glib::{self, clone};
 use gtk::{prelude::*, CssProvider};
-use gtk::{Application, ApplicationWindow, HeaderBar, Stack, StackSwitcher};
 
 pub fn build_ui(app: &adw::Application) {
     // Create new window and present it

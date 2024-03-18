@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="SettingsPage" parent="GtkScrolledWindow">
+    <property name="child">
+      <object class="GtkListBox" id="selectlist">
+        <property name="selection-mode">browse</property>
+        <style>
+          <class name="navigation-sidebar" />
+        </style>
+        <child>
+          <object class="AdwActionRow" id="homerow">
+            <property name="title">Home</property>
+            <child type="suffix">
+              <object class="GtkButton">
+                <property name="valign">center</property>
+                <property name="icon-name">object-rotate-left-symbolic</property>
+                <property name="action-name">win.home</property>
+                <style>
+                  <class name="flat" />
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title">History</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title">Search</property>
+            <child type="suffix">
+              <object class="GtkButton">
+                <property name="valign">center</property>
+                <property name="icon-name">object-rotate-left-symbolic</property>
+                <property name="action-name">win.search</property>
+                <style>
+                  <class name="flat" />
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title">Settings</property>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

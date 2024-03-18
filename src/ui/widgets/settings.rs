@@ -1,6 +1,6 @@
 use dirs::home_dir;
-use gtk::prelude::*;
 use gtk::subclass::prelude::*;
+use gtk::prelude::EditableExt;
 mod imp{
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
@@ -10,24 +10,10 @@ mod imp{
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/moe/tsukimi/window.ui")]
+    #[template(resource = "/moe/tsukimi/settings.ui")]
     pub struct Window {
         #[template_child]
-        pub serverentry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub portentry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub nameentry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub passwordentry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub stack: TemplateChild<gtk::Stack>,
-        #[template_child]
         pub selectlist: TemplateChild<gtk::ListBox>,
-        #[template_child]
-        pub inwindow: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub loginbutton: TemplateChild<gtk::Button>,
     }
 
     // The central trait for subclassing a GObject
@@ -59,13 +45,6 @@ mod imp{
                 None,
                 move |window, _action, _parameter| {
                     window.searchpage();
-                },
-            );
-            klass.install_action(
-                "win.relogin",
-                None,
-                move |window, _action, _parameter| {
-                    window.placeholder();
                 },
             );
             
@@ -145,33 +124,15 @@ impl Window {
         imp.stack.set_visible_child_name("main");
     }
 
-    fn placeholder(&self) {
-        let imp = self.imp();
-        imp.stack.set_visible_child_name("placeholder");
-    }
-
-    fn homepage(&self) {
-        let imp = self.imp();
-        let stack = crate::ui::home_page::create_page();
-        imp.inwindow.set_child(Some(&stack));
-    }
-
-    fn searchpage(&self) {
-        let imp = self.imp();
-        let stack = crate::ui::search_page::create_page1();
-        imp.inwindow.set_child(Some(&stack));
-    }
 
     async fn login(&self) {
         let imp = self.imp();
-        imp.loginbutton.set_sensitive(false);
-        let loginbutton = imp.loginbutton.clone();
         let server = imp.serverentry.text().to_string();
         let port = imp.portentry.text().to_string();
         let name = imp.nameentry.text().to_string();
         let password = imp.passwordentry.text().to_string();
         let (sender, receiver) = async_channel::bounded::<String>(1);
-        let selfc = self.clone();
+
         runtime().spawn(async move {
             match crate::ui::network::login(server, name, password, port).await {
                 Ok(_) => {
@@ -181,15 +142,8 @@ impl Window {
             }
         });
         glib::MainContext::default().spawn_local(async move {
-            match receiver.recv().await {
-                Ok(_) => {
-                    loginbutton.set_sensitive(false);
-                    selfc.mainpage();
-                },
-                Err(_) => {
-                    loginbutton.set_sensitive(true);
-                    loginbutton.set_label("Link Failed");
-                }
+            while let Ok(_) = receiver.recv().await {
+                println!("Login successful");
             }
         });
     }

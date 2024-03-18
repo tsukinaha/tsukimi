@@ -1,31 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <menu id="main-menu">
-    <submenu>
-      <attribute name="label" translatable="yes">_Filter</attribute>
-      <item>
-        <attribute name="label" translatable="yes">_All</attribute>
-        <attribute name="action">win.filter</attribute>
-        <attribute name="target">All</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">_Open</attribute>
-        <attribute name="action">win.filter</attribute>
-        <attribute name="target">Open</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">_Done</attribute>
-        <attribute name="action">win.filter</attribute>
-        <attribute name="target">Done</attribute>
-      </item>
-    </submenu>
     <item>
-      <attribute name="label" translatable="yes">_Remove Done Tasks</attribute>
-      <attribute name="action">win.remove-done-tasks</attribute>
+      <attribute name="label" translatable="yes">Relogin</attribute>
+      <attribute name="action">win.relogin</attribute>
     </item>
     <item>
-      <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
-      <attribute name="action">win.show-help-overlay</attribute>
+      <attribute name="label" translatable="yes">About</attribute>
+      <attribute name="action">win.about</attribute>
     </item>
   </menu>
   <template class="AppWindow" parent="AdwApplicationWindow">
