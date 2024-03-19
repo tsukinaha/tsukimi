@@ -186,42 +186,27 @@
                           </object>
                         </child>
                         <property name="content">
-                          <object class="GtkScrolledWindow" id="inwindow">
-                            <property name="child">
-                              <object class="GtkStack" id="insidestack">
-                                <property name="hexpand">True</property>
-                                <property name="transition-type">crossfade</property>
-                                <child>
-                                  <object class="GtkStackPage">
-                                    <property name="name">title</property>
-                                    <property name="child">
-                                      <object class="GtkListBox" id="settingslist">
-                                        <property name="selection-mode">browse</property>
-                                        <style>
-                                          <class name="flat" />
-                                        </style>
-                                        <child>
-                                          <object class="AdwEntryRow" id="proxyentry">
-                                            <property name="title" translatable="yes">HTTP Proxy</property>
-                                            <property name="show-apply-button">True</property>
-                                            <property name="action-name">win.proxy</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </property>
+                          <object class="GtkStack" id="insidestack">
+                            <property name="hexpand">True</property>
+                            <property name="transition-type">crossfade</property>
+                            <child>
+                              <object class="GtkStackPage">
+                                <property name="name">searchpage1</property>
+                                <property name="child">
+                                  <object class="AdwNavigationPage" id="searchpage1">
                                   </object>
-                                </child>
-                                <child>
-                                  <object class="GtkStackPage">
-                                    <property name="name">settingspage</property>
-                                    <property name="child">
-                                      <object class="AdwNavigationPage" id="settingspage">
-                                      </object>
-                                    </property>
-                                  </object>
-                                </child>
+                                </property>
                               </object>
-                            </property>
+                            </child>
+                            <child>
+                              <object class="GtkStackPage">
+                                <property name="name">settingspage</property>
+                                <property name="child">
+                                  <object class="AdwNavigationPage" id="settingspage">
+                                  </object>
+                                </property>
+                              </object>
+                            </child>
                           </object>
                         </property>
                       </object>

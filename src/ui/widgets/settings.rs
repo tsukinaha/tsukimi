@@ -14,6 +14,8 @@ mod imp{
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsukimi/settings.ui")]
     pub struct SettingsPage {
+        #[template_child]
+        pub proxyentry: TemplateChild<adw::EntryRow>,
     }
 
     // The central trait for subclassing a GObject
@@ -26,6 +28,12 @@ mod imp{
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.install_action(
+                "setting.proxy",
+                None,
+                move |window, _action, _parameter| {
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {

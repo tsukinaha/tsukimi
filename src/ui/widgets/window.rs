@@ -26,13 +26,9 @@ mod imp{
         #[template_child]
         pub selectlist: TemplateChild<gtk::ListBox>,
         #[template_child]
-        pub inwindow: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
         pub loginbutton: TemplateChild<gtk::Button>,
         #[template_child]
         pub insidestack: TemplateChild<gtk::Stack>,
-        #[template_child]
-        pub proxyentry: TemplateChild<adw::EntryRow>,
         #[template_child]
         pub settingspage: TemplateChild<adw::NavigationPage>,
         pub selection: gtk::SingleSelection,
@@ -74,13 +70,6 @@ mod imp{
                 None,
                 move |window, _action, _parameter| {
                     window.placeholder();
-                },
-            );
-            klass.install_action(
-                "win.proxy",
-                None,
-                move |window, _action, _parameter| {
-                    window.proxy();
                 },
             );
         }
@@ -220,11 +209,6 @@ impl Window {
         let settingspage = crate::ui::widgets::settings::SettingsPage::new();
         imp.settingspage.set_child(Some(&settingspage));
         imp.insidestack.set_visible_child_name("settingspage");
-    }
-
-    fn proxy(&self) {
-        let imp = self.imp();
-        let proxy = imp.proxyentry.text().to_string();
     }
 
     async fn login(&self) {
