@@ -1,18 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template parent="AdwActionRow" class="AccountRow">
-    <object class="AdwActionRow" id="homerow">
-      <property name="title">Home</property>
-      <child type="suffix">
-        <object class="GtkButton">
-          <property name="valign">center</property>
-          <property name="icon-name">object-rotate-left-symbolic</property>
-          <property name="action-name">win.home</property>
-          <style>
-            <class name="flat" />
-          </style>
-        </object>
-      </child>
-    </object>
+  <template parent="AdwNavigationPage" class="SettingsPage">
+    <child>
+      <object class="AdwToolbarView">
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="AdwClamp">
+                <property name="margin-top">36</property>
+                <property name="margin-bottom">12</property>
+                <property name="vexpand">True</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">18</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
+                    <child>
+                      <object class="GtkListBox">
+                        <property name="selection-mode">none</property>
+                        <child>
+                          <object class="AdwEntryRow" id="proxyentry">
+                            <property name="title" translatable="yes">HTTP Proxy</property>
+                            <property name="show-apply-button">True</property>
+                            <property name="action-name">win.proxy</property>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="boxed-list" />
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
   </template>
 </interface>

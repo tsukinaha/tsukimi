@@ -213,23 +213,9 @@
                                 </child>
                                 <child>
                                   <object class="GtkStackPage">
-                                    <property name="name">title2</property>
+                                    <property name="name">settingspage</property>
                                     <property name="child">
-                                      <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
-                                        <style>
-                                          <class name="flat" />
-                                        </style>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Continue Watching</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkGridView">
-                                            
-                                          </object>
-                                        </child>
+                                      <object class="AdwNavigationPage" id="settingspage">
                                       </object>
                                     </property>
                                   </object>

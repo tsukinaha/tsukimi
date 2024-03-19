@@ -12,16 +12,16 @@ mod imp{
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/moe/tsukimi/settings.ui")]
-    pub struct SettingsPage {
+    #[template(resource = "/moe/tsukimi/homeitems.ui")]
+    pub struct HistoryPage {
     }
 
     // The central trait for subclassing a GObject
     #[glib::object_subclass]
-    impl ObjectSubclass for SettingsPage {
+    impl ObjectSubclass for HistoryPage {
         // `NAME` needs to match `class` attribute of template
-        const NAME: &'static str = "SettingsPage";
-        type Type = super::SettingsPage;
+        const NAME: &'static str = "HistoryPage";
+        type Type = super::HistoryPage;
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
@@ -34,34 +34,34 @@ mod imp{
     }
 
     // Trait shared by all GObjects
-    impl ObjectImpl for SettingsPage {}
+    impl ObjectImpl for HistoryPage {}
 
     // Trait shared by all widgets
-    impl WidgetImpl for SettingsPage {}
+    impl WidgetImpl for HistoryPage {}
 
     // Trait shared by all windows
-    impl WindowImpl for SettingsPage {}
+    impl WindowImpl for HistoryPage {}
 
     // Trait shared by all application windows
-    impl ApplicationWindowImpl for SettingsPage {}
+    impl ApplicationWindowImpl for HistoryPage {}
 
-    impl adw::subclass::navigation_page::NavigationPageImpl for SettingsPage {}
+    impl adw::subclass::navigation_page::NavigationPageImpl for HistoryPage {}
 }
 
 glib::wrapper! {
-    pub struct SettingsPage(ObjectSubclass<imp::SettingsPage>)
+    pub struct HistoryPage(ObjectSubclass<imp::HistoryPage>)
         @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
-impl Default for SettingsPage {
+impl Default for HistoryPage {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl SettingsPage {
+impl HistoryPage {
     pub fn new() -> Self {
         Object::builder().build()
     }
