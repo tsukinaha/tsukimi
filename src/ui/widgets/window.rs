@@ -1,8 +1,9 @@
 // use crate::ui::config::set_proxy;
+use adw::prelude::NavigationPageExt;
 #[cfg(unix)]
 use dirs::home_dir;
-use gtk::prelude::*;
 use gtk::subclass::prelude::*;
+use gtk::{glib::clone, prelude::*};
 use std::env;
 
 mod imp {
@@ -29,13 +30,12 @@ mod imp {
         #[template_child]
         pub selectlist: TemplateChild<gtk::ListBox>,
         #[template_child]
-        pub inwindow: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
         pub loginbutton: TemplateChild<gtk::Button>,
         #[template_child]
         pub insidestack: TemplateChild<gtk::Stack>,
         #[template_child]
-        pub proxyentry: TemplateChild<adw::EntryRow>,
+        pub settingspage: TemplateChild<adw::NavigationPage>,
+        pub selection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -60,9 +60,6 @@ mod imp {
             klass.install_action("win.relogin", None, move |window, _action, _parameter| {
                 window.placeholder();
             });
-            klass.install_action("win.proxy", None, move |window, _action, _parameter| {
-                window.proxy();
-            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -77,7 +74,6 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj().clone();
             obj.loginenter();
-
             self.selectlist.connect_row_selected(move |_, row| {
                 if let Some(row) = row {
                     let num = row.index();
@@ -163,7 +159,19 @@ impl Window {
 
     fn historypage(&self) {
         let imp = self.imp();
-        imp.insidestack.set_visible_child_name("title2");
+        let stack = crate::ui::home_page::create_page();
+        let pagename = format!("homepage");
+        if stack.child_by_name(&pagename).is_some() {
+            stack.remove(&stack.child_by_name(&pagename).unwrap());
+        }
+        let pagename = format!("searchpage");
+        if stack.child_by_name(&pagename).is_some() {
+            stack.remove(&stack.child_by_name(&pagename).unwrap());
+        }
+        if imp.insidestack.child_by_name("homepage").is_none() {
+            imp.insidestack.add_titled(&stack, Some("homepage"), "home");
+        }
+        imp.insidestack.set_visible_child_name("homepage");
     }
 
     fn searchpage(&self) {
@@ -186,12 +194,9 @@ impl Window {
 
     fn settingspage(&self) {
         let imp = self.imp();
-        imp.insidestack.set_visible_child_name("title");
-    }
-
-    fn proxy(&self) {
-        let imp = self.imp();
-        let proxy = imp.proxyentry.text().to_string();
+        let settingspage = crate::ui::widgets::settings::SettingsPage::new();
+        imp.settingspage.set_child(Some(&settingspage));
+        imp.insidestack.set_visible_child_name("settingspage");
     }
 
     async fn login(&self) {
