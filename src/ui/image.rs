@@ -14,7 +14,7 @@ pub fn set_image(id: String) -> Box {
     #[cfg(unix)]
     let pathbuf = dirs::home_dir()
         .unwrap()
-        .join(format!("{}/.local/share/tsukimi/{}.png", id));
+        .join(format!(".local/share/tsukimi/{}.png", id));
 
     #[cfg(windows)]
     let pathbuf = env::current_dir()
@@ -58,7 +58,7 @@ pub fn set_thumbimage(id: String) -> Box {
     #[cfg(unix)]
     let pathbuf = dirs::home_dir()
         .unwrap()
-        .join(format!("{}/.local/share/tsukimi/t{}.png", id));
+        .join(format!(".local/share/tsukimi/t{}.png", id));
 
     #[cfg(windows)]
     let pathbuf = env::current_dir()
@@ -102,7 +102,7 @@ pub fn set_backdropimage(id: String) -> Box {
     #[cfg(unix)]
     let pathbuf = dirs::home_dir()
         .unwrap()
-        .join(format!("{}/.local/share/tsukimi/b{}.png", id));
+        .join(format!(".local/share/tsukimi/b{}.png", id));
 
     #[cfg(windows)]
     let pathbuf = env::current_dir()
