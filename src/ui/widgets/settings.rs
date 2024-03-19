@@ -1,4 +1,4 @@
-use gtk::{gdk, glib, prelude::*};
+use gtk::glib;
 
 mod imp {
 

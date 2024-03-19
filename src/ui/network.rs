@@ -1,8 +1,7 @@
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
 
-use super::config::{client, mpv};
-use super::config::{get_proxy_info, Config};
+use super::config::{get_server_info, Config, ReqClient};
 use gdk_pixbuf::Pixbuf;
 use gtk::gdk_pixbuf;
 use reqwest::header::{HeaderMap, HeaderValue};
@@ -11,9 +10,7 @@ use serde_json::json;
 use serde_json::Value;
 use serde_yaml::to_string;
 use std::env;
-use std::fs::File;
 use std::fs::{self, write};
-use std::io::Read;
 use tokio::runtime::Runtime;
 
 use serde::{Deserialize, Serialize};
@@ -30,7 +27,7 @@ pub async fn login(
     password: String,
     port: String,
 ) -> Result<(), Error> {
-    let client = client();
+    let client = ReqClient::new();
 
     let mut headers = HeaderMap::new();
     headers.insert("X-Emby-Client", HeaderValue::from_static("Emby Web"));
@@ -112,45 +109,45 @@ struct SearchModel {
     search_results: Vec<SearchResult>,
 }
 
-pub struct ServerInfo {
-    pub domain: String,
-    pub user_id: String,
-    pub access_token: String,
-    pub port: String,
-}
+// pub struct ServerInfo {
+//     pub domain: String,
+//     pub user_id: String,
+//     pub access_token: String,
+//     pub port: String,
+// }
 
-pub fn get_server_info() -> ServerInfo {
-    let mut server_info = ServerInfo {
-        domain: String::new(),
-        user_id: String::new(),
-        access_token: String::new(),
-        port: String::new(),
-    };
-    #[cfg(unix)]
-    let mut path = dirs::home_dir()
-        .unwrap()
-        .join(".config")
-        .join("tsukimi.yaml");
+// pub fn get_server_info() -> ServerInfo {
+//     let mut server_info = ServerInfo {
+//         domain: String::new(),
+//         user_id: String::new(),
+//         access_token: String::new(),
+//         port: String::new(),
+//     };
+//     #[cfg(unix)]
+//     let mut path = dirs::home_dir()
+//         .unwrap()
+//         .join(".config")
+//         .join("tsukimi.yaml");
 
-    #[cfg(windows)]
-    let path = env::current_dir()
-        .unwrap()
-        .join("config")
-        .join("tsukimi.yaml");
+//     #[cfg(windows)]
+//     let path = env::current_dir()
+//         .unwrap()
+//         .join("config")
+//         .join("tsukimi.yaml");
 
-    if path.exists() {
-        let mut file = File::open(path).unwrap();
-        let mut contents = String::new();
-        file.read_to_string(&mut contents).unwrap();
-        let config: Config = serde_yaml::from_str(&contents).unwrap();
-        server_info.domain = config.domain;
-        server_info.user_id = config.user_id;
-        server_info.access_token = config.access_token;
-        server_info.port = config.port;
-    };
+//     if path.exists() {
+//         let mut file = File::open(path).unwrap();
+//         let mut contents = String::new();
+//         file.read_to_string(&mut contents).unwrap();
+//         let config: Config = serde_yaml::from_str(&contents).unwrap();
+//         server_info.domain = config.domain;
+//         server_info.user_id = config.user_id;
+//         server_info.access_token = config.access_token;
+//         server_info.port = config.port;
+//     };
 
-    server_info
-}
+//     server_info
+// }
 
 pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Error> {
     let mut model = SearchModel {
@@ -158,7 +155,7 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
     };
     let server_info = get_server_info();
 
-    let client = client();
+    let client = ReqClient::add_proxy();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server_info.domain, server_info.port, server_info.user_id
@@ -208,7 +205,7 @@ pub struct seriesimage {
 
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
     let server_info = get_server_info();
-    let client = client();
+    let client = ReqClient::add_proxy();
     let url = format!(
         "{}:{}/emby/Shows/{}/Episodes",
         server_info.domain, server_info.port, id
@@ -304,7 +301,7 @@ pub struct Media {
 
 pub async fn playbackinfo(id: String) -> Result<Media, Error> {
     let server_info = get_server_info();
-    let client = client();
+    let client = ReqClient::add_proxy();
     let url = format!(
         "{}:{}/emby/Items/{}/PlaybackInfo",
         server_info.domain, server_info.port, id
@@ -336,72 +333,72 @@ pub async fn playbackinfo(id: String) -> Result<Media, Error> {
     return Ok(mediainfo);
 }
 
-pub fn mpv_play(url: String, name: String) {
-    let mut command = std::process::Command::new(mpv());
-    let server_info = get_server_info();
-    let titlename = format!("--force-media-title={}", name);
-    let osdname = format!("--osd-playing-msg={}", name);
-    let forcewindow = format!("--force-window=immediate");
-    let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
-    if get_proxy_info().is_empty() {
-        command
-            .arg(forcewindow)
-            .arg(titlename)
-            .arg(osdname)
-            .arg(url);
-    } else {
-        let proxy = format!("--http-proxy={}", get_proxy_info());
-        command
-            .arg(forcewindow)
-            .arg(titlename)
-            .arg(osdname)
-            .arg(proxy)
-            .arg(url);
-    }
-    command.spawn().expect("mpv failed to start");
-}
+// pub fn mpv_play(url: String, name: String) {
+//     let mut command = std::process::Command::new(mpv());
+//     let server_info = get_server_info();
+//     let titlename = format!("--force-media-title={}", name);
+//     let osdname = format!("--osd-playing-msg={}", name);
+//     let forcewindow = format!("--force-window=immediate");
+//     let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
+//     if get_proxy_info().is_empty() {
+//         command
+//             .arg(forcewindow)
+//             .arg(titlename)
+//             .arg(osdname)
+//             .arg(url);
+//     } else {
+//         let proxy = format!("--http-proxy={}", get_proxy_info());
+//         command
+//             .arg(forcewindow)
+//             .arg(titlename)
+//             .arg(osdname)
+//             .arg(proxy)
+//             .arg(url);
+//     }
+//     command.spawn().expect("mpv failed to start");
+// }
 
-pub fn mpv_play_withsub(url: String, suburl: String, name: String) {
-    let mut command = std::process::Command::new(mpv());
-    let server_info = get_server_info();
-    let titlename = format!("--force-media-title={}", name);
-    let osdname = format!("--osd-playing-msg={}", name);
-    let forcewindow = format!("--force-window=immediate");
-    let sub = format!(
-        "--sub-file={}:{}/emby{}",
-        server_info.domain, server_info.port, suburl
-    );
-    let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
-    if get_proxy_info().is_empty() {
-        command
-            .arg(forcewindow)
-            .arg(titlename)
-            .arg(osdname)
-            .arg(sub)
-            .arg(url);
-    } else {
-        let proxy = format!("--http-proxy={}", get_proxy_info());
-        command
-            .arg(forcewindow)
-            .arg(titlename)
-            .arg(osdname)
-            .arg(proxy)
-            .arg(sub)
-            .arg(url);
-    }
-    // command
-    //     .arg(forcewindow)
-    //     .arg(titlename)
-    //     .arg(osdname)
-    //     .arg(sub)
-    //     .arg(url);
-    let _ = command.spawn().expect("mpv failed to start").wait();
-}
+// pub fn mpv_play_withsub(url: String, suburl: String, name: String) {
+//     let mut command = std::process::Command::new(mpv());
+//     let server_info = get_server_info();
+//     let titlename = format!("--force-media-title={}", name);
+//     let osdname = format!("--osd-playing-msg={}", name);
+//     let forcewindow = format!("--force-window=immediate");
+//     let sub = format!(
+//         "--sub-file={}:{}/emby{}",
+//         server_info.domain, server_info.port, suburl
+//     );
+//     let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
+//     if get_proxy_info().is_empty() {
+//         command
+//             .arg(forcewindow)
+//             .arg(titlename)
+//             .arg(osdname)
+//             .arg(sub)
+//             .arg(url);
+//     } else {
+//         let proxy = format!("--http-proxy={}", get_proxy_info());
+//         command
+//             .arg(forcewindow)
+//             .arg(titlename)
+//             .arg(osdname)
+//             .arg(proxy)
+//             .arg(sub)
+//             .arg(url);
+//     }
+//     // command
+//     //     .arg(forcewindow)
+//     //     .arg(titlename)
+//     //     .arg(osdname)
+//     //     .arg(sub)
+//     //     .arg(url);
+//     let _ = command.spawn().expect("mpv failed to start").wait();
+// }
 
 #[allow(unused)]
 pub async fn get_item_overview(id: String) -> Result<String, Error> {
     let server_info = get_server_info();
-    let client = client();
+    let client = ReqClient::add_proxy();
     let url = format!(
         "{}:{}/emby/Users/{}/{}",
         server_info.domain, server_info.port, server_info.user_id, id
@@ -423,7 +420,7 @@ pub async fn get_item_overview(id: String) -> Result<String, Error> {
 
 pub async fn markwatched(id: String, sourceid: String) -> Result<String, Error> {
     let server_info = get_server_info();
-    let client = client();
+    let client = ReqClient::add_proxy();
     let url = format!(
         "{}:{}/emby/Users/{}/PlayingItems/{}",
         server_info.domain, server_info.port, server_info.user_id, id
@@ -473,7 +470,7 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
     let mut model = ResumeModel { resume: Vec::new() };
     let server_info = get_server_info();
 
-    let client = client();
+    let client = ReqClient::add_proxy();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/Resume",
         server_info.domain, server_info.port, server_info.user_id

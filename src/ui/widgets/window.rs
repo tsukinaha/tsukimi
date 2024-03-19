@@ -1,4 +1,4 @@
-use crate::ui::config::set_proxy;
+// use crate::ui::config::set_proxy;
 #[cfg(unix)]
 use dirs::home_dir;
 use gtk::prelude::*;
