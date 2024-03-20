@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template parent="AdwNavigationPage" class="SettingsPage">
+  <template parent="AdwNavigationPage" class="SearchPage">
     <property name="title" translatable="yes">Tsukimi</property>
     <child>
       <object class="AdwToolbarView">
         <child>
           <object class="GtkScrolledWindow">
             <property name="hscrollbar-policy">never</property>
+            <property name="vexpand">True</property>
+            <property name="hexpand">True</property>
             <child>
               <object class="AdwClamp">
-                <property name="margin-top">36</property>
-                <property name="margin-bottom">12</property>
                 <property name="vexpand">True</property>
                 <child>
                   <object class="GtkBox">
@@ -19,18 +19,18 @@
                     <property name="margin-start">12</property>
                     <property name="margin-end">12</property>
                     <child>
-                      <object class="GtkListBox">
-                        <property name="selection-mode">none</property>
-                        <child>
-                          <object class="AdwEntryRow" id="proxyentry">
-                            <property name="title" translatable="yes">HTTP Proxy</property>
-                            <property name="show-apply-button">True</property>
-                            <property name="action-name">setting.proxy</property>
-                          </object>
-                        </child>
-                        <style>
-                          <class name="boxed-list" />
-                        </style>
+                      <object class="GtkSearchEntry" id="searchentry">
+                        <property name="placeholder-text">Search</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSpinner" id="spinner">
+                        <property name="spinning">True</property>
+                        <property name="visible">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkGridView" id="searchgrid">
                       </object>
                     </child>
                   </object>
