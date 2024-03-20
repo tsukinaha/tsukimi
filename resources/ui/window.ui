@@ -170,7 +170,7 @@
                 </property>
                 <property name="content">
                   <object class="AdwNavigationPage">
-                    <property name="title" translatable="yes">Tasks</property>
+                    <property name="title" translatable="yes">Tsukimi</property>
                     <property name="child">
                       <object class="AdwToolbarView">
                         <child type="top">
@@ -194,6 +194,16 @@
                                 <property name="name">searchpage1</property>
                                 <property name="child">
                                   <object class="AdwNavigationPage" id="searchpage1">
+                                    <property name="title" translatable="yes">Tsukimi</property>
+                                    <child>
+                                      <object class="AdwToolbarView">
+                                        <child type="top">
+                                          <object class="AdwHeaderBar">
+                                            <property name="show-title">False</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
                                   </object>
                                 </property>
                               </object>
@@ -203,6 +213,16 @@
                                 <property name="name">settingspage</property>
                                 <property name="child">
                                   <object class="AdwNavigationPage" id="settingspage">
+                                    <property name="title" translatable="yes">Tsukimi</property>
+                                    <child>
+                                      <object class="AdwToolbarView">
+                                        <child type="top">
+                                          <object class="AdwHeaderBar">
+                                            <property name="show-title">False</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
                                   </object>
                                 </property>
                               </object>

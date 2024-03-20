@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwNavigationPage" class="SettingsPage">
+    <property name="title" translatable="yes">Tsukimi</property>
     <child>
       <object class="AdwToolbarView">
         <child>
@@ -24,7 +25,7 @@
                           <object class="AdwEntryRow" id="proxyentry">
                             <property name="title" translatable="yes">HTTP Proxy</property>
                             <property name="show-apply-button">True</property>
-                            <property name="action-name">win.proxy</property>
+                            <property name="action-name">setting.proxy</property>
                           </object>
                         </child>
                         <style>
