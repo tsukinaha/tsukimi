@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template class="HorizonItem" parent="GtkApplicationWindow">
-  <property name="valign">start</property>
+  <template parent="AdwNavigationPage" class="SearchPage">
+    <property name="title" translatable="yes">Tsukimi</property>
     <child>
-      <object class="GtkOverlay" id="overlay">
+      <object class="AdwToolbarView">
         <child>
-            <object class="GtkPicture" id="picture">
-            </object>
+          <object class="GtkScrolledWindow">
+            <property name="hscrollbar-policy">never</property>
+            <property name="vexpand">True</property>
+            <property name="hexpand">True</property>
+            <child>
+              <object class="AdwClamp">
+                <property name="vexpand">True</property>
+                <child>
+                  <object class="GtkSearchEntry" id="searchentry">
+                    <property name="placeholder-text">Search</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSpinner" id="spinner">
+                    <property name="spinning">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkGridView" id="searchgrid">
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
         </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkLabel" id="line1">
-      </object>
-      <object class="GtkLabel" id="line2">
       </object>
     </child>
   </template>

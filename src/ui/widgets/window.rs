@@ -35,6 +35,8 @@ mod imp {
         pub insidestack: TemplateChild<gtk::Stack>,
         #[template_child]
         pub settingspage: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub searchpage: TemplateChild<adw::NavigationPage>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -176,19 +178,8 @@ impl Window {
 
     fn searchpage(&self) {
         let imp = self.imp();
-        let stack = crate::ui::search_page::create_page1();
-        let pagename = format!("homepage");
-        if stack.child_by_name(&pagename).is_some() {
-            stack.remove(&stack.child_by_name(&pagename).unwrap());
-        }
-        let pagename = format!("searchpage");
-        if stack.child_by_name(&pagename).is_some() {
-            stack.remove(&stack.child_by_name(&pagename).unwrap());
-        }
-        if imp.insidestack.child_by_name("searchpage").is_none() {
-            imp.insidestack
-                .add_titled(&stack, Some("searchpage"), "search");
-        }
+        let searchpage = crate::ui::widgets::search::SearchPage::new();
+        imp.searchpage.set_child(Some(&searchpage));
         imp.insidestack.set_visible_child_name("searchpage");
     }
 

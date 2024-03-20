@@ -191,9 +191,9 @@
                             <property name="transition-type">crossfade</property>
                             <child>
                               <object class="GtkStackPage">
-                                <property name="name">searchpage1</property>
+                                <property name="name">searchpage</property>
                                 <property name="child">
-                                  <object class="AdwNavigationPage" id="searchpage1">
+                                  <object class="AdwNavigationPage" id="searchpage">
                                     <property name="title" translatable="yes">Tsukimi</property>
                                     <child>
                                       <object class="AdwToolbarView">
