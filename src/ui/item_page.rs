@@ -9,7 +9,7 @@ use std::cell::Ref;
 use std::env;
 use std::path::PathBuf;
 
-pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
+pub fn itempage(result: Ref<SearchResult>) -> Box {
     let pagebox = Box::new(Orientation::Vertical, 5);
 
     let introbox = Box::new(Orientation::Horizontal, 10);
@@ -108,14 +108,6 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
             .unwrap();
         let series_info: Ref<network::SeriesInfo> = item.borrow();
         let resultid = resultid.clone();
-        let episodes_page = episodes_page::episodes_page(stack.clone(), series_info, resultid);
-        let pagename = format!("episodes_page");
-        if stack.child_by_name(&pagename).is_none() {
-        } else {
-            stack.remove(&stack.child_by_name(&pagename).unwrap());
-        }
-        stack.add_named(&episodes_page, Some(&pagename));
-        stack.set_visible_child_name(&pagename);
     });
 
     let scrolled_window = gtk::ScrolledWindow::new();

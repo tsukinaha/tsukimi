@@ -232,7 +232,7 @@ pub async fn get_image(id: String) -> Result<String, Error> {
                     }
                     Err(e) => {
                         eprintln!("加载错误");
-                        if attempts >= 3 {
+                        if attempts >= 7 {
                             return Err(e.into());
                         }
                     }
@@ -240,7 +240,7 @@ pub async fn get_image(id: String) -> Result<String, Error> {
             }
             Err(e) => {
                 eprintln!("加载错误");
-                if attempts >= 3 {
+                if attempts >= 7 {
                     return Err(e.into());
                 }
             }
@@ -441,14 +441,14 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
                         return Ok(id);
                     }
                     Err(e) => {
-                        if attempts >= 3 {
+                        if attempts >= 7 {
                             return Err(e.into());
                         }
                     }
                 }
             }
             Err(e) => {
-                if attempts >= 3 {
+                if attempts >= 7 {
                     return Err(e.into());
                 }
             }
@@ -490,7 +490,7 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
                     }
                     Err(e) => {
                         eprintln!("加载错误");
-                        if attempts >= 3 {
+                        if attempts >= 7 {
                             return Err(e.into());
                         }
                     }
@@ -498,7 +498,7 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
             }
             Err(e) => {
                 eprintln!("加载错误");
-                if attempts >= 3 {
+                if attempts >= 7 {
                     return Err(e.into());
                 }
             }

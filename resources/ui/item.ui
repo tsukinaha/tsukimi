@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwNavigationPage" class="ItemPage">
+    <property name="title" translatable="yes">Tsukimi</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="hscrollbar-policy">never</property>
+            <property name="vexpand">True</property>
+            <property name="hexpand">True</property>
+            <child>
+              <object class="GtkOverlay">
+                <child>
+                  <object class="GtkPicture" id="backdrop">
+                  <property name="halign">center</property>
+                  <property name="vexpand">true</property>
+                  <property name="hexpand">true</property>
+                  </object>
+                </child>
+                <child type="overlay">
+                  <object class="GtkMenuButton" id="camera_selection_button">
+                    <property name="icon-name">video-camera-symbolic</property>
+                    <property name="halign">end</property>
+                    <property name="valign">end</property>
+                    <property name="margin-end">18</property>
+                    <property name="margin-bottom">18</property>
+                    <property name="direction">up</property>
+                    <style>
+                      <class name="osd" />
+                      <class name="circular" />
+                      <class name="selectionbutton" />
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

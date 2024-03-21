@@ -5,7 +5,7 @@
     <child>
       <object class="AdwToolbarView">
         <child>
-          <object class="GtkScrolledWindow">
+          <object class="GtkScrolledWindow" id="searchscrolled">
             <property name="hscrollbar-policy">never</property>
             <property name="vexpand">True</property>
             <property name="hexpand">True</property>
