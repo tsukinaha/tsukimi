@@ -1,6 +1,8 @@
 use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
+
+use super::item::ItemPage;
 mod imp {
     use std::cell::RefCell;
 
@@ -8,6 +10,8 @@ mod imp {
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
     use gtk::{gio, glib, CompositeTemplate, Entry, Label, Picture};
+
+    use crate::ui::widgets::item::ItemPage;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -112,9 +116,9 @@ mod imp {
                 let result: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
                 let item_page;
                 if result.Type == "Movie" {
-                    item_page = crate::ui::movie_page::movie_page(result);
+                    item_page = ItemPage::new(result.Id.clone());
                 } else {
-                    item_page = crate::ui::item_page::itempage(result);
+                    item_page = ItemPage::new(result.Id.clone());
                 }
                 obj.set(item_page);
             }));
@@ -151,7 +155,7 @@ impl SearchPage {
         Object::builder().build()
     }
 
-    fn set(&self, item_page: gtk::Box) {
+    fn set(&self, item_page: ItemPage) {
         let imp = imp::SearchPage::from_obj(self);
         imp.searchscrolled.set_child(Some(&item_page));
     }

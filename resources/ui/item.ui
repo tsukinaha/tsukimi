@@ -13,9 +13,9 @@
               <object class="GtkOverlay">
                 <child>
                   <object class="GtkPicture" id="backdrop">
-                  <property name="halign">center</property>
-                  <property name="vexpand">true</property>
-                  <property name="hexpand">true</property>
+                    <property name="halign">center</property>
+                    <property name="valign">start</property>
+                    <property name="hexpand">true</property>
                   </object>
                 </child>
                 <child type="overlay">

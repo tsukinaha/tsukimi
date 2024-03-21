@@ -4,7 +4,6 @@ use gtk::glib::{self, clone,  BoxedAnyObject};
 use gtk::{gio, prelude::*, Stack};
 use gtk::{Box, Orientation};
 use std::cell::Ref;
-use super::episodes_page;
 use super::network::{get_image, runtime};
 
 pub fn itempage(result: Ref<SearchResult>) -> Box {

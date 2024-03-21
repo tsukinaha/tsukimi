@@ -1,20 +1,23 @@
 use gtk::{gio, glib};
 use glib::Object;
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
-
 mod imp{
-    use std::cell::{OnceCell, RefCell};
-
+    use std::path::PathBuf;
+    use std::cell::OnceCell;
+    use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
-    use gtk::subclass::prelude::*;
-    use gtk::{gio, glib, CompositeTemplate, Entry, Label, Picture};
+    use gtk::{glib, CompositeTemplate};
+    use gtk::prelude::*;
 
     // Object holding the state
-    #[derive(CompositeTemplate, Default)]
+    #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/item.ui")]
+    #[properties(wrapper_type = super::ItemPage)]
     pub struct ItemPage {
-        id: OnceCell<String>,
+        #[property(get, set, construct_only)]
+        pub id: OnceCell<String>,
+
+        #[template_child]
+        pub backdrop: TemplateChild<gtk::Picture>,
     }
 
     // The central trait for subclassing a GObject
@@ -27,6 +30,7 @@ mod imp{
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -35,9 +39,33 @@ mod imp{
     }
 
     // Trait shared by all GObjects
+    #[glib::derived_properties]
     impl ObjectImpl for ItemPage {
         fn constructed(&self) {
-
+            self.parent_constructed();
+            let obj = self.obj();
+            let id = obj.id();
+            let path = format!("{}/.local/share/tsukimi/b{}.png",dirs::home_dir().expect("msg").display(), id);
+            let pathbuf = PathBuf::from(&path);
+            let backdrop = self.backdrop.get();
+            let (sender, receiver) = async_channel::bounded::<String>(1);
+            let idclone = id.clone();
+            if pathbuf.exists() {
+                backdrop.set_file(Some(&gtk::gio::File::for_path(&path)));
+            } else {
+                crate::ui::network::runtime().spawn(async move {
+                    let id = crate::ui::network::get_backdropimage(idclone).await.expect("msg");
+                    sender.send(id.clone()).await.expect("The channel needs to be open.");
+                });
+            }
+        
+            glib::spawn_future_local(async move {
+                while let Ok(_) = receiver.recv().await {
+                    let path = format!("{}/.local/share/tsukimi/b{}.png",dirs::home_dir().expect("msg").display(), id);
+                    let file = gtk::gio::File::for_path(&path);
+                    backdrop.set_file(Some(&file));
+                }
+            });
         }
 
     }
@@ -63,6 +91,6 @@ glib::wrapper! {
 
 impl ItemPage {
     pub fn new(id:String) -> Self {
-        Object::builder().build()
+        Object::builder().property("id", id).build()
     }
 }
