@@ -1,7 +1,6 @@
 use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-
 mod imp {
     use std::cell::RefCell;
 
@@ -20,6 +19,8 @@ mod imp {
         pub searchgrid: TemplateChild<gtk::GridView>,
         #[template_child]
         pub spinner: TemplateChild<gtk::Spinner>,
+        #[template_child]
+        pub searchscrolled: TemplateChild<gtk::ScrolledWindow>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -43,10 +44,11 @@ mod imp {
     // Trait shared by all GObjects
     impl ObjectImpl for SearchPage {
         fn constructed(&self) {
+            let obj = self.obj();
             self.parent_constructed();
             let spinner = self.spinner.get();
             let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
-            self.searchentry.connect_search_changed(glib::clone!(@strong sender,@weak spinner=> move |entry| {
+            self.searchentry.connect_activate(glib::clone!(@strong sender,@weak spinner=> move |entry| {
                 spinner.set_visible(true);
                 let search_content = entry.text().to_string();
                 crate::ui::network::runtime().spawn(glib::clone!(@strong sender => async move {
@@ -81,12 +83,12 @@ mod imp {
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
                 let result: std::cell::Ref<crate::ui::network::SearchResult> = entry.borrow();
-                let vbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
+                let vbox = gtk::Box::new(gtk::Orientation::Vertical, 2);
                 let overlay = gtk::Overlay::new();
                 let imgbox = crate::ui::image::set_image(result.Id.clone());
-                imgbox.set_size_request(187, 275);
+                imgbox.set_size_request(167, 275);
                 overlay.set_child(Some(&imgbox));
-                overlay.set_size_request(187, 275);
+                overlay.set_size_request(167, 275);
                 vbox.append(&overlay);
                 let label = Label::new(Some(&result.Name));
                 let markup = format!("{}", result.Name);
@@ -102,9 +104,20 @@ mod imp {
                 vbox.append(&labeltype);
                 listitem.set_child(Some(&vbox));
             });
-
             self.searchgrid.set_factory(Some(&factory));
             self.searchgrid.set_model(Some(&self.selection));
+            self.searchgrid.connect_activate(glib::clone!(@weak obj => move |gridview, position| {
+                let model = gridview.model().unwrap();
+                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                let result: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
+                let item_page;
+                if result.Type == "Movie" {
+                    item_page = crate::ui::movie_page::movie_page(result);
+                } else {
+                    item_page = crate::ui::item_page::itempage(result);
+                }
+                obj.set(item_page);
+            }));
         }
     }
 
@@ -136,5 +149,10 @@ impl Default for SearchPage {
 impl SearchPage {
     pub fn new() -> Self {
         Object::builder().build()
+    }
+
+    fn set(&self, item_page: gtk::Box) {
+        let imp = imp::SearchPage::from_obj(self);
+        imp.searchscrolled.set_child(Some(&item_page));
     }
 }

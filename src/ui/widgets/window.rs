@@ -191,15 +191,13 @@ impl Window {
 
     fn searchpage(&self) {
         let imp = self.imp();
-        let searchpage = crate::ui::widgets::search::SearchPage::new();
-        imp.searchpage.set_child(Some(&searchpage));
+        imp.searchpage.set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
         imp.insidestack.set_visible_child_name("searchpage");
     }
 
     fn settingspage(&self) {
         let imp = self.imp();
-        let settingspage = crate::ui::widgets::settings::SettingsPage::new();
-        imp.settingspage.set_child(Some(&settingspage));
+        imp.settingspage.set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
         imp.insidestack.set_visible_child_name("settingspage");
     }
 
