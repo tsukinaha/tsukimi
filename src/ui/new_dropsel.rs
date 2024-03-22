@@ -34,11 +34,8 @@ pub fn newmediadropsel(playbackinfo: network::Media,id:String) -> gtk::Box {
     }
 
     let namedropdown = gtk::DropDown::new(Some(namelist), Option::<gtk::Expression>::None);
-    namedropdown.set_size_request(400, 30);
     let audiodropdown = gtk::DropDown::new(Some(audiolist.clone()), Option::<gtk::Expression>::None);
-    audiodropdown.set_size_request(400, 30);
     let subdropdown = gtk::DropDown::new(Some(sublist.clone()), Option::<gtk::Expression>::None);
-    subdropdown.set_size_request(400, 30);
     let playback_info = playbackinfo.clone();
 
     namedropdown.connect_selected_item_notify(move |dropdown| {
@@ -77,7 +74,6 @@ pub fn newmediadropsel(playbackinfo: network::Media,id:String) -> gtk::Box {
     vbox.append(&subdropdown);
     
     let playbutton = gtk::Button::with_label("播放");
-    playbutton.set_size_request(400, 30);
     playbutton.connect_clicked(move |_| {
         let nameselected = namedropdown.selected_item();
         let nameselected = nameselected.and_downcast_ref::<gtk::StringObject>().unwrap();

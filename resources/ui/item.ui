@@ -5,10 +5,8 @@
     <child>
       <object class="AdwToolbarView">
         <child>
-          <object class="GtkScrolledWindow">
-            <property name="hscrollbar-policy">never</property>
-            <property name="vexpand">True</property>
-            <property name="hexpand">True</property>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkOverlay">
                 <child>
@@ -16,21 +14,37 @@
                     <property name="halign">center</property>
                     <property name="valign">start</property>
                     <property name="hexpand">true</property>
+                    <property name="vexpand">true</property>
+                    <property name="opacity">0.7</property>
                   </object>
                 </child>
                 <child type="overlay">
-                  <object class="GtkMenuButton" id="camera_selection_button">
-                    <property name="icon-name">video-camera-symbolic</property>
-                    <property name="halign">end</property>
+                  <object class="GtkBox" id="osdbox">
+                    <property name="orientation">vertical</property>
                     <property name="valign">end</property>
-                    <property name="margin-end">18</property>
-                    <property name="margin-bottom">18</property>
-                    <property name="direction">up</property>
-                    <style>
-                      <class name="osd" />
-                      <class name="circular" />
-                      <class name="selectionbutton" />
-                    </style>
+                    <property name="margin-bottom">12</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+              <property name="orientation">horizontal</property>
+                <child>
+                  <object class="GtkDropDown">
+                  <property name="scale-factor">0.5</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="vscrollbar-policy">never</property>
+                <property name="valign">fill</property>
+                <property name="margin-bottom">3</property>
+                <child>
+                  <object class="GtkListView" id="itemlist">
+                    <property name="orientation">horizontal</property>
                   </object>
                 </child>
               </object>
