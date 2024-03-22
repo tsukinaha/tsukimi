@@ -1,0 +1,47 @@
+name: Build MacOS Releases
+on:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
+jobs:
+  build-release:
+    # permissions:
+    #   contents: write
+    env:
+      RUST_BACKTRACE: full
+    strategy:
+      matrix:
+        include:
+          - arch-name: x86_64-macos
+            os: macos-latest
+            target: x86_64-apple-darwin
+            artifact: tsukimi
+            ext:
+
+          # - name: aarch64-macos
+          #   os: macos-latest
+          #   target: aarch64-apple-darwin
+          #   artifact: tsukimi
+          #   ext:
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          brew install gtk4
+          brew install libadwaita
+          rustup target add ${{matrix.target}}
+          cargo build --release --locked --target ${{matrix.target}}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.artifact}}-${{matrix.target}}
+          path: target/${{matrix.target}}/release/${{matrix.artifact}}

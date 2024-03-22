@@ -36,3 +36,10 @@ assets = [
     ["target/release/tsukimi", "usr/bin/", "755"],
     ["README.md", "usr/share/doc/tsukimi/README", "644"],
 ]
+
+
+[workspace.metadata.cross.target.x86_64-unknown-linux-musl]
+image = "alpine:edge"
+pre-build = [
+    "apk update && apk upgrade && apk add build-base openssl-dev linux-headers musl-dev gtk4.0-dev libadwaita-dev rustup && rustup-init -y && sh -c 'source $HOME/.cargo/bin'"
+]

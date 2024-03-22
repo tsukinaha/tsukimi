@@ -1,0 +1,44 @@
+name: Build Windows GNU Releases
+on:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
+jobs:
+  build-release:
+    # permissions:
+    #   contents: write
+    env:
+      RUST_BACKTRACE: full
+    strategy:
+      matrix:
+        include:
+          - arch-name: x86_64-windows-gnu
+            os: windows-latest
+            target: x86_64-pc-windows-gnu
+            artifact: tsukimi.exe
+            ext: .exe
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          rustup toolchain install stable-gnu
+          rustup default stable-gnu
+          C:\msys64\usr\bin\pacman.exe -Syu --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc mingw-w64-x86_64-libadwaita
+          $env:Path += ";C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include";
+          $env:LIBRARY_PATH="C:\msys64\mingw64\lib";
+          $env:INCLUDE_PATH="C:\msys64\mingw64\include";
+          cargo build --release --locked
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.artifact}}
+          path: target/release/${{matrix.artifact}}

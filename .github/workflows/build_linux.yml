@@ -1,0 +1,52 @@
+name: Build Linux Releases
+on:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
+jobs:
+  build-release:
+    # permissions:
+    #   contents: write
+    env:
+      RUST_BACKTRACE: full
+    strategy:
+      matrix:
+        include:
+          # - arch-name: x86_64-linux-gnu
+          #   os: ubuntu-latest
+          #   target: x86_64-unknown-linux-gnu
+          #   artifact: tsukimi
+          #   ext:
+
+          - arch-name: x86_64-linux-musl
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            artifact: tsukimi
+            ext:
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # - name: Build ${{matrix.target}}
+      #   if: ${{matrix.target == 'x86_64-unknown-linux-musl' }}
+      #   run: |
+      #     sudo apt install -y libgtk-4-dev build-essential libadwaita-1-dev musl-dev musl-tools
+      #     rustup target add x86_64-unknown-linux-musl
+      #     cargo build --release --locked --target ${{matrix.target}}
+
+      - name: Build ${{matrix.target}}
+        run: |
+          cargo install cross --git https://github.com/cross-rs/cross
+          cross build --release --locked --target ${{matrix.target}}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.artifact}}-${{matrix.arch-name}}
+          path: target/${{matrix.target}}/release/${{matrix.artifact}}

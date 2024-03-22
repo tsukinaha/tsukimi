@@ -1,0 +1,88 @@
+name: Build Windows Releases
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - v*
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
+jobs:
+  build-release:
+    permissions:
+      contents: write
+    env:
+      RUST_BACKTRACE: full
+    strategy:
+      matrix:
+        include:
+          - arch: x86_64-windows-msvc
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact: tsukimi.exe
+            ext: .exe
+          - arch: x86_64-windows-gnu
+            os: windows-latest
+            target: x86_64-pc-windows-gnu
+            artifact: tsukimi.exe
+            ext: .exe
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build ${{ matrix.target }}
+        if: ${{ matrix.target == 'x86_64-pc-windows-msvc' }}
+        run: |
+          rustup default stable-msvc
+          py -3.12 -m pip install --user pipx
+          py -3.12 -m pipx ensurepath
+          pipx install gvsbuild
+          $env:Path = "C:\gtk-build\gtk\x64\release\lib\pkgconfig;C:\gtk-build\gtk\x64\release\bin;C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path
+          $env:LIB = "C:\gtk-build\gtk\x64\release\lib;C:\msys64\mingw64\lib;" + $env:LIB
+          $env:INCLUDE = "C:\gtk-build\gtk\x64\release\include;C:\gtk-build\gtk\x64\release\include\cairo;C:\gtk-build\gtk\x64\release\include\glib-2.0;C:\gtk-build\gtk\x64\release\include\gobject-introspection-1.0;C:\gtk-build\gtk\x64\release\lib\glib-2.0\include;C:\msys64\mingw64\include;" + $env:INCLUDE
+          $env:PKG_CONFIG_PATH = "C:\gtk-build\gtk\x64\release\lib\pkgconfig;" + $env:PKG_CONFIG_PATH
+          gvsbuild build gtk4 libadwaita librsvg
+          cargo build --release --locked --target ${{ matrix.target }}
+          mkdir C:/artifacts
+          cp target/${{matrix.target}}/release/${{ matrix.artifact }} C:/artifacts/tsukimi-${{ matrix.arch }}${{ matrix.ext }}
+          cd C:\gtk-build\gtk\x64\release\bin
+          cp gtk-4-1.dll,gio-2.0-0.dll,glib-2.0-0.dll,gobject-2.0-0.dll,adwaita-1-0.dll C:/artifacts/
+          compress-archive -path C:/artifacts/* -destination C:/artifacts/tsukimi-${{matrix.arch}}.zip
+
+      - name: Build ${{ matrix.target }}
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        run: |
+          rustup toolchain install stable-gnu
+          rustup default stable-gnu
+          C:\msys64\usr\bin\pacman.exe -Syu --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc mingw-w64-x86_64-libadwaita
+          $env:Path += ";C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include";
+          $env:LIBRARY_PATH="C:\msys64\mingw64\lib";
+          $env:INCLUDE_PATH="C:\msys64\mingw64\include";
+          cargo build --release --locked --target ${{ matrix.target }}
+          mkdir C:/artifacts/
+          cp target/${{matrix.target}}/release/${{ matrix.artifact }} C:/artifacts/tsukimi-${{ matrix.arch }}${{ matrix.ext }}
+          cd C:/msys64/mingw64/bin
+          cp libadwaita-1-0.dll,libcairo-2.dll,libgdk_pixbuf-2.0-0.dll,libgio-2.0-0.dll,libglib-2.0-0.dll,libgobject-2.0-0.dll,libgtk-4-1.dll,libpango-1.0-0.dll C:/artifacts
+          compress-archive -path C:/artifacts/* -destination C:/artifacts/tsukimi-${{matrix.arch}}.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsukimi-${{matrix.arch}}.zip
+          path: C:/artifacts/tsukimi-${{matrix.arch}}.zip
+
+      - name: Get latest tag name
+        run: echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+
+      - name: Upload Github Assets
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: C:/artifacts/*.zip
+          tag_name: ${{ env.TAG_NAME }}
