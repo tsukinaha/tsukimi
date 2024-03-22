@@ -1,20 +1,26 @@
 use glib::Object;
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-
 mod imp {
-    use std::cell::{OnceCell, RefCell};
-
+    use crate::ui::network;
+    use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
-    use gtk::subclass::prelude::*;
-    use gtk::{gio, glib, CompositeTemplate, Entry, Label, Picture};
-
+    use gtk::prelude::*;
+    use gtk::{glib, CompositeTemplate};
+    use std::cell::{OnceCell, Ref};
+    use std::path::PathBuf;
     // Object holding the state
-    #[derive(CompositeTemplate, Default)]
+    #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/item.ui")]
+    #[properties(wrapper_type = super::ItemPage)]
     pub struct ItemPage {
-        id: OnceCell<String>,
+        #[property(get, set, construct_only)]
+        pub id: OnceCell<String>,
+
+        #[template_child]
+        pub backdrop: TemplateChild<gtk::Picture>,
+        #[template_child]
+        pub itemlist: TemplateChild<gtk::ListView>,
+        pub selection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -35,8 +41,103 @@ mod imp {
     }
 
     // Trait shared by all GObjects
+    #[glib::derived_properties]
     impl ObjectImpl for ItemPage {
-        fn constructed(&self) {}
+        fn constructed(&self) {
+            self.parent_constructed();
+            let obj = self.obj();
+            let id = obj.id();
+            let path = format!(
+                "{}/.local/share/tsukimi/b{}.png",
+                dirs::home_dir().expect("msg").display(),
+                id
+            );
+            let pathbuf = PathBuf::from(&path);
+            let backdrop = self.backdrop.get();
+            let (sender, receiver) = async_channel::bounded::<String>(1);
+            let idclone = id.clone();
+            if pathbuf.exists() {
+                backdrop.set_file(Some(&gtk::gio::File::for_path(&path)));
+            } else {
+                crate::ui::network::runtime().spawn(async move {
+                    let id = crate::ui::network::get_backdropimage(idclone)
+                        .await
+                        .expect("msg");
+                    sender
+                        .send(id.clone())
+                        .await
+                        .expect("The channel needs to be open.");
+                });
+            }
+
+            let idclone = id.clone();
+
+            glib::spawn_future_local(async move {
+                while let Ok(_) = receiver.recv().await {
+                    let path = format!(
+                        "{}/.local/share/tsukimi/b{}.png",
+                        dirs::home_dir().expect("msg").display(),
+                        idclone
+                    );
+                    let file = gtk::gio::File::for_path(&path);
+                    backdrop.set_file(Some(&file));
+                }
+            });
+
+            let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+            self.selection.set_model(Some(&store));
+
+            let (sender, receiver) = async_channel::bounded::<Vec<network::SeriesInfo>>(1);
+            network::runtime().spawn(async move {
+                match network::get_series_info(id).await {
+                    Ok(series_info) => {
+                        sender
+                            .send(series_info)
+                            .await
+                            .expect("series_info not received.");
+                    }
+                    Err(e) => eprintln!("Error: {}", e),
+                }
+            });
+
+            glib::spawn_future_local(async move {
+                let series_info = receiver.recv().await.expect("series_info not received.");
+                for info in series_info {
+                    let object = glib::BoxedAnyObject::new(info);
+                    store.append(&object);
+                }
+            });
+
+            let factory = gtk::SignalListItemFactory::new();
+            factory.connect_bind(|_, item| {
+                let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
+                let entry = listitem
+                    .item()
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
+                let seriesinfo: Ref<network::SeriesInfo> = entry.borrow();
+                let vbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
+                let label = gtk::Label::new(Some(&seriesinfo.Name));
+                label.set_halign(gtk::Align::Start);
+                let markup = format!(
+                    "S{}E{}: {}",
+                    seriesinfo.ParentIndexNumber, seriesinfo.IndexNumber, seriesinfo.Name
+                );
+                label.set_markup(markup.as_str());
+                label.set_ellipsize(gtk::pango::EllipsizeMode::End);
+                label.set_size_request(-1, 20);
+                label.set_valign(gtk::Align::Start);
+                let img = crate::ui::image::setimage(seriesinfo.Id.clone());
+                img.set_size_request(250, 141);
+                vbox.append(&img);
+                vbox.append(&label);
+                vbox.set_valign(gtk::Align::Start);
+                vbox.set_size_request(250, 150);
+                listitem.set_child(Some(&vbox));
+            });
+            self.itemlist.set_factory(Some(&factory));
+            self.itemlist.set_model(Some(&self.selection));
+        }
     }
 
     // Trait shared by all widgets
@@ -60,6 +161,6 @@ glib::wrapper! {
 
 impl ItemPage {
     pub fn new(id: String) -> Self {
-        Object::builder().build()
+        Object::builder().property("id", id).build()
     }
 }

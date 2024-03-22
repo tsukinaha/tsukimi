@@ -93,7 +93,7 @@
             <property name="name">main</property>
             <property name="child">
               <object class="AdwNavigationSplitView" id="split_view">
-                <property name="min-sidebar-width">100</property>
+                <property name="min-sidebar-width">60</property>
                 <property name="sidebar">
                   <object class="AdwNavigationPage">
                     <property name="title" translatable="yes">Tsukimi</property>
