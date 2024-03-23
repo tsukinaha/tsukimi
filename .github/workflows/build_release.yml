@@ -51,7 +51,7 @@ jobs:
           mkdir C:/artifacts
           cp target/${{matrix.target}}/release/${{ matrix.artifact }} C:/artifacts/tsukimi-${{ matrix.arch }}${{ matrix.ext }}
           cd C:\gtk-build\gtk\x64\release\bin
-          cp gtk-4-1.dll,gio-2.0-0.dll,glib-2.0-0.dll,gobject-2.0-0.dll,adwaita-1-0.dll C:/artifacts/
+          cp *.dll C:/artifacts/
           compress-archive -path C:/artifacts/* -destination C:/artifacts/tsukimi-${{matrix.arch}}.zip
 
       - name: Build ${{ matrix.target }}
@@ -67,7 +67,7 @@ jobs:
           mkdir C:/artifacts/
           cp target/${{matrix.target}}/release/${{ matrix.artifact }} C:/artifacts/tsukimi-${{ matrix.arch }}${{ matrix.ext }}
           cd C:/msys64/mingw64/bin
-          cp libadwaita-1-0.dll,libcairo-2.dll,libgdk_pixbuf-2.0-0.dll,libgio-2.0-0.dll,libglib-2.0-0.dll,libgobject-2.0-0.dll,libgtk-4-1.dll,libpango-1.0-0.dll C:/artifacts
+          cp *.dll C:/artifacts
           compress-archive -path C:/artifacts/* -destination C:/artifacts/tsukimi-${{matrix.arch}}.zip
 
       - name: Upload artifact
