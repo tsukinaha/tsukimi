@@ -189,10 +189,6 @@ pub struct SeriesInfo {
     pub ParentIndexNumber: u32,
 }
 
-pub struct seriesimage {
-    pub image: Option<Pixbuf>,
-}
-
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
     let server_info = get_server_info();
     let client = reqwest::Client::new();

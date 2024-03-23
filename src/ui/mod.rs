@@ -6,6 +6,7 @@ mod movie_page;
 mod network;
 mod new_dropsel;
 mod widgets;
+mod moviedrop;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
 

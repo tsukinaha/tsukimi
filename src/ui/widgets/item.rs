@@ -121,7 +121,7 @@ mod imp {
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
                 let label = gtk::Label::new(Some(&seriesinfo.Name));
                 label.set_halign(gtk::Align::Start);
-                let markup = format!("S{}E{}: {}", seriesinfo.ParentIndexNumber, seriesinfo.IndexNumber, seriesinfo.Name);
+                let markup = format!("E{} : {}", seriesinfo.IndexNumber, seriesinfo.Name);
                 label.set_markup(markup.as_str());
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 label.set_size_request(-1,20);
@@ -134,6 +134,10 @@ mod imp {
                 vbox.set_size_request(250, 150);
                 listitem.set_child(Some(&vbox));
             });
+            factory.connect_unbind(|_, item| {
+                let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
+                listitem.set_child(None::<&gtk::Widget>);
+            });
             self.itemlist.set_factory(Some(&factory));
             self.itemlist.set_model(Some(&self.selection));
             let osdbox = self.osdbox.get();
@@ -142,6 +146,7 @@ mod imp {
                 let model = listview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let seriesinfo: Ref<network::SeriesInfo> = item.borrow();
+                let info = seriesinfo.clone();
                 let id = seriesinfo.Id.clone();
                 let idc = id.clone();
                 if let Some(widget) = osdbox.last_child() {
@@ -155,16 +160,14 @@ mod imp {
                     let playback = network::playbackinfo(id).await.expect("msg");
                     sender.send(playback).await.expect("msg");
                 });
-                let dropdownspinner = dropdownspinner.clone();
-                let osdbox = osdbox.clone();
-                glib::spawn_future_local(async move {
+                glib::spawn_future_local(glib::clone!(@weak dropdownspinner,@weak osdbox =>async move {
                     while let Ok(playback) = receiver.recv().await {
-                        let idc = idc.clone();
-                        let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, idc);
+                        let info = info.clone();
+                        let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, info);
                         dropdownspinner.set_visible(false);
                         osdbox.append(&dropdown);
                     }
-                });
+                }));
             });
         }
     }

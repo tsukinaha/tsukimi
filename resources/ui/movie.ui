@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template parent="AdwNavigationPage" class="ItemPage">
+  <template parent="AdwNavigationPage" class="MoviePage">
     <property name="title" translatable="yes">Tsukimi</property>
     <child>
       <object class="AdwToolbarView">

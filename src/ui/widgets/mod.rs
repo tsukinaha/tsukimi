@@ -4,3 +4,4 @@ pub mod settings;
 pub mod homeitems;
 pub mod search;
 pub mod item;
+pub mod movie;

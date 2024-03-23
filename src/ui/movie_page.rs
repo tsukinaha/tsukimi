@@ -28,10 +28,10 @@ pub fn movie_page(result: std::cell::Ref<'_, SearchResult>) -> Box{
         sender.send(playbackinfo).await.expect("The channel needs to be open.");
     }));
 
-    let seriesid = result.Id.clone();
+    let series = result.clone();
     glib::spawn_future_local(clone!(@strong playbackinfobox => async move {
         while let Ok(playbackinfo) = receiver.recv().await {
-            let mediadropsel = super::new_dropsel::newmediadropsel(playbackinfo, seriesid.clone());
+            let mediadropsel = super::moviedrop::newmediadropsel(playbackinfo, series.clone());
             playbackinfobox.append(&mediadropsel);
         }
     }));
