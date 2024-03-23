@@ -92,7 +92,7 @@ pub async fn login(
     let yaml = to_string(&config).unwrap();
 
     #[cfg(unix)]
-    let mut path = dirs::home_dir()
+    let path = dirs::home_dir()
         .unwrap()
         .join(".config")
         .join("tsukimi.yaml");
@@ -103,7 +103,12 @@ pub async fn login(
         .join("config")
         .join("tsukimi.yaml");
 
-    write(path, yaml).unwrap();
+    if path.exists() {
+        write(path, yaml).unwrap();
+    } else {
+        fs::create_dir_all(&path).unwrap();
+        write(path, yaml).unwrap();
+    }
 
     Ok(())
 }
