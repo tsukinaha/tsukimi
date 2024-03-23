@@ -1,37 +1,36 @@
 use gtk::{gio, glib};
 use glib::Object;
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
 
 mod imp{
-    use std::cell::RefCell;
 
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;
-    use gtk::{gio, glib, CompositeTemplate, Entry, Label, Picture};
+    use gtk::{glib, CompositeTemplate};
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsukimi/settings.ui")]
-    pub struct HorizonItem {
+    pub struct SettingsPage {
         #[template_child]
-        pub picture: TemplateChild<Picture>,
-        #[template_child(id = "line1")]
-        pub line1: TemplateChild<Label>,
-        #[template_child(id = "line2")]
-        pub line2: TemplateChild<Label>,
+        pub proxyentry: TemplateChild<adw::EntryRow>,
     }
 
     // The central trait for subclassing a GObject
     #[glib::object_subclass]
-    impl ObjectSubclass for HorizonItem {
+    impl ObjectSubclass for SettingsPage {
         // `NAME` needs to match `class` attribute of template
-        const NAME: &'static str = "HorizonItem";
-        type Type = super::HorizonItem;
-        type ParentType = gtk::ApplicationWindow;
+        const NAME: &'static str = "SettingsPage";
+        type Type = super::SettingsPage;
+        type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.install_action(
+                "setting.proxy",
+                None,
+                move |window, _action, _parameter| {
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -40,32 +39,34 @@ mod imp{
     }
 
     // Trait shared by all GObjects
-    impl ObjectImpl for HorizonItem {}
+    impl ObjectImpl for SettingsPage {}
 
     // Trait shared by all widgets
-    impl WidgetImpl for HorizonItem {}
+    impl WidgetImpl for SettingsPage {}
 
     // Trait shared by all windows
-    impl WindowImpl for HorizonItem {}
+    impl WindowImpl for SettingsPage {}
 
     // Trait shared by all application windows
-    impl ApplicationWindowImpl for HorizonItem {}
+    impl ApplicationWindowImpl for SettingsPage {}
+
+    impl adw::subclass::navigation_page::NavigationPageImpl for SettingsPage {}
 }
 
 glib::wrapper! {
-    pub struct HorizonItem(ObjectSubclass<imp::HorizonItem>)
-        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget,
+    pub struct SettingsPage(ObjectSubclass<imp::SettingsPage>)
+        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
-impl Default for HorizonItem {
+impl Default for SettingsPage {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl HorizonItem {
+impl SettingsPage {
     pub fn new() -> Self {
         Object::builder().build()
     }

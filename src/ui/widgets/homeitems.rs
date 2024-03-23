@@ -12,23 +12,17 @@ mod imp{
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/moe/tsukimi/settings.ui")]
-    pub struct HorizonItem {
-        #[template_child]
-        pub picture: TemplateChild<Picture>,
-        #[template_child(id = "line1")]
-        pub line1: TemplateChild<Label>,
-        #[template_child(id = "line2")]
-        pub line2: TemplateChild<Label>,
+    #[template(resource = "/moe/tsukimi/homeitems.ui")]
+    pub struct HistoryPage {
     }
 
     // The central trait for subclassing a GObject
     #[glib::object_subclass]
-    impl ObjectSubclass for HorizonItem {
+    impl ObjectSubclass for HistoryPage {
         // `NAME` needs to match `class` attribute of template
-        const NAME: &'static str = "HorizonItem";
-        type Type = super::HorizonItem;
-        type ParentType = gtk::ApplicationWindow;
+        const NAME: &'static str = "HistoryPage";
+        type Type = super::HistoryPage;
+        type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
@@ -40,32 +34,34 @@ mod imp{
     }
 
     // Trait shared by all GObjects
-    impl ObjectImpl for HorizonItem {}
+    impl ObjectImpl for HistoryPage {}
 
     // Trait shared by all widgets
-    impl WidgetImpl for HorizonItem {}
+    impl WidgetImpl for HistoryPage {}
 
     // Trait shared by all windows
-    impl WindowImpl for HorizonItem {}
+    impl WindowImpl for HistoryPage {}
 
     // Trait shared by all application windows
-    impl ApplicationWindowImpl for HorizonItem {}
+    impl ApplicationWindowImpl for HistoryPage {}
+
+    impl adw::subclass::navigation_page::NavigationPageImpl for HistoryPage {}
 }
 
 glib::wrapper! {
-    pub struct HorizonItem(ObjectSubclass<imp::HorizonItem>)
-        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget,
+    pub struct HistoryPage(ObjectSubclass<imp::HistoryPage>)
+        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
-impl Default for HorizonItem {
+impl Default for HistoryPage {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl HorizonItem {
+impl HistoryPage {
     pub fn new() -> Self {
         Object::builder().build()
     }

@@ -34,11 +34,11 @@ pub fn episodes_page(stack: Stack, series_info: Ref<network::SeriesInfo>, series
         sender.send(playbackinfo).await.expect("The channel needs to be open.");
     }));
 
-    let series_id = series_info.Id.clone();
+    let series = series_info.clone();
     let seriesoverview = series_info.Overview.clone();
     glib::spawn_future_local(clone!(@strong playbackinfobox,@strong playbackinfovbox => async move {
         while let Ok(playbackinfo) = receiver.recv().await {
-            let mediadropsel = super::new_dropsel::newmediadropsel(playbackinfo, series_id.clone());
+            let mediadropsel = super::new_dropsel::newmediadropsel(playbackinfo, series.clone());
             playbackinfobox.append(&mediadropsel);
             playbackinfovbox.append(&playbackinfobox);
             if seriesoverview.is_some() {

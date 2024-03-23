@@ -1,5 +1,7 @@
+use adw::prelude::NavigationPageExt;
+use dirs::home_dir;
+use gtk::{glib::clone, prelude::*};
 use gtk::subclass::prelude::*;
-use gtk::prelude::EditableExt;
 mod imp{
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
@@ -24,7 +26,14 @@ mod imp{
         #[template_child]
         pub selectlist: TemplateChild<gtk::ListBox>,
         #[template_child]
-        pub inwindow: TemplateChild<gtk::ScrolledWindow>,
+        pub loginbutton: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub insidestack: TemplateChild<gtk::Stack>,
+        #[template_child]
+        pub settingspage: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub searchpage: TemplateChild<adw::NavigationPage>,
+        pub selection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -42,7 +51,6 @@ mod imp{
                 None,
                 |window, _, _| async move {
                     window.login().await;
-                    window.mainpage();
                 },
             );
             klass.install_action(
@@ -59,7 +67,13 @@ mod imp{
                     window.searchpage();
                 },
             );
-            
+            klass.install_action(
+                "win.relogin",
+                None,
+                move |window, _action, _parameter| {
+                    window.placeholder();
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -73,6 +87,7 @@ mod imp{
             // Call "constructed" on parent
             self.parent_constructed();
             let obj = self.obj().clone();
+            obj.loginenter();
             self.selectlist.connect_row_selected(move |_, row| {
                 if let Some(row) = row {
                     let num = row.index();
@@ -81,13 +96,13 @@ mod imp{
                             obj.homepage();
                         }
                         1 => {
-                            obj.homepage();
+                            obj.historypage();
                         }
                         2 => {
                             obj.searchpage();
                         }
                         3 => {
-                            println!("Settings");
+                            obj.settingspage();
                         }
                         _ => {}
                     }
@@ -135,27 +150,67 @@ impl Window {
         imp.stack.set_visible_child_name("main");
     }
 
+    fn placeholder(&self) {
+        let imp = self.imp();
+        imp.stack.set_visible_child_name("placeholder");
+    }
+
     fn homepage(&self) {
         let imp = self.imp();
         let stack = crate::ui::home_page::create_page();
-        imp.inwindow.set_child(Some(&stack));
+        let pagename = format!("homepage");
+        if stack.child_by_name(&pagename).is_some() {
+            stack.remove(&stack.child_by_name(&pagename).unwrap());
+        }
+        let pagename = format!("searchpage");
+        if stack.child_by_name(&pagename).is_some() {
+            stack.remove(&stack.child_by_name(&pagename).unwrap());
+        }
+        if imp.insidestack.child_by_name("homepage").is_none() {
+            imp.insidestack.add_titled(&stack, Some("homepage"), "home");
+        }
+        imp.insidestack.set_visible_child_name("homepage");
+    }
+
+    fn historypage(&self) {
+        let imp = self.imp();
+        let stack = crate::ui::home_page::create_page();
+        let pagename = format!("homepage");
+        if stack.child_by_name(&pagename).is_some() {
+            stack.remove(&stack.child_by_name(&pagename).unwrap());
+        }
+        let pagename = format!("searchpage");
+        if stack.child_by_name(&pagename).is_some() {
+            stack.remove(&stack.child_by_name(&pagename).unwrap());
+        }
+        if imp.insidestack.child_by_name("homepage").is_none() {
+            imp.insidestack.add_titled(&stack, Some("homepage"), "home");
+        }
+        imp.insidestack.set_visible_child_name("homepage");
     }
 
     fn searchpage(&self) {
         let imp = self.imp();
-        let stack = crate::ui::search_page::create_page1();
-        imp.inwindow.set_child(Some(&stack));
+        imp.searchpage.set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
+        imp.insidestack.set_visible_child_name("searchpage");
     }
 
+    fn settingspage(&self) {
+        let imp = self.imp();
+        imp.settingspage.set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
+        imp.insidestack.set_visible_child_name("settingspage");
+    }
 
     async fn login(&self) {
         let imp = self.imp();
+        imp.loginbutton.set_sensitive(false);
+        let loginbutton = imp.loginbutton.clone();
         let server = imp.serverentry.text().to_string();
         let port = imp.portentry.text().to_string();
         let name = imp.nameentry.text().to_string();
         let password = imp.passwordentry.text().to_string();
         let (sender, receiver) = async_channel::bounded::<String>(1);
-
+        let selfc = self.clone();
         runtime().spawn(async move {
             match crate::ui::network::login(server, name, password, port).await {
                 Ok(_) => {
@@ -165,9 +220,25 @@ impl Window {
             }
         });
         glib::MainContext::default().spawn_local(async move {
-            while let Ok(_) = receiver.recv().await {
-                println!("Login successful");
+            match receiver.recv().await {
+                Ok(_) => {
+                    loginbutton.set_sensitive(false);
+                    selfc.mainpage();
+                },
+                Err(_) => {
+                    loginbutton.set_sensitive(true);
+                    loginbutton.set_label("Link Failed");
+                }
             }
         });
+    }
+
+    fn loginenter(&self) {
+        let mut path = home_dir().unwrap();
+        path.push(".config");
+        path.push("tsukimi.yaml");
+        if path.exists() {
+            self.mainpage();
+        } 
     }
 }

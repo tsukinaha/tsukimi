@@ -4,10 +4,9 @@ use gtk::glib::{self, clone,  BoxedAnyObject};
 use gtk::{gio, prelude::*, Stack};
 use gtk::{Box, Orientation};
 use std::cell::Ref;
-use super::episodes_page;
 use super::network::{get_image, runtime};
 
-pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
+pub fn itempage(result: Ref<SearchResult>) -> Box {
     let pagebox = Box::new(Orientation::Vertical, 5);
 
     let introbox = Box::new(Orientation::Horizontal, 10);
@@ -84,14 +83,6 @@ pub fn itempage(stack: Stack, result: Ref<SearchResult>) -> Box {
         let item = model.item(position).and_downcast::<BoxedAnyObject>().unwrap();
         let series_info: Ref<network::SeriesInfo> = item.borrow();
         let resultid = resultid.clone();
-        let episodes_page = episodes_page::episodes_page(stack.clone(), series_info,resultid);
-        let pagename = format!("episodes_page");
-        if stack.child_by_name(&pagename).is_none() {
-        } else {
-            stack.remove(&stack.child_by_name(&pagename).unwrap());
-        }
-        stack.add_named(&episodes_page, Some(&pagename));
-        stack.set_visible_child_name(&pagename);
     });
 
     let scrolled_window = gtk::ScrolledWindow::new();

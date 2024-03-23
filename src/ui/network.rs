@@ -1,4 +1,3 @@
-use crate::ui::settings_page::Config;
 use gtk::gdk_pixbuf;
 
 use dirs::home_dir;
@@ -16,6 +15,16 @@ use tokio::runtime::Runtime;
 
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
+
+#[derive(Serialize,Debug, Deserialize)]
+pub struct Config {
+    pub domain: String,
+    pub username: String,
+    pub password: String,
+    pub port: String,
+    pub user_id: String,
+    pub access_token: String,
+}
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();
@@ -180,10 +189,6 @@ pub struct SeriesInfo {
     pub ParentIndexNumber: u32,
 }
 
-pub struct seriesimage {
-    pub image: Option<Pixbuf>,
-}
-
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
     let server_info = get_server_info();
     let client = reqwest::Client::new();
@@ -240,7 +245,7 @@ pub async fn get_image(id: String) -> Result<String, Error> {
                     }
                     Err(e) => {
                         eprintln!("加载错误");
-                        if attempts >= 3 {
+                        if attempts >= 7 {
                             return Err(e.into());
                         }
                     }
@@ -248,7 +253,7 @@ pub async fn get_image(id: String) -> Result<String, Error> {
             }
             Err(e) => {
                 eprintln!("加载错误");
-                if attempts >= 3 {
+                if attempts >= 7 {
                     return Err(e.into());
                 }
             }
@@ -480,14 +485,14 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
                         return Ok(id);
                     },
                     Err(e) => {
-                        if attempts >= 3 {
+                        if attempts >= 7 {
                             return Err(e.into());
                         }
                     }
                 }
             }
             Err(e) => {
-                if attempts >= 3 {
+                if attempts >= 7 {
                     return Err(e.into());
                 }
             }
@@ -526,7 +531,7 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
                     },
                     Err(e) => {
                         eprintln!("加载错误");
-                        if attempts >= 3 {
+                        if attempts >= 7 {
                             return Err(e.into());
                         }
                     }
@@ -534,7 +539,7 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
             }
             Err(e) => {
                 eprintln!("加载错误");
-                if attempts >= 3 {
+                if attempts >= 7 {
                     return Err(e.into());
                 }
             }

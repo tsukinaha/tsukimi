@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/moe/tsukimi/">
-    <file compressed="true" preprocess="xml-stripblanks">horizon_item.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">settings.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">search.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">item.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">movie.ui</file>
   </gresource>
 </gresources>
