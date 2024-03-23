@@ -6,7 +6,6 @@ use gtk::Orientation;
 pub fn newmediadropsel(playbackinfo: network::Media,id:String) -> gtk::Box {
     let vbox = gtk::Box::new(Orientation::Vertical, 5);
     let namelist = gtk::StringList::new(&[]);
-    let audiolist = gtk::StringList::new(&[]);
 
     let sublist = gtk::StringList::new(&[]);
 
@@ -15,13 +14,7 @@ pub fn newmediadropsel(playbackinfo: network::Media,id:String) -> gtk::Box {
         namelist.append(&media.Name);
         if _set == 1 {
             for stream in media.MediaStreams {
-                if stream.Type == "Audio" {
-                    if let Some(s) = stream.DisplayTitle {
-                        audiolist.append(&s);
-                    } else {
-                        println!("No value");
-                    }
-                } else if stream.Type == "Subtitle" {
+                if stream.Type == "Subtitle" {
                     if let Some(d) = stream.DisplayTitle {
                         sublist.append(&d);
                     } else {
@@ -34,7 +27,6 @@ pub fn newmediadropsel(playbackinfo: network::Media,id:String) -> gtk::Box {
     }
 
     let namedropdown = gtk::DropDown::new(Some(namelist), Option::<gtk::Expression>::None);
-    let audiodropdown = gtk::DropDown::new(Some(audiolist.clone()), Option::<gtk::Expression>::None);
     let subdropdown = gtk::DropDown::new(Some(sublist.clone()), Option::<gtk::Expression>::None);
     let playback_info = playbackinfo.clone();
 
@@ -42,22 +34,13 @@ pub fn newmediadropsel(playbackinfo: network::Media,id:String) -> gtk::Box {
         let selected = dropdown.selected_item();
         let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
         let selected = selected.string();
-        for _i in 1..audiolist.n_items() {
-            audiolist.remove(0);
-        }
         for _i in 1..sublist.n_items() {
             sublist.remove(0);
         }
         for media in playbackinfo.MediaSources.clone() {
             if media.Name == selected {
                 for stream in media.MediaStreams {
-                    if stream.Type == "Audio" {
-                        if let Some(s) = stream.DisplayTitle {
-                            audiolist.append(&s);
-                        } else {
-                            println!("No value");
-                        }
-                    } else if stream.Type == "Subtitle" {
+                    if stream.Type == "Subtitle" {
                         if let Some(d) = stream.DisplayTitle {
                             sublist.append(&d);
                         } else {
@@ -70,7 +53,6 @@ pub fn newmediadropsel(playbackinfo: network::Media,id:String) -> gtk::Box {
         }
     });
     vbox.append(&namedropdown);
-    vbox.append(&audiodropdown);
     vbox.append(&subdropdown);
     
     let playbutton = gtk::Button::with_label("播放");

@@ -4,10 +4,11 @@ mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
+    use gtk::subclass::widget;
     use gtk::{glib, CompositeTemplate};
     use std::cell::{OnceCell, Ref};
     use std::path::PathBuf;
-    use crate::ui::network;
+    use crate::ui::network::{self, runtime, Media};
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/item.ui")]
@@ -15,11 +16,14 @@ mod imp {
     pub struct ItemPage {
         #[property(get, set, construct_only)]
         pub id: OnceCell<String>,
-
+        #[template_child]
+        pub dropdownspinner: TemplateChild<gtk::Spinner>,
         #[template_child]
         pub backdrop: TemplateChild<gtk::Picture>,
         #[template_child]
         pub itemlist: TemplateChild<gtk::ListView>,
+        #[template_child]
+        pub osdbox: TemplateChild<gtk::Box>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -132,6 +136,36 @@ mod imp {
             });
             self.itemlist.set_factory(Some(&factory));
             self.itemlist.set_model(Some(&self.selection));
+            let osdbox = self.osdbox.get();
+            let dropdownspinner = self.dropdownspinner.get();
+            self.itemlist.connect_activate(move |listview, position| {
+                let model = listview.model().unwrap();
+                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                let seriesinfo: Ref<network::SeriesInfo> = item.borrow();
+                let id = seriesinfo.Id.clone();
+                let idc = id.clone();
+                if let Some(widget) = osdbox.last_child() {
+                    if widget.is::<gtk::Box>() {
+                        osdbox.remove(&widget);
+                    }
+                }
+                dropdownspinner.set_visible(true);
+                let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
+                runtime().spawn(async move {
+                    let playback = network::playbackinfo(id).await.expect("msg");
+                    sender.send(playback).await.expect("msg");
+                });
+                let dropdownspinner = dropdownspinner.clone();
+                let osdbox = osdbox.clone();
+                glib::spawn_future_local(async move {
+                    while let Ok(playback) = receiver.recv().await {
+                        let idc = idc.clone();
+                        let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, idc);
+                        dropdownspinner.set_visible(false);
+                        osdbox.append(&dropdown);
+                    }
+                });
+            });
         }
     }
 

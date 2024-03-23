@@ -2,10 +2,15 @@ child {
     margin: 9px;
     border-radius:15px;
 }
-row{
-    margin:9px;
+overlay > box {
+    background-color: rgba(0,0,0,0.3);
     border-radius:10px;
-   }
+}
+row{
+    margin-left:9px;
+    margin-right:9px;
+    border-radius:10px;
+}
    
 picture {
     border-radius:10px;
