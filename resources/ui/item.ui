@@ -16,7 +16,7 @@
                     <child>
                       <object class="GtkPicture" id="backdrop">
                         <property name="halign">fill</property>
-                        <property name="valign">start</property>
+                        <property name="valign">fill</property>
                         <property name="content-fit">cover</property>
                         <property name="hexpand">true</property>
                         <property name="vexpand">true</property>
