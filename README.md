@@ -2,10 +2,12 @@
 
   ![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main)
   ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi)
+  ![GitHub License](https://img.shields.io/github/license/tsukinaha/tsukimi)
 
-使用gtk4-rs编写的第三方Emby客户端    
-尚未发版  
+
+使用 gtk4-rs 编写的第三方 Emby Linux 客户端      
+Windows 使用需配置 MPV PATH 并安装 MSVC GTK4 环境   
 支持外挂字幕 支持历史记录 不支持音乐    
-使用系统mpv进行播放    
+使用系统 mpv 进行播放    
     
 
