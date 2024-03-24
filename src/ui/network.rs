@@ -1,7 +1,4 @@
-use gtk::gdk_pixbuf;
-
 use dirs::home_dir;
-use gdk_pixbuf::Pixbuf;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::Error;
 use serde_json::json;

@@ -1,5 +1,5 @@
 use gtk::prelude::*;
-use gtk::{gio, glib, Application};
+use gtk::{gio, glib};
 mod ui;
 
 const APP_ID: &str = "moe.tsuna.tsukimi";

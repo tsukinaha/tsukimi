@@ -1,13 +1,13 @@
 use adw::prelude::NavigationPageExt;
 use dirs::home_dir;
-use gtk::{glib::clone, prelude::*};
+use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 mod imp{
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
-    use gtk::{prelude::*, HeaderBar, ToggleButton};
+    use gtk::prelude::*;
     use gtk::subclass::prelude::*;
-    use gtk::{glib, Button, CompositeTemplate, Stack};
+    use gtk::{glib, CompositeTemplate,};
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
