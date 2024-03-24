@@ -3,6 +3,7 @@ use gtk::{prelude::*, Picture};
 use gtk::{Box, Orientation};
 use std::env;
 use std::path::PathBuf;
+// use std::path::PathBuf;
 
 pub fn set_image(id: String) -> Box {
     let imgbox = Box::new(Orientation::Vertical, 5);
@@ -54,7 +55,8 @@ pub fn set_thumbimage(id: String) -> Box {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Center);
+    image.set_halign(gtk::Align::Fill);
+    image.set_content_fit(gtk::ContentFit::Cover);
 
     #[cfg(unix)]
     let pathbuf = dirs::home_dir()
@@ -98,7 +100,8 @@ pub fn set_backdropimage(id: String) -> Box {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Center);
+    image.set_halign(gtk::Align::Fill);
+    image.set_content_fit(gtk::ContentFit::Cover);
 
     #[cfg(unix)]
     let pathbuf = dirs::home_dir()
@@ -136,21 +139,42 @@ pub fn set_backdropimage(id: String) -> Box {
     imgbox
 }
 
+fn get_thum_dir(id: &String) -> PathBuf {
+    #[cfg(unix)]
+    let pathbuf = dirs::home_dir()
+        .unwrap()
+        .join(format!(".local/share/tsukimi/{}.png", id));
+
+    #[cfg(windows)]
+    let pathbuf = env::current_dir()
+        .unwrap()
+        .join("thumbnails")
+        .join(format!("{}.png", id));
+
+    return pathbuf;
+}
+
 pub fn setimage(id: String) -> Picture {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Center);
 
-    let path = format!(
-        "{}/.local/share/tsukimi/{}.png",
-        dirs::home_dir().expect("msg").display(),
-        id
-    );
-    let pathbuf = PathBuf::from(&path);
+    #[cfg(unix)]
+    let pathbuf = dirs::home_dir()
+        .unwrap()
+        .join(format!(".local/share/tsukimi/{}.png", id));
+
+    #[cfg(windows)]
+    let pathbuf = env::current_dir()
+        .unwrap()
+        .join("thumbnails")
+        .join(format!("{}.png", id));
+
+    // let pathbuf = PathBuf::from(&path);
     let idfuture = id.clone();
     if pathbuf.exists() {
-        image.set_file(Some(&gtk::gio::File::for_path(&path)));
+        image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
     } else {
         crate::ui::network::runtime().spawn(async move {
             let id = crate::ui::network::get_image(id.clone())
@@ -165,7 +189,9 @@ pub fn setimage(id: String) -> Picture {
 
     glib::spawn_future_local(clone!(@weak image => async move {
         while let Ok(_) = receiver.recv().await {
-            let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), idfuture);
+            // let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), idfuture);
+            let path =get_thum_dir(&idfuture);
+
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
         }
@@ -180,15 +206,20 @@ pub fn setlogoimage(id: String) -> Picture {
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Center);
 
-    let path = format!(
-        "{}/.local/share/tsukimi/{}.png",
-        dirs::home_dir().expect("msg").display(),
-        id
-    );
-    let pathbuf = PathBuf::from(&path);
+    #[cfg(unix)]
+    let pathbuf = dirs::home_dir()
+        .unwrap()
+        .join(format!(".local/share/tsukimi/{}.png", id));
+
+    #[cfg(windows)]
+    let pathbuf = env::current_dir()
+        .unwrap()
+        .join("thumbnails")
+        .join(format!("{}.png", id));
+
     let idfuture = id.clone();
     if pathbuf.exists() {
-        image.set_file(Some(&gtk::gio::File::for_path(&path)));
+        image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
     } else {
         crate::ui::network::runtime().spawn(async move {
             let id = crate::ui::network::get_image(id.clone())
@@ -203,7 +234,7 @@ pub fn setlogoimage(id: String) -> Picture {
 
     glib::spawn_future_local(clone!(@weak image => async move {
         while let Ok(_) = receiver.recv().await {
-            let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), idfuture);
+        let path = get_thum_dir(&idfuture);
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
         }

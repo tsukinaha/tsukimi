@@ -1,25 +1,18 @@
 use super::config::MPVClient;
 use super::network;
-use super::network::SeriesInfo;
+use super::network::SearchResult;
 use gtk::prelude::*;
 use gtk::Orientation;
 
-pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::Box {
+pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk::Box {
     let hbox = gtk::Box::new(Orientation::Horizontal, 5);
-    hbox.set_valign(gtk::Align::End);
-    hbox.set_vexpand(true);
     let leftvbox = gtk::Box::new(Orientation::Vertical, 5);
     leftvbox.set_margin_start(80);
     leftvbox.set_margin_top(80);
     leftvbox.set_margin_bottom(20);
     leftvbox.set_halign(gtk::Align::Start);
     leftvbox.set_valign(gtk::Align::End);
-    let markup = format!(
-        "<b> Season {} : Episode {} - {} </b>",
-        info.ParentIndexNumber, info.IndexNumber, info.Name
-    );
     let label = gtk::Label::new(Some(&info.Name));
-    label.set_markup(markup.as_str());
     leftvbox.append(&label);
     hbox.append(&leftvbox);
     let vbox = gtk::Box::new(Orientation::Vertical, 5);

@@ -1,30 +1,17 @@
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
-use gtk::gdk_pixbuf;
 
 use super::config::{get_server_info, Config, ReqClient};
-use gdk_pixbuf::Pixbuf;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::Error;
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 use serde_json::Value;
 use serde_yaml::to_string;
 use std::env;
 use std::fs::{self, write};
-use tokio::runtime::Runtime;
-
-use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
-
-// #[derive(Serialize,Debug, Deserialize)]
-// pub struct Config {
-//     pub domain: String,
-//     pub username: String,
-//     pub password: String,
-//     pub port: String,
-//     pub user_id: String,
-//     pub access_token: String,
-// }
+use tokio::runtime::Runtime;
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();
@@ -106,7 +93,8 @@ pub async fn login(
     if path.exists() {
         write(path, yaml).unwrap();
     } else {
-        fs::create_dir_all(&path).unwrap();
+        let parent_dir = path.parent().unwrap();
+        fs::create_dir_all(&parent_dir).unwrap();
         write(path, yaml).unwrap();
     }
 
@@ -171,11 +159,6 @@ pub struct SeriesInfo {
     pub Overview: Option<String>,
     pub IndexNumber: u32,
     pub ParentIndexNumber: u32,
-}
-
-#[allow(unused)]
-pub struct seriesimage {
-    pub image: Option<Pixbuf>,
 }
 
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {

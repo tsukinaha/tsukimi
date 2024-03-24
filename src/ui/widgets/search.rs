@@ -2,16 +2,22 @@ use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use super::item::ItemPage;
+use self::imp::Page;
+
 mod imp {
-    use std::cell::RefCell;
 
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
-    use gtk::{gio, glib, CompositeTemplate, Entry, Label, Picture};
+    use gtk::{gio, glib, CompositeTemplate, Label};
 
     use crate::ui::widgets::item::ItemPage;
+    use crate::ui::widgets::movie::MoviePage;
+
+    pub enum Page {
+        Movie(Box<gtk::Widget>),
+        Item(Box<gtk::Widget>),
+    }
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -89,12 +95,9 @@ mod imp {
                     .unwrap();
                 let result: std::cell::Ref<crate::ui::network::SearchResult> = entry.borrow();
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 2);
-                let overlay = gtk::Overlay::new();
                 let imgbox = crate::ui::image::set_image(result.Id.clone());
                 imgbox.set_size_request(167, 275);
-                overlay.set_child(Some(&imgbox));
-                overlay.set_size_request(167, 275);
-                vbox.append(&overlay);
+                vbox.append(&imgbox);
                 let label = Label::new(Some(&result.Name));
                 let markup = format!("{}", result.Name);
                 label.set_markup(markup.as_str());
@@ -109,21 +112,24 @@ mod imp {
                 vbox.append(&labeltype);
                 listitem.set_child(Some(&vbox));
             });
+            factory.connect_unbind(|_, item| {
+                let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
+                listitem.set_child(None::<&gtk::Widget>);
+            });
             self.searchgrid.set_factory(Some(&factory));
             self.searchgrid.set_model(Some(&self.selection));
-            self.searchgrid
-                .connect_activate(glib::clone!(@weak obj => move |gridview, position| {
-                    let model = gridview.model().unwrap();
-                    let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                    let result: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
-                    let item_page;
-                    if result.Type == "Movie" {
-                        item_page = ItemPage::new(result.Id.clone());
-                    } else {
-                        item_page = ItemPage::new(result.Id.clone());
-                    }
-                    obj.set(item_page);
-                }));
+            self.searchgrid.connect_activate(glib::clone!(@weak obj => move |gridview, position| {
+                let model = gridview.model().unwrap();
+                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                let result: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
+                let item_page;
+                if result.Type == "Movie" {
+                    item_page = Page::Movie(Box::new(MoviePage::new(result.Id.clone(),result.Name.clone()).into()));
+                } else {
+                    item_page = Page::Item(Box::new(ItemPage::new(result.Id.clone()).into()));
+                }
+                obj.set(item_page);
+            }));
         }
     }
 
@@ -157,8 +163,12 @@ impl SearchPage {
         Object::builder().build()
     }
 
-    fn set(&self, item_page: ItemPage) {
+    fn set(&self, page: crate::ui::widgets::search::imp::Page) {
         let imp = imp::SearchPage::from_obj(self);
-        imp.searchscrolled.set_child(Some(&item_page));
+        let widget = match page {
+            Page::Movie(widget) => widget,
+            Page::Item(widget) => widget,
+        };
+        imp.searchscrolled.set_child(Some(&*widget));
     }
 }

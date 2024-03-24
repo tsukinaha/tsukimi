@@ -1,14 +1,13 @@
 use glib::Object;
 use gtk::{gio, glib};
 mod imp {
-    // use crate::ui::network;
-    use crate::ui::network::{self, runtime, Media};
+    use crate::ui::network::{self, runtime};
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
-    use gtk::subclass::widget;
     use gtk::{glib, CompositeTemplate};
     use std::cell::{OnceCell, Ref};
+    use std::env;
     use std::path::PathBuf;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -52,17 +51,23 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             let id = obj.id();
-            let path = format!(
-                "{}/.local/share/tsukimi/b{}.png",
-                dirs::home_dir().expect("msg").display(),
-                id
-            );
-            let pathbuf = PathBuf::from(&path);
+
+            #[cfg(unix)]
+            let pathbuf = dirs::home_dir()
+                .unwrap()
+                .join(format!(".local/share/tsukimi/b{}.png", id));
+            #[cfg(windows)]
+            let pathbuf = env::current_dir()
+                .unwrap()
+                .join("thumbnails")
+                .join(format!("b{}.png", id));
+
+            // let pathbuf = PathBuf::from(&path);
             let backdrop = self.backdrop.get();
             let (sender, receiver) = async_channel::bounded::<String>(1);
             let idclone = id.clone();
             if pathbuf.exists() {
-                backdrop.set_file(Some(&gtk::gio::File::for_path(&path)));
+                backdrop.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
             } else {
                 crate::ui::network::runtime().spawn(async move {
                     let id = crate::ui::network::get_backdropimage(idclone)
@@ -79,12 +84,21 @@ mod imp {
 
             glib::spawn_future_local(async move {
                 while let Ok(_) = receiver.recv().await {
-                    let path = format!(
-                        "{}/.local/share/tsukimi/b{}.png",
-                        dirs::home_dir().expect("msg").display(),
-                        idclone
-                    );
-                    let file = gtk::gio::File::for_path(&path);
+                    #[cfg(unix)]
+                    let pathbuf = dirs::home_dir()
+                        .unwrap()
+                        .join(format!(".local/share/tsukimi/b{}.png", idclone));
+                    #[cfg(windows)]
+                    let pathbuf = env::current_dir()
+                        .unwrap()
+                        .join("thumbnails")
+                        .join(format!("b{}.png", idclone));
+                    // let path = format!(
+                    //     "{}/.local/share/tsukimi/b{}.png",
+                    //     dirs::home_dir().expect("msg").display(),
+                    //     idclone
+                    // );
+                    let file = gtk::gio::File::for_path(&pathbuf);
                     backdrop.set_file(Some(&file));
                 }
             });
@@ -124,10 +138,7 @@ mod imp {
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
                 let label = gtk::Label::new(Some(&seriesinfo.Name));
                 label.set_halign(gtk::Align::Start);
-                let markup = format!(
-                    "S{}E{}: {}",
-                    seriesinfo.ParentIndexNumber, seriesinfo.IndexNumber, seriesinfo.Name
-                );
+                let markup = format!("E{} : {}", seriesinfo.IndexNumber, seriesinfo.Name);
                 label.set_markup(markup.as_str());
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 label.set_size_request(-1, 20);
@@ -140,6 +151,10 @@ mod imp {
                 vbox.set_size_request(250, 150);
                 listitem.set_child(Some(&vbox));
             });
+            factory.connect_unbind(|_, item| {
+                let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
+                listitem.set_child(None::<&gtk::Widget>);
+            });
             self.itemlist.set_factory(Some(&factory));
             self.itemlist.set_model(Some(&self.selection));
             let osdbox = self.osdbox.get();
@@ -151,8 +166,8 @@ mod imp {
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
                 let seriesinfo: Ref<network::SeriesInfo> = item.borrow();
+                let info = seriesinfo.clone();
                 let id = seriesinfo.Id.clone();
-                let idc = id.clone();
                 if let Some(widget) = osdbox.last_child() {
                     if widget.is::<gtk::Box>() {
                         osdbox.remove(&widget);
@@ -164,16 +179,16 @@ mod imp {
                     let playback = network::playbackinfo(id).await.expect("msg");
                     sender.send(playback).await.expect("msg");
                 });
-                let dropdownspinner = dropdownspinner.clone();
-                let osdbox = osdbox.clone();
-                glib::spawn_future_local(async move {
-                    while let Ok(playback) = receiver.recv().await {
-                        let idc = idc.clone();
-                        let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, idc);
-                        dropdownspinner.set_visible(false);
-                        osdbox.append(&dropdown);
-                    }
-                });
+                glib::spawn_future_local(
+                    glib::clone!(@weak dropdownspinner,@weak osdbox =>async move {
+                        while let Ok(playback) = receiver.recv().await {
+                            let info = info.clone();
+                            let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, info);
+                            dropdownspinner.set_visible(false);
+                            osdbox.append(&dropdown);
+                        }
+                    }),
+                );
             });
         }
     }

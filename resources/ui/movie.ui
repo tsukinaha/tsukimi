@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template parent="AdwNavigationPage" class="ItemPage">
+  <template parent="AdwNavigationPage" class="MoviePage">
     <property name="title" translatable="yes">Tsukimi</property>
     <child>
       <object class="AdwToolbarView">
@@ -16,17 +16,17 @@
                     <child>
                       <object class="GtkPicture" id="backdrop">
                         <property name="halign">fill</property>
-                        <property name="valign">fill</property>
+                        <property name="valign">start</property>
                         <property name="content-fit">cover</property>
                         <property name="hexpand">true</property>
                         <property name="vexpand">true</property>
-                        <property name="opacity">1</property>
+                        <property name="opacity">0.7</property>
                       </object>
                     </child>
                     <child type="overlay">
                       <object class="GtkBox" id="osdbox">
                         <property name="orientation">vertical</property>
-                        <property name="valign">fill</property>
+                        <property name="valign">end</property>
                         <property name="vexpand">true</property>
                         <property name="hexpand">true</property>
                         <child>
@@ -37,15 +37,6 @@
                             <property name="vexpand">true</property>
                           </object>
                         </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="orientation">horizontal</property>
-                    <child>
-                      <object class="GtkDropDown">
                       </object>
                     </child>
                   </object>

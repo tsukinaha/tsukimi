@@ -8,8 +8,6 @@ env:
 
 jobs:
   build-release:
-    # permissions:
-    #   contents: write
     env:
       RUST_BACKTRACE: full
     strategy:
