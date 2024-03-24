@@ -6,6 +6,7 @@
 
 
 使用 gtk4-rs 编写的第三方 Emby Linux 客户端      
+Windows 使用需配置 MPV PATH 并安装 MSVC GTK4 环境   
 支持外挂字幕 支持历史记录 不支持音乐    
 使用系统 mpv 进行播放    
     
