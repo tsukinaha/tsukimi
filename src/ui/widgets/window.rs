@@ -33,6 +33,8 @@ mod imp{
         pub settingspage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub searchpage: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub historypage: TemplateChild<adw::NavigationPage>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -157,36 +159,14 @@ impl Window {
 
     fn homepage(&self) {
         let imp = self.imp();
-        let stack = crate::ui::home_page::create_page();
-        let pagename = format!("homepage");
-        if stack.child_by_name(&pagename).is_some() {
-            stack.remove(&stack.child_by_name(&pagename).unwrap());
-        }
-        let pagename = format!("searchpage");
-        if stack.child_by_name(&pagename).is_some() {
-            stack.remove(&stack.child_by_name(&pagename).unwrap());
-        }
-        if imp.insidestack.child_by_name("homepage").is_none() {
-            imp.insidestack.add_titled(&stack, Some("homepage"), "home");
-        }
-        imp.insidestack.set_visible_child_name("homepage");
+        imp.historypage.set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
+        imp.insidestack.set_visible_child_name("historypage");
     }
 
     fn historypage(&self) {
         let imp = self.imp();
-        let stack = crate::ui::home_page::create_page();
-        let pagename = format!("homepage");
-        if stack.child_by_name(&pagename).is_some() {
-            stack.remove(&stack.child_by_name(&pagename).unwrap());
-        }
-        let pagename = format!("searchpage");
-        if stack.child_by_name(&pagename).is_some() {
-            stack.remove(&stack.child_by_name(&pagename).unwrap());
-        }
-        if imp.insidestack.child_by_name("homepage").is_none() {
-            imp.insidestack.add_titled(&stack, Some("homepage"), "home");
-        }
-        imp.insidestack.set_visible_child_name("homepage");
+        imp.historypage.set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
+        imp.insidestack.set_visible_child_name("historypage");
     }
 
     fn searchpage(&self) {

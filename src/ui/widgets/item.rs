@@ -4,11 +4,10 @@ mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
-    use gtk::subclass::widget;
     use gtk::{glib, CompositeTemplate};
     use std::cell::{OnceCell, Ref};
     use std::path::PathBuf;
-    use crate::ui::network::{self, runtime, Media};
+    use crate::ui::network::{self, runtime};
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/item.ui")]
@@ -148,7 +147,6 @@ mod imp {
                 let seriesinfo: Ref<network::SeriesInfo> = item.borrow();
                 let info = seriesinfo.clone();
                 let id = seriesinfo.Id.clone();
-                let idc = id.clone();
                 if let Some(widget) = osdbox.last_child() {
                     if widget.is::<gtk::Box>() {
                         osdbox.remove(&widget);

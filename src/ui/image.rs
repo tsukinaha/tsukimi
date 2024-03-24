@@ -41,7 +41,8 @@ pub fn set_thumbimage(id:String) -> Box {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Center);
+    image.set_halign(gtk::Align::Fill);
+    image.set_content_fit(gtk::ContentFit::Cover);
 
     let path = format!("{}/.local/share/tsukimi/t{}.png",dirs::home_dir().expect("msg").display(), id);
     let pathbuf = PathBuf::from(&path);
@@ -73,7 +74,8 @@ pub fn set_backdropimage(id:String) -> Box {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Center);
+    image.set_halign(gtk::Align::Fill);
+    image.set_content_fit(gtk::ContentFit::Cover);
 
     let path = format!("{}/.local/share/tsukimi/b{}.png",dirs::home_dir().expect("msg").display(), id);
     let pathbuf = PathBuf::from(&path);

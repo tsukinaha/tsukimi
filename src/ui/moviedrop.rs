@@ -6,10 +6,20 @@ use gtk::Orientation;
 pub fn newmediadropsel(playbackinfo: network::Media,info:SearchResult) -> gtk::Box {
     let hbox = gtk::Box::new(Orientation::Horizontal, 5);
     let leftvbox = gtk::Box::new(Orientation::Vertical, 5);
+    leftvbox.set_margin_start(80);
+    leftvbox.set_margin_top(80);
+    leftvbox.set_margin_bottom(20);
+    leftvbox.set_halign(gtk::Align::Start);
+    leftvbox.set_valign(gtk::Align::End);
     let label = gtk::Label::new(Some(&info.Name));
     leftvbox.append(&label);
     hbox.append(&leftvbox);
     let vbox = gtk::Box::new(Orientation::Vertical, 5);
+    vbox.set_margin_start(20);
+    vbox.set_margin_end(80);
+    vbox.set_margin_bottom(20);
+    vbox.set_halign(gtk::Align::End);
+    vbox.set_hexpand(true);
     let namelist = gtk::StringList::new(&[]);
 
     let sublist = gtk::StringList::new(&[]);

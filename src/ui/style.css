@@ -46,16 +46,16 @@ Issues caused by theming should be reported to Gradience repository, and not to 
 https://github.com/GradienceTeam/Gradience
 */
 
-@define-color theme_fg_color #AEE5FA;
-@define-color theme_text_color #AEE5FA;
+@define-color theme_fg_color #AEB5FA;
+@define-color theme_text_color #AEB5FA;
 @define-color theme_bg_color #1a1b26;
 @define-color theme_base_color #1a1b26;
-@define-color theme_selected_bg_color #AEE5FA;
+@define-color theme_selected_bg_color #AEB5FA;
 @define-color theme_selected_fg_color rgba(0, 0, 0, 0.87);
 @define-color insensitive_bg_color #1a1b26;
 @define-color insensitive_fg_color rgba(192, 202, 245, 0.5);
 @define-color insensitive_base_color #24283b;
-@define-color theme_unfocused_fg_color #AEE5FA;
+@define-color theme_unfocused_fg_color #AEB5FA;
 @define-color theme_unfocused_text_color #c0caf5;
 @define-color theme_unfocused_bg_color #1a1b26;
 @define-color theme_unfocused_base_color #1a1b26;
@@ -67,7 +67,7 @@ https://github.com/GradienceTeam/Gradience
 @define-color warning_color #FDD633;
 @define-color error_color #BA1B1B;
 @define-color success_color #81C995;
-@define-color wm_title #AEE5FA;
+@define-color wm_title #AEB5FA;
 @define-color wm_unfocused_title rgba(192, 202, 245, 0.7);
 @define-color wm_highlight rgba(192, 202, 245, 0.1);
 @define-color wm_bg #1a1b26;
@@ -161,7 +161,7 @@ https://github.com/GradienceTeam/Gradience
 @define-color popover_bg_color rgba(0, 0, 0, 0.94);
 @define-color popover_fg_color #d1e5f4;
 @define-color thumbnail_bg_color #1a1b26;
-@define-color thumbnail_fg_color #AEE5FA;
+@define-color thumbnail_fg_color #AEB5FA;
 @define-color shade_color rgba(0, 0, 0, 0.36);
 @define-color scrollbar_outline_color rgba(0, 0, 0, 0.5);
 /*

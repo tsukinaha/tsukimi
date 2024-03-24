@@ -4,14 +4,12 @@ use gtk::{gio, glib};
 
 use self::imp::Page;
 
-use super::item::ItemPage;
 mod imp {
-    use std::cell::RefCell;
 
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
-    use gtk::{gio, glib, CompositeTemplate, Entry, Label, Picture};
+    use gtk::{gio, glib, CompositeTemplate, Label};
 
     use crate::ui::widgets::item::ItemPage;
     use crate::ui::widgets::movie::MoviePage;

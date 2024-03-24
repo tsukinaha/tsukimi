@@ -6,5 +6,6 @@
     <file compressed="true" preprocess="xml-stripblanks">search.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">item.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">movie.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">history.ui</file>
   </gresource>
 </gresources>

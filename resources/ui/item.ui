@@ -19,19 +19,21 @@
                         <property name="valign">start</property>
                         <property name="content-fit">cover</property>
                         <property name="hexpand">true</property>
-                        <property name="opacity">0.7</property>
+                        <property name="opacity">1</property>
                       </object>
                     </child>
                     <child type="overlay">
                       <object class="GtkBox" id="osdbox">
                         <property name="orientation">vertical</property>
-                        <property name="valign">end</property>
+                        <property name="valign">fill</property>
                         <property name="vexpand">true</property>
                         <property name="hexpand">true</property>
                         <child>
                           <object class="GtkSpinner" id="dropdownspinner">
                             <property name="spinning">True</property>
                             <property name="visible">False</property>
+                            <property name="valign">end</property>
+                            <property name="vexpand">true</property>
                           </object>
                         </child>
                       </object>

@@ -32,17 +32,10 @@
                           <object class="GtkSpinner" id="dropdownspinner">
                             <property name="spinning">True</property>
                             <property name="visible">False</property>
+                            <property name="valign">end</property>
+                            <property name="vexpand">true</property>
                           </object>
                         </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="orientation">horizontal</property>
-                    <child>
-                      <object class="GtkDropDown">
                       </object>
                     </child>
                   </object>

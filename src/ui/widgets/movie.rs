@@ -1,13 +1,12 @@
 use glib::Object;
 use gtk::{gio, glib};
 mod imp {
-    use crate::ui::network::{self, runtime, Media, SearchResult};
+    use crate::ui::network::{self, runtime, SearchResult};
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
-    use gtk::subclass::widget;
     use gtk::{glib, CompositeTemplate};
-    use std::cell::{OnceCell, Ref};
+    use std::cell::OnceCell;
     use std::path::PathBuf;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]

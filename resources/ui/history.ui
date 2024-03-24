@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwNavigationPage" class="HistoryPage">
+    <property name="title" translatable="yes">Tsukimi</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child>
+          <object class="GtkScrolledWindow" id="historyscrolled">
+            <property name="vexpand">True</property>
+            <property name="hexpand">True</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="spacing">18</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Continue Watching</property>
+                    <property name="halign">start</property>
+                    <property name="margin-start">12</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSpinner" id="spinner">
+                    <property name="spinning">True</property>
+                    <property name="visible">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkGridView" id="historygrid">
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
