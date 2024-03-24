@@ -19,6 +19,7 @@
                         <property name="valign">start</property>
                         <property name="content-fit">cover</property>
                         <property name="hexpand">true</property>
+                        <property name="vexpand">true</property>
                         <property name="opacity">1</property>
                       </object>
                     </child>

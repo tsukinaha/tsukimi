@@ -90,6 +90,7 @@ mod imp{
             self.parent_constructed();
             let obj = self.obj().clone();
             obj.loginenter();
+            obj.homepage();
             self.selectlist.connect_row_selected(move |_, row| {
                 if let Some(row) = row {
                     let num = row.index();
