@@ -1,6 +1,11 @@
 name: Build Windows MSVC Releases
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 'feature/win'
+  schedule:
+    - cron: '5 6 * * *'
 
 env:
   CARGO_TERM_COLOR: always
@@ -25,7 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build ${{matrix.target}}
+      - name: Install dependencies
         run: |
           rustup default stable-msvc
           py -3.12 -m pip install --user pipx
@@ -36,6 +41,13 @@ jobs:
           $env:INCLUDE = "C:\gtk-build\gtk\x64\release\include;C:\gtk-build\gtk\x64\release\include\cairo;C:\gtk-build\gtk\x64\release\include\glib-2.0;C:\gtk-build\gtk\x64\release\include\gobject-introspection-1.0;C:\gtk-build\gtk\x64\release\lib\glib-2.0\include;C:\msys64\mingw64\include;" + $env:INCLUDE
           $env:PKG_CONFIG_PATH = "C:\gtk-build\gtk\x64\release\lib\pkgconfig;" + $env:PKG_CONFIG_PATH
           gvsbuild build gtk4 libadwaita adwaita-icon-theme
+
+      - name: Build ${{matrix.target}}
+        run: |
+          $env:Path = "C:\gtk-build\gtk\x64\release\lib\pkgconfig;C:\gtk-build\gtk\x64\release\bin;C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path
+          $env:LIB = "C:\gtk-build\gtk\x64\release\lib;C:\msys64\mingw64\lib;" + $env:LIB
+          $env:INCLUDE = "C:\gtk-build\gtk\x64\release\include;C:\gtk-build\gtk\x64\release\include\cairo;C:\gtk-build\gtk\x64\release\include\glib-2.0;C:\gtk-build\gtk\x64\release\include\gobject-introspection-1.0;C:\gtk-build\gtk\x64\release\lib\glib-2.0\include;C:\msys64\mingw64\include;" + $env:INCLUDE
+          $env:PKG_CONFIG_PATH = "C:\gtk-build\gtk\x64\release\lib\pkgconfig;" + $env:PKG_CONFIG_PATH
           cargo build --release --locked
           mkdir C:/artifacts
           cp target/release/${{matrix.artifact}} C:/artifacts/

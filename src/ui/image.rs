@@ -3,7 +3,6 @@ use gtk::{prelude::*, Picture};
 use gtk::{Box, Orientation};
 use std::env;
 use std::path::PathBuf;
-// use std::path::PathBuf;
 
 pub fn set_image(id: String) -> Box {
     let imgbox = Box::new(Orientation::Vertical, 5);

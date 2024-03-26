@@ -7,11 +7,11 @@ use reqwest::Error;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use serde_json::Value;
-use serde_yaml::to_string;
 use std::env;
 use std::fs::{self, write};
 use std::sync::OnceLock;
 use tokio::runtime::Runtime;
+use toml::to_string;
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();
@@ -76,26 +76,26 @@ pub async fn login(
         access_token: access_token.to_string(),
         ..Default::default()
     };
-    let yaml = to_string(&config).unwrap();
+    let toml = to_string(&config).unwrap();
 
     #[cfg(unix)]
     let path = dirs::home_dir()
         .unwrap()
         .join(".config")
-        .join("tsukimi.yaml");
+        .join("tsukimi.toml");
 
     #[cfg(windows)]
     let path = env::current_dir()
         .unwrap()
         .join("config")
-        .join("tsukimi.yaml");
+        .join("tsukimi.toml");
 
     if path.exists() {
-        write(path, yaml).unwrap();
+        write(path, toml).unwrap();
     } else {
         let parent_dir = path.parent().unwrap();
         fs::create_dir_all(&parent_dir).unwrap();
-        write(path, yaml).unwrap();
+        write(path, toml).unwrap();
     }
 
     Ok(())

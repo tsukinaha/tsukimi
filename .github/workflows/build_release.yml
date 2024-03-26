@@ -1,4 +1,4 @@
-name: Build Windows Releases
+name: Build releases and publish
 on:
   workflow_dispatch:
   push:
@@ -8,26 +8,37 @@ on:
 env:
   CARGO_TERM_COLOR: always
   CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+  RUST_BACKTRACE: full
 
 jobs:
-  build-release:
-    permissions:
-      contents: write
-    env:
-      RUST_BACKTRACE: full
+  build:
     strategy:
       matrix:
         include:
+          # x86_64-windows-msvc
           - arch: x86_64-windows-msvc
             os: windows-latest
             target: x86_64-pc-windows-msvc
             artifact: tsukimi.exe
             ext: .exe
+          # x86_64-windows-gnu
           - arch: x86_64-windows-gnu
             os: windows-latest
             target: x86_64-pc-windows-gnu
             artifact: tsukimi.exe
             ext: .exe
+          # x86_64-linux-gnu
+          - arch: x86_64-linux-gnu
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact: tsukimi
+            ext:
+          # x86_64-apple-darwin
+          - arch: x86_64-apple-darwin
+            os: macos-latest
+            target: x86_64-apple-darwin
+            artifact: tsukimi
+            ext:
 
     runs-on: ${{matrix.os}}
 
@@ -48,33 +59,74 @@ jobs:
           $env:PKG_CONFIG_PATH = "C:\gtk-build\gtk\x64\release\lib\pkgconfig;" + $env:PKG_CONFIG_PATH
           gvsbuild build gtk4 libadwaita adwaita-icon-theme
           cargo build --release --locked --target ${{ matrix.target }}
-          mkdir C:/artifacts
-          cp target/${{matrix.target}}/release/${{ matrix.artifact }} C:/artifacts/tsukimi-${{ matrix.arch }}${{ matrix.ext }}
-          cd C:\gtk-build\gtk\x64\release\bin
-          cp *.dll C:/artifacts/
-          compress-archive -path C:/artifacts/* -destination C:/artifacts/tsukimi-${{matrix.arch}}.zip
+          mkdir artifact
+          cp target/${{matrix.target}}/release/${{ matrix.artifact }} artifact/tsukimi-${{ matrix.arch }}${{ matrix.ext }}
+          cp C:\gtk-build\gtk\x64\release\bin\*.dll artifact/
+          compress-archive -path artifact/* -destination artifact/tsukimi-${{matrix.arch}}.zip
 
       - name: Build ${{ matrix.target }}
         if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
         run: |
           rustup toolchain install stable-gnu
           rustup default stable-gnu
-          C:\msys64\usr\bin\pacman.exe -Syu --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc mingw-w64-x86_64-libadwaita
-          $env:Path += ";C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include";
-          $env:LIBRARY_PATH="C:\msys64\mingw64\lib";
-          $env:INCLUDE_PATH="C:\msys64\mingw64\include";
+          C:\msys64\usr\bin\pacman.exe -S --needed --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-gettext mingw-w64-x86_64-libxml2 mingw-w64-x86_64-librsvg mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc mingw-w64-x86_64-libadwaita
+          C:\msys64\usr\bin\pacman.exe -Syu --noconfirm
+
+      - name: Build ${{ matrix.target }}
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        run: |
+          $env:Path = "C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path;
           cargo build --release --locked --target ${{ matrix.target }}
-          mkdir C:/artifacts/
-          cp target/${{matrix.target}}/release/${{ matrix.artifact }} C:/artifacts/tsukimi-${{ matrix.arch }}${{ matrix.ext }}
-          cd C:/msys64/mingw64/bin
-          cp *.dll C:/artifacts
-          compress-archive -path C:/artifacts/* -destination C:/artifacts/tsukimi-${{matrix.arch}}.zip
+          mkdir artifact/
+          cp target/${{matrix.target}}/release/${{ matrix.artifact }} artifact/tsukimi-${{ matrix.arch }}${{ matrix.ext }}
+          cp C:/msys64/mingw64/bin/*.dll artifact
+          compress-archive -path artifact/* -destination artifact/tsukimi-${{matrix.arch}}.zip
+
+      - name: Build ${{matrix.target}}
+        if: ${{matrix.target == 'x86_64-unknown-linux-gnu'}}
+        run: |
+          mkdir artifact
+          docker build -t tsukimi .
+          docker run -d --name tsukimi tsukimi
+          docker cp tsukimi:/usr/src/tsukimi/tsukimi-x86_64-linux-gnu.tar.gz artifact/
+
+      - name: Build ${{matrix.target}}
+        if: ${{matrix.target == 'x86_64-apple-darwin'}}
+        run: |
+          brew install gtk4
+          brew install libadwaita
+          rustup target add ${{matrix.target}}
+          cargo build --release --locked --target ${{matrix.target}}
+          mkdir artifact
+          cp target/${{matrix.target}}/release/${{matrix.artifact}} artifact/tsukimi-${{matrix.arch}}${{matrix.ext}}
+          cd artifact/
+          tar -czf tsukimi-${{matrix.arch}}.tar.gz ./*
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tsukimi-${{matrix.arch}}.zip
-          path: C:/artifacts/tsukimi-${{matrix.arch}}.zip
+          name: tsukimi-${{matrix.arch}}
+          path: |
+            artifact/tsukimi-*.zip
+            artifact/tsukimi-*.tar.gz
+          compression-level: 0
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+ 
+      - name: Calculate hash
+        run: |
+          sha256sum *.zip > tsukimi.sha256sum
 
       - name: Get latest tag name
         run: echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
@@ -84,5 +136,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: C:/artifacts/*.zip
+          files: |
+            *.zip
+            tsukimi.sha256sum
           tag_name: ${{ env.TAG_NAME }}

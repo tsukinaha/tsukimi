@@ -210,12 +210,12 @@ impl Window {
 
     fn loginenter(&self) {
         #[cfg(unix)]
-        let path = home_dir().unwrap().join(".config/tsukimi.yaml");
+        let path = home_dir().unwrap().join(".config/tsukimi.toml");
         #[cfg(windows)]
         let path = env::current_dir()
             .unwrap()
             .join("config")
-            .join("tsukimi.yaml");
+            .join("tsukimi.toml");
 
         if path.exists() {
             self.mainpage();

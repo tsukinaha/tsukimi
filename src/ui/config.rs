@@ -1,10 +1,9 @@
 use reqwest;
 use serde::{Deserialize, Serialize};
-use std::env;
-use std::fs::File;
-use std::io::Read;
+use std::{env, fs};
+use toml;
 
-#[derive(Serialize, Debug, Deserialize, Default)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct Config {
     pub domain: String,
     pub username: String,
@@ -98,39 +97,18 @@ impl MPVClient {
     }
 }
 
-// pub fn set_proxy(proxy: String) {
-//     #[cfg(unix)]
-//     let config_path = dirs::home_dir().unwrap().join(".config/tsukimi.yaml");
-
-//     #[cfg(windows)]
-//     let config_path = env::current_dir()
-//         .unwrap()
-//         .join("config")
-//         .join("tsukimi.yaml");
-
-//     let file = File::open(&config_path).expect("failed to open config file");
-//     let data = BufReader::new(file);
-//     let mut config: Config = serde_yaml::from_reader(data).expect("failed to parse YAML");
-
-//     config.proxy = proxy;
-
-//     let new_config = serde_yaml::to_string(&config).unwrap();
-
-//     std::fs::write(config_path, new_config).expect("写入代理配置失败");
-// }
-
 fn get_proxy_info() -> String {
     #[cfg(unix)]
-    let config_path = dirs::home_dir().unwrap().join(".config/tsukimi.yaml");
+    let config_path = dirs::home_dir().unwrap().join(".config/tsukimi.toml");
 
     #[cfg(windows)]
     let config_path = env::current_dir()
         .unwrap()
         .join("config")
-        .join("tsukimi.yaml");
+        .join("tsukimi.toml");
 
     let data = std::fs::read_to_string(&config_path).unwrap();
-    let config: Config = serde_yaml::from_str(&data).unwrap();
+    let config: Config = toml::from_str(&data).unwrap();
     return config.proxy;
 }
 
@@ -139,21 +117,21 @@ fn default_mpv() -> String {
     return "mpv".to_string();
 
     #[cfg(windows)]
-    return "mpv.com".to_string();
+    return "mpv.exe".to_string();
 }
 
 fn mpv() -> String {
     #[cfg(unix)]
-    let config_path = dirs::home_dir().unwrap().join(".config/tsukimi.yaml");
+    let config_path = dirs::home_dir().unwrap().join(".config/tsukimi.toml");
 
     #[cfg(windows)]
     let config_path = env::current_dir()
         .unwrap()
         .join("config")
-        .join("tsukimi.yaml");
+        .join("tsukimi.toml");
 
     let data = std::fs::read_to_string(&config_path).unwrap();
-    let config: Config = serde_yaml::from_str(&data).unwrap();
+    let config: Config = toml::from_str(&data).unwrap();
 
     let mpv = config.mpv;
     if mpv.is_empty() {
@@ -181,19 +159,17 @@ pub fn get_server_info() -> ServerInfo {
     let mut path = dirs::home_dir()
         .unwrap()
         .join(".config")
-        .join("tsukimi.yaml");
+        .join("tsukimi.toml");
 
     #[cfg(windows)]
     let path = env::current_dir()
         .unwrap()
         .join("config")
-        .join("tsukimi.yaml");
+        .join("tsukimi.toml");
 
     if path.exists() {
-        let mut file = File::open(path).unwrap();
-        let mut contents = String::new();
-        file.read_to_string(&mut contents).unwrap();
-        let config: Config = serde_yaml::from_str(&contents).unwrap();
+        let data = fs::read_to_string(path).expect("read config file failed");
+        let config: Config = toml::from_str(&data).expect("parse config data failed");
         server_info.domain = config.domain;
         server_info.user_id = config.user_id;
         server_info.access_token = config.access_token;
