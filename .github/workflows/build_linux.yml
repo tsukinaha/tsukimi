@@ -28,11 +28,11 @@ jobs:
           mkdir artifact
           docker build -t tsukimi .
           docker run -d --name tsukimi tsukimi
-          docker cp tsukimi:/usr/src/tsukimi/tsukimi.tar.gz artifact/
+          docker cp tsukimi:/usr/src/tsukimi/. artifact/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{matrix.artifact}}-${{matrix.arch-name}}
-          path: artifact/tsukimi.tar.gz
+          path: artifact/*
           compression-level: 0

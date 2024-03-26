@@ -7,7 +7,7 @@
     <key>CFBundleDisplayName</key>
     <string>Tsukimi</string>
     <key>CFBundleIdentifier</key>
-    <string>com.inhana.tsukimi</string>
+    <string>com.inaha.tsukimi</string>
     <key>CFBundleExecutable</key>
     <string>tsukimi</string>
     <key>CFBundleSignature</key>
