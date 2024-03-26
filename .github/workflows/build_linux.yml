@@ -1,0 +1,38 @@
+name: Build Linux Releases
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+  schedule:
+    - cron: '45 3 * * *'
+
+jobs:
+  build-release:
+    strategy:
+      matrix:
+        include:
+          - arch-name: x86_64-linux-gnu
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact: tsukimi
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build ${{matrix.target}}
+        run: |
+          mkdir artifact
+          docker build -t tsukimi .
+          docker run -d --name tsukimi tsukimi
+          docker cp tsukimi:/usr/src/tsukimi/. artifact/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.artifact}}-${{matrix.arch-name}}
+          path: artifact/*
+          compression-level: 0

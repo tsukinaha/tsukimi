@@ -1,0 +1,62 @@
+name: Build Windows MSVC Releases
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+  schedule:
+    - cron: '15 3 * * *'
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
+jobs:
+  build-release:
+    env:
+      RUST_BACKTRACE: full
+    strategy:
+      matrix:
+        include:
+          - arch-name: x86_64-windows-msvc
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact: tsukimi.exe
+            ext: .exe
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          rustup default stable-msvc
+          py -3.12 -m pip install --user pipx
+          py -3.12 -m pipx ensurepath
+          pipx install gvsbuild
+          $env:Path = "C:\gtk-build\gtk\x64\release\lib\pkgconfig;C:\gtk-build\gtk\x64\release\bin;C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path
+          $env:LIB = "C:\gtk-build\gtk\x64\release\lib;C:\msys64\mingw64\lib;" + $env:LIB
+          $env:INCLUDE = "C:\gtk-build\gtk\x64\release\include;C:\gtk-build\gtk\x64\release\include\cairo;C:\gtk-build\gtk\x64\release\include\glib-2.0;C:\gtk-build\gtk\x64\release\include\gobject-introspection-1.0;C:\gtk-build\gtk\x64\release\lib\glib-2.0\include;C:\msys64\mingw64\include;" + $env:INCLUDE
+          $env:PKG_CONFIG_PATH = "C:\gtk-build\gtk\x64\release\lib\pkgconfig;" + $env:PKG_CONFIG_PATH
+          gvsbuild build gtk4 libadwaita adwaita-icon-theme
+
+      - name: Build ${{matrix.target}}
+        run: |
+          $env:Path = "C:\gtk-build\gtk\x64\release\lib\pkgconfig;C:\gtk-build\gtk\x64\release\bin;C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path
+          $env:LIB = "C:\gtk-build\gtk\x64\release\lib;C:\msys64\mingw64\lib;" + $env:LIB
+          $env:INCLUDE = "C:\gtk-build\gtk\x64\release\include;C:\gtk-build\gtk\x64\release\include\cairo;C:\gtk-build\gtk\x64\release\include\glib-2.0;C:\gtk-build\gtk\x64\release\include\gobject-introspection-1.0;C:\gtk-build\gtk\x64\release\lib\glib-2.0\include;C:\msys64\mingw64\include;" + $env:INCLUDE
+          $env:PKG_CONFIG_PATH = "C:\gtk-build\gtk\x64\release\lib\pkgconfig;" + $env:PKG_CONFIG_PATH
+          cargo build --release --locked
+          mkdir C:/artifacts
+          cp target/release/${{matrix.artifact}} C:/artifacts/
+          cd C:/gtk-build/gtk/x64/release/bin
+          cp *.dll C:/artifacts/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsukimi-${{matrix.arch-name}}
+          path: C:/artifacts/*
+          compression-level: 0

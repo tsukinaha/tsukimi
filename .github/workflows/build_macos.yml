@@ -1,0 +1,54 @@
+name: Build MacOS Releases
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+  schedule:
+    - cron: '0 4 * * *'
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
+jobs:
+  build-release:
+    env:
+      RUST_BACKTRACE: full
+    strategy:
+      matrix:
+        include:
+          - arch-name: x86_64-macos
+            os: macos-latest
+            target: x86_64-apple-darwin
+            artifact: tsukimi
+            ext:
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          brew install gtk4
+          brew install libadwaita
+          rustup target add ${{matrix.target}}
+          cargo build --release --locked
+
+      - name: Make MacOS package
+        run: |
+          mkdir -p Tsukimi.app/Contents/MacOS
+          mkdir -p Tsukimi.app/Contents/Resources
+          cp share/macos/Info.plist Tsukimi.app/Contents/
+          cp share/macos/AppIcon.icns Tsukimi.app/Contents/Resources/
+          mv target/release/tsukimi Tsukimi.app/Contents/MacOS/
+          tar -czf tsukimi-x86_64-apple-darwin.tar.gz Tsukimi.app/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.artifact}}-${{matrix.target}}
+          path: tsukimi-${{matrix.target}}.tar.gz
+          compression-level: 0
