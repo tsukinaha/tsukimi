@@ -1,8 +1,8 @@
 use reqwest;
 use serde::{Deserialize, Serialize};
-use std::fs;
 #[cfg(windows)]
 use std::env;
+use std::fs;
 use toml;
 
 #[derive(Debug, Serialize, Deserialize, Default)]

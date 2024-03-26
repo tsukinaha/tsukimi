@@ -4,8 +4,10 @@ use gtk::{Box, Orientation};
 #[cfg(windows)]
 use std::env;
 use std::path::PathBuf;
+use std::sync::Arc;
+use tokio::sync::Mutex;
 
-pub fn set_image(id: String) -> Box {
+pub fn set_image(id: String, mutex: Arc<Mutex<()>>) -> Box {
     let imgbox = Box::new(Orientation::Vertical, 5);
 
     let (sender, receiver) = async_channel::bounded::<String>(1);
@@ -13,28 +15,29 @@ pub fn set_image(id: String) -> Box {
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Center);
 
-    #[cfg(unix)]
-    let pathbuf = dirs::home_dir()
-        .unwrap()
-        .join(format!(".local/share/tsukimi/{}.png", id));
-
-    #[cfg(windows)]
-    let pathbuf = env::current_dir()
-        .unwrap()
-        .join("thumbnails")
-        .join(format!("{}.png", id));
+    let pathbuf = get_thum_dir().join(format!("{}.png", id));
 
     if pathbuf.exists() {
         image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
     } else {
         crate::ui::network::runtime().spawn(async move {
-            let id = crate::ui::network::get_image(id.clone())
-                .await
-                .expect("msg");
-            sender
-                .send(id.clone())
-                .await
-                .expect("The channel needs to be open.");
+            let _lock = mutex.lock().await;
+            let mut retries = 0;
+            while retries < 3 {
+                match crate::ui::network::get_image(id.clone()).await {
+                    Ok(id) => {
+                        sender
+                            .send(id.clone())
+                            .await
+                            .expect("The channel needs to be open.");
+                        break;
+                    }
+                    Err(e) => {
+                        eprintln!("Failed to get image: {}, retrying...", e);
+                        retries += 1;
+                    }
+                }
+            }
         });
     }
 
@@ -49,148 +52,133 @@ pub fn set_image(id: String) -> Box {
     imgbox
 }
 
-pub fn set_thumbimage(id: String) -> Box {
+pub fn set_thumbimage(id: String, mutex: Arc<Mutex<()>>) -> Box {
     let imgbox = Box::new(Orientation::Vertical, 5);
 
-    let (sender, receiver) = async_channel::bounded::<String>(1);
-
-    let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Fill);
-    image.set_content_fit(gtk::ContentFit::Cover);
-
-    #[cfg(unix)]
-    let pathbuf = dirs::home_dir()
-        .unwrap()
-        .join(format!(".local/share/tsukimi/t{}.png", id));
-
-    #[cfg(windows)]
-    let pathbuf = env::current_dir()
-        .unwrap()
-        .join("thumbnails")
-        .join(format!("t{}.png", id));
-
-    if pathbuf.exists() {
-        image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
-    } else {
-        crate::ui::network::runtime().spawn(async move {
-            let id = crate::ui::network::get_thumbimage(id.clone())
-                .await
-                .expect("msg");
-            sender
-                .send(id.clone())
-                .await
-                .expect("The channel needs to be open.");
-        });
-    }
-
-    glib::spawn_future_local(clone!(@weak image => async move {
-        while let Ok(_) = receiver.recv().await {
-            let file = gtk::gio::File::for_path(&pathbuf);
-            image.set_file(Some(&file));
-        }
-    }));
-
-    imgbox.append(&image);
-    imgbox
-}
-
-pub fn set_backdropimage(id: String) -> Box {
-    let imgbox = Box::new(Orientation::Vertical, 5);
-
-    let (sender, receiver) = async_channel::bounded::<String>(1);
-
-    let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Fill);
-    image.set_content_fit(gtk::ContentFit::Cover);
-
-    #[cfg(unix)]
-    let pathbuf = dirs::home_dir()
-        .unwrap()
-        .join(format!(".local/share/tsukimi/b{}.png", id));
-
-    #[cfg(windows)]
-    let pathbuf = env::current_dir()
-        .unwrap()
-        .join("thumbnails")
-        .join(format!("b{}.png", id));
-
-    if pathbuf.exists() {
-        image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
-    } else {
-        crate::ui::network::runtime().spawn(async move {
-            let id = crate::ui::network::get_backdropimage(id.clone())
-                .await
-                .expect("msg");
-            sender
-                .send(id.clone())
-                .await
-                .expect("The channel needs to be open.");
-        });
-    }
-
-    glib::spawn_future_local(clone!(@weak image=> async move {
-        while let Ok(_) = receiver.recv().await {
-            let file = gtk::gio::File::for_path(&pathbuf);
-            image.set_file(Some(&file));
-        }
-    }));
-
-    imgbox.append(&image);
-    imgbox
-}
-
-fn get_thum_dir(id: &String) -> PathBuf {
-    #[cfg(unix)]
-    let pathbuf = dirs::home_dir()
-        .unwrap()
-        .join(format!(".local/share/tsukimi/{}.png", id));
-
-    #[cfg(windows)]
-    let pathbuf = env::current_dir()
-        .unwrap()
-        .join("thumbnails")
-        .join(format!("{}.png", id));
-
-    return pathbuf;
-}
-
-pub fn setimage(id: String) -> Picture {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Center);
 
-    #[cfg(unix)]
-    let pathbuf = dirs::home_dir()
-        .unwrap()
-        .join(format!(".local/share/tsukimi/{}.png", id));
-
-    #[cfg(windows)]
-    let pathbuf = env::current_dir()
-        .unwrap()
-        .join("thumbnails")
-        .join(format!("{}.png", id));
-
-    // let pathbuf = PathBuf::from(&path);
+    let pathbuf = get_thum_dir().join(format!("t{}.png", id));
     let idfuture = id.clone();
     if pathbuf.exists() {
         image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
     } else {
         crate::ui::network::runtime().spawn(async move {
-            let id = crate::ui::network::get_image(id.clone())
-                .await
-                .expect("msg");
-            sender
-                .send(id.clone())
-                .await
-                .expect("The channel needs to be open.");
+            let _lock = mutex.lock().await;
+            let mut retries = 0;
+            while retries < 3 {
+                match crate::ui::network::get_thumbimage(id.clone()).await {
+                    Ok(id) => {
+                        sender
+                            .send(id.clone())
+                            .await
+                            .expect("The channel needs to be open.");
+                        break;
+                    }
+                    Err(e) => {
+                        eprintln!("Failed to get image: {}, retrying...", e);
+                        retries += 1;
+                    }
+                }
+            }
         });
     }
 
     glib::spawn_future_local(clone!(@weak image => async move {
         while let Ok(_) = receiver.recv().await {
-            // let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), idfuture);
-            let path =get_thum_dir(&idfuture);
+            let path = get_thum_dir().join(format!("{}.png",idfuture));
+            let file = gtk::gio::File::for_path(&path);
+            image.set_file(Some(&file));
+        }
+    }));
+
+    imgbox.append(&image);
+    imgbox
+}
+
+pub fn set_backdropimage(id: String, mutex: Arc<Mutex<()>>) -> Box {
+    let imgbox = Box::new(Orientation::Vertical, 5);
+
+    let (sender, receiver) = async_channel::bounded::<String>(1);
+
+    let image = gtk::Picture::new();
+    image.set_halign(gtk::Align::Center);
+
+    let pathbuf = get_thum_dir().join(format!("b{}.png", id));
+    let idfuture = id.clone();
+    if pathbuf.exists() {
+        image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
+    } else {
+        crate::ui::network::runtime().spawn(async move {
+            let _lock = mutex.lock().await;
+            let mut retries = 0;
+            while retries < 3 {
+                match crate::ui::network::get_backdropimage(id.clone()).await {
+                    Ok(id) => {
+                        sender
+                            .send(id.clone())
+                            .await
+                            .expect("The channel needs to be open.");
+                        break;
+                    }
+                    Err(e) => {
+                        eprintln!("Failed to get image: {}, retrying...", e);
+                        retries += 1;
+                    }
+                }
+            }
+        });
+    }
+
+    glib::spawn_future_local(clone!(@weak image => async move {
+        while let Ok(_) = receiver.recv().await {
+            let path = get_thum_dir().join(format!("{}.png",idfuture));
+            let file = gtk::gio::File::for_path(&path);
+            image.set_file(Some(&file));
+        }
+    }));
+
+    imgbox.append(&image);
+    imgbox
+}
+
+pub fn setimage(id: String, mutex: Arc<Mutex<()>>) -> Picture {
+    let (sender, receiver) = async_channel::bounded::<String>(1);
+
+    let image = gtk::Picture::new();
+    image.set_halign(gtk::Align::Center);
+
+    let pathbuf = get_thum_dir().join(format!("{}.png", id));
+    let idfuture = id.clone();
+    if pathbuf.exists() {
+        image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
+    } else {
+        crate::ui::network::runtime().spawn(async move {
+            let _lock = mutex.lock().await;
+            let mut retries = 0;
+            while retries < 3 {
+                match crate::ui::network::get_image(id.clone()).await {
+                    Ok(id) => {
+                        sender
+                            .send(id.clone())
+                            .await
+                            .expect("The channel needs to be open.");
+                        break;
+                    }
+                    Err(e) => {
+                        eprintln!("Failed to get image: {}, retrying...", e);
+                        retries += 1;
+                    }
+                }
+            }
+        });
+    }
+
+    glib::spawn_future_local(clone!(@weak image => async move {
+        while let Ok(_) = receiver.recv().await {
+            let path =get_thum_dir().join(format!("{}.png",idfuture));
 
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
@@ -206,17 +194,7 @@ pub fn setlogoimage(id: String) -> Picture {
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Center);
 
-    #[cfg(unix)]
-    let pathbuf = dirs::home_dir()
-        .unwrap()
-        .join(format!(".local/share/tsukimi/{}.png", id));
-
-    #[cfg(windows)]
-    let pathbuf = env::current_dir()
-        .unwrap()
-        .join("thumbnails")
-        .join(format!("{}.png", id));
-
+    let pathbuf = get_thum_dir().join(format!("{}.png", id));
     let idfuture = id.clone();
     if pathbuf.exists() {
         image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
@@ -234,11 +212,22 @@ pub fn setlogoimage(id: String) -> Picture {
 
     glib::spawn_future_local(clone!(@weak image => async move {
         while let Ok(_) = receiver.recv().await {
-        let path = get_thum_dir(&idfuture);
+        // let path = get_thum_dir(&idfuture);
+        let path = get_thum_dir().join(format!("{}.png",idfuture));
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
         }
     }));
 
     image
+}
+
+fn get_thum_dir() -> PathBuf {
+    #[cfg(unix)]
+    let pathbuf = dirs::home_dir().unwrap().join(".local/share/tsukimi");
+
+    #[cfg(windows)]
+    let pathbuf = env::current_dir().unwrap().join("thumbnails");
+
+    return pathbuf;
 }

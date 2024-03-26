@@ -1,3 +1,5 @@
+use std::{env, path::PathBuf};
+
 use glib::Object;
 use gtk::{gio, glib};
 mod imp {
@@ -7,8 +9,8 @@ mod imp {
     use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
     use std::cell::{OnceCell, Ref};
-    #[cfg(windows)]
-    use std::env;
+
+    use super::get_thum_dir;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/item.ui")]
@@ -52,17 +54,7 @@ mod imp {
             let obj = self.obj();
             let id = obj.id();
 
-            #[cfg(unix)]
-            let pathbuf = dirs::home_dir()
-                .unwrap()
-                .join(format!(".local/share/tsukimi/b{}.png", id));
-            #[cfg(windows)]
-            let pathbuf = env::current_dir()
-                .unwrap()
-                .join("thumbnails")
-                .join(format!("b{}.png", id));
-
-            // let pathbuf = PathBuf::from(&path);
+            let pathbuf = get_thum_dir().join(format!("b{}.png", id));
             let backdrop = self.backdrop.get();
             let (sender, receiver) = async_channel::bounded::<String>(1);
             let idclone = id.clone();
@@ -84,20 +76,7 @@ mod imp {
 
             glib::spawn_future_local(async move {
                 while let Ok(_) = receiver.recv().await {
-                    #[cfg(unix)]
-                    let pathbuf = dirs::home_dir()
-                        .unwrap()
-                        .join(format!(".local/share/tsukimi/b{}.png", idclone));
-                    #[cfg(windows)]
-                    let pathbuf = env::current_dir()
-                        .unwrap()
-                        .join("thumbnails")
-                        .join(format!("b{}.png", idclone));
-                    // let path = format!(
-                    //     "{}/.local/share/tsukimi/b{}.png",
-                    //     dirs::home_dir().expect("msg").display(),
-                    //     idclone
-                    // );
+                    let pathbuf = get_thum_dir().join(format!("b{}.png", idclone));
                     let file = gtk::gio::File::for_path(&pathbuf);
                     backdrop.set_file(Some(&file));
                 }
@@ -143,7 +122,8 @@ mod imp {
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 label.set_size_request(-1, 20);
                 label.set_valign(gtk::Align::Start);
-                let img = crate::ui::image::setimage(seriesinfo.Id.clone());
+                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+                let img = crate::ui::image::setimage(seriesinfo.Id.clone(), mutex.clone());
                 img.set_size_request(250, 141);
                 vbox.append(&img);
                 vbox.append(&label);
@@ -168,23 +148,30 @@ mod imp {
                 let seriesinfo: Ref<network::SeriesInfo> = item.borrow();
                 let info = seriesinfo.clone();
                 let id = seriesinfo.Id.clone();
+                dropdownspinner.set_visible(true);
                 if let Some(widget) = osdbox.last_child() {
                     if widget.is::<gtk::Box>() {
                         osdbox.remove(&widget);
                     }
                 }
-                dropdownspinner.set_visible(true);
+                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                 let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
                 runtime().spawn(async move {
                     let playback = network::playbackinfo(id).await.expect("msg");
                     sender.send(playback).await.expect("msg");
                 });
                 glib::spawn_future_local(
-                    glib::clone!(@weak dropdownspinner,@weak osdbox =>async move {
+                    glib::clone!(@weak dropdownspinner,@weak osdbox=>async move {
                         while let Ok(playback) = receiver.recv().await {
+                            let _ = mutex.lock().await;
                             let info = info.clone();
                             let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, info);
                             dropdownspinner.set_visible(false);
+                            if let Some(widget) = osdbox.last_child() {
+                                if widget.is::<gtk::Box>() {
+                                    osdbox.remove(&widget);
+                                }
+                            }
                             osdbox.append(&dropdown);
                         }
                     }),
@@ -216,4 +203,13 @@ impl ItemPage {
     pub fn new(id: String) -> Self {
         Object::builder().property("id", id).build()
     }
+}
+
+fn get_thum_dir() -> PathBuf {
+    #[cfg(unix)]
+    let path = dirs::home_dir().unwrap().join(".local/share/tsukimi");
+    #[cfg(windows)]
+    let path = env::current_dir().unwrap().join("thumbnails");
+
+    return path;
 }

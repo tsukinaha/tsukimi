@@ -64,6 +64,9 @@ mod imp {
             klass.install_action("win.relogin", None, move |window, _action, _parameter| {
                 window.placeholder();
             });
+            klass.install_action("win.about", None, move |window, _action, _parameter| {
+                window.about();
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -141,6 +144,11 @@ impl Window {
     }
 
     fn placeholder(&self) {
+        let imp = self.imp();
+        imp.stack.set_visible_child_name("placeholder");
+    }
+
+    fn about(&self) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("placeholder");
     }
