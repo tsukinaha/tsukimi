@@ -83,13 +83,16 @@ mod imp {
                 let result: std::cell::Ref<crate::ui::network::Resume> = entry.borrow();
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 0);
                 let imgbox ;
+                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                 if result.ParentThumbItemId.is_some() {
-                    imgbox = crate::ui::image::set_thumbimage(result.ParentThumbItemId.as_ref().expect("").clone());
+                    imgbox = crate::ui::image::set_thumbimage(result.ParentThumbItemId.as_ref().expect("").clone(),mutex.clone());
                 } else {
                     if result.Type == "Movie" {
-                        imgbox = crate::ui::image::set_backdropimage(result.Id.clone());
+                        imgbox = crate::ui::image::set_backdropimage(result.Id.clone(),mutex.clone());
+                    } else if result.ParentThumbItemId.is_some() {
+                        imgbox = crate::ui::image::set_backdropimage(result.SeriesId.as_ref().expect("").to_string(),mutex.clone());
                     } else {
-                        imgbox = crate::ui::image::set_backdropimage(result.SeriesId.as_ref().expect("").to_string());
+                        imgbox = crate::ui::image::set_image(result.Id.clone(),mutex.clone());
                     }
                 }
                 imgbox.set_size_request(290, 169);
@@ -130,7 +133,11 @@ mod imp {
                 if result.Type == "Movie" {
                     item_page = Page::Movie(Box::new(MoviePage::new(result.Id.clone(),result.Name.clone()).into()));
                 } else {
-                    item_page = Page::Item(Box::new(ItemPage::new(result.ParentThumbItemId.as_ref().expect("msg").clone()).into()));
+                    if result.ParentThumbItemId == None {
+                        item_page = Page::Item(Box::new(ItemPage::new(result.SeriesId.as_ref().expect("msg").clone()).into()));
+                    } else {
+                        item_page = Page::Item(Box::new(ItemPage::new(result.ParentThumbItemId.as_ref().expect("msg").clone()).into()));
+                    }
                 }
                 obj.set(item_page);
             }));

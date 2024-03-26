@@ -211,53 +211,6 @@ pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
     Ok(seriesinfo)
 }
 
-pub async fn get_image(id: String) -> Result<String, Error> {
-    let server_info = get_server_info();
-    let mut attempts = 0;
-
-    loop {
-        attempts += 1;
-        let result = reqwest::get(&format!(
-            "{}:{}/emby/Items/{}/Images/Primary",
-            server_info.domain, server_info.port, id
-        ))
-        .await;
-
-        match result {
-            Ok(response) => {
-                let bytes_result = response.bytes().await;
-                match bytes_result {
-                    Ok(bytes) => {
-                        let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
-                        let pathbuf = PathBuf::from(path_str);
-                        if pathbuf.exists() {
-                            fs::write(pathbuf.join(format!("{}.png",id)), &bytes).unwrap();
-                        } else {
-                            fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
-                                .unwrap();
-                            
-                            fs::write(pathbuf.join(format!("{}.png",id)),&bytes).unwrap();
-                        }
-                        return Ok(id);
-                    }
-                    Err(e) => {
-                        eprintln!("加载错误");
-                        if attempts >= 7 {
-                            return Err(e.into());
-                        }
-                    }
-                }
-            }
-            Err(e) => {
-                eprintln!("加载错误");
-                if attempts >= 7 {
-                    return Err(e.into());
-                }
-            }
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MediaStream {
     pub DisplayTitle: Option<String>,
@@ -452,94 +405,119 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
     Ok(model.resume)
 }
 
-pub async fn get_thumbimage(id: String) -> Result<String, Error> {
+pub async fn get_image(id: String) -> Result<String, Error> {
     let server_info = get_server_info();
-    let mut attempts = 0;
 
-    loop {
-        attempts += 1;
-        let result = reqwest::get(&format!(
-            "{}:{}/emby/Items/{}/Images/Thumb",
-            server_info.domain, server_info.port, id
-        ))
-        .await;
+    let result = reqwest::get(&format!(
+        "{}:{}/emby/Items/{}/Images/Primary?maxHeight=300",
+        server_info.domain, server_info.port, id
+    ))
+    .await;
 
-        match result {
-            Ok(response) => {
-                let bytes_result = response.bytes().await;
-                match bytes_result {
-                    Ok(bytes) => {
-                        let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
-                        let pathbuf = PathBuf::from(path_str);
-                        if pathbuf.exists() {
-                            fs::write(pathbuf.join(format!("t{}.png",id)), &bytes).unwrap();
-                        } else {
-                            fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
-                                .unwrap();
-                            
-                            fs::write(pathbuf.join(format!("t{}.png",id)),&bytes).unwrap();
-                        }
-                        return Ok(id);
-                    },
-                    Err(e) => {
-                        if attempts >= 7 {
-                            return Err(e.into());
-                        }
+    match result {
+        Ok(response) => {
+            let bytes_result = response.bytes().await;
+            match bytes_result {
+                Ok(bytes) => {
+                    let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
+                    let pathbuf = PathBuf::from(path_str);
+                    if pathbuf.exists() {
+                        fs::write(pathbuf.join(format!("{}.png",id)), &bytes).unwrap();
+                    } else {
+                        fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
+                            .unwrap();
+                        
+                        fs::write(pathbuf.join(format!("{}.png",id)),&bytes).unwrap();
                     }
+                    return Ok(id);
                 }
-            }
-            Err(e) => {
-                if attempts >= 7 {
+                Err(e) => {
+                    eprintln!("加载错误");
                     return Err(e.into());
                 }
             }
+        }
+        Err(e) => {
+            eprintln!("加载错误");
+            return Err(e.into());
+        }
+    }
+}
+
+pub async fn get_thumbimage(id: String) -> Result<String, Error> {
+    let server_info = get_server_info();
+
+    let result = reqwest::get(&format!(
+        "{}:{}/emby/Items/{}/Images/Thumb",
+        server_info.domain, server_info.port, id
+    ))
+    .await;
+
+    match result {
+        Ok(response) => {
+            let bytes_result = response.bytes().await;
+            match bytes_result {
+                Ok(bytes) => {
+                    let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
+                    let pathbuf = PathBuf::from(path_str);
+                    if pathbuf.exists() {
+                        fs::write(pathbuf.join(format!("t{}.png",id)), &bytes).unwrap();
+                    } else {
+                        fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
+                            .unwrap();
+                        
+                        fs::write(pathbuf.join(format!("t{}.png",id)),&bytes).unwrap();
+                    }
+                    return Ok(id);
+                }
+                Err(e) => {
+                    eprintln!("加载错误");
+                    return Err(e.into());
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("加载错误");
+            return Err(e.into());
         }
     }
 }
 
 pub async fn get_backdropimage(id: String) -> Result<String, Error> {
     let server_info = get_server_info();
-    let mut attempts = 0;
 
-    loop {
-        attempts += 1;
-        let result = reqwest::get(&format!(
-            "{}:{}/emby/Items/{}/Images/Backdrop",
-            server_info.domain, server_info.port, id
-        ))
-        .await;
+    let result = reqwest::get(&format!(
+        "{}:{}/emby/Items/{}/Images/Backdrop",
+        server_info.domain, server_info.port, id
+    ))
+    .await;
 
-        match result {
-            Ok(response) => {
-                let bytes_result = response.bytes().await;
-                match bytes_result {
-                    Ok(bytes) => {
-                        let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
-                        let pathbuf = PathBuf::from(path_str);
-                        if pathbuf.exists() {
-                            fs::write(pathbuf.join(format!("b{}.png",id)), &bytes).unwrap();
-                        } else {
-                            fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
-                                .unwrap();
-                            
-                            fs::write(pathbuf.join(format!("b{}.png",id)),&bytes).unwrap();
-                        }
-                        return Ok(id);
-                    },
-                    Err(e) => {
-                        eprintln!("加载错误");
-                        if attempts >= 7 {
-                            return Err(e.into());
-                        }
+    match result {
+        Ok(response) => {
+            let bytes_result = response.bytes().await;
+            match bytes_result {
+                Ok(bytes) => {
+                    let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
+                    let pathbuf = PathBuf::from(path_str);
+                    if pathbuf.exists() {
+                        fs::write(pathbuf.join(format!("b{}.png",id)), &bytes).unwrap();
+                    } else {
+                        fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
+                            .unwrap();
+                        
+                        fs::write(pathbuf.join(format!("b{}.png",id)),&bytes).unwrap();
                     }
+                    return Ok(id);
                 }
-            }
-            Err(e) => {
-                eprintln!("加载错误");
-                if attempts >= 7 {
+                Err(e) => {
+                    eprintln!("加载错误");
                     return Err(e.into());
                 }
             }
+        }
+        Err(e) => {
+            eprintln!("加载错误");
+            return Err(e.into());
         }
     }
 }

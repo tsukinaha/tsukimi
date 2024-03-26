@@ -94,7 +94,8 @@ mod imp {
                     .unwrap();
                 let result: std::cell::Ref<crate::ui::network::SearchResult> = entry.borrow();
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 2);
-                let imgbox = crate::ui::image::set_image(result.Id.clone());
+                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+                let imgbox = crate::ui::image::set_image(result.Id.clone(), mutex);
                 imgbox.set_size_request(167, 275);
                 vbox.append(&imgbox);
                 let label = Label::new(Some(&result.Name));

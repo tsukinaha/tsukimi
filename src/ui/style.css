@@ -78,8 +78,8 @@ https://github.com/GradienceTeam/Gradience
 @define-color content_view_bg #1a1b26;
 @define-color placeholder_text_color silver;
 @define-color text_view_bg #1d1d1d;
-@define-color budgie_tasklist_indicator_color #90D1F6;
-@define-color budgie_tasklist_indicator_color_active #90D1F6;
+@define-color budgie_tasklist_indicator_color #AEB5FA;
+@define-color budgie_tasklist_indicator_color_active #AEB5FA;
 @define-color budgie_tasklist_indicator_color_active_window #999999;
 @define-color budgie_tasklist_indicator_color_attention #FDD633;
 @define-color STRAWBERRY_100 #FF9262;
@@ -144,9 +144,9 @@ https://github.com/GradienceTeam/Gradience
 @define-color warning_fg_color rgba(0, 0, 0, 0.87);
 @define-color error_bg_color #ffb4a9;
 @define-color error_fg_color #680003;
-@define-color window_bg_color rgba(0, 0, 0, 0.94);
+@define-color window_bg_color rgba(30, 30, 30, 0.94);
 @define-color window_fg_color #e1e2e5;
-@define-color view_bg_color rgba(0, 0, 0, 0.94);
+@define-color view_bg_color rgba(30, 30, 30, 0.94);
 @define-color view_fg_color #e1e2e5;
 @define-color headerbar_bg_color mix(@dialog_bg_color, @window_bg_color, 0.5);
 @define-color headerbar_fg_color #d1e5f4;
@@ -156,9 +156,9 @@ https://github.com/GradienceTeam/Gradience
 @define-color card_bg_color rgba(25, 28, 30, 0.20);
 @define-color card_fg_color #d1e5f4;
 @define-color card_shade_color rgba(0, 0, 0, 0.09);
-@define-color dialog_bg_color rgba(0, 0, 0, 0.94);
+@define-color dialog_bg_color rgba(30, 30, 30, 0.94);
 @define-color dialog_fg_color #d1e5f4;
-@define-color popover_bg_color rgba(0, 0, 0, 0.94);
+@define-color popover_bg_color rgba(30, 30, 30, 0.94);
 @define-color popover_fg_color #d1e5f4;
 @define-color thumbnail_bg_color #1a1b26;
 @define-color thumbnail_fg_color #AEB5FA;

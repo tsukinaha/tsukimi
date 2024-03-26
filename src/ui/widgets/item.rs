@@ -125,7 +125,8 @@ mod imp {
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 label.set_size_request(-1,20);
                 label.set_valign(gtk::Align::Start);
-                let img = crate::ui::image::setimage(seriesinfo.Id.clone());
+                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+                let img = crate::ui::image::setimage(seriesinfo.Id.clone(),mutex.clone());
                 img.set_size_request(250, 141);
                 vbox.append(&img);
                 vbox.append(&label);
@@ -147,22 +148,29 @@ mod imp {
                 let seriesinfo: Ref<network::SeriesInfo> = item.borrow();
                 let info = seriesinfo.clone();
                 let id = seriesinfo.Id.clone();
+                dropdownspinner.set_visible(true);
                 if let Some(widget) = osdbox.last_child() {
                     if widget.is::<gtk::Box>() {
                         osdbox.remove(&widget);
                     }
                 }
-                dropdownspinner.set_visible(true);
+                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                 let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
                 runtime().spawn(async move {
                     let playback = network::playbackinfo(id).await.expect("msg");
                     sender.send(playback).await.expect("msg");
                 });
-                glib::spawn_future_local(glib::clone!(@weak dropdownspinner,@weak osdbox =>async move {
+                glib::spawn_future_local(glib::clone!(@weak dropdownspinner,@weak osdbox=>async move {
                     while let Ok(playback) = receiver.recv().await {
+                        let _ = mutex.lock().await;
                         let info = info.clone();
                         let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, info);
                         dropdownspinner.set_visible(false);
+                        if let Some(widget) = osdbox.last_child() {
+                            if widget.is::<gtk::Box>() {
+                                osdbox.remove(&widget);
+                            }
+                        }
                         osdbox.append(&dropdown);
                     }
                 }));
