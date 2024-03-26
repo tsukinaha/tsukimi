@@ -8,7 +8,6 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
     use std::cell::{OnceCell, Ref};
     use std::env;
-    use std::path::PathBuf;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/item.ui")]
