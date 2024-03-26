@@ -1,5 +1,5 @@
 use gtk::glib::{self, clone};
-use gtk::{prelude::*, Picture};
+use gtk::{prelude::*, Picture, Revealer};
 use gtk::{Box, Orientation};
 #[cfg(windows)]
 use std::env;
@@ -13,12 +13,20 @@ pub fn set_image(id: String, mutex: Arc<Mutex<()>>) -> Box {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Center);
-
+    image.set_halign(gtk::Align::Fill);
+    image.set_content_fit(gtk::ContentFit::Cover);
+    let revealer = gtk::Revealer::builder()
+        .transition_type(gtk::RevealerTransitionType::Crossfade)
+        .child(&image)
+        .reveal_child(false)
+        .transition_duration(700)
+        .build();
     let pathbuf = get_thum_dir().join(format!("{}.png", id));
-
     if pathbuf.exists() {
-        image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
+        if image.file().is_none() {
+            image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
+            revealer.set_reveal_child(true);
+        }
     } else {
         crate::ui::network::runtime().spawn(async move {
             let _lock = mutex.lock().await;
@@ -41,14 +49,15 @@ pub fn set_image(id: String, mutex: Arc<Mutex<()>>) -> Box {
         });
     }
 
-    glib::spawn_future_local(clone!(@weak image => async move {
+    glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
         while let Ok(_) = receiver.recv().await {
             let file = gtk::gio::File::for_path(&pathbuf);
             image.set_file(Some(&file));
+            revealer.set_reveal_child(true);
         }
     }));
 
-    imgbox.append(&image);
+    imgbox.append(&revealer);
     imgbox
 }
 
@@ -58,12 +67,22 @@ pub fn set_thumbimage(id: String, mutex: Arc<Mutex<()>>) -> Box {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Center);
+    image.set_halign(gtk::Align::Fill);
+    image.set_content_fit(gtk::ContentFit::Cover);
+    let revealer = gtk::Revealer::builder()
+        .transition_type(gtk::RevealerTransitionType::Crossfade)
+        .child(&image)
+        .reveal_child(false)
+        .transition_duration(700)
+        .build();
 
     let pathbuf = get_thum_dir().join(format!("t{}.png", id));
     let idfuture = id.clone();
     if pathbuf.exists() {
-        image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
+        if image.file().is_none() {
+            image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
+            revealer.set_reveal_child(true);
+        }
     } else {
         crate::ui::network::runtime().spawn(async move {
             let _lock = mutex.lock().await;
@@ -86,15 +105,16 @@ pub fn set_thumbimage(id: String, mutex: Arc<Mutex<()>>) -> Box {
         });
     }
 
-    glib::spawn_future_local(clone!(@weak image => async move {
+    glib::spawn_future_local(clone!(@weak image,@weak revealer=> async move {
         while let Ok(_) = receiver.recv().await {
             let path = get_thum_dir().join(format!("{}.png",idfuture));
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
+            revealer.set_reveal_child(true);
         }
     }));
 
-    imgbox.append(&image);
+    imgbox.append(&revealer);
     imgbox
 }
 
@@ -104,12 +124,22 @@ pub fn set_backdropimage(id: String, mutex: Arc<Mutex<()>>) -> Box {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Center);
+    image.set_halign(gtk::Align::Fill);
+    image.set_content_fit(gtk::ContentFit::Cover);
+    let revealer = gtk::Revealer::builder()
+        .transition_type(gtk::RevealerTransitionType::Crossfade)
+        .child(&image)
+        .reveal_child(false)
+        .transition_duration(700)
+        .build();
 
     let pathbuf = get_thum_dir().join(format!("b{}.png", id));
     let idfuture = id.clone();
     if pathbuf.exists() {
-        image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
+        if image.file().is_none() {
+            image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
+            revealer.set_reveal_child(true);
+        }
     } else {
         crate::ui::network::runtime().spawn(async move {
             let _lock = mutex.lock().await;
@@ -132,28 +162,39 @@ pub fn set_backdropimage(id: String, mutex: Arc<Mutex<()>>) -> Box {
         });
     }
 
-    glib::spawn_future_local(clone!(@weak image => async move {
+    glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
         while let Ok(_) = receiver.recv().await {
             let path = get_thum_dir().join(format!("{}.png",idfuture));
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
+            revealer.set_reveal_child(true);
         }
     }));
 
-    imgbox.append(&image);
+    imgbox.append(&revealer);
     imgbox
 }
 
-pub fn setimage(id: String, mutex: Arc<Mutex<()>>) -> Picture {
+pub fn setimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Center);
+    image.set_halign(gtk::Align::Fill);
+    image.set_content_fit(gtk::ContentFit::Cover);
+    let revealer = gtk::Revealer::builder()
+        .transition_type(gtk::RevealerTransitionType::Crossfade)
+        .child(&image)
+        .reveal_child(false)
+        .transition_duration(700)
+        .build();
 
     let pathbuf = get_thum_dir().join(format!("{}.png", id));
     let idfuture = id.clone();
     if pathbuf.exists() {
-        image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
+        if image.file().is_none() {
+            image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
+            revealer.set_reveal_child(true);
+        }
     } else {
         crate::ui::network::runtime().spawn(async move {
             let _lock = mutex.lock().await;
@@ -176,16 +217,17 @@ pub fn setimage(id: String, mutex: Arc<Mutex<()>>) -> Picture {
         });
     }
 
-    glib::spawn_future_local(clone!(@weak image => async move {
+    glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
         while let Ok(_) = receiver.recv().await {
             let path =get_thum_dir().join(format!("{}.png",idfuture));
 
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
+            revealer.set_reveal_child(true);
         }
     }));
 
-    image
+    revealer
 }
 
 pub fn setlogoimage(id: String) -> Picture {
