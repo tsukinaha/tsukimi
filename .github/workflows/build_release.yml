@@ -130,10 +130,12 @@ jobs:
       - name: Package MacOS x86_64
         run: |
           tar -xzf tsukimi-x86_64-apple-darwin/tsukimi-x86_64-apple-darwin.tar.gz
-          mkdir -p tsukimi.app/Contents/MacOS
-          cp share/macos/Info.plist tsukimi.app/Contents/
-          mv tsukimi tsukimi.app/Contents/MacOS/
-          tar -czf tsukimi-x86_64-apple-darwin.tar.gz tsukimi.app/
+          mkdir -p Tsukimi.app/Contents/MacOS
+          mkdir -p Tsukimi.app/Contents/Resources
+          cp share/macos/Info.plist Tsukimi.app/Contents/
+          cp share/macos/AppIcon.icns Tsukimi.app/Contents/Resources/
+          mv tsukimi Tsukimi.app/Contents/MacOS/
+          tar -czf tsukimi-x86_64-apple-darwin.tar.gz Tsukimi.app/
 
       - name: Package Windows GNU
         run: |

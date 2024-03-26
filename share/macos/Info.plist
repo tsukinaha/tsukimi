@@ -10,6 +10,10 @@
     <string>com.inaha.tsukimi</string>
     <key>CFBundleExecutable</key>
     <string>tsukimi</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundleIconName</key>
+    <string>AppIcon</string>
     <key>CFBundleSignature</key>
     <string>suki</string>
 

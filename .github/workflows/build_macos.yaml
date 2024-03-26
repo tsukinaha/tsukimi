@@ -35,10 +35,20 @@ jobs:
           brew install gtk4
           brew install libadwaita
           rustup target add ${{matrix.target}}
-          cargo build --release --locked --target ${{matrix.target}}
+          cargo build --release --locked
+
+      - name: Make MacOS package
+        run: |
+          mkdir -p Tsukimi.app/Contents/MacOS
+          mkdir -p Tsukimi.app/Contents/Resources
+          cp share/macos/Info.plist Tsukimi.app/Contents/
+          cp share/macos/AppIcon.icns Tsukimi.app/Contents/Resources/
+          mv target/release/tsukimi Tsukimi.app/Contents/MacOS/
+          tar -czf tsukimi-x86_64-apple-darwin.tar.gz Tsukimi.app/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{matrix.artifact}}-${{matrix.target}}
-          path: target/${{matrix.target}}/release/${{matrix.artifact}}
+          path: tsukimi-${{matrix.target}}.tar.gz
+          compression-level: 0

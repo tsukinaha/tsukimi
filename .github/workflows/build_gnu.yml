@@ -51,3 +51,4 @@ jobs:
         with:
           name: tsukimi-${{matrix.arch-name}}
           path: C:/artifacts/*
+          compression-level: 0
