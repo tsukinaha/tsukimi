@@ -1,6 +1,8 @@
 use reqwest;
 use serde::{Deserialize, Serialize};
-use std::{env, fs};
+use std::fs;
+#[cfg(windows)]
+use std::env;
 use toml;
 
 #[derive(Debug, Serialize, Deserialize, Default)]
@@ -156,7 +158,7 @@ pub fn get_server_info() -> ServerInfo {
         port: String::new(),
     };
     #[cfg(unix)]
-    let mut path = dirs::home_dir()
+    let path = dirs::home_dir()
         .unwrap()
         .join(".config")
         .join("tsukimi.toml");

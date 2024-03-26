@@ -7,6 +7,7 @@ mod imp {
     use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
     use std::cell::{OnceCell, Ref};
+    #[cfg(windows)]
     use std::env;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]

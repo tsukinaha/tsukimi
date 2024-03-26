@@ -1,6 +1,7 @@
 use gtk::glib::{self, clone};
 use gtk::{prelude::*, Picture};
 use gtk::{Box, Orientation};
+#[cfg(windows)]
 use std::env;
 use std::path::PathBuf;
 

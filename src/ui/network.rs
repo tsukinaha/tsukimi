@@ -7,6 +7,7 @@ use reqwest::Error;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use serde_json::Value;
+#[cfg(windows)]
 use std::env;
 use std::fs::{self, write};
 use std::sync::OnceLock;
@@ -204,7 +205,7 @@ pub async fn get_image(id: String) -> Result<String, Error> {
                 match bytes_result {
                     Ok(bytes) => {
                         #[cfg(unix)]
-                        let mut pathbuf = dirs::home_dir().unwrap().join(".local/share/tsukimi");
+                        let pathbuf = dirs::home_dir().unwrap().join(".local/share/tsukimi");
 
                         #[cfg(windows)]
                         let pathbuf = env::current_dir().unwrap().join("thumbnails");

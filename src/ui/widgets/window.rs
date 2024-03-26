@@ -3,6 +3,7 @@ use adw::prelude::NavigationPageExt;
 use dirs::home_dir;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
+#[cfg(windows)]
 use std::env;
 
 mod imp {

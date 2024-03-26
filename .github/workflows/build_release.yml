@@ -88,7 +88,7 @@ jobs:
           mkdir artifact
           docker build -t tsukimi .
           docker run -d --name tsukimi tsukimi
-          docker cp tsukimi:/usr/src/tsukimi/tsukimi-x86_64-linux-gnu.tar.gz artifact/
+          docker cp tsukimi:/usr/src/tsukimi/tsukimi-${{matrix.arch}}.tar.gz artifact/
 
       - name: Build ${{matrix.target}}
         if: ${{matrix.target == 'x86_64-apple-darwin'}}
@@ -124,9 +124,26 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
  
+      - name: Package Windows GNU
+        run: |
+          mv tsukimi-x86_64-windows-gnu/*.zip .
+
+      - name: Package Windows MSVC
+        run: |
+          mv tsukimi-x86_64-windows-msvc/*.zip .
+
+      - name: Package Linux GNU
+        run: |
+          mv tsukimi-x86_64-linux-gnu/*.tar.gz .
+
+      - name: Package MacOS x86_64
+        run: |
+          mv tsukimi-x86_64-apple-darwin/*.tar.gz .
+
       - name: Calculate hash
         run: |
-          sha256sum *.zip > tsukimi.sha256sum
+          sha512sum *.zip > tsukimi.sha512sum
+          sha512sum *.tar.gz >> tsukimi.sha512sum
 
       - name: Get latest tag name
         run: echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
@@ -138,5 +155,6 @@ jobs:
         with:
           files: |
             *.zip
-            tsukimi.sha256sum
+            *.tar.gz
+            tsukimi.sha512sum
           tag_name: ${{ env.TAG_NAME }}
