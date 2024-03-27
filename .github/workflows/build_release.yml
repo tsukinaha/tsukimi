@@ -1,0 +1,172 @@
+name: Build releases and publish
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - v*
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+  RUST_BACKTRACE: full
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          # x86_64-windows-msvc
+          - arch: x86_64-windows-msvc
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact: tsukimi.exe
+            ext: .exe
+          # x86_64-windows-gnu
+          - arch: x86_64-windows-gnu
+            os: windows-latest
+            target: x86_64-pc-windows-gnu
+            artifact: tsukimi.exe
+            ext: .exe
+          # x86_64-linux-gnu
+          - arch: x86_64-linux-gnu
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact: tsukimi
+            ext:
+          # x86_64-apple-darwin
+          - arch: x86_64-apple-darwin
+            os: macos-latest
+            target: x86_64-apple-darwin
+            artifact: tsukimi
+            ext:
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build ${{ matrix.target }}
+        if: ${{ matrix.target == 'x86_64-pc-windows-msvc' }}
+        run: |
+          rustup default stable-msvc
+          py -3.12 -m pip install --user pipx
+          py -3.12 -m pipx ensurepath
+          pipx install gvsbuild
+          $env:Path = "C:\gtk-build\gtk\x64\release\lib\pkgconfig;C:\gtk-build\gtk\x64\release\bin;C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path
+          $env:LIB = "C:\gtk-build\gtk\x64\release\lib;C:\msys64\mingw64\lib;" + $env:LIB
+          $env:INCLUDE = "C:\gtk-build\gtk\x64\release\include;C:\gtk-build\gtk\x64\release\include\cairo;C:\gtk-build\gtk\x64\release\include\glib-2.0;C:\gtk-build\gtk\x64\release\include\gobject-introspection-1.0;C:\gtk-build\gtk\x64\release\lib\glib-2.0\include;C:\msys64\mingw64\include;" + $env:INCLUDE
+          $env:PKG_CONFIG_PATH = "C:\gtk-build\gtk\x64\release\lib\pkgconfig;" + $env:PKG_CONFIG_PATH
+          gvsbuild build gtk4 libadwaita adwaita-icon-theme
+          cargo build --release --locked --target ${{ matrix.target }}
+          mkdir artifact
+          cp target/${{matrix.target}}/release/${{ matrix.artifact }} artifact/tsukimi-${{ matrix.arch }}${{ matrix.ext }}
+          cp C:\gtk-build\gtk\x64\release\bin\*.dll artifact/
+          compress-archive -path artifact/* -destination artifact/tsukimi-${{matrix.arch}}.zip
+
+      - name: Build ${{ matrix.target }}
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        run: |
+          rustup toolchain install stable-gnu
+          rustup default stable-gnu
+          C:\msys64\usr\bin\pacman.exe -S --needed --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-gettext mingw-w64-x86_64-libxml2 mingw-w64-x86_64-librsvg mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc mingw-w64-x86_64-libadwaita
+          C:\msys64\usr\bin\pacman.exe -Syu --noconfirm
+
+      - name: Build ${{ matrix.target }}
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        run: |
+          $env:Path = "C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path;
+          cargo build --release --locked --target ${{ matrix.target }}
+          mkdir artifact/
+          cp target/${{matrix.target}}/release/${{ matrix.artifact }} artifact/tsukimi-${{ matrix.arch }}${{ matrix.ext }}
+          cp C:/msys64/mingw64/bin/*.dll artifact
+          compress-archive -path artifact/* -destination artifact/tsukimi-${{matrix.arch}}.zip
+
+      - name: Build ${{matrix.target}}
+        if: ${{matrix.target == 'x86_64-unknown-linux-gnu'}}
+        run: |
+          mkdir artifact
+          docker build -t tsukimi .
+          docker run -d --name tsukimi tsukimi
+          docker cp tsukimi:/usr/src/tsukimi/. artifact/
+          cd artifact
+          tar -czf tsukimi-${{matrix.arch}}.tar.gz tsukimi
+
+      - name: Build ${{matrix.target}}
+        if: ${{matrix.target == 'x86_64-apple-darwin'}}
+        run: |
+          brew install gtk4
+          brew install libadwaita
+          rustup target add ${{matrix.target}}
+          cargo build --release --locked --target ${{matrix.target}}
+          mkdir artifact
+          cp target/${{matrix.target}}/release/${{matrix.artifact}} artifact/
+          cd artifact/
+          tar -czf tsukimi-${{matrix.arch}}.tar.gz ./*
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsukimi-${{matrix.arch}}
+          path: |
+            artifact/*.deb
+            artifact/tsukimi-*.zip
+            artifact/tsukimi-*.tar.gz
+          compression-level: 0
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+ 
+      - name: Package MacOS x86_64
+        run: |
+          tar -xzf tsukimi-x86_64-apple-darwin/tsukimi-x86_64-apple-darwin.tar.gz
+          mkdir -p Tsukimi.app/Contents/MacOS
+          mkdir -p Tsukimi.app/Contents/Resources
+          cp share/macos/Info.plist Tsukimi.app/Contents/
+          cp share/macos/AppIcon.icns Tsukimi.app/Contents/Resources/
+          mv tsukimi Tsukimi.app/Contents/MacOS/
+          tar -czf tsukimi-x86_64-apple-darwin.tar.gz Tsukimi.app/
+
+      - name: Package Windows GNU
+        run: |
+          mv tsukimi-x86_64-windows-gnu/*.zip .
+
+      - name: Package Windows MSVC
+        run: |
+          mv tsukimi-x86_64-windows-msvc/*.zip .
+
+      - name: Package Linux GNU
+        run: |
+          mv tsukimi-x86_64-linux-gnu/*.tar.gz .
+          mv tsukimi-x86_64-linux-gnu/*.deb .
+
+      - name: Calculate hash
+        run: |
+          sha512sum *.zip > tsukimi.sha512sum
+          sha512sum *.tar.gz >> tsukimi.sha512sum
+          sha512sum *.deb >> tsukimi.sha512sum
+
+      - name: Get latest tag name
+        run: echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+
+      - name: Upload Github Assets
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            *.zip
+            *.tar.gz
+            *.deb
+            tsukimi.sha512sum
+          tag_name: ${{ env.TAG_NAME }}
