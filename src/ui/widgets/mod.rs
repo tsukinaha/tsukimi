@@ -1,7 +1,7 @@
-pub mod window;
-pub mod settings;
-pub mod search;
+pub mod episoderow;
+pub mod history;
 pub mod item;
 pub mod movie;
-pub mod history;
-pub mod episoderow;
+pub mod search;
+pub mod settings;
+pub mod window;

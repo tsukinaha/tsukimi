@@ -1,9 +1,9 @@
-mod provider;
 mod image;
+mod moviedrop;
 mod network;
 mod new_dropsel;
+mod provider;
 mod widgets;
-mod moviedrop;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
 

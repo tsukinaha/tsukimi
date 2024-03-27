@@ -83,20 +83,30 @@ mod imp {
             let factory = gtk::SignalListItemFactory::new();
             factory.connect_bind(move |_factory, item| {
                 let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
-                let entry = listitem.item().and_downcast::<glib::BoxedAnyObject>().unwrap();
+                let entry = listitem
+                    .item()
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
                 let result: std::cell::Ref<crate::ui::network::Resume> = entry.borrow();
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 0);
-                let imgbox ;
+                let imgbox;
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                 if result.ParentThumbItemId.is_some() {
-                    imgbox = crate::ui::image::set_thumbimage(result.ParentThumbItemId.as_ref().expect("").clone(),mutex.clone());
+                    imgbox = crate::ui::image::set_thumbimage(
+                        result.ParentThumbItemId.as_ref().expect("").clone(),
+                        mutex.clone(),
+                    );
                 } else {
                     if result.Type == "Movie" {
-                        imgbox = crate::ui::image::set_backdropimage(result.Id.clone(),mutex.clone());
+                        imgbox =
+                            crate::ui::image::set_backdropimage(result.Id.clone(), mutex.clone());
                     } else if result.ParentThumbItemId.is_some() {
-                        imgbox = crate::ui::image::set_backdropimage(result.SeriesId.as_ref().expect("").to_string(),mutex.clone());
+                        imgbox = crate::ui::image::set_backdropimage(
+                            result.SeriesId.as_ref().expect("").to_string(),
+                            mutex.clone(),
+                        );
                     } else {
-                        imgbox = crate::ui::image::set_image(result.Id.clone(),mutex.clone());
+                        imgbox = crate::ui::image::set_image(result.Id.clone(), mutex.clone());
                     }
                 }
                 imgbox.set_size_request(290, 169);
@@ -104,14 +114,20 @@ mod imp {
                 let label = Label::new(Some(&result.Name));
                 let labeltype = Label::new(Some(&result.Type));
                 if result.Type == "Episode" {
-                    let markup = format!("{}",result.SeriesName.as_ref().expect("").clone());
+                    let markup = format!("{}", result.SeriesName.as_ref().expect("").clone());
                     label.set_markup(markup.as_str());
-                    let markup = format!("<span color='lightgray' font='10'>S{}E{}: {}</span>", result.ParentIndexNumber.as_ref().expect("").clone(), result.IndexNumber.as_ref().expect("").clone(), result.Name);
+                    let markup = format!(
+                        "<span color='lightgray' font='10'>S{}E{}: {}</span>",
+                        result.ParentIndexNumber.as_ref().expect("").clone(),
+                        result.IndexNumber.as_ref().expect("").clone(),
+                        result.Name
+                    );
                     labeltype.set_markup(markup.as_str());
                 } else {
                     let markup = format!("{}", result.Name);
                     label.set_markup(markup.as_str());
-                    let markup = format!("<span color='lightgray' font='10'>{}</span>", result.Type);
+                    let markup =
+                        format!("<span color='lightgray' font='10'>{}</span>", result.Type);
                     labeltype.set_markup(markup.as_str());
                 }
                 label.set_wrap(true);

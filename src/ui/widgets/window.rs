@@ -2,12 +2,12 @@ use adw::prelude::NavigationPageExt;
 use dirs::home_dir;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-mod imp{
+mod imp {
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
-    use gtk::{glib, CompositeTemplate,};
+    use gtk::{glib, CompositeTemplate};
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -48,41 +48,21 @@ mod imp{
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
-            klass.install_action_async(
-                "win.login",
-                None,
-                |window, _, _| async move {
-                    window.login().await;
-                },
-            );
-            klass.install_action(
-                "win.home",
-                None,
-                move |window, _action, _parameter| {
-                    window.homepage();
-                },
-            );
-            klass.install_action(
-                "win.search",
-                None,
-                move |window, _action, _parameter| {
-                    window.searchpage();
-                },
-            );
-            klass.install_action(
-                "win.relogin",
-                None,
-                move |window, _action, _parameter| {
-                    window.placeholder();
-                },
-            );
-            klass.install_action(
-                "win.about",
-                None,
-                move |window, _action, _parameter| {
-                    window.about();
-                },
-            );
+            klass.install_action_async("win.login", None, |window, _, _| async move {
+                window.login().await;
+            });
+            klass.install_action("win.home", None, move |window, _action, _parameter| {
+                window.homepage();
+            });
+            klass.install_action("win.search", None, move |window, _action, _parameter| {
+                window.searchpage();
+            });
+            klass.install_action("win.relogin", None, move |window, _action, _parameter| {
+                window.placeholder();
+            });
+            klass.install_action("win.about", None, move |window, _action, _parameter| {
+                window.about();
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -130,7 +110,6 @@ mod imp{
     // Trait shared by all application windows
     impl ApplicationWindowImpl for Window {}
     impl AdwApplicationWindowImpl for Window {}
-
 }
 
 use glib::Object;
@@ -172,25 +151,29 @@ impl Window {
 
     fn homepage(&self) {
         let imp = self.imp();
-        imp.historypage.set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
+        imp.historypage
+            .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
         imp.insidestack.set_visible_child_name("historypage");
     }
 
     fn historypage(&self) {
         let imp = self.imp();
-        imp.historypage.set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
+        imp.historypage
+            .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
         imp.insidestack.set_visible_child_name("historypage");
     }
 
     fn searchpage(&self) {
         let imp = self.imp();
-        imp.searchpage.set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
+        imp.searchpage
+            .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
         imp.insidestack.set_visible_child_name("searchpage");
     }
 
     fn settingspage(&self) {
         let imp = self.imp();
-        imp.settingspage.set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
+        imp.settingspage
+            .set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
         imp.insidestack.set_visible_child_name("settingspage");
     }
 
@@ -207,8 +190,11 @@ impl Window {
         runtime().spawn(async move {
             match crate::ui::network::login(server, name, password, port).await {
                 Ok(_) => {
-                    sender.send("1".to_string()).await.expect("The channel needs to be open.");
-                },
+                    sender
+                        .send("1".to_string())
+                        .await
+                        .expect("The channel needs to be open.");
+                }
                 Err(e) => eprintln!("Error: {}", e),
             }
         });
@@ -217,7 +203,7 @@ impl Window {
                 Ok(_) => {
                     loginbutton.set_sensitive(false);
                     selfc.mainpage();
-                },
+                }
                 Err(_) => {
                     loginbutton.set_sensitive(true);
                     loginbutton.set_label("Link Failed");
@@ -232,6 +218,6 @@ impl Window {
         path.push("tsukimi.yaml");
         if path.exists() {
             self.mainpage();
-        } 
+        }
     }
 }

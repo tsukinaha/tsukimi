@@ -98,7 +98,6 @@ mod imp {
             });
 
             let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
-            
             self.selection.set_model(Some(&store));
 
             let (sender, receiver) = async_channel::bounded::<Vec<network::SeriesInfo>>(1);
