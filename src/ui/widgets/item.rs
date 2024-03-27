@@ -1,14 +1,15 @@
 use glib::Object;
-use gtk::{gio, glib};
 use gtk::prelude::*;
+use gtk::{gio, glib};
 mod imp {
+    use crate::ui::network::{self, runtime};
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
     use std::cell::{OnceCell, Ref};
+    use std::collections::{HashMap, HashSet};
     use std::path::PathBuf;
-    use crate::ui::network::{self, runtime};
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/item.ui")]
@@ -28,7 +29,10 @@ mod imp {
         pub itemrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub logobox: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub seasonlist: TemplateChild<gtk::DropDown>,
         pub selection: gtk::SingleSelection,
+        pub seasonselection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -94,8 +98,8 @@ mod imp {
             });
 
             let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
-            self.selection.set_model(Some(&store));
             
+            self.selection.set_model(Some(&store));
 
             let (sender, receiver) = async_channel::bounded::<Vec<network::SeriesInfo>>(1);
             network::runtime().spawn(async move {
@@ -110,19 +114,60 @@ mod imp {
                 }
             });
 
+            let seasonstore = gtk::StringList::new(&[]);
+            self.seasonselection.set_model(Some(&seasonstore));
+            let seasonlist = self.seasonlist.get();
+            seasonlist.set_model(Some(&self.seasonselection));
             glib::spawn_future_local(async move {
                 let series_info = receiver.recv().await.expect("series_info not received.");
-                for info in series_info {
-                    let object = glib::BoxedAnyObject::new(info);
-                    store.append(&object);
+                let mut season_set: HashSet<u32> = HashSet::new();
+                let mut season_map: HashMap<String, u32> = HashMap::new();
+                let mut position = 0;
+                let mut _infor = 0;
+                for info in &series_info {
+                    if !season_set.contains(&info.ParentIndexNumber) {
+                        let seasonstring = format!("Season {}", info.ParentIndexNumber);
+                        seasonstore.append(&seasonstring);
+                        season_set.insert(info.ParentIndexNumber);
+                        season_map.insert(seasonstring.clone(), info.ParentIndexNumber);
+                        if _infor <= 1 {
+                            if info.ParentIndexNumber < 1 {
+                                position += 1;
+                            }
+                        }
+                        _infor += 1;
+                    }
                 }
+                for info in &series_info {
+                    if info.ParentIndexNumber == 1 {
+                        let object = glib::BoxedAnyObject::new(info.clone());
+                        store.append(&object);
+                    }
+                }
+                seasonlist.set_selected(position);
+                seasonlist.connect_selected_item_notify(move |dropdown| {
+                    let selected = dropdown.selected_item();
+                    let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
+                    let selected = selected.string().to_string();
+                    store.remove_all();
+                    let season_number = season_map[&selected];
+                    for info in &series_info {
+                        if info.ParentIndexNumber == season_number {
+                            let object = glib::BoxedAnyObject::new(info.clone());
+                            store.append(&object);
+                        }
+                    }
+                });
                 itemrevealer.set_reveal_child(true);
             });
 
             let factory = gtk::SignalListItemFactory::new();
             factory.connect_bind(|_, item| {
                 let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
-                let entry = listitem.item().and_downcast::<glib::BoxedAnyObject>().unwrap();
+                let entry = listitem
+                    .item()
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
                 let seriesinfo: Ref<network::SeriesInfo> = entry.borrow();
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
                 let label = gtk::Label::new(Some(&seriesinfo.Name));
@@ -130,10 +175,10 @@ mod imp {
                 let markup = format!("{}. {}", seriesinfo.IndexNumber, seriesinfo.Name);
                 label.set_markup(markup.as_str());
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
-                label.set_size_request(-1,20);
+                label.set_size_request(-1, 20);
                 label.set_valign(gtk::Align::Start);
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                let img = crate::ui::image::setimage(seriesinfo.Id.clone(),mutex.clone());
+                let img = crate::ui::image::setimage(seriesinfo.Id.clone(), mutex.clone());
                 img.set_size_request(250, 141);
                 vbox.append(&img);
                 vbox.append(&label);
@@ -153,7 +198,10 @@ mod imp {
             let dropdownspinner = self.dropdownspinner.get();
             self.itemlist.connect_activate(move |listview, position| {
                 let model = listview.model().unwrap();
-                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                let item = model
+                    .item(position)
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
                 let seriesinfo: Ref<network::SeriesInfo> = item.borrow();
                 let info = seriesinfo.clone();
                 let id = seriesinfo.Id.clone();
@@ -169,20 +217,22 @@ mod imp {
                     let playback = network::playbackinfo(id).await.expect("msg");
                     sender.send(playback).await.expect("msg");
                 });
-                glib::spawn_future_local(glib::clone!(@weak dropdownspinner,@weak osdbox=>async move {
-                    while let Ok(playback) = receiver.recv().await {
-                        let _ = mutex.lock().await;
-                        let info = info.clone();
-                        let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, info);
-                        dropdownspinner.set_visible(false);
-                        if let Some(widget) = osdbox.last_child() {
-                            if widget.is::<gtk::Box>() {
-                                osdbox.remove(&widget);
+                glib::spawn_future_local(
+                    glib::clone!(@weak dropdownspinner,@weak osdbox=>async move {
+                        while let Ok(playback) = receiver.recv().await {
+                            let _ = mutex.lock().await;
+                            let info = info.clone();
+                            let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, info);
+                            dropdownspinner.set_visible(false);
+                            if let Some(widget) = osdbox.last_child() {
+                                if widget.is::<gtk::Box>() {
+                                    osdbox.remove(&widget);
+                                }
                             }
+                            osdbox.append(&dropdown);
                         }
-                        osdbox.append(&dropdown);
-                    }
-                }));
+                    }),
+                );
             });
         }
     }
