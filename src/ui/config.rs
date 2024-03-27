@@ -1,6 +1,6 @@
 use reqwest;
 use serde::{Deserialize, Serialize};
-#[cfg(windows)]
+#[cfg(any(target_os="windows",target_os="macos"))]
 use std::env;
 use std::fs;
 use toml;
@@ -43,6 +43,12 @@ pub struct MPVClient;
 
 impl MPVClient {
     pub fn play(url: String, name: String) {
+        #[cfg(target_os = "macos")]
+        env::set_var("PATH", {
+            let paths = vec!["/usr/bin", "/usr/local/bin"];
+            env::join_paths(paths).unwrap()
+        });
+
         let mut command = std::process::Command::new(mpv());
         let server_info = get_server_info();
         let titlename = format!("--force-media-title={}", name);
@@ -68,6 +74,12 @@ impl MPVClient {
     }
 
     pub fn play_with_sub(url: String, name: String, suburl: String) {
+        #[cfg(target_os = "macos")]
+        env::set_var("PATH", {
+            let paths = vec!["/usr/bin", "/usr/local/bin"];
+            env::join_paths(paths).unwrap()
+        });
+
         let mut command = std::process::Command::new(mpv());
         let server_info = get_server_info();
         let titlename = format!("--force-media-title={}", name);
