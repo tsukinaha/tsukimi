@@ -1,5 +1,6 @@
 use glib::Object;
 use gtk::{gio, glib};
+use gtk::prelude::*;
 mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
@@ -25,6 +26,8 @@ mod imp {
         pub osdbox: TemplateChild<gtk::Box>,
         #[template_child]
         pub itemrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub logobox: TemplateChild<gtk::Box>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -144,6 +147,8 @@ mod imp {
             });
             self.itemlist.set_factory(Some(&factory));
             self.itemlist.set_model(Some(&self.selection));
+            let logobox = self.logobox.get();
+            obj.logoset(logobox);
             let osdbox = self.osdbox.get();
             let dropdownspinner = self.dropdownspinner.get();
             self.itemlist.connect_activate(move |listview, position| {
@@ -204,5 +209,13 @@ glib::wrapper! {
 impl ItemPage {
     pub fn new(id: String) -> Self {
         Object::builder().property("id", id).build()
+    }
+
+    pub fn logoset(&self, osd: gtk::Box) {
+        let id = self.id();
+        let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+        let logo = crate::ui::image::setlogoimage(id.clone(), mutex.clone());
+        osd.append(&logo);
+        osd.add_css_class("logo");
     }
 }

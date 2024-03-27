@@ -1,5 +1,6 @@
 use glib::Object;
 use gtk::{gio, glib};
+use gtk::prelude::*;
 mod imp {
     use crate::ui::network::{self, runtime, SearchResult};
     use adw::subclass::prelude::*;
@@ -25,6 +26,8 @@ mod imp {
         pub itemlist: TemplateChild<gtk::ListView>,
         #[template_child]
         pub osdbox: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub logobox: TemplateChild<gtk::Box>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -90,6 +93,8 @@ mod imp {
                     backdrop.set_file(Some(&file));
                 }
             });
+            let logobox = self.logobox.get();
+            obj.logoset(logobox);
             let dropdownspinner = self.dropdownspinner.get();
             let osdbox = self.osdbox.get();
             dropdownspinner.set_visible(true);
@@ -137,5 +142,13 @@ glib::wrapper! {
 impl MoviePage {
     pub fn new(id: String,name: String) -> Self {
         Object::builder().property("id", id).property("moviename", name).build()
+    }
+
+    pub fn logoset(&self, osd: gtk::Box) {
+        let id = self.id();
+        let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+        let logo = crate::ui::image::setlogoimage(id.clone(), mutex.clone());
+        osd.append(&logo);
+        osd.add_css_class("logo");
     }
 }

@@ -521,3 +521,42 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
         }
     }
 }
+
+pub async fn get_logoimage(id: String) -> Result<String, Error> {
+    let server_info = get_server_info();
+
+    let result = reqwest::get(&format!(
+        "{}:{}/emby/Items/{}/Images/Logo",
+        server_info.domain, server_info.port, id
+    ))
+    .await;
+
+    match result {
+        Ok(response) => {
+            let bytes_result = response.bytes().await;
+            match bytes_result {
+                Ok(bytes) => {
+                    let path_str = format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display());
+                    let pathbuf = PathBuf::from(path_str);
+                    if pathbuf.exists() {
+                        fs::write(pathbuf.join(format!("l{}.png",id)), &bytes).unwrap();
+                    } else {
+                        fs::create_dir_all(format!("{}/.local/share/tsukimi/", home_dir().expect("msg").display()))
+                            .unwrap();
+                        
+                        fs::write(pathbuf.join(format!("l{}.png",id)),&bytes).unwrap();
+                    }
+                    return Ok(id);
+                }
+                Err(e) => {
+                    eprintln!("加载错误");
+                    return Err(e.into());
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("加载错误");
+            return Err(e.into());
+        }
+    }
+}

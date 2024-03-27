@@ -39,6 +39,15 @@
                         </child>
                       </object>
                     </child>
+                    <child type="overlay">
+                      <object class="GtkBox" id="logobox">
+                      <property name="margin-start">30</property>
+                      <property name="margin-top">15</property>
+                      <property name="height-request">150</property>
+                      <property name="valign">start</property>
+                      <property name="halign">start</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
