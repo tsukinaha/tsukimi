@@ -31,6 +31,8 @@ mod imp {
         pub spinner: TemplateChild<gtk::Spinner>,
         #[template_child]
         pub searchscrolled: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        pub searchrevealer: TemplateChild<gtk::Revealer>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -57,6 +59,8 @@ mod imp {
             let obj = self.obj();
             self.parent_constructed();
             let spinner = self.spinner.get();
+            let searchrevealer = self.searchrevealer.get();
+            
             let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
             self.searchentry.connect_activate(glib::clone!(@strong sender,@weak spinner=> move |entry| {
                 spinner.set_visible(true);
@@ -81,6 +85,7 @@ mod imp {
                             store.append(&object);
                         }
                     }
+                    searchrevealer.set_reveal_child(true);
                 }
             }));
 

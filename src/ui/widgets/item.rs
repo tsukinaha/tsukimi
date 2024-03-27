@@ -23,6 +23,8 @@ mod imp {
         pub itemlist: TemplateChild<gtk::ListView>,
         #[template_child]
         pub osdbox: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub itemrevealer: TemplateChild<gtk::Revealer>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -49,6 +51,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
+            let itemrevealer = self.itemrevealer.get();
             let id = obj.id();
             let path = format!(
                 "{}/.local/share/tsukimi/b{}.png",
@@ -110,6 +113,7 @@ mod imp {
                     let object = glib::BoxedAnyObject::new(info);
                     store.append(&object);
                 }
+                itemrevealer.set_reveal_child(true);
             });
 
             let factory = gtk::SignalListItemFactory::new();
@@ -120,7 +124,7 @@ mod imp {
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
                 let label = gtk::Label::new(Some(&seriesinfo.Name));
                 label.set_halign(gtk::Align::Start);
-                let markup = format!("E{} : {}", seriesinfo.IndexNumber, seriesinfo.Name);
+                let markup = format!("{}. {}", seriesinfo.IndexNumber, seriesinfo.Name);
                 label.set_markup(markup.as_str());
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 label.set_size_request(-1,20);

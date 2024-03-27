@@ -29,6 +29,8 @@ mod imp {
         pub spinner: TemplateChild<gtk::Spinner>,
         #[template_child]
         pub historyscrolled: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        pub historyrevealer: TemplateChild<gtk::Revealer>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -55,6 +57,7 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             let spinner = self.spinner.get();
+            let historyrevealer = self.historyrevealer.get();
             spinner.set_visible(true);
             let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Resume>>(1);
             crate::ui::network::runtime().spawn(glib::clone!(@strong sender => async move {
@@ -72,6 +75,7 @@ mod imp {
                         store.append(&object);
                     }
                     spinner.set_visible(false);
+                    historyrevealer.set_reveal_child(true);
                 }
             }));
 

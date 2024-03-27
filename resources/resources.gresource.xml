@@ -7,5 +7,6 @@
     <file compressed="true" preprocess="xml-stripblanks">item.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">movie.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">history.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">episoderow.ui</file>
   </gresource>
 </gresources>

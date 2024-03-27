@@ -55,8 +55,14 @@
                     <property name="valign">fill</property>
                     <property name="margin-bottom">3</property>
                     <child>
-                      <object class="GtkListView" id="itemlist">
-                        <property name="orientation">horizontal</property>
+                      <object class="GtkRevealer" id="itemrevealer">
+                        <property name="transition-duration">700</property>
+                        <property name="reveal-child">False</property>
+                        <child>
+                          <object class="GtkListView" id="itemlist">
+                            <property name="orientation">horizontal</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
