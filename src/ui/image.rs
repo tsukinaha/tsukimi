@@ -8,7 +8,7 @@ pub fn set_image(id: String, mutex: Arc<Mutex<()>>) -> Box {
     let imgbox = Box::new(Orientation::Vertical, 5);
 
     let (sender, receiver) = async_channel::bounded::<String>(1);
-    
+
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Fill);
     image.set_content_fit(gtk::ContentFit::Cover);
@@ -180,7 +180,7 @@ pub fn set_backdropimage(id: String, mutex: Arc<Mutex<()>>) -> Box {
         while let Ok(_) = receiver.recv().await {
             let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), idfuture);
             let file = gtk::gio::File::for_path(&path);
-            image.set_file(Some(&file)); 
+            image.set_file(Some(&file));
             revealer.set_reveal_child(true);
         }
     }));
@@ -189,7 +189,7 @@ pub fn set_backdropimage(id: String, mutex: Arc<Mutex<()>>) -> Box {
     imgbox
 }
 
-pub fn setimage(id: String,mutex: Arc<Mutex<()>>) -> Revealer {
+pub fn setimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
@@ -248,7 +248,7 @@ pub fn setimage(id: String,mutex: Arc<Mutex<()>>) -> Revealer {
     revealer
 }
 
-pub fn setlogoimage(id: String,mutex: Arc<Mutex<()>>) -> Revealer {
+pub fn setlogoimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();

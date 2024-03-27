@@ -1,14 +1,14 @@
 use glib::Object;
-use gtk::{gio, glib};
 use gtk::prelude::*;
+use gtk::{gio, glib};
 mod imp {
+    use crate::ui::network::{self, runtime};
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
     use std::cell::{OnceCell, Ref};
     use std::path::PathBuf;
-    use crate::ui::network::{self, runtime};
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/item.ui")]
@@ -95,7 +95,6 @@ mod imp {
 
             let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
             self.selection.set_model(Some(&store));
-            
 
             let (sender, receiver) = async_channel::bounded::<Vec<network::SeriesInfo>>(1);
             network::runtime().spawn(async move {
@@ -122,7 +121,10 @@ mod imp {
             let factory = gtk::SignalListItemFactory::new();
             factory.connect_bind(|_, item| {
                 let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
-                let entry = listitem.item().and_downcast::<glib::BoxedAnyObject>().unwrap();
+                let entry = listitem
+                    .item()
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
                 let seriesinfo: Ref<network::SeriesInfo> = entry.borrow();
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
                 let label = gtk::Label::new(Some(&seriesinfo.Name));
@@ -130,10 +132,10 @@ mod imp {
                 let markup = format!("{}. {}", seriesinfo.IndexNumber, seriesinfo.Name);
                 label.set_markup(markup.as_str());
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
-                label.set_size_request(-1,20);
+                label.set_size_request(-1, 20);
                 label.set_valign(gtk::Align::Start);
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                let img = crate::ui::image::setimage(seriesinfo.Id.clone(),mutex.clone());
+                let img = crate::ui::image::setimage(seriesinfo.Id.clone(), mutex.clone());
                 img.set_size_request(250, 141);
                 vbox.append(&img);
                 vbox.append(&label);
@@ -153,7 +155,10 @@ mod imp {
             let dropdownspinner = self.dropdownspinner.get();
             self.itemlist.connect_activate(move |listview, position| {
                 let model = listview.model().unwrap();
-                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                let item = model
+                    .item(position)
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
                 let seriesinfo: Ref<network::SeriesInfo> = item.borrow();
                 let info = seriesinfo.clone();
                 let id = seriesinfo.Id.clone();
@@ -169,20 +174,22 @@ mod imp {
                     let playback = network::playbackinfo(id).await.expect("msg");
                     sender.send(playback).await.expect("msg");
                 });
-                glib::spawn_future_local(glib::clone!(@weak dropdownspinner,@weak osdbox=>async move {
-                    while let Ok(playback) = receiver.recv().await {
-                        let _ = mutex.lock().await;
-                        let info = info.clone();
-                        let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, info);
-                        dropdownspinner.set_visible(false);
-                        if let Some(widget) = osdbox.last_child() {
-                            if widget.is::<gtk::Box>() {
-                                osdbox.remove(&widget);
+                glib::spawn_future_local(
+                    glib::clone!(@weak dropdownspinner,@weak osdbox=>async move {
+                        while let Ok(playback) = receiver.recv().await {
+                            let _ = mutex.lock().await;
+                            let info = info.clone();
+                            let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, info);
+                            dropdownspinner.set_visible(false);
+                            if let Some(widget) = osdbox.last_child() {
+                                if widget.is::<gtk::Box>() {
+                                    osdbox.remove(&widget);
+                                }
                             }
+                            osdbox.append(&dropdown);
                         }
-                        osdbox.append(&dropdown);
-                    }
-                }));
+                    }),
+                );
             });
         }
     }

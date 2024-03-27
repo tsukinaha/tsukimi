@@ -60,8 +60,9 @@ mod imp {
             self.parent_constructed();
             let spinner = self.spinner.get();
             let searchrevealer = self.searchrevealer.get();
-            
-            let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
+
+            let (sender, receiver) =
+                async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
             self.searchentry.connect_activate(glib::clone!(@strong sender,@weak spinner=> move |entry| {
                 spinner.set_visible(true);
                 let search_content = entry.text().to_string();
@@ -73,7 +74,7 @@ mod imp {
                     sender.send(search_results).await.expect("search results not received.");
                 }));
             }));
-            
+
             let store = gio::ListStore::new::<glib::BoxedAnyObject>();
             glib::spawn_future_local(glib::clone!(@weak store=> async move {
                 while let Ok(search_results) = receiver.recv().await {

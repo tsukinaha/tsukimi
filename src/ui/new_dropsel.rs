@@ -3,7 +3,7 @@ use super::network::SeriesInfo;
 use gtk::prelude::*;
 use gtk::Orientation;
 
-pub fn newmediadropsel(playbackinfo: network::Media,info:SeriesInfo) -> gtk::Box {
+pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::Box {
     let hbox = gtk::Box::new(Orientation::Horizontal, 5);
     hbox.set_valign(gtk::Align::End);
     hbox.set_vexpand(true);
@@ -13,7 +13,10 @@ pub fn newmediadropsel(playbackinfo: network::Media,info:SeriesInfo) -> gtk::Box
     leftvbox.set_margin_bottom(20);
     leftvbox.set_halign(gtk::Align::Start);
     leftvbox.set_valign(gtk::Align::End);
-    let markup = format!("<b> Season {} : Episode {} - {} </b>", info.ParentIndexNumber, info.IndexNumber, info.Name);         
+    let markup = format!(
+        "<b> Season {} : Episode {} - {} </b>",
+        info.ParentIndexNumber, info.IndexNumber, info.Name
+    );
     let label = gtk::Label::new(Some(&info.Name));
     label.set_markup(markup.as_str());
     leftvbox.append(&label);
@@ -77,7 +80,9 @@ pub fn newmediadropsel(playbackinfo: network::Media,info:SeriesInfo) -> gtk::Box
     let playbutton = gtk::Button::with_label("播放");
     playbutton.connect_clicked(move |_| {
         let nameselected = namedropdown.selected_item();
-        let nameselected = nameselected.and_downcast_ref::<gtk::StringObject>().unwrap();
+        let nameselected = nameselected
+            .and_downcast_ref::<gtk::StringObject>()
+            .unwrap();
         let nameselected = nameselected.string();
         let subselected = subdropdown.selected_item();
         if subselected.is_none() {
@@ -87,9 +92,9 @@ pub fn newmediadropsel(playbackinfo: network::Media,info:SeriesInfo) -> gtk::Box
                     let name = info.Id.clone();
                     let sourceid = media.Id.clone();
                     network::runtime().spawn(async move {
-                        let _ = network::markwatched(name,sourceid).await;
+                        let _ = network::markwatched(name, sourceid).await;
                     });
-                    network::mpv_play(directurl.expect("no url"),media.Name.clone());
+                    network::mpv_play(directurl.expect("no url"), media.Name.clone());
                 }
             }
             return;
@@ -108,16 +113,23 @@ pub fn newmediadropsel(playbackinfo: network::Media,info:SeriesInfo) -> gtk::Box
                                 let name = info.Id.clone();
                                 let sourceid = media.Id.clone();
                                 network::runtime().spawn(async move {
-                                    let _  = network::markwatched(name,sourceid).await;
+                                    let _ = network::markwatched(name, sourceid).await;
                                 });
-                                let _ = network::mpv_play_withsub(directurl.expect("no url"),suburl.expect("no url"),media.Name.clone());
+                                let _ = network::mpv_play_withsub(
+                                    directurl.expect("no url"),
+                                    suburl.expect("no url"),
+                                    media.Name.clone(),
+                                );
                             } else {
                                 let name = info.Id.clone();
                                 let sourceid = media.Id.clone();
                                 network::runtime().spawn(async move {
-                                    let _  = network::markwatched(name,sourceid).await;
+                                    let _ = network::markwatched(name, sourceid).await;
                                 });
-                                let _ = network::mpv_play(directurl.expect("no url"),media.Name.clone());
+                                let _ = network::mpv_play(
+                                    directurl.expect("no url"),
+                                    media.Name.clone(),
+                                );
                             }
                         }
                     }

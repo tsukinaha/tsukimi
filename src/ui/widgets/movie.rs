@@ -1,6 +1,6 @@
 use glib::Object;
-use gtk::{gio, glib};
 use gtk::prelude::*;
+use gtk::{gio, glib};
 mod imp {
     use crate::ui::network::{self, runtime, SearchResult};
     use adw::subclass::prelude::*;
@@ -140,8 +140,11 @@ glib::wrapper! {
 }
 
 impl MoviePage {
-    pub fn new(id: String,name: String) -> Self {
-        Object::builder().property("id", id).property("moviename", name).build()
+    pub fn new(id: String, name: String) -> Self {
+        Object::builder()
+            .property("id", id)
+            .property("moviename", name)
+            .build()
     }
 
     pub fn logoset(&self, osd: gtk::Box) {
