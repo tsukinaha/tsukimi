@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="EpisodeRow" parent="GtkBox">
+    <child>
+      <object class="GtkPicture" id="image">
+      </object>
+    </child>
+    <child>
+      <object class="GtkLabel" id="content_label">
+      </object>
+    </child>
+  </template>
+</interface>

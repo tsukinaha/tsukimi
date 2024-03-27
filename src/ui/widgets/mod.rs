@@ -1,3 +1,4 @@
+pub mod episoderow;
 pub mod history;
 pub mod item;
 pub mod movie;

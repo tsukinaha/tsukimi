@@ -26,7 +26,14 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkGridView" id="historygrid">
+                  <object class="GtkRevealer" id="historyrevealer">
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
+                    <child>
+                      <object class="GtkGridView" id="historygrid">
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

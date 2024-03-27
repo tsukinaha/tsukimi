@@ -1,6 +1,7 @@
 use std::{env, path::PathBuf};
 
 use glib::Object;
+use gtk::prelude::*;
 use gtk::{gio, glib};
 mod imp {
     use crate::ui::network::{self, runtime};
@@ -11,6 +12,7 @@ mod imp {
     use std::cell::{OnceCell, Ref};
 
     use super::get_thum_dir;
+    use std::collections::{HashMap, HashSet};
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/item.ui")]
@@ -26,7 +28,14 @@ mod imp {
         pub itemlist: TemplateChild<gtk::ListView>,
         #[template_child]
         pub osdbox: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub itemrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub logobox: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub seasonlist: TemplateChild<gtk::DropDown>,
         pub selection: gtk::SingleSelection,
+        pub seasonselection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -52,6 +61,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
+            let itemrevealer = self.itemrevealer.get();
             let id = obj.id();
 
             let pathbuf = get_thum_dir().join(format!("b{}.png", id));
@@ -98,12 +108,51 @@ mod imp {
                 }
             });
 
+            let seasonstore = gtk::StringList::new(&[]);
+            self.seasonselection.set_model(Some(&seasonstore));
+            let seasonlist = self.seasonlist.get();
+            seasonlist.set_model(Some(&self.seasonselection));
             glib::spawn_future_local(async move {
                 let series_info = receiver.recv().await.expect("series_info not received.");
-                for info in series_info {
-                    let object = glib::BoxedAnyObject::new(info);
-                    store.append(&object);
+                let mut season_set: HashSet<u32> = HashSet::new();
+                let mut season_map: HashMap<String, u32> = HashMap::new();
+                let mut position = 0;
+                let mut _infor = 0;
+                for info in &series_info {
+                    if !season_set.contains(&info.ParentIndexNumber) {
+                        let seasonstring = format!("Season {}", info.ParentIndexNumber);
+                        seasonstore.append(&seasonstring);
+                        season_set.insert(info.ParentIndexNumber);
+                        season_map.insert(seasonstring.clone(), info.ParentIndexNumber);
+                        if _infor <= 1 {
+                            if info.ParentIndexNumber < 1 {
+                                position += 1;
+                            }
+                        }
+                        _infor += 1;
+                    }
                 }
+                for info in &series_info {
+                    if info.ParentIndexNumber == 1 {
+                        let object = glib::BoxedAnyObject::new(info.clone());
+                        store.append(&object);
+                    }
+                }
+                seasonlist.set_selected(position);
+                seasonlist.connect_selected_item_notify(move |dropdown| {
+                    let selected = dropdown.selected_item();
+                    let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
+                    let selected = selected.string().to_string();
+                    store.remove_all();
+                    let season_number = season_map[&selected];
+                    for info in &series_info {
+                        if info.ParentIndexNumber == season_number {
+                            let object = glib::BoxedAnyObject::new(info.clone());
+                            store.append(&object);
+                        }
+                    }
+                });
+                itemrevealer.set_reveal_child(true);
             });
 
             let factory = gtk::SignalListItemFactory::new();
@@ -117,7 +166,7 @@ mod imp {
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
                 let label = gtk::Label::new(Some(&seriesinfo.Name));
                 label.set_halign(gtk::Align::Start);
-                let markup = format!("E{} : {}", seriesinfo.IndexNumber, seriesinfo.Name);
+                let markup = format!("{}. {}", seriesinfo.IndexNumber, seriesinfo.Name);
                 label.set_markup(markup.as_str());
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 label.set_size_request(-1, 20);
@@ -137,6 +186,8 @@ mod imp {
             });
             self.itemlist.set_factory(Some(&factory));
             self.itemlist.set_model(Some(&self.selection));
+            let logobox = self.logobox.get();
+            obj.logoset(logobox);
             let osdbox = self.osdbox.get();
             let dropdownspinner = self.dropdownspinner.get();
             self.itemlist.connect_activate(move |listview, position| {
@@ -202,6 +253,14 @@ glib::wrapper! {
 impl ItemPage {
     pub fn new(id: String) -> Self {
         Object::builder().property("id", id).build()
+    }
+
+    pub fn logoset(&self, osd: gtk::Box) {
+        let id = self.id();
+        let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+        let logo = crate::ui::image::setlogoimage(id.clone(), mutex.clone());
+        osd.append(&logo);
+        osd.add_css_class("logo");
     }
 }
 

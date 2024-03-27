@@ -38,13 +38,22 @@
                         </child>
                       </object>
                     </child>
+                    <child type="overlay">
+                      <object class="GtkBox" id="logobox">
+                      <property name="margin-start">30</property>
+                      <property name="margin-top">15</property>
+                      <property name="height-request">150</property>
+                      <property name="valign">start</property>
+                      <property name="halign">start</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
                   <object class="GtkBox">
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkDropDown">
+                      <object class="GtkDropDown" id="seasonlist">
                       </object>
                     </child>
                   </object>
@@ -55,8 +64,14 @@
                     <property name="valign">fill</property>
                     <property name="margin-bottom">3</property>
                     <child>
-                      <object class="GtkListView" id="itemlist">
-                        <property name="orientation">horizontal</property>
+                      <object class="GtkRevealer" id="itemrevealer">
+                        <property name="transition-duration">700</property>
+                        <property name="reveal-child">False</property>
+                        <child>
+                          <object class="GtkListView" id="itemlist">
+                            <property name="orientation">horizontal</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>

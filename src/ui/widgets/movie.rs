@@ -1,4 +1,5 @@
 use glib::Object;
+use gtk::prelude::*;
 use gtk::{gio, glib};
 mod imp {
     use crate::ui::network::{self, runtime, SearchResult};
@@ -26,6 +27,8 @@ mod imp {
         pub itemlist: TemplateChild<gtk::ListView>,
         #[template_child]
         pub osdbox: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub logobox: TemplateChild<gtk::Box>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -97,15 +100,12 @@ mod imp {
                         .join("thumbnails")
                         .join(format!("b{}.png", idclone));
 
-                    // let path = format!(
-                    //     "{}/.local/share/tsukimi/b{}.png",
-                    //     dirs::home_dir().expect("msg").display(),
-                    //     idclone
-                    // );
                     let file = gtk::gio::File::for_path(&path);
                     backdrop.set_file(Some(&file));
                 }
             });
+            let logobox = self.logobox.get();
+            obj.logoset(logobox);
             let dropdownspinner = self.dropdownspinner.get();
             let osdbox = self.osdbox.get();
             dropdownspinner.set_visible(true);
@@ -156,5 +156,13 @@ impl MoviePage {
             .property("id", id)
             .property("moviename", name)
             .build()
+    }
+
+    pub fn logoset(&self, osd: gtk::Box) {
+        let id = self.id();
+        let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+        let logo = crate::ui::image::setlogoimage(id.clone(), mutex.clone());
+        osd.append(&logo);
+        osd.add_css_class("logo");
     }
 }

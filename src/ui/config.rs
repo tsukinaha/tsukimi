@@ -1,6 +1,6 @@
 use reqwest;
 use serde::{Deserialize, Serialize};
-#[cfg(any(target_os="windows",target_os="macos"))]
+#[cfg(any(target_os = "windows", target_os = "macos"))]
 use std::env;
 use std::fs;
 use toml;

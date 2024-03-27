@@ -242,7 +242,6 @@ pub async fn playbackinfo(id: String) -> Result<Media, Error> {
     return Ok(mediainfo);
 }
 
-#[allow(unused)]
 pub async fn get_item_overview(id: String) -> Result<String, Error> {
     let server_info = get_server_info();
     let client = ReqClient::add_proxy();
@@ -457,6 +456,48 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
                         fs::create_dir_all(&pathbuf).unwrap();
 
                         fs::write(pathbuf.join(format!("b{}.png", id)), &bytes).unwrap();
+                    }
+                    return Ok(id);
+                }
+                Err(e) => {
+                    eprintln!("加载错误");
+                    return Err(e.into());
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("加载错误");
+            return Err(e.into());
+        }
+    }
+}
+
+pub async fn get_logoimage(id: String) -> Result<String, Error> {
+    let server_info = get_server_info();
+
+    let result = reqwest::get(&format!(
+        "{}:{}/emby/Items/{}/Images/Logo",
+        server_info.domain, server_info.port, id
+    ))
+    .await;
+
+    match result {
+        Ok(response) => {
+            let bytes_result = response.bytes().await;
+            match bytes_result {
+                Ok(bytes) => {
+                    #[cfg(unix)]
+                    let pathbuf = dirs::home_dir().unwrap().join(".local/share/tsukimi");
+
+                    #[cfg(windows)]
+                    let pathbuf = env::current_dir().unwrap().join("thumbnails");
+
+                    if pathbuf.exists() {
+                        fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
+                    } else {
+                        fs::create_dir_all(&pathbuf).unwrap();
+
+                        fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
                     }
                     return Ok(id);
                 }
