@@ -1,6 +1,8 @@
 use glib::Object;
 use gtk::prelude::*;
 use gtk::{gio, glib};
+use adw::subclass::prelude::*;
+
 mod imp {
     use crate::ui::network::{self, runtime};
     use adw::subclass::prelude::*;
@@ -45,6 +47,18 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.install_action("item.first", None, move |window, _action, _parameter| {
+                window.itemfirst();
+            });
+            klass.install_action("item.previous", None, move |window, _action, _parameter| {
+                window.itemprevious();
+            });
+            klass.install_action("item.next", None, move |window, _action, _parameter| {
+                window.itemnext();
+            });
+            klass.install_action("item.last", None, move |window, _action, _parameter| {
+                window.itemlast();
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -266,5 +280,33 @@ impl ItemPage {
         let logo = crate::ui::image::setlogoimage(id.clone(), mutex.clone());
         osd.append(&logo);
         osd.add_css_class("logo");
+    }
+
+    pub fn itemfirst(&self) {
+        let imp = self.imp();
+        imp.itemlist.scroll_to(0, gtk::ListScrollFlags::SELECT, None);
+    }
+
+    pub fn itemprevious(&self) {
+        let imp = self.imp();
+        let selection = &imp.selection;
+        let position = selection.selected();
+        if position > 0 {
+            imp.itemlist.scroll_to(position - 1, gtk::ListScrollFlags::SELECT, None);
+        }
+    }
+
+    pub fn itemnext(&self) {
+        let imp = self.imp();
+        let selection = &imp.selection;
+        let position = selection.selected();
+        if position < imp.itemlist.model().unwrap().n_items() {
+            imp.itemlist.scroll_to(position + 1, gtk::ListScrollFlags::SELECT, None);
+        }
+    }
+
+    pub fn itemlast(&self) {
+        let imp = self.imp();
+        imp.itemlist.scroll_to(imp.itemlist.model().unwrap().n_items() - 1, gtk::ListScrollFlags::SELECT, None);
     }
 }

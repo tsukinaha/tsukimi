@@ -40,11 +40,11 @@
                     </child>
                     <child type="overlay">
                       <object class="GtkBox" id="logobox">
-                      <property name="margin-start">30</property>
-                      <property name="margin-top">15</property>
-                      <property name="height-request">150</property>
-                      <property name="valign">start</property>
-                      <property name="halign">start</property>
+                        <property name="margin-start">30</property>
+                        <property name="margin-top">15</property>
+                        <property name="height-request">150</property>
+                        <property name="valign">start</property>
+                        <property name="halign">start</property>
                       </object>
                     </child>
                   </object>
@@ -52,21 +52,52 @@
                 <child>
                   <object class="GtkBox">
                     <property name="orientation">horizontal</property>
+                    <property name="spacing">6</property>
+                    <property name="hexpand">true</property>
                     <child>
                       <object class="GtkDropDown" id="seasonlist">
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="go-first">
+                        <property name="halign">end</property>
+                        <property name="icon-name">go-first-symbolic</property>
+                        <property name="action-name">item.first</property>
+                        <property name="hexpand">true</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="go-previous-symbolic">
+                        <property name="halign">end</property>
+                        <property name="icon-name">go-previous-symbolic</property>
+                        <property name="action-name">item.previous</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="go-next-symbolic">
+                        <property name="halign">end</property>
+                        <property name="icon-name">go-next-symbolic</property>
+                        <property name="action-name">item.next</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="go-last-symbolic">
+                        <property name="halign">end</property>
+                        <property name="icon-name">go-last-symbolic</property>
+                        <property name="action-name">item.last</property>
                       </object>
                     </child>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkScrolledWindow">
-                    <property name="vscrollbar-policy">never</property>
-                    <property name="valign">fill</property>
-                    <property name="margin-bottom">3</property>
+                  <object class="GtkRevealer" id="itemrevealer">
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
                     <child>
-                      <object class="GtkRevealer" id="itemrevealer">
-                        <property name="transition-duration">700</property>
-                        <property name="reveal-child">False</property>
+                      <object class="GtkScrolledWindow">
+                        <property name="vscrollbar-policy">never</property>
+                        <property name="valign">fill</property>
+                        <property name="margin-bottom">3</property>
                         <child>
                           <object class="GtkListView" id="itemlist">
                             <property name="orientation">horizontal</property>
