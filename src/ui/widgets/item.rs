@@ -8,6 +8,7 @@ mod imp {
     use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
     use std::cell::{OnceCell, Ref};
+    use std::collections::{HashMap, HashSet};
     use std::path::PathBuf;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -28,7 +29,10 @@ mod imp {
         pub itemrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub logobox: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub seasonlist: TemplateChild<gtk::DropDown>,
         pub selection: gtk::SingleSelection,
+        pub seasonselection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -109,12 +113,50 @@ mod imp {
                 }
             });
 
+            let seasonstore = gtk::StringList::new(&[]);
+            self.seasonselection.set_model(Some(&seasonstore));
+            let seasonlist = self.seasonlist.get();
+            seasonlist.set_model(Some(&self.seasonselection));
             glib::spawn_future_local(async move {
                 let series_info = receiver.recv().await.expect("series_info not received.");
-                for info in series_info {
-                    let object = glib::BoxedAnyObject::new(info);
-                    store.append(&object);
+                let mut season_set: HashSet<u32> = HashSet::new();
+                let mut season_map: HashMap<String, u32> = HashMap::new();
+                let mut position = 0;
+                let mut _infor = 0;
+                for info in &series_info {
+                    if !season_set.contains(&info.ParentIndexNumber) {
+                        let seasonstring = format!("Season {}", info.ParentIndexNumber);
+                        seasonstore.append(&seasonstring);
+                        season_set.insert(info.ParentIndexNumber);
+                        season_map.insert(seasonstring.clone(), info.ParentIndexNumber);
+                        if _infor <= 1 {
+                            if info.ParentIndexNumber < 1 {
+                                position += 1;
+                            }
+                        }
+                        _infor += 1;
+                    }
                 }
+                for info in &series_info {
+                    if info.ParentIndexNumber == 1 {
+                        let object = glib::BoxedAnyObject::new(info.clone());
+                        store.append(&object);
+                    }
+                }
+                seasonlist.set_selected(position);
+                seasonlist.connect_selected_item_notify(move |dropdown| {
+                    let selected = dropdown.selected_item();
+                    let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
+                    let selected = selected.string().to_string();
+                    store.remove_all();
+                    let season_number = season_map[&selected];
+                    for info in &series_info {
+                        if info.ParentIndexNumber == season_number {
+                            let object = glib::BoxedAnyObject::new(info.clone());
+                            store.append(&object);
+                        }
+                    }
+                });
                 itemrevealer.set_reveal_child(true);
             });
 

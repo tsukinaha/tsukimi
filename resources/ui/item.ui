@@ -53,7 +53,7 @@
                   <object class="GtkBox">
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkDropDown">
+                      <object class="GtkDropDown" id="seasonlist">
                       </object>
                     </child>
                   </object>
