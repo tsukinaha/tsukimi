@@ -54,6 +54,16 @@ box > overlay > image {
     margin:3px;
     color: #FFFFFF;
 }
+
+revealer > expander-widget > box > box > widget {
+    background-color:rgba(1,1,1,0.3);
+    border-radius:10px;
+    margin:5px;
+}
+
+revealer > expander-widget > box > box > widget > box{
+    margin:15px;
+}
 /*
 Generated with Gradience
 

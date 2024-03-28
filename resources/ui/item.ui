@@ -19,7 +19,7 @@
                         <property name="valign">fill</property>
                         <property name="content-fit">cover</property>
                         <property name="hexpand">true</property>
-                        <property name="vexpand">true</property>
+                        <property name="height-request">700</property>
                       </object>
                     </child>
                     <child type="overlay">
@@ -91,6 +91,7 @@
                 </child>
                 <child>
                   <object class="GtkRevealer" id="itemrevealer">
+                    <property name="transition-type">crossfade</property>
                     <property name="transition-duration">700</property>
                     <property name="reveal-child">False</property>
                     <child>
@@ -101,6 +102,89 @@
                         <child>
                           <object class="GtkListView" id="itemlist">
                             <property name="orientation">horizontal</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="overviewrevealer">
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
+                    <child>
+                      <object class="GtkExpander">
+                        <property name="expanded">True</property>
+                        <child type="label">
+                          <object class="GtkLabel" id="expander-label">
+                            <property name="label" translatable="yes">Overview</property>
+                            <attributes>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                            </attributes>
+                            <property name="use-markup">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">horizontal</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="AdwBin">
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="hexpand">true</property>
+                                    <property name="orientation">vertical</property>
+                                    <property name="spacing">6</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <attributes>
+                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                        </attributes>
+                                        <property name="halign">start</property>
+                                        <property name="label">Season</property>
+                                        <property name="use-markup">True</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkInscription" id="itemoverview">
+                                        <property name="min-lines">8</property>
+                                        <property name="yalign">0.00</property>
+                                        <property name="hexpand">true</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwBin">
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="hexpand">true</property>
+                                    <property name="orientation">vertical</property>
+                                    <property name="spacing">6</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <attributes>
+                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                        </attributes>
+                                        <property name="halign">start</property>
+                                        <property name="label">Episode</property>
+                                        <property name="use-markup">True</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkInscription" id="selecteditemoverview">
+                                        <property name="min-lines">8</property>
+                                        <property name="yalign">0.00</property>
+                                        <property name="hexpand">true</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>

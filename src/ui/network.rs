@@ -321,7 +321,7 @@ pub async fn get_item_overview(id: String) -> Result<String, Error> {
     let server_info = get_server_info();
     let client = reqwest::Client::new();
     let url = format!(
-        "{}:{}/emby/Users/{}/{}",
+        "{}:{}/emby/Users/{}/Items/{}",
         server_info.domain, server_info.port, server_info.user_id, id
     );
     let params = [

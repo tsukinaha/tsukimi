@@ -37,6 +37,12 @@ mod imp {
         pub logobox: TemplateChild<gtk::Box>,
         #[template_child]
         pub seasonlist: TemplateChild<gtk::DropDown>,
+        #[template_child]
+        pub overviewrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub itemoverview: TemplateChild<gtk::Inscription>,
+        #[template_child]
+        pub selecteditemoverview: TemplateChild<gtk::Inscription>,
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
     }
@@ -171,7 +177,7 @@ mod imp {
                                 UserData: info.UserData.clone(),
                                 Overview: info.Overview.clone(),
                             };
-                            obj.requestdropdown(seriesinfo.clone());
+                            obj.selectepisode(seriesinfo.clone());
                         }
                     }
                 }
@@ -195,7 +201,7 @@ mod imp {
                 });
                 itemrevealer.set_reveal_child(true);
             }));
-
+            obj.setoverview();
             let factory = gtk::SignalListItemFactory::new();
             factory.connect_bind(|_, item| {
                 let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
@@ -254,7 +260,7 @@ mod imp {
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
                 let seriesinfo: Ref<network::SeriesInfo> = item.borrow();
-                obj.requestdropdown(seriesinfo.clone());
+                obj.selectepisode(seriesinfo.clone());
             }));
         }
     }
@@ -333,7 +339,7 @@ impl ItemPage {
         imp.itemlist.last_child().unwrap().activate();
     }
 
-    pub fn requestdropdown(&self, seriesinfo: SeriesInfo) {
+    pub fn selectepisode(&self, seriesinfo: SeriesInfo) {
         let info = seriesinfo.clone();
         let imp = self.imp();
         let osdbox = imp.osdbox.get();
@@ -367,5 +373,27 @@ impl ItemPage {
                 }
             }),
         );
+
+        if let Some(overview) = seriesinfo.Overview {
+            imp.selecteditemoverview.set_text(Some(&overview));
+        }
+    }
+
+    pub fn setoverview(&self) {
+        let imp = self.imp();
+        let id = imp.id.get().unwrap().clone();
+        let itemoverview = imp.itemoverview.get();
+        let overviewrevealer = imp.overviewrevealer.get();
+        let (sender, receiver) = async_channel::bounded::<String>(1);
+        crate::ui::network::runtime().spawn(async move {
+            let overview = crate::ui::network::get_item_overview(id.to_string()).await.expect("msg");
+            sender.send(overview).await.expect("msg");
+        });
+        glib::spawn_future_local(async move {
+            while let Ok(overview) = receiver.recv().await {
+                itemoverview.set_text(Some(&overview));
+                overviewrevealer.set_reveal_child(true);
+            }
+        });
     }
 }
