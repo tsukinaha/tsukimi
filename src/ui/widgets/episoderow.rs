@@ -1,8 +1,7 @@
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-use gtk::{glib, pango};
-use pango::{AttrInt, AttrList};
+use gtk::glib;
 
 use crate::ui::provider::episoderowitem::EpisodeObject;
 
@@ -11,7 +10,7 @@ mod imp {
 
     use glib::Binding;
     use gtk::subclass::prelude::*;
-    use gtk::{glib, CheckButton, CompositeTemplate, Label, Picture};
+    use gtk::{glib, CompositeTemplate, Label, Picture};
 
     // Object holding the state
     #[derive(Default, CompositeTemplate)]

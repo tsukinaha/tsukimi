@@ -150,8 +150,6 @@ mod imp {
                         }
                         _infor += 1;
                     }
-                }
-                for info in &series_info {
                     if info.ParentIndexNumber == 1 {
                         let object = glib::BoxedAnyObject::new(info.clone());
                         store.append(&object);
@@ -191,9 +189,27 @@ mod imp {
                 label.set_size_request(-1, 20);
                 label.set_valign(gtk::Align::Start);
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+                let overlay = gtk::Overlay::new();
                 let img = crate::ui::image::setimage(seriesinfo.Id.clone(), mutex.clone());
                 img.set_size_request(250, 141);
-                vbox.append(&img);
+                overlay.set_child(Some(&img));
+                let progressbar = gtk::ProgressBar::new();
+                progressbar.set_valign(gtk::Align::End);
+                if let Some(userdata) = &seriesinfo.UserData {
+                    if let Some(percentage) = userdata.PlayedPercentage {
+                        progressbar.set_fraction(percentage / 100.0);
+                    }
+                    if userdata.Played {
+                        let mark = gtk::Image::from_icon_name("object-select-symbolic");
+                        mark.set_halign(gtk::Align::End);
+                        mark.set_valign(gtk::Align::Start);
+                        mark.set_height_request(25);
+                        mark.set_width_request(25);
+                        overlay.add_overlay(&mark);
+                    }
+                }
+                overlay.add_overlay(&progressbar);
+                vbox.append(&overlay);
                 vbox.append(&label);
                 vbox.set_valign(gtk::Align::Start);
                 vbox.set_size_request(250, 150);

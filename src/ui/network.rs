@@ -101,6 +101,7 @@ pub struct SearchResult {
     pub Name: String,
     pub Type: String,
     pub Id: String,
+    pub UserData: Option<UserData>,
 }
 
 struct SearchModel {
@@ -186,6 +187,7 @@ pub struct SeriesInfo {
     pub Overview: Option<String>,
     pub IndexNumber: u32,
     pub ParentIndexNumber: u32,
+    pub UserData: Option<UserData>,
 }
 
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
@@ -379,8 +381,16 @@ pub struct Resume {
     pub ParentIndexNumber: Option<u32>,
     pub ParentThumbItemId: Option<String>,
     pub SeriesName: Option<String>,
+    pub UserData: Option<UserData>,
 }
 
+#[derive(Deserialize, Debug, Clone)]
+pub struct UserData {
+    pub PlayedPercentage: Option<f64>,
+    pub PlaybackPositionTicks: Option<u64>,
+    pub Played: bool,
+    pub UnplayedItemCount: Option<u32>,
+}
 struct ResumeModel {
     resume: Vec<Resume>,
 }

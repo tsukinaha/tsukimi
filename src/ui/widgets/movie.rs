@@ -110,6 +110,7 @@ mod imp {
                             Id: idclonet.clone(),
                             Name: name.clone(),
                             Type: String::from("Movie"),
+                            UserData: None,
                         };
                         let dropdown = crate::ui::moviedrop::newmediadropsel(playback, info);
                         dropdownspinner.set_visible(false);

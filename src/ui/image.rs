@@ -1,5 +1,5 @@
 use gtk::glib::{self, clone};
-use gtk::{prelude::*, Picture, Revealer};
+use gtk::{prelude::*, Revealer};
 use gtk::{Box, Orientation};
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -16,6 +16,7 @@ pub fn set_image(id: String, mutex: Arc<Mutex<()>>) -> Box {
         .transition_type(gtk::RevealerTransitionType::Crossfade)
         .child(&image)
         .reveal_child(false)
+        .vexpand(true)
         .transition_duration(700)
         .build();
     let path = format!(
@@ -77,6 +78,7 @@ pub fn set_thumbimage(id: String, mutex: Arc<Mutex<()>>) -> Box {
         .transition_type(gtk::RevealerTransitionType::Crossfade)
         .child(&image)
         .reveal_child(false)
+        .vexpand(true)
         .transition_duration(700)
         .build();
 
@@ -139,6 +141,7 @@ pub fn set_backdropimage(id: String, mutex: Arc<Mutex<()>>) -> Box {
         .transition_type(gtk::RevealerTransitionType::Crossfade)
         .child(&image)
         .reveal_child(false)
+        .vexpand(true)
         .transition_duration(700)
         .build();
 
@@ -199,6 +202,7 @@ pub fn setimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
         .transition_type(gtk::RevealerTransitionType::Crossfade)
         .child(&image)
         .reveal_child(false)
+        .vexpand(true)
         .transition_duration(700)
         .build();
 

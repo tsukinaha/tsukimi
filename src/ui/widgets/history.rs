@@ -89,6 +89,7 @@ mod imp {
                     .unwrap();
                 let result: std::cell::Ref<crate::ui::network::Resume> = entry.borrow();
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 0);
+                let overlay = gtk::Overlay::new();
                 let imgbox;
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                 if result.ParentThumbItemId.is_some() {
@@ -110,7 +111,24 @@ mod imp {
                     }
                 }
                 imgbox.set_size_request(290, 169);
-                vbox.append(&imgbox);
+                overlay.set_child(Some(&imgbox));
+                let progressbar = gtk::ProgressBar::new();
+                progressbar.set_valign(gtk::Align::End);
+                if let Some(userdata) = &result.UserData {
+                    if let Some(percentage) = userdata.PlayedPercentage {
+                        progressbar.set_fraction(percentage / 100.0);
+                    }
+                    if userdata.Played {
+                        let mark = gtk::Image::from_icon_name("object-select-symbolic");
+                        mark.set_halign(gtk::Align::End);
+                        mark.set_valign(gtk::Align::Start);
+                        mark.set_height_request(25);
+                        mark.set_width_request(25);
+                        overlay.add_overlay(&mark);
+                    }
+                }
+                overlay.add_overlay(&progressbar);
+                vbox.append(&overlay);
                 let label = Label::new(Some(&result.Name));
                 let labeltype = Label::new(Some(&result.Type));
                 if result.Type == "Episode" {

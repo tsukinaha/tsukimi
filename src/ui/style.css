@@ -41,7 +41,19 @@ list {
     background-color: rgba(0, 0, 0, 0);
 }
 
+overlay > label {
+    background-color: #AEB5FA;
+    border-radius: 999px;
+    margin:3px;
+    color: #FFFFFF;
+}
 
+box > overlay > image {
+    background-color: #AEB5FA;
+    border-radius: 999px;
+    margin:3px;
+    color: #FFFFFF;
+}
 /*
 Generated with Gradience
 
@@ -136,9 +148,9 @@ https://github.com/GradienceTeam/Gradience
 @define-color BLACK_500 #393634;
 @define-color BLACK_700 #33302F;
 @define-color BLACK_900 #2B2928;
-@define-color accent_bg_color #79d0ff;
-@define-color accent_fg_color #00344a;
-@define-color accent_color #79d0ff;
+@define-color accent_bg_color #AEB5FA;
+@define-color accent_fg_color #3C0090;
+@define-color accent_color #AEB5FA;
 @define-color destructive_bg_color #ffb4a9;
 @define-color destructive_fg_color #680003;
 @define-color destructive_color #ffb4a9;

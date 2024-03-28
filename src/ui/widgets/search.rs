@@ -100,10 +100,24 @@ mod imp {
                     .unwrap();
                 let result: std::cell::Ref<crate::ui::network::SearchResult> = entry.borrow();
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 2);
+                let overlay = gtk::Overlay::new();
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                 let imgbox = crate::ui::image::set_image(result.Id.clone(), mutex);
                 imgbox.set_size_request(167, 275);
-                vbox.append(&imgbox);
+                overlay.set_child(Some(&imgbox));
+                if let Some(userdata) = &result.UserData {
+                    if let Some(unplayeditemcount) = userdata.UnplayedItemCount {
+                        if unplayeditemcount > 0 {
+                            let mark = gtk::Label::new(Some(&userdata.UnplayedItemCount.expect("no unplayeditemcount").to_string()));
+                            mark.set_valign(gtk::Align::Start);
+                            mark.set_halign(gtk::Align::End);
+                            mark.set_height_request(40);
+                            mark.set_width_request(40);
+                            overlay.add_overlay(&mark);
+                        }
+                    }
+                }
+                vbox.append(&overlay);
                 let label = Label::new(Some(&result.Name));
                 let markup = format!("{}", result.Name);
                 label.set_markup(markup.as_str());
