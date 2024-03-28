@@ -146,7 +146,7 @@ mod imp {
                 if result.Type == "Movie" {
                     item_page = Page::Movie(Box::new(MoviePage::new(result.Id.clone(),result.Name.clone()).into()));
                 } else {
-                    item_page = Page::Item(Box::new(ItemPage::new(result.Id.clone()).into()));
+                    item_page = Page::Item(Box::new(ItemPage::new(result.Id.clone(),result.Id.clone()).into()));
                 }
                 obj.set(item_page);
             }));

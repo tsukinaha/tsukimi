@@ -1,10 +1,12 @@
+use adw::subclass::prelude::*;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::{gio, glib};
-use adw::subclass::prelude::*;
+
+use crate::ui::network::SeriesInfo;
 
 mod imp {
-    use crate::ui::network::{self, runtime};
+    use crate::ui::network;
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
@@ -19,6 +21,8 @@ mod imp {
     pub struct ItemPage {
         #[property(get, set, construct_only)]
         pub id: OnceCell<String>,
+        #[property(get, set, construct_only)]
+        pub inid: OnceCell<String>,
         #[template_child]
         pub dropdownspinner: TemplateChild<gtk::Spinner>,
         #[template_child]
@@ -74,6 +78,8 @@ mod imp {
             let obj = self.obj();
             let itemrevealer = self.itemrevealer.get();
             let id = obj.id();
+            let idc = id.clone();
+            let inid = obj.inid();
             let path = format!(
                 "{}/.local/share/tsukimi/b{}.png",
                 dirs::home_dir().expect("msg").display(),
@@ -131,7 +137,8 @@ mod imp {
             self.seasonselection.set_model(Some(&seasonstore));
             let seasonlist = self.seasonlist.get();
             seasonlist.set_model(Some(&self.seasonselection));
-            glib::spawn_future_local(async move {
+            let itemlist = self.itemlist.get();
+            glib::spawn_future_local(glib::clone!(@weak obj =>async move {
                 let series_info = receiver.recv().await.expect("series_info not received.");
                 let mut season_set: HashSet<u32> = HashSet::new();
                 let mut season_map: HashMap<String, u32> = HashMap::new();
@@ -154,8 +161,24 @@ mod imp {
                         let object = glib::BoxedAnyObject::new(info.clone());
                         store.append(&object);
                     }
+                    if inid != idc {
+                        if info.Id == inid {
+                            let seriesinfo = network::SeriesInfo {
+                                Id: inid.clone(),
+                                Name: info.Name.clone(),
+                                IndexNumber: info.IndexNumber,
+                                ParentIndexNumber: info.ParentIndexNumber,
+                                UserData: info.UserData.clone(),
+                                Overview: info.Overview.clone(),
+                            };
+                            obj.requestdropdown(seriesinfo.clone());
+                        }
+                    }
                 }
                 seasonlist.set_selected(position);
+                if idc == inid {
+                    itemlist.first_child().unwrap().activate();
+                }
                 seasonlist.connect_selected_item_notify(move |dropdown| {
                     let selected = dropdown.selected_item();
                     let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
@@ -168,9 +191,10 @@ mod imp {
                             store.append(&object);
                         }
                     }
+                    itemlist.first_child().unwrap().activate();
                 });
                 itemrevealer.set_reveal_child(true);
-            });
+            }));
 
             let factory = gtk::SignalListItemFactory::new();
             factory.connect_bind(|_, item| {
@@ -223,46 +247,15 @@ mod imp {
             self.itemlist.set_model(Some(&self.selection));
             let logobox = self.logobox.get();
             obj.logoset(logobox);
-            let osdbox = self.osdbox.get();
-            let dropdownspinner = self.dropdownspinner.get();
-            self.itemlist.connect_activate(move |listview, position| {
+            self.itemlist.connect_activate(glib::clone!(@weak obj =>move |listview, position| {
                 let model = listview.model().unwrap();
                 let item = model
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
                 let seriesinfo: Ref<network::SeriesInfo> = item.borrow();
-                let info = seriesinfo.clone();
-                let id = seriesinfo.Id.clone();
-                dropdownspinner.set_visible(true);
-                if let Some(widget) = osdbox.last_child() {
-                    if widget.is::<gtk::Box>() {
-                        osdbox.remove(&widget);
-                    }
-                }
-                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
-                runtime().spawn(async move {
-                    let playback = network::playbackinfo(id).await.expect("msg");
-                    sender.send(playback).await.expect("msg");
-                });
-                glib::spawn_future_local(
-                    glib::clone!(@weak dropdownspinner,@weak osdbox=>async move {
-                        while let Ok(playback) = receiver.recv().await {
-                            let _ = mutex.lock().await;
-                            let info = info.clone();
-                            let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, info);
-                            dropdownspinner.set_visible(false);
-                            if let Some(widget) = osdbox.last_child() {
-                                if widget.is::<gtk::Box>() {
-                                    osdbox.remove(&widget);
-                                }
-                            }
-                            osdbox.append(&dropdown);
-                        }
-                    }),
-                );
-            });
+                obj.requestdropdown(seriesinfo.clone());
+            }));
         }
     }
 
@@ -286,8 +279,11 @@ glib::wrapper! {
 }
 
 impl ItemPage {
-    pub fn new(id: String) -> Self {
-        Object::builder().property("id", id).build()
+    pub fn new(id: String, inid: String) -> Self {
+        Object::builder()
+            .property("id", id)
+            .property("inid", inid)
+            .build()
     }
 
     pub fn logoset(&self, osd: gtk::Box) {
@@ -300,7 +296,9 @@ impl ItemPage {
 
     pub fn itemfirst(&self) {
         let imp = self.imp();
-        imp.itemlist.scroll_to(0, gtk::ListScrollFlags::SELECT, None);
+        imp.itemlist
+            .scroll_to(0, gtk::ListScrollFlags::SELECT, None);
+        imp.itemlist.first_child().unwrap().activate();
     }
 
     pub fn itemprevious(&self) {
@@ -308,7 +306,9 @@ impl ItemPage {
         let selection = &imp.selection;
         let position = selection.selected();
         if position > 0 {
-            imp.itemlist.scroll_to(position - 1, gtk::ListScrollFlags::SELECT, None);
+            imp.itemlist
+                .scroll_to(position - 1, gtk::ListScrollFlags::SELECT, None);
+            // Todo: activate the previous item
         }
     }
 
@@ -317,12 +317,55 @@ impl ItemPage {
         let selection = &imp.selection;
         let position = selection.selected();
         if position < imp.itemlist.model().unwrap().n_items() {
-            imp.itemlist.scroll_to(position + 1, gtk::ListScrollFlags::SELECT, None);
+            imp.itemlist
+                .scroll_to(position + 1, gtk::ListScrollFlags::SELECT, None);
+            // Todo: activate the next item
         }
     }
 
     pub fn itemlast(&self) {
         let imp = self.imp();
-        imp.itemlist.scroll_to(imp.itemlist.model().unwrap().n_items() - 1, gtk::ListScrollFlags::SELECT, None);
+        imp.itemlist.scroll_to(
+            imp.itemlist.model().unwrap().n_items() - 1,
+            gtk::ListScrollFlags::SELECT,
+            None,
+        );
+        imp.itemlist.last_child().unwrap().activate();
+    }
+
+    pub fn requestdropdown(&self, seriesinfo: SeriesInfo) {
+        let info = seriesinfo.clone();
+        let imp = self.imp();
+        let osdbox = imp.osdbox.get();
+        let dropdownspinner = imp.dropdownspinner.get();
+        let id = seriesinfo.Id.clone();
+        dropdownspinner.set_visible(true);
+        if let Some(widget) = osdbox.last_child() {
+            if widget.is::<gtk::Box>() {
+                osdbox.remove(&widget);
+            }
+        }
+        let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
+        crate::ui::network::runtime().spawn(async move {
+            let playback = crate::ui::network::playbackinfo(id).await.expect("msg");
+            sender.send(playback).await.expect("msg");
+        });
+        glib::spawn_future_local(
+            glib::clone!(@weak dropdownspinner,@weak osdbox=>async move {
+                while let Ok(playback) = receiver.recv().await {
+                    let _ = mutex.lock().await;
+                    let info = info.clone();
+                    let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, info);
+                    dropdownspinner.set_visible(false);
+                    if let Some(widget) = osdbox.last_child() {
+                        if widget.is::<gtk::Box>() {
+                            osdbox.remove(&widget);
+                        }
+                    }
+                    osdbox.append(&dropdown);
+                }
+            }),
+        );
     }
 }

@@ -88,7 +88,7 @@ mod imp {
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
                 let result: std::cell::Ref<crate::ui::network::Resume> = entry.borrow();
-                let vbox = gtk::Box::new(gtk::Orientation::Vertical, 0);
+                let vbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
                 let overlay = gtk::Overlay::new();
                 let imgbox;
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
@@ -172,9 +172,9 @@ mod imp {
                     item_page = Page::Movie(Box::new(MoviePage::new(result.Id.clone(),result.Name.clone()).into()));
                 } else {
                     if result.ParentThumbItemId == None {
-                        item_page = Page::Item(Box::new(ItemPage::new(result.SeriesId.as_ref().expect("msg").clone()).into()));
+                        item_page = Page::Item(Box::new(ItemPage::new(result.SeriesId.as_ref().expect("msg").clone(),result.Id.clone()).into()));
                     } else {
-                        item_page = Page::Item(Box::new(ItemPage::new(result.ParentThumbItemId.as_ref().expect("msg").clone()).into()));
+                        item_page = Page::Item(Box::new(ItemPage::new(result.ParentThumbItemId.as_ref().expect("msg").clone(),result.Id.clone()).into()));
                     }
                 }
                 obj.set(item_page);
