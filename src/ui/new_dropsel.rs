@@ -2,6 +2,7 @@ use super::network;
 use super::network::SeriesInfo;
 use gtk::prelude::*;
 use gtk::Orientation;
+use gtk::glib;
 
 pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::Box {
     let hbox = gtk::Box::new(Orientation::Horizontal, 5);
@@ -78,7 +79,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
     vbox.append(&subdropdown);
     let info = info.clone();
     let playbutton = gtk::Button::with_label("播放");
-    playbutton.connect_clicked(move |_| {
+    playbutton.connect_clicked(move |button| {
         let nameselected = namedropdown.selected_item();
         let nameselected = nameselected
             .and_downcast_ref::<gtk::StringObject>()
@@ -104,32 +105,55 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
         for media in playback_info.MediaSources.clone() {
             if media.Name == nameselected {
                 for mediastream in media.MediaStreams {
+                    let sub = subselected.clone();
                     if mediastream.Type == "Subtitle" {
                         let displaytitle = mediastream.DisplayTitle.unwrap_or("".to_string());
                         if displaytitle == subselected {
-                            let directurl = media.DirectStreamUrl.clone();
-                            if mediastream.IsExternal == true {
-                                let suburl = mediastream.DeliveryUrl.clone();
-                                let name = info.Id.clone();
-                                let sourceid = media.Id.clone();
-                                network::runtime().spawn(async move {
-                                    let _ = network::markwatched(name, sourceid).await;
-                                });
-                                let _ = network::mpv_play_withsub(
-                                    directurl.expect("no url"),
-                                    suburl.expect("no url"),
-                                    media.Name.clone(),
-                                );
-                            } else {
-                                let name = info.Id.clone();
-                                let sourceid = media.Id.clone();
-                                network::runtime().spawn(async move {
-                                    let _ = network::markwatched(name, sourceid).await;
-                                });
-                                let _ = network::mpv_play(
-                                    directurl.expect("no url"),
-                                    media.Name.clone(),
-                                );
+                            if let Some(directurl) = media.DirectStreamUrl.clone() {
+                                if mediastream.IsExternal == true {
+                                    if let Some(suburl) = mediastream.DeliveryUrl.clone() {
+                                        let name = info.Id.clone();
+                                        let sourceid = media.Id.clone();
+                                        network::runtime().spawn(async move {
+                                            let _ = network::markwatched(name, sourceid).await;
+                                        });
+                                        let _ = network::mpv_play_withsub(
+                                            directurl,
+                                            suburl,
+                                            media.Name.clone(),
+                                        );
+                                    } else {
+                                        let name = info.Id.clone();
+                                        let sourceid = media.Id.clone();
+                                        button.set_label("Loading Subtitle");
+                                        network::runtime().spawn(async move {
+                                            let media = network::playbackinfo_withmediaid(name, sourceid).await;
+                                            let media = media.unwrap();
+                                            for mediasource in media.MediaSources {
+                                                for mediastream in mediasource.MediaStreams {
+                                                    if mediastream.Type == "Subtitle" {
+                                                        if displaytitle == sub {
+                                                            if let Some(suburl) = mediastream.DeliveryUrl.clone() {
+                                                                let _ = network::mpv_play_withsub(
+                                                                    directurl.clone(),
+                                                                    suburl,
+                                                                    mediasource.Name.clone(),
+                                                                );
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    let name = info.Id.clone();
+                                    let sourceid = media.Id.clone();
+                                    network::runtime().spawn(async move {
+                                        let _ = network::markwatched(name, sourceid).await;
+                                    });
+                                    let _ = network::mpv_play(directurl, media.Name.clone());
+                                }
                             }
                         }
                     }

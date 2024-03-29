@@ -129,13 +129,15 @@ mod imp {
                 }
                 overlay.add_overlay(&progressbar);
                 vbox.append(&overlay);
-                let label = Label::new(Some(&result.Name));
+                let label = Label::builder()
+                    .label(&result.Name)
+                    .build();
                 let labeltype = Label::new(Some(&result.Type));
                 if result.Type == "Episode" {
                     let markup = format!("{}", result.SeriesName.as_ref().expect("").clone());
                     label.set_markup(markup.as_str());
                     let markup = format!(
-                        "<span color='lightgray' font='10'>S{}E{}: {}</span>",
+                        "<span color='lightgray' font='small'>S{}E{}: {}</span>",
                         result.ParentIndexNumber.as_ref().expect("").clone(),
                         result.IndexNumber.as_ref().expect("").clone(),
                         result.Name
@@ -145,7 +147,7 @@ mod imp {
                     let markup = format!("{}", result.Name);
                     label.set_markup(markup.as_str());
                     let markup =
-                        format!("<span color='lightgray' font='10'>{}</span>", result.Type);
+                        format!("<span color='lightgray' font='small'>{}</span>", result.Type);
                     labeltype.set_markup(markup.as_str());
                 }
                 label.set_wrap(true);

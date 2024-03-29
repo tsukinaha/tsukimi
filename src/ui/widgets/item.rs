@@ -1,5 +1,6 @@
 use adw::subclass::prelude::*;
 use glib::Object;
+use gtk::cairo::Context;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
@@ -43,6 +44,14 @@ mod imp {
         pub itemoverview: TemplateChild<gtk::Inscription>,
         #[template_child]
         pub selecteditemoverview: TemplateChild<gtk::Inscription>,
+        #[template_child]
+        pub mediainfobox: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub linksscrolled: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        pub mediainforevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub linksrevealer: TemplateChild<gtk::Revealer>,
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
     }
@@ -211,10 +220,9 @@ mod imp {
                     .unwrap();
                 let seriesinfo: Ref<network::SeriesInfo> = entry.borrow();
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
-                let label = gtk::Label::new(Some(&seriesinfo.Name));
-                label.set_halign(gtk::Align::Start);
                 let markup = format!("{}. {}", seriesinfo.IndexNumber, seriesinfo.Name);
-                label.set_markup(markup.as_str());
+                let label = gtk::Label::new(Some(&markup));
+                label.set_halign(gtk::Align::Start);
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 label.set_size_request(-1, 20);
                 label.set_valign(gtk::Align::Start);
@@ -345,6 +353,7 @@ impl ItemPage {
         let osdbox = imp.osdbox.get();
         let dropdownspinner = imp.dropdownspinner.get();
         let id = seriesinfo.Id.clone();
+        let idc = id.clone();
         dropdownspinner.set_visible(true);
         if let Some(widget) = osdbox.last_child() {
             if widget.is::<gtk::Box>() {
@@ -362,7 +371,7 @@ impl ItemPage {
                 while let Ok(playback) = receiver.recv().await {
                     let _ = mutex.lock().await;
                     let info = info.clone();
-                    let dropdown = crate::ui::new_dropsel::newmediadropsel(playback, info);
+                    let dropdown = crate::ui::new_dropsel::newmediadropsel(playback.clone(), info);
                     dropdownspinner.set_visible(false);
                     if let Some(widget) = osdbox.last_child() {
                         if widget.is::<gtk::Box>() {
@@ -371,12 +380,13 @@ impl ItemPage {
                     }
                     osdbox.append(&dropdown);
                 }
-            }),
+            }), 
         );
 
         if let Some(overview) = seriesinfo.Overview {
             imp.selecteditemoverview.set_text(Some(&overview));
         }
+        self.createmediabox(idc);
     }
 
     pub fn setoverview(&self) {
@@ -384,16 +394,172 @@ impl ItemPage {
         let id = imp.id.get().unwrap().clone();
         let itemoverview = imp.itemoverview.get();
         let overviewrevealer = imp.overviewrevealer.get();
-        let (sender, receiver) = async_channel::bounded::<String>(1);
+        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
         crate::ui::network::runtime().spawn(async move {
-            let overview = crate::ui::network::get_item_overview(id.to_string()).await.expect("msg");
-            sender.send(overview).await.expect("msg");
+            let item = crate::ui::network::get_item_overview(id.to_string()).await.expect("msg");
+            sender.send(item).await.expect("msg");
         });
-        glib::spawn_future_local(async move {
-            while let Ok(overview) = receiver.recv().await {
-                itemoverview.set_text(Some(&overview));
+        glib::spawn_future_local(glib::clone!(@weak self as obj=>async move {
+            while let Ok(item) = receiver.recv().await {
+                if let Some(overview) = item.Overview {
+                    itemoverview.set_text(Some(&overview));
+                }
+                if let Some (links) = item.ExternalUrls {
+                    obj.setlinksscrolled(links);
+                }
                 overviewrevealer.set_reveal_child(true);
             }
+        }));
+    }
+
+    pub fn createmediabox(&self,id: String) {
+        let imp = self.imp();
+        let mediainfobox = imp.mediainfobox.get();
+        let mediainforevealer = imp.mediainforevealer.get();
+        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
+        crate::ui::network::runtime().spawn(async move {
+            let media = crate::ui::network::get_mediainfo(id.to_string()).await.expect("msg");
+            sender.send(media).await.expect("msg");
         });
+        glib::spawn_future_local(async move {
+            while let Ok(media) = receiver.recv().await {
+                while mediainfobox.last_child() != None {
+                    mediainfobox.last_child().map(|child| mediainfobox.remove(&child));
+                }
+                for mediasource in media.MediaSources {
+                    let singlebox = gtk::Box::new(gtk::Orientation::Vertical, 5);
+                    let info = format!("{} {}\n{}", mediasource.Container.to_uppercase(), bytefmt::format(mediasource.Size), mediasource.Name);
+                    let label = gtk::Label::builder()
+                        .label(&info)
+                        .halign(gtk::Align::Start)
+                        .margin_start(15)
+                        .valign(gtk::Align::Start)
+                        .margin_top(5)
+                        .build();
+                    singlebox.append(&label);
+
+                    let mediascrolled = gtk::ScrolledWindow::builder()
+                        .hscrollbar_policy(gtk::PolicyType::Automatic)
+                        .vscrollbar_policy(gtk::PolicyType::Never)
+                        .overlay_scrolling(true)
+                        .sensitive(false)
+                        .build();
+
+                    let mediabox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
+                    for mediapart in mediasource.MediaStreams {
+                        if mediapart.Type == "Attachment" {
+                            continue;
+                        }
+                        let mediapartbox = gtk::Box::builder()
+                            .orientation(gtk::Orientation::Vertical)
+                            .spacing(0)
+                            .width_request(300)
+                            .build();
+                        let mut str: String = Default::default();
+                        let icon = gtk::Image::builder()
+                            .margin_end(5)
+                            .build();
+                        if mediapart.Type == "Video" {
+                            icon.set_from_icon_name(Some("video-x-generic-symbolic"))
+                        } else if mediapart.Type == "Audio" {
+                            icon.set_from_icon_name(Some("audio-x-generic-symbolic"))
+                        } else if mediapart.Type == "Subtitle" {
+                            icon.set_from_icon_name(Some("media-view-subtitles-symbolic"))
+                        } else {
+                            icon.set_from_icon_name(Some("text-x-generic-symbolic"))
+                        }
+                        let typebox = gtk::Box::builder()
+                            .orientation(gtk::Orientation::Horizontal)
+                            .spacing(5)
+                            .build();
+                        typebox.append(&icon);
+                        typebox.append(&gtk::Label::new(Some(&mediapart.Type)));
+                        if let Some(codec) = mediapart.Codec {
+                            str.push_str(format!("Codec: {}", codec).as_str());
+                        }
+                        if let Some(language) = mediapart.DisplayLanguage {
+                            str.push_str(format!("\nLanguage: {}", language).as_str());
+                        }
+                        if let Some(title) = mediapart.Title {
+                            str.push_str(format!("\nTitle: {}", title).as_str());
+                        }
+                        if let Some(bitrate) = mediapart.BitRate {
+                            str.push_str(format!("\nBitrate: {}it/s", bytefmt::format(bitrate)).as_str());
+                        }
+                        if let Some(bitdepth) = mediapart.BitDepth {
+                            str.push_str(format!("\nBitDepth: {} bit", bitdepth).as_str());
+                        }
+                        if let Some(samplerate) = mediapart.SampleRate {
+                            str.push_str(format!("\nSampleRate: {} Hz", samplerate).as_str());
+                        }
+                        if let Some(height) = mediapart.Height {
+                            str.push_str(format!("\nHeight: {}", height).as_str());
+                        }
+                        if let Some(width) = mediapart.Width {
+                            str.push_str(format!("\nWidth: {}", width).as_str());
+                        }
+                        if let Some(colorspace) = mediapart.ColorSpace {
+                            str.push_str(format!("\nColorSpace: {}", colorspace).as_str());
+                        }
+                        if let Some(displaytitle) = mediapart.DisplayTitle {
+                            str.push_str(format!("\nDisplayTitle: {}", displaytitle).as_str());
+                        }
+                        if let Some(channel) = mediapart.Channels {
+                            str.push_str(format!("\nChannel: {}", channel).as_str());
+                        }
+                        if let Some(channellayout) = mediapart.ChannelLayout {
+                            str.push_str(format!("\nChannelLayout: {}", channellayout).as_str());
+                        }
+                        if let Some(averageframerate) = mediapart.AverageFrameRate {
+                            str.push_str(format!("\nAverageFrameRate: {}", averageframerate).as_str());
+                        }
+                        if let Some(pixelformat) = mediapart.PixelFormat {
+                            str.push_str(format!("\nPixelFormat: {}", pixelformat).as_str());
+                        }
+                        let inscription = gtk::Inscription::builder()
+                            .text(&str)
+                            .min_lines(14)
+                            .hexpand(true)
+                            .yalign(0.0)
+                            .build();
+                        mediapartbox.append(&typebox);
+                        mediapartbox.append(&inscription);
+                        mediabox.append(&mediapartbox);
+                    }
+                    
+                    mediascrolled.set_child(Some(&mediabox));
+                    singlebox.append(&mediascrolled);
+                    mediainfobox.append(&singlebox);
+                }
+                mediainforevealer.set_reveal_child(true);
+            }
+        });
+    }
+
+    pub fn setlinksscrolled(&self, links: Vec<crate::ui::network::Urls>) {
+        let imp = self.imp();
+        let linksscrolled = imp.linksscrolled.get();
+        let linksrevealer = imp.linksrevealer.get();
+        let linkbox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
+        while linkbox.last_child() != None {
+            linkbox.last_child().map(|child| linkbox.remove(&child));
+        }
+        for url in links {
+            let linkbutton = gtk::Button::builder()
+                .margin_start(10)
+                .margin_top(10)
+                .build();
+            let buttoncontent = adw::ButtonContent::builder()
+                .label(&url.Name)
+                .icon_name("send-to-symbolic")
+                .build();
+            linkbutton.set_child(Some(&buttoncontent));
+            linkbutton.connect_clicked(move |_| {
+                let _ = gio::AppInfo::launch_default_for_uri(&url.Url, Option::<&gio::AppLaunchContext>::None);
+            });
+            linkbox.append(&linkbutton);
+        }
+        linksscrolled.set_child(Some(&linkbox));
+        linksrevealer.set_reveal_child(true);
     }
 }

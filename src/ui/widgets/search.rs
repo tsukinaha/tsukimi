@@ -125,7 +125,7 @@ mod imp {
                 label.set_size_request(-1, 24);
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 let labeltype = Label::new(Some(&result.Type));
-                let markup = format!("<span color='lightgray' font='8'>{}</span>", result.Type);
+                let markup = format!("<span color='lightgray' font='small'>{}</span>", result.Type);
                 labeltype.set_markup(markup.as_str());
                 labeltype.set_size_request(-1, 24);
                 vbox.append(&label);

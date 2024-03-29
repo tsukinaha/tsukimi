@@ -64,6 +64,19 @@ revealer > expander-widget > box > box > widget {
 revealer > expander-widget > box > box > widget > box{
     margin:15px;
 }
+
+box > scrolledwindow > viewport > box > box {
+    margin:5px;
+    background-color:rgba(0,0,0,0.3);
+    border-radius:10px;
+}
+scrolledwindow > viewport > box > box > label {
+    margin:15px;
+}
+scrolledwindow > viewport > box > box > box {
+    margin-left:15px;
+    margin-top:15px;
+}
 /*
 Generated with Gradience
 
