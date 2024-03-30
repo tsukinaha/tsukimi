@@ -81,6 +81,9 @@ mod imp {
 
             self.selection.set_model(Some(&store));
             let factory = gtk::SignalListItemFactory::new();
+            factory.connect_setup(move |_factory,item|{
+
+            });
             factory.connect_bind(move |_factory, item| {
                 let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
                 let entry = listitem
@@ -92,22 +95,22 @@ mod imp {
                 let overlay = gtk::Overlay::new();
                 let imgbox;
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                if result.ParentThumbItemId.is_some() {
-                    imgbox = crate::ui::image::set_thumbimage(
+                if result.ParentThumbItemId.is_some() && result.Type == "Episode"{
+                    imgbox = crate::ui::image::setthumbimage(
                         result.ParentThumbItemId.as_ref().expect("").clone(),
                         mutex.clone(),
                     );
                 } else {
                     if result.Type == "Movie" {
                         imgbox =
-                            crate::ui::image::set_backdropimage(result.Id.clone(), mutex.clone());
+                            crate::ui::image::setbackdropimage(result.Id.clone(), mutex.clone());
                     } else if result.ParentThumbItemId.is_some() {
-                        imgbox = crate::ui::image::set_backdropimage(
+                        imgbox = crate::ui::image::setthumbimage(
                             result.SeriesId.as_ref().expect("").to_string(),
                             mutex.clone(),
                         );
                     } else {
-                        imgbox = crate::ui::image::set_image(result.Id.clone(), mutex.clone());
+                        imgbox = crate::ui::image::setimage(result.Id.clone(), mutex.clone());
                     }
                 }
                 imgbox.set_size_request(290, 169);

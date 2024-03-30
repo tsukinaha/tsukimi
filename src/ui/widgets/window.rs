@@ -35,6 +35,8 @@ mod imp {
         pub searchpage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub historypage: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub homepage: TemplateChild<adw::NavigationPage>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -151,9 +153,9 @@ impl Window {
 
     fn homepage(&self) {
         let imp = self.imp();
-        imp.historypage
-            .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
-        imp.insidestack.set_visible_child_name("historypage");
+        imp.homepage
+            .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
+        imp.insidestack.set_visible_child_name("homepage");
     }
 
     fn historypage(&self) {

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwNavigationPage" class="HomePage">
+    <property name="title" translatable="yes">Tsukimi</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child>
+          <object class="GtkScrolledWindow" id="root">
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="spacing">9</property>
+                <child>
+                  <object class="GtkRevealer" id="librevealer">
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
+                    <child>
+                      <object class="GtkExpander">
+                        <property name="expanded">True</property>
+                        <child type="label">
+                          <object class="GtkLabel">
+                            <property name="label" translatable="yes">Libraries</property>
+                            <attributes>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                            </attributes>
+                            <property name="use-markup">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="libscrolled">
+                            <property name="overlay-scrolling">true</property>
+                            <property name="vscrollbar-policy">never</property>
+                            <property name="margin-bottom">3</property>
+                            <child>
+                              <object class="GtkListView" id="actorlist">
+                                <property name="orientation">horizontal</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="libsrevealer">
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
+                    <child>
+                      <object class="GtkExpander">
+                        <property name="expanded">True</property>
+                        <child type="label">
+                          <object class="GtkLabel">
+                            <property name="label" translatable="yes">Libraries</property>
+                            <attributes>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                            </attributes>
+                            <property name="use-markup">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="libsbox">
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">6</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
