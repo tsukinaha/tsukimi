@@ -1,4 +1,4 @@
-name: Build Linux Releases
+name: Linux CI
 on:
   workflow_dispatch:
   push:

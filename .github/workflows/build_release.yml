@@ -1,4 +1,4 @@
-name: Build releases and publish
+name: CI Passing
 on:
   workflow_dispatch:
   push:
