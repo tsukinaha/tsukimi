@@ -11,7 +11,10 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
     leftvbox.set_margin_bottom(20);
     leftvbox.set_halign(gtk::Align::Start);
     leftvbox.set_valign(gtk::Align::End);
-    let label = gtk::Label::new(Some(&info.Name));
+    let label = gtk::Label::builder()
+        .label(format!("<b>{}</b>", info.Name))
+        .use_markup(true)
+        .build();
     leftvbox.append(&label);
     hbox.append(&leftvbox);
     let vbox = gtk::Box::new(Orientation::Vertical, 5);

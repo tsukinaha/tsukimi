@@ -1,7 +1,8 @@
 use adw::subclass::prelude::*;
 use glib::Object;
 use gtk::cairo::Context;
-use gtk::prelude::*;
+use gtk::subclass::widget;
+use gtk::{prelude::*, Label};
 use gtk::{gio, glib};
 
 use crate::ui::network::SeriesInfo;
@@ -52,8 +53,15 @@ mod imp {
         pub mediainforevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub linksrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub actorrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub actorscrolled: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        pub actorlist: TemplateChild<gtk::ListView>,
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
+        pub actorselection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -404,8 +412,11 @@ impl ItemPage {
                 if let Some(overview) = item.Overview {
                     itemoverview.set_text(Some(&overview));
                 }
-                if let Some (links) = item.ExternalUrls {
+                if let Some(links) = item.ExternalUrls {
                     obj.setlinksscrolled(links);
+                }
+                if let Some(actor) = item.People {
+                    obj.setactorscrolled(actor);
                 }
                 overviewrevealer.set_reveal_child(true);
             }
@@ -540,6 +551,9 @@ impl ItemPage {
         let imp = self.imp();
         let linksscrolled = imp.linksscrolled.get();
         let linksrevealer = imp.linksrevealer.get();
+        if !links.is_empty() {
+            linksrevealer.set_reveal_child(true);
+        }
         let linkbox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
         while linkbox.last_child() != None {
             linkbox.last_child().map(|child| linkbox.remove(&child));
@@ -561,5 +575,94 @@ impl ItemPage {
         }
         linksscrolled.set_child(Some(&linkbox));
         linksrevealer.set_reveal_child(true);
+    }
+
+    pub fn setactorscrolled(&self, actors: Vec<crate::ui::network::People>) {
+        let imp = self.imp();
+        let actorscrolled = imp.actorscrolled.get();
+        let actorrevealer = imp.actorrevealer.get();
+        if !actors.is_empty() {
+            actorrevealer.set_reveal_child(true);
+        }
+        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+        for people in actors {
+            let object = glib::BoxedAnyObject::new(people);
+            store.append(&object);
+        }
+        imp.actorselection.set_model(Some(&store));
+        let actorselection = &imp.actorselection;
+        let factory = gtk::SignalListItemFactory::new();
+        factory.connect_setup(move |_, item| {
+            let list_item = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem");
+            let listbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
+            let picture = gtk::Box::builder()
+                .orientation(gtk::Orientation::Vertical)
+                .height_request(200)
+                .width_request(150)
+                .build();
+            let label = gtk::Label::builder()
+                .halign(gtk::Align::Start)
+                .ellipsize(gtk::pango::EllipsizeMode::End)
+                .build();
+            listbox.append(&picture);
+            listbox.append(&label);
+            list_item.set_child(Some(&listbox));
+        });
+        factory.connect_bind(move |_, item| {
+            let picture = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .child()
+                .and_downcast::<gtk::Box>()
+                .expect("Needs to be Box")
+                .first_child()
+                .expect("Needs to be Picture");
+            let label = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .child()
+                .and_downcast::<gtk::Box>()
+                .expect("Needs to be Box")
+                .last_child()
+                .expect("Needs to be Picture");
+            let entry = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .item()
+                .and_downcast::<glib::BoxedAnyObject>()
+                .expect("Needs to be BoxedAnyObject");
+            let people: std::cell::Ref<crate::ui::network::People> = entry.borrow();
+            if picture.is::<gtk::Box>() {
+                if let Some(_revealer) = picture
+                    .downcast_ref::<gtk::Box>()
+                    .expect("Needs to be Box")
+                    .first_child() {
+                    
+                } else {
+                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+                let img = crate::ui::image::setimage(people.Id.clone(), mutex.clone());
+                picture
+                    .downcast_ref::<gtk::Box>()
+                    .expect("Needs to be Box")
+                    .append(&img);
+                }
+            }
+            if label.is::<gtk::Label>() {
+                if let Some(role) = &people.Role {
+                let str = format!("{}\n{}", people.Name, role);
+                label
+                    .downcast_ref::<gtk::Label>()
+                    .expect("Needs to be Label")
+                    .set_text(&str);
+                }
+            }
+            
+        });
+        imp.actorlist.set_factory(Some(&factory));
+        imp.actorlist.set_model(Some(actorselection));
+        let actorlist = imp.actorlist.get();
+        actorscrolled.set_child(Some(&actorlist));
     }
 }

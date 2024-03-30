@@ -2,7 +2,6 @@ use super::network;
 use super::network::SeriesInfo;
 use gtk::prelude::*;
 use gtk::Orientation;
-use gtk::glib;
 
 pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::Box {
     let hbox = gtk::Box::new(Orientation::Horizontal, 5);
@@ -15,11 +14,12 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
     leftvbox.set_halign(gtk::Align::Start);
     leftvbox.set_valign(gtk::Align::End);
     let markup = format!(
-        "<b> Season {} : Episode {} - {} </b>",
-        info.ParentIndexNumber, info.IndexNumber, info.Name
+        "<b>{}\n\nSeason {} : Episode {}</b>",
+        info.Name, info.ParentIndexNumber, info.IndexNumber
     );
     let label = gtk::Label::new(Some(&info.Name));
     label.set_markup(markup.as_str());
+    label.set_ellipsize(gtk::pango::EllipsizeMode::End);
     leftvbox.append(&label);
     hbox.append(&leftvbox);
     let vbox = gtk::Box::new(Orientation::Vertical, 5);
@@ -27,6 +27,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
     vbox.set_margin_end(80);
     vbox.set_margin_bottom(20);
     vbox.set_halign(gtk::Align::End);
+    vbox.set_valign(gtk::Align::End);
     vbox.set_hexpand(true);
     let namelist = gtk::StringList::new(&[]);
 

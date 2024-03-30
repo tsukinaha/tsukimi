@@ -191,6 +191,8 @@ pub struct SeriesInfo {
     pub UserData: Option<UserData>,
 }
 
+
+
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
     let server_info = get_server_info();
     let client = reqwest::Client::new();
@@ -336,10 +338,19 @@ pub fn mpv_play_withsub(url: String, suburl: String, name: String) {
     let _ = command.spawn().expect("mpv failed to start").wait();
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Item {
     pub ExternalUrls: Option<Vec<Urls>>,
     pub Overview: Option<String>,
+    pub People: Option<Vec<People>>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct People {
+    pub Name: String,
+    pub Id: String,
+    pub Role: Option<String>,
+    pub Type: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -464,7 +475,7 @@ pub async fn get_image(id: String) -> Result<String, Error> {
     let server_info = get_server_info();
 
     let result = reqwest::get(&format!(
-        "{}:{}/emby/Items/{}/Images/Primary?maxHeight=300",
+        "{}:{}/emby/Items/{}/Images/Primary?maxHeight=400",
         server_info.domain, server_info.port, id
     ))
     .await;
