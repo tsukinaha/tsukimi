@@ -17,15 +17,18 @@
                     <property name="transition-duration">700</property>
                     <property name="reveal-child">False</property>
                     <child>
-                      <object class="GtkExpander">
-                        <property name="expanded">True</property>
-                        <child type="label">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
+                        <property name="hexpand">True</property>
+                        <child>
                           <object class="GtkLabel">
                             <property name="label" translatable="yes">Libraries</property>
+                            <property name="margin-start">12</property>
+                            <property name="halign">start</property>
                             <attributes>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                             </attributes>
-                            <property name="use-markup">True</property>
                           </object>
                         </child>
                         <child>
@@ -34,7 +37,7 @@
                             <property name="vscrollbar-policy">never</property>
                             <property name="margin-bottom">3</property>
                             <child>
-                              <object class="GtkListView" id="actorlist">
+                              <object class="GtkListView" id="liblist">
                                 <property name="orientation">horizontal</property>
                               </object>
                             </child>
@@ -50,23 +53,9 @@
                     <property name="transition-duration">700</property>
                     <property name="reveal-child">False</property>
                     <child>
-                      <object class="GtkExpander">
-                        <property name="expanded">True</property>
-                        <child type="label">
-                          <object class="GtkLabel">
-                            <property name="label" translatable="yes">Libraries</property>
-                            <attributes>
-                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                            </attributes>
-                            <property name="use-markup">True</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkBox" id="libsbox">
-                            <property name="orientation">vertical</property>
-                            <property name="spacing">6</property>
-                          </object>
-                        </child>
+                      <object class="GtkBox" id="libsbox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                       </object>
                     </child>
                   </object>

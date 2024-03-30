@@ -1,6 +1,9 @@
 use glib::Object;
+use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
+
+use crate::ui::network::{runtime, Latest};
 
 use self::imp::Page;
 
@@ -29,6 +32,12 @@ mod imp {
         pub libscrolled: TemplateChild<gtk::ScrolledWindow>,
         #[template_child]
         pub librevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub liblist: TemplateChild<gtk::ListView>,
+        #[template_child]
+        pub libsbox: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub libsrevealer: TemplateChild<gtk::Revealer>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -54,7 +63,8 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            
+            // request library
+            obj.set_library();
         }
     }
 
@@ -89,11 +99,232 @@ impl HomePage {
     }
 
     fn set(&self, page: Page) {
-        let imp = imp::HomePage::from_obj(self);
+        let imp = self.imp();
         let widget = match page {
             Page::Movie(widget) => widget,
             Page::Item(widget) => widget,
         };
         imp.root.set_child(Some(&*widget));
+    }
+
+    pub fn set_library(&self) {
+        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::View>>(3);
+        crate::ui::network::runtime().spawn(async move {
+            let views = crate::ui::network::get_library().await.expect("msg");
+            sender.send(views).await.expect("msg");
+        });
+        glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
+            while let Ok(views) = receiver.recv().await {
+                obj.set_libraryscorll(&views);
+                obj.get_librarysscroll(&views);
+            }
+        }));
+    }
+
+    pub fn set_libraryscorll(&self, views: &Vec<crate::ui::network::View>) {
+        let imp = self.imp();
+        let libscrolled = imp.libscrolled.get();
+        imp.librevealer.set_reveal_child(true);
+        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+        for view in views {
+            let object = glib::BoxedAnyObject::new(view.clone());
+            store.append(&object);
+        }
+        imp.selection.set_model(Some(&store));
+        let selection = &imp.selection;
+        let factory = gtk::SignalListItemFactory::new();
+        factory.connect_setup(move |_, item| {
+            let list_item = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem");
+            let listbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
+            let picture = gtk::Box::builder()
+                .orientation(gtk::Orientation::Vertical)
+                .height_request(150)
+                .width_request(300)
+                .build();
+            let label = gtk::Label::builder()
+                .halign(gtk::Align::Center)
+                .ellipsize(gtk::pango::EllipsizeMode::End)
+                .build();
+            listbox.append(&picture);
+            listbox.append(&label);
+            list_item.set_child(Some(&listbox));
+        });
+        factory.connect_bind(move |_, item| {
+            let picture = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .child()
+                .and_downcast::<gtk::Box>()
+                .expect("Needs to be Box")
+                .first_child()
+                .expect("Needs to be Picture");
+            let label = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .child()
+                .and_downcast::<gtk::Box>()
+                .expect("Needs to be Box")
+                .last_child()
+                .expect("Needs to be Picture");
+            let entry = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .item()
+                .and_downcast::<glib::BoxedAnyObject>()
+                .expect("Needs to be BoxedAnyObject");
+            let view: std::cell::Ref<crate::ui::network::View> = entry.borrow();
+            if picture.is::<gtk::Box>() {
+                if let Some(_revealer) = picture
+                    .downcast_ref::<gtk::Box>()
+                    .expect("Needs to be Box")
+                    .first_child()
+                {
+                } else {
+                    let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+                    let img = crate::ui::image::setimage(view.Id.clone(), mutex.clone());
+                    picture
+                        .downcast_ref::<gtk::Box>()
+                        .expect("Needs to be Box")
+                        .append(&img);
+                }
+            }
+            if label.is::<gtk::Label>() {
+                let str = format!("{}", view.Name);
+                label
+                    .downcast_ref::<gtk::Label>()
+                    .expect("Needs to be Label")
+                    .set_text(&str);
+            }
+        });
+        imp.liblist.set_factory(Some(&factory));
+        imp.liblist.set_model(Some(selection));
+        let liblist = imp.liblist.get();
+        libscrolled.set_child(Some(&liblist));
+    }
+
+    pub fn get_librarysscroll(&self, views: &Vec<crate::ui::network::View>) {
+        let libsrevealer = self.imp().libsrevealer.get();
+        libsrevealer.set_reveal_child(true);
+        for view in views.clone() {
+            let libsbox = self.imp().libsbox.get();
+            let scrolledwindow = gtk::ScrolledWindow::builder()
+                .hscrollbar_policy(gtk::PolicyType::Automatic)
+                .vscrollbar_policy(gtk::PolicyType::Never)
+                .build();
+            let scrollbox = gtk::Box::new(gtk::Orientation::Vertical, 15);
+            let revealer = gtk::Revealer::builder()
+                .transition_type(gtk::RevealerTransitionType::SlideDown)
+                .transition_duration(700)
+                .reveal_child(false)
+                .child(&scrollbox)
+                .build();
+            libsbox.append(&revealer);
+            let label = gtk::Label::builder()
+                .label(format!("<b>Latest {}</b>", view.Name))
+                .halign(gtk::Align::Start)
+                .use_markup(true)
+                .margin_top(15)
+                .margin_start(10)
+                .build();
+            scrollbox.append(&label);
+            scrollbox.append(&scrolledwindow);
+            let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+            let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Latest>>(3);
+            crate::ui::network::runtime().spawn(async move {
+                let latest = crate::ui::network::get_latest(view.Id.clone(), mutex)
+                    .await
+                    .expect("msg");
+                sender.send(latest).await.expect("msg");
+            });
+            glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
+                while let Ok(latest) = receiver.recv().await {
+                    obj.set_librarysscroll(latest.clone());
+                    let listview = obj.set_librarysscroll(latest);
+                    scrolledwindow.set_child(Some(&listview));
+                    revealer.set_reveal_child(true);
+                }
+            }));
+        }
+    }
+
+    pub fn set_librarysscroll(&self, latests: Vec<crate::ui::network::Latest>) -> gtk::ListView {
+        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+        for latest in latests {
+            let object = glib::BoxedAnyObject::new(latest.clone());
+            store.append(&object);
+        }
+        let selection = gtk::SingleSelection::new(Some(store));
+        let factory = gtk::SignalListItemFactory::new();
+
+        factory.connect_setup(move |_, item| {
+            let list_item = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem");
+            let listbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
+            let picture = gtk::Box::builder()
+                .orientation(gtk::Orientation::Vertical)
+                .height_request(240)
+                .width_request(167)
+                .build();
+            let label = gtk::Label::builder()
+                .halign(gtk::Align::Center)
+                .ellipsize(gtk::pango::EllipsizeMode::End)
+                .build();
+            listbox.append(&picture);
+            listbox.append(&label);
+            list_item.set_child(Some(&listbox));
+        });
+        factory.connect_bind(move |_, item| {
+            let picture = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .child()
+                .and_downcast::<gtk::Box>()
+                .expect("Needs to be Box")
+                .first_child()
+                .expect("Needs to be Picture");
+            let label = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .child()
+                .and_downcast::<gtk::Box>()
+                .expect("Needs to be Box")
+                .last_child()
+                .expect("Needs to be Picture");
+            let entry = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .item()
+                .and_downcast::<glib::BoxedAnyObject>()
+                .expect("Needs to be BoxedAnyObject");
+            let latest: std::cell::Ref<crate::ui::network::Latest> = entry.borrow();
+            if picture.is::<gtk::Box>() {
+                if let Some(_revealer) = picture
+                    .downcast_ref::<gtk::Box>()
+                    .expect("Needs to be Box")
+                    .first_child()
+                {
+                } else {
+                    let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+                    let img = crate::ui::image::setimage(latest.Id.clone(), mutex.clone());
+                    picture
+                        .downcast_ref::<gtk::Box>()
+                        .expect("Needs to be Box")
+                        .append(&img);
+                }
+            }
+            if label.is::<gtk::Label>() {
+                let str = format!("{}", latest.Name);
+                label
+                    .downcast_ref::<gtk::Label>()
+                    .expect("Needs to be Label")
+                    .set_text(&str);
+            }
+        });
+        let listview = gtk::ListView::new(Some(selection), Some(factory));
+        listview.set_orientation(gtk::Orientation::Horizontal);
+        listview
     }
 }

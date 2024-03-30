@@ -13,7 +13,7 @@ use tokio::runtime::Runtime;
 use serde::{Deserialize, Serialize};
 #[cfg(target_os = "macos")]
 use std::env;
-use std::sync::OnceLock;
+use std::sync::{Mutex, OnceLock};
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
@@ -166,7 +166,7 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
         ("SearchTerm", &searchinfo),
         ("GroupProgramsBySeries", "true"),
         ("Limit", "50"),
-        ("X-Emby-Client", "Emby+Web"),
+        ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", "Tsukimi"),
         ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
         ("X-Emby-Client-Version", "4.8.0.54"),
@@ -205,7 +205,7 @@ pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
         ("EnableTotalRecordCount", "true"),
         ("EnableImages", "true"),
         ("UserId", &server_info.user_id),
-        ("X-Emby-Client", "Emby+Web"),
+        ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", "Tsukimi"),
         ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
         ("X-Emby-Client-Version", "4.8.0.54"),
@@ -271,7 +271,7 @@ pub async fn playbackinfo(id: String) -> Result<Media, Error> {
         ("AutoOpenLiveStream", "true"),
         ("IsPlayback", "true"),
         ("MaxStreamingBitrate", "4000000"),
-        ("X-Emby-Client", "Emby+Web"),
+        ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", "Tsukimi"),
         ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
         ("X-Emby-Client-Version", "4.8.0.54"),
@@ -368,7 +368,7 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
     );
     let params = [
         ("Fields", "ShareLevel"),
-        ("X-Emby-Client", "Emby+Web"),
+        ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", "Tsukimi"),
         ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
         ("X-Emby-Client-Version", "4.8.0.54"),
@@ -390,7 +390,7 @@ pub async fn markwatched(id: String, sourceid: String) -> Result<String, Error> 
     );
     println!("{}", url);
     let params = [
-        ("X-Emby-Client", "Emby+Web"),
+        ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", "Tsukimi"),
         ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b114514"),
         ("X-Emby-Client-Version", "4.8.0.54"),
@@ -456,7 +456,7 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
         ("ImageTypeLimit", "1"),
         ("MediaTypes", "Video"),
         ("Limit", "8"),
-        ("X-Emby-Client", "Emby+Web"),
+        ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", "Tsukimi"),
         ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
         ("X-Emby-Client-Version", "4.8.0.54"),
@@ -660,7 +660,7 @@ pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
     );
     let params = [
         ("Fields", "ShareLevel"),
-        ("X-Emby-Client", "Emby+Web"),
+        ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", "Tsukimi"),
         ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
         ("X-Emby-Client-Version", "4.8.0.54"),
@@ -690,7 +690,7 @@ pub async fn playbackinfo_withmediaid(id: String,mediaid: String) -> Result<Medi
         ("SubtitleStreamIndex", "1"),
         ("MediaSourceId", &mediaid),
         ("MaxStreamingBitrate", "4000000"),
-        ("X-Emby-Client", "Emby+Web"),
+        ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", "Tsukimi"),
         ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
         ("X-Emby-Client-Version", "4.8.0.54"),
@@ -708,4 +708,77 @@ pub async fn playbackinfo_withmediaid(id: String,mediaid: String) -> Result<Medi
     let json: serde_json::Value = response.json().await?;
     let mediainfo: Media = serde_json::from_value(json.clone()).unwrap();
     return Ok(mediainfo);
+}
+
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct View {
+    pub Name: String,
+    pub Id: String,
+    pub CollectionType: Option<String>,
+}
+
+pub async fn get_library() -> Result<Vec<View>, Error>{
+    let server_info = get_server_info();
+    let client = reqwest::Client::new();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Views",
+        server_info.domain, server_info.port, server_info.user_id
+    );
+
+    let params = [
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", "Tsukimi"),
+        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
+        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    let response = client
+        .get(&url)
+        .query(&params)
+        .send()
+        .await?;
+    let json: serde_json::Value = response.json().await?;
+    let views: Vec<View> = serde_json::from_value(json["Items"].clone()).unwrap();
+    return Ok(views);
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct Latest {
+    pub Name: String,
+    pub Id: String,
+    pub Type: String,
+    pub UserData: Option<UserData>,
+}
+
+pub async fn get_latest(id: String,_mutex: std::sync::Arc<tokio::sync::Mutex<()>>) -> Result<Vec<Latest>, Error> {
+    let server_info = get_server_info();
+    let client = reqwest::Client::new();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items/Latest",
+        server_info.domain, server_info.port, server_info.user_id
+    );
+
+    let params = [
+        ("Limit", "16"),
+        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear"),
+        ("ParentId", &id),
+        ("ImageTypeLimit", "1"),
+        ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", "Tsukimi"),
+        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
+        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    let response = client
+        .get(&url)
+        .query(&params)
+        .send()
+        .await?;
+    let json: serde_json::Value = response.json().await?;
+    let latests: Vec<Latest> = serde_json::from_value(json.clone()).unwrap();
+    return Ok(latests);
 }
