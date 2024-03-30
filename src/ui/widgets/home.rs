@@ -38,6 +38,8 @@ mod imp {
         pub libsbox: TemplateChild<gtk::Box>,
         #[template_child]
         pub libsrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub spinner: TemplateChild<gtk::Spinner>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -247,6 +249,7 @@ impl HomePage {
                 }
             }));
         }
+        self.imp().spinner.set_visible(false);
     }
 
     pub fn set_librarysscroll(&self, latests: Vec<crate::ui::network::Latest>) -> gtk::ListView {

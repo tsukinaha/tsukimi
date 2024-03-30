@@ -12,6 +12,12 @@
                 <property name="orientation">vertical</property>
                 <property name="spacing">9</property>
                 <child>
+                  <object class="GtkSpinner" id="spinner">
+                    <property name="spinning">True</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+                <child>
                   <object class="GtkRevealer" id="librevealer">
                     <property name="transition-type">crossfade</property>
                     <property name="transition-duration">700</property>

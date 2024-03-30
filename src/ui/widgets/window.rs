@@ -56,6 +56,9 @@ mod imp {
             klass.install_action("win.home", None, move |window, _action, _parameter| {
                 window.homepage();
             });
+            klass.install_action("win.history", None, move |window, _action, _parameter| {
+                window.historypage();
+            });
             klass.install_action("win.search", None, move |window, _action, _parameter| {
                 window.searchpage();
             });

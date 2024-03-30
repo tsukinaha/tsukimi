@@ -122,7 +122,21 @@
                                 </style>
                                 <child>
                                   <object class="AdwActionRow" id="homerow">
-                                    <property name="title">Home</property>
+                                    <child type="prefix">
+                                      <object class="GtkLabel">
+                                        <property name="label" translatable="yes">Home</property>
+                                        <property name="halign">start</property>
+                                        <attributes>
+                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                        </attributes>
+                                      </object>
+                                    </child>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="icon-name">go-home-symbolic</property>
+                                        <property name="halign">start</property>
+                                      </object>
+                                    </child>
                                     <child type="suffix">
                                       <object class="GtkButton">
                                         <property name="valign">center</property>
@@ -137,12 +151,50 @@
                                 </child>
                                 <child>
                                   <object class="AdwActionRow">
-                                    <property name="title">History</property>
+                                    <child type="prefix">
+                                      <object class="GtkLabel">
+                                        <property name="label" translatable="yes">History</property>
+                                        <property name="halign">start</property>
+                                        <attributes>
+                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                        </attributes>
+                                      </object>
+                                    </child>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="icon-name">document-open-recent-symbolic</property>
+                                        <property name="halign">start</property>
+                                      </object>
+                                    </child>
+                                    <child type="suffix">
+                                      <object class="GtkButton">
+                                        <property name="valign">center</property>
+                                        <property name="icon-name">object-rotate-left</property>
+                                        <property name="action-name">win.history</property>
+                                        <style>
+                                          <class name="flat" />
+                                        </style>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
                                 <child>
                                   <object class="AdwActionRow">
-                                    <property name="title">Search</property>
+                                    <child type="prefix">
+                                      <object class="GtkLabel">
+                                        <property name="label" translatable="yes">Search</property>
+                                        <property name="halign">start</property>
+                                        <attributes>
+                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                        </attributes>
+                                      </object>
+                                    </child>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="icon-name">system-search-symbolic</property>
+                                        <property name="halign">start</property>
+                                      </object>
+                                    </child>
                                     <child type="suffix">
                                       <object class="GtkButton">
                                         <property name="valign">center</property>
@@ -157,7 +209,21 @@
                                 </child>
                                 <child>
                                   <object class="AdwActionRow">
-                                    <property name="title">Settings</property>
+                                    <child type="prefix">
+                                      <object class="GtkLabel">
+                                        <property name="label" translatable="yes">Preferences</property>
+                                        <property name="halign">start</property>
+                                        <attributes>
+                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                        </attributes>
+                                      </object>
+                                    </child>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="icon-name">preferences-system-symbolic</property>
+                                        <property name="halign">start</property>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
                               </object>
