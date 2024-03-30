@@ -1,13 +1,18 @@
-# Tsukimi  
+# Tsukimi       
 
   ![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main)
   ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi)
   ![GitHub License](https://img.shields.io/github/license/tsukinaha/tsukimi)
 
+  <a href="https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml">
+    <img alt="Linux CI status" src="https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg"/>
+  </a>
+  <a href="https://github.com/tsukinaha/tsukimi/actions/workflows/build_gnu.yml">
+    <img alt="Windows GNU CI status" src="https://github.com/tsukinaha/tsukimi/actions/workflows/build_gnu.yml/badge.svg"/>
+  </a>
 
-使用 gtk4-rs 编写的第三方 Emby Linux 客户端      
-Windows 使用需配置 MPV PATH 并安装 MSVC GTK4 环境   
-支持外挂字幕 支持历史记录 不支持音乐    
-使用系统 mpv 进行播放    
+使用 gtk4-rs 编写的第三方 Emby 客户端              
+Linux: 使用 /usr/bin/mpv 播放       
+Windows: 使用 mpv PATH 或 ./config/tsukimi.toml => mpv: "/path/to/mpv" 播放
     
 
