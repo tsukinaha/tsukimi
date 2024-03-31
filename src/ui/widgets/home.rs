@@ -7,6 +7,7 @@ use crate::ui::network::Latest;
 
 use self::imp::Page;
 use super::item::ItemPage;
+use super::list::ListPage;
 use super::movie::MoviePage;
 use super::window::Window;
 
@@ -204,6 +205,20 @@ impl HomePage {
         imp.liblist.set_factory(Some(&factory));
         imp.liblist.set_model(Some(selection));
         let liblist = imp.liblist.get();
+        liblist.connect_activate(glib::clone!(@weak self as obj => move |listview, position| {
+            let model = listview.model().unwrap();
+            let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+            let view: std::cell::Ref<crate::ui::network::View> = item.borrow();
+            let item_page = Page::Item(Box::new(ListPage::new(view.Id.clone()).into()));
+            obj.set(item_page);
+            let window = obj.root();
+            if let Some(window) = window {
+                if window.is::<Window>() {
+                    let window = window.downcast::<Window>().unwrap();
+                    window.set_title(&format!("{} - Date Created Descending",view.Name));
+                }
+            }
+        }));
         libscrolled.set_child(Some(&liblist));
     }
 
@@ -354,7 +369,7 @@ impl HomePage {
         let listview = gtk::ListView::new(Some(selection), Some(factory));
         listview.set_orientation(gtk::Orientation::Horizontal);
         listview.connect_activate(glib::clone!(@weak self as obj => move |listview, position| {
-            let model = listview.model().unwrap();
+                let model = listview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<Latest> = item.borrow();
                 let item_page;

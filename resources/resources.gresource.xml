@@ -9,5 +9,6 @@
     <file compressed="true" preprocess="xml-stripblanks">history.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">episoderow.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">home.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">list.ui</file>
   </gresource>
 </gresources>

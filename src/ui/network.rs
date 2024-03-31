@@ -753,7 +753,8 @@ pub struct Latest {
     pub ProductionYear: Option<u32>,
 }
 
-pub async fn get_latest(id: String,_mutex: std::sync::Arc<tokio::sync::Mutex<()>>) -> Result<Vec<Latest>, Error> {
+pub async fn get_latest(id: String,mutex: std::sync::Arc<tokio::sync::Mutex<()>>) -> Result<Vec<Latest>, Error> {
+    let _ = mutex.lock().await;
     let server_info = get_server_info();
     let client = reqwest::Client::new();
     let url = format!(
@@ -782,4 +783,56 @@ pub async fn get_latest(id: String,_mutex: std::sync::Arc<tokio::sync::Mutex<()>
     let json: serde_json::Value = response.json().await?;
     let latests: Vec<Latest> = serde_json::from_value(json.clone()).unwrap();
     return Ok(latests);
+}
+
+pub async fn get_list(id: String,start: String,mutex: std::sync::Arc<tokio::sync::Mutex<()>>) -> Result<List, Error> {
+    let _ = mutex.lock().await;
+    let server_info = get_server_info();
+    let client = reqwest::Client::new();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items",
+        server_info.domain, server_info.port, server_info.user_id
+    );
+
+    let params = [
+        ("Limit", "50"),
+        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate"),
+        ("ParentId", &id),
+        ("ImageTypeLimit", "1"),
+        ("StartIndex", &start),
+        ("IncludeItemTypes","Movie,Series"),
+        ("SortBy", "DateCreated,SortName"),
+        ("SortOrder", "Descending"),
+        ("Recursive", "true"),
+        ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", "Tsukimi"),
+        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
+        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    let response = client
+        .get(&url)
+        .query(&params)
+        .send()
+        .await?;
+    let json: serde_json::Value = response.json().await?;
+    let latests: List = serde_json::from_value(json.clone()).unwrap();
+    return Ok(latests);
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct List {
+    pub TotalRecordCount: u32,
+    pub Items: Vec<Latest>,
+}
+
+impl Default for List {
+    fn default() -> Self {
+        List {
+            TotalRecordCount: 0,
+            Items: Vec::new(),
+        }
+    }
 }

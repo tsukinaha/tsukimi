@@ -139,6 +139,8 @@ mod imp {
             });
             self.searchgrid.set_factory(Some(&factory));
             self.searchgrid.set_model(Some(&self.selection));
+            self.searchgrid.set_min_columns(4);
+            self.searchgrid.set_max_columns(4);
             self.searchgrid.connect_activate(glib::clone!(@weak obj => move |gridview, position| {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
