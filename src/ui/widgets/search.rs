@@ -13,6 +13,7 @@ mod imp {
 
     use crate::ui::widgets::item::ItemPage;
     use crate::ui::widgets::movie::MoviePage;
+    use crate::ui::widgets::window::Window;
 
     pub enum Page {
         Movie(Box<gtk::Widget>),
@@ -149,6 +150,13 @@ mod imp {
                     item_page = Page::Item(Box::new(ItemPage::new(result.Id.clone(),result.Id.clone()).into()));
                 }
                 obj.set(item_page);
+                let window = obj.root();
+                if let Some(window) = window {
+                    if window.is::<Window>() {
+                        let window = window.downcast::<Window>().unwrap();
+                        window.set_title(&result.Name);
+                    }
+                }
             }));
         }
     }

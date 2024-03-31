@@ -3,19 +3,18 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use crate::ui::network::{runtime, Latest};
+use crate::ui::network::Latest;
 
 use self::imp::Page;
+use super::item::ItemPage;
+use super::movie::MoviePage;
+use super::window::Window;
 
 mod imp {
 
     use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
     use gtk::subclass::prelude::*;
-    use gtk::{gio, glib, CompositeTemplate, Label};
-
-    use crate::ui::widgets::item::ItemPage;
-    use crate::ui::widgets::movie::MoviePage;
+    use gtk::{glib, CompositeTemplate};
 
     pub enum Page {
         Movie(Box<gtk::Widget>),
@@ -36,6 +35,8 @@ mod imp {
         pub liblist: TemplateChild<gtk::ListView>,
         #[template_child]
         pub libsbox: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub toast: TemplateChild<adw::ToastOverlay>,
         #[template_child]
         pub libsrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
@@ -214,6 +215,7 @@ impl HomePage {
             let scrolledwindow = gtk::ScrolledWindow::builder()
                 .hscrollbar_policy(gtk::PolicyType::Automatic)
                 .vscrollbar_policy(gtk::PolicyType::Never)
+                .overlay_scrolling(true)
                 .build();
             let scrollbox = gtk::Box::new(gtk::Orientation::Vertical, 15);
             let revealer = gtk::Revealer::builder()
@@ -273,6 +275,8 @@ impl HomePage {
                 .build();
             let label = gtk::Label::builder()
                 .halign(gtk::Align::Center)
+                .justify(gtk::Justification::Center)
+                .wrap_mode(gtk::pango::WrapMode::WordChar)
                 .ellipsize(gtk::pango::EllipsizeMode::End)
                 .build();
             listbox.append(&picture);
@@ -303,6 +307,9 @@ impl HomePage {
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
             let latest: std::cell::Ref<crate::ui::network::Latest> = entry.borrow();
+            if latest.Type == "MusicAlbum" {
+                picture.set_size_request(167, 167);
+            }
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture
                     .downcast_ref::<gtk::Box>()
@@ -312,14 +319,32 @@ impl HomePage {
                 } else {
                     let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                     let img = crate::ui::image::setimage(latest.Id.clone(), mutex.clone());
+                    let overlay = gtk::Overlay::builder()
+                        .child(&img)
+                        .build();
+                    if let Some(userdata) = &latest.UserData {
+                        if let Some(unplayeditemcount) = userdata.UnplayedItemCount {
+                            if unplayeditemcount > 0 {
+                                let mark = gtk::Label::new(Some(&userdata.UnplayedItemCount.expect("no unplayeditemcount").to_string()));
+                                mark.set_valign(gtk::Align::Start);
+                                mark.set_halign(gtk::Align::End);
+                                mark.set_height_request(40);
+                                mark.set_width_request(40);
+                                overlay.add_overlay(&mark);
+                            }
+                        }
+                    }
                     picture
                         .downcast_ref::<gtk::Box>()
                         .expect("Needs to be Box")
-                        .append(&img);
+                        .append(&overlay);
                 }
             }
             if label.is::<gtk::Label>() {
-                let str = format!("{}", latest.Name);
+                let mut str = format!("{}", latest.Name);
+                if let Some(productionyear) = latest.ProductionYear {
+                    str.push_str(&format!("\n{}", productionyear));
+                }
                 label
                     .downcast_ref::<gtk::Label>()
                     .expect("Needs to be Label")
@@ -328,6 +353,32 @@ impl HomePage {
         });
         let listview = gtk::ListView::new(Some(selection), Some(factory));
         listview.set_orientation(gtk::Orientation::Horizontal);
+        listview.connect_activate(glib::clone!(@weak self as obj => move |listview, position| {
+            let model = listview.model().unwrap();
+                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                let result: std::cell::Ref<Latest> = item.borrow();
+                let item_page;
+                if result.Type == "Movie" {
+                    item_page = Page::Movie(Box::new(MoviePage::new(result.Id.clone(),result.Name.clone()).into()));
+                    obj.set(item_page);
+                } else if result.Type == "Series" {
+                    item_page = Page::Item(Box::new(ItemPage::new(result.Id.clone(),result.Id.clone()).into()));
+                    obj.set(item_page);
+                } else {
+                    let toast = adw::Toast::builder()
+                        .title(format!("{} is not supported",result.Type))
+                        .timeout(3)
+                        .build();
+                    obj.imp().toast.add_toast(toast);
+                }      
+                let window = obj.root();
+                if let Some(window) = window {
+                    if window.is::<Window>() {
+                        let window = window.downcast::<Window>().unwrap();
+                        window.set_title(&result.Name);
+                    }
+                }
+        }));
         listview
     }
 }

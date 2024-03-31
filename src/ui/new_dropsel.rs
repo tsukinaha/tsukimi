@@ -58,7 +58,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
         let selected = dropdown.selected_item();
         let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
         let selected = selected.string();
-        for _i in 1..sublist.n_items() {
+        for _i in 0..sublist.n_items() {
             sublist.remove(0);
         }
         for media in playbackinfo.MediaSources.clone() {
@@ -97,6 +97,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                         let _ = network::markwatched(name, sourceid).await;
                     });
                     network::mpv_play(directurl.expect("no url"), media.Name.clone());
+                    return;
                 }
             }
             return;
@@ -123,6 +124,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                                             suburl,
                                             media.Name.clone(),
                                         );
+                                        return;
                                     } else {
                                         let name = info.Id.clone();
                                         let sourceid = media.Id.clone();
@@ -140,6 +142,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                                                                     suburl,
                                                                     mediasource.Name.clone(),
                                                                 );
+                                                                return;
                                                             }
                                                         }
                                                     }
@@ -154,6 +157,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                                         let _ = network::markwatched(name, sourceid).await;
                                     });
                                     let _ = network::mpv_play(directurl, media.Name.clone());
+                                    return;
                                 }
                             }
                         }

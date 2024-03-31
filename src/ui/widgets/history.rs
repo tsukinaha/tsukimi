@@ -13,6 +13,7 @@ mod imp {
 
     use crate::ui::widgets::item::ItemPage;
     use crate::ui::widgets::movie::MoviePage;
+    use crate::ui::widgets::window::Window;
 
     pub enum Page {
         Movie(Box<gtk::Widget>),
@@ -81,9 +82,6 @@ mod imp {
 
             self.selection.set_model(Some(&store));
             let factory = gtk::SignalListItemFactory::new();
-            factory.connect_setup(move |_factory,item|{
-
-            });
             factory.connect_bind(move |_factory, item| {
                 let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
                 let entry = listitem
@@ -183,6 +181,13 @@ mod imp {
                     }
                 }
                 obj.set(item_page);
+                let window = obj.root();
+                if let Some(window) = window {
+                    if window.is::<Window>() {
+                        let window = window.downcast::<Window>().unwrap();
+                        window.set_title(&result.Name);
+                    }
+                }
             }));
         }
     }

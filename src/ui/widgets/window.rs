@@ -37,6 +37,10 @@ mod imp {
         pub historypage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub homepage: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub split_view: TemplateChild<adw::OverlaySplitView>,
+        #[template_child]
+        pub navipage: TemplateChild<adw::NavigationPage>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -67,6 +71,9 @@ mod imp {
             });
             klass.install_action("win.about", None, move |window, _action, _parameter| {
                 window.about();
+            });
+            klass.install_action("win.sidebar", None, move |window, _action, _parameter| {
+                window.sidebar();
             });
         }
 
@@ -135,6 +142,11 @@ impl Window {
         Object::builder().property("application", app).build()
     }
 
+    pub fn set_title(&self, title: &str) {
+        let imp = self.imp();
+        imp.navipage.set_title(title);
+    }
+
     fn imp(&self) -> &imp::Window {
         imp::Window::from_obj(self)
     }
@@ -159,6 +171,7 @@ impl Window {
         imp.homepage
             .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
         imp.insidestack.set_visible_child_name("homepage");
+        imp.navipage.set_title("Home");
     }
 
     fn historypage(&self) {
@@ -166,6 +179,7 @@ impl Window {
         imp.historypage
             .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
         imp.insidestack.set_visible_child_name("historypage");
+        imp.navipage.set_title("History");
     }
 
     fn searchpage(&self) {
@@ -173,6 +187,7 @@ impl Window {
         imp.searchpage
             .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
         imp.insidestack.set_visible_child_name("searchpage");
+        imp.navipage.set_title("Search");
     }
 
     fn settingspage(&self) {
@@ -180,6 +195,12 @@ impl Window {
         imp.settingspage
             .set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
         imp.insidestack.set_visible_child_name("settingspage");
+        imp.navipage.set_title("Preferences");
+    }
+    
+    fn sidebar(&self) {
+        let imp = self.imp();
+        imp.split_view.set_show_sidebar(!imp.split_view.shows_sidebar());
     }
 
     async fn login(&self) {

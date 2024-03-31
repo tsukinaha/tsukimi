@@ -1,8 +1,6 @@
 use adw::subclass::prelude::*;
 use glib::Object;
-use gtk::cairo::Context;
-use gtk::subclass::widget;
-use gtk::{prelude::*, Label};
+use gtk::prelude::*;
 use gtk::{gio, glib};
 
 use crate::ui::network::SeriesInfo;

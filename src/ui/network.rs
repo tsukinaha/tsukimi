@@ -750,6 +750,7 @@ pub struct Latest {
     pub Id: String,
     pub Type: String,
     pub UserData: Option<UserData>,
+    pub ProductionYear: Option<u32>,
 }
 
 pub async fn get_latest(id: String,_mutex: std::sync::Arc<tokio::sync::Mutex<()>>) -> Result<Vec<Latest>, Error> {
