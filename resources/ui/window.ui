@@ -163,7 +163,7 @@
                                       <object class="GtkImage">
                                         <property name="icon-name">document-open-recent-symbolic</property>
                                         <property name="halign">start</property>
-                                      </object>min_columns
+                                      </object>
                                     </child>
                                     <child type="suffix">
                                       <object class="GtkButton">
