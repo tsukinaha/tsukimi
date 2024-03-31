@@ -250,21 +250,30 @@ impl ListPage {
             let result: std::cell::Ref<crate::ui::network::Latest> = item.borrow();
             let item_page;
             if result.Type == "Movie" {
+                let window = obj.root();
+                if let Some(window) = window {
+                    if window.is::<Window>() {
+                        let window = window.downcast::<Window>().unwrap();
+                        window.set_title(&result.Name);
+                    }
+                }
                 item_page = Page::Movie(Box::new(MoviePage::new(result.Id.clone(),result.Name.clone()).into()));
                 obj.set(item_page);
             } else if result.Type == "Series" {
+                let window = obj.root();
+                if let Some(window) = window {
+                    if window.is::<Window>() {
+                        let window = window.downcast::<Window>().unwrap();
+                        window.set_title(&result.Name);
+                    }
+                }
                 item_page = Page::Item(Box::new(ItemPage::new(result.Id.clone(),result.Id.clone()).into()));
                 obj.set(item_page);
             } else {
 
             }      
-            let window = obj.root();
-            if let Some(window) = window {
-                if window.is::<Window>() {
-                    let window = window.downcast::<Window>().unwrap();
-                    window.set_title(&result.Name);
-                }
-            }
+            
+            
         })); 
         self.update();
     }

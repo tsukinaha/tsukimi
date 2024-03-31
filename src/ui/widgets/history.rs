@@ -166,6 +166,7 @@ mod imp {
             });
             self.historygrid.set_factory(Some(&factory));
             self.historygrid.set_model(Some(&self.selection));
+            self.historygrid.set_min_columns(3);
             self.historygrid.connect_activate(glib::clone!(@weak obj => move |gridview, position| {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
@@ -185,7 +186,11 @@ mod imp {
                 if let Some(window) = window {
                     if window.is::<Window>() {
                         let window = window.downcast::<Window>().unwrap();
+                        if let Some(seriesname) = &result.SeriesName {
+                            window.set_title(seriesname);
+                        } else {
                         window.set_title(&result.Name);
+                        }
                     }
                 }
             }));

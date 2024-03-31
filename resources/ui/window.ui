@@ -93,7 +93,7 @@
             <property name="name">main</property>
             <property name="child">
               <object class="AdwOverlaySplitView" id="split_view">
-                <property name="min-sidebar-width">60</property>
+                <property name="min-sidebar-width">160</property>
                 <property name="max-sidebar-width">200</property>
                 <property name="sidebar">
                   <object class="AdwNavigationPage">
@@ -163,7 +163,7 @@
                                       <object class="GtkImage">
                                         <property name="icon-name">document-open-recent-symbolic</property>
                                         <property name="halign">start</property>
-                                      </object>
+                                      </object>min_columns
                                     </child>
                                     <child type="suffix">
                                       <object class="GtkButton">

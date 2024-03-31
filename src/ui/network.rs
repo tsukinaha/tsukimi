@@ -800,7 +800,7 @@ pub async fn get_list(id: String,start: String,mutex: std::sync::Arc<tokio::sync
         ("ParentId", &id),
         ("ImageTypeLimit", "1"),
         ("StartIndex", &start),
-        ("IncludeItemTypes","Movie,Series"),
+        ("IncludeItemTypes","Movie,Series,MusicAlbum"),
         ("SortBy", "DateCreated,SortName"),
         ("SortOrder", "Descending"),
         ("Recursive", "true"),
