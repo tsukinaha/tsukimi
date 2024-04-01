@@ -12,8 +12,8 @@
   </menu>
   <template class="AppWindow" parent="AdwApplicationWindow">
     <property name="title" translatable="yes">Login</property>
-    <property name="width-request">880</property>
-    <property name="height-request">550</property>
+    <property name="width-request">1280</property>
+    <property name="height-request">920</property>
     <child>
       <object class="AdwBreakpoint">
         <condition>max-width: 500sp</condition>

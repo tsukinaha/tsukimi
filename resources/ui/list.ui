@@ -32,19 +32,19 @@
                             <attributes>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                             </attributes>
-                            <property name="halign">center</property>
+                            <property name="halign">start</property>
                             <property name="margin-top">12</property>
+                            <property name="margin-start">55</property>
                           </object>
                         </child>
                         <child>
-                          <object class="AdwClamp">
+                          <object class="GtkScrolledWindow" id="listscrolled">
+                            <property name="hexpand">True</property>
                             <property name="vexpand">True</property>
                             <child>
-                              <object class="GtkScrolledWindow" id="listscrolled">
-                                <child>
-                                  <object class="GtkGridView" id="listgrid">
-                                  </object>
-                                </child>
+                              <object class="GtkGridView" id="listgrid">
+                              <property name="margin-start">40</property>
+                              <property name="margin-end">40</property>
                               </object>
                             </child>
                           </object>

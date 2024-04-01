@@ -242,8 +242,8 @@ impl ListPage {
         });
         imp.listgrid.set_factory(Some(&factory));
         imp.listgrid.set_model(Some(&imp.selection));
-        imp.listgrid.set_min_columns(4);
-        imp.listgrid.set_max_columns(4);
+        imp.listgrid.set_min_columns(3);
+        imp.listgrid.set_max_columns(13);
         imp.listgrid.connect_activate(glib::clone!(@weak self as obj => move |gridview, position| {
             let model = gridview.model().unwrap();
             let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
@@ -280,7 +280,6 @@ impl ListPage {
 
     pub fn update(&self) {
         let scrolled = self.imp().listscrolled.get();
-        let mut offset = 50;
         scrolled.connect_edge_reached(glib::clone!(@weak self as obj => move |_, pos| {
             if pos == gtk::PositionType::Bottom {
                 let spinner = obj.imp().spinner.get();
@@ -289,7 +288,7 @@ impl ListPage {
                 let store = obj.imp().selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
                 let id = obj.imp().id.get().expect("id not set").clone();
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                
+                let offset = obj.imp().selection.model().unwrap().n_items();
                 crate::ui::network::runtime().spawn(glib::clone!(@strong sender => async move {
                     let list_results = crate::ui::network::get_list(id.to_string(),offset.to_string(),mutex).await.unwrap_or_else(|e| {
                         eprintln!("Error: {}", e);
@@ -303,7 +302,6 @@ impl ListPage {
                             let object = glib::BoxedAnyObject::new(result);
                             store.append(&object);
                         }
-                        offset += 50;
                         spinner.set_visible(false);
                     }
                 }));
