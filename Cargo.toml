@@ -10,7 +10,7 @@ license = "MIT"
 gtk = { version = "0.8", package = "gtk4", features = ["v4_12"] }
 serde = { version = "1.0.197", features = ["derive"] }
 serde_yaml = "0.9.32"
-serde_json = "1.0.114"
+serde_json = "1.0.115"
 tokio = { version = "1.36.0", features = ["full"] }
 reqwest = { version = "0.11", features = ["json"] }
 async-channel = "2.2.0"
