@@ -3,13 +3,26 @@ use super::network::SearchResult;
 use gtk::prelude::*;
 use gtk::Orientation;
 
-pub fn newmediadropsel(playbackinfo: network::Media,info:SearchResult) -> gtk::Box {
+pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk::Box {
     let hbox = gtk::Box::new(Orientation::Horizontal, 5);
     let leftvbox = gtk::Box::new(Orientation::Vertical, 5);
-    let label = gtk::Label::new(Some(&info.Name));
+    leftvbox.set_margin_start(80);
+    leftvbox.set_margin_top(80);
+    leftvbox.set_margin_bottom(20);
+    leftvbox.set_halign(gtk::Align::Start);
+    leftvbox.set_valign(gtk::Align::End);
+    let label = gtk::Label::builder()
+        .label(format!("<b>{}</b>", info.Name))
+        .use_markup(true)
+        .build();
     leftvbox.append(&label);
     hbox.append(&leftvbox);
     let vbox = gtk::Box::new(Orientation::Vertical, 5);
+    vbox.set_margin_start(20);
+    vbox.set_margin_end(80);
+    vbox.set_margin_bottom(20);
+    vbox.set_halign(gtk::Align::End);
+    vbox.set_hexpand(true);
     let namelist = gtk::StringList::new(&[]);
 
     let sublist = gtk::StringList::new(&[]);
@@ -63,7 +76,9 @@ pub fn newmediadropsel(playbackinfo: network::Media,info:SearchResult) -> gtk::B
     let playbutton = gtk::Button::with_label("播放");
     playbutton.connect_clicked(move |_| {
         let nameselected = namedropdown.selected_item();
-        let nameselected = nameselected.and_downcast_ref::<gtk::StringObject>().unwrap();
+        let nameselected = nameselected
+            .and_downcast_ref::<gtk::StringObject>()
+            .unwrap();
         let nameselected = nameselected.string();
         let subselected = subdropdown.selected_item();
         if subselected.is_none() {
@@ -73,9 +88,9 @@ pub fn newmediadropsel(playbackinfo: network::Media,info:SearchResult) -> gtk::B
                     let name = info.Id.clone();
                     let sourceid = media.Id.clone();
                     network::runtime().spawn(async move {
-                        let _ = network::markwatched(name,sourceid).await;
+                        let _ = network::markwatched(name, sourceid).await;
                     });
-                    network::mpv_play(directurl.expect("no url"),media.Name.clone());
+                    network::mpv_play(directurl.expect("no url"), media.Name.clone());
                 }
             }
             return;
@@ -94,16 +109,23 @@ pub fn newmediadropsel(playbackinfo: network::Media,info:SearchResult) -> gtk::B
                                 let name = info.Id.clone();
                                 let sourceid = media.Id.clone();
                                 network::runtime().spawn(async move {
-                                    let _  = network::markwatched(name,sourceid).await;
+                                    let _ = network::markwatched(name, sourceid).await;
                                 });
-                                let _ = network::mpv_play_withsub(directurl.expect("no url"),suburl.expect("no url"),media.Name.clone());
+                                let _ = network::mpv_play_withsub(
+                                    directurl.expect("no url"),
+                                    suburl.expect("no url"),
+                                    media.Name.clone(),
+                                );
                             } else {
                                 let name = info.Id.clone();
                                 let sourceid = media.Id.clone();
                                 network::runtime().spawn(async move {
-                                    let _  = network::markwatched(name,sourceid).await;
+                                    let _ = network::markwatched(name, sourceid).await;
                                 });
-                                let _ = network::mpv_play(directurl.expect("no url"),media.Name.clone());
+                                let _ = network::mpv_play(
+                                    directurl.expect("no url"),
+                                    media.Name.clone(),
+                                );
                             }
                         }
                     }

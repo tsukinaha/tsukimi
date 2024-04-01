@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwNavigationPage" class="ListPage">
+    <property name="title" translatable="yes">Tsukimi</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child>
+          <object class="GtkScrolledWindow" id="weaasds">
+            <property name="vexpand">True</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkSpinner" id="spinner">
+                    <property name="spinning">True</property>
+                    <property name="visible">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="listrevealer">
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkLabel" id="count">
+                            <property name="label" translatable="yes">1</property>
+                            <attributes>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                            </attributes>
+                            <property name="halign">start</property>
+                            <property name="margin-top">12</property>
+                            <property name="margin-start">55</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="listscrolled">
+                            <property name="hexpand">True</property>
+                            <property name="vexpand">True</property>
+                            <child>
+                              <object class="GtkGridView" id="listgrid">
+                              <property name="margin-start">40</property>
+                              <property name="margin-end">40</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

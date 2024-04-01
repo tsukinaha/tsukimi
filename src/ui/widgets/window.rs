@@ -1,13 +1,13 @@
 use adw::prelude::NavigationPageExt;
 use dirs::home_dir;
-use gtk::{glib::clone, prelude::*};
+use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-mod imp{
+mod imp {
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
-    use gtk::{prelude::*, HeaderBar, ToggleButton};
+    use gtk::prelude::*;
     use gtk::subclass::prelude::*;
-    use gtk::{glib, Button, CompositeTemplate, Stack};
+    use gtk::{glib, CompositeTemplate};
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -33,6 +33,14 @@ mod imp{
         pub settingspage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub searchpage: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub historypage: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub homepage: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub split_view: TemplateChild<adw::OverlaySplitView>,
+        #[template_child]
+        pub navipage: TemplateChild<adw::NavigationPage>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -46,34 +54,27 @@ mod imp{
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
-            klass.install_action_async(
-                "win.login",
-                None,
-                |window, _, _| async move {
-                    window.login().await;
-                },
-            );
-            klass.install_action(
-                "win.home",
-                None,
-                move |window, _action, _parameter| {
-                    window.homepage();
-                },
-            );
-            klass.install_action(
-                "win.search",
-                None,
-                move |window, _action, _parameter| {
-                    window.searchpage();
-                },
-            );
-            klass.install_action(
-                "win.relogin",
-                None,
-                move |window, _action, _parameter| {
-                    window.placeholder();
-                },
-            );
+            klass.install_action_async("win.login", None, |window, _, _| async move {
+                window.login().await;
+            });
+            klass.install_action("win.home", None, move |window, _action, _parameter| {
+                window.homepage();
+            });
+            klass.install_action("win.history", None, move |window, _action, _parameter| {
+                window.historypage();
+            });
+            klass.install_action("win.search", None, move |window, _action, _parameter| {
+                window.searchpage();
+            });
+            klass.install_action("win.relogin", None, move |window, _action, _parameter| {
+                window.placeholder();
+            });
+            klass.install_action("win.about", None, move |window, _action, _parameter| {
+                window.about();
+            });
+            klass.install_action("win.sidebar", None, move |window, _action, _parameter| {
+                window.sidebar();
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -88,6 +89,7 @@ mod imp{
             self.parent_constructed();
             let obj = self.obj().clone();
             obj.loginenter();
+            obj.homepage();
             self.selectlist.connect_row_selected(move |_, row| {
                 if let Some(row) = row {
                     let num = row.index();
@@ -120,7 +122,6 @@ mod imp{
     // Trait shared by all application windows
     impl ApplicationWindowImpl for Window {}
     impl AdwApplicationWindowImpl for Window {}
-
 }
 
 use glib::Object;
@@ -141,6 +142,11 @@ impl Window {
         Object::builder().property("application", app).build()
     }
 
+    pub fn set_title(&self, title: &str) {
+        let imp = self.imp();
+        imp.navipage.set_title(title);
+    }
+
     fn imp(&self) -> &imp::Window {
         imp::Window::from_obj(self)
     }
@@ -155,50 +161,46 @@ impl Window {
         imp.stack.set_visible_child_name("placeholder");
     }
 
+    fn about(&self) {
+        let imp = self.imp();
+        imp.stack.set_visible_child_name("placeholder");
+    }
+
     fn homepage(&self) {
         let imp = self.imp();
-        let stack = crate::ui::home_page::create_page();
-        let pagename = format!("homepage");
-        if stack.child_by_name(&pagename).is_some() {
-            stack.remove(&stack.child_by_name(&pagename).unwrap());
-        }
-        let pagename = format!("searchpage");
-        if stack.child_by_name(&pagename).is_some() {
-            stack.remove(&stack.child_by_name(&pagename).unwrap());
-        }
-        if imp.insidestack.child_by_name("homepage").is_none() {
-            imp.insidestack.add_titled(&stack, Some("homepage"), "home");
-        }
+        imp.homepage
+            .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
         imp.insidestack.set_visible_child_name("homepage");
+        imp.navipage.set_title("Home");
     }
 
     fn historypage(&self) {
         let imp = self.imp();
-        let stack = crate::ui::home_page::create_page();
-        let pagename = format!("homepage");
-        if stack.child_by_name(&pagename).is_some() {
-            stack.remove(&stack.child_by_name(&pagename).unwrap());
-        }
-        let pagename = format!("searchpage");
-        if stack.child_by_name(&pagename).is_some() {
-            stack.remove(&stack.child_by_name(&pagename).unwrap());
-        }
-        if imp.insidestack.child_by_name("homepage").is_none() {
-            imp.insidestack.add_titled(&stack, Some("homepage"), "home");
-        }
-        imp.insidestack.set_visible_child_name("homepage");
+        imp.historypage
+            .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
+        imp.insidestack.set_visible_child_name("historypage");
+        imp.navipage.set_title("History");
     }
 
     fn searchpage(&self) {
         let imp = self.imp();
-        imp.searchpage.set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
+        imp.searchpage
+            .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
         imp.insidestack.set_visible_child_name("searchpage");
+        imp.navipage.set_title("Search");
     }
 
     fn settingspage(&self) {
         let imp = self.imp();
-        imp.settingspage.set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
+        imp.settingspage
+            .set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
         imp.insidestack.set_visible_child_name("settingspage");
+        imp.navipage.set_title("Preferences");
+    }
+    
+    fn sidebar(&self) {
+        let imp = self.imp();
+        imp.split_view.set_show_sidebar(!imp.split_view.shows_sidebar());
     }
 
     async fn login(&self) {
@@ -214,8 +216,11 @@ impl Window {
         runtime().spawn(async move {
             match crate::ui::network::login(server, name, password, port).await {
                 Ok(_) => {
-                    sender.send("1".to_string()).await.expect("The channel needs to be open.");
-                },
+                    sender
+                        .send("1".to_string())
+                        .await
+                        .expect("The channel needs to be open.");
+                }
                 Err(e) => eprintln!("Error: {}", e),
             }
         });
@@ -224,7 +229,7 @@ impl Window {
                 Ok(_) => {
                     loginbutton.set_sensitive(false);
                     selfc.mainpage();
-                },
+                }
                 Err(_) => {
                     loginbutton.set_sensitive(true);
                     loginbutton.set_label("Link Failed");
@@ -239,6 +244,6 @@ impl Window {
         path.push("tsukimi.yaml");
         if path.exists() {
             self.mainpage();
-        } 
+        }
     }
 }

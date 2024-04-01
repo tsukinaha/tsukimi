@@ -1,7 +1,7 @@
-use gtk::{gio, glib};
 use glib::Object;
+use gtk::{gio, glib};
 
-mod imp{
+mod imp {
 
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;
@@ -25,12 +25,7 @@ mod imp{
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
-            klass.install_action(
-                "setting.proxy",
-                None,
-                move |window, _action, _parameter| {
-                },
-            );
+            klass.install_action("setting.proxy", None, move |_window, _action, _parameter| {});
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {

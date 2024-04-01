@@ -4,17 +4,16 @@ use gtk::{gio, glib};
 
 use self::imp::Page;
 
-use super::item::ItemPage;
 mod imp {
-    use std::cell::RefCell;
 
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
-    use gtk::{gio, glib, CompositeTemplate, Entry, Label, Picture};
+    use gtk::{gio, glib, CompositeTemplate, Label};
 
     use crate::ui::widgets::item::ItemPage;
     use crate::ui::widgets::movie::MoviePage;
+    use crate::ui::widgets::window::Window;
 
     pub enum Page {
         Movie(Box<gtk::Widget>),
@@ -33,6 +32,8 @@ mod imp {
         pub spinner: TemplateChild<gtk::Spinner>,
         #[template_child]
         pub searchscrolled: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        pub searchrevealer: TemplateChild<gtk::Revealer>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -59,7 +60,10 @@ mod imp {
             let obj = self.obj();
             self.parent_constructed();
             let spinner = self.spinner.get();
-            let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
+            let searchrevealer = self.searchrevealer.get();
+
+            let (sender, receiver) =
+                async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
             self.searchentry.connect_activate(glib::clone!(@strong sender,@weak spinner=> move |entry| {
                 spinner.set_visible(true);
                 let search_content = entry.text().to_string();
@@ -71,7 +75,7 @@ mod imp {
                     sender.send(search_results).await.expect("search results not received.");
                 }));
             }));
-            
+
             let store = gio::ListStore::new::<glib::BoxedAnyObject>();
             glib::spawn_future_local(glib::clone!(@weak store=> async move {
                 while let Ok(search_results) = receiver.recv().await {
@@ -83,6 +87,7 @@ mod imp {
                             store.append(&object);
                         }
                     }
+                    searchrevealer.set_reveal_child(true);
                 }
             }));
 
@@ -96,9 +101,24 @@ mod imp {
                     .unwrap();
                 let result: std::cell::Ref<crate::ui::network::SearchResult> = entry.borrow();
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 2);
-                let imgbox = crate::ui::image::set_image(result.Id.clone());
+                let overlay = gtk::Overlay::new();
+                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
+                let imgbox = crate::ui::image::set_image(result.Id.clone(), mutex);
                 imgbox.set_size_request(167, 275);
-                vbox.append(&imgbox);
+                overlay.set_child(Some(&imgbox));
+                if let Some(userdata) = &result.UserData {
+                    if let Some(unplayeditemcount) = userdata.UnplayedItemCount {
+                        if unplayeditemcount > 0 {
+                            let mark = gtk::Label::new(Some(&userdata.UnplayedItemCount.expect("no unplayeditemcount").to_string()));
+                            mark.set_valign(gtk::Align::Start);
+                            mark.set_halign(gtk::Align::End);
+                            mark.set_height_request(40);
+                            mark.set_width_request(40);
+                            overlay.add_overlay(&mark);
+                        }
+                    }
+                }
+                vbox.append(&overlay);
                 let label = Label::new(Some(&result.Name));
                 let markup = format!("{}", result.Name);
                 label.set_markup(markup.as_str());
@@ -106,7 +126,7 @@ mod imp {
                 label.set_size_request(-1, 24);
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 let labeltype = Label::new(Some(&result.Type));
-                let markup = format!("<span color='lightgray' font='8'>{}</span>", result.Type);
+                let markup = format!("<span color='lightgray' font='small'>{}</span>", result.Type);
                 labeltype.set_markup(markup.as_str());
                 labeltype.set_size_request(-1, 24);
                 vbox.append(&label);
@@ -119,6 +139,8 @@ mod imp {
             });
             self.searchgrid.set_factory(Some(&factory));
             self.searchgrid.set_model(Some(&self.selection));
+            self.searchgrid.set_min_columns(4);
+            self.searchgrid.set_max_columns(4);
             self.searchgrid.connect_activate(glib::clone!(@weak obj => move |gridview, position| {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
@@ -127,9 +149,16 @@ mod imp {
                 if result.Type == "Movie" {
                     item_page = Page::Movie(Box::new(MoviePage::new(result.Id.clone(),result.Name.clone()).into()));
                 } else {
-                    item_page = Page::Item(Box::new(ItemPage::new(result.Id.clone()).into()));
+                    item_page = Page::Item(Box::new(ItemPage::new(result.Id.clone(),result.Id.clone()).into()));
                 }
                 obj.set(item_page);
+                let window = obj.root();
+                if let Some(window) = window {
+                    if window.is::<Window>() {
+                        let window = window.downcast::<Window>().unwrap();
+                        window.set_title(&result.Name);
+                    }
+                }
             }));
         }
     }

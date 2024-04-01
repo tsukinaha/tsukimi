@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>Tsukimi</string>
+    <key>CFBundleDisplayName</key>
+    <string>Tsukimi</string>
+    <key>CFBundleIdentifier</key>
+    <string>moe.tsuna.tsukimi</string>
+    <key>CFBundleExecutable</key>
+    <string>tsukimi</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundleIconName</key>
+    <string>AppIcon</string>
+    <key>CFBundleSignature</key>
+    <string>suki</string>
+
+    <key>LSMinimumSystemVersion</key>
+    <string>12.7.3</string>
+
+    <!-- 网络权限 -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
+
+      <!-- 读写用户目录权限 -->
+    <key>NSHomeDirectory</key>
+    <string>Tsukimi needs to store user token and cache</string>
+ 
+    <!-- 访问其他应用权限 -->
+    <key>NSAppleEventsUsageDescription</key>
+    <string>Tsukimi needs to control MPV player to play videos</string>
+
+    <key>NSServices</key>
+    <array>
+        <dict>
+            <key>NSMenuItem</key>
+            <dict>
+                <key>default</key>
+                <string>Services</string>
+            </dict>
+            <key>NSMessage</key>
+            <string>runningServiceCommand</string>
+            <key>NSRequiredContext</key>
+            <dict>
+                <key>NSApplicationActivationBundleID</key>
+                <string>io.mpv</string>
+            </dict>
+        </dict>
+    </array>
+
+    <key>CFBundleVersion</key>
+    <string>0.0.3</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0.0.3</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>tsukimi</string>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>tsukimi</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+</plist>

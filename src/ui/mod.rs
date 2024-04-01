@@ -1,12 +1,9 @@
-mod episodes_page;
-mod home_page;
 mod image;
-mod item_page;
-mod movie_page;
+mod moviedrop;
 mod network;
 mod new_dropsel;
+mod provider;
 mod widgets;
-mod moviedrop;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
 

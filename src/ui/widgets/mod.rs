@@ -1,7 +1,9 @@
-pub mod horizon_item;
-pub mod window;
-pub mod settings;
-pub mod homeitems;
-pub mod search;
+pub mod episoderow;
+pub mod history;
 pub mod item;
 pub mod movie;
+pub mod search;
+pub mod settings;
+pub mod window;
+pub mod home;
+pub mod list;
