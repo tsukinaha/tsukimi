@@ -504,13 +504,13 @@ pub async fn get_image(id: String) -> Result<String, Error> {
                     return Ok(id);
                 }
                 Err(e) => {
-                    eprintln!("加载错误");
+                    eprintln!("loading error");
                     return Err(e.into());
                 }
             }
         }
         Err(e) => {
-            eprintln!("加载错误");
+            eprintln!("loading error");
             return Err(e.into());
         }
     }
@@ -549,13 +549,13 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
                     return Ok(id);
                 }
                 Err(e) => {
-                    eprintln!("加载错误");
+                    eprintln!("loading error");
                     return Err(e.into());
                 }
             }
         }
         Err(e) => {
-            eprintln!("加载错误");
+            eprintln!("loading error");
             return Err(e.into());
         }
     }
@@ -594,13 +594,13 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
                     return Ok(id);
                 }
                 Err(e) => {
-                    eprintln!("加载错误");
+                    eprintln!("loading error");
                     return Err(e.into());
                 }
             }
         }
         Err(e) => {
-            eprintln!("加载错误");
+            eprintln!("loading error");
             return Err(e.into());
         }
     }
@@ -639,13 +639,13 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
                     return Ok(id);
                 }
                 Err(e) => {
-                    eprintln!("加载错误");
+                    eprintln!("loading error");
                     return Err(e.into());
                 }
             }
         }
         Err(e) => {
-            eprintln!("加载错误");
+            eprintln!("loading error");
             return Err(e.into());
         }
     }

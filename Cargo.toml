@@ -19,15 +19,23 @@ dirs = "5.0.1"
 adw = { version = "0.6.0", package = "libadwaita", features = ["v1_4"] }
 cargo-deb = "2.1.0"
 bytefmt = "0.1.7"
-libmpv = "=2.0.1"
+libmpv = { path = "libmpv-rs", version = "2.0.1"}
+libmpv-sys = "3.1.0"
 crossbeam = "0.8.4"
+libc = "0.2.153"
 
 [build-dependencies]
 glib-build-tools = "0.19.0"
 
+[features]
+default = ["protocols", "render"]
+protocols = [] # Enable custom protocol callbacks
+render = [] # Enable custom rendering
+build_libmpv = [] # build libmpv automatically, provided MPV_SOURCE is set
+
 [package.metadata.deb]
-maintainer = "Inaha <tsukinaha@tutanota.com>"
-copyright = "2024, Inaha <tsukinaha@tutanota.com>"
+maintainer = "Inaha <tsukimi@tutanota.com>"
+copyright = "2024, Inaha <tsukimi@tutanota.com>"
 license-file = ["LICENSE","4"]
 extended-description = """\
 A simple Emby Client with MPV \

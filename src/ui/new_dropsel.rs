@@ -1,5 +1,6 @@
 use super::network;
 use super::network::SeriesInfo;
+use gtk::glib;
 use gtk::prelude::*;
 use gtk::Orientation;
 
@@ -79,8 +80,9 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
     vbox.append(&namedropdown);
     vbox.append(&subdropdown);
     let info = info.clone();
-    let playbutton = gtk::Button::with_label("播放");
+    let playbutton = gtk::Button::with_label("Play");
     playbutton.connect_clicked(move |button| {
+        
         let nameselected = namedropdown.selected_item();
         let nameselected = nameselected
             .and_downcast_ref::<gtk::StringObject>()
@@ -96,7 +98,9 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                     network::runtime().spawn(async move {
                         let _ = network::markwatched(name, sourceid).await;
                     });
-                    network::mpv_play(directurl.expect("no url"), media.Name.clone());
+                    gtk::gio::spawn_blocking(move || {
+                        let _ = super::mpv::event::play(directurl.expect("no url"));
+                    });
                     return;
                 }
             }
@@ -156,7 +160,9 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                                     network::runtime().spawn(async move {
                                         let _ = network::markwatched(name, sourceid).await;
                                     });
-                                    let _ = network::mpv_play(directurl, media.Name.clone());
+                                    gtk::gio::spawn_blocking(move || {
+                                        let _ = super::mpv::event::play(media.DirectStreamUrl.clone().unwrap());
+                                    });
                                     return;
                                 }
                             }

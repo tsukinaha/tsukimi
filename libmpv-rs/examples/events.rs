@@ -1,27 +1,36 @@
+// Copyright (C) 2016  ParadoxSpiral
+//
+// This file is part of libmpv-rs.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
 use libmpv::{events::*, *};
 
 use std::{collections::HashMap, env, thread, time::Duration};
 
-pub fn play(url:String) -> Result<()> {
+const VIDEO_URL: &str = "https://www.youtube.com/watch?v=DLzxrzFCyOs";
 
-    unsafe {
-        use libc::setlocale;
-        use libc::LC_NUMERIC;
-        setlocale(LC_NUMERIC, "C\0".as_ptr() as *const _);
-    }
-
-    let server_info = crate::ui::network::get_server_info();
-    let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
+fn main() -> Result<()> {
+    let path = env::args()
+        .nth(1)
+        .unwrap_or_else(|| String::from(VIDEO_URL));
 
     // Create an `Mpv` and set some properties.
-    let mpv = Mpv::with_initializer(|init| {
-        init.set_property("osc", true)?;
-        init.set_property("config", true)?;
-        init.set_property("input-default-bindings", true)?;
-    
-        Ok(())
-    }).unwrap();
+    let mpv = Mpv::new()?;
     mpv.set_property("volume", 15)?;
+    mpv.set_property("vo", "null")?;
 
     let mut ev_ctx = mpv.create_event_context();
     ev_ctx.disable_deprecated_events()?;
@@ -30,7 +39,7 @@ pub fn play(url:String) -> Result<()> {
 
     crossbeam::scope(|scope| {
         scope.spawn(|_| {
-            mpv.playlist_load_files(&[(&url, FileState::AppendPlay, None)])
+            mpv.playlist_load_files(&[(&path, FileState::AppendPlay, None)])
                 .unwrap();
 
             thread::sleep(Duration::from_secs(3));
@@ -39,9 +48,11 @@ pub fn play(url:String) -> Result<()> {
 
             thread::sleep(Duration::from_secs(5));
 
+            // Trigger `Event::EndFile`.
+            mpv.playlist_next_force().unwrap();
         });
         scope.spawn(move |_| loop {
-            let ev = ev_ctx.wait_event(1000.).unwrap_or(Err(Error::Null));
+            let ev = ev_ctx.wait_event(600.).unwrap_or(Err(Error::Null));
 
             match ev {
                 Ok(Event::EndFile(r)) => {

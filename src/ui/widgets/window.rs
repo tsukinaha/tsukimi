@@ -1,11 +1,15 @@
 use adw::prelude::NavigationPageExt;
 use dirs::home_dir;
 use gtk::prelude::*;
+use gio::Settings;
 use gtk::subclass::prelude::*;
 mod imp {
+    use std::cell::OnceCell;
+
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
+    use gtk::gio::Settings;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
@@ -42,6 +46,7 @@ mod imp {
         #[template_child]
         pub navipage: TemplateChild<adw::NavigationPage>,
         pub selection: gtk::SingleSelection,
+        pub settings: OnceCell<Settings>,
     }
 
     // The central trait for subclassing a GObject
@@ -87,10 +92,12 @@ mod imp {
         fn constructed(&self) {
             // Call "constructed" on parent
             self.parent_constructed();
-            let obj = self.obj().clone();
+            let obj = self.obj();
+            obj.setup_settings();
+            obj.load_window_size();
             obj.loginenter();
             obj.homepage();
-            self.selectlist.connect_row_selected(move |_, row| {
+            self.selectlist.connect_row_selected(glib::clone!(@weak obj => move |_, row| {
                 if let Some(row) = row {
                     let num = row.index();
                     match num {
@@ -109,7 +116,7 @@ mod imp {
                         _ => {}
                     }
                 }
-            });
+            }));
         }
     }
 
@@ -117,7 +124,17 @@ mod imp {
     impl WidgetImpl for Window {}
 
     // Trait shared by all windows
-    impl WindowImpl for Window {}
+    impl WindowImpl for Window {
+            // Save window state right before the window will be closed
+        fn close_request(&self) -> glib::Propagation {
+            // Save window size
+            self.obj()
+                .save_window_size()
+                .expect("Failed to save window state");
+            // Allow to invoke other event handlers
+            glib::Propagation::Proceed
+        }
+    }
 
     // Trait shared by all application windows
     impl ApplicationWindowImpl for Window {}
@@ -128,6 +145,7 @@ use glib::Object;
 use gtk::{gio, glib};
 
 use crate::ui::network::runtime;
+use crate::APP_ID;
 
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
@@ -137,6 +155,49 @@ glib::wrapper! {
 }
 
 impl Window {
+    fn setup_settings(&self) {
+        let settings = Settings::new(APP_ID);
+        self.imp()
+            .settings
+            .set(settings)
+            .expect("`settings` should not be set before calling `setup_settings`.");
+    }
+
+    fn settings(&self) -> &Settings {
+        self.imp()
+            .settings
+            .get()
+            .expect("`settings` should be set in `setup_settings`.")
+    }
+
+    pub fn save_window_size(&self) -> Result<(), glib::BoolError> {
+        // Get the size of the window
+        let size = self.default_size();
+
+        // Set the window state in `settings`
+        self.settings().set_int("window-width", size.0)?;
+        self.settings().set_int("window-height", size.1)?;
+        self.settings()
+            .set_boolean("is-maximized", self.is_maximized())?;
+
+        Ok(())
+    }
+
+    fn load_window_size(&self) {
+        // Get the window state from `settings`
+        let width = self.settings().int("window-width");
+        let height = self.settings().int("window-height");
+        let is_maximized = self.settings().boolean("is-maximized");
+
+        // Set the size of the window
+        self.set_default_size(width, height);
+
+        // If the window was maximized when it was closed, maximize it again
+        if is_maximized {
+            self.maximize();
+        }
+    }
+
     pub fn new(app: &adw::Application) -> Self {
         // Create new window
         Object::builder().property("application", app).build()
