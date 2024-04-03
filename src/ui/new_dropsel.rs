@@ -1,3 +1,4 @@
+use super::mpv;
 use super::network;
 use super::network::SeriesInfo;
 use gtk::glib;
@@ -99,7 +100,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                         let _ = network::markwatched(name, sourceid).await;
                     });
                     gtk::gio::spawn_blocking(move || {
-                        let _ = super::mpv::event::play(directurl.expect("no url"));
+                        let _ = super::mpv::event::play(directurl.expect("no url"),None);
                     });
                     return;
                 }
@@ -123,11 +124,11 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                                         network::runtime().spawn(async move {
                                             let _ = network::markwatched(name, sourceid).await;
                                         });
-                                        let _ = network::mpv_play_withsub(
-                                            directurl,
-                                            suburl,
-                                            media.Name.clone(),
-                                        );
+                                        mpv::event::play(
+                                            directurl.clone(),
+                                            mediastream.DeliveryUrl,
+                                        )
+                                        .unwrap();
                                         return;
                                     } else {
                                         let name = info.Id.clone();
@@ -140,14 +141,11 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                                                 for mediastream in mediasource.MediaStreams {
                                                     if mediastream.Type == "Subtitle" {
                                                         if displaytitle == sub {
-                                                            if let Some(suburl) = mediastream.DeliveryUrl.clone() {
-                                                                let _ = network::mpv_play_withsub(
-                                                                    directurl.clone(),
-                                                                    suburl,
-                                                                    mediasource.Name.clone(),
-                                                                );
-                                                                return;
-                                                            }
+                                                            mpv::event::play(
+                                                                directurl.clone(),
+                                                                mediastream.DeliveryUrl,
+                                                            )
+                                                            .unwrap();
                                                         }
                                                     }
                                                 }
@@ -161,7 +159,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                                         let _ = network::markwatched(name, sourceid).await;
                                     });
                                     gtk::gio::spawn_blocking(move || {
-                                        let _ = super::mpv::event::play(media.DirectStreamUrl.clone().unwrap());
+                                        let _ = super::mpv::event::play(media.DirectStreamUrl.clone().unwrap(),None);
                                     });
                                     return;
                                 }

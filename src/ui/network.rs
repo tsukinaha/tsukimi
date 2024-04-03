@@ -15,6 +15,8 @@ use serde::{Deserialize, Serialize};
 use std::env;
 use std::sync::{Mutex, OnceLock};
 
+use crate::config;
+
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
     pub domain: String,
@@ -144,7 +146,7 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
     let mut model = SearchModel {
         search_results: Vec::new(),
     };
-    let server_info = get_server_info();
+    let server_info = config::set_config();
 
     let client = reqwest::Client::new();
     let url = format!(
@@ -194,7 +196,7 @@ pub struct SeriesInfo {
 
 
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
-    let server_info = get_server_info();
+    let server_info = config::set_config();
     let client = reqwest::Client::new();
     let url = format!(
         "{}:{}/emby/Shows/{}/Episodes",
@@ -258,7 +260,7 @@ pub struct Media {
 }
 
 pub async fn playbackinfo(id: String) -> Result<Media, Error> {
-    let server_info = get_server_info();
+    let server_info = config::set_config();
     let client = reqwest::Client::new();
     let url = format!(
         "{}:{}/emby/Items/{}/PlaybackInfo",
@@ -299,7 +301,7 @@ pub fn mpv_play(url: String, name: String) {
     });
 
     let mut command = std::process::Command::new("mpv");
-    let server_info = get_server_info();
+    let server_info = config::set_config();
     let titlename = format!("--force-media-title={}", name);
     let osdname = format!("--osd-playing-msg={}", name);
     let forcewindow = format!("--force-window=immediate");
@@ -320,7 +322,7 @@ pub fn mpv_play_withsub(url: String, suburl: String, name: String) {
     });
 
     let mut command = std::process::Command::new("mpv");
-    let server_info = get_server_info();
+    let server_info = config::set_config();
     let titlename = format!("--force-media-title={}", name);
     let osdname = format!("--osd-playing-msg={}", name);
     let forcewindow = format!("--force-window=immediate");
@@ -360,7 +362,7 @@ pub struct Urls {
 }
 
 pub async fn get_item_overview(id: String) -> Result<Item, Error> {
-    let server_info = get_server_info();
+    let server_info = config::set_config();
     let client = reqwest::Client::new();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/{}",
@@ -382,7 +384,7 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
 }
 
 pub async fn markwatched(id: String, sourceid: String) -> Result<String, Error> {
-    let server_info = get_server_info();
+    let server_info = config::set_config();
     let client = reqwest::Client::new();
     let url = format!(
         "{}:{}/emby/Users/{}/PlayingItems/{}",
@@ -439,7 +441,7 @@ struct ResumeModel {
 
 pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
     let mut model = ResumeModel { resume: Vec::new() };
-    let server_info = get_server_info();
+    let server_info = config::set_config();
 
     let client = reqwest::Client::new();
     let url = format!(
@@ -472,7 +474,7 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
 }
 
 pub async fn get_image(id: String) -> Result<String, Error> {
-    let server_info = get_server_info();
+    let server_info = config::set_config();
 
     let result = reqwest::get(&format!(
         "{}:{}/emby/Items/{}/Images/Primary?maxHeight=400",
@@ -517,7 +519,7 @@ pub async fn get_image(id: String) -> Result<String, Error> {
 }
 
 pub async fn get_thumbimage(id: String) -> Result<String, Error> {
-    let server_info = get_server_info();
+    let server_info = config::set_config();
 
     let result = reqwest::get(&format!(
         "{}:{}/emby/Items/{}/Images/Thumb",
@@ -562,7 +564,7 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
 }
 
 pub async fn get_backdropimage(id: String) -> Result<String, Error> {
-    let server_info = get_server_info();
+    let server_info = config::set_config();
 
     let result = reqwest::get(&format!(
         "{}:{}/emby/Items/{}/Images/Backdrop",
@@ -607,7 +609,7 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
 }
 
 pub async fn get_logoimage(id: String) -> Result<String, Error> {
-    let server_info = get_server_info();
+    let server_info = config::set_config();
 
     let result = reqwest::get(&format!(
         "{}:{}/emby/Items/{}/Images/Logo",
@@ -652,7 +654,7 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
 }
 
 pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
-    let server_info = get_server_info();
+    let server_info = config::set_config();
     let client = reqwest::Client::new();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/{}",
@@ -674,7 +676,7 @@ pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
 }
 
 pub async fn playbackinfo_withmediaid(id: String,mediaid: String) -> Result<Media, Error> {
-    let server_info = get_server_info();
+    let server_info = config::set_config();
     let client = reqwest::Client::new();
     let url = format!(
         "{}:{}/emby/Items/{}/PlaybackInfo",
@@ -719,7 +721,7 @@ pub struct View {
 }
 
 pub async fn get_library() -> Result<Vec<View>, Error>{
-    let server_info = get_server_info();
+    let server_info = config::set_config();
     let client = reqwest::Client::new();
     let url = format!(
         "{}:{}/emby/Users/{}/Views",
@@ -755,7 +757,7 @@ pub struct Latest {
 
 pub async fn get_latest(id: String,mutex: std::sync::Arc<tokio::sync::Mutex<()>>) -> Result<Vec<Latest>, Error> {
     let _ = mutex.lock().await;
-    let server_info = get_server_info();
+    let server_info = config::set_config();
     let client = reqwest::Client::new();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/Latest",
@@ -787,7 +789,7 @@ pub async fn get_latest(id: String,mutex: std::sync::Arc<tokio::sync::Mutex<()>>
 
 pub async fn get_list(id: String,start: String,mutex: std::sync::Arc<tokio::sync::Mutex<()>>) -> Result<List, Error> {
     let _ = mutex.lock().await;
-    let server_info = get_server_info();
+    let server_info = config::set_config();
     let client = reqwest::Client::new();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",

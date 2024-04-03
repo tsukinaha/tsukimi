@@ -2,7 +2,9 @@ use libmpv::{events::*, *};
 
 use std::{collections::HashMap, env, thread, time::Duration};
 
-pub fn play(url:String) -> Result<()> {
+use crate::config::set_config;
+
+pub fn play(url:String,suburl:Option<String>) -> Result<()> {
 
     unsafe {
         use libc::setlocale;
@@ -10,7 +12,7 @@ pub fn play(url:String) -> Result<()> {
         setlocale(LC_NUMERIC, "C\0".as_ptr() as *const _);
     }
 
-    let server_info = crate::ui::network::get_server_info();
+    let server_info = set_config();
     let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
 
     // Create an `Mpv` and set some properties.
@@ -18,10 +20,12 @@ pub fn play(url:String) -> Result<()> {
         init.set_property("osc", true)?;
         init.set_property("config", true)?;
         init.set_property("input-default-bindings", true)?;
+        init.set_property("force-window", "immediate")?;
+        
     
         Ok(())
     }).unwrap();
-    mpv.set_property("volume", 15)?;
+    mpv.set_property("volume", 75)?;
 
     let mut ev_ctx = mpv.create_event_context();
     ev_ctx.disable_deprecated_events()?;
@@ -32,13 +36,13 @@ pub fn play(url:String) -> Result<()> {
         scope.spawn(|_| {
             mpv.playlist_load_files(&[(&url, FileState::AppendPlay, None)])
                 .unwrap();
-
-            thread::sleep(Duration::from_secs(3));
-
-            mpv.set_property("volume", 25).unwrap();
-
-            thread::sleep(Duration::from_secs(5));
-
+            thread::sleep(Duration::from_secs(1));
+            if let Some(suburl) = suburl {
+                let suburl = format!("{}:{}/emby{}", server_info.domain, server_info.port, suburl);
+                println!("Loading subtitle: {}", suburl);
+                mpv.subtitle_add_select(&suburl, None, None)
+                 .unwrap();
+            }
         });
         scope.spawn(move |_| loop {
             let ev = ev_ctx.wait_event(1000.).unwrap_or(Err(Error::Null));

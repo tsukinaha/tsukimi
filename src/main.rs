@@ -2,10 +2,13 @@
 use gtk::prelude::*;
 use gtk::{gio, glib};
 mod ui;
+mod config;
 
 const APP_ID: &str = "moe.tsuna.tsukimi";
 
 fn main() -> glib::ExitCode {
+    // Load the configuration file
+    config::load_cfg();
     // Register and include resources
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
 

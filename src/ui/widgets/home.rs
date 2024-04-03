@@ -234,7 +234,7 @@ impl HomePage {
                 .build();
             let scrollbox = gtk::Box::new(gtk::Orientation::Vertical, 15);
             let revealer = gtk::Revealer::builder()
-                .transition_type(gtk::RevealerTransitionType::SlideDown)
+                .transition_type(gtk::RevealerTransitionType::SlideUp)
                 .transition_duration(700)
                 .reveal_child(false)
                 .child(&scrollbox)
