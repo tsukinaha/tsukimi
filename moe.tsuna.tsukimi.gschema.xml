@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schemalist>
+  <schema id="moe.tsuna.tsukimi" path="/moe/tsukimi/">
+    <key name="window-width" type="i">
+      <default>-1</default>
+      <summary>Default window width</summary>
+    </key>
+    <key name="window-height" type="i">
+      <default>-1</default>
+      <summary>Default window height</summary>
+    </key>
+    <key name="is-maximized" type="b">
+      <default>false</default>
+      <summary>Default window maximized behaviour</summary>
+    </key>
+    <key name="is-progress-enabled" type="b">
+      <default>false</default>
+      <summary>Default switch state</summary>
+    </key>
+    <key name="is-overlay" type="b">
+      <default>false</default>
+      <summary>Default switch state</summary>
+    </key>
+  </schema>
+</schemalist>
