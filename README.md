@@ -4,6 +4,11 @@
   ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi)
   ![GitHub License](https://img.shields.io/github/license/tsukinaha/tsukimi)
 
+  
+使用 GTK4-RS 编写的第三方 Emby 客户端              
+For Linux.
+
+
   <a href="https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml">
     <img alt="Linux CI status" src="https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg"/>
   </a>
@@ -11,8 +16,12 @@
     <img alt="Windows GNU CI status" src="https://github.com/tsukinaha/tsukimi/actions/workflows/build_gnu.yml/badge.svg"/>
   </a>
 
-使用 gtk4-rs 编写的第三方 Emby 客户端              
-Linux: 使用 /usr/bin/mpv 播放       
-Windows: 使用 mpv PATH 或 ./config/tsukimi.toml => mpv: "/path/to/mpv" 播放
-    
+  ![AUR Version](https://img.shields.io/aur/version/tsukimi-git)
 
+## Build
+请见 [Dockerfile](https://github.com/tsukinaha/tsukimi/blob/main/Dockerfile)
+
+## Credits
+- [gtk4-rs](https://github.com/gtk-rs/gtk4-rs)
+- [MPV](https://github.com/mpv-player/mpv)
+- [Adwaita](https://gitlab.gnome.org/GNOME/libadwaita/)
