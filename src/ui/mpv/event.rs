@@ -24,13 +24,14 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:Back) -> R
     let mpv = Mpv::with_initializer(|init| {
         init.set_property("osc", true)?;
         init.set_property("config", true)?;
+        init.set_property("input-vo-keyboard", true)?;
         init.set_property("input-default-bindings", true)?;
         init.set_property("force-window", "immediate")?;
         if let Some(name) = name {
             init.set_property("force-media-title", name)?;
         }
-        
-    
+
+
         Ok(())
     }).unwrap();
     mpv.set_property("volume", 75)?;
@@ -75,7 +76,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:Back) -> R
                     println!("Exiting! Reason: {:?}", r);
                     break;
                 }
-                
+
                 Ok(Event::PropertyChange {
                     name: "time-pos",
                     change: PropertyData::Double(mpv_node),
