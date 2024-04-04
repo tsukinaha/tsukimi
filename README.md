@@ -6,7 +6,7 @@
 
   
 使用 GTK4-RS 编写的第三方 Emby 客户端              
-For Linux.
+For Linux ~~Only~~.
 
 
   <a href="https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml">
