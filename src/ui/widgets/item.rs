@@ -369,7 +369,7 @@ impl ItemPage {
         let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
         crate::ui::network::runtime().spawn(async move {
-            let playback = crate::ui::network::playbackinfo(id).await.expect("msg");
+            let playback = crate::ui::network::get_playbackinfo(id).await.expect("msg");
             sender.send(playback).await.expect("msg");
         });
         glib::spawn_future_local(

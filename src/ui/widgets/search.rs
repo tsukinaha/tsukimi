@@ -103,7 +103,7 @@ mod imp {
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 2);
                 let overlay = gtk::Overlay::new();
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                let imgbox = crate::ui::image::set_image(result.Id.clone(), mutex);
+                let imgbox = crate::ui::image::setimage(result.Id.clone(), mutex);
                 imgbox.set_size_request(167, 275);
                 overlay.set_child(Some(&imgbox));
                 if let Some(userdata) = &result.UserData {
@@ -120,8 +120,6 @@ mod imp {
                 }
                 vbox.append(&overlay);
                 let label = Label::new(Some(&result.Name));
-                let markup = format!("{}", result.Name);
-                label.set_markup(markup.as_str());
                 label.set_wrap(true);
                 label.set_size_request(-1, 24);
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);

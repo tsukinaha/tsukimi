@@ -4,6 +4,7 @@ mod network;
 mod new_dropsel;
 mod provider;
 mod widgets;
+mod mpv;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
 
