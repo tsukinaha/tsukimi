@@ -9,13 +9,10 @@ use std::fs::{self, write};
 use std::io::Read;
 use std::path::PathBuf;
 use tokio::runtime::Runtime;
-
-use serde::{Deserialize, Serialize};
-#[cfg(target_os = "macos")]
 use std::env;
+use serde::{Deserialize, Serialize};
 use std::sync::{Mutex, OnceLock};
-
-use crate::config;
+use crate::config::{self, get_device_name};
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
@@ -41,18 +38,18 @@ pub async fn login(
     let client = reqwest::Client::new();
 
     let mut headers = HeaderMap::new();
-    headers.insert("X-Emby-Client", HeaderValue::from_static("Emby Web"));
+    headers.insert("X-Emby-Client", HeaderValue::from_static("Tsukimi"));
     headers.insert(
         "X-Emby-Device-Name",
-        HeaderValue::from_static("Google Chrome Linux"),
+        HeaderValue::from_str(&get_device_name()).unwrap(),
     );
     headers.insert(
         "X-Emby-Device-Id",
-        HeaderValue::from_static("23956a32-6628-47d0-a57d-b47a1f57aa02"),
+        HeaderValue::from_str(&env::var("UUID").unwrap()).unwrap(),
     );
     headers.insert(
         "X-Emby-Client-Version",
-        HeaderValue::from_static("4.8.0.54"),
+        HeaderValue::from_static("0.3.0"),
     );
     headers.insert("X-Emby-Language", HeaderValue::from_static("zh-cn"));
 
@@ -110,38 +107,6 @@ struct SearchModel {
     search_results: Vec<SearchResult>,
 }
 
-pub struct ServerInfo {
-    pub domain: String,
-    pub user_id: String,
-    pub access_token: String,
-    pub port: String,
-}
-
-pub fn get_server_info() -> ServerInfo {
-    let mut server_info = ServerInfo {
-        domain: String::new(),
-        user_id: String::new(),
-        access_token: String::new(),
-        port: String::new(),
-    };
-    let mut path = home_dir().unwrap();
-    path.push(".config");
-    path.push("tsukimi.yaml");
-
-    if path.exists() {
-        let mut file = File::open(path).unwrap();
-        let mut contents = String::new();
-        file.read_to_string(&mut contents).unwrap();
-        let config: Config = serde_yaml::from_str(&contents).unwrap();
-        server_info.domain = config.domain;
-        server_info.user_id = config.user_id;
-        server_info.access_token = config.access_token;
-        server_info.port = config.port;
-    };
-
-    server_info
-}
-
 pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Error> {
     let mut model = SearchModel {
         search_results: Vec::new(),
@@ -169,9 +134,9 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
         ("GroupProgramsBySeries", "true"),
         ("Limit", "50"),
         ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
-        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", "0.3.0"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -208,9 +173,9 @@ pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
         ("EnableImages", "true"),
         ("UserId", &server_info.user_id),
         ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
-        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", "0.3.0"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -257,87 +222,7 @@ pub struct MediaSource {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Media {
     pub MediaSources: Vec<MediaSource>,
-}
-
-pub async fn playbackinfo(id: String) -> Result<Media, Error> {
-    let server_info = config::set_config();
-    let client = reqwest::Client::new();
-    let url = format!(
-        "{}:{}/emby/Items/{}/PlaybackInfo",
-        server_info.domain, server_info.port, id
-    );
-
-    let params = [
-        ("StartTimeTicks", "0"),
-        ("UserId", &server_info.user_id),
-        ("AutoOpenLiveStream", "true"),
-        ("IsPlayback", "true"),
-        ("MaxStreamingBitrate", "4000000"),
-        ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
-        ("X-Emby-Client-Version", "4.8.0.54"),
-        ("X-Emby-Token", &server_info.access_token),
-        ("X-Emby-Language", "zh-cn"),
-        ("reqformat", "json"),
-    ];
-    let profile = serde_json::json!({"DeviceProfile":{"MaxStaticBitrate":140000000,"MaxStreamingBitrate":140000000,"MusicStreamingTranscodingBitrate":192000,"DirectPlayProfiles":[{"Container":"mp4,m4v","Type":"Video","VideoCodec":"h264,av1,vp8,vp9","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Streaming","Protocol":"hls","MaxAudioChannels":"2","MinSegments":"1","BreakOnNonKeyFrames":true},{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"opus","Type":"Audio","AudioCodec":"opus","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"wav","Type":"Audio","AudioCodec":"wav","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"opus","Type":"Audio","AudioCodec":"opus","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"wav","Type":"Audio","AudioCodec":"wav","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"m4s,ts","Type":"Video","AudioCodec":"aac","VideoCodec":"h264","Context":"Streaming","Protocol":"hls","MaxAudioChannels":"2","MinSegments":"1","BreakOnNonKeyFrames":true,"ManifestSubtitles":"vtt"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis","VideoCodec":"vpx","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp4","Type":"Video","AudioCodec":"aac,opus,flac,vorbis","VideoCodec":"h264","Context":"Static","Protocol":"http"}],"ContainerProfiles":[],"CodecProfiles":[{"Type":"VideoAudio","Codec":"aac","Conditions":[{"Condition":"Equals","Property":"IsSecondaryAudio","Value":"false","IsRequired":"false"}]},{"Type":"VideoAudio","Conditions":[{"Condition":"Equals","Property":"IsSecondaryAudio","Value":"false","IsRequired":"false"}]},{"Type":"Video","Codec":"h264","Conditions":[{"Condition":"EqualsAny","Property":"VideoProfile","Value":"high|main|baseline|constrained baseline","IsRequired":false},{"Condition":"LessThanEqual","Property":"VideoLevel","Value":"52","IsRequired":false},{"Condition":"LessThanEqual","Property":"Width","Value":"1280","IsRequired":false}]},{"Type":"Video","Codec":"hevc","Conditions":[{"Condition":"LessThanEqual","Property":"Width","Value":"1280","IsRequired":false}]},{"Type":"Video","Conditions":[{"Condition":"LessThanEqual","Property":"Width","Value":"1280","IsRequired":false}]}],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[{"Type":"Video","Container":"m4v","MimeType":"video/mp4"}]}});
-    let response = client
-        .post(&url)
-        .query(&params)
-        .json(&profile)
-        .send()
-        .await?;
-    let json: serde_json::Value = response.json().await?;
-    let mediainfo: Media = serde_json::from_value(json.clone()).unwrap();
-    return Ok(mediainfo);
-}
-
-pub fn mpv_play(url: String, name: String) {
-    #[cfg(target_os = "macos")]
-    env::set_var("PATH", {
-        let paths = vec!["/usr/bin", "/usr/local/bin"];
-        env::join_paths(paths).unwrap()
-    });
-
-    let mut command = std::process::Command::new("mpv");
-    let server_info = config::set_config();
-    let titlename = format!("--force-media-title={}", name);
-    let osdname = format!("--osd-playing-msg={}", name);
-    let forcewindow = format!("--force-window=immediate");
-    let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
-    command
-        .arg(forcewindow)
-        .arg(titlename)
-        .arg(osdname)
-        .arg(url);
-    command.spawn().expect("mpv failed to start");
-}
-
-pub fn mpv_play_withsub(url: String, suburl: String, name: String) {
-    #[cfg(target_os = "macos")]
-    env::set_var("PATH", {
-        let paths = vec!["/usr/bin", "/usr/local/bin"];
-        env::join_paths(paths).unwrap()
-    });
-
-    let mut command = std::process::Command::new("mpv");
-    let server_info = config::set_config();
-    let titlename = format!("--force-media-title={}", name);
-    let osdname = format!("--osd-playing-msg={}", name);
-    let forcewindow = format!("--force-window=immediate");
-    let sub = format!(
-        "--sub-file={}:{}/emby{}",
-        server_info.domain, server_info.port, suburl
-    );
-    let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
-    command
-        .arg(forcewindow)
-        .arg(titlename)
-        .arg(osdname)
-        .arg(sub)
-        .arg(url);
-    let _ = command.spawn().expect("mpv failed to start").wait();
+    pub PlaySessionId: Option<String>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -371,9 +256,9 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
     let params = [
         ("Fields", "ShareLevel"),
         ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
-        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", "0.3.0"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -393,9 +278,9 @@ pub async fn markwatched(id: String, sourceid: String) -> Result<String, Error> 
     println!("{}", url);
     let params = [
         ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b114514"),
-        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", "0.3.0"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
         ("reqformat", "json"),
@@ -459,9 +344,9 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
         ("MediaTypes", "Video"),
         ("Limit", "8"),
         ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
-        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", "0.3.0"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -663,9 +548,9 @@ pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
     let params = [
         ("Fields", "ShareLevel"),
         ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
-        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", "0.3.0"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -675,7 +560,7 @@ pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
     Ok(mediainfo)
 }
 
-pub async fn playbackinfo_withmediaid(id: String,mediaid: String) -> Result<Media, Error> {
+pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
     let server_info = config::set_config();
     let client = reqwest::Client::new();
     let url = format!(
@@ -690,12 +575,11 @@ pub async fn playbackinfo_withmediaid(id: String,mediaid: String) -> Result<Medi
         ("IsPlayback", "true"),
         ("AudioStreamIndex", "1"),
         ("SubtitleStreamIndex", "1"),
-        ("MediaSourceId", &mediaid),
         ("MaxStreamingBitrate", "4000000"),
         ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
-        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", "0.3.0"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
         ("reqformat", "json"),
@@ -730,9 +614,9 @@ pub async fn get_library() -> Result<Vec<View>, Error>{
 
     let params = [
         ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
-        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", "0.3.0"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -771,9 +655,9 @@ pub async fn get_latest(id: String,mutex: std::sync::Arc<tokio::sync::Mutex<()>>
         ("ImageTypeLimit", "1"),
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
         ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
-        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", "0.3.0"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -808,9 +692,9 @@ pub async fn get_list(id: String,start: String,mutex: std::sync::Arc<tokio::sync
         ("Recursive", "true"),
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
         ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", "Tsukimi"),
-        ("X-Emby-Device-Id", "3d1edad3-27ff-46ff-9ec2-00643b1571cd"),
-        ("X-Emby-Client-Version", "4.8.0.54"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", "0.3.0"),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -837,4 +721,63 @@ impl Default for List {
             Items: Vec::new(),
         }
     }
+}
+
+pub struct Back {
+    pub id: String,
+    pub playsessionid: Option<String>,
+    pub mediasourceid: String,
+    pub tick: f64,
+}
+
+pub async fn positionback(back:Back) {
+    let tick = back.tick.to_string();
+    let server_info = config::set_config();
+    let client = reqwest::Client::new();
+    let url = format!(
+        "{}:{}/emby/Sessions/Playing/Progress",
+        server_info.domain, server_info.port
+    );
+
+    let params = [
+        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+        ("reqformat", "json"),
+    ];
+    let profile = serde_json::json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
+    client
+        .post(&url)
+        .query(&params)
+        .json(&profile)
+        .send()
+        .await.unwrap();
+}
+
+pub async fn positionstop(back:Back) {
+    let tick = back.tick.to_string();
+    let server_info = config::set_config();
+    let client = reqwest::Client::new();
+    let url = format!(
+        "{}:{}/emby/Sessions/Playing/Stopped",
+        server_info.domain, server_info.port
+    );
+
+    let params = [
+        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+        ("reqformat", "json"),
+    ];
+    let profile = serde_json::json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
+    client
+        .post(&url)
+        .query(&params)
+        .json(&profile)
+        .send()
+        .await.unwrap();
 }

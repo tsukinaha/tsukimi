@@ -1,5 +1,8 @@
+use super::mpv;
 use super::network;
+use super::network::Back;
 use super::network::SearchResult;
+use super::new_dropsel::play_event;
 use gtk::prelude::*;
 use gtk::Orientation;
 
@@ -52,7 +55,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
         let selected = dropdown.selected_item();
         let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
         let selected = selected.string();
-        for _i in 1..sublist.n_items() {
+        for _i in 0..sublist.n_items() {
             sublist.remove(0);
         }
         for media in playbackinfo.MediaSources.clone() {
@@ -73,8 +76,9 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
     vbox.append(&namedropdown);
     vbox.append(&subdropdown);
     let info = info.clone();
-    let playbutton = gtk::Button::with_label("播放");
-    playbutton.connect_clicked(move |_| {
+    let playbutton = gtk::Button::with_label("Play");
+    playbutton.connect_clicked(move |button| {
+        button.set_label("Playing...");
         let nameselected = namedropdown.selected_item();
         let nameselected = nameselected
             .and_downcast_ref::<gtk::StringObject>()
@@ -85,12 +89,14 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
             for media in playback_info.MediaSources.clone() {
                 if media.Name == nameselected {
                     let directurl = media.DirectStreamUrl.clone();
-                    let name = info.Id.clone();
-                    let sourceid = media.Id.clone();
-                    network::runtime().spawn(async move {
-                        let _ = network::markwatched(name, sourceid).await;
-                    });
-                    network::mpv_play(directurl.expect("no url"), media.Name.clone());
+                    let back = Back {
+                        id: info.Id.clone(),
+                        mediasourceid: media.Id.clone(),
+                        playsessionid: playback_info.PlaySessionId.clone(),
+                        tick: 0.,
+                    };
+                    play_event(button.clone(),directurl,media.Name,back);
+                    return;
                 }
             }
             return;
@@ -98,34 +104,33 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
         let subselected = subselected.and_downcast_ref::<gtk::StringObject>().unwrap();
         let subselected = subselected.string();
         for media in playback_info.MediaSources.clone() {
-            if media.Name == nameselected {
+            if media.Name == nameselected.to_string() {
                 for mediastream in media.MediaStreams {
                     if mediastream.Type == "Subtitle" {
                         let displaytitle = mediastream.DisplayTitle.unwrap_or("".to_string());
                         if displaytitle == subselected {
-                            let directurl = media.DirectStreamUrl.clone();
-                            if mediastream.IsExternal == true {
-                                let suburl = mediastream.DeliveryUrl.clone();
-                                let name = info.Id.clone();
-                                let sourceid = media.Id.clone();
-                                network::runtime().spawn(async move {
-                                    let _ = network::markwatched(name, sourceid).await;
-                                });
-                                let _ = network::mpv_play_withsub(
-                                    directurl.expect("no url"),
-                                    suburl.expect("no url"),
-                                    media.Name.clone(),
-                                );
-                            } else {
-                                let name = info.Id.clone();
-                                let sourceid = media.Id.clone();
-                                network::runtime().spawn(async move {
-                                    let _ = network::markwatched(name, sourceid).await;
-                                });
-                                let _ = network::mpv_play(
-                                    directurl.expect("no url"),
-                                    media.Name.clone(),
-                                );
+                            if let Some(directurl) = media.DirectStreamUrl.clone() {
+                                if mediastream.IsExternal == true {
+                                    if let Some(_suburl) = mediastream.DeliveryUrl.clone() {
+                                        let back = Back {
+                                            id: info.Id.clone(),
+                                            mediasourceid: media.Id.clone(),
+                                            playsessionid: playback_info.PlaySessionId.clone(),
+                                            tick: 0.,
+                                        };
+                                        play_event(button.clone(),Some(directurl),media.Name,back);
+                                        return;
+                                    } 
+                                } else {
+                                    let back = Back {
+                                        id: info.Id.clone(),
+                                        mediasourceid: media.Id.clone(),
+                                        playsessionid: playback_info.PlaySessionId.clone(),
+                                        tick: 0.,
+                                    };
+                                    play_event(button.clone(),Some(directurl),media.Name,back);
+                                    return;
+                                }
                             }
                         }
                     }

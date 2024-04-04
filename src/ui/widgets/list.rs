@@ -18,9 +18,6 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{gio, glib, CompositeTemplate};
 
-    use crate::ui::widgets::item::ItemPage;
-    use crate::ui::widgets::movie::MoviePage;
-
     pub enum Page {
         Movie(Box<gtk::Widget>),
         Item(Box<gtk::Widget>),
@@ -269,11 +266,7 @@ impl ListPage {
                 }
                 item_page = Page::Item(Box::new(ItemPage::new(result.Id.clone(),result.Id.clone()).into()));
                 obj.set(item_page);
-            } else {
-
-            }      
-            
-            
+            } 
         })); 
         self.update();
     }

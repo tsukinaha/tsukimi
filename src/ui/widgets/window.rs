@@ -157,6 +157,8 @@ glib::wrapper! {
 impl Window {
     fn setup_settings(&self) {
         let settings = Settings::new(APP_ID);
+        let is_overlay = settings.boolean("is-overlay");
+        self.overlay_sidebar(is_overlay);
         self.imp()
             .settings
             .set(settings)
@@ -264,6 +266,11 @@ impl Window {
         imp.split_view.set_show_sidebar(!imp.split_view.shows_sidebar());
     }
 
+    pub fn overlay_sidebar(&self, overlay: bool) {
+        let imp = self.imp();
+        imp.split_view.set_collapsed(overlay);
+    }
+
     async fn login(&self) {
         let imp = self.imp();
         imp.loginbutton.set_sensitive(false);
@@ -273,7 +280,6 @@ impl Window {
         let name = imp.nameentry.text().to_string();
         let password = imp.passwordentry.text().to_string();
         let (sender, receiver) = async_channel::bounded::<String>(1);
-        let selfc = self.clone();
         runtime().spawn(async move {
             match crate::ui::network::login(server, name, password, port).await {
                 Ok(_) => {
@@ -285,18 +291,18 @@ impl Window {
                 Err(e) => eprintln!("Error: {}", e),
             }
         });
-        glib::MainContext::default().spawn_local(async move {
+        glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
             match receiver.recv().await {
                 Ok(_) => {
                     loginbutton.set_sensitive(false);
-                    selfc.mainpage();
+                    obj.mainpage();
                 }
                 Err(_) => {
                     loginbutton.set_sensitive(true);
                     loginbutton.set_label("Link Failed");
                 }
             }
-        });
+        }));
     }
 
     fn loginenter(&self) {

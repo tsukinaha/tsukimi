@@ -13,5 +13,13 @@
       <default>false</default>
       <summary>Default window maximized behaviour</summary>
     </key>
+    <key name="is-progress-enabled" type="b">
+      <default>false</default>
+      <summary>Default switch state</summary>
+    </key>
+    <key name="is-overlay" type="b">
+      <default>false</default>
+      <summary>Default switch state</summary>
+    </key>
   </schema>
 </schemalist>

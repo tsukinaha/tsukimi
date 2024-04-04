@@ -120,7 +120,6 @@ mod imp {
                 }
                 vbox.append(&overlay);
                 let label = Label::new(Some(&result.Name));
-                let markup = format!("{}", result.Name);
                 label.set_wrap(true);
                 label.set_size_request(-1, 24);
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);

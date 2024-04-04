@@ -22,10 +22,14 @@
                       <object class="GtkListBox">
                         <property name="selection-mode">none</property>
                         <child>
-                          <object class="AdwEntryRow" id="proxyentry">
-                            <property name="title" translatable="yes">HTTP Proxy</property>
-                            <property name="show-apply-button">True</property>
-                            <property name="action-name">setting.proxy</property>
+                          <object class="AdwSwitchRow" id="backcontrol">
+                            <property name="title" translatable="yes">Proactively provide progress updates</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSwitchRow" id="sidebarcontrol">
+                            <property name="title" translatable="yes">Sidebar Overlay</property>
+                            <property name="subtitle" translatable="yes">or side by side</property>
                           </object>
                         </child>
                         <style>

@@ -1,5 +1,5 @@
 use std::{env, fs::File, io::Read};
-
+use uuid::Uuid;
 use dirs::home_dir;
 use serde::{Deserialize, Serialize};
 
@@ -11,6 +11,11 @@ pub struct Config {
     pub port: String,
     pub user_id: String,
     pub access_token: String,
+}
+
+fn generate_uuid() -> String {
+    let uuid = Uuid::new_v4();
+    uuid.to_string()
 }
 
 pub fn load_cfg() {
@@ -29,6 +34,10 @@ pub fn load_cfg() {
         env::set_var("EMBY_PORT", &config.port);
         env::set_var("EMBY_USER_ID", &config.user_id);
         env::set_var("EMBY_ACCESS_TOKEN", &config.access_token);
+
+        let uuid = generate_uuid();
+        env::set_var("UUID", &uuid);
+
     };
 }
 
@@ -42,4 +51,12 @@ pub fn set_config() -> Config {
         access_token: env::var("EMBY_ACCESS_TOKEN").unwrap(),
     };
     config
+}
+
+pub fn get_device_name() -> String {
+    if cfg!(target_os = "windows") {
+        env::var("COMPUTERNAME").unwrap_or("Unknown Device".to_string())
+    } else {
+        env::var("HOSTNAME").unwrap_or("Unknown Device".to_string())
+    }
 }
