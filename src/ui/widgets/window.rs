@@ -96,7 +96,6 @@ mod imp {
             obj.setup_settings();
             obj.load_window_size();
             obj.loginenter();
-            obj.homepage();
             self.selectlist.connect_row_selected(glib::clone!(@weak obj => move |_, row| {
                 if let Some(row) = row {
                     let num = row.index();
@@ -144,6 +143,7 @@ mod imp {
 use glib::Object;
 use gtk::{gio, glib};
 
+use crate::config::load_cfg;
 use crate::ui::network::runtime;
 use crate::APP_ID;
 
@@ -295,14 +295,16 @@ impl Window {
             match receiver.recv().await {
                 Ok(_) => {
                     loginbutton.set_sensitive(false);
+                    load_cfg();
                     obj.mainpage();
+                    obj.homepage();
                 }
                 Err(_) => {
                     loginbutton.set_sensitive(true);
                     loginbutton.set_label("Link Failed");
                 }
             }
-        }));
+        }));   
     }
 
     fn loginenter(&self) {
@@ -311,6 +313,7 @@ impl Window {
         path.push("tsukimi.yaml");
         if path.exists() {
             self.mainpage();
+            self.homepage();
         }
     }
 }
