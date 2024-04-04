@@ -77,13 +77,6 @@ scrolledwindow > viewport > box > box > box {
     margin-left:15px;
     margin-top:15px;
 }
-/*
-Generated with Gradience
-
-Issues caused by theming should be reported to Gradience repository, and not to upstream
-
-https://github.com/GradienceTeam/Gradience
-*/
 
 @define-color theme_fg_color #AEB5FA;
 @define-color theme_text_color #AEB5FA;
@@ -203,13 +196,6 @@ https://github.com/GradienceTeam/Gradience
 @define-color thumbnail_fg_color #AEB5FA;
 @define-color shade_color rgba(0, 0, 0, 0.36);
 @define-color scrollbar_outline_color rgba(0, 0, 0, 0.5);
-/*
-Generated with Gradience
-
-Issues caused by theming should be reported to Gradience repository, and not to upstream
-
-https://github.com/GradienceTeam/Gradience
-*/
 
 placessidebar {
     background-color: rgba(0, 0, 0, 0);

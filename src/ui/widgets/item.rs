@@ -7,6 +7,8 @@ use crate::ui::network::SeriesInfo;
 
 mod imp {
     use crate::ui::network;
+    use crate::ui::widgets::settings;
+    use crate::APP_ID;
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
@@ -108,6 +110,8 @@ mod imp {
             );
             let pathbuf = PathBuf::from(&path);
             let backdrop = self.backdrop.get();
+            let settings = gtk::gio::Settings::new(APP_ID);
+            backdrop.set_height_request(settings.int("background-height"));
             let (sender, receiver) = async_channel::bounded::<String>(1);
             let idclone = id.clone();
             if pathbuf.exists() {

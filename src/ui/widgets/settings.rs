@@ -24,7 +24,8 @@ mod imp {
         pub backcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub sidebarcontrol: TemplateChild<adw::SwitchRow>,
-
+        #[template_child]
+        pub spinrow: TemplateChild<adw::SpinRow>,
     }
 
     // The central trait for subclassing a GObject
@@ -51,6 +52,7 @@ mod imp {
             let obj = self.obj();
             obj.set_back();
             obj.set_sidebar();
+            obj.set_spin();
         }
     }
 
@@ -101,6 +103,15 @@ impl SettingsPage {
         imp.backcontrol.set_active(settings.boolean("is-progress-enabled"));
         imp.backcontrol.connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
             settings.set_boolean("is-progress-enabled", control.is_active()).unwrap();
+        }));
+    }
+
+    pub fn set_spin(&self) {
+        let imp = imp::SettingsPage::from_obj(self);
+        let settings = gio::Settings::new(APP_ID);
+        imp.spinrow.set_value(settings.int("background-height").into());
+        imp.spinrow.connect_value_notify(glib::clone!(@weak self as obj =>move |control| {
+            settings.set_int("background-height", control.value() as i32).unwrap();
         }));
     }
 }

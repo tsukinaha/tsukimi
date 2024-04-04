@@ -56,6 +56,7 @@
                     <property name="hexpand">true</property>
                     <child>
                       <object class="GtkDropDown" id="seasonlist">
+                      <property name="margin-start">10</property>
                       </object>
                     </child>
                     <child>
@@ -82,6 +83,7 @@
                     </child>
                     <child>
                       <object class="GtkToggleButton" id="go-last-symbolic">
+                        <property name="margin-end">15</property>
                         <property name="halign">end</property>
                         <property name="icon-name">go-last-symbolic</property>
                         <property name="action-name">item.last</property>
