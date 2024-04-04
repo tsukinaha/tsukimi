@@ -113,6 +113,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
         for media in playback_info.MediaSources.clone() {
             if media.Name == nameselected.to_string() {
                 for mediastream in media.MediaStreams {
+                    let sub = subselected.clone();
                     if mediastream.Type == "Subtitle" {
                         let displaytitle = mediastream.DisplayTitle.unwrap_or("".to_string());
                         if displaytitle == subselected {

@@ -147,6 +147,18 @@ checksum = "7ff69b9dd49fd426c69a0db9fc04dd934cdb6645ff000864d98f7e2af8830eaa"
 [[package]]
 name = "bytefmt"
 version = "0.1.7"
+<<<<<<< HEAD
+=======
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "590b1af059a21c47d4da7cd11f05e08b1992b58b5b4acf2a5e10d7e53aed3d74"
+dependencies = [
+ "regex",
+]
+
+[[package]]
+name = "bytes"
+version = "1.5.0"
+>>>>>>> 6805baf38621bfd700bee6bcabba3364fe0a8220
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "590b1af059a21c47d4da7cd11f05e08b1992b58b5b4acf2a5e10d7e53aed3d74"
 dependencies = [
@@ -283,6 +295,7 @@ dependencies = [
 ]
 
 [[package]]
+<<<<<<< HEAD
 name = "crossbeam"
 version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -305,6 +318,8 @@ dependencies = [
 ]
 
 [[package]]
+=======
+>>>>>>> 6805baf38621bfd700bee6bcabba3364fe0a8220
 name = "crossbeam-deque"
 version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -324,6 +339,7 @@ dependencies = [
 ]
 
 [[package]]
+<<<<<<< HEAD
 name = "crossbeam-queue"
 version = "0.3.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -333,6 +349,8 @@ dependencies = [
 ]
 
 [[package]]
+=======
+>>>>>>> 6805baf38621bfd700bee6bcabba3364fe0a8220
 name = "crossbeam-utils"
 version = "0.8.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1025,6 +1043,18 @@ checksum = "8f518f335dce6725a761382244631d86cf0ccb2863413590b31338feb467f9c3"
 [[package]]
 name = "itertools"
 version = "0.12.1"
+<<<<<<< HEAD
+=======
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ba291022dbbd398a455acf126c1e341954079855bc60dfdda641363bd6922569"
+dependencies = [
+ "either",
+]
+
+[[package]]
+name = "itoa"
+version = "1.0.10"
+>>>>>>> 6805baf38621bfd700bee6bcabba3364fe0a8220
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ba291022dbbd398a455acf126c1e341954079855bc60dfdda641363bd6922569"
 dependencies = [
@@ -1142,6 +1172,26 @@ checksum = "90ed8c1e510134f979dbc4f070f87d4313098b704861a105fe34231c70a3901c"
 [[package]]
 name = "lzma-sys"
 version = "0.1.20"
+<<<<<<< HEAD
+=======
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5fda04ab3764e6cde78b9974eec4f779acaba7c4e84b36eca3cf77c581b85d27"
+dependencies = [
+ "cc",
+ "libc",
+ "pkg-config",
+]
+
+[[package]]
+name = "md5"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "490cc448043f947bae3cbee9c203358d62dbee0db12107a74be5c30ccfd09771"
+
+[[package]]
+name = "memchr"
+version = "2.7.1"
+>>>>>>> 6805baf38621bfd700bee6bcabba3364fe0a8220
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5fda04ab3764e6cde78b9974eec4f779acaba7c4e84b36eca3cf77c581b85d27"
 dependencies = [
@@ -1487,6 +1537,38 @@ dependencies = [
 [[package]]
 name = "regex"
 version = "1.10.4"
+<<<<<<< HEAD
+=======
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c117dbdfde9c8308975b6a18d71f3f385c89461f7b3fb054288ecf2a2058ba4c"
+dependencies = [
+ "aho-corasick",
+ "memchr",
+ "regex-automata",
+ "regex-syntax",
+]
+
+[[package]]
+name = "regex-automata"
+version = "0.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "86b83b8b9847f9bf95ef68afb0b8e6cdb80f498442f5179a29fad448fcc1eaea"
+dependencies = [
+ "aho-corasick",
+ "memchr",
+ "regex-syntax",
+]
+
+[[package]]
+name = "regex-syntax"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f"
+
+[[package]]
+name = "reqwest"
+version = "0.11.26"
+>>>>>>> 6805baf38621bfd700bee6bcabba3364fe0a8220
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c117dbdfde9c8308975b6a18d71f3f385c89461f7b3fb054288ecf2a2058ba4c"
 dependencies = [
@@ -2032,7 +2114,10 @@ dependencies = [
  "async-channel",
  "bytefmt",
  "cargo-deb",
+<<<<<<< HEAD
  "crossbeam",
+=======
+>>>>>>> 6805baf38621bfd700bee6bcabba3364fe0a8220
  "dirs",
  "glib-build-tools",
  "gtk4",
@@ -2079,6 +2164,15 @@ dependencies = [
 [[package]]
 name = "unicode-width"
 version = "0.1.11"
+<<<<<<< HEAD
+=======
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e51733f11c9c4f72aa0c160008246859e340b00807569a0da0e7a1079b27ba85"
+
+[[package]]
+name = "unsafe-libyaml"
+version = "0.2.10"
+>>>>>>> 6805baf38621bfd700bee6bcabba3364fe0a8220
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e51733f11c9c4f72aa0c160008246859e340b00807569a0da0e7a1079b27ba85"
 
@@ -2106,6 +2200,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "711b9620af191e0cdc7468a8d14e709c3dcdb115b36f838e601583af800a370a"
 
 [[package]]
+<<<<<<< HEAD
 name = "uuid"
 version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2115,6 +2210,8 @@ dependencies = [
 ]
 
 [[package]]
+=======
+>>>>>>> 6805baf38621bfd700bee6bcabba3364fe0a8220
 name = "vcpkg"
 version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
