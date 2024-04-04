@@ -5,7 +5,6 @@ use gtk::{
     glib,
     subclass::prelude::*,
 };
-use gtk::prelude::*;
 
 use crate::APP_ID;
 
@@ -13,7 +12,6 @@ mod imp {
 
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;
-    use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
     // Object holding the state

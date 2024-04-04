@@ -1,8 +1,6 @@
-use super::mpv;
 use super::network;
 use super::network::Back;
 use super::network::SearchResult;
-use super::network::SeriesInfo;
 use super::new_dropsel::play_event;
 use gtk::prelude::*;
 use gtk::Orientation;

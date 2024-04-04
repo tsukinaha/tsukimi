@@ -8,7 +8,6 @@ use super::network::SeriesInfo;
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::Orientation;
-use libc::id_t;
 
 pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::Box {
     let hbox = gtk::Box::new(Orientation::Horizontal, 5);
@@ -117,7 +116,6 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
         for media in playback_info.MediaSources.clone() {
             if media.Name == nameselected.to_string() {
                 for mediastream in media.MediaStreams {
-                    let sub = subselected.clone();
                     if mediastream.Type == "Subtitle" {
                         let displaytitle = mediastream.DisplayTitle.unwrap_or("".to_string());
                         if displaytitle == subselected {

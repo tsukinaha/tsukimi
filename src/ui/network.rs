@@ -4,14 +4,12 @@ use reqwest::Error;
 use serde_json::json;
 use serde_json::Value;
 use serde_yaml::to_string;
-use std::fs::File;
 use std::fs::{self, write};
-use std::io::Read;
 use std::path::PathBuf;
 use tokio::runtime::Runtime;
 use std::env;
 use serde::{Deserialize, Serialize};
-use std::sync::{Mutex, OnceLock};
+use std::sync::OnceLock;
 use crate::config::{self, get_device_name};
 
 #[derive(Serialize, Debug, Deserialize)]

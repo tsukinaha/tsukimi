@@ -7,7 +7,6 @@ use crate::ui::network::SeriesInfo;
 
 mod imp {
     use crate::ui::network;
-    use crate::ui::widgets::settings;
     use crate::APP_ID;
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
