@@ -17,7 +17,15 @@ For Linux ~~Only~~.
   </a>
 
   ![AUR Version](https://img.shields.io/aur/version/tsukimi-git)
-
+## Progress
+目前开发进度大概只有10%，还很不成熟
+- [x] 基本播放功能
+- [x] 搜索功能
+- [x] emby 主页基础支持 
+- [x] libmpv集成
+- [x] Windows的基础支持
+- [ ] 内容跟随窗口比例缩放
+- [ ] http代理   
 ## Build
 请见 [Dockerfile](https://github.com/tsukinaha/tsukimi/blob/main/Dockerfile)
 
