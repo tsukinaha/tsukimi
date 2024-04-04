@@ -38,6 +38,10 @@ pub fn load_cfg() {
         let uuid = generate_uuid();
         env::set_var("UUID", &uuid);
 
+    } else {
+        
+        let uuid = generate_uuid();
+        env::set_var("UUID", &uuid);
     };
 }
 
