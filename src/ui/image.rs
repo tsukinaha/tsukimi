@@ -28,6 +28,10 @@ pub fn setimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
         if image.file().is_none() {
             image.set_file(Some(&gtk::gio::File::for_path(&path)));
             revealer.set_reveal_child(true);
+            crate::ui::network::runtime().spawn(async move {
+                let _lock = mutex.lock().await;
+                crate::ui::network::get_image(id.clone()).await.unwrap();
+            });
         }
     } else {
         crate::ui::network::runtime().spawn(async move {
@@ -88,6 +92,10 @@ pub fn setthumbimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
         if image.file().is_none() {
             image.set_file(Some(&gtk::gio::File::for_path(&path)));
             revealer.set_reveal_child(true);
+            crate::ui::network::runtime().spawn(async move {
+                let _lock = mutex.lock().await;
+                crate::ui::network::get_image(id.clone()).await.unwrap();
+            });
         }
     } else {
         crate::ui::network::runtime().spawn(async move {
@@ -148,6 +156,10 @@ pub fn setbackdropimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
         if image.file().is_none() {
             image.set_file(Some(&gtk::gio::File::for_path(&path)));
             revealer.set_reveal_child(true);
+            crate::ui::network::runtime().spawn(async move {
+                let _lock = mutex.lock().await;
+                crate::ui::network::get_image(id.clone()).await.unwrap();
+            });
         }
     } else {
         crate::ui::network::runtime().spawn(async move {

@@ -21,6 +21,23 @@ For Linux ~~Only~~.
 ## Build
 请见 [Dockerfile](https://github.com/tsukinaha/tsukimi/blob/main/Dockerfile)
 
+## MPV Config
+- Linux: 读取默认配置 (```$XDG_CONFIG_HOME/mpv```)
+- Windows: 
+
+```
+|__bin\
+|__share\
+|__lib\
+|__mpv\
+|    |__mpv.conf
+|    |__input.conf
+|    |__scripts\
+|    |    |__ .......
+|    |__ .......
+|__config\
+```
+
 ## Credits
 - [gtk4-rs](https://github.com/gtk-rs/gtk4-rs)
 - [MPV](https://github.com/mpv-player/mpv)
