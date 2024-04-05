@@ -97,7 +97,7 @@
                     <property name="transition-duration">700</property>
                     <property name="reveal-child">False</property>
                     <child>
-                      <object class="GtkScrolledWindow">
+                      <object class="GtkScrolledWindow" id="episodescrolled">
                         <property name="overlay-scrolling">true</property>
                         <property name="vscrollbar-policy">never</property>
                         <property name="valign">fill</property>

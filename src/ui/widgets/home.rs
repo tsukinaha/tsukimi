@@ -1,4 +1,5 @@
 use glib::Object;
+use gtk::gdk::Event;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
@@ -6,6 +7,7 @@ use gtk::{gio, glib};
 use crate::ui::network::Latest;
 
 use self::imp::Page;
+use super::fix::fix;
 use super::item::ItemPage;
 use super::list::ListPage;
 use super::movie::MoviePage;
@@ -127,7 +129,7 @@ impl HomePage {
 
     pub fn set_libraryscorll(&self, views: &Vec<crate::ui::network::View>) {
         let imp = self.imp();
-        let libscrolled = imp.libscrolled.get();
+        let libscrolled = fix(imp.libscrolled.get());
         imp.librevealer.set_reveal_child(true);
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
         for view in views {
@@ -232,6 +234,7 @@ impl HomePage {
                 .vscrollbar_policy(gtk::PolicyType::Never)
                 .overlay_scrolling(true)
                 .build();
+            let scrolledwindow = fix(scrolledwindow);
             let scrollbox = gtk::Box::new(gtk::Orientation::Vertical, 15);
             let revealer = gtk::Revealer::builder()
                 .transition_type(gtk::RevealerTransitionType::SlideUp)

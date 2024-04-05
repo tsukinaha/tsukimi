@@ -3,6 +3,8 @@ use uuid::Uuid;
 use dirs::home_dir;
 use serde::{Deserialize, Serialize};
 
+pub const VERSION:&str = "0.3.0";
+
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
     pub domain: String,

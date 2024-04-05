@@ -5,8 +5,11 @@ use gtk::{gio, glib};
 
 use crate::ui::network::SeriesInfo;
 
+use super::fix::fix;
+
 mod imp {
     use crate::ui::network;
+    use crate::ui::widgets::fix::fix;
     use crate::APP_ID;
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
@@ -57,6 +60,8 @@ mod imp {
         #[template_child]
         pub actorscrolled: TemplateChild<gtk::ScrolledWindow>,
         #[template_child]
+        pub episodescrolled: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
         pub actorlist: TemplateChild<gtk::ListView>,
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
@@ -98,6 +103,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
+            fix(self.episodescrolled.get());
             let itemrevealer = self.itemrevealer.get();
             let id = obj.id();
             let idc = id.clone();
@@ -454,8 +460,9 @@ impl ItemPage {
                         .hscrollbar_policy(gtk::PolicyType::Automatic)
                         .vscrollbar_policy(gtk::PolicyType::Never)
                         .overlay_scrolling(true)
-                        .sensitive(false)
                         .build();
+
+                    let mediascrolled = fix(mediascrolled);
 
                     let mediabox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
                     for mediapart in mediasource.MediaStreams {
@@ -550,7 +557,7 @@ impl ItemPage {
 
     pub fn setlinksscrolled(&self, links: Vec<crate::ui::network::Urls>) {
         let imp = self.imp();
-        let linksscrolled = imp.linksscrolled.get();
+        let linksscrolled = fix(imp.linksscrolled.get());
         let linksrevealer = imp.linksrevealer.get();
         if !links.is_empty() {
             linksrevealer.set_reveal_child(true);
@@ -580,7 +587,7 @@ impl ItemPage {
 
     pub fn setactorscrolled(&self, actors: Vec<crate::ui::network::People>) {
         let imp = self.imp();
-        let actorscrolled = imp.actorscrolled.get();
+        let actorscrolled = fix(imp.actorscrolled.get());
         let actorrevealer = imp.actorrevealer.get();
         if !actors.is_empty() {
             actorrevealer.set_reveal_child(true);

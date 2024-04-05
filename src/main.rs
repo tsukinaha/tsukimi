@@ -19,6 +19,9 @@ fn main() -> glib::ExitCode {
     // Connect to "activate" signal of `app`
     app.connect_activate(ui::build_ui);
 
+    app.set_accels_for_action("win.about", &["<Ctrl>N"]);
+
+
     // Run the application
     app.run()
 }
