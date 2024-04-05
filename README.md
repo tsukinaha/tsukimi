@@ -6,8 +6,12 @@
 
   
 使用 GTK4-RS 编写的第三方 Emby 客户端              
-For Linux ~~Only~~.
-
+For Linux ~~Only~~.    
+请注意 设置页第一项的功能是    
+开启：每10s回报一次进度 播放与停止也回报    
+关闭：每300s回报一次进度 播放与停止也回报    
+如果你不能接受懒回报 请立刻删除此软件并拉黑    
+只对 aur 用户的 issue/pr 积极回应
 
   <a href="https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml">
     <img alt="Linux CI status" src="https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg"/>
