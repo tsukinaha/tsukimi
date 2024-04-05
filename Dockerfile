@@ -36,4 +36,6 @@ COPY --from=builder /usr/src/tsukimi/target/release/tsukimi /usr/src/tsukimi/
 
 COPY --from=builder /usr/src/tsukimi/target/debian/*.deb /usr/src/tsukimi/
 
+COPY --from=builder root/.local/share/glib-2.0/schemas/gschemas.compiled /usr/src/tsukimi/
+
 ENTRYPOINT ["sleep","3600"]

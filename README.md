@@ -13,13 +13,21 @@ For Linux ~~Only~~.
     <img alt="Linux CI status" src="https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg"/>
   </a>
   <a href="https://github.com/tsukinaha/tsukimi/actions/workflows/build_gnu.yml">
-    <img alt="Windows GNU CI status" src="https://github.com/tsukinaha/tsukimi/actions/workflows/build_gnu.yml/badge.svg"/>
+    <img alt="Windows GNU CI status" src="https://github.com/tsukinaha/tsukimi/actions/workflows/build_publish.yml/badge.svg"/>
   </a>
 
   ![AUR Version](https://img.shields.io/aur/version/tsukimi-git)
 
 ## Build
 请见 [Dockerfile](https://github.com/tsukinaha/tsukimi/blob/main/Dockerfile)
+
+## Installation
+### Windows
+- Install via Scoop / 通过Scoop安装
+```
+scoop bucket add scol https://github.com/Kosette/scol.git
+scoop install tsukimi
+```
 
 ## MPV Config
 - Linux: 读取默认配置 (`$XDG_CONFIG_HOME/mpv`)

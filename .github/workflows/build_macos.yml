@@ -1,11 +1,11 @@
 name: MacOS CI
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 'main'
-  schedule:
-    - cron: '0 4 * * *'
+  # push:
+  #   branches:
+  #     - 'main'
+  # schedule:
+  #   - cron: '0 4 * * *'
 
 env:
   CARGO_TERM_COLOR: always
