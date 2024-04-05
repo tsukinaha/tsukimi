@@ -82,7 +82,7 @@ mod imp {
                     spinner.set_visible(false);
                     store.remove_all();
                     for result in search_results {
-                        if result.Type == "Series" || result.Type == "Movie" {
+                        if result.result_type == "Series" || result.result_type == "Movie" {
                             let object = glib::BoxedAnyObject::new(result);
                             store.append(&object);
                         }
@@ -103,13 +103,13 @@ mod imp {
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 2);
                 let overlay = gtk::Overlay::new();
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                let imgbox = crate::ui::image::setimage(result.Id.clone(), mutex);
+                let imgbox = crate::ui::image::setimage(result.id.clone(), mutex);
                 imgbox.set_size_request(167, 275);
                 overlay.set_child(Some(&imgbox));
-                if let Some(userdata) = &result.UserData {
-                    if let Some(unplayeditemcount) = userdata.UnplayedItemCount {
+                if let Some(userdata) = &result.user_data {
+                    if let Some(unplayeditemcount) = userdata.unplayed_item_count {
                         if unplayeditemcount > 0 {
-                            let mark = gtk::Label::new(Some(&userdata.UnplayedItemCount.expect("no unplayeditemcount").to_string()));
+                            let mark = gtk::Label::new(Some(&userdata.unplayed_item_count.expect("no unplayeditemcount").to_string()));
                             mark.set_valign(gtk::Align::Start);
                             mark.set_halign(gtk::Align::End);
                             mark.set_height_request(40);
@@ -119,12 +119,12 @@ mod imp {
                     }
                 }
                 vbox.append(&overlay);
-                let label = Label::new(Some(&result.Name));
+                let label = Label::new(Some(&result.name));
                 label.set_wrap(true);
                 label.set_size_request(-1, 24);
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
-                let labeltype = Label::new(Some(&result.Type));
-                let markup = format!("<span color='lightgray' font='small'>{}</span>", result.Type);
+                let labeltype = Label::new(Some(&result.result_type));
+                let markup = format!("<span color='lightgray' font='small'>{}</span>", result.result_type);
                 labeltype.set_markup(markup.as_str());
                 labeltype.set_size_request(-1, 24);
                 vbox.append(&label);
@@ -144,17 +144,17 @@ mod imp {
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
                 let item_page;
-                if result.Type == "Movie" {
-                    item_page = Page::Movie(Box::new(MoviePage::new(result.Id.clone(),result.Name.clone()).into()));
+                if result.result_type == "Movie" {
+                    item_page = Page::Movie(Box::new(MoviePage::new(result.id.clone(),result.name.clone()).into()));
                 } else {
-                    item_page = Page::Item(Box::new(ItemPage::new(result.Id.clone(),result.Id.clone()).into()));
+                    item_page = Page::Item(Box::new(ItemPage::new(result.id.clone(),result.id.clone()).into()));
                 }
                 obj.set(item_page);
                 let window = obj.root();
                 if let Some(window) = window {
                     if window.is::<Window>() {
                         let window = window.downcast::<Window>().unwrap();
-                        window.set_title(&result.Name);
+                        window.set_title(&result.name);
                     }
                 }
             }));

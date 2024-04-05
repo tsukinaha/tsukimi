@@ -21,9 +21,9 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
     leftvbox.set_valign(gtk::Align::End);
     let markup = format!(
         "<b>{}\n\nSeason {} : Episode {}</b>",
-        info.Name, info.ParentIndexNumber, info.IndexNumber
+        info.name, info.parent_index_number, info.index_number
     );
-    let label = gtk::Label::new(Some(&info.Name));
+    let label = gtk::Label::new(Some(&info.name));
     label.set_markup(markup.as_str());
     label.set_ellipsize(gtk::pango::EllipsizeMode::End);
     leftvbox.append(&label);
@@ -40,12 +40,12 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
     let sublist = gtk::StringList::new(&[]);
 
     let mut _set = 1;
-    for media in playbackinfo.MediaSources.clone() {
-        namelist.append(&media.Name);
+    for media in playbackinfo.media_sources.clone() {
+        namelist.append(&media.name);
         if _set == 1 {
-            for stream in media.MediaStreams {
-                if stream.Type == "Subtitle" {
-                    if let Some(d) = stream.DisplayTitle {
+            for stream in media.media_streams {
+                if stream.stream_type == "Subtitle" {
+                    if let Some(d) = stream.display_title {
                         sublist.append(&d);
                     } else {
                         println!("No value");
@@ -67,11 +67,11 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
         for _i in 0..sublist.n_items() {
             sublist.remove(0);
         }
-        for media in playbackinfo.MediaSources.clone() {
-            if media.Name == selected {
-                for stream in media.MediaStreams {
-                    if stream.Type == "Subtitle" {
-                        if let Some(d) = stream.DisplayTitle {
+        for media in playbackinfo.media_sources.clone() {
+            if media.name == selected {
+                for stream in media.media_streams {
+                    if stream.stream_type == "Subtitle" {
+                        if let Some(d) = stream.display_title {
                             sublist.append(&d);
                         } else {
                             println!("No value");
@@ -96,16 +96,16 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
         let nameselected = nameselected.string();
         let subselected = subdropdown.selected_item();
         if subselected.is_none() {
-            for media in playback_info.MediaSources.clone() {
-                if media.Name == nameselected {
-                    let directurl = media.DirectStreamUrl.clone();
+            for media in playback_info.media_sources.clone() {
+                if media.name == nameselected {
+                    let directurl = media.direct_stream_url.clone();
                     let back = Back {
-                        id: info.Id.clone(),
-                        mediasourceid: media.Id.clone(),
-                        playsessionid: playback_info.PlaySessionId.clone(),
+                        id: info.id.clone(),
+                        mediasourceid: media.id.clone(),
+                        playsessionid: playback_info.play_session_id.clone(),
                         tick: 0.,
                     };
-                    play_event(button.clone(),directurl,None,media.Name,back);
+                    play_event(button.clone(),directurl,None,media.name,back);
                     return;
                 }
             }
@@ -113,36 +113,36 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
         }
         let subselected = subselected.and_downcast_ref::<gtk::StringObject>().unwrap();
         let subselected = subselected.string();
-        for media in playback_info.MediaSources.clone() {
-            if media.Name == nameselected.to_string() {
-                for mediastream in media.MediaStreams {
-                    if mediastream.Type == "Subtitle" {
-                        let displaytitle = mediastream.DisplayTitle.unwrap_or("".to_string());
+        for media in playback_info.media_sources.clone() {
+            if media.name == nameselected.to_string() {
+                for mediastream in media.media_streams {
+                    if mediastream.stream_type == "Subtitle" {
+                        let displaytitle = mediastream.display_title.unwrap_or("".to_string());
                         if displaytitle == subselected {
-                            if let Some(directurl) = media.DirectStreamUrl.clone() {
-                                if mediastream.IsExternal == true {
-                                    if let Some(suburl) = mediastream.DeliveryUrl.clone() {
+                            if let Some(directurl) = media.direct_stream_url.clone() {
+                                if mediastream.is_external == true {
+                                    if let Some(suburl) = mediastream.delivery_url.clone() {
                                         let back = Back {
-                                            id: info.Id.clone(),
-                                            mediasourceid: media.Id.clone(),
-                                            playsessionid: playback_info.PlaySessionId.clone(),
+                                            id: info.id.clone(),
+                                            mediasourceid: media.id.clone(),
+                                            playsessionid: playback_info.play_session_id.clone(),
                                             tick: 0.,
                                         };
-                                        play_event(button.clone(),Some(directurl),Some(suburl),media.Name,back);
+                                        play_event(button.clone(),Some(directurl),Some(suburl),media.name,back);
                                         return;
                                     } else {
                                         // Ask Luke
-                                        set_sub(info.Id.clone(),media.Id.clone(),nameselected.to_string(),subselected.to_string(),button.clone());
+                                        set_sub(info.id.clone(),media.id.clone(),nameselected.to_string(),subselected.to_string(),button.clone());
                                         return;
                                     }
                                 } else {
                                     let back = Back {
-                                        id: info.Id.clone(),
-                                        mediasourceid: media.Id.clone(),
-                                        playsessionid: playback_info.PlaySessionId.clone(),
+                                        id: info.id.clone(),
+                                        mediasourceid: media.id.clone(),
+                                        playsessionid: playback_info.play_session_id.clone(),
                                         tick: 0.,
                                     };
-                                    play_event(button.clone(),Some(directurl),None,media.Name,back);
+                                    play_event(button.clone(),Some(directurl),None,media.name,back);
                                     return;
                                 }
                             }
@@ -207,22 +207,22 @@ pub fn set_sub(
     });
     glib::spawn_future_local(async move {
         while let Ok(media) = receiver.recv().await {
-            for mediasource in media.MediaSources.clone() {
-                if mediasource.Name == nameselected.to_string() {
-                    for mediastream in mediasource.MediaStreams {
-                        if mediastream.Type == "Subtitle" {
-                            let displaytitle = mediastream.DisplayTitle.unwrap_or("".to_string());
+            for mediasource in media.media_sources.clone() {
+                if mediasource.name == nameselected.to_string() {
+                    for mediastream in mediasource.media_streams {
+                        if mediastream.stream_type == "Subtitle" {
+                            let displaytitle = mediastream.display_title.unwrap_or("".to_string());
                             if displaytitle == subselected {
-                                if let Some(directurl) = mediasource.DirectStreamUrl.clone() {
-                                    if mediastream.IsExternal == true {
-                                        if let Some(suburl) = mediastream.DeliveryUrl.clone() {
+                                if let Some(directurl) = mediasource.direct_stream_url.clone() {
+                                    if mediastream.is_external == true {
+                                        if let Some(suburl) = mediastream.delivery_url.clone() {
                                             let back = Back {
                                                 id: id.clone(),
-                                                mediasourceid: mediasource.Id.clone(),
-                                                playsessionid: media.PlaySessionId.clone(),
+                                                mediasourceid: mediasource.id.clone(),
+                                                playsessionid: media.play_session_id.clone(),
                                                 tick: 0.,
                                             };
-                                            play_event(button.clone(),Some(directurl),Some(suburl),mediasource.Name,back);
+                                            play_event(button.clone(),Some(directurl),Some(suburl),mediasource.name,back);
                                             return;
                                         } 
                                     }

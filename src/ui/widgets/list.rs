@@ -130,12 +130,12 @@ impl ListPage {
         let store = gio::ListStore::new::<glib::BoxedAnyObject>();
         glib::spawn_future_local(glib::clone!(@weak store=> async move {
             while let Ok(list_results) = receiver.recv().await {
-                for result in list_results.Items {
+                for result in list_results.items {
                     let object = glib::BoxedAnyObject::new(result);
                     store.append(&object);
                 }
                 spinner.set_visible(false);
-                count.set_text(&format!("{} Items",list_results.TotalRecordCount));
+                count.set_text(&format!("{} Items",list_results.total_record_count));
                 listrevealer.set_reveal_child(true);
             }
         }));
@@ -190,7 +190,7 @@ impl ListPage {
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
             let latest: std::cell::Ref<crate::ui::network::Latest> = entry.borrow();
-            if latest.Type == "MusicAlbum" {
+            if latest.latest_type == "MusicAlbum" {
                 picture.set_size_request(167, 167);
             }
             if picture.is::<gtk::Box>() {
@@ -201,14 +201,14 @@ impl ListPage {
                 {
                 } else {
                     let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                    let img = crate::ui::image::setimage(latest.Id.clone(), mutex.clone());
+                    let img = crate::ui::image::setimage(latest.id.clone(), mutex.clone());
                     let overlay = gtk::Overlay::builder().child(&img).build();
-                    if let Some(userdata) = &latest.UserData {
-                        if let Some(unplayeditemcount) = userdata.UnplayedItemCount {
+                    if let Some(userdata) = &latest.user_data {
+                        if let Some(unplayeditemcount) = userdata.unplayed_item_count {
                             if unplayeditemcount > 0 {
                                 let mark = gtk::Label::new(Some(
                                     &userdata
-                                        .UnplayedItemCount
+                                        .unplayed_item_count
                                         .expect("no unplayeditemcount")
                                         .to_string(),
                                 ));
@@ -227,8 +227,8 @@ impl ListPage {
                 }
             }
             if label.is::<gtk::Label>() {
-                let mut str = format!("{}", latest.Name);
-                if let Some(productionyear) = latest.ProductionYear {
+                let mut str = format!("{}", latest.name);
+                if let Some(productionyear) = latest.production_year {
                     str.push_str(&format!("\n{}", productionyear));
                 }
                 label
@@ -246,25 +246,25 @@ impl ListPage {
             let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
             let result: std::cell::Ref<crate::ui::network::Latest> = item.borrow();
             let item_page;
-            if result.Type == "Movie" {
+            if result.latest_type == "Movie" {
                 let window = obj.root();
                 if let Some(window) = window {
                     if window.is::<Window>() {
                         let window = window.downcast::<Window>().unwrap();
-                        window.set_title(&result.Name);
+                        window.set_title(&result.name);
                     }
                 }
-                item_page = Page::Movie(Box::new(MoviePage::new(result.Id.clone(),result.Name.clone()).into()));
+                item_page = Page::Movie(Box::new(MoviePage::new(result.id.clone(),result.name.clone()).into()));
                 obj.set(item_page);
-            } else if result.Type == "Series" {
+            } else if result.latest_type == "Series" {
                 let window = obj.root();
                 if let Some(window) = window {
                     if window.is::<Window>() {
                         let window = window.downcast::<Window>().unwrap();
-                        window.set_title(&result.Name);
+                        window.set_title(&result.name);
                     }
                 }
-                item_page = Page::Item(Box::new(ItemPage::new(result.Id.clone(),result.Id.clone()).into()));
+                item_page = Page::Item(Box::new(ItemPage::new(result.id.clone(),result.id.clone()).into()));
                 obj.set(item_page);
             } 
         })); 
@@ -291,7 +291,7 @@ impl ListPage {
                 }));
                 glib::spawn_future_local(glib::clone!(@weak store=> async move {
                     while let Ok(list_results) = receiver.recv().await {
-                        for result in list_results.Items {
+                        for result in list_results.items {
                             let object = glib::BoxedAnyObject::new(result);
                             store.append(&object);
                         }

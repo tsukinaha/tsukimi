@@ -93,33 +93,33 @@ mod imp {
                 let overlay = gtk::Overlay::new();
                 let imgbox;
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                if result.ParentThumbItemId.is_some() && result.Type == "Episode"{
+                if result.parent_thumb_item_id.is_some() && result.resume_type == "Episode"{
                     imgbox = crate::ui::image::setthumbimage(
-                        result.ParentThumbItemId.as_ref().expect("").clone(),
+                        result.parent_thumb_item_id.as_ref().expect("").clone(),
                         mutex.clone(),
                     );
                 } else {
-                    if result.Type == "Movie" {
+                    if result.resume_type == "Movie" {
                         imgbox =
-                            crate::ui::image::setbackdropimage(result.Id.clone(), mutex.clone());
-                    } else if result.ParentThumbItemId.is_some() {
+                            crate::ui::image::setbackdropimage(result.id.clone(), mutex.clone());
+                    } else if result.parent_thumb_item_id.is_some() {
                         imgbox = crate::ui::image::setthumbimage(
-                            result.SeriesId.as_ref().expect("").to_string(),
+                            result.series_id.as_ref().expect("").to_string(),
                             mutex.clone(),
                         );
                     } else {
-                        imgbox = crate::ui::image::setimage(result.Id.clone(), mutex.clone());
+                        imgbox = crate::ui::image::setimage(result.id.clone(), mutex.clone());
                     }
                 }
                 imgbox.set_size_request(290, 169);
                 overlay.set_child(Some(&imgbox));
                 let progressbar = gtk::ProgressBar::new();
                 progressbar.set_valign(gtk::Align::End);
-                if let Some(userdata) = &result.UserData {
-                    if let Some(percentage) = userdata.PlayedPercentage {
+                if let Some(userdata) = &result.user_data {
+                    if let Some(percentage) = userdata.played_percentage {
                         progressbar.set_fraction(percentage / 100.0);
                     }
-                    if userdata.Played {
+                    if userdata.played {
                         let mark = gtk::Image::from_icon_name("object-select-symbolic");
                         mark.set_halign(gtk::Align::End);
                         mark.set_valign(gtk::Align::Start);
@@ -131,24 +131,24 @@ mod imp {
                 overlay.add_overlay(&progressbar);
                 vbox.append(&overlay);
                 let label = Label::builder()
-                    .label(&result.Name)
+                    .label(&result.name)
                     .build();
-                let labeltype = Label::new(Some(&result.Type));
-                if result.Type == "Episode" {
-                    let markup = format!("{}", result.SeriesName.as_ref().expect("").clone());
+                let labeltype = Label::new(Some(&result.resume_type));
+                if result.resume_type == "Episode" {
+                    let markup = format!("{}", result.series_name.as_ref().expect("").clone());
                     label.set_markup(markup.as_str());
                     let markup = format!(
                         "<span color='lightgray' font='small'>S{}E{}: {}</span>",
-                        result.ParentIndexNumber.as_ref().expect("").clone(),
-                        result.IndexNumber.as_ref().expect("").clone(),
-                        result.Name
+                        result.parent_index_number.as_ref().expect("").clone(),
+                        result.index_number.as_ref().expect("").clone(),
+                        result.name
                     );
                     labeltype.set_markup(markup.as_str());
                 } else {
-                    let markup = format!("{}", result.Name);
+                    let markup = format!("{}", result.name);
                     label.set_markup(markup.as_str());
                     let markup =
-                        format!("<span color='lightgray' font='small'>{}</span>", result.Type);
+                        format!("<span color='lightgray' font='small'>{}</span>", result.resume_type);
                     labeltype.set_markup(markup.as_str());
                 }
                 label.set_wrap(true);
@@ -172,13 +172,13 @@ mod imp {
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<crate::ui::network::Resume> = item.borrow();
                 let item_page;
-                if result.Type == "Movie" {
-                    item_page = Page::Movie(Box::new(MoviePage::new(result.Id.clone(),result.Name.clone()).into()));
+                if result.resume_type == "Movie" {
+                    item_page = Page::Movie(Box::new(MoviePage::new(result.id.clone(),result.name.clone()).into()));
                 } else {
-                    if result.ParentThumbItemId == None {
-                        item_page = Page::Item(Box::new(ItemPage::new(result.SeriesId.as_ref().expect("msg").clone(),result.Id.clone()).into()));
+                    if result.parent_thumb_item_id == None {
+                        item_page = Page::Item(Box::new(ItemPage::new(result.series_id.as_ref().expect("msg").clone(),result.id.clone()).into()));
                     } else {
-                        item_page = Page::Item(Box::new(ItemPage::new(result.ParentThumbItemId.as_ref().expect("msg").clone(),result.Id.clone()).into()));
+                        item_page = Page::Item(Box::new(ItemPage::new(result.parent_thumb_item_id.as_ref().expect("msg").clone(),result.id.clone()).into()));
                     }
                 }
                 obj.set(item_page);
@@ -186,10 +186,10 @@ mod imp {
                 if let Some(window) = window {
                     if window.is::<Window>() {
                         let window = window.downcast::<Window>().unwrap();
-                        if let Some(seriesname) = &result.SeriesName {
+                        if let Some(seriesname) = &result.series_name {
                             window.set_title(seriesname);
                         } else {
-                        window.set_title(&result.Name);
+                        window.set_title(&result.name);
                         }
                     }
                 }

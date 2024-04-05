@@ -1,5 +1,4 @@
 use glib::Object;
-use gtk::gdk::Event;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
@@ -189,7 +188,7 @@ impl HomePage {
                 {
                 } else {
                     let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                    let img = crate::ui::image::setimage(view.Id.clone(), mutex.clone());
+                    let img = crate::ui::image::setimage(view.id.clone(), mutex.clone());
                     picture
                         .downcast_ref::<gtk::Box>()
                         .expect("Needs to be Box")
@@ -197,7 +196,7 @@ impl HomePage {
                 }
             }
             if label.is::<gtk::Label>() {
-                let str = format!("{}", view.Name);
+                let str = format!("{}", view.name);
                 label
                     .downcast_ref::<gtk::Label>()
                     .expect("Needs to be Label")
@@ -211,13 +210,13 @@ impl HomePage {
             let model = listview.model().unwrap();
             let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
             let view: std::cell::Ref<crate::ui::network::View> = item.borrow();
-            let item_page = Page::Item(Box::new(ListPage::new(view.Id.clone()).into()));
+            let item_page = Page::Item(Box::new(ListPage::new(view.id.clone()).into()));
             obj.set(item_page);
             let window = obj.root();
             if let Some(window) = window {
                 if window.is::<Window>() {
                     let window = window.downcast::<Window>().unwrap();
-                    window.set_title(&format!("{} - Date Created Descending",view.Name));
+                    window.set_title(&format!("{} - Date Created Descending",view.name));
                 }
             }
         }));
@@ -244,7 +243,7 @@ impl HomePage {
                 .build();
             libsbox.append(&revealer);
             let label = gtk::Label::builder()
-                .label(format!("<b>Latest {}</b>", view.Name))
+                .label(format!("<b>Latest {}</b>", view.name))
                 .halign(gtk::Align::Start)
                 .use_markup(true)
                 .margin_top(15)
@@ -255,7 +254,7 @@ impl HomePage {
             let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
             let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Latest>>(3);
             crate::ui::network::runtime().spawn(async move {
-                let latest = crate::ui::network::get_latest(view.Id.clone(), mutex)
+                let latest = crate::ui::network::get_latest(view.id.clone(), mutex)
                     .await
                     .expect("msg");
                 sender.send(latest).await.expect("msg");
@@ -325,7 +324,7 @@ impl HomePage {
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
             let latest: std::cell::Ref<crate::ui::network::Latest> = entry.borrow();
-            if latest.Type == "MusicAlbum" {
+            if latest.latest_type == "MusicAlbum" {
                 picture.set_size_request(167, 167);
             }
             if picture.is::<gtk::Box>() {
@@ -336,14 +335,14 @@ impl HomePage {
                 {
                 } else {
                     let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                    let img = crate::ui::image::setimage(latest.Id.clone(), mutex.clone());
+                    let img = crate::ui::image::setimage(latest.id.clone(), mutex.clone());
                     let overlay = gtk::Overlay::builder()
                         .child(&img)
                         .build();
-                    if let Some(userdata) = &latest.UserData {
-                        if let Some(unplayeditemcount) = userdata.UnplayedItemCount {
+                    if let Some(userdata) = &latest.user_data {
+                        if let Some(unplayeditemcount) = userdata.unplayed_item_count {
                             if unplayeditemcount > 0 {
-                                let mark = gtk::Label::new(Some(&userdata.UnplayedItemCount.expect("no unplayeditemcount").to_string()));
+                                let mark = gtk::Label::new(Some(&userdata.unplayed_item_count.expect("no unplayeditemcount").to_string()));
                                 mark.set_valign(gtk::Align::Start);
                                 mark.set_halign(gtk::Align::End);
                                 mark.set_height_request(40);
@@ -359,8 +358,8 @@ impl HomePage {
                 }
             }
             if label.is::<gtk::Label>() {
-                let mut str = format!("{}", latest.Name);
-                if let Some(productionyear) = latest.ProductionYear {
+                let mut str = format!("{}", latest.name);
+                if let Some(productionyear) = latest.production_year {
                     str.push_str(&format!("\n{}", productionyear));
                 }
                 label
@@ -376,15 +375,15 @@ impl HomePage {
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<Latest> = item.borrow();
                 let item_page;
-                if result.Type == "Movie" {
-                    item_page = Page::Movie(Box::new(MoviePage::new(result.Id.clone(),result.Name.clone()).into()));
+                if result.latest_type == "Movie" {
+                    item_page = Page::Movie(Box::new(MoviePage::new(result.id.clone(),result.name.clone()).into()));
                     obj.set(item_page);
-                } else if result.Type == "Series" {
-                    item_page = Page::Item(Box::new(ItemPage::new(result.Id.clone(),result.Id.clone()).into()));
+                } else if result.latest_type == "Series" {
+                    item_page = Page::Item(Box::new(ItemPage::new(result.id.clone(),result.id.clone()).into()));
                     obj.set(item_page);
                 } else {
                     let toast = adw::Toast::builder()
-                        .title(format!("{} is not supported",result.Type))
+                        .title(format!("{} is not supported",result.latest_type))
                         .timeout(3)
                         .build();
                     obj.imp().toast.add_toast(toast);
@@ -393,7 +392,7 @@ impl HomePage {
                 if let Some(window) = window {
                     if window.is::<Window>() {
                         let window = window.downcast::<Window>().unwrap();
-                        window.set_title(&result.Name);
+                        window.set_title(&result.name);
                     }
                 }
         }));

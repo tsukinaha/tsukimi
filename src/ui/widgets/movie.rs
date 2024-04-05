@@ -131,10 +131,10 @@ mod imp {
                 glib::clone!(@weak dropdownspinner,@weak osdbox =>async move {
                     while let Ok(playback) = receiver.recv().await {
                         let info:SearchResult = SearchResult {
-                            Id: idclonet.clone(),
-                            Name: name.clone(),
-                            Type: String::from("Movie"),
-                            UserData: None,
+                            id: idclonet.clone(),
+                            name: name.clone(),
+                            result_type: String::from("Movie"),
+                            user_data: None,
                         };
                         let dropdown = crate::ui::moviedrop::newmediadropsel(playback, info);
                         dropdownspinner.set_visible(false);
@@ -194,13 +194,13 @@ impl MoviePage {
         });
         glib::spawn_future_local(glib::clone!(@weak self as obj=>async move {
             while let Ok(item) = receiver.recv().await {
-                if let Some(overview) = item.Overview {
+                if let Some(overview) = item.overview {
                     itemoverview.set_text(Some(&overview));
                 }
-                if let Some(links) = item.ExternalUrls {
+                if let Some(links) = item.external_urls {
                     obj.setlinksscrolled(links);
                 }
-                if let Some(actor) = item.People {
+                if let Some(actor) = item.people {
                     obj.setactorscrolled(actor);
                 }
                 overviewrevealer.set_reveal_child(true);
@@ -222,9 +222,9 @@ impl MoviePage {
                 while mediainfobox.last_child() != None {
                     mediainfobox.last_child().map(|child| mediainfobox.remove(&child));
                 }
-                for mediasource in media.MediaSources {
+                for mediasource in media.media_sources {
                     let singlebox = gtk::Box::new(gtk::Orientation::Vertical, 5);
-                    let info = format!("{} {}\n{}", mediasource.Container.to_uppercase(), bytefmt::format(mediasource.Size), mediasource.Name);
+                    let info = format!("{} {}\n{}", mediasource.container.to_uppercase(), bytefmt::format(mediasource.size), mediasource.name);
                     let label = gtk::Label::builder()
                         .label(&info)
                         .halign(gtk::Align::Start)
@@ -243,8 +243,8 @@ impl MoviePage {
                     let mediascrolled = fix(mediascrolled);
                     
                     let mediabox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
-                    for mediapart in mediasource.MediaStreams {
-                        if mediapart.Type == "Attachment" {
+                    for mediapart in mediasource.media_streams {
+                        if mediapart.stream_type == "Attachment" {
                             continue;
                         }
                         let mediapartbox = gtk::Box::builder()
@@ -256,11 +256,11 @@ impl MoviePage {
                         let icon = gtk::Image::builder()
                             .margin_end(5)
                             .build();
-                        if mediapart.Type == "Video" {
+                        if mediapart.stream_type == "Video" {
                             icon.set_from_icon_name(Some("video-x-generic-symbolic"))
-                        } else if mediapart.Type == "Audio" {
+                        } else if mediapart.stream_type == "Audio" {
                             icon.set_from_icon_name(Some("audio-x-generic-symbolic"))
-                        } else if mediapart.Type == "Subtitle" {
+                        } else if mediapart.stream_type == "Subtitle" {
                             icon.set_from_icon_name(Some("media-view-subtitles-symbolic"))
                         } else {
                             icon.set_from_icon_name(Some("text-x-generic-symbolic"))
@@ -270,47 +270,47 @@ impl MoviePage {
                             .spacing(5)
                             .build();
                         typebox.append(&icon);
-                        typebox.append(&gtk::Label::new(Some(&mediapart.Type)));
-                        if let Some(codec) = mediapart.Codec {
+                        typebox.append(&gtk::Label::new(Some(&mediapart.stream_type)));
+                        if let Some(codec) = mediapart.codec {
                             str.push_str(format!("Codec: {}", codec).as_str());
                         }
-                        if let Some(language) = mediapart.DisplayLanguage {
+                        if let Some(language) = mediapart.display_language {
                             str.push_str(format!("\nLanguage: {}", language).as_str());
                         }
-                        if let Some(title) = mediapart.Title {
+                        if let Some(title) = mediapart.title {
                             str.push_str(format!("\nTitle: {}", title).as_str());
                         }
-                        if let Some(bitrate) = mediapart.BitRate {
+                        if let Some(bitrate) = mediapart.bit_rate {
                             str.push_str(format!("\nBitrate: {}it/s", bytefmt::format(bitrate)).as_str());
                         }
-                        if let Some(bitdepth) = mediapart.BitDepth {
+                        if let Some(bitdepth) = mediapart.bit_depth {
                             str.push_str(format!("\nBitDepth: {} bit", bitdepth).as_str());
                         }
-                        if let Some(samplerate) = mediapart.SampleRate {
+                        if let Some(samplerate) = mediapart.sample_rate {
                             str.push_str(format!("\nSampleRate: {} Hz", samplerate).as_str());
                         }
-                        if let Some(height) = mediapart.Height {
+                        if let Some(height) = mediapart.height {
                             str.push_str(format!("\nHeight: {}", height).as_str());
                         }
-                        if let Some(width) = mediapart.Width {
+                        if let Some(width) = mediapart.width {
                             str.push_str(format!("\nWidth: {}", width).as_str());
                         }
-                        if let Some(colorspace) = mediapart.ColorSpace {
+                        if let Some(colorspace) = mediapart.color_space {
                             str.push_str(format!("\nColorSpace: {}", colorspace).as_str());
                         }
-                        if let Some(displaytitle) = mediapart.DisplayTitle {
+                        if let Some(displaytitle) = mediapart.display_title {
                             str.push_str(format!("\nDisplayTitle: {}", displaytitle).as_str());
                         }
-                        if let Some(channel) = mediapart.Channels {
+                        if let Some(channel) = mediapart.channels {
                             str.push_str(format!("\nChannel: {}", channel).as_str());
                         }
-                        if let Some(channellayout) = mediapart.ChannelLayout {
+                        if let Some(channellayout) = mediapart.channel_layout {
                             str.push_str(format!("\nChannelLayout: {}", channellayout).as_str());
                         }
-                        if let Some(averageframerate) = mediapart.AverageFrameRate {
+                        if let Some(averageframerate) = mediapart.average_frame_rate {
                             str.push_str(format!("\nAverageFrameRate: {}", averageframerate).as_str());
                         }
-                        if let Some(pixelformat) = mediapart.PixelFormat {
+                        if let Some(pixelformat) = mediapart.pixel_format {
                             str.push_str(format!("\nPixelFormat: {}", pixelformat).as_str());
                         }
                         let inscription = gtk::Inscription::builder()
@@ -350,12 +350,12 @@ impl MoviePage {
                 .margin_top(10)
                 .build();
             let buttoncontent = adw::ButtonContent::builder()
-                .label(&url.Name)
+                .label(&url.name)
                 .icon_name("send-to-symbolic")
                 .build();
             linkbutton.set_child(Some(&buttoncontent));
             linkbutton.connect_clicked(move |_| {
-                let _ = gio::AppInfo::launch_default_for_uri(&url.Url, Option::<&gio::AppLaunchContext>::None);
+                let _ = gio::AppInfo::launch_default_for_uri(&url.url, Option::<&gio::AppLaunchContext>::None);
             });
             linkbox.append(&linkbutton);
         }
@@ -428,7 +428,7 @@ impl MoviePage {
                     
                 } else {
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                let img = crate::ui::image::setimage(people.Id.clone(), mutex.clone());
+                let img = crate::ui::image::setimage(people.id.clone(), mutex.clone());
                 picture
                     .downcast_ref::<gtk::Box>()
                     .expect("Needs to be Box")
@@ -436,8 +436,8 @@ impl MoviePage {
                 }
             }
             if label.is::<gtk::Label>() {
-                if let Some(role) = &people.Role {
-                    let str = format!("{}\n{}", people.Name, role);
+                if let Some(role) = &people.role {
+                    let str = format!("{}\n{}", people.name, role);
                     label
                         .downcast_ref::<gtk::Label>()
                         .expect("Needs to be Label")
