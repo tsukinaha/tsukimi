@@ -23,7 +23,8 @@
                         <property name="selection-mode">none</property>
                         <child>
                           <object class="AdwSwitchRow" id="backcontrol">
-                            <property name="title" translatable="yes">Proactively provide progress updates</property>
+                            <property name="title" translatable="yes">Proactively Provide Progress Updates</property>
+                            <property name="subtitle" translatable="yes">Every 10 Seconds or Every 300 Seconds</property>
                           </object>
                         </child>
                         <child>
@@ -44,6 +45,16 @@
                                 <property name="step-increment">50</property>
                               </object>
                             </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSwitchRow" id="autofullscreencontrol">
+                            <property name="title" translatable="yes">Auto Fullscreen Playing</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSwitchRow" id="forcewindowcontrol">
+                            <property name="title" translatable="yes">Show Playing Window Immediately</property>
                           </object>
                         </child>
                         <style>

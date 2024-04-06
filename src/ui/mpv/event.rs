@@ -4,12 +4,7 @@ use libmpv::{events::*, *};
 use std::{collections::HashMap, env, thread, time::{Duration, Instant}};
 
 use crate::{config::set_config, ui::network::{runtime, Back}, APP_ID};
-
-pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:Back) -> Result<()> {
-
-    let id = back.id;
-    let mediasourceid = back.mediasourceid;
-    let playsessionid = back.playsessionid;
+pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back) -> Result<()> {
 
     unsafe {
         use libc::setlocale;
@@ -26,9 +21,15 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:Back) -> R
         init.set_property("config", true)?;
         init.set_property("input-vo-keyboard", true)?;
         init.set_property("input-default-bindings", true)?;
-        init.set_property("force-window", "immediate")?;
         if let Some(name) = name {
             init.set_property("force-media-title", name)?;
+        }
+        let settings = gtk::gio::Settings::new(APP_ID);
+        if settings.boolean("is-fullscreen") {
+            init.set_property("fullscreen", true)?;
+        }
+        if settings.boolean("is-force-window") {
+            init.set_property("force-window", "immediate")?;
         }
 
 
@@ -41,6 +42,12 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:Back) -> R
     ev_ctx.observe_property("volume", Format::Int64, 0)?;
     ev_ctx.observe_property("time-pos", Format::Double, 0)?;
 
+    let backc = back.clone();
+
+    runtime().spawn(async move {
+        crate::ui::network::playstart(backc).await;
+    });
+
     crossbeam::scope(|scope| {
         scope.spawn(|_| {
             mpv.playlist_load_files(&[(&url, FileState::AppendPlay, None)])
@@ -52,6 +59,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:Back) -> R
                 mpv.subtitle_add_select(&suburl, None, None)
                  .unwrap();
             }
+            
         });
         let mut last_print = Instant::now();
         scope.spawn(move |_| loop {
@@ -62,12 +70,8 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:Back) -> R
                         if let Ok(duration) = env::var("DURATION") {
                             println!("Duration: {}", duration);
                             let tick = duration.parse::<f64>().unwrap() * 10000000.0;
-                            let back = Back {
-                                id: id.clone(),
-                                mediasourceid: mediasourceid.clone(),
-                                playsessionid: playsessionid.clone(),
-                                tick,
-                            };
+                            let mut back = back.clone();
+                            back.tick = tick;
                             runtime().spawn(async move {
                                 crate::ui::network::positionstop(back).await;
                             });
@@ -89,12 +93,8 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:Back) -> R
                             if last_print.elapsed() >= Duration::from_secs(300) || settings.boolean("is-progress-enabled") {
                             if let Ok(duration) = env::var("DURATION") {
                                 let tick = duration.parse::<f64>().unwrap() * 10000000.0;
-                                let back = Back {
-                                    id: id.clone(),
-                                    mediasourceid: mediasourceid.clone(),
-                                    playsessionid: playsessionid.clone(),
-                                    tick,
-                                };
+                                let mut back = back.clone();
+                                back.tick = tick;
                                 runtime().spawn(async move {
                                     crate::ui::network::positionback(back).await;
                                 });

@@ -23,7 +23,11 @@ mod imp {
         #[template_child]
         pub sidebarcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
+        pub autofullscreencontrol: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub spinrow: TemplateChild<adw::SpinRow>,
+        #[template_child]
+        pub forcewindowcontrol: TemplateChild<adw::SwitchRow>,
     }
 
     // The central trait for subclassing a GObject
@@ -51,6 +55,8 @@ mod imp {
             obj.set_back();
             obj.set_sidebar();
             obj.set_spin();
+            obj.set_fullscreen();
+            obj.set_forcewindow();
         }
     }
 
@@ -112,4 +118,23 @@ impl SettingsPage {
             settings.set_int("background-height", control.value() as i32).unwrap();
         }));
     }
+
+    pub fn set_fullscreen(&self) {
+        let imp = imp::SettingsPage::from_obj(self);
+        let settings = gio::Settings::new(APP_ID);
+        imp.autofullscreencontrol.set_active(settings.boolean("is-fullscreen"));
+        imp.autofullscreencontrol.connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
+            settings.set_boolean("is-fullscreen", control.is_active()).unwrap();
+        }));
+    }
+
+    pub fn set_forcewindow(&self) {
+        let imp = imp::SettingsPage::from_obj(self);
+        let settings = gio::Settings::new(APP_ID);
+        imp.forcewindowcontrol.set_active(settings.boolean("is-force-window"));
+        imp.forcewindowcontrol.connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
+            settings.set_boolean("is-force-window", control.is_active()).unwrap();
+        }));
+    }
+    
 }

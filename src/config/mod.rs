@@ -63,6 +63,10 @@ pub fn get_device_name() -> String {
     if cfg!(target_os = "windows") {
         env::var("COMPUTERNAME").unwrap_or("Unknown Device".to_string())
     } else {
-        env::var("HOSTNAME").unwrap_or("Unknown Device".to_string())
+        let output = std::process::Command::new("uname")
+        .output()
+        .expect("failed to execute process");
+
+        String::from_utf8_lossy(&output.stdout).trim().to_string()
     }
 }

@@ -821,6 +821,7 @@ impl Default for List {
     }
 }
 
+#[derive(Deserialize, Debug, Clone)]
 pub struct Back {
     pub id: String,
     pub playsessionid: Option<String>,
@@ -860,6 +861,32 @@ pub async fn positionstop(back:Back) {
     let client = reqwest::Client::new();
     let url = format!(
         "{}:{}/emby/Sessions/Playing/Stopped",
+        server_info.domain, server_info.port
+    );
+
+    let params = [
+        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+        ("reqformat", "json"),
+    ];
+    let profile = serde_json::json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
+    client
+        .post(&url)
+        .query(&params)
+        .json(&profile)
+        .send()
+        .await.unwrap();
+}
+
+pub async fn playstart(back:Back) {
+    let tick = back.tick.to_string();
+    let server_info = config::set_config();
+    let client = reqwest::Client::new();
+    let url = format!(
+        "{}:{}/emby/Sessions/Playing",
         server_info.domain, server_info.port
     );
 
