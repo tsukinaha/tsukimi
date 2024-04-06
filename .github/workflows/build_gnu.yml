@@ -1,6 +1,9 @@
-name: Build Windows GNU Releases
+name: Windows GNU CI
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 'main'
 
 env:
   CARGO_TERM_COLOR: always
@@ -13,11 +16,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - arch-name: x86_64-windows-gnu
+          - arch: x86_64-windows-gnu
             os: windows-latest
             target: x86_64-pc-windows-gnu
             artifact: tsukimi.exe
-            ext: .exe
 
     runs-on: ${{matrix.os}}
 
@@ -25,21 +27,39 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build ${{matrix.target}}
+      - name: Install dependencies
         run: |
           rustup toolchain install stable-gnu
           rustup default stable-gnu
-          C:\msys64\usr\bin\pacman.exe -Syu --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc mingw-w64-x86_64-libadwaita
-          $env:Path = "C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path;
-          $env:LIBRARY_PATH="C:\msys64\mingw64\lib;" + $env:LIBRARY_PATH;
-          $env:INCLUDE_PATH="C:\msys64\mingw64\include;" + $env:INCLUDE_PATH;
+          C:\msys64\usr\bin\pacman.exe -S --needed --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc mingw-w64-x86_64-libadwaita mingw-w64-x86_64-mpv
+          C:\msys64\usr\bin\pacman.exe -Syu --noconfirm
+
+      - name: Build ${{ matrix.target }}
+        run: |
+          $env:Path = "C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path;
           cargo build --release --locked
-          mkdir C:/artifacts
-          cp target/release/${{matrix.artifact}} C:/artifacts/
-          cd C:/msys64/mingw64/bin
-          cp *.dll C:/artifacts/
+          mkdir artifact && cd artifact
+          mkdir tsukimi-windows-gnu-amd64/ && cd tsukimi-windows-gnu-amd64/ && mkdir bin/ && mkdir share/ && mkdir lib/
+          cp ../../target/release/${{ matrix.artifact }} bin/
+          cp C:/msys64/mingw64/bin/*.dll bin/
+          cp -recurse C:/msys64/mingw64/lib/gdk-pixbuf-2.0 lib/
+          remove-item lib/gdk-pixbuf-2.0/2.10.0/loaders/* -exclude "*svg.dll"
+          cp -recurse C:/msys64/mingw64/share/glib-2.0 share/
+          get-childitem -recurse -path share/glib-2.0/* -exclude "*gschemas.compiled*"|remove-item -recurse
+          mv ../../moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
+          C:/msys64/mingw64/bin/glib-compile-schemas.exe share/glib-2.0/schemas/
+          remove-item share/glib-2.0/schemas/*.xml
+          cp -recurse C:/msys64/mingw64/share/icons share/
+          cp ../../resources/ui/icons/tsukimi.png share/icons/
+          remove-item -recurse share/icons/hicolor && remove-item -recurse share/icons/Adwaita/scalable && remove-item -recurse share/icons/Adwaita/cursors
+          remove-item -recurse share/icons/Adwaita/16x16 && remove-item -recurse share/icons/Adwaita/symbolic-up-to-32
+          gci -directory -recurse .|where-object {$_.getfilesysteminfos().count -eq 0}|remove-item -recurse 
+          compress-archive -path ./* -destinationpath ../tsukimi-${{matrix.arch}}.zip
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tsukimi-${{matrix.arch-name}}
-          path: C:/artifacts/*
+          name: tsukimi-${{matrix.arch}}
+          path: artifact/*.zip
+          compression-level: 5
+          retention-days: 3

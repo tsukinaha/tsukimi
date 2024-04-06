@@ -16,8 +16,8 @@ For Linux ~~Only~~.
   <a href="https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml">
     <img alt="Linux CI status" src="https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg"/>
   </a>
-  <a href="https://github.com/tsukinaha/tsukimi/actions/workflows/build_gnu.yml">
-    <img alt="Windows GNU CI status" src="https://github.com/tsukinaha/tsukimi/actions/workflows/build_publish.yml/badge.svg"/>
+  <a href="https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml">
+    <img alt="Windows GNU CI status" src="https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml/badge.svg"/>
   </a>
 
   ![AUR Version](https://img.shields.io/aur/version/tsukimi-git)
