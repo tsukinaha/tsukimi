@@ -4,7 +4,7 @@ use libmpv::{events::*, *};
 use std::{collections::HashMap, env, thread, time::{Duration, Instant}};
 
 use crate::{config::set_config, ui::network::{runtime, Back}, APP_ID};
-pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back) -> Result<()> {
+pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,percentage:Option<f64>) -> Result<()> {
 
     unsafe {
         use libc::setlocale;
@@ -21,17 +21,26 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back) -> 
         init.set_property("config", true)?;
         init.set_property("input-vo-keyboard", true)?;
         init.set_property("input-default-bindings", true)?;
+        
         if let Some(name) = name {
             init.set_property("force-media-title", name)?;
         }
+        
         let settings = gtk::gio::Settings::new(APP_ID);
+
         if settings.boolean("is-fullscreen") {
             init.set_property("fullscreen", true)?;
         }
+
         if settings.boolean("is-force-window") {
             init.set_property("force-window", "immediate")?;
         }
 
+        if settings.boolean("is-resume") {
+            if let Some(percentage) = percentage {
+                init.set_property("start", format!("{}%",percentage as u32))?;
+            }
+        }
 
         Ok(())
     }).unwrap();
@@ -42,12 +51,15 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back) -> 
     ev_ctx.observe_property("volume", Format::Int64, 0)?;
     ev_ctx.observe_property("time-pos", Format::Double, 0)?;
 
-    let backc = back.clone();
-
+    let mut backc = back.clone();
+    if let Some(percentage) = percentage {
+        backc.tick = percentage * 10000000.0;
+    }
     runtime().spawn(async move {
         crate::ui::network::playstart(backc).await;
-    });
+    });    
 
+    
     crossbeam::scope(|scope| {
         scope.spawn(|_| {
             mpv.playlist_load_files(&[(&url, FileState::AppendPlay, None)])

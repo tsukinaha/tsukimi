@@ -29,6 +29,10 @@
       <default>true</default>
       <summary>Default switch state</summary>
     </key>
+    <key name="is-resume" type="b">
+      <default>true</default>
+      <summary>Default switch state</summary>
+    </key>
     <key name="background-height" type="i">
       <default>700</default>
       <summary>Default background height</summary>

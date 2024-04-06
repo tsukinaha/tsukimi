@@ -28,6 +28,8 @@ mod imp {
         pub spinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub forcewindowcontrol: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub resumecontrol: TemplateChild<adw::SwitchRow>,
     }
 
     // The central trait for subclassing a GObject
@@ -57,6 +59,7 @@ mod imp {
             obj.set_spin();
             obj.set_fullscreen();
             obj.set_forcewindow();
+            obj.set_resume();
         }
     }
 
@@ -134,6 +137,15 @@ impl SettingsPage {
         imp.forcewindowcontrol.set_active(settings.boolean("is-force-window"));
         imp.forcewindowcontrol.connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
             settings.set_boolean("is-force-window", control.is_active()).unwrap();
+        }));
+    }
+
+    pub fn set_resume(&self) {
+        let imp = imp::SettingsPage::from_obj(self);
+        let settings = gio::Settings::new(APP_ID);
+        imp.resumecontrol.set_active(settings.boolean("is-resume"));
+        imp.resumecontrol.connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
+            settings.set_boolean("is-resume", control.is_active()).unwrap();
         }));
     }
     

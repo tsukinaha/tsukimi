@@ -76,6 +76,16 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
     vbox.append(&subdropdown);
     let info = info.clone();
     let playbutton = gtk::Button::with_label("Play");
+    let settings = gtk::gio::Settings::new(crate::APP_ID);
+    if settings.boolean("is-resume") {
+        if let Some(userdata) = &info.user_data {
+            if let Some(percentage) = userdata.played_percentage {
+                if percentage > 0. {
+                    playbutton.set_label("Resume");
+                }
+            }
+        }
+    }
     playbutton.connect_clicked(move |button| {
         button.set_label("Playing...");
         let nameselected = namedropdown.selected_item();
@@ -94,7 +104,11 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
                         playsessionid: playback_info.play_session_id.clone(),
                         tick: 0.,
                     };
-                    play_event(button.clone(),directurl,None,media.name,back);
+                    if let Some(userdata) = &info.user_data {
+                        play_event(button.clone(),directurl,None,media.name,back,userdata.played_percentage);
+                        return;
+                    }
+                    play_event(button.clone(),directurl,None,media.name,back,None);
                     return;
                 }
             }
@@ -117,11 +131,16 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
                                             playsessionid: playback_info.play_session_id.clone(),
                                             tick: 0.,
                                         };
-                                        play_event(button.clone(),Some(directurl),Some(suburl),media.name,back);
+                                        if let Some(userdata) = &info.user_data {
+                                            play_event(button.clone(),Some(directurl),Some(suburl),media.name,back,userdata.played_percentage);
+                                            return;
+                                        }
+                                        play_event(button.clone(),Some(directurl),Some(suburl),media.name,back,None);
                                         return;
                                     } else {
-                                        super::new_dropsel::set_sub(info.id.clone(),media.id.clone(),nameselected.to_string(),subselected.to_string(),button.clone());
-                                        return; 
+                                        let userdata = info.user_data.clone();
+                                        super::new_dropsel::set_sub(info.id.clone(),media.id.clone(),nameselected.to_string(),subselected.to_string(),button.clone(),userdata);
+                                        return;
                                     }
                                 } else {
                                     let back = Back {
@@ -130,7 +149,11 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
                                         playsessionid: playback_info.play_session_id.clone(),
                                         tick: 0.,
                                     };
-                                    play_event(button.clone(),Some(directurl),None,media.name,back);
+                                    if let Some(userdata) = &info.user_data {
+                                        play_event(button.clone(),Some(directurl),None,media.name,back,userdata.played_percentage);
+                                        return;
+                                    }
+                                    play_event(button.clone(),Some(directurl),None,media.name,back,None);
                                     return;
                                 }
                             }

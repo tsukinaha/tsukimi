@@ -57,6 +57,11 @@
                             <property name="title" translatable="yes">Show Playing Window Immediately</property>
                           </object>
                         </child>
+                        <child>
+                          <object class="AdwSwitchRow" id="resumecontrol">
+                            <property name="title" translatable="yes">Resume Playing</property>
+                          </object>
+                        </child>
                         <style>
                           <class name="boxed-list" />
                         </style>
