@@ -10,6 +10,7 @@ use tokio::runtime::Runtime;
 use std::env;
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
+use crate::config::proxy::ReqClient;
 use crate::config::{self, get_device_name};
 
 #[derive(Serialize, Debug, Deserialize)]
@@ -33,7 +34,7 @@ pub async fn login(
     password: String,
     port: String,
 ) -> Result<(), Error> {
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
 
     let mut headers = HeaderMap::new();
     headers.insert("X-Emby-Client", HeaderValue::from_static("Tsukimi"));
@@ -88,6 +89,9 @@ pub async fn login(
     let mut path = home_dir().unwrap();
     path.push(".config");
     path.push("tsukimi.yaml");
+    if !path.exists() {
+        fs::create_dir_all(path.parent().unwrap()).unwrap();
+    }
     write(path, yaml).unwrap();
 
     Ok(())
@@ -115,7 +119,7 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
     };
     let server_info = config::set_config();
 
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server_info.domain, server_info.port, server_info.user_id
@@ -170,7 +174,7 @@ pub struct SeriesInfo {
 
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
     let server_info = config::set_config();
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Shows/{}/Episodes",
         server_info.domain, server_info.port, id
@@ -287,7 +291,7 @@ pub struct Urls {
 
 pub async fn get_item_overview(id: String) -> Result<Item, Error> {
     let server_info = config::set_config();
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/{}",
         server_info.domain, server_info.port, server_info.user_id, id
@@ -309,7 +313,7 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
 
 pub async fn _markwatched(id: String, sourceid: String) -> Result<String, Error> {
     let server_info = config::set_config();
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Users/{}/PlayingItems/{}",
         server_info.domain, server_info.port, server_info.user_id, id
@@ -380,7 +384,7 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
     let mut model = ResumeModel { resume: Vec::new() };
     let server_info = config::set_config();
 
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/Resume",
         server_info.domain, server_info.port, server_info.user_id
@@ -592,7 +596,7 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
 
 pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
     let server_info = config::set_config();
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/{}",
         server_info.domain, server_info.port, server_info.user_id, id
@@ -614,7 +618,7 @@ pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
 
 pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
     let server_info = config::set_config();
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Items/{}/PlaybackInfo",
         server_info.domain, server_info.port, id
@@ -650,7 +654,7 @@ pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
 
 pub async fn get_sub(id: String,sourceid: String) -> Result<Media, Error> {
     let server_info = config::set_config();
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Items/{}/PlaybackInfo",
         server_info.domain, server_info.port, id
@@ -697,7 +701,7 @@ pub struct View {
 
 pub async fn get_library() -> Result<Vec<View>, Error>{
     let server_info = config::set_config();
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Users/{}/Views",
         server_info.domain, server_info.port, server_info.user_id
@@ -738,7 +742,7 @@ pub struct Latest {
 pub async fn get_latest(id: String,mutex: std::sync::Arc<tokio::sync::Mutex<()>>) -> Result<Vec<Latest>, Error> {
     let _ = mutex.lock().await;
     let server_info = config::set_config();
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/Latest",
         server_info.domain, server_info.port, server_info.user_id
@@ -770,7 +774,7 @@ pub async fn get_latest(id: String,mutex: std::sync::Arc<tokio::sync::Mutex<()>>
 pub async fn get_list(id: String,start: String,mutex: std::sync::Arc<tokio::sync::Mutex<()>>) -> Result<List, Error> {
     let _ = mutex.lock().await;
     let server_info = config::set_config();
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server_info.domain, server_info.port, server_info.user_id
@@ -832,7 +836,7 @@ pub struct Back {
 pub async fn positionback(back:Back) {
     let tick = back.tick.to_string();
     let server_info = config::set_config();
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Sessions/Playing/Progress",
         server_info.domain, server_info.port
@@ -858,7 +862,7 @@ pub async fn positionback(back:Back) {
 pub async fn positionstop(back:Back) {
     let tick = back.tick.to_string();
     let server_info = config::set_config();
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Sessions/Playing/Stopped",
         server_info.domain, server_info.port
@@ -884,7 +888,7 @@ pub async fn positionstop(back:Back) {
 pub async fn playstart(back:Back) {
     let tick = back.tick.to_string();
     let server_info = config::set_config();
-    let client = reqwest::Client::new();
+    let client = ReqClient::new();
     let url = format!(
         "{}:{}/emby/Sessions/Playing",
         server_info.domain, server_info.port

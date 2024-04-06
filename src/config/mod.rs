@@ -3,6 +3,7 @@ use uuid::Uuid;
 use dirs::home_dir;
 use serde::{Deserialize, Serialize};
 
+pub mod proxy;
 pub const VERSION:&str = "0.3.0";
 
 #[derive(Serialize, Debug, Deserialize)]

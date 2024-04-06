@@ -62,6 +62,31 @@
                             <property name="title" translatable="yes">Resume Playing</property>
                           </object>
                         </child>
+                        <child>
+                          <object class="AdwEntryRow" id="proxyentry">
+                            <property name="title" translatable="yes">HTTP Proxy</property>
+                            <child type="suffix">
+                              <object class="GtkButton">
+                                <property name="label" translatable="yes">Set</property>
+                                <property name="valign">center</property>
+                                <property name="action-name">win.proxy</property>
+                                <style>
+                                  <class name="flat" />
+                                </style>
+                              </object>
+                            </child>
+                            <child type="suffix">
+                              <object class="GtkButton">
+                                <property name="label" translatable="yes">Clear</property>
+                                <property name="valign">center</property>
+                                <property name="action-name">win.proxyclear</property>
+                                <style>
+                                  <class name="flat" />
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
                         <style>
                           <class name="boxed-list" />
                         </style>

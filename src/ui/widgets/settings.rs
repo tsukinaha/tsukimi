@@ -30,6 +30,8 @@ mod imp {
         pub forcewindowcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub resumecontrol: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub proxyentry: TemplateChild<adw::EntryRow>,
     }
 
     // The central trait for subclassing a GObject
@@ -42,6 +44,12 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.install_action("win.proxy", None, move |set, _action, _parameter| {
+                set.proxy();
+            });
+            klass.install_action("win.proxyclear", None, move |set, _action, _parameter| {
+                set.proxyclear();
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -60,6 +68,7 @@ mod imp {
             obj.set_fullscreen();
             obj.set_forcewindow();
             obj.set_resume();
+            obj.set_proxy();
         }
     }
 
@@ -149,4 +158,22 @@ impl SettingsPage {
         }));
     }
     
+    pub fn proxy(&self) {
+        let imp = imp::SettingsPage::from_obj(self);
+        let settings = gio::Settings::new(APP_ID);
+        settings.set_string("proxy", &imp.proxyentry.text()).unwrap();
+    }
+
+    pub fn set_proxy(&self) {
+        let imp = imp::SettingsPage::from_obj(self);
+        let settings = gio::Settings::new(APP_ID);
+        imp.proxyentry.set_text(&settings.string("proxy"));
+    }
+
+    pub fn proxyclear(&self) {
+        let imp = imp::SettingsPage::from_obj(self);
+        let settings = gio::Settings::new(APP_ID);
+        settings.set_string("proxy", "").unwrap();
+        imp.proxyentry.set_text("");
+    }
 }

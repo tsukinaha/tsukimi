@@ -55,6 +55,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
     if let Some(percentage) = percentage {
         backc.tick = percentage * 10000000.0;
     }
+    std::env::set_var("DURATION", backc.tick.to_string());
     runtime().spawn(async move {
         crate::ui::network::playstart(backc).await;
     });    
@@ -75,7 +76,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
         });
         let mut last_print = Instant::now();
         scope.spawn(move |_| loop {
-            let ev = ev_ctx.wait_event(1000.).unwrap_or(Err(Error::Null));
+            let ev = ev_ctx.wait_event(10000.).unwrap_or(Err(Error::Null));
             match ev {
                 Ok(Event::EndFile(r)) => {
                     if r == 3 {
@@ -106,6 +107,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
                             if let Ok(duration) = env::var("DURATION") {
                                 let tick = duration.parse::<f64>().unwrap() * 10000000.0;
                                 let mut back = back.clone();
+                                println!("Position: {}", tick);
                                 back.tick = tick;
                                 runtime().spawn(async move {
                                     crate::ui::network::positionback(back).await;
