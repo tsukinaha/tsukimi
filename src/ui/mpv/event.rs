@@ -38,7 +38,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
 
         if settings.boolean("is-resume") {
             if let Some(percentage) = percentage {
-                init.set_property("start", format!("{}%",percentage as u32))?;
+                init.set_property("start", format!("{}%", percentage))?;
             }
         }
 
@@ -51,11 +51,11 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
     ev_ctx.observe_property("volume", Format::Int64, 0)?;
     ev_ctx.observe_property("time-pos", Format::Double, 0)?;
 
-    let mut backc = back.clone();
-    if let Some(percentage) = percentage {
-        backc.tick = percentage * 10000000.0;
-    }
-    std::env::set_var("DURATION", backc.tick.to_string());
+    let backc = back.clone();
+
+    let duration = backc.tick / 10000000;
+    std::env::set_var("DURATION", duration.to_string());
+
     runtime().spawn(async move {
         crate::ui::network::playstart(backc).await;
     });    
@@ -84,7 +84,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
                             println!("Duration: {}", duration);
                             let tick = duration.parse::<f64>().unwrap() * 10000000.0;
                             let mut back = back.clone();
-                            back.tick = tick;
+                            back.tick = tick as u64;
                             runtime().spawn(async move {
                                 crate::ui::network::positionstop(back).await;
                             });
@@ -101,14 +101,17 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
                 }) => {
                     if last_print.elapsed() >= Duration::from_secs(10) {
                         std::env::set_var("DURATION", mpv_node.to_string());
-                            last_print = Instant::now();
-                            let settings = gtk::gio::Settings::new(APP_ID);
-                            if last_print.elapsed() >= Duration::from_secs(300) || settings.boolean("is-progress-enabled") {
+
+                        last_print = Instant::now();
+                        let settings = gtk::gio::Settings::new(APP_ID);
+                        if last_print.elapsed() >= Duration::from_secs(300)
+                            || settings.boolean("is-progress-enabled")
+                        {
                             if let Ok(duration) = env::var("DURATION") {
                                 let tick = duration.parse::<f64>().unwrap() * 10000000.0;
                                 let mut back = back.clone();
-                                println!("Position: {}", tick);
-                                back.tick = tick;
+                                // println!("Position: {}", tick);
+                                back.tick = tick as u64;
                                 runtime().spawn(async move {
                                     crate::ui::network::positionback(back).await;
                                 });
