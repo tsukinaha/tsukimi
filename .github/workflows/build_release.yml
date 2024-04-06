@@ -22,11 +22,11 @@ jobs:
             artifact: tsukimi
             ext:
           # x86_64-apple-darwin
-          - arch: x86_64-apple-darwin
-            os: macos-latest
-            target: x86_64-apple-darwin
-            artifact: tsukimi
-            ext:
+          # - arch: x86_64-apple-darwin
+          #   os: macos-latest
+          #   target: x86_64-apple-darwin
+          #   artifact: tsukimi
+          #   ext:
 
     runs-on: ${{matrix.os}}
 
@@ -42,15 +42,15 @@ jobs:
           docker run -d --name tsukimi tsukimi
           docker cp tsukimi:/usr/src/tsukimi/. artifact/
 
-      - name: Build ${{matrix.target}}
-        if: ${{matrix.target == 'x86_64-apple-darwin'}}
-        run: |
-          brew install gtk4
-          brew install libadwaita
-          rustup target add ${{matrix.target}}
-          cargo build --release --locked --target ${{matrix.target}}
-          mkdir artifact
-          cp target/${{matrix.target}}/release/${{matrix.artifact}} artifact/
+      # - name: Build ${{matrix.target}}
+      #   if: ${{matrix.target == 'x86_64-apple-darwin'}}
+      #   run: |
+      #     brew install gtk4
+      #     brew install libadwaita
+      #     rustup target add ${{matrix.target}}
+      #     cargo build --release --locked --target ${{matrix.target}}
+      #     mkdir artifact
+      #     cp target/${{matrix.target}}/release/${{matrix.artifact}} artifact/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -59,6 +59,8 @@ jobs:
           path: |
             artifact/*
           compression-level: 0
+          overwrite: true
+          retention-days: 3
 
   publish:
     needs: build
@@ -73,19 +75,19 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
  
-      - name: Package MacOS x86_64
-        run: |
-          mkdir -p Tsukimi.app/Contents/MacOS
-          mkdir -p Tsukimi.app/Contents/Resources
-          cp share/macos/Info.plist Tsukimi.app/Contents/
-          cp share/macos/AppIcon.icns Tsukimi.app/Contents/Resources/
-          mv tsukimi-x86_64-apple-darwin/tsukimi Tsukimi.app/Contents/MacOS/
-          tar -czf tsukimi-x86_64-apple-darwin.tar.gz Tsukimi.app/
+      # - name: Package MacOS x86_64
+      #   run: |
+      #     mkdir -p Tsukimi.app/Contents/MacOS
+      #     mkdir -p Tsukimi.app/Contents/Resources
+      #     cp share/macos/Info.plist Tsukimi.app/Contents/
+      #     cp share/macos/AppIcon.icns Tsukimi.app/Contents/Resources/
+      #     mv tsukimi-x86_64-apple-darwin/tsukimi Tsukimi.app/Contents/MacOS/
+      #     tar -czf tsukimi-x86_64-apple-darwin.tar.gz Tsukimi.app/
 
       - name: Package Linux GNU
         run: |
           mv tsukimi-x86_64-linux-gnu/* .
-          tar -czf tsukimi-x86_64-linux-gnu.tar.gz tsukimi
+          tar -czf tsukimi-x86_64-linux-gnu.tar.gz tsukimi gschemas.compiled
 
       - name: Calculate hash
         run: |

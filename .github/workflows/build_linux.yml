@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - 'main'
-  schedule:
-    - cron: '45 3 * * *'
+  # schedule:
+  #   - cron: '45 3 * * *'
 
 jobs:
   build-release:
@@ -36,3 +36,5 @@ jobs:
           name: ${{matrix.artifact}}-${{matrix.arch-name}}
           path: artifact/*
           compression-level: 0
+          overwrite: true
+          retention-days: 7
