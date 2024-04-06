@@ -1,8 +1,5 @@
 use glib::Object;
-use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-
-use self::imp::Page;
 
 mod imp {
 
@@ -14,11 +11,6 @@ mod imp {
     use crate::ui::widgets::item::ItemPage;
     use crate::ui::widgets::movie::MoviePage;
     use crate::ui::widgets::window::Window;
-
-    pub enum Page {
-        Movie(Box<gtk::Widget>),
-        Item(Box<gtk::Widget>),
-    }
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -79,7 +71,7 @@ mod imp {
                     historyrevealer.set_reveal_child(true);
                 }
             }));
-
+            self.selection.set_autoselect(false);
             self.selection.set_model(Some(&store));
             let factory = gtk::SignalListItemFactory::new();
             factory.connect_bind(move |_factory, item| {
@@ -93,7 +85,7 @@ mod imp {
                 let overlay = gtk::Overlay::new();
                 let imgbox;
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                if result.parent_thumb_item_id.is_some() && result.resume_type == "Episode"{
+                if result.parent_thumb_item_id.is_some() && result.resume_type == "Episode" {
                     imgbox = crate::ui::image::setthumbimage(
                         result.parent_thumb_item_id.as_ref().expect("").clone(),
                         mutex.clone(),
@@ -130,9 +122,7 @@ mod imp {
                 }
                 overlay.add_overlay(&progressbar);
                 vbox.append(&overlay);
-                let label = Label::builder()
-                    .label(&result.name)
-                    .build();
+                let label = Label::builder().label(&result.name).build();
                 let labeltype = Label::new(Some(&result.resume_type));
                 if result.resume_type == "Episode" {
                     let markup = format!("{}", result.series_name.as_ref().expect("").clone());
@@ -147,8 +137,10 @@ mod imp {
                 } else {
                     let markup = format!("{}", result.name);
                     label.set_markup(markup.as_str());
-                    let markup =
-                        format!("<span color='lightgray' font='small'>{}</span>", result.resume_type);
+                    let markup = format!(
+                        "<span color='lightgray' font='small'>{}</span>",
+                        result.resume_type
+                    );
                     labeltype.set_markup(markup.as_str());
                 }
                 label.set_wrap(true);
@@ -171,27 +163,28 @@ mod imp {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<crate::ui::network::Resume> = item.borrow();
-                let item_page;
+                let window = obj.root().and_downcast::<Window>().unwrap();
                 if result.resume_type == "Movie" {
-                    item_page = Page::Movie(Box::new(MoviePage::new(result.id.clone(),result.name.clone()).into()));
+                    let item_page = MoviePage::new(result.id.clone(),result.name.clone());
+                    window.imp().historyview.push(&item_page);
+                    window.change_pop_visibility();
                 } else {
                     if result.parent_thumb_item_id == None {
-                        item_page = Page::Item(Box::new(ItemPage::new(result.series_id.as_ref().expect("msg").clone(),result.id.clone()).into()));
+                        let item_page = ItemPage::new(result.series_id.as_ref().expect("msg").clone(),result.id.clone());
+                        window.imp().historyview.push(&item_page);
+                        window.change_pop_visibility();
                     } else {
-                        item_page = Page::Item(Box::new(ItemPage::new(result.parent_thumb_item_id.as_ref().expect("msg").clone(),result.id.clone()).into()));
+                        let item_page = ItemPage::new(result.parent_thumb_item_id.as_ref().expect("msg").clone(),result.id.clone());
+                        window.imp().historyview.push(&item_page);
+                        window.change_pop_visibility();
                     }
                 }
-                obj.set(item_page);
-                let window = obj.root();
-                if let Some(window) = window {
-                    if window.is::<Window>() {
-                        let window = window.downcast::<Window>().unwrap();
-                        if let Some(seriesname) = &result.series_name {
-                            window.set_title(seriesname);
-                        } else {
-                        window.set_title(&result.name);
-                        }
-                    }
+                if let Some(seriesname) = &result.series_name {
+                    window.set_title(&seriesname);
+                    std::env::set_var("HISTORY_TITLE", &seriesname)
+                } else {
+                    window.set_title(&result.name);
+                    std::env::set_var("HISTORY_TITLE", &result.name)
                 }
             }));
         }
@@ -225,14 +218,5 @@ impl Default for HistoryPage {
 impl HistoryPage {
     pub fn new() -> Self {
         Object::builder().build()
-    }
-
-    fn set(&self, page: Page) {
-        let imp = imp::HistoryPage::from_obj(self);
-        let widget = match page {
-            Page::Movie(widget) => widget,
-            Page::Item(widget) => widget,
-        };
-        imp.historyscrolled.set_child(Some(&*widget));
     }
 }

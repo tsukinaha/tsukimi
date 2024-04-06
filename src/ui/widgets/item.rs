@@ -148,6 +148,7 @@ mod imp {
             });
 
             let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+            self.selection.set_autoselect(false);
             self.selection.set_model(Some(&store));
 
             let (sender, receiver) = async_channel::bounded::<Vec<network::SeriesInfo>>(1);
@@ -597,6 +598,7 @@ impl ItemPage {
             let object = glib::BoxedAnyObject::new(people);
             store.append(&object);
         }
+        imp.actorselection.set_autoselect(false);
         imp.actorselection.set_model(Some(&store));
         let actorselection = &imp.actorselection;
         let factory = gtk::SignalListItemFactory::new();

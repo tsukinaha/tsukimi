@@ -3,8 +3,6 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use self::imp::Page;
-
 use super::item::ItemPage;
 use super::movie::MoviePage;
 use super::window::Window;
@@ -17,11 +15,6 @@ mod imp {
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
-
-    pub enum Page {
-        Movie(Box<gtk::Widget>),
-        Item(Box<gtk::Widget>),
-    }
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -92,23 +85,6 @@ glib::wrapper! {
 impl ListPage {
     pub fn new(id: String) -> Self {
         Object::builder().property("id", id).build()
-    }
-
-    fn set(&self, page: Page) {
-        let widget = match page {
-            Page::Movie(widget) => widget,
-            Page::Item(widget) => widget,
-        };
-        if self.parent().expect("").is::<gtk::Viewport>() {
-            let scrolled = self
-                .parent()
-                .expect("viewport")
-                .parent()
-                .expect("scrolledwindow")
-                .downcast::<gtk::ScrolledWindow>()
-                .unwrap();
-            scrolled.set_child(Some(&*widget));
-        }
     }
 
     fn set_factory(&self) {
@@ -245,28 +221,17 @@ impl ListPage {
             let model = gridview.model().unwrap();
             let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
             let result: std::cell::Ref<crate::ui::network::Latest> = item.borrow();
-            let item_page;
+            let window = obj.root().and_downcast::<Window>().unwrap();
             if result.latest_type == "Movie" {
-                let window = obj.root();
-                if let Some(window) = window {
-                    if window.is::<Window>() {
-                        let window = window.downcast::<Window>().unwrap();
-                        window.set_title(&result.name);
-                    }
-                }
-                item_page = Page::Movie(Box::new(MoviePage::new(result.id.clone(),result.name.clone()).into()));
-                obj.set(item_page);
+                window.set_title(&result.name);
+                let item_page = MoviePage::new(result.id.clone(),result.name.clone());
+                window.imp().homeview.push(&item_page);
             } else if result.latest_type == "Series" {
-                let window = obj.root();
-                if let Some(window) = window {
-                    if window.is::<Window>() {
-                        let window = window.downcast::<Window>().unwrap();
-                        window.set_title(&result.name);
-                    }
-                }
-                item_page = Page::Item(Box::new(ItemPage::new(result.id.clone(),result.id.clone()).into()));
-                obj.set(item_page);
+                window.set_title(&result.name);
+                let item_page = ItemPage::new(result.id.clone(),result.id.clone());
+                window.imp().homeview.push(&item_page);
             } 
+            std::env::set_var("HOME_TITLE", &result.name);
         })); 
         self.update();
     }

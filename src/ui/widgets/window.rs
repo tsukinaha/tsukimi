@@ -1,3 +1,5 @@
+use std::env;
+
 use adw::prelude::NavigationPageExt;
 use dirs::home_dir;
 use gtk::prelude::*;
@@ -34,6 +36,8 @@ mod imp {
         #[template_child]
         pub insidestack: TemplateChild<gtk::Stack>,
         #[template_child]
+        pub popbutton: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
         pub settingspage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub searchpage: TemplateChild<adw::NavigationPage>,
@@ -43,6 +47,12 @@ mod imp {
         pub homepage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub split_view: TemplateChild<adw::OverlaySplitView>,
+        #[template_child]
+        pub homeview: TemplateChild<adw::NavigationView>,
+        #[template_child]
+        pub historyview: TemplateChild<adw::NavigationView>,
+        #[template_child]
+        pub searchview: TemplateChild<adw::NavigationView>,
         #[template_child]
         pub navipage: TemplateChild<adw::NavigationPage>,
         pub selection: gtk::SingleSelection,
@@ -63,19 +73,22 @@ mod imp {
                 window.login().await;
             });
             klass.install_action("win.home", None, move |window, _action, _parameter| {
-                window.homepage();
+                window.freshhomepage();
             });
             klass.install_action("win.history", None, move |window, _action, _parameter| {
-                window.historypage();
+                window.freshhistorypage();
             });
             klass.install_action("win.search", None, move |window, _action, _parameter| {
-                window.searchpage();
+                window.freshsearchpage();
             });
             klass.install_action("win.relogin", None, move |window, _action, _parameter| {
                 window.placeholder();
             });
             klass.install_action("win.sidebar", None, move |window, _action, _parameter| {
                 window.sidebar();
+            });
+            klass.install_action("win.pop", None, move |window, _action, _parameter| {
+                window.pop();
             });
         }
 
@@ -152,6 +165,60 @@ glib::wrapper! {
 }
 
 impl Window {
+    fn homeviewpop(&self) {
+        let imp = self.imp();
+        imp.homeview.pop();
+        if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
+            if tag.as_str() == "homepage" {
+                imp.navipage.set_title("Home");
+                self.change_pop_visibility();
+            }
+        }
+    }
+
+    fn historyviewpop(&self) {
+        let imp = self.imp();
+        imp.historyview.pop();
+        if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
+            if tag.as_str() == "historypage" {
+                imp.navipage.set_title("History");
+                self.change_pop_visibility();
+            }
+        }
+    }
+
+    fn searchviewpop(&self) {
+        let imp = self.imp();
+        imp.searchview.pop();
+        if let Some(tag) = imp.searchview.visible_page().unwrap().tag() {
+            if tag.as_str() == "searchpage" {
+                imp.navipage.set_title("Search");
+                self.change_pop_visibility();
+            }
+        }
+    }
+
+    fn pop(&self) {
+        let imp = self.imp();
+        if imp.insidestack.visible_child_name().unwrap().as_str() == "homepage" {
+            self.homeviewpop();
+        } else if imp.insidestack.visible_child_name().unwrap().as_str() == "historypage" {
+            self.historyviewpop();
+        } else if imp.insidestack.visible_child_name().unwrap().as_str() == "searchpage" {
+            self.searchviewpop();
+        }
+    }
+
+    pub fn change_pop_visibility(&self) {
+        let imp = self.imp();
+        imp.popbutton.set_visible(!imp.popbutton.is_visible());
+    }
+
+    pub fn set_pop_visibility(&self, visible: bool) {
+        let imp = self.imp();
+        imp.popbutton.set_visible(visible);
+    }
+
     fn setup_settings(&self) {
         let settings = Settings::new(APP_ID);
         let is_overlay = settings.boolean("is-overlay");
@@ -223,26 +290,92 @@ impl Window {
 
     fn homepage(&self) {
         let imp = self.imp();
+        imp.insidestack.set_visible_child_name("homepage");
+        if imp.homepage.child().is_none() {
         imp.homepage
             .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
-        imp.insidestack.set_visible_child_name("homepage");
+            imp.navipage.set_title("Home");
+        }
+        if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
+            if tag.as_str() == "homepage" {
+                imp.navipage.set_title("Home");
+                self.set_pop_visibility(false);
+            } else {
+                imp.navipage.set_title(&env::var("HOME_TITLE").unwrap_or_else(|_| "Home".to_string()));
+                self.set_pop_visibility(true);
+            }
+        } else {
+            imp.navipage.set_title(&env::var("HOME_TITLE").unwrap_or_else(|_| "Home".to_string()));
+            self.set_pop_visibility(true);
+        }
+    }
+
+    fn freshhomepage(&self) {
+        let imp = self.imp();
+        imp.homeview.pop_to_page(&imp.homeview.find_page("homepage").unwrap());
+        imp.homepage
+            .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
         imp.navipage.set_title("Home");
+    }
+
+    fn freshhistorypage(&self) {
+        let imp = self.imp();
+        imp.historyview.pop_to_page(&imp.historyview.find_page("historypage").unwrap());
+        imp.historypage
+            .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
+        imp.navipage.set_title("History");
+    }
+
+    fn freshsearchpage(&self) {
+        let imp = self.imp();
+        imp.searchview.pop_to_page(&imp.searchview.find_page("searchpage").unwrap());
+        imp.searchpage
+            .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
+        imp.navipage.set_title("Search");
     }
 
     fn historypage(&self) {
         let imp = self.imp();
+        imp.insidestack.set_visible_child_name("historypage");
+        if imp.historypage.child().is_none() {
         imp.historypage
             .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
-        imp.insidestack.set_visible_child_name("historypage");
-        imp.navipage.set_title("History");
+            imp.navipage.set_title("History");
+        }
+        if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
+            if tag.as_str() == "historypage" {
+                imp.navipage.set_title("History");
+                self.set_pop_visibility(false);
+            } else {
+                self.set_pop_visibility(true);
+                imp.navipage.set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "History".to_string()));
+            }
+        } else {
+            self.set_pop_visibility(true);
+            imp.navipage.set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "History".to_string()));
+        }
     }
 
     fn searchpage(&self) {
         let imp = self.imp();
+        imp.insidestack.set_visible_child_name("searchpage");
+        if imp.searchpage.child().is_none() {
         imp.searchpage
             .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
-        imp.insidestack.set_visible_child_name("searchpage");
-        imp.navipage.set_title("Search");
+            imp.navipage.set_title("Search");
+        }
+        if let Some(tag) = imp.searchview.visible_page().unwrap().tag() {
+            if tag.as_str() == "searchpage" {
+                imp.navipage.set_title("Search");
+                self.set_pop_visibility(false);
+            } else {
+                self.set_pop_visibility(true);
+                imp.navipage.set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| "Search".to_string()));
+            }
+        } else {
+            self.set_pop_visibility(true);
+            imp.navipage.set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| "Search".to_string()));
+        }
     }
 
     fn settingspage(&self) {
@@ -251,6 +384,7 @@ impl Window {
             .set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
         imp.insidestack.set_visible_child_name("settingspage");
         imp.navipage.set_title("Preferences");
+        self.set_pop_visibility(false);
     }
     
     fn sidebar(&self) {

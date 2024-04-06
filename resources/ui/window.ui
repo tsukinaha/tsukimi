@@ -248,6 +248,13 @@
                                 <property name="action-name">win.sidebar</property>
                               </object>
                             </child>
+                            <child type="start">
+                              <object class="GtkToggleButton" id="popbutton">
+                                <property name="icon-name">go-previous-symbolic</property>
+                                <property name="action-name">win.pop</property>
+                                <property name="visible">False</property>
+                              </object>
+                            </child>
                             <child type="end">
                               <object class="GtkMenuButton">
                                 <property name="icon-name">open-menu-symbolic</property>
@@ -264,15 +271,11 @@
                               <object class="GtkStackPage">
                                 <property name="name">homepage</property>
                                 <property name="child">
-                                  <object class="AdwNavigationPage" id="homepage">
-                                    <property name="title" translatable="yes">Tsukimi</property>
+                                  <object class="AdwNavigationView" id="homeview">
                                     <child>
-                                      <object class="AdwToolbarView">
-                                        <child type="top">
-                                          <object class="AdwHeaderBar">
-                                            <property name="show-title">False</property>
-                                          </object>
-                                        </child>
+                                      <object class="AdwNavigationPage" id="homepage">
+                                        <property name="tag">homepage</property>
+                                        <property name="title" translatable="yes">Tsukimi</property>
                                       </object>
                                     </child>
                                   </object>
@@ -283,15 +286,11 @@
                               <object class="GtkStackPage">
                                 <property name="name">historypage</property>
                                 <property name="child">
-                                  <object class="AdwNavigationPage" id="historypage">
-                                    <property name="title" translatable="yes">Tsukimi</property>
+                                  <object class="AdwNavigationView" id="historyview">
                                     <child>
-                                      <object class="AdwToolbarView">
-                                        <child type="top">
-                                          <object class="AdwHeaderBar">
-                                            <property name="show-title">False</property>
-                                          </object>
-                                        </child>
+                                      <object class="AdwNavigationPage" id="historypage">
+                                        <property name="tag">historypage</property>
+                                        <property name="title" translatable="yes">Tsukimi</property>
                                       </object>
                                     </child>
                                   </object>
@@ -302,15 +301,11 @@
                               <object class="GtkStackPage">
                                 <property name="name">searchpage</property>
                                 <property name="child">
-                                  <object class="AdwNavigationPage" id="searchpage">
-                                    <property name="title" translatable="yes">Tsukimi</property>
+                                  <object class="AdwNavigationView" id="searchview">
                                     <child>
-                                      <object class="AdwToolbarView">
-                                        <child type="top">
-                                          <object class="AdwHeaderBar">
-                                            <property name="show-title">False</property>
-                                          </object>
-                                        </child>
+                                      <object class="AdwNavigationPage" id="searchpage">
+                                        <property name="tag">searchpage</property>
+                                        <property name="title" translatable="yes">Tsukimi</property>
                                       </object>
                                     </child>
                                   </object>
