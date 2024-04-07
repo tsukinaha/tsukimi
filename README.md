@@ -49,9 +49,12 @@ scoop install tsukimi
 |    |__ .......
 |__config\
 ```
-如果没有配置，则读取环境变量`$MPV_HOME`，都没有则保持libmpv默认行为
+如果未配置，则保持libmpv默认行为 (优先级：`tsukimi`>`$MPV_HOME`>`%APPDATA%/mpv`)
 
-**具体配置请见:[MPV-manual#files](https://mpv.io/manual/master/#files)**
+[Windows MPV Config懒人包](https://github.com/ZBound/mpv_config/raw/main/tsukimi-mpv-config.7z)
+
+**具体配置请见:[MPV-manual#files](https://mpv.io/manual/master/#files)** 
+
 
 ## Themes
 
