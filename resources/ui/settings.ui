@@ -63,6 +63,25 @@
                           </object>
                         </child>
                         <child>
+                          <object class="AdwComboRow" id="themecontrol">
+                            <property name="title" translatable="yes">Theme</property>
+                            <property name="subtitle" translatable="yes">Restart App To Take Effect | Powered By Gradience</property>
+                            <property name="model">
+                              <object class="GtkStringList">
+                                <items>
+                                  <item translatable="yes">System Default</item>
+                                  <item translatable="yes">Adwaita</item>
+                                  <item translatable="yes">Adwaita Dark</item>
+                                  <item translatable="yes">Catppuccin Latte</item>
+                                  <item translatable="yes">Tokyo Night Dark</item>
+                                  <item translatable="yes">Solarized Dark</item>
+                                  <item translatable="yes">Alpha Dark</item>
+                                </items>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
                           <object class="AdwEntryRow" id="proxyentry">
                             <property name="title" translatable="yes">HTTP Proxy</property>
                             <child type="suffix">

@@ -31,6 +31,8 @@ mod imp {
         #[template_child]
         pub resumecontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
+        pub themecontrol: TemplateChild<adw::ComboRow>,
+        #[template_child]
         pub proxyentry: TemplateChild<adw::EntryRow>,
     }
 
@@ -69,6 +71,7 @@ mod imp {
             obj.set_forcewindow();
             obj.set_resume();
             obj.set_proxy();
+            obj.set_theme();
         }
     }
 
@@ -175,5 +178,38 @@ impl SettingsPage {
         let settings = gio::Settings::new(APP_ID);
         settings.set_string("proxy", "").unwrap();
         imp.proxyentry.set_text("");
+    }
+
+    pub fn set_theme(&self) {
+        let imp = imp::SettingsPage::from_obj(self);
+        let settings = gio::Settings::new(APP_ID);
+        let theme = settings.string("theme");
+        let mut pos = 0;
+        match theme.as_str() {
+            "default" => pos = 0,
+            "Adwaita" => pos = 1,
+            "Adwaita Dark" => pos = 2,
+            "Catppuccino Latte" => pos = 3,
+            "Tokyo Night Dark" => pos = 4,
+            "Solarized Dark" => pos = 5,
+            "Alpha Dark" => pos = 6,
+            _ => (),
+        }
+        imp.themecontrol.set_selected(pos);
+        imp.themecontrol.connect_selected_item_notify(glib::clone!(@weak self as obj =>move |control| {
+            let theme = control.selected_item().and_then(|item| {
+                item.downcast::<gtk::StringObject>().ok().map(|item| item.string())
+            }).unwrap();
+            match theme.as_str() {
+                "System Default" => settings.set_string("theme", "default").unwrap(),
+                "Adwaita" => settings.set_string("theme", "Adwaita").unwrap(),
+                "Adwaita Dark" => settings.set_string("theme", "Adwaita Dark").unwrap(),
+                "Catppuccin Latte" => settings.set_string("theme", "Catppuccino Latte").unwrap(),
+                "Tokyo Night Dark" => settings.set_string("theme", "Tokyo Night Dark").unwrap(),
+                "Solarized Dark" => settings.set_string("theme", "Solarized Dark").unwrap(),
+                "Alpha Dark" => settings.set_string("theme", "Alpha Dark").unwrap(),
+                _ => (),
+            }
+        }));
     }
 }

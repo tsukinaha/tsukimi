@@ -82,41 +82,40 @@ placessidebar {
 }
 .sidebar-pane{
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    background-color: rgba(0, 0, 0, 0);
-    color: #000;
 }
-    
-    
-@define-color destructive_color rgb(210, 15, 57);
-@define-color destructive_bg_color rgb(230, 69, 83);
-@define-color destructive_fg_color rgb(239, 241, 245);
-@define-color success_color rgb(23, 146, 153);
-@define-color success_bg_color rgb(64, 160, 43);
-@define-color success_fg_color rgb(239, 241, 245);
-@define-color warning_color rgb(223, 142, 29);
-@define-color warning_bg_color rgb(254, 100, 11);
-@define-color warning_fg_color rgb(76, 79, 105);
-@define-color error_color rgb(210, 15, 57);
-@define-color error_bg_color rgb(230, 69, 83);
-@define-color error_fg_color rgb(239, 241, 245);
-@define-color window_bg_color rgb(239, 241, 245);
-@define-color window_fg_color rgb(76, 79, 105);
-@define-color view_bg_color rgb(230, 233, 239);
-@define-color view_fg_color rgb(76, 79, 105);
-@define-color headerbar_bg_color rgb(220, 224, 232);
-@define-color headerbar_fg_color rgb(76, 79, 105);
-@define-color headerbar_border_color rgb(156, 160, 176);
+
+
+        
+@define-color destructive_color #c01c28;
+@define-color destructive_bg_color #e01b24;
+@define-color destructive_fg_color #ffffff;
+@define-color success_color #26a269;
+@define-color success_bg_color #2ec27e;
+@define-color success_fg_color #ffffff;
+@define-color warning_color #ae7b03;
+@define-color warning_bg_color #e5a50a;
+@define-color warning_fg_color rgba(0, 0, 0, 0.8);
+@define-color error_color #c01c28;
+@define-color error_bg_color #e01b24;
+@define-color error_fg_color #ffffff;
+@define-color window_bg_color #fafafa;
+@define-color window_fg_color rgba(0, 0, 0, 0.8);
+@define-color view_bg_color #ffffff;
+@define-color view_fg_color rgba(0, 0, 0, 0.8);
+@define-color headerbar_bg_color #ebebeb;
+@define-color headerbar_fg_color rgba(0, 0, 0, 0.8);
+@define-color headerbar_border_color rgba(0, 0, 0, 0.8);
 @define-color headerbar_backdrop_color @window_bg_color;
 @define-color headerbar_shade_color rgba(0, 0, 0, 0.07);
-@define-color card_bg_color rgb(230, 233, 239);
-@define-color card_fg_color rgb(76, 79, 105);
+@define-color card_bg_color #ffffff;
+@define-color card_fg_color rgba(0, 0, 0, 0.8);
 @define-color card_shade_color rgba(0, 0, 0, 0.07);
-@define-color dialog_bg_color #e6e9ef;
-@define-color dialog_fg_color rgb(76, 79, 105);
-@define-color popover_bg_color #e6e9ef;
-@define-color popover_fg_color rgb(76, 79, 105);
-@define-color shade_color rgba(0,0,0,0.07);
-@define-color scrollbar_outline_color rgb(255,255,255);
+@define-color dialog_bg_color #fafafa;
+@define-color dialog_fg_color rgba(0, 0, 0, 0.8);
+@define-color popover_bg_color #ffffff;
+@define-color popover_fg_color rgba(0, 0, 0, 0.8);
+@define-color shade_color rgba(0, 0, 0, 0.07);
+@define-color scrollbar_outline_color #ffffff;
 @define-color blue_1 #99c1f1;
 @define-color blue_2 #62a0ea;
 @define-color blue_3 #3584e4;
@@ -163,6 +162,7 @@ placessidebar {
 @define-color dark_4 #241f31;
 @define-color dark_5 #000000;
 
+
 windowcontrols > button { /* GTK4 */
     color: transparent;
     min-width: 2px;
@@ -204,4 +204,4 @@ windowcontrols > button { /* GTK4 */
   button.titlebutton.minimize:hover,
   windowcontrols > button.minimize:hover {
     opacity: 0.8;
-  } 
+  }

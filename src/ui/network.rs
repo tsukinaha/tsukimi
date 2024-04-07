@@ -11,7 +11,7 @@ use std::env;
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
 use crate::config::proxy::ReqClient;
-use crate::config::{self, get_device_name};
+use crate::config::{self, get_device_name, APP_VERSION};
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
@@ -48,7 +48,7 @@ pub async fn login(
     );
     headers.insert(
         "X-Emby-Client-Version",
-        HeaderValue::from_static("0.3.0"),
+        HeaderValue::from_static(APP_VERSION),
     );
     headers.insert("X-Emby-Language", HeaderValue::from_static("zh-cn"));
 
@@ -142,7 +142,7 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -187,7 +187,7 @@ pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -301,7 +301,7 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -323,7 +323,7 @@ pub async fn _markwatched(id: String, sourceid: String) -> Result<String, Error>
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
         ("reqformat", "json"),
@@ -402,7 +402,7 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -606,7 +606,7 @@ pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -635,7 +635,7 @@ pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
         ("reqformat", "json"),
@@ -672,7 +672,7 @@ pub async fn get_sub(id: String,sourceid: String) -> Result<Media, Error> {
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
         ("reqformat", "json"),
@@ -711,7 +711,7 @@ pub async fn get_library() -> Result<Vec<View>, Error>{
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -757,7 +757,7 @@ pub async fn get_latest(id: String,mutex: std::sync::Arc<tokio::sync::Mutex<()>>
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -794,7 +794,7 @@ pub async fn get_list(id: String,start: String,mutex: std::sync::Arc<tokio::sync
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
@@ -843,7 +843,7 @@ pub async fn positionback(back:Back) {
     );
 
     let params = [
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
         ("X-Emby-Token", &server_info.access_token),
@@ -869,7 +869,7 @@ pub async fn positionstop(back:Back) {
     );
 
     let params = [
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
         ("X-Emby-Token", &server_info.access_token),
@@ -895,7 +895,7 @@ pub async fn playstart(back:Back) {
     );
 
     let params = [
-        ("X-Emby-Client-Version", "0.3.0"),
+        ("X-Emby-Client-Version", APP_VERSION),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
         ("X-Emby-Token", &server_info.access_token),

@@ -4,7 +4,7 @@ use dirs::home_dir;
 use serde::{Deserialize, Serialize};
 
 pub mod proxy;
-pub const VERSION:&str = "0.3.0";
+pub const APP_VERSION:&str = "0.4.0";
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
