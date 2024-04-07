@@ -52,7 +52,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
     ev_ctx.observe_property("time-pos", Format::Double, 0)?;
 
     let backc = back.clone();
-    std::env::set_var("DURATION", &backc.tick.to_string());
+    std::env::set_var("DURATION", (&backc.tick / 10000000).to_string());
     runtime().spawn(async move {
         crate::ui::network::playstart(backc).await;
     });    
@@ -65,7 +65,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
             thread::sleep(Duration::from_secs(1));
             if let Some(suburl) = suburl {
                 let suburl = format!("{}:{}/emby{}", server_info.domain, server_info.port, suburl);
-                println!("Loading subtitle: {}", suburl);
+                println!("Loading subtitle");
                 mpv.subtitle_add_select(&suburl, None, None)
                  .unwrap();
             }
