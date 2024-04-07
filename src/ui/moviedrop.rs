@@ -98,18 +98,17 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
             for media in playback_info.media_sources.clone() {
                 if media.name == nameselected {
                     let directurl = media.direct_stream_url.clone();
-                    let back = Back {
-                        id: info.id.clone(),
-                        mediasourceid: media.id.clone(),
-                        playsessionid: playback_info.play_session_id.clone(),
-                        tick: 0.,
-                    };
                     if let Some(userdata) = &info.user_data {
+                        let back = Back {
+                            id: info.id.clone(),
+                            mediasourceid: media.id.clone(),
+                            playsessionid: playback_info.play_session_id.clone(),
+                            tick: userdata.playback_position_ticks.unwrap_or_else(|| 0),
+                            percentage: userdata.played_percentage,
+                        };
                         play_event(button.clone(),directurl,None,media.name,back,userdata.played_percentage);
                         return;
                     }
-                    play_event(button.clone(),directurl,None,media.name,back,None);
-                    return;
                 }
             }
             return;
@@ -125,36 +124,34 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
                             if let Some(directurl) = media.direct_stream_url.clone() {
                                 if mediastream.is_external == true {
                                     if let Some(suburl) = mediastream.delivery_url.clone() {
-                                        let back = Back {
-                                            id: info.id.clone(),
-                                            mediasourceid: media.id.clone(),
-                                            playsessionid: playback_info.play_session_id.clone(),
-                                            tick: 0.,
-                                        };
                                         if let Some(userdata) = &info.user_data {
+                                            let back = Back {
+                                                id: info.id.clone(),
+                                                mediasourceid: media.id.clone(),
+                                                playsessionid: playback_info.play_session_id.clone(),
+                                                tick: userdata.playback_position_ticks.unwrap_or_else(|| 0),
+                                                percentage: userdata.played_percentage,
+                                            };
                                             play_event(button.clone(),Some(directurl),Some(suburl),media.name,back,userdata.played_percentage);
                                             return;
                                         }
-                                        play_event(button.clone(),Some(directurl),Some(suburl),media.name,back,None);
-                                        return;
                                     } else {
                                         let userdata = info.user_data.clone();
                                         super::new_dropsel::set_sub(info.id.clone(),media.id.clone(),nameselected.to_string(),subselected.to_string(),button.clone(),userdata);
                                         return;
                                     }
                                 } else {
-                                    let back = Back {
-                                        id: info.id.clone(),
-                                        mediasourceid: media.id.clone(),
-                                        playsessionid: playback_info.play_session_id.clone(),
-                                        tick: 0.,
-                                    };
                                     if let Some(userdata) = &info.user_data {
+                                        let back = Back {
+                                            id: info.id.clone(),
+                                            mediasourceid: media.id.clone(),
+                                            playsessionid: playback_info.play_session_id.clone(),
+                                            tick: userdata.playback_position_ticks.unwrap_or_else(|| 0),
+                                            percentage: userdata.played_percentage,
+                                        };
                                         play_event(button.clone(),Some(directurl),None,media.name,back,userdata.played_percentage);
                                         return;
                                     }
-                                    play_event(button.clone(),Some(directurl),None,media.name,back,None);
-                                    return;
                                 }
                             }
                         }

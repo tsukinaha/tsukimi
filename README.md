@@ -20,7 +20,7 @@ For Linux ~~Only~~.
     <img alt="Windows GNU CI status" src="https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml/badge.svg"/>
   </a>
 
-  ![AUR Version](https://img.shields.io/aur/version/tsukimi-git)
+  [![AUR Version](https://img.shields.io/aur/version/tsukimi-git)](https://aur.archlinux.org/packages/tsukimi-git)
 
 ## Build
 请见 [Dockerfile](https://github.com/tsukinaha/tsukimi/blob/main/Dockerfile)
@@ -52,6 +52,11 @@ scoop install tsukimi
 如果没有配置，则读取环境变量`$MPV_HOME`，都没有则保持libmpv默认行为
 
 **具体配置请见:[MPV-manual#files](https://mpv.io/manual/master/#files)**
+
+## Themes
+
+- 除内置的6个主题外提供了跟随系统的选项 以便切换深浅色 和尊重用户自定义 css 样式表 [了解详情](https://wiki.archlinux.org/title/GTK#Configuration)
+- 主题来自 [Gradience](https://github.com/GradienceTeam/Gradience)
 
 ## Credits
 - [gtk4-rs](https://github.com/gtk-rs/gtk4-rs)

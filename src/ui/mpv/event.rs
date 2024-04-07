@@ -51,11 +51,8 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
     ev_ctx.observe_property("volume", Format::Int64, 0)?;
     ev_ctx.observe_property("time-pos", Format::Double, 0)?;
 
-    let mut backc = back.clone();
-    if let Some(percentage) = percentage {
-        backc.tick = percentage * 10000000.0;
-    }
-    std::env::set_var("DURATION", backc.tick.to_string());
+    let backc = back.clone();
+    std::env::set_var("DURATION", &backc.tick.to_string());
     runtime().spawn(async move {
         crate::ui::network::playstart(backc).await;
     });    
@@ -82,7 +79,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
                     if r == 3 {
                         if let Ok(duration) = env::var("DURATION") {
                             println!("Duration: {}", duration);
-                            let tick = duration.parse::<f64>().unwrap() * 10000000.0;
+                            let tick = duration.parse::<f64>().unwrap() as u64 * 10000000;
                             let mut back = back.clone();
                             back.tick = tick;
                             runtime().spawn(async move {
@@ -105,7 +102,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
                             let settings = gtk::gio::Settings::new(APP_ID);
                             if last_print.elapsed() >= Duration::from_secs(300) || settings.boolean("is-progress-enabled") {
                             if let Ok(duration) = env::var("DURATION") {
-                                let tick = duration.parse::<f64>().unwrap() * 10000000.0;
+                                let tick = duration.parse::<f64>().unwrap() as u64 * 10000000;
                                 let mut back = back.clone();
                                 println!("Position: {}", tick);
                                 back.tick = tick;

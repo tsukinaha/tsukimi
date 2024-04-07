@@ -312,6 +312,7 @@ impl Window {
 
     fn freshhomepage(&self) {
         let imp = self.imp();
+        imp.insidestack.set_visible_child_name("homepage");
         imp.homeview.pop_to_page(&imp.homeview.find_page("homepage").unwrap());
         imp.homepage
             .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
@@ -320,6 +321,7 @@ impl Window {
 
     fn freshhistorypage(&self) {
         let imp = self.imp();
+        imp.insidestack.set_visible_child_name("historypage");
         imp.historyview.pop_to_page(&imp.historyview.find_page("historypage").unwrap());
         imp.historypage
             .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
@@ -328,6 +330,7 @@ impl Window {
 
     fn freshsearchpage(&self) {
         let imp = self.imp();
+        imp.insidestack.set_visible_child_name("searchpage");
         imp.searchview.pop_to_page(&imp.searchview.find_page("searchpage").unwrap());
         imp.searchpage
             .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
