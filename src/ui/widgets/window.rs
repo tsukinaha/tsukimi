@@ -383,8 +383,10 @@ impl Window {
 
     fn settingspage(&self) {
         let imp = self.imp();
+        if imp.settingspage.child().is_none() {
         imp.settingspage
             .set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
+        }
         imp.insidestack.set_visible_child_name("settingspage");
         imp.navipage.set_title("Preferences");
         self.set_pop_visibility(false);

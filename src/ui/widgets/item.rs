@@ -172,25 +172,22 @@ mod imp {
             glib::spawn_future_local(glib::clone!(@weak obj =>async move {
                 let series_info = receiver.recv().await.expect("series_info not received.");
                 let mut season_set: HashSet<u32> = HashSet::new();
-                let mut season_map: HashMap<String, u32> = HashMap::new();
-                let mut position = 0;
-                let mut _infor = 0;
+                let mut season_map: HashMap<String,u32> = HashMap::new();
+                let min_season = series_info.iter().map(|info| if info.parent_index_number == 0 { 100 } else { info.parent_index_number }).min().unwrap_or(1);
+                let mut pos = 0;
                 for info in &series_info {
                     if !season_set.contains(&info.parent_index_number) {
                         let seasonstring = format!("Season {}", info.parent_index_number);
                         seasonstore.append(&seasonstring);
                         season_set.insert(info.parent_index_number);
-                        season_map.insert(seasonstring.clone(), info.parent_index_number);
-                        if _infor <= 1 {
-                            if info.parent_index_number < 1 {
-                                position += 1;
-                            }
+                        season_map.insert(seasonstring.clone(), if info.parent_index_number == 0 { 100 } else { info.parent_index_number });
+                        if info.parent_index_number == min_season {
+                            let object = glib::BoxedAnyObject::new(info.clone());
+                            store.append(&object);
                         }
-                        _infor += 1;
-                    }
-                    if info.parent_index_number == 1 {
-                        let object = glib::BoxedAnyObject::new(info.clone());
-                        store.append(&object);
+                        if info.parent_index_number != min_season {
+                            pos += 1;
+                        }
                     }
                     if inid != idc {
                         if info.id == inid {
@@ -206,7 +203,7 @@ mod imp {
                         }
                     }
                 }
-                seasonlist.set_selected(position);
+                seasonlist.set_selected(pos);
                 if idc == inid {
                     itemlist.first_child().unwrap().activate();
                 }

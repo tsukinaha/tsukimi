@@ -5,7 +5,6 @@ use adw::subclass::prelude::*;
 
 use super::fix::fix;
 mod imp {
-    use crate::ui::network::{self, runtime, SearchResult};
     use crate::APP_ID;
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
@@ -76,7 +75,6 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             let id = obj.id();
-            let name = obj.moviename();
             let path = format!(
                 "{}/.local/share/tsukimi/b{}.png",
                 dirs::home_dir().expect("msg").display(),

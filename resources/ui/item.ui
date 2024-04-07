@@ -36,6 +36,9 @@
                             <property name="vexpand">true</property>
                           </object>
                         </child>
+                        <style>
+                          <class name="mask" />
+                        </style>
                       </object>
                     </child>
                     <child type="overlay">
@@ -47,6 +50,31 @@
                         <property name="halign">start</property>
                       </object>
                     </child>
+                    <child type="overlay">
+                      <object class="GtkBox">
+                        <property name="margin-end">30</property>
+                        <property name="margin-top">15</property>
+                        <property name="spacing">10</property>
+                        <property name="valign">start</property>
+                        <property name="halign">end</property>
+                        <child>
+                          <object class="GtkToggleButton">
+                            <property name="icon-name">emblem-favorite-symbolic</property>
+                            <style>
+                              <class name="raised" />
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkCheckButton">
+                            <style>
+                              <class name="selection-mode" />
+                            </style>
+                          </object>
+                        </child>
+
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
@@ -56,7 +84,7 @@
                     <property name="hexpand">true</property>
                     <child>
                       <object class="GtkDropDown" id="seasonlist">
-                      <property name="margin-start">10</property>
+                        <property name="margin-start">10</property>
                       </object>
                     </child>
                     <child>
