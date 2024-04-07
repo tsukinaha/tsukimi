@@ -103,9 +103,7 @@ mod imp {
             }
 
             let idclone = id.clone();
-            let idclonet = id.clone();
             let idc = id.clone();
-            let name = name.clone();
             glib::spawn_future_local(async move {
                 while let Ok(_) = receiver.recv().await {
                     let path = format!(
