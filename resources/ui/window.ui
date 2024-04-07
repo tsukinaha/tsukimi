@@ -318,15 +318,6 @@
                                 <property name="child">
                                   <object class="AdwNavigationPage" id="settingspage">
                                     <property name="title" translatable="yes">Tsukimi</property>
-                                    <child>
-                                      <object class="AdwToolbarView">
-                                        <child type="top">
-                                          <object class="AdwHeaderBar">
-                                            <property name="show-title">False</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
                                   </object>
                                 </property>
                               </object>
