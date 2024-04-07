@@ -104,7 +104,6 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
                             mediasourceid: media.id.clone(),
                             playsessionid: playback_info.play_session_id.clone(),
                             tick: userdata.playback_position_ticks.unwrap_or_else(|| 0),
-                            percentage: userdata.played_percentage,
                         };
                         play_event(button.clone(),directurl,None,media.name,back,userdata.played_percentage);
                         return;
@@ -130,7 +129,6 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
                                                 mediasourceid: media.id.clone(),
                                                 playsessionid: playback_info.play_session_id.clone(),
                                                 tick: userdata.playback_position_ticks.unwrap_or_else(|| 0),
-                                                percentage: userdata.played_percentage,
                                             };
                                             play_event(button.clone(),Some(directurl),Some(suburl),media.name,back,userdata.played_percentage);
                                             return;
@@ -147,7 +145,6 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
                                             mediasourceid: media.id.clone(),
                                             playsessionid: playback_info.play_session_id.clone(),
                                             tick: userdata.playback_position_ticks.unwrap_or_else(|| 0),
-                                            percentage: userdata.played_percentage,
                                         };
                                         play_event(button.clone(),Some(directurl),None,media.name,back,userdata.played_percentage);
                                         return;
