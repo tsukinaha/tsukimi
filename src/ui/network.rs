@@ -261,12 +261,16 @@ pub struct Media {
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct Item {
+    #[serde(rename = "Name")]
+    pub name: String,
     #[serde(rename = "ExternalUrls")]
     pub external_urls: Option<Vec<Urls>>,
     #[serde(rename = "Overview")]
     pub overview: Option<String>,
     #[serde(rename = "People")]
     pub people: Option<Vec<People>>,
+    #[serde(rename = "UserData")]
+    pub user_data: Option<UserData>,
 }
 
 #[derive(Deserialize, Debug, Clone)]

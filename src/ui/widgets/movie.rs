@@ -119,29 +119,7 @@ mod imp {
             });
             let logobox = self.logobox.get();
             obj.logoset(logobox);
-            let dropdownspinner = self.dropdownspinner.get();
-            let osdbox = self.osdbox.get();
-            dropdownspinner.set_visible(true);
-            let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
-            runtime().spawn(async move {
-                let playback = network::get_playbackinfo(id).await.expect("msg");
-                sender.send(playback).await.expect("msg");
-            });
-            glib::spawn_future_local(
-                glib::clone!(@weak dropdownspinner,@weak osdbox =>async move {
-                    while let Ok(playback) = receiver.recv().await {
-                        let info:SearchResult = SearchResult {
-                            id: idclonet.clone(),
-                            name: name.clone(),
-                            result_type: String::from("Movie"),
-                            user_data: None,
-                        };
-                        let dropdown = crate::ui::moviedrop::newmediadropsel(playback, info);
-                        dropdownspinner.set_visible(false);
-                        osdbox.append(&dropdown);
-                    }
-                }),
-            );
+            
             obj.setoverview();
             obj.createmediabox(idc);
         }
@@ -185,11 +163,12 @@ impl MoviePage {
     pub fn setoverview(&self) {
         let imp = self.imp();
         let id = imp.id.get().unwrap().clone();
+        let idclone = id.clone();
         let itemoverview = imp.itemoverview.get();
         let overviewrevealer = imp.overviewrevealer.get();
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
         crate::ui::network::runtime().spawn(async move {
-            let item = crate::ui::network::get_item_overview(id.to_string()).await.expect("msg");
+            let item = crate::ui::network::get_item_overview(id).await.expect("msg");
             sender.send(item).await.expect("msg");
         });
         glib::spawn_future_local(glib::clone!(@weak self as obj=>async move {
@@ -203,9 +182,40 @@ impl MoviePage {
                 if let Some(actor) = item.people {
                     obj.setactorscrolled(actor);
                 }
+                if let Some(userdata) = item.user_data {
+                    obj.dropdown(idclone.clone(), item.name.clone(), Some(userdata));
+                }
                 overviewrevealer.set_reveal_child(true);
             }
         }));
+    }
+
+    pub fn dropdown(&self,id: String, name: String, userdata: Option<crate::ui::network::UserData>) {
+        let imp = self.imp();
+        let dropdownspinner = imp.dropdownspinner.get();
+        let osdbox = imp.osdbox.get();
+        dropdownspinner.set_visible(true);
+        let idclone = id.clone();
+        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
+        crate::ui::network::runtime().spawn(async move {
+            let playback = crate::ui::network::get_playbackinfo(id).await.expect("msg");
+            sender.send(playback).await.expect("msg");
+        });
+        glib::spawn_future_local(
+            glib::clone!(@weak dropdownspinner,@weak osdbox =>async move {
+                while let Ok(playback) = receiver.recv().await {
+                    let info:crate::ui::network::SearchResult = crate::ui::network::SearchResult {
+                        id: idclone.clone(),
+                        name: name.clone(),
+                        result_type: String::from("Movie"),
+                        user_data: userdata.clone(),
+                    };
+                    let dropdown = crate::ui::moviedrop::newmediadropsel(playback, info);
+                    dropdownspinner.set_visible(false);
+                    osdbox.append(&dropdown);
+                }
+            }),
+        );
     }
 
     pub fn createmediabox(&self,id: String) {
