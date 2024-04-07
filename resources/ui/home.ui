@@ -22,7 +22,7 @@
                     <child>
                       <object class="GtkRevealer" id="librevealer">
                         <property name="transition-type">crossfade</property>
-                        <property name="transition-duration">700</property>
+                        <property name="transition-duration">300</property>
                         <property name="reveal-child">False</property>
                         <child>
                           <object class="GtkBox">

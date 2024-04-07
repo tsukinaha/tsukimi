@@ -103,7 +103,7 @@ mod imp {
                         imgbox = crate::ui::image::setimage(result.id.clone(), mutex.clone());
                     }
                 }
-                imgbox.set_size_request(290, 169);
+                imgbox.set_size_request(265, 169);
                 overlay.set_child(Some(&imgbox));
                 let progressbar = gtk::ProgressBar::new();
                 progressbar.set_valign(gtk::Align::End);

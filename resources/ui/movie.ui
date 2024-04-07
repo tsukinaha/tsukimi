@@ -38,6 +38,9 @@
                             <property name="vexpand">true</property>
                           </object>
                         </child>
+                        <style>
+                          <class name="mask" />
+                        </style>
                       </object>
                     </child>
                     <child type="overlay">

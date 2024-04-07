@@ -175,19 +175,24 @@ mod imp {
                 let mut season_map: HashMap<String,u32> = HashMap::new();
                 let min_season = series_info.iter().map(|info| if info.parent_index_number == 0 { 100 } else { info.parent_index_number }).min().unwrap_or(1);
                 let mut pos = 0;
+                let mut set = true;
                 for info in &series_info {
                     if !season_set.contains(&info.parent_index_number) {
                         let seasonstring = format!("Season {}", info.parent_index_number);
                         seasonstore.append(&seasonstring);
                         season_set.insert(info.parent_index_number);
-                        season_map.insert(seasonstring.clone(), if info.parent_index_number == 0 { 100 } else { info.parent_index_number });
-                        if info.parent_index_number == min_season {
-                            let object = glib::BoxedAnyObject::new(info.clone());
-                            store.append(&object);
+                        season_map.insert(seasonstring.clone(), info.parent_index_number);
+                        if set {
+                            if info.parent_index_number == min_season {
+                                set = false;
+                            } else {
+                                pos += 1;
+                            }
                         }
-                        if info.parent_index_number != min_season {
-                            pos += 1;
-                        }
+                    }
+                    if info.parent_index_number == min_season {
+                        let object = glib::BoxedAnyObject::new(info.clone());
+                        store.append(&object);
                     }
                     if inid != idc {
                         if info.id == inid {
@@ -203,7 +208,6 @@ mod imp {
                         }
                     }
                 }
-                seasonlist.set_selected(pos);
                 if idc == inid {
                     itemlist.first_child().unwrap().activate();
                 }
@@ -221,6 +225,7 @@ mod imp {
                     }
                     itemlist.first_child().unwrap().activate();
                 });
+                seasonlist.set_selected(pos);
                 itemrevealer.set_reveal_child(true);
             }));
             obj.setoverview();
