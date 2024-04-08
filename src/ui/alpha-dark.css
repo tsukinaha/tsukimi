@@ -1,3 +1,7 @@
+.checkwatched {
+    background: rgba(0,0,0,0.1);
+}
+
 child {
     margin: 9px;
     border-radius:15px;

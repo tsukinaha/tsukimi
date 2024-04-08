@@ -11,6 +11,9 @@ child {
     background: rgba(0,0,0,0);
 }
  
+.checkwatched {
+    background: rgba(0,0,0,0.1);
+}
    
 listview > row {
     margin-left:9px;

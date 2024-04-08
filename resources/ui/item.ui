@@ -58,17 +58,10 @@
                         <property name="valign">start</property>
                         <property name="halign">end</property>
                         <child>
-                          <object class="GtkToggleButton">
-                            <property name="icon-name">emblem-favorite-symbolic</property>
-                            <style>
-                              <class name="raised" />
-                            </style>
-                          </object>
-                        </child>
-                        <child>
                           <object class="GtkCheckButton">
                             <style>
                               <class name="selection-mode" />
+                              <class name="checkwatched" />
                             </style>
                           </object>
                         </child>
