@@ -1,7 +1,7 @@
 use gtk::prelude::*;
 use libmpv::{events::*, *};
 
-use std::{collections::HashMap, env, thread, time::{Duration, Instant}};
+use std::{collections::HashMap, thread, time::{Duration, Instant}};
 
 use crate::{config::set_config, ui::network::{runtime, Back}, APP_ID};
 pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,percentage:Option<f64>) -> Result<()> {
@@ -20,6 +20,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
     } else {
         Duration::from_secs(300)
     };
+    let mut duration: u64 = back.tick;
     // Create an `Mpv` and set some properties.
     let mpv = Mpv::with_initializer(|init| {
         init.set_property("osc", true)?;
@@ -55,7 +56,6 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
     ev_ctx.observe_property("time-pos", Format::Double, 0)?;
 
     let backc = back.clone();
-    std::env::set_var("DURATION", (&backc.tick / 10000000).to_string());
     runtime().spawn(async move {
         crate::ui::network::playstart(backc).await;
     });    
@@ -80,15 +80,11 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
             match ev {
                 Ok(Event::EndFile(r)) => {
                     if r == 3 {
-                        if let Ok(duration) = env::var("DURATION") {
-                            println!("Duration: {}", duration);
-                            let tick = duration.parse::<f64>().unwrap() as u64 * 10000000;
-                            let mut back = back.clone();
-                            back.tick = tick;
-                            runtime().spawn(async move {
-                                crate::ui::network::positionstop(back).await;
-                            });
-                        }
+                        let mut back = back.clone();
+                        back.tick = duration;
+                        runtime().spawn(async move {
+                            crate::ui::network::positionstop(back).await;
+                        });
                     }
                     println!("Exiting! Reason: {:?}", r);
                     break;
@@ -99,18 +95,14 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
                     change: PropertyData::Double(mpv_node),
                     ..
                 }) => {
+                    duration = mpv_node as u64 * 10000000;
                     if last_print.elapsed() >= interval {
-                        std::env::set_var("DURATION", mpv_node.to_string());
                         last_print = Instant::now();
-                        if let Ok(duration) = env::var("DURATION") {
-                            let tick = duration.parse::<f64>().unwrap() as u64 * 10000000;
-                            let mut back = back.clone();
-                            println!("Position: {}", tick);
-                            back.tick = tick;
-                            runtime().spawn(async move {
-                                crate::ui::network::positionback(back).await;
-                            });
-                        }
+                        let mut back = back.clone();
+                        back.tick = duration;
+                        runtime().spawn(async move {
+                            crate::ui::network::positionback(back).await;
+                        });
                     }
                 }
 

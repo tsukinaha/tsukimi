@@ -208,6 +208,7 @@ mod imp {
                         }
                     }
                 }
+                seasonlist.set_selected(pos);
                 if idc == inid {
                     itemlist.first_child().unwrap().activate();
                 }
@@ -225,7 +226,6 @@ mod imp {
                     }
                     itemlist.first_child().unwrap().activate();
                 });
-                seasonlist.set_selected(pos);
                 itemrevealer.set_reveal_child(true);
             }));
             obj.setoverview();
