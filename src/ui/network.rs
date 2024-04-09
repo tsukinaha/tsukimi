@@ -431,11 +431,11 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
 pub async fn get_image(id: String) -> Result<String, Error> {
     let server_info = config::set_config();
 
-    let result = reqwest::get(&format!(
+    let result = client().get(&format!(
         "{}:{}/emby/Items/{}/Images/Primary?maxHeight=400",
         server_info.domain, server_info.port, id
     ))
-    .await;
+    .send().await;
 
     match result {
         Ok(response) => {
@@ -476,11 +476,11 @@ pub async fn get_image(id: String) -> Result<String, Error> {
 pub async fn get_thumbimage(id: String) -> Result<String, Error> {
     let server_info = config::set_config();
 
-    let result = reqwest::get(&format!(
+    let result = client().get(&format!(
         "{}:{}/emby/Items/{}/Images/Thumb",
         server_info.domain, server_info.port, id
     ))
-    .await;
+    .send().await;
 
     match result {
         Ok(response) => {
@@ -521,11 +521,11 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
 pub async fn get_backdropimage(id: String) -> Result<String, Error> {
     let server_info = config::set_config();
 
-    let result = reqwest::get(&format!(
+    let result = client().get(&format!(
         "{}:{}/emby/Items/{}/Images/Backdrop",
         server_info.domain, server_info.port, id
     ))
-    .await;
+    .send().await;
 
     match result {
         Ok(response) => {
@@ -566,11 +566,11 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
 pub async fn get_logoimage(id: String) -> Result<String, Error> {
     let server_info = config::set_config();
 
-    let result = reqwest::get(&format!(
+    let result = client().get(&format!(
         "{}:{}/emby/Items/{}/Images/Logo",
         server_info.domain, server_info.port, id
     ))
-    .await;
+    .send().await;
 
     match result {
         Ok(response) => {
