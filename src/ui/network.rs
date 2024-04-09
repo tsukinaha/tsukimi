@@ -39,7 +39,7 @@ pub fn runtime() -> &'static Runtime {
 
 fn client() -> &'static Client {
     static CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
-    CLIENT.get_or_init(|| ReqClient::new())
+    CLIENT.get_or_init(ReqClient::build)
 }
 
 pub async fn login(
@@ -462,17 +462,17 @@ pub async fn get_image(id: String) -> Result<String, Error> {
 
                         fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
                     }
-                    return Ok(id);
+                    Ok(id)
                 }
                 Err(e) => {
                     eprintln!("loading error");
-                    return Err(e.into());
+                    Err(e)
                 }
             }
         }
         Err(e) => {
             eprintln!("loading error");
-            return Err(e.into());
+            Err(e)
         }
     }
 }
@@ -509,17 +509,17 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
 
                         fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
                     }
-                    return Ok(id);
+                    Ok(id)
                 }
                 Err(e) => {
                     eprintln!("loading error");
-                    return Err(e.into());
+                    Err(e)
                 }
             }
         }
         Err(e) => {
             eprintln!("loading error");
-            return Err(e.into());
+            Err(e)
         }
     }
 }
@@ -556,17 +556,17 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
 
                         fs::write(pathbuf.join(format!("b{}.png", id)), &bytes).unwrap();
                     }
-                    return Ok(id);
+                    Ok(id)
                 }
                 Err(e) => {
                     eprintln!("loading error");
-                    return Err(e.into());
+                    Err(e)
                 }
             }
         }
         Err(e) => {
             eprintln!("loading error");
-            return Err(e.into());
+            Err(e)
         }
     }
 }
@@ -603,17 +603,17 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
 
                         fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
                     }
-                    return Ok(id);
+                    Ok(id)
                 }
                 Err(e) => {
                     eprintln!("loading error");
-                    return Err(e.into());
+                    Err(e)
                 }
             }
         }
         Err(e) => {
             eprintln!("loading error");
-            return Err(e.into());
+            Err(e)
         }
     }
 }
@@ -673,7 +673,7 @@ pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
         .await?;
     let json: serde_json::Value = response.json().await?;
     let mediainfo: Media = serde_json::from_value(json).unwrap();
-    return Ok(mediainfo);
+    Ok(mediainfo)
 }
 
 pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
@@ -710,7 +710,7 @@ pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
         .await?;
     let json: serde_json::Value = response.json().await?;
     let mediainfo: Media = serde_json::from_value(json).unwrap();
-    return Ok(mediainfo);
+    Ok(mediainfo)
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -739,14 +739,10 @@ pub async fn get_library() -> Result<Vec<View>, Error> {
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client
-        .get(&url)
-        .query(&params)
-        .send()
-        .await?;
+    let response = client.get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
     let views: Vec<View> = serde_json::from_value(json["Items"].take()).unwrap();
-    return Ok(views);
+    Ok(views)
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -790,7 +786,7 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
     let response = client.get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let latests: Vec<Latest> = serde_json::from_value(json).unwrap();
-    return Ok(latests);
+    Ok(latests)
 }
 
 pub async fn get_list(
@@ -829,24 +825,15 @@ pub async fn get_list(
     let response = client.get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let latests: List = serde_json::from_value(json).unwrap();
-    return Ok(latests);
+    Ok(latests)
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone, Default)]
 pub struct List {
     #[serde(rename = "TotalRecordCount")]
     pub total_record_count: u32,
     #[serde(rename = "Items")]
     pub items: Vec<Latest>,
-}
-
-impl Default for List {
-    fn default() -> Self {
-        List {
-            total_record_count: 0,
-            items: Vec::new(),
-        }
-    }
 }
 
 #[derive(Deserialize, Debug, Clone)]

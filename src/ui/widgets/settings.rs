@@ -212,7 +212,7 @@ impl SettingsPage {
         );
         std::fs::remove_dir_all(path).unwrap();
         let toast = adw::Toast::builder()
-            .title(format!("Cache Cleared"))
+            .title("Cache Cleared".to_string())
             .timeout(3)
             .build();
         let imp = self.imp();

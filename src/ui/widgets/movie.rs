@@ -103,7 +103,7 @@ mod imp {
             let idclone = id.clone();
             let idc = id.clone();
             glib::spawn_future_local(async move {
-                while let Ok(_) = receiver.recv().await {
+                while receiver.recv().await.is_ok() {
                     let path = format!(
                         "{}/.local/share/tsukimi/b{}.png",
                         dirs::home_dir().expect("msg").display(),
@@ -233,10 +233,10 @@ impl MoviePage {
         });
         glib::spawn_future_local(async move {
             while let Ok(media) = receiver.recv().await {
-                while mediainfobox.last_child() != None {
-                    mediainfobox
-                        .last_child()
-                        .map(|child| mediainfobox.remove(&child));
+                while mediainfobox.last_child().is_some() {
+                    if let Some(child) = mediainfobox.last_child() {
+                        mediainfobox.remove(&child)
+                    }
                 }
                 for mediasource in media.media_sources {
                     let singlebox = gtk::Box::new(gtk::Orientation::Vertical, 5);
@@ -364,8 +364,10 @@ impl MoviePage {
             linksrevealer.set_reveal_child(true);
         }
         let linkbox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
-        while linkbox.last_child() != None {
-            linkbox.last_child().map(|child| linkbox.remove(&child));
+        while linkbox.last_child().is_some() {
+            if let Some(child) = linkbox.last_child() {
+                linkbox.remove(&child)
+            }
         }
         for url in links {
             let linkbutton = gtk::Button::builder()

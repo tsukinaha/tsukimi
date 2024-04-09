@@ -88,16 +88,14 @@ mod imp {
                     imgbox = crate::ui::image::setthumbimage(
                         result.parent_thumb_item_id.as_ref().expect("").clone(),
                     );
+                } else if result.resume_type == "Movie" {
+                    imgbox = crate::ui::image::setbackdropimage(result.id.clone());
+                } else if result.parent_thumb_item_id.is_some() {
+                    imgbox = crate::ui::image::setthumbimage(
+                        result.series_id.as_ref().expect("").to_string(),
+                    );
                 } else {
-                    if result.resume_type == "Movie" {
-                        imgbox = crate::ui::image::setbackdropimage(result.id.clone());
-                    } else if result.parent_thumb_item_id.is_some() {
-                        imgbox = crate::ui::image::setthumbimage(
-                            result.series_id.as_ref().expect("").to_string(),
-                        );
-                    } else {
-                        imgbox = crate::ui::image::setimage(result.id.clone());
-                    }
+                    imgbox = crate::ui::image::setimage(result.id.clone());
                 }
                 imgbox.set_size_request(265, 169);
                 overlay.set_child(Some(&imgbox));
@@ -121,7 +119,7 @@ mod imp {
                 let label = Label::builder().label(&result.name).build();
                 let labeltype = Label::new(Some(&result.resume_type));
                 if result.resume_type == "Episode" {
-                    let markup = format!("{}", result.series_name.as_ref().expect("").clone());
+                    let markup = result.series_name.as_ref().expect("").clone().to_string();
                     label.set_markup(markup.as_str());
                     let markup = format!(
                         "<span color='lightgray' font='small'>S{}E{}: {}</span>",
@@ -131,7 +129,7 @@ mod imp {
                     );
                     labeltype.set_markup(markup.as_str());
                 } else {
-                    let markup = format!("{}", result.name);
+                    let markup = result.name.to_string();
                     label.set_markup(markup.as_str());
                     let markup = format!(
                         "<span color='lightgray' font='small'>{}</span>",
@@ -164,20 +162,18 @@ mod imp {
                     let item_page = MoviePage::new(result.id.clone(),result.name.clone());
                     window.imp().historyview.push(&item_page);
                     window.change_pop_visibility();
+                } else if result.parent_thumb_item_id.is_none() {
+                    let item_page = ItemPage::new(result.series_id.as_ref().expect("msg").clone(),result.id.clone());
+                    window.imp().historyview.push(&item_page);
+                    window.change_pop_visibility();
                 } else {
-                    if result.parent_thumb_item_id == None {
-                        let item_page = ItemPage::new(result.series_id.as_ref().expect("msg").clone(),result.id.clone());
-                        window.imp().historyview.push(&item_page);
-                        window.change_pop_visibility();
-                    } else {
-                        let item_page = ItemPage::new(result.parent_thumb_item_id.as_ref().expect("msg").clone(),result.id.clone());
-                        window.imp().historyview.push(&item_page);
-                        window.change_pop_visibility();
-                    }
+                    let item_page = ItemPage::new(result.parent_thumb_item_id.as_ref().expect("msg").clone(),result.id.clone());
+                    window.imp().historyview.push(&item_page);
+                    window.change_pop_visibility();
                 }
                 if let Some(seriesname) = &result.series_name {
-                    window.set_title(&seriesname);
-                    std::env::set_var("HISTORY_TITLE", &seriesname)
+                    window.set_title(seriesname);
+                    std::env::set_var("HISTORY_TITLE", seriesname)
                 } else {
                     window.set_title(&result.name);
                     std::env::set_var("HISTORY_TITLE", &result.name)

@@ -114,7 +114,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                             id: info.id.clone(),
                             mediasourceid: media.id.clone(),
                             playsessionid: playback_info.play_session_id.clone(),
-                            tick: userdata.playback_position_ticks.unwrap_or_else(|| 0),
+                            tick: userdata.playback_position_ticks.unwrap_or(0),
                         };
                         play_event(
                             button.clone(),
@@ -133,13 +133,13 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
         let subselected = subselected.and_downcast_ref::<gtk::StringObject>().unwrap();
         let subselected = subselected.string();
         for media in playback_info.media_sources.clone() {
-            if media.name == nameselected.to_string() {
+            if media.name == nameselected {
                 for mediastream in media.media_streams {
                     if mediastream.stream_type == "Subtitle" {
                         let displaytitle = mediastream.display_title.unwrap_or("".to_string());
                         if displaytitle == subselected {
                             if let Some(directurl) = media.direct_stream_url.clone() {
-                                if mediastream.is_external == true {
+                                if mediastream.is_external {
                                     if let Some(suburl) = mediastream.delivery_url.clone() {
                                         if let Some(userdata) = &info.user_data {
                                             let back = Back {
@@ -148,9 +148,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                                                 playsessionid: playback_info
                                                     .play_session_id
                                                     .clone(),
-                                                tick: userdata
-                                                    .playback_position_ticks
-                                                    .unwrap_or_else(|| 0),
+                                                tick: userdata.playback_position_ticks.unwrap_or(0),
                                             };
                                             play_event(
                                                 button.clone(),
@@ -175,26 +173,22 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                                         );
                                         return;
                                     }
-                                } else {
-                                    if let Some(userdata) = &info.user_data {
-                                        let back = Back {
-                                            id: info.id.clone(),
-                                            mediasourceid: media.id.clone(),
-                                            playsessionid: playback_info.play_session_id.clone(),
-                                            tick: userdata
-                                                .playback_position_ticks
-                                                .unwrap_or_else(|| 0),
-                                        };
-                                        play_event(
-                                            button.clone(),
-                                            Some(directurl),
-                                            None,
-                                            media.name,
-                                            back,
-                                            userdata.played_percentage,
-                                        );
-                                        return;
-                                    }
+                                } else if let Some(userdata) = &info.user_data {
+                                    let back = Back {
+                                        id: info.id.clone(),
+                                        mediasourceid: media.id.clone(),
+                                        playsessionid: playback_info.play_session_id.clone(),
+                                        tick: userdata.playback_position_ticks.unwrap_or(0),
+                                    };
+                                    play_event(
+                                        button.clone(),
+                                        Some(directurl),
+                                        None,
+                                        media.name,
+                                        back,
+                                        userdata.played_percentage,
+                                    );
+                                    return;
                                 }
                             }
                         }
@@ -275,13 +269,13 @@ pub fn set_sub(
     glib::spawn_future_local(async move {
         while let Ok(media) = receiver.recv().await {
             for mediasource in media.media_sources.clone() {
-                if mediasource.name == nameselected.to_string() {
+                if mediasource.name == nameselected {
                     for mediastream in mediasource.media_streams {
                         if mediastream.stream_type == "Subtitle" {
                             let displaytitle = mediastream.display_title.unwrap_or("".to_string());
                             if displaytitle == subselected {
                                 if let Some(directurl) = mediasource.direct_stream_url.clone() {
-                                    if mediastream.is_external == true {
+                                    if mediastream.is_external {
                                         if let Some(suburl) = mediastream.delivery_url.clone() {
                                             if let Some(userdata) = userdata {
                                                 let back = Back {
@@ -290,7 +284,7 @@ pub fn set_sub(
                                                     playsessionid: media.play_session_id.clone(),
                                                     tick: userdata
                                                         .playback_position_ticks
-                                                        .unwrap_or_else(|| 0),
+                                                        .unwrap_or(0),
                                                 };
                                                 play_event(
                                                     button.clone(),
