@@ -1,11 +1,7 @@
 use adw::prelude::*;
 use dirs::home_dir;
 use glib::Object;
-use gtk::{
-    gio,
-    glib,
-    subclass::prelude::*,
-};
+use gtk::{gio, glib, subclass::prelude::*};
 
 use crate::APP_ID;
 
@@ -27,6 +23,8 @@ mod imp {
         pub autofullscreencontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub spinrow: TemplateChild<adw::SpinRow>,
+        #[template_child]
+        pub threadspinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub forcewindowcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
@@ -78,6 +76,7 @@ mod imp {
             obj.set_resume();
             obj.set_proxy();
             obj.set_theme();
+            obj.set_thread();
         }
     }
 
@@ -114,48 +113,64 @@ impl SettingsPage {
     pub fn set_sidebar(&self) {
         let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
-        imp.sidebarcontrol.set_active(settings.boolean("is-overlay"));
-        imp.sidebarcontrol.connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
-            let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
-            window.overlay_sidebar(control.is_active());
-            settings.set_boolean("is-overlay", control.is_active()).unwrap();
-        }));
+        imp.sidebarcontrol
+            .set_active(settings.boolean("is-overlay"));
+        imp.sidebarcontrol
+            .connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
+                let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
+                window.overlay_sidebar(control.is_active());
+                settings.set_boolean("is-overlay", control.is_active()).unwrap();
+            }));
     }
 
     pub fn set_back(&self) {
         let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
-        imp.backcontrol.set_active(settings.boolean("is-progress-enabled"));
+        imp.backcontrol
+            .set_active(settings.boolean("is-progress-enabled"));
         imp.backcontrol.connect_active_notify(move |control| {
-            settings.set_boolean("is-progress-enabled", control.is_active()).unwrap();
+            settings
+                .set_boolean("is-progress-enabled", control.is_active())
+                .unwrap();
         });
     }
 
     pub fn set_spin(&self) {
         let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
-        imp.spinrow.set_value(settings.int("background-height").into());
+        imp.spinrow
+            .set_value(settings.int("background-height").into());
         imp.spinrow.connect_value_notify(move |control| {
-            settings.set_int("background-height", control.value() as i32).unwrap();
+            settings
+                .set_int("background-height", control.value() as i32)
+                .unwrap();
         });
     }
 
     pub fn set_fullscreen(&self) {
         let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
-        imp.autofullscreencontrol.set_active(settings.boolean("is-fullscreen"));
-        imp.autofullscreencontrol.connect_active_notify(move |control| {
-            settings.set_boolean("is-fullscreen", control.is_active()).unwrap();
-        });
+        imp.autofullscreencontrol
+            .set_active(settings.boolean("is-fullscreen"));
+        imp.autofullscreencontrol
+            .connect_active_notify(move |control| {
+                settings
+                    .set_boolean("is-fullscreen", control.is_active())
+                    .unwrap();
+            });
     }
 
     pub fn set_forcewindow(&self) {
         let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
-        imp.forcewindowcontrol.set_active(settings.boolean("is-force-window"));
-        imp.forcewindowcontrol.connect_active_notify(move |control| {
-            settings.set_boolean("is-force-window", control.is_active()).unwrap();
-        });
+        imp.forcewindowcontrol
+            .set_active(settings.boolean("is-force-window"));
+        imp.forcewindowcontrol
+            .connect_active_notify(move |control| {
+                settings
+                    .set_boolean("is-force-window", control.is_active())
+                    .unwrap();
+            });
     }
 
     pub fn set_resume(&self) {
@@ -163,14 +178,18 @@ impl SettingsPage {
         let settings = gio::Settings::new(APP_ID);
         imp.resumecontrol.set_active(settings.boolean("is-resume"));
         imp.resumecontrol.connect_active_notify(move |control| {
-            settings.set_boolean("is-resume", control.is_active()).unwrap();
+            settings
+                .set_boolean("is-resume", control.is_active())
+                .unwrap();
         });
     }
-    
+
     pub fn proxy(&self) {
         let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
-        settings.set_string("proxy", &imp.proxyentry.text()).unwrap();
+        settings
+            .set_string("proxy", &imp.proxyentry.text())
+            .unwrap();
     }
 
     pub fn set_proxy(&self) {
@@ -187,13 +206,15 @@ impl SettingsPage {
     }
 
     pub fn cacheclear(&self) {
-        let path = format!("{}/.local/share/tsukimi", home_dir().expect("can not find home").display());
+        let path = format!(
+            "{}/.local/share/tsukimi",
+            home_dir().expect("can not find home").display()
+        );
         std::fs::remove_dir_all(path).unwrap();
-        let toast = 
-            adw::Toast::builder()
-                        .title(format!("Cache Cleared"))
-                        .timeout(3)
-                        .build();
+        let toast = adw::Toast::builder()
+            .title(format!("Cache Cleared"))
+            .timeout(3)
+            .build();
         let imp = self.imp();
         imp.toast.add_toast(toast);
     }
@@ -229,5 +250,14 @@ impl SettingsPage {
                 _ => (),
             }
         }));
+    }
+
+    pub fn set_thread(&self) {
+        let imp = self.imp();
+        let settings = gio::Settings::new(APP_ID);
+        imp.threadspinrow.set_value(settings.int("threads").into());
+        imp.threadspinrow.connect_value_notify(move |control| {
+            settings.set_int("threads", control.value() as i32).unwrap();
+        });
     }
 }

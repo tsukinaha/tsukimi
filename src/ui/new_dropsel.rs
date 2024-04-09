@@ -116,7 +116,14 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                             playsessionid: playback_info.play_session_id.clone(),
                             tick: userdata.playback_position_ticks.unwrap_or_else(|| 0),
                         };
-                        play_event(button.clone(),directurl,None,media.name,back,userdata.played_percentage);
+                        play_event(
+                            button.clone(),
+                            directurl,
+                            None,
+                            media.name,
+                            back,
+                            userdata.played_percentage,
+                        );
                         return;
                     }
                 }
@@ -138,27 +145,54 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                                             let back = Back {
                                                 id: info.id.clone(),
                                                 mediasourceid: media.id.clone(),
-                                                playsessionid: playback_info.play_session_id.clone(),
-                                                tick: userdata.playback_position_ticks.unwrap_or_else(|| 0),
+                                                playsessionid: playback_info
+                                                    .play_session_id
+                                                    .clone(),
+                                                tick: userdata
+                                                    .playback_position_ticks
+                                                    .unwrap_or_else(|| 0),
                                             };
-                                            play_event(button.clone(),Some(directurl),Some(suburl),media.name,back,userdata.played_percentage);
+                                            play_event(
+                                                button.clone(),
+                                                Some(directurl),
+                                                Some(suburl),
+                                                media.name,
+                                                back,
+                                                userdata.played_percentage,
+                                            );
                                             return;
                                         }
                                     } else {
                                         // Ask Luke
                                         let userdata = info.user_data.clone();
-                                        set_sub(info.id.clone(),media.id.clone(),nameselected.to_string(),subselected.to_string(),button.clone(),userdata);
+                                        set_sub(
+                                            info.id.clone(),
+                                            media.id.clone(),
+                                            nameselected.to_string(),
+                                            subselected.to_string(),
+                                            button.clone(),
+                                            userdata,
+                                        );
                                         return;
                                     }
-                                } else {               
+                                } else {
                                     if let Some(userdata) = &info.user_data {
                                         let back = Back {
                                             id: info.id.clone(),
                                             mediasourceid: media.id.clone(),
                                             playsessionid: playback_info.play_session_id.clone(),
-                                            tick: userdata.playback_position_ticks.unwrap_or_else(|| 0),
+                                            tick: userdata
+                                                .playback_position_ticks
+                                                .unwrap_or_else(|| 0),
                                         };
-                                        play_event(button.clone(),Some(directurl),None,media.name,back,userdata.played_percentage);
+                                        play_event(
+                                            button.clone(),
+                                            Some(directurl),
+                                            None,
+                                            media.name,
+                                            back,
+                                            userdata.played_percentage,
+                                        );
                                         return;
                                     }
                                 }
@@ -175,22 +209,35 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
     hbox
 }
 
-pub fn play_event(button: gtk::Button, directurl: Option<String>, suburl:Option<String>, name: String, back: Back,percentage:Option<f64>) {
+pub fn play_event(
+    button: gtk::Button,
+    directurl: Option<String>,
+    suburl: Option<String>,
+    name: String,
+    back: Back,
+    percentage: Option<f64>,
+) {
     let (sender, receiver) = async_channel::bounded(1);
     gtk::gio::spawn_blocking(move || {
         sender
             .send_blocking(false)
             .expect("The channel needs to be open.");
-        match mpv::event::play(directurl.expect("no url"),suburl,Some(name),&back,percentage)  {
+        match mpv::event::play(
+            directurl.expect("no url"),
+            suburl,
+            Some(name),
+            &back,
+            percentage,
+        ) {
             Ok(_) => {
                 sender
-                .send_blocking(true)
-                .expect("The channel needs to be open.");
+                    .send_blocking(true)
+                    .expect("The channel needs to be open.");
             }
             Err(e) => {
                 eprintln!("Failed to play: {}", e);
-            } 
-        };   
+            }
+        };
     });
     glib::spawn_future_local(glib::clone!(@weak button =>async move {
         while let Ok(enable_button) = receiver.recv().await {
@@ -208,22 +255,19 @@ pub fn play_event(button: gtk::Button, directurl: Option<String>, suburl:Option<
 }
 
 pub fn set_sub(
-    id:String, 
-    sourceid:String,
+    id: String,
+    sourceid: String,
     nameselected: String,
     subselected: String,
     button: gtk::Button,
-    userdata: Option<crate::ui::network::UserData>
-    ) {
+    userdata: Option<crate::ui::network::UserData>,
+) {
     let (sender, receiver) = async_channel::bounded::<Media>(1);
     let idc = id.clone();
     runtime().spawn(async move {
         match get_sub(idc, sourceid).await {
             Ok(media) => {
-                sender
-                    .send(media)
-                    .await
-                    .expect("series_info not received.");
+                sender.send(media).await.expect("series_info not received.");
             }
             Err(e) => eprintln!("Error: {}", e),
         }
@@ -244,12 +288,21 @@ pub fn set_sub(
                                                     id: id.clone(),
                                                     mediasourceid: mediasource.id.clone(),
                                                     playsessionid: media.play_session_id.clone(),
-                                                    tick: userdata.playback_position_ticks.unwrap_or_else(|| 0),
+                                                    tick: userdata
+                                                        .playback_position_ticks
+                                                        .unwrap_or_else(|| 0),
                                                 };
-                                                play_event(button.clone(),Some(directurl),Some(suburl),nameselected,back,userdata.played_percentage);
+                                                play_event(
+                                                    button.clone(),
+                                                    Some(directurl),
+                                                    Some(suburl),
+                                                    nameselected,
+                                                    back,
+                                                    userdata.played_percentage,
+                                                );
                                                 return;
                                             }
-                                        } 
+                                        }
                                     }
                                 }
                             }

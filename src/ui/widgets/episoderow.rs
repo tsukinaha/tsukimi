@@ -1,7 +1,7 @@
 use glib::Object;
+use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-use gtk::glib;
 
 use crate::ui::provider::episoderowitem::EpisodeObject;
 

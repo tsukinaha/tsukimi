@@ -1,17 +1,18 @@
+use crate::config::proxy::ReqClient;
+use crate::config::{self, get_device_name, APP_VERSION};
 use dirs::home_dir;
+use gtk::prelude::*;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 use serde_json::Value;
 use serde_yaml::to_string;
+use std::env;
 use std::fs::{self, write};
 use std::path::PathBuf;
-use tokio::runtime::{self, Runtime};
-use std::env;
-use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
-use crate::config::proxy::ReqClient;
-use crate::config::{self, get_device_name, APP_VERSION};
+use tokio::runtime::{self, Runtime};
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
@@ -25,12 +26,15 @@ pub struct Config {
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();
-    RUNTIME.get_or_init(|| runtime::Builder::new_multi_thread()
-                                            .worker_threads(4)
-                                            .enable_io()
-                                            .enable_time()
-                                            .build()
-                                            .expect("Failed to create runtime"))
+    let settings = gtk::gio::Settings::new(crate::APP_ID);
+    RUNTIME.get_or_init(|| {
+        runtime::Builder::new_multi_thread()
+            .worker_threads(settings.int("threads") as usize)
+            .enable_io()
+            .enable_time()
+            .build()
+            .expect("Failed to create runtime")
+    })
 }
 
 fn client() -> &'static Client {
@@ -139,7 +143,7 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
             "Fields",
             "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
         ),
-        ("IncludeItemTypes","Movie,Series"),
+        ("IncludeItemTypes", "Movie,Series"),
         ("StartIndex", "0"),
         ("SortBy", "SortName"),
         ("SortOrder", "Ascending"),
@@ -179,8 +183,6 @@ pub struct SeriesInfo {
     #[serde(rename = "UserData")]
     pub user_data: Option<UserData>,
 }
-
-
 
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
     let server_info = config::set_config();
@@ -431,11 +433,13 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
 pub async fn get_image(id: String) -> Result<String, Error> {
     let server_info = config::set_config();
 
-    let result = client().get(&format!(
-        "{}:{}/emby/Items/{}/Images/Primary?maxHeight=400",
-        server_info.domain, server_info.port, id
-    ))
-    .send().await;
+    let result = client()
+        .get(&format!(
+            "{}:{}/emby/Items/{}/Images/Primary?maxHeight=400",
+            server_info.domain, server_info.port, id
+        ))
+        .send()
+        .await;
 
     match result {
         Ok(response) => {
@@ -476,11 +480,13 @@ pub async fn get_image(id: String) -> Result<String, Error> {
 pub async fn get_thumbimage(id: String) -> Result<String, Error> {
     let server_info = config::set_config();
 
-    let result = client().get(&format!(
-        "{}:{}/emby/Items/{}/Images/Thumb",
-        server_info.domain, server_info.port, id
-    ))
-    .send().await;
+    let result = client()
+        .get(&format!(
+            "{}:{}/emby/Items/{}/Images/Thumb",
+            server_info.domain, server_info.port, id
+        ))
+        .send()
+        .await;
 
     match result {
         Ok(response) => {
@@ -521,11 +527,13 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
 pub async fn get_backdropimage(id: String) -> Result<String, Error> {
     let server_info = config::set_config();
 
-    let result = client().get(&format!(
-        "{}:{}/emby/Items/{}/Images/Backdrop",
-        server_info.domain, server_info.port, id
-    ))
-    .send().await;
+    let result = client()
+        .get(&format!(
+            "{}:{}/emby/Items/{}/Images/Backdrop",
+            server_info.domain, server_info.port, id
+        ))
+        .send()
+        .await;
 
     match result {
         Ok(response) => {
@@ -566,11 +574,13 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
 pub async fn get_logoimage(id: String) -> Result<String, Error> {
     let server_info = config::set_config();
 
-    let result = client().get(&format!(
-        "{}:{}/emby/Items/{}/Images/Logo",
-        server_info.domain, server_info.port, id
-    ))
-    .send().await;
+    let result = client()
+        .get(&format!(
+            "{}:{}/emby/Items/{}/Images/Logo",
+            server_info.domain, server_info.port, id
+        ))
+        .send()
+        .await;
 
     match result {
         Ok(response) => {
@@ -666,7 +676,7 @@ pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
     return Ok(mediainfo);
 }
 
-pub async fn get_sub(id: String,sourceid: String) -> Result<Media, Error> {
+pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
     let server_info = config::set_config();
     let client = client();
     let url = format!(
@@ -713,7 +723,7 @@ pub struct View {
     pub collection_type: Option<String>,
 }
 
-pub async fn get_library() -> Result<Vec<View>, Error>{
+pub async fn get_library() -> Result<Vec<View>, Error> {
     let server_info = config::set_config();
     let client = client();
     let url = format!(
@@ -729,11 +739,7 @@ pub async fn get_library() -> Result<Vec<View>, Error>{
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client
-        .get(&url)
-        .query(&params)
-        .send()
-        .await?;
+    let response = client.get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let views: Vec<View> = serde_json::from_value(json["Items"].clone()).unwrap();
     return Ok(views);
@@ -763,7 +769,10 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
 
     let params = [
         ("Limit", "16"),
-        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear"),
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+        ),
         ("ParentId", &id),
         ("ImageTypeLimit", "1"),
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
@@ -774,17 +783,17 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client
-        .get(&url)
-        .query(&params)
-        .send()
-        .await?;
+    let response = client.get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let latests: Vec<Latest> = serde_json::from_value(json.clone()).unwrap();
     return Ok(latests);
 }
 
-pub async fn get_list(id: String,start: String,mutex: std::sync::Arc<tokio::sync::Mutex<()>>) -> Result<List, Error> {
+pub async fn get_list(
+    id: String,
+    start: String,
+    mutex: std::sync::Arc<tokio::sync::Mutex<()>>,
+) -> Result<List, Error> {
     let _ = mutex.lock().await;
     let server_info = config::set_config();
     let client = client();
@@ -795,14 +804,16 @@ pub async fn get_list(id: String,start: String,mutex: std::sync::Arc<tokio::sync
 
     let params = [
         ("Limit", "50"),
-        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate"),
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+        ),
         ("ParentId", &id),
         ("ImageTypeLimit", "1"),
         ("StartIndex", &start),
-        ("IncludeItemTypes","Movie,Series,MusicAlbum"),
+        ("IncludeItemTypes", "Movie,Series,MusicAlbum"),
         ("SortBy", "DateCreated,SortName"),
         ("SortOrder", "Descending"),
-        ("Recursive", "true"),
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
@@ -811,11 +822,7 @@ pub async fn get_list(id: String,start: String,mutex: std::sync::Arc<tokio::sync
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client
-        .get(&url)
-        .query(&params)
-        .send()
-        .await?;
+    let response = client.get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let latests: List = serde_json::from_value(json.clone()).unwrap();
     return Ok(latests);
@@ -846,7 +853,7 @@ pub struct Back {
     pub tick: u64,
 }
 
-pub async fn positionback(back:Back) {
+pub async fn positionback(back: Back) {
     let server_info = config::set_config();
     let client = client();
     let url = format!(
@@ -868,10 +875,11 @@ pub async fn positionback(back:Back) {
         .query(&params)
         .json(&profile)
         .send()
-        .await.unwrap();
+        .await
+        .unwrap();
 }
 
-pub async fn positionstop(back:Back) {
+pub async fn positionstop(back: Back) {
     let server_info = config::set_config();
     let client = client();
     let url = format!(
@@ -893,10 +901,11 @@ pub async fn positionstop(back:Back) {
         .query(&params)
         .json(&profile)
         .send()
-        .await.unwrap();
+        .await
+        .unwrap();
 }
 
-pub async fn playstart(back:Back) {
+pub async fn playstart(back: Back) {
     let server_info = config::set_config();
     let client = client();
     let url = format!(
@@ -918,5 +927,6 @@ pub async fn playstart(back:Back) {
         .query(&params)
         .json(&profile)
         .send()
-        .await.unwrap();
+        .await
+        .unwrap();
 }

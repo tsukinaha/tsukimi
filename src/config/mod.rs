@@ -1,10 +1,10 @@
-use std::{env, fs::File, io::Read};
-use uuid::Uuid;
 use dirs::home_dir;
 use serde::{Deserialize, Serialize};
+use std::{env, fs::File, io::Read};
+use uuid::Uuid;
 
 pub mod proxy;
-pub const APP_VERSION:&str = "0.4.0";
+pub const APP_VERSION: &str = "0.4.0";
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
@@ -40,9 +40,7 @@ pub fn load_cfg() {
 
         let uuid = generate_uuid();
         env::set_var("UUID", &uuid);
-
     } else {
-        
         let uuid = generate_uuid();
         env::set_var("UUID", &uuid);
     };
@@ -65,8 +63,8 @@ pub fn get_device_name() -> String {
         env::var("COMPUTERNAME").unwrap_or("Unknown Device".to_string())
     } else {
         let output = std::process::Command::new("uname")
-        .output()
-        .expect("failed to execute process");
+            .output()
+            .expect("failed to execute process");
 
         String::from_utf8_lossy(&output.stdout).trim().to_string()
     }
