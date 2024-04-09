@@ -35,6 +35,7 @@ jobs:
           brew install gtk4
           brew install libadwaita
           brew install dylibbundler
+          brew install mpv
           rustup target add ${{matrix.target}}
           cargo build --release --locked
 
