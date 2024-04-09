@@ -49,7 +49,7 @@ pub fn setimage(id: String) -> Revealer {
     }
 
     glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
-        while let Ok(_) = receiver.recv().await {
+        while receiver.recv().await.is_ok() {
             let path = format!("{}/.local/share/tsukimi/{}.png",dirs::home_dir().expect("msg").display(), idfuture);
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
@@ -108,7 +108,7 @@ pub fn setthumbimage(id: String) -> Revealer {
     }
 
     glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
-        while let Ok(_) = receiver.recv().await {
+        while receiver.recv().await.is_ok() {
             let path = format!("{}/.local/share/tsukimi/t{}.png",dirs::home_dir().expect("msg").display(), idfuture);
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
@@ -167,7 +167,7 @@ pub fn setbackdropimage(id: String) -> Revealer {
     }
 
     glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
-        while let Ok(_) = receiver.recv().await {
+        while receiver.recv().await.is_ok() {
             let path = format!("{}/.local/share/tsukimi/b{}.png",dirs::home_dir().expect("msg").display(), idfuture);
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
@@ -225,7 +225,7 @@ pub fn setlogoimage(id: String) -> Revealer {
     }
 
     glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
-        while let Ok(_) = receiver.recv().await {
+        while receiver.recv().await.is_ok() {
             let path = format!("{}/.local/share/tsukimi/l{}.png",dirs::home_dir().expect("msg").display(), idfuture);
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));

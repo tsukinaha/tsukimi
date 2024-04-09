@@ -204,10 +204,10 @@ impl HomePage {
         libscrolled.set_child(Some(&liblist));
     }
 
-    pub fn get_librarysscroll(&self, views: &Vec<crate::ui::network::View>) {
+    pub fn get_librarysscroll(&self, views: &[crate::ui::network::View]) {
         let libsrevealer = self.imp().libsrevealer.get();
         libsrevealer.set_reveal_child(true);
-        for view in views.clone() {
+        for view in views.iter().cloned() {
             let libsbox = self.imp().libsbox.get();
             let scrolledwindow = gtk::ScrolledWindow::builder()
                 .hscrollbar_policy(gtk::PolicyType::Automatic)

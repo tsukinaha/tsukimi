@@ -136,7 +136,7 @@ mod imp {
             let idclone = id.clone();
 
             glib::spawn_future_local(async move {
-                while let Ok(_) = receiver.recv().await {
+                while receiver.recv().await.is_ok() {
                     let path = format!(
                         "{}/.local/share/tsukimi/b{}.png",
                         dirs::home_dir().expect("msg").display(),

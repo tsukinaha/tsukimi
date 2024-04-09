@@ -39,7 +39,7 @@ pub fn runtime() -> &'static Runtime {
 
 fn client() -> &'static Client {
     static CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
-    CLIENT.get_or_init(ReqClient::new)
+    CLIENT.get_or_init(ReqClient::build)
 }
 
 pub async fn login(
