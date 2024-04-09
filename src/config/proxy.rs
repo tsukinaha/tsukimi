@@ -8,12 +8,12 @@ impl ReqClient {
         if !settings.string("proxy").is_empty() {
             let proxy = reqwest::Proxy::all(settings.string("proxy").to_string())
                 .expect("failed to find proxy");
-            return reqwest::Client::builder()
+            reqwest::Client::builder()
                 .proxy(proxy)
                 .build()
-                .expect("failed to initialize client");
+                .expect("failed to initialize client")
         } else {
-            return reqwest::Client::new();
+            reqwest::Client::new()
         }
     }
 }

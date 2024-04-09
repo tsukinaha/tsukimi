@@ -194,18 +194,16 @@ mod imp {
                         let object = glib::BoxedAnyObject::new(info.clone());
                         store.append(&object);
                     }
-                    if inid != idc {
-                        if info.id == inid {
-                            let seriesinfo = network::SeriesInfo {
-                                id: inid.clone(),
-                                name: info.name.clone(),
-                                index_number: info.index_number,
-                                parent_index_number: info.parent_index_number,
-                                user_data: info.user_data.clone(),
-                                overview: info.overview.clone(),
-                            };
-                            obj.selectepisode(seriesinfo.clone());
-                        }
+                    if inid != idc && info.id == inid {
+                        let seriesinfo = network::SeriesInfo {
+                            id: inid.clone(),
+                            name: info.name.clone(),
+                            index_number: info.index_number,
+                            parent_index_number: info.parent_index_number,
+                            user_data: info.user_data.clone(),
+                            overview: info.overview.clone(),
+                        };
+                        obj.selectepisode(seriesinfo.clone());
                     }
                 }
                 seasonlist.set_selected(pos);
@@ -447,10 +445,10 @@ impl ItemPage {
         });
         glib::spawn_future_local(async move {
             while let Ok(media) = receiver.recv().await {
-                while mediainfobox.last_child() != None {
-                    mediainfobox
-                        .last_child()
-                        .map(|child| mediainfobox.remove(&child));
+                while mediainfobox.last_child().is_some() {
+                    if let Some(child) = mediainfobox.last_child() {
+                        mediainfobox.remove(&child)
+                    }
                 }
                 for mediasource in media.media_sources {
                     let singlebox = gtk::Box::new(gtk::Orientation::Vertical, 5);
@@ -578,8 +576,10 @@ impl ItemPage {
             linksrevealer.set_reveal_child(true);
         }
         let linkbox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
-        while linkbox.last_child() != None {
-            linkbox.last_child().map(|child| linkbox.remove(&child));
+        while linkbox.last_child().is_some() {
+            if let Some(child) = linkbox.last_child() {
+                linkbox.remove(&child)
+            }
         }
         for url in links {
             let linkbutton = gtk::Button::builder()

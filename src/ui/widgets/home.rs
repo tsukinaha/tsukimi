@@ -178,7 +178,7 @@ impl HomePage {
                 }
             }
             if label.is::<gtk::Label>() {
-                let str = format!("{}", view.name);
+                let str = view.name.to_string();
                 label
                     .downcast_ref::<gtk::Label>()
                     .expect("Needs to be Label")
@@ -343,7 +343,7 @@ impl HomePage {
                 }
             }
             if label.is::<gtk::Label>() {
-                let mut str = format!("{}", latest.name);
+                let mut str = latest.name.to_string();
                 if let Some(productionyear) = latest.production_year {
                     str.push_str(&format!("\n{}", productionyear));
                 }

@@ -202,7 +202,7 @@ impl ListPage {
                 }
             }
             if label.is::<gtk::Label>() {
-                let mut str = format!("{}", latest.name);
+                let mut str = latest.name.to_string();
                 if let Some(productionyear) = latest.production_year {
                     str.push_str(&format!("\n{}", productionyear));
                 }

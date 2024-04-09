@@ -465,7 +465,7 @@ impl Window {
     pub fn toast(&self, message: &str) {
         let imp = self.imp();
         let toast = adw::Toast::builder()
-            .title(format!("{}", message))
+            .title(message.to_string())
             .timeout(3)
             .build();
         imp.toast.add_toast(toast);
