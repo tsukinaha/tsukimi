@@ -811,6 +811,7 @@ pub async fn get_list(
         ("ParentId", &id),
         ("ImageTypeLimit", "1"),
         ("StartIndex", &start),
+        ("Recursive", "True"),
         ("IncludeItemTypes", "Movie,Series,MusicAlbum"),
         ("SortBy", "DateCreated,SortName"),
         ("SortOrder", "Descending"),

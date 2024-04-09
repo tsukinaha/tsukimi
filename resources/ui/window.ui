@@ -48,6 +48,7 @@
                                 <property name="orientation">vertical</property>
                                 <property name="width-request">500</property>
                                 <property name="halign">center</property>
+                                <property name="spacing">12</property>
                                 <child>
                                   <object class="AdwEntryRow" id="serverentry">
                                     <property name="title" translatable="yes">Server</property>
