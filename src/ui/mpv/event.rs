@@ -1,11 +1,24 @@
 use gtk::prelude::*;
 use libmpv::{events::*, *};
 
-use std::{collections::HashMap, thread, time::{Duration, Instant}};
+use std::{
+    collections::HashMap,
+    thread,
+    time::{Duration, Instant},
+};
 
-use crate::{config::set_config, ui::network::{runtime, Back}, APP_ID};
-pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,percentage:Option<f64>) -> Result<()> {
-
+use crate::{
+    config::set_config,
+    ui::network::{runtime, Back},
+    APP_ID,
+};
+pub fn play(
+    url: String,
+    suburl: Option<String>,
+    name: Option<String>,
+    back: &Back,
+    percentage: Option<f64>,
+) -> Result<()> {
     unsafe {
         use libc::setlocale;
         use libc::LC_NUMERIC;
@@ -27,7 +40,7 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
         init.set_property("config", true)?;
         init.set_property("input-vo-keyboard", true)?;
         init.set_property("input-default-bindings", true)?;
-        
+
         if let Some(name) = name {
             init.set_property("force-media-title", name)?;
         }
@@ -42,12 +55,13 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
 
         if settings.boolean("is-resume") {
             if let Some(percentage) = percentage {
-                init.set_property("start", format!("{}%",percentage as u32))?;
+                init.set_property("start", format!("{}%", percentage as u32))?;
             }
         }
 
         Ok(())
-    }).unwrap();
+    })
+    .unwrap();
     mpv.set_property("volume", 75)?;
 
     let mut ev_ctx = mpv.create_event_context();
@@ -58,9 +72,8 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
     let backc = back.clone();
     runtime().spawn(async move {
         crate::ui::network::playstart(backc).await;
-    });    
+    });
 
-    
     crossbeam::scope(|scope| {
         scope.spawn(|_| {
             mpv.playlist_load_files(&[(&url, FileState::AppendPlay, None)])
@@ -69,10 +82,8 @@ pub fn play(url:String,suburl:Option<String>,name:Option<String>,back:&Back,perc
             if let Some(suburl) = suburl {
                 let suburl = format!("{}:{}/emby{}", server_info.domain, server_info.port, suburl);
                 println!("Loading subtitle");
-                mpv.subtitle_add_select(&suburl, None, None)
-                 .unwrap();
+                mpv.subtitle_add_select(&suburl, None, None).unwrap();
             }
-            
         });
         let mut last_print = Instant::now();
         scope.spawn(move |_| loop {

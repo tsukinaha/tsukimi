@@ -1,10 +1,10 @@
 mod image;
 mod moviedrop;
+mod mpv;
 mod network;
 mod new_dropsel;
 mod provider;
 mod widgets;
-mod mpv;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
 
@@ -26,15 +26,13 @@ pub fn build_ui(app: &adw::Application) {
                 about.present();
             })
             .build();
-    window.add_action_entries([
-            about_action,
-    ]);
+    window.add_action_entries([about_action]);
     window.present();
 }
 
 pub fn load_css() {
     let settings = gtk::gio::Settings::new(crate::APP_ID);
-    
+
     let provider = CssProvider::new();
     match settings.string("theme").as_str() {
         "Catppuccin Latte" => {
@@ -58,12 +56,11 @@ pub fn load_css() {
         _ => {
             provider.load_from_string(include_str!("basic.css"));
         }
-    } 
+    }
     // Add the provider to the default screen
     gtk::style_context_add_provider_for_display(
         &Display::default().expect("Could not connect to a display."),
         &provider,
         gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
     );
-    
 }

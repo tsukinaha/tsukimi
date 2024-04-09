@@ -216,22 +216,24 @@ impl ListPage {
         imp.listgrid.set_model(Some(&imp.selection));
         imp.listgrid.set_min_columns(3);
         imp.listgrid.set_max_columns(13);
-        imp.listgrid.connect_activate(glib::clone!(@weak self as obj => move |gridview, position| {
-            let model = gridview.model().unwrap();
-            let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-            let result: std::cell::Ref<crate::ui::network::Latest> = item.borrow();
-            let window = obj.root().and_downcast::<Window>().unwrap();
-            if result.latest_type == "Movie" {
-                window.set_title(&result.name);
-                let item_page = MoviePage::new(result.id.clone(),result.name.clone());
-                window.imp().homeview.push(&item_page);
-            } else if result.latest_type == "Series" {
-                window.set_title(&result.name);
-                let item_page = ItemPage::new(result.id.clone(),result.id.clone());
-                window.imp().homeview.push(&item_page);
-            } 
-            std::env::set_var("HOME_TITLE", &result.name);
-        })); 
+        imp.listgrid.connect_activate(
+            glib::clone!(@weak self as obj => move |gridview, position| {
+                let model = gridview.model().unwrap();
+                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                let result: std::cell::Ref<crate::ui::network::Latest> = item.borrow();
+                let window = obj.root().and_downcast::<Window>().unwrap();
+                if result.latest_type == "Movie" {
+                    window.set_title(&result.name);
+                    let item_page = MoviePage::new(result.id.clone(),result.name.clone());
+                    window.imp().homeview.push(&item_page);
+                } else if result.latest_type == "Series" {
+                    window.set_title(&result.name);
+                    let item_page = ItemPage::new(result.id.clone(),result.id.clone());
+                    window.imp().homeview.push(&item_page);
+                }
+                std::env::set_var("HOME_TITLE", &result.name);
+            }),
+        );
         self.update();
     }
 
@@ -266,4 +268,3 @@ impl ListPage {
         }));
     }
 }
-

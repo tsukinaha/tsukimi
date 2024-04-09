@@ -278,15 +278,16 @@ mod imp {
             self.itemlist.set_model(Some(&self.selection));
             let logobox = self.logobox.get();
             obj.logoset(logobox);
-            self.itemlist.connect_activate(glib::clone!(@weak obj =>move |listview, position| {
-                let model = listview.model().unwrap();
-                let item = model
-                    .item(position)
-                    .and_downcast::<glib::BoxedAnyObject>()
-                    .unwrap();
-                let seriesinfo: Ref<network::SeriesInfo> = item.borrow();
-                obj.selectepisode(seriesinfo.clone());
-            }));
+            self.itemlist
+                .connect_activate(glib::clone!(@weak obj =>move |listview, position| {
+                    let model = listview.model().unwrap();
+                    let item = model
+                        .item(position)
+                        .and_downcast::<glib::BoxedAnyObject>()
+                        .unwrap();
+                    let seriesinfo: Ref<network::SeriesInfo> = item.borrow();
+                    obj.selectepisode(seriesinfo.clone());
+                }));
         }
     }
 
@@ -396,7 +397,7 @@ impl ItemPage {
                     }
                     osdbox.append(&dropdown);
                 }
-            }), 
+            }),
         );
 
         if let Some(overview) = seriesinfo.overview {
@@ -412,7 +413,9 @@ impl ItemPage {
         let overviewrevealer = imp.overviewrevealer.get();
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
         crate::ui::network::runtime().spawn(async move {
-            let item = crate::ui::network::get_item_overview(id.to_string()).await.expect("msg");
+            let item = crate::ui::network::get_item_overview(id.to_string())
+                .await
+                .expect("msg");
             sender.send(item).await.expect("msg");
         });
         glib::spawn_future_local(glib::clone!(@weak self as obj=>async move {
@@ -431,23 +434,32 @@ impl ItemPage {
         }));
     }
 
-    pub fn createmediabox(&self,id: String) {
+    pub fn createmediabox(&self, id: String) {
         let imp = self.imp();
         let mediainfobox = imp.mediainfobox.get();
         let mediainforevealer = imp.mediainforevealer.get();
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
         crate::ui::network::runtime().spawn(async move {
-            let media = crate::ui::network::get_mediainfo(id.to_string()).await.expect("msg");
+            let media = crate::ui::network::get_mediainfo(id.to_string())
+                .await
+                .expect("msg");
             sender.send(media).await.expect("msg");
         });
         glib::spawn_future_local(async move {
             while let Ok(media) = receiver.recv().await {
                 while mediainfobox.last_child() != None {
-                    mediainfobox.last_child().map(|child| mediainfobox.remove(&child));
+                    mediainfobox
+                        .last_child()
+                        .map(|child| mediainfobox.remove(&child));
                 }
                 for mediasource in media.media_sources {
                     let singlebox = gtk::Box::new(gtk::Orientation::Vertical, 5);
-                    let info = format!("{} {}\n{}", mediasource.container.to_uppercase(), bytefmt::format(mediasource.size), mediasource.name);
+                    let info = format!(
+                        "{} {}\n{}",
+                        mediasource.container.to_uppercase(),
+                        bytefmt::format(mediasource.size),
+                        mediasource.name
+                    );
                     let label = gtk::Label::builder()
                         .label(&info)
                         .halign(gtk::Align::Start)
@@ -476,9 +488,7 @@ impl ItemPage {
                             .width_request(300)
                             .build();
                         let mut str: String = Default::default();
-                        let icon = gtk::Image::builder()
-                            .margin_end(5)
-                            .build();
+                        let icon = gtk::Image::builder().margin_end(5).build();
                         if mediapart.stream_type == "Video" {
                             icon.set_from_icon_name(Some("video-x-generic-symbolic"))
                         } else if mediapart.stream_type == "Audio" {
@@ -504,7 +514,9 @@ impl ItemPage {
                             str.push_str(format!("\nTitle: {}", title).as_str());
                         }
                         if let Some(bitrate) = mediapart.bit_rate {
-                            str.push_str(format!("\nBitrate: {}it/s", bytefmt::format(bitrate)).as_str());
+                            str.push_str(
+                                format!("\nBitrate: {}it/s", bytefmt::format(bitrate)).as_str(),
+                            );
                         }
                         if let Some(bitdepth) = mediapart.bit_depth {
                             str.push_str(format!("\nBitDepth: {} bit", bitdepth).as_str());
@@ -531,7 +543,9 @@ impl ItemPage {
                             str.push_str(format!("\nChannelLayout: {}", channellayout).as_str());
                         }
                         if let Some(averageframerate) = mediapart.average_frame_rate {
-                            str.push_str(format!("\nAverageFrameRate: {}", averageframerate).as_str());
+                            str.push_str(
+                                format!("\nAverageFrameRate: {}", averageframerate).as_str(),
+                            );
                         }
                         if let Some(pixelformat) = mediapart.pixel_format {
                             str.push_str(format!("\nPixelFormat: {}", pixelformat).as_str());
@@ -546,7 +560,7 @@ impl ItemPage {
                         mediapartbox.append(&inscription);
                         mediabox.append(&mediapartbox);
                     }
-                    
+
                     mediascrolled.set_child(Some(&mediabox));
                     singlebox.append(&mediascrolled);
                     mediainfobox.append(&singlebox);
@@ -578,7 +592,10 @@ impl ItemPage {
                 .build();
             linkbutton.set_child(Some(&buttoncontent));
             linkbutton.connect_clicked(move |_| {
-                let _ = gio::AppInfo::launch_default_for_uri(&url.url, Option::<&gio::AppLaunchContext>::None);
+                let _ = gio::AppInfo::launch_default_for_uri(
+                    &url.url,
+                    Option::<&gio::AppLaunchContext>::None,
+                );
             });
             linkbox.append(&linkbutton);
         }
@@ -648,26 +665,25 @@ impl ItemPage {
                 if let Some(_revealer) = picture
                     .downcast_ref::<gtk::Box>()
                     .expect("Needs to be Box")
-                    .first_child() {
-                    
+                    .first_child()
+                {
                 } else {
-                let img = crate::ui::image::setimage(people.id.clone());
-                picture
-                    .downcast_ref::<gtk::Box>()
-                    .expect("Needs to be Box")
-                    .append(&img);
+                    let img = crate::ui::image::setimage(people.id.clone());
+                    picture
+                        .downcast_ref::<gtk::Box>()
+                        .expect("Needs to be Box")
+                        .append(&img);
                 }
             }
             if label.is::<gtk::Label>() {
                 if let Some(role) = &people.role {
-                let str = format!("{}\n{}", people.name, role);
-                label
-                    .downcast_ref::<gtk::Label>()
-                    .expect("Needs to be Label")
-                    .set_text(&str);
+                    let str = format!("{}\n{}", people.name, role);
+                    label
+                        .downcast_ref::<gtk::Label>()
+                        .expect("Needs to be Label")
+                        .set_text(&str);
                 }
             }
-            
         });
         imp.actorlist.set_factory(Some(&factory));
         imp.actorlist.set_model(Some(actorselection));

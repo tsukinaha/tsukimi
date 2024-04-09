@@ -90,8 +90,7 @@ mod imp {
                     );
                 } else {
                     if result.resume_type == "Movie" {
-                        imgbox =
-                            crate::ui::image::setbackdropimage(result.id.clone());
+                        imgbox = crate::ui::image::setbackdropimage(result.id.clone());
                     } else if result.parent_thumb_item_id.is_some() {
                         imgbox = crate::ui::image::setthumbimage(
                             result.series_id.as_ref().expect("").to_string(),

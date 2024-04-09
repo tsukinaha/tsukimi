@@ -1,7 +1,6 @@
 use glib::Object;
 use gtk::{gio, glib};
 
-
 mod imp {
 
     use glib::subclass::InitializingObject;
@@ -101,7 +100,12 @@ mod imp {
                 if let Some(userdata) = &result.user_data {
                     if let Some(unplayeditemcount) = userdata.unplayed_item_count {
                         if unplayeditemcount > 0 {
-                            let mark = gtk::Label::new(Some(&userdata.unplayed_item_count.expect("no unplayeditemcount").to_string()));
+                            let mark = gtk::Label::new(Some(
+                                &userdata
+                                    .unplayed_item_count
+                                    .expect("no unplayeditemcount")
+                                    .to_string(),
+                            ));
                             mark.set_valign(gtk::Align::Start);
                             mark.set_halign(gtk::Align::End);
                             mark.set_height_request(40);
@@ -116,7 +120,10 @@ mod imp {
                 label.set_size_request(-1, 24);
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 let labeltype = Label::new(Some(&result.result_type));
-                let markup = format!("<span color='lightgray' font='small'>{}</span>", result.result_type);
+                let markup = format!(
+                    "<span color='lightgray' font='small'>{}</span>",
+                    result.result_type
+                );
                 labeltype.set_markup(markup.as_str());
                 labeltype.set_size_request(-1, 24);
                 vbox.append(&label);
@@ -131,23 +138,24 @@ mod imp {
             self.searchgrid.set_model(Some(&self.selection));
             self.searchgrid.set_min_columns(4);
             self.searchgrid.set_max_columns(4);
-            self.searchgrid.connect_activate(glib::clone!(@weak obj => move |gridview, position| {
-                let model = gridview.model().unwrap();
-                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let result: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
-                let window = obj.root().and_downcast::<Window>().unwrap();
-                if result.result_type == "Movie" {
-                    let item_page = MoviePage::new(result.id.clone(),result.name.clone());
-                    window.imp().searchview.push(&item_page);
-                    window.change_pop_visibility();
-                } else {
-                    let item_page = ItemPage::new(result.id.clone(),result.id.clone());
-                    window.imp().searchview.push(&item_page);
-                    window.change_pop_visibility();
-                }
-                window.set_title(&result.name);
-                std::env::set_var("SEARCH_TITLE", &result.name)
-            }));
+            self.searchgrid
+                .connect_activate(glib::clone!(@weak obj => move |gridview, position| {
+                    let model = gridview.model().unwrap();
+                    let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                    let result: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
+                    let window = obj.root().and_downcast::<Window>().unwrap();
+                    if result.result_type == "Movie" {
+                        let item_page = MoviePage::new(result.id.clone(),result.name.clone());
+                        window.imp().searchview.push(&item_page);
+                        window.change_pop_visibility();
+                    } else {
+                        let item_page = ItemPage::new(result.id.clone(),result.id.clone());
+                        window.imp().searchview.push(&item_page);
+                        window.change_pop_visibility();
+                    }
+                    window.set_title(&result.name);
+                    std::env::set_var("SEARCH_TITLE", &result.name)
+                }));
         }
     }
 

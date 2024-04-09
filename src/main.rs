@@ -1,8 +1,8 @@
 #![windows_subsystem = "windows"]
 use gtk::prelude::*;
 use gtk::{gio, glib};
-mod ui;
 mod config;
+mod ui;
 
 const APP_ID: &str = "moe.tsuna.tsukimi";
 
@@ -20,7 +20,6 @@ fn main() -> glib::ExitCode {
     app.connect_activate(ui::build_ui);
 
     app.set_accels_for_action("win.about", &["<Ctrl>N"]);
-
 
     // Run the application
     app.run()

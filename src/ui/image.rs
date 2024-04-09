@@ -178,7 +178,6 @@ pub fn setbackdropimage(id: String) -> Revealer {
     revealer
 }
 
-
 pub fn setlogoimage(id: String) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 

@@ -45,5 +45,9 @@
       <default>700</default>
       <summary>Default background height</summary>
     </key>
+    <key name="threads" type="i">
+      <default>4</default>
+      <summary>Default threads</summary>
+    </key>
   </schema>
 </schemalist>

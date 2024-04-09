@@ -2,16 +2,16 @@ use std::env;
 
 use adw::prelude::NavigationPageExt;
 use dirs::home_dir;
-use gtk::prelude::*;
 use gio::Settings;
+use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 mod imp {
     use std::cell::OnceCell;
 
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
     use gtk::gio::Settings;
+    use gtk::prelude::*;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
@@ -108,26 +108,27 @@ mod imp {
             obj.setup_settings();
             obj.load_window_size();
             obj.loginenter();
-            self.selectlist.connect_row_selected(glib::clone!(@weak obj => move |_, row| {
-                if let Some(row) = row {
-                    let num = row.index();
-                    match num {
-                        0 => {
-                            obj.homepage();
+            self.selectlist
+                .connect_row_selected(glib::clone!(@weak obj => move |_, row| {
+                    if let Some(row) = row {
+                        let num = row.index();
+                        match num {
+                            0 => {
+                                obj.homepage();
+                            }
+                            1 => {
+                                obj.historypage();
+                            }
+                            2 => {
+                                obj.searchpage();
+                            }
+                            3 => {
+                                obj.settingspage();
+                            }
+                            _ => {}
                         }
-                        1 => {
-                            obj.historypage();
-                        }
-                        2 => {
-                            obj.searchpage();
-                        }
-                        3 => {
-                            obj.settingspage();
-                        }
-                        _ => {}
                     }
-                }
-            }));
+                }));
         }
     }
 
@@ -136,7 +137,7 @@ mod imp {
 
     // Trait shared by all windows
     impl WindowImpl for Window {
-            // Save window state right before the window will be closed
+        // Save window state right before the window will be closed
         fn close_request(&self) -> glib::Propagation {
             // Save window size
             self.obj()
@@ -294,8 +295,8 @@ impl Window {
         let imp = self.imp();
         imp.insidestack.set_visible_child_name("homepage");
         if imp.homepage.child().is_none() {
-        imp.homepage
-            .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
+            imp.homepage
+                .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
             imp.navipage.set_title("Home");
         }
         if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
@@ -303,11 +304,13 @@ impl Window {
                 imp.navipage.set_title("Home");
                 self.set_pop_visibility(false);
             } else {
-                imp.navipage.set_title(&env::var("HOME_TITLE").unwrap_or_else(|_| "Home".to_string()));
+                imp.navipage
+                    .set_title(&env::var("HOME_TITLE").unwrap_or_else(|_| "Home".to_string()));
                 self.set_pop_visibility(true);
             }
         } else {
-            imp.navipage.set_title(&env::var("HOME_TITLE").unwrap_or_else(|_| "Home".to_string()));
+            imp.navipage
+                .set_title(&env::var("HOME_TITLE").unwrap_or_else(|_| "Home".to_string()));
             self.set_pop_visibility(true);
         }
     }
@@ -315,7 +318,8 @@ impl Window {
     fn freshhomepage(&self) {
         let imp = self.imp();
         imp.insidestack.set_visible_child_name("homepage");
-        imp.homeview.pop_to_page(&imp.homeview.find_page("homepage").unwrap());
+        imp.homeview
+            .pop_to_page(&imp.homeview.find_page("homepage").unwrap());
         imp.homepage
             .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
         imp.navipage.set_title("Home");
@@ -324,7 +328,8 @@ impl Window {
     fn freshhistorypage(&self) {
         let imp = self.imp();
         imp.insidestack.set_visible_child_name("historypage");
-        imp.historyview.pop_to_page(&imp.historyview.find_page("historypage").unwrap());
+        imp.historyview
+            .pop_to_page(&imp.historyview.find_page("historypage").unwrap());
         imp.historypage
             .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
         imp.navipage.set_title("History");
@@ -333,7 +338,8 @@ impl Window {
     fn freshsearchpage(&self) {
         let imp = self.imp();
         imp.insidestack.set_visible_child_name("searchpage");
-        imp.searchview.pop_to_page(&imp.searchview.find_page("searchpage").unwrap());
+        imp.searchview
+            .pop_to_page(&imp.searchview.find_page("searchpage").unwrap());
         imp.searchpage
             .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
         imp.navipage.set_title("Search");
@@ -343,8 +349,8 @@ impl Window {
         let imp = self.imp();
         imp.insidestack.set_visible_child_name("historypage");
         if imp.historypage.child().is_none() {
-        imp.historypage
-            .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
+            imp.historypage
+                .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
             imp.navipage.set_title("History");
         }
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
@@ -353,11 +359,14 @@ impl Window {
                 self.set_pop_visibility(false);
             } else {
                 self.set_pop_visibility(true);
-                imp.navipage.set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "History".to_string()));
+                imp.navipage.set_title(
+                    &env::var("HISTORY_TITLE").unwrap_or_else(|_| "History".to_string()),
+                );
             }
         } else {
             self.set_pop_visibility(true);
-            imp.navipage.set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "History".to_string()));
+            imp.navipage
+                .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "History".to_string()));
         }
     }
 
@@ -365,8 +374,8 @@ impl Window {
         let imp = self.imp();
         imp.insidestack.set_visible_child_name("searchpage");
         if imp.searchpage.child().is_none() {
-        imp.searchpage
-            .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
+            imp.searchpage
+                .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
             imp.navipage.set_title("Search");
         }
         if let Some(tag) = imp.searchview.visible_page().unwrap().tag() {
@@ -375,28 +384,31 @@ impl Window {
                 self.set_pop_visibility(false);
             } else {
                 self.set_pop_visibility(true);
-                imp.navipage.set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| "Search".to_string()));
+                imp.navipage
+                    .set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| "Search".to_string()));
             }
         } else {
             self.set_pop_visibility(true);
-            imp.navipage.set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| "Search".to_string()));
+            imp.navipage
+                .set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| "Search".to_string()));
         }
     }
 
     fn settingspage(&self) {
         let imp = self.imp();
         if imp.settingspage.child().is_none() {
-        imp.settingspage
-            .set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
+            imp.settingspage
+                .set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
         }
         imp.insidestack.set_visible_child_name("settingspage");
         imp.navipage.set_title("Preferences");
         self.set_pop_visibility(false);
     }
-    
+
     fn sidebar(&self) {
         let imp = self.imp();
-        imp.split_view.set_show_sidebar(!imp.split_view.shows_sidebar());
+        imp.split_view
+            .set_show_sidebar(!imp.split_view.shows_sidebar());
     }
 
     pub fn overlay_sidebar(&self, overlay: bool) {
@@ -437,7 +449,7 @@ impl Window {
                     loginbutton.set_label("Link Failed");
                 }
             }
-        }));   
+        }));
     }
 
     fn loginenter(&self) {
@@ -452,11 +464,10 @@ impl Window {
 
     pub fn toast(&self, message: &str) {
         let imp = self.imp();
-        let toast = 
-            adw::Toast::builder()
-                        .title(format!("{}",message))
-                        .timeout(3)
-                        .build();
+        let toast = adw::Toast::builder()
+            .title(format!("{}", message))
+            .timeout(3)
+            .build();
         imp.toast.add_toast(toast);
     }
 }
