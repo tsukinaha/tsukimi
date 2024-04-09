@@ -1,4 +1,5 @@
 use adw::prelude::*;
+use dirs::home_dir;
 use glib::Object;
 use gtk::{
     gio,
@@ -34,6 +35,8 @@ mod imp {
         pub themecontrol: TemplateChild<adw::ComboRow>,
         #[template_child]
         pub proxyentry: TemplateChild<adw::EntryRow>,
+        #[template_child]
+        pub toast: TemplateChild<adw::ToastOverlay>,
     }
 
     // The central trait for subclassing a GObject
@@ -51,6 +54,9 @@ mod imp {
             });
             klass.install_action("win.proxyclear", None, move |set, _action, _parameter| {
                 set.proxyclear();
+            });
+            klass.install_action("setting.clear", None, move |set, _action, _parameter| {
+                set.cacheclear();
             });
         }
 
@@ -106,7 +112,7 @@ impl SettingsPage {
     }
 
     pub fn set_sidebar(&self) {
-        let imp = imp::SettingsPage::from_obj(self);
+        let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
         imp.sidebarcontrol.set_active(settings.boolean("is-overlay"));
         imp.sidebarcontrol.connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
@@ -117,7 +123,7 @@ impl SettingsPage {
     }
 
     pub fn set_back(&self) {
-        let imp = imp::SettingsPage::from_obj(self);
+        let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
         imp.backcontrol.set_active(settings.boolean("is-progress-enabled"));
         imp.backcontrol.connect_active_notify(move |control| {
@@ -126,7 +132,7 @@ impl SettingsPage {
     }
 
     pub fn set_spin(&self) {
-        let imp = imp::SettingsPage::from_obj(self);
+        let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
         imp.spinrow.set_value(settings.int("background-height").into());
         imp.spinrow.connect_value_notify(move |control| {
@@ -135,7 +141,7 @@ impl SettingsPage {
     }
 
     pub fn set_fullscreen(&self) {
-        let imp = imp::SettingsPage::from_obj(self);
+        let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
         imp.autofullscreencontrol.set_active(settings.boolean("is-fullscreen"));
         imp.autofullscreencontrol.connect_active_notify(move |control| {
@@ -144,7 +150,7 @@ impl SettingsPage {
     }
 
     pub fn set_forcewindow(&self) {
-        let imp = imp::SettingsPage::from_obj(self);
+        let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
         imp.forcewindowcontrol.set_active(settings.boolean("is-force-window"));
         imp.forcewindowcontrol.connect_active_notify(move |control| {
@@ -153,7 +159,7 @@ impl SettingsPage {
     }
 
     pub fn set_resume(&self) {
-        let imp = imp::SettingsPage::from_obj(self);
+        let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
         imp.resumecontrol.set_active(settings.boolean("is-resume"));
         imp.resumecontrol.connect_active_notify(move |control| {
@@ -162,26 +168,38 @@ impl SettingsPage {
     }
     
     pub fn proxy(&self) {
-        let imp = imp::SettingsPage::from_obj(self);
+        let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
         settings.set_string("proxy", &imp.proxyentry.text()).unwrap();
     }
 
     pub fn set_proxy(&self) {
-        let imp = imp::SettingsPage::from_obj(self);
+        let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
         imp.proxyentry.set_text(&settings.string("proxy"));
     }
 
     pub fn proxyclear(&self) {
-        let imp = imp::SettingsPage::from_obj(self);
+        let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
         settings.set_string("proxy", "").unwrap();
         imp.proxyentry.set_text("");
     }
 
+    pub fn cacheclear(&self) {
+        let path = format!("{}/.local/share/tsukimi", home_dir().expect("can not find home").display());
+        std::fs::remove_dir_all(path).unwrap();
+        let toast = 
+            adw::Toast::builder()
+                        .title(format!("Cache Cleared"))
+                        .timeout(3)
+                        .build();
+        let imp = self.imp();
+        imp.toast.add_toast(toast);
+    }
+
     pub fn set_theme(&self) {
-        let imp = imp::SettingsPage::from_obj(self);
+        let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
         let theme = settings.string("theme");
         let mut pos = 0;

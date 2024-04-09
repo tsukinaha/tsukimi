@@ -1,9 +1,7 @@
 use gtk::glib::{self, clone};
 use gtk::{prelude::*, Revealer};
 use std::path::PathBuf;
-use std::sync::Arc;
-use tokio::sync::Mutex;
-pub fn setimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
+pub fn setimage(id: String) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
@@ -14,7 +12,7 @@ pub fn setimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
         .child(&image)
         .reveal_child(false)
         .vexpand(true)
-        .transition_duration(700)
+        .transition_duration(400)
         .build();
 
     let path = format!(
@@ -31,7 +29,6 @@ pub fn setimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
         }
     } else {
         crate::ui::network::runtime().spawn(async move {
-            let _lock = mutex.lock().await;
             let mut retries = 0;
             while retries < 3 {
                 match crate::ui::network::get_image(id.clone()).await {
@@ -63,7 +60,7 @@ pub fn setimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
     revealer
 }
 
-pub fn setthumbimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
+pub fn setthumbimage(id: String) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
@@ -74,7 +71,7 @@ pub fn setthumbimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
         .child(&image)
         .reveal_child(false)
         .vexpand(true)
-        .transition_duration(700)
+        .transition_duration(400)
         .build();
 
     let path = format!(
@@ -91,7 +88,6 @@ pub fn setthumbimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
         }
     } else {
         crate::ui::network::runtime().spawn(async move {
-            let _lock = mutex.lock().await;
             let mut retries = 0;
             while retries < 3 {
                 match crate::ui::network::get_thumbimage(id.clone()).await {
@@ -123,7 +119,7 @@ pub fn setthumbimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
     revealer
 }
 
-pub fn setbackdropimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
+pub fn setbackdropimage(id: String) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
@@ -134,7 +130,7 @@ pub fn setbackdropimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
         .child(&image)
         .reveal_child(false)
         .vexpand(true)
-        .transition_duration(700)
+        .transition_duration(400)
         .build();
 
     let path = format!(
@@ -151,7 +147,6 @@ pub fn setbackdropimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
         }
     } else {
         crate::ui::network::runtime().spawn(async move {
-            let _lock = mutex.lock().await;
             let mut retries = 0;
             while retries < 3 {
                 match crate::ui::network::get_backdropimage(id.clone()).await {
@@ -184,7 +179,7 @@ pub fn setbackdropimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
 }
 
 
-pub fn setlogoimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
+pub fn setlogoimage(id: String) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
@@ -194,7 +189,7 @@ pub fn setlogoimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
         .transition_type(gtk::RevealerTransitionType::Crossfade)
         .child(&image)
         .reveal_child(false)
-        .transition_duration(700)
+        .transition_duration(400)
         .build();
 
     let path = format!(
@@ -211,7 +206,6 @@ pub fn setlogoimage(id: String, mutex: Arc<Mutex<()>>) -> Revealer {
         }
     } else {
         crate::ui::network::runtime().spawn(async move {
-            let _lock = mutex.lock().await;
             let mut retries = 0;
             while retries < 3 {
                 match crate::ui::network::get_logoimage(id.clone()).await {

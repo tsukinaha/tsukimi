@@ -95,8 +95,7 @@ mod imp {
                 let result: std::cell::Ref<crate::ui::network::SearchResult> = entry.borrow();
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 2);
                 let overlay = gtk::Overlay::new();
-                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                let imgbox = crate::ui::image::setimage(result.id.clone(), mutex);
+                let imgbox = crate::ui::image::setimage(result.id.clone());
                 imgbox.set_size_request(167, 275);
                 overlay.set_child(Some(&imgbox));
                 if let Some(userdata) = &result.user_data {

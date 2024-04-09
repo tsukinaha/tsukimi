@@ -84,23 +84,20 @@ mod imp {
                 let vbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
                 let overlay = gtk::Overlay::new();
                 let imgbox;
-                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                 if result.parent_thumb_item_id.is_some() && result.resume_type == "Episode" {
                     imgbox = crate::ui::image::setthumbimage(
                         result.parent_thumb_item_id.as_ref().expect("").clone(),
-                        mutex.clone(),
                     );
                 } else {
                     if result.resume_type == "Movie" {
                         imgbox =
-                            crate::ui::image::setbackdropimage(result.id.clone(), mutex.clone());
+                            crate::ui::image::setbackdropimage(result.id.clone());
                     } else if result.parent_thumb_item_id.is_some() {
                         imgbox = crate::ui::image::setthumbimage(
                             result.series_id.as_ref().expect("").to_string(),
-                            mutex.clone(),
                         );
                     } else {
-                        imgbox = crate::ui::image::setimage(result.id.clone(), mutex.clone());
+                        imgbox = crate::ui::image::setimage(result.id.clone());
                     }
                 }
                 imgbox.set_size_request(265, 169);

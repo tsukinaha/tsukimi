@@ -55,6 +55,8 @@ mod imp {
         pub searchview: TemplateChild<adw::NavigationView>,
         #[template_child]
         pub navipage: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub toast: TemplateChild<adw::ToastOverlay>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
     }
@@ -446,5 +448,15 @@ impl Window {
             self.mainpage();
             self.homepage();
         }
+    }
+
+    pub fn toast(&self, message: &str) {
+        let imp = self.imp();
+        let toast = 
+            adw::Toast::builder()
+                        .title(format!("{}",message))
+                        .timeout(3)
+                        .build();
+        imp.toast.add_toast(toast);
     }
 }

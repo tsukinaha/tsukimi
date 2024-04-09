@@ -244,9 +244,8 @@ mod imp {
                 label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                 label.set_size_request(-1, 20);
                 label.set_valign(gtk::Align::Start);
-                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                 let overlay = gtk::Overlay::new();
-                let img = crate::ui::image::setimage(seriesinfo.id.clone(), mutex.clone());
+                let img = crate::ui::image::setimage(seriesinfo.id.clone());
                 img.set_size_request(250, 141);
                 overlay.set_child(Some(&img));
                 let progressbar = gtk::ProgressBar::new();
@@ -320,8 +319,7 @@ impl ItemPage {
 
     pub fn logoset(&self, osd: gtk::Box) {
         let id = self.id();
-        let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-        let logo = crate::ui::image::setlogoimage(id.clone(), mutex.clone());
+        let logo = crate::ui::image::setlogoimage(id.clone());
         osd.append(&logo);
         osd.add_css_class("logo");
     }
@@ -653,8 +651,7 @@ impl ItemPage {
                     .first_child() {
                     
                 } else {
-                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                let img = crate::ui::image::setimage(people.id.clone(), mutex.clone());
+                let img = crate::ui::image::setimage(people.id.clone());
                 picture
                     .downcast_ref::<gtk::Box>()
                     .expect("Needs to be Box")

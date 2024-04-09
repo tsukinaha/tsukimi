@@ -150,8 +150,7 @@ impl MoviePage {
 
     pub fn logoset(&self, osd: gtk::Box) {
         let id = self.id();
-        let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-        let logo = crate::ui::image::setlogoimage(id.clone(), mutex.clone());
+        let logo = crate::ui::image::setlogoimage(id.clone());
         osd.append(&logo);
         osd.add_css_class("logo");
     }
@@ -433,8 +432,7 @@ impl MoviePage {
                     .first_child() {
                     
                 } else {
-                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                let img = crate::ui::image::setimage(people.id.clone(), mutex.clone());
+                let img = crate::ui::image::setimage(people.id.clone());
                 picture
                     .downcast_ref::<gtk::Box>()
                     .expect("Needs to be Box")

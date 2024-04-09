@@ -176,8 +176,7 @@ impl ListPage {
                     .first_child()
                 {
                 } else {
-                    let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                    let img = crate::ui::image::setimage(latest.id.clone(), mutex.clone());
+                    let img = crate::ui::image::setimage(latest.id.clone());
                     let overlay = gtk::Overlay::builder().child(&img).build();
                     if let Some(userdata) = &latest.user_data {
                         if let Some(unplayeditemcount) = userdata.unplayed_item_count {

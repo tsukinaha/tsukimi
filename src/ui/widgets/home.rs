@@ -170,8 +170,7 @@ impl HomePage {
                     .first_child()
                 {
                 } else {
-                    let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                    let img = crate::ui::image::setimage(view.id.clone(), mutex.clone());
+                    let img = crate::ui::image::setimage(view.id.clone());
                     picture
                         .downcast_ref::<gtk::Box>()
                         .expect("Needs to be Box")
@@ -233,10 +232,9 @@ impl HomePage {
                 .build();
             scrollbox.append(&label);
             scrollbox.append(&scrolledwindow);
-            let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
             let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Latest>>(3);
             crate::ui::network::runtime().spawn(async move {
-                let latest = crate::ui::network::get_latest(view.id.clone(), mutex)
+                let latest = crate::ui::network::get_latest(view.id.clone())
                     .await
                     .expect("msg");
                 sender.send(latest).await.expect("msg");
@@ -319,8 +317,7 @@ impl HomePage {
                     .first_child()
                 {
                 } else {
-                    let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-                    let img = crate::ui::image::setimage(latest.id.clone(), mutex.clone());
+                    let img = crate::ui::image::setimage(latest.id.clone());
                     let overlay = gtk::Overlay::builder().child(&img).build();
                     if let Some(userdata) = &latest.user_data {
                         if let Some(unplayeditemcount) = userdata.unplayed_item_count {

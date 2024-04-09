@@ -6,7 +6,7 @@ use serde_json::Value;
 use serde_yaml::to_string;
 use std::fs::{self, write};
 use std::path::PathBuf;
-use tokio::runtime::Runtime;
+use tokio::runtime::{self, Runtime};
 use std::env;
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
@@ -25,7 +25,12 @@ pub struct Config {
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();
-    RUNTIME.get_or_init(|| Runtime::new().expect("Setting up tokio runtime needs to succeed."))
+    RUNTIME.get_or_init(|| runtime::Builder::new_multi_thread()
+                                            .worker_threads(4)
+                                            .enable_io()
+                                            .enable_time()
+                                            .build()
+                                            .expect("Failed to create runtime"))
 }
 
 pub async fn login(
@@ -743,8 +748,7 @@ pub struct Latest {
     pub production_year: Option<u32>,
 }
 
-pub async fn get_latest(id: String,mutex: std::sync::Arc<tokio::sync::Mutex<()>>) -> Result<Vec<Latest>, Error> {
-    let _ = mutex.lock().await;
+pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
     let server_info = config::set_config();
     let client = ReqClient::new();
     let url = format!(
