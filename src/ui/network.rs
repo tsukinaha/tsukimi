@@ -162,8 +162,8 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
     ];
 
     let response = client.get(&url).query(&params).send().await?;
-    let json: serde_json::Value = response.json().await?;
-    let items: Vec<SearchResult> = serde_json::from_value(json["Items"].clone()).unwrap();
+    let mut json: serde_json::Value = response.json().await?;
+    let items: Vec<SearchResult> = serde_json::from_value(json["Items"].take()).unwrap();
     model.search_results = items;
     Ok(model.search_results)
 }
@@ -204,8 +204,8 @@ pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
         ("X-Emby-Language", "zh-cn"),
     ];
     let response = client.get(&url).query(&params).send().await?;
-    let json: serde_json::Value = response.json().await?;
-    let seriesinfo: Vec<SeriesInfo> = serde_json::from_value(json["Items"].clone()).unwrap();
+    let mut json: serde_json::Value = response.json().await?;
+    let seriesinfo: Vec<SeriesInfo> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(seriesinfo)
 }
 
@@ -323,7 +323,7 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
     ];
     let response = client.get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
-    let item: Item = serde_json::from_value(json.clone()).unwrap();
+    let item: Item = serde_json::from_value(json).unwrap();
     Ok(item)
 }
 
@@ -424,8 +424,8 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
     ];
 
     let response = client.get(&url).query(&params).send().await?;
-    let json: serde_json::Value = response.json().await?;
-    let items: Vec<Resume> = serde_json::from_value(json["Items"].clone()).unwrap();
+    let mut json: serde_json::Value = response.json().await?;
+    let items: Vec<Resume> = serde_json::from_value(json["Items"].take()).unwrap();
     model.resume = items;
     Ok(model.resume)
 }
@@ -636,7 +636,7 @@ pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
     ];
     let response = client.get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
-    let mediainfo: Media = serde_json::from_value(json.clone()).unwrap();
+    let mediainfo: Media = serde_json::from_value(json).unwrap();
     Ok(mediainfo)
 }
 
@@ -672,7 +672,7 @@ pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
         .send()
         .await?;
     let json: serde_json::Value = response.json().await?;
-    let mediainfo: Media = serde_json::from_value(json.clone()).unwrap();
+    let mediainfo: Media = serde_json::from_value(json).unwrap();
     return Ok(mediainfo);
 }
 
@@ -709,7 +709,7 @@ pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
         .send()
         .await?;
     let json: serde_json::Value = response.json().await?;
-    let mediainfo: Media = serde_json::from_value(json.clone()).unwrap();
+    let mediainfo: Media = serde_json::from_value(json).unwrap();
     return Ok(mediainfo);
 }
 
@@ -739,9 +739,13 @@ pub async fn get_library() -> Result<Vec<View>, Error> {
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client.get(&url).query(&params).send().await?;
-    let json: serde_json::Value = response.json().await?;
-    let views: Vec<View> = serde_json::from_value(json["Items"].clone()).unwrap();
+    let response = client
+        .get(&url)
+        .query(&params)
+        .send()
+        .await?;
+    let mut json: serde_json::Value = response.json().await?;
+    let views: Vec<View> = serde_json::from_value(json["Items"].take()).unwrap();
     return Ok(views);
 }
 
@@ -785,7 +789,7 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
     ];
     let response = client.get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
-    let latests: Vec<Latest> = serde_json::from_value(json.clone()).unwrap();
+    let latests: Vec<Latest> = serde_json::from_value(json).unwrap();
     return Ok(latests);
 }
 
@@ -824,7 +828,7 @@ pub async fn get_list(
     ];
     let response = client.get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
-    let latests: List = serde_json::from_value(json.clone()).unwrap();
+    let latests: List = serde_json::from_value(json).unwrap();
     return Ok(latests);
 }
 
