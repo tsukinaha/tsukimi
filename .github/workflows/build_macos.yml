@@ -34,6 +34,7 @@ jobs:
         run: |
           brew install gtk4
           brew install libadwaita
+          brew install dylibbundler
           rustup target add ${{matrix.target}}
           cargo build --release --locked
 
@@ -44,6 +45,7 @@ jobs:
           cp share/macos/Info.plist Tsukimi.app/Contents/
           cp share/macos/AppIcon.icns Tsukimi.app/Contents/Resources/
           mv target/release/tsukimi Tsukimi.app/Contents/MacOS/
+          dylibbundler -od -b -x ./Tsukimi.app/Contents/MacOS/tsukimi -d ./Tsukimi.app/Contents/Frameworks -p @executable_path/../Frameworks/
           tar -czf tsukimi-x86_64-apple-darwin.tar.gz Tsukimi.app/
 
       - name: Upload artifact
