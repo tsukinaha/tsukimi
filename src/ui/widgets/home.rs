@@ -337,6 +337,14 @@ impl HomePage {
                                 overlay.add_overlay(&mark);
                             }
                         }
+                        if userdata.played {
+                            let mark = gtk::Image::from_icon_name("object-select-symbolic");
+                            mark.set_halign(gtk::Align::End);
+                            mark.set_valign(gtk::Align::Start);
+                            mark.set_height_request(40);
+                            mark.set_width_request(40);
+                            overlay.add_overlay(&mark);
+                        }
                     }
                     picture
                         .downcast_ref::<gtk::Box>()
