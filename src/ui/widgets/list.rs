@@ -2,7 +2,7 @@ use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-
+use adw::prelude::NavigationPageExt;
 use super::item::ItemPage;
 use super::movie::MoviePage;
 use super::window::Window;
@@ -225,10 +225,12 @@ impl ListPage {
                 if result.latest_type == "Movie" {
                     window.set_title(&result.name);
                     let item_page = MoviePage::new(result.id.clone(),result.name.clone());
+                    item_page.set_tag(Some(&result.name));
                     window.imp().homeview.push(&item_page);
                 } else if result.latest_type == "Series" {
                     window.set_title(&result.name);
                     let item_page = ItemPage::new(result.id.clone(),result.id.clone());
+                    item_page.set_tag(Some(&result.name));
                     window.imp().homeview.push(&item_page);
                 }
                 std::env::set_var("HOME_TITLE", &result.name);

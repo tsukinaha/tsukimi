@@ -175,8 +175,11 @@ impl Window {
             if tag.as_str() == "homepage" {
                 imp.navipage.set_title("Home");
                 self.change_pop_visibility();
+            } else {
+                imp.navipage
+                    .set_title(&tag);
             }
-        }
+        } 
     }
 
     fn historyviewpop(&self) {
@@ -186,6 +189,9 @@ impl Window {
             if tag.as_str() == "historypage" {
                 imp.navipage.set_title("History");
                 self.change_pop_visibility();
+            } else {
+                imp.navipage
+                    .set_title(&tag);
             }
         }
     }
@@ -197,6 +203,9 @@ impl Window {
             if tag.as_str() == "searchpage" {
                 imp.navipage.set_title("Search");
                 self.change_pop_visibility();
+            } else {
+                imp.navipage
+                    .set_title(&tag);
             }
         }
     }

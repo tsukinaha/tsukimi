@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use adw::subclass::prelude::*;
+use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::{gio, glib};
@@ -629,9 +630,11 @@ impl MoviePage {
                 };
                 if recommend.result_type == "Movie" {
                     let item_page = MoviePage::new(recommend.id.clone(),recommend.name.clone());
+                    item_page.set_tag(Some(recommend.name.as_str()));
                     view.push(&item_page);
                 } else {
                     let item_page = ItemPage::new(recommend.id.clone(),recommend.id.clone());
+                    item_page.set_tag(Some(recommend.name.as_str()));
                     view.push(&item_page);
                 }
             }),

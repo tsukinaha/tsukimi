@@ -3,6 +3,7 @@ use gtk::{gio, glib};
 
 mod imp {
 
+    use adw::prelude::NavigationPageExt;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
@@ -146,10 +147,12 @@ mod imp {
                     let window = obj.root().and_downcast::<Window>().unwrap();
                     if result.result_type == "Movie" {
                         let item_page = MoviePage::new(result.id.clone(),result.name.clone());
+                        item_page.set_tag(Some(&result.name));
                         window.imp().searchview.push(&item_page);
                         window.change_pop_visibility();
                     } else {
                         let item_page = ItemPage::new(result.id.clone(),result.id.clone());
+                        item_page.set_tag(Some(&result.name));
                         window.imp().searchview.push(&item_page);
                         window.change_pop_visibility();
                     }

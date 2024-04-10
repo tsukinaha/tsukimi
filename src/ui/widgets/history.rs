@@ -2,7 +2,7 @@ use glib::Object;
 use gtk::{gio, glib};
 
 mod imp {
-
+    use adw::prelude::NavigationPageExt;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
@@ -160,14 +160,17 @@ mod imp {
                 let window = obj.root().and_downcast::<Window>().unwrap();
                 if result.resume_type == "Movie" {
                     let item_page = MoviePage::new(result.id.clone(),result.name.clone());
+                    item_page.set_tag(Some(&result.name));
                     window.imp().historyview.push(&item_page);
                     window.change_pop_visibility();
                 } else if result.parent_thumb_item_id.is_none() {
                     let item_page = ItemPage::new(result.series_id.as_ref().expect("msg").clone(),result.id.clone());
+                    item_page.set_tag(Some(&result.name));
                     window.imp().historyview.push(&item_page);
                     window.change_pop_visibility();
                 } else {
                     let item_page = ItemPage::new(result.parent_thumb_item_id.as_ref().expect("msg").clone(),result.id.clone());
+                    item_page.set_tag(Some(&result.name));
                     window.imp().historyview.push(&item_page);
                     window.change_pop_visibility();
                 }

@@ -1,6 +1,6 @@
 use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
-
+use adw::prelude::NavigationPageExt;
 use adw::subclass::prelude::*;
 use glib::Object;
 use gtk::prelude::*;
@@ -9,6 +9,7 @@ use gtk::{gio, glib};
 use crate::ui::network::{self, runtime, similar, SeriesInfo};
 
 use super::fix::fix;
+use super::list::ListPage;
 use super::movie::MoviePage;
 
 mod imp {
@@ -749,6 +750,39 @@ impl ItemPage {
         imp.actorlist.set_factory(Some(&factory));
         imp.actorlist.set_model(Some(actorselection));
         let actorlist = imp.actorlist.get();
+        actorlist.connect_activate(
+            glib::clone!(@weak self as obj =>move |listview, position| {
+                let model = listview.model().unwrap();
+                let item = model
+                    .item(position)
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
+                let actor: std::cell::Ref<crate::ui::network::People> = item.borrow();
+                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                let view = match window.current_view_name().as_str() {
+                    "homepage" => {
+                        window.set_title(&actor.name);
+                        std::env::set_var("HOME_TITLE", &actor.name);
+                        &window.imp().homeview
+                    }
+                    "searchpage" => {
+                        window.set_title(&actor.name);
+                        std::env::set_var("SEARCH_TITLE", &actor.name);
+                        &window.imp().searchview
+                    }
+                    "historypage" => {
+                        window.set_title(&actor.name);
+                        std::env::set_var("HISTORY_TITLE", &actor.name);
+                        &window.imp().historyview
+                    }
+                    _ => {
+                        &window.imp().searchview
+                    }
+                };
+                let item_page = ListPage::new(actor.id.clone());
+                view.push(&item_page);
+            }),
+        );
         actorscrolled.set_child(Some(&actorlist));
     }
 
@@ -887,12 +921,18 @@ impl ItemPage {
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 let view = match window.current_view_name().as_str() {
                     "homepage" => {
+                        window.set_title(&recommend.name);
+                        std::env::set_var("HOME_TITLE", &recommend.name);
                         &window.imp().homeview
                     }
                     "searchpage" => {
+                        window.set_title(&recommend.name);
+                        std::env::set_var("SEARCH_TITLE", &recommend.name);
                         &window.imp().searchview
                     }
                     "historypage" => {
+                        window.set_title(&recommend.name);
+                        std::env::set_var("HISTORY_TITLE", &recommend.name);
                         &window.imp().historyview
                     }
                     _ => {
@@ -901,12 +941,13 @@ impl ItemPage {
                 };
                 if recommend.result_type == "Movie" {
                     let item_page = MoviePage::new(recommend.id.clone(),recommend.name.clone());
+                    item_page.set_tag(Some(recommend.name.as_str()));
                     view.push(&item_page);
                 } else {
                     let item_page = ItemPage::new(recommend.id.clone(),recommend.id.clone());
+                    item_page.set_tag(Some(recommend.name.as_str()));
                     view.push(&item_page);
                 }
-                window.set_title(&recommend.name);
             }),
         );
         recommendscrolled.set_child(Some(&recommendlist));
