@@ -630,12 +630,20 @@ impl MoviePage {
                 };
                 if recommend.result_type == "Movie" {
                     let item_page = MoviePage::new(recommend.id.clone(),recommend.name.clone());
-                    item_page.set_tag(Some(recommend.name.as_str()));
-                    view.push(&item_page);
+                    if view.find_page(recommend.name.as_str()).is_some() {
+                        view.pop_to_tag(recommend.name.as_str());
+                    } else {
+                        item_page.set_tag(Some(recommend.name.as_str()));
+                        view.push(&item_page);
+                    }
                 } else {
                     let item_page = ItemPage::new(recommend.id.clone(),recommend.id.clone());
-                    item_page.set_tag(Some(recommend.name.as_str()));
-                    view.push(&item_page);
+                    if view.find_page(recommend.name.as_str()).is_some() {
+                        view.pop_to_tag(recommend.name.as_str());
+                    } else {
+                        item_page.set_tag(Some(recommend.name.as_str()));
+                        view.push(&item_page);
+                    }
                 }
             }),
         );

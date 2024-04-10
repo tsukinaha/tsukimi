@@ -5,6 +5,8 @@ use gtk::{gio, glib, subclass::prelude::*};
 
 use crate::APP_ID;
 
+use super::window::Window;
+
 mod imp {
 
     use glib::subclass::InitializingObject;
@@ -55,6 +57,9 @@ mod imp {
             });
             klass.install_action("setting.clear", None, move |set, _action, _parameter| {
                 set.cacheclear();
+            });
+            klass.install_action_async("setting.rootpic", None, |set, _action, _parameter| async move {
+                set.set_rootpic().await;
             });
         }
 
@@ -259,5 +264,27 @@ impl SettingsPage {
         imp.threadspinrow.connect_value_notify(move |control| {
             settings.set_int("threads", control.value() as i32).unwrap();
         });
+    }
+
+    pub async fn set_rootpic(&self) {
+        let images_filter = gtk::FileFilter::new();
+        images_filter.set_name(Some("Image"));
+        images_filter.add_pixbuf_formats();
+        let model = gio::ListStore::new::<gtk::FileFilter>();
+        model.append(&images_filter);
+        let window = self.root().and_downcast::<Window>().unwrap();
+        let filedialog = gtk::FileDialog::builder()
+            .modal(true)
+            .title("Select a picture")
+            .filters(&model)
+            .build();
+        match filedialog.open_future(Some(&window)).await {
+            Ok(file) => {
+                window.set_rootpic(file)
+            }
+            Err(_) => {
+                window.toast("Failed to set root picture.")
+            }
+        };
     }
 }

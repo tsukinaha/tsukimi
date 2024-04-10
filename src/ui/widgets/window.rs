@@ -57,6 +57,8 @@ mod imp {
         pub navipage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub toast: TemplateChild<adw::ToastOverlay>,
+        #[template_child]
+        pub rootpic: TemplateChild<gtk::Picture>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
     }
@@ -483,5 +485,10 @@ impl Window {
     pub fn current_view_name(&self) -> String {
         let imp = self.imp();
         imp.insidestack.visible_child_name().unwrap().to_string()
+    }
+
+    pub fn set_rootpic(&self, file: gio::File) {
+        let imp = self.imp();
+        imp.rootpic.set_file(Some(&file));
     }
 }

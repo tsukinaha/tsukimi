@@ -277,6 +277,10 @@ pub struct Media {
 pub struct Item {
     #[serde(rename = "Name")]
     pub name: String,
+    #[serde(rename = "Id")]
+    pub id: String,
+    #[serde(rename = "ProductionYear")]
+    pub production_year: Option<u16>,
     #[serde(rename = "ExternalUrls")]
     pub external_urls: Option<Vec<Urls>>,
     #[serde(rename = "Overview")]
@@ -957,4 +961,39 @@ pub(crate) async fn similar(id: &str) -> Result<Vec<SearchResult>, Error> {
     let items: Vec<SearchResult> = serde_json::from_value(json["Items"].take()).unwrap();
     model.search_results = items;
     Ok(model.search_results)
+}
+
+pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Error> {
+    let server_info = config::set_config();
+
+    let client = client();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items",
+        server_info.domain, server_info.port, server_info.user_id
+    );
+    let params = [
+        (
+            "Fields",
+            "PrimaryImageAspectRatio,ProductionYear",
+        ),
+        ("PersonIds", id),
+        ("Recursive", "true"),
+        ("CollapseBoxSetItems", "false"),
+        ("SortBy", "SortName"),
+        ("SortOrder", "Ascending"),
+        ("IncludeItemTypes", types),
+        ("ImageTypeLimit", "1"),
+        ("Limit", "12"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+
+    let response = client.get(&url).query(&params).send().await?;
+    let mut json: serde_json::Value = response.json().await?;
+    let items: Vec<Item> = serde_json::from_value(json["Items"].take()).unwrap();
+    Ok(items)
 }

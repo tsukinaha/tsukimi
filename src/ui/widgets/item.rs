@@ -8,8 +8,8 @@ use gtk::{gio, glib};
 
 use crate::ui::network::{self, runtime, similar, SeriesInfo};
 
+use super::actor::ActorPage;
 use super::fix::fix;
-use super::list::ListPage;
 use super::movie::MoviePage;
 
 mod imp {
@@ -779,7 +779,13 @@ impl ItemPage {
                         &window.imp().searchview
                     }
                 };
-                let item_page = ListPage::new(actor.id.clone());
+                let item_page = ActorPage::new(&actor.id);
+                if view.find_page(actor.name.as_str()).is_some() {
+                    view.pop_to_tag(actor.name.as_str());
+                } else {
+                    item_page.set_tag(Some(actor.name.as_str()));
+                    view.push(&item_page);
+                }
                 view.push(&item_page);
             }),
         );
@@ -949,12 +955,20 @@ impl ItemPage {
                 };
                 if recommend.result_type == "Movie" {
                     let item_page = MoviePage::new(recommend.id.clone(),recommend.name.clone());
-                    item_page.set_tag(Some(recommend.name.as_str()));
-                    view.push(&item_page);
+                    if view.find_page(recommend.name.as_str()).is_some() {
+                        view.pop_to_tag(recommend.name.as_str());
+                    } else {
+                        item_page.set_tag(Some(recommend.name.as_str()));
+                        view.push(&item_page);
+                    }
                 } else {
                     let item_page = ItemPage::new(recommend.id.clone(),recommend.id.clone());
-                    item_page.set_tag(Some(recommend.name.as_str()));
-                    view.push(&item_page);
+                    if view.find_page(recommend.name.as_str()).is_some() {
+                        view.pop_to_tag(recommend.name.as_str());
+                    } else {
+                        item_page.set_tag(Some(recommend.name.as_str()));
+                        view.push(&item_page);
+                    }
                 }
             }),
         );
