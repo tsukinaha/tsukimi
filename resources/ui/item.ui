@@ -72,7 +72,6 @@
                 <child>
                   <object class="GtkBox">
                     <property name="orientation">horizontal</property>
-                    <property name="spacing">6</property>
                     <property name="hexpand">true</property>
                     <child>
                       <object class="GtkDropDown" id="seasonlist">
@@ -80,11 +79,16 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkSearchEntry" id="episodesearchentry">
+                        <property name="hexpand">true</property>
+                        <property name="placeholder-text" translatable="yes">Search episodes in current season</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkToggleButton" id="go-first">
                         <property name="halign">end</property>
                         <property name="icon-name">go-first-symbolic</property>
                         <property name="action-name">item.first</property>
-                        <property name="hexpand">true</property>
                       </object>
                     </child>
                     <child>
@@ -109,6 +113,9 @@
                         <property name="action-name">item.last</property>
                       </object>
                     </child>
+                    <style>
+                      <class name="linked" />
+                    </style>
                   </object>
                 </child>
                 <child>

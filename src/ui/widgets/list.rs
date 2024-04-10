@@ -239,7 +239,7 @@ impl ListPage {
 
     pub fn update(&self) {
         let scrolled = self.imp().listscrolled.get();
-        scrolled.connect_edge_reached(glib::clone!(@weak self as obj => move |_, pos| {
+        scrolled.connect_edge_overshot(glib::clone!(@weak self as obj => move |_, pos| {
             if pos == gtk::PositionType::Bottom {
                 let spinner = obj.imp().spinner.get();
                 spinner.set_visible(true);
