@@ -9,6 +9,7 @@ use gtk::{gio, glib};
 use crate::ui::network::{self, runtime, similar, SeriesInfo};
 
 use super::fix::fix;
+use super::movie::MoviePage;
 
 mod imp {
     use crate::ui::widgets::fix::fix;
@@ -755,9 +756,7 @@ impl ItemPage {
         let id = self.id();
         let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
         runtime().spawn(async move {
-            let id = similar(&id)
-                .await
-                .expect("msg");
+            let id = similar(&id).await.expect("msg");
             sender
                 .send(id)
                 .await
@@ -840,10 +839,28 @@ impl ItemPage {
                 {
                 } else {
                     let img = crate::ui::image::setimage(recommend.id.clone());
+                    let overlay = gtk::Overlay::builder().child(&img).build();
+                    if let Some(userdata) = &recommend.user_data {
+                        if let Some(unplayeditemcount) = userdata.unplayed_item_count {
+                            if unplayeditemcount > 0 {
+                                let mark = gtk::Label::new(Some(
+                                    &userdata
+                                        .unplayed_item_count
+                                        .expect("no unplayeditemcount")
+                                        .to_string(),
+                                ));
+                                mark.set_valign(gtk::Align::Start);
+                                mark.set_halign(gtk::Align::End);
+                                mark.set_height_request(40);
+                                mark.set_width_request(40);
+                                overlay.add_overlay(&mark);
+                            }
+                        }
+                    }
                     picture
                         .downcast_ref::<gtk::Box>()
                         .expect("Needs to be Box")
-                        .append(&img);
+                        .append(&overlay);
                 }
             }
             if label.is::<gtk::Label>() {
@@ -859,6 +876,39 @@ impl ItemPage {
         imp.recommendlist.set_factory(Some(&factory));
         imp.recommendlist.set_model(Some(recommendselection));
         let recommendlist = imp.recommendlist.get();
+        recommendlist.connect_activate(
+            glib::clone!(@weak self as obj =>move |listview, position| {
+                let model = listview.model().unwrap();
+                let item = model
+                    .item(position)
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
+                let recommend: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
+                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                let view = match window.current_view_name().as_str() {
+                    "homepage" => {
+                        &window.imp().homeview
+                    }
+                    "searchpage" => {
+                        &window.imp().searchview
+                    }
+                    "historypage" => {
+                        &window.imp().historyview
+                    }
+                    _ => {
+                        &window.imp().searchview
+                    }
+                };
+                if recommend.result_type == "Movie" {
+                    let item_page = MoviePage::new(recommend.id.clone(),recommend.name.clone());
+                    view.push(&item_page);
+                } else {
+                    let item_page = ItemPage::new(recommend.id.clone(),recommend.id.clone());
+                    view.push(&item_page);
+                }
+                window.set_title(&recommend.name);
+            }),
+        );
         recommendscrolled.set_child(Some(&recommendlist));
     }
 }

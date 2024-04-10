@@ -470,4 +470,9 @@ impl Window {
             .build();
         imp.toast.add_toast(toast);
     }
+
+    pub fn current_view_name(&self) -> String {
+        let imp = self.imp();
+        imp.insidestack.visible_child_name().unwrap().to_string()
+    }
 }

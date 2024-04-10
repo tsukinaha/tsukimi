@@ -8,6 +8,7 @@ use gtk::{gio, glib};
 use crate::ui::network::{runtime, similar};
 
 use super::fix::fix;
+use super::item::ItemPage;
 mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
@@ -57,7 +58,7 @@ mod imp {
         pub recommendscrolled: TemplateChild<gtk::ScrolledWindow>,
         pub selection: gtk::SingleSelection,
         pub actorselection: gtk::SingleSelection,
-        pub recommendselection: gtk::SingleSelection
+        pub recommendselection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -495,9 +496,7 @@ impl MoviePage {
         let id = self.id();
         let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
         runtime().spawn(async move {
-            let id = similar(&id)
-                .await
-                .expect("msg");
+            let id = similar(&id).await.expect("msg");
             sender
                 .send(id)
                 .await
@@ -599,6 +598,44 @@ impl MoviePage {
         imp.recommendlist.set_factory(Some(&factory));
         imp.recommendlist.set_model(Some(recommendselection));
         let recommendlist = imp.recommendlist.get();
+        recommendlist.connect_activate(
+            glib::clone!(@weak self as obj =>move |listview, position| {
+                let model = listview.model().unwrap();
+                let item = model
+                    .item(position)
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
+                let recommend: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
+                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                let view = match window.current_view_name().as_str() {
+                    "homepage" => {
+                        window.set_title(&recommend.name);
+                        std::env::set_var("HOME_TITLE", &recommend.name);
+                        &window.imp().homeview
+                    }
+                    "searchpage" => {
+                        window.set_title(&recommend.name);
+                        std::env::set_var("SEARCH_TITLE", &recommend.name);
+                        &window.imp().searchview
+                    }
+                    "historypage" => {
+                        window.set_title(&recommend.name);
+                        std::env::set_var("HISTORY_TITLE", &recommend.name);
+                        &window.imp().historyview
+                    }
+                    _ => {
+                        &window.imp().searchview
+                    }
+                };
+                if recommend.result_type == "Movie" {
+                    let item_page = MoviePage::new(recommend.id.clone(),recommend.name.clone());
+                    view.push(&item_page);
+                } else {
+                    let item_page = ItemPage::new(recommend.id.clone(),recommend.id.clone());
+                    view.push(&item_page);
+                }
+            }),
+        );
         recommendscrolled.set_child(Some(&recommendlist));
     }
 }
