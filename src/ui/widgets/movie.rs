@@ -1,17 +1,19 @@
+use std::path::PathBuf;
+
 use adw::subclass::prelude::*;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
+use crate::ui::network::{runtime, similar};
+
 use super::fix::fix;
 mod imp {
-    use crate::APP_ID;
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
-    use std::path::PathBuf;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/movie.ui")]
@@ -47,8 +49,15 @@ mod imp {
         pub overviewrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub itemoverview: TemplateChild<gtk::Inscription>,
+        #[template_child]
+        pub recommendlist: TemplateChild<gtk::ListView>,
+        #[template_child]
+        pub recommendrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub recommendscrolled: TemplateChild<gtk::ScrolledWindow>,
         pub selection: gtk::SingleSelection,
         pub actorselection: gtk::SingleSelection,
+        pub recommendselection: gtk::SingleSelection
     }
 
     // The central trait for subclassing a GObject
@@ -74,50 +83,11 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            let id = obj.id();
-            let path = format!(
-                "{}/.local/share/tsukimi/b{}.png",
-                dirs::home_dir().expect("msg").display(),
-                id
-            );
-            let pathbuf = PathBuf::from(&path);
-            let backdrop = self.backdrop.get();
-            let settings = gtk::gio::Settings::new(APP_ID);
-            backdrop.set_height_request(settings.int("background-height"));
-            let (sender, receiver) = async_channel::bounded::<String>(1);
-            let idclone = id.clone();
-            if pathbuf.exists() {
-                backdrop.set_file(Some(&gtk::gio::File::for_path(&path)));
-            } else {
-                crate::ui::network::runtime().spawn(async move {
-                    let id = crate::ui::network::get_backdropimage(idclone)
-                        .await
-                        .expect("msg");
-                    sender
-                        .send(id.clone())
-                        .await
-                        .expect("The channel needs to be open.");
-                });
-            }
-
-            let idclone = id.clone();
-            let idc = id.clone();
-            glib::spawn_future_local(async move {
-                while receiver.recv().await.is_ok() {
-                    let path = format!(
-                        "{}/.local/share/tsukimi/b{}.png",
-                        dirs::home_dir().expect("msg").display(),
-                        idclone
-                    );
-                    let file = gtk::gio::File::for_path(&path);
-                    backdrop.set_file(Some(&file));
-                }
-            });
-            let logobox = self.logobox.get();
-            obj.logoset(logobox);
-
+            obj.setup_background();
+            obj.logoset();
             obj.setoverview();
-            obj.createmediabox(idc);
+            obj.createmediabox();
+            obj.get_similar();
         }
     }
 
@@ -148,9 +118,49 @@ impl MoviePage {
             .build()
     }
 
-    pub fn logoset(&self, osd: gtk::Box) {
+    fn setup_background(&self) {
+        let imp = self.imp();
         let id = self.id();
-        let logo = crate::ui::image::setlogoimage(id.clone());
+        let path = format!(
+            "{}/.local/share/tsukimi/b{}.png",
+            dirs::home_dir().expect("msg").display(),
+            id
+        );
+        let pathbuf = PathBuf::from(&path);
+        let backdrop = imp.backdrop.get();
+        let settings = gtk::gio::Settings::new(crate::APP_ID);
+        backdrop.set_height_request(settings.int("background-height"));
+        let (sender, receiver) = async_channel::bounded::<String>(1);
+        let idclone = id.clone();
+        if pathbuf.exists() {
+            backdrop.set_file(Some(&gtk::gio::File::for_path(&path)));
+        } else {
+            crate::ui::network::runtime().spawn(async move {
+                let id = crate::ui::network::get_backdropimage(id)
+                    .await
+                    .expect("msg");
+                sender
+                    .send(id)
+                    .await
+                    .expect("The channel needs to be open.");
+            });
+        }
+        glib::spawn_future_local(async move {
+            while receiver.recv().await.is_ok() {
+                let path = format!(
+                    "{}/.local/share/tsukimi/b{}.png",
+                    dirs::home_dir().expect("msg").display(),
+                    idclone
+                );
+                let file = gtk::gio::File::for_path(&path);
+                backdrop.set_file(Some(&file));
+            }
+        });
+    }
+    pub fn logoset(&self) {
+        let osd = &self.imp().logobox;
+        let id = self.id();
+        let logo = crate::ui::image::setlogoimage(id);
         osd.append(&logo);
         osd.add_css_class("logo");
     }
@@ -211,6 +221,7 @@ impl MoviePage {
                         name: name.clone(),
                         result_type: String::from("Movie"),
                         user_data: userdata.clone(),
+                        production_year: None
                     };
                     let dropdown = crate::ui::moviedrop::newmediadropsel(playback, info);
                     dropdownspinner.set_visible(false);
@@ -220,7 +231,8 @@ impl MoviePage {
         );
     }
 
-    pub fn createmediabox(&self, id: String) {
+    pub fn createmediabox(&self) {
+        let id = self.id();
         let imp = self.imp();
         let mediainfobox = imp.mediainfobox.get();
         let mediainforevealer = imp.mediainforevealer.get();
@@ -477,5 +489,116 @@ impl MoviePage {
         let actorlist = imp.actorlist.get();
         actorscrolled.set_child(Some(&actorlist));
         actorrevealer.set_reveal_child(true);
+    }
+
+    pub fn get_similar(&self) {
+        let id = self.id();
+        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
+        runtime().spawn(async move {
+            let id = similar(&id)
+                .await
+                .expect("msg");
+            sender
+                .send(id)
+                .await
+                .expect("The channel needs to be open.");
+        });
+
+        glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
+            while let Ok(result) = receiver.recv().await {
+                obj.setrecommendscrolled(result);
+            }
+        }));
+    }
+
+    pub fn setrecommendscrolled(&self, recommend: Vec<crate::ui::network::SearchResult>) {
+        let imp = self.imp();
+        let recommendscrolled = fix(imp.recommendscrolled.get());
+        let recommendrevealer = imp.recommendrevealer.get();
+        if !recommend.is_empty() {
+            recommendrevealer.set_reveal_child(true);
+        }
+        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+        for recommend in recommend {
+            let object = glib::BoxedAnyObject::new(recommend);
+            store.append(&object);
+        }
+        imp.recommendselection.set_autoselect(false);
+        imp.recommendselection.set_model(Some(&store));
+        let recommendselection = &imp.recommendselection;
+        let factory = gtk::SignalListItemFactory::new();
+        factory.connect_setup(move |_, item| {
+            let list_item = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem");
+            let listbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
+            let picture = gtk::Box::builder()
+                .orientation(gtk::Orientation::Vertical)
+                .height_request(273)
+                .width_request(182)
+                .build();
+            let label = gtk::Label::builder()
+                .valign(gtk::Align::Start)
+                .halign(gtk::Align::Center)
+                .justify(gtk::Justification::Center)
+                .wrap_mode(gtk::pango::WrapMode::WordChar)
+                .ellipsize(gtk::pango::EllipsizeMode::End)
+                .build();
+            listbox.append(&picture);
+            listbox.append(&label);
+            list_item.set_child(Some(&listbox));
+        });
+        factory.connect_bind(move |_, item| {
+            let picture = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .child()
+                .and_downcast::<gtk::Box>()
+                .expect("Needs to be Box")
+                .first_child()
+                .expect("Needs to be Picture");
+            let label = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .child()
+                .and_downcast::<gtk::Box>()
+                .expect("Needs to be Box")
+                .last_child()
+                .expect("Needs to be Picture");
+            let entry = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .item()
+                .and_downcast::<glib::BoxedAnyObject>()
+                .expect("Needs to be BoxedAnyObject");
+            let recommend: std::cell::Ref<crate::ui::network::SearchResult> = entry.borrow();
+            if picture.is::<gtk::Box>() {
+                if let Some(_revealer) = picture
+                    .downcast_ref::<gtk::Box>()
+                    .expect("Needs to be Box")
+                    .first_child()
+                {
+                } else {
+                    let img = crate::ui::image::setimage(recommend.id.clone());
+                    picture
+                        .downcast_ref::<gtk::Box>()
+                        .expect("Needs to be Box")
+                        .append(&img);
+                }
+            }
+            if label.is::<gtk::Label>() {
+                if let Some(production_year) = &recommend.production_year {
+                    let str = format!("{}\n{}", recommend.name, production_year);
+                    label
+                        .downcast_ref::<gtk::Label>()
+                        .expect("Needs to be Label")
+                        .set_text(&str);
+                }
+            }
+        });
+        imp.recommendlist.set_factory(Some(&factory));
+        imp.recommendlist.set_model(Some(recommendselection));
+        let recommendlist = imp.recommendlist.get();
+        recommendscrolled.set_child(Some(&recommendlist));
     }
 }

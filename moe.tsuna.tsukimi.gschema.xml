@@ -34,7 +34,7 @@
       <summary>Default switch state</summary>
     </key>
     <key name="theme" type="s">
-      <default>"default"</default>
+      <default>"Adwaita"</default>
       <summary>Default switch state</summary>
     </key>
     <key name="proxy" type="s">

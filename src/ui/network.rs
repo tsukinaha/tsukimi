@@ -121,6 +121,8 @@ pub struct SearchResult {
     pub id: String,
     #[serde(rename = "UserData")]
     pub user_data: Option<UserData>,
+    #[serde(rename = "ProductionYear")]
+    pub production_year: Option<i16>,
 }
 
 struct SearchModel {
@@ -921,4 +923,38 @@ pub async fn playstart(back: Back) {
         .send()
         .await
         .unwrap();
+}
+
+pub(crate) async fn similar(id: &str) -> Result<Vec<SearchResult>, Error> {
+    let mut model = SearchModel {
+        search_results: Vec::new(),
+    };
+    let server_info = config::set_config();
+
+    let client = client();
+    let url = format!(
+        "{}:{}/emby/Items/{}/Similar",
+        server_info.domain, server_info.port, id
+    );
+    let params = [
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+        ),
+        ("UserId", &server_info.user_id),
+        ("ImageTypeLimit", "1"),
+        ("Limit", "12"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+
+    let response = client.get(&url).query(&params).send().await?;
+    let mut json: serde_json::Value = response.json().await?;
+    let items: Vec<SearchResult> = serde_json::from_value(json["Items"].take()).unwrap();
+    model.search_results = items;
+    Ok(model.search_results)
 }
