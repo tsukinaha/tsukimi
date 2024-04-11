@@ -22,210 +22,308 @@
       </object>
     </child>
     <property name="content">
-      <object class="AdwToastOverlay" id="toast">
-        <child>
-          <object class="GtkStack" id="stack">
-            <property name="transition-type">crossfade</property>
+      <object class="GtkOverlay">
+        <child type="overlay">
+          <object class="AdwToastOverlay" id="toast">
             <child>
-              <object class="GtkStackPage">
-                <property name="name">placeholder</property>
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkHeaderBar">
-                        <style>
-                          <class name="flat" />
-                        </style>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkWindowHandle">
-                        <property name="child">
-                          <object class="AdwStatusPage">
+              <object class="GtkStack" id="stack">
+                <property name="transition-type">crossfade</property>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">placeholder</property>
+                    <property name="child">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkHeaderBar">
+                            <style>
+                              <class name="flat" />
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkWindowHandle">
                             <property name="child">
-                              <object class="GtkBox">
-                                <property name="orientation">vertical</property>
-                                <property name="width-request">500</property>
-                                <property name="halign">center</property>
-                                <property name="spacing">12</property>
-                                <child>
-                                  <object class="AdwEntryRow" id="serverentry">
-                                    <property name="title" translatable="yes">Server</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="AdwEntryRow" id="portentry">
-                                    <property name="title" translatable="yes">Port</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="AdwEntryRow" id="nameentry">
-                                    <property name="title" translatable="yes">Name</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="AdwEntryRow" id="passwordentry">
-                                    <property name="title" translatable="yes">Password</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="loginbutton">
-                                    <property name="label" translatable="yes">_Link Start</property>
-                                    <property name="use-underline">True</property>
+                              <object class="AdwStatusPage">
+                                <property name="child">
+                                  <object class="GtkBox">
+                                    <property name="orientation">vertical</property>
+                                    <property name="width-request">500</property>
                                     <property name="halign">center</property>
-                                    <property name="action-name">win.login</property>
-                                    <style>
-                                      <class name="pill" />
-                                      <class name="suggested-action" />
-                                    </style>
+                                    <property name="spacing">12</property>
+                                    <child>
+                                      <object class="AdwEntryRow" id="serverentry">
+                                        <property name="title" translatable="yes">Server</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwEntryRow" id="portentry">
+                                        <property name="title" translatable="yes">Port</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwEntryRow" id="nameentry">
+                                        <property name="title" translatable="yes">Name</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwEntryRow" id="passwordentry">
+                                        <property name="title" translatable="yes">Password</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="loginbutton">
+                                        <property name="label" translatable="yes">_Link Start</property>
+                                        <property name="use-underline">True</property>
+                                        <property name="halign">center</property>
+                                        <property name="action-name">win.login</property>
+                                        <style>
+                                          <class name="pill" />
+                                          <class name="suggested-action" />
+                                        </style>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">main</property>
+                    <property name="child">
+                      <object class="AdwOverlaySplitView" id="split_view">
+                        <property name="min-sidebar-width">160</property>
+                        <property name="max-sidebar-width">200</property>
+                        <property name="sidebar">
+                          <object class="AdwNavigationPage">
+                            <property name="title" translatable="yes">Tsukimi</property>
+                            <property name="child">
+                              <object class="AdwToolbarView">
+                                <child type="top">
+                                  <object class="AdwHeaderBar">
+                                    <child type="start">
+                                      <object class="GtkToggleButton" id="backbutton">
+                                        <property name="icon-name">list-add-symbolic</property>
+                                        <property name="tooltip-text" translatable="yes">New Collection</property>
+                                        <property name="action-name">win.new-collection</property>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
+                                <property name="content">
+                                  <object class="GtkScrolledWindow">
+                                    <property name="child">
+                                      <object class="GtkListBox" id="selectlist">
+                                        <property name="selection-mode">browse</property>
+                                        <style>
+                                          <class name="navigation-sidebar" />
+                                        </style>
+                                        <child>
+                                          <object class="AdwActionRow" id="homerow">
+                                            <child type="prefix">
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Home</property>
+                                                <property name="halign">start</property>
+                                                <attributes>
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                </attributes>
+                                              </object>
+                                            </child>
+                                            <child type="prefix">
+                                              <object class="GtkImage">
+                                                <property name="icon-name">go-home-symbolic</property>
+                                                <property name="halign">start</property>
+                                              </object>
+                                            </child>
+                                            <child type="suffix">
+                                              <object class="GtkButton">
+                                                <property name="valign">center</property>
+                                                <property name="icon-name">object-rotate-left</property>
+                                                <property name="action-name">win.home</property>
+                                                <style>
+                                                  <class name="flat" />
+                                                </style>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwActionRow">
+                                            <child type="prefix">
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">History</property>
+                                                <property name="halign">start</property>
+                                                <attributes>
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                </attributes>
+                                              </object>
+                                            </child>
+                                            <child type="prefix">
+                                              <object class="GtkImage">
+                                                <property name="icon-name">document-open-recent-symbolic</property>
+                                                <property name="halign">start</property>
+                                              </object>
+                                            </child>
+                                            <child type="suffix">
+                                              <object class="GtkButton">
+                                                <property name="valign">center</property>
+                                                <property name="icon-name">object-rotate-left</property>
+                                                <property name="action-name">win.history</property>
+                                                <style>
+                                                  <class name="flat" />
+                                                </style>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwActionRow">
+                                            <child type="prefix">
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Search</property>
+                                                <property name="halign">start</property>
+                                                <attributes>
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                </attributes>
+                                              </object>
+                                            </child>
+                                            <child type="prefix">
+                                              <object class="GtkImage">
+                                                <property name="icon-name">system-search-symbolic</property>
+                                                <property name="halign">start</property>
+                                              </object>
+                                            </child>
+                                            <child type="suffix">
+                                              <object class="GtkButton">
+                                                <property name="valign">center</property>
+                                                <property name="icon-name">object-rotate-left</property>
+                                                <property name="action-name">win.search</property>
+                                                <style>
+                                                  <class name="flat" />
+                                                </style>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwActionRow">
+                                            <child type="prefix">
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Preferences</property>
+                                                <property name="halign">start</property>
+                                                <attributes>
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                </attributes>
+                                              </object>
+                                            </child>
+                                            <child type="prefix">
+                                              <object class="GtkImage">
+                                                <property name="icon-name">preferences-system-symbolic</property>
+                                                <property name="halign">start</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </property>
                               </object>
                             </property>
                           </object>
                         </property>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkStackPage">
-                <property name="name">main</property>
-                <property name="child">
-                  <object class="AdwOverlaySplitView" id="split_view">
-                    <property name="min-sidebar-width">160</property>
-                    <property name="max-sidebar-width">200</property>
-                    <property name="sidebar">
-                      <object class="AdwNavigationPage">
-                        <property name="title" translatable="yes">Tsukimi</property>
-                        <property name="child">
-                          <object class="AdwToolbarView">
-                            <child type="top">
-                              <object class="AdwHeaderBar">
-                                <child type="start">
-                                  <object class="GtkToggleButton" id="backbutton">
-                                    <property name="icon-name">list-add-symbolic</property>
-                                    <property name="tooltip-text" translatable="yes">New Collection</property>
-                                    <property name="action-name">win.new-collection</property>
+                        <property name="content">
+                          <object class="AdwNavigationPage" id="navipage">
+                            <property name="title" translatable="yes"></property>
+                            <property name="child">
+                              <object class="AdwToolbarView">
+                                <child type="top">
+                                  <object class="AdwHeaderBar">
+                                    <property name="show-back-button">False</property>
+                                    <child type="start">
+                                      <object class="GtkToggleButton" id="sidebar">
+                                        <property name="icon-name">format-indent-less-symbolic</property>
+                                        <property name="action-name">win.sidebar</property>
+                                      </object>
+                                    </child>
+                                    <child type="start">
+                                      <object class="GtkToggleButton" id="popbutton">
+                                        <property name="icon-name">go-previous-symbolic</property>
+                                        <property name="action-name">win.pop</property>
+                                        <property name="visible">False</property>
+                                      </object>
+                                    </child>
+                                    <child type="end">
+                                      <object class="GtkMenuButton">
+                                        <property name="icon-name">open-menu-symbolic</property>
+                                        <property name="menu-model">main-menu</property>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
-                              </object>
-                            </child>
-                            <property name="content">
-                              <object class="GtkScrolledWindow">
-                                <property name="child">
-                                  <object class="GtkListBox" id="selectlist">
-                                    <property name="selection-mode">browse</property>
-                                    <style>
-                                      <class name="navigation-sidebar" />
-                                    </style>
+                                <property name="content">
+                                  <object class="GtkStack" id="insidestack">
+                                    <property name="hexpand">True</property>
+                                    <property name="transition-type">crossfade</property>
                                     <child>
-                                      <object class="AdwActionRow" id="homerow">
-                                        <child type="prefix">
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Home</property>
-                                            <property name="halign">start</property>
-                                            <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                            </attributes>
+                                      <object class="GtkStackPage">
+                                        <property name="name">homepage</property>
+                                        <property name="child">
+                                          <object class="AdwNavigationView" id="homeview">
+                                            <child>
+                                              <object class="AdwNavigationPage" id="homepage">
+                                                <property name="tag">homepage</property>
+                                                <property name="title" translatable="yes">Tsukimi</property>
+                                              </object>
+                                            </child>
                                           </object>
-                                        </child>
-                                        <child type="prefix">
-                                          <object class="GtkImage">
-                                            <property name="icon-name">go-home-symbolic</property>
-                                            <property name="halign">start</property>
-                                          </object>
-                                        </child>
-                                        <child type="suffix">
-                                          <object class="GtkButton">
-                                            <property name="valign">center</property>
-                                            <property name="icon-name">object-rotate-left</property>
-                                            <property name="action-name">win.home</property>
-                                            <style>
-                                              <class name="flat" />
-                                            </style>
-                                          </object>
-                                        </child>
+                                        </property>
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="AdwActionRow">
-                                        <child type="prefix">
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">History</property>
-                                            <property name="halign">start</property>
-                                            <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                            </attributes>
+                                      <object class="GtkStackPage">
+                                        <property name="name">historypage</property>
+                                        <property name="child">
+                                          <object class="AdwNavigationView" id="historyview">
+                                            <child>
+                                              <object class="AdwNavigationPage" id="historypage">
+                                                <property name="tag">historypage</property>
+                                                <property name="title" translatable="yes">Tsukimi</property>
+                                              </object>
+                                            </child>
                                           </object>
-                                        </child>
-                                        <child type="prefix">
-                                          <object class="GtkImage">
-                                            <property name="icon-name">document-open-recent-symbolic</property>
-                                            <property name="halign">start</property>
-                                          </object>
-                                        </child>
-                                        <child type="suffix">
-                                          <object class="GtkButton">
-                                            <property name="valign">center</property>
-                                            <property name="icon-name">object-rotate-left</property>
-                                            <property name="action-name">win.history</property>
-                                            <style>
-                                              <class name="flat" />
-                                            </style>
-                                          </object>
-                                        </child>
+                                        </property>
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="AdwActionRow">
-                                        <child type="prefix">
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Search</property>
-                                            <property name="halign">start</property>
-                                            <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                            </attributes>
+                                      <object class="GtkStackPage">
+                                        <property name="name">searchpage</property>
+                                        <property name="child">
+                                          <object class="AdwNavigationView" id="searchview">
+                                            <child>
+                                              <object class="AdwNavigationPage" id="searchpage">
+                                                <property name="tag">searchpage</property>
+                                                <property name="title" translatable="yes">Tsukimi</property>
+                                              </object>
+                                            </child>
                                           </object>
-                                        </child>
-                                        <child type="prefix">
-                                          <object class="GtkImage">
-                                            <property name="icon-name">system-search-symbolic</property>
-                                            <property name="halign">start</property>
-                                          </object>
-                                        </child>
-                                        <child type="suffix">
-                                          <object class="GtkButton">
-                                            <property name="valign">center</property>
-                                            <property name="icon-name">object-rotate-left</property>
-                                            <property name="action-name">win.search</property>
-                                            <style>
-                                              <class name="flat" />
-                                            </style>
-                                          </object>
-                                        </child>
+                                        </property>
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="AdwActionRow">
-                                        <child type="prefix">
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Preferences</property>
-                                            <property name="halign">start</property>
-                                            <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                            </attributes>
+                                      <object class="GtkStackPage">
+                                        <property name="name">settingspage</property>
+                                        <property name="child">
+                                          <object class="AdwNavigationPage" id="settingspage">
+                                            <property name="title" translatable="yes">Tsukimi</property>
                                           </object>
-                                        </child>
-                                        <child type="prefix">
-                                          <object class="GtkImage">
-                                            <property name="icon-name">preferences-system-symbolic</property>
-                                            <property name="halign">start</property>
-                                          </object>
-                                        </child>
+                                        </property>
                                       </object>
                                     </child>
                                   </object>
@@ -236,102 +334,24 @@
                         </property>
                       </object>
                     </property>
-                    <property name="content">
-                      <object class="AdwNavigationPage" id="navipage">
-                        <property name="title" translatable="yes"></property>
-                        <property name="child">
-                          <object class="AdwToolbarView">
-                            <child type="top">
-                              <object class="AdwHeaderBar">
-                                <property name="show-back-button">False</property>
-                                <child type="start">
-                                  <object class="GtkToggleButton" id="sidebar">
-                                    <property name="icon-name">format-indent-less-symbolic</property>
-                                    <property name="action-name">win.sidebar</property>
-                                  </object>
-                                </child>
-                                <child type="start">
-                                  <object class="GtkToggleButton" id="popbutton">
-                                    <property name="icon-name">go-previous-symbolic</property>
-                                    <property name="action-name">win.pop</property>
-                                    <property name="visible">False</property>
-                                  </object>
-                                </child>
-                                <child type="end">
-                                  <object class="GtkMenuButton">
-                                    <property name="icon-name">open-menu-symbolic</property>
-                                    <property name="menu-model">main-menu</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <property name="content">
-                              <object class="GtkStack" id="insidestack">
-                                <property name="hexpand">True</property>
-                                <property name="transition-type">crossfade</property>
-                                <child>
-                                  <object class="GtkStackPage">
-                                    <property name="name">homepage</property>
-                                    <property name="child">
-                                      <object class="AdwNavigationView" id="homeview">
-                                        <child>
-                                          <object class="AdwNavigationPage" id="homepage">
-                                            <property name="tag">homepage</property>
-                                            <property name="title" translatable="yes">Tsukimi</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkStackPage">
-                                    <property name="name">historypage</property>
-                                    <property name="child">
-                                      <object class="AdwNavigationView" id="historyview">
-                                        <child>
-                                          <object class="AdwNavigationPage" id="historypage">
-                                            <property name="tag">historypage</property>
-                                            <property name="title" translatable="yes">Tsukimi</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkStackPage">
-                                    <property name="name">searchpage</property>
-                                    <property name="child">
-                                      <object class="AdwNavigationView" id="searchview">
-                                        <child>
-                                          <object class="AdwNavigationPage" id="searchpage">
-                                            <property name="tag">searchpage</property>
-                                            <property name="title" translatable="yes">Tsukimi</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkStackPage">
-                                    <property name="name">settingspage</property>
-                                    <property name="child">
-                                      <object class="AdwNavigationPage" id="settingspage">
-                                        <property name="title" translatable="yes">Tsukimi</property>
-                                      </object>
-                                    </property>
-                                  </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </property>
-                      </object>
-                    </property>
                   </object>
-                </property>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStack" id="backgroundstack">
+            <property name="transition-type">crossfade</property>
+            <property name="transition-duration">1000</property>
+            <child>
+              <object class="GtkPicture" id="rootpic">
+                <property name="halign">fill</property>
+                <property name="valign">fill</property>
+                <property name="content-fit">cover</property>
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <property name="opacity">0.15</property>
               </object>
             </child>
           </object>

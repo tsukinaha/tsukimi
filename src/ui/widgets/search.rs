@@ -3,6 +3,7 @@ use gtk::{gio, glib};
 
 mod imp {
 
+    use adw::prelude::NavigationPageExt;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
@@ -113,6 +114,14 @@ mod imp {
                             overlay.add_overlay(&mark);
                         }
                     }
+                    if userdata.played {
+                        let mark = gtk::Image::from_icon_name("object-select-symbolic");
+                        mark.set_halign(gtk::Align::End);
+                        mark.set_valign(gtk::Align::Start);
+                        mark.set_height_request(40);
+                        mark.set_width_request(40);
+                        overlay.add_overlay(&mark);
+                    }
                 }
                 vbox.append(&overlay);
                 let label = Label::new(Some(&result.name));
@@ -146,10 +155,12 @@ mod imp {
                     let window = obj.root().and_downcast::<Window>().unwrap();
                     if result.result_type == "Movie" {
                         let item_page = MoviePage::new(result.id.clone(),result.name.clone());
+                        item_page.set_tag(Some(&result.name));
                         window.imp().searchview.push(&item_page);
                         window.change_pop_visibility();
                     } else {
                         let item_page = ItemPage::new(result.id.clone(),result.id.clone());
+                        item_page.set_tag(Some(&result.name));
                         window.imp().searchview.push(&item_page);
                         window.change_pop_visibility();
                     }

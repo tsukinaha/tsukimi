@@ -5,6 +5,8 @@ use gtk::{gio, glib, subclass::prelude::*};
 
 use crate::APP_ID;
 
+use super::window::Window;
+
 mod imp {
 
     use glib::subclass::InitializingObject;
@@ -23,6 +25,8 @@ mod imp {
         pub autofullscreencontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub spinrow: TemplateChild<adw::SpinRow>,
+        #[template_child]
+        pub backgroundspinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub threadspinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
@@ -56,6 +60,13 @@ mod imp {
             klass.install_action("setting.clear", None, move |set, _action, _parameter| {
                 set.cacheclear();
             });
+            klass.install_action_async(
+                "setting.rootpic",
+                None,
+                |set, _action, _parameter| async move {
+                    set.set_rootpic().await;
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -77,6 +88,7 @@ mod imp {
             obj.set_proxy();
             obj.set_theme();
             obj.set_thread();
+            obj.set_picopactiy();
         }
     }
 
@@ -258,6 +270,38 @@ impl SettingsPage {
         imp.threadspinrow.set_value(settings.int("threads").into());
         imp.threadspinrow.connect_value_notify(move |control| {
             settings.set_int("threads", control.value() as i32).unwrap();
+        });
+    }
+
+    pub async fn set_rootpic(&self) {
+        let images_filter = gtk::FileFilter::new();
+        images_filter.set_name(Some("Image"));
+        images_filter.add_pixbuf_formats();
+        let model = gio::ListStore::new::<gtk::FileFilter>();
+        model.append(&images_filter);
+        let window = self.root().and_downcast::<Window>().unwrap();
+        let filedialog = gtk::FileDialog::builder()
+            .modal(true)
+            .title("Select a picture")
+            .filters(&model)
+            .build();
+        match filedialog.open_future(Some(&window)).await {
+            Ok(file) => {
+                let file_path = file.path().unwrap().display().to_string();
+                let settings = gio::Settings::new(APP_ID);
+                settings.set_string("root-pic", &file_path).unwrap();
+                window.set_rootpic(file);
+            },
+            Err(_) => window.toast("Failed to set root picture."),
+        };
+    }
+
+    pub fn set_picopactiy(&self) {
+        let imp = self.imp();
+        let settings = gio::Settings::new(APP_ID);
+        imp.backgroundspinrow.set_value(settings.int("pic-opacity").into());
+        imp.backgroundspinrow.connect_value_notify(move |control| {
+            settings.set_int("pic-opacity", control.value() as i32).unwrap();
         });
     }
 }

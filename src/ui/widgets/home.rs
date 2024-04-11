@@ -1,5 +1,6 @@
 use std::env;
 
+use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
@@ -194,6 +195,7 @@ impl HomePage {
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let view: std::cell::Ref<crate::ui::network::View> = item.borrow();
                 let item_page = ListPage::new(view.id.clone());
+                item_page.set_tag(Some(&view.name));
                 let window = obj.root().and_downcast::<Window>().unwrap();
                 window.imp().homeview.push(&item_page);
                 window.set_title(&view.name);
@@ -335,6 +337,14 @@ impl HomePage {
                                 overlay.add_overlay(&mark);
                             }
                         }
+                        if userdata.played {
+                            let mark = gtk::Image::from_icon_name("object-select-symbolic");
+                            mark.set_halign(gtk::Align::End);
+                            mark.set_valign(gtk::Align::Start);
+                            mark.set_height_request(40);
+                            mark.set_width_request(40);
+                            overlay.add_overlay(&mark);
+                        }
                     }
                     picture
                         .downcast_ref::<gtk::Box>()
@@ -363,12 +373,14 @@ impl HomePage {
                     let result: std::cell::Ref<Latest> = item.borrow();
                     if result.latest_type == "Movie" {
                         let item_page = MoviePage::new(result.id.clone(),result.name.clone());
+                        item_page.set_tag(Some(&result.name));
                         window.imp().homeview.push(&item_page);
                         window.set_title(&result.name);
                         window.change_pop_visibility();
                         env::set_var("HOME_TITLE", &result.name)
                     } else if result.latest_type == "Series" {
                         let item_page = ItemPage::new(result.id.clone(),result.id.clone());
+                        item_page.set_tag(Some(&result.name));
                         window.imp().homeview.push(&item_page);
                         window.set_title(&result.name);
                         window.change_pop_visibility();
