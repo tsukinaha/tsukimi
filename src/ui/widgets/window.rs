@@ -178,10 +178,9 @@ impl Window {
                 imp.navipage.set_title("Home");
                 self.change_pop_visibility();
             } else {
-                imp.navipage
-                    .set_title(&tag);
+                imp.navipage.set_title(&tag);
             }
-        } 
+        }
     }
 
     fn historyviewpop(&self) {
@@ -192,8 +191,7 @@ impl Window {
                 imp.navipage.set_title("History");
                 self.change_pop_visibility();
             } else {
-                imp.navipage
-                    .set_title(&tag);
+                imp.navipage.set_title(&tag);
             }
         }
     }
@@ -206,8 +204,7 @@ impl Window {
                 imp.navipage.set_title("Search");
                 self.change_pop_visibility();
             } else {
-                imp.navipage
-                    .set_title(&tag);
+                imp.navipage.set_title(&tag);
             }
         }
     }

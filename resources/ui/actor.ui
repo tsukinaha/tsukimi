@@ -63,7 +63,8 @@
                                 <child>
                                   <object class="GtkInscription" id="inscription">
                                     <property name="text" translatable="yes">No Inscriptions</property>
-                                    <property name="valign">start</property>
+                                    <property name="valign">fill</property>
+                                    <property name="yalign">0.00</property>
                                     <property name="margin-start">12</property>
                                     <property name="margin-top">12</property>
                                     <property name="hexpand">True</property>
@@ -83,6 +84,7 @@
                         <property name="transition-duration">300</property>
                         <property name="reveal-child">False</property>
                         <property name="halign">fill</property>
+                        <property name="margin-top">30</property>
                         <property name="valign">start</property>
                         <property name="hexpand">True</property>
                         <property name="vexpand">True</property>
@@ -98,6 +100,7 @@
                                 <property name="halign">start</property>
                                 <attributes>
                                   <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                  <attribute name="scale" value="1.3"/>
                                 </attributes>
                               </object>
                             </child>
@@ -138,6 +141,7 @@
                                 <property name="halign">start</property>
                                 <attributes>
                                   <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                  <attribute name="scale" value="1.3"/>
                                 </attributes>
                               </object>
                             </child>
@@ -178,6 +182,7 @@
                                 <property name="halign">start</property>
                                 <attributes>
                                   <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                  <attribute name="scale" value="1.3"/>
                                 </attributes>
                               </object>
                             </child>
@@ -191,6 +196,35 @@
                                     <property name="orientation">horizontal</property>
                                   </object>
                                 </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRevealer" id="linksrevealer">
+                        <property name="transition-type">crossfade</property>
+                        <property name="transition-duration">700</property>
+                        <property name="reveal-child">False</property>
+                        <child>
+                          <object class="GtkExpander">
+                            <property name="expanded">True</property>
+                            <child type="label">
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Links</property>
+                                <attributes>
+                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                  <attribute name="scale" value="1.3"/>
+                                </attributes>
+                                <property name="use-markup">True</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkScrolledWindow" id="linksscrolled">
+                                <property name="overlay-scrolling">true</property>
+                                <property name="vscrollbar-policy">never</property>
+                                <property name="margin-bottom">3</property>
                               </object>
                             </child>
                           </object>

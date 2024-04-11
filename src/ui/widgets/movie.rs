@@ -1,13 +1,14 @@
 use std::path::PathBuf;
 
-use adw::subclass::prelude::*;
 use adw::prelude::NavigationPageExt;
+use adw::subclass::prelude::*;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
 use crate::ui::network::{runtime, similar};
 
+use super::actor::ActorPage;
 use super::fix::fix;
 use super::item::ItemPage;
 mod imp {
@@ -407,7 +408,7 @@ impl MoviePage {
 
     pub fn setactorscrolled(&self, actors: Vec<crate::ui::network::People>) {
         let imp = self.imp();
-        let actorscrolled = fix(imp.actorscrolled.get());
+        fix(imp.actorscrolled.get());
         let actorrevealer = imp.actorrevealer.get();
         if !actors.is_empty() {
             actorrevealer.set_reveal_child(true);
@@ -489,7 +490,42 @@ impl MoviePage {
         imp.actorlist.set_factory(Some(&factory));
         imp.actorlist.set_model(Some(actorselection));
         let actorlist = imp.actorlist.get();
-        actorscrolled.set_child(Some(&actorlist));
+        actorlist.connect_activate(glib::clone!(@weak self as obj =>move |listview, position| {
+            let model = listview.model().unwrap();
+            let item = model
+                .item(position)
+                .and_downcast::<glib::BoxedAnyObject>()
+                .unwrap();
+            let actor: std::cell::Ref<crate::ui::network::People> = item.borrow();
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            let view = match window.current_view_name().as_str() {
+                "homepage" => {
+                    window.set_title(&actor.name);
+                    std::env::set_var("HOME_TITLE", &actor.name);
+                    &window.imp().homeview
+                }
+                "searchpage" => {
+                    window.set_title(&actor.name);
+                    std::env::set_var("SEARCH_TITLE", &actor.name);
+                    &window.imp().searchview
+                }
+                "historypage" => {
+                    window.set_title(&actor.name);
+                    std::env::set_var("HISTORY_TITLE", &actor.name);
+                    &window.imp().historyview
+                }
+                _ => {
+                    &window.imp().searchview
+                }
+            };
+            let item_page = ActorPage::new(&actor.id);
+            if view.find_page(actor.name.as_str()).is_some() {
+                view.pop_to_tag(actor.name.as_str());
+            } else {
+                item_page.set_tag(Some(actor.name.as_str()));
+                view.push(&item_page);
+            }
+        }));
         actorrevealer.set_reveal_child(true);
     }
 

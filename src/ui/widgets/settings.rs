@@ -58,9 +58,13 @@ mod imp {
             klass.install_action("setting.clear", None, move |set, _action, _parameter| {
                 set.cacheclear();
             });
-            klass.install_action_async("setting.rootpic", None, |set, _action, _parameter| async move {
-                set.set_rootpic().await;
-            });
+            klass.install_action_async(
+                "setting.rootpic",
+                None,
+                |set, _action, _parameter| async move {
+                    set.set_rootpic().await;
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -279,12 +283,8 @@ impl SettingsPage {
             .filters(&model)
             .build();
         match filedialog.open_future(Some(&window)).await {
-            Ok(file) => {
-                window.set_rootpic(file)
-            }
-            Err(_) => {
-                window.toast("Failed to set root picture.")
-            }
+            Ok(file) => window.set_rootpic(file),
+            Err(_) => window.toast("Failed to set root picture."),
         };
     }
 }

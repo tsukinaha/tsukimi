@@ -2,10 +2,12 @@ use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-
+use adw::prelude::NavigationPageExt;
 use crate::ui::image::setimage;
 
 use super::fix::fix;
+use super::item::ItemPage;
+use super::movie::MoviePage;
 
 mod imp {
     use adw::subclass::prelude::*;
@@ -48,6 +50,10 @@ mod imp {
         pub episodescrolled: TemplateChild<gtk::ScrolledWindow>,
         #[template_child]
         pub episodelist: TemplateChild<gtk::ListView>,
+        #[template_child]
+        pub linksrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub linksscrolled: TemplateChild<gtk::ScrolledWindow>,
         pub movieselection: gtk::SingleSelection,
         pub seriesselection: gtk::SingleSelection,
         pub episodeselection: gtk::SingleSelection,
@@ -135,6 +141,9 @@ impl ActorPage {
                 if let Some(overview) = item.overview {
                     inscription.set_text(Some(&overview));
                 }
+                if let Some(links) = item.external_urls {
+                    obj.setlinksscrolled(links);
+                }
                 title.set_text(&item.name);
                 inforevealer.set_reveal_child(true);
                 spinner.set_visible(false);
@@ -148,7 +157,7 @@ impl ActorPage {
         self.sets("Episode");
     }
 
-    pub fn sets(&self, types:&str) {
+    pub fn sets(&self, types: &str) {
         let imp = self.imp();
         let id = self.id();
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
@@ -184,6 +193,7 @@ impl ActorPage {
             listbox.append(&label);
             list_item.set_child(Some(&listbox));
         });
+        let listtype = types.to_string();
         factory.connect_bind(move |_, item| {
             let picture = item
                 .downcast_ref::<gtk::ListItem>()
@@ -218,6 +228,12 @@ impl ActorPage {
                     let img = crate::ui::image::setimage(item.id.clone());
                     let overlay = gtk::Overlay::builder().child(&img).build();
                     if let Some(userdata) = &item.user_data {
+                        if let Some(percentage) = userdata.played_percentage {
+                            let progressbar = gtk::ProgressBar::new();
+                            progressbar.set_fraction(percentage / 100.0);
+                            progressbar.set_valign(gtk::Align::End);
+                            overlay.add_overlay(&progressbar);
+                        }
                         if let Some(unplayeditemcount) = userdata.unplayed_item_count {
                             if unplayeditemcount > 0 {
                                 let mark = gtk::Label::new(Some(
@@ -249,9 +265,20 @@ impl ActorPage {
                 }
             }
             if label.is::<gtk::Label>() {
-                let mut str = item.name.to_string();
-                if let Some(productionyear) = item.production_year {
-                    str.push_str(&format!("\n{}", productionyear));
+                let mut str: String;
+                if listtype == "Episode" {
+                    str = item.series_name.as_ref().unwrap().to_string();
+                    if let Some(season) = item.parent_index_number {
+                        str.push_str(&format!("\nS{}", season));
+                    }
+                    if let Some(episode) = item.index_number {
+                        str.push_str(&format!(":E{} - {}", episode, item.name));
+                    }
+                } else {
+                    str = item.name.to_string();
+                    if let Some(productionyear) = item.production_year {
+                        str.push_str(&format!("\n{}", productionyear));
+                    }
                 }
                 label
                     .downcast_ref::<gtk::Label>()
@@ -290,11 +317,12 @@ impl ActorPage {
         }
         list.set_factory(Some(&factory));
         selection.set_model(Some(&store));
+        selection.set_autoselect(false);
         list.set_model(Some(selection));
-        let types = types.to_string();
+        let media_type = types.to_string();
         let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Item>>(1);
         crate::ui::network::runtime().spawn(async move {
-            let item = crate::ui::network::person_item(&id, &types.to_string())
+            let item = crate::ui::network::person_item(&id, &media_type.to_string())
                 .await
                 .expect("msg");
             sender.send(item).await.expect("msg");
@@ -308,5 +336,104 @@ impl ActorPage {
                 revealer.set_reveal_child(true);
             }
         });
+        let types = types.to_string();
+        list.connect_activate(
+            glib::clone!(@weak self as obj =>move |listview, position| {
+                let model = listview.model().unwrap();
+                let item = model
+                    .item(position)
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
+                let recommend: std::cell::Ref<crate::ui::network::Item> = item.borrow();
+                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                let view = match window.current_view_name().as_str() {
+                    "homepage" => {
+                        window.set_title(&recommend.name);
+                        std::env::set_var("HOME_TITLE", &recommend.name);
+                        &window.imp().homeview
+                    }
+                    "searchpage" => {
+                        window.set_title(&recommend.name);
+                        std::env::set_var("SEARCH_TITLE", &recommend.name);
+                        &window.imp().searchview
+                    }
+                    "historypage" => {
+                        window.set_title(&recommend.name);
+                        std::env::set_var("HISTORY_TITLE", &recommend.name);
+                        &window.imp().historyview
+                    }
+                    _ => {
+                        &window.imp().searchview
+                    }
+                };
+                match types.as_str() {
+                    "Movie" => {
+                        let item_page = MoviePage::new(recommend.id.clone(),recommend.name.clone());
+                        if view.find_page(recommend.name.as_str()).is_some() {
+                            view.pop_to_tag(recommend.name.as_str());
+                        } else {
+                            item_page.set_tag(Some(recommend.name.as_str()));
+                            view.push(&item_page);
+                        }
+                    }
+                    "Series" => {
+                        let item_page = ItemPage::new(recommend.id.clone(),recommend.id.clone());
+                        if view.find_page(recommend.name.as_str()).is_some() {
+                            view.pop_to_tag(recommend.name.as_str());
+                        } else {
+                            item_page.set_tag(Some(recommend.name.as_str()));
+                            view.push(&item_page);
+                        }
+                    }
+                    "Episode" => {
+                        let item_page = ItemPage::new(recommend.series_id.clone().unwrap(),recommend.id.clone());
+                        if view.find_page(recommend.name.as_str()).is_some() {
+                            view.pop_to_tag(recommend.name.as_str());
+                        } else {
+                            item_page.set_tag(Some(recommend.name.as_str()));
+                            view.push(&item_page);
+                        }
+                    }
+                    _ => {
+                    }
+                } 
+            }),
+        );
+    }
+
+    pub fn setlinksscrolled(&self, links: Vec<crate::ui::network::Urls>) {
+        let imp = self.imp();
+        let linksscrolled = fix(imp.linksscrolled.get());
+        let linksrevealer = imp.linksrevealer.get();
+        if !links.is_empty() {
+            linksrevealer.set_reveal_child(true);
+        }
+        let linkbox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
+        linkbox.add_css_class("flat");
+        while linkbox.last_child().is_some() {
+            if let Some(child) = linkbox.last_child() {
+                linkbox.remove(&child)
+            }
+        }
+        for url in links {
+            let linkbutton = gtk::Button::builder()
+                .margin_start(10)
+                .margin_top(10)
+                .build();
+            let buttoncontent = adw::ButtonContent::builder()
+                .label(&url.name)
+                .icon_name("send-to-symbolic")
+                .build();
+            linkbutton.set_child(Some(&buttoncontent));
+            linkbutton.connect_clicked(move |_| {
+                let _ = gio::AppInfo::launch_default_for_uri(
+                    &url.url,
+                    Option::<&gio::AppLaunchContext>::None,
+                );
+            });
+            linkbox.append(&linkbutton);
+        }
+        linksscrolled.set_child(Some(&linkbox));
+        linksrevealer.set_reveal_child(true);
     }
 }

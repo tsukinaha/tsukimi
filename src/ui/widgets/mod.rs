@@ -1,3 +1,4 @@
+pub mod actor;
 pub mod episoderow;
 pub mod fix;
 pub mod history;
@@ -8,4 +9,3 @@ pub mod movie;
 pub mod search;
 pub mod settings;
 pub mod window;
-pub mod actor;

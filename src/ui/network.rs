@@ -279,6 +279,14 @@ pub struct Item {
     pub name: String,
     #[serde(rename = "Id")]
     pub id: String,
+    #[serde(rename = "SeriesId")]
+    pub series_id: Option<String>,
+    #[serde(rename = "SeriesName")]
+    pub series_name: Option<String>,
+    #[serde(rename = "ParentIndexNumber")]
+    pub parent_index_number: Option<u32>,
+    #[serde(rename = "IndexNumber")]
+    pub index_number: Option<u32>,
     #[serde(rename = "ProductionYear")]
     pub production_year: Option<u16>,
     #[serde(rename = "ExternalUrls")]
@@ -972,10 +980,7 @@ pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Erro
         server_info.domain, server_info.port, server_info.user_id
     );
     let params = [
-        (
-            "Fields",
-            "PrimaryImageAspectRatio,ProductionYear",
-        ),
+        ("Fields", "PrimaryImageAspectRatio,ProductionYear"),
         ("PersonIds", id),
         ("Recursive", "true"),
         ("CollapseBoxSetItems", "false"),

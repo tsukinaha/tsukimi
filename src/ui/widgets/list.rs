@@ -1,11 +1,11 @@
+use super::item::ItemPage;
+use super::movie::MoviePage;
+use super::window::Window;
+use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-use adw::prelude::NavigationPageExt;
-use super::item::ItemPage;
-use super::movie::MoviePage;
-use super::window::Window;
 
 mod imp {
 
