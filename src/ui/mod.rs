@@ -22,7 +22,7 @@ pub fn build_ui(app: &adw::Application) {
                     .license_type(gtk::License::Gpl30)
                     .build();
                 about.add_acknowledgement_section(Some("Code"),&["Inaha","Kosette"]);
-                about.add_acknowledgement_section(Some("Special Thanks"), &["Qound","Eikano"]);
+                about.add_acknowledgement_section(Some("Special Thanks"), &["Qound","Eikano","amtoaer"]);
                 about.present();
             })
             .build();
