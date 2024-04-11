@@ -26,6 +26,8 @@ mod imp {
         #[template_child]
         pub spinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
+        pub backgroundspinrow: TemplateChild<adw::SpinRow>,
+        #[template_child]
         pub threadspinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub forcewindowcontrol: TemplateChild<adw::SwitchRow>,
@@ -86,6 +88,7 @@ mod imp {
             obj.set_proxy();
             obj.set_theme();
             obj.set_thread();
+            obj.set_picopactiy();
         }
     }
 
@@ -291,5 +294,14 @@ impl SettingsPage {
             },
             Err(_) => window.toast("Failed to set root picture."),
         };
+    }
+
+    pub fn set_picopactiy(&self) {
+        let imp = self.imp();
+        let settings = gio::Settings::new(APP_ID);
+        imp.backgroundspinrow.set_value(settings.int("pic-opacity").into());
+        imp.backgroundspinrow.connect_value_notify(move |control| {
+            settings.set_int("pic-opacity", control.value() as i32).unwrap();
+        });
     }
 }

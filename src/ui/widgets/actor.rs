@@ -329,11 +329,14 @@ impl ActorPage {
         });
         glib::spawn_future_local(async move {
             while let Ok(items) = receiver.recv().await {
+                let items_len = items.len();
                 for item in items {
                     let object = glib::BoxedAnyObject::new(item);
                     store.append(&object);
                 }
-                revealer.set_reveal_child(true);
+                if items_len != 0 {
+                    revealer.set_reveal_child(true);
+                }
             }
         });
         let types = types.to_string();

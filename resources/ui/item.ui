@@ -315,6 +315,87 @@
                   </object>
                 </child>
                 <child>
+                  <object class="GtkRevealer" id="studiosrevealer">
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
+                    <child>
+                      <object class="GtkExpander">
+                        <property name="expanded">True</property>
+                        <child type="label">
+                          <object class="GtkLabel">
+                            <property name="label" translatable="yes">Studios</property>
+                            <attributes>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="studiosscrolled">
+                            <property name="overlay-scrolling">true</property>
+                            <property name="vscrollbar-policy">never</property>
+                            <property name="margin-bottom">3</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="genresrevealer">
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
+                    <child>
+                      <object class="GtkExpander">
+                        <property name="expanded">True</property>
+                        <child type="label">
+                          <object class="GtkLabel">
+                            <property name="label" translatable="yes">Genres</property>
+                            <attributes>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="genresscrolled">
+                            <property name="overlay-scrolling">true</property>
+                            <property name="vscrollbar-policy">never</property>
+                            <property name="margin-bottom">3</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="tagsrevealer">
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
+                    <child>
+                      <object class="GtkExpander">
+                        <property name="expanded">True</property>
+                        <child type="label">
+                          <object class="GtkLabel">
+                            <property name="label" translatable="yes">Tags</property>
+                            <attributes>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="tagsscrolled">
+                            <property name="overlay-scrolling">true</property>
+                            <property name="vscrollbar-policy">never</property>
+                            <property name="margin-bottom">3</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
                   <object class="GtkRevealer" id="mediainforevealer">
                     <property name="transition-type">crossfade</property>
                     <property name="transition-duration">700</property>

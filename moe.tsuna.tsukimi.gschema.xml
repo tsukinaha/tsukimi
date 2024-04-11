@@ -53,5 +53,9 @@
       <default>4</default>
       <summary>Default threads</summary>
     </key>
+    <key name="pic-opacity" type="i">
+      <default>15</default>
+      <summary>Default threads</summary>
+    </key>
   </schema>
 </schemalist>

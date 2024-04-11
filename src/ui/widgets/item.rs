@@ -72,6 +72,18 @@ mod imp {
         #[template_child]
         pub actorlist: TemplateChild<gtk::ListView>,
         #[template_child]
+        pub studiosscrolled: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        pub studiosrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub tagsscrolled: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        pub tagsrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub genresscrolled: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        pub genresrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
         pub episodesearchentry: TemplateChild<gtk::SearchEntry>,
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
@@ -496,6 +508,15 @@ impl ItemPage {
                 }
                 if let Some(actor) = item.people {
                     obj.setactorscrolled(actor);
+                }
+                if let Some(studios) = item.studios {
+                    obj.set_studio(studios);
+                }
+                if let Some(tags) = item.tags {
+                    obj.set_tags(tags);
+                }
+                if let Some(genres) = item.genres {
+                    obj.set_genres(genres);
                 }
                 overviewrevealer.set_reveal_child(true);
             }
@@ -978,5 +999,44 @@ impl ItemPage {
             }),
         );
         recommendscrolled.set_child(Some(&recommendlist));
+    }
+
+    pub fn set_studio(&self, infos: Vec<crate::ui::network::SGTitem>) {
+        let imp = self.imp();
+        let scrolled = fix(imp.studiosscrolled.get());
+        let revealer = imp.studiosrevealer.get();
+        self.setup_sgts(revealer, scrolled, infos);
+    }
+
+    pub fn set_tags(&self, infos: Vec<crate::ui::network::SGTitem>) {
+        let imp = self.imp();
+        let scrolled = fix(imp.tagsscrolled.get());
+        let revealer = imp.tagsrevealer.get();
+        self.setup_sgts(revealer, scrolled, infos);
+    }
+
+    pub fn set_genres(&self, infos: Vec<crate::ui::network::SGTitem>) {
+        let imp = self.imp();
+        let scrolled = fix(imp.genresscrolled.get());
+        let revealer = imp.genresrevealer.get();
+        self.setup_sgts(revealer, scrolled, infos);
+    }
+
+    pub fn setup_sgts(&self, linksrevealer: gtk::Revealer, linksscrolled: gtk::ScrolledWindow, infos: Vec<crate::ui::network::SGTitem>) {
+        if !infos.is_empty() {
+            linksrevealer.set_reveal_child(true);
+        }
+        let linkbox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
+        for url in infos {
+            let linkbutton = gtk::Button::builder()
+                .margin_start(10)
+                .margin_top(10)
+                .label(&url.name)
+                .build();
+            linkbutton.add_css_class("raised");
+            linkbox.append(&linkbutton);
+        }
+        linksscrolled.set_child(Some(&linkbox));
+        linksrevealer.set_reveal_child(true);
     }
 }

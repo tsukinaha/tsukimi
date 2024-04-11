@@ -498,7 +498,9 @@ impl Window {
             .content_fit(gtk::ContentFit::Cover)
             .file(&file)
             .build();
-        pic.set_opacity(0.15);
+        let settings = Settings::new(APP_ID);
+        let opacity = settings.int("pic-opacity");
+        pic.set_opacity(opacity as f64 / 100.0);
         backgroundstack.add_child(&pic);
         backgroundstack.set_visible_child(&pic);
     }

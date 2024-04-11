@@ -295,6 +295,12 @@ pub struct Item {
     pub overview: Option<String>,
     #[serde(rename = "People")]
     pub people: Option<Vec<People>>,
+    #[serde(rename = "Studios")]
+    pub studios: Option<Vec<SGTitem>>,
+    #[serde(rename = "GenreItems")]
+    pub genres: Option<Vec<SGTitem>>,
+    #[serde(rename = "TagItems")]
+    pub tags: Option<Vec<SGTitem>>,
     #[serde(rename = "UserData")]
     pub user_data: Option<UserData>,
 }
@@ -308,7 +314,15 @@ pub struct People {
     #[serde(rename = "Role")]
     pub role: Option<String>,
     #[serde(rename = "Type")]
-    pub people_type: String,
+    pub people_type: Option<String>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct SGTitem {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "Id")]
+    pub id: i32,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
