@@ -39,7 +39,6 @@ mod imp {
                 let rect = graphene::Rect::new(dx as f32, dy as f32, new_width as f32, new_height as f32);
                 snapshot.push_blur(10.0);
                 snapshot.append_texture(&texture, &rect);
-                
                 snapshot.pop();
             }
         }

@@ -137,7 +137,7 @@
                             </child>
                             <child>
                               <object class="AdwActionRow">
-                                <property name="title" translatable="yes">Root Picture</property>
+                                <property name="title" translatable="yes">Default Background</property>
                                 <property name="action-name">setting.rootpic</property>
                                 <property name="activatable">True</property>
                                 <child>

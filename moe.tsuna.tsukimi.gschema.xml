@@ -41,6 +41,10 @@
       <default>""</default>
       <summary>Default switch state</summary>
     </key>
+    <key name="root-pic" type="s">
+      <default>""</default>
+      <summary>Default switch state</summary>
+    </key>
     <key name="background-height" type="i">
       <default>700</default>
       <summary>Default background height</summary>

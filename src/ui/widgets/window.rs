@@ -36,6 +36,8 @@ mod imp {
         #[template_child]
         pub insidestack: TemplateChild<gtk::Stack>,
         #[template_child]
+        pub backgroundstack: TemplateChild<gtk::Stack>,
+        #[template_child]
         pub popbutton: TemplateChild<gtk::ToggleButton>,
         #[template_child]
         pub settingspage: TemplateChild<adw::NavigationPage>,
@@ -107,6 +109,7 @@ mod imp {
             // Call "constructed" on parent
             self.parent_constructed();
             let obj = self.obj();
+            obj.setup_rootpic();
             obj.setup_settings();
             obj.load_window_size();
             obj.loginenter();
@@ -486,8 +489,24 @@ impl Window {
 
     pub fn set_rootpic(&self, file: gio::File) {
         let imp = self.imp();
-        let pic = crate::ui::provider::background_paintable::BackgroundPaintable::default();
-        pic.set_pic(file);
-        imp.rootpic.set_paintable(Some(&pic));
+        let backgroundstack = imp.backgroundstack.get();
+        let pic = gtk::Picture::builder()
+            .halign(gtk::Align::Fill)
+            .valign(gtk::Align::Fill)
+            .hexpand(true)
+            .vexpand(true)
+            .content_fit(gtk::ContentFit::Cover)
+            .file(&file)
+            .build();
+        pic.set_opacity(0.15);
+        backgroundstack.add_child(&pic);
+        backgroundstack.set_visible_child(&pic);
+    }
+
+    pub fn setup_rootpic(&self) {
+        let settings = Settings::new(APP_ID);
+        let pic = settings.string("root-pic");
+        let file = gio::File::for_path(&pic);
+        self.set_rootpic(file);
     }
 }

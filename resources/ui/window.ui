@@ -341,13 +341,19 @@
           </object>
         </child>
         <child>
-          <object class="GtkPicture" id="rootpic">
-            <property name="halign">fill</property>
-            <property name="valign">fill</property>
-            <property name="content-fit">cover</property>
-            <property name="hexpand">true</property>
-            <property name="vexpand">true</property>
-            <property name="opacity">0.15</property>
+          <object class="GtkStack" id="backgroundstack">
+            <property name="transition-type">crossfade</property>
+            <property name="transition-duration">1000</property>
+            <child>
+              <object class="GtkPicture" id="rootpic">
+                <property name="halign">fill</property>
+                <property name="valign">fill</property>
+                <property name="content-fit">cover</property>
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <property name="opacity">0.15</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>

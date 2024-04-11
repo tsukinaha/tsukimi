@@ -283,7 +283,12 @@ impl SettingsPage {
             .filters(&model)
             .build();
         match filedialog.open_future(Some(&window)).await {
-            Ok(file) => window.set_rootpic(file),
+            Ok(file) => {
+                let file_path = file.path().unwrap().display().to_string();
+                let settings = gio::Settings::new(APP_ID);
+                settings.set_string("root-pic", &file_path).unwrap();
+                window.set_rootpic(file);
+            },
             Err(_) => window.toast("Failed to set root picture."),
         };
     }
