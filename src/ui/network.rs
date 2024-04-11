@@ -121,6 +121,8 @@ pub struct SearchResult {
     pub id: String,
     #[serde(rename = "UserData")]
     pub user_data: Option<UserData>,
+    #[serde(rename = "ProductionYear")]
+    pub production_year: Option<i16>,
 }
 
 struct SearchModel {
@@ -275,12 +277,30 @@ pub struct Media {
 pub struct Item {
     #[serde(rename = "Name")]
     pub name: String,
+    #[serde(rename = "Id")]
+    pub id: String,
+    #[serde(rename = "SeriesId")]
+    pub series_id: Option<String>,
+    #[serde(rename = "SeriesName")]
+    pub series_name: Option<String>,
+    #[serde(rename = "ParentIndexNumber")]
+    pub parent_index_number: Option<u32>,
+    #[serde(rename = "IndexNumber")]
+    pub index_number: Option<u32>,
+    #[serde(rename = "ProductionYear")]
+    pub production_year: Option<u16>,
     #[serde(rename = "ExternalUrls")]
     pub external_urls: Option<Vec<Urls>>,
     #[serde(rename = "Overview")]
     pub overview: Option<String>,
     #[serde(rename = "People")]
     pub people: Option<Vec<People>>,
+    #[serde(rename = "Studios")]
+    pub studios: Option<Vec<SGTitem>>,
+    #[serde(rename = "GenreItems")]
+    pub genres: Option<Vec<SGTitem>>,
+    #[serde(rename = "TagItems")]
+    pub tags: Option<Vec<SGTitem>>,
     #[serde(rename = "UserData")]
     pub user_data: Option<UserData>,
 }
@@ -294,7 +314,15 @@ pub struct People {
     #[serde(rename = "Role")]
     pub role: Option<String>,
     #[serde(rename = "Type")]
-    pub people_type: String,
+    pub people_type: Option<String>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct SGTitem {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "Id")]
+    pub id: i32,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -446,6 +474,10 @@ pub async fn get_image(id: String) -> Result<String, Error> {
             let bytes_result = response.bytes().await;
             match bytes_result {
                 Ok(bytes) => {
+                    if bytes.len() < 10240 {
+                        return Ok(id);
+                    }
+                    
                     let path_str = format!(
                         "{}/.local/share/tsukimi/",
                         home_dir().expect("msg").display()
@@ -493,6 +525,10 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
             let bytes_result = response.bytes().await;
             match bytes_result {
                 Ok(bytes) => {
+                    if bytes.len() < 10240 {
+                        return Ok(id);
+                    }
+                    
                     let path_str = format!(
                         "{}/.local/share/tsukimi/",
                         home_dir().expect("msg").display()
@@ -540,6 +576,10 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
             let bytes_result = response.bytes().await;
             match bytes_result {
                 Ok(bytes) => {
+                    if bytes.len() < 10240 {
+                        return Ok(id);
+                    }
+
                     let path_str = format!(
                         "{}/.local/share/tsukimi/",
                         home_dir().expect("msg").display()
@@ -587,6 +627,10 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
             let bytes_result = response.bytes().await;
             match bytes_result {
                 Ok(bytes) => {
+                    if bytes.len() < 10240 {
+                        return Ok(id);
+                    }
+                    
                     let path_str = format!(
                         "{}/.local/share/tsukimi/",
                         home_dir().expect("msg").display()
@@ -921,4 +965,70 @@ pub async fn playstart(back: Back) {
         .send()
         .await
         .unwrap();
+}
+
+pub(crate) async fn similar(id: &str) -> Result<Vec<SearchResult>, Error> {
+    let mut model = SearchModel {
+        search_results: Vec::new(),
+    };
+    let server_info = config::set_config();
+
+    let client = client();
+    let url = format!(
+        "{}:{}/emby/Items/{}/Similar",
+        server_info.domain, server_info.port, id
+    );
+    let params = [
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+        ),
+        ("UserId", &server_info.user_id),
+        ("ImageTypeLimit", "1"),
+        ("Limit", "12"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+
+    let response = client.get(&url).query(&params).send().await?;
+    let mut json: serde_json::Value = response.json().await?;
+    let items: Vec<SearchResult> = serde_json::from_value(json["Items"].take()).unwrap();
+    model.search_results = items;
+    Ok(model.search_results)
+}
+
+pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Error> {
+    let server_info = config::set_config();
+
+    let client = client();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items",
+        server_info.domain, server_info.port, server_info.user_id
+    );
+    let params = [
+        ("Fields", "PrimaryImageAspectRatio,ProductionYear"),
+        ("PersonIds", id),
+        ("Recursive", "true"),
+        ("CollapseBoxSetItems", "false"),
+        ("SortBy", "SortName"),
+        ("SortOrder", "Ascending"),
+        ("IncludeItemTypes", types),
+        ("ImageTypeLimit", "1"),
+        ("Limit", "12"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+
+    let response = client.get(&url).query(&params).send().await?;
+    let mut json: serde_json::Value = response.json().await?;
+    let items: Vec<Item> = serde_json::from_value(json["Items"].take()).unwrap();
+    Ok(items)
 }

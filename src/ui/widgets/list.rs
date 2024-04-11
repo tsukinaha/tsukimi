@@ -1,11 +1,11 @@
+use super::item::ItemPage;
+use super::movie::MoviePage;
+use super::window::Window;
+use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-
-use super::item::ItemPage;
-use super::movie::MoviePage;
-use super::window::Window;
 
 mod imp {
 
@@ -225,10 +225,12 @@ impl ListPage {
                 if result.latest_type == "Movie" {
                     window.set_title(&result.name);
                     let item_page = MoviePage::new(result.id.clone(),result.name.clone());
+                    item_page.set_tag(Some(&result.name));
                     window.imp().homeview.push(&item_page);
                 } else if result.latest_type == "Series" {
                     window.set_title(&result.name);
                     let item_page = ItemPage::new(result.id.clone(),result.id.clone());
+                    item_page.set_tag(Some(&result.name));
                     window.imp().homeview.push(&item_page);
                 }
                 std::env::set_var("HOME_TITLE", &result.name);
@@ -239,7 +241,7 @@ impl ListPage {
 
     pub fn update(&self) {
         let scrolled = self.imp().listscrolled.get();
-        scrolled.connect_edge_reached(glib::clone!(@weak self as obj => move |_, pos| {
+        scrolled.connect_edge_overshot(glib::clone!(@weak self as obj => move |_, pos| {
             if pos == gtk::PositionType::Bottom {
                 let spinner = obj.imp().spinner.get();
                 spinner.set_visible(true);

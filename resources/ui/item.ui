@@ -72,7 +72,6 @@
                 <child>
                   <object class="GtkBox">
                     <property name="orientation">horizontal</property>
-                    <property name="spacing">6</property>
                     <property name="hexpand">true</property>
                     <child>
                       <object class="GtkDropDown" id="seasonlist">
@@ -80,11 +79,16 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkSearchEntry" id="episodesearchentry">
+                        <property name="hexpand">true</property>
+                        <property name="placeholder-text" translatable="yes">Search episodes in current season</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkToggleButton" id="go-first">
                         <property name="halign">end</property>
                         <property name="icon-name">go-first-symbolic</property>
                         <property name="action-name">item.first</property>
-                        <property name="hexpand">true</property>
                       </object>
                     </child>
                     <child>
@@ -109,6 +113,9 @@
                         <property name="action-name">item.last</property>
                       </object>
                     </child>
+                    <style>
+                      <class name="linked" />
+                    </style>
                   </object>
                 </child>
                 <child>
@@ -155,6 +162,38 @@
                             <property name="margin-bottom">3</property>
                             <child>
                               <object class="GtkListView" id="actorlist">
+                                <property name="orientation">horizontal</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="recommendrevealer">
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
+                    <child>
+                      <object class="GtkExpander">
+                        <property name="expanded">True</property>
+                        <child type="label">
+                          <object class="GtkLabel">
+                            <property name="label" translatable="yes">Recommend</property>
+                            <attributes>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="recommendscrolled">
+                            <property name="overlay-scrolling">true</property>
+                            <property name="vscrollbar-policy">never</property>
+                            <property name="margin-bottom">3</property>
+                            <child>
+                              <object class="GtkListView" id="recommendlist">
                                 <property name="orientation">horizontal</property>
                               </object>
                             </child>
@@ -266,6 +305,87 @@
                         </child>
                         <child>
                           <object class="GtkScrolledWindow" id="linksscrolled">
+                            <property name="overlay-scrolling">true</property>
+                            <property name="vscrollbar-policy">never</property>
+                            <property name="margin-bottom">3</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="studiosrevealer">
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
+                    <child>
+                      <object class="GtkExpander">
+                        <property name="expanded">True</property>
+                        <child type="label">
+                          <object class="GtkLabel">
+                            <property name="label" translatable="yes">Studios</property>
+                            <attributes>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="studiosscrolled">
+                            <property name="overlay-scrolling">true</property>
+                            <property name="vscrollbar-policy">never</property>
+                            <property name="margin-bottom">3</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="genresrevealer">
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
+                    <child>
+                      <object class="GtkExpander">
+                        <property name="expanded">True</property>
+                        <child type="label">
+                          <object class="GtkLabel">
+                            <property name="label" translatable="yes">Genres</property>
+                            <attributes>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="genresscrolled">
+                            <property name="overlay-scrolling">true</property>
+                            <property name="vscrollbar-policy">never</property>
+                            <property name="margin-bottom">3</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="tagsrevealer">
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">700</property>
+                    <property name="reveal-child">False</property>
+                    <child>
+                      <object class="GtkExpander">
+                        <property name="expanded">True</property>
+                        <child type="label">
+                          <object class="GtkLabel">
+                            <property name="label" translatable="yes">Tags</property>
+                            <attributes>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScrolledWindow" id="tagsscrolled">
                             <property name="overlay-scrolling">true</property>
                             <property name="vscrollbar-policy">never</property>
                             <property name="margin-bottom">3</property>

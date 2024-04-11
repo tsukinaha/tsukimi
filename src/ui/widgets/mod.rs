@@ -1,3 +1,4 @@
+pub mod actor;
 pub mod episoderow;
 pub mod fix;
 pub mod history;
