@@ -486,6 +486,8 @@ impl Window {
 
     pub fn set_rootpic(&self, file: gio::File) {
         let imp = self.imp();
-        imp.rootpic.set_file(Some(&file));
+        let pic = crate::ui::provider::background_paintable::BackgroundPaintable::default();
+        pic.set_pic(file);
+        imp.rootpic.set_paintable(Some(&pic));
     }
 }

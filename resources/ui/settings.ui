@@ -140,7 +140,6 @@
                                 <property name="title" translatable="yes">Root Picture</property>
                                 <property name="action-name">setting.rootpic</property>
                                 <property name="activatable">True</property>
-                                <property name="visible">False</property>
                                 <child>
                                   <object class="GtkImage">
                                     <property name="icon_name">folder-pictures-symbolic</property>

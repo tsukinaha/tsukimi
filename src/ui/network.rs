@@ -460,6 +460,10 @@ pub async fn get_image(id: String) -> Result<String, Error> {
             let bytes_result = response.bytes().await;
             match bytes_result {
                 Ok(bytes) => {
+                    if bytes.len() < 10240 {
+                        return Ok(id);
+                    }
+                    
                     let path_str = format!(
                         "{}/.local/share/tsukimi/",
                         home_dir().expect("msg").display()
@@ -507,6 +511,10 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
             let bytes_result = response.bytes().await;
             match bytes_result {
                 Ok(bytes) => {
+                    if bytes.len() < 10240 {
+                        return Ok(id);
+                    }
+                    
                     let path_str = format!(
                         "{}/.local/share/tsukimi/",
                         home_dir().expect("msg").display()
@@ -554,6 +562,10 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
             let bytes_result = response.bytes().await;
             match bytes_result {
                 Ok(bytes) => {
+                    if bytes.len() < 10240 {
+                        return Ok(id);
+                    }
+
                     let path_str = format!(
                         "{}/.local/share/tsukimi/",
                         home_dir().expect("msg").display()
@@ -601,6 +613,10 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
             let bytes_result = response.bytes().await;
             match bytes_result {
                 Ok(bytes) => {
+                    if bytes.len() < 10240 {
+                        return Ok(id);
+                    }
+                    
                     let path_str = format!(
                         "{}/.local/share/tsukimi/",
                         home_dir().expect("msg").display()

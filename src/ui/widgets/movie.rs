@@ -134,9 +134,13 @@ impl MoviePage {
         let settings = gtk::gio::Settings::new(crate::APP_ID);
         backdrop.set_height_request(settings.int("background-height"));
         let (sender, receiver) = async_channel::bounded::<String>(1);
-        let idclone = id.clone();
+        let id2 = id.clone();
         if pathbuf.exists() {
             backdrop.set_file(Some(&gtk::gio::File::for_path(&path)));
+            glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
+                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                window.set_rootpic(gtk::gio::File::for_path(&path));
+            }));
         } else {
             crate::ui::network::runtime().spawn(async move {
                 let id = crate::ui::network::get_backdropimage(id)
@@ -148,17 +152,21 @@ impl MoviePage {
                     .expect("The channel needs to be open.");
             });
         }
-        glib::spawn_future_local(async move {
+        glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
             while receiver.recv().await.is_ok() {
                 let path = format!(
                     "{}/.local/share/tsukimi/b{}.png",
                     dirs::home_dir().expect("msg").display(),
-                    idclone
+                    id2
                 );
-                let file = gtk::gio::File::for_path(&path);
-                backdrop.set_file(Some(&file));
+                if pathbuf.exists() {
+                    let file = gtk::gio::File::for_path(&path);
+                    backdrop.set_file(Some(&file));
+                    let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                    window.set_rootpic(file);
+                }
             }
-        });
+        }));
     }
     pub fn logoset(&self) {
         let osd = &self.imp().logobox;
