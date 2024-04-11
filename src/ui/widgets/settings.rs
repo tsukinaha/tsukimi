@@ -291,7 +291,7 @@ impl SettingsPage {
                 let settings = gio::Settings::new(APP_ID);
                 settings.set_string("root-pic", &file_path).unwrap();
                 window.set_rootpic(file);
-            },
+            }
             Err(_) => window.toast("Failed to set root picture."),
         };
     }
@@ -299,9 +299,12 @@ impl SettingsPage {
     pub fn set_picopactiy(&self) {
         let imp = self.imp();
         let settings = gio::Settings::new(APP_ID);
-        imp.backgroundspinrow.set_value(settings.int("pic-opacity").into());
+        imp.backgroundspinrow
+            .set_value(settings.int("pic-opacity").into());
         imp.backgroundspinrow.connect_value_notify(move |control| {
-            settings.set_int("pic-opacity", control.value() as i32).unwrap();
+            settings
+                .set_int("pic-opacity", control.value() as i32)
+                .unwrap();
         });
     }
 }

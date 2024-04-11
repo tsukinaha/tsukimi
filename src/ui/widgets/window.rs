@@ -490,14 +490,17 @@ impl Window {
     pub fn set_rootpic(&self, file: gio::File) {
         let imp = self.imp();
         let backgroundstack = imp.backgroundstack.get();
-        let pic = gtk::Picture::builder()
+        /***  let pic = gtk::Picture::builder()
             .halign(gtk::Align::Fill)
             .valign(gtk::Align::Fill)
             .hexpand(true)
             .vexpand(true)
             .content_fit(gtk::ContentFit::Cover)
             .file(&file)
-            .build();
+            .build(); ***/
+        let paintbale = crate::ui::provider::background_paintable::BackgroundPaintable::default();
+        paintbale.set_pic(file);
+        let pic = gtk::Picture::for_paintable(&paintbale);
         let settings = Settings::new(APP_ID);
         let opacity = settings.int("pic-opacity");
         pic.set_opacity(opacity as f64 / 100.0);

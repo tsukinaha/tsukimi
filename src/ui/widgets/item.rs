@@ -1022,7 +1022,12 @@ impl ItemPage {
         self.setup_sgts(revealer, scrolled, infos);
     }
 
-    pub fn setup_sgts(&self, linksrevealer: gtk::Revealer, linksscrolled: gtk::ScrolledWindow, infos: Vec<crate::ui::network::SGTitem>) {
+    pub fn setup_sgts(
+        &self,
+        linksrevealer: gtk::Revealer,
+        linksscrolled: gtk::ScrolledWindow,
+        infos: Vec<crate::ui::network::SGTitem>,
+    ) {
         if !infos.is_empty() {
             linksrevealer.set_reveal_child(true);
         }
