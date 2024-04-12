@@ -38,6 +38,12 @@ mod imp {
         #[template_child]
         pub proxyentry: TemplateChild<adw::EntryRow>,
         #[template_child]
+        pub backgroundblurspinrow: TemplateChild<adw::SpinRow>,
+        #[template_child]
+        pub backgroundblurcontrol: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub backgroundcontrol: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub toast: TemplateChild<adw::ToastOverlay>,
     }
 
@@ -67,6 +73,9 @@ mod imp {
                     set.set_rootpic().await;
                 },
             );
+            klass.install_action("setting.backgroundclear", None, move |set, _action, _parameter| {
+                set.clearpic();
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -89,6 +98,9 @@ mod imp {
             obj.set_theme();
             obj.set_thread();
             obj.set_picopactiy();
+            obj.set_pic();
+            obj.set_picblur();
+            obj.change_picblur();
         }
     }
 
@@ -301,10 +313,63 @@ impl SettingsPage {
         let settings = gio::Settings::new(APP_ID);
         imp.backgroundspinrow
             .set_value(settings.int("pic-opacity").into());
-        imp.backgroundspinrow.connect_value_notify(move |control| {
+        imp.backgroundspinrow.connect_value_notify(
+            glib::clone!(@weak self as obj =>move |control| {
+                settings
+                    .set_int("pic-opacity", control.value() as i32)
+                    .unwrap();
+                let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
+                window.set_picopacity(control.value() as i32);
+            }),
+        );
+    }
+
+    pub fn set_pic(&self) {
+        let imp = self.imp();
+        let settings = gio::Settings::new(APP_ID);
+        imp.backgroundcontrol
+            .set_active(settings.boolean("is-backgroundenabled"));
+        imp.backgroundcontrol.connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
             settings
-                .set_int("pic-opacity", control.value() as i32)
+                .set_boolean("is-backgroundenabled", control.is_active())
                 .unwrap();
-        });
+            if !control.is_active() {
+                let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
+                window.clear_pic();
+            }
+        }));
+    }
+
+    pub fn set_picblur(&self) {
+        let imp = self.imp();
+        let settings = gio::Settings::new(APP_ID);
+        imp.backgroundblurcontrol
+            .set_active(settings.boolean("is-blurenabled"));
+        imp.backgroundblurcontrol
+            .connect_active_notify(move |control| {
+                settings
+                    .set_boolean("is-blurenabled", control.is_active())
+                    .unwrap();
+            });
+    }
+
+    pub fn change_picblur(&self) {
+        let imp = self.imp();
+        let settings = gio::Settings::new(APP_ID);
+        imp.backgroundblurspinrow
+            .set_value(settings.int("pic-blur").into());
+        imp.backgroundblurspinrow
+            .connect_value_notify(move |control| {
+                settings
+                    .set_int("pic-blur", control.value() as i32)
+                    .unwrap();
+            });
+    }
+
+    pub fn clearpic(&self) {
+        glib::spawn_future_local(glib::clone!(@weak self as obj => async move {
+            let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
+            window.clear_pic();
+        }));
     }
 }
