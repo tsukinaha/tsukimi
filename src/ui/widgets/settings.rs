@@ -73,9 +73,13 @@ mod imp {
                     set.set_rootpic().await;
                 },
             );
-            klass.install_action("setting.backgroundclear", None, move |set, _action, _parameter| {
-                set.clearpic();
-            });
+            klass.install_action(
+                "setting.backgroundclear",
+                None,
+                move |set, _action, _parameter| {
+                    set.clearpic();
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -329,15 +333,17 @@ impl SettingsPage {
         let settings = gio::Settings::new(APP_ID);
         imp.backgroundcontrol
             .set_active(settings.boolean("is-backgroundenabled"));
-        imp.backgroundcontrol.connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
-            settings
-                .set_boolean("is-backgroundenabled", control.is_active())
-                .unwrap();
-            if !control.is_active() {
-                let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
-                window.clear_pic();
-            }
-        }));
+        imp.backgroundcontrol.connect_active_notify(
+            glib::clone!(@weak self as obj =>move |control| {
+                settings
+                    .set_boolean("is-backgroundenabled", control.is_active())
+                    .unwrap();
+                if !control.is_active() {
+                    let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
+                    window.clear_pic();
+                }
+            }),
+        );
     }
 
     pub fn set_picblur(&self) {
@@ -371,5 +377,7 @@ impl SettingsPage {
             let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
             window.clear_pic();
         }));
+        let settings = gio::Settings::new(APP_ID);
+        settings.set_string("root-pic", "").unwrap();
     }
 }
