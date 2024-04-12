@@ -33,6 +33,14 @@
       <default>true</default>
       <summary>Default switch state</summary>
     </key>
+    <key name="is-blurenabled" type="b">
+      <default>false</default>
+      <summary>Default switch state</summary>
+    </key>
+    <key name="is-backgroundenabled" type="b">
+      <default>false</default>
+      <summary>Default switch state</summary>
+    </key>
     <key name="theme" type="s">
       <default>"Adwaita"</default>
       <summary>Default switch state</summary>
@@ -54,6 +62,10 @@
       <summary>Default threads</summary>
     </key>
     <key name="pic-opacity" type="i">
+      <default>15</default>
+      <summary>Default threads</summary>
+    </key>
+    <key name="pic-blur" type="i">
       <default>15</default>
       <summary>Default threads</summary>
     </key>

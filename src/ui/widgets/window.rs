@@ -489,20 +489,42 @@ impl Window {
 
     pub fn set_rootpic(&self, file: gio::File) {
         let imp = self.imp();
-        let backgroundstack = imp.backgroundstack.get();
-        let pic = gtk::Picture::builder()
-            .halign(gtk::Align::Fill)
-            .valign(gtk::Align::Fill)
-            .hexpand(true)
-            .vexpand(true)
-            .content_fit(gtk::ContentFit::Cover)
-            .file(&file)
-            .build();
         let settings = Settings::new(APP_ID);
-        let opacity = settings.int("pic-opacity");
-        pic.set_opacity(opacity as f64 / 100.0);
-        backgroundstack.add_child(&pic);
-        backgroundstack.set_visible_child(&pic);
+        if settings.boolean("is-backgroundenabled") {
+            let backgroundstack = imp.backgroundstack.get();
+            let pic: gtk::Picture;
+            if settings.boolean("is-blurenabled") {
+                let paintbale =
+                    crate::ui::provider::background_paintable::BackgroundPaintable::default();
+                paintbale.set_pic(file);
+                pic = gtk::Picture::builder()
+                    .paintable(&paintbale)
+                    .halign(gtk::Align::Fill)
+                    .valign(gtk::Align::Fill)
+                    .hexpand(true)
+                    .vexpand(true)
+                    .content_fit(gtk::ContentFit::Cover)
+                    .build();
+            } else {
+                pic = gtk::Picture::builder()
+                    .halign(gtk::Align::Fill)
+                    .valign(gtk::Align::Fill)
+                    .hexpand(true)
+                    .vexpand(true)
+                    .content_fit(gtk::ContentFit::Cover)
+                    .file(&file)
+                    .build();
+            }
+            let opacity = settings.int("pic-opacity");
+            pic.set_opacity(opacity as f64 / 100.0);
+            backgroundstack.add_child(&pic);
+            backgroundstack.set_visible_child(&pic);
+            if backgroundstack.observe_children().n_items() > 1 {
+                if let Some(child) = backgroundstack.first_child() {
+                    backgroundstack.remove(&child);
+                }
+            }
+        }
     }
 
     pub fn setup_rootpic(&self) {
@@ -510,5 +532,24 @@ impl Window {
         let pic = settings.string("root-pic");
         let file = gio::File::for_path(&pic);
         self.set_rootpic(file);
+    }
+
+    pub fn set_picopacity(&self, opacity: i32) {
+        let imp = self.imp();
+        let backgroundstack = imp.backgroundstack.get();
+        let pic = backgroundstack
+            .last_child()
+            .unwrap()
+            .downcast::<gtk::Picture>()
+            .unwrap();
+        pic.set_opacity(opacity as f64 / 100.0);
+    }
+
+    pub fn clear_pic(&self) {
+        let imp = self.imp();
+        let backgroundstack = imp.backgroundstack.get();
+        if let Some(child) = backgroundstack.last_child() {
+            backgroundstack.remove(&child);
+        }
     }
 }

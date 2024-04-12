@@ -271,6 +271,7 @@
                                   <object class="GtkStack" id="insidestack">
                                     <property name="hexpand">True</property>
                                     <property name="transition-type">crossfade</property>
+                                    <property name="transition-duration">100</property>
                                     <child>
                                       <object class="GtkStackPage">
                                         <property name="name">homepage</property>
