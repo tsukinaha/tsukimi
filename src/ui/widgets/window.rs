@@ -519,7 +519,7 @@ impl Window {
             pic.set_opacity(opacity as f64 / 100.0);
             backgroundstack.add_child(&pic);
             backgroundstack.set_visible_child(&pic);
-            if backgroundstack.observe_children().n_items() > 1 {
+            if backgroundstack.observe_children().n_items() > 2 {
                 if let Some(child) = backgroundstack.first_child() {
                     backgroundstack.remove(&child);
                 }
