@@ -1,4 +1,5 @@
 use std::env;
+use std::path::PathBuf;
 
 use adw::prelude::NavigationPageExt;
 use dirs::home_dir;
@@ -530,19 +531,22 @@ impl Window {
     pub fn setup_rootpic(&self) {
         let settings = Settings::new(APP_ID);
         let pic = settings.string("root-pic");
-        let file = gio::File::for_path(&pic);
-        self.set_rootpic(file);
+        let pathbuf = PathBuf::from(pic);
+        if pathbuf.exists() {
+            let file = gio::File::for_path(&pathbuf);
+            self.set_rootpic(file);
+        }
     }
 
     pub fn set_picopacity(&self, opacity: i32) {
         let imp = self.imp();
         let backgroundstack = imp.backgroundstack.get();
-        let pic = backgroundstack
-            .last_child()
-            .unwrap()
+        if let Some(child) = backgroundstack.last_child() {
+            let pic = child
             .downcast::<gtk::Picture>()
             .unwrap();
-        pic.set_opacity(opacity as f64 / 100.0);
+            pic.set_opacity(opacity as f64 / 100.0);
+        }  
     }
 
     pub fn clear_pic(&self) {
