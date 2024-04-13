@@ -27,8 +27,6 @@ mod imp {
         #[property(get, set, construct_only)]
         pub moviename: OnceCell<String>,
         #[template_child]
-        pub dropdownspinner: TemplateChild<gtk::Spinner>,
-        #[template_child]
         pub backdrop: TemplateChild<gtk::Picture>,
         #[template_child]
         pub osdbox: TemplateChild<gtk::Box>,
@@ -70,6 +68,24 @@ mod imp {
         pub genresscrolled: TemplateChild<gtk::ScrolledWindow>,
         #[template_child]
         pub genresrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub line1: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub line2: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub crating: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub orating: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub star: TemplateChild<gtk::Image>,
+        #[template_child]
+        pub playbutton: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub line1spinner: TemplateChild<gtk::Spinner>,
+        #[template_child]
+        pub namedropdown: TemplateChild<gtk::DropDown>,
+        #[template_child]
+        pub subdropdown: TemplateChild<gtk::DropDown>,
         pub selection: gtk::SingleSelection,
         pub actorselection: gtk::SingleSelection,
         pub recommendselection: gtk::SingleSelection,
@@ -236,9 +252,9 @@ impl MoviePage {
         userdata: Option<crate::ui::network::UserData>,
     ) {
         let imp = self.imp();
-        let dropdownspinner = imp.dropdownspinner.get();
         let osdbox = imp.osdbox.get();
-        dropdownspinner.set_visible(true);
+        self.imp().playbutton.set_sensitive(false);
+        self.imp().line1spinner.set_visible(true);
         let idclone = id.clone();
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
         crate::ui::network::runtime().spawn(async move {
@@ -246,7 +262,7 @@ impl MoviePage {
             sender.send(playback).await.expect("msg");
         });
         glib::spawn_future_local(
-            glib::clone!(@weak dropdownspinner,@weak osdbox =>async move {
+            glib::clone!(@weak osdbox,@weak self as obj =>async move {
                 while let Ok(playback) = receiver.recv().await {
                     let info:crate::ui::network::SearchResult = crate::ui::network::SearchResult {
                         id: idclone.clone(),
@@ -255,9 +271,11 @@ impl MoviePage {
                         user_data: userdata.clone(),
                         production_year: None
                     };
-                    let dropdown = crate::ui::moviedrop::newmediadropsel(playback, info);
-                    dropdownspinner.set_visible(false);
-                    osdbox.append(&dropdown);
+                    obj.imp().line1.set_text(&format!("{}", info.name));
+                    obj.imp().line1spinner.set_visible(false);
+                    let info = info.clone();
+                    crate::ui::moviedrop::newmediadropsel(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
+                    obj.imp().playbutton.set_sensitive(true);
                 }
             }),
         );

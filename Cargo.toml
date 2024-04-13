@@ -24,6 +24,7 @@ libmpv-sys = "3.1.0"
 crossbeam = "0.8.4"
 libc = "0.2.153"
 uuid = { version = "1.8.0", features = ["v4"] }
+chrono = "0.4.37"
 
 [build-dependencies]
 glib-build-tools = "0.19.0"

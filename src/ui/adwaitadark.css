@@ -15,6 +15,14 @@ child {
     background: rgba(0,0,0,0);
 }
  
+.frame {
+    border: 2px solid @borders;
+    border-radius: 5px;
+}
+
+.pill {
+    border-radius: 10px;
+}
    
 listview > row {
     margin-left:9px;

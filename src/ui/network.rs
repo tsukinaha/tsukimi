@@ -303,6 +303,12 @@ pub struct Item {
     pub tags: Option<Vec<SGTitem>>,
     #[serde(rename = "UserData")]
     pub user_data: Option<UserData>,
+    #[serde(rename = "CommunityRating")]
+    pub community_rating: Option<f64>,
+    #[serde(rename = "OfficialRating")]
+    pub official_rating: Option<String>,
+    #[serde(rename = "RunTimeTicks")]
+    pub run_time_ticks: Option<u64>,
 }
 
 #[derive(Deserialize, Debug, Clone)]

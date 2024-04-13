@@ -49,6 +49,15 @@ box > overlay > image {
     margin:3px;
 }
 
+.frame {
+    border: 2px solid @borders;
+    border-radius: 5px;
+}
+
+.pill {
+    border-radius: 10px;
+}
+
 revealer > expander-widget > box > box > widget {
     background-color:rgba(1,1,1,0.1);
     border-radius:10px;
