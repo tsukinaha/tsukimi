@@ -144,10 +144,26 @@ mod imp {
             let obj = self.obj();
             fix(self.episodescrolled.get());
             obj.setup_background();
-            obj.setup_seasons();
-            obj.logoset();
-            obj.setoverview();
-            obj.get_similar();
+            let (sender, receiver) = async_channel::bounded::<bool>(1);
+            gtk::gio::spawn_blocking(move || {
+                sender
+                    .send_blocking(false)
+                    .expect("The channel needs to be open.");
+                std::thread::sleep(std::time::Duration::from_millis(500));
+                sender
+                    .send_blocking(true)
+                    .expect("The channel needs to be open.");
+            });
+            glib::spawn_future_local(glib::clone!(@weak obj =>async move {
+                while let Ok(bool) = receiver.recv().await {
+                    if bool {
+                        obj.setup_seasons().await;
+                        obj.logoset();
+                        obj.setoverview();
+                        obj.get_similar();
+                    }
+                }
+            })); 
         }
     }
 
@@ -227,7 +243,7 @@ impl ItemPage {
         }));
     }
 
-    pub fn setup_seasons(&self) {
+    pub async fn setup_seasons(&self) {
         let imp = self.imp();
         let itemrevealer = imp.itemrevealer.get();
         let id = self.id();
@@ -255,9 +271,9 @@ impl ItemPage {
         imp.seasonselection.set_model(Some(&seasonstore));
         let seasonlist = imp.seasonlist.get();
         seasonlist.set_model(Some(&imp.seasonselection));
-        let itemlist = imp.itemlist.get();
+        
         glib::spawn_future_local(glib::clone!(@weak self as obj,@weak store =>async move {
-            let series_info = receiver.recv().await.expect("series_info not received.");
+            while let Ok(series_info) = receiver.recv().await{
             let mut season_set: HashSet<u32> = HashSet::new();
             let mut season_map: HashMap<String,u32> = HashMap::new();
             let min_season = series_info.iter().map(|info| if info.parent_index_number == 0 { 100 } else { info.parent_index_number }).min().unwrap_or(1);
@@ -293,7 +309,9 @@ impl ItemPage {
                     obj.selectepisode(seriesinfo.clone());
                 }
             }
-            seasonlist.set_selected(pos);
+            obj.imp().seasonlist.set_selected(pos);
+            let seasonlist = obj.imp().seasonlist.get();
+            let itemlist = obj.imp().itemlist.get();
             if idc == inid {
                 itemlist.first_child().unwrap().activate();
             }
@@ -325,6 +343,7 @@ impl ItemPage {
                 }
             }));
             itemrevealer.set_reveal_child(true);
+            }
         }));
 
         let factory = gtk::SignalListItemFactory::new();
