@@ -26,6 +26,8 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult, namedro
         namelist.append(&media.name);
     }
 
+    namedropdown.set_model(Some(&namelist));
+    subdropdown.set_model(Some(&sublist));
     namedropdown.set_factory(Some(&factory()));
     subdropdown.set_factory(Some(&factory()));
     let playback_info = playbackinfo.clone();

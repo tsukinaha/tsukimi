@@ -219,6 +219,47 @@ impl MoviePage {
         });
         glib::spawn_future_local(glib::clone!(@weak self as obj=>async move {
             while let Ok(item) = receiver.recv().await {
+                {
+                    let mut str = String::new();
+                    if let Some(communityrating) = item.community_rating {
+                        let formatted_rating = format!("{:.1}", communityrating);
+                        let crating = obj.imp().crating.get();
+                        crating.set_text(&formatted_rating);
+                        crating.set_visible(true);
+                        obj.imp().star.get().set_visible(true);
+                    }
+                    if let Some(rating) = item.official_rating {
+                        let orating = obj.imp().orating.get();
+                        orating.set_text(&rating);
+                        orating.set_visible(true);
+                    }
+                    if let Some(year) = item.production_year {
+                        str.push_str(&year.to_string());
+                        str.push_str("  ");
+                    }
+                    if let Some(runtime) = item.run_time_ticks {
+                        let duration = chrono::Duration::seconds((runtime / 10000000) as i64);
+                        let hours = duration.num_hours();
+                        let minutes = duration.num_minutes() % 60;
+                        let seconds = duration.num_seconds() % 60;
+
+                        let time_string = if hours > 0 {
+                            format!("{}:{:02}", hours, minutes)
+                        } else {
+                            format!("{}:{:02}", minutes, seconds)
+                        };
+                        str.push_str(&time_string);
+                        str.push_str("  ");
+                    }
+                    if let Some(genres) = &item.genres {
+                        for genre in genres {
+                            str.push_str(&genre.name);
+                            str.push_str(",");
+                        }
+                        str.pop();
+                    }
+                    obj.imp().line2.get().set_text(&str);
+                }
                 if let Some(overview) = item.overview {
                     itemoverview.set_text(Some(&overview));
                 }
@@ -273,7 +314,6 @@ impl MoviePage {
                     };
                     obj.imp().line1.set_text(&format!("{}", info.name));
                     obj.imp().line1spinner.set_visible(false);
-                    let info = info.clone();
                     crate::ui::moviedrop::newmediadropsel(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
                     obj.imp().playbutton.set_sensitive(true);
                 }
