@@ -101,6 +101,8 @@ mod imp {
         pub namedropdown: TemplateChild<gtk::DropDown>,
         #[template_child]
         pub subdropdown: TemplateChild<gtk::DropDown>,
+        #[template_child]
+        pub backrevealer: TemplateChild<gtk::Revealer>,
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
         pub actorselection: gtk::SingleSelection,
@@ -211,6 +213,7 @@ impl ItemPage {
         if pathbuf.exists() {
             backdrop.set_file(Some(&gtk::gio::File::for_path(&path)));
             glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
+                obj.imp().backrevealer.set_reveal_child(true);
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 window.set_rootpic(gtk::gio::File::for_path(&path));
             }));
@@ -236,6 +239,7 @@ impl ItemPage {
                 if pathbuf.exists() {
                     let file = gtk::gio::File::for_path(&path);
                     backdrop.set_file(Some(&file));
+                    obj.imp().backrevealer.set_reveal_child(true);
                     let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                     window.set_rootpic(file);
                 }

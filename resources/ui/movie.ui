@@ -14,14 +14,21 @@
                 <child>
                   <object class="GtkOverlay">
                     <child>
-                      <object class="GtkPicture" id="backdrop">
+                      <object class="GtkRevealer" id="backrevealer">
+                        <property name="transition-type">crossfade</property>
+                        <property name="transition-duration">700</property>
                         <property name="halign">fill</property>
                         <property name="valign">fill</property>
-                        <property name="content-fit">cover</property>
-                        <property name="hexpand">true</property>
-                        <property name="vexpand">true</property>
-                        <property name="opacity">0.7</property>
-                        <property name="height-request">700</property>
+                        <property name="reveal-child">False</property>
+                        <child>
+                          <object class="GtkPicture" id="backdrop">
+                            <property name="halign">fill</property>
+                            <property name="valign">fill</property>
+                            <property name="content-fit">cover</property>
+                            <property name="hexpand">true</property>
+                            <property name="height-request">700</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child type="overlay">
