@@ -474,26 +474,24 @@ impl ItemPage {
             let playback = crate::ui::network::get_playbackinfo(id).await.expect("msg");
             sender.send(playback).await.expect("msg");
         });
-        glib::spawn_future_local(
-            glib::clone!(@weak osdbox,@weak self as obj=>async move {
-                while let Ok(playback) = receiver.recv().await {
-                    let _ = mutex.lock().await;
-                    obj.imp().line1.set_text(&format!("S{}:E{} - {}",info.parent_index_number, info.index_number, info.name));
-                    obj.imp().line1spinner.set_visible(false);
-                    let info = info.clone();
-                    crate::ui::new_dropsel::newmediadropsel(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
-                    obj.imp().playbutton.set_sensitive(true);
-                    //let dropdown = crate::ui::new_dropsel::newmediadropsel(playback.clone(), info);
-                    //dropdownspinner.set_visible(false);
-                    //if let Some(widget) = osdbox.last_child() {
-                    //    if widget.is::<gtk::Box>() {
-                    //        osdbox.remove(&widget);
-                    //    }
-                    //}
-                    //osdbox.append(&dropdown);
-                }
-            }),
-        );
+        glib::spawn_future_local(glib::clone!(@weak osdbox,@weak self as obj=>async move {
+            while let Ok(playback) = receiver.recv().await {
+                let _ = mutex.lock().await;
+                obj.imp().line1.set_text(&format!("S{}:E{} - {}",info.parent_index_number, info.index_number, info.name));
+                obj.imp().line1spinner.set_visible(false);
+                let info = info.clone();
+                crate::ui::new_dropsel::newmediadropsel(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
+                obj.imp().playbutton.set_sensitive(true);
+                //let dropdown = crate::ui::new_dropsel::newmediadropsel(playback.clone(), info);
+                //dropdownspinner.set_visible(false);
+                //if let Some(widget) = osdbox.last_child() {
+                //    if widget.is::<gtk::Box>() {
+                //        osdbox.remove(&widget);
+                //    }
+                //}
+                //osdbox.append(&dropdown);
+            }
+        }));
 
         if let Some(overview) = seriesinfo.overview {
             imp.selecteditemoverview.set_text(Some(&overview));

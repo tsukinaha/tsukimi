@@ -9,10 +9,16 @@ use super::provider::dropdown_factory::factory;
 use gtk::glib;
 use gtk::prelude::*;
 
-pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo, namedropdown: gtk::DropDown, subdropdown: gtk::DropDown, playbutton: gtk::Button) {
+pub fn newmediadropsel(
+    playbackinfo: network::Media,
+    info: SeriesInfo,
+    namedropdown: gtk::DropDown,
+    subdropdown: gtk::DropDown,
+    playbutton: gtk::Button,
+) {
     let namelist = gtk::StringList::new(&[]);
     let sublist = gtk::StringList::new(&[]);
-    
+
     if let Some(media) = &playbackinfo.media_sources.first() {
         for stream in &media.media_streams {
             if stream.stream_type == "Subtitle" {

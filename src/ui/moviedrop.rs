@@ -5,8 +5,13 @@ use super::new_dropsel::play_event;
 use super::provider::dropdown_factory::factory;
 use gtk::prelude::*;
 
-pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult, namedropdown: gtk::DropDown, subdropdown: gtk::DropDown, playbutton: gtk::Button) {
-    
+pub fn newmediadropsel(
+    playbackinfo: network::Media,
+    info: SearchResult,
+    namedropdown: gtk::DropDown,
+    subdropdown: gtk::DropDown,
+    playbutton: gtk::Button,
+) {
     let namelist = gtk::StringList::new(&[]);
 
     let sublist = gtk::StringList::new(&[]);

@@ -1048,3 +1048,35 @@ pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Erro
     let items: Vec<Item> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
 }
+
+pub async fn get_search_recommend() -> Result<List, Error> {
+    let server_info = config::set_config();
+    let client = client();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items",
+        server_info.domain, server_info.port, server_info.user_id
+    );
+
+    let params = [
+        ("Limit", "20"),
+        (
+            "EnableTotalRecordCount",
+            "false",
+        ),
+        ("ImageTypeLimit", "0"),
+        ("Recursive", "true"),
+        ("IncludeItemTypes", "Movie,Series"),
+        ("SortBy", "IsFavoriteOrLiked,Random"),
+        ("Recursive", "true"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    let response = client.get(&url).query(&params).send().await?;
+    let json: serde_json::Value = response.json().await?;
+    let latests: List = serde_json::from_value(json).unwrap();
+    Ok(latests)
+}

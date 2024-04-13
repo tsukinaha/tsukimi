@@ -542,11 +542,9 @@ impl Window {
         let imp = self.imp();
         let backgroundstack = imp.backgroundstack.get();
         if let Some(child) = backgroundstack.last_child() {
-            let pic = child
-            .downcast::<gtk::Picture>()
-            .unwrap();
+            let pic = child.downcast::<gtk::Picture>().unwrap();
             pic.set_opacity(opacity as f64 / 100.0);
-        }  
+        }
     }
 
     pub fn clear_pic(&self) {

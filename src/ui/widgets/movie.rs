@@ -310,23 +310,21 @@ impl MoviePage {
             let playback = crate::ui::network::get_playbackinfo(id).await.expect("msg");
             sender.send(playback).await.expect("msg");
         });
-        glib::spawn_future_local(
-            glib::clone!(@weak osdbox,@weak self as obj =>async move {
-                while let Ok(playback) = receiver.recv().await {
-                    let info:crate::ui::network::SearchResult = crate::ui::network::SearchResult {
-                        id: idclone.clone(),
-                        name: name.clone(),
-                        result_type: String::from("Movie"),
-                        user_data: userdata.clone(),
-                        production_year: None
-                    };
-                    obj.imp().line1.set_text(&format!("{}", info.name));
-                    obj.imp().line1spinner.set_visible(false);
-                    crate::ui::moviedrop::newmediadropsel(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
-                    obj.imp().playbutton.set_sensitive(true);
-                }
-            }),
-        );
+        glib::spawn_future_local(glib::clone!(@weak osdbox,@weak self as obj =>async move {
+            while let Ok(playback) = receiver.recv().await {
+                let info:crate::ui::network::SearchResult = crate::ui::network::SearchResult {
+                    id: idclone.clone(),
+                    name: name.clone(),
+                    result_type: String::from("Movie"),
+                    user_data: userdata.clone(),
+                    production_year: None
+                };
+                obj.imp().line1.set_text(&format!("{}", info.name));
+                obj.imp().line1spinner.set_visible(false);
+                crate::ui::moviedrop::newmediadropsel(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
+                obj.imp().playbutton.set_sensitive(true);
+            }
+        }));
     }
 
     pub fn createmediabox(&self) {
