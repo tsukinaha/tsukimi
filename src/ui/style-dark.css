@@ -29,6 +29,15 @@ picture {
     border-radius:10px;
 }
 
+.frame {
+    border: 2px solid @borders;
+    border-radius: 5px;
+}
+
+.pill {
+    border-radius: 10px;
+}
+
 listview {
     background-color: rgba(0,0,0,0);
 }

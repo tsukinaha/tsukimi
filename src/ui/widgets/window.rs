@@ -94,8 +94,8 @@ mod imp {
             klass.install_action("win.sidebar", None, move |window, _action, _parameter| {
                 window.sidebar();
             });
-            klass.install_action("win.pop", None, move |window, _action, _parameter| {
-                window.pop();
+            klass.install_action_async("win.pop", None, |window, _action, _parameter| async move {
+                window.pop().await;
             });
         }
 
@@ -174,7 +174,7 @@ glib::wrapper! {
 }
 
 impl Window {
-    fn homeviewpop(&self) {
+    async fn homeviewpop(&self) {
         let imp = self.imp();
         imp.homeview.pop();
         if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
@@ -187,7 +187,7 @@ impl Window {
         }
     }
 
-    fn historyviewpop(&self) {
+    async fn historyviewpop(&self) {
         let imp = self.imp();
         imp.historyview.pop();
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
@@ -200,7 +200,7 @@ impl Window {
         }
     }
 
-    fn searchviewpop(&self) {
+    async fn searchviewpop(&self) {
         let imp = self.imp();
         imp.searchview.pop();
         if let Some(tag) = imp.searchview.visible_page().unwrap().tag() {
@@ -213,14 +213,14 @@ impl Window {
         }
     }
 
-    fn pop(&self) {
+    async fn pop(&self) {
         let imp = self.imp();
         if imp.insidestack.visible_child_name().unwrap().as_str() == "homepage" {
-            self.homeviewpop();
+            self.homeviewpop().await;
         } else if imp.insidestack.visible_child_name().unwrap().as_str() == "historypage" {
-            self.historyviewpop();
+            self.historyviewpop().await;
         } else if imp.insidestack.visible_child_name().unwrap().as_str() == "searchpage" {
-            self.searchviewpop();
+            self.searchviewpop().await;
         }
     }
 
@@ -335,6 +335,7 @@ impl Window {
         imp.homepage
             .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
         imp.navipage.set_title("Home");
+        self.set_pop_visibility(false);
     }
 
     fn freshhistorypage(&self) {
@@ -345,6 +346,7 @@ impl Window {
         imp.historypage
             .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
         imp.navipage.set_title("History");
+        self.set_pop_visibility(false);
     }
 
     fn freshsearchpage(&self) {
@@ -355,6 +357,7 @@ impl Window {
         imp.searchpage
             .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
         imp.navipage.set_title("Search");
+        self.set_pop_visibility(false);
     }
 
     fn historypage(&self) {
@@ -542,11 +545,9 @@ impl Window {
         let imp = self.imp();
         let backgroundstack = imp.backgroundstack.get();
         if let Some(child) = backgroundstack.last_child() {
-            let pic = child
-            .downcast::<gtk::Picture>()
-            .unwrap();
+            let pic = child.downcast::<gtk::Picture>().unwrap();
             pic.set_opacity(opacity as f64 / 100.0);
-        }  
+        }
     }
 
     pub fn clear_pic(&self) {

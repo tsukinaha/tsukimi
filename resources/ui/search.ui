@@ -5,39 +5,42 @@
     <child>
       <object class="AdwToolbarView">
         <child>
-          <object class="GtkScrolledWindow" id="searchscrolled">
-            <property name="hscrollbar-policy">never</property>
-            <property name="vexpand">True</property>
-            <property name="hexpand">True</property>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">18</property>
+            <property name="margin-start">12</property>
+            <property name="margin-end">12</property>
             <child>
-              <object class="AdwClamp">
-                <property name="vexpand">True</property>
+              <object class="GtkSearchEntry" id="searchentry">
+                <property name="placeholder-text">Search</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSpinner" id="spinner">
+                <property name="spinning">True</property>
+                <property name="visible">False</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox" id="recommendbox">
+                <property name="orientation">vertical</property>
+                <property name="margin-start">6</property>
+                <property name="margin-end">6</property>
+                <property name="spacing">6</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkRevealer" id="searchrevealer">
+                <property name="transition-type">crossfade</property>
+                <property name="transition-duration">700</property>
+                <property name="reveal-child">False</property>
                 <child>
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">18</property>
-                    <property name="margin-start">12</property>
-                    <property name="margin-end">12</property>
+                  <object class="GtkScrolledWindow" id="searchscrolled">
+                    <property name="hscrollbar-policy">never</property>
+                    <property name="vexpand">True</property>
+                    <property name="hexpand">True</property>
                     <child>
-                      <object class="GtkSearchEntry" id="searchentry">
-                        <property name="placeholder-text">Search</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSpinner" id="spinner">
-                        <property name="spinning">True</property>
-                        <property name="visible">False</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkRevealer" id="searchrevealer">
-                        <property name="transition-type">crossfade</property>
-                        <property name="transition-duration">700</property>
-                        <property name="reveal-child">False</property>
-                        <child>
-                          <object class="GtkGridView" id="searchgrid">
-                          </object>
-                        </child>
+                      <object class="GtkGridView" id="searchgrid">
                       </object>
                     </child>
                   </object>

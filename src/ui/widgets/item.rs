@@ -30,8 +30,6 @@ mod imp {
         #[property(get, set, construct_only)]
         pub inid: OnceCell<String>,
         #[template_child]
-        pub dropdownspinner: TemplateChild<gtk::Spinner>,
-        #[template_child]
         pub backdrop: TemplateChild<gtk::Picture>,
         #[template_child]
         pub itemlist: TemplateChild<gtk::ListView>,
@@ -85,6 +83,24 @@ mod imp {
         pub genresrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub episodesearchentry: TemplateChild<gtk::SearchEntry>,
+        #[template_child]
+        pub line1: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub line2: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub crating: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub orating: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub star: TemplateChild<gtk::Image>,
+        #[template_child]
+        pub playbutton: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub line1spinner: TemplateChild<gtk::Spinner>,
+        #[template_child]
+        pub namedropdown: TemplateChild<gtk::DropDown>,
+        #[template_child]
+        pub subdropdown: TemplateChild<gtk::DropDown>,
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
         pub actorselection: gtk::SingleSelection,
@@ -128,10 +144,26 @@ mod imp {
             let obj = self.obj();
             fix(self.episodescrolled.get());
             obj.setup_background();
-            obj.setup_seasons();
-            obj.logoset();
-            obj.setoverview();
-            obj.get_similar();
+            let (sender, receiver) = async_channel::bounded::<bool>(1);
+            gtk::gio::spawn_blocking(move || {
+                sender
+                    .send_blocking(false)
+                    .expect("The channel needs to be open.");
+                std::thread::sleep(std::time::Duration::from_millis(500));
+                sender
+                    .send_blocking(true)
+                    .expect("The channel needs to be open.");
+            });
+            glib::spawn_future_local(glib::clone!(@weak obj =>async move {
+                while let Ok(bool) = receiver.recv().await {
+                    if bool {
+                        obj.setup_seasons().await;
+                        obj.logoset();
+                        obj.setoverview();
+                        obj.get_similar();
+                    }
+                }
+            })); 
         }
     }
 
@@ -211,7 +243,7 @@ impl ItemPage {
         }));
     }
 
-    pub fn setup_seasons(&self) {
+    pub async fn setup_seasons(&self) {
         let imp = self.imp();
         let itemrevealer = imp.itemrevealer.get();
         let id = self.id();
@@ -239,9 +271,9 @@ impl ItemPage {
         imp.seasonselection.set_model(Some(&seasonstore));
         let seasonlist = imp.seasonlist.get();
         seasonlist.set_model(Some(&imp.seasonselection));
-        let itemlist = imp.itemlist.get();
+        
         glib::spawn_future_local(glib::clone!(@weak self as obj,@weak store =>async move {
-            let series_info = receiver.recv().await.expect("series_info not received.");
+            while let Ok(series_info) = receiver.recv().await{
             let mut season_set: HashSet<u32> = HashSet::new();
             let mut season_map: HashMap<String,u32> = HashMap::new();
             let min_season = series_info.iter().map(|info| if info.parent_index_number == 0 { 100 } else { info.parent_index_number }).min().unwrap_or(1);
@@ -277,7 +309,9 @@ impl ItemPage {
                     obj.selectepisode(seriesinfo.clone());
                 }
             }
-            seasonlist.set_selected(pos);
+            obj.imp().seasonlist.set_selected(pos);
+            let seasonlist = obj.imp().seasonlist.get();
+            let itemlist = obj.imp().itemlist.get();
             if idc == inid {
                 itemlist.first_child().unwrap().activate();
             }
@@ -309,6 +343,7 @@ impl ItemPage {
                 }
             }));
             itemrevealer.set_reveal_child(true);
+            }
         }));
 
         let factory = gtk::SignalListItemFactory::new();
@@ -448,37 +483,34 @@ impl ItemPage {
         let info = seriesinfo.clone();
         let imp = self.imp();
         let osdbox = imp.osdbox.get();
-        let dropdownspinner = imp.dropdownspinner.get();
         let id = seriesinfo.id.clone();
         let idc = id.clone();
-        dropdownspinner.set_visible(true);
-        if let Some(widget) = osdbox.last_child() {
-            if widget.is::<gtk::Box>() {
-                osdbox.remove(&widget);
-            }
-        }
+        self.imp().playbutton.set_sensitive(false);
+        self.imp().line1spinner.set_visible(true);
         let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
         crate::ui::network::runtime().spawn(async move {
             let playback = crate::ui::network::get_playbackinfo(id).await.expect("msg");
             sender.send(playback).await.expect("msg");
         });
-        glib::spawn_future_local(
-            glib::clone!(@weak dropdownspinner,@weak osdbox=>async move {
-                while let Ok(playback) = receiver.recv().await {
-                    let _ = mutex.lock().await;
-                    let info = info.clone();
-                    let dropdown = crate::ui::new_dropsel::newmediadropsel(playback.clone(), info);
-                    dropdownspinner.set_visible(false);
-                    if let Some(widget) = osdbox.last_child() {
-                        if widget.is::<gtk::Box>() {
-                            osdbox.remove(&widget);
-                        }
-                    }
-                    osdbox.append(&dropdown);
-                }
-            }),
-        );
+        glib::spawn_future_local(glib::clone!(@weak osdbox,@weak self as obj=>async move {
+            while let Ok(playback) = receiver.recv().await {
+                let _ = mutex.lock().await;
+                obj.imp().line1.set_text(&format!("S{}:E{} - {}",info.parent_index_number, info.index_number, info.name));
+                obj.imp().line1spinner.set_visible(false);
+                let info = info.clone();
+                crate::ui::new_dropsel::newmediadropsel(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
+                obj.imp().playbutton.set_sensitive(true);
+                //let dropdown = crate::ui::new_dropsel::newmediadropsel(playback.clone(), info);
+                //dropdownspinner.set_visible(false);
+                //if let Some(widget) = osdbox.last_child() {
+                //    if widget.is::<gtk::Box>() {
+                //        osdbox.remove(&widget);
+                //    }
+                //}
+                //osdbox.append(&dropdown);
+            }
+        }));
 
         if let Some(overview) = seriesinfo.overview {
             imp.selecteditemoverview.set_text(Some(&overview));
@@ -500,6 +532,47 @@ impl ItemPage {
         });
         glib::spawn_future_local(glib::clone!(@weak self as obj=>async move {
             while let Ok(item) = receiver.recv().await {
+                {
+                    let mut str = String::new();
+                    if let Some(communityrating) = item.community_rating {
+                        let formatted_rating = format!("{:.1}", communityrating);
+                        let crating = obj.imp().crating.get();
+                        crating.set_text(&formatted_rating);
+                        crating.set_visible(true);
+                        obj.imp().star.get().set_visible(true);
+                    }
+                    if let Some(rating) = item.official_rating {
+                        let orating = obj.imp().orating.get();
+                        orating.set_text(&rating);
+                        orating.set_visible(true);
+                    }
+                    if let Some(year) = item.production_year {
+                        str.push_str(&year.to_string());
+                        str.push_str("  ");
+                    }
+                    if let Some(runtime) = item.run_time_ticks {
+                        let duration = chrono::Duration::seconds((runtime / 10000000) as i64);
+                        let hours = duration.num_hours();
+                        let minutes = duration.num_minutes() % 60;
+                        let seconds = duration.num_seconds() % 60;
+
+                        let time_string = if hours > 0 {
+                            format!("{}:{:02}", hours, minutes)
+                        } else {
+                            format!("{}:{:02}", minutes, seconds)
+                        };
+                        str.push_str(&time_string);
+                        str.push_str("  ");
+                    }
+                    if let Some(genres) = &item.genres {
+                        for genre in genres {
+                            str.push_str(&genre.name);
+                            str.push_str(",");
+                        }
+                        str.pop();
+                    }
+                    obj.imp().line2.get().set_text(&str);
+                }
                 if let Some(overview) = item.overview {
                     itemoverview.set_text(Some(&overview));
                 }

@@ -303,6 +303,14 @@ pub struct Item {
     pub tags: Option<Vec<SGTitem>>,
     #[serde(rename = "UserData")]
     pub user_data: Option<UserData>,
+    #[serde(rename = "CommunityRating")]
+    pub community_rating: Option<f64>,
+    #[serde(rename = "OfficialRating")]
+    pub official_rating: Option<String>,
+    #[serde(rename = "RunTimeTicks")]
+    pub run_time_ticks: Option<u64>,
+    #[serde(rename = "Taglines")]
+    pub taglines: Option<Vec<String>>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -514,7 +522,7 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
 
     let result = client()
         .get(&format!(
-            "{}:{}/emby/Items/{}/Images/Thumb",
+            "{}:{}/emby/Items/{}/Images/Thumb?maxHeight=400",
             server_info.domain, server_info.port, id
         ))
         .send()
@@ -565,7 +573,7 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
 
     let result = client()
         .get(&format!(
-            "{}:{}/emby/Items/{}/Images/Backdrop",
+            "{}:{}/emby/Items/{}/Images/Backdrop?maxHeight=1200",
             server_info.domain, server_info.port, id
         ))
         .send()
@@ -616,7 +624,7 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
 
     let result = client()
         .get(&format!(
-            "{}:{}/emby/Items/{}/Images/Logo",
+            "{}:{}/emby/Items/{}/Images/Logo?maxHeight=400",
             server_info.domain, server_info.port, id
         ))
         .send()
@@ -1039,4 +1047,36 @@ pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Erro
     let mut json: serde_json::Value = response.json().await?;
     let items: Vec<Item> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
+}
+
+pub async fn get_search_recommend() -> Result<List, Error> {
+    let server_info = config::set_config();
+    let client = client();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items",
+        server_info.domain, server_info.port, server_info.user_id
+    );
+
+    let params = [
+        ("Limit", "20"),
+        (
+            "EnableTotalRecordCount",
+            "false",
+        ),
+        ("ImageTypeLimit", "0"),
+        ("Recursive", "true"),
+        ("IncludeItemTypes", "Movie,Series"),
+        ("SortBy", "IsFavoriteOrLiked,Random"),
+        ("Recursive", "true"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    let response = client.get(&url).query(&params).send().await?;
+    let json: serde_json::Value = response.json().await?;
+    let latests: List = serde_json::from_value(json).unwrap();
+    Ok(latests)
 }
