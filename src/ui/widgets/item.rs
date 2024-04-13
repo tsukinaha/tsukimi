@@ -7,6 +7,7 @@ use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
 
 use crate::ui::network::{self, runtime, similar, SeriesInfo};
+use crate::ui::new_dropsel::bind_button;
 
 use super::actor::ActorPage;
 use super::fix::fix;
@@ -18,7 +19,7 @@ mod imp {
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
-    use std::cell::OnceCell;
+    use std::cell::{OnceCell, RefCell};
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -107,6 +108,7 @@ mod imp {
         pub seasonselection: gtk::SingleSelection,
         pub actorselection: gtk::SingleSelection,
         pub recommendselection: gtk::SingleSelection,
+        pub playbuttonhandlerid: RefCell<Option<glib::SignalHandlerId>>,
     }
 
     // The central trait for subclassing a GObject
@@ -194,6 +196,11 @@ impl ItemPage {
             .property("id", id)
             .property("inid", inid)
             .build()
+    }
+
+    pub fn bind_playbutton(&self, playbackinfo: network::Media, info: network::SeriesInfo) {
+        let imp = self.imp();
+        bind_button(playbackinfo, info, imp.namedropdown.get(), imp.subdropdown.get(), imp.playbutton.get());
     }
 
     pub fn setup_background(&self) {
@@ -503,16 +510,13 @@ impl ItemPage {
                 obj.imp().line1.set_text(&format!("S{}:E{} - {}",info.parent_index_number, info.index_number, info.name));
                 obj.imp().line1spinner.set_visible(false);
                 let info = info.clone();
-                crate::ui::new_dropsel::newmediadropsel(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
+                if let Some(handlerid) = obj.imp().playbuttonhandlerid.borrow_mut().take() {
+                    obj.imp().playbutton.disconnect(handlerid);
+                }
+                crate::ui::new_dropsel::newmediadropsel(playback.clone(), &info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
+                let handlerid = bind_button(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
+                obj.imp().playbuttonhandlerid.replace(Some(handlerid));
                 obj.imp().playbutton.set_sensitive(true);
-                //let dropdown = crate::ui::new_dropsel::newmediadropsel(playback.clone(), info);
-                //dropdownspinner.set_visible(false);
-                //if let Some(widget) = osdbox.last_child() {
-                //    if widget.is::<gtk::Box>() {
-                //        osdbox.remove(&widget);
-                //    }
-                //}
-                //osdbox.append(&dropdown);
             }
         }));
 
