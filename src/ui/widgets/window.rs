@@ -335,6 +335,7 @@ impl Window {
         imp.homepage
             .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
         imp.navipage.set_title("Home");
+        self.set_pop_visibility(false);
     }
 
     fn freshhistorypage(&self) {
@@ -345,6 +346,7 @@ impl Window {
         imp.historypage
             .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
         imp.navipage.set_title("History");
+        self.set_pop_visibility(false);
     }
 
     fn freshsearchpage(&self) {
@@ -355,6 +357,7 @@ impl Window {
         imp.searchpage
             .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
         imp.navipage.set_title("Search");
+        self.set_pop_visibility(false);
     }
 
     fn historypage(&self) {

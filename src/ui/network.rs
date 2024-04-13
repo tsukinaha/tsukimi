@@ -522,7 +522,7 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
 
     let result = client()
         .get(&format!(
-            "{}:{}/emby/Items/{}/Images/Thumb",
+            "{}:{}/emby/Items/{}/Images/Thumb?maxHeight=400",
             server_info.domain, server_info.port, id
         ))
         .send()
@@ -573,7 +573,7 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
 
     let result = client()
         .get(&format!(
-            "{}:{}/emby/Items/{}/Images/Backdrop",
+            "{}:{}/emby/Items/{}/Images/Backdrop?maxHeight=1200",
             server_info.domain, server_info.port, id
         ))
         .send()
@@ -624,7 +624,7 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
 
     let result = client()
         .get(&format!(
-            "{}:{}/emby/Items/{}/Images/Logo",
+            "{}:{}/emby/Items/{}/Images/Logo?maxHeight=400",
             server_info.domain, server_info.port, id
         ))
         .send()
