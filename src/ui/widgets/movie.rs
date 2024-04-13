@@ -73,6 +73,8 @@ mod imp {
         #[template_child]
         pub line2: TemplateChild<gtk::Label>,
         #[template_child]
+        pub tagline: TemplateChild<gtk::Label>,
+        #[template_child]
         pub crating: TemplateChild<gtk::Label>,
         #[template_child]
         pub orating: TemplateChild<gtk::Label>,
@@ -226,7 +228,7 @@ impl MoviePage {
                         let crating = obj.imp().crating.get();
                         crating.set_text(&formatted_rating);
                         crating.set_visible(true);
-                        obj.imp().star.get().set_visible(true);
+                        obj.imp().star.set_visible(true);
                     }
                     if let Some(rating) = item.official_rating {
                         let orating = obj.imp().orating.get();
@@ -259,6 +261,12 @@ impl MoviePage {
                         str.pop();
                     }
                     obj.imp().line2.get().set_text(&str);
+                    if let Some(taglines) = item.taglines {
+                        if let Some(tagline) = taglines.first() {
+                            obj.imp().tagline.set_text(&tagline);
+                            obj.imp().tagline.set_visible(true);
+                        }
+                    }
                 }
                 if let Some(overview) = item.overview {
                     itemoverview.set_text(Some(&overview));

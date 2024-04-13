@@ -309,6 +309,8 @@ pub struct Item {
     pub official_rating: Option<String>,
     #[serde(rename = "RunTimeTicks")]
     pub run_time_ticks: Option<u64>,
+    #[serde(rename = "Taglines")]
+    pub taglines: Option<Vec<String>>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
