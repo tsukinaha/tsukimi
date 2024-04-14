@@ -1,4 +1,5 @@
 #![windows_subsystem = "windows"]
+use config::load_uuid;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 mod config;
@@ -7,8 +8,7 @@ mod ui;
 const APP_ID: &str = "moe.tsuna.tsukimi";
 
 fn main() -> glib::ExitCode {
-    // Load the configuration file
-    config::load_cfg();
+    load_uuid();
     // Register and include resources
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
 

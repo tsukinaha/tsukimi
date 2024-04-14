@@ -168,20 +168,19 @@ impl ActorPage {
                 .downcast_ref::<gtk::ListItem>()
                 .expect("Needs to be ListItem");
             let listbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
-            let picture;
-            if media_type == "Episode" {
-                picture = gtk::Box::builder()
+            let picture = if media_type == "Episode" {
+                gtk::Box::builder()
                     .orientation(gtk::Orientation::Vertical)
                     .height_request(141)
                     .width_request(250)
-                    .build();
+                    .build()
             } else {
-                picture = gtk::Box::builder()
+                gtk::Box::builder()
                     .orientation(gtk::Orientation::Vertical)
                     .height_request(273)
                     .width_request(182)
-                    .build();
-            }
+                    .build()
+            };
             let label = gtk::Label::builder()
                 .valign(gtk::Align::Start)
                 .halign(gtk::Align::Center)

@@ -20,6 +20,11 @@ child {
     border-radius: 5px;
 }
 
+.serverrow {
+    margin: 6px;
+    border-radius: 10px;
+}
+
 .pill {
     border-radius: 10px;
 }

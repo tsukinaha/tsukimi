@@ -93,6 +93,11 @@ placessidebar {
     background-color: rgba(0, 0, 0, 0);
     color: #000;
 }
+
+.serverrow {
+    margin: 6px;
+    border-radius: 10px;
+}
     
     
 @define-color destructive_color rgb(210, 15, 57);
