@@ -24,7 +24,7 @@ pub fn newmediadropsel(
         for stream in &media.media_streams {
             if stream.stream_type == "Subtitle" {
                 if let Some(d) = &stream.display_title {
-                    sublist.append(&d);
+                    sublist.append(d);
                 } else {
                     println!("No value");
                 }
@@ -130,9 +130,7 @@ pub fn bind_button(
                                             let back = Back {
                                                 id: info.id.clone(),
                                                 mediasourceid: media.id.clone(),
-                                                playsessionid: playbackinfo
-                                                    .play_session_id
-                                                    .clone(),
+                                                playsessionid: playbackinfo.play_session_id.clone(),
                                                 tick: userdata.playback_position_ticks.unwrap_or(0),
                                             };
                                             play_event(

@@ -1,10 +1,10 @@
-use dirs::home_dir;
 use serde::{Deserialize, Serialize};
 use std::{env, fs::File, io::Read};
 use uuid::Uuid;
+use std::io::Write;
 
 pub mod proxy;
-pub const APP_VERSION: &str = "0.4.3";
+pub const APP_VERSION: &str = "0.4.5";
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
@@ -21,29 +21,9 @@ fn generate_uuid() -> String {
     uuid.to_string()
 }
 
-pub fn load_cfg() {
-    let mut path = home_dir().unwrap();
-    path.push(".config");
-    path.push("tsukimi.yaml");
-
-    if path.exists() {
-        let mut file = File::open(path).unwrap();
-        let mut contents = String::new();
-        file.read_to_string(&mut contents).unwrap();
-        let config: Config = serde_yaml::from_str(&contents).unwrap();
-        env::set_var("EMBY_DOMAIN", &config.domain);
-        env::set_var("EMBY_USERNAME", &config.username);
-        env::set_var("EMBY_PASSWORD", &config.password);
-        env::set_var("EMBY_PORT", &config.port);
-        env::set_var("EMBY_USER_ID", &config.user_id);
-        env::set_var("EMBY_ACCESS_TOKEN", &config.access_token);
-
-        let uuid = generate_uuid();
-        env::set_var("UUID", uuid);
-    } else {
-        let uuid = generate_uuid();
-        env::set_var("UUID", uuid);
-    };
+pub fn load_uuid() {
+    let uuid = generate_uuid();
+    env::set_var("UUID", uuid);
 }
 
 pub fn set_config() -> Config {
@@ -67,4 +47,94 @@ pub fn get_device_name() -> String {
 
         String::from_utf8_lossy(&output.stdout).trim().to_string()
     }
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Account {
+    pub servername: String,
+    pub server: String,
+    pub username: String,
+    pub password: String,
+    pub port: String,
+    pub user_id: String,
+    pub access_token: String,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub struct Accounts {
+    pub accounts: Vec<Account>,
+}
+
+pub async fn save_cfg(account:Account) -> Result<(), Box<dyn std::error::Error>> {
+    let mut path = dirs::home_dir().ok_or("Failed to get home directory")?;
+    path.push(".config");
+    std::fs::DirBuilder::new().recursive(true).create(&path)?;
+    path.push("tsukimi.toml");
+    let mut accounts: Accounts = load_cfgv2()?;
+    accounts.accounts.push(account);
+    let toml = toml::to_string(&accounts).unwrap_or_else(|err| {
+        eprintln!("Error while serializing accounts: {:?}", err);
+        std::process::exit(1);
+    });
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .create(true)
+        .open(&path)?;
+    writeln!(file, "{}", toml)?;
+    Ok(())
+}
+
+pub fn load_cfgv2() -> Result<Accounts, Box<dyn std::error::Error>> {
+    let mut path = dirs::home_dir().ok_or("Failed to get home directory")?;
+    path.push(".config");
+    path.push("tsukimi.toml");
+    if !path.exists() {
+        return Ok(Accounts { accounts: Vec::new() }); 
+    }
+    let mut file = File::open(&path)?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+    let accounts: Accounts = toml::from_str(&contents)?;
+    Ok(accounts)
+}
+
+pub fn load_env(account:&Account) {
+    env::set_var("EMBY_NAME", &account.servername);
+    env::set_var("EMBY_DOMAIN", &account.server);
+    env::set_var("EMBY_USERNAME", &account.username);
+    env::set_var("EMBY_PASSWORD", &account.password);
+    env::set_var("EMBY_PORT", &account.port);
+    env::set_var("EMBY_USER_ID", &account.user_id);
+    env::set_var("EMBY_ACCESS_TOKEN", &account.access_token);
+
+    let uuid = generate_uuid();
+    env::set_var("UUID", uuid);
+}
+
+pub fn remove(account:&Account) -> Result<(), Box<dyn std::error::Error>> {
+    let mut path = dirs::home_dir().ok_or("Failed to get home directory")?;
+    path.push(".config");
+    path.push("tsukimi.toml");
+    let mut accounts: Accounts = load_cfgv2()?;
+    accounts.accounts.retain(|x| {
+        x.servername != account.servername 
+        && x.server != account.server 
+        && x.username != account.username 
+        && x.password != account.password
+        && x.port != account.port
+        && x.user_id != account.user_id
+        && x.access_token != account.access_token
+    });
+    let toml = toml::to_string(&accounts).unwrap_or_else(|err| {
+        eprintln!("Error while serializing accounts: {:?}", err);
+        std::process::exit(1);
+    });
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open(&path)?;
+    writeln!(file, "{}", toml)?;
+    Ok(())
 }

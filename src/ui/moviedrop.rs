@@ -21,7 +21,7 @@ pub fn newmediadropsel(
         for stream in &media.media_streams {
             if stream.stream_type == "Subtitle" {
                 if let Some(d) = &stream.display_title {
-                    sublist.append(&d);
+                    sublist.append(d);
                 } else {
                     println!("No value");
                 }

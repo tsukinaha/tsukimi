@@ -5,6 +5,7 @@ use gtk::prelude::*;
 use gtk::{gio, glib};
 use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
+use std::env;
 
 use crate::ui::models::SETTINGS;
 use crate::ui::network::{self, runtime, similar, SeriesInfo};
@@ -168,7 +169,7 @@ mod imp {
                         obj.get_similar();
                     }
                 }
-            })); 
+            }));
         }
     }
 
@@ -201,7 +202,13 @@ impl ItemPage {
 
     pub fn bind_playbutton(&self, playbackinfo: network::Media, info: network::SeriesInfo) {
         let imp = self.imp();
-        bind_button(playbackinfo, info, imp.namedropdown.get(), imp.subdropdown.get(), imp.playbutton.get());
+        bind_button(
+            playbackinfo,
+            info,
+            imp.namedropdown.get(),
+            imp.subdropdown.get(),
+            imp.playbutton.get(),
+        );
     }
 
     pub fn setup_background(&self) {
@@ -209,13 +216,13 @@ impl ItemPage {
         let id1 = self.id();
         let imp = self.imp();
         let path = format!(
-            "{}/.local/share/tsukimi/b{}.png",
-            dirs::home_dir().expect("msg").display(),
+            "{}/.local/share/tsukimi/{}/b{}.png",
+            dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
             id1
         );
         let pathbuf = std::path::PathBuf::from(&path);
         let backdrop = imp.backdrop.get();
-        backdrop.set_height_request(SETTINGS.background_height() as i32);
+        backdrop.set_height_request(SETTINGS.background_height());
         let (sender, receiver) = async_channel::bounded::<String>(1);
         if pathbuf.exists() {
             backdrop.set_file(Some(&gtk::gio::File::for_path(&path)));
@@ -239,8 +246,8 @@ impl ItemPage {
         glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
             while receiver.recv().await.is_ok() {
                 let path = format!(
-                    "{}/.local/share/tsukimi/b{}.png",
-                    dirs::home_dir().expect("msg").display(),
+                    "{}/.local/share/tsukimi/{}/b{}.png",
+                    dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
                     id2
                 );
                 if pathbuf.exists() {
@@ -282,7 +289,7 @@ impl ItemPage {
         imp.seasonselection.set_model(Some(&seasonstore));
         let seasonlist = imp.seasonlist.get();
         seasonlist.set_model(Some(&imp.seasonselection));
-        
+
         glib::spawn_future_local(glib::clone!(@weak self as obj,@weak store =>async move {
             while let Ok(series_info) = receiver.recv().await{
             let mut season_set: HashSet<u32> = HashSet::new();
@@ -575,7 +582,7 @@ impl ItemPage {
                     if let Some(genres) = &item.genres {
                         for genre in genres {
                             str.push_str(&genre.name);
-                            str.push_str(",");
+                            str.push(',');
                         }
                         str.pop();
                     }

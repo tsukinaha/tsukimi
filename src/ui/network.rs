@@ -1,5 +1,5 @@
 use crate::config::proxy::ReqClient;
-use crate::config::{self, get_device_name, APP_VERSION};
+use crate::config::{self, get_device_name, save_cfg, Account, APP_VERSION};
 use crate::ui::models::SETTINGS;
 use dirs::home_dir;
 use reqwest::header::{HeaderMap, HeaderValue};
@@ -7,22 +7,11 @@ use reqwest::{Client, Error};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use serde_json::Value;
-use serde_yaml::to_string;
 use std::env;
-use std::fs::{self, write};
+use std::fs;
 use std::path::PathBuf;
 use std::sync::OnceLock;
 use tokio::runtime::{self, Runtime};
-
-#[derive(Serialize, Debug, Deserialize)]
-pub struct Config {
-    pub domain: String,
-    pub username: String,
-    pub password: String,
-    pub port: String,
-    pub user_id: String,
-    pub access_token: String,
-}
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();
@@ -41,8 +30,9 @@ fn client() -> &'static Client {
     CLIENT.get_or_init(ReqClient::build)
 }
 
-pub async fn login(
-    domain: String,
+pub async fn loginv2(
+    servername: String,
+    server: String,
     username: String,
     password: String,
     port: String,
@@ -73,7 +63,7 @@ pub async fn login(
     let res = client
         .post(&format!(
             "{}:{}/emby/Users/authenticatebyname",
-            domain, port
+            server, port
         ))
         .headers(headers)
         .json(&body)
@@ -90,23 +80,16 @@ pub async fn login(
     let access_token = v["AccessToken"].as_str().unwrap();
     println!("AccessToken: {}", access_token);
 
-    let config = Config {
-        domain,
+    let config = Account {
+        servername,
+        server,
         username,
         password,
         port,
         user_id: user_id.to_string(),
         access_token: access_token.to_string(),
     };
-    let yaml = to_string(&config).unwrap();
-    let mut path = home_dir().unwrap();
-    path.push(".config");
-    path.push("tsukimi.yaml");
-    if !path.exists() {
-        fs::create_dir_all(path.parent().unwrap()).unwrap();
-    }
-    write(path, yaml).unwrap();
-
+    save_cfg(config).await.unwrap();
     Ok(())
 }
 
@@ -486,16 +469,16 @@ pub async fn get_image(id: String) -> Result<String, Error> {
                     }
 
                     let path_str = format!(
-                        "{}/.local/share/tsukimi/",
-                        home_dir().expect("msg").display()
+                        "{}/.local/share/tsukimi/{}",
+                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
                     );
                     let pathbuf = PathBuf::from(path_str);
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
                     } else {
                         fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/",
-                            home_dir().expect("msg").display()
+                            "{}/.local/share/tsukimi/{}",
+                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
                         ))
                         .unwrap();
 
@@ -537,16 +520,16 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
                     }
 
                     let path_str = format!(
-                        "{}/.local/share/tsukimi/",
-                        home_dir().expect("msg").display()
+                        "{}/.local/share/tsukimi/{}",
+                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
                     );
                     let pathbuf = PathBuf::from(path_str);
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
                     } else {
                         fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/",
-                            home_dir().expect("msg").display()
+                            "{}/.local/share/tsukimi/{}",
+                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
                         ))
                         .unwrap();
 
@@ -588,16 +571,16 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
                     }
 
                     let path_str = format!(
-                        "{}/.local/share/tsukimi/",
-                        home_dir().expect("msg").display()
+                        "{}/.local/share/tsukimi/{}",
+                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
                     );
                     let pathbuf = PathBuf::from(path_str);
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("b{}.png", id)), &bytes).unwrap();
                     } else {
                         fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/",
-                            home_dir().expect("msg").display()
+                            "{}/.local/share/tsukimi/{}",
+                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
                         ))
                         .unwrap();
 
@@ -639,16 +622,16 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
                     }
 
                     let path_str = format!(
-                        "{}/.local/share/tsukimi/",
-                        home_dir().expect("msg").display()
+                        "{}/.local/share/tsukimi/{}",
+                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
                     );
                     let pathbuf = PathBuf::from(path_str);
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
                     } else {
                         fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/",
-                            home_dir().expect("msg").display()
+                            "{}/.local/share/tsukimi/{}",
+                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
                         ))
                         .unwrap();
 
@@ -1058,10 +1041,7 @@ pub async fn get_search_recommend() -> Result<List, Error> {
 
     let params = [
         ("Limit", "20"),
-        (
-            "EnableTotalRecordCount",
-            "false",
-        ),
+        ("EnableTotalRecordCount", "false"),
         ("ImageTypeLimit", "0"),
         ("Recursive", "true"),
         ("IncludeItemTypes", "Movie,Series"),

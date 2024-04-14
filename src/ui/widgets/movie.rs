@@ -1,3 +1,4 @@
+use std::env;
 use std::path::PathBuf;
 
 use adw::prelude::NavigationPageExt;
@@ -139,7 +140,7 @@ mod imp {
                         obj.get_similar();
                     }
                 }
-            }));  
+            }));
         }
     }
 
@@ -174,8 +175,8 @@ impl MoviePage {
         let imp = self.imp();
         let id = self.id();
         let path = format!(
-            "{}/.local/share/tsukimi/b{}.png",
-            dirs::home_dir().expect("msg").display(),
+            "{}/.local/share/tsukimi/{}/b{}.png",
+            dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
             id
         );
         let pathbuf = PathBuf::from(&path);
@@ -204,8 +205,8 @@ impl MoviePage {
         glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
             while receiver.recv().await.is_ok() {
                 let path = format!(
-                    "{}/.local/share/tsukimi/b{}.png",
-                    dirs::home_dir().expect("msg").display(),
+                    "{}/.local/share/tsukimi/{}/b{}.png",
+                    dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
                     id2
                 );
                 if pathbuf.exists() {
@@ -276,14 +277,14 @@ impl MoviePage {
                     if let Some(genres) = &item.genres {
                         for genre in genres {
                             str.push_str(&genre.name);
-                            str.push_str(",");
+                            str.push(',');
                         }
                         str.pop();
                     }
                     obj.imp().line2.get().set_text(&str);
                     if let Some(taglines) = item.taglines {
                         if let Some(tagline) = taglines.first() {
-                            obj.imp().tagline.set_text(&tagline);
+                            obj.imp().tagline.set_text(tagline);
                             obj.imp().tagline.set_visible(true);
                         }
                     }
@@ -339,7 +340,7 @@ impl MoviePage {
                     user_data: userdata.clone(),
                     production_year: None
                 };
-                obj.imp().line1.set_text(&format!("{}", info.name));
+                obj.imp().line1.set_text(&info.name.to_string());
                 obj.imp().line1spinner.set_visible(false);
                 crate::ui::moviedrop::newmediadropsel(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
                 obj.imp().playbutton.set_sensitive(true);

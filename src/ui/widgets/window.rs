@@ -2,10 +2,11 @@ use std::env;
 use std::path::PathBuf;
 
 use adw::prelude::NavigationPageExt;
-use dirs::home_dir;
+use adw::prelude::ActionRowExt;
 use gio::Settings;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
+use adw::prelude::AdwDialogExt;
 mod imp {
     use std::cell::OnceCell;
 
@@ -21,19 +22,9 @@ mod imp {
     #[template(resource = "/moe/tsukimi/window.ui")]
     pub struct Window {
         #[template_child]
-        pub serverentry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub portentry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub nameentry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub passwordentry: TemplateChild<adw::EntryRow>,
-        #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
         #[template_child]
         pub selectlist: TemplateChild<gtk::ListBox>,
-        #[template_child]
-        pub loginbutton: TemplateChild<gtk::Button>,
         #[template_child]
         pub insidestack: TemplateChild<gtk::Stack>,
         #[template_child]
@@ -62,6 +53,10 @@ mod imp {
         pub toast: TemplateChild<adw::ToastOverlay>,
         #[template_child]
         pub rootpic: TemplateChild<gtk::Picture>,
+        #[template_child]
+        pub serversbox: TemplateChild<gtk::ListBox>,
+        #[template_child]
+        pub login_stack: TemplateChild<gtk::Stack>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
     }
@@ -76,9 +71,6 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
-            klass.install_action_async("win.login", None, |window, _, _| async move {
-                window.login().await;
-            });
             klass.install_action("win.home", None, move |window, _action, _parameter| {
                 window.freshhomepage();
             });
@@ -93,6 +85,9 @@ mod imp {
             });
             klass.install_action("win.sidebar", None, move |window, _action, _parameter| {
                 window.sidebar();
+            });
+            klass.install_action("win.new-account", None, move |window, _action, _parameter| {
+                window.new_account();
             });
             klass.install_action_async("win.pop", None, |window, _action, _parameter| async move {
                 window.pop().await;
@@ -113,7 +108,7 @@ mod imp {
             obj.setup_rootpic();
             obj.setup_settings();
             obj.load_window_size();
-            obj.loginenter();
+            obj.set_servers();
             self.selectlist
                 .connect_row_selected(glib::clone!(@weak obj => move |_, row| {
                     if let Some(row) = row {
@@ -161,10 +156,9 @@ mod imp {
 
 use glib::Object;
 use gtk::{gio, glib};
-
-use crate::config::load_cfg;
+use crate::config::Account;
+use crate::config::{load_cfgv2, load_env};
 use crate::ui::models::SETTINGS;
-use crate::ui::network::runtime;
 use crate::APP_ID;
 
 glib::wrapper! {
@@ -175,6 +169,53 @@ glib::wrapper! {
 }
 
 impl Window {
+    pub fn set_servers(&self) {
+        let imp = self.imp();
+        let listbox = imp.serversbox.get();
+        listbox.remove_all();
+        let accounts = load_cfgv2().unwrap();
+        if accounts.accounts.is_empty() {
+            imp.login_stack.set_visible_child_name("no-server");
+            return;
+        } else {
+            imp.login_stack.set_visible_child_name("servers");
+        }
+        for account in accounts.accounts {
+            let account_clone = account.clone();
+            let row = adw::ActionRow::builder()
+                .title(&account.servername)
+                .subtitle(&account.username)
+                .height_request(80)
+                .activatable(true)
+                .build();
+            unsafe { row.set_data("account", account); }
+            row.add_suffix(&{
+                let button = gtk::Button::builder()
+                    .icon_name("user-trash-symbolic")
+                    .valign(gtk::Align::Center)
+                    .build();
+                button.add_css_class("flat");
+                button.connect_clicked(glib::clone!(@weak self as obj=> move |_| {
+                    crate::config::remove(&account_clone).unwrap();
+                    obj.set_servers();
+                }));
+                button
+            });
+            row.add_css_class("serverrow");
+
+            listbox.append(&row);
+        }
+        listbox.connect_row_activated(glib::clone!(@weak self as obj => move |_, row| {
+            unsafe { 
+                let account_ptr: std::ptr::NonNull<Account>  = row.data("account").unwrap(); 
+                let account: &Account = &*account_ptr.as_ptr();
+                load_env(account);
+            }
+            obj.mainpage();
+            obj.freshhomepage();
+        }));
+    }
+
     async fn homeviewpop(&self) {
         let imp = self.imp();
         imp.homeview.pop();
@@ -432,52 +473,6 @@ impl Window {
         imp.split_view.set_collapsed(overlay);
     }
 
-    async fn login(&self) {
-        let imp = self.imp();
-        imp.loginbutton.set_sensitive(false);
-        let loginbutton = imp.loginbutton.clone();
-        let server = imp.serverentry.text().to_string();
-        let port = imp.portentry.text().to_string();
-        let name = imp.nameentry.text().to_string();
-        let password = imp.passwordentry.text().to_string();
-        let (sender, receiver) = async_channel::bounded::<String>(1);
-        runtime().spawn(async move {
-            match crate::ui::network::login(server, name, password, port).await {
-                Ok(_) => {
-                    sender
-                        .send("1".to_string())
-                        .await
-                        .expect("The channel needs to be open.");
-                }
-                Err(e) => eprintln!("Error: {}", e),
-            }
-        });
-        glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
-            match receiver.recv().await {
-                Ok(_) => {
-                    loginbutton.set_sensitive(false);
-                    load_cfg();
-                    obj.mainpage();
-                    obj.homepage();
-                }
-                Err(_) => {
-                    loginbutton.set_sensitive(true);
-                    loginbutton.set_label("Link Failed");
-                }
-            }
-        }));
-    }
-
-    fn loginenter(&self) {
-        let mut path = home_dir().unwrap();
-        path.push(".config");
-        path.push("tsukimi.yaml");
-        if path.exists() {
-            self.mainpage();
-            self.homepage();
-        }
-    }
-
     pub fn toast(&self, message: &str) {
         let imp = self.imp();
         let toast = adw::Toast::builder()
@@ -497,29 +492,28 @@ impl Window {
         let settings = Settings::new(APP_ID);
         if settings.boolean("is-backgroundenabled") {
             let backgroundstack = imp.backgroundstack.get();
-            let pic: gtk::Picture;
-            if settings.boolean("is-blurenabled") {
+            let pic: gtk::Picture = if settings.boolean("is-blurenabled") {
                 let paintbale =
                     crate::ui::provider::background_paintable::BackgroundPaintable::default();
                 paintbale.set_pic(file);
-                pic = gtk::Picture::builder()
+                gtk::Picture::builder()
                     .paintable(&paintbale)
                     .halign(gtk::Align::Fill)
                     .valign(gtk::Align::Fill)
                     .hexpand(true)
                     .vexpand(true)
                     .content_fit(gtk::ContentFit::Cover)
-                    .build();
+                    .build()
             } else {
-                pic = gtk::Picture::builder()
+                gtk::Picture::builder()
                     .halign(gtk::Align::Fill)
                     .valign(gtk::Align::Fill)
                     .hexpand(true)
                     .vexpand(true)
                     .content_fit(gtk::ContentFit::Cover)
                     .file(&file)
-                    .build();
-            }
+                    .build()
+            };
             let opacity = settings.int("pic-opacity");
             pic.set_opacity(opacity as f64 / 100.0);
             backgroundstack.add_child(&pic);
@@ -556,5 +550,10 @@ impl Window {
         if let Some(child) = backgroundstack.last_child() {
             backgroundstack.remove(&child);
         }
+    }
+
+    pub fn new_account(&self) {
+        let dialog = crate::ui::widgets::account_add::AccountWindow::new();
+        dialog.present(self);
     }
 }

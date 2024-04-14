@@ -131,11 +131,10 @@ impl Settings {
     pub fn set_background_enabled(&self, background_enabled: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_IS_BACKGROUND_ENABLED, background_enabled)
     }
-    
+
     pub fn background_enabled(&self) -> bool {
         self.boolean(Self::KEY_IS_BACKGROUND_ENABLED)
     }
-
 
     pub fn set_blur_enabled(&self, is_blur_enabled: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_IS_BLUR_ENABLED, is_blur_enabled)
@@ -144,7 +143,6 @@ impl Settings {
     pub fn is_blur_enabled(&self) -> bool {
         self.boolean(Self::KEY_IS_BLUR_ENABLED)
     }
-    
 }
 
 impl Default for Settings {
