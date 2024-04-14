@@ -1,3 +1,4 @@
+use super::models::SETTINGS;
 use super::network;
 use super::network::Back;
 use super::network::SearchResult;
@@ -61,8 +62,7 @@ pub fn newmediadropsel(
     });
 
     let info = info.clone();
-    let settings = gtk::gio::Settings::new(crate::APP_ID);
-    if settings.boolean("is-resume") {
+    if SETTINGS.resume() {
         if let Some(userdata) = &info.user_data {
             if let Some(percentage) = userdata.played_percentage {
                 if percentage > 0. {

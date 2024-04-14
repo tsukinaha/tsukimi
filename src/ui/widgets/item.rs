@@ -6,6 +6,7 @@ use gtk::{gio, glib};
 use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
 
+use crate::ui::models::SETTINGS;
 use crate::ui::network::{self, runtime, similar, SeriesInfo};
 use crate::ui::new_dropsel::bind_button;
 
@@ -214,8 +215,7 @@ impl ItemPage {
         );
         let pathbuf = std::path::PathBuf::from(&path);
         let backdrop = imp.backdrop.get();
-        let settings = gtk::gio::Settings::new(crate::APP_ID);
-        backdrop.set_height_request(settings.int("background-height"));
+        backdrop.set_height_request(SETTINGS.background_height() as i32);
         let (sender, receiver) = async_channel::bounded::<String>(1);
         if pathbuf.exists() {
             backdrop.set_file(Some(&gtk::gio::File::for_path(&path)));

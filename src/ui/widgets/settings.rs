@@ -3,7 +3,7 @@ use dirs::home_dir;
 use glib::Object;
 use gtk::{gio, glib, subclass::prelude::*};
 
-use crate::APP_ID;
+use crate::ui::models::SETTINGS;
 
 use super::window::Window;
 
@@ -140,96 +140,83 @@ impl SettingsPage {
 
     pub fn set_sidebar(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
         imp.sidebarcontrol
-            .set_active(settings.boolean("is-overlay"));
+            .set_active(SETTINGS.overlay());
         imp.sidebarcontrol
             .connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
                 let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
                 window.overlay_sidebar(control.is_active());
-                settings.set_boolean("is-overlay", control.is_active()).unwrap();
+                SETTINGS.set_overlay(control.is_active()).unwrap();
             }));
     }
 
     pub fn set_back(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
         imp.backcontrol
-            .set_active(settings.boolean("is-progress-enabled"));
+            .set_active(SETTINGS.progress());
         imp.backcontrol.connect_active_notify(move |control| {
-            settings
-                .set_boolean("is-progress-enabled", control.is_active())
+            SETTINGS
+                .set_progress(control.is_active())
                 .unwrap();
         });
     }
 
     pub fn set_spin(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
         imp.spinrow
-            .set_value(settings.int("background-height").into());
+            .set_value(SETTINGS.background_height().into());
         imp.spinrow.connect_value_notify(move |control| {
-            settings
-                .set_int("background-height", control.value() as i32)
+            SETTINGS
+                .set_background_height(control.value() as i32)
                 .unwrap();
         });
     }
 
     pub fn set_fullscreen(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
         imp.autofullscreencontrol
-            .set_active(settings.boolean("is-fullscreen"));
+            .set_active(SETTINGS.fullscreen());
         imp.autofullscreencontrol
             .connect_active_notify(move |control| {
-                settings
-                    .set_boolean("is-fullscreen", control.is_active())
+                SETTINGS
+                    .set_fullscreen(control.is_active())
                     .unwrap();
             });
     }
 
     pub fn set_forcewindow(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
         imp.forcewindowcontrol
-            .set_active(settings.boolean("is-force-window"));
+            .set_active(SETTINGS.forcewindow());
         imp.forcewindowcontrol
             .connect_active_notify(move |control| {
-                settings
-                    .set_boolean("is-force-window", control.is_active())
+                SETTINGS
+                    .set_forcewindow(control.is_active())
                     .unwrap();
             });
     }
 
     pub fn set_resume(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
-        imp.resumecontrol.set_active(settings.boolean("is-resume"));
+        imp.resumecontrol.set_active(SETTINGS.resume());
         imp.resumecontrol.connect_active_notify(move |control| {
-            settings
-                .set_boolean("is-resume", control.is_active())
-                .unwrap();
+            SETTINGS.set_resume(control.is_active()).unwrap();
         });
     }
 
     pub fn proxy(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
-        settings
-            .set_string("proxy", &imp.proxyentry.text())
-            .unwrap();
+        SETTINGS.set_proxy(&imp.proxyentry.text()).unwrap();
     }
 
     pub fn set_proxy(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
-        imp.proxyentry.set_text(&settings.string("proxy"));
+        imp.proxyentry.set_text(&SETTINGS.proxy());
     }
 
     pub fn proxyclear(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
-        settings.set_string("proxy", "").unwrap();
+        SETTINGS.set_proxy("").unwrap();
         imp.proxyentry.set_text("");
     }
 
@@ -249,8 +236,7 @@ impl SettingsPage {
 
     pub fn set_theme(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
-        let theme = settings.string("theme");
+        let theme = SETTINGS.theme();
         let mut pos = 0;
         match theme.as_str() {
             "default" => pos = 0,
@@ -267,25 +253,15 @@ impl SettingsPage {
             let theme = control.selected_item().and_then(|item| {
                 item.downcast::<gtk::StringObject>().ok().map(|item| item.string())
             }).unwrap();
-            match theme.as_str() {
-                "System Default" => settings.set_string("theme", "default").unwrap(),
-                "Adwaita" => settings.set_string("theme", "Adwaita").unwrap(),
-                "Adwaita Dark" => settings.set_string("theme", "Adwaita Dark").unwrap(),
-                "Catppuccin Latte" => settings.set_string("theme", "Catppuccino Latte").unwrap(),
-                "Tokyo Night Dark" => settings.set_string("theme", "Tokyo Night Dark").unwrap(),
-                "Solarized Dark" => settings.set_string("theme", "Solarized Dark").unwrap(),
-                "Alpha Dark" => settings.set_string("theme", "Alpha Dark").unwrap(),
-                _ => (),
-            }
+            SETTINGS.set_theme(&theme).unwrap();
         }));
     }
 
     pub fn set_thread(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
-        imp.threadspinrow.set_value(settings.int("threads").into());
+        imp.threadspinrow.set_value(SETTINGS.threads().into());
         imp.threadspinrow.connect_value_notify(move |control| {
-            settings.set_int("threads", control.value() as i32).unwrap();
+            SETTINGS.set_threads(control.value() as i32).unwrap();
         });
     }
 
@@ -304,8 +280,7 @@ impl SettingsPage {
         match filedialog.open_future(Some(&window)).await {
             Ok(file) => {
                 let file_path = file.path().unwrap().display().to_string();
-                let settings = gio::Settings::new(APP_ID);
-                settings.set_string("root-pic", &file_path).unwrap();
+                SETTINGS.set_root_pic(&file_path).unwrap();
                 window.set_rootpic(file);
             }
             Err(_) => window.toast("Failed to set root picture."),
@@ -314,14 +289,11 @@ impl SettingsPage {
 
     pub fn set_picopactiy(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
         imp.backgroundspinrow
-            .set_value(settings.int("pic-opacity").into());
+            .set_value(SETTINGS.pic_opacity().into());
         imp.backgroundspinrow.connect_value_notify(
             glib::clone!(@weak self as obj =>move |control| {
-                settings
-                    .set_int("pic-opacity", control.value() as i32)
-                    .unwrap();
+                SETTINGS.set_pic_opacity(control.value() as i32).unwrap();
                 let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
                 window.set_picopacity(control.value() as i32);
             }),
@@ -330,14 +302,11 @@ impl SettingsPage {
 
     pub fn set_pic(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
         imp.backgroundcontrol
-            .set_active(settings.boolean("is-backgroundenabled"));
+            .set_active(SETTINGS.background_enabled());
         imp.backgroundcontrol.connect_active_notify(
             glib::clone!(@weak self as obj =>move |control| {
-                settings
-                    .set_boolean("is-backgroundenabled", control.is_active())
-                    .unwrap();
+                SETTINGS.set_background_enabled(control.is_active()).unwrap();
                 if !control.is_active() {
                     let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
                     window.clear_pic();
@@ -348,27 +317,23 @@ impl SettingsPage {
 
     pub fn set_picblur(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
         imp.backgroundblurcontrol
-            .set_active(settings.boolean("is-blurenabled"));
+            .set_active(SETTINGS.is_blur_enabled());
         imp.backgroundblurcontrol
             .connect_active_notify(move |control| {
-                settings
-                    .set_boolean("is-blurenabled", control.is_active())
+                SETTINGS
+                    .set_blur_enabled(control.is_active())
                     .unwrap();
             });
     }
 
     pub fn change_picblur(&self) {
         let imp = self.imp();
-        let settings = gio::Settings::new(APP_ID);
         imp.backgroundblurspinrow
-            .set_value(settings.int("pic-blur").into());
+            .set_value(SETTINGS.pic_blur().into());
         imp.backgroundblurspinrow
             .connect_value_notify(move |control| {
-                settings
-                    .set_int("pic-blur", control.value() as i32)
-                    .unwrap();
+                SETTINGS.set_pic_blur(control.value() as i32).unwrap();
             });
     }
 
@@ -377,7 +342,6 @@ impl SettingsPage {
             let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
             window.clear_pic();
         }));
-        let settings = gio::Settings::new(APP_ID);
-        settings.set_string("root-pic", "").unwrap();
+        SETTINGS.set_root_pic("").unwrap();
     }
 }

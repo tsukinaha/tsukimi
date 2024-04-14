@@ -1,3 +1,4 @@
+use super::models::SETTINGS;
 use super::mpv;
 use super::network;
 use super::network::get_sub;
@@ -62,8 +63,7 @@ pub fn newmediadropsel(
     });
     let info = info.clone();
 
-    let settings = gtk::gio::Settings::new(crate::APP_ID);
-    if settings.boolean("is-resume") {
+    if SETTINGS.resume() {
         if let Some(userdata) = &info.user_data {
             if let Some(percentage) = userdata.played_percentage {
                 if percentage > 0. {
@@ -218,8 +218,7 @@ pub fn play_event(
     glib::spawn_future_local(glib::clone!(@weak button =>async move {
         while let Ok(enable_button) = receiver.recv().await {
             if enable_button {
-                let settings = gtk::gio::Settings::new(crate::APP_ID);
-                if settings.boolean("is-resume") {
+                if SETTINGS.resume() {
                     button.set_label("Resume");
                 } else {
                     button.set_label("Play");

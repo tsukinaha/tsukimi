@@ -163,6 +163,7 @@ use glib::Object;
 use gtk::{gio, glib};
 
 use crate::config::load_cfg;
+use crate::ui::models::SETTINGS;
 use crate::ui::network::runtime;
 use crate::APP_ID;
 
@@ -532,8 +533,7 @@ impl Window {
     }
 
     pub fn setup_rootpic(&self) {
-        let settings = Settings::new(APP_ID);
-        let pic = settings.string("root-pic");
+        let pic = SETTINGS.root_pic();
         let pathbuf = PathBuf::from(pic);
         if pathbuf.exists() {
             let file = gio::File::for_path(&pathbuf);

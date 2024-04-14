@@ -1,7 +1,7 @@
 use crate::config::proxy::ReqClient;
 use crate::config::{self, get_device_name, APP_VERSION};
+use crate::ui::models::SETTINGS;
 use dirs::home_dir;
-use gtk::prelude::*;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
 use serde::{Deserialize, Serialize};
@@ -26,10 +26,9 @@ pub struct Config {
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();
-    let settings = gtk::gio::Settings::new(crate::APP_ID);
     RUNTIME.get_or_init(|| {
         runtime::Builder::new_multi_thread()
-            .worker_threads(settings.int("threads") as usize)
+            .worker_threads(SETTINGS.threads() as usize)
             .enable_io()
             .enable_time()
             .build()

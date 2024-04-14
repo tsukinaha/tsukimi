@@ -3,6 +3,8 @@ use gtk::{gdk, gio::File, glib, graphene, prelude::*, subclass::prelude::*};
 mod imp {
     use std::{cell::RefCell, rc::Rc};
 
+    use crate::ui::models::SETTINGS;
+
     use super::*;
 
     #[derive(Default)]
@@ -48,8 +50,7 @@ mod imp {
 
                 let rect =
                     graphene::Rect::new(dx as f32, dy as f32, new_width as f32, new_height as f32);
-                let settings = gtk::gio::Settings::new(crate::APP_ID);
-                snapshot.push_blur(settings.int("pic-blur") as f64);
+                snapshot.push_blur(SETTINGS.pic_blur() as f64);
                 snapshot.append_texture(&texture, &rect);
                 snapshot.pop();
             }
