@@ -37,10 +37,6 @@ gridview > child box {
     margin:0px;
 }
 
-list {
-    background-color: rgba(0, 0, 0, 0);
-}
-
 overlay > label {
     background-color: #AEB5FA;
     border-radius: 999px;
@@ -51,6 +47,15 @@ box > overlay > image {
     background-color: #AEB5FA;
     border-radius: 999px;
     margin:3px;
+}
+
+.frame {
+    border: 2px solid @borders;
+    border-radius: 5px;
+}
+
+.pill {
+    border-radius: 10px;
 }
 
 revealer > expander-widget > box > box > widget {

@@ -1,7 +1,7 @@
 use crate::config::proxy::ReqClient;
 use crate::config::{self, get_device_name, APP_VERSION};
+use crate::ui::models::SETTINGS;
 use dirs::home_dir;
-use gtk::prelude::*;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
 use serde::{Deserialize, Serialize};
@@ -26,10 +26,9 @@ pub struct Config {
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();
-    let settings = gtk::gio::Settings::new(crate::APP_ID);
     RUNTIME.get_or_init(|| {
         runtime::Builder::new_multi_thread()
-            .worker_threads(settings.int("threads") as usize)
+            .worker_threads(SETTINGS.threads() as usize)
             .enable_io()
             .enable_time()
             .build()
@@ -303,6 +302,14 @@ pub struct Item {
     pub tags: Option<Vec<SGTitem>>,
     #[serde(rename = "UserData")]
     pub user_data: Option<UserData>,
+    #[serde(rename = "CommunityRating")]
+    pub community_rating: Option<f64>,
+    #[serde(rename = "OfficialRating")]
+    pub official_rating: Option<String>,
+    #[serde(rename = "RunTimeTicks")]
+    pub run_time_ticks: Option<u64>,
+    #[serde(rename = "Taglines")]
+    pub taglines: Option<Vec<String>>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -477,7 +484,7 @@ pub async fn get_image(id: String) -> Result<String, Error> {
                     if bytes.len() < 10240 {
                         return Ok(id);
                     }
-                    
+
                     let path_str = format!(
                         "{}/.local/share/tsukimi/",
                         home_dir().expect("msg").display()
@@ -514,7 +521,7 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
 
     let result = client()
         .get(&format!(
-            "{}:{}/emby/Items/{}/Images/Thumb",
+            "{}:{}/emby/Items/{}/Images/Thumb?maxHeight=400",
             server_info.domain, server_info.port, id
         ))
         .send()
@@ -528,7 +535,7 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
                     if bytes.len() < 10240 {
                         return Ok(id);
                     }
-                    
+
                     let path_str = format!(
                         "{}/.local/share/tsukimi/",
                         home_dir().expect("msg").display()
@@ -565,7 +572,7 @@ pub async fn get_backdropimage(id: String) -> Result<String, Error> {
 
     let result = client()
         .get(&format!(
-            "{}:{}/emby/Items/{}/Images/Backdrop",
+            "{}:{}/emby/Items/{}/Images/Backdrop?maxHeight=1200",
             server_info.domain, server_info.port, id
         ))
         .send()
@@ -616,7 +623,7 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
 
     let result = client()
         .get(&format!(
-            "{}:{}/emby/Items/{}/Images/Logo",
+            "{}:{}/emby/Items/{}/Images/Logo?maxHeight=400",
             server_info.domain, server_info.port, id
         ))
         .send()
@@ -630,7 +637,7 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
                     if bytes.len() < 10240 {
                         return Ok(id);
                     }
-                    
+
                     let path_str = format!(
                         "{}/.local/share/tsukimi/",
                         home_dir().expect("msg").display()
@@ -695,11 +702,11 @@ pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
     let params = [
         ("StartTimeTicks", "0"),
         ("UserId", &server_info.user_id),
-        ("AutoOpenLiveStream", "true"),
-        ("IsPlayback", "true"),
+        ("AutoOpenLiveStream", "false"),
+        ("IsPlayback", "false"),
         ("AudioStreamIndex", "1"),
         ("SubtitleStreamIndex", "1"),
-        ("MaxStreamingBitrate", "4000000"),
+        ("MaxStreamingBitrate", "160000000"),
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
@@ -708,7 +715,11 @@ pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
         ("X-Emby-Language", "zh-cn"),
         ("reqformat", "json"),
     ];
-    let profile = serde_json::json!({"DeviceProfile":{"MaxStaticBitrate":140000000,"MaxStreamingBitrate":140000000,"MusicStreamingTranscodingBitrate":192000,"DirectPlayProfiles":[{"Container":"mp4,m4v","Type":"Video","VideoCodec":"h264,av1,vp8,vp9","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Streaming","Protocol":"hls","MaxAudioChannels":"2","MinSegments":"1","BreakOnNonKeyFrames":true},{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"opus","Type":"Audio","AudioCodec":"opus","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"wav","Type":"Audio","AudioCodec":"wav","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"opus","Type":"Audio","AudioCodec":"opus","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"wav","Type":"Audio","AudioCodec":"wav","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"m4s,ts","Type":"Video","AudioCodec":"aac","VideoCodec":"h264","Context":"Streaming","Protocol":"hls","MaxAudioChannels":"2","MinSegments":"1","BreakOnNonKeyFrames":true,"ManifestSubtitles":"vtt"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis","VideoCodec":"vpx","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp4","Type":"Video","AudioCodec":"aac,opus,flac,vorbis","VideoCodec":"h264","Context":"Static","Protocol":"http"}],"ContainerProfiles":[],"CodecProfiles":[{"Type":"VideoAudio","Codec":"aac","Conditions":[{"Condition":"Equals","Property":"IsSecondaryAudio","Value":"false","IsRequired":"false"}]},{"Type":"VideoAudio","Conditions":[{"Condition":"Equals","Property":"IsSecondaryAudio","Value":"false","IsRequired":"false"}]},{"Type":"Video","Codec":"h264","Conditions":[{"Condition":"EqualsAny","Property":"VideoProfile","Value":"high|main|baseline|constrained baseline","IsRequired":false},{"Condition":"LessThanEqual","Property":"VideoLevel","Value":"52","IsRequired":false},{"Condition":"LessThanEqual","Property":"Width","Value":"1280","IsRequired":false}]},{"Type":"Video","Codec":"hevc","Conditions":[{"Condition":"LessThanEqual","Property":"Width","Value":"1280","IsRequired":false}]},{"Type":"Video","Conditions":[{"Condition":"LessThanEqual","Property":"Width","Value":"1280","IsRequired":false}]}],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[{"Type":"Video","Container":"m4v","MimeType":"video/mp4"}]}});
+    let profile = serde_json::json!(
+
+        {"DeviceProfile":{"Name":"Direct play all","MaxStaticBitrate":1000000000,"MaxStreamingBitrate":1000000000,"MusicStreamingTranscodingBitrate":1500000,"DirectPlayProfiles":[{"Container":"mkv","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9,mp4","AudioCodec":"aac,ac3,alac,eac3,dts,flac,mp3,opus,truehd,vorbis"},{"Container":"mp4,m4v","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9","AudioCodec":"aac,alac,opus,mp3,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[],"ContainerProfiles":[],"CodecProfiles":[],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[]}}
+
+    );
     let response = client
         .post(&url)
         .query(&params)
@@ -745,7 +756,11 @@ pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
         ("X-Emby-Language", "zh-cn"),
         ("reqformat", "json"),
     ];
-    let profile = serde_json::json!({"DeviceProfile":{"MaxStaticBitrate":140000000,"MaxStreamingBitrate":140000000,"MusicStreamingTranscodingBitrate":192000,"DirectPlayProfiles":[{"Container":"mp4,m4v","Type":"Video","VideoCodec":"h264,av1,vp8,vp9","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Streaming","Protocol":"hls","MaxAudioChannels":"2","MinSegments":"1","BreakOnNonKeyFrames":true},{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"opus","Type":"Audio","AudioCodec":"opus","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"wav","Type":"Audio","AudioCodec":"wav","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"opus","Type":"Audio","AudioCodec":"opus","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"wav","Type":"Audio","AudioCodec":"wav","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"m4s,ts","Type":"Video","AudioCodec":"aac","VideoCodec":"h264","Context":"Streaming","Protocol":"hls","MaxAudioChannels":"2","MinSegments":"1","BreakOnNonKeyFrames":true,"ManifestSubtitles":"vtt"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis","VideoCodec":"vpx","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp4","Type":"Video","AudioCodec":"aac,opus,flac,vorbis","VideoCodec":"h264","Context":"Static","Protocol":"http"}],"ContainerProfiles":[],"CodecProfiles":[{"Type":"VideoAudio","Codec":"aac","Conditions":[{"Condition":"Equals","Property":"IsSecondaryAudio","Value":"false","IsRequired":"false"}]},{"Type":"VideoAudio","Conditions":[{"Condition":"Equals","Property":"IsSecondaryAudio","Value":"false","IsRequired":"false"}]},{"Type":"Video","Codec":"h264","Conditions":[{"Condition":"EqualsAny","Property":"VideoProfile","Value":"high|main|baseline|constrained baseline","IsRequired":false},{"Condition":"LessThanEqual","Property":"VideoLevel","Value":"52","IsRequired":false},{"Condition":"LessThanEqual","Property":"Width","Value":"1280","IsRequired":false}]},{"Type":"Video","Codec":"hevc","Conditions":[{"Condition":"LessThanEqual","Property":"Width","Value":"1280","IsRequired":false}]},{"Type":"Video","Conditions":[{"Condition":"LessThanEqual","Property":"Width","Value":"1280","IsRequired":false}]}],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[{"Type":"Video","Container":"m4v","MimeType":"video/mp4"}]}});
+    let profile = serde_json::json!(
+
+        {"DeviceProfile":{"Name":"Direct play all","MaxStaticBitrate":1000000000,"MaxStreamingBitrate":1000000000,"MusicStreamingTranscodingBitrate":1500000,"DirectPlayProfiles":[{"Container":"mkv","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9,mp4","AudioCodec":"aac,ac3,alac,eac3,dts,flac,mp3,opus,truehd,vorbis"},{"Container":"mp4,m4v","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9","AudioCodec":"aac,alac,opus,mp3,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[],"ContainerProfiles":[],"CodecProfiles":[],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[]}}
+
+    );
     let response = client
         .post(&url)
         .query(&params)
@@ -1031,4 +1046,36 @@ pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Erro
     let mut json: serde_json::Value = response.json().await?;
     let items: Vec<Item> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
+}
+
+pub async fn get_search_recommend() -> Result<List, Error> {
+    let server_info = config::set_config();
+    let client = client();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items",
+        server_info.domain, server_info.port, server_info.user_id
+    );
+
+    let params = [
+        ("Limit", "20"),
+        (
+            "EnableTotalRecordCount",
+            "false",
+        ),
+        ("ImageTypeLimit", "0"),
+        ("Recursive", "true"),
+        ("IncludeItemTypes", "Movie,Series"),
+        ("SortBy", "IsFavoriteOrLiked,Random"),
+        ("Recursive", "true"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    let response = client.get(&url).query(&params).send().await?;
+    let json: serde_json::Value = response.json().await?;
+    let latests: List = serde_json::from_value(json).unwrap();
+    Ok(latests)
 }

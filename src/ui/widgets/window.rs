@@ -1,4 +1,5 @@
 use std::env;
+use std::path::PathBuf;
 
 use adw::prelude::NavigationPageExt;
 use dirs::home_dir;
@@ -93,8 +94,8 @@ mod imp {
             klass.install_action("win.sidebar", None, move |window, _action, _parameter| {
                 window.sidebar();
             });
-            klass.install_action("win.pop", None, move |window, _action, _parameter| {
-                window.pop();
+            klass.install_action_async("win.pop", None, |window, _action, _parameter| async move {
+                window.pop().await;
             });
         }
 
@@ -162,6 +163,7 @@ use glib::Object;
 use gtk::{gio, glib};
 
 use crate::config::load_cfg;
+use crate::ui::models::SETTINGS;
 use crate::ui::network::runtime;
 use crate::APP_ID;
 
@@ -173,7 +175,7 @@ glib::wrapper! {
 }
 
 impl Window {
-    fn homeviewpop(&self) {
+    async fn homeviewpop(&self) {
         let imp = self.imp();
         imp.homeview.pop();
         if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
@@ -186,7 +188,7 @@ impl Window {
         }
     }
 
-    fn historyviewpop(&self) {
+    async fn historyviewpop(&self) {
         let imp = self.imp();
         imp.historyview.pop();
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
@@ -199,7 +201,7 @@ impl Window {
         }
     }
 
-    fn searchviewpop(&self) {
+    async fn searchviewpop(&self) {
         let imp = self.imp();
         imp.searchview.pop();
         if let Some(tag) = imp.searchview.visible_page().unwrap().tag() {
@@ -212,14 +214,14 @@ impl Window {
         }
     }
 
-    fn pop(&self) {
+    async fn pop(&self) {
         let imp = self.imp();
         if imp.insidestack.visible_child_name().unwrap().as_str() == "homepage" {
-            self.homeviewpop();
+            self.homeviewpop().await;
         } else if imp.insidestack.visible_child_name().unwrap().as_str() == "historypage" {
-            self.historyviewpop();
+            self.historyviewpop().await;
         } else if imp.insidestack.visible_child_name().unwrap().as_str() == "searchpage" {
-            self.searchviewpop();
+            self.searchviewpop().await;
         }
     }
 
@@ -334,6 +336,7 @@ impl Window {
         imp.homepage
             .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
         imp.navipage.set_title("Home");
+        self.set_pop_visibility(false);
     }
 
     fn freshhistorypage(&self) {
@@ -344,6 +347,7 @@ impl Window {
         imp.historypage
             .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
         imp.navipage.set_title("History");
+        self.set_pop_visibility(false);
     }
 
     fn freshsearchpage(&self) {
@@ -354,6 +358,7 @@ impl Window {
         imp.searchpage
             .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
         imp.navipage.set_title("Search");
+        self.set_pop_visibility(false);
     }
 
     fn historypage(&self) {
@@ -489,26 +494,67 @@ impl Window {
 
     pub fn set_rootpic(&self, file: gio::File) {
         let imp = self.imp();
-        let backgroundstack = imp.backgroundstack.get();
-        let pic = gtk::Picture::builder()
-            .halign(gtk::Align::Fill)
-            .valign(gtk::Align::Fill)
-            .hexpand(true)
-            .vexpand(true)
-            .content_fit(gtk::ContentFit::Cover)
-            .file(&file)
-            .build();
         let settings = Settings::new(APP_ID);
-        let opacity = settings.int("pic-opacity");
-        pic.set_opacity(opacity as f64 / 100.0);
-        backgroundstack.add_child(&pic);
-        backgroundstack.set_visible_child(&pic);
+        if settings.boolean("is-backgroundenabled") {
+            let backgroundstack = imp.backgroundstack.get();
+            let pic: gtk::Picture;
+            if settings.boolean("is-blurenabled") {
+                let paintbale =
+                    crate::ui::provider::background_paintable::BackgroundPaintable::default();
+                paintbale.set_pic(file);
+                pic = gtk::Picture::builder()
+                    .paintable(&paintbale)
+                    .halign(gtk::Align::Fill)
+                    .valign(gtk::Align::Fill)
+                    .hexpand(true)
+                    .vexpand(true)
+                    .content_fit(gtk::ContentFit::Cover)
+                    .build();
+            } else {
+                pic = gtk::Picture::builder()
+                    .halign(gtk::Align::Fill)
+                    .valign(gtk::Align::Fill)
+                    .hexpand(true)
+                    .vexpand(true)
+                    .content_fit(gtk::ContentFit::Cover)
+                    .file(&file)
+                    .build();
+            }
+            let opacity = settings.int("pic-opacity");
+            pic.set_opacity(opacity as f64 / 100.0);
+            backgroundstack.add_child(&pic);
+            backgroundstack.set_visible_child(&pic);
+            if backgroundstack.observe_children().n_items() > 2 {
+                if let Some(child) = backgroundstack.first_child() {
+                    backgroundstack.remove(&child);
+                }
+            }
+        }
     }
 
     pub fn setup_rootpic(&self) {
-        let settings = Settings::new(APP_ID);
-        let pic = settings.string("root-pic");
-        let file = gio::File::for_path(&pic);
-        self.set_rootpic(file);
+        let pic = SETTINGS.root_pic();
+        let pathbuf = PathBuf::from(pic);
+        if pathbuf.exists() {
+            let file = gio::File::for_path(&pathbuf);
+            self.set_rootpic(file);
+        }
+    }
+
+    pub fn set_picopacity(&self, opacity: i32) {
+        let imp = self.imp();
+        let backgroundstack = imp.backgroundstack.get();
+        if let Some(child) = backgroundstack.last_child() {
+            let pic = child.downcast::<gtk::Picture>().unwrap();
+            pic.set_opacity(opacity as f64 / 100.0);
+        }
+    }
+
+    pub fn clear_pic(&self) {
+        let imp = self.imp();
+        let backgroundstack = imp.backgroundstack.get();
+        if let Some(child) = backgroundstack.last_child() {
+            backgroundstack.remove(&child);
+        }
     }
 }

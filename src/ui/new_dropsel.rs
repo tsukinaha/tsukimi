@@ -1,3 +1,4 @@
+use super::models::SETTINGS;
 use super::mpv;
 use super::network;
 use super::network::get_sub;
@@ -5,60 +6,38 @@ use super::network::runtime;
 use super::network::Back;
 use super::network::Media;
 use super::network::SeriesInfo;
+use super::provider::dropdown_factory::factory;
 use gtk::glib;
 use gtk::prelude::*;
-use gtk::Orientation;
 
-pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::Box {
-    let hbox = gtk::Box::new(Orientation::Horizontal, 5);
-    hbox.set_valign(gtk::Align::End);
-    hbox.set_vexpand(true);
-    let leftvbox = gtk::Box::new(Orientation::Vertical, 5);
-    leftvbox.set_margin_start(80);
-    leftvbox.set_margin_top(80);
-    leftvbox.set_margin_bottom(20);
-    leftvbox.set_halign(gtk::Align::Start);
-    leftvbox.set_valign(gtk::Align::End);
-    let markup = format!(
-        "<b>{}\n\nSeason {} : Episode {}</b>",
-        info.name, info.parent_index_number, info.index_number
-    );
-    let label = gtk::Label::new(Some(&info.name));
-    label.set_markup(markup.as_str());
-    label.set_ellipsize(gtk::pango::EllipsizeMode::End);
-    leftvbox.append(&label);
-    hbox.append(&leftvbox);
-    let vbox = gtk::Box::new(Orientation::Vertical, 5);
-    vbox.set_margin_start(20);
-    vbox.set_margin_end(80);
-    vbox.set_margin_bottom(20);
-    vbox.set_halign(gtk::Align::End);
-    vbox.set_valign(gtk::Align::End);
-    vbox.set_hexpand(true);
+pub fn newmediadropsel(
+    playbackinfo: network::Media,
+    info: &SeriesInfo,
+    namedropdown: gtk::DropDown,
+    subdropdown: gtk::DropDown,
+    playbutton: gtk::Button,
+) {
     let namelist = gtk::StringList::new(&[]);
-
     let sublist = gtk::StringList::new(&[]);
 
-    let mut _set = 1;
-    for media in playbackinfo.media_sources.clone() {
-        namelist.append(&media.name);
-        if _set == 1 {
-            for stream in media.media_streams {
-                if stream.stream_type == "Subtitle" {
-                    if let Some(d) = stream.display_title {
-                        sublist.append(&d);
-                    } else {
-                        println!("No value");
-                    }
+    if let Some(media) = &playbackinfo.media_sources.first() {
+        for stream in &media.media_streams {
+            if stream.stream_type == "Subtitle" {
+                if let Some(d) = &stream.display_title {
+                    sublist.append(&d);
+                } else {
+                    println!("No value");
                 }
             }
         }
-        _set = 0;
     }
-
-    let namedropdown = gtk::DropDown::new(Some(namelist), Option::<gtk::Expression>::None);
-    let subdropdown = gtk::DropDown::new(Some(sublist.clone()), Option::<gtk::Expression>::None);
-    let playback_info = playbackinfo.clone();
+    for media in &playbackinfo.media_sources {
+        namelist.append(&media.name);
+    }
+    namedropdown.set_model(Some(&namelist));
+    subdropdown.set_model(Some(&sublist));
+    namedropdown.set_factory(Some(&factory()));
+    subdropdown.set_factory(Some(&factory()));
 
     namedropdown.connect_selected_item_notify(move |dropdown| {
         let selected = dropdown.selected_item();
@@ -82,12 +61,9 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
             }
         }
     });
-    vbox.append(&namedropdown);
-    vbox.append(&subdropdown);
     let info = info.clone();
-    let playbutton = gtk::Button::with_label("Play");
-    let settings = gtk::gio::Settings::new(crate::APP_ID);
-    if settings.boolean("is-resume") {
+
+    if SETTINGS.resume() {
         if let Some(userdata) = &info.user_data {
             if let Some(percentage) = userdata.played_percentage {
                 if percentage > 0. {
@@ -96,7 +72,16 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
             }
         }
     }
-    playbutton.connect_clicked(move |button| {
+}
+
+pub fn bind_button(
+    playbackinfo: network::Media,
+    info: SeriesInfo,
+    namedropdown: gtk::DropDown,
+    subdropdown: gtk::DropDown,
+    playbutton: gtk::Button,
+) -> glib::SignalHandlerId {
+    let handlerid = playbutton.connect_clicked(move |button| {
         button.set_label("Playing...");
         button.set_sensitive(false);
         let nameselected = namedropdown.selected_item();
@@ -106,14 +91,14 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
         let nameselected = nameselected.string();
         let subselected = subdropdown.selected_item();
         if subselected.is_none() {
-            for media in playback_info.media_sources.clone() {
+            for media in playbackinfo.media_sources.clone() {
                 if media.name == nameselected {
                     let directurl = media.direct_stream_url.clone();
                     if let Some(userdata) = &info.user_data {
                         let back = Back {
                             id: info.id.clone(),
                             mediasourceid: media.id.clone(),
-                            playsessionid: playback_info.play_session_id.clone(),
+                            playsessionid: playbackinfo.play_session_id.clone(),
                             tick: userdata.playback_position_ticks.unwrap_or(0),
                         };
                         play_event(
@@ -132,7 +117,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
         }
         let subselected = subselected.and_downcast_ref::<gtk::StringObject>().unwrap();
         let subselected = subselected.string();
-        for media in playback_info.media_sources.clone() {
+        for media in playbackinfo.media_sources.clone() {
             if media.name == nameselected {
                 for mediastream in media.media_streams {
                     if mediastream.stream_type == "Subtitle" {
@@ -145,7 +130,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                                             let back = Back {
                                                 id: info.id.clone(),
                                                 mediasourceid: media.id.clone(),
-                                                playsessionid: playback_info
+                                                playsessionid: playbackinfo
                                                     .play_session_id
                                                     .clone(),
                                                 tick: userdata.playback_position_ticks.unwrap_or(0),
@@ -177,7 +162,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
                                     let back = Back {
                                         id: info.id.clone(),
                                         mediasourceid: media.id.clone(),
-                                        playsessionid: playback_info.play_session_id.clone(),
+                                        playsessionid: playbackinfo.play_session_id.clone(),
                                         tick: userdata.playback_position_ticks.unwrap_or(0),
                                     };
                                     play_event(
@@ -197,10 +182,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SeriesInfo) -> gtk::B
             }
         }
     });
-
-    vbox.append(&playbutton);
-    hbox.append(&vbox);
-    hbox
+    handlerid
 }
 
 pub fn play_event(
@@ -236,8 +218,7 @@ pub fn play_event(
     glib::spawn_future_local(glib::clone!(@weak button =>async move {
         while let Ok(enable_button) = receiver.recv().await {
             if enable_button {
-                let settings = gtk::gio::Settings::new(crate::APP_ID);
-                if settings.boolean("is-resume") {
+                if SETTINGS.resume() {
                     button.set_label("Resume");
                 } else {
                     button.set_label("Play");

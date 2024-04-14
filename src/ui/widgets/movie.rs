@@ -6,6 +6,7 @@ use glib::Object;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
+use crate::ui::models::SETTINGS;
 use crate::ui::network::{runtime, similar};
 
 use super::actor::ActorPage;
@@ -26,8 +27,6 @@ mod imp {
         pub id: OnceCell<String>,
         #[property(get, set, construct_only)]
         pub moviename: OnceCell<String>,
-        #[template_child]
-        pub dropdownspinner: TemplateChild<gtk::Spinner>,
         #[template_child]
         pub backdrop: TemplateChild<gtk::Picture>,
         #[template_child]
@@ -70,6 +69,28 @@ mod imp {
         pub genresscrolled: TemplateChild<gtk::ScrolledWindow>,
         #[template_child]
         pub genresrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub line1: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub line2: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub tagline: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub crating: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub orating: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub star: TemplateChild<gtk::Image>,
+        #[template_child]
+        pub playbutton: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub line1spinner: TemplateChild<gtk::Spinner>,
+        #[template_child]
+        pub namedropdown: TemplateChild<gtk::DropDown>,
+        #[template_child]
+        pub subdropdown: TemplateChild<gtk::DropDown>,
+        #[template_child]
+        pub backrevealer: TemplateChild<gtk::Revealer>,
         pub selection: gtk::SingleSelection,
         pub actorselection: gtk::SingleSelection,
         pub recommendselection: gtk::SingleSelection,
@@ -99,10 +120,26 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             obj.setup_background();
-            obj.logoset();
-            obj.setoverview();
-            obj.createmediabox();
-            obj.get_similar();
+            let (sender, receiver) = async_channel::bounded::<bool>(1);
+            gtk::gio::spawn_blocking(move || {
+                sender
+                    .send_blocking(false)
+                    .expect("The channel needs to be open.");
+                std::thread::sleep(std::time::Duration::from_millis(500));
+                sender
+                    .send_blocking(true)
+                    .expect("The channel needs to be open.");
+            });
+            glib::spawn_future_local(glib::clone!(@weak obj =>async move {
+                while let Ok(bool) = receiver.recv().await {
+                    if bool {
+                        obj.logoset();
+                        obj.setoverview();
+                        obj.createmediabox();
+                        obj.get_similar();
+                    }
+                }
+            }));  
         }
     }
 
@@ -143,13 +180,13 @@ impl MoviePage {
         );
         let pathbuf = PathBuf::from(&path);
         let backdrop = imp.backdrop.get();
-        let settings = gtk::gio::Settings::new(crate::APP_ID);
-        backdrop.set_height_request(settings.int("background-height"));
+        backdrop.set_height_request(SETTINGS.background_height());
         let (sender, receiver) = async_channel::bounded::<String>(1);
         let id2 = id.clone();
         if pathbuf.exists() {
             backdrop.set_file(Some(&gtk::gio::File::for_path(&path)));
             glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
+                obj.imp().backrevealer.set_reveal_child(true);
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 window.set_rootpic(gtk::gio::File::for_path(&path));
             }));
@@ -174,6 +211,7 @@ impl MoviePage {
                 if pathbuf.exists() {
                     let file = gtk::gio::File::for_path(&path);
                     backdrop.set_file(Some(&file));
+                    obj.imp().backrevealer.set_reveal_child(true);
                     let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                     window.set_rootpic(file);
                 }
@@ -203,6 +241,53 @@ impl MoviePage {
         });
         glib::spawn_future_local(glib::clone!(@weak self as obj=>async move {
             while let Ok(item) = receiver.recv().await {
+                {
+                    let mut str = String::new();
+                    if let Some(communityrating) = item.community_rating {
+                        let formatted_rating = format!("{:.1}", communityrating);
+                        let crating = obj.imp().crating.get();
+                        crating.set_text(&formatted_rating);
+                        crating.set_visible(true);
+                        obj.imp().star.set_visible(true);
+                    }
+                    if let Some(rating) = item.official_rating {
+                        let orating = obj.imp().orating.get();
+                        orating.set_text(&rating);
+                        orating.set_visible(true);
+                    }
+                    if let Some(year) = item.production_year {
+                        str.push_str(&year.to_string());
+                        str.push_str("  ");
+                    }
+                    if let Some(runtime) = item.run_time_ticks {
+                        let duration = chrono::Duration::seconds((runtime / 10000000) as i64);
+                        let hours = duration.num_hours();
+                        let minutes = duration.num_minutes() % 60;
+                        let seconds = duration.num_seconds() % 60;
+
+                        let time_string = if hours > 0 {
+                            format!("{}:{:02}", hours, minutes)
+                        } else {
+                            format!("{}:{:02}", minutes, seconds)
+                        };
+                        str.push_str(&time_string);
+                        str.push_str("  ");
+                    }
+                    if let Some(genres) = &item.genres {
+                        for genre in genres {
+                            str.push_str(&genre.name);
+                            str.push_str(",");
+                        }
+                        str.pop();
+                    }
+                    obj.imp().line2.get().set_text(&str);
+                    if let Some(taglines) = item.taglines {
+                        if let Some(tagline) = taglines.first() {
+                            obj.imp().tagline.set_text(&tagline);
+                            obj.imp().tagline.set_visible(true);
+                        }
+                    }
+                }
                 if let Some(overview) = item.overview {
                     itemoverview.set_text(Some(&overview));
                 }
@@ -236,31 +321,30 @@ impl MoviePage {
         userdata: Option<crate::ui::network::UserData>,
     ) {
         let imp = self.imp();
-        let dropdownspinner = imp.dropdownspinner.get();
         let osdbox = imp.osdbox.get();
-        dropdownspinner.set_visible(true);
+        self.imp().playbutton.set_sensitive(false);
+        self.imp().line1spinner.set_visible(true);
         let idclone = id.clone();
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
         crate::ui::network::runtime().spawn(async move {
             let playback = crate::ui::network::get_playbackinfo(id).await.expect("msg");
             sender.send(playback).await.expect("msg");
         });
-        glib::spawn_future_local(
-            glib::clone!(@weak dropdownspinner,@weak osdbox =>async move {
-                while let Ok(playback) = receiver.recv().await {
-                    let info:crate::ui::network::SearchResult = crate::ui::network::SearchResult {
-                        id: idclone.clone(),
-                        name: name.clone(),
-                        result_type: String::from("Movie"),
-                        user_data: userdata.clone(),
-                        production_year: None
-                    };
-                    let dropdown = crate::ui::moviedrop::newmediadropsel(playback, info);
-                    dropdownspinner.set_visible(false);
-                    osdbox.append(&dropdown);
-                }
-            }),
-        );
+        glib::spawn_future_local(glib::clone!(@weak osdbox,@weak self as obj =>async move {
+            while let Ok(playback) = receiver.recv().await {
+                let info:crate::ui::network::SearchResult = crate::ui::network::SearchResult {
+                    id: idclone.clone(),
+                    name: name.clone(),
+                    result_type: String::from("Movie"),
+                    user_data: userdata.clone(),
+                    production_year: None
+                };
+                obj.imp().line1.set_text(&format!("{}", info.name));
+                obj.imp().line1spinner.set_visible(false);
+                crate::ui::moviedrop::newmediadropsel(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
+                obj.imp().playbutton.set_sensitive(true);
+            }
+        }));
     }
 
     pub fn createmediabox(&self) {
@@ -731,7 +815,12 @@ impl MoviePage {
         self.setup_sgts(revealer, scrolled, infos);
     }
 
-    pub fn setup_sgts(&self, linksrevealer: gtk::Revealer, linksscrolled: gtk::ScrolledWindow, infos: Vec<crate::ui::network::SGTitem>) {
+    pub fn setup_sgts(
+        &self,
+        linksrevealer: gtk::Revealer,
+        linksscrolled: gtk::ScrolledWindow,
+        infos: Vec<crate::ui::network::SGTitem>,
+    ) {
         if !infos.is_empty() {
             linksrevealer.set_reveal_child(true);
         }

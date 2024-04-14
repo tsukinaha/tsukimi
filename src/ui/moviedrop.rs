@@ -1,53 +1,41 @@
+use super::models::SETTINGS;
 use super::network;
 use super::network::Back;
 use super::network::SearchResult;
 use super::new_dropsel::play_event;
+use super::provider::dropdown_factory::factory;
 use gtk::prelude::*;
-use gtk::Orientation;
 
-pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk::Box {
-    let hbox = gtk::Box::new(Orientation::Horizontal, 5);
-    let leftvbox = gtk::Box::new(Orientation::Vertical, 5);
-    leftvbox.set_margin_start(80);
-    leftvbox.set_margin_top(80);
-    leftvbox.set_margin_bottom(20);
-    leftvbox.set_halign(gtk::Align::Start);
-    leftvbox.set_valign(gtk::Align::End);
-    let label = gtk::Label::builder()
-        .label(format!("<b>{}</b>", info.name))
-        .use_markup(true)
-        .build();
-    leftvbox.append(&label);
-    hbox.append(&leftvbox);
-    let vbox = gtk::Box::new(Orientation::Vertical, 5);
-    vbox.set_margin_start(20);
-    vbox.set_margin_end(80);
-    vbox.set_margin_bottom(20);
-    vbox.set_halign(gtk::Align::End);
-    vbox.set_hexpand(true);
+pub fn newmediadropsel(
+    playbackinfo: network::Media,
+    info: SearchResult,
+    namedropdown: gtk::DropDown,
+    subdropdown: gtk::DropDown,
+    playbutton: gtk::Button,
+) {
     let namelist = gtk::StringList::new(&[]);
 
     let sublist = gtk::StringList::new(&[]);
 
-    let mut _set = 1;
-    for media in playbackinfo.media_sources.clone() {
-        namelist.append(&media.name);
-        if _set == 1 {
-            for stream in media.media_streams {
-                if stream.stream_type == "Subtitle" {
-                    if let Some(d) = stream.display_title {
-                        sublist.append(&d);
-                    } else {
-                        println!("No value");
-                    }
+    if let Some(media) = playbackinfo.media_sources.first() {
+        for stream in &media.media_streams {
+            if stream.stream_type == "Subtitle" {
+                if let Some(d) = &stream.display_title {
+                    sublist.append(&d);
+                } else {
+                    println!("No value");
                 }
             }
         }
-        _set = 0;
+    }
+    for media in &playbackinfo.media_sources {
+        namelist.append(&media.name);
     }
 
-    let namedropdown = gtk::DropDown::new(Some(namelist), Option::<gtk::Expression>::None);
-    let subdropdown = gtk::DropDown::new(Some(sublist.clone()), Option::<gtk::Expression>::None);
+    namedropdown.set_model(Some(&namelist));
+    subdropdown.set_model(Some(&sublist));
+    namedropdown.set_factory(Some(&factory()));
+    subdropdown.set_factory(Some(&factory()));
     let playback_info = playbackinfo.clone();
 
     namedropdown.connect_selected_item_notify(move |dropdown| {
@@ -72,12 +60,9 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
             }
         }
     });
-    vbox.append(&namedropdown);
-    vbox.append(&subdropdown);
+
     let info = info.clone();
-    let playbutton = gtk::Button::with_label("Play");
-    let settings = gtk::gio::Settings::new(crate::APP_ID);
-    if settings.boolean("is-resume") {
+    if SETTINGS.resume() {
         if let Some(userdata) = &info.user_data {
             if let Some(percentage) = userdata.played_percentage {
                 if percentage > 0. {
@@ -86,6 +71,7 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
             }
         }
     }
+
     playbutton.connect_clicked(move |button| {
         button.set_label("Playing...");
         let nameselected = namedropdown.selected_item();
@@ -185,8 +171,4 @@ pub fn newmediadropsel(playbackinfo: network::Media, info: SearchResult) -> gtk:
             }
         }
     });
-
-    vbox.append(&playbutton);
-    hbox.append(&vbox);
-    hbox
 }

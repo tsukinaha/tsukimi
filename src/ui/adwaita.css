@@ -14,7 +14,16 @@ child {
 .logo {
     background: rgba(0,0,0,0);
 }
- 
+
+.frame {
+    border: 2px solid @borders;
+    border-radius: 5px;
+}
+
+.pill {
+    border-radius: 10px;
+}
+  
    
 listview > row {
     margin-left:9px;
@@ -38,9 +47,7 @@ gridview > child box {
     margin:0px;
 }
 
-list {
-    background-color: rgba(0, 0, 0, 0);
-}
+ 
 
 overlay > label {
     background-color: #AEB5FA;

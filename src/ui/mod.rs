@@ -5,8 +5,11 @@ mod network;
 mod new_dropsel;
 mod provider;
 mod widgets;
+pub(crate) mod models;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
+
+use self::models::SETTINGS;
 
 pub fn build_ui(app: &adw::Application) {
     // Create new window and present it
@@ -16,7 +19,7 @@ pub fn build_ui(app: &adw::Application) {
                 let about = adw::AboutWindow::builder()
                     .application_name("Tsukimi")
                     .version(crate::config::APP_VERSION)
-                    .comments("A simple third-party Emby client.\nTest version: tsukimi 0.4.1 \n2024.4.9 23:23")
+                    .comments("A simple third-party Emby client.\nTest version: tsukimi 0.4.3 \n2024.4.13 10:42")
                     .website("https://github.com/tsukinaha/tsukimi")
                     .application_icon("tsukimi")
                     .license_type(gtk::License::Gpl30)
@@ -31,10 +34,8 @@ pub fn build_ui(app: &adw::Application) {
 }
 
 pub fn load_css() {
-    let settings = gtk::gio::Settings::new(crate::APP_ID);
-
     let provider = CssProvider::new();
-    match settings.string("theme").as_str() {
+    match SETTINGS.theme().as_str() {
         "Catppuccin Latte" => {
             provider.load_from_string(include_str!("style.css"));
         }
