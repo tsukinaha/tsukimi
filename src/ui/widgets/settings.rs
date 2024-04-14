@@ -140,8 +140,7 @@ impl SettingsPage {
 
     pub fn set_sidebar(&self) {
         let imp = self.imp();
-        imp.sidebarcontrol
-            .set_active(SETTINGS.overlay());
+        imp.sidebarcontrol.set_active(SETTINGS.overlay());
         imp.sidebarcontrol
             .connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
                 let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
@@ -152,19 +151,15 @@ impl SettingsPage {
 
     pub fn set_back(&self) {
         let imp = self.imp();
-        imp.backcontrol
-            .set_active(SETTINGS.progress());
+        imp.backcontrol.set_active(SETTINGS.progress());
         imp.backcontrol.connect_active_notify(move |control| {
-            SETTINGS
-                .set_progress(control.is_active())
-                .unwrap();
+            SETTINGS.set_progress(control.is_active()).unwrap();
         });
     }
 
     pub fn set_spin(&self) {
         let imp = self.imp();
-        imp.spinrow
-            .set_value(SETTINGS.background_height().into());
+        imp.spinrow.set_value(SETTINGS.background_height().into());
         imp.spinrow.connect_value_notify(move |control| {
             SETTINGS
                 .set_background_height(control.value() as i32)
@@ -174,25 +169,19 @@ impl SettingsPage {
 
     pub fn set_fullscreen(&self) {
         let imp = self.imp();
-        imp.autofullscreencontrol
-            .set_active(SETTINGS.fullscreen());
+        imp.autofullscreencontrol.set_active(SETTINGS.fullscreen());
         imp.autofullscreencontrol
             .connect_active_notify(move |control| {
-                SETTINGS
-                    .set_fullscreen(control.is_active())
-                    .unwrap();
+                SETTINGS.set_fullscreen(control.is_active()).unwrap();
             });
     }
 
     pub fn set_forcewindow(&self) {
         let imp = self.imp();
-        imp.forcewindowcontrol
-            .set_active(SETTINGS.forcewindow());
+        imp.forcewindowcontrol.set_active(SETTINGS.forcewindow());
         imp.forcewindowcontrol
             .connect_active_notify(move |control| {
-                SETTINGS
-                    .set_forcewindow(control.is_active())
-                    .unwrap();
+                SETTINGS.set_forcewindow(control.is_active()).unwrap();
             });
     }
 
@@ -249,12 +238,14 @@ impl SettingsPage {
             _ => (),
         }
         imp.themecontrol.set_selected(pos);
-        imp.themecontrol.connect_selected_item_notify(glib::clone!(@weak self as obj =>move |control| {
-            let theme = control.selected_item().and_then(|item| {
-                item.downcast::<gtk::StringObject>().ok().map(|item| item.string())
-            }).unwrap();
-            SETTINGS.set_theme(&theme).unwrap();
-        }));
+        imp.themecontrol.connect_selected_item_notify(
+            glib::clone!(@weak self as obj =>move |control| {
+                let theme = control.selected_item().and_then(|item| {
+                    item.downcast::<gtk::StringObject>().ok().map(|item| item.string())
+                }).unwrap();
+                SETTINGS.set_theme(&theme).unwrap();
+            }),
+        );
     }
 
     pub fn set_thread(&self) {
@@ -321,9 +312,7 @@ impl SettingsPage {
             .set_active(SETTINGS.is_blur_enabled());
         imp.backgroundblurcontrol
             .connect_active_notify(move |control| {
-                SETTINGS
-                    .set_blur_enabled(control.is_active())
-                    .unwrap();
+                SETTINGS.set_blur_enabled(control.is_active()).unwrap();
             });
     }
 

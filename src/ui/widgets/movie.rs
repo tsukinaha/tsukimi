@@ -139,7 +139,7 @@ mod imp {
                         obj.get_similar();
                     }
                 }
-            }));  
+            }));
         }
     }
 

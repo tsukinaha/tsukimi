@@ -95,15 +95,15 @@ impl SearchPage {
 
     pub fn setup_recommend(&self) {
         let (sender, receiver) = async_channel::bounded::<List>(1);
-            crate::ui::network::runtime().spawn(async move {
-                let list = crate::ui::network::get_search_recommend()
-                    .await
-                    .expect("msg");
-                sender
-                    .send(list)
-                    .await
-                    .expect("The channel needs to be open.");
-            });
+        crate::ui::network::runtime().spawn(async move {
+            let list = crate::ui::network::get_search_recommend()
+                .await
+                .expect("msg");
+            sender
+                .send(list)
+                .await
+                .expect("The channel needs to be open.");
+        });
         glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
             while let Ok(list) = receiver.recv().await {
                 let imp = obj.imp();

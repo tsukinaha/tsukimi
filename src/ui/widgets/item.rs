@@ -168,7 +168,7 @@ mod imp {
                         obj.get_similar();
                     }
                 }
-            })); 
+            }));
         }
     }
 
@@ -201,7 +201,13 @@ impl ItemPage {
 
     pub fn bind_playbutton(&self, playbackinfo: network::Media, info: network::SeriesInfo) {
         let imp = self.imp();
-        bind_button(playbackinfo, info, imp.namedropdown.get(), imp.subdropdown.get(), imp.playbutton.get());
+        bind_button(
+            playbackinfo,
+            info,
+            imp.namedropdown.get(),
+            imp.subdropdown.get(),
+            imp.playbutton.get(),
+        );
     }
 
     pub fn setup_background(&self) {
@@ -282,7 +288,7 @@ impl ItemPage {
         imp.seasonselection.set_model(Some(&seasonstore));
         let seasonlist = imp.seasonlist.get();
         seasonlist.set_model(Some(&imp.seasonselection));
-        
+
         glib::spawn_future_local(glib::clone!(@weak self as obj,@weak store =>async move {
             while let Ok(series_info) = receiver.recv().await{
             let mut season_set: HashSet<u32> = HashSet::new();

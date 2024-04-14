@@ -130,9 +130,7 @@ pub fn bind_button(
                                             let back = Back {
                                                 id: info.id.clone(),
                                                 mediasourceid: media.id.clone(),
-                                                playsessionid: playbackinfo
-                                                    .play_session_id
-                                                    .clone(),
+                                                playsessionid: playbackinfo.play_session_id.clone(),
                                                 tick: userdata.playback_position_ticks.unwrap_or(0),
                                             };
                                             play_event(

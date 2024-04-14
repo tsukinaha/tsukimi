@@ -1,11 +1,11 @@
 mod image;
+pub(crate) mod models;
 mod moviedrop;
 mod mpv;
 mod network;
 mod new_dropsel;
 mod provider;
 mod widgets;
-pub(crate) mod models;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
 

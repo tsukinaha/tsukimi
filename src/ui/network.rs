@@ -1058,10 +1058,7 @@ pub async fn get_search_recommend() -> Result<List, Error> {
 
     let params = [
         ("Limit", "20"),
-        (
-            "EnableTotalRecordCount",
-            "false",
-        ),
+        ("EnableTotalRecordCount", "false"),
         ("ImageTypeLimit", "0"),
         ("Recursive", "true"),
         ("IncludeItemTypes", "Movie,Series"),
