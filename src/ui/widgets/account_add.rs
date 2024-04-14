@@ -29,6 +29,8 @@ mod imp {
         pub port_entry: TemplateChild<gtk::Entry>,
         #[template_child]
         pub toast: TemplateChild<adw::ToastOverlay>,
+        #[template_child]
+        pub spinner: TemplateChild<gtk::Spinner>,
     }
 
     // The central trait for subclassing a GObject
@@ -81,6 +83,7 @@ impl AccountWindow {
 
     pub async fn add(&self) {
         let imp = self.imp();
+        imp.spinner.set_visible(true);
         let servername = imp.servername_entry.text();
         let server = imp.server_entry.text();
         let username = imp.username_entry.text();
@@ -104,6 +107,7 @@ impl AccountWindow {
                 while let Ok(item) = receiver.recv().await {
                     match item {
                         Ok(_) => {
+                            obj.imp().spinner.set_visible(false);
                             obj.close();
                             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                             window.set_servers();

@@ -89,6 +89,12 @@
                                     </style>
                                   </object>
                                 </child>
+                                <child>
+                                  <object class="GtkSpinner" id="spinner">
+                                    <property name="visible">False</property>
+                                    <property name="spinning">True</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                           </object>
