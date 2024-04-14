@@ -155,7 +155,7 @@ mod imp {
                 sender
                     .send_blocking(false)
                     .expect("The channel needs to be open.");
-                std::thread::sleep(std::time::Duration::from_millis(500));
+                std::thread::sleep(std::time::Duration::from_millis(400));
                 sender
                     .send_blocking(true)
                     .expect("The channel needs to be open.");

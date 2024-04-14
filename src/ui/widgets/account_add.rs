@@ -113,6 +113,7 @@ impl AccountWindow {
                             window.set_servers();
                         }
                         Err(e) => {
+                            obj.imp().spinner.set_visible(false);
                             obj.imp().toast.add_toast(Toast::builder().timeout(3).title(&format!("Failed to login: {}", e)).build());
                         }   
                     }
