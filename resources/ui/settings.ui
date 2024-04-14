@@ -24,12 +24,6 @@
                           <object class="GtkListBox">
                             <property name="selection-mode">none</property>
                             <child>
-                              <object class="AdwSwitchRow" id="backcontrol">
-                                <property name="title" translatable="yes">Proactively Provide Progress Updates</property>
-                                <property name="subtitle" translatable="yes">Every 10 Seconds or Every 300 Seconds</property>
-                              </object>
-                            </child>
-                            <child>
                               <object class="AdwSwitchRow" id="sidebarcontrol">
                                 <property name="title" translatable="yes">Sidebar Overlay</property>
                                 <property name="subtitle" translatable="yes">or side by side</property>
@@ -37,7 +31,7 @@
                             </child>
                             <child>
                               <object class="AdwSpinRow" id="spinrow">
-                                <property name="title" translatable="yes">Background Height</property>
+                                <property name="title" translatable="yes">Picture Height</property>
                                 <property name="adjustment">
                                   <object class="GtkAdjustment">
                                     <property name="lower">350</property>
@@ -49,19 +43,149 @@
                                 </property>
                               </object>
                             </child>
+
                             <child>
-                              <object class="AdwSwitchRow" id="autofullscreencontrol">
-                                <property name="title" translatable="yes">Auto Fullscreen Playing</property>
+                              <object class="AdwExpanderRow">
+                                <property name="title" translatable="yes">MPV Preferences</property>
+                                <child>
+                                  <object class="AdwSwitchRow" id="autofullscreencontrol">
+                                    <property name="title" translatable="yes">Auto Fullscreen</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSwitchRow" id="forcewindowcontrol">
+                                    <property name="title" translatable="yes">Show Window Immediately</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
-                              <object class="AdwSwitchRow" id="forcewindowcontrol">
-                                <property name="title" translatable="yes">Show Playing Window Immediately</property>
+                              <object class="AdwExpanderRow">
+                                <property name="title" translatable="yes">Network Preferences</property>
+                                <child>
+                                  <object class="AdwEntryRow" id="proxyentry">
+                                    <property name="title" translatable="yes">HTTP Proxy</property>
+                                    <child type="suffix">
+                                      <object class="GtkToggleButton">
+                                        <property name="icon-name" translatable="yes">emblem-ok-symbolic</property>
+                                        <property name="valign">center</property>
+                                        <property name="action-name">win.proxy</property>
+                                        <style>
+                                          <class name="flat" />
+                                        </style>
+                                      </object>
+                                    </child>
+                                    <child type="suffix">
+                                      <object class="GtkToggleButton">
+                                        <property name="icon-name" translatable="yes">user-trash-symbolic</property>
+                                        <property name="valign">center</property>
+                                        <property name="action-name">win.proxyclear</property>
+                                        <style>
+                                          <class name="flat" />
+                                        </style>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSpinRow" id="threadspinrow">
+                                    <property name="title" translatable="yes">Threads</property>
+                                    <property name="adjustment">
+                                      <object class="GtkAdjustment">
+                                        <property name="lower">1</property>
+                                        <property name="upper">8</property>
+                                        <property name="value">4</property>
+                                        <property name="page-increment">1</property>
+                                        <property name="step-increment">1</property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
-                              <object class="AdwSwitchRow" id="resumecontrol">
-                                <property name="title" translatable="yes">Resume Playing</property>
+                              <object class="AdwExpanderRow">
+                                <property name="title" translatable="yes">Playing Preferences</property>
+                                <child>
+                                  <object class="AdwSwitchRow" id="resumecontrol">
+                                    <property name="title" translatable="yes">Resume Playing</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSwitchRow" id="backcontrol">
+                                    <property name="title" translatable="yes">Proactively Provide Progress Updates</property>
+                                    <property name="subtitle" translatable="yes">Every 10 Seconds or Every 300 Seconds</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwExpanderRow">
+                                <property name="title" translatable="yes">Background Preferences</property>
+                                <child>
+                                  <object class="AdwSwitchRow" id="backgroundcontrol">
+                                    <property name="title" translatable="yes">Background</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">Default</property>
+                                    <property name="action-name">setting.rootpic</property>
+                                    <property name="activatable">True</property>
+                                    <child>
+                                      <object class="GtkImage">
+                                        <property name="icon_name">folder-pictures-symbolic</property>
+                                        <property name="accessible-role">presentation</property>
+                                      </object>
+                                    </child>
+                                    <child type="suffix">
+                                      <object class="GtkToggleButton">
+                                        <property name="icon-name" translatable="yes">user-trash-symbolic</property>
+                                        <property name="valign">center</property>
+                                        <property name="action-name">setting.backgroundclear</property>
+                                        <style>
+                                          <class name="flat" />
+                                        </style>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSpinRow" id="backgroundspinrow">
+                                    <property name="title" translatable="yes">Opacity</property>
+                                    <property name="adjustment">
+                                      <object class="GtkAdjustment">
+                                        <property name="lower">0</property>
+                                        <property name="upper">40</property>
+                                        <property name="value">15</property>
+                                        <property name="page-increment">1</property>
+                                        <property name="step-increment">1</property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSwitchRow" id="backgroundblurcontrol">
+                                    <property name="title" translatable="yes">Blur (Experimental)</property>
+                                    <property name="subtitle" translatable="yes">Warning: High GPU usage</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSpinRow" id="backgroundblurspinrow">
+                                    <property name="title" translatable="yes">Blur Radius (Experimental)</property>
+                                    <property name="subtitle" translatable="yes">Warning: High GPU usage</property>
+                                    <property name="adjustment">
+                                      <object class="GtkAdjustment">
+                                        <property name="lower">0</property>
+                                        <property name="upper">40</property>
+                                        <property name="value">15</property>
+                                        <property name="page-increment">1</property>
+                                        <property name="step-increment">1</property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                
                               </object>
                             </child>
                             <child>
@@ -94,72 +218,6 @@
                                     </items>
                                   </object>
                                 </property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="AdwEntryRow" id="proxyentry">
-                                <property name="title" translatable="yes">HTTP Proxy</property>
-                                <child type="suffix">
-                                  <object class="GtkButton">
-                                    <property name="label" translatable="yes">Set</property>
-                                    <property name="valign">center</property>
-                                    <property name="action-name">win.proxy</property>
-                                    <style>
-                                      <class name="flat" />
-                                    </style>
-                                  </object>
-                                </child>
-                                <child type="suffix">
-                                  <object class="GtkButton">
-                                    <property name="label" translatable="yes">Clear</property>
-                                    <property name="valign">center</property>
-                                    <property name="action-name">win.proxyclear</property>
-                                    <style>
-                                      <class name="flat" />
-                                    </style>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="AdwSpinRow" id="threadspinrow">
-                                <property name="title" translatable="yes">Threads</property>
-                                <property name="adjustment">
-                                  <object class="GtkAdjustment">
-                                    <property name="lower">1</property>
-                                    <property name="upper">8</property>
-                                    <property name="value">4</property>
-                                    <property name="page-increment">1</property>
-                                    <property name="step-increment">1</property>
-                                  </object>
-                                </property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="AdwSpinRow" id="backgroundspinrow">
-                                <property name="title" translatable="yes">Background Opacity</property>
-                                <property name="adjustment">
-                                  <object class="GtkAdjustment">
-                                    <property name="lower">0</property>
-                                    <property name="upper">40</property>
-                                    <property name="value">15</property>
-                                    <property name="page-increment">1</property>
-                                    <property name="step-increment">1</property>
-                                  </object>
-                                </property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="AdwActionRow">
-                                <property name="title" translatable="yes">Default Background</property>
-                                <property name="action-name">setting.rootpic</property>
-                                <property name="activatable">True</property>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="icon_name">folder-pictures-symbolic</property>
-                                    <property name="accessible-role">presentation</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                             <style>

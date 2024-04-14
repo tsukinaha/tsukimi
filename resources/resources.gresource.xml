@@ -11,6 +11,7 @@
     <file compressed="true" preprocess="xml-stripblanks">home.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">list.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">actor.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">account.ui</file>
   </gresource>
   <gresource prefix="/moe/tsukimi/icons">
     <file alias="tsukimi">icons/tsukimi.png</file>

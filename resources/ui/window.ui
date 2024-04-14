@@ -42,51 +42,70 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkWindowHandle">
-                            <property name="child">
-                              <object class="AdwStatusPage">
+                          <object class="GtkOverlay">
+                            <property name="hexpand">True</property>
+                            <property name="vexpand">True</property>
+                            <child>
+                              <object class="GtkWindowHandle">
                                 <property name="child">
-                                  <object class="GtkBox">
-                                    <property name="orientation">vertical</property>
-                                    <property name="width-request">500</property>
-                                    <property name="halign">center</property>
-                                    <property name="spacing">12</property>
-                                    <child>
-                                      <object class="AdwEntryRow" id="serverentry">
-                                        <property name="title" translatable="yes">Server</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="AdwEntryRow" id="portentry">
-                                        <property name="title" translatable="yes">Port</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="AdwEntryRow" id="nameentry">
-                                        <property name="title" translatable="yes">Name</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="AdwEntryRow" id="passwordentry">
-                                        <property name="title" translatable="yes">Password</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkButton" id="loginbutton">
-                                        <property name="label" translatable="yes">_Link Start</property>
-                                        <property name="use-underline">True</property>
+                                  <object class="AdwStatusPage">
+                                    <property name="child">
+                                      <object class="GtkBox">
+                                        <property name="orientation">vertical</property>
+                                        <property name="width-request">500</property>
                                         <property name="halign">center</property>
-                                        <property name="action-name">win.login</property>
-                                        <style>
-                                          <class name="pill" />
-                                          <class name="suggested-action" />
-                                        </style>
+                                        <property name="spacing">12</property>
+                                        <child>
+                                          <object class="AdwEntryRow" id="serverentry">
+                                            <property name="title" translatable="yes">Server</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwEntryRow" id="portentry">
+                                            <property name="title" translatable="yes">Port</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwEntryRow" id="nameentry">
+                                            <property name="title" translatable="yes">Name</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwEntryRow" id="passwordentry">
+                                            <property name="title" translatable="yes">Password</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkButton" id="loginbutton">
+                                            <property name="label" translatable="yes">_Link Start</property>
+                                            <property name="use-underline">True</property>
+                                            <property name="halign">center</property>
+                                            <property name="action-name">win.login</property>
+                                            <style>
+                                              <class name="pill" />
+                                              <class name="suggested-action" />
+                                            </style>
+                                          </object>
+                                        </child>
                                       </object>
-                                    </child>
+                                    </property>
                                   </object>
                                 </property>
                               </object>
-                            </property>
+                            </child>
+                            <child type="overlay">
+                              <object class="GtkToggleButton">
+                                <property name="halign">end</property>
+                                <property name="valign">end</property>
+                                <property name="icon-name">list-add-symbolic</property>
+                                <property name="margin-end">30</property>
+                                <property name="margin-bottom">30</property>
+                                <style>
+                                  <class name="osd" />
+                                  <class name="suggested-action" />
+                                </style>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
@@ -271,6 +290,7 @@
                                   <object class="GtkStack" id="insidestack">
                                     <property name="hexpand">True</property>
                                     <property name="transition-type">crossfade</property>
+                                    <property name="transition-duration">100</property>
                                     <child>
                                       <object class="GtkStackPage">
                                         <property name="name">homepage</property>
