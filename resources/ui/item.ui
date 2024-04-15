@@ -21,12 +21,19 @@
                         <property name="valign">fill</property>
                         <property name="reveal-child">False</property>
                         <child>
-                          <object class="GtkPicture" id="backdrop">
+                          <object class="AdwCarousel" id="carousel">
                             <property name="halign">fill</property>
                             <property name="valign">fill</property>
-                            <property name="content-fit">cover</property>
-                            <property name="hexpand">true</property>
-                            <property name="height-request">700</property>
+                            <property name="reveal-duration">3000</property>
+                            <child>
+                              <object class="GtkPicture" id="backdrop">
+                                <property name="halign">fill</property>
+                                <property name="valign">fill</property>
+                                <property name="content-fit">cover</property>
+                                <property name="hexpand">true</property>
+                                <property name="height-request">700</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>

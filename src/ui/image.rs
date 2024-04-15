@@ -120,7 +120,7 @@ pub fn setthumbimage(id: String) -> Revealer {
     revealer
 }
 
-pub fn setbackdropimage(id: String) -> Revealer {
+pub fn setbackdropimage(id: String, tag: u8) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
@@ -150,7 +150,7 @@ pub fn setbackdropimage(id: String) -> Revealer {
         crate::ui::network::runtime().spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match crate::ui::network::get_backdropimage(id.clone()).await {
+                match crate::ui::network::get_backdropimage(id.clone(),tag).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())

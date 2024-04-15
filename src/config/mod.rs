@@ -119,12 +119,12 @@ pub fn remove(account:&Account) -> Result<(), Box<dyn std::error::Error>> {
     let mut accounts: Accounts = load_cfgv2()?;
     accounts.accounts.retain(|x| {
         x.servername != account.servername 
-        && x.server != account.server 
-        && x.username != account.username 
-        && x.password != account.password
-        && x.port != account.port
-        && x.user_id != account.user_id
-        && x.access_token != account.access_token
+        || x.server != account.server 
+        || x.username != account.username 
+        || x.password != account.password
+        || x.port != account.port
+        || x.user_id != account.user_id
+        || x.access_token != account.access_token
     });
     let toml = toml::to_string(&accounts).unwrap_or_else(|err| {
         eprintln!("Error while serializing accounts: {:?}", err);

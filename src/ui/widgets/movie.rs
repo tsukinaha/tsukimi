@@ -92,6 +92,8 @@ mod imp {
         pub subdropdown: TemplateChild<gtk::DropDown>,
         #[template_child]
         pub backrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub carousel: TemplateChild<adw::Carousel>,
         pub selection: gtk::SingleSelection,
         pub actorselection: gtk::SingleSelection,
         pub recommendselection: gtk::SingleSelection,
@@ -193,7 +195,7 @@ impl MoviePage {
             }));
         } else {
             crate::ui::network::runtime().spawn(async move {
-                let id = crate::ui::network::get_backdropimage(id)
+                let id = crate::ui::network::get_backdropimage(id,0)
                     .await
                     .expect("msg");
                 sender
@@ -219,6 +221,60 @@ impl MoviePage {
             }
         }));
     }
+
+    pub fn add_backdrops(&self, image_tags: Vec<String>) {
+        let imp = self.imp();
+        let id = self.id();
+        let tags = image_tags.len();
+        let carousel = imp.carousel.get();
+        for tag_num in 1..tags {
+            let id = id.clone();
+            let path = format!(
+                "{}/.local/share/tsukimi/{}/b{}_{}.png",
+                dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
+                id,tag_num
+            );
+            let pathbuf = PathBuf::from(&path);
+            let (sender, receiver) = async_channel::bounded::<String>(1);
+            let id2 = id.clone();
+            if pathbuf.exists() {
+                glib::spawn_future_local(glib::clone!(@weak carousel =>async move {
+                    let file = gtk::gio::File::for_path(&path);
+                    let picture = gtk::Picture::builder()
+                        .file(&file)
+                        .build();
+                    carousel.append(&picture);
+                }));
+            } else {
+                crate::ui::network::runtime().spawn(async move {
+                    let id = crate::ui::network::get_backdropimage(id,0)
+                        .await
+                        .expect("msg");
+                    sender
+                        .send(id)
+                        .await
+                        .expect("The channel needs to be open.");
+                });
+            }
+            glib::spawn_future_local(glib::clone!(@weak carousel=>async move {
+                while receiver.recv().await.is_ok() {
+                    let path = format!(
+                        "{}/.local/share/tsukimi/{}/b{}_{}.png",
+                        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
+                        id2,tag_num
+                    );
+                    if pathbuf.exists() {
+                        let file = gtk::gio::File::for_path(&path);
+                        let picture = gtk::Picture::builder()
+                            .file(&file)
+                            .build();
+                        carousel.append(&picture);
+                    }
+                }
+            }));
+        }    
+    }
+
     pub fn logoset(&self) {
         let osd = &self.imp().logobox;
         let id = self.id();
@@ -311,6 +367,9 @@ impl MoviePage {
                     obj.set_genres(genres);
                 }
                 overviewrevealer.set_reveal_child(true);
+                if let Some(image_tags) = item.backdrop_image_tags {
+                    obj.add_backdrops(image_tags);
+                }
             }
         }));
     }
