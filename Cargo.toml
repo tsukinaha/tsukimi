@@ -28,6 +28,7 @@ chrono = "0.4.37"
 toml = "0.8.12"
 
 [build-dependencies]
+embed-resource = "2.4.2"
 glib-build-tools = "0.19.0"
 
 [features]
@@ -50,3 +51,10 @@ assets = [
     ["target/release/tsukimi", "usr/bin/", "755"],
     ["README.md", "usr/share/doc/tsukimi/README", "644"],
 ]
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = "s"
+debug = false
+strip = true

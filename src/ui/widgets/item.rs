@@ -6,8 +6,8 @@ use gtk::{gio, glib};
 use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
 use std::env;
-use std::path::PathBuf;
 
+use crate::config::get_cache_dir;
 use crate::ui::models::SETTINGS;
 use crate::ui::network::{self, runtime, similar, SeriesInfo};
 use crate::ui::new_dropsel::bind_button;
@@ -220,25 +220,27 @@ impl ItemPage {
         let id = self.id();
         let id1 = self.id();
         let imp = self.imp();
-        let path = format!(
-            "{}/.local/share/tsukimi/{}/b{}_0.png",
-            dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-            id1
-        );
-        let pathbuf = std::path::PathBuf::from(&path);
+        // let path = format!(
+        //     "{}/.local/share/tsukimi/{}/b{}_0.png",
+        //     dirs::home_dir().expect("msg").display(),
+        //     env::var("EMBY_NAME").unwrap(),
+        //     id1
+        // );
+        // let pathbuf = std::path::PathBuf::from(&path);
+        let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("b{}_0.png", id1));
         let backdrop = imp.backdrop.get();
         backdrop.set_height_request(SETTINGS.background_height());
         let (sender, receiver) = async_channel::bounded::<String>(1);
         if pathbuf.exists() {
-            backdrop.set_file(Some(&gtk::gio::File::for_path(&path)));
+            backdrop.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
             glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
                 obj.imp().backrevealer.set_reveal_child(true);
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                window.set_rootpic(gtk::gio::File::for_path(&path));
+                window.set_rootpic(gtk::gio::File::for_path(&pathbuf));
             }));
         } else {
             crate::ui::network::runtime().spawn(async move {
-                let id = crate::ui::network::get_backdropimage(id1,0)
+                let id = crate::ui::network::get_backdropimage(id1, 0)
                     .await
                     .expect("msg");
                 sender
@@ -250,13 +252,14 @@ impl ItemPage {
         let id2 = id.to_string();
         glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
             while receiver.recv().await.is_ok() {
-                let path = format!(
-                    "{}/.local/share/tsukimi/{}/b{}_0.png",
-                    dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-                    id2
-                );
+                // let path = format!(
+                //     "{}/.local/share/tsukimi/{}/b{}_0.png",
+                //     dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
+                //     id2
+                // );
+                let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("b{}_0.png",id2));
                 if pathbuf.exists() {
-                    let file = gtk::gio::File::for_path(&path);
+                    let file = gtk::gio::File::for_path(&pathbuf);
                     backdrop.set_file(Some(&file));
                     obj.imp().backrevealer.set_reveal_child(true);
                     let window = obj.root().and_downcast::<super::window::Window>().unwrap();
@@ -275,17 +278,21 @@ impl ItemPage {
         indicator.set_carousel(Some(&carousel));
         for tag_num in 1..=tags {
             let id = id.clone();
-            let path = format!(
-                "{}/.local/share/tsukimi/{}/b{}_{}.png",
-                dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-                id,tag_num
-            );
-            let pathbuf = PathBuf::from(&path);
+            // let path = format!(
+            //     "{}/.local/share/tsukimi/{}/b{}_{}.png",
+            //     dirs::home_dir().expect("msg").display(),
+            //     env::var("EMBY_NAME").unwrap(),
+            //     id,
+            //     tag_num
+            // );
+            // let pathbuf = PathBuf::from(&path);
+            let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap())
+                .join(format!("b{}_{}.png", id, tag_num));
             let (sender, receiver) = async_channel::bounded::<String>(1);
             let id2 = id.clone();
             if pathbuf.exists() {
                 glib::spawn_future_local(glib::clone!(@weak carousel =>async move {
-                    let file = gtk::gio::File::for_path(&path);
+                    let file = gtk::gio::File::for_path(&pathbuf);
                     let picture = gtk::Picture::builder()
                         .file(&file)
                         .halign(gtk::Align::Fill)
@@ -297,7 +304,7 @@ impl ItemPage {
                 }));
             } else {
                 crate::ui::network::runtime().spawn(async move {
-                    let id = crate::ui::network::get_backdropimage(id,tag_num as u8)
+                    let id = crate::ui::network::get_backdropimage(id, tag_num as u8)
                         .await
                         .expect("msg");
                     sender
@@ -308,13 +315,14 @@ impl ItemPage {
             }
             glib::spawn_future_local(glib::clone!(@weak carousel=>async move {
                 while receiver.recv().await.is_ok() {
-                    let path = format!(
-                        "{}/.local/share/tsukimi/{}/b{}_{}.png",
-                        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-                        id2,tag_num
-                    );
+                    // let path = format!(
+                    //     "{}/.local/share/tsukimi/{}/b{}_{}.png",
+                    //     dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
+                    //     id2,tag_num
+                    // );
+                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("b{}_{}.png",id2,tag_num));
                     if pathbuf.exists() {
-                        let file = gtk::gio::File::for_path(&path);
+                        let file = gtk::gio::File::for_path(&pathbuf);
                         let picture = gtk::Picture::builder()
                             .halign(gtk::Align::Fill)
                             .valign(gtk::Align::Fill)
@@ -326,7 +334,7 @@ impl ItemPage {
                     }
                 }
             }));
-        }    
+        }
     }
 
     pub async fn setup_seasons(&self) {

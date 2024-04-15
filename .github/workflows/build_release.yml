@@ -1,9 +1,9 @@
-name: CI Passing
+name: Publishing
 on:
   workflow_dispatch:
   push:
     tags:
-      - v*
+      - v*-win
 
 env:
   CARGO_TERM_COLOR: always
@@ -15,18 +15,10 @@ jobs:
     strategy:
       matrix:
         include:
-          # x86_64-linux-gnu
-          - arch: x86_64-linux-gnu
-            os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            artifact: tsukimi
-            ext:
-          # x86_64-apple-darwin
-          # - arch: x86_64-apple-darwin
-          #   os: macos-latest
-          #   target: x86_64-apple-darwin
-          #   artifact: tsukimi
-          #   ext:
+          - arch: x86_64-windows-gnu
+            os: windows-latest
+            target: x86_64-pc-windows-gnu
+            artifact: tsukimi.exe
 
     runs-on: ${{matrix.os}}
 
@@ -34,32 +26,45 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build ${{matrix.target}}
-        if: ${{matrix.target == 'x86_64-unknown-linux-gnu'}}
+      - name: Install dependencies
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
         run: |
-          mkdir artifact
-          docker build -t tsukimi .
-          docker run -d --name tsukimi tsukimi
-          docker cp tsukimi:/usr/src/tsukimi/. artifact/
+          rustup toolchain install stable-gnu
+          rustup default stable-gnu
+          C:\msys64\usr\bin\pacman.exe -S --needed --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc mingw-w64-x86_64-libadwaita mingw-w64-x86_64-mpv
+          C:\msys64\usr\bin\pacman.exe -Syu --noconfirm
 
-      # - name: Build ${{matrix.target}}
-      #   if: ${{matrix.target == 'x86_64-apple-darwin'}}
-      #   run: |
-      #     brew install gtk4
-      #     brew install libadwaita
-      #     rustup target add ${{matrix.target}}
-      #     cargo build --release --locked --target ${{matrix.target}}
-      #     mkdir artifact
-      #     cp target/${{matrix.target}}/release/${{matrix.artifact}} artifact/
+      - name: Build ${{ matrix.target }}
+        run: |
+          $env:Path = "C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path;
+          cargo build --release --locked
+          mkdir artifact && cd artifact
+          mkdir tsukimi-windows-gnu-amd64/ && cd tsukimi-windows-gnu-amd64/ && mkdir bin/ && mkdir share/ && mkdir lib/
+          cp ../../target/release/${{ matrix.artifact }} bin/
+          cp C:/msys64/mingw64/bin/*.dll bin/
+          cp -recurse C:/msys64/mingw64/lib/gdk-pixbuf-2.0 lib/
+          remove-item lib/gdk-pixbuf-2.0/2.10.0/loaders/* -exclude "*svg.dll"
+          cp -recurse C:/msys64/mingw64/share/glib-2.0 share/
+          get-childitem -recurse -path share/glib-2.0/* -exclude "*gschemas.compiled*"|remove-item -recurse
+          mv ../../moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
+          C:/msys64/mingw64/bin/glib-compile-schemas.exe share/glib-2.0/schemas/
+          remove-item share/glib-2.0/schemas/*.xml
+          cp -recurse C:/msys64/mingw64/share/icons share/
+          cp ../../resources/ui/icons/tsukimi.png share/icons/
+          remove-item -recurse share/icons/hicolor && remove-item -recurse share/icons/Adwaita/scalable && remove-item -recurse share/icons/Adwaita/cursors
+          remove-item -recurse share/icons/Adwaita/16x16 && remove-item -recurse share/icons/Adwaita/symbolic-up-to-32
+          gci -directory -recurse .|where-object {$_.getfilesysteminfos().count -eq 0}|remove-item -recurse 
+          compress-archive -path ./* -destinationpath ../tsukimi-${{matrix.arch}}.zip
+          7z.exe a ../tsukimi-${{matrix.arch}}.7z ./*
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: tsukimi-${{matrix.arch}}
           path: |
-            artifact/*
-          compression-level: 0
-          overwrite: true
+            artifact/tsukimi-*.zip
+            artifact/tsukimi-*.7z
+          compression-level: 5
           retention-days: 3
 
   publish:
@@ -75,35 +80,32 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
  
-      # - name: Package MacOS x86_64
-      #   run: |
-      #     mkdir -p Tsukimi.app/Contents/MacOS
-      #     mkdir -p Tsukimi.app/Contents/Resources
-      #     cp share/macos/Info.plist Tsukimi.app/Contents/
-      #     cp share/macos/AppIcon.icns Tsukimi.app/Contents/Resources/
-      #     mv tsukimi-x86_64-apple-darwin/tsukimi Tsukimi.app/Contents/MacOS/
-      #     tar -czf tsukimi-x86_64-apple-darwin.tar.gz Tsukimi.app/
-
-      - name: Package Linux GNU
+      - name: Package Windows GNU
         run: |
-          mv tsukimi-x86_64-linux-gnu/* .
-          tar -czf tsukimi-x86_64-linux-gnu.tar.gz tsukimi gschemas.compiled
+          mv tsukimi-x86_64-windows-gnu/*.zip .
+          mv tsukimi-x86_64-windows-gnu/*.7z .
 
       - name: Calculate hash
         run: |
-          sha512sum *.tar.gz > tsukimi.sha512sum
-          sha512sum *.deb >> tsukimi.sha512sum
+          sha512sum *.zip > tsukimi.sha512sum
+          sha512sum *.7z > tsukimi-7z.sha512sum
 
       - name: Get latest tag name
         run: echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+
+      - name: Get latest CHANGELOG
+        run: |
+          sudo apt install mawk -y
+          awk '/^## /{if(++count==2){exit}next}count==1{print}' CHANGELOG.md >> ${{github.workspace}}-CHANGELOG.md
 
       - name: Upload Github Assets
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          body_path: ${{github.workspace}}-CHANGELOG.md
           files: |
-            *.tar.gz
-            *.deb
-            tsukimi.sha512sum
+            *.zip
+            *.7z
+            *.sha512sum
           tag_name: ${{ env.TAG_NAME }}

@@ -1,9 +1,10 @@
-use crate::ui::image::setimage;
 use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
+
+use crate::ui::image::setimage;
 
 use super::fix::fix;
 use super::item::ItemPage;

@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'main'
+      - 'patch'
 
 env:
   CARGO_TERM_COLOR: always
@@ -25,9 +25,11 @@ jobs:
 
     steps:
       - name: Checkout
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/checkout@v4
 
       - name: Install dependencies
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         run: |
           rustup toolchain install stable-gnu
           rustup default stable-gnu
@@ -35,6 +37,7 @@ jobs:
           C:\msys64\usr\bin\pacman.exe -Syu --noconfirm
 
       - name: Build ${{ matrix.target }}
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         run: |
           $env:Path = "C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path;
           cargo build --release --locked
@@ -54,12 +57,13 @@ jobs:
           remove-item -recurse share/icons/hicolor && remove-item -recurse share/icons/Adwaita/scalable && remove-item -recurse share/icons/Adwaita/cursors
           remove-item -recurse share/icons/Adwaita/16x16 && remove-item -recurse share/icons/Adwaita/symbolic-up-to-32
           gci -directory -recurse .|where-object {$_.getfilesysteminfos().count -eq 0}|remove-item -recurse 
-          compress-archive -path ./* -destinationpath ../tsukimi-${{matrix.arch}}.zip
 
       - name: Upload artifact
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/upload-artifact@v4
         with:
           name: tsukimi-${{matrix.arch}}
-          path: artifact/*.zip
+          path: |
+            artifact/*
           compression-level: 5
           retention-days: 3

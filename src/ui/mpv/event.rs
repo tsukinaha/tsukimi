@@ -3,7 +3,7 @@ use libmpv::{events::*, *};
 
 use std::{
     collections::HashMap,
-    thread,
+    env, thread,
     time::{Duration, Instant},
 };
 
@@ -38,6 +38,7 @@ pub fn play(
     let mpv = Mpv::with_initializer(|init| {
         init.set_property("osc", true)?;
         init.set_property("config", true)?;
+        #[cfg(unix)]
         init.set_property("input-vo-keyboard", true)?;
         init.set_property("input-default-bindings", true)?;
 
@@ -56,6 +57,23 @@ pub fn play(
         if settings.boolean("is-resume") {
             if let Some(percentage) = percentage {
                 init.set_property("start", format!("{}%", percentage as u32))?;
+            }
+        }
+
+        if !settings.string("proxy").is_empty() {
+            init.set_property("http-proxy", settings.string("proxy").as_str())?;
+        }
+
+        #[cfg(windows)]
+        {
+            let mpv_config_dir = env::current_exe()
+                .unwrap()
+                .ancestors()
+                .nth(2)
+                .unwrap()
+                .join("mpv");
+            if mpv_config_dir.join("mpv.conf").exists() {
+                init.set_property("config-dir", mpv_config_dir.display().to_string())?;
             }
         }
 

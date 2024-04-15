@@ -1,7 +1,3 @@
-use crate::config::proxy::ReqClient;
-use crate::config::{self, get_device_name, save_cfg, Account, APP_VERSION};
-use crate::ui::models::SETTINGS;
-use dirs::home_dir;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
 use serde::{Deserialize, Serialize};
@@ -9,9 +5,12 @@ use serde_json::json;
 use serde_json::Value;
 use std::env;
 use std::fs;
-use std::path::PathBuf;
 use std::sync::OnceLock;
 use tokio::runtime::{self, Runtime};
+
+use crate::config::proxy::ReqClient;
+use crate::config::{self, get_cache_dir, get_device_name, save_cfg, Account, APP_VERSION};
+use crate::ui::models::SETTINGS;
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();
@@ -470,19 +469,17 @@ pub async fn get_image(id: String) -> Result<String, Error> {
                         return Ok(id);
                     }
 
-                    let path_str = format!(
-                        "{}/.local/share/tsukimi/{}",
-                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                    );
-                    let pathbuf = PathBuf::from(path_str);
+                    // let path_str = format!(
+                    //     "{}/.local/share/tsukimi/{}",
+                    //     home_dir().expect("msg").display(),
+                    //     env::var("EMBY_NAME").unwrap()
+                    // );
+                    // let pathbuf = PathBuf::from(path_str);
+                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
                     } else {
-                        fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                        ))
-                        .unwrap();
+                        fs::create_dir_all(&pathbuf).unwrap();
 
                         fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
                     }
@@ -521,19 +518,17 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
                         return Ok(id);
                     }
 
-                    let path_str = format!(
-                        "{}/.local/share/tsukimi/{}",
-                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                    );
-                    let pathbuf = PathBuf::from(path_str);
+                    // let path_str = format!(
+                    //     "{}/.local/share/tsukimi/{}",
+                    //     home_dir().expect("msg").display(),
+                    //     env::var("EMBY_NAME").unwrap()
+                    // );
+                    // let pathbuf = PathBuf::from(path_str);
+                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
                     } else {
-                        fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                        ))
-                        .unwrap();
+                        fs::create_dir_all(&pathbuf).unwrap();
 
                         fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
                     }
@@ -552,7 +547,7 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
     }
 }
 
-pub async fn get_backdropimage(id: String,tag:u8) -> Result<String, Error> {
+pub async fn get_backdropimage(id: String, tag: u8) -> Result<String, Error> {
     let server_info = config::set_config();
 
     let result = client()
@@ -572,19 +567,17 @@ pub async fn get_backdropimage(id: String,tag:u8) -> Result<String, Error> {
                         return Ok(id);
                     }
 
-                    let path_str = format!(
-                        "{}/.local/share/tsukimi/{}",
-                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                    );
-                    let pathbuf = PathBuf::from(path_str);
+                    // let path_str = format!(
+                    //     "{}/.local/share/tsukimi/{}",
+                    //     home_dir().expect("msg").display(),
+                    //     env::var("EMBY_NAME").unwrap()
+                    // );
+                    // let pathbuf = PathBuf::from(path_str);
+                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("b{}_{}.png", id, tag)), &bytes).unwrap();
                     } else {
-                        fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                        ))
-                        .unwrap();
+                        fs::create_dir_all(&pathbuf).unwrap();
 
                         fs::write(pathbuf.join(format!("b{}_{}.png", id, tag)), &bytes).unwrap();
                     }
@@ -623,19 +616,17 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
                         return Ok(id);
                     }
 
-                    let path_str = format!(
-                        "{}/.local/share/tsukimi/{}",
-                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                    );
-                    let pathbuf = PathBuf::from(path_str);
+                    // let path_str = format!(
+                    //     "{}/.local/share/tsukimi/{}",
+                    //     home_dir().expect("msg").display(),
+                    //     env::var("EMBY_NAME").unwrap()
+                    // );
+                    // let pathbuf = PathBuf::from(path_str);
+                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
                     } else {
-                        fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                        ))
-                        .unwrap();
+                        fs::create_dir_all(&pathbuf).unwrap();
 
                         fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
                     }
