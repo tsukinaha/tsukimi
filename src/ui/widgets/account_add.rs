@@ -110,6 +110,7 @@ impl AccountWindow {
                             obj.imp().spinner.set_visible(false);
                             obj.close();
                             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                            window.toast("Account added successfully");
                             window.set_servers();
                         }
                         Err(e) => {
