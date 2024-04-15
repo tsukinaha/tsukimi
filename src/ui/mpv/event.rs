@@ -1,6 +1,5 @@
 use gtk::prelude::*;
 use libmpv::{events::*, *};
-
 use std::{
     collections::HashMap,
     thread,
@@ -38,6 +37,7 @@ pub fn play(
     let mpv = Mpv::with_initializer(|init| {
         init.set_property("osc", true)?;
         init.set_property("config", true)?;
+        #[cfg(unix)]
         init.set_property("input-vo-keyboard", true)?;
         init.set_property("input-default-bindings", true)?;
 
@@ -55,14 +55,31 @@ pub fn play(
 
         if settings.boolean("is-resume") {
             if let Some(percentage) = percentage {
-                init.set_property("start", format!("{}%", percentage as u32))?;
+                init.set_property("start", format!("{}%", percentage))?;
+            }
+        }
+
+        if !settings.string("proxy").is_empty() {
+            init.set_property("http-proxy", settings.string("proxy").as_str())?;
+        }
+
+        #[cfg(windows)]
+        {
+            let mpv_config_dir = std::env::current_exe()
+                .unwrap()
+                .ancestors()
+                .nth(2)
+                .unwrap()
+                .join("mpv");
+            if mpv_config_dir.join("mpv.conf").exists() {
+                init.set_property("config-dir", mpv_config_dir.display().to_string())?;
             }
         }
 
         Ok(())
     })
     .unwrap();
-    mpv.set_property("volume", 75)?;
+    mpv.set_property("volume", 85)?;
 
     let mut ev_ctx = mpv.create_event_context();
     ev_ctx.disable_deprecated_events()?;
@@ -87,7 +104,7 @@ pub fn play(
         });
         let mut last_print = Instant::now();
         scope.spawn(move |_| loop {
-            let ev = ev_ctx.wait_event(10000.).unwrap_or(Err(Error::Null));
+            let ev = ev_ctx.wait_event(2000.).unwrap_or(Err(Error::Null));
             match ev {
                 Ok(Event::EndFile(r)) => {
                     if r == 3 {

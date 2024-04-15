@@ -1,9 +1,9 @@
+use adw::prelude::AdwDialogExt;
 use adw::Toast;
 use glib::Object;
 use gtk::glib;
-use gtk::subclass::prelude::*;
 use gtk::prelude::*;
-use adw::prelude::AdwDialogExt;
+use gtk::subclass::prelude::*;
 
 use crate::ui::network::{loginv2, runtime};
 mod imp {
@@ -62,7 +62,6 @@ mod imp {
 
     impl WidgetImpl for AccountWindow {}
     impl AdwDialogImpl for AccountWindow {}
-
 }
 
 glib::wrapper! {
@@ -89,12 +88,30 @@ impl AccountWindow {
         let username = imp.username_entry.text();
         let password = imp.password_entry.text();
         let port = imp.port_entry.text();
-        if servername.is_empty() || server.is_empty() || username.is_empty() || password.is_empty() || port.is_empty() {
-            imp.toast.add_toast(Toast::builder().timeout(3).title("All fields must be filled in").build());
+        if servername.is_empty()
+            || server.is_empty()
+            || username.is_empty()
+            || password.is_empty()
+            || port.is_empty()
+        {
+            imp.toast.add_toast(
+                Toast::builder()
+                    .timeout(3)
+                    .title("All fields must be filled in")
+                    .build(),
+            );
         } else {
-            let (sender, receiver) = async_channel::bounded::<Result<bool,reqwest::Error>>(1);
+            let (sender, receiver) = async_channel::bounded::<Result<bool, reqwest::Error>>(1);
             runtime().spawn(async move {
-                match loginv2(servername.to_string(), server.to_string(), username.to_string(), password.to_string(), port.to_string()).await {
+                match loginv2(
+                    servername.to_string(),
+                    server.to_string(),
+                    username.to_string(),
+                    password.to_string(),
+                    port.to_string(),
+                )
+                .await
+                {
                     Ok(_) => {
                         sender.send(Ok(true)).await.unwrap();
                     }
@@ -116,7 +133,7 @@ impl AccountWindow {
                         Err(e) => {
                             obj.imp().spinner.set_visible(false);
                             obj.imp().toast.add_toast(Toast::builder().timeout(3).title(&format!("Failed to login: {}", e)).build());
-                        }   
+                        }
                     }
                 }
             }));

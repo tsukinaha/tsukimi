@@ -1,21 +1,20 @@
-use std::env;
-use std::path::PathBuf;
-
-use adw::prelude::NavigationPageExt;
 use adw::prelude::ActionRowExt;
+use adw::prelude::AdwDialogExt;
+use adw::prelude::NavigationPageExt;
 use gio::Settings;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-use adw::prelude::AdwDialogExt;
-mod imp {
-    use std::cell::OnceCell;
+use std::env;
+use std::path::PathBuf;
 
+mod imp {
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
     use gtk::gio::Settings;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
+    use std::cell::OnceCell;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -86,9 +85,13 @@ mod imp {
             klass.install_action("win.sidebar", None, move |window, _action, _parameter| {
                 window.sidebar();
             });
-            klass.install_action("win.new-account", None, move |window, _action, _parameter| {
-                window.new_account();
-            });
+            klass.install_action(
+                "win.new-account",
+                None,
+                move |window, _action, _parameter| {
+                    window.new_account();
+                },
+            );
             klass.install_action_async("win.pop", None, |window, _action, _parameter| async move {
                 window.pop().await;
             });
@@ -154,12 +157,12 @@ mod imp {
     impl AdwApplicationWindowImpl for Window {}
 }
 
-use glib::Object;
-use gtk::{gio, glib};
 use crate::config::Account;
 use crate::config::{load_cfgv2, load_env};
 use crate::ui::models::SETTINGS;
 use crate::APP_ID;
+use glib::Object;
+use gtk::{gio, glib};
 
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
@@ -188,7 +191,9 @@ impl Window {
                 .height_request(80)
                 .activatable(true)
                 .build();
-            unsafe { row.set_data("account", account); }
+            unsafe {
+                row.set_data("account", account);
+            }
             row.add_suffix(&{
                 let button = gtk::Button::builder()
                     .icon_name("user-trash-symbolic")
@@ -206,8 +211,8 @@ impl Window {
             listbox.append(&row);
         }
         listbox.connect_row_activated(glib::clone!(@weak self as obj => move |_, row| {
-            unsafe { 
-                let account_ptr: std::ptr::NonNull<Account>  = row.data("account").unwrap(); 
+            unsafe {
+                let account_ptr: std::ptr::NonNull<Account>  = row.data("account").unwrap();
                 let account: &Account = &*account_ptr.as_ptr();
                 load_env(account);
             }
@@ -331,8 +336,6 @@ impl Window {
         let imp = self.imp();
         imp.navipage.set_title(title);
     }
-
-
 
     fn mainpage(&self) {
         let imp = self.imp();

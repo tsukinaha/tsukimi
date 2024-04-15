@@ -1,10 +1,9 @@
-use std::env;
-
 use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
+use std::env;
 
 use crate::ui::network::Latest;
 

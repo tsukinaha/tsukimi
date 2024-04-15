@@ -1,85 +1,85 @@
 child {
-    margin: 9px;
-    border-radius:15px;
+  margin: 9px;
+  border-radius: 15px;
 }
 .mask {
-    background: rgba(255,255,255,0.7);
-    filter: blur(7px);
-    border-radius:10px;
+  background: rgba(255, 255, 255, 0.7);
+  filter: blur(7px);
+  border-radius: 10px;
 }
 
 .logo {
-    background: rgba(0,0,0,0);
+  background: rgba(0, 0, 0, 0);
 }
- 
+
 .checkwatched {
-    background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
 }
-   
+
 listview > row {
-    margin-left:9px;
-    margin-right:9px;
-    border-radius:10px;
+  margin-left: 9px;
+  margin-right: 9px;
+  border-radius: 10px;
 }
 
 picture {
-    border-radius:10px;
+  border-radius: 10px;
 }
 
 listview {
-    background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
 }
- 
+
 gridview {
-    background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
 }
-  
+
 gridview > child box {
-    margin:0px;
+  margin: 0px;
 }
 
 overlay > label {
-    background-color: #AEB5FA;
-    border-radius: 999px;
-    margin:3px;
+  background-color: #aeb5fa;
+  border-radius: 999px;
+  margin: 3px;
 }
 
 box > overlay > image {
-    background-color: #AEB5FA;
-    border-radius: 999px;
-    margin:3px;
+  background-color: #aeb5fa;
+  border-radius: 999px;
+  margin: 3px;
 }
 
 .frame {
-    border: 2px solid @borders;
-    border-radius: 5px;
+  border: 2px solid @borders;
+  border-radius: 5px;
 }
 
 .pill {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 revealer > expander-widget > box > box > widget {
-    background-color:rgba(1,1,1,0.1);
-    border-radius:10px;
-    margin:5px;
+  background-color: rgba(1, 1, 1, 0.1);
+  border-radius: 10px;
+  margin: 5px;
 }
 
-revealer > expander-widget > box > box > widget > box{
-    margin:15px;
+revealer > expander-widget > box > box > widget > box {
+  margin: 15px;
 }
 
 box > scrolledwindow > viewport > box > box {
-    margin:5px;
-    background-color:rgba(0,0,0,0.1);
-    border-radius:10px;
+  margin: 5px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 scrolledwindow > viewport > box > box > label {
-    margin:15px;
+  margin: 15px;
 }
 scrolledwindow > viewport > box > box > box {
-    margin-left:15px;
-    margin-top:15px;
+  margin-left: 15px;
+  margin-top: 15px;
 }
 
 @define-color accent_bg_color #AEB5FA;
@@ -87,20 +87,19 @@ scrolledwindow > viewport > box > box > box {
 @define-color accent_color #AEB5FA;
 
 placessidebar {
-    background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
 }
-.sidebar-pane{
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    background-color: rgba(0, 0, 0, 0);
-    color: #000;
+.sidebar-pane {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0);
+  color: #000;
 }
 
 .serverrow {
-    margin: 6px;
-    border-radius: 10px;
+  margin: 6px;
+  border-radius: 10px;
 }
-    
-    
+
 @define-color destructive_color rgb(210, 15, 57);
 @define-color destructive_bg_color rgb(230, 69, 83);
 @define-color destructive_fg_color rgb(239, 241, 245);
@@ -177,45 +176,55 @@ placessidebar {
 @define-color dark_4 #241f31;
 @define-color dark_5 #000000;
 
-windowcontrols > button { /* GTK4 */
-    color: transparent;
-    min-width: 2px;
-    min-height: 2px;
-    border-radius: 100%;
-    padding: 0;
-    margin: 0 5px;
-  }
-  
-  windowcontrols > button > image {
-    padding: 0;
-  }
-  
-  button.titlebutton.close,
-  windowcontrols > button.close {
-    background-color: #BBBBBB;
-  }
-  
-  button.titlebutton.close:hover,
-  windowcontrols > button.close:hover {
-    opacity: 0.8;
-  }
-  
-  button.titlebutton.maximize,
-  windowcontrols > button.maximize {
-    background-color: #BBBBBB;
-  }
-  
-  button.titlebutton.maximize:hover,
-  windowcontrols > button.maximize:hover {
-    opacity: 0.8;
-  }
-  
-  button.titlebutton.minimize,
-  windowcontrols > button.minimize {
-    background-color: #BBBBBB;
-  }
-  
-  button.titlebutton.minimize:hover,
-  windowcontrols > button.minimize:hover {
-    opacity: 0.8;
-  } 
+windowcontrols > button {
+  /* GTK4 */
+  color: transparent;
+  min-width: 2px;
+  min-height: 2px;
+  border-radius: 100%;
+  padding: 0;
+  margin: 0 5px;
+}
+
+windowcontrols > button > image {
+  padding: 0;
+}
+
+button.titlebutton.close,
+windowcontrols > button.close {
+  background-color: #bbbbbb;
+}
+
+button.titlebutton.close:hover,
+windowcontrols > button.close:hover {
+  opacity: 0.8;
+}
+
+button.titlebutton.maximize,
+windowcontrols > button.maximize {
+  background-color: #bbbbbb;
+}
+
+button.titlebutton.maximize:hover,
+windowcontrols > button.maximize:hover {
+  opacity: 0.8;
+}
+
+button.titlebutton.minimize,
+windowcontrols > button.minimize {
+  background-color: #bbbbbb;
+}
+
+button.titlebutton.minimize:hover,
+windowcontrols > button.minimize:hover {
+  opacity: 0.8;
+}
+label {
+  font-size: 16px;
+}
+.large-font {
+  font-size: 18px;
+}
+window {
+  box-shadow: none;
+}

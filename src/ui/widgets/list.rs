@@ -1,20 +1,20 @@
-use super::item::ItemPage;
-use super::movie::MoviePage;
-use super::window::Window;
 use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-mod imp {
+use super::item::ItemPage;
+use super::movie::MoviePage;
+use super::window::Window;
 
-    use std::cell::OnceCell;
+mod imp {
 
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
+    use std::cell::OnceCell;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]

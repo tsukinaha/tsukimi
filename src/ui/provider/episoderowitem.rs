@@ -1,10 +1,9 @@
 mod imp {
-    use std::cell::RefCell;
-
     use glib::Properties;
     use gtk::glib;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
+    use std::cell::RefCell;
 
     use super::TaskData;
 

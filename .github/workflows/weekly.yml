@@ -1,9 +1,9 @@
-name: Publishing
+name: Windows weekly build
 on:
   workflow_dispatch:
   push:
-    tags:
-      - v*-win
+  schedule:
+    - cron: '14 10 * * 0'
 
 env:
   CARGO_TERM_COLOR: always
@@ -27,12 +27,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
         run: |
           rustup toolchain install stable-gnu
           rustup default stable-gnu
-          C:\msys64\usr\bin\pacman.exe -S --needed --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc mingw-w64-x86_64-libadwaita mingw-w64-x86_64-mpv
+          C:\msys64\usr\bin\pacman.exe -S --needed --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc mingw-w64-x86_64-libadwaita
           C:\msys64\usr\bin\pacman.exe -Syu --noconfirm
+
+      - name: Install latest libmpv-dev
+        run: |
+          mkdir mpv_dev && cd mpv_dev
+          . ../scripts/get_latest_mpv.ps1
+          Get-Latest-Mpv
+          mv -force libmpv.dll.a c:/msys64/mingw64/lib
+          mv -force libmpv-2.dll c:/msys64/mingw64/bin
+          mv -force include/mpv c:/msys64/mingw64/include
+          cd ..
 
       - name: Build ${{ matrix.target }}
         run: |
@@ -54,7 +63,6 @@ jobs:
           remove-item -recurse share/icons/hicolor && remove-item -recurse share/icons/Adwaita/scalable && remove-item -recurse share/icons/Adwaita/cursors
           remove-item -recurse share/icons/Adwaita/16x16 && remove-item -recurse share/icons/Adwaita/symbolic-up-to-32
           gci -directory -recurse .|where-object {$_.getfilesysteminfos().count -eq 0}|remove-item -recurse 
-          compress-archive -path ./* -destinationpath ../tsukimi-${{matrix.arch}}.zip
           7z.exe a ../tsukimi-${{matrix.arch}}.7z ./*
 
       - name: Upload artifact
@@ -62,10 +70,9 @@ jobs:
         with:
           name: tsukimi-${{matrix.arch}}
           path: |
-            artifact/tsukimi-*.zip
-            artifact/tsukimi-*.7z
-          compression-level: 5
-          retention-days: 3
+            artifact/*.7z
+          compression-level: 0
+          retention-days: 7
 
   publish:
     needs: build
@@ -82,30 +89,21 @@ jobs:
  
       - name: Package Windows GNU
         run: |
-          mv tsukimi-x86_64-windows-gnu/*.zip .
           mv tsukimi-x86_64-windows-gnu/*.7z .
 
       - name: Calculate hash
         run: |
-          sha512sum *.zip > tsukimi.sha512sum
-          sha512sum *.7z > tsukimi-7z.sha512sum
+          sha512sum *.7z > tsukimi.sha512sum
 
-      - name: Get latest tag name
-        run: echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
-
-      - name: Get latest CHANGELOG
-        run: |
-          sudo apt install mawk -y
-          awk '/^## /{if(++count==2){exit}next}count==1{print}' CHANGELOG.md >> ${{github.workspace}}-CHANGELOG.md
+      - name: Set date as tag
+        run: echo "TAG_NAME=windows-weekly-$(date --rfc-3339='date')" >> $GITHUB_ENV
 
       - name: Upload Github Assets
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          body_path: ${{github.workspace}}-CHANGELOG.md
           files: |
-            *.zip
             *.7z
             *.sha512sum
           tag_name: ${{ env.TAG_NAME }}

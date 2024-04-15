@@ -13,7 +13,7 @@
   <template class="AppWindow" parent="AdwApplicationWindow">
     <property name="title" translatable="yes">Tsukimi</property>
     <property name="width-request">1280</property>
-    <property name="height-request">920</property>
+    <property name="height-request">720</property>
     <property name="icon-name">tsukimi</property>
     <child>
       <object class="AdwBreakpoint">

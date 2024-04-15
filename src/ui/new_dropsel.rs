@@ -1,3 +1,6 @@
+use gtk::glib;
+use gtk::prelude::*;
+
 use super::models::SETTINGS;
 use super::mpv;
 use super::network;
@@ -7,8 +10,6 @@ use super::network::Back;
 use super::network::Media;
 use super::network::SeriesInfo;
 use super::provider::dropdown_factory::factory;
-use gtk::glib;
-use gtk::prelude::*;
 
 pub fn newmediadropsel(
     playbackinfo: network::Media,

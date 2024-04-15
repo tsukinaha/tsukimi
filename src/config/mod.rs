@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
+use std::io::Write;
+use std::path::PathBuf;
 use std::{env, fs::File, io::Read};
 use uuid::Uuid;
-use std::io::Write;
 
 pub mod proxy;
 pub const APP_VERSION: &str = "0.4.5";
@@ -66,9 +67,8 @@ pub struct Accounts {
     pub accounts: Vec<Account>,
 }
 
-pub async fn save_cfg(account:Account) -> Result<(), Box<dyn std::error::Error>> {
-    let mut path = dirs::home_dir().ok_or("Failed to get home directory")?;
-    path.push(".config");
+pub async fn save_cfg(account: Account) -> Result<(), Box<dyn std::error::Error>> {
+    let mut path = get_config_dir();
     std::fs::DirBuilder::new().recursive(true).create(&path)?;
     path.push("tsukimi.toml");
     let mut accounts: Accounts = load_cfgv2()?;
@@ -80,17 +80,18 @@ pub async fn save_cfg(account:Account) -> Result<(), Box<dyn std::error::Error>>
     let mut file = std::fs::OpenOptions::new()
         .write(true)
         .create(true)
+        .truncate(true)
         .open(&path)?;
     writeln!(file, "{}", toml)?;
     Ok(())
 }
 
 pub fn load_cfgv2() -> Result<Accounts, Box<dyn std::error::Error>> {
-    let mut path = dirs::home_dir().ok_or("Failed to get home directory")?;
-    path.push(".config");
-    path.push("tsukimi.toml");
+    let path = get_config_dir().join("tsukimi.toml");
     if !path.exists() {
-        return Ok(Accounts { accounts: Vec::new() }); 
+        return Ok(Accounts {
+            accounts: Vec::new(),
+        });
     }
     let mut file = File::open(&path)?;
     let mut contents = String::new();
@@ -99,7 +100,7 @@ pub fn load_cfgv2() -> Result<Accounts, Box<dyn std::error::Error>> {
     Ok(accounts)
 }
 
-pub fn load_env(account:&Account) {
+pub fn load_env(account: &Account) {
     env::set_var("EMBY_NAME", &account.servername);
     env::set_var("EMBY_DOMAIN", &account.server);
     env::set_var("EMBY_USERNAME", &account.username);
@@ -112,19 +113,17 @@ pub fn load_env(account:&Account) {
     env::set_var("UUID", uuid);
 }
 
-pub fn remove(account:&Account) -> Result<(), Box<dyn std::error::Error>> {
-    let mut path = dirs::home_dir().ok_or("Failed to get home directory")?;
-    path.push(".config");
-    path.push("tsukimi.toml");
+pub fn remove(account: &Account) -> Result<(), Box<dyn std::error::Error>> {
+    let path = get_config_dir().join("tsukimi.toml");
     let mut accounts: Accounts = load_cfgv2()?;
     accounts.accounts.retain(|x| {
-        x.servername != account.servername 
-        || x.server != account.server 
-        || x.username != account.username 
-        || x.password != account.password
-        || x.port != account.port
-        || x.user_id != account.user_id
-        || x.access_token != account.access_token
+        x.servername != account.servername
+            || x.server != account.server
+            || x.username != account.username
+            || x.password != account.password
+            || x.port != account.port
+            || x.user_id != account.user_id
+            || x.access_token != account.access_token
     });
     let toml = toml::to_string(&accounts).unwrap_or_else(|err| {
         eprintln!("Error while serializing accounts: {:?}", err);
@@ -134,7 +133,45 @@ pub fn remove(account:&Account) -> Result<(), Box<dyn std::error::Error>> {
         .write(true)
         .create(true)
         .truncate(true)
-        .open(&path)?;
+        .open(path)?;
     writeln!(file, "{}", toml)?;
     Ok(())
+}
+
+/// get config directory, not tsukimi.toml path
+pub fn get_config_dir() -> PathBuf {
+    #[cfg(windows)]
+    {
+        env::current_exe()
+            .unwrap()
+            .ancestors()
+            .nth(2)
+            .unwrap()
+            .join("config")
+    }
+
+    #[cfg(unix)]
+    {
+        dirs::home_dir().unwrap().join(".config")
+    }
+}
+
+/// get cache dir for specific server.
+pub fn get_cache_dir(servername: String) -> PathBuf {
+    #[cfg(windows)]
+    {
+        env::current_exe()
+            .unwrap()
+            .ancestors()
+            .nth(2)
+            .unwrap()
+            .join(format!("cache/{}", servername))
+    }
+
+    #[cfg(unix)]
+    {
+        dirs::home_dir()
+            .unwrap()
+            .join(format!(".local/share/tsukimi/{}", servername))
+    }
 }

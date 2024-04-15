@@ -1,7 +1,9 @@
 use gtk::glib::{self, clone};
 use gtk::{prelude::*, Revealer};
 use std::env;
-use std::path::PathBuf;
+
+use crate::config::get_cache_dir;
+
 pub fn setimage(id: String) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
@@ -16,16 +18,11 @@ pub fn setimage(id: String) -> Revealer {
         .transition_duration(400)
         .build();
 
-    let path = format!(
-        "{}/.local/share/tsukimi/{}/{}.png",
-        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-        id
-    );
-    let pathbuf = PathBuf::from(&path);
+    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("{}.png", id));
     let idfuture = id.clone();
     if pathbuf.exists() {
         if image.file().is_none() {
-            image.set_file(Some(&gtk::gio::File::for_path(&path)));
+            image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
             revealer.set_reveal_child(true);
         }
     } else {
@@ -51,7 +48,7 @@ pub fn setimage(id: String) -> Revealer {
 
     glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
         while receiver.recv().await.is_ok() {
-            let path = format!("{}/.local/share/tsukimi/{}/{}.png",dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(), idfuture);
+            let path = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("{}.png",idfuture));
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
             revealer.set_reveal_child(true);
@@ -75,16 +72,11 @@ pub fn setthumbimage(id: String) -> Revealer {
         .transition_duration(400)
         .build();
 
-    let path = format!(
-        "{}/.local/share/tsukimi/{}/t{}.png",
-        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-        id
-    );
-    let pathbuf = PathBuf::from(&path);
+    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("t{}.png", id));
     let idfuture = id.clone();
     if pathbuf.exists() {
         if image.file().is_none() {
-            image.set_file(Some(&gtk::gio::File::for_path(&path)));
+            image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
             revealer.set_reveal_child(true);
         }
     } else {
@@ -110,7 +102,7 @@ pub fn setthumbimage(id: String) -> Revealer {
 
     glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
         while receiver.recv().await.is_ok() {
-            let path = format!("{}/.local/share/tsukimi/{}/t{}.png",dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(), idfuture);
+            let path = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("t{}.png",idfuture));
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
             revealer.set_reveal_child(true);
@@ -134,23 +126,19 @@ pub fn setbackdropimage(id: String, tag: u8) -> Revealer {
         .transition_duration(400)
         .build();
 
-    let path = format!(
-        "{}/.local/share/tsukimi/{}/b{}_{}.png",
-        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-        id,tag
-    );
-    let pathbuf = PathBuf::from(&path);
+    let pathbuf =
+        get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("b{}_{}.png", id, tag));
     let idfuture = id.clone();
     if pathbuf.exists() {
         if image.file().is_none() {
-            image.set_file(Some(&gtk::gio::File::for_path(&path)));
+            image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
             revealer.set_reveal_child(true);
         }
     } else {
         crate::ui::network::runtime().spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match crate::ui::network::get_backdropimage(id.clone(),tag).await {
+                match crate::ui::network::get_backdropimage(id.clone(), tag).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())
@@ -169,7 +157,7 @@ pub fn setbackdropimage(id: String, tag: u8) -> Revealer {
 
     glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
         while receiver.recv().await.is_ok() {
-            let path = format!("{}/.local/share/tsukimi/{}/b{}_{}.png",dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(), idfuture, tag);
+            let path = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("b{}_{}.png",idfuture,tag));
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
             revealer.set_reveal_child(true);
@@ -192,16 +180,11 @@ pub fn setlogoimage(id: String) -> Revealer {
         .transition_duration(400)
         .build();
 
-    let path = format!(
-        "{}/.local/share/tsukimi/{}/l{}.png",
-        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-        id
-    );
-    let pathbuf = PathBuf::from(&path);
+    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("l{}.png", id));
     let idfuture = id.clone();
     if pathbuf.exists() {
         if image.file().is_none() {
-            image.set_file(Some(&gtk::gio::File::for_path(&path)));
+            image.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
             revealer.set_reveal_child(true);
         }
     } else {
@@ -227,7 +210,7 @@ pub fn setlogoimage(id: String) -> Revealer {
 
     glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
         while receiver.recv().await.is_ok() {
-            let path = format!("{}/.local/share/tsukimi/{}/l{}.png",dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(), idfuture);
+            let path = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("l{}.png",idfuture));
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
             revealer.set_reveal_child(true);

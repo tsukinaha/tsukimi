@@ -1,7 +1,3 @@
-use crate::config::proxy::ReqClient;
-use crate::config::{self, get_device_name, save_cfg, Account, APP_VERSION};
-use crate::ui::models::SETTINGS;
-use dirs::home_dir;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
 use serde::{Deserialize, Serialize};
@@ -9,17 +5,22 @@ use serde_json::json;
 use serde_json::Value;
 use std::env;
 use std::fs;
-use std::path::PathBuf;
 use std::sync::OnceLock;
 use tokio::runtime::{self, Runtime};
 
+use crate::config::proxy::ReqClient;
+use crate::config::{self, get_cache_dir, get_device_name, save_cfg, Account, APP_VERSION};
+use crate::ui::models::SETTINGS;
+
 pub fn runtime() -> &'static Runtime {
+    const STACK_SIZE: usize = 6 * 1024 * 1024;
+
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();
     RUNTIME.get_or_init(|| {
         runtime::Builder::new_multi_thread()
             .worker_threads(SETTINGS.threads() as usize)
-            .enable_io()
-            .enable_time()
+            .thread_stack_size(STACK_SIZE)
+            .enable_all()
             .build()
             .expect("Failed to create runtime")
     })
@@ -37,8 +38,6 @@ pub async fn loginv2(
     password: String,
     port: String,
 ) -> Result<(), Error> {
-    let client = client();
-
     let mut headers = HeaderMap::new();
     headers.insert("X-Emby-Client", HeaderValue::from_static("Tsukimi"));
     headers.insert(
@@ -60,7 +59,7 @@ pub async fn loginv2(
         "Pw": password
     });
 
-    let res = client
+    let res = client()
         .post(&format!(
             "{}:{}/emby/Users/authenticatebyname",
             server, port
@@ -117,7 +116,6 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
     };
     let server_info = config::set_config();
 
-    let client = client();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server_info.domain, server_info.port, server_info.user_id
@@ -133,9 +131,9 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
         ("SortOrder", "Ascending"),
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
         ("ImageTypeLimit", "1"),
-        ("Recursive", "true"),
+        ("Recursive", "True"),
         ("SearchTerm", &searchinfo),
-        ("GroupProgramsBySeries", "true"),
+        ("GroupProgramsBySeries", "True"),
         ("Limit", "50"),
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
@@ -145,7 +143,7 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
         ("X-Emby-Language", "zh-cn"),
     ];
 
-    let response = client.get(&url).query(&params).send().await?;
+    let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
     let items: Vec<SearchResult> = serde_json::from_value(json["Items"].take()).unwrap();
     model.search_results = items;
@@ -170,15 +168,14 @@ pub struct SeriesInfo {
 
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Shows/{}/Episodes",
         server_info.domain, server_info.port, id
     );
     let params = [
         ("Fields", "Overview"),
-        ("EnableTotalRecordCount", "true"),
-        ("EnableImages", "true"),
+        ("EnableTotalRecordCount", "True"),
+        ("EnableImages", "True"),
         ("UserId", &server_info.user_id),
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
@@ -187,7 +184,7 @@ pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client.get(&url).query(&params).send().await?;
+    let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
     let seriesinfo: Vec<SeriesInfo> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(seriesinfo)
@@ -327,7 +324,6 @@ pub struct Urls {
 
 pub async fn get_item_overview(id: String) -> Result<Item, Error> {
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/{}",
         server_info.domain, server_info.port, server_info.user_id, id
@@ -341,7 +337,7 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client.get(&url).query(&params).send().await?;
+    let response = client().get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let item: Item = serde_json::from_value(json).unwrap();
     Ok(item)
@@ -349,7 +345,6 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
 
 pub async fn _markwatched(id: String, sourceid: String) -> Result<String, Error> {
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Users/{}/PlayingItems/{}",
         server_info.domain, server_info.port, server_info.user_id, id
@@ -369,7 +364,7 @@ pub async fn _markwatched(id: String, sourceid: String) -> Result<String, Error>
         "Id": &id,
         "MediaSourceId": &sourceid,
     });
-    let response = client
+    let response = client()
         .post(&url)
         .query(&params)
         .json(&inplay)
@@ -420,13 +415,12 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
     let mut model = ResumeModel { resume: Vec::new() };
     let server_info = config::set_config();
 
-    let client = client();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/Resume",
         server_info.domain, server_info.port, server_info.user_id
     );
     let params = [
-        ("Recursive", "true"),
+        ("Recursive", "True"),
         (
             "Fields",
             "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
@@ -434,7 +428,7 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
         ("ImageTypeLimit", "1"),
         ("MediaTypes", "Video"),
-        ("Limit", "8"),
+        ("Limit", "24"),
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
@@ -443,7 +437,7 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
         ("X-Emby-Language", "zh-cn"),
     ];
 
-    let response = client.get(&url).query(&params).send().await?;
+    let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
     let items: Vec<Resume> = serde_json::from_value(json["Items"].take()).unwrap();
     model.resume = items;
@@ -470,19 +464,11 @@ pub async fn get_image(id: String) -> Result<String, Error> {
                         return Ok(id);
                     }
 
-                    let path_str = format!(
-                        "{}/.local/share/tsukimi/{}",
-                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                    );
-                    let pathbuf = PathBuf::from(path_str);
+                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
                     } else {
-                        fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                        ))
-                        .unwrap();
+                        fs::create_dir_all(&pathbuf).unwrap();
 
                         fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
                     }
@@ -521,19 +507,11 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
                         return Ok(id);
                     }
 
-                    let path_str = format!(
-                        "{}/.local/share/tsukimi/{}",
-                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                    );
-                    let pathbuf = PathBuf::from(path_str);
+                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
                     } else {
-                        fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                        ))
-                        .unwrap();
+                        fs::create_dir_all(&pathbuf).unwrap();
 
                         fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
                     }
@@ -552,7 +530,7 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
     }
 }
 
-pub async fn get_backdropimage(id: String,tag:u8) -> Result<String, Error> {
+pub async fn get_backdropimage(id: String, tag: u8) -> Result<String, Error> {
     let server_info = config::set_config();
 
     let result = client()
@@ -572,19 +550,11 @@ pub async fn get_backdropimage(id: String,tag:u8) -> Result<String, Error> {
                         return Ok(id);
                     }
 
-                    let path_str = format!(
-                        "{}/.local/share/tsukimi/{}",
-                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                    );
-                    let pathbuf = PathBuf::from(path_str);
+                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("b{}_{}.png", id, tag)), &bytes).unwrap();
                     } else {
-                        fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                        ))
-                        .unwrap();
+                        fs::create_dir_all(&pathbuf).unwrap();
 
                         fs::write(pathbuf.join(format!("b{}_{}.png", id, tag)), &bytes).unwrap();
                     }
@@ -623,19 +593,11 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
                         return Ok(id);
                     }
 
-                    let path_str = format!(
-                        "{}/.local/share/tsukimi/{}",
-                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                    );
-                    let pathbuf = PathBuf::from(path_str);
+                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
                     } else {
-                        fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
-                        ))
-                        .unwrap();
+                        fs::create_dir_all(&pathbuf).unwrap();
 
                         fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
                     }
@@ -656,7 +618,6 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
 
 pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/{}",
         server_info.domain, server_info.port, server_info.user_id, id
@@ -670,7 +631,7 @@ pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client.get(&url).query(&params).send().await?;
+    let response = client().get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let mediainfo: Media = serde_json::from_value(json).unwrap();
     Ok(mediainfo)
@@ -678,7 +639,6 @@ pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
 
 pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Items/{}/PlaybackInfo",
         server_info.domain, server_info.port, id
@@ -687,11 +647,11 @@ pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
     let params = [
         ("StartTimeTicks", "0"),
         ("UserId", &server_info.user_id),
-        ("AutoOpenLiveStream", "false"),
-        ("IsPlayback", "false"),
+        ("AutoOpenLiveStream", "False"),
+        ("IsPlayback", "False"),
         ("AudioStreamIndex", "1"),
         ("SubtitleStreamIndex", "1"),
-        ("MaxStreamingBitrate", "160000000"),
+        ("MaxStreamingBitrate", "1000000000"),
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
@@ -705,7 +665,7 @@ pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
         {"DeviceProfile":{"Name":"Direct play all","MaxStaticBitrate":1000000000,"MaxStreamingBitrate":1000000000,"MusicStreamingTranscodingBitrate":1500000,"DirectPlayProfiles":[{"Container":"mkv","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9,mp4","AudioCodec":"aac,ac3,alac,eac3,dts,flac,mp3,opus,truehd,vorbis"},{"Container":"mp4,m4v","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9","AudioCodec":"aac,alac,opus,mp3,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[],"ContainerProfiles":[],"CodecProfiles":[],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[]}}
 
     );
-    let response = client
+    let response = client()
         .post(&url)
         .query(&params)
         .json(&profile)
@@ -718,7 +678,6 @@ pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
 
 pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Items/{}/PlaybackInfo",
         server_info.domain, server_info.port, id
@@ -727,12 +686,12 @@ pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
     let params = [
         ("StartTimeTicks", "0"),
         ("UserId", &server_info.user_id),
-        ("AutoOpenLiveStream", "true"),
-        ("IsPlayback", "true"),
+        ("AutoOpenLiveStream", "True"),
+        ("IsPlayback", "True"),
         ("AudioStreamIndex", "1"),
         ("SubtitleStreamIndex", "1"),
         ("MediaSourceId", &sourceid),
-        ("MaxStreamingBitrate", "4000000"),
+        ("MaxStreamingBitrate", "1000000000"),
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
@@ -746,7 +705,7 @@ pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
         {"DeviceProfile":{"Name":"Direct play all","MaxStaticBitrate":1000000000,"MaxStreamingBitrate":1000000000,"MusicStreamingTranscodingBitrate":1500000,"DirectPlayProfiles":[{"Container":"mkv","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9,mp4","AudioCodec":"aac,ac3,alac,eac3,dts,flac,mp3,opus,truehd,vorbis"},{"Container":"mp4,m4v","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9","AudioCodec":"aac,alac,opus,mp3,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[],"ContainerProfiles":[],"CodecProfiles":[],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[]}}
 
     );
-    let response = client
+    let response = client()
         .post(&url)
         .query(&params)
         .json(&profile)
@@ -769,7 +728,6 @@ pub struct View {
 
 pub async fn get_library() -> Result<Vec<View>, Error> {
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Users/{}/Views",
         server_info.domain, server_info.port, server_info.user_id
@@ -783,7 +741,7 @@ pub async fn get_library() -> Result<Vec<View>, Error> {
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client.get(&url).query(&params).send().await?;
+    let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
     let views: Vec<View> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(views)
@@ -805,14 +763,13 @@ pub struct Latest {
 
 pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/Latest",
         server_info.domain, server_info.port, server_info.user_id
     );
 
     let params = [
-        ("Limit", "16"),
+        ("Limit", "20"),
         (
             "Fields",
             "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
@@ -827,7 +784,7 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client.get(&url).query(&params).send().await?;
+    let response = client().get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let latests: Vec<Latest> = serde_json::from_value(json).unwrap();
     Ok(latests)
@@ -840,14 +797,13 @@ pub async fn get_list(
 ) -> Result<List, Error> {
     let _ = mutex.lock().await;
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server_info.domain, server_info.port, server_info.user_id
     );
 
     let params = [
-        ("Limit", "50"),
+        ("Limit", "30"),
         (
             "Fields",
             "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
@@ -867,7 +823,7 @@ pub async fn get_list(
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client.get(&url).query(&params).send().await?;
+    let response = client().get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let latests: List = serde_json::from_value(json).unwrap();
     Ok(latests)
@@ -891,7 +847,6 @@ pub struct Back {
 
 pub async fn positionback(back: Back) {
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Sessions/Playing/Progress",
         server_info.domain, server_info.port
@@ -906,7 +861,7 @@ pub async fn positionback(back: Back) {
         ("reqformat", "json"),
     ];
     let profile = serde_json::json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
-    client
+    client()
         .post(&url)
         .query(&params)
         .json(&profile)
@@ -917,7 +872,6 @@ pub async fn positionback(back: Back) {
 
 pub async fn positionstop(back: Back) {
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Sessions/Playing/Stopped",
         server_info.domain, server_info.port
@@ -932,7 +886,7 @@ pub async fn positionstop(back: Back) {
         ("reqformat", "json"),
     ];
     let profile = serde_json::json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
-    client
+    client()
         .post(&url)
         .query(&params)
         .json(&profile)
@@ -943,7 +897,6 @@ pub async fn positionstop(back: Back) {
 
 pub async fn playstart(back: Back) {
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Sessions/Playing",
         server_info.domain, server_info.port
@@ -958,7 +911,7 @@ pub async fn playstart(back: Back) {
         ("reqformat", "json"),
     ];
     let profile = serde_json::json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
-    client
+    client()
         .post(&url)
         .query(&params)
         .json(&profile)
@@ -973,7 +926,6 @@ pub(crate) async fn similar(id: &str) -> Result<Vec<SearchResult>, Error> {
     };
     let server_info = config::set_config();
 
-    let client = client();
     let url = format!(
         "{}:{}/emby/Items/{}/Similar",
         server_info.domain, server_info.port, id
@@ -994,7 +946,7 @@ pub(crate) async fn similar(id: &str) -> Result<Vec<SearchResult>, Error> {
         ("X-Emby-Language", "zh-cn"),
     ];
 
-    let response = client.get(&url).query(&params).send().await?;
+    let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
     let items: Vec<SearchResult> = serde_json::from_value(json["Items"].take()).unwrap();
     model.search_results = items;
@@ -1004,7 +956,6 @@ pub(crate) async fn similar(id: &str) -> Result<Vec<SearchResult>, Error> {
 pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Error> {
     let server_info = config::set_config();
 
-    let client = client();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server_info.domain, server_info.port, server_info.user_id
@@ -1012,8 +963,8 @@ pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Erro
     let params = [
         ("Fields", "PrimaryImageAspectRatio,ProductionYear"),
         ("PersonIds", id),
-        ("Recursive", "true"),
-        ("CollapseBoxSetItems", "false"),
+        ("Recursive", "True"),
+        ("CollapseBoxSetItems", "False"),
         ("SortBy", "SortName"),
         ("SortOrder", "Ascending"),
         ("IncludeItemTypes", types),
@@ -1027,7 +978,7 @@ pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Erro
         ("X-Emby-Language", "zh-cn"),
     ];
 
-    let response = client.get(&url).query(&params).send().await?;
+    let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
     let items: Vec<Item> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
@@ -1035,20 +986,18 @@ pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Erro
 
 pub async fn get_search_recommend() -> Result<List, Error> {
     let server_info = config::set_config();
-    let client = client();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server_info.domain, server_info.port, server_info.user_id
     );
 
     let params = [
-        ("Limit", "20"),
-        ("EnableTotalRecordCount", "false"),
+        ("Limit", "16"),
+        ("EnableTotalRecordCount", "False"),
         ("ImageTypeLimit", "0"),
-        ("Recursive", "true"),
+        ("Recursive", "True"),
         ("IncludeItemTypes", "Movie,Series"),
         ("SortBy", "IsFavoriteOrLiked,Random"),
-        ("Recursive", "true"),
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
@@ -1056,7 +1005,7 @@ pub async fn get_search_recommend() -> Result<List, Error> {
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client.get(&url).query(&params).send().await?;
+    let response = client().get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let latests: List = serde_json::from_value(json).unwrap();
     Ok(latests)
