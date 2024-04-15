@@ -212,6 +212,7 @@ impl Window {
                 load_env(account);
             }
             obj.mainpage();
+            obj.imp().selectlist.select_row(obj.imp().selectlist.row_at_index(0).as_ref());
             obj.freshhomepage();
         }));
     }
@@ -331,9 +332,7 @@ impl Window {
         imp.navipage.set_title(title);
     }
 
-    fn imp(&self) -> &imp::Window {
-        imp::Window::from_obj(self)
-    }
+
 
     fn mainpage(&self) {
         let imp = self.imp();
