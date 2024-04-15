@@ -135,9 +135,9 @@ pub fn setbackdropimage(id: String, tag: u8) -> Revealer {
         .build();
 
     let path = format!(
-        "{}/.local/share/tsukimi/{}/b{}.png",
+        "{}/.local/share/tsukimi/{}/b{}_{}.png",
         dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-        id
+        id,tag
     );
     let pathbuf = PathBuf::from(&path);
     let idfuture = id.clone();
@@ -169,7 +169,7 @@ pub fn setbackdropimage(id: String, tag: u8) -> Revealer {
 
     glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
         while receiver.recv().await.is_ok() {
-            let path = format!("{}/.local/share/tsukimi/{}/b{}.png",dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(), idfuture);
+            let path = format!("{}/.local/share/tsukimi/{}/b{}_{}.png",dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(), idfuture, tag);
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
             revealer.set_reveal_child(true);

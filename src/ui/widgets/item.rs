@@ -219,7 +219,7 @@ impl ItemPage {
         let id1 = self.id();
         let imp = self.imp();
         let path = format!(
-            "{}/.local/share/tsukimi/{}/b{}.png",
+            "{}/.local/share/tsukimi/{}/b{}_0.png",
             dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
             id1
         );
@@ -249,7 +249,7 @@ impl ItemPage {
         glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
             while receiver.recv().await.is_ok() {
                 let path = format!(
-                    "{}/.local/share/tsukimi/{}/b{}.png",
+                    "{}/.local/share/tsukimi/{}/b{}_0.png",
                     dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
                     id2
                 );
