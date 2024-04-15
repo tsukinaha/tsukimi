@@ -469,12 +469,6 @@ pub async fn get_image(id: String) -> Result<String, Error> {
                         return Ok(id);
                     }
 
-                    // let path_str = format!(
-                    //     "{}/.local/share/tsukimi/{}",
-                    //     home_dir().expect("msg").display(),
-                    //     env::var("EMBY_NAME").unwrap()
-                    // );
-                    // let pathbuf = PathBuf::from(path_str);
                     let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
@@ -518,12 +512,6 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
                         return Ok(id);
                     }
 
-                    // let path_str = format!(
-                    //     "{}/.local/share/tsukimi/{}",
-                    //     home_dir().expect("msg").display(),
-                    //     env::var("EMBY_NAME").unwrap()
-                    // );
-                    // let pathbuf = PathBuf::from(path_str);
                     let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
@@ -567,12 +555,6 @@ pub async fn get_backdropimage(id: String, tag: u8) -> Result<String, Error> {
                         return Ok(id);
                     }
 
-                    // let path_str = format!(
-                    //     "{}/.local/share/tsukimi/{}",
-                    //     home_dir().expect("msg").display(),
-                    //     env::var("EMBY_NAME").unwrap()
-                    // );
-                    // let pathbuf = PathBuf::from(path_str);
                     let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("b{}_{}.png", id, tag)), &bytes).unwrap();
@@ -616,12 +598,6 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
                         return Ok(id);
                     }
 
-                    // let path_str = format!(
-                    //     "{}/.local/share/tsukimi/{}",
-                    //     home_dir().expect("msg").display(),
-                    //     env::var("EMBY_NAME").unwrap()
-                    // );
-                    // let pathbuf = PathBuf::from(path_str);
                     let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
                     if pathbuf.exists() {
                         fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();

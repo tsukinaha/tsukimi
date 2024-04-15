@@ -220,13 +220,6 @@ impl ItemPage {
         let id = self.id();
         let id1 = self.id();
         let imp = self.imp();
-        // let path = format!(
-        //     "{}/.local/share/tsukimi/{}/b{}_0.png",
-        //     dirs::home_dir().expect("msg").display(),
-        //     env::var("EMBY_NAME").unwrap(),
-        //     id1
-        // );
-        // let pathbuf = std::path::PathBuf::from(&path);
         let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("b{}_0.png", id1));
         let backdrop = imp.backdrop.get();
         backdrop.set_height_request(SETTINGS.background_height());
@@ -252,11 +245,6 @@ impl ItemPage {
         let id2 = id.to_string();
         glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
             while receiver.recv().await.is_ok() {
-                // let path = format!(
-                //     "{}/.local/share/tsukimi/{}/b{}_0.png",
-                //     dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-                //     id2
-                // );
                 let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("b{}_0.png",id2));
                 if pathbuf.exists() {
                     let file = gtk::gio::File::for_path(&pathbuf);
@@ -278,14 +266,6 @@ impl ItemPage {
         indicator.set_carousel(Some(&carousel));
         for tag_num in 1..=tags {
             let id = id.clone();
-            // let path = format!(
-            //     "{}/.local/share/tsukimi/{}/b{}_{}.png",
-            //     dirs::home_dir().expect("msg").display(),
-            //     env::var("EMBY_NAME").unwrap(),
-            //     id,
-            //     tag_num
-            // );
-            // let pathbuf = PathBuf::from(&path);
             let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap())
                 .join(format!("b{}_{}.png", id, tag_num));
             let (sender, receiver) = async_channel::bounded::<String>(1);
@@ -315,11 +295,6 @@ impl ItemPage {
             }
             glib::spawn_future_local(glib::clone!(@weak carousel=>async move {
                 while receiver.recv().await.is_ok() {
-                    // let path = format!(
-                    //     "{}/.local/share/tsukimi/{}/b{}_{}.png",
-                    //     dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-                    //     id2,tag_num
-                    // );
                     let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("b{}_{}.png",id2,tag_num));
                     if pathbuf.exists() {
                         let file = gtk::gio::File::for_path(&pathbuf);

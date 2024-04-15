@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'patch'
+      - 'main'
   # schedule:
   #   - cron: '45 3 * * *'
 

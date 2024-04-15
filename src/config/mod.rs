@@ -87,7 +87,6 @@ pub async fn save_cfg(account: Account) -> Result<(), Box<dyn std::error::Error>
 
 pub fn load_cfgv2() -> Result<Accounts, Box<dyn std::error::Error>> {
     let path = get_config_dir().join("tsukimi.toml");
-    // path.push("tsukimi.toml");
     if !path.exists() {
         return Ok(Accounts {
             accounts: Vec::new(),
@@ -115,7 +114,6 @@ pub fn load_env(account: &Account) {
 
 pub fn remove(account: &Account) -> Result<(), Box<dyn std::error::Error>> {
     let path = get_config_dir().join("tsukimi.toml");
-    // path.push("tsukimi.toml");
     let mut accounts: Accounts = load_cfgv2()?;
     accounts.accounts.retain(|x| {
         x.servername != account.servername
