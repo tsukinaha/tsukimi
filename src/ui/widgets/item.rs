@@ -109,6 +109,8 @@ mod imp {
         pub backrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub carousel: TemplateChild<adw::Carousel>,
+        #[template_child]
+        pub indicator: TemplateChild<adw::CarouselIndicatorLines>,
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
         pub actorselection: gtk::SingleSelection,
@@ -265,11 +267,12 @@ impl ItemPage {
     }
 
     pub fn add_backdrops(&self, image_tags: Vec<String>) {
-        println!("{:?}",image_tags);
         let imp = self.imp();
         let id = self.id();
         let tags = image_tags.len();
         let carousel = imp.carousel.get();
+        let indicator = imp.indicator.get();
+        indicator.set_carousel(Some(&carousel));
         for tag_num in 1..=tags {
             let id = id.clone();
             let path = format!(

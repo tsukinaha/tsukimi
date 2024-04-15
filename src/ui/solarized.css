@@ -6,8 +6,10 @@ child {
     margin: 9px;
     border-radius:15px;
 }
+
 .mask {
-    background: linear-gradient(to bottom, rgba(0,0,0,0), #073642);
+    background: #073642;
+    filter: blur(7px);
     border-radius:10px;
 }
 
