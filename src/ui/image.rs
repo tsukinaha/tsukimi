@@ -18,7 +18,8 @@ pub fn setimage(id: String) -> Revealer {
 
     let path = format!(
         "{}/.local/share/tsukimi/{}/{}.png",
-        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
+        dirs::home_dir().expect("msg").display(),
+        env::var("EMBY_NAME").unwrap(),
         id
     );
     let pathbuf = PathBuf::from(&path);
@@ -77,7 +78,8 @@ pub fn setthumbimage(id: String) -> Revealer {
 
     let path = format!(
         "{}/.local/share/tsukimi/{}/t{}.png",
-        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
+        dirs::home_dir().expect("msg").display(),
+        env::var("EMBY_NAME").unwrap(),
         id
     );
     let pathbuf = PathBuf::from(&path);
@@ -136,8 +138,10 @@ pub fn setbackdropimage(id: String, tag: u8) -> Revealer {
 
     let path = format!(
         "{}/.local/share/tsukimi/{}/b{}_{}.png",
-        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-        id,tag
+        dirs::home_dir().expect("msg").display(),
+        env::var("EMBY_NAME").unwrap(),
+        id,
+        tag
     );
     let pathbuf = PathBuf::from(&path);
     let idfuture = id.clone();
@@ -150,7 +154,7 @@ pub fn setbackdropimage(id: String, tag: u8) -> Revealer {
         crate::ui::network::runtime().spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match crate::ui::network::get_backdropimage(id.clone(),tag).await {
+                match crate::ui::network::get_backdropimage(id.clone(), tag).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())
@@ -194,7 +198,8 @@ pub fn setlogoimage(id: String) -> Revealer {
 
     let path = format!(
         "{}/.local/share/tsukimi/{}/l{}.png",
-        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
+        dirs::home_dir().expect("msg").display(),
+        env::var("EMBY_NAME").unwrap(),
         id
     );
     let pathbuf = PathBuf::from(&path);

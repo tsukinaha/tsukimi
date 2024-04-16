@@ -472,7 +472,8 @@ pub async fn get_image(id: String) -> Result<String, Error> {
 
                     let path_str = format!(
                         "{}/.local/share/tsukimi/{}",
-                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
+                        home_dir().expect("msg").display(),
+                        env::var("EMBY_NAME").unwrap()
                     );
                     let pathbuf = PathBuf::from(path_str);
                     if pathbuf.exists() {
@@ -480,7 +481,8 @@ pub async fn get_image(id: String) -> Result<String, Error> {
                     } else {
                         fs::create_dir_all(format!(
                             "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
+                            home_dir().expect("msg").display(),
+                            env::var("EMBY_NAME").unwrap()
                         ))
                         .unwrap();
 
@@ -523,7 +525,8 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
 
                     let path_str = format!(
                         "{}/.local/share/tsukimi/{}",
-                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
+                        home_dir().expect("msg").display(),
+                        env::var("EMBY_NAME").unwrap()
                     );
                     let pathbuf = PathBuf::from(path_str);
                     if pathbuf.exists() {
@@ -531,7 +534,8 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
                     } else {
                         fs::create_dir_all(format!(
                             "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
+                            home_dir().expect("msg").display(),
+                            env::var("EMBY_NAME").unwrap()
                         ))
                         .unwrap();
 
@@ -552,7 +556,7 @@ pub async fn get_thumbimage(id: String) -> Result<String, Error> {
     }
 }
 
-pub async fn get_backdropimage(id: String,tag:u8) -> Result<String, Error> {
+pub async fn get_backdropimage(id: String, tag: u8) -> Result<String, Error> {
     let server_info = config::set_config();
 
     let result = client()
@@ -574,7 +578,8 @@ pub async fn get_backdropimage(id: String,tag:u8) -> Result<String, Error> {
 
                     let path_str = format!(
                         "{}/.local/share/tsukimi/{}",
-                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
+                        home_dir().expect("msg").display(),
+                        env::var("EMBY_NAME").unwrap()
                     );
                     let pathbuf = PathBuf::from(path_str);
                     if pathbuf.exists() {
@@ -582,7 +587,8 @@ pub async fn get_backdropimage(id: String,tag:u8) -> Result<String, Error> {
                     } else {
                         fs::create_dir_all(format!(
                             "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
+                            home_dir().expect("msg").display(),
+                            env::var("EMBY_NAME").unwrap()
                         ))
                         .unwrap();
 
@@ -625,7 +631,8 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
 
                     let path_str = format!(
                         "{}/.local/share/tsukimi/{}",
-                        home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
+                        home_dir().expect("msg").display(),
+                        env::var("EMBY_NAME").unwrap()
                     );
                     let pathbuf = PathBuf::from(path_str);
                     if pathbuf.exists() {
@@ -633,7 +640,8 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
                     } else {
                         fs::create_dir_all(format!(
                             "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap()
+                            home_dir().expect("msg").display(),
+                            env::var("EMBY_NAME").unwrap()
                         ))
                         .unwrap();
 

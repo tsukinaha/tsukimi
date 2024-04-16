@@ -136,7 +136,7 @@ impl SearchPage {
                             window.set_title(&item.name);
                             window.change_pop_visibility();
                             env::set_var("HOME_TITLE", &item.name)
-                        } 
+                        }
                     }));
                     recommendbox.append(&button);
                 }

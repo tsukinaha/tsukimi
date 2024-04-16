@@ -180,7 +180,8 @@ impl MoviePage {
         let id = self.id();
         let path = format!(
             "{}/.local/share/tsukimi/{}/b{}_0.png",
-            dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
+            dirs::home_dir().expect("msg").display(),
+            env::var("EMBY_NAME").unwrap(),
             id
         );
         let pathbuf = PathBuf::from(&path);
@@ -197,7 +198,7 @@ impl MoviePage {
             }));
         } else {
             crate::ui::network::runtime().spawn(async move {
-                let id = crate::ui::network::get_backdropimage(id,0)
+                let id = crate::ui::network::get_backdropimage(id, 0)
                     .await
                     .expect("msg");
                 sender
@@ -235,8 +236,10 @@ impl MoviePage {
             let id = id.clone();
             let path = format!(
                 "{}/.local/share/tsukimi/{}/b{}_{}.png",
-                dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-                id,tag_num
+                dirs::home_dir().expect("msg").display(),
+                env::var("EMBY_NAME").unwrap(),
+                id,
+                tag_num
             );
             let pathbuf = PathBuf::from(&path);
             let (sender, receiver) = async_channel::bounded::<String>(1);
@@ -251,7 +254,7 @@ impl MoviePage {
                 }));
             } else {
                 crate::ui::network::runtime().spawn(async move {
-                    let id = crate::ui::network::get_backdropimage(id,0)
+                    let id = crate::ui::network::get_backdropimage(id, 0)
                         .await
                         .expect("msg");
                     sender
@@ -276,7 +279,7 @@ impl MoviePage {
                     }
                 }
             }));
-        }    
+        }
     }
 
     pub fn logoset(&self) {
@@ -654,11 +657,11 @@ impl MoviePage {
                     format!("{}\n{}", people.name, role)
                 } else {
                     people.name.to_string()
-                }; 
-                    label
-                        .downcast_ref::<gtk::Label>()
-                        .expect("Needs to be Label")
-                        .set_text(&str);
+                };
+                label
+                    .downcast_ref::<gtk::Label>()
+                    .expect("Needs to be Label")
+                    .set_text(&str);
             }
         });
         imp.actorlist.set_factory(Some(&factory));

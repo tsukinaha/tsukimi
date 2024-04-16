@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
+use std::io::Write;
 use std::{env, fs::File, io::Read};
 use uuid::Uuid;
-use std::io::Write;
 
 pub mod proxy;
 pub const APP_VERSION: &str = "0.4.5";
@@ -66,7 +66,7 @@ pub struct Accounts {
     pub accounts: Vec<Account>,
 }
 
-pub async fn save_cfg(account:Account) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn save_cfg(account: Account) -> Result<(), Box<dyn std::error::Error>> {
     let mut path = dirs::home_dir().ok_or("Failed to get home directory")?;
     path.push(".config");
     std::fs::DirBuilder::new().recursive(true).create(&path)?;
@@ -90,7 +90,9 @@ pub fn load_cfgv2() -> Result<Accounts, Box<dyn std::error::Error>> {
     path.push(".config");
     path.push("tsukimi.toml");
     if !path.exists() {
-        return Ok(Accounts { accounts: Vec::new() }); 
+        return Ok(Accounts {
+            accounts: Vec::new(),
+        });
     }
     let mut file = File::open(&path)?;
     let mut contents = String::new();
@@ -99,7 +101,7 @@ pub fn load_cfgv2() -> Result<Accounts, Box<dyn std::error::Error>> {
     Ok(accounts)
 }
 
-pub fn load_env(account:&Account) {
+pub fn load_env(account: &Account) {
     env::set_var("EMBY_NAME", &account.servername);
     env::set_var("EMBY_DOMAIN", &account.server);
     env::set_var("EMBY_USERNAME", &account.username);
@@ -112,19 +114,19 @@ pub fn load_env(account:&Account) {
     env::set_var("UUID", uuid);
 }
 
-pub fn remove(account:&Account) -> Result<(), Box<dyn std::error::Error>> {
+pub fn remove(account: &Account) -> Result<(), Box<dyn std::error::Error>> {
     let mut path = dirs::home_dir().ok_or("Failed to get home directory")?;
     path.push(".config");
     path.push("tsukimi.toml");
     let mut accounts: Accounts = load_cfgv2()?;
     accounts.accounts.retain(|x| {
-        x.servername != account.servername 
-        || x.server != account.server 
-        || x.username != account.username 
-        || x.password != account.password
-        || x.port != account.port
-        || x.user_id != account.user_id
-        || x.access_token != account.access_token
+        x.servername != account.servername
+            || x.server != account.server
+            || x.username != account.username
+            || x.password != account.password
+            || x.port != account.port
+            || x.user_id != account.user_id
+            || x.access_token != account.access_token
     });
     let toml = toml::to_string(&accounts).unwrap_or_else(|err| {
         eprintln!("Error while serializing accounts: {:?}", err);

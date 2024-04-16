@@ -222,7 +222,8 @@ impl ItemPage {
         let imp = self.imp();
         let path = format!(
             "{}/.local/share/tsukimi/{}/b{}_0.png",
-            dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
+            dirs::home_dir().expect("msg").display(),
+            env::var("EMBY_NAME").unwrap(),
             id1
         );
         let pathbuf = std::path::PathBuf::from(&path);
@@ -238,7 +239,7 @@ impl ItemPage {
             }));
         } else {
             crate::ui::network::runtime().spawn(async move {
-                let id = crate::ui::network::get_backdropimage(id1,0)
+                let id = crate::ui::network::get_backdropimage(id1, 0)
                     .await
                     .expect("msg");
                 sender
@@ -277,8 +278,10 @@ impl ItemPage {
             let id = id.clone();
             let path = format!(
                 "{}/.local/share/tsukimi/{}/b{}_{}.png",
-                dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-                id,tag_num
+                dirs::home_dir().expect("msg").display(),
+                env::var("EMBY_NAME").unwrap(),
+                id,
+                tag_num
             );
             let pathbuf = PathBuf::from(&path);
             let (sender, receiver) = async_channel::bounded::<String>(1);
@@ -297,7 +300,7 @@ impl ItemPage {
                 }));
             } else {
                 crate::ui::network::runtime().spawn(async move {
-                    let id = crate::ui::network::get_backdropimage(id,tag_num as u8)
+                    let id = crate::ui::network::get_backdropimage(id, tag_num as u8)
                         .await
                         .expect("msg");
                     sender
@@ -326,7 +329,7 @@ impl ItemPage {
                     }
                 }
             }));
-        }    
+        }
     }
 
     pub async fn setup_seasons(&self) {
@@ -930,11 +933,11 @@ impl ItemPage {
                     format!("{}\n{}", people.name, role)
                 } else {
                     people.name.to_string()
-                }; 
-                    label
-                        .downcast_ref::<gtk::Label>()
-                        .expect("Needs to be Label")
-                        .set_text(&str);
+                };
+                label
+                    .downcast_ref::<gtk::Label>()
+                    .expect("Needs to be Label")
+                    .set_text(&str);
             }
         });
         imp.actorlist.set_factory(Some(&factory));
