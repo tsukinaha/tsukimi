@@ -80,6 +80,7 @@ pub async fn save_cfg(account: Account) -> Result<(), Box<dyn std::error::Error>
     let mut file = std::fs::OpenOptions::new()
         .write(true)
         .create(true)
+        .truncate(true)
         .open(&path)?;
     writeln!(file, "{}", toml)?;
     Ok(())
