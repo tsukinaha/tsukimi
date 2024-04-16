@@ -926,13 +926,15 @@ impl ItemPage {
                 }
             }
             if label.is::<gtk::Label>() {
-                if let Some(role) = &people.role {
-                    let str = format!("{}\n{}", people.name, role);
+                let str = if let Some(role) = &people.role {
+                    format!("{}\n{}", people.name, role)
+                } else {
+                    people.name.to_string()
+                }; 
                     label
                         .downcast_ref::<gtk::Label>()
                         .expect("Needs to be Label")
                         .set_text(&str);
-                }
             }
         });
         imp.actorlist.set_factory(Some(&factory));
