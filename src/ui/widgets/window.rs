@@ -217,7 +217,6 @@ impl Window {
                 load_env(account);
             }
             obj.mainpage();
-            obj.imp().selectlist.select_row(obj.imp().selectlist.row_at_index(0).as_ref());
             obj.freshhomepage();
         }));
     }
@@ -373,7 +372,8 @@ impl Window {
 
     fn freshhomepage(&self) {
         let imp = self.imp();
-        imp.insidestack.set_visible_child_name("homepage");
+        imp.selectlist
+            .select_row(imp.selectlist.row_at_index(0).as_ref());
         imp.homeview
             .pop_to_page(&imp.homeview.find_page("homepage").unwrap());
         imp.homepage
@@ -384,6 +384,8 @@ impl Window {
 
     fn freshhistorypage(&self) {
         let imp = self.imp();
+        imp.selectlist
+            .select_row(imp.selectlist.row_at_index(1).as_ref());
         imp.insidestack.set_visible_child_name("historypage");
         imp.historyview
             .pop_to_page(&imp.historyview.find_page("historypage").unwrap());
@@ -395,6 +397,8 @@ impl Window {
 
     fn freshsearchpage(&self) {
         let imp = self.imp();
+        imp.selectlist
+            .select_row(imp.selectlist.row_at_index(2).as_ref());
         imp.insidestack.set_visible_child_name("searchpage");
         imp.searchview
             .pop_to_page(&imp.searchview.find_page("searchpage").unwrap());

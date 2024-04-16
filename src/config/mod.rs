@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use std::io::Write;
-use std::path::PathBuf;
 use std::{env, fs::File, io::Read};
 use uuid::Uuid;
 
@@ -139,7 +138,7 @@ pub fn remove(account: &Account) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 /// get config directory, not tsukimi.toml path
-pub fn get_config_dir() -> PathBuf {
+pub fn get_config_dir() -> std::path::PathBuf {
     #[cfg(windows)]
     {
         env::current_exe()
@@ -157,7 +156,7 @@ pub fn get_config_dir() -> PathBuf {
 }
 
 /// get cache dir for specific server.
-pub fn get_cache_dir(servername: String) -> PathBuf {
+pub fn get_cache_dir(servername: String) -> std::path::PathBuf {
     #[cfg(windows)]
     {
         env::current_exe()
