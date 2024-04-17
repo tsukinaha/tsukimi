@@ -131,6 +131,7 @@
                                           <object class="GtkLabel" id="line2">
                                             <property name="halign">start</property>
                                             <property name="label" translatable="yes">Loading...</property>
+                                            <property name="ellipsize">end</property>
                                           </object>
                                         </child>
                                       </object>
