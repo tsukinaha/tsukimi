@@ -229,7 +229,8 @@ impl Window {
         imp.homeview.pop();
         if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
             if tag.as_str() == "homepage" {
-                imp.navipage.set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
+                imp.navipage
+                    .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
                 self.change_pop_visibility();
             } else {
                 imp.navipage.set_title(&tag);
@@ -355,11 +356,13 @@ impl Window {
         if imp.homepage.child().is_none() {
             imp.homepage
                 .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
-            imp.navipage.set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
+            imp.navipage
+                .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
         }
         if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
             if tag.as_str() == "homepage" {
-                imp.navipage.set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
+                imp.navipage
+                    .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
                 self.set_pop_visibility(false);
             } else {
                 imp.navipage
@@ -375,18 +378,21 @@ impl Window {
 
     fn freshhomepage(&self) {
         let imp = self.imp();
-        imp.selectlist.select_row(imp.selectlist.row_at_index(0).as_ref());
+        imp.selectlist
+            .select_row(imp.selectlist.row_at_index(0).as_ref());
         imp.homeview
             .pop_to_page(&imp.homeview.find_page("homepage").unwrap());
         imp.homepage
             .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
-        imp.navipage.set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
+        imp.navipage
+            .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
         self.set_pop_visibility(false);
     }
 
     fn freshhistorypage(&self) {
         let imp = self.imp();
-        imp.selectlist.select_row(imp.selectlist.row_at_index(1).as_ref());
+        imp.selectlist
+            .select_row(imp.selectlist.row_at_index(1).as_ref());
         imp.insidestack.set_visible_child_name("historypage");
         imp.historyview
             .pop_to_page(&imp.historyview.find_page("historypage").unwrap());
@@ -398,7 +404,8 @@ impl Window {
 
     fn freshsearchpage(&self) {
         let imp = self.imp();
-        imp.selectlist.select_row(imp.selectlist.row_at_index(2).as_ref());
+        imp.selectlist
+            .select_row(imp.selectlist.row_at_index(2).as_ref());
         imp.insidestack.set_visible_child_name("searchpage");
         imp.searchview
             .pop_to_page(&imp.searchview.find_page("searchpage").unwrap());
