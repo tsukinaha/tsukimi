@@ -329,6 +329,7 @@ impl ItemPage {
                     }
                 }
             }));
+            carousel.set_allow_scroll_wheel(true);
         }
     }
 

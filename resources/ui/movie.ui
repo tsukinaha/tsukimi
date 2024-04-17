@@ -24,7 +24,7 @@
                           <object class="AdwCarousel" id="carousel">
                             <property name="halign">fill</property>
                             <property name="valign">fill</property>
-                            <property name="allow_scroll_wheel">True</property>
+                            <property name="allow_scroll_wheel">False</property>
                             <property name="reveal-duration">700</property>
                             <child>
                               <object class="GtkPicture" id="backdrop">
@@ -86,6 +86,7 @@
                                           <object class="GtkLabel" id="line1">
                                             <property name="halign">start</property>
                                             <property name="label" translatable="yes">Loading...</property>
+                                            <property name="wrap">true</property>
                                             <attributes>
                                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                                               <attribute name="scale" value="1.3"/>
@@ -263,13 +264,21 @@
                     <property name="transition-duration">700</property>
                     <property name="reveal-child">False</property>
                     <child>
-                      <object class="GtkExpander">
-                        <property name="expanded">True</property>
-                        <child type="label">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-top">12</property>
+                        <property name="halign">fill</property>
+                        <property name="valign">start</property>
+                        <child>
                           <object class="GtkLabel">
                             <property name="label" translatable="yes">Actors</property>
+                            <property name="halign">start</property>
+                            <property name="margin-start">10</property>
                             <attributes>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                              <attribute name="scale" value="1.3"/>
                             </attributes>
                             <property name="use-markup">True</property>
                           </object>
@@ -296,13 +305,21 @@
                     <property name="transition-duration">700</property>
                     <property name="reveal-child">False</property>
                     <child>
-                      <object class="GtkExpander">
-                        <property name="expanded">True</property>
-                        <child type="label">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-top">12</property>
+                        <property name="halign">fill</property>
+                        <property name="valign">start</property>
+                        <child>
                           <object class="GtkLabel">
                             <property name="label" translatable="yes">Recommend</property>
+                            <property name="halign">start</property>
+                            <property name="margin-start">10</property>
                             <attributes>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                              <attribute name="scale" value="1.3"/>
                             </attributes>
                           </object>
                         </child>
@@ -328,13 +345,21 @@
                     <property name="transition-duration">700</property>
                     <property name="reveal-child">False</property>
                     <child>
-                      <object class="GtkExpander">
-                        <property name="expanded">True</property>
-                        <child type="label">
-                          <object class="GtkLabel" id="expander-label">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-top">12</property>
+                        <property name="halign">fill</property>
+                        <property name="valign">start</property>
+                        <child>
+                          <object class="GtkLabel">
                             <property name="label" translatable="yes">Overview</property>
+                            <property name="halign">start</property>
+                            <property name="margin-start">10</property>
                             <attributes>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                              <attribute name="scale" value="1.3"/>
                             </attributes>
                             <property name="use-markup">True</property>
                           </object>
@@ -343,6 +368,8 @@
                           <object class="GtkBox">
                             <property name="orientation">horizontal</property>
                             <property name="spacing">6</property>
+                            <property name="margin-start">10</property>
+                            <property name="margin-end">10</property>
                             <child>
                               <object class="AdwBin">
                                 <child>
@@ -384,13 +411,21 @@
                     <property name="transition-duration">700</property>
                     <property name="reveal-child">False</property>
                     <child>
-                      <object class="GtkExpander">
-                        <property name="expanded">True</property>
-                        <child type="label">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-top">12</property>
+                        <property name="halign">fill</property>
+                        <property name="valign">start</property>
+                        <child>
                           <object class="GtkLabel">
                             <property name="label" translatable="yes">Links</property>
+                            <property name="halign">start</property>
+                            <property name="margin-start">10</property>
                             <attributes>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                              <attribute name="scale" value="1.3"/>
                             </attributes>
                           </object>
                         </child>
@@ -411,13 +446,21 @@
                     <property name="transition-duration">700</property>
                     <property name="reveal-child">False</property>
                     <child>
-                      <object class="GtkExpander">
-                        <property name="expanded">True</property>
-                        <child type="label">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-top">12</property>
+                        <property name="halign">fill</property>
+                        <property name="valign">start</property>
+                        <child>
                           <object class="GtkLabel">
                             <property name="label" translatable="yes">Studios</property>
+                            <property name="halign">start</property>
+                            <property name="margin-start">10</property>
                             <attributes>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                              <attribute name="scale" value="1.3"/>
                             </attributes>
                           </object>
                         </child>
@@ -438,13 +481,21 @@
                     <property name="transition-duration">700</property>
                     <property name="reveal-child">False</property>
                     <child>
-                      <object class="GtkExpander">
-                        <property name="expanded">True</property>
-                        <child type="label">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-top">12</property>
+                        <property name="halign">fill</property>
+                        <property name="valign">start</property>
+                        <child>
                           <object class="GtkLabel">
                             <property name="label" translatable="yes">Genres</property>
+                            <property name="halign">start</property>
+                            <property name="margin-start">10</property>
                             <attributes>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                              <attribute name="scale" value="1.3"/>
                             </attributes>
                           </object>
                         </child>
@@ -465,13 +516,21 @@
                     <property name="transition-duration">700</property>
                     <property name="reveal-child">False</property>
                     <child>
-                      <object class="GtkExpander">
-                        <property name="expanded">True</property>
-                        <child type="label">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-top">12</property>
+                        <property name="halign">fill</property>
+                        <property name="valign">start</property>
+                        <child>
                           <object class="GtkLabel">
                             <property name="label" translatable="yes">Tags</property>
+                            <property name="halign">start</property>
+                            <property name="margin-start">10</property>
                             <attributes>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                              <attribute name="scale" value="1.3"/>
                             </attributes>
                           </object>
                         </child>
@@ -492,13 +551,21 @@
                     <property name="transition-duration">700</property>
                     <property name="reveal-child">False</property>
                     <child>
-                      <object class="GtkExpander">
-                        <property name="expanded">True</property>
-                        <child type="label">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-top">12</property>
+                        <property name="halign">fill</property>
+                        <property name="valign">start</property>
+                        <child>
                           <object class="GtkLabel">
                             <property name="label" translatable="yes">MediaInfo</property>
+                            <property name="halign">start</property>
+                            <property name="margin-start">10</property>
                             <attributes>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                              <attribute name="scale" value="1.3"/>
                             </attributes>
                             <property name="use-markup">True</property>
                           </object>

@@ -65,6 +65,7 @@
                                     <child>
                                       <object class="AdwEntryRow" id="server_entry">
                                         <property name="title" translatable="yes">Server</property>
+                                        <property name="text">http(s)://1.14.5.14</property>
                                         <child type="suffix">
                                           <object class="GtkEntry" id="port_entry">
                                             <property name="halign">end</property>
