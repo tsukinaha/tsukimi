@@ -240,8 +240,9 @@ impl HomePage {
                 .child(&scrollbox)
                 .build();
             libsbox.append(&revealer);
+            let view_name = view.name.replace('&', "&amp;");
             let label = gtk::Label::builder()
-                .label(format!("<b>Latest {}</b>", view.name))
+                .label(format!("<b>Latest {}</b>", view_name))
                 .halign(gtk::Align::Start)
                 .use_markup(true)
                 .margin_top(15)

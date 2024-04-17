@@ -117,7 +117,8 @@
                     <property name="child">
                       <object class="AdwOverlaySplitView" id="split_view">
                         <property name="min-sidebar-width">160</property>
-                        <property name="max-sidebar-width">200</property>
+                        <property name="max-sidebar-width">300</property>
+                        <property name="sidebar-width-fraction">0.18</property>
                         <property name="sidebar">
                           <object class="AdwNavigationPage">
                             <property name="title" translatable="yes">Tsukimi</property>

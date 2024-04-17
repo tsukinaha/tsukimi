@@ -216,6 +216,8 @@ impl Window {
                 let account: &Account = &*account_ptr.as_ptr();
                 load_env(account);
             }
+            obj.imp().historypage.set_child(None::<&gtk::Widget>);
+            obj.imp().searchpage.set_child(None::<&gtk::Widget>);
             obj.mainpage();
             obj.freshhomepage();
         }));
@@ -226,7 +228,8 @@ impl Window {
         imp.homeview.pop();
         if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
             if tag.as_str() == "homepage" {
-                imp.navipage.set_title("Home");
+                imp.navipage
+                    .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
                 self.change_pop_visibility();
             } else {
                 imp.navipage.set_title(&tag);
@@ -352,11 +355,13 @@ impl Window {
         if imp.homepage.child().is_none() {
             imp.homepage
                 .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
-            imp.navipage.set_title("Home");
+            imp.navipage
+                .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
         }
         if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
             if tag.as_str() == "homepage" {
-                imp.navipage.set_title("Home");
+                imp.navipage
+                    .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
                 self.set_pop_visibility(false);
             } else {
                 imp.navipage
@@ -378,7 +383,8 @@ impl Window {
             .pop_to_page(&imp.homeview.find_page("homepage").unwrap());
         imp.homepage
             .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
-        imp.navipage.set_title("Home");
+        imp.navipage
+            .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
         self.set_pop_visibility(false);
     }
 

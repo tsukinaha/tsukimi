@@ -155,7 +155,6 @@ impl ListPage {
             listbox.append(&picture);
             listbox.append(&label);
             listbox.set_valign(gtk::Align::Start);
-            listbox.set_size_request(167, 300);
             list_item.set_child(Some(&listbox));
         });
         factory.connect_bind(move |_, item| {
@@ -184,6 +183,8 @@ impl ListPage {
             let latest: std::cell::Ref<crate::ui::network::Latest> = entry.borrow();
             if latest.latest_type == "MusicAlbum" {
                 picture.set_size_request(167, 167);
+            } else {
+                picture.set_size_request(167, 277);
             }
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture

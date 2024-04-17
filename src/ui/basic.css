@@ -64,14 +64,13 @@ box > overlay > image {
   margin: 3px;
 }
 
-revealer > expander-widget > box > box > widget {
+revealer > box > box > widget {
   background-color: rgba(1, 1, 1, 0.1);
   border-radius: 10px;
-  margin: 5px;
 }
 
-revealer > expander-widget > box > box > widget > box {
-  margin: 15px;
+revealer > box > box > widget > box {
+  margin: 10px;
 }
 
 box > scrolledwindow > viewport > box > box {
