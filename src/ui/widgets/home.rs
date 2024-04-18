@@ -1,6 +1,8 @@
 use std::env;
+use std::path::PathBuf;
 
 use adw::prelude::NavigationPageExt;
+use dirs::home_dir;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
@@ -112,6 +114,17 @@ impl HomePage {
     }
 
     pub fn set_library(&self) {
+        let pathbuf = PathBuf::from(format!(
+            "{}/.local/share/tsukimi/{}/view.json",
+            home_dir().expect("msg").display(),
+            env::var("EMBY_NAME").unwrap()
+        ));
+        if pathbuf.exists() {
+            let data = std::fs::read_to_string(&pathbuf).expect("Unable to read file");
+            let views: Vec<crate::ui::network::View> = serde_json::from_str(&data).expect("JSON was not well-formatted");
+            self.set_libraryscorll(&views);
+            self.get_librarysscroll(&views);
+        }
         let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::View>>(3);
         crate::ui::network::runtime().spawn(async move {
             let views = crate::ui::network::get_library().await.expect("msg");
@@ -225,6 +238,10 @@ impl HomePage {
     pub fn get_librarysscroll(&self, views: &[crate::ui::network::View]) {
         let libsrevealer = self.imp().libsrevealer.get();
         libsrevealer.set_reveal_child(true);
+        let libsbox = self.imp().libsbox.get();
+        for _ in 0..libsbox.observe_children().n_items() {
+            libsbox.remove(&libsbox.last_child().unwrap());
+        }
         for view in views.iter().cloned() {
             let libsbox = self.imp().libsbox.get();
             let scrolledwindow = gtk::ScrolledWindow::builder()
@@ -235,8 +252,6 @@ impl HomePage {
             let scrolledwindow = fix(scrolledwindow);
             let scrollbox = gtk::Box::new(gtk::Orientation::Vertical, 15);
             let revealer = gtk::Revealer::builder()
-                .transition_type(gtk::RevealerTransitionType::SlideUp)
-                .transition_duration(300)
                 .reveal_child(false)
                 .child(&scrollbox)
                 .build();
@@ -251,6 +266,22 @@ impl HomePage {
                 .build();
             scrollbox.append(&label);
             scrollbox.append(&scrolledwindow);
+
+            let pathbuf = PathBuf::from(format!(
+                "{}/.local/share/tsukimi/{}/latest_{}.json",
+                home_dir().expect("msg").display(),
+                env::var("EMBY_NAME").unwrap(),
+                &view.id
+            ));
+            if pathbuf.exists() {
+                let data = std::fs::read_to_string(&pathbuf).expect("Unable to read file");
+                let latest: Vec<crate::ui::network::Latest> = serde_json::from_str(&data).expect("JSON was not well-formatted");
+                self.set_librarysscroll(latest.clone());
+                let listview = self.set_librarysscroll(latest);
+                scrolledwindow.set_child(Some(&listview));
+                revealer.set_reveal_child(true);
+            }
+
             let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Latest>>(3);
             crate::ui::network::runtime().spawn(async move {
                 let latest = crate::ui::network::get_latest(view.id.clone())
@@ -263,7 +294,9 @@ impl HomePage {
                     obj.set_librarysscroll(latest.clone());
                     let listview = obj.set_librarysscroll(latest);
                     scrolledwindow.set_child(Some(&listview));
-                    revealer.set_reveal_child(true);
+                    if !revealer.reveals_child() {
+                        revealer.set_reveal_child(true);
+                    }
                 }
             }));
         }
@@ -291,6 +324,7 @@ impl HomePage {
                 .orientation(gtk::Orientation::Vertical)
                 .height_request(240)
                 .width_request(167)
+                .valign(gtk::Align::Start)
                 .build();
             let label = gtk::Label::builder()
                 .halign(gtk::Align::Center)
@@ -328,6 +362,7 @@ impl HomePage {
             let latest: std::cell::Ref<crate::ui::network::Latest> = entry.borrow();
             if latest.latest_type == "MusicAlbum" {
                 picture.set_size_request(167, 167);
+                picture.set_valign(gtk::Align::Center);
             }
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture

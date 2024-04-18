@@ -12,6 +12,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::sync::OnceLock;
 use tokio::runtime::{self, Runtime};
+use std::io::Write;
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();
@@ -93,7 +94,7 @@ pub async fn loginv2(
     Ok(())
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct SearchResult {
     #[serde(rename = "Name")]
     pub name: String,
@@ -152,7 +153,7 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
     Ok(model.search_results)
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct SeriesInfo {
     #[serde(rename = "Name")]
     pub name: String,
@@ -255,7 +256,7 @@ pub struct Media {
     pub play_session_id: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Item {
     #[serde(rename = "Name")]
     pub name: String,
@@ -297,7 +298,7 @@ pub struct Item {
     pub backdrop_image_tags: Option<Vec<String>>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct People {
     #[serde(rename = "Name")]
     pub name: String,
@@ -309,7 +310,7 @@ pub struct People {
     pub people_type: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct SGTitem {
     #[serde(rename = "Name")]
     pub name: String,
@@ -379,7 +380,7 @@ pub async fn _markwatched(id: String, sourceid: String) -> Result<String, Error>
     Ok(text)
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Resume {
     #[serde(rename = "Name")]
     pub name: String,
@@ -401,7 +402,7 @@ pub struct Resume {
     pub user_data: Option<UserData>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct UserData {
     #[serde(rename = "PlayedPercentage")]
     pub played_percentage: Option<f64>,
@@ -765,7 +766,7 @@ pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
     Ok(mediainfo)
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct View {
     #[serde(rename = "Name")]
     pub name: String,
@@ -794,10 +795,24 @@ pub async fn get_library() -> Result<Vec<View>, Error> {
     let response = client.get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
     let views: Vec<View> = serde_json::from_value(json["Items"].take()).unwrap();
+    let views_json = serde_json::to_string(&views).unwrap();
+    let mut pathbuf = PathBuf::from(format!(
+        "{}/.local/share/tsukimi/{}",
+        home_dir().expect("msg").display(),
+        env::var("EMBY_NAME").unwrap()
+    ));
+    std::fs::DirBuilder::new().recursive(true).create(&pathbuf).unwrap();
+    pathbuf.push("views.json");
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open(&pathbuf).unwrap();
+    writeln!(file, "{}", views_json).unwrap();
     Ok(views)
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Latest {
     #[serde(rename = "Name")]
     pub name: String,
@@ -838,6 +853,21 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
     let response = client.get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let latests: Vec<Latest> = serde_json::from_value(json).unwrap();
+    let latests_json = serde_json::to_string(&latests).unwrap();
+    let mut pathbuf = PathBuf::from(format!(
+        "{}/.local/share/tsukimi/{}",
+        home_dir().expect("msg").display(),
+        env::var("EMBY_NAME").unwrap(),
+    ));
+    std::fs::DirBuilder::new().recursive(true).create(&pathbuf).unwrap();
+    pathbuf.push(format!("latest_{}.json", id));
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open(&pathbuf).unwrap();
+    writeln!(file, "{}", latests_json).unwrap();
+
     Ok(latests)
 }
 
@@ -881,7 +911,7 @@ pub async fn get_list(
     Ok(latests)
 }
 
-#[derive(Deserialize, Debug, Clone, Default)]
+#[derive(Deserialize, Clone, Default)]
 pub struct List {
     #[serde(rename = "TotalRecordCount")]
     pub total_record_count: u32,
