@@ -114,39 +114,14 @@ impl HomePage {
     }
 
     pub fn set_library(&self) {
-        let pathbuf = PathBuf::from(format!(
-            "{}/.local/share/tsukimi/{}/view.json",
-            home_dir().expect("msg").display(),
-            env::var("EMBY_NAME").unwrap()
-        ));
-        if pathbuf.exists() {
-            let data = std::fs::read_to_string(&pathbuf).expect("Unable to read file");
-            let views: Vec<crate::ui::network::View> = serde_json::from_str(&data).expect("JSON was not well-formatted");
-            self.set_libraryscorll(&views);
-            self.get_librarysscroll(&views);
-        }
-        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::View>>(3);
-        crate::ui::network::runtime().spawn(async move {
-            let views = crate::ui::network::get_library().await.expect("msg");
-            sender.send(views).await.expect("msg");
-        });
-        glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
-            while let Ok(views) = receiver.recv().await {
-                obj.set_libraryscorll(&views);
-                obj.get_librarysscroll(&views);
-            }
-        }));
+        self.set_libraryscorll();
     }
 
-    pub fn set_libraryscorll(&self, views: &Vec<crate::ui::network::View>) {
+    pub fn set_libraryscorll(&self) {
         let imp = self.imp();
         let libscrolled = fix(imp.libscrolled.get());
         imp.librevealer.set_reveal_child(true);
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
-        for view in views {
-            let object = glib::BoxedAnyObject::new(view.clone());
-            store.append(&object);
-        }
         imp.selection.set_autoselect(false);
         imp.selection.set_model(Some(&store));
         let selection = &imp.selection;
@@ -233,6 +208,35 @@ impl HomePage {
             }),
         );
         libscrolled.set_child(Some(&liblist));
+        let pathbuf = PathBuf::from(format!(
+            "{}/.local/share/tsukimi/{}/views.json",
+            home_dir().expect("msg").display(),
+            env::var("EMBY_NAME").unwrap()
+        ));
+        if pathbuf.exists() {
+            let data = std::fs::read_to_string(&pathbuf).expect("Unable to read file");
+            let views: Vec<crate::ui::network::View> = serde_json::from_str(&data).expect("JSON was not well-formatted");
+            for view in &views {
+                let object = glib::BoxedAnyObject::new(view.clone());
+                store.append(&object);
+            }
+            self.get_librarysscroll(&views);
+        } else {
+            let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::View>>(3);
+            crate::ui::network::runtime().spawn(async move {
+                let views = crate::ui::network::get_library().await.expect("msg");
+                sender.send(views).await.expect("msg");
+            });
+            glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
+                while let Ok(views) = receiver.recv().await {
+                    for view in &views {
+                        let object = glib::BoxedAnyObject::new(view.clone());
+                        store.append(&object);
+                    }
+                    obj.get_librarysscroll(&views);
+                }
+            }));
+        }
     }
 
     pub fn get_librarysscroll(&self, views: &[crate::ui::network::View]) {
