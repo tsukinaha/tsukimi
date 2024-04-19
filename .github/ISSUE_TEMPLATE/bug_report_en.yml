@@ -14,7 +14,7 @@ body:
     id: ensure
     attributes:
       label: Confirm
-      description: Before submitting an issue, please confirm that you have read and confirmed the following:
+      description: Before submitting an issue, please confirm that you have read and confirmed the following
       options:
         - label: My version is the latest version and my version number is the same as [latest version](https://github.com/tsukinaha/tsukimi/releases/latest).
           required: true
