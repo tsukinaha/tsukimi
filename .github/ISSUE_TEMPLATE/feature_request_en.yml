@@ -1,0 +1,30 @@
+name: Feature Request
+description: Feature Request
+title: "[Feature Request]: "
+labels: ["feature request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe what feature do you want to add.
+  - type: input
+    id: version
+    attributes:
+      label: Current application version
+      description: Current application version
+    validations:
+      required: true
+  - type: textarea
+    id: feature-request
+    attributes:
+      label: Feature Request
+      description: Describe the feature that you want to improve or add.
+      placeholder: "Feature request"
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: You can list some references but don't refer to any comparable commercial software.
+      placeholder: "References"
