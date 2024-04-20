@@ -243,7 +243,7 @@ impl Window {
         imp.historyview.pop();
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
             if tag.as_str() == "historypage" {
-                imp.navipage.set_title("History");
+                imp.navipage.set_title("History & Liked");
                 self.change_pop_visibility();
             } else {
                 imp.navipage.set_title(&tag);
@@ -421,16 +421,16 @@ impl Window {
         if imp.historypage.child().is_none() {
             imp.historypage
                 .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
-            imp.navipage.set_title("History");
+            imp.navipage.set_title("History & Liked");
         }
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
             if tag.as_str() == "historypage" {
-                imp.navipage.set_title("History");
+                imp.navipage.set_title("History & Liked");
                 self.set_pop_visibility(false);
             } else {
                 self.set_pop_visibility(true);
                 imp.navipage.set_title(
-                    &env::var("HISTORY_TITLE").unwrap_or_else(|_| "History".to_string()),
+                    &env::var("HISTORY_TITLE").unwrap_or_else(|_| "History & Liked".to_string()),
                 );
             }
         } else {

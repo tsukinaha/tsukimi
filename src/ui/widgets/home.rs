@@ -215,7 +215,8 @@ impl HomePage {
         ));
         if pathbuf.exists() {
             let data = std::fs::read_to_string(&pathbuf).expect("Unable to read file");
-            let views: Vec<crate::ui::network::View> = serde_json::from_str(&data).expect("JSON was not well-formatted");
+            let views: Vec<crate::ui::network::View> =
+                serde_json::from_str(&data).expect("JSON was not well-formatted");
             for view in &views {
                 let object = glib::BoxedAnyObject::new(view.clone());
                 store.append(&object);
@@ -223,7 +224,7 @@ impl HomePage {
             self.get_librarysscroll(&views);
         } else {
             let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::View>>(3);
-            crate::ui::network::runtime().spawn(async move {
+            crate::ui::network::RUNTIME.spawn(async move {
                 let views = crate::ui::network::get_library().await.expect("msg");
                 sender.send(views).await.expect("msg");
             });
@@ -279,7 +280,8 @@ impl HomePage {
             ));
             if pathbuf.exists() {
                 let data = std::fs::read_to_string(&pathbuf).expect("Unable to read file");
-                let latest: Vec<crate::ui::network::Latest> = serde_json::from_str(&data).expect("JSON was not well-formatted");
+                let latest: Vec<crate::ui::network::Latest> =
+                    serde_json::from_str(&data).expect("JSON was not well-formatted");
                 self.set_librarysscroll(latest.clone());
                 let listview = self.set_librarysscroll(latest);
                 scrolledwindow.set_child(Some(&listview));
@@ -287,7 +289,7 @@ impl HomePage {
             }
 
             let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Latest>>(3);
-            crate::ui::network::runtime().spawn(async move {
+            crate::ui::network::RUNTIME.spawn(async move {
                 let latest = crate::ui::network::get_latest(view.id.clone())
                     .await
                     .expect("msg");
@@ -365,7 +367,7 @@ impl HomePage {
                 .expect("Needs to be BoxedAnyObject");
             let latest: std::cell::Ref<crate::ui::network::Latest> = entry.borrow();
             if latest.latest_type == "MusicAlbum" {
-                picture.set_size_request(167, 167);
+                picture.set_size_request(210, 210);
                 picture.set_valign(gtk::Align::Center);
             }
             if picture.is::<gtk::Box>() {

@@ -111,7 +111,7 @@ impl ListPage {
         let id = imp.id.get().expect("id not set").clone();
         spinner.set_visible(true);
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::List>(1);
-        crate::ui::network::runtime().spawn(glib::clone!(@strong sender => async move {
+        crate::ui::network::RUNTIME.spawn(glib::clone!(@strong sender => async move {
             let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
             let list_results = crate::ui::network::get_list(id.to_string(),0.to_string(),mutex).await.unwrap_or_else(|e| {
                 eprintln!("Error: {}", e);
@@ -267,7 +267,7 @@ impl ListPage {
                 let id = obj.imp().id.get().expect("id not set").clone();
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                 let offset = obj.imp().selection.model().unwrap().n_items();
-                crate::ui::network::runtime().spawn(glib::clone!(@strong sender => async move {
+                crate::ui::network::RUNTIME.spawn(glib::clone!(@strong sender => async move {
                     let list_results = crate::ui::network::get_list(id.to_string(),offset.to_string(),mutex).await.unwrap_or_else(|e| {
                         eprintln!("Error: {}", e);
                         crate::ui::network::List::default()

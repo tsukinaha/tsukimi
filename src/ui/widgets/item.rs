@@ -9,8 +9,9 @@ use std::env;
 use std::path::PathBuf;
 
 use crate::ui::models::SETTINGS;
-use crate::ui::network::{self, runtime, similar, SeriesInfo};
+use crate::ui::network::{self, RUNTIME, similar, SeriesInfo};
 use crate::ui::new_dropsel::bind_button;
+use crate::utils::{spawn, spawn_tokio};
 
 use super::actor::ActorPage;
 use super::fix::fix;
@@ -32,7 +33,7 @@ mod imp {
         #[property(get, set, construct_only)]
         pub id: OnceCell<String>,
         #[property(get, set, construct_only)]
-        pub inid: OnceCell<String>,
+        pub inid: RefCell<String>,
         #[template_child]
         pub backdrop: TemplateChild<gtk::Picture>,
         #[template_child]
@@ -111,6 +112,10 @@ mod imp {
         pub carousel: TemplateChild<adw::Carousel>,
         #[template_child]
         pub indicator: TemplateChild<adw::CarouselIndicatorLines>,
+        #[template_child]
+        pub favourite_button_split: TemplateChild<adw::SplitButton>,
+        #[template_child]
+        pub favourite_button_split_content: TemplateChild<adw::ButtonContent>,
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
         pub actorselection: gtk::SingleSelection,
@@ -139,6 +144,21 @@ mod imp {
             });
             klass.install_action("item.last", None, move |window, _action, _parameter| {
                 window.itemlast();
+            });
+            klass.install_action_async("like.episode", None, |window, _action, _parameter| async move {
+                window.like_episode().await;
+            });
+            klass.install_action_async("like.series", None, |window, _action, _parameter| async move {
+                window.like_series().await;
+            });
+            klass.install_action_async("unlike", None, |window, _action, _parameter| async move {
+                window.unlike().await;
+            });
+            klass.install_action_async("mark.played", None, |window, _action, _parameter| async move {
+                window.played().await;
+            });
+            klass.install_action_async("mark.unplayed", None, |window, _action, _parameter| async move {
+                window.unplayed().await;
             });
         }
 
@@ -205,6 +225,109 @@ impl ItemPage {
             .build()
     }
 
+    pub async fn played(&self) {
+        let imp = self.imp();
+        imp.favourite_button_split.set_sensitive(false);
+        let id = self.inid();
+        let (tx, rx) = async_channel::bounded::<()>(1);
+        spawn_tokio(async move {
+            network::played(&id).await.unwrap();
+            tx.send(()).await.unwrap();
+        }).await;
+        spawn(glib::clone!(@weak self as obj=>async move {
+            rx.recv().await.unwrap();
+            obj.imp().favourite_button_split.set_sensitive(true);
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Mark as played successfully.");
+        }));
+    }
+
+    pub async fn unplayed(&self) {
+        let imp = self.imp();
+        imp.favourite_button_split.set_sensitive(false);
+        let id = self.inid();
+        let (tx, rx) = async_channel::bounded::<()>(1);
+        spawn_tokio(async move {
+            network::unplayed(&id).await.unwrap();
+            tx.send(()).await.unwrap();
+        }).await;
+        spawn(glib::clone!(@weak self as obj=>async move {
+            rx.recv().await.unwrap();
+            obj.imp().favourite_button_split.set_sensitive(true);
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Mark as unplayed successfully.");
+        }));
+    }
+
+    pub async fn like_episode(&self) {
+        let imp = self.imp();
+        let spilt_button_content = imp.favourite_button_split_content.get();
+        let spilt_button = imp.favourite_button_split.get();
+        imp.favourite_button_split.set_sensitive(false);
+        let id = self.inid();
+        let (tx, rx) = async_channel::bounded::<()>(1);
+        spawn_tokio(async move {
+            network::like(&id).await.unwrap();
+            tx.send(()).await.unwrap();
+        }).await;
+        spawn(glib::clone!(@weak self as obj=>async move {
+            rx.recv().await.unwrap();
+            obj.imp().favourite_button_split.set_sensitive(true);
+            spilt_button.set_action_name(Some("unlike"));
+            spilt_button_content.set_icon_name("starred-symbolic");
+            spilt_button_content.set_label("Unlike");
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Liked the episode successfully.");
+        }));
+    }
+
+    pub async fn unlike(&self) {
+        let imp = self.imp();
+        let inid = self.inid();
+        let spilt_button_content = imp.favourite_button_split_content.get();
+        let spilt_button = imp.favourite_button_split.get();
+        imp.favourite_button_split.set_sensitive(false);
+        let id = self.id();
+        let (tx, rx) = async_channel::bounded::<()>(1);
+        spawn_tokio(async move {
+            network::unlike(&id).await.unwrap();
+            network::unlike(&inid).await.unwrap();
+            tx.send(()).await.unwrap();
+        }).await;
+        spawn(glib::clone!(@weak self as obj=>async move {
+            rx.recv().await.unwrap();
+            obj.imp().favourite_button_split.set_sensitive(true);
+            spilt_button.set_action_name(Some("like.series"));
+            spilt_button_content.set_icon_name("non-starred-symbolic");
+            spilt_button_content.set_label("Like");
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Unliked the series and episode successfully.");
+        }));   
+    }
+
+    pub async fn like_series(&self) {
+        let imp = self.imp();
+        let spilt_button_content = imp.favourite_button_split_content.get();
+        let spilt_button = imp.favourite_button_split.get();
+        imp.favourite_button_split.set_sensitive(false);
+        let id = self.id();
+        let (tx, rx) = async_channel::bounded::<()>(1);
+        spawn_tokio(async move {
+            network::like(&id).await.unwrap();
+            tx.send(()).await.unwrap();
+        }).await;
+        spawn(glib::clone!(@weak self as obj=>async move {
+            rx.recv().await.unwrap();
+            obj.imp().favourite_button_split.set_sensitive(true);
+            spilt_button.set_action_name(Some("unlike"));
+            spilt_button_content.set_icon_name("starred-symbolic");
+            spilt_button_content.set_label("Unlike");
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Liked the series successfully.");
+        }));
+    }
+
+
     pub fn bind_playbutton(&self, playbackinfo: network::Media, info: network::SeriesInfo) {
         let imp = self.imp();
         bind_button(
@@ -238,7 +361,7 @@ impl ItemPage {
                 window.set_rootpic(gtk::gio::File::for_path(&path));
             }));
         } else {
-            crate::ui::network::runtime().spawn(async move {
+            crate::ui::network::RUNTIME.spawn(async move {
                 let id = crate::ui::network::get_backdropimage(id1, 0)
                     .await
                     .expect("msg");
@@ -299,7 +422,7 @@ impl ItemPage {
                     carousel.append(&picture);
                 }));
             } else {
-                crate::ui::network::runtime().spawn(async move {
+                crate::ui::network::RUNTIME.spawn(async move {
                     let id = crate::ui::network::get_backdropimage(id, tag_num as u8)
                         .await
                         .expect("msg");
@@ -345,7 +468,7 @@ impl ItemPage {
         imp.selection.set_model(Some(&store));
 
         let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SeriesInfo>>(1);
-        network::runtime().spawn(async move {
+        network::RUNTIME.spawn(async move {
             match network::get_series_info(id).await {
                 Ok(series_info) => {
                     sender
@@ -574,12 +697,14 @@ impl ItemPage {
         let imp = self.imp();
         let osdbox = imp.osdbox.get();
         let id = seriesinfo.id.clone();
+        imp.inid.replace(id.clone());
         let idc = id.clone();
-        self.imp().playbutton.set_sensitive(false);
-        self.imp().line1spinner.set_visible(true);
+        imp.playbutton.set_sensitive(false);
+        imp.favourite_button_split.set_sensitive(false);
+        imp.line1spinner.set_visible(true);
         let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let playback = crate::ui::network::get_playbackinfo(id).await.expect("msg");
             sender.send(playback).await.expect("msg");
         });
@@ -596,6 +721,7 @@ impl ItemPage {
                 let handlerid = bind_button(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
                 obj.imp().playbuttonhandlerid.replace(Some(handlerid));
                 obj.imp().playbutton.set_sensitive(true);
+                obj.imp().favourite_button_split.set_sensitive(true);
             }
         }));
 
@@ -611,7 +737,7 @@ impl ItemPage {
         let itemoverview = imp.itemoverview.get();
         let overviewrevealer = imp.overviewrevealer.get();
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let item = crate::ui::network::get_item_overview(id.to_string())
                 .await
                 .expect("msg");
@@ -682,6 +808,17 @@ impl ItemPage {
                 if let Some(image_tags) = item.backdrop_image_tags {
                     obj.add_backdrops(image_tags);
                 }
+                if item.user_data.is_some() {
+                    let user_data = item.user_data.as_ref().unwrap();
+                    if let Some (is_favourite) = user_data.is_favorite {
+                        if is_favourite {
+                            let imp = obj.imp();
+                            imp.favourite_button_split.set_action_name(Some("unlike"));
+                            imp.favourite_button_split_content.set_icon_name("starred-symbolic");
+                            imp.favourite_button_split_content.set_label("Unlike");
+                        }
+                    }
+                }
             }
         }));
     }
@@ -691,7 +828,7 @@ impl ItemPage {
         let mediainfobox = imp.mediainfobox.get();
         let mediainforevealer = imp.mediainforevealer.get();
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let media = crate::ui::network::get_mediainfo(id.to_string())
                 .await
                 .expect("msg");
@@ -986,7 +1123,7 @@ impl ItemPage {
     pub fn get_similar(&self) {
         let id = self.id();
         let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
-        runtime().spawn(async move {
+        RUNTIME.spawn(async move {
             let id = similar(&id).await.expect("msg");
             sender
                 .send(id)

@@ -146,7 +146,7 @@ impl ActorPage {
         let spinner = imp.spinner.get();
         let title = imp.title.get();
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let item = crate::ui::network::get_item_overview(id.to_string())
                 .await
                 .expect("msg");
@@ -336,7 +336,7 @@ impl ActorPage {
         list.set_model(Some(selection));
         let media_type = types.to_string();
         let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Item>>(1);
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let item = crate::ui::network::person_item(&id, &media_type.to_string())
                 .await
                 .expect("msg");

@@ -8,7 +8,8 @@ use gtk::prelude::*;
 use gtk::{gio, glib};
 
 use crate::ui::models::SETTINGS;
-use crate::ui::network::{runtime, similar};
+use crate::ui::network::{self, similar, RUNTIME};
+use crate::utils::{spawn, spawn_tokio};
 
 use super::actor::ActorPage;
 use super::fix::fix;
@@ -96,6 +97,10 @@ mod imp {
         pub carousel: TemplateChild<adw::Carousel>,
         #[template_child]
         pub indicator: TemplateChild<adw::CarouselIndicatorLines>,
+        #[template_child]
+        pub favourite_button_split: TemplateChild<adw::SplitButton>,
+        #[template_child]
+        pub favourite_button_split_content: TemplateChild<adw::ButtonContent>,
         pub selection: gtk::SingleSelection,
         pub actorselection: gtk::SingleSelection,
         pub recommendselection: gtk::SingleSelection,
@@ -111,6 +116,18 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.install_action_async("like", None, |window, _action, _parameter| async move {
+                window.like().await;
+            });
+            klass.install_action_async("unlike", None, |window, _action, _parameter| async move {
+                window.unlike().await;
+            });
+            klass.install_action_async("mark.played", None, |window, _action, _parameter| async move {
+                window.played().await;
+            });
+            klass.install_action_async("mark.unplayed", None, |window, _action, _parameter| async move {
+                window.unplayed().await;
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -175,6 +192,86 @@ impl MoviePage {
             .build()
     }
 
+    pub async fn played(&self) {
+        let imp = self.imp();
+        imp.favourite_button_split.set_sensitive(false);
+        let id = self.id();
+        let (tx, rx) = async_channel::bounded::<()>(1);
+        spawn_tokio(async move {
+            network::played(&id).await.unwrap();
+            tx.send(()).await.unwrap();
+        }).await;
+        spawn(glib::clone!(@weak self as obj=>async move {
+            rx.recv().await.unwrap();
+            obj.imp().favourite_button_split.set_sensitive(true);
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Mark as played successfully.");
+        }));
+    }
+
+    pub async fn unplayed(&self) {
+        let imp = self.imp();
+        imp.favourite_button_split.set_sensitive(false);
+        let id = self.id();
+        let (tx, rx) = async_channel::bounded::<()>(1);
+        spawn_tokio(async move {
+            network::unplayed(&id).await.unwrap();
+            tx.send(()).await.unwrap();
+        }).await;
+        spawn(glib::clone!(@weak self as obj=>async move {
+            rx.recv().await.unwrap();
+            obj.imp().favourite_button_split.set_sensitive(true);
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Mark as unplayed successfully.");
+        }));
+    }
+
+    pub async fn like(&self) {
+        let imp = self.imp();
+        let spilt_button_content = imp.favourite_button_split_content.get();
+        let spilt_button = imp.favourite_button_split.get();
+        imp.favourite_button_split.set_sensitive(false);
+        let id = self.id();
+        let (tx, rx) = async_channel::bounded::<()>(1);
+        spawn_tokio(async move {
+            network::like(&id).await.unwrap();
+            tx.send(()).await.unwrap();
+        }).await;
+        spawn(glib::clone!(@weak self as obj=>async move {
+            rx.recv().await.unwrap();
+            obj.imp().favourite_button_split.set_sensitive(true);
+            spilt_button.set_action_name(Some("unlike"));
+            spilt_button_content.set_icon_name("starred-symbolic");
+            spilt_button_content.set_label("Unlike");
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Liked the movie successfully.");
+        }));
+    }
+
+    pub async fn unlike(&self) {
+        let imp = self.imp();
+        let inid = self.id();
+        let spilt_button_content = imp.favourite_button_split_content.get();
+        let spilt_button = imp.favourite_button_split.get();
+        imp.favourite_button_split.set_sensitive(false);
+        let id = self.id();
+        let (tx, rx) = async_channel::bounded::<()>(1);
+        spawn_tokio(async move {
+            network::unlike(&id).await.unwrap();
+            network::unlike(&inid).await.unwrap();
+            tx.send(()).await.unwrap();
+        }).await;
+        spawn(glib::clone!(@weak self as obj=>async move {
+            rx.recv().await.unwrap();
+            obj.imp().favourite_button_split.set_sensitive(true);
+            spilt_button.set_action_name(Some("like"));
+            spilt_button_content.set_icon_name("non-starred-symbolic");
+            spilt_button_content.set_label("Like");
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Unliked the movie successfully.");
+        }));   
+    }
+
     fn setup_background(&self) {
         let imp = self.imp();
         let id = self.id();
@@ -197,7 +294,7 @@ impl MoviePage {
                 window.set_rootpic(gtk::gio::File::for_path(&path));
             }));
         } else {
-            crate::ui::network::runtime().spawn(async move {
+            crate::ui::network::RUNTIME.spawn(async move {
                 let id = crate::ui::network::get_backdropimage(id, 0)
                     .await
                     .expect("msg");
@@ -253,7 +350,7 @@ impl MoviePage {
                     carousel.append(&picture);
                 }));
             } else {
-                crate::ui::network::runtime().spawn(async move {
+                crate::ui::network::RUNTIME.spawn(async move {
                     let id = crate::ui::network::get_backdropimage(id, 0)
                         .await
                         .expect("msg");
@@ -298,7 +395,7 @@ impl MoviePage {
         let itemoverview = imp.itemoverview.get();
         let overviewrevealer = imp.overviewrevealer.get();
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let item = crate::ui::network::get_item_overview(id)
                 .await
                 .expect("msg");
@@ -362,8 +459,8 @@ impl MoviePage {
                 if let Some(actor) = item.people {
                     obj.setactorscrolled(actor);
                 }
-                if let Some(userdata) = item.user_data {
-                    obj.dropdown(idclone.clone(), item.name.clone(), Some(userdata));
+                if let Some(userdata) = &item.user_data {
+                    obj.dropdown(idclone.clone(), item.name.clone(), Some(userdata.clone()));
                 }
                 if let Some(studios) = item.studios {
                     obj.set_studio(studios);
@@ -377,6 +474,16 @@ impl MoviePage {
                 overviewrevealer.set_reveal_child(true);
                 if let Some(image_tags) = item.backdrop_image_tags {
                     obj.add_backdrops(image_tags);
+                }
+                if let Some(userdata) = item.user_data {
+                    if let Some (is_favourite) = userdata.is_favorite {
+                        if is_favourite {
+                            let imp = obj.imp();
+                            imp.favourite_button_split.set_action_name(Some("unlike"));
+                            imp.favourite_button_split_content.set_icon_name("starred-symbolic");
+                            imp.favourite_button_split_content.set_label("Unlike");
+                        }
+                    }
                 }
             }
         }));
@@ -394,7 +501,7 @@ impl MoviePage {
         self.imp().line1spinner.set_visible(true);
         let idclone = id.clone();
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let playback = crate::ui::network::get_playbackinfo(id).await.expect("msg");
             sender.send(playback).await.expect("msg");
         });
@@ -421,7 +528,7 @@ impl MoviePage {
         let mediainfobox = imp.mediainfobox.get();
         let mediainforevealer = imp.mediainforevealer.get();
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let media = crate::ui::network::get_mediainfo(id.to_string())
                 .await
                 .expect("msg");
@@ -710,7 +817,7 @@ impl MoviePage {
     pub fn get_similar(&self) {
         let id = self.id();
         let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
-        runtime().spawn(async move {
+        RUNTIME.spawn(async move {
             let id = similar(&id).await.expect("msg");
             sender
                 .send(id)

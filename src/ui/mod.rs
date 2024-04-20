@@ -8,7 +8,7 @@ mod provider;
 mod widgets;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
-
+pub use crate::ui::network::RUNTIME;
 use self::models::SETTINGS;
 
 pub fn build_ui(app: &adw::Application) {

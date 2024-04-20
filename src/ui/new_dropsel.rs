@@ -2,7 +2,7 @@ use super::models::SETTINGS;
 use super::mpv;
 use super::network;
 use super::network::get_sub;
-use super::network::runtime;
+use super::network::RUNTIME;
 use super::network::Back;
 use super::network::Media;
 use super::network::SeriesInfo;
@@ -237,7 +237,7 @@ pub fn set_sub(
 ) {
     let (sender, receiver) = async_channel::bounded::<Media>(1);
     let idc = id.clone();
-    runtime().spawn(async move {
+    RUNTIME.spawn(async move {
         match get_sub(idc, sourceid).await {
             Ok(media) => {
                 sender.send(media).await.expect("series_info not received.");

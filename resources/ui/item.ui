@@ -137,21 +137,45 @@
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="GtkButton" id="playbutton">
+                                      <object class="GtkBox">
+                                        <property name="orientation">horizontal</property>
                                         <property name="halign">start</property>
-                                        <property name="width-request">250</property>
-                                        <property name="sensitive">False</property>
-                                        <property name="child">
-                                          <object class="AdwButtonContent">
-                                            <property name="icon-name">media-playback-start-symbolic</property>
-                                            <property name="label" translatable="yes">Play</property>
-                                            <property name="use-underline">True</property>
+                                        <property name="spacing">10</property>
+                                        <child>
+                                          <object class="GtkButton" id="playbutton">
+                                            <property name="halign">start</property>
+                                            <property name="width-request">250</property>
+                                            <property name="sensitive">False</property>
+                                            <property name="child">
+                                              <object class="AdwButtonContent">
+                                                <property name="icon-name">media-playback-start-symbolic</property>
+                                                <property name="label" translatable="yes">Play</property>
+                                                <property name="use-underline">True</property>
+                                              </object>
+                                            </property>
+                                            <style>
+                                              <class name="suggested-action" />
+                                              <class name="pill" />
+                                            </style>
                                           </object>
-                                        </property>
-                                        <style>
-                                          <class name="suggested-action" />
-                                          <class name="pill" />
-                                        </style>
+                                        </child>
+                                        <child>
+                                          <object class="AdwSplitButton" id="favourite_button_split">
+                                            <property name="menu_model">favourite_button_menu_model</property>
+                                            <property name="sensitive">False</property>
+                                            <property name="action-name">like.series</property>
+                                            <child>
+                                              <object class="AdwButtonContent" id="favourite_button_split_content">
+                                                <property name="icon-name">non-starred-symbolic</property>
+                                                <property name="label">Like</property>
+                                              </object>
+                                            </child>
+                                            <style>
+                                              <class name="suggested-action" />
+                                              <class name="starbutton" />
+                                            </style>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
@@ -227,23 +251,6 @@
                         <property name="height-request">150</property>
                         <property name="valign">start</property>
                         <property name="halign">start</property>
-                      </object>
-                    </child>
-                    <child type="overlay">
-                      <object class="GtkBox">
-                        <property name="margin-end">30</property>
-                        <property name="margin-top">15</property>
-                        <property name="spacing">10</property>
-                        <property name="valign">start</property>
-                        <property name="halign">end</property>
-                        <child>
-                          <object class="GtkCheckButton">
-                            <style>
-                              <class name="selection-mode" />
-                              <class name="checkwatched" />
-                            </style>
-                          </object>
-                        </child>
                       </object>
                     </child>
                   </object>
@@ -674,4 +681,42 @@
       </object>
     </child>
   </template>
+  <menu id="favourite_button_menu_model">
+    <section>
+      <item>
+        <attribute name="label">Like This Episode</attribute>
+        <attribute name="action">like.episode</attribute>
+      </item>
+      <item>
+        <attribute name="label">Like This Series</attribute>
+        <attribute name="action">like.series</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Unlike All</attribute>
+        <attribute name="action">unlike</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Mark as Played</attribute>
+        <attribute name="action">mark.played</attribute>
+      </item>
+      <item>
+        <attribute name="label">Mark as Unplayed</attribute>
+        <attribute name="action">mark.unplayed</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Edit Metadata</attribute>
+        <attribute name="action">notification.default</attribute>
+      </item>
+      <item>
+        <attribute name="label">Edit Images</attribute>
+        <attribute name="action">notification.default</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>

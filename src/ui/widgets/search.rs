@@ -95,7 +95,7 @@ impl SearchPage {
 
     pub fn setup_recommend(&self) {
         let (sender, receiver) = async_channel::bounded::<List>(1);
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let list = crate::ui::network::get_search_recommend()
                 .await
                 .expect("msg");
@@ -154,7 +154,7 @@ impl SearchPage {
                 spinner.set_visible(true);
                 recommendbox.set_visible(false);
                 let search_content = entry.text().to_string();
-                crate::ui::network::runtime().spawn(glib::clone!(@strong sender => async move {
+                crate::ui::network::RUNTIME.spawn(glib::clone!(@strong sender => async move {
                     let search_results = crate::ui::network::search(search_content).await.unwrap_or_else(|e| {
                         eprintln!("Error: {}", e);
                         Vec::<crate::ui::network::SearchResult>::new()

@@ -6,7 +6,7 @@ pub fn setimage(id: String) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Fill);
+    image.set_halign(gtk::Align::Center);
     image.set_content_fit(gtk::ContentFit::Cover);
     let revealer = gtk::Revealer::builder()
         .transition_type(gtk::RevealerTransitionType::Crossfade)
@@ -30,7 +30,7 @@ pub fn setimage(id: String) -> Revealer {
             revealer.set_reveal_child(true);
         }
     } else {
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
                 match crate::ui::network::get_image(id.clone()).await {
@@ -90,7 +90,7 @@ pub fn setthumbimage(id: String) -> Revealer {
             revealer.set_reveal_child(true);
         }
     } else {
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
                 match crate::ui::network::get_thumbimage(id.clone()).await {
@@ -151,7 +151,7 @@ pub fn setbackdropimage(id: String, tag: u8) -> Revealer {
             revealer.set_reveal_child(true);
         }
     } else {
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
                 match crate::ui::network::get_backdropimage(id.clone(), tag).await {
@@ -210,7 +210,7 @@ pub fn setlogoimage(id: String) -> Revealer {
             revealer.set_reveal_child(true);
         }
     } else {
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
                 match crate::ui::network::get_logoimage(id.clone()).await {
