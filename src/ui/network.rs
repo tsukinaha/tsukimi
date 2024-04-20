@@ -2,6 +2,7 @@ use crate::config::proxy::ReqClient;
 use crate::config::{self, get_device_name, save_cfg, Account, APP_VERSION};
 use crate::ui::models::SETTINGS;
 use dirs::home_dir;
+use once_cell::sync::Lazy;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
 use serde::{Deserialize, Serialize};
@@ -13,15 +14,15 @@ use std::io::Write;
 use std::path::PathBuf;
 use std::sync::OnceLock;
 use tokio::runtime;
-use once_cell::sync::Lazy;
 
-pub static RUNTIME: Lazy<tokio::runtime::Runtime> =
-    Lazy::new(|| runtime::Builder::new_multi_thread()
-    .worker_threads(SETTINGS.threads() as usize)
-    .enable_io()
-    .enable_time()
-    .build()
-    .expect("Failed to create runtime"));
+pub static RUNTIME: Lazy<tokio::runtime::Runtime> = Lazy::new(|| {
+    runtime::Builder::new_multi_thread()
+        .worker_threads(SETTINGS.threads() as usize)
+        .enable_io()
+        .enable_time()
+        .build()
+        .expect("Failed to create runtime")
+});
 
 fn client() -> &'static Client {
     static CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
@@ -413,7 +414,6 @@ pub struct UserData {
     pub unplayed_item_count: Option<u32>,
     #[serde(rename = "IsFavorite")]
     pub is_favorite: Option<bool>,
-
 }
 struct ResumeModel {
     resume: Vec<Resume>,
@@ -1115,10 +1115,7 @@ pub(crate) async fn like_item(types: &str) -> Result<Vec<Item>, Error> {
 
     let client = client();
     let url = if types == "People" {
-        format!(
-            "{}:{}/emby/Persons",
-            server_info.domain, server_info.port
-        )
+        format!("{}:{}/emby/Persons", server_info.domain, server_info.port)
     } else {
         format!(
             "{}:{}/emby/Users/{}/Items",
@@ -1126,7 +1123,10 @@ pub(crate) async fn like_item(types: &str) -> Result<Vec<Item>, Error> {
         )
     };
     let params = [
-        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear"),
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+        ),
         ("Filters", "IsFavorite"),
         ("Recursive", "true"),
         ("CollapseBoxSetItems", "false"),
@@ -1134,7 +1134,11 @@ pub(crate) async fn like_item(types: &str) -> Result<Vec<Item>, Error> {
         ("SortOrder", "Ascending"),
         ("IncludeItemTypes", types),
         ("Limit", "12"),
-        if types == "People" {("UserId", &server_info.user_id)} else {("", "")},
+        if types == "People" {
+            ("UserId", &server_info.user_id)
+        } else {
+            ("", "")
+        },
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
@@ -1149,7 +1153,7 @@ pub(crate) async fn like_item(types: &str) -> Result<Vec<Item>, Error> {
     Ok(items)
 }
 
-pub async fn like(id: &str) -> Result<(), Error>{
+pub async fn like(id: &str) -> Result<(), Error> {
     let server_info = config::set_config();
     let client = client();
     let url = format!(
@@ -1169,7 +1173,7 @@ pub async fn like(id: &str) -> Result<(), Error>{
     Ok(())
 }
 
-pub async fn unlike(id: &str) -> Result<(), Error>{
+pub async fn unlike(id: &str) -> Result<(), Error> {
     let server_info = config::set_config();
     let client = client();
     let url = format!(
@@ -1189,7 +1193,7 @@ pub async fn unlike(id: &str) -> Result<(), Error>{
     Ok(())
 }
 
-pub async fn played(id: &str) -> Result<(), Error>{
+pub async fn played(id: &str) -> Result<(), Error> {
     let server_info = config::set_config();
     let client = client();
     let url = format!(
@@ -1209,7 +1213,7 @@ pub async fn played(id: &str) -> Result<(), Error>{
     Ok(())
 }
 
-pub async fn unplayed(id: &str) -> Result<(), Error>{
+pub async fn unplayed(id: &str) -> Result<(), Error> {
     let server_info = config::set_config();
     let client = client();
     let url = format!(

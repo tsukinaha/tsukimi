@@ -9,7 +9,7 @@ use std::env;
 use std::path::PathBuf;
 
 use crate::ui::models::SETTINGS;
-use crate::ui::network::{self, RUNTIME, similar, SeriesInfo};
+use crate::ui::network::{self, similar, SeriesInfo, RUNTIME};
 use crate::ui::new_dropsel::bind_button;
 use crate::utils::{spawn, spawn_tokio};
 
@@ -145,21 +145,37 @@ mod imp {
             klass.install_action("item.last", None, move |window, _action, _parameter| {
                 window.itemlast();
             });
-            klass.install_action_async("like.episode", None, |window, _action, _parameter| async move {
-                window.like_episode().await;
-            });
-            klass.install_action_async("like.series", None, |window, _action, _parameter| async move {
-                window.like_series().await;
-            });
+            klass.install_action_async(
+                "like.episode",
+                None,
+                |window, _action, _parameter| async move {
+                    window.like_episode().await;
+                },
+            );
+            klass.install_action_async(
+                "like.series",
+                None,
+                |window, _action, _parameter| async move {
+                    window.like_series().await;
+                },
+            );
             klass.install_action_async("unlike", None, |window, _action, _parameter| async move {
                 window.unlike().await;
             });
-            klass.install_action_async("mark.played", None, |window, _action, _parameter| async move {
-                window.played().await;
-            });
-            klass.install_action_async("mark.unplayed", None, |window, _action, _parameter| async move {
-                window.unplayed().await;
-            });
+            klass.install_action_async(
+                "mark.played",
+                None,
+                |window, _action, _parameter| async move {
+                    window.played().await;
+                },
+            );
+            klass.install_action_async(
+                "mark.unplayed",
+                None,
+                |window, _action, _parameter| async move {
+                    window.unplayed().await;
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -233,7 +249,8 @@ impl ItemPage {
         spawn_tokio(async move {
             network::played(&id).await.unwrap();
             tx.send(()).await.unwrap();
-        }).await;
+        })
+        .await;
         spawn(glib::clone!(@weak self as obj=>async move {
             rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
@@ -250,7 +267,8 @@ impl ItemPage {
         spawn_tokio(async move {
             network::unplayed(&id).await.unwrap();
             tx.send(()).await.unwrap();
-        }).await;
+        })
+        .await;
         spawn(glib::clone!(@weak self as obj=>async move {
             rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
@@ -269,7 +287,8 @@ impl ItemPage {
         spawn_tokio(async move {
             network::like(&id).await.unwrap();
             tx.send(()).await.unwrap();
-        }).await;
+        })
+        .await;
         spawn(glib::clone!(@weak self as obj=>async move {
             rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
@@ -293,7 +312,8 @@ impl ItemPage {
             network::unlike(&id).await.unwrap();
             network::unlike(&inid).await.unwrap();
             tx.send(()).await.unwrap();
-        }).await;
+        })
+        .await;
         spawn(glib::clone!(@weak self as obj=>async move {
             rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
@@ -302,7 +322,7 @@ impl ItemPage {
             spilt_button_content.set_label("Like");
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             window.toast("Unliked the series and episode successfully.");
-        }));   
+        }));
     }
 
     pub async fn like_series(&self) {
@@ -315,7 +335,8 @@ impl ItemPage {
         spawn_tokio(async move {
             network::like(&id).await.unwrap();
             tx.send(()).await.unwrap();
-        }).await;
+        })
+        .await;
         spawn(glib::clone!(@weak self as obj=>async move {
             rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
@@ -326,7 +347,6 @@ impl ItemPage {
             window.toast("Liked the series successfully.");
         }));
     }
-
 
     pub fn bind_playbutton(&self, playbackinfo: network::Media, info: network::SeriesInfo) {
         let imp = self.imp();

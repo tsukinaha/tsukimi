@@ -122,12 +122,20 @@ mod imp {
             klass.install_action_async("unlike", None, |window, _action, _parameter| async move {
                 window.unlike().await;
             });
-            klass.install_action_async("mark.played", None, |window, _action, _parameter| async move {
-                window.played().await;
-            });
-            klass.install_action_async("mark.unplayed", None, |window, _action, _parameter| async move {
-                window.unplayed().await;
-            });
+            klass.install_action_async(
+                "mark.played",
+                None,
+                |window, _action, _parameter| async move {
+                    window.played().await;
+                },
+            );
+            klass.install_action_async(
+                "mark.unplayed",
+                None,
+                |window, _action, _parameter| async move {
+                    window.unplayed().await;
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -200,7 +208,8 @@ impl MoviePage {
         spawn_tokio(async move {
             network::played(&id).await.unwrap();
             tx.send(()).await.unwrap();
-        }).await;
+        })
+        .await;
         spawn(glib::clone!(@weak self as obj=>async move {
             rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
@@ -217,7 +226,8 @@ impl MoviePage {
         spawn_tokio(async move {
             network::unplayed(&id).await.unwrap();
             tx.send(()).await.unwrap();
-        }).await;
+        })
+        .await;
         spawn(glib::clone!(@weak self as obj=>async move {
             rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
@@ -236,7 +246,8 @@ impl MoviePage {
         spawn_tokio(async move {
             network::like(&id).await.unwrap();
             tx.send(()).await.unwrap();
-        }).await;
+        })
+        .await;
         spawn(glib::clone!(@weak self as obj=>async move {
             rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
@@ -260,7 +271,8 @@ impl MoviePage {
             network::unlike(&id).await.unwrap();
             network::unlike(&inid).await.unwrap();
             tx.send(()).await.unwrap();
-        }).await;
+        })
+        .await;
         spawn(glib::clone!(@weak self as obj=>async move {
             rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
@@ -269,7 +281,7 @@ impl MoviePage {
             spilt_button_content.set_label("Like");
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             window.toast("Unliked the movie successfully.");
-        }));   
+        }));
     }
 
     fn setup_background(&self) {

@@ -8,7 +8,10 @@ use std::{
 };
 
 use crate::{
-    config::set_config, ui::network::{Back, RUNTIME}, utils::spawn_tokio, APP_ID
+    config::set_config,
+    ui::network::{Back, RUNTIME},
+    utils::spawn_tokio,
+    APP_ID,
 };
 pub fn play(
     url: String,
@@ -93,8 +96,7 @@ pub fn play(
                         back.tick = duration;
                         let _ = spawn_tokio(async {
                             crate::ui::network::positionstop(back).await;
-                            }
-                        );
+                        });
                     }
                     println!("Exiting! Reason: {:?}", r);
                     break;
