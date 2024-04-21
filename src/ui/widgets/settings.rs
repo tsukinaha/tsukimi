@@ -50,6 +50,8 @@ mod imp {
         pub backgroundcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub toast: TemplateChild<adw::ToastOverlay>,
+        #[template_child]
+        pub fontspinrow: TemplateChild<adw::SpinRow>,
     }
 
     // The central trait for subclassing a GObject
@@ -112,6 +114,7 @@ mod imp {
                 obj.set_picblur();
                 obj.change_picblur();
                 obj.set_auto_select_server();
+                obj.set_fontsize();
             }));
         }
     }
@@ -183,6 +186,20 @@ impl SettingsPage {
             SETTINGS
                 .set_background_height(control.value() as i32)
                 .unwrap();
+        });
+    }
+
+    pub fn set_fontsize(&self) {
+        let imp = self.imp();
+        let settings = gtk::Settings::default().unwrap();
+        if SETTINGS.font_size() == -1 {
+            imp.fontspinrow.set_value((settings.property::<i32>("gtk-xft-dpi") / 1024).into());
+        } else {
+            imp.fontspinrow.set_value(SETTINGS.font_size().into());
+        }
+        imp.fontspinrow.connect_value_notify(move |control| {
+            settings.set_property("gtk-xft-dpi",control.value() as i32 * 1024);
+            SETTINGS.set_font_size(control.value() as i32).unwrap();
         });
     }
 

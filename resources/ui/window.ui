@@ -116,7 +116,7 @@
                     <property name="name">main</property>
                     <property name="child">
                       <object class="AdwOverlaySplitView" id="split_view">
-                        <property name="min-sidebar-width">190</property>
+                        <property name="min-sidebar-width">220</property>
                         <property name="max-sidebar-width">300</property>
                         <property name="sidebar-width-fraction">0.18</property>
                         <property name="sidebar">

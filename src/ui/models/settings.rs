@@ -26,7 +26,16 @@ impl Settings {
     const KEY_PIC_OPACITY: &'static str = "pic-opacity";
     const KEY_PIC_BLUR: &'static str = "pic-blur";
     const KEY_PREFERRED_SERVER: &'static str = "preferred-server";
-    const KEU_IS_AUTO_SELECT_SERVER: &'static str = "is-auto-select-server";
+    const KEY_IS_AUTO_SELECT_SERVER: &'static str = "is-auto-select-server";
+    const KEY_FONT_SIZE: &'static str = "font-size";
+
+    pub fn set_font_size(&self, font_size: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_FONT_SIZE, font_size)
+    }
+
+    pub fn font_size(&self) -> i32 {
+        self.int(Self::KEY_FONT_SIZE)
+    }
 
     pub fn set_forcewindow(&self, force_window: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_IS_FORCE_WINDOW, force_window)
@@ -45,11 +54,11 @@ impl Settings {
     }
 
     pub fn set_auto_select_server(&self, auto_select_server: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEU_IS_AUTO_SELECT_SERVER, auto_select_server)
+        self.set_boolean(Self::KEY_IS_AUTO_SELECT_SERVER, auto_select_server)
     }
 
     pub fn auto_select_server(&self) -> bool {
-        self.boolean(Self::KEU_IS_AUTO_SELECT_SERVER)
+        self.boolean(Self::KEY_IS_AUTO_SELECT_SERVER)
     }
 
     pub fn set_progress(&self, progress: bool) -> Result<(), glib::BoolError> {
