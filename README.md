@@ -48,6 +48,11 @@ scoop install tsukimi
 ```
 - [Release](https://github.com/tsukinaha/tsukimi/releases/latest)
 
+## Tips
+如果你感觉组件过大（如图片），请设置此环境变量 [更多](https://wiki.archlinuxcn.org/wiki/HiDPI#GDK_3_(GTK+_3))
+```
+$ export GDK_SCALE=1
+```
 
 ## MPV Config
 - Linux: `$XDG_CONFIG_HOME/mpv`
