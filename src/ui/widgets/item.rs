@@ -232,14 +232,11 @@ impl ItemPage {
         let imp = self.imp();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
-        let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
             network::played(&id).await.unwrap();
-            tx.send(()).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
-            rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             window.toast("Mark as played successfully.");
@@ -250,14 +247,11 @@ impl ItemPage {
         let imp = self.imp();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
-        let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
             network::unplayed(&id).await.unwrap();
-            tx.send(()).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
-            rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             window.toast("Mark as unplayed successfully.");
@@ -270,14 +264,11 @@ impl ItemPage {
         let spilt_button = imp.favourite_button_split.get();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
-        let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
             network::like(&id).await.unwrap();
-            tx.send(()).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
-            rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
             spilt_button.set_action_name(Some("unlike"));
             spilt_button_content.set_icon_name("starred-symbolic");
@@ -294,15 +285,12 @@ impl ItemPage {
         let spilt_button = imp.favourite_button_split.get();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.id();
-        let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
             network::unlike(&id).await.unwrap();
             network::unlike(&inid).await.unwrap();
-            tx.send(()).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
-            rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
             spilt_button.set_action_name(Some("like.series"));
             spilt_button_content.set_icon_name("non-starred-symbolic");
@@ -318,14 +306,11 @@ impl ItemPage {
         let spilt_button = imp.favourite_button_split.get();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.id();
-        let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
             network::like(&id).await.unwrap();
-            tx.send(()).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
-            rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
             spilt_button.set_action_name(Some("unlike"));
             spilt_button_content.set_icon_name("starred-symbolic");
@@ -362,7 +347,7 @@ impl ItemPage {
         let (sender, receiver) = async_channel::bounded::<String>(1);
         if pathbuf.exists() {
             backdrop.set_file(Some(&gtk::gio::File::for_path(&path)));
-            glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
+            spawn(glib::clone!(@weak self as obj =>async move {
                 obj.imp().backrevealer.set_reveal_child(true);
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 window.set_rootpic(gtk::gio::File::for_path(&path));

@@ -1,6 +1,6 @@
 use crate::ui::RUNTIME;
 
-pub fn spawn_tokio_blocking<F>(fut: F) -> F::Output
+pub fn _spawn_tokio_blocking<F>(fut: F) -> F::Output
 where
     F: std::future::Future + Send + 'static,
     F::Output: Send + 'static,
@@ -43,6 +43,7 @@ where
     F: std::future::Future<Output = ()> + 'static,
 {
     gtk::glib::spawn_future_local(async move {
+        // Give the GLib event loop a whole 250ms to animate the NavigtionPage
         gtk::glib::timeout_future(std::time::Duration::from_millis(250)).await;
         future.await;
     });
