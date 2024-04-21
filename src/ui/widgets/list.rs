@@ -16,6 +16,8 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::utils::spawn_g_timeout;
+
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/list.ui")]
@@ -59,22 +61,8 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            let (sender, receiver) = async_channel::bounded::<bool>(1);
-            gtk::gio::spawn_blocking(move || {
-                sender
-                    .send_blocking(false)
-                    .expect("The channel needs to be open.");
-                std::thread::sleep(std::time::Duration::from_millis(500));
-                sender
-                    .send_blocking(true)
-                    .expect("The channel needs to be open.");
-            });
-            glib::spawn_future_local(glib::clone!(@weak obj =>async move {
-                while let Ok(bool) = receiver.recv().await {
-                    if bool {
-                        obj.set_factory();
-                    }
-                }
+            spawn_g_timeout(glib::clone!(@weak obj => async move {
+                obj.set_factory();
             }));
         }
     }

@@ -37,3 +37,13 @@ where
         fut.await;
     });
 }
+
+pub fn spawn_g_timeout<F>(future: F) 
+where
+    F: std::future::Future<Output = ()> + 'static,
+{
+    gtk::glib::spawn_future_local(async move {
+        gtk::glib::timeout_future(std::time::Duration::from_millis(250)).await;
+        future.await;
+    });
+}

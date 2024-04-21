@@ -20,6 +20,8 @@ mod imp {
     use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
+
+    use crate::utils::spawn_g_timeout;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/movie.ui")]
@@ -149,26 +151,12 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            let (sender, receiver) = async_channel::bounded::<bool>(1);
-            gtk::gio::spawn_blocking(move || {
-                sender
-                    .send_blocking(false)
-                    .expect("The channel needs to be open.");
-                std::thread::sleep(std::time::Duration::from_millis(300));
-                sender
-                    .send_blocking(true)
-                    .expect("The channel needs to be open.");
-            });
-            glib::spawn_future_local(glib::clone!(@weak obj =>async move {
-                while let Ok(bool) = receiver.recv().await {
-                    if bool {
-                        obj.setup_background();
-                        obj.logoset();
-                        obj.setoverview();
-                        obj.createmediabox();
-                        obj.get_similar();
-                    }
-                }
+            spawn_g_timeout(glib::clone!(@weak obj => async move {
+                obj.setup_background();
+                obj.logoset();
+                obj.setoverview();
+                obj.createmediabox();
+                obj.get_similar();
             }));
         }
     }
