@@ -149,13 +149,12 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            obj.setup_background();
             let (sender, receiver) = async_channel::bounded::<bool>(1);
             gtk::gio::spawn_blocking(move || {
                 sender
                     .send_blocking(false)
                     .expect("The channel needs to be open.");
-                std::thread::sleep(std::time::Duration::from_millis(400));
+                std::thread::sleep(std::time::Duration::from_millis(300));
                 sender
                     .send_blocking(true)
                     .expect("The channel needs to be open.");
@@ -163,6 +162,7 @@ mod imp {
             glib::spawn_future_local(glib::clone!(@weak obj =>async move {
                 while let Ok(bool) = receiver.recv().await {
                     if bool {
+                        obj.setup_background();
                         obj.logoset();
                         obj.setoverview();
                         obj.createmediabox();
