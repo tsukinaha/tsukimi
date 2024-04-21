@@ -8,7 +8,8 @@ use std::{
 
 use crate::{
     config::set_config,
-    ui::network::{runtime, Back},
+    ui::network::{Back, RUNTIME},
+    utils::spawn_tokio,
     APP_ID,
 };
 pub fn play(
@@ -87,7 +88,7 @@ pub fn play(
     ev_ctx.observe_property("time-pos", Format::Double, 0)?;
 
     let backc = back.clone();
-    runtime().spawn(async move {
+    RUNTIME.spawn(async move {
         crate::ui::network::playstart(backc).await;
     });
 
@@ -110,7 +111,7 @@ pub fn play(
                     if r == 3 {
                         let mut back = back.clone();
                         back.tick = duration;
-                        runtime().spawn(async move {
+                        let _ = spawn_tokio(async {
                             crate::ui::network::positionstop(back).await;
                         });
                     }
@@ -128,7 +129,7 @@ pub fn play(
                         last_print = Instant::now();
                         let mut back = back.clone();
                         back.tick = duration;
-                        runtime().spawn(async move {
+                        RUNTIME.spawn(async move {
                             crate::ui::network::positionback(back).await;
                         });
                     }

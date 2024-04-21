@@ -177,6 +177,15 @@ impl Window {
         let listbox = imp.serversbox.get();
         listbox.remove_all();
         let accounts = load_cfgv2().unwrap();
+        for account in &accounts.accounts {
+            if SETTINGS.auto_select_server() && account.servername == SETTINGS.preferred_server() {
+                load_env(account);
+                imp.historypage.set_child(None::<&gtk::Widget>);
+                imp.searchpage.set_child(None::<&gtk::Widget>);
+                self.mainpage();
+                self.freshhomepage();
+            }
+        }
         if accounts.accounts.is_empty() {
             imp.login_stack.set_visible_child_name("no-server");
             return;
@@ -215,6 +224,7 @@ impl Window {
                 let account_ptr: std::ptr::NonNull<Account>  = row.data("account").unwrap();
                 let account: &Account = &*account_ptr.as_ptr();
                 load_env(account);
+                SETTINGS.set_preferred_server(&account.servername).unwrap();
             }
             obj.imp().historypage.set_child(None::<&gtk::Widget>);
             obj.imp().searchpage.set_child(None::<&gtk::Widget>);
@@ -242,7 +252,7 @@ impl Window {
         imp.historyview.pop();
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
             if tag.as_str() == "historypage" {
-                imp.navipage.set_title("History");
+                imp.navipage.set_title("History & Liked");
                 self.change_pop_visibility();
             } else {
                 imp.navipage.set_title(&tag);
@@ -420,16 +430,16 @@ impl Window {
         if imp.historypage.child().is_none() {
             imp.historypage
                 .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
-            imp.navipage.set_title("History");
+            imp.navipage.set_title("History & Liked");
         }
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
             if tag.as_str() == "historypage" {
-                imp.navipage.set_title("History");
+                imp.navipage.set_title("History & Liked");
                 self.set_pop_visibility(false);
             } else {
                 self.set_pop_visibility(true);
                 imp.navipage.set_title(
-                    &env::var("HISTORY_TITLE").unwrap_or_else(|_| "History".to_string()),
+                    &env::var("HISTORY_TITLE").unwrap_or_else(|_| "History & Liked".to_string()),
                 );
             }
         } else {

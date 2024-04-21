@@ -16,6 +16,8 @@ mod imp {
     use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
+
+    use crate::utils::spawn_g_timeout;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/actor.ui")]
@@ -83,24 +85,10 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            let (sender, receiver) = async_channel::bounded::<bool>(1);
-            gtk::gio::spawn_blocking(move || {
-                sender
-                    .send_blocking(false)
-                    .expect("The channel needs to be open.");
-                std::thread::sleep(std::time::Duration::from_millis(400));
-                sender
-                    .send_blocking(true)
-                    .expect("The channel needs to be open.");
-            });
-            glib::spawn_future_local(glib::clone!(@weak obj =>async move {
-                while let Ok(bool) = receiver.recv().await {
-                    if bool {
-                        obj.setup_pic();
-                        obj.get_item();
-                        obj.set_lists();
-                    }
-                }
+            spawn_g_timeout(glib::clone!(@weak obj => async move {
+                obj.setup_pic();
+                obj.get_item();
+                obj.set_lists();
             }));
         }
     }
@@ -147,7 +135,7 @@ impl ActorPage {
         let spinner = imp.spinner.get();
         let title = imp.title.get();
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let item = crate::ui::network::get_item_overview(id.to_string())
                 .await
                 .expect("msg");
@@ -337,7 +325,7 @@ impl ActorPage {
         list.set_model(Some(selection));
         let media_type = types.to_string();
         let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Item>>(1);
-        crate::ui::network::runtime().spawn(async move {
+        crate::ui::network::RUNTIME.spawn(async move {
             let item = crate::ui::network::person_item(&id, &media_type.to_string())
                 .await
                 .expect("msg");

@@ -2,10 +2,11 @@
 # Tsukimi
 > A Simple Third-party Emby client.
 
+<a>
 <img alt="Commit Activity" src="https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main" />
 <img alt="Top Language" src="https://img.shields.io/github/languages/top/tsukinaha/Tsukimi"/>
 <img alt="Github License" src="https://img.shields.io/github/license/tsukinaha/Tsukimi" />
-
+</a>
   
 使用 GTK4-RS 编写的第三方 Emby 客户端
 
@@ -20,6 +21,9 @@
 <img alt="AUR Version" src="https://img.shields.io/aur/version/tsukimi-git" />
 </a>
 
+## I want feature of ○○○!
+欢迎提出你想要的功能    
+如果它实用或有趣  我相信你很快就可以看到它
 
 ## Screenshots
 <div align="center">

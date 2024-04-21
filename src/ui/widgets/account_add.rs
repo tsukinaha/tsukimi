@@ -5,7 +5,7 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 
-use crate::ui::network::{loginv2, runtime};
+use crate::ui::network::{loginv2, RUNTIME};
 mod imp {
 
     use adw::subclass::dialog::AdwDialogImpl;
@@ -102,7 +102,7 @@ impl AccountWindow {
             );
         } else {
             let (sender, receiver) = async_channel::bounded::<Result<bool, reqwest::Error>>(1);
-            runtime().spawn(async move {
+            RUNTIME.spawn(async move {
                 match loginv2(
                     servername.to_string(),
                     server.to_string(),

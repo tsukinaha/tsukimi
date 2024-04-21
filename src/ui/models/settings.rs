@@ -25,6 +25,8 @@ impl Settings {
     const KEY_THREADS: &'static str = "threads";
     const KEY_PIC_OPACITY: &'static str = "pic-opacity";
     const KEY_PIC_BLUR: &'static str = "pic-blur";
+    const KEY_PREFERRED_SERVER: &'static str = "preferred-server";
+    const KEU_IS_AUTO_SELECT_SERVER: &'static str = "is-auto-select-server";
 
     pub fn set_forcewindow(&self, force_window: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_IS_FORCE_WINDOW, force_window)
@@ -32,6 +34,22 @@ impl Settings {
 
     pub fn forcewindow(&self) -> bool {
         self.boolean(Self::KEY_IS_FORCE_WINDOW)
+    }
+
+    pub fn set_preferred_server(&self, preferred_server: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_PREFERRED_SERVER, preferred_server)
+    }
+
+    pub fn preferred_server(&self) -> String {
+        self.string(Self::KEY_PREFERRED_SERVER).to_string()
+    }
+
+    pub fn set_auto_select_server(&self, auto_select_server: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEU_IS_AUTO_SELECT_SERVER, auto_select_server)
+    }
+
+    pub fn auto_select_server(&self) -> bool {
+        self.boolean(Self::KEU_IS_AUTO_SELECT_SERVER)
     }
 
     pub fn set_progress(&self, progress: bool) -> Result<(), glib::BoolError> {

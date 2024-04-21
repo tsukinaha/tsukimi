@@ -7,6 +7,7 @@ pub mod home;
 pub mod item;
 pub mod list;
 pub mod movie;
+pub mod music;
 pub mod search;
 pub mod settings;
 pub mod window;

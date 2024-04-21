@@ -216,10 +216,10 @@ windowcontrols > button.minimize:hover {
   color: rgba(255, 255, 255, 0.8);
 }
 label {
-  font-size: 16px;
+  font-size: 1.1em;
 }
 .large-font {
-  font-size: 18px;
+  font-size: 1.2em;
 }
 window {
   box-shadow: none;

@@ -16,6 +16,8 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
 
+    use crate::utils::spawn_g_timeout;
+
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/list.ui")]
@@ -59,22 +61,8 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            let (sender, receiver) = async_channel::bounded::<bool>(1);
-            gtk::gio::spawn_blocking(move || {
-                sender
-                    .send_blocking(false)
-                    .expect("The channel needs to be open.");
-                std::thread::sleep(std::time::Duration::from_millis(500));
-                sender
-                    .send_blocking(true)
-                    .expect("The channel needs to be open.");
-            });
-            glib::spawn_future_local(glib::clone!(@weak obj =>async move {
-                while let Ok(bool) = receiver.recv().await {
-                    if bool {
-                        obj.set_factory();
-                    }
-                }
+            spawn_g_timeout(glib::clone!(@weak obj => async move {
+                obj.set_factory();
             }));
         }
     }
@@ -111,7 +99,7 @@ impl ListPage {
         let id = imp.id.get().expect("id not set").clone();
         spinner.set_visible(true);
         let (sender, receiver) = async_channel::bounded::<crate::ui::network::List>(1);
-        crate::ui::network::runtime().spawn(glib::clone!(@strong sender => async move {
+        crate::ui::network::RUNTIME.spawn(glib::clone!(@strong sender => async move {
             let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
             let list_results = crate::ui::network::get_list(id.to_string(),0.to_string(),mutex).await.unwrap_or_else(|e| {
                 eprintln!("Error: {}", e);
@@ -267,7 +255,7 @@ impl ListPage {
                 let id = obj.imp().id.get().expect("id not set").clone();
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                 let offset = obj.imp().selection.model().unwrap().n_items();
-                crate::ui::network::runtime().spawn(glib::clone!(@strong sender => async move {
+                crate::ui::network::RUNTIME.spawn(glib::clone!(@strong sender => async move {
                     let list_results = crate::ui::network::get_list(id.to_string(),offset.to_string(),mutex).await.unwrap_or_else(|e| {
                         eprintln!("Error: {}", e);
                         crate::ui::network::List::default()

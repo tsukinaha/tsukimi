@@ -14,6 +14,8 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::utils::spawn_g_timeout;
+
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsukimi/settings.ui")]
@@ -34,6 +36,8 @@ mod imp {
         pub forcewindowcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub resumecontrol: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub themecontrol: TemplateChild<adw::ComboRow>,
         #[template_child]
@@ -93,19 +97,22 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            obj.set_back();
-            obj.set_sidebar();
-            obj.set_spin();
-            obj.set_fullscreen();
-            obj.set_forcewindow();
-            obj.set_resume();
-            obj.set_proxy();
-            obj.set_theme();
-            obj.set_thread();
-            obj.set_picopactiy();
-            obj.set_pic();
-            obj.set_picblur();
-            obj.change_picblur();
+            spawn_g_timeout(glib::clone!(@weak obj=> async move {
+                obj.set_back();
+                obj.set_sidebar();
+                obj.set_spin();
+                obj.set_fullscreen();
+                obj.set_forcewindow();
+                obj.set_resume();
+                obj.set_proxy();
+                obj.set_theme();
+                obj.set_thread();
+                obj.set_picopactiy();
+                obj.set_pic();
+                obj.set_picblur();
+                obj.change_picblur();
+                obj.set_auto_select_server();
+            }));
         }
     }
 
@@ -155,6 +162,17 @@ impl SettingsPage {
         imp.backcontrol.set_active(SETTINGS.progress());
         imp.backcontrol.connect_active_notify(move |control| {
             SETTINGS.set_progress(control.is_active()).unwrap();
+        });
+    }
+
+    pub fn set_auto_select_server(&self) {
+        let imp = self.imp();
+        imp.selectlastcontrol
+            .set_active(SETTINGS.auto_select_server());
+        imp.selectlastcontrol.connect_active_notify(move |control| {
+            SETTINGS
+                .set_auto_select_server(control.is_active())
+                .unwrap();
         });
     }
 

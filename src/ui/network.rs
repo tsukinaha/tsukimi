@@ -1,3 +1,4 @@
+use once_cell::sync::Lazy;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
 use serde::{Deserialize, Serialize};
@@ -5,26 +6,23 @@ use serde_json::json;
 use serde_json::Value;
 use std::env;
 use std::fs;
+use std::io::Write;
 use std::sync::OnceLock;
-use tokio::runtime::{self, Runtime};
+use tokio::runtime;
 
 use crate::config::proxy::ReqClient;
 use crate::config::{self, get_cache_dir, get_device_name, save_cfg, Account, APP_VERSION};
 use crate::ui::models::SETTINGS;
 
-pub fn runtime() -> &'static Runtime {
+pub static RUNTIME: Lazy<tokio::runtime::Runtime> = Lazy::new(|| {
     const STACK_SIZE: usize = 6 * 1024 * 1024;
-
-    static RUNTIME: OnceLock<Runtime> = OnceLock::new();
-    RUNTIME.get_or_init(|| {
-        runtime::Builder::new_multi_thread()
-            .worker_threads(SETTINGS.threads() as usize)
-            .thread_stack_size(STACK_SIZE)
-            .enable_all()
-            .build()
-            .expect("Failed to create runtime")
-    })
-}
+    runtime::Builder::new_multi_thread()
+        .worker_threads(SETTINGS.threads() as usize)
+        .thread_stack_size(STACK_SIZE)
+        .enable_all()
+        .build()
+        .expect("Failed to create runtime")
+});
 
 fn client() -> &'static Client {
     static CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
@@ -92,7 +90,7 @@ pub async fn loginv2(
     Ok(())
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct SearchResult {
     #[serde(rename = "Name")]
     pub name: String,
@@ -150,7 +148,7 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
     Ok(model.search_results)
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct SeriesInfo {
     #[serde(rename = "Name")]
     pub name: String,
@@ -252,7 +250,7 @@ pub struct Media {
     pub play_session_id: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Item {
     #[serde(rename = "Name")]
     pub name: String,
@@ -292,9 +290,11 @@ pub struct Item {
     pub taglines: Option<Vec<String>>,
     #[serde(rename = "BackdropImageTags")]
     pub backdrop_image_tags: Option<Vec<String>>,
+    #[serde(rename = "AlbumArtist")]
+    pub album_artist: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct People {
     #[serde(rename = "Name")]
     pub name: String,
@@ -306,7 +306,7 @@ pub struct People {
     pub people_type: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct SGTitem {
     #[serde(rename = "Name")]
     pub name: String,
@@ -374,7 +374,7 @@ pub async fn _markwatched(id: String, sourceid: String) -> Result<String, Error>
     Ok(text)
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Resume {
     #[serde(rename = "Name")]
     pub name: String,
@@ -396,7 +396,7 @@ pub struct Resume {
     pub user_data: Option<UserData>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct UserData {
     #[serde(rename = "PlayedPercentage")]
     pub played_percentage: Option<f64>,
@@ -406,6 +406,8 @@ pub struct UserData {
     pub played: bool,
     #[serde(rename = "UnplayedItemCount")]
     pub unplayed_item_count: Option<u32>,
+    #[serde(rename = "IsFavorite")]
+    pub is_favorite: Option<bool>,
 }
 struct ResumeModel {
     resume: Vec<Resume>,
@@ -716,7 +718,7 @@ pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
     Ok(mediainfo)
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct View {
     #[serde(rename = "Name")]
     pub name: String,
@@ -744,10 +746,24 @@ pub async fn get_library() -> Result<Vec<View>, Error> {
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
     let views: Vec<View> = serde_json::from_value(json["Items"].take()).unwrap();
+    let views_json = serde_json::to_string(&views).unwrap();
+    let mut pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
+    std::fs::DirBuilder::new()
+        .recursive(true)
+        .create(&pathbuf)
+        .unwrap();
+    pathbuf.push("views.json");
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open(&pathbuf)
+        .unwrap();
+    writeln!(file, "{}", views_json).unwrap();
     Ok(views)
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Latest {
     #[serde(rename = "Name")]
     pub name: String,
@@ -787,6 +803,21 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
     let response = client().get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let latests: Vec<Latest> = serde_json::from_value(json).unwrap();
+    let latests_json = serde_json::to_string(&latests).unwrap();
+    let mut pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
+    std::fs::DirBuilder::new()
+        .recursive(true)
+        .create(&pathbuf)
+        .unwrap();
+    pathbuf.push(format!("latest_{}.json", id));
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open(&pathbuf)
+        .unwrap();
+    writeln!(file, "{}", latests_json).unwrap();
+
     Ok(latests)
 }
 
@@ -829,7 +860,7 @@ pub async fn get_list(
     Ok(latests)
 }
 
-#[derive(Deserialize, Debug, Clone, Default)]
+#[derive(Deserialize, Clone, Default)]
 pub struct List {
     #[serde(rename = "TotalRecordCount")]
     pub total_record_count: u32,
@@ -1009,4 +1040,122 @@ pub async fn get_search_recommend() -> Result<List, Error> {
     let json: serde_json::Value = response.json().await?;
     let latests: List = serde_json::from_value(json).unwrap();
     Ok(latests)
+}
+
+pub(crate) async fn like_item(types: &str) -> Result<Vec<Item>, Error> {
+    let server_info = config::set_config();
+
+    let url = if types == "People" {
+        format!("{}:{}/emby/Persons", server_info.domain, server_info.port)
+    } else {
+        format!(
+            "{}:{}/emby/Users/{}/Items",
+            server_info.domain, server_info.port, server_info.user_id
+        )
+    };
+    let params = [
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+        ),
+        ("Filters", "IsFavorite"),
+        ("Recursive", "True"),
+        ("CollapseBoxSetItems", "False"),
+        ("SortBy", "SortName"),
+        ("SortOrder", "Ascending"),
+        ("IncludeItemTypes", types),
+        ("Limit", "12"),
+        if types == "People" {
+            ("UserId", &server_info.user_id)
+        } else {
+            ("", "")
+        },
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+
+    let response = client().get(&url).query(&params).send().await?;
+    let mut json: serde_json::Value = response.json().await?;
+    let items: Vec<Item> = serde_json::from_value(json["Items"].take()).unwrap();
+    Ok(items)
+}
+
+pub async fn like(id: &str) -> Result<(), Error> {
+    let server_info = config::set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/FavoriteItems/{}",
+        server_info.domain, server_info.port, server_info.user_id, id
+    );
+
+    let params = [
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    client().post(&url).query(&params).send().await?;
+    Ok(())
+}
+
+pub async fn unlike(id: &str) -> Result<(), Error> {
+    let server_info = config::set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/FavoriteItems/{}/Delete",
+        server_info.domain, server_info.port, server_info.user_id, id
+    );
+
+    let params = [
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    client().post(&url).query(&params).send().await?;
+    Ok(())
+}
+
+pub async fn played(id: &str) -> Result<(), Error> {
+    let server_info = config::set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/PlayedItems/{}",
+        server_info.domain, server_info.port, server_info.user_id, id
+    );
+
+    let params = [
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    client().post(&url).query(&params).send().await?;
+    Ok(())
+}
+
+pub async fn unplayed(id: &str) -> Result<(), Error> {
+    let server_info = config::set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/PlayedItems/{}/Delete",
+        server_info.domain, server_info.port, server_info.user_id, id
+    );
+
+    let params = [
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    client().post(&url).query(&params).send().await?;
+    Ok(())
 }
