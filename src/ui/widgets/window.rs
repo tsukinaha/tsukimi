@@ -178,6 +178,15 @@ impl Window {
         let listbox = imp.serversbox.get();
         listbox.remove_all();
         let accounts = load_cfgv2().unwrap();
+        for account in &accounts.accounts {
+            if SETTINGS.auto_select_server() && account.servername == SETTINGS.preferred_server() {
+                load_env(account);
+                imp.historypage.set_child(None::<&gtk::Widget>);
+                imp.searchpage.set_child(None::<&gtk::Widget>);
+                self.mainpage();
+                self.freshhomepage();
+            }
+        }
         if accounts.accounts.is_empty() {
             imp.login_stack.set_visible_child_name("no-server");
             return;
@@ -216,6 +225,7 @@ impl Window {
                 let account_ptr: std::ptr::NonNull<Account>  = row.data("account").unwrap();
                 let account: &Account = &*account_ptr.as_ptr();
                 load_env(account);
+                SETTINGS.set_preferred_server(&account.servername).unwrap();
             }
             obj.imp().historypage.set_child(None::<&gtk::Widget>);
             obj.imp().searchpage.set_child(None::<&gtk::Widget>);
