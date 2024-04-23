@@ -43,8 +43,13 @@ From AUR
 ### Windows
 - Scoop
 ```
-scoop bucket add scol https://github.com/Kosette/scol.git
+# Install tsukimi only, tsukimi included in Scoop/Extras
+## if you want to tansfer previous installed tsukimi from scol to Extras, first uninstall it and reinstall by `scoop install Extras/tsukimi` 
 scoop install tsukimi
+
+# Or install tsukimi with mpv configs
+scoop bucket add scol https://github.com/Kosette/scol.git
+scoop install tsukimi-full
 ```
 - [Release](https://github.com/tsukinaha/tsukimi/releases/latest)
 
