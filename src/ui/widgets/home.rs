@@ -2,13 +2,12 @@ use std::env;
 use std::path::PathBuf;
 
 use adw::prelude::NavigationPageExt;
+use crate::client::{network::*, structs::*};
 use dirs::home_dir;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-
-use crate::ui::network::Latest;
 
 use super::{fix::fix, item::ItemPage, list::ListPage, movie::MoviePage, window::Window};
 
@@ -154,7 +153,7 @@ impl HomePage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let view: std::cell::Ref<crate::ui::network::View> = entry.borrow();
+            let view: std::cell::Ref<View> = entry.borrow();
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture
                     .downcast_ref::<gtk::Box>()
@@ -184,7 +183,7 @@ impl HomePage {
             glib::clone!(@weak self as obj => move |listview, position| {
                 let model = listview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let view: std::cell::Ref<crate::ui::network::View> = item.borrow();
+                let view: std::cell::Ref<View> = item.borrow();
                 let item_page = ListPage::new(view.id.clone());
                 item_page.set_tag(Some(&view.name));
                 let window = obj.root().and_downcast::<Window>().unwrap();
@@ -202,7 +201,7 @@ impl HomePage {
         ));
         if pathbuf.exists() {
             let data = std::fs::read_to_string(&pathbuf).expect("Unable to read file");
-            let views: Vec<crate::ui::network::View> =
+            let views: Vec<View> =
                 serde_json::from_str(&data).expect("JSON was not well-formatted");
             for view in &views {
                 let object = glib::BoxedAnyObject::new(view.clone());
@@ -210,9 +209,9 @@ impl HomePage {
             }
             self.get_librarysscroll(&views);
         } else {
-            let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::View>>(3);
-            crate::ui::network::RUNTIME.spawn(async move {
-                let views = crate::ui::network::get_library().await.expect("msg");
+            let (sender, receiver) = async_channel::bounded::<Vec<View>>(3);
+            RUNTIME.spawn(async move {
+                let views = get_library().await.expect("msg");
                 sender.send(views).await.expect("msg");
             });
             glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
@@ -227,7 +226,7 @@ impl HomePage {
         }
     }
 
-    pub fn get_librarysscroll(&self, views: &[crate::ui::network::View]) {
+    pub fn get_librarysscroll(&self, views: &[View]) {
         let libsrevealer = self.imp().libsrevealer.get();
         libsrevealer.set_reveal_child(true);
         let libsbox = self.imp().libsbox.get();
@@ -267,7 +266,7 @@ impl HomePage {
             ));
             if pathbuf.exists() {
                 let data = std::fs::read_to_string(&pathbuf).expect("Unable to read file");
-                let latest: Vec<crate::ui::network::Latest> =
+                let latest: Vec<Latest> =
                     serde_json::from_str(&data).expect("JSON was not well-formatted");
                 self.set_librarysscroll(latest.clone());
                 let listview = self.set_librarysscroll(latest);
@@ -275,9 +274,9 @@ impl HomePage {
                 revealer.set_reveal_child(true);
             }
 
-            let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Latest>>(3);
-            crate::ui::network::RUNTIME.spawn(async move {
-                let latest = crate::ui::network::get_latest(view.id.clone())
+            let (sender, receiver) = async_channel::bounded::<Vec<Latest>>(3);
+            RUNTIME.spawn(async move {
+                let latest = get_latest(view.id.clone())
                     .await
                     .expect("msg");
                 sender.send(latest).await.expect("msg");
@@ -296,7 +295,7 @@ impl HomePage {
         self.imp().spinner.set_visible(false);
     }
 
-    pub fn set_librarysscroll(&self, latests: Vec<crate::ui::network::Latest>) -> gtk::ListView {
+    pub fn set_librarysscroll(&self, latests: Vec<Latest>) -> gtk::ListView {
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
         for latest in latests {
             let object = glib::BoxedAnyObject::new(latest.clone());
@@ -352,7 +351,7 @@ impl HomePage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<crate::ui::network::Latest> = entry.borrow();
+            let latest: std::cell::Ref<Latest> = entry.borrow();
             if latest.latest_type == "MusicAlbum" {
                 picture.set_size_request(210, 210);
                 picture.set_valign(gtk::Align::Center);

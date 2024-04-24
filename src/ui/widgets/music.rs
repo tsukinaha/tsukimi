@@ -1,7 +1,6 @@
 use glib::Object;
 use gtk::{gio, glib};
 
-
 mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
@@ -17,7 +16,6 @@ mod imp {
     pub struct MusicPage {
         #[property(get, set, construct_only)]
         pub id: OnceCell<String>,
-        
     }
 
     // The central trait for subclassing a GObject
@@ -72,6 +70,4 @@ impl MusicPage {
     pub fn new(id: &str) -> Self {
         Object::builder().property("id", id).build()
     }
-
-   
 }

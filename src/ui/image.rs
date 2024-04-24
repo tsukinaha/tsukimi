@@ -2,6 +2,7 @@ use gtk::glib::{self, clone};
 use gtk::{prelude::*, Revealer};
 use std::env;
 use std::path::PathBuf;
+use crate::client::network::*;
 pub fn setimage(id: String) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
@@ -30,10 +31,10 @@ pub fn setimage(id: String) -> Revealer {
             revealer.set_reveal_child(true);
         }
     } else {
-        crate::ui::network::RUNTIME.spawn(async move {
+        RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match crate::ui::network::get_image(id.clone()).await {
+                match get_image(id.clone(),"Primary",None).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())
@@ -90,10 +91,10 @@ pub fn setthumbimage(id: String) -> Revealer {
             revealer.set_reveal_child(true);
         }
     } else {
-        crate::ui::network::RUNTIME.spawn(async move {
+        RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match crate::ui::network::get_thumbimage(id.clone()).await {
+                match get_image(id.clone(),"Thumb",None).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())
@@ -151,10 +152,10 @@ pub fn setbackdropimage(id: String, tag: u8) -> Revealer {
             revealer.set_reveal_child(true);
         }
     } else {
-        crate::ui::network::RUNTIME.spawn(async move {
+        RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match crate::ui::network::get_backdropimage(id.clone(), tag).await {
+                match get_image(id.clone(), "Backdrop", Some(tag)).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())
@@ -210,10 +211,10 @@ pub fn setlogoimage(id: String) -> Revealer {
             revealer.set_reveal_child(true);
         }
     } else {
-        crate::ui::network::RUNTIME.spawn(async move {
+        RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match crate::ui::network::get_logoimage(id.clone()).await {
+                match get_image(id.clone(), "Logo", None).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())

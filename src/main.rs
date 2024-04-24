@@ -2,6 +2,7 @@
 use config::load_uuid;
 use gtk::prelude::*;
 use gtk::{gio, glib};
+mod client;
 mod config;
 mod ui;
 mod utils;

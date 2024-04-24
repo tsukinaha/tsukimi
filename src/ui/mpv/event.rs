@@ -8,10 +8,7 @@ use std::{
 };
 
 use crate::{
-    config::set_config,
-    ui::network::{Back, RUNTIME},
-    utils::spawn_tokio,
-    APP_ID,
+    client::{network::*, structs::Back}, config::set_config,utils::spawn_tokio, APP_ID
 };
 pub fn play(
     url: String,
@@ -72,7 +69,7 @@ pub fn play(
 
     let backc = back.clone();
     RUNTIME.spawn(async move {
-        crate::ui::network::playstart(backc).await;
+        playstart(backc).await;
     });
 
     crossbeam::scope(|scope| {
@@ -95,7 +92,7 @@ pub fn play(
                         let mut back = back.clone();
                         back.tick = duration;
                         let _ = spawn_tokio(async {
-                            crate::ui::network::positionstop(back).await;
+                            positionstop(back).await;
                         });
                     }
                     println!("Exiting! Reason: {:?}", r);
@@ -113,7 +110,7 @@ pub fn play(
                         let mut back = back.clone();
                         back.tick = duration;
                         RUNTIME.spawn(async move {
-                            crate::ui::network::positionback(back).await;
+                            positionback(back).await;
                         });
                     }
                 }

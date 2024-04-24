@@ -1,3 +1,4 @@
+use crate::client::{network::*, structs::*};
 use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
@@ -126,11 +127,11 @@ impl HistoryPage {
         let historyrevealer = imp.historyrevealer.get();
         spinner.set_visible(true);
         fix(imp.hisscrolled.get());
-        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Resume>>(1);
-        crate::ui::network::RUNTIME.spawn(glib::clone!(@strong sender => async move {
-            let history_results = crate::ui::network::resume().await.unwrap_or_else(|e| {
+        let (sender, receiver) = async_channel::bounded::<Vec<Resume>>(1);
+        RUNTIME.spawn(glib::clone!(@strong sender => async move {
+            let history_results = resume().await.unwrap_or_else(|e| {
                 eprintln!("Error: {}", e);
-                Vec::<crate::ui::network::Resume>::new()
+                Vec::<Resume>::new()
             });
             sender.send(history_results).await.expect("history results not received.");
         }));
@@ -154,7 +155,7 @@ impl HistoryPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .unwrap();
-            let result: std::cell::Ref<crate::ui::network::Resume> = entry.borrow();
+            let result: std::cell::Ref<Resume> = entry.borrow();
             let vbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
             let overlay = gtk::Overlay::new();
             let imgbox;
@@ -229,7 +230,7 @@ impl HistoryPage {
         imp.historylist.connect_activate(glib::clone!(@weak self as obj => move |gridview, position| {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let result: std::cell::Ref<crate::ui::network::Resume> = item.borrow();
+                let result: std::cell::Ref<Resume> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 if result.resume_type == "Movie" {
                     let item_page = MoviePage::new(result.id.clone(),result.name.clone());
@@ -329,7 +330,7 @@ impl HistoryPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let item: std::cell::Ref<crate::ui::network::Item> = entry.borrow();
+            let item: std::cell::Ref<Item> = entry.borrow();
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture
                     .downcast_ref::<gtk::Box>()
@@ -449,9 +450,9 @@ impl HistoryPage {
         selection.set_autoselect(false);
         list.set_model(Some(selection));
         let media_type = types.to_string();
-        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Item>>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let item = crate::ui::network::like_item(&media_type.to_string())
+        let (sender, receiver) = async_channel::bounded::<Vec<Item>>(1);
+        RUNTIME.spawn(async move {
+            let item = like_item(&media_type.to_string())
                 .await
                 .expect("msg");
             sender.send(item).await.expect("msg");
@@ -476,7 +477,7 @@ impl HistoryPage {
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
-                let recommend: std::cell::Ref<crate::ui::network::Item> = item.borrow();
+                let recommend: std::cell::Ref<Item> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 let view = match window.current_view_name().as_str() {
                     "homepage" => {

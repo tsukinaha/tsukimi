@@ -1,4 +1,4 @@
-use crate::ui::RUNTIME;
+use crate::client::network::RUNTIME;
 
 pub fn _spawn_tokio_blocking<F>(fut: F) -> F::Output
 where
@@ -38,7 +38,7 @@ where
     });
 }
 
-pub fn spawn_g_timeout<F>(future: F) 
+pub fn spawn_g_timeout<F>(future: F)
 where
     F: std::future::Future<Output = ()> + 'static,
 {

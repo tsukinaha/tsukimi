@@ -1,3 +1,4 @@
+use crate::client::{network::*, structs::*};
 use crate::ui::image::setimage;
 use adw::prelude::NavigationPageExt;
 use glib::Object;
@@ -133,9 +134,9 @@ impl ActorPage {
         let inforevealer = imp.inforevealer.get();
         let spinner = imp.spinner.get();
         let title = imp.title.get();
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let item = crate::ui::network::get_item_overview(id.to_string())
+        let (sender, receiver) = async_channel::bounded::<Item>(1);
+        RUNTIME.spawn(async move {
+            let item = get_item_overview(id.to_string())
                 .await
                 .expect("msg");
             sender.send(item).await.expect("msg");
@@ -220,7 +221,7 @@ impl ActorPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let item: std::cell::Ref<crate::ui::network::Item> = entry.borrow();
+            let item: std::cell::Ref<Item> = entry.borrow();
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture
                     .downcast_ref::<gtk::Box>()
@@ -323,9 +324,9 @@ impl ActorPage {
         selection.set_autoselect(false);
         list.set_model(Some(selection));
         let media_type = types.to_string();
-        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Item>>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let item = crate::ui::network::person_item(&id, &media_type.to_string())
+        let (sender, receiver) = async_channel::bounded::<Vec<Item>>(1);
+        RUNTIME.spawn(async move {
+            let item = person_item(&id, &media_type.to_string())
                 .await
                 .expect("msg");
             sender.send(item).await.expect("msg");
@@ -350,7 +351,7 @@ impl ActorPage {
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
-                let recommend: std::cell::Ref<crate::ui::network::Item> = item.borrow();
+                let recommend: std::cell::Ref<Item> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 let view = match window.current_view_name().as_str() {
                     "homepage" => {
@@ -407,7 +408,7 @@ impl ActorPage {
         );
     }
 
-    pub fn setlinksscrolled(&self, links: Vec<crate::ui::network::Urls>) {
+    pub fn setlinksscrolled(&self, links: Vec<Urls>) {
         let imp = self.imp();
         let linksscrolled = fix(imp.linksscrolled.get());
         let linksrevealer = imp.linksrevealer.get();

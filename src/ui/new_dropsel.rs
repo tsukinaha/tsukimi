@@ -1,17 +1,12 @@
 use super::models::SETTINGS;
 use super::mpv;
-use super::network;
-use super::network::get_sub;
-use super::network::Back;
-use super::network::Media;
-use super::network::SeriesInfo;
-use super::network::RUNTIME;
+use crate::client::{network::*, structs::*};
 use super::provider::dropdown_factory::factory;
 use gtk::glib;
 use gtk::prelude::*;
 
 pub fn newmediadropsel(
-    playbackinfo: network::Media,
+    playbackinfo: Media,
     info: &SeriesInfo,
     namedropdown: gtk::DropDown,
     subdropdown: gtk::DropDown,
@@ -75,7 +70,7 @@ pub fn newmediadropsel(
 }
 
 pub fn bind_button(
-    playbackinfo: network::Media,
+    playbackinfo: Media,
     info: SeriesInfo,
     namedropdown: gtk::DropDown,
     subdropdown: gtk::DropDown,
@@ -233,7 +228,7 @@ pub fn set_sub(
     nameselected: String,
     subselected: String,
     button: gtk::Button,
-    userdata: Option<crate::ui::network::UserData>,
+    userdata: Option<UserData>,
 ) {
     let (sender, receiver) = async_channel::bounded::<Media>(1);
     let idc = id.clone();

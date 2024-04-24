@@ -9,7 +9,7 @@ use std::env;
 use std::path::PathBuf;
 
 use crate::ui::models::SETTINGS;
-use crate::ui::network::{self, similar, SeriesInfo, RUNTIME};
+use crate::client::{network::*, structs::*};
 use crate::ui::new_dropsel::bind_button;
 use crate::utils::{spawn, spawn_tokio};
 
@@ -233,7 +233,7 @@ impl ItemPage {
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
         spawn_tokio(async move {
-            network::played(&id).await.unwrap();
+            played(&id).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
@@ -248,7 +248,7 @@ impl ItemPage {
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
         spawn_tokio(async move {
-            network::unplayed(&id).await.unwrap();
+            unplayed(&id).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
@@ -265,7 +265,7 @@ impl ItemPage {
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
         spawn_tokio(async move {
-            network::like(&id).await.unwrap();
+            like(&id).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
@@ -286,8 +286,8 @@ impl ItemPage {
         imp.favourite_button_split.set_sensitive(false);
         let id = self.id();
         spawn_tokio(async move {
-            network::unlike(&id).await.unwrap();
-            network::unlike(&inid).await.unwrap();
+            unlike(&id).await.unwrap();
+            unlike(&inid).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
@@ -307,7 +307,7 @@ impl ItemPage {
         imp.favourite_button_split.set_sensitive(false);
         let id = self.id();
         spawn_tokio(async move {
-            network::like(&id).await.unwrap();
+            like(&id).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
@@ -320,7 +320,7 @@ impl ItemPage {
         }));
     }
 
-    pub fn bind_playbutton(&self, playbackinfo: network::Media, info: network::SeriesInfo) {
+    pub fn bind_playbutton(&self, playbackinfo: Media, info: SeriesInfo) {
         let imp = self.imp();
         bind_button(
             playbackinfo,
@@ -353,8 +353,8 @@ impl ItemPage {
                 window.set_rootpic(gtk::gio::File::for_path(&path));
             }));
         } else {
-            crate::ui::network::RUNTIME.spawn(async move {
-                let id = crate::ui::network::get_backdropimage(id1, 0)
+            RUNTIME.spawn(async move {
+                let id = get_image(id1, "Backdrop", Some(0))
                     .await
                     .expect("msg");
                 sender
@@ -414,8 +414,8 @@ impl ItemPage {
                     carousel.append(&picture);
                 }));
             } else {
-                crate::ui::network::RUNTIME.spawn(async move {
-                    let id = crate::ui::network::get_backdropimage(id, tag_num as u8)
+                RUNTIME.spawn(async move {
+                    let id = get_image(id, "Backdrop", Some(tag_num as u8))
                         .await
                         .expect("msg");
                     sender
@@ -459,9 +459,9 @@ impl ItemPage {
         imp.selection.set_autoselect(false);
         imp.selection.set_model(Some(&store));
 
-        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SeriesInfo>>(1);
-        network::RUNTIME.spawn(async move {
-            match network::get_series_info(id).await {
+        let (sender, receiver) = async_channel::bounded::<Vec<SeriesInfo>>(1);
+        RUNTIME.spawn(async move {
+            match get_series_info(id).await {
                 Ok(series_info) => {
                     sender
                         .send(series_info)
@@ -503,7 +503,7 @@ impl ItemPage {
                     store.append(&object);
                 }
                 if inid != idc && info.id == inid {
-                    let seriesinfo = network::SeriesInfo {
+                    let seriesinfo = SeriesInfo {
                         id: inid.clone(),
                         name: info.name.clone(),
                         index_number: info.index_number,
@@ -599,7 +599,7 @@ impl ItemPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let seriesinfo: Ref<network::SeriesInfo> = entry.borrow();
+            let seriesinfo: Ref<SeriesInfo> = entry.borrow();
             if picture.first_child().is_none() {
                 let img = crate::ui::image::setimage(seriesinfo.id.clone());
                 picture.set_child(Some(&img));
@@ -633,7 +633,7 @@ impl ItemPage {
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
-                obj.selectepisode(item.borrow::<network::SeriesInfo>().clone());
+                obj.selectepisode(item.borrow::<SeriesInfo>().clone());
             }));
     }
 
@@ -695,9 +695,9 @@ impl ItemPage {
         imp.favourite_button_split.set_sensitive(false);
         imp.line1spinner.set_visible(true);
         let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let playback = crate::ui::network::get_playbackinfo(id).await.expect("msg");
+        let (sender, receiver) = async_channel::bounded::<Media>(1);
+        RUNTIME.spawn(async move {
+            let playback = get_playbackinfo(id).await.expect("msg");
             sender.send(playback).await.expect("msg");
         });
         glib::spawn_future_local(glib::clone!(@weak osdbox,@weak self as obj=>async move {
@@ -728,9 +728,9 @@ impl ItemPage {
         let id = imp.id.get().unwrap().clone();
         let itemoverview = imp.itemoverview.get();
         let overviewrevealer = imp.overviewrevealer.get();
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let item = crate::ui::network::get_item_overview(id.to_string())
+        let (sender, receiver) = async_channel::bounded::<Item>(1);
+        RUNTIME.spawn(async move {
+            let item = get_item_overview(id.to_string())
                 .await
                 .expect("msg");
             sender.send(item).await.expect("msg");
@@ -819,9 +819,9 @@ impl ItemPage {
         let imp = self.imp();
         let mediainfobox = imp.mediainfobox.get();
         let mediainforevealer = imp.mediainforevealer.get();
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let media = crate::ui::network::get_mediainfo(id.to_string())
+        let (sender, receiver) = async_channel::bounded::<Media>(1);
+        RUNTIME.spawn(async move {
+            let media = get_mediainfo(id.to_string())
                 .await
                 .expect("msg");
             sender.send(media).await.expect("msg");
@@ -951,7 +951,7 @@ impl ItemPage {
         });
     }
 
-    pub fn setlinksscrolled(&self, links: Vec<crate::ui::network::Urls>) {
+    pub fn setlinksscrolled(&self, links: Vec<Urls>) {
         let imp = self.imp();
         let linksscrolled = fix(imp.linksscrolled.get());
         let linksrevealer = imp.linksrevealer.get();
@@ -986,7 +986,7 @@ impl ItemPage {
         linksrevealer.set_reveal_child(true);
     }
 
-    pub fn setactorscrolled(&self, actors: Vec<crate::ui::network::People>) {
+    pub fn setactorscrolled(&self, actors: Vec<People>) {
         let imp = self.imp();
         let actorscrolled = fix(imp.actorscrolled.get());
         let actorrevealer = imp.actorrevealer.get();
@@ -1043,7 +1043,7 @@ impl ItemPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let people: std::cell::Ref<crate::ui::network::People> = entry.borrow();
+            let people: std::cell::Ref<People> = entry.borrow();
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture
                     .downcast_ref::<gtk::Box>()
@@ -1079,7 +1079,7 @@ impl ItemPage {
                 .item(position)
                 .and_downcast::<glib::BoxedAnyObject>()
                 .unwrap();
-            let actor: std::cell::Ref<crate::ui::network::People> = item.borrow();
+            let actor: std::cell::Ref<People> = item.borrow();
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             let view = match window.current_view_name().as_str() {
                 "homepage" => {
@@ -1114,7 +1114,7 @@ impl ItemPage {
 
     pub fn get_similar(&self) {
         let id = self.id();
-        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
+        let (sender, receiver) = async_channel::bounded::<Vec<SearchResult>>(1);
         RUNTIME.spawn(async move {
             let id = similar(&id).await.expect("msg");
             sender
@@ -1130,7 +1130,7 @@ impl ItemPage {
         }));
     }
 
-    pub fn setrecommendscrolled(&self, recommend: Vec<crate::ui::network::SearchResult>) {
+    pub fn setrecommendscrolled(&self, recommend: Vec<SearchResult>) {
         let imp = self.imp();
         let recommendscrolled = fix(imp.recommendscrolled.get());
         let recommendrevealer = imp.recommendrevealer.get();
@@ -1190,7 +1190,7 @@ impl ItemPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let recommend: std::cell::Ref<crate::ui::network::SearchResult> = entry.borrow();
+            let recommend: std::cell::Ref<SearchResult> = entry.borrow();
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture
                     .downcast_ref::<gtk::Box>()
@@ -1251,7 +1251,7 @@ impl ItemPage {
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
-                let recommend: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
+                let recommend: std::cell::Ref<SearchResult> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 let view = match window.current_view_name().as_str() {
                     "homepage" => {
@@ -1295,21 +1295,21 @@ impl ItemPage {
         recommendscrolled.set_child(Some(&recommendlist));
     }
 
-    pub fn set_studio(&self, infos: Vec<crate::ui::network::SGTitem>) {
+    pub fn set_studio(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
         let scrolled = fix(imp.studiosscrolled.get());
         let revealer = imp.studiosrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
 
-    pub fn set_tags(&self, infos: Vec<crate::ui::network::SGTitem>) {
+    pub fn set_tags(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
         let scrolled = fix(imp.tagsscrolled.get());
         let revealer = imp.tagsrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
 
-    pub fn set_genres(&self, infos: Vec<crate::ui::network::SGTitem>) {
+    pub fn set_genres(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
         let scrolled = fix(imp.genresscrolled.get());
         let revealer = imp.genresrevealer.get();
@@ -1320,7 +1320,7 @@ impl ItemPage {
         &self,
         linksrevealer: gtk::Revealer,
         linksscrolled: gtk::ScrolledWindow,
-        infos: Vec<crate::ui::network::SGTitem>,
+        infos: Vec<SGTitem>,
     ) {
         if !infos.is_empty() {
             linksrevealer.set_reveal_child(true);

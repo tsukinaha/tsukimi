@@ -1,6 +1,6 @@
 use std::env;
 
-use crate::ui::network::List;
+use crate::client::{network::*, structs::*};
 use crate::ui::widgets::item::ItemPage;
 use crate::ui::widgets::movie::MoviePage;
 use crate::ui::widgets::window::Window;
@@ -95,8 +95,8 @@ impl SearchPage {
 
     pub fn setup_recommend(&self) {
         let (sender, receiver) = async_channel::bounded::<List>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let list = crate::ui::network::get_search_recommend()
+        RUNTIME.spawn(async move {
+            let list = get_search_recommend()
                 .await
                 .expect("msg");
             sender
@@ -149,15 +149,15 @@ impl SearchPage {
         let spinner = imp.spinner.get();
         let searchrevealer = imp.searchrevealer.get();
         let recommendbox = imp.recommendbox.get();
-        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
+        let (sender, receiver) = async_channel::bounded::<Vec<SearchResult>>(1);
         imp.searchentry.connect_activate(glib::clone!(@strong sender,@weak spinner=> move |entry| {
                 spinner.set_visible(true);
                 recommendbox.set_visible(false);
                 let search_content = entry.text().to_string();
-                crate::ui::network::RUNTIME.spawn(glib::clone!(@strong sender => async move {
-                    let search_results = crate::ui::network::search(search_content).await.unwrap_or_else(|e| {
+                RUNTIME.spawn(glib::clone!(@strong sender => async move {
+                    let search_results = search(search_content).await.unwrap_or_else(|e| {
                         eprintln!("Error: {}", e);
-                        Vec::<crate::ui::network::SearchResult>::new()
+                        Vec::<SearchResult>::new()
                     });
                     sender.send(search_results).await.expect("search results not received.");
                 }));
@@ -186,7 +186,7 @@ impl SearchPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .unwrap();
-            let result: std::cell::Ref<crate::ui::network::SearchResult> = entry.borrow();
+            let result: std::cell::Ref<SearchResult> = entry.borrow();
             let vbox = gtk::Box::new(gtk::Orientation::Vertical, 2);
             let overlay = gtk::Overlay::new();
             let imgbox = crate::ui::image::setimage(result.id.clone());
@@ -245,7 +245,7 @@ impl SearchPage {
             glib::clone!(@weak self as obj => move |gridview, position| {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let result: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
+                let result: std::cell::Ref<SearchResult> = item.borrow();
                 let window = obj.root().and_downcast::<Window>().unwrap();
                 if result.result_type == "Movie" {
                     let item_page = MoviePage::new(result.id.clone(),result.name.clone());

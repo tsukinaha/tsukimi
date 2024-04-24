@@ -6,7 +6,7 @@ use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-
+use crate::client::{network::*, structs::*};
 mod imp {
 
     use std::cell::OnceCell;
@@ -98,12 +98,12 @@ impl ListPage {
         let count = imp.count.get();
         let id = imp.id.get().expect("id not set").clone();
         spinner.set_visible(true);
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::List>(1);
-        crate::ui::network::RUNTIME.spawn(glib::clone!(@strong sender => async move {
+        let (sender, receiver) = async_channel::bounded::<List>(1);
+        RUNTIME.spawn(glib::clone!(@strong sender => async move {
             let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-            let list_results = crate::ui::network::get_list(id.to_string(),0.to_string(),mutex).await.unwrap_or_else(|e| {
+            let list_results = get_list(id.to_string(),0.to_string(),mutex).await.unwrap_or_else(|e| {
                 eprintln!("Error: {}", e);
-                crate::ui::network::List::default()
+                List::default()
             });
             sender.send(list_results).await.expect("list results not received.");
         }));
@@ -168,7 +168,7 @@ impl ListPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<crate::ui::network::Latest> = entry.borrow();
+            let latest: std::cell::Ref<Latest> = entry.borrow();
             if latest.latest_type == "MusicAlbum" {
                 picture.set_size_request(167, 167);
             } else {
@@ -225,7 +225,7 @@ impl ListPage {
             glib::clone!(@weak self as obj => move |gridview, position| {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let result: std::cell::Ref<crate::ui::network::Latest> = item.borrow();
+                let result: std::cell::Ref<Latest> = item.borrow();
                 let window = obj.root().and_downcast::<Window>().unwrap();
                 if result.latest_type == "Movie" {
                     window.set_title(&result.name);
@@ -250,15 +250,15 @@ impl ListPage {
             if pos == gtk::PositionType::Bottom {
                 let spinner = obj.imp().spinner.get();
                 spinner.set_visible(true);
-                let (sender, receiver) = async_channel::bounded::<crate::ui::network::List>(1);
+                let (sender, receiver) = async_channel::bounded::<List>(1);
                 let store = obj.imp().selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
                 let id = obj.imp().id.get().expect("id not set").clone();
                 let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                 let offset = obj.imp().selection.model().unwrap().n_items();
-                crate::ui::network::RUNTIME.spawn(glib::clone!(@strong sender => async move {
-                    let list_results = crate::ui::network::get_list(id.to_string(),offset.to_string(),mutex).await.unwrap_or_else(|e| {
+                RUNTIME.spawn(glib::clone!(@strong sender => async move {
+                    let list_results = get_list(id.to_string(),offset.to_string(),mutex).await.unwrap_or_else(|e| {
                         eprintln!("Error: {}", e);
-                        crate::ui::network::List::default()
+                        List::default()
                     });
                     sender.send(list_results).await.expect("list results not received.");
                 }));

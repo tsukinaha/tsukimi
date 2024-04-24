@@ -1,13 +1,11 @@
 use super::models::SETTINGS;
-use super::network;
-use super::network::Back;
-use super::network::SearchResult;
+use crate::client::structs::*;
 use super::new_dropsel::play_event;
 use super::provider::dropdown_factory::factory;
 use gtk::prelude::*;
 
 pub fn newmediadropsel(
-    playbackinfo: network::Media,
+    playbackinfo: Media,
     info: SearchResult,
     namedropdown: gtk::DropDown,
     subdropdown: gtk::DropDown,

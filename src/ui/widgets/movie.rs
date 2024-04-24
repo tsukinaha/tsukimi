@@ -8,7 +8,7 @@ use gtk::prelude::*;
 use gtk::{gio, glib};
 
 use crate::ui::models::SETTINGS;
-use crate::ui::network::{self, similar, RUNTIME};
+use crate::client::{network::*, structs::*};
 use crate::utils::{spawn, spawn_tokio};
 
 use super::actor::ActorPage;
@@ -194,7 +194,7 @@ impl MoviePage {
         let id = self.id();
         let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
-            network::played(&id).await.unwrap();
+            played(&id).await.unwrap();
             tx.send(()).await.unwrap();
         })
         .await;
@@ -212,7 +212,7 @@ impl MoviePage {
         let id = self.id();
         let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
-            network::unplayed(&id).await.unwrap();
+            unplayed(&id).await.unwrap();
             tx.send(()).await.unwrap();
         })
         .await;
@@ -232,7 +232,7 @@ impl MoviePage {
         let id = self.id();
         let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
-            network::like(&id).await.unwrap();
+            like(&id).await.unwrap();
             tx.send(()).await.unwrap();
         })
         .await;
@@ -256,8 +256,8 @@ impl MoviePage {
         let id = self.id();
         let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
-            network::unlike(&id).await.unwrap();
-            network::unlike(&inid).await.unwrap();
+            unlike(&id).await.unwrap();
+            unlike(&inid).await.unwrap();
             tx.send(()).await.unwrap();
         })
         .await;
@@ -294,8 +294,8 @@ impl MoviePage {
                 window.set_rootpic(gtk::gio::File::for_path(&path));
             }));
         } else {
-            crate::ui::network::RUNTIME.spawn(async move {
-                let id = crate::ui::network::get_backdropimage(id, 0)
+            RUNTIME.spawn(async move {
+                let id = get_image(id, "Backdrop", Some(0))
                     .await
                     .expect("msg");
                 sender
@@ -350,8 +350,8 @@ impl MoviePage {
                     carousel.append(&picture);
                 }));
             } else {
-                crate::ui::network::RUNTIME.spawn(async move {
-                    let id = crate::ui::network::get_backdropimage(id, 0)
+                RUNTIME.spawn(async move {
+                    let id = get_image(id, "Backdrop", Some(tag_num as u8))
                         .await
                         .expect("msg");
                     sender
@@ -394,9 +394,9 @@ impl MoviePage {
         let idclone = id.clone();
         let itemoverview = imp.itemoverview.get();
         let overviewrevealer = imp.overviewrevealer.get();
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let item = crate::ui::network::get_item_overview(id)
+        let (sender, receiver) = async_channel::bounded::<Item>(1);
+        RUNTIME.spawn(async move {
+            let item = get_item_overview(id)
                 .await
                 .expect("msg");
             sender.send(item).await.expect("msg");
@@ -493,21 +493,21 @@ impl MoviePage {
         &self,
         id: String,
         name: String,
-        userdata: Option<crate::ui::network::UserData>,
+        userdata: Option<UserData>,
     ) {
         let imp = self.imp();
         let osdbox = imp.osdbox.get();
         self.imp().playbutton.set_sensitive(false);
         self.imp().line1spinner.set_visible(true);
         let idclone = id.clone();
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let playback = crate::ui::network::get_playbackinfo(id).await.expect("msg");
+        let (sender, receiver) = async_channel::bounded::<Media>(1);
+        RUNTIME.spawn(async move {
+            let playback = get_playbackinfo(id).await.expect("msg");
             sender.send(playback).await.expect("msg");
         });
         glib::spawn_future_local(glib::clone!(@weak osdbox,@weak self as obj =>async move {
             while let Ok(playback) = receiver.recv().await {
-                let info:crate::ui::network::SearchResult = crate::ui::network::SearchResult {
+                let info:SearchResult = SearchResult {
                     id: idclone.clone(),
                     name: name.clone(),
                     result_type: String::from("Movie"),
@@ -527,9 +527,9 @@ impl MoviePage {
         let imp = self.imp();
         let mediainfobox = imp.mediainfobox.get();
         let mediainforevealer = imp.mediainforevealer.get();
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let media = crate::ui::network::get_mediainfo(id.to_string())
+        let (sender, receiver) = async_channel::bounded::<Media>(1);
+        RUNTIME.spawn(async move {
+            let media = get_mediainfo(id.to_string())
                 .await
                 .expect("msg");
             sender.send(media).await.expect("msg");
@@ -659,7 +659,7 @@ impl MoviePage {
         });
     }
 
-    pub fn setlinksscrolled(&self, links: Vec<crate::ui::network::Urls>) {
+    pub fn setlinksscrolled(&self, links: Vec<Urls>) {
         let imp = self.imp();
         let linksscrolled = fix(imp.linksscrolled.get());
         let linksrevealer = imp.linksrevealer.get();
@@ -689,7 +689,7 @@ impl MoviePage {
         linksrevealer.set_reveal_child(true);
     }
 
-    pub fn setactorscrolled(&self, actors: Vec<crate::ui::network::People>) {
+    pub fn setactorscrolled(&self, actors: Vec<People>) {
         let imp = self.imp();
         fix(imp.actorscrolled.get());
         let actorrevealer = imp.actorrevealer.get();
@@ -745,7 +745,7 @@ impl MoviePage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let people: std::cell::Ref<crate::ui::network::People> = entry.borrow();
+            let people: std::cell::Ref<People> = entry.borrow();
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture
                     .downcast_ref::<gtk::Box>()
@@ -781,7 +781,7 @@ impl MoviePage {
                 .item(position)
                 .and_downcast::<glib::BoxedAnyObject>()
                 .unwrap();
-            let actor: std::cell::Ref<crate::ui::network::People> = item.borrow();
+            let actor: std::cell::Ref<People> = item.borrow();
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             let view = match window.current_view_name().as_str() {
                 "homepage" => {
@@ -816,7 +816,7 @@ impl MoviePage {
 
     pub fn get_similar(&self) {
         let id = self.id();
-        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
+        let (sender, receiver) = async_channel::bounded::<Vec<SearchResult>>(1);
         RUNTIME.spawn(async move {
             let id = similar(&id).await.expect("msg");
             sender
@@ -832,7 +832,7 @@ impl MoviePage {
         }));
     }
 
-    pub fn setrecommendscrolled(&self, recommend: Vec<crate::ui::network::SearchResult>) {
+    pub fn setrecommendscrolled(&self, recommend: Vec<SearchResult>) {
         let imp = self.imp();
         let recommendscrolled = fix(imp.recommendscrolled.get());
         let recommendrevealer = imp.recommendrevealer.get();
@@ -892,7 +892,7 @@ impl MoviePage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let recommend: std::cell::Ref<crate::ui::network::SearchResult> = entry.borrow();
+            let recommend: std::cell::Ref<SearchResult> = entry.borrow();
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture
                     .downcast_ref::<gtk::Box>()
@@ -927,7 +927,7 @@ impl MoviePage {
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
-                let recommend: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
+                let recommend: std::cell::Ref<SearchResult> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 let view = match window.current_view_name().as_str() {
                     "homepage" => {
@@ -971,21 +971,21 @@ impl MoviePage {
         recommendscrolled.set_child(Some(&recommendlist));
     }
 
-    pub fn set_studio(&self, infos: Vec<crate::ui::network::SGTitem>) {
+    pub fn set_studio(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
         let scrolled = fix(imp.studiosscrolled.get());
         let revealer = imp.studiosrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
 
-    pub fn set_tags(&self, infos: Vec<crate::ui::network::SGTitem>) {
+    pub fn set_tags(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
         let scrolled = fix(imp.tagsscrolled.get());
         let revealer = imp.tagsrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
 
-    pub fn set_genres(&self, infos: Vec<crate::ui::network::SGTitem>) {
+    pub fn set_genres(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
         let scrolled = fix(imp.genresscrolled.get());
         let revealer = imp.genresrevealer.get();
@@ -996,7 +996,7 @@ impl MoviePage {
         &self,
         linksrevealer: gtk::Revealer,
         linksscrolled: gtk::ScrolledWindow,
-        infos: Vec<crate::ui::network::SGTitem>,
+        infos: Vec<SGTitem>,
     ) {
         if !infos.is_empty() {
             linksrevealer.set_reveal_child(true);

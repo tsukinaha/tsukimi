@@ -2,12 +2,10 @@ mod image;
 pub(crate) mod models;
 mod moviedrop;
 mod mpv;
-mod network;
 mod new_dropsel;
 mod provider;
 mod widgets;
 use self::models::SETTINGS;
-pub use crate::ui::network::RUNTIME;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
 
