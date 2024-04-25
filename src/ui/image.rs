@@ -1,8 +1,8 @@
+use crate::client::network::*;
 use gtk::glib::{self, clone};
 use gtk::{prelude::*, Revealer};
 use std::env;
 use std::path::PathBuf;
-use crate::client::network::*;
 pub fn setimage(id: String) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
@@ -34,7 +34,7 @@ pub fn setimage(id: String) -> Revealer {
         RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match get_image(id.clone(),"Primary",None).await {
+                match get_image(id.clone(), "Primary", None).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())
@@ -94,7 +94,7 @@ pub fn setthumbimage(id: String) -> Revealer {
         RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match get_image(id.clone(),"Thumb",None).await {
+                match get_image(id.clone(), "Thumb", None).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())

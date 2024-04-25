@@ -1,4 +1,5 @@
 use crate::client::{network::*, structs::*};
+use crate::utils::{get_data_with_cache, spawn};
 use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
@@ -13,6 +14,8 @@ mod imp {
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
+
+    use crate::utils::spawn;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -86,8 +89,10 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            obj.setup_history();
-            obj.set_lists();
+            spawn(glib::clone!(@weak obj =>async move {
+                obj.setup_history().await;
+                obj.set_lists().await;
+            }));
         }
     }
 
@@ -121,30 +126,25 @@ impl HistoryPage {
         Object::builder().build()
     }
 
-    pub fn setup_history(&self) {
+    pub async fn setup_history(&self) {
         let imp = self.imp();
         let spinner = imp.spinner.get();
         let historyrevealer = imp.historyrevealer.get();
         spinner.set_visible(true);
         fix(imp.hisscrolled.get());
-        let (sender, receiver) = async_channel::bounded::<Vec<Resume>>(1);
-        RUNTIME.spawn(glib::clone!(@strong sender => async move {
-            let history_results = resume().await.unwrap_or_else(|e| {
-                eprintln!("Error: {}", e);
-                Vec::<Resume>::new()
-            });
-            sender.send(history_results).await.expect("history results not received.");
-        }));
+
+        let history_results =
+            get_data_with_cache("0".to_string(), "history", async { resume().await })
+                .await
+                .unwrap_or_else(|_| Vec::new());
         let store = gio::ListStore::new::<glib::BoxedAnyObject>();
-        glib::spawn_future_local(glib::clone!(@weak store=> async move {
-            while let Ok(history_results) = receiver.recv().await {
+        spawn(glib::clone!(@weak store=> async move {
                 for result in history_results {
                     let object = glib::BoxedAnyObject::new(result);
                     store.append(&object);
                 }
                 spinner.set_visible(false);
                 historyrevealer.set_reveal_child(true);
-            }
         }));
         imp.selection.set_autoselect(false);
         imp.selection.set_model(Some(&store));
@@ -258,15 +258,15 @@ impl HistoryPage {
             }));
     }
 
-    pub fn set_lists(&self) {
-        self.sets("Movie");
-        self.sets("Series");
-        self.sets("Episode");
-        self.sets("People");
-        self.sets("MusicAlbum");
+    pub async fn set_lists(&self) {
+        self.sets("Movie").await;
+        self.sets("Series").await;
+        self.sets("Episode").await;
+        self.sets("People").await;
+        self.sets("MusicAlbum").await;
     }
 
-    pub fn sets(&self, types: &str) {
+    pub async fn sets(&self, types: &str) {
         let imp = self.imp();
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
         let factory = gtk::SignalListItemFactory::new();
@@ -450,23 +450,21 @@ impl HistoryPage {
         selection.set_autoselect(false);
         list.set_model(Some(selection));
         let media_type = types.to_string();
-        let (sender, receiver) = async_channel::bounded::<Vec<Item>>(1);
-        RUNTIME.spawn(async move {
-            let item = like_item(&media_type.to_string())
-                .await
-                .expect("msg");
-            sender.send(item).await.expect("msg");
-        });
-        glib::spawn_future_local(async move {
-            while let Ok(items) = receiver.recv().await {
-                let items_len = items.len();
-                for item in items {
-                    let object = glib::BoxedAnyObject::new(item);
-                    store.append(&object);
-                }
-                if items_len != 0 {
-                    revealer.set_reveal_child(true);
-                }
+
+        let items = get_data_with_cache("0".to_string(), &media_type.to_string(), async move {
+            like_item(&media_type.to_string()).await
+        })
+        .await
+        .unwrap_or_else(|_| Vec::new());
+
+        spawn(async move {
+            let items_len = items.len();
+            for item in items {
+                let object = glib::BoxedAnyObject::new(item);
+                store.append(&object);
+            }
+            if items_len != 0 {
+                revealer.set_reveal_child(true);
             }
         });
         let types = types.to_string();

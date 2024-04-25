@@ -206,7 +206,10 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
         ),
         "Backdrop" => format!(
             "{}:{}/emby/Items/{}/Images/Backdrop/{}?maxHeight=1200",
-            server.domain, server.port, id , tag.unwrap()
+            server.domain,
+            server.port,
+            id,
+            tag.unwrap()
         ),
         "Thumb" => format!(
             "{}:{}/emby/Items/{}/Images/Thumb?maxHeight=400",
@@ -251,7 +254,11 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
                             fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
                         }
                         "Backdrop" => {
-                            fs::write(pathbuf.join(format!("b{}_{}.png", id, tag.unwrap())), &bytes).unwrap();
+                            fs::write(
+                                pathbuf.join(format!("b{}_{}.png", id, tag.unwrap())),
+                                &bytes,
+                            )
+                            .unwrap();
                         }
                         "Thumb" => {
                             fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();

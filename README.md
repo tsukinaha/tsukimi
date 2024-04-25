@@ -54,11 +54,12 @@ scoop install tsukimi-full
 - [Release](https://github.com/tsukinaha/tsukimi/releases/latest)
 
 ## Tips
-如果你感觉组件过大（如图片），请设置此环境变量 [更多](https://wiki.archlinuxcn.org/wiki/HiDPI#GDK_3_(GTK+_3))
+如果你感觉组件过大（如图片），请设置此环境变量（X11 Only） [更多](https://wiki.archlinuxcn.org/wiki/HiDPI#GDK_3_(GTK+_3))    
+如果你使用 KDE Wayland，组件大小将会是 `GDK 检测到的缩放大小 * KDE 系统缩放大小` 
 ```
 $ export GDK_SCALE=1
 ```
-
+[Group](https://t.me/+8Sktkd13w00wNGNl)
 ## MPV Config
 - Linux: `$XDG_CONFIG_HOME/mpv`
 - Windows: 

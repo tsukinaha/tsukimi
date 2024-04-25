@@ -96,9 +96,7 @@ impl SearchPage {
     pub fn setup_recommend(&self) {
         let (sender, receiver) = async_channel::bounded::<List>(1);
         RUNTIME.spawn(async move {
-            let list = get_search_recommend()
-                .await
-                .expect("msg");
+            let list = get_search_recommend().await.expect("msg");
             sender
                 .send(list)
                 .await
@@ -150,7 +148,8 @@ impl SearchPage {
         let searchrevealer = imp.searchrevealer.get();
         let recommendbox = imp.recommendbox.get();
         let (sender, receiver) = async_channel::bounded::<Vec<SearchResult>>(1);
-        imp.searchentry.connect_activate(glib::clone!(@strong sender,@weak spinner=> move |entry| {
+        imp.searchentry.connect_activate(
+            glib::clone!(@strong sender,@weak spinner=> move |entry| {
                 spinner.set_visible(true);
                 recommendbox.set_visible(false);
                 let search_content = entry.text().to_string();
@@ -161,7 +160,8 @@ impl SearchPage {
                     });
                     sender.send(search_results).await.expect("search results not received.");
                 }));
-            }));
+            }),
+        );
 
         let store = gio::ListStore::new::<glib::BoxedAnyObject>();
         glib::spawn_future_local(glib::clone!(@weak store=> async move {

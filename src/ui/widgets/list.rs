@@ -1,12 +1,12 @@
 use super::item::ItemPage;
 use super::movie::MoviePage;
 use super::window::Window;
+use crate::client::{network::*, structs::*};
 use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-use crate::client::{network::*, structs::*};
 mod imp {
 
     use std::cell::OnceCell;

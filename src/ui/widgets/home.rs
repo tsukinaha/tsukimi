@@ -1,8 +1,8 @@
 use std::env;
 use std::path::PathBuf;
 
-use adw::prelude::NavigationPageExt;
 use crate::client::{network::*, structs::*};
+use adw::prelude::NavigationPageExt;
 use dirs::home_dir;
 use glib::Object;
 use gtk::prelude::*;
@@ -276,9 +276,7 @@ impl HomePage {
 
             let (sender, receiver) = async_channel::bounded::<Vec<Latest>>(3);
             RUNTIME.spawn(async move {
-                let latest = get_latest(view.id.clone())
-                    .await
-                    .expect("msg");
+                let latest = get_latest(view.id.clone()).await.expect("msg");
                 sender.send(latest).await.expect("msg");
             });
             glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {

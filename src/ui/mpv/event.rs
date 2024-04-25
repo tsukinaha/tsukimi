@@ -8,7 +8,10 @@ use std::{
 };
 
 use crate::{
-    client::{network::*, structs::Back}, config::set_config,utils::spawn_tokio, APP_ID
+    client::{network::*, structs::Back},
+    config::set_config,
+    utils::spawn_tokio,
+    APP_ID,
 };
 pub fn play(
     url: String,
@@ -38,7 +41,7 @@ pub fn play(
         init.set_property("config", true)?;
         init.set_property("input-vo-keyboard", true)?;
         init.set_property("input-default-bindings", true)?;
-
+        init.set_property("user-agent", "Tsukimi")?;
         if let Some(name) = name {
             init.set_property("force-media-title", name)?;
         }

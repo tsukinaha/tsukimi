@@ -1,7 +1,7 @@
 use super::models::SETTINGS;
 use super::mpv;
-use crate::client::{network::*, structs::*};
 use super::provider::dropdown_factory::factory;
+use crate::client::{network::*, structs::*};
 use gtk::glib;
 use gtk::prelude::*;
 

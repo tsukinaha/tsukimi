@@ -1,7 +1,7 @@
 use super::models::SETTINGS;
-use crate::client::structs::*;
 use super::new_dropsel::play_event;
 use super::provider::dropdown_factory::factory;
+use crate::client::structs::*;
 use gtk::prelude::*;
 
 pub fn newmediadropsel(
