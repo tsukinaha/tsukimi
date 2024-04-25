@@ -113,7 +113,7 @@ mod imp {
                 let settings = gtk::Settings::default().unwrap();
                 settings.set_property(
                     "gtk-xft-dpi",
-                    crate::ui::models::SETTINGS.font_size() as i32 * 1024,
+                    crate::ui::models::SETTINGS.font_size() * 1024,
                 );
             }
             obj.setup_rootpic();

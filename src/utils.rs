@@ -71,7 +71,7 @@ where
         });
         Ok(data)
     } else {
-        let v = spawn_tokio(async { future.await }).await?;
+        let v = spawn_tokio(future).await?;
         let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
         std::fs::write(&path, s_data).expect("Unable to write file");
         Ok(v)
@@ -85,7 +85,7 @@ where
 {
     let mut path = get_path();
     path.push(format!("{}_{}.json", item_type, &id));
-    let v = spawn_tokio(async { future.await }).await?;
+    let v = spawn_tokio(future).await?;
     let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
     std::fs::write(&path, s_data).expect("Unable to write file");
     Ok(v)
@@ -117,7 +117,7 @@ async fn _s_path() {
     let pathbuf = get_path();
     std::fs::DirBuilder::new()
         .recursive(true)
-        .create(&pathbuf)
+        .create(pathbuf)
         .unwrap();
 }
 
