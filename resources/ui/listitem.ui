@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwBin" class="TuListItem">
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">5</property>
+        <child>
+          <object class="GtkOverlay" id="overlay">
+            <property name="width-request">167</property>
+            <property name="height-request">260</property>
+            <property name="halign">center</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="listlabel">
+            <property name="justify">center</property>
+            <property name="width-request">167</property>
+            <property name="ellipsize">end</property>
+          </object>
+        </child>        
+      </object>
+    </child>
+  </template>
+</interface>

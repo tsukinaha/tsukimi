@@ -1,3 +1,4 @@
+use crate::client::network::*;
 use gtk::glib::{self, clone};
 use gtk::{prelude::*, Revealer};
 use std::env;
@@ -6,7 +7,7 @@ pub fn setimage(id: String) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Fill);
+    image.set_halign(gtk::Align::Center);
     image.set_content_fit(gtk::ContentFit::Cover);
     let revealer = gtk::Revealer::builder()
         .transition_type(gtk::RevealerTransitionType::Crossfade)
@@ -18,7 +19,8 @@ pub fn setimage(id: String) -> Revealer {
 
     let path = format!(
         "{}/.local/share/tsukimi/{}/{}.png",
-        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
+        dirs::home_dir().expect("msg").display(),
+        env::var("EMBY_NAME").unwrap(),
         id
     );
     let pathbuf = PathBuf::from(&path);
@@ -29,10 +31,10 @@ pub fn setimage(id: String) -> Revealer {
             revealer.set_reveal_child(true);
         }
     } else {
-        crate::ui::network::runtime().spawn(async move {
+        RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match crate::ui::network::get_image(id.clone()).await {
+                match get_image(id.clone(), "Primary", None).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())
@@ -77,7 +79,8 @@ pub fn setthumbimage(id: String) -> Revealer {
 
     let path = format!(
         "{}/.local/share/tsukimi/{}/t{}.png",
-        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
+        dirs::home_dir().expect("msg").display(),
+        env::var("EMBY_NAME").unwrap(),
         id
     );
     let pathbuf = PathBuf::from(&path);
@@ -88,10 +91,10 @@ pub fn setthumbimage(id: String) -> Revealer {
             revealer.set_reveal_child(true);
         }
     } else {
-        crate::ui::network::runtime().spawn(async move {
+        RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match crate::ui::network::get_thumbimage(id.clone()).await {
+                match get_image(id.clone(), "Thumb", None).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())
@@ -120,7 +123,7 @@ pub fn setthumbimage(id: String) -> Revealer {
     revealer
 }
 
-pub fn setbackdropimage(id: String) -> Revealer {
+pub fn setbackdropimage(id: String, tag: u8) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
@@ -135,9 +138,11 @@ pub fn setbackdropimage(id: String) -> Revealer {
         .build();
 
     let path = format!(
-        "{}/.local/share/tsukimi/{}/b{}.png",
-        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
-        id
+        "{}/.local/share/tsukimi/{}/b{}_{}.png",
+        dirs::home_dir().expect("msg").display(),
+        env::var("EMBY_NAME").unwrap(),
+        id,
+        tag
     );
     let pathbuf = PathBuf::from(&path);
     let idfuture = id.clone();
@@ -147,10 +152,10 @@ pub fn setbackdropimage(id: String) -> Revealer {
             revealer.set_reveal_child(true);
         }
     } else {
-        crate::ui::network::runtime().spawn(async move {
+        RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match crate::ui::network::get_backdropimage(id.clone()).await {
+                match get_image(id.clone(), "Backdrop", Some(tag)).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())
@@ -169,7 +174,7 @@ pub fn setbackdropimage(id: String) -> Revealer {
 
     glib::spawn_future_local(clone!(@weak image,@weak revealer => async move {
         while receiver.recv().await.is_ok() {
-            let path = format!("{}/.local/share/tsukimi/{}/b{}.png",dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(), idfuture);
+            let path = format!("{}/.local/share/tsukimi/{}/b{}_{}.png",dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(), idfuture, tag);
             let file = gtk::gio::File::for_path(&path);
             image.set_file(Some(&file));
             revealer.set_reveal_child(true);
@@ -194,7 +199,8 @@ pub fn setlogoimage(id: String) -> Revealer {
 
     let path = format!(
         "{}/.local/share/tsukimi/{}/l{}.png",
-        dirs::home_dir().expect("msg").display(),env::var("EMBY_NAME").unwrap(),
+        dirs::home_dir().expect("msg").display(),
+        env::var("EMBY_NAME").unwrap(),
         id
     );
     let pathbuf = PathBuf::from(&path);
@@ -205,10 +211,10 @@ pub fn setlogoimage(id: String) -> Revealer {
             revealer.set_reveal_child(true);
         }
     } else {
-        crate::ui::network::runtime().spawn(async move {
+        RUNTIME.spawn(async move {
             let mut retries = 0;
             while retries < 3 {
-                match crate::ui::network::get_logoimage(id.clone()).await {
+                match get_image(id.clone(), "Logo", None).await {
                     Ok(id) => {
                         sender
                             .send(id.clone())

@@ -8,8 +8,9 @@ use std::{
 };
 
 use crate::{
+    client::{network::*, structs::Back},
     config::set_config,
-    ui::network::{runtime, Back},
+    utils::spawn_tokio,
     APP_ID,
 };
 pub fn play(
@@ -40,7 +41,7 @@ pub fn play(
         init.set_property("config", true)?;
         init.set_property("input-vo-keyboard", true)?;
         init.set_property("input-default-bindings", true)?;
-
+        init.set_property("user-agent", "Tsukimi")?;
         if let Some(name) = name {
             init.set_property("force-media-title", name)?;
         }
@@ -70,8 +71,8 @@ pub fn play(
     ev_ctx.observe_property("time-pos", Format::Double, 0)?;
 
     let backc = back.clone();
-    runtime().spawn(async move {
-        crate::ui::network::playstart(backc).await;
+    RUNTIME.spawn(async move {
+        playstart(backc).await;
     });
 
     crossbeam::scope(|scope| {
@@ -93,8 +94,8 @@ pub fn play(
                     if r == 3 {
                         let mut back = back.clone();
                         back.tick = duration;
-                        runtime().spawn(async move {
-                            crate::ui::network::positionstop(back).await;
+                        let _ = spawn_tokio(async {
+                            positionstop(back).await;
                         });
                     }
                     println!("Exiting! Reason: {:?}", r);
@@ -111,8 +112,8 @@ pub fn play(
                         last_print = Instant::now();
                         let mut back = back.clone();
                         back.tick = duration;
-                        runtime().spawn(async move {
-                            crate::ui::network::positionback(back).await;
+                        RUNTIME.spawn(async move {
+                            positionback(back).await;
                         });
                     }
                 }

@@ -1,0 +1,24 @@
+<interface>
+  <menu id="rightmenu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Remove</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Like</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Mark as Played</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Edit Metadata</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Edit Images</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Scan</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

@@ -1,3 +1,4 @@
+pub mod account_add;
 pub mod actor;
 pub mod episoderow;
 pub mod fix;
@@ -6,7 +7,8 @@ pub mod home;
 pub mod item;
 pub mod list;
 pub mod movie;
+pub mod music;
 pub mod search;
 pub mod settings;
+pub mod tu_list_item;
 pub mod window;
-pub mod account_add;

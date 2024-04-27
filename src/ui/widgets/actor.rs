@@ -1,4 +1,6 @@
+use crate::client::{network::*, structs::*};
 use crate::ui::image::setimage;
+use crate::utils::{get_data_with_cache, spawn};
 use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
@@ -15,6 +17,8 @@ mod imp {
     use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
+
+    use crate::utils::spawn_g_timeout;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/actor.ui")]
@@ -82,9 +86,11 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            obj.setup_pic();
-            obj.get_item();
-            obj.set_lists();
+            spawn_g_timeout(glib::clone!(@weak obj => async move {
+                obj.setup_pic();
+                obj.get_item().await;
+                obj.set_lists().await;
+            }));
         }
     }
 
@@ -122,22 +128,19 @@ impl ActorPage {
         imp.actorpicbox.append(&pic);
     }
 
-    pub fn get_item(&self) {
+    pub async fn get_item(&self) {
         let imp = self.imp();
         let id = self.id();
         let inscription = imp.inscription.get();
         let inforevealer = imp.inforevealer.get();
         let spinner = imp.spinner.get();
         let title = imp.title.get();
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
-        crate::ui::network::runtime().spawn(async move {
-            let item = crate::ui::network::get_item_overview(id.to_string())
-                .await
-                .expect("msg");
-            sender.send(item).await.expect("msg");
-        });
-        glib::spawn_future_local(glib::clone!(@weak self as obj=>async move {
-            while let Ok(item) = receiver.recv().await {
+        let item = get_data_with_cache(id.to_string(), "item", async {
+            get_item_overview(id).await
+        })
+        .await
+        .unwrap();
+        spawn(glib::clone!(@weak self as obj=>async move {
                 if let Some(overview) = item.overview {
                     inscription.set_text(Some(&overview));
                 }
@@ -147,17 +150,16 @@ impl ActorPage {
                 title.set_text(&item.name);
                 inforevealer.set_reveal_child(true);
                 spinner.set_visible(false);
-            }
         }));
     }
 
-    pub fn set_lists(&self) {
-        self.sets("Movie");
-        self.sets("Series");
-        self.sets("Episode");
+    pub async fn set_lists(&self) {
+        self.sets("Movie").await;
+        self.sets("Series").await;
+        self.sets("Episode").await;
     }
 
-    pub fn sets(&self, types: &str) {
+    pub async fn sets(&self, types: &str) {
         let imp = self.imp();
         let id = self.id();
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
@@ -216,7 +218,7 @@ impl ActorPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let item: std::cell::Ref<crate::ui::network::Item> = entry.borrow();
+            let item: std::cell::Ref<Item> = entry.borrow();
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture
                     .downcast_ref::<gtk::Box>()
@@ -266,7 +268,11 @@ impl ActorPage {
             if label.is::<gtk::Label>() {
                 let mut str: String;
                 if listtype == "Episode" {
-                    str = item.series_name.as_ref().unwrap().to_string();
+                    if let Some(name) = &item.series_name {
+                        str = name.to_string();
+                    } else {
+                        str = "".to_string();
+                    }
                     if let Some(season) = item.parent_index_number {
                         str.push_str(&format!("\nS{}", season));
                     }
@@ -319,23 +325,19 @@ impl ActorPage {
         selection.set_autoselect(false);
         list.set_model(Some(selection));
         let media_type = types.to_string();
-        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Item>>(1);
-        crate::ui::network::runtime().spawn(async move {
-            let item = crate::ui::network::person_item(&id, &media_type.to_string())
-                .await
-                .expect("msg");
-            sender.send(item).await.expect("msg");
-        });
-        glib::spawn_future_local(async move {
-            while let Ok(items) = receiver.recv().await {
-                let items_len = items.len();
-                for item in items {
-                    let object = glib::BoxedAnyObject::new(item);
-                    store.append(&object);
-                }
-                if items_len != 0 {
-                    revealer.set_reveal_child(true);
-                }
+        let items = get_data_with_cache(id.to_string(), &media_type.to_string(), async move {
+            person_item(&id, &media_type).await
+        })
+        .await
+        .unwrap();
+        spawn(async move {
+            let items_len = items.len();
+            for item in items {
+                let object = glib::BoxedAnyObject::new(item);
+                store.append(&object);
+            }
+            if items_len != 0 {
+                revealer.set_reveal_child(true);
             }
         });
         let types = types.to_string();
@@ -346,7 +348,7 @@ impl ActorPage {
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
-                let recommend: std::cell::Ref<crate::ui::network::Item> = item.borrow();
+                let recommend: std::cell::Ref<Item> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 let view = match window.current_view_name().as_str() {
                     "homepage" => {
@@ -403,7 +405,7 @@ impl ActorPage {
         );
     }
 
-    pub fn setlinksscrolled(&self, links: Vec<crate::ui::network::Urls>) {
+    pub fn setlinksscrolled(&self, links: Vec<Urls>) {
         let imp = self.imp();
         let linksscrolled = fix(imp.linksscrolled.get());
         let linksrevealer = imp.linksrevealer.get();

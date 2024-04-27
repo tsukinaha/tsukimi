@@ -24,6 +24,25 @@
                           <object class="GtkListBox">
                             <property name="selection-mode">none</property>
                             <child>
+                              <object class="AdwSwitchRow" id="selectlastcontrol">
+                                <property name="title" translatable="yes">Auto Select Last Server</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwSpinRow" id="fontspinrow">
+                                <property name="title" translatable="yes">Font Scale</property>
+                                <property name="adjustment">
+                                  <object class="GtkAdjustment">
+                                    <property name="lower">30</property>
+                                    <property name="upper">200</property>
+                                    <property name="value">100</property>
+                                    <property name="page-increment">1</property>
+                                    <property name="step-increment">1</property>
+                                  </object>
+                                </property>
+                              </object>
+                            </child>
+                            <child>
                               <object class="AdwSwitchRow" id="sidebarcontrol">
                                 <property name="title" translatable="yes">Sidebar Overlay</property>
                                 <property name="subtitle" translatable="yes">or side by side</property>
@@ -185,7 +204,7 @@
                                     </property>
                                   </object>
                                 </child>
-                                
+
                               </object>
                             </child>
                             <child>

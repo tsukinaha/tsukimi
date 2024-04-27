@@ -57,5 +57,29 @@
       <default>15</default>
       <summary>Default threads</summary>
     </key>
+    <key name="pic-blur" type="i">
+      <default>15</default>
+      <summary>Default threads</summary>
+    </key>
+    <key name="font-size" type="i">
+      <default>-1</default>
+      <summary>Default font size</summary>
+    </key>
+    <key name="is-blurenabled" type="b">
+      <default>false</default>
+      <summary>Default switch state</summary>
+    </key>
+    <key name="is-backgroundenabled" type="b">
+      <default>false</default>
+      <summary>Default switch state</summary>
+    </key>
+    <key name="preferred-server" type="s">
+      <default>""</default>
+      <summary>Default switch state</summary>
+    </key>
+    <key name="is-auto-select-server" type="b">
+      <default>false</default>
+      <summary>Default switch state</summary>
+    </key>
   </schema>
 </schemalist>

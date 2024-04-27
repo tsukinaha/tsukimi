@@ -1,20 +1,25 @@
 use super::item::ItemPage;
 use super::movie::MoviePage;
+use super::tu_list_item::TuListItem;
 use super::window::Window;
+use crate::client::{network::*, structs::*};
+use crate::ui::provider::tu_item::TuItem;
+use crate::utils::{get_data_with_cache, spawn, spawn_tokio};
 use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-
 mod imp {
 
-    use std::cell::OnceCell;
+    use std::cell::{OnceCell, RefCell};
 
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
+
+    use crate::utils::spawn_g_timeout;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -23,6 +28,8 @@ mod imp {
     pub struct ListPage {
         #[property(get, set, construct_only)]
         pub id: OnceCell<String>,
+        #[property(get, set, construct_only)]
+        pub collectiontype: OnceCell<String>,
         #[template_child]
         pub listgrid: TemplateChild<gtk::GridView>,
         #[template_child]
@@ -34,6 +41,7 @@ mod imp {
         #[template_child]
         pub listscrolled: TemplateChild<gtk::ScrolledWindow>,
         pub selection: gtk::SingleSelection,
+        pub popovermenu: RefCell<Option<gtk::PopoverMenu>>,
     }
 
     // The central trait for subclassing a GObject
@@ -59,7 +67,9 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            obj.set_factory();
+            spawn_g_timeout(glib::clone!(@weak obj => async move {
+                obj.set_factory().await;
+            }));
         }
     }
 
@@ -83,29 +93,34 @@ glib::wrapper! {
 }
 
 impl ListPage {
-    pub fn new(id: String) -> Self {
-        Object::builder().property("id", id).build()
+    pub fn new(id: String, collection_type: String) -> Self {
+        Object::builder()
+            .property("id", id)
+            .property("collectiontype", collection_type)
+            .build()
     }
 
-    fn set_factory(&self) {
+    async fn set_factory(&self) {
         let imp = self.imp();
         let spinner = imp.spinner.get();
         let listrevealer = imp.listrevealer.get();
         let count = imp.count.get();
         let id = imp.id.get().expect("id not set").clone();
+        let c = imp.collectiontype.get().unwrap();
+        let include_item_types = match c.as_str() {
+            "movies" => "Movie",
+            "tvshows" => "Series",
+            "music" => "MusicAlbum",
+            _ => "Movie, Series",
+        };
         spinner.set_visible(true);
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::List>(1);
-        crate::ui::network::runtime().spawn(glib::clone!(@strong sender => async move {
-            let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-            let list_results = crate::ui::network::get_list(id.to_string(),0.to_string(),mutex).await.unwrap_or_else(|e| {
-                eprintln!("Error: {}", e);
-                crate::ui::network::List::default()
-            });
-            sender.send(list_results).await.expect("list results not received.");
-        }));
+        let list_results = get_data_with_cache(id.to_string(), &include_item_types, async move {
+            get_list(id.to_string(), 0.to_string(), &include_item_types).await
+        })
+        .await
+        .unwrap();
         let store = gio::ListStore::new::<glib::BoxedAnyObject>();
-        glib::spawn_future_local(glib::clone!(@weak store=> async move {
-            while let Ok(list_results) = receiver.recv().await {
+        spawn(glib::clone!(@weak store=> async move {
                 for result in list_results.items {
                     let object = glib::BoxedAnyObject::new(result);
                     store.append(&object);
@@ -113,11 +128,10 @@ impl ListPage {
                 spinner.set_visible(false);
                 count.set_text(&format!("{} Items",list_results.total_record_count));
                 listrevealer.set_reveal_child(true);
-            }
         }));
         imp.selection.set_model(Some(&store));
         let factory = gtk::SignalListItemFactory::new();
-        factory.connect_setup(move |_, item| {
+        /* factory.connect_setup(move |_, item| {
             let list_item = item
                 .downcast_ref::<gtk::ListItem>()
                 .expect("Needs to be ListItem");
@@ -139,11 +153,48 @@ impl ListPage {
             listbox.append(&picture);
             listbox.append(&label);
             listbox.set_valign(gtk::Align::Start);
-            listbox.set_size_request(167, 300);
             list_item.set_child(Some(&listbox));
-        });
+        }); */
         factory.connect_bind(move |_, item| {
-            let picture = item
+            let list_item = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem");
+            let entry = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .item()
+                .and_downcast::<glib::BoxedAnyObject>()
+                .expect("Needs to be BoxedAnyObject");
+            let latest: std::cell::Ref<Latest> = entry.borrow();
+            if list_item.child().is_none() {
+                match latest.latest_type.as_str() {
+                    "Movie" => {
+                        let tu_item: TuItem = glib::object::Object::new();
+                        tu_item.set_id(latest.id.clone());
+                        tu_item.set_name(latest.name.clone());
+                        tu_item.set_production_year(latest.production_year.unwrap());
+                        if let Some(userdata) = &latest.user_data {
+                            tu_item.set_played(userdata.played);
+                        }
+                        let list_child = TuListItem::new(tu_item, "Movie");
+                        list_item.set_child(Some(&list_child));
+                    }
+                    "Series" => {
+                        let tu_item: TuItem = glib::object::Object::new();
+                        tu_item.set_id(latest.id.clone());
+                        tu_item.set_name(latest.name.clone());
+                        tu_item.set_production_year(latest.production_year.unwrap());
+                        if let Some(userdata) = &latest.user_data {
+                            tu_item.set_played(userdata.played);
+                            tu_item.set_unplayed_item_count(userdata.unplayed_item_count.unwrap());
+                        }
+                        let list_child = TuListItem::new(tu_item, "Series");
+                        list_item.set_child(Some(&list_child));
+                    }
+                    _ => {}
+                }
+            }
+            /* let picture = item
                 .downcast_ref::<gtk::ListItem>()
                 .expect("Needs to be ListItem")
                 .child()
@@ -165,9 +216,11 @@ impl ListPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<crate::ui::network::Latest> = entry.borrow();
+            let latest: std::cell::Ref<Latest> = entry.borrow();
             if latest.latest_type == "MusicAlbum" {
                 picture.set_size_request(167, 167);
+            } else {
+                picture.set_size_request(167, 277);
             }
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture
@@ -210,7 +263,7 @@ impl ListPage {
                     .downcast_ref::<gtk::Label>()
                     .expect("Needs to be Label")
                     .set_text(&str);
-            }
+            } */
         });
         imp.listgrid.set_factory(Some(&factory));
         imp.listgrid.set_model(Some(&imp.selection));
@@ -220,7 +273,7 @@ impl ListPage {
             glib::clone!(@weak self as obj => move |gridview, position| {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let result: std::cell::Ref<crate::ui::network::Latest> = item.borrow();
+                let result: std::cell::Ref<Latest> = item.borrow();
                 let window = obj.root().and_downcast::<Window>().unwrap();
                 if result.latest_type == "Movie" {
                     window.set_title(&result.name);
@@ -236,35 +289,44 @@ impl ListPage {
                 std::env::set_var("HOME_TITLE", &result.name);
             }),
         );
-        self.update();
+        self.update().await;
     }
 
-    pub fn update(&self) {
+    pub async fn update(&self) {
         let scrolled = self.imp().listscrolled.get();
         scrolled.connect_edge_overshot(glib::clone!(@weak self as obj => move |_, pos| {
             if pos == gtk::PositionType::Bottom {
                 let spinner = obj.imp().spinner.get();
                 spinner.set_visible(true);
-                let (sender, receiver) = async_channel::bounded::<crate::ui::network::List>(1);
                 let store = obj.imp().selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
                 let id = obj.imp().id.get().expect("id not set").clone();
-                let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
                 let offset = obj.imp().selection.model().unwrap().n_items();
-                crate::ui::network::runtime().spawn(glib::clone!(@strong sender => async move {
-                    let list_results = crate::ui::network::get_list(id.to_string(),offset.to_string(),mutex).await.unwrap_or_else(|e| {
-                        eprintln!("Error: {}", e);
-                        crate::ui::network::List::default()
-                    });
-                    sender.send(list_results).await.expect("list results not received.");
-                }));
-                glib::spawn_future_local(glib::clone!(@weak store=> async move {
-                    while let Ok(list_results) = receiver.recv().await {
+                let c = obj.imp().collectiontype.get().unwrap();
+                let include_item_types = match c.as_str() {
+                    "movies" => {
+                        "Movie"
+                    }
+                    "tvshows" => {
+                        "Series"
+                    }
+                    "music" => {
+                        "MusicAlbum"
+                    }
+                    _ => {
+                        "Movie, Series"
+                    }
+                };
+                spinner.set_visible(true);
+                let list_results = spawn_tokio(async move {
+                    get_list(id.to_string(),offset.to_string(),&include_item_types).await.unwrap()
+                });
+                spawn(glib::clone!(@weak store=> async move {
+                        let list_results = list_results.await;
                         for result in list_results.items {
                             let object = glib::BoxedAnyObject::new(result);
                             store.append(&object);
                         }
                         spinner.set_visible(false);
-                    }
                 }));
             }
         }));

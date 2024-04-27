@@ -6,8 +6,10 @@ child {
     margin: 9px;
     border-radius:15px;
 }
+
 .mask {
-    background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(255,255,255,0.8));
+    background: rgba(255,255,255,0.7);
+    filter: blur(7px);
     border-radius:10px;
 }
 
@@ -66,14 +68,17 @@ box > overlay > image {
     margin:3px;
 }
 
-revealer > expander-widget > box > box > widget {
-    background-color:rgba(1,1,1,0.1);
-    border-radius:10px;
-    margin:5px;
+tabbar > revealer > box {
+    background-color:rgba(0,0,0,0);
 }
 
-revealer > expander-widget > box > box > widget > box{
-    margin:15px;
+revealer > box > box > widget {
+    background-color:rgba(1,1,1,0.1);
+    border-radius:10px;
+}
+
+revealer > box > box > widget > box{
+    margin:10px;
 }
 
 box > scrolledwindow > viewport > box > box {

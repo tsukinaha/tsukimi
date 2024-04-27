@@ -1,12 +1,12 @@
 use std::env;
 use std::path::PathBuf;
 
-use adw::prelude::NavigationPageExt;
 use adw::prelude::ActionRowExt;
+use adw::prelude::AdwDialogExt;
+use adw::prelude::NavigationPageExt;
 use gio::Settings;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-use adw::prelude::AdwDialogExt;
 mod imp {
     use std::cell::OnceCell;
 
@@ -86,9 +86,13 @@ mod imp {
             klass.install_action("win.sidebar", None, move |window, _action, _parameter| {
                 window.sidebar();
             });
-            klass.install_action("win.new-account", None, move |window, _action, _parameter| {
-                window.new_account();
-            });
+            klass.install_action(
+                "win.new-account",
+                None,
+                move |window, _action, _parameter| {
+                    window.new_account();
+                },
+            );
             klass.install_action_async("win.pop", None, |window, _action, _parameter| async move {
                 window.pop().await;
             });
@@ -105,6 +109,13 @@ mod imp {
             // Call "constructed" on parent
             self.parent_constructed();
             let obj = self.obj();
+            if crate::ui::models::SETTINGS.font_size() != -1 {
+                let settings = gtk::Settings::default().unwrap();
+                settings.set_property(
+                    "gtk-xft-dpi",
+                    crate::ui::models::SETTINGS.font_size() * 1024,
+                );
+            }
             obj.setup_rootpic();
             obj.setup_settings();
             obj.load_window_size();
@@ -154,12 +165,12 @@ mod imp {
     impl AdwApplicationWindowImpl for Window {}
 }
 
-use glib::Object;
-use gtk::{gio, glib};
 use crate::config::Account;
 use crate::config::{load_cfgv2, load_env};
 use crate::ui::models::SETTINGS;
 use crate::APP_ID;
+use glib::Object;
+use gtk::{gio, glib};
 
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
@@ -174,6 +185,15 @@ impl Window {
         let listbox = imp.serversbox.get();
         listbox.remove_all();
         let accounts = load_cfgv2().unwrap();
+        for account in &accounts.accounts {
+            if SETTINGS.auto_select_server() && account.servername == SETTINGS.preferred_server() {
+                load_env(account);
+                imp.historypage.set_child(None::<&gtk::Widget>);
+                imp.searchpage.set_child(None::<&gtk::Widget>);
+                self.mainpage();
+                self.freshhomepage();
+            }
+        }
         if accounts.accounts.is_empty() {
             imp.login_stack.set_visible_child_name("no-server");
             return;
@@ -188,7 +208,9 @@ impl Window {
                 .height_request(80)
                 .activatable(true)
                 .build();
-            unsafe { row.set_data("account", account); }
+            unsafe {
+                row.set_data("account", account);
+            }
             row.add_suffix(&{
                 let button = gtk::Button::builder()
                     .icon_name("user-trash-symbolic")
@@ -206,11 +228,14 @@ impl Window {
             listbox.append(&row);
         }
         listbox.connect_row_activated(glib::clone!(@weak self as obj => move |_, row| {
-            unsafe { 
-                let account_ptr: std::ptr::NonNull<Account>  = row.data("account").unwrap(); 
+            unsafe {
+                let account_ptr: std::ptr::NonNull<Account>  = row.data("account").unwrap();
                 let account: &Account = &*account_ptr.as_ptr();
                 load_env(account);
+                SETTINGS.set_preferred_server(&account.servername).unwrap();
             }
+            obj.imp().historypage.set_child(None::<&gtk::Widget>);
+            obj.imp().searchpage.set_child(None::<&gtk::Widget>);
             obj.mainpage();
             obj.freshhomepage();
         }));
@@ -221,7 +246,8 @@ impl Window {
         imp.homeview.pop();
         if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
             if tag.as_str() == "homepage" {
-                imp.navipage.set_title("Home");
+                imp.navipage
+                    .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
                 self.change_pop_visibility();
             } else {
                 imp.navipage.set_title(&tag);
@@ -234,7 +260,7 @@ impl Window {
         imp.historyview.pop();
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
             if tag.as_str() == "historypage" {
-                imp.navipage.set_title("History");
+                imp.navipage.set_title("History & Liked");
                 self.change_pop_visibility();
             } else {
                 imp.navipage.set_title(&tag);
@@ -331,10 +357,6 @@ impl Window {
         imp.navipage.set_title(title);
     }
 
-    fn imp(&self) -> &imp::Window {
-        imp::Window::from_obj(self)
-    }
-
     fn mainpage(&self) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("main");
@@ -351,11 +373,13 @@ impl Window {
         if imp.homepage.child().is_none() {
             imp.homepage
                 .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
-            imp.navipage.set_title("Home");
+            imp.navipage
+                .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
         }
         if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
             if tag.as_str() == "homepage" {
-                imp.navipage.set_title("Home");
+                imp.navipage
+                    .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
                 self.set_pop_visibility(false);
             } else {
                 imp.navipage
@@ -371,17 +395,21 @@ impl Window {
 
     fn freshhomepage(&self) {
         let imp = self.imp();
-        imp.insidestack.set_visible_child_name("homepage");
+        imp.selectlist
+            .select_row(imp.selectlist.row_at_index(0).as_ref());
         imp.homeview
             .pop_to_page(&imp.homeview.find_page("homepage").unwrap());
         imp.homepage
             .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
-        imp.navipage.set_title("Home");
+        imp.navipage
+            .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
         self.set_pop_visibility(false);
     }
 
     fn freshhistorypage(&self) {
         let imp = self.imp();
+        imp.selectlist
+            .select_row(imp.selectlist.row_at_index(1).as_ref());
         imp.insidestack.set_visible_child_name("historypage");
         imp.historyview
             .pop_to_page(&imp.historyview.find_page("historypage").unwrap());
@@ -393,6 +421,8 @@ impl Window {
 
     fn freshsearchpage(&self) {
         let imp = self.imp();
+        imp.selectlist
+            .select_row(imp.selectlist.row_at_index(2).as_ref());
         imp.insidestack.set_visible_child_name("searchpage");
         imp.searchview
             .pop_to_page(&imp.searchview.find_page("searchpage").unwrap());
@@ -408,16 +438,16 @@ impl Window {
         if imp.historypage.child().is_none() {
             imp.historypage
                 .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
-            imp.navipage.set_title("History");
+            imp.navipage.set_title("History & Liked");
         }
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
             if tag.as_str() == "historypage" {
-                imp.navipage.set_title("History");
+                imp.navipage.set_title("History & Liked");
                 self.set_pop_visibility(false);
             } else {
                 self.set_pop_visibility(true);
                 imp.navipage.set_title(
-                    &env::var("HISTORY_TITLE").unwrap_or_else(|_| "History".to_string()),
+                    &env::var("HISTORY_TITLE").unwrap_or_else(|_| "History & Liked".to_string()),
                 );
             }
         } else {

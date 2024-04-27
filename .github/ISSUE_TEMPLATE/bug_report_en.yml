@@ -1,0 +1,56 @@
+name: Bug feedback
+description: File a bug report
+title: "[Bug report]: Describe your issue here briefly"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please confirm the following information:
+        1. Please submit issues according to this template. Issues not submitted according to this template will be closed directly.
+        2. If your issue can be found directly in previous issues, your issue will be closed directly.
+        3. When submitting an issue, be sure to describe it clearly and attach a log. Issues that are not clearly described and cannot be understood and analyzed will be closed directly.
+  - type: checkboxes
+    id: ensure
+    attributes:
+      label: Confirm
+      description: Before submitting an issue, please confirm that you have read and confirmed the following
+      options:
+        - label: My version is the latest version and my version number is the same as [latest version](https://github.com/tsukinaha/tsukimi/releases/latest).
+          required: true
+        - label: I have searched in [issue](https://github.com/tsukinaha/tsukimi/issues) and confirmed that my issue has not been raised.
+          required: true
+        - label: I have modified the title and replaced the description in the title with the issue I encountered.
+          required: true
+  - type: input
+    id: version
+    attributes:
+      label: Current program version
+      description: The version number of the program when the issue occurred
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: Issue type
+      description: In which of the following sections did you encounter the issue
+      options:
+        - Main program running issues
+        - Running environment issues
+        - Other issues
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Issue description
+      description: Please give a detailed description of the issue you encountered
+      placeholder: "Issue description"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: The operation and screenshot of the interface when the issue occurred
+      description: When the issue occurs, please copy the program operation log here.
+      render: bash
