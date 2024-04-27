@@ -112,6 +112,13 @@
                       </object>
                     </child>
                     <child>
+                      <object class="AdwStatusPage" id="allstatus">
+                        <property name="title">Nothing Here</property>
+                        <property name="icon-name">document-open-symbolic</property>
+                        <property name="visible">False</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkRevealer" id="listrevealer">
                         <property name="transition-type">crossfade</property>
                         <property name="transition-duration">700</property>
@@ -141,6 +148,7 @@
                 <property name="child">
                   <object class="AdwStatusPage">
                     <property name="title">Nothing Here</property>
+                    <property name="icon-name">document-open-symbolic</property>
                   </object>
                 </property>
               </object>

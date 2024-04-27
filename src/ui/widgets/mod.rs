@@ -12,3 +12,4 @@ pub mod search;
 pub mod settings;
 pub mod tu_list_item;
 pub mod window;
+pub mod account_settings;

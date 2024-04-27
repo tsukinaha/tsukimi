@@ -14,8 +14,15 @@ fn main() -> glib::ExitCode {
     // Register and include resources
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
 
+    adw::init().expect("Failed to initialize Adw");
     // Create a new application
-    let app = adw::Application::builder().application_id(APP_ID).build();
+    let app = adw::Application::builder()
+        .application_id(APP_ID).build();
+
+    // load the icon theme
+    let theme = gtk::IconTheme::for_display(&gtk::gdk::Display::default().unwrap());
+    theme.add_resource_path("/moe/tsukimi/icons");
+
     // Load the CSS from the resource file
     app.connect_startup(|_| ui::load_css());
     // Connect to "activate" signal of `app`

@@ -1,12 +1,10 @@
 use std::env;
 use std::path::PathBuf;
 
-use adw::prelude::ActionRowExt;
-use adw::prelude::AdwDialogExt;
-use adw::prelude::NavigationPageExt;
 use gio::Settings;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
+use adw::prelude::*;
 mod imp {
     use std::cell::OnceCell;
 
@@ -57,6 +55,8 @@ mod imp {
         pub serversbox: TemplateChild<gtk::ListBox>,
         #[template_child]
         pub login_stack: TemplateChild<gtk::Stack>,
+        #[template_child]
+        pub namerow: TemplateChild<adw::ActionRow>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
     }
@@ -85,6 +85,9 @@ mod imp {
             });
             klass.install_action("win.sidebar", None, move |window, _action, _parameter| {
                 window.sidebar();
+            });
+            klass.install_action("setting.account", None, move |window, _action, _parameter| {
+                window.account_settings();
             });
             klass.install_action(
                 "win.new-account",
@@ -186,12 +189,13 @@ impl Window {
         listbox.remove_all();
         let accounts = load_cfgv2().unwrap();
         for account in &accounts.accounts {
-            if SETTINGS.auto_select_server() && account.servername == SETTINGS.preferred_server() {
+            if SETTINGS.auto_select_server() && account.servername == SETTINGS.preferred_server() && env::var("EMBY_NAME").is_err() {
                 load_env(account);
                 imp.historypage.set_child(None::<&gtk::Widget>);
                 imp.searchpage.set_child(None::<&gtk::Widget>);
                 self.mainpage();
                 self.freshhomepage();
+                self.account_setup();
             }
         }
         if accounts.accounts.is_empty() {
@@ -238,9 +242,22 @@ impl Window {
             obj.imp().searchpage.set_child(None::<&gtk::Widget>);
             obj.mainpage();
             obj.freshhomepage();
+            obj.account_setup();
         }));
     }
 
+    pub fn account_setup(&self) {
+        let imp = self.imp();
+        imp.namerow.set_title(&env::var("EMBY_USERNAME").unwrap_or_else(|_| "Username".to_string()));
+        imp.namerow.set_subtitle(&env::var("EMBY_NAME").unwrap_or_else(|_| "Server".to_string()));
+    }
+
+
+    pub fn account_settings(&self) {
+        let dialog = crate::ui::widgets::account_settings::AccountSettings::new();
+        dialog.present(self);
+    }
+    
     async fn homeviewpop(&self) {
         let imp = self.imp();
         imp.homeview.pop();
