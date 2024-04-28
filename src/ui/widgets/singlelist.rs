@@ -28,6 +28,8 @@ mod imp {
     pub struct SingleListPage {
         #[property(get, set, construct_only)]
         pub id: OnceCell<String>,
+        #[property(get, set, nullable)]
+        pub parentid: RefCell<Option<String>>,
         #[property(get, set, construct_only)]
         pub collectiontype: OnceCell<String>,
         #[property(get, set, construct_only)]
@@ -102,11 +104,12 @@ glib::wrapper! {
 }
 
 impl SingleListPage {
-    pub fn new(id: String, collection_type: String, listtype: &str) -> Self {
+    pub fn new(id: String, collection_type: String, listtype: &str, parentid: Option<String>) -> Self {
         Object::builder()
             .property("id", id)
             .property("collectiontype", collection_type)
             .property("listtype", listtype)
+            .property("parentid", parentid)
             .build()
     }
 
@@ -159,8 +162,13 @@ impl SingleListPage {
         };
         let listtype = imp.listtype.get().unwrap().clone();
         spinner.set_visible(true);
+        let parentid = imp.parentid.borrow().clone();
         let list_results = get_data_with_cache(id.to_string(), &format!("{}{}",listtype.clone(),include_item_types), async move {
-            get_list(id.to_string(), 0.to_string(), &include_item_types, &listtype).await
+            if let Some(parentid) = parentid {
+                get_inlist(parentid.to_string(), 0.to_string(), &listtype, &id).await
+            } else {
+                get_list(id.to_string(), 0.to_string(), &include_item_types, &listtype).await
+            }
         })
         .await
         .unwrap();
@@ -244,6 +252,11 @@ impl SingleListPage {
                     let item_page = ItemPage::new(result.id.clone(),result.id.clone());
                     item_page.set_tag(Some(&result.name));
                     window.imp().homeview.push(&item_page);
+                } else {
+                    window.set_title(&result.name);
+                    let item_page = SingleListPage::new(result.id.clone(),"".to_string(),&result.latest_type, obj.imp().id.get().cloned());
+                    item_page.set_tag(Some(&result.name));
+                    window.imp().homeview.push(&item_page);
                 }
                 std::env::set_var("HOME_TITLE", &result.name);
             }),
@@ -277,8 +290,13 @@ impl SingleListPage {
                 };
                 let listtype = obj.imp().listtype.get().unwrap().clone();
                 spinner.set_visible(true);
+                let parentid = obj.imp().parentid.borrow().clone();
                 let list_results = spawn_tokio(async move {
-                    get_list(id.to_string(),offset.to_string(),&include_item_types,&listtype).await.unwrap()
+                    if let Some(parentid) = parentid {
+                        get_inlist(parentid.to_string(), offset.to_string(), &listtype, &id).await.unwrap()
+                    } else {
+                        get_list(id.to_string(), offset.to_string(), &include_item_types, &listtype).await.unwrap()
+                    }
                 });
                 spawn(glib::clone!(@weak store=> async move {
                         let list_results = list_results.await;

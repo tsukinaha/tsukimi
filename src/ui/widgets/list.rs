@@ -88,17 +88,17 @@ impl ListPage {
         let id = imp.id.get().unwrap();
         let collection_type = imp.collectiontype.get().unwrap();
         let stack = imp.stack.get();
-        let allpage = SingleListPage::new(id.clone(), collection_type.clone(),"all");
+        let allpage = SingleListPage::new(id.clone(), collection_type.clone(),"all", None);
         stack.add_titled(&allpage, Some("all"), "All");
-        let resumepage = SingleListPage::new(id.clone(), collection_type.clone(),"resume");
+        let resumepage = SingleListPage::new(id.clone(), collection_type.clone(),"resume", None);
         stack.add_titled(&resumepage, Some("resume"), "Resume");
-        let boxsetpage = SingleListPage::new(id.clone(), collection_type.clone(),"boxset");
+        let boxsetpage = SingleListPage::new(id.clone(), collection_type.clone(),"boxset", None);
         stack.add_titled(&boxsetpage, Some("boxset"), "Boxset");
-        let tagspage = SingleListPage::new(id.clone(), collection_type.clone(),"tags");
+        let tagspage = SingleListPage::new(id.clone(), collection_type.clone(),"tags", None);
         stack.add_titled(&tagspage, Some("tags"), "Tags");
-        let genrespage = SingleListPage::new(id.clone(), collection_type.clone(),"genres");
+        let genrespage = SingleListPage::new(id.clone(), collection_type.clone(),"genres", None);
         stack.add_titled(&genrespage, Some("genres"), "Genres");
-        let likedpage = SingleListPage::new(id.clone(), collection_type.clone(),"liked");
+        let likedpage = SingleListPage::new(id.clone(), collection_type.clone(),"liked", None);
         stack.add_titled(&likedpage, Some("liked"), "Liked");
     }
 }

@@ -510,7 +510,7 @@ pub async fn get_list(id: String, start: String, include_item_types: &str, listt
         ("ParentId", &id),
         ("ImageTypeLimit", "1"),
         ("StartIndex", &start),
-        ("Recursive", "True"),
+        ("Recursive", "true"),
         ("IncludeItemTypes", include_item_type),
         ("SortBy", "DateCreated,SortName"),
         ("SortOrder", "Descending"),
@@ -566,12 +566,54 @@ pub async fn get_list(id: String, start: String, include_item_types: &str, listt
         ("X-Emby-Token", &emby_token),
         ("X-Emby-Language", "zh-cn"),
         ],
-        _ => vec![]
+        _ => vec![
+        
+        ]
     };
     let response = client().get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
-    let latests: List = serde_json::from_value(json).unwrap();
-    Ok(latests)
+    let l: List = serde_json::from_value(json).unwrap();
+    Ok(l)
+}
+
+pub async fn get_inlist(id: String, start: String, listtype: &str, parentid: &str) -> Result<List, Error> {
+    let server_info = set_config();
+    let device_name = get_device_name();
+    let device_id = env::var("UUID").unwrap();
+    let app_version = APP_VERSION;
+    let emby_token = server_info.access_token;
+    let url =
+            format!(
+            "{}:{}/emby/Users/{}/Items",
+            server_info.domain, server_info.port, server_info.user_id);
+
+    let params = 
+        vec![
+        ("Limit", "50"),
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+        ),
+        ("ParentId", &id),
+        ("ImageTypeLimit", "1"),
+        ("StartIndex", &start),
+        ("Recursive", "true"),
+        ("IncludeItemTypes", "Movie,Series,Video,Game,MusicAlbum"),
+        ("SortBy", "DateCreated,SortName"),
+        ("SortOrder", "Descending"),
+        ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+        if listtype == "genres" {("GenreIds", parentid)} else {("TagIds", parentid)},
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &device_name),
+        ("X-Emby-Device-Id", &device_id),
+        ("X-Emby-Client-Version", app_version),
+        ("X-Emby-Token", &emby_token),
+        ("X-Emby-Language", "zh-cn"),
+        ];
+    let response = client().get(&url).query(&params).send().await?;
+    let json: serde_json::Value = response.json().await?;
+    let l: List = serde_json::from_value(json).unwrap();
+    Ok(l)
 }
 
 pub async fn like(id: &str) -> Result<(), Error> {
