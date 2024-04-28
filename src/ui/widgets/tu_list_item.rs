@@ -7,6 +7,7 @@ use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
 
+use crate::ui::image::setbackdropimage;
 use crate::ui::image::setimage;
 use crate::ui::provider::tu_item::TuItem;
 
@@ -28,6 +29,8 @@ mod imp {
         pub item: OnceCell<TuItem>,
         #[property(get, set, construct_only)]
         pub itemtype: OnceCell<String>,
+        #[property(get, set, construct_only)]
+        pub isresume: OnceCell<bool>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub listlabel: TemplateChild<gtk::Label>,
@@ -89,10 +92,11 @@ glib::wrapper! {
 }
 
 impl TuListItem {
-    pub fn new(item: TuItem, item_type: &str) -> Self {
+    pub fn new(item: TuItem, item_type: &str, isresume: bool) -> Self {
         Object::builder()
             .property("itemtype", item_type)
             .property("item", item)
+            .property("isresume", isresume)
             .build()
     }
 
@@ -102,7 +106,12 @@ impl TuListItem {
         let item_type = imp.itemtype.get().unwrap();
         match item_type.as_str() {
             "Movie" => {
-                imp.listlabel.set_text(format!("{}\n{}", item.name(), item.production_year()).as_str());
+                let year = if item.production_year() != 0 { 
+                    item.production_year().to_string()
+                } else { 
+                    String::from("") 
+                };
+                imp.listlabel.set_text(format!("{}\n{}", item.name(), year).as_str());
                 self.set_picture();
                 self.set_played();
             }
@@ -112,6 +121,15 @@ impl TuListItem {
                 self.set_played();
                 self.set_count();
             }
+            "BoxSet" => {
+                imp.listlabel.set_text(format!("{}", item.name()).as_str());
+                self.set_picture();
+            }
+            "Tag" | "Genre" => {
+                imp.overlay.set_size_request(190,190);
+                imp.listlabel.set_text(format!("{}", item.name()).as_str());
+                self.set_picture();
+            }
             _ => {}
         }
     }
@@ -120,8 +138,13 @@ impl TuListItem {
         let imp = self.imp();
         let item = imp.item.get().unwrap();
         let id = item.id();
-        let image = setimage(id);
-        imp.overlay.set_child(Some(&image));
+        let image = if let Some(true) = imp.isresume.get() {
+            imp.overlay.set_size_request(250, 141);
+            setbackdropimage(id, 0)
+        } else {
+            setimage(id)
+        };
+        imp.overlay.set_child(Some(&image)); 
     }
 
     pub fn set_played(&self) {

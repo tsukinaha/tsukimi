@@ -472,14 +472,36 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
     Ok(latests)
 }
 
-pub async fn get_list(id: String, start: String, include_item_types: &str) -> Result<List, Error> {
+pub async fn get_list(id: String, start: String, include_item_types: &str, listtype: &str) -> Result<List, Error> {
     let server_info = set_config();
-    let url = format!(
-        "{}:{}/emby/Users/{}/Items",
-        server_info.domain, server_info.port, server_info.user_id
-    );
+    let device_name = get_device_name();
+    let device_id = env::var("UUID").unwrap();
+    let app_version = APP_VERSION;
+    let emby_token = server_info.access_token;
+    let url = match listtype {
+        "item"  => format!(
+            "{}:{}/emby/Users/{}/Items",
+            server_info.domain, server_info.port, server_info.user_id),
+        "resume" => format!(
+            "{}:{}/emby/Users/{}/Items/Resume",
+            server_info.domain, server_info.port, server_info.user_id),
+        "genres" => format!(
+            "{}:{}/emby/Genres",
+            server_info.domain, server_info.port),
+        _ => format!(
+            "{}:{}/emby/Users/{}/Items",
+            server_info.domain, server_info.port, server_info.user_id)
+    };
 
-    let params = [
+    let include_item_type = match listtype {
+        "tags" => "Tag",
+        "boxset" => "BoxSet",
+        _ => include_item_types
+    };
+
+    let params = match listtype {
+        "all" | "liked" | "tags" | "boxset" => 
+        vec![
         ("Limit", "50"),
         (
             "Fields",
@@ -489,17 +511,63 @@ pub async fn get_list(id: String, start: String, include_item_types: &str) -> Re
         ("ImageTypeLimit", "1"),
         ("StartIndex", &start),
         ("Recursive", "True"),
-        ("IncludeItemTypes", include_item_types),
+        ("IncludeItemTypes", include_item_type),
         ("SortBy", "DateCreated,SortName"),
         ("SortOrder", "Descending"),
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+        if listtype == "liked" {("Filters", "IsFavorite")} else {("", "")},
         ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", &get_device_name()),
-        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Device-Name", &device_name),
+        ("X-Emby-Device-Id", &device_id),
+        ("X-Emby-Client-Version", app_version),
+        ("X-Emby-Token", &emby_token),
         ("X-Emby-Language", "zh-cn"),
-    ];
+        ],
+
+        "resume" => 
+        vec![
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+        ),
+        ("ParentId", &id),
+        ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+        ("ImageTypeLimit", "1"),
+        ("IncludeItemTypes", include_item_type),
+        ("Limit", "30"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &device_name),
+        ("X-Emby-Device-Id", &device_id),
+        ("X-Emby-Client-Version", app_version),
+        ("X-Emby-Token", &emby_token),
+        ("X-Emby-Language", "zh-cn"),
+        ],
+
+        "genres" =>
+        vec![
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio",
+        ),
+        ("IncludeItemTypes", include_item_type),
+        ("StartIndex", &start),
+        ("ImageTypeLimit", "1"),
+        ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+        ("Limit", "50"),
+        ("userId", &server_info.user_id),
+        ("Recursive", "true"),
+        ("ParentId", &id),
+        ("SortBy", "SortName"),
+        ("SortOrder", "Descending"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &device_name),
+        ("X-Emby-Device-Id", &device_id),
+        ("X-Emby-Client-Version", app_version),
+        ("X-Emby-Token", &emby_token),
+        ("X-Emby-Language", "zh-cn"),
+        ],
+        _ => vec![]
+    };
     let response = client().get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let latests: List = serde_json::from_value(json).unwrap();

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwNavigationPage" class="SingleListPage">
+    <property name="title" translatable="yes">Tsukimi</property>
+    <property name="child">
+      <object class="GtkBox">
+        <property name="margin-top">10</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="count">
+                <property name="label" translatable="yes"></property>
+                <attributes>
+                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                </attributes>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="margin-start">55</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuButton" id="postmenu">
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="menu-model">poster-menu</property>
+                <property name="direction">GTK_ARROW_RIGHT</property>
+                <property name="child">
+                  <object class="AdwButtonContent">
+                    <property name="icon-name">view-grid-symbolic</property>
+                    <property name="label" translatable="yes">View</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSpinner" id="spinner">
+                <property name="hexpand">True</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="spinning">True</property>
+                <property name="visible">False</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox" id="adbutton">
+                <property name="halign">end</property>
+                <property name="hexpand">True</property>
+                <property name="orientation">horizontal</property>
+                <child>
+                  <object class="GtkToggleButton" id="ascending">
+                    <property name="icon-name">view-sort-ascending-symbolic</property>
+                    <property name="action-name">ascending</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkToggleButton">
+                    <property name="icon-name">view-sort-descending-symbolic</property>
+                    <property name="action-name">descending</property>
+                    <property name="valign">center</property>
+                    <property name="group">ascending</property>
+                  </object>
+                </child>
+                <style>
+                  <class name="linked"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkDropDown" id="dropdown">
+                <property name="halign">end</property>
+                <property name="margin-end">55</property>
+                <property name="valign">center</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Date Updated</item>
+                      <item translatable="yes">Date Last Aired</item>
+                      <item translatable="yes">Date Created</item>
+                      <item translatable="yes">Imdb Rate</item>
+                      <item translatable="yes">Title</item>
+                      <item translatable="yes">Premiere Date</item>
+                      <item translatable="yes">Offical Rating</item>
+                      <item translatable="yes">Production Year</item>
+                      <item translatable="yes">Date Played</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <style>
+              <class name="flat"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="AdwStatusPage" id="status">
+            <property name="title">Nothing Here</property>
+            <property name="icon-name">document-open-symbolic</property>
+            <property name="visible">False</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkRevealer" id="listrevealer">
+            <property name="transition-type">crossfade</property>
+            <property name="transition-duration">700</property>
+            <property name="reveal-child">False</property>
+            <child>
+              <object class="GtkScrolledWindow" id="listscrolled">
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <child>
+                  <object class="GtkGridView" id="listgrid">
+                    <property name="margin-start">40</property>
+                    <property name="margin-end">40</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+  <menu id="poster-menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Poster</attribute>
+        <attribute name="action">poster</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Backdrop</attribute>
+        <attribute name="action">backdrop</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Banner</attribute>
+        <attribute name="action">banner</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

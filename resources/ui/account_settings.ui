@@ -36,7 +36,8 @@
           <object class="AdwPreferencesGroup">
             <child>
               <object class="GtkButton">
-                <property name="halign">end</property>
+                <property name="halign">center</property>
+                <property name="action-name">as.password</property>
                 <child>
                   <object class="AdwButtonContent">
                     <property name="label" translatable="yes">Change Password</property>
@@ -45,6 +46,7 @@
                 </child>
                 <style>
                   <class name="suggested-action"/>
+                  <class name="pill"/>
                 </style>
               </object>
             </child>
