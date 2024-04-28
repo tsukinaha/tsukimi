@@ -233,6 +233,19 @@ pub struct Latest {
     pub user_data: Option<UserData>,
     #[serde(rename = "ProductionYear")]
     pub production_year: Option<u32>,
+    #[serde(rename = "IndexNumber")]
+    pub index_number: Option<u32>,
+    #[serde(rename = "ParentIndexNumber")]
+    pub parent_index_number: Option<u32>,
+    #[serde(rename = "SeriesName")]
+    pub series_name: Option<String>,
+    #[serde(rename = "ParentBackdropItemId")]
+    pub parent_backdrop_item_id: Option<String>,
+    #[serde(rename = "ParentThumbItemId")]
+    pub parent_thumb_item_id: Option<String>,
+    #[serde(rename = "PlayedPercentage")]
+    pub played_percentage: Option<f64>,
+
 }
 
 #[derive(Serialize, Deserialize, Clone)]

@@ -478,6 +478,7 @@ pub async fn get_list(
     include_item_types: &str,
     listtype: &str,
     sort_order: &str,
+    sortby: &str,
 ) -> Result<List, Error> {
     let server_info = set_config();
     let device_name = get_device_name();
@@ -520,7 +521,7 @@ pub async fn get_list(
                 ("StartIndex", &start),
                 ("Recursive", "true"),
                 ("IncludeItemTypes", include_item_type),
-                ("SortBy", "DateCreated,SortName"),
+                ("SortBy", sortby),
                 ("SortOrder", sort_order),
                 ("EnableImageTypes", "Primary,Backdrop,Thumb"),
                 if listtype == "liked" {("Filters", "IsFavorite")} else {("", "")},
@@ -541,7 +542,10 @@ pub async fn get_list(
                 ("ParentId", &id),
                 ("EnableImageTypes", "Primary,Backdrop,Thumb"),
                 ("ImageTypeLimit", "1"),
-                ("IncludeItemTypes", include_item_type),
+                ("IncludeItemTypes", match include_item_type {
+                    "Series" => "Episode",
+                    _ => include_item_type,
+                }),
                 ("Limit", "30"),
                 ("X-Emby-Client", "Tsukimi"),
                 ("X-Emby-Device-Name", &device_name),
@@ -561,7 +565,7 @@ pub async fn get_list(
                 ("userId", &server_info.user_id),
                 ("Recursive", "true"),
                 ("ParentId", &id),
-                ("SortBy", "SortName"),
+                ("SortBy", sortby),
                 ("SortOrder", sort_order),
                 ("X-Emby-Client", "Tsukimi"),
                 ("X-Emby-Device-Name", &device_name),
@@ -584,6 +588,7 @@ pub async fn get_inlist(
     listtype: &str,
     parentid: &str,
     sort_order: &str,
+    sortby: &str
 ) -> Result<List, Error> {
     let server_info = set_config();
     let device_name = get_device_name();
@@ -606,7 +611,7 @@ pub async fn get_inlist(
         ("StartIndex", &start),
         ("Recursive", "true"),
         ("IncludeItemTypes", "Movie,Series,Video,Game,MusicAlbum"),
-        ("SortBy", "DateCreated,SortName"),
+        ("SortBy", sortby),
         ("SortOrder", sort_order),
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
         if listtype == "genres" {

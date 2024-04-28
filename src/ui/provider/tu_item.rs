@@ -33,6 +33,10 @@ pub mod imp {
         item_type: RefCell<String>,
         #[property(get, set)]
         production_year: RefCell<u32>,
+        #[property(get, set, nullable)]
+        parent_thumb_item_id: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        parent_backdrop_item_id: RefCell<Option<String>>,
     }
 
     #[glib::derived_properties]

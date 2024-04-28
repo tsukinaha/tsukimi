@@ -80,8 +80,8 @@
                 <property name="model">
                   <object class="GtkStringList">
                     <items>
-                      <item translatable="yes">Date Updated</item>
-                      <item translatable="yes">Date Last Aired</item>
+                      <item translatable="yes">Critic Rating</item>
+                      <item translatable="yes">Bitrate</item>
                       <item translatable="yes">Date Created</item>
                       <item translatable="yes">Imdb Rate</item>
                       <item translatable="yes">Title</item>
@@ -89,6 +89,7 @@
                       <item translatable="yes">Offical Rating</item>
                       <item translatable="yes">Production Year</item>
                       <item translatable="yes">Date Played</item>
+                      <item translatable="yes">Runtime</item>
                     </items>
                   </object>
                 </property>
@@ -102,6 +103,7 @@
         <child>
           <object class="AdwStatusPage" id="status">
             <property name="title">Nothing Here</property>
+            <property name="vexpand">True</property>
             <property name="icon-name">document-open-symbolic</property>
             <property name="visible">False</property>
           </object>

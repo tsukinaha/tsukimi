@@ -119,6 +119,9 @@ impl TuListItem {
                     .set_text(format!("{}\n{}", item.name(), year).as_str());
                 self.set_picture();
                 self.set_played();
+                if let Some(true) = imp.isresume.get() {
+                    self.set_played_percentage();
+                }
             }
             "Series" => {
                 imp.listlabel
@@ -136,6 +139,12 @@ impl TuListItem {
                 imp.listlabel.set_text(format!("{}", item.name()).as_str());
                 self.set_picture();
             }
+            "Episode" => {
+                imp.listlabel.set_text(&format!("{}\nS{}E{}: {}", item.series_name(),item.parent_index_number(),item.index_number(),item.name()));
+                self.set_picture();
+                self.set_played();
+                self.set_played_percentage();
+            }
             _ => {}
         }
     }
@@ -145,8 +154,18 @@ impl TuListItem {
         let item = imp.item.get().unwrap();
         let id = item.id();
         let image = if let Some(true) = imp.isresume.get() {
-            imp.overlay.set_size_request(250, 141);
-            setbackdropimage(id, 0)
+            if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
+                let parent_thumb_item_id = parent_thumb_item_id;
+                imp.overlay.set_size_request(250, 141);
+                setbackdropimage(parent_thumb_item_id, 0)
+            } else if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id() {
+                let parent_backdrop_item_id = parent_backdrop_item_id;
+                imp.overlay.set_size_request(250, 141);
+                setbackdropimage(parent_backdrop_item_id, 0)
+            } else {
+                imp.overlay.set_size_request(250, 141);
+                setbackdropimage(id, 0)
+            }     
         } else {
             setimage(id)
         };
@@ -178,6 +197,18 @@ impl TuListItem {
             mark.set_width_request(40);
             imp.overlay.add_overlay(&mark);
         }
+    }
+
+    pub fn set_played_percentage(&self) {
+        let imp = self.imp();
+        let item = imp.item.get().unwrap();
+        let percentage = item.played_percentage();
+        let progress = gtk::ProgressBar::builder()
+            .show_text(true)
+            .fraction(percentage / 100.0)
+            .valign(gtk::Align::End)
+            .build();
+        imp.overlay.add_overlay(&progress);
     }
 
     pub fn gesture(&self) {
