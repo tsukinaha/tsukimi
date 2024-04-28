@@ -10,6 +10,7 @@ use gtk::{gio, glib};
 use crate::ui::image::setbackdropimage;
 use crate::ui::image::setimage;
 use crate::ui::provider::tu_item::TuItem;
+use crate::utils::spawn;
 
 mod imp {
     use adw::subclass::prelude::*;
@@ -36,6 +37,8 @@ mod imp {
         pub listlabel: TemplateChild<gtk::Label>,
         #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
+        #[template_child]
+        pub revealer: TemplateChild<gtk::Revealer>,
     }
 
     // The central trait for subclassing a GObject
@@ -63,6 +66,7 @@ mod imp {
             let obj = self.obj();
             obj.set_up();
             obj.gesture();
+            obj.reveals();
         }
 
         fn dispose(&self) {
@@ -106,17 +110,19 @@ impl TuListItem {
         let item_type = imp.itemtype.get().unwrap();
         match item_type.as_str() {
             "Movie" => {
-                let year = if item.production_year() != 0 { 
+                let year = if item.production_year() != 0 {
                     item.production_year().to_string()
-                } else { 
-                    String::from("") 
+                } else {
+                    String::from("")
                 };
-                imp.listlabel.set_text(format!("{}\n{}", item.name(), year).as_str());
+                imp.listlabel
+                    .set_text(format!("{}\n{}", item.name(), year).as_str());
                 self.set_picture();
                 self.set_played();
             }
             "Series" => {
-                imp.listlabel.set_text(format!("{}\n{}", item.name(), item.production_year()).as_str());
+                imp.listlabel
+                    .set_text(format!("{}\n{}", item.name(), item.production_year()).as_str());
                 self.set_picture();
                 self.set_played();
                 self.set_count();
@@ -126,7 +132,7 @@ impl TuListItem {
                 self.set_picture();
             }
             "Tag" | "Genre" => {
-                imp.overlay.set_size_request(190,190);
+                imp.overlay.set_size_request(190, 190);
                 imp.listlabel.set_text(format!("{}", item.name()).as_str());
                 self.set_picture();
             }
@@ -144,7 +150,7 @@ impl TuListItem {
         } else {
             setimage(id)
         };
-        imp.overlay.set_child(Some(&image)); 
+        imp.overlay.set_child(Some(&image));
     }
 
     pub fn set_played(&self) {
@@ -180,7 +186,10 @@ impl TuListItem {
         let menu = builder.object::<MenuModel>("rightmenu");
         match menu {
             Some(popover) => {
-                let popover = PopoverMenu::builder().menu_model(&popover).has_arrow(false).build();
+                let popover = PopoverMenu::builder()
+                    .menu_model(&popover)
+                    .has_arrow(false)
+                    .build();
                 popover.set_parent(self);
                 let _ = imp.popover.replace(Some(popover));
             }
@@ -196,5 +205,13 @@ impl TuListItem {
             };
         }));
         self.add_controller(gesture);
+    }
+
+    pub fn reveals(&self) {
+        let imp = self.imp();
+        let revealer = imp.revealer.get();
+        spawn(glib::clone!(@weak imp => async move {
+            revealer.set_reveal_child(true);
+        }));
     }
 }

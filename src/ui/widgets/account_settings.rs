@@ -1,8 +1,6 @@
 use adw::subclass::prelude::*;
 use gtk::{glib, CompositeTemplate};
 
-
-
 mod imp {
     use glib::subclass::InitializingObject;
 
@@ -10,9 +8,7 @@ mod imp {
 
     #[derive(Debug, Default, CompositeTemplate)]
     #[template(resource = "/moe/tsukimi/account_settings.ui")]
-    pub struct AccountSettings {
-
-    }
+    pub struct AccountSettings {}
 
     #[glib::object_subclass]
     impl ObjectSubclass for AccountSettings {
@@ -34,7 +30,6 @@ mod imp {
     impl WidgetImpl for AccountSettings {}
     impl AdwDialogImpl for AccountSettings {}
     impl PreferencesDialogImpl for AccountSettings {}
-
 }
 
 glib::wrapper! {

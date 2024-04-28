@@ -43,7 +43,6 @@ pub mod imp {
         const NAME: &'static str = "TuItem";
         type Type = super::TuItem;
     }
-
 }
 
 glib::wrapper! {

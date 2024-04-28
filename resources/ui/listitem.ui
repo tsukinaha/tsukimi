@@ -2,23 +2,29 @@
 <interface>
   <template parent="AdwBin" class="TuListItem">
     <child>
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
-        <property name="spacing">5</property>
+      <object class="GtkRevealer" id="revealer">
+        <property name="transition-type">crossfade</property>
+        <property name="reveal-child">False</property>
         <child>
-          <object class="GtkOverlay" id="overlay">
-            <property name="width-request">167</property>
-            <property name="height-request">260</property>
-            <property name="halign">center</property>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkOverlay" id="overlay">
+                <property name="width-request">167</property>
+                <property name="height-request">260</property>
+                <property name="halign">center</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="listlabel">
+                <property name="justify">center</property>
+                <property name="width-request">167</property>
+                <property name="ellipsize">end</property>
+              </object>
+            </child>
           </object>
         </child>
-        <child>
-          <object class="GtkLabel" id="listlabel">
-            <property name="justify">center</property>
-            <property name="width-request">167</property>
-            <property name="ellipsize">end</property>
-          </object>
-        </child>        
       </object>
     </child>
   </template>

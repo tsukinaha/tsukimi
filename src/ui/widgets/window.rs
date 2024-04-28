@@ -1,10 +1,9 @@
 use std::env;
 use std::path::PathBuf;
 
-use gio::Settings;
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
 use adw::prelude::*;
+use gio::Settings;
+use gtk::subclass::prelude::*;
 mod imp {
     use std::cell::OnceCell;
 
@@ -86,9 +85,13 @@ mod imp {
             klass.install_action("win.sidebar", None, move |window, _action, _parameter| {
                 window.sidebar();
             });
-            klass.install_action("setting.account", None, move |window, _action, _parameter| {
-                window.account_settings();
-            });
+            klass.install_action(
+                "setting.account",
+                None,
+                move |window, _action, _parameter| {
+                    window.account_settings();
+                },
+            );
             klass.install_action(
                 "win.new-account",
                 None,
@@ -189,7 +192,10 @@ impl Window {
         listbox.remove_all();
         let accounts = load_cfgv2().unwrap();
         for account in &accounts.accounts {
-            if SETTINGS.auto_select_server() && account.servername == SETTINGS.preferred_server() && env::var("EMBY_NAME").is_err() {
+            if SETTINGS.auto_select_server()
+                && account.servername == SETTINGS.preferred_server()
+                && env::var("EMBY_NAME").is_err()
+            {
                 load_env(account);
                 imp.historypage.set_child(None::<&gtk::Widget>);
                 imp.searchpage.set_child(None::<&gtk::Widget>);
@@ -248,16 +254,17 @@ impl Window {
 
     pub fn account_setup(&self) {
         let imp = self.imp();
-        imp.namerow.set_title(&env::var("EMBY_USERNAME").unwrap_or_else(|_| "Username".to_string()));
-        imp.namerow.set_subtitle(&env::var("EMBY_NAME").unwrap_or_else(|_| "Server".to_string()));
+        imp.namerow
+            .set_title(&env::var("EMBY_USERNAME").unwrap_or_else(|_| "Username".to_string()));
+        imp.namerow
+            .set_subtitle(&env::var("EMBY_NAME").unwrap_or_else(|_| "Server".to_string()));
     }
-
 
     pub fn account_settings(&self) {
         let dialog = crate::ui::widgets::account_settings::AccountSettings::new();
         dialog.present(self);
     }
-    
+
     async fn homeviewpop(&self) {
         let imp = self.imp();
         imp.homeview.pop();

@@ -54,16 +54,17 @@
                 <child>
                   <object class="GtkToggleButton" id="ascending">
                     <property name="icon-name">view-sort-ascending-symbolic</property>
-                    <property name="action-name">ascending</property>
                     <property name="valign">center</property>
+                    <signal name="clicked" handler="sort_order_ascending_cb" swapped="yes"/>
                   </object>
                 </child>
                 <child>
                   <object class="GtkToggleButton">
                     <property name="icon-name">view-sort-descending-symbolic</property>
-                    <property name="action-name">descending</property>
                     <property name="valign">center</property>
                     <property name="group">ascending</property>
+                    <property name="active">True</property>
+                    <signal name="clicked" handler="sort_order_descending_cb" swapped="yes"/>
                   </object>
                 </child>
                 <style>

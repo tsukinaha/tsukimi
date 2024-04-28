@@ -64,6 +64,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -79,7 +80,7 @@ mod imp {
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(@weak obj => async move {
                 obj.handle_type().await;
-                obj.set_factory().await;
+                obj.set_factory("Descending").await;
             }));
         }
     }
@@ -103,8 +104,14 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+#[gtk::template_callbacks]
 impl SingleListPage {
-    pub fn new(id: String, collection_type: String, listtype: &str, parentid: Option<String>) -> Self {
+    pub fn new(
+        id: String,
+        collection_type: String,
+        listtype: &str,
+        parentid: Option<String>,
+    ) -> Self {
         Object::builder()
             .property("id", id)
             .property("collectiontype", collection_type)
@@ -113,13 +120,21 @@ impl SingleListPage {
             .build()
     }
 
+    #[template_callback]
+    async fn sort_order_ascending_cb(&self,_btn: &gtk::ToggleButton) {
+        self.sortorder("Ascending").await;
+    }
+
+    #[template_callback]
+    async fn sort_order_descending_cb(&self,_btn: &gtk::ToggleButton) {
+        self.sortorder("Descending").await;
+    }
+
     async fn handle_type(&self) {
         let imp = self.imp();
         let listtype = imp.listtype.get().unwrap();
         match listtype.as_str() {
-            "all" => {
-                
-            }
+            "all" => {}
             "resume" => {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
@@ -147,29 +162,36 @@ impl SingleListPage {
         }
     }
 
-    async fn set_factory(&self) {
+    async fn set_factory(&self, order: &str) {
+        let order = order.to_owned();
+        let update_order = order.clone();
         let imp = self.imp();
         let spinner = imp.spinner.get();
         let listrevealer = imp.listrevealer.get();
         let count = imp.count.get();
         let id = imp.id.get().expect("id not set").clone();
-        let c = imp.collectiontype.get().unwrap();
-        let include_item_types = match c.as_str() {
-            "movies" => "Movie",
-            "tvshows" => "Series",
-            "music" => "MusicAlbum",
-            _ => "Movie, Series",
-        };
+        let include_item_types = self.get_include_item_types().to_owned();
         let listtype = imp.listtype.get().unwrap().clone();
         spinner.set_visible(true);
         let parentid = imp.parentid.borrow().clone();
-        let list_results = get_data_with_cache(id.to_string(), &format!("{}{}",listtype.clone(),include_item_types), async move {
-            if let Some(parentid) = parentid {
-                get_inlist(parentid.to_string(), 0.to_string(), &listtype, &id).await
-            } else {
-                get_list(id.to_string(), 0.to_string(), &include_item_types, &listtype).await
-            }
-        })
+        let list_results = get_data_with_cache(
+            id.to_string(),
+            &format!("{}{}", listtype.clone(), include_item_types),
+            async move {
+                if let Some(parentid) = parentid {
+                    get_inlist(parentid.to_string(), 0.to_string(), &listtype, &id, &order).await
+                } else {
+                    get_list(
+                        id.to_string(),
+                        0.to_string(),
+                        &include_item_types,
+                        &listtype,
+                        &order,
+                    )
+                    .await
+                }
+            },
+        )
         .await
         .unwrap();
         let store = gio::ListStore::new::<glib::BoxedAnyObject>();
@@ -225,7 +247,8 @@ impl SingleListPage {
                         let tu_item: TuItem = glib::object::Object::new();
                         tu_item.set_id(latest.id.clone());
                         tu_item.set_name(latest.name.clone());
-                        let list_child = TuListItem::new(tu_item, latest.latest_type.as_str(), false);
+                        let list_child =
+                            TuListItem::new(tu_item, latest.latest_type.as_str(), false);
                         list_item.set_child(Some(&list_child));
                     }
                     _ => {}
@@ -261,41 +284,30 @@ impl SingleListPage {
                 std::env::set_var("HOME_TITLE", &result.name);
             }),
         );
-        self.update().await;
+        self.update(&update_order).await;
     }
 
-    pub async fn update(&self) {
+    pub async fn update(&self, order: &str) {
+        let order = order.to_owned();
         let scrolled = self.imp().listscrolled.get();
+        let include_item_types = self.get_include_item_types().to_owned();
         scrolled.connect_edge_overshot(glib::clone!(@weak self as obj => move |_, pos| {
             if pos == gtk::PositionType::Bottom {
+                let order = order.clone();
                 let spinner = obj.imp().spinner.get();
                 spinner.set_visible(true);
                 let store = obj.imp().selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
                 let id = obj.imp().id.get().expect("id not set").clone();
                 let offset = obj.imp().selection.model().unwrap().n_items();
-                let c = obj.imp().collectiontype.get().unwrap();
-                let include_item_types = match c.as_str() {
-                    "movies" => {
-                        "Movie"
-                    }
-                    "tvshows" => {
-                        "Series"
-                    }
-                    "music" => {
-                        "MusicAlbum"
-                    }
-                    _ => {
-                        "Movie, Series"
-                    }
-                };
                 let listtype = obj.imp().listtype.get().unwrap().clone();
                 spinner.set_visible(true);
                 let parentid = obj.imp().parentid.borrow().clone();
+                let include_item_types = include_item_types.clone();
                 let list_results = spawn_tokio(async move {
                     if let Some(parentid) = parentid {
-                        get_inlist(parentid.to_string(), offset.to_string(), &listtype, &id).await.unwrap()
+                        get_inlist(parentid.to_string(), offset.to_string(), &listtype, &id, &order).await.unwrap()
                     } else {
-                        get_list(id.to_string(), offset.to_string(), &include_item_types, &listtype).await.unwrap()
+                        get_list(id.to_string(), offset.to_string(), &include_item_types, &listtype, &order).await.unwrap()
                     }
                 });
                 spawn(glib::clone!(@weak store=> async move {
@@ -308,5 +320,56 @@ impl SingleListPage {
                 }));
             }
         }));
+    }
+
+    pub async fn sortorder(&self, order: &str) {
+        let order = order.to_owned();
+        let spinner = self.imp().spinner.get();
+        let store = self
+            .imp()
+            .selection
+            .model()
+            .unwrap()
+            .downcast::<gio::ListStore>()
+            .unwrap();
+        let id = self.imp().id.get().expect("id not set").clone();
+        let listtype = self.imp().listtype.get().unwrap().clone();
+        spinner.set_visible(true);
+        let parentid = self.imp().parentid.borrow().clone();
+        let include_item_types = self.get_include_item_types().to_owned();
+        let list_results = spawn_tokio(async move {
+            if let Some(parentid) = parentid {
+                get_inlist(parentid.to_string(), 0.to_string(), &listtype, &id, &order).await
+            } else {
+                get_list(
+                    id.to_string(),
+                    0.to_string(),
+                    &include_item_types,
+                    &listtype,
+                    &order,
+                )
+                .await
+            }
+        })
+        .await
+        .unwrap();
+        spawn(glib::clone!(@weak store,@weak self as obj=> async move {
+                store.remove_all();
+                for result in list_results.items {
+                    let object = glib::BoxedAnyObject::new(result);
+                    store.append(&object);
+                }
+                spinner.set_visible(false);
+        }));
+    }
+
+    pub fn get_include_item_types(&self) -> &str {
+        let c = self.imp().collectiontype.get().unwrap();
+        match c.as_str() {
+            "movies" => "Movie",
+            "tvshows" => "Series",
+            "music" => "MusicAlbum",
+            _ => "Movie, Series",
+        }
     }
 }

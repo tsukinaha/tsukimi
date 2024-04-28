@@ -16,8 +16,7 @@ fn main() -> glib::ExitCode {
 
     adw::init().expect("Failed to initialize Adw");
     // Create a new application
-    let app = adw::Application::builder()
-        .application_id(APP_ID).build();
+    let app = adw::Application::builder().application_id(APP_ID).build();
 
     // load the icon theme
     let theme = gtk::IconTheme::for_display(&gtk::gdk::Display::default().unwrap());
