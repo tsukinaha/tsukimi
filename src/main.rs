@@ -1,4 +1,8 @@
-#![windows_subsystem = "windows"]
+#![cfg_attr(
+    all(target_os = "windows", not(feature = "console")),
+    windows_subsystem = "windows"
+)]
+
 use config::load_uuid;
 use gtk::prelude::*;
 use gtk::{gio, glib};

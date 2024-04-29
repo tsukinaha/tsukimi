@@ -193,12 +193,13 @@ impl SettingsPage {
         let imp = self.imp();
         let settings = gtk::Settings::default().unwrap();
         if SETTINGS.font_size() == -1 {
-            imp.fontspinrow.set_value((settings.property::<i32>("gtk-xft-dpi") / 1024).into());
+            imp.fontspinrow
+                .set_value((settings.property::<i32>("gtk-xft-dpi") / 1024).into());
         } else {
             imp.fontspinrow.set_value(SETTINGS.font_size().into());
         }
         imp.fontspinrow.connect_value_notify(move |control| {
-            settings.set_property("gtk-xft-dpi",control.value() as i32 * 1024);
+            settings.set_property("gtk-xft-dpi", control.value() as i32 * 1024);
             SETTINGS.set_font_size(control.value() as i32).unwrap();
         });
     }
