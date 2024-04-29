@@ -88,17 +88,19 @@ impl ListPage {
         let id = imp.id.get().unwrap();
         let collection_type = imp.collectiontype.get().unwrap();
         let stack = imp.stack.get();
-        let allpage = SingleListPage::new(id.clone(), collection_type.clone(), "all", None);
-        stack.add_titled(&allpage, Some("all"), "All");
-        let resumepage = SingleListPage::new(id.clone(), collection_type.clone(), "resume", None);
-        stack.add_titled(&resumepage, Some("resume"), "Resume");
-        let boxsetpage = SingleListPage::new(id.clone(), collection_type.clone(), "boxset", None);
-        stack.add_titled(&boxsetpage, Some("boxset"), "Boxset");
-        let tagspage = SingleListPage::new(id.clone(), collection_type.clone(), "tags", None);
-        stack.add_titled(&tagspage, Some("tags"), "Tags");
-        let genrespage = SingleListPage::new(id.clone(), collection_type.clone(), "genres", None);
-        stack.add_titled(&genrespage, Some("genres"), "Genres");
-        let likedpage = SingleListPage::new(id.clone(), collection_type.clone(), "liked", None);
-        stack.add_titled(&likedpage, Some("liked"), "Liked");
+
+        let pages = [
+            ("all", "All"),
+            ("resume", "Resume"),
+            ("boxset", "Boxset"),
+            ("tags", "Tags"),
+            ("genres", "Genres"),
+            ("liked", "Liked"),
+        ];
+
+        for (name, title) in &pages {
+            let page = SingleListPage::new(id.clone(), collection_type.clone(), name, None);
+            stack.add_titled(&page, Some(name), title);
+        }
     }
 }

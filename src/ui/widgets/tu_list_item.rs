@@ -7,8 +7,11 @@ use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
 
+use crate::client::structs::Latest;
 use crate::ui::image::setbackdropimage;
+use crate::ui::image::setbannerimage;
 use crate::ui::image::setimage;
+use crate::ui::image::setthumbimage;
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::spawn;
 
@@ -140,7 +143,13 @@ impl TuListItem {
                 self.set_picture();
             }
             "Episode" => {
-                imp.listlabel.set_text(&format!("{}\nS{}E{}: {}", item.series_name(),item.parent_index_number(),item.index_number(),item.name()));
+                imp.listlabel.set_text(&format!(
+                    "{}\nS{}E{}: {}",
+                    item.series_name(),
+                    item.parent_index_number(),
+                    item.index_number(),
+                    item.name()
+                ));
                 self.set_picture();
                 self.set_played();
                 self.set_played_percentage();
@@ -153,23 +162,63 @@ impl TuListItem {
         let imp = self.imp();
         let item = imp.item.get().unwrap();
         let id = item.id();
-        let image = if let Some(true) = imp.isresume.get() {
-            if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
-                let parent_thumb_item_id = parent_thumb_item_id;
-                imp.overlay.set_size_request(250, 141);
-                setbackdropimage(parent_thumb_item_id, 0)
-            } else if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id() {
-                let parent_backdrop_item_id = parent_backdrop_item_id;
-                imp.overlay.set_size_request(250, 141);
-                setbackdropimage(parent_backdrop_item_id, 0)
-            } else {
-                imp.overlay.set_size_request(250, 141);
-                setbackdropimage(id, 0)
-            }     
+        if let Some(poster) = item.poster() {
+            let image = match poster.as_str() {
+                "banner" => {
+                    imp.overlay.set_size_request(375, 70);
+                    if let Some(imag_tags) = item.image_tags() {
+                        if imag_tags.banner().is_some() {
+                            setbannerimage(id)
+                        } else if imag_tags.thumb().is_some() {
+                            setthumbimage(id)
+                        } else if imag_tags.backdrop().is_some() {
+                            setbackdropimage(id, 0)
+                        } else {
+                            setimage(id)
+                        }
+                    } else {
+                        setimage(id)
+                    }
+                }
+                "backdrop" => {
+                    imp.overlay.set_size_request(250, 141);
+                    if let Some(imag_tags) = item.image_tags() {
+                        if imag_tags.backdrop().is_some() {
+                            setbackdropimage(id, 0)
+                        } else if imag_tags.thumb().is_some() {
+                            setthumbimage(id)
+                        } else {
+                            setimage(id)
+                        }
+                    } else {
+                        setimage(id)
+                    }
+                }
+                _ => setimage(id),
+            };
+            imp.overlay.set_child(Some(&image));
         } else {
-            setimage(id)
-        };
-        imp.overlay.set_child(Some(&image));
+            let image = if let Some(true) = imp.isresume.get() {
+                if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
+                    let parent_thumb_item_id = parent_thumb_item_id;
+                    imp.overlay.set_size_request(250, 141);
+                    setbackdropimage(parent_thumb_item_id, 0)
+                } else if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id() {
+                    let parent_backdrop_item_id = parent_backdrop_item_id;
+                    imp.overlay.set_size_request(250, 141);
+                    setbackdropimage(parent_backdrop_item_id, 0)
+                } else {
+                    imp.overlay.set_size_request(250, 141);
+                    setbackdropimage(id, 0)
+                }
+            } else {
+                if self.itemtype() == "Episode" {
+                    imp.overlay.set_size_request(250, 141);
+                }
+                setimage(id)
+            };
+            imp.overlay.set_child(Some(&image));
+        }
     }
 
     pub fn set_played(&self) {
@@ -244,5 +293,97 @@ impl TuListItem {
         spawn(glib::clone!(@weak imp => async move {
             revealer.set_reveal_child(true);
         }));
+    }
+}
+
+pub fn tu_list_item_register(latest: &Latest, list_item: &gtk::ListItem, listtype: &str) {
+    match latest.latest_type.as_str() {
+        "Movie" => {
+            let tu_item: TuItem = glib::object::Object::new();
+            tu_item.set_id(latest.id.clone());
+            tu_item.set_name(latest.name.clone());
+            tu_item.set_production_year(latest.production_year.unwrap_or_else(|| 0));
+            if let Some(userdata) = &latest.user_data {
+                tu_item.set_played(userdata.played);
+            }
+            let list_child = TuListItem::new(tu_item, "Movie", listtype == "resume");
+            list_item.set_child(Some(&list_child));
+        }
+        "Series" => {
+            let tu_item: TuItem = glib::object::Object::new();
+            tu_item.set_id(latest.id.clone());
+            tu_item.set_name(latest.name.clone());
+            tu_item.set_production_year(latest.production_year.unwrap());
+            if let Some(userdata) = &latest.user_data {
+                tu_item.set_played(userdata.played);
+                tu_item.set_unplayed_item_count(userdata.unplayed_item_count.unwrap());
+            }
+            let list_child = TuListItem::new(tu_item, "Series", listtype == "resume");
+            list_item.set_child(Some(&list_child));
+        }
+        "BoxSet" | "Tag" | "Genre" => {
+            let tu_item: TuItem = glib::object::Object::new();
+            tu_item.set_id(latest.id.clone());
+            tu_item.set_name(latest.name.clone());
+            let list_child = TuListItem::new(tu_item, latest.latest_type.as_str(), false);
+            list_item.set_child(Some(&list_child));
+        }
+        "Episode" => {
+            let tu_item: TuItem = glib::object::Object::new();
+            tu_item.set_id(latest.id.clone());
+            tu_item.set_name(latest.name.clone());
+            tu_item.set_index_number(latest.index_number.unwrap());
+            tu_item.set_parent_index_number(latest.parent_index_number.unwrap());
+            tu_item.set_series_name(latest.series_name.as_ref().unwrap().clone());
+            tu_item.set_parent_backdrop_item_id(latest.parent_backdrop_item_id.clone());
+            tu_item.set_parent_thumb_item_id(latest.parent_thumb_item_id.clone());
+            tu_item.set_played_percentage(
+                latest
+                    .user_data
+                    .as_ref()
+                    .unwrap()
+                    .played_percentage
+                    .unwrap_or_else(|| 0.0),
+            );
+            if let Some(userdata) = &latest.user_data {
+                tu_item.set_played(userdata.played);
+            }
+            let list_child = TuListItem::new(tu_item, "Episode", listtype == "resume");
+            list_item.set_child(Some(&list_child));
+        }
+        _ => {}
+    }
+}
+
+pub fn tu_list_poster(latest: &Latest, list_item: &gtk::ListItem, listtype: &str, poster: &str) {
+    match latest.latest_type.as_str() {
+        "Movie" => {
+            let tu_item: TuItem = glib::object::Object::new();
+            tu_item.set_id(latest.id.clone());
+            tu_item.set_name(latest.name.clone());
+            tu_item.set_production_year(latest.production_year.unwrap_or_else(|| 0));
+            if let Some(userdata) = &latest.user_data {
+                tu_item.set_played(userdata.played);
+            }
+            tu_item.set_poster(poster);
+            tu_item.imp().set_image_tags(latest.image_tags.clone());
+            let list_child = TuListItem::new(tu_item, "Movie", listtype == "resume");
+            list_item.set_child(Some(&list_child));
+        }
+        "Series" => {
+            let tu_item: TuItem = glib::object::Object::new();
+            tu_item.set_id(latest.id.clone());
+            tu_item.set_name(latest.name.clone());
+            tu_item.set_production_year(latest.production_year.unwrap());
+            if let Some(userdata) = &latest.user_data {
+                tu_item.set_played(userdata.played);
+                tu_item.set_unplayed_item_count(userdata.unplayed_item_count.unwrap());
+            }
+            tu_item.set_poster(poster);
+            tu_item.imp().set_image_tags(latest.image_tags.clone());
+            let list_child = TuListItem::new(tu_item, "Series", listtype == "resume");
+            list_item.set_child(Some(&list_child));
+        }
+        _ => {}
     }
 }

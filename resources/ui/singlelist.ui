@@ -80,11 +80,11 @@
                 <property name="model">
                   <object class="GtkStringList">
                     <items>
-                      <item translatable="yes">Critic Rating</item>
+                      <item translatable="yes">Title</item>
                       <item translatable="yes">Bitrate</item>
                       <item translatable="yes">Date Created</item>
                       <item translatable="yes">Imdb Rate</item>
-                      <item translatable="yes">Title</item>
+                      <item translatable="yes">Critic Rating</item>
                       <item translatable="yes">Premiere Date</item>
                       <item translatable="yes">Offical Rating</item>
                       <item translatable="yes">Production Year</item>

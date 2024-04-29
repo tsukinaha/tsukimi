@@ -219,6 +219,10 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
             "{}:{}/emby/Items/{}/Images/Logo?maxHeight=400",
             server.domain, server.port, id
         ),
+        "Banner" => format!(
+            "{}:{}/emby/Items/{}/Images/Banner?maxHeight=400",
+            server.domain, server.port, id
+        ),
         _ => format!(
             "{}:{}/emby/Items/{}/Images/Primary?maxHeight=400",
             server.domain, server.port, id
@@ -265,6 +269,9 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
                         }
                         "Logo" => {
                             fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
+                        }
+                        "Banner" => {
+                            fs::write(pathbuf.join(format!("banner{}.png", id)), &bytes).unwrap();
                         }
                         _ => {
                             fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
@@ -542,10 +549,13 @@ pub async fn get_list(
                 ("ParentId", &id),
                 ("EnableImageTypes", "Primary,Backdrop,Thumb"),
                 ("ImageTypeLimit", "1"),
-                ("IncludeItemTypes", match include_item_type {
-                    "Series" => "Episode",
-                    _ => include_item_type,
-                }),
+                (
+                    "IncludeItemTypes",
+                    match include_item_type {
+                        "Series" => "Episode",
+                        _ => include_item_type,
+                    },
+                ),
                 ("Limit", "30"),
                 ("X-Emby-Client", "Tsukimi"),
                 ("X-Emby-Device-Name", &device_name),
@@ -588,7 +598,7 @@ pub async fn get_inlist(
     listtype: &str,
     parentid: &str,
     sort_order: &str,
-    sortby: &str
+    sortby: &str,
 ) -> Result<List, Error> {
     let server_info = set_config();
     let device_name = get_device_name();
@@ -614,7 +624,7 @@ pub async fn get_inlist(
         ("SortBy", sortby),
         ("SortOrder", sort_order),
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
-        if listtype == "genres" {
+        if listtype == "Genre" {
             ("GenreIds", parentid)
         } else {
             ("TagIds", parentid)
@@ -815,7 +825,7 @@ pub async fn similar(id: &str) -> Result<Vec<SearchResult>, Error> {
     Ok(model.search_results)
 }
 
-pub async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Error> {
+pub async fn person_item(id: &str, types: &str) -> Result<Vec<Latest>, Error> {
     let server_info = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
@@ -841,7 +851,7 @@ pub async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Error> {
 
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<Item> = serde_json::from_value(json["Items"].take()).unwrap();
+    let items: Vec<Latest> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
 }
 

@@ -1,9 +1,8 @@
 use super::item::ItemPage;
 use super::movie::MoviePage;
-use super::tu_list_item::TuListItem;
+use super::tu_list_item::tu_list_item_register;
 use super::window::Window;
 use crate::client::{network::*, structs::*};
-use crate::ui::provider::tu_item::TuItem;
 use crate::utils::{get_data_with_cache, spawn, spawn_tokio};
 use adw::prelude::NavigationPageExt;
 use glib::Object;
@@ -69,6 +68,19 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
             klass.bind_template_instance_callbacks();
+            klass.install_action_async("poster", None, |window, _action, _parameter| async move {
+                window.poster("poster").await;
+            });
+            klass.install_action_async(
+                "backdrop",
+                None,
+                |window, _action, _parameter| async move {
+                    window.poster("backdrop").await;
+                },
+            );
+            klass.install_action_async("banner", None, |window, _action, _parameter| async move {
+                window.poster("banner").await;
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -83,6 +95,8 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(@weak obj => async move {
+                obj.imp().sortorder.replace("Descending".to_string());
+                obj.imp().sortby.replace("SortName".to_string());
                 obj.handle_type().await;
                 obj.set_up_dropdown();
                 obj.set_factory().await;
@@ -126,13 +140,13 @@ impl SingleListPage {
     }
 
     #[template_callback]
-    async fn sort_order_ascending_cb(&self,_btn: &gtk::ToggleButton) {
+    async fn sort_order_ascending_cb(&self, _btn: &gtk::ToggleButton) {
         self.imp().sortorder.replace("Ascending".to_string());
         self.sortorder().await;
     }
 
     #[template_callback]
-    async fn sort_order_descending_cb(&self,_btn: &gtk::ToggleButton) {
+    async fn sort_order_descending_cb(&self, _btn: &gtk::ToggleButton) {
         self.imp().sortorder.replace("Descending".to_string());
         self.sortorder().await;
     }
@@ -170,7 +184,7 @@ impl SingleListPage {
     }
 
     async fn set_factory(&self) {
-        let order = self.imp().sortby.borrow().clone();
+        let order = self.imp().sortorder.borrow().clone();
         let update_order = order.clone();
         let imp = self.imp();
         let spinner = imp.spinner.get();
@@ -187,7 +201,15 @@ impl SingleListPage {
             &format!("{}{}", listtype.clone(), include_item_types),
             async move {
                 if let Some(parentid) = parentid {
-                    get_inlist(parentid.to_string(), 0.to_string(), &listtype, &id, &order, &sortby).await
+                    get_inlist(
+                        parentid.to_string(),
+                        0.to_string(),
+                        &listtype,
+                        &id,
+                        &order,
+                        &sortby,
+                    )
+                    .await
                 } else {
                     get_list(
                         id.to_string(),
@@ -209,13 +231,14 @@ impl SingleListPage {
         };
         let store = gio::ListStore::new::<glib::BoxedAnyObject>();
         spawn(glib::clone!(@weak store=> async move {
+                spinner.set_visible(false);
+                listrevealer.set_reveal_child(true);
+                count.set_text(&format!("{} Items",list_results.total_record_count));
                 for result in list_results.items {
                     let object = glib::BoxedAnyObject::new(result);
                     store.append(&object);
+                    gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
                 }
-                spinner.set_visible(false);
-                count.set_text(&format!("{} Items",list_results.total_record_count));
-                listrevealer.set_reveal_child(true);
         }));
         imp.selection.set_model(Some(&store));
         let factory = gtk::SignalListItemFactory::new();
@@ -232,61 +255,12 @@ impl SingleListPage {
                 .expect("Needs to be BoxedAnyObject");
             let latest: std::cell::Ref<Latest> = entry.borrow();
             if list_item.child().is_none() {
-                match latest.latest_type.as_str() {
-                    "Movie" => {
-                        let tu_item: TuItem = glib::object::Object::new();
-                        tu_item.set_id(latest.id.clone());
-                        tu_item.set_name(latest.name.clone());
-                        tu_item.set_production_year(latest.production_year.unwrap_or_else(|| 0));
-                        if let Some(userdata) = &latest.user_data {
-                            tu_item.set_played(userdata.played);
-                        }
-                        let list_child = TuListItem::new(tu_item, "Movie", listtype == "resume");
-                        list_item.set_child(Some(&list_child));
-                    }
-                    "Series" => {
-                        let tu_item: TuItem = glib::object::Object::new();
-                        tu_item.set_id(latest.id.clone());
-                        tu_item.set_name(latest.name.clone());
-                        tu_item.set_production_year(latest.production_year.unwrap());
-                        if let Some(userdata) = &latest.user_data {
-                            tu_item.set_played(userdata.played);
-                            tu_item.set_unplayed_item_count(userdata.unplayed_item_count.unwrap());
-                        }
-                        let list_child = TuListItem::new(tu_item, "Series", listtype == "resume");
-                        list_item.set_child(Some(&list_child));
-                    }
-                    "BoxSet" | "Tag" | "Genre" => {
-                        let tu_item: TuItem = glib::object::Object::new();
-                        tu_item.set_id(latest.id.clone());
-                        tu_item.set_name(latest.name.clone());
-                        let list_child =
-                            TuListItem::new(tu_item, latest.latest_type.as_str(), false);
-                        list_item.set_child(Some(&list_child));
-                    }
-                    "Episode" => {
-                        let tu_item: TuItem = glib::object::Object::new();
-                        tu_item.set_id(latest.id.clone());
-                        tu_item.set_name(latest.name.clone());
-                        tu_item.set_index_number(latest.index_number.unwrap());
-                        tu_item.set_parent_index_number(latest.parent_index_number.unwrap());
-                        tu_item.set_series_name(latest.series_name.as_ref().unwrap().clone());
-                        tu_item.set_parent_backdrop_item_id(latest.parent_backdrop_item_id.clone());
-                        tu_item.set_parent_thumb_item_id(latest.parent_thumb_item_id.clone());
-                        tu_item.set_played_percentage(latest.user_data.as_ref().unwrap().played_percentage.unwrap_or_else(|| 0.0));
-                        if let Some(userdata) = &latest.user_data {
-                            tu_item.set_played(userdata.played);
-                        }
-                        let list_child = TuListItem::new(tu_item, "Episode", listtype == "resume");
-                        list_item.set_child(Some(&list_child));
-                    }
-                    _ => {}
-                }
+                tu_list_item_register(&latest, list_item, &listtype)
             }
         });
         imp.listgrid.set_factory(Some(&factory));
         imp.listgrid.set_model(Some(&imp.selection));
-        imp.listgrid.set_min_columns(3);
+        imp.listgrid.set_min_columns(1);
         imp.listgrid.set_max_columns(13);
         imp.listgrid.connect_activate(
             glib::clone!(@weak self as obj => move |gridview, position| {
@@ -349,12 +323,13 @@ impl SingleListPage {
                     }
                 });
                 spawn(glib::clone!(@weak store=> async move {
-                        let list_results = list_results.await;
-                        for result in list_results.items {
-                            let object = glib::BoxedAnyObject::new(result);
-                            store.append(&object);
-                        }
-                        spinner.set_visible(false);
+                    let list_results = list_results.await;
+                    spinner.set_visible(false);
+                    for result in list_results.items {
+                        let object = glib::BoxedAnyObject::new(result);
+                        store.append(&object);
+                        gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
+                    }
                 }));
             }
         }));
@@ -378,7 +353,15 @@ impl SingleListPage {
         let sortby = self.imp().sortby.borrow().clone();
         let list_results = spawn_tokio(async move {
             if let Some(parentid) = parentid {
-                get_inlist(parentid.to_string(), 0.to_string(), &listtype, &id, &order, &sortby).await
+                get_inlist(
+                    parentid.to_string(),
+                    0.to_string(),
+                    &listtype,
+                    &id,
+                    &order,
+                    &sortby,
+                )
+                .await
             } else {
                 get_list(
                     id.to_string(),
@@ -386,7 +369,7 @@ impl SingleListPage {
                     &include_item_types,
                     &listtype,
                     &order,
-                    &sortby
+                    &sortby,
                 )
                 .await
             }
@@ -395,11 +378,12 @@ impl SingleListPage {
         .unwrap();
         spawn(glib::clone!(@weak store,@weak self as obj=> async move {
                 store.remove_all();
+                spinner.set_visible(false);
                 for result in list_results.items {
                     let object = glib::BoxedAnyObject::new(result);
                     store.append(&object);
+                    gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
                 }
-                spinner.set_visible(false);
         }));
     }
 
@@ -420,7 +404,7 @@ impl SingleListPage {
             spawn(glib::clone!(@weak obj=> async move {
                 obj.set_dropdown_selected();
                 obj.sortorder().await;
-            }));    
+            }));
         }));
     }
 
@@ -429,11 +413,11 @@ impl SingleListPage {
         let dropdown = imp.dropdown.get();
         let selected = dropdown.selected();
         let sortby = match selected {
-            0 => "CriticRating,SortName",
+            0 => "SortName",
             1 => "TotalBitrate,SortName",
             2 => "DateCreated,SortName",
             3 => "CommunityRating,SortName",
-            4 => "SortName",
+            4 => "CriticRating,SortName",
             5 => "ProductionYear,PremiereDate,SortName",
             6 => "OfficialRating,SortName",
             7 => "ProductionYear,SortName",
@@ -442,5 +426,29 @@ impl SingleListPage {
             _ => "SortName",
         };
         imp.sortby.replace(sortby.to_string());
+    }
+
+    pub async fn poster(&self, poster: &str) {
+        let imp = self.imp();
+        let listgrid = imp.listgrid.get();
+        let listtype = imp.listtype.get().unwrap().clone();
+        let poster = poster.to_string();
+        let factory = gtk::SignalListItemFactory::new();
+        factory.connect_bind(move |_, item| {
+            let list_item = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem");
+            let entry = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .item()
+                .and_downcast::<glib::BoxedAnyObject>()
+                .expect("Needs to be BoxedAnyObject");
+            let latest: std::cell::Ref<Latest> = entry.borrow();
+            if list_item.child().is_none() {
+                super::tu_list_item::tu_list_poster(&latest, list_item, &listtype, &poster);
+            }
+        });
+        listgrid.set_factory(Some(&factory));
     }
 }

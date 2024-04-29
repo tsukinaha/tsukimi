@@ -109,12 +109,14 @@ pub struct Item {
     pub series_id: Option<String>,
     #[serde(rename = "SeriesName")]
     pub series_name: Option<String>,
+    #[serde(rename = "Type")]
+    pub item_type: String,
     #[serde(rename = "ParentIndexNumber")]
     pub parent_index_number: Option<u32>,
     #[serde(rename = "IndexNumber")]
     pub index_number: Option<u32>,
     #[serde(rename = "ProductionYear")]
-    pub production_year: Option<u16>,
+    pub production_year: Option<u32>,
     #[serde(rename = "ExternalUrls")]
     pub external_urls: Option<Vec<Urls>>,
     #[serde(rename = "Overview")]
@@ -245,7 +247,20 @@ pub struct Latest {
     pub parent_thumb_item_id: Option<String>,
     #[serde(rename = "PlayedPercentage")]
     pub played_percentage: Option<f64>,
+    #[serde(rename = "ImageTags")]
+    pub image_tags: Option<ImageTags>,
+}
 
+#[derive(Serialize, Deserialize, Clone)]
+pub struct ImageTags {
+    #[serde(rename = "Primary")]
+    pub primary: Option<String>,
+    #[serde(rename = "Thumb")]
+    pub thumb: Option<String>,
+    #[serde(rename = "Banner")]
+    pub banner: Option<String>,
+    #[serde(rename = "Backdrop")]
+    pub backdrop: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]

@@ -10,6 +10,7 @@ use gtk::{gio, glib};
 use super::fix::fix;
 use super::item::ItemPage;
 use super::movie::MoviePage;
+use super::tu_list_item::tu_list_item_register;
 
 mod imp {
     use adw::subclass::prelude::*;
@@ -164,131 +165,19 @@ impl ActorPage {
         let id = self.id();
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
         let factory = gtk::SignalListItemFactory::new();
-        let media_type = types.to_string();
-        factory.connect_setup(move |_, item| {
+        factory.connect_bind(move |_, item| {
             let list_item = item
                 .downcast_ref::<gtk::ListItem>()
                 .expect("Needs to be ListItem");
-            let listbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
-            let picture = if media_type == "Episode" {
-                gtk::Box::builder()
-                    .orientation(gtk::Orientation::Vertical)
-                    .height_request(141)
-                    .width_request(250)
-                    .build()
-            } else {
-                gtk::Box::builder()
-                    .orientation(gtk::Orientation::Vertical)
-                    .height_request(273)
-                    .width_request(182)
-                    .build()
-            };
-            let label = gtk::Label::builder()
-                .valign(gtk::Align::Start)
-                .halign(gtk::Align::Center)
-                .justify(gtk::Justification::Center)
-                .wrap_mode(gtk::pango::WrapMode::WordChar)
-                .ellipsize(gtk::pango::EllipsizeMode::End)
-                .build();
-            listbox.append(&picture);
-            listbox.append(&label);
-            list_item.set_child(Some(&listbox));
-        });
-        let listtype = types.to_string();
-        factory.connect_bind(move |_, item| {
-            let picture = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .child()
-                .and_downcast::<gtk::Box>()
-                .expect("Needs to be Box")
-                .first_child()
-                .expect("Needs to be Picture");
-            let label = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .child()
-                .and_downcast::<gtk::Box>()
-                .expect("Needs to be Box")
-                .last_child()
-                .expect("Needs to be Picture");
             let entry = item
                 .downcast_ref::<gtk::ListItem>()
                 .expect("Needs to be ListItem")
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let item: std::cell::Ref<Item> = entry.borrow();
-            if picture.is::<gtk::Box>() {
-                if let Some(_revealer) = picture
-                    .downcast_ref::<gtk::Box>()
-                    .expect("Needs to be Box")
-                    .first_child()
-                {
-                } else {
-                    let img = crate::ui::image::setimage(item.id.clone());
-                    let overlay = gtk::Overlay::builder().child(&img).build();
-                    if let Some(userdata) = &item.user_data {
-                        if let Some(percentage) = userdata.played_percentage {
-                            let progressbar = gtk::ProgressBar::new();
-                            progressbar.set_fraction(percentage / 100.0);
-                            progressbar.set_valign(gtk::Align::End);
-                            overlay.add_overlay(&progressbar);
-                        }
-                        if let Some(unplayeditemcount) = userdata.unplayed_item_count {
-                            if unplayeditemcount > 0 {
-                                let mark = gtk::Label::new(Some(
-                                    &userdata
-                                        .unplayed_item_count
-                                        .expect("no unplayeditemcount")
-                                        .to_string(),
-                                ));
-                                mark.set_valign(gtk::Align::Start);
-                                mark.set_halign(gtk::Align::End);
-                                mark.set_height_request(40);
-                                mark.set_width_request(40);
-                                overlay.add_overlay(&mark);
-                            }
-                        }
-                        if userdata.played {
-                            let mark = gtk::Image::from_icon_name("object-select-symbolic");
-                            mark.set_halign(gtk::Align::End);
-                            mark.set_valign(gtk::Align::Start);
-                            mark.set_height_request(40);
-                            mark.set_width_request(40);
-                            overlay.add_overlay(&mark);
-                        }
-                    }
-                    picture
-                        .downcast_ref::<gtk::Box>()
-                        .expect("Needs to be Box")
-                        .append(&overlay);
-                }
-            }
-            if label.is::<gtk::Label>() {
-                let mut str: String;
-                if listtype == "Episode" {
-                    if let Some(name) = &item.series_name {
-                        str = name.to_string();
-                    } else {
-                        str = "".to_string();
-                    }
-                    if let Some(season) = item.parent_index_number {
-                        str.push_str(&format!("\nS{}", season));
-                    }
-                    if let Some(episode) = item.index_number {
-                        str.push_str(&format!(":E{} - {}", episode, item.name));
-                    }
-                } else {
-                    str = item.name.to_string();
-                    if let Some(productionyear) = item.production_year {
-                        str.push_str(&format!("\n{}", productionyear));
-                    }
-                }
-                label
-                    .downcast_ref::<gtk::Label>()
-                    .expect("Needs to be Label")
-                    .set_text(&str);
+            let latest: std::cell::Ref<Latest> = entry.borrow();
+            if list_item.child().is_none() {
+                tu_list_item_register(&latest, list_item, &latest.latest_type)
             }
         });
         let list;
@@ -331,13 +220,13 @@ impl ActorPage {
         .await
         .unwrap();
         spawn(async move {
-            let items_len = items.len();
+            if items.len() != 0 {
+                revealer.set_reveal_child(true);
+            }
             for item in items {
                 let object = glib::BoxedAnyObject::new(item);
                 store.append(&object);
-            }
-            if items_len != 0 {
-                revealer.set_reveal_child(true);
+                gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
             }
         });
         let types = types.to_string();
