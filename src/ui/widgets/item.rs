@@ -5,13 +5,12 @@ use gtk::prelude::*;
 use gtk::{gio, glib};
 use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
-use std::env;
+use std::path::PathBuf;
 
-use crate::config::get_cache_dir;
+use crate::client::{network::*, structs::*};
 use crate::ui::models::SETTINGS;
-use crate::ui::network::{self, similar, SeriesInfo, RUNTIME};
 use crate::ui::new_dropsel::bind_button;
-use crate::utils::{spawn, spawn_tokio};
+use crate::utils::{get_data_with_cache, get_image_with_cache, spawn, spawn_tokio};
 
 use super::actor::ActorPage;
 use super::fix::fix;
@@ -190,13 +189,15 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
+            let backdrop = self.backdrop.get();
+            backdrop.set_height_request(crate::ui::models::SETTINGS.background_height());
             spawn_g_timeout(glib::clone!(@weak obj => async move {
                 fix(obj.imp().episodescrolled.get());
-                obj.setup_background();
+                obj.setup_background().await;
                 obj.setup_seasons().await;
                 obj.logoset();
-                obj.setoverview();
-                obj.get_similar();
+                obj.setoverview().await;
+                obj.get_similar().await;
             }));
         }
     }
@@ -233,7 +234,7 @@ impl ItemPage {
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
         spawn_tokio(async move {
-            network::played(&id).await.unwrap();
+            played(&id).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
@@ -248,7 +249,7 @@ impl ItemPage {
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
         spawn_tokio(async move {
-            network::unplayed(&id).await.unwrap();
+            unplayed(&id).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
@@ -265,7 +266,7 @@ impl ItemPage {
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
         spawn_tokio(async move {
-            network::like(&id).await.unwrap();
+            like(&id).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
@@ -286,8 +287,8 @@ impl ItemPage {
         imp.favourite_button_split.set_sensitive(false);
         let id = self.id();
         spawn_tokio(async move {
-            network::unlike(&id).await.unwrap();
-            network::unlike(&inid).await.unwrap();
+            unlike(&id).await.unwrap();
+            unlike(&inid).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
@@ -307,7 +308,7 @@ impl ItemPage {
         imp.favourite_button_split.set_sensitive(false);
         let id = self.id();
         spawn_tokio(async move {
-            network::like(&id).await.unwrap();
+            like(&id).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
@@ -320,7 +321,7 @@ impl ItemPage {
         }));
     }
 
-    pub fn bind_playbutton(&self, playbackinfo: network::Media, info: network::SeriesInfo) {
+    pub fn bind_playbutton(&self, playbackinfo: Media, info: SeriesInfo) {
         let imp = self.imp();
         bind_button(
             playbackinfo,
@@ -331,99 +332,44 @@ impl ItemPage {
         );
     }
 
-    pub fn setup_background(&self) {
+    pub async fn setup_background(&self) {
         let id = self.id();
-        let id1 = self.id();
         let imp = self.imp();
-        let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("b{}_0.png", id1));
+
         let backdrop = imp.backdrop.get();
-        backdrop.set_height_request(SETTINGS.background_height());
-        let (sender, receiver) = async_channel::bounded::<String>(1);
+        let path = get_image_with_cache(&id, "Backdrop", Some(0))
+            .await
+            .unwrap();
+        let file = gtk::gio::File::for_path(&path);
+        let pathbuf = PathBuf::from(&path);
         if pathbuf.exists() {
-            backdrop.set_file(Some(&gtk::gio::File::for_path(&pathbuf)));
-            spawn(glib::clone!(@weak self as obj =>async move {
-                obj.imp().backrevealer.set_reveal_child(true);
-                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                window.set_rootpic(gtk::gio::File::for_path(&pathbuf));
-            }));
-        } else {
-            crate::ui::network::RUNTIME.spawn(async move {
-                let id = crate::ui::network::get_backdropimage(id1, 0)
-                    .await
-                    .expect("msg");
-                sender
-                    .send(id)
-                    .await
-                    .expect("The channel needs to be open.");
-            });
+            backdrop.set_file(Some(&file));
+            self.imp().backrevealer.set_reveal_child(true);
+            let window = self.root().and_downcast::<super::window::Window>().unwrap();
+            window.set_rootpic(file);
         }
-        let id2 = id.to_string();
-        glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
-            while receiver.recv().await.is_ok() {
-                let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("b{}_0.png",id2));
-                if pathbuf.exists() {
-                    let file = gtk::gio::File::for_path(&pathbuf);
-                    backdrop.set_file(Some(&file));
-                    obj.imp().backrevealer.set_reveal_child(true);
-                    let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                    window.set_rootpic(file);
-                }
-            }
-        }));
     }
 
-    pub fn add_backdrops(&self, image_tags: Vec<String>) {
+    pub async fn add_backdrops(&self, image_tags: Vec<String>) {
         let imp = self.imp();
         let id = self.id();
         let tags = image_tags.len();
         let carousel = imp.carousel.get();
         let indicator = imp.indicator.get();
         indicator.set_carousel(Some(&carousel));
-        for tag_num in 1..=tags {
-            let id = id.clone();
-            let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap())
-                .join(format!("b{}_{}.png", id, tag_num));
-            let (sender, receiver) = async_channel::bounded::<String>(1);
-            let id2 = id.clone();
-            if pathbuf.exists() {
-                glib::spawn_future_local(glib::clone!(@weak carousel =>async move {
-                    let file = gtk::gio::File::for_path(&pathbuf);
-                    let picture = gtk::Picture::builder()
-                        .file(&file)
-                        .halign(gtk::Align::Fill)
-                        .valign(gtk::Align::Fill)
-                        .content_fit(gtk::ContentFit::Cover)
-                        .height_request(SETTINGS.background_height())
-                        .build();
-                    carousel.append(&picture);
-                }));
-            } else {
-                crate::ui::network::RUNTIME.spawn(async move {
-                    let id = crate::ui::network::get_backdropimage(id, tag_num as u8)
-                        .await
-                        .expect("msg");
-                    sender
-                        .send(id)
-                        .await
-                        .expect("The channel needs to be open.");
-                });
-            }
-            glib::spawn_future_local(glib::clone!(@weak carousel=>async move {
-                while receiver.recv().await.is_ok() {
-                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap()).join(format!("b{}_{}.png",id2,tag_num));
-                    if pathbuf.exists() {
-                        let file = gtk::gio::File::for_path(&pathbuf);
-                        let picture = gtk::Picture::builder()
-                            .halign(gtk::Align::Fill)
-                            .valign(gtk::Align::Fill)
-                            .content_fit(gtk::ContentFit::Cover)
-                            .height_request(SETTINGS.background_height())
-                            .file(&file)
-                            .build();
-                        carousel.append(&picture);
-                    }
-                }
-            }));
+        for tag_num in 1..tags {
+            let path = get_image_with_cache(&id, "Backdrop", Some(tag_num as u8))
+                .await
+                .unwrap();
+            let file = gtk::gio::File::for_path(&path);
+            let picture = gtk::Picture::builder()
+                .halign(gtk::Align::Fill)
+                .valign(gtk::Align::Fill)
+                .content_fit(gtk::ContentFit::Cover)
+                .height_request(SETTINGS.background_height())
+                .file(&file)
+                .build();
+            carousel.append(&picture);
             carousel.set_allow_scroll_wheel(true);
         }
     }
@@ -439,96 +385,86 @@ impl ItemPage {
         imp.selection.set_autoselect(false);
         imp.selection.set_model(Some(&store));
 
-        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SeriesInfo>>(1);
-        network::RUNTIME.spawn(async move {
-            match network::get_series_info(id).await {
-                Ok(series_info) => {
-                    sender
-                        .send(series_info)
-                        .await
-                        .expect("series_info not received.");
-                }
-                Err(e) => eprintln!("Error: {}", e),
-            }
-        });
-
         let seasonstore = gtk::StringList::new(&[]);
         imp.seasonselection.set_model(Some(&seasonstore));
         let seasonlist = imp.seasonlist.get();
         seasonlist.set_model(Some(&imp.seasonselection));
 
-        glib::spawn_future_local(glib::clone!(@weak self as obj,@weak store =>async move {
-            while let Ok(series_info) = receiver.recv().await{
-            let mut season_set: HashSet<u32> = HashSet::new();
-            let mut season_map: HashMap<String,u32> = HashMap::new();
-            let min_season = series_info.iter().map(|info| if info.parent_index_number == 0 { 100 } else { info.parent_index_number }).min().unwrap_or(1);
-            let mut pos = 0;
-            let mut set = true;
-            for info in &series_info {
-                if !season_set.contains(&info.parent_index_number) {
-                    let seasonstring = format!("Season {}", info.parent_index_number);
-                    seasonstore.append(&seasonstring);
-                    season_set.insert(info.parent_index_number);
-                    season_map.insert(seasonstring.clone(), info.parent_index_number);
-                    if set {
-                        if info.parent_index_number == min_season {
-                            set = false;
-                        } else {
-                            pos += 1;
+        let series_info =
+            get_data_with_cache(id.clone(), "serinfo", async { get_series_info(id).await })
+                .await
+                .unwrap();
+
+        spawn(glib::clone!(@weak self as obj => async move {
+                let mut season_set: HashSet<u32> = HashSet::new();
+                let mut season_map: HashMap<String,u32> = HashMap::new();
+                let min_season = series_info.iter().map(|info| if info.parent_index_number == 0 { 100 } else { info.parent_index_number }).min().unwrap_or(1);
+                let mut pos = 0;
+                let mut set = true;
+                for info in &series_info {
+                    if !season_set.contains(&info.parent_index_number) {
+                        let seasonstring = format!("Season {}", info.parent_index_number);
+                        seasonstore.append(&seasonstring);
+                        season_set.insert(info.parent_index_number);
+                        season_map.insert(seasonstring.clone(), info.parent_index_number);
+                        if set {
+                            if info.parent_index_number == min_season {
+                                set = false;
+                            } else {
+                                pos += 1;
+                            }
                         }
                     }
-                }
-                if info.parent_index_number == min_season {
-                    let object = glib::BoxedAnyObject::new(info.clone());
-                    store.append(&object);
-                }
-                if inid != idc && info.id == inid {
-                    let seriesinfo = network::SeriesInfo {
-                        id: inid.clone(),
-                        name: info.name.clone(),
-                        index_number: info.index_number,
-                        parent_index_number: info.parent_index_number,
-                        user_data: info.user_data.clone(),
-                        overview: info.overview.clone(),
-                    };
-                    obj.selectepisode(seriesinfo.clone());
-                }
-            }
-            obj.imp().seasonlist.set_selected(pos);
-            let seasonlist = obj.imp().seasonlist.get();
-            let itemlist = obj.imp().itemlist.get();
-            if idc == inid {
-                itemlist.first_child().unwrap().activate();
-            }
-            let seriesinfo_seasonlist = series_info.clone();
-            let seriesinfo_seasonmap = season_map.clone();
-            seasonlist.connect_selected_item_notify(glib::clone!(@weak store => move |dropdown| {
-                let selected = dropdown.selected_item();
-                let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
-                let selected = selected.string().to_string();
-                store.remove_all();
-                let season_number = seriesinfo_seasonmap[&selected];
-                for info in &seriesinfo_seasonlist {
-                    if info.parent_index_number == season_number {
+                    if info.parent_index_number == min_season {
                         let object = glib::BoxedAnyObject::new(info.clone());
                         store.append(&object);
                     }
-                }
-                itemlist.first_child().unwrap().activate();
-            }));
-            let episodesearchentry = obj.imp().episodesearchentry.get();
-            episodesearchentry.connect_search_changed(glib::clone!(@weak store => move |entry| {
-                let text = entry.text();
-                store.remove_all();
-                for info in &series_info {
-                    if (info.name.to_lowercase().contains(&text.to_lowercase()) || info.index_number.to_string().contains(&text.to_lowercase())) && info.parent_index_number == season_map[&seasonlist.selected_item().and_downcast_ref::<gtk::StringObject>().unwrap().string().to_string()] {
-                        let object = glib::BoxedAnyObject::new(info.clone());
-                        store.append(&object);
+                    if inid != idc && info.id == inid {
+                        let seriesinfo = SeriesInfo {
+                            id: inid.clone(),
+                            name: info.name.clone(),
+                            index_number: info.index_number,
+                            parent_index_number: info.parent_index_number,
+                            user_data: info.user_data.clone(),
+                            overview: info.overview.clone(),
+                        };
+                        obj.selectepisode(seriesinfo.clone()).await;
                     }
                 }
-            }));
-            itemrevealer.set_reveal_child(true);
-            }
+                obj.imp().seasonlist.set_selected(pos);
+                let seasonlist = obj.imp().seasonlist.get();
+                let itemlist = obj.imp().itemlist.get();
+                if idc == inid {
+                    itemlist.first_child().unwrap().activate();
+                }
+                let seriesinfo_seasonlist = series_info.clone();
+                let seriesinfo_seasonmap = season_map.clone();
+                seasonlist.connect_selected_item_notify(glib::clone!(@weak store => move |dropdown| {
+                    let selected = dropdown.selected_item();
+                    let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
+                    let selected = selected.string().to_string();
+                    store.remove_all();
+                    let season_number = seriesinfo_seasonmap[&selected];
+                    for info in &seriesinfo_seasonlist {
+                        if info.parent_index_number == season_number {
+                            let object = glib::BoxedAnyObject::new(info.clone());
+                            store.append(&object);
+                        }
+                    }
+                    itemlist.first_child().unwrap().activate();
+                }));
+                let episodesearchentry = obj.imp().episodesearchentry.get();
+                episodesearchentry.connect_search_changed(glib::clone!(@weak store => move |entry| {
+                    let text = entry.text();
+                    store.remove_all();
+                    for info in &series_info {
+                        if (info.name.to_lowercase().contains(&text.to_lowercase()) || info.index_number.to_string().contains(&text.to_lowercase())) && info.parent_index_number == season_map[&seasonlist.selected_item().and_downcast_ref::<gtk::StringObject>().unwrap().string().to_string()] {
+                            let object = glib::BoxedAnyObject::new(info.clone());
+                            store.append(&object);
+                        }
+                    }
+                }));
+                itemrevealer.set_reveal_child(true);
         }));
 
         let factory = gtk::SignalListItemFactory::new();
@@ -579,7 +515,7 @@ impl ItemPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let seriesinfo: Ref<network::SeriesInfo> = entry.borrow();
+            let seriesinfo: Ref<SeriesInfo> = entry.borrow();
             if picture.first_child().is_none() {
                 let img = crate::ui::image::setimage(seriesinfo.id.clone());
                 picture.set_child(Some(&img));
@@ -613,7 +549,10 @@ impl ItemPage {
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
-                obj.selectepisode(item.borrow::<network::SeriesInfo>().clone());
+                spawn(glib::clone!(@weak obj =>async move {
+                    let item_ref = item.borrow::<SeriesInfo>().clone();
+                    obj.selectepisode(item_ref).await;
+                }));
             }));
     }
 
@@ -664,7 +603,7 @@ impl ItemPage {
         imp.itemlist.last_child().unwrap().activate();
     }
 
-    pub fn selectepisode(&self, seriesinfo: SeriesInfo) {
+    pub async fn selectepisode(&self, seriesinfo: SeriesInfo) {
         let info = seriesinfo.clone();
         let imp = self.imp();
         let osdbox = imp.osdbox.get();
@@ -674,15 +613,15 @@ impl ItemPage {
         imp.playbutton.set_sensitive(false);
         imp.favourite_button_split.set_sensitive(false);
         imp.line1spinner.set_visible(true);
-        let mutex = std::sync::Arc::new(tokio::sync::Mutex::new(()));
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let playback = crate::ui::network::get_playbackinfo(id).await.expect("msg");
-            sender.send(playback).await.expect("msg");
-        });
-        glib::spawn_future_local(glib::clone!(@weak osdbox,@weak self as obj=>async move {
-            while let Ok(playback) = receiver.recv().await {
-                let _ = mutex.lock().await;
+        let playback =
+            get_data_with_cache(
+                id.clone(),
+                "episode",
+                async move { get_playbackinfo(id).await },
+            )
+            .await
+            .unwrap();
+        spawn(glib::clone!(@weak osdbox,@weak self as obj=>async move {
                 obj.imp().line1.set_text(&format!("S{}:E{} - {}",info.parent_index_number, info.index_number, info.name));
                 obj.imp().line1spinner.set_visible(false);
                 let info = info.clone();
@@ -694,29 +633,25 @@ impl ItemPage {
                 obj.imp().playbuttonhandlerid.replace(Some(handlerid));
                 obj.imp().playbutton.set_sensitive(true);
                 obj.imp().favourite_button_split.set_sensitive(true);
-            }
         }));
 
         if let Some(overview) = seriesinfo.overview {
             imp.selecteditemoverview.set_text(Some(&overview));
         }
-        self.createmediabox(idc);
+        self.createmediabox(idc).await;
     }
 
-    pub fn setoverview(&self) {
+    pub async fn setoverview(&self) {
         let imp = self.imp();
         let id = imp.id.get().unwrap().clone();
         let itemoverview = imp.itemoverview.get();
         let overviewrevealer = imp.overviewrevealer.get();
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let item = crate::ui::network::get_item_overview(id.to_string())
-                .await
-                .expect("msg");
-            sender.send(item).await.expect("msg");
-        });
-        glib::spawn_future_local(glib::clone!(@weak self as obj=>async move {
-            while let Ok(item) = receiver.recv().await {
+        let item = get_data_with_cache(id.clone(), "overview", async move {
+            get_item_overview(id.to_string()).await
+        })
+        .await
+        .unwrap();
+        spawn(glib::clone!(@weak self as obj=>async move {
                 {
                     let mut str = String::new();
                     if let Some(communityrating) = item.community_rating {
@@ -778,7 +713,7 @@ impl ItemPage {
                 }
                 overviewrevealer.set_reveal_child(true);
                 if let Some(image_tags) = item.backdrop_image_tags {
-                    obj.add_backdrops(image_tags);
+                    obj.add_backdrops(image_tags).await;
                 }
                 if item.user_data.is_some() {
                     let user_data = item.user_data.as_ref().unwrap();
@@ -791,147 +726,139 @@ impl ItemPage {
                         }
                     }
                 }
-            }
         }));
     }
 
-    pub fn createmediabox(&self, id: String) {
+    pub async fn createmediabox(&self, id: String) {
         let imp = self.imp();
         let mediainfobox = imp.mediainfobox.get();
         let mediainforevealer = imp.mediainforevealer.get();
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Media>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let media = crate::ui::network::get_mediainfo(id.to_string())
+        let media =
+            get_data_with_cache(id.clone(), "media", async move { get_mediainfo(id).await })
                 .await
-                .expect("msg");
-            sender.send(media).await.expect("msg");
-        });
-        glib::spawn_future_local(async move {
-            while let Ok(media) = receiver.recv().await {
-                while mediainfobox.last_child().is_some() {
-                    if let Some(child) = mediainfobox.last_child() {
-                        mediainfobox.remove(&child)
-                    }
+                .unwrap();
+        spawn(async move {
+            while mediainfobox.last_child().is_some() {
+                if let Some(child) = mediainfobox.last_child() {
+                    mediainfobox.remove(&child)
                 }
-                for mediasource in media.media_sources {
-                    let singlebox = gtk::Box::new(gtk::Orientation::Vertical, 5);
-                    let info = format!(
-                        "{} {}\n{}",
-                        mediasource.container.to_uppercase(),
-                        bytefmt::format(mediasource.size),
-                        mediasource.name
-                    );
-                    let label = gtk::Label::builder()
-                        .label(&info)
-                        .halign(gtk::Align::Start)
-                        .margin_start(15)
-                        .valign(gtk::Align::Start)
-                        .margin_top(5)
-                        .build();
-                    singlebox.append(&label);
-
-                    let mediascrolled = gtk::ScrolledWindow::builder()
-                        .hscrollbar_policy(gtk::PolicyType::Automatic)
-                        .vscrollbar_policy(gtk::PolicyType::Never)
-                        .overlay_scrolling(true)
-                        .build();
-
-                    let mediascrolled = fix(mediascrolled);
-
-                    let mediabox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
-                    for mediapart in mediasource.media_streams {
-                        if mediapart.stream_type == "Attachment" {
-                            continue;
-                        }
-                        let mediapartbox = gtk::Box::builder()
-                            .orientation(gtk::Orientation::Vertical)
-                            .spacing(0)
-                            .width_request(300)
-                            .build();
-                        let mut str: String = Default::default();
-                        let icon = gtk::Image::builder().margin_end(5).build();
-                        if mediapart.stream_type == "Video" {
-                            icon.set_from_icon_name(Some("video-x-generic-symbolic"))
-                        } else if mediapart.stream_type == "Audio" {
-                            icon.set_from_icon_name(Some("audio-x-generic-symbolic"))
-                        } else if mediapart.stream_type == "Subtitle" {
-                            icon.set_from_icon_name(Some("media-view-subtitles-symbolic"))
-                        } else {
-                            icon.set_from_icon_name(Some("text-x-generic-symbolic"))
-                        }
-                        let typebox = gtk::Box::builder()
-                            .orientation(gtk::Orientation::Horizontal)
-                            .spacing(5)
-                            .build();
-                        typebox.append(&icon);
-                        typebox.append(&gtk::Label::new(Some(&mediapart.stream_type)));
-                        if let Some(codec) = mediapart.codec {
-                            str.push_str(format!("Codec: {}", codec).as_str());
-                        }
-                        if let Some(language) = mediapart.display_language {
-                            str.push_str(format!("\nLanguage: {}", language).as_str());
-                        }
-                        if let Some(title) = mediapart.title {
-                            str.push_str(format!("\nTitle: {}", title).as_str());
-                        }
-                        if let Some(bitrate) = mediapart.bit_rate {
-                            str.push_str(
-                                format!("\nBitrate: {}it/s", bytefmt::format(bitrate)).as_str(),
-                            );
-                        }
-                        if let Some(bitdepth) = mediapart.bit_depth {
-                            str.push_str(format!("\nBitDepth: {} bit", bitdepth).as_str());
-                        }
-                        if let Some(samplerate) = mediapart.sample_rate {
-                            str.push_str(format!("\nSampleRate: {} Hz", samplerate).as_str());
-                        }
-                        if let Some(height) = mediapart.height {
-                            str.push_str(format!("\nHeight: {}", height).as_str());
-                        }
-                        if let Some(width) = mediapart.width {
-                            str.push_str(format!("\nWidth: {}", width).as_str());
-                        }
-                        if let Some(colorspace) = mediapart.color_space {
-                            str.push_str(format!("\nColorSpace: {}", colorspace).as_str());
-                        }
-                        if let Some(displaytitle) = mediapart.display_title {
-                            str.push_str(format!("\nDisplayTitle: {}", displaytitle).as_str());
-                        }
-                        if let Some(channel) = mediapart.channels {
-                            str.push_str(format!("\nChannel: {}", channel).as_str());
-                        }
-                        if let Some(channellayout) = mediapart.channel_layout {
-                            str.push_str(format!("\nChannelLayout: {}", channellayout).as_str());
-                        }
-                        if let Some(averageframerate) = mediapart.average_frame_rate {
-                            str.push_str(
-                                format!("\nAverageFrameRate: {}", averageframerate).as_str(),
-                            );
-                        }
-                        if let Some(pixelformat) = mediapart.pixel_format {
-                            str.push_str(format!("\nPixelFormat: {}", pixelformat).as_str());
-                        }
-                        let inscription = gtk::Inscription::builder()
-                            .text(&str)
-                            .min_lines(14)
-                            .hexpand(true)
-                            .yalign(0.0)
-                            .build();
-                        mediapartbox.append(&typebox);
-                        mediapartbox.append(&inscription);
-                        mediabox.append(&mediapartbox);
-                    }
-
-                    mediascrolled.set_child(Some(&mediabox));
-                    singlebox.append(&mediascrolled);
-                    mediainfobox.append(&singlebox);
-                }
-                mediainforevealer.set_reveal_child(true);
             }
+            for mediasource in media.media_sources {
+                let singlebox = gtk::Box::new(gtk::Orientation::Vertical, 5);
+                let info = format!(
+                    "{} {}\n{}",
+                    mediasource.container.to_uppercase(),
+                    bytefmt::format(mediasource.size),
+                    mediasource.name
+                );
+                let label = gtk::Label::builder()
+                    .label(&info)
+                    .halign(gtk::Align::Start)
+                    .margin_start(15)
+                    .valign(gtk::Align::Start)
+                    .margin_top(5)
+                    .build();
+                singlebox.append(&label);
+
+                let mediascrolled = gtk::ScrolledWindow::builder()
+                    .hscrollbar_policy(gtk::PolicyType::Automatic)
+                    .vscrollbar_policy(gtk::PolicyType::Never)
+                    .overlay_scrolling(true)
+                    .build();
+
+                let mediascrolled = fix(mediascrolled);
+
+                let mediabox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
+                for mediapart in mediasource.media_streams {
+                    if mediapart.stream_type == "Attachment" {
+                        continue;
+                    }
+                    let mediapartbox = gtk::Box::builder()
+                        .orientation(gtk::Orientation::Vertical)
+                        .spacing(0)
+                        .width_request(300)
+                        .build();
+                    let mut str: String = Default::default();
+                    let icon = gtk::Image::builder().margin_end(5).build();
+                    if mediapart.stream_type == "Video" {
+                        icon.set_from_icon_name(Some("video-x-generic-symbolic"))
+                    } else if mediapart.stream_type == "Audio" {
+                        icon.set_from_icon_name(Some("audio-x-generic-symbolic"))
+                    } else if mediapart.stream_type == "Subtitle" {
+                        icon.set_from_icon_name(Some("media-view-subtitles-symbolic"))
+                    } else {
+                        icon.set_from_icon_name(Some("text-x-generic-symbolic"))
+                    }
+                    let typebox = gtk::Box::builder()
+                        .orientation(gtk::Orientation::Horizontal)
+                        .spacing(5)
+                        .build();
+                    typebox.append(&icon);
+                    typebox.append(&gtk::Label::new(Some(&mediapart.stream_type)));
+                    if let Some(codec) = mediapart.codec {
+                        str.push_str(format!("Codec: {}", codec).as_str());
+                    }
+                    if let Some(language) = mediapart.display_language {
+                        str.push_str(format!("\nLanguage: {}", language).as_str());
+                    }
+                    if let Some(title) = mediapart.title {
+                        str.push_str(format!("\nTitle: {}", title).as_str());
+                    }
+                    if let Some(bitrate) = mediapart.bit_rate {
+                        str.push_str(
+                            format!("\nBitrate: {}it/s", bytefmt::format(bitrate)).as_str(),
+                        );
+                    }
+                    if let Some(bitdepth) = mediapart.bit_depth {
+                        str.push_str(format!("\nBitDepth: {} bit", bitdepth).as_str());
+                    }
+                    if let Some(samplerate) = mediapart.sample_rate {
+                        str.push_str(format!("\nSampleRate: {} Hz", samplerate).as_str());
+                    }
+                    if let Some(height) = mediapart.height {
+                        str.push_str(format!("\nHeight: {}", height).as_str());
+                    }
+                    if let Some(width) = mediapart.width {
+                        str.push_str(format!("\nWidth: {}", width).as_str());
+                    }
+                    if let Some(colorspace) = mediapart.color_space {
+                        str.push_str(format!("\nColorSpace: {}", colorspace).as_str());
+                    }
+                    if let Some(displaytitle) = mediapart.display_title {
+                        str.push_str(format!("\nDisplayTitle: {}", displaytitle).as_str());
+                    }
+                    if let Some(channel) = mediapart.channels {
+                        str.push_str(format!("\nChannel: {}", channel).as_str());
+                    }
+                    if let Some(channellayout) = mediapart.channel_layout {
+                        str.push_str(format!("\nChannelLayout: {}", channellayout).as_str());
+                    }
+                    if let Some(averageframerate) = mediapart.average_frame_rate {
+                        str.push_str(format!("\nAverageFrameRate: {}", averageframerate).as_str());
+                    }
+                    if let Some(pixelformat) = mediapart.pixel_format {
+                        str.push_str(format!("\nPixelFormat: {}", pixelformat).as_str());
+                    }
+                    let inscription = gtk::Inscription::builder()
+                        .text(&str)
+                        .min_lines(14)
+                        .hexpand(true)
+                        .yalign(0.0)
+                        .build();
+                    mediapartbox.append(&typebox);
+                    mediapartbox.append(&inscription);
+                    mediabox.append(&mediapartbox);
+                }
+
+                mediascrolled.set_child(Some(&mediabox));
+                singlebox.append(&mediascrolled);
+                mediainfobox.append(&singlebox);
+            }
+            mediainforevealer.set_reveal_child(true);
         });
     }
 
-    pub fn setlinksscrolled(&self, links: Vec<crate::ui::network::Urls>) {
+    pub fn setlinksscrolled(&self, links: Vec<Urls>) {
         let imp = self.imp();
         let linksscrolled = fix(imp.linksscrolled.get());
         let linksrevealer = imp.linksrevealer.get();
@@ -966,7 +893,7 @@ impl ItemPage {
         linksrevealer.set_reveal_child(true);
     }
 
-    pub fn setactorscrolled(&self, actors: Vec<crate::ui::network::People>) {
+    pub fn setactorscrolled(&self, actors: Vec<People>) {
         let imp = self.imp();
         let actorscrolled = fix(imp.actorscrolled.get());
         let actorrevealer = imp.actorrevealer.get();
@@ -1023,7 +950,7 @@ impl ItemPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let people: std::cell::Ref<crate::ui::network::People> = entry.borrow();
+            let people: std::cell::Ref<People> = entry.borrow();
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture
                     .downcast_ref::<gtk::Box>()
@@ -1059,7 +986,7 @@ impl ItemPage {
                 .item(position)
                 .and_downcast::<glib::BoxedAnyObject>()
                 .unwrap();
-            let actor: std::cell::Ref<crate::ui::network::People> = item.borrow();
+            let actor: std::cell::Ref<People> = item.borrow();
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             let view = match window.current_view_name().as_str() {
                 "homepage" => {
@@ -1092,25 +1019,17 @@ impl ItemPage {
         actorscrolled.set_child(Some(&actorlist));
     }
 
-    pub fn get_similar(&self) {
+    pub async fn get_similar(&self) {
         let id = self.id();
-        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::SearchResult>>(1);
-        RUNTIME.spawn(async move {
-            let id = similar(&id).await.expect("msg");
-            sender
-                .send(id)
-                .await
-                .expect("The channel needs to be open.");
-        });
-
-        glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
-            while let Ok(result) = receiver.recv().await {
-                obj.setrecommendscrolled(result);
-            }
+        let result = get_data_with_cache(id.clone(), "sim", async move { similar(&id).await })
+            .await
+            .unwrap();
+        spawn(glib::clone!(@weak self as obj =>async move {
+            obj.setrecommendscrolled(result);
         }));
     }
 
-    pub fn setrecommendscrolled(&self, recommend: Vec<crate::ui::network::SearchResult>) {
+    pub fn setrecommendscrolled(&self, recommend: Vec<SearchResult>) {
         let imp = self.imp();
         let recommendscrolled = fix(imp.recommendscrolled.get());
         let recommendrevealer = imp.recommendrevealer.get();
@@ -1170,7 +1089,7 @@ impl ItemPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let recommend: std::cell::Ref<crate::ui::network::SearchResult> = entry.borrow();
+            let recommend: std::cell::Ref<SearchResult> = entry.borrow();
             if picture.is::<gtk::Box>() {
                 if let Some(_revealer) = picture
                     .downcast_ref::<gtk::Box>()
@@ -1231,7 +1150,7 @@ impl ItemPage {
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
-                let recommend: std::cell::Ref<crate::ui::network::SearchResult> = item.borrow();
+                let recommend: std::cell::Ref<SearchResult> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 let view = match window.current_view_name().as_str() {
                     "homepage" => {
@@ -1275,21 +1194,21 @@ impl ItemPage {
         recommendscrolled.set_child(Some(&recommendlist));
     }
 
-    pub fn set_studio(&self, infos: Vec<crate::ui::network::SGTitem>) {
+    pub fn set_studio(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
         let scrolled = fix(imp.studiosscrolled.get());
         let revealer = imp.studiosrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
 
-    pub fn set_tags(&self, infos: Vec<crate::ui::network::SGTitem>) {
+    pub fn set_tags(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
         let scrolled = fix(imp.tagsscrolled.get());
         let revealer = imp.tagsrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
 
-    pub fn set_genres(&self, infos: Vec<crate::ui::network::SGTitem>) {
+    pub fn set_genres(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
         let scrolled = fix(imp.genresscrolled.get());
         let revealer = imp.genresrevealer.get();
@@ -1300,7 +1219,7 @@ impl ItemPage {
         &self,
         linksrevealer: gtk::Revealer,
         linksscrolled: gtk::ScrolledWindow,
-        infos: Vec<crate::ui::network::SGTitem>,
+        infos: Vec<SGTitem>,
     ) {
         if !infos.is_empty() {
             linksrevealer.set_reveal_child(true);

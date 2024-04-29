@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="AlbumWidget" parent="AdwBin">
+    <child>
+      <object class="AdwClamp">
+        <property name="margin-bottom">48</property>
+        <property name="margin-top">48</property>
+        <property name="maximum-size">1000</property>
+        <child>
+          <object class="GtkBox">
+            <property name="halign">fill</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkBox" id="albumInfo">
+                <property name="halign">fill</property>
+                <property name="hexpand">True</property>
+                <property name="spacing">32</property>
+                <child>
+                  <object class="GtkImage" id="_cover_image">
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="albumDetails">
+                    <property name="halign">center</property>
+                    <property name="valign">start</property>
+                    <property name="orientation">vertical</property>
+                    <property name="margin-top">18</property>
+                    <child>
+                      <object class="GtkLabel" id="_title_label">
+                        <property name="focusable">False</property>
+                        <property name="halign">start</property>
+                        <property name="ellipsize">middle</property>
+                        <property name="margin-bottom">18</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="_artist_label">
+                        <property name="focusable">False</property>
+                        <property name="halign">start</property>
+                        <property name="ellipsize">middle</property>
+                        <property name="margin-bottom">12</property>
+                        <style>
+                          <class name="title-3"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="_released_label">
+                        <property name="focusable">False</property>
+                        <property name="halign">start</property>
+                        <property name="use_markup">True</property>
+                        <property name="margin-bottom">12</property>
+                        <style>
+                          <class name="dim-label"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="_composer_label">
+                        <property name="focusable">False</property>
+                        <property name="halign">start</property>
+                        <property name="ellipsize">end</property>
+                        <property name="margin-bottom">12</property>
+                        <style>
+                          <class name="dim-label"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">12</property>
+                        <property name="margin-top">6</property>
+                        <child>
+                          <object class="GtkButton" id="_play_button">
+                            <property name="width-request">44</property>
+                            <property name="height-request">44</property>
+                            <property name="icon-name">media-playback-start-symbolic</property>
+                            <property name="tooltip-text" translatable="yes">Play</property>
+                            <property name="valign">center</property>
+                            <signal name="clicked" handler="_on_play_button_clicked" swapped="no"/>
+                            <style>
+                              <class name="circular"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuButton" id="_menu_button">
+                            <property name="width-request">44</property>
+                            <property name="height-request">44</property>
+                            <property name="halign">start</property>
+                            <property name="valign">center</property>
+                            <property name="focus_on_click">False</property>
+                            <property name="menu-model">album_menu</property>
+                            <property name="direction">none</property>
+                            <property name="icon_name">view-more-symbolic</property>
+                            <style>
+                              <class name="circular"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkListBox" id="_disc_list_box">
+                <property name="focusable">False</property>
+                <property name="margin-top">48</property>
+                <property name="selection_mode">0</property>
+                <style>
+                  <class name="background"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+  <menu id="album_menu">
+    <item>
+      <attribute name="label" translatable="yes">_Play</attribute>
+      <attribute name="action">album.play</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Add to _Favorite Songs</attribute>
+      <attribute name="action">album.add_favorites</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">_Add to Playlist…</attribute>
+      <attribute name="action">album.add_playlist</attribute>
+    </item>
+  </menu>
+</interface>

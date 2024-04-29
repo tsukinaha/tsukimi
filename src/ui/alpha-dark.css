@@ -73,6 +73,10 @@ revealer > box > box > widget > box {
   margin: 10px;
 }
 
+tabbar > revealer > box {
+  background-color: rgba(0, 0, 0, 0);
+}
+
 box > scrolledwindow > viewport > box > box {
   margin: 5px;
   background-color: rgba(0, 0, 0, 0.1);
@@ -214,12 +218,6 @@ windowcontrols > button.minimize:hover {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   background-color: rgba(0, 0, 0, 0);
   color: rgba(255, 255, 255, 0.8);
-}
-label {
-  font-size: 1.1em;
-}
-.large-font {
-  font-size: 1.2em;
 }
 window {
   box-shadow: none;

@@ -5,7 +5,8 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 
-use crate::ui::network::{loginv2, RUNTIME};
+use crate::client::network::*;
+
 mod imp {
 
     use adw::subclass::dialog::AdwDialogImpl;

@@ -1,14 +1,13 @@
-use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use crate::ui::image::setimage;
-
 use super::fix::fix;
-use super::item::ItemPage;
-use super::movie::MoviePage;
+use super::tu_list_item::tu_list_item_register;
+use crate::client::{network::*, structs::*};
+use crate::ui::image::setimage;
+use crate::utils::{get_data_with_cache, spawn, tu_list_view_connect_activate};
 
 mod imp {
     use adw::subclass::prelude::*;
@@ -87,8 +86,8 @@ mod imp {
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(@weak obj => async move {
                 obj.setup_pic();
-                obj.get_item();
-                obj.set_lists();
+                obj.get_item().await;
+                obj.set_lists().await;
             }));
         }
     }
@@ -127,22 +126,19 @@ impl ActorPage {
         imp.actorpicbox.append(&pic);
     }
 
-    pub fn get_item(&self) {
+    pub async fn get_item(&self) {
         let imp = self.imp();
         let id = self.id();
         let inscription = imp.inscription.get();
         let inforevealer = imp.inforevealer.get();
         let spinner = imp.spinner.get();
         let title = imp.title.get();
-        let (sender, receiver) = async_channel::bounded::<crate::ui::network::Item>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let item = crate::ui::network::get_item_overview(id.to_string())
-                .await
-                .expect("msg");
-            sender.send(item).await.expect("msg");
-        });
-        glib::spawn_future_local(glib::clone!(@weak self as obj=>async move {
-            while let Ok(item) = receiver.recv().await {
+        let item = get_data_with_cache(id.to_string(), "item", async {
+            get_item_overview(id).await
+        })
+        .await
+        .unwrap();
+        spawn(glib::clone!(@weak self as obj=>async move {
                 if let Some(overview) = item.overview {
                     inscription.set_text(Some(&overview));
                 }
@@ -152,142 +148,33 @@ impl ActorPage {
                 title.set_text(&item.name);
                 inforevealer.set_reveal_child(true);
                 spinner.set_visible(false);
-            }
         }));
     }
 
-    pub fn set_lists(&self) {
-        self.sets("Movie");
-        self.sets("Series");
-        self.sets("Episode");
+    pub async fn set_lists(&self) {
+        self.sets("Movie").await;
+        self.sets("Series").await;
+        self.sets("Episode").await;
     }
 
-    pub fn sets(&self, types: &str) {
+    pub async fn sets(&self, types: &str) {
         let imp = self.imp();
         let id = self.id();
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
         let factory = gtk::SignalListItemFactory::new();
-        let media_type = types.to_string();
-        factory.connect_setup(move |_, item| {
+        factory.connect_bind(move |_, item| {
             let list_item = item
                 .downcast_ref::<gtk::ListItem>()
                 .expect("Needs to be ListItem");
-            let listbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
-            let picture = if media_type == "Episode" {
-                gtk::Box::builder()
-                    .orientation(gtk::Orientation::Vertical)
-                    .height_request(141)
-                    .width_request(250)
-                    .build()
-            } else {
-                gtk::Box::builder()
-                    .orientation(gtk::Orientation::Vertical)
-                    .height_request(273)
-                    .width_request(182)
-                    .build()
-            };
-            let label = gtk::Label::builder()
-                .valign(gtk::Align::Start)
-                .halign(gtk::Align::Center)
-                .justify(gtk::Justification::Center)
-                .wrap_mode(gtk::pango::WrapMode::WordChar)
-                .ellipsize(gtk::pango::EllipsizeMode::End)
-                .build();
-            listbox.append(&picture);
-            listbox.append(&label);
-            list_item.set_child(Some(&listbox));
-        });
-        let listtype = types.to_string();
-        factory.connect_bind(move |_, item| {
-            let picture = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .child()
-                .and_downcast::<gtk::Box>()
-                .expect("Needs to be Box")
-                .first_child()
-                .expect("Needs to be Picture");
-            let label = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .child()
-                .and_downcast::<gtk::Box>()
-                .expect("Needs to be Box")
-                .last_child()
-                .expect("Needs to be Picture");
             let entry = item
                 .downcast_ref::<gtk::ListItem>()
                 .expect("Needs to be ListItem")
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let item: std::cell::Ref<crate::ui::network::Item> = entry.borrow();
-            if picture.is::<gtk::Box>() {
-                if let Some(_revealer) = picture
-                    .downcast_ref::<gtk::Box>()
-                    .expect("Needs to be Box")
-                    .first_child()
-                {
-                } else {
-                    let img = crate::ui::image::setimage(item.id.clone());
-                    let overlay = gtk::Overlay::builder().child(&img).build();
-                    if let Some(userdata) = &item.user_data {
-                        if let Some(percentage) = userdata.played_percentage {
-                            let progressbar = gtk::ProgressBar::new();
-                            progressbar.set_fraction(percentage / 100.0);
-                            progressbar.set_valign(gtk::Align::End);
-                            overlay.add_overlay(&progressbar);
-                        }
-                        if let Some(unplayeditemcount) = userdata.unplayed_item_count {
-                            if unplayeditemcount > 0 {
-                                let mark = gtk::Label::new(Some(
-                                    &userdata
-                                        .unplayed_item_count
-                                        .expect("no unplayeditemcount")
-                                        .to_string(),
-                                ));
-                                mark.set_valign(gtk::Align::Start);
-                                mark.set_halign(gtk::Align::End);
-                                mark.set_height_request(40);
-                                mark.set_width_request(40);
-                                overlay.add_overlay(&mark);
-                            }
-                        }
-                        if userdata.played {
-                            let mark = gtk::Image::from_icon_name("object-select-symbolic");
-                            mark.set_halign(gtk::Align::End);
-                            mark.set_valign(gtk::Align::Start);
-                            mark.set_height_request(40);
-                            mark.set_width_request(40);
-                            overlay.add_overlay(&mark);
-                        }
-                    }
-                    picture
-                        .downcast_ref::<gtk::Box>()
-                        .expect("Needs to be Box")
-                        .append(&overlay);
-                }
-            }
-            if label.is::<gtk::Label>() {
-                let mut str: String;
-                if listtype == "Episode" {
-                    str = item.series_name.as_ref().unwrap().to_string();
-                    if let Some(season) = item.parent_index_number {
-                        str.push_str(&format!("\nS{}", season));
-                    }
-                    if let Some(episode) = item.index_number {
-                        str.push_str(&format!(":E{} - {}", episode, item.name));
-                    }
-                } else {
-                    str = item.name.to_string();
-                    if let Some(productionyear) = item.production_year {
-                        str.push_str(&format!("\n{}", productionyear));
-                    }
-                }
-                label
-                    .downcast_ref::<gtk::Label>()
-                    .expect("Needs to be Label")
-                    .set_text(&str);
+            let latest: std::cell::Ref<Latest> = entry.borrow();
+            if list_item.child().is_none() {
+                tu_list_item_register(&latest, list_item, &latest.latest_type)
             }
         });
         let list;
@@ -324,91 +211,34 @@ impl ActorPage {
         selection.set_autoselect(false);
         list.set_model(Some(selection));
         let media_type = types.to_string();
-        let (sender, receiver) = async_channel::bounded::<Vec<crate::ui::network::Item>>(1);
-        crate::ui::network::RUNTIME.spawn(async move {
-            let item = crate::ui::network::person_item(&id, &media_type.to_string())
-                .await
-                .expect("msg");
-            sender.send(item).await.expect("msg");
-        });
-        glib::spawn_future_local(async move {
-            while let Ok(items) = receiver.recv().await {
-                let items_len = items.len();
-                for item in items {
-                    let object = glib::BoxedAnyObject::new(item);
-                    store.append(&object);
-                }
-                if items_len != 0 {
-                    revealer.set_reveal_child(true);
-                }
+        let items = get_data_with_cache(id.to_string(), &media_type.to_string(), async move {
+            person_item(&id, &media_type).await
+        })
+        .await
+        .unwrap();
+        spawn(async move {
+            if !items.is_empty() {
+                revealer.set_reveal_child(true);
+            }
+            for item in items {
+                let object = glib::BoxedAnyObject::new(item);
+                store.append(&object);
+                gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
             }
         });
-        let types = types.to_string();
-        list.connect_activate(
-            glib::clone!(@weak self as obj =>move |listview, position| {
-                let model = listview.model().unwrap();
-                let item = model
-                    .item(position)
-                    .and_downcast::<glib::BoxedAnyObject>()
-                    .unwrap();
-                let recommend: std::cell::Ref<crate::ui::network::Item> = item.borrow();
-                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                let view = match window.current_view_name().as_str() {
-                    "homepage" => {
-                        window.set_title(&recommend.name);
-                        std::env::set_var("HOME_TITLE", &recommend.name);
-                        &window.imp().homeview
-                    }
-                    "searchpage" => {
-                        window.set_title(&recommend.name);
-                        std::env::set_var("SEARCH_TITLE", &recommend.name);
-                        &window.imp().searchview
-                    }
-                    "historypage" => {
-                        window.set_title(&recommend.name);
-                        std::env::set_var("HISTORY_TITLE", &recommend.name);
-                        &window.imp().historyview
-                    }
-                    _ => {
-                        &window.imp().searchview
-                    }
-                };
-                match types.as_str() {
-                    "Movie" => {
-                        let item_page = MoviePage::new(recommend.id.clone(),recommend.name.clone());
-                        if view.find_page(recommend.name.as_str()).is_some() {
-                            view.pop_to_tag(recommend.name.as_str());
-                        } else {
-                            item_page.set_tag(Some(recommend.name.as_str()));
-                            view.push(&item_page);
-                        }
-                    }
-                    "Series" => {
-                        let item_page = ItemPage::new(recommend.id.clone(),recommend.id.clone());
-                        if view.find_page(recommend.name.as_str()).is_some() {
-                            view.pop_to_tag(recommend.name.as_str());
-                        } else {
-                            item_page.set_tag(Some(recommend.name.as_str()));
-                            view.push(&item_page);
-                        }
-                    }
-                    "Episode" => {
-                        let item_page = ItemPage::new(recommend.series_id.clone().unwrap(),recommend.id.clone());
-                        if view.find_page(recommend.name.as_str()).is_some() {
-                            view.pop_to_tag(recommend.name.as_str());
-                        } else {
-                            item_page.set_tag(Some(recommend.name.as_str()));
-                            view.push(&item_page);
-                        }
-                    }
-                    _ => {
-                    }
-                }
-            }),
-        );
+        list.connect_activate(glib::clone!(@weak self as obj =>move |listview, position| {
+            let model = listview.model().unwrap();
+            let item = model
+                .item(position)
+                .and_downcast::<glib::BoxedAnyObject>()
+                .unwrap();
+            let recommend: std::cell::Ref<Latest> = item.borrow();
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            tu_list_view_connect_activate(window, &recommend);
+        }));
     }
 
-    pub fn setlinksscrolled(&self, links: Vec<crate::ui::network::Urls>) {
+    pub fn setlinksscrolled(&self, links: Vec<Urls>) {
         let imp = self.imp();
         let linksscrolled = fix(imp.linksscrolled.get());
         let linksrevealer = imp.linksrevealer.get();

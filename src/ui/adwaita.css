@@ -65,6 +65,10 @@ box > overlay > image {
   margin: 3px;
 }
 
+tabbar > revealer > box {
+  background-color: rgba(0, 0, 0, 0);
+}
+
 revealer > box > box > widget {
   background-color: rgba(1, 1, 1, 0.1);
   border-radius: 10px;
@@ -218,12 +222,6 @@ windowcontrols > button.minimize {
 button.titlebutton.minimize:hover,
 windowcontrols > button.minimize:hover {
   opacity: 0.8;
-}
-label {
-  font-size: 1.1em;
-}
-.large-font {
-  font-size: 1.2em;
 }
 window {
   box-shadow: none;

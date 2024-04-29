@@ -128,9 +128,31 @@
                                   <object class="AdwHeaderBar">
                                     <child type="start">
                                       <object class="GtkToggleButton" id="backbutton">
-                                        <property name="icon-name">list-add-symbolic</property>
-                                        <property name="tooltip-text" translatable="yes">New Collection</property>
-                                        <property name="action-name">win.new-collection</property>
+                                        <property name="icon-name">system-log-out-symbolic</property>
+                                        <property name="tooltip-text" translatable="yes">Log Out</property>
+                                        <property name="action-name">win.relogin</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child type="bottom">
+                                  <object class="AdwActionRow" id="namerow">
+                                    <property name="halign">fill</property>
+                                    <child type="prefix">
+                                      <object class="AdwAvatar">
+                                        <property name="size">30</property>
+                                        <property name="margin-start">12</property>
+                                        <property name="halign">start</property>
+                                      </object>
+                                    </child>
+                                    <child type="suffix">
+                                      <object class="GtkToggleButton">
+                                        <property name="valign">center</property>
+                                        <property name="icon-name">settings-symbolic</property>
+                                        <property name="action-name">setting.account</property>
+                                        <style>
+                                          <class name="flat" />
+                                        </style>
                                       </object>
                                     </child>
                                   </object>
@@ -226,6 +248,25 @@
                                                 <style>
                                                   <class name="flat" />
                                                 </style>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwActionRow">
+                                            <child type="prefix">
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Server Panel</property>
+                                                <property name="halign">start</property>
+                                                <attributes>
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                </attributes>
+                                              </object>
+                                            </child>
+                                            <child type="prefix">
+                                              <object class="GtkImage">
+                                                <property name="icon-name">view-grid-symbolic</property>
+                                                <property name="halign">start</property>
                                               </object>
                                             </child>
                                           </object>
@@ -332,6 +373,19 @@
                                                 <property name="title" translatable="yes">Tsukimi</property>
                                               </object>
                                             </child>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkStackPage">
+                                        <property name="name">serverpanelpage</property>
+                                        <property name="child">
+                                          <object class="AdwStatusPage">
+                                            <property name="title">Nothing Here</property>
+                                            <property name="description">没写</property>
+                                            <property name="icon-name">view-grid-symbolic</property>
+                                            <property name="vexpand">True</property>
                                           </object>
                                         </property>
                                       </object>

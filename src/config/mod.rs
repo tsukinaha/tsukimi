@@ -4,7 +4,7 @@ use std::{env, fs::File, io::Read};
 use uuid::Uuid;
 
 pub mod proxy;
-pub const APP_VERSION: &str = "0.4.7";
+pub const APP_VERSION: &str = "0.4.9";
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
@@ -67,7 +67,7 @@ pub struct Accounts {
 }
 
 pub async fn save_cfg(account: Account) -> Result<(), Box<dyn std::error::Error>> {
-    let mut path = get_config_dir();
+    let mut path = get_config_dir()?;
     std::fs::DirBuilder::new().recursive(true).create(&path)?;
     path.push("tsukimi.toml");
     let mut accounts: Accounts = load_cfgv2()?;
@@ -86,7 +86,8 @@ pub async fn save_cfg(account: Account) -> Result<(), Box<dyn std::error::Error>
 }
 
 pub fn load_cfgv2() -> Result<Accounts, Box<dyn std::error::Error>> {
-    let path = get_config_dir().join("tsukimi.toml");
+    let mut path = get_config_dir()?;
+    path.push("tsukimi.toml");
     if !path.exists() {
         return Ok(Accounts {
             accounts: Vec::new(),
@@ -113,7 +114,8 @@ pub fn load_env(account: &Account) {
 }
 
 pub fn remove(account: &Account) -> Result<(), Box<dyn std::error::Error>> {
-    let path = get_config_dir().join("tsukimi.toml");
+    let mut path = get_config_dir()?;
+    path.push("tsukimi.toml");
     let mut accounts: Accounts = load_cfgv2()?;
     accounts.accounts.retain(|x| {
         x.servername != account.servername
@@ -138,39 +140,44 @@ pub fn remove(account: &Account) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 /// get config directory, not tsukimi.toml path
-pub fn get_config_dir() -> std::path::PathBuf {
+pub fn get_config_dir() -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
     #[cfg(windows)]
     {
-        env::current_exe()
-            .unwrap()
+        let path = env::current_exe()?
             .ancestors()
             .nth(2)
-            .unwrap()
-            .join("config")
+            .ok_or("Failed to get Tsukimi root dir!")?
+            .join("config");
+        Ok(path)
     }
 
     #[cfg(unix)]
     {
-        dirs::home_dir().unwrap().join(".config")
+        let path = dirs::home_dir()
+            .ok_or("Failed to get Home dir!")?
+            .join(".config");
+        Ok(path)
     }
 }
 
 /// get cache dir for specific server.
-pub fn get_cache_dir(servername: String) -> std::path::PathBuf {
+pub fn get_cache_dir(servername: String) -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
     #[cfg(windows)]
     {
-        env::current_exe()
-            .unwrap()
+        let path = env::current_exe()?
             .ancestors()
             .nth(2)
-            .unwrap()
-            .join(format!("cache/{}", servername))
+            .ok_or("Failed to get Tsukimi root dir!")?
+            .join(format!("cache/{}", servername));
+
+        Ok(path)
     }
 
     #[cfg(unix)]
     {
-        dirs::home_dir()
-            .unwrap()
-            .join(format!(".local/share/tsukimi/{}", servername))
+        let path = dirs::home_dir()
+            .ok_or("Failed to get Home dir!")?
+            .join(format!(".local/share/tsukimi/{}", servername));
+        Ok(path)
     }
 }

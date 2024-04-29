@@ -1,17 +1,14 @@
 use once_cell::sync::Lazy;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
-use serde::{Deserialize, Serialize};
-use serde_json::json;
-use serde_json::Value;
-use std::env;
-use std::fs;
-use std::io::Write;
+use serde_json::{json, Value};
 use std::sync::OnceLock;
+use std::{env, fs, io::Write};
 use tokio::runtime;
 
+use super::structs::*;
 use crate::config::proxy::ReqClient;
-use crate::config::{self, get_cache_dir, get_device_name, save_cfg, Account, APP_VERSION};
+use crate::config::{get_cache_dir, get_device_name, save_cfg, set_config, Account, APP_VERSION};
 use crate::ui::models::SETTINGS;
 
 pub static RUNTIME: Lazy<tokio::runtime::Runtime> = Lazy::new(|| {
@@ -24,7 +21,7 @@ pub static RUNTIME: Lazy<tokio::runtime::Runtime> = Lazy::new(|| {
         .expect("Failed to create runtime")
 });
 
-fn client() -> &'static Client {
+pub fn client() -> &'static Client {
     static CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
     CLIENT.get_or_init(ReqClient::build)
 }
@@ -66,16 +63,10 @@ pub async fn loginv2(
         .json(&body)
         .send()
         .await?;
-
     let v: Value = res.json().await?;
 
-    // 获取 "User" 对象中的 "Id" 字段
     let user_id = v["User"]["Id"].as_str().unwrap();
-    println!("UserId: {}", user_id);
-
-    // 获取 "AccessToken" 字段
     let access_token = v["AccessToken"].as_str().unwrap();
-    println!("AccessToken: {}", access_token);
 
     let config = Account {
         servername,
@@ -90,33 +81,14 @@ pub async fn loginv2(
     Ok(())
 }
 
-#[derive(Serialize, Deserialize, Clone)]
-pub struct SearchResult {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Type")]
-    pub result_type: String,
-    #[serde(rename = "Id")]
-    pub id: String,
-    #[serde(rename = "UserData")]
-    pub user_data: Option<UserData>,
-    #[serde(rename = "ProductionYear")]
-    pub production_year: Option<i16>,
-}
-
-struct SearchModel {
-    search_results: Vec<SearchResult>,
-}
-
-pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Error> {
+pub async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Error> {
+    let server = set_config();
     let mut model = SearchModel {
         search_results: Vec::new(),
     };
-    let server_info = config::set_config();
-
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
-        server_info.domain, server_info.port, server_info.user_id
+        server.domain, server.port, server.user_id
     );
     let params = [
         (
@@ -137,10 +109,9 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
         ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Token", &server.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
     let items: Vec<SearchResult> = serde_json::from_value(json["Items"].take()).unwrap();
@@ -148,38 +119,22 @@ pub(crate) async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Erro
     Ok(model.search_results)
 }
 
-#[derive(Serialize, Deserialize, Clone)]
-pub struct SeriesInfo {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Id")]
-    pub id: String,
-    #[serde(rename = "Overview")]
-    pub overview: Option<String>,
-    #[serde(rename = "IndexNumber")]
-    pub index_number: u32,
-    #[serde(rename = "ParentIndexNumber")]
-    pub parent_index_number: u32,
-    #[serde(rename = "UserData")]
-    pub user_data: Option<UserData>,
-}
-
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
-    let server_info = config::set_config();
+    let server = set_config();
     let url = format!(
         "{}:{}/emby/Shows/{}/Episodes",
-        server_info.domain, server_info.port, id
+        server.domain, server.port, id
     );
     let params = [
         ("Fields", "Overview"),
         ("EnableTotalRecordCount", "True"),
         ("EnableImages", "True"),
-        ("UserId", &server_info.user_id),
+        ("UserId", &server.user_id),
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
         ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Token", &server.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
     let response = client().get(&url).query(&params).send().await?;
@@ -188,145 +143,11 @@ pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
     Ok(seriesinfo)
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MediaStream {
-    #[serde(rename = "DisplayTitle")]
-    pub display_title: Option<String>,
-    #[serde(rename = "Type")]
-    pub stream_type: String,
-    #[serde(rename = "DeliveryUrl")]
-    pub delivery_url: Option<String>,
-    #[serde(rename = "IsExternal")]
-    pub is_external: bool,
-    #[serde(rename = "Title")]
-    pub title: Option<String>,
-    #[serde(rename = "DisplayLanguage")]
-    pub display_language: Option<String>,
-    #[serde(rename = "Codec")]
-    pub codec: Option<String>,
-    #[serde(rename = "BitRate")]
-    pub bit_rate: Option<u64>,
-    #[serde(rename = "BitDepth")]
-    pub bit_depth: Option<u64>,
-    #[serde(rename = "AverageFrameRate")]
-    pub average_frame_rate: Option<f64>,
-    #[serde(rename = "Height")]
-    pub height: Option<u64>,
-    #[serde(rename = "Width")]
-    pub width: Option<u64>,
-    #[serde(rename = "PixelFormat")]
-    pub pixel_format: Option<String>,
-    #[serde(rename = "ColorSpace")]
-    pub color_space: Option<String>,
-    #[serde(rename = "SampleRate")]
-    pub sample_rate: Option<u64>,
-    #[serde(rename = "Channels")]
-    pub channels: Option<u64>,
-    #[serde(rename = "ChannelLayout")]
-    pub channel_layout: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MediaSource {
-    #[serde(rename = "Id")]
-    pub id: String,
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Size")]
-    pub size: u64,
-    #[serde(rename = "Container")]
-    pub container: String,
-    #[serde(rename = "DirectStreamUrl")]
-    pub direct_stream_url: Option<String>,
-    #[serde(rename = "MediaStreams")]
-    pub media_streams: Vec<MediaStream>,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Media {
-    #[serde(rename = "MediaSources")]
-    pub media_sources: Vec<MediaSource>,
-    #[serde(rename = "PlaySessionId")]
-    pub play_session_id: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-pub struct Item {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Id")]
-    pub id: String,
-    #[serde(rename = "SeriesId")]
-    pub series_id: Option<String>,
-    #[serde(rename = "SeriesName")]
-    pub series_name: Option<String>,
-    #[serde(rename = "ParentIndexNumber")]
-    pub parent_index_number: Option<u32>,
-    #[serde(rename = "IndexNumber")]
-    pub index_number: Option<u32>,
-    #[serde(rename = "ProductionYear")]
-    pub production_year: Option<u16>,
-    #[serde(rename = "ExternalUrls")]
-    pub external_urls: Option<Vec<Urls>>,
-    #[serde(rename = "Overview")]
-    pub overview: Option<String>,
-    #[serde(rename = "People")]
-    pub people: Option<Vec<People>>,
-    #[serde(rename = "Studios")]
-    pub studios: Option<Vec<SGTitem>>,
-    #[serde(rename = "GenreItems")]
-    pub genres: Option<Vec<SGTitem>>,
-    #[serde(rename = "TagItems")]
-    pub tags: Option<Vec<SGTitem>>,
-    #[serde(rename = "UserData")]
-    pub user_data: Option<UserData>,
-    #[serde(rename = "CommunityRating")]
-    pub community_rating: Option<f64>,
-    #[serde(rename = "OfficialRating")]
-    pub official_rating: Option<String>,
-    #[serde(rename = "RunTimeTicks")]
-    pub run_time_ticks: Option<u64>,
-    #[serde(rename = "Taglines")]
-    pub taglines: Option<Vec<String>>,
-    #[serde(rename = "BackdropImageTags")]
-    pub backdrop_image_tags: Option<Vec<String>>,
-    #[serde(rename = "AlbumArtist")]
-    pub album_artist: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-pub struct People {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Id")]
-    pub id: String,
-    #[serde(rename = "Role")]
-    pub role: Option<String>,
-    #[serde(rename = "Type")]
-    pub people_type: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-pub struct SGTitem {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Id")]
-    pub id: i32,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Urls {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Url")]
-    pub url: String,
-}
-
 pub async fn get_item_overview(id: String) -> Result<Item, Error> {
-    let server_info = config::set_config();
+    let server = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/{}",
-        server_info.domain, server_info.port, server_info.user_id, id
+        server.domain, server.port, server.user_id, id
     );
     let params = [
         ("Fields", "ShareLevel"),
@@ -334,7 +155,7 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
         ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Token", &server.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
     let response = client().get(&url).query(&params).send().await?;
@@ -343,83 +164,11 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
     Ok(item)
 }
 
-pub async fn _markwatched(id: String, sourceid: String) -> Result<String, Error> {
-    let server_info = config::set_config();
-    let url = format!(
-        "{}:{}/emby/Users/{}/PlayingItems/{}",
-        server_info.domain, server_info.port, server_info.user_id, id
-    );
-    println!("{}", url);
-    let params = [
-        ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", &get_device_name()),
-        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
-        ("X-Emby-Language", "zh-cn"),
-        ("reqformat", "json"),
-    ];
-    let inplay = json!({
-        "UserId": &server_info.user_id,
-        "Id": &id,
-        "MediaSourceId": &sourceid,
-    });
-    let response = client()
-        .post(&url)
-        .query(&params)
-        .json(&inplay)
-        .send()
-        .await?;
-    let text = response.text().await?;
-    Ok(text)
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-pub struct Resume {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Type")]
-    pub resume_type: String,
-    #[serde(rename = "Id")]
-    pub id: String,
-    #[serde(rename = "SeriesId")]
-    pub series_id: Option<String>,
-    #[serde(rename = "IndexNumber")]
-    pub index_number: Option<u32>,
-    #[serde(rename = "ParentIndexNumber")]
-    pub parent_index_number: Option<u32>,
-    #[serde(rename = "ParentThumbItemId")]
-    pub parent_thumb_item_id: Option<String>,
-    #[serde(rename = "SeriesName")]
-    pub series_name: Option<String>,
-    #[serde(rename = "UserData")]
-    pub user_data: Option<UserData>,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-pub struct UserData {
-    #[serde(rename = "PlayedPercentage")]
-    pub played_percentage: Option<f64>,
-    #[serde(rename = "PlaybackPositionTicks")]
-    pub playback_position_ticks: Option<u64>,
-    #[serde(rename = "Played")]
-    pub played: bool,
-    #[serde(rename = "UnplayedItemCount")]
-    pub unplayed_item_count: Option<u32>,
-    #[serde(rename = "IsFavorite")]
-    pub is_favorite: Option<bool>,
-}
-struct ResumeModel {
-    resume: Vec<Resume>,
-}
-
-pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
-    let mut model = ResumeModel { resume: Vec::new() };
-    let server_info = config::set_config();
-
+pub async fn resume() -> Result<Vec<Latest>, Error> {
+    let server = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/Resume",
-        server_info.domain, server_info.port, server_info.user_id
+        server.domain, server.port, server.user_id
     );
     let params = [
         ("Recursive", "True"),
@@ -435,156 +184,50 @@ pub(crate) async fn resume() -> Result<Vec<Resume>, Error> {
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
         ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Token", &server.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
 
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<Resume> = serde_json::from_value(json["Items"].take()).unwrap();
-    model.resume = items;
-    Ok(model.resume)
+    let items: Vec<Latest> = serde_json::from_value(json["Items"].take()).unwrap();
+    Ok(items)
 }
 
-pub async fn get_image(id: String) -> Result<String, Error> {
-    let server_info = config::set_config();
+pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<String, Error> {
+    let server = set_config();
 
-    let result = client()
-        .get(&format!(
+    let url = match image_type {
+        "Pirmary" => format!(
             "{}:{}/emby/Items/{}/Images/Primary?maxHeight=400",
-            server_info.domain, server_info.port, id
-        ))
-        .send()
-        .await;
-
-    match result {
-        Ok(response) => {
-            let bytes_result = response.bytes().await;
-            match bytes_result {
-                Ok(bytes) => {
-                    if bytes.len() < 10240 {
-                        return Ok(id);
-                    }
-
-                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
-                    if pathbuf.exists() {
-                        fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
-                    } else {
-                        fs::create_dir_all(&pathbuf).unwrap();
-
-                        fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
-                    }
-                    Ok(id)
-                }
-                Err(e) => {
-                    eprintln!("loading error");
-                    Err(e)
-                }
-            }
-        }
-        Err(e) => {
-            eprintln!("loading error");
-            Err(e)
-        }
-    }
-}
-
-pub async fn get_thumbimage(id: String) -> Result<String, Error> {
-    let server_info = config::set_config();
-
-    let result = client()
-        .get(&format!(
-            "{}:{}/emby/Items/{}/Images/Thumb?maxHeight=400",
-            server_info.domain, server_info.port, id
-        ))
-        .send()
-        .await;
-
-    match result {
-        Ok(response) => {
-            let bytes_result = response.bytes().await;
-            match bytes_result {
-                Ok(bytes) => {
-                    if bytes.len() < 10240 {
-                        return Ok(id);
-                    }
-
-                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
-                    if pathbuf.exists() {
-                        fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
-                    } else {
-                        fs::create_dir_all(&pathbuf).unwrap();
-
-                        fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
-                    }
-                    Ok(id)
-                }
-                Err(e) => {
-                    eprintln!("loading error");
-                    Err(e)
-                }
-            }
-        }
-        Err(e) => {
-            eprintln!("loading error");
-            Err(e)
-        }
-    }
-}
-
-pub async fn get_backdropimage(id: String, tag: u8) -> Result<String, Error> {
-    let server_info = config::set_config();
-
-    let result = client()
-        .get(&format!(
+            server.domain, server.port, id
+        ),
+        "Backdrop" => format!(
             "{}:{}/emby/Items/{}/Images/Backdrop/{}?maxHeight=1200",
-            server_info.domain, server_info.port, id, tag
-        ))
-        .send()
-        .await;
-
-    match result {
-        Ok(response) => {
-            let bytes_result = response.bytes().await;
-            match bytes_result {
-                Ok(bytes) => {
-                    if bytes.len() < 10240 {
-                        return Ok(id);
-                    }
-
-                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
-                    if pathbuf.exists() {
-                        fs::write(pathbuf.join(format!("b{}_{}.png", id, tag)), &bytes).unwrap();
-                    } else {
-                        fs::create_dir_all(&pathbuf).unwrap();
-
-                        fs::write(pathbuf.join(format!("b{}_{}.png", id, tag)), &bytes).unwrap();
-                    }
-                    Ok(id)
-                }
-                Err(e) => {
-                    eprintln!("loading error");
-                    Err(e)
-                }
-            }
-        }
-        Err(e) => {
-            eprintln!("loading error");
-            Err(e)
-        }
-    }
-}
-
-pub async fn get_logoimage(id: String) -> Result<String, Error> {
-    let server_info = config::set_config();
-
-    let result = client()
-        .get(&format!(
+            server.domain,
+            server.port,
+            id,
+            tag.unwrap()
+        ),
+        "Thumb" => format!(
+            "{}:{}/emby/Items/{}/Images/Thumb?maxHeight=400",
+            server.domain, server.port, id
+        ),
+        "Logo" => format!(
             "{}:{}/emby/Items/{}/Images/Logo?maxHeight=400",
-            server_info.domain, server_info.port, id
-        ))
-        .send()
-        .await;
+            server.domain, server.port, id
+        ),
+        "Banner" => format!(
+            "{}:{}/emby/Items/{}/Images/Banner?maxHeight=400",
+            server.domain, server.port, id
+        ),
+        _ => format!(
+            "{}:{}/emby/Items/{}/Images/Primary?maxHeight=400",
+            server.domain, server.port, id
+        ),
+    };
+
+    let result = client().get(&url).send().await;
 
     match result {
         Ok(response) => {
@@ -594,14 +237,34 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
                     if bytes.len() < 10240 {
                         return Ok(id);
                     }
-
-                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
-                    if pathbuf.exists() {
-                        fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
-                    } else {
+                    let pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap())
+                        .expect("Failed to get cache dir!");
+                    if !pathbuf.exists() {
                         fs::create_dir_all(&pathbuf).unwrap();
-
-                        fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
+                    }
+                    match image_type {
+                        "Primary" => {
+                            fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
+                        }
+                        "Backdrop" => {
+                            fs::write(
+                                pathbuf.join(format!("b{}_{}.png", id, tag.unwrap())),
+                                &bytes,
+                            )
+                            .unwrap();
+                        }
+                        "Thumb" => {
+                            fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
+                        }
+                        "Logo" => {
+                            fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
+                        }
+                        "Banner" => {
+                            fs::write(pathbuf.join(format!("banner{}.png", id)), &bytes).unwrap();
+                        }
+                        _ => {
+                            fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
+                        }
                     }
                     Ok(id)
                 }
@@ -619,10 +282,10 @@ pub async fn get_logoimage(id: String) -> Result<String, Error> {
 }
 
 pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
-    let server_info = config::set_config();
+    let server = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/{}",
-        server_info.domain, server_info.port, server_info.user_id, id
+        server.domain, server.port, server.user_id, id
     );
     let params = [
         ("Fields", "ShareLevel"),
@@ -630,7 +293,7 @@ pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
         ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Token", &server.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
     let response = client().get(&url).query(&params).send().await?;
@@ -640,15 +303,15 @@ pub async fn get_mediainfo(id: String) -> Result<Media, Error> {
 }
 
 pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
-    let server_info = config::set_config();
+    let server = set_config();
     let url = format!(
         "{}:{}/emby/Items/{}/PlaybackInfo",
-        server_info.domain, server_info.port, id
+        server.domain, server.port, id
     );
 
     let params = [
         ("StartTimeTicks", "0"),
-        ("UserId", &server_info.user_id),
+        ("UserId", &server.user_id),
         ("AutoOpenLiveStream", "False"),
         ("IsPlayback", "False"),
         ("AudioStreamIndex", "1"),
@@ -658,7 +321,7 @@ pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
         ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Token", &server.access_token),
         ("X-Emby-Language", "zh-cn"),
         ("reqformat", "json"),
     ];
@@ -679,15 +342,15 @@ pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
 }
 
 pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
-    let server_info = config::set_config();
+    let server = set_config();
     let url = format!(
         "{}:{}/emby/Items/{}/PlaybackInfo",
-        server_info.domain, server_info.port, id
+        server.domain, server.port, id
     );
 
     let params = [
         ("StartTimeTicks", "0"),
-        ("UserId", &server_info.user_id),
+        ("UserId", &server.user_id),
         ("AutoOpenLiveStream", "True"),
         ("IsPlayback", "True"),
         ("AudioStreamIndex", "1"),
@@ -698,7 +361,7 @@ pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
         ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Token", &server.access_token),
         ("X-Emby-Language", "zh-cn"),
         ("reqformat", "json"),
     ];
@@ -718,21 +381,11 @@ pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {
     Ok(mediainfo)
 }
 
-#[derive(Serialize, Deserialize, Clone)]
-pub struct View {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Id")]
-    pub id: String,
-    #[serde(rename = "CollectionType")]
-    pub collection_type: Option<String>,
-}
-
 pub async fn get_library() -> Result<Vec<View>, Error> {
-    let server_info = config::set_config();
+    let server = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Views",
-        server_info.domain, server_info.port, server_info.user_id
+        server.domain, server.port, server.user_id
     );
 
     let params = [
@@ -740,14 +393,15 @@ pub async fn get_library() -> Result<Vec<View>, Error> {
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
         ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Token", &server.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
     let views: Vec<View> = serde_json::from_value(json["Items"].take()).unwrap();
     let views_json = serde_json::to_string(&views).unwrap();
-    let mut pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
+    let mut pathbuf =
+        get_cache_dir(env::var("EMBY_NAME").unwrap()).expect("Failed to get cache dir!");
     std::fs::DirBuilder::new()
         .recursive(true)
         .create(&pathbuf)
@@ -763,25 +417,11 @@ pub async fn get_library() -> Result<Vec<View>, Error> {
     Ok(views)
 }
 
-#[derive(Serialize, Deserialize, Clone)]
-pub struct Latest {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Id")]
-    pub id: String,
-    #[serde(rename = "Type")]
-    pub latest_type: String,
-    #[serde(rename = "UserData")]
-    pub user_data: Option<UserData>,
-    #[serde(rename = "ProductionYear")]
-    pub production_year: Option<u32>,
-}
-
 pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
-    let server_info = config::set_config();
+    let server = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/Latest",
-        server_info.domain, server_info.port, server_info.user_id
+        server.domain, server.port, server.user_id
     );
 
     let params = [
@@ -797,14 +437,15 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
         ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Token", &server.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
     let response = client().get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let latests: Vec<Latest> = serde_json::from_value(json).unwrap();
     let latests_json = serde_json::to_string(&latests).unwrap();
-    let mut pathbuf = get_cache_dir(env::var("EMBY_NAME").unwrap());
+    let mut pathbuf =
+        get_cache_dir(env::var("EMBY_NAME").unwrap()).expect("Failed to get cache dir!");
     std::fs::DirBuilder::new()
         .recursive(true)
         .create(&pathbuf)
@@ -824,17 +465,136 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
 pub async fn get_list(
     id: String,
     start: String,
-    mutex: std::sync::Arc<tokio::sync::Mutex<()>>,
+    include_item_types: &str,
+    listtype: &str,
+    sort_order: &str,
+    sortby: &str,
 ) -> Result<List, Error> {
-    let _ = mutex.lock().await;
-    let server_info = config::set_config();
+    let server_info = set_config();
+    let device_name = get_device_name();
+    let device_id = env::var("UUID").unwrap();
+    let app_version = APP_VERSION;
+    let emby_token = server_info.access_token;
+    let url = match listtype {
+        "item" => format!(
+            "{}:{}/emby/Users/{}/Items",
+            server_info.domain, server_info.port, server_info.user_id
+        ),
+        "resume" => format!(
+            "{}:{}/emby/Users/{}/Items/Resume",
+            server_info.domain, server_info.port, server_info.user_id
+        ),
+        "genres" => format!("{}:{}/emby/Genres", server_info.domain, server_info.port),
+        _ => format!(
+            "{}:{}/emby/Users/{}/Items",
+            server_info.domain, server_info.port, server_info.user_id
+        ),
+    };
+
+    let include_item_type = match listtype {
+        "tags" => "Tag",
+        "boxset" => "BoxSet",
+        _ => include_item_types,
+    };
+
+    let params =
+        match listtype {
+            "all" | "liked" | "tags" | "boxset" => {
+                vec![
+                ("Limit", "50"),
+                (
+                    "Fields",
+                    "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+                ),
+                ("ParentId", &id),
+                ("ImageTypeLimit", "1"),
+                ("StartIndex", &start),
+                ("Recursive", "true"),
+                ("IncludeItemTypes", include_item_type),
+                ("SortBy", sortby),
+                ("SortOrder", sort_order),
+                ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+                if listtype == "liked" {("Filters", "IsFavorite")} else {("", "")},
+                ("X-Emby-Client", "Tsukimi"),
+                ("X-Emby-Device-Name", &device_name),
+                ("X-Emby-Device-Id", &device_id),
+                ("X-Emby-Client-Version", app_version),
+                ("X-Emby-Token", &emby_token),
+                ("X-Emby-Language", "zh-cn"),
+                ]
+            }
+
+            "resume" => vec![
+                (
+                    "Fields",
+                    "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+                ),
+                ("ParentId", &id),
+                ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+                ("ImageTypeLimit", "1"),
+                (
+                    "IncludeItemTypes",
+                    match include_item_type {
+                        "Series" => "Episode",
+                        _ => include_item_type,
+                    },
+                ),
+                ("Limit", "30"),
+                ("X-Emby-Client", "Tsukimi"),
+                ("X-Emby-Device-Name", &device_name),
+                ("X-Emby-Device-Id", &device_id),
+                ("X-Emby-Client-Version", app_version),
+                ("X-Emby-Token", &emby_token),
+                ("X-Emby-Language", "zh-cn"),
+            ],
+
+            "genres" => vec![
+                ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
+                ("IncludeItemTypes", include_item_type),
+                ("StartIndex", &start),
+                ("ImageTypeLimit", "1"),
+                ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+                ("Limit", "50"),
+                ("userId", &server_info.user_id),
+                ("Recursive", "true"),
+                ("ParentId", &id),
+                ("SortBy", sortby),
+                ("SortOrder", sort_order),
+                ("X-Emby-Client", "Tsukimi"),
+                ("X-Emby-Device-Name", &device_name),
+                ("X-Emby-Device-Id", &device_id),
+                ("X-Emby-Client-Version", app_version),
+                ("X-Emby-Token", &emby_token),
+                ("X-Emby-Language", "zh-cn"),
+            ],
+            _ => vec![],
+        };
+    let response = client().get(&url).query(&params).send().await?;
+    let json: serde_json::Value = response.json().await?;
+    let l: List = serde_json::from_value(json).unwrap();
+    Ok(l)
+}
+
+pub async fn get_inlist(
+    id: String,
+    start: String,
+    listtype: &str,
+    parentid: &str,
+    sort_order: &str,
+    sortby: &str,
+) -> Result<List, Error> {
+    let server_info = set_config();
+    let device_name = get_device_name();
+    let device_id = env::var("UUID").unwrap();
+    let app_version = APP_VERSION;
+    let emby_token = server_info.access_token;
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server_info.domain, server_info.port, server_info.user_id
     );
 
-    let params = [
-        ("Limit", "30"),
+    let params = vec![
+        ("Limit", "50"),
         (
             "Fields",
             "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
@@ -842,11 +602,37 @@ pub async fn get_list(
         ("ParentId", &id),
         ("ImageTypeLimit", "1"),
         ("StartIndex", &start),
-        ("Recursive", "True"),
-        ("IncludeItemTypes", "Movie,Series,MusicAlbum"),
-        ("SortBy", "DateCreated,SortName"),
-        ("SortOrder", "Descending"),
+        ("Recursive", "true"),
+        ("IncludeItemTypes", "Movie,Series,Video,Game,MusicAlbum"),
+        ("SortBy", sortby),
+        ("SortOrder", sort_order),
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+        if listtype == "Genre" {
+            ("GenreIds", parentid)
+        } else {
+            ("TagIds", parentid)
+        },
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &device_name),
+        ("X-Emby-Device-Id", &device_id),
+        ("X-Emby-Client-Version", app_version),
+        ("X-Emby-Token", &emby_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    let response = client().get(&url).query(&params).send().await?;
+    let json: serde_json::Value = response.json().await?;
+    let l: List = serde_json::from_value(json).unwrap();
+    Ok(l)
+}
+
+pub async fn like(id: &str) -> Result<(), Error> {
+    let server_info = set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/FavoriteItems/{}",
+        server_info.domain, server_info.port, server_info.user_id, id
+    );
+
+    let params = [
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
@@ -854,30 +640,69 @@ pub async fn get_list(
         ("X-Emby-Token", &server_info.access_token),
         ("X-Emby-Language", "zh-cn"),
     ];
-    let response = client().get(&url).query(&params).send().await?;
-    let json: serde_json::Value = response.json().await?;
-    let latests: List = serde_json::from_value(json).unwrap();
-    Ok(latests)
+    client().post(&url).query(&params).send().await?;
+    Ok(())
 }
 
-#[derive(Deserialize, Clone, Default)]
-pub struct List {
-    #[serde(rename = "TotalRecordCount")]
-    pub total_record_count: u32,
-    #[serde(rename = "Items")]
-    pub items: Vec<Latest>,
+pub async fn unlike(id: &str) -> Result<(), Error> {
+    let server_info = set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/FavoriteItems/{}/Delete",
+        server_info.domain, server_info.port, server_info.user_id, id
+    );
+
+    let params = [
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    client().post(&url).query(&params).send().await?;
+    Ok(())
 }
 
-#[derive(Deserialize, Debug, Clone)]
-pub struct Back {
-    pub id: String,
-    pub playsessionid: Option<String>,
-    pub mediasourceid: String,
-    pub tick: u64,
+pub async fn played(id: &str) -> Result<(), Error> {
+    let server_info = set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/PlayedItems/{}",
+        server_info.domain, server_info.port, server_info.user_id, id
+    );
+
+    let params = [
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    client().post(&url).query(&params).send().await?;
+    Ok(())
+}
+
+pub async fn unplayed(id: &str) -> Result<(), Error> {
+    let server_info = set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/PlayedItems/{}/Delete",
+        server_info.domain, server_info.port, server_info.user_id, id
+    );
+
+    let params = [
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    client().post(&url).query(&params).send().await?;
+    Ok(())
 }
 
 pub async fn positionback(back: Back) {
-    let server_info = config::set_config();
+    let server_info = set_config();
     let url = format!(
         "{}:{}/emby/Sessions/Playing/Progress",
         server_info.domain, server_info.port
@@ -902,7 +727,7 @@ pub async fn positionback(back: Back) {
 }
 
 pub async fn positionstop(back: Back) {
-    let server_info = config::set_config();
+    let server_info = set_config();
     let url = format!(
         "{}:{}/emby/Sessions/Playing/Stopped",
         server_info.domain, server_info.port
@@ -927,7 +752,7 @@ pub async fn positionstop(back: Back) {
 }
 
 pub async fn playstart(back: Back) {
-    let server_info = config::set_config();
+    let server_info = set_config();
     let url = format!(
         "{}:{}/emby/Sessions/Playing",
         server_info.domain, server_info.port
@@ -951,12 +776,11 @@ pub async fn playstart(back: Back) {
         .unwrap();
 }
 
-pub(crate) async fn similar(id: &str) -> Result<Vec<SearchResult>, Error> {
+pub async fn similar(id: &str) -> Result<Vec<SearchResult>, Error> {
     let mut model = SearchModel {
         search_results: Vec::new(),
     };
-    let server_info = config::set_config();
-
+    let server_info = set_config();
     let url = format!(
         "{}:{}/emby/Items/{}/Similar",
         server_info.domain, server_info.port, id
@@ -984,9 +808,8 @@ pub(crate) async fn similar(id: &str) -> Result<Vec<SearchResult>, Error> {
     Ok(model.search_results)
 }
 
-pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Error> {
-    let server_info = config::set_config();
-
+pub async fn person_item(id: &str, types: &str) -> Result<Vec<Latest>, Error> {
+    let server_info = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server_info.domain, server_info.port, server_info.user_id
@@ -994,8 +817,8 @@ pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Erro
     let params = [
         ("Fields", "PrimaryImageAspectRatio,ProductionYear"),
         ("PersonIds", id),
-        ("Recursive", "True"),
-        ("CollapseBoxSetItems", "False"),
+        ("Recursive", "true"),
+        ("CollapseBoxSetItems", "false"),
         ("SortBy", "SortName"),
         ("SortOrder", "Ascending"),
         ("IncludeItemTypes", types),
@@ -1011,12 +834,12 @@ pub(crate) async fn person_item(id: &str, types: &str) -> Result<Vec<Item>, Erro
 
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<Item> = serde_json::from_value(json["Items"].take()).unwrap();
+    let items: Vec<Latest> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
 }
 
 pub async fn get_search_recommend() -> Result<List, Error> {
-    let server_info = config::set_config();
+    let server_info = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server_info.domain, server_info.port, server_info.user_id
@@ -1024,9 +847,9 @@ pub async fn get_search_recommend() -> Result<List, Error> {
 
     let params = [
         ("Limit", "16"),
-        ("EnableTotalRecordCount", "False"),
+        ("EnableTotalRecordCount", "false"),
         ("ImageTypeLimit", "0"),
-        ("Recursive", "True"),
+        ("Recursive", "true"),
         ("IncludeItemTypes", "Movie,Series"),
         ("SortBy", "IsFavoriteOrLiked,Random"),
         ("X-Emby-Client", "Tsukimi"),
@@ -1042,9 +865,8 @@ pub async fn get_search_recommend() -> Result<List, Error> {
     Ok(latests)
 }
 
-pub(crate) async fn like_item(types: &str) -> Result<Vec<Item>, Error> {
-    let server_info = config::set_config();
-
+pub async fn like_item(types: &str) -> Result<Vec<Latest>, Error> {
+    let server_info = set_config();
     let url = if types == "People" {
         format!("{}:{}/emby/Persons", server_info.domain, server_info.port)
     } else {
@@ -1059,8 +881,8 @@ pub(crate) async fn like_item(types: &str) -> Result<Vec<Item>, Error> {
             "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
         ),
         ("Filters", "IsFavorite"),
-        ("Recursive", "True"),
-        ("CollapseBoxSetItems", "False"),
+        ("Recursive", "true"),
+        ("CollapseBoxSetItems", "false"),
         ("SortBy", "SortName"),
         ("SortOrder", "Ascending"),
         ("IncludeItemTypes", types),
@@ -1080,82 +902,6 @@ pub(crate) async fn like_item(types: &str) -> Result<Vec<Item>, Error> {
 
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<Item> = serde_json::from_value(json["Items"].take()).unwrap();
+    let items: Vec<Latest> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
-}
-
-pub async fn like(id: &str) -> Result<(), Error> {
-    let server_info = config::set_config();
-    let url = format!(
-        "{}:{}/emby/Users/{}/FavoriteItems/{}",
-        server_info.domain, server_info.port, server_info.user_id, id
-    );
-
-    let params = [
-        ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", &get_device_name()),
-        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
-        ("X-Emby-Language", "zh-cn"),
-    ];
-    client().post(&url).query(&params).send().await?;
-    Ok(())
-}
-
-pub async fn unlike(id: &str) -> Result<(), Error> {
-    let server_info = config::set_config();
-    let url = format!(
-        "{}:{}/emby/Users/{}/FavoriteItems/{}/Delete",
-        server_info.domain, server_info.port, server_info.user_id, id
-    );
-
-    let params = [
-        ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", &get_device_name()),
-        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
-        ("X-Emby-Language", "zh-cn"),
-    ];
-    client().post(&url).query(&params).send().await?;
-    Ok(())
-}
-
-pub async fn played(id: &str) -> Result<(), Error> {
-    let server_info = config::set_config();
-    let url = format!(
-        "{}:{}/emby/Users/{}/PlayedItems/{}",
-        server_info.domain, server_info.port, server_info.user_id, id
-    );
-
-    let params = [
-        ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", &get_device_name()),
-        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
-        ("X-Emby-Language", "zh-cn"),
-    ];
-    client().post(&url).query(&params).send().await?;
-    Ok(())
-}
-
-pub async fn unplayed(id: &str) -> Result<(), Error> {
-    let server_info = config::set_config();
-    let url = format!(
-        "{}:{}/emby/Users/{}/PlayedItems/{}/Delete",
-        server_info.domain, server_info.port, server_info.user_id, id
-    );
-
-    let params = [
-        ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", &get_device_name()),
-        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
-        ("X-Emby-Language", "zh-cn"),
-    ];
-    client().post(&url).query(&params).send().await?;
-    Ok(())
 }

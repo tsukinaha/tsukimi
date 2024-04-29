@@ -247,7 +247,7 @@ impl SettingsPage {
     }
 
     pub fn cacheclear(&self) {
-        let path = get_cache_dir(env::var("EMBY_NAME").unwrap());
+        let path = get_cache_dir(env::var("EMBY_NAME").unwrap()).expect("Failed to get cache dir");
         #[cfg(unix)]
         std::fs::remove_dir_all(path.parent().unwrap()).unwrap();
         #[cfg(windows)]

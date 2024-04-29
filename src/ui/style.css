@@ -59,6 +59,15 @@ box > overlay > image {
   border-radius: 10px;
 }
 
+.frame {
+  border: 2px solid @borders;
+  border-radius: 5px;
+}
+
+.pill {
+  border-radius: 10px;
+}
+
 revealer > box > box > widget {
   background-color: rgba(1, 1, 1, 0.1);
   border-radius: 10px;
@@ -79,6 +88,10 @@ scrolledwindow > viewport > box > box > label {
 scrolledwindow > viewport > box > box > box {
   margin-left: 15px;
   margin-top: 15px;
+}
+
+tabbar > revealer > box {
+  background-color: rgba(0, 0, 0, 0);
 }
 
 @define-color accent_bg_color #AEB5FA;
@@ -217,12 +230,6 @@ windowcontrols > button.minimize {
 button.titlebutton.minimize:hover,
 windowcontrols > button.minimize:hover {
   opacity: 0.8;
-}
-label {
-  font-size: 1.1em;
-}
-.large-font {
-  font-size: 1.2em;
 }
 window {
   box-shadow: none;

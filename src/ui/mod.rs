@@ -2,12 +2,10 @@ mod image;
 pub(crate) mod models;
 mod moviedrop;
 mod mpv;
-mod network;
 mod new_dropsel;
 mod provider;
-mod widgets;
+pub mod widgets;
 use self::models::SETTINGS;
-pub use crate::ui::network::RUNTIME;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
 
@@ -19,7 +17,7 @@ pub fn build_ui(app: &adw::Application) {
                 let about = adw::AboutWindow::builder()
                     .application_name("Tsukimi")
                     .version(crate::config::APP_VERSION)
-                    .comments("A simple third-party Emby client.\nTest version: tsukimi 0.4.7 \n2024.4.20 20:43")
+                    .comments("A simple third-party Emby client.\nTest version: tsukimi 0.4.9 \n2024.4.29 20:06")
                     .website("https://github.com/tsukinaha/tsukimi")
                     .application_icon("tsukimi")
                     .license_type(gtk::License::Gpl30)

@@ -1,4 +1,4 @@
-use ::gtk::prelude::*;
+use gtk::prelude::*;
 
 pub fn fix(scrolledwindow: gtk::ScrolledWindow) -> gtk::ScrolledWindow {
     let controller = scrolledwindow.observe_controllers();

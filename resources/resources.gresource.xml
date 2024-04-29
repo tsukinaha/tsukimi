@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
+  <gresource prefix="/moe/tsukimi/icons/">
+    <file alias="tsukimi">icons/tsukimi.png</file>
+    <file preprocess="xml-stripblanks" alias="settings-symbolic.svg">icons/settings-symbolic.svg</file>
+  </gresource>
   <gresource prefix="/moe/tsukimi/">
     <file compressed="true" preprocess="xml-stripblanks">settings.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">window.ui</file>
@@ -13,9 +17,9 @@
     <file compressed="true" preprocess="xml-stripblanks">actor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">account.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">music.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">listitem.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">pop-menu.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">account_settings.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">singlelist.ui</file>
   </gresource>
-  <gresource prefix="/moe/tsukimi/icons">
-    <file alias="tsukimi">icons/tsukimi.png</file>
-  </gresource>
-
 </gresources>

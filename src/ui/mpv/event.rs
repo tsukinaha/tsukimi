@@ -7,8 +7,8 @@ use std::{
 };
 
 use crate::{
+    client::{network::*, structs::Back},
     config::set_config,
-    ui::network::{Back, RUNTIME},
     utils::spawn_tokio,
     APP_ID,
 };
@@ -41,7 +41,7 @@ pub fn play(
         #[cfg(unix)]
         init.set_property("input-vo-keyboard", true)?;
         init.set_property("input-default-bindings", true)?;
-
+        init.set_property("user-agent", "Tsukimi")?;
         if let Some(name) = name {
             init.set_property("force-media-title", name)?;
         }
@@ -89,7 +89,7 @@ pub fn play(
 
     let backc = back.clone();
     RUNTIME.spawn(async move {
-        crate::ui::network::playstart(backc).await;
+        playstart(backc).await;
     });
 
     crossbeam::scope(|scope| {
@@ -112,7 +112,7 @@ pub fn play(
                         let mut back = back.clone();
                         back.tick = duration;
                         let _ = spawn_tokio(async {
-                            crate::ui::network::positionstop(back).await;
+                            positionstop(back).await;
                         });
                     }
                     println!("Exiting! Reason: {:?}", r);
@@ -130,7 +130,7 @@ pub fn play(
                         let mut back = back.clone();
                         back.tick = duration;
                         RUNTIME.spawn(async move {
-                            crate::ui::network::positionback(back).await;
+                            positionback(back).await;
                         });
                     }
                 }

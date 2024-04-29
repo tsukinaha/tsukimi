@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="AccountSettings" parent="AdwPreferencesDialog">
+    <property name="title" translatable="yes">Account Settings</property>
+    <property name="content-height">780</property>
+    <style>
+      <class name="account-settings"/>
+    </style>
+    <child>
+      <object class="AdwPreferencesPage">
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwAvatar">
+                <property name="size">100</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="true">Change Password</property>
+            <child>
+              <object class="AdwPasswordEntryRow" id="password_entry">
+                <property name="title" translatable="yes">New Password</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPasswordEntryRow" id="password_second_entry">
+                <property name="title" translatable="yes">Confirm Password</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="GtkButton">
+                <property name="halign">center</property>
+                <property name="action-name">as.password</property>
+                <child>
+                  <object class="AdwButtonContent">
+                    <property name="label" translatable="yes">Change Password</property>
+                    <property name="icon-name">go-next-symbolic</property>
+                  </object>
+                </child>
+                <style>
+                  <class name="suggested-action"/>
+                  <class name="pill"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

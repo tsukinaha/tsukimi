@@ -318,6 +318,7 @@
                         <child>
                           <object class="GtkListView" id="itemlist">
                             <property name="orientation">horizontal</property>
+                            <property name="single-click-activate">True</property>
                           </object>
                         </child>
                       </object>
