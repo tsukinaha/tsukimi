@@ -195,10 +195,6 @@ pub struct Resume {
     pub user_data: Option<UserData>,
 }
 
-pub struct ResumeModel {
-    pub resume: Vec<Resume>,
-}
-
 #[derive(Serialize, Deserialize, Clone)]
 pub struct UserData {
     #[serde(rename = "PlayedPercentage")]
@@ -249,6 +245,8 @@ pub struct Latest {
     pub played_percentage: Option<f64>,
     #[serde(rename = "ImageTags")]
     pub image_tags: Option<ImageTags>,
+    #[serde(rename = "SeriesId")]
+    pub series_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]

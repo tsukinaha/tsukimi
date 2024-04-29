@@ -35,6 +35,12 @@ glib::wrapper! {
     pub struct ImageTags(ObjectSubclass<imp::ImageTags>);
 }
 
+impl Default for ImageTags {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ImageTags {
     pub fn new() -> ImageTags {
         glib::object::Object::new()

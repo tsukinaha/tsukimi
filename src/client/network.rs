@@ -164,8 +164,7 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
     Ok(item)
 }
 
-pub async fn resume() -> Result<Vec<Resume>, Error> {
-    let mut model = ResumeModel { resume: Vec::new() };
+pub async fn resume() -> Result<Vec<Latest>, Error> {
     let server = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/Resume",
@@ -191,9 +190,8 @@ pub async fn resume() -> Result<Vec<Resume>, Error> {
 
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<Resume> = serde_json::from_value(json["Items"].take()).unwrap();
-    model.resume = items;
-    Ok(model.resume)
+    let items: Vec<Latest> = serde_json::from_value(json["Items"].take()).unwrap();
+    Ok(items)
 }
 
 pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<String, Error> {
@@ -883,7 +881,7 @@ pub async fn get_search_recommend() -> Result<List, Error> {
     Ok(latests)
 }
 
-pub async fn like_item(types: &str) -> Result<Vec<Item>, Error> {
+pub async fn like_item(types: &str) -> Result<Vec<Latest>, Error> {
     let server_info = set_config();
     let url = if types == "People" {
         format!("{}:{}/emby/Persons", server_info.domain, server_info.port)
@@ -920,6 +918,6 @@ pub async fn like_item(types: &str) -> Result<Vec<Item>, Error> {
 
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<Item> = serde_json::from_value(json["Items"].take()).unwrap();
+    let items: Vec<Latest> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
 }

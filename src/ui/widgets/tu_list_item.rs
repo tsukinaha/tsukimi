@@ -134,12 +134,12 @@ impl TuListItem {
                 self.set_count();
             }
             "BoxSet" => {
-                imp.listlabel.set_text(format!("{}", item.name()).as_str());
+                imp.listlabel.set_text(item.name().to_string().as_str());
                 self.set_picture();
             }
             "Tag" | "Genre" => {
                 imp.overlay.set_size_request(190, 190);
-                imp.listlabel.set_text(format!("{}", item.name()).as_str());
+                imp.listlabel.set_text(item.name().to_string().as_str());
                 self.set_picture();
             }
             "Episode" => {
@@ -153,6 +153,10 @@ impl TuListItem {
                 self.set_picture();
                 self.set_played();
                 self.set_played_percentage();
+            }
+            "Views" => {
+                imp.listlabel.set_text(item.name().to_string().as_str());
+                self.set_picture();
             }
             _ => {}
         }
@@ -212,7 +216,7 @@ impl TuListItem {
                     setbackdropimage(id, 0)
                 }
             } else {
-                if self.itemtype() == "Episode" {
+                if self.itemtype() == "Episode" || self.itemtype() == "Views" {
                     imp.overlay.set_size_request(250, 141);
                 }
                 setimage(id)
@@ -302,7 +306,7 @@ pub fn tu_list_item_register(latest: &Latest, list_item: &gtk::ListItem, listtyp
             let tu_item: TuItem = glib::object::Object::new();
             tu_item.set_id(latest.id.clone());
             tu_item.set_name(latest.name.clone());
-            tu_item.set_production_year(latest.production_year.unwrap_or_else(|| 0));
+            tu_item.set_production_year(latest.production_year.unwrap_or(0));
             if let Some(userdata) = &latest.user_data {
                 tu_item.set_played(userdata.played);
             }
@@ -343,7 +347,7 @@ pub fn tu_list_item_register(latest: &Latest, list_item: &gtk::ListItem, listtyp
                     .as_ref()
                     .unwrap()
                     .played_percentage
-                    .unwrap_or_else(|| 0.0),
+                    .unwrap_or(0.0),
             );
             if let Some(userdata) = &latest.user_data {
                 tu_item.set_played(userdata.played);
@@ -361,7 +365,7 @@ pub fn tu_list_poster(latest: &Latest, list_item: &gtk::ListItem, listtype: &str
             let tu_item: TuItem = glib::object::Object::new();
             tu_item.set_id(latest.id.clone());
             tu_item.set_name(latest.name.clone());
-            tu_item.set_production_year(latest.production_year.unwrap_or_else(|| 0));
+            tu_item.set_production_year(latest.production_year.unwrap_or(0));
             if let Some(userdata) = &latest.user_data {
                 tu_item.set_played(userdata.played);
             }

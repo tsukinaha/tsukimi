@@ -141,6 +141,9 @@ mod imp {
                                 obj.searchpage();
                             }
                             3 => {
+                                obj.serverpanelpage();
+                            }
+                            4 => {
                                 obj.settingspage();
                             }
                             _ => {}
@@ -513,6 +516,13 @@ impl Window {
         }
         imp.insidestack.set_visible_child_name("settingspage");
         imp.navipage.set_title("Preferences");
+        self.set_pop_visibility(false);
+    }
+
+    fn serverpanelpage(&self) {
+        let imp = self.imp();
+        imp.insidestack.set_visible_child_name("serverpanelpage");
+        imp.navipage.set_title("Server Panel");
         self.set_pop_visibility(false);
     }
 

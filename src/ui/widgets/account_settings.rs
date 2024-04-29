@@ -38,6 +38,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Dialog, adw::PreferencesDialog, @implements gtk::Accessible;
 }
 
+impl Default for AccountSettings {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AccountSettings {
     pub fn new() -> Self {
         glib::Object::builder().build()

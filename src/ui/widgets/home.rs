@@ -1,15 +1,18 @@
 use std::env;
 
 use crate::client::{network::*, structs::*};
-use crate::utils::{get_data_with_cache, spawn};
+use crate::ui::provider::tu_item::TuItem;
+use crate::utils::{
+    get_data_with_cache, spawn, tu_list_item_factory, tu_list_view_connect_activate,
+};
 use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use super::tu_list_item::tu_list_item_register;
-use super::{fix::fix, item::ItemPage, list::ListPage, movie::MoviePage, window::Window};
+use super::tu_list_item::TuListItem;
+use super::{fix::fix, list::ListPage, window::Window};
 
 mod imp {
 
@@ -112,68 +115,23 @@ impl HomePage {
         imp.selection.set_model(Some(&store));
         let selection = &imp.selection;
         let factory = gtk::SignalListItemFactory::new();
-        factory.connect_setup(move |_, item| {
+        factory.connect_bind(move |_, item| {
             let list_item = item
                 .downcast_ref::<gtk::ListItem>()
                 .expect("Needs to be ListItem");
-            let listbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
-            let picture = gtk::Box::builder()
-                .orientation(gtk::Orientation::Vertical)
-                .height_request(150)
-                .width_request(300)
-                .build();
-            let label = gtk::Label::builder()
-                .halign(gtk::Align::Center)
-                .ellipsize(gtk::pango::EllipsizeMode::End)
-                .build();
-            listbox.append(&picture);
-            listbox.append(&label);
-            list_item.set_child(Some(&listbox));
-        });
-        factory.connect_bind(move |_, item| {
-            let picture = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .child()
-                .and_downcast::<gtk::Box>()
-                .expect("Needs to be Box")
-                .first_child()
-                .expect("Needs to be Picture");
-            let label = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .child()
-                .and_downcast::<gtk::Box>()
-                .expect("Needs to be Box")
-                .last_child()
-                .expect("Needs to be Picture");
-            let entry = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .item()
-                .and_downcast::<glib::BoxedAnyObject>()
-                .expect("Needs to be BoxedAnyObject");
-            let view: std::cell::Ref<View> = entry.borrow();
-            if picture.is::<gtk::Box>() {
-                if let Some(_revealer) = picture
-                    .downcast_ref::<gtk::Box>()
-                    .expect("Needs to be Box")
-                    .first_child()
-                {
-                } else {
-                    let img = crate::ui::image::setimage(view.id.clone());
-                    picture
-                        .downcast_ref::<gtk::Box>()
-                        .expect("Needs to be Box")
-                        .append(&img);
-                }
-            }
-            if label.is::<gtk::Label>() {
-                let str = view.name.to_string();
-                label
-                    .downcast_ref::<gtk::Label>()
-                    .expect("Needs to be Label")
-                    .set_text(&str);
+            if list_item.child().is_none() {
+                let entry = item
+                    .downcast_ref::<gtk::ListItem>()
+                    .expect("Needs to be ListItem")
+                    .item()
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .expect("Needs to be BoxedAnyObject");
+                let view: std::cell::Ref<View> = entry.borrow();
+                let tu_item: TuItem = glib::object::Object::new();
+                tu_item.set_id(view.id.clone());
+                tu_item.set_name(view.name.clone());
+                let list_child = TuListItem::new(tu_item, "Views", false);
+                list_item.set_child(Some(&list_child));
             }
         });
         imp.liblist.set_factory(Some(&factory));
@@ -207,6 +165,7 @@ impl HomePage {
                 for view in &views {
                     let object = glib::BoxedAnyObject::new(view.clone());
                     store.append(&object);
+                    gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
                 }
                 obj.get_librarysscroll(&views).await;
         }));
@@ -267,24 +226,7 @@ impl HomePage {
             .model(&store)
             .autoselect(false)
             .build();
-        let factory = gtk::SignalListItemFactory::new();
-
-        factory.connect_bind(move |_, item| {
-            let list_item = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem");
-            let entry = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .item()
-                .and_downcast::<glib::BoxedAnyObject>()
-                .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<Latest> = entry.borrow();
-            let listtype = &latest.latest_type;
-            if list_item.child().is_none() {
-                tu_list_item_register(&latest, list_item, listtype)
-            }
-        });
+        let factory = tu_list_item_factory();
         let listview = gtk::ListView::new(Some(selection), Some(factory));
         listview.set_orientation(gtk::Orientation::Horizontal);
         listview.connect_activate(
@@ -293,27 +235,7 @@ impl HomePage {
                     let model = listview.model().unwrap();
                     let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                     let result: std::cell::Ref<Latest> = item.borrow();
-                    if result.latest_type == "Movie" {
-                        let item_page = MoviePage::new(result.id.clone(),result.name.clone());
-                        item_page.set_tag(Some(&result.name));
-                        window.imp().homeview.push(&item_page);
-                        window.set_title(&result.name);
-                        window.change_pop_visibility();
-                        env::set_var("HOME_TITLE", &result.name)
-                    } else if result.latest_type == "Series" {
-                        let item_page = ItemPage::new(result.id.clone(),result.id.clone());
-                        item_page.set_tag(Some(&result.name));
-                        window.imp().homeview.push(&item_page);
-                        window.set_title(&result.name);
-                        window.change_pop_visibility();
-                        env::set_var("HOME_TITLE", &result.name)
-                    } else {
-                        let toast = adw::Toast::builder()
-                            .title(format!("{} is not supported",result.latest_type))
-                            .timeout(3)
-                            .build();
-                        obj.imp().toast.add_toast(toast);
-                    }
+                    tu_list_view_connect_activate(window, &result);
             }),
         );
         spawn(glib::clone!(@weak store => async move {

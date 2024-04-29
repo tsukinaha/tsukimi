@@ -1,4 +1,7 @@
-use crate::client::network::RUNTIME;
+use crate::client::{network::RUNTIME, structs::Latest};
+use crate::ui::widgets::tu_list_item::tu_list_item_register;
+use gtk::glib;
+use gtk::prelude::*;
 
 pub fn _spawn_tokio_blocking<F>(fut: F) -> F::Output
 where
@@ -127,4 +130,105 @@ fn get_path() -> std::path::PathBuf {
         dirs::home_dir().expect("msg").display(),
         std::env::var("EMBY_NAME").unwrap()
     ))
+}
+
+pub fn tu_list_item_factory() -> gtk::SignalListItemFactory {
+    let factory = gtk::SignalListItemFactory::new();
+    factory.connect_bind(move |_, item| {
+        let list_item = item
+            .downcast_ref::<gtk::ListItem>()
+            .expect("Needs to be ListItem");
+        let entry = item
+            .downcast_ref::<gtk::ListItem>()
+            .expect("Needs to be ListItem")
+            .item()
+            .and_downcast::<glib::BoxedAnyObject>()
+            .expect("Needs to be BoxedAnyObject");
+        let latest: std::cell::Ref<Latest> = entry.borrow();
+        if list_item.child().is_none() {
+            tu_list_item_register(&latest, list_item, &latest.latest_type)
+        }
+    });
+    factory
+}
+use adw::prelude::NavigationPageExt;
+use gtk::subclass::prelude::ObjectSubclassIsExt;
+pub fn tu_list_view_connect_activate(window: crate::ui::widgets::window::Window, result: &Latest) {
+    let view = match window.current_view_name().as_str() {
+        "homepage" => {
+            window.set_title(&result.name);
+            std::env::set_var("HOME_TITLE", &result.name);
+            &window.imp().homeview
+        }
+        "searchpage" => {
+            window.set_title(&result.name);
+            std::env::set_var("SEARCH_TITLE", &result.name);
+            &window.imp().searchview
+        }
+        "historypage" => {
+            window.set_title(&result.name);
+            std::env::set_var("HISTORY_TITLE", &result.name);
+            &window.imp().historyview
+        }
+        _ => &window.imp().searchview,
+    };
+    match result.latest_type.as_str() {
+        "Movie" => {
+            window.set_title(&result.name);
+            if view.find_page(result.name.as_str()).is_some() {
+                view.pop_to_tag(result.name.as_str());
+            } else {
+                let item_page = crate::ui::widgets::movie::MoviePage::new(
+                    result.id.clone(),
+                    result.name.clone(),
+                );
+                item_page.set_tag(Some(&result.name));
+                view.push(&item_page);
+                window.set_pop_visibility(true)
+            }
+        }
+        "Series" => {
+            window.set_title(&result.name);
+            if view.find_page(result.name.as_str()).is_some() {
+                view.pop_to_tag(result.name.as_str());
+            } else {
+                let item_page = crate::ui::widgets::item::ItemPage::new(
+                    result.id.clone(),
+                    result.id.clone(),
+                );
+                item_page.set_tag(Some(&result.name));
+                view.push(&item_page);
+                window.set_pop_visibility(true)
+            }
+        }
+        "Episode" => {
+            window.set_title(&result.name);
+            if view.find_page(result.name.as_str()).is_some() {
+                view.pop_to_tag(result.name.as_str());
+            } else {
+                let item_page = crate::ui::widgets::item::ItemPage::new(
+                    result.series_id.as_ref().unwrap().clone(),
+                    result.id.clone(),
+                );
+                item_page.set_tag(Some(&result.name));
+                view.push(&item_page);
+                window.set_pop_visibility(true)
+            }
+        }
+        "People" => {
+            window.set_title(&result.name);
+            if view.find_page(result.name.as_str()).is_some() {
+                view.pop_to_tag(result.name.as_str());
+            } else {
+                let item_page = crate::ui::widgets::actor::ActorPage::new(&result.id);
+                item_page.set_tag(Some(&result.name));
+                view.push(&item_page);
+                window.set_pop_visibility(true)
+            }
+        }
+        "BoxSet" => {
+            window.toast("BoxSet not supported yet");
+        }
+        _ => {}
+    }
 }

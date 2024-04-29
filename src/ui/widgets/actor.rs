@@ -220,7 +220,7 @@ impl ActorPage {
         .await
         .unwrap();
         spawn(async move {
-            if items.len() != 0 {
+            if !items.is_empty() {
                 revealer.set_reveal_child(true);
             }
             for item in items {

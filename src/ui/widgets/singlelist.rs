@@ -1,10 +1,6 @@
-use super::item::ItemPage;
-use super::movie::MoviePage;
-use super::tu_list_item::tu_list_item_register;
 use super::window::Window;
 use crate::client::{network::*, structs::*};
-use crate::utils::{get_data_with_cache, spawn, spawn_tokio};
-use adw::prelude::NavigationPageExt;
+use crate::utils::{get_data_with_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate};
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
@@ -241,23 +237,7 @@ impl SingleListPage {
                 }
         }));
         imp.selection.set_model(Some(&store));
-        let factory = gtk::SignalListItemFactory::new();
-        let listtype = imp.listtype.get().unwrap().clone();
-        factory.connect_bind(move |_, item| {
-            let list_item = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem");
-            let entry = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .item()
-                .and_downcast::<glib::BoxedAnyObject>()
-                .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<Latest> = entry.borrow();
-            if list_item.child().is_none() {
-                tu_list_item_register(&latest, list_item, &listtype)
-            }
-        });
+        let factory = tu_list_item_factory();
         imp.listgrid.set_factory(Some(&factory));
         imp.listgrid.set_model(Some(&imp.selection));
         imp.listgrid.set_min_columns(1);
@@ -268,28 +248,7 @@ impl SingleListPage {
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<Latest> = item.borrow();
                 let window = obj.root().and_downcast::<Window>().unwrap();
-                if result.latest_type == "Movie" {
-                    window.set_title(&result.name);
-                    let item_page = MoviePage::new(result.id.clone(),result.name.clone());
-                    item_page.set_tag(Some(&result.name));
-                    window.imp().homeview.push(&item_page);
-                } else if result.latest_type == "Series" {
-                    window.set_title(&result.name);
-                    let item_page = ItemPage::new(result.id.clone(),result.id.clone());
-                    item_page.set_tag(Some(&result.name));
-                    window.imp().homeview.push(&item_page);
-                } else if result.latest_type == "Episode" {
-                    window.set_title(&result.name);
-                    let item_page = ItemPage::new(result.parent_thumb_item_id.clone().unwrap(),result.id.clone());
-                    item_page.set_tag(Some(&result.name));
-                    window.imp().homeview.push(&item_page);
-                } else {
-                    window.set_title(&result.name);
-                    let item_page = SingleListPage::new(result.id.clone(),"".to_string(),&result.latest_type, obj.imp().id.get().cloned());
-                    item_page.set_tag(Some(&result.name));
-                    window.imp().homeview.push(&item_page);
-                }
-                std::env::set_var("HOME_TITLE", &result.name);
+                tu_list_view_connect_activate(window,&result)
             }),
         );
         let listtype = imp.listtype.get().unwrap().clone();
