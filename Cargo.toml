@@ -22,7 +22,7 @@ bytefmt = "0.1.7"
 libmpv = { path = "libmpv-rs", version = "2.0.1"}
 libmpv-sys = "3.1.0"
 crossbeam = "0.8.4"
-libc = "0.2.153"
+libc = "0.2.154"
 uuid = { version = "1.8.0", features = ["v4"] }
 chrono = "0.4.38"
 toml = "0.8.12"
