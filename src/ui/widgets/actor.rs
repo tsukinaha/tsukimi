@@ -1,15 +1,12 @@
 use crate::client::{network::*, structs::*};
 use crate::ui::image::setimage;
-use crate::utils::{get_data_with_cache, spawn};
-use adw::prelude::NavigationPageExt;
+use crate::utils::{get_data_with_cache, spawn, tu_list_view_connect_activate};
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
 use super::fix::fix;
-use super::item::ItemPage;
-use super::movie::MoviePage;
 use super::tu_list_item::tu_list_item_register;
 
 mod imp {
@@ -229,7 +226,6 @@ impl ActorPage {
                 gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
             }
         });
-        let types = types.to_string();
         list.connect_activate(
             glib::clone!(@weak self as obj =>move |listview, position| {
                 let model = listview.model().unwrap();
@@ -237,60 +233,10 @@ impl ActorPage {
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
-                let recommend: std::cell::Ref<Item> = item.borrow();
+                let recommend: std::cell::Ref<Latest> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                let view = match window.current_view_name().as_str() {
-                    "homepage" => {
-                        window.set_title(&recommend.name);
-                        std::env::set_var("HOME_TITLE", &recommend.name);
-                        &window.imp().homeview
-                    }
-                    "searchpage" => {
-                        window.set_title(&recommend.name);
-                        std::env::set_var("SEARCH_TITLE", &recommend.name);
-                        &window.imp().searchview
-                    }
-                    "historypage" => {
-                        window.set_title(&recommend.name);
-                        std::env::set_var("HISTORY_TITLE", &recommend.name);
-                        &window.imp().historyview
-                    }
-                    _ => {
-                        &window.imp().searchview
-                    }
-                };
-                match types.as_str() {
-                    "Movie" => {
-                        let item_page = MoviePage::new(recommend.id.clone(),recommend.name.clone());
-                        if view.find_page(recommend.name.as_str()).is_some() {
-                            view.pop_to_tag(recommend.name.as_str());
-                        } else {
-                            item_page.set_tag(Some(recommend.name.as_str()));
-                            view.push(&item_page);
-                        }
-                    }
-                    "Series" => {
-                        let item_page = ItemPage::new(recommend.id.clone(),recommend.id.clone());
-                        if view.find_page(recommend.name.as_str()).is_some() {
-                            view.pop_to_tag(recommend.name.as_str());
-                        } else {
-                            item_page.set_tag(Some(recommend.name.as_str()));
-                            view.push(&item_page);
-                        }
-                    }
-                    "Episode" => {
-                        let item_page = ItemPage::new(recommend.series_id.clone().unwrap(),recommend.id.clone());
-                        if view.find_page(recommend.name.as_str()).is_some() {
-                            view.pop_to_tag(recommend.name.as_str());
-                        } else {
-                            item_page.set_tag(Some(recommend.name.as_str()));
-                            view.push(&item_page);
-                        }
-                    }
-                    _ => {
-                    }
-                }
-            }),
+                tu_list_view_connect_activate(window, &recommend);
+            })
         );
     }
 
