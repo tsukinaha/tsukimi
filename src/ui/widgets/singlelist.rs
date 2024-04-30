@@ -3,7 +3,9 @@ use std::sync::Arc;
 
 use super::window::Window;
 use crate::client::{network::*, structs::*};
-use crate::utils::{get_data_with_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate};
+use crate::utils::{
+    get_data_with_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate,
+};
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
@@ -11,7 +13,6 @@ use gtk::{gio, glib};
 mod imp {
 
     use std::cell::{OnceCell, RefCell};
-    use std::sync::Mutex;
 
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;

@@ -163,13 +163,15 @@ impl HistoryPage {
         });
         imp.historylist.set_factory(Some(&factory));
         imp.historylist.set_model(Some(&imp.selection));
-        imp.historylist.connect_activate(glib::clone!(@weak self as obj => move |gridview, position| {
+        imp.historylist.connect_activate(
+            glib::clone!(@weak self as obj => move |gridview, position| {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<Latest> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 tu_list_view_connect_activate(window, &result, None);
-            }));
+            }),
+        );
     }
 
     pub async fn set_lists(&self) {
@@ -262,17 +264,15 @@ impl HistoryPage {
                 revealer.set_reveal_child(true);
             }
         });
-        list.connect_activate(
-            glib::clone!(@weak self as obj =>move |listview, position| {
-                let model = listview.model().unwrap();
-                let item = model
-                    .item(position)
-                    .and_downcast::<glib::BoxedAnyObject>()
-                    .unwrap();
-                let recommend: std::cell::Ref<Latest> = item.borrow();
-                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                tu_list_view_connect_activate(window, &recommend, None);
-            }),
-        );
+        list.connect_activate(glib::clone!(@weak self as obj =>move |listview, position| {
+            let model = listview.model().unwrap();
+            let item = model
+                .item(position)
+                .and_downcast::<glib::BoxedAnyObject>()
+                .unwrap();
+            let recommend: std::cell::Ref<Latest> = item.borrow();
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            tu_list_view_connect_activate(window, &recommend, None);
+        }));
     }
 }
