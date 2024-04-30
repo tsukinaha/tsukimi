@@ -30,6 +30,16 @@ body:
     validations:
       required: true
   - type: dropdown
+    id: platform
+    attributes:
+      label: Operating System
+      description: In which of the following platforms did you encounter the issue
+      options:
+        - Windows
+        - Linux
+    validations:
+      required: true
+  - type: dropdown
     id: type
     attributes:
       label: Issue type
