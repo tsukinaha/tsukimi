@@ -230,6 +230,9 @@ pub fn tu_list_view_connect_activate(window: crate::ui::widgets::window::Window,
         "BoxSet" => {
             window.toast("BoxSet not supported yet");
         }
+        "MusicAlbum" => {
+            window.toast("MusicAlbum not supported yet");
+        }
         _ => {
             window.set_title(&result.name);
             if view.find_page(result.name.as_str()).is_some() {

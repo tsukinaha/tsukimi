@@ -41,6 +41,8 @@ pub mod imp {
         poster: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         image_tags: RefCell<Option<crate::ui::provider::image_tags::ImageTags>>,
+        #[property(get, set, nullable)]
+        album_artist: RefCell<Option<String>>,
     }
 
     #[glib::derived_properties]
