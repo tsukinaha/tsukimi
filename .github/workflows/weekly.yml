@@ -1,9 +1,9 @@
 name: Windows weekly build
 on:
   workflow_dispatch:
-  push:
-  schedule:
-    - cron: '14 10 * * 0'
+  # push:
+  # schedule:
+  #   - cron: '14 10 * * 0'
 
 env:
   CARGO_TERM_COLOR: always

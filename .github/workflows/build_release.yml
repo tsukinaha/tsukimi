@@ -1,4 +1,4 @@
-name: Publishing
+name: feature/win - Publishing
 on:
   workflow_dispatch:
   push:
@@ -57,6 +57,13 @@ jobs:
           compress-archive -path ./* -destinationpath ../tsukimi-${{matrix.arch}}.zip
           7z.exe a ../tsukimi-${{matrix.arch}}.7z ./*
 
+      - name: Build Complete Package
+        run: |
+          cd artifact/ && cp -r tsukimi-windows-gnu-amd64 tsukimi-windows-gnu-amd64-complete && cd tsukimi-windows-gnu-amd64-complete && mkdir mpv && cd mpv
+          Invoke-WebRequest -Uri "https://github.com/ZBound/tkm-config/releases/latest/download/mqv.7z" -OutFile mpv.7z
+          7z.exe x mpv.7z && rm mpv.7z
+          7z.exe a ../../tsukimi-${{matrix.arch}}-complete.7z ../*
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -64,7 +71,7 @@ jobs:
           path: |
             artifact/tsukimi-*.zip
             artifact/tsukimi-*.7z
-          compression-level: 5
+          compression-level: 0
           retention-days: 3
 
   publish:
