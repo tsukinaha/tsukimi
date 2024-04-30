@@ -158,7 +158,7 @@ impl HistoryPage {
                 .expect("Needs to be BoxedAnyObject");
             let latest: std::cell::Ref<Latest> = entry.borrow();
             if list_item.child().is_none() {
-                tu_list_item_register(&latest, list_item, &latest.latest_type)
+                tu_list_item_register(&latest, list_item, "resume")
             }
         });
         imp.historylist.set_factory(Some(&factory));
@@ -196,7 +196,7 @@ impl HistoryPage {
                 .expect("Needs to be BoxedAnyObject");
             let latest: std::cell::Ref<Latest> = entry.borrow();
             if list_item.child().is_none() {
-                tu_list_item_register(&latest, list_item, &latest.latest_type)
+                tu_list_item_register(&latest, list_item, "latest")
             }
         });
         let list;

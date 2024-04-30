@@ -132,7 +132,7 @@ fn get_path() -> std::path::PathBuf {
     ))
 }
 
-pub fn tu_list_item_factory() -> gtk::SignalListItemFactory {
+pub fn tu_list_item_factory(listtype: String) -> gtk::SignalListItemFactory {
     let factory = gtk::SignalListItemFactory::new();
     factory.connect_bind(move |_, item| {
         let list_item = item
@@ -146,7 +146,7 @@ pub fn tu_list_item_factory() -> gtk::SignalListItemFactory {
             .expect("Needs to be BoxedAnyObject");
         let latest: std::cell::Ref<Latest> = entry.borrow();
         if list_item.child().is_none() {
-            tu_list_item_register(&latest, list_item, &latest.latest_type)
+            tu_list_item_register(&latest, list_item, &listtype)
         }
     });
     factory

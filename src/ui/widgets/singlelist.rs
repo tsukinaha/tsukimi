@@ -237,7 +237,8 @@ impl SingleListPage {
                 }
         }));
         imp.selection.set_model(Some(&store));
-        let factory = tu_list_item_factory();
+        let listtype = imp.listtype.get().unwrap().clone();
+        let factory = tu_list_item_factory(listtype);
         imp.listgrid.set_factory(Some(&factory));
         imp.listgrid.set_model(Some(&imp.selection));
         imp.listgrid.set_min_columns(1);

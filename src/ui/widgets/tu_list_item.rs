@@ -310,6 +310,16 @@ pub fn tu_list_item_register(latest: &Latest, list_item: &gtk::ListItem, listtyp
             if let Some(userdata) = &latest.user_data {
                 tu_item.set_played(userdata.played);
             }
+            if listtype == "resume" {
+                tu_item.set_played_percentage(
+                    latest
+                        .user_data
+                        .as_ref()
+                        .unwrap()
+                        .played_percentage
+                        .unwrap_or(0.0),
+                );
+            }
             let list_child = TuListItem::new(tu_item, "Movie", listtype == "resume");
             list_item.set_child(Some(&list_child));
         }

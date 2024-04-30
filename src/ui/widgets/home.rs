@@ -226,7 +226,7 @@ impl HomePage {
             .model(&store)
             .autoselect(false)
             .build();
-        let factory = tu_list_item_factory();
+        let factory = tu_list_item_factory("".to_string());
         let listview = gtk::ListView::new(Some(selection), Some(factory));
         listview.set_orientation(gtk::Orientation::Horizontal);
         listview.connect_activate(
