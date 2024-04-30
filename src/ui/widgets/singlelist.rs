@@ -1,3 +1,6 @@
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
+
 use super::window::Window;
 use crate::client::{network::*, structs::*};
 use crate::utils::{get_data_with_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate};
@@ -8,6 +11,7 @@ use gtk::{gio, glib};
 mod imp {
 
     use std::cell::{OnceCell, RefCell};
+    use std::sync::Mutex;
 
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
@@ -51,6 +55,7 @@ mod imp {
         pub popovermenu: RefCell<Option<gtk::PopoverMenu>>,
         pub sortorder: RefCell<String>,
         pub sortby: RefCell<String>,
+        pub lock: RefCell<bool>,
     }
 
     // The central trait for subclassing a GObject
@@ -262,8 +267,13 @@ impl SingleListPage {
         let order = order.to_owned();
         let scrolled = self.imp().listscrolled.get();
         let include_item_types = self.get_include_item_types().to_owned();
-        scrolled.connect_edge_overshot(glib::clone!(@weak self as obj => move |_, pos| {
+        let is_running = Arc::new(AtomicBool::new(false));
+        scrolled.connect_edge_reached(glib::clone!(@weak self as obj => move |_, pos| {
             if pos == gtk::PositionType::Bottom {
+                let is_running = Arc::clone(&is_running);
+                if is_running.compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst).is_err() {
+                    return;
+                }
                 let order = order.clone();
                 let spinner = obj.imp().spinner.get();
                 spinner.set_visible(true);
@@ -290,6 +300,7 @@ impl SingleListPage {
                         store.append(&object);
                         gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
                     }
+                    is_running.store(false, Ordering::SeqCst);
                 }));
             }
         }));

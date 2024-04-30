@@ -77,3 +77,5 @@ Priority:
 - [gtk4-rs](https://github.com/gtk-rs/gtk4-rs)
 - [MPV](https://github.com/mpv-player/mpv)
 - [Adwaita](https://gitlab.gnome.org/GNOME/libadwaita/)
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tsukinaha/tsukimi&type=Timeline)](https://star-history.com/#tsukinaha/tsukimi&Timeline)

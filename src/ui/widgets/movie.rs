@@ -425,9 +425,7 @@ impl MoviePage {
         self.imp().line1spinner.set_visible(true);
         let idclone = id.clone();
         let playback =
-            get_data_with_cache(
-                id.clone(),
-                "playback",
+            spawn_tokio(
                 async move { get_playbackinfo(id).await },
             )
             .await
