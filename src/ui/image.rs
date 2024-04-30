@@ -9,7 +9,7 @@ pub fn setimage(id: String) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
-    image.set_halign(gtk::Align::Center);
+    image.set_halign(gtk::Align::Fill);
     image.set_content_fit(gtk::ContentFit::Cover);
     let revealer = gtk::Revealer::builder()
         .transition_type(gtk::RevealerTransitionType::Crossfade)

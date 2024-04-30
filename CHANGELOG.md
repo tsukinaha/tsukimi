@@ -1,3 +1,9 @@
+## 0.4.9-1
+
+### Hotfix
+
+- Fixed backdrop view not display correctly
+
 ## 0.4.9
 
 ### Added
