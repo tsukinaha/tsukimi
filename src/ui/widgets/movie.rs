@@ -423,12 +423,7 @@ impl MoviePage {
         self.imp().playbutton.set_sensitive(false);
         self.imp().line1spinner.set_visible(true);
         let idclone = id.clone();
-        let playback =
-            get_data_with_cache(
-                id.clone(),
-                "playback",
-                async move { get_playbackinfo(id).await },
-            )
+        let playback = spawn_tokio(async move { get_playbackinfo(id).await })
             .await
             .unwrap();
         spawn(glib::clone!(@weak osdbox,@weak self as obj =>async move {

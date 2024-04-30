@@ -2,6 +2,8 @@ use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 
 use super::window::Window;
 use crate::client::{network::*, structs::*};
@@ -54,6 +56,7 @@ mod imp {
         pub popovermenu: RefCell<Option<gtk::PopoverMenu>>,
         pub sortorder: RefCell<String>,
         pub sortby: RefCell<String>,
+        pub lock: RefCell<bool>,
     }
 
     // The central trait for subclassing a GObject
@@ -240,7 +243,8 @@ impl SingleListPage {
                 }
         }));
         imp.selection.set_model(Some(&store));
-        let factory = tu_list_item_factory();
+        let listtype = imp.listtype.get().unwrap().clone();
+        let factory = tu_list_item_factory(listtype);
         imp.listgrid.set_factory(Some(&factory));
         imp.listgrid.set_model(Some(&imp.selection));
         imp.listgrid.set_min_columns(1);
@@ -251,7 +255,7 @@ impl SingleListPage {
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<Latest> = item.borrow();
                 let window = obj.root().and_downcast::<Window>().unwrap();
-                tu_list_view_connect_activate(window,&result)
+                tu_list_view_connect_activate(window,&result,obj.imp().id.get().cloned())
             }),
         );
         let listtype = imp.listtype.get().unwrap().clone();
@@ -264,8 +268,13 @@ impl SingleListPage {
         let order = order.to_owned();
         let scrolled = self.imp().listscrolled.get();
         let include_item_types = self.get_include_item_types().to_owned();
-        scrolled.connect_edge_overshot(glib::clone!(@weak self as obj => move |_, pos| {
+        let is_running = Arc::new(AtomicBool::new(false));
+        scrolled.connect_edge_reached(glib::clone!(@weak self as obj => move |_, pos| {
             if pos == gtk::PositionType::Bottom {
+                let is_running = Arc::clone(&is_running);
+                if is_running.compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst).is_err() {
+                    return;
+                }
                 let order = order.clone();
                 let spinner = obj.imp().spinner.get();
                 spinner.set_visible(true);
@@ -292,6 +301,7 @@ impl SingleListPage {
                         store.append(&object);
                         gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
                     }
+                    is_running.store(false, Ordering::SeqCst);
                 }));
             }
         }));

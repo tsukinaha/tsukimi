@@ -159,7 +159,7 @@ impl HistoryPage {
                 .expect("Needs to be BoxedAnyObject");
             let latest: std::cell::Ref<Latest> = entry.borrow();
             if list_item.child().is_none() {
-                tu_list_item_register(&latest, list_item, &latest.latest_type)
+                tu_list_item_register(&latest, list_item, "resume")
             }
         });
         imp.historylist.set_factory(Some(&factory));
@@ -170,7 +170,7 @@ impl HistoryPage {
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<Latest> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                tu_list_view_connect_activate(window, &result);
+                tu_list_view_connect_activate(window, &result, None);
             }),
         );
     }
@@ -199,7 +199,7 @@ impl HistoryPage {
                 .expect("Needs to be BoxedAnyObject");
             let latest: std::cell::Ref<Latest> = entry.borrow();
             if list_item.child().is_none() {
-                tu_list_item_register(&latest, list_item, &latest.latest_type)
+                tu_list_item_register(&latest, list_item, "latest")
             }
         });
         let list;
@@ -273,7 +273,7 @@ impl HistoryPage {
                 .unwrap();
             let recommend: std::cell::Ref<Latest> = item.borrow();
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            tu_list_view_connect_activate(window, &recommend);
+            tu_list_view_connect_activate(window, &recommend, None);
         }));
     }
 }

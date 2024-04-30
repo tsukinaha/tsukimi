@@ -158,7 +158,18 @@ impl TuListItem {
                 imp.listlabel.set_text(item.name().to_string().as_str());
                 self.set_picture();
             }
-            _ => {}
+            "MusicAlbum" => {
+                imp.listlabel.set_text(&format!(
+                    "{}\n{}",
+                    item.name(),
+                    item.album_artist().unwrap_or("".to_string())
+                ));
+                imp.overlay.set_size_request(190, 190);
+                self.set_picture();
+            }
+            _ => {
+                println!("Unknown item type: {}", item_type)
+            }
         }
     }
 
@@ -310,6 +321,16 @@ pub fn tu_list_item_register(latest: &Latest, list_item: &gtk::ListItem, listtyp
             if let Some(userdata) = &latest.user_data {
                 tu_item.set_played(userdata.played);
             }
+            if listtype == "resume" {
+                tu_item.set_played_percentage(
+                    latest
+                        .user_data
+                        .as_ref()
+                        .unwrap()
+                        .played_percentage
+                        .unwrap_or(0.0),
+                );
+            }
             let list_child = TuListItem::new(tu_item, "Movie", listtype == "resume");
             list_item.set_child(Some(&list_child));
         }
@@ -353,6 +374,14 @@ pub fn tu_list_item_register(latest: &Latest, list_item: &gtk::ListItem, listtyp
                 tu_item.set_played(userdata.played);
             }
             let list_child = TuListItem::new(tu_item, "Episode", listtype == "resume");
+            list_item.set_child(Some(&list_child));
+        }
+        "MusicAlbum" => {
+            let tu_item: TuItem = glib::object::Object::new();
+            tu_item.set_id(latest.id.clone());
+            tu_item.set_name(latest.name.clone());
+            tu_item.set_album_artist(latest.album_artist.clone());
+            let list_child = TuListItem::new(tu_item, "MusicAlbum", false);
             list_item.set_child(Some(&list_child));
         }
         _ => {}

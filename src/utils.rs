@@ -4,6 +4,7 @@ use std::env;
 
 use crate::client::{network::RUNTIME, structs::Latest};
 use crate::config::get_cache_dir;
+use crate::ui::widgets::singlelist::SingleListPage;
 use crate::ui::widgets::tu_list_item::tu_list_item_register;
 
 pub fn _spawn_tokio_blocking<F>(fut: F) -> F::Output
@@ -131,7 +132,7 @@ fn get_path() -> std::path::PathBuf {
     get_cache_dir(env::var("EMBY_NAME").unwrap()).expect("Failed to get cache dir!")
 }
 
-pub fn tu_list_item_factory() -> gtk::SignalListItemFactory {
+pub fn tu_list_item_factory(listtype: String) -> gtk::SignalListItemFactory {
     let factory = gtk::SignalListItemFactory::new();
     factory.connect_bind(move |_, item| {
         let list_item = item
@@ -145,14 +146,18 @@ pub fn tu_list_item_factory() -> gtk::SignalListItemFactory {
             .expect("Needs to be BoxedAnyObject");
         let latest: std::cell::Ref<Latest> = entry.borrow();
         if list_item.child().is_none() {
-            tu_list_item_register(&latest, list_item, &latest.latest_type)
+            tu_list_item_register(&latest, list_item, &listtype)
         }
     });
     factory
 }
 use adw::prelude::NavigationPageExt;
 use gtk::subclass::prelude::ObjectSubclassIsExt;
-pub fn tu_list_view_connect_activate(window: crate::ui::widgets::window::Window, result: &Latest) {
+pub fn tu_list_view_connect_activate(
+    window: crate::ui::widgets::window::Window,
+    result: &Latest,
+    parentid: Option<String>,
+) {
     let view = match window.current_view_name().as_str() {
         "homepage" => {
             window.set_title(&result.name);
@@ -226,6 +231,23 @@ pub fn tu_list_view_connect_activate(window: crate::ui::widgets::window::Window,
         "BoxSet" => {
             window.toast("BoxSet not supported yet");
         }
-        _ => {}
+        "MusicAlbum" => {
+            window.toast("MusicAlbum not supported yet");
+        }
+        _ => {
+            window.set_title(&result.name);
+            if view.find_page(result.name.as_str()).is_some() {
+                view.pop_to_tag(result.name.as_str());
+            } else {
+                let item_page = SingleListPage::new(
+                    result.id.clone(),
+                    "".to_string(),
+                    &result.latest_type,
+                    parentid,
+                );
+                item_page.set_tag(Some(&result.name));
+                window.imp().homeview.push(&item_page);
+            }
+        }
     }
 }

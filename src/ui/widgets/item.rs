@@ -613,12 +613,7 @@ impl ItemPage {
         imp.playbutton.set_sensitive(false);
         imp.favourite_button_split.set_sensitive(false);
         imp.line1spinner.set_visible(true);
-        let playback =
-            get_data_with_cache(
-                id.clone(),
-                "episode",
-                async move { get_playbackinfo(id).await },
-            )
+        let playback = spawn_tokio(async move { get_playbackinfo(id).await })
             .await
             .unwrap();
         spawn(glib::clone!(@weak osdbox,@weak self as obj=>async move {

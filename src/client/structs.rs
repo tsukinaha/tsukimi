@@ -247,6 +247,8 @@ pub struct Latest {
     pub image_tags: Option<ImageTags>,
     #[serde(rename = "SeriesId")]
     pub series_id: Option<String>,
+    #[serde(rename = "AlbumArtist")]
+    pub album_artist: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]

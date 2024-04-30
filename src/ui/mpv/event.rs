@@ -111,9 +111,9 @@ pub fn play(
                     if r == 3 {
                         let mut back = back.clone();
                         back.tick = duration;
-                        let _ = spawn_tokio(async {
+                        std::mem::drop(spawn_tokio(async {
                             positionstop(back).await;
-                        });
+                        }));
                     }
                     println!("Exiting! Reason: {:?}", r);
                     break;

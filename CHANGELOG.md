@@ -1,3 +1,25 @@
+## 0.4.9
+
+### Added
+
+- Added quick logout button
+- Added library sort: view and category
+- Added font size option
+- Added global local cache
+- Added tags page
+- Added transition animation when adding new item in the list
+- Added empty library page hint
+
+### Fixed
+
+- Fixed image resizing when entering episode/movie details
+- Fixed invisible items in some libraries
+- Fixed adding account will login to the preference server directly
+
+### Changed
+
+- Deprecated secondary home update
+
 ## 0.4.5
 
 ### Breaking Changes (Windows only)
@@ -6,7 +28,7 @@
 
 ### Highlights
 
-- Added multi accounts support 
+- Added multi accounts support
 
 ## 0.4.3
 
