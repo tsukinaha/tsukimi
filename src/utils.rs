@@ -1,4 +1,5 @@
 use crate::client::{network::RUNTIME, structs::Latest};
+use crate::ui::widgets::singlelist::SingleListPage;
 use crate::ui::widgets::tu_list_item::tu_list_item_register;
 use gtk::glib;
 use gtk::prelude::*;
@@ -153,7 +154,7 @@ pub fn tu_list_item_factory(listtype: String) -> gtk::SignalListItemFactory {
 }
 use adw::prelude::NavigationPageExt;
 use gtk::subclass::prelude::ObjectSubclassIsExt;
-pub fn tu_list_view_connect_activate(window: crate::ui::widgets::window::Window, result: &Latest) {
+pub fn tu_list_view_connect_activate(window: crate::ui::widgets::window::Window, result: &Latest, parentid: Option<String>) {
     let view = match window.current_view_name().as_str() {
         "homepage" => {
             window.set_title(&result.name);
@@ -229,6 +230,15 @@ pub fn tu_list_view_connect_activate(window: crate::ui::widgets::window::Window,
         "BoxSet" => {
             window.toast("BoxSet not supported yet");
         }
-        _ => {}
+        _ => {
+            window.set_title(&result.name);
+            if view.find_page(result.name.as_str()).is_some() {
+                view.pop_to_tag(result.name.as_str());
+            } else {
+                let item_page = SingleListPage::new(result.id.clone(),"".to_string(),&result.latest_type, parentid);
+                item_page.set_tag(Some(&result.name));
+                window.imp().homeview.push(&item_page);
+            }
+        }
     }
 }

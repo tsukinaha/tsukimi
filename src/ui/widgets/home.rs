@@ -235,7 +235,7 @@ impl HomePage {
                     let model = listview.model().unwrap();
                     let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                     let result: std::cell::Ref<Latest> = item.borrow();
-                    tu_list_view_connect_activate(window, &result);
+                    tu_list_view_connect_activate(window, &result, None);
             }),
         );
         spawn(glib::clone!(@weak store => async move {

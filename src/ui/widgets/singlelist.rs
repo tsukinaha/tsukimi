@@ -249,7 +249,7 @@ impl SingleListPage {
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<Latest> = item.borrow();
                 let window = obj.root().and_downcast::<Window>().unwrap();
-                tu_list_view_connect_activate(window,&result)
+                tu_list_view_connect_activate(window,&result,obj.imp().id.get().cloned())
             }),
         );
         let listtype = imp.listtype.get().unwrap().clone();

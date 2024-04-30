@@ -235,7 +235,7 @@ impl ActorPage {
                     .unwrap();
                 let recommend: std::cell::Ref<Latest> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                tu_list_view_connect_activate(window, &recommend);
+                tu_list_view_connect_activate(window, &recommend, None);
             })
         );
     }
