@@ -23,6 +23,7 @@ mod imp {
     use std::cell::{OnceCell, RefCell};
 
     use crate::ui::provider::tu_item::TuItem;
+    use crate::utils::spawn;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -67,9 +68,11 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            obj.set_up();
-            obj.gesture();
-            obj.reveals();
+            spawn(glib::clone!(@weak obj => async move {
+                obj.set_up();
+                obj.gesture();
+                obj.reveals();
+            }));
         }
 
         fn dispose(&self) {
