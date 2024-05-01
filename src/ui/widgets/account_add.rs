@@ -92,15 +92,15 @@ impl AccountWindow {
         if servername.is_empty()
             || server.is_empty()
             || username.is_empty()
-            || password.is_empty()
             || port.is_empty()
         {
             imp.toast.add_toast(
                 Toast::builder()
                     .timeout(3)
-                    .title("All fields must be filled in")
+                    .title("Fields must be filled in")
                     .build(),
             );
+            imp.spinner.set_visible(false);
         } else {
             let (sender, receiver) = async_channel::bounded::<Result<bool, reqwest::Error>>(1);
             RUNTIME.spawn(async move {
