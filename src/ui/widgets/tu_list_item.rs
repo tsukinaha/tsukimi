@@ -407,7 +407,7 @@ pub fn tu_list_poster(latest: &Latest, list_item: &gtk::ListItem, listtype: &str
             let tu_item: TuItem = glib::object::Object::new();
             tu_item.set_id(latest.id.clone());
             tu_item.set_name(latest.name.clone());
-            tu_item.set_production_year(latest.production_year.unwrap());
+            tu_item.set_production_year(latest.production_year.unwrap_or(0));
             if let Some(userdata) = &latest.user_data {
                 tu_item.set_played(userdata.played);
                 tu_item.set_unplayed_item_count(userdata.unplayed_item_count.unwrap());
