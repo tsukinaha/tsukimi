@@ -68,11 +68,9 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            spawn(glib::clone!(@weak obj => async move {
-                obj.set_up();
-                obj.gesture();
-                obj.reveals();
-            }));
+            obj.set_up();
+            obj.gesture();
+            obj.reveals();
         }
 
         fn dispose(&self) {
