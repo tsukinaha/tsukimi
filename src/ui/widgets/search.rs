@@ -189,7 +189,7 @@ impl SearchPage {
             let result: std::cell::Ref<SearchResult> = entry.borrow();
             let vbox = gtk::Box::new(gtk::Orientation::Vertical, 2);
             let overlay = gtk::Overlay::new();
-            let imgbox = crate::ui::image::setimage(result.id.clone());
+            let imgbox = crate::ui::image::set_image(result.id.clone(), "Primary", None);
             imgbox.set_size_request(167, 275);
             overlay.set_child(Some(&imgbox));
             if let Some(userdata) = &result.user_data {

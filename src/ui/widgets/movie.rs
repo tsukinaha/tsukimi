@@ -318,7 +318,7 @@ impl MoviePage {
     pub fn logoset(&self) {
         let osd = &self.imp().logobox;
         let id = self.id();
-        let logo = crate::ui::image::setlogoimage(id);
+        let logo = crate::ui::image::set_image(id, "Logo", None);
         osd.append(&logo);
         osd.add_css_class("logo");
     }
@@ -666,7 +666,7 @@ impl MoviePage {
                     .first_child()
                 {
                 } else {
-                    let img = crate::ui::image::setimage(people.id.clone());
+                    let img = crate::ui::image::set_image(people.id.clone(), "Primary", None);
                     picture
                         .downcast_ref::<gtk::Box>()
                         .expect("Needs to be Box")
@@ -805,7 +805,7 @@ impl MoviePage {
                     .first_child()
                 {
                 } else {
-                    let img = crate::ui::image::setimage(recommend.id.clone());
+                    let img = crate::ui::image::set_image(recommend.id.clone(), "Primary", None);
                     picture
                         .downcast_ref::<gtk::Box>()
                         .expect("Needs to be Box")

@@ -517,7 +517,7 @@ impl ItemPage {
                 .expect("Needs to be BoxedAnyObject");
             let seriesinfo: Ref<SeriesInfo> = entry.borrow();
             if picture.first_child().is_none() {
-                let img = crate::ui::image::setimage(seriesinfo.id.clone());
+                let img = crate::ui::image::set_image(seriesinfo.id.clone(), "Primary", None);
                 picture.set_child(Some(&img));
                 let progressbar = gtk::ProgressBar::new();
                 progressbar.set_valign(gtk::Align::End);
@@ -558,7 +558,7 @@ impl ItemPage {
     pub fn logoset(&self) {
         let logobox = self.imp().logobox.get();
         let id = self.id();
-        let logo = crate::ui::image::setlogoimage(id.clone());
+        let logo = crate::ui::image::set_image(id.clone(),"Logo",None);
         logobox.append(&logo);
         logobox.add_css_class("logo");
     }
@@ -952,7 +952,7 @@ impl ItemPage {
                     .first_child()
                 {
                 } else {
-                    let img = crate::ui::image::setimage(people.id.clone());
+                    let img = crate::ui::image::set_image(people.id.clone(), "Primary", None);
                     picture
                         .downcast_ref::<gtk::Box>()
                         .expect("Needs to be Box")
@@ -1091,7 +1091,7 @@ impl ItemPage {
                     .first_child()
                 {
                 } else {
-                    let img = crate::ui::image::setimage(recommend.id.clone());
+                    let img = crate::ui::image::set_image(recommend.id.clone(), "Primary", None);
                     let overlay = gtk::Overlay::builder().child(&img).build();
                     if let Some(userdata) = &recommend.user_data {
                         if let Some(unplayeditemcount) = userdata.unplayed_item_count {

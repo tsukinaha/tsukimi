@@ -1,5 +1,5 @@
 use crate::client::{network::*, structs::*};
-use crate::ui::image::setimage;
+use crate::ui::image::set_image;
 use crate::utils::{get_data_with_cache, spawn, tu_list_view_connect_activate};
 use glib::Object;
 use gtk::prelude::*;
@@ -119,7 +119,7 @@ impl ActorPage {
     pub fn setup_pic(&self) {
         let imp = self.imp();
         let id = self.id();
-        let pic = setimage(id);
+        let pic = set_image(id,"Primary",None);
         pic.set_size_request(218, 328);
         pic.set_halign(gtk::Align::Start);
         pic.set_valign(gtk::Align::Start);

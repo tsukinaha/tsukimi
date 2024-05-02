@@ -13,10 +13,7 @@ use crate::client::network::played;
 use crate::client::network::unlike;
 use crate::client::network::unplayed;
 use crate::client::structs::Latest;
-use crate::ui::image::setbackdropimage;
-use crate::ui::image::setbannerimage;
-use crate::ui::image::setimage;
-use crate::ui::image::setthumbimage;
+use crate::ui::image::set_image;
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::spawn;
 use crate::utils::spawn_tokio;
@@ -191,33 +188,33 @@ impl TuListItem {
                     imp.overlay.set_size_request(375, 70);
                     if let Some(imag_tags) = item.image_tags() {
                         if imag_tags.banner().is_some() {
-                            setbannerimage(id)
+                            set_image(id, "Banner", None)
                         } else if imag_tags.thumb().is_some() {
-                            setthumbimage(id)
+                            set_image(id, "Thumb", None)
                         } else if imag_tags.backdrop().is_some() {
-                            setbackdropimage(id, 0)
+                            set_image(id, "Backdrop", Some(0))
                         } else {
-                            setimage(id)
+                            set_image(id, "Primary", None)
                         }
                     } else {
-                        setimage(id)
+                        set_image(id, "Primary", None)
                     }
                 }
                 "backdrop" => {
                     imp.overlay.set_size_request(250, 141);
                     if let Some(imag_tags) = item.image_tags() {
                         if imag_tags.backdrop().is_some() {
-                            setbackdropimage(id, 0)
+                            set_image(id, "Backdrop", Some(0))
                         } else if imag_tags.thumb().is_some() {
-                            setthumbimage(id)
+                            set_image(id, "Thumb", None)
                         } else {
-                            setimage(id)
+                            set_image(id, "Primary", None)
                         }
                     } else {
-                        setimage(id)
+                        set_image(id, "Primary", None)
                     }
                 }
-                _ => setimage(id),
+                _ => set_image(id, "Primary", None),
             };
             imp.overlay.set_child(Some(&image));
         } else {
@@ -225,20 +222,20 @@ impl TuListItem {
                 if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
                     let parent_thumb_item_id = parent_thumb_item_id;
                     imp.overlay.set_size_request(250, 141);
-                    setbackdropimage(parent_thumb_item_id, 0)
+                    set_image(parent_thumb_item_id, "Thumb", None)
                 } else if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id() {
                     let parent_backdrop_item_id = parent_backdrop_item_id;
                     imp.overlay.set_size_request(250, 141);
-                    setbackdropimage(parent_backdrop_item_id, 0)
+                    set_image(parent_backdrop_item_id, "Backdrop", Some(0))
                 } else {
                     imp.overlay.set_size_request(250, 141);
-                    setbackdropimage(id, 0)
+                    set_image(id, "Backdrop", Some(0))
                 }
             } else {
                 if self.itemtype() == "Episode" || self.itemtype() == "Views" {
                     imp.overlay.set_size_request(250, 141);
                 }
-                setimage(id)
+                set_image(id, "Primary", None)
             };
             imp.overlay.set_child(Some(&image));
         }
