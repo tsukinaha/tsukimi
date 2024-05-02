@@ -1,12 +1,17 @@
 use glib::Object;
 use gtk::gdk::Rectangle;
 use gtk::gio::MenuModel;
+use gtk::glib::subclass::types::ObjectSubclassExt;
 use gtk::glib::subclass::types::ObjectSubclassIsExt;
 use gtk::prelude::*;
 use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
 
+use crate::client::network::like;
+use crate::client::network::played;
+use crate::client::network::unlike;
+use crate::client::network::unplayed;
 use crate::client::structs::Latest;
 use crate::ui::image::setbackdropimage;
 use crate::ui::image::setbannerimage;
@@ -14,6 +19,7 @@ use crate::ui::image::setimage;
 use crate::ui::image::setthumbimage;
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::spawn;
+use crate::utils::spawn_tokio;
 
 mod imp {
     use adw::subclass::prelude::*;
@@ -23,7 +29,6 @@ mod imp {
     use std::cell::{OnceCell, RefCell};
 
     use crate::ui::provider::tu_item::TuItem;
-    use crate::utils::spawn;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -70,6 +75,7 @@ mod imp {
             let obj = self.obj();
             obj.set_up();
             obj.gesture();
+            obj.insert_action_group("item", obj.set_action().as_ref());
             obj.reveals();
         }
 
@@ -83,12 +89,6 @@ mod imp {
     // Trait shared by all widgets
     impl WidgetImpl for TuListItem {}
 
-    // Trait shared by all windows
-    impl WindowImpl for TuListItem {}
-
-    // Trait shared by all application windows
-    impl ApplicationWindowImpl for TuListItem {}
-
     impl BinImpl for TuListItem {}
 }
 
@@ -97,6 +97,13 @@ glib::wrapper! {
         @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
+}
+
+pub enum Action {
+    Like,
+    Unlike,
+    Played,
+    Unplayed,
 }
 
 impl TuListItem {
@@ -303,6 +310,89 @@ impl TuListItem {
         self.add_controller(gesture);
     }
 
+    pub fn set_action(&self) -> Option<gio::SimpleActionGroup> {
+        let item_type = self.imp().itemtype.get().unwrap();
+        match item_type.as_str() {
+            "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" => self.set_item_action(),
+            _ => None,
+        }
+    }
+
+    pub fn set_item_action(&self) -> Option<gio::SimpleActionGroup> {
+        let action_group = gio::SimpleActionGroup::new();
+
+        match self.item().is_favorite() {
+            true => action_group.add_action_entries([gio::ActionEntry::builder("unlike")
+                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    spawn(glib::clone!(@weak obj => async move {
+                        obj.perform_action(Action::Unlike).await;
+                    }))
+                }))
+                .build()]),
+            false => action_group.add_action_entries([gio::ActionEntry::builder("like")
+                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    spawn(glib::clone!(@weak obj => async move {
+                        obj.perform_action(Action::Like).await;
+                    }))
+                }))
+                .build()]),
+        }
+
+        match self.item().played() {
+            true => action_group.add_action_entries([gio::ActionEntry::builder("unplayed")
+                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    spawn(glib::clone!(@weak obj => async move {
+                        obj.perform_action(Action::Unplayed).await;
+                    }))
+                }))
+                .build()]),
+            false => action_group.add_action_entries([gio::ActionEntry::builder("played")
+                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    spawn(glib::clone!(@weak obj => async move {
+                        obj.perform_action(Action::Played).await;
+                    }))
+                }))
+                .build()]),
+        }
+
+        Some(action_group)
+    }
+
+    async fn perform_action_inner(id: &str, action: &Action) -> Result<(), reqwest::Error> {
+        match action {
+            Action::Like => like(id).await,
+            Action::Unlike => unlike(id).await,
+            Action::Played => played(id).await,
+            Action::Unplayed => unplayed(id).await,
+        }
+    }
+
+    pub async fn perform_action(&self, action: Action) {
+        let id = self.item().id().clone();
+        self.update_state(&action);
+        let result = spawn_tokio(async move { Self::perform_action_inner(&id, &action).await });
+    
+        result.await.unwrap();
+    
+        spawn(glib::clone!(@weak self as obj => async move {
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Success");
+        })); 
+
+        let obj = self.imp().obj();
+        obj.insert_action_group("item", obj.set_action().as_ref());
+    }
+    
+    pub fn update_state(&self, action: &Action) {
+        match action {
+            Action::Like => self.item().set_is_favorite(true),
+            Action::Unlike => self.item().set_is_favorite(false),
+            Action::Played => self.item().set_played(true),
+            Action::Unplayed => self.item().set_played(false),
+        }
+        self.gesture();
+    }
+
     pub fn reveals(&self) {
         let imp = self.imp();
         let revealer = imp.revealer.get();
@@ -310,114 +400,95 @@ impl TuListItem {
             revealer.set_reveal_child(true);
         }));
     }
+
+    pub async fn process_item(&self, action: fn(&String) -> Result<(), Box<dyn std::error::Error>>) {
+        let id = self.item().id();
+        spawn_tokio(async move {
+            action(&id).unwrap();
+        })
+        .await;
+        spawn(glib::clone!(@weak self as obj=>async move {
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Success");
+        }));
+    }
+    
+
 }
 
 pub fn tu_list_item_register(latest: &Latest, list_item: &gtk::ListItem, listtype: &str) {
+    let tu_item = create_tu_item(latest, None);
     match latest.latest_type.as_str() {
-        "Movie" => {
-            let tu_item: TuItem = glib::object::Object::new();
-            tu_item.set_id(latest.id.clone());
-            tu_item.set_name(latest.name.clone());
-            tu_item.set_production_year(latest.production_year.unwrap_or(0));
-            if let Some(userdata) = &latest.user_data {
-                tu_item.set_played(userdata.played);
-            }
-            if listtype == "resume" {
-                tu_item.set_played_percentage(
-                    latest
-                        .user_data
-                        .as_ref()
-                        .unwrap()
-                        .played_percentage
-                        .unwrap_or(0.0),
-                );
-            }
-            let list_child = TuListItem::new(tu_item, "Movie", listtype == "resume");
-            list_item.set_child(Some(&list_child));
-        }
-        "Series" => {
-            let tu_item: TuItem = glib::object::Object::new();
-            tu_item.set_id(latest.id.clone());
-            tu_item.set_name(latest.name.clone());
-            tu_item.set_production_year(latest.production_year.unwrap_or(0));
-            if let Some(userdata) = &latest.user_data {
-                tu_item.set_played(userdata.played);
-                tu_item.set_unplayed_item_count(userdata.unplayed_item_count.unwrap());
-            }
-            let list_child = TuListItem::new(tu_item, "Series", listtype == "resume");
-            list_item.set_child(Some(&list_child));
-        }
-        "BoxSet" | "Tag" | "Genre" => {
-            let tu_item: TuItem = glib::object::Object::new();
-            tu_item.set_id(latest.id.clone());
-            tu_item.set_name(latest.name.clone());
-            let list_child = TuListItem::new(tu_item, latest.latest_type.as_str(), false);
-            list_item.set_child(Some(&list_child));
-        }
-        "Episode" => {
-            let tu_item: TuItem = glib::object::Object::new();
-            tu_item.set_id(latest.id.clone());
-            tu_item.set_name(latest.name.clone());
-            tu_item.set_index_number(latest.index_number.unwrap());
-            tu_item.set_parent_index_number(latest.parent_index_number.unwrap());
-            tu_item.set_series_name(latest.series_name.as_ref().unwrap().clone());
-            tu_item.set_parent_backdrop_item_id(latest.parent_backdrop_item_id.clone());
-            tu_item.set_parent_thumb_item_id(latest.parent_thumb_item_id.clone());
-            tu_item.set_played_percentage(
-                latest
-                    .user_data
-                    .as_ref()
-                    .unwrap()
-                    .played_percentage
-                    .unwrap_or(0.0),
+        "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" => {
+            set_list_child(
+                tu_item,
+                list_item,
+                &latest.latest_type,
+                listtype == "resume",
             );
-            if let Some(userdata) = &latest.user_data {
-                tu_item.set_played(userdata.played);
-            }
-            let list_child = TuListItem::new(tu_item, "Episode", listtype == "resume");
-            list_item.set_child(Some(&list_child));
-        }
-        "MusicAlbum" => {
-            let tu_item: TuItem = glib::object::Object::new();
-            tu_item.set_id(latest.id.clone());
-            tu_item.set_name(latest.name.clone());
-            tu_item.set_album_artist(latest.album_artist.clone());
-            let list_child = TuListItem::new(tu_item, "MusicAlbum", false);
-            list_item.set_child(Some(&list_child));
         }
         _ => {}
     }
 }
 
 pub fn tu_list_poster(latest: &Latest, list_item: &gtk::ListItem, listtype: &str, poster: &str) {
+    let tu_item = create_tu_item(latest, Some(poster));
     match latest.latest_type.as_str() {
-        "Movie" => {
-            let tu_item: TuItem = glib::object::Object::new();
-            tu_item.set_id(latest.id.clone());
-            tu_item.set_name(latest.name.clone());
-            tu_item.set_production_year(latest.production_year.unwrap_or(0));
-            if let Some(userdata) = &latest.user_data {
-                tu_item.set_played(userdata.played);
-            }
-            tu_item.set_poster(poster);
-            tu_item.imp().set_image_tags(latest.image_tags.clone());
-            let list_child = TuListItem::new(tu_item, "Movie", listtype == "resume");
-            list_item.set_child(Some(&list_child));
-        }
-        "Series" => {
-            let tu_item: TuItem = glib::object::Object::new();
-            tu_item.set_id(latest.id.clone());
-            tu_item.set_name(latest.name.clone());
-            tu_item.set_production_year(latest.production_year.unwrap_or(0));
-            if let Some(userdata) = &latest.user_data {
-                tu_item.set_played(userdata.played);
-                tu_item.set_unplayed_item_count(userdata.unplayed_item_count.unwrap());
-            }
-            tu_item.set_poster(poster);
-            tu_item.imp().set_image_tags(latest.image_tags.clone());
-            let list_child = TuListItem::new(tu_item, "Series", listtype == "resume");
-            list_item.set_child(Some(&list_child));
+        "Movie" | "Series" => {
+            set_list_child(
+                tu_item,
+                list_item,
+                &latest.latest_type,
+                listtype == "resume",
+            );
         }
         _ => {}
     }
+}
+
+fn create_tu_item(latest: &Latest, poster: Option<&str>) -> TuItem {
+    let tu_item: TuItem = glib::object::Object::new();
+    tu_item.set_id(latest.id.clone());
+    tu_item.set_name(latest.name.clone());
+    if let Some(production_year) = latest.production_year {
+        tu_item.set_production_year(production_year);
+    }
+    if let Some(index_number) = latest.index_number {
+        tu_item.set_index_number(index_number);
+    }
+    if let Some(parent_index_number) = latest.parent_index_number {
+        tu_item.set_parent_index_number(parent_index_number);
+    }
+    if let Some(userdata) = &latest.user_data {
+        tu_item.set_played(userdata.played);
+        if let Some(played_percentage) = userdata.played_percentage {
+            tu_item.set_played_percentage(played_percentage);
+        }
+        if let Some(unplayed_item_count) = userdata.unplayed_item_count {
+            tu_item.set_unplayed_item_count(unplayed_item_count);
+        }
+        tu_item.set_is_favorite(userdata.is_favorite.unwrap_or(false));
+    }
+    if let Some(poster) = poster {
+        tu_item.set_poster(poster);
+        tu_item.imp().set_image_tags(latest.image_tags.clone());
+    }
+    if let Some(parent_thumb_item_id) = &latest.parent_thumb_item_id {
+        tu_item.set_parent_thumb_item_id(Some(parent_thumb_item_id.clone()));
+    }
+    if let Some(parent_backdrop_item_id) = &latest.parent_backdrop_item_id {
+        tu_item.set_parent_backdrop_item_id(Some(parent_backdrop_item_id.clone()));
+    }
+    if let Some(series_name) = &latest.series_name {
+        tu_item.set_series_name(series_name.clone());
+    }
+    if let Some(album_artist) = &latest.album_artist {
+        tu_item.set_album_artist(Some(album_artist.clone()));
+    }
+    tu_item
+}
+
+fn set_list_child(tu_item: TuItem, list_item: &gtk::ListItem, latest_type: &str, is_resume: bool) {
+    let list_child = TuListItem::new(tu_item, latest_type, is_resume);
+    list_item.set_child(Some(&list_child));
 }

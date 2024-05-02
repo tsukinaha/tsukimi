@@ -159,96 +159,38 @@ pub fn tu_list_view_connect_activate(
     result: &Latest,
     parentid: Option<String>,
 ) {
-    let view = match window.current_view_name().as_str() {
-        "homepage" => {
-            window.set_title(&result.name);
-            std::env::set_var("HOME_TITLE", &result.name);
-            &window.imp().homeview
-        }
-        "searchpage" => {
-            window.set_title(&result.name);
-            std::env::set_var("SEARCH_TITLE", &result.name);
-            &window.imp().searchview
-        }
-        "historypage" => {
-            window.set_title(&result.name);
-            std::env::set_var("HISTORY_TITLE", &result.name);
-            &window.imp().historyview
-        }
-        _ => &window.imp().searchview,
+    let (view, title_var) = match window.current_view_name().as_str() {
+        "homepage" => (&window.imp().homeview, "HOME_TITLE"),
+        "searchpage" => (&window.imp().searchview, "SEARCH_TITLE"),
+        "historypage" => (&window.imp().historyview, "HISTORY_TITLE"),
+        _ => (&window.imp().searchview, "SEARCH_TITLE"),
     };
+    window.set_title(&result.name);
+    std::env::set_var(title_var, &result.name);
+
     match result.latest_type.as_str() {
-        "Movie" => {
-            window.set_title(&result.name);
-            if view.find_page(result.name.as_str()).is_some() {
-                view.pop_to_tag(result.name.as_str());
-            } else {
-                let item_page = crate::ui::widgets::movie::MoviePage::new(
-                    result.id.clone(),
-                    result.name.clone(),
-                );
-                item_page.set_tag(Some(&result.name));
-                view.push(&item_page);
-                window.set_pop_visibility(true)
-            }
-        }
-        "Series" => {
-            window.set_title(&result.name);
-            if view.find_page(result.name.as_str()).is_some() {
-                view.pop_to_tag(result.name.as_str());
-            } else {
-                let item_page =
-                    crate::ui::widgets::item::ItemPage::new(result.id.clone(), result.id.clone());
-                item_page.set_tag(Some(&result.name));
-                view.push(&item_page);
-                window.set_pop_visibility(true)
-            }
-        }
-        "Episode" => {
-            window.set_title(&result.name);
-            if view.find_page(result.name.as_str()).is_some() {
-                view.pop_to_tag(result.name.as_str());
-            } else {
-                let item_page = crate::ui::widgets::item::ItemPage::new(
-                    result.series_id.as_ref().unwrap().clone(),
-                    result.id.clone(),
-                );
-                item_page.set_tag(Some(&result.name));
-                view.push(&item_page);
-                window.set_pop_visibility(true)
-            }
-        }
-        "People" => {
-            window.set_title(&result.name);
-            if view.find_page(result.name.as_str()).is_some() {
-                view.pop_to_tag(result.name.as_str());
-            } else {
-                let item_page = crate::ui::widgets::actor::ActorPage::new(&result.id);
-                item_page.set_tag(Some(&result.name));
-                view.push(&item_page);
-                window.set_pop_visibility(true)
-            }
-        }
-        "BoxSet" => {
-            window.toast("BoxSet not supported yet");
-        }
-        "MusicAlbum" => {
-            window.toast("MusicAlbum not supported yet");
-        }
-        _ => {
-            window.set_title(&result.name);
-            if view.find_page(result.name.as_str()).is_some() {
-                view.pop_to_tag(result.name.as_str());
-            } else {
-                let item_page = SingleListPage::new(
-                    result.id.clone(),
-                    "".to_string(),
-                    &result.latest_type,
-                    parentid,
-                );
-                item_page.set_tag(Some(&result.name));
-                window.imp().homeview.push(&item_page);
-            }
-        }
+        "Movie" => push_page(view, &window, &result.name, crate::ui::widgets::movie::MoviePage::new(result.id.clone(), result.name.clone())),
+        "Series" => push_page(view, &window, &result.name, crate::ui::widgets::item::ItemPage::new(result.id.clone(), result.id.clone())),
+        "Episode" => push_page(view, &window, &result.name, crate::ui::widgets::item::ItemPage::new(result.series_id.as_ref().unwrap().clone(),result.id.clone())),
+        "People" => push_page(view, &window, &result.name, crate::ui::widgets::actor::ActorPage::new(&result.id)),
+        "BoxSet" => window.toast("BoxSet not supported yet"),
+        "MusicAlbum" => window.toast("MusicAlbum not supported yet"),
+        _ => push_page(view, &window, &result.name, SingleListPage::new(result.id.clone(), "".to_string(), &result.latest_type, parentid)),
+    }
+}
+
+fn push_page<T: 'static + Clone + gtk::prelude::IsA<adw::NavigationPage>>(
+    view: &adw::NavigationView,
+    window: &crate::ui::widgets::window::Window,
+    tag: &str,
+    page: T,
+) {
+    if view.find_page(tag).is_some() {
+        view.pop_to_tag(tag);
+    } else {
+        let item_page = page;
+        item_page.set_tag(Some(tag));
+        view.push(&item_page);
+        window.set_pop_visibility(true);
     }
 }

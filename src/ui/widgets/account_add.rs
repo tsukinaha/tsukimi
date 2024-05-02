@@ -89,11 +89,7 @@ impl AccountWindow {
         let username = imp.username_entry.text();
         let password = imp.password_entry.text();
         let port = imp.port_entry.text();
-        if servername.is_empty()
-            || server.is_empty()
-            || username.is_empty()
-            || port.is_empty()
-        {
+        if servername.is_empty() || server.is_empty() || username.is_empty() || port.is_empty() {
             imp.toast.add_toast(
                 Toast::builder()
                     .timeout(3)
