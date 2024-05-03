@@ -2,6 +2,7 @@ use once_cell::sync::Lazy;
 pub mod settings;
 pub use self::settings::Settings;
 pub static SETTINGS: Lazy<Settings> = Lazy::new(Settings::default);
+pub static CACHE_PATH: Lazy<CachePath> = Lazy::new(CachePath::new);
 use std::path::{Path, PathBuf};
 use once_cell::sync::OnceCell;
 use dirs::home_dir;
@@ -27,12 +28,10 @@ impl CachePath {
         })
     }
 
-    pub fn with_emby_name(&self) -> &Path {
-        self.path.get_or_init(|| {
-            let mut path = home_dir().expect("Failed to get home directory");
-            path.push(Self::CACHE_DIR);
-            path.push(std::env::var("EMBY_NAME").unwrap());
-            path
-        })
+    pub fn with_emby_name(&self) -> PathBuf {
+        let mut path = home_dir().expect("Failed to get home directory");
+        path.push(Self::CACHE_DIR);
+        path.push(std::env::var("EMBY_NAME").unwrap());
+        path
     }
 }

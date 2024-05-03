@@ -1,9 +1,8 @@
 use adw::prelude::*;
-use dirs::home_dir;
 use glib::Object;
 use gtk::{gio, glib, subclass::prelude::*};
 
-use crate::ui::models::SETTINGS;
+use crate::ui::models::{CACHE_PATH, SETTINGS};
 
 use super::window::Window;
 
@@ -246,10 +245,7 @@ impl SettingsPage {
     }
 
     pub fn cacheclear(&self) {
-        let path = format!(
-            "{}/.local/share/tsukimi",
-            home_dir().expect("can not find home").display()
-        );
+        let path = CACHE_PATH.with_emby_name();
         std::fs::remove_dir_all(path).unwrap();
         let toast = adw::Toast::builder()
             .title("Cache Cleared".to_string())

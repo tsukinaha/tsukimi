@@ -3,7 +3,7 @@ use gtk::glib::{self, clone};
 use gtk::{prelude::*, Revealer};
 use std::path::PathBuf;
 
-use super::models::CachePath;
+use super::models::CACHE_PATH;
 pub fn set_image(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
@@ -18,8 +18,7 @@ pub fn set_image(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
         .transition_duration(400)
         .build();
 
-    let path = CachePath::new();
-    let cache_path = path.with_emby_name();
+    let cache_path = CACHE_PATH.with_emby_name();
     let path = match image_type {
         "Logo" => format!("{}/l{}.png", cache_path.display(), id),
         "Banner" => format!("{}/banner{}.png", cache_path.display(), id),

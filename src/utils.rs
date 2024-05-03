@@ -1,4 +1,5 @@
 use crate::client::{network::RUNTIME, structs::Latest};
+use crate::ui::models::CACHE_PATH;
 use crate::ui::widgets::singlelist::SingleListPage;
 use crate::ui::widgets::tu_list_item::tu_list_item_register;
 use gtk::glib;
@@ -62,7 +63,7 @@ where
     T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
     F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
 {
-    let mut path = get_path();
+    let mut path = CACHE_PATH.with_emby_name().to_path_buf();
     path.push(format!("{}_{}.json", item_type, &id));
 
     if path.exists() {
@@ -87,7 +88,7 @@ where
     T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
     F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
 {
-    let mut path = get_path();
+    let mut path = CACHE_PATH.with_emby_name().to_path_buf();
     path.push(format!("{}_{}.json", item_type, &id));
     let v = spawn_tokio(future).await?;
     let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
@@ -100,7 +101,7 @@ pub async fn get_image_with_cache(
     img_type: &str,
     tag: Option<u8>,
 ) -> Result<String, reqwest::Error> {
-    let mut path = get_path();
+    let mut path = CACHE_PATH.with_emby_name().to_path_buf();
     match img_type {
         "Pirmary" => path.push(format!("{}.png", id)),
         "Backdrop" => path.push(format!("b{}_{}.png", id, tag.unwrap())),
@@ -118,19 +119,11 @@ pub async fn get_image_with_cache(
 }
 
 async fn _s_path() {
-    let pathbuf = get_path();
+    let pathbuf = CACHE_PATH.with_emby_name();
     std::fs::DirBuilder::new()
         .recursive(true)
         .create(pathbuf)
         .unwrap();
-}
-
-fn get_path() -> std::path::PathBuf {
-    std::path::PathBuf::from(format!(
-        "{}/.local/share/tsukimi/{}",
-        dirs::home_dir().expect("msg").display(),
-        std::env::var("EMBY_NAME").unwrap()
-    ))
 }
 
 pub fn tu_list_item_factory(listtype: String) -> gtk::SignalListItemFactory {

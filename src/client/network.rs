@@ -1,8 +1,7 @@
 use super::structs::*;
 use crate::config::proxy::ReqClient;
 use crate::config::{get_device_name, save_cfg, set_config, Account, APP_VERSION};
-use crate::ui::models::SETTINGS;
-use dirs::home_dir;
+use crate::ui::models::{CACHE_PATH, SETTINGS};
 use once_cell::sync::Lazy;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
@@ -81,11 +80,8 @@ pub async fn loginv2(
     Ok(())
 }
 
-pub async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Error> {
+pub async fn search(searchinfo: String) -> Result<Vec<Latest>, Error> {
     let server = set_config();
-    let mut model = SearchModel {
-        search_results: Vec::new(),
-    };
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server.domain, server.port, server.user_id
@@ -114,9 +110,8 @@ pub async fn search(searchinfo: String) -> Result<Vec<SearchResult>, Error> {
     ];
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<SearchResult> = serde_json::from_value(json["Items"].take()).unwrap();
-    model.search_results = items;
-    Ok(model.search_results)
+    let items: Vec<Latest> = serde_json::from_value(json["Items"].take()).unwrap();
+    Ok(items)
 }
 
 pub async fn get_series_info(id: String) -> Result<Vec<SeriesInfo>, Error> {
@@ -227,11 +222,7 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
         ),
     };
 
-    let path_str = format!(
-        "{}/.local/share/tsukimi/{}",
-        home_dir().expect("msg").display(),
-        env::var("EMBY_NAME").unwrap()
-    );
+    let path_str = CACHE_PATH.with_emby_name();
     let result = client().get(&url).send().await;
 
     match result {
@@ -244,11 +235,7 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
                     }
                     let pathbuf = PathBuf::from(path_str);
                     if !pathbuf.exists() {
-                        fs::create_dir_all(format!(
-                            "{}/.local/share/tsukimi/{}",
-                            home_dir().expect("msg").display(),
-                            env::var("EMBY_NAME").unwrap()
-                        ))
+                        fs::create_dir_all(CACHE_PATH.with_emby_name())
                         .unwrap();
                     }
                     match image_type {
@@ -409,11 +396,7 @@ pub async fn get_library() -> Result<Vec<View>, Error> {
     let mut json: serde_json::Value = response.json().await?;
     let views: Vec<View> = serde_json::from_value(json["Items"].take()).unwrap();
     let views_json = serde_json::to_string(&views).unwrap();
-    let mut pathbuf = PathBuf::from(format!(
-        "{}/.local/share/tsukimi/{}",
-        home_dir().expect("msg").display(),
-        env::var("EMBY_NAME").unwrap()
-    ));
+    let mut pathbuf = CACHE_PATH.with_emby_name().to_path_buf();
     std::fs::DirBuilder::new()
         .recursive(true)
         .create(&pathbuf)
@@ -456,11 +439,7 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
     let json: serde_json::Value = response.json().await?;
     let latests: Vec<Latest> = serde_json::from_value(json).unwrap();
     let latests_json = serde_json::to_string(&latests).unwrap();
-    let mut pathbuf = PathBuf::from(format!(
-        "{}/.local/share/tsukimi/{}",
-        home_dir().expect("msg").display(),
-        env::var("EMBY_NAME").unwrap(),
-    ));
+    let mut pathbuf = CACHE_PATH.with_emby_name().to_path_buf();
     std::fs::DirBuilder::new()
         .recursive(true)
         .create(&pathbuf)

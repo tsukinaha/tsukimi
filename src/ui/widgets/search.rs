@@ -4,11 +4,11 @@ use crate::client::{network::*, structs::*};
 use crate::ui::widgets::item::ItemPage;
 use crate::ui::widgets::movie::MoviePage;
 use crate::ui::widgets::window::Window;
+use crate::utils::{tu_list_item_factory, tu_list_view_connect_activate};
 use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-use gtk::Label;
 use gtk::{gio, glib};
 
 mod imp {
@@ -147,7 +147,7 @@ impl SearchPage {
         let spinner = imp.spinner.get();
         let searchrevealer = imp.searchrevealer.get();
         let recommendbox = imp.recommendbox.get();
-        let (sender, receiver) = async_channel::bounded::<Vec<SearchResult>>(1);
+        let (sender, receiver) = async_channel::bounded::<Vec<Latest>>(1);
         imp.searchentry.connect_activate(
             glib::clone!(@strong sender,@weak spinner=> move |entry| {
                 spinner.set_visible(true);
@@ -156,7 +156,7 @@ impl SearchPage {
                 RUNTIME.spawn(glib::clone!(@strong sender => async move {
                     let search_results = search(search_content).await.unwrap_or_else(|e| {
                         eprintln!("Error: {}", e);
-                        Vec::<SearchResult>::new()
+                        Vec::<Latest>::new()
                     });
                     sender.send(search_results).await.expect("search results not received.");
                 }));
@@ -169,7 +169,7 @@ impl SearchPage {
                 spinner.set_visible(false);
                 store.remove_all();
                 for result in search_results {
-                    if result.result_type == "Series" || result.result_type == "Movie" {
+                    if result.latest_type == "Series" || result.latest_type == "Movie" {
                         let object = glib::BoxedAnyObject::new(result);
                         store.append(&object);
                     }
@@ -179,87 +179,18 @@ impl SearchPage {
         }));
 
         imp.selection.set_model(Some(&store));
-        let factory = gtk::SignalListItemFactory::new();
-        factory.connect_bind(|_, item| {
-            let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
-            let entry = listitem
-                .item()
-                .and_downcast::<glib::BoxedAnyObject>()
-                .unwrap();
-            let result: std::cell::Ref<SearchResult> = entry.borrow();
-            let vbox = gtk::Box::new(gtk::Orientation::Vertical, 2);
-            let overlay = gtk::Overlay::new();
-            let imgbox = crate::ui::image::set_image(result.id.clone(), "Primary", None);
-            imgbox.set_size_request(167, 275);
-            overlay.set_child(Some(&imgbox));
-            if let Some(userdata) = &result.user_data {
-                if let Some(unplayeditemcount) = userdata.unplayed_item_count {
-                    if unplayeditemcount > 0 {
-                        let mark = gtk::Label::new(Some(
-                            &userdata
-                                .unplayed_item_count
-                                .expect("no unplayeditemcount")
-                                .to_string(),
-                        ));
-                        mark.set_valign(gtk::Align::Start);
-                        mark.set_halign(gtk::Align::End);
-                        mark.set_height_request(40);
-                        mark.set_width_request(40);
-                        overlay.add_overlay(&mark);
-                    }
-                }
-                if userdata.played {
-                    let mark = gtk::Image::from_icon_name("object-select-symbolic");
-                    mark.set_halign(gtk::Align::End);
-                    mark.set_valign(gtk::Align::Start);
-                    mark.set_height_request(40);
-                    mark.set_width_request(40);
-                    overlay.add_overlay(&mark);
-                }
-            }
-            vbox.append(&overlay);
-            let label = Label::new(Some(&result.name));
-            label.set_wrap(true);
-            label.set_size_request(-1, 24);
-            label.set_ellipsize(gtk::pango::EllipsizeMode::End);
-            let labeltype = Label::new(Some(&result.result_type));
-            let markup = format!(
-                "<span color='lightgray' font='small'>{}</span>",
-                result.result_type
-            );
-            labeltype.set_markup(markup.as_str());
-            labeltype.set_size_request(-1, 24);
-            vbox.append(&label);
-            vbox.append(&labeltype);
-            listitem.set_child(Some(&vbox));
-        });
-        factory.connect_unbind(|_, item| {
-            let listitem = item.downcast_ref::<gtk::ListItem>().unwrap();
-            listitem.set_child(None::<&gtk::Widget>);
-        });
+        let factory = tu_list_item_factory("".to_string());
         imp.searchgrid.set_factory(Some(&factory));
         imp.searchgrid.set_model(Some(&imp.selection));
         imp.searchgrid.set_min_columns(1);
         imp.searchgrid.set_max_columns(15);
         imp.searchgrid.connect_activate(
-            glib::clone!(@weak self as obj => move |gridview, position| {
-                let model = gridview.model().unwrap();
-                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let result: std::cell::Ref<SearchResult> = item.borrow();
-                let window = obj.root().and_downcast::<Window>().unwrap();
-                if result.result_type == "Movie" {
-                    let item_page = MoviePage::new(result.id.clone(),result.name.clone());
-                    item_page.set_tag(Some(&result.name));
-                    window.imp().searchview.push(&item_page);
-                    window.change_pop_visibility();
-                } else {
-                    let item_page = ItemPage::new(result.id.clone(),result.id.clone());
-                    item_page.set_tag(Some(&result.name));
-                    window.imp().searchview.push(&item_page);
-                    window.change_pop_visibility();
-                }
-                window.set_title(&result.name);
-                std::env::set_var("SEARCH_TITLE", &result.name)
+            glib::clone!(@weak self as obj => move |listview, position| {
+                    let window = obj.root().and_downcast::<Window>().unwrap();
+                    let model = listview.model().unwrap();
+                    let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                    let result: std::cell::Ref<Latest> = item.borrow();
+                    tu_list_view_connect_activate(window, &result, None);
             }),
         );
     }
