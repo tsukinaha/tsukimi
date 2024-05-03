@@ -2,7 +2,7 @@ use adw::prelude::*;
 use glib::Object;
 use gtk::{gio, glib, subclass::prelude::*};
 
-use crate::ui::models::{CACHE_PATH, SETTINGS};
+use crate::ui::models::{emby_cache_path, SETTINGS};
 
 use super::window::Window;
 
@@ -245,7 +245,7 @@ impl SettingsPage {
     }
 
     pub fn cacheclear(&self) {
-        let path = CACHE_PATH.with_emby_name();
+        let path = emby_cache_path();
         std::fs::remove_dir_all(path).unwrap();
         let toast = adw::Toast::builder()
             .title("Cache Cleared".to_string())

@@ -1,7 +1,7 @@
 use super::structs::*;
 use crate::config::proxy::ReqClient;
 use crate::config::{get_device_name, save_cfg, set_config, Account, APP_VERSION};
-use crate::ui::models::{CACHE_PATH, SETTINGS};
+use crate::ui::models::{emby_cache_path, SETTINGS};
 use once_cell::sync::Lazy;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
@@ -222,7 +222,7 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
         ),
     };
 
-    let path_str = CACHE_PATH.with_emby_name();
+    let path_str = emby_cache_path();
     let result = client().get(&url).send().await;
 
     match result {
@@ -235,7 +235,7 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
                     }
                     let pathbuf = PathBuf::from(path_str);
                     if !pathbuf.exists() {
-                        fs::create_dir_all(CACHE_PATH.with_emby_name())
+                        fs::create_dir_all(emby_cache_path())
                         .unwrap();
                     }
                     match image_type {
@@ -396,7 +396,7 @@ pub async fn get_library() -> Result<Vec<View>, Error> {
     let mut json: serde_json::Value = response.json().await?;
     let views: Vec<View> = serde_json::from_value(json["Items"].take()).unwrap();
     let views_json = serde_json::to_string(&views).unwrap();
-    let mut pathbuf = CACHE_PATH.with_emby_name().to_path_buf();
+    let mut pathbuf = emby_cache_path();
     std::fs::DirBuilder::new()
         .recursive(true)
         .create(&pathbuf)
@@ -439,7 +439,7 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
     let json: serde_json::Value = response.json().await?;
     let latests: Vec<Latest> = serde_json::from_value(json).unwrap();
     let latests_json = serde_json::to_string(&latests).unwrap();
-    let mut pathbuf = CACHE_PATH.with_emby_name().to_path_buf();
+    let mut pathbuf = emby_cache_path();
     std::fs::DirBuilder::new()
         .recursive(true)
         .create(&pathbuf)

@@ -2,36 +2,13 @@ use once_cell::sync::Lazy;
 pub mod settings;
 pub use self::settings::Settings;
 pub static SETTINGS: Lazy<Settings> = Lazy::new(Settings::default);
-pub static CACHE_PATH: Lazy<CachePath> = Lazy::new(CachePath::new);
-use std::path::{Path, PathBuf};
-use once_cell::sync::OnceCell;
-use dirs::home_dir;
 
-pub struct CachePath {
-    path: OnceCell<PathBuf>,
-}
+pub static CACHE_PATH: Lazy<std::path::PathBuf> = Lazy::new(|| {
+    gtk::glib::user_cache_dir()
+        .join("tsukimi")
+});
 
-impl CachePath {
-    const CACHE_DIR: &'static str = ".local/share/tsukimi";
-
-    pub fn new() -> Self {
-        Self {
-            path: OnceCell::new(),
-        }
-    }
-    
-    pub fn get(&self) -> &Path {
-        self.path.get_or_init(|| {
-            let mut path = home_dir().expect("Failed to get home directory");
-            path.push(Self::CACHE_DIR);
-            path
-        })
-    }
-
-    pub fn with_emby_name(&self) -> PathBuf {
-        let mut path = home_dir().expect("Failed to get home directory");
-        path.push(Self::CACHE_DIR);
-        path.push(std::env::var("EMBY_NAME").unwrap());
-        path
-    }
+pub fn emby_cache_path() -> std::path::PathBuf {
+    CACHE_PATH
+        .join(std::env::var("EMBY_NAME").unwrap())
 }
