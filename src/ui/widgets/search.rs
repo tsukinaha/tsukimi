@@ -147,7 +147,7 @@ impl SearchPage {
         let spinner = imp.spinner.get();
         let searchrevealer = imp.searchrevealer.get();
         let recommendbox = imp.recommendbox.get();
-        let (sender, receiver) = async_channel::bounded::<Vec<Latest>>(1);
+        let (sender, receiver) = async_channel::bounded::<Vec<SimpleListItem>>(1);
         imp.searchentry.connect_activate(
             glib::clone!(@strong sender,@weak spinner=> move |entry| {
                 spinner.set_visible(true);
@@ -156,7 +156,7 @@ impl SearchPage {
                 RUNTIME.spawn(glib::clone!(@strong sender => async move {
                     let search_results = search(search_content).await.unwrap_or_else(|e| {
                         eprintln!("Error: {}", e);
-                        Vec::<Latest>::new()
+                        Vec::<SimpleListItem>::new()
                     });
                     sender.send(search_results).await.expect("search results not received.");
                 }));
@@ -189,7 +189,7 @@ impl SearchPage {
                     let window = obj.root().and_downcast::<Window>().unwrap();
                     let model = listview.model().unwrap();
                     let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                    let result: std::cell::Ref<Latest> = item.borrow();
+                    let result: std::cell::Ref<SimpleListItem> = item.borrow();
                     tu_list_view_connect_activate(window, &result, None);
             }),
         );

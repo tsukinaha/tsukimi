@@ -1,4 +1,4 @@
-use crate::client::{network::RUNTIME, structs::Latest};
+use crate::client::{network::RUNTIME, structs::SimpleListItem};
 use crate::ui::models::emby_cache_path;
 use crate::ui::widgets::singlelist::SingleListPage;
 use crate::ui::widgets::tu_list_item::tu_list_item_register;
@@ -138,7 +138,7 @@ pub fn tu_list_item_factory(listtype: String) -> gtk::SignalListItemFactory {
             .item()
             .and_downcast::<glib::BoxedAnyObject>()
             .expect("Needs to be BoxedAnyObject");
-        let latest: std::cell::Ref<Latest> = entry.borrow();
+        let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
         if list_item.child().is_none() {
             tu_list_item_register(&latest, list_item, &listtype)
         }
@@ -149,7 +149,7 @@ use adw::prelude::NavigationPageExt;
 use gtk::subclass::prelude::ObjectSubclassIsExt;
 pub fn tu_list_view_connect_activate(
     window: crate::ui::widgets::window::Window,
-    result: &Latest,
+    result: &SimpleListItem,
     parentid: Option<String>,
 ) {
     let (view, title_var) = match window.current_view_name().as_str() {
@@ -165,7 +165,7 @@ pub fn tu_list_view_connect_activate(
         "Movie" => push_page(view, &window, &result.name, crate::ui::widgets::movie::MoviePage::new(result.id.clone(), result.name.clone())),
         "Series" => push_page(view, &window, &result.name, crate::ui::widgets::item::ItemPage::new(result.id.clone(), result.id.clone())),
         "Episode" => push_page(view, &window, &result.name, crate::ui::widgets::item::ItemPage::new(result.series_id.as_ref().unwrap().clone(),result.id.clone())),
-        "People" => push_page(view, &window, &result.name, crate::ui::widgets::actor::ActorPage::new(&result.id)),
+        "Actor" => push_page(view, &window, &result.name, crate::ui::widgets::actor::ActorPage::new(&result.id)),
         "BoxSet" => window.toast("BoxSet not supported yet"),
         "MusicAlbum" => window.toast("MusicAlbum not supported yet"),
         _ => push_page(view, &window, &result.name, SingleListPage::new(result.id.clone(), "".to_string(), &result.latest_type, parentid)),

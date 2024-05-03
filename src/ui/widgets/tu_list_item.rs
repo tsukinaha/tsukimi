@@ -12,7 +12,7 @@ use crate::client::network::like;
 use crate::client::network::played;
 use crate::client::network::unlike;
 use crate::client::network::unplayed;
-use crate::client::structs::Latest;
+use crate::client::structs::SimpleListItem;
 use crate::ui::image::set_image;
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::spawn;
@@ -170,6 +170,14 @@ impl TuListItem {
                     item.album_artist().unwrap_or("".to_string())
                 ));
                 imp.overlay.set_size_request(190, 190);
+                self.set_picture();
+            }
+            "Actor" => {
+                imp.listlabel.set_text(&format!(
+                    "{}\n{}",
+                    item.name(),
+                    item.role().unwrap_or("".to_string())
+                ));
                 self.set_picture();
             }
             _ => {
@@ -413,10 +421,10 @@ impl TuListItem {
 
 }
 
-pub fn tu_list_item_register(latest: &Latest, list_item: &gtk::ListItem, listtype: &str) {
+pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem, listtype: &str) {
     let tu_item = create_tu_item(latest, None);
     match latest.latest_type.as_str() {
-        "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" => {
+        "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Actor"=> {
             set_list_child(
                 tu_item,
                 list_item,
@@ -428,7 +436,7 @@ pub fn tu_list_item_register(latest: &Latest, list_item: &gtk::ListItem, listtyp
     }
 }
 
-pub fn tu_list_poster(latest: &Latest, list_item: &gtk::ListItem, listtype: &str, poster: &str) {
+pub fn tu_list_poster(latest: &SimpleListItem, list_item: &gtk::ListItem, listtype: &str, poster: &str) {
     let tu_item = create_tu_item(latest, Some(poster));
     match latest.latest_type.as_str() {
         "Movie" | "Series" => {
@@ -443,7 +451,7 @@ pub fn tu_list_poster(latest: &Latest, list_item: &gtk::ListItem, listtype: &str
     }
 }
 
-fn create_tu_item(latest: &Latest, poster: Option<&str>) -> TuItem {
+fn create_tu_item(latest: &SimpleListItem, poster: Option<&str>) -> TuItem {
     let tu_item: TuItem = glib::object::Object::new();
     tu_item.set_id(latest.id.clone());
     tu_item.set_name(latest.name.clone());
@@ -481,6 +489,9 @@ fn create_tu_item(latest: &Latest, poster: Option<&str>) -> TuItem {
     }
     if let Some(album_artist) = &latest.album_artist {
         tu_item.set_album_artist(Some(album_artist.clone()));
+    }
+    if let Some(role) = &latest.role {
+        tu_item.set_role(Some(role.clone())); 
     }
     tu_item
 }

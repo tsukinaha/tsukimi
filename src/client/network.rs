@@ -80,7 +80,7 @@ pub async fn loginv2(
     Ok(())
 }
 
-pub async fn search(searchinfo: String) -> Result<Vec<Latest>, Error> {
+pub async fn search(searchinfo: String) -> Result<Vec<SimpleListItem>, Error> {
     let server = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
@@ -110,7 +110,7 @@ pub async fn search(searchinfo: String) -> Result<Vec<Latest>, Error> {
     ];
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<Latest> = serde_json::from_value(json["Items"].take()).unwrap();
+    let items: Vec<SimpleListItem> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
 }
 
@@ -159,7 +159,7 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
     Ok(item)
 }
 
-pub async fn resume() -> Result<Vec<Latest>, Error> {
+pub async fn resume() -> Result<Vec<SimpleListItem>, Error> {
     let server = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/Resume",
@@ -185,7 +185,7 @@ pub async fn resume() -> Result<Vec<Latest>, Error> {
 
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<Latest> = serde_json::from_value(json["Items"].take()).unwrap();
+    let items: Vec<SimpleListItem> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
 }
 
@@ -412,7 +412,7 @@ pub async fn get_library() -> Result<Vec<View>, Error> {
     Ok(views)
 }
 
-pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
+pub async fn get_latest(id: String) -> Result<Vec<SimpleListItem>, Error> {
     let server = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items/Latest",
@@ -437,7 +437,7 @@ pub async fn get_latest(id: String) -> Result<Vec<Latest>, Error> {
     ];
     let response = client().get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
-    let latests: Vec<Latest> = serde_json::from_value(json).unwrap();
+    let latests: Vec<SimpleListItem> = serde_json::from_value(json).unwrap();
     let latests_json = serde_json::to_string(&latests).unwrap();
     let mut pathbuf = emby_cache_path();
     std::fs::DirBuilder::new()
@@ -770,10 +770,7 @@ pub async fn playstart(back: Back) {
         .unwrap();
 }
 
-pub async fn similar(id: &str) -> Result<Vec<SearchResult>, Error> {
-    let mut model = SearchModel {
-        search_results: Vec::new(),
-    };
+pub async fn similar(id: &str) -> Result<Vec<SimpleListItem>, Error> {
     let server_info = set_config();
     let url = format!(
         "{}:{}/emby/Items/{}/Similar",
@@ -797,12 +794,11 @@ pub async fn similar(id: &str) -> Result<Vec<SearchResult>, Error> {
 
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<SearchResult> = serde_json::from_value(json["Items"].take()).unwrap();
-    model.search_results = items;
-    Ok(model.search_results)
+    let items: Vec<SimpleListItem> = serde_json::from_value(json["Items"].take()).unwrap();
+    Ok(items)
 }
 
-pub async fn person_item(id: &str, types: &str) -> Result<Vec<Latest>, Error> {
+pub async fn person_item(id: &str, types: &str) -> Result<Vec<SimpleListItem>, Error> {
     let server_info = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
@@ -828,7 +824,7 @@ pub async fn person_item(id: &str, types: &str) -> Result<Vec<Latest>, Error> {
 
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<Latest> = serde_json::from_value(json["Items"].take()).unwrap();
+    let items: Vec<SimpleListItem> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
 }
 
@@ -860,7 +856,7 @@ pub async fn get_search_recommend() -> Result<List, Error> {
     Ok(latests)
 }
 
-pub async fn like_item(types: &str) -> Result<Vec<Latest>, Error> {
+pub async fn like_item(types: &str) -> Result<Vec<SimpleListItem>, Error> {
     let server_info = set_config();
     let url = if types == "People" {
         format!("{}:{}/emby/Persons", server_info.domain, server_info.port)
@@ -897,6 +893,6 @@ pub async fn like_item(types: &str) -> Result<Vec<Latest>, Error> {
 
     let response = client().get(&url).query(&params).send().await?;
     let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<Latest> = serde_json::from_value(json["Items"].take()).unwrap();
+    let items: Vec<SimpleListItem> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
 }

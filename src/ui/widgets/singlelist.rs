@@ -6,8 +6,8 @@ use crate::client::{network::*, structs::*};
 use crate::utils::{
     get_data_with_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate,
 };
+use adw::prelude::*;
 use glib::Object;
-use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 mod imp {
@@ -153,6 +153,15 @@ impl SingleListPage {
         self.sortorder().await;
     }
 
+    #[template_callback]
+    fn filter_panel_cb(&self, _btn: &gtk::Button) {
+        let dialog = adw::Dialog::builder()
+            .title("Filter")                                                                                                                                                    
+            .presentation_mode(adw::DialogPresentationMode::BottomSheet)
+            .build();
+        dialog.present(self);
+    }
+
     async fn handle_type(&self) {
         let imp = self.imp();
         let listtype = imp.listtype.get().unwrap();
@@ -253,7 +262,7 @@ impl SingleListPage {
             glib::clone!(@weak self as obj => move |gridview, position| {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let result: std::cell::Ref<Latest> = item.borrow();
+                let result: std::cell::Ref<SimpleListItem> = item.borrow();
                 let window = obj.root().and_downcast::<Window>().unwrap();
                 tu_list_view_connect_activate(window,&result,obj.imp().id.get().cloned())
             }),
@@ -416,7 +425,7 @@ impl SingleListPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<Latest> = entry.borrow();
+            let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
             if list_item.child().is_none() {
                 super::tu_list_item::tu_list_poster(&latest, list_item, &listtype, &poster);
             }

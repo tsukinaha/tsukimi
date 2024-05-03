@@ -156,7 +156,7 @@ impl HistoryPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<Latest> = entry.borrow();
+            let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
             if list_item.child().is_none() {
                 tu_list_item_register(&latest, list_item, "resume")
             }
@@ -167,7 +167,7 @@ impl HistoryPage {
             glib::clone!(@weak self as obj => move |gridview, position| {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let result: std::cell::Ref<Latest> = item.borrow();
+                let result: std::cell::Ref<SimpleListItem> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 tu_list_view_connect_activate(window, &result, None);
             }),
@@ -196,7 +196,7 @@ impl HistoryPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<Latest> = entry.borrow();
+            let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
             if list_item.child().is_none() {
                 tu_list_item_register(&latest, list_item, "latest")
             }
@@ -270,7 +270,7 @@ impl HistoryPage {
                 .item(position)
                 .and_downcast::<glib::BoxedAnyObject>()
                 .unwrap();
-            let recommend: std::cell::Ref<Latest> = item.borrow();
+            let recommend: std::cell::Ref<SimpleListItem> = item.borrow();
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             tu_list_view_connect_activate(window, &recommend, None);
         }));

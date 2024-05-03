@@ -172,7 +172,7 @@ impl ActorPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<Latest> = entry.borrow();
+            let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
             if list_item.child().is_none() {
                 tu_list_item_register(&latest, list_item, &latest.latest_type)
             }
@@ -232,7 +232,7 @@ impl ActorPage {
                 .item(position)
                 .and_downcast::<glib::BoxedAnyObject>()
                 .unwrap();
-            let recommend: std::cell::Ref<Latest> = item.borrow();
+            let recommend: std::cell::Ref<SimpleListItem> = item.borrow();
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             tu_list_view_connect_activate(window, &recommend, None);
         }));

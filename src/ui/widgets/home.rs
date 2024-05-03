@@ -219,7 +219,7 @@ impl HomePage {
         self.imp().spinner.set_visible(false);
     }
 
-    pub fn set_librarysscroll(&self, latests: Vec<Latest>) -> gtk::ListView {
+    pub fn set_librarysscroll(&self, latests: Vec<SimpleListItem>) -> gtk::ListView {
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
 
         let selection = gtk::SingleSelection::builder()
@@ -234,7 +234,7 @@ impl HomePage {
                     let window = obj.root().and_downcast::<Window>().unwrap();
                     let model = listview.model().unwrap();
                     let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                    let result: std::cell::Ref<Latest> = item.borrow();
+                    let result: std::cell::Ref<SimpleListItem> = item.borrow();
                     tu_list_view_connect_activate(window, &result, None);
             }),
         );

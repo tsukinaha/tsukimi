@@ -47,9 +47,23 @@
               </object>
             </child>
             <child>
-              <object class="GtkBox" id="adbutton">
+              <object class="GtkButton" id="refresh">
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
+                <property name="valign">center</property>
+                <property name="child">
+                  <object class="AdwButtonContent">
+                    <property name="icon-name">go-up-symbolic</property>
+                    <property name="label" translatable="yes">Filter Panel</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </property>
+                <signal name="clicked" handler="filter_panel_cb" swapped="yes"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox" id="adbutton">
+                <property name="halign">end</property>
                 <property name="orientation">horizontal</property>
                 <child>
                   <object class="GtkToggleButton" id="ascending">
