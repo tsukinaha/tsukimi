@@ -5,7 +5,7 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use super::fix::fix;
+use crate::ui::widgets::fix::ScrolledWindowFixExt;
 use super::tu_list_item::tu_list_item_register;
 mod imp {
     use glib::subclass::InitializingObject;
@@ -128,7 +128,7 @@ impl HistoryPage {
         let spinner = imp.spinner.get();
         let historyrevealer = imp.historyrevealer.get();
         spinner.set_visible(true);
-        fix(imp.hisscrolled.get());
+        imp.hisscrolled.fix();
 
         let history_results =
             get_data_with_cache("0".to_string(), "history", async { resume().await })
@@ -209,37 +209,37 @@ impl HistoryPage {
                 list = imp.movielist.get();
                 selection = &imp.movieselection;
                 revealer = imp.movierevealer.get();
-                fix(imp.moviescrolled.get());
+                imp.moviescrolled.fix();
             }
             "Series" => {
                 list = imp.serieslist.get();
                 selection = &imp.seriesselection;
                 revealer = imp.seriesrevealer.get();
-                fix(imp.seriesscrolled.get());
+                imp.seriesscrolled.fix();
             }
             "Episode" => {
                 list = imp.episodelist.get();
                 selection = &imp.episodeselection;
                 revealer = imp.episoderevealer.get();
-                fix(imp.episodescrolled.get());
+                imp.episodescrolled.fix();
             }
             "People" => {
                 list = imp.peoplelist.get();
                 selection = &imp.peopleselection;
                 revealer = imp.peoplerevealer.get();
-                fix(imp.peoplescrolled.get());
+                imp.peoplescrolled.fix();
             }
             "MusicAlbum" => {
                 list = imp.albumlist.get();
                 selection = &imp.albumselection;
                 revealer = imp.albumrevealer.get();
-                fix(imp.albumscrolled.get());
+                imp.albumscrolled.fix();
             }
             _ => {
                 list = imp.episodelist.get();
                 selection = &imp.episodeselection;
                 revealer = imp.episoderevealer.get();
-                fix(imp.episodescrolled.get());
+                imp.episodescrolled.fix();
             }
         }
         list.set_factory(Some(&factory));

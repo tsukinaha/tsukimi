@@ -30,6 +30,8 @@ mod imp {
         pub listview: TemplateChild<gtk::ListView>,
         #[template_child]
         pub status: TemplateChild<adw::StatusPage>,
+        #[template_child]
+        pub scrolledwindow: TemplateChild<gtk::ScrolledWindow>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -105,15 +107,18 @@ impl IncludedDialog {
         let boxset_list = self.get_boxset_list().await;
         spawn(glib::clone!(@weak store,@weak self as obj=> async move {
             obj.imp().spinner.set_visible(false);
+            
             if boxset_list.is_empty() {
                 obj.imp().status.set_visible(true);
                 return;
             }
+
             for result in boxset_list {
                 let object = glib::BoxedAnyObject::new(result);
                 store.append(&object);
                 gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
             }
+            obj.imp().scrolledwindow.set_visible(true);
         }));
     }
 

@@ -6,7 +6,7 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use super::fix::fix;
+use crate::ui::widgets::fix::ScrolledWindowFixExt;
 use super::tu_list_item::tu_list_item_register;
 
 mod imp {
@@ -185,25 +185,25 @@ impl ActorPage {
                 list = imp.movielist.get();
                 selection = &imp.movieselection;
                 revealer = imp.movierevealer.get();
-                fix(imp.moviescrolled.get());
+                imp.moviescrolled.fix();
             }
             "Series" => {
                 list = imp.serieslist.get();
                 selection = &imp.seriesselection;
                 revealer = imp.seriesrevealer.get();
-                fix(imp.seriesscrolled.get());
+                imp.seriesscrolled.fix();
             }
             "Episode" => {
                 list = imp.episodelist.get();
                 selection = &imp.episodeselection;
                 revealer = imp.episoderevealer.get();
-                fix(imp.episodescrolled.get());
+                imp.episodescrolled.fix();
             }
             _ => {
                 list = imp.episodelist.get();
                 selection = &imp.episodeselection;
                 revealer = imp.episoderevealer.get();
-                fix(imp.episodescrolled.get());
+                imp.episodescrolled.fix();
             }
         }
         list.set_factory(Some(&factory));
@@ -240,7 +240,7 @@ impl ActorPage {
 
     pub fn setlinksscrolled(&self, links: Vec<Urls>) {
         let imp = self.imp();
-        let linksscrolled = fix(imp.linksscrolled.get());
+        let linksscrolled = imp.linksscrolled.fix();
         let linksrevealer = imp.linksrevealer.get();
         if !links.is_empty() {
             linksrevealer.set_reveal_child(true);

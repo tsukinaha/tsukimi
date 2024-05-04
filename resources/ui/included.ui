@@ -7,6 +7,7 @@
     <property name="child">
       <object class="GtkBox">
         <property name="orientation">vertical</property>
+        <property name="spacing">12</property>
         <child>
           <object class="AdwStatusPage" id="status">
             <property name="title">Nothing Here</property>
@@ -26,7 +27,7 @@
           </object>
         </child>
         <child>
-          <object class="GtkScrolledWindow">
+          <object class="GtkScrolledWindow" id="scrolledwindow">
             <property name="visible">False</property>
             <property name="hscrollbar-policy">never</property>
             <child>

@@ -12,12 +12,12 @@ use crate::ui::models::SETTINGS;
 use crate::ui::new_dropsel::bind_button;
 use crate::utils::{get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate};
 
-use super::fix::fix;
+use super::fix::ScrolledWindowFixExt;
 use super::included::IncludedDialog;
 use super::window::Window;
 
 mod imp {
-    use crate::ui::widgets::fix::fix;
+    use crate::ui::widgets::fix::ScrolledWindowFixExt;
     use crate::utils::spawn_g_timeout;
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
@@ -193,7 +193,7 @@ mod imp {
             let backdrop = self.backdrop.get();
             backdrop.set_height_request(crate::ui::models::SETTINGS.background_height());
             spawn_g_timeout(glib::clone!(@weak obj => async move {
-                fix(obj.imp().episodescrolled.get());
+                obj.imp().episodescrolled.fix();
                 obj.setup_background().await;
                 obj.setup_seasons().await;
                 obj.logoset();
@@ -769,7 +769,7 @@ impl ItemPage {
                     .overlay_scrolling(true)
                     .build();
 
-                let mediascrolled = fix(mediascrolled);
+                let mediascrolled = mediascrolled.fix();
 
                 let mediabox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
                 for mediapart in mediasource.media_streams {
@@ -854,7 +854,7 @@ impl ItemPage {
                 }
 
                 mediascrolled.set_child(Some(&mediabox));
-                singlebox.append(&mediascrolled);
+                singlebox.append(mediascrolled);
                 mediainfobox.append(&singlebox);
             }
             mediainforevealer.set_reveal_child(true);
@@ -863,7 +863,7 @@ impl ItemPage {
 
     pub fn setlinksscrolled(&self, links: Vec<Urls>) {
         let imp = self.imp();
-        let linksscrolled = fix(imp.linksscrolled.get());
+        let linksscrolled = imp.linksscrolled.fix();
         let linksrevealer = imp.linksrevealer.get();
         if !links.is_empty() {
             linksrevealer.set_reveal_child(true);
@@ -898,7 +898,7 @@ impl ItemPage {
 
     pub fn setactorscrolled(&self, actors: Vec<SimpleListItem>) {
         let imp = self.imp();
-        let actorscrolled = fix(imp.actorscrolled.get());
+        let actorscrolled = imp.actorscrolled.fix();
         let actorrevealer = imp.actorrevealer.get();
         if !actors.is_empty() {
             actorrevealer.set_reveal_child(true);
@@ -939,7 +939,7 @@ impl ItemPage {
 
     pub fn setrecommendscrolled(&self, recommend: Vec<SimpleListItem>) {
         let imp = self.imp();
-        let recommendscrolled = fix(imp.recommendscrolled.get());
+        let recommendscrolled = imp.recommendscrolled.fix();
         let recommendrevealer = imp.recommendrevealer.get();
         if !recommend.is_empty() {
             recommendrevealer.set_reveal_child(true);
@@ -970,21 +970,21 @@ impl ItemPage {
 
     pub fn set_studio(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
-        let scrolled = fix(imp.studiosscrolled.get());
+        let scrolled = imp.studiosscrolled.fix();
         let revealer = imp.studiosrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
 
     pub fn set_tags(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
-        let scrolled = fix(imp.tagsscrolled.get());
+        let scrolled = imp.tagsscrolled.fix();
         let revealer = imp.tagsrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
 
     pub fn set_genres(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
-        let scrolled = fix(imp.genresscrolled.get());
+        let scrolled = imp.genresscrolled.fix();
         let revealer = imp.genresrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
@@ -992,7 +992,7 @@ impl ItemPage {
     pub fn setup_sgts(
         &self,
         linksrevealer: gtk::Revealer,
-        linksscrolled: gtk::ScrolledWindow,
+        linksscrolled: &gtk::ScrolledWindow,
         infos: Vec<SGTitem>,
     ) {
         if !infos.is_empty() {

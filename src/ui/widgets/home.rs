@@ -12,7 +12,7 @@ use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
 use super::tu_list_item::TuListItem;
-use super::{fix::fix, list::ListPage, window::Window};
+use super::{fix::ScrolledWindowFixExt, list::ListPage, window::Window};
 
 mod imp {
 
@@ -108,7 +108,7 @@ impl HomePage {
 
     pub async fn set_libraryscorll(&self) {
         let imp = self.imp();
-        let libscrolled = fix(imp.libscrolled.get());
+        let libscrolled = imp.libscrolled.fix();
         imp.librevealer.set_reveal_child(true);
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
         imp.selection.set_autoselect(false);
@@ -185,7 +185,7 @@ impl HomePage {
                 .vscrollbar_policy(gtk::PolicyType::Never)
                 .overlay_scrolling(true)
                 .build();
-            let scrolledwindow = fix(scrolledwindow);
+            let scrolled = scrolledwindow.fix();
             let scrollbox = gtk::Box::new(gtk::Orientation::Vertical, 15);
             let revealer = gtk::Revealer::builder()
                 .reveal_child(false)
@@ -201,7 +201,7 @@ impl HomePage {
                 .margin_start(10)
                 .build();
             scrollbox.append(&label);
-            scrollbox.append(&scrolledwindow);
+            scrollbox.append(scrolled);
             let latest = get_data_with_cache(view.id.clone(), "view", async move {
                 get_latest(view.id.clone()).await
             })

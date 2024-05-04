@@ -1,15 +1,17 @@
 use std::path::PathBuf;
 
+use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
-use gtk::prelude::*;
+use gtk::template_callbacks;
 use gtk::{gio, glib};
 
 use crate::client::{network::*, structs::*};
 use crate::ui::models::SETTINGS;
 use crate::utils::{get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate};
 
-use super::fix::fix;
+use super::fix::ScrolledWindowFixExt;
+use super::included::IncludedDialog;
 use super::window::Window;
 mod imp {
     use adw::subclass::prelude::*;
@@ -115,6 +117,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
             klass.install_action_async("like", None, |window, _action, _parameter| async move {
                 window.like().await;
             });
@@ -179,6 +182,7 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+#[template_callbacks]
 impl MoviePage {
     pub fn new(id: String, name: String) -> Self {
         Object::builder()
@@ -187,18 +191,22 @@ impl MoviePage {
             .build()
     }
 
+    #[template_callback]
+    pub fn include_button_cb(&self) {
+        let id = self.id();
+        let dialog = IncludedDialog::new(&id);
+        dialog.present(self);
+    }
+
     pub async fn played(&self) {
         let imp = self.imp();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.id();
-        let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
             played(&id).await.unwrap();
-            tx.send(()).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
-            rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             window.toast("Mark as played successfully.");
@@ -209,14 +217,11 @@ impl MoviePage {
         let imp = self.imp();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.id();
-        let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
             unplayed(&id).await.unwrap();
-            tx.send(()).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
-            rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             window.toast("Mark as unplayed successfully.");
@@ -229,14 +234,11 @@ impl MoviePage {
         let spilt_button = imp.favourite_button_split.get();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.id();
-        let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
             like(&id).await.unwrap();
-            tx.send(()).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
-            rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
             spilt_button.set_action_name(Some("unlike"));
             spilt_button_content.set_icon_name("starred-symbolic");
@@ -248,20 +250,15 @@ impl MoviePage {
 
     pub async fn unlike(&self) {
         let imp = self.imp();
-        let inid = self.id();
         let spilt_button_content = imp.favourite_button_split_content.get();
         let spilt_button = imp.favourite_button_split.get();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.id();
-        let (tx, rx) = async_channel::bounded::<()>(1);
         spawn_tokio(async move {
             unlike(&id).await.unwrap();
-            unlike(&inid).await.unwrap();
-            tx.send(()).await.unwrap();
         })
         .await;
         spawn(glib::clone!(@weak self as obj=>async move {
-            rx.recv().await.unwrap();
             obj.imp().favourite_button_split.set_sensitive(true);
             spilt_button.set_action_name(Some("like"));
             spilt_button_content.set_icon_name("non-starred-symbolic");
@@ -477,8 +474,7 @@ impl MoviePage {
                     .vscrollbar_policy(gtk::PolicyType::Never)
                     .overlay_scrolling(true)
                     .build();
-
-                let mediascrolled = fix(mediascrolled);
+                let mediascrolled = mediascrolled.fix();
 
                 let mediabox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
                 for mediapart in mediasource.media_streams {
@@ -563,7 +559,7 @@ impl MoviePage {
                 }
 
                 mediascrolled.set_child(Some(&mediabox));
-                singlebox.append(&mediascrolled);
+                singlebox.append(mediascrolled);
                 mediainfobox.append(&singlebox);
             }
             mediainforevealer.set_reveal_child(true);
@@ -572,7 +568,7 @@ impl MoviePage {
 
     pub fn setlinksscrolled(&self, links: Vec<Urls>) {
         let imp = self.imp();
-        let linksscrolled = fix(imp.linksscrolled.get());
+        let linksscrolled = imp.linksscrolled.fix();
         let linksrevealer = imp.linksrevealer.get();
         if !links.is_empty() {
             linksrevealer.set_reveal_child(true);
@@ -601,12 +597,12 @@ impl MoviePage {
     }
 
     pub fn setactorscrolled(&self, actors: Vec<SimpleListItem>) {
-        let imp = self.imp();
-        fix(imp.actorscrolled.get());
-        let actorrevealer = imp.actorrevealer.get();
-        if !actors.is_empty() {
-            actorrevealer.set_reveal_child(true);
+        if actors.is_empty() {
+            return;
         }
+        let imp = self.imp();
+        imp.actorscrolled.fix();
+        let actorrevealer = imp.actorrevealer.get();
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
         for people in actors {
             let object = glib::BoxedAnyObject::new(people);
@@ -641,7 +637,7 @@ impl MoviePage {
 
     pub fn setrecommendscrolled(&self, recommend: Vec<SimpleListItem>) {
         let imp = self.imp();
-        let recommendscrolled = fix(imp.recommendscrolled.get());
+        let recommendscrolled = imp.recommendscrolled.fix();
         let recommendrevealer = imp.recommendrevealer.get();
         if !recommend.is_empty() {
             recommendrevealer.set_reveal_child(true);
@@ -672,21 +668,21 @@ impl MoviePage {
 
     pub fn set_studio(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
-        let scrolled = fix(imp.studiosscrolled.get());
+        let scrolled = imp.studiosscrolled.fix();
         let revealer = imp.studiosrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
 
     pub fn set_tags(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
-        let scrolled = fix(imp.tagsscrolled.get());
+        let scrolled = imp.tagsscrolled.fix();
         let revealer = imp.tagsrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
 
     pub fn set_genres(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
-        let scrolled = fix(imp.genresscrolled.get());
+        let scrolled = imp.genresscrolled.fix();
         let revealer = imp.genresrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
@@ -694,7 +690,7 @@ impl MoviePage {
     pub fn setup_sgts(
         &self,
         linksrevealer: gtk::Revealer,
-        linksscrolled: gtk::ScrolledWindow,
+        linksscrolled: &gtk::ScrolledWindow,
         infos: Vec<SGTitem>,
     ) {
         if !infos.is_empty() {
