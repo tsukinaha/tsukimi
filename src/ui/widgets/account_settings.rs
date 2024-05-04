@@ -1,14 +1,20 @@
 use adw::subclass::prelude::*;
-use gtk::{glib, CompositeTemplate};
+use gtk::{glib, template_callbacks, CompositeTemplate};
+use adw::prelude::*;
+use crate::{client::network::change_password, utils::spawn_tokio};
 
 mod imp {
     use glib::subclass::InitializingObject;
-
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate)]
     #[template(resource = "/moe/tsukimi/account_settings.ui")]
-    pub struct AccountSettings {}
+    pub struct AccountSettings {
+        #[template_child]
+        pub password_entry: TemplateChild<adw::PasswordEntryRow>,
+        #[template_child]
+        pub password_second_entry: TemplateChild<adw::PasswordEntryRow>,
+    }
 
     #[glib::object_subclass]
     impl ObjectSubclass for AccountSettings {
@@ -18,6 +24,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -44,8 +51,37 @@ impl Default for AccountSettings {
     }
 }
 
+#[template_callbacks]
 impl AccountSettings {
     pub fn new() -> Self {
         glib::Object::builder().build()
+    }
+
+    #[template_callback]
+    async fn on_change_password(&self, _button: gtk::Button) {
+        let new_password = self.imp().password_entry.text();
+        let new_password_second = self.imp().password_second_entry.text();
+        if new_password.is_empty() || new_password_second.is_empty() {
+            let window = self.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Password cannot be empty!");
+            return;
+        }
+        if new_password != new_password_second {
+            let window = self.root().and_downcast::<super::window::Window>().unwrap();
+            window.toast("Passwords do not match!");
+            return;
+        }
+        match spawn_tokio(async move {
+            change_password(&new_password).await
+        }).await {
+            Ok(_) => {
+                let window = self.root().and_downcast::<super::window::Window>().unwrap();
+                window.toast("Password changed successfully!");
+            }
+            Err(e) => {
+                let window = self.root().and_downcast::<super::window::Window>().unwrap();
+                window.toast(&format!("Failed to change password: {}", e));
+            }
+        };
     }
 }

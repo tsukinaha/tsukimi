@@ -66,6 +66,7 @@
               <object class="GtkBox" id="adbutton">
                 <property name="halign">end</property>
                 <property name="orientation">horizontal</property>
+                <property name="hexpand">True</property>
                 <child>
                   <object class="GtkToggleButton" id="ascending">
                     <property name="icon-name">view-sort-ascending-symbolic</property>

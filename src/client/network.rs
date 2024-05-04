@@ -952,3 +952,24 @@ pub async fn get_includedby(parentid: &str) -> Result<List, Error> {
     let latests: List = serde_json::from_value(json).unwrap();
     Ok(latests)
 }
+
+pub async fn change_password(new_password: &str) -> Result<(), Error> {
+    let server_info = set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Password",
+        server_info.domain, server_info.port, server_info.user_id
+    );
+
+    let params = [
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+
+    let profile = serde_json::json!({"CurrentPw":server_info.password,"NewPw":new_password});
+    client().post(&url).query(&params).json(&profile).send().await?;
+    Ok(())
+}

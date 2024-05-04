@@ -37,13 +37,13 @@
             <child>
               <object class="GtkButton">
                 <property name="halign">center</property>
-                <property name="action-name">as.password</property>
                 <child>
                   <object class="AdwButtonContent">
                     <property name="label" translatable="yes">Change Password</property>
                     <property name="icon-name">go-next-symbolic</property>
                   </object>
                 </child>
+                <signal name="clicked" handler="on_change_password" swapped="yes"/>
                 <style>
                   <class name="suggested-action"/>
                   <class name="pill"/>
