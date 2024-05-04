@@ -162,13 +162,51 @@ pub fn tu_list_view_connect_activate(
     std::env::set_var(title_var, &result.name);
 
     match result.latest_type.as_str() {
-        "Movie" => push_page(view, &window, &result.name, crate::ui::widgets::movie::MoviePage::new(result.id.clone(), result.name.clone())),
-        "Series" => push_page(view, &window, &result.name, crate::ui::widgets::item::ItemPage::new(result.id.clone(), result.id.clone())),
-        "Episode" => push_page(view, &window, &result.name, crate::ui::widgets::item::ItemPage::new(result.series_id.as_ref().unwrap().clone(),result.id.clone())),
-        "Actor" => push_page(view, &window, &result.name, crate::ui::widgets::actor::ActorPage::new(&result.id)),
-        "BoxSet" => push_page(view, &window, &result.name, crate::ui::widgets::boxset::BoxSetPage::new(&result.id)),
+        "Movie" => push_page(
+            view,
+            &window,
+            &result.name,
+            crate::ui::widgets::movie::MoviePage::new(result.id.clone(), result.name.clone()),
+        ),
+        "Series" => push_page(
+            view,
+            &window,
+            &result.name,
+            crate::ui::widgets::item::ItemPage::new(result.id.clone(), result.id.clone()),
+        ),
+        "Episode" => push_page(
+            view,
+            &window,
+            &result.name,
+            crate::ui::widgets::item::ItemPage::new(
+                result.series_id.as_ref().unwrap().clone(),
+                result.id.clone(),
+            ),
+        ),
+        "Actor" => push_page(
+            view,
+            &window,
+            &result.name,
+            crate::ui::widgets::actor::ActorPage::new(&result.id),
+        ),
+        "BoxSet" => push_page(
+            view,
+            &window,
+            &result.name,
+            crate::ui::widgets::boxset::BoxSetPage::new(&result.id),
+        ),
         "MusicAlbum" => window.toast("MusicAlbum not supported yet"),
-        _ => push_page(view, &window, &result.name, SingleListPage::new(result.id.clone(), "".to_string(), &result.latest_type, parentid)),
+        _ => push_page(
+            view,
+            &window,
+            &result.name,
+            SingleListPage::new(
+                result.id.clone(),
+                "".to_string(),
+                &result.latest_type,
+                parentid,
+            ),
+        ),
     }
 }
 

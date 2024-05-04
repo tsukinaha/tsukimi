@@ -8,7 +8,10 @@ use gtk::{gio, glib};
 
 use crate::client::{network::*, structs::*};
 use crate::ui::image::set_image;
-use crate::utils::{get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate};
+use crate::utils::{
+    get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory,
+    tu_list_view_connect_activate,
+};
 
 use super::fix::ScrolledWindowFixExt;
 use super::included::IncludedDialog;
@@ -120,9 +123,7 @@ glib::wrapper! {
 #[template_callbacks]
 impl BoxSetPage {
     pub fn new(id: &str) -> Self {
-        Object::builder()
-            .property("id", id)
-            .build()
+        Object::builder().property("id", id).build()
     }
 
     #[template_callback]
@@ -135,7 +136,7 @@ impl BoxSetPage {
     pub async fn setup_pic(&self) {
         let imp = self.imp();
         let id = self.id();
-        let pic = set_image(id,"Primary",None);
+        let pic = set_image(id, "Primary", None);
         pic.set_halign(gtk::Align::Start);
         pic.set_valign(gtk::Align::Start);
         imp.picbox.append(&pic);
@@ -291,7 +292,7 @@ impl BoxSetPage {
                 tu_list_view_connect_activate(window, &result, None);
             }),
         );
-
+        imp.initemscrolled.fix();
         let store = self
             .imp()
             .selection

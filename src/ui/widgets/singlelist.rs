@@ -156,7 +156,7 @@ impl SingleListPage {
     #[template_callback]
     fn filter_panel_cb(&self, _btn: &gtk::Button) {
         let dialog = adw::Dialog::builder()
-            .title("Filter")                                                                                                                                                    
+            .title("Filter")
             .presentation_mode(adw::DialogPresentationMode::BottomSheet)
             .build();
         dialog.present(self);

@@ -6,8 +6,8 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use crate::ui::widgets::fix::ScrolledWindowFixExt;
 use super::tu_list_item::tu_list_item_register;
+use crate::ui::widgets::fix::ScrolledWindowFixExt;
 
 mod imp {
     use adw::subclass::prelude::*;
@@ -119,7 +119,7 @@ impl ActorPage {
     pub fn setup_pic(&self) {
         let imp = self.imp();
         let id = self.id();
-        let pic = set_image(id,"Primary",None);
+        let pic = set_image(id, "Primary", None);
         pic.set_size_request(218, 328);
         pic.set_halign(gtk::Align::Start);
         pic.set_valign(gtk::Align::Start);

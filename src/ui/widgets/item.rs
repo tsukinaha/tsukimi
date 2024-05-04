@@ -1,16 +1,19 @@
+use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
-use gtk::{prelude::*, template_callbacks};
 use gtk::{gio, glib};
+use gtk::{prelude::*, template_callbacks};
 use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
-use adw::prelude::*;
 
 use crate::client::{network::*, structs::*};
 use crate::ui::models::SETTINGS;
 use crate::ui::new_dropsel::bind_button;
-use crate::utils::{get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate};
+use crate::utils::{
+    get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory,
+    tu_list_view_connect_activate,
+};
 
 use super::fix::ScrolledWindowFixExt;
 use super::included::IncludedDialog;
@@ -544,7 +547,11 @@ impl ItemPage {
                     }
                 }
                 picture.add_overlay(&progressbar);
-                let markup = format!("{}. {}", seriesinfo.index_number.unwrap_or(0), seriesinfo.name);
+                let markup = format!(
+                    "{}. {}",
+                    seriesinfo.index_number.unwrap_or(0),
+                    seriesinfo.name
+                );
                 label.set_label(&markup);
             }
         });
@@ -567,7 +574,7 @@ impl ItemPage {
     pub fn logoset(&self) {
         let logobox = self.imp().logobox.get();
         let id = self.id();
-        let logo = crate::ui::image::set_image(id.clone(),"Logo",None);
+        let logo = crate::ui::image::set_image(id.clone(), "Logo", None);
         logobox.append(&logo);
         logobox.add_css_class("logo");
     }

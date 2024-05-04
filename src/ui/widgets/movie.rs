@@ -8,7 +8,10 @@ use gtk::{gio, glib};
 
 use crate::client::{network::*, structs::*};
 use crate::ui::models::SETTINGS;
-use crate::utils::{get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate};
+use crate::utils::{
+    get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory,
+    tu_list_view_connect_activate,
+};
 
 use super::fix::ScrolledWindowFixExt;
 use super::included::IncludedDialog;

@@ -5,8 +5,8 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use crate::ui::widgets::fix::ScrolledWindowFixExt;
 use super::tu_list_item::tu_list_item_register;
+use crate::ui::widgets::fix::ScrolledWindowFixExt;
 mod imp {
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;

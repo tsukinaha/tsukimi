@@ -235,8 +235,7 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
                     }
                     let pathbuf = PathBuf::from(path_str);
                     if !pathbuf.exists() {
-                        fs::create_dir_all(emby_cache_path())
-                        .unwrap();
+                        fs::create_dir_all(emby_cache_path()).unwrap();
                     }
                     match image_type {
                         "Primary" => {
@@ -905,10 +904,7 @@ pub async fn get_included(id: &str) -> Result<List, Error> {
     );
 
     let params = [
-        (
-            "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio",
-        ),
+        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
         ("Limit", "12"),
         ("ListItemIds", id),
         ("Recursive", "true"),
@@ -940,11 +936,11 @@ pub async fn get_includedby(parentid: &str) -> Result<List, Error> {
             "Fields",
             "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
         ),
-        ("ImageTypeLimit","1"),
+        ("ImageTypeLimit", "1"),
         ("ParentId", parentid),
         ("SortBy", "DisplayOrder"),
         ("SortOrder", "Ascending"),
-        ("EnableTotalRecordCount","false"),
+        ("EnableTotalRecordCount", "false"),
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),

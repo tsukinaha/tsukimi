@@ -127,9 +127,9 @@ impl AccountWindow {
                             window.toast("Account added successfully");
                             window.set_servers();
                         }
-                        Err(e) => {
+                        Err(_) => {
                             obj.imp().spinner.set_visible(false);
-                            obj.imp().toast.add_toast(Toast::builder().timeout(3).title(&format!("Failed to login: {}", e)).build());
+                            obj.imp().toast.add_toast(Toast::builder().timeout(3).title("Wrong Password or Account.").build());
                         }
                     }
                 }

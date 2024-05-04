@@ -1,10 +1,12 @@
 use adw::subclass::prelude::*;
-use gtk::{glib, CompositeTemplate};
 use gtk::prelude::*;
+use gtk::{glib, CompositeTemplate};
 
 use crate::client::network::get_included;
 use crate::client::structs::SimpleListItem;
-use crate::utils::{get_data_with_cache, spawn, tu_list_item_factory, tu_list_view_connect_activate};
+use crate::utils::{
+    get_data_with_cache, spawn, tu_list_item_factory, tu_list_view_connect_activate,
+};
 
 use super::window::Window;
 
@@ -107,7 +109,7 @@ impl IncludedDialog {
         let boxset_list = self.get_boxset_list().await;
         spawn(glib::clone!(@weak store,@weak self as obj=> async move {
             obj.imp().spinner.set_visible(false);
-            
+
             if boxset_list.is_empty() {
                 obj.imp().status.set_visible(true);
                 return;
@@ -125,9 +127,14 @@ impl IncludedDialog {
     async fn get_boxset_list(&self) -> Vec<SimpleListItem> {
         let imp = self.imp();
         let id = imp.id.get().unwrap().clone();
-        let list = get_data_with_cache(id.to_string(), "include", async move {
-            get_included(&id).await
-        }).await.unwrap();
+        let list =
+            get_data_with_cache(
+                id.to_string(),
+                "include",
+                async move { get_included(&id).await },
+            )
+            .await
+            .unwrap();
         list.items
     }
 }

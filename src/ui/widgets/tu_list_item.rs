@@ -376,18 +376,18 @@ impl TuListItem {
         let id = self.item().id().clone();
         self.update_state(&action);
         let result = spawn_tokio(async move { Self::perform_action_inner(&id, &action).await });
-    
+
         result.await.unwrap();
-    
+
         spawn(glib::clone!(@weak self as obj => async move {
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             window.toast("Success");
-        })); 
+        }));
 
         let obj = self.imp().obj();
         obj.insert_action_group("item", obj.set_action().as_ref());
     }
-    
+
     pub fn update_state(&self, action: &Action) {
         match action {
             Action::Like => self.item().set_is_favorite(true),
@@ -406,7 +406,10 @@ impl TuListItem {
         }));
     }
 
-    pub async fn process_item(&self, action: fn(&String) -> Result<(), Box<dyn std::error::Error>>) {
+    pub async fn process_item(
+        &self,
+        action: fn(&String) -> Result<(), Box<dyn std::error::Error>>,
+    ) {
         let id = self.item().id();
         spawn_tokio(async move {
             action(&id).unwrap();
@@ -417,14 +420,13 @@ impl TuListItem {
             window.toast("Success");
         }));
     }
-    
-
 }
 
 pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem, listtype: &str) {
     let tu_item = create_tu_item(latest, None);
     match latest.latest_type.as_str() {
-        "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Actor"=> {
+        "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views"
+        | "Actor" => {
             set_list_child(
                 tu_item,
                 list_item,
@@ -436,7 +438,12 @@ pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem,
     }
 }
 
-pub fn tu_list_poster(latest: &SimpleListItem, list_item: &gtk::ListItem, listtype: &str, poster: &str) {
+pub fn tu_list_poster(
+    latest: &SimpleListItem,
+    list_item: &gtk::ListItem,
+    listtype: &str,
+    poster: &str,
+) {
     let tu_item = create_tu_item(latest, Some(poster));
     match latest.latest_type.as_str() {
         "Movie" | "Series" => {
@@ -491,7 +498,7 @@ fn create_tu_item(latest: &SimpleListItem, poster: Option<&str>) -> TuItem {
         tu_item.set_album_artist(Some(album_artist.clone()));
     }
     if let Some(role) = &latest.role {
-        tu_item.set_role(Some(role.clone())); 
+        tu_item.set_role(Some(role.clone()));
     }
     tu_item
 }
