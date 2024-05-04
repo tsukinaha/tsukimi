@@ -6,7 +6,6 @@ use once_cell::sync::Lazy;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
 use serde_json::{json, Value};
-use std::path::PathBuf;
 use std::sync::OnceLock;
 use std::{env, fs, io::Write};
 use tokio::runtime;
@@ -233,7 +232,7 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
                     if bytes.len() < 10240 {
                         return Ok(id);
                     }
-                    let pathbuf = PathBuf::from(path_str);
+                    let pathbuf = path_str;
                     if !pathbuf.exists() {
                         fs::create_dir_all(emby_cache_path()).unwrap();
                     }

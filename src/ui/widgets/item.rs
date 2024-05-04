@@ -2,7 +2,7 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
 use gtk::{gio, glib};
-use gtk::{prelude::*, template_callbacks};
+use gtk::template_callbacks;
 use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
