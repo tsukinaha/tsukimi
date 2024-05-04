@@ -47,10 +47,11 @@
               </object>
             </child>
             <child>
-              <object class="GtkButton" id="refresh">
+              <object class="GtkButton">
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
                 <property name="valign">center</property>
+                <property name="visible">False</property>
                 <property name="child">
                   <object class="AdwButtonContent">
                     <property name="icon-name">go-up-symbolic</property>
