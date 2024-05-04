@@ -79,18 +79,20 @@ pub async fn loginv2(
     Ok(())
 }
 
-pub async fn search(searchinfo: String) -> Result<Vec<SimpleListItem>, Error> {
+pub async fn search(searchinfo: String, filter: &Vec<&str>) -> Result<Vec<SimpleListItem>, Error> {
     let server = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",
         server.domain, server.port, server.user_id
     );
+    let filter_str = filter.join(",");
     let params = [
         (
             "Fields",
             "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
         ),
-        ("IncludeItemTypes", "Movie,Series"),
+        ("IncludeItemTypes", &filter_str),
+        ("IncludeSearchTypes", "false"),
         ("StartIndex", "0"),
         ("SortBy", "SortName"),
         ("SortOrder", "Ascending"),

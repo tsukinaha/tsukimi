@@ -76,7 +76,7 @@ impl AccountSettings {
         }).await {
             Ok(_) => {
                 let window = self.root().and_downcast::<super::window::Window>().unwrap();
-                window.toast("Password changed successfully!");
+                window.toast("Password changed successfully! Please login again.");
             }
             Err(e) => {
                 let window = self.root().and_downcast::<super::window::Window>().unwrap();

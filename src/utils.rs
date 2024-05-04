@@ -183,7 +183,7 @@ pub fn tu_list_view_connect_activate(
                 result.id.clone(),
             ),
         ),
-        "Actor" => push_page(
+        "Actor" | "Person" => push_page(
             view,
             &window,
             &result.name,

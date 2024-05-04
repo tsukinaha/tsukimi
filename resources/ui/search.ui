@@ -16,6 +16,72 @@
               </object>
             </child>
             <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="halign">center</property>
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkToggleButton" id="movie">
+                    <property name="group">music</property>
+                    <property name="active">True</property>
+                    <child>
+                      <object class="AdwButtonContent">
+                        <property name="label" translatable="yes">Movie</property>
+                        <property name="icon-name">video-x-generic-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="series">
+                    <property name="group">music</property>
+                    <property name="active">True</property>
+                    <child>
+                      <object class="AdwButtonContent">
+                        <property name="label" translatable="yes">Series</property>
+                        <property name="icon-name">series</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="boxset">
+                    <property name="group">music</property>
+                    <property name="active">True</property>
+                    <child>
+                      <object class="AdwButtonContent">
+                        <property name="label" translatable="yes">Box Set</property>
+                        <property name="icon-name">folder-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="person">
+                    <property name="group">music</property>
+                    <property name="active">True</property>
+                    <child>
+                      <object class="AdwButtonContent">
+                        <property name="label" translatable="yes">Person</property>
+                        <property name="icon-name">avatar-default-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="music">
+                    <property name="active">False</property>
+                    <child>
+                      <object class="AdwButtonContent">
+                        <property name="label" translatable="yes">Music Album</property>
+                        <property name="icon-name">folder-music-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="GtkSpinner" id="spinner">
                 <property name="spinning">True</property>
                 <property name="visible">False</property>

@@ -172,7 +172,7 @@ impl TuListItem {
                 imp.overlay.set_size_request(190, 190);
                 self.set_picture();
             }
-            "Actor" => {
+            "Actor" | "Person"=> {
                 imp.listlabel.set_text(&format!(
                     "{}\n{}",
                     item.name(),
@@ -426,7 +426,7 @@ pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem,
     let tu_item = create_tu_item(latest, None);
     match latest.latest_type.as_str() {
         "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views"
-        | "Actor" => {
+        | "Actor" | "Person" => {
             set_list_child(
                 tu_item,
                 list_item,

@@ -3,6 +3,7 @@
   <gresource prefix="/moe/tsukimi/icons/">
     <file alias="tsukimi">icons/tsukimi.png</file>
     <file preprocess="xml-stripblanks" alias="settings-symbolic.svg">icons/settings-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="series.svg">icons/series.svg</file>
   </gresource>
   <gresource prefix="/moe/tsukimi/">
     <file compressed="true" preprocess="xml-stripblanks">settings.ui</file>

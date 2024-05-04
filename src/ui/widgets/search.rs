@@ -4,7 +4,7 @@ use crate::client::{network::*, structs::*};
 use crate::ui::widgets::item::ItemPage;
 use crate::ui::widgets::movie::MoviePage;
 use crate::ui::widgets::window::Window;
-use crate::utils::{tu_list_item_factory, tu_list_view_connect_activate};
+use crate::utils::{spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate};
 use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::prelude::*;
@@ -33,6 +33,16 @@ mod imp {
         pub searchrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub recommendbox: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub movie: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
+        pub series: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
+        pub boxset: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
+        pub person: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
+        pub music: TemplateChild<gtk::ToggleButton>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -60,6 +70,7 @@ mod imp {
             self.parent_constructed();
             obj.setup_recommend();
             obj.setup_search();
+            obj.search();
         }
     }
 
@@ -144,40 +155,9 @@ impl SearchPage {
 
     pub fn setup_search(&self) {
         let imp = self.imp();
-        let spinner = imp.spinner.get();
-        let searchrevealer = imp.searchrevealer.get();
-        let recommendbox = imp.recommendbox.get();
-        let (sender, receiver) = async_channel::bounded::<Vec<SimpleListItem>>(1);
-        imp.searchentry.connect_activate(
-            glib::clone!(@strong sender,@weak spinner=> move |entry| {
-                spinner.set_visible(true);
-                recommendbox.set_visible(false);
-                let search_content = entry.text().to_string();
-                RUNTIME.spawn(glib::clone!(@strong sender => async move {
-                    let search_results = search(search_content).await.unwrap_or_else(|e| {
-                        eprintln!("Error: {}", e);
-                        Vec::<SimpleListItem>::new()
-                    });
-                    sender.send(search_results).await.expect("search results not received.");
-                }));
-            }),
-        );
+       
 
         let store = gio::ListStore::new::<glib::BoxedAnyObject>();
-        glib::spawn_future_local(glib::clone!(@weak store=> async move {
-            while let Ok(search_results) = receiver.recv().await {
-                spinner.set_visible(false);
-                store.remove_all();
-                for result in search_results {
-                    if result.latest_type == "Series" || result.latest_type == "Movie" {
-                        let object = glib::BoxedAnyObject::new(result);
-                        store.append(&object);
-                    }
-                }
-                searchrevealer.set_reveal_child(true);
-            }
-        }));
-
         imp.selection.set_model(Some(&store));
         let factory = tu_list_item_factory("".to_string());
         imp.searchgrid.set_factory(Some(&factory));
@@ -191,6 +171,56 @@ impl SearchPage {
                     let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                     let result: std::cell::Ref<SimpleListItem> = item.borrow();
                     tu_list_view_connect_activate(window, &result, None);
+            }),
+        );
+    }
+
+    pub fn search(&self) {
+        let imp = self.imp();
+        let spinner = imp.spinner.get();
+        let searchrevealer = imp.searchrevealer.get();
+        let recommendbox = imp.recommendbox.get();
+        let store = imp.selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+        imp.searchentry.connect_activate(
+            glib::clone!(@weak spinner,@weak imp => move |entry| {
+                spinner.set_visible(true);
+                recommendbox.set_visible(false);
+                let search_content = entry.text().to_string();
+                let search_filter = 
+                
+                {
+                    let mut filter = Vec::new();
+                    if imp.movie.is_active() {
+                        filter.push("Movie");
+                    }
+                    if imp.series.is_active() {
+                        filter.push("Series");
+                    }
+                    if imp.boxset.is_active() {
+                        filter.push("BoxSet");
+                    }
+                    if imp.person.is_active() {
+                        filter.push("Person");
+                    }
+                    if imp.music.is_active() {
+                        filter.push("MusicAlbum");
+                    }
+                    filter.pop();
+                    filter
+                };
+
+                glib::spawn_future_local(glib::clone!(@weak store, @weak searchrevealer=> async move {
+                    let search_results = spawn_tokio(async move {
+                        search(search_content,&search_filter).await
+                    }).await.unwrap();
+                    spinner.set_visible(false);
+                    store.remove_all();
+                    searchrevealer.set_reveal_child(true);
+                    for result in search_results {
+                        let object = glib::BoxedAnyObject::new(result);
+                        store.append(&object);
+                    } 
+                }));
             }),
         );
     }
