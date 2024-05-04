@@ -1,10 +1,11 @@
 use adw::subclass::prelude::*;
 use glib::Object;
-use gtk::prelude::*;
+use gtk::{prelude::*, template_callbacks};
 use gtk::{gio, glib};
 use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
+use adw::prelude::*;
 
 use crate::client::{network::*, structs::*};
 use crate::ui::models::SETTINGS;
@@ -12,6 +13,7 @@ use crate::ui::new_dropsel::bind_button;
 use crate::utils::{get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate};
 
 use super::fix::fix;
+use super::included::IncludedDialog;
 use super::window::Window;
 
 mod imp {
@@ -131,6 +133,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
             klass.install_action("item.first", None, move |window, _action, _parameter| {
                 window.itemfirst();
             });
@@ -219,12 +222,20 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+#[template_callbacks]
 impl ItemPage {
     pub fn new(id: String, inid: String) -> Self {
         Object::builder()
             .property("id", id)
             .property("inid", inid)
             .build()
+    }
+
+    #[template_callback]
+    pub fn include_button_cb(&self) {
+        let id = self.id();
+        let dialog = IncludedDialog::new(&id);
+        dialog.present(self);
     }
 
     pub async fn played(&self) {
@@ -396,24 +407,24 @@ impl ItemPage {
         spawn(glib::clone!(@weak self as obj => async move {
                 let mut season_set: HashSet<u32> = HashSet::new();
                 let mut season_map: HashMap<String,u32> = HashMap::new();
-                let min_season = series_info.iter().map(|info| if info.parent_index_number == 0 { 100 } else { info.parent_index_number }).min().unwrap_or(1);
+                let min_season = series_info.iter().map(|info| if info.parent_index_number.unwrap_or(0) == 0 { 100 } else { info.parent_index_number.unwrap_or(0) }).min().unwrap_or(1);
                 let mut pos = 0;
                 let mut set = true;
                 for info in &series_info {
-                    if !season_set.contains(&info.parent_index_number) {
-                        let seasonstring = format!("Season {}", info.parent_index_number);
+                    if !season_set.contains(&info.parent_index_number.unwrap_or(0)) {
+                        let seasonstring = format!("Season {}", info.parent_index_number.unwrap_or(0));
                         seasonstore.append(&seasonstring);
-                        season_set.insert(info.parent_index_number);
-                        season_map.insert(seasonstring.clone(), info.parent_index_number);
+                        season_set.insert(info.parent_index_number.unwrap_or(0));
+                        season_map.insert(seasonstring.clone(), info.parent_index_number.unwrap_or(0));
                         if set {
-                            if info.parent_index_number == min_season {
+                            if info.parent_index_number.unwrap_or(0) == min_season {
                                 set = false;
                             } else {
                                 pos += 1;
                             }
                         }
                     }
-                    if info.parent_index_number == min_season {
+                    if info.parent_index_number.unwrap_or(0) == min_season {
                         let object = glib::BoxedAnyObject::new(info.clone());
                         store.append(&object);
                     }
@@ -444,7 +455,7 @@ impl ItemPage {
                     store.remove_all();
                     let season_number = seriesinfo_seasonmap[&selected];
                     for info in &seriesinfo_seasonlist {
-                        if info.parent_index_number == season_number {
+                        if info.parent_index_number.unwrap_or(0) == season_number {
                             let object = glib::BoxedAnyObject::new(info.clone());
                             store.append(&object);
                         }
@@ -456,7 +467,7 @@ impl ItemPage {
                     let text = entry.text();
                     store.remove_all();
                     for info in &series_info {
-                        if (info.name.to_lowercase().contains(&text.to_lowercase()) || info.index_number.to_string().contains(&text.to_lowercase())) && info.parent_index_number == season_map[&seasonlist.selected_item().and_downcast_ref::<gtk::StringObject>().unwrap().string().to_string()] {
+                        if (info.name.to_lowercase().contains(&text.to_lowercase()) || info.index_number.unwrap_or(0).to_string().contains(&text.to_lowercase())) && info.parent_index_number.unwrap_or(0) == season_map[&seasonlist.selected_item().and_downcast_ref::<gtk::StringObject>().unwrap().string().to_string()] {
                             let object = glib::BoxedAnyObject::new(info.clone());
                             store.append(&object);
                         }
@@ -533,7 +544,7 @@ impl ItemPage {
                     }
                 }
                 picture.add_overlay(&progressbar);
-                let markup = format!("{}. {}", seriesinfo.index_number, seriesinfo.name);
+                let markup = format!("{}. {}", seriesinfo.index_number.unwrap_or(0), seriesinfo.name);
                 label.set_label(&markup);
             }
         });
@@ -614,7 +625,7 @@ impl ItemPage {
             .await
             .unwrap();
         spawn(glib::clone!(@weak osdbox,@weak self as obj=>async move {
-                obj.imp().line1.set_text(&format!("S{}:E{} - {}",info.parent_index_number, info.index_number, info.name));
+                obj.imp().line1.set_text(&format!("S{}:E{} - {}",info.parent_index_number.unwrap_or(0), info.index_number.unwrap_or(0), info.name));
                 obj.imp().line1spinner.set_visible(false);
                 let info = info.clone();
                 if let Some(handlerid) = obj.imp().playbuttonhandlerid.borrow_mut().take() {

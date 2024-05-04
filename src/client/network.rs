@@ -896,3 +896,34 @@ pub async fn like_item(types: &str) -> Result<Vec<SimpleListItem>, Error> {
     let items: Vec<SimpleListItem> = serde_json::from_value(json["Items"].take()).unwrap();
     Ok(items)
 }
+
+pub async fn get_included(id: &str) -> Result<List, Error> {
+    let server_info = set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items",
+        server_info.domain, server_info.port, server_info.user_id
+    );
+
+    let params = [
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio",
+        ),
+        ("Limit", "12"),
+        ("ListItemIds", id),
+        ("Recursive", "true"),
+        ("IncludeItemTypes", "Playlist,BoxSet"),
+        ("SortBy", "SortName"),
+        ("Recursive", "true"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    let response = client().get(&url).query(&params).send().await?;
+    let json: serde_json::Value = response.json().await?;
+    let latests: List = serde_json::from_value(json).unwrap();
+    Ok(latests)
+}

@@ -24,9 +24,9 @@ pub struct SeriesInfo {
     #[serde(rename = "Overview")]
     pub overview: Option<String>,
     #[serde(rename = "IndexNumber")]
-    pub index_number: u32,
+    pub index_number: Option<u32>,
     #[serde(rename = "ParentIndexNumber")]
-    pub parent_index_number: u32,
+    pub parent_index_number: Option<u32>,
     #[serde(rename = "UserData")]
     pub user_data: Option<UserData>,
 }

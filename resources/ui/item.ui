@@ -265,6 +265,18 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkButton" id="include_button">
+                        <property name="child">
+                          <object class="AdwButtonContent">
+                            <property name="icon-name">view-grid-symbolic</property>
+                            <property name="label" translatable="yes">Included In</property>
+                            <property name="use-underline">True</property>
+                          </object>
+                        </property>
+                        <signal name="clicked" handler="include_button_cb" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkSearchEntry" id="episodesearchentry">
                         <property name="hexpand">true</property>
                         <property name="placeholder-text" translatable="yes">Search episodes in current season</property>

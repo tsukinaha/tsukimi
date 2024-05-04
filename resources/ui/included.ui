@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="IncludedDialog" parent="AdwDialog">
+    <property name="title" translatable="yes">Included In</property>
+    <property name="presentation-mode">bottom-sheet</property>
+    <property name="follows-content-size">True</property>
+    <property name="child">
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="AdwStatusPage" id="status">
+            <property name="title">Nothing Here</property>
+            <property name="description">This item is not included in any BoxSet.</property>
+            <property name="icon-name">view-grid-symbolic</property>
+            <property name="vexpand">True</property>
+            <property name="visible">False</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSpinner" id="spinner">
+            <property name="visible">True</property>
+            <property name="spinning">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="vexpand">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">False</property>
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="GtkListView" id="listview">
+                <property name="vexpand">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>
