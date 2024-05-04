@@ -975,3 +975,23 @@ pub async fn change_password(new_password: &str) -> Result<(), Error> {
     client().post(&url).query(&params).json(&profile).send().await?;
     Ok(())
 }
+
+pub async fn hide_from_resume(id: &str) -> Result<(), Error> {
+    let server_info = set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items/{}/HideFromResume",
+        server_info.domain, server_info.port, server_info.user_id, id
+    );
+
+    let params = [
+        ("Hide", "true"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    client().post(&url).query(&params).send().await?;
+    Ok(())
+}

@@ -8,6 +8,7 @@ use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
 
+use crate::client::network::hide_from_resume;
 use crate::client::network::like;
 use crate::client::network::played;
 use crate::client::network::unlike;
@@ -101,6 +102,7 @@ pub enum Action {
     Unlike,
     Played,
     Unplayed,
+    Remove,
 }
 
 impl TuListItem {
@@ -360,6 +362,15 @@ impl TuListItem {
                 .build()]),
         }
 
+        if let Some(true) = self.imp().isresume.get() {
+            action_group.add_action_entries([gio::ActionEntry::builder("remove")
+                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    spawn(glib::clone!(@weak obj => async move {
+                        obj.perform_action(Action::Remove).await;
+                    }))
+                }))
+                .build()]);
+        }
         Some(action_group)
     }
 
@@ -369,6 +380,7 @@ impl TuListItem {
             Action::Unlike => unlike(id).await,
             Action::Played => played(id).await,
             Action::Unplayed => unplayed(id).await,
+            Action::Remove => hide_from_resume(id).await,
         }
     }
 
@@ -394,6 +406,13 @@ impl TuListItem {
             Action::Unlike => self.item().set_is_favorite(false),
             Action::Played => self.item().set_played(true),
             Action::Unplayed => self.item().set_played(false),
+            Action::Remove => {
+                self.imp().revealer.set_reveal_child(false);
+                spawn(glib::clone!(@weak self as obj => async move {
+                    glib::timeout_future_seconds(1).await;
+                    obj.imp().revealer.set_visible(false);
+                }));
+            },
         }
         self.gesture();
     }

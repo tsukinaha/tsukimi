@@ -284,8 +284,10 @@ impl MoviePage {
         if pathbuf.exists() {
             backdrop.set_file(Some(&file));
             self.imp().backrevealer.set_reveal_child(true);
-            let window = self.root().and_downcast::<super::window::Window>().unwrap();
-            window.set_rootpic(file);
+            spawn(glib::clone!(@weak self as obj => async move {
+                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                window.set_rootpic(file);
+            }));
         }
     }
 
