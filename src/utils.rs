@@ -198,11 +198,12 @@ pub fn tu_list_view_connect_activate(
         "MusicAlbum" => {
             let item = create_tu_item(&result, None);
             push_page(
-            view,
-            &window,
-            &result.name,
-            crate::ui::widgets::music_album::AlbumPage::new(item))
-        },
+                view,
+                &window,
+                &result.name,
+                crate::ui::widgets::music_album::AlbumPage::new(item),
+            )
+        }
         _ => push_page(
             view,
             &window,

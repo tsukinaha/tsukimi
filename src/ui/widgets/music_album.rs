@@ -72,13 +72,21 @@ impl AlbumPage {
 
     pub async fn set_album(&self) {
         let item = self.item();
-        let image = get_image_with_cache(&item.id(), "Primary", None).await.unwrap_or_default();
-        self.imp().cover_image.set_file(Some(&gtk::gio::File::for_path(image)));
+        let image = get_image_with_cache(&item.id(), "Primary", None)
+            .await
+            .unwrap_or_default();
+        self.imp()
+            .cover_image
+            .set_file(Some(&gtk::gio::File::for_path(image)));
 
         self.imp().title_label.set_text(&item.name());
 
-        self.imp().artist_label.set_text(&item.album_artist().unwrap_or(String::new()));
-    
-        self.imp().released_label.set_text(&item.production_year().to_string());
+        self.imp()
+            .artist_label
+            .set_text(&item.album_artist().unwrap_or(String::new()));
+
+        self.imp()
+            .released_label
+            .set_text(&item.production_year().to_string());
     }
 }
