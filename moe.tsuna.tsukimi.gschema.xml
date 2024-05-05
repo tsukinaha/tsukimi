@@ -70,7 +70,7 @@
       <summary>Default switch state</summary>
     </key>
     <key name="is-backgroundenabled" type="b">
-      <default>false</default>
+      <default>true</default>
       <summary>Default switch state</summary>
     </key>
     <key name="preferred-server" type="s">
