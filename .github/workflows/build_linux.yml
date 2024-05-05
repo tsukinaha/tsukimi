@@ -1,9 +1,9 @@
-name: Linux CI
+name: feature/win - Linux CI
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - 'main'
+  push:
+    branches:
+      - "feature/win"
   # schedule:
   #   - cron: '45 3 * * *'
 

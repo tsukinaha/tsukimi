@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - v*-win
+      - v*
 
 env:
   CARGO_TERM_COLOR: always
@@ -19,6 +19,10 @@ jobs:
             os: windows-latest
             target: x86_64-pc-windows-gnu
             artifact: tsukimi.exe
+          - arch: x86_64-linux-gnu
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact: tsukimi
 
     runs-on: ${{matrix.os}}
 
@@ -35,6 +39,7 @@ jobs:
           C:\msys64\usr\bin\pacman.exe -Syu --noconfirm
 
       - name: Build ${{ matrix.target }}
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
         run: |
           $env:Path = "C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path;
           cargo build --release --locked
@@ -58,11 +63,22 @@ jobs:
           7z.exe a ../tsukimi-${{matrix.arch}}.7z ./*
 
       - name: Build Complete Package
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
         run: |
           cd artifact/ && cp -r tsukimi-windows-gnu-amd64 tsukimi-windows-gnu-amd64-complete && cd tsukimi-windows-gnu-amd64-complete && mkdir mpv && cd mpv
           Invoke-WebRequest -Uri "https://github.com/ZBound/tkm-config/releases/latest/download/mqv.7z" -OutFile mpv.7z
           7z.exe x mpv.7z && rm mpv.7z
           7z.exe a ../../tsukimi-${{matrix.arch}}-complete.7z ../*
+
+      - name: Build ${{matrix.target}}
+        if: ${{ matrix.target == 'x86_64-unknown-linux-gnu' }}
+        run: |
+          mkdir artifact
+          docker build -t tsukimi .
+          docker run -d --name tsukimi tsukimi
+          docker cp tsukimi:/usr/src/tsukimi/. artifact/
+          cd artifact
+          tar -czf tsukimi-x86_64-linux-gnu.tar.gz tsukimi gschemas.compiled
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -71,6 +87,8 @@ jobs:
           path: |
             artifact/tsukimi-*.zip
             artifact/tsukimi-*.7z
+            artifact/tsukimi*.deb
+            artifact/tsukimi*.tar.gz
           compression-level: 0
           retention-days: 3
 
@@ -86,16 +104,23 @@ jobs:
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
- 
-      - name: Package Windows GNU
+
+      - name: Extract packages
         run: |
           mv tsukimi-x86_64-windows-gnu/*.zip .
           mv tsukimi-x86_64-windows-gnu/*.7z .
+          mv tsukimi-x86_64-linux-gnu/*.tar.gz .
+          mv tsukimi-x86_64-linux-gnu/*.deb .
+          rm -rf tsukimi-x86_64-windows-gnu
+          rm -rf tsukimi-x86_64-linux-gnu
 
       - name: Calculate hash
         run: |
-          sha512sum *.zip > tsukimi.sha512sum
           sha512sum *.7z > tsukimi-7z.sha512sum
+          sha512sum tsukimi*.zip > tsukimi.sha512sum
+          sha512sum tsukimi*.7z >> tsukimi.sha512sum
+          sha512sum tsukimi*.tar.gz >> tsukimi.sha512sum
+          sha512sum tsukimi*.deb >> tsukimi.sha512sum
 
       - name: Get latest tag name
         run: echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
@@ -114,5 +139,7 @@ jobs:
           files: |
             *.zip
             *.7z
+            *.tar.gz
+            *.deb
             *.sha512sum
           tag_name: ${{ env.TAG_NAME }}
