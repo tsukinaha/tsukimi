@@ -43,6 +43,8 @@ mod imp {
         #[template_child]
         pub listlabel: TemplateChild<gtk::Label>,
         #[template_child]
+        pub label2: TemplateChild<gtk::Label>,
+        #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
         #[template_child]
         pub revealer: TemplateChild<gtk::Revealer>,
@@ -125,8 +127,8 @@ impl TuListItem {
                 } else {
                     String::from("")
                 };
-                imp.listlabel
-                    .set_text(format!("{}\n{}", item.name(), year).as_str());
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_text(&year);
                 self.set_picture();
                 self.set_played();
                 if let Some(true) = imp.isresume.get() {
@@ -134,25 +136,32 @@ impl TuListItem {
                 }
             }
             "Series" => {
-                imp.listlabel
-                    .set_text(format!("{}\n{}", item.name(), item.production_year()).as_str());
+                let year = if item.production_year() != 0 {
+                    item.production_year().to_string()
+                } else {
+                    String::from("")
+                };
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_text(&year);
                 self.set_picture();
                 self.set_played();
                 self.set_count();
             }
             "BoxSet" => {
-                imp.listlabel.set_text(item.name().to_string().as_str());
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_visible(false);
                 self.set_picture();
             }
             "Tag" | "Genre" => {
                 imp.overlay.set_size_request(190, 190);
-                imp.listlabel.set_text(item.name().to_string().as_str());
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_visible(false);
                 self.set_picture();
             }
             "Episode" => {
-                imp.listlabel.set_text(&format!(
-                    "{}\nS{}E{}: {}",
-                    item.series_name(),
+                imp.listlabel.set_text(&item.series_name());
+                imp.label2.set_text(&format!(
+                    "S{}E{}: {}",
                     item.parent_index_number(),
                     item.index_number(),
                     item.name()
@@ -162,24 +171,19 @@ impl TuListItem {
                 self.set_played_percentage();
             }
             "Views" => {
-                imp.listlabel.set_text(item.name().to_string().as_str());
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_visible(false);
                 self.set_picture();
             }
             "MusicAlbum" => {
-                imp.listlabel.set_text(&format!(
-                    "{}\n{}",
-                    item.name(),
-                    item.album_artist().unwrap_or("".to_string())
-                ));
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_text(&item.album_artist().unwrap_or("".to_string()));
                 imp.overlay.set_size_request(190, 190);
                 self.set_picture();
             }
             "Actor" | "Person" => {
-                imp.listlabel.set_text(&format!(
-                    "{}\n{}",
-                    item.name(),
-                    item.role().unwrap_or("".to_string())
-                ));
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_text(&item.role().unwrap_or("".to_string()));
                 self.set_picture();
             }
             _ => {

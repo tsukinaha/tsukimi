@@ -23,6 +23,19 @@
                 <property name="ellipsize">end</property>
               </object>
             </child>
+            <child>
+              <object class="GtkLabel" id="label2">
+                <property name="justify">center</property>
+                <property name="width-request">167</property>
+                <property name="ellipsize">middle</property>
+                <attributes>
+                  <attribute name="scale" value="0.9"/>
+                </attributes>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+            </child>
           </object>
         </child>
       </object>

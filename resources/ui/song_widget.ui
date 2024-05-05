@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="SongWidget" parent="GtkListBoxRow">
+    <property name="selectable">False</property>
+    <child>
+      <object class="GtkBox" id="box1">
+        <property name="focusable">False</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkImage" id="_dnd_icon">
+            <property name="visible">False</property>
+            <property name="icon-name">list-drag-handle-symbolic</property>
+            <style>
+              <class name="drag-handle"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="box3">
+            <property name="width_request">48</property>
+            <property name="focusable">False</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkImage" id="_play_icon">
+                <property name="focusable">False</property>
+                <property name="icon_size">1</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="_number_label">
+                <property name="focusable">False</property>
+                <property name="halign">end</property>
+                <property name="justify">right</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="title_box">
+            <property name="focusable">False</property>
+            <property name="hexpand">True</property>
+            <child>
+              <object class="GtkLabel" id="_title_label">
+                <property name="focusable">False</property>
+                <property name="xalign">0</property>
+                <property name="halign">start</property>
+                <property name="hexpand">True</property>
+                <property name="ellipsize">end</property>
+                <property name="max_width_chars">90</property>
+                <property name="justify">fill</property>
+                <property name="margin-start">9</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="_artist_box">
+            <property name="visible">False</property>
+            <property name="focusable">False</property>
+            <property name="hexpand">True</property>
+            <child>
+              <object class="GtkLabel" id="_artist_label">
+                <property name="focusable">False</property>
+                <property name="xalign">0</property>
+                <property name="halign">start</property>
+                <property name="hexpand">True</property>
+                <property name="ellipsize">end</property>
+                <property name="max_width_chars">90</property>
+                <property name="justify">fill</property>
+                <property name="margin-start">9</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="_album_duration_box">
+            <property name="focusable">False</property>
+            <property name="hexpand">True</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="_album_label">
+                <property name="visible">False</property>
+                <property name="focusable">False</property>
+                <property name="xalign">0</property>
+                <property name="halign">start</property>
+                <property name="hexpand">True</property>
+                <property name="ellipsize">end</property>
+                <property name="max_width_chars">90</property>
+                <property name="justify">fill</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="_duration_label">
+                <property name="focusable">False</property>
+                <property name="halign">end</property>
+                <property name="hexpand">True</property>
+                <property name="single_line_mode">True</property>
+                <attributes>
+                  <attribute name="font-features" value="tnum=1"/>
+                </attributes>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="StarToggle" id="_star_toggle">
+            <property name="valign">center</property>
+            <property name="margin-end">12</property>
+            <property name="margin-start">12</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="_menu_button">
+            <property name="visible">False</property>
+            <property name="focusable">True</property>
+            <property name="icon-name">view-more-symbolic</property>
+            <style>
+              <class name="flat"/>
+            </style>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkDragSource" id="_drag_source">
+        <property name="actions">move</property>
+        <property name="propagation-phase">none</property>
+        <signal name="prepare" handler="_on_drag_prepare" swapped="no"/>
+        <signal name="drag-begin" handler="_on_drag_begin" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkDropTarget">
+        <property name="actions">move</property>
+        <property name="formats">SongWidget</property>
+        <property name="preload">True</property>
+        <signal name="drop" handler="_on_drop" swapped="no"/>
+      </object>
+    </child>
+    <style>
+      <class name="songwidget"/>
+    </style>
+  </template>
+  <object class="GtkSizeGroup" id="_size_group">
+    <property name="mode">horizontal</property>
+    <widgets>
+      <widget name="title_box"/>
+      <widget name="_artist_box"/>
+      <widget name="_album_duration_box"/>
+    </widgets>
+  </object>
+</interface>
