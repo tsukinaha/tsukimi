@@ -568,7 +568,8 @@ impl ItemPage {
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
                 spawn(glib::clone!(@weak obj =>async move {
-                    obj.selectepisode(item.borrow::<SeriesInfo>().clone()).await;
+                    let series_info = item.borrow::<SeriesInfo>().clone();
+                    obj.selectepisode(series_info).await;
                 }));
             }));
     }

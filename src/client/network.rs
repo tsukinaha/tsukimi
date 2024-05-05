@@ -79,7 +79,7 @@ pub async fn loginv2(
     Ok(())
 }
 
-pub async fn search(searchinfo: String, filter: &Vec<&str>) -> Result<Vec<SimpleListItem>, Error> {
+pub async fn search(searchinfo: String, filter: &[&str]) -> Result<Vec<SimpleListItem>, Error> {
     let server = set_config();
     let url = format!(
         "{}:{}/emby/Users/{}/Items",

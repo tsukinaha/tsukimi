@@ -230,11 +230,9 @@ impl TuListItem {
         } else {
             let image = if let Some(true) = imp.isresume.get() {
                 if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
-                    let parent_thumb_item_id = parent_thumb_item_id;
                     imp.overlay.set_size_request(250, 141);
                     set_image(parent_thumb_item_id, "Thumb", None)
                 } else if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id() {
-                    let parent_backdrop_item_id = parent_backdrop_item_id;
                     imp.overlay.set_size_request(250, 141);
                     set_image(parent_backdrop_item_id, "Backdrop", Some(0))
                 } else {
