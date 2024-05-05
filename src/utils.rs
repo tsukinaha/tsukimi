@@ -1,7 +1,7 @@
 use crate::client::{network::RUNTIME, structs::SimpleListItem};
 use crate::ui::models::emby_cache_path;
 use crate::ui::widgets::singlelist::SingleListPage;
-use crate::ui::widgets::tu_list_item::tu_list_item_register;
+use crate::ui::widgets::tu_list_item::{create_tu_item, tu_list_item_register};
 use gtk::glib;
 use gtk::prelude::*;
 
@@ -103,7 +103,7 @@ pub async fn get_image_with_cache(
 ) -> Result<String, reqwest::Error> {
     let mut path = emby_cache_path();
     match img_type {
-        "Pirmary" => path.push(format!("{}.png", id)),
+        "Primary" => path.push(format!("{}.png", id)),
         "Backdrop" => path.push(format!("b{}_{}.png", id, tag.unwrap())),
         "Thumb" => path.push(format!("t{}.png", id)),
         "Logo" => path.push(format!("l{}.png", id)),
@@ -195,7 +195,14 @@ pub fn tu_list_view_connect_activate(
             &result.name,
             crate::ui::widgets::boxset::BoxSetPage::new(&result.id),
         ),
-        "MusicAlbum" => window.toast("MusicAlbum not supported yet"),
+        "MusicAlbum" => {
+            let item = create_tu_item(&result, None);
+            push_page(
+            view,
+            &window,
+            &result.name,
+            crate::ui::widgets::music_album::AlbumPage::new(item))
+        },
         _ => push_page(
             view,
             &window,

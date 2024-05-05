@@ -194,7 +194,7 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
     let server = set_config();
 
     let url = match image_type {
-        "Pirmary" => format!(
+        "Primary" => format!(
             "{}:{}/emby/Items/{}/Images/Primary?maxHeight=400",
             server.domain, server.port, id
         ),

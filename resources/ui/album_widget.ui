@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template class="AlbumWidget" parent="AdwBin">
+  <template class="AlbumPage" parent="AdwNavigationPage">
+  <property name="title" translatable="yes">Tsukimi</property>
     <child>
       <object class="AdwClamp">
         <property name="margin-bottom">48</property>
@@ -16,7 +17,7 @@
                 <property name="hexpand">True</property>
                 <property name="spacing">32</property>
                 <child>
-                  <object class="GtkImage" id="_cover_image">
+                  <object class="GtkPicture" id="cover_image">
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                   </object>
@@ -28,7 +29,7 @@
                     <property name="orientation">vertical</property>
                     <property name="margin-top">18</property>
                     <child>
-                      <object class="GtkLabel" id="_title_label">
+                      <object class="GtkLabel" id="title_label">
                         <property name="focusable">False</property>
                         <property name="halign">start</property>
                         <property name="ellipsize">middle</property>
@@ -39,7 +40,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="_artist_label">
+                      <object class="GtkLabel" id="artist_label">
                         <property name="focusable">False</property>
                         <property name="halign">start</property>
                         <property name="ellipsize">middle</property>
@@ -50,7 +51,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="_released_label">
+                      <object class="GtkLabel" id="released_label">
                         <property name="focusable">False</property>
                         <property name="halign">start</property>
                         <property name="use_markup">True</property>
@@ -83,9 +84,9 @@
                             <property name="icon-name">media-playback-start-symbolic</property>
                             <property name="tooltip-text" translatable="yes">Play</property>
                             <property name="valign">center</property>
-                            <signal name="clicked" handler="_on_play_button_clicked" swapped="no"/>
                             <style>
                               <class name="circular"/>
+                              <class name="suggested-action"/>
                             </style>
                           </object>
                         </child>

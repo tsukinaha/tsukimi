@@ -487,7 +487,7 @@ pub fn tu_list_poster(
     }
 }
 
-fn create_tu_item(latest: &SimpleListItem, poster: Option<&str>) -> TuItem {
+pub fn create_tu_item(latest: &SimpleListItem, poster: Option<&str>) -> TuItem {
     let tu_item: TuItem = glib::object::Object::new();
     tu_item.set_id(latest.id.clone());
     tu_item.set_name(latest.name.clone());
