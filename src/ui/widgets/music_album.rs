@@ -88,7 +88,7 @@ impl AlbumPage {
 
         self.imp()
             .artist_label
-            .set_text(&item.album_artist().unwrap_or(String::new()));
+            .set_text(&item.album_artist().unwrap_or_default());
 
         let duration = item.run_time_ticks() / 10000000;
         let release = format!(

@@ -46,6 +46,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
 }
 
+impl Default for DiscBox {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl DiscBox {
     pub fn new() -> Self {
         glib::Object::builder().build()

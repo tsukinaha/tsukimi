@@ -197,7 +197,7 @@ pub fn tu_list_view_connect_activate(
             crate::ui::widgets::boxset::BoxSetPage::new(&result.id),
         ),
         "MusicAlbum" => {
-            let item = TuItem::from_simple(&result, None);
+            let item = TuItem::from_simple(result, None);
             push_page(
                 view,
                 &window,
