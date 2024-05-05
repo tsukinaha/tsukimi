@@ -1,7 +1,8 @@
 use crate::client::{network::RUNTIME, structs::SimpleListItem};
 use crate::ui::models::emby_cache_path;
+use crate::ui::provider::tu_item::TuItem;
 use crate::ui::widgets::singlelist::SingleListPage;
-use crate::ui::widgets::tu_list_item::{create_tu_item, tu_list_item_register};
+use crate::ui::widgets::tu_list_item::tu_list_item_register;
 use gtk::glib;
 use gtk::prelude::*;
 
@@ -196,7 +197,7 @@ pub fn tu_list_view_connect_activate(
             crate::ui::widgets::boxset::BoxSetPage::new(&result.id),
         ),
         "MusicAlbum" => {
-            let item = create_tu_item(&result, None);
+            let item = TuItem::from_simple(&result, None);
             push_page(
                 view,
                 &window,

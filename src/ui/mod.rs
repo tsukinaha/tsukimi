@@ -3,7 +3,7 @@ pub(crate) mod models;
 mod moviedrop;
 mod mpv;
 mod new_dropsel;
-mod provider;
+pub mod provider;
 pub mod widgets;
 use self::models::SETTINGS;
 use gtk::gdk::Display;

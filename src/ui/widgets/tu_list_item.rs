@@ -469,7 +469,7 @@ impl TuListItem {
 }
 
 pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem, listtype: &str) {
-    let tu_item = create_tu_item(latest, None);
+    let tu_item = TuItem::from_simple(latest, None);
     match latest.latest_type.as_str() {
         "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views"
         | "Actor" | "Person" => {
@@ -490,7 +490,7 @@ pub fn tu_list_poster(
     listtype: &str,
     poster: &str,
 ) {
-    let tu_item = create_tu_item(latest, Some(poster));
+    let tu_item = TuItem::from_simple(latest, Some(poster));
     match latest.latest_type.as_str() {
         "Movie" | "Series" => {
             set_list_child(
@@ -502,61 +502,6 @@ pub fn tu_list_poster(
         }
         _ => {}
     }
-}
-
-pub fn create_tu_item(latest: &SimpleListItem, poster: Option<&str>) -> TuItem {
-    let tu_item: TuItem = glib::object::Object::new();
-    tu_item.set_id(latest.id.clone());
-    tu_item.set_name(latest.name.clone());
-    if let Some(production_year) = latest.production_year {
-        tu_item.set_production_year(production_year);
-    }
-    if let Some(index_number) = latest.index_number {
-        tu_item.set_index_number(index_number);
-    }
-    if let Some(parent_index_number) = latest.parent_index_number {
-        tu_item.set_parent_index_number(parent_index_number);
-    }
-    if let Some(userdata) = &latest.user_data {
-        tu_item.set_played(userdata.played);
-        if let Some(played_percentage) = userdata.played_percentage {
-            tu_item.set_played_percentage(played_percentage);
-        }
-        if let Some(unplayed_item_count) = userdata.unplayed_item_count {
-            tu_item.set_unplayed_item_count(unplayed_item_count);
-        }
-        tu_item.set_is_favorite(userdata.is_favorite.unwrap_or(false));
-    }
-    if let Some(poster) = poster {
-        tu_item.set_poster(poster);
-        tu_item.imp().set_image_tags(latest.image_tags.clone());
-    }
-    if let Some(parent_thumb_item_id) = &latest.parent_thumb_item_id {
-        tu_item.set_parent_thumb_item_id(Some(parent_thumb_item_id.clone()));
-    }
-    if let Some(parent_backdrop_item_id) = &latest.parent_backdrop_item_id {
-        tu_item.set_parent_backdrop_item_id(Some(parent_backdrop_item_id.clone()));
-    }
-    if let Some(series_name) = &latest.series_name {
-        tu_item.set_series_name(series_name.clone());
-    }
-    if let Some(album_artist) = &latest.album_artist {
-        tu_item.set_album_artist(Some(album_artist.clone()));
-    }
-    if let Some(role) = &latest.role {
-        tu_item.set_role(Some(role.clone()));
-    }
-    if let Some(artists) = &latest.artists {
-        let artist = artists.join(" , ");
-        tu_item.set_artists(Some(artist));
-    }
-    if let Some(album_id) = &latest.album_id {
-        tu_item.set_album_id(Some(album_id.clone()));
-    }
-    if let Some(run_time_ticks) = latest.run_time_ticks {
-        tu_item.set_run_time_ticks(run_time_ticks);
-    }
-    tu_item
 }
 
 fn set_list_child(tu_item: TuItem, list_item: &gtk::ListItem, latest_type: &str, is_resume: bool) {

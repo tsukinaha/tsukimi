@@ -4,9 +4,13 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::{glib, CompositeTemplate};
 
-use crate::{client::network::get_songs, ui::provider::tu_item::TuItem, utils::{get_data_with_cache, get_image_with_cache, spawn}};
+use crate::{
+    client::network::get_songs,
+    ui::provider::tu_item::TuItem,
+    utils::{get_data_with_cache, get_image_with_cache, spawn},
+};
 
-use super::{song_widget::format_duration, tu_list_item::create_tu_item};
+use super::song_widget::format_duration;
 
 mod imp {
     use std::cell::OnceCell;
@@ -87,10 +91,12 @@ impl AlbumPage {
             .set_text(&item.album_artist().unwrap_or(String::new()));
 
         let duration = item.run_time_ticks() / 10000000;
-        let release = format!("{} , {}", item.production_year(), format_duration(duration as i64));
-        self.imp()
-            .released_label
-            .set_text(&release);
+        let release = format!(
+            "{} , {}",
+            item.production_year(),
+            format_duration(duration as i64)
+        );
+        self.imp().released_label.set_text(&release);
 
         let path = get_image_with_cache(&item.id(), "Primary", None)
             .await
@@ -101,9 +107,7 @@ impl AlbumPage {
         }
 
         let image = gtk::gio::File::for_path(path);
-        self.imp()
-            .cover_image
-            .set_file(Some(&image));
+        self.imp().cover_image.set_file(Some(&image));
 
         spawn(glib::clone!(@weak self as obj=>async move {
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
@@ -114,23 +118,23 @@ impl AlbumPage {
     pub async fn get_songs(&self) {
         let item = self.item();
         let id = item.id();
-        let songs = get_data_with_cache(item.id(), "audio", async move {
-            get_songs(&id).await
-        }).await.unwrap();
+        let songs = get_data_with_cache(item.id(), "audio", async move { get_songs(&id).await })
+            .await
+            .unwrap();
 
         let mut disc_boxes: HashMap<u32, super::disc_box::DiscBox> = HashMap::new();
-        
+
         for song in songs.items {
-            let item = create_tu_item(&song, None);
+            let item = TuItem::from_simple(&song, None);
             let parent_index_number = item.parent_index_number();
-        
+
             let song_widget = disc_boxes.entry(parent_index_number).or_insert_with(|| {
                 let new_disc_box = super::disc_box::DiscBox::new();
                 new_disc_box.set_disc(parent_index_number);
                 self.imp().listbox.append(&new_disc_box);
                 new_disc_box
             });
-        
+
             song_widget.add_song(item);
         }
     }
