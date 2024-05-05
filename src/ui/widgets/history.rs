@@ -3,9 +3,9 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use super::fix::fix;
 use super::tu_list_item::tu_list_item_register;
 use crate::client::{network::*, structs::*};
+use crate::ui::widgets::fix::ScrolledWindowFixExt;
 use crate::utils::{get_data_with_cache, spawn, tu_list_view_connect_activate};
 
 mod imp {
@@ -129,7 +129,7 @@ impl HistoryPage {
         let spinner = imp.spinner.get();
         let historyrevealer = imp.historyrevealer.get();
         spinner.set_visible(true);
-        fix(imp.hisscrolled.get());
+        imp.hisscrolled.fix();
 
         let history_results =
             get_data_with_cache("0".to_string(), "history", async { resume().await })
@@ -157,7 +157,7 @@ impl HistoryPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<Latest> = entry.borrow();
+            let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
             if list_item.child().is_none() {
                 tu_list_item_register(&latest, list_item, "resume")
             }
@@ -168,7 +168,7 @@ impl HistoryPage {
             glib::clone!(@weak self as obj => move |gridview, position| {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let result: std::cell::Ref<Latest> = item.borrow();
+                let result: std::cell::Ref<SimpleListItem> = item.borrow();
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 tu_list_view_connect_activate(window, &result, None);
             }),
@@ -197,7 +197,7 @@ impl HistoryPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<Latest> = entry.borrow();
+            let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
             if list_item.child().is_none() {
                 tu_list_item_register(&latest, list_item, "latest")
             }
@@ -210,37 +210,37 @@ impl HistoryPage {
                 list = imp.movielist.get();
                 selection = &imp.movieselection;
                 revealer = imp.movierevealer.get();
-                fix(imp.moviescrolled.get());
+                imp.moviescrolled.fix();
             }
             "Series" => {
                 list = imp.serieslist.get();
                 selection = &imp.seriesselection;
                 revealer = imp.seriesrevealer.get();
-                fix(imp.seriesscrolled.get());
+                imp.seriesscrolled.fix();
             }
             "Episode" => {
                 list = imp.episodelist.get();
                 selection = &imp.episodeselection;
                 revealer = imp.episoderevealer.get();
-                fix(imp.episodescrolled.get());
+                imp.episodescrolled.fix();
             }
             "People" => {
                 list = imp.peoplelist.get();
                 selection = &imp.peopleselection;
                 revealer = imp.peoplerevealer.get();
-                fix(imp.peoplescrolled.get());
+                imp.peoplescrolled.fix();
             }
             "MusicAlbum" => {
                 list = imp.albumlist.get();
                 selection = &imp.albumselection;
                 revealer = imp.albumrevealer.get();
-                fix(imp.albumscrolled.get());
+                imp.albumscrolled.fix();
             }
             _ => {
                 list = imp.episodelist.get();
                 selection = &imp.episodeselection;
                 revealer = imp.episoderevealer.get();
-                fix(imp.episodescrolled.get());
+                imp.episodescrolled.fix();
             }
         }
         list.set_factory(Some(&factory));
@@ -271,7 +271,7 @@ impl HistoryPage {
                 .item(position)
                 .and_downcast::<glib::BoxedAnyObject>()
                 .unwrap();
-            let recommend: std::cell::Ref<Latest> = item.borrow();
+            let recommend: std::cell::Ref<SimpleListItem> = item.borrow();
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             tu_list_view_connect_activate(window, &recommend, None);
         }));

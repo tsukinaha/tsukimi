@@ -34,7 +34,7 @@
                             <property name="receives-default">True</property>
                             <property name="action-name">account.add</property>
                             <style>
-                              <class name="suggested-action"/>
+                              <class name="suggested-action" />
                             </style>
                           </object>
                         </child>
@@ -86,7 +86,7 @@
                                       </object>
                                     </child>
                                     <style>
-                                      <class name="boxed-list"/>
+                                      <class name="boxed-list" />
                                     </style>
                                   </object>
                                 </child>

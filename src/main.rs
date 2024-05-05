@@ -3,6 +3,8 @@
     windows_subsystem = "windows"
 )]
 
+use std::env;
+
 use config::load_uuid;
 use gtk::prelude::*;
 use gtk::{gio, glib};
@@ -15,6 +17,19 @@ const APP_ID: &str = "moe.tsuna.tsukimi";
 
 fn main() -> glib::ExitCode {
     load_uuid();
+
+    // redirect cache dir to tsukimi root
+    #[cfg(windows)]
+    env::set_var(
+        "XDG_CACHE_HOME",
+        env::current_exe()
+            .unwrap()
+            .ancestors()
+            .nth(2)
+            .unwrap()
+            .join("cache"),
+    );
+
     // Register and include resources
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
 

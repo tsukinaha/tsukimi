@@ -6,7 +6,7 @@ use gtk::{gio, glib};
 use std::env;
 
 use super::tu_list_item::TuListItem;
-use super::{fix::fix, list::ListPage, window::Window};
+use super::{fix::ScrolledWindowFixExt, list::ListPage, window::Window};
 use crate::client::{network::*, structs::*};
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::{
@@ -107,7 +107,7 @@ impl HomePage {
 
     pub async fn set_libraryscorll(&self) {
         let imp = self.imp();
-        let libscrolled = fix(imp.libscrolled.get());
+        let libscrolled = imp.libscrolled.fix();
         imp.librevealer.set_reveal_child(true);
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
         imp.selection.set_autoselect(false);
@@ -184,7 +184,7 @@ impl HomePage {
                 .vscrollbar_policy(gtk::PolicyType::Never)
                 .overlay_scrolling(true)
                 .build();
-            let scrolledwindow = fix(scrolledwindow);
+            let scrolled = scrolledwindow.fix();
             let scrollbox = gtk::Box::new(gtk::Orientation::Vertical, 15);
             let revealer = gtk::Revealer::builder()
                 .reveal_child(false)
@@ -199,8 +199,9 @@ impl HomePage {
                 .margin_top(15)
                 .margin_start(10)
                 .build();
+            label.add_css_class("title-3");
             scrollbox.append(&label);
-            scrollbox.append(&scrolledwindow);
+            scrollbox.append(scrolled);
             let latest = get_data_with_cache(view.id.clone(), "view", async move {
                 get_latest(view.id.clone()).await
             })
@@ -218,7 +219,7 @@ impl HomePage {
         self.imp().spinner.set_visible(false);
     }
 
-    pub fn set_librarysscroll(&self, latests: Vec<Latest>) -> gtk::ListView {
+    pub fn set_librarysscroll(&self, latests: Vec<SimpleListItem>) -> gtk::ListView {
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
 
         let selection = gtk::SingleSelection::builder()
@@ -233,7 +234,7 @@ impl HomePage {
                     let window = obj.root().and_downcast::<Window>().unwrap();
                     let model = listview.model().unwrap();
                     let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                    let result: std::cell::Ref<Latest> = item.borrow();
+                    let result: std::cell::Ref<SimpleListItem> = item.borrow();
                     tu_list_view_connect_activate(window, &result, None);
             }),
         );

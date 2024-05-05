@@ -88,8 +88,8 @@
                                             <property name="label" translatable="yes">Loading...</property>
                                             <property name="wrap">true</property>
                                             <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                              <attribute name="scale" value="1.3"/>
+                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                                              <attribute name="scale" value="1.3" />
                                             </attributes>
                                           </object>
                                         </child>
@@ -198,7 +198,7 @@
                                           <object class="GtkLabel">
                                             <property name="label" translatable="yes">Video: </property>
                                             <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                                             </attributes>
                                           </object>
                                         </child>
@@ -218,7 +218,7 @@
                                           <object class="GtkLabel">
                                             <property name="label" translatable="yes">Subtitle: </property>
                                             <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                                             </attributes>
                                           </object>
                                         </child>
@@ -262,6 +262,18 @@
                     <child>
                       <object class="GtkDropDown" id="seasonlist">
                         <property name="margin-start">10</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="include_button">
+                        <property name="child">
+                          <object class="AdwButtonContent">
+                            <property name="icon-name">view-grid-symbolic</property>
+                            <property name="label" translatable="yes">Included In</property>
+                            <property name="use-underline">True</property>
+                          </object>
+                        </property>
+                        <signal name="clicked" handler="include_button_cb" swapped="yes" />
                       </object>
                     </child>
                     <child>
@@ -344,8 +356,8 @@
                             <property name="halign">start</property>
                             <property name="margin-start">10</property>
                             <attributes>
-                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                              <attribute name="scale" value="1.3"/>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                              <attribute name="scale" value="1.3" />
                             </attributes>
                             <property name="use-markup">True</property>
                           </object>
@@ -385,8 +397,8 @@
                             <property name="halign">start</property>
                             <property name="margin-start">10</property>
                             <attributes>
-                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                              <attribute name="scale" value="1.3"/>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                              <attribute name="scale" value="1.3" />
                             </attributes>
                           </object>
                         </child>
@@ -425,8 +437,8 @@
                             <property name="halign">start</property>
                             <property name="margin-start">10</property>
                             <attributes>
-                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                              <attribute name="scale" value="1.3"/>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                              <attribute name="scale" value="1.3" />
                             </attributes>
                             <property name="use-markup">True</property>
                           </object>
@@ -447,7 +459,7 @@
                                     <child>
                                       <object class="GtkLabel">
                                         <attributes>
-                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                                         </attributes>
                                         <property name="halign">start</property>
                                         <property name="label">Season</property>
@@ -475,7 +487,7 @@
                                     <child>
                                       <object class="GtkLabel">
                                         <attributes>
-                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                                         </attributes>
                                         <property name="halign">start</property>
                                         <property name="label">Episode</property>
@@ -518,8 +530,8 @@
                             <property name="halign">start</property>
                             <property name="margin-start">10</property>
                             <attributes>
-                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                              <attribute name="scale" value="1.3"/>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                              <attribute name="scale" value="1.3" />
                             </attributes>
                             <property name="use-markup">True</property>
                           </object>
@@ -554,8 +566,8 @@
                             <property name="halign">start</property>
                             <property name="margin-start">10</property>
                             <attributes>
-                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                              <attribute name="scale" value="1.3"/>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                              <attribute name="scale" value="1.3" />
                             </attributes>
                           </object>
                         </child>
@@ -589,8 +601,8 @@
                             <property name="halign">start</property>
                             <property name="margin-start">10</property>
                             <attributes>
-                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                              <attribute name="scale" value="1.3"/>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                              <attribute name="scale" value="1.3" />
                             </attributes>
                           </object>
                         </child>
@@ -624,8 +636,8 @@
                             <property name="halign">start</property>
                             <property name="margin-start">10</property>
                             <attributes>
-                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                              <attribute name="scale" value="1.3"/>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                              <attribute name="scale" value="1.3" />
                             </attributes>
                           </object>
                         </child>
@@ -659,8 +671,8 @@
                             <property name="halign">start</property>
                             <property name="margin-start">10</property>
                             <attributes>
-                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                              <attribute name="scale" value="1.3"/>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                              <attribute name="scale" value="1.3" />
                             </attributes>
                             <property name="use-markup">True</property>
                           </object>

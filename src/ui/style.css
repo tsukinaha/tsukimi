@@ -26,6 +26,10 @@ picture {
   border-radius: 10px;
 }
 
+.songwidget {
+  padding: 12px;
+}
+
 listview {
   background-color: rgba(0, 0, 0, 0);
 }

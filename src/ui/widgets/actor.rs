@@ -3,10 +3,10 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use super::fix::fix;
 use super::tu_list_item::tu_list_item_register;
 use crate::client::{network::*, structs::*};
-use crate::ui::image::setimage;
+use crate::ui::image::set_image;
+use crate::ui::widgets::fix::ScrolledWindowFixExt;
 use crate::utils::{get_data_with_cache, spawn, tu_list_view_connect_activate};
 
 mod imp {
@@ -119,7 +119,7 @@ impl ActorPage {
     pub fn setup_pic(&self) {
         let imp = self.imp();
         let id = self.id();
-        let pic = setimage(id);
+        let pic = set_image(id, "Primary", None);
         pic.set_size_request(218, 328);
         pic.set_halign(gtk::Align::Start);
         pic.set_valign(gtk::Align::Start);
@@ -172,7 +172,7 @@ impl ActorPage {
                 .item()
                 .and_downcast::<glib::BoxedAnyObject>()
                 .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<Latest> = entry.borrow();
+            let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
             if list_item.child().is_none() {
                 tu_list_item_register(&latest, list_item, &latest.latest_type)
             }
@@ -185,25 +185,25 @@ impl ActorPage {
                 list = imp.movielist.get();
                 selection = &imp.movieselection;
                 revealer = imp.movierevealer.get();
-                fix(imp.moviescrolled.get());
+                imp.moviescrolled.fix();
             }
             "Series" => {
                 list = imp.serieslist.get();
                 selection = &imp.seriesselection;
                 revealer = imp.seriesrevealer.get();
-                fix(imp.seriesscrolled.get());
+                imp.seriesscrolled.fix();
             }
             "Episode" => {
                 list = imp.episodelist.get();
                 selection = &imp.episodeselection;
                 revealer = imp.episoderevealer.get();
-                fix(imp.episodescrolled.get());
+                imp.episodescrolled.fix();
             }
             _ => {
                 list = imp.episodelist.get();
                 selection = &imp.episodeselection;
                 revealer = imp.episoderevealer.get();
-                fix(imp.episodescrolled.get());
+                imp.episodescrolled.fix();
             }
         }
         list.set_factory(Some(&factory));
@@ -232,7 +232,7 @@ impl ActorPage {
                 .item(position)
                 .and_downcast::<glib::BoxedAnyObject>()
                 .unwrap();
-            let recommend: std::cell::Ref<Latest> = item.borrow();
+            let recommend: std::cell::Ref<SimpleListItem> = item.borrow();
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             tu_list_view_connect_activate(window, &recommend, None);
         }));
@@ -240,7 +240,7 @@ impl ActorPage {
 
     pub fn setlinksscrolled(&self, links: Vec<Urls>) {
         let imp = self.imp();
-        let linksscrolled = fix(imp.linksscrolled.get());
+        let linksscrolled = imp.linksscrolled.fix();
         let linksrevealer = imp.linksrevealer.get();
         if !links.is_empty() {
             linksrevealer.set_reveal_child(true);

@@ -14,11 +14,6 @@ pub struct SearchResult {
     pub production_year: Option<i16>,
 }
 
-// for serde
-pub struct SearchModel {
-    pub search_results: Vec<SearchResult>,
-}
-
 // single item
 #[derive(Serialize, Deserialize, Clone)]
 pub struct SeriesInfo {
@@ -29,9 +24,9 @@ pub struct SeriesInfo {
     #[serde(rename = "Overview")]
     pub overview: Option<String>,
     #[serde(rename = "IndexNumber")]
-    pub index_number: u32,
+    pub index_number: Option<u32>,
     #[serde(rename = "ParentIndexNumber")]
-    pub parent_index_number: u32,
+    pub parent_index_number: Option<u32>,
     #[serde(rename = "UserData")]
     pub user_data: Option<UserData>,
 }
@@ -122,7 +117,7 @@ pub struct Item {
     #[serde(rename = "Overview")]
     pub overview: Option<String>,
     #[serde(rename = "People")]
-    pub people: Option<Vec<People>>,
+    pub people: Option<Vec<SimpleListItem>>,
     #[serde(rename = "Studios")]
     pub studios: Option<Vec<SGTitem>>,
     #[serde(rename = "GenreItems")]
@@ -220,7 +215,7 @@ pub struct View {
 }
 
 #[derive(Serialize, Deserialize, Clone)]
-pub struct Latest {
+pub struct SimpleListItem {
     #[serde(rename = "Name")]
     pub name: String,
     #[serde(rename = "Id")]
@@ -249,6 +244,14 @@ pub struct Latest {
     pub series_id: Option<String>,
     #[serde(rename = "AlbumArtist")]
     pub album_artist: Option<String>,
+    #[serde(rename = "Artists")]
+    pub artists: Option<Vec<String>>,
+    #[serde(rename = "AlbumId")]
+    pub album_id: Option<String>,
+    #[serde(rename = "Role")]
+    pub role: Option<String>,
+    #[serde(rename = "RunTimeTicks")]
+    pub run_time_ticks: Option<u64>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -268,7 +271,7 @@ pub struct List {
     #[serde(rename = "TotalRecordCount")]
     pub total_record_count: u32,
     #[serde(rename = "Items")]
-    pub items: Vec<Latest>,
+    pub items: Vec<SimpleListItem>,
 }
 
 #[derive(Deserialize, Debug, Clone)]

@@ -1,10 +1,8 @@
 use adw::prelude::*;
 use glib::Object;
 use gtk::{gio, glib, subclass::prelude::*};
-use std::env;
 
-use crate::config::get_cache_dir;
-use crate::ui::models::SETTINGS;
+use crate::ui::models::{emby_cache_path, SETTINGS};
 
 use super::window::Window;
 
@@ -247,11 +245,8 @@ impl SettingsPage {
     }
 
     pub fn cacheclear(&self) {
-        let path = get_cache_dir(env::var("EMBY_NAME").unwrap()).expect("Failed to get cache dir");
-        #[cfg(unix)]
-        std::fs::remove_dir_all(path.parent().unwrap()).unwrap();
-        #[cfg(windows)]
-        remove_file(std::path::PathBuf::from(path.parent().unwrap())).unwrap();
+        let path = emby_cache_path();
+        std::fs::remove_dir_all(path).unwrap();
         let toast = adw::Toast::builder()
             .title("Cache Cleared".to_string())
             .timeout(3)
@@ -370,24 +365,4 @@ impl SettingsPage {
         }));
         SETTINGS.set_root_pic("").unwrap();
     }
-}
-
-/// for Scoop users cache is persist folder created by Scoop, removing it would fail.
-#[cfg(windows)]
-fn remove_file(path: std::path::PathBuf) -> std::io::Result<()> {
-    let entries = std::fs::read_dir(path)?;
-
-    for entry in entries {
-        let entry = entry?;
-        let path = entry.path();
-
-        if path.is_file() {
-            std::fs::remove_file(path)?;
-        } else if path.is_dir() {
-            // remove files recursively
-            std::fs::remove_dir_all(path)?;
-        }
-    }
-
-    Ok(())
 }

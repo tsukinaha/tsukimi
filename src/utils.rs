@@ -1,13 +1,13 @@
 use gtk::glib;
 use gtk::prelude::*;
-use std::env;
 
-use crate::client::{network::RUNTIME, structs::Latest};
-use crate::config::get_cache_dir;
+use crate::client::{network::RUNTIME, structs::SimpleListItem};
+use crate::ui::models::emby_cache_path;
+use crate::ui::provider::tu_item::TuItem;
 use crate::ui::widgets::singlelist::SingleListPage;
 use crate::ui::widgets::tu_list_item::tu_list_item_register;
 
-pub fn _spawn_tokio_blocking<F>(fut: F) -> F::Output
+pub fn spawn_tokio_blocking<F>(fut: F) -> F::Output
 where
     F: std::future::Future + Send + 'static,
     F::Output: Send + 'static,
@@ -65,7 +65,7 @@ where
     T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
     F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
 {
-    let mut path = get_path();
+    let mut path = emby_cache_path();
     path.push(format!("{}_{}.json", item_type, &id));
 
     if path.exists() {
@@ -90,7 +90,7 @@ where
     T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
     F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
 {
-    let mut path = get_path();
+    let mut path = emby_cache_path();
     path.push(format!("{}_{}.json", item_type, &id));
     let v = spawn_tokio(future).await?;
     let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
@@ -103,9 +103,9 @@ pub async fn get_image_with_cache(
     img_type: &str,
     tag: Option<u8>,
 ) -> Result<String, reqwest::Error> {
-    let mut path = get_path();
+    let mut path = emby_cache_path();
     match img_type {
-        "Pirmary" => path.push(format!("{}.png", id)),
+        "Primary" => path.push(format!("{}.png", id)),
         "Backdrop" => path.push(format!("b{}_{}.png", id, tag.unwrap())),
         "Thumb" => path.push(format!("t{}.png", id)),
         "Logo" => path.push(format!("l{}.png", id)),
@@ -121,15 +121,11 @@ pub async fn get_image_with_cache(
 }
 
 async fn _s_path() {
-    let pathbuf = get_path();
+    let pathbuf = emby_cache_path();
     std::fs::DirBuilder::new()
         .recursive(true)
         .create(pathbuf)
         .unwrap();
-}
-
-fn get_path() -> std::path::PathBuf {
-    get_cache_dir(env::var("EMBY_NAME").unwrap()).expect("Failed to get cache dir!")
 }
 
 pub fn tu_list_item_factory(listtype: String) -> gtk::SignalListItemFactory {
@@ -144,7 +140,7 @@ pub fn tu_list_item_factory(listtype: String) -> gtk::SignalListItemFactory {
             .item()
             .and_downcast::<glib::BoxedAnyObject>()
             .expect("Needs to be BoxedAnyObject");
-        let latest: std::cell::Ref<Latest> = entry.borrow();
+        let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
         if list_item.child().is_none() {
             tu_list_item_register(&latest, list_item, &listtype)
         }
@@ -155,99 +151,87 @@ use adw::prelude::NavigationPageExt;
 use gtk::subclass::prelude::ObjectSubclassIsExt;
 pub fn tu_list_view_connect_activate(
     window: crate::ui::widgets::window::Window,
-    result: &Latest,
+    result: &SimpleListItem,
     parentid: Option<String>,
 ) {
-    let view = match window.current_view_name().as_str() {
-        "homepage" => {
-            window.set_title(&result.name);
-            std::env::set_var("HOME_TITLE", &result.name);
-            &window.imp().homeview
-        }
-        "searchpage" => {
-            window.set_title(&result.name);
-            std::env::set_var("SEARCH_TITLE", &result.name);
-            &window.imp().searchview
-        }
-        "historypage" => {
-            window.set_title(&result.name);
-            std::env::set_var("HISTORY_TITLE", &result.name);
-            &window.imp().historyview
-        }
-        _ => &window.imp().searchview,
+    let (view, title_var) = match window.current_view_name().as_str() {
+        "homepage" => (&window.imp().homeview, "HOME_TITLE"),
+        "searchpage" => (&window.imp().searchview, "SEARCH_TITLE"),
+        "historypage" => (&window.imp().historyview, "HISTORY_TITLE"),
+        _ => (&window.imp().searchview, "SEARCH_TITLE"),
     };
+    window.set_title(&result.name);
+    std::env::set_var(title_var, &result.name);
+
     match result.latest_type.as_str() {
-        "Movie" => {
-            window.set_title(&result.name);
-            if view.find_page(result.name.as_str()).is_some() {
-                view.pop_to_tag(result.name.as_str());
-            } else {
-                let item_page = crate::ui::widgets::movie::MoviePage::new(
-                    result.id.clone(),
-                    result.name.clone(),
-                );
-                item_page.set_tag(Some(&result.name));
-                view.push(&item_page);
-                window.set_pop_visibility(true)
-            }
-        }
-        "Series" => {
-            window.set_title(&result.name);
-            if view.find_page(result.name.as_str()).is_some() {
-                view.pop_to_tag(result.name.as_str());
-            } else {
-                let item_page =
-                    crate::ui::widgets::item::ItemPage::new(result.id.clone(), result.id.clone());
-                item_page.set_tag(Some(&result.name));
-                view.push(&item_page);
-                window.set_pop_visibility(true)
-            }
-        }
-        "Episode" => {
-            window.set_title(&result.name);
-            if view.find_page(result.name.as_str()).is_some() {
-                view.pop_to_tag(result.name.as_str());
-            } else {
-                let item_page = crate::ui::widgets::item::ItemPage::new(
-                    result.series_id.as_ref().unwrap().clone(),
-                    result.id.clone(),
-                );
-                item_page.set_tag(Some(&result.name));
-                view.push(&item_page);
-                window.set_pop_visibility(true)
-            }
-        }
-        "People" => {
-            window.set_title(&result.name);
-            if view.find_page(result.name.as_str()).is_some() {
-                view.pop_to_tag(result.name.as_str());
-            } else {
-                let item_page = crate::ui::widgets::actor::ActorPage::new(&result.id);
-                item_page.set_tag(Some(&result.name));
-                view.push(&item_page);
-                window.set_pop_visibility(true)
-            }
-        }
-        "BoxSet" => {
-            window.toast("BoxSet not supported yet");
-        }
+        "Movie" => push_page(
+            view,
+            &window,
+            &result.name,
+            crate::ui::widgets::movie::MoviePage::new(result.id.clone(), result.name.clone()),
+        ),
+        "Series" => push_page(
+            view,
+            &window,
+            &result.name,
+            crate::ui::widgets::item::ItemPage::new(result.id.clone(), result.id.clone()),
+        ),
+        "Episode" => push_page(
+            view,
+            &window,
+            &result.name,
+            crate::ui::widgets::item::ItemPage::new(
+                result.series_id.as_ref().unwrap().clone(),
+                result.id.clone(),
+            ),
+        ),
+        "Actor" | "Person" => push_page(
+            view,
+            &window,
+            &result.name,
+            crate::ui::widgets::actor::ActorPage::new(&result.id),
+        ),
+        "BoxSet" => push_page(
+            view,
+            &window,
+            &result.name,
+            crate::ui::widgets::boxset::BoxSetPage::new(&result.id),
+        ),
         "MusicAlbum" => {
-            window.toast("MusicAlbum not supported yet");
+            let item = TuItem::from_simple(result, None);
+            push_page(
+                view,
+                &window,
+                &result.name,
+                crate::ui::widgets::music_album::AlbumPage::new(item),
+            )
         }
-        _ => {
-            window.set_title(&result.name);
-            if view.find_page(result.name.as_str()).is_some() {
-                view.pop_to_tag(result.name.as_str());
-            } else {
-                let item_page = SingleListPage::new(
-                    result.id.clone(),
-                    "".to_string(),
-                    &result.latest_type,
-                    parentid,
-                );
-                item_page.set_tag(Some(&result.name));
-                window.imp().homeview.push(&item_page);
-            }
-        }
+        _ => push_page(
+            view,
+            &window,
+            &result.name,
+            SingleListPage::new(
+                result.id.clone(),
+                "".to_string(),
+                &result.latest_type,
+                parentid,
+            ),
+        ),
+    }
+}
+
+fn push_page<T: 'static + Clone + gtk::prelude::IsA<adw::NavigationPage>>(
+    view: &adw::NavigationView,
+    window: &crate::ui::widgets::window::Window,
+    tag: &str,
+    page: T,
+) {
+    if view.find_page(tag).is_some() {
+        view.pop_to_tag(tag);
+    } else {
+        let item_page = page;
+        item_page.set_tag(Some(tag));
+        view.push(&item_page);
+        window.set_pop_visibility(true);
     }
 }

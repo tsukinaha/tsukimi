@@ -9,7 +9,7 @@ use std::{
 use crate::{
     client::{network::*, structs::Back},
     config::set_config,
-    utils::spawn_tokio,
+    utils::spawn_tokio_blocking,
     APP_ID,
 };
 pub fn play(
@@ -111,9 +111,9 @@ pub fn play(
                     if r == 3 {
                         let mut back = back.clone();
                         back.tick = duration;
-                        std::mem::drop(spawn_tokio(async {
+                        spawn_tokio_blocking(async {
                             positionstop(back).await;
-                        }));
+                        });
                     }
                     println!("Exiting! Reason: {:?}", r);
                     break;

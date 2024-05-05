@@ -25,6 +25,10 @@ child {
   border-radius: 10px;
 }
 
+.songwidget {
+  padding: 12px;
+}
+
 .serverrow {
   margin: 6px;
   border-radius: 10px;

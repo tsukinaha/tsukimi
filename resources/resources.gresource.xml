@@ -3,6 +3,7 @@
   <gresource prefix="/moe/tsukimi/icons/">
     <file alias="tsukimi">icons/tsukimi.png</file>
     <file preprocess="xml-stripblanks" alias="settings-symbolic.svg">icons/settings-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="series.svg">icons/series.svg</file>
   </gresource>
   <gresource prefix="/moe/tsukimi/">
     <file compressed="true" preprocess="xml-stripblanks">settings.ui</file>
@@ -16,10 +17,14 @@
     <file compressed="true" preprocess="xml-stripblanks">list.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">actor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">account.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">music.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">listitem.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">pop-menu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">account_settings.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">singlelist.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">boxset.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">included.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">album_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">song_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">disc_box.ui</file>
   </gresource>
 </gresources>

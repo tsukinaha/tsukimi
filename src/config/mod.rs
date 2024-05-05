@@ -4,7 +4,7 @@ use std::{env, fs::File, io::Read};
 use uuid::Uuid;
 
 pub mod proxy;
-pub const APP_VERSION: &str = "0.4.9";
+pub const APP_VERSION: &str = "0.4.10";
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
@@ -156,28 +156,6 @@ pub fn get_config_dir() -> Result<std::path::PathBuf, Box<dyn std::error::Error>
         let path = dirs::home_dir()
             .ok_or("Failed to get Home dir!")?
             .join(".config");
-        Ok(path)
-    }
-}
-
-/// get cache dir for specific server.
-pub fn get_cache_dir(servername: String) -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
-    #[cfg(windows)]
-    {
-        let path = env::current_exe()?
-            .ancestors()
-            .nth(2)
-            .ok_or("Failed to get Tsukimi root dir!")?
-            .join(format!("cache/{}", servername));
-
-        Ok(path)
-    }
-
-    #[cfg(unix)]
-    {
-        let path = dirs::home_dir()
-            .ok_or("Failed to get Home dir!")?
-            .join(format!(".local/share/tsukimi/{}", servername));
         Ok(path)
     }
 }

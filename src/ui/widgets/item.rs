@@ -1,7 +1,7 @@
-use adw::prelude::NavigationPageExt;
+use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
-use gtk::prelude::*;
+use gtk::template_callbacks;
 use gtk::{gio, glib};
 use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
@@ -10,14 +10,17 @@ use std::path::PathBuf;
 use crate::client::{network::*, structs::*};
 use crate::ui::models::SETTINGS;
 use crate::ui::new_dropsel::bind_button;
-use crate::utils::{get_data_with_cache, get_image_with_cache, spawn, spawn_tokio};
+use crate::utils::{
+    get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory,
+    tu_list_view_connect_activate,
+};
 
-use super::actor::ActorPage;
-use super::fix::fix;
-use super::movie::MoviePage;
+use super::fix::ScrolledWindowFixExt;
+use super::included::IncludedDialog;
+use super::window::Window;
 
 mod imp {
-    use crate::ui::widgets::fix::fix;
+    use crate::ui::widgets::fix::ScrolledWindowFixExt;
     use crate::utils::spawn_g_timeout;
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
@@ -133,6 +136,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
             klass.install_action("item.first", None, move |window, _action, _parameter| {
                 window.itemfirst();
             });
@@ -192,7 +196,7 @@ mod imp {
             let backdrop = self.backdrop.get();
             backdrop.set_height_request(crate::ui::models::SETTINGS.background_height());
             spawn_g_timeout(glib::clone!(@weak obj => async move {
-                fix(obj.imp().episodescrolled.get());
+                obj.imp().episodescrolled.fix();
                 obj.setup_background().await;
                 obj.setup_seasons().await;
                 obj.logoset();
@@ -221,12 +225,20 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+#[template_callbacks]
 impl ItemPage {
     pub fn new(id: String, inid: String) -> Self {
         Object::builder()
             .property("id", id)
             .property("inid", inid)
             .build()
+    }
+
+    #[template_callback]
+    pub fn include_button_cb(&self) {
+        let id = self.id();
+        let dialog = IncludedDialog::new(&id);
+        dialog.present(self);
     }
 
     pub async fn played(&self) {
@@ -345,8 +357,10 @@ impl ItemPage {
         if pathbuf.exists() {
             backdrop.set_file(Some(&file));
             self.imp().backrevealer.set_reveal_child(true);
-            let window = self.root().and_downcast::<super::window::Window>().unwrap();
-            window.set_rootpic(file);
+            spawn(glib::clone!(@weak self as obj=>async move {
+                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                window.set_rootpic(file);
+            }));
         }
     }
 
@@ -398,24 +412,24 @@ impl ItemPage {
         spawn(glib::clone!(@weak self as obj => async move {
                 let mut season_set: HashSet<u32> = HashSet::new();
                 let mut season_map: HashMap<String,u32> = HashMap::new();
-                let min_season = series_info.iter().map(|info| if info.parent_index_number == 0 { 100 } else { info.parent_index_number }).min().unwrap_or(1);
+                let min_season = series_info.iter().map(|info| if info.parent_index_number.unwrap_or(0) == 0 { 100 } else { info.parent_index_number.unwrap_or(0) }).min().unwrap_or(1);
                 let mut pos = 0;
                 let mut set = true;
                 for info in &series_info {
-                    if !season_set.contains(&info.parent_index_number) {
-                        let seasonstring = format!("Season {}", info.parent_index_number);
+                    if !season_set.contains(&info.parent_index_number.unwrap_or(0)) {
+                        let seasonstring = format!("Season {}", info.parent_index_number.unwrap_or(0));
                         seasonstore.append(&seasonstring);
-                        season_set.insert(info.parent_index_number);
-                        season_map.insert(seasonstring.clone(), info.parent_index_number);
+                        season_set.insert(info.parent_index_number.unwrap_or(0));
+                        season_map.insert(seasonstring.clone(), info.parent_index_number.unwrap_or(0));
                         if set {
-                            if info.parent_index_number == min_season {
+                            if info.parent_index_number.unwrap_or(0) == min_season {
                                 set = false;
                             } else {
                                 pos += 1;
                             }
                         }
                     }
-                    if info.parent_index_number == min_season {
+                    if info.parent_index_number.unwrap_or(0) == min_season {
                         let object = glib::BoxedAnyObject::new(info.clone());
                         store.append(&object);
                     }
@@ -446,7 +460,7 @@ impl ItemPage {
                     store.remove_all();
                     let season_number = seriesinfo_seasonmap[&selected];
                     for info in &seriesinfo_seasonlist {
-                        if info.parent_index_number == season_number {
+                        if info.parent_index_number.unwrap_or(0) == season_number {
                             let object = glib::BoxedAnyObject::new(info.clone());
                             store.append(&object);
                         }
@@ -458,7 +472,7 @@ impl ItemPage {
                     let text = entry.text();
                     store.remove_all();
                     for info in &series_info {
-                        if (info.name.to_lowercase().contains(&text.to_lowercase()) || info.index_number.to_string().contains(&text.to_lowercase())) && info.parent_index_number == season_map[&seasonlist.selected_item().and_downcast_ref::<gtk::StringObject>().unwrap().string().to_string()] {
+                        if (info.name.to_lowercase().contains(&text.to_lowercase()) || info.index_number.unwrap_or(0).to_string().contains(&text.to_lowercase())) && info.parent_index_number.unwrap_or(0) == season_map[&seasonlist.selected_item().and_downcast_ref::<gtk::StringObject>().unwrap().string().to_string()] {
                             let object = glib::BoxedAnyObject::new(info.clone());
                             store.append(&object);
                         }
@@ -517,7 +531,7 @@ impl ItemPage {
                 .expect("Needs to be BoxedAnyObject");
             let seriesinfo: Ref<SeriesInfo> = entry.borrow();
             if picture.first_child().is_none() {
-                let img = crate::ui::image::setimage(seriesinfo.id.clone());
+                let img = crate::ui::image::set_image(seriesinfo.id.clone(), "Primary", None);
                 picture.set_child(Some(&img));
                 let progressbar = gtk::ProgressBar::new();
                 progressbar.set_valign(gtk::Align::End);
@@ -535,7 +549,11 @@ impl ItemPage {
                     }
                 }
                 picture.add_overlay(&progressbar);
-                let markup = format!("{}. {}", seriesinfo.index_number, seriesinfo.name);
+                let markup = format!(
+                    "{}. {}",
+                    seriesinfo.index_number.unwrap_or(0),
+                    seriesinfo.name
+                );
                 label.set_label(&markup);
             }
         });
@@ -550,8 +568,8 @@ impl ItemPage {
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
                 spawn(glib::clone!(@weak obj =>async move {
-                    let item_ref = item.borrow::<SeriesInfo>().clone();
-                    obj.selectepisode(item_ref).await;
+                    let series_info = item.borrow::<SeriesInfo>().clone();
+                    obj.selectepisode(series_info).await;
                 }));
             }));
     }
@@ -559,7 +577,7 @@ impl ItemPage {
     pub fn logoset(&self) {
         let logobox = self.imp().logobox.get();
         let id = self.id();
-        let logo = crate::ui::image::setlogoimage(id.clone());
+        let logo = crate::ui::image::set_image(id.clone(), "Logo", None);
         logobox.append(&logo);
         logobox.add_css_class("logo");
     }
@@ -617,7 +635,7 @@ impl ItemPage {
             .await
             .unwrap();
         spawn(glib::clone!(@weak osdbox,@weak self as obj=>async move {
-                obj.imp().line1.set_text(&format!("S{}:E{} - {}",info.parent_index_number, info.index_number, info.name));
+                obj.imp().line1.set_text(&format!("S{}:E{} - {}",info.parent_index_number.unwrap_or(0), info.index_number.unwrap_or(0), info.name));
                 obj.imp().line1spinner.set_visible(false);
                 let info = info.clone();
                 if let Some(handlerid) = obj.imp().playbuttonhandlerid.borrow_mut().take() {
@@ -761,7 +779,7 @@ impl ItemPage {
                     .overlay_scrolling(true)
                     .build();
 
-                let mediascrolled = fix(mediascrolled);
+                let mediascrolled = mediascrolled.fix();
 
                 let mediabox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
                 for mediapart in mediasource.media_streams {
@@ -846,7 +864,7 @@ impl ItemPage {
                 }
 
                 mediascrolled.set_child(Some(&mediabox));
-                singlebox.append(&mediascrolled);
+                singlebox.append(mediascrolled);
                 mediainfobox.append(&singlebox);
             }
             mediainforevealer.set_reveal_child(true);
@@ -855,7 +873,7 @@ impl ItemPage {
 
     pub fn setlinksscrolled(&self, links: Vec<Urls>) {
         let imp = self.imp();
-        let linksscrolled = fix(imp.linksscrolled.get());
+        let linksscrolled = imp.linksscrolled.fix();
         let linksrevealer = imp.linksrevealer.get();
         if !links.is_empty() {
             linksrevealer.set_reveal_child(true);
@@ -888,9 +906,9 @@ impl ItemPage {
         linksrevealer.set_reveal_child(true);
     }
 
-    pub fn setactorscrolled(&self, actors: Vec<People>) {
+    pub fn setactorscrolled(&self, actors: Vec<SimpleListItem>) {
         let imp = self.imp();
-        let actorscrolled = fix(imp.actorscrolled.get());
+        let actorscrolled = imp.actorscrolled.fix();
         let actorrevealer = imp.actorrevealer.get();
         if !actors.is_empty() {
             actorrevealer.set_reveal_child(true);
@@ -903,114 +921,19 @@ impl ItemPage {
         imp.actorselection.set_autoselect(false);
         imp.actorselection.set_model(Some(&store));
         let actorselection = &imp.actorselection;
-        let factory = gtk::SignalListItemFactory::new();
-        factory.connect_setup(move |_, item| {
-            let list_item = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem");
-            let listbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
-            let picture = gtk::Box::builder()
-                .orientation(gtk::Orientation::Vertical)
-                .height_request(200)
-                .width_request(150)
-                .build();
-            let label = gtk::Label::builder()
-                .halign(gtk::Align::Start)
-                .ellipsize(gtk::pango::EllipsizeMode::End)
-                .build();
-            listbox.append(&picture);
-            listbox.append(&label);
-            list_item.set_child(Some(&listbox));
-        });
-        factory.connect_bind(move |_, item| {
-            let picture = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .child()
-                .and_downcast::<gtk::Box>()
-                .expect("Needs to be Box")
-                .first_child()
-                .expect("Needs to be Picture");
-            let label = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .child()
-                .and_downcast::<gtk::Box>()
-                .expect("Needs to be Box")
-                .last_child()
-                .expect("Needs to be Picture");
-            let entry = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .item()
-                .and_downcast::<glib::BoxedAnyObject>()
-                .expect("Needs to be BoxedAnyObject");
-            let people: std::cell::Ref<People> = entry.borrow();
-            if picture.is::<gtk::Box>() {
-                if let Some(_revealer) = picture
-                    .downcast_ref::<gtk::Box>()
-                    .expect("Needs to be Box")
-                    .first_child()
-                {
-                } else {
-                    let img = crate::ui::image::setimage(people.id.clone());
-                    picture
-                        .downcast_ref::<gtk::Box>()
-                        .expect("Needs to be Box")
-                        .append(&img);
-                }
-            }
-            if label.is::<gtk::Label>() {
-                let str = if let Some(role) = &people.role {
-                    format!("{}\n{}", people.name, role)
-                } else {
-                    people.name.to_string()
-                };
-                label
-                    .downcast_ref::<gtk::Label>()
-                    .expect("Needs to be Label")
-                    .set_text(&str);
-            }
-        });
+        let factory = tu_list_item_factory("".to_string());
+        imp.actorlist.connect_activate(
+            glib::clone!(@weak self as obj => move |listview, position| {
+                    let window = obj.root().and_downcast::<Window>().unwrap();
+                    let model = listview.model().unwrap();
+                    let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                    let result: std::cell::Ref<SimpleListItem> = item.borrow();
+                    tu_list_view_connect_activate(window, &result, None);
+            }),
+        );
         imp.actorlist.set_factory(Some(&factory));
         imp.actorlist.set_model(Some(actorselection));
         let actorlist = imp.actorlist.get();
-        actorlist.connect_activate(glib::clone!(@weak self as obj =>move |listview, position| {
-            let model = listview.model().unwrap();
-            let item = model
-                .item(position)
-                .and_downcast::<glib::BoxedAnyObject>()
-                .unwrap();
-            let actor: std::cell::Ref<People> = item.borrow();
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            let view = match window.current_view_name().as_str() {
-                "homepage" => {
-                    window.set_title(&actor.name);
-                    std::env::set_var("HOME_TITLE", &actor.name);
-                    &window.imp().homeview
-                }
-                "searchpage" => {
-                    window.set_title(&actor.name);
-                    std::env::set_var("SEARCH_TITLE", &actor.name);
-                    &window.imp().searchview
-                }
-                "historypage" => {
-                    window.set_title(&actor.name);
-                    std::env::set_var("HISTORY_TITLE", &actor.name);
-                    &window.imp().historyview
-                }
-                _ => {
-                    &window.imp().searchview
-                }
-            };
-            let item_page = ActorPage::new(&actor.id);
-            if view.find_page(actor.name.as_str()).is_some() {
-                view.pop_to_tag(actor.name.as_str());
-            } else {
-                item_page.set_tag(Some(actor.name.as_str()));
-                view.push(&item_page);
-            }
-        }));
         actorscrolled.set_child(Some(&actorlist));
     }
 
@@ -1024,9 +947,9 @@ impl ItemPage {
         }));
     }
 
-    pub fn setrecommendscrolled(&self, recommend: Vec<SearchResult>) {
+    pub fn setrecommendscrolled(&self, recommend: Vec<SimpleListItem>) {
         let imp = self.imp();
-        let recommendscrolled = fix(imp.recommendscrolled.get());
+        let recommendscrolled = imp.recommendscrolled.fix();
         let recommendrevealer = imp.recommendrevealer.get();
         if !recommend.is_empty() {
             recommendrevealer.set_reveal_child(true);
@@ -1039,151 +962,17 @@ impl ItemPage {
         imp.recommendselection.set_autoselect(false);
         imp.recommendselection.set_model(Some(&store));
         let recommendselection = &imp.recommendselection;
-        let factory = gtk::SignalListItemFactory::new();
-        factory.connect_setup(move |_, item| {
-            let list_item = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem");
-            let listbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
-            let picture = gtk::Box::builder()
-                .orientation(gtk::Orientation::Vertical)
-                .height_request(273)
-                .width_request(182)
-                .build();
-            let label = gtk::Label::builder()
-                .valign(gtk::Align::Start)
-                .halign(gtk::Align::Center)
-                .justify(gtk::Justification::Center)
-                .wrap_mode(gtk::pango::WrapMode::WordChar)
-                .ellipsize(gtk::pango::EllipsizeMode::End)
-                .build();
-            listbox.append(&picture);
-            listbox.append(&label);
-            list_item.set_child(Some(&listbox));
-        });
-        factory.connect_bind(move |_, item| {
-            let picture = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .child()
-                .and_downcast::<gtk::Box>()
-                .expect("Needs to be Box")
-                .first_child()
-                .expect("Needs to be Picture");
-            let label = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .child()
-                .and_downcast::<gtk::Box>()
-                .expect("Needs to be Box")
-                .last_child()
-                .expect("Needs to be Picture");
-            let entry = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .item()
-                .and_downcast::<glib::BoxedAnyObject>()
-                .expect("Needs to be BoxedAnyObject");
-            let recommend: std::cell::Ref<SearchResult> = entry.borrow();
-            if picture.is::<gtk::Box>() {
-                if let Some(_revealer) = picture
-                    .downcast_ref::<gtk::Box>()
-                    .expect("Needs to be Box")
-                    .first_child()
-                {
-                } else {
-                    let img = crate::ui::image::setimage(recommend.id.clone());
-                    let overlay = gtk::Overlay::builder().child(&img).build();
-                    if let Some(userdata) = &recommend.user_data {
-                        if let Some(unplayeditemcount) = userdata.unplayed_item_count {
-                            if unplayeditemcount > 0 {
-                                let mark = gtk::Label::new(Some(
-                                    &userdata
-                                        .unplayed_item_count
-                                        .expect("no unplayeditemcount")
-                                        .to_string(),
-                                ));
-                                mark.set_valign(gtk::Align::Start);
-                                mark.set_halign(gtk::Align::End);
-                                mark.set_height_request(40);
-                                mark.set_width_request(40);
-                                overlay.add_overlay(&mark);
-                            }
-                        }
-                        if userdata.played {
-                            let mark = gtk::Image::from_icon_name("object-select-symbolic");
-                            mark.set_halign(gtk::Align::End);
-                            mark.set_valign(gtk::Align::Start);
-                            mark.set_height_request(40);
-                            mark.set_width_request(40);
-                            overlay.add_overlay(&mark);
-                        }
-                    }
-                    picture
-                        .downcast_ref::<gtk::Box>()
-                        .expect("Needs to be Box")
-                        .append(&overlay);
-                }
-            }
-            if label.is::<gtk::Label>() {
-                if let Some(production_year) = &recommend.production_year {
-                    let str = format!("{}\n{}", recommend.name, production_year);
-                    label
-                        .downcast_ref::<gtk::Label>()
-                        .expect("Needs to be Label")
-                        .set_text(&str);
-                }
-            }
-        });
+        let factory = tu_list_item_factory("".to_string());
         imp.recommendlist.set_factory(Some(&factory));
         imp.recommendlist.set_model(Some(recommendselection));
         let recommendlist = imp.recommendlist.get();
         recommendlist.connect_activate(
-            glib::clone!(@weak self as obj =>move |listview, position| {
-                let model = listview.model().unwrap();
-                let item = model
-                    .item(position)
-                    .and_downcast::<glib::BoxedAnyObject>()
-                    .unwrap();
-                let recommend: std::cell::Ref<SearchResult> = item.borrow();
-                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                let view = match window.current_view_name().as_str() {
-                    "homepage" => {
-                        window.set_title(&recommend.name);
-                        std::env::set_var("HOME_TITLE", &recommend.name);
-                        &window.imp().homeview
-                    }
-                    "searchpage" => {
-                        window.set_title(&recommend.name);
-                        std::env::set_var("SEARCH_TITLE", &recommend.name);
-                        &window.imp().searchview
-                    }
-                    "historypage" => {
-                        window.set_title(&recommend.name);
-                        std::env::set_var("HISTORY_TITLE", &recommend.name);
-                        &window.imp().historyview
-                    }
-                    _ => {
-                        &window.imp().searchview
-                    }
-                };
-                if recommend.result_type == "Movie" {
-                    let item_page = MoviePage::new(recommend.id.clone(),recommend.name.clone());
-                    if view.find_page(recommend.name.as_str()).is_some() {
-                        view.pop_to_tag(recommend.name.as_str());
-                    } else {
-                        item_page.set_tag(Some(recommend.name.as_str()));
-                        view.push(&item_page);
-                    }
-                } else {
-                    let item_page = ItemPage::new(recommend.id.clone(),recommend.id.clone());
-                    if view.find_page(recommend.name.as_str()).is_some() {
-                        view.pop_to_tag(recommend.name.as_str());
-                    } else {
-                        item_page.set_tag(Some(recommend.name.as_str()));
-                        view.push(&item_page);
-                    }
-                }
+            glib::clone!(@weak self as obj => move |listview, position| {
+                    let window = obj.root().and_downcast::<Window>().unwrap();
+                    let model = listview.model().unwrap();
+                    let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                    let result: std::cell::Ref<SimpleListItem> = item.borrow();
+                    tu_list_view_connect_activate(window, &result, None);
             }),
         );
         recommendscrolled.set_child(Some(&recommendlist));
@@ -1191,21 +980,21 @@ impl ItemPage {
 
     pub fn set_studio(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
-        let scrolled = fix(imp.studiosscrolled.get());
+        let scrolled = imp.studiosscrolled.fix();
         let revealer = imp.studiosrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
 
     pub fn set_tags(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
-        let scrolled = fix(imp.tagsscrolled.get());
+        let scrolled = imp.tagsscrolled.fix();
         let revealer = imp.tagsrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
 
     pub fn set_genres(&self, infos: Vec<SGTitem>) {
         let imp = self.imp();
-        let scrolled = fix(imp.genresscrolled.get());
+        let scrolled = imp.genresscrolled.fix();
         let revealer = imp.genresrevealer.get();
         self.setup_sgts(revealer, scrolled, infos);
     }
@@ -1213,7 +1002,7 @@ impl ItemPage {
     pub fn setup_sgts(
         &self,
         linksrevealer: gtk::Revealer,
-        linksscrolled: gtk::ScrolledWindow,
+        linksscrolled: &gtk::ScrolledWindow,
         infos: Vec<SGTitem>,
     ) {
         if !infos.is_empty() {

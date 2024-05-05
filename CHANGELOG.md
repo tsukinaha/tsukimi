@@ -1,3 +1,26 @@
+## 0.4.10
+
+### Added
+
+- Added context menu
+- Added option to remove item from resume list
+- Added series page
+- Added view collection for movie/series page
+- Added reset password functionality
+- Added search category
+- Added album page (not playable for now)
+
+### Changed
+
+- List item second line has dim-label style enabled by default and scaled to 0.9
+- Home page has title style enabled
+- Rewrote bottom component for increased stability
+
+### Fixed
+
+- Fixed issue where password was required to be filled
+- Fixed issue where spinner behaved incorrectly when logging in
+
 ## 0.4.9-1
 
 ### Hotfix

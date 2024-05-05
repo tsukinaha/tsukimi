@@ -4,7 +4,7 @@
     <property name="title" translatable="yes">Account Settings</property>
     <property name="content-height">780</property>
     <style>
-      <class name="account-settings"/>
+      <class name="account-settings" />
     </style>
     <child>
       <object class="AdwPreferencesPage">
@@ -37,16 +37,16 @@
             <child>
               <object class="GtkButton">
                 <property name="halign">center</property>
-                <property name="action-name">as.password</property>
                 <child>
                   <object class="AdwButtonContent">
                     <property name="label" translatable="yes">Change Password</property>
                     <property name="icon-name">go-next-symbolic</property>
                   </object>
                 </child>
+                <signal name="clicked" handler="on_change_password" swapped="yes" />
                 <style>
-                  <class name="suggested-action"/>
-                  <class name="pill"/>
+                  <class name="suggested-action" />
+                  <class name="pill" />
                 </style>
               </object>
             </child>

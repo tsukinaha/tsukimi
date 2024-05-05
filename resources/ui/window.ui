@@ -172,7 +172,7 @@
                                                 <property name="label" translatable="yes">Home</property>
                                                 <property name="halign">start</property>
                                                 <attributes>
-                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                                                 </attributes>
                                               </object>
                                             </child>
@@ -201,7 +201,7 @@
                                                 <property name="label" translatable="yes">History &amp; Liked</property>
                                                 <property name="halign">start</property>
                                                 <attributes>
-                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                                                 </attributes>
                                               </object>
                                             </child>
@@ -230,7 +230,7 @@
                                                 <property name="label" translatable="yes">Search</property>
                                                 <property name="halign">start</property>
                                                 <attributes>
-                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                                                 </attributes>
                                               </object>
                                             </child>
@@ -259,7 +259,7 @@
                                                 <property name="label" translatable="yes">Server Panel</property>
                                                 <property name="halign">start</property>
                                                 <attributes>
-                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                                                 </attributes>
                                               </object>
                                             </child>
@@ -278,7 +278,7 @@
                                                 <property name="label" translatable="yes">Preferences</property>
                                                 <property name="halign">start</property>
                                                 <attributes>
-                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                                                 </attributes>
                                               </object>
                                             </child>
