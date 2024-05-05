@@ -37,6 +37,9 @@
                                 <attributes>
                                   <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                                 </attributes>
+                                <style>
+                                  <class name="title-3"/>
+                                </style>
                               </object>
                             </child>
                             <child>
