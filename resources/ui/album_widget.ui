@@ -19,6 +19,7 @@
                     <property name="halign">fill</property>
                     <property name="hexpand">True</property>
                     <property name="spacing">32</property>
+                    <property name="margin-bottom">48</property>
                     <child>
                       <object class="GtkPicture" id="cover_image">
                         <property name="halign">center</property>
@@ -115,12 +116,10 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkListBox" id="listbox">
-                    <property name="focusable">False</property>
-                    <property name="margin-top">48</property>
-                    <property name="selection_mode">0</property>
+                  <object class="GtkBox" id="listbox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">36</property>
                     <style>
-                      <class name="boxed-list"/>
                       <class name="logo"/>
                     </style>
                   </object>

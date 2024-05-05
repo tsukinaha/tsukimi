@@ -59,7 +59,7 @@
         </child>
         <child>
           <object class="GtkBox" id="_artist_box">
-            <property name="visible">False</property>
+            <property name="visible">True</property>
             <property name="focusable">False</property>
             <property name="hexpand">True</property>
             <child>
@@ -72,6 +72,9 @@
                 <property name="max_width_chars">90</property>
                 <property name="justify">fill</property>
                 <property name="margin-start">9</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
             </child>
           </object>

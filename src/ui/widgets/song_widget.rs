@@ -75,13 +75,14 @@ impl SongWidget {
         imp.title_label.set_text(&item.name());
         imp.artist_label.set_text(&item.artists().unwrap_or("".to_string()));
         let duration = item.run_time_ticks() / 10000000;
-        imp.duration_label.set_text(&Self::format_duration(duration as i64));
+        imp.duration_label.set_text(&format_duration(duration as i64));
     }
     
-    fn format_duration(seconds: i64) -> String {
-        let duration = Duration::seconds(seconds);
-        let minutes = duration.num_minutes();
-        let seconds = duration.num_seconds() % 60;
-        format!("{}:{:02}", minutes, seconds)
-    }
+}
+
+pub fn format_duration(seconds: i64) -> String {
+    let duration = Duration::seconds(seconds);
+    let minutes = duration.num_minutes();
+    let seconds = duration.num_seconds() % 60;
+    format!("{}:{:02}", minutes, seconds)
 }
