@@ -125,22 +125,6 @@
         </child>
       </object>
     </child>
-    <child>
-      <object class="GtkDragSource" id="_drag_source">
-        <property name="actions">move</property>
-        <property name="propagation-phase">none</property>
-        <signal name="prepare" handler="_on_drag_prepare" swapped="no"/>
-        <signal name="drag-begin" handler="_on_drag_begin" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkDropTarget">
-        <property name="actions">move</property>
-        <property name="formats">SongWidget</property>
-        <property name="preload">True</property>
-        <signal name="drop" handler="_on_drop" swapped="no"/>
-      </object>
-    </child>
     <style>
       <class name="songwidget"/>
     </style>

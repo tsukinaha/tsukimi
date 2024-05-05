@@ -86,7 +86,6 @@ pub async fn search(searchinfo: String, filter: &[&str]) -> Result<Vec<SimpleLis
         server.domain, server.port, server.user_id
     );
     let filter_str = filter.join(",");
-    println!("{:?}", filter_str);
     let params = [
         (
             "Fields",

@@ -181,6 +181,7 @@ impl TuListItem {
                     .set_text(&item.album_artist().unwrap_or("".to_string()));
                 imp.overlay.set_size_request(190, 190);
                 self.set_picture();
+                self.set_play();
             }
             "Actor" | "Person" => {
                 imp.listlabel.set_text(&item.name());
@@ -191,6 +192,21 @@ impl TuListItem {
                 println!("Unknown item type: {}", item_type)
             }
         }
+    }
+
+    pub fn set_play(&self) {
+        let imp = self.imp();
+        let button = gtk::Button::builder()
+            .icon_name("media-playback-start-symbolic")
+            .halign(gtk::Align::Start)
+            .valign(gtk::Align::End)
+            .margin_bottom(5)
+            .margin_start(5)
+            .height_request(35)
+            .width_request(35)
+            .build();
+        button.add_css_class("suggested-action");
+        imp.overlay.add_overlay(&button);
     }
 
     pub fn set_picture(&self) {

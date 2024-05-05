@@ -2,7 +2,7 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::{glib, CompositeTemplate};
 
-use crate::{ui::provider::tu_item::TuItem, utils::get_image_with_cache};
+use crate::{ui::provider::tu_item::TuItem, utils::{get_image_with_cache, spawn}};
 
 mod imp {
     use std::cell::OnceCell;
@@ -72,12 +72,6 @@ impl AlbumPage {
 
     pub async fn set_album(&self) {
         let item = self.item();
-        let image = get_image_with_cache(&item.id(), "Primary", None)
-            .await
-            .unwrap_or_default();
-        self.imp()
-            .cover_image
-            .set_file(Some(&gtk::gio::File::for_path(image)));
 
         self.imp().title_label.set_text(&item.name());
 
@@ -88,5 +82,23 @@ impl AlbumPage {
         self.imp()
             .released_label
             .set_text(&item.production_year().to_string());
+
+        let path = get_image_with_cache(&item.id(), "Primary", None)
+            .await
+            .unwrap_or_default();
+
+        if !std::path::PathBuf::from(&path).is_file() {
+            return;
+        }
+
+        let image = gtk::gio::File::for_path(path);
+        self.imp()
+            .cover_image
+            .set_file(Some(&image));
+        
+        spawn(glib::clone!(@weak self as obj=>async move {
+            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+            window.set_rootpic(image);
+        }));
     }
 }
