@@ -135,6 +135,7 @@
                 <property name="vexpand">True</property>
                 <child>
                   <object class="GtkGridView" id="listgrid">
+                    <property name="single-click-activate">True</property>
                     <property name="margin-start">40</property>
                     <property name="margin-end">40</property>
                   </object>

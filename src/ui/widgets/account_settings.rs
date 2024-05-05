@@ -1,11 +1,11 @@
+use crate::{client::network::change_password, utils::spawn_tokio};
+use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::{glib, template_callbacks, CompositeTemplate};
-use adw::prelude::*;
-use crate::{client::network::change_password, utils::spawn_tokio};
 
 mod imp {
-    use glib::subclass::InitializingObject;
     use super::*;
+    use glib::subclass::InitializingObject;
 
     #[derive(Debug, Default, CompositeTemplate)]
     #[template(resource = "/moe/tsukimi/account_settings.ui")]
@@ -71,9 +71,7 @@ impl AccountSettings {
             window.toast("Passwords do not match!");
             return;
         }
-        match spawn_tokio(async move {
-            change_password(&new_password).await
-        }).await {
+        match spawn_tokio(async move { change_password(&new_password).await }).await {
             Ok(_) => {
                 let window = self.root().and_downcast::<super::window::Window>().unwrap();
                 window.toast("Password changed successfully! Please login again.");

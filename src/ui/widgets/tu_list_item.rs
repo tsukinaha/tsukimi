@@ -174,7 +174,7 @@ impl TuListItem {
                 imp.overlay.set_size_request(190, 190);
                 self.set_picture();
             }
-            "Actor" | "Person"=> {
+            "Actor" | "Person" => {
                 imp.listlabel.set_text(&format!(
                     "{}\n{}",
                     item.name(),
@@ -409,10 +409,18 @@ impl TuListItem {
             Action::Remove => {
                 self.imp().revealer.set_reveal_child(false);
                 spawn(glib::clone!(@weak self as obj => async move {
-                    glib::timeout_future_seconds(1).await;
-                    obj.imp().revealer.set_visible(false);
+                    let parent = obj.parent().unwrap().parent().unwrap();
+                    if let Some(list_view) = parent.downcast_ref::<gtk::ListView>() {
+                        let selection = list_view.model().unwrap().downcast::<gtk::SingleSelection>().unwrap();
+                        let store = selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+                        store.remove(selection.selected());
+                    } else if let Some(grid_view) = parent.downcast_ref::<gtk::GridView>() {
+                        let selection = grid_view.model().unwrap().downcast::<gtk::SingleSelection>().unwrap();
+                        let store = selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+                        store.remove(selection.selected());
+                    }
                 }));
-            },
+            }
         }
         self.gesture();
     }

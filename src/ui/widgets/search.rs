@@ -155,7 +155,6 @@ impl SearchPage {
 
     pub fn setup_search(&self) {
         let imp = self.imp();
-       
 
         let store = gio::ListStore::new::<glib::BoxedAnyObject>();
         imp.selection.set_model(Some(&store));
@@ -180,15 +179,18 @@ impl SearchPage {
         let spinner = imp.spinner.get();
         let searchrevealer = imp.searchrevealer.get();
         let recommendbox = imp.recommendbox.get();
-        let store = imp.selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+        let store = imp
+            .selection
+            .model()
+            .unwrap()
+            .downcast::<gio::ListStore>()
+            .unwrap();
         imp.searchentry.connect_activate(
             glib::clone!(@weak spinner,@weak imp => move |entry| {
                 spinner.set_visible(true);
                 recommendbox.set_visible(false);
                 let search_content = entry.text().to_string();
-                let search_filter = 
-                
-                {
+                let search_filter = {
                     let mut filter = Vec::new();
                     if imp.movie.is_active() {
                         filter.push("Movie");
@@ -219,7 +221,7 @@ impl SearchPage {
                     for result in search_results {
                         let object = glib::BoxedAnyObject::new(result);
                         store.append(&object);
-                    } 
+                    }
                 }));
             }),
         );

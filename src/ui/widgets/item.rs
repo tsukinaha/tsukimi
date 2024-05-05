@@ -1,8 +1,8 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
-use gtk::{gio, glib};
 use gtk::template_callbacks;
+use gtk::{gio, glib};
 use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;

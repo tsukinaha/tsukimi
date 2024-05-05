@@ -972,7 +972,12 @@ pub async fn change_password(new_password: &str) -> Result<(), Error> {
     ];
 
     let profile = serde_json::json!({"CurrentPw":server_info.password,"NewPw":new_password});
-    client().post(&url).query(&params).json(&profile).send().await?;
+    client()
+        .post(&url)
+        .query(&params)
+        .json(&profile)
+        .send()
+        .await?;
     Ok(())
 }
 
