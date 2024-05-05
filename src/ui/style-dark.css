@@ -31,6 +31,10 @@ picture {
     border-radius:10px;
 }
 
+.songwidget {
+    padding: 12px;
+}
+
 .frame {
     border: 2px solid @borders;
     border-radius: 5px;

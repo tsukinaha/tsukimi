@@ -26,6 +26,10 @@ child {
     border-radius: 10px;
 }
 
+.songwidget {
+    padding: 12px;
+}
+
 .pill {
     border-radius: 10px;
 }

@@ -80,6 +80,7 @@
                                       <object class="GtkLabel" id="line2">
                                         <property name="halign">start</property>
                                         <property name="valign">center</property>
+                                        <property name="ellipsize">end</property>
                                         <attributes>
                                           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                                           <attribute name="scale" value="1.2"/>

@@ -45,6 +45,12 @@ pub mod imp {
         album_artist: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         role: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        artists: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        album_id: RefCell<Option<String>>,
+        #[property(get, set)]
+        run_time_ticks: RefCell<u64>,
     }
 
     #[glib::derived_properties]

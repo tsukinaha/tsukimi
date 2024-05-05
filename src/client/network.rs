@@ -1000,3 +1000,31 @@ pub async fn hide_from_resume(id: &str) -> Result<(), Error> {
     client().post(&url).query(&params).send().await?;
     Ok(())
 }
+
+pub async fn get_songs(parentid: &str) -> Result<List, Error> {
+    let server_info = set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items",
+        server_info.domain, server_info.port, server_info.user_id
+    );
+
+    let params = [
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,SyncStatus",
+        ),
+        ("ImageTypeLimit", "1"),
+        ("ParentId", parentid),
+        ("EnableTotalRecordCount", "false"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    let response = client().get(&url).query(&params).send().await?;
+    let json: serde_json::Value = response.json().await?;
+    let latests: List = serde_json::from_value(json).unwrap();
+    Ok(latests)
+}

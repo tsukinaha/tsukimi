@@ -546,6 +546,16 @@ pub fn create_tu_item(latest: &SimpleListItem, poster: Option<&str>) -> TuItem {
     if let Some(role) = &latest.role {
         tu_item.set_role(Some(role.clone()));
     }
+    if let Some(artists) = &latest.artists {
+        let artist = artists.join(",");
+        tu_item.set_artists(Some(artist));
+    }
+    if let Some(album_id) = &latest.album_id {
+        tu_item.set_album_id(Some(album_id.clone()));
+    }
+    if let Some(run_time_ticks) = latest.run_time_ticks {
+        tu_item.set_run_time_ticks(run_time_ticks);
+    }
     tu_item
 }
 

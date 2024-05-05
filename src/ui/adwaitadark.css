@@ -31,6 +31,10 @@ child {
     border-radius: 10px;
 }
    
+.songwidget {
+    padding: 12px;
+}
+
 listview > row {
     margin-left:9px;
     margin-right:9px;

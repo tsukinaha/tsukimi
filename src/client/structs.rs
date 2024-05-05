@@ -244,8 +244,14 @@ pub struct SimpleListItem {
     pub series_id: Option<String>,
     #[serde(rename = "AlbumArtist")]
     pub album_artist: Option<String>,
+    #[serde(rename = "Artists")]
+    pub artists: Option<Vec<String>>,
+    #[serde(rename = "AlbumId")]
+    pub album_id: Option<String>,
     #[serde(rename = "Role")]
     pub role: Option<String>,
+    #[serde(rename = "RunTimeTicks")]
+    pub run_time_ticks: Option<u64>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]

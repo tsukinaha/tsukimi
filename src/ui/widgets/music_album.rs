@@ -2,7 +2,9 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::{glib, CompositeTemplate};
 
-use crate::{ui::provider::tu_item::TuItem, utils::{get_image_with_cache, spawn}};
+use crate::{client::network::get_songs, ui::provider::tu_item::TuItem, utils::{get_data_with_cache, get_image_with_cache, spawn}};
+
+use super::tu_list_item::create_tu_item;
 
 mod imp {
     use std::cell::OnceCell;
@@ -26,6 +28,8 @@ mod imp {
         pub artist_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub released_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub listbox: TemplateChild<gtk::ListBox>,
     }
 
     #[glib::object_subclass]
@@ -50,6 +54,7 @@ mod imp {
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(@weak obj => async move {
                 obj.set_album().await;
+                obj.get_songs().await;
             }));
         }
     }
@@ -95,10 +100,23 @@ impl AlbumPage {
         self.imp()
             .cover_image
             .set_file(Some(&image));
-        
+
         spawn(glib::clone!(@weak self as obj=>async move {
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             window.set_rootpic(image);
         }));
+    }
+
+    pub async fn get_songs(&self) {
+        let item = self.item();
+        let id = item.id();
+        let songs = get_data_with_cache(item.id(), "audio", async move {
+            get_songs(&id).await
+        }).await.unwrap();
+        for song in songs.items {
+            let item = create_tu_item(&song, None);
+            let song_widget = super::song_widget::SongWidget::new(item);
+            self.imp().listbox.append(&song_widget);
+        }
     }
 }
