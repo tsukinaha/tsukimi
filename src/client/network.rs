@@ -86,13 +86,14 @@ pub async fn search(searchinfo: String, filter: &[&str]) -> Result<Vec<SimpleLis
         server.domain, server.port, server.user_id
     );
     let filter_str = filter.join(",");
+    println!("{:?}", filter_str);
     let params = [
         (
             "Fields",
             "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
         ),
         ("IncludeItemTypes", &filter_str),
-        ("IncludeSearchTypes", "false"),
+        ("IncludeSearchTypes", &filter_str),
         ("StartIndex", "0"),
         ("SortBy", "SortName"),
         ("SortOrder", "Ascending"),

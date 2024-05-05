@@ -207,7 +207,6 @@ impl SearchPage {
                     if imp.music.is_active() {
                         filter.push("MusicAlbum");
                     }
-                    filter.pop();
                     filter
                 };
 

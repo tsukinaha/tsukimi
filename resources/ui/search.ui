@@ -22,7 +22,6 @@
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkToggleButton" id="movie">
-                    <property name="group">music</property>
                     <property name="active">True</property>
                     <child>
                       <object class="AdwButtonContent">
@@ -34,7 +33,6 @@
                 </child>
                 <child>
                   <object class="GtkToggleButton" id="series">
-                    <property name="group">music</property>
                     <property name="active">True</property>
                     <child>
                       <object class="AdwButtonContent">
@@ -46,7 +44,6 @@
                 </child>
                 <child>
                   <object class="GtkToggleButton" id="boxset">
-                    <property name="group">music</property>
                     <property name="active">True</property>
                     <child>
                       <object class="AdwButtonContent">
@@ -58,7 +55,6 @@
                 </child>
                 <child>
                   <object class="GtkToggleButton" id="person">
-                    <property name="group">music</property>
                     <property name="active">True</property>
                     <child>
                       <object class="AdwButtonContent">
@@ -70,7 +66,7 @@
                 </child>
                 <child>
                   <object class="GtkToggleButton" id="music">
-                    <property name="active">False</property>
+                    <property name="active">True</property>
                     <child>
                       <object class="AdwButtonContent">
                         <property name="label" translatable="yes">Music Album</property>
