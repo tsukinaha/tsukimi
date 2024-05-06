@@ -3,7 +3,7 @@
 > A Simple Third-party Emby client.
 > 使用 GTK4-RS 编写的第三方 Emby 客户端
 
-![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Static Badge](https://img.shields.io/badge/Telegram-Group-blue)](https://t.me/+8Sktkd13w00wNGNl) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Windows GNU CI status](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml) [![AUR Version](https://img.shields.io/aur/version/tsukimi-git)](https://aur.archlinux.org/packages/tsukimi-git) 
+![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Static Badge](https://img.shields.io/badge/Telegram-Group-blue)](https://t.me/+mhcPxx5kE6QzMjVl) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Windows GNU CI status](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml) [![AUR Version](https://img.shields.io/aur/version/tsukimi-git)](https://aur.archlinux.org/packages/tsukimi-git) 
 
 ## Notice
 Windows 下如出现 窗口无法显示 黑边框 等情况
