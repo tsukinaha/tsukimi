@@ -4,9 +4,9 @@ use gtk::prelude::*;
 use gtk::{gio, glib};
 mod client;
 mod config;
+mod macros;
 mod ui;
 mod utils;
-mod macros;
 
 const APP_ID: &str = "moe.tsuna.tsukimi";
 

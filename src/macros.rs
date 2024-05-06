@@ -13,7 +13,8 @@ macro_rules! _add_toast {
             if let Some(window) = root.downcast_ref::<adw::PreferencesWindow>() {
                 use adw::prelude::PreferencesWindowExt;
                 window.add_toast($toast);
-            } else if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
+            } else if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>()
+            {
                 window.add_toast($toast);
             } else {
                 panic!("Trying to display a toast when the parent doesn't support it");
@@ -24,9 +25,7 @@ macro_rules! _add_toast {
 
 #[macro_export]
 macro_rules! toast {
-    ($widget:expr, $message:expr) => {
-        {
-            $crate::_add_toast!($widget, adw::Toast::new($message.as_ref()));
-        }
-    }
+    ($widget:expr, $message:expr) => {{
+        $crate::_add_toast!($widget, adw::Toast::new($message.as_ref()));
+    }};
 }

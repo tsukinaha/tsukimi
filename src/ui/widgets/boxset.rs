@@ -188,8 +188,8 @@ impl BoxSetPage {
 
         let path = get_image_with_cache(&id, "Backdrop", Some(0))
             .await
-            .unwrap_or_else(|e| {
-                toast!(self,"Network Error");
+            .unwrap_or_else(|_| {
+                toast!(self, "Network Error");
                 String::default()
             });
         let file = gtk::gio::File::for_path(&path);
@@ -206,8 +206,8 @@ impl BoxSetPage {
         let itemoverview = imp.inscription.get();
         let item = get_data_with_cache(id.clone(), "item", async { get_item_overview(id).await })
             .await
-            .unwrap_or_else(|e| {
-                toast!(self,"Network Error");
+            .unwrap_or_else(|_| {
+                toast!(self, "Network Error");
                 Item::default()
             });
         spawn(glib::clone!(@weak self as obj=>async move {

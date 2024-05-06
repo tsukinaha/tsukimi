@@ -4,9 +4,7 @@ mod imp {
     use super::*;
 
     #[derive(Default)]
-    pub struct StarToggle {
-
-    }
+    pub struct StarToggle {}
 
     #[glib::object_subclass]
     impl ObjectSubclass for StarToggle {
@@ -28,11 +26,9 @@ mod imp {
         fn toggled(&self) {
             self.obj().update();
         }
-
     }
 
     impl ButtonImpl for StarToggle {}
-
 }
 
 glib::wrapper! {
@@ -60,9 +56,17 @@ impl StarToggle {
 
     fn update(&self) {
         let starred = self.is_active();
-        self.set_icon_name(if starred {"starred-symbolic"} else {"non-starred-symbolic"} );
-        self.set_tooltip_text(if starred {Some("Remove from favorites")} else {Some("Add to favorites")});
-        
+        self.set_icon_name(if starred {
+            "starred-symbolic"
+        } else {
+            "non-starred-symbolic"
+        });
+        self.set_tooltip_text(if starred {
+            Some("Remove from favorites")
+        } else {
+            Some("Add to favorites")
+        });
+
         if starred {
             self.add_css_class("starred")
         } else {
@@ -72,4 +76,3 @@ impl StarToggle {
         self.add_css_class("interacted")
     }
 }
-

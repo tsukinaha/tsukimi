@@ -1,15 +1,15 @@
+use crate::ui::provider::tu_item::TuItem;
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use chrono::Duration;
 use gtk::{glib, CompositeTemplate};
-use crate::ui::provider::tu_item::TuItem;
 
 mod imp {
     use std::cell::OnceCell;
 
+    use super::*;
     use crate::ui::provider::tu_item::TuItem;
     use crate::ui::widgets::star_toggle::StarToggle;
-    use super::*;
     use glib::subclass::InitializingObject;
 
     #[derive(CompositeTemplate, Default, glib::Properties)]

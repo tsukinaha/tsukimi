@@ -279,8 +279,8 @@ impl MoviePage {
         let backdrop = imp.backdrop.get();
         let path = get_image_with_cache(&id, "Backdrop", Some(0))
             .await
-            .unwrap_or_else(|e| {
-                toast!(self,"Network Error");
+            .unwrap_or_else(|_| {
+                toast!(self, "Network Error");
                 String::new()
             });
         let file = gtk::gio::File::for_path(&path);
@@ -305,8 +305,8 @@ impl MoviePage {
         for tag_num in 1..tags {
             let path = get_image_with_cache(&id, "Backdrop", Some(tag_num as u8))
                 .await
-                .unwrap_or_else(|e| {
-                    toast!(self,"Network Error");
+                .unwrap_or_else(|_| {
+                    toast!(self, "Network Error");
                     String::new()
                 });
             let file = gtk::gio::File::for_path(&path);
@@ -338,8 +338,8 @@ impl MoviePage {
         let overviewrevealer = imp.overviewrevealer.get();
         let item = get_data_with_cache(id.clone(), "item", async { get_item_overview(id).await })
             .await
-            .unwrap_or_else(|e| {
-                toast!(self,"Network Error");
+            .unwrap_or_else(|_| {
+                toast!(self, "Network Error");
                 Item::default()
             });
         spawn(glib::clone!(@weak self as obj=>async move {
@@ -644,8 +644,8 @@ impl MoviePage {
         let id = self.id();
         let result = get_data_with_cache(id.clone(), "sim", async move { similar(&id).await })
             .await
-            .unwrap_or_else(|e| {
-                toast!(self,"Network Error");
+            .unwrap_or_else(|_| {
+                toast!(self, "Network Error");
                 Vec::new()
             });
         spawn(glib::clone!(@weak self as obj =>async move {

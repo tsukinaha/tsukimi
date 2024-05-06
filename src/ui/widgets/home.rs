@@ -161,8 +161,8 @@ impl HomePage {
         let views =
             get_data_with_cache("0".to_string(), "views", async move { get_library().await })
                 .await
-                .unwrap_or_else(|e| {
-                    toast!(self,"Network Error");
+                .unwrap_or_else(|_| {
+                    toast!(self, "Network Error");
                     Vec::new()
                 });
         glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
@@ -211,8 +211,8 @@ impl HomePage {
                 get_latest(view.id.clone()).await
             })
             .await
-            .unwrap_or_else(|e| {
-                toast!(self,"Network Error");
+            .unwrap_or_else(|_| {
+                toast!(self, "Network Error");
                 Vec::new()
             });
             spawn(glib::clone!(@weak self as obj =>async move {

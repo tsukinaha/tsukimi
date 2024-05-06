@@ -138,8 +138,8 @@ impl ActorPage {
             get_item_overview(id).await
         })
         .await
-        .unwrap_or_else(|e| {
-            toast!(self,"Network Error");
+        .unwrap_or_else(|_| {
+            toast!(self, "Network Error");
             Item::default()
         });
         spawn(glib::clone!(@weak self as obj=>async move {
@@ -219,8 +219,8 @@ impl ActorPage {
             person_item(&id, &media_type).await
         })
         .await
-        .unwrap_or_else(|e| {
-            toast!(self,"Network Error");
+        .unwrap_or_else(|_| {
+            toast!(self, "Network Error");
             Vec::new()
         });
         spawn(async move {
