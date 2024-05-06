@@ -386,6 +386,20 @@ impl ItemPage {
             carousel.append(&picture);
             carousel.set_allow_scroll_wheel(true);
         }
+
+        if carousel.n_pages() == 1 {
+            return;
+        }
+
+        spawn(glib::clone!(@weak carousel => async move {
+            loop {
+                glib::timeout_future_seconds(10).await;
+                let current_page = carousel.position();
+                let n_pages = carousel.n_pages();
+                let new_page_position = (current_page + 1. + n_pages as f64) % n_pages as f64;
+                carousel.scroll_to(&carousel.nth_page(new_page_position as u32),true);
+            }
+        }));
     }
 
     pub async fn setup_seasons(&self) {

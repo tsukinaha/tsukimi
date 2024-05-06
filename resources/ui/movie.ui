@@ -40,216 +40,135 @@
                       </object>
                     </child>
                     <child type="overlay">
-                      <object class="GtkOverlay">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
                         <property name="valign">end</property>
                         <property name="vexpand">true</property>
-                        <property name="height-request">200</property>
+                        <property name="hexpand">true</property>
                         <child>
-                          <object class="GtkBox">
-                            <property name="valign">end</property>
-                            <property name="vexpand">true</property>
-                            <property name="height-request">200</property>
-                            <style>
-                              <class name="mask" />
-                            </style>
-                          </object>
-                        </child>
-                        <child type="overlay">
-                          <object class="GtkBox">
-                            <property name="orientation">vertical</property>
-                            <property name="valign">end</property>
+                          <object class="GtkBox" id="osdbox">
+                            <property name="orientation">horizontal</property>
+                            <property name="valign">fill</property>
                             <property name="vexpand">true</property>
                             <property name="hexpand">true</property>
                             <child>
-                              <object class="GtkBox" id="osdbox">
-                                <property name="orientation">horizontal</property>
-                                <property name="valign">fill</property>
-                                <property name="vexpand">true</property>
+                              <object class="GtkBox">
+                                <property name="orientation">vertical</property>
                                 <property name="hexpand">true</property>
+                                <property name="valign">end</property>
+                                <property name="halign">start</property>
+                                <property name="spacing">6</property>
+                                <property name="margin-start">50</property>
+                                <property name="margin-end">50</property>
+                                <property name="margin-bottom">20</property>
+                                <property name="margin-top">20</property>
                                 <child>
                                   <object class="GtkBox">
-                                    <property name="orientation">vertical</property>
-                                    <property name="hexpand">true</property>
-                                    <property name="valign">end</property>
+                                    <property name="orientation">horizontal</property>
                                     <property name="halign">start</property>
-                                    <property name="spacing">6</property>
-                                    <property name="margin-start">50</property>
-                                    <property name="margin-end">50</property>
-                                    <property name="margin-bottom">20</property>
-                                    <property name="margin-top">20</property>
+                                    <property name="spacing">10</property>
                                     <child>
-                                      <object class="GtkBox">
-                                        <property name="orientation">horizontal</property>
+                                      <object class="GtkLabel" id="line1">
                                         <property name="halign">start</property>
-                                        <property name="spacing">10</property>
-                                        <child>
-                                          <object class="GtkLabel" id="line1">
-                                            <property name="halign">start</property>
-                                            <property name="label" translatable="yes">Loading...</property>
-                                            <property name="wrap">true</property>
-                                            <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                              <attribute name="scale" value="1.3"/>
-                                            </attributes>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkSpinner" id="line1spinner">
-                                            <property name="visible">True</property>
-                                            <property name="spinning">True</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="tagline">
-                                        <property name="halign">start</property>
-                                        <property name="visible">False</property>
-                                        <property name="label" translatable="yes">loading</property>
+                                        <property name="label" translatable="yes">Loading...</property>
+                                        <property name="wrap">true</property>
                                         <attributes>
                                           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                          <attribute name="scale" value="1.0"/>
+                                          <attribute name="scale" value="1.3"/>
                                         </attributes>
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="GtkBox">
-                                        <property name="orientation">horizontal</property>
-                                        <property name="halign">start</property>
-                                        <property name="spacing">10</property>
-                                        <child>
-                                          <object class="GtkImage" id="star">
-                                            <property name="icon-name">starred-symbolic</property>
-                                            <property name="visible">False</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel" id="crating">
-                                            <property name="label" translatable="yes"></property>
-                                            <property name="visible">False</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel" id="orating">
-                                            <property name="label" translatable="yes"></property>
-                                            <property name="visible">False</property>
-                                            <style>
-                                              <class name="frame" />
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel" id="line2">
-                                            <property name="halign">start</property>
-                                            <property name="label" translatable="yes">Loading...</property>
-                                            <property name="ellipsize">end</property>
-                                          </object>
-                                        </child>
+                                      <object class="GtkSpinner" id="line1spinner">
+                                        <property name="visible">True</property>
+                                        <property name="spinning">True</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="tagline">
+                                    <property name="halign">start</property>
+                                    <property name="visible">False</property>
+                                    <property name="label" translatable="yes">loading</property>
+                                    <attributes>
+                                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                      <attribute name="scale" value="1.0"/>
+                                    </attributes>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="orientation">horizontal</property>
+                                    <property name="halign">start</property>
+                                    <property name="spacing">10</property>
+                                    <child>
+                                      <object class="GtkImage" id="star">
+                                        <property name="icon-name">starred-symbolic</property>
+                                        <property name="visible">False</property>
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="GtkBox">
-                                        <property name="orientation">horizontal</property>
+                                      <object class="GtkLabel" id="crating">
+                                        <property name="label" translatable="yes"></property>
+                                        <property name="visible">False</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="orating">
+                                        <property name="label" translatable="yes"></property>
+                                        <property name="visible">False</property>
+                                        <style>
+                                          <class name="frame" />
+                                        </style>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="line2">
                                         <property name="halign">start</property>
-                                        <property name="spacing">10</property>
-                                        <child>
-                                          <object class="GtkButton" id="playbutton">
-                                            <property name="halign">start</property>
-                                            <property name="width-request">250</property>
-                                            <property name="sensitive">False</property>
-                                            <property name="child">
-                                              <object class="AdwButtonContent">
-                                                <property name="icon-name">media-playback-start-symbolic</property>
-                                                <property name="label" translatable="yes">Play</property>
-                                                <property name="use-underline">True</property>
-                                              </object>
-                                            </property>
-                                            <style>
-                                              <class name="suggested-action" />
-                                              <class name="pill" />
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="AdwSplitButton" id="favourite_button_split">
-                                            <property name="menu_model">favourite_button_menu_model</property>
-                                            <property name="action-name">like</property>
-                                            <child>
-                                              <object class="AdwButtonContent" id="favourite_button_split_content">
-                                                <property name="icon-name">non-starred-symbolic</property>
-                                                <property name="label">Like</property>
-                                              </object>
-                                            </child>
-                                            <style>
-                                              <class name="suggested-action" />
-                                              <class name="starbutton" />
-                                            </style>
-                                          </object>
-                                        </child>
+                                        <property name="label" translatable="yes">Loading...</property>
+                                        <property name="ellipsize">end</property>
                                       </object>
                                     </child>
                                   </object>
                                 </child>
                                 <child>
                                   <object class="GtkBox">
-                                    <property name="orientation">vertical</property>
-                                    <property name="valign">end</property>
-                                    <property name="spacing">6</property>
-                                    <property name="margin-start">50</property>
-                                    <property name="margin-end">50</property>
-                                    <property name="margin-bottom">20</property>
-                                    <property name="margin-top">20</property>
+                                    <property name="orientation">horizontal</property>
+                                    <property name="halign">start</property>
+                                    <property name="spacing">10</property>
                                     <child>
-                                      <object class="GtkButton" id="include_button">
-                                        <property name="halign">end</property>
+                                      <object class="GtkButton" id="playbutton">
+                                        <property name="halign">start</property>
+                                        <property name="width-request">250</property>
+                                        <property name="sensitive">False</property>
                                         <property name="child">
                                           <object class="AdwButtonContent">
-                                            <property name="icon-name">view-grid-symbolic</property>
-                                            <property name="label" translatable="yes">Included In</property>
+                                            <property name="icon-name">media-playback-start-symbolic</property>
+                                            <property name="label" translatable="yes">Play</property>
                                             <property name="use-underline">True</property>
                                           </object>
                                         </property>
-                                        <signal name="clicked" handler="include_button_cb" swapped="yes"/>
+                                        <style>
+                                          <class name="suggested-action" />
+                                          <class name="pill" />
+                                        </style>
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="GtkBox">
-                                        <property name="orientation">horizontal</property>
-                                        <property name="halign">end</property>
-                                        <property name="spacing">6</property>
+                                      <object class="AdwSplitButton" id="favourite_button_split">
+                                        <property name="menu_model">favourite_button_menu_model</property>
+                                        <property name="action-name">like</property>
                                         <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Video: </property>
-                                            <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                            </attributes>
+                                          <object class="AdwButtonContent" id="favourite_button_split_content">
+                                            <property name="icon-name">non-starred-symbolic</property>
+                                            <property name="label">Like</property>
                                           </object>
                                         </child>
-                                        <child>
-                                          <object class="GtkDropDown" id="namedropdown">
-                                            <property name="width-request">300</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkBox">
-                                        <property name="orientation">horizontal</property>
-                                        <property name="halign">end</property>
-                                        <property name="spacing">6</property>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Subtitle: </property>
-                                            <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                            </attributes>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkDropDown" id="subdropdown">
-                                            <property name="width-request">300</property>
-                                          </object>
-                                        </child>
+                                        <style>
+                                          <class name="suggested-action" />
+                                          <class name="starbutton" />
+                                        </style>
                                       </object>
                                     </child>
                                   </object>
@@ -257,14 +176,81 @@
                               </object>
                             </child>
                             <child>
-                              <object class="AdwCarouselIndicatorLines" id="indicator">
-                                <property name="margin-bottom">10</property>
-                                <property name="halign">center</property>
+                              <object class="GtkBox">
+                                <property name="orientation">vertical</property>
                                 <property name="valign">end</property>
+                                <property name="spacing">6</property>
+                                <property name="margin-start">50</property>
+                                <property name="margin-end">50</property>
+                                <property name="margin-bottom">20</property>
+                                <property name="margin-top">20</property>
+                                <child>
+                                  <object class="GtkButton" id="include_button">
+                                    <property name="halign">end</property>
+                                    <property name="child">
+                                      <object class="AdwButtonContent">
+                                        <property name="icon-name">view-grid-symbolic</property>
+                                        <property name="label" translatable="yes">Included In</property>
+                                        <property name="use-underline">True</property>
+                                      </object>
+                                    </property>
+                                    <signal name="clicked" handler="include_button_cb" swapped="yes"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="orientation">horizontal</property>
+                                    <property name="halign">end</property>
+                                    <property name="spacing">6</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="label" translatable="yes">Video: </property>
+                                        <attributes>
+                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                        </attributes>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkDropDown" id="namedropdown">
+                                        <property name="width-request">300</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="orientation">horizontal</property>
+                                    <property name="halign">end</property>
+                                    <property name="spacing">6</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="label" translatable="yes">Subtitle: </property>
+                                        <attributes>
+                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                        </attributes>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkDropDown" id="subdropdown">
+                                        <property name="width-request">300</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                           </object>
                         </child>
+                        <child>
+                          <object class="AdwCarouselIndicatorLines" id="indicator">
+                            <property name="margin-bottom">10</property>
+                            <property name="halign">center</property>
+                            <property name="valign">end</property>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="mask" />
+                        </style>
                       </object>
                     </child>
                     <child type="overlay">
