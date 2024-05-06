@@ -94,7 +94,7 @@ pub struct Media {
     pub play_session_id: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct Item {
     #[serde(rename = "Name")]
     pub name: String,
@@ -214,7 +214,7 @@ pub struct View {
     pub collection_type: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct SimpleListItem {
     #[serde(rename = "Name")]
     pub name: String,

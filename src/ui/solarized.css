@@ -1,20 +1,20 @@
 .checkwatched {
-    background: rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.1);
 }
 
 child {
     margin: 9px;
-    border-radius:15px;
+    border-radius: 15px;
 }
 
 .mask {
     background: #073642;
     filter: blur(7px);
-    border-radius:10px;
+    border-radius: 10px;
 }
 
 .logo {
-    background: rgba(0,0,0,0);
+    background: rgba(0, 0, 0, 0);
 }
 
 .frame {
@@ -35,67 +35,97 @@ child {
     border-radius: 10px;
 }
 
-   
-listview > row {
-    margin-left:9px;
-    margin-right:9px;
-    border-radius:10px;
+/* Starring */
+button.star:hover {
+    opacity: 1;
+}
+
+@keyframes rotate_star {
+    from {
+        -gtk-icon-transform: rotate(-72deg);
+    }
+
+    to {}
+}
+
+@keyframes rotate_unstar {
+    from {
+        -gtk-icon-transform: rotate(72deg);
+    }
+
+    to {}
+}
+
+button.star.interacted.starred image {
+    animation: rotate_star 0.4s ease;
+}
+
+button.star.interacted:not(.starred) image {
+    animation: rotate_unstar 0.4s ease;
+}
+
+listview>row {
+    margin-left: 9px;
+    margin-right: 9px;
+    border-radius: 10px;
 }
 
 picture {
-    border-radius:10px;
+    border-radius: 10px;
 }
 
 listview {
-    background-color: rgba(0,0,0,0);
+    background-color: rgba(0, 0, 0, 0);
 }
- 
+
 gridview {
-    background-color: rgba(0,0,0,0);
-}
-  
-gridview > child box {
-    margin:0px;
+    background-color: rgba(0, 0, 0, 0);
 }
 
- 
+gridview>child box {
+    margin: 0px;
+}
 
-overlay > label {
+
+
+overlay>label {
     background-color: #AEB5FA;
     border-radius: 999px;
-    margin:3px;
+    margin: 3px;
 }
 
-box > overlay > image {
+box>overlay>image {
     background-color: #AEB5FA;
     border-radius: 999px;
-    margin:3px;
+    margin: 3px;
 }
 
-revealer > box > box > widget {
-    background-color:rgba(1,1,1,0.1);
-    border-radius:10px;
+revealer>box>box>widget {
+    background-color: rgba(1, 1, 1, 0.1);
+    border-radius: 10px;
 }
 
-revealer > box > box > widget > box{
-    margin:10px;
+revealer>box>box>widget>box {
+    margin: 10px;
 }
 
-tabbar > revealer > box {
-    background-color:rgba(0,0,0,0);
+tabbar>revealer>box {
+    background-color: rgba(0, 0, 0, 0);
 }
 
-box > scrolledwindow > viewport > box > box {
-    margin:5px;
-    background-color:rgba(0,0,0,0.1);
-    border-radius:10px;
+box>scrolledwindow>viewport>box>box {
+    margin: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
-scrolledwindow > viewport > box > box > label {
-    margin:15px;
+
+scrolledwindow>viewport>box>box>label {
+    margin: 15px;
 }
-scrolledwindow > viewport > box > box > box {
-    margin-left:15px;
-    margin-top:15px;
+
+scrolledwindow>viewport>box>box>box {
+    margin-left: 15px;
+    margin-top: 15px;
 }
 
 @define-color accent_bg_color #AEB5FA;
@@ -130,7 +160,7 @@ scrolledwindow > viewport > box > box > box {
 @define-color dialog_fg_color #93a1a1;
 @define-color popover_bg_color #073642;
 @define-color popover_fg_color #93a1a1;
-@define-color shade_color rgba(0,0,0,0.07);
+@define-color shade_color rgba(0, 0, 0, 0.07);
 @define-color scrollbar_outline_color #586e75;
 @define-color blue_1 #99c1f1;
 @define-color blue_2 #62a0ea;
@@ -177,52 +207,54 @@ scrolledwindow > viewport > box > box > box {
 @define-color dark_3 #3d3846;
 @define-color dark_4 #241f31;
 @define-color dark_5 #000000;
-.sidebar-pane{
+
+.sidebar-pane {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     background-color: rgba(0, 0, 0, 0);
     color: rgba(255, 255, 255, 0.8);
 
-    }
+}
 
-    windowcontrols > button { /* GTK4 */
-        color: transparent;
-        min-width: 2px;
-        min-height: 2px;
-        border-radius: 100%;
-        padding: 0;
-        margin: 0 5px;
-      }
-      
-      windowcontrols > button > image {
-        padding: 0;
-      }
-      
-      button.titlebutton.close,
-      windowcontrols > button.close {
-        background-color: #505050;
-      }
-      
-      button.titlebutton.close:hover,
-      windowcontrols > button.close:hover {
-        opacity: 0.8;
-      }
-      
-      button.titlebutton.maximize,
-      windowcontrols > button.maximize {
-        background-color: #505050;
-      }
-      
-      button.titlebutton.maximize:hover,
-      windowcontrols > button.maximize:hover {
-        opacity: 0.8;
-      }
-      
-      button.titlebutton.minimize,
-      windowcontrols > button.minimize {
-        background-color: #505050;
-      }
-      
-      button.titlebutton.minimize:hover,
-      windowcontrols > button.minimize:hover {
-        opacity: 0.8;
-      }
+windowcontrols>button {
+    /* GTK4 */
+    color: transparent;
+    min-width: 2px;
+    min-height: 2px;
+    border-radius: 100%;
+    padding: 0;
+    margin: 0 5px;
+}
+
+windowcontrols>button>image {
+    padding: 0;
+}
+
+button.titlebutton.close,
+windowcontrols>button.close {
+    background-color: #505050;
+}
+
+button.titlebutton.close:hover,
+windowcontrols>button.close:hover {
+    opacity: 0.8;
+}
+
+button.titlebutton.maximize,
+windowcontrols>button.maximize {
+    background-color: #505050;
+}
+
+button.titlebutton.maximize:hover,
+windowcontrols>button.maximize:hover {
+    opacity: 0.8;
+}
+
+button.titlebutton.minimize,
+windowcontrols>button.minimize {
+    background-color: #505050;
+}
+
+button.titlebutton.minimize:hover,
+windowcontrols>button.minimize:hover {
+    opacity: 0.8;
+}

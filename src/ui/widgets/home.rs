@@ -1,6 +1,7 @@
 use std::env;
 
 use crate::client::{network::*, structs::*};
+use crate::toast;
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::{
     get_data_with_cache, spawn, tu_list_item_factory, tu_list_view_connect_activate,
@@ -160,7 +161,10 @@ impl HomePage {
         let views =
             get_data_with_cache("0".to_string(), "views", async move { get_library().await })
                 .await
-                .unwrap();
+                .unwrap_or_else(|e| {
+                    toast!(self,"Network Error");
+                    Vec::new()
+                });
         glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
                 for view in &views {
                     let object = glib::BoxedAnyObject::new(view.clone());
@@ -207,7 +211,10 @@ impl HomePage {
                 get_latest(view.id.clone()).await
             })
             .await
-            .unwrap();
+            .unwrap_or_else(|e| {
+                toast!(self,"Network Error");
+                Vec::new()
+            });
             spawn(glib::clone!(@weak self as obj =>async move {
                     obj.set_librarysscroll(latest.clone());
                     let listview = obj.set_librarysscroll(latest);

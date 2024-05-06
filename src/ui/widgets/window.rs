@@ -546,6 +546,11 @@ impl Window {
         imp.toast.add_toast(toast);
     }
 
+    pub fn add_toast(&self, toast: adw::Toast) {
+        let imp = self.imp();
+        imp.toast.add_toast(toast);
+    }
+
     pub fn current_view_name(&self) -> String {
         let imp = self.imp();
         imp.insidestack.visible_child_name().unwrap().to_string()

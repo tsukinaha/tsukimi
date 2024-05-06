@@ -2,14 +2,13 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use chrono::Duration;
 use gtk::{glib, CompositeTemplate};
-
 use crate::ui::provider::tu_item::TuItem;
 
 mod imp {
     use std::cell::OnceCell;
 
     use crate::ui::provider::tu_item::TuItem;
-
+    use crate::ui::widgets::star_toggle::StarToggle;
     use super::*;
     use glib::subclass::InitializingObject;
 
@@ -27,6 +26,8 @@ mod imp {
         pub artist_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub duration_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub star_toggle: TemplateChild<StarToggle>,
     }
 
     #[glib::object_subclass]
@@ -36,6 +37,7 @@ mod imp {
         type ParentType = gtk::ListBoxRow;
 
         fn class_init(klass: &mut Self::Class) {
+            StarToggle::ensure_type();
             klass.bind_template();
         }
 
@@ -78,6 +80,7 @@ impl SongWidget {
         let duration = item.run_time_ticks() / 10000000;
         imp.duration_label
             .set_text(&format_duration(duration as i64));
+        imp.star_toggle.set_active(item.is_favorite());
     }
 }
 

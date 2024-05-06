@@ -18,3 +18,4 @@ pub mod singlelist;
 pub mod song_widget;
 pub mod tu_list_item;
 pub mod window;
+pub mod star_toggle;

@@ -1,20 +1,20 @@
 .checkwatched {
-    background: rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.1);
 }
 
 child {
     margin: 9px;
-    border-radius:15px;
+    border-radius: 15px;
 }
 
 .mask {
-    background: rgba(255,255,255,0.7);
+    background: rgba(255, 255, 255, 0.7);
     filter: blur(7px);
-    border-radius:10px;
+    border-radius: 10px;
 }
 
 .logo {
-    background: rgba(0,0,0,0);
+    background: rgba(0, 0, 0, 0);
 }
 
 .frame {
@@ -34,68 +34,99 @@ child {
 .pill {
     border-radius: 10px;
 }
-  
-   
-listview > row {
-    margin-left:9px;
-    margin-right:9px;
-    border-radius:10px;
+
+/* Starring */
+button.star:hover {
+    opacity: 1;
+}
+
+@keyframes rotate_star {
+    from {
+        -gtk-icon-transform: rotate(-72deg);
+    }
+
+    to {}
+}
+
+@keyframes rotate_unstar {
+    from {
+        -gtk-icon-transform: rotate(72deg);
+    }
+
+    to {}
+}
+
+button.star.interacted.starred image {
+    animation: rotate_star 0.4s ease;
+}
+
+button.star.interacted:not(.starred) image {
+    animation: rotate_unstar 0.4s ease;
+}
+
+
+listview>row {
+    margin-left: 9px;
+    margin-right: 9px;
+    border-radius: 10px;
 }
 
 picture {
-    border-radius:10px;
+    border-radius: 10px;
 }
 
 listview {
-    background-color: rgba(0,0,0,0);
+    background-color: rgba(0, 0, 0, 0);
 }
- 
+
 gridview {
-    background-color: rgba(0,0,0,0);
-}
-  
-gridview > child box {
-    margin:0px;
+    background-color: rgba(0, 0, 0, 0);
 }
 
- 
+gridview>child box {
+    margin: 0px;
+}
 
-overlay > label {
+
+
+overlay>label {
     background-color: #AEB5FA;
     border-radius: 999px;
-    margin:3px;
+    margin: 3px;
 }
 
-box > overlay > image {
+box>overlay>image {
     background-color: #AEB5FA;
     border-radius: 999px;
-    margin:3px;
+    margin: 3px;
 }
 
-tabbar > revealer > box {
-    background-color:rgba(0,0,0,0);
+tabbar>revealer>box {
+    background-color: rgba(0, 0, 0, 0);
 }
 
-revealer > box > box > widget {
-    background-color:rgba(1,1,1,0.1);
-    border-radius:10px;
+revealer>box>box>widget {
+    background-color: rgba(1, 1, 1, 0.1);
+    border-radius: 10px;
 }
 
-revealer > box > box > widget > box{
-    margin:10px;
+revealer>box>box>widget>box {
+    margin: 10px;
 }
 
-box > scrolledwindow > viewport > box > box {
-    margin:5px;
-    background-color:rgba(0,0,0,0.1);
-    border-radius:10px;
+box>scrolledwindow>viewport>box>box {
+    margin: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
-scrolledwindow > viewport > box > box > label {
-    margin:15px;
+
+scrolledwindow>viewport>box>box>label {
+    margin: 15px;
 }
-scrolledwindow > viewport > box > box > box {
-    margin-left:15px;
-    margin-top:15px;
+
+scrolledwindow>viewport>box>box>box {
+    margin-left: 15px;
+    margin-top: 15px;
 }
 
 @define-color accent_bg_color #AEB5FA;
@@ -105,14 +136,15 @@ scrolledwindow > viewport > box > box > box {
 placessidebar {
     background-color: rgba(0, 0, 0, 0);
 }
-.sidebar-pane{
+
+.sidebar-pane {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     background-color: rgba(245, 245, 245, 0);
     color: rgba(1, 1, 1, 0.8);
 }
 
 
-        
+
 @define-color destructive_color #c01c28;
 @define-color destructive_bg_color #e01b24;
 @define-color destructive_fg_color #ffffff;
@@ -190,45 +222,46 @@ placessidebar {
 @define-color dark_5 #000000;
 
 
-windowcontrols > button { /* GTK4 */
+windowcontrols>button {
+    /* GTK4 */
     color: transparent;
     min-width: 2px;
     min-height: 2px;
     border-radius: 100%;
     padding: 0;
     margin: 0 5px;
-  }
-  
-  windowcontrols > button > image {
+}
+
+windowcontrols>button>image {
     padding: 0;
-  }
-  
-  button.titlebutton.close,
-  windowcontrols > button.close {
+}
+
+button.titlebutton.close,
+windowcontrols>button.close {
     background-color: #BBBBBB;
-  }
-  
-  button.titlebutton.close:hover,
-  windowcontrols > button.close:hover {
+}
+
+button.titlebutton.close:hover,
+windowcontrols>button.close:hover {
     opacity: 0.8;
-  }
-  
-  button.titlebutton.maximize,
-  windowcontrols > button.maximize {
+}
+
+button.titlebutton.maximize,
+windowcontrols>button.maximize {
     background-color: #BBBBBB;
-  }
-  
-  button.titlebutton.maximize:hover,
-  windowcontrols > button.maximize:hover {
+}
+
+button.titlebutton.maximize:hover,
+windowcontrols>button.maximize:hover {
     opacity: 0.8;
-  }
-  
-  button.titlebutton.minimize,
-  windowcontrols > button.minimize {
+}
+
+button.titlebutton.minimize,
+windowcontrols>button.minimize {
     background-color: #BBBBBB;
-  }
-  
-  button.titlebutton.minimize:hover,
-  windowcontrols > button.minimize:hover {
+}
+
+button.titlebutton.minimize:hover,
+windowcontrols>button.minimize:hover {
     opacity: 0.8;
-  }
+}

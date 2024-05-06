@@ -110,6 +110,13 @@
           </object>
         </child>
         <child>
+          <object class="StarToggle" id="star_toggle">
+            <property name="valign">center</property>
+            <property name="margin-end">12</property>
+            <property name="margin-start">12</property>
+          </object>
+        </child>
+        <child>
           <object class="GtkMenuButton" id="_menu_button">
             <property name="focusable">True</property>
             <property name="icon-name">view-more-symbolic</property>

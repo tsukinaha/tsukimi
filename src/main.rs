@@ -6,6 +6,7 @@ mod client;
 mod config;
 mod ui;
 mod utils;
+mod macros;
 
 const APP_ID: &str = "moe.tsuna.tsukimi";
 

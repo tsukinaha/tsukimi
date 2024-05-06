@@ -7,6 +7,7 @@ use gtk::template_callbacks;
 use gtk::{gio, glib};
 
 use crate::client::{network::*, structs::*};
+use crate::toast;
 use crate::ui::image::set_image;
 use crate::utils::{
     get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory,
@@ -187,7 +188,10 @@ impl BoxSetPage {
 
         let path = get_image_with_cache(&id, "Backdrop", Some(0))
             .await
-            .unwrap();
+            .unwrap_or_else(|e| {
+                toast!(self,"Network Error");
+                String::default()
+            });
         let file = gtk::gio::File::for_path(&path);
         let pathbuf = PathBuf::from(&path);
         if pathbuf.exists() {
@@ -202,7 +206,10 @@ impl BoxSetPage {
         let itemoverview = imp.inscription.get();
         let item = get_data_with_cache(id.clone(), "item", async { get_item_overview(id).await })
             .await
-            .unwrap();
+            .unwrap_or_else(|e| {
+                toast!(self,"Network Error");
+                Item::default()
+            });
         spawn(glib::clone!(@weak self as obj=>async move {
                 {
                     let mut str = String::new();
