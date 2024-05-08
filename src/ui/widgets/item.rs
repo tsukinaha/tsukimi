@@ -1,6 +1,7 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
+use gst::glib::clone;
 use gtk::template_callbacks;
 use gtk::{gio, glib};
 use std::cell::Ref;
@@ -391,15 +392,14 @@ impl ItemPage {
             return;
         }
 
-        spawn(glib::clone!(@weak carousel => async move {
-            loop {
-                glib::timeout_future_seconds(10).await;
-                let current_page = carousel.position();
-                let n_pages = carousel.n_pages();
-                let new_page_position = (current_page + 1. + n_pages as f64) % n_pages as f64;
-                carousel.scroll_to(&carousel.nth_page(new_page_position as u32),true);
-            }
-        }));
+        glib::timeout_add_seconds_local(10, move || {
+            let current_page = carousel.position();
+            let n_pages = carousel.n_pages();
+            let new_page_position = (current_page + 1. + n_pages as f64) % n_pages as f64;
+            carousel.scroll_to(&carousel.nth_page(new_page_position as u32), true);
+
+            glib::ControlFlow::Continue
+        });
     }
 
     pub async fn setup_seasons(&self) {

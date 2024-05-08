@@ -16,6 +16,10 @@ child {
     background: rgba(0, 0, 0, 0);
 }
 
+.bottom-bar {
+    background: transparent;
+}
+
 .frame {
     border: 2px solid @borders;
     border-radius: 5px;

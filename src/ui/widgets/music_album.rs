@@ -61,6 +61,7 @@ mod imp {
             spawn_g_timeout(glib::clone!(@weak obj => async move {
                 obj.set_album().await;
                 obj.get_songs().await;
+                obj.set_toolbar();
             }));
         }
     }
@@ -137,5 +138,10 @@ impl AlbumPage {
 
             song_widget.add_song(item);
         }
+    }
+
+    pub fn set_toolbar(&self) {
+        let window = self.root().and_downcast::<super::window::Window>().unwrap();
+        window.set_player_toolbar();
     }
 }

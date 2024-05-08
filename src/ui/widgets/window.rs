@@ -14,6 +14,8 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::ui::widgets::player_toolbar::PlayerToolbarBox;
+
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsukimi/window.ui")]
@@ -56,6 +58,10 @@ mod imp {
         pub login_stack: TemplateChild<gtk::Stack>,
         #[template_child]
         pub namerow: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub player_toolbar_bin: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub player_toolbar_box: TemplateChild<PlayerToolbarBox>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
     }
@@ -69,6 +75,7 @@ mod imp {
         type ParentType = adw::ApplicationWindow;
 
         fn class_init(klass: &mut Self::Class) {
+            PlayerToolbarBox::ensure_type();
             klass.bind_template();
             klass.install_action("win.home", None, move |window, _action, _parameter| {
                 window.freshhomepage();
@@ -177,6 +184,7 @@ mod imp {
 use crate::config::Account;
 use crate::config::{load_cfgv2, load_env};
 use crate::ui::models::SETTINGS;
+use crate::utils::spawn;
 use crate::APP_ID;
 use glib::Object;
 use gtk::{gio, glib};
@@ -624,5 +632,11 @@ impl Window {
     pub fn new_account(&self) {
         let dialog = crate::ui::widgets::account_add::AccountWindow::new();
         dialog.present(self);
+    }
+
+    pub fn set_player_toolbar(&self) {
+        spawn(glib::clone!(@weak self as obj=>async move {
+            obj.imp().player_toolbar_bin.set_reveal_child(true);
+        }));
     }
 }

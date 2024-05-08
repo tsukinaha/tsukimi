@@ -6,6 +6,7 @@ use once_cell::sync::Lazy;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
 use serde_json::{json, Value};
+use url::{form_urlencoded, Url};
 use std::sync::OnceLock;
 use std::{env, fs, io::Write};
 use tokio::runtime;
@@ -1027,4 +1028,13 @@ pub async fn get_songs(parentid: &str) -> Result<List, Error> {
     let json: serde_json::Value = response.json().await?;
     let latests: List = serde_json::from_value(json).unwrap();
     Ok(latests)
+}
+
+pub fn get_song_streaming_uri(id: &str) -> String {
+    let server_info = set_config();
+    let url = format!(
+        "{}:{}/emby/Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
+        server_info.domain, server_info.port, id, server_info.user_id, env::var("UUID").unwrap(), server_info.access_token
+    );
+    url.to_string()
 }

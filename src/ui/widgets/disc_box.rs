@@ -1,6 +1,6 @@
 use adw::subclass::prelude::*;
-
-use gtk::{glib, CompositeTemplate};
+use gtk::prelude::*;
+use gtk::{glib, template_callbacks, CompositeTemplate};
 
 use crate::ui::provider::tu_item::TuItem;
 
@@ -27,6 +27,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -52,6 +53,7 @@ impl Default for DiscBox {
     }
 }
 
+#[template_callbacks]
 impl DiscBox {
     pub fn new() -> Self {
         glib::Object::builder().build()
@@ -66,5 +68,10 @@ impl DiscBox {
         let listbox = self.imp().listbox.get();
         let song_widget = SongWidget::new(item);
         listbox.append(&song_widget);
+    }
+
+    #[template_callback]
+    pub fn song_activated(&self, song_widget: &SongWidget) {
+        song_widget.activate();
     }
 }

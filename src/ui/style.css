@@ -8,6 +8,10 @@ child {
     border-radius:10px;
 }
 
+.bottom-bar {
+    background: transparent;
+}
+
 .logo {
     background: rgba(0, 0, 0, 0);
 }
