@@ -35,6 +35,14 @@ button.star:hover {
     opacity: 1;
 }
 
+.playing-song-label {
+    font-weight: bold;
+}
+
+.coverimage {
+    border-radius: 10px;
+}
+
 @keyframes rotate_star {
     from {
         -gtk-icon-transform: rotate(-72deg);

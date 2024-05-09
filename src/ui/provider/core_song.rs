@@ -8,9 +8,7 @@ use crate::ui::widgets::song_widget::State;
 pub mod imp {
     use std::cell::Cell;
 
-    use gst::glib::Value;
     use gtk::glib::Properties;
-
 
     use crate::ui::widgets::song_widget::State;
 
@@ -36,7 +34,6 @@ pub mod imp {
 
     impl CoreSong {
         fn set_state(&self, state: State) {
-            println!("Setting state to {:?}", state);
             if self.state.get() == state {
                 return;
             }
@@ -50,10 +47,12 @@ glib::wrapper! {
     pub struct CoreSong(ObjectSubclass<imp::CoreSong>);
 }
 
-
 impl CoreSong {
     pub fn new(id: &str) -> CoreSong {
-        glib::object::Object::builder().property("id", id).property("state", State::UNPLAYED).build()
+        glib::object::Object::builder()
+            .property("id", id)
+            .property("state", State::UNPLAYED)
+            .build()
     }
 }
 

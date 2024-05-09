@@ -1,18 +1,17 @@
 use std::cell::RefCell;
 
-use crate::ui::{provider::core_song::{self, CoreSong}, widgets::song_widget::State};
+use crate::ui::{provider::core_song::CoreSong, widgets::song_widget::State};
 
 use super::MUSIC_PLAYER;
 
-
 pub struct Player {
-    core_song: RefCell<Option<CoreSong>>
+    core_song: RefCell<Option<CoreSong>>,
 }
 
 impl Player {
     pub fn from_core_song(core_song: CoreSong) -> Self {
         Self {
-            core_song: RefCell::new(Some(core_song))
+            core_song: RefCell::new(Some(core_song)),
         }
     }
 
@@ -37,12 +36,12 @@ impl Player {
     pub fn unpause(&self) {
         MUSIC_PLAYER.unpause();
     }
-    
-    pub fn state(&self) -> State {
-        if let Some(core_song) = self.core_song.borrow().as_ref() {
-            core_song.state()
+
+    pub fn state(&self) -> gst::State {
+        if let Some(_) = self.core_song.borrow().as_ref() {
+            MUSIC_PLAYER.state()
         } else {
-            State::UNPLAYED
+            gst::State::Null
         }
     }
 }
@@ -50,7 +49,7 @@ impl Player {
 impl Default for Player {
     fn default() -> Self {
         Self {
-            core_song: RefCell::new(None)
+            core_song: RefCell::new(None),
         }
     }
 }

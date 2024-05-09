@@ -30,6 +30,14 @@ child {
     border-radius: 10px;
 }
 
+.playing-song-label {
+    font-weight: bold;
+}
+
+.coverimage {
+    border-radius: 10px;
+}
+
 .songwidget {
     padding: 12px;
 }

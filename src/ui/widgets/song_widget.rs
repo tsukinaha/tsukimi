@@ -16,7 +16,6 @@ pub enum State {
 }
 
 mod imp {
-    use std::cell::{Cell, OnceCell};
     use super::*;
     use crate::ui::provider::core_song::CoreSong;
     use crate::ui::provider::tu_item::TuItem;
@@ -24,6 +23,7 @@ mod imp {
     use crate::ui::widgets::window::Window;
     use crate::utils::spawn;
     use glib::subclass::InitializingObject;
+    use std::cell::{Cell, OnceCell};
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/song_widget.ui")]
@@ -83,17 +83,15 @@ mod imp {
             self.set_state(State::PLAYING);
             let window = self.obj().root().and_downcast::<Window>().unwrap();
             let player_toolbar = window.imp().player_toolbar_box.get();
-            player_toolbar.imp().player.play(core_song);
+            player_toolbar.play(core_song);
             spawn(glib::clone!(@weak self as obj => async move {
                 player_toolbar.set_item(obj.item.get().unwrap()).await;
             }));
-            
         }
     }
 
     impl SongWidget {
         fn set_state(&self, state: State) {
-            println!("widget Setting state to {:?}", state);
             if self.state.get() == state {
                 return;
             }
@@ -126,7 +124,10 @@ glib::wrapper! {
 
 impl SongWidget {
     pub fn new(item: TuItem) -> Self {
-        glib::Object::builder().property("coresong", CoreSong::new(&item.id())).property("item", item).build()
+        glib::Object::builder()
+            .property("coresong", CoreSong::new(&item.id()))
+            .property("item", item)
+            .build()
     }
 
     pub fn set_up(&self) {
@@ -144,9 +145,9 @@ impl SongWidget {
 
     fn bind(&self, core_song: &CoreSong) {
         self.bind_property("state", core_song, "state")
-                .sync_create()
-                .bidirectional()
-                .build();
+            .sync_create()
+            .bidirectional()
+            .build();
     }
 }
 

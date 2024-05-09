@@ -4,10 +4,10 @@ use gtk::prelude::*;
 use gtk::{gio, glib};
 mod client;
 mod config;
+mod gstl;
 mod macros;
 mod ui;
 mod utils;
-mod gstl;
 
 const APP_ID: &str = "moe.tsuna.tsukimi";
 
@@ -18,7 +18,7 @@ fn main() -> glib::ExitCode {
 
     // Initialize the GTK application
     adw::init().expect("Failed to initialize Adw");
-    
+
     // Create a new application
     let app = adw::Application::builder().application_id(APP_ID).build();
 

@@ -331,6 +331,7 @@
                                 <child type="bottom">
                                   <object class="GtkRevealer" id="player_toolbar_bin">
                                     <property name="reveal-child">False</property>
+                                    <property name="valign">end</property>
                                     <child>
                                       <object class="PlayerToolbarBox" id="player_toolbar_box" />
                                     </child>

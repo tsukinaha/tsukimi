@@ -20,6 +20,14 @@ child {
     background: transparent;
 }
 
+.playing-song-label {
+    font-weight: bold;
+}
+
+.coverimage {
+    border-radius: 10px;
+}
+
 .frame {
     border: 2px solid @borders;
     border-radius: 5px;

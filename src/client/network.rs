@@ -6,7 +6,6 @@ use once_cell::sync::Lazy;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
 use serde_json::{json, Value};
-use url::{form_urlencoded, Url};
 use std::sync::OnceLock;
 use std::{env, fs, io::Write};
 use tokio::runtime;

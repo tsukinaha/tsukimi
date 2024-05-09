@@ -1,7 +1,6 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
-use gst::glib::clone;
 use gtk::template_callbacks;
 use gtk::{gio, glib};
 use std::cell::Ref;

@@ -30,6 +30,10 @@ button.star:hover {
     opacity: 1;
 }
 
+.playing-song-label {
+    font-weight: bold;
+}
+
 @keyframes rotate_star {
     from {
         -gtk-icon-transform: rotate(-72deg);
@@ -74,6 +78,10 @@ listview>row {
 }
 
 picture {
+    border-radius: 10px;
+}
+
+.coverimage {
     border-radius: 10px;
 }
 

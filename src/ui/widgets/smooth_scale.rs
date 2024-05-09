@@ -23,9 +23,8 @@ mod imp {
     impl ObjectImpl for SmoothScale {
         fn constructed(&self) {
             self.parent_constructed();
-            
+
             self.obj().duration_changed();
-            self.obj().update_position_callback();
         }
     }
     impl WidgetImpl for SmoothScale {}
@@ -47,31 +46,30 @@ impl Default for SmoothScale {
 impl SmoothScale {
     pub fn new() -> Self {
         glib::Object::builder().build()
-    }  
+    }
 
-    fn update_position_callback(&self) -> glib::ControlFlow {
+    pub fn update_position_callback(&self) -> glib::ControlFlow {
         let position = &MUSIC_PLAYER.position();
-        println!("Position: {}", *position);
-        if *position > 0 {
-            self.set_value(*position as f64);
+        if *position > 0.0 {
+            self.set_value(*position);
         }
         self.update_timeout();
         glib::ControlFlow::Continue
     }
 
-    fn update_timeout(&self) {
-        let width = std::cmp::max(self.width(),1);
+    pub fn update_timeout(&self) {
+        let width = std::cmp::max(self.width(), 1);
         let timeout_period = std::cmp::min(1000 * 200 / width, 200);
         if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
             glib::source::SourceId::remove(timeout);
         }
         self.imp().timeout.replace(Some(glib::timeout_add_local(
             std::time::Duration::from_millis(timeout_period as u64),
-            glib::clone!(@strong self as obj => move || obj.update_position_callback())
+            glib::clone!(@strong self as obj => move || obj.update_position_callback()),
         )));
     }
 
-    fn remove_timeout(&self) {
+    pub fn remove_timeout(&self) {
         if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
             glib::source::SourceId::remove(timeout);
         }
@@ -82,5 +80,4 @@ impl SmoothScale {
         self.set_range(0.0, 200.0);
         self.set_increments(300.0, 600.0);
     }
-
 }

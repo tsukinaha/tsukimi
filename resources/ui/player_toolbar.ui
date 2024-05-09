@@ -19,6 +19,10 @@
                         <property name="margin-top">6</property>
                         <child>
                             <object class="GtkImage" id="cover_image">
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <property name="height_request">80</property>
+                                <property name="width_request">80</property>
                             </object>
                         </child>
                         <child>
@@ -82,7 +86,6 @@
                                 </child>
                                 <child>
                                     <object class="GtkButton" id="_play_button">
-                                        <property name="sensitive">False</property>
                                         <property name="focusable">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="tooltip_text" translatable="yes">Play</property>
@@ -123,34 +126,34 @@
                                         <property name="focusable">False</property>
                                         <property name="margin_top">12</property>
                                         <child>
-                                            <object class="GtkLabel" id="_progress_time_label">
+                                            <object class="GtkLabel" id="progress_time_label">
                                                 <property name="focusable">False</property>
                                                 <property name="halign">start</property>
                                                 <property name="valign">center</property>
-                                                <property name="label">0∶00</property>
+                                                <property name="label">0:00</property>
                                                 <attributes>
                                                     <attribute name="font-features" value="tnum=1"/>
                                                 </attributes>
                                             </object>
                                         </child>
                                         <child>
-                                            <object class="SmoothScale" id="_progress_scale">
+                                            <object class="SmoothScale" id="progress_scale">
                                                 <property name="focusable">True</property>
                                                 <property name="valign">center</property>
                                                 <property name="hexpand">True</property>
                                                 <property name="draw_value">False</property>
-                                                <!-- <signal name = "value-changed" handler="_on_progress_value_changed" swapped="no"/> -->
+                                                <signal name = "value-changed" handler="on_progress_value_changed" swapped="yes"/>
                                                 <style>
                                                     <class name="smooth-scale"/>
                                                 </style>
                                             </object>
                                         </child>
                                         <child>
-                                            <object class="GtkLabel" id="_duration_label">
+                                            <object class="GtkLabel" id="duration_label">
                                                 <property name="focusable">False</property>
                                                 <property name="halign">start</property>
                                                 <property name="valign">center</property>
-                                                <property name="label">0∶00</property>
+                                                <property name="label">0:00</property>
                                                 <attributes>
                                                     <attribute name="font-features" value="tnum=1"/>
                                                 </attributes>
