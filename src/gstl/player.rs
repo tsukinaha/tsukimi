@@ -18,12 +18,12 @@ impl MusicPlayer {
         bus.add_signal_watch();
         bus.connect_message(Some("progress"), {
             move |_bus, msg| {
-                on_bus_message(&msg);
+                on_bus_message(msg);
             }
         });
         bus.connect_message(Some("eos"), {
             move |_bus, msg| {
-                on_bus_message(&msg);
+                on_bus_message(msg);
             }
         });
         Self { pipeline }
@@ -40,7 +40,7 @@ impl MusicPlayer {
         self.stop();
         let uri = get_song_streaming_uri(&core_song.id());
 
-        self.pipeline.set_property("uri", &uri);
+        self.pipeline.set_property("uri", uri);
         self.playing();
     }
 

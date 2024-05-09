@@ -51,7 +51,7 @@ impl CoreSong {
     pub fn new(id: &str) -> CoreSong {
         glib::object::Object::builder()
             .property("id", id)
-            .property("state", State::UNPLAYED)
+            .property("state", State::Unplayed)
             .build()
     }
 }

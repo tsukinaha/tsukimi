@@ -22,7 +22,7 @@ impl Player {
     pub fn play(&self, core_song: CoreSong) {
         if let Some(core_song_old) = self.core_song.borrow().as_ref() {
             if core_song_old != &core_song {
-                core_song_old.set_state(State::PLAYED);
+                core_song_old.set_state(State::Played);
             }
         }
         MUSIC_PLAYER.play(&core_song);
@@ -38,7 +38,7 @@ impl Player {
     }
 
     pub fn state(&self) -> gst::State {
-        if let Some(_) = self.core_song.borrow().as_ref() {
+        if self.core_song.borrow().as_ref().is_some() {
             MUSIC_PLAYER.state()
         } else {
             gst::State::Null

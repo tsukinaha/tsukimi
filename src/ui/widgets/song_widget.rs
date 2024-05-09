@@ -9,10 +9,10 @@ use gtk::{glib, CompositeTemplate};
 #[enum_type(name = "State")]
 
 pub enum State {
-    PLAYED,
-    PLAYING,
+    Played,
+    Playing,
     #[default]
-    UNPLAYED,
+    Unplayed,
 }
 
 mod imp {
@@ -80,7 +80,7 @@ mod imp {
     impl ListBoxRowImpl for SongWidget {
         fn activate(&self) {
             let core_song = self.obj().coresong();
-            self.set_state(State::PLAYING);
+            self.set_state(State::Playing);
             let window = self.obj().root().and_downcast::<Window>().unwrap();
             let player_toolbar = window.imp().player_toolbar_box.get();
             player_toolbar.play(core_song);
@@ -101,10 +101,10 @@ mod imp {
             ctx.remove_css_class("playing-song-label");
             self.play_icon.set_visible(false);
             match state {
-                State::PLAYED => {
+                State::Played => {
                     ctx.add_css_class("dim-label");
                 }
-                State::PLAYING => {
+                State::Playing => {
                     ctx.add_css_class("playing-song-label");
                     self.play_icon.set_visible(true);
                 }
