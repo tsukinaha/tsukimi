@@ -192,6 +192,7 @@ impl TuListItem {
                 println!("Unknown item type: {}", item_type)
             }
         }
+        self.set_tooltip_text(Some(&item.name()));
     }
 
     pub fn set_play(&self) {
