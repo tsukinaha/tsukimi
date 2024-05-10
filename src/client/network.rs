@@ -240,26 +240,26 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
                     }
                     match image_type {
                         "Primary" => {
-                            fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("{}", id)), &bytes).unwrap();
                         }
                         "Backdrop" => {
                             fs::write(
-                                pathbuf.join(format!("b{}_{}.png", id, tag.unwrap())),
+                                pathbuf.join(format!("b{}_{}", id, tag.unwrap())),
                                 &bytes,
                             )
                             .unwrap();
                         }
                         "Thumb" => {
-                            fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("t{}", id)), &bytes).unwrap();
                         }
                         "Logo" => {
-                            fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("l{}", id)), &bytes).unwrap();
                         }
                         "Banner" => {
-                            fs::write(pathbuf.join(format!("banner{}.png", id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("banner{}", id)), &bytes).unwrap();
                         }
                         _ => {
-                            fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("{}", id)), &bytes).unwrap();
                         }
                     }
                     Ok(id)

@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use gtk::{glib, prelude::*, subclass::prelude::*, template_callbacks};
 
 use crate::{
@@ -99,12 +101,16 @@ impl PlayerToolbarBox {
         imp.title_label.set_text(&item.name());
         imp.artist_label
             .set_text(&item.album_artist().unwrap_or_default());
-        let path =
-            get_image_with_cache(&item.album_id().unwrap_or("0".to_string()), "Primary", None)
+        let mut path =
+            get_image_with_cache(&item.id(), "Primary", None)
                 .await
                 .unwrap();
+        if !Path::new(&path).exists() {
+            path = get_image_with_cache(&item.album_id().unwrap(), "Primary", None)
+            .await
+            .unwrap();
+        }
         imp.cover_image.set_file(Some(&path));
-        imp.progress_time_label.set_text("0:00");
         let duration = (item.run_time_ticks() / 10000000) as i64;
         imp.duration_label.set_text(&format_duration(duration));
         imp.progress_scale.set_range(0.0, duration as f64);

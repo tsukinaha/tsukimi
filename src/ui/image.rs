@@ -21,11 +21,11 @@ pub fn set_image(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
 
     let cache_path = emby_cache_path();
     let path = match image_type {
-        "Logo" => format!("{}/l{}.png", cache_path.display(), id),
-        "Banner" => format!("{}/banner{}.png", cache_path.display(), id),
-        "Backdrop" => format!("{}/b{}_{}.png", cache_path.display(), id, tag.unwrap()),
-        "Thumb" => format!("{}/t{}.png", cache_path.display(), id),
-        _ => format!("{}/{}.png", cache_path.display(), id),
+        "Logo" => format!("{}/l{}", cache_path.display(), id),
+        "Banner" => format!("{}/banner{}", cache_path.display(), id),
+        "Backdrop" => format!("{}/b{}_{}", cache_path.display(), id, tag.unwrap()),
+        "Thumb" => format!("{}/t{}", cache_path.display(), id),
+        _ => format!("{}/{}", cache_path.display(), id),
     };
 
     let pathbuf = PathBuf::from(&path);

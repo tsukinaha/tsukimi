@@ -265,7 +265,11 @@ impl TuListItem {
                 if self.itemtype() == "Episode" || self.itemtype() == "Views" {
                     imp.overlay.set_size_request(250, 141);
                 }
-                set_image(id, "Primary", None)
+                if let Some(imag_tags) = item.primary_image_item_id() {
+                    set_image(imag_tags, "Primary", None)
+                } else {
+                    set_image(id, "Primary", None)
+                }
             };
             imp.overlay.set_child(Some(&image));
         }

@@ -104,11 +104,11 @@ pub async fn get_image_with_cache(
 ) -> Result<String, reqwest::Error> {
     let mut path = emby_cache_path();
     match img_type {
-        "Primary" => path.push(format!("{}.png", id)),
-        "Backdrop" => path.push(format!("b{}_{}.png", id, tag.unwrap())),
-        "Thumb" => path.push(format!("t{}.png", id)),
-        "Logo" => path.push(format!("l{}.png", id)),
-        _ => path.push(format!("{}.png", id)),
+        "Primary" => path.push(format!("{}", id)),
+        "Backdrop" => path.push(format!("b{}_{}", id, tag.unwrap())),
+        "Thumb" => path.push(format!("t{}", id)),
+        "Logo" => path.push(format!("l{}", id)),
+        _ => path.push(format!("{}", id)),
     }
     let id = id.to_string();
     let img_type = img_type.to_string();

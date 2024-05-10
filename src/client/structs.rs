@@ -252,6 +252,8 @@ pub struct SimpleListItem {
     pub role: Option<String>,
     #[serde(rename = "RunTimeTicks")]
     pub run_time_ticks: Option<u64>,
+    #[serde(rename = "PrimaryImageItemId")]
+    pub primary_image_item_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
