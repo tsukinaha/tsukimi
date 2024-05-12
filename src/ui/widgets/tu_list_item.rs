@@ -134,6 +134,7 @@ impl TuListItem {
                 if let Some(true) = imp.isresume.get() {
                     self.set_played_percentage();
                 }
+                self.set_rating();
             }
             "Series" => {
                 let year = if item.production_year() != 0 {
@@ -146,6 +147,7 @@ impl TuListItem {
                 self.set_picture();
                 self.set_played();
                 self.set_count();
+                self.set_rating();
             }
             "BoxSet" => {
                 imp.listlabel.set_text(&item.name());
@@ -286,6 +288,19 @@ impl TuListItem {
             mark.set_width_request(40);
             imp.overlay.add_overlay(&mark);
         }
+    }
+
+    pub fn set_rating(&self) {
+        let imp = self.imp();
+        let item = imp.item.get().unwrap();
+        if let Some(rating) = item.rating() {
+            let rating = gtk::Label::new(Some(&rating));
+            rating.set_halign(gtk::Align::Start);
+            rating.set_valign(gtk::Align::End);
+            rating.set_height_request(40);
+            rating.set_width_request(60);
+            imp.overlay.add_overlay(&rating);
+        } 
     }
 
     pub fn set_count(&self) {

@@ -89,7 +89,7 @@ pub async fn search(searchinfo: String, filter: &[&str]) -> Result<Vec<SimpleLis
     let params = [
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
         ),
         ("IncludeItemTypes", &filter_str),
         ("IncludeSearchTypes", &filter_str),
@@ -170,7 +170,7 @@ pub async fn resume() -> Result<Vec<SimpleListItem>, Error> {
         ("Recursive", "true"),
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,CommunityRating",
         ),
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
         ("ImageTypeLimit", "1"),
@@ -420,7 +420,7 @@ pub async fn get_latest(id: String) -> Result<Vec<SimpleListItem>, Error> {
         ("Limit", "16"),
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,CommunityRating",
         ),
         ("ParentId", &id),
         ("ImageTypeLimit", "1"),
@@ -495,7 +495,7 @@ pub async fn get_list(
                 ("Limit", "50"),
                 (
                     "Fields",
-                    "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+                    "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
                 ),
                 ("ParentId", &id),
                 ("ImageTypeLimit", "1"),
@@ -588,7 +588,7 @@ pub async fn get_inlist(
         ("Limit", "50"),
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
         ),
         ("ParentId", &id),
         ("ImageTypeLimit", "1"),
@@ -776,7 +776,7 @@ pub async fn similar(id: &str) -> Result<Vec<SimpleListItem>, Error> {
     let params = [
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
         ),
         ("UserId", &server_info.user_id),
         ("ImageTypeLimit", "1"),
@@ -802,7 +802,7 @@ pub async fn person_item(id: &str, types: &str) -> Result<Vec<SimpleListItem>, E
         server_info.domain, server_info.port, server_info.user_id
     );
     let params = [
-        ("Fields", "PrimaryImageAspectRatio,ProductionYear"),
+        ("Fields", "PrimaryImageAspectRatio,ProductionYear,CommunityRating"),
         ("PersonIds", id),
         ("Recursive", "true"),
         ("CollapseBoxSetItems", "false"),
@@ -866,7 +866,7 @@ pub async fn like_item(types: &str) -> Result<Vec<SimpleListItem>, Error> {
     let params = [
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,CommunityRating",
         ),
         ("Filters", "IsFavorite"),
         ("Recursive", "true"),
@@ -902,7 +902,7 @@ pub async fn get_included(id: &str) -> Result<List, Error> {
     );
 
     let params = [
-        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
+        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,CommunityRating"),
         ("Limit", "12"),
         ("ListItemIds", id),
         ("Recursive", "true"),
@@ -932,7 +932,7 @@ pub async fn get_includedby(parentid: &str) -> Result<List, Error> {
     let params = [
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
         ),
         ("ImageTypeLimit", "1"),
         ("ParentId", parentid),
@@ -1043,7 +1043,7 @@ pub async fn get_random() -> Result<List, Error> {
     );
 
     let params = [
-        ("Fields", "ProductionYear"),
+        ("Fields", "ProductionYear,CommunityRating"),
         ("EnableImageTypes", "Logo,Backdrop"),
         ("ImageTypeLimit", "1"),
         ("EnableTotalRecordCount", "false"),

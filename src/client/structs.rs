@@ -256,6 +256,8 @@ pub struct SimpleListItem {
     pub primary_image_item_id: Option<String>,
     #[serde(rename = "BackdropImageTags")]
     pub backdrop_image_tags: Option<Vec<String>>,
+    #[serde(rename = "CommunityRating")]
+    pub community_rating: Option<f32>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
