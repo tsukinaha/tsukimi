@@ -455,7 +455,9 @@ impl ItemPage {
                             user_data: info.user_data.clone(),
                             overview: info.overview.clone(),
                         };
-                        obj.selectepisode(seriesinfo.clone()).await;
+                        spawn(glib::clone!(@weak obj => async move {
+                            obj.selectepisode(seriesinfo.clone()).await;
+                        }));
                     }
                 }
                 obj.imp().seasonlist.set_selected(pos);

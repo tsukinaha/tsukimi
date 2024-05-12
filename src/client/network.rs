@@ -243,11 +243,8 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
                             fs::write(pathbuf.join(format!("{}", id)), &bytes).unwrap();
                         }
                         "Backdrop" => {
-                            fs::write(
-                                pathbuf.join(format!("b{}_{}", id, tag.unwrap())),
-                                &bytes,
-                            )
-                            .unwrap();
+                            fs::write(pathbuf.join(format!("b{}_{}", id, tag.unwrap())), &bytes)
+                                .unwrap();
                         }
                         "Thumb" => {
                             fs::write(pathbuf.join(format!("t{}", id)), &bytes).unwrap();
@@ -1046,10 +1043,7 @@ pub async fn get_random() -> Result<List, Error> {
     );
 
     let params = [
-        (
-            "Fields",
-            "ProductionYear",
-        ),
+        ("Fields", "ProductionYear"),
         ("EnableImageTypes", "Logo,Backdrop"),
         ("ImageTypeLimit", "1"),
         ("EnableTotalRecordCount", "false"),

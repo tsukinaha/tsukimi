@@ -101,12 +101,12 @@ impl AlbumPage {
 
         let path = if let Some(image_tags) = item.primary_image_item_id() {
             get_image_with_cache(&image_tags, "Primary", None)
-            .await
-            .unwrap_or_default()
+                .await
+                .unwrap_or_default()
         } else {
             get_image_with_cache(&item.id(), "Primary", None)
-            .await
-            .unwrap_or_default()
+                .await
+                .unwrap_or_default()
         };
 
         if !std::path::PathBuf::from(&path).is_file() {

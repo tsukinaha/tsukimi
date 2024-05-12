@@ -254,6 +254,8 @@ pub struct SimpleListItem {
     pub run_time_ticks: Option<u64>,
     #[serde(rename = "PrimaryImageItemId")]
     pub primary_image_item_id: Option<String>,
+    #[serde(rename = "BackdropImageTags")]
+    pub backdrop_image_tags: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -270,7 +272,7 @@ pub struct ImageTags {
     pub logo: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct List {
     #[serde(rename = "TotalRecordCount")]
     pub total_record_count: u32,

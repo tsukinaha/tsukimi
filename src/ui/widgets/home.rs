@@ -2,13 +2,13 @@ use std::env;
 
 use crate::client::{network::*, structs::*};
 use crate::ui::image::set_image;
-use crate::ui::provider::image_tags;
-use crate::ui::widgets::tu_list_item::tu_list_item_register;
-use crate::{fraction, fraction_reset, toast};
 use crate::ui::provider::tu_item::TuItem;
+use crate::ui::widgets::tu_list_item::tu_list_item_register;
 use crate::utils::{
-    get_data_with_cache, get_data_with_cache_else, spawn, tu_list_item_factory, tu_list_view_connect_activate
+    get_data_with_cache, get_data_with_cache_else, spawn, tu_list_item_factory,
+    tu_list_view_connect_activate,
 };
+use crate::{fraction, toast};
 use adw::prelude::NavigationPageExt;
 use chrono::{Datelike, Local};
 use glib::Object;
@@ -123,7 +123,7 @@ impl HomePage {
         let history_results =
             get_data_with_cache("0".to_string(), "history", async { resume().await })
                 .await
-                .unwrap();
+                .unwrap_or_default();
         let store = gio::ListStore::new::<glib::BoxedAnyObject>();
         spawn(glib::clone!(@weak store=> async move {
                 for result in history_results {
@@ -165,33 +165,65 @@ impl HomePage {
     pub async fn set_carousel(&self) {
         let date = Local::now();
         let formatted_date = format!("{:04}{:02}{:02}", date.year(), date.month(), date.day());
-        let results = get_data_with_cache_else(formatted_date, "carousel", async {
-            get_random().await
-        })
-        .await
-        .unwrap();
+        let results =
+            get_data_with_cache_else(formatted_date, "carousel", async { get_random().await })
+                .await
+                .unwrap_or_default();
         for result in results.items {
             if let Some(image_tags) = &result.image_tags {
-                if image_tags.logo.is_some() {
-                    self.carousel_add_child(result);
+                if let Some(backdrop_image_tags) = &result.backdrop_image_tags {
+                    if image_tags.logo.is_some() && !backdrop_image_tags.is_empty() {
+                        self.carousel_add_child(result);
+                    }
                 }
             }
         }
+
+        let carousel = self.imp().carousel.get();
+
+        if carousel.n_pages() <= 1 {
+            return;
+        }
+
+        glib::timeout_add_seconds_local(7, move || {
+            let current_page = carousel.position();
+            let n_pages = carousel.n_pages();
+            let new_page_position = (current_page + 1. + n_pages as f64) % n_pages as f64;
+            carousel.scroll_to(&carousel.nth_page(new_page_position as u32), true);
+
+            glib::ControlFlow::Continue
+        });
     }
 
     pub fn carousel_add_child(&self, item: SimpleListItem) {
         let imp = self.imp();
         let id = item.id;
 
+        let image = set_image(id.clone(), "Backdrop", Some(0));
+        image.set_halign(gtk::Align::Center);
+
         let overlay = gtk::Overlay::builder()
-            .valign(gtk::Align::Center)
+            .valign(gtk::Align::Fill)
+            .halign(gtk::Align::Center)
+            .child(&image)
+            .build();
+        
+        let logo = set_image(id, "Logo", None);
+        logo.set_halign(gtk::Align::End);
+
+        let logobox = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .margin_bottom(10)
+            .margin_end(10)
+            .height_request(150)
+            .valign(gtk::Align::End)
             .halign(gtk::Align::Fill)
-            .hexpand(true)
-            .vexpand(true)
-            .child(&set_image(id, "Backdrop", Some(0)))
             .build();
 
-        let logo = set_image(&id, "Logo", None);
+        logobox.append(&logo);
+
+        overlay.add_overlay(&logobox);
+        
         imp.carousel.append(&overlay);
     }
 

@@ -486,14 +486,13 @@ impl Window {
                 self.set_pop_visibility(false);
             } else {
                 self.set_pop_visibility(true);
-                imp.navipage.set_title(
-                    &env::var("HISTORY_TITLE").unwrap_or_else(|_| "Liked".to_string()),
-                );
+                imp.navipage
+                    .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "Liked".to_string()));
             }
         } else {
             self.set_pop_visibility(true);
             imp.navipage
-                .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "History".to_string()));
+                .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "Liked".to_string()));
         }
     }
 

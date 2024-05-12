@@ -1,5 +1,5 @@
 use crate::client::{network::*, structs::*};
-use crate::fraction;
+use crate::{fraction, fraction_reset};
 use crate::utils::{get_data_with_cache, spawn, tu_list_view_connect_activate};
 use glib::Object;
 use gtk::prelude::*;
@@ -115,6 +115,7 @@ impl HistoryPage {
     }
 
     pub async fn set_lists(&self) {
+        fraction_reset!(self);
         self.sets("Movie").await;
         self.sets("Series").await;
         self.sets("Episode").await;
