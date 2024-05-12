@@ -62,6 +62,8 @@ mod imp {
         pub player_toolbar_bin: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub player_toolbar_box: TemplateChild<PlayerToolbarBox>,
+        #[template_child]
+        pub progressbar: TemplateChild<gtk::ProgressBar>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
     }
@@ -439,6 +441,7 @@ impl Window {
         imp.navipage
             .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
         self.set_pop_visibility(false);
+        self.set_fraction(1.0);
     }
 
     fn freshhistorypage(&self) {
@@ -452,6 +455,7 @@ impl Window {
             .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
         imp.navipage.set_title("History");
         self.set_pop_visibility(false);
+        self.set_fraction(1.0);
     }
 
     fn freshsearchpage(&self) {
@@ -465,6 +469,7 @@ impl Window {
             .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
         imp.navipage.set_title("Search");
         self.set_pop_visibility(false);
+        self.set_fraction(1.0);
     }
 
     fn historypage(&self) {
@@ -473,16 +478,16 @@ impl Window {
         if imp.historypage.child().is_none() {
             imp.historypage
                 .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
-            imp.navipage.set_title("History & Liked");
+            imp.navipage.set_title("Liked");
         }
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
             if tag.as_str() == "historypage" {
-                imp.navipage.set_title("History & Liked");
+                imp.navipage.set_title("Liked");
                 self.set_pop_visibility(false);
             } else {
                 self.set_pop_visibility(true);
                 imp.navipage.set_title(
-                    &env::var("HISTORY_TITLE").unwrap_or_else(|_| "History & Liked".to_string()),
+                    &env::var("HISTORY_TITLE").unwrap_or_else(|_| "Liked".to_string()),
                 );
             }
         } else {
@@ -638,5 +643,10 @@ impl Window {
         spawn(glib::clone!(@weak self as obj=>async move {
             obj.imp().player_toolbar_bin.set_reveal_child(true);
         }));
+    }
+
+    pub fn set_fraction(&self, fraction: f64) {
+        let imp = self.imp();
+        imp.progressbar.set_fraction(fraction);
     }
 }

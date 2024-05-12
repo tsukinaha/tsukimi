@@ -266,6 +266,8 @@ pub struct ImageTags {
     pub banner: Option<String>,
     #[serde(rename = "Backdrop")]
     pub backdrop: Option<String>,
+    #[serde(rename = "Logo")]
+    pub logo: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]

@@ -1,12 +1,16 @@
 use std::env;
 
 use crate::client::{network::*, structs::*};
-use crate::toast;
+use crate::ui::image::set_image;
+use crate::ui::provider::image_tags;
+use crate::ui::widgets::tu_list_item::tu_list_item_register;
+use crate::{fraction, fraction_reset, toast};
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::{
-    get_data_with_cache, spawn, tu_list_item_factory, tu_list_view_connect_activate,
+    get_data_with_cache, get_data_with_cache_else, spawn, tu_list_item_factory, tu_list_view_connect_activate
 };
 use adw::prelude::NavigationPageExt;
+use chrono::{Datelike, Local};
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
@@ -41,8 +45,15 @@ mod imp {
         #[template_child]
         pub libsrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
-        pub spinner: TemplateChild<gtk::Spinner>,
+        pub historylist: TemplateChild<gtk::ListView>,
+        #[template_child]
+        pub hisscrolled: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        pub historyrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub carousel: TemplateChild<adw::Carousel>,
         pub selection: gtk::SingleSelection,
+        pub hisselection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -68,6 +79,8 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(@weak obj => async move {
+                obj.set_carousel().await;
+                obj.setup_history().await;
                 obj.set_library().await;
             }));
         }
@@ -101,6 +114,85 @@ impl Default for HomePage {
 impl HomePage {
     pub fn new() -> Self {
         Object::builder().build()
+    }
+
+    pub async fn setup_history(&self) {
+        let imp = self.imp();
+        let historyrevealer = imp.historyrevealer.get();
+        imp.hisscrolled.fix();
+        let history_results =
+            get_data_with_cache("0".to_string(), "history", async { resume().await })
+                .await
+                .unwrap();
+        let store = gio::ListStore::new::<glib::BoxedAnyObject>();
+        spawn(glib::clone!(@weak store=> async move {
+                for result in history_results {
+                    let object = glib::BoxedAnyObject::new(result);
+                    store.append(&object);
+                }
+                historyrevealer.set_reveal_child(true);
+        }));
+        imp.hisselection.set_model(Some(&store));
+        let factory = gtk::SignalListItemFactory::new();
+        factory.connect_bind(move |_factory, item| {
+            let list_item = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem");
+            let entry = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .item()
+                .and_downcast::<glib::BoxedAnyObject>()
+                .expect("Needs to be BoxedAnyObject");
+            let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
+            if list_item.child().is_none() {
+                tu_list_item_register(&latest, list_item, "resume")
+            }
+        });
+        imp.historylist.set_factory(Some(&factory));
+        imp.historylist.set_model(Some(&imp.hisselection));
+        imp.historylist.connect_activate(
+            glib::clone!(@weak self as obj => move |gridview, position| {
+                let model = gridview.model().unwrap();
+                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                let result: std::cell::Ref<SimpleListItem> = item.borrow();
+                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                tu_list_view_connect_activate(window, &result, None);
+            }),
+        );
+    }
+
+    pub async fn set_carousel(&self) {
+        let date = Local::now();
+        let formatted_date = format!("{:04}{:02}{:02}", date.year(), date.month(), date.day());
+        let results = get_data_with_cache_else(formatted_date, "carousel", async {
+            get_random().await
+        })
+        .await
+        .unwrap();
+        for result in results.items {
+            if let Some(image_tags) = &result.image_tags {
+                if image_tags.logo.is_some() {
+                    self.carousel_add_child(result);
+                }
+            }
+        }
+    }
+
+    pub fn carousel_add_child(&self, item: SimpleListItem) {
+        let imp = self.imp();
+        let id = item.id;
+
+        let overlay = gtk::Overlay::builder()
+            .valign(gtk::Align::Center)
+            .halign(gtk::Align::Fill)
+            .hexpand(true)
+            .vexpand(true)
+            .child(&set_image(id, "Backdrop", Some(0)))
+            .build();
+
+        let logo = set_image(&id, "Logo", None);
+        imp.carousel.append(&overlay);
     }
 
     pub async fn set_library(&self) {
@@ -224,7 +316,7 @@ impl HomePage {
                     }
             }));
         }
-        self.imp().spinner.set_visible(false);
+        fraction!(self);
     }
 
     pub fn set_librarysscroll(&self, latests: Vec<SimpleListItem>) -> gtk::ListView {

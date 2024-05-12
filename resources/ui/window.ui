@@ -12,12 +12,12 @@
   </menu>
   <template class="AppWindow" parent="AdwApplicationWindow">
     <property name="title" translatable="yes">Tsukimi</property>
-    <property name="width-request">1280</property>
-    <property name="height-request">920</property>
+    <property name="width-request">500</property>
+    <property name="height-request">300</property>
     <property name="icon-name">tsukimi</property>
     <child>
       <object class="AdwBreakpoint">
-        <condition>max-width: 500sp</condition>
+        <condition>max-width: 800sp</condition>
         <setter object="split_view" property="collapsed">True</setter>
       </object>
     </child>
@@ -198,7 +198,7 @@
                                           <object class="AdwActionRow">
                                             <child type="prefix">
                                               <object class="GtkLabel">
-                                                <property name="label" translatable="yes">History &amp; Liked</property>
+                                                <property name="label" translatable="yes">Liked</property>
                                                 <property name="halign">start</property>
                                                 <attributes>
                                                   <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
@@ -326,6 +326,15 @@
                                         <property name="menu-model">main-menu</property>
                                       </object>
                                     </child>
+                                  </object>
+                                </child>
+                                <child type="top">
+                                  <object class="GtkProgressBar" id="progressbar">
+                                    <property name="hexpand">True</property>
+                                    <property name="fraction">1</property>
+                                    <style>
+                                      <class name="osd" />
+                                    </style>
                                   </object>
                                 </child>
                                 <child type="bottom">

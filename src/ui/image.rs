@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 use super::models::emby_cache_path;
 
-pub fn set_image(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
+pub fn set_image(id: &str, image_type: &str, tag: Option<u8>) -> Revealer {
     let (sender, receiver) = async_channel::bounded::<String>(1);
 
     let image = gtk::Picture::new();
@@ -27,6 +27,8 @@ pub fn set_image(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
         "Thumb" => format!("{}/t{}", cache_path.display(), id),
         _ => format!("{}/{}", cache_path.display(), id),
     };
+
+    let id = id.to_string();
 
     let pathbuf = PathBuf::from(&path);
     if pathbuf.exists() {

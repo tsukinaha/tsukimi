@@ -1,4 +1,5 @@
 use crate::client::{network::*, structs::*};
+use crate::fraction;
 use crate::utils::{get_data_with_cache, spawn, tu_list_view_connect_activate};
 use glib::Object;
 use gtk::prelude::*;
@@ -18,14 +19,6 @@ mod imp {
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsukimi/history.ui")]
     pub struct HistoryPage {
-        #[template_child]
-        pub historylist: TemplateChild<gtk::ListView>,
-        #[template_child]
-        pub spinner: TemplateChild<gtk::Spinner>,
-        #[template_child]
-        pub hisscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub historyrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub movierevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
@@ -61,7 +54,6 @@ mod imp {
         pub episodeselection: gtk::SingleSelection,
         pub peopleselection: gtk::SingleSelection,
         pub albumselection: gtk::SingleSelection,
-        pub selection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -87,7 +79,6 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             spawn(glib::clone!(@weak obj =>async move {
-                obj.setup_history().await;
                 obj.set_lists().await;
             }));
         }
@@ -123,63 +114,13 @@ impl HistoryPage {
         Object::builder().build()
     }
 
-    pub async fn setup_history(&self) {
-        let imp = self.imp();
-        let spinner = imp.spinner.get();
-        let historyrevealer = imp.historyrevealer.get();
-        spinner.set_visible(true);
-        imp.hisscrolled.fix();
-
-        let history_results =
-            get_data_with_cache("0".to_string(), "history", async { resume().await })
-                .await
-                .unwrap_or_else(|_| Vec::new());
-        let store = gio::ListStore::new::<glib::BoxedAnyObject>();
-        spawn(glib::clone!(@weak store=> async move {
-                for result in history_results {
-                    let object = glib::BoxedAnyObject::new(result);
-                    store.append(&object);
-                }
-                spinner.set_visible(false);
-                historyrevealer.set_reveal_child(true);
-        }));
-        imp.selection.set_autoselect(false);
-        imp.selection.set_model(Some(&store));
-        let factory = gtk::SignalListItemFactory::new();
-        factory.connect_bind(move |_factory, item| {
-            let list_item = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem");
-            let entry = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .item()
-                .and_downcast::<glib::BoxedAnyObject>()
-                .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
-            if list_item.child().is_none() {
-                tu_list_item_register(&latest, list_item, "resume")
-            }
-        });
-        imp.historylist.set_factory(Some(&factory));
-        imp.historylist.set_model(Some(&imp.selection));
-        imp.historylist.connect_activate(
-            glib::clone!(@weak self as obj => move |gridview, position| {
-                let model = gridview.model().unwrap();
-                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                tu_list_view_connect_activate(window, &result, None);
-            }),
-        );
-    }
-
     pub async fn set_lists(&self) {
         self.sets("Movie").await;
         self.sets("Series").await;
         self.sets("Episode").await;
         self.sets("People").await;
         self.sets("MusicAlbum").await;
+        fraction!(self);
     }
 
     pub async fn sets(&self, types: &str) {

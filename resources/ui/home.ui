@@ -14,9 +14,28 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">9</property>
                     <child>
-                      <object class="GtkSpinner" id="spinner">
-                        <property name="spinning">True</property>
+                      <object class="GtkOverlay">
+                        <property name="halign">fill</property>
+                        <property name="height-request">300</property>
+                        <property name="valign">fill</property>
                         <property name="visible">True</property>
+                        <child>
+                          <object class="AdwCarousel" id="carousel">
+                            <property name="halign">fill</property>
+                            <property name="valign">fill</property>
+                            <property name="hexpand">true</property>
+                            <property name="vexpand">true</property>
+                          </object>
+                        </child>
+                        <child type="overlay">
+                          <object class="AdwCarouselIndicatorDots">
+                            <property name="halign">center</property>
+                            <property name="valign">end</property>
+                            <property name="hexpand">true</property>
+                            <property name="vexpand">false</property>
+                            <property name="carousel">carousel</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>
@@ -50,6 +69,43 @@
                                 <child>
                                   <object class="GtkListView" id="liblist">
                                     <property name="orientation">horizontal</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRevealer" id="historyrevealer">
+                        <property name="transition-duration">300</property>
+                        <property name="reveal-child">True</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">6</property>
+                            <property name="hexpand">True</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Continue Watching</property>
+                                <property name="margin-start">12</property>
+                                <property name="halign">start</property>
+                                <attributes>
+                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                  <attribute name="scale" value="1.3"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkScrolledWindow" id="hisscrolled">
+                                <property name="overlay-scrolling">true</property>
+                                <property name="vscrollbar-policy">never</property>
+                                <property name="margin-bottom">3</property>
+                                <child>
+                                  <object class="GtkListView" id="historylist">
+                                    <property name="orientation">horizontal</property>
+                                    <property name="single-click-activate">True</property>
                                   </object>
                                 </child>
                               </object>
