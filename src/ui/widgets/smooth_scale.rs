@@ -6,11 +6,16 @@ mod imp {
 
     use std::cell::RefCell;
 
+    use crate::gstl::list::Player;
+
     use super::*;
 
-    #[derive(Default)]
+    #[derive(Default, glib::Properties)]
+    #[properties(wrapper_type = super::SmoothScale)]
     pub struct SmoothScale {
         pub timeout: RefCell<Option<glib::source::SourceId>>,
+        #[property(get, set = Self::set_player, explicit_notify, nullable)]
+        pub player: glib::WeakRef<Player>,
     }
 
     #[glib::object_subclass]
@@ -19,10 +24,34 @@ mod imp {
         type Type = super::SmoothScale;
         type ParentType = gtk::Scale;
     }
-
+    
+    #[glib::derived_properties]
     impl ObjectImpl for SmoothScale {
         fn constructed(&self) {
             self.parent_constructed();
+
+            // new GestureClick with add_controller is doesn't work for connect_released
+            //
+            // so we need to iterate through the controllers to get the GestureClick
+            // and then connect the signals
+            let mut gesture = gtk::GestureClick::new();
+            self.obj()
+                .observe_controllers()
+                .into_iter()
+                .for_each(|collection| {
+                    if let Ok(event) = collection {
+                        if event.type_() == gtk::GestureClick::static_type() {
+                            gesture = event.downcast::<gtk::GestureClick>().unwrap();
+                        }
+                    }
+                });
+
+            gesture.connect_pressed(glib::clone!(@weak self as imp => move |_, _, _, _|{
+                imp.on_click_pressed();
+            }));
+            gesture.connect_released(glib::clone!(@weak self as imp => move |_, _, _, _|{
+                imp.on_click_released();
+            }));
 
             self.obj().duration_changed();
         }
@@ -30,6 +59,30 @@ mod imp {
     impl WidgetImpl for SmoothScale {}
     impl RangeImpl for SmoothScale {}
     impl ScaleImpl for SmoothScale {}
+
+    impl SmoothScale {
+        fn set_player(&self, player: Option<Player>) {
+            if self.player.upgrade() == player {
+                return;
+            }
+            self.player.set(player.as_ref());
+        }
+
+        fn on_click_pressed(&self) {
+            let obj = self.obj();
+            obj.remove_timeout();
+        }
+
+        fn on_click_released(&self) {
+            let obj = self.obj();
+            self.on_seek_finished(self.obj().value());
+            obj.update_timeout();
+        }
+
+        fn on_seek_finished(&self, value: f64) {
+            MUSIC_PLAYER.set_position(value);
+        }
+    }
 }
 
 glib::wrapper! {
@@ -72,6 +125,14 @@ impl SmoothScale {
     pub fn remove_timeout(&self) {
         if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
             glib::source::SourceId::remove(timeout);
+        }
+    }
+
+    pub fn on_smooth_scale_value_changed(&self) {
+        let value = self.value();
+        let position = value / 60.0;
+        if let Some(player) = self.imp().player.upgrade() {
+            player.set_position(position);
         }
     }
 

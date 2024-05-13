@@ -14,7 +14,7 @@ mod imp {
     use adw::subclass::bin::BinImpl;
     use gtk::{glib::subclass::InitializingObject, CompositeTemplate};
 
-    use crate::{gstl::list, ui::widgets::smooth_scale::SmoothScale};
+    use crate::{gstl::list::Player, ui::widgets::smooth_scale::SmoothScale};
 
     use super::*;
 
@@ -23,7 +23,7 @@ mod imp {
     pub struct PlayerToolbarBox {
         #[template_child]
         pub toolbar: TemplateChild<gtk::ActionBar>,
-        pub player: list::Player,
+        pub player: Player,
         #[template_child]
         pub cover_image: TemplateChild<gtk::Image>,
         #[template_child]

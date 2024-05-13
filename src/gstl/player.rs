@@ -86,6 +86,17 @@ impl MusicPlayer {
         let pipeline = &self.pipeline;
         pipeline.current_state()
     }
+
+    pub fn set_position(&self, position: f64) {
+        let pipeline = &self.pipeline;
+        let position = gst::ClockTime::from_seconds(position as u64);
+        pipeline
+            .seek_simple(
+                gst::SeekFlags::FLUSH | gst::SeekFlags::KEY_UNIT,
+                position,
+            )
+            .expect("Seek failed");
+    }
 }
 
 fn on_bus_message(msg: &gst::Message) {
