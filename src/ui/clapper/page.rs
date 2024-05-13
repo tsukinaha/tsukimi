@@ -56,6 +56,19 @@ mod imp {
             let controls = SimpleControls::new();
             controls.set_valign(gtk::Align::End);
             self.video.add_fading_overlay(&controls);
+
+            let backbutton = gtk::Button::builder()
+                .icon_name("go-previous-symbolic")
+                .valign(gtk::Align::Start)
+                .halign(gtk::Align::Start)
+                .build();
+
+            backbutton.add_css_class("osd");
+            backbutton.add_css_class("circular");
+            backbutton.connect_clicked(glib::clone!(@weak self as imp => move |_| {
+                imp.obj().on_button_clicked();
+            }));
+            self.video.add_fading_overlay(&backbutton);
         }
     }
 
@@ -102,5 +115,11 @@ impl ClapperPage {
         self.imp().video.connect_toggle_fullscreen(move |_video| {
             window_clone.set_fullscreened(!window_clone.is_fullscreened());
         });
+    }
+
+    pub fn on_button_clicked(&self) {
+        self.imp().video.player().unwrap().stop();
+        let window = self.root().unwrap().downcast::<Window>().unwrap();
+        window.mainpage();
     }
 }

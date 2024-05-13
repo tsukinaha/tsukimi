@@ -401,7 +401,7 @@ impl Window {
         imp.navipage.set_title(title);
     }
 
-    fn mainpage(&self) {
+    pub fn mainpage(&self) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("main");
     }
