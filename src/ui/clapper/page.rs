@@ -61,6 +61,8 @@ mod imp {
                 .icon_name("go-previous-symbolic")
                 .valign(gtk::Align::Start)
                 .halign(gtk::Align::Start)
+                .margin_top(5)
+                .margin_start(5)
                 .build();
 
             backbutton.add_css_class("osd");
