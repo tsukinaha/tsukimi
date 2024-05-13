@@ -4,7 +4,6 @@ use crate::client::{network::*, structs::*};
 use gtk::glib;
 use gtk::prelude::*;
 
-
 pub fn bind_button(
     playbackinfo: Media,
     info: SeriesInfo,

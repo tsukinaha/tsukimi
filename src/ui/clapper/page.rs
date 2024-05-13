@@ -1,9 +1,9 @@
-use glib::Object;
-use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
-use gtk::prelude::*;
 use crate::config::set_config;
 use crate::ui::widgets::window::Window;
+use glib::Object;
+use gtk::prelude::*;
+use gtk::subclass::prelude::*;
+use gtk::{gio, glib};
 
 mod imp {
 
@@ -61,8 +61,8 @@ mod imp {
                 .icon_name("go-previous-symbolic")
                 .valign(gtk::Align::Start)
                 .halign(gtk::Align::Start)
-                .margin_top(5)
-                .margin_start(5)
+                .margin_top(7)
+                .margin_start(7)
                 .build();
 
             backbutton.add_css_class("osd");
@@ -95,8 +95,7 @@ glib::wrapper! {
 
 impl ClapperPage {
     pub fn new() -> Self {
-        Object::builder()
-            .build()
+        Object::builder().build()
     }
 
     pub fn add_item(&self, url: &str, suburi: Option<&str>) {
@@ -107,8 +106,20 @@ impl ClapperPage {
             let suburi = format!("{}:{}/emby{}", server_info.domain, server_info.port, suburi);
             item.set_suburi(&suburi);
         }
-        self.imp().video.player().unwrap().queue().unwrap().add_item(&item);
-        self.imp().video.player().unwrap().queue().unwrap().select_item(Some(&item));
+        self.imp()
+            .video
+            .player()
+            .unwrap()
+            .queue()
+            .unwrap()
+            .add_item(&item);
+        self.imp()
+            .video
+            .player()
+            .unwrap()
+            .queue()
+            .unwrap()
+            .select_item(Some(&item));
         self.imp().video.player().unwrap().play();
     }
 

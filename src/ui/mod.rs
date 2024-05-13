@@ -1,8 +1,8 @@
+mod clapper;
 mod image;
 pub(crate) mod models;
 mod moviedrop;
 mod mpv;
-mod clapper;
 mod new_dropsel;
 pub mod provider;
 pub mod widgets;
