@@ -17,7 +17,7 @@ pub fn build_ui(app: &adw::Application) {
                 let about = adw::AboutWindow::builder()
                     .application_name("Tsukimi")
                     .version(crate::config::APP_VERSION)
-                    .comments("A simple third-party Emby client.\nTest version: tsukimi 0.4.10 \n2024.5.5 13:09")
+                    .comments("A simple third-party Emby client.\nTest version: tsukimi 0.4.12 \n2024.5.13 18:05")
                     .website("https://github.com/tsukinaha/tsukimi")
                     .application_icon("tsukimi")
                     .license_type(gtk::License::Gpl30)

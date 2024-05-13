@@ -12,7 +12,7 @@ use crate::{fraction, toast};
 use adw::prelude::NavigationPageExt;
 use chrono::{Datelike, Local};
 use glib::Object;
-use gtk::prelude::*;
+use gtk::{prelude::*, template_callbacks};
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
@@ -21,11 +21,15 @@ use super::{fix::ScrolledWindowFixExt, list::ListPage, window::Window};
 
 mod imp {
 
+    use std::cell::RefCell;
+
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
     use crate::utils::spawn_g_timeout;
+
+    use super::SimpleListItem;
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsukimi/home.ui")]
@@ -52,6 +56,7 @@ mod imp {
         pub historyrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub carousel: TemplateChild<adw::Carousel>,
+        pub carouset_items: RefCell<Vec<SimpleListItem>>,
         pub selection: gtk::SingleSelection,
         pub hisselection: gtk::SingleSelection,
     }
@@ -66,6 +71,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -111,9 +117,19 @@ impl Default for HomePage {
     }
 }
 
+#[template_callbacks]
 impl HomePage {
     pub fn new() -> Self {
         Object::builder().build()
+    }
+
+    #[template_callback]
+    fn carousel_pressed_cb(&self) {
+        let position = self.imp().carousel.position();
+        if let Some(item) = self.imp().carouset_items.borrow().get(position as usize) {
+            let window = self.root().and_downcast::<super::window::Window>().unwrap();
+            tu_list_view_connect_activate(window, item, None)
+        }
     }
 
     pub async fn setup_history(&self) {
@@ -173,6 +189,7 @@ impl HomePage {
             if let Some(image_tags) = &result.image_tags {
                 if let Some(backdrop_image_tags) = &result.backdrop_image_tags {
                     if image_tags.logo.is_some() && !backdrop_image_tags.is_empty() {
+                        self.imp().carouset_items.borrow_mut().push(result.clone());
                         self.carousel_add_child(result);
                     }
                 }
@@ -328,7 +345,7 @@ impl HomePage {
                 .margin_top(15)
                 .margin_start(10)
                 .build();
-            label.add_css_class("title-3");
+            label.add_css_class("title-4");
             scrollbox.append(&label);
             scrollbox.append(scrolled);
             let latest = get_data_with_cache(view.id.clone(), "view", async move {

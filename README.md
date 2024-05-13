@@ -12,6 +12,7 @@
 - 暂时使用裸 MPV 的方式进行播放 计划使用 Gstreamer 替代
 - FR/Issue 前请检查是否重复
 - 欢迎参与项目贡献  Telegram Group: https://t.me/+mhcPxx5kE6QzMjVl
+- Trello Kanban https://trello.com/b/8GOsuygJ/%E5%95%8A%EF%BC%9F
 
 ## I want feature of ○○○!
 欢迎提出你想要的功能    

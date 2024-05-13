@@ -25,6 +25,11 @@
                             <property name="valign">fill</property>
                             <property name="hexpand">true</property>
                             <property name="spacing">20</property>
+                            <child>
+                              <object class="GtkGestureClick">
+                                <signal name="released" handler="carousel_pressed_cb" swapped="true" />
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child type="overlay">
