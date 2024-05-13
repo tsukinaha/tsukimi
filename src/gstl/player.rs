@@ -91,10 +91,7 @@ impl MusicPlayer {
         let pipeline = &self.pipeline;
         let position = gst::ClockTime::from_seconds(position as u64);
         pipeline
-            .seek_simple(
-                gst::SeekFlags::FLUSH | gst::SeekFlags::KEY_UNIT,
-                position,
-            )
+            .seek_simple(gst::SeekFlags::FLUSH | gst::SeekFlags::KEY_UNIT, position)
             .expect("Seek failed");
     }
 }

@@ -1,7 +1,6 @@
-
+use super::MUSIC_PLAYER;
 use crate::ui::{provider::core_song::CoreSong, widgets::song_widget::State};
 use gtk::{glib, subclass::prelude::*};
-use super::MUSIC_PLAYER;
 
 mod imp {
     use std::cell::RefCell;

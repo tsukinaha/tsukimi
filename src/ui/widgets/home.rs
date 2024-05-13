@@ -12,9 +12,9 @@ use crate::{fraction, toast};
 use adw::prelude::NavigationPageExt;
 use chrono::{Datelike, Local};
 use glib::Object;
-use gtk::{prelude::*, template_callbacks};
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
+use gtk::{prelude::*, template_callbacks};
 
 use super::tu_list_item::TuListItem;
 use super::{fix::ScrolledWindowFixExt, list::ListPage, window::Window};
@@ -224,7 +224,7 @@ impl HomePage {
             .halign(gtk::Align::Center)
             .child(&image)
             .build();
-        
+
         let logo = set_image(id, "Logo", None);
         logo.set_halign(gtk::Align::End);
 
@@ -240,7 +240,7 @@ impl HomePage {
         logobox.append(&logo);
 
         overlay.add_overlay(&logobox);
-        
+
         imp.carousel.append(&overlay);
     }
 

@@ -1,6 +1,6 @@
 use crate::client::{network::*, structs::*};
-use crate::{fraction, fraction_reset};
 use crate::utils::{get_data_with_cache, spawn, tu_list_view_connect_activate};
+use crate::{fraction, fraction_reset};
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;

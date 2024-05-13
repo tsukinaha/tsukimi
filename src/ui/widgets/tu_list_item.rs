@@ -300,7 +300,7 @@ impl TuListItem {
             rating.set_height_request(40);
             rating.set_width_request(60);
             imp.overlay.add_overlay(&rating);
-        } 
+        }
     }
 
     pub fn set_count(&self) {

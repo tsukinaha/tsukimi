@@ -488,10 +488,9 @@ pub async fn get_list(
         _ => include_item_types,
     };
 
-    let params =
-        match listtype {
-            "all" | "liked" | "tags" | "boxset" => {
-                vec![
+    let params = match listtype {
+        "all" | "liked" | "tags" | "boxset" => {
+            vec![
                 ("Limit", "50"),
                 (
                     "Fields",
@@ -513,53 +512,53 @@ pub async fn get_list(
                 ("X-Emby-Token", &emby_token),
                 ("X-Emby-Language", "zh-cn"),
                 ]
-            }
+        }
 
-            "resume" => vec![
-                (
-                    "Fields",
-                    "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
-                ),
-                ("ParentId", &id),
-                ("EnableImageTypes", "Primary,Backdrop,Thumb"),
-                ("ImageTypeLimit", "1"),
-                (
-                    "IncludeItemTypes",
-                    match include_item_type {
-                        "Series" => "Episode",
-                        _ => include_item_type,
-                    },
-                ),
-                ("Limit", "30"),
-                ("X-Emby-Client", "Tsukimi"),
-                ("X-Emby-Device-Name", &device_name),
-                ("X-Emby-Device-Id", &device_id),
-                ("X-Emby-Client-Version", app_version),
-                ("X-Emby-Token", &emby_token),
-                ("X-Emby-Language", "zh-cn"),
-            ],
+        "resume" => vec![
+            (
+                "Fields",
+                "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+            ),
+            ("ParentId", &id),
+            ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+            ("ImageTypeLimit", "1"),
+            (
+                "IncludeItemTypes",
+                match include_item_type {
+                    "Series" => "Episode",
+                    _ => include_item_type,
+                },
+            ),
+            ("Limit", "30"),
+            ("X-Emby-Client", "Tsukimi"),
+            ("X-Emby-Device-Name", &device_name),
+            ("X-Emby-Device-Id", &device_id),
+            ("X-Emby-Client-Version", app_version),
+            ("X-Emby-Token", &emby_token),
+            ("X-Emby-Language", "zh-cn"),
+        ],
 
-            "genres" => vec![
-                ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
-                ("IncludeItemTypes", include_item_type),
-                ("StartIndex", &start),
-                ("ImageTypeLimit", "1"),
-                ("EnableImageTypes", "Primary,Backdrop,Thumb"),
-                ("Limit", "50"),
-                ("userId", &server_info.user_id),
-                ("Recursive", "true"),
-                ("ParentId", &id),
-                ("SortBy", sortby),
-                ("SortOrder", sort_order),
-                ("X-Emby-Client", "Tsukimi"),
-                ("X-Emby-Device-Name", &device_name),
-                ("X-Emby-Device-Id", &device_id),
-                ("X-Emby-Client-Version", app_version),
-                ("X-Emby-Token", &emby_token),
-                ("X-Emby-Language", "zh-cn"),
-            ],
-            _ => vec![],
-        };
+        "genres" => vec![
+            ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
+            ("IncludeItemTypes", include_item_type),
+            ("StartIndex", &start),
+            ("ImageTypeLimit", "1"),
+            ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+            ("Limit", "50"),
+            ("userId", &server_info.user_id),
+            ("Recursive", "true"),
+            ("ParentId", &id),
+            ("SortBy", sortby),
+            ("SortOrder", sort_order),
+            ("X-Emby-Client", "Tsukimi"),
+            ("X-Emby-Device-Name", &device_name),
+            ("X-Emby-Device-Id", &device_id),
+            ("X-Emby-Client-Version", app_version),
+            ("X-Emby-Token", &emby_token),
+            ("X-Emby-Language", "zh-cn"),
+        ],
+        _ => vec![],
+    };
     let response = client().get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let l: List = serde_json::from_value(json).unwrap();
@@ -802,7 +801,10 @@ pub async fn person_item(id: &str, types: &str) -> Result<Vec<SimpleListItem>, E
         server_info.domain, server_info.port, server_info.user_id
     );
     let params = [
-        ("Fields", "PrimaryImageAspectRatio,ProductionYear,CommunityRating"),
+        (
+            "Fields",
+            "PrimaryImageAspectRatio,ProductionYear,CommunityRating",
+        ),
         ("PersonIds", id),
         ("Recursive", "true"),
         ("CollapseBoxSetItems", "false"),
@@ -902,7 +904,10 @@ pub async fn get_included(id: &str) -> Result<List, Error> {
     );
 
     let params = [
-        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,CommunityRating"),
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,CommunityRating",
+        ),
         ("Limit", "12"),
         ("ListItemIds", id),
         ("Recursive", "true"),

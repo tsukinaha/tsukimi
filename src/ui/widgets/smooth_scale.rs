@@ -24,7 +24,7 @@ mod imp {
         type Type = super::SmoothScale;
         type ParentType = gtk::Scale;
     }
-    
+
     #[glib::derived_properties]
     impl ObjectImpl for SmoothScale {
         fn constructed(&self) {
