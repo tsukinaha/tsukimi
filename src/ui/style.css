@@ -20,6 +20,11 @@ child {
     background: rgba(0, 0, 0, 0.1);
 }
 
+.smooth-scale {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
 listview>row {
     margin-left: 9px;
     margin-right: 9px;

@@ -20,6 +20,11 @@ child {
     background: rgba(0, 0, 0, 0);
 }
 
+.smooth-scale {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
 overlay box>dropdown>button {
     background: rgba(25, 28, 30, 0.4);
 }

@@ -60,7 +60,6 @@ mod imp {
     impl ObjectImpl for PlayerToolbarBox {
         fn constructed(&self) {
             self.parent_constructed();
-            self.toolbar.set_revealed(true);
         }
     }
     impl WidgetImpl for PlayerToolbarBox {}
@@ -94,6 +93,7 @@ impl PlayerToolbarBox {
         self.imp().progress_scale.update_timeout();
         let play_pause_image = &self.imp().play_pause_image.get();
         play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
+        self.imp().toolbar.set_revealed(true);
     }
 
     pub async fn set_item(&self, item: &TuItem) {
@@ -120,6 +120,14 @@ impl PlayerToolbarBox {
         let label = &self.imp().progress_time_label.get();
         let position = progress_scale.value();
         label.set_text(&format_duration(position as i64));
+    }
+
+    #[template_callback]
+    fn on_stop_button_clicked(&self) {
+        let imp = self.imp();
+        imp.player.stop();
+        imp.progress_scale.remove_timeout();
+        imp.toolbar.set_revealed(false);
     }
 
     #[template_callback]

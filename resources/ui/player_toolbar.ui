@@ -176,6 +176,23 @@
                         <property name="margin-start">6</property>
                         <property name="margin-top">6</property>
                         <child>
+                            <object class="GtkButton" id="_stop_button">
+                                <property name="focusable">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">Stop And Hide PlayerBar</property>
+                                <signal name="clicked" handler="on_stop_button_clicked" swapped="yes"/>
+                                <style>
+                                    <class name="flat"/>
+                                </style>
+                                <child>
+                                    <object class="GtkImage">
+                                        <property name="icon_name">go-bottom-symbolic</property>
+                                        <property name="icon_size">1</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
                             <object class="GtkMenuButton" id="_repeat_menu_button">
                                 <property name="focusable">True</property>
                                 <property name="receives_default">True</property>

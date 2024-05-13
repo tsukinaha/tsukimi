@@ -185,7 +185,7 @@
                                             <child type="suffix">
                                               <object class="GtkButton">
                                                 <property name="valign">center</property>
-                                                <property name="icon-name">object-rotate-left</property>
+                                                <property name="icon-name">emblem-synchronizing-symbolic</property>
                                                 <property name="action-name">win.home</property>
                                                 <style>
                                                   <class name="flat" />
@@ -214,7 +214,7 @@
                                             <child type="suffix">
                                               <object class="GtkButton">
                                                 <property name="valign">center</property>
-                                                <property name="icon-name">object-rotate-left</property>
+                                                <property name="icon-name">emblem-synchronizing-symbolic</property>
                                                 <property name="action-name">win.history</property>
                                                 <style>
                                                   <class name="flat" />
@@ -243,7 +243,7 @@
                                             <child type="suffix">
                                               <object class="GtkButton">
                                                 <property name="valign">center</property>
-                                                <property name="icon-name">object-rotate-left</property>
+                                                <property name="icon-name">emblem-synchronizing-symbolic</property>
                                                 <property name="action-name">win.search</property>
                                                 <style>
                                                   <class name="flat" />

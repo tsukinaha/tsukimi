@@ -20,6 +20,11 @@ child {
     background: transparent;
 }
 
+.smooth-scale {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
 .frame {
     border: 2px solid @borders;
     border-radius: 5px;

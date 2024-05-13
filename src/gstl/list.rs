@@ -33,6 +33,14 @@ impl Player {
         MUSIC_PLAYER.pause();
     }
 
+    pub fn stop(&self) {
+        if let Some(core_song) = self.core_song.borrow().as_ref() {
+            core_song.set_state(State::Played);
+        }
+        MUSIC_PLAYER.stop();
+        self.core_song.replace(None);
+    }
+
     pub fn unpause(&self) {
         MUSIC_PLAYER.unpause();
     }
