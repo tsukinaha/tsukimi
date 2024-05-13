@@ -10,6 +10,7 @@ use std::path::PathBuf;
 use crate::client::{network::*, structs::*};
 use crate::ui::models::SETTINGS;
 use crate::ui::new_dropsel::bind_button;
+use crate::ui::provider::dropdown_factory::factory;
 use crate::utils::{
     get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory,
     tu_list_view_connect_activate,
@@ -656,8 +657,8 @@ impl ItemPage {
                 if let Some(handlerid) = obj.imp().playbuttonhandlerid.borrow_mut().take() {
                     obj.imp().playbutton.disconnect(handlerid);
                 }
-                crate::ui::new_dropsel::newmediadropsel(playback.clone(), &info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
-                let handlerid = bind_button(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
+                obj.set_dropdown(&playback, &info);
+                let handlerid = obj.bind_button(&playback, &info);
                 obj.imp().playbuttonhandlerid.replace(Some(handlerid));
                 obj.imp().playbutton.set_sensitive(true);
                 obj.imp().favourite_button_split.set_sensitive(true);
@@ -1035,5 +1036,117 @@ impl ItemPage {
         }
         linksscrolled.set_child(Some(&linkbox));
         linksrevealer.set_reveal_child(true);
+    }
+
+    pub fn set_dropdown(&self, playbackinfo: &Media, info: &SeriesInfo) {
+        let playbackinfo = playbackinfo.clone();
+        let info = info.clone();
+        let imp = self.imp();
+        let namedropdown = imp.namedropdown.get();
+        let subdropdown = imp.subdropdown.get();
+        let playbutton = imp.playbutton.get();
+        let namelist = gtk::StringList::new(&[]);
+        let sublist = gtk::StringList::new(&[]);
+
+        if let Some(media) = playbackinfo.media_sources.first() {
+            for stream in &media.media_streams {
+                if stream.stream_type == "Subtitle" {
+                    if let Some(d) = &stream.display_title {
+                        sublist.append(d);
+                    } else {
+                        println!("No value");
+                    }
+                }
+            }
+        }
+        for media in &playbackinfo.media_sources {
+            namelist.append(&media.name);
+        }
+        namedropdown.set_model(Some(&namelist));
+        subdropdown.set_model(Some(&sublist));
+        namedropdown.set_factory(Some(&factory()));
+        subdropdown.set_factory(Some(&factory()));
+
+        namedropdown.connect_selected_item_notify(move |dropdown| {
+            let selected = dropdown.selected_item();
+            let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
+            let selected = selected.string();
+            for _i in 0..sublist.n_items() {
+                sublist.remove(0);
+            }
+            for media in playbackinfo.media_sources.clone() {
+                if media.name == selected {
+                    for stream in media.media_streams {
+                        if stream.stream_type == "Subtitle" {
+                            if let Some(d) = stream.display_title {
+                                sublist.append(&d);
+                            } else {
+                                println!("No value");
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        });
+        let info = info.clone();
+
+        if SETTINGS.resume() {
+            if let Some(userdata) = &info.user_data {
+                if let Some(percentage) = userdata.played_percentage {
+                    if percentage > 0. {
+                        playbutton.set_label("Resume");
+                    }
+                }
+            }
+        }
+    }
+
+    pub fn bind_button(&self, playbackinfo: &Media, _info: &SeriesInfo) -> glib::SignalHandlerId {
+        let imp = self.imp();
+        let playbackinfo = playbackinfo.clone();
+        let playbutton = imp.playbutton.get();
+        let namedropdown = imp.namedropdown.get();
+        let subdropdown = imp.subdropdown.get();
+        let handlerid = playbutton.connect_clicked(glib::clone!(@weak self as obj => move |_| {
+            let nameselected = namedropdown.selected_item();
+            let nameselected = nameselected
+                .and_downcast_ref::<gtk::StringObject>()
+                .unwrap();
+            let nameselected = nameselected.string();
+            let subselected = subdropdown.selected_item();
+            if subselected.is_none() {
+                for media in playbackinfo.media_sources.clone() {
+                    if media.name == nameselected {
+                        if let Some(directurl) = media.direct_stream_url {
+                            obj.get_window().set_clapperpage(&directurl, None)
+                        }
+                    }
+                }
+                return;
+            }
+            let subselected = subselected.and_downcast_ref::<gtk::StringObject>().unwrap();
+            let subselected = subselected.string();
+            for media in playbackinfo.media_sources.clone() {
+                if media.name == nameselected {
+                    for mediastream in media.media_streams {
+                        if mediastream.stream_type == "Subtitle" {
+                            let displaytitle = mediastream.display_title.unwrap_or("".to_string());
+                            if displaytitle == subselected {
+                                if let Some(directurl) = media.direct_stream_url.clone() {
+                                    let suburl = mediastream.delivery_url.clone();
+                                    obj.get_window().set_clapperpage(&directurl, suburl.as_deref())
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }));
+        handlerid
+    }
+
+    pub fn get_window(&self) -> Window {
+        self.root().unwrap().downcast::<Window>().unwrap()
     }
 }

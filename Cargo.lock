@@ -276,6 +276,56 @@ dependencies = [
 ]
 
 [[package]]
+name = "clapper"
+version = "0.1.0"
+dependencies = [
+ "bitflags 2.5.0",
+ "clapper-sys",
+ "gio",
+ "glib",
+ "gstreamer",
+ "libc",
+]
+
+[[package]]
+name = "clapper-gtk"
+version = "0.1.0"
+dependencies = [
+ "bitflags 2.5.0",
+ "clapper",
+ "clapper-gtk-sys",
+ "gdk4",
+ "gio",
+ "glib",
+ "gtk4",
+ "libc",
+]
+
+[[package]]
+name = "clapper-gtk-sys"
+version = "0.0.1"
+dependencies = [
+ "clapper-sys",
+ "gio-sys",
+ "glib-sys",
+ "gtk4-sys",
+ "libc",
+ "system-deps",
+]
+
+[[package]]
+name = "clapper-sys"
+version = "0.0.1"
+dependencies = [
+ "gio-sys",
+ "glib-sys",
+ "gobject-sys",
+ "gstreamer-sys",
+ "libc",
+ "system-deps",
+]
+
+[[package]]
 name = "colorchoice"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2209,12 +2259,14 @@ checksum = "e421abadd41a4225275504ea4d6566923418b7f05506fbc9c0fe86ba7396114b"
 
 [[package]]
 name = "tsukimi"
-version = "0.4.12"
+version = "0.5.0"
 dependencies = [
  "async-channel",
  "bytefmt",
  "cargo-deb",
  "chrono",
+ "clapper",
+ "clapper-gtk",
  "crossbeam",
  "dirs",
  "glib-build-tools",

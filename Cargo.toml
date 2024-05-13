@@ -1,6 +1,6 @@
 [package]
 name = "tsukimi"
-version = "0.4.12"
+version = "0.5.0"
 edition = "2021"
 description = "A simple Emby Client with MPV written by GTK4-RS" 
 license = "GPL"
@@ -20,6 +20,8 @@ adw = { version = "0.6.0", package = "libadwaita", features = ["v1_5"] }
 cargo-deb = "2.2.0"
 bytefmt = "0.1.7"
 libmpv = { path = "libmpv-rs", version = "2.0.1"}
+clapper = { path = "clapper-rs/libclapper-rs" }
+clapper-gtk = { path = "clapper-rs/libclapper-gtk-rs" }
 libmpv-sys = "3.1.0"
 crossbeam = "0.8.4"
 libc = "0.2.154"

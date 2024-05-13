@@ -14,6 +14,7 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::ui::clapper::page::ClapperPage;
     use crate::ui::widgets::player_toolbar::PlayerToolbarBox;
 
     // Object holding the state
@@ -64,6 +65,10 @@ mod imp {
         pub player_toolbar_box: TemplateChild<PlayerToolbarBox>,
         #[template_child]
         pub progressbar: TemplateChild<gtk::ProgressBar>,
+        #[template_child]
+        pub clapperpage: TemplateChild<gtk::StackPage>,
+        #[template_child]
+        pub clappernav: TemplateChild<ClapperPage>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
     }
@@ -78,6 +83,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             PlayerToolbarBox::ensure_type();
+            ClapperPage::ensure_type();
             klass.bind_template();
             klass.install_action("win.home", None, move |window, _action, _parameter| {
                 window.freshhomepage();
@@ -131,6 +137,7 @@ mod imp {
                     crate::ui::models::SETTINGS.font_size() * 1024,
                 );
             }
+            self.clappernav.bind_fullscreen(&self.obj());
             obj.setup_rootpic();
             obj.setup_settings();
             obj.load_window_size();
@@ -647,5 +654,11 @@ impl Window {
     pub fn set_fraction(&self, fraction: f64) {
         let imp = self.imp();
         imp.progressbar.set_fraction(fraction);
+    }
+
+    pub fn set_clapperpage(&self, url: &str, suburi: Option<&str>) {
+        let imp = self.imp();
+        imp.stack.set_visible_child_name("clapper");
+        imp.clappernav.add_item(url, suburi);
     }
 }

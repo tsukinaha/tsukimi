@@ -1,73 +1,9 @@
 use super::models::SETTINGS;
 use super::mpv;
-use super::provider::dropdown_factory::factory;
 use crate::client::{network::*, structs::*};
 use gtk::glib;
 use gtk::prelude::*;
 
-pub fn newmediadropsel(
-    playbackinfo: Media,
-    info: &SeriesInfo,
-    namedropdown: gtk::DropDown,
-    subdropdown: gtk::DropDown,
-    playbutton: gtk::Button,
-) {
-    let namelist = gtk::StringList::new(&[]);
-    let sublist = gtk::StringList::new(&[]);
-
-    if let Some(media) = &playbackinfo.media_sources.first() {
-        for stream in &media.media_streams {
-            if stream.stream_type == "Subtitle" {
-                if let Some(d) = &stream.display_title {
-                    sublist.append(d);
-                } else {
-                    println!("No value");
-                }
-            }
-        }
-    }
-    for media in &playbackinfo.media_sources {
-        namelist.append(&media.name);
-    }
-    namedropdown.set_model(Some(&namelist));
-    subdropdown.set_model(Some(&sublist));
-    namedropdown.set_factory(Some(&factory()));
-    subdropdown.set_factory(Some(&factory()));
-
-    namedropdown.connect_selected_item_notify(move |dropdown| {
-        let selected = dropdown.selected_item();
-        let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
-        let selected = selected.string();
-        for _i in 0..sublist.n_items() {
-            sublist.remove(0);
-        }
-        for media in playbackinfo.media_sources.clone() {
-            if media.name == selected {
-                for stream in media.media_streams {
-                    if stream.stream_type == "Subtitle" {
-                        if let Some(d) = stream.display_title {
-                            sublist.append(&d);
-                        } else {
-                            println!("No value");
-                        }
-                    }
-                }
-                break;
-            }
-        }
-    });
-    let info = info.clone();
-
-    if SETTINGS.resume() {
-        if let Some(userdata) = &info.user_data {
-            if let Some(percentage) = userdata.played_percentage {
-                if percentage > 0. {
-                    playbutton.set_label("Resume");
-                }
-            }
-        }
-    }
-}
 
 pub fn bind_button(
     playbackinfo: Media,
@@ -77,8 +13,6 @@ pub fn bind_button(
     playbutton: gtk::Button,
 ) -> glib::SignalHandlerId {
     let handlerid = playbutton.connect_clicked(move |button| {
-        button.set_label("Playing...");
-        button.set_sensitive(false);
         let nameselected = namedropdown.selected_item();
         let nameselected = nameselected
             .and_downcast_ref::<gtk::StringObject>()

@@ -1,0 +1,15 @@
+[options]
+library = "ClapperGtk"
+version = "0.0"
+min_cfg_version = "0.0"
+target_path = "."
+girs_directories = [ "../../gir-files-gstreamer/", "../../gir-files-gtk/", "../", "../../libclapper-rs" ]
+work_mode = "sys"
+single_version_file = true
+
+external_libraries = [
+    "GLib",
+    "Gio",
+    "Gtk",
+    "Clapper",
+]

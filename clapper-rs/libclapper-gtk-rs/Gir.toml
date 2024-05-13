@@ -1,0 +1,77 @@
+[options]
+library = "ClapperGtk"
+version = "0.0"
+min_cfg_version = "0.0"
+target_path = "."
+girs_directories = [ "../gir-files-gstreamer/", "../gir-files-gtk/", "./", "../libclapper-rs" ]
+work_mode = "normal"
+single_version_file = true
+generate_safety_asserts = true
+deprecate_by_min_version = true
+
+generate = [
+    "ClapperGtk.Billboard",
+    "ClapperGtk.PreviousItemButton",
+    "ClapperGtk.VideoActionMask",
+    "ClapperGtk.NextItemButton",
+    "ClapperGtk.ToggleFullscreenButton",
+    "ClapperGtk.TogglePlayButton",
+]
+
+manual = [
+    "Gtk.Widget",
+    "Gtk.Align",
+    "Gtk.Button",
+    "Gtk.Actionable",
+    "Gtk.Buildable",
+    "Gtk.Accessible",
+    "Gtk.AccessibleRole",
+    "Gtk.ConstraintTarget",
+    "Gtk.LayoutManager",
+    "Gtk.Overflow",
+    "Gdk.Cursor",
+    "Clapper.Player",
+    "Gio.Resource",
+    "Clapper.MediaItem",
+    "Clapper.PlayerSeekMethod",
+]
+
+[[object]]
+    name = "ClapperGtk.Container"
+    status = "generate"
+    generate_builder = true
+
+[[object]]
+    name = "ClapperGtk.ExtraMenuButton"
+    status = "generate"
+    generate_builder = true
+
+[[object]]
+    name = "ClapperGtk.LeadContainer"
+    status = "generate"
+    generate_builder = true
+
+[[object]]
+    name = "ClapperGtk.SeekBar"
+    status = "generate"
+    generate_builder = true
+
+[[object]]
+    name = "ClapperGtk.SimpleControls"
+    status = "generate"
+    generate_builder = true
+
+[[object]]
+    name = "ClapperGtk.TitleHeader"
+    status = "generate"
+    generate_builder = true
+
+[[object]]
+    name = "ClapperGtk.TitleLabel"
+    status = "generate"
+    generate_builder = true
+
+[[object]]
+    name = "ClapperGtk.Video"
+    status = "generate"
+    generate_builder = true
