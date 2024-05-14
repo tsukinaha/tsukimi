@@ -134,6 +134,7 @@ impl TuListItem {
                 if let Some(true) = imp.isresume.get() {
                     self.set_played_percentage();
                 }
+                self.set_rating();
             }
             "Series" => {
                 let year = if item.production_year() != 0 {
@@ -146,6 +147,7 @@ impl TuListItem {
                 self.set_picture();
                 self.set_played();
                 self.set_count();
+                self.set_rating();
             }
             "BoxSet" => {
                 imp.listlabel.set_text(&item.name());
@@ -192,6 +194,7 @@ impl TuListItem {
                 println!("Unknown item type: {}", item_type)
             }
         }
+        self.set_tooltip_text(Some(&item.name()));
     }
 
     pub fn set_play(&self) {
@@ -264,7 +267,11 @@ impl TuListItem {
                 if self.itemtype() == "Episode" || self.itemtype() == "Views" {
                     imp.overlay.set_size_request(250, 141);
                 }
-                set_image(id, "Primary", None)
+                if let Some(imag_tags) = item.primary_image_item_id() {
+                    set_image(imag_tags, "Primary", None)
+                } else {
+                    set_image(id, "Primary", None)
+                }
             };
             imp.overlay.set_child(Some(&image));
         }
@@ -280,6 +287,19 @@ impl TuListItem {
             mark.set_height_request(40);
             mark.set_width_request(40);
             imp.overlay.add_overlay(&mark);
+        }
+    }
+
+    pub fn set_rating(&self) {
+        let imp = self.imp();
+        let item = imp.item.get().unwrap();
+        if let Some(rating) = item.rating() {
+            let rating = gtk::Label::new(Some(&rating));
+            rating.set_halign(gtk::Align::Start);
+            rating.set_valign(gtk::Align::End);
+            rating.set_height_request(40);
+            rating.set_width_request(60);
+            imp.overlay.add_overlay(&rating);
         }
     }
 

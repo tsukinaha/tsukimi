@@ -6,6 +6,7 @@ use gtk::{gio, glib};
 use std::path::PathBuf;
 
 use crate::client::{network::*, structs::*};
+use crate::toast;
 use crate::ui::models::SETTINGS;
 use crate::utils::{
     get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory,
@@ -277,7 +278,10 @@ impl MoviePage {
         let backdrop = imp.backdrop.get();
         let path = get_image_with_cache(&id, "Backdrop", Some(0))
             .await
-            .unwrap();
+            .unwrap_or_else(|_| {
+                toast!(self, "Network Error");
+                String::new()
+            });
         let file = gtk::gio::File::for_path(&path);
         let pathbuf = PathBuf::from(&path);
         if pathbuf.exists() {
@@ -300,7 +304,10 @@ impl MoviePage {
         for tag_num in 1..tags {
             let path = get_image_with_cache(&id, "Backdrop", Some(tag_num as u8))
                 .await
-                .unwrap();
+                .unwrap_or_else(|_| {
+                    toast!(self, "Network Error");
+                    String::new()
+                });
             let file = gtk::gio::File::for_path(&path);
             let picture = gtk::Picture::builder()
                 .halign(gtk::Align::Fill)
@@ -330,7 +337,10 @@ impl MoviePage {
         let overviewrevealer = imp.overviewrevealer.get();
         let item = get_data_with_cache(id.clone(), "item", async { get_item_overview(id).await })
             .await
-            .unwrap();
+            .unwrap_or_else(|_| {
+                toast!(self, "Network Error");
+                Item::default()
+            });
         spawn(glib::clone!(@weak self as obj=>async move {
                 {
                     let mut str = String::new();
@@ -633,7 +643,10 @@ impl MoviePage {
         let id = self.id();
         let result = get_data_with_cache(id.clone(), "sim", async move { similar(&id).await })
             .await
-            .unwrap();
+            .unwrap_or_else(|_| {
+                toast!(self, "Network Error");
+                Vec::new()
+            });
         spawn(glib::clone!(@weak self as obj =>async move {
             obj.setrecommendscrolled(result);
         }));

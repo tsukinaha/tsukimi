@@ -3,12 +3,17 @@
 > A Simple Third-party Emby client.
 > 使用 GTK4-RS 编写的第三方 Emby 客户端
 
-![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Static Badge](https://img.shields.io/badge/Telegram-Group-blue)](https://t.me/+8Sktkd13w00wNGNl) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Windows GNU CI status](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml) [![AUR Version](https://img.shields.io/aur/version/tsukimi-git)](https://aur.archlinux.org/packages/tsukimi-git)
+![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Static Badge](https://img.shields.io/badge/Telegram-Group-blue)](https://t.me/+mhcPxx5kE6QzMjVl) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Windows GNU CI status](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml) [![AUR Version](https://img.shields.io/aur/version/tsukimi-git)](https://aur.archlinux.org/packages/tsukimi-git)
 
 ## Notice
 
-Windows 下如出现 窗口无法显示 黑边框 等情况
-请安装 Archlinux
+- Windows 下如出现 窗口无法显示 黑边框 等情况
+  请安装 Archlinux
+- 此项目位于早期开发阶段 错误处理尚不完善
+- 暂时使用裸 MPV 的方式进行播放 计划使用 Gstreamer 替代
+- FR/Issue 前请检查是否重复
+- 欢迎参与项目贡献 Telegram Group: https://t.me/+mhcPxx5kE6QzMjVl
+- Trello Kanban https://trello.com/b/8GOsuygJ/%E5%95%8A%EF%BC%9F
 
 ## I want feature of ○○○!
 

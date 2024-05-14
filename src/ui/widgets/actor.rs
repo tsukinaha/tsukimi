@@ -5,6 +5,7 @@ use gtk::{gio, glib};
 
 use super::tu_list_item::tu_list_item_register;
 use crate::client::{network::*, structs::*};
+use crate::toast;
 use crate::ui::image::set_image;
 use crate::ui::widgets::fix::ScrolledWindowFixExt;
 use crate::utils::{get_data_with_cache, spawn, tu_list_view_connect_activate};
@@ -137,7 +138,10 @@ impl ActorPage {
             get_item_overview(id).await
         })
         .await
-        .unwrap();
+        .unwrap_or_else(|_| {
+            toast!(self, "Network Error");
+            Item::default()
+        });
         spawn(glib::clone!(@weak self as obj=>async move {
                 if let Some(overview) = item.overview {
                     inscription.set_text(Some(&overview));
@@ -215,7 +219,10 @@ impl ActorPage {
             person_item(&id, &media_type).await
         })
         .await
-        .unwrap();
+        .unwrap_or_else(|_| {
+            toast!(self, "Network Error");
+            Vec::new()
+        });
         spawn(async move {
             if !items.is_empty() {
                 revealer.set_reveal_child(true);

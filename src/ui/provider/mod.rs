@@ -1,4 +1,5 @@
 pub mod background_paintable;
+pub mod core_song;
 pub mod dropdown_factory;
 pub mod episoderowitem;
 pub mod image_tags;

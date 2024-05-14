@@ -12,5 +12,9 @@ pub static CACHE_PATH: Lazy<std::path::PathBuf> = Lazy::new(|| {
 });
 
 pub fn emby_cache_path() -> std::path::PathBuf {
-    CACHE_PATH.join(std::env::var("EMBY_NAME").unwrap())
+    let path = CACHE_PATH.join(std::env::var("EMBY_NAME").unwrap());
+    if !path.exists() {
+        std::fs::create_dir_all(&path).expect("Failed to create directory");
+    }
+    path
 }

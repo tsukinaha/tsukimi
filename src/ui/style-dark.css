@@ -6,14 +6,23 @@ child {
   margin: 9px;
   border-radius: 15px;
 }
+
 .mask {
-  background: rgba(0, 0, 0, 0.7);
-  filter: blur(7px);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8));
   border-radius: 10px;
+}
+
+.bottom-bar {
+  background: transparent;
 }
 
 .logo {
   background: rgba(0, 0, 0, 0);
+}
+
+.smooth-scale {
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 overlay box > dropdown > button {
@@ -24,6 +33,45 @@ listview > row {
   margin-left: 9px;
   margin-right: 9px;
   border-radius: 10px;
+}
+
+/* Starring */
+button.star:hover {
+  opacity: 1;
+}
+
+.playing-song-label {
+  font-weight: bold;
+}
+
+.coverimage {
+  border-radius: 10px;
+}
+
+@keyframes rotate_star {
+  from {
+    -gtk-icon-transform: rotate(-72deg);
+  }
+
+  to {
+  }
+}
+
+@keyframes rotate_unstar {
+  from {
+    -gtk-icon-transform: rotate(72deg);
+  }
+
+  to {
+  }
+}
+
+button.star.interacted.starred image {
+  animation: rotate_star 0.4s ease;
+}
+
+button.star.interacted:not(.starred) image {
+  animation: rotate_unstar 0.4s ease;
 }
 
 picture {
@@ -96,6 +144,7 @@ tabbar > revealer > box {
 scrolledwindow > viewport > box > box > label {
   margin: 15px;
 }
+
 scrolledwindow > viewport > box > box > box {
   margin-left: 15px;
   margin-top: 15px;
@@ -191,6 +240,7 @@ https://github.com/GradienceTeam/Gradience
 placessidebar {
   background-color: rgba(0, 0, 0, 0);
 }
+
 .sidebar-pane {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   background-color: rgba(0, 0, 0, 0);
@@ -203,6 +253,7 @@ placessidebar {
 window.background.nautilus-window {
   background: rgba(25, 28, 30, 0.9);
 }
+
 .undershoot-top {
   color: rgba(255, 255, 255, 0.8);
 }
@@ -250,6 +301,7 @@ button.titlebutton.minimize:hover,
 windowcontrols > button.minimize:hover {
   opacity: 0.8;
 }
+
 window {
   box-shadow: none;
 }

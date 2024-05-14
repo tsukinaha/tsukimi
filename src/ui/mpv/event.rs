@@ -64,6 +64,7 @@ pub fn play(
             init.set_property("http-proxy", settings.string("proxy").as_str())?;
         }
 
+        // set mpv config dir on windows
         #[cfg(windows)]
         {
             let mpv_config_dir = std::env::current_exe()

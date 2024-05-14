@@ -386,6 +386,19 @@ impl ItemPage {
             carousel.append(&picture);
             carousel.set_allow_scroll_wheel(true);
         }
+
+        if carousel.n_pages() == 1 {
+            return;
+        }
+
+        glib::timeout_add_seconds_local(10, move || {
+            let current_page = carousel.position();
+            let n_pages = carousel.n_pages();
+            let new_page_position = (current_page + 1. + n_pages as f64) % n_pages as f64;
+            carousel.scroll_to(&carousel.nth_page(new_page_position as u32), true);
+
+            glib::ControlFlow::Continue
+        });
     }
 
     pub async fn setup_seasons(&self) {
@@ -442,7 +455,9 @@ impl ItemPage {
                             user_data: info.user_data.clone(),
                             overview: info.overview.clone(),
                         };
-                        obj.selectepisode(seriesinfo.clone()).await;
+                        spawn(glib::clone!(@weak obj => async move {
+                            obj.selectepisode(seriesinfo.clone()).await;
+                        }));
                     }
                 }
                 obj.imp().seasonlist.set_selected(pos);

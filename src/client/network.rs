@@ -91,7 +91,7 @@ pub async fn search(searchinfo: String, filter: &[&str]) -> Result<Vec<SimpleLis
     let params = [
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
         ),
         ("IncludeItemTypes", &filter_str),
         ("IncludeSearchTypes", &filter_str),
@@ -172,7 +172,7 @@ pub async fn resume() -> Result<Vec<SimpleListItem>, Error> {
         ("Recursive", "True"),
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,CommunityRating",
         ),
         ("EnableImageTypes", "Primary,Backdrop,Thumb"),
         ("ImageTypeLimit", "1"),
@@ -242,26 +242,23 @@ pub async fn get_image(id: String, image_type: &str, tag: Option<u8>) -> Result<
                     }
                     match image_type {
                         "Primary" => {
-                            fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(&id), &bytes).unwrap();
                         }
                         "Backdrop" => {
-                            fs::write(
-                                pathbuf.join(format!("b{}_{}.png", id, tag.unwrap())),
-                                &bytes,
-                            )
-                            .unwrap();
+                            fs::write(pathbuf.join(format!("b{}_{}", id, tag.unwrap())), &bytes)
+                                .unwrap();
                         }
                         "Thumb" => {
-                            fs::write(pathbuf.join(format!("t{}.png", id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("t{}", id)), &bytes).unwrap();
                         }
                         "Logo" => {
-                            fs::write(pathbuf.join(format!("l{}.png", id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("l{}", id)), &bytes).unwrap();
                         }
                         "Banner" => {
-                            fs::write(pathbuf.join(format!("banner{}.png", id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(format!("banner{}", id)), &bytes).unwrap();
                         }
                         _ => {
-                            fs::write(pathbuf.join(format!("{}.png", id)), &bytes).unwrap();
+                            fs::write(pathbuf.join(&id), &bytes).unwrap();
                         }
                     }
                     Ok(id)
@@ -425,7 +422,7 @@ pub async fn get_latest(id: String) -> Result<Vec<SimpleListItem>, Error> {
         ("Limit", "20"),
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,CommunityRating",
         ),
         ("ParentId", &id),
         ("ImageTypeLimit", "1"),
@@ -493,14 +490,13 @@ pub async fn get_list(
         _ => include_item_types,
     };
 
-    let params =
-        match listtype {
-            "all" | "liked" | "tags" | "boxset" => {
-                vec![
+    let params = match listtype {
+        "all" | "liked" | "tags" | "boxset" => {
+            vec![
                 ("Limit", "50"),
                 (
                     "Fields",
-                    "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+                    "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
                 ),
                 ("ParentId", &id),
                 ("ImageTypeLimit", "1"),
@@ -518,53 +514,53 @@ pub async fn get_list(
                 ("X-Emby-Token", &emby_token),
                 ("X-Emby-Language", "zh-cn"),
                 ]
-            }
+        }
 
-            "resume" => vec![
-                (
-                    "Fields",
-                    "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
-                ),
-                ("ParentId", &id),
-                ("EnableImageTypes", "Primary,Backdrop,Thumb"),
-                ("ImageTypeLimit", "1"),
-                (
-                    "IncludeItemTypes",
-                    match include_item_type {
-                        "Series" => "Episode",
-                        _ => include_item_type,
-                    },
-                ),
-                ("Limit", "30"),
-                ("X-Emby-Client", "Tsukimi"),
-                ("X-Emby-Device-Name", &device_name),
-                ("X-Emby-Device-Id", &device_id),
-                ("X-Emby-Client-Version", app_version),
-                ("X-Emby-Token", &emby_token),
-                ("X-Emby-Language", "zh-cn"),
-            ],
+        "resume" => vec![
+            (
+                "Fields",
+                "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+            ),
+            ("ParentId", &id),
+            ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+            ("ImageTypeLimit", "1"),
+            (
+                "IncludeItemTypes",
+                match include_item_type {
+                    "Series" => "Episode",
+                    _ => include_item_type,
+                },
+            ),
+            ("Limit", "30"),
+            ("X-Emby-Client", "Tsukimi"),
+            ("X-Emby-Device-Name", &device_name),
+            ("X-Emby-Device-Id", &device_id),
+            ("X-Emby-Client-Version", app_version),
+            ("X-Emby-Token", &emby_token),
+            ("X-Emby-Language", "zh-cn"),
+        ],
 
-            "genres" => vec![
-                ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
-                ("IncludeItemTypes", include_item_type),
-                ("StartIndex", &start),
-                ("ImageTypeLimit", "1"),
-                ("EnableImageTypes", "Primary,Backdrop,Thumb"),
-                ("Limit", "50"),
-                ("userId", &server_info.user_id),
-                ("Recursive", "true"),
-                ("ParentId", &id),
-                ("SortBy", sortby),
-                ("SortOrder", sort_order),
-                ("X-Emby-Client", "Tsukimi"),
-                ("X-Emby-Device-Name", &device_name),
-                ("X-Emby-Device-Id", &device_id),
-                ("X-Emby-Client-Version", app_version),
-                ("X-Emby-Token", &emby_token),
-                ("X-Emby-Language", "zh-cn"),
-            ],
-            _ => vec![],
-        };
+        "genres" => vec![
+            ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
+            ("IncludeItemTypes", include_item_type),
+            ("StartIndex", &start),
+            ("ImageTypeLimit", "1"),
+            ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+            ("Limit", "50"),
+            ("userId", &server_info.user_id),
+            ("Recursive", "true"),
+            ("ParentId", &id),
+            ("SortBy", sortby),
+            ("SortOrder", sort_order),
+            ("X-Emby-Client", "Tsukimi"),
+            ("X-Emby-Device-Name", &device_name),
+            ("X-Emby-Device-Id", &device_id),
+            ("X-Emby-Client-Version", app_version),
+            ("X-Emby-Token", &emby_token),
+            ("X-Emby-Language", "zh-cn"),
+        ],
+        _ => vec![],
+    };
     let response = client().get(&url).query(&params).send().await?;
     let json: serde_json::Value = response.json().await?;
     let l: List = serde_json::from_value(json).unwrap();
@@ -593,7 +589,7 @@ pub async fn get_inlist(
         ("Limit", "50"),
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
         ),
         ("ParentId", &id),
         ("ImageTypeLimit", "1"),
@@ -781,7 +777,7 @@ pub async fn similar(id: &str) -> Result<Vec<SimpleListItem>, Error> {
     let params = [
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
         ),
         ("UserId", &server_info.user_id),
         ("ImageTypeLimit", "1"),
@@ -807,7 +803,10 @@ pub async fn person_item(id: &str, types: &str) -> Result<Vec<SimpleListItem>, E
         server_info.domain, server_info.port, server_info.user_id
     );
     let params = [
-        ("Fields", "PrimaryImageAspectRatio,ProductionYear"),
+        (
+            "Fields",
+            "PrimaryImageAspectRatio,ProductionYear,CommunityRating",
+        ),
         ("PersonIds", id),
         ("Recursive", "true"),
         ("CollapseBoxSetItems", "false"),
@@ -870,7 +869,7 @@ pub async fn like_item(types: &str) -> Result<Vec<SimpleListItem>, Error> {
     let params = [
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,CommunityRating",
         ),
         ("Filters", "IsFavorite"),
         ("Recursive", "true"),
@@ -906,7 +905,10 @@ pub async fn get_included(id: &str) -> Result<List, Error> {
     );
 
     let params = [
-        ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
+        (
+            "Fields",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,CommunityRating",
+        ),
         ("Limit", "12"),
         ("ListItemIds", id),
         ("Recursive", "true"),
@@ -935,7 +937,7 @@ pub async fn get_includedby(parentid: &str) -> Result<List, Error> {
     let params = [
         (
             "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate",
+            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
         ),
         ("ImageTypeLimit", "1"),
         ("ParentId", parentid),
@@ -1016,6 +1018,45 @@ pub async fn get_songs(parentid: &str) -> Result<List, Error> {
         ("ImageTypeLimit", "1"),
         ("ParentId", parentid),
         ("EnableTotalRecordCount", "false"),
+        ("X-Emby-Client", "Tsukimi"),
+        ("X-Emby-Device-Name", &get_device_name()),
+        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
+        ("X-Emby-Client-Version", APP_VERSION),
+        ("X-Emby-Token", &server_info.access_token),
+        ("X-Emby-Language", "zh-cn"),
+    ];
+    let response = client().get(&url).query(&params).send().await?;
+    let json: serde_json::Value = response.json().await?;
+    let latests: List = serde_json::from_value(json).unwrap();
+    Ok(latests)
+}
+
+pub fn get_song_streaming_uri(id: &str) -> String {
+    let server_info = set_config();
+    let url = format!(
+        "{}:{}/emby/Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
+        server_info.domain, server_info.port, id, server_info.user_id, env::var("UUID").unwrap(), server_info.access_token
+    );
+    url.to_string()
+}
+
+pub async fn get_random() -> Result<List, Error> {
+    let server_info = set_config();
+    let url = format!(
+        "{}:{}/emby/Users/{}/Items",
+        server_info.domain, server_info.port, server_info.user_id
+    );
+
+    let params = [
+        ("Fields", "ProductionYear,CommunityRating"),
+        ("EnableImageTypes", "Logo,Backdrop"),
+        ("ImageTypeLimit", "1"),
+        ("EnableTotalRecordCount", "false"),
+        ("SortBy", "Random"),
+        ("Limit", "10"),
+        ("Recursive", "true"),
+        ("IncludeItemTypes", "Series"),
+        ("EnableUserData", "false"),
         ("X-Emby-Client", "Tsukimi"),
         ("X-Emby-Device-Name", &get_device_name()),
         ("X-Emby-Device-Id", &env::var("UUID").unwrap()),

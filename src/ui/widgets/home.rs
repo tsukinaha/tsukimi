@@ -1,25 +1,34 @@
 use adw::prelude::NavigationPageExt;
+use chrono::{Datelike, Local};
 use glib::Object;
-use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
+use gtk::{prelude::*, template_callbacks};
 use std::env;
 
 use super::tu_list_item::TuListItem;
 use super::{fix::ScrolledWindowFixExt, list::ListPage, window::Window};
 use crate::client::{network::*, structs::*};
+use crate::ui::image::set_image;
 use crate::ui::provider::tu_item::TuItem;
+use crate::ui::widgets::tu_list_item::tu_list_item_register;
 use crate::utils::{
-    get_data_with_cache, spawn, tu_list_item_factory, tu_list_view_connect_activate,
+    get_data_with_cache, get_data_with_cache_else, spawn, tu_list_item_factory,
+    tu_list_view_connect_activate,
 };
+use crate::{fraction, toast};
 
 mod imp {
+
+    use std::cell::RefCell;
 
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
     use crate::utils::spawn_g_timeout;
+
+    use super::SimpleListItem;
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsukimi/home.ui")]
@@ -39,8 +48,16 @@ mod imp {
         #[template_child]
         pub libsrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
-        pub spinner: TemplateChild<gtk::Spinner>,
+        pub historylist: TemplateChild<gtk::ListView>,
+        #[template_child]
+        pub hisscrolled: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
+        pub historyrevealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub carousel: TemplateChild<adw::Carousel>,
+        pub carouset_items: RefCell<Vec<SimpleListItem>>,
         pub selection: gtk::SingleSelection,
+        pub hisselection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -53,6 +70,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -66,6 +84,8 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(@weak obj => async move {
+                obj.set_carousel().await;
+                obj.setup_history().await;
                 obj.set_library().await;
             }));
         }
@@ -96,9 +116,131 @@ impl Default for HomePage {
     }
 }
 
+#[template_callbacks]
 impl HomePage {
     pub fn new() -> Self {
         Object::builder().build()
+    }
+
+    #[template_callback]
+    fn carousel_pressed_cb(&self) {
+        let position = self.imp().carousel.position();
+        if let Some(item) = self.imp().carouset_items.borrow().get(position as usize) {
+            let window = self.root().and_downcast::<super::window::Window>().unwrap();
+            tu_list_view_connect_activate(window, item, None)
+        }
+    }
+
+    pub async fn setup_history(&self) {
+        let imp = self.imp();
+        let historyrevealer = imp.historyrevealer.get();
+        imp.hisscrolled.fix();
+        let history_results =
+            get_data_with_cache("0".to_string(), "history", async { resume().await })
+                .await
+                .unwrap_or_default();
+        let store = gio::ListStore::new::<glib::BoxedAnyObject>();
+        spawn(glib::clone!(@weak store=> async move {
+                for result in history_results {
+                    let object = glib::BoxedAnyObject::new(result);
+                    store.append(&object);
+                }
+                historyrevealer.set_reveal_child(true);
+        }));
+        imp.hisselection.set_model(Some(&store));
+        let factory = gtk::SignalListItemFactory::new();
+        factory.connect_bind(move |_factory, item| {
+            let list_item = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem");
+            let entry = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem")
+                .item()
+                .and_downcast::<glib::BoxedAnyObject>()
+                .expect("Needs to be BoxedAnyObject");
+            let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
+            if list_item.child().is_none() {
+                tu_list_item_register(&latest, list_item, "resume")
+            }
+        });
+        imp.historylist.set_factory(Some(&factory));
+        imp.historylist.set_model(Some(&imp.hisselection));
+        imp.historylist.connect_activate(
+            glib::clone!(@weak self as obj => move |gridview, position| {
+                let model = gridview.model().unwrap();
+                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                let result: std::cell::Ref<SimpleListItem> = item.borrow();
+                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                tu_list_view_connect_activate(window, &result, None);
+            }),
+        );
+    }
+
+    pub async fn set_carousel(&self) {
+        let date = Local::now();
+        let formatted_date = format!("{:04}{:02}{:02}", date.year(), date.month(), date.day());
+        let results =
+            get_data_with_cache_else(formatted_date, "carousel", async { get_random().await })
+                .await
+                .unwrap_or_default();
+        for result in results.items {
+            if let Some(image_tags) = &result.image_tags {
+                if let Some(backdrop_image_tags) = &result.backdrop_image_tags {
+                    if image_tags.logo.is_some() && !backdrop_image_tags.is_empty() {
+                        self.imp().carouset_items.borrow_mut().push(result.clone());
+                        self.carousel_add_child(result);
+                    }
+                }
+            }
+        }
+
+        let carousel = self.imp().carousel.get();
+
+        if carousel.n_pages() <= 1 {
+            return;
+        }
+
+        glib::timeout_add_seconds_local(7, move || {
+            let current_page = carousel.position();
+            let n_pages = carousel.n_pages();
+            let new_page_position = (current_page + 1. + n_pages as f64) % n_pages as f64;
+            carousel.scroll_to(&carousel.nth_page(new_page_position as u32), true);
+
+            glib::ControlFlow::Continue
+        });
+    }
+
+    pub fn carousel_add_child(&self, item: SimpleListItem) {
+        let imp = self.imp();
+        let id = item.id;
+
+        let image = set_image(id.clone(), "Backdrop", Some(0));
+        image.set_halign(gtk::Align::Center);
+
+        let overlay = gtk::Overlay::builder()
+            .valign(gtk::Align::Fill)
+            .halign(gtk::Align::Center)
+            .child(&image)
+            .build();
+
+        let logo = set_image(id, "Logo", None);
+        logo.set_halign(gtk::Align::End);
+
+        let logobox = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .margin_bottom(10)
+            .margin_end(10)
+            .height_request(150)
+            .valign(gtk::Align::End)
+            .halign(gtk::Align::Fill)
+            .build();
+
+        logobox.append(&logo);
+
+        overlay.add_overlay(&logobox);
+
+        imp.carousel.append(&overlay);
     }
 
     pub async fn set_library(&self) {
@@ -159,7 +301,10 @@ impl HomePage {
         let views =
             get_data_with_cache("0".to_string(), "views", async move { get_library().await })
                 .await
-                .unwrap();
+                .unwrap_or_else(|_| {
+                    toast!(self, "Network Error");
+                    Vec::new()
+                });
         glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
                 for view in &views {
                     let object = glib::BoxedAnyObject::new(view.clone());
@@ -199,14 +344,17 @@ impl HomePage {
                 .margin_top(15)
                 .margin_start(10)
                 .build();
-            label.add_css_class("title-3");
+            label.add_css_class("title-4");
             scrollbox.append(&label);
             scrollbox.append(scrolled);
             let latest = get_data_with_cache(view.id.clone(), "view", async move {
                 get_latest(view.id.clone()).await
             })
             .await
-            .unwrap();
+            .unwrap_or_else(|_| {
+                toast!(self, "Network Error");
+                Vec::new()
+            });
             spawn(glib::clone!(@weak self as obj =>async move {
                     obj.set_librarysscroll(latest.clone());
                     let listview = obj.set_librarysscroll(latest);
@@ -216,7 +364,7 @@ impl HomePage {
                     }
             }));
         }
-        self.imp().spinner.set_visible(false);
+        fraction!(self);
     }
 
     pub fn set_librarysscroll(&self, latests: Vec<SimpleListItem>) -> gtk::ListView {

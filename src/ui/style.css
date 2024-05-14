@@ -2,10 +2,18 @@ child {
   margin: 9px;
   border-radius: 15px;
 }
+
 .mask {
-  background: rgba(255, 255, 255, 0.7);
-  filter: blur(7px);
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0),
+    rgba(255, 255, 255, 0.8)
+  );
   border-radius: 10px;
+}
+
+.bottom-bar {
+  background: transparent;
 }
 
 .logo {
@@ -16,6 +24,11 @@ child {
   background: rgba(0, 0, 0, 0.1);
 }
 
+.smooth-scale {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
 listview > row {
   margin-left: 9px;
   margin-right: 9px;
@@ -23,6 +36,14 @@ listview > row {
 }
 
 picture {
+  border-radius: 10px;
+}
+
+.playing-song-label {
+  font-weight: bold;
+}
+
+.coverimage {
   border-radius: 10px;
 }
 
@@ -42,6 +63,37 @@ gridview > child box {
   margin: 0px;
 }
 
+/* Starring */
+button.star:hover {
+  opacity: 1;
+}
+
+@keyframes rotate_star {
+  from {
+    -gtk-icon-transform: rotate(-72deg);
+  }
+
+  to {
+  }
+}
+
+@keyframes rotate_unstar {
+  from {
+    -gtk-icon-transform: rotate(72deg);
+  }
+
+  to {
+  }
+}
+
+button.star.interacted.starred image {
+  animation: rotate_star 0.4s ease;
+}
+
+button.star.interacted:not(.starred) image {
+  animation: rotate_unstar 0.4s ease;
+}
+
 overlay > label {
   background-color: #aeb5fa;
   border-radius: 999px;
@@ -52,15 +104,6 @@ box > overlay > image {
   background-color: #aeb5fa;
   border-radius: 999px;
   margin: 3px;
-}
-
-.frame {
-  border: 2px solid @borders;
-  border-radius: 5px;
-}
-
-.pill {
-  border-radius: 10px;
 }
 
 .frame {
@@ -86,9 +129,11 @@ box > scrolledwindow > viewport > box > box {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
+
 scrolledwindow > viewport > box > box > label {
   margin: 15px;
 }
+
 scrolledwindow > viewport > box > box > box {
   margin-left: 15px;
   margin-top: 15px;
@@ -105,6 +150,7 @@ tabbar > revealer > box {
 placessidebar {
   background-color: rgba(0, 0, 0, 0);
 }
+
 .sidebar-pane {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   background-color: rgba(0, 0, 0, 0);
@@ -144,8 +190,8 @@ placessidebar {
 @define-color dialog_fg_color rgb(76, 79, 105);
 @define-color popover_bg_color #e6e9ef;
 @define-color popover_fg_color rgb(76, 79, 105);
-@define-color shade_color rgba(0,0,0,0.07);
-@define-color scrollbar_outline_color rgb(255,255,255);
+@define-color shade_color rgba(0, 0, 0, 0.07);
+@define-color scrollbar_outline_color rgb(255, 255, 255);
 @define-color blue_1 #99c1f1;
 @define-color blue_2 #62a0ea;
 @define-color blue_3 #3584e4;
@@ -235,6 +281,7 @@ button.titlebutton.minimize:hover,
 windowcontrols > button.minimize:hover {
   opacity: 0.8;
 }
+
 window {
   box-shadow: none;
 }

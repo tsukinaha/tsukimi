@@ -94,7 +94,7 @@ pub struct Media {
     pub play_session_id: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct Item {
     #[serde(rename = "Name")]
     pub name: String,
@@ -214,7 +214,7 @@ pub struct View {
     pub collection_type: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct SimpleListItem {
     #[serde(rename = "Name")]
     pub name: String,
@@ -252,6 +252,12 @@ pub struct SimpleListItem {
     pub role: Option<String>,
     #[serde(rename = "RunTimeTicks")]
     pub run_time_ticks: Option<u64>,
+    #[serde(rename = "PrimaryImageItemId")]
+    pub primary_image_item_id: Option<String>,
+    #[serde(rename = "BackdropImageTags")]
+    pub backdrop_image_tags: Option<Vec<String>>,
+    #[serde(rename = "CommunityRating")]
+    pub community_rating: Option<f32>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -264,9 +270,11 @@ pub struct ImageTags {
     pub banner: Option<String>,
     #[serde(rename = "Backdrop")]
     pub backdrop: Option<String>,
+    #[serde(rename = "Logo")]
+    pub logo: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct List {
     #[serde(rename = "TotalRecordCount")]
     pub total_record_count: u32,

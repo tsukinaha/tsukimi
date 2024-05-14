@@ -13,6 +13,8 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
 
+    use crate::ui::widgets::player_toolbar::PlayerToolbarBox;
+
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsukimi/window.ui")]
@@ -55,6 +57,12 @@ mod imp {
         pub login_stack: TemplateChild<gtk::Stack>,
         #[template_child]
         pub namerow: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub player_toolbar_bin: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub player_toolbar_box: TemplateChild<PlayerToolbarBox>,
+        #[template_child]
+        pub progressbar: TemplateChild<gtk::ProgressBar>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
     }
@@ -68,6 +76,7 @@ mod imp {
         type ParentType = adw::ApplicationWindow;
 
         fn class_init(klass: &mut Self::Class) {
+            PlayerToolbarBox::ensure_type();
             klass.bind_template();
             klass.install_action("win.home", None, move |window, _action, _parameter| {
                 window.freshhomepage();
@@ -176,6 +185,7 @@ mod imp {
 use crate::config::Account;
 use crate::config::{load_cfgv2, load_env};
 use crate::ui::models::SETTINGS;
+use crate::utils::spawn;
 use crate::APP_ID;
 use glib::Object;
 use gtk::{gio, glib};
@@ -430,6 +440,7 @@ impl Window {
         imp.navipage
             .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
         self.set_pop_visibility(false);
+        self.set_fraction(1.0);
     }
 
     fn freshhistorypage(&self) {
@@ -443,6 +454,7 @@ impl Window {
             .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
         imp.navipage.set_title("History");
         self.set_pop_visibility(false);
+        self.set_fraction(1.0);
     }
 
     fn freshsearchpage(&self) {
@@ -456,6 +468,7 @@ impl Window {
             .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
         imp.navipage.set_title("Search");
         self.set_pop_visibility(false);
+        self.set_fraction(1.0);
     }
 
     fn historypage(&self) {
@@ -464,22 +477,21 @@ impl Window {
         if imp.historypage.child().is_none() {
             imp.historypage
                 .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
-            imp.navipage.set_title("History & Liked");
+            imp.navipage.set_title("Liked");
         }
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
             if tag.as_str() == "historypage" {
-                imp.navipage.set_title("History & Liked");
+                imp.navipage.set_title("Liked");
                 self.set_pop_visibility(false);
             } else {
                 self.set_pop_visibility(true);
-                imp.navipage.set_title(
-                    &env::var("HISTORY_TITLE").unwrap_or_else(|_| "History & Liked".to_string()),
-                );
+                imp.navipage
+                    .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "Liked".to_string()));
             }
         } else {
             self.set_pop_visibility(true);
             imp.navipage
-                .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "History".to_string()));
+                .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "Liked".to_string()));
         }
     }
 
@@ -542,6 +554,11 @@ impl Window {
             .title(message.to_string())
             .timeout(3)
             .build();
+        imp.toast.add_toast(toast);
+    }
+
+    pub fn add_toast(&self, toast: adw::Toast) {
+        let imp = self.imp();
         imp.toast.add_toast(toast);
     }
 
@@ -618,5 +635,16 @@ impl Window {
     pub fn new_account(&self) {
         let dialog = crate::ui::widgets::account_add::AccountWindow::new();
         dialog.present(self);
+    }
+
+    pub fn set_player_toolbar(&self) {
+        spawn(glib::clone!(@weak self as obj=>async move {
+            obj.imp().player_toolbar_bin.set_reveal_child(true);
+        }));
+    }
+
+    pub fn set_fraction(&self, fraction: f64) {
+        let imp = self.imp();
+        imp.progressbar.set_fraction(fraction);
     }
 }

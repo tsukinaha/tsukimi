@@ -12,12 +12,12 @@
   </menu>
   <template class="AppWindow" parent="AdwApplicationWindow">
     <property name="title" translatable="yes">Tsukimi</property>
-    <property name="width-request">1280</property>
-    <property name="height-request">720</property>
+    <property name="width-request">500</property>
+    <property name="height-request">300</property>
     <property name="icon-name">tsukimi</property>
     <child>
       <object class="AdwBreakpoint">
-        <condition>max-width: 500sp</condition>
+        <condition>max-width: 800sp</condition>
         <setter object="split_view" property="collapsed">True</setter>
       </object>
     </child>
@@ -185,7 +185,7 @@
                                             <child type="suffix">
                                               <object class="GtkButton">
                                                 <property name="valign">center</property>
-                                                <property name="icon-name">object-rotate-left</property>
+                                                <property name="icon-name">emblem-synchronizing-symbolic</property>
                                                 <property name="action-name">win.home</property>
                                                 <style>
                                                   <class name="flat" />
@@ -198,7 +198,7 @@
                                           <object class="AdwActionRow">
                                             <child type="prefix">
                                               <object class="GtkLabel">
-                                                <property name="label" translatable="yes">History &amp; Liked</property>
+                                                <property name="label" translatable="yes">Liked</property>
                                                 <property name="halign">start</property>
                                                 <attributes>
                                                   <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
@@ -214,7 +214,7 @@
                                             <child type="suffix">
                                               <object class="GtkButton">
                                                 <property name="valign">center</property>
-                                                <property name="icon-name">object-rotate-left</property>
+                                                <property name="icon-name">emblem-synchronizing-symbolic</property>
                                                 <property name="action-name">win.history</property>
                                                 <style>
                                                   <class name="flat" />
@@ -243,7 +243,7 @@
                                             <child type="suffix">
                                               <object class="GtkButton">
                                                 <property name="valign">center</property>
-                                                <property name="icon-name">object-rotate-left</property>
+                                                <property name="icon-name">emblem-synchronizing-symbolic</property>
                                                 <property name="action-name">win.search</property>
                                                 <style>
                                                   <class name="flat" />
@@ -303,6 +303,7 @@
                             <property name="title" translatable="yes"></property>
                             <property name="child">
                               <object class="AdwToolbarView">
+                                <property name="bottom-bar-style">raised</property>
                                 <child type="top">
                                   <object class="AdwHeaderBar">
                                     <property name="show-back-button">False</property>
@@ -324,6 +325,24 @@
                                         <property name="icon-name">open-menu-symbolic</property>
                                         <property name="menu-model">main-menu</property>
                                       </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child type="top">
+                                  <object class="GtkProgressBar" id="progressbar">
+                                    <property name="hexpand">True</property>
+                                    <property name="fraction">1</property>
+                                    <style>
+                                      <class name="osd" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child type="bottom">
+                                  <object class="GtkRevealer" id="player_toolbar_bin">
+                                    <property name="reveal-child">False</property>
+                                    <property name="valign">end</property>
+                                    <child>
+                                      <object class="PlayerToolbarBox" id="player_toolbar_box" />
                                     </child>
                                   </object>
                                 </child>

@@ -8,13 +8,21 @@ child {
 }
 
 .mask {
-  background: #073642;
-  filter: blur(7px);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 33, 2, 0.8));
   border-radius: 10px;
 }
 
 .logo {
   background: rgba(0, 0, 0, 0);
+}
+
+.bottom-bar {
+  background: transparent;
+}
+
+.smooth-scale {
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 .frame {
@@ -27,12 +35,51 @@ child {
   border-radius: 10px;
 }
 
+.playing-song-label {
+  font-weight: bold;
+}
+
+.coverimage {
+  border-radius: 10px;
+}
+
 .songwidget {
   padding: 12px;
 }
 
 .pill {
   border-radius: 10px;
+}
+
+/* Starring */
+button.star:hover {
+  opacity: 1;
+}
+
+@keyframes rotate_star {
+  from {
+    -gtk-icon-transform: rotate(-72deg);
+  }
+
+  to {
+  }
+}
+
+@keyframes rotate_unstar {
+  from {
+    -gtk-icon-transform: rotate(72deg);
+  }
+
+  to {
+  }
+}
+
+button.star.interacted.starred image {
+  animation: rotate_star 0.4s ease;
+}
+
+button.star.interacted:not(.starred) image {
+  animation: rotate_unstar 0.4s ease;
 }
 
 listview > row {
@@ -87,9 +134,11 @@ box > scrolledwindow > viewport > box > box {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
+
 scrolledwindow > viewport > box > box > label {
   margin: 15px;
 }
+
 scrolledwindow > viewport > box > box > box {
   margin-left: 15px;
   margin-top: 15px;
@@ -127,7 +176,7 @@ scrolledwindow > viewport > box > box > box {
 @define-color dialog_fg_color #93a1a1;
 @define-color popover_bg_color #073642;
 @define-color popover_fg_color #93a1a1;
-@define-color shade_color rgba(0,0,0,0.07);
+@define-color shade_color rgba(0, 0, 0, 0.07);
 @define-color scrollbar_outline_color #586e75;
 @define-color blue_1 #99c1f1;
 @define-color blue_2 #62a0ea;
@@ -174,6 +223,7 @@ scrolledwindow > viewport > box > box > box {
 @define-color dark_3 #3d3846;
 @define-color dark_4 #241f31;
 @define-color dark_5 #000000;
+
 .sidebar-pane {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   background-color: rgba(0, 0, 0, 0);
@@ -223,6 +273,7 @@ button.titlebutton.minimize:hover,
 windowcontrols > button.minimize:hover {
   opacity: 0.8;
 }
+
 window {
   box-shadow: none;
 }

@@ -1,17 +1,29 @@
+use crate::ui::provider::{core_song::CoreSong, tu_item::TuItem};
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use chrono::Duration;
 use gtk::{glib, CompositeTemplate};
 
-use crate::ui::provider::tu_item::TuItem;
+#[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
+#[repr(u32)]
+#[enum_type(name = "State")]
+
+pub enum State {
+    Played,
+    Playing,
+    #[default]
+    Unplayed,
+}
 
 mod imp {
-    use std::cell::OnceCell;
-
-    use crate::ui::provider::tu_item::TuItem;
-
     use super::*;
+    use crate::ui::provider::core_song::CoreSong;
+    use crate::ui::provider::tu_item::TuItem;
+    use crate::ui::widgets::star_toggle::StarToggle;
+    use crate::ui::widgets::window::Window;
+    use crate::utils::spawn;
     use glib::subclass::InitializingObject;
+    use std::cell::{Cell, OnceCell};
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/song_widget.ui")]
@@ -19,6 +31,8 @@ mod imp {
     pub struct SongWidget {
         #[property(get, set, construct_only)]
         pub item: OnceCell<TuItem>,
+        #[property(get, set = Self::set_state, explicit_notify, builder(State::default()))]
+        pub state: Cell<State>,
         #[template_child]
         pub number_label: TemplateChild<gtk::Label>,
         #[template_child]
@@ -27,6 +41,12 @@ mod imp {
         pub artist_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub duration_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub star_toggle: TemplateChild<StarToggle>,
+        #[template_child]
+        pub play_icon: TemplateChild<gtk::Image>,
+        #[property(get, set, construct_only)]
+        pub coresong: OnceCell<CoreSong>,
     }
 
     #[glib::object_subclass]
@@ -36,6 +56,7 @@ mod imp {
         type ParentType = gtk::ListBoxRow;
 
         fn class_init(klass: &mut Self::Class) {
+            StarToggle::ensure_type();
             klass.bind_template();
         }
 
@@ -48,13 +69,51 @@ mod imp {
     impl ObjectImpl for SongWidget {
         fn constructed(&self) {
             self.parent_constructed();
+
             let obj = self.obj();
             obj.set_up();
+            let core_song = self.obj().coresong();
+            obj.bind(&core_song);
+        }
+    }
+    impl WidgetImpl for SongWidget {}
+    impl ListBoxRowImpl for SongWidget {
+        fn activate(&self) {
+            let core_song = self.obj().coresong();
+            self.set_state(State::Playing);
+            let window = self.obj().root().and_downcast::<Window>().unwrap();
+            let player_toolbar = window.imp().player_toolbar_box.get();
+            player_toolbar.play(core_song);
+            spawn(glib::clone!(@weak self as obj => async move {
+                player_toolbar.set_item(obj.item.get().unwrap()).await;
+            }));
         }
     }
 
-    impl WidgetImpl for SongWidget {}
-    impl ListBoxRowImpl for SongWidget {}
+    impl SongWidget {
+        fn set_state(&self, state: State) {
+            if self.state.get() == state {
+                return;
+            }
+            let obj = self.obj();
+            let ctx = self.title_label.get();
+            ctx.remove_css_class("dim-label");
+            ctx.remove_css_class("playing-song-label");
+            self.play_icon.set_visible(false);
+            match state {
+                State::Played => {
+                    ctx.add_css_class("dim-label");
+                }
+                State::Playing => {
+                    ctx.add_css_class("playing-song-label");
+                    self.play_icon.set_visible(true);
+                }
+                _ => {}
+            }
+            self.state.set(state);
+            obj.notify_state();
+        }
+    }
 }
 
 glib::wrapper! {
@@ -65,7 +124,10 @@ glib::wrapper! {
 
 impl SongWidget {
     pub fn new(item: TuItem) -> Self {
-        glib::Object::builder().property("item", item).build()
+        glib::Object::builder()
+            .property("coresong", CoreSong::new(&item.id()))
+            .property("item", item)
+            .build()
     }
 
     pub fn set_up(&self) {
@@ -78,6 +140,14 @@ impl SongWidget {
         let duration = item.run_time_ticks() / 10000000;
         imp.duration_label
             .set_text(&format_duration(duration as i64));
+        imp.star_toggle.set_active(item.is_favorite());
+    }
+
+    fn bind(&self, core_song: &CoreSong) {
+        self.bind_property("state", core_song, "state")
+            .sync_create()
+            .bidirectional()
+            .build();
     }
 }
 

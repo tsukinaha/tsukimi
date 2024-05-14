@@ -246,7 +246,9 @@ impl SettingsPage {
 
     pub fn cacheclear(&self) {
         let path = emby_cache_path();
-        std::fs::remove_dir_all(path).unwrap();
+        if path.exists() {
+            std::fs::remove_dir_all(path).unwrap();
+        }
         let toast = adw::Toast::builder()
             .title("Cache Cleared".to_string())
             .timeout(3)

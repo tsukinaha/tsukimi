@@ -51,6 +51,10 @@ pub mod imp {
         artists: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         album_id: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        rating: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        primary_image_item_id: RefCell<Option<String>>,
         #[property(get, set)]
         run_time_ticks: RefCell<u64>,
     }
@@ -134,6 +138,13 @@ impl TuItem {
         }
         if let Some(run_time_ticks) = latest.run_time_ticks {
             tu_item.set_run_time_ticks(run_time_ticks);
+        }
+        if let Some(primary_image_item_id) = &latest.primary_image_item_id {
+            tu_item.set_primary_image_item_id(Some(primary_image_item_id.clone()));
+        }
+        if let Some(rating) = &latest.community_rating {
+            let rating = format!("{:.1}", rating);
+            tu_item.set_rating(Some(rating));
         }
         tu_item
     }

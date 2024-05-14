@@ -1,3 +1,26 @@
+## 0.4.12
+
+### Added
+
+- Added auto slide carousel
+- Added window breakpoint
+- Added music playback (preliminary)
+- Added rating
+- Added hover tip
+
+### Changed
+
+- Put history in the homepage
+- Changed GtkSpinner to GtkProgressBar
+- Changed the mask style of the project detail page
+- Removed the window size limit
+
+### Fixed
+
+- Fixed the issue where the episode allocation was blocked by the selected episode when entering the page from the episode
+- Fixed the problem with the cache directory
+- Fixed several issues that could lead to crashes
+
 ## 0.4.10
 
 ### Added

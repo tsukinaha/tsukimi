@@ -85,6 +85,30 @@ where
     }
 }
 
+pub async fn get_data_with_cache_else<T, F>(
+    id: String,
+    item_type: &str,
+    future: F,
+) -> Result<T, reqwest::Error>
+where
+    T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
+    F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
+{
+    let mut path = emby_cache_path();
+    path.push(format!("{}_{}.json", item_type, &id));
+
+    if path.exists() {
+        let data = std::fs::read_to_string(&path).expect("Unable to read file");
+        let data: T = serde_json::from_str(&data).expect("JSON was not well-formatted");
+        Ok(data)
+    } else {
+        let v = spawn_tokio(future).await?;
+        let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
+        std::fs::write(&path, s_data).expect("Unable to write file");
+        Ok(v)
+    }
+}
+
 pub async fn _get_data<T, F>(id: String, item_type: &str, future: F) -> Result<T, reqwest::Error>
 where
     T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
@@ -105,11 +129,11 @@ pub async fn get_image_with_cache(
 ) -> Result<String, reqwest::Error> {
     let mut path = emby_cache_path();
     match img_type {
-        "Primary" => path.push(format!("{}.png", id)),
-        "Backdrop" => path.push(format!("b{}_{}.png", id, tag.unwrap())),
-        "Thumb" => path.push(format!("t{}.png", id)),
-        "Logo" => path.push(format!("l{}.png", id)),
-        _ => path.push(format!("{}.png", id)),
+        "Primary" => path.push(id),
+        "Backdrop" => path.push(format!("b{}_{}", id, tag.unwrap())),
+        "Thumb" => path.push(format!("t{}", id)),
+        "Logo" => path.push(format!("l{}", id)),
+        _ => path.push(id),
     }
     let id = id.to_string();
     let img_type = img_type.to_string();

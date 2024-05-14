@@ -10,6 +10,8 @@ use gtk::prelude::*;
 use gtk::{gio, glib};
 mod client;
 mod config;
+mod gstl;
+mod macros;
 mod ui;
 mod utils;
 
@@ -18,22 +20,33 @@ const APP_ID: &str = "moe.tsuna.tsukimi";
 fn main() -> glib::ExitCode {
     load_uuid();
 
-    // redirect cache dir to tsukimi root
+    // redirect cache dir and set proxy env for gstreamer plugins
     #[cfg(windows)]
-    env::set_var(
-        "XDG_CACHE_HOME",
-        env::current_exe()
-            .unwrap()
-            .ancestors()
-            .nth(2)
-            .unwrap()
-            .join("cache"),
-    );
+    {
+        let settings = gtk::gio::Settings::new(APP_ID);
+
+        // set proxy env
+        env::set_var("http_proxy", settings.string("proxy"));
+        env::set_var("https_proxy", settings.string("proxy"));
+
+        // set cache dir
+        env::set_var(
+            "XDG_CACHE_HOME",
+            env::current_exe()
+                .unwrap()
+                .ancestors()
+                .nth(2)
+                .unwrap()
+                .join("cache"),
+        );
+    }
 
     // Register and include resources
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
 
+    // Initialize the GTK application
     adw::init().expect("Failed to initialize Adw");
+
     // Create a new application
     let app = adw::Application::builder().application_id(APP_ID).build();
 
