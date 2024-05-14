@@ -1,4 +1,4 @@
-use gst::prelude::*;
+use gst::{glib, prelude::*};
 
 use crate::{client::network::get_song_streaming_uri, ui::provider::core_song::CoreSong};
 
@@ -25,6 +25,21 @@ impl MusicPlayer {
             move |_bus, msg| {
                 on_bus_message(msg);
             }
+        });
+        bus.connect_message(Some("buffering"), {
+            glib::clone!(@weak pipeline => move |_bus, msg| {
+                match msg.view() {
+                    gst::MessageView::Buffering(buffering) => {
+                        let percent = buffering.percent();
+                        if percent < 100 {
+                            let _ = pipeline.set_state(gst::State::Paused);
+                        } else {
+                            let _ = pipeline.set_state(gst::State::Playing);
+                        }
+                    }
+                    _ => (),
+                }
+            })
         });
         Self { pipeline }
     }
@@ -124,6 +139,9 @@ fn on_bus_message(msg: &gst::Message) {
                 println!("Progress None");
             }
         },
+        gst::MessageView::ClockLost(_) => {
+            println!("Clock lost");
+        }
         _ => {
             println!("Message {:?}", msg.type_());
         }

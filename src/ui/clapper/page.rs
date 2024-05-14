@@ -4,14 +4,15 @@ use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
+use gst::prelude::*;
 
 mod imp {
 
     use std::cell::RefCell;
-
+    
+    use gtk::prelude::*;
     use clapper_gtk::*;
     use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
@@ -24,6 +25,7 @@ mod imp {
         pub url: RefCell<Option<String>>,
         #[template_child]
         pub video: TemplateChild<clapper_gtk::Video>,
+        pub buffering: RefCell<Option<glib::SignalHandlerId>>,
     }
 
     // The central trait for subclassing a GObject
@@ -48,7 +50,7 @@ mod imp {
     impl ObjectImpl for ClapperPage {
         fn constructed(&self) {
             self.parent_constructed();
-
+            
             let header = TitleHeader::new();
             header.set_valign(gtk::Align::Start);
             self.video.add_fading_overlay(&header);
@@ -121,6 +123,7 @@ impl ClapperPage {
             .unwrap()
             .select_item(Some(&item));
         self.imp().video.player().unwrap().play();
+
     }
 
     pub fn bind_fullscreen(&self, window: &Window) {
@@ -134,5 +137,32 @@ impl ClapperPage {
         self.imp().video.player().unwrap().stop();
         let window = self.root().unwrap().downcast::<Window>().unwrap();
         window.mainpage();
+    }
+
+    pub fn add_msg(&self) {
+        let player = self.imp().video.player().unwrap();
+        let element = player.video_sink().unwrap();
+        if let Some(buffering) = self.imp().buffering.take() {
+            element.bus().unwrap().disconnect(buffering);
+        }
+        
+            let bus = element.bus().unwrap();
+            bus.add_signal_watch();
+            let buffering = bus.connect_message(Some("buffering"), {
+                move |_bus, msg| {
+                    match msg.view() {
+                        gst::MessageView::Buffering(buffering) => {
+                            let percent = buffering.percent();
+                            if percent < 100 {
+                                let _ = element.set_state(gst::State::Paused);
+                            } else {
+                                let _ = element.set_state(gst::State::Playing);
+                            }
+                        }
+                        _ => (),
+                    }
+                }
+            });
+            self.imp().buffering.replace(Some(buffering));
     }
 }
