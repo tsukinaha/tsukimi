@@ -477,7 +477,6 @@ impl Window {
             .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
         imp.navipage.set_title("Search");
         self.set_pop_visibility(false);
-        self.set_fraction(1.0);
     }
 
     fn historypage(&self) {
