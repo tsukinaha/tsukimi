@@ -221,6 +221,34 @@
                               </object>
                             </child>
                             <child>
+                              <object class="AdwActionRow">
+                                <property name="title" translatable="yes">Font Family</property>
+                                <child type="suffix">
+                                  <object class="GtkFontDialogButton" id="font">
+                                    <property name="level">family</property>
+                                    <property name="valign">center</property>
+                                    <property name="dialog">
+                                      <object class="GtkFontDialog"/>
+                                    </property>
+                                    <style>
+                                      <class name="flat" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child type="suffix">
+                                  <object class="GtkButton">
+                                    <property name="icon-name" translatable="yes">user-trash-symbolic</property>
+                                    <property name="valign">center</property>
+                                    <property name="action-name">setting.fontclear</property>
+                                    <property name="tooltip-text" translatable="yes">Restart App To Take Effect</property>
+                                    <style>
+                                      <class name="flat" />
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
                               <object class="AdwComboRow" id="themecontrol">
                                 <property name="title" translatable="yes">Theme</property>
                                 <property name="subtitle" translatable="yes">Restart App To Take Effect | Powered By Gradience</property>

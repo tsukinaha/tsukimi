@@ -2,7 +2,7 @@ use adw::prelude::*;
 use glib::Object;
 use gtk::{gio, glib, subclass::prelude::*};
 
-use crate::ui::models::{emby_cache_path, SETTINGS};
+use crate::{toast, ui::models::{emby_cache_path, SETTINGS}};
 
 use super::window::Window;
 
@@ -50,6 +50,8 @@ mod imp {
         pub toast: TemplateChild<adw::ToastOverlay>,
         #[template_child]
         pub fontspinrow: TemplateChild<adw::SpinRow>,
+        #[template_child]
+        pub font: TemplateChild<gtk::FontDialogButton>,
     }
 
     // The central trait for subclassing a GObject
@@ -85,6 +87,9 @@ mod imp {
                     set.clearpic();
                 },
             );
+            klass.install_action("setting.fontclear", None, move |set, _action, _parameter| {
+                set.clear_font();
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -113,6 +118,7 @@ mod imp {
                 obj.change_picblur();
                 obj.set_auto_select_server();
                 obj.set_fontsize();
+                obj.set_font();
             }));
         }
     }
@@ -366,5 +372,22 @@ impl SettingsPage {
             window.clear_pic();
         }));
         SETTINGS.set_root_pic("").unwrap();
+    }
+
+    pub fn set_font(&self) {
+        let imp = self.imp();
+        let settings = self.settings();
+        imp.font.set_font_desc(&gtk::pango::FontDescription::from_string(&SETTINGS.font_name()));
+        imp.font.connect_font_desc_notify(move |font| {
+            let font_desc = font.font_desc().unwrap();
+            let font_string = gtk::pango::FontDescription::to_string(&font_desc);
+            settings.set_gtk_font_name(Some(&font_string));
+            SETTINGS.set_font_name(&font_string).unwrap();
+        });
+    }
+
+    pub fn clear_font(&self) {
+        SETTINGS.set_font_name("").unwrap();
+        toast!(self, "Font Cleared, Restart to take effect.");
     }
 }

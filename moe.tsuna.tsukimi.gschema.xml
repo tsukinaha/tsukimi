@@ -77,6 +77,10 @@
       <default>""</default>
       <summary>Default switch state</summary>
     </key>
+    <key name="font-name" type="s">
+      <default>""</default>
+      <summary>Default switch state</summary>
+    </key>
     <key name="is-auto-select-server" type="b">
       <default>false</default>
       <summary>Default switch state</summary>
