@@ -42,6 +42,11 @@ child {
     font-weight: bold;
 }
 
+overlay {
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+	border-radius: 10px;
+}
+
 /* Starring */
 button.star:hover {
     opacity: 1;

@@ -157,6 +157,11 @@ placessidebar {
 }
 
 
+overlay {
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+	border-radius: 10px;
+}
+
 @define-color destructive_color rgb(210, 15, 57);
 @define-color destructive_bg_color rgb(230, 69, 83);
 @define-color destructive_fg_color rgb(239, 241, 245);
