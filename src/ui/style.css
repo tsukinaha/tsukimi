@@ -157,9 +157,16 @@ placessidebar {
 }
 
 
+.home-carousel {
+    border-radius: 10px;
+    margin: 0px;
+    box-shadow: none;
+}
+
 overlay {
 	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 	border-radius: 10px;
+    margin: 6px;
 }
 
 @define-color destructive_color rgb(210, 15, 57);

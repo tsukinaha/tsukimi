@@ -458,6 +458,9 @@
             </child>
           </object>
         </child>
+        <style>
+          <class name="home-carousel" />
+        </style>
       </object>
     </property>
   </template>

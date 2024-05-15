@@ -41,6 +41,9 @@
                             <property name="carousel">carousel</property>
                           </object>
                         </child>
+                        <style>
+                          <class name="home-carousel"/>
+                        </style>
                       </object>
                     </child>
                     <child>
