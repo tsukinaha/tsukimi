@@ -29,6 +29,15 @@ impl Settings {
     const KEY_IS_AUTO_SELECT_SERVER: &'static str = "is-auto-select-server";
     const KEY_FONT_SIZE: &'static str = "font-size";
     const KEY_FONT_NAME: &'static str = "font-name";
+    const KEY_DAILY_RECOMMEND: &'static str = "is-daily-recommend";
+
+    pub fn set_daily_recommend(&self, daily_recommend: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_DAILY_RECOMMEND, daily_recommend)
+    }
+
+    pub fn daily_recommend(&self) -> bool {
+        self.boolean(Self::KEY_DAILY_RECOMMEND)
+    }
 
     pub fn set_font_name(&self, font_name: &str) -> Result<(), glib::BoolError> {
         self.set_string(Self::KEY_FONT_NAME, font_name)

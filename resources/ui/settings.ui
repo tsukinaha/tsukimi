@@ -29,6 +29,11 @@
                               </object>
                             </child>
                             <child>
+                              <object class="AdwSwitchRow" id="dailyrecommendcontrol">
+                                <property name="title" translatable="yes">Daily Recommend</property>
+                              </object>
+                            </child>
+                            <child>
                               <object class="AdwSpinRow" id="fontspinrow">
                                 <property name="title" translatable="yes">Font Scale</property>
                                 <property name="adjustment">

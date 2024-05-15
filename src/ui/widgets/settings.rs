@@ -52,6 +52,8 @@ mod imp {
         pub fontspinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub font: TemplateChild<gtk::FontDialogButton>,
+        #[template_child]
+        pub dailyrecommendcontrol: TemplateChild<adw::SwitchRow>,
     }
 
     // The central trait for subclassing a GObject
@@ -119,6 +121,7 @@ mod imp {
                 obj.set_auto_select_server();
                 obj.set_fontsize();
                 obj.set_font();
+                obj.set_daily_recommend();
             }));
         }
     }
@@ -389,5 +392,14 @@ impl SettingsPage {
     pub fn clear_font(&self) {
         SETTINGS.set_font_name("").unwrap();
         toast!(self, "Font Cleared, Restart to take effect.");
+    }
+
+    pub fn set_daily_recommend(&self) {
+        let imp = self.imp();
+        imp.dailyrecommendcontrol
+            .set_active(SETTINGS.daily_recommend());
+        imp.dailyrecommendcontrol.connect_active_notify(move |control| {
+            SETTINGS.set_daily_recommend(control.is_active()).unwrap();
+        });
     }
 }
