@@ -4,7 +4,7 @@ use std::{env, fs::File, io::Read};
 use uuid::Uuid;
 
 pub mod proxy;
-pub const APP_VERSION: &str = "0.5.0";
+pub const APP_VERSION: &str = "0.4.13";
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
