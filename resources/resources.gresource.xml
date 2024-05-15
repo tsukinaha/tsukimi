@@ -27,5 +27,6 @@
     <file compressed="true" preprocess="xml-stripblanks">song_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">disc_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">player_toolbar.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">clapperpage.ui</file>
   </gresource>
 </gresources>
