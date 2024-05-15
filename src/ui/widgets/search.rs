@@ -43,6 +43,8 @@ mod imp {
         pub person: TemplateChild<gtk::ToggleButton>,
         #[template_child]
         pub music: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
+        pub recommendwindow: TemplateChild<gtk::ScrolledWindow>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -210,12 +212,14 @@ impl SearchPage {
                     filter
                 };
 
-                glib::spawn_future_local(glib::clone!(@weak store, @weak searchrevealer=> async move {
+                glib::spawn_future_local(glib::clone!(@weak store, @weak searchrevealer,@weak imp=> async move {
                     let search_results = spawn_tokio(async move {
                         search(search_content,&search_filter).await
                     }).await.unwrap();
                     spinner.set_visible(false);
                     store.remove_all();
+                    imp.recommendwindow.set_visible(false);
+                    imp.searchscrolled.set_visible(true);
                     searchrevealer.set_reveal_child(true);
                     for result in search_results {
                         let object = glib::BoxedAnyObject::new(result);
