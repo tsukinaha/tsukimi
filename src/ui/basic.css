@@ -46,6 +46,18 @@ child {
   font-weight: bold;
 }
 
+.home-carousel {
+  border-radius: 10px;
+  margin: 0px;
+  box-shadow: none;
+}
+
+overlay {
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  margin: 6px;
+}
+
 /* Starring */
 button.star:hover {
   opacity: 1;

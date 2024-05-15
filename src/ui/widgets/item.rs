@@ -8,8 +8,10 @@ use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 
 use crate::client::{network::*, structs::*};
+use crate::toast;
 use crate::ui::models::SETTINGS;
-use crate::ui::new_dropsel::bind_button;
+use crate::ui::mpv;
+use crate::ui::provider::dropdown_factory::factory;
 use crate::utils::{
     get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory,
     tu_list_view_connect_activate,
@@ -333,17 +335,6 @@ impl ItemPage {
         }));
     }
 
-    pub fn bind_playbutton(&self, playbackinfo: Media, info: SeriesInfo) {
-        let imp = self.imp();
-        bind_button(
-            playbackinfo,
-            info,
-            imp.namedropdown.get(),
-            imp.subdropdown.get(),
-            imp.playbutton.get(),
-        );
-    }
-
     pub async fn setup_background(&self) {
         let id = self.id();
         let imp = self.imp();
@@ -656,8 +647,8 @@ impl ItemPage {
                 if let Some(handlerid) = obj.imp().playbuttonhandlerid.borrow_mut().take() {
                     obj.imp().playbutton.disconnect(handlerid);
                 }
-                crate::ui::new_dropsel::newmediadropsel(playback.clone(), &info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
-                let handlerid = bind_button(playback.clone(), info, obj.imp().namedropdown.get(), obj.imp().subdropdown.get(), obj.imp().playbutton.get());
+                obj.set_dropdown(&playback, &info);
+                let handlerid = obj.bind_button(&playback, &info);
                 obj.imp().playbuttonhandlerid.replace(Some(handlerid));
                 obj.imp().playbutton.set_sensitive(true);
                 obj.imp().favourite_button_split.set_sensitive(true);
@@ -1035,5 +1026,149 @@ impl ItemPage {
         }
         linksscrolled.set_child(Some(&linkbox));
         linksrevealer.set_reveal_child(true);
+    }
+
+    pub fn set_dropdown(&self, playbackinfo: &Media, info: &SeriesInfo) {
+        let playbackinfo = playbackinfo.clone();
+        let info = info.clone();
+        let imp = self.imp();
+        let namedropdown = imp.namedropdown.get();
+        let subdropdown = imp.subdropdown.get();
+        let playbutton = imp.playbutton.get();
+        let namelist = gtk::StringList::new(&[]);
+        let sublist = gtk::StringList::new(&[]);
+
+        if let Some(media) = playbackinfo.media_sources.first() {
+            for stream in &media.media_streams {
+                if stream.stream_type == "Subtitle" {
+                    if let Some(d) = &stream.display_title {
+                        sublist.append(d);
+                    } else {
+                        println!("No value");
+                    }
+                }
+            }
+        }
+        for media in &playbackinfo.media_sources {
+            namelist.append(&media.name);
+        }
+        namedropdown.set_model(Some(&namelist));
+        subdropdown.set_model(Some(&sublist));
+        namedropdown.set_factory(Some(&factory()));
+        subdropdown.set_factory(Some(&factory()));
+
+        namedropdown.connect_selected_item_notify(move |dropdown| {
+            let selected = dropdown.selected_item();
+            let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
+            let selected = selected.string();
+            for _i in 0..sublist.n_items() {
+                sublist.remove(0);
+            }
+            for media in playbackinfo.media_sources.clone() {
+                if media.name == selected {
+                    for stream in media.media_streams {
+                        if stream.stream_type == "Subtitle" {
+                            if let Some(d) = stream.display_title {
+                                sublist.append(&d);
+                            } else {
+                                println!("No value");
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        });
+        let info = info.clone();
+
+        if SETTINGS.resume() {
+            if let Some(userdata) = &info.user_data {
+                if let Some(percentage) = userdata.played_percentage {
+                    if percentage > 0. {
+                        playbutton.set_label("Resume");
+                    }
+                }
+            }
+        }
+    }
+
+    pub fn bind_button(&self, playbackinfo: &Media, info: &SeriesInfo) -> glib::SignalHandlerId {
+        let imp = self.imp();
+        let playbackinfo = playbackinfo.clone();
+        let playbutton = imp.playbutton.get();
+        let namedropdown = imp.namedropdown.get();
+        let subdropdown = imp.subdropdown.get();
+        let info = info.clone();
+        playbutton.connect_clicked(glib::clone!(@weak self as obj => move |_| {
+            let nameselected = namedropdown.selected_item();
+            let nameselected = nameselected
+                .and_downcast_ref::<gtk::StringObject>()
+                .unwrap();
+            let nameselected = nameselected.string();
+            let subselected = subdropdown.selected_item();
+            let subselected = if subselected.is_some() {
+                Some(subselected.and_downcast_ref::<gtk::StringObject>().unwrap().string().to_string())
+            } else {
+                None
+            };
+            for media in playbackinfo.media_sources.clone() {
+                if media.name == nameselected {
+                    let medianameselected = nameselected.to_string();
+                    let url = media.direct_stream_url.clone();
+                    let name = media.name.clone();
+                    let back = Back {
+                        id: info.id.clone(),
+                        mediasourceid: media.id.clone(),
+                        playsessionid: playbackinfo.play_session_id.clone(),
+                        tick: info.user_data.as_ref().map_or(0, |data| data.playback_position_ticks.unwrap_or(0)),
+                    };
+                    let percentage = info.user_data.as_ref().map_or(0., |data| data.played_percentage.unwrap_or(0.));
+                    let id = info.id.clone();
+                    let subselected = subselected.clone();
+                    if let Some(url) = url {
+                        spawn(async move {
+                            let suburl = match media.media_streams.iter().find(|&mediastream| {
+                                mediastream.stream_type == "Subtitle" && Some(mediastream.display_title.as_ref().unwrap_or(&"".to_string())) == subselected.as_ref() && mediastream.is_external
+                            }) {
+                                Some(mediastream) => match mediastream.delivery_url.clone() {
+                                    Some(url) => Some(url),
+                                    None => {
+                                        let playbackinfo = spawn_tokio(async {get_sub(id, media.id).await}).await.unwrap();
+                                        let mediasource = playbackinfo.media_sources.iter().find(|&media| media.name == medianameselected).unwrap();
+                                        let suburl = mediasource.media_streams.iter().find(|&mediastream| {
+                                            mediastream.stream_type == "Subtitle" && Some(mediastream.display_title.as_ref().unwrap_or(&"".to_string())) == subselected.as_ref() && mediastream.is_external
+                                        }).unwrap().delivery_url.clone();
+                                        suburl
+                                    },
+                                },
+                                None => None,
+                            };
+                            gio::spawn_blocking(move || {
+                                match mpv::event::play(
+                                    url,
+                                    suburl,
+                                    Some(name),
+                                    &back,
+                                    Some(percentage),
+                                ) {
+                                    Ok(_) => {
+                                    }
+                                    Err(e) => {
+                                        eprintln!("Failed to play: {}", e);
+                                    }
+                                };
+                            });
+                        });
+                    } else {
+                        toast!(obj,"No Stream URL found");
+                        return;
+                    }
+                }
+            }
+        }))
+    }
+
+    pub fn get_window(&self) -> Window {
+        self.root().unwrap().downcast::<Window>().unwrap()
     }
 }

@@ -429,6 +429,15 @@
                     </property>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkStackPage" id="clapperpage">
+                    <property name="name">clapper</property>
+                    <property name="child">
+                      <object class="ClapperPage" id="clappernav">
+                      </object>
+                    </property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -449,6 +458,9 @@
             </child>
           </object>
         </child>
+        <style>
+          <class name="home-carousel" />
+        </style>
       </object>
     </property>
   </template>

@@ -13,6 +13,7 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
 
+    use crate::ui::clapper::page::ClapperPage;
     use crate::ui::widgets::player_toolbar::PlayerToolbarBox;
 
     // Object holding the state
@@ -63,6 +64,10 @@ mod imp {
         pub player_toolbar_box: TemplateChild<PlayerToolbarBox>,
         #[template_child]
         pub progressbar: TemplateChild<gtk::ProgressBar>,
+        #[template_child]
+        pub clapperpage: TemplateChild<gtk::StackPage>,
+        #[template_child]
+        pub clappernav: TemplateChild<ClapperPage>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
     }
@@ -77,6 +82,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             PlayerToolbarBox::ensure_type();
+            ClapperPage::ensure_type();
             klass.bind_template();
             klass.install_action("win.home", None, move |window, _action, _parameter| {
                 window.freshhomepage();
@@ -393,7 +399,7 @@ impl Window {
         imp.navipage.set_title(title);
     }
 
-    fn mainpage(&self) {
+    pub fn mainpage(&self) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("main");
     }

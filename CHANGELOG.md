@@ -1,25 +1,27 @@
-## 0.4.12
+## 0.4.13
 
 ### Added
 
-- Added auto slide carousel
-- Added window breakpoint
-- Added music playback (preliminary)
-- Added rating
-- Added hover tip
+- Added an auto-scrolling carousel
+- Added window breakpoints
+- Added initial music playback
+- Added rating function
+- Added hover tips
 
 ### Changed
 
-- Put history in the homepage
+- Moved history records to the homepage
 - Changed GtkSpinner to GtkProgressBar
-- Changed the mask style of the project detail page
-- Removed the window size limit
+- Changed the mask style of the project details page
+- Changed the style of some icons
+- Removed window size limitations
 
 ### Fixed
 
-- Fixed the issue where the episode allocation was blocked by the selected episode when entering the page from the episode
-- Fixed the problem with the cache directory
-- Fixed several issues that could lead to crashes
+- Fixed the issue where the distribution of episodes was blocked when entering the page from the season
+- Fixed issues related to the cache directory
+- Fixed several issues that may cause crashes
+- Fixed the issue of being stuck in the mpv window when there are no available streams
 
 ## 0.4.10
 
