@@ -137,7 +137,6 @@ mod imp {
                     crate::ui::models::SETTINGS.font_size() * 1024,
                 );
             }
-            self.clappernav.bind_fullscreen(&self.obj());
             obj.setup_rootpic();
             obj.setup_settings();
             obj.load_window_size();
@@ -656,9 +655,4 @@ impl Window {
         imp.progressbar.set_fraction(fraction);
     }
 
-    pub fn set_clapperpage(&self, url: &str, suburi: Option<&str>) {
-        let imp = self.imp();
-        imp.stack.set_visible_child_name("clapper");
-        imp.clappernav.add_item(url, suburi);
-    }
 }

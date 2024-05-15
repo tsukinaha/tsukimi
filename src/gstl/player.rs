@@ -32,8 +32,10 @@ impl MusicPlayer {
                     gst::MessageView::Buffering(buffering) => {
                         let percent = buffering.percent();
                         if percent < 100 {
+                            println!("Buffering {}%", percent);
                             let _ = pipeline.set_state(gst::State::Paused);
                         } else {
+                            println!("Buffering complete");
                             let _ = pipeline.set_state(gst::State::Playing);
                         }
                     }

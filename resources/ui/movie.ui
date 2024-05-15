@@ -42,7 +42,7 @@
                     <child type="overlay">
                       <object class="GtkBox">
                         <property name="orientation">vertical</property>
-                        <property name="valign">end</property>
+                        <property name="valign">fill</property>
                         <property name="vexpand">true</property>
                         <property name="hexpand">true</property>
                         <child>

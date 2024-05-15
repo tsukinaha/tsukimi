@@ -8,8 +8,9 @@ use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 
 use crate::client::{network::*, structs::*};
+use crate::toast;
 use crate::ui::models::SETTINGS;
-use crate::ui::new_dropsel::bind_button;
+use crate::ui::mpv;
 use crate::ui::provider::dropdown_factory::factory;
 use crate::utils::{
     get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory,
@@ -332,17 +333,6 @@ impl ItemPage {
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             window.toast("Liked the series successfully.");
         }));
-    }
-
-    pub fn bind_playbutton(&self, playbackinfo: Media, info: SeriesInfo) {
-        let imp = self.imp();
-        bind_button(
-            playbackinfo,
-            info,
-            imp.namedropdown.get(),
-            imp.subdropdown.get(),
-            imp.playbutton.get(),
-        );
     }
 
     pub async fn setup_background(&self) {
@@ -1102,12 +1092,13 @@ impl ItemPage {
         }
     }
 
-    pub fn bind_button(&self, playbackinfo: &Media, _info: &SeriesInfo) -> glib::SignalHandlerId {
+    pub fn bind_button(&self, playbackinfo: &Media, info: &SeriesInfo) -> glib::SignalHandlerId {
         let imp = self.imp();
         let playbackinfo = playbackinfo.clone();
         let playbutton = imp.playbutton.get();
         let namedropdown = imp.namedropdown.get();
         let subdropdown = imp.subdropdown.get();
+        let info = info.clone();
         let handlerid = playbutton.connect_clicked(glib::clone!(@weak self as obj => move |_| {
             let nameselected = namedropdown.selected_item();
             let nameselected = nameselected
@@ -1115,30 +1106,64 @@ impl ItemPage {
                 .unwrap();
             let nameselected = nameselected.string();
             let subselected = subdropdown.selected_item();
-            if subselected.is_none() {
-                for media in playbackinfo.media_sources.clone() {
-                    if media.name == nameselected {
-                        if let Some(directurl) = media.direct_stream_url {
-                            obj.get_window().set_clapperpage(&directurl, None)
-                        }
-                    }
-                }
-                return;
-            }
-            let subselected = subselected.and_downcast_ref::<gtk::StringObject>().unwrap();
-            let subselected = subselected.string();
+            let subselected = if subselected.is_some() {
+                Some(subselected.and_downcast_ref::<gtk::StringObject>().unwrap().string().to_string())
+            } else {
+                None
+            };
             for media in playbackinfo.media_sources.clone() {
                 if media.name == nameselected {
-                    for mediastream in media.media_streams {
-                        if mediastream.stream_type == "Subtitle" {
-                            let displaytitle = mediastream.display_title.unwrap_or("".to_string());
-                            if displaytitle == subselected {
-                                if let Some(directurl) = media.direct_stream_url.clone() {
-                                    let suburl = mediastream.delivery_url.clone();
-                                    obj.get_window().set_clapperpage(&directurl, suburl.as_deref())
-                                }
-                            }
-                        }
+                    let medianameselected = nameselected.to_string();
+                    let url = media.direct_stream_url.clone();
+                    let name = media.name.clone();
+                    let back = Back {
+                        id: info.id.clone(),
+                        mediasourceid: media.id.clone(),
+                        playsessionid: playbackinfo.play_session_id.clone(),
+                        tick: info.user_data.as_ref().map_or(0, |data| data.playback_position_ticks.unwrap_or(0)),
+                    };
+                    let percentage = info.user_data.as_ref().map_or(0., |data| data.played_percentage.unwrap_or(0.));
+                    let id = info.id.clone();
+                    let subselected = subselected.clone();
+                    if let Some(url) = url {
+                        spawn(async move {
+                            let suburl = match media.media_streams.iter().find(|&mediastream| {
+                                mediastream.stream_type == "Subtitle" && Some(mediastream.display_title.as_ref().unwrap_or(&"".to_string())) == subselected.as_ref() && mediastream.is_external
+                            }) {
+                                Some(mediastream) => match mediastream.delivery_url.clone() {
+                                    Some(url) => Some(url),
+                                    None => {
+                                        let playbackinfo = spawn_tokio(async {get_sub(id, media.id).await}).await.unwrap();
+                                        let mediasource = playbackinfo.media_sources.iter().find(|&media| media.name == medianameselected).unwrap();
+                                        let suburl = mediasource.media_streams.iter().find(|&mediastream| {
+                                            mediastream.stream_type == "Subtitle" && Some(mediastream.display_title.as_ref().unwrap_or(&"".to_string())) == subselected.as_ref() && mediastream.is_external
+                                        }).unwrap().delivery_url.clone();
+                                        suburl
+                                    },
+                                },
+                                None => None,
+                            };
+                            gio::spawn_blocking(move || {
+                                match mpv::event::play(
+                                    url,
+                                    suburl,
+                                    Some(name),
+                                    &back,
+                                    Some(percentage),
+                                ) {
+                                    Ok(_) => {
+                                        
+                                    }
+                                    Err(e) => {
+                                        eprintln!("Failed to play: {}", e);
+                                    }
+                                };
+                            });
+                            return;
+                        });
+                    } else {
+                        toast!(obj,"No Stream URL found");
+                        return;
                     }
                 }
             }

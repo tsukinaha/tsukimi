@@ -1,9 +1,7 @@
 mod clapper;
 mod image;
 pub(crate) mod models;
-mod moviedrop;
 mod mpv;
-mod new_dropsel;
 pub mod provider;
 pub mod widgets;
 use self::models::SETTINGS;

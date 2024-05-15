@@ -7,11 +7,6 @@
         <property name="content">
           <object class="GtkBox">
             <property name="orientation">vertical</property>
-            <child>
-              <object class="ClapperGtkVideo" id="video">
-                <property name="vexpand">true</property>
-              </object>
-            </child>
           </object>
         </property>
       </object>
