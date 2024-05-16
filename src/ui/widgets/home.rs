@@ -10,6 +10,7 @@ use super::tu_list_item::TuListItem;
 use super::{fix::ScrolledWindowFixExt, list::ListPage, window::Window};
 use crate::client::{network::*, structs::*};
 use crate::ui::image::set_image;
+use crate::ui::models::SETTINGS;
 use crate::ui::provider::tu_item::TuItem;
 use crate::ui::widgets::tu_list_item::tu_list_item_register;
 use crate::utils::{
@@ -56,6 +57,8 @@ mod imp {
         #[template_child]
         pub carousel: TemplateChild<adw::Carousel>,
         pub carouset_items: RefCell<Vec<SimpleListItem>>,
+        #[template_child]
+        pub carouseloverlay: TemplateChild<gtk::Overlay>,
         pub selection: gtk::SingleSelection,
         pub hisselection: gtk::SingleSelection,
     }
@@ -178,6 +181,11 @@ impl HomePage {
     }
 
     pub async fn set_carousel(&self) {
+        if !SETTINGS.daily_recommend() {
+            self.imp().carouseloverlay.set_visible(false);
+            return;
+        }
+
         let date = Local::now();
         let formatted_date = format!("{:04}{:02}{:02}", date.year(), date.month(), date.day());
         let results =

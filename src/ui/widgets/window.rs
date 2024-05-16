@@ -129,6 +129,8 @@ mod imp {
             // Call "constructed" on parent
             self.parent_constructed();
             let obj = self.obj();
+
+            obj.set_fonts();
             if crate::ui::models::SETTINGS.font_size() != -1 {
                 let settings = gtk::Settings::default().unwrap();
                 settings.set_property(
@@ -474,7 +476,6 @@ impl Window {
             .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
         imp.navipage.set_title("Search");
         self.set_pop_visibility(false);
-        self.set_fraction(1.0);
     }
 
     fn historypage(&self) {
@@ -652,5 +653,12 @@ impl Window {
     pub fn set_fraction(&self, fraction: f64) {
         let imp = self.imp();
         imp.progressbar.set_fraction(fraction);
+    }
+
+    pub fn set_fonts(&self) {
+        if !SETTINGS.font_name().is_empty() {
+            let settings = self.imp().stack.settings();
+            settings.set_gtk_font_name(Some(&SETTINGS.font_name()));
+        }
     }
 }

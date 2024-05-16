@@ -29,6 +29,11 @@
                               </object>
                             </child>
                             <child>
+                              <object class="AdwSwitchRow" id="dailyrecommendcontrol">
+                                <property name="title" translatable="yes">Daily Recommend</property>
+                              </object>
+                            </child>
+                            <child>
                               <object class="AdwSpinRow" id="fontspinrow">
                                 <property name="title" translatable="yes">Font Scale</property>
                                 <property name="adjustment">
@@ -216,6 +221,34 @@
                                   <object class="GtkImage">
                                     <property name="icon_name">user-trash-symbolic</property>
                                     <property name="accessible-role">presentation</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwActionRow">
+                                <property name="title" translatable="yes">Font Family</property>
+                                <child type="suffix">
+                                  <object class="GtkFontDialogButton" id="font">
+                                    <property name="level">family</property>
+                                    <property name="valign">center</property>
+                                    <property name="dialog">
+                                      <object class="GtkFontDialog"/>
+                                    </property>
+                                    <style>
+                                      <class name="flat" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child type="suffix">
+                                  <object class="GtkButton">
+                                    <property name="icon-name" translatable="yes">user-trash-symbolic</property>
+                                    <property name="valign">center</property>
+                                    <property name="action-name">setting.fontclear</property>
+                                    <property name="tooltip-text" translatable="yes">Restart App To Take Effect</property>
+                                    <style>
+                                      <class name="flat" />
+                                    </style>
                                   </object>
                                 </child>
                               </object>

@@ -1,3 +1,17 @@
+## 0.4.13-1
+
+- 增加首页每日推荐开关
+- 增加字体显示设置
+
+> [!NOTE]
+> 如果你使用的字体包含的字符集不完整，将可能会出现缺字等显示异常
+
+- Add a switch for daily recommendations on the homepage
+- Add font display settings
+
+> [!NOTE]
+> If the font you are using has an incomplete character set, there may be missing characters or other display abnormalities.
+
 ## 0.4.13
 
 ### Added
