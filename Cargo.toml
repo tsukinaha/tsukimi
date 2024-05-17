@@ -19,8 +19,6 @@ dirs = "5.0.1"
 adw = { version = "0.6.0", package = "libadwaita", features = ["v1_5"] }
 cargo-deb = "2.2.0"
 bytefmt = "0.1.7"
-libmpv = { path = "libmpv-rs", version = "2.0.1"}
-libmpv-sys = "3.1.0"
 crossbeam = "0.8.4"
 libc = "0.2.154"
 uuid = { version = "1.8.0", features = ["v4"] }
@@ -29,6 +27,11 @@ toml = "0.8.12"
 tracing = "0.1.40"
 gst = { version = "0.22.4", package = "gstreamer"}
 url = "2.5.0"
+libmpv2 = "=3.0.0"
+gl = "0.14.0"
+epoxy = "0.1.0"
+libloading = "0.8.3"
+glium = "0.34.0"
 
 [build-dependencies]
 glib-build-tools = "0.19.0"

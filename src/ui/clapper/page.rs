@@ -1,10 +1,10 @@
 use glib::Object;
 use gtk::{gio, glib};
 
+
 mod imp {
 
     use std::cell::RefCell;
-    
     use gtk::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;
@@ -42,7 +42,7 @@ mod imp {
     impl ObjectImpl for ClapperPage {
         fn constructed(&self) {
             self.parent_constructed();
-            
+
         }
     }
 
@@ -69,6 +69,4 @@ impl ClapperPage {
     pub fn new() -> Self {
         Object::builder().build()
     }
-
-    
 }

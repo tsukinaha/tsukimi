@@ -1,5 +1,5 @@
 use gtk::prelude::*;
-use libmpv::{events::*, *};
+use libmpv2::{events::*, *};
 
 use std::{
     collections::HashMap,
@@ -65,7 +65,7 @@ pub fn play(
     .unwrap();
     mpv.set_property("volume", 75)?;
 
-    let mut ev_ctx = mpv.create_event_context();
+    let mut ev_ctx = EventContext::new(mpv.ctx);
     ev_ctx.disable_deprecated_events()?;
     ev_ctx.observe_property("volume", Format::Int64, 0)?;
     ev_ctx.observe_property("time-pos", Format::Double, 0)?;

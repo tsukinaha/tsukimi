@@ -869,6 +869,7 @@ impl MoviePage {
                         toast!(obj,"No Stream URL found");
                         return;
                     }
+                    return;
                 }
             }
         }));

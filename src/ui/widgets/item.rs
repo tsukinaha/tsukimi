@@ -1165,6 +1165,7 @@ impl ItemPage {
                         toast!(obj,"No Stream URL found");
                         return;
                     }
+                    return;
                 }
             }
         }));
