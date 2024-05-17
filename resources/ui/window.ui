@@ -27,7 +27,7 @@
           <object class="AdwToastOverlay" id="toast">
             <child>
               <object class="GtkStack" id="stack">
-                <property name="transition-type">crossfade</property>
+                <property name="transition-type">slide-left-right</property>
                 <child>
                   <object class="GtkStackPage">
                     <property name="name">placeholder</property>

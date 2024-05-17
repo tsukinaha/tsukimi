@@ -130,7 +130,7 @@ mod imp {
             // Call "constructed" on parent
             self.parent_constructed();
             let obj = self.obj();
-
+            self.clappernav.bind_fullscreen(&obj);
             obj.set_fonts();
             if crate::ui::models::SETTINGS.font_size() != -1 {
                 let settings = gtk::Settings::default().unwrap();
@@ -661,5 +661,11 @@ impl Window {
             let settings = self.imp().stack.settings();
             settings.set_gtk_font_name(Some(&SETTINGS.font_name()));
         }
+    }
+
+    pub fn set_clapperpage(&self, url: &str, suburi: Option<&str>, name: Option<&str>) {
+        let imp = self.imp();
+        imp.stack.set_visible_child_name("clapper");
+        imp.clappernav.add_item(url, suburi, name);
     }
 }

@@ -28,10 +28,8 @@ tracing = "0.1.40"
 gst = { version = "0.22.4", package = "gstreamer"}
 url = "2.5.0"
 libmpv2 = "=3.0.0"
-gl = "0.14.0"
-epoxy = "0.1.0"
-libloading = "0.8.3"
-glium = "0.34.0"
+clapper = { path = "clapper-rs/libclapper-rs" }
+clapper-gtk = { path = "clapper-rs/libclapper-gtk-rs" }
 
 [build-dependencies]
 glib-build-tools = "0.19.0"

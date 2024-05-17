@@ -7,6 +7,47 @@
         <property name="content">
           <object class="GtkBox">
             <property name="orientation">vertical</property>
+            <child>
+              <object class="ClapperGtkVideo" id="video">
+                <property name="vexpand">true</property>
+                <property name="auto-inhibit">true</property>
+                <child type="fading-overlay">
+                  <object class="ClapperGtkTitleHeader" id="title_header">
+                    <property name="valign">start</property>
+                  </object>
+                </child>
+                <child type="fading-overlay">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">20</property>
+                    <child>
+                      <object class="GtkToggleButton">
+                        <property name="valign">start</property>
+                        <property name="halign">end</property>
+                        <signal name="toggled" handler="on_play_pause_toggled" swapped="yes"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="mediainfo">
+                        <property name="visible">false</property>
+                        <property name="valign">start</property>
+                        <property name="halign">start</property>
+                        <property name="margin-start">8</property>
+                        <style>
+                          <class name="osd"/>
+                          <class name="mediainfo"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child type="fading-overlay">
+                  <object class="ClapperGtkSimpleControls">
+                    <property name="valign">end</property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </property>
       </object>

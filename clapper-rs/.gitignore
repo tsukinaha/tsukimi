@@ -1,0 +1,5 @@
+.vscode/
+target/
+build/
+.env
+.log
