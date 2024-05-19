@@ -22,7 +22,7 @@ fn main() -> glib::ExitCode {
     // Initialize the Clapper library
     glib::setenv("CLAPPER_USE_PLAYBIN3", "1", false).unwrap();
     clapper::init().unwrap();
-    
+
     // Create a new application
     let app = adw::Application::builder().application_id(APP_ID).build();
 

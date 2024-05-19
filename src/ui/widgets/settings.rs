@@ -2,7 +2,10 @@ use adw::prelude::*;
 use glib::Object;
 use gtk::{gio, glib, subclass::prelude::*};
 
-use crate::{toast, ui::models::{emby_cache_path, SETTINGS}};
+use crate::{
+    toast,
+    ui::models::{emby_cache_path, SETTINGS},
+};
 
 use super::window::Window;
 
@@ -89,9 +92,13 @@ mod imp {
                     set.clearpic();
                 },
             );
-            klass.install_action("setting.fontclear", None, move |set, _action, _parameter| {
-                set.clear_font();
-            });
+            klass.install_action(
+                "setting.fontclear",
+                None,
+                move |set, _action, _parameter| {
+                    set.clear_font();
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -380,7 +387,10 @@ impl SettingsPage {
     pub fn set_font(&self) {
         let imp = self.imp();
         let settings = self.settings();
-        imp.font.set_font_desc(&gtk::pango::FontDescription::from_string(&SETTINGS.font_name()));
+        imp.font
+            .set_font_desc(&gtk::pango::FontDescription::from_string(
+                &SETTINGS.font_name(),
+            ));
         imp.font.connect_font_desc_notify(move |font| {
             let font_desc = font.font_desc().unwrap();
             let font_string = gtk::pango::FontDescription::to_string(&font_desc);
@@ -398,8 +408,9 @@ impl SettingsPage {
         let imp = self.imp();
         imp.dailyrecommendcontrol
             .set_active(SETTINGS.daily_recommend());
-        imp.dailyrecommendcontrol.connect_active_notify(move |control| {
-            SETTINGS.set_daily_recommend(control.is_active()).unwrap();
-        });
+        imp.dailyrecommendcontrol
+            .connect_active_notify(move |control| {
+                SETTINGS.set_daily_recommend(control.is_active()).unwrap();
+            });
     }
 }

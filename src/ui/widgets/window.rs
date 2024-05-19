@@ -663,9 +663,15 @@ impl Window {
         }
     }
 
-    pub fn set_clapperpage(&self, url: &str, suburi: Option<&str>, name: Option<&str>) {
+    pub fn set_clapperpage(
+        &self,
+        url: &str,
+        suburi: Option<&str>,
+        name: Option<&str>,
+        line2: Option<&str>,
+    ) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("clapper");
-        imp.clappernav.add_item(url, suburi, name);
+        imp.clappernav.add_item(url, suburi, name, line2);
     }
 }

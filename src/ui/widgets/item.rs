@@ -1,6 +1,7 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
+use gst::glib::property::PropertyGet;
 use gtk::template_callbacks;
 use gtk::{gio, glib};
 use std::cell::Ref;
@@ -126,6 +127,10 @@ mod imp {
         pub actorselection: gtk::SingleSelection,
         pub recommendselection: gtk::SingleSelection,
         pub playbuttonhandlerid: RefCell<Option<glib::SignalHandlerId>>,
+
+        #[property(get, set, construct_only)]
+        pub name: RefCell<Option<String>>,
+        pub selected: RefCell<Option<String>>,
     }
 
     // The central trait for subclassing a GObject
@@ -229,10 +234,11 @@ glib::wrapper! {
 
 #[template_callbacks]
 impl ItemPage {
-    pub fn new(id: String, inid: String) -> Self {
+    pub fn new(id: String, inid: String, name: String) -> Self {
         Object::builder()
             .property("id", id)
             .property("inid", inid)
+            .property("name", name)
             .build()
     }
 
@@ -641,7 +647,9 @@ impl ItemPage {
             .await
             .unwrap();
         spawn(glib::clone!(@weak osdbox,@weak self as obj=>async move {
-                obj.imp().line1.set_text(&format!("S{}:E{} - {}",info.parent_index_number.unwrap_or(0), info.index_number.unwrap_or(0), info.name));
+                let selected_name = format!("S{}:E{} - {}",info.parent_index_number.unwrap_or(0), info.index_number.unwrap_or(0), info.name);
+                obj.imp().line1.set_text(&selected_name);
+                obj.imp().selected.replace(Some(selected_name));
                 obj.imp().line1spinner.set_visible(false);
                 let info = info.clone();
                 if let Some(handlerid) = obj.imp().playbuttonhandlerid.borrow_mut().take() {
@@ -1115,7 +1123,6 @@ impl ItemPage {
                 if media.name == nameselected {
                     let medianameselected = nameselected.to_string();
                     let url = media.direct_stream_url.clone();
-                    let name = info.name.clone();
                     let back = Back {
                         id: info.id.clone(),
                         mediasourceid: media.id.clone(),
@@ -1126,6 +1133,8 @@ impl ItemPage {
                     let id = info.id.clone();
                     let subselected = subselected.clone();
                     if let Some(url) = url {
+                        let name = obj.imp().name.borrow().clone();
+                        let selected = obj.imp().selected.borrow().clone();
                         spawn(async move {
                             let suburl = match media.media_streams.iter().find(|&mediastream| {
                                 mediastream.stream_type == "Subtitle" && Some(mediastream.display_title.as_ref().unwrap_or(&"".to_string())) == subselected.as_ref() && mediastream.is_external
@@ -1143,7 +1152,7 @@ impl ItemPage {
                                 },
                                 None => None,
                             };
-                            obj.get_window().set_clapperpage(&url, suburl.as_deref(), Some(&name));
+                            obj.get_window().set_clapperpage(&url, suburl.as_deref(), name.as_deref(), selected.as_deref());
                             return;
                         });
                     } else {

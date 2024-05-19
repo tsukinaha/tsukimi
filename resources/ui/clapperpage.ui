@@ -12,8 +12,35 @@
                 <property name="vexpand">true</property>
                 <property name="auto-inhibit">true</property>
                 <child type="fading-overlay">
-                  <object class="ClapperGtkTitleHeader" id="title_header">
+                  <object class="GtkBox" id="header">
                     <property name="valign">start</property>
+                    <property name="halign">center</property>
+                    <property name="orientation">vertical</property>
+                    <property name="width-request">600</property>
+                    <property name="margin-top">7</property>
+                    <child>
+                      <object class="GtkLabel" id="title">
+                        <property name="valign">start</property>
+                        <attributes>
+                          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                        </attributes>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="secondtitle">
+                        <property name="valign">start</property>
+                        <attributes>
+                          <attribute name="scale" value="0.8"/>
+                        </attributes>
+                        <style>
+                          <class name="dim-label"/>
+                        </style>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="osd"/>
+                      <class name="mediainfo"/>
+                    </style>
                   </object>
                 </child>
                 <child type="fading-overlay">
@@ -24,7 +51,14 @@
                       <object class="GtkToggleButton">
                         <property name="valign">start</property>
                         <property name="halign">end</property>
+                        <property name="icon-name">help-about-symbolic</property>
                         <signal name="toggled" handler="on_play_pause_toggled" swapped="yes"/>
+                        <property name="margin-end">7</property>
+                        <property name="margin-top">7</property>
+                        <style>
+                          <class name="circular"/>
+                          <class name="osd"/>
+                        </style>
                       </object>
                     </child>
                     <child>

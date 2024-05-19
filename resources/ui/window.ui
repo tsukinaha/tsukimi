@@ -148,7 +148,7 @@
                                     <child type="suffix">
                                       <object class="GtkToggleButton">
                                         <property name="valign">center</property>
-                                        <property name="icon-name">settings-symbolic</property>
+                                        <property name="icon-name">applications-system-symbolic</property>
                                         <property name="action-name">setting.account</property>
                                         <style>
                                           <class name="flat" />

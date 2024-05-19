@@ -793,7 +793,7 @@ impl MoviePage {
                     }
                 }
             }
-        }  
+        }
     }
 
     pub fn bind_button(&self, playbackinfo: &Media, info: &SeriesInfo) {
@@ -819,7 +819,7 @@ impl MoviePage {
                 if media.name == nameselected {
                     let medianameselected = nameselected.to_string();
                     let url = media.direct_stream_url.clone();
-                    let name = media.name.clone();
+                    let name = info.name.clone();
                     let back = Back {
                         id: info.id.clone(),
                         mediasourceid: media.id.clone(),
@@ -847,22 +847,7 @@ impl MoviePage {
                                 },
                                 None => None,
                             };
-                            gio::spawn_blocking(move || {
-                                match mpv::event::play(
-                                    url,
-                                    suburl,
-                                    Some(name),
-                                    &back,
-                                    Some(percentage),
-                                ) {
-                                    Ok(_) => {
-                                        
-                                    }
-                                    Err(e) => {
-                                        eprintln!("Failed to play: {}", e);
-                                    }
-                                };
-                            });
+                            obj.get_window().set_clapperpage(&url, suburl.as_deref(), Some(&name), None);
                             return;
                         });
                     } else {
@@ -873,5 +858,9 @@ impl MoviePage {
                 }
             }
         }));
+    }
+
+    pub fn get_window(&self) -> Window {
+        self.root().and_downcast::<Window>().unwrap()
     }
 }

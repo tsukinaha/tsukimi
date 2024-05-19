@@ -1,4 +1,5 @@
 use crate::config::set_config;
+use crate::ui::widgets::song_widget::format_duration;
 use crate::ui::widgets::window::Window;
 use clapper::{AudioStream, VideoStream};
 use glib::Object;
@@ -28,7 +29,12 @@ mod imp {
         #[template_child]
         pub mediainfo: TemplateChild<gtk::Label>,
         #[template_child]
-        pub title_header: TemplateChild<TitleHeader>,
+        pub title: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub secondtitle: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub header: TemplateChild<gtk::Box>,
+        pub mediaitem: RefCell<Option<clapper::MediaItem>>,
     }
 
     // The central trait for subclassing a GObject
@@ -97,28 +103,32 @@ impl ClapperPage {
         Object::builder().build()
     }
 
-    pub fn add_item(&self, url: &str, suburi: Option<&str>, name: Option<&str>) {
+    pub fn add_item(
+        &self,
+        url: &str,
+        suburi: Option<&str>,
+        name: Option<&str>,
+        line2: Option<&str>,
+    ) {
         let imp = self.imp();
         let server_info = set_config();
         let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
-        let item = clapper::MediaItem::builder()
-            .uri(url)
-            .name(name.unwrap_or("Unknown"))
-            .build();
-        
+        let item = clapper::MediaItem::builder().uri(url).build();
+
+        imp.mediaitem.replace(Some(item.clone()));
+        imp.title.set_text(name.unwrap_or("Unknown"));
+        if let Some(line2) = line2 {
+            imp.secondtitle.set_text(line2);
+        } else {
+            imp.secondtitle.set_visible(false);
+        }
+
         if let Some(suburi) = suburi {
             let suburi = format!("{}:{}/emby{}", server_info.domain, server_info.port, suburi);
             item.set_suburi(&suburi);
         }
-        imp
-            .video
-            .player()
-            .unwrap()
-            .queue()
-            .unwrap()
-            .add_item(&item);
-        imp
-            .video
+        imp.video.player().unwrap().queue().unwrap().add_item(&item);
+        imp.video
             .player()
             .unwrap()
             .queue()
@@ -145,31 +155,42 @@ impl ClapperPage {
         let imp = self.imp();
         let player = imp.video.player().unwrap();
         let item = player.video_streams().unwrap().item(0);
-        let video_stream = item.and_downcast_ref::<VideoStream>().unwrap();
-        let item = player.audio_streams().unwrap().item(0);
-        let audio_stream = item.and_downcast_ref::<AudioStream>().unwrap();
-        let mediainfo = &self.imp().mediainfo;
-        let text = &format!(
-            " <b>Video</b> \n Bitrate: {} kbps \n Framerate: {} \n Codec: {} \n Pixel Format: {} \n Resolution: {}x{} \n\n <b>Audio</b> \n Audio Codec: {} \n Channels: {} \n Sample Rate: {} Hz \n Bitrate: {} kbps \n Sample Format: {} \n\n <b>Video Playback</b> \n Decoder: {} \n Filter: {} \n Sink: {} \n\n <b>Audio Playback</b> \n Decoder: {} \n Filter: {} \n Sink: {} ",
-            video_stream.bitrate() / 1000,
-            video_stream.fps(),
-            video_stream.codec().unwrap_or("Unknown".into()),
-            video_stream.pixel_format().unwrap_or("Unknown".into()),
-            video_stream.width(),
-            video_stream.height(),
-            audio_stream.codec().unwrap_or("Unknown".into()),
-            audio_stream.channels(),
-            audio_stream.sample_rate(),
-            audio_stream.bitrate() / 1000,
-            audio_stream.sample_format().unwrap_or("Unknown".into()),
-            player.current_video_decoder().map_or("Unknown".to_string(), |decoder| decoder.type_().to_string()),
-            player.video_filter().map_or("Unknown".to_string(), |filter| filter.type_().to_string()),
-            player.video_sink().map_or("Unknown".to_string(), |sink| sink.type_().to_string()),
-            player.current_audio_decoder().map_or("Unknown".to_string(), |decoder| decoder.type_().to_string()),
-            player.audio_filter().map_or("Unknown".to_string(), |filter| filter.type_().to_string()),
-            player.audio_sink().map_or("Unknown".to_string(), |sink| sink.type_().to_string())
-        );
-        mediainfo.set_markup(text);
-        mediainfo.set_visible(!mediainfo.is_visible())
+        if let Some(video_stream) = item.and_downcast_ref::<VideoStream>() {
+            let item = player.audio_streams().unwrap().item(0);
+            if let Some(audio_stream) = item.and_downcast_ref::<AudioStream>() {
+                let mediaitembind = imp.mediaitem.borrow();
+                let mediaitem = mediaitembind.as_ref().unwrap();
+
+                let mediainfo = &self.imp().mediainfo;
+                let text = &format!(
+                    " <b>Media</b> \n Container Format: {} \n Duration: {} \n\n <b>Video</b> \n Bitrate: {} kbps \n Framerate: {} \n Codec: {} \n Pixel Format: {} \n Resolution: {}x{} \n\n <b>Audio</b> \n Audio Codec: {} \n Channels: {} \n Sample Rate: {} Hz \n Bitrate: {} kbps \n Sample Format: {} \n\n <b>Video Playback</b> \n Decoder: {} \n Filter: {} \n Sink: {} \n\n <b>Audio Playback</b> \n Decoder: {} \n Filter: {} \n Sink: {} ",
+                    mediaitem.container_format().unwrap_or("Unknown".into()),
+                    &format_duration(mediaitem.duration() as i64),
+                    video_stream.bitrate() / 1000,
+                    video_stream.fps(),
+                    video_stream.codec().unwrap_or("Unknown".into()),
+                    video_stream.pixel_format().unwrap_or("Unknown".into()),
+                    video_stream.width(),
+                    video_stream.height(),
+                    audio_stream.codec().unwrap_or("Unknown".into()),
+                    audio_stream.channels(),
+                    audio_stream.sample_rate(),
+                    audio_stream.bitrate() / 1000,
+                    audio_stream.sample_format().unwrap_or("Unknown".into()),
+                    player.current_video_decoder().map_or("Unknown".to_string(), |decoder| decoder.type_().to_string()),
+                    player.video_filter().map_or("-".to_string(), |filter| filter.type_().to_string()),
+                    player.video_sink().map_or("Unknown".to_string(), |sink| sink.type_().to_string()),
+                    player.current_audio_decoder().map_or("Unknown".to_string(), |decoder| decoder.type_().to_string()),
+                    player.audio_filter().map_or("-".to_string(), |filter| filter.type_().to_string()),
+                    player.audio_sink().map_or("Unknown".to_string(), |sink| sink.type_().to_string())
+                );
+                mediainfo.set_markup(text);
+                mediainfo.set_visible(!mediainfo.is_visible())
+            } else {
+                return;
+            }
+        } else {
+            return;
+        }
     }
 }
