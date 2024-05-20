@@ -1,4 +1,5 @@
 use crate::config::set_config;
+use crate::toast;
 use crate::ui::widgets::song_widget::format_duration;
 use crate::ui::widgets::window::Window;
 use clapper::{AudioStream, VideoStream};
@@ -11,7 +12,6 @@ mod imp {
 
     use std::cell::RefCell;
 
-    use clapper_gtk::TitleHeader;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
@@ -115,6 +115,10 @@ impl ClapperPage {
         let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
         let item = clapper::MediaItem::builder().uri(url).build();
 
+        if suburi.is_some() {
+            toast!(self,"External subtitles not supported, see https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/36")
+        }
+
         imp.mediaitem.replace(Some(item.clone()));
         imp.title.set_text(name.unwrap_or("Unknown"));
         if let Some(line2) = line2 {
@@ -123,10 +127,6 @@ impl ClapperPage {
             imp.secondtitle.set_visible(false);
         }
 
-        if let Some(suburi) = suburi {
-            let suburi = format!("{}:{}/emby{}", server_info.domain, server_info.port, suburi);
-            item.set_suburi(&suburi);
-        }
         imp.video.player().unwrap().queue().unwrap().add_item(&item);
         imp.video
             .player()

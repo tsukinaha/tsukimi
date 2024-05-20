@@ -72,6 +72,12 @@
                               <object class="AdwExpanderRow">
                                 <property name="title" translatable="yes">MPV Preferences</property>
                                 <child>
+                                  <object class="AdwSwitchRow" id="mpvcontrol">
+                                    <property name="title" translatable="yes">Enable MPV (External Window)</property>
+                                    <property name="subtitle" translatable="yes">External Subtitle Support</property>
+                                  </object>
+                                </child>
+                                <child>
                                   <object class="AdwSwitchRow" id="autofullscreencontrol">
                                     <property name="title" translatable="yes">Auto Fullscreen</property>
                                   </object>

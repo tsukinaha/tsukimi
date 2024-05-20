@@ -1,7 +1,6 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
-use gst::glib::property::PropertyGet;
 use gtk::template_callbacks;
 use gtk::{gio, glib};
 use std::cell::Ref;
@@ -1152,7 +1151,26 @@ impl ItemPage {
                                 },
                                 None => None,
                             };
-                            obj.get_window().set_clapperpage(&url, suburl.as_deref(), name.as_deref(), selected.as_deref());
+                            if SETTINGS.mpv() {
+                                gio::spawn_blocking(move || {
+                                    match mpv::event::play(
+                                        url,
+                                        suburl,
+                                        Some(name.unwrap_or("".to_string())),
+                                        &back,
+                                        Some(percentage),
+                                    ) {
+                                        Ok(_) => {
+                                            
+                                        }
+                                        Err(e) => {
+                                            eprintln!("Failed to play: {}", e);
+                                        }
+                                    };
+                                });
+                            } else {
+                                obj.get_window().set_clapperpage(&url, suburl.as_deref(), name.as_deref(), selected.as_deref());
+                            }
                             return;
                         });
                     } else {

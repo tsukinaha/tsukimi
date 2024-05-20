@@ -24,9 +24,12 @@ fn main() -> glib::ExitCode {
         video.add_fading_overlay(&controls);
         
         // replace this with a path to a local video file or an url that points to a video stream
-        let item = MediaItem::new("file:///var/home/jangernert/big-buck-bunny_trailer.webm");
+        let item = MediaItem::new("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
+        
         video.player().unwrap().queue().unwrap().add_item(&item);
         video.player().unwrap().queue().unwrap().select_item(Some(&item));
+
+        video.player().unwrap().play();
 
         let content = gtk4::Box::new(gtk4::Orientation::Vertical, 0);
         content.append(&libadwaita::HeaderBar::new());

@@ -57,6 +57,8 @@ mod imp {
         pub font: TemplateChild<gtk::FontDialogButton>,
         #[template_child]
         pub dailyrecommendcontrol: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub mpvcontrol: TemplateChild<adw::SwitchRow>,
     }
 
     // The central trait for subclassing a GObject
@@ -129,6 +131,7 @@ mod imp {
                 obj.set_fontsize();
                 obj.set_font();
                 obj.set_daily_recommend();
+                obj.set_mpvcontrol();
             }));
         }
     }
@@ -412,5 +415,13 @@ impl SettingsPage {
             .connect_active_notify(move |control| {
                 SETTINGS.set_daily_recommend(control.is_active()).unwrap();
             });
+    }
+
+    pub fn set_mpvcontrol(&self) {
+        let imp = self.imp();
+        imp.mpvcontrol.set_active(SETTINGS.mpv());
+        imp.mpvcontrol.connect_active_notify(move |control| {
+            SETTINGS.set_mpv(control.is_active()).unwrap();
+        });
     }
 }

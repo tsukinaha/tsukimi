@@ -11,6 +11,9 @@
               <object class="ClapperGtkVideo" id="video">
                 <property name="vexpand">true</property>
                 <property name="auto-inhibit">true</property>
+                <child type="overlay">
+                  <object class="ClapperGtkBillboard" id="billboard"/>
+                </child>
                 <child type="fading-overlay">
                   <object class="GtkBox" id="header">
                     <property name="valign">start</property>

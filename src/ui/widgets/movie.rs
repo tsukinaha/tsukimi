@@ -847,7 +847,26 @@ impl MoviePage {
                                 },
                                 None => None,
                             };
-                            obj.get_window().set_clapperpage(&url, suburl.as_deref(), Some(&name), None);
+                            if SETTINGS.mpv() {
+                                gio::spawn_blocking(move || {
+                                    match mpv::event::play(
+                                        url,
+                                        suburl,
+                                        Some(name),
+                                        &back,
+                                        Some(percentage),
+                                    ) {
+                                        Ok(_) => {
+                                            
+                                        }
+                                        Err(e) => {
+                                            eprintln!("Failed to play: {}", e);
+                                        }
+                                    };
+                                });
+                            } else {
+                                obj.get_window().set_clapperpage(&url, suburl.as_deref(), Some(&name), None);
+                            }
                             return;
                         });
                     } else {
