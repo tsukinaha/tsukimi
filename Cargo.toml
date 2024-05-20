@@ -20,7 +20,7 @@ adw = { version = "0.6.0", package = "libadwaita", features = ["v1_5"] }
 cargo-deb = "2.2.0"
 bytefmt = "0.1.7"
 crossbeam = "0.8.4"
-libc = "0.2.154"
+libc = "0.2.155"
 uuid = { version = "1.8.0", features = ["v4"] }
 chrono = "0.4.38"
 toml = "0.8.12"
