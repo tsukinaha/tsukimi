@@ -23,7 +23,7 @@ crossbeam = "0.8.4"
 libc = "0.2.154"
 uuid = { version = "1.8.0", features = ["v4"] }
 chrono = "0.4.38"
-toml = "0.8.12"
+toml = "0.8.13"
 tracing = "0.1.40"
 gst = { version = "0.22.4", package = "gstreamer"}
 url = "2.5.0"
