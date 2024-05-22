@@ -353,7 +353,7 @@ impl HomePage {
                 .margin_top(15)
                 .margin_start(10)
                 .build();
-            label.add_css_class("title-4");
+            label.add_css_class("title-3");
             scrollbox.append(&label);
             scrollbox.append(scrolled);
             let latest = get_data_with_cache(view.id.clone(), "view", async move {
