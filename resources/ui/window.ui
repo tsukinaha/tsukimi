@@ -45,6 +45,9 @@
                           <object class="GtkOverlay">
                             <property name="hexpand">True</property>
                             <property name="vexpand">True</property>
+                            <style>
+                              <class name="home-carousel" />
+                            </style>
                             <child>
                               <object class="GtkStack" id="login_stack">
                                 <property name="transition-type">crossfade</property>
