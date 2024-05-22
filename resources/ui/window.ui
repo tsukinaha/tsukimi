@@ -271,25 +271,6 @@
                                             </child>
                                           </object>
                                         </child>
-                                        <child>
-                                          <object class="AdwActionRow">
-                                            <child type="prefix">
-                                              <object class="GtkLabel">
-                                                <property name="label" translatable="yes">Preferences</property>
-                                                <property name="halign">start</property>
-                                                <attributes>
-                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                                </attributes>
-                                              </object>
-                                            </child>
-                                            <child type="prefix">
-                                              <object class="GtkImage">
-                                                <property name="icon-name">preferences-system-symbolic</property>
-                                                <property name="halign">start</property>
-                                              </object>
-                                            </child>
-                                          </object>
-                                        </child>
                                       </object>
                                     </property>
                                   </object>

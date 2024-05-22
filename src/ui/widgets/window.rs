@@ -160,9 +160,6 @@ mod imp {
                             3 => {
                                 obj.serverpanelpage();
                             }
-                            4 => {
-                                obj.settingspage();
-                            }
                             _ => {}
                         }
                     }
@@ -525,17 +522,6 @@ impl Window {
             imp.navipage
                 .set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| "Search".to_string()));
         }
-    }
-
-    fn settingspage(&self) {
-        let imp = self.imp();
-        if imp.settingspage.child().is_none() {
-            imp.settingspage
-                .set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
-        }
-        imp.insidestack.set_visible_child_name("settingspage");
-        imp.navipage.set_title("Preferences");
-        self.set_pop_visibility(false);
     }
 
     fn serverpanelpage(&self) {
