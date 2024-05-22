@@ -1,10 +1,9 @@
-use std::ops::Deref;
-
 use gtk::{
     gio,
     glib::{self, thread_guard::ThreadGuard},
     prelude::*,
 };
+use std::ops::Deref;
 
 use crate::APP_ID;
 
@@ -30,6 +29,15 @@ impl Settings {
     const KEY_FONT_SIZE: &'static str = "font-size";
     const KEY_FONT_NAME: &'static str = "font-name";
     const KEY_DAILY_RECOMMEND: &'static str = "is-daily-recommend";
+    const KEY_MPV: &'static str = "mpv";
+
+    pub fn set_mpv(&self, mpv: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_MPV, mpv)
+    }
+
+    pub fn mpv(&self) -> bool {
+        self.boolean(Self::KEY_MPV)
+    }
 
     pub fn set_daily_recommend(&self, daily_recommend: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_DAILY_RECOMMEND, daily_recommend)

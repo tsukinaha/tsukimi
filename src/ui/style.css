@@ -3,6 +3,11 @@ child {
   border-radius: 15px;
 }
 
+.mediainfo {
+  padding: 9px;
+  border-radius: 15px;
+}
+
 .mask {
   background: linear-gradient(
     to bottom,
@@ -37,6 +42,16 @@ listview > row {
 
 picture {
   border-radius: 10px;
+}
+
+clapper-gtk-video > overlay {
+  margin: 0px;
+  border-radius: 0px;
+}
+
+clapper-gtk-video > overlay > picture {
+  margin: 0px;
+  border-radius: 0px;
 }
 
 .playing-song-label {

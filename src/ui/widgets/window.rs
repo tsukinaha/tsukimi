@@ -68,6 +68,8 @@ mod imp {
         pub clapperpage: TemplateChild<gtk::StackPage>,
         #[template_child]
         pub clappernav: TemplateChild<ClapperPage>,
+        #[template_child]
+        pub serverselectlist: TemplateChild<gtk::ListBox>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
     }
@@ -84,6 +86,7 @@ mod imp {
             PlayerToolbarBox::ensure_type();
             ClapperPage::ensure_type();
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
             klass.install_action("win.home", None, move |window, _action, _parameter| {
                 window.freshhomepage();
             });
@@ -129,7 +132,7 @@ mod imp {
             // Call "constructed" on parent
             self.parent_constructed();
             let obj = self.obj();
-
+            self.clappernav.bind_fullscreen(&obj);
             obj.set_fonts();
             if crate::ui::models::SETTINGS.font_size() != -1 {
                 let settings = gtk::Settings::default().unwrap();
@@ -142,6 +145,7 @@ mod imp {
             obj.setup_settings();
             obj.load_window_size();
             obj.set_servers();
+            obj.set_nav_servers();
             self.selectlist
                 .connect_row_selected(glib::clone!(@weak obj => move |_, row| {
                     if let Some(row) = row {
@@ -158,9 +162,6 @@ mod imp {
                             }
                             3 => {
                                 obj.serverpanelpage();
-                            }
-                            4 => {
-                                obj.settingspage();
                             }
                             _ => {}
                         }
@@ -190,13 +191,16 @@ mod imp {
     impl AdwApplicationWindowImpl for Window {}
 }
 
+use crate::client::structs::Back;
 use crate::config::Account;
 use crate::config::{load_cfgv2, load_env};
 use crate::ui::models::SETTINGS;
 use crate::utils::spawn;
 use crate::APP_ID;
 use glib::Object;
-use gtk::{gio, glib};
+use gtk::{gio, glib, template_callbacks};
+
+use super::server_row::ServerRow;
 
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
@@ -205,6 +209,7 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+#[template_callbacks]
 impl Window {
     pub fn set_servers(&self) {
         let imp = self.imp();
@@ -231,31 +236,7 @@ impl Window {
             imp.login_stack.set_visible_child_name("servers");
         }
         for account in accounts.accounts {
-            let account_clone = account.clone();
-            let row = adw::ActionRow::builder()
-                .title(&account.servername)
-                .subtitle(&account.username)
-                .height_request(80)
-                .activatable(true)
-                .build();
-            unsafe {
-                row.set_data("account", account);
-            }
-            row.add_suffix(&{
-                let button = gtk::Button::builder()
-                    .icon_name("user-trash-symbolic")
-                    .valign(gtk::Align::Center)
-                    .build();
-                button.add_css_class("flat");
-                button.connect_clicked(glib::clone!(@weak self as obj=> move |_| {
-                    crate::config::remove(&account_clone).unwrap();
-                    obj.set_servers();
-                }));
-                button
-            });
-            row.add_css_class("serverrow");
-
-            listbox.append(&row);
+            listbox.append(&self.set_server_rows(account));
         }
         listbox.connect_row_activated(glib::clone!(@weak self as obj => move |_, row| {
             unsafe {
@@ -264,12 +245,59 @@ impl Window {
                 load_env(account);
                 SETTINGS.set_preferred_server(&account.servername).unwrap();
             }
-            obj.imp().historypage.set_child(None::<&gtk::Widget>);
-            obj.imp().searchpage.set_child(None::<&gtk::Widget>);
-            obj.mainpage();
-            obj.freshhomepage();
-            obj.account_setup();
+            obj.reset();
         }));
+    }
+
+    pub fn set_nav_servers(&self) {
+        let imp = self.imp();
+        let listbox = imp.serverselectlist.get();
+        let accounts = load_cfgv2().unwrap();
+        for account in accounts.accounts {
+            listbox.append(&ServerRow::new(account));
+        }
+    }
+
+    #[template_callback]
+    pub fn account_activated(&self, account_row: &ServerRow) {
+        account_row.activate();
+    }
+
+    pub fn reset(&self) {
+        self.imp().historypage.set_child(None::<&gtk::Widget>);
+        self.imp().searchpage.set_child(None::<&gtk::Widget>);
+
+        self.mainpage();
+        self.freshhomepage();
+        self.account_setup();
+    }
+
+    pub fn set_server_rows(&self, account: Account) -> adw::ActionRow {
+        let account_clone = account.clone();
+        let row = adw::ActionRow::builder()
+            .title(&account.servername)
+            .subtitle(&account.username)
+            .height_request(80)
+            .activatable(true)
+            .build();
+        unsafe {
+            row.set_data("account", account);
+        }
+        row.add_suffix(&{
+            let button = gtk::Button::builder()
+                .icon_name("user-trash-symbolic")
+                .valign(gtk::Align::Center)
+                .build();
+            button.add_css_class("flat");
+            button.connect_clicked(glib::clone!(@weak self as obj=> move |_| {
+                crate::config::remove(&account_clone).unwrap();
+                obj.set_servers();
+                obj.set_nav_servers();
+            }));
+            button
+        });
+        row.add_css_class("serverrow");
+        row
     }
 
     pub fn account_setup(&self) {
@@ -526,17 +554,6 @@ impl Window {
         }
     }
 
-    fn settingspage(&self) {
-        let imp = self.imp();
-        if imp.settingspage.child().is_none() {
-            imp.settingspage
-                .set_child(Some(&crate::ui::widgets::settings::SettingsPage::new()));
-        }
-        imp.insidestack.set_visible_child_name("settingspage");
-        imp.navipage.set_title("Preferences");
-        self.set_pop_visibility(false);
-    }
-
     fn serverpanelpage(&self) {
         let imp = self.imp();
         imp.insidestack.set_visible_child_name("serverpanelpage");
@@ -660,5 +677,18 @@ impl Window {
             let settings = self.imp().stack.settings();
             settings.set_gtk_font_name(Some(&SETTINGS.font_name()));
         }
+    }
+
+    pub fn set_clapperpage(
+        &self,
+        url: &str,
+        suburi: Option<&str>,
+        name: Option<&str>,
+        line2: Option<&str>,
+        back: Option<Back>,
+    ) {
+        let imp = self.imp();
+        imp.stack.set_visible_child_name("clapper");
+        imp.clappernav.add_item(url, suburi, name, line2, back);
     }
 }

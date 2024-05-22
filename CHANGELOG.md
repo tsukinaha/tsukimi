@@ -1,3 +1,27 @@
+## 0.5.0
+
+- 增加了 clapper 作为默认播放器
+
+  > [!NOTE]
+  > clapper 与 mpv 具有不同的特性，如果遇到播放问题可先切换至 mpv（Settings->video->Enable MPV），请至 issue 反馈相关问题
+
+- 重构了设置页，封装到 adwdialog
+- 统一了列表标题的样式
+- 右键菜单现在出现在点击事件的右下
+
+- 修复了若干已知错误
+
+- Added clapper as the default player
+
+  > [!NOTE]
+  > clipper and mpv have different features, if there are playback issues, you can first switch to mpv (Settings->Video->Enable MPV), and please report related issues to the issue tracker.
+
+- Refactored the settings page, encapsulated into adwdialog
+- Unified the style of list titles
+- Right-click menus now appear at the bottom right of click events
+
+- Fixed several known issues
+
 ## 0.4.13-1
 
 - 增加首页每日推荐开关

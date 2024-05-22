@@ -337,6 +337,7 @@ impl TuListItem {
             Some(popover) => {
                 let popover = PopoverMenu::builder()
                     .menu_model(&popover)
+                    .halign(gtk::Align::Start)
                     .has_arrow(false)
                     .build();
                 popover.set_parent(self);
@@ -349,7 +350,7 @@ impl TuListItem {
         gesture.connect_released(glib::clone!(@weak imp => move | gesture, _n, x, y| {
             gesture.set_state(gtk::EventSequenceState::Claimed);
             if let Some(popover) = imp.popover.borrow().as_ref() {
-                popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 1, 1)));
+                popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
                 popover.popup();
             };
         }));

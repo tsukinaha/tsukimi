@@ -1,0 +1,34 @@
+[package]
+name = "clapper-gtk-sys"
+version = "0.0.1"
+edition = "2021"
+build = "build.rs"
+
+[package.metadata.system-deps.clapper_gtk_0_0]
+name = "clapper-gtk-0.0"
+version = "0"
+
+[package.metadata.docs.rs]
+rustc-args = ["--cfg", "docsrs"]
+rustdoc-args = ["--cfg", "docsrs", "--generate-link-to-definition"]
+all-features = true
+
+[lib]
+name = "clapper_gtk_sys"
+
+[dependencies]
+libc = "0.2"
+glib-sys = "0.19"
+gio-sys = "0.19"
+gtk-sys = { package = "gtk4-sys", version = "0.8" }
+clapper-sys = { path = "../../libclapper-rs/sys/" }
+
+
+[build-dependencies]
+system-deps = "6"
+
+[dev-dependencies]
+shell-words = "1.0.0"
+tempfile = "3"
+
+[features]

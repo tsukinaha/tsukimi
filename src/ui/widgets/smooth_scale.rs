@@ -54,6 +54,7 @@ mod imp {
             }));
 
             self.obj().duration_changed();
+            self.obj().update_timeout();
         }
     }
     impl WidgetImpl for SmoothScale {}
@@ -106,7 +107,6 @@ impl SmoothScale {
         if *position > 0.0 {
             self.set_value(*position);
         }
-        self.update_timeout();
         glib::ControlFlow::Continue
     }
 

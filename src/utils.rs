@@ -198,7 +198,11 @@ pub fn tu_list_view_connect_activate(
             view,
             &window,
             &result.name,
-            crate::ui::widgets::item::ItemPage::new(result.id.clone(), result.id.clone()),
+            crate::ui::widgets::item::ItemPage::new(
+                result.id.clone(),
+                result.id.clone(),
+                result.name.clone(),
+            ),
         ),
         "Episode" => push_page(
             view,
@@ -207,6 +211,7 @@ pub fn tu_list_view_connect_activate(
             crate::ui::widgets::item::ItemPage::new(
                 result.series_id.as_ref().unwrap().clone(),
                 result.id.clone(),
+                result.series_name.clone().unwrap_or("".to_string()),
             ),
         ),
         "Actor" | "Person" => push_page(

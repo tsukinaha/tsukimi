@@ -1,6 +1,6 @@
 [package]
 name = "tsukimi"
-version = "0.4.13"
+version = "0.5.0"
 edition = "2021"
 description = "A simple Emby Client with MPV written by GTK4-RS"
 license = "GPL"
@@ -10,11 +10,11 @@ license = "GPL"
 gtk = { version = "0.8.2", package = "gtk4", features = [
     "v4_14",
 ] }
-serde = { version = "1.0.201", features = ["derive"] }
+serde = { version = "1.0.202", features = ["derive"] }
 serde_json = "1.0.117"
 tokio = { version = "1.37.0", features = ["full"] }
 reqwest = { version = "0.12", features = ["json"] }
-async-channel = "2.2.1"
+async-channel = "2.3.1"
 once_cell = "1.19.0"
 dirs = "5.0.1"
 adw = { version = "0.6.0", package = "libadwaita", features = [
@@ -22,15 +22,16 @@ adw = { version = "0.6.0", package = "libadwaita", features = [
 ] }
 cargo-deb = "2.2.0"
 bytefmt = "0.1.7"
-libmpv = { path = "libmpv-rs", version = "2.0.1" }
-libmpv-sys = "3.1.0"
 crossbeam = "0.8.4"
-libc = "0.2.154"
+libc = "0.2.155"
 uuid = { version = "1.8.0", features = ["v4"] }
 chrono = "0.4.38"
-toml = "0.8.12"
+toml = "0.8.13"
 tracing = "0.1.40"
+libmpv2 = "=3.0.0"
 gst = { version = "0.22.4", package = "gstreamer" }
+clapper = { path = "clapper-rs/libclapper-rs" }
+clapper-gtk = { path = "clapper-rs/libclapper-gtk-rs" }
 
 [build-dependencies]
 embed-resource = "2.4.2"
