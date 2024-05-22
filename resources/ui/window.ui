@@ -162,7 +162,6 @@
                                     <property name="child">
                                       <object class="GtkBox">
                                         <property name="orientation">vertical</property>
-
                                         <child>
                                           <object class="GtkLabel">
                                             <property name="label" translatable="yes">Servers</property>
@@ -180,6 +179,16 @@
                                             <attributes>
                                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                                             </attributes>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkListBox" id="serverselectlist">
+                                            <property name="selection_mode">0</property>
+                                            <property name="focusable">False</property>
+                                            <signal name="row-activated" handler="account_activated" swapped="yes"/>
+                                            <style>
+                                              <class name="navigation-sidebar" />
+                                            </style>
                                           </object>
                                         </child>
                                         <child>
@@ -203,22 +212,24 @@
                                         </child>
                                         <child>
                                           <object class="GtkListBox" id="selectlist">
-                                            <property name="selection-mode">browse</property>
                                             <style>
                                               <class name="navigation-sidebar" />
                                             </style>
-
                                             <child>
                                               <object class="AdwActionRow" id="homerow">
                                                 <child type="prefix">
                                                   <object class="GtkLabel">
                                                     <property name="label" translatable="yes">Home</property>
                                                     <property name="halign">start</property>
+                                                    <attributes>
+                                                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                    </attributes>
                                                   </object>
                                                 </child>
                                                 <child type="prefix">
                                                   <object class="GtkImage">
                                                     <property name="icon-name">go-home-symbolic</property>
+                                                    <property name="margin-end">6</property>
                                                     <property name="halign">start</property>
                                                   </object>
                                                 </child>
@@ -240,11 +251,15 @@
                                                   <object class="GtkLabel">
                                                     <property name="label" translatable="yes">Liked</property>
                                                     <property name="halign">start</property>
+                                                    <attributes>
+                                                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                    </attributes>
                                                   </object>
                                                 </child>
                                                 <child type="prefix">
                                                   <object class="GtkImage">
                                                     <property name="icon-name">document-open-recent-symbolic</property>
+                                                    <property name="margin-end">6</property>
                                                     <property name="halign">start</property>
                                                   </object>
                                                 </child>
@@ -266,11 +281,15 @@
                                                   <object class="GtkLabel">
                                                     <property name="label" translatable="yes">Search</property>
                                                     <property name="halign">start</property>
+                                                    <attributes>
+                                                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                    </attributes>
                                                   </object>
                                                 </child>
                                                 <child type="prefix">
                                                   <object class="GtkImage">
                                                     <property name="icon-name">system-search-symbolic</property>
+                                                    <property name="margin-end">6</property>
                                                     <property name="halign">start</property>
                                                   </object>
                                                 </child>
@@ -292,11 +311,15 @@
                                                   <object class="GtkLabel">
                                                     <property name="label" translatable="yes">Server Panel</property>
                                                     <property name="halign">start</property>
+                                                    <attributes>
+                                                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                    </attributes>
                                                   </object>
                                                 </child>
                                                 <child type="prefix">
                                                   <object class="GtkImage">
                                                     <property name="icon-name">view-grid-symbolic</property>
+                                                    <property name="margin-end">6</property>
                                                     <property name="halign">start</property>
                                                   </object>
                                                 </child>

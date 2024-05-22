@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="ServerWidget" parent="AdwBin">
-    <property name="selectable">True</property>
+  <template class="SidebarServerRow" parent="GtkListBoxRow">
+  <property name="height-request">48</property>
+  <property name="selectable">False</property>
     <child>
       <object class="GtkBox" id="box1">
         <property name="focusable">False</property>
         <property name="spacing">6</property>
+        <property name="margin-start">12</property>
         <child>
-          <object class="GtkImage" id="_dnd_icon">
-            <property name="visible">False</property>
-            <property name="icon-name">emby</property>
+          <object class="GtkImage" id="dnd_icon">
+            <property name="icon-name">network-server-symbolic</property>
           </object>
         </child>
         <child>
@@ -27,6 +28,12 @@
                 <property name="max_width_chars">90</property>
                 <property name="justify">fill</property>
                 <property name="margin-start">9</property>
+                <attributes>
+                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                </attributes>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
             </child>
           </object>
@@ -34,11 +41,4 @@
       </object>
     </child>
   </template>
-  <object class="GtkSizeGroup" id="_size_group">
-    <property name="mode">horizontal</property>
-    <widgets>
-      <widget name="title_box"/>
-      <widget name="_artist_box"/>
-    </widgets>
-  </object>
 </interface>

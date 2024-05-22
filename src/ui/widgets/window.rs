@@ -69,6 +69,8 @@ mod imp {
         pub clapperpage: TemplateChild<gtk::StackPage>,
         #[template_child]
         pub clappernav: TemplateChild<ClapperPage>,
+        #[template_child]
+        pub serverselectlist: TemplateChild<gtk::ListBox>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
     }
@@ -85,6 +87,7 @@ mod imp {
             PlayerToolbarBox::ensure_type();
             ClapperPage::ensure_type();
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
             klass.install_action("win.home", None, move |window, _action, _parameter| {
                 window.freshhomepage();
             });
@@ -143,6 +146,7 @@ mod imp {
             obj.setup_settings();
             obj.load_window_size();
             obj.set_servers();
+            obj.set_nav_servers();
             self.selectlist
                 .connect_row_selected(glib::clone!(@weak obj => move |_, row| {
                     if let Some(row) = row {
@@ -194,7 +198,9 @@ use crate::ui::models::SETTINGS;
 use crate::utils::spawn;
 use crate::APP_ID;
 use glib::Object;
-use gtk::{gio, glib};
+use gtk::{gio, glib, template_callbacks};
+
+use super::server_row::ServerRow;
 
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
@@ -203,6 +209,7 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+#[template_callbacks]
 impl Window {
     pub fn set_servers(&self) {
         let imp = self.imp();
@@ -229,8 +236,45 @@ impl Window {
             imp.login_stack.set_visible_child_name("servers");
         }
         for account in accounts.accounts {
-            let account_clone = account.clone();
-            let row = adw::ActionRow::builder()
+            listbox.append(&self.set_server_rows(account));
+        }
+        listbox.connect_row_activated(glib::clone!(@weak self as obj => move |_, row| {
+            unsafe {
+                let account_ptr: std::ptr::NonNull<Account>  = row.data("account").unwrap();
+                let account: &Account = &*account_ptr.as_ptr();
+                load_env(account);
+                SETTINGS.set_preferred_server(&account.servername).unwrap();
+            }
+            obj.reset(); 
+        }));
+    }
+
+    pub fn set_nav_servers(&self) {
+        let imp = self.imp();
+        let listbox = imp.serverselectlist.get();
+        let accounts = load_cfgv2().unwrap();
+        for account in accounts.accounts {
+            listbox.append(&ServerRow::new(account));
+        }
+    }
+
+    #[template_callback]
+    pub fn account_activated(&self, account_row: &ServerRow) {
+        account_row.activate();
+    }
+
+    pub fn reset(&self) {
+        self.imp().historypage.set_child(None::<&gtk::Widget>);
+        self.imp().searchpage.set_child(None::<&gtk::Widget>);
+
+        self.mainpage();
+        self.freshhomepage();
+        self.account_setup();
+    }
+
+    pub fn set_server_rows(&self, account:Account) -> adw::ActionRow {
+        let account_clone = account.clone();
+        let row = adw::ActionRow::builder()
                 .title(&account.servername)
                 .subtitle(&account.username)
                 .height_request(80)
@@ -248,26 +292,12 @@ impl Window {
                 button.connect_clicked(glib::clone!(@weak self as obj=> move |_| {
                     crate::config::remove(&account_clone).unwrap();
                     obj.set_servers();
+                    obj.set_nav_servers();
                 }));
                 button
             });
             row.add_css_class("serverrow");
-
-            listbox.append(&row);
-        }
-        listbox.connect_row_activated(glib::clone!(@weak self as obj => move |_, row| {
-            unsafe {
-                let account_ptr: std::ptr::NonNull<Account>  = row.data("account").unwrap();
-                let account: &Account = &*account_ptr.as_ptr();
-                load_env(account);
-                SETTINGS.set_preferred_server(&account.servername).unwrap();
-            }
-            obj.imp().historypage.set_child(None::<&gtk::Widget>);
-            obj.imp().searchpage.set_child(None::<&gtk::Widget>);
-            obj.mainpage();
-            obj.freshhomepage();
-            obj.account_setup();
-        }));
+            row
     }
 
     pub fn account_setup(&self) {

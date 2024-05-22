@@ -72,6 +72,7 @@ mod imp {
 
             let obj = self.obj();
             obj.set_up();
+            
             let core_song = self.obj().coresong();
             obj.bind(&core_song);
         }
