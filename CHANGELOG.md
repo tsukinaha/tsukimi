@@ -1,9 +1,9 @@
-## 0.5.0
+## 0.5.0-preview
 
 - 增加了 clapper 作为默认播放器
 
-  > [!NOTE]
-  > clapper 与 mpv 具有不同的特性，如果遇到播放问题可先切换至 mpv（Settings->video->Enable MPV），请至 issue 反馈相关问题
+> [!NOTE]
+> clapper 在 Windows 上尚未解决兼容性问题，因此该预览版依然默认启用 mpv，如果你使用 Linux 则可以尝试在设置中关闭 mpv 选项，启用 clapper。
 
 - 重构了设置页，封装到 adwdialog
 - 统一了列表标题的样式
@@ -13,8 +13,8 @@
 
 - Added clapper as the default player
 
-  > [!NOTE]
-  > clipper and mpv have different features, if there are playback issues, you can first switch to mpv (Settings->Video->Enable MPV), and please report related issues to the issue tracker.
+> [!NOTE]
+> clapper has not yet resolved compatibility issues on Windows in this preview version, so it still defaults to using mpv. If you are using Linux, you can try disabling the mpv option in the settings and enabling clapper for better integration.
 
 - Refactored the settings page, encapsulated into adwdialog
 - Unified the style of list titles

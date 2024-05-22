@@ -1,28 +1,32 @@
 FROM archlinux:latest as builder
 
-WORKDIR /usr/src/tsukimi
-
-COPY . .
 ENV CARGO_TERM_COLOR=always \
     CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse \
     RUST_BACKTRACE=full
 
 RUN pacman -Syu --noconfirm &&\
-    pacman -S --noconfirm base-devel gtk4 libadwaita mpv gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly &&\
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y &&\
-    mkdir -p $HOME/.local/share/glib-2.0/schemas &&\
-    cp moe.tsuna.tsukimi.gschema.xml $HOME/.local/share/glib-2.0/schemas/ &&\
-    glib-compile-schemas $HOME/.local/share/glib-2.0/schemas/ &&\
-    export PATH=$HOME/.cargo/bin:$PATH &&\
-    cargo build --release --locked
+    pacman -S --noconfirm git base-devel sudo
 
-RUN pacman -Syu --noconfirm &&\
-    pacman -S --noconfirm base-devel gtk4 libadwaita mpv gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly &&\
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y &&\
-    mkdir -p $HOME/.local/share/glib-2.0/schemas &&\
-    cp moe.tsuna.tsukimi.gschema.xml $HOME/.local/share/glib-2.0/schemas/ &&\
-    glib-compile-schemas $HOME/.local/share/glib-2.0/schemas/ &&\
+RUN useradd -m -G wheel -s /bin/bash alice \
+    && echo 'alice:password' | chpasswd
+
+RUN echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/99_wheel
+
+USER alice
+
+WORKDIR /home/alice
+
+RUN git clone https://aur.archlinux.org/paru.git \
+    && cd paru \
+    && makepkg -si --noconfirm
+
+COPY . .
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y &&\
     export PATH=$HOME/.cargo/bin:$PATH &&\
+    sudo pacman -S --noconfirm libadwaita mpv gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly &&\
+    paru -S clapper &&\
+    cargo build --release --locked &&\
     cargo install cargo-deb --no-default-features &&\
     cargo deb
 
@@ -32,10 +36,10 @@ WORKDIR /usr/src/tsukimi
 
 VOLUME /usr/src/tsukimi
 
-COPY --from=builder /usr/src/tsukimi/target/release/tsukimi /usr/src/tsukimi/
+COPY --from=builder /home/alice/target/release/tsukimi /usr/src/tsukimi/
 
-COPY --from=builder /usr/src/tsukimi/target/debian/*.deb /usr/src/tsukimi/
+COPY --from=builder /home/alice/target/debian/*.deb /usr/src/tsukimi/
 
-COPY --from=builder root/.local/share/glib-2.0/schemas/gschemas.compiled /usr/src/tsukimi/
+COPY --from=builder /home/alice/moe.tsuna.tsukimi.gschema.xml /usr/src/tsukimi/
 
 ENTRYPOINT ["sleep","3600"]

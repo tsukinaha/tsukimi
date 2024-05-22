@@ -27,10 +27,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: |
-          rustup default stable-gnu
-          C:\msys64\usr\bin\pacman.exe -Sy --needed --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc mingw-w64-x86_64-libadwaita mingw-w64-x86_64-mpv mingw-w64-x86_64-gstreamer mingw-w64-x86_64-gst-plugins-good mingw-w64-x86_64-gst-plugins-bad mingw-w64-x86_64-gst-plugins-ugly
+        run: >
+          rustup default stable-gnu;
+          C:\msys64\usr\bin\pacman.exe -Sy --needed --noconfirm mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc 
+          mingw-w64-x86_64-libadwaita mingw-w64-x86_64-gstreamer mingw-w64-x86_64-gst-plugins-good 
+          mingw-w64-x86_64-gst-plugins-bad mingw-w64-x86_64-gst-plugins-ugly mingw-w64-x86_64-gst-libav;
           C:\msys64\usr\bin\pacman.exe -Syu --noconfirm
+      
+      - name: Install clapper
+        run: |
+          mkdir clapper-dev && cd clapper-dev
+          Invoke-WebRequest -Uri "https://github.com/Kosette/clapper/releases/latest/download/clapper-dev.7z" -OutFile clapper-dev.7z
+          7z.exe x clapper-dev.7z && rm clapper-dev.7z
+          cp -recurse -force bin C:/msys64/mingw64/
+          cp -recurse -force include C:/msys64/mingw64/
+          cp -recurse -force lib C:/msys64/mingw64/
 
       - name: Install latest libmpv-dev
         run: |
@@ -40,7 +51,6 @@ jobs:
           mv -force libmpv.dll.a c:/msys64/mingw64/lib
           mv -force libmpv-2.dll c:/msys64/mingw64/bin
           mv -force include/mpv c:/msys64/mingw64/include
-          cd ..
 
       - name: Build ${{ matrix.target }}
         run: |
