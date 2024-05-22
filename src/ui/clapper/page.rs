@@ -103,6 +103,12 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+impl Default for ClapperPage {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[gtk::template_callbacks]
 impl ClapperPage {
     pub fn new() -> Self {
@@ -197,12 +203,8 @@ impl ClapperPage {
                 );
                 mediainfo.set_markup(text);
                 mediainfo.set_visible(!mediainfo.is_visible())
-            } else {
-                return;
-            }
-        } else {
-            return;
-        }
+            } 
+        } 
     }
 
     pub fn update_position_callback(&self) -> glib::ControlFlow {

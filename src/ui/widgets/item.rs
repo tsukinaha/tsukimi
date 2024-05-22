@@ -1106,7 +1106,8 @@ impl ItemPage {
         let namedropdown = imp.namedropdown.get();
         let subdropdown = imp.subdropdown.get();
         let info = info.clone();
-        let handlerid = playbutton.connect_clicked(glib::clone!(@weak self as obj => move |_| {
+        
+        playbutton.connect_clicked(glib::clone!(@weak self as obj => move |_| {
             let nameselected = namedropdown.selected_item();
             let nameselected = nameselected
                 .and_downcast_ref::<gtk::StringObject>()
@@ -1169,7 +1170,6 @@ impl ItemPage {
                             } else {
                                 obj.get_window().set_clapperpage(&url, suburl.as_deref(), name.as_deref(), selected.as_deref(), Some(back));
                             }
-                            return;
                         });
                     } else {
                         toast!(obj,"No Stream URL found");
@@ -1178,8 +1178,7 @@ impl ItemPage {
                     return;
                 }
             }
-        }));
-        handlerid
+        }))
     }
 
     pub fn get_window(&self) -> Window {

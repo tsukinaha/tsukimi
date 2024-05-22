@@ -732,7 +732,7 @@ impl MoviePage {
     }
 
     pub fn set_dropdown(&self, playbackinfo: &Media, info: &SeriesInfo) {
-        self.bind_button(playbackinfo, &info);
+        self.bind_button(playbackinfo, info);
         let playbackinfo = playbackinfo.clone();
         let info = info.clone();
         let imp = self.imp();
@@ -865,7 +865,6 @@ impl MoviePage {
                             } else {
                                 obj.get_window().set_clapperpage(&url, suburl.as_deref(), Some(&name), None, Some(back));
                             }
-                            return;
                         });
                     } else {
                         toast!(obj,"No Stream URL found");
