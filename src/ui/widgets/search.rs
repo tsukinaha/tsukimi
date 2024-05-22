@@ -141,7 +141,7 @@ impl SearchPage {
                             window.change_pop_visibility();
                             env::set_var("HOME_TITLE", &item.name)
                         } else if item.latest_type == "Series" {
-                            let item_page = ItemPage::new(item.id.clone(),item.id.clone());
+                            let item_page = ItemPage::new(item.id.clone(),item.id.clone(),item.name.clone());
                             item_page.set_tag(Some(&item.name));
                             window.imp().searchview.push(&item_page);
                             window.set_title(&item.name);

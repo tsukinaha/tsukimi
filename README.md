@@ -8,15 +8,9 @@
 ## Notice
 - Windows 下如出现 窗口无法显示 黑边框 等情况
 请安装 Archlinux
-- 此项目位于早期开发阶段 错误处理尚不完善
-- 暂时使用裸 MPV 的方式进行播放 计划使用 Gstreamer 替代
+- 位于早期开发阶段 错误处理尚不完善
 - FR/Issue 前请检查是否重复
-- 欢迎参与项目贡献  Telegram Group: https://t.me/+mhcPxx5kE6QzMjVl
 - Trello Kanban https://trello.com/b/8GOsuygJ/%E5%95%8A%EF%BC%9F
-
-## I want feature of ○○○!
-欢迎提出你想要的功能    
-如果它实用或有趣  我相信你很快就可以看到它
 
 ## Screenshots
 <div align="center">
