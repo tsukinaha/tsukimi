@@ -14,6 +14,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Appearence</property>
+            <property name="description">Not all settings and features are guaranteed to be available on Windows. If you find the component too large, please try adjusting the system scaling. For more details, see the README.</property>
             <child>
               <object class="AdwSwitchRow" id="selectlastcontrol">
                 <property name="title" translatable="yes">Auto Select Last Server</property>
@@ -110,6 +111,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Network</property>
+            <property name="description">User facing error has not been well implemented. This alert will be removed when everything is functioning correctly.</property>
             <child>
               <object class="AdwEntryRow" id="proxyentry">
                 <property name="title" translatable="yes">HTTP Proxy</property>
@@ -151,7 +153,6 @@
             </child>
           </object>
         </child>
-
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Background</property>
@@ -161,6 +162,7 @@
                 <property name="margin-end">12</property>
               </object>
             </property>
+            <property name="description">This feature may cause significant lag. Please enable it with caution.</property>
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Default</property>

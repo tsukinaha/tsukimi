@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="ServerWidget" parent="AdwBin">
+    <property name="selectable">True</property>
+    <child>
+      <object class="GtkBox" id="box1">
+        <property name="focusable">False</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkImage" id="_dnd_icon">
+            <property name="visible">False</property>
+            <property name="icon-name">emby</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="title_box">
+            <property name="focusable">False</property>
+            <property name="hexpand">True</property>
+            <child>
+              <object class="GtkLabel" id="title_label">
+                <property name="focusable">False</property>
+                <property name="xalign">0</property>
+                <property name="halign">start</property>
+                <property name="hexpand">True</property>
+                <property name="ellipsize">end</property>
+                <property name="max_width_chars">90</property>
+                <property name="justify">fill</property>
+                <property name="margin-start">9</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+  <object class="GtkSizeGroup" id="_size_group">
+    <property name="mode">horizontal</property>
+    <widgets>
+      <widget name="title_box"/>
+      <widget name="_artist_box"/>
+    </widgets>
+  </object>
+</interface>

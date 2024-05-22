@@ -2,6 +2,7 @@
 <gresources>
   <gresource prefix="/moe/tsukimi/icons/">
     <file alias="tsukimi">icons/tsukimi.png</file>
+    <file alias="emby">icons/emby.png</file>
     <file preprocess="xml-stripblanks" alias="settings-symbolic.svg">icons/settings-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="series.svg">icons/series.svg</file>
   </gresource>
