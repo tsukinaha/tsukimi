@@ -1169,7 +1169,7 @@ impl ItemPage {
                                     };
                                 });
                             } else {
-                                obj.get_window().set_clapperpage(&url, suburl.as_deref(), name.as_deref(), selected.as_deref());
+                                obj.get_window().set_clapperpage(&url, suburl.as_deref(), name.as_deref(), selected.as_deref(), Some(back));
                             }
                             return;
                         });

@@ -192,6 +192,7 @@ mod imp {
     impl AdwApplicationWindowImpl for Window {}
 }
 
+use crate::client::structs::Back;
 use crate::config::Account;
 use crate::config::{load_cfgv2, load_env};
 use crate::ui::models::SETTINGS;
@@ -685,9 +686,10 @@ impl Window {
         suburi: Option<&str>,
         name: Option<&str>,
         line2: Option<&str>,
+        back: Option<Back>,
     ) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("clapper");
-        imp.clappernav.add_item(url, suburi, name, line2);
+        imp.clappernav.add_item(url, suburi, name, line2, back);
     }
 }

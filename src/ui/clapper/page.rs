@@ -1,3 +1,5 @@
+use crate::client::network::{positionback, RUNTIME};
+use crate::client::structs::Back;
 use crate::config::set_config;
 use crate::toast;
 use crate::ui::widgets::song_widget::format_duration;
@@ -17,6 +19,8 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::client::structs::Back;
+
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/clapperpage.ui")]
@@ -35,6 +39,8 @@ mod imp {
         #[template_child]
         pub header: TemplateChild<gtk::Box>,
         pub mediaitem: RefCell<Option<clapper::MediaItem>>,
+        pub timeout: RefCell<Option<glib::source::SourceId>>,
+        pub back: RefCell<Option<Back>>,
     }
 
     // The central trait for subclassing a GObject
@@ -109,6 +115,7 @@ impl ClapperPage {
         suburi: Option<&str>,
         name: Option<&str>,
         line2: Option<&str>,
+        back: Option<Back>,
     ) {
         let imp = self.imp();
         let server_info = set_config();
@@ -118,6 +125,8 @@ impl ClapperPage {
         if suburi.is_some() {
             toast!(self,"External subtitles not supported, see https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/36")
         }
+
+        imp.back.replace(back);
 
         imp.mediaitem.replace(Some(item.clone()));
         imp.title.set_text(name.unwrap_or("Unknown"));
@@ -135,6 +144,7 @@ impl ClapperPage {
             .unwrap()
             .select_item(Some(&item));
         imp.video.player().unwrap().play();
+        self.update_timeout();
     }
 
     pub fn bind_fullscreen(&self, window: &Window) {
@@ -146,6 +156,7 @@ impl ClapperPage {
 
     pub fn on_button_clicked(&self) {
         self.imp().video.player().unwrap().stop();
+        self.remove_timeout();
         let window = self.root().unwrap().downcast::<Window>().unwrap();
         window.mainpage();
     }
@@ -191,6 +202,38 @@ impl ClapperPage {
             }
         } else {
             return;
+        }
+    }
+
+    pub fn update_position_callback(&self) -> glib::ControlFlow {
+        let position = &self.imp().video.player().unwrap().position();
+        let back = self.imp().back.borrow();
+        if *position > 0.0 {
+            if let Some(back) = back.as_ref() {
+                let duration = *position as u64 * 10000000;
+                let mut back = back.clone();
+                back.tick = duration;
+                RUNTIME.spawn(async move {
+                    positionback(back).await;
+                });
+            }
+        }
+        glib::ControlFlow::Continue
+    }
+
+    pub fn update_timeout(&self) {
+        if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
+            glib::source::SourceId::remove(timeout);
+        }
+        self.imp().timeout.replace(Some(glib::timeout_add_local(
+            std::time::Duration::from_secs(10),
+            glib::clone!(@strong self as obj => move || obj.update_position_callback()),
+        )));
+    }
+
+    pub fn remove_timeout(&self) {
+        if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
+            glib::source::SourceId::remove(timeout);
         }
     }
 }

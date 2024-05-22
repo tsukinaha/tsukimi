@@ -865,7 +865,7 @@ impl MoviePage {
                                     };
                                 });
                             } else {
-                                obj.get_window().set_clapperpage(&url, suburl.as_deref(), Some(&name), None);
+                                obj.get_window().set_clapperpage(&url, suburl.as_deref(), Some(&name), None, Some(back));
                             }
                             return;
                         });
