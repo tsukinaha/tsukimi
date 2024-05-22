@@ -1,4 +1,9 @@
-use crate::{client::network::change_password, toast, ui::models::{emby_cache_path, SETTINGS}, utils::spawn_tokio};
+use crate::{
+    client::network::change_password,
+    toast,
+    ui::models::{emby_cache_path, SETTINGS},
+    utils::spawn_tokio,
+};
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::{gio, glib, template_callbacks, CompositeTemplate};
@@ -104,24 +109,24 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-                obj.set_back();
-                obj.set_sidebar();
-                obj.set_spin();
-                obj.set_fullscreen();
-                obj.set_forcewindow();
-                obj.set_resume();
-                obj.set_proxy();
-                obj.set_theme();
-                obj.set_thread();
-                obj.set_picopactiy();
-                obj.set_pic();
-                obj.set_picblur();
-                obj.change_picblur();
-                obj.set_auto_select_server();
-                obj.set_fontsize();
-                obj.set_font();
-                obj.set_daily_recommend();
-                obj.set_mpvcontrol();
+            obj.set_back();
+            obj.set_sidebar();
+            obj.set_spin();
+            obj.set_fullscreen();
+            obj.set_forcewindow();
+            obj.set_resume();
+            obj.set_proxy();
+            obj.set_theme();
+            obj.set_thread();
+            obj.set_picopactiy();
+            obj.set_pic();
+            obj.set_picblur();
+            obj.change_picblur();
+            obj.set_auto_select_server();
+            obj.set_fontsize();
+            obj.set_font();
+            obj.set_daily_recommend();
+            obj.set_mpvcontrol();
         }
     }
 

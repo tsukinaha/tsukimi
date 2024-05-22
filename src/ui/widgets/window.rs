@@ -246,7 +246,7 @@ impl Window {
                 load_env(account);
                 SETTINGS.set_preferred_server(&account.servername).unwrap();
             }
-            obj.reset(); 
+            obj.reset();
         }));
     }
 
@@ -273,32 +273,32 @@ impl Window {
         self.account_setup();
     }
 
-    pub fn set_server_rows(&self, account:Account) -> adw::ActionRow {
+    pub fn set_server_rows(&self, account: Account) -> adw::ActionRow {
         let account_clone = account.clone();
         let row = adw::ActionRow::builder()
-                .title(&account.servername)
-                .subtitle(&account.username)
-                .height_request(80)
-                .activatable(true)
+            .title(&account.servername)
+            .subtitle(&account.username)
+            .height_request(80)
+            .activatable(true)
+            .build();
+        unsafe {
+            row.set_data("account", account);
+        }
+        row.add_suffix(&{
+            let button = gtk::Button::builder()
+                .icon_name("user-trash-symbolic")
+                .valign(gtk::Align::Center)
                 .build();
-            unsafe {
-                row.set_data("account", account);
-            }
-            row.add_suffix(&{
-                let button = gtk::Button::builder()
-                    .icon_name("user-trash-symbolic")
-                    .valign(gtk::Align::Center)
-                    .build();
-                button.add_css_class("flat");
-                button.connect_clicked(glib::clone!(@weak self as obj=> move |_| {
-                    crate::config::remove(&account_clone).unwrap();
-                    obj.set_servers();
-                    obj.set_nav_servers();
-                }));
-                button
-            });
-            row.add_css_class("serverrow");
-            row
+            button.add_css_class("flat");
+            button.connect_clicked(glib::clone!(@weak self as obj=> move |_| {
+                crate::config::remove(&account_clone).unwrap();
+                obj.set_servers();
+                obj.set_nav_servers();
+            }));
+            button
+        });
+        row.add_css_class("serverrow");
+        row
     }
 
     pub fn account_setup(&self) {

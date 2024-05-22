@@ -856,9 +856,7 @@ impl MoviePage {
                                         &back,
                                         Some(percentage),
                                     ) {
-                                        Ok(_) => {
-                                            
-                                        }
+                                        Ok(_) => {}
                                         Err(e) => {
                                             eprintln!("Failed to play: {}", e);
                                         }

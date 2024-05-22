@@ -37,7 +37,6 @@ pub mod imp {
         const NAME: &'static str = "AccountItem";
         type Type = super::AccountItem;
     }
-
 }
 
 glib::wrapper! {
@@ -56,7 +55,7 @@ impl AccountItem {
         item.set_user_id(account.user_id);
         item.set_access_token(account.access_token);
         item
-    } 
+    }
 
     pub fn account(&self) -> Account {
         Account {

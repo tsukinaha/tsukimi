@@ -3,14 +3,15 @@ use gtk::{glib, CompositeTemplate};
 
 use crate::{config::Account, ui::provider::account_item::AccountItem};
 
-
-
 mod imp {
     use std::cell::OnceCell;
 
     use glib::subclass::InitializingObject;
 
-    use crate::{config::load_env, ui::{models::SETTINGS, provider::account_item::AccountItem, widgets::window::Window}};
+    use crate::{
+        config::load_env,
+        ui::{models::SETTINGS, provider::account_item::AccountItem, widgets::window::Window},
+    };
 
     use super::*;
 
@@ -69,7 +70,7 @@ glib::wrapper! {
 }
 
 impl ServerRow {
-    pub fn new(account:Account) -> Self {
+    pub fn new(account: Account) -> Self {
         glib::Object::builder()
             .property("item", &AccountItem::from_simple(&account))
             .build()
