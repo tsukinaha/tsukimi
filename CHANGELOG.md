@@ -1,3 +1,27 @@
+## 0.5.0-1
+
+- 增加了 clapper 作为播放器
+
+> [!NOTE]
+> clapper 在 Windows 上尚未解决兼容性问题，因此该版本依然默认启用 mpv，如果你使用 Linux 则可以尝试在设置中关闭 mpv 选项，启用 clapper。
+
+- 重构了设置页，封装到 adwdialog
+- 统一了列表标题的样式
+- 右键菜单现在出现在点击事件的右下
+
+- 修复了若干已知错误
+
+- Added clapper as videso player
+
+> [!NOTE]
+> clapper has not yet resolved compatibility issues on Windows in this version, so it still defaults to using mpv. If you are using Linux, you can try disabling the mpv option in the settings and enabling clapper for better integration.
+
+- Refactored the settings page, encapsulated into adwdialog
+- Unified the style of list titles
+- Right-click menus now appear at the bottom right of click events
+
+- Fixed several known issues
+
 ## 0.5.0-preview
 
 - 增加了 clapper 作为默认播放器
