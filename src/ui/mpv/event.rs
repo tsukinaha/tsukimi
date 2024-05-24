@@ -2,7 +2,6 @@ use gtk::prelude::*;
 use libmpv2::{events::*, *};
 
 use std::{
-    collections::HashMap,
     thread,
     time::{Duration, Instant},
 };
@@ -77,13 +76,12 @@ pub fn play(
 
     crossbeam::scope(|scope| {
         scope.spawn(|_| {
-            mpv.playlist_load_files(&[(&url, FileState::AppendPlay, None)])
-                .unwrap();
+            mpv.command("loadfile", &[&url, "append-play"]).unwrap();
             thread::sleep(Duration::from_secs(1));
             if let Some(suburl) = suburl {
                 let suburl = format!("{}:{}/emby{}", server_info.domain, server_info.port, suburl);
                 println!("Loading subtitle");
-                mpv.subtitle_add_select(&suburl, None, None).unwrap();
+                mpv.command("sub-add", &[&suburl, "select"]).unwrap();
             }
         });
         let mut last_print = Instant::now();
@@ -117,15 +115,6 @@ pub fn play(
                         });
                     }
                 }
-
-                Ok(Event::PropertyChange {
-                    name: "demuxer-cache-state",
-                    change: PropertyData::Node(mpv_node),
-                    ..
-                }) => {
-                    let ranges = seekable_ranges(mpv_node).unwrap();
-                    println!("Seekable ranges updated: {:?}", ranges);
-                }
                 Ok(e) => println!("Event triggered: {:?}", e),
                 Err(e) => println!("Event errored: {:?}", e),
             }
@@ -135,17 +124,3 @@ pub fn play(
     Ok(())
 }
 
-fn seekable_ranges(demuxer_cache_state: &MpvNode) -> Option<Vec<(f64, f64)>> {
-    let mut res = Vec::new();
-    let props: HashMap<&str, MpvNode> = demuxer_cache_state.to_map()?.collect();
-    let ranges = props.get("seekable-ranges")?.to_array()?;
-
-    for node in ranges {
-        let range: HashMap<&str, MpvNode> = node.to_map()?.collect();
-        let start = range.get("start")?.to_f64()?;
-        let end = range.get("end")?.to_f64()?;
-        res.push((start, end));
-    }
-
-    Some(res)
-}
