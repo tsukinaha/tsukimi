@@ -136,6 +136,11 @@ impl TuListItem {
                 }
                 self.set_rating();
             }
+            "CollectionFolder" => {
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_visible(false);
+                self.set_picture();
+            }
             "Series" => {
                 let year = if item.production_year() != 0 {
                     item.production_year().to_string()
@@ -264,7 +269,7 @@ impl TuListItem {
                     set_image(id, "Backdrop", Some(0))
                 }
             } else {
-                if self.itemtype() == "Episode" || self.itemtype() == "Views" {
+                if self.itemtype() == "Episode" || self.itemtype() == "CollectionFolder" {
                     imp.overlay.set_size_request(250, 141);
                 }
                 if let Some(imag_tags) = item.primary_image_item_id() {
@@ -489,7 +494,7 @@ impl TuListItem {
     }
 }
 
-pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem, listtype: &str) {
+pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem, is_resume: bool) {
     let tu_item = TuItem::from_simple(latest, None);
     match latest.latest_type.as_str() {
         "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views"
@@ -498,7 +503,7 @@ pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem,
                 tu_item,
                 list_item,
                 &latest.latest_type,
-                listtype == "resume",
+                is_resume,
             );
         }
         _ => {}
@@ -508,7 +513,7 @@ pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem,
 pub fn tu_list_poster(
     latest: &SimpleListItem,
     list_item: &gtk::ListItem,
-    listtype: &str,
+    is_resume: bool,
     poster: &str,
 ) {
     let tu_item = TuItem::from_simple(latest, Some(poster));
@@ -518,7 +523,7 @@ pub fn tu_list_poster(
                 tu_item,
                 list_item,
                 &latest.latest_type,
-                listtype == "resume",
+                is_resume,
             );
         }
         _ => {}

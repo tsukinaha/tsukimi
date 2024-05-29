@@ -258,6 +258,8 @@ pub struct SimpleListItem {
     pub backdrop_image_tags: Option<Vec<String>>,
     #[serde(rename = "CommunityRating")]
     pub community_rating: Option<f32>,
+    #[serde(rename = "CollectionType")]
+    pub collection_type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -282,10 +284,32 @@ pub struct List {
     pub items: Vec<SimpleListItem>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct Items {
+    #[serde(rename = "Items")]
+    pub items: Vec<Item>,
+    #[serde(rename = "TotalRecordCount")]
+    pub total_record_count: Option<u32>,
+}
+
 #[derive(Deserialize, Debug, Clone)]
 pub struct Back {
     pub id: String,
     pub playsessionid: Option<String>,
     pub mediasourceid: String,
     pub tick: u64,
+}
+
+#[derive(Deserialize)]
+pub struct LoginResponse {
+    #[serde(rename = "User")]
+    pub user: User,
+    #[serde(rename = "AccessToken")]
+    pub access_token: String,
+}
+
+#[derive(Deserialize)]
+pub struct User {
+    #[serde(rename = "Id")]
+    pub id: String,
 }

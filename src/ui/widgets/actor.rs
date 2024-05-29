@@ -178,7 +178,7 @@ impl ActorPage {
                 .expect("Needs to be BoxedAnyObject");
             let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
             if list_item.child().is_none() {
-                tu_list_item_register(&latest, list_item, &latest.latest_type)
+                tu_list_item_register(&latest, list_item, false)
             }
         });
         let list;

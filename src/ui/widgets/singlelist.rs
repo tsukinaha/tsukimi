@@ -427,7 +427,7 @@ impl SingleListPage {
                 .expect("Needs to be BoxedAnyObject");
             let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
             if list_item.child().is_none() {
-                super::tu_list_item::tu_list_poster(&latest, list_item, &listtype, &poster);
+                super::tu_list_item::tu_list_poster(&latest, list_item, &listtype == "resume", &poster);
             }
         });
         listgrid.set_factory(Some(&factory));

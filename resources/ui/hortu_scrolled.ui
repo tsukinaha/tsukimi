@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwBin" class="HortuScrolled">
+    <child>
+      <object class="GtkRevealer" id="revealer">
+        <property name="transition-type">crossfade</property>
+        <property name="reveal-child">False</property>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkLabel" id="label">
+                <property name="label" translatable="yes"></property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="margin-start">12</property>
+                <attributes>
+                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                </attributes>
+                <style>
+                  <class name="title-3"/>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolled">
+                <property name="overlay-scrolling">true</property>
+                <property name="vscrollbar-policy">never</property>
+                <property name="margin-bottom">3</property>
+                <child>
+                  <object class="GtkListView" id="list">
+                    <property name="orientation">horizontal</property>
+                    <property name="single-click-activate">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

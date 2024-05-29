@@ -1106,7 +1106,7 @@ impl ItemPage {
         let namedropdown = imp.namedropdown.get();
         let subdropdown = imp.subdropdown.get();
         let info = info.clone();
-        
+
         playbutton.connect_clicked(glib::clone!(@weak self as obj => move |_| {
             let nameselected = namedropdown.selected_item();
             let nameselected = nameselected

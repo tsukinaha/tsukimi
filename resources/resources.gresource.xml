@@ -28,5 +28,6 @@
     <file compressed="true" preprocess="xml-stripblanks">player_toolbar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">server_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">clapperpage.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">hortu_scrolled.ui</file>
   </gresource>
 </gresources>

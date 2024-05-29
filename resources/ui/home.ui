@@ -12,7 +12,7 @@
                 <child>
                   <object class="GtkBox">
                     <property name="orientation">vertical</property>
-                    <property name="spacing">9</property>
+                    <property name="spacing">15</property>
                     <child>
                       <object class="GtkOverlay" id="carouseloverlay">
                         <property name="halign">fill</property>
@@ -47,93 +47,18 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkRevealer" id="librevealer">
-                        <property name="transition-duration">300</property>
-                        <property name="reveal-child">False</property>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="orientation">vertical</property>
-                            <property name="spacing">6</property>
-                            <property name="hexpand">True</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="label" translatable="yes">Libraries</property>
-                                <property name="margin-start">12</property>
-                                <property name="halign">start</property>
-                                <attributes>
-                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                </attributes>
-                                <style>
-                                  <class name="title-3"/>
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkScrolledWindow" id="libscrolled">
-                                <property name="overlay-scrolling">true</property>
-                                <property name="vscrollbar-policy">never</property>
-                                <property name="margin-bottom">3</property>
-                                <child>
-                                  <object class="GtkListView" id="liblist">
-                                    <property name="orientation">horizontal</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
+                      <object class="HortuScrolled" id="libhortu">
                       </object>
                     </child>
                     <child>
-                      <object class="GtkRevealer" id="historyrevealer">
-                        <property name="transition-duration">300</property>
-                        <property name="reveal-child">False</property>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="orientation">vertical</property>
-                            <property name="spacing">6</property>
-                            <property name="hexpand">True</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="label" translatable="yes">Continue Watching</property>
-                                <property name="margin-start">12</property>
-                                <property name="halign">start</property>
-                                <attributes>
-                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                </attributes>
-                                <style>
-                                  <class name="title-3"/>
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkScrolledWindow" id="hisscrolled">
-                                <property name="overlay-scrolling">true</property>
-                                <property name="vscrollbar-policy">never</property>
-                                <property name="margin-bottom">3</property>
-                                <child>
-                                  <object class="GtkListView" id="historylist">
-                                    <property name="orientation">horizontal</property>
-                                    <property name="single-click-activate">True</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
+                      <object class="HortuScrolled" id="hishortu">
+                        <property name="isresume">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkRevealer" id="libsrevealer">
-                        <property name="transition-type">crossfade</property>
-                        <property name="transition-duration">700</property>
-                        <property name="reveal-child">False</property>
-                        <child>
-                          <object class="GtkBox" id="libsbox">
-                            <property name="orientation">vertical</property>
-                            <property name="spacing">6</property>
-                          </object>
-                        </child>
+                      <object class="GtkBox" id="libsbox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                       </object>
                     </child>
                   </object>

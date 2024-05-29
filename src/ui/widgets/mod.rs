@@ -20,3 +20,4 @@ pub mod song_widget;
 pub mod star_toggle;
 pub mod tu_list_item;
 pub mod window;
+pub mod hortu_scrolled;

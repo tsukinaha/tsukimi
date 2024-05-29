@@ -203,8 +203,8 @@ impl ClapperPage {
                 );
                 mediainfo.set_markup(text);
                 mediainfo.set_visible(!mediainfo.is_visible())
-            } 
-        } 
+            }
+        }
     }
 
     pub fn update_position_callback(&self) -> glib::ControlFlow {

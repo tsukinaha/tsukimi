@@ -192,6 +192,7 @@ mod imp {
     impl AdwApplicationWindowImpl for Window {}
 }
 
+use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
 use crate::config::Account;
 use crate::config::{load_cfgv2, load_env};
@@ -222,7 +223,7 @@ impl Window {
                 && account.servername == SETTINGS.preferred_server()
                 && env::var("EMBY_NAME").is_err()
             {
-                load_env(account);
+                EMBY_CLIENT.init(&account);
                 imp.historypage.set_child(None::<&gtk::Widget>);
                 imp.searchpage.set_child(None::<&gtk::Widget>);
                 self.mainpage();
@@ -243,7 +244,7 @@ impl Window {
             unsafe {
                 let account_ptr: std::ptr::NonNull<Account>  = row.data("account").unwrap();
                 let account: &Account = &*account_ptr.as_ptr();
-                load_env(account);
+                EMBY_CLIENT.init(&account);
                 SETTINGS.set_preferred_server(&account.servername).unwrap();
             }
             obj.reset();

@@ -57,6 +57,8 @@ pub mod imp {
         primary_image_item_id: RefCell<Option<String>>,
         #[property(get, set)]
         run_time_ticks: RefCell<u64>,
+        #[property(get, set, nullable)]
+        collection_type: RefCell<Option<String>>,
     }
 
     #[glib::derived_properties]
@@ -145,6 +147,9 @@ impl TuItem {
         if let Some(rating) = &latest.community_rating {
             let rating = format!("{:.1}", rating);
             tu_item.set_rating(Some(rating));
+        }
+        if let Some(collection_type) = &latest.collection_type {
+            tu_item.set_collection_type(Some(collection_type.clone()));
         }
         tu_item
     }

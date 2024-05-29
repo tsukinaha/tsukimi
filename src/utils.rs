@@ -84,6 +84,34 @@ where
     }
 }
 
+pub async fn req_cache<T, F>(
+    tag: &str,
+    future: F,
+) -> Result<T, reqwest::Error>
+where
+    T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
+    F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
+{
+    let mut path = emby_cache_path();
+    path.push(format!("{}.json",tag));
+
+    if path.exists() {
+        let data = std::fs::read_to_string(&path).expect("Unable to read file");
+        let data: T = serde_json::from_str(&data).expect("JSON was not well-formatted");
+        RUNTIME.spawn(async move {
+            let v = future.await.unwrap();
+            let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
+            std::fs::write(&path, s_data).expect("Unable to write file");
+        });
+        Ok(data)
+    } else {
+        let v = spawn_tokio(future).await?;
+        let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
+        std::fs::write(&path, s_data).expect("Unable to write file");
+        Ok(v)
+    }
+}
+
 pub async fn get_data_with_cache_else<T, F>(
     id: String,
     item_type: &str,
@@ -143,14 +171,6 @@ pub async fn get_image_with_cache(
     Ok(path.to_string_lossy().to_string())
 }
 
-async fn _s_path() {
-    let pathbuf = emby_cache_path();
-    std::fs::DirBuilder::new()
-        .recursive(true)
-        .create(pathbuf)
-        .unwrap();
-}
-
 pub fn tu_list_item_factory(listtype: String) -> gtk::SignalListItemFactory {
     let factory = gtk::SignalListItemFactory::new();
     factory.connect_bind(move |_, item| {
@@ -165,7 +185,7 @@ pub fn tu_list_item_factory(listtype: String) -> gtk::SignalListItemFactory {
             .expect("Needs to be BoxedAnyObject");
         let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
         if list_item.child().is_none() {
-            tu_list_item_register(&latest, list_item, &listtype)
+            tu_list_item_register(&latest, list_item, &listtype == "resume")
         }
     });
     factory
