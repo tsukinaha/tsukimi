@@ -1,6 +1,6 @@
 use gst::{glib, prelude::*};
 
-use crate::{client::network::get_song_streaming_uri, ui::provider::core_song::CoreSong};
+use crate::{client::client::EMBY_CLIENT, ui::provider::core_song::CoreSong};
 
 pub struct MusicPlayer {
     pipeline: gst::Element,
@@ -53,7 +53,7 @@ impl MusicPlayer {
 
     pub fn play(&self, core_song: &CoreSong) {
         self.stop();
-        let uri = get_song_streaming_uri(&core_song.id());
+        let uri = EMBY_CLIENT.get_song_streaming_uri(&core_song.id());
 
         self.pipeline.set_property("uri", uri);
         self.playing();

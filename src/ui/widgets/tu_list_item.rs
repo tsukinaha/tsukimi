@@ -8,12 +8,10 @@ use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
 
-use crate::client::network::hide_from_resume;
-use crate::client::network::like;
-use crate::client::network::played;
-use crate::client::network::unlike;
-use crate::client::network::unplayed;
+use crate::client::client::EMBY_CLIENT;
+use crate::client::error::UserFacingError;
 use crate::client::structs::SimpleListItem;
+use crate::toast;
 use crate::ui::image::set_image;
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::spawn;
@@ -421,11 +419,11 @@ impl TuListItem {
 
     async fn perform_action_inner(id: &str, action: &Action) -> Result<(), reqwest::Error> {
         match action {
-            Action::Like => like(id).await,
-            Action::Unlike => unlike(id).await,
-            Action::Played => played(id).await,
-            Action::Unplayed => unplayed(id).await,
-            Action::Remove => hide_from_resume(id).await,
+            Action::Like => EMBY_CLIENT.like(id).await,
+            Action::Unlike => EMBY_CLIENT.unlike(id).await,
+            Action::Played => EMBY_CLIENT.set_as_played(id).await,
+            Action::Unplayed => EMBY_CLIENT.set_as_unplayed(id).await,
+            Action::Remove => EMBY_CLIENT.hide_from_resume(id).await,
         }
     }
 
@@ -434,12 +432,14 @@ impl TuListItem {
         self.update_state(&action);
         let result = spawn_tokio(async move { Self::perform_action_inner(&id, &action).await });
 
-        result.await.unwrap();
-
-        spawn(glib::clone!(@weak self as obj => async move {
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Success");
-        }));
+        match result.await {
+            Ok(_) => {
+                toast!(self, "Success")
+            }
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+            }
+        }
 
         let obj = self.imp().obj();
         obj.insert_action_group("item", obj.set_action().as_ref());

@@ -1,8 +1,5 @@
 use crate::{
-    client::network::change_password,
-    toast,
-    ui::models::{emby_cache_path, SETTINGS},
-    utils::spawn_tokio,
+    client::client::EMBY_CLIENT, toast, ui::models::{emby_cache_path, SETTINGS}, utils::spawn_tokio
 };
 use adw::prelude::*;
 use adw::subclass::prelude::*;
@@ -158,23 +155,19 @@ impl AccountSettings {
         let new_password = self.imp().password_entry.text();
         let new_password_second = self.imp().password_second_entry.text();
         if new_password.is_empty() || new_password_second.is_empty() {
-            let window = self.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Password cannot be empty!");
+            toast!(self, "Password cannot be empty!");
             return;
         }
         if new_password != new_password_second {
-            let window = self.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Passwords do not match!");
+            toast!(self, "Passwords do not match!");
             return;
         }
-        match spawn_tokio(async move { change_password(&new_password).await }).await {
+        match spawn_tokio(async move { EMBY_CLIENT.change_password(&new_password).await }).await {
             Ok(_) => {
-                let window = self.root().and_downcast::<super::window::Window>().unwrap();
-                window.toast("Password changed successfully! Please login again.");
+                toast!(self, "Password changed successfully! Please login again.");
             }
             Err(e) => {
-                let window = self.root().and_downcast::<super::window::Window>().unwrap();
-                window.toast(&format!("Failed to change password: {}", e));
+                toast!(self, &format!("Failed to change password: {}", e));
             }
         };
     }

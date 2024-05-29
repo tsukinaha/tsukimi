@@ -1,7 +1,7 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::{gio, glib, CompositeTemplate};
 
-use crate::client::structs::{SimpleListItem};
+use crate::client::structs::SimpleListItem;
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::spawn;
 use crate::ui::widgets::fix::ScrolledWindowFixExt;

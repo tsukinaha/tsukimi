@@ -202,7 +202,7 @@ impl HomePage {
         let date = Local::now();
         let formatted_date = format!("{:04}{:02}{:02}", date.year(), date.month(), date.day());
         let results =
-            match get_data_with_cache_else(formatted_date, "carousel", async { get_random().await })
+            match get_data_with_cache_else(formatted_date, "carousel", async { EMBY_CLIENT.get_random().await })
                 .await {
                     Ok(results) => results,
                     Err(e) => {

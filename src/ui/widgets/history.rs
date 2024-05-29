@@ -1,7 +1,7 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::client::{network::*, structs::*};
-use crate::utils::{get_data_with_cache, req_cache, spawn, tu_list_view_connect_activate};
+use crate::client::structs::*;
+use crate::utils::req_cache;
 use crate::{fraction, fraction_reset, toast};
 use glib::Object;
 use gtk::prelude::*;
