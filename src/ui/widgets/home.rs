@@ -1,17 +1,13 @@
-use std::env;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::{network::*, structs::*};
 use crate::ui::image::set_image;
 use crate::ui::models::SETTINGS;
-use crate::ui::provider::tu_item::TuItem;
-use crate::ui::widgets::tu_list_item::tu_list_item_register;
 use crate::utils::{
-    get_data_with_cache, get_data_with_cache_else, req_cache, spawn, tu_list_item_factory, tu_list_view_connect_activate
+    get_data_with_cache_else, req_cache, tu_list_view_connect_activate
 };
-use crate::{fraction, toast};
-use adw::prelude::NavigationPageExt;
+use crate::toast;
 use chrono::{Datelike, Local};
 use glib::Object;
 use gtk::subclass::prelude::*;
@@ -19,8 +15,6 @@ use gtk::{gio, glib};
 use gtk::{prelude::*, template_callbacks};
 
 use super::hortu_scrolled::HortuScrolled;
-use super::tu_list_item::TuListItem;
-use super::{fix::ScrolledWindowFixExt, list::ListPage, window::Window};
 
 mod imp {
 
@@ -208,9 +202,15 @@ impl HomePage {
         let date = Local::now();
         let formatted_date = format!("{:04}{:02}{:02}", date.year(), date.month(), date.day());
         let results =
-            get_data_with_cache_else(formatted_date, "carousel", async { get_random().await })
-                .await
-                .unwrap_or_default();
+            match get_data_with_cache_else(formatted_date, "carousel", async { get_random().await })
+                .await {
+                    Ok(results) => results,
+                    Err(e) => {
+                        toast!(self, e.to_user_facing());
+                        List::default()
+                    }
+                };
+                
         for result in results.items {
             if let Some(image_tags) = &result.image_tags {
                 if let Some(backdrop_image_tags) = &result.backdrop_image_tags {

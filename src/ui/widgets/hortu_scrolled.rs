@@ -1,12 +1,10 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::{gio, glib, CompositeTemplate};
 
-use crate::client::structs::{Items, List, SimpleListItem};
+use crate::client::structs::{SimpleListItem};
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::spawn;
-use crate::{config::Account, ui::provider::account_item::AccountItem};
 use crate::ui::widgets::fix::ScrolledWindowFixExt;
-use glib::Object;
 
 use super::tu_list_item::TuListItem;
 
@@ -16,7 +14,7 @@ mod imp {
     use glib::subclass::InitializingObject;
     use gtk::gio;
 
-    use crate::{client::structs::SimpleListItem, ui::widgets::{singlelist::SingleListPage, window::Window}, utils::{tu_list_item_factory, tu_list_view_connect_activate}};
+    use crate::{client::structs::SimpleListItem, ui::widgets::{singlelist::SingleListPage, window::Window}};
 
     use super::*;
 

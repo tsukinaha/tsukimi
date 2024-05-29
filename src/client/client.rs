@@ -1,4 +1,4 @@
-use std::{cell::RefCell, sync::Mutex};
+use std::{sync::Mutex};
 
 use reqwest::{header::HeaderValue, Method, RequestBuilder, Response};
 use serde::{Deserialize, Serialize};
@@ -13,7 +13,7 @@ use crate::{
 
 use once_cell::sync::Lazy;
 
-use super::{network::RUNTIME, structs::{Back, Item, Items, List, LoginResponse, Media, SimpleListItem}};
+use super::{network::RUNTIME, structs::{Back, Item, List, LoginResponse, Media, SimpleListItem}};
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
 
@@ -166,7 +166,7 @@ impl EmbyClient {
             ("EnableImageTypes", "Primary,Backdrop,Thumb"),
             ("ImageTypeLimit", "1"),
             ("Recursive", "true"),
-            ("SearchTerm", &query),
+            ("SearchTerm", query),
             ("GroupProgramsBySeries", "true"),
             ("Limit", "50"),
         ];
@@ -303,7 +303,7 @@ impl EmbyClient {
                 "Fields",
                 "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,CommunityRating",
             ),
-            ("ParentId", &id),
+            ("ParentId", id),
             ("ImageTypeLimit", "1"),
             ("EnableImageTypes", "Primary,Backdrop,Thumb"),
         ];
@@ -453,21 +453,21 @@ impl EmbyClient {
     }
 
     pub async fn position_back(&self, back: &Back) -> Result<(), reqwest::Error> {
-        let path = format!("Sessions/Playing/Progress");
+        let path = "Sessions/Playing/Progress".to_string();
         let params = [("reqformat", "json")];
         let body = json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
         self.post(&path, &params, body).await
     }
 
     pub async fn position_stop(&self, back: &Back) -> Result<(), reqwest::Error> {
-        let path = format!("Sessions/Playing/Stopped");
+        let path = "Sessions/Playing/Stopped".to_string();
         let params = [("reqformat", "json")];
         let body = json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
         self.post(&path, &params, body).await
     }
 
     pub async fn position_start(&self, back: &Back) -> Result<(), reqwest::Error> {
-        let path = format!("Sessions/Playing");
+        let path = "Sessions/Playing".to_string();
         let params = [("reqformat", "json")];
         let body = json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
         self.post(&path, &params, body).await
@@ -521,9 +521,12 @@ impl EmbyClient {
     }
 
     pub async fn get_favourite(&self, types: &str) -> Result<List, reqwest::Error> {
-        let user_id = &self.user_id.lock().unwrap();
+        let user_id = {
+            let user_id = self.user_id.lock().unwrap();
+            user_id.to_owned()
+        };
         let path = if types == "People" {
-            format!("Persons")
+            "Persons".to_string()
         } else {
             format!("Users/{}/Items", user_id)
         };
@@ -540,7 +543,7 @@ impl EmbyClient {
             ("IncludeItemTypes", types),
             ("Limit", "12"),
             if types == "People" {
-                ("UserId", user_id)
+                ("UserId", &user_id)
             } else {
                 ("", "")
             },
