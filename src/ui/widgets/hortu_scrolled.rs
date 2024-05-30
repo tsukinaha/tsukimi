@@ -179,7 +179,7 @@ mod imp {
                         view,
                         &window,
                         &result.name,
-                        crate::ui::widgets::list::ListPage::new(item.id(), item.collection_type().unwrap()),
+                        crate::ui::widgets::list::ListPage::new(item.id(), item.collection_type().unwrap_or_default()),
                     )
                 }
                 _ => Self::push_page(

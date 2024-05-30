@@ -5,7 +5,10 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 
+use crate::client::client::EMBY_CLIENT;
+use crate::client::error::UserFacingError;
 use crate::client::network::*;
+use crate::toast;
 
 mod imp {
 
@@ -100,12 +103,9 @@ impl AccountWindow {
         } else {
             let (sender, receiver) = async_channel::bounded::<Result<bool, reqwest::Error>>(1);
             RUNTIME.spawn(async move {
-                match loginv2(
-                    servername.to_string(),
-                    server.to_string(),
-                    username.to_string(),
-                    password.to_string(),
-                    port.to_string(),
+                match EMBY_CLIENT.login(
+                    &username,
+                    &password,
                 )
                 .await
                 {
@@ -127,9 +127,9 @@ impl AccountWindow {
                             window.toast("Account added successfully");
                             window.set_servers();
                         }
-                        Err(_) => {
+                        Err(e) => {
                             obj.imp().spinner.set_visible(false);
-                            obj.imp().toast.add_toast(Toast::builder().timeout(3).title("Wrong Password or Account.").build());
+                            toast!(obj, e.to_user_facing());
                         }
                     }
                 }

@@ -65,7 +65,7 @@ impl EmbyClient {
     pub fn header_change_url(&self, url: &str) {
         let url = Url::parse(url).unwrap();
         let mut url_lock = self.url.lock().unwrap();
-        *url_lock = Some(url);
+        *url_lock = Some(url.join("emby/").unwrap());
     }
 
     pub fn set_user_id(&self, user_id: &str) {
@@ -621,8 +621,10 @@ impl EmbyClient {
 
     pub fn get_song_streaming_uri(&self, id: &str) -> String {
         let url = self.url.lock().unwrap().as_ref().unwrap().clone();
-        url.join(&format!("Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
-        id, &self.user_id.lock().unwrap(), &DEVICE_ID.to_string(), std::env::var("EMBY_TOKEN").unwrap(), )).unwrap().to_string()
+        let url = url.join(&format!("Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
+        id, &self.user_id.lock().unwrap(), &DEVICE_ID.to_string(), std::env::var("EMBY_ACCESS_TOKEN").unwrap(), )).unwrap().to_string();
+        println!("{}", url);
+        url
     }
 
     pub async fn get_random(&self) -> Result<List, reqwest::Error> {
