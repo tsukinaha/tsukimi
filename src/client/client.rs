@@ -700,8 +700,8 @@ mod tests {
 
     #[tokio::test]
     async fn search() {
-        EMBY_CLIENT.header_change_url("https://emby.pilipiliultra.top/", "443");
-        let result = EMBY_CLIENT.login("inaha", "niconico").await;
+        EMBY_CLIENT.header_change_url("https://123", "443");
+        let result = EMBY_CLIENT.login("inaha", "1234").await;
         match result {
             Ok(response) => {
                 println!("{}", response.access_token);

@@ -24,61 +24,6 @@ pub fn client() -> &'static Client {
     CLIENT.get_or_init(ReqClient::build)
 }
 
-pub async fn loginv2(
-    servername: String,
-    server: String,
-    username: String,
-    password: String,
-    port: String,
-) -> Result<(), Error> {
-    let mut headers = HeaderMap::new();
-    headers.insert("X-Emby-Client", HeaderValue::from_static("Tsukimi"));
-    headers.insert(
-        "X-Emby-Device-Name",
-        HeaderValue::from_str(&get_device_name()).unwrap(),
-    );
-    headers.insert(
-        "X-Emby-Device-Id",
-        HeaderValue::from_str(&env::var("UUID").unwrap()).unwrap(),
-    );
-    headers.insert(
-        "X-Emby-Client-Version",
-        HeaderValue::from_static(APP_VERSION),
-    );
-    headers.insert("X-Emby-Language", HeaderValue::from_static("zh-cn"));
-
-    let body = json!({
-        "Username": username,
-        "Pw": password
-    });
-
-    let res = client()
-        .post(&format!(
-            "{}:{}/emby/Users/authenticatebyname",
-            server, port
-        ))
-        .headers(headers)
-        .json(&body)
-        .send()
-        .await?;
-    let v: Value = res.json().await?;
-
-    let user_id = v["User"]["Id"].as_str().unwrap();
-    let access_token = v["AccessToken"].as_str().unwrap();
-
-    let config = Account {
-        servername,
-        server,
-        username,
-        password,
-        port,
-        user_id: user_id.to_string(),
-        access_token: access_token.to_string(),
-    };
-    save_cfg(config).await.unwrap();
-    Ok(())
-}
-
 pub async fn search(searchinfo: String, filter: &[&str]) -> Result<Vec<SimpleListItem>, Error> {
     let server = set_config();
     let url = format!(
@@ -669,39 +614,6 @@ pub async fn similar(id: &str) -> Result<Vec<SimpleListItem>, Error> {
             "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
         ),
         ("UserId", &server_info.user_id),
-        ("ImageTypeLimit", "1"),
-        ("Limit", "12"),
-        ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", &get_device_name()),
-        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
-        ("X-Emby-Language", "zh-cn"),
-    ];
-
-    let response = client().get(&url).query(&params).send().await?;
-    let mut json: serde_json::Value = response.json().await?;
-    let items: Vec<SimpleListItem> = serde_json::from_value(json["Items"].take()).unwrap();
-    Ok(items)
-}
-
-pub async fn person_item(id: &str, types: &str) -> Result<Vec<SimpleListItem>, Error> {
-    let server_info = set_config();
-    let url = format!(
-        "{}:{}/emby/Users/{}/Items",
-        server_info.domain, server_info.port, server_info.user_id
-    );
-    let params = [
-        (
-            "Fields",
-            "PrimaryImageAspectRatio,ProductionYear,CommunityRating",
-        ),
-        ("PersonIds", id),
-        ("Recursive", "true"),
-        ("CollapseBoxSetItems", "false"),
-        ("SortBy", "SortName"),
-        ("SortOrder", "Ascending"),
-        ("IncludeItemTypes", types),
         ("ImageTypeLimit", "1"),
         ("Limit", "12"),
         ("X-Emby-Client", "Tsukimi"),
