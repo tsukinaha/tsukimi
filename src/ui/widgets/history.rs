@@ -103,11 +103,11 @@ impl HistoryPage {
     pub async fn sets(&self, types: &str) {
         let hortu = 
             match types {
-                "Movie" => self.imp().moviehortu.clone(),
-                "Series" => self.imp().serieshortu.clone(),
-                "Episode" => self.imp().episodehortu.clone(),
-                "People" => self.imp().peoplehortu.clone(),
-                "MusicAlbum" => self.imp().albumhortu.clone(),
+                "Movie" => self.imp().moviehortu.get(),
+                "Series" => self.imp().serieshortu.get(),
+                "Episode" => self.imp().episodehortu.get(),
+                "People" => self.imp().peoplehortu.get(),
+                "MusicAlbum" => self.imp().albumhortu.get(),
                 _ => return,
             };
 

@@ -151,9 +151,9 @@ impl ActorPage {
     pub async fn sets(&self, types: &str) {
         let hortu = 
             match types {
-                "Movie" => self.imp().moviehortu.clone(),
-                "Series" => self.imp().serieshortu.clone(),
-                "Episode" => self.imp().episodehortu.clone(),
+                "Movie" => self.imp().moviehortu.get(),
+                "Series" => self.imp().serieshortu.get(),
+                "Episode" => self.imp().episodehortu.get(),
                 _ => return,
             };
 

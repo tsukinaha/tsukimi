@@ -1,20 +1,22 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
+use gst::glib::subclass::types;
 use gtk::template_callbacks;
 use gtk::{gio, glib};
 use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 
+use crate::client::client::EMBY_CLIENT;
+use crate::client::error::UserFacingError;
 use crate::client::{network::*, structs::*};
-use crate::toast;
+use crate::{fraction, fraction_reset, toast};
 use crate::ui::models::SETTINGS;
 use crate::ui::mpv;
 use crate::ui::provider::dropdown_factory::factory;
 use crate::utils::{
-    get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory,
-    tu_list_view_connect_activate,
+    get_data_with_cache, get_image_with_cache, req_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate
 };
 
 use super::fix::ScrolledWindowFixExt;
@@ -23,6 +25,7 @@ use super::window::Window;
 
 mod imp {
     use crate::ui::widgets::fix::ScrolledWindowFixExt;
+    use crate::ui::widgets::hortu_scrolled::HortuScrolled;
     use crate::utils::spawn_g_timeout;
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
@@ -39,6 +42,16 @@ mod imp {
         pub id: OnceCell<String>,
         #[property(get, set, construct_only)]
         pub inid: RefCell<String>,
+
+        #[template_child]
+        pub actorhortu: TemplateChild<HortuScrolled>,
+        #[template_child]
+        pub recommendhortu: TemplateChild<HortuScrolled>,
+        #[template_child]
+        pub includehortu: TemplateChild<HortuScrolled>,
+        #[template_child]
+        pub additionalhortu: TemplateChild<HortuScrolled>,
+
         #[template_child]
         pub backdrop: TemplateChild<gtk::Picture>,
         #[template_child]
@@ -66,19 +79,7 @@ mod imp {
         #[template_child]
         pub linksrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
-        pub actorrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub actorscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub recommendrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub recommendscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
         pub episodescrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub recommendlist: TemplateChild<gtk::ListView>,
-        #[template_child]
-        pub actorlist: TemplateChild<gtk::ListView>,
         #[template_child]
         pub studiosscrolled: TemplateChild<gtk::ScrolledWindow>,
         #[template_child]
@@ -123,8 +124,6 @@ mod imp {
         pub favourite_button_split_content: TemplateChild<adw::ButtonContent>,
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
-        pub actorselection: gtk::SingleSelection,
-        pub recommendselection: gtk::SingleSelection,
         pub playbuttonhandlerid: RefCell<Option<glib::SignalHandlerId>>,
 
         #[property(get, set, construct_only)]
@@ -207,7 +206,7 @@ mod imp {
                 obj.setup_seasons().await;
                 obj.logoset();
                 obj.setoverview().await;
-                obj.get_similar().await;
+                obj.set_lists().await;
             }));
         }
     }
@@ -726,7 +725,7 @@ impl ItemPage {
                     obj.setlinksscrolled(links);
                 }
                 if let Some(actor) = item.people {
-                    obj.setactorscrolled(actor);
+                    obj.setactorscrolled(actor).await;
                 }
                 if let Some(studios) = item.studios {
                     obj.set_studio(studios);
@@ -919,76 +918,58 @@ impl ItemPage {
         linksrevealer.set_reveal_child(true);
     }
 
-    pub fn setactorscrolled(&self, actors: Vec<SimpleListItem>) {
-        let imp = self.imp();
-        let actorscrolled = imp.actorscrolled.fix();
-        let actorrevealer = imp.actorrevealer.get();
-        if !actors.is_empty() {
-            actorrevealer.set_reveal_child(true);
-        }
-        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
-        for people in actors {
-            let object = glib::BoxedAnyObject::new(people);
-            store.append(&object);
-        }
-        imp.actorselection.set_autoselect(false);
-        imp.actorselection.set_model(Some(&store));
-        let actorselection = &imp.actorselection;
-        let factory = tu_list_item_factory("".to_string());
-        imp.actorlist.connect_activate(
-            glib::clone!(@weak self as obj => move |listview, position| {
-                    let window = obj.root().and_downcast::<Window>().unwrap();
-                    let model = listview.model().unwrap();
-                    let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                    let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                    tu_list_view_connect_activate(window, &result, None);
-            }),
-        );
-        imp.actorlist.set_factory(Some(&factory));
-        imp.actorlist.set_model(Some(actorselection));
-        let actorlist = imp.actorlist.get();
-        actorscrolled.set_child(Some(&actorlist));
+    pub async fn setactorscrolled(&self, actors: Vec<SimpleListItem>) {
+        let hortu = self.imp().actorhortu.get();
+
+        hortu.set_title("Actors");
+
+        hortu.set_items(&actors);
     }
 
-    pub async fn get_similar(&self) {
+    pub async fn set_lists(&self) {
+        self.sets("Recommend").await;
+        self.sets("Included In").await;
+        self.sets("Additional Parts").await;
+    }
+
+    pub async fn sets(&self, types: &str) {
+        let hortu = 
+            match types {
+                "Recommend" => self.imp().recommendhortu.get(),
+                "Included In" => self.imp().includehortu.get(),
+                "Additional Parts" => self.imp().additionalhortu.get(),
+                _ => return,
+            };
+
+        hortu.set_title(&format!("{}", types));
+        
         let id = self.id();
-        let result = get_data_with_cache(id.clone(), "sim", async move { similar(&id).await })
-            .await
-            .unwrap();
-        spawn(glib::clone!(@weak self as obj =>async move {
-            obj.setrecommendscrolled(result);
-        }));
-    }
+        let types = types.to_string();
 
-    pub fn setrecommendscrolled(&self, recommend: Vec<SimpleListItem>) {
-        let imp = self.imp();
-        let recommendscrolled = imp.recommendscrolled.fix();
-        let recommendrevealer = imp.recommendrevealer.get();
-        if !recommend.is_empty() {
-            recommendrevealer.set_reveal_child(true);
+        let results = 
+            match req_cache(&format!("item_{types}_{id}"), 
+                async move {
+                    match types.as_str() {
+                        "Recommend" => EMBY_CLIENT.get_similar(&id).await,
+                        "Included In" => EMBY_CLIENT.get_included(&id).await,
+                        "Additional Parts" => EMBY_CLIENT.get_additional(&id).await,
+                        _ => Ok(List::default()),
+                    }
+                }
+            ).await {
+                Ok(history) => history,
+                Err(e) => {
+                    toast!(self, e.to_user_facing());
+                    List::default()
+                }
+            };
+
+        if results.items.is_empty() {
+            hortu.set_visible(false);
+            return;
         }
-        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
-        for recommend in recommend {
-            let object = glib::BoxedAnyObject::new(recommend);
-            store.append(&object);
-        }
-        imp.recommendselection.set_autoselect(false);
-        imp.recommendselection.set_model(Some(&store));
-        let recommendselection = &imp.recommendselection;
-        let factory = tu_list_item_factory("".to_string());
-        imp.recommendlist.set_factory(Some(&factory));
-        imp.recommendlist.set_model(Some(recommendselection));
-        let recommendlist = imp.recommendlist.get();
-        recommendlist.connect_activate(
-            glib::clone!(@weak self as obj => move |listview, position| {
-                    let window = obj.root().and_downcast::<Window>().unwrap();
-                    let model = listview.model().unwrap();
-                    let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                    let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                    tu_list_view_connect_activate(window, &result, None);
-            }),
-        );
-        recommendscrolled.set_child(Some(&recommendlist));
+
+        hortu.set_items(&results.items);
     }
 
     pub fn set_studio(&self, infos: Vec<SGTitem>) {
