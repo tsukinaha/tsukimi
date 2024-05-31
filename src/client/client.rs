@@ -154,7 +154,7 @@ impl EmbyClient {
 
     pub async fn search(&self, query: &str, filter: &[&str]) -> Result<List, reqwest::Error> {
         let filter_str = filter.join(",");
-        let path = format!("Users/{}/Items", self.user_id.lock().unwrap());
+        let path = format!("Users/{}/Items", self.user_id());
         let params = [
             (
                 "Fields",
@@ -187,13 +187,13 @@ impl EmbyClient {
     }
 
     pub async fn get_item_info(&self, id: &str) -> Result<Item, reqwest::Error> {
-        let path = format!("Users/{}/Items/{}", self.user_id.lock().unwrap(), id);
+        let path = format!("Users/{}/Items/{}", self.user_id(), id);
         let params = [("Fields", "ShareLevel")];
         self.request(&path, &params).await
     }
 
     pub async fn get_resume(&self) -> Result<List, reqwest::Error> {
-        let path = format!("Users/{}/Items/Resume", self.user_id.lock().unwrap());
+        let path = format!("Users/{}/Items/Resume", self.user_id());
         let params = [
             ("Recursive", "true"),
             (
@@ -489,7 +489,7 @@ impl EmbyClient {
     }
 
     pub async fn get_person(&self, id: &str, types: &str) -> Result<List, reqwest::Error> {
-        let path = format!("Users/{}/Items", id);
+        let path = format!("Users/{}/Items", &self.user_id());
         let params = [
             (
                 "Fields",
@@ -700,8 +700,8 @@ mod tests {
 
     #[tokio::test]
     async fn search() {
-        EMBY_CLIENT.header_change_url("https://123", "443");
-        let result = EMBY_CLIENT.login("inaha", "1234").await;
+        EMBY_CLIENT.header_change_url("https://example.com", "443");
+        let result = EMBY_CLIENT.login("test", "test").await;
         match result {
             Ok(response) => {
                 println!("{}", response.access_token);

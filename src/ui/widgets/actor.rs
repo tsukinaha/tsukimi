@@ -19,6 +19,7 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
 
+    use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
     use crate::utils::spawn_g_timeout;
     // Object holding the state
@@ -43,9 +44,7 @@ mod imp {
         #[template_child]
         pub episodehortu: TemplateChild<HortuScrolled>,
         #[template_child]
-        pub linksrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub linksscrolled: TemplateChild<gtk::ScrolledWindow>,
+        pub linkshorbu: TemplateChild<HorbuScrolled>,
     }
 
     // The central trait for subclassing a GObject
@@ -58,6 +57,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             HortuScrolled::ensure_type();
+            HorbuScrolled::ensure_type();
             klass.bind_template();
         }
 
@@ -120,14 +120,18 @@ impl ActorPage {
         let inscription = imp.inscription.get();
         let inforevealer = imp.inforevealer.get();
         let title = imp.title.get();
-        let item = get_data_with_cache(id.to_string(), "item", async {
-            get_item_overview(id).await
-        })
-        .await
-        .unwrap_or_else(|_| {
-            toast!(self, "Network Error");
-            Item::default()
-        });
+
+        let item = 
+        match req_cache(&format!("list_{}",id), async move {
+            EMBY_CLIENT.get_item_info(&id).await
+        }).await {
+            Ok(item) => item,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                Item::default()
+            }
+        };
+
         spawn(glib::clone!(@weak self as obj=>async move {
                 if let Some(overview) = item.overview {
                     inscription.set_text(Some(&overview));
@@ -161,10 +165,12 @@ impl ActorPage {
 
         let types = types.to_string();
 
+        let id = self.id();
+
         let results = 
-            match req_cache(&format!("actor_{}_{}", types, self.id()), 
+            match req_cache(&format!("actor_{}_{}", types, &id), 
                 async move {
-                    EMBY_CLIENT.get_favourite(&types).await
+                    EMBY_CLIENT.get_person(&id, &types).await
                 }
             ).await {
                 Ok(history) => history,
@@ -174,47 +180,18 @@ impl ActorPage {
                 }
             };
 
-        if results.items.is_empty() {
-            hortu.set_visible(false);
-            return;
-        }
-
         hortu.set_items(&results.items);
     }
 
     pub fn setlinksscrolled(&self, links: Vec<Urls>) {
+
         let imp = self.imp();
-        let linksscrolled = imp.linksscrolled.fix();
-        let linksrevealer = imp.linksrevealer.get();
-        if !links.is_empty() {
-            linksrevealer.set_reveal_child(true);
-        }
-        let linkbox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
-        linkbox.add_css_class("flat");
-        while linkbox.last_child().is_some() {
-            if let Some(child) = linkbox.last_child() {
-                linkbox.remove(&child)
-            }
-        }
-        for url in links {
-            let linkbutton = gtk::Button::builder()
-                .margin_start(10)
-                .margin_top(10)
-                .build();
-            let buttoncontent = adw::ButtonContent::builder()
-                .label(&url.name)
-                .icon_name("send-to-symbolic")
-                .build();
-            linkbutton.set_child(Some(&buttoncontent));
-            linkbutton.connect_clicked(move |_| {
-                let _ = gio::AppInfo::launch_default_for_uri(
-                    &url.url,
-                    Option::<&gio::AppLaunchContext>::None,
-                );
-            });
-            linkbox.append(&linkbutton);
-        }
-        linksscrolled.set_child(Some(&linkbox));
-        linksrevealer.set_reveal_child(true);
+
+        let linkshorbu = imp.linkshorbu.get();
+
+        linkshorbu.set_title("Links");
+
+        linkshorbu.set_links(&links);
+
     }
 }

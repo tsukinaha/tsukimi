@@ -405,13 +405,13 @@ impl MoviePage {
                     obj.dropdown(idclone.clone(), item.name.clone(), Some(userdata.clone())).await;
                 }
                 if let Some(studios) = item.studios {
-                    obj.set_studio(studios);
+                    
                 }
                 if let Some(tags) = item.tags {
-                    obj.set_tags(tags);
+                   
                 }
                 if let Some(genres) = item.genres {
-                    obj.set_genres(genres);
+                    
                 }
                 overviewrevealer.set_reveal_child(true);
                 if let Some(image_tags) = item.backdrop_image_tags {

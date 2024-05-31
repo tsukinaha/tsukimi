@@ -230,6 +230,8 @@ impl HortuScrolled {
             return;
         }
 
+        self.set_visible(true);
+
         let items = items.clone();
 
         let imp = self.imp();

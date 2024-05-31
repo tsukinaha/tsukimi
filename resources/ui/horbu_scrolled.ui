@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template parent="AdwBin" class="HortuScrolled">
+  <template parent="AdwBin" class="HorbuScrolled">
     <property name="visible">False</property>
     <child>
       <object class="GtkRevealer" id="revealer">
@@ -26,16 +26,8 @@
               </object>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="scrolled">
-                <property name="overlay-scrolling">true</property>
-                <property name="vscrollbar-policy">never</property>
+              <object class="GtkFlowBox" id="flow">
                 <property name="margin-bottom">3</property>
-                <child>
-                  <object class="GtkListView" id="list">
-                    <property name="orientation">horizontal</property>
-                    <property name="single-click-activate">True</property>
-                  </object>
-                </child>
               </object>
             </child>
           </object>

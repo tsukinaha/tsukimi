@@ -21,3 +21,4 @@ pub mod star_toggle;
 pub mod tu_list_item;
 pub mod window;
 pub mod hortu_scrolled;
+pub mod horbu_scrolled;

@@ -25,6 +25,7 @@ use super::window::Window;
 
 mod imp {
     use crate::ui::widgets::fix::ScrolledWindowFixExt;
+    use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
     use crate::utils::spawn_g_timeout;
     use adw::subclass::prelude::*;
@@ -53,6 +54,15 @@ mod imp {
         pub additionalhortu: TemplateChild<HortuScrolled>,
 
         #[template_child]
+        pub studioshorbu: TemplateChild<HorbuScrolled>,
+        #[template_child]
+        pub tagshorbu: TemplateChild<HorbuScrolled>,
+        #[template_child]
+        pub genreshorbu: TemplateChild<HorbuScrolled>,
+        #[template_child]
+        pub linkshorbu: TemplateChild<HorbuScrolled>,
+
+        #[template_child]
         pub backdrop: TemplateChild<gtk::Picture>,
         #[template_child]
         pub itemlist: TemplateChild<gtk::ListView>,
@@ -73,25 +83,9 @@ mod imp {
         #[template_child]
         pub mediainfobox: TemplateChild<gtk::Box>,
         #[template_child]
-        pub linksscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
         pub mediainforevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
-        pub linksrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
         pub episodescrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub studiosscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub studiosrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub tagsscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub tagsrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub genresscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub genresrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub episodesearchentry: TemplateChild<gtk::SearchEntry>,
         #[template_child]
@@ -140,6 +134,8 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
+            HortuScrolled::ensure_type();
+            HorbuScrolled::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("item.first", None, move |window, _action, _parameter| {
@@ -671,11 +667,18 @@ impl ItemPage {
         let id = imp.id.get().unwrap().clone();
         let itemoverview = imp.itemoverview.get();
         let overviewrevealer = imp.overviewrevealer.get();
-        let item = get_data_with_cache(id.clone(), "overview", async move {
-            get_item_overview(id.to_string()).await
-        })
-        .await
-        .unwrap();
+
+        let item = 
+            match req_cache(&format!("item_{}", &id), async move {
+                EMBY_CLIENT.get_item_info(&id).await
+            }).await {
+                Ok(item) => item,
+                Err(e) => {
+                    toast!(self, e.to_user_facing());
+                    Item::default()
+                }
+            };
+
         spawn(glib::clone!(@weak self as obj=>async move {
                 {
                     let mut str = String::new();
@@ -722,19 +725,19 @@ impl ItemPage {
                     itemoverview.set_text(Some(&overview));
                 }
                 if let Some(links) = item.external_urls {
-                    obj.setlinksscrolled(links);
+                    obj.set_flowlinks(links);
                 }
                 if let Some(actor) = item.people {
                     obj.setactorscrolled(actor).await;
                 }
                 if let Some(studios) = item.studios {
-                    obj.set_studio(studios);
+                    obj.set_flowbuttons(studios, "Studios");
                 }
                 if let Some(tags) = item.tags {
-                    obj.set_tags(tags);
+                    obj.set_flowbuttons(tags, "Tags");
                 }
                 if let Some(genres) = item.genres {
-                    obj.set_genres(genres);
+                    obj.set_flowbuttons(genres, "Genres");
                 }
                 overviewrevealer.set_reveal_child(true);
                 if let Some(image_tags) = item.backdrop_image_tags {
@@ -883,41 +886,6 @@ impl ItemPage {
         });
     }
 
-    pub fn setlinksscrolled(&self, links: Vec<Urls>) {
-        let imp = self.imp();
-        let linksscrolled = imp.linksscrolled.fix();
-        let linksrevealer = imp.linksrevealer.get();
-        if !links.is_empty() {
-            linksrevealer.set_reveal_child(true);
-        }
-        let linkbox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
-        while linkbox.last_child().is_some() {
-            if let Some(child) = linkbox.last_child() {
-                linkbox.remove(&child)
-            }
-        }
-        for url in links {
-            let linkbutton = gtk::Button::builder()
-                .margin_start(10)
-                .margin_top(10)
-                .build();
-            let buttoncontent = adw::ButtonContent::builder()
-                .label(&url.name)
-                .icon_name("send-to-symbolic")
-                .build();
-            linkbutton.set_child(Some(&buttoncontent));
-            linkbutton.connect_clicked(move |_| {
-                let _ = gio::AppInfo::launch_default_for_uri(
-                    &url.url,
-                    Option::<&gio::AppLaunchContext>::None,
-                );
-            });
-            linkbox.append(&linkbutton);
-        }
-        linksscrolled.set_child(Some(&linkbox));
-        linksrevealer.set_reveal_child(true);
-    }
-
     pub async fn setactorscrolled(&self, actors: Vec<SimpleListItem>) {
         let hortu = self.imp().actorhortu.get();
 
@@ -972,48 +940,28 @@ impl ItemPage {
         hortu.set_items(&results.items);
     }
 
-    pub fn set_studio(&self, infos: Vec<SGTitem>) {
+    pub fn set_flowbuttons(&self, infos: Vec<SGTitem>, type_: &str) {
         let imp = self.imp();
-        let scrolled = imp.studiosscrolled.fix();
-        let revealer = imp.studiosrevealer.get();
-        self.setup_sgts(revealer, scrolled, infos);
+        let horbu = match type_ {
+            "Genres" => imp.genreshorbu.get(),
+            "Studios" => imp.studioshorbu.get(),
+            "Tags" => imp.tagshorbu.get(),
+            _ => return,
+        };
+
+        horbu.set_title(type_);
+
+        horbu.set_items(&infos);
     }
 
-    pub fn set_tags(&self, infos: Vec<SGTitem>) {
+    pub fn set_flowlinks(&self, links: Vec<Urls>) {
         let imp = self.imp();
-        let scrolled = imp.tagsscrolled.fix();
-        let revealer = imp.tagsrevealer.get();
-        self.setup_sgts(revealer, scrolled, infos);
-    }
 
-    pub fn set_genres(&self, infos: Vec<SGTitem>) {
-        let imp = self.imp();
-        let scrolled = imp.genresscrolled.fix();
-        let revealer = imp.genresrevealer.get();
-        self.setup_sgts(revealer, scrolled, infos);
-    }
+        let horbu = imp.linkshorbu.get();
 
-    pub fn setup_sgts(
-        &self,
-        linksrevealer: gtk::Revealer,
-        linksscrolled: &gtk::ScrolledWindow,
-        infos: Vec<SGTitem>,
-    ) {
-        if !infos.is_empty() {
-            linksrevealer.set_reveal_child(true);
-        }
-        let linkbox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
-        for url in infos {
-            let linkbutton = gtk::Button::builder()
-                .margin_start(10)
-                .margin_top(10)
-                .label(&url.name)
-                .build();
-            linkbutton.add_css_class("raised");
-            linkbox.append(&linkbutton);
-        }
-        linksscrolled.set_child(Some(&linkbox));
-        linksrevealer.set_reveal_child(true);
+        horbu.set_title("Links");
+
+        horbu.set_links(&links);
     }
 
     pub fn set_dropdown(&self, playbackinfo: &Media, info: &SeriesInfo) {
