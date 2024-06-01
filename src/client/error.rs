@@ -21,7 +21,7 @@ impl UserFacingError for reqwest::Error {
                 format!("Timeout Error: {}", self)
             } else {
                 warn!("Error: {}", self);
-                format!("Error: {}", self)
+                format!("Error: {}", self.to_string().replace("&", "&amp;"))
             }
         }
     }

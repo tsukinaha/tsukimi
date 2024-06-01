@@ -7,7 +7,7 @@ use crate::ui::models::SETTINGS;
 use crate::utils::{
     get_data_with_cache_else, req_cache, tu_list_view_connect_activate
 };
-use crate::toast;
+use crate::{fraction, fraction_reset, toast};
 use chrono::{Datelike, Local};
 use glib::Object;
 use gtk::subclass::prelude::*;
@@ -25,6 +25,7 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::fraction;
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
     use crate::utils::spawn_g_timeout;
 
@@ -76,9 +77,7 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(@weak obj => async move {
-                obj.set_carousel().await;
-                obj.setup_history().await;
-                obj.setup_library().await;
+                obj.setup().await
             }));
         }
     }
@@ -112,6 +111,14 @@ impl Default for HomePage {
 impl HomePage {
     pub fn new() -> Self {
         Object::builder().build()
+    }
+
+    pub async fn setup(&self) {
+        fraction_reset!(self);
+        self.set_carousel().await;
+        self.setup_history().await;
+        self.setup_library().await;
+        fraction!(self);
     }
 
     #[template_callback]

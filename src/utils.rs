@@ -99,7 +99,10 @@ where
         let data = std::fs::read_to_string(&path).expect("Unable to read file");
         let data: T = serde_json::from_str(&data).expect("JSON was not well-formatted");
         RUNTIME.spawn(async move {
-            let v = future.await.unwrap();
+            let v = match future.await {
+                Ok(v) => v,
+                Err(_) => return
+            };
             let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
             std::fs::write(&path, s_data).expect("Unable to write file");
         });

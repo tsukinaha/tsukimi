@@ -86,7 +86,12 @@ impl EmbyClient {
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
         let request = self.prepare_request(Method::GET, path, params);
-        self.send_request(request).await
+        let res = self.send_request(request).await?;
+
+        match res.error_for_status() {
+            Ok(res) => Ok(res.json().await?),
+            Err(e) => Err(e),
+        }
     }
 
     pub async fn request_picture(
@@ -98,14 +103,13 @@ impl EmbyClient {
         request.send().await
     }
 
-    pub async fn post<T, B>(
+    pub async fn post<B>(
         &self,
         path: &str,
         params: &[(&str, &str)],
         body: B,
-    ) -> Result<T, reqwest::Error>
+    ) -> Result<Response, reqwest::Error>
     where
-        T: for<'de> Deserialize<'de> + Send + 'static,
         B: Serialize,
     {
         let request = self.prepare_request(Method::POST, path, params).json(&body);
@@ -124,13 +128,10 @@ impl EmbyClient {
         self.client.request(method, url).headers(headers)
     }
 
-    async fn send_request<T>(&self, request: reqwest::RequestBuilder) -> Result<T, reqwest::Error>
-    where
-        T: for<'de> Deserialize<'de> + Send + 'static,
+    async fn send_request(&self, request: reqwest::RequestBuilder) -> Result<Response, reqwest::Error>
     {
         let res = request.send().await?;
-        let data = res.json::<T>().await?;
-        Ok(data)
+        Ok(res)
     }
 
     pub async fn login(
@@ -142,7 +143,7 @@ impl EmbyClient {
             "Username": username,
             "Pw": password
         });
-        self.post("Users/authenticatebyname", &[], body).await
+        self.post("Users/authenticatebyname", &[], body).await?.json().await
     }
 
     pub fn add_params_to_url(&self, url: &mut Url, params: &[(&str, &str)]) {
@@ -273,7 +274,7 @@ impl EmbyClient {
         let body = json!(
             {"DeviceProfile":{"Name":"Direct play all","MaxStaticBitrate":1000000000,"MaxStreamingBitrate":1000000000,"MusicStreamingTranscodingBitrate":1500000,"DirectPlayProfiles":[{"Container":"mkv","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9,mp4","AudioCodec":"aac,ac3,alac,eac3,dts,flac,mp3,opus,truehd,vorbis"},{"Container":"mp4,m4v","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9","AudioCodec":"aac,alac,opus,mp3,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[],"ContainerProfiles":[],"CodecProfiles":[],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[]}}
         );
-        self.post(&path, &params, body).await
+        self.post(&path, &params, body).await?.json().await
     }
 
     pub async fn get_sub(&self, id: &str, source_id: &str) -> Result<Media, reqwest::Error> {
@@ -292,7 +293,7 @@ impl EmbyClient {
         let body = json!(
             {"DeviceProfile":{"Name":"Direct play all","MaxStaticBitrate":1000000000,"MaxStreamingBitrate":1000000000,"MusicStreamingTranscodingBitrate":1500000,"DirectPlayProfiles":[{"Container":"mkv","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9,mp4","AudioCodec":"aac,ac3,alac,eac3,dts,flac,mp3,opus,truehd,vorbis"},{"Container":"mp4,m4v","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9","AudioCodec":"aac,alac,opus,mp3,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[],"ContainerProfiles":[],"CodecProfiles":[],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[]}}
         );
-        self.post(&path, &params, body).await
+        self.post(&path, &params, body).await?.json().await
     }
 
     pub async fn get_library(&self) -> Result<List, reqwest::Error> {
@@ -431,7 +432,8 @@ impl EmbyClient {
             &self.user_id.lock().unwrap(),
             id
         );
-        self.post(&path, &[], json!({})).await
+        self.post(&path, &[], json!({})).await?;
+        Ok(())
     }
 
     pub async fn unlike(&self, id: &str) -> Result<(), reqwest::Error> {
@@ -440,12 +442,14 @@ impl EmbyClient {
             &self.user_id.lock().unwrap(),
             id
         );
-        self.post(&path, &[], json!({})).await
+        self.post(&path, &[], json!({})).await?;
+        Ok(())
     }
 
     pub async fn set_as_played(&self, id: &str) -> Result<(), reqwest::Error> {
         let path = format!("Users/{}/PlayedItems/{}", &self.user_id(), id);
-        self.post(&path, &[], json!({})).await
+        self.post(&path, &[], json!({})).await?;
+        Ok(())
     }
 
     pub async fn set_as_unplayed(&self, id: &str) -> Result<(), reqwest::Error> {
@@ -454,28 +458,32 @@ impl EmbyClient {
             &self.user_id.lock().unwrap(),
             id
         );
-        self.post(&path, &[], json!({})).await
+        self.post(&path, &[], json!({})).await?;
+        Ok(())
     }
 
     pub async fn position_back(&self, back: &Back) -> Result<(), reqwest::Error> {
         let path = "Sessions/Playing/Progress".to_string();
         let params = [("reqformat", "json")];
         let body = json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
-        self.post(&path, &params, body).await
+        self.post(&path, &params, body).await?;
+        Ok(())
     }
 
     pub async fn position_stop(&self, back: &Back) -> Result<(), reqwest::Error> {
         let path = "Sessions/Playing/Stopped".to_string();
         let params = [("reqformat", "json")];
         let body = json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
-        self.post(&path, &params, body).await
+        self.post(&path, &params, body).await?;
+        Ok(())
     }
 
     pub async fn position_start(&self, back: &Back) -> Result<(), reqwest::Error> {
         let path = "Sessions/Playing".to_string();
         let params = [("reqformat", "json")];
         let body = json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
-        self.post(&path, &params, body).await
+        self.post(&path, &params, body).await?;
+        Ok(())
     }
 
     pub async fn get_similar(&self, id: &str) -> Result<List, reqwest::Error> {
@@ -597,7 +605,7 @@ impl EmbyClient {
             "CurrentPw": old_password,
             "NewPw": new_password
         });
-        self.post(&path, &[], body).await
+        self.post(&path, &[], body).await?.json().await
     }
 
     pub async fn hide_from_resume(&self, id: &str) -> Result<(), reqwest::Error> {
@@ -607,7 +615,7 @@ impl EmbyClient {
             id
         );
         let params = [("Hide", "true")];
-        self.post(&path, &params, json!({})).await
+        self.post(&path, &params, json!({})).await?.json().await
     }
 
     pub async fn get_songs(&self, parent_id: &str) -> Result<List, reqwest::Error> {
