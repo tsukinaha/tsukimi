@@ -200,6 +200,11 @@ impl TuListItem {
                 imp.label2.set_text(&item.role().unwrap_or("".to_string()));
                 self.set_picture();
             }
+            "Audio" => {
+                imp.listlabel.set_text(&item.name());
+                imp.overlay.set_size_request(190, 190);
+                self.set_picture();
+            }
             _ => {
                 println!("Unknown item type: {}", item_type)
             }

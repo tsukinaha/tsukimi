@@ -97,14 +97,8 @@ mod imp {
                 let item: std::cell::Ref<SimpleListItem> = entry.borrow();
                 if list_item.child().is_none() {
                     let tu_item = TuItem::from_simple(&item, None);
-                    match item.latest_type.as_str() {
-                        "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views"
-                        | "Actor" | "Person" | "CollectionFolder" => {
-                            let list_child = TuListItem::new(tu_item, &item.latest_type, is_resume);
-                            list_item.set_child(Some(&list_child));
-                        }
-                        _ => {}
-                    }
+                    let list_child = TuListItem::new(tu_item, &item.latest_type, is_resume);
+                    list_item.set_child(Some(&list_child));
                 }
             });
             factory
@@ -145,7 +139,7 @@ mod imp {
                 "Episode" => Self::push_page(
                     view,
                     &window,
-                    &result.name,
+                    &result.series_name.clone().unwrap_or_default(),
                     crate::ui::widgets::item::ItemPage::new(
                         result.series_id.as_ref().unwrap().clone(),
                         result.id.clone(),
@@ -182,17 +176,7 @@ mod imp {
                         crate::ui::widgets::list::ListPage::new(item.id(), item.collection_type().unwrap_or_default()),
                     )
                 }
-                _ => Self::push_page(
-                    view,
-                    &window,
-                    &result.name,
-                    SingleListPage::new(
-                        result.id.clone(),
-                        "".to_string(),
-                        &result.latest_type,
-                        parentid,
-                    ),
-                ),
+                _ => {},
             }
         }
 
