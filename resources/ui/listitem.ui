@@ -14,6 +14,38 @@
                 <property name="width-request">167</property>
                 <property name="height-request">260</property>
                 <property name="halign">center</property>
+                <!--
+                TODO: Add a button to show Picture
+                <child type="overlay">
+                  <object class="GtkButton">
+                    <property name="halign">end</property>
+                    <property name="valign">end</property>
+                    <property name="icon-name">view-more-symbolic</property>
+                    <signal name="clicked" handler="on_view_more_clicked" swap="yes"/>
+                    <style>
+                      <class name="flat"/>
+                      <class name="circular"/>
+                      <class name="accent"/>
+                    </style>
+                  </object>
+                </child>
+                -->
+                <child type="overlay">
+                  <object class="GtkSpinner" id="spinner">
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="spinning">True</property>
+                  </object>
+                </child>
+                <child type="overlay">
+                  <object class="GtkImage" id="broken">
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="visible">False</property>
+                    <property name="icon-name">image-missing-symbolic</property>
+                    <property name="icon-size">GTK_ICON_SIZE_LARGE</property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
@@ -21,6 +53,10 @@
                 <property name="justify">center</property>
                 <property name="width-request">167</property>
                 <property name="ellipsize">end</property>
+                <attributes>
+                  <attribute name="scale" value="0.9"/>
+                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                </attributes>
               </object>
             </child>
             <child>
@@ -29,7 +65,7 @@
                 <property name="width-request">167</property>
                 <property name="ellipsize">middle</property>
                 <attributes>
-                  <attribute name="scale" value="0.9"/>
+                  <attribute name="scale" value="0.8"/>
                 </attributes>
                 <style>
                   <class name="dim-label"/>
