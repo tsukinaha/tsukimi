@@ -38,12 +38,24 @@
                   </object>
                 </child>
                 <child type="overlay">
-                  <object class="GtkImage" id="broken">
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="visible">False</property>
-                    <property name="icon-name">image-missing-symbolic</property>
-                    <property name="icon-size">GTK_ICON_SIZE_LARGE</property>
+                  <object class="GtkBox" id="broken">
+                  <property name="hexpand">True</property>
+                  <property name="visible">False</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="halign">center</property>
+                        <property name="hexpand">True</property>
+                        <property name="valign">center</property>
+                        <property name="icon-name">image-missing-symbolic</property>
+                        <property name="icon-size">GTK_ICON_SIZE_LARGE</property>
+                        <style>
+                          <class name="accent"/>
+                        </style>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="card"/>
+                    </style>
                   </object>
                 </child>
               </object>

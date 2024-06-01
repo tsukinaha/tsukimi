@@ -2,6 +2,7 @@
 <interface>
   <template class="AccountSettings" parent="AdwPreferencesDialog">
     <property name="title" translatable="yes">Settings</property>
+    <property name="search-enabled">True</property>
     <property name="content-height">780</property>
     <style>
       <class name="account-settings"/>

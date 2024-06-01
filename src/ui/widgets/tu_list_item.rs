@@ -52,7 +52,7 @@ mod imp {
         #[template_child]
         pub spinner: TemplateChild<gtk::Spinner>,
         #[template_child]
-        pub broken: TemplateChild<gtk::Image>,
+        pub broken: TemplateChild<gtk::Box>,
     }
 
     // The central trait for subclassing a GObject
@@ -339,13 +339,14 @@ impl TuListItem {
 
             debug!("Setting image: {}", &pathbuf.display());
 
-            if pathbuf.exists() {
-                spinner.stop();
-            } else {
+            spinner.stop();
+
+            if !pathbuf.exists() {
                 broken.set_visible(true);
             }
 
             let file = gtk::gio::File::for_path(pathbuf);
+
             image.set_file(Some(&file));
             revealer.set_reveal_child(true);
 
