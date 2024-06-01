@@ -1,7 +1,7 @@
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::client::{network::*, structs::*};
+use crate::client::{structs::*};
 use crate::ui::image::set_image;
 use crate::ui::models::SETTINGS;
 use crate::utils::{
@@ -25,7 +25,7 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
-    use crate::fraction;
+    
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
     use crate::utils::spawn_g_timeout;
 

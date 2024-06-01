@@ -1,16 +1,14 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::client::{network::*, structs::*};
+use crate::client::{structs::*};
 use crate::{fraction, fraction_reset, toast};
 use crate::ui::image::set_image;
-use crate::utils::{get_data_with_cache, req_cache, spawn, tu_list_view_connect_activate};
+use crate::utils::{req_cache, spawn};
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use super::tu_list_item::tu_list_item_register;
-use crate::ui::widgets::fix::ScrolledWindowFixExt;
 
 mod imp {
     use adw::subclass::prelude::*;
@@ -161,7 +159,7 @@ impl ActorPage {
                 _ => return,
             };
 
-        hortu.set_title(&format!("{}", types));
+        hortu.set_title(types);
 
         let types = types.to_string();
 

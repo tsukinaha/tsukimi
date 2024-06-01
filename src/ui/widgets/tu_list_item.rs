@@ -14,7 +14,6 @@ use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::SimpleListItem;
 use crate::toast;
-use crate::ui::image::set_image;
 use crate::ui::models::emby_cache_path;
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::spawn;
@@ -313,7 +312,7 @@ impl TuListItem {
 
         let id = id.to_string();
     
-        let pathbuf = cache_path.join(&path);
+        let pathbuf = cache_path.join(path);
 
         if pathbuf.exists() {
             if image.file().is_none() {

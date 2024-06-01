@@ -1,13 +1,11 @@
 use super::structs::*;
 use crate::config::proxy::ReqClient;
-use crate::config::{get_device_name, save_cfg, set_config, Account, APP_VERSION};
+use crate::config::{get_device_name, set_config, APP_VERSION};
 use crate::ui::models::{emby_cache_path, SETTINGS};
 use once_cell::sync::Lazy;
-use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, Error};
-use serde_json::{json, Value};
 use std::sync::OnceLock;
-use std::{env, fs, io::Write};
+use std::{env, fs};
 use tokio::runtime;
 
 pub static RUNTIME: Lazy<tokio::runtime::Runtime> = Lazy::new(|| {

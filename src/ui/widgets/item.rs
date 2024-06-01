@@ -1,7 +1,6 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
-use gst::glib::subclass::types;
 use gtk::template_callbacks;
 use gtk::{gio, glib};
 use std::cell::Ref;
@@ -11,12 +10,12 @@ use std::path::PathBuf;
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::{network::*, structs::*};
-use crate::{fraction, fraction_reset, toast};
+use crate::{toast};
 use crate::ui::models::SETTINGS;
 use crate::ui::mpv;
 use crate::ui::provider::dropdown_factory::factory;
 use crate::utils::{
-    get_data_with_cache, get_image_with_cache, req_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate
+    get_data_with_cache, get_image_with_cache, req_cache, spawn, spawn_tokio
 };
 
 use super::fix::ScrolledWindowFixExt;
@@ -909,7 +908,7 @@ impl ItemPage {
                 _ => return,
             };
 
-        hortu.set_title(&format!("{}", types));
+        hortu.set_title(types);
         
         let id = self.id();
         let types = types.to_string();

@@ -1,20 +1,17 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::{gio, glib, CompositeTemplate};
 
-use crate::client::structs::{SGTitem, SimpleListItem, Urls};
-use crate::ui::provider::tu_item::TuItem;
+use crate::client::structs::{SGTitem, Urls};
 use crate::utils::spawn;
-use crate::ui::widgets::fix::ScrolledWindowFixExt;
 
-use super::tu_list_item::TuListItem;
 
 mod imp {
     use std::cell::OnceCell;
 
     use glib::subclass::InitializingObject;
-    use gtk::gio;
+    
 
-    use crate::{client::structs::SimpleListItem, ui::widgets::{singlelist::SingleListPage, window::Window}};
+    use crate::{ui::widgets::{singlelist::SingleListPage, window::Window}};
 
     use super::*;
 

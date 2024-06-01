@@ -14,7 +14,7 @@ mod imp {
     use glib::subclass::InitializingObject;
     use gtk::gio;
 
-    use crate::{client::structs::SimpleListItem, ui::widgets::{singlelist::SingleListPage, window::Window}};
+    use crate::{client::structs::SimpleListItem, ui::widgets::{window::Window}};
 
     use super::*;
 

@@ -6,12 +6,13 @@ use glib::Object;
 use gtk::template_callbacks;
 use gtk::{gio, glib};
 
+use crate::client::client::EMBY_CLIENT;
+use crate::client::error::UserFacingError;
 use crate::client::{network::*, structs::*};
-use crate::toast;
+use crate::{fraction, fraction_reset, toast};
 use crate::ui::image::set_image;
 use crate::utils::{
-    get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory,
-    tu_list_view_connect_activate,
+    get_data_with_cache, get_image_with_cache, req_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate
 };
 
 use super::fix::ScrolledWindowFixExt;
@@ -24,6 +25,8 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
 
+    use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
+    use crate::ui::widgets::hortu_scrolled::HortuScrolled;
     use crate::utils::spawn_g_timeout;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -33,17 +36,7 @@ mod imp {
         #[property(get, set, construct_only)]
         pub id: OnceCell<String>,
         #[template_child]
-        pub linksscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub linksrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
         pub inscription: TemplateChild<gtk::Inscription>,
-        #[template_child]
-        pub initemlist: TemplateChild<gtk::ListView>,
-        #[template_child]
-        pub initemrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub initemscrolled: TemplateChild<gtk::ScrolledWindow>,
         #[template_child]
         pub boxset_title: TemplateChild<gtk::Label>,
         #[template_child]
@@ -57,10 +50,11 @@ mod imp {
         #[template_child]
         pub picbox: TemplateChild<gtk::Box>,
         #[template_child]
-        pub spinner: TemplateChild<gtk::Spinner>,
-        #[template_child]
         pub favourite_button_content: TemplateChild<adw::ButtonContent>,
-        pub selection: gtk::SingleSelection,
+        #[template_child]
+        pub linkshorbu: TemplateChild<HorbuScrolled>,
+        #[template_child]
+        pub inititemhortu: TemplateChild<HortuScrolled>,
     }
 
     // The central trait for subclassing a GObject
@@ -127,11 +121,13 @@ impl BoxSetPage {
         Object::builder().property("id", id).build()
     }
 
-    #[template_callback]
-    pub fn include_button_cb(&self) {
-        let id = self.id();
-        let dialog = IncludedDialog::new(&id);
-        dialog.present(self);
+    pub async fn setup(&self) {
+        fraction_reset!(self);
+        self.setup_background().await;
+        self.setup_pic().await;
+        self.setoverview().await;
+        self.set_included().await;
+        fraction!(self);
     }
 
     pub async fn setup_pic(&self) {
@@ -189,7 +185,6 @@ impl BoxSetPage {
         let path = get_image_with_cache(&id, "Backdrop", Some(0))
             .await
             .unwrap_or_else(|_| {
-                toast!(self, "Network Error");
                 String::default()
             });
         let file = gtk::gio::File::for_path(&path);
@@ -249,83 +244,40 @@ impl BoxSetPage {
                 }
                 obj.imp().boxset_title.set_text(&item.name);
                 obj.imp().inforevealer.set_reveal_child(true);
-                obj.imp().spinner.set_visible(false);
         }));
     }
 
     pub fn setlinksscrolled(&self, links: Vec<Urls>) {
+
         let imp = self.imp();
-        let linksscrolled = imp.linksscrolled.fix();
-        let linksrevealer = imp.linksrevealer.get();
-        if !links.is_empty() {
-            linksrevealer.set_reveal_child(true);
-        }
-        let linkbox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
-        for url in links {
-            let linkbutton = gtk::Button::builder()
-                .margin_start(10)
-                .margin_top(10)
-                .build();
-            let buttoncontent = adw::ButtonContent::builder()
-                .label(&url.name)
-                .icon_name("send-to-symbolic")
-                .build();
-            linkbutton.set_child(Some(&buttoncontent));
-            linkbutton.connect_clicked(move |_| {
-                let _ = gio::AppInfo::launch_default_for_uri(
-                    &url.url,
-                    Option::<&gio::AppLaunchContext>::None,
-                );
-            });
-            linkbox.append(&linkbutton);
-        }
-        linksscrolled.set_child(Some(&linkbox));
-        linksrevealer.set_reveal_child(true);
+
+        let linkshorbu = imp.linkshorbu.get();
+
+        linkshorbu.set_title("Links");
+
+        linkshorbu.set_links(&links);
     }
 
     pub async fn set_included(&self) {
         let imp = self.imp();
-        let factory = tu_list_item_factory("".to_string());
-        imp.initemlist.set_factory(Some(&factory));
-        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
-        imp.selection.set_model(Some(&store));
-        imp.initemlist.set_model(Some(&imp.selection));
-        imp.initemlist.connect_activate(
-            glib::clone!(@weak self as obj => move |gridview, position| {
-                let model = gridview.model().unwrap();
-                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                let window = obj.root().and_downcast::<Window>().unwrap();
-                tu_list_view_connect_activate(window, &result, None);
-            }),
-        );
-        imp.initemscrolled.fix();
-        let store = self
-            .imp()
-            .selection
-            .model()
-            .unwrap()
-            .downcast::<gtk::gio::ListStore>()
-            .unwrap();
-        let boxset_list = self.get_included().await;
-        spawn(glib::clone!(@weak store,@weak self as obj=> async move {
-            obj.imp().initemrevealer.set_reveal_child(true);
-            for result in boxset_list {
-                let object = glib::BoxedAnyObject::new(result);
-                store.append(&object);
-                gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
-            }
-        }));
-    }
+        
+        let id = self.id();
 
-    pub async fn get_included(&self) -> Vec<SimpleListItem> {
-        let imp = self.imp();
-        let id = imp.id.get().unwrap().clone();
-        let list = get_data_with_cache(id.to_string(), "include", async move {
-            get_includedby(&id).await
-        })
-        .await
-        .unwrap();
-        list.items
+        imp.inititemhortu.set_title("Items");
+
+        let results = 
+            match req_cache(&format!("boxset_{}", &id), 
+                async move {
+                    EMBY_CLIENT.get_includedby(&id).await
+                }
+            ).await {
+                Ok(history) => history,
+                Err(e) => {
+                    toast!(self, e.to_user_facing());
+                    List::default()
+                }
+            };
+
+        imp.inititemhortu.set_items(&results.items);
     }
 }

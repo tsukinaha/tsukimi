@@ -5,7 +5,7 @@ use adw::subclass::prelude::*;
 use gtk::{glib, CompositeTemplate};
 
 use crate::{
-    client::{client::EMBY_CLIENT, error::UserFacingError, structs::List}, toast, ui::provider::tu_item::TuItem, utils::{get_data_with_cache, get_image_with_cache, req_cache, spawn}
+    client::{client::EMBY_CLIENT, error::UserFacingError, structs::List}, toast, ui::provider::tu_item::TuItem, utils::{get_image_with_cache, req_cache, spawn}
 };
 
 use super::song_widget::format_duration;

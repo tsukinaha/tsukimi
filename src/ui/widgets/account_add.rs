@@ -7,10 +7,8 @@ use gtk::subclass::prelude::*;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::client::network::*;
 use crate::config::save_cfg;
 use crate::config::Account;
-use crate::toast;
 use crate::utils::spawn_tokio;
 
 mod imp {

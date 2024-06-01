@@ -12,17 +12,15 @@ impl UserFacingError for reqwest::Error {
         if let Some(status_code) = status_code {
             warn!("Error: {}", status_code);
             format!("Error: {}", status_code)
+        } else if self.is_decode() {
+            warn!("Decoding Error: {}", self);
+            format!("Decoding Error: {}", self)
+        } else if self.is_timeout() {
+            warn!("Timeout Error: {}", self);
+            format!("Timeout Error: {}", self)
         } else {
-            if self.is_decode() {
-                warn!("Decoding Error: {}", self);
-                format!("Decoding Error: {}", self)
-            } else if self.is_timeout() {
-                warn!("Timeout Error: {}", self);
-                format!("Timeout Error: {}", self)
-            } else {
-                warn!("Error: {}", self);
-                format!("Error: {}", self.to_string().replace("&", "&amp;"))
-            }
+            warn!("Error: {}", self);
+            format!("Error: {}", self.to_string().replace('&', "&amp;"))
         }
     }
 }

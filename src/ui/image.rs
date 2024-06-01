@@ -1,10 +1,8 @@
 use crate::client::client::EMBY_CLIENT;
-use crate::client::network::*;
 use crate::utils::{spawn, spawn_tokio};
 use gtk::glib::{self, clone};
 use gtk::{prelude::*, Revealer};
-use tracing::{debug, info, warn};
-use std::path::PathBuf;
+use tracing::{debug, warn};
 
 use super::models::emby_cache_path;
 
@@ -26,7 +24,7 @@ pub fn set_image(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
 
     let id = id.to_string();
 
-    let pathbuf = cache_path.join(&path);
+    let pathbuf = cache_path.join(path);
     if pathbuf.exists() {
         if image.file().is_none() {
             image.set_file(Some(&gtk::gio::File::for_path(pathbuf)));
