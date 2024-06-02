@@ -366,8 +366,8 @@ impl TuListItem {
             let mark = gtk::Image::from_icon_name("object-select-symbolic");
             mark.set_halign(gtk::Align::End);
             mark.set_valign(gtk::Align::Start);
-            mark.set_height_request(40);
-            mark.set_width_request(40);
+            mark.set_height_request(30);
+            mark.set_width_request(30);
             imp.overlay.add_overlay(&mark);
         }
     }

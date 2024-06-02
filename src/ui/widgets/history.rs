@@ -1,7 +1,7 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
-use crate::utils::req_cache;
+use crate::utils::{req_cache, spawn_tokio};
 use crate::{fraction, fraction_reset, toast};
 use glib::Object;
 use gtk::prelude::*;
@@ -116,11 +116,11 @@ impl HistoryPage {
         let types = types.to_string();
 
         let results = 
-            match req_cache(&format!("favourite_{}", types), 
-                async move {
+            match 
+                spawn_tokio(async move 
+                {
                     EMBY_CLIENT.get_favourite(&types).await
-                }
-            ).await {
+                }).await {
                 Ok(history) => history,
                 Err(e) => {
                     toast!(self, e.to_user_facing());

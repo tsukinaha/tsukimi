@@ -154,5 +154,6 @@ impl AccountWindow {
         let window = self.root().and_downcast::<super::window::Window>().unwrap();
         window.toast("Account added successfully");
         window.set_servers();
+        window.set_nav_servers();
     }
 }

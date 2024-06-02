@@ -88,10 +88,7 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(@weak obj => async move {
-                obj.setup_background().await;
-                obj.setup_pic().await;
-                obj.setoverview().await;
-                obj.set_included().await;
+                obj.setup().await;
             }));
         }
     }

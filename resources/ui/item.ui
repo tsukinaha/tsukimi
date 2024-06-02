@@ -344,12 +344,13 @@
                           <object class="GtkLabel">
                             <property name="label" translatable="yes">Overview</property>
                             <property name="halign">start</property>
-                            <property name="margin-start">10</property>
                             <attributes>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                              <attribute name="scale" value="1.3"/>
                             </attributes>
-                            <property name="use-markup">True</property>
+                            <style>
+                              <class name="title-3"/>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                         </child>
                         <child>
@@ -453,12 +454,13 @@
                           <object class="GtkLabel">
                             <property name="label" translatable="yes">MediaInfo</property>
                             <property name="halign">start</property>
-                            <property name="margin-start">10</property>
                             <attributes>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                              <attribute name="scale" value="1.3"/>
                             </attributes>
-                            <property name="use-markup">True</property>
+                            <style>
+                              <class name="title-3"/>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                         </child>
                         <child>

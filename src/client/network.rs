@@ -686,33 +686,3 @@ pub async fn get_included(id: &str) -> Result<List, Error> {
     let latests: List = serde_json::from_value(json).unwrap();
     Ok(latests)
 }
-
-pub async fn get_includedby(parentid: &str) -> Result<List, Error> {
-    let server_info = set_config();
-    let url = format!(
-        "{}:{}/emby/Users/{}/Items",
-        server_info.domain, server_info.port, server_info.user_id
-    );
-
-    let params = [
-        (
-            "Fields",
-            "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
-        ),
-        ("ImageTypeLimit", "1"),
-        ("ParentId", parentid),
-        ("SortBy", "DisplayOrder"),
-        ("SortOrder", "Ascending"),
-        ("EnableTotalRecordCount", "false"),
-        ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", &get_device_name()),
-        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server_info.access_token),
-        ("X-Emby-Language", "zh-cn"),
-    ];
-    let response = client().get(&url).query(&params).send().await?;
-    let json: serde_json::Value = response.json().await?;
-    let latests: List = serde_json::from_value(json).unwrap();
-    Ok(latests)
-}

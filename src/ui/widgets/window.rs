@@ -195,7 +195,7 @@ mod imp {
 use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
 use crate::config::Account;
-use crate::config::{load_cfgv2};
+use crate::config::load_cfgv2;
 use crate::ui::models::SETTINGS;
 use crate::utils::spawn;
 use crate::APP_ID;
@@ -254,6 +254,7 @@ impl Window {
     pub fn set_nav_servers(&self) {
         let imp = self.imp();
         let listbox = imp.serverselectlist.get();
+        listbox.remove_all();
         let accounts = load_cfgv2().unwrap();
         for account in accounts.accounts {
             listbox.append(&ServerRow::new(account));
