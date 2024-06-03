@@ -140,6 +140,12 @@ impl TuListItem {
                 }
                 self.set_rating();
             }
+            "Video" => {
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_visible(false);
+                imp.overlay.set_size_request(250, 141);
+                self.set_picture();
+            }
             "CollectionFolder" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);

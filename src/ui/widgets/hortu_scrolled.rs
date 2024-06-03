@@ -121,7 +121,7 @@ mod imp {
             std::env::set_var(title_var, &result.name);
 
             match result.latest_type.as_str() {
-                "Movie" => Self::push_page(
+                "Movie" | "Video" => Self::push_page(
                     view,
                     &window,
                     &result.name,
