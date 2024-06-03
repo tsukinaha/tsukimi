@@ -9,11 +9,12 @@ use gtk::{gio, glib};
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::{network::*, structs::*};
-use crate::{fraction, fraction_reset, toast};
 use crate::ui::image::set_image;
 use crate::utils::{
-    get_data_with_cache, get_image_with_cache, req_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate
+    get_data_with_cache, get_image_with_cache, req_cache, spawn, spawn_tokio, tu_list_item_factory,
+    tu_list_view_connect_activate,
 };
+use crate::{fraction, fraction_reset, toast};
 
 use super::fix::ScrolledWindowFixExt;
 use super::included::IncludedDialog;
@@ -181,9 +182,7 @@ impl BoxSetPage {
 
         let path = get_image_with_cache(&id, "Backdrop", Some(0))
             .await
-            .unwrap_or_else(|_| {
-                String::default()
-            });
+            .unwrap_or_else(|_| String::default());
         let file = gtk::gio::File::for_path(&path);
         let pathbuf = PathBuf::from(&path);
         if pathbuf.exists() {
@@ -245,7 +244,6 @@ impl BoxSetPage {
     }
 
     pub fn setlinksscrolled(&self, links: Vec<Urls>) {
-
         let imp = self.imp();
 
         let linkshorbu = imp.linkshorbu.get();
@@ -257,23 +255,22 @@ impl BoxSetPage {
 
     pub async fn set_included(&self) {
         let imp = self.imp();
-        
+
         let id = self.id();
 
         imp.inititemhortu.set_title("Items");
 
-        let results = 
-            match req_cache(&format!("boxset_{}", &id), 
-                async move {
-                    EMBY_CLIENT.get_includedby(&id).await
-                }
-            ).await {
-                Ok(history) => history,
-                Err(e) => {
-                    toast!(self, e.to_user_facing());
-                    List::default()
-                }
-            };
+        let results = match req_cache(&format!("boxset_{}", &id), async move {
+            EMBY_CLIENT.get_includedby(&id).await
+        })
+        .await
+        {
+            Ok(history) => history,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                List::default()
+            }
+        };
 
         imp.inititemhortu.set_items(&results.items);
     }

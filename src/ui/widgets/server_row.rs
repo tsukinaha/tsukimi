@@ -9,7 +9,9 @@ mod imp {
     use glib::subclass::InitializingObject;
 
     use crate::{
-        client::client::EMBY_CLIENT, config::load_env, ui::{models::SETTINGS, provider::account_item::AccountItem, widgets::window::Window}
+        client::client::EMBY_CLIENT,
+        config::load_env,
+        ui::{models::SETTINGS, provider::account_item::AccountItem, widgets::window::Window},
     };
 
     use super::*;

@@ -1,7 +1,5 @@
 use tracing::warn;
 
-
-
 pub trait UserFacingError {
     fn to_user_facing(&self) -> String;
 }

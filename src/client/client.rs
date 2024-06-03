@@ -1,4 +1,4 @@
-use std::{sync::Mutex};
+use std::sync::Mutex;
 
 use reqwest::{header::HeaderValue, Method, RequestBuilder, Response};
 use serde::{Deserialize, Serialize};
@@ -9,12 +9,16 @@ use uuid::Uuid;
 
 use crate::{
     config::{get_device_name, load_env, Account, APP_VERSION},
-    ui::models::emby_cache_path, utils::spawn_tokio,
+    ui::models::emby_cache_path,
+    utils::spawn_tokio,
 };
 
 use once_cell::sync::Lazy;
 
-use super::{network::RUNTIME, structs::{Back, Item, List, LoginResponse, Media, SimpleListItem}};
+use super::{
+    network::RUNTIME,
+    structs::{Back, Item, List, LoginResponse, Media, SimpleListItem},
+};
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
 
@@ -65,7 +69,8 @@ impl EmbyClient {
 
     pub fn header_change_url(&self, url: &str, port: &str) {
         let mut url = Url::parse(url).unwrap();
-        url.set_port(Some(port.parse::<u16>().unwrap_or_default())).unwrap();
+        url.set_port(Some(port.parse::<u16>().unwrap_or_default()))
+            .unwrap();
         let mut url_lock = self.url.lock().unwrap();
         *url_lock = Some(url.join("emby/").unwrap());
     }
@@ -128,8 +133,10 @@ impl EmbyClient {
         self.client.request(method, url).headers(headers)
     }
 
-    async fn send_request(&self, request: reqwest::RequestBuilder) -> Result<Response, reqwest::Error>
-    {
+    async fn send_request(
+        &self,
+        request: reqwest::RequestBuilder,
+    ) -> Result<Response, reqwest::Error> {
         let res = request.send().await?;
         Ok(res)
     }
@@ -143,7 +150,10 @@ impl EmbyClient {
             "Username": username,
             "Pw": password
         });
-        self.post("Users/authenticatebyname", &[], body).await?.json().await
+        self.post("Users/authenticatebyname", &[], body)
+            .await?
+            .json()
+            .await
     }
 
     pub fn add_params_to_url(&self, url: &mut Url, params: &[(&str, &str)]) {
@@ -239,16 +249,14 @@ impl EmbyClient {
         match self.image_request(id, image_type, tag).await {
             Ok(response) => {
                 let bytes = response.bytes().await.unwrap();
-                
+
                 if bytes.len() > 1000 {
                     self.save_image(id, image_type, tag, &bytes);
                 }
 
                 Ok(())
             }
-            Err(e) => {
-                Err(e)
-            }
+            Err(e) => Err(e),
         }
     }
 
@@ -662,22 +670,20 @@ impl EmbyClient {
 
     pub async fn get_additional(&self, id: &str) -> Result<List, reqwest::Error> {
         let path = format!("Videos/{}/AdditionalParts", id);
-        let params: [(&str, &str); 1] = [
-            ("UserId", &self.user_id()),
-        ];
+        let params: [(&str, &str); 1] = [("UserId", &self.user_id())];
         self.request(&path, &params).await
     }
 }
 
 pub trait ReadWithCache {
-    async fn request_with_cache<T, F>(&self, file_name: &str, fut: F) -> Result<T, reqwest::Error> 
+    async fn request_with_cache<T, F>(&self, file_name: &str, fut: F) -> Result<T, reqwest::Error>
     where
         T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
         F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send;
 }
 
 impl ReadWithCache for EmbyClient {
-    async fn request_with_cache<T, F>(&self, file_name: &str, fut: F) -> Result<T, reqwest::Error> 
+    async fn request_with_cache<T, F>(&self, file_name: &str, fut: F) -> Result<T, reqwest::Error>
     where
         T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
         F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
@@ -702,7 +708,6 @@ impl ReadWithCache for EmbyClient {
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests {

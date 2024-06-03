@@ -194,7 +194,7 @@ impl TuListItem {
                 self.set_picture();
                 self.set_play();
             }
-            "Actor" | "Person" => {
+            "Actor" | "Person" | "Director" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&item.role().unwrap_or("".to_string()));
                 self.set_picture();
@@ -291,7 +291,6 @@ impl TuListItem {
         }
     }
 
-
     pub fn set_image(&self, id: String, image_type: &str, tag: Option<u8>) -> gtk::Revealer {
         let image = gtk::Picture::new();
         image.set_halign(gtk::Align::Fill);
@@ -303,15 +302,15 @@ impl TuListItem {
             .vexpand(true)
             .transition_duration(400)
             .build();
-    
+
         let cache_path = emby_cache_path();
         let path = format!("{}-{}-{}", id, image_type, tag.unwrap_or(0));
-    
+
         let spinner = self.imp().spinner.get();
         let broken = self.imp().broken.get();
 
         let id = id.to_string();
-    
+
         let pathbuf = cache_path.join(path);
 
         if pathbuf.exists() {
@@ -321,41 +320,43 @@ impl TuListItem {
                 spinner.stop();
             }
             return revealer;
-        } 
-    
+        }
+
         let image_type = image_type.to_string();
-    
-        spawn(glib::clone!(@weak image,@weak revealer,@weak spinner => async move {
 
-            spawn_tokio(async move {
-                let mut retries = 0;
-                while retries < 3 {
-                    match EMBY_CLIENT.get_image(&id, &image_type, tag).await {
-                        Ok(_) => {
-                            break;
+        spawn(
+            glib::clone!(@weak image,@weak revealer,@weak spinner => async move {
+
+                spawn_tokio(async move {
+                    let mut retries = 0;
+                    while retries < 3 {
+                        match EMBY_CLIENT.get_image(&id, &image_type, tag).await {
+                            Ok(_) => {
+                                break;
+                            }
+                            Err(e) => {
+                                warn!("Failed to get image: {}, retrying...", e);
+                                retries += 1;
+                            }
                         }
-                        Err(e) => {
-                            warn!("Failed to get image: {}, retrying...", e);
-                            retries += 1;
-                        }
-                    }
-            }}).await;
+                }}).await;
 
-            debug!("Setting image: {}", &pathbuf.display());
+                debug!("Setting image: {}", &pathbuf.display());
 
-            spinner.stop();
+                spinner.stop();
 
-            if !pathbuf.exists() {
-                broken.set_visible(true);
-            }
+                if !pathbuf.exists() {
+                    broken.set_visible(true);
+                }
 
-            let file = gtk::gio::File::for_path(pathbuf);
+                let file = gtk::gio::File::for_path(pathbuf);
 
-            image.set_file(Some(&file));
-            revealer.set_reveal_child(true);
+                image.set_file(Some(&file));
+                revealer.set_reveal_child(true);
 
-        }));
-    
+            }),
+        );
+
         revealer
     }
 
@@ -578,12 +579,7 @@ pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem,
     match latest.latest_type.as_str() {
         "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views"
         | "Actor" | "Person" => {
-            set_list_child(
-                tu_item,
-                list_item,
-                &latest.latest_type,
-                is_resume,
-            );
+            set_list_child(tu_item, list_item, &latest.latest_type, is_resume);
         }
         _ => {}
     }
@@ -598,12 +594,7 @@ pub fn tu_list_poster(
     let tu_item = TuItem::from_simple(latest, Some(poster));
     match latest.latest_type.as_str() {
         "Movie" | "Series" => {
-            set_list_child(
-                tu_item,
-                list_item,
-                &latest.latest_type,
-                is_resume,
-            );
+            set_list_child(tu_item, list_item, &latest.latest_type, is_resume);
         }
         _ => {}
     }

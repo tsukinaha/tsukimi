@@ -4,14 +4,12 @@ use gtk::{gio, glib, CompositeTemplate};
 use crate::client::structs::{SGTitem, Urls};
 use crate::utils::spawn;
 
-
 mod imp {
     use std::cell::OnceCell;
 
     use glib::subclass::InitializingObject;
-    
 
-    use crate::{ui::widgets::{singlelist::SingleListPage, window::Window}};
+    use crate::ui::widgets::{singlelist::SingleListPage, window::Window};
 
     use super::*;
 
@@ -47,20 +45,14 @@ mod imp {
     }
 
     #[glib::derived_properties]
-    impl ObjectImpl for HorbuScrolled {
-    }
+    impl ObjectImpl for HorbuScrolled {}
 
     impl WidgetImpl for HorbuScrolled {}
 
     impl BinImpl for HorbuScrolled {}
 
     impl HorbuScrolled {
-    
-        pub fn activate(
-            &self,
-            result: &SGTitem,
-            parentid: Option<String>,
-        ) {
+        pub fn activate(&self, result: &SGTitem, parentid: Option<String>) {
             let window = self.obj().root().and_downcast::<Window>().unwrap();
             let (view, title_var) = match window.current_view_name().as_str() {
                 "homepage" => (&window.imp().homeview, "HOME_TITLE"),
@@ -70,17 +62,13 @@ mod imp {
             };
             window.set_title(&result.name);
             std::env::set_var(title_var, &result.name);
-        
+
             Self::push_page(
                 view,
                 &window,
                 &result.name,
-                SingleListPage::new(
-                    result.id.to_string(),
-                    "".to_string(),
-                    "",
-                    parentid,
-                ));
+                SingleListPage::new(result.id.to_string(), "".to_string(), "", parentid),
+            );
         }
 
         fn push_page<T: 'static + Clone + gtk::prelude::IsA<adw::NavigationPage>>(
@@ -109,7 +97,9 @@ glib::wrapper! {
 
 impl HorbuScrolled {
     pub fn new(is_resume: bool) -> Self {
-        glib::Object::builder().property("isresume", is_resume).build()
+        glib::Object::builder()
+            .property("isresume", is_resume)
+            .build()
     }
 
     pub fn set_items(&self, items: &Vec<SGTitem>) {
@@ -147,7 +137,7 @@ impl HorbuScrolled {
 
                 gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
             }
-            
+
         }));
     }
 
@@ -189,12 +179,11 @@ impl HorbuScrolled {
 
                 gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
             }
-            
+
         }));
     }
 
     pub fn set_title(&self, title: &str) {
         self.imp().label.set_text(title);
     }
-    
 }

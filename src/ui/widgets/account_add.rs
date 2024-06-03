@@ -102,16 +102,14 @@ impl AccountWindow {
             );
             imp.spinner.set_visible(false);
             return;
-        } 
+        }
 
         EMBY_CLIENT.header_change_url(&server, &port);
         EMBY_CLIENT.header_change_token(&servername);
         let un = username.to_string();
         let pw = password.to_string();
-        let res = 
-            match spawn_tokio(async move {
-                EMBY_CLIENT.login(&username,&password).await
-            }).await {
+        let res =
+            match spawn_tokio(async move { EMBY_CLIENT.login(&username, &password).await }).await {
                 Ok(res) => res,
                 Err(_) => {
                     imp.toast.add_toast(
@@ -124,7 +122,7 @@ impl AccountWindow {
                     return;
                 }
             };
-        
+
         let account = Account {
             servername: servername.to_string(),
             server: server.to_string(),
@@ -148,7 +146,7 @@ impl AccountWindow {
                 return;
             }
         };
-        
+
         imp.spinner.set_visible(false);
         self.close();
         let window = self.root().and_downcast::<super::window::Window>().unwrap();

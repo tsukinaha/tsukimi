@@ -1,12 +1,9 @@
-
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::client::{structs::*};
+use crate::client::structs::*;
 use crate::ui::image::set_image;
 use crate::ui::models::SETTINGS;
-use crate::utils::{
-    get_data_with_cache_else, req_cache, tu_list_view_connect_activate
-};
+use crate::utils::{get_data_with_cache_else, req_cache, tu_list_view_connect_activate};
 use crate::{fraction, fraction_reset, toast};
 use chrono::{Datelike, Local};
 use glib::Object;
@@ -25,7 +22,6 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
-    
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
     use crate::utils::spawn_g_timeout;
 
@@ -133,18 +129,13 @@ impl HomePage {
     pub async fn setup_history(&self) {
         let hortu = self.imp().hishortu.get();
 
-        let results = 
-            match req_cache("history", 
-                async {
-                    EMBY_CLIENT.get_resume().await
-                }
-            ).await {
-                Ok(history) => history,
-                Err(e) => {
-                    toast!(self, e.to_user_facing());
-                    List::default()
-                }
-            };
+        let results = match req_cache("history", async { EMBY_CLIENT.get_resume().await }).await {
+            Ok(history) => history,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                List::default()
+            }
+        };
 
         hortu.set_title("Continue Watching");
 
@@ -154,18 +145,13 @@ impl HomePage {
     pub async fn setup_library(&self) {
         let hortu = self.imp().libhortu.get();
 
-        let results = 
-            match req_cache("library", 
-                async {
-                    EMBY_CLIENT.get_library().await
-                }
-            ).await {
-                Ok(history) => history.items,
-                Err(e) => {
-                    toast!(self, e.to_user_facing());
-                    Vec::new()
-                }
-            };
+        let results = match req_cache("library", async { EMBY_CLIENT.get_library().await }).await {
+            Ok(history) => history.items,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                Vec::new()
+            }
+        };
 
         hortu.set_title("Library");
 
@@ -176,13 +162,11 @@ impl HomePage {
 
     pub async fn setup_libsview(&self, items: Vec<SimpleListItem>) {
         for view in items {
-
-            let results = 
-            match req_cache(&format!("library_{}", view.id), 
-                async move {
-                    EMBY_CLIENT.get_latest(&view.id).await
-                }
-            ).await {
+            let results = match req_cache(&format!("library_{}", view.id), async move {
+                EMBY_CLIENT.get_latest(&view.id).await
+            })
+            .await
+            {
                 Ok(history) => history,
                 Err(e) => {
                     toast!(self, e.to_user_facing());
@@ -208,16 +192,18 @@ impl HomePage {
 
         let date = Local::now();
         let formatted_date = format!("{:04}{:02}{:02}", date.year(), date.month(), date.day());
-        let results =
-            match get_data_with_cache_else(formatted_date, "carousel", async { EMBY_CLIENT.get_random().await })
-                .await {
-                    Ok(results) => results,
-                    Err(e) => {
-                        toast!(self, e.to_user_facing());
-                        List::default()
-                    }
-                };
-                
+        let results = match get_data_with_cache_else(formatted_date, "carousel", async {
+            EMBY_CLIENT.get_random().await
+        })
+        .await
+        {
+            Ok(results) => results,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                List::default()
+            }
+        };
+
         for result in results.items {
             if let Some(image_tags) = &result.image_tags {
                 if let Some(backdrop_image_tags) = &result.backdrop_image_tags {

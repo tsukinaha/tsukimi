@@ -101,26 +101,21 @@ impl HistoryPage {
     }
 
     pub async fn sets(&self, types: &str) {
-        let hortu = 
-            match types {
-                "Movie" => self.imp().moviehortu.get(),
-                "Series" => self.imp().serieshortu.get(),
-                "Episode" => self.imp().episodehortu.get(),
-                "People" => self.imp().peoplehortu.get(),
-                "MusicAlbum" => self.imp().albumhortu.get(),
-                _ => return,
-            };
+        let hortu = match types {
+            "Movie" => self.imp().moviehortu.get(),
+            "Series" => self.imp().serieshortu.get(),
+            "Episode" => self.imp().episodehortu.get(),
+            "People" => self.imp().peoplehortu.get(),
+            "MusicAlbum" => self.imp().albumhortu.get(),
+            _ => return,
+        };
 
         hortu.set_title(&format!("Favourite {}", types));
 
         let types = types.to_string();
 
-        let results = 
-            match 
-                spawn_tokio(async move 
-                {
-                    EMBY_CLIENT.get_favourite(&types).await
-                }).await {
+        let results =
+            match spawn_tokio(async move { EMBY_CLIENT.get_favourite(&types).await }).await {
                 Ok(history) => history,
                 Err(e) => {
                     toast!(self, e.to_user_facing());

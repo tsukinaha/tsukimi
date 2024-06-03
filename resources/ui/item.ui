@@ -87,6 +87,17 @@
                                   </object>
                                 </child>
                                 <child>
+                                  <object class="GtkLabel" id="tagline">
+                                    <property name="halign">start</property>
+                                    <property name="visible">False</property>
+                                    <property name="label" translatable="yes">loading</property>
+                                    <attributes>
+                                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                      <attribute name="scale" value="1.0"/>
+                                    </attributes>
+                                  </object>
+                                </child>
+                                <child>
                                   <object class="GtkBox">
                                     <property name="orientation">horizontal</property>
                                     <property name="halign">start</property>
@@ -242,7 +253,7 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkBox" id="toolbar">
                     <property name="orientation">horizontal</property>
                     <property name="hexpand">true</property>
                     <child>

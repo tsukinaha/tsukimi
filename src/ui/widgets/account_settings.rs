@@ -1,5 +1,8 @@
 use crate::{
-    client::client::EMBY_CLIENT, toast, ui::models::{emby_cache_path, SETTINGS}, utils::spawn_tokio
+    client::client::EMBY_CLIENT,
+    toast,
+    ui::models::{emby_cache_path, SETTINGS},
+    utils::spawn_tokio,
 };
 use adw::prelude::*;
 use adw::subclass::prelude::*;

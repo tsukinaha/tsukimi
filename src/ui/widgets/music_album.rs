@@ -5,7 +5,10 @@ use adw::subclass::prelude::*;
 use gtk::{glib, CompositeTemplate};
 
 use crate::{
-    client::{client::EMBY_CLIENT, error::UserFacingError, structs::List}, toast, ui::provider::tu_item::TuItem, utils::{get_image_with_cache, req_cache, spawn}
+    client::{client::EMBY_CLIENT, error::UserFacingError, structs::List},
+    toast,
+    ui::provider::tu_item::TuItem,
+    utils::{get_image_with_cache, req_cache, spawn},
 };
 
 use super::song_widget::format_duration;
@@ -124,14 +127,16 @@ impl AlbumPage {
         let item = self.item();
         let id = item.id();
 
-        let songs = match req_cache(&format!("audio_{}",item.id()), async move {
+        let songs = match req_cache(&format!("audio_{}", item.id()), async move {
             EMBY_CLIENT.get_songs(&id).await
-        }).await {
+        })
+        .await
+        {
             Ok(songs) => songs,
             Err(e) => {
                 toast!(self, e.to_user_facing());
                 List::default()
-            },
+            }
         };
 
         let mut disc_boxes: HashMap<u32, super::disc_box::DiscBox> = HashMap::new();

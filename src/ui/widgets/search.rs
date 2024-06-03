@@ -2,7 +2,6 @@ use std::env;
 
 use crate::client::{network::*, structs::*};
 use crate::ui::widgets::item::ItemPage;
-use crate::ui::widgets::movie::MoviePage;
 use crate::ui::widgets::window::Window;
 use crate::utils::{spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate};
 use adw::prelude::NavigationPageExt;
@@ -133,21 +132,12 @@ impl SearchPage {
                     button.set_child(Some(&buttoncontent));
                     button.connect_clicked(glib::clone!(@weak obj => move |_| {
                         let window = obj.root().and_downcast::<Window>().unwrap();
-                        if item.latest_type == "Movie" {
-                            let item_page = MoviePage::new(item.id.clone(),item.name.clone());
-                            item_page.set_tag(Some(&item.name));
-                            window.imp().searchview.push(&item_page);
-                            window.set_title(&item.name);
-                            window.change_pop_visibility();
-                            env::set_var("HOME_TITLE", &item.name)
-                        } else if item.latest_type == "Series" {
-                            let item_page = ItemPage::new(item.id.clone(),item.id.clone(),item.name.clone());
-                            item_page.set_tag(Some(&item.name));
-                            window.imp().searchview.push(&item_page);
-                            window.set_title(&item.name);
-                            window.change_pop_visibility();
-                            env::set_var("HOME_TITLE", &item.name)
-                        }
+                        let item_page = ItemPage::new(item.id.clone(),item.id.clone(),item.name.clone());
+                        item_page.set_tag(Some(&item.name));
+                        window.imp().searchview.push(&item_page);
+                        window.set_title(&item.name);
+                        window.change_pop_visibility();
+                        env::set_var("HOME_TITLE", &item.name)
                     }));
                     recommendbox.append(&button);
                 }

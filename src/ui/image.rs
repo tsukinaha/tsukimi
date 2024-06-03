@@ -21,7 +21,6 @@ pub fn set_image(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
     let cache_path = emby_cache_path();
     let path = format!("{}-{}-{}", id, image_type, tag.unwrap_or(0));
 
-
     let id = id.to_string();
 
     let pathbuf = cache_path.join(path);
@@ -31,7 +30,7 @@ pub fn set_image(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
             revealer.set_reveal_child(true);
         }
         return revealer;
-    } 
+    }
 
     let image_type = image_type.to_string();
 

@@ -3,8 +3,8 @@ use gtk::{gio, glib, CompositeTemplate};
 
 use crate::client::structs::SimpleListItem;
 use crate::ui::provider::tu_item::TuItem;
-use crate::utils::spawn;
 use crate::ui::widgets::fix::ScrolledWindowFixExt;
+use crate::utils::spawn;
 
 use super::tu_list_item::TuListItem;
 
@@ -14,7 +14,7 @@ mod imp {
     use glib::subclass::InitializingObject;
     use gtk::gio;
 
-    use crate::{client::structs::SimpleListItem, ui::widgets::{window::Window}};
+    use crate::{client::structs::SimpleListItem, ui::widgets::window::Window};
 
     use super::*;
 
@@ -63,8 +63,9 @@ mod imp {
 
             self.list.set_model(Some(&self.selection));
 
-            self.list.set_factory(Some(&self.factory(*self.isresume.get().unwrap_or(&false))));
-        
+            self.list
+                .set_factory(Some(&self.factory(*self.isresume.get().unwrap_or(&false))));
+
             self.list.connect_activate(
                 glib::clone!(@weak self as imp => move |listview, position| {
                     let window = imp.obj().root().and_downcast::<Window>().unwrap();
@@ -103,7 +104,7 @@ mod imp {
             });
             factory
         }
-    
+
         fn activate(
             &self,
             window: crate::ui::widgets::window::Window,
@@ -118,13 +119,17 @@ mod imp {
             };
             window.set_title(&result.name);
             std::env::set_var(title_var, &result.name);
-        
+
             match result.latest_type.as_str() {
                 "Movie" => Self::push_page(
                     view,
                     &window,
                     &result.name,
-                    crate::ui::widgets::movie::MoviePage::new(result.id.clone(), result.name.clone()),
+                    crate::ui::widgets::item::ItemPage::new(
+                        result.id.clone(),
+                        result.id.clone(),
+                        result.name.clone(),
+                    ),
                 ),
                 "Series" => Self::push_page(
                     view,
@@ -173,10 +178,13 @@ mod imp {
                         view,
                         &window,
                         &result.name,
-                        crate::ui::widgets::list::ListPage::new(item.id(), item.collection_type().unwrap_or_default()),
+                        crate::ui::widgets::list::ListPage::new(
+                            item.id(),
+                            item.collection_type().unwrap_or_default(),
+                        ),
                     )
                 }
-                _ => {},
+                _ => {}
             }
         }
 
@@ -206,7 +214,9 @@ glib::wrapper! {
 
 impl HortuScrolled {
     pub fn new(is_resume: bool) -> Self {
-        glib::Object::builder().property("isresume", is_resume).build()
+        glib::Object::builder()
+            .property("isresume", is_resume)
+            .build()
     }
 
     pub fn set_items(&self, items: &Vec<SimpleListItem>) {
@@ -219,7 +229,12 @@ impl HortuScrolled {
         let items = items.clone();
 
         let imp = self.imp();
-        let store = imp.selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+        let store = imp
+            .selection
+            .model()
+            .unwrap()
+            .downcast::<gio::ListStore>()
+            .unwrap();
 
         imp.revealer.set_reveal_child(true);
 
@@ -229,13 +244,11 @@ impl HortuScrolled {
                 store.append(&object);
                 gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
             }
-            
+
         }));
     }
 
     pub fn set_title(&self, title: &str) {
         self.imp().label.set_text(title);
     }
-
-    
 }

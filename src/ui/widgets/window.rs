@@ -194,8 +194,8 @@ mod imp {
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
-use crate::config::Account;
 use crate::config::load_cfgv2;
+use crate::config::Account;
 use crate::ui::models::SETTINGS;
 use crate::utils::spawn;
 use crate::APP_ID;

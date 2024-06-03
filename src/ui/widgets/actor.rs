@@ -1,14 +1,13 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::client::{structs::*};
-use crate::{fraction, fraction_reset, toast};
+use crate::client::structs::*;
 use crate::ui::image::set_image;
 use crate::utils::{req_cache, spawn};
+use crate::{fraction, fraction_reset, toast};
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-
 
 mod imp {
     use adw::subclass::prelude::*;
@@ -119,10 +118,11 @@ impl ActorPage {
         let inforevealer = imp.inforevealer.get();
         let title = imp.title.get();
 
-        let item = 
-        match req_cache(&format!("list_{}",id), async move {
+        let item = match req_cache(&format!("list_{}", id), async move {
             EMBY_CLIENT.get_item_info(&id).await
-        }).await {
+        })
+        .await
+        {
             Ok(item) => item,
             Err(e) => {
                 toast!(self, e.to_user_facing());
@@ -151,13 +151,12 @@ impl ActorPage {
     }
 
     pub async fn sets(&self, types: &str) {
-        let hortu = 
-            match types {
-                "Movie" => self.imp().moviehortu.get(),
-                "Series" => self.imp().serieshortu.get(),
-                "Episode" => self.imp().episodehortu.get(),
-                _ => return,
-            };
+        let hortu = match types {
+            "Movie" => self.imp().moviehortu.get(),
+            "Series" => self.imp().serieshortu.get(),
+            "Episode" => self.imp().episodehortu.get(),
+            _ => return,
+        };
 
         hortu.set_title(types);
 
@@ -165,24 +164,22 @@ impl ActorPage {
 
         let id = self.id();
 
-        let results = 
-            match req_cache(&format!("actor_{}_{}", types, &id), 
-                async move {
-                    EMBY_CLIENT.get_person(&id, &types).await
-                }
-            ).await {
-                Ok(history) => history,
-                Err(e) => {
-                    toast!(self, e.to_user_facing());
-                    List::default()
-                }
-            };
+        let results = match req_cache(&format!("actor_{}_{}", types, &id), async move {
+            EMBY_CLIENT.get_person(&id, &types).await
+        })
+        .await
+        {
+            Ok(history) => history,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                List::default()
+            }
+        };
 
         hortu.set_items(&results.items);
     }
 
     pub fn setlinksscrolled(&self, links: Vec<Urls>) {
-
         let imp = self.imp();
 
         let linkshorbu = imp.linkshorbu.get();
@@ -190,6 +187,5 @@ impl ActorPage {
         linkshorbu.set_title("Links");
 
         linkshorbu.set_links(&links);
-
     }
 }

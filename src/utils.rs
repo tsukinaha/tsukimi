@@ -1,3 +1,4 @@
+use crate::client::client::EMBY_CLIENT;
 use crate::client::{network::RUNTIME, structs::SimpleListItem};
 use crate::ui::models::emby_cache_path;
 use crate::ui::provider::tu_item::TuItem;
@@ -84,16 +85,13 @@ where
     }
 }
 
-pub async fn req_cache<T, F>(
-    tag: &str,
-    future: F,
-) -> Result<T, reqwest::Error>
+pub async fn req_cache<T, F>(tag: &str, future: F) -> Result<T, reqwest::Error>
 where
     T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
     F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
 {
     let mut path = emby_cache_path();
-    path.push(format!("{}.json",tag));
+    path.push(format!("{}.json", tag));
 
     if path.exists() {
         let data = std::fs::read_to_string(&path).expect("Unable to read file");
@@ -101,7 +99,7 @@ where
         RUNTIME.spawn(async move {
             let v = match future.await {
                 Ok(v) => v,
-                Err(_) => return
+                Err(_) => return,
             };
             let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
             std::fs::write(&path, s_data).expect("Unable to write file");
@@ -168,7 +166,7 @@ pub async fn get_image_with_cache(
     let id = id.to_string();
     let img_type = img_type.to_string();
     if !path.exists() {
-        spawn_tokio(async move { crate::client::network::get_image(id, &img_type, tag).await })
+        spawn_tokio(async move { EMBY_CLIENT.get_image(&id, &img_type, tag).await })
             .await?;
     }
     Ok(path.to_string_lossy().to_string())
@@ -214,7 +212,11 @@ pub fn tu_list_view_connect_activate(
             view,
             &window,
             &result.name,
-            crate::ui::widgets::movie::MoviePage::new(result.id.clone(), result.name.clone()),
+            crate::ui::widgets::item::ItemPage::new(
+                result.id.clone(),
+                result.id.clone(),
+                result.name.clone(),
+            ),
         ),
         "Series" => push_page(
             view,
