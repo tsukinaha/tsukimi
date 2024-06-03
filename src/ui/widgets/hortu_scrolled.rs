@@ -72,7 +72,7 @@ mod imp {
                     let model = listview.model().unwrap();
                     let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                     let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                    imp.activate(window, &result, None);
+                    imp.activate(window, &result);
                 }),
             );
         }
@@ -109,7 +109,6 @@ mod imp {
             &self,
             window: crate::ui::widgets::window::Window,
             result: &SimpleListItem,
-            parentid: Option<String>,
         ) {
             let (view, title_var) = match window.current_view_name().as_str() {
                 "homepage" => (&window.imp().homeview, "HOME_TITLE"),

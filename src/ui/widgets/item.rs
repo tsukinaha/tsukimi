@@ -668,9 +668,14 @@ impl ItemPage {
         imp.playbutton.set_sensitive(false);
         imp.favourite_button_split.set_sensitive(false);
         imp.line1spinner.set_visible(true);
-        let playback = spawn_tokio(async move { get_playbackinfo(id).await })
-            .await
-            .unwrap();
+        let playback =
+            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&id).await }).await {
+                Ok(playback) => playback,
+                Err(e) => {
+                    toast!(self, e.to_user_facing());
+                    return;
+                }
+            };
         spawn(glib::clone!(@weak osdbox,@weak self as obj=>async move {
                 let selected_name = format!("S{}:E{} - {}",info.parent_index_number.unwrap_or(0), info.index_number.unwrap_or(0), info.name);
                 obj.imp().line1.set_text(&selected_name);

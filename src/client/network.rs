@@ -1,11 +1,11 @@
 use super::structs::*;
 use crate::config::proxy::ReqClient;
 use crate::config::{get_device_name, set_config, APP_VERSION};
-use crate::ui::models::{SETTINGS};
+use crate::ui::models::SETTINGS;
 use once_cell::sync::Lazy;
 use reqwest::{Client, Error};
+use std::env;
 use std::sync::OnceLock;
-use std::{env};
 use tokio::runtime;
 
 pub static RUNTIME: Lazy<tokio::runtime::Runtime> = Lazy::new(|| {
@@ -101,45 +101,6 @@ pub async fn get_item_overview(id: String) -> Result<Item, Error> {
     let json: serde_json::Value = response.json().await?;
     let item: Item = serde_json::from_value(json).unwrap();
     Ok(item)
-}
-
-pub async fn get_playbackinfo(id: String) -> Result<Media, Error> {
-    let server = set_config();
-    let url = format!(
-        "{}:{}/emby/Items/{}/PlaybackInfo",
-        server.domain, server.port, id
-    );
-
-    let params = [
-        ("StartTimeTicks", "0"),
-        ("UserId", &server.user_id),
-        ("AutoOpenLiveStream", "false"),
-        ("IsPlayback", "false"),
-        ("AudioStreamIndex", "1"),
-        ("SubtitleStreamIndex", "1"),
-        ("MaxStreamingBitrate", "160000000"),
-        ("X-Emby-Client", "Tsukimi"),
-        ("X-Emby-Device-Name", &get_device_name()),
-        ("X-Emby-Device-Id", &env::var("UUID").unwrap()),
-        ("X-Emby-Client-Version", APP_VERSION),
-        ("X-Emby-Token", &server.access_token),
-        ("X-Emby-Language", "zh-cn"),
-        ("reqformat", "json"),
-    ];
-    let profile = serde_json::json!(
-
-        {"DeviceProfile":{"Name":"Direct play all","MaxStaticBitrate":1000000000,"MaxStreamingBitrate":1000000000,"MusicStreamingTranscodingBitrate":1500000,"DirectPlayProfiles":[{"Container":"mkv","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9,mp4","AudioCodec":"aac,ac3,alac,eac3,dts,flac,mp3,opus,truehd,vorbis"},{"Container":"mp4,m4v","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9","AudioCodec":"aac,alac,opus,mp3,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[],"ContainerProfiles":[],"CodecProfiles":[],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[]}}
-
-    );
-    let response = client()
-        .post(&url)
-        .query(&params)
-        .json(&profile)
-        .send()
-        .await?;
-    let json: serde_json::Value = response.json().await?;
-    let mediainfo: Media = serde_json::from_value(json).unwrap();
-    Ok(mediainfo)
 }
 
 pub async fn get_sub(id: String, sourceid: String) -> Result<Media, Error> {

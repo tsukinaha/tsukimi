@@ -1,7 +1,7 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
-use crate::utils::{spawn_tokio};
+use crate::utils::spawn_tokio;
 use crate::{fraction, fraction_reset, toast};
 use glib::Object;
 use gtk::prelude::*;

@@ -160,8 +160,7 @@ pub async fn get_image_with_cache(
     let id = id.to_string();
     let img_type = img_type.to_string();
     if !path.exists() {
-        spawn_tokio(async move { EMBY_CLIENT.get_image(&id, &img_type, tag).await })
-            .await?;
+        spawn_tokio(async move { EMBY_CLIENT.get_image(&id, &img_type, tag).await }).await?;
     }
     Ok(path.to_string_lossy().to_string())
 }
