@@ -78,6 +78,8 @@ pub struct MediaSource {
     pub name: String,
     #[serde(rename = "Size")]
     pub size: u64,
+    #[serde(rename = "Path")]
+    pub path: Option<String>,
     #[serde(rename = "Container")]
     pub container: String,
     #[serde(rename = "DirectStreamUrl")]
@@ -100,6 +102,8 @@ pub struct Item {
     pub name: String,
     #[serde(rename = "Id")]
     pub id: String,
+    #[serde(rename = "DateCreated")]
+    pub date_created: Option<String>,
     #[serde(rename = "SeriesId")]
     pub series_id: Option<String>,
     #[serde(rename = "SeriesName")]
@@ -138,6 +142,10 @@ pub struct Item {
     pub backdrop_image_tags: Option<Vec<String>>,
     #[serde(rename = "AlbumArtist")]
     pub album_artist: Option<String>,
+    #[serde(rename = "MediaSources")]
+    pub media_sources: Option<Vec<MediaSource>>,
+    #[serde(rename = "PlaySessionId")]
+    pub play_session_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]

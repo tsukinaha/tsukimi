@@ -15,6 +15,7 @@ use crate::ui::models::SETTINGS;
 use crate::ui::mpv;
 use crate::ui::provider::dropdown_factory::factory;
 use crate::utils::{get_data_with_cache, get_image_with_cache, req_cache, spawn, spawn_tokio};
+use chrono::{DateTime, Local, NaiveDateTime, Utc};
 
 use super::fix::ScrolledWindowFixExt;
 use super::included::IncludedDialog;
@@ -629,7 +630,6 @@ impl ItemPage {
     }
 
     pub async fn selectmovie(&self, id: String, name: String, userdata: Option<UserData>) {
-        self.createmediabox(&id).await;
         let imp = self.imp();
         imp.playbutton.set_sensitive(false);
         imp.line1spinner.set_visible(true);
@@ -664,7 +664,7 @@ impl ItemPage {
         let osdbox = imp.osdbox.get();
         let id = seriesinfo.id.clone();
         imp.inid.replace(id.clone());
-        let idc = id.clone();
+
         imp.playbutton.set_sensitive(false);
         imp.favourite_button_split.set_sensitive(false);
         imp.line1spinner.set_visible(true);
@@ -676,6 +676,9 @@ impl ItemPage {
                     return;
                 }
             };
+        
+        let media_playback = playback.clone();
+
         spawn(glib::clone!(@weak osdbox,@weak self as obj=>async move {
                 let selected_name = format!("S{}:E{} - {}",info.parent_index_number.unwrap_or(0), info.index_number.unwrap_or(0), info.name);
                 obj.imp().line1.set_text(&selected_name);
@@ -695,7 +698,7 @@ impl ItemPage {
         if let Some(overview) = seriesinfo.overview {
             imp.selecteditemoverview.set_text(Some(&overview));
         }
-        self.createmediabox(&idc).await;
+        self.createmediabox(media_playback.media_sources, None).await;
     }
 
     pub async fn setoverview(&self) {
@@ -799,6 +802,10 @@ impl ItemPage {
                     }
                 }
 
+                if let Some(media_sources) = item.media_sources {
+                    obj.createmediabox(media_sources, item.date_created).await;
+                }
+
                 if item.item_type == "Series" {
                     obj.setup_seasons().await;
                 } else {
@@ -808,34 +815,31 @@ impl ItemPage {
         }));
     }
 
-    pub async fn createmediabox(&self, id: &str) {
-        let id = id.to_owned();
+    pub fn dt(&self, date: &str) -> String {
+        let dt = DateTime::parse_from_rfc3339(date).unwrap().with_timezone(&Utc);
+        let local_time: DateTime<Local> = dt.with_timezone(&Local);
+        let naive_local_time: NaiveDateTime = local_time.naive_local();
+        naive_local_time.to_string()
+    }
+
+    pub async fn createmediabox(&self, media_sources: Vec<MediaSource>, date_created: Option<String>) {
         let imp = self.imp();
         let mediainfobox = imp.mediainfobox.get();
         let mediainforevealer = imp.mediainforevealer.get();
-        let media = match req_cache(&format!("media_{}", &id), async move {
-            EMBY_CLIENT.get_playbackinfo(&id).await
-        })
-        .await
-        {
-            Ok(media) => media,
-            Err(e) => {
-                toast!(self, e.to_user_facing());
-                return;
-            }
-        };
 
         while mediainfobox.last_child().is_some() {
             if let Some(child) = mediainfobox.last_child() {
                 mediainfobox.remove(&child)
             }
         }
-        for mediasource in media.media_sources {
+        for mediasource in media_sources {
             let singlebox = gtk::Box::new(gtk::Orientation::Vertical, 5);
             let info = format!(
-                "{} {}\n{}",
+                "{}\n{} {} Added: {}\n{}",
+                mediasource.path.unwrap_or_default(),
                 mediasource.container.to_uppercase(),
                 bytefmt::format(mediasource.size),
+                self.dt(date_created.as_ref().unwrap_or(&String::new())),
                 mediasource.name
             );
             let label = gtk::Label::builder()
@@ -844,7 +848,9 @@ impl ItemPage {
                 .margin_start(15)
                 .valign(gtk::Align::Start)
                 .margin_top(5)
+                .ellipsize(gtk::pango::EllipsizeMode::End)
                 .build();
+            label.add_css_class("caption-heading");
             singlebox.append(&label);
 
             let mediascrolled = gtk::ScrolledWindow::builder()
