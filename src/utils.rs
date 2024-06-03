@@ -156,13 +156,7 @@ pub async fn get_image_with_cache(
     tag: Option<u8>,
 ) -> Result<String, reqwest::Error> {
     let mut path = emby_cache_path();
-    match img_type {
-        "Primary" => path.push(id),
-        "Backdrop" => path.push(format!("b{}_{}", id, tag.unwrap())),
-        "Thumb" => path.push(format!("t{}", id)),
-        "Logo" => path.push(format!("l{}", id)),
-        _ => path.push(id),
-    }
+    path.push(format!("{}-{}-{}", id, img_type, tag.unwrap_or(0)));
     let id = id.to_string();
     let img_type = img_type.to_string();
     if !path.exists() {

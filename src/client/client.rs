@@ -245,26 +245,29 @@ impl EmbyClient {
         id: &str,
         image_type: &str,
         tag: Option<u8>,
-    ) -> Result<(), reqwest::Error> {
+    ) -> Result<String, reqwest::Error> {
         match self.image_request(id, image_type, tag).await {
             Ok(response) => {
                 let bytes = response.bytes().await.unwrap();
 
-                if bytes.len() > 1000 {
-                    self.save_image(id, image_type, tag, &bytes);
-                }
+                let path = if bytes.len() > 1000 {
+                    self.save_image(id, image_type, tag, &bytes)
+                } else {
+                    String::new()
+                };
 
-                Ok(())
+                Ok(path)
             }
             Err(e) => Err(e),
         }
     }
 
-    pub fn save_image(&self, id: &str, image_type: &str, tag: Option<u8>, bytes: &[u8]) {
+    pub fn save_image(&self, id: &str, image_type: &str, tag: Option<u8>, bytes: &[u8]) -> String {
         let cache_path = emby_cache_path();
         let path = format!("{}-{}-{}", id, image_type, tag.unwrap_or(0));
         let path = cache_path.join(path);
-        std::fs::write(path, bytes).unwrap();
+        std::fs::write(&path, bytes).unwrap();
+        path.to_string_lossy().to_string()
     }
 
     pub async fn get_playbackinfo(&self, id: &str) -> Result<Media, reqwest::Error> {
