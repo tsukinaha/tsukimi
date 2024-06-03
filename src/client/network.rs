@@ -1,11 +1,11 @@
 use super::structs::*;
 use crate::config::proxy::ReqClient;
 use crate::config::{get_device_name, set_config, APP_VERSION};
-use crate::ui::models::{emby_cache_path, SETTINGS};
+use crate::ui::models::{SETTINGS};
 use once_cell::sync::Lazy;
 use reqwest::{Client, Error};
 use std::sync::OnceLock;
-use std::{env, fs};
+use std::{env};
 use tokio::runtime;
 
 pub static RUNTIME: Lazy<tokio::runtime::Runtime> = Lazy::new(|| {

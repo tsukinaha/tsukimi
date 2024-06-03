@@ -11,14 +11,10 @@ use crate::client::error::UserFacingError;
 use crate::client::{network::*, structs::*};
 use crate::ui::image::set_image;
 use crate::utils::{
-    get_data_with_cache, get_image_with_cache, req_cache, spawn, spawn_tokio, tu_list_item_factory,
-    tu_list_view_connect_activate,
+    get_data_with_cache, get_image_with_cache, req_cache, spawn, spawn_tokio,
 };
 use crate::{fraction, fraction_reset, toast};
 
-use super::fix::ScrolledWindowFixExt;
-use super::included::IncludedDialog;
-use super::window::Window;
 mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
