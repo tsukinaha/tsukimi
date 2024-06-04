@@ -7,7 +7,7 @@ use crate::ui::widgets::tu_list_item::tu_list_item_register;
 use gtk::glib;
 use gtk::prelude::*;
 
-pub fn spawn_tokio_blocking<F>(fut: F) -> F::Output
+pub fn _spawn_tokio_blocking<F>(fut: F) -> F::Output
 where
     F: std::future::Future + Send + 'static,
     F::Output: Send + 'static,

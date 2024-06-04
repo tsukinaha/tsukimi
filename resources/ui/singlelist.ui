@@ -38,15 +38,6 @@
               </object>
             </child>
             <child>
-              <object class="GtkSpinner" id="spinner">
-                <property name="hexpand">True</property>
-                <property name="halign">end</property>
-                <property name="valign">center</property>
-                <property name="spinning">True</property>
-                <property name="visible">False</property>
-              </object>
-            </child>
-            <child>
               <object class="GtkButton">
                 <property name="halign">end</property>
                 <property name="hexpand">True</property>
@@ -133,6 +124,7 @@
               <object class="GtkScrolledWindow" id="listscrolled">
                 <property name="hexpand">True</property>
                 <property name="vexpand">True</property>
+                <signal name="edge-reached" handler="edge_reached_cb" swapped="yes"/>
                 <child>
                   <object class="GtkGridView" id="listgrid">
                     <property name="single-click-activate">True</property>

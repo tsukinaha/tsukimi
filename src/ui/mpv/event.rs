@@ -9,7 +9,6 @@ use std::{
 use crate::{
     client::{client::EMBY_CLIENT, network::*, structs::Back},
     config::set_config,
-    utils::{spawn_tokio, spawn_tokio_blocking},
     APP_ID,
 };
 pub fn play(

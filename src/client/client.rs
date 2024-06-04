@@ -330,13 +330,13 @@ impl EmbyClient {
     pub async fn get_list(
         &self,
         id: String,
-        start: String,
+        start: &str,
         include_item_types: &str,
         listtype: &str,
         sort_order: &str,
         sortby: &str,
     ) -> Result<List, reqwest::Error> {
-        let user_id = &self.user_id.lock().unwrap();
+        let user_id = &self.user_id();
         let path = match listtype {
             "item" => format!("Users/{}/Items", user_id),
             "resume" => format!("Users/{}/Items/Resume", user_id),
@@ -358,7 +358,7 @@ impl EmbyClient {
                     ),
                     ("ParentId", &id),
                     ("ImageTypeLimit", "1"),
-                    ("StartIndex", &start),
+                    ("StartIndex", start),
                     ("Recursive", "true"),
                     ("IncludeItemTypes", include_item_type),
                     ("SortBy", sortby),
@@ -407,7 +407,7 @@ impl EmbyClient {
     pub async fn get_inlist(
         &self,
         id: String,
-        start: String,
+        start: &str,
         listtype: &str,
         parentid: &str,
         sort_order: &str,
@@ -422,7 +422,7 @@ impl EmbyClient {
             ),
             ("ParentId", &id),
             ("ImageTypeLimit", "1"),
-            ("StartIndex", &start),
+            ("StartIndex", start),
             ("Recursive", "true"),
             ("IncludeItemTypes", "Movie,Series,Video,Game,MusicAlbum"),
             ("SortBy", sortby),

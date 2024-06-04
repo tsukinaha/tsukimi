@@ -2,17 +2,22 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
 use super::window::Window;
+use crate::client::client::EMBY_CLIENT;
+use crate::client::error::UserFacingError;
 use crate::client::{network::*, structs::*};
+use crate::toast;
 use crate::utils::{
-    get_data_with_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate,
+    get_data_with_cache, req_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate
 };
 use adw::prelude::*;
 use glib::Object;
 use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
+use gtk::{gio, glib, ScrolledWindow};
 mod imp {
 
     use std::cell::{OnceCell, RefCell};
+    use std::sync::atomic::AtomicBool;
+    use std::sync::Arc;
 
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
@@ -37,8 +42,6 @@ mod imp {
         #[template_child]
         pub listgrid: TemplateChild<gtk::GridView>,
         #[template_child]
-        pub spinner: TemplateChild<gtk::Spinner>,
-        #[template_child]
         pub listrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub count: TemplateChild<gtk::Label>,
@@ -56,7 +59,7 @@ mod imp {
         pub popovermenu: RefCell<Option<gtk::PopoverMenu>>,
         pub sortorder: RefCell<String>,
         pub sortby: RefCell<String>,
-        pub lock: RefCell<bool>,
+        pub lock: Arc<AtomicBool>,
     }
 
     // The central trait for subclassing a GObject
@@ -96,6 +99,10 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
+
+            let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+            self.selection.set_model(Some(&store));
+
             spawn_g_timeout(glib::clone!(@weak obj => async move {
                 obj.imp().sortorder.replace("Descending".to_string());
                 obj.imp().sortby.replace("SortName".to_string());
@@ -144,13 +151,29 @@ impl SingleListPage {
     #[template_callback]
     async fn sort_order_ascending_cb(&self, _btn: &gtk::ToggleButton) {
         self.imp().sortorder.replace("Ascending".to_string());
-        self.sortorder().await;
+        let store = self
+            .imp()
+            .selection
+            .model()
+            .unwrap()
+            .downcast::<gio::ListStore>()
+            .unwrap();
+        store.remove_all();
+        self.update_view("0").await;
     }
 
     #[template_callback]
     async fn sort_order_descending_cb(&self, _btn: &gtk::ToggleButton) {
         self.imp().sortorder.replace("Descending".to_string());
-        self.sortorder().await;
+        let store = self
+            .imp()
+            .selection
+            .model()
+            .unwrap()
+            .downcast::<gio::ListStore>()
+            .unwrap();
+        store.remove_all();
+        self.update_view("0").await;
     }
 
     #[template_callback]
@@ -196,25 +219,21 @@ impl SingleListPage {
 
     async fn set_factory(&self) {
         let order = self.imp().sortorder.borrow().clone();
-        let update_order = order.clone();
         let imp = self.imp();
-        let spinner = imp.spinner.get();
         let listrevealer = imp.listrevealer.get();
         let count = imp.count.get();
         let id = imp.id.get().expect("id not set").clone();
         let include_item_types = self.get_include_item_types().to_owned();
         let listtype = imp.listtype.get().unwrap().clone();
-        spinner.set_visible(true);
         let parentid = imp.parentid.borrow().clone();
         let sortby = imp.sortby.borrow().clone();
-        let list_results = get_data_with_cache(
-            id.to_string(),
-            &format!("{}{}", listtype.clone(), include_item_types),
+        let list_results = match req_cache(
+            &format!("{}_{}_{}",id, listtype.clone(), include_item_types),
             async move {
                 if let Some(parentid) = parentid {
-                    get_inlist(
+                    EMBY_CLIENT.get_inlist(
                         parentid.to_string(),
-                        0.to_string(),
+                        "0",
                         &listtype,
                         &id,
                         &order,
@@ -222,9 +241,9 @@ impl SingleListPage {
                     )
                     .await
                 } else {
-                    get_list(
+                    EMBY_CLIENT.get_list(
                         id.to_string(),
-                        0.to_string(),
+                        "0",
                         &include_item_types,
                         &listtype,
                         &order,
@@ -235,14 +254,19 @@ impl SingleListPage {
             },
         )
         .await
-        .unwrap();
+        {
+            Ok(list_results) => list_results,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
         if list_results.items.is_empty() {
             self.imp().status.set_visible(true);
             self.imp().listrevealer.set_visible(false);
         };
         let store = gio::ListStore::new::<glib::BoxedAnyObject>();
         spawn(glib::clone!(@weak store=> async move {
-                spinner.set_visible(false);
                 listrevealer.set_reveal_child(true);
                 count.set_text(&format!("{} Items",list_results.total_record_count));
                 for result in list_results.items {
@@ -260,6 +284,7 @@ impl SingleListPage {
         imp.listgrid.set_max_columns(13);
         imp.listgrid.connect_activate(
             glib::clone!(@weak self as obj => move |gridview, position| {
+                println!("{}",position);
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<SimpleListItem> = item.borrow();
@@ -267,58 +292,36 @@ impl SingleListPage {
                 tu_list_view_connect_activate(window,&result,obj.imp().id.get().cloned())
             }),
         );
-        let listtype = imp.listtype.get().unwrap().clone();
-        if listtype != "resume" {
-            self.update(&update_order).await;
+        
+    }
+
+    #[template_callback]
+    pub async fn edge_reached_cb(&self, pos: gtk::PositionType, _:gtk::ScrolledWindow) {
+
+        let listtype = self.imp().listtype.get().unwrap();
+
+        if listtype == "resume" {
+            return;
+        }
+
+        if pos == gtk::PositionType::Bottom {
+            let is_running = Arc::clone(&self.imp().lock);
+
+            if is_running.compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst).is_err() {
+                return;
+            }
+
+            let offset = self.imp().selection.model().unwrap().n_items();
+
+            self.update_view(&offset.to_string()).await;
+            
+            is_running.store(false, Ordering::SeqCst);
         }
     }
 
-    pub async fn update(&self, order: &str) {
-        let order = order.to_owned();
-        let scrolled = self.imp().listscrolled.get();
-        let include_item_types = self.get_include_item_types().to_owned();
-        let is_running = Arc::new(AtomicBool::new(false));
-        scrolled.connect_edge_reached(glib::clone!(@weak self as obj => move |_, pos| {
-            if pos == gtk::PositionType::Bottom {
-                let is_running = Arc::clone(&is_running);
-                if is_running.compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst).is_err() {
-                    return;
-                }
-                let order = order.clone();
-                let spinner = obj.imp().spinner.get();
-                spinner.set_visible(true);
-                let store = obj.imp().selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
-                let id = obj.imp().id.get().expect("id not set").clone();
-                let offset = obj.imp().selection.model().unwrap().n_items();
-                let listtype = obj.imp().listtype.get().unwrap().clone();
-                spinner.set_visible(true);
-                let parentid = obj.imp().parentid.borrow().clone();
-                let include_item_types = include_item_types.clone();
-                let sortby = obj.imp().sortby.borrow().clone();
-                let list_results = spawn_tokio(async move {
-                    if let Some(parentid) = parentid {
-                        get_inlist(parentid.to_string(), offset.to_string(), &listtype, &id, &order, &sortby).await.unwrap()
-                    } else {
-                        get_list(id.to_string(), offset.to_string(), &include_item_types, &listtype, &order, &sortby).await.unwrap()
-                    }
-                });
-                spawn(glib::clone!(@weak store=> async move {
-                    let list_results = list_results.await;
-                    spinner.set_visible(false);
-                    for result in list_results.items {
-                        let object = glib::BoxedAnyObject::new(result);
-                        store.append(&object);
-                        gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
-                    }
-                    is_running.store(false, Ordering::SeqCst);
-                }));
-            }
-        }));
-    }
-
-    pub async fn sortorder(&self) {
+    pub async fn update_view(&self, pos: &str) {
+        let pos = pos.to_owned();
         let order = self.imp().sortorder.borrow().clone();
-        let spinner = self.imp().spinner.get();
         let store = self
             .imp()
             .selection
@@ -326,17 +329,18 @@ impl SingleListPage {
             .unwrap()
             .downcast::<gio::ListStore>()
             .unwrap();
-        let id = self.imp().id.get().expect("id not set").clone();
+
+        let id = self.imp().id.get().unwrap().clone();
         let listtype = self.imp().listtype.get().unwrap().clone();
-        spinner.set_visible(true);
         let parentid = self.imp().parentid.borrow().clone();
         let include_item_types = self.get_include_item_types().to_owned();
         let sortby = self.imp().sortby.borrow().clone();
-        let list_results = spawn_tokio(async move {
+
+        let list_results = match spawn_tokio(async move {
             if let Some(parentid) = parentid {
-                get_inlist(
+                EMBY_CLIENT.get_inlist(
                     parentid.to_string(),
-                    0.to_string(),
+                    &pos,
                     &listtype,
                     &id,
                     &order,
@@ -344,9 +348,9 @@ impl SingleListPage {
                 )
                 .await
             } else {
-                get_list(
+                EMBY_CLIENT.get_list(
                     id.to_string(),
-                    0.to_string(),
+                    &pos,
                     &include_item_types,
                     &listtype,
                     &order,
@@ -354,18 +358,20 @@ impl SingleListPage {
                 )
                 .await
             }
-        })
-        .await
-        .unwrap();
-        spawn(glib::clone!(@weak store,@weak self as obj=> async move {
-                store.remove_all();
-                spinner.set_visible(false);
-                for result in list_results.items {
-                    let object = glib::BoxedAnyObject::new(result);
-                    store.append(&object);
-                    gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
-                }
-        }));
+        }).await
+        {
+            Ok(list_results) => list_results,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+
+        for result in list_results.items {
+            let object = glib::BoxedAnyObject::new(result);
+            store.append(&object);
+            gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
+        }
     }
 
     pub fn get_include_item_types(&self) -> &str {
@@ -384,7 +390,15 @@ impl SingleListPage {
         dropdown.connect_selected_item_notify(glib::clone!(@weak self as obj => move |_| {
             spawn(glib::clone!(@weak obj=> async move {
                 obj.set_dropdown_selected();
-                obj.sortorder().await;
+                let store = obj
+                    .imp()
+                    .selection
+                    .model()
+                    .unwrap()
+                    .downcast::<gio::ListStore>()
+                    .unwrap();
+                store.remove_all();
+                obj.update_view("0").await;
             }));
         }));
     }
