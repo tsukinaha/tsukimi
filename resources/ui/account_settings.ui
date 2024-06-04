@@ -342,6 +342,11 @@
                 <property name="title" translatable="yes">Show Window Immediately</property>
               </object>
             </child>
+            <child>
+              <object class="AdwSwitchRow" id="ytdlcontrol">
+                <property name="title" translatable="yes">--ytdl-format=best</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>

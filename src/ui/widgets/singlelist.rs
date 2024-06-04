@@ -279,7 +279,6 @@ impl SingleListPage {
         imp.listgrid.set_max_columns(13);
         imp.listgrid.connect_activate(
             glib::clone!(@weak self as obj => move |gridview, position| {
-                println!("{}",position);
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<SimpleListItem> = item.borrow();

@@ -52,6 +52,10 @@ pub fn play(
             init.set_property("force-window", "immediate")?;
         }
 
+        if settings.boolean("ytdl") {
+            init.set_property("ytdl-format", "best")?;
+        }
+
         if settings.boolean("is-resume") {
             if let Some(percentage) = percentage {
                 init.set_property("start", format!("{}%", percentage as u32))?;

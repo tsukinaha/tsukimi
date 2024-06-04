@@ -57,6 +57,8 @@ mod imp {
         pub dailyrecommendcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub mpvcontrol: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub ytdlcontrol: TemplateChild<adw::SwitchRow>,
     }
 
     #[glib::object_subclass]
@@ -127,6 +129,7 @@ mod imp {
             obj.set_font();
             obj.set_daily_recommend();
             obj.set_mpvcontrol();
+            obj.set_ytdlcontrol();
         }
     }
 
@@ -426,6 +429,14 @@ impl AccountSettings {
         imp.mpvcontrol.set_active(SETTINGS.mpv());
         imp.mpvcontrol.connect_active_notify(move |control| {
             SETTINGS.set_mpv(control.is_active()).unwrap();
+        });
+    }
+
+    pub fn set_ytdlcontrol(&self) {
+        let imp = self.imp();
+        imp.ytdlcontrol.set_active(SETTINGS.ytdl());
+        imp.ytdlcontrol.connect_active_notify(move |control| {
+            SETTINGS.set_ytdl(control.is_active()).unwrap();
         });
     }
 }

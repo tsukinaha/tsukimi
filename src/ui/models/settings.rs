@@ -31,6 +31,15 @@ impl Settings {
     const KEY_FONT_NAME: &'static str = "font-name";
     const KEY_DAILY_RECOMMEND: &'static str = "is-daily-recommend";
     const KEY_MPV: &'static str = "mpv";
+    const KEY_YTDL: &'static str = "ytdl";
+
+    pub fn set_ytdl(&self, ytdl: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_YTDL, ytdl)
+    }
+
+    pub fn ytdl(&self) -> bool {
+        self.boolean(Self::KEY_YTDL)
+    }
 
     pub fn set_mpv(&self, mpv: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_MPV, mpv)
