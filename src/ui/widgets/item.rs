@@ -9,12 +9,12 @@ use std::path::PathBuf;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::client::{network::*, structs::*};
+use crate::client::structs::*;
 use crate::toast;
 use crate::ui::models::SETTINGS;
 use crate::ui::mpv;
 use crate::ui::provider::dropdown_factory::factory;
-use crate::utils::{get_data_with_cache, get_image_with_cache, req_cache, spawn, spawn_tokio};
+use crate::utils::{get_image_with_cache, req_cache, spawn, spawn_tokio};
 use chrono::{DateTime, Local, NaiveDateTime, Utc};
 
 use super::fix::ScrolledWindowFixExt;
@@ -801,7 +801,7 @@ impl ItemPage {
                 let naive_local_time: NaiveDateTime = local_time.naive_local();
                 naive_local_time.to_string()
             }
-            None => return "".to_string(),
+            None => "".to_string(),
         }
     }
 

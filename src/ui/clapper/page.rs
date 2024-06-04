@@ -216,9 +216,7 @@ impl ClapperPage {
                 let duration = *position as u64 * 10000000;
                 let mut back = back.clone();
                 back.tick = duration;
-                RUNTIME.spawn(async move {
-                    EMBY_CLIENT.position_back(&back).await
-                });
+                RUNTIME.spawn(async move { EMBY_CLIENT.position_back(&back).await });
             }
         }
         glib::ControlFlow::Continue

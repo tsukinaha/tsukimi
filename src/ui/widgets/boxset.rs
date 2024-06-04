@@ -8,9 +8,9 @@ use gtk::{gio, glib};
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::client::{network::*, structs::*};
+use crate::client::structs::*;
 use crate::ui::image::set_image;
-use crate::utils::{get_data_with_cache, get_image_with_cache, req_cache, spawn, spawn_tokio};
+use crate::utils::{get_image_with_cache, req_cache, spawn, spawn_tokio};
 use crate::{fraction, fraction_reset, toast};
 
 mod imp {

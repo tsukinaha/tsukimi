@@ -17,7 +17,7 @@ use once_cell::sync::Lazy;
 
 use super::{
     network::RUNTIME,
-    structs::{Back, Item, List, LoginResponse, Media, SerInList, SeriesInfo, SimpleListItem},
+    structs::{Back, Item, List, LoginResponse, Media, SerInList, SimpleListItem},
 };
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
@@ -389,7 +389,7 @@ impl EmbyClient {
             "genres" => vec![
                 ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
                 ("IncludeItemTypes", include_item_type),
-                ("StartIndex", &start),
+                ("StartIndex", start),
                 ("ImageTypeLimit", "1"),
                 ("EnableImageTypes", "Primary,Backdrop,Thumb"),
                 ("Limit", "50"),

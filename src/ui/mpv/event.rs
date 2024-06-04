@@ -69,9 +69,7 @@ pub fn play(
     ev_ctx.observe_property("time-pos", Format::Double, 0)?;
 
     let backc = back.clone();
-    RUNTIME.spawn(async move {
-        EMBY_CLIENT.position_start(&backc).await
-    });
+    RUNTIME.spawn(async move { EMBY_CLIENT.position_start(&backc).await });
 
     crossbeam::scope(|scope| {
         scope.spawn(|_| {
@@ -91,9 +89,7 @@ pub fn play(
                     if r == 3 {
                         let mut back = back.clone();
                         back.tick = duration;
-                        RUNTIME.spawn(async move {
-                            EMBY_CLIENT.position_stop(&back).await
-                        });
+                        RUNTIME.spawn(async move { EMBY_CLIENT.position_stop(&back).await });
                     }
                     println!("Exiting! Reason: {:?}", r);
                     break;
@@ -109,9 +105,7 @@ pub fn play(
                         last_print = Instant::now();
                         let mut back = back.clone();
                         back.tick = duration;
-                        RUNTIME.spawn(async move {
-                            EMBY_CLIENT.position_back(&back).await
-                        });
+                        RUNTIME.spawn(async move { EMBY_CLIENT.position_back(&back).await });
                     }
                 }
                 Ok(e) => println!("Event triggered: {:?}", e),

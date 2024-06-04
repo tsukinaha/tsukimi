@@ -1,18 +1,18 @@
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
 use super::window::Window;
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::client::{network::*, structs::*};
+use crate::client::structs::*;
 use crate::toast;
 use crate::utils::{
-    get_data_with_cache, req_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate
+    req_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate,
 };
 use adw::prelude::*;
 use glib::Object;
 use gtk::subclass::prelude::*;
-use gtk::{gio, glib, ScrolledWindow};
+use gtk::{gio, glib};
 mod imp {
 
     use std::cell::{OnceCell, RefCell};
@@ -228,28 +228,23 @@ impl SingleListPage {
         let parentid = imp.parentid.borrow().clone();
         let sortby = imp.sortby.borrow().clone();
         let list_results = match req_cache(
-            &format!("{}_{}_{}",id, listtype.clone(), include_item_types),
+            &format!("{}_{}_{}", id, listtype.clone(), include_item_types),
             async move {
                 if let Some(parentid) = parentid {
-                    EMBY_CLIENT.get_inlist(
-                        parentid.to_string(),
-                        "0",
-                        &listtype,
-                        &id,
-                        &order,
-                        &sortby,
-                    )
-                    .await
+                    EMBY_CLIENT
+                        .get_inlist(parentid.to_string(), "0", &listtype, &id, &order, &sortby)
+                        .await
                 } else {
-                    EMBY_CLIENT.get_list(
-                        id.to_string(),
-                        "0",
-                        &include_item_types,
-                        &listtype,
-                        &order,
-                        &sortby,
-                    )
-                    .await
+                    EMBY_CLIENT
+                        .get_list(
+                            id.to_string(),
+                            "0",
+                            &include_item_types,
+                            &listtype,
+                            &order,
+                            &sortby,
+                        )
+                        .await
                 }
             },
         )
@@ -292,12 +287,10 @@ impl SingleListPage {
                 tu_list_view_connect_activate(window,&result,obj.imp().id.get().cloned())
             }),
         );
-        
     }
 
     #[template_callback]
-    pub async fn edge_reached_cb(&self, pos: gtk::PositionType, _:gtk::ScrolledWindow) {
-
+    pub async fn edge_reached_cb(&self, pos: gtk::PositionType, _: gtk::ScrolledWindow) {
         let listtype = self.imp().listtype.get().unwrap();
 
         if listtype == "resume" {
@@ -307,14 +300,17 @@ impl SingleListPage {
         if pos == gtk::PositionType::Bottom {
             let is_running = Arc::clone(&self.imp().lock);
 
-            if is_running.compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst).is_err() {
+            if is_running
+                .compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst)
+                .is_err()
+            {
                 return;
             }
 
             let offset = self.imp().selection.model().unwrap().n_items();
 
             self.update_view(&offset.to_string()).await;
-            
+
             is_running.store(false, Ordering::SeqCst);
         }
     }
@@ -338,27 +334,23 @@ impl SingleListPage {
 
         let list_results = match spawn_tokio(async move {
             if let Some(parentid) = parentid {
-                EMBY_CLIENT.get_inlist(
-                    parentid.to_string(),
-                    &pos,
-                    &listtype,
-                    &id,
-                    &order,
-                    &sortby,
-                )
-                .await
+                EMBY_CLIENT
+                    .get_inlist(parentid.to_string(), &pos, &listtype, &id, &order, &sortby)
+                    .await
             } else {
-                EMBY_CLIENT.get_list(
-                    id.to_string(),
-                    &pos,
-                    &include_item_types,
-                    &listtype,
-                    &order,
-                    &sortby,
-                )
-                .await
+                EMBY_CLIENT
+                    .get_list(
+                        id.to_string(),
+                        &pos,
+                        &include_item_types,
+                        &listtype,
+                        &order,
+                        &sortby,
+                    )
+                    .await
             }
-        }).await
+        })
+        .await
         {
             Ok(list_results) => list_results,
             Err(e) => {
