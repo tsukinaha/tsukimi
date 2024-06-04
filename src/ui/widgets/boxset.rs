@@ -137,18 +137,20 @@ impl BoxSetPage {
         let spilt_button = imp.favourite_button.get();
         imp.favourite_button.set_sensitive(false);
         let id = self.id();
-        spawn_tokio(async move {
-            like(&id).await.unwrap();
-        })
-        .await;
-        spawn(glib::clone!(@weak self as obj=>async move {
-            obj.imp().favourite_button.set_sensitive(true);
-            spilt_button.set_action_name(Some("unlike"));
-            spilt_button_content.set_icon_name("starred-symbolic");
-            spilt_button_content.set_label("Unlike");
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Liked the Item successfully.");
-        }));
+        match spawn_tokio(async move { EMBY_CLIENT.like(&id).await }).await {
+            Ok(_) => (),
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+
+        spilt_button.set_action_name(Some("unlike"));
+        spilt_button_content.set_icon_name("starred-symbolic");
+        spilt_button_content.set_label("Unlike");
+
+        imp.favourite_button.set_sensitive(true);
+        toast!(self, "Liked the Boxset successfully.");
     }
 
     pub async fn unlike(&self) {
@@ -157,18 +159,20 @@ impl BoxSetPage {
         let spilt_button = imp.favourite_button.get();
         imp.favourite_button.set_sensitive(false);
         let id = self.id();
-        spawn_tokio(async move {
-            unlike(&id).await.unwrap();
-        })
-        .await;
-        spawn(glib::clone!(@weak self as obj=>async move {
-            obj.imp().favourite_button.set_sensitive(true);
-            spilt_button.set_action_name(Some("like"));
-            spilt_button_content.set_icon_name("non-starred-symbolic");
-            spilt_button_content.set_label("Like");
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Unliked the Item successfully.");
-        }));
+        match spawn_tokio(async move { EMBY_CLIENT.unlike(&id).await }).await {
+            Ok(_) => (),
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+
+        spilt_button.set_action_name(Some("like"));
+        spilt_button_content.set_icon_name("non-starred-symbolic");
+        spilt_button_content.set_label("Like");
+
+        imp.favourite_button.set_sensitive(true);
+        toast!(self, "Unliked the Boxset successfully.");
     }
 
     pub async fn setup_background(&self) {
@@ -189,12 +193,19 @@ impl BoxSetPage {
         let imp = self.imp();
         let id = imp.id.get().unwrap().clone();
         let itemoverview = imp.inscription.get();
-        let item = get_data_with_cache(id.clone(), "item", async { get_item_overview(id).await })
-            .await
-            .unwrap_or_else(|_| {
-                toast!(self, "Network Error");
+
+        let item = match req_cache(&format!("item_{}", &id), async move {
+            EMBY_CLIENT.get_item_info(&id).await
+        })
+        .await
+        {
+            Ok(item) => item,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
                 Item::default()
-            });
+            }
+        };
+
         spawn(glib::clone!(@weak self as obj=>async move {
                 {
                     let mut str = String::new();

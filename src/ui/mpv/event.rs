@@ -7,9 +7,9 @@ use std::{
 };
 
 use crate::{
-    client::{network::*, structs::Back},
+    client::{client::EMBY_CLIENT, network::*, structs::Back},
     config::set_config,
-    utils::spawn_tokio_blocking,
+    utils::{spawn_tokio, spawn_tokio_blocking},
     APP_ID,
 };
 pub fn play(
@@ -71,7 +71,7 @@ pub fn play(
 
     let backc = back.clone();
     RUNTIME.spawn(async move {
-        playstart(backc).await;
+        EMBY_CLIENT.position_start(&backc).await
     });
 
     crossbeam::scope(|scope| {
@@ -92,8 +92,8 @@ pub fn play(
                     if r == 3 {
                         let mut back = back.clone();
                         back.tick = duration;
-                        spawn_tokio_blocking(async {
-                            positionstop(back).await;
+                        RUNTIME.spawn(async move {
+                            EMBY_CLIENT.position_stop(&back).await
                         });
                     }
                     println!("Exiting! Reason: {:?}", r);
@@ -111,7 +111,7 @@ pub fn play(
                         let mut back = back.clone();
                         back.tick = duration;
                         RUNTIME.spawn(async move {
-                            positionback(back).await;
+                            EMBY_CLIENT.position_back(&back).await
                         });
                     }
                 }

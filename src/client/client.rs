@@ -17,7 +17,7 @@ use once_cell::sync::Lazy;
 
 use super::{
     network::RUNTIME,
-    structs::{Back, Item, List, LoginResponse, Media, SimpleListItem},
+    structs::{Back, Item, List, LoginResponse, Media, SerInList, SeriesInfo, SimpleListItem},
 };
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
@@ -186,7 +186,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_series_info(&self, id: &str) -> Result<SimpleListItem, reqwest::Error> {
+    pub async fn get_series_info(&self, id: &str) -> Result<SerInList, reqwest::Error> {
         let path = format!("Shows/{}/Episodes", id);
         let params = [
             ("Fields", "Overview"),

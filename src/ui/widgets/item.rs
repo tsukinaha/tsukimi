@@ -18,7 +18,6 @@ use crate::utils::{get_data_with_cache, get_image_with_cache, req_cache, spawn, 
 use chrono::{DateTime, Local, NaiveDateTime, Utc};
 
 use super::fix::ScrolledWindowFixExt;
-use super::included::IncludedDialog;
 use super::window::Window;
 
 mod imp {
@@ -160,13 +159,6 @@ mod imp {
                     window.like_episode().await;
                 },
             );
-            klass.install_action_async(
-                "like.series",
-                None,
-                |window, _action, _parameter| async move {
-                    window.like_series().await;
-                },
-            );
             klass.install_action_async("unlike", None, |window, _action, _parameter| async move {
                 window.unlike().await;
             });
@@ -238,41 +230,34 @@ impl ItemPage {
             .build()
     }
 
-    #[template_callback]
-    pub fn include_button_cb(&self) {
-        let id = self.id();
-        let dialog = IncludedDialog::new(&id);
-        dialog.present(self);
-    }
-
     pub async fn played(&self) {
         let imp = self.imp();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
-        spawn_tokio(async move {
-            played(&id).await.unwrap();
-        })
-        .await;
-        spawn(glib::clone!(@weak self as obj=>async move {
-            obj.imp().favourite_button_split.set_sensitive(true);
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Mark as played successfully.");
-        }));
+        match spawn_tokio(async move { EMBY_CLIENT.set_as_played(&id).await }).await {
+            Ok(_) => (),
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+        imp.favourite_button_split.set_sensitive(true);
+        toast!(self, "Mark as played successfully.");
     }
 
     pub async fn unplayed(&self) {
         let imp = self.imp();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
-        spawn_tokio(async move {
-            unplayed(&id).await.unwrap();
-        })
-        .await;
-        spawn(glib::clone!(@weak self as obj=>async move {
-            obj.imp().favourite_button_split.set_sensitive(true);
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Mark as unplayed successfully.");
-        }));
+        match spawn_tokio(async move { EMBY_CLIENT.set_as_unplayed(&id).await }).await {
+            Ok(_) => (),
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+        imp.favourite_button_split.set_sensitive(true);
+        toast!(self, "Mark as unplayed successfully.");
     }
 
     pub async fn like_episode(&self) {
@@ -281,18 +266,20 @@ impl ItemPage {
         let spilt_button = imp.favourite_button_split.get();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
-        spawn_tokio(async move {
-            like(&id).await.unwrap();
-        })
-        .await;
-        spawn(glib::clone!(@weak self as obj=>async move {
-            obj.imp().favourite_button_split.set_sensitive(true);
-            spilt_button.set_action_name(Some("unlike"));
-            spilt_button_content.set_icon_name("starred-symbolic");
-            spilt_button_content.set_label("Unlike");
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Liked the episode successfully.");
-        }));
+        match spawn_tokio(async move { EMBY_CLIENT.like(&id).await }).await {
+            Ok(_) => (),
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+
+        spilt_button.set_action_name(Some("unlike"));
+        spilt_button_content.set_icon_name("starred-symbolic");
+        spilt_button_content.set_label("Unlike");
+
+        imp.favourite_button_split.set_sensitive(true);
+        toast!(self, "Liked the Video successfully.");
     }
 
     pub async fn unlike(&self) {
@@ -301,40 +288,20 @@ impl ItemPage {
         let spilt_button_content = imp.favourite_button_split_content.get();
         let spilt_button = imp.favourite_button_split.get();
         imp.favourite_button_split.set_sensitive(false);
-        let id = self.id();
-        spawn_tokio(async move {
-            unlike(&id).await.unwrap();
-            unlike(&inid).await.unwrap();
-        })
-        .await;
-        spawn(glib::clone!(@weak self as obj=>async move {
-            obj.imp().favourite_button_split.set_sensitive(true);
-            spilt_button.set_action_name(Some("like.series"));
-            spilt_button_content.set_icon_name("non-starred-symbolic");
-            spilt_button_content.set_label("Like");
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Unliked the series and episode successfully.");
-        }));
-    }
+        match spawn_tokio(async move { EMBY_CLIENT.unlike(&inid).await }).await {
+            Ok(_) => (),
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
 
-    pub async fn like_series(&self) {
-        let imp = self.imp();
-        let spilt_button_content = imp.favourite_button_split_content.get();
-        let spilt_button = imp.favourite_button_split.get();
-        imp.favourite_button_split.set_sensitive(false);
-        let id = self.id();
-        spawn_tokio(async move {
-            like(&id).await.unwrap();
-        })
-        .await;
-        spawn(glib::clone!(@weak self as obj=>async move {
-            obj.imp().favourite_button_split.set_sensitive(true);
-            spilt_button.set_action_name(Some("unlike"));
-            spilt_button_content.set_icon_name("starred-symbolic");
-            spilt_button_content.set_label("Unlike");
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Liked the series successfully.");
-        }));
+        spilt_button.set_action_name(Some("like.series"));
+        spilt_button_content.set_icon_name("non-starred-symbolic");
+        spilt_button_content.set_label("Like");
+
+        imp.favourite_button_split.set_sensitive(true);
+        toast!(self, "Unliked the Video successfully.");
     }
 
     pub async fn setup_background(&self) {
@@ -410,10 +377,17 @@ impl ItemPage {
         let seasonlist = imp.seasonlist.get();
         seasonlist.set_model(Some(&imp.seasonselection));
 
-        let series_info =
-            get_data_with_cache(id.clone(), "serinfo", async { get_series_info(id).await })
-                .await
-                .unwrap();
+        let series_info = match req_cache(&format!("serinfo_{}", &id), async move {
+            EMBY_CLIENT.get_series_info(&id).await
+        })
+        .await
+        {
+            Ok(item) => item.items,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                Vec::new()
+            }
+        };
 
         spawn(glib::clone!(@weak self as obj => async move {
                 let mut season_set: HashSet<u32> = HashSet::new();
@@ -656,6 +630,7 @@ impl ItemPage {
         let handlerid = self.bind_button(&playback, &info);
         imp.playbuttonhandlerid.replace(Some(handlerid));
         imp.playbutton.set_sensitive(true);
+        imp.favourite_button_split.set_sensitive(true);
     }
 
     pub async fn selectepisode(&self, seriesinfo: SeriesInfo) {
@@ -676,7 +651,7 @@ impl ItemPage {
                     return;
                 }
             };
-        
+
         let media_playback = playback.clone();
 
         spawn(glib::clone!(@weak osdbox,@weak self as obj=>async move {
@@ -698,7 +673,8 @@ impl ItemPage {
         if let Some(overview) = seriesinfo.overview {
             imp.selecteditemoverview.set_text(Some(&overview));
         }
-        self.createmediabox(media_playback.media_sources, None).await;
+        self.createmediabox(media_playback.media_sources, None)
+            .await;
     }
 
     pub async fn setoverview(&self) {
@@ -815,14 +791,25 @@ impl ItemPage {
         }));
     }
 
-    pub fn dt(&self, date: &str) -> String {
-        let dt = DateTime::parse_from_rfc3339(date).unwrap().with_timezone(&Utc);
-        let local_time: DateTime<Local> = dt.with_timezone(&Local);
-        let naive_local_time: NaiveDateTime = local_time.naive_local();
-        naive_local_time.to_string()
+    pub fn dt(&self, date: Option<&str>) -> String {
+        match date {
+            Some(date) => {
+                let dt = DateTime::parse_from_rfc3339(date)
+                    .unwrap()
+                    .with_timezone(&Utc);
+                let local_time: DateTime<Local> = dt.with_timezone(&Local);
+                let naive_local_time: NaiveDateTime = local_time.naive_local();
+                naive_local_time.to_string()
+            }
+            None => return "".to_string(),
+        }
     }
 
-    pub async fn createmediabox(&self, media_sources: Vec<MediaSource>, date_created: Option<String>) {
+    pub async fn createmediabox(
+        &self,
+        media_sources: Vec<MediaSource>,
+        date_created: Option<String>,
+    ) {
         let imp = self.imp();
         let mediainfobox = imp.mediainfobox.get();
         let mediainforevealer = imp.mediainforevealer.get();
@@ -835,11 +822,11 @@ impl ItemPage {
         for mediasource in media_sources {
             let singlebox = gtk::Box::new(gtk::Orientation::Vertical, 5);
             let info = format!(
-                "{}\n{} {} Added: {}\n{}",
+                "{}\n{} {} {}\n{}",
                 mediasource.path.unwrap_or_default(),
                 mediasource.container.to_uppercase(),
                 bytefmt::format(mediasource.size),
-                self.dt(date_created.as_ref().unwrap_or(&String::new())),
+                self.dt(date_created.as_deref()),
                 mediasource.name
             );
             let label = gtk::Label::builder()
@@ -1131,7 +1118,13 @@ impl ItemPage {
                                 Some(mediastream) => match mediastream.delivery_url.clone() {
                                     Some(url) => Some(url),
                                     None => {
-                                        let playbackinfo = spawn_tokio(async {get_sub(id, media.id).await}).await.unwrap();
+                                        let playbackinfo = match spawn_tokio(async move { EMBY_CLIENT.get_sub(&id, &media.id).await}).await {
+                                            Ok(playbackinfo) => playbackinfo,
+                                            Err(e) => {
+                                                toast!(obj, e.to_user_facing());
+                                                return;
+                                            }
+                                        };
                                         let mediasource = playbackinfo.media_sources.iter().find(|&media| media.name == medianameselected).unwrap();
                                         let suburl = mediasource.media_streams.iter().find(|&mediastream| {
                                             mediastream.stream_type == "Subtitle" && Some(mediastream.display_title.as_ref().unwrap_or(&"".to_string())) == subselected.as_ref() && mediastream.is_external

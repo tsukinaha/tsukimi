@@ -105,11 +105,7 @@ mod imp {
             factory
         }
 
-        fn activate(
-            &self,
-            window: crate::ui::widgets::window::Window,
-            result: &SimpleListItem,
-        ) {
+        fn activate(&self, window: crate::ui::widgets::window::Window, result: &SimpleListItem) {
             let (view, title_var) = match window.current_view_name().as_str() {
                 "homepage" => (&window.imp().homeview, "HOME_TITLE"),
                 "searchpage" => (&window.imp().searchview, "SEARCH_TITLE"),

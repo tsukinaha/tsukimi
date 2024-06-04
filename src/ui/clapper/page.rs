@@ -1,4 +1,5 @@
-use crate::client::network::{positionback, RUNTIME};
+use crate::client::client::EMBY_CLIENT;
+use crate::client::network::RUNTIME;
 use crate::client::structs::Back;
 use crate::config::set_config;
 use crate::toast;
@@ -216,7 +217,7 @@ impl ClapperPage {
                 let mut back = back.clone();
                 back.tick = duration;
                 RUNTIME.spawn(async move {
-                    positionback(back).await;
+                    EMBY_CLIENT.position_back(&back).await
                 });
             }
         }

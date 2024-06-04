@@ -159,7 +159,7 @@
                                       <object class="AdwSplitButton" id="favourite_button_split">
                                         <property name="menu_model">favourite_button_menu_model</property>
                                         <property name="sensitive">False</property>
-                                        <property name="action-name">like.series</property>
+                                        <property name="action-name">like.episode</property>
                                         <child>
                                           <object class="AdwButtonContent" id="favourite_button_split_content">
                                             <property name="icon-name">non-starred-symbolic</property>
@@ -494,17 +494,13 @@
   <menu id="favourite_button_menu_model">
     <section>
       <item>
-        <attribute name="label">Like This Episode</attribute>
+        <attribute name="label">Like This Video</attribute>
         <attribute name="action">like.episode</attribute>
-      </item>
-      <item>
-        <attribute name="label">Like This Series</attribute>
-        <attribute name="action">like.series</attribute>
       </item>
     </section>
     <section>
       <item>
-        <attribute name="label">Unlike All</attribute>
+        <attribute name="label">Unlike This Video</attribute>
         <attribute name="action">unlike</attribute>
       </item>
     </section>

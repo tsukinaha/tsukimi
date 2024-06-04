@@ -268,6 +268,8 @@ pub struct SimpleListItem {
     pub community_rating: Option<f32>,
     #[serde(rename = "CollectionType")]
     pub collection_type: Option<String>,
+    #[serde(rename = "Overview")]
+    pub overview: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -290,6 +292,12 @@ pub struct List {
     pub total_record_count: u32,
     #[serde(rename = "Items")]
     pub items: Vec<SimpleListItem>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct SerInList {
+    #[serde(rename = "Items")]
+    pub items: Vec<SeriesInfo>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
