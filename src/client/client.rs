@@ -410,17 +410,12 @@ impl EmbyClient {
         sortby: &str,
     ) -> Result<List, reqwest::Error> {
         let path = format!("Users/{}/Items", &self.user_id());
-        let params = [
+        let mut params = vec![
             ("Limit", "50"),
             (
                 "Fields",
                 "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
             ),
-            if let Some(id) = id {
-                ("ParentId", &id.clone())
-            } else {
-                ("", "")
-            },
             ("ImageTypeLimit", "1"),
             ("StartIndex", start),
             ("Recursive", "true"),
@@ -436,6 +431,12 @@ impl EmbyClient {
                 ("TagIds", parentid)
             },
         ];
+
+        let id_clone;
+        if let Some(id) = id {
+            id_clone = id.clone();
+            params.push(("ParentId", &id_clone));
+        }
         self.request(&path, &params).await
     }
 
