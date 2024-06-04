@@ -38,6 +38,8 @@ mod imp {
         #[property(get, set, construct_only)]
         pub collectiontype: OnceCell<String>,
         #[property(get, set, construct_only)]
+        pub isinlist: OnceCell<bool>,
+        #[property(get, set, construct_only)]
         pub listtype: OnceCell<String>,
         #[template_child]
         pub listgrid: TemplateChild<gtk::GridView>,
@@ -139,12 +141,14 @@ impl SingleListPage {
         collection_type: String,
         listtype: &str,
         parentid: Option<String>,
+        is_inlist: bool,
     ) -> Self {
         Object::builder()
             .property("id", id)
             .property("collectiontype", collection_type)
             .property("listtype", listtype)
             .property("parentid", parentid)
+            .property("isinlist", is_inlist)
             .build()
     }
 
@@ -227,12 +231,14 @@ impl SingleListPage {
         let listtype = imp.listtype.get().unwrap().clone();
         let parentid = imp.parentid.borrow().clone();
         let sortby = imp.sortby.borrow().clone();
+
+        let is_inlist = imp.isinlist.get().unwrap().clone();
         let list_results = match req_cache(
             &format!("{}_{}_{}", id, listtype.clone(), include_item_types),
             async move {
-                if let Some(parentid) = parentid {
+                if is_inlist {
                     EMBY_CLIENT
-                        .get_inlist(parentid.to_string(), "0", &listtype, &id, &order, &sortby)
+                        .get_inlist(parentid, "0", &listtype, &id, &order, &sortby)
                         .await
                 } else {
                     EMBY_CLIENT
@@ -331,10 +337,12 @@ impl SingleListPage {
         let include_item_types = self.get_include_item_types().to_owned();
         let sortby = self.imp().sortby.borrow().clone();
 
+        let is_inlist = self.imp().isinlist.get().unwrap().clone();
+
         let list_results = match spawn_tokio(async move {
-            if let Some(parentid) = parentid {
+            if is_inlist {
                 EMBY_CLIENT
-                    .get_inlist(parentid.to_string(), &pos, &listtype, &id, &order, &sortby)
+                    .get_inlist(parentid, &pos, &listtype, &id, &order, &sortby)
                     .await
             } else {
                 EMBY_CLIENT

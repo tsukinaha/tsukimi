@@ -19,6 +19,8 @@ mod imp {
     pub struct HorbuScrolled {
         #[property(get, set, construct_only)]
         pub isresume: OnceCell<bool>,
+        #[property(get, set, nullable)]
+        pub list_type: OnceCell<Option<String>>,
         #[template_child]
         pub label: TemplateChild<gtk::Label>,
         #[template_child]
@@ -63,11 +65,12 @@ mod imp {
             window.set_title(&result.name);
             std::env::set_var(title_var, &result.name);
 
+            let list_type = self.list_type.get().unwrap().as_ref().unwrap();
             Self::push_page(
                 view,
                 &window,
                 &result.name,
-                SingleListPage::new(result.id.to_string(), "".to_string(), "", parentid),
+                SingleListPage::new(result.id.to_string(), "".to_string(), list_type, parentid, true),
             );
         }
 

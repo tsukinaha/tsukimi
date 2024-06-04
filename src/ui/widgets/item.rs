@@ -998,6 +998,8 @@ impl ItemPage {
 
         horbu.set_title(type_);
 
+        horbu.set_list_type(Some(type_.to_string()));
+
         horbu.set_items(&infos);
     }
 

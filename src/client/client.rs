@@ -8,8 +8,7 @@ use url::Url;
 use uuid::Uuid;
 
 use crate::{
-    config::{get_device_name, load_env, proxy::ReqClient, Account, APP_VERSION},
-    ui::models::emby_cache_path,
+    config::{get_device_name, load_env, proxy::ReqClient, Account, APP_VERSION}, ui::models::emby_cache_path
 };
 
 use once_cell::sync::Lazy;
@@ -403,7 +402,7 @@ impl EmbyClient {
 
     pub async fn get_inlist(
         &self,
-        id: String,
+        id: Option<String>,
         start: &str,
         listtype: &str,
         parentid: &str,
@@ -417,7 +416,11 @@ impl EmbyClient {
                 "Fields",
                 "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
             ),
-            ("ParentId", &id),
+            if let Some(id) = id {
+                ("ParentId", &id.clone())
+            } else {
+                ("", "")
+            },
             ("ImageTypeLimit", "1"),
             ("StartIndex", start),
             ("Recursive", "true"),
@@ -425,8 +428,10 @@ impl EmbyClient {
             ("SortBy", sortby),
             ("SortOrder", sort_order),
             ("EnableImageTypes", "Primary,Backdrop,Thumb"),
-            if listtype == "Genre" {
+            if listtype == "Genres" {
                 ("GenreIds", parentid)
+            } else if listtype == "Studios" {
+                ("StudioIds", parentid)
             } else {
                 ("TagIds", parentid)
             },

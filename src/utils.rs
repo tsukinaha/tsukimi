@@ -232,6 +232,7 @@ pub fn tu_list_view_connect_activate(
                 "".to_string(),
                 &result.latest_type,
                 parentid,
+                true,
             ),
         ),
     }
