@@ -256,6 +256,7 @@
                   <object class="GtkBox" id="toolbar">
                     <property name="orientation">horizontal</property>
                     <property name="hexpand">true</property>
+                    <property name="visible">False</property>
                     <child>
                       <object class="GtkDropDown" id="seasonlist">
                         <property name="margin-start">10</property>

@@ -783,10 +783,10 @@ impl ItemPage {
                 }
 
                 if item.item_type == "Series" {
+                    obj.imp().toolbar.set_visible(true);
                     obj.setup_seasons().await;
                 } else {
-                    obj.selectmovie(item.id, item.name, item.user_data).await;
-                    obj.imp().toolbar.set_visible(false);
+                    obj.selectmovie(item.id, item.name, item.user_data).await; 
                 }
         }));
     }
