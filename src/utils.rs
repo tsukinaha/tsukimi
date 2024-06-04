@@ -56,35 +56,6 @@ where
     });
 }
 
-pub async fn get_data_with_cache<T, F>(
-    id: String,
-    item_type: &str,
-    future: F,
-) -> Result<T, reqwest::Error>
-where
-    T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
-    F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
-{
-    let mut path = emby_cache_path();
-    path.push(format!("{}_{}.json", item_type, &id));
-
-    if path.exists() {
-        let data = std::fs::read_to_string(&path).expect("Unable to read file");
-        let data: T = serde_json::from_str(&data).expect("JSON was not well-formatted");
-        RUNTIME.spawn(async move {
-            let v = future.await.unwrap();
-            let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
-            std::fs::write(&path, s_data).expect("Unable to write file");
-        });
-        Ok(data)
-    } else {
-        let v = spawn_tokio(future).await?;
-        let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
-        std::fs::write(&path, s_data).expect("Unable to write file");
-        Ok(v)
-    }
-}
-
 pub async fn req_cache<T, F>(tag: &str, future: F) -> Result<T, reqwest::Error>
 where
     T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,

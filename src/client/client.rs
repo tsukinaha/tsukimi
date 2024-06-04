@@ -8,17 +8,14 @@ use url::Url;
 use uuid::Uuid;
 
 use crate::{
-    config::{get_device_name, load_env, Account, APP_VERSION},
+    config::{get_device_name, load_env, proxy::ReqClient, Account, APP_VERSION},
     ui::models::emby_cache_path,
-    utils::spawn_tokio,
 };
 
 use once_cell::sync::Lazy;
 
-use super::{
-    network::RUNTIME,
-    structs::{Back, Item, List, LoginResponse, Media, SerInList, SimpleListItem},
-};
+use super::structs::{Back, Item, List, LoginResponse, Media, SerInList, SimpleListItem};
+
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
 
@@ -49,7 +46,7 @@ impl EmbyClient {
         headers.insert("X-Emby-Language", HeaderValue::from_static("zh-cn"));
         Self {
             url: Mutex::new(None),
-            client: reqwest::Client::new(),
+            client: ReqClient::build(),
             headers: Mutex::new(headers),
             user_id: Mutex::new(String::new()),
         }
@@ -675,40 +672,6 @@ impl EmbyClient {
         let path = format!("Videos/{}/AdditionalParts", id);
         let params: [(&str, &str); 1] = [("UserId", &self.user_id())];
         self.request(&path, &params).await
-    }
-}
-
-pub trait ReadWithCache {
-    async fn request_with_cache<T, F>(&self, file_name: &str, fut: F) -> Result<T, reqwest::Error>
-    where
-        T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
-        F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send;
-}
-
-impl ReadWithCache for EmbyClient {
-    async fn request_with_cache<T, F>(&self, file_name: &str, fut: F) -> Result<T, reqwest::Error>
-    where
-        T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
-        F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
-    {
-        let mut path = emby_cache_path();
-        path.push(format!("{}.json", file_name));
-
-        if path.exists() {
-            let data = std::fs::read_to_string(&path).expect("Unable to read file");
-            let data: T = serde_json::from_str(&data).expect("JSON was not well-formatted");
-            RUNTIME.spawn(async move {
-                let v = fut.await.unwrap();
-                let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
-                std::fs::write(&path, s_data).expect("Unable to write file");
-            });
-            Ok(data)
-        } else {
-            let v = spawn_tokio(fut).await?;
-            let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
-            std::fs::write(&path, s_data).expect("Unable to write file");
-            Ok(v)
-        }
     }
 }
 
