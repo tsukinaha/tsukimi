@@ -236,7 +236,7 @@ impl EmbyClient {
             if image_type == "Backdrop" {
                 "1280"
             } else {
-                "300"
+                "800"
             })
         ];
         self.request_picture(&path, &params).await
