@@ -6,124 +6,139 @@
       <object class="GtkScrolledWindow">
         <property name="hscrollbar-policy">never</property>
         <child>
-          <object class="AdwClamp">
-            <property name="margin-bottom">48</property>
-            <property name="margin-top">48</property>
-            <property name="maximum-size">1000</property>
+          <object class="GtkBox">
+            <property name="halign">fill</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">18</property>
             <child>
-              <object class="GtkBox">
-                <property name="halign">fill</property>
-                <property name="orientation">vertical</property>
+              <object class="AdwClamp">
+                <property name="margin-bottom">48</property>
+                <property name="margin-top">48</property>
+                <property name="maximum-size">1000</property>
                 <child>
-                  <object class="GtkBox" id="albumInfo">
+                  <object class="GtkBox">
                     <property name="halign">fill</property>
-                    <property name="hexpand">True</property>
-                    <property name="spacing">32</property>
-                    <property name="margin-bottom">48</property>
-                    <child>
-                      <object class="GtkPicture" id="cover_image">
-                        <property name="halign">center</property>
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkBox" id="albumDetails">
-                        <property name="halign">center</property>
-                        <property name="valign">start</property>
-                        <property name="orientation">vertical</property>
-                        <property name="margin-top">18</property>
-                        <child>
-                          <object class="GtkLabel" id="title_label">
-                            <property name="focusable">False</property>
-                            <property name="halign">start</property>
-                            <property name="ellipsize">middle</property>
-                            <property name="margin-bottom">18</property>
-                            <style>
-                              <class name="title-1"/>
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="artist_label">
-                            <property name="focusable">False</property>
-                            <property name="halign">start</property>
-                            <property name="ellipsize">middle</property>
-                            <property name="margin-bottom">12</property>
-                            <style>
-                              <class name="title-3"/>
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="released_label">
-                            <property name="focusable">False</property>
-                            <property name="halign">start</property>
-                            <property name="use_markup">True</property>
-                            <property name="margin-bottom">12</property>
-                            <style>
-                              <class name="dim-label"/>
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="_composer_label">
-                            <property name="focusable">False</property>
-                            <property name="halign">start</property>
-                            <property name="ellipsize">end</property>
-                            <property name="margin-bottom">12</property>
-                            <style>
-                              <class name="dim-label"/>
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="orientation">horizontal</property>
-                            <property name="spacing">12</property>
-                            <property name="margin-top">6</property>
-                            <child>
-                              <object class="GtkButton" id="_play_button">
-                                <property name="width-request">44</property>
-                                <property name="height-request">44</property>
-                                <property name="icon-name">media-playback-start-symbolic</property>
-                                <property name="tooltip-text" translatable="yes">Play</property>
-                                <property name="valign">center</property>
-                                <style>
-                                  <class name="circular"/>
-                                  <class name="suggested-action"/>
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkMenuButton" id="_menu_button">
-                                <property name="width-request">44</property>
-                                <property name="height-request">44</property>
-                                <property name="halign">start</property>
-                                <property name="valign">center</property>
-                                <property name="focus_on_click">False</property>
-                                <property name="menu-model">album_menu</property>
-                                <property name="direction">none</property>
-                                <property name="icon_name">view-more-symbolic</property>
-                                <style>
-                                  <class name="circular"/>
-                                </style>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkBox" id="listbox">
                     <property name="orientation">vertical</property>
-                    <property name="spacing">36</property>
-                    <style>
-                      <class name="logo"/>
-                    </style>
+                    <child>
+                      <object class="GtkBox" id="albumInfo">
+                        <property name="halign">fill</property>
+                        <property name="hexpand">True</property>
+                        <property name="spacing">32</property>
+                        <property name="margin-bottom">48</property>
+                        <child>
+                          <object class="GtkPicture" id="cover_image">
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="albumDetails">
+                            <property name="halign">center</property>
+                            <property name="valign">start</property>
+                            <property name="orientation">vertical</property>
+                            <property name="margin-top">18</property>
+                            <child>
+                              <object class="GtkLabel" id="title_label">
+                                <property name="focusable">False</property>
+                                <property name="halign">start</property>
+                                <property name="ellipsize">middle</property>
+                                <property name="margin-bottom">18</property>
+                                <style>
+                                  <class name="title-1"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="artist_label">
+                                <property name="focusable">False</property>
+                                <property name="halign">start</property>
+                                <property name="ellipsize">middle</property>
+                                <property name="margin-bottom">12</property>
+                                <style>
+                                  <class name="title-3"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="released_label">
+                                <property name="focusable">False</property>
+                                <property name="halign">start</property>
+                                <property name="use_markup">True</property>
+                                <property name="margin-bottom">12</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="_composer_label">
+                                <property name="focusable">False</property>
+                                <property name="halign">start</property>
+                                <property name="ellipsize">end</property>
+                                <property name="margin-bottom">12</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <property name="spacing">12</property>
+                                <property name="margin-top">6</property>
+                                <child>
+                                  <object class="GtkButton" id="_play_button">
+                                    <property name="width-request">44</property>
+                                    <property name="height-request">44</property>
+                                    <property name="icon-name">media-playback-start-symbolic</property>
+                                    <property name="tooltip-text" translatable="yes">Play</property>
+                                    <property name="valign">center</property>
+                                    <style>
+                                      <class name="circular"/>
+                                      <class name="suggested-action"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkMenuButton" id="_menu_button">
+                                    <property name="width-request">44</property>
+                                    <property name="height-request">44</property>
+                                    <property name="halign">start</property>
+                                    <property name="valign">center</property>
+                                    <property name="focus_on_click">False</property>
+                                    <property name="menu-model">album_menu</property>
+                                    <property name="direction">none</property>
+                                    <property name="icon_name">view-more-symbolic</property>
+                                    <style>
+                                      <class name="circular"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="listbox">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">36</property>
+                        <style>
+                          <class name="logo"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </child>
+              </object>
+            </child>
+            <child>
+              <object class="HortuScrolled" id="artisthortu">
+              </object>
+            </child>
+            <child>
+              <object class="HortuScrolled" id="recommendhortu">
               </object>
             </child>
           </object>

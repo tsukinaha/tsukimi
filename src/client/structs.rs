@@ -160,7 +160,7 @@ pub struct People {
     pub people_type: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct SGTitem {
     #[serde(rename = "Name")]
     pub name: String,
@@ -250,8 +250,8 @@ pub struct SimpleListItem {
     pub image_tags: Option<ImageTags>,
     #[serde(rename = "SeriesId")]
     pub series_id: Option<String>,
-    #[serde(rename = "AlbumArtist")]
-    pub album_artist: Option<String>,
+    #[serde(rename = "AlbumArtists")]
+    pub album_artists: Option<Vec<View>>,
     #[serde(rename = "Artists")]
     pub artists: Option<Vec<String>>,
     #[serde(rename = "AlbumId")]

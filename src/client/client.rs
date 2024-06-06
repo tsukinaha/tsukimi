@@ -266,6 +266,26 @@ impl EmbyClient {
         path.to_string_lossy().to_string()
     }
 
+    pub async fn get_artist_albums(&self, id: &str, artist_id: &str) -> Result<List, reqwest::Error> {
+        let path = format!("Users/{}/Items", self.user_id());
+        let params = [
+            (
+                "IncludeItemTypes",
+                "MusicAlbum",
+            ),
+            ("Recursive", "true"),
+            ("ImageTypeLimit", "1"),
+            ("Limit", "12"),
+            ("SortBy", "ProductionYear,SortName"),
+            ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+            ("SortOrder", "Descending"),
+            ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear"),
+            ("AlbumArtistIds", artist_id),
+            ("ExcludeItemIds", id),
+        ];
+        self.request(&path, &params).await
+    }
+
     pub async fn get_playbackinfo(&self, id: &str) -> Result<Media, reqwest::Error> {
         let path = format!("Items/{}/PlaybackInfo", id);
         let params = [

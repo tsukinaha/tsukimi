@@ -16,7 +16,7 @@ use super::song_widget::format_duration;
 mod imp {
     use std::cell::OnceCell;
 
-    use crate::{ui::provider::tu_item::TuItem, utils::spawn_g_timeout};
+    use crate::{ui::{provider::tu_item::TuItem, widgets::hortu_scrolled::HortuScrolled}, utils::spawn_g_timeout};
 
     use super::*;
     use glib::subclass::InitializingObject;
@@ -37,6 +37,10 @@ mod imp {
         pub released_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub listbox: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub recommendhortu: TemplateChild<HortuScrolled>,
+        #[template_child]
+        pub artisthortu: TemplateChild<HortuScrolled>,
     }
 
     #[glib::object_subclass]
@@ -62,6 +66,7 @@ mod imp {
             spawn_g_timeout(glib::clone!(@weak obj => async move {
                 obj.set_album().await;
                 obj.get_songs().await;
+                obj.set_lists().await;
                 obj.set_toolbar();
             }));
         }
@@ -90,7 +95,7 @@ impl AlbumPage {
 
         self.imp()
             .artist_label
-            .set_text(&item.album_artist().unwrap_or_default());
+            .set_text(&item.albumartist_name());
 
         let duration = item.run_time_ticks() / 10000000;
         let release = format!(
@@ -159,5 +164,51 @@ impl AlbumPage {
     pub fn set_toolbar(&self) {
         let window = self.root().and_downcast::<super::window::Window>().unwrap();
         window.set_player_toolbar();
+    }
+
+    pub async fn set_lists(&self) {
+        self.sets("Recommend").await;
+        self.sets("More From").await;
+    }
+
+    pub async fn sets(&self, types: &str) {
+        let hortu = match types {
+            "Recommend" => self.imp().recommendhortu.get(),
+            "More From" => self.imp().artisthortu.get(),
+            _ => return,
+        };
+
+        if types == "More From" {
+            hortu.set_title(&format!("More From {}", self.item().albumartist_name()));
+        } else {
+            hortu.set_title(types);
+        }
+
+        let id = self.item().id();
+        let artist_id = self.item().albumartist_id();
+        let types = types.to_string();
+
+        let results = match req_cache(&format!("item_{types}_{id}"), async move {
+            match types.as_str() {
+                "Recommend" => EMBY_CLIENT.get_similar(&id).await,
+                "More From" => EMBY_CLIENT.get_artist_albums(&id, &artist_id).await,
+                _ => Ok(List::default()),
+            }
+        })
+        .await
+        {
+            Ok(history) => history,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                List::default()
+            }
+        };
+
+        if results.items.is_empty() {
+            hortu.set_visible(false);
+            return;
+        }
+
+        hortu.set_items(&results.items);
     }
 }
