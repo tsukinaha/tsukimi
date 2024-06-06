@@ -225,14 +225,20 @@ impl EmbyClient {
         if let Some(tag) = tag {
             path.push_str(&format!("/{}", tag));
         }
-        let params = [(
-            "maxHeight",
+        let params = [
+            ("maxHeight",
             if image_type == "Backdrop" {
-                "1080"
+                "800"
             } else {
-                "400"
-            },
-        )];
+                "300"
+            }),
+            ("maxWidth",
+            if image_type == "Backdrop" {
+                "1280"
+            } else {
+                "300"
+            })
+        ];
         self.request_picture(&path, &params).await
     }
 
