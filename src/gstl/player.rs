@@ -16,14 +16,10 @@ impl MusicPlayer {
         // Start playing
         let bus = pipeline.bus().unwrap();
         bus.add_signal_watch();
-        bus.connect_message(Some("progress"), {
-            move |_bus, msg| {
-                on_bus_message(msg);
-            }
-        });
         bus.connect_message(Some("eos"), {
-            move |_bus, msg| {
-                on_bus_message(msg);
+            move |_bus, _msg| {
+                // Hard Reset
+                // Not Implemented
             }
         });
         bus.connect_message(Some("buffering"), {
@@ -43,6 +39,14 @@ impl MusicPlayer {
         });
         Self { pipeline }
     }
+
+    pub fn _connect_about_to_finish<F>(&self, cb: F)
+    where
+        F: Fn(&[glib::Value]) -> Option<glib::Value> + Send + Sync + 'static,
+    {
+        self.pipeline.connect("about-to-finish", false, cb);
+    }
+
 
     pub fn playing(&self) {
         let pipeline = &self.pipeline;
@@ -108,42 +112,5 @@ impl MusicPlayer {
         pipeline
             .seek_simple(gst::SeekFlags::FLUSH | gst::SeekFlags::KEY_UNIT, position)
             .expect("Seek failed");
-    }
-}
-
-fn on_bus_message(msg: &gst::Message) {
-    match msg.view() {
-        gst::MessageView::Eos(eos) => {
-            let eos_src_name = match eos.src() {
-                Some(src) => src.name(),
-                None => "no_name".into(),
-            };
-            println!("End of stream from {}", eos_src_name);
-        }
-        gst::MessageView::Error(err) => {
-            println!(
-                "Error from {:?}: {} ({:?})",
-                err.src().map(|s| s.path_string()),
-                err.error(),
-                err.debug()
-            );
-        }
-        gst::MessageView::DurationChanged(duration) => {
-            println!("Progress {}", duration.src().unwrap());
-        }
-        gst::MessageView::Progress(progress) => match progress.src() {
-            Some(minutes) => {
-                println!("Progress {}", minutes);
-            }
-            None => {
-                println!("Progress None");
-            }
-        },
-        gst::MessageView::ClockLost(_) => {
-            println!("Clock lost");
-        }
-        _ => {
-            println!("Message {:?}", msg.type_());
-        }
     }
 }
