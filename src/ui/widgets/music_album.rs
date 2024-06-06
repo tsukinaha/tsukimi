@@ -64,10 +64,10 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(@weak obj => async move {
+                obj.set_toolbar();
                 obj.set_album().await;
                 obj.get_songs().await;
                 obj.set_lists().await;
-                obj.set_toolbar();
             }));
         }
     }

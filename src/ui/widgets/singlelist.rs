@@ -5,7 +5,7 @@ use super::window::Window;
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
-use crate::toast;
+use crate::{fraction, fraction_reset, toast};
 use crate::utils::{
     req_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate,
 };
@@ -106,11 +106,7 @@ mod imp {
             self.selection.set_model(Some(&store));
 
             spawn_g_timeout(glib::clone!(@weak obj => async move {
-                obj.imp().sortorder.replace("Descending".to_string());
-                obj.imp().sortby.replace("SortName".to_string());
-                obj.handle_type().await;
-                obj.set_up_dropdown();
-                obj.set_factory().await;
+                obj.set_up().await;
             }));
         }
     }
@@ -150,6 +146,16 @@ impl SingleListPage {
             .property("parentid", parentid)
             .property("isinlist", is_inlist)
             .build()
+    }
+
+    async fn set_up(&self) {
+        fraction_reset!(self);
+        self.imp().sortorder.replace("Descending".to_string());
+        self.imp().sortby.replace("SortName".to_string());
+        self.handle_type().await;
+        self.set_up_dropdown();
+        self.set_factory().await;
+        fraction!(self);
     }
 
     #[template_callback]
@@ -233,6 +239,7 @@ impl SingleListPage {
         let sortby = imp.sortby.borrow().clone();
 
         let is_inlist = imp.isinlist.get().unwrap().clone();
+
         let list_results = match req_cache(
             &format!("{}_{}_{}", id, listtype.clone(), include_item_types),
             async move {
@@ -321,6 +328,13 @@ impl SingleListPage {
     }
 
     pub async fn update_view(&self, pos: &str) {
+        fraction_reset!(self);
+        self.update_view_cb(pos).await;
+        fraction!(self);
+    }
+
+
+    pub async fn update_view_cb(&self, pos: &str) {
         let pos = pos.to_owned();
         let order = self.imp().sortorder.borrow().clone();
         let store = self
