@@ -162,6 +162,18 @@ impl ClapperPage {
     }
 
     pub fn on_button_clicked(&self) {
+        let position = &self.imp().video.player().unwrap().position();
+        let back = self.imp().back.borrow();
+
+        if *position > 0.0 {
+            if let Some(back) = back.as_ref() {
+                let duration = *position as u64 * 10000000;
+                let mut back = back.clone();
+                back.tick = duration;
+                RUNTIME.spawn(async move { EMBY_CLIENT.position_stop(&back).await });
+            }
+        }
+
         self.imp().video.player().unwrap().stop();
         self.remove_timeout();
         let window = self.root().unwrap().downcast::<Window>().unwrap();
