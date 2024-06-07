@@ -2,6 +2,7 @@
 <interface>
   <template class="AccountSettings" parent="AdwPreferencesDialog">
     <property name="title" translatable="yes">Settings</property>
+    <property name="search-enabled">True</property>
     <property name="content-height">780</property>
     <style>
       <class name="account-settings" />
@@ -140,6 +141,7 @@
             <child>
               <object class="AdwSpinRow" id="threadspinrow">
                 <property name="title" translatable="yes">Threads</property>
+                <property name="subtitle">This only effects on getting images</property>
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
@@ -337,6 +339,11 @@
             <child>
               <object class="AdwSwitchRow" id="forcewindowcontrol">
                 <property name="title" translatable="yes">Show Window Immediately</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="ytdlcontrol">
+                <property name="title" translatable="yes">--ytdl-format=best</property>
               </object>
             </child>
           </object>

@@ -4,7 +4,7 @@ use gtk::{gio, glib, template_callbacks, CompositeTemplate};
 
 use super::window::Window;
 use crate::{
-    client::network::change_password,
+    client::client::EMBY_CLIENT,
     toast,
     ui::models::{emby_cache_path, SETTINGS},
     utils::spawn_tokio,
@@ -57,6 +57,8 @@ mod imp {
         pub dailyrecommendcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub mpvcontrol: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub ytdlcontrol: TemplateChild<adw::SwitchRow>,
     }
 
     #[glib::object_subclass]
@@ -127,6 +129,7 @@ mod imp {
             obj.set_font();
             obj.set_daily_recommend();
             obj.set_mpvcontrol();
+            obj.set_ytdlcontrol();
         }
     }
 
@@ -158,23 +161,19 @@ impl AccountSettings {
         let new_password = self.imp().password_entry.text();
         let new_password_second = self.imp().password_second_entry.text();
         if new_password.is_empty() || new_password_second.is_empty() {
-            let window = self.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Password cannot be empty!");
+            toast!(self, "Password cannot be empty!");
             return;
         }
         if new_password != new_password_second {
-            let window = self.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Passwords do not match!");
+            toast!(self, "Passwords do not match!");
             return;
         }
-        match spawn_tokio(async move { change_password(&new_password).await }).await {
+        match spawn_tokio(async move { EMBY_CLIENT.change_password(&new_password).await }).await {
             Ok(_) => {
-                let window = self.root().and_downcast::<super::window::Window>().unwrap();
-                window.toast("Password changed successfully! Please login again.");
+                toast!(self, "Password changed successfully! Please login again.");
             }
             Err(e) => {
-                let window = self.root().and_downcast::<super::window::Window>().unwrap();
-                window.toast(&format!("Failed to change password: {}", e));
+                toast!(self, &format!("Failed to change password: {}", e));
             }
         };
     }
@@ -430,6 +429,14 @@ impl AccountSettings {
         imp.mpvcontrol.set_active(SETTINGS.mpv());
         imp.mpvcontrol.connect_active_notify(move |control| {
             SETTINGS.set_mpv(control.is_active()).unwrap();
+        });
+    }
+
+    pub fn set_ytdlcontrol(&self) {
+        let imp = self.imp();
+        imp.ytdlcontrol.set_active(SETTINGS.ytdl());
+        imp.ytdlcontrol.connect_active_notify(move |control| {
+            SETTINGS.set_ytdl(control.is_active()).unwrap();
         });
     }
 }

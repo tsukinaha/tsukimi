@@ -98,7 +98,7 @@ impl ListPage {
         ];
 
         for (name, title) in &pages {
-            let page = SingleListPage::new(id.clone(), collection_type.clone(), name, None);
+            let page = SingleListPage::new(id.clone(), collection_type.clone(), name, None, false);
             stack.add_titled(&page, Some(name), title);
         }
     }

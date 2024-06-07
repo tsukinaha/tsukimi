@@ -118,7 +118,6 @@ mod imp {
 }
 
 glib::wrapper! {
-    /// Preference Window to display and update room details.
     pub struct SongWidget(ObjectSubclass<imp::SongWidget>)
         @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
 }

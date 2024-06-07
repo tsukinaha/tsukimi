@@ -1,15 +1,13 @@
 use gtk::prelude::*;
 use libmpv2::{events::*, *};
 use std::{
-    collections::HashMap,
     thread,
     time::{Duration, Instant},
 };
 
 use crate::{
-    client::{network::*, structs::Back},
+    client::{client::EMBY_CLIENT, network::*, structs::Back},
     config::set_config,
-    utils::spawn_tokio_blocking,
     APP_ID,
 };
 
@@ -55,6 +53,10 @@ pub fn play(
             init.set_property("force-window", "immediate")?;
         }
 
+        if settings.boolean("ytdl") {
+            init.set_property("ytdl-format", "best")?;
+        }
+
         if settings.boolean("is-resume") {
             if let Some(percentage) = percentage {
                 init.set_property("start", format!("{}%", percentage))?;
@@ -90,19 +92,16 @@ pub fn play(
     ev_ctx.observe_property("time-pos", Format::Double, 0)?;
 
     let backc = back.clone();
-    RUNTIME.spawn(async move {
-        playstart(backc).await;
-    });
+    RUNTIME.spawn(async move { EMBY_CLIENT.position_start(&backc).await });
 
     crossbeam::scope(|scope| {
         scope.spawn(|_| {
-            mpv.playlist_load_files(&[(&url, FileState::AppendPlay, None)])
-                .unwrap();
+            mpv.command("loadfile", &[&url, "append-play"]).unwrap();
             thread::sleep(Duration::from_secs(1));
             if let Some(suburl) = suburl {
                 let suburl = format!("{}:{}/emby{}", server_info.domain, server_info.port, suburl);
                 println!("Loading subtitle");
-                mpv.subtitle_add_select(&suburl, None, None).unwrap();
+                mpv.command("sub-add", &[&suburl, "select"]).unwrap();
             }
         });
         let mut last_print = Instant::now();
@@ -113,9 +112,7 @@ pub fn play(
                     if r == 3 {
                         let mut back = back.clone();
                         back.tick = duration;
-                        spawn_tokio_blocking(async {
-                            positionstop(back).await;
-                        });
+                        RUNTIME.spawn(async move { EMBY_CLIENT.position_stop(&back).await });
                     }
                     println!("Exiting! Reason: {:?}", r);
                     break;
@@ -131,19 +128,8 @@ pub fn play(
                         last_print = Instant::now();
                         let mut back = back.clone();
                         back.tick = duration;
-                        RUNTIME.spawn(async move {
-                            positionback(back).await;
-                        });
+                        RUNTIME.spawn(async move { EMBY_CLIENT.position_back(&back).await });
                     }
-                }
-
-                Ok(Event::PropertyChange {
-                    name: "demuxer-cache-state",
-                    change: PropertyData::Node(mpv_node),
-                    ..
-                }) => {
-                    let ranges = seekable_ranges(mpv_node).unwrap();
-                    println!("Seekable ranges updated: {:?}", ranges);
                 }
                 Ok(e) => println!("Event triggered: {:?}", e),
                 Err(e) => println!("Event errored: {:?}", e),
@@ -152,19 +138,4 @@ pub fn play(
     })
     .unwrap();
     Ok(())
-}
-
-fn seekable_ranges(demuxer_cache_state: &MpvNode) -> Option<Vec<(f64, f64)>> {
-    let mut res = Vec::new();
-    let props: HashMap<&str, MpvNode> = demuxer_cache_state.to_map()?.collect();
-    let ranges = props.get("seekable-ranges")?.to_array()?;
-
-    for node in ranges {
-        let range: HashMap<&str, MpvNode> = node.to_map()?.collect();
-        let start = range.get("start")?.to_f64()?;
-        let end = range.get("end")?.to_f64()?;
-        res.push((start, end));
-    }
-
-    Some(res)
 }

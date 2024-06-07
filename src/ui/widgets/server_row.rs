@@ -9,6 +9,7 @@ mod imp {
     use glib::subclass::InitializingObject;
 
     use crate::{
+        client::client::EMBY_CLIENT,
         config::load_env,
         ui::{models::SETTINGS, provider::account_item::AccountItem, widgets::window::Window},
     };
@@ -57,6 +58,7 @@ mod imp {
             let account = self.obj().item().account();
             load_env(&account);
             SETTINGS.set_preferred_server(&account.servername).unwrap();
+            EMBY_CLIENT.init(&account);
             let window = self.obj().root().and_downcast::<Window>().unwrap();
             window.reset();
         }

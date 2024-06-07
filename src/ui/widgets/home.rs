@@ -1,32 +1,29 @@
-use adw::prelude::NavigationPageExt;
 use chrono::{Datelike, Local};
 use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 use gtk::{prelude::*, template_callbacks};
-use std::env;
 
-use super::tu_list_item::TuListItem;
-use super::{fix::ScrolledWindowFixExt, list::ListPage, window::Window};
-use crate::client::{network::*, structs::*};
+use crate::client::client::EMBY_CLIENT;
+use crate::client::error::UserFacingError;
+use crate::client::structs::*;
 use crate::ui::image::set_image;
 use crate::ui::models::SETTINGS;
-use crate::ui::provider::tu_item::TuItem;
-use crate::ui::widgets::tu_list_item::tu_list_item_register;
-use crate::utils::{
-    get_data_with_cache, get_data_with_cache_else, spawn, tu_list_item_factory,
-    tu_list_view_connect_activate,
-};
-use crate::{fraction, toast};
+use crate::utils::{get_data_with_cache_else, req_cache, tu_list_view_connect_activate};
+use crate::{fraction, fraction_reset, toast};
+
+use super::hortu_scrolled::HortuScrolled;
 
 mod imp {
 
     use std::cell::RefCell;
 
     use glib::subclass::InitializingObject;
+    use gst::glib::types::StaticTypeExt;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::ui::widgets::hortu_scrolled::HortuScrolled;
     use crate::utils::spawn_g_timeout;
 
     use super::SimpleListItem;
@@ -37,30 +34,19 @@ mod imp {
         #[template_child]
         pub root: TemplateChild<gtk::ScrolledWindow>,
         #[template_child]
-        pub libscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub librevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub liblist: TemplateChild<gtk::ListView>,
-        #[template_child]
         pub libsbox: TemplateChild<gtk::Box>,
         #[template_child]
         pub toast: TemplateChild<adw::ToastOverlay>,
         #[template_child]
-        pub libsrevealer: TemplateChild<gtk::Revealer>,
+        pub hishortu: TemplateChild<HortuScrolled>,
         #[template_child]
-        pub historylist: TemplateChild<gtk::ListView>,
-        #[template_child]
-        pub hisscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub historyrevealer: TemplateChild<gtk::Revealer>,
+        pub libhortu: TemplateChild<HortuScrolled>,
         #[template_child]
         pub carousel: TemplateChild<adw::Carousel>,
         pub carouset_items: RefCell<Vec<SimpleListItem>>,
         #[template_child]
         pub carouseloverlay: TemplateChild<gtk::Overlay>,
         pub selection: gtk::SingleSelection,
-        pub hisselection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -72,6 +58,7 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
+            HortuScrolled::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }
@@ -87,9 +74,7 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(@weak obj => async move {
-                obj.set_carousel().await;
-                obj.setup_history().await;
-                obj.set_library().await;
+                obj.setup().await
             }));
         }
     }
@@ -125,6 +110,14 @@ impl HomePage {
         Object::builder().build()
     }
 
+    pub async fn setup(&self) {
+        fraction_reset!(self);
+        self.set_carousel().await;
+        self.setup_history().await;
+        self.setup_library().await;
+        fraction!(self);
+    }
+
     #[template_callback]
     fn carousel_pressed_cb(&self) {
         let position = self.imp().carousel.position();
@@ -135,49 +128,61 @@ impl HomePage {
     }
 
     pub async fn setup_history(&self) {
-        let imp = self.imp();
-        let historyrevealer = imp.historyrevealer.get();
-        imp.hisscrolled.fix();
-        let history_results =
-            get_data_with_cache("0".to_string(), "history", async { resume().await })
-                .await
-                .unwrap_or_default();
-        let store = gio::ListStore::new::<glib::BoxedAnyObject>();
-        spawn(glib::clone!(@weak store=> async move {
-                for result in history_results {
-                    let object = glib::BoxedAnyObject::new(result);
-                    store.append(&object);
-                }
-                historyrevealer.set_reveal_child(true);
-        }));
-        imp.hisselection.set_model(Some(&store));
-        let factory = gtk::SignalListItemFactory::new();
-        factory.connect_bind(move |_factory, item| {
-            let list_item = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem");
-            let entry = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .item()
-                .and_downcast::<glib::BoxedAnyObject>()
-                .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
-            if list_item.child().is_none() {
-                tu_list_item_register(&latest, list_item, "resume")
+        let hortu = self.imp().hishortu.get();
+
+        let results = match req_cache("history", async { EMBY_CLIENT.get_resume().await }).await {
+            Ok(history) => history,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                List::default()
             }
-        });
-        imp.historylist.set_factory(Some(&factory));
-        imp.historylist.set_model(Some(&imp.hisselection));
-        imp.historylist.connect_activate(
-            glib::clone!(@weak self as obj => move |gridview, position| {
-                let model = gridview.model().unwrap();
-                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                tu_list_view_connect_activate(window, &result, None);
-            }),
-        );
+        };
+
+        hortu.set_title("Continue Watching");
+
+        hortu.set_items(&results.items);
+    }
+
+    pub async fn setup_library(&self) {
+        let hortu = self.imp().libhortu.get();
+
+        let results = match req_cache("library", async { EMBY_CLIENT.get_library().await }).await {
+            Ok(history) => history.items,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                Vec::new()
+            }
+        };
+
+        hortu.set_title("Library");
+
+        hortu.set_items(&results);
+
+        self.setup_libsview(results).await;
+    }
+
+    pub async fn setup_libsview(&self, items: Vec<SimpleListItem>) {
+        for view in items {
+            let results = match req_cache(&format!("library_{}", view.id), async move {
+                EMBY_CLIENT.get_latest(&view.id).await
+            })
+            .await
+            {
+                Ok(history) => history,
+                Err(e) => {
+                    toast!(self, e.to_user_facing());
+                    Vec::new()
+                }
+            };
+
+            let hortu = HortuScrolled::new(false);
+
+            hortu.set_title(&format!("{} - Latest", view.name));
+
+            hortu.set_items(&results);
+
+            self.imp().libsbox.append(&hortu);
+        }
     }
 
     pub async fn set_carousel(&self) {
@@ -188,10 +193,18 @@ impl HomePage {
 
         let date = Local::now();
         let formatted_date = format!("{:04}{:02}{:02}", date.year(), date.month(), date.day());
-        let results =
-            get_data_with_cache_else(formatted_date, "carousel", async { get_random().await })
-                .await
-                .unwrap_or_default();
+        let results = match get_data_with_cache_else(formatted_date, "carousel", async {
+            EMBY_CLIENT.get_random().await
+        })
+        .await
+        {
+            Ok(results) => results,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                List::default()
+            }
+        };
+
         for result in results.items {
             if let Some(image_tags) = &result.image_tags {
                 if let Some(backdrop_image_tags) = &result.backdrop_image_tags {
@@ -249,158 +262,5 @@ impl HomePage {
         overlay.add_overlay(&logobox);
 
         imp.carousel.append(&overlay);
-    }
-
-    pub async fn set_library(&self) {
-        self.set_libraryscorll().await;
-    }
-
-    pub async fn set_libraryscorll(&self) {
-        let imp = self.imp();
-        let libscrolled = imp.libscrolled.fix();
-        imp.librevealer.set_reveal_child(true);
-        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
-        imp.selection.set_autoselect(false);
-        imp.selection.set_model(Some(&store));
-        let selection = &imp.selection;
-        let factory = gtk::SignalListItemFactory::new();
-        factory.connect_bind(move |_, item| {
-            let list_item = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem");
-            if list_item.child().is_none() {
-                let entry = item
-                    .downcast_ref::<gtk::ListItem>()
-                    .expect("Needs to be ListItem")
-                    .item()
-                    .and_downcast::<glib::BoxedAnyObject>()
-                    .expect("Needs to be BoxedAnyObject");
-                let view: std::cell::Ref<View> = entry.borrow();
-                let tu_item: TuItem = glib::object::Object::new();
-                tu_item.set_id(view.id.clone());
-                tu_item.set_name(view.name.clone());
-                let list_child = TuListItem::new(tu_item, "Views", false);
-                list_item.set_child(Some(&list_child));
-            }
-        });
-        imp.liblist.set_factory(Some(&factory));
-        imp.liblist.set_model(Some(selection));
-        let liblist = imp.liblist.get();
-        liblist.connect_activate(
-            glib::clone!(@weak self as obj => move |listview, position| {
-                let model = listview.model().unwrap();
-                let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                let view: std::cell::Ref<View> = item.borrow();
-                let collection_type = match &view.collection_type {
-                    Some(collection_type) => collection_type.clone(),
-                    None => "".to_string(),
-                };
-                let item_page = ListPage::new(view.id.clone(),collection_type);
-                item_page.set_tag(Some(&view.name));
-                let window = obj.root().and_downcast::<Window>().unwrap();
-                window.imp().homeview.push(&item_page);
-                window.set_title(&view.name);
-                window.change_pop_visibility();
-                env::set_var("HOME_TITLE", &view.name)
-            }),
-        );
-        libscrolled.set_child(Some(&liblist));
-
-        let views =
-            get_data_with_cache("0".to_string(), "views", async move { get_library().await })
-                .await
-                .unwrap_or_else(|_| {
-                    toast!(self, "Network Error");
-                    Vec::new()
-                });
-        glib::spawn_future_local(glib::clone!(@weak self as obj =>async move {
-                for view in &views {
-                    let object = glib::BoxedAnyObject::new(view.clone());
-                    store.append(&object);
-                    gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
-                }
-                obj.get_librarysscroll(&views).await;
-        }));
-    }
-
-    pub async fn get_librarysscroll(&self, views: &[View]) {
-        let libsrevealer = self.imp().libsrevealer.get();
-        libsrevealer.set_reveal_child(true);
-        let libsbox = self.imp().libsbox.get();
-        for _ in 0..libsbox.observe_children().n_items() {
-            libsbox.remove(&libsbox.last_child().unwrap());
-        }
-        for view in views.iter().cloned() {
-            let libsbox = self.imp().libsbox.get();
-            let scrolledwindow = gtk::ScrolledWindow::builder()
-                .hscrollbar_policy(gtk::PolicyType::Automatic)
-                .vscrollbar_policy(gtk::PolicyType::Never)
-                .overlay_scrolling(true)
-                .build();
-            let scrolled = scrolledwindow.fix();
-            let scrollbox = gtk::Box::new(gtk::Orientation::Vertical, 15);
-            let revealer = gtk::Revealer::builder()
-                .reveal_child(false)
-                .child(&scrollbox)
-                .build();
-            libsbox.append(&revealer);
-            let view_name = view.name.replace('&', "&amp;");
-            let label = gtk::Label::builder()
-                .label(format!("<b>Latest {}</b>", view_name))
-                .halign(gtk::Align::Start)
-                .use_markup(true)
-                .margin_top(15)
-                .margin_start(10)
-                .build();
-            label.add_css_class("title-3");
-            scrollbox.append(&label);
-            scrollbox.append(scrolled);
-            let latest = get_data_with_cache(view.id.clone(), "view", async move {
-                get_latest(view.id.clone()).await
-            })
-            .await
-            .unwrap_or_else(|_| {
-                toast!(self, "Network Error");
-                Vec::new()
-            });
-            spawn(glib::clone!(@weak self as obj =>async move {
-                    obj.set_librarysscroll(latest.clone());
-                    let listview = obj.set_librarysscroll(latest);
-                    scrolledwindow.set_child(Some(&listview));
-                    if !revealer.reveals_child() {
-                        revealer.set_reveal_child(true);
-                    }
-            }));
-        }
-        fraction!(self);
-    }
-
-    pub fn set_librarysscroll(&self, latests: Vec<SimpleListItem>) -> gtk::ListView {
-        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
-
-        let selection = gtk::SingleSelection::builder()
-            .model(&store)
-            .autoselect(false)
-            .build();
-        let factory = tu_list_item_factory("".to_string());
-        let listview = gtk::ListView::new(Some(selection), Some(factory));
-        listview.set_orientation(gtk::Orientation::Horizontal);
-        listview.connect_activate(
-            glib::clone!(@weak self as obj => move |listview, position| {
-                    let window = obj.root().and_downcast::<Window>().unwrap();
-                    let model = listview.model().unwrap();
-                    let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                    let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                    tu_list_view_connect_activate(window, &result, None);
-            }),
-        );
-        spawn(glib::clone!(@weak store => async move {
-            for latest in latests {
-                let object = glib::BoxedAnyObject::new(latest.clone());
-                store.append(&object);
-                gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
-            }
-        }));
-        listview
     }
 }

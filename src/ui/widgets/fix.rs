@@ -4,6 +4,7 @@ pub trait ScrolledWindowFixExt {
     fn fix(&self) -> &Self;
 }
 
+/// fix scrolledwindow fucking up the vscroll event
 impl ScrolledWindowFixExt for ScrolledWindow {
     fn fix(&self) -> &Self {
         let controller = self.observe_controllers();

@@ -78,6 +78,8 @@ pub struct MediaSource {
     pub name: String,
     #[serde(rename = "Size")]
     pub size: u64,
+    #[serde(rename = "Path")]
+    pub path: Option<String>,
     #[serde(rename = "Container")]
     pub container: String,
     #[serde(rename = "DirectStreamUrl")]
@@ -100,6 +102,8 @@ pub struct Item {
     pub name: String,
     #[serde(rename = "Id")]
     pub id: String,
+    #[serde(rename = "DateCreated")]
+    pub date_created: Option<String>,
     #[serde(rename = "SeriesId")]
     pub series_id: Option<String>,
     #[serde(rename = "SeriesName")]
@@ -138,6 +142,10 @@ pub struct Item {
     pub backdrop_image_tags: Option<Vec<String>>,
     #[serde(rename = "AlbumArtist")]
     pub album_artist: Option<String>,
+    #[serde(rename = "MediaSources")]
+    pub media_sources: Option<Vec<MediaSource>>,
+    #[serde(rename = "PlaySessionId")]
+    pub play_session_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -152,7 +160,7 @@ pub struct People {
     pub people_type: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct SGTitem {
     #[serde(rename = "Name")]
     pub name: String,
@@ -242,8 +250,8 @@ pub struct SimpleListItem {
     pub image_tags: Option<ImageTags>,
     #[serde(rename = "SeriesId")]
     pub series_id: Option<String>,
-    #[serde(rename = "AlbumArtist")]
-    pub album_artist: Option<String>,
+    #[serde(rename = "AlbumArtists")]
+    pub album_artists: Option<Vec<View>>,
     #[serde(rename = "Artists")]
     pub artists: Option<Vec<String>>,
     #[serde(rename = "AlbumId")]
@@ -258,6 +266,10 @@ pub struct SimpleListItem {
     pub backdrop_image_tags: Option<Vec<String>>,
     #[serde(rename = "CommunityRating")]
     pub community_rating: Option<f32>,
+    #[serde(rename = "CollectionType")]
+    pub collection_type: Option<String>,
+    #[serde(rename = "Overview")]
+    pub overview: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -282,10 +294,38 @@ pub struct List {
     pub items: Vec<SimpleListItem>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct SerInList {
+    #[serde(rename = "Items")]
+    pub items: Vec<SeriesInfo>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct Items {
+    #[serde(rename = "Items")]
+    pub items: Vec<Item>,
+    #[serde(rename = "TotalRecordCount")]
+    pub total_record_count: Option<u32>,
+}
+
 #[derive(Deserialize, Debug, Clone)]
 pub struct Back {
     pub id: String,
     pub playsessionid: Option<String>,
     pub mediasourceid: String,
     pub tick: u64,
+}
+
+#[derive(Deserialize)]
+pub struct LoginResponse {
+    #[serde(rename = "User")]
+    pub user: User,
+    #[serde(rename = "AccessToken")]
+    pub access_token: String,
+}
+
+#[derive(Deserialize)]
+pub struct User {
+    #[serde(rename = "Id")]
+    pub id: String,
 }

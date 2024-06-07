@@ -13,6 +13,7 @@
             <child>
               <object class="GtkSearchEntry" id="searchentry">
                 <property name="placeholder-text">Search</property>
+                <signal name="activate" handler="on_search_activate" swapped="yes"/>
               </object>
             </child>
             <child>
@@ -78,12 +79,6 @@
               </object>
             </child>
             <child>
-              <object class="GtkSpinner" id="spinner">
-                <property name="spinning">True</property>
-                <property name="visible">False</property>
-              </object>
-            </child>
-            <child>
               <object class="GtkScrolledWindow" id="recommendwindow">
                 <property name="hscrollbar-policy">never</property>
                 <property name="visible">True</property>
@@ -112,6 +107,7 @@
                     <property name="hexpand">True</property>
                     <child>
                       <object class="GtkGridView" id="searchgrid">
+                      <property name="single-click-activate">True</property>
                       </object>
                     </child>
                   </object>

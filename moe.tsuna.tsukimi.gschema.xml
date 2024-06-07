@@ -37,6 +37,10 @@
       <default>true</default>
       <summary>Default switch state</summary>
     </key>
+    <key name="ytdl" type="b">
+      <default>true</default>
+      <summary>Default switch state</summary>
+    </key>
     <key name="is-daily-recommend" type="b">
       <default>true</default>
       <summary>Default switch state</summary>

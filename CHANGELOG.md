@@ -1,3 +1,53 @@
+## 0.6.0
+
+- 重写了一些组件
+- 重写了一些方法
+- 重写了加载进度条
+- 重写了网络请求 现在 url 可以被自动格式化了 但仍需添加协议头
+- 重写了错误处理
+- 将电影与系列页面整合
+- 现在 include 行 显示在剧集列表下方
+- 添加了 附加内容 行
+- 添加了 列表项图片 的加载 spinner 及无图片提示
+- 为音乐页添加推荐行与同艺术家作品行
+- 缩小 已看过 的标记大小
+- 将列表项的第一行字体变粗 缩小列表项的字体
+- 根页面的 stack 动画改为 OVER_LEFT_RIGHT
+- 无专辑的单曲现在可以被显示了
+- 主页的服务器列现在随外部同步
+- 喜欢页面不再使用缓存
+- 无内容的列表将不可见
+- 从集进入项目页面时标题将会使用项目标题
+- 设置窗口中可以搜索设置项了
+- 增加了网络请求的 tracing
+- 项目页中的 tags/studios/genres 可以进入对应的页面了
+- mediainfo 现在显示路径了
+- 得益于重写组件 解决了一些已知问题
+
+- Added "Additional Content" line
+- Added a "Recommended" row and "Same Artist Works" row for music page
+- Added a loading spinner and no-image prompt for list item images
+- Added network request tracing
+- Added searching for settings in the settings window
+- Changed the stack animation of the homepage to OVER_LEFT_RIGHT
+- Decreased the size of the "Watched" tag
+- Empty lists will no longer be displayed
+- In the project page, tags/studios/genres can now be entered into the corresponding pages
+- Integrated movie and series pages
+- Made the first line of list items bold and decreased the list item font size
+- Now able to display single tracks without an album
+- Revised error handling
+- Revised network requests, with URLs now able to be automatically formatted, but still requiring the addition of a protocol header
+- Revised some components
+- Revised some methods
+- Revised the loading progress bar
+- The "Likes" page no longer uses caching
+- The "include" line now displays below the episode list
+- The server list on the homepage now syncs with the outside
+- When entering the project page from the collection, the title will now use the project title
+- mediainfo now displays the path
+- Due to the component rewrite, several known issues have been resolved.
+
 ## 0.5.0-1
 
 - 增加了 clapper 作为播放器

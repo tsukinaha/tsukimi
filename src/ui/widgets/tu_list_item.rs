@@ -7,14 +7,14 @@ use gtk::prelude::*;
 use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
+use tracing::debug;
+use tracing::warn;
 
-use crate::client::network::hide_from_resume;
-use crate::client::network::like;
-use crate::client::network::played;
-use crate::client::network::unlike;
-use crate::client::network::unplayed;
+use crate::client::client::EMBY_CLIENT;
+use crate::client::error::UserFacingError;
 use crate::client::structs::SimpleListItem;
-use crate::ui::image::set_image;
+use crate::toast;
+use crate::ui::models::emby_cache_path;
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::spawn;
 use crate::utils::spawn_tokio;
@@ -48,6 +48,10 @@ mod imp {
         pub overlay: TemplateChild<gtk::Overlay>,
         #[template_child]
         pub revealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub spinner: TemplateChild<gtk::Spinner>,
+        #[template_child]
+        pub broken: TemplateChild<gtk::Box>,
     }
 
     // The central trait for subclassing a GObject
@@ -136,6 +140,17 @@ impl TuListItem {
                 }
                 self.set_rating();
             }
+            "Video" => {
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_visible(false);
+                imp.overlay.set_size_request(250, 141);
+                self.set_picture();
+            }
+            "CollectionFolder" => {
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_visible(false);
+                self.set_picture();
+            }
             "Series" => {
                 let year = if item.production_year() != 0 {
                     item.production_year().to_string()
@@ -179,15 +194,19 @@ impl TuListItem {
             }
             "MusicAlbum" => {
                 imp.listlabel.set_text(&item.name());
-                imp.label2
-                    .set_text(&item.album_artist().unwrap_or("".to_string()));
+                imp.label2.set_text(&item.albumartist_name());
                 imp.overlay.set_size_request(190, 190);
                 self.set_picture();
                 self.set_play();
             }
-            "Actor" | "Person" => {
+            "Actor" | "Person" | "Director" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&item.role().unwrap_or("".to_string()));
+                self.set_picture();
+            }
+            "Audio" => {
+                imp.listlabel.set_text(&item.name());
+                imp.overlay.set_size_request(190, 190);
                 self.set_picture();
             }
             _ => {
@@ -222,59 +241,128 @@ impl TuListItem {
                     imp.overlay.set_size_request(375, 70);
                     if let Some(imag_tags) = item.image_tags() {
                         if imag_tags.banner().is_some() {
-                            set_image(id, "Banner", None)
+                            self.set_image(id, "Banner", None)
                         } else if imag_tags.thumb().is_some() {
-                            set_image(id, "Thumb", None)
+                            self.set_image(id, "Thumb", None)
                         } else if imag_tags.backdrop().is_some() {
-                            set_image(id, "Backdrop", Some(0))
+                            self.set_image(id, "Backdrop", Some(0))
                         } else {
-                            set_image(id, "Primary", None)
+                            self.set_image(id, "Primary", None)
                         }
                     } else {
-                        set_image(id, "Primary", None)
+                        self.set_image(id, "Primary", None)
                     }
                 }
                 "backdrop" => {
                     imp.overlay.set_size_request(250, 141);
                     if let Some(imag_tags) = item.image_tags() {
                         if imag_tags.backdrop().is_some() {
-                            set_image(id, "Backdrop", Some(0))
+                            self.set_image(id, "Backdrop", Some(0))
                         } else if imag_tags.thumb().is_some() {
-                            set_image(id, "Thumb", None)
+                            self.set_image(id, "Thumb", None)
                         } else {
-                            set_image(id, "Primary", None)
+                            self.set_image(id, "Primary", None)
                         }
                     } else {
-                        set_image(id, "Primary", None)
+                        self.set_image(id, "Primary", None)
                     }
                 }
-                _ => set_image(id, "Primary", None),
+                _ => self.set_image(id, "Primary", None),
             };
             imp.overlay.set_child(Some(&image));
         } else {
             let image = if let Some(true) = imp.isresume.get() {
                 if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
                     imp.overlay.set_size_request(250, 141);
-                    set_image(parent_thumb_item_id, "Thumb", None)
+                    self.set_image(parent_thumb_item_id, "Thumb", None)
                 } else if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id() {
                     imp.overlay.set_size_request(250, 141);
-                    set_image(parent_backdrop_item_id, "Backdrop", Some(0))
+                    self.set_image(parent_backdrop_item_id, "Backdrop", Some(0))
                 } else {
                     imp.overlay.set_size_request(250, 141);
-                    set_image(id, "Backdrop", Some(0))
+                    self.set_image(id, "Backdrop", Some(0))
                 }
             } else {
-                if self.itemtype() == "Episode" || self.itemtype() == "Views" {
+                if self.itemtype() == "Episode" || self.itemtype() == "CollectionFolder" {
                     imp.overlay.set_size_request(250, 141);
                 }
-                if let Some(imag_tags) = item.primary_image_item_id() {
-                    set_image(imag_tags, "Primary", None)
+                if let Some(img_tags) = item.primary_image_item_id() {
+                    self.set_image(img_tags, "Primary", None)
                 } else {
-                    set_image(id, "Primary", None)
+                    self.set_image(id, "Primary", None)
                 }
             };
             imp.overlay.set_child(Some(&image));
         }
+    }
+
+    pub fn set_image(&self, id: String, image_type: &str, tag: Option<u8>) -> gtk::Revealer {
+        let image = gtk::Picture::new();
+        image.set_halign(gtk::Align::Fill);
+        image.set_content_fit(gtk::ContentFit::Cover);
+        let revealer = gtk::Revealer::builder()
+            .transition_type(gtk::RevealerTransitionType::Crossfade)
+            .child(&image)
+            .reveal_child(false)
+            .vexpand(true)
+            .transition_duration(400)
+            .build();
+
+        let cache_path = emby_cache_path();
+        let path = format!("{}-{}-{}", id, image_type, tag.unwrap_or(0));
+
+        let spinner = self.imp().spinner.get();
+        let broken = self.imp().broken.get();
+
+        let id = id.to_string();
+
+        let pathbuf = cache_path.join(path);
+
+        if pathbuf.exists() {
+            if image.file().is_none() {
+                image.set_file(Some(&gtk::gio::File::for_path(pathbuf)));
+                revealer.set_reveal_child(true);
+                spinner.stop();
+            }
+            return revealer;
+        }
+
+        let image_type = image_type.to_string();
+
+        spawn(
+            glib::clone!(@weak image,@weak revealer,@weak spinner => async move {
+
+                spawn_tokio(async move {
+                    let mut retries = 0;
+                    while retries < 3 {
+                        match EMBY_CLIENT.get_image(&id, &image_type, tag).await {
+                            Ok(_) => {
+                                break;
+                            }
+                            Err(e) => {
+                                warn!("Failed to get image: {}, retrying...", e);
+                                retries += 1;
+                            }
+                        }
+                }}).await;
+
+                debug!("Setting image: {}", &pathbuf.display());
+
+                spinner.stop();
+
+                if !pathbuf.exists() {
+                    broken.set_visible(true);
+                }
+
+                let file = gtk::gio::File::for_path(pathbuf);
+
+                image.set_file(Some(&file));
+                revealer.set_reveal_child(true);
+
+            }),
+        );
+
+        revealer
     }
 
     pub fn set_played(&self) {
@@ -284,8 +372,8 @@ impl TuListItem {
             let mark = gtk::Image::from_icon_name("object-select-symbolic");
             mark.set_halign(gtk::Align::End);
             mark.set_valign(gtk::Align::Start);
-            mark.set_height_request(40);
-            mark.set_width_request(40);
+            mark.set_height_request(30);
+            mark.set_width_request(30);
             imp.overlay.add_overlay(&mark);
         }
     }
@@ -416,11 +504,11 @@ impl TuListItem {
 
     async fn perform_action_inner(id: &str, action: &Action) -> Result<(), reqwest::Error> {
         match action {
-            Action::Like => like(id).await,
-            Action::Unlike => unlike(id).await,
-            Action::Played => played(id).await,
-            Action::Unplayed => unplayed(id).await,
-            Action::Remove => hide_from_resume(id).await,
+            Action::Like => EMBY_CLIENT.like(id).await,
+            Action::Unlike => EMBY_CLIENT.unlike(id).await,
+            Action::Played => EMBY_CLIENT.set_as_played(id).await,
+            Action::Unplayed => EMBY_CLIENT.set_as_unplayed(id).await,
+            Action::Remove => EMBY_CLIENT.hide_from_resume(id).await,
         }
     }
 
@@ -429,12 +517,14 @@ impl TuListItem {
         self.update_state(&action);
         let result = spawn_tokio(async move { Self::perform_action_inner(&id, &action).await });
 
-        result.await.unwrap();
-
-        spawn(glib::clone!(@weak self as obj => async move {
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Success");
-        }));
+        match result.await {
+            Ok(_) => {
+                toast!(self, "Success")
+            }
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+            }
+        }
 
         let obj = self.imp().obj();
         obj.insert_action_group("item", obj.set_action().as_ref());
@@ -489,17 +579,12 @@ impl TuListItem {
     }
 }
 
-pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem, listtype: &str) {
+pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem, is_resume: bool) {
     let tu_item = TuItem::from_simple(latest, None);
     match latest.latest_type.as_str() {
         "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views"
         | "Actor" | "Person" => {
-            set_list_child(
-                tu_item,
-                list_item,
-                &latest.latest_type,
-                listtype == "resume",
-            );
+            set_list_child(tu_item, list_item, &latest.latest_type, is_resume);
         }
         _ => {}
     }
@@ -508,18 +593,13 @@ pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem,
 pub fn tu_list_poster(
     latest: &SimpleListItem,
     list_item: &gtk::ListItem,
-    listtype: &str,
+    is_resume: bool,
     poster: &str,
 ) {
     let tu_item = TuItem::from_simple(latest, Some(poster));
     match latest.latest_type.as_str() {
         "Movie" | "Series" => {
-            set_list_child(
-                tu_item,
-                list_item,
-                &latest.latest_type,
-                listtype == "resume",
-            );
+            set_list_child(tu_item, list_item, &latest.latest_type, is_resume);
         }
         _ => {}
     }

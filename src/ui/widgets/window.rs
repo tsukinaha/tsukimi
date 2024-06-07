@@ -191,9 +191,10 @@ mod imp {
     impl AdwApplicationWindowImpl for Window {}
 }
 
+use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
+use crate::config::load_cfgv2;
 use crate::config::Account;
-use crate::config::{load_cfgv2, load_env};
 use crate::ui::models::SETTINGS;
 use crate::utils::spawn;
 use crate::APP_ID;
@@ -221,7 +222,7 @@ impl Window {
                 && account.servername == SETTINGS.preferred_server()
                 && env::var("EMBY_NAME").is_err()
             {
-                load_env(account);
+                EMBY_CLIENT.init(account);
                 imp.historypage.set_child(None::<&gtk::Widget>);
                 imp.searchpage.set_child(None::<&gtk::Widget>);
                 self.mainpage();
@@ -242,7 +243,7 @@ impl Window {
             unsafe {
                 let account_ptr: std::ptr::NonNull<Account>  = row.data("account").unwrap();
                 let account: &Account = &*account_ptr.as_ptr();
-                load_env(account);
+                EMBY_CLIENT.init(account);
                 SETTINGS.set_preferred_server(&account.servername).unwrap();
             }
             obj.reset();
@@ -252,6 +253,7 @@ impl Window {
     pub fn set_nav_servers(&self) {
         let imp = self.imp();
         let listbox = imp.serverselectlist.get();
+        listbox.remove_all();
         let accounts = load_cfgv2().unwrap();
         for account in accounts.accounts {
             listbox.append(&ServerRow::new(account));
@@ -476,7 +478,6 @@ impl Window {
         imp.navipage
             .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
         self.set_pop_visibility(false);
-        self.set_fraction(1.0);
     }
 
     fn freshhistorypage(&self) {
@@ -490,7 +491,6 @@ impl Window {
             .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
         imp.navipage.set_title("History");
         self.set_pop_visibility(false);
-        self.set_fraction(1.0);
     }
 
     fn freshsearchpage(&self) {

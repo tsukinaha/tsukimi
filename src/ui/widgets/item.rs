@@ -7,22 +7,23 @@ use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 
-use crate::client::{network::*, structs::*};
+use crate::client::client::EMBY_CLIENT;
+use crate::client::error::UserFacingError;
+use crate::client::structs::*;
 use crate::toast;
 use crate::ui::models::SETTINGS;
 use crate::ui::mpv;
 use crate::ui::provider::dropdown_factory::factory;
-use crate::utils::{
-    get_data_with_cache, get_image_with_cache, spawn, spawn_tokio, tu_list_item_factory,
-    tu_list_view_connect_activate,
-};
+use crate::utils::{get_image_with_cache, req_cache, spawn, spawn_tokio};
+use chrono::{DateTime, Local, NaiveDateTime, Utc};
 
 use super::fix::ScrolledWindowFixExt;
-use super::included::IncludedDialog;
 use super::window::Window;
 
 mod imp {
     use crate::ui::widgets::fix::ScrolledWindowFixExt;
+    use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
+    use crate::ui::widgets::hortu_scrolled::HortuScrolled;
     use crate::utils::spawn_g_timeout;
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
@@ -39,6 +40,25 @@ mod imp {
         pub id: OnceCell<String>,
         #[property(get, set, construct_only)]
         pub inid: RefCell<String>,
+
+        #[template_child]
+        pub actorhortu: TemplateChild<HortuScrolled>,
+        #[template_child]
+        pub recommendhortu: TemplateChild<HortuScrolled>,
+        #[template_child]
+        pub includehortu: TemplateChild<HortuScrolled>,
+        #[template_child]
+        pub additionalhortu: TemplateChild<HortuScrolled>,
+
+        #[template_child]
+        pub studioshorbu: TemplateChild<HorbuScrolled>,
+        #[template_child]
+        pub tagshorbu: TemplateChild<HorbuScrolled>,
+        #[template_child]
+        pub genreshorbu: TemplateChild<HorbuScrolled>,
+        #[template_child]
+        pub linkshorbu: TemplateChild<HorbuScrolled>,
+
         #[template_child]
         pub backdrop: TemplateChild<gtk::Picture>,
         #[template_child]
@@ -60,37 +80,9 @@ mod imp {
         #[template_child]
         pub mediainfobox: TemplateChild<gtk::Box>,
         #[template_child]
-        pub linksscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
         pub mediainforevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
-        pub linksrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub actorrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub actorscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub recommendrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub recommendscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
         pub episodescrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub recommendlist: TemplateChild<gtk::ListView>,
-        #[template_child]
-        pub actorlist: TemplateChild<gtk::ListView>,
-        #[template_child]
-        pub studiosscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub studiosrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub tagsscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub tagsrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub genresscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub genresrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub episodesearchentry: TemplateChild<gtk::SearchEntry>,
         #[template_child]
@@ -121,10 +113,13 @@ mod imp {
         pub favourite_button_split: TemplateChild<adw::SplitButton>,
         #[template_child]
         pub favourite_button_split_content: TemplateChild<adw::ButtonContent>,
+        #[template_child]
+        pub tagline: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub toolbar: TemplateChild<gtk::Box>,
+
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
-        pub actorselection: gtk::SingleSelection,
-        pub recommendselection: gtk::SingleSelection,
         pub playbuttonhandlerid: RefCell<Option<glib::SignalHandlerId>>,
 
         #[property(get, set, construct_only)]
@@ -141,6 +136,8 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
+            HortuScrolled::ensure_type();
+            HorbuScrolled::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("item.first", None, move |window, _action, _parameter| {
@@ -160,13 +157,6 @@ mod imp {
                 None,
                 |window, _action, _parameter| async move {
                     window.like_episode().await;
-                },
-            );
-            klass.install_action_async(
-                "like.series",
-                None,
-                |window, _action, _parameter| async move {
-                    window.like_series().await;
                 },
             );
             klass.install_action_async("unlike", None, |window, _action, _parameter| async move {
@@ -204,10 +194,9 @@ mod imp {
             spawn_g_timeout(glib::clone!(@weak obj => async move {
                 obj.imp().episodescrolled.fix();
                 obj.setup_background().await;
-                obj.setup_seasons().await;
                 obj.logoset();
                 obj.setoverview().await;
-                obj.get_similar().await;
+                obj.set_lists().await;
             }));
         }
     }
@@ -241,41 +230,34 @@ impl ItemPage {
             .build()
     }
 
-    #[template_callback]
-    pub fn include_button_cb(&self) {
-        let id = self.id();
-        let dialog = IncludedDialog::new(&id);
-        dialog.present(self);
-    }
-
     pub async fn played(&self) {
         let imp = self.imp();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
-        spawn_tokio(async move {
-            played(&id).await.unwrap();
-        })
-        .await;
-        spawn(glib::clone!(@weak self as obj=>async move {
-            obj.imp().favourite_button_split.set_sensitive(true);
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Mark as played successfully.");
-        }));
+        match spawn_tokio(async move { EMBY_CLIENT.set_as_played(&id).await }).await {
+            Ok(_) => (),
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+        imp.favourite_button_split.set_sensitive(true);
+        toast!(self, "Mark as played successfully.");
     }
 
     pub async fn unplayed(&self) {
         let imp = self.imp();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
-        spawn_tokio(async move {
-            unplayed(&id).await.unwrap();
-        })
-        .await;
-        spawn(glib::clone!(@weak self as obj=>async move {
-            obj.imp().favourite_button_split.set_sensitive(true);
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Mark as unplayed successfully.");
-        }));
+        match spawn_tokio(async move { EMBY_CLIENT.set_as_unplayed(&id).await }).await {
+            Ok(_) => (),
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+        imp.favourite_button_split.set_sensitive(true);
+        toast!(self, "Mark as unplayed successfully.");
     }
 
     pub async fn like_episode(&self) {
@@ -284,18 +266,20 @@ impl ItemPage {
         let spilt_button = imp.favourite_button_split.get();
         imp.favourite_button_split.set_sensitive(false);
         let id = self.inid();
-        spawn_tokio(async move {
-            like(&id).await.unwrap();
-        })
-        .await;
-        spawn(glib::clone!(@weak self as obj=>async move {
-            obj.imp().favourite_button_split.set_sensitive(true);
-            spilt_button.set_action_name(Some("unlike"));
-            spilt_button_content.set_icon_name("starred-symbolic");
-            spilt_button_content.set_label("Unlike");
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Liked the episode successfully.");
-        }));
+        match spawn_tokio(async move { EMBY_CLIENT.like(&id).await }).await {
+            Ok(_) => (),
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+
+        spilt_button.set_action_name(Some("unlike"));
+        spilt_button_content.set_icon_name("starred-symbolic");
+        spilt_button_content.set_label("Unlike");
+
+        imp.favourite_button_split.set_sensitive(true);
+        toast!(self, "Liked the Video successfully.");
     }
 
     pub async fn unlike(&self) {
@@ -304,40 +288,20 @@ impl ItemPage {
         let spilt_button_content = imp.favourite_button_split_content.get();
         let spilt_button = imp.favourite_button_split.get();
         imp.favourite_button_split.set_sensitive(false);
-        let id = self.id();
-        spawn_tokio(async move {
-            unlike(&id).await.unwrap();
-            unlike(&inid).await.unwrap();
-        })
-        .await;
-        spawn(glib::clone!(@weak self as obj=>async move {
-            obj.imp().favourite_button_split.set_sensitive(true);
-            spilt_button.set_action_name(Some("like.series"));
-            spilt_button_content.set_icon_name("non-starred-symbolic");
-            spilt_button_content.set_label("Like");
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Unliked the series and episode successfully.");
-        }));
-    }
+        match spawn_tokio(async move { EMBY_CLIENT.unlike(&inid).await }).await {
+            Ok(_) => (),
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
 
-    pub async fn like_series(&self) {
-        let imp = self.imp();
-        let spilt_button_content = imp.favourite_button_split_content.get();
-        let spilt_button = imp.favourite_button_split.get();
-        imp.favourite_button_split.set_sensitive(false);
-        let id = self.id();
-        spawn_tokio(async move {
-            like(&id).await.unwrap();
-        })
-        .await;
-        spawn(glib::clone!(@weak self as obj=>async move {
-            obj.imp().favourite_button_split.set_sensitive(true);
-            spilt_button.set_action_name(Some("unlike"));
-            spilt_button_content.set_icon_name("starred-symbolic");
-            spilt_button_content.set_label("Unlike");
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Liked the series successfully.");
-        }));
+        spilt_button.set_action_name(Some("like.series"));
+        spilt_button_content.set_icon_name("non-starred-symbolic");
+        spilt_button_content.set_label("Like");
+
+        imp.favourite_button_split.set_sensitive(true);
+        toast!(self, "Unliked the Video successfully.");
     }
 
     pub async fn setup_background(&self) {
@@ -413,10 +377,17 @@ impl ItemPage {
         let seasonlist = imp.seasonlist.get();
         seasonlist.set_model(Some(&imp.seasonselection));
 
-        let series_info =
-            get_data_with_cache(id.clone(), "serinfo", async { get_series_info(id).await })
-                .await
-                .unwrap();
+        let series_info = match req_cache(&format!("serinfo_{}", &id), async move {
+            EMBY_CLIENT.get_series_info(&id).await
+        })
+        .await
+        {
+            Ok(item) => item.items,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                Vec::new()
+            }
+        };
 
         spawn(glib::clone!(@weak self as obj => async move {
                 let mut season_set: HashSet<u32> = HashSet::new();
@@ -632,19 +603,57 @@ impl ItemPage {
         imp.itemlist.last_child().unwrap().activate();
     }
 
+    pub async fn selectmovie(&self, id: String, name: String, userdata: Option<UserData>) {
+        let imp = self.imp();
+        imp.playbutton.set_sensitive(false);
+        imp.line1spinner.set_visible(true);
+        let idclone = id.clone();
+        let playback =
+            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&id).await }).await {
+                Ok(playback) => playback,
+                Err(e) => {
+                    toast!(self, e.to_user_facing());
+                    return;
+                }
+            };
+        let info = SeriesInfo {
+            id: idclone.clone(),
+            name: name.clone(),
+            user_data: userdata.clone(),
+            overview: None,
+            index_number: None,
+            parent_index_number: None,
+        };
+        imp.line1.set_text(&info.name.to_string());
+        imp.line1spinner.set_visible(false);
+        self.set_dropdown(&playback, &info);
+        let handlerid = self.bind_button(&playback, &info);
+        imp.playbuttonhandlerid.replace(Some(handlerid));
+        imp.playbutton.set_sensitive(true);
+        imp.favourite_button_split.set_sensitive(true);
+    }
+
     pub async fn selectepisode(&self, seriesinfo: SeriesInfo) {
         let info = seriesinfo.clone();
         let imp = self.imp();
         let osdbox = imp.osdbox.get();
         let id = seriesinfo.id.clone();
         imp.inid.replace(id.clone());
-        let idc = id.clone();
+
         imp.playbutton.set_sensitive(false);
         imp.favourite_button_split.set_sensitive(false);
         imp.line1spinner.set_visible(true);
-        let playback = spawn_tokio(async move { get_playbackinfo(id).await })
-            .await
-            .unwrap();
+        let playback =
+            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&id).await }).await {
+                Ok(playback) => playback,
+                Err(e) => {
+                    toast!(self, e.to_user_facing());
+                    return;
+                }
+            };
+
+        let media_playback = playback.clone();
+
         spawn(glib::clone!(@weak osdbox,@weak self as obj=>async move {
                 let selected_name = format!("S{}:E{} - {}",info.parent_index_number.unwrap_or(0), info.index_number.unwrap_or(0), info.name);
                 obj.imp().line1.set_text(&selected_name);
@@ -664,7 +673,8 @@ impl ItemPage {
         if let Some(overview) = seriesinfo.overview {
             imp.selecteditemoverview.set_text(Some(&overview));
         }
-        self.createmediabox(idc).await;
+        self.createmediabox(media_playback.media_sources, None)
+            .await;
     }
 
     pub async fn setoverview(&self) {
@@ -672,11 +682,19 @@ impl ItemPage {
         let id = imp.id.get().unwrap().clone();
         let itemoverview = imp.itemoverview.get();
         let overviewrevealer = imp.overviewrevealer.get();
-        let item = get_data_with_cache(id.clone(), "overview", async move {
-            get_item_overview(id.to_string()).await
+
+        let item = match req_cache(&format!("item_{}", &id), async move {
+            EMBY_CLIENT.get_item_info(&id).await
         })
         .await
-        .unwrap();
+        {
+            Ok(item) => item,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                Item::default()
+            }
+        };
+
         spawn(glib::clone!(@weak self as obj=>async move {
                 {
                     let mut str = String::new();
@@ -718,24 +736,31 @@ impl ItemPage {
                         str.pop();
                     }
                     obj.imp().line2.get().set_text(&str);
+
+                    if let Some(taglines) = item.taglines {
+                        if let Some(tagline) = taglines.first() {
+                            obj.imp().tagline.set_text(tagline);
+                            obj.imp().tagline.set_visible(true);
+                        }
+                    }
                 }
                 if let Some(overview) = item.overview {
                     itemoverview.set_text(Some(&overview));
                 }
                 if let Some(links) = item.external_urls {
-                    obj.setlinksscrolled(links);
+                    obj.set_flowlinks(links);
                 }
                 if let Some(actor) = item.people {
-                    obj.setactorscrolled(actor);
+                    obj.setactorscrolled(actor).await;
                 }
                 if let Some(studios) = item.studios {
-                    obj.set_studio(studios);
+                    obj.set_flowbuttons(studios, "Studios");
                 }
                 if let Some(tags) = item.tags {
-                    obj.set_tags(tags);
+                    obj.set_flowbuttons(tags, "Tags");
                 }
                 if let Some(genres) = item.genres {
-                    obj.set_genres(genres);
+                    obj.set_flowbuttons(genres, "Genres");
                 }
                 overviewrevealer.set_reveal_child(true);
                 if let Some(image_tags) = item.backdrop_image_tags {
@@ -752,287 +777,240 @@ impl ItemPage {
                         }
                     }
                 }
+
+                if let Some(media_sources) = item.media_sources {
+                    obj.createmediabox(media_sources, item.date_created).await;
+                }
+
+                if item.item_type == "Series" {
+                    obj.imp().toolbar.set_visible(true);
+                    obj.setup_seasons().await;
+                } else {
+                    obj.selectmovie(item.id, item.name, item.user_data).await;
+                }
         }));
     }
 
-    pub async fn createmediabox(&self, id: String) {
+    pub fn dt(&self, date: Option<&str>) -> String {
+        match date {
+            Some(date) => {
+                let dt = DateTime::parse_from_rfc3339(date)
+                    .unwrap()
+                    .with_timezone(&Utc);
+                let local_time: DateTime<Local> = dt.with_timezone(&Local);
+                let naive_local_time: NaiveDateTime = local_time.naive_local();
+                naive_local_time.to_string()
+            }
+            None => "".to_string(),
+        }
+    }
+
+    pub async fn createmediabox(
+        &self,
+        media_sources: Vec<MediaSource>,
+        date_created: Option<String>,
+    ) {
         let imp = self.imp();
         let mediainfobox = imp.mediainfobox.get();
         let mediainforevealer = imp.mediainforevealer.get();
-        let media =
-            get_data_with_cache(id.clone(), "media", async move { get_mediainfo(id).await })
-                .await
-                .unwrap();
-        spawn(async move {
-            while mediainfobox.last_child().is_some() {
-                if let Some(child) = mediainfobox.last_child() {
-                    mediainfobox.remove(&child)
-                }
-            }
-            for mediasource in media.media_sources {
-                let singlebox = gtk::Box::new(gtk::Orientation::Vertical, 5);
-                let info = format!(
-                    "{} {}\n{}",
-                    mediasource.container.to_uppercase(),
-                    bytefmt::format(mediasource.size),
-                    mediasource.name
-                );
-                let label = gtk::Label::builder()
-                    .label(&info)
-                    .halign(gtk::Align::Start)
-                    .margin_start(15)
-                    .valign(gtk::Align::Start)
-                    .margin_top(5)
-                    .build();
-                singlebox.append(&label);
 
-                let mediascrolled = gtk::ScrolledWindow::builder()
-                    .hscrollbar_policy(gtk::PolicyType::Automatic)
-                    .vscrollbar_policy(gtk::PolicyType::Never)
-                    .overlay_scrolling(true)
-                    .build();
-
-                let mediascrolled = mediascrolled.fix();
-
-                let mediabox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
-                for mediapart in mediasource.media_streams {
-                    if mediapart.stream_type == "Attachment" {
-                        continue;
-                    }
-                    let mediapartbox = gtk::Box::builder()
-                        .orientation(gtk::Orientation::Vertical)
-                        .spacing(0)
-                        .width_request(300)
-                        .build();
-                    let mut str: String = Default::default();
-                    let icon = gtk::Image::builder().margin_end(5).build();
-                    if mediapart.stream_type == "Video" {
-                        icon.set_from_icon_name(Some("video-x-generic-symbolic"))
-                    } else if mediapart.stream_type == "Audio" {
-                        icon.set_from_icon_name(Some("audio-x-generic-symbolic"))
-                    } else if mediapart.stream_type == "Subtitle" {
-                        icon.set_from_icon_name(Some("media-view-subtitles-symbolic"))
-                    } else {
-                        icon.set_from_icon_name(Some("text-x-generic-symbolic"))
-                    }
-                    let typebox = gtk::Box::builder()
-                        .orientation(gtk::Orientation::Horizontal)
-                        .spacing(5)
-                        .build();
-                    typebox.append(&icon);
-                    typebox.append(&gtk::Label::new(Some(&mediapart.stream_type)));
-                    if let Some(codec) = mediapart.codec {
-                        str.push_str(format!("Codec: {}", codec).as_str());
-                    }
-                    if let Some(language) = mediapart.display_language {
-                        str.push_str(format!("\nLanguage: {}", language).as_str());
-                    }
-                    if let Some(title) = mediapart.title {
-                        str.push_str(format!("\nTitle: {}", title).as_str());
-                    }
-                    if let Some(bitrate) = mediapart.bit_rate {
-                        str.push_str(
-                            format!("\nBitrate: {}it/s", bytefmt::format(bitrate)).as_str(),
-                        );
-                    }
-                    if let Some(bitdepth) = mediapart.bit_depth {
-                        str.push_str(format!("\nBitDepth: {} bit", bitdepth).as_str());
-                    }
-                    if let Some(samplerate) = mediapart.sample_rate {
-                        str.push_str(format!("\nSampleRate: {} Hz", samplerate).as_str());
-                    }
-                    if let Some(height) = mediapart.height {
-                        str.push_str(format!("\nHeight: {}", height).as_str());
-                    }
-                    if let Some(width) = mediapart.width {
-                        str.push_str(format!("\nWidth: {}", width).as_str());
-                    }
-                    if let Some(colorspace) = mediapart.color_space {
-                        str.push_str(format!("\nColorSpace: {}", colorspace).as_str());
-                    }
-                    if let Some(displaytitle) = mediapart.display_title {
-                        str.push_str(format!("\nDisplayTitle: {}", displaytitle).as_str());
-                    }
-                    if let Some(channel) = mediapart.channels {
-                        str.push_str(format!("\nChannel: {}", channel).as_str());
-                    }
-                    if let Some(channellayout) = mediapart.channel_layout {
-                        str.push_str(format!("\nChannelLayout: {}", channellayout).as_str());
-                    }
-                    if let Some(averageframerate) = mediapart.average_frame_rate {
-                        str.push_str(format!("\nAverageFrameRate: {}", averageframerate).as_str());
-                    }
-                    if let Some(pixelformat) = mediapart.pixel_format {
-                        str.push_str(format!("\nPixelFormat: {}", pixelformat).as_str());
-                    }
-                    let inscription = gtk::Inscription::builder()
-                        .text(&str)
-                        .min_lines(14)
-                        .hexpand(true)
-                        .yalign(0.0)
-                        .build();
-                    mediapartbox.append(&typebox);
-                    mediapartbox.append(&inscription);
-                    mediabox.append(&mediapartbox);
-                }
-
-                mediascrolled.set_child(Some(&mediabox));
-                singlebox.append(mediascrolled);
-                mediainfobox.append(&singlebox);
-            }
-            mediainforevealer.set_reveal_child(true);
-        });
-    }
-
-    pub fn setlinksscrolled(&self, links: Vec<Urls>) {
-        let imp = self.imp();
-        let linksscrolled = imp.linksscrolled.fix();
-        let linksrevealer = imp.linksrevealer.get();
-        if !links.is_empty() {
-            linksrevealer.set_reveal_child(true);
-        }
-        let linkbox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
-        while linkbox.last_child().is_some() {
-            if let Some(child) = linkbox.last_child() {
-                linkbox.remove(&child)
+        while mediainfobox.last_child().is_some() {
+            if let Some(child) = mediainfobox.last_child() {
+                mediainfobox.remove(&child)
             }
         }
-        for url in links {
-            let linkbutton = gtk::Button::builder()
-                .margin_start(10)
-                .margin_top(10)
+        for mediasource in media_sources {
+            let singlebox = gtk::Box::new(gtk::Orientation::Vertical, 5);
+            let info = format!(
+                "{}\n{} {} {}\n{}",
+                mediasource.path.unwrap_or_default(),
+                mediasource.container.to_uppercase(),
+                bytefmt::format(mediasource.size),
+                self.dt(date_created.as_deref()),
+                mediasource.name
+            );
+            let label = gtk::Label::builder()
+                .label(&info)
+                .halign(gtk::Align::Start)
+                .margin_start(15)
+                .valign(gtk::Align::Start)
+                .margin_top(5)
+                .ellipsize(gtk::pango::EllipsizeMode::End)
                 .build();
-            let buttoncontent = adw::ButtonContent::builder()
-                .label(&url.name)
-                .icon_name("send-to-symbolic")
+            label.add_css_class("caption-heading");
+            singlebox.append(&label);
+
+            let mediascrolled = gtk::ScrolledWindow::builder()
+                .hscrollbar_policy(gtk::PolicyType::Automatic)
+                .vscrollbar_policy(gtk::PolicyType::Never)
+                .overlay_scrolling(true)
                 .build();
-            linkbutton.set_child(Some(&buttoncontent));
-            linkbutton.connect_clicked(move |_| {
-                let _ = gio::AppInfo::launch_default_for_uri(
-                    &url.url,
-                    Option::<&gio::AppLaunchContext>::None,
-                );
-            });
-            linkbox.append(&linkbutton);
+
+            let mediascrolled = mediascrolled.fix();
+
+            let mediabox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
+            for mediapart in mediasource.media_streams {
+                if mediapart.stream_type == "Attachment" {
+                    continue;
+                }
+                let mediapartbox = gtk::Box::builder()
+                    .orientation(gtk::Orientation::Vertical)
+                    .spacing(0)
+                    .width_request(300)
+                    .build();
+                let mut str: String = Default::default();
+                let icon = gtk::Image::builder().margin_end(5).build();
+                if mediapart.stream_type == "Video" {
+                    icon.set_from_icon_name(Some("video-x-generic-symbolic"))
+                } else if mediapart.stream_type == "Audio" {
+                    icon.set_from_icon_name(Some("audio-x-generic-symbolic"))
+                } else if mediapart.stream_type == "Subtitle" {
+                    icon.set_from_icon_name(Some("media-view-subtitles-symbolic"))
+                } else {
+                    icon.set_from_icon_name(Some("text-x-generic-symbolic"))
+                }
+                let typebox = gtk::Box::builder()
+                    .orientation(gtk::Orientation::Horizontal)
+                    .spacing(5)
+                    .build();
+                typebox.append(&icon);
+                typebox.append(&gtk::Label::new(Some(&mediapart.stream_type)));
+                if let Some(codec) = mediapart.codec {
+                    str.push_str(format!("Codec: {}", codec).as_str());
+                }
+                if let Some(language) = mediapart.display_language {
+                    str.push_str(format!("\nLanguage: {}", language).as_str());
+                }
+                if let Some(title) = mediapart.title {
+                    str.push_str(format!("\nTitle: {}", title).as_str());
+                }
+                if let Some(bitrate) = mediapart.bit_rate {
+                    str.push_str(format!("\nBitrate: {}it/s", bytefmt::format(bitrate)).as_str());
+                }
+                if let Some(bitdepth) = mediapart.bit_depth {
+                    str.push_str(format!("\nBitDepth: {} bit", bitdepth).as_str());
+                }
+                if let Some(samplerate) = mediapart.sample_rate {
+                    str.push_str(format!("\nSampleRate: {} Hz", samplerate).as_str());
+                }
+                if let Some(height) = mediapart.height {
+                    str.push_str(format!("\nHeight: {}", height).as_str());
+                }
+                if let Some(width) = mediapart.width {
+                    str.push_str(format!("\nWidth: {}", width).as_str());
+                }
+                if let Some(colorspace) = mediapart.color_space {
+                    str.push_str(format!("\nColorSpace: {}", colorspace).as_str());
+                }
+                if let Some(displaytitle) = mediapart.display_title {
+                    str.push_str(format!("\nDisplayTitle: {}", displaytitle).as_str());
+                }
+                if let Some(channel) = mediapart.channels {
+                    str.push_str(format!("\nChannel: {}", channel).as_str());
+                }
+                if let Some(channellayout) = mediapart.channel_layout {
+                    str.push_str(format!("\nChannelLayout: {}", channellayout).as_str());
+                }
+                if let Some(averageframerate) = mediapart.average_frame_rate {
+                    str.push_str(format!("\nAverageFrameRate: {}", averageframerate).as_str());
+                }
+                if let Some(pixelformat) = mediapart.pixel_format {
+                    str.push_str(format!("\nPixelFormat: {}", pixelformat).as_str());
+                }
+                let inscription = gtk::Inscription::builder()
+                    .text(&str)
+                    .min_lines(14)
+                    .hexpand(true)
+                    .yalign(0.0)
+                    .build();
+                mediapartbox.append(&typebox);
+                mediapartbox.append(&inscription);
+                mediabox.append(&mediapartbox);
+            }
+
+            mediascrolled.set_child(Some(&mediabox));
+            singlebox.append(mediascrolled);
+            mediainfobox.append(&singlebox);
         }
-        linksscrolled.set_child(Some(&linkbox));
-        linksrevealer.set_reveal_child(true);
+        mediainforevealer.set_reveal_child(true);
     }
 
-    pub fn setactorscrolled(&self, actors: Vec<SimpleListItem>) {
-        let imp = self.imp();
-        let actorscrolled = imp.actorscrolled.fix();
-        let actorrevealer = imp.actorrevealer.get();
-        if !actors.is_empty() {
-            actorrevealer.set_reveal_child(true);
-        }
-        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
-        for people in actors {
-            let object = glib::BoxedAnyObject::new(people);
-            store.append(&object);
-        }
-        imp.actorselection.set_autoselect(false);
-        imp.actorselection.set_model(Some(&store));
-        let actorselection = &imp.actorselection;
-        let factory = tu_list_item_factory("".to_string());
-        imp.actorlist.connect_activate(
-            glib::clone!(@weak self as obj => move |listview, position| {
-                    let window = obj.root().and_downcast::<Window>().unwrap();
-                    let model = listview.model().unwrap();
-                    let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                    let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                    tu_list_view_connect_activate(window, &result, None);
-            }),
-        );
-        imp.actorlist.set_factory(Some(&factory));
-        imp.actorlist.set_model(Some(actorselection));
-        let actorlist = imp.actorlist.get();
-        actorscrolled.set_child(Some(&actorlist));
+    pub async fn setactorscrolled(&self, actors: Vec<SimpleListItem>) {
+        let hortu = self.imp().actorhortu.get();
+
+        hortu.set_title("Actors");
+
+        hortu.set_items(&actors);
     }
 
-    pub async fn get_similar(&self) {
+    pub async fn set_lists(&self) {
+        self.sets("Recommend").await;
+        self.sets("Included In").await;
+        self.sets("Additional Parts").await;
+    }
+
+    pub async fn sets(&self, types: &str) {
+        let hortu = match types {
+            "Recommend" => self.imp().recommendhortu.get(),
+            "Included In" => self.imp().includehortu.get(),
+            "Additional Parts" => self.imp().additionalhortu.get(),
+            _ => return,
+        };
+
+        hortu.set_title(types);
+
         let id = self.id();
-        let result = get_data_with_cache(id.clone(), "sim", async move { similar(&id).await })
-            .await
-            .unwrap();
-        spawn(glib::clone!(@weak self as obj =>async move {
-            obj.setrecommendscrolled(result);
-        }));
-    }
+        let types = types.to_string();
 
-    pub fn setrecommendscrolled(&self, recommend: Vec<SimpleListItem>) {
-        let imp = self.imp();
-        let recommendscrolled = imp.recommendscrolled.fix();
-        let recommendrevealer = imp.recommendrevealer.get();
-        if !recommend.is_empty() {
-            recommendrevealer.set_reveal_child(true);
+        let results = match req_cache(&format!("item_{types}_{id}"), async move {
+            match types.as_str() {
+                "Recommend" => EMBY_CLIENT.get_similar(&id).await,
+                "Included In" => EMBY_CLIENT.get_included(&id).await,
+                "Additional Parts" => EMBY_CLIENT.get_additional(&id).await,
+                _ => Ok(List::default()),
+            }
+        })
+        .await
+        {
+            Ok(history) => history,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                List::default()
+            }
+        };
+
+        if results.items.is_empty() {
+            hortu.set_visible(false);
+            return;
         }
-        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
-        for recommend in recommend {
-            let object = glib::BoxedAnyObject::new(recommend);
-            store.append(&object);
-        }
-        imp.recommendselection.set_autoselect(false);
-        imp.recommendselection.set_model(Some(&store));
-        let recommendselection = &imp.recommendselection;
-        let factory = tu_list_item_factory("".to_string());
-        imp.recommendlist.set_factory(Some(&factory));
-        imp.recommendlist.set_model(Some(recommendselection));
-        let recommendlist = imp.recommendlist.get();
-        recommendlist.connect_activate(
-            glib::clone!(@weak self as obj => move |listview, position| {
-                    let window = obj.root().and_downcast::<Window>().unwrap();
-                    let model = listview.model().unwrap();
-                    let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                    let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                    tu_list_view_connect_activate(window, &result, None);
-            }),
-        );
-        recommendscrolled.set_child(Some(&recommendlist));
+
+        hortu.set_items(&results.items);
     }
 
-    pub fn set_studio(&self, infos: Vec<SGTitem>) {
+    pub fn set_flowbuttons(&self, infos: Vec<SGTitem>, type_: &str) {
         let imp = self.imp();
-        let scrolled = imp.studiosscrolled.fix();
-        let revealer = imp.studiosrevealer.get();
-        self.setup_sgts(revealer, scrolled, infos);
+        let horbu = match type_ {
+            "Genres" => imp.genreshorbu.get(),
+            "Studios" => imp.studioshorbu.get(),
+            "Tags" => imp.tagshorbu.get(),
+            _ => return,
+        };
+
+        horbu.set_title(type_);
+
+        horbu.set_list_type(Some(type_.to_string()));
+
+        horbu.set_items(&infos);
     }
 
-    pub fn set_tags(&self, infos: Vec<SGTitem>) {
+    pub fn set_flowlinks(&self, links: Vec<Urls>) {
         let imp = self.imp();
-        let scrolled = imp.tagsscrolled.fix();
-        let revealer = imp.tagsrevealer.get();
-        self.setup_sgts(revealer, scrolled, infos);
-    }
 
-    pub fn set_genres(&self, infos: Vec<SGTitem>) {
-        let imp = self.imp();
-        let scrolled = imp.genresscrolled.fix();
-        let revealer = imp.genresrevealer.get();
-        self.setup_sgts(revealer, scrolled, infos);
-    }
+        let horbu = imp.linkshorbu.get();
 
-    pub fn setup_sgts(
-        &self,
-        linksrevealer: gtk::Revealer,
-        linksscrolled: &gtk::ScrolledWindow,
-        infos: Vec<SGTitem>,
-    ) {
-        if !infos.is_empty() {
-            linksrevealer.set_reveal_child(true);
-        }
-        let linkbox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
-        for url in infos {
-            let linkbutton = gtk::Button::builder()
-                .margin_start(10)
-                .margin_top(10)
-                .label(&url.name)
-                .build();
-            linkbutton.add_css_class("raised");
-            linkbox.append(&linkbutton);
-        }
-        linksscrolled.set_child(Some(&linkbox));
-        linksrevealer.set_reveal_child(true);
+        horbu.set_title("Links");
+
+        horbu.set_links(&links);
     }
 
     pub fn set_dropdown(&self, playbackinfo: &Media, info: &SeriesInfo) {
@@ -1142,7 +1120,13 @@ impl ItemPage {
                                 Some(mediastream) => match mediastream.delivery_url.clone() {
                                     Some(url) => Some(url),
                                     None => {
-                                        let playbackinfo = spawn_tokio(async {get_sub(id, media.id).await}).await.unwrap();
+                                        let playbackinfo = match spawn_tokio(async move { EMBY_CLIENT.get_sub(&id, &media.id).await}).await {
+                                            Ok(playbackinfo) => playbackinfo,
+                                            Err(e) => {
+                                                toast!(obj, e.to_user_facing());
+                                                return;
+                                            }
+                                        };
                                         let mediasource = playbackinfo.media_sources.iter().find(|&media| media.name == medianameselected).unwrap();
                                         let suburl = mediasource.media_streams.iter().find(|&mediastream| {
                                             mediastream.stream_type == "Subtitle" && Some(mediastream.display_title.as_ref().unwrap_or(&"".to_string())) == subselected.as_ref() && mediastream.is_external

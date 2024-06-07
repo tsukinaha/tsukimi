@@ -5,6 +5,12 @@ use std::cell::RefCell;
 
 use crate::client::structs::SimpleListItem;
 
+#[derive(Default, Clone)]
+struct AlbumArtist {
+    name: String,
+    id: String,
+}
+
 pub mod imp {
     use gtk::glib::Properties;
 
@@ -44,8 +50,6 @@ pub mod imp {
         #[property(get, set, nullable)]
         image_tags: RefCell<Option<crate::ui::provider::image_tags::ImageTags>>,
         #[property(get, set, nullable)]
-        album_artist: RefCell<Option<String>>,
-        #[property(get, set, nullable)]
         role: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         artists: RefCell<Option<String>>,
@@ -57,6 +61,11 @@ pub mod imp {
         primary_image_item_id: RefCell<Option<String>>,
         #[property(get, set)]
         run_time_ticks: RefCell<u64>,
+        #[property(get, set, nullable)]
+        collection_type: RefCell<Option<String>>,
+        #[property(name = "albumartist-name", get, set, type = String, member = name)]
+        #[property(name = "albumartist-id", get, set, type = String, member = id)]
+        album_artist: RefCell<AlbumArtist>,
     }
 
     #[glib::derived_properties]
@@ -123,8 +132,23 @@ impl TuItem {
         if let Some(series_name) = &latest.series_name {
             tu_item.set_series_name(series_name.clone());
         }
-        if let Some(album_artist) = &latest.album_artist {
-            tu_item.set_album_artist(Some(album_artist.clone()));
+        if let Some(album_artist) = &latest.album_artists {
+            tu_item.set_albumartist_name(
+                album_artist
+                    .first()
+                    .as_ref()
+                    .map(|s| s.name.as_str())
+                    .unwrap_or_default()
+                    .to_string(),
+            );
+            tu_item.set_albumartist_id(
+                album_artist
+                    .first()
+                    .as_ref()
+                    .map(|s| s.id.as_str())
+                    .unwrap_or_default()
+                    .to_string(),
+            );
         }
         if let Some(role) = &latest.role {
             tu_item.set_role(Some(role.clone()));
@@ -145,6 +169,9 @@ impl TuItem {
         if let Some(rating) = &latest.community_rating {
             let rating = format!("{:.1}", rating);
             tu_item.set_rating(Some(rating));
+        }
+        if let Some(collection_type) = &latest.collection_type {
+            tu_item.set_collection_type(Some(collection_type.clone()));
         }
         tu_item
     }

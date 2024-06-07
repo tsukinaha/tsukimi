@@ -5,7 +5,11 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 
-use crate::client::network::*;
+use crate::client::client::EMBY_CLIENT;
+use crate::client::error::UserFacingError;
+use crate::config::save_cfg;
+use crate::config::Account;
+use crate::utils::spawn_tokio;
 
 mod imp {
 
@@ -97,43 +101,57 @@ impl AccountWindow {
                     .build(),
             );
             imp.spinner.set_visible(false);
-        } else {
-            let (sender, receiver) = async_channel::bounded::<Result<bool, reqwest::Error>>(1);
-            RUNTIME.spawn(async move {
-                match loginv2(
-                    servername.to_string(),
-                    server.to_string(),
-                    username.to_string(),
-                    password.to_string(),
-                    port.to_string(),
-                )
-                .await
-                {
-                    Ok(_) => {
-                        sender.send(Ok(true)).await.unwrap();
-                    }
-                    Err(e) => {
-                        sender.send(Err(e)).await.unwrap();
-                    }
-                }
-            });
-            glib::spawn_future_local(glib::clone!(@weak self as obj=>async move {
-                while let Ok(item) = receiver.recv().await {
-                    match item {
-                        Ok(_) => {
-                            obj.imp().spinner.set_visible(false);
-                            obj.close();
-                            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                            window.toast("Account added successfully");
-                            window.set_servers();
-                        }
-                        Err(_) => {
-                            obj.imp().spinner.set_visible(false);
-                            obj.imp().toast.add_toast(Toast::builder().timeout(3).title("Wrong Password or Account.").build());
-                        }
-                    }
-                }
-            }));
+            return;
         }
+
+        EMBY_CLIENT.header_change_url(&server, &port);
+        EMBY_CLIENT.header_change_token(&servername);
+        let un = username.to_string();
+        let pw = password.to_string();
+        let res =
+            match spawn_tokio(async move { EMBY_CLIENT.login(&username, &password).await }).await {
+                Ok(res) => res,
+                Err(_) => {
+                    imp.toast.add_toast(
+                        Toast::builder()
+                            .timeout(3)
+                            .title("Failed to connect to server")
+                            .build(),
+                    );
+                    imp.spinner.set_visible(false);
+                    return;
+                }
+            };
+
+        let account = Account {
+            servername: servername.to_string(),
+            server: server.to_string(),
+            username: un,
+            password: pw,
+            port: port.to_string(),
+            user_id: res.user.id,
+            access_token: res.access_token,
+        };
+
+        match save_cfg(account).await {
+            Ok(_) => (),
+            Err(e) => {
+                imp.toast.add_toast(
+                    Toast::builder()
+                        .timeout(3)
+                        .title(e.to_user_facing())
+                        .build(),
+                );
+                imp.spinner.set_visible(false);
+                return;
+            }
+        };
+
+        imp.spinner.set_visible(false);
+        self.close();
+        let window = self.root().and_downcast::<super::window::Window>().unwrap();
+        window.toast("Account added successfully");
+        window.set_servers();
+        window.set_nav_servers();
     }
 }

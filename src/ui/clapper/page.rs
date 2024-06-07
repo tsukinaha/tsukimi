@@ -4,7 +4,8 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use crate::client::network::{positionback, RUNTIME};
+use crate::client::client::EMBY_CLIENT;
+use crate::client::network::RUNTIME;
 use crate::client::structs::Back;
 use crate::config::set_config;
 use crate::toast;
@@ -215,9 +216,7 @@ impl ClapperPage {
                 let duration = *position as u64 * 10000000;
                 let mut back = back.clone();
                 back.tick = duration;
-                RUNTIME.spawn(async move {
-                    positionback(back).await;
-                });
+                RUNTIME.spawn(async move { EMBY_CLIENT.position_back(&back).await });
             }
         }
         glib::ControlFlow::Continue
