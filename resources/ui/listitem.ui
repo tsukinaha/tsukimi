@@ -12,7 +12,7 @@
             <child>
               <object class="GtkOverlay" id="overlay">
                 <property name="width-request">167</property>
-                <property name="height-request">141</property>
+                <property name="height-request">260</property>
                 <property name="halign">center</property>
                 <!--
                 TODO: Add a button to show Picture
