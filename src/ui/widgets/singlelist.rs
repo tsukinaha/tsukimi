@@ -5,6 +5,7 @@ use super::window::Window;
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
+use crate::ui::models::SETTINGS;
 use crate::{fraction, fraction_reset, toast};
 use crate::utils::{
     req_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate,
@@ -383,7 +384,6 @@ impl SingleListPage {
         for result in list_results.items {
             let object = glib::BoxedAnyObject::new(result);
             store.append(&object);
-            gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
         }
     }
 
@@ -400,6 +400,11 @@ impl SingleListPage {
     pub fn set_up_dropdown(&self) {
         let imp = self.imp();
         let dropdown = imp.dropdown.get();
+        
+        let sort = SETTINGS.list_sort();
+        if sort >= 0 {
+            dropdown.set_selected(sort as u32);
+        }
         dropdown.connect_selected_item_notify(glib::clone!(@weak self as obj => move |_| {
             spawn(glib::clone!(@weak obj=> async move {
                 obj.set_dropdown_selected();
@@ -420,6 +425,7 @@ impl SingleListPage {
         let imp = self.imp();
         let dropdown = imp.dropdown.get();
         let selected = dropdown.selected();
+        SETTINGS.set_list_sort(&selected).unwrap();
         let sortby = match selected {
             0 => "SortName",
             1 => "TotalBitrate,SortName",
