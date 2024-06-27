@@ -360,7 +360,7 @@
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                             </attributes>
                             <style>
-                              <class name="title-3"/>
+                              <class name="title-4"/>
                               <class name="dim-label"/>
                             </style>
                           </object>
@@ -390,6 +390,7 @@
                                     </child>
                                     <child>
                                       <object class="GtkInscription" id="itemoverview">
+                                        <property name="tooltip-text" bind-source="itemoverview" bind-property="text" bind-flags="sync-create" translatable="yes"/>
                                         <property name="min-lines">8</property>
                                         <property name="yalign">0.00</property>
                                         <property name="hexpand">true</property>
@@ -418,6 +419,7 @@
                                     </child>
                                     <child>
                                       <object class="GtkInscription" id="selecteditemoverview">
+                                        <property name="tooltip-text" bind-source="selecteditemoverview" bind-property="text" bind-flags="sync-create" translatable="yes"/>
                                         <property name="min-lines">8</property>
                                         <property name="yalign">0.00</property>
                                         <property name="hexpand">true</property>
@@ -470,7 +472,7 @@
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                             </attributes>
                             <style>
-                              <class name="title-3"/>
+                              <class name="title-4"/>
                               <class name="dim-label"/>
                             </style>
                           </object>
