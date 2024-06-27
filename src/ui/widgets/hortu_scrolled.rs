@@ -32,6 +32,8 @@ mod imp {
         pub list: TemplateChild<gtk::ListView>,
         #[template_child]
         pub revealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub morebutton: TemplateChild<gtk::Button>,
 
         pub selection: gtk::SingleSelection,
     }
@@ -214,7 +216,12 @@ impl HortuScrolled {
             .build()
     }
 
-    pub fn set_items(&self, items: &[SimpleListItem]) {
+    pub fn set_morebutton(&self) {
+        let imp = self.imp();
+        imp.morebutton.set_visible(true);
+    }
+
+    pub fn set_items(&self, items: &Vec<SimpleListItem>) {
         if items.is_empty() {
             return;
         }

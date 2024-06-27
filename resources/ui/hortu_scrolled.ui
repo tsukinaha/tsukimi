@@ -11,18 +11,38 @@
             <property name="orientation">vertical</property>
             <property name="spacing">5</property>
             <child>
-              <object class="GtkLabel" id="label">
-                <property name="label" translatable="yes"></property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="margin-start">12</property>
-                <attributes>
-                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                </attributes>
-                <style>
-                  <class name="title-3"/>
-                  <class name="dim-label"/>
-                </style>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="hexpand">True</property>
+                <child>
+                  <object class="GtkLabel" id="label">
+                    <property name="label" translatable="yes"></property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="margin-start">12</property>
+                    <property name="hexpand">True</property>
+                    <attributes>
+                      <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                    </attributes>
+                    <style>
+                      <class name="title-4" />
+                      <class name="dim-label" />
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="morebutton">
+                    <property name="visible">False</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="margin-end">12</property>
+                    <property name="icon-name">view-more-symbolic</property>
+                    <style>
+                      <class name="circular" />
+                      <class name="flat" />
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
             <child>

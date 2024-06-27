@@ -33,6 +33,10 @@
                   <object class="HortuScrolled" id="albumhortu">
                   </object>
                 </child>
+                <child>
+                  <object class="HortuScrolled" id="boxsethortu">
+                  </object>
+                </child>
               </object>
             </child>
           </object>

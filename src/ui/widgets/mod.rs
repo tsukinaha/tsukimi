@@ -10,6 +10,7 @@ pub mod horbu_scrolled;
 pub mod hortu_scrolled;
 pub mod item;
 pub mod list;
+pub mod list_dropdown;
 pub mod music_album;
 pub mod player_toolbar;
 pub mod search;

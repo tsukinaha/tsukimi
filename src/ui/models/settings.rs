@@ -31,6 +31,15 @@ impl Settings {
     const KEY_DAILY_RECOMMEND: &'static str = "is-daily-recommend";
     const KEY_MPV: &'static str = "mpv";
     const KEY_YTDL: &'static str = "ytdl";
+    const KEY_LIST_SORT: &'static str = "list-sort";
+
+    pub fn set_list_sort(&self, list_sort: &u32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_LIST_SORT, *list_sort as i32)
+    }
+
+    pub fn list_sort(&self) -> i32 {
+        self.int(Self::KEY_LIST_SORT)
+    }
 
     pub fn set_ytdl(&self, ytdl: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_YTDL, ytdl)

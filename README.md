@@ -7,9 +7,13 @@
 
 ## Notice
 
+> [!IMPORTANT]
+> READ BEFORE INSTALLATION
+
+- 对 Windows 的支持不做任何保证，请善用 修改字体族/尺寸 的功能来弥补 Windows 可悲的字体渲染
+- 缩放导致的问题在 gtk4 无解，KDE Wayland/Windows 下请将系统缩放修改至 150% 以下来回避双重缩放
 - Windows 下如出现 窗口无法显示 黑边框 等情况
-  请安装 Archlinux
-- 位于早期开发阶段 错误处理尚不完善
+  请尝试更新图形显示卡驱动 或安装 Archlinux
 - FR/Issue 前请检查是否重复
 - Trello Kanban https://trello.com/b/8GOsuygJ/%E5%95%8A%EF%BC%9F
 

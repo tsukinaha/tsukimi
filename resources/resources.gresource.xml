@@ -9,7 +9,6 @@
     <file compressed="true" preprocess="xml-stripblanks">window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">search.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">item.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">movie.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">history.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">episoderow.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">home.ui</file>
@@ -18,6 +17,7 @@
     <file compressed="true" preprocess="xml-stripblanks">account.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">listitem.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">pop-menu.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">dropdown.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">account_settings.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">singlelist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">boxset.ui</file>

@@ -1,33 +1,37 @@
-use gtk::pango;
+use gtk::glib;
 use gtk::prelude::*;
 
-pub fn factory() -> gtk::SignalListItemFactory {
+use crate::ui::widgets::item::DropdownList;
+
+pub fn factory(upbind: bool) -> gtk::SignalListItemFactory {
     let factory = gtk::SignalListItemFactory::new();
-    factory.connect_setup(move |_, item| {
+    factory.connect_bind(move |_, item| {
         let list_item = item
             .downcast_ref::<gtk::ListItem>()
             .expect("Needs to be ListItem");
-        let label = gtk::Label::builder()
-            .ellipsize(pango::EllipsizeMode::End)
-            .halign(gtk::Align::Start)
-            .build();
-        list_item.set_child(Some(&label));
-    });
-    factory.connect_bind(move |_, item| {
-        let label = item
-            .downcast_ref::<gtk::ListItem>()
-            .expect("Needs to be ListItem")
-            .child()
-            .and_downcast::<gtk::Label>()
-            .expect("need to be label");
-        let string = item
+
+        if list_item.child().is_some() && !upbind {
+            return;
+        }
+
+        if let Some(entry) = item
             .downcast_ref::<gtk::ListItem>()
             .expect("Needs to be ListItem")
             .item()
-            .and_downcast::<gtk::StringObject>()
-            .expect("need to be string")
-            .string();
-        label.set_label(&string);
+            .and_downcast::<glib::BoxedAnyObject>()
+        {
+            let dl: std::cell::Ref<DropdownList> = entry.borrow();
+
+            let list_dropdown = crate::ui::widgets::list_dropdown::ListDropdown::new();
+
+            list_dropdown.set_label1(&dl.line1);
+
+            if !upbind {
+                list_dropdown.set_label2(&dl.line2);
+            }
+
+            list_item.set_child(Some(&list_dropdown));
+        }
     });
     factory
 }

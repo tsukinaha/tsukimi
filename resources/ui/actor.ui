@@ -56,6 +56,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkInscription" id="inscription">
+                                    <property name="tooltip-text" bind-source="inscription" bind-property="text" bind-flags="sync-create" translatable="yes" />
                                     <property name="text" translatable="yes">No Inscriptions</property>
                                     <property name="valign">fill</property>
                                     <property name="yalign">0.00</property>
@@ -64,6 +65,7 @@
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
                                     <property name="min-lines">3</property>
+                                    <property name="text-overflow">ellipsize-end</property>
                                   </object>
                                 </child>
                               </object>

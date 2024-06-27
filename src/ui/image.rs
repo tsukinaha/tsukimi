@@ -9,7 +9,7 @@ use crate::utils::{spawn, spawn_tokio};
 pub fn set_image(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Fill);
-    image.set_content_fit(gtk::ContentFit::Cover);
+    image.set_content_fit(gtk::ContentFit::Contain);
     let revealer = gtk::Revealer::builder()
         .transition_type(gtk::RevealerTransitionType::Crossfade)
         .child(&image)

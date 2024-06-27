@@ -17,11 +17,11 @@
                 <property name="valign">center</property>
                 <property name="margin-start">12</property>
                 <attributes>
-                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                 </attributes>
                 <style>
-                  <class name="title-3"/>
-                  <class name="dim-label"/>
+                  <class name="title-4" />
+                  <class name="dim-label" />
                 </style>
               </object>
             </child>
