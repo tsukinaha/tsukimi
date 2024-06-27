@@ -69,6 +69,22 @@
               </object>
             </child>
             <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Accent Color</property>
+                <child type="suffix">
+                  <object class="GtkColorDialogButton" id="color">
+                    <property name="valign">center</property>
+                    <property name="dialog">
+                      <object class="GtkColorDialog"/>
+                    </property>
+                    <style>
+                      <class name="flat" />
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="AdwComboRow" id="themecontrol">
                 <property name="title" translatable="yes">Theme</property>
                 <property name="subtitle" translatable="yes">Restart App To Take Effect</property>
@@ -79,8 +95,6 @@
                       <item translatable="yes">Adwaita</item>
                       <item translatable="yes">Adwaita Dark</item>
                       <item translatable="yes">Catppuccin Latte</item>
-                      <item translatable="yes">Tokyo Night Dark</item>
-                      <item translatable="yes">Solarized Dark</item>
                       <item translatable="yes">Alpha Dark</item>
                     </items>
                   </object>

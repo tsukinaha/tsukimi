@@ -36,12 +36,6 @@ pub fn load_css() {
         "Catppuccin Latte" => {
             provider.load_from_string(include_str!("style.css"));
         }
-        "Tokyo Night Dark" => {
-            provider.load_from_string(include_str!("style-dark.css"));
-        }
-        "Solarized Dark" => {
-            provider.load_from_string(include_str!("solarized.css"));
-        }
         "Alpha Dark" => {
             provider.load_from_string(include_str!("alpha-dark.css"));
         }

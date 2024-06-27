@@ -133,6 +133,7 @@ impl TuListItem {
                 };
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&year);
+                imp.overlay.set_size_request(167, 260);
                 self.set_picture();
                 self.set_played();
                 if let Some(true) = imp.isresume.get() {
@@ -159,6 +160,7 @@ impl TuListItem {
                 };
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&year);
+                imp.overlay.set_size_request(167, 260);
                 self.set_picture();
                 self.set_played();
                 self.set_count();
@@ -167,6 +169,7 @@ impl TuListItem {
             "BoxSet" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
+                imp.overlay.set_size_request(167, 260);
                 self.set_picture();
             }
             "Tag" | "Genre" => {
@@ -203,6 +206,7 @@ impl TuListItem {
             "Actor" | "Person" | "Director" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&item.role().unwrap_or("".to_string()));
+                imp.overlay.set_size_request(167, 260);
                 self.set_picture();
             }
             "Audio" => {

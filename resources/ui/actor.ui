@@ -64,6 +64,7 @@
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
                                     <property name="min-lines">3</property>
+                                    <property name="text-overflow">ellipsize-end</property>
                                   </object>
                                 </child>
                               </object>

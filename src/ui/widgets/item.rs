@@ -1,6 +1,7 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
+use gst::glib::object;
 use gtk::template_callbacks;
 use gtk::{gio, glib};
 use std::cell::Ref;
@@ -18,6 +19,7 @@ use crate::utils::{get_image_with_cache, req_cache, spawn, spawn_tokio};
 use chrono::{DateTime, Local, NaiveDateTime, Utc};
 
 use super::fix::ScrolledWindowFixExt;
+use super::song_widget::format_duration;
 use super::window::Window;
 
 mod imp {
@@ -125,6 +127,9 @@ mod imp {
         #[property(get, set, construct_only)]
         pub name: RefCell<Option<String>>,
         pub selected: RefCell<Option<String>>,
+
+        pub videoselection: gtk::SingleSelection,
+        pub subselection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -979,11 +984,6 @@ impl ItemPage {
             }
         };
 
-        if results.items.is_empty() {
-            hortu.set_visible(false);
-            return;
-        }
-
         hortu.set_items(&results.items);
     }
 
@@ -1019,58 +1019,77 @@ impl ItemPage {
         let imp = self.imp();
         let namedropdown = imp.namedropdown.get();
         let subdropdown = imp.subdropdown.get();
+        namedropdown.set_factory(Some(&factory(true)));
+        namedropdown.set_list_factory(Some(&factory(false)));
+        subdropdown.set_factory(Some(&factory(true)));
+        subdropdown.set_list_factory(Some(&factory(false)));
+
         let playbutton = imp.playbutton.get();
-        let namelist = gtk::StringList::new(&[]);
-        let sublist = gtk::StringList::new(&[]);
+
+        let vstore = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+        imp.videoselection.set_model(Some(&vstore));
+
+        let sstore = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+        imp.subselection.set_model(Some(&sstore));
 
         if let Some(media) = playbackinfo.media_sources.first() {
             for stream in &media.media_streams {
                 if stream.stream_type == "Subtitle" {
-                    if let Some(d) = &stream.display_title {
-                        sublist.append(d);
-                    } else {
-                        println!("No value");
-                    }
+                    let dl = DropdownList {
+                        line1: stream.display_title.clone(),
+                        line2: stream.title.clone(),
+                    };
+                    let object = glib::BoxedAnyObject::new(dl);
+                    sstore.append(&object);
                 }
             }
         }
+
         for media in &playbackinfo.media_sources {
-            namelist.append(&media.name);
+            let dl = DropdownList {
+                line1: Some(media.name.clone()),
+                line2: None,
+            };
+
+            let object = glib::BoxedAnyObject::new(dl);
+            vstore.append(&object);
         }
-        namedropdown.set_model(Some(&namelist));
-        subdropdown.set_model(Some(&sublist));
-        namedropdown.set_factory(Some(&factory()));
-        subdropdown.set_factory(Some(&factory()));
+        namedropdown.set_model(Some(&imp.videoselection));
+        subdropdown.set_model(Some(&imp.subselection));
 
         namedropdown.connect_selected_item_notify(move |dropdown| {
-            let selected = dropdown.selected_item();
-            let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
-            let selected = selected.string();
-            for _i in 0..sublist.n_items() {
-                sublist.remove(0);
-            }
-            for media in playbackinfo.media_sources.clone() {
-                if media.name == selected {
-                    for stream in media.media_streams {
-                        if stream.stream_type == "Subtitle" {
-                            if let Some(d) = stream.display_title {
-                                sublist.append(&d);
-                            } else {
-                                println!("No value");
+            if let Some(entry) = dropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
+            {
+                let dl: std::cell::Ref<DropdownList> = entry.borrow();
+                let selected = dl.line1.clone().unwrap();
+                for _i in 0..sstore.n_items() {
+                    sstore.remove(0);
+                }
+                for media in playbackinfo.media_sources.clone() {
+                    if media.name == selected {
+                        for stream in media.media_streams {
+                            if stream.stream_type == "Subtitle" {
+                                let dl = DropdownList {
+                                    line1: stream.display_title,
+                                    line2: stream.title,
+                                };
+                                let object = glib::BoxedAnyObject::new(dl);
+                                sstore.append(&object);
                             }
                         }
+                        subdropdown.set_selected(0);
+                        break;
                     }
-                    break;
                 }
-            }
+            }   
         });
-        let info = info.clone();
 
         if SETTINGS.resume() {
             if let Some(userdata) = &info.user_data {
-                if let Some(percentage) = userdata.played_percentage {
-                    if percentage > 0. {
-                        playbutton.set_label("Resume");
+                if let Some(ticks) = userdata.playback_position_ticks {
+                    if ticks > 0 {
+                        let sec = ticks / 10000000;
+                        playbutton.set_label(&format!("Resume {}",format_duration(sec as i64)));
                     }
                 }
             }
@@ -1086,20 +1105,28 @@ impl ItemPage {
         let info = info.clone();
 
         playbutton.connect_clicked(glib::clone!(@weak self as obj => move |_| {
-            let nameselected = namedropdown.selected_item();
-            let nameselected = nameselected
-                .and_downcast_ref::<gtk::StringObject>()
-                .unwrap();
-            let nameselected = nameselected.string();
-            let subselected = subdropdown.selected_item();
-            let subselected = if subselected.is_some() {
-                Some(subselected.and_downcast_ref::<gtk::StringObject>().unwrap().string().to_string())
+
+            let nameselected = 
+                if let Some(entry) = namedropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
+            {
+                let dl: std::cell::Ref<DropdownList> = entry.borrow();
+                dl.line1.clone().unwrap_or_default()
             } else {
-                None
+                return;
             };
+
+            let subselected =
+                if let Some(entry) = subdropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
+            {
+                let dl: std::cell::Ref<DropdownList> = entry.borrow();
+                &dl.line1.clone()
+            } else {
+                &None
+            };
+
             for media in playbackinfo.media_sources.clone() {
                 if media.name == nameselected {
-                    let medianameselected = nameselected.to_string();
+                    let medianameselected = nameselected;
                     let url = media.direct_stream_url.clone();
                     let back = Back {
                         id: info.id.clone(),
@@ -1168,4 +1195,9 @@ impl ItemPage {
     pub fn get_window(&self) -> Window {
         self.root().unwrap().downcast::<Window>().unwrap()
     }
+}
+
+pub struct DropdownList {
+    pub line1: Option<String>,
+    pub line2: Option<String>,
 }
