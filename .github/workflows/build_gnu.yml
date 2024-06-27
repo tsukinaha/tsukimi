@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   # push:
   #   branches:
-  #     - 'main'
+  #     - 'feature/win'
 
 env:
   CARGO_TERM_COLOR: always
@@ -28,48 +28,97 @@ jobs:
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Setup msys2
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: >
-          rustup default stable-gnu;
-          C:\msys64\usr\bin\pacman.exe -Sy --needed --noconfirm mingw-w64-x86_64-pkgconf mingw-w64-x86_64-gcc 
-          mingw-w64-x86_64-mpv mingw-w64-x86_64-libadwaita mingw-w64-x86_64-gstreamer mingw-w64-x86_64-gst-plugins-good 
-          mingw-w64-x86_64-gst-plugins-bad mingw-w64-x86_64-gst-plugins-ugly mingw-w64-x86_64-gst-libav;
-          C:\msys64\usr\bin\pacman.exe -Syu --noconfirm
-
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          release: false
+          msystem: MINGW64
+          install: >-
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-mpv
+            mingw-w64-x86_64-libadwaita
+            mingw-w64-x86_64-gstreamer
+            mingw-w64-x86_64-meson
+            mingw-w64-x86_64-glib2
+            mingw-w64-x86_64-gst-plugins-base
+            mingw-w64-x86_64-gst-plugins-good
+            mingw-w64-x86_64-gst-plugins-bad
+            mingw-w64-x86_64-gst-plugins-ugly
+            mingw-w64-x86_64-gst-libav
+            git
+         
       - name: Install clapper
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        shell: msys2 {0}
         run: |
-          mkdir clapper-dev && cd clapper-dev
-          Invoke-WebRequest -Uri "https://github.com/Kosette/clapper/releases/latest/download/clapper-dev.7z" -OutFile clapper-dev.7z
-          7z.exe x clapper-dev.7z && rm clapper-dev.7z
-          cp -recurse -force bin C:/msys64/mingw64/
-          cp -recurse -force include C:/msys64/mingw64/
-          cp -recurse -force lib C:/msys64/mingw64/
+          git clone https://github.com/Rafostar/clapper.git
+          cd clapper
+          meson setup builddir --prefix=/mingw64
+          cd builddir
+          meson compile && meson install
 
-      - name: Build ${{ matrix.target }}
+      - name: Build tsukimi-${{ matrix.target }}
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        shell: powershell
         run: |
           $env:Path = "C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path;
+          rustup default stable-gnu
           cargo build --release --locked
+      
+      - name: Package
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        shell: msys2 {0}
+        run: |
           mkdir artifact && cd artifact
           mkdir tsukimi-windows-gnu-amd64/ && cd tsukimi-windows-gnu-amd64/ && mkdir bin/ && mkdir share/ && mkdir lib/
-          cp ../../target/release/${{ matrix.artifact }} bin/
-          cp C:/msys64/mingw64/bin/*.dll bin/
-          cp -recurse C:/msys64/mingw64/lib/gdk-pixbuf-2.0 lib/
-          remove-item lib/gdk-pixbuf-2.0/2.10.0/loaders/* -exclude "*svg.dll"
-          cp -recurse C:/msys64/mingw64/share/glib-2.0 share/
-          get-childitem -directory -path share/glib-2.0/ -exclude "*schemas*"|remove-item -recurse
-          mv ../../moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
-          C:/msys64/mingw64/bin/glib-compile-schemas.exe share/glib-2.0/schemas/
-          gci -recurse -path share/glib-2.0/* -exclude "*.compiled"|remove-item -recurse
-          cp -recurse C:/msys64/mingw64/lib/gio lib/
-          cp -recurse C:/msys64/mingw64/lib/gstreamer-1.0 lib/ && gci -recurse -path lib/gstreamer-1.0 -exclude "*.dll"|remove-item -recurse
-          cp -recurse C:/msys64/mingw64/share/icons share/
-          cp ../../resources/ui/icons/tsukimi.png share/icons/
-          remove-item -recurse share/icons/hicolor && remove-item -recurse share/icons/Adwaita/scalable && remove-item -recurse share/icons/Adwaita/cursors
-          remove-item -recurse share/icons/Adwaita/16x16 && remove-item -recurse share/icons/Adwaita/symbolic-up-to-32
-          gci -directory -recurse .|where-object {$_.getfilesysteminfos().count -eq 0}|remove-item -recurse
+          cp $GITHUB_WORKSPACE/target/release/${{ matrix.artifact }} bin/
+          cp /mingw64/bin/gdbus.exe bin/
+
+          cp -r /mingw64/lib/gdk-pixbuf-2.0 lib/
+          find lib/gdk-pixbuf-2.0/2.10.0/loaders -type f ! -name "*svg.dll" -exec rm -f "{}" \;
+          
+          cp -r /mingw64/lib/gio lib/
+          
+          cp -r /mingw64/lib/gstreamer-1.0 lib/ && find lib/gstreamer-1.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
+
+          cp -r /mingw64/lib/clapper-0.0 lib/ && find lib/clapper-0.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
+
+          cp -r /mingw64/share/glib-2.0 share/
+          find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rf "{}" \;
+          mv $GITHUB_WORKSPACE/moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
+          glib-compile-schemas.exe share/glib-2.0/schemas/
+          find share/glib-2.0/ -type f ! -name "*.compiled" -exec rm -f "{}" \;
+                    
+          cp -r /mingw64/share/icons share/
+          cp $GITHUB_WORKSPACE/resources/ui/icons/tsukimi.png share/icons/
+          rm -rf share/icons/hicolor && rm -rf share/icons/AdwaitaLegacy && rm -rf share/icons/Adwaita/scalable && rm -rf share/icons/Adwaita/cursors
+          rm -rf share/icons/Adwaita/16x16 && rm -rf share/icons/Adwaita/symbolic-up-to-32
+          
+          find . -type d -empty -delete
+          
+          cd lib/gstreamer-1.0 
+          rm -f \
+            libgstadpcmenc.dll libgstamfcodec.dll libgstdvbsubenc.dll libgstencoding.dll \
+            libgstfrei0r.dll libgstinter.dll libgstlame.dll libgstldac.dll libgstmpeg2enc.dll \
+            libgstmpegpsmux.dll libgstmpegtsmux.dll libgstmplex.dll libgstrealmedia.dll \
+            libgstsubenc.dll libgstsvtav1.dll libgstsvthevcenc.dll libgsttwolame.dll \
+            libgstvoamrwbenc.dll libgstwavenc.dll libgstx264.dll libgstx265.dll \
+            libgstxingmux.dll libgsty4menc.dll libgstzbar.dll
+          
+          cd $GITHUB_WORKSPACE/artifact/tsukimi-windows-gnu-amd64
+          ldd bin/tsukimi.exe | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
+          find lib/ -type f -name "*.dll" -exec ldd "{}" \; | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
+
+      - name: Create NSIS installer
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        shell: powershell
+        run: |
+          cp tsukimi_installer.nsi artifact
+          makensis /V4 artifact/tsukimi_installer.nsi
+          rm artifact/tsukimi_installer.nsi
 
       - name: Upload artifact
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
@@ -80,3 +129,4 @@ jobs:
             artifact/*
           compression-level: 5
           retention-days: 3
+          if-no-files-found: error
