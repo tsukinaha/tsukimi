@@ -26,7 +26,7 @@ macro_rules! _add_toast {
 #[macro_export]
 macro_rules! toast {
     ($widget:expr, $message:expr) => {{
-        $crate::_add_toast!($widget, adw::Toast::new($message.as_ref()));
+        $crate::_add_toast!($widget, adw::Toast::builder().timeout(1).title($message).build());
     }};
 }
 

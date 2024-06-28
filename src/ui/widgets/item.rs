@@ -1,7 +1,6 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
-use gst::glib::object;
 use gtk::template_callbacks;
 use gtk::{gio, glib};
 use std::cell::Ref;
@@ -14,6 +13,7 @@ use crate::client::structs::*;
 use crate::toast;
 use crate::ui::models::SETTINGS;
 use crate::ui::mpv;
+use crate::ui::provider::actions::HasLikeAction;
 use crate::ui::provider::dropdown_factory::factory;
 use crate::utils::{get_image_with_cache, req_cache, spawn, spawn_tokio};
 use chrono::{DateTime, Local, NaiveDateTime, Utc};
@@ -22,10 +22,11 @@ use super::fix::ScrolledWindowFixExt;
 use super::song_widget::format_duration;
 use super::window::Window;
 
-mod imp {
+pub(crate) mod imp {
     use crate::ui::widgets::fix::ScrolledWindowFixExt;
     use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
+    use crate::ui::widgets::star_toggle::StarToggle;
     use crate::utils::spawn_g_timeout;
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
@@ -112,9 +113,7 @@ mod imp {
         #[template_child]
         pub indicator: TemplateChild<adw::CarouselIndicatorLines>,
         #[template_child]
-        pub favourite_button_split: TemplateChild<adw::SplitButton>,
-        #[template_child]
-        pub favourite_button_split_content: TemplateChild<adw::ButtonContent>,
+        pub favourite_button: TemplateChild<StarToggle>,
         #[template_child]
         pub tagline: TemplateChild<gtk::Label>,
         #[template_child]
@@ -141,6 +140,7 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
+            StarToggle::ensure_type();
             HortuScrolled::ensure_type();
             HorbuScrolled::ensure_type();
             klass.bind_template();
@@ -157,30 +157,6 @@ mod imp {
             klass.install_action("item.last", None, move |window, _action, _parameter| {
                 window.itemlast();
             });
-            klass.install_action_async(
-                "like.episode",
-                None,
-                |window, _action, _parameter| async move {
-                    window.like_episode().await;
-                },
-            );
-            klass.install_action_async("unlike", None, |window, _action, _parameter| async move {
-                window.unlike().await;
-            });
-            klass.install_action_async(
-                "mark.played",
-                None,
-                |window, _action, _parameter| async move {
-                    window.played().await;
-                },
-            );
-            klass.install_action_async(
-                "mark.unplayed",
-                None,
-                |window, _action, _parameter| async move {
-                    window.unplayed().await;
-                },
-            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -235,79 +211,7 @@ impl ItemPage {
             .build()
     }
 
-    pub async fn played(&self) {
-        let imp = self.imp();
-        imp.favourite_button_split.set_sensitive(false);
-        let id = self.inid();
-        match spawn_tokio(async move { EMBY_CLIENT.set_as_played(&id).await }).await {
-            Ok(_) => (),
-            Err(e) => {
-                toast!(self, e.to_user_facing());
-                return;
-            }
-        };
-        imp.favourite_button_split.set_sensitive(true);
-        toast!(self, "Mark as played successfully.");
-    }
-
-    pub async fn unplayed(&self) {
-        let imp = self.imp();
-        imp.favourite_button_split.set_sensitive(false);
-        let id = self.inid();
-        match spawn_tokio(async move { EMBY_CLIENT.set_as_unplayed(&id).await }).await {
-            Ok(_) => (),
-            Err(e) => {
-                toast!(self, e.to_user_facing());
-                return;
-            }
-        };
-        imp.favourite_button_split.set_sensitive(true);
-        toast!(self, "Mark as unplayed successfully.");
-    }
-
-    pub async fn like_episode(&self) {
-        let imp = self.imp();
-        let spilt_button_content = imp.favourite_button_split_content.get();
-        let spilt_button = imp.favourite_button_split.get();
-        imp.favourite_button_split.set_sensitive(false);
-        let id = self.inid();
-        match spawn_tokio(async move { EMBY_CLIENT.like(&id).await }).await {
-            Ok(_) => (),
-            Err(e) => {
-                toast!(self, e.to_user_facing());
-                return;
-            }
-        };
-
-        spilt_button.set_action_name(Some("unlike"));
-        spilt_button_content.set_icon_name("starred-symbolic");
-        spilt_button_content.set_label("Unlike");
-
-        imp.favourite_button_split.set_sensitive(true);
-        toast!(self, "Liked the Video successfully.");
-    }
-
-    pub async fn unlike(&self) {
-        let imp = self.imp();
-        let inid = self.inid();
-        let spilt_button_content = imp.favourite_button_split_content.get();
-        let spilt_button = imp.favourite_button_split.get();
-        imp.favourite_button_split.set_sensitive(false);
-        match spawn_tokio(async move { EMBY_CLIENT.unlike(&inid).await }).await {
-            Ok(_) => (),
-            Err(e) => {
-                toast!(self, e.to_user_facing());
-                return;
-            }
-        };
-
-        spilt_button.set_action_name(Some("like.series"));
-        spilt_button_content.set_icon_name("non-starred-symbolic");
-        spilt_button_content.set_label("Like");
-
-        imp.favourite_button_split.set_sensitive(true);
-        toast!(self, "Unliked the Video successfully.");
-    }
+    
 
     pub async fn setup_background(&self) {
         let id = self.id();
@@ -635,7 +539,6 @@ impl ItemPage {
         let handlerid = self.bind_button(&playback, &info);
         imp.playbuttonhandlerid.replace(Some(handlerid));
         imp.playbutton.set_sensitive(true);
-        imp.favourite_button_split.set_sensitive(true);
     }
 
     pub async fn selectepisode(&self, seriesinfo: SeriesInfo) {
@@ -646,7 +549,6 @@ impl ItemPage {
         imp.inid.replace(id.clone());
 
         imp.playbutton.set_sensitive(false);
-        imp.favourite_button_split.set_sensitive(false);
         imp.line1spinner.set_visible(true);
         let playback =
             match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&id).await }).await {
@@ -672,7 +574,6 @@ impl ItemPage {
                 let handlerid = obj.bind_button(&playback, &info);
                 obj.imp().playbuttonhandlerid.replace(Some(handlerid));
                 obj.imp().playbutton.set_sensitive(true);
-                obj.imp().favourite_button_split.set_sensitive(true);
         }));
 
         if let Some(overview) = seriesinfo.overview {
@@ -700,7 +601,9 @@ impl ItemPage {
             }
         };
 
-        spawn(glib::clone!(@weak self as obj=>async move {
+        let id = self.id();
+
+        spawn(glib::clone!(@weak self as obj, @strong id=>async move {
                 {
                     let mut str = String::new();
                     if let Some(communityrating) = item.community_rating {
@@ -775,10 +678,9 @@ impl ItemPage {
                     let user_data = item.user_data.as_ref().unwrap();
                     if let Some (is_favourite) = user_data.is_favorite {
                         if is_favourite {
-                            let imp = obj.imp();
-                            imp.favourite_button_split.set_action_name(Some("unlike"));
-                            imp.favourite_button_split_content.set_icon_name("starred-symbolic");
-                            imp.favourite_button_split_content.set_label("Unlike");
+                            obj.imp().favourite_button.set_active(true);
+                        } else {
+                            obj.imp().favourite_button.set_active(false);
                         }
                     }
                 }
@@ -793,6 +695,8 @@ impl ItemPage {
                 } else {
                     obj.selectmovie(item.id, item.name, item.user_data).await; 
                 }
+
+                obj.imp().bind_actions(&id).await;
         }));
     }
 

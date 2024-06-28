@@ -3,7 +3,7 @@
   <template parent="AdwBin" class="TuListItem">
     <child>
       <object class="GtkRevealer" id="revealer">
-        <property name="transition-type">crossfade</property>
+        <property name="transition-type">swing-down</property>
         <property name="reveal-child">False</property>
         <child>
           <object class="GtkBox">

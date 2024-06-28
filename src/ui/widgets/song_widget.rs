@@ -1,8 +1,9 @@
-use crate::ui::provider::{core_song::CoreSong, tu_item::TuItem};
+use crate::{ui::provider::{core_song::CoreSong, tu_item::TuItem}, utils::spawn};
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use chrono::Duration;
 use gtk::{glib, CompositeTemplate};
+use crate::ui::provider::actions::HasLikeAction;
 
 #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
 #[repr(u32)]
@@ -15,7 +16,7 @@ pub enum State {
     Unplayed,
 }
 
-mod imp {
+pub(crate) mod imp {
     use super::*;
     use crate::ui::provider::core_song::CoreSong;
     use crate::ui::provider::tu_item::TuItem;
@@ -42,7 +43,7 @@ mod imp {
         #[template_child]
         pub duration_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub star_toggle: TemplateChild<StarToggle>,
+        pub favourite_button: TemplateChild<StarToggle>,
         #[template_child]
         pub play_icon: TemplateChild<gtk::Image>,
         #[property(get, set, construct_only)]
@@ -133,6 +134,7 @@ impl SongWidget {
     pub fn set_up(&self) {
         let imp = self.imp();
         let item = imp.item.get().unwrap();
+        let id = item.id();
         imp.number_label.set_text(&item.index_number().to_string());
         imp.title_label.set_text(&item.name());
         imp.artist_label
@@ -140,7 +142,11 @@ impl SongWidget {
         let duration = item.run_time_ticks() / 10000000;
         imp.duration_label
             .set_text(&format_duration(duration as i64));
-        imp.star_toggle.set_active(item.is_favorite());
+        imp.favourite_button.set_active(item.is_favorite());
+
+        spawn(glib::clone!(@weak self as obj, @strong id => async move {
+            obj.imp().bind_actions(&id).await;
+        }));
     }
 
     fn bind(&self, core_song: &CoreSong) {

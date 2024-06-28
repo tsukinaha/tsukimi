@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::{glib, CompositeTemplate};
@@ -33,12 +31,7 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for ListDropdown {
-        fn constructed(&self) {
-            self.parent_constructed();
-            let obj = self.obj();
-        }
-    }
+    impl ObjectImpl for ListDropdown {}
 
     impl WidgetImpl for ListDropdown {}
     impl BinImpl for ListDropdown{}

@@ -100,6 +100,19 @@
                                   </object>
                                 </child>
                                 <child>
+                                  <object class="StarToggle" id="favourite_button">
+                                    <property name="width-request">44</property>
+                                    <property name="height-request">44</property>
+                                    <property name="icon-name">non-starred-symbolic</property>
+                                    <property name="tooltip-text" translatable="yes">Play</property>
+                                    <property name="valign">center</property>
+                                    <style>
+                                      <class name="circular"/>
+                                      <class name="suggested-action"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
                                   <object class="GtkMenuButton" id="_menu_button">
                                     <property name="width-request">44</property>
                                     <property name="height-request">44</property>
@@ -148,16 +161,12 @@
   </template>
   <menu id="album_menu">
     <item>
-      <attribute name="label" translatable="yes">_Play</attribute>
-      <attribute name="action">album.play</attribute>
+      <attribute name="label" translatable="yes">Edit Metadata</attribute>
+      <attribute name="action">item.editm</attribute>
     </item>
     <item>
-      <attribute name="label" translatable="yes">Add to _Favorite Songs</attribute>
-      <attribute name="action">album.add_favorites</attribute>
-    </item>
-    <item>
-      <attribute name="label" translatable="yes">_Add to Playlist…</attribute>
-      <attribute name="action">album.add_playlist</attribute>
+      <attribute name="label" translatable="yes">Edit Images</attribute>
+      <attribute name="action">item.editi</attribute>
     </item>
   </menu>
 </interface>
