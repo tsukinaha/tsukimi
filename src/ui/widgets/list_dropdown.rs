@@ -30,12 +30,7 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for ListDropdown {
-        fn constructed(&self) {
-            self.parent_constructed();
-            let _obj = self.obj();
-        }
-    }
+    impl ObjectImpl for ListDropdown {}
 
     impl WidgetImpl for ListDropdown {}
     impl BinImpl for ListDropdown {}

@@ -1,6 +1,6 @@
 use gtk::{glib, prelude::*, subclass::prelude::*};
 
-mod imp {
+pub(crate) mod imp {
     use super::*;
 
     #[derive(Default)]
@@ -50,7 +50,6 @@ impl StarToggle {
 
     pub fn set_up(&self) {
         self.add_css_class("star");
-        self.add_css_class("flat");
         self.add_css_class("circular");
     }
 

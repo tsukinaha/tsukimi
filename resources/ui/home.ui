@@ -12,17 +12,18 @@
                 <child>
                   <object class="GtkBox">
                     <property name="orientation">vertical</property>
+                    <property name="valign">start</property>
                     <property name="spacing">15</property>
                     <child>
                       <object class="GtkOverlay" id="carouseloverlay">
                         <property name="halign">fill</property>
-                        <property name="height-request">500</property>
+                        <property name="height-request">400</property>
                         <property name="valign">start</property>
                         <property name="visible">True</property>
                         <child>
                           <object class="AdwCarousel" id="carousel">
                             <property name="halign">fill</property>
-                            <property name="valign">fill</property>
+                            <property name="valign">start</property>
                             <property name="hexpand">true</property>
                             <property name="spacing">20</property>
                             <child>
@@ -59,6 +60,7 @@
                       <object class="GtkBox" id="libsbox">
                         <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
+                        <property name="height-request">1000</property>
                       </object>
                     </child>
                   </object>

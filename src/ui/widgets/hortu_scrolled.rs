@@ -148,7 +148,7 @@ mod imp {
                         result.series_name.clone().unwrap_or("".to_string()),
                     ),
                 ),
-                "Actor" | "Person" => Self::push_page(
+                "Actor" | "Person" | "Director" => Self::push_page(
                     view,
                     &window,
                     &result.name,

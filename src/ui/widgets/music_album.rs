@@ -13,16 +13,20 @@ use crate::{
 
 use super::song_widget::format_duration;
 
-mod imp {
+pub(crate) mod imp {
+    use glib::subclass::InitializingObject;
     use std::cell::OnceCell;
 
+    use crate::ui::provider::actions::HasLikeAction;
     use crate::{
-        ui::{provider::tu_item::TuItem, widgets::hortu_scrolled::HortuScrolled},
+        ui::{
+            provider::tu_item::TuItem,
+            widgets::{hortu_scrolled::HortuScrolled, star_toggle::StarToggle},
+        },
         utils::spawn_g_timeout,
     };
 
     use super::*;
-    use glib::subclass::InitializingObject;
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/album_widget.ui")]
@@ -44,6 +48,8 @@ mod imp {
         pub recommendhortu: TemplateChild<HortuScrolled>,
         #[template_child]
         pub artisthortu: TemplateChild<HortuScrolled>,
+        #[template_child]
+        pub favourite_button: TemplateChild<StarToggle>,
     }
 
     #[glib::object_subclass]
@@ -53,6 +59,7 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
+            StarToggle::ensure_type();
             klass.bind_template();
         }
 
@@ -66,12 +73,18 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            spawn_g_timeout(glib::clone!(@weak obj => async move {
-                obj.set_toolbar();
-                obj.set_album().await;
-                obj.get_songs().await;
-                obj.set_lists().await;
-            }));
+
+            let id = obj.item().id();
+
+            spawn_g_timeout(
+                glib::clone!(@weak self as this, @weak obj, @strong id => async move {
+                    obj.set_toolbar();
+                    obj.set_album().await;
+                    obj.get_songs().await;
+                    obj.set_lists().await;
+                    this.bind_actions(&id).await;
+                }),
+            );
         }
     }
 
@@ -93,6 +106,12 @@ impl AlbumPage {
 
     pub async fn set_album(&self) {
         let item = self.item();
+
+        if item.is_favorite() {
+            self.imp().favourite_button.set_active(true);
+        } else {
+            self.imp().favourite_button.set_active(false);
+        }
 
         self.imp().title_label.set_text(&item.name());
 
