@@ -1,4 +1,4 @@
-name: feature/win - Windows GNU CI
+name: Windows GNU CI
 on:
   workflow_dispatch:
   push:
