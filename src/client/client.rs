@@ -393,7 +393,7 @@ impl EmbyClient {
         let path = match listtype {
             "item" => format!("Users/{}/Items", user_id),
             "resume" => format!("Users/{}/Items/Resume", user_id),
-            "genres" => format!("Genres"),
+            "genres" => "Genres".to_string(),
             _ => format!("Users/{}/Items", user_id),
         };
         let include_item_type = match listtype {
@@ -705,9 +705,9 @@ impl EmbyClient {
 
     pub fn get_song_streaming_uri(&self, id: &str) -> String {
         let url = self.url.lock().unwrap().as_ref().unwrap().clone();
-        let url = url.join(&format!("Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
-        id, &self.user_id(), &DEVICE_ID.to_string(), std::env::var("EMBY_ACCESS_TOKEN").unwrap(), )).unwrap().to_string();
-        url
+
+        url.join(&format!("Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
+        id, &self.user_id(), &DEVICE_ID.to_string(), std::env::var("EMBY_ACCESS_TOKEN").unwrap(), )).unwrap().to_string()
     }
 
     pub async fn get_random(&self) -> Result<List, reqwest::Error> {

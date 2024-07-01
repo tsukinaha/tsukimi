@@ -3,9 +3,9 @@ use crate::client::error::UserFacingError;
 use crate::toast;
 use crate::ui::widgets::song_widget::SongWidget;
 use crate::ui::widgets::star_toggle::StarToggle;
+use crate::utils::spawn;
 use crate::utils::spawn_tokio;
 use gtk::prelude::*;
-use crate::utils::spawn;
 use gtk::subclass::prelude::ObjectSubclassIsExt;
 use gtk::{gio, glib};
 

@@ -239,7 +239,7 @@ impl SingleListPage {
         let parentid = imp.parentid.borrow().clone();
         let sortby = imp.sortby.borrow().clone();
 
-        let is_inlist = imp.isinlist.get().unwrap().clone();
+        let is_inlist = *imp.isinlist.get().unwrap();
 
         let list_results = match req_cache(
             &format!("{}_{}_{}", id, listtype.clone(), include_item_types),
@@ -351,7 +351,7 @@ impl SingleListPage {
         let include_item_types = self.get_include_item_types().to_owned();
         let sortby = self.imp().sortby.borrow().clone();
 
-        let is_inlist = self.imp().isinlist.get().unwrap().clone();
+        let is_inlist = *self.imp().isinlist.get().unwrap();
 
         let list_results = match spawn_tokio(async move {
             if is_inlist {
