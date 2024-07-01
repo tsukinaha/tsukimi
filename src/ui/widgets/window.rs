@@ -15,6 +15,7 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
 
     use crate::ui::clapper::page::ClapperPage;
+    use crate::ui::widgets::item_actionbox::ItemActionsBox;
     use crate::ui::widgets::player_toolbar::PlayerToolbarBox;
 
     // Object holding the state
@@ -86,6 +87,7 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             PlayerToolbarBox::ensure_type();
             ClapperPage::ensure_type();
+            ItemActionsBox::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("win.home", None, move |window, _action, _parameter| {
@@ -160,9 +162,6 @@ mod imp {
                             }
                             2 => {
                                 obj.searchpage();
-                            }
-                            3 => {
-                                obj.serverpanelpage();
                             }
                             _ => {}
                         }
@@ -553,13 +552,6 @@ impl Window {
             imp.navipage
                 .set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| "Search".to_string()));
         }
-    }
-
-    fn serverpanelpage(&self) {
-        let imp = self.imp();
-        imp.insidestack.set_visible_child_name("serverpanelpage");
-        imp.navipage.set_title("Server Panel");
-        self.set_pop_visibility(false);
     }
 
     fn sidebar(&self) {

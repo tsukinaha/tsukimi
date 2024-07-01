@@ -20,19 +20,18 @@ pub fn factory(upbind: bool) -> gtk::SignalListItemFactory {
             .item()
             .and_downcast::<glib::BoxedAnyObject>()
         {
-        let dl: std::cell::Ref<DropdownList> = entry.borrow();
+            let dl: std::cell::Ref<DropdownList> = entry.borrow();
 
-        let list_dropdown = crate::ui::widgets::list_dropdown::ListDropdown::new();
-        
-        list_dropdown.set_label1(&dl.line1);
+            let list_dropdown = crate::ui::widgets::list_dropdown::ListDropdown::new();
 
-        if !upbind {
-            list_dropdown.set_label2(&dl.line2);
-        }
+            list_dropdown.set_label1(&dl.line1);
 
-        list_item.set_child(Some(&list_dropdown));
+            if !upbind {
+                list_dropdown.set_label2(&dl.line2);
+            }
+
+            list_item.set_child(Some(&list_dropdown));
         }
     });
     factory
 }
-

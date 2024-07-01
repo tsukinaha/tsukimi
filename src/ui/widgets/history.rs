@@ -133,6 +133,5 @@ impl HistoryPage {
         }
 
         hortu.set_items(&results.items);
-
     }
 }

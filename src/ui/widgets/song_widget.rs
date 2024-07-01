@@ -1,9 +1,12 @@
-use crate::{ui::provider::{core_song::CoreSong, tu_item::TuItem}, utils::spawn};
+use crate::ui::provider::actions::HasLikeAction;
+use crate::{
+    ui::provider::{core_song::CoreSong, tu_item::TuItem},
+    utils::spawn,
+};
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use chrono::Duration;
 use gtk::{glib, CompositeTemplate};
-use crate::ui::provider::actions::HasLikeAction;
 
 #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
 #[repr(u32)]
@@ -145,7 +148,7 @@ impl SongWidget {
         imp.favourite_button.set_active(item.is_favorite());
 
         spawn(glib::clone!(@weak self as obj, @strong id => async move {
-            obj.imp().bind_actions(&id).await;
+            obj.bind_actions(&id).await;
         }));
     }
 

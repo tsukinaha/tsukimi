@@ -197,8 +197,7 @@ impl TuListItem {
             }
             "MusicAlbum" => {
                 imp.listlabel.set_text(&item.name());
-                imp.label2
-                    .set_text(&item.albumartist_name());
+                imp.label2.set_text(&item.albumartist_name());
                 imp.overlay.set_size_request(190, 190);
                 self.set_picture();
                 self.set_play();

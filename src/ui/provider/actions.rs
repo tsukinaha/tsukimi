@@ -1,19 +1,19 @@
-use crate::ui::widgets::actor::imp::ActorPage;
-use crate::ui::widgets::item::imp::ItemPage;
-use crate::ui::widgets::{boxset::imp::BoxSetPage, music_album::imp::AlbumPage, song_widget::imp::SongWidget};
-use crate::ui::widgets::star_toggle::StarToggle;
-use gtk::prelude::*;
-use gtk::glib;
-use gtk::subclass::prelude::ObjectSubclassExt;
-use crate::utils::spawn_tokio;
-use crate::toast;
 use crate::client::client::EMBY_CLIENT;
-use crate::utils::spawn;
 use crate::client::error::UserFacingError;
+use crate::toast;
+use crate::ui::widgets::song_widget::SongWidget;
+use crate::ui::widgets::star_toggle::StarToggle;
+use crate::utils::spawn_tokio;
+use gtk::prelude::*;
+use crate::utils::spawn;
+use gtk::subclass::prelude::ObjectSubclassIsExt;
+use gtk::{gio, glib};
 
 pub trait HasLikeAction {
     fn like_button(&self) -> StarToggle;
     async fn bind_actions(&self, id: &str);
+    fn edit_metadata_action(&self) -> gio::SimpleActionGroup;
+    fn bind_edit(&self, id: &str);
 }
 
 macro_rules! impl_has_likeaction {
@@ -21,15 +21,17 @@ macro_rules! impl_has_likeaction {
         $(
             impl HasLikeAction for $t {
                 fn like_button(&self) -> StarToggle {
-                    self.favourite_button.clone()
+                    self.imp().favourite_button.clone()
                 }
 
                 async fn bind_actions(&self, id: &str) {
-                    let obj = self.obj();
                     let like_button = self.like_button();
                     let id = id.to_string();
+
+                    self.bind_edit(&id);
+
                     like_button.connect_toggled(
-                        glib::clone!(@weak obj => move |button| {
+                        glib::clone!(@weak self as obj => move |button| {
                             let active = button.is_active();
                             spawn(
                                 glib::clone!(@weak obj, @strong id => async move {
@@ -39,7 +41,7 @@ macro_rules! impl_has_likeaction {
                                     } else {
                                         spawn_tokio(async move {EMBY_CLIENT.unlike(&id).await} ).await
                                     };
-                    
+
                                     match result {
                                         Ok(_) => {
                                             toast!(obj, "Success");
@@ -53,9 +55,26 @@ macro_rules! impl_has_likeaction {
                         })
                     );
                 }
+
+                fn edit_metadata_action(&self) -> gio::SimpleActionGroup {
+                    let action_group = gio::SimpleActionGroup::new();
+                    action_group.add_action_entries([gio::ActionEntry::builder("editm")
+                        .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                            use crate::ui::widgets::metadata_dialog::MetadataDialog;
+                            use crate::insert_editm_dialog;
+                            let dialog = MetadataDialog::new();
+                            insert_editm_dialog!(obj, dialog);
+                        }))
+                        .build()]);
+                    action_group
+                }
+
+                fn bind_edit(&self, id: &str) {
+                    self.insert_action_group("item", Some(&self.edit_metadata_action()));
+                }
             }
         )+
     };
 }
 
-impl_has_likeaction!(SongWidget, AlbumPage, BoxSetPage, ActorPage, ItemPage);
+impl_has_likeaction!(SongWidget);

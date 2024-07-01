@@ -100,31 +100,7 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="StarToggle" id="favourite_button">
-                                    <property name="width-request">44</property>
-                                    <property name="height-request">44</property>
-                                    <property name="icon-name">non-starred-symbolic</property>
-                                    <property name="tooltip-text" translatable="yes">Play</property>
-                                    <property name="valign">center</property>
-                                    <style>
-                                      <class name="circular"/>
-                                      <class name="suggested-action"/>
-                                    </style>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkMenuButton" id="_menu_button">
-                                    <property name="width-request">44</property>
-                                    <property name="height-request">44</property>
-                                    <property name="halign">start</property>
-                                    <property name="valign">center</property>
-                                    <property name="focus_on_click">False</property>
-                                    <property name="menu-model">album_menu</property>
-                                    <property name="direction">none</property>
-                                    <property name="icon_name">view-more-symbolic</property>
-                                    <style>
-                                      <class name="circular"/>
-                                    </style>
+                                  <object class="ItemActionsBox" id="actionbox">
                                   </object>
                                 </child>
                               </object>
@@ -159,14 +135,4 @@
       </object>
     </child>
   </template>
-  <menu id="album_menu">
-    <item>
-      <attribute name="label" translatable="yes">Edit Metadata</attribute>
-      <attribute name="action">item.editm</attribute>
-    </item>
-    <item>
-      <attribute name="label" translatable="yes">Edit Images</attribute>
-      <attribute name="action">item.editi</attribute>
-    </item>
-  </menu>
 </interface>

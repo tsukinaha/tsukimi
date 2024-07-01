@@ -10,7 +10,6 @@ use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::image::set_image;
-use crate::ui::provider::actions::HasLikeAction;
 use crate::utils::{get_image_with_cache, req_cache, spawn};
 use crate::{fraction, fraction_reset, toast};
 
@@ -23,7 +22,7 @@ pub(crate) mod imp {
 
     use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
-    use crate::ui::widgets::star_toggle::StarToggle;
+    use crate::ui::widgets::item_actionbox::ItemActionsBox;
     use crate::utils::spawn_g_timeout;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -43,7 +42,7 @@ pub(crate) mod imp {
         #[template_child]
         pub inforevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
-        pub favourite_button: TemplateChild<StarToggle>,
+        pub actionbox: TemplateChild<ItemActionsBox>,
         #[template_child]
         pub picbox: TemplateChild<gtk::Box>,
         #[template_child]
@@ -61,7 +60,7 @@ pub(crate) mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
-            StarToggle::ensure_type();
+            ItemActionsBox::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }
@@ -81,6 +80,8 @@ pub(crate) mod imp {
             spawn_g_timeout(glib::clone!(@weak obj => async move {
                 obj.setup().await;
             }));
+
+            self.actionbox.set_id(Some(obj.id()));
         }
     }
 
@@ -187,15 +188,14 @@ impl BoxSetPage {
                     if let Some (is_favourite) = userdata.is_favorite {
                         let imp = obj.imp();
                         if is_favourite {
-                            imp.favourite_button.set_active(true);
+                            imp.actionbox.set_btn_active(true);
                         } else {
-                            imp.favourite_button.set_active(false);
+                            imp.actionbox.set_btn_active(false);
                         }
                     }
                 }
                 obj.imp().boxset_title.set_text(&item.name);
                 obj.imp().inforevealer.set_reveal_child(true);
-                obj.imp().bind_actions(&id).await;
         }));
     }
 

@@ -99,8 +99,7 @@ impl PlayerToolbarBox {
     pub async fn set_item(&self, item: &TuItem) {
         let imp = self.imp();
         imp.title_label.set_text(&item.name());
-        imp.artist_label
-            .set_text(&item.albumartist_name());
+        imp.artist_label.set_text(&item.albumartist_name());
         let mut path = get_image_with_cache(&item.id(), "Primary", None)
             .await
             .unwrap();

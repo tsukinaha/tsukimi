@@ -3,17 +3,21 @@ use std::sync::Mutex;
 use reqwest::{header::HeaderValue, Method, RequestBuilder, Response};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use tracing::info;
+use tracing::{info, warn};
 use url::Url;
 use uuid::Uuid;
 
 use crate::{
-    config::{get_device_name, load_env, proxy::ReqClient, Account, APP_VERSION}, ui::models::emby_cache_path
+    config::{get_device_name, load_env, proxy::ReqClient, Account, APP_VERSION},
+    ui::models::emby_cache_path,
+    utils::{spawn, spawn_tokio},
 };
 
 use once_cell::sync::Lazy;
 
-use super::structs::{Back, Item, List, LoginResponse, Media, SerInList, SimpleListItem};
+use super::structs::{
+    AuthenticateResponse, Back, Item, List, LoginResponse, Media, SerInList, SimpleListItem,
+};
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
@@ -56,6 +60,20 @@ impl EmbyClient {
         self.header_change_token(&account.access_token);
         self.set_user_id(&account.user_id);
         load_env(account);
+
+        spawn(async move {
+            spawn_tokio(async move {
+                match EMBY_CLIENT.authenticate_admin().await {
+                    Ok(r) => {
+                        if r.policy.is_administrator {
+                            crate::ui::provider::set_admin(true);
+                        }
+                    }
+                    Err(e) => warn!("Failed to authenticate as admin: {}", e),
+                }
+            })
+            .await;
+        });
     }
 
     pub fn header_change_token(&self, token: &str) {
@@ -135,6 +153,11 @@ impl EmbyClient {
     ) -> Result<Response, reqwest::Error> {
         let res = request.send().await?;
         Ok(res)
+    }
+
+    pub async fn authenticate_admin(&self) -> Result<AuthenticateResponse, reqwest::Error> {
+        let path = format!("Users/{}", self.user_id());
+        self.request(&path, &[]).await
     }
 
     pub async fn login(
@@ -226,18 +249,22 @@ impl EmbyClient {
             path.push_str(&format!("/{}", tag));
         }
         let params = [
-            ("maxHeight",
-            if image_type == "Backdrop" {
-                "800"
-            } else {
-                "300"
-            }),
-            ("maxWidth",
-            if image_type == "Backdrop" {
-                "1280"
-            } else {
-                "800"
-            })
+            (
+                "maxHeight",
+                if image_type == "Backdrop" {
+                    "800"
+                } else {
+                    "300"
+                },
+            ),
+            (
+                "maxWidth",
+                if image_type == "Backdrop" {
+                    "1280"
+                } else {
+                    "800"
+                },
+            ),
         ];
         self.request_picture(&path, &params).await
     }
@@ -272,20 +299,24 @@ impl EmbyClient {
         path.to_string_lossy().to_string()
     }
 
-    pub async fn get_artist_albums(&self, id: &str, artist_id: &str) -> Result<List, reqwest::Error> {
+    pub async fn get_artist_albums(
+        &self,
+        id: &str,
+        artist_id: &str,
+    ) -> Result<List, reqwest::Error> {
         let path = format!("Users/{}/Items", self.user_id());
         let params = [
-            (
-                "IncludeItemTypes",
-                "MusicAlbum",
-            ),
+            ("IncludeItemTypes", "MusicAlbum"),
             ("Recursive", "true"),
             ("ImageTypeLimit", "1"),
             ("Limit", "12"),
             ("SortBy", "ProductionYear,SortName"),
             ("EnableImageTypes", "Primary,Backdrop,Thumb"),
             ("SortOrder", "Descending"),
-            ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear"),
+            (
+                "Fields",
+                "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+            ),
             ("AlbumArtistIds", artist_id),
             ("ExcludeItemIds", id),
         ];

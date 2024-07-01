@@ -70,7 +70,13 @@ mod imp {
                 view,
                 &window,
                 &result.name,
-                SingleListPage::new(result.id.to_string(), "".to_string(), list_type, parentid, true),
+                SingleListPage::new(
+                    result.id.to_string(),
+                    "".to_string(),
+                    list_type,
+                    parentid,
+                    true,
+                ),
             );
         }
 

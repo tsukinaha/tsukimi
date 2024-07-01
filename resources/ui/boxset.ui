@@ -54,7 +54,7 @@
                                       <object class="GtkLabel" id="boxset_title">
                                         <property name="label" translatable="yes">Name</property>
                                         <property name="halign">start</property>
-                                        <property name="valign">start</property>
+                                        <property name="valign">end</property>
                                         <property name="ellipsize">middle</property>
                                         <attributes>
                                           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
@@ -72,33 +72,8 @@
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="StarToggle" id="favourite_button">
-                                        <property name="margin-start">6</property>
-                                        <property name="width-request">35</property>
-                                        <property name="height-request">35</property>
-                                        <property name="icon-name">non-starred-symbolic</property>
-                                        <property name="tooltip-text" translatable="yes">Play</property>
-                                        <property name="valign">end</property>
-                                        <style>
-                                          <class name="circular"/>
-                                          <class name="suggested-action"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkMenuButton" id="menu_button">
-                                        <property name="width-request">35</property>
-                                        <property name="height-request">35</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">end</property>
-                                        <property name="focus_on_click">False</property>
-                                        <property name="menu-model">item_menu</property>
-                                        <property name="direction">none</property>
-                                        <property name="icon_name">view-more-symbolic</property>
-                                        <style>
-                                          <class name="circular"/>
-                                          <class name="flat"/>
-                                        </style>
+                                      <object class="ItemActionsBox" id="actionbox">
+                                        <property name="margin-start">12</property>
                                       </object>
                                     </child>
                                   </object>
@@ -163,14 +138,4 @@
       </object>
     </child>
   </template>
-  <menu id="item_menu">
-    <item>
-      <attribute name="label" translatable="yes">Edit Metadata</attribute>
-      <attribute name="action">item.editm</attribute>
-    </item>
-    <item>
-      <attribute name="label" translatable="yes">Edit Images</attribute>
-      <attribute name="action">item.editi</attribute>
-    </item>
-  </menu>
 </interface>

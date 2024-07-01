@@ -14,6 +14,18 @@ pub struct SearchResult {
     pub production_year: Option<i16>,
 }
 
+#[derive(Serialize, Deserialize, Clone)]
+pub struct AuthenticateResponse {
+    #[serde(rename = "Policy")]
+    pub policy: Policy,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Policy {
+    #[serde(rename = "IsAdministrator")]
+    pub is_administrator: bool,
+}
+
 // single item
 #[derive(Serialize, Deserialize, Clone)]
 pub struct SeriesInfo {

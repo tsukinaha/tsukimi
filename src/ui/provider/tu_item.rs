@@ -133,8 +133,22 @@ impl TuItem {
             tu_item.set_series_name(series_name.clone());
         }
         if let Some(album_artist) = &latest.album_artists {
-            tu_item.set_albumartist_name(album_artist.first().as_ref().map(|s| s.name.as_str()).unwrap_or_default().to_string());
-            tu_item.set_albumartist_id(album_artist.first().as_ref().map(|s| s.id.as_str()).unwrap_or_default().to_string());
+            tu_item.set_albumartist_name(
+                album_artist
+                    .first()
+                    .as_ref()
+                    .map(|s| s.name.as_str())
+                    .unwrap_or_default()
+                    .to_string(),
+            );
+            tu_item.set_albumartist_id(
+                album_artist
+                    .first()
+                    .as_ref()
+                    .map(|s| s.id.as_str())
+                    .unwrap_or_default()
+                    .to_string(),
+            );
         }
         if let Some(role) = &latest.role {
             tu_item.set_role(Some(role.clone()));

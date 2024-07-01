@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0" />
+  <template parent="GtkBox" class="ItemActionsBox">
+    <property name="orientation">horizontal</property>
+    <property name="spacing">12</property>
+    <property name="margin-top">12</property>
+    <child>
+      <object class="StarToggle" id="favourite_button">
+        <property name="width-request">35</property>
+        <property name="height-request">35</property>
+        <property name="icon-name">non-starred-symbolic</property>
+        <property name="tooltip-text" translatable="yes">Play</property>
+        <property name="valign">center</property>
+        <signal name="toggled" handler="on_favourite_button_toggled" swapped="yes" />
+        <style>
+          <class name="circular" />
+          <class name="suggested-action" />
+        </style>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuButton" id="menu_button">
+        <property name="width-request">35</property>
+        <property name="height-request">35</property>
+        <property name="halign">start</property>
+        <property name="valign">center</property>
+        <property name="focus_on_click">False</property>
+        <property name="menu-model">item_menu</property>
+        <property name="direction">none</property>
+        <property name="icon_name">view-more-symbolic</property>
+        <style>
+          <class name="circular" />
+          <class name="flat" />
+        </style>
+      </object>
+    </child>
+  </template>
+  <menu id="item_menu">
+    <item>
+      <attribute name="label" translatable="yes">Mark as Played</attribute>
+      <attribute name="action">item.played</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Mark as Unplayed</attribute>
+      <attribute name="action">item.unplayed</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Edit Metadata</attribute>
+      <attribute name="action">item.editm</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Edit Images</attribute>
+      <attribute name="action">item.editi</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+    </item>
+  </menu>
+</interface>

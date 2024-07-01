@@ -6,10 +6,10 @@ use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::models::SETTINGS;
-use crate::{fraction, fraction_reset, toast};
 use crate::utils::{
     req_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate,
 };
+use crate::{fraction, fraction_reset, toast};
 use adw::prelude::*;
 use glib::Object;
 use gtk::subclass::prelude::*;
@@ -334,7 +334,6 @@ impl SingleListPage {
         fraction!(self);
     }
 
-
     pub async fn update_view_cb(&self, pos: &str) {
         let pos = pos.to_owned();
         let order = self.imp().sortorder.borrow().clone();
@@ -400,7 +399,7 @@ impl SingleListPage {
     pub fn set_up_dropdown(&self) {
         let imp = self.imp();
         let dropdown = imp.dropdown.get();
-        
+
         let sort = SETTINGS.list_sort();
         if sort >= 0 {
             dropdown.set_selected(sort as u32);

@@ -1,6 +1,7 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::Object;
+use gtk::pango::AttrList;
 use gtk::template_callbacks;
 use gtk::{gio, glib};
 use std::cell::Ref;
@@ -13,7 +14,7 @@ use crate::client::structs::*;
 use crate::toast;
 use crate::ui::models::SETTINGS;
 use crate::ui::mpv;
-use crate::ui::provider::actions::HasLikeAction;
+
 use crate::ui::provider::dropdown_factory::factory;
 use crate::utils::{get_image_with_cache, req_cache, spawn, spawn_tokio};
 use chrono::{DateTime, Local, NaiveDateTime, Utc};
@@ -26,6 +27,7 @@ pub(crate) mod imp {
     use crate::ui::widgets::fix::ScrolledWindowFixExt;
     use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
+    use crate::ui::widgets::item_actionbox::ItemActionsBox;
     use crate::ui::widgets::star_toggle::StarToggle;
     use crate::utils::spawn_g_timeout;
     use adw::subclass::prelude::*;
@@ -113,7 +115,7 @@ pub(crate) mod imp {
         #[template_child]
         pub indicator: TemplateChild<adw::CarouselIndicatorLines>,
         #[template_child]
-        pub favourite_button: TemplateChild<StarToggle>,
+        pub actionbox: TemplateChild<ItemActionsBox>,
         #[template_child]
         pub tagline: TemplateChild<gtk::Label>,
         #[template_child]
@@ -210,8 +212,6 @@ impl ItemPage {
             .property("name", name)
             .build()
     }
-
-    
 
     pub async fn setup_background(&self) {
         let id = self.id();
@@ -380,12 +380,13 @@ impl ItemPage {
             let listbox = gtk::Box::new(gtk::Orientation::Vertical, 5);
             let picture = gtk::Overlay::builder()
                 .height_request(141)
-                .width_request(250)
+                .width_request(240)
                 .build();
             let label = gtk::Label::builder()
                 .halign(gtk::Align::Start)
                 .wrap_mode(gtk::pango::WrapMode::WordChar)
                 .ellipsize(gtk::pango::EllipsizeMode::End)
+                .attributes(&AttrList::from_string("0 -1 scale 0.9\n0 -1 weight bold").unwrap())
                 .build();
             listbox.append(&picture);
             listbox.append(&label);
@@ -437,6 +438,7 @@ impl ItemPage {
                         mark.set_height_request(25);
                         mark.set_width_request(25);
                         picture.add_overlay(&mark);
+                        label.add_css_class("dim-label");
                     }
                 }
                 picture.add_overlay(&progressbar);
@@ -525,8 +527,10 @@ impl ItemPage {
                     return;
                 }
             };
+        let id = idclone.clone();
+        imp.actionbox.set_id(Some(idclone));
         let info = SeriesInfo {
-            id: idclone.clone(),
+            id: id.clone(),
             name: name.clone(),
             user_data: userdata.clone(),
             overview: None,
@@ -544,10 +548,9 @@ impl ItemPage {
     pub async fn selectepisode(&self, seriesinfo: SeriesInfo) {
         let info = seriesinfo.clone();
         let imp = self.imp();
-        let osdbox = imp.osdbox.get();
         let id = seriesinfo.id.clone();
         imp.inid.replace(id.clone());
-
+        imp.actionbox.set_id(Some(id.clone()));
         imp.playbutton.set_sensitive(false);
         imp.line1spinner.set_visible(true);
         let playback =
@@ -561,20 +564,23 @@ impl ItemPage {
 
         let media_playback = playback.clone();
 
-        spawn(glib::clone!(@weak osdbox,@weak self as obj=>async move {
-                let selected_name = format!("S{}:E{} - {}",info.parent_index_number.unwrap_or(0), info.index_number.unwrap_or(0), info.name);
-                obj.imp().line1.set_text(&selected_name);
-                obj.imp().selected.replace(Some(selected_name));
-                obj.imp().line1spinner.set_visible(false);
-                let info = info.clone();
-                if let Some(handlerid) = obj.imp().playbuttonhandlerid.borrow_mut().take() {
-                    obj.imp().playbutton.disconnect(handlerid);
-                }
-                obj.set_dropdown(&playback, &info);
-                let handlerid = obj.bind_button(&playback, &info);
-                obj.imp().playbuttonhandlerid.replace(Some(handlerid));
-                obj.imp().playbutton.set_sensitive(true);
-        }));
+        let selected_name = format!(
+            "S{}:E{} - {}",
+            info.parent_index_number.unwrap_or(0),
+            info.index_number.unwrap_or(0),
+            info.name
+        );
+        imp.line1.set_text(&selected_name);
+        imp.selected.replace(Some(selected_name));
+        imp.line1spinner.set_visible(false);
+        let info = info.clone();
+        if let Some(handlerid) = imp.playbuttonhandlerid.borrow_mut().take() {
+            imp.playbutton.disconnect(handlerid);
+        }
+        self.set_dropdown(&playback, &info);
+        let handlerid = self.bind_button(&playback, &info);
+        imp.playbuttonhandlerid.replace(Some(handlerid));
+        imp.playbutton.set_sensitive(true);
 
         if let Some(overview) = seriesinfo.overview {
             imp.selecteditemoverview.set_text(Some(&overview));
@@ -677,10 +683,11 @@ impl ItemPage {
                 if item.user_data.is_some() {
                     let user_data = item.user_data.as_ref().unwrap();
                     if let Some (is_favourite) = user_data.is_favorite {
+                        let imp = obj.imp();
                         if is_favourite {
-                            obj.imp().favourite_button.set_active(true);
+                            imp.actionbox.set_btn_active(true);
                         } else {
-                            obj.imp().favourite_button.set_active(false);
+                            imp.actionbox.set_btn_active(false);
                         }
                     }
                 }
@@ -693,10 +700,8 @@ impl ItemPage {
                     obj.imp().toolbar.set_visible(true);
                     obj.setup_seasons().await;
                 } else {
-                    obj.selectmovie(item.id, item.name, item.user_data).await; 
+                    obj.selectmovie(item.id, item.name, item.user_data).await;
                 }
-
-                obj.imp().bind_actions(&id).await;
         }));
     }
 
@@ -962,7 +967,9 @@ impl ItemPage {
         subdropdown.set_model(Some(&imp.subselection));
 
         namedropdown.connect_selected_item_notify(move |dropdown| {
-            if let Some(entry) = dropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
+            if let Some(entry) = dropdown
+                .selected_item()
+                .and_downcast::<glib::BoxedAnyObject>()
             {
                 let dl: std::cell::Ref<DropdownList> = entry.borrow();
                 let selected = dl.line1.clone().unwrap();
@@ -985,7 +992,7 @@ impl ItemPage {
                         break;
                     }
                 }
-            }   
+            }
         });
 
         if SETTINGS.resume() {
@@ -993,7 +1000,9 @@ impl ItemPage {
                 if let Some(ticks) = userdata.playback_position_ticks {
                     if ticks > 0 {
                         let sec = ticks / 10000000;
-                        playbutton.set_label(&format!("Resume {}",format_duration(sec as i64)));
+                        playbutton.set_label(&format!("Resume {}", format_duration(sec as i64)));
+                    } else {
+                        playbutton.set_label("Play");
                     }
                 }
             }
@@ -1010,8 +1019,7 @@ impl ItemPage {
 
         playbutton.connect_clicked(glib::clone!(@weak self as obj => move |_| {
 
-            let nameselected = 
-                if let Some(entry) = namedropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
+            let nameselected = if let Some(entry) = namedropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
             {
                 let dl: std::cell::Ref<DropdownList> = entry.borrow();
                 dl.line1.clone().unwrap_or_default()

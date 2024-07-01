@@ -47,7 +47,6 @@ impl MusicPlayer {
         self.pipeline.connect("about-to-finish", false, cb);
     }
 
-
     pub fn playing(&self) {
         let pipeline = &self.pipeline;
         pipeline

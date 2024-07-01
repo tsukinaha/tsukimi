@@ -2,7 +2,6 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::{glib, CompositeTemplate};
 
-
 mod imp {
     use super::*;
     use glib::subclass::InitializingObject;
@@ -34,7 +33,7 @@ mod imp {
     impl ObjectImpl for ListDropdown {}
 
     impl WidgetImpl for ListDropdown {}
-    impl BinImpl for ListDropdown{}
+    impl BinImpl for ListDropdown {}
 }
 
 glib::wrapper! {
