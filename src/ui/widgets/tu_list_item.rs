@@ -452,12 +452,15 @@ impl TuListItem {
     pub fn set_action(&self) -> Option<gio::SimpleActionGroup> {
         let item_type = self.imp().itemtype.get().unwrap();
         match item_type.as_str() {
-            "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" => self.set_item_action(),
+            "Movie" | "Series" | "Episode" => self.set_item_action(true),
+            "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Actor" | "Person" => {
+                self.set_item_action(false)
+            }
             _ => None,
         }
     }
 
-    pub fn set_item_action(&self) -> Option<gio::SimpleActionGroup> {
+    pub fn set_item_action(&self, is_playable: bool) -> Option<gio::SimpleActionGroup> {
         let action_group = gio::SimpleActionGroup::new();
 
         action_group.add_action_entries([gio::ActionEntry::builder("editm")
@@ -487,21 +490,23 @@ impl TuListItem {
                 .build()]),
         }
 
-        match self.item().played() {
-            true => action_group.add_action_entries([gio::ActionEntry::builder("unplayed")
-                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
-                    spawn(glib::clone!(@weak obj => async move {
-                        obj.perform_action(Action::Unplayed).await;
+        if is_playable {
+            match self.item().played() {
+                true => action_group.add_action_entries([gio::ActionEntry::builder("unplayed")
+                    .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                        spawn(glib::clone!(@weak obj => async move {
+                            obj.perform_action(Action::Unplayed).await;
+                        }))
                     }))
-                }))
-                .build()]),
-            false => action_group.add_action_entries([gio::ActionEntry::builder("played")
-                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
-                    spawn(glib::clone!(@weak obj => async move {
-                        obj.perform_action(Action::Played).await;
+                    .build()]),
+                false => action_group.add_action_entries([gio::ActionEntry::builder("played")
+                    .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                        spawn(glib::clone!(@weak obj => async move {
+                            obj.perform_action(Action::Played).await;
+                        }))
                     }))
-                }))
-                .build()]),
+                    .build()]),
+            }
         }
 
         if let Some(true) = self.imp().isresume.get() {
