@@ -104,15 +104,17 @@ impl ItemActionsBox {
             .activate(glib::clone!(@weak self as obj => move |_, _, _| {
                 use crate::ui::widgets::metadata_dialog::MetadataDialog;
                 use crate::insert_editm_dialog;
-                let dialog = MetadataDialog::new();
-                insert_editm_dialog!(obj, dialog);
+                let id = obj.id();
+                if let Some(id) = id {
+                    let dialog = MetadataDialog::new(&id);
+                    insert_editm_dialog!(obj, dialog);
+                }
             }))
             .build()]);
         action_group
     }
 
     pub fn bind_edit(&self) {
-        let id = self.id();
         self.insert_action_group("item", Some(&self.edit_metadata_action()));
     }
 
