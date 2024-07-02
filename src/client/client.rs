@@ -60,7 +60,7 @@ impl EmbyClient {
         self.header_change_token(&account.access_token);
         self.set_user_id(&account.user_id);
         load_env(account);
-
+        crate::ui::provider::set_admin(false);
         spawn(async move {
             spawn_tokio(async move {
                 match EMBY_CLIENT.authenticate_admin().await {
