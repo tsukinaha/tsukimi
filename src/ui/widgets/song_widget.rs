@@ -21,7 +21,8 @@ pub enum State {
 
 pub(crate) mod imp {
     use super::*;
-    use crate::ui::provider::core_song::CoreSong;
+    use crate::insert_editm_dialog;
+    use crate::ui::{provider::core_song::CoreSong, widgets::metadata_dialog::MetadataDialog};
     use crate::ui::provider::tu_item::TuItem;
     use crate::ui::widgets::star_toggle::StarToggle;
     use crate::ui::widgets::window::Window;
@@ -62,6 +63,11 @@ pub(crate) mod imp {
         fn class_init(klass: &mut Self::Class) {
             StarToggle::ensure_type();
             klass.bind_template();
+            klass.install_action_async("song.editm", None, |window, _action, _parameter| async move {
+                let id = window.item().id();
+                let dialog = MetadataDialog::new(&id);
+                insert_editm_dialog!(window, dialog);
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -137,7 +143,6 @@ impl SongWidget {
     pub fn set_up(&self) {
         let imp = self.imp();
         let item = imp.item.get().unwrap();
-        let id = item.id();
         imp.number_label.set_text(&item.index_number().to_string());
         imp.title_label.set_text(&item.name());
         imp.artist_label
@@ -147,8 +152,9 @@ impl SongWidget {
             .set_text(&format_duration(duration as i64));
         imp.favourite_button.set_active(item.is_favorite());
 
-        spawn(glib::clone!(@weak self as obj, @strong id => async move {
-            obj.bind_actions(&id).await;
+        let id = item.id();
+        spawn(glib::clone!(@weak self as obj => async move {
+            obj.bind_like(&id).await;
         }));
     }
 

@@ -705,20 +705,6 @@ impl ItemPage {
         }));
     }
 
-    pub fn dt(&self, date: Option<&str>) -> String {
-        match date {
-            Some(date) => {
-                let dt = DateTime::parse_from_rfc3339(date)
-                    .unwrap()
-                    .with_timezone(&Utc);
-                let local_time: DateTime<Local> = dt.with_timezone(&Local);
-                let naive_local_time: NaiveDateTime = local_time.naive_local();
-                naive_local_time.to_string()
-            }
-            None => "".to_string(),
-        }
-    }
-
     pub async fn createmediabox(
         &self,
         media_sources: Vec<MediaSource>,
@@ -740,7 +726,7 @@ impl ItemPage {
                 mediasource.path.unwrap_or_default(),
                 mediasource.container.to_uppercase(),
                 bytefmt::format(mediasource.size),
-                self.dt(date_created.as_deref()),
+                dt(date_created.as_deref()),
                 mediasource.name
             );
             let label = gtk::Label::builder()
@@ -1112,4 +1098,18 @@ impl ItemPage {
 pub struct DropdownList {
     pub line1: Option<String>,
     pub line2: Option<String>,
+}
+
+pub fn dt(date: Option<&str>) -> String {
+    match date {
+        Some(date) => {
+            let dt = DateTime::parse_from_rfc3339(date)
+                .unwrap()
+                .with_timezone(&Utc);
+            let local_time: DateTime<Local> = dt.with_timezone(&Local);
+            let naive_local_time: NaiveDateTime = local_time.naive_local();
+            naive_local_time.to_string()
+        }
+        None => "".to_string(),
+    }
 }

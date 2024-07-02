@@ -222,6 +222,12 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
+    pub async fn get_edit_info(&self, id: &str) -> Result<Item, reqwest::Error> {
+        let path = format!("Users/{}/Items/{}", self.user_id(), id);
+        let params = [("Fields", "ChannelMappingInfo")];
+        self.request(&path, &params).await
+    }
+
     pub async fn get_resume(&self) -> Result<List, reqwest::Error> {
         let path = format!("Users/{}/Items/Resume", self.user_id());
         let params = [

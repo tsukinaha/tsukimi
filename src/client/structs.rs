@@ -158,6 +158,30 @@ pub struct Item {
     pub media_sources: Option<Vec<MediaSource>>,
     #[serde(rename = "PlaySessionId")]
     pub play_session_id: Option<String>,
+    #[serde(rename = "OriginalTitle")]
+    pub original_title: Option<String>,
+    #[serde(rename = "SortName")]
+    pub sort_name: Option<String>,
+    #[serde(rename = "ProviderIds")]
+    pub provider_ids: Option<ProviderIds>,
+    #[serde(rename = "Path")]
+    pub path: Option<String>,
+    #[serde(rename = "Album")]
+    pub album: Option<String>,
+    #[serde(rename = "Artists")]
+    pub artists: Option<Vec<String>>,
+    #[serde(rename = "LockData")]
+    pub lock_data: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct ProviderIds {
+    #[serde(rename = "Tmdb")]
+    pub tmdb: Option<String>,
+    #[serde(rename = "Imdb")]
+    pub imdb: Option<String>,
+    #[serde(rename = "Tvdb")]
+    pub tvdb: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]

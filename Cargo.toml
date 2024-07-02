@@ -25,8 +25,8 @@ uuid = { version = "1.8.0", features = ["v4"] }
 chrono = "0.4.38"
 toml = "0.8.13"
 tracing = "0.1.40"
-gst = { version = "0.22.5", package = "gstreamer"}
-url = "2.5.0"
+gst = { version = "0.22.6", package = "gstreamer"}
+url = "2.5.2"
 libmpv2 = "=4.0.0"
 clapper = { path = "clapper-rs/libclapper-rs" }
 clapper-gtk = { path = "clapper-rs/libclapper-gtk-rs" }
