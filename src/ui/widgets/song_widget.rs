@@ -22,10 +22,10 @@ pub enum State {
 pub(crate) mod imp {
     use super::*;
     use crate::insert_editm_dialog;
-    use crate::ui::{provider::core_song::CoreSong, widgets::metadata_dialog::MetadataDialog};
     use crate::ui::provider::tu_item::TuItem;
     use crate::ui::widgets::star_toggle::StarToggle;
     use crate::ui::widgets::window::Window;
+    use crate::ui::{provider::core_song::CoreSong, widgets::metadata_dialog::MetadataDialog};
     use crate::utils::spawn;
     use glib::subclass::InitializingObject;
     use std::cell::{Cell, OnceCell};
@@ -63,11 +63,15 @@ pub(crate) mod imp {
         fn class_init(klass: &mut Self::Class) {
             StarToggle::ensure_type();
             klass.bind_template();
-            klass.install_action_async("song.editm", None, |window, _action, _parameter| async move {
-                let id = window.item().id();
-                let dialog = MetadataDialog::new(&id);
-                insert_editm_dialog!(window, dialog);
-            });
+            klass.install_action_async(
+                "song.editm",
+                None,
+                |window, _action, _parameter| async move {
+                    let id = window.item().id();
+                    let dialog = MetadataDialog::new(&id);
+                    insert_editm_dialog!(window, dialog);
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {

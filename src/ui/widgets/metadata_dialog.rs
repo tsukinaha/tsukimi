@@ -1,20 +1,25 @@
+use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::glib;
-use gtk::prelude::*;
 use gtk::template_callbacks;
-use adw::prelude::*;
 use gtk::SpinButton;
 
-use crate::{client::{client::EMBY_CLIENT, error::UserFacingError}, toast, utils::spawn_tokio};
+use crate::{
+    client::{client::EMBY_CLIENT, error::UserFacingError},
+    toast,
+    utils::spawn_tokio,
+};
 
 mod imp {
-    use std::cell::{OnceCell, RefCell};
-    use gtk::prelude::*;
-    use adw::prelude::*;
-    use crate::{client::structs::Item, ui::{provider::IS_ADMIN, widgets::item::dt}, utils::spawn};
-    use gtk::{glib, CompositeTemplate};
     use super::*;
+    use crate::{
+        client::structs::Item,
+        ui::{provider::IS_ADMIN, widgets::item::dt},
+        utils::spawn,
+    };
     use glib::subclass::InitializingObject;
+    use gtk::{glib, CompositeTemplate};
+    use std::cell::{OnceCell, RefCell};
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsukimi/metadata_dialog.ui")]
@@ -23,7 +28,7 @@ mod imp {
         #[property(get, set, construct_only)]
         pub id: OnceCell<String>,
         #[template_child]
-        pub stack: TemplateChild<gtk::Stack>,  
+        pub stack: TemplateChild<gtk::Stack>,
 
         #[template_child]
         pub path_entry: TemplateChild<adw::ActionRow>,
@@ -68,7 +73,7 @@ mod imp {
         #[template_child]
         pub second_spin: TemplateChild<gtk::SpinButton>,
 
-        pub timezone: RefCell<Option<glib::DateTime>>
+        pub timezone: RefCell<Option<glib::DateTime>>,
     }
 
     #[glib::object_subclass]
@@ -111,28 +116,48 @@ mod imp {
         }
 
         pub fn load_data(&self, metadata: Item) {
-            self.path_entry.set_subtitle(&metadata.path.unwrap_or("No Data".to_string()));
+            self.path_entry
+                .set_subtitle(&metadata.path.unwrap_or("No Data".to_string()));
             self.title_entry.set_text(&metadata.name);
-            self.sorttitle_entry.set_text(&metadata.sort_name.unwrap_or_default());
-            self.timezone.replace(metadata.date_created.as_ref().map(|x| glib::DateTime::from_iso8601(x, None).unwrap().to_local().unwrap()));
-            self.date_entry.set_subtitle(&dt(metadata.date_created.as_deref()));
-            self.overview_entry.buffer().set_text(&metadata.overview.unwrap_or_default());
-            self.lock_check.set_active(metadata.lock_data.unwrap_or_default());
+            self.sorttitle_entry
+                .set_text(&metadata.sort_name.unwrap_or_default());
+            self.timezone
+                .replace(metadata.date_created.as_ref().map(|x| {
+                    glib::DateTime::from_iso8601(x, None)
+                        .unwrap()
+                        .to_local()
+                        .unwrap()
+                }));
+            self.date_entry
+                .set_subtitle(&dt(metadata.date_created.as_deref()));
+            self.overview_entry
+                .buffer()
+                .set_text(&metadata.overview.unwrap_or_default());
+            self.lock_check
+                .set_active(metadata.lock_data.unwrap_or_default());
 
             if metadata.item_type == "Audio" {
-                self.artist_entry.set_text(&metadata.artists.unwrap_or_default().join(","));
-                self.album_artist_entry.set_text(&metadata.album_artist.unwrap_or_default());
-                self.album_entry.set_text(&metadata.album.unwrap_or_default());
-                self.disc_entry.set_text(&metadata.parent_index_number.unwrap_or_default().to_string());
-                self.track_entry.set_text(&metadata.index_number.unwrap_or_default().to_string());
+                self.artist_entry
+                    .set_text(&metadata.artists.unwrap_or_default().join(","));
+                self.album_artist_entry
+                    .set_text(&metadata.album_artist.unwrap_or_default());
+                self.album_entry
+                    .set_text(&metadata.album.unwrap_or_default());
+                self.disc_entry
+                    .set_text(&metadata.parent_index_number.unwrap_or_default().to_string());
+                self.track_entry
+                    .set_text(&metadata.index_number.unwrap_or_default().to_string());
                 self.music_group.set_visible(true);
                 return;
             }
-            
+
             if let Some(provider_ids) = metadata.provider_ids {
-                self.moviedb_entry.set_text(&provider_ids.tmdb.unwrap_or_default());
-                self.tvdb_entry.set_text(&provider_ids.tvdb.unwrap_or_default());
-                self.imdb_entry.set_text(&provider_ids.imdb.unwrap_or_default());
+                self.moviedb_entry
+                    .set_text(&provider_ids.tmdb.unwrap_or_default());
+                self.tvdb_entry
+                    .set_text(&provider_ids.tvdb.unwrap_or_default());
+                self.imdb_entry
+                    .set_text(&provider_ids.imdb.unwrap_or_default());
                 self.ids_group.set_visible(true);
             }
         }
@@ -153,7 +178,7 @@ impl MetadataDialog {
 
     async fn get_data(&self) {
         let id = self.id();
-        match spawn_tokio(async move { EMBY_CLIENT.get_edit_info(&id).await } ).await {
+        match spawn_tokio(async move { EMBY_CLIENT.get_edit_info(&id).await }).await {
             Ok(metadata) => {
                 self.imp().stack.set_visible_child_name("page");
                 self.imp().load_data(metadata);
@@ -167,7 +192,7 @@ impl MetadataDialog {
     #[template_callback]
     fn on_day_selected(&self, calender: gtk::Calendar) {
         let date_time = self.get_time();
-        
+
         let date = calender.date();
         let date = glib::DateTime::from_local(
             date.year(),
@@ -176,7 +201,8 @@ impl MetadataDialog {
             date_time.hour(),
             date_time.minute(),
             date_time.second().into(),
-        ).unwrap();
+        )
+        .unwrap();
 
         self.set_time(date)
     }
@@ -188,8 +214,15 @@ impl MetadataDialog {
     }
 
     fn set_time(&self, date: glib::DateTime) {
-        self.imp().date_entry.set_subtitle(&format!("{:04}-{:02}-{:02} {:02}:{:02}:{:02}", 
-            date.year(), date.month(), date.day_of_month(), date.hour(), date.minute(), date.second()));
+        self.imp().date_entry.set_subtitle(&format!(
+            "{:04}-{:02}-{:02} {:02}:{:02}:{:02}",
+            date.year(),
+            date.month(),
+            date.day_of_month(),
+            date.hour(),
+            date.minute(),
+            date.second()
+        ));
         {
             self.imp().timezone.replace(Some(date));
         }
@@ -208,7 +241,8 @@ impl MetadataDialog {
             hour,
             minute,
             second,
-        ).unwrap();
+        )
+        .unwrap();
         self.set_time(date);
     }
 }
