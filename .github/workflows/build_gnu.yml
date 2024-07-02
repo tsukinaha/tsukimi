@@ -56,7 +56,7 @@ jobs:
         run: |
           git clone https://github.com/Rafostar/clapper.git
           cd clapper
-          meson setup builddir --prefix=/mingw64
+          meson setup builddir --prefix=/mingw64 -Dmpris=enabled
           cd builddir
           meson compile && meson install
 
