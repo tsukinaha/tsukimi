@@ -460,6 +460,16 @@ impl TuListItem {
     pub fn set_item_action(&self) -> Option<gio::SimpleActionGroup> {
         let action_group = gio::SimpleActionGroup::new();
 
+        action_group.add_action_entries([gio::ActionEntry::builder("editm")
+                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    spawn(glib::clone!(@weak obj => async move {
+                        let id = obj.item().id();
+                        let dialog = crate::ui::widgets::metadata_dialog::MetadataDialog::new(&id);
+                        crate::insert_editm_dialog!(obj, dialog);
+                    }))
+                }))
+                .build()]);
+    
         match self.item().is_favorite() {
             true => action_group.add_action_entries([gio::ActionEntry::builder("unlike")
                 .activate(glib::clone!(@weak self as obj => move |_, _, _| {
