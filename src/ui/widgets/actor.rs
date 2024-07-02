@@ -7,7 +7,6 @@ use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::image::set_image;
-use crate::ui::provider::actions::HasLikeAction;
 use crate::utils::{req_cache, spawn};
 use crate::{fraction, fraction_reset, toast};
 
@@ -20,7 +19,7 @@ pub(crate) mod imp {
 
     use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
-    use crate::ui::widgets::star_toggle::StarToggle;
+    use crate::ui::widgets::item_actionbox::ItemActionsBox;
     use crate::utils::spawn_g_timeout;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -47,7 +46,7 @@ pub(crate) mod imp {
         pub linkshorbu: TemplateChild<HorbuScrolled>,
 
         #[template_child]
-        pub favourite_button: TemplateChild<StarToggle>,
+        pub actionbox: TemplateChild<ItemActionsBox>,
     }
 
     // The central trait for subclassing a GObject
@@ -59,9 +58,9 @@ pub(crate) mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
-            StarToggle::ensure_type();
             HortuScrolled::ensure_type();
             HorbuScrolled::ensure_type();
+            ItemActionsBox::ensure_type();
             klass.bind_template();
         }
 
@@ -82,6 +81,8 @@ pub(crate) mod imp {
                 obj.get_item().await;
                 obj.set_lists().await;
             }));
+
+            self.actionbox.set_id(Some(obj.id()));
         }
     }
 
@@ -150,15 +151,14 @@ impl ActorPage {
                 if let Some(userdata) = item.user_data {
                     if let Some(is_favorite) = userdata.is_favorite {
                         if is_favorite {
-                            obj.imp().favourite_button.set_active(true);
+                            obj.imp().actionbox.set_btn_active(true);
                         } else {
-                            obj.imp().favourite_button.set_active(false);
+                            obj.imp().actionbox.set_btn_active(false);
                         }
                     }
                 }
                 title.set_text(&item.name);
                 inforevealer.set_reveal_child(true);
-                obj.imp().bind_actions(&id).await;
         }));
     }
 

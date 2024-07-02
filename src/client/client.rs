@@ -3,16 +3,19 @@ use reqwest::{header::HeaderValue, Method, RequestBuilder, Response};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::sync::Mutex;
-use tracing::info;
+use tracing::{info, warn};
 use url::Url;
 use uuid::Uuid;
 
 use crate::{
     config::{get_device_name, load_env, proxy::ReqClient, Account, APP_VERSION},
     ui::models::emby_cache_path,
+    utils::{spawn, spawn_tokio},
 };
 
-use super::structs::{Back, Item, List, LoginResponse, Media, SerInList, SimpleListItem};
+use super::structs::{
+    AuthenticateResponse, Back, Item, List, LoginResponse, Media, SerInList, SimpleListItem,
+};
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
@@ -55,6 +58,20 @@ impl EmbyClient {
         self.header_change_token(&account.access_token);
         self.set_user_id(&account.user_id);
         load_env(account);
+
+        spawn(async move {
+            spawn_tokio(async move {
+                match EMBY_CLIENT.authenticate_admin().await {
+                    Ok(r) => {
+                        if r.policy.is_administrator {
+                            crate::ui::provider::set_admin(true);
+                        }
+                    }
+                    Err(e) => warn!("Failed to authenticate as admin: {}", e),
+                }
+            })
+            .await;
+        });
     }
 
     pub fn header_change_token(&self, token: &str) {
@@ -134,6 +151,11 @@ impl EmbyClient {
     ) -> Result<Response, reqwest::Error> {
         let res = request.send().await?;
         Ok(res)
+    }
+
+    pub async fn authenticate_admin(&self) -> Result<AuthenticateResponse, reqwest::Error> {
+        let path = format!("Users/{}", self.user_id());
+        self.request(&path, &[]).await
     }
 
     pub async fn login(

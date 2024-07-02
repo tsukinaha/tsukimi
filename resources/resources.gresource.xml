@@ -30,5 +30,7 @@
     <file compressed="true" preprocess="xml-stripblanks">clapperpage.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">hortu_scrolled.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">horbu_scrolled.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">metadata_dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">item_actions.ui</file>
   </gresource>
 </gresources>

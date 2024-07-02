@@ -148,7 +148,7 @@ impl SongWidget {
         imp.favourite_button.set_active(item.is_favorite());
 
         spawn(glib::clone!(@weak self as obj, @strong id => async move {
-            obj.imp().bind_actions(&id).await;
+            obj.bind_actions(&id).await;
         }));
     }
 
