@@ -56,7 +56,7 @@ jobs:
         run: |
           git clone https://github.com/Rafostar/clapper.git
           cd clapper
-          meson setup builddir --prefix=/mingw64
+          meson setup builddir --prefix=/mingw64 -Dclapper-app=disabled
           cd builddir
           meson compile && meson install
 
@@ -68,7 +68,7 @@ jobs:
           rustup default stable-gnu
           cargo build --release --locked
 
-      - name: Package
+      - name: Prepare Package
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: msys2 {0}
         run: |
@@ -130,9 +130,14 @@ jobs:
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: powershell
         run: |
-          cd artifact/ && cp -r tsukimi-windows-gnu-amd64 tsukimi-windows-gnu-amd64-complete && cd tsukimi-windows-gnu-amd64-complete && mkdir mpv && cd mpv
+          cd artifact/
+          cp -r tsukimi-windows-gnu-amd64 tsukimi-windows-gnu-amd64-complete
+          cd tsukimi-windows-gnu-amd64-complete
+          mkdir mpv
+          cd mpv
           Invoke-WebRequest -Uri "https://github.com/ZBound/tkm-config/releases/latest/download/mqv.7z" -OutFile mpv.7z
-          7z.exe x mpv.7z && rm mpv.7z
+          7z.exe x mpv.7z
+          rm mpv.7z
           7z.exe a ../../tsukimi-${{matrix.arch}}-complete.7z ../*
 
       - name: Calculate Checksum

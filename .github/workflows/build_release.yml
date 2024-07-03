@@ -1,9 +1,9 @@
 name: feature/win - Publishing
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - v*
+  # push:
+  #   tags:
+  #     - v*
 
 env:
   CARGO_TERM_COLOR: always
