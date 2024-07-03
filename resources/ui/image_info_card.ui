@@ -86,6 +86,7 @@
                 <property name="icon-name">edit-copy-symbolic</property>
                 <property name="halign">start</property>
                 <property name="hexpand">true</property>
+                <property name="tooltip_text">Copy Image To Clipboard</property>
                 <signal name="clicked" handler="on_copy" swapped="true"/>
                 <style>
                   <class name="flat" />
@@ -96,6 +97,7 @@
               <object class="GtkButton">
                 <property name="icon-name">view-fullscreen-symbolic</property>
                 <property name="halign">end</property>
+                <property name="tooltip_text">View Image</property>
                 <signal name="clicked" handler="on_view" swapped="true"/>
                 <style>
                   <class name="flat" />
