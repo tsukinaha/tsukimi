@@ -53,6 +53,14 @@
       <default>""</default>
       <summary>Default switch state</summary>
     </key>
+    <key name="accent-color-code" type="s">
+      <default>"#AEB5FA"</default>
+      <summary>Default switch state</summary>
+    </key>
+    <key name="accent-fg-color-code" type="s">
+      <default>"#3C0090"</default>
+      <summary>Default switch state</summary>
+    </key>
     <key name="root-pic" type="s">
       <default>""</default>
       <summary>Default switch state</summary>

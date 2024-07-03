@@ -32,24 +32,52 @@ pub fn build_ui(app: &adw::Application) {
 
 pub fn load_css() {
     let provider = CssProvider::new();
+
+    let mut styles = String::new();
+
     match SETTINGS.theme().as_str() {
         "Catppuccin Latte" => {
-            provider.load_from_string(include_str!("style.css"));
+            styles.push_str(include_str!("style.css"));
         }
         "Alpha Dark" => {
-            provider.load_from_string(include_str!("alpha-dark.css"));
+            styles.push_str(include_str!("alpha-dark.css"));
         }
         "Adwaita" => {
-            provider.load_from_string(include_str!("adwaita.css"));
+            styles.push_str(include_str!("adwaita.css"));
         }
         "Adwaita Dark" => {
-            provider.load_from_string(include_str!("adwaitadark.css"));
+            styles.push_str(include_str!("adwaitadark.css"));
         }
         _ => {
-            provider.load_from_string(include_str!("basic.css"));
+            styles.push_str(include_str!("basic.css"));
         }
     }
-    // Add the provider to the default screen
+
+    let accent_color = SETTINGS.accent_color_code();
+    styles.push_str(&format!(
+                "@define-color accent_color {};
+                @define-color accent_bg_color {};
+                @define-color accent_fg_color {};
+                overlay>label {{
+                    background-color: {};
+                    border-radius: 999px;
+                    margin: 3px;
+                }}
+                
+                box>overlay>image {{
+                    background-color: {};
+                    border-radius: 999px;
+                    margin: 3px;
+                }}",
+            accent_color,
+            accent_color,
+            SETTINGS.accent_fg_color_code(),
+            accent_color,
+            accent_color
+        ));
+
+    provider.load_from_string(&styles);
+
     gtk::style_context_add_provider_for_display(
         &Display::default().expect("Could not connect to a display."),
         &provider,
