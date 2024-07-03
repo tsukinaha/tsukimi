@@ -1,9 +1,9 @@
 name: feature/win - Windows GNU CI
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - 'feature/win'
+  push:
+    branches:
+      - "feature/win"
 
 env:
   CARGO_TERM_COLOR: always
@@ -49,7 +49,7 @@ jobs:
             mingw-w64-x86_64-gst-plugins-ugly
             mingw-w64-x86_64-gst-libav
             git
-         
+
       - name: Install clapper
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: msys2 {0}
@@ -67,7 +67,7 @@ jobs:
           $env:Path = "C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path;
           rustup default stable-gnu
           cargo build --release --locked
-      
+
       - name: Package
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: msys2 {0}
@@ -78,10 +78,10 @@ jobs:
           cp /mingw64/bin/gdbus.exe bin/
 
           cp -r /mingw64/lib/gdk-pixbuf-2.0 lib/
-          find lib/gdk-pixbuf-2.0/2.10.0/loaders -type f ! -name "*svg.dll" -exec rm -f "{}" \;
-          
+          find lib/gdk-pixbuf-2.0/2.10.0/loaders -type f ! \( -name "*-svg.dll" -o -name "*-png.dll" -o -name "*-jpeg.dll" \) -exec rm -f "{}" \;
+
           cp -r /mingw64/lib/gio lib/
-          
+
           cp -r /mingw64/lib/gstreamer-1.0 lib/ && find lib/gstreamer-1.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
 
           cp -r /mingw64/lib/clapper-0.0 lib/ && find lib/clapper-0.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
@@ -96,9 +96,9 @@ jobs:
           cp $GITHUB_WORKSPACE/resources/ui/icons/tsukimi.png share/icons/
           rm -rf share/icons/hicolor && rm -rf share/icons/AdwaitaLegacy && rm -rf share/icons/Adwaita/scalable && rm -rf share/icons/Adwaita/cursors
           rm -rf share/icons/Adwaita/16x16 && rm -rf share/icons/Adwaita/symbolic-up-to-32
-          
+
           find . -type d -empty -delete
-          
+
           cd lib/gstreamer-1.0 
           rm -f \
             libgstadpcmenc.dll libgstamfcodec.dll libgstdvbsubenc.dll libgstencoding.dll \
@@ -107,7 +107,7 @@ jobs:
             libgstsubenc.dll libgstsvtav1.dll libgstsvthevcenc.dll libgsttwolame.dll \
             libgstvoamrwbenc.dll libgstwavenc.dll libgstx264.dll libgstx265.dll \
             libgstxingmux.dll libgsty4menc.dll libgstzbar.dll
-          
+
           cd $GITHUB_WORKSPACE/artifact/tsukimi-windows-gnu-amd64
           ldd bin/tsukimi.exe | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
           find lib/ -type f -name "*.dll" -exec ldd "{}" \; | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
@@ -120,13 +120,38 @@ jobs:
           makensis /V4 artifact/tsukimi_installer.nsi
           rm artifact/tsukimi_installer.nsi
 
+      - name: Build Thin Package
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        shell: powershell
+        run: |
+          7z.exe a artifact/tsukimi-${{matrix.arch}}.7z artifact/tsukimi-windows-gnu-amd64/*
+
+      - name: Build Complete Package
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        shell: powershell
+        run: |
+          cd artifact/ && cp -r tsukimi-windows-gnu-amd64 tsukimi-windows-gnu-amd64-complete && cd tsukimi-windows-gnu-amd64-complete && mkdir mpv && cd mpv
+          Invoke-WebRequest -Uri "https://github.com/ZBound/tkm-config/releases/latest/download/mqv.7z" -OutFile mpv.7z
+          7z.exe x mpv.7z && rm mpv.7z
+          7z.exe a ../../tsukimi-${{matrix.arch}}-complete.7z ../*
+
+      - name: Calculate Checksum
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        shell: msys2 {0}
+        run: |
+          sha512sum artifact/*.7z > artifact/tsukimi-7z.sha512sum
+          sha512sum artifact/*.7z > artifact/tsukimi.sha512sum
+          sha512sum artifact/*.exe >> artifact/tsukimi.sha512sum
+
       - name: Upload artifact
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/upload-artifact@v4
         with:
           name: tsukimi-${{matrix.arch}}
           path: |
-            artifact/*
-          compression-level: 5
+            artifact/*.exe
+            artifact/*.7z
+            artifact/*.sha512sum
+          compression-level: 0
           retention-days: 3
           if-no-files-found: error

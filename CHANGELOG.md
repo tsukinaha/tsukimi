@@ -1,3 +1,13 @@
+## 0.6.6
+
+New Feature
+View Item Images f2111e8 (https://github.com/tsukinaha/tsukimi/commit/f2111e823ec71dde7faf4f3d3fb428d63af9cb90)
+View Item Metadata f094078 (https://github.com/tsukinaha/tsukimi/commit/f09407869dda5afbc0d6b786c21894c2d610d886)
+Change Accent Color 68cba9c (https://github.com/tsukinaha/tsukimi/commit/68cba9c56d1f1657b6cd44e7d4588c3ca09d8ff5)
+
+Bugfixes
+Fixed some UI issues
+
 ## 0.6.0
 
 - 重写了一些组件
