@@ -747,10 +747,13 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub fn get_image_path(&self, id: &str, image_type: &str) -> String {
-        let path = format!("Items/{}/Images/{}", id, image_type);
-        let url = self.url.lock().unwrap().as_ref().unwrap().clone();
-        url.join(&path).unwrap().to_string()
+    pub fn get_image_path(&self, id: &str, image_type: &str, image_index: Option<u32>) -> String {
+        let path = format!("Items/{}/Images/{}/", id, image_type);
+        let url = self.url.lock().unwrap().as_ref().unwrap().clone().join(&path).unwrap();
+        match image_index {
+            Some(index) => url.join(&index.to_string()).unwrap().to_string(),
+            None => url.to_string(),
+        }
     }
 }
 

@@ -40,7 +40,6 @@
                           </object>
                         </child>
                       </object>
-                      s
                     </child>
                     <child>
                       <object class="GtkScrolledWindow">
@@ -133,6 +132,16 @@
                                     <style>
                                       <class name="title-5" />
                                     </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkFlowBox" id="flowbox">
+                                    <property name="margin-start">12</property>
+                                    <property name="margin-end">12</property>
+                                    <property name="selection-mode">none</property>
+                                    <property name="homogeneous">True</property>
+                                    <property name="column-spacing">12</property>
+                                    <property name="row-spacing">12</property>
                                   </object>
                                 </child>
                               </object>

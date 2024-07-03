@@ -106,7 +106,12 @@ impl ImageInfoCard {
 
     #[template_callback]
     fn on_copy(&self) {
-        
+        let clipboard = self.clipboard();
+        let Some(texture) = self.picture_texture() else {
+            toast!(self, "No image to copy");
+            return;
+        };
+        clipboard.set_texture(&texture);
     }
 
     pub fn set_size(&self, width: &Option<u32>, height: &Option<u32>, size: &Option<u64>) {
@@ -123,8 +128,8 @@ impl ImageInfoCard {
         self.imp().label2.set_text(&str);
     }
 
-    pub fn set_picture(&self, img_type: &str, id: &str) {
-        let path = EMBY_CLIENT.get_image_path(id, img_type);
+    pub fn set_picture(&self, img_type: &str, id: &str, image_index: &Option<u32>) {
+        let path = EMBY_CLIENT.get_image_path(id, img_type, *image_index);
         
         let picture = self.imp().picture.get();
         spawn(glib::clone!(@weak picture, @weak self as obj =>async move {
@@ -158,5 +163,11 @@ impl ImageInfoCard {
 
     pub fn picture_paintable(&self) -> Option<gtk::gdk::Paintable> {
         self.imp().picture.paintable()
+    }
+
+    pub fn picture_texture(&self) -> Option<gtk::gdk::Texture> {
+        self.imp().picture.paintable().and_then(|paintable| {
+            paintable.downcast::<gtk::gdk::Texture>().ok()
+        })
     }
 }

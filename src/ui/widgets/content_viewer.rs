@@ -160,7 +160,6 @@ impl MediaContentViewer {
             .child()
             .and_downcast::<gtk::Picture>()
             .and_then(|p| p.paintable())
-            .and_downcast::<ImagePaintable>()
-            .and_then(|p| p.current_frame())
+            .and_then(|p| p.downcast::<gdk::Texture>().ok())
     }
 }

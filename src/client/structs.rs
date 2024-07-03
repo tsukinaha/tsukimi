@@ -208,6 +208,8 @@ pub struct ImageItem {
     pub image_type: String,
     #[serde(rename = "Size")]
     pub size: Option<u64>,
+    #[serde(rename = "ImageIndex")]
+    pub image_index: Option<u32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]

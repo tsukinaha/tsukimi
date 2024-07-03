@@ -39,6 +39,9 @@ mod imp {
         pub disc: TemplateChild<ImageInfoCard>,
         #[template_child]
         pub art: TemplateChild<ImageInfoCard>,
+
+        #[template_child]
+        pub flowbox: TemplateChild<gtk::FlowBox>,
     }
 
     #[glib::object_subclass]
@@ -85,7 +88,15 @@ mod imp {
         pub fn set_card(&self, card: &ImageInfoCard, item: &ImageItem) {
             card.set_loading_visible();
             card.set_size(&item.width, &item.height, &item.size);
-            card.set_picture(&item.image_type, &self.obj().id());
+            card.set_picture(&item.image_type, &self.obj().id(), &None);
+        }
+
+        pub fn add_backdrop(&self, item: &ImageItem) {
+            let card = ImageInfoCard::new("Backdrop");
+            card.set_loading_visible();
+            card.set_size(&item.width, &item.height, &item.size);
+            card.set_picture(&item.image_type, &self.obj().id(), &item.image_index);
+            self.flowbox.append(&card);
         }
 
         pub fn set_item(&self, item: &ImageItem) {
@@ -109,7 +120,7 @@ mod imp {
                     self.set_card(&self.art, item);
                 },
                 "Backdrop" => {
-                    
+                    self.add_backdrop(item);
                 },
                 _ => {}
             }
