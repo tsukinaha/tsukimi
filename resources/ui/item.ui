@@ -23,7 +23,7 @@
                         <child>
                           <object class="AdwCarousel" id="carousel">
                             <property name="halign">fill</property>
-                            <property name="valign">fill</property>
+                            <property name="valign">start</property>
                             <property name="allow_scroll_wheel">False</property>
                             <property name="reveal-duration">700</property>
                             <child>

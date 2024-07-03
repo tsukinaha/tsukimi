@@ -135,7 +135,7 @@ impl ImageInfoCard {
 
         let picture = self.imp().picture.get();
         spawn(glib::clone!(@weak picture, @weak self as obj =>async move {
-            let file = gio::File::for_uri(&path).read_future(Priority::default()).await.ok();
+            let file = gio::File::for_uri(&path).read_future(Priority::LOW).await.ok();
             if let Some(stream) = file {
                 match gtk::gdk_pixbuf::Pixbuf::from_stream(&stream, None::<&gio::Cancellable>) {
                     Ok(pixbuf) => {
