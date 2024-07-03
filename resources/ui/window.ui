@@ -24,6 +24,13 @@
     <property name="content">
       <object class="GtkOverlay">
         <child type="overlay">
+          <object class="MediaViewer" id="media_viewer">
+            <property name="visible">False</property>
+          </object>
+        </child>
+        <child>
+      <object class="GtkOverlay">
+        <child type="overlay">
           <object class="AdwToastOverlay" id="toast">
             <child>
               <object class="GtkStack" id="stack">
@@ -120,7 +127,7 @@
                     <property name="child">
                       <object class="AdwOverlaySplitView" id="split_view">
                         <property name="min-sidebar-width">170</property>
-                        <property name="max-sidebar-width">300</property>
+                        <property name="max-sidebar-width">180</property>
                         <property name="sidebar-width-fraction">0.19</property>
                         <property name="sidebar">
                           <object class="AdwNavigationPage">
@@ -261,7 +268,7 @@
                                                 </child>
                                                 <child type="prefix">
                                                   <object class="GtkImage">
-                                                    <property name="icon-name">document-open-recent-symbolic</property>
+                                                    <property name="icon-name">emblem-favorite-symbolic</property>
                                                     <property name="margin-end">6</property>
                                                     <property name="halign">start</property>
                                                   </object>
@@ -304,26 +311,6 @@
                                                     <style>
                                                       <class name="flat" />
                                                     </style>
-                                                  </object>
-                                                </child>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="AdwActionRow">
-                                                <child type="prefix">
-                                                  <object class="GtkLabel">
-                                                    <property name="label" translatable="yes">Server Panel</property>
-                                                    <property name="halign">start</property>
-                                                    <attributes>
-                                                      <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                                                    </attributes>
-                                                  </object>
-                                                </child>
-                                                <child type="prefix">
-                                                  <object class="GtkImage">
-                                                    <property name="icon-name">view-grid-symbolic</property>
-                                                    <property name="margin-end">6</property>
-                                                    <property name="halign">start</property>
                                                   </object>
                                                 </child>
                                               </object>
@@ -502,6 +489,8 @@
           <class name="home-carousel" />
         </style>
       </object>
+    </child>
+    </object>
     </property>
   </template>
 </interface>

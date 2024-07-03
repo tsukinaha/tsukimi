@@ -10,10 +10,10 @@ use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::image::set_image;
-use crate::utils::{get_image_with_cache, req_cache, spawn, spawn_tokio};
+use crate::utils::{get_image_with_cache, req_cache, spawn};
 use crate::{fraction, fraction_reset, toast};
 
-mod imp {
+pub(crate) mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
@@ -22,6 +22,7 @@ mod imp {
 
     use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
+    use crate::ui::widgets::item_actionbox::ItemActionsBox;
     use crate::utils::spawn_g_timeout;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -41,11 +42,9 @@ mod imp {
         #[template_child]
         pub inforevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
-        pub favourite_button: TemplateChild<gtk::Button>,
+        pub actionbox: TemplateChild<ItemActionsBox>,
         #[template_child]
         pub picbox: TemplateChild<gtk::Box>,
-        #[template_child]
-        pub favourite_button_content: TemplateChild<adw::ButtonContent>,
         #[template_child]
         pub linkshorbu: TemplateChild<HorbuScrolled>,
         #[template_child]
@@ -61,14 +60,9 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
+            ItemActionsBox::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
-            klass.install_action_async("like", None, |window, _action, _parameter| async move {
-                window.like().await;
-            });
-            klass.install_action_async("unlike", None, |window, _action, _parameter| async move {
-                window.unlike().await;
-            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -82,9 +76,12 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
+
             spawn_g_timeout(glib::clone!(@weak obj => async move {
                 obj.setup().await;
             }));
+
+            self.actionbox.set_id(Some(obj.id()));
         }
     }
 
@@ -131,50 +128,6 @@ impl BoxSetPage {
         imp.picbox.append(&pic);
     }
 
-    pub async fn like(&self) {
-        let imp = self.imp();
-        let spilt_button_content = imp.favourite_button_content.get();
-        let spilt_button = imp.favourite_button.get();
-        imp.favourite_button.set_sensitive(false);
-        let id = self.id();
-        match spawn_tokio(async move { EMBY_CLIENT.like(&id).await }).await {
-            Ok(_) => (),
-            Err(e) => {
-                toast!(self, e.to_user_facing());
-                return;
-            }
-        };
-
-        spilt_button.set_action_name(Some("unlike"));
-        spilt_button_content.set_icon_name("starred-symbolic");
-        spilt_button_content.set_label("Unlike");
-
-        imp.favourite_button.set_sensitive(true);
-        toast!(self, "Liked the Boxset successfully.");
-    }
-
-    pub async fn unlike(&self) {
-        let imp = self.imp();
-        let spilt_button_content = imp.favourite_button_content.get();
-        let spilt_button = imp.favourite_button.get();
-        imp.favourite_button.set_sensitive(false);
-        let id = self.id();
-        match spawn_tokio(async move { EMBY_CLIENT.unlike(&id).await }).await {
-            Ok(_) => (),
-            Err(e) => {
-                toast!(self, e.to_user_facing());
-                return;
-            }
-        };
-
-        spilt_button.set_action_name(Some("like"));
-        spilt_button_content.set_icon_name("non-starred-symbolic");
-        spilt_button_content.set_label("Like");
-
-        imp.favourite_button.set_sensitive(true);
-        toast!(self, "Unliked the Boxset successfully.");
-    }
-
     pub async fn setup_background(&self) {
         let id = self.id();
 
@@ -206,7 +159,9 @@ impl BoxSetPage {
             }
         };
 
-        spawn(glib::clone!(@weak self as obj=>async move {
+        let id = self.id();
+
+        spawn(glib::clone!(@weak self as obj, @strong id =>async move {
                 {
                     let mut str = String::new();
                     if let Some(rating) = item.official_rating {
@@ -233,13 +188,9 @@ impl BoxSetPage {
                     if let Some (is_favourite) = userdata.is_favorite {
                         let imp = obj.imp();
                         if is_favourite {
-                            imp.favourite_button.set_action_name(Some("unlike"));
-                            imp.favourite_button_content.set_icon_name("starred-symbolic");
-                            imp.favourite_button_content.set_label("Unlike");
+                            imp.actionbox.set_btn_active(true);
                         } else {
-                            imp.favourite_button.set_action_name(Some("like"));
-                            imp.favourite_button_content.set_icon_name("non-starred-symbolic");
-                            imp.favourite_button_content.set_label("Like");
+                            imp.actionbox.set_btn_active(false);
                         }
                     }
                 }

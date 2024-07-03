@@ -4,6 +4,7 @@ use gtk::gio::MenuModel;
 use gtk::glib::subclass::types::ObjectSubclassExt;
 use gtk::glib::subclass::types::ObjectSubclassIsExt;
 use gtk::prelude::*;
+use gtk::template_callbacks;
 use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
@@ -18,6 +19,8 @@ use crate::ui::models::emby_cache_path;
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::spawn;
 use crate::utils::spawn_tokio;
+
+use super::window::Window;
 
 mod imp {
     use adw::subclass::prelude::*;
@@ -64,6 +67,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -111,6 +115,7 @@ pub enum Action {
     Remove,
 }
 
+#[template_callbacks]
 impl TuListItem {
     pub fn new(item: TuItem, item_type: &str, isresume: bool) -> Self {
         Object::builder()
@@ -452,13 +457,36 @@ impl TuListItem {
     pub fn set_action(&self) -> Option<gio::SimpleActionGroup> {
         let item_type = self.imp().itemtype.get().unwrap();
         match item_type.as_str() {
-            "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" => self.set_item_action(),
+            "Movie" | "Series" | "Episode" => self.set_item_action(true),
+            "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Actor" | "Person" => {
+                self.set_item_action(false)
+            }
             _ => None,
         }
     }
 
-    pub fn set_item_action(&self) -> Option<gio::SimpleActionGroup> {
+    pub fn set_item_action(&self, is_playable: bool) -> Option<gio::SimpleActionGroup> {
         let action_group = gio::SimpleActionGroup::new();
+
+        action_group.add_action_entries([gio::ActionEntry::builder("editm")
+            .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                spawn(glib::clone!(@weak obj => async move {
+                    let id = obj.item().id();
+                    let dialog = crate::ui::widgets::metadata_dialog::MetadataDialog::new(&id);
+                    crate::insert_editm_dialog!(obj, dialog);
+                }))
+            }))
+            .build()]);
+
+        action_group.add_action_entries([gio::ActionEntry::builder("editi")
+            .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                spawn(glib::clone!(@weak obj => async move {
+                    let id = obj.item().id();
+                    let dialog = crate::ui::widgets::image_dialog::ImagesDialog::new(&id);
+                    crate::insert_editm_dialog!(obj, dialog);
+                }))
+            }))
+            .build()]);
 
         match self.item().is_favorite() {
             true => action_group.add_action_entries([gio::ActionEntry::builder("unlike")
@@ -477,21 +505,23 @@ impl TuListItem {
                 .build()]),
         }
 
-        match self.item().played() {
-            true => action_group.add_action_entries([gio::ActionEntry::builder("unplayed")
-                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
-                    spawn(glib::clone!(@weak obj => async move {
-                        obj.perform_action(Action::Unplayed).await;
+        if is_playable {
+            match self.item().played() {
+                true => action_group.add_action_entries([gio::ActionEntry::builder("unplayed")
+                    .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                        spawn(glib::clone!(@weak obj => async move {
+                            obj.perform_action(Action::Unplayed).await;
+                        }))
                     }))
-                }))
-                .build()]),
-            false => action_group.add_action_entries([gio::ActionEntry::builder("played")
-                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
-                    spawn(glib::clone!(@weak obj => async move {
-                        obj.perform_action(Action::Played).await;
+                    .build()]),
+                false => action_group.add_action_entries([gio::ActionEntry::builder("played")
+                    .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                        spawn(glib::clone!(@weak obj => async move {
+                            obj.perform_action(Action::Played).await;
+                        }))
                     }))
-                }))
-                .build()]),
+                    .build()]),
+            }
         }
 
         if let Some(true) = self.imp().isresume.get() {
@@ -580,6 +610,33 @@ impl TuListItem {
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             window.toast("Success");
         }));
+    }
+
+    #[template_callback]
+    fn on_view_pic_clicked(&self) {
+        match self
+            .imp()
+            .overlay
+            .child()
+            .unwrap()
+            .downcast::<gtk::Revealer>()
+            .unwrap()
+            .child()
+            .unwrap()
+            .downcast::<gtk::Picture>()
+        {
+            Ok(picture) => {
+                let window = self
+                    .ancestor(Window::static_type())
+                    .and_downcast::<Window>()
+                    .unwrap();
+                window.reveal_image(&picture);
+                window.media_viewer_show_paintable(picture.paintable());
+            }
+            Err(_) => {
+                toast!(self, "Error loading image");
+            }
+        }
     }
 }
 

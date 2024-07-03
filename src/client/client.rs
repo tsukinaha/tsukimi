@@ -3,16 +3,20 @@ use reqwest::{header::HeaderValue, Method, RequestBuilder, Response};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::sync::Mutex;
-use tracing::info;
+use tracing::{info, warn};
 use url::Url;
 use uuid::Uuid;
 
 use crate::{
     config::{get_device_name, load_env, proxy::ReqClient, Account, APP_VERSION},
     ui::models::emby_cache_path,
+    utils::{spawn, spawn_tokio},
 };
 
-use super::structs::{Back, Item, List, LoginResponse, Media, SerInList, SimpleListItem};
+use super::structs::{
+    AuthenticateResponse, Back, ImageItem, Item, List, LoginResponse, Media, SerInList,
+    SimpleListItem,
+};
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
@@ -55,6 +59,20 @@ impl EmbyClient {
         self.header_change_token(&account.access_token);
         self.set_user_id(&account.user_id);
         load_env(account);
+        crate::ui::provider::set_admin(false);
+        spawn(async move {
+            spawn_tokio(async move {
+                match EMBY_CLIENT.authenticate_admin().await {
+                    Ok(r) => {
+                        if r.policy.is_administrator {
+                            crate::ui::provider::set_admin(true);
+                        }
+                    }
+                    Err(e) => warn!("Failed to authenticate as admin: {}", e),
+                }
+            })
+            .await;
+        });
     }
 
     pub fn header_change_token(&self, token: &str) {
@@ -136,6 +154,11 @@ impl EmbyClient {
         Ok(res)
     }
 
+    pub async fn authenticate_admin(&self) -> Result<AuthenticateResponse, reqwest::Error> {
+        let path = format!("Users/{}", self.user_id());
+        self.request(&path, &[]).await
+    }
+
     pub async fn login(
         &self,
         username: &str,
@@ -198,6 +221,12 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
+    pub async fn get_edit_info(&self, id: &str) -> Result<Item, reqwest::Error> {
+        let path = format!("Users/{}/Items/{}", self.user_id(), id);
+        let params = [("Fields", "ChannelMappingInfo")];
+        self.request(&path, &params).await
+    }
+
     pub async fn get_resume(&self) -> Result<List, reqwest::Error> {
         let path = format!("Users/{}/Items/Resume", self.user_id());
         let params = [
@@ -212,6 +241,11 @@ impl EmbyClient {
             ("Limit", "24"),
         ];
         self.request(&path, &params).await
+    }
+
+    pub async fn get_image_items(&self, id: &str) -> Result<Vec<ImageItem>, reqwest::Error> {
+        let path = format!("Items/{}/Images", id);
+        self.request(&path, &[]).await
     }
 
     pub async fn image_request(
@@ -709,6 +743,23 @@ impl EmbyClient {
         let path = format!("Videos/{}/AdditionalParts", id);
         let params: [(&str, &str); 1] = [("UserId", &self.user_id())];
         self.request(&path, &params).await
+    }
+
+    pub fn get_image_path(&self, id: &str, image_type: &str, image_index: Option<u32>) -> String {
+        let path = format!("Items/{}/Images/{}/", id, image_type);
+        let url = self
+            .url
+            .lock()
+            .unwrap()
+            .as_ref()
+            .unwrap()
+            .clone()
+            .join(&path)
+            .unwrap();
+        match image_index {
+            Some(index) => url.join(&index.to_string()).unwrap().to_string(),
+            None => url.to_string(),
+        }
     }
 }
 

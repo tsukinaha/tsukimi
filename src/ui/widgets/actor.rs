@@ -10,7 +10,7 @@ use crate::ui::image::set_image;
 use crate::utils::{req_cache, spawn};
 use crate::{fraction, fraction_reset, toast};
 
-mod imp {
+pub(crate) mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
@@ -19,6 +19,7 @@ mod imp {
 
     use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
+    use crate::ui::widgets::item_actionbox::ItemActionsBox;
     use crate::utils::spawn_g_timeout;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -43,6 +44,9 @@ mod imp {
         pub episodehortu: TemplateChild<HortuScrolled>,
         #[template_child]
         pub linkshorbu: TemplateChild<HorbuScrolled>,
+
+        #[template_child]
+        pub actionbox: TemplateChild<ItemActionsBox>,
     }
 
     // The central trait for subclassing a GObject
@@ -56,6 +60,7 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             HortuScrolled::ensure_type();
             HorbuScrolled::ensure_type();
+            ItemActionsBox::ensure_type();
             klass.bind_template();
         }
 
@@ -70,11 +75,14 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            spawn_g_timeout(glib::clone!(@weak obj => async move {
+
+            spawn_g_timeout(glib::clone!(@weak obj=> async move {
                 obj.setup_pic();
                 obj.get_item().await;
                 obj.set_lists().await;
             }));
+
+            self.actionbox.set_id(Some(obj.id()));
         }
     }
 
@@ -131,12 +139,23 @@ impl ActorPage {
             }
         };
 
-        spawn(glib::clone!(@weak self as obj=>async move {
+        let id = self.id();
+
+        spawn(glib::clone!(@weak self as obj, @strong id =>async move {
                 if let Some(overview) = item.overview {
                     inscription.set_text(Some(&overview));
                 }
                 if let Some(links) = item.external_urls {
                     obj.setlinksscrolled(links);
+                }
+                if let Some(userdata) = item.user_data {
+                    if let Some(is_favorite) = userdata.is_favorite {
+                        if is_favorite {
+                            obj.imp().actionbox.set_btn_active(true);
+                        } else {
+                            obj.imp().actionbox.set_btn_active(false);
+                        }
+                    }
                 }
                 title.set_text(&item.name);
                 inforevealer.set_reveal_child(true);

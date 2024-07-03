@@ -1,4 +1,8 @@
-use crate::ui::provider::{core_song::CoreSong, tu_item::TuItem};
+use crate::ui::provider::actions::HasLikeAction;
+use crate::{
+    ui::provider::{core_song::CoreSong, tu_item::TuItem},
+    utils::spawn,
+};
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use chrono::Duration;
@@ -15,12 +19,13 @@ pub enum State {
     Unplayed,
 }
 
-mod imp {
+pub(crate) mod imp {
     use super::*;
-    use crate::ui::provider::core_song::CoreSong;
+    use crate::insert_editm_dialog;
     use crate::ui::provider::tu_item::TuItem;
     use crate::ui::widgets::star_toggle::StarToggle;
     use crate::ui::widgets::window::Window;
+    use crate::ui::{provider::core_song::CoreSong, widgets::metadata_dialog::MetadataDialog};
     use crate::utils::spawn;
     use glib::subclass::InitializingObject;
     use std::cell::{Cell, OnceCell};
@@ -42,7 +47,7 @@ mod imp {
         #[template_child]
         pub duration_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub star_toggle: TemplateChild<StarToggle>,
+        pub favourite_button: TemplateChild<StarToggle>,
         #[template_child]
         pub play_icon: TemplateChild<gtk::Image>,
         #[property(get, set, construct_only)]
@@ -58,6 +63,15 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             StarToggle::ensure_type();
             klass.bind_template();
+            klass.install_action_async(
+                "song.editm",
+                None,
+                |window, _action, _parameter| async move {
+                    let id = window.item().id();
+                    let dialog = MetadataDialog::new(&id);
+                    insert_editm_dialog!(window, dialog);
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -140,7 +154,12 @@ impl SongWidget {
         let duration = item.run_time_ticks() / 10000000;
         imp.duration_label
             .set_text(&format_duration(duration as i64));
-        imp.star_toggle.set_active(item.is_favorite());
+        imp.favourite_button.set_active(item.is_favorite());
+
+        let id = item.id();
+        spawn(glib::clone!(@weak self as obj => async move {
+            obj.bind_like(&id).await;
+        }));
     }
 
     fn bind(&self, core_song: &CoreSong) {

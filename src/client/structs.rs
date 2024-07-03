@@ -14,6 +14,18 @@ pub struct SearchResult {
     pub production_year: Option<i16>,
 }
 
+#[derive(Serialize, Deserialize, Clone)]
+pub struct AuthenticateResponse {
+    #[serde(rename = "Policy")]
+    pub policy: Policy,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Policy {
+    #[serde(rename = "IsAdministrator")]
+    pub is_administrator: bool,
+}
+
 // single item
 #[derive(Serialize, Deserialize, Clone)]
 pub struct SeriesInfo {
@@ -146,6 +158,30 @@ pub struct Item {
     pub media_sources: Option<Vec<MediaSource>>,
     #[serde(rename = "PlaySessionId")]
     pub play_session_id: Option<String>,
+    #[serde(rename = "OriginalTitle")]
+    pub original_title: Option<String>,
+    #[serde(rename = "SortName")]
+    pub sort_name: Option<String>,
+    #[serde(rename = "ProviderIds")]
+    pub provider_ids: Option<ProviderIds>,
+    #[serde(rename = "Path")]
+    pub path: Option<String>,
+    #[serde(rename = "Album")]
+    pub album: Option<String>,
+    #[serde(rename = "Artists")]
+    pub artists: Option<Vec<String>>,
+    #[serde(rename = "LockData")]
+    pub lock_data: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct ProviderIds {
+    #[serde(rename = "Tmdb")]
+    pub tmdb: Option<String>,
+    #[serde(rename = "Imdb")]
+    pub imdb: Option<String>,
+    #[serde(rename = "Tvdb")]
+    pub tvdb: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -158,6 +194,22 @@ pub struct People {
     pub role: Option<String>,
     #[serde(rename = "Type")]
     pub people_type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct ImageItem {
+    #[serde(rename = "Filename")]
+    pub filename: Option<String>,
+    #[serde(rename = "Height")]
+    pub height: Option<u32>,
+    #[serde(rename = "Width")]
+    pub width: Option<u32>,
+    #[serde(rename = "ImageType")]
+    pub image_type: String,
+    #[serde(rename = "Size")]
+    pub size: Option<u64>,
+    #[serde(rename = "ImageIndex")]
+    pub image_index: Option<u32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]

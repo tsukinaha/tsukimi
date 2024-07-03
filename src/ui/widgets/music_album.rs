@@ -13,11 +13,15 @@ use crate::{
 
 use super::song_widget::format_duration;
 
-mod imp {
+pub(crate) mod imp {
     use std::cell::OnceCell;
 
+    use crate::ui::widgets::item_actionbox::ItemActionsBox;
     use crate::{
-        ui::{provider::tu_item::TuItem, widgets::hortu_scrolled::HortuScrolled},
+        ui::{
+            provider::tu_item::TuItem,
+            widgets::{hortu_scrolled::HortuScrolled, star_toggle::StarToggle},
+        },
         utils::spawn_g_timeout,
     };
 
@@ -44,6 +48,8 @@ mod imp {
         pub recommendhortu: TemplateChild<HortuScrolled>,
         #[template_child]
         pub artisthortu: TemplateChild<HortuScrolled>,
+        #[template_child]
+        pub actionbox: TemplateChild<ItemActionsBox>,
     }
 
     #[glib::object_subclass]
@@ -53,6 +59,7 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
+            StarToggle::ensure_type();
             klass.bind_template();
         }
 
@@ -66,12 +73,17 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            spawn_g_timeout(glib::clone!(@weak obj => async move {
-                obj.set_toolbar();
-                obj.set_album().await;
-                obj.get_songs().await;
-                obj.set_lists().await;
-            }));
+
+            let id = obj.item().id();
+
+            spawn_g_timeout(
+                glib::clone!(@weak self as this, @weak obj, @strong id => async move {
+                    obj.set_toolbar();
+                    obj.set_album().await;
+                    obj.get_songs().await;
+                    obj.set_lists().await;
+                }),
+            );
         }
     }
 
@@ -94,9 +106,19 @@ impl AlbumPage {
     pub async fn set_album(&self) {
         let item = self.item();
 
-        self.imp().title_label.set_text(&item.name());
+        let imp = self.imp();
 
-        self.imp().artist_label.set_text(&item.albumartist_name());
+        imp.actionbox.set_id(Some(item.id()));
+
+        if item.is_favorite() {
+            imp.actionbox.set_btn_active(true);
+        } else {
+            imp.actionbox.set_btn_active(false);
+        }
+
+        imp.title_label.set_text(&item.name());
+
+        imp.artist_label.set_text(&item.albumartist_name());
 
         let duration = item.run_time_ticks() / 10000000;
         let release = format!(
@@ -104,7 +126,7 @@ impl AlbumPage {
             item.production_year(),
             format_duration(duration as i64)
         );
-        self.imp().released_label.set_text(&release);
+        imp.released_label.set_text(&release);
 
         let path = if let Some(image_tags) = item.primary_image_item_id() {
             get_image_with_cache(&image_tags, "Primary", None)
@@ -121,7 +143,7 @@ impl AlbumPage {
         }
 
         let image = gtk::gio::File::for_path(path);
-        self.imp().cover_image.set_file(Some(&image));
+        imp.cover_image.set_file(Some(&image));
 
         spawn(glib::clone!(@weak self as obj=>async move {
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();

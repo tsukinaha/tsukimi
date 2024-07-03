@@ -112,10 +112,13 @@
           </object>
         </child>
         <child>
-          <object class="StarToggle" id="star_toggle">
+          <object class="StarToggle" id="favourite_button">
             <property name="valign">center</property>
             <property name="margin-end">12</property>
             <property name="margin-start">12</property>
+            <style>
+              <class name="flat"/>
+            </style>
           </object>
         </child>
         <child>
@@ -144,16 +147,14 @@
   </object>
   <menu id="song-menu">
     <item>
-      <attribute name="label" translatable="yes">_Play</attribute>
-      <attribute name="action">songwidget.play</attribute>
+      <attribute name="label" translatable="yes">View Metadata</attribute>
+      <attribute name="action">song.editm</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
     </item>
     <item>
-      <attribute name="label" translatable="yes">_Add to Playlist…</attribute>
-      <attribute name="action">songwidget.add_playlist</attribute>
-    </item>
-    <item>
-      <attribute name="label" translatable="yes">_Remove from Playlist</attribute>
-      <attribute name="action">songwidget.remove_playlist</attribute>
+      <attribute name="label" translatable="yes">View Images</attribute>
+      <attribute name="action">song.editi</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
     </item>
   </menu>
 </interface>

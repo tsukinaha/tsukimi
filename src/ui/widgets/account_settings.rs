@@ -9,6 +9,7 @@ use crate::{
     ui::models::{emby_cache_path, SETTINGS},
     utils::spawn_tokio,
 };
+use gtk::gdk::RGBA;
 
 mod imp {
     use super::*;
@@ -59,6 +60,10 @@ mod imp {
         pub mpvcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub ytdlcontrol: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub color: TemplateChild<gtk::ColorDialogButton>,
+        #[template_child]
+        pub fg_color: TemplateChild<gtk::ColorDialogButton>,
     }
 
     #[glib::object_subclass]
@@ -130,6 +135,7 @@ mod imp {
             obj.set_daily_recommend();
             obj.set_mpvcontrol();
             obj.set_ytdlcontrol();
+            obj.set_color();
         }
     }
 
@@ -194,6 +200,25 @@ impl AccountSettings {
         imp.backcontrol.set_active(SETTINGS.progress());
         imp.backcontrol.connect_active_notify(move |control| {
             SETTINGS.set_progress(control.is_active()).unwrap();
+        });
+    }
+
+    pub fn set_color(&self) {
+        let imp = self.imp();
+        use std::str::FromStr;
+        imp.color
+            .set_rgba(&RGBA::from_str(&SETTINGS.accent_color_code()).unwrap());
+        imp.color.connect_rgba_notify(move |control| {
+            SETTINGS
+                .set_accent_color_code(&control.rgba().to_string())
+                .unwrap();
+        });
+        imp.fg_color
+            .set_rgba(&RGBA::from_str(&SETTINGS.accent_fg_color_code()).unwrap());
+        imp.fg_color.connect_rgba_notify(move |control| {
+            SETTINGS
+                .set_accent_fg_color_code(&control.rgba().to_string())
+                .unwrap();
         });
     }
 

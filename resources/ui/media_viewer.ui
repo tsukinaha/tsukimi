@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="media-menu-model">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Copy Image</attribute>
+        <attribute name="action">media-viewer.copy-image</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+  </menu>
+  <template class="MediaViewer" parent="GtkWidget">
+    <child>
+      <object class="AdwToolbarView" id="toolbar_view">
+        <property name="extend-content-to-top-edge" bind-source="MediaViewer" bind-property="fullscreened" bind-flags="sync-create" />
+        <property name="reveal-top-bars" bind-source="MediaViewer" bind-property="fullscreened" bind-flags="sync-create|invert-boolean" />
+        <property name="overflow">visible</property>
+        <child type="top">
+          <object class="GtkHeaderBar" id="header_bar">
+            <property name="title-widget">
+              <object class="GtkLabel">
+                <binding name="label">
+                  <lookup name="body">MediaViewer</lookup>
+                </binding>
+                <property name="single-line-mode">True</property>
+                <property name="ellipsize">end</property>
+                <style>
+                  <class name="title" />
+                </style>
+              </object>
+            </property>
+            <child type="start">
+              <object class="GtkButton" id="back">
+                <property name="icon-name">go-previous-symbolic</property>
+                <property name="action-name">media-viewer.close</property>
+                <property name="tooltip-text" translatable="yes">Back</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Back</property>
+                </accessibility>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkMenuButton" id="menu">
+                <property name="icon-name">view-more-symbolic</property>
+                <property name="menu-model">media-menu-model</property>
+                <property name="tooltip-text" translatable="yes">Media Menu</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Media Menu</property>
+                </accessibility>
+                <property name="primary">True</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkButton">
+                <property name="visible" bind-source="MediaViewer" bind-property="fullscreened" bind-flags="sync-create|invert-boolean" />
+                <property name="icon-name">view-fullscreen-symbolic</property>
+                <property name="action-name">win.toggle-fullscreen</property>
+                <property name="tooltip-text" translatable="yes">Fullscreen</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Fullscreen</property>
+                </accessibility>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkButton">
+                <property name="visible" bind-source="MediaViewer" bind-property="fullscreened" bind-flags="sync-create" />
+                <property name="icon-name">view-restore-symbolic</property>
+                <property name="action-name">win.toggle-fullscreen</property>
+                <property name="tooltip-text" translatable="yes">Exit Fullscreen</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Exit Fullscreen</property>
+                </accessibility>
+              </object>
+            </child>
+          </object>
+        </child>
+        <property name="content">
+          <object class="ScaleRevealer" id="revealer">
+            <property name="halign">center</property>
+            <property name="valign">fill</property>
+            <property name="vexpand">true</property>
+            <property name="child">
+              <object class="MediaContentViewer" id="media">
+                <property name="autoplay">true</property>
+              </object>
+            </property>
+          </object>
+        </property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkEventControllerMotion">
+        <signal name="motion" handler="handle_motion" swapped="yes" />
+      </object>
+    </child>
+    <child>
+      <object class="GtkGestureClick">
+        <signal name="released" handler="handle_click" swapped="yes" />
+      </object>
+    </child>
+  </template>
+</interface>

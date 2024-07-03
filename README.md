@@ -96,3 +96,8 @@ Priority:
 - [Adwaita](https://gitlab.gnome.org/GNOME/libadwaita/)
 
 [![Star History Chart](https://api.star-history.com/svg?repos=tsukinaha/tsukimi&type=Timeline)](https://star-history.com/#tsukinaha/tsukimi&Timeline)
+
+## Thanks
+
+- Gnome Music
+- Fractal

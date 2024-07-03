@@ -71,11 +71,29 @@
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Accent Color</property>
+                <property name="subtitle" translatable="yes">Restart App To Take Effect</property>
                 <child type="suffix">
                   <object class="GtkColorDialogButton" id="color">
                     <property name="valign">center</property>
                     <property name="dialog">
                       <object class="GtkColorDialog" />
+                    </property>
+                    <style>
+                      <class name="flat" />
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Accent Foreground Color</property>
+                <property name="subtitle" translatable="yes">Restart App To Take Effect</property>
+                <child type="suffix">
+                  <object class="GtkColorDialogButton" id="fg_color">
+                    <property name="valign">center</property>
+                    <property name="dialog">
+                      <object class="GtkColorDialog"/>
                     </property>
                     <style>
                       <class name="flat" />

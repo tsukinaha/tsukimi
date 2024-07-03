@@ -30,12 +30,7 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for ListDropdown {
-        fn constructed(&self) {
-            self.parent_constructed();
-            let _obj = self.obj();
-        }
-    }
+    impl ObjectImpl for ListDropdown {}
 
     impl WidgetImpl for ListDropdown {}
     impl BinImpl for ListDropdown {}
@@ -45,6 +40,12 @@ glib::wrapper! {
     /// Preference Window to display and update room details.
     pub struct ListDropdown(ObjectSubclass<imp::ListDropdown>)
         @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
+}
+
+impl Default for ListDropdown {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ListDropdown {
@@ -63,11 +64,5 @@ impl ListDropdown {
             self.imp().label2.set_text(label_str);
             self.imp().label2.set_visible(true);
         }
-    }
-}
-
-impl Default for ListDropdown {
-    fn default() -> Self {
-        Self::new()
     }
 }
