@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="MediaContentViewer" parent="AdwBin">
+    <property name="child">
+      <object class="GtkStack" id="stack">
+        <child>
+          <object class="GtkStackPage">
+            <property name="name">loading</property>
+            <property name="child">
+              <object class="GtkSpinner" id="spinner">
+                <property name="valign">center</property>
+                <property name="halign">center</property>
+                <property name="vexpand">True</property>
+                <style>
+                  <class name="large"/>
+                </style>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage">
+            <property name="name">viewer</property>
+            <property name="child">
+              <object class="AdwBin" id="viewer"/>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage">
+            <property name="name">fallback</property>
+            <property name="child">
+              <object class="AdwStatusPage" id="fallback"/>
+            </property>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

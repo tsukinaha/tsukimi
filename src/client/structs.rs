@@ -197,6 +197,20 @@ pub struct People {
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
+pub struct ImageItem {
+    #[serde(rename = "Filename")]
+    pub filename: Option<String>,
+    #[serde(rename = "Height")]
+    pub height: Option<u32>,
+    #[serde(rename = "Width")]
+    pub width: Option<u32>,
+    #[serde(rename = "ImageType")]
+    pub image_type: String,
+    #[serde(rename = "Size")]
+    pub size: Option<u64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct SGTitem {
     #[serde(rename = "Name")]
     pub name: String,

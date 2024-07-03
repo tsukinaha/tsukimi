@@ -16,7 +16,7 @@ use crate::{
 use once_cell::sync::Lazy;
 
 use super::structs::{
-    AuthenticateResponse, Back, Item, List, LoginResponse, Media, SerInList, SimpleListItem,
+    AuthenticateResponse, Back, ImageItem, Item, List, LoginResponse, Media, SerInList, SimpleListItem
 };
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
@@ -242,6 +242,11 @@ impl EmbyClient {
             ("Limit", "8"),
         ];
         self.request(&path, &params).await
+    }
+
+    pub async fn get_image_items(&self, id: &str) -> Result<Vec<ImageItem>, reqwest::Error> {
+        let path = format!("Items/{}/Images", id);
+        self.request(&path, &[]).await
     }
 
     pub async fn image_request(
@@ -740,6 +745,12 @@ impl EmbyClient {
         let path = format!("Videos/{}/AdditionalParts", id);
         let params: [(&str, &str); 1] = [("UserId", &self.user_id())];
         self.request(&path, &params).await
+    }
+
+    pub fn get_image_path(&self, id: &str, image_type: &str) -> String {
+        let path = format!("Items/{}/Images/{}", id, image_type);
+        let url = self.url.lock().unwrap().as_ref().unwrap().clone();
+        url.join(&path).unwrap().to_string()
     }
 }
 

@@ -32,5 +32,9 @@
     <file compressed="true" preprocess="xml-stripblanks">horbu_scrolled.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">metadata_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">item_actions.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">media_viewer.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">content_viewer.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">images_dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">image_info_card.ui</file>
   </gresource>
 </gresources>

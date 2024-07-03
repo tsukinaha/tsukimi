@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwBin" class="ImageInfoCard">
+    <property name="width-request">250</property>
+    <property name="height-request">170</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">5</property>
+        <child>
+          <object class="GtkStack" id="stack">
+            <property name="height-request">150</property>
+            <property name="transition-type">crossfade</property>
+            <child>
+              <object class="GtkStackPage">
+                <property name="name">fallback</property>
+                <property name="title">Fallback</property>
+                <property name="child">
+                  <object class="GtkImage">
+                    <property name="icon-name">image-missing-symbolic</property>
+                    <property name="icon-size">GTK_ICON_SIZE_LARGE</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <style>
+                      <class name="accent"/>
+                    </style>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage">
+                <property name="name">loading</property>
+                <property name="title">Loading</property>
+                <property name="child">
+                  <object class="GtkSpinner">
+                    <property name="spinning">True</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="width-request">24</property>
+                    <property name="height-request">24</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage">
+                <property name="name">picture</property>
+                <property name="title">Picture</property>
+                <property name="child">
+                  <object class="GtkPicture" id="picture">
+                    <property name="halign">center</property>
+                    <property name="valign">fill</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property name="justify">center</property>
+            <property name="ellipsize">end</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label2">
+            <property name="justify">center</property>
+            <property name="ellipsize">middle</property>
+            <attributes>
+              <attribute name="scale" value="0.9" />
+            </attributes>
+            <style>
+              <class name="dim-label" />
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="vexpand">true</property>
+            <property name="valign">end</property>
+            <child>
+              <object class="GtkButton">
+                <property name="icon-name">edit-copy-symbolic</property>
+                <property name="halign">start</property>
+                <property name="hexpand">true</property>
+                <signal name="clicked" handler="on_copy" swapped="true"/>
+                <style>
+                  <class name="flat" />
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="icon-name">view-fullscreen-symbolic</property>
+                <property name="halign">end</property>
+                <signal name="clicked" handler="on_view" swapped="true"/>
+                <style>
+                  <class name="flat" />
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <style>
+          <class name="card" />
+        </style>
+      </object>
+    </child>
+  </template>
+</interface>

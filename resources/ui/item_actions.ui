@@ -10,7 +10,6 @@
         <property name="width-request">35</property>
         <property name="height-request">35</property>
         <property name="icon-name">non-starred-symbolic</property>
-        <property name="tooltip-text" translatable="yes">Play</property>
         <property name="valign">center</property>
         <signal name="toggled" handler="on_favourite_button_toggled" swapped="yes" />
         <style>
@@ -48,12 +47,12 @@
       <attribute name="hidden-when">action-disabled</attribute>
     </item>
     <item>
-      <attribute name="label" translatable="yes">Edit Metadata</attribute>
+      <attribute name="label" translatable="yes">View Metadata</attribute>
       <attribute name="action">item.editm</attribute>
       <attribute name="hidden-when">action-disabled</attribute>
     </item>
     <item>
-      <attribute name="label" translatable="yes">Edit Images</attribute>
+      <attribute name="label" translatable="yes">View Images</attribute>
       <attribute name="action">item.editi</attribute>
       <attribute name="hidden-when">action-disabled</attribute>
     </item>

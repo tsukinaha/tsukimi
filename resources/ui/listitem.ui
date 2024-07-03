@@ -14,14 +14,12 @@
                 <property name="width-request">141</property>
                 <property name="height-request">141</property>
                 <property name="halign">center</property>
-                <!--
-                TODO: Add a button to show Picture
                 <child type="overlay">
                   <object class="GtkButton">
-                    <property name="halign">end</property>
-                    <property name="valign">end</property>
-                    <property name="icon-name">view-more-symbolic</property>
-                    <signal name="clicked" handler="on_view_more_clicked" swap="yes"/>
+                    <property name="halign">start</property>
+                    <property name="valign">start</property>
+                    <property name="icon-name">view-fullscreen-symbolic</property>
+                    <signal name="clicked" handler="on_view_pic_clicked" swapped="yes"/>
                     <style>
                       <class name="flat"/>
                       <class name="circular"/>
@@ -29,7 +27,6 @@
                     </style>
                   </object>
                 </child>
-                -->
                 <child type="overlay">
                   <object class="GtkSpinner" id="spinner">
                     <property name="halign">center</property>

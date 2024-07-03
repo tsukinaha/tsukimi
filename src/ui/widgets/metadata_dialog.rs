@@ -26,6 +26,12 @@ mod imp {
         pub stack: TemplateChild<gtk::Stack>,  
 
         #[template_child]
+        pub page: TemplateChild<adw::NavigationPage>,
+
+        #[template_child]
+        pub hint: TemplateChild<adw::ActionRow>,
+
+        #[template_child]
         pub path_entry: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub title_entry: TemplateChild<adw::EntryRow>,
@@ -100,9 +106,10 @@ mod imp {
 
     impl MetadataDialog {
         fn init(&self) {
-            if !IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
-                self.stack.set_visible_child_name("nopermission");
-                return;
+            if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
+                self.page.set_title("View Metadata");
+                // bind the edit action
+                self.hint.set_subtitle("This page is READ-ONLY, because it is not finished yet.");
             }
 
             spawn(glib::clone!(@weak self as imp => async move {
@@ -126,6 +133,10 @@ mod imp {
                 self.disc_entry.set_text(&metadata.parent_index_number.unwrap_or_default().to_string());
                 self.track_entry.set_text(&metadata.index_number.unwrap_or_default().to_string());
                 self.music_group.set_visible(true);
+                return;
+            }
+
+            if metadata.item_type == "MusicAlbum" {
                 return;
             }
             

@@ -24,6 +24,13 @@
     <property name="content">
       <object class="GtkOverlay">
         <child type="overlay">
+          <object class="MediaViewer" id="media_viewer">
+            <property name="visible">False</property>
+          </object>
+        </child>
+        <child>
+      <object class="GtkOverlay">
+        <child type="overlay">
           <object class="AdwToastOverlay" id="toast">
             <child>
               <object class="GtkStack" id="stack">
@@ -482,6 +489,8 @@
           <class name="home-carousel" />
         </style>
       </object>
+    </child>
+    </object>
     </property>
   </template>
 </interface>

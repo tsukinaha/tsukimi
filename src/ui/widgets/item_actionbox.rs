@@ -111,6 +111,17 @@ impl ItemActionsBox {
                 }
             }))
             .build()]);
+        action_group.add_action_entries([gio::ActionEntry::builder("editi")
+            .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                use crate::ui::widgets::image_dialog::ImagesDialog;
+                use crate::insert_editm_dialog;
+                let id = obj.id();
+                if let Some(id) = id {
+                    let dialog = ImagesDialog::new(&id);
+                    insert_editm_dialog!(obj, dialog);
+                }
+            }))
+            .build()]);
         action_group
     }
 

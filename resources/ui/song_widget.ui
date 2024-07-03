@@ -147,12 +147,12 @@
   </object>
   <menu id="song-menu">
     <item>
-      <attribute name="label" translatable="yes">Edit Metadata</attribute>
+      <attribute name="label" translatable="yes">View Metadata</attribute>
       <attribute name="action">song.editm</attribute>
       <attribute name="hidden-when">action-disabled</attribute>
     </item>
     <item>
-      <attribute name="label" translatable="yes">Edit Images</attribute>
+      <attribute name="label" translatable="yes">View Images</attribute>
       <attribute name="action">song.editi</attribute>
       <attribute name="hidden-when">action-disabled</attribute>
     </item>

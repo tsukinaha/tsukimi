@@ -15,7 +15,10 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
 
     use crate::ui::clapper::page::ClapperPage;
+    use crate::ui::widgets::content_viewer::MediaContentViewer;
+    use crate::ui::widgets::image_dialog::ImagesDialog;
     use crate::ui::widgets::item_actionbox::ItemActionsBox;
+    use crate::ui::widgets::media_viewer::MediaViewer;
     use crate::ui::widgets::player_toolbar::PlayerToolbarBox;
 
     // Object holding the state
@@ -72,6 +75,8 @@ mod imp {
         pub clappernav: TemplateChild<ClapperPage>,
         #[template_child]
         pub serverselectlist: TemplateChild<gtk::ListBox>,
+        #[template_child]
+        pub media_viewer: TemplateChild<MediaViewer>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
     }
@@ -88,6 +93,9 @@ mod imp {
             PlayerToolbarBox::ensure_type();
             ClapperPage::ensure_type();
             ItemActionsBox::ensure_type();
+            MediaContentViewer::ensure_type();
+            MediaViewer::ensure_type();
+            ImagesDialog::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("win.home", None, move |window, _action, _parameter| {
@@ -121,6 +129,13 @@ mod imp {
             );
             klass.install_action_async("win.pop", None, |window, _action, _parameter| async move {
                 window.pop().await;
+            });
+            klass.install_action("win.toggle-fullscreen", None, |obj, _, _| {
+                if obj.is_fullscreened() {
+                    obj.unfullscreen();
+                } else {
+                    obj.fullscreen();
+                }
             });
         }
 
@@ -683,5 +698,18 @@ impl Window {
         let imp = self.imp();
         imp.stack.set_visible_child_name("clapper");
         imp.clappernav.add_item(url, suburi, name, line2, back);
+    }
+
+    pub fn reveal_image(&self, source_widget: &impl IsA<gtk::Widget>) {
+        let imp = self.imp();
+        imp.media_viewer.reveal(source_widget);
+    }
+
+    pub fn media_viewer_show_paintable(&self, paintable: Option<gtk::gdk::Paintable>) {
+        let Some(paintable) = paintable else {
+            return;
+        };
+        let imp = self.imp();
+        imp.media_viewer.view_image(paintable);
     }
 }

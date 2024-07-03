@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwDialog" class="ImagesDialog">
+    <property name="content-width">820</property>
+    <property name="content-height">400</property>
+    <property name="width-request">360</property>
+    <property name="height-request">800</property>
+    <property name="title" translatable="yes">View Images</property>
+    <property name="presentation-mode">bottom-sheet</property>
+    <child>
+      <object class="AdwToastOverlay" id="toast">
+        <child>
+          <object class="AdwNavigationView" id="navigation_view">
+            <child>
+              <object class="AdwNavigationPage" id="page">
+                <property name="tag">main</property>
+                <property name="title" translatable="yes">View Images</property>
+                <property name="child">
+                  <object class="AdwToolbarView">
+                    <child type="top">
+                      <object class="AdwHeaderBar">
+                        <property name="show-end-title-buttons">False</property>
+                        <property name="show-start-title-buttons">False</property>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="label" translatable="yes">Cancel</property>
+                            <property name="action-name">window.close</property>
+                          </object>
+                        </child>
+                        <child type="end">
+                          <object class="GtkButton">
+                            <property name="label" translatable="yes">_Save</property>
+                            <property name="use-underline">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="receives-default">True</property>
+                            <property name="action-name">data.save</property>
+                            <style>
+                              <class name="suggested-action" />
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                      s
+                    </child>
+                    <child>
+                      <object class="GtkScrolledWindow">
+                        <property name="hscrollbar-policy">never</property>
+                        <child>
+                          <object class="AdwClamp">
+                            <property name="margin-top">36</property>
+                            <property name="margin-bottom">12</property>
+                            <property name="vexpand">True</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">18</property>
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="valign">start</property>
+                                <child>
+                                  <object class="AdwActionRow" id="hint">
+                                    <property name="title" translatable="yes">Not Available</property>
+                                    <property name="subtitle" translatable="yes">This page is READ-ONLY, because you have no permission to modify it.</property>
+                                    <style>
+                                      <class name="property" />
+                                      <class name="error" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label" translatable="yes">Images</property>
+                                    <property name="margin-start">12</property>
+                                    <property name="halign">start</property>
+                                    <style>
+                                      <class name="title-5" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="orientation">horizontal</property>
+                                    <property name="margin-start">12</property>
+                                    <property name="margin-end">12</property>
+                                    <property name="homogeneous">True</property>
+                                    <property name="spacing">12</property>
+                                    <child>
+                                      <object class="ImageInfoCard" id="primary">
+                                        <property name="imgtype">Primary</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="ImageInfoCard" id="logo">
+                                        <property name="imgtype">Logo</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="ImageInfoCard" id="thumb">
+                                        <property name="imgtype">Thumb</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="orientation">horizontal</property>
+                                    <property name="margin-start">12</property>
+                                    <property name="margin-end">12</property>
+                                    <property name="homogeneous">True</property>
+                                    <property name="spacing">12</property>
+                                    <child>
+                                      <object class="ImageInfoCard" id="banner">
+                                        <property name="imgtype">Banner</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="ImageInfoCard" id="disc">
+                                        <property name="imgtype">Disc</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="ImageInfoCard" id="art">
+                                        <property name="imgtype">Art</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label" translatable="yes">BackDrops</property>
+                                    <property name="margin-start">12</property>
+                                    <property name="halign">start</property>
+                                    <style>
+                                      <class name="title-5" />
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
