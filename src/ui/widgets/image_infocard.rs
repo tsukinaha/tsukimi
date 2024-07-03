@@ -95,7 +95,12 @@ impl ImageInfoCard {
             .ancestor(Window::static_type())
             .and_downcast::<Window>()
             .unwrap();
-        window.media_viewer_show_paintable(self.picture_paintable());
+        let paintable = self.picture_paintable();
+        if paintable.is_none() {
+            toast!(self, "No image to view");
+            return;
+        }
+        window.media_viewer_show_paintable(paintable);
         window.reveal_image(&self.imp().picture.get());
         let dialog = self
             .ancestor(ImagesDialog::static_type())
