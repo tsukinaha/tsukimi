@@ -3,16 +3,24 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk::template_callbacks;
 
-use crate::{client::{client::EMBY_CLIENT, error::UserFacingError}, toast, utils::spawn_tokio};
+use crate::{
+    client::{client::EMBY_CLIENT, error::UserFacingError},
+    toast,
+    utils::spawn_tokio,
+};
 
 mod imp {
-    use std::cell::OnceCell;
-    use gtk::prelude::*;
-    use adw::prelude::*;
-    use crate::{client::structs::ImageItem, ui::{provider::IS_ADMIN, widgets::image_infocard::ImageInfoCard}, utils::spawn};
-    use gtk::{glib, CompositeTemplate};
     use super::*;
+    use crate::{
+        client::structs::ImageItem,
+        ui::{provider::IS_ADMIN, widgets::image_infocard::ImageInfoCard},
+        utils::spawn,
+    };
+    use adw::prelude::*;
     use glib::subclass::InitializingObject;
+    use gtk::prelude::*;
+    use gtk::{glib, CompositeTemplate};
+    use std::cell::OnceCell;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsukimi/images_dialog.ui")]
@@ -76,8 +84,9 @@ mod imp {
         fn init(&self) {
             if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
                 self.page.set_title("View Images");
-                self.hint.set_subtitle("This page is READ-ONLY, because it is not finished yet.");
-            }   
+                self.hint
+                    .set_subtitle("This page is READ-ONLY, because it is not finished yet.");
+            }
 
             let obj = self.obj();
             spawn(glib::clone!(@weak obj => async move {
@@ -103,25 +112,25 @@ mod imp {
             match item.image_type.as_str() {
                 "Primary" => {
                     self.set_card(&self.primary, item);
-                },
+                }
                 "Logo" => {
                     self.set_card(&self.logo, item);
-                },
+                }
                 "Thumb" => {
                     self.set_card(&self.thumb, item);
-                },
+                }
                 "Banner" => {
                     self.set_card(&self.banner, item);
-                },
+                }
                 "Disc" => {
                     self.set_card(&self.disc, item);
-                },
+                }
                 "Art" => {
                     self.set_card(&self.art, item);
-                },
+                }
                 "Backdrop" => {
                     self.add_backdrop(item);
-                },
+                }
                 _ => {}
             }
         }
@@ -142,13 +151,12 @@ impl ImagesDialog {
 
     pub async fn set_image_items(&self) {
         let id = self.id();
-        match spawn_tokio( async move { EMBY_CLIENT.get_image_items(&id).await } ).await
-        {
+        match spawn_tokio(async move { EMBY_CLIENT.get_image_items(&id).await }).await {
             Ok(items) => {
                 for item in items {
                     self.imp().set_item(&item);
                 }
-            },
+            }
             Err(e) => {
                 toast!(self, e.to_user_facing());
             }

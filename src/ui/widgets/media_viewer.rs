@@ -3,7 +3,6 @@ use gtk::{gdk, glib, glib::clone, graphene, CompositeTemplate};
 
 use crate::toast;
 
-
 const ANIMATION_DURATION: u32 = 250;
 const CANCEL_SWIPE_ANIMATION_DURATION: u32 = 400;
 
@@ -246,7 +245,6 @@ mod imp {
 
             self.obj().notify_fullscreened();
         }
-
     }
 }
 
@@ -265,8 +263,6 @@ impl MediaViewer {
     /// Reveal this widget by transitioning from `source_widget`.
     pub fn reveal(&self, source_widget: &impl IsA<gtk::Widget>) {
         let imp = self.imp();
-
-        
 
         self.set_visible(true);
         imp.menu.grab_focus();

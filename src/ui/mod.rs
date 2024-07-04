@@ -55,7 +55,7 @@ pub fn load_css() {
 
     let accent_color = SETTINGS.accent_color_code();
     styles.push_str(&format!(
-                "@define-color accent_color {};
+        "@define-color accent_color {};
                 @define-color accent_bg_color {};
                 @define-color accent_fg_color {};
                 overlay>label {{
@@ -69,12 +69,12 @@ pub fn load_css() {
                     border-radius: 999px;
                     margin: 3px;
                 }}",
-            accent_color,
-            accent_color,
-            SETTINGS.accent_fg_color_code(),
-            accent_color,
-            accent_color
-        ));
+        accent_color,
+        accent_color,
+        SETTINGS.accent_fg_color_code(),
+        accent_color,
+        accent_color
+    ));
 
     provider.load_from_string(&styles);
 

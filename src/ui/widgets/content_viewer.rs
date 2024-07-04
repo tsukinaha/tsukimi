@@ -7,9 +7,9 @@ use crate::utils::spawn;
 use super::image_paintable::ImagePaintable;
 
 mod imp {
-    use std::cell::Cell;
-    use gtk::{glib, CompositeTemplate};
     use glib::subclass::InitializingObject;
+    use gtk::{glib, CompositeTemplate};
+    use std::cell::Cell;
 
     use super::*;
 
@@ -95,7 +95,7 @@ impl MediaContentViewer {
     pub fn show_fallback(&self) {
         let imp = self.imp();
         let fallback = &imp.fallback;
-        
+
         fallback.set_title("Image not Viewable");
         fallback.set_icon_name(Some("image-missing"));
 
@@ -139,15 +139,14 @@ impl MediaContentViewer {
     }
 
     async fn view_file_inner(&self, file: gio::File) {
-
         match ImagePaintable::from_file(&file) {
-                Ok(texture) => {
-                    self.view_image(&texture);
-                    return;
-                }
-                Err(error) => {
-                    warn!("Could not load GdkTexture from file: {error}");
-                }
+            Ok(texture) => {
+                self.view_image(&texture);
+                return;
+            }
+            Err(error) => {
+                warn!("Could not load GdkTexture from file: {error}");
+            }
         }
 
         self.show_fallback();

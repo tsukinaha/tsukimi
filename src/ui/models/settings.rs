@@ -36,14 +36,17 @@ impl Settings {
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
     const KEY_ACCENT_FG_COLOR_CODE: &'static str = "accent-fg-color-code";
 
-    pub fn set_accent_fg_color_code(&self, accent_fg_color_code: &str) -> Result<(), glib::BoolError> {
+    pub fn set_accent_fg_color_code(
+        &self,
+        accent_fg_color_code: &str,
+    ) -> Result<(), glib::BoolError> {
         self.set_string(Self::KEY_ACCENT_FG_COLOR_CODE, accent_fg_color_code)
     }
 
     pub fn accent_fg_color_code(&self) -> String {
         self.string(Self::KEY_ACCENT_FG_COLOR_CODE).to_string()
     }
-    
+
     pub fn set_accent_color_code(&self, accent_color_code: &str) -> Result<(), glib::BoolError> {
         self.set_string(Self::KEY_ACCENT_COLOR_CODE, accent_color_code)
     }

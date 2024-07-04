@@ -15,8 +15,8 @@ use super::window::Window;
 mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
-    use gtk::{glib, CompositeTemplate};
     use gtk::prelude::*;
+    use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
 
     // Object holding the state
@@ -26,7 +26,7 @@ mod imp {
     pub struct ImageInfoCard {
         #[property(get, set, construct_only)]
         pub imgtype: OnceCell<String>,
-        
+
         #[template_child]
         pub label1: TemplateChild<gtk::Label>,
         #[template_child]
@@ -63,7 +63,6 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             self.label1.set_text(&self.obj().imgtype());
-            
         }
     }
 
@@ -84,9 +83,7 @@ glib::wrapper! {
 #[template_callbacks]
 impl ImageInfoCard {
     pub fn new(img_type: &str) -> Self {
-        Object::builder()
-            .property("imgtype", img_type)
-            .build()
+        Object::builder().property("imgtype", img_type).build()
     }
 
     #[template_callback]
@@ -135,23 +132,27 @@ impl ImageInfoCard {
 
     pub fn set_picture(&self, img_type: &str, id: &str, image_index: &Option<u32>) {
         let path = EMBY_CLIENT.get_image_path(id, img_type, *image_index);
-        
+
         let picture = self.imp().picture.get();
-        spawn(glib::clone!(@weak picture, @weak self as obj =>async move {
-            let file = gio::File::for_uri(&path).read_future(Priority::LOW).await.ok();
-            if let Some(stream) = file {
-                match gtk::gdk_pixbuf::Pixbuf::from_stream(&stream, None::<&gio::Cancellable>) {
-                    Ok(pixbuf) => {
-                        picture.set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(&pixbuf)));
-                        obj.set_picture_visible();
-                    },
-                    Err(_) => {
-                        toast!(obj, "Error loading image");
-                        obj.set_fallback_visible();
+
+        gio::File::for_uri(&path).read_async(
+            Priority::LOW,
+            None::<&gio::Cancellable>,
+            glib::clone!(@weak self as obj => move |res| {
+                if let Some(stream) = res.ok() {
+                    match gtk::gdk_pixbuf::Pixbuf::from_stream(&stream, None::<&gio::Cancellable>) {
+                        Ok(pixbuf) => {
+                            picture.set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(&pixbuf)));
+                            obj.set_picture_visible();
+                        },
+                        Err(_) => {
+                            toast!(obj, "Error loading image");
+                            obj.set_fallback_visible();
+                        }
                     }
                 }
-            }  
-        }));
+            }),
+        );
     }
 
     pub fn set_picture_visible(&self) {
@@ -171,8 +172,9 @@ impl ImageInfoCard {
     }
 
     pub fn picture_texture(&self) -> Option<gtk::gdk::Texture> {
-        self.imp().picture.paintable().and_then(|paintable| {
-            paintable.downcast::<gtk::gdk::Texture>().ok()
-        })
+        self.imp()
+            .picture
+            .paintable()
+            .and_then(|paintable| paintable.downcast::<gtk::gdk::Texture>().ok())
     }
 }

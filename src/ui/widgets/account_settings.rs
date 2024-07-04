@@ -205,13 +205,19 @@ impl AccountSettings {
     pub fn set_color(&self) {
         let imp = self.imp();
         use std::str::FromStr;
-        imp.color.set_rgba(&RGBA::from_str(&SETTINGS.accent_color_code()).unwrap());
+        imp.color
+            .set_rgba(&RGBA::from_str(&SETTINGS.accent_color_code()).unwrap());
         imp.color.connect_rgba_notify(move |control| {
-            SETTINGS.set_accent_color_code(&control.rgba().to_string()).unwrap();
+            SETTINGS
+                .set_accent_color_code(&control.rgba().to_string())
+                .unwrap();
         });
-        imp.fg_color.set_rgba(&RGBA::from_str(&SETTINGS.accent_fg_color_code()).unwrap());
+        imp.fg_color
+            .set_rgba(&RGBA::from_str(&SETTINGS.accent_fg_color_code()).unwrap());
         imp.fg_color.connect_rgba_notify(move |control| {
-            SETTINGS.set_accent_fg_color_code(&control.rgba().to_string()).unwrap();
+            SETTINGS
+                .set_accent_fg_color_code(&control.rgba().to_string())
+                .unwrap();
         });
     }
 

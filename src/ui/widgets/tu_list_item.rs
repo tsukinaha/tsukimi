@@ -470,25 +470,25 @@ impl TuListItem {
         let action_group = gio::SimpleActionGroup::new();
 
         action_group.add_action_entries([gio::ActionEntry::builder("editm")
-                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
-                    spawn(glib::clone!(@weak obj => async move {
-                        let id = obj.item().id();
-                        let dialog = crate::ui::widgets::metadata_dialog::MetadataDialog::new(&id);
-                        crate::insert_editm_dialog!(obj, dialog);
-                    }))
+            .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                spawn(glib::clone!(@weak obj => async move {
+                    let id = obj.item().id();
+                    let dialog = crate::ui::widgets::metadata_dialog::MetadataDialog::new(&id);
+                    crate::insert_editm_dialog!(obj, dialog);
                 }))
-                .build()]);
+            }))
+            .build()]);
 
         action_group.add_action_entries([gio::ActionEntry::builder("editi")
-                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
-                    spawn(glib::clone!(@weak obj => async move {
-                        let id = obj.item().id();
-                        let dialog = crate::ui::widgets::image_dialog::ImagesDialog::new(&id);
-                        crate::insert_editm_dialog!(obj, dialog);
-                    }))
+            .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                spawn(glib::clone!(@weak obj => async move {
+                    let id = obj.item().id();
+                    let dialog = crate::ui::widgets::image_dialog::ImagesDialog::new(&id);
+                    crate::insert_editm_dialog!(obj, dialog);
                 }))
-                .build()]);
-    
+            }))
+            .build()]);
+
         match self.item().is_favorite() {
             true => action_group.add_action_entries([gio::ActionEntry::builder("unlike")
                 .activate(glib::clone!(@weak self as obj => move |_, _, _| {
@@ -615,7 +615,17 @@ impl TuListItem {
 
     #[template_callback]
     fn on_view_pic_clicked(&self) {
-        match self.imp().overlay.child().unwrap().downcast::<gtk::Revealer>().unwrap().child().unwrap().downcast::<gtk::Picture>() {
+        match self
+            .imp()
+            .overlay
+            .child()
+            .unwrap()
+            .downcast::<gtk::Revealer>()
+            .unwrap()
+            .child()
+            .unwrap()
+            .downcast::<gtk::Picture>()
+        {
             Ok(picture) => {
                 let window = self
                     .ancestor(Window::static_type())
@@ -628,7 +638,6 @@ impl TuListItem {
                 toast!(self, "Error loading image");
             }
         }
-
     }
 }
 

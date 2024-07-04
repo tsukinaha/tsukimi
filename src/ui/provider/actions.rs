@@ -5,9 +5,9 @@ use crate::ui::widgets::song_widget::SongWidget;
 use crate::ui::widgets::star_toggle::StarToggle;
 use crate::utils::spawn;
 use crate::utils::spawn_tokio;
+use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::ObjectSubclassIsExt;
-use gtk::glib;
 
 pub trait HasLikeAction {
     fn like_button(&self) -> StarToggle;

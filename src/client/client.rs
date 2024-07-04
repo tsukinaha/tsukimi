@@ -16,7 +16,8 @@ use crate::{
 use once_cell::sync::Lazy;
 
 use super::structs::{
-    AuthenticateResponse, Back, ImageItem, Item, List, LoginResponse, Media, SerInList, SimpleListItem
+    AuthenticateResponse, Back, ImageItem, Item, List, LoginResponse, Media, SerInList,
+    SimpleListItem,
 };
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
@@ -749,7 +750,15 @@ impl EmbyClient {
 
     pub fn get_image_path(&self, id: &str, image_type: &str, image_index: Option<u32>) -> String {
         let path = format!("Items/{}/Images/{}/", id, image_type);
-        let url = self.url.lock().unwrap().as_ref().unwrap().clone().join(&path).unwrap();
+        let url = self
+            .url
+            .lock()
+            .unwrap()
+            .as_ref()
+            .unwrap()
+            .clone()
+            .join(&path)
+            .unwrap();
         match image_index {
             Some(index) => url.join(&index.to_string()).unwrap().to_string(),
             None => url.to_string(),
