@@ -139,9 +139,10 @@
                                     <property name="margin-start">12</property>
                                     <property name="margin-end">12</property>
                                     <property name="selection-mode">none</property>
-                                    <property name="homogeneous">True</property>
-                                    <property name="column-spacing">12</property>
+                                    <property name="homogeneous">False</property>
+                                    <property name="column-spacing">3</property>
                                     <property name="row-spacing">12</property>
+                                    <property name="min-children-per-line">3</property>
                                   </object>
                                 </child>
                               </object>
