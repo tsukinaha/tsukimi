@@ -92,9 +92,22 @@
                                       <object class="AdwStatusPage">
                                         <property name="valign">center</property>
                                         <property name="vexpand">True</property>
-                                        <property name="icon-name">list-add-symbolic</property>
+                                        <property name="icon-name">network-server-symbolic</property>
                                         <property name="title" translatable="yes">No Server</property>
-                                        <property name="description" translatable="yes">Add a server to get started</property>
+                                        <property name="description" translatable="yes">Add a server to get started.
+You should install the package `gst-libav` to play media files with built-in player.</property>
+                                        <property name="child">
+                                          <object class="GtkButton" id="add_server">
+                                            <property name="label" translatable="yes">Add Server</property>
+                                            <property name="halign">center</property>
+                                            <property name="valign">center</property>
+                                            <signal name="clicked" handler="on_add_server" swapped="yes"/>
+                                            <style>
+                                              <class name="suggested-action" />
+                                              <class name="pill" />
+                                            </style>
+                                          </object>
+                                        </property>
                                       </object>
                                     </property>
                                   </object>
@@ -102,13 +115,13 @@
                               </object>
                             </child>
                             <child type="overlay">
-                              <object class="GtkToggleButton">
+                              <object class="GtkButton">
                                 <property name="halign">end</property>
                                 <property name="valign">end</property>
                                 <property name="icon-name">list-add-symbolic</property>
                                 <property name="margin-end">30</property>
                                 <property name="margin-bottom">30</property>
-                                <property name="action-name">win.new-account</property>
+                                <signal name="clicked" handler="on_add_server" swapped="yes"/>
                                 <style>
                                   <class name="osd" />
                                   <class name="suggested-action" />
