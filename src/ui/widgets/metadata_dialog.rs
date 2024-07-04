@@ -1,7 +1,6 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::glib;
-use gtk::prelude::*;
 use gtk::template_callbacks;
 use gtk::SpinButton;
 
@@ -18,9 +17,9 @@ mod imp {
         ui::{provider::IS_ADMIN, widgets::item::dt},
         utils::spawn,
     };
-    use adw::prelude::*;
+    
     use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
+    
     use gtk::{glib, CompositeTemplate};
     use std::cell::{OnceCell, RefCell};
 

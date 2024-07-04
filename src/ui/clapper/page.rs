@@ -5,6 +5,7 @@ use crate::config::set_config;
 use crate::toast;
 use crate::ui::widgets::song_widget::format_duration;
 use crate::ui::widgets::window::Window;
+#[allow(clippy::all, unused_imports)]
 use clapper::{AudioStream, VideoStream};
 use glib::Object;
 use gtk::prelude::*;

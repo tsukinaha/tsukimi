@@ -25,6 +25,7 @@ mod sealed {
     impl<T: super::IsA<super::ThreadedObject>> Sealed for T {}
 }
 
+#[allow(dead_code)]
 pub trait ThreadedObjectExt: IsA<ThreadedObject> + sealed::Sealed + 'static {
     #[doc(alias = "clapper_threaded_object_get_context")]
     #[doc(alias = "get_context")]

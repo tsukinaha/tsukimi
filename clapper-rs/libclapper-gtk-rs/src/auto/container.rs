@@ -6,7 +6,7 @@
 // DO NOT EDIT
 
 use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "ClapperGtkContainer")]
@@ -207,6 +207,7 @@ mod sealed {
     impl<T: super::IsA<super::Container>> Sealed for T {}
 }
 
+#[allow(dead_code)]
 pub trait ContainerExt: IsA<Container> + sealed::Sealed + 'static {
     #[doc(alias = "clapper_gtk_container_get_adaptive_height")]
     #[doc(alias = "get_adaptive_height")]

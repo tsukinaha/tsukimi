@@ -7,7 +7,7 @@
 
 use crate::{Container,VideoActionMask};
 use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "ClapperGtkLeadContainer")]
@@ -216,6 +216,7 @@ mod sealed {
     impl<T: super::IsA<super::LeadContainer>> Sealed for T {}
 }
 
+#[allow(dead_code)]
 pub trait LeadContainerExt: IsA<LeadContainer> + sealed::Sealed + 'static {
     #[doc(alias = "clapper_gtk_lead_container_get_blocked_actions")]
     #[doc(alias = "get_blocked_actions")]

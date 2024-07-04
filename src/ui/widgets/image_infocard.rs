@@ -7,7 +7,6 @@ use gtk::{gio, glib};
 
 use crate::client::client::EMBY_CLIENT;
 use crate::toast;
-use crate::utils::spawn;
 
 use super::image_dialog::ImagesDialog;
 use super::window::Window;
@@ -125,7 +124,7 @@ impl ImageInfoCard {
         };
         let mut str = format!("{}x{}", width, height);
         if let Some(size) = size {
-            str.push_str(&format!(" {}", bytefmt::format(*size)).as_str());
+            str.push_str(format!(" {}", bytefmt::format(*size)).as_str());
         }
         self.imp().label2.set_text(&str);
     }
@@ -139,7 +138,7 @@ impl ImageInfoCard {
             Priority::LOW,
             None::<&gio::Cancellable>,
             glib::clone!(@weak self as obj => move |res| {
-                if let Some(stream) = res.ok() {
+                if let Ok(stream) = res {
                     match gtk::gdk_pixbuf::Pixbuf::from_stream(&stream, None::<&gio::Cancellable>) {
                         Ok(pixbuf) => {
                             picture.set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(&pixbuf)));

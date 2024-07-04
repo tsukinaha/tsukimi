@@ -4,9 +4,9 @@
 // from ../gir-files-gtk
 // DO NOT EDIT
 
-use crate::{StreamType};
+use crate::StreamType;
 use glib::{prelude::*,signal::{connect_raw, SignalHandlerId},translate::*};
-use std::{boxed::Box as Box_};
+use std::boxed::Box as Box_;
 
 glib::wrapper! {
     #[doc(alias = "ClapperStream")]
@@ -69,6 +69,7 @@ mod sealed {
     impl<T: super::IsA<super::Stream>> Sealed for T {}
 }
 
+#[allow(dead_code)]
 pub trait StreamExt: IsA<Stream> + sealed::Sealed + 'static {
     #[doc(alias = "clapper_stream_get_stream_type")]
     #[doc(alias = "get_stream_type")]

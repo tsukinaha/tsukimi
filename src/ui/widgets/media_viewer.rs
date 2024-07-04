@@ -254,6 +254,12 @@ glib::wrapper! {
         @extends gtk::Widget, @implements gtk::Accessible, adw::Swipeable;
 }
 
+impl Default for MediaViewer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[gtk::template_callbacks]
 impl MediaViewer {
     pub fn new() -> Self {
