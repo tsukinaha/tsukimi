@@ -1,9 +1,3 @@
-use clapper::{AudioStream, VideoStream};
-use glib::Object;
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
-
 use crate::client::client::EMBY_CLIENT;
 use crate::client::network::RUNTIME;
 use crate::client::structs::Back;
@@ -11,6 +5,12 @@ use crate::config::set_config;
 use crate::toast;
 use crate::ui::widgets::song_widget::format_duration;
 use crate::ui::widgets::window::Window;
+#[allow(clippy::all, unused_imports)]
+use clapper::{AudioStream, VideoStream};
+use glib::Object;
+use gtk::prelude::*;
+use gtk::subclass::prelude::*;
+use gtk::{gio, glib};
 
 mod imp {
 

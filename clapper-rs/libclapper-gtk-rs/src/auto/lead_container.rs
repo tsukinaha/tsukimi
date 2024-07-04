@@ -5,7 +5,6 @@
 // from ../libclapper-rs
 // DO NOT EDIT
 
-#![allow(unused)]
 use crate::{Container, VideoActionMask};
 use glib::{
     prelude::*,
@@ -296,6 +295,7 @@ mod sealed {
     impl<T: super::IsA<super::LeadContainer>> Sealed for T {}
 }
 
+#[allow(dead_code)]
 pub trait LeadContainerExt: IsA<LeadContainer> + sealed::Sealed + 'static {
     #[doc(alias = "clapper_gtk_lead_container_get_blocked_actions")]
     #[doc(alias = "get_blocked_actions")]

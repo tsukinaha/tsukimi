@@ -5,7 +5,6 @@
 // from ../libclapper-rs
 // DO NOT EDIT
 
-#![allow(unused)]
 use glib::{
     prelude::*,
     signal::{connect_raw, SignalHandlerId},
@@ -283,6 +282,7 @@ mod sealed {
     impl<T: super::IsA<super::Container>> Sealed for T {}
 }
 
+#[allow(dead_code)]
 pub trait ContainerExt: IsA<Container> + sealed::Sealed + 'static {
     #[doc(alias = "clapper_gtk_container_get_adaptive_height")]
     #[doc(alias = "get_adaptive_height")]

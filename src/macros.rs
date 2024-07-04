@@ -10,11 +10,11 @@ macro_rules! _add_toast {
             use adw::prelude::PreferencesDialogExt;
             dialog.add_toast($toast);
         } else if let Some(dialog) = $widget
-        .ancestor(adw::ToastOverlay::static_type())
-        .and_downcast::<adw::ToastOverlay>() {
+            .ancestor(adw::ToastOverlay::static_type())
+            .and_downcast::<adw::ToastOverlay>()
+        {
             dialog.add_toast($toast);
-        }
-        else if let Some(root) = $widget.root() {
+        } else if let Some(root) = $widget.root() {
             if let Some(window) = root.downcast_ref::<adw::PreferencesWindow>() {
                 use adw::prelude::PreferencesWindowExt;
                 window.add_toast($toast);

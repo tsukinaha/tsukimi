@@ -18,6 +18,7 @@ mod imp {
     };
     use adw::prelude::*;
     use glib::subclass::InitializingObject;
+
     use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
 

@@ -7,7 +7,6 @@ use gtk::{gio, glib};
 
 use crate::client::client::EMBY_CLIENT;
 use crate::toast;
-use crate::utils::spawn;
 
 use super::image_dialog::ImagesDialog;
 use super::window::Window;
@@ -134,21 +133,25 @@ impl ImageInfoCard {
         let path = EMBY_CLIENT.get_image_path(id, img_type, *image_index);
 
         let picture = self.imp().picture.get();
-        spawn(glib::clone!(@weak picture, @weak self as obj =>async move {
-            let file = gio::File::for_uri(&path).read_future(Priority::LOW).await.ok();
-            if let Some(stream) = file {
-                match gtk::gdk_pixbuf::Pixbuf::from_stream(&stream, None::<&gio::Cancellable>) {
-                    Ok(pixbuf) => {
-                        picture.set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(&pixbuf)));
-                        obj.set_picture_visible();
-                    },
-                    Err(_) => {
-                        toast!(obj, "Error loading image");
-                        obj.set_fallback_visible();
+
+        gio::File::for_uri(&path).read_async(
+            Priority::LOW,
+            None::<&gio::Cancellable>,
+            glib::clone!(@weak self as obj => move |res| {
+                if let Ok(stream) = res {
+                    match gtk::gdk_pixbuf::Pixbuf::from_stream(&stream, None::<&gio::Cancellable>) {
+                        Ok(pixbuf) => {
+                            picture.set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(&pixbuf)));
+                            obj.set_picture_visible();
+                        },
+                        Err(_) => {
+                            toast!(obj, "Error loading image");
+                            obj.set_fallback_visible();
+                        }
                     }
                 }
-            }
-        }));
+            }),
+        );
     }
 
     pub fn set_picture_visible(&self) {

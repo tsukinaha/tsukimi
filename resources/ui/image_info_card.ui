@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwBin" class="ImageInfoCard">
-    <property name="halign">center</property>
+    <property name="halign">start</property>
     <property name="width-request">250</property>
     <property name="height-request">170</property>
     <child>

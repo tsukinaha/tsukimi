@@ -4,7 +4,6 @@
 // from ../gir-files-gtk
 // DO NOT EDIT
 
-#![allow(unused)]
 use crate::StreamType;
 use glib::{
     prelude::*,
@@ -81,6 +80,7 @@ mod sealed {
     impl<T: super::IsA<super::Stream>> Sealed for T {}
 }
 
+#[allow(dead_code)]
 pub trait StreamExt: IsA<Stream> + sealed::Sealed + 'static {
     #[doc(alias = "clapper_stream_get_stream_type")]
     #[doc(alias = "get_stream_type")]
