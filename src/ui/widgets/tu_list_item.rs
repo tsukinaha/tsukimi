@@ -219,6 +219,7 @@ impl TuListItem {
                 self.set_picture();
             }
             _ => {
+                self.set_visible(false);
                 println!("Unknown item type: {}", item_type)
             }
         }

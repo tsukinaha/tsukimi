@@ -29,7 +29,7 @@
                             <child>
                               <object class="GtkPicture" id="backdrop">
                                 <property name="halign">fill</property>
-                                <property name="valign">fill</property>
+                                <property name="valign">start</property>
                                 <property name="content-fit">cover</property>
                                 <property name="hexpand">true</property>
                                 <property name="height-request">700</property>
@@ -309,19 +309,25 @@
                   </object>
                 </child>
                 <child>
-                  <object class="HortuScrolled" id="includehortu">
-                  </object>
-                </child>
-                <child>
-                  <object class="HortuScrolled" id="additionalhortu">
-                  </object>
-                </child>
-                <child>
-                  <object class="HortuScrolled" id="actorhortu">
-                  </object>
-                </child>
-                <child>
-                  <object class="HortuScrolled" id="recommendhortu">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="height-request">500</property>
+                    <child>
+                      <object class="HortuScrolled" id="includehortu">
+                      </object>
+                    </child>
+                    <child>
+                      <object class="HortuScrolled" id="additionalhortu">
+                      </object>
+                    </child>
+                    <child>
+                      <object class="HortuScrolled" id="actorhortu">
+                      </object>
+                    </child>
+                    <child>
+                      <object class="HortuScrolled" id="recommendhortu">
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
