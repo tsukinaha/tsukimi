@@ -124,7 +124,8 @@ jobs:
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: powershell
         run: |
-          7z.exe a artifact/tsukimi-${{matrix.arch}}.7z artifact/tsukimi-windows-gnu-amd64/*
+          cd artifact/tsukimi-windows-gnu-amd64
+          7z.exe a ../tsukimi-${{matrix.arch}}.7z ./*
 
       - name: Build Complete Package
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
