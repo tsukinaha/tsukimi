@@ -3,7 +3,7 @@
 > A Simple Third-party Emby client.
 > 使用 GTK4-RS 编写的第三方 Emby 客户端
 
-![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Static Badge](https://img.shields.io/badge/Telegram-Group-blue)](https://t.me/+mhcPxx5kE6QzMjVl) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Windows GNU CI status](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml) [![AUR Version](https://img.shields.io/aur/version/tsukimi-git)](https://aur.archlinux.org/packages/tsukimi-git) 
+![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Static Badge](https://img.shields.io/badge/Telegram-Group-blue)](https://t.me/+J7bzIkIGcPA2OTll) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Windows GNU CI status](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml) [![AUR Version](https://img.shields.io/aur/version/tsukimi-git)](https://aur.archlinux.org/packages/tsukimi-git) 
 
 ## Notice
 
@@ -14,8 +14,9 @@
 - 缩放导致的问题在 gtk4 无解，KDE Wayland/Windows 下请将系统缩放修改至 150% 以下来回避双重缩放    
 - Windows 下如出现 窗口无法显示 黑边框 等情况
 请尝试更新图形显示卡驱动 或安装 Archlinux    
-- FR/Issue 前请检查是否重复    
+- Issue 前请检查是否重复    
 - Trello Kanban     https://trello.com/b/8GOsuygJ/%E5%95%8A%EF%BC%9F    
+- Telegram Group    https://t.me/+J7bzIkIGcPA2OTll
 
 ## Screenshots
 <div align="center">
@@ -82,8 +83,18 @@ Priority:
 - [MPV](https://github.com/mpv-player/mpv)
 - [Adwaita](https://gitlab.gnome.org/GNOME/libadwaita/)
 
-[![Star History Chart](https://api.star-history.com/svg?repos=tsukinaha/tsukimi&type=Timeline)](https://star-history.com/#tsukinaha/tsukimi&Timeline)
-
 ## Thanks
 - Gnome Music
 - Fractal
+- Clapper
+
+## Star History
+
+<a href="https://star-history.com/#tsukinaha/tsukimi&Timeline">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=tsukinaha/tsukimi&type=Timeline&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=tsukinaha/tsukimi&type=Timeline" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=tsukinaha/tsukimi&type=Timeline" />
+ </picture>
+</a>
+
