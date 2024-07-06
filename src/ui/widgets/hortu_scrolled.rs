@@ -1,5 +1,5 @@
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::{gio, glib, CompositeTemplate};
+use gtk::{gio, glib, template_callbacks, CompositeTemplate};
 
 use crate::client::structs::SimpleListItem;
 use crate::ui::provider::tu_item::TuItem;
@@ -46,6 +46,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -209,6 +210,7 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
 }
 
+#[template_callbacks]
 impl HortuScrolled {
     pub fn new(is_resume: bool) -> Self {
         glib::Object::builder()
@@ -252,5 +254,46 @@ impl HortuScrolled {
 
     pub fn set_title(&self, title: &str) {
         self.imp().label.set_text(title);
+    }
+
+    #[template_callback]
+    fn on_rightbutton_clicked(&self) {
+        self.anime(true);
+    }
+
+    #[template_callback]
+    fn on_leftbutton_clicked(&self) {
+        self.anime(false);
+    }
+
+    fn anime(&self, is_right: bool) {
+        let scrolled = self.imp().scrolled.get();
+        let adj = scrolled.hadjustment();
+
+        let Some(clock) = scrolled.frame_clock() else {
+            return
+        };
+
+        let start = adj.value();
+        let end = if is_right { start + 400.0 } else { start - 400.0 };
+        let start_time = clock.frame_time();
+        let end_time = start_time + 1000 * 400;
+        scrolled.add_tick_callback(move |_view, clock| {
+            let now = clock.frame_time();
+            if now < end_time && adj.value() != end {
+                let mut t = (now - start_time) as f64 / (end_time - start_time) as f64;
+                t = Self::ease_out_cubic(t);
+                adj.set_value(start + t * (end - start));
+                glib::ControlFlow::Continue
+            } else {
+                adj.set_value(end);
+                glib::ControlFlow::Break
+            }
+        });
+    }
+
+    fn ease_out_cubic(t: f64) -> f64 {
+        let t = t - 1.0;
+        t * t * t + 1.0
     }
 }

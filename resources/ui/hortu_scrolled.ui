@@ -21,11 +21,11 @@
                     <property name="margin-start">12</property>
                     <property name="hexpand">True</property>
                     <attributes>
-                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                      <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                     </attributes>
                     <style>
-                      <class name="title-4"/>
-                      <class name="dim-label"/>
+                      <class name="title-4" />
+                      <class name="dim-label" />
                     </style>
                   </object>
                 </child>
@@ -37,22 +37,57 @@
                     <property name="margin-end">12</property>
                     <property name="icon-name">view-more-symbolic</property>
                     <style>
-                      <class name="circular"/>
-                      <class name="flat"/>
+                      <class name="circular" />
+                      <class name="flat" />
                     </style>
                   </object>
                 </child>
               </object>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="scrolled">
-                <property name="overlay-scrolling">true</property>
-                <property name="vscrollbar-policy">never</property>
-                <property name="margin-bottom">3</property>
+
+              <object class="GtkOverlay">
                 <child>
-                  <object class="GtkListView" id="list">
-                    <property name="orientation">horizontal</property>
-                    <property name="single-click-activate">True</property>
+                  <object class="GtkScrolledWindow" id="scrolled">
+                    <property name="overlay-scrolling">true</property>
+                    <property name="vscrollbar-policy">never</property>
+                    <property name="margin-bottom">3</property>
+                    <child>
+                      <object class="GtkListView" id="list">
+                        <property name="orientation">horizontal</property>
+                        <property name="single-click-activate">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child type="overlay">
+                  <object class="GtkButton">
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="height-request">50</property>
+                    <property name="width-request">36</property>
+                    <property name="margin-end">6</property>
+                    <property name="icon-name">go-next-symbolic</property>
+                    <property name="opacity">0.5</property>
+                    <signal name="clicked" handler="on_rightbutton_clicked" swapped="yes" />
+                    <style>
+                      <class name="suggested-action" />
+                    </style>
+                  </object>
+                </child>
+                <child type="overlay">
+                  <object class="GtkButton">
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <property name="height-request">50</property>
+                    <property name="width-request">36</property>
+                    <property name="margin-start">6</property>
+                    <property name="icon-name">go-previous-symbolic</property>
+                    <property name="opacity">0.5</property>
+                    <signal name="clicked" handler="on_leftbutton_clicked" swapped="yes" />
+                    <style>
+                      <class name="suggested-action" />
+                    </style>
                   </object>
                 </child>
               </object>
