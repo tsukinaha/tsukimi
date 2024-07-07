@@ -8,10 +8,10 @@
 #![cfg(unix)]
 
 use clapper_gtk_sys::*;
-use std::mem::{align_of, size_of};
 use std::env;
 use std::error::Error;
 use std::ffi::OsString;
+use std::mem::{align_of, size_of};
 use std::path::Path;
 use std::process::{Command, Stdio};
 use std::str;
@@ -69,8 +69,7 @@ fn pkg_config_cflags(packages: &[&str]) -> Result<Vec<String>, Box<dyn Error>> {
     if packages.is_empty() {
         return Ok(Vec::new());
     }
-    let pkg_config = env::var_os("PKG_CONFIG")
-        .unwrap_or_else(|| OsString::from("pkg-config"));
+    let pkg_config = env::var_os("PKG_CONFIG").unwrap_or_else(|| OsString::from("pkg-config"));
     let mut cmd = Command::new(pkg_config);
     cmd.arg("--cflags");
     cmd.args(packages);
@@ -83,7 +82,6 @@ fn pkg_config_cflags(packages: &[&str]) -> Result<Vec<String>, Box<dyn Error>> {
     let stdout = str::from_utf8(&out.stdout)?;
     Ok(shell_words::split(stdout.trim())?)
 }
-
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 struct Layout {
@@ -166,8 +164,7 @@ fn cross_validate_layout_with_c() {
 
     let mut results = Results::default();
 
-    for ((rust_name, rust_layout), (c_name, c_layout)) in
-        RUST_LAYOUTS.iter().zip(c_layouts.iter())
+    for ((rust_name, rust_layout), (c_name, c_layout)) in RUST_LAYOUTS.iter().zip(c_layouts.iter())
     {
         if rust_name != c_name {
             results.record_failed();
@@ -177,9 +174,7 @@ fn cross_validate_layout_with_c() {
 
         if rust_layout != c_layout {
             results.record_failed();
-            eprintln!(
-                "Layout mismatch for {rust_name}\nRust: {rust_layout:?}\nC:    {c_layout:?}",
-            );
+            eprintln!("Layout mismatch for {rust_name}\nRust: {rust_layout:?}\nC:    {c_layout:?}",);
             continue;
         }
 
@@ -209,22 +204,118 @@ fn get_c_output(name: &str) -> Result<String, Box<dyn Error>> {
 }
 
 const RUST_LAYOUTS: &[(&str, Layout)] = &[
-    ("ClapperGtkBillboardClass", Layout {size: size_of::<ClapperGtkBillboardClass>(), alignment: align_of::<ClapperGtkBillboardClass>()}),
-    ("ClapperGtkContainer", Layout {size: size_of::<ClapperGtkContainer>(), alignment: align_of::<ClapperGtkContainer>()}),
-    ("ClapperGtkContainerClass", Layout {size: size_of::<ClapperGtkContainerClass>(), alignment: align_of::<ClapperGtkContainerClass>()}),
-    ("ClapperGtkExtraMenuButtonClass", Layout {size: size_of::<ClapperGtkExtraMenuButtonClass>(), alignment: align_of::<ClapperGtkExtraMenuButtonClass>()}),
-    ("ClapperGtkLeadContainer", Layout {size: size_of::<ClapperGtkLeadContainer>(), alignment: align_of::<ClapperGtkLeadContainer>()}),
-    ("ClapperGtkLeadContainerClass", Layout {size: size_of::<ClapperGtkLeadContainerClass>(), alignment: align_of::<ClapperGtkLeadContainerClass>()}),
-    ("ClapperGtkNextItemButtonClass", Layout {size: size_of::<ClapperGtkNextItemButtonClass>(), alignment: align_of::<ClapperGtkNextItemButtonClass>()}),
-    ("ClapperGtkPreviousItemButtonClass", Layout {size: size_of::<ClapperGtkPreviousItemButtonClass>(), alignment: align_of::<ClapperGtkPreviousItemButtonClass>()}),
-    ("ClapperGtkSeekBarClass", Layout {size: size_of::<ClapperGtkSeekBarClass>(), alignment: align_of::<ClapperGtkSeekBarClass>()}),
-    ("ClapperGtkSimpleControlsClass", Layout {size: size_of::<ClapperGtkSimpleControlsClass>(), alignment: align_of::<ClapperGtkSimpleControlsClass>()}),
-    ("ClapperGtkTitleHeaderClass", Layout {size: size_of::<ClapperGtkTitleHeaderClass>(), alignment: align_of::<ClapperGtkTitleHeaderClass>()}),
-    ("ClapperGtkTitleLabelClass", Layout {size: size_of::<ClapperGtkTitleLabelClass>(), alignment: align_of::<ClapperGtkTitleLabelClass>()}),
-    ("ClapperGtkToggleFullscreenButtonClass", Layout {size: size_of::<ClapperGtkToggleFullscreenButtonClass>(), alignment: align_of::<ClapperGtkToggleFullscreenButtonClass>()}),
-    ("ClapperGtkTogglePlayButtonClass", Layout {size: size_of::<ClapperGtkTogglePlayButtonClass>(), alignment: align_of::<ClapperGtkTogglePlayButtonClass>()}),
-    ("ClapperGtkVideoActionMask", Layout {size: size_of::<ClapperGtkVideoActionMask>(), alignment: align_of::<ClapperGtkVideoActionMask>()}),
-    ("ClapperGtkVideoClass", Layout {size: size_of::<ClapperGtkVideoClass>(), alignment: align_of::<ClapperGtkVideoClass>()}),
+    (
+        "ClapperGtkBillboardClass",
+        Layout {
+            size: size_of::<ClapperGtkBillboardClass>(),
+            alignment: align_of::<ClapperGtkBillboardClass>(),
+        },
+    ),
+    (
+        "ClapperGtkContainer",
+        Layout {
+            size: size_of::<ClapperGtkContainer>(),
+            alignment: align_of::<ClapperGtkContainer>(),
+        },
+    ),
+    (
+        "ClapperGtkContainerClass",
+        Layout {
+            size: size_of::<ClapperGtkContainerClass>(),
+            alignment: align_of::<ClapperGtkContainerClass>(),
+        },
+    ),
+    (
+        "ClapperGtkExtraMenuButtonClass",
+        Layout {
+            size: size_of::<ClapperGtkExtraMenuButtonClass>(),
+            alignment: align_of::<ClapperGtkExtraMenuButtonClass>(),
+        },
+    ),
+    (
+        "ClapperGtkLeadContainer",
+        Layout {
+            size: size_of::<ClapperGtkLeadContainer>(),
+            alignment: align_of::<ClapperGtkLeadContainer>(),
+        },
+    ),
+    (
+        "ClapperGtkLeadContainerClass",
+        Layout {
+            size: size_of::<ClapperGtkLeadContainerClass>(),
+            alignment: align_of::<ClapperGtkLeadContainerClass>(),
+        },
+    ),
+    (
+        "ClapperGtkNextItemButtonClass",
+        Layout {
+            size: size_of::<ClapperGtkNextItemButtonClass>(),
+            alignment: align_of::<ClapperGtkNextItemButtonClass>(),
+        },
+    ),
+    (
+        "ClapperGtkPreviousItemButtonClass",
+        Layout {
+            size: size_of::<ClapperGtkPreviousItemButtonClass>(),
+            alignment: align_of::<ClapperGtkPreviousItemButtonClass>(),
+        },
+    ),
+    (
+        "ClapperGtkSeekBarClass",
+        Layout {
+            size: size_of::<ClapperGtkSeekBarClass>(),
+            alignment: align_of::<ClapperGtkSeekBarClass>(),
+        },
+    ),
+    (
+        "ClapperGtkSimpleControlsClass",
+        Layout {
+            size: size_of::<ClapperGtkSimpleControlsClass>(),
+            alignment: align_of::<ClapperGtkSimpleControlsClass>(),
+        },
+    ),
+    (
+        "ClapperGtkTitleHeaderClass",
+        Layout {
+            size: size_of::<ClapperGtkTitleHeaderClass>(),
+            alignment: align_of::<ClapperGtkTitleHeaderClass>(),
+        },
+    ),
+    (
+        "ClapperGtkTitleLabelClass",
+        Layout {
+            size: size_of::<ClapperGtkTitleLabelClass>(),
+            alignment: align_of::<ClapperGtkTitleLabelClass>(),
+        },
+    ),
+    (
+        "ClapperGtkToggleFullscreenButtonClass",
+        Layout {
+            size: size_of::<ClapperGtkToggleFullscreenButtonClass>(),
+            alignment: align_of::<ClapperGtkToggleFullscreenButtonClass>(),
+        },
+    ),
+    (
+        "ClapperGtkTogglePlayButtonClass",
+        Layout {
+            size: size_of::<ClapperGtkTogglePlayButtonClass>(),
+            alignment: align_of::<ClapperGtkTogglePlayButtonClass>(),
+        },
+    ),
+    (
+        "ClapperGtkVideoActionMask",
+        Layout {
+            size: size_of::<ClapperGtkVideoActionMask>(),
+            alignment: align_of::<ClapperGtkVideoActionMask>(),
+        },
+    ),
+    (
+        "ClapperGtkVideoClass",
+        Layout {
+            size: size_of::<ClapperGtkVideoClass>(),
+            alignment: align_of::<ClapperGtkVideoClass>(),
+        },
+    ),
 ];
 
 const RUST_CONSTANTS: &[(&str, &str)] = &[
@@ -239,5 +330,3 @@ const RUST_CONSTANTS: &[(&str, &str)] = &[
     ("(guint) CLAPPER_GTK_VIDEO_ACTION_TOGGLE_FULLSCREEN", "4"),
     ("(guint) CLAPPER_GTK_VIDEO_ACTION_TOGGLE_PLAY", "2"),
 ];
-
-

@@ -7,10 +7,10 @@
 #![cfg(unix)]
 
 use clapper_sys::*;
-use std::mem::{align_of, size_of};
 use std::env;
 use std::error::Error;
 use std::ffi::OsString;
+use std::mem::{align_of, size_of};
 use std::path::Path;
 use std::process::{Command, Stdio};
 use std::str;
@@ -68,8 +68,7 @@ fn pkg_config_cflags(packages: &[&str]) -> Result<Vec<String>, Box<dyn Error>> {
     if packages.is_empty() {
         return Ok(Vec::new());
     }
-    let pkg_config = env::var_os("PKG_CONFIG")
-        .unwrap_or_else(|| OsString::from("pkg-config"));
+    let pkg_config = env::var_os("PKG_CONFIG").unwrap_or_else(|| OsString::from("pkg-config"));
     let mut cmd = Command::new(pkg_config);
     cmd.arg("--cflags");
     cmd.args(packages);
@@ -82,7 +81,6 @@ fn pkg_config_cflags(packages: &[&str]) -> Result<Vec<String>, Box<dyn Error>> {
     let stdout = str::from_utf8(&out.stdout)?;
     Ok(shell_words::split(stdout.trim())?)
 }
-
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 struct Layout {
@@ -165,8 +163,7 @@ fn cross_validate_layout_with_c() {
 
     let mut results = Results::default();
 
-    for ((rust_name, rust_layout), (c_name, c_layout)) in
-        RUST_LAYOUTS.iter().zip(c_layouts.iter())
+    for ((rust_name, rust_layout), (c_name, c_layout)) in RUST_LAYOUTS.iter().zip(c_layouts.iter())
     {
         if rust_name != c_name {
             results.record_failed();
@@ -176,9 +173,7 @@ fn cross_validate_layout_with_c() {
 
         if rust_layout != c_layout {
             results.record_failed();
-            eprintln!(
-                "Layout mismatch for {rust_name}\nRust: {rust_layout:?}\nC:    {c_layout:?}",
-            );
+            eprintln!("Layout mismatch for {rust_name}\nRust: {rust_layout:?}\nC:    {c_layout:?}",);
             continue;
         }
 
@@ -208,30 +203,174 @@ fn get_c_output(name: &str) -> Result<String, Box<dyn Error>> {
 }
 
 const RUST_LAYOUTS: &[(&str, Layout)] = &[
-    ("ClapperAudioStreamClass", Layout {size: size_of::<ClapperAudioStreamClass>(), alignment: align_of::<ClapperAudioStreamClass>()}),
-    ("ClapperDiscovererClass", Layout {size: size_of::<ClapperDiscovererClass>(), alignment: align_of::<ClapperDiscovererClass>()}),
-    ("ClapperDiscovererDiscoveryMode", Layout {size: size_of::<ClapperDiscovererDiscoveryMode>(), alignment: align_of::<ClapperDiscovererDiscoveryMode>()}),
-    ("ClapperFeature", Layout {size: size_of::<ClapperFeature>(), alignment: align_of::<ClapperFeature>()}),
-    ("ClapperFeatureClass", Layout {size: size_of::<ClapperFeatureClass>(), alignment: align_of::<ClapperFeatureClass>()}),
-    ("ClapperMarkerClass", Layout {size: size_of::<ClapperMarkerClass>(), alignment: align_of::<ClapperMarkerClass>()}),
-    ("ClapperMarkerType", Layout {size: size_of::<ClapperMarkerType>(), alignment: align_of::<ClapperMarkerType>()}),
-    ("ClapperMediaItemClass", Layout {size: size_of::<ClapperMediaItemClass>(), alignment: align_of::<ClapperMediaItemClass>()}),
-    ("ClapperMprisClass", Layout {size: size_of::<ClapperMprisClass>(), alignment: align_of::<ClapperMprisClass>()}),
-    ("ClapperPlayerClass", Layout {size: size_of::<ClapperPlayerClass>(), alignment: align_of::<ClapperPlayerClass>()}),
-    ("ClapperPlayerSeekMethod", Layout {size: size_of::<ClapperPlayerSeekMethod>(), alignment: align_of::<ClapperPlayerSeekMethod>()}),
-    ("ClapperPlayerState", Layout {size: size_of::<ClapperPlayerState>(), alignment: align_of::<ClapperPlayerState>()}),
-    ("ClapperQueueClass", Layout {size: size_of::<ClapperQueueClass>(), alignment: align_of::<ClapperQueueClass>()}),
-    ("ClapperQueueProgressionMode", Layout {size: size_of::<ClapperQueueProgressionMode>(), alignment: align_of::<ClapperQueueProgressionMode>()}),
-    ("ClapperServerClass", Layout {size: size_of::<ClapperServerClass>(), alignment: align_of::<ClapperServerClass>()}),
-    ("ClapperStream", Layout {size: size_of::<ClapperStream>(), alignment: align_of::<ClapperStream>()}),
-    ("ClapperStreamClass", Layout {size: size_of::<ClapperStreamClass>(), alignment: align_of::<ClapperStreamClass>()}),
-    ("ClapperStreamListClass", Layout {size: size_of::<ClapperStreamListClass>(), alignment: align_of::<ClapperStreamListClass>()}),
-    ("ClapperStreamType", Layout {size: size_of::<ClapperStreamType>(), alignment: align_of::<ClapperStreamType>()}),
-    ("ClapperSubtitleStreamClass", Layout {size: size_of::<ClapperSubtitleStreamClass>(), alignment: align_of::<ClapperSubtitleStreamClass>()}),
-    ("ClapperThreadedObject", Layout {size: size_of::<ClapperThreadedObject>(), alignment: align_of::<ClapperThreadedObject>()}),
-    ("ClapperThreadedObjectClass", Layout {size: size_of::<ClapperThreadedObjectClass>(), alignment: align_of::<ClapperThreadedObjectClass>()}),
-    ("ClapperTimelineClass", Layout {size: size_of::<ClapperTimelineClass>(), alignment: align_of::<ClapperTimelineClass>()}),
-    ("ClapperVideoStreamClass", Layout {size: size_of::<ClapperVideoStreamClass>(), alignment: align_of::<ClapperVideoStreamClass>()}),
+    (
+        "ClapperAudioStreamClass",
+        Layout {
+            size: size_of::<ClapperAudioStreamClass>(),
+            alignment: align_of::<ClapperAudioStreamClass>(),
+        },
+    ),
+    (
+        "ClapperDiscovererClass",
+        Layout {
+            size: size_of::<ClapperDiscovererClass>(),
+            alignment: align_of::<ClapperDiscovererClass>(),
+        },
+    ),
+    (
+        "ClapperDiscovererDiscoveryMode",
+        Layout {
+            size: size_of::<ClapperDiscovererDiscoveryMode>(),
+            alignment: align_of::<ClapperDiscovererDiscoveryMode>(),
+        },
+    ),
+    (
+        "ClapperFeature",
+        Layout {
+            size: size_of::<ClapperFeature>(),
+            alignment: align_of::<ClapperFeature>(),
+        },
+    ),
+    (
+        "ClapperFeatureClass",
+        Layout {
+            size: size_of::<ClapperFeatureClass>(),
+            alignment: align_of::<ClapperFeatureClass>(),
+        },
+    ),
+    (
+        "ClapperMarkerClass",
+        Layout {
+            size: size_of::<ClapperMarkerClass>(),
+            alignment: align_of::<ClapperMarkerClass>(),
+        },
+    ),
+    (
+        "ClapperMarkerType",
+        Layout {
+            size: size_of::<ClapperMarkerType>(),
+            alignment: align_of::<ClapperMarkerType>(),
+        },
+    ),
+    (
+        "ClapperMediaItemClass",
+        Layout {
+            size: size_of::<ClapperMediaItemClass>(),
+            alignment: align_of::<ClapperMediaItemClass>(),
+        },
+    ),
+    (
+        "ClapperMprisClass",
+        Layout {
+            size: size_of::<ClapperMprisClass>(),
+            alignment: align_of::<ClapperMprisClass>(),
+        },
+    ),
+    (
+        "ClapperPlayerClass",
+        Layout {
+            size: size_of::<ClapperPlayerClass>(),
+            alignment: align_of::<ClapperPlayerClass>(),
+        },
+    ),
+    (
+        "ClapperPlayerSeekMethod",
+        Layout {
+            size: size_of::<ClapperPlayerSeekMethod>(),
+            alignment: align_of::<ClapperPlayerSeekMethod>(),
+        },
+    ),
+    (
+        "ClapperPlayerState",
+        Layout {
+            size: size_of::<ClapperPlayerState>(),
+            alignment: align_of::<ClapperPlayerState>(),
+        },
+    ),
+    (
+        "ClapperQueueClass",
+        Layout {
+            size: size_of::<ClapperQueueClass>(),
+            alignment: align_of::<ClapperQueueClass>(),
+        },
+    ),
+    (
+        "ClapperQueueProgressionMode",
+        Layout {
+            size: size_of::<ClapperQueueProgressionMode>(),
+            alignment: align_of::<ClapperQueueProgressionMode>(),
+        },
+    ),
+    (
+        "ClapperServerClass",
+        Layout {
+            size: size_of::<ClapperServerClass>(),
+            alignment: align_of::<ClapperServerClass>(),
+        },
+    ),
+    (
+        "ClapperStream",
+        Layout {
+            size: size_of::<ClapperStream>(),
+            alignment: align_of::<ClapperStream>(),
+        },
+    ),
+    (
+        "ClapperStreamClass",
+        Layout {
+            size: size_of::<ClapperStreamClass>(),
+            alignment: align_of::<ClapperStreamClass>(),
+        },
+    ),
+    (
+        "ClapperStreamListClass",
+        Layout {
+            size: size_of::<ClapperStreamListClass>(),
+            alignment: align_of::<ClapperStreamListClass>(),
+        },
+    ),
+    (
+        "ClapperStreamType",
+        Layout {
+            size: size_of::<ClapperStreamType>(),
+            alignment: align_of::<ClapperStreamType>(),
+        },
+    ),
+    (
+        "ClapperSubtitleStreamClass",
+        Layout {
+            size: size_of::<ClapperSubtitleStreamClass>(),
+            alignment: align_of::<ClapperSubtitleStreamClass>(),
+        },
+    ),
+    (
+        "ClapperThreadedObject",
+        Layout {
+            size: size_of::<ClapperThreadedObject>(),
+            alignment: align_of::<ClapperThreadedObject>(),
+        },
+    ),
+    (
+        "ClapperThreadedObjectClass",
+        Layout {
+            size: size_of::<ClapperThreadedObjectClass>(),
+            alignment: align_of::<ClapperThreadedObjectClass>(),
+        },
+    ),
+    (
+        "ClapperTimelineClass",
+        Layout {
+            size: size_of::<ClapperTimelineClass>(),
+            alignment: align_of::<ClapperTimelineClass>(),
+        },
+    ),
+    (
+        "ClapperVideoStreamClass",
+        Layout {
+            size: size_of::<ClapperVideoStreamClass>(),
+            alignment: align_of::<ClapperVideoStreamClass>(),
+        },
+    ),
 ];
 
 const RUST_CONSTANTS: &[(&str, &str)] = &[
@@ -273,5 +412,3 @@ const RUST_CONSTANTS: &[(&str, &str)] = &[
     ("CLAPPER_TIME_MS_FORMAT", "02u:%02u:%02u.%03u"),
     ("CLAPPER_VERSION_S", "0.7.0"),
 ];
-
-

@@ -15,7 +15,6 @@ pub use crate::auto::*;
 #[doc(hidden)]
 pub static INITIALIZED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
-
 pub use ffi;
 
 pub fn init() -> Result<(), &'static str> {
@@ -23,10 +22,7 @@ pub fn init() -> Result<(), &'static str> {
         use glib::translate::*;
         use std::ptr;
 
-        if from_glib(ffi::clapper_init_check(
-            ptr::null_mut(),
-            ptr::null_mut()
-        )) {
+        if from_glib(ffi::clapper_init_check(ptr::null_mut(), ptr::null_mut())) {
             crate::INITIALIZED.store(true, std::sync::atomic::Ordering::SeqCst);
             Ok(())
         } else {
