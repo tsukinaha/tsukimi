@@ -83,7 +83,7 @@ impl SimpleControls {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::extra-menu-button\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_extra_menu_button_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_extra_menu_button_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -96,7 +96,7 @@ impl SimpleControls {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::fullscreenable\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_fullscreenable_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_fullscreenable_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -109,7 +109,7 @@ impl SimpleControls {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::seek-method\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_seek_method_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_seek_method_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 }

@@ -293,7 +293,7 @@ pub trait ContainerExt: IsA<Container> + sealed::Sealed + 'static {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"adapt\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(adapt_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(adapt_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -306,7 +306,7 @@ pub trait ContainerExt: IsA<Container> + sealed::Sealed + 'static {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::adaptive-height\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_adaptive_height_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_adaptive_height_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -319,7 +319,7 @@ pub trait ContainerExt: IsA<Container> + sealed::Sealed + 'static {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::adaptive-width\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_adaptive_width_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_adaptive_width_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -332,7 +332,7 @@ pub trait ContainerExt: IsA<Container> + sealed::Sealed + 'static {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::height-target\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_height_target_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_height_target_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -345,7 +345,7 @@ pub trait ContainerExt: IsA<Container> + sealed::Sealed + 'static {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::width-target\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_width_target_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_width_target_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
         }
     }
 }

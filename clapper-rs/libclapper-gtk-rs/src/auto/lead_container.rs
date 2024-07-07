@@ -257,7 +257,7 @@ pub trait LeadContainerExt: IsA<LeadContainer> + sealed::Sealed + 'static {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::blocked-actions\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_blocked_actions_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_blocked_actions_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -270,7 +270,7 @@ pub trait LeadContainerExt: IsA<LeadContainer> + sealed::Sealed + 'static {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::leading\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_leading_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_leading_trampoline::<Self, F> as *const ())), Box_::into_raw(f))
         }
     }
 }

@@ -87,7 +87,7 @@ impl StreamList {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::current-index\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_current_index_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_current_index_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -100,7 +100,7 @@ impl StreamList {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::current-stream\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_current_stream_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_current_stream_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -113,7 +113,7 @@ impl StreamList {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::n-streams\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_n_streams_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_n_streams_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 }

@@ -365,7 +365,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"missing-plugin\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(missing_plugin_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(missing_plugin_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -378,7 +378,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"seek-done\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(seek_done_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(seek_done_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -396,7 +396,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::audio-enabled\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_audio_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_audio_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -409,7 +409,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::audio-filter\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_audio_filter_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_audio_filter_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -422,7 +422,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::audio-offset\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_audio_offset_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_audio_offset_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -435,7 +435,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::audio-sink\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_audio_sink_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_audio_sink_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -448,7 +448,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::audio-streams\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_audio_streams_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_audio_streams_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -461,7 +461,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::autoplay\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_autoplay_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_autoplay_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -474,7 +474,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::current-audio-decoder\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_current_audio_decoder_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_current_audio_decoder_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -487,7 +487,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::current-video-decoder\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_current_video_decoder_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_current_video_decoder_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -500,7 +500,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::mute\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_mute_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_mute_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -513,7 +513,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::position\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_position_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_position_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -526,7 +526,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::queue\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_queue_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_queue_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -539,7 +539,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::speed\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_speed_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_speed_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -552,7 +552,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::state\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_state_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_state_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -565,7 +565,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::subtitle-font-desc\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_subtitle_font_desc_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_subtitle_font_desc_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -578,7 +578,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::subtitle-offset\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_subtitle_offset_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_subtitle_offset_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -591,7 +591,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::subtitle-streams\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_subtitle_streams_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_subtitle_streams_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -604,7 +604,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::subtitles-enabled\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_subtitles_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_subtitles_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -617,7 +617,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::video-enabled\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_video_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_video_enabled_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -630,7 +630,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::video-filter\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_video_filter_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_video_filter_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -643,7 +643,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::video-sink\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_video_sink_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_video_sink_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -656,7 +656,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::video-streams\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_video_streams_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_video_streams_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -669,7 +669,7 @@ impl Player {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::volume\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_volume_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_volume_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 }

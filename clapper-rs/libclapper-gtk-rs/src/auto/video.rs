@@ -119,7 +119,7 @@ impl Video {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"seek-request\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(seek_request_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(seek_request_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -132,7 +132,7 @@ impl Video {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"toggle-fullscreen\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(toggle_fullscreen_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(toggle_fullscreen_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -145,7 +145,7 @@ impl Video {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::auto-inhibit\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_auto_inhibit_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_auto_inhibit_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -158,7 +158,7 @@ impl Video {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::fade-delay\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_fade_delay_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_fade_delay_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -171,7 +171,7 @@ impl Video {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::inhibited\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_inhibited_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_inhibited_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -184,7 +184,7 @@ impl Video {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::player\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_player_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_player_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -197,7 +197,7 @@ impl Video {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::touch-fade-delay\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_touch_fade_delay_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_touch_fade_delay_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 }

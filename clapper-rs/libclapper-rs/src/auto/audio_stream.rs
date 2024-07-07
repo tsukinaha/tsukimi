@@ -83,7 +83,7 @@ impl AudioStream {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::bitrate\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_bitrate_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_bitrate_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -96,7 +96,7 @@ impl AudioStream {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::channels\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_channels_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_channels_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -109,7 +109,7 @@ impl AudioStream {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::codec\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_codec_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_codec_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -122,7 +122,7 @@ impl AudioStream {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::lang-code\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_lang_code_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_lang_code_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -135,7 +135,7 @@ impl AudioStream {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::lang-name\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_lang_name_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_lang_name_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -148,7 +148,7 @@ impl AudioStream {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::sample-format\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_sample_format_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_sample_format_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -161,7 +161,7 @@ impl AudioStream {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::sample-rate\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_sample_rate_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_sample_rate_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 }

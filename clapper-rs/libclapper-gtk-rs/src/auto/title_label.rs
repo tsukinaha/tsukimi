@@ -82,7 +82,7 @@ impl TitleLabel {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::current-title\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_current_title_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_current_title_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -95,7 +95,7 @@ impl TitleLabel {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::fallback-to-uri\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_fallback_to_uri_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_fallback_to_uri_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -108,7 +108,7 @@ impl TitleLabel {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::media-item\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_media_item_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_media_item_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 }

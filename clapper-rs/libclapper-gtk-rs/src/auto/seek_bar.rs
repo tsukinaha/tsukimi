@@ -74,7 +74,7 @@ impl SeekBar {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::reveal-labels\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_reveal_labels_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_reveal_labels_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 
@@ -87,7 +87,7 @@ impl SeekBar {
         unsafe {
             let f: Box_<F> = Box_::new(f);
             connect_raw(self.as_ptr() as *mut _, b"notify::seek-method\0".as_ptr() as *const _,
-                Some(std::mem::transmute::<_, unsafe extern "C" fn()>(notify_seek_method_trampoline::<F> as *const ())), Box_::into_raw(f))
+                Some(std::mem::transmute::<*const (), unsafe extern "C" fn()>(notify_seek_method_trampoline::<F> as *const ())), Box_::into_raw(f))
         }
     }
 }
