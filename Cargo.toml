@@ -55,3 +55,6 @@ assets = [
     ["target/release/tsukimi", "usr/bin/", "755"],
     ["README.md", "usr/share/doc/tsukimi/README", "644"],
 ]
+
+[profile.release]
+lto = true
