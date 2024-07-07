@@ -14,7 +14,7 @@ mod imp {
     use std::cell::OnceCell;
 
     use glib::subclass::InitializingObject;
-    use gtk::{gio, EventControllerFocus};
+    use gtk::gio;
 
     use crate::{client::structs::SimpleListItem, ui::widgets::window::Window};
 
