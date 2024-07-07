@@ -8,11 +8,13 @@ use crate::utils::spawn;
 
 use super::tu_list_item::TuListItem;
 
+const SHOW_BUTTON_ANIMATION_DURATION: u32 = 250;
+
 mod imp {
     use std::cell::OnceCell;
 
     use glib::subclass::InitializingObject;
-    use gtk::gio;
+    use gtk::{gio, EventControllerFocus};
 
     use crate::{client::structs::SimpleListItem, ui::widgets::window::Window};
 
@@ -34,6 +36,13 @@ mod imp {
         pub revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub morebutton: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub left_button: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub right_button: TemplateChild<gtk::Button>,
+
+        pub show_button_animation: OnceCell<adw::TimedAnimation>,
+        pub hide_button_animation: OnceCell<adw::TimedAnimation>,
 
         pub selection: gtk::SingleSelection,
     }
@@ -246,7 +255,6 @@ impl HortuScrolled {
             for result in items {
                 let object = glib::BoxedAnyObject::new(result);
                 store.append(&object);
-                gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
             }
 
         }));
@@ -256,9 +264,78 @@ impl HortuScrolled {
         self.imp().label.set_text(title);
     }
 
+    fn set_control_opacity(&self, opacity: f64) {
+        let imp = self.imp();
+        imp.left_button.set_opacity(opacity);
+        imp.right_button.set_opacity(opacity);
+    }
+
+    fn are_controls_visible(&self) -> bool {
+        if self.hide_controls_animation().state() == adw::AnimationState::Playing {
+            return false;
+        }
+
+        self.imp().left_button.opacity() >= 0.68
+            || self.show_controls_animation().state() == adw::AnimationState::Playing
+    }
+
+    fn show_controls_animation(&self) -> &adw::TimedAnimation {
+        self.imp().show_button_animation.get_or_init(|| {
+            let target = adw::CallbackAnimationTarget::new(glib::clone!(
+                @weak self as obj => move |opacity| obj.set_control_opacity(opacity)
+            ));
+
+            adw::TimedAnimation::builder()
+                .duration(SHOW_BUTTON_ANIMATION_DURATION)
+                .widget(&self.imp().scrolled.get())
+                .target(&target)
+                .value_to(0.7)
+                .build()
+        })
+    }
+
+    fn hide_controls_animation(&self) -> &adw::TimedAnimation {
+        self.imp().hide_button_animation.get_or_init(|| {
+            let target = adw::CallbackAnimationTarget::new(glib::clone!(
+                @weak self as obj => move |opacity| obj.set_control_opacity(opacity)
+            ));
+
+            adw::TimedAnimation::builder()
+                .duration(SHOW_BUTTON_ANIMATION_DURATION)
+                .widget(&self.imp().scrolled.get())
+                .target(&target)
+                .value_to(0.)
+                .build()
+        })
+    }
+
     #[template_callback]
     fn on_rightbutton_clicked(&self) {
         self.anime(true);
+    }
+
+    fn controls_opacity(&self) -> f64 {
+        self.imp().left_button.opacity()
+    }
+
+    #[template_callback]
+    fn on_enter_focus(&self) {
+        if !self.are_controls_visible() {
+            self.hide_controls_animation().pause();
+            self.show_controls_animation()
+                .set_value_from(self.controls_opacity());
+            self.show_controls_animation().play();
+        }
+    }
+
+    #[template_callback]
+    fn on_leave_focus(&self) {
+        if self.are_controls_visible() {
+            self.show_controls_animation().pause();
+            self.hide_controls_animation()
+                .set_value_from(self.controls_opacity());
+            self.hide_controls_animation().play();
+        }
     }
 
     #[template_callback]

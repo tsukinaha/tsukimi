@@ -3,6 +3,12 @@
   <template parent="AdwBin" class="HortuScrolled">
     <property name="visible">False</property>
     <child>
+      <object class="GtkEventControllerMotion">
+        <signal name="enter" handler="on_enter_focus" swapped="yes"/>
+        <signal name="leave" handler="on_leave_focus" swapped="yes"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkRevealer" id="revealer">
         <property name="reveal-child">False</property>
         <child>
@@ -45,7 +51,6 @@
               </object>
             </child>
             <child>
-
               <object class="GtkOverlay">
                 <child>
                   <object class="GtkScrolledWindow" id="scrolled">
@@ -61,14 +66,14 @@
                   </object>
                 </child>
                 <child type="overlay">
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="right_button">
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <property name="height-request">70</property>
                     <property name="width-request">30</property>
                     <property name="margin-end">6</property>
                     <property name="icon-name">go-next-symbolic</property>
-                    <property name="opacity">0.7</property>
+                    <property name="opacity">0</property>
                     <signal name="clicked" handler="on_rightbutton_clicked" swapped="yes" />
                     <style>
                       <class name="osd" />
@@ -76,14 +81,14 @@
                   </object>
                 </child>
                 <child type="overlay">
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="left_button">
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <property name="height-request">70</property>
                     <property name="width-request">30</property>
                     <property name="margin-start">6</property>
                     <property name="icon-name">go-previous-symbolic</property>
-                    <property name="opacity">0.7</property>
+                    <property name="opacity">0</property>
                     <signal name="clicked" handler="on_leftbutton_clicked" swapped="yes" />
                     <style>
                       <class name="osd" />
