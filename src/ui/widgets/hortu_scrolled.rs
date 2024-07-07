@@ -348,11 +348,15 @@ impl HortuScrolled {
         let adj = scrolled.hadjustment();
 
         let Some(clock) = scrolled.frame_clock() else {
-            return
+            return;
         };
 
         let start = adj.value();
-        let end = if is_right { start + 400.0 } else { start - 400.0 };
+        let end = if is_right {
+            start + 400.0
+        } else {
+            start - 400.0
+        };
         let start_time = clock.frame_time();
         let end_time = start_time + 1000 * 400;
         scrolled.add_tick_callback(move |_view, clock| {

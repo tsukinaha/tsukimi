@@ -17,9 +17,9 @@ mod imp {
         ui::{provider::IS_ADMIN, widgets::item::dt},
         utils::spawn,
     };
-    
+
     use glib::subclass::InitializingObject;
-    
+
     use gtk::{glib, CompositeTemplate};
     use std::cell::{OnceCell, RefCell};
 
