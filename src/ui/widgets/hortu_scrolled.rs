@@ -4,7 +4,6 @@ use gtk::{gio, glib, template_callbacks, CompositeTemplate};
 use crate::client::structs::SimpleListItem;
 use crate::ui::provider::tu_item::TuItem;
 use crate::ui::widgets::fix::ScrolledWindowFixExt;
-use crate::utils::spawn;
 
 use super::tu_list_item::TuListItem;
 
@@ -249,15 +248,11 @@ impl HortuScrolled {
             .downcast::<gio::ListStore>()
             .unwrap();
 
+        for result in items {
+            let object = glib::BoxedAnyObject::new(result);
+            store.append(&object);
+        }
         imp.revealer.set_reveal_child(true);
-
-        spawn(glib::clone!(@weak store=> async move {
-            for result in items {
-                let object = glib::BoxedAnyObject::new(result);
-                store.append(&object);
-            }
-
-        }));
     }
 
     pub fn set_title(&self, title: &str) {
