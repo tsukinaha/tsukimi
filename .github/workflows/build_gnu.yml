@@ -113,52 +113,13 @@ jobs:
           ldd bin/tsukimi.exe | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
           find lib/ -type f -name "*.dll" -exec ldd "{}" \; | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
 
-      - name: Create NSIS installer
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        shell: powershell
-        run: |
-          cp tsukimi_installer.nsi artifact
-          makensis /V4 artifact/tsukimi_installer.nsi
-          rm artifact/tsukimi_installer.nsi
-
-      - name: Build Thin Package
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        shell: powershell
-        run: |
-          cd artifact/tsukimi-windows-gnu-amd64
-          7z.exe a ../tsukimi-${{matrix.arch}}.7z ./*
-
-      - name: Build Complete Package
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        shell: powershell
-        run: |
-          cd artifact/
-          cp -r tsukimi-windows-gnu-amd64 tsukimi-windows-gnu-amd64-complete
-          cd tsukimi-windows-gnu-amd64-complete
-          mkdir mpv
-          cd mpv
-          Invoke-WebRequest -Uri "https://github.com/ZBound/tkm-config/releases/latest/download/mqv.7z" -OutFile mpv.7z
-          7z.exe x mpv.7z
-          rm mpv.7z
-          7z.exe a ../../tsukimi-${{matrix.arch}}-complete.7z ../*
-
-      - name: Calculate Checksum
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        shell: msys2 {0}
-        run: |
-          sha512sum artifact/*.7z > artifact/tsukimi-7z.sha512sum
-          sha512sum artifact/*.7z > artifact/tsukimi.sha512sum
-          sha512sum artifact/*.exe >> artifact/tsukimi.sha512sum
-
       - name: Upload artifact
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/upload-artifact@v4
         with:
           name: tsukimi-${{matrix.arch}}
           path: |
-            artifact/*.exe
-            artifact/*.7z
-            artifact/*.sha512sum
-          compression-level: 0
+            artifact/tsukimi-windows-gnu-amd64/*
+          compression-level: 5
           retention-days: 3
           if-no-files-found: error
