@@ -1,9 +1,9 @@
+use adw::prelude::*;
 use glib::Object;
 use gtk::gdk::Rectangle;
 use gtk::gio::MenuModel;
 use gtk::glib::subclass::types::ObjectSubclassExt;
 use gtk::glib::subclass::types::ObjectSubclassIsExt;
-use gtk::prelude::*;
 use gtk::template_callbacks;
 use gtk::Builder;
 use gtk::PopoverMenu;
@@ -21,6 +21,8 @@ use crate::utils::spawn;
 use crate::utils::spawn_tokio;
 
 use super::window::Window;
+
+pub const PROGRESSBAR_ANIMATION_DURATION: u32 = 2000;
 
 mod imp {
     use adw::subclass::prelude::*;
@@ -421,10 +423,31 @@ impl TuListItem {
         let percentage = item.played_percentage();
         let progress = gtk::ProgressBar::builder()
             .show_text(true)
-            .fraction(percentage / 100.0)
+            .fraction(0.)
             .valign(gtk::Align::End)
             .build();
+
         imp.overlay.add_overlay(&progress);
+
+        spawn(glib::clone!(@weak progress => async move {
+            let target = adw::CallbackAnimationTarget::new(glib::clone!(
+                @weak progress => move |process| {
+                    progress.set_fraction(process)
+                }
+            ));
+    
+            let animation = adw::TimedAnimation::builder()
+                .duration(PROGRESSBAR_ANIMATION_DURATION)
+                .widget(&progress)
+                .target(&target)
+                .easing(adw::Easing::EaseOutQuart)
+                .value_from(0.)
+                .value_to(percentage / 100.0)
+                .build();
+            
+            glib::timeout_future_seconds(1).await;
+            animation.play();
+        }));
     }
 
     pub fn gesture(&self) {

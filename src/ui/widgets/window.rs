@@ -79,6 +79,8 @@ mod imp {
         pub media_viewer: TemplateChild<MediaViewer>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
+
+        pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
     }
 
     // The central trait for subclassing a GObject
@@ -210,6 +212,7 @@ use glib::Object;
 use gtk::{gio, glib, template_callbacks};
 
 use super::server_row::ServerRow;
+use super::tu_list_item::PROGRESSBAR_ANIMATION_DURATION;
 
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
@@ -668,9 +671,24 @@ impl Window {
         }));
     }
 
-    pub fn set_fraction(&self, fraction: f64) {
-        let imp = self.imp();
-        imp.progressbar.set_fraction(fraction);
+    pub fn set_fraction(&self, from_value: f64, to_value: f64) {
+        self.progressbar_animation().set_value_from(from_value);
+        self.progressbar_animation().set_value_to(to_value);
+        self.progressbar_animation().play();
+    }
+
+    fn progressbar_animation(&self) -> &adw::TimedAnimation {
+        self.imp().progress_bar_animation.get_or_init(|| {
+            let target = adw::CallbackAnimationTarget::new(glib::clone!(
+                @weak self as obj => move |fraction| obj.imp().progressbar.set_fraction(fraction)
+            ));
+
+            adw::TimedAnimation::builder()
+                .duration(PROGRESSBAR_ANIMATION_DURATION)
+                .widget(&self.imp().progressbar.get())
+                .target(&target)
+                .build()
+        })
     }
 
     pub fn set_fonts(&self) {

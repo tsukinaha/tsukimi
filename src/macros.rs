@@ -44,7 +44,7 @@ macro_rules! fraction {
         use gtk::prelude::WidgetExt;
         if let Some(root) = $widget.root() {
             if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
-                window.set_fraction(0.0);
+                window.set_fraction(1.0, 0.0);
             }
         }
     }};
@@ -56,7 +56,7 @@ macro_rules! fraction_reset {
         use gtk::prelude::WidgetExt;
         if let Some(root) = $widget.root() {
             if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
-                window.set_fraction(1.0);
+                window.set_fraction(0.0, 1.0);
             }
         }
     }};
