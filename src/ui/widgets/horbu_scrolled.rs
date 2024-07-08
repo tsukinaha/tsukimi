@@ -111,14 +111,14 @@ impl HorbuScrolled {
             .build()
     }
 
-    pub fn set_items(&self, items: &Vec<SGTitem>) {
+    pub fn set_items(&self, items: &[SGTitem]) {
         if items.is_empty() {
             return;
         }
 
         self.set_visible(true);
 
-        let items = items.clone();
+        let items = items.to_owned();
 
         let imp = self.imp();
 
@@ -150,14 +150,14 @@ impl HorbuScrolled {
         }));
     }
 
-    pub fn set_links(&self, items: &Vec<Urls>) {
+    pub fn set_links(&self, items: &[Urls]) {
         if items.is_empty() {
             return;
         }
 
         self.set_visible(true);
 
-        let items = items.clone();
+        let items = items.to_owned();
 
         let imp = self.imp();
 

@@ -231,14 +231,14 @@ impl HortuScrolled {
         imp.morebutton.set_visible(true);
     }
 
-    pub fn set_items(&self, items: &Vec<SimpleListItem>) {
+    pub fn set_items(&self, items: &[SimpleListItem]) {
         if items.is_empty() {
             return;
         }
 
         self.set_visible(true);
 
-        let items = items.clone();
+        let items = items.to_owned();
 
         let imp = self.imp();
         let store = imp

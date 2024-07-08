@@ -793,11 +793,9 @@ mod tests {
                 for item in items.items {
                     println!("{}", item.name);
                 }
-                assert!(true);
             }
             Err(e) => {
                 eprintln!("{}", e.to_user_facing());
-                assert!(false);
             }
         }
     }

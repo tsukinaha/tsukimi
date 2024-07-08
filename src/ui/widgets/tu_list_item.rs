@@ -420,7 +420,7 @@ impl TuListItem {
                     progress.set_fraction(process)
                 }
             ));
-    
+
             let animation = adw::TimedAnimation::builder()
                 .duration(PROGRESSBAR_ANIMATION_DURATION)
                 .widget(&progress)
@@ -429,7 +429,7 @@ impl TuListItem {
                 .value_from(0.)
                 .value_to(percentage / 100.0)
                 .build();
-            
+
             glib::timeout_future_seconds(1).await;
             animation.play();
         }));

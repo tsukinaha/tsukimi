@@ -24,16 +24,13 @@ impl MusicPlayer {
         });
         bus.connect_message(Some("buffering"), {
             glib::clone!(@weak pipeline => move |_bus, msg| {
-                match msg.view() {
-                    gst::MessageView::Buffering(buffering) => {
-                        let percent = buffering.percent();
-                        if percent < 100 {
-                            let _ = pipeline.set_state(gst::State::Paused);
-                        } else {
-                            let _ = pipeline.set_state(gst::State::Playing);
-                        }
+                if let gst::MessageView::Buffering(buffering) = msg.view() {
+                    let percent = buffering.percent();
+                    if percent < 100 {
+                        let _ = pipeline.set_state(gst::State::Paused);
+                    } else {
+                        let _ = pipeline.set_state(gst::State::Playing);
                     }
-                    _ => (),
                 }
             })
         });
