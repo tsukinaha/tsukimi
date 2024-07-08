@@ -76,6 +76,7 @@
                                                 <property name="valign">start</property>
                                                 <style>
                                                   <class name="logo" />
+                                                  <class name="boxed-list" />
                                                 </style>
                                               </object>
                                             </child>
@@ -368,15 +369,6 @@ You should install the package `gst-libav` to play media files with built-in pla
                                     </child>
                                   </object>
                                 </child>
-                                <child type="top">
-                                  <object class="GtkProgressBar" id="progressbar">
-                                    <property name="hexpand">True</property>
-                                    <property name="fraction">1</property>
-                                    <style>
-                                      <class name="osd" />
-                                    </style>
-                                  </object>
-                                </child>
                                 <child type="bottom">
                                   <object class="GtkRevealer" id="player_toolbar_bin">
                                     <property name="reveal-child">False</property>
@@ -387,76 +379,66 @@ You should install the package `gst-libav` to play media files with built-in pla
                                   </object>
                                 </child>
                                 <property name="content">
-                                  <object class="GtkStack" id="insidestack">
-                                    <property name="hexpand">True</property>
-                                    <property name="transition-type">crossfade</property>
-                                    <property name="transition-duration">100</property>
+                                  <object class="GtkOverlay">
+                                    <child type="overlay">
+                                      <object class="GtkProgressBar" id="progressbar">
+                                        <property name="hexpand">True</property>
+                                        <property name="valign">start</property>
+                                        <style>
+                                          <class name="osd" />
+                                        </style>
+                                      </object>
+                                    </child>
                                     <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">homepage</property>
-                                        <property name="child">
-                                          <object class="AdwNavigationView" id="homeview">
-                                            <child>
-                                              <object class="AdwNavigationPage" id="homepage">
-                                                <property name="tag">homepage</property>
-                                                <property name="title" translatable="yes">Tsukimi</property>
+                                      <object class="GtkStack" id="insidestack">
+                                        <property name="hexpand">True</property>
+                                        <property name="transition-type">crossfade</property>
+                                        <property name="transition-duration">100</property>
+                                        <child>
+                                          <object class="GtkStackPage">
+                                            <property name="name">homepage</property>
+                                            <property name="child">
+                                              <object class="AdwNavigationView" id="homeview">
+                                                <child>
+                                                  <object class="AdwNavigationPage" id="homepage">
+                                                    <property name="tag">homepage</property>
+                                                    <property name="title" translatable="yes">Tsukimi</property>
+                                                  </object>
+                                                </child>
                                               </object>
-                                            </child>
+                                            </property>
                                           </object>
-                                        </property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">historypage</property>
-                                        <property name="child">
-                                          <object class="AdwNavigationView" id="historyview">
-                                            <child>
-                                              <object class="AdwNavigationPage" id="historypage">
-                                                <property name="tag">historypage</property>
-                                                <property name="title" translatable="yes">Tsukimi</property>
+                                        </child>
+                                        <child>
+                                          <object class="GtkStackPage">
+                                            <property name="name">historypage</property>
+                                            <property name="child">
+                                              <object class="AdwNavigationView" id="historyview">
+                                                <child>
+                                                  <object class="AdwNavigationPage" id="historypage">
+                                                    <property name="tag">historypage</property>
+                                                    <property name="title" translatable="yes">Tsukimi</property>
+                                                  </object>
+                                                </child>
                                               </object>
-                                            </child>
+                                            </property>
                                           </object>
-                                        </property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">searchpage</property>
-                                        <property name="child">
-                                          <object class="AdwNavigationView" id="searchview">
-                                            <child>
-                                              <object class="AdwNavigationPage" id="searchpage">
-                                                <property name="tag">searchpage</property>
-                                                <property name="title" translatable="yes">Tsukimi</property>
+                                        </child>
+                                        <child>
+                                          <object class="GtkStackPage">
+                                            <property name="name">searchpage</property>
+                                            <property name="child">
+                                              <object class="AdwNavigationView" id="searchview">
+                                                <child>
+                                                  <object class="AdwNavigationPage" id="searchpage">
+                                                    <property name="tag">searchpage</property>
+                                                    <property name="title" translatable="yes">Tsukimi</property>
+                                                  </object>
+                                                </child>
                                               </object>
-                                            </child>
+                                            </property>
                                           </object>
-                                        </property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">serverpanelpage</property>
-                                        <property name="child">
-                                          <object class="AdwStatusPage">
-                                            <property name="title">Nothing Here</property>
-                                            <property name="description">没写</property>
-                                            <property name="icon-name">view-grid-symbolic</property>
-                                            <property name="vexpand">True</property>
-                                          </object>
-                                        </property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">settingspage</property>
-                                        <property name="child">
-                                          <object class="AdwNavigationPage" id="settingspage">
-                                            <property name="title" translatable="yes">Tsukimi</property>
-                                          </object>
-                                        </property>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>

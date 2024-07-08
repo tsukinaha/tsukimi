@@ -7,7 +7,7 @@ use crate::ui::widgets::fix::ScrolledWindowFixExt;
 
 use super::tu_list_item::TuListItem;
 
-const SHOW_BUTTON_ANIMATION_DURATION: u32 = 250;
+const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
 
 mod imp {
     use std::cell::OnceCell;

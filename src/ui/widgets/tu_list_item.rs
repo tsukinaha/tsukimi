@@ -145,6 +145,7 @@ impl TuListItem {
                 self.set_played();
                 if let Some(true) = imp.isresume.get() {
                     self.set_played_percentage();
+                    return;
                 }
                 self.set_rating();
             }
@@ -207,7 +208,6 @@ impl TuListItem {
                 imp.label2.set_text(&item.albumartist_name());
                 imp.overlay.set_size_request(190, 190);
                 self.set_picture();
-                self.set_play();
             }
             "Actor" | "Person" | "Director" => {
                 imp.listlabel.set_text(&item.name());
@@ -226,21 +226,6 @@ impl TuListItem {
             }
         }
         self.set_tooltip_text(Some(&item.name()));
-    }
-
-    pub fn set_play(&self) {
-        let imp = self.imp();
-        let button = gtk::Button::builder()
-            .icon_name("media-playback-start-symbolic")
-            .halign(gtk::Align::Start)
-            .valign(gtk::Align::End)
-            .margin_bottom(5)
-            .margin_start(5)
-            .height_request(35)
-            .width_request(35)
-            .build();
-        button.add_css_class("suggested-action");
-        imp.overlay.add_overlay(&button);
     }
 
     pub fn set_picture(&self) {

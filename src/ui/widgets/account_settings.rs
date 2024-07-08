@@ -316,9 +316,8 @@ impl AccountSettings {
             "Adwaita" => pos = 1,
             "Adwaita Dark" => pos = 2,
             "Catppuccino Latte" => pos = 3,
-            "Tokyo Night Dark" => pos = 4,
-            "Solarized Dark" => pos = 5,
-            "Alpha Dark" => pos = 6,
+            "Alpha Dark" => pos = 4,
+            "???" => pos = 5,
             _ => (),
         }
         imp.themecontrol.set_selected(pos);

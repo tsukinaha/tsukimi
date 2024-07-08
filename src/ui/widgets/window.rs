@@ -36,8 +36,6 @@ mod imp {
         #[template_child]
         pub popbutton: TemplateChild<gtk::ToggleButton>,
         #[template_child]
-        pub settingspage: TemplateChild<adw::NavigationPage>,
-        #[template_child]
         pub searchpage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub historypage: TemplateChild<adw::NavigationPage>,

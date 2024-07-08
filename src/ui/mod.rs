@@ -48,6 +48,9 @@ pub fn load_css() {
         "Adwaita Dark" => {
             styles.push_str(include_str!("adwaitadark.css"));
         }
+        "???" => {
+            styles.push_str(include_str!("old.css"));
+        }
         _ => {
             styles.push_str(include_str!("basic.css"));
         }
