@@ -221,9 +221,9 @@ impl TuListItem {
                 self.set_picture();
             }
             _ => {
-                let list_item = self.parent().unwrap();
-                list_item.set_visible(false);
-                warn!("Unknown item type: {}", item_type)
+                
+                self.set_visible(false);
+                println!("Unknown item type: {}", item_type)
             }
         }
         self.set_tooltip_text(Some(&item.name()));
