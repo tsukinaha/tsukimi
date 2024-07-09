@@ -4,7 +4,8 @@
     <property name="content-width">820</property>
     <property name="content-height">400</property>
     <property name="width-request">360</property>
-    <property name="height-request">294</property>
+    <property name="height-request">800</property>
+    <property name="presentation-mode">bottom-sheet</property>
     <property name="title" translatable="yes">Add a New Account</property>
     <child>
       <object class="AdwToastOverlay" id="toast">
@@ -34,7 +35,7 @@
                             <property name="receives-default">True</property>
                             <property name="action-name">account.add</property>
                             <style>
-                              <class name="suggested-action"/>
+                              <class name="suggested-action" />
                             </style>
                           </object>
                         </child>
@@ -55,39 +56,31 @@
                                 <property name="margin-start">12</property>
                                 <property name="margin-end">12</property>
                                 <child>
-                                  <object class="GtkListBox">
-                                    <property name="selection-mode">none</property>
-                                    <child>
-                                      <object class="AdwEntryRow" id="servername_entry">
-                                        <property name="title" translatable="yes">Name</property>
+                                  <object class="AdwEntryRow" id="servername_entry">
+                                    <property name="title" translatable="yes">Name</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwEntryRow" id="server_entry">
+                                    <property name="title" translatable="yes">Server</property>
+                                    <property name="text">http(s)://1.14.5.14</property>
+                                    <child type="suffix">
+                                      <object class="GtkEntry" id="port_entry">
+                                        <property name="halign">end</property>
+                                        <property name="valign">center</property>
+                                        <property name="placeholder-text" translatable="yes">Port</property>
                                       </object>
                                     </child>
-                                    <child>
-                                      <object class="AdwEntryRow" id="server_entry">
-                                        <property name="title" translatable="yes">Server</property>
-                                        <property name="text">http(s)://1.14.5.14</property>
-                                        <child type="suffix">
-                                          <object class="GtkEntry" id="port_entry">
-                                            <property name="halign">end</property>
-                                            <property name="valign">center</property>
-                                            <property name="placeholder-text" translatable="yes">Port</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="AdwEntryRow" id="username_entry">
-                                        <property name="title" translatable="yes">Username</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="AdwPasswordEntryRow" id="password_entry">
-                                        <property name="title" translatable="yes">Password</property>
-                                      </object>
-                                    </child>
-                                    <style>
-                                      <class name="boxed-list"/>
-                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwEntryRow" id="username_entry">
+                                    <property name="title" translatable="yes">Username</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwPasswordEntryRow" id="password_entry">
+                                    <property name="title" translatable="yes">Password</property>
                                   </object>
                                 </child>
                                 <child>
