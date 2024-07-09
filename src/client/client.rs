@@ -2,7 +2,7 @@ use std::sync::Mutex;
 
 use reqwest::{header::HeaderValue, Method, RequestBuilder, Response};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
+use serde_json::{json, Value};
 use tracing::{info, warn};
 use url::Url;
 use uuid::Uuid;
@@ -16,12 +16,12 @@ use crate::{
 use once_cell::sync::Lazy;
 
 use super::structs::{
-    AuthenticateResponse, Back, ImageItem, Item, List, LoginResponse, Media, SerInList,
-    SimpleListItem,
+    AuthenticateResponse, Back, ImageItem, Item, List, LiveMedia, LoginResponse, Media, SerInList, SimpleListItem
 };
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
+static PROFILE: &str = include_str!("stream_profile.json");
 
 pub struct EmbyClient {
     pub url: Mutex<Option<Url>>,
@@ -347,10 +347,22 @@ impl EmbyClient {
             ("MaxStreamingBitrate", "160000000"),
             ("reqformat", "json"),
         ];
-        let body = json!(
-            {"DeviceProfile":{"Name":"Direct play all","MaxStaticBitrate":1000000000,"MaxStreamingBitrate":1000000000,"MusicStreamingTranscodingBitrate":1500000,"DirectPlayProfiles":[{"Container":"mkv","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9,mp4","AudioCodec":"aac,ac3,alac,eac3,dts,flac,mp3,opus,truehd,vorbis"},{"Container":"mp4,m4v","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9","AudioCodec":"aac,alac,opus,mp3,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[],"ContainerProfiles":[],"CodecProfiles":[],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[]}}
-        );
-        self.post(&path, &params, body).await?.json().await
+        let profile: Value = serde_json::from_str(PROFILE).unwrap();
+        self.post(&path, &params, profile).await?.json().await
+    }
+
+    pub async fn get_live_playbackinfo(&self, id: &str) -> Result<LiveMedia, reqwest::Error> {
+        let path = format!("Items/{}/PlaybackInfo", id);
+        let params = [
+            ("StartTimeTicks", "0"),
+            ("UserId", &self.user_id()),
+            ("AutoOpenLiveStream", "true"),
+            ("IsPlayback", "true"),
+            ("MaxStreamingBitrate", "160000000"),
+            ("reqformat", "json"),
+        ];
+        let profile: Value = serde_json::from_str(PROFILE).unwrap();
+        self.post(&path, &params, profile).await?.json().await
     }
 
     pub async fn get_sub(&self, id: &str, source_id: &str) -> Result<Media, reqwest::Error> {
@@ -366,10 +378,8 @@ impl EmbyClient {
             ("MaxStreamingBitrate", "4000000"),
             ("reqformat", "json"),
         ];
-        let body = json!(
-            {"DeviceProfile":{"Name":"Direct play all","MaxStaticBitrate":1000000000,"MaxStreamingBitrate":1000000000,"MusicStreamingTranscodingBitrate":1500000,"DirectPlayProfiles":[{"Container":"mkv","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9,mp4","AudioCodec":"aac,ac3,alac,eac3,dts,flac,mp3,opus,truehd,vorbis"},{"Container":"mp4,m4v","Type":"Video","VideoCodec":"hevc,h264,av1,vp8,vp9","AudioCodec":"aac,alac,opus,mp3,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[],"ContainerProfiles":[],"CodecProfiles":[],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[]}}
-        );
-        self.post(&path, &params, body).await?.json().await
+        let profile: Value = serde_json::from_str(PROFILE).unwrap();
+        self.post(&path, &params, profile).await?.json().await
     }
 
     pub async fn get_library(&self) -> Result<List, reqwest::Error> {
@@ -390,6 +400,11 @@ impl EmbyClient {
             ("EnableImageTypes", "Primary,Backdrop,Thumb"),
         ];
         self.request(&path, &params).await
+    }
+
+    pub fn get_streaming_url(&self, path: &str) -> String {
+        let url = self.url.lock().unwrap().as_ref().unwrap().clone();
+        url.join(path).unwrap().to_string()
     }
 
     pub async fn get_list(
@@ -746,6 +761,19 @@ impl EmbyClient {
         let path = format!("Videos/{}/AdditionalParts", id);
         let params: [(&str, &str); 1] = [("UserId", &self.user_id())];
         self.request(&path, &params).await
+    }
+
+    pub async fn get_channels(&self) -> Result<List, reqwest::Error> {
+        let params = [
+            ("IsAiring", "true"),
+            ("userId", &self.user_id()),
+            ("ImageTypeLimit", "1"),
+            ("Limit", "12"),
+            ("Fields", "ProgramPrimaryImageAspectRatio"),
+            ("SortBy", "DefaultChannelOrder"),
+            ("SortOrder", "	Ascending")
+            ];
+        self.request("LiveTv/Channels", &params).await
     }
 
     pub fn get_image_path(&self, id: &str, image_type: &str, image_index: Option<u32>) -> String {

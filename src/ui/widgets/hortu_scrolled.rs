@@ -14,6 +14,10 @@ mod imp {
 
     use glib::subclass::InitializingObject;
     use gtk::gio;
+    use crate::client::client::EMBY_CLIENT;
+    use crate::client::error::UserFacingError;
+    use crate::toast;
+    use crate::utils::{spawn, spawn_tokio};
 
     use crate::{client::structs::SimpleListItem, ui::widgets::window::Window};
 
@@ -137,6 +141,27 @@ mod imp {
                         result.name.clone(),
                     ),
                 ),
+                "TvChannel" => {
+                    let id = result.id.clone();
+                    let name = result.name.clone();
+                    spawn(glib::clone!(@weak self as imp => async move {
+                        let obj = imp.obj();
+                        toast!(obj, "Processing...");
+                        match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&id).await }).await {
+                            Ok(playback) => {
+                                let Some(ref url) = playback.media_sources[0].transcoding_url else {
+                                    toast!(obj, "No transcoding url found");
+                                    return;
+                                };
+                                let window = obj.root().unwrap().downcast::<Window>().unwrap();
+                                window.play_media(url.to_string(), None, Some(name), None, None, 0.0)
+                            }
+                            Err(e) => {
+                                toast!(obj, e.to_user_facing());
+                            }
+                        }
+                    }));
+                }
                 "Series" => Self::push_page(
                     view,
                     &window,

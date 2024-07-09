@@ -144,7 +144,7 @@ impl TuListItem {
                 self.set_picture();
                 self.set_played();
                 if let Some(true) = imp.isresume.get() {
-                    self.set_played_percentage();
+                    self.set_played_percentage(self.get_played_percentage());
                     return;
                 }
                 self.set_rating();
@@ -154,6 +154,30 @@ impl TuListItem {
                 imp.label2.set_visible(false);
                 imp.overlay.set_size_request(250, 141);
                 self.set_picture();
+            }
+            "TvChannel" => {
+                imp.listlabel.set_text(&format!("{} - {}", item.name(), item.program_name().unwrap_or_default()));
+                imp.overlay.set_size_request(250, 141);
+                self.set_picture();
+
+                let Some(program_start_time) = item.program_start_time() else {
+                    return;
+                };
+
+                let program_start_time = program_start_time.to_local().unwrap();
+
+                let Some(program_end_time) = item.program_end_time() else {
+                    return;
+                };
+
+                let program_end_time = program_end_time.to_local().unwrap();
+
+                let now = glib::DateTime::now_local().unwrap();
+
+                let progress = (now.to_unix() - program_start_time.to_unix()) as f64 / (program_end_time.to_unix() - program_start_time.to_unix()) as f64;
+
+                self.set_played_percentage(progress * 100.0);
+                imp.label2.set_text(&format!("{} - {}", program_start_time.format("%H:%M").unwrap(), program_end_time.format("%H:%M").unwrap()));
             }
             "CollectionFolder" | "UserView" => {
                 imp.listlabel.set_text(&item.name());
@@ -195,9 +219,10 @@ impl TuListItem {
                     item.index_number(),
                     item.name()
                 ));
+                imp.overlay.set_size_request(250, 141);
                 self.set_picture();
                 self.set_played();
-                self.set_played_percentage();
+                self.set_played_percentage(self.get_played_percentage());
             }
             "Views" => {
                 imp.listlabel.set_text(&item.name());
@@ -400,10 +425,15 @@ impl TuListItem {
         }
     }
 
-    pub fn set_played_percentage(&self) {
+    pub fn get_played_percentage(&self) -> f64 {
         let imp = self.imp();
         let item = imp.item.get().unwrap();
-        let percentage = item.played_percentage();
+        item.played_percentage()
+    }
+
+    pub fn set_played_percentage(&self, percentage: f64) {
+        let imp = self.imp();
+
         let progress = gtk::ProgressBar::builder()
             .show_text(true)
             .fraction(0.)
@@ -465,7 +495,7 @@ impl TuListItem {
         let item_type = self.imp().itemtype.get().unwrap();
         match item_type.as_str() {
             "Movie" | "Series" | "Episode" => self.set_item_action(true),
-            "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Actor" | "Person" => {
+            "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Actor" | "Person" | "TvChannel" => {
                 self.set_item_action(false)
             }
             _ => None,

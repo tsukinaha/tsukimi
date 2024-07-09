@@ -133,13 +133,13 @@ mod imp {
                 .set_text(&metadata.sort_name.unwrap_or_default());
             self.timezone
                 .replace(metadata.date_created.as_ref().map(|x| {
-                    glib::DateTime::from_iso8601(x, None)
+                    glib::DateTime::from_iso8601(&x.to_rfc3339(), None)
                         .unwrap()
                         .to_local()
                         .unwrap()
                 }));
             self.date_entry
-                .set_subtitle(&dt(metadata.date_created.as_deref()));
+                .set_subtitle(&dt(metadata.date_created));
             self.overview_entry
                 .buffer()
                 .set_text(&metadata.overview.unwrap_or_default());

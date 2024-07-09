@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use chrono::{DateTime, Utc};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct SearchResult {
@@ -108,6 +109,20 @@ pub struct Media {
     pub play_session_id: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct LiveMedia {
+    #[serde(rename = "MediaSources")]
+    pub media_sources: Vec<LiveMediaSource>,
+    #[serde(rename = "PlaySessionId")]
+    pub play_session_id: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct LiveMediaSource {
+    #[serde(rename = "TranscodingUrl")]
+    pub transcoding_url: Option<String>,
+}
+
 #[derive(Serialize, Deserialize, Clone, Default)]
 pub struct Item {
     #[serde(rename = "Name")]
@@ -115,7 +130,7 @@ pub struct Item {
     #[serde(rename = "Id")]
     pub id: String,
     #[serde(rename = "DateCreated")]
-    pub date_created: Option<String>,
+    pub date_created: Option<DateTime<Utc>>,
     #[serde(rename = "SeriesId")]
     pub series_id: Option<String>,
     #[serde(rename = "SeriesName")]
@@ -322,6 +337,19 @@ pub struct SimpleListItem {
     pub collection_type: Option<String>,
     #[serde(rename = "Overview")]
     pub overview: Option<String>,
+    #[serde(rename = "CurrentProgram")]
+    pub current_program: Option<CurrentProgram>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct CurrentProgram {
+    #[serde(rename = "Name")]
+    pub name: Option<String>,
+    #[serde(rename = "EndDate")]
+    pub end_date: Option<DateTime<Utc>>,
+    #[serde(rename = "StartDate")]
+    pub start_date: Option<DateTime<Utc>>,
+
 }
 
 #[derive(Serialize, Deserialize, Clone)]

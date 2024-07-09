@@ -32,6 +32,8 @@ mod imp {
         pub albumhortu: TemplateChild<HortuScrolled>,
         #[template_child]
         pub boxsethortu: TemplateChild<HortuScrolled>,
+        #[template_child]
+        pub tvhortu: TemplateChild<HortuScrolled>,
     }
 
     // The central trait for subclassing a GObject
@@ -100,6 +102,7 @@ impl HistoryPage {
         self.sets("People").await;
         self.sets("MusicAlbum").await;
         self.sets("BoxSet").await;
+        self.sets("TvChannel").await;
         fraction!(self);
     }
 
@@ -111,6 +114,7 @@ impl HistoryPage {
             "People" => self.imp().peoplehortu.get(),
             "MusicAlbum" => self.imp().albumhortu.get(),
             "BoxSet" => self.imp().boxsethortu.get(),
+            "TvChannel" => self.imp().tvhortu.get(),
             _ => return,
         };
 

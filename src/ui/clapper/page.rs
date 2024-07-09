@@ -1,7 +1,6 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::network::RUNTIME;
 use crate::client::structs::Back;
-use crate::config::set_config;
 use crate::toast;
 use crate::ui::widgets::song_widget::format_duration;
 use crate::ui::widgets::window::Window;
@@ -126,8 +125,7 @@ impl ClapperPage {
         back: Option<Back>,
     ) {
         let imp = self.imp();
-        let server_info = set_config();
-        let url = format!("{}:{}/emby{}", server_info.domain, server_info.port, url);
+        let url = EMBY_CLIENT.get_streaming_url(url);
         let item = clapper::MediaItem::builder().uri(url).build();
 
         if suburi.is_some() {

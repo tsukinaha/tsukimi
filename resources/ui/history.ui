@@ -37,6 +37,10 @@
                   <object class="HortuScrolled" id="boxsethortu">
                   </object>
                 </child>
+                <child>
+                  <object class="HortuScrolled" id="tvhortu">
+                  </object>
+                </child>
               </object>
             </child>
           </object>

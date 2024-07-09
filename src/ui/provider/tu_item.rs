@@ -2,7 +2,7 @@ use gtk::glib;
 use gtk::glib::prelude::*;
 use gtk::glib::subclass::prelude::*;
 use std::cell::RefCell;
-
+use glib::DateTime;
 use crate::client::structs::SimpleListItem;
 
 #[derive(Default, Clone)]
@@ -12,6 +12,7 @@ struct AlbumArtist {
 }
 
 pub mod imp {
+    use glib::DateTime;
     use gtk::glib::Properties;
 
     use super::*;
@@ -66,6 +67,12 @@ pub mod imp {
         #[property(name = "albumartist-name", get, set, type = String, member = name)]
         #[property(name = "albumartist-id", get, set, type = String, member = id)]
         album_artist: RefCell<AlbumArtist>,
+        #[property(get, set, nullable)]
+        program_name: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        program_start_time: RefCell<Option<DateTime>>,
+        #[property(get, set, nullable)]
+        program_end_time: RefCell<Option<DateTime>>,
     }
 
     #[glib::derived_properties]
@@ -173,6 +180,21 @@ impl TuItem {
         if let Some(collection_type) = &latest.collection_type {
             tu_item.set_collection_type(Some(collection_type.clone()));
         }
+        if let Some(current_program) = &latest.current_program {
+            if let Some(program_name) = &current_program.name {
+                tu_item.set_program_name(Some(program_name.clone()));
+            }
+            if let Some(start_time) = &current_program.start_date {
+                tu_item.set_program_start_time(Some(&chrono_to_glib(start_time)));
+            }
+            if let Some(end_time) = &current_program.end_date {
+                tu_item.set_program_end_time(Some(&chrono_to_glib(end_time)));
+            }
+        }
         tu_item
     }
+}
+
+fn chrono_to_glib(datetime: &chrono::DateTime<chrono::Utc>) -> DateTime {
+    DateTime::from_iso8601(&datetime.to_rfc3339(), None).unwrap()
 }

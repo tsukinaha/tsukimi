@@ -726,4 +726,25 @@ impl Window {
     fn on_add_server(&self) {
         self.new_account();
     }
+
+    pub fn play_media(&self, url: String, suburl: Option<String>, name: Option<String>, back: Option<Back>, selected: Option<String>, percentage: f64) {
+        if SETTINGS.mpv() {
+            gio::spawn_blocking(move || {
+                match crate::ui::mpv::event::play(
+                    url,
+                    suburl,
+                    Some(name.unwrap_or("".to_string())),
+                    back,
+                    Some(percentage),
+                ) {
+                    Ok(_) => {}
+                    Err(e) => {
+                        eprintln!("Failed to play: {}", e);
+                    }
+                };
+            });
+        } else {
+            self.set_clapperpage(&url, suburl.as_deref(), name.as_deref(), selected.as_deref(), back);
+        }
+    }
 }

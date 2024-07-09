@@ -13,11 +13,10 @@ use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::toast;
 use crate::ui::models::SETTINGS;
-use crate::ui::mpv;
 
 use crate::ui::provider::dropdown_factory::factory;
 use crate::utils::{get_image_with_cache, req_cache, spawn, spawn_tokio};
-use chrono::{DateTime, Local, NaiveDateTime, Utc};
+use chrono::{DateTime, Utc};
 
 use super::fix::ScrolledWindowFixExt;
 use super::song_widget::format_duration;
@@ -708,7 +707,7 @@ impl ItemPage {
     pub async fn createmediabox(
         &self,
         media_sources: Vec<MediaSource>,
-        date_created: Option<String>,
+        date_created: Option<DateTime<Utc>>,
     ) {
         let imp = self.imp();
         let mediainfobox = imp.mediainfobox.get();
@@ -726,7 +725,7 @@ impl ItemPage {
                 mediasource.path.unwrap_or_default(),
                 mediasource.container.to_uppercase(),
                 bytefmt::format(mediasource.size),
-                dt(date_created.as_deref()),
+                dt(date_created),
                 mediasource.name
             );
             let label = gtk::Label::builder()
@@ -1061,24 +1060,7 @@ impl ItemPage {
                                 },
                                 None => None,
                             };
-                            if SETTINGS.mpv() {
-                                gio::spawn_blocking(move || {
-                                    match mpv::event::play(
-                                        url,
-                                        suburl,
-                                        Some(name.unwrap_or("".to_string())),
-                                        &back,
-                                        Some(percentage),
-                                    ) {
-                                        Ok(_) => {}
-                                        Err(e) => {
-                                            eprintln!("Failed to play: {}", e);
-                                        }
-                                    };
-                                });
-                            } else {
-                                obj.get_window().set_clapperpage(&url, suburl.as_deref(), name.as_deref(), selected.as_deref(), Some(back));
-                            }
+                            obj.get_window().play_media(url, suburl, name, Some(back), selected, percentage);
                         });
                     } else {
                         toast!(obj,"No Stream URL found");
@@ -1100,16 +1082,9 @@ pub struct DropdownList {
     pub line2: Option<String>,
 }
 
-pub fn dt(date: Option<&str>) -> String {
-    match date {
-        Some(date) => {
-            let dt = DateTime::parse_from_rfc3339(date)
-                .unwrap()
-                .with_timezone(&Utc);
-            let local_time: DateTime<Local> = dt.with_timezone(&Local);
-            let naive_local_time: NaiveDateTime = local_time.naive_local();
-            naive_local_time.to_string()
-        }
-        None => "".to_string(),
-    }
+pub fn dt(date: Option<chrono::DateTime<Utc>>) -> String {
+    let Some(date) = date else {
+        return "".to_string();
+    };
+    date.format("%Y-%m-%d %H:%M:%S").to_string()
 }
