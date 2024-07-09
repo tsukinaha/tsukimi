@@ -162,6 +162,13 @@ impl HomePage {
 
     pub async fn setup_libsview(&self, items: Vec<SimpleListItem>) {
         for view in items {
+            let Some(collection_type) = view.collection_type else {
+                continue;
+            };
+            if collection_type == "livetv" {
+
+                continue;
+            }
             let results = match req_cache(&format!("library_{}", view.id), async move {
                 EMBY_CLIENT.get_latest(&view.id).await
             })

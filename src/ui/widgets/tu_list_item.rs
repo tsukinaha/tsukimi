@@ -155,9 +155,10 @@ impl TuListItem {
                 imp.overlay.set_size_request(250, 141);
                 self.set_picture();
             }
-            "CollectionFolder" => {
+            "CollectionFolder" | "UserView" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
+                imp.overlay.set_size_request(250, 141);
                 self.set_picture();
             }
             "Series" => {
@@ -221,9 +222,8 @@ impl TuListItem {
                 self.set_picture();
             }
             _ => {
-                
                 self.set_visible(false);
-                println!("Unknown item type: {}", item_type)
+                warn!("Unknown item type: {}", item_type)
             }
         }
         self.set_tooltip_text(Some(&item.name()));
@@ -281,9 +281,6 @@ impl TuListItem {
                     self.set_image(id, "Backdrop", Some(0))
                 }
             } else {
-                if self.itemtype() == "Episode" || self.itemtype() == "CollectionFolder" {
-                    imp.overlay.set_size_request(250, 141);
-                }
                 if let Some(img_tags) = item.primary_image_item_id() {
                     self.set_image(img_tags, "Primary", None)
                 } else {
