@@ -16,7 +16,8 @@ use crate::{
 use once_cell::sync::Lazy;
 
 use super::structs::{
-    AuthenticateResponse, Back, ImageItem, Item, List, LiveMedia, LoginResponse, Media, SerInList, SimpleListItem
+    AuthenticateResponse, Back, ImageItem, Item, List, LiveMedia, LoginResponse, Media, SerInList,
+    SimpleListItem,
 };
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
@@ -771,8 +772,22 @@ impl EmbyClient {
             ("Limit", "12"),
             ("Fields", "ProgramPrimaryImageAspectRatio"),
             ("SortBy", "DefaultChannelOrder"),
-            ("SortOrder", "	Ascending")
-            ];
+            ("SortOrder", "Ascending"),
+        ];
+        self.request("LiveTv/Channels", &params).await
+    }
+
+    pub async fn get_channels_list(&self, start_index: &str) -> Result<List, reqwest::Error> {
+        let params = [
+            ("IsAiring", "true"),
+            ("userId", &self.user_id()),
+            ("ImageTypeLimit", "1"),
+            ("Limit", "50"),
+            ("Fields", "ProgramPrimaryImageAspectRatio"),
+            ("SortBy", "DefaultChannelOrder"),
+            ("SortOrder", "Ascending"),
+            ("StartIndex", start_index),
+        ];
         self.request("LiveTv/Channels", &params).await
     }
 

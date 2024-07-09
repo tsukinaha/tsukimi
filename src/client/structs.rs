@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct SearchResult {
@@ -349,7 +349,6 @@ pub struct CurrentProgram {
     pub end_date: Option<DateTime<Utc>>,
     #[serde(rename = "StartDate")]
     pub start_date: Option<DateTime<Utc>>,
-
 }
 
 #[derive(Serialize, Deserialize, Clone)]

@@ -244,6 +244,9 @@ impl SingleListPage {
         let list_results = match req_cache(
             &format!("{}_{}_{}", id, listtype.clone(), include_item_types),
             async move {
+                if listtype == "livetv" {
+                    return EMBY_CLIENT.get_channels_list("0").await;
+                }
                 if is_inlist {
                     EMBY_CLIENT
                         .get_inlist(parentid, "0", &listtype, &id, &order, &sortby)
@@ -354,6 +357,9 @@ impl SingleListPage {
         let is_inlist = *self.imp().isinlist.get().unwrap();
 
         let list_results = match spawn_tokio(async move {
+            if listtype == "livetv" {
+                return EMBY_CLIENT.get_channels_list(&pos).await;
+            }
             if is_inlist {
                 EMBY_CLIENT
                     .get_inlist(parentid, &pos, &listtype, &id, &order, &sortby)

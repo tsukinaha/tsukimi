@@ -138,8 +138,7 @@ mod imp {
                         .to_local()
                         .unwrap()
                 }));
-            self.date_entry
-                .set_subtitle(&dt(metadata.date_created));
+            self.date_entry.set_subtitle(&dt(metadata.date_created));
             self.overview_entry
                 .buffer()
                 .set_text(&metadata.overview.unwrap_or_default());

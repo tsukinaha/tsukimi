@@ -1,9 +1,9 @@
+use crate::client::structs::SimpleListItem;
+use glib::DateTime;
 use gtk::glib;
 use gtk::glib::prelude::*;
 use gtk::glib::subclass::prelude::*;
 use std::cell::RefCell;
-use glib::DateTime;
-use crate::client::structs::SimpleListItem;
 
 #[derive(Default, Clone)]
 struct AlbumArtist {

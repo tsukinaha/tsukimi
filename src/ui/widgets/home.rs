@@ -165,7 +165,7 @@ impl HomePage {
             let Some(collection_type) = view.collection_type else {
                 continue;
             };
-            
+
             let results = match req_cache(&format!("library_{}", view.id), async move {
                 if collection_type == "livetv" {
                     EMBY_CLIENT.get_channels().await.map(|x| x.items)

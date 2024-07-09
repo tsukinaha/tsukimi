@@ -12,12 +12,12 @@ const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
 mod imp {
     use std::cell::OnceCell;
 
-    use glib::subclass::InitializingObject;
-    use gtk::gio;
     use crate::client::client::EMBY_CLIENT;
     use crate::client::error::UserFacingError;
     use crate::toast;
     use crate::utils::{spawn, spawn_tokio};
+    use glib::subclass::InitializingObject;
+    use gtk::gio;
 
     use crate::{client::structs::SimpleListItem, ui::widgets::window::Window};
 
@@ -212,6 +212,21 @@ mod imp {
                         crate::ui::widgets::list::ListPage::new(
                             item.id(),
                             item.collection_type().unwrap_or_default(),
+                        ),
+                    )
+                }
+                "UserView" => {
+                    let item = TuItem::from_simple(result, None);
+                    Self::push_page(
+                        view,
+                        &window,
+                        &result.name,
+                        crate::ui::widgets::singlelist::SingleListPage::new(
+                            item.id(),
+                            item.collection_type().unwrap_or_default(),
+                            "livetv",
+                            None,
+                            false,
                         ),
                     )
                 }

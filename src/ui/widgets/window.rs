@@ -727,7 +727,15 @@ impl Window {
         self.new_account();
     }
 
-    pub fn play_media(&self, url: String, suburl: Option<String>, name: Option<String>, back: Option<Back>, selected: Option<String>, percentage: f64) {
+    pub fn play_media(
+        &self,
+        url: String,
+        suburl: Option<String>,
+        name: Option<String>,
+        back: Option<Back>,
+        selected: Option<String>,
+        percentage: f64,
+    ) {
         if SETTINGS.mpv() {
             gio::spawn_blocking(move || {
                 match crate::ui::mpv::event::play(
@@ -744,7 +752,13 @@ impl Window {
                 };
             });
         } else {
-            self.set_clapperpage(&url, suburl.as_deref(), name.as_deref(), selected.as_deref(), back);
+            self.set_clapperpage(
+                &url,
+                suburl.as_deref(),
+                name.as_deref(),
+                selected.as_deref(),
+                back,
+            );
         }
     }
 }

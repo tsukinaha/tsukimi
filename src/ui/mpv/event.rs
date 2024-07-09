@@ -87,7 +87,7 @@ pub fn play(
             let ev = ev_ctx.wait_event(10000.).unwrap_or(Err(Error::Null));
             match ev {
                 Ok(Event::EndFile(r)) => {
-                    if r == 3 {         
+                    if r == 3 {
                         if let Some(mut back) = back.clone() {
                             back.tick = duration;
                             RUNTIME.spawn(async move { EMBY_CLIENT.position_stop(&back).await });

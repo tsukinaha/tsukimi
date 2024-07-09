@@ -156,7 +156,11 @@ impl TuListItem {
                 self.set_picture();
             }
             "TvChannel" => {
-                imp.listlabel.set_text(&format!("{} - {}", item.name(), item.program_name().unwrap_or_default()));
+                imp.listlabel.set_text(&format!(
+                    "{} - {}",
+                    item.name(),
+                    item.program_name().unwrap_or_default()
+                ));
                 imp.overlay.set_size_request(250, 141);
                 self.set_picture();
 
@@ -174,10 +178,15 @@ impl TuListItem {
 
                 let now = glib::DateTime::now_local().unwrap();
 
-                let progress = (now.to_unix() - program_start_time.to_unix()) as f64 / (program_end_time.to_unix() - program_start_time.to_unix()) as f64;
+                let progress = (now.to_unix() - program_start_time.to_unix()) as f64
+                    / (program_end_time.to_unix() - program_start_time.to_unix()) as f64;
 
                 self.set_played_percentage(progress * 100.0);
-                imp.label2.set_text(&format!("{} - {}", program_start_time.format("%H:%M").unwrap(), program_end_time.format("%H:%M").unwrap()));
+                imp.label2.set_text(&format!(
+                    "{} - {}",
+                    program_start_time.format("%H:%M").unwrap(),
+                    program_end_time.format("%H:%M").unwrap()
+                ));
             }
             "CollectionFolder" | "UserView" => {
                 imp.listlabel.set_text(&item.name());
@@ -495,9 +504,8 @@ impl TuListItem {
         let item_type = self.imp().itemtype.get().unwrap();
         match item_type.as_str() {
             "Movie" | "Series" | "Episode" => self.set_item_action(true),
-            "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Actor" | "Person" | "TvChannel" => {
-                self.set_item_action(false)
-            }
+            "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Actor" | "Person"
+            | "TvChannel" => self.set_item_action(false),
             _ => None,
         }
     }
@@ -681,7 +689,7 @@ pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem,
     let tu_item = TuItem::from_simple(latest, None);
     match latest.latest_type.as_str() {
         "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views"
-        | "Actor" | "Person" => {
+        | "Actor" | "Person" | "TvChannel" => {
             set_list_child(tu_item, list_item, &latest.latest_type, is_resume);
         }
         _ => {}

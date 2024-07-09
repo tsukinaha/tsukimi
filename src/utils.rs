@@ -1,5 +1,7 @@
 use crate::client::client::EMBY_CLIENT;
+use crate::client::error::UserFacingError;
 use crate::client::{network::RUNTIME, structs::SimpleListItem};
+use crate::toast;
 use crate::ui::models::emby_cache_path;
 use crate::ui::provider::tu_item::TuItem;
 use crate::ui::widgets::singlelist::SingleListPage;
@@ -222,6 +224,25 @@ pub fn tu_list_view_connect_activate(
                 &result.name,
                 crate::ui::widgets::music_album::AlbumPage::new(item),
             )
+        }
+        "TvChannel" => {
+            let id = result.id.clone();
+            let name = result.name.clone();
+            spawn(glib::clone!(@weak window => async move {
+                toast!(window, "Processing...");
+                match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&id).await }).await {
+                    Ok(playback) => {
+                        let Some(ref url) = playback.media_sources[0].transcoding_url else {
+                            toast!(window, "No transcoding url found");
+                            return;
+                        };
+                        window.play_media(url.to_string(), None, Some(name), None, None, 0.0)
+                    }
+                    Err(e) => {
+                        toast!(window, e.to_user_facing());
+                    }
+                }
+            }));
         }
         _ => push_page(
             view,
