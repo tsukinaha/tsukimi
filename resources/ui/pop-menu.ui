@@ -5,36 +5,43 @@
         <attribute name="label" translatable="yes">Remove</attribute>
         <attribute name="action">item.remove</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;R</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Like</attribute>
         <attribute name="action">item.like</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;L</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Unlike</attribute>
         <attribute name="action">item.unlike</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;K</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Mark as Played</attribute>
         <attribute name="action">item.played</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;P</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Mark as Unplayed</attribute>
         <attribute name="action">item.unplayed</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;N</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">View Metadata</attribute>
         <attribute name="action">item.editm</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;M</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">View Images</attribute>
         <attribute name="action">item.editi</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;I</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Scan</attribute>
