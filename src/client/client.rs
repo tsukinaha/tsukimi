@@ -241,7 +241,6 @@ impl EmbyClient {
             ("EnableImageTypes", "Primary,Backdrop,Thumb"),
             ("ImageTypeLimit", "1"),
             ("MediaTypes", "Video"),
-            ("Limit", "8"),
         ];
         self.request(&path, &params).await
     }

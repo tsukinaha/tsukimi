@@ -388,9 +388,9 @@ impl HortuScrolled {
 
         let start = adj.value();
         let end = if is_right {
-            start + 400.0
+            start + 800.0
         } else {
-            start - 400.0
+            start - 800.0
         };
         let start_time = clock.frame_time();
         let end_time = start_time + 1000 * 400;
