@@ -157,6 +157,7 @@
                                     </child>
                                     <child>
                                       <object class="ItemActionsBox" id="actionbox">
+                                        <property name="is-playable">True</property>
                                       </object>
                                     </child>
                                   </object>

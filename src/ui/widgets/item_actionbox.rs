@@ -1,3 +1,6 @@
+
+use crate::utils::spawn;
+
 use adw::subclass::prelude::*;
 use gtk::{gio, prelude::*};
 use gtk::{glib, template_callbacks, CompositeTemplate};
@@ -25,6 +28,10 @@ mod imp {
         pub favourite_button: TemplateChild<StarToggle>,
         #[property(get, set, nullable)]
         pub id: RefCell<Option<String>>,
+        #[property(get, set, construct, default = false)]
+        pub is_playable: RefCell<bool>,
+        #[property(get, set, default = false)]
+        pub played: RefCell<bool>,
     }
 
     #[glib::object_subclass]
@@ -60,12 +67,6 @@ glib::wrapper! {
     /// Preference Window to display and update room details.
     pub struct ItemActionsBox(ObjectSubclass<imp::ItemActionsBox>)
         @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
-}
-
-impl Default for ItemActionsBox {
-    fn default() -> Self {
-        Self::new()
-    }
 }
 
 #[template_callbacks]
@@ -122,6 +123,51 @@ impl ItemActionsBox {
                 }
             }))
             .build()]);
+        if self.is_playable() {
+            if self.played() {
+                action_group.add_action_entries([gio::ActionEntry::builder("unplayed")
+                    .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                        let id = obj.id();
+                        if let Some(id) = id {
+                            spawn(glib::clone!(@weak obj => async move {
+                                match spawn_tokio(async move { EMBY_CLIENT.set_as_unplayed(&id).await }).await
+                                {
+                                    Ok(_) => {
+                                        obj.set_played(false);
+                                        toast!(obj, "Success");
+                                        obj.bind_edit();
+                                    }
+                                    Err(e) => {
+                                        toast!(obj, e.to_user_facing());
+                                    }
+                                }
+                            })); 
+                        }
+                    }))
+                    .build()]);
+            } else {
+                action_group.add_action_entries([gio::ActionEntry::builder("played")
+                    .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                        let id = obj.id();
+                        if let Some(id) = id {
+                            spawn(glib::clone!(@weak obj => async move {
+                                match spawn_tokio(async move { EMBY_CLIENT.set_as_played(&id).await }).await
+                                {
+                                    Ok(_) => {
+                                        obj.set_played(true);
+                                        toast!(obj, "Success");
+                                        obj.bind_edit();
+                                    }
+                                    Err(e) => {
+                                        toast!(obj, e.to_user_facing());
+                                    }
+                                }
+                            })); 
+                        }
+                    }))
+                    .build()]);
+            }
+        }
         action_group
     }
 
