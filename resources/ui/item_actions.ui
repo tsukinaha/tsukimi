@@ -88,5 +88,19 @@
         <attribute name="accel">&lt;Control&gt;F8</attribute>
       </item>
     </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">View This Episode Metadata</attribute>
+        <attribute name="action">item.editepisodem</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;F9</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">View This Episode Images</attribute>
+        <attribute name="action">item.editepisodei</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;F10</attribute>
+      </item>
+    </section>
   </menu>
 </interface>

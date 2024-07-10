@@ -175,6 +175,24 @@ impl ItemActionsBox {
         }
 
         if let Some(episode_id) = self.episode_id() {
+            action_group.add_action_entries([gio::ActionEntry::builder("editepisodem")
+                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    use crate::ui::widgets::metadata_dialog::MetadataDialog;
+                    use crate::insert_editm_dialog;
+                    let episode_id = obj.episode_id().unwrap();
+                    let dialog = MetadataDialog::new(&episode_id);
+                    insert_editm_dialog!(obj, dialog);
+                }))
+                .build()]);
+            action_group.add_action_entries([gio::ActionEntry::builder("editepisodei")
+                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    use crate::ui::widgets::image_dialog::ImagesDialog;
+                    use crate::insert_editm_dialog;
+                    let episode_id = obj.episode_id().unwrap();
+                    let dialog = ImagesDialog::new(&episode_id);
+                    insert_editm_dialog!(obj, dialog);
+                }))
+                .build()]);
             let episode_id_clone = episode_id.clone();
             if self.episode_played() {
                 action_group.add_action_entries([gio::ActionEntry::builder("episodeunplayed")
