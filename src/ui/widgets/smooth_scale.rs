@@ -1,12 +1,11 @@
 use gtk::{glib, prelude::*, subclass::prelude::*};
-use gtk::glib::subclass::prelude::*;
 mod imp {
     use gtk::{glib, prelude::*, subclass::prelude::*};
-    use std::{borrow::Borrow, cell::RefCell};
+    use std::{cell::RefCell};
 
     use crate::gstl::player::MusicPlayer;
 
-    use super::*;
+    
 
     #[derive(Default, glib::Properties)]
     #[properties(wrapper_type = super::SmoothScale)]
@@ -52,7 +51,6 @@ mod imp {
             }));
 
             self.obj().duration_changed();
-            self.obj().update_timeout();
         }
     }
     impl WidgetImpl for SmoothScale {}

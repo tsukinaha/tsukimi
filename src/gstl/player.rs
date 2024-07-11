@@ -1,21 +1,30 @@
 use gst::prelude::*;
 use gtk::glib;
-use gtk::glib::prelude::*;
 use gtk::glib::subclass::prelude::*;
 use crate::{client::client::EMBY_CLIENT, ui::provider::core_song::CoreSong};
 
 pub mod imp {
     use std::cell::RefCell;
+    use async_channel::{Receiver, Sender};
     use once_cell::sync::*;
     use gtk::{glib, prelude::ListModelExt};
     use gtk::glib::Properties;
     use std::sync::OnceLock;
 
     use super::*;
-    use glib::subclass::{InitializingObject, Signal};
+    use glib::subclass::Signal;
     use crate::ui::widgets::song_widget::State;
+    
+    struct AboutToFinish {
+        tx: Sender<bool>,
+        rx: Receiver<bool>,
+    }
 
-    use super::*;
+    static ABOUT_TO_FINISH: Lazy<AboutToFinish> = Lazy::new(|| {
+        let (tx, rx) = async_channel::bounded::<bool>(1);
+    
+        AboutToFinish { tx, rx }
+    });
 
     #[derive(Properties, Default)]
     #[properties(wrapper_type = super::MusicPlayer)]
@@ -59,12 +68,23 @@ pub mod imp {
                     }
                 })
             });
+
+            self.pipeline.set(pipeline).unwrap();
+
             self.connect_about_to_finish(
-                glib::clone!(@strong self as imp => move |_| {
-                    imp.next_song();
+                move |_| {
+                    let _ = ABOUT_TO_FINISH
+                        .tx
+                        .send_blocking(true);
                     None
-                }),
+                },
             );
+
+            glib::spawn_future_local(glib::clone!(@weak self as imp => async move {
+                while let Ok(true) = ABOUT_TO_FINISH.rx.recv().await {
+                    imp.next_song();
+                }
+            }));
         }
 
         fn signals() -> &'static [Signal] {
@@ -102,9 +122,14 @@ pub mod imp {
         }
 
         pub fn play(&self, core_song: &CoreSong) {
-            if let Some(core_song_old) = self.active_core_song.borrow().as_ref() {
+            let core_song_old = self.active_core_song.borrow().clone();
+            if let Some(core_song_old) = core_song_old.as_ref() {
                 if core_song_old != core_song {
                     core_song_old.set_state(State::Played);
+                    {
+                        let mut active_core_song = self.active_core_song.borrow_mut();
+                        *active_core_song = Some(core_song.clone());
+                    }
                 }
             }
             
@@ -135,18 +160,15 @@ pub mod imp {
             }
             let row = model.item(next_position).unwrap();
             let core_song = row.downcast_ref::<CoreSong>().unwrap();
+            core_song.set_state(State::Playing);
             self.play(core_song);
         }
 
         pub fn core_song_position(&self) -> Option<u32> {
             let core_song = self.active_core_song.borrow();
-            let Some(core_song) = core_song.as_ref() else {
-                return None;
-            };
+            let core_song = core_song.as_ref()?;
             let model = self.active_model.borrow();
-            let Some(model) = model.as_ref() else {
-                return None;
-            };
+            let model = model.as_ref()?;
             model.find(core_song)
         }
 

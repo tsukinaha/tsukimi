@@ -60,6 +60,7 @@ mod imp {
     impl ObjectImpl for PlayerToolbarBox {
         fn constructed(&self) {
             self.parent_constructed();
+            self.progress_scale.set_player(Some(&self.player));
         }
     }
     impl WidgetImpl for PlayerToolbarBox {}
