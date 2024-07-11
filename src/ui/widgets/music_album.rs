@@ -2,19 +2,23 @@ use std::collections::HashMap;
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
-use gtk::{glib, CompositeTemplate};
-
+use gtk::gio::ListStore;
+use gtk::{gio::ListModel, glib, template_callbacks, Button, CompositeTemplate, FlattenListModel};
+use gtk::{gio, prelude::*};
+use crate::bing_song_model;
+use crate::ui::provider::core_song::CoreSong;
+use crate::ui::widgets::song_widget::State;
 use crate::{
     client::{client::EMBY_CLIENT, error::UserFacingError, structs::List},
     toast,
-    ui::provider::tu_item::TuItem,
+    ui::{provider::tu_item::TuItem, widgets::song_widget::SongWidget},
     utils::{get_image_with_cache, req_cache, spawn},
 };
 
 use super::song_widget::format_duration;
 
 pub(crate) mod imp {
-    use std::cell::OnceCell;
+    use std::cell::{OnceCell, RefCell};
 
     use crate::ui::widgets::item_actionbox::ItemActionsBox;
     use crate::{
@@ -27,6 +31,7 @@ pub(crate) mod imp {
 
     use super::*;
     use glib::subclass::InitializingObject;
+    use glib::SignalHandlerId;
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/album_widget.ui")]
@@ -50,6 +55,7 @@ pub(crate) mod imp {
         pub artisthortu: TemplateChild<HortuScrolled>,
         #[template_child]
         pub actionbox: TemplateChild<ItemActionsBox>,
+        pub signal_id: RefCell<Option<SignalHandlerId>>,
     }
 
     #[glib::object_subclass]
@@ -61,6 +67,7 @@ pub(crate) mod imp {
         fn class_init(klass: &mut Self::Class) {
             StarToggle::ensure_type();
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -98,6 +105,9 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
 }
 
+use crate::ui::widgets::disc_box::DiscBox;
+
+#[template_callbacks]
 impl AlbumPage {
     pub fn new(item: TuItem) -> Self {
         glib::Object::builder().property("item", item).build()
@@ -176,12 +186,38 @@ impl AlbumPage {
             let song_widget = disc_boxes.entry(parent_index_number).or_insert_with(|| {
                 let new_disc_box = super::disc_box::DiscBox::new();
                 new_disc_box.set_disc(parent_index_number);
+                new_disc_box.connect_closure("song-activated", true, 
+                glib::closure_local!(@watch self as obj => move |_:DiscBox, song_widget| {
+                    obj.song_activated(song_widget);
+                }));
                 self.imp().listbox.append(&new_disc_box);
                 new_disc_box
             });
 
             song_widget.add_song(item);
         }
+    }
+
+    fn song_activated(&self, song_widget: SongWidget) {
+        song_widget.set_state(State::Playing);
+        let active_model = self.song_model();
+        let active_core_song = song_widget.coresong();
+        bing_song_model!(self, active_model, active_core_song);
+    }
+
+    fn song_model(&self) -> ListStore {
+        let imp = self.imp();
+        let listbox = imp.listbox.get();
+        let liststore = gio::ListStore::new::<CoreSong>();
+        for child in listbox.observe_children().into_iter().flatten() {
+            let discbox = child.downcast::<DiscBox>().unwrap();
+            for child in discbox.imp().listbox.observe_children().into_iter().flatten() {
+                let song_widget = child.downcast::<SongWidget>().unwrap();
+                let item = song_widget.coresong();
+                liststore.append(&item)
+            }
+        }
+        liststore
     }
 
     pub fn set_toolbar(&self) {
@@ -233,5 +269,19 @@ impl AlbumPage {
         }
 
         hortu.set_items(&results.items);
+    }
+
+    #[template_callback]
+    fn on_play_button_clicked(&self, _btn: gtk::Button) {
+        let imp = self.imp();
+        let active_model = self.song_model();
+        let Some(object) = imp.listbox.get().first_child() else {
+            return;
+        };
+        let Some(widget) = object.downcast::<DiscBox>().unwrap().imp().listbox.first_child() else {
+            return;
+        };
+        let active_core_song = widget.downcast::<SongWidget>().unwrap().coresong();
+        bing_song_model!(self, active_model, active_core_song);
     }
 }

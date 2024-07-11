@@ -204,6 +204,7 @@ use crate::client::structs::Back;
 use crate::config::load_cfgv2;
 use crate::config::Account;
 use crate::ui::models::SETTINGS;
+use crate::ui::provider::core_song::CoreSong;
 use crate::utils::spawn;
 use crate::APP_ID;
 use glib::Object;
@@ -725,6 +726,11 @@ impl Window {
     #[template_callback]
     fn on_add_server(&self) {
         self.new_account();
+    }
+
+    pub fn bind_song_model(&self, active_model: gio::ListStore, active_core_song: CoreSong) {
+        let imp = self.imp();
+        imp.player_toolbar_box.bind_song_model(active_model, active_core_song);
     }
 
     pub fn play_media(

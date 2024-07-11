@@ -21,6 +21,12 @@ pub mod imp {
         pub id: RefCell<String>,
         #[property(get, set = Self::set_state, explicit_notify, builder(State::default()))]
         pub state: Cell<State>,
+        #[property(get, set)]
+        pub name: RefCell<String>,
+        #[property(get, set)]
+        pub artist: RefCell<String>,
+        #[property(get, set)]
+        pub album_id: RefCell<String>,
     }
 
     #[glib::derived_properties]

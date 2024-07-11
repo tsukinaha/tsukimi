@@ -146,7 +146,6 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">Network</property>
-            <property name="description">User facing error has not been well implemented. This alert will be removed when everything is functioning correctly.</property>
             <child>
               <object class="AdwEntryRow" id="proxyentry">
                 <property name="title" translatable="yes">HTTP Proxy</property>

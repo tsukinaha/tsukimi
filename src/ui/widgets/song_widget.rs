@@ -24,9 +24,7 @@ pub(crate) mod imp {
     use crate::insert_editm_dialog;
     use crate::ui::provider::tu_item::TuItem;
     use crate::ui::widgets::star_toggle::StarToggle;
-    use crate::ui::widgets::window::Window;
     use crate::ui::{provider::core_song::CoreSong, widgets::metadata_dialog::MetadataDialog};
-    use crate::utils::spawn;
     use glib::subclass::InitializingObject;
     use std::cell::{Cell, OnceCell};
 
@@ -72,6 +70,15 @@ pub(crate) mod imp {
                     insert_editm_dialog!(window, dialog);
                 },
             );
+            klass.install_action_async(
+                "song.editi",
+                None,
+                |window, _action, _parameter| async move {
+                    let id = window.item().id();
+                    let dialog = MetadataDialog::new(&id);
+                    insert_editm_dialog!(window, dialog);
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -88,22 +95,19 @@ pub(crate) mod imp {
             obj.set_up();
 
             let core_song = self.obj().coresong();
+
+            let item = obj.item();
+            if let Some(album_id) = item.album_id() {
+                core_song.set_album_id(album_id);
+            }
+            core_song.set_artist(item.albumartist_name());
+            core_song.set_name(item.name());
+            core_song.set_id(item.id());
             obj.bind(&core_song);
         }
     }
     impl WidgetImpl for SongWidget {}
-    impl ListBoxRowImpl for SongWidget {
-        fn activate(&self) {
-            let core_song = self.obj().coresong();
-            self.set_state(State::Playing);
-            let window = self.obj().root().and_downcast::<Window>().unwrap();
-            let player_toolbar = window.imp().player_toolbar_box.get();
-            player_toolbar.play(core_song);
-            spawn(glib::clone!(@weak self as obj => async move {
-                player_toolbar.set_item(obj.item.get().unwrap()).await;
-            }));
-        }
-    }
+    impl ListBoxRowImpl for SongWidget {}
 
     impl SongWidget {
         fn set_state(&self, state: State) {

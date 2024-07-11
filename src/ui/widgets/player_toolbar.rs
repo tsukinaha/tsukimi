@@ -14,7 +14,7 @@ mod imp {
     use adw::subclass::bin::BinImpl;
     use gtk::{glib::subclass::InitializingObject, CompositeTemplate};
 
-    use crate::{gstl::list::Player, ui::widgets::smooth_scale::SmoothScale};
+    use crate::{gstl::player::MusicPlayer, ui::widgets::smooth_scale::SmoothScale};
 
     use super::*;
 
@@ -23,7 +23,7 @@ mod imp {
     pub struct PlayerToolbarBox {
         #[template_child]
         pub toolbar: TemplateChild<gtk::ActionBar>,
-        pub player: Player,
+        pub player: MusicPlayer,
         #[template_child]
         pub cover_image: TemplateChild<gtk::Image>,
         #[template_child]
@@ -88,8 +88,7 @@ impl PlayerToolbarBox {
         self.imp().toolbar.set_revealed(true)
     }
 
-    pub fn play(&self, core_song: CoreSong) {
-        self.imp().player.play(core_song);
+    pub fn update_play_state(&self) {
         self.imp().progress_scale.update_timeout();
         let play_pause_image = &self.imp().play_pause_image.get();
         play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
@@ -124,7 +123,7 @@ impl PlayerToolbarBox {
     #[template_callback]
     fn on_stop_button_clicked(&self) {
         let imp = self.imp();
-        imp.player.stop();
+        imp.player.imp().stop();
         imp.progress_scale.remove_timeout();
         imp.toolbar.set_revealed(false);
     }
@@ -133,12 +132,18 @@ impl PlayerToolbarBox {
     fn on_play_button_clicked(&self) {
         let player = &self.imp().player;
         let play_pause_image = &self.imp().play_pause_image.get();
-        if player.state() == gst::State::Playing {
-            player.pause();
+        if player.imp().state() == gst::State::Playing {
+            player.imp().pause();
             play_pause_image.set_icon_name(Some("media-playback-start-symbolic"));
         } else {
-            player.unpause();
+            player.imp().unpause();
             play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
         }
+    }
+
+    pub fn bind_song_model(&self, active_model: gtk::gio::ListStore, active_core_song: CoreSong) {
+        let player = &self.imp().player.imp();
+        player.load_model(active_model, active_core_song);
+        self.update_play_state();
     }
 }
