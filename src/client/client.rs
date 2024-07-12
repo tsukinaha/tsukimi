@@ -289,7 +289,7 @@ impl EmbyClient {
     ) -> Result<String, reqwest::Error> {
         match self.image_request(id, image_type, tag).await {
             Ok(response) => {
-                let bytes = response.bytes().await.unwrap();
+                let bytes = response.bytes().await?;
 
                 let path = if bytes.len() > 1000 {
                     self.save_image(id, image_type, tag, &bytes)
