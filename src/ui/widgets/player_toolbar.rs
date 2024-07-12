@@ -125,6 +125,7 @@ impl PlayerToolbarBox {
     pub fn set_repeat_mode(&self, mode: ListRepeatMode) {
         let player = &self.imp().player;
         player.set_repeat_mode(mode);
+        player.set_is_first_song(true);
         SETTINGS.set_music_repeat_mode(mode.to_string()).unwrap();
         let i = &self.imp().repeat_image;
         match mode {
