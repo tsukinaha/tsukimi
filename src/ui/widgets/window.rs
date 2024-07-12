@@ -204,6 +204,7 @@ use crate::client::structs::Back;
 use crate::config::load_cfgv2;
 use crate::config::Account;
 use crate::ui::models::SETTINGS;
+use crate::ui::provider::core_song::CoreSong;
 use crate::utils::spawn;
 use crate::APP_ID;
 use glib::Object;
@@ -487,6 +488,7 @@ impl Window {
         imp.navipage
             .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
         self.set_pop_visibility(false);
+        self.imp().player_toolbar_box.on_stop_button_clicked();
     }
 
     fn freshhistorypage(&self) {
@@ -669,8 +671,10 @@ impl Window {
         }));
     }
 
-    pub fn set_fraction(&self, from_value: f64, to_value: f64) {
-        self.progressbar_animation().set_value_from(from_value);
+    pub fn set_fraction(&self, to_value: f64) {
+        let progressbar = &self.imp().progressbar;
+        progressbar.set_inverted(!progressbar.is_inverted());
+        self.progressbar_animation().set_value_from(progressbar.fraction());
         self.progressbar_animation().set_value_to(to_value);
         self.progressbar_animation().play();
     }
@@ -725,6 +729,11 @@ impl Window {
     #[template_callback]
     fn on_add_server(&self) {
         self.new_account();
+    }
+
+    pub fn bind_song_model(&self, active_model: gio::ListStore, active_core_song: CoreSong) {
+        let imp = self.imp();
+        imp.player_toolbar_box.bind_song_model(active_model, active_core_song);
     }
 
     pub fn play_media(

@@ -379,11 +379,10 @@
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="GtkInscription" id="itemoverview">
-                                        <property name="tooltip-text" bind-source="itemoverview" bind-property="text" bind-flags="sync-create" translatable="yes"/>
-                                        <property name="min-lines">8</property>
-                                        <property name="yalign">0.00</property>
-                                        <property name="hexpand">true</property>
+                                      <object class="GtkTextView" id="itemoverview">
+                                        <property name="wrap-mode">word</property>
+                                        <property name="height-request">150</property>
+                                        <property name="editable">False</property>
                                       </object>
                                     </child>
                                   </object>
@@ -408,11 +407,10 @@
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="GtkInscription" id="selecteditemoverview">
-                                        <property name="tooltip-text" bind-source="selecteditemoverview" bind-property="text" bind-flags="sync-create" translatable="yes"/>
-                                        <property name="min-lines">8</property>
-                                        <property name="yalign">0.00</property>
-                                        <property name="hexpand">true</property>
+                                      <object class="GtkTextView" id="selecteditemoverview">
+                                        <property name="wrap-mode">word</property>
+                                        <property name="height-request">150</property>
+                                        <property name="editable">False</property>
                                       </object>
                                     </child>
                                   </object>

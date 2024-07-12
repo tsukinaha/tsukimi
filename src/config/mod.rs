@@ -4,7 +4,7 @@ use std::{env, fs::File, io::Read};
 use uuid::Uuid;
 
 pub mod proxy;
-pub const APP_VERSION: &str = "0.6.10";
+pub const APP_VERSION: &str = "0.7.0";
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
@@ -56,8 +56,7 @@ pub struct Accounts {
 }
 
 pub async fn save_cfg(account: Account) -> Result<(), Box<dyn std::error::Error>> {
-    let mut path = dirs::home_dir().ok_or("Failed to get home directory")?;
-    path.push(".config");
+    let mut path = dirs::config_dir().ok_or("Failed to get home directory")?;
     std::fs::DirBuilder::new().recursive(true).create(&path)?;
     path.push("tsukimi.toml");
     let mut accounts: Accounts = load_cfgv2()?;

@@ -21,6 +21,16 @@ pub mod imp {
         pub id: RefCell<String>,
         #[property(get, set = Self::set_state, explicit_notify, builder(State::default()))]
         pub state: Cell<State>,
+        #[property(get, set)]
+        pub name: RefCell<String>,
+        #[property(get, set)]
+        pub artist: RefCell<String>,
+        #[property(get, set)]
+        pub album_id: RefCell<String>,
+        #[property(get, set)]
+        pub have_single_track_image: RefCell<bool>,
+        #[property(get, set)]
+        pub duration: RefCell<u64>,
     }
 
     #[glib::derived_properties]

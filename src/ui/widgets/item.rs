@@ -78,9 +78,9 @@ pub(crate) mod imp {
         #[template_child]
         pub overviewrevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
-        pub itemoverview: TemplateChild<gtk::Inscription>,
+        pub itemoverview: TemplateChild<gtk::TextView>,
         #[template_child]
-        pub selecteditemoverview: TemplateChild<gtk::Inscription>,
+        pub selecteditemoverview: TemplateChild<gtk::TextView>,
         #[template_child]
         pub mediainfobox: TemplateChild<gtk::Box>,
         #[template_child]
@@ -583,7 +583,7 @@ impl ItemPage {
         imp.playbutton.set_sensitive(true);
 
         if let Some(overview) = seriesinfo.overview {
-            imp.selecteditemoverview.set_text(Some(&overview));
+            imp.selecteditemoverview.buffer().set_text(&overview);
         }
         if let Some(user_data) = seriesinfo.user_data {
             if let Some(is_favourite) = user_data.is_favorite {
@@ -666,7 +666,7 @@ impl ItemPage {
                     }
                 }
                 if let Some(overview) = item.overview {
-                    itemoverview.set_text(Some(&overview));
+                    itemoverview.buffer().set_text(&overview);
                 }
                 if let Some(links) = item.external_urls {
                     obj.set_flowlinks(links);

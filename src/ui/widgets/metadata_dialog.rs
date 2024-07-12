@@ -115,7 +115,6 @@ mod imp {
         fn init(&self) {
             if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
                 self.page.set_title("View Metadata");
-                // bind the edit action
                 self.hint
                     .set_subtitle("This page is READ-ONLY, because it is not finished yet.");
             }

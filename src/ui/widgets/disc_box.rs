@@ -7,8 +7,10 @@ use crate::ui::provider::tu_item::TuItem;
 use super::song_widget::SongWidget;
 
 mod imp {
+    use std::sync::OnceLock;
+
     use super::*;
-    use glib::subclass::InitializingObject;
+    use glib::subclass::{InitializingObject, Signal};
 
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsukimi/disc_box.ui")]
@@ -35,7 +37,16 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for DiscBox {}
+    impl ObjectImpl for DiscBox {
+        fn signals() -> &'static [Signal] {
+            static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
+            SIGNALS.get_or_init(|| {
+                vec![Signal::builder("song-activated")
+                    .param_types([SongWidget::static_type()])
+                    .build()]
+            })
+        }
+    }
 
     impl WidgetImpl for DiscBox {}
     impl BoxImpl for DiscBox {}
@@ -72,6 +83,6 @@ impl DiscBox {
 
     #[template_callback]
     pub fn song_activated(&self, song_widget: &SongWidget) {
-        song_widget.activate();
+        self.emit_by_name::<()>("song-activated", &[&song_widget]);
     }
 }

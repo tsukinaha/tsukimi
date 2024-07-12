@@ -93,6 +93,7 @@
                                     <property name="icon-name">media-playback-start-symbolic</property>
                                     <property name="tooltip-text" translatable="yes">Play</property>
                                     <property name="valign">center</property>
+                                    <signal name="clicked" handler="on_play_button_clicked" swapped="yes"/>
                                     <style>
                                       <class name="circular"/>
                                       <class name="suggested-action"/>

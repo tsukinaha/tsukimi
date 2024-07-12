@@ -44,7 +44,7 @@ macro_rules! fraction {
         use gtk::prelude::WidgetExt;
         if let Some(root) = $widget.root() {
             if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
-                window.set_fraction(1.0, 0.0);
+                window.set_fraction(0.0);
             }
         }
     }};
@@ -56,7 +56,7 @@ macro_rules! fraction_reset {
         use gtk::prelude::WidgetExt;
         if let Some(root) = $widget.root() {
             if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
-                window.set_fraction(0.0, 1.0);
+                window.set_fraction(1.0);
             }
         }
     }};
@@ -64,12 +64,27 @@ macro_rules! fraction_reset {
 
 #[macro_export]
 macro_rules! insert_editm_dialog {
-    ($widget:expr, $toast:expr) => {{
+    ($widget:expr, $dialog:expr) => {{
         use adw::prelude::*;
         use gtk::prelude::WidgetExt;
         if let Some(root) = $widget.root() {
             if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
-                $toast.present(window);
+                $dialog.present(window);
+            } else {
+                panic!("Trying to display a dialog when the parent doesn't support it");
+            }
+        }
+    }};
+}
+
+#[macro_export]
+macro_rules! bing_song_model {
+    ($widget:expr, $active_model:expr, $active_core_song:expr) => {{
+        use adw::prelude::*;
+        use gtk::prelude::WidgetExt;
+        if let Some(root) = $widget.root() {
+            if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
+                window.bind_song_model($active_model, $active_core_song);
             } else {
                 panic!("Trying to display a toast when the parent doesn't support it");
             }

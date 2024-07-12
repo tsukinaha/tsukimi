@@ -1,21 +1,18 @@
 use gtk::{glib, prelude::*, subclass::prelude::*};
-
-use crate::gstl::MUSIC_PLAYER;
-
 mod imp {
+    use gtk::{glib, prelude::*, subclass::prelude::*};
+    use std::{cell::RefCell};
 
-    use std::cell::RefCell;
+    use crate::gstl::player::MusicPlayer;
 
-    use crate::gstl::list::Player;
-
-    use super::*;
+    
 
     #[derive(Default, glib::Properties)]
     #[properties(wrapper_type = super::SmoothScale)]
     pub struct SmoothScale {
         pub timeout: RefCell<Option<glib::source::SourceId>>,
         #[property(get, set = Self::set_player, explicit_notify, nullable)]
-        pub player: glib::WeakRef<Player>,
+        pub player: glib::WeakRef<MusicPlayer>,
     }
 
     #[glib::object_subclass]
@@ -54,7 +51,6 @@ mod imp {
             }));
 
             self.obj().duration_changed();
-            self.obj().update_timeout();
         }
     }
     impl WidgetImpl for SmoothScale {}
@@ -62,7 +58,7 @@ mod imp {
     impl ScaleImpl for SmoothScale {}
 
     impl SmoothScale {
-        fn set_player(&self, player: Option<Player>) {
+        fn set_player(&self, player: Option<MusicPlayer>) {
             if self.player.upgrade() == player {
                 return;
             }
@@ -81,7 +77,7 @@ mod imp {
         }
 
         fn on_seek_finished(&self, value: f64) {
-            MUSIC_PLAYER.set_position(value);
+            self.player.upgrade().unwrap().imp().set_position(value);
         }
     }
 }
@@ -103,7 +99,7 @@ impl SmoothScale {
     }
 
     pub fn update_position_callback(&self) -> glib::ControlFlow {
-        let position = &MUSIC_PLAYER.position();
+        let position = &self.player().unwrap().imp().position();
         if *position > 0.0 {
             self.set_value(*position);
         }
@@ -132,7 +128,7 @@ impl SmoothScale {
         let value = self.value();
         let position = value / 60.0;
         if let Some(player) = self.imp().player.upgrade() {
-            player.set_position(position);
+            player.imp().set_position(position);
         }
     }
 

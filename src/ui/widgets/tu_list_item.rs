@@ -314,12 +314,10 @@ impl TuListItem {
                     imp.overlay.set_size_request(250, 141);
                     self.set_image(id, "Backdrop", Some(0))
                 }
+            } else if let Some(img_tags) = item.primary_image_item_id() {
+                self.set_image(img_tags, "Primary", None)
             } else {
-                if let Some(img_tags) = item.primary_image_item_id() {
-                    self.set_image(img_tags, "Primary", None)
-                } else {
-                    self.set_image(id, "Primary", None)
-                }
+                self.set_image(id, "Primary", None)
             };
             imp.overlay.set_child(Some(&image));
         }

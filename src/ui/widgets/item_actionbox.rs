@@ -74,6 +74,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
 }
 
+impl Default for ItemActionsBox {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[template_callbacks]
 impl ItemActionsBox {
     pub fn new() -> Self {
