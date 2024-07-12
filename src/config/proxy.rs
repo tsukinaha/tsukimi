@@ -10,10 +10,16 @@ impl ReqClient {
                 .expect("failed to find proxy");
             reqwest::Client::builder()
                 .proxy(proxy)
+                .timeout(std::time::Duration::from_secs(10))
+                .pool_max_idle_per_host(settings.int("threads") as usize)
                 .build()
                 .expect("failed to initialize client")
         } else {
-            reqwest::Client::new()
+            reqwest::Client::builder()
+                .timeout(std::time::Duration::from_secs(10))
+                .pool_max_idle_per_host(settings.int("threads") as usize)
+                .build()
+                .expect("failed to initialize client")
         }
     }
 }
