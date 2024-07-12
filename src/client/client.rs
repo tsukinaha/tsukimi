@@ -23,7 +23,7 @@ use super::structs::{
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
 static PROFILE: &str = include_str!("stream_profile.json");
-
+static CLIENT_ID: Lazy<String> = Lazy::new(|| format!("Tsukimi/{}", APP_VERSION));
 pub struct EmbyClient {
     pub url: Mutex<Option<Url>>,
     pub client: reqwest::Client,
@@ -35,7 +35,7 @@ impl EmbyClient {
     pub fn default() -> Self {
         let mut headers = reqwest::header::HeaderMap::new();
         headers.insert("Authorization", HeaderValue::from_static("Emby"));
-        headers.insert("X-Emby-Client", HeaderValue::from_static("Tsukimi"));
+        headers.insert("X-Emby-Client", HeaderValue::from_static(&CLIENT_ID));
         headers.insert(
             "X-Emby-Device-Name",
             HeaderValue::from_str(&get_device_name()).unwrap(),
