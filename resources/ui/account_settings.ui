@@ -178,8 +178,8 @@
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
-                    <property name="upper">8</property>
-                    <property name="value">4</property>
+                    <property name="upper">2</property>
+                    <property name="value">1</property>
                     <property name="page-increment">1</property>
                     <property name="step-increment">1</property>
                   </object>

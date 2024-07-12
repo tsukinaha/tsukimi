@@ -70,7 +70,7 @@
       <summary>Default background height</summary>
     </key>
     <key name="threads" type="i">
-      <default>4</default>
+      <default>1</default>
       <summary>Default threads</summary>
     </key>
     <key name="pic-opacity" type="i">
