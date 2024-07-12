@@ -12,6 +12,7 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::{fraction, fraction_reset};
     use crate::utils::spawn_g_timeout;
 
     // Object holding the state
@@ -51,7 +52,9 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(@weak obj => async move {
+                fraction!(obj);
                 obj.set_pages().await;
+                fraction_reset!(obj);
             }));
         }
     }

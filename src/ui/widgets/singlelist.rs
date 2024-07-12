@@ -150,13 +150,11 @@ impl SingleListPage {
     }
 
     async fn set_up(&self) {
-        fraction_reset!(self);
         self.imp().sortorder.replace("Descending".to_string());
         self.imp().sortby.replace("SortName".to_string());
         self.handle_type().await;
         self.set_up_dropdown();
         self.set_factory().await;
-        fraction!(self);
     }
 
     #[template_callback]
