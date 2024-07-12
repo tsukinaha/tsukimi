@@ -52,9 +52,9 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(@weak obj => async move {
-                fraction!(obj);
-                obj.set_pages().await;
                 fraction_reset!(obj);
+                obj.set_pages().await;
+                fraction!(obj);
             }));
         }
     }
