@@ -27,6 +27,10 @@ pub mod imp {
         pub artist: RefCell<String>,
         #[property(get, set)]
         pub album_id: RefCell<String>,
+        #[property(get, set)]
+        pub have_single_track_image: RefCell<bool>,
+        #[property(get, set)]
+        pub duration: RefCell<u64>,
     }
 
     #[glib::derived_properties]

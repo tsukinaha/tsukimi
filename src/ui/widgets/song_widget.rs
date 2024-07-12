@@ -103,6 +103,12 @@ pub(crate) mod imp {
             core_song.set_artist(item.albumartist_name());
             core_song.set_name(item.name());
             core_song.set_id(item.id());
+            if let Some(image_tags) = item.image_tags() {
+                if image_tags.primary().is_some() {
+                    core_song.set_have_single_track_image(true);
+                }
+            }
+            core_song.set_duration(item.run_time_ticks() / 10000000);
             obj.bind(&core_song);
         }
     }

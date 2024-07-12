@@ -72,13 +72,12 @@
                                 <property name="spacing">12</property>
                                 <child>
                                     <object class="GtkButton" id="_prev_button">
-                                        <property name="sensitive">False</property>
                                         <property name="focusable">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="icon_name">media-skip-backward-symbolic</property>
                                         <property name="tooltip_text" translatable="yes">Previous</property>
                                         <property name="valign">center</property>
-                                        <!--  <signal name="clicked" handler="_on_prev_button_clicked" swapped="no"/> -->
+                                        <signal name="clicked" handler="on_prev_button_clicked" swapped="yes"/>
                                         <style>
                                             <class name="circular"/>
                                         </style>
@@ -103,13 +102,12 @@
                                 </child>
                                 <child>
                                     <object class="GtkButton" id="_next_button">
-                                        <property name="sensitive">False</property>
                                         <property name="focusable">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="icon_name">media-skip-forward-symbolic</property>
                                         <property name="tooltip_text" translatable="yes">Next</property>
                                         <property name="valign">center</property>
-                                        <!-- <signal name="clicked" handler="_on_next_button_clicked" swapped="no"/> -->
+                                        <signal name="clicked" handler="on_next_button_clicked" swapped="true"/>
                                         <style>
                                             <class name="circular"/>
                                         </style>

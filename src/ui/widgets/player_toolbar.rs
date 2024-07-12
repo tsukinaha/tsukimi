@@ -4,7 +4,7 @@ use gtk::{glib, prelude::*, subclass::prelude::*, template_callbacks};
 
 use crate::{
     ui::provider::{core_song::CoreSong, tu_item::TuItem},
-    utils::get_image_with_cache,
+    utils::{get_image_with_cache, spawn},
 };
 
 use super::{smooth_scale::SmoothScale, song_widget::format_duration};
@@ -61,8 +61,15 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             self.progress_scale.set_player(Some(&self.player));
+            let obj = self.obj().clone();
+            self.player.connect_local("stream-start", true, 
+                move |_| {
+                    obj.change_view();
+                    None
+            });
         }
     }
+
     impl WidgetImpl for PlayerToolbarBox {}
     impl BinImpl for PlayerToolbarBox {}
 }
@@ -114,6 +121,30 @@ impl PlayerToolbarBox {
         imp.progress_scale.set_range(0.0, duration as f64);
     }
 
+    pub fn change_view(&self) {
+        let Some(core_song) = self.imp().player.active_core_song() else {
+            return;
+        };
+        let imp = self.imp();
+        imp.title_label.set_text(&core_song.name());
+        imp.artist_label.set_text(&core_song.artist());
+        imp.duration_label.set_text(&format_duration(core_song.duration() as i64));
+        imp.progress_scale.set_range(0.0, core_song.duration() as f64);
+        spawn(glib::clone!(@weak imp => async move {
+            if core_song.have_single_track_image() {
+                let path = get_image_with_cache(&core_song.id(), "Primary", None)
+                    .await
+                    .unwrap();
+                imp.cover_image.set_file(Some(&path));
+            } else {
+                let path = get_image_with_cache(&core_song.album_id(), "Primary", None)
+                    .await
+                    .unwrap();
+                imp.cover_image.set_file(Some(&path));
+            }
+        }));
+    }
+
     #[template_callback]
     fn on_progress_value_changed(&self, progress_scale: &SmoothScale) {
         let label = &self.imp().progress_time_label.get();
@@ -146,5 +177,15 @@ impl PlayerToolbarBox {
         let player = &self.imp().player.imp();
         player.load_model(active_model, active_core_song);
         self.update_play_state();
+    }
+
+    #[template_callback]
+    fn on_next_button_clicked(&self) {
+        self.imp().player.imp().next();
+    }
+
+    #[template_callback]
+    fn on_prev_button_clicked(&self) {
+        self.imp().player.imp().prev();
     }
 }

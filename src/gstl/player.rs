@@ -1,6 +1,5 @@
 use gst::prelude::*;
 use gtk::glib;
-use gtk::glib::subclass::prelude::*;
 use crate::{client::client::EMBY_CLIENT, ui::provider::core_song::CoreSong};
 
 pub mod imp {
@@ -9,7 +8,9 @@ pub mod imp {
     use once_cell::sync::*;
     use gtk::{glib, prelude::ListModelExt};
     use gtk::glib::Properties;
+    use tracing::debug;
     use std::sync::OnceLock;
+    use gtk::{prelude::*, subclass::prelude::*};
 
     use super::*;
     use glib::subclass::Signal;
@@ -26,6 +27,28 @@ pub mod imp {
         AboutToFinish { tx, rx }
     });
 
+    pub struct StreamStart {
+        tx: Sender<bool>,
+        pub rx: Receiver<bool>,
+    }
+
+    pub static STREAM_START: Lazy<StreamStart> = Lazy::new(|| {
+        let (tx, rx) = async_channel::bounded::<bool>(1);
+    
+        StreamStart { tx, rx }
+    });
+
+    pub struct Eos {
+        tx: Sender<bool>,
+        pub rx: Receiver<bool>,
+    }
+
+    pub static EOS: Lazy<Eos> = Lazy::new(|| {
+        let (tx, rx) = async_channel::bounded::<bool>(1);
+    
+        Eos { tx, rx }
+    });
+
     #[derive(Properties, Default)]
     #[properties(wrapper_type = super::MusicPlayer)]
     pub struct MusicPlayer {
@@ -34,6 +57,8 @@ pub mod imp {
         pub active_core_song: RefCell<Option<CoreSong>>,
         #[property(get, set, nullable)]
         pub active_model: RefCell<Option<gtk::gio::ListStore>>,
+        #[property(get, set)]
+        pub is_first_song: RefCell<bool>,
     }
 
     #[glib::derived_properties]
@@ -51,9 +76,10 @@ pub mod imp {
             bus.add_signal_watch();
             
             bus.connect_message(Some("eos"), {
-                move |_bus, _msg| {
-                    // Hard Reset
-                    // Not Implemented
+                move |_,_| {
+                    let _ = EOS
+                        .tx
+                        .send_blocking(true);
                 }
             });
             bus.connect_message(Some("buffering"), {
@@ -80,9 +106,36 @@ pub mod imp {
                 },
             );
 
+            self.connect_stream_start(
+                move |_,_| {
+                    let _ = STREAM_START
+                        .tx
+                        .send_blocking(true);
+                },
+            );
+
             glib::spawn_future_local(glib::clone!(@weak self as imp => async move {
                 while let Ok(true) = ABOUT_TO_FINISH.rx.recv().await {
-                    imp.next_song();
+                    if let Some(core_song) = imp.next_song() {
+                        imp.add_song(&core_song);
+                    }
+                }
+            }));
+
+            glib::spawn_future_local(glib::clone!(@weak self as imp => async move {
+                while let Ok(true) = STREAM_START.rx.recv().await {
+                    let obj = imp.obj();
+                    if !obj.is_first_song() {
+                        imp.playlist_next();
+                    }
+                    obj.set_is_first_song(false);
+                    obj.emit_by_name::<()>("stream-start", &[]);
+                }
+            }));
+
+            glib::spawn_future_local(glib::clone!(@weak self as imp => async move {
+                while let Ok(true) = EOS.rx.recv().await {
+                    imp.next();
                 }
             }));
         }
@@ -90,8 +143,7 @@ pub mod imp {
         fn signals() -> &'static [Signal] {
             static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
             SIGNALS.get_or_init(|| {
-                vec![Signal::builder("song-changed")
-                    .param_types([CoreSong::static_type()])
+                vec![Signal::builder("stream-start")
                     .build()]
             })
         }
@@ -102,6 +154,8 @@ pub mod imp {
         const NAME: &'static str = "MusicPlayer";
         type Type = super::MusicPlayer;
     }
+
+    impl WidgetImpl for MusicPlayer {}
 
     impl MusicPlayer {
         fn pipeline(&self) -> &gst::Element {
@@ -115,6 +169,13 @@ pub mod imp {
             self.pipeline().connect("about-to-finish", false, cb);
         }
 
+        pub fn connect_stream_start<F>(&self, cb: F)
+        where
+            F: Fn(&gst::Bus, &gst::Message) + Send + Sync + 'static,
+        {
+            self.pipeline().bus().unwrap().connect_message(Some("stream-start"), cb);
+        }
+
         pub fn playing(&self) {
             self.pipeline()
                 .set_state(gst::State::Playing)
@@ -122,14 +183,10 @@ pub mod imp {
         }
 
         pub fn play(&self, core_song: &CoreSong) {
-            let core_song_old = self.active_core_song.borrow().clone();
-            if let Some(core_song_old) = core_song_old.as_ref() {
+            core_song.set_state(State::Playing);
+            if let Some(core_song_old) = self.active_core_song.borrow().as_ref() {
                 if core_song_old != core_song {
                     core_song_old.set_state(State::Played);
-                    {
-                        let mut active_core_song = self.active_core_song.borrow_mut();
-                        *active_core_song = Some(core_song.clone());
-                    }
                 }
             }
             
@@ -140,28 +197,53 @@ pub mod imp {
             self.playing();
         }
 
+        pub fn add_song(&self, core_song: &CoreSong) {
+            let uri = EMBY_CLIENT.get_song_streaming_uri(&core_song.id());
+            debug!("URI: {}", uri);
+            self.pipeline().set_property("uri", uri);
+            self.playing();
+        }
+
+        pub fn playlist_next(&self) {
+            if let Some(core_song) = self.active_core_song.borrow().as_ref() {
+                core_song.set_state(State::Played);
+            };
+            if let Some(core_song) = self.next_song() {
+                core_song.set_state(State::Playing);
+                debug!("Next Song: {}", core_song.name());
+                self.active_core_song.replace(Some(core_song));
+            }
+        }
+
         pub fn stop(&self) {
             self.pipeline()
                 .set_state(gst::State::Null)
                 .expect("Unable to set the pipeline to the `Null` state");
         }
 
-        pub fn next_song(&self) {
+        pub fn next_song(&self) -> Option<CoreSong> {
             let model = self.active_model.borrow();
-            let Some(model) = model.as_ref() else {
-                return;
-            };
-            let Some(core_song_position) = self.core_song_position() else {
-                return;
-            };
+            let model = model.as_ref()?;
+            let core_song_position = self.core_song_position()?;
+            debug!("Core Song Position: {}", core_song_position);
             let next_position = core_song_position + 1;
             if next_position >= model.n_items() {
-                return;
+                return None;
             }
-            let row = model.item(next_position).unwrap();
-            let core_song = row.downcast_ref::<CoreSong>().unwrap();
-            core_song.set_state(State::Playing);
-            self.play(core_song);
+            let row = model.item(next_position)?;
+            row.downcast::<CoreSong>().ok()
+        }
+
+        pub fn prev_song(&self) -> Option<CoreSong> {
+            let model = self.active_model.borrow();
+            let model = model.as_ref()?;
+            let core_song_position = self.core_song_position()?;
+            if core_song_position == 0 {
+                return None;
+            }
+            let prev_position = core_song_position - 1;
+            let row = model.item(prev_position)?;
+            row.downcast::<CoreSong>().ok()
         }
 
         pub fn core_song_position(&self) -> Option<u32> {
@@ -213,6 +295,9 @@ pub mod imp {
         }
 
         pub fn load_model(&self, active_model: gtk::gio::ListStore, active_core_song: CoreSong) {
+            if let Some(core_song) = self.active_core_song.borrow().as_ref() {
+                core_song.set_state(State::Played);
+            };
             self.active_model.replace(Some(active_model));
             self.active_core_song.replace(Some(active_core_song));
             self.prepre_play();
@@ -223,7 +308,29 @@ pub mod imp {
             let Some(active_core_song) = object.as_ref() else {
                 return;
             };
+            self.obj().set_is_first_song(true);
             self.play(active_core_song);
+        }
+
+        pub fn next(&self) {
+            self.playlist_next();
+            self.prepre_play();
+        }
+
+        pub fn prev(&self) {
+            self.playlist_prev();
+            self.prepre_play();
+        }
+
+        pub fn playlist_prev(&self) {
+            if let Some(core_song) = self.active_core_song.borrow().as_ref() {
+                core_song.set_state(State::Played);
+            };
+            if let Some(core_song) = self.prev_song() {
+                core_song.set_state(State::Playing);
+                debug!("Prev Song: {}", core_song.name());
+                self.active_core_song.replace(Some(core_song));
+            }
         }
     }
 }
