@@ -128,8 +128,8 @@ impl TuItem {
         }
         if let Some(poster) = poster {
             tu_item.set_poster(poster);
-            tu_item.imp().set_image_tags(latest.image_tags.clone());
         }
+        tu_item.imp().set_image_tags(latest.image_tags.clone());
         if let Some(parent_thumb_item_id) = &latest.parent_thumb_item_id {
             tu_item.set_parent_thumb_item_id(Some(parent_thumb_item_id.clone()));
         }

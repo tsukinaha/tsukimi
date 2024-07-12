@@ -1,9 +1,7 @@
-use std::path::Path;
-
 use gtk::{glib, prelude::*, subclass::prelude::*, template_callbacks};
 
 use crate::{
-    gstl::player::imp::ListRepeatMode, ui::{models::SETTINGS, provider::{core_song::CoreSong, tu_item::TuItem}}, utils::{get_image_with_cache, spawn}
+    gstl::player::imp::ListRepeatMode, ui::{models::SETTINGS, provider::core_song::CoreSong}, utils::{get_image_with_cache, spawn}
 };
 
 use super::{smooth_scale::SmoothScale, song_widget::format_duration};
@@ -147,24 +145,6 @@ impl PlayerToolbarBox {
         let play_pause_image = &self.imp().play_pause_image.get();
         play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
         self.imp().toolbar.set_revealed(true);
-    }
-
-    pub async fn set_item(&self, item: &TuItem) {
-        let imp = self.imp();
-        imp.title_label.set_text(&item.name());
-        imp.artist_label.set_text(&item.albumartist_name());
-        let mut path = get_image_with_cache(&item.id(), "Primary", None)
-            .await
-            .unwrap();
-        if !Path::new(&path).exists() {
-            path = get_image_with_cache(&item.album_id().unwrap(), "Primary", None)
-                .await
-                .unwrap();
-        }
-        imp.cover_image.set_file(Some(&path));
-        let duration = (item.run_time_ticks() / 10000000) as i64;
-        imp.duration_label.set_text(&format_duration(duration));
-        imp.progress_scale.set_range(0.0, duration as f64);
     }
 
     pub fn change_view(&self) {

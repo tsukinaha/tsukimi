@@ -23,6 +23,7 @@ pub(crate) mod imp {
     use super::*;
     use crate::insert_editm_dialog;
     use crate::ui::provider::tu_item::TuItem;
+    use crate::ui::widgets::image_dialog::ImagesDialog;
     use crate::ui::widgets::star_toggle::StarToggle;
     use crate::ui::{provider::core_song::CoreSong, widgets::metadata_dialog::MetadataDialog};
     use glib::subclass::InitializingObject;
@@ -75,7 +76,7 @@ pub(crate) mod imp {
                 None,
                 |window, _action, _parameter| async move {
                     let id = window.item().id();
-                    let dialog = MetadataDialog::new(&id);
+                    let dialog = ImagesDialog::new(&id);
                     insert_editm_dialog!(window, dialog);
                 },
             );
