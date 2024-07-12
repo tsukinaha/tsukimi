@@ -488,6 +488,7 @@ impl Window {
         imp.navipage
             .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
         self.set_pop_visibility(false);
+        self.imp().player_toolbar_box.on_stop_button_clicked();
     }
 
     fn freshhistorypage(&self) {
@@ -670,8 +671,10 @@ impl Window {
         }));
     }
 
-    pub fn set_fraction(&self, from_value: f64, to_value: f64) {
-        self.progressbar_animation().set_value_from(from_value);
+    pub fn set_fraction(&self, to_value: f64) {
+        let progressbar = &self.imp().progressbar;
+        progressbar.set_inverted(!progressbar.is_inverted());
+        self.progressbar_animation().set_value_from(progressbar.fraction());
         self.progressbar_animation().set_value_to(to_value);
         self.progressbar_animation().play();
     }

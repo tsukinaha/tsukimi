@@ -384,6 +384,7 @@ You should install the package `gst-libav` to play media files with built-in pla
                                       <object class="GtkProgressBar" id="progressbar">
                                         <property name="hexpand">True</property>
                                         <property name="valign">start</property>
+                                        <property name="inverted">true</property>
                                         <style>
                                           <class name="osd" />
                                         </style>

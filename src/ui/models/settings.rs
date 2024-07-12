@@ -35,6 +35,15 @@ impl Settings {
     const KEY_LIST_SORT: &'static str = "list-sort";
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
     const KEY_ACCENT_FG_COLOR_CODE: &'static str = "accent-fg-color-code";
+    const KEY_MUSIC_REPEAT_MODE: &'static str = "music-repeat-mode";
+
+    pub fn set_music_repeat_mode(&self, music_repeat_mode: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_MUSIC_REPEAT_MODE, music_repeat_mode)
+    }
+
+    pub fn music_repeat_mode(&self) -> String {
+        self.string(Self::KEY_MUSIC_REPEAT_MODE).to_string()
+    }
 
     pub fn set_accent_fg_color_code(
         &self,

@@ -30,10 +30,6 @@ mod imp {
         #[template_child]
         pub searchgrid: TemplateChild<gtk::GridView>,
         #[template_child]
-        pub searchscrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub searchrevealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
         pub recommendbox: TemplateChild<gtk::Box>,
         #[template_child]
         pub movie: TemplateChild<gtk::ToggleButton>,
@@ -46,7 +42,7 @@ mod imp {
         #[template_child]
         pub music: TemplateChild<gtk::ToggleButton>,
         #[template_child]
-        pub recommendwindow: TemplateChild<gtk::ScrolledWindow>,
+        pub stack: TemplateChild<gtk::Stack>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -172,8 +168,6 @@ impl SearchPage {
     #[template_callback]
     async fn on_search_activate(&self, entry: &SearchEntry) {
         let imp = self.imp();
-        let searchrevealer = imp.searchrevealer.get();
-        let recommendbox = imp.recommendbox.get();
 
         let store = imp
             .selection
@@ -181,8 +175,6 @@ impl SearchPage {
             .unwrap()
             .downcast::<gio::ListStore>()
             .unwrap();
-
-        recommendbox.set_visible(false);
 
         let search_content = entry.text().to_string();
         let search_filter = {
@@ -221,15 +213,19 @@ impl SearchPage {
             };
 
         store.remove_all();
-        imp.recommendwindow.set_visible(false);
-        imp.searchscrolled.set_visible(true);
-        searchrevealer.set_reveal_child(true);
 
         fraction!(self);
+
+        if search_results.items.is_empty() {
+            self.imp().stack.set_visible_child_name("fallback");
+            return;
+        };
 
         for result in search_results.items {
             let object = glib::BoxedAnyObject::new(result);
             store.append(&object);
         }
+
+        self.imp().stack.set_visible_child_name("result");
     }
 }

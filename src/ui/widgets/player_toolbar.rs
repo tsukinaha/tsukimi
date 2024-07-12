@@ -3,8 +3,7 @@ use std::path::Path;
 use gtk::{glib, prelude::*, subclass::prelude::*, template_callbacks};
 
 use crate::{
-    ui::provider::{core_song::CoreSong, tu_item::TuItem},
-    utils::{get_image_with_cache, spawn},
+    gstl::player::imp::ListRepeatMode, ui::{models::SETTINGS, provider::{core_song::CoreSong, tu_item::TuItem}}, utils::{get_image_with_cache, spawn}
 };
 
 use super::{smooth_scale::SmoothScale, song_widget::format_duration};
@@ -14,7 +13,7 @@ mod imp {
     use adw::subclass::bin::BinImpl;
     use gtk::{glib::subclass::InitializingObject, CompositeTemplate};
 
-    use crate::{gstl::player::MusicPlayer, ui::widgets::smooth_scale::SmoothScale};
+    use crate::{gstl::player::{imp::ListRepeatMode, MusicPlayer}, ui::widgets::smooth_scale::SmoothScale};
 
     use super::*;
 
@@ -38,6 +37,8 @@ mod imp {
         pub progress_time_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub duration_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub repeat_image: TemplateChild<gtk::Image>,
     }
 
     #[glib::object_subclass]
@@ -50,6 +51,30 @@ mod imp {
             SmoothScale::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
+
+            klass.install_action(
+                "repeat.none",
+                None,
+                move |player_toolbar_box, _action, _target| {
+                    player_toolbar_box.set_repeat_mode(ListRepeatMode::None);
+                },
+            );
+
+            klass.install_action(
+                "repeat.one",
+                None,
+                move |player_toolbar_box, _action, _target| {
+                    player_toolbar_box.set_repeat_mode(ListRepeatMode::RepeatOne);
+                },
+            );
+
+            klass.install_action(
+                "repeat.all",
+                None,
+                move |player_toolbar_box, _action, _target| {
+                    player_toolbar_box.set_repeat_mode(ListRepeatMode::Repeat);
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -67,6 +92,9 @@ mod imp {
                     obj.change_view();
                     None
             });
+            self.obj().set_repeat_mode(ListRepeatMode::from_string(
+                &SETTINGS.music_repeat_mode()
+            ));
         }
     }
 
@@ -94,6 +122,24 @@ impl PlayerToolbarBox {
 
     pub fn toolbar_reveal(&self) {
         self.imp().toolbar.set_revealed(true)
+    }
+
+    pub fn set_repeat_mode(&self, mode: ListRepeatMode) {
+        let player = &self.imp().player;
+        player.set_repeat_mode(mode);
+        SETTINGS.set_music_repeat_mode(mode.to_string()).unwrap();
+        let i = &self.imp().repeat_image;
+        match mode {
+            ListRepeatMode::None => {
+                i.set_icon_name(Some("media-playlist-consecutive-symbolic"));
+            }
+            ListRepeatMode::RepeatOne => {
+                i.set_icon_name(Some("media-playlist-repeat-song-symbolic"));
+            }
+            ListRepeatMode::Repeat => {
+                i.set_icon_name(Some("media-playlist-repeat-symbolic")); 
+            }
+        }
     }
 
     pub fn update_play_state(&self) {
@@ -153,7 +199,7 @@ impl PlayerToolbarBox {
     }
 
     #[template_callback]
-    fn on_stop_button_clicked(&self) {
+    pub fn on_stop_button_clicked(&self) {
         let imp = self.imp();
         imp.player.imp().stop();
         imp.progress_scale.remove_timeout();

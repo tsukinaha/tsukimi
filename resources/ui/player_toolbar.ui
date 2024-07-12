@@ -191,9 +191,11 @@
                             </object>
                         </child>
                         <child>
-                            <object class="GtkMenuButton" id="_repeat_menu_button">
+                            <object class="GtkMenuButton" id="repeat_menu_button">
                                 <property name="focusable">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">Repeat Mode</property>
+                                <property name="menu-model">repeat-menu</property>
                                 <style>
                                     <class name="flat"/>
                                 </style>
@@ -202,7 +204,7 @@
                                         <property name="focusable">False</property>
                                         <property name="spacing">6</property>
                                         <child>
-                                            <object class="GtkImage" id="_repeat_image">
+                                            <object class="GtkImage" id="repeat_image">
                                                 <property name="focusable">False</property>
                                                 <property name="icon_name">media-playlist-consecutive-symbolic</property>
                                                 <property name="icon_size">1</property>
@@ -224,4 +226,18 @@
             </object>
         </child>
     </template>
+    <menu id="repeat-menu">
+        <item>
+            <attribute name="label" translatable="yes">Repeat One</attribute>
+            <attribute name="action">repeat.one</attribute>
+        </item>
+        <item>
+            <attribute name="label" translatable="yes">Repeat All</attribute>
+            <attribute name="action">repeat.all</attribute>
+        </item>
+        <item>
+            <attribute name="label" translatable="yes">None</attribute>
+            <attribute name="action">repeat.none</attribute>
+        </item>
+    </menu>
 </interface>

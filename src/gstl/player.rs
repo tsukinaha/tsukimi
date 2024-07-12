@@ -3,7 +3,7 @@ use gtk::glib;
 use crate::{client::client::EMBY_CLIENT, ui::provider::core_song::CoreSong};
 
 pub mod imp {
-    use std::cell::RefCell;
+    use std::cell::{Cell, RefCell};
     use async_channel::{Receiver, Sender};
     use once_cell::sync::*;
     use gtk::{glib, prelude::ListModelExt};
@@ -15,6 +15,36 @@ pub mod imp {
     use super::*;
     use glib::subclass::Signal;
     use crate::ui::widgets::song_widget::State;
+
+
+    #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
+    #[repr(u32)]
+    #[enum_type(name = "ListRepeatMode")]
+    pub enum ListRepeatMode {
+        #[default]
+        None,
+        Repeat,
+        RepeatOne,
+    }
+
+    impl ListRepeatMode {
+        pub fn from_string(string: &str) -> Self {
+            match string {
+                "none" => ListRepeatMode::None,
+                "repeat" => ListRepeatMode::Repeat,
+                "repeat-one" => ListRepeatMode::RepeatOne,
+                _ => ListRepeatMode::None,
+            }
+        }
+
+        pub fn to_string(&self) -> &str {
+            match self {
+                ListRepeatMode::None => "none",
+                ListRepeatMode::Repeat => "repeat",
+                ListRepeatMode::RepeatOne => "repeat-one",
+            }
+        }
+    }
     
     struct AboutToFinish {
         tx: Sender<bool>,
@@ -27,23 +57,23 @@ pub mod imp {
         AboutToFinish { tx, rx }
     });
 
-    pub struct StreamStart {
+    struct StreamStart {
         tx: Sender<bool>,
-        pub rx: Receiver<bool>,
+        rx: Receiver<bool>,
     }
 
-    pub static STREAM_START: Lazy<StreamStart> = Lazy::new(|| {
+    static STREAM_START: Lazy<StreamStart> = Lazy::new(|| {
         let (tx, rx) = async_channel::bounded::<bool>(1);
     
         StreamStart { tx, rx }
     });
 
-    pub struct Eos {
+    struct Eos {
         tx: Sender<bool>,
-        pub rx: Receiver<bool>,
+        rx: Receiver<bool>,
     }
 
-    pub static EOS: Lazy<Eos> = Lazy::new(|| {
+    static EOS: Lazy<Eos> = Lazy::new(|| {
         let (tx, rx) = async_channel::bounded::<bool>(1);
     
         Eos { tx, rx }
@@ -59,6 +89,8 @@ pub mod imp {
         pub active_model: RefCell<Option<gtk::gio::ListStore>>,
         #[property(get, set)]
         pub is_first_song: RefCell<bool>,
+        #[property(get, set, builder(ListRepeatMode::default()))]
+        pub repeat_mode: Cell<ListRepeatMode>,
     }
 
     #[glib::derived_properties]
@@ -222,12 +254,19 @@ pub mod imp {
         }
 
         pub fn next_song(&self) -> Option<CoreSong> {
+            let obj = self.obj();
+            if obj.repeat_mode() == ListRepeatMode::RepeatOne {
+                return obj.active_core_song();
+            }
             let model = self.active_model.borrow();
             let model = model.as_ref()?;
             let core_song_position = self.core_song_position()?;
             debug!("Core Song Position: {}", core_song_position);
             let next_position = core_song_position + 1;
             if next_position >= model.n_items() {
+                if obj.repeat_mode() == ListRepeatMode::Repeat {
+                    return model.item(0)?.downcast::<CoreSong>().ok();
+                }
                 return None;
             }
             let row = model.item(next_position)?;
@@ -235,10 +274,17 @@ pub mod imp {
         }
 
         pub fn prev_song(&self) -> Option<CoreSong> {
+            let obj = self.obj();
+            if obj.repeat_mode() == ListRepeatMode::RepeatOne {
+                return obj.active_core_song();
+            }
             let model = self.active_model.borrow();
             let model = model.as_ref()?;
             let core_song_position = self.core_song_position()?;
             if core_song_position == 0 {
+                if obj.repeat_mode() == ListRepeatMode::Repeat {
+                    return model.item(model.n_items() - 1)?.downcast::<CoreSong>().ok();
+                }
                 return None;
             }
             let prev_position = core_song_position - 1;
