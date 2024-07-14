@@ -152,8 +152,8 @@ impl SingleListPage {
     async fn set_up(&self) {
         self.imp().sortorder.replace("Descending".to_string());
         self.imp().sortby.replace("SortName".to_string());
-        self.handle_type().await;
         self.set_up_dropdown();
+        self.handle_type().await;
         self.set_factory().await;
     }
 
@@ -407,6 +407,7 @@ impl SingleListPage {
         let sort = SETTINGS.list_sort();
         if sort >= 0 {
             dropdown.set_selected(sort as u32);
+            self.update_sortby(sort as u32);
         }
         dropdown.connect_selected_item_notify(glib::clone!(@weak self as obj => move |_| {
             spawn(glib::clone!(@weak obj=> async move {
@@ -429,6 +430,10 @@ impl SingleListPage {
         let dropdown = imp.dropdown.get();
         let selected = dropdown.selected();
         SETTINGS.set_list_sort(&selected).unwrap();
+        self.update_sortby(selected);
+    }
+
+    pub fn update_sortby(&self, selected: u32) {
         let sortby = match selected {
             0 => "SortName",
             1 => "TotalBitrate,SortName",
@@ -442,7 +447,7 @@ impl SingleListPage {
             9 => "Runtime,SortName",
             _ => "SortName",
         };
-        imp.sortby.replace(sortby.to_string());
+        self.imp().sortby.replace(sortby.to_string());
     }
 
     pub async fn poster(&self, poster: &str) {
