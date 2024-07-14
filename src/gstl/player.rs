@@ -5,8 +5,8 @@ use crate::{client::client::EMBY_CLIENT, ui::provider::core_song::CoreSong};
 pub mod imp {
     use std::cell::{Cell, RefCell};
     use async_channel::{Receiver, Sender};
+    use gtk::prelude::ObjectExt;
     use once_cell::sync::*;
-    use gtk::{glib, prelude::ListModelExt};
     use gtk::glib::Properties;
     use tracing::debug;
     use std::sync::OnceLock;
@@ -15,6 +15,7 @@ pub mod imp {
     use super::*;
     use glib::subclass::Signal;
     use crate::ui::widgets::song_widget::State;
+    use gtk::glib;
 
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
@@ -115,7 +116,7 @@ pub mod imp {
                 }
             });
             bus.connect_message(Some("buffering"), {
-                glib::clone!(@weak pipeline => move |_bus, msg| {
+                glib::clone!(#[strong] pipeline, move |_bus, msg| {
                     if let gst::MessageView::Buffering(buffering) = msg.view() {
                         let percent = buffering.percent();
                         if percent < 100 {
@@ -146,7 +147,7 @@ pub mod imp {
                 },
             );
 
-            glib::spawn_future_local(glib::clone!(@weak self as imp => async move {
+            glib::spawn_future_local(glib::clone!(#[weak(rename_to = imp)] self, async move {
                 while let Ok(true) = ABOUT_TO_FINISH.rx.recv().await {
                     if let Some(core_song) = imp.next_song() {
                         imp.add_song(&core_song);
@@ -155,7 +156,7 @@ pub mod imp {
                 }
             }));
 
-            glib::spawn_future_local(glib::clone!(@weak self as imp => async move {
+            glib::spawn_future_local(glib::clone!(#[weak(rename_to = imp)] self, async move {
                 while let Ok(true) = STREAM_START.rx.recv().await {
                     let obj = imp.obj();
                     if obj.gapless() {
@@ -166,7 +167,7 @@ pub mod imp {
                 }
             }));
 
-            glib::spawn_future_local(glib::clone!(@weak self as imp => async move {
+            glib::spawn_future_local(glib::clone!(#[weak(rename_to = imp)] self, async move {
                 while let Ok(true) = EOS.rx.recv().await {
                     println!("EOS");
                     let obj = imp.obj();
@@ -206,9 +207,9 @@ pub mod imp {
 
         pub fn connect_about_to_finish<F>(&self, cb: F)
         where
-            F: Fn(&[glib::Value]) -> Option<glib::Value> + Send + Sync + 'static,
+            F: Fn(&[gst::glib::Value]) -> Option<gst::glib::Value> + Send + Sync + 'static,
         {
-            self.pipeline().connect("about-to-finish", false, cb);
+            gst::prelude::ObjectExt::connect(self.pipeline(), "about-to-finish", false, cb);
         }
 
         pub fn connect_stream_start<F>(&self, cb: F)
@@ -235,13 +236,13 @@ pub mod imp {
             self.stop();
             let uri = EMBY_CLIENT.get_song_streaming_uri(&core_song.id());
 
-            self.pipeline().set_property("uri", uri);
+            gst::prelude::ObjectExt::set_property(self.pipeline(), "uri", uri);
             self.playing();
         }
 
         pub fn add_song(&self, core_song: &CoreSong) {
             let uri = EMBY_CLIENT.get_song_streaming_uri(&core_song.id());
-            self.pipeline().set_property("uri", uri);
+            gst::prelude::ObjectExt::set_property(self.pipeline(), "uri", uri);
         }
 
         pub fn playlist_next(&self) {

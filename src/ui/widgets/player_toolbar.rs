@@ -156,17 +156,17 @@ impl PlayerToolbarBox {
         imp.artist_label.set_text(&core_song.artist());
         imp.duration_label.set_text(&format_duration(core_song.duration() as i64));
         imp.progress_scale.set_range(0.0, core_song.duration() as f64);
-        spawn(glib::clone!(@weak imp => async move {
+        spawn(glib::clone!(#[weak] imp, async move {
             if core_song.have_single_track_image() {
                 let path = get_image_with_cache(&core_song.id(), "Primary", None)
                     .await
                     .unwrap();
-                imp.cover_image.set_file(Some(&path));
+                imp.cover_image.set_from_file(Some(&path));
             } else {
                 let path = get_image_with_cache(&core_song.album_id(), "Primary", None)
                     .await
                     .unwrap();
-                imp.cover_image.set_file(Some(&path));
+                imp.cover_image.set_from_file(Some(&path));
             }
         }));
     }

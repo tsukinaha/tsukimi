@@ -187,7 +187,7 @@ impl AccountSettings {
         let imp = self.imp();
         imp.sidebarcontrol.set_active(SETTINGS.overlay());
         imp.sidebarcontrol
-            .connect_active_notify(glib::clone!(@weak self as obj =>move |control| {
+            .connect_active_notify(glib::clone!(#[weak(rename_to = obj)] self,move |control| {
                 let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
                 window.overlay_sidebar(control.is_active());
                 SETTINGS.set_overlay(control.is_active()).unwrap();
@@ -322,12 +322,12 @@ impl AccountSettings {
         }
         imp.themecontrol.set_selected(pos);
         imp.themecontrol.connect_selected_item_notify(
-            glib::clone!(@weak self as obj =>move |control| {
+            move |control| {
                 let theme = control.selected_item().and_then(|item| {
                     item.downcast::<gtk::StringObject>().ok().map(|item| item.string())
                 }).unwrap();
                 SETTINGS.set_theme(&theme).unwrap();
-            }),
+            },
         );
     }
 
@@ -366,7 +366,7 @@ impl AccountSettings {
         imp.backgroundspinrow
             .set_value(SETTINGS.pic_opacity().into());
         imp.backgroundspinrow.connect_value_notify(
-            glib::clone!(@weak self as obj =>move |control| {
+            glib::clone!(#[weak(rename_to = obj)] self,move |control| {
                 SETTINGS.set_pic_opacity(control.value() as i32).unwrap();
                 let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
                 window.set_picopacity(control.value() as i32);
@@ -379,7 +379,7 @@ impl AccountSettings {
         imp.backgroundcontrol
             .set_active(SETTINGS.background_enabled());
         imp.backgroundcontrol.connect_active_notify(
-            glib::clone!(@weak self as obj =>move |control| {
+            glib::clone!(#[weak(rename_to = obj)] self,move |control| {
                 SETTINGS.set_background_enabled(control.is_active()).unwrap();
                 if !control.is_active() {
                     let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
@@ -410,7 +410,7 @@ impl AccountSettings {
     }
 
     pub fn clearpic(&self) {
-        glib::spawn_future_local(glib::clone!(@weak self as obj => async move {
+        glib::spawn_future_local(glib::clone!(#[weak(rename_to = obj)] self, async move {
             let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
             window.clear_pic();
         }));

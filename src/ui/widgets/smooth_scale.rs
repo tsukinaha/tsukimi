@@ -1,7 +1,7 @@
 use gtk::{glib, prelude::*, subclass::prelude::*};
 mod imp {
     use gtk::{glib, prelude::*, subclass::prelude::*};
-    use std::{cell::RefCell};
+    use std::cell::RefCell;
 
     use crate::gstl::player::MusicPlayer;
 
@@ -43,10 +43,10 @@ mod imp {
                     }
                 });
 
-            gesture.connect_pressed(glib::clone!(@weak self as imp => move |_, _, _, _|{
+            gesture.connect_pressed(glib::clone!(#[weak(rename_to = imp)] self, move |_, _, _, _|{
                 imp.on_click_pressed();
             }));
-            gesture.connect_released(glib::clone!(@weak self as imp => move |_, _, _, _|{
+            gesture.connect_released(glib::clone!(#[weak(rename_to = imp)] self, move |_, _, _, _|{
                 imp.on_click_released();
             }));
 
@@ -112,10 +112,13 @@ impl SmoothScale {
         if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
             glib::source::SourceId::remove(timeout);
         }
-        self.imp().timeout.replace(Some(glib::timeout_add_local(
-            std::time::Duration::from_millis(timeout_period as u64),
-            glib::clone!(@strong self as obj => move || obj.update_position_callback()),
-        )));
+        let closure = glib::clone!(#[weak(rename_to = obj)] self, move || {
+            self.imp().timeout.replace(Some(glib::timeout_add_local(
+                std::time::Duration::from_millis(timeout_period as u64),
+                move || obj.update_position_callback(),
+            )));
+        });
+        closure();
     }
 
     pub fn remove_timeout(&self) {

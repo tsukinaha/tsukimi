@@ -119,7 +119,7 @@ mod imp {
                     .set_subtitle("This page is READ-ONLY, because it is not finished yet.");
             }
 
-            spawn(glib::clone!(@weak self as imp => async move {
+            spawn(glib::clone!(#[weak(rename_to = imp)] self, async move {
                 imp.obj().get_data().await
             }));
         }

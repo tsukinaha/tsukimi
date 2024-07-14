@@ -5,7 +5,6 @@
 // from ..\libclapper-rs
 // DO NOT EDIT
 
-// use crate::ffi;
 use glib::{bitflags::bitflags, prelude::*, translate::*};
 
 bitflags! {

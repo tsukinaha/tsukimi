@@ -89,7 +89,7 @@ mod imp {
             }
 
             let obj = self.obj();
-            spawn(glib::clone!(@weak obj => async move {
+            spawn(glib::clone!(#[weak] obj, async move {
                 obj.set_image_items().await;
             }));
         }

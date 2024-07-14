@@ -113,7 +113,7 @@ impl ItemActionsBox {
     pub fn edit_metadata_action(&self) -> gio::SimpleActionGroup {
         let action_group = gio::SimpleActionGroup::new();
         action_group.add_action_entries([gio::ActionEntry::builder("editm")
-            .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+            .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
                 use crate::ui::widgets::metadata_dialog::MetadataDialog;
                 use crate::insert_editm_dialog;
                 let id = obj.id();
@@ -124,7 +124,7 @@ impl ItemActionsBox {
             }))
             .build()]);
         action_group.add_action_entries([gio::ActionEntry::builder("editi")
-            .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+            .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
                 use crate::ui::widgets::image_dialog::ImagesDialog;
                 use crate::insert_editm_dialog;
                 let id = obj.id();
@@ -137,10 +137,10 @@ impl ItemActionsBox {
         if self.is_playable() {
             if self.played() {
                 action_group.add_action_entries([gio::ActionEntry::builder("unplayed")
-                    .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
                         let id = obj.id();
                         if let Some(id) = id {
-                            spawn(glib::clone!(@weak obj => async move {
+                            spawn(glib::clone!(#[weak] obj, async move {
                                 match spawn_tokio(async move { EMBY_CLIENT.set_as_unplayed(&id).await }).await
                                 {
                                     Ok(_) => {
@@ -158,10 +158,10 @@ impl ItemActionsBox {
                     .build()]);
             } else {
                 action_group.add_action_entries([gio::ActionEntry::builder("played")
-                    .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
                         let id = obj.id();
                         if let Some(id) = id {
-                            spawn(glib::clone!(@weak obj => async move {
+                            spawn(glib::clone!(#[weak] obj, async move {
                                 match spawn_tokio(async move { EMBY_CLIENT.set_as_played(&id).await }).await
                                 {
                                     Ok(_) => {
@@ -182,7 +182,7 @@ impl ItemActionsBox {
 
         if let Some(episode_id) = self.episode_id() {
             action_group.add_action_entries([gio::ActionEntry::builder("editepisodem")
-                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
                     use crate::ui::widgets::metadata_dialog::MetadataDialog;
                     use crate::insert_editm_dialog;
                     let episode_id = obj.episode_id().unwrap();
@@ -191,7 +191,7 @@ impl ItemActionsBox {
                 }))
                 .build()]);
             action_group.add_action_entries([gio::ActionEntry::builder("editepisodei")
-                .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
                     use crate::ui::widgets::image_dialog::ImagesDialog;
                     use crate::insert_editm_dialog;
                     let episode_id = obj.episode_id().unwrap();
@@ -202,9 +202,9 @@ impl ItemActionsBox {
             let episode_id_clone = episode_id.clone();
             if self.episode_played() {
                 action_group.add_action_entries([gio::ActionEntry::builder("episodeunplayed")
-                    .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
                         
-                            spawn(glib::clone!(@weak obj,@strong episode_id => async move {
+                            spawn(glib::clone!(#[weak] obj,#[strong] episode_id , async move {
                                 match spawn_tokio(async move { EMBY_CLIENT.set_as_unplayed(&episode_id).await }).await
                                 {
                                     Ok(_) => {
@@ -222,9 +222,9 @@ impl ItemActionsBox {
                     .build()]);
             } else {
                 action_group.add_action_entries([gio::ActionEntry::builder("episodeplayed")
-                    .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
                         
-                            spawn(glib::clone!(@weak obj,@strong episode_id => async move {
+                            spawn(glib::clone!(#[weak] obj,#[strong] episode_id , async move {
                                 match spawn_tokio(async move { EMBY_CLIENT.set_as_played(&episode_id).await }).await
                                 {
                                     Ok(_) => {
@@ -244,9 +244,9 @@ impl ItemActionsBox {
 
             if self.episode_liked() {
                 action_group.add_action_entries([gio::ActionEntry::builder("episodeunlike")
-                    .activate(glib::clone!(@weak self as obj => move |_, _, _| {
+                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
                         
-                            spawn(glib::clone!(@weak obj,@strong episode_id_clone => async move {
+                            spawn(glib::clone!(#[weak] obj,#[strong] episode_id_clone , async move {
                                 match spawn_tokio(async move { EMBY_CLIENT.unlike(&episode_id_clone).await }).await
                                 {
                                     Ok(_) => {
@@ -264,8 +264,8 @@ impl ItemActionsBox {
                     .build()]);
             } else {
                 action_group.add_action_entries([gio::ActionEntry::builder("episodelike")
-                    .activate(glib::clone!(@weak self as obj => move |_, _, _| {
-                            spawn(glib::clone!(@weak obj,@strong episode_id_clone => async move {
+                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
+                            spawn(glib::clone!(#[weak] obj,#[strong] episode_id_clone , async move {
                                 match spawn_tokio(async move { EMBY_CLIENT.like(&episode_id_clone).await }).await
                                 {
                                     Ok(_) => {

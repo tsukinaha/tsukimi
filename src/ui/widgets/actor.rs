@@ -75,7 +75,7 @@ pub(crate) mod imp {
             self.parent_constructed();
             let obj = self.obj();
 
-            spawn_g_timeout(glib::clone!(@weak obj=> async move {
+            spawn_g_timeout(glib::clone!(#[weak] obj, async move {
                 obj.setup_pic();
                 obj.get_item().await;
                 obj.set_lists().await;
@@ -138,9 +138,7 @@ impl ActorPage {
             }
         };
 
-        let id = self.id();
-
-        spawn(glib::clone!(@weak self as obj, @strong id =>async move {
+        spawn(glib::clone!(#[weak(rename_to = obj)] self ,async move {
                 if let Some(overview) = item.overview {
                     inscription.set_text(Some(&overview));
                 }

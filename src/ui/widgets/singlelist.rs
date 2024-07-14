@@ -106,7 +106,7 @@ mod imp {
             let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
             self.selection.set_model(Some(&store));
 
-            spawn_g_timeout(glib::clone!(@weak obj => async move {
+            spawn_g_timeout(glib::clone!(#[weak] obj, async move {
                 obj.set_up().await;
             }));
         }
@@ -191,7 +191,7 @@ impl SingleListPage {
             .title("Filter")
             .presentation_mode(adw::DialogPresentationMode::BottomSheet)
             .build();
-        dialog.present(self);
+        dialog.present(Some(self));
     }
 
     async fn handle_type(&self) {
@@ -276,7 +276,7 @@ impl SingleListPage {
             self.imp().listrevealer.set_visible(false);
         };
         let store = gio::ListStore::new::<glib::BoxedAnyObject>();
-        spawn(glib::clone!(@weak store=> async move {
+        spawn(glib::clone!(#[weak] store, async move {
                 listrevealer.set_reveal_child(true);
                 count.set_text(&format!("{} Items",list_results.total_record_count));
                 for result in list_results.items {
@@ -293,7 +293,7 @@ impl SingleListPage {
         imp.listgrid.set_min_columns(1);
         imp.listgrid.set_max_columns(13);
         imp.listgrid.connect_activate(
-            glib::clone!(@weak self as obj => move |gridview, position| {
+            glib::clone!(#[weak(rename_to = obj)] self, move |gridview, position| {
                 let model = gridview.model().unwrap();
                 let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
                 let result: std::cell::Ref<SimpleListItem> = item.borrow();
@@ -409,8 +409,8 @@ impl SingleListPage {
             dropdown.set_selected(sort as u32);
             self.update_sortby(sort as u32);
         }
-        dropdown.connect_selected_item_notify(glib::clone!(@weak self as obj => move |_| {
-            spawn(glib::clone!(@weak obj=> async move {
+        dropdown.connect_selected_item_notify(glib::clone!(#[weak(rename_to = obj)] self, move |_| {
+            spawn(glib::clone!(#[weak] obj, async move {
                 obj.set_dropdown_selected();
                 let store = obj
                     .imp()

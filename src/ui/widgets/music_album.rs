@@ -81,10 +81,8 @@ pub(crate) mod imp {
             self.parent_constructed();
             let obj = self.obj();
 
-            let id = obj.item().id();
-
             spawn_g_timeout(
-                glib::clone!(@weak self as this, @weak obj, @strong id => async move {
+                glib::clone!(#[weak] obj, async move {
                     obj.set_toolbar();
                     obj.set_album().await;
                     obj.get_songs().await;
@@ -155,7 +153,7 @@ impl AlbumPage {
         let image = gtk::gio::File::for_path(path);
         imp.cover_image.set_file(Some(&image));
 
-        spawn(glib::clone!(@weak self as obj=>async move {
+        spawn(glib::clone!(#[weak(rename_to = obj)] self,async move {
             let window = obj.root().and_downcast::<super::window::Window>().unwrap();
             window.set_rootpic(image);
         }));
@@ -187,7 +185,10 @@ impl AlbumPage {
                 let new_disc_box = super::disc_box::DiscBox::new();
                 new_disc_box.set_disc(parent_index_number);
                 new_disc_box.connect_closure("song-activated", true, 
-                glib::closure_local!(@watch self as obj => move |_:DiscBox, song_widget| {
+                glib::closure_local!(
+                    #[watch(rename_to = obj)]
+                    self, 
+                    move |_:DiscBox, song_widget| {
                     obj.song_activated(song_widget);
                 }));
                 self.imp().listbox.append(&new_disc_box);

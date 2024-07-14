@@ -1,5 +1,4 @@
 use glib::Object;
-use gst::glib::Priority;
 use gtk::glib::subclass::types::ObjectSubclassIsExt;
 use gtk::prelude::*;
 use gtk::template_callbacks;
@@ -135,9 +134,9 @@ impl ImageInfoCard {
         let picture = self.imp().picture.get();
 
         gio::File::for_uri(&path).read_async(
-            Priority::LOW,
+            glib::Priority::LOW,
             None::<&gio::Cancellable>,
-            glib::clone!(@weak self as obj => move |res| {
+            glib::clone!(#[weak(rename_to = obj)] self, move |res| {
                 if let Ok(stream) = res {
                     match gtk::gdk_pixbuf::Pixbuf::from_stream(&stream, None::<&gio::Cancellable>) {
                         Ok(pixbuf) => {

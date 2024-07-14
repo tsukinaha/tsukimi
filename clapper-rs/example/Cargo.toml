@@ -4,7 +4,7 @@ edition.workspace = true
 version.workspace = true
 
 [dependencies]
-libadwaita = "0.6"
-gtk4 = "0.8"
+libadwaita = "0.7"
+gtk4 = "0.9"
 clapper = { path = "../libclapper-rs" }
 clapper-gtk = { path = "../libclapper-gtk-rs" }

@@ -77,7 +77,7 @@ pub(crate) mod imp {
             self.parent_constructed();
             let obj = self.obj();
 
-            spawn_g_timeout(glib::clone!(@weak obj => async move {
+            spawn_g_timeout(glib::clone!(#[weak] obj, async move {
                 obj.setup().await;
             }));
 
@@ -159,9 +159,7 @@ impl BoxSetPage {
             }
         };
 
-        let id = self.id();
-
-        spawn(glib::clone!(@weak self as obj, @strong id =>async move {
+        spawn(glib::clone!(#[weak(rename_to = obj)] self ,async move {
                 {
                     let mut str = String::new();
                     if let Some(rating) = item.official_rating {

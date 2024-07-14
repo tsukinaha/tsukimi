@@ -18,7 +18,7 @@ mod imp {
     use std::cell::RefCell;
 
     use glib::subclass::InitializingObject;
-    use gst::glib::types::StaticTypeExt;
+    use gtk::prelude::StaticTypeExt;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
@@ -72,7 +72,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            spawn_g_timeout(glib::clone!(@weak obj => async move {
+            spawn_g_timeout(glib::clone!(#[weak] obj, async move {
                 obj.setup().await
             }));
         }

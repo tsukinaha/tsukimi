@@ -51,7 +51,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            spawn_g_timeout(glib::clone!(@weak obj => async move {
+            spawn_g_timeout(glib::clone!(#[weak] obj, async move {
                 fraction_reset!(obj);
                 obj.set_pages().await;
                 fraction!(obj);

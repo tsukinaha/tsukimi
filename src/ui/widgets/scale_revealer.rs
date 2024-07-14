@@ -45,8 +45,8 @@ mod imp {
 
             let obj = self.obj();
             let target = adw::CallbackAnimationTarget::new(clone!(
-                @weak
-                obj =>
+                #[weak]
+                obj,
                 move |_| {
                     obj.queue_draw();
                 }
@@ -55,8 +55,8 @@ mod imp {
 
             animation.set_easing(adw::Easing::EaseOutQuart);
             animation.connect_done(clone!(
-                @weak
-                obj =>
+                #[weak]
+                obj,
                 move |_| {
                     let imp = obj.imp();
 

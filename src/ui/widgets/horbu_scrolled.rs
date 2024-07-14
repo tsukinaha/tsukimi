@@ -126,7 +126,7 @@ impl HorbuScrolled {
 
         let flow = imp.flow.get();
 
-        spawn(glib::clone!(@weak flow, @weak self as obj => async move {
+        spawn(glib::clone!(#[weak] flow, #[weak(rename_to = obj)] self, async move {
             for result in items {
                 let buttoncontent = adw::ButtonContent::builder()
                     .label(&result.name)
@@ -138,7 +138,7 @@ impl HorbuScrolled {
                     .child(&buttoncontent)
                     .build();
 
-                button.connect_clicked(glib::clone!(@weak obj=> move |_| {
+                button.connect_clicked(glib::clone!(#[weak] obj, move |_| {
                     obj.imp().activate(&result, None);
                 }));
 
@@ -165,7 +165,7 @@ impl HorbuScrolled {
 
         let flow = imp.flow.get();
 
-        spawn(glib::clone!(@weak flow, @weak self as obj => async move {
+        spawn(glib::clone!(#[weak] flow, async move {
             for result in items {
                 let buttoncontent = adw::ButtonContent::builder()
                     .label(&result.name)
@@ -177,12 +177,12 @@ impl HorbuScrolled {
                     .child(&buttoncontent)
                     .build();
 
-                button.connect_clicked(glib::clone!(@weak obj=> move |_| {
+                button.connect_clicked(move |_| {
                     let _ = gio::AppInfo::launch_default_for_uri(
                         &result.url,
                         Option::<&gio::AppLaunchContext>::None,
                     );
-                }));
+                });
 
                 flow.append(&button);
 

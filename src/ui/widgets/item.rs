@@ -174,7 +174,7 @@ pub(crate) mod imp {
             let backdrop = self.backdrop.get();
             backdrop.set_height_request(crate::ui::models::SETTINGS.background_height());
             self.actionbox.set_id(Some(obj.id()));
-            spawn_g_timeout(glib::clone!(@weak obj => async move {
+            spawn_g_timeout(glib::clone!(#[weak] obj, async move {
                 obj.imp().episodescrolled.fix();
                 obj.setup_background().await;
                 obj.logoset();
@@ -226,7 +226,7 @@ impl ItemPage {
         if pathbuf.exists() {
             backdrop.set_file(Some(&file));
             self.imp().backrevealer.set_reveal_child(true);
-            spawn(glib::clone!(@weak self as obj=>async move {
+            spawn(glib::clone!(#[weak(rename_to = obj)] self,async move {
                 let window = obj.root().and_downcast::<super::window::Window>().unwrap();
                 window.set_rootpic(file);
             }));
@@ -298,7 +298,7 @@ impl ItemPage {
             }
         };
 
-        spawn(glib::clone!(@weak self as obj => async move {
+        spawn(glib::clone!(#[weak(rename_to = obj)] self, async move {
                 let mut season_set: HashSet<u32> = HashSet::new();
                 let mut season_map: HashMap<String,u32> = HashMap::new();
                 let min_season = series_info.iter().map(|info| if info.parent_index_number.unwrap_or(0) == 0 { 100 } else { info.parent_index_number.unwrap_or(0) }).min().unwrap_or(1);
@@ -331,7 +331,7 @@ impl ItemPage {
                             user_data: info.user_data.clone(),
                             overview: info.overview.clone(),
                         };
-                        spawn(glib::clone!(@weak obj => async move {
+                        spawn(glib::clone!(#[weak] obj, async move {
                             obj.selectepisode(seriesinfo.clone()).await;
                         }));
                     }
@@ -344,7 +344,7 @@ impl ItemPage {
                 }
                 let seriesinfo_seasonlist = series_info.clone();
                 let seriesinfo_seasonmap = season_map.clone();
-                seasonlist.connect_selected_item_notify(glib::clone!(@weak store => move |dropdown| {
+                seasonlist.connect_selected_item_notify(glib::clone!(#[weak] store, move |dropdown| {
                     let selected = dropdown.selected_item();
                     let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
                     let selected = selected.string().to_string();
@@ -359,7 +359,7 @@ impl ItemPage {
                     itemlist.first_child().unwrap().activate();
                 }));
                 let episodesearchentry = obj.imp().episodesearchentry.get();
-                episodesearchentry.connect_search_changed(glib::clone!(@weak store => move |entry| {
+                episodesearchentry.connect_search_changed(glib::clone!(#[weak] store, move |entry| {
                     let text = entry.text();
                     store.remove_all();
                     for info in &series_info {
@@ -454,13 +454,13 @@ impl ItemPage {
         imp.itemlist.set_model(Some(&imp.selection));
 
         imp.itemlist
-            .connect_activate(glib::clone!(@weak self as obj =>move |listview, position| {
+            .connect_activate(glib::clone!(#[weak(rename_to = obj)] self,move |listview, position| {
                 let model = listview.model().unwrap();
                 let item = model
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
-                spawn(glib::clone!(@weak obj =>async move {
+                spawn(glib::clone!(#[weak] obj,async move {
                     let series_info = item.borrow::<SeriesInfo>().clone();
                     obj.selectepisode(series_info).await;
                 }));
@@ -614,9 +614,7 @@ impl ItemPage {
             }
         };
 
-        let id = self.id();
-
-        spawn(glib::clone!(@weak self as obj, @strong id=>async move {
+        spawn(glib::clone!(#[weak(rename_to = obj)] self,async move {
                 {
                     let mut str = String::new();
                     if let Some(communityrating) = item.community_rating {
@@ -765,13 +763,13 @@ impl ItemPage {
                 let mut str: String = Default::default();
                 let icon = gtk::Image::builder().margin_end(5).build();
                 if mediapart.stream_type == "Video" {
-                    icon.set_from_icon_name(Some("video-x-generic-symbolic"))
+                    icon.set_icon_name(Some("video-x-generic-symbolic"))
                 } else if mediapart.stream_type == "Audio" {
-                    icon.set_from_icon_name(Some("audio-x-generic-symbolic"))
+                    icon.set_icon_name(Some("audio-x-generic-symbolic"))
                 } else if mediapart.stream_type == "Subtitle" {
-                    icon.set_from_icon_name(Some("media-view-subtitles-symbolic"))
+                    icon.set_icon_name(Some("media-view-subtitles-symbolic"))
                 } else {
-                    icon.set_from_icon_name(Some("text-x-generic-symbolic"))
+                    icon.set_icon_name(Some("text-x-generic-symbolic"))
                 }
                 let typebox = gtk::Box::builder()
                     .orientation(gtk::Orientation::Horizontal)
@@ -1007,7 +1005,7 @@ impl ItemPage {
         let subdropdown = imp.subdropdown.get();
         let info = info.clone();
 
-        playbutton.connect_clicked(glib::clone!(@weak self as obj => move |_| {
+        playbutton.connect_clicked(glib::clone!(#[weak(rename_to = obj)] self, move |_| {
 
             let nameselected = if let Some(entry) = namedropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
             {

@@ -27,10 +27,10 @@ macro_rules! impl_has_likeaction {
                     let id = id.to_string();
 
                     like_button.connect_toggled(
-                        glib::clone!(@weak self as obj => move |button| {
+                        glib::clone!(#[weak(rename_to = obj)] self, move |button| {
                             let active = button.is_active();
                             spawn(
-                                glib::clone!(@weak obj, @strong id => async move {
+                                glib::clone!(#[weak] obj, #[strong] id, async move {
 
                                     let result = if active {
                                         spawn_tokio(async move {EMBY_CLIENT.like(&id).await} ).await

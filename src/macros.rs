@@ -69,7 +69,7 @@ macro_rules! insert_editm_dialog {
         use gtk::prelude::WidgetExt;
         if let Some(root) = $widget.root() {
             if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
-                $dialog.present(window);
+                $dialog.present(Some(window));
             } else {
                 panic!("Trying to display a dialog when the parent doesn't support it");
             }

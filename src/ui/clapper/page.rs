@@ -78,7 +78,7 @@ mod imp {
 
             backbutton.add_css_class("osd");
             backbutton.add_css_class("circular");
-            backbutton.connect_clicked(glib::clone!(@weak self as imp => move |_| {
+            backbutton.connect_clicked(glib::clone!(#[weak(rename_to = imp)] self, move |_| {
                 imp.obj().on_button_clicked();
             }));
             self.video.add_fading_overlay(&backbutton);
@@ -156,7 +156,7 @@ impl ClapperPage {
     pub fn bind_fullscreen(&self, window: &Window) {
         let window_clone = window.clone();
         self.imp().video.connect_toggle_fullscreen(move |_video| {
-            window_clone.set_fullscreened(!window_clone.is_fullscreened());
+            window_clone.set_fullscreened(!window_clone.is_fullscreen());
         });
     }
 
@@ -237,10 +237,13 @@ impl ClapperPage {
         if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
             glib::source::SourceId::remove(timeout);
         }
-        self.imp().timeout.replace(Some(glib::timeout_add_local(
-            std::time::Duration::from_secs(10),
-            glib::clone!(@strong self as obj => move || obj.update_position_callback()),
-        )));
+        let closure = glib::clone!(#[weak(rename_to = obj)] self, move || {
+            self.imp().timeout.replace(Some(glib::timeout_add_local(
+                std::time::Duration::from_secs(10),
+                move || obj.update_position_callback(),
+            )));
+        });
+        closure();
     }
 
     pub fn remove_timeout(&self) {

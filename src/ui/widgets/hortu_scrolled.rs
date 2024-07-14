@@ -82,7 +82,7 @@ mod imp {
                 .set_factory(Some(&self.factory(*self.isresume.get().unwrap_or(&false))));
 
             self.list.connect_activate(
-                glib::clone!(@weak self as imp => move |listview, position| {
+                glib::clone!(#[weak(rename_to = imp)] self, move |listview, position| {
                     let window = imp.obj().root().and_downcast::<Window>().unwrap();
                     let model = listview.model().unwrap();
                     let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
@@ -144,7 +144,7 @@ mod imp {
                 "TvChannel" => {
                     let id = result.id.clone();
                     let name = result.name.clone();
-                    spawn(glib::clone!(@weak self as imp => async move {
+                    spawn(glib::clone!(#[weak(rename_to = imp)] self, async move {
                         let obj = imp.obj();
                         toast!(obj, "Processing...");
                         match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&id).await }).await {
@@ -317,7 +317,7 @@ impl HortuScrolled {
     fn show_controls_animation(&self) -> &adw::TimedAnimation {
         self.imp().show_button_animation.get_or_init(|| {
             let target = adw::CallbackAnimationTarget::new(glib::clone!(
-                @weak self as obj => move |opacity| obj.set_control_opacity(opacity)
+                #[weak(rename_to = obj)] self, move |opacity| obj.set_control_opacity(opacity)
             ));
 
             adw::TimedAnimation::builder()
@@ -332,7 +332,7 @@ impl HortuScrolled {
     fn hide_controls_animation(&self) -> &adw::TimedAnimation {
         self.imp().hide_button_animation.get_or_init(|| {
             let target = adw::CallbackAnimationTarget::new(glib::clone!(
-                @weak self as obj => move |opacity| obj.set_control_opacity(opacity)
+                #[weak(rename_to = obj)] self, move |opacity| obj.set_control_opacity(opacity)
             ));
 
             adw::TimedAnimation::builder()

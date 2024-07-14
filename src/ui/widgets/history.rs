@@ -58,7 +58,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            spawn(glib::clone!(@weak obj =>async move {
+            spawn(glib::clone!(#[weak] obj,async move {
                 obj.set_lists().await;
             }));
         }

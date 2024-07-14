@@ -34,7 +34,7 @@ pub fn set_image(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
 
     let image_type = image_type.to_string();
 
-    spawn(clone!(@weak image,@weak revealer => async move {
+    spawn(clone!(#[weak] image,#[weak] revealer, async move {
         spawn_tokio(async move {
             let mut retries = 0;
             while retries < 3 {

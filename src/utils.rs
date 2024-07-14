@@ -228,7 +228,7 @@ pub fn tu_list_view_connect_activate(
         "TvChannel" => {
             let id = result.id.clone();
             let name = result.name.clone();
-            spawn(glib::clone!(@weak window => async move {
+            spawn(glib::clone!(#[weak] window, async move {
                 toast!(window, "Processing...");
                 match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&id).await }).await {
                     Ok(playback) => {
