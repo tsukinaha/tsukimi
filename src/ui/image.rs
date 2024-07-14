@@ -34,25 +34,33 @@ pub fn set_image(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
 
     let image_type = image_type.to_string();
 
-    spawn(clone!(#[weak] image,#[weak] revealer, async move {
-        spawn_tokio(async move {
-            let mut retries = 0;
-            while retries < 3 {
-                match EMBY_CLIENT.get_image(&id, &image_type, tag).await {
-                    Ok(_) => {
-                        break;
-                    }
-                    Err(e) => {
-                        warn!("Failed to get image: {}, retrying...", e);
-                        retries += 1;
+    spawn(clone!(
+        #[weak]
+        image,
+        #[weak]
+        revealer,
+        async move {
+            spawn_tokio(async move {
+                let mut retries = 0;
+                while retries < 3 {
+                    match EMBY_CLIENT.get_image(&id, &image_type, tag).await {
+                        Ok(_) => {
+                            break;
+                        }
+                        Err(e) => {
+                            warn!("Failed to get image: {}, retrying...", e);
+                            retries += 1;
+                        }
                     }
                 }
-        }}).await;
-        debug!("Setting image: {}", &pathbuf.display());
-        let file = gtk::gio::File::for_path(pathbuf);
-        image.set_file(Some(&file));
-        revealer.set_reveal_child(true);
-    }));
+            })
+            .await;
+            debug!("Setting image: {}", &pathbuf.display());
+            let file = gtk::gio::File::for_path(pathbuf);
+            image.set_file(Some(&file));
+            revealer.set_reveal_child(true);
+        }
+    ));
 
     revealer
 }

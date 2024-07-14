@@ -77,9 +77,13 @@ pub(crate) mod imp {
             self.parent_constructed();
             let obj = self.obj();
 
-            spawn_g_timeout(glib::clone!(#[weak] obj, async move {
-                obj.setup().await;
-            }));
+            spawn_g_timeout(glib::clone!(
+                #[weak]
+                obj,
+                async move {
+                    obj.setup().await;
+                }
+            ));
 
             self.actionbox.set_id(Some(obj.id()));
         }
@@ -159,7 +163,10 @@ impl BoxSetPage {
             }
         };
 
-        spawn(glib::clone!(#[weak(rename_to = obj)] self ,async move {
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
                 {
                     let mut str = String::new();
                     if let Some(rating) = item.official_rating {
@@ -183,7 +190,7 @@ impl BoxSetPage {
                     obj.setlinksscrolled(links);
                 }
                 if let Some(userdata) = item.user_data {
-                    if let Some (is_favourite) = userdata.is_favorite {
+                    if let Some(is_favourite) = userdata.is_favorite {
                         let imp = obj.imp();
                         if is_favourite {
                             imp.actionbox.set_btn_active(true);
@@ -194,7 +201,8 @@ impl BoxSetPage {
                 }
                 obj.imp().boxset_title.set_text(&item.name);
                 obj.imp().inforevealer.set_reveal_child(true);
-        }));
+            }
+        ));
     }
 
     pub fn setlinksscrolled(&self, links: Vec<Urls>) {

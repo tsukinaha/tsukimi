@@ -228,21 +228,27 @@ pub fn tu_list_view_connect_activate(
         "TvChannel" => {
             let id = result.id.clone();
             let name = result.name.clone();
-            spawn(glib::clone!(#[weak] window, async move {
-                toast!(window, "Processing...");
-                match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&id).await }).await {
-                    Ok(playback) => {
-                        let Some(ref url) = playback.media_sources[0].transcoding_url else {
-                            toast!(window, "No transcoding url found");
-                            return;
-                        };
-                        window.play_media(url.to_string(), None, Some(name), None, None, 0.0)
-                    }
-                    Err(e) => {
-                        toast!(window, e.to_user_facing());
+            spawn(glib::clone!(
+                #[weak]
+                window,
+                async move {
+                    toast!(window, "Processing...");
+                    match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&id).await })
+                        .await
+                    {
+                        Ok(playback) => {
+                            let Some(ref url) = playback.media_sources[0].transcoding_url else {
+                                toast!(window, "No transcoding url found");
+                                return;
+                            };
+                            window.play_media(url.to_string(), None, Some(name), None, None, 0.0)
+                        }
+                        Err(e) => {
+                            toast!(window, e.to_user_facing());
+                        }
                     }
                 }
-            }));
+            ));
         }
         _ => push_page(
             view,

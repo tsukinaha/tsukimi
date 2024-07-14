@@ -72,9 +72,11 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            spawn_g_timeout(glib::clone!(#[weak] obj, async move {
-                obj.setup().await
-            }));
+            spawn_g_timeout(glib::clone!(
+                #[weak]
+                obj,
+                async move { obj.setup().await }
+            ));
         }
     }
 

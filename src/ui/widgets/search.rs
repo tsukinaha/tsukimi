@@ -70,9 +70,13 @@ mod imp {
             let obj = self.obj();
             self.parent_constructed();
             obj.setup_search();
-            spawn(glib::clone!(#[weak] obj, async move {
-                obj.setup_recommend().await;
-            }));
+            spawn(glib::clone!(
+                #[weak]
+                obj,
+                async move {
+                    obj.setup_recommend().await;
+                }
+            ));
         }
     }
 
@@ -131,15 +135,20 @@ impl SearchPage {
                 .build();
             button.set_halign(gtk::Align::Center);
             button.set_child(Some(&buttoncontent));
-            button.connect_clicked(glib::clone!(#[weak(rename_to = obj)] self, move |_| {
-                let window = obj.root().and_downcast::<Window>().unwrap();
-                let item_page = ItemPage::new(item.id.clone(),item.id.clone(),item.name.clone());
-                item_page.set_tag(Some(&item.name));
-                window.imp().searchview.push(&item_page);
-                window.set_title(&item.name);
-                window.change_pop_visibility();
-                env::set_var("HOME_TITLE", &item.name)
-            }));
+            button.connect_clicked(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_| {
+                    let window = obj.root().and_downcast::<Window>().unwrap();
+                    let item_page =
+                        ItemPage::new(item.id.clone(), item.id.clone(), item.name.clone());
+                    item_page.set_tag(Some(&item.name));
+                    window.imp().searchview.push(&item_page);
+                    window.set_title(&item.name);
+                    window.change_pop_visibility();
+                    env::set_var("HOME_TITLE", &item.name)
+                }
+            ));
             recommendbox.append(&button);
         }
     }
@@ -154,15 +163,20 @@ impl SearchPage {
         imp.searchgrid.set_model(Some(&imp.selection));
         imp.searchgrid.set_min_columns(1);
         imp.searchgrid.set_max_columns(15);
-        imp.searchgrid.connect_activate(
-            glib::clone!(#[weak(rename_to = obj)] self, move |listview, position| {
-                    let window = obj.root().and_downcast::<Window>().unwrap();
-                    let model = listview.model().unwrap();
-                    let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
-                    let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                    tu_list_view_connect_activate(window, &result, None);
-            }),
-        );
+        imp.searchgrid.connect_activate(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |listview, position| {
+                let window = obj.root().and_downcast::<Window>().unwrap();
+                let model = listview.model().unwrap();
+                let item = model
+                    .item(position)
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
+                let result: std::cell::Ref<SimpleListItem> = item.borrow();
+                tu_list_view_connect_activate(window, &result, None);
+            }
+        ));
     }
 
     #[template_callback]

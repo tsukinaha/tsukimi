@@ -78,9 +78,13 @@ mod imp {
 
             backbutton.add_css_class("osd");
             backbutton.add_css_class("circular");
-            backbutton.connect_clicked(glib::clone!(#[weak(rename_to = imp)] self, move |_| {
-                imp.obj().on_button_clicked();
-            }));
+            backbutton.connect_clicked(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                move |_| {
+                    imp.obj().on_button_clicked();
+                }
+            ));
             self.video.add_fading_overlay(&backbutton);
         }
     }
@@ -237,12 +241,16 @@ impl ClapperPage {
         if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
             glib::source::SourceId::remove(timeout);
         }
-        let closure = glib::clone!(#[weak(rename_to = obj)] self, move || {
-            self.imp().timeout.replace(Some(glib::timeout_add_local(
-                std::time::Duration::from_secs(10),
-                move || obj.update_position_callback(),
-            )));
-        });
+        let closure = glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move || {
+                self.imp().timeout.replace(Some(glib::timeout_add_local(
+                    std::time::Duration::from_secs(10),
+                    move || obj.update_position_callback(),
+                )));
+            }
+        );
         closure();
     }
 

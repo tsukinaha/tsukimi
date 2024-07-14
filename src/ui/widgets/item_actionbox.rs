@@ -113,172 +113,256 @@ impl ItemActionsBox {
     pub fn edit_metadata_action(&self) -> gio::SimpleActionGroup {
         let action_group = gio::SimpleActionGroup::new();
         action_group.add_action_entries([gio::ActionEntry::builder("editm")
-            .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                use crate::ui::widgets::metadata_dialog::MetadataDialog;
-                use crate::insert_editm_dialog;
-                let id = obj.id();
-                if let Some(id) = id {
-                    let dialog = MetadataDialog::new(&id);
-                    insert_editm_dialog!(obj, dialog);
+            .activate(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_, _, _| {
+                    use crate::insert_editm_dialog;
+                    use crate::ui::widgets::metadata_dialog::MetadataDialog;
+                    let id = obj.id();
+                    if let Some(id) = id {
+                        let dialog = MetadataDialog::new(&id);
+                        insert_editm_dialog!(obj, dialog);
+                    }
                 }
-            }))
+            ))
             .build()]);
         action_group.add_action_entries([gio::ActionEntry::builder("editi")
-            .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                use crate::ui::widgets::image_dialog::ImagesDialog;
-                use crate::insert_editm_dialog;
-                let id = obj.id();
-                if let Some(id) = id {
-                    let dialog = ImagesDialog::new(&id);
-                    insert_editm_dialog!(obj, dialog);
+            .activate(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_, _, _| {
+                    use crate::insert_editm_dialog;
+                    use crate::ui::widgets::image_dialog::ImagesDialog;
+                    let id = obj.id();
+                    if let Some(id) = id {
+                        let dialog = ImagesDialog::new(&id);
+                        insert_editm_dialog!(obj, dialog);
+                    }
                 }
-            }))
+            ))
             .build()]);
         if self.is_playable() {
             if self.played() {
                 action_group.add_action_entries([gio::ActionEntry::builder("unplayed")
-                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                        let id = obj.id();
-                        if let Some(id) = id {
-                            spawn(glib::clone!(#[weak] obj, async move {
-                                match spawn_tokio(async move { EMBY_CLIENT.set_as_unplayed(&id).await }).await
-                                {
-                                    Ok(_) => {
-                                        obj.set_played(false);
-                                        toast!(obj, "Success");
-                                        obj.bind_edit();
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            let id = obj.id();
+                            if let Some(id) = id {
+                                spawn(glib::clone!(
+                                    #[weak]
+                                    obj,
+                                    async move {
+                                        match spawn_tokio(async move {
+                                            EMBY_CLIENT.set_as_unplayed(&id).await
+                                        })
+                                        .await
+                                        {
+                                            Ok(_) => {
+                                                obj.set_played(false);
+                                                toast!(obj, "Success");
+                                                obj.bind_edit();
+                                            }
+                                            Err(e) => {
+                                                toast!(obj, e.to_user_facing());
+                                            }
+                                        }
                                     }
-                                    Err(e) => {
-                                        toast!(obj, e.to_user_facing());
-                                    }
-                                }
-                            })); 
+                                ));
+                            }
                         }
-                    }))
+                    ))
                     .build()]);
             } else {
                 action_group.add_action_entries([gio::ActionEntry::builder("played")
-                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                        let id = obj.id();
-                        if let Some(id) = id {
-                            spawn(glib::clone!(#[weak] obj, async move {
-                                match spawn_tokio(async move { EMBY_CLIENT.set_as_played(&id).await }).await
-                                {
-                                    Ok(_) => {
-                                        obj.set_played(true);
-                                        toast!(obj, "Success");
-                                        obj.bind_edit();
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            let id = obj.id();
+                            if let Some(id) = id {
+                                spawn(glib::clone!(
+                                    #[weak]
+                                    obj,
+                                    async move {
+                                        match spawn_tokio(async move {
+                                            EMBY_CLIENT.set_as_played(&id).await
+                                        })
+                                        .await
+                                        {
+                                            Ok(_) => {
+                                                obj.set_played(true);
+                                                toast!(obj, "Success");
+                                                obj.bind_edit();
+                                            }
+                                            Err(e) => {
+                                                toast!(obj, e.to_user_facing());
+                                            }
+                                        }
                                     }
-                                    Err(e) => {
-                                        toast!(obj, e.to_user_facing());
-                                    }
-                                }
-                            })); 
+                                ));
+                            }
                         }
-                    }))
+                    ))
                     .build()]);
             }
         }
 
         if let Some(episode_id) = self.episode_id() {
             action_group.add_action_entries([gio::ActionEntry::builder("editepisodem")
-                .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                    use crate::ui::widgets::metadata_dialog::MetadataDialog;
-                    use crate::insert_editm_dialog;
-                    let episode_id = obj.episode_id().unwrap();
-                    let dialog = MetadataDialog::new(&episode_id);
-                    insert_editm_dialog!(obj, dialog);
-                }))
+                .activate(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_, _, _| {
+                        use crate::insert_editm_dialog;
+                        use crate::ui::widgets::metadata_dialog::MetadataDialog;
+                        let episode_id = obj.episode_id().unwrap();
+                        let dialog = MetadataDialog::new(&episode_id);
+                        insert_editm_dialog!(obj, dialog);
+                    }
+                ))
                 .build()]);
             action_group.add_action_entries([gio::ActionEntry::builder("editepisodei")
-                .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                    use crate::ui::widgets::image_dialog::ImagesDialog;
-                    use crate::insert_editm_dialog;
-                    let episode_id = obj.episode_id().unwrap();
-                    let dialog = ImagesDialog::new(&episode_id);
-                    insert_editm_dialog!(obj, dialog);
-                }))
+                .activate(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_, _, _| {
+                        use crate::insert_editm_dialog;
+                        use crate::ui::widgets::image_dialog::ImagesDialog;
+                        let episode_id = obj.episode_id().unwrap();
+                        let dialog = ImagesDialog::new(&episode_id);
+                        insert_editm_dialog!(obj, dialog);
+                    }
+                ))
                 .build()]);
             let episode_id_clone = episode_id.clone();
             if self.episode_played() {
                 action_group.add_action_entries([gio::ActionEntry::builder("episodeunplayed")
-                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                        
-                            spawn(glib::clone!(#[weak] obj,#[strong] episode_id , async move {
-                                match spawn_tokio(async move { EMBY_CLIENT.set_as_unplayed(&episode_id).await }).await
-                                {
-                                    Ok(_) => {
-                                        obj.set_episode_played(false);
-                                        toast!(obj, "Success");
-                                        obj.bind_edit();
-                                    }
-                                    Err(e) => {
-                                        toast!(obj, e.to_user_facing());
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                #[strong]
+                                episode_id,
+                                async move {
+                                    match spawn_tokio(async move {
+                                        EMBY_CLIENT.set_as_unplayed(&episode_id).await
+                                    })
+                                    .await
+                                    {
+                                        Ok(_) => {
+                                            obj.set_episode_played(false);
+                                            toast!(obj, "Success");
+                                            obj.bind_edit();
+                                        }
+                                        Err(e) => {
+                                            toast!(obj, e.to_user_facing());
+                                        }
                                     }
                                 }
-                            })); 
-                        
-                    }))
+                            ));
+                        }
+                    ))
                     .build()]);
             } else {
                 action_group.add_action_entries([gio::ActionEntry::builder("episodeplayed")
-                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                        
-                            spawn(glib::clone!(#[weak] obj,#[strong] episode_id , async move {
-                                match spawn_tokio(async move { EMBY_CLIENT.set_as_played(&episode_id).await }).await
-                                {
-                                    Ok(_) => {
-                                        obj.set_episode_played(true);
-                                        toast!(obj, "Success");
-                                        obj.bind_edit();
-                                    }
-                                    Err(e) => {
-                                        toast!(obj, e.to_user_facing());
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                #[strong]
+                                episode_id,
+                                async move {
+                                    match spawn_tokio(async move {
+                                        EMBY_CLIENT.set_as_played(&episode_id).await
+                                    })
+                                    .await
+                                    {
+                                        Ok(_) => {
+                                            obj.set_episode_played(true);
+                                            toast!(obj, "Success");
+                                            obj.bind_edit();
+                                        }
+                                        Err(e) => {
+                                            toast!(obj, e.to_user_facing());
+                                        }
                                     }
                                 }
-                            })); 
-                        
-                    }))
+                            ));
+                        }
+                    ))
                     .build()]);
             };
 
             if self.episode_liked() {
                 action_group.add_action_entries([gio::ActionEntry::builder("episodeunlike")
-                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                        
-                            spawn(glib::clone!(#[weak] obj,#[strong] episode_id_clone , async move {
-                                match spawn_tokio(async move { EMBY_CLIENT.unlike(&episode_id_clone).await }).await
-                                {
-                                    Ok(_) => {
-                                        obj.set_episode_liked(false);
-                                        toast!(obj, "Success");
-                                        obj.bind_edit();
-                                    }
-                                    Err(e) => {
-                                        toast!(obj, e.to_user_facing());
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                #[strong]
+                                episode_id_clone,
+                                async move {
+                                    match spawn_tokio(async move {
+                                        EMBY_CLIENT.unlike(&episode_id_clone).await
+                                    })
+                                    .await
+                                    {
+                                        Ok(_) => {
+                                            obj.set_episode_liked(false);
+                                            toast!(obj, "Success");
+                                            obj.bind_edit();
+                                        }
+                                        Err(e) => {
+                                            toast!(obj, e.to_user_facing());
+                                        }
                                     }
                                 }
-                            })); 
-                        
-                    }))
+                            ));
+                        }
+                    ))
                     .build()]);
             } else {
                 action_group.add_action_entries([gio::ActionEntry::builder("episodelike")
-                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                            spawn(glib::clone!(#[weak] obj,#[strong] episode_id_clone , async move {
-                                match spawn_tokio(async move { EMBY_CLIENT.like(&episode_id_clone).await }).await
-                                {
-                                    Ok(_) => {
-                                        obj.set_episode_liked(true);
-                                        toast!(obj, "Success");
-                                        obj.bind_edit();
-                                    }
-                                    Err(e) => {
-                                        toast!(obj, e.to_user_facing());
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                #[strong]
+                                episode_id_clone,
+                                async move {
+                                    match spawn_tokio(async move {
+                                        EMBY_CLIENT.like(&episode_id_clone).await
+                                    })
+                                    .await
+                                    {
+                                        Ok(_) => {
+                                            obj.set_episode_liked(true);
+                                            toast!(obj, "Success");
+                                            obj.bind_edit();
+                                        }
+                                        Err(e) => {
+                                            toast!(obj, e.to_user_facing());
+                                        }
                                     }
                                 }
-                            })); 
-                    }))
+                            ));
+                        }
+                    ))
                     .build()]);
             }
         }

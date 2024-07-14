@@ -126,28 +126,37 @@ impl HorbuScrolled {
 
         let flow = imp.flow.get();
 
-        spawn(glib::clone!(#[weak] flow, #[weak(rename_to = obj)] self, async move {
-            for result in items {
-                let buttoncontent = adw::ButtonContent::builder()
-                    .label(&result.name)
-                    .icon_name("view-list-symbolic")
-                    .build();
+        spawn(glib::clone!(
+            #[weak]
+            flow,
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                for result in items {
+                    let buttoncontent = adw::ButtonContent::builder()
+                        .label(&result.name)
+                        .icon_name("view-list-symbolic")
+                        .build();
 
-                let button = gtk::Button::builder()
-                    .margin_start(10)
-                    .child(&buttoncontent)
-                    .build();
+                    let button = gtk::Button::builder()
+                        .margin_start(10)
+                        .child(&buttoncontent)
+                        .build();
 
-                button.connect_clicked(glib::clone!(#[weak] obj, move |_| {
-                    obj.imp().activate(&result, None);
-                }));
+                    button.connect_clicked(glib::clone!(
+                        #[weak]
+                        obj,
+                        move |_| {
+                            obj.imp().activate(&result, None);
+                        }
+                    ));
 
-                flow.append(&button);
+                    flow.append(&button);
 
-                gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
+                    gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
+                }
             }
-
-        }));
+        ));
     }
 
     pub fn set_links(&self, items: &[Urls]) {
@@ -165,31 +174,34 @@ impl HorbuScrolled {
 
         let flow = imp.flow.get();
 
-        spawn(glib::clone!(#[weak] flow, async move {
-            for result in items {
-                let buttoncontent = adw::ButtonContent::builder()
-                    .label(&result.name)
-                    .icon_name("send-to-symbolic")
-                    .build();
+        spawn(glib::clone!(
+            #[weak]
+            flow,
+            async move {
+                for result in items {
+                    let buttoncontent = adw::ButtonContent::builder()
+                        .label(&result.name)
+                        .icon_name("send-to-symbolic")
+                        .build();
 
-                let button = gtk::Button::builder()
-                    .margin_start(10)
-                    .child(&buttoncontent)
-                    .build();
+                    let button = gtk::Button::builder()
+                        .margin_start(10)
+                        .child(&buttoncontent)
+                        .build();
 
-                button.connect_clicked(move |_| {
-                    let _ = gio::AppInfo::launch_default_for_uri(
-                        &result.url,
-                        Option::<&gio::AppLaunchContext>::None,
-                    );
-                });
+                    button.connect_clicked(move |_| {
+                        let _ = gio::AppInfo::launch_default_for_uri(
+                            &result.url,
+                            Option::<&gio::AppLaunchContext>::None,
+                        );
+                    });
 
-                flow.append(&button);
+                    flow.append(&button);
 
-                gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
+                    gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
+                }
             }
-
-        }));
+        ));
     }
 
     pub fn set_title(&self, title: &str) {

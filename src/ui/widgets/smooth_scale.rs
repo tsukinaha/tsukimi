@@ -5,8 +5,6 @@ mod imp {
 
     use crate::gstl::player::MusicPlayer;
 
-    
-
     #[derive(Default, glib::Properties)]
     #[properties(wrapper_type = super::SmoothScale)]
     pub struct SmoothScale {
@@ -43,12 +41,20 @@ mod imp {
                     }
                 });
 
-            gesture.connect_pressed(glib::clone!(#[weak(rename_to = imp)] self, move |_, _, _, _|{
-                imp.on_click_pressed();
-            }));
-            gesture.connect_released(glib::clone!(#[weak(rename_to = imp)] self, move |_, _, _, _|{
-                imp.on_click_released();
-            }));
+            gesture.connect_pressed(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                move |_, _, _, _| {
+                    imp.on_click_pressed();
+                }
+            ));
+            gesture.connect_released(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                move |_, _, _, _| {
+                    imp.on_click_released();
+                }
+            ));
 
             self.obj().duration_changed();
         }
@@ -112,12 +118,16 @@ impl SmoothScale {
         if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
             glib::source::SourceId::remove(timeout);
         }
-        let closure = glib::clone!(#[weak(rename_to = obj)] self, move || {
-            self.imp().timeout.replace(Some(glib::timeout_add_local(
-                std::time::Duration::from_millis(timeout_period as u64),
-                move || obj.update_position_callback(),
-            )));
-        });
+        let closure = glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move || {
+                self.imp().timeout.replace(Some(glib::timeout_add_local(
+                    std::time::Duration::from_millis(timeout_period as u64),
+                    move || obj.update_position_callback(),
+                )));
+            }
+        );
         closure();
     }
 

@@ -24,9 +24,9 @@ fn main() {
             .expect("Failed to compile po file");
 
         if status.success() {
-            println!("{}", "OK");
+            println!("OK");
         } else {
-            println!("{}", "FAILED");
+            println!("FAILED");
         }
     }
 }

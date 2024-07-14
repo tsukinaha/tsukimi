@@ -1,7 +1,9 @@
 use gtk::{glib, prelude::*, subclass::prelude::*, template_callbacks};
 
 use crate::{
-    gstl::player::imp::ListRepeatMode, ui::{models::SETTINGS, provider::core_song::CoreSong}, utils::{get_image_with_cache, spawn}
+    gstl::player::imp::ListRepeatMode,
+    ui::{models::SETTINGS, provider::core_song::CoreSong},
+    utils::{get_image_with_cache, spawn},
 };
 
 use super::{smooth_scale::SmoothScale, song_widget::format_duration};
@@ -11,7 +13,10 @@ mod imp {
     use adw::subclass::bin::BinImpl;
     use gtk::{glib::subclass::InitializingObject, CompositeTemplate};
 
-    use crate::{gstl::player::{imp::ListRepeatMode, MusicPlayer}, ui::widgets::smooth_scale::SmoothScale};
+    use crate::{
+        gstl::player::{imp::ListRepeatMode, MusicPlayer},
+        ui::widgets::smooth_scale::SmoothScale,
+    };
 
     use super::*;
 
@@ -85,14 +90,12 @@ mod imp {
             self.parent_constructed();
             self.progress_scale.set_player(Some(&self.player));
             let obj = self.obj().clone();
-            self.player.connect_local("stream-start", true, 
-                move |_| {
-                    obj.change_view();
-                    None
+            self.player.connect_local("stream-start", true, move |_| {
+                obj.change_view();
+                None
             });
-            self.obj().set_repeat_mode(ListRepeatMode::from_string(
-                &SETTINGS.music_repeat_mode()
-            ));
+            self.obj()
+                .set_repeat_mode(ListRepeatMode::from_string(&SETTINGS.music_repeat_mode()));
         }
     }
 
@@ -135,7 +138,7 @@ impl PlayerToolbarBox {
                 i.set_icon_name(Some("media-playlist-repeat-song-symbolic"));
             }
             ListRepeatMode::Repeat => {
-                i.set_icon_name(Some("media-playlist-repeat-symbolic")); 
+                i.set_icon_name(Some("media-playlist-repeat-symbolic"));
             }
         }
     }
@@ -154,21 +157,27 @@ impl PlayerToolbarBox {
         let imp = self.imp();
         imp.title_label.set_text(&core_song.name());
         imp.artist_label.set_text(&core_song.artist());
-        imp.duration_label.set_text(&format_duration(core_song.duration() as i64));
-        imp.progress_scale.set_range(0.0, core_song.duration() as f64);
-        spawn(glib::clone!(#[weak] imp, async move {
-            if core_song.have_single_track_image() {
-                let path = get_image_with_cache(&core_song.id(), "Primary", None)
-                    .await
-                    .unwrap();
-                imp.cover_image.set_from_file(Some(&path));
-            } else {
-                let path = get_image_with_cache(&core_song.album_id(), "Primary", None)
-                    .await
-                    .unwrap();
-                imp.cover_image.set_from_file(Some(&path));
+        imp.duration_label
+            .set_text(&format_duration(core_song.duration() as i64));
+        imp.progress_scale
+            .set_range(0.0, core_song.duration() as f64);
+        spawn(glib::clone!(
+            #[weak]
+            imp,
+            async move {
+                if core_song.have_single_track_image() {
+                    let path = get_image_with_cache(&core_song.id(), "Primary", None)
+                        .await
+                        .unwrap();
+                    imp.cover_image.set_from_file(Some(&path));
+                } else {
+                    let path = get_image_with_cache(&core_song.album_id(), "Primary", None)
+                        .await
+                        .unwrap();
+                    imp.cover_image.set_from_file(Some(&path));
+                }
             }
-        }));
+        ));
     }
 
     #[template_callback]

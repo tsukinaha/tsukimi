@@ -168,9 +168,13 @@ impl SongWidget {
         imp.favourite_button.set_active(item.is_favorite());
 
         let id = item.id();
-        spawn(glib::clone!(#[weak(rename_to = obj)] self, async move {
-            obj.bind_like(&id).await;
-        }));
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                obj.bind_like(&id).await;
+            }
+        ));
     }
 
     fn bind(&self, core_song: &CoreSong) {

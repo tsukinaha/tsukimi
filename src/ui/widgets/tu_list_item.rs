@@ -356,9 +356,14 @@ impl TuListItem {
 
         let image_type = image_type.to_string();
 
-        spawn(
-            glib::clone!(#[weak] image,#[weak] revealer,#[weak] spinner, async move {
-
+        spawn(glib::clone!(
+            #[weak]
+            image,
+            #[weak]
+            revealer,
+            #[weak]
+            spinner,
+            async move {
                 spawn_tokio(async move {
                     let mut retries = 0;
                     while retries < 3 {
@@ -371,7 +376,9 @@ impl TuListItem {
                                 retries += 1;
                             }
                         }
-                }}).await;
+                    }
+                })
+                .await;
 
                 debug!("Setting image: {}", &pathbuf.display());
 
@@ -385,9 +392,8 @@ impl TuListItem {
 
                 image.set_file(Some(&file));
                 revealer.set_reveal_child(true);
-
-            }),
-        );
+            }
+        ));
 
         revealer
     }
@@ -449,25 +455,29 @@ impl TuListItem {
 
         imp.overlay.add_overlay(&progress);
 
-        spawn(glib::clone!(#[weak] progress, async move {
-            let target = adw::CallbackAnimationTarget::new(glib::clone!(
-                #[weak] progress, move |process| {
-                    progress.set_fraction(process)
-                }
-            ));
+        spawn(glib::clone!(
+            #[weak]
+            progress,
+            async move {
+                let target = adw::CallbackAnimationTarget::new(glib::clone!(
+                    #[weak]
+                    progress,
+                    move |process| progress.set_fraction(process)
+                ));
 
-            let animation = adw::TimedAnimation::builder()
-                .duration(PROGRESSBAR_ANIMATION_DURATION)
-                .widget(&progress)
-                .target(&target)
-                .easing(adw::Easing::EaseOutQuart)
-                .value_from(0.)
-                .value_to(percentage / 100.0)
-                .build();
+                let animation = adw::TimedAnimation::builder()
+                    .duration(PROGRESSBAR_ANIMATION_DURATION)
+                    .widget(&progress)
+                    .target(&target)
+                    .easing(adw::Easing::EaseOutQuart)
+                    .value_from(0.)
+                    .value_to(percentage / 100.0)
+                    .build();
 
-            glib::timeout_future_seconds(1).await;
-            animation.play();
-        }));
+                glib::timeout_future_seconds(1).await;
+                animation.play();
+            }
+        ));
     }
 
     pub fn gesture(&self) {
@@ -488,13 +498,17 @@ impl TuListItem {
         }
         let gesture = gtk::GestureClick::new();
         gesture.set_button(3);
-        gesture.connect_released(glib::clone!(#[weak] imp, move | gesture, _n, x, y| {
-            gesture.set_state(gtk::EventSequenceState::Claimed);
-            if let Some(popover) = imp.popover.borrow().as_ref() {
-                popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
-                popover.popup();
-            };
-        }));
+        gesture.connect_released(glib::clone!(
+            #[weak]
+            imp,
+            move |gesture, _n, x, y| {
+                gesture.set_state(gtk::EventSequenceState::Claimed);
+                if let Some(popover) = imp.popover.borrow().as_ref() {
+                    popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
+                    popover.popup();
+                };
+            }
+        ));
         self.add_controller(gesture);
     }
 
@@ -512,68 +526,125 @@ impl TuListItem {
         let action_group = gio::SimpleActionGroup::new();
 
         action_group.add_action_entries([gio::ActionEntry::builder("editm")
-            .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                spawn(glib::clone!(#[weak] obj, async move {
-                    let id = obj.item().id();
-                    let dialog = crate::ui::widgets::metadata_dialog::MetadataDialog::new(&id);
-                    crate::insert_editm_dialog!(obj, dialog);
-                }))
-            }))
+            .activate(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_, _, _| {
+                    spawn(glib::clone!(
+                        #[weak]
+                        obj,
+                        async move {
+                            let id = obj.item().id();
+                            let dialog =
+                                crate::ui::widgets::metadata_dialog::MetadataDialog::new(&id);
+                            crate::insert_editm_dialog!(obj, dialog);
+                        }
+                    ))
+                }
+            ))
             .build()]);
 
         action_group.add_action_entries([gio::ActionEntry::builder("editi")
-            .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                spawn(glib::clone!(#[weak] obj, async move {
-                    let id = obj.item().id();
-                    let dialog = crate::ui::widgets::image_dialog::ImagesDialog::new(&id);
-                    crate::insert_editm_dialog!(obj, dialog);
-                }))
-            }))
+            .activate(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_, _, _| {
+                    spawn(glib::clone!(
+                        #[weak]
+                        obj,
+                        async move {
+                            let id = obj.item().id();
+                            let dialog = crate::ui::widgets::image_dialog::ImagesDialog::new(&id);
+                            crate::insert_editm_dialog!(obj, dialog);
+                        }
+                    ))
+                }
+            ))
             .build()]);
 
         match self.item().is_favorite() {
             true => action_group.add_action_entries([gio::ActionEntry::builder("unlike")
-                .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                    spawn(glib::clone!(#[weak] obj, async move {
-                        obj.perform_action(Action::Unlike).await;
-                    }))
-                }))
+                .activate(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_, _, _| {
+                        spawn(glib::clone!(
+                            #[weak]
+                            obj,
+                            async move {
+                                obj.perform_action(Action::Unlike).await;
+                            }
+                        ))
+                    }
+                ))
                 .build()]),
             false => action_group.add_action_entries([gio::ActionEntry::builder("like")
-                .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                    spawn(glib::clone!(#[weak] obj, async move {
-                        obj.perform_action(Action::Like).await;
-                    }))
-                }))
+                .activate(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_, _, _| {
+                        spawn(glib::clone!(
+                            #[weak]
+                            obj,
+                            async move {
+                                obj.perform_action(Action::Like).await;
+                            }
+                        ))
+                    }
+                ))
                 .build()]),
         }
 
         if is_playable {
             match self.item().played() {
                 true => action_group.add_action_entries([gio::ActionEntry::builder("unplayed")
-                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                        spawn(glib::clone!(#[weak] obj, async move {
-                            obj.perform_action(Action::Unplayed).await;
-                        }))
-                    }))
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                async move {
+                                    obj.perform_action(Action::Unplayed).await;
+                                }
+                            ))
+                        }
+                    ))
                     .build()]),
                 false => action_group.add_action_entries([gio::ActionEntry::builder("played")
-                    .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                        spawn(glib::clone!(#[weak] obj, async move {
-                            obj.perform_action(Action::Played).await;
-                        }))
-                    }))
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                async move {
+                                    obj.perform_action(Action::Played).await;
+                                }
+                            ))
+                        }
+                    ))
                     .build()]),
             }
         }
 
         if let Some(true) = self.imp().isresume.get() {
             action_group.add_action_entries([gio::ActionEntry::builder("remove")
-                .activate(glib::clone!(#[weak(rename_to = obj)] self, move |_, _, _| {
-                    spawn(glib::clone!(#[weak] obj, async move {
-                        obj.perform_action(Action::Remove).await;
-                    }))
-                }))
+                .activate(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_, _, _| {
+                        spawn(glib::clone!(
+                            #[weak]
+                            obj,
+                            async move {
+                                obj.perform_action(Action::Remove).await;
+                            }
+                        ))
+                    }
+                ))
                 .build()]);
         }
         Some(action_group)
@@ -615,18 +686,38 @@ impl TuListItem {
             Action::Unplayed => self.item().set_played(false),
             Action::Remove => {
                 self.imp().revealer.set_reveal_child(false);
-                spawn(glib::clone!(#[weak(rename_to = obj)] self, async move {
-                    let parent = obj.parent().unwrap().parent().unwrap();
-                    if let Some(list_view) = parent.downcast_ref::<gtk::ListView>() {
-                        let selection = list_view.model().unwrap().downcast::<gtk::SingleSelection>().unwrap();
-                        let store = selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
-                        store.remove(selection.selected());
-                    } else if let Some(grid_view) = parent.downcast_ref::<gtk::GridView>() {
-                        let selection = grid_view.model().unwrap().downcast::<gtk::SingleSelection>().unwrap();
-                        let store = selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
-                        store.remove(selection.selected());
+                spawn(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    async move {
+                        let parent = obj.parent().unwrap().parent().unwrap();
+                        if let Some(list_view) = parent.downcast_ref::<gtk::ListView>() {
+                            let selection = list_view
+                                .model()
+                                .unwrap()
+                                .downcast::<gtk::SingleSelection>()
+                                .unwrap();
+                            let store = selection
+                                .model()
+                                .unwrap()
+                                .downcast::<gio::ListStore>()
+                                .unwrap();
+                            store.remove(selection.selected());
+                        } else if let Some(grid_view) = parent.downcast_ref::<gtk::GridView>() {
+                            let selection = grid_view
+                                .model()
+                                .unwrap()
+                                .downcast::<gtk::SingleSelection>()
+                                .unwrap();
+                            let store = selection
+                                .model()
+                                .unwrap()
+                                .downcast::<gio::ListStore>()
+                                .unwrap();
+                            store.remove(selection.selected());
+                        }
                     }
-                }));
+                ));
             }
         }
         self.gesture();
@@ -649,10 +740,14 @@ impl TuListItem {
             action(&id).unwrap();
         })
         .await;
-        spawn(glib::clone!(#[weak(rename_to = obj)] self,async move {
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.toast("Success");
-        }));
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                window.toast("Success");
+            }
+        ));
     }
 
     #[template_callback]

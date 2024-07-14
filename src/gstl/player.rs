@@ -1,22 +1,21 @@
+use crate::{client::client::EMBY_CLIENT, ui::provider::core_song::CoreSong};
 use gst::prelude::*;
 use gtk::glib;
-use crate::{client::client::EMBY_CLIENT, ui::provider::core_song::CoreSong};
 
 pub mod imp {
-    use std::cell::{Cell, RefCell};
     use async_channel::{Receiver, Sender};
-    use gtk::prelude::ObjectExt;
-    use once_cell::sync::*;
     use gtk::glib::Properties;
-    use tracing::debug;
-    use std::sync::OnceLock;
+    use gtk::prelude::ObjectExt;
     use gtk::{prelude::*, subclass::prelude::*};
+    use once_cell::sync::*;
+    use std::cell::{Cell, RefCell};
+    use std::sync::OnceLock;
+    use tracing::debug;
 
     use super::*;
-    use glib::subclass::Signal;
     use crate::ui::widgets::song_widget::State;
+    use glib::subclass::Signal;
     use gtk::glib;
-
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
@@ -38,7 +37,7 @@ pub mod imp {
             }
         }
 
-        pub fn to_string(&self) -> &str {
+        pub fn to_string(self) -> &'static str {
             match self {
                 ListRepeatMode::None => "none",
                 ListRepeatMode::Repeat => "repeat",
@@ -46,7 +45,7 @@ pub mod imp {
             }
         }
     }
-    
+
     struct AboutToFinish {
         tx: Sender<bool>,
         rx: Receiver<bool>,
@@ -54,7 +53,7 @@ pub mod imp {
 
     static ABOUT_TO_FINISH: Lazy<AboutToFinish> = Lazy::new(|| {
         let (tx, rx) = async_channel::bounded::<bool>(1);
-    
+
         AboutToFinish { tx, rx }
     });
 
@@ -65,7 +64,7 @@ pub mod imp {
 
     static STREAM_START: Lazy<StreamStart> = Lazy::new(|| {
         let (tx, rx) = async_channel::bounded::<bool>(1);
-    
+
         StreamStart { tx, rx }
     });
 
@@ -76,7 +75,7 @@ pub mod imp {
 
     static EOS: Lazy<Eos> = Lazy::new(|| {
         let (tx, rx) = async_channel::bounded::<bool>(1);
-    
+
         Eos { tx, rx }
     });
 
@@ -107,88 +106,91 @@ pub mod imp {
             // Start playing
             let bus = pipeline.bus().unwrap();
             bus.add_signal_watch();
-            
+
             bus.connect_message(Some("eos"), {
-                move |_,_| {
-                    let _ = EOS
-                        .tx
-                        .send_blocking(true);
+                move |_, _| {
+                    let _ = EOS.tx.send_blocking(true);
                 }
             });
             bus.connect_message(Some("buffering"), {
-                glib::clone!(#[strong] pipeline, move |_bus, msg| {
-                    if let gst::MessageView::Buffering(buffering) = msg.view() {
-                        let percent = buffering.percent();
-                        if percent < 100 {
-                            let _ = pipeline.set_state(gst::State::Paused);
-                        } else {
-                            let _ = pipeline.set_state(gst::State::Playing);
+                glib::clone!(
+                    #[strong]
+                    pipeline,
+                    move |_bus, msg| {
+                        if let gst::MessageView::Buffering(buffering) = msg.view() {
+                            let percent = buffering.percent();
+                            if percent < 100 {
+                                let _ = pipeline.set_state(gst::State::Paused);
+                            } else {
+                                let _ = pipeline.set_state(gst::State::Playing);
+                            }
                         }
                     }
-                })
+                )
             });
 
             self.pipeline.set(pipeline).unwrap();
 
-            self.connect_about_to_finish(
-                move |_| {
-                    let _ = ABOUT_TO_FINISH
-                        .tx
-                        .send_blocking(true);
-                    None
-                },
-            );
+            self.connect_about_to_finish(move |_| {
+                let _ = ABOUT_TO_FINISH.tx.send_blocking(true);
+                None
+            });
 
-            self.connect_stream_start(
-                move |_,_| {
-                    let _ = STREAM_START
-                        .tx
-                        .send_blocking(true);
-                },
-            );
+            self.connect_stream_start(move |_, _| {
+                let _ = STREAM_START.tx.send_blocking(true);
+            });
 
-            glib::spawn_future_local(glib::clone!(#[weak(rename_to = imp)] self, async move {
-                while let Ok(true) = ABOUT_TO_FINISH.rx.recv().await {
-                    if let Some(core_song) = imp.next_song() {
-                        imp.add_song(&core_song);
-                        imp.obj().set_gapless(true);
+            glib::spawn_future_local(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                async move {
+                    while let Ok(true) = ABOUT_TO_FINISH.rx.recv().await {
+                        if let Some(core_song) = imp.next_song() {
+                            imp.add_song(&core_song);
+                            imp.obj().set_gapless(true);
+                        }
                     }
                 }
-            }));
+            ));
 
-            glib::spawn_future_local(glib::clone!(#[weak(rename_to = imp)] self, async move {
-                while let Ok(true) = STREAM_START.rx.recv().await {
-                    let obj = imp.obj();
-                    if obj.gapless() {
+            glib::spawn_future_local(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                async move {
+                    while let Ok(true) = STREAM_START.rx.recv().await {
+                        let obj = imp.obj();
+                        if obj.gapless() {
+                            imp.playlist_next();
+                        }
+                        obj.set_gapless(false);
+                        obj.emit_by_name::<()>("stream-start", &[]);
+                    }
+                }
+            ));
+
+            glib::spawn_future_local(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                async move {
+                    while let Ok(true) = EOS.rx.recv().await {
+                        println!("EOS");
+                        let obj = imp.obj();
                         imp.playlist_next();
+                        imp.stop();
+                        if obj.gapless() {
+                            if let Some(core_song) = imp.obj().active_core_song() {
+                                imp.play(&core_song);
+                            };
+                        }
+                        obj.set_gapless(false);
                     }
-                    obj.set_gapless(false); 
-                    obj.emit_by_name::<()>("stream-start", &[]);
                 }
-            }));
-
-            glib::spawn_future_local(glib::clone!(#[weak(rename_to = imp)] self, async move {
-                while let Ok(true) = EOS.rx.recv().await {
-                    println!("EOS");
-                    let obj = imp.obj();
-                    imp.playlist_next();
-                    imp.stop();
-                    if obj.gapless() {
-                        if let Some(core_song) = imp.obj().active_core_song() {
-                            imp.play(&core_song);
-                        };
-                    }
-                    obj.set_gapless(false);
-                }
-            }));
+            ));
         }
 
         fn signals() -> &'static [Signal] {
             static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
-            SIGNALS.get_or_init(|| {
-                vec![Signal::builder("stream-start")
-                    .build()]
-            })
+            SIGNALS.get_or_init(|| vec![Signal::builder("stream-start").build()])
         }
     }
 
@@ -216,7 +218,10 @@ pub mod imp {
         where
             F: Fn(&gst::Bus, &gst::Message) + Send + Sync + 'static,
         {
-            self.pipeline().bus().unwrap().connect_message(Some("stream-start"), cb);
+            self.pipeline()
+                .bus()
+                .unwrap()
+                .connect_message(Some("stream-start"), cb);
         }
 
         pub fn playing(&self) {
@@ -232,7 +237,7 @@ pub mod imp {
                     core_song_old.set_state(State::Played);
                 }
             }
-            
+
             self.stop();
             let uri = EMBY_CLIENT.get_song_streaming_uri(&core_song.id());
 

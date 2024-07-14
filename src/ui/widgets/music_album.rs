@@ -1,10 +1,5 @@
 use std::collections::HashMap;
 
-use adw::prelude::*;
-use adw::subclass::prelude::*;
-use gtk::gio::ListStore;
-use gtk::{glib, template_callbacks, CompositeTemplate};
-use gtk::gio;
 use crate::bing_song_model;
 use crate::ui::provider::core_song::CoreSong;
 use crate::ui::widgets::song_widget::State;
@@ -14,6 +9,11 @@ use crate::{
     ui::{provider::tu_item::TuItem, widgets::song_widget::SongWidget},
     utils::{get_image_with_cache, req_cache, spawn},
 };
+use adw::prelude::*;
+use adw::subclass::prelude::*;
+use gtk::gio;
+use gtk::gio::ListStore;
+use gtk::{glib, template_callbacks, CompositeTemplate};
 
 use super::song_widget::format_duration;
 
@@ -81,14 +81,16 @@ pub(crate) mod imp {
             self.parent_constructed();
             let obj = self.obj();
 
-            spawn_g_timeout(
-                glib::clone!(#[weak] obj, async move {
+            spawn_g_timeout(glib::clone!(
+                #[weak]
+                obj,
+                async move {
                     obj.set_toolbar();
                     obj.set_album().await;
                     obj.get_songs().await;
                     obj.set_lists().await;
-                }),
-            );
+                }
+            ));
         }
     }
 
@@ -153,10 +155,14 @@ impl AlbumPage {
         let image = gtk::gio::File::for_path(path);
         imp.cover_image.set_file(Some(&image));
 
-        spawn(glib::clone!(#[weak(rename_to = obj)] self,async move {
-            let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-            window.set_rootpic(image);
-        }));
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                window.set_rootpic(image);
+            }
+        ));
     }
 
     pub async fn get_songs(&self) {
@@ -184,13 +190,17 @@ impl AlbumPage {
             let song_widget = disc_boxes.entry(parent_index_number).or_insert_with(|| {
                 let new_disc_box = super::disc_box::DiscBox::new();
                 new_disc_box.set_disc(parent_index_number);
-                new_disc_box.connect_closure("song-activated", true, 
-                glib::closure_local!(
-                    #[watch(rename_to = obj)]
-                    self, 
-                    move |_:DiscBox, song_widget| {
-                    obj.song_activated(song_widget);
-                }));
+                new_disc_box.connect_closure(
+                    "song-activated",
+                    true,
+                    glib::closure_local!(
+                        #[watch(rename_to = obj)]
+                        self,
+                        move |_: DiscBox, song_widget| {
+                            obj.song_activated(song_widget);
+                        }
+                    ),
+                );
                 self.imp().listbox.append(&new_disc_box);
                 new_disc_box
             });
@@ -212,7 +222,13 @@ impl AlbumPage {
         let liststore = gio::ListStore::new::<CoreSong>();
         for child in listbox.observe_children().into_iter().flatten() {
             let discbox = child.downcast::<DiscBox>().unwrap();
-            for child in discbox.imp().listbox.observe_children().into_iter().flatten() {
+            for child in discbox
+                .imp()
+                .listbox
+                .observe_children()
+                .into_iter()
+                .flatten()
+            {
                 let song_widget = child.downcast::<SongWidget>().unwrap();
                 let item = song_widget.coresong();
                 liststore.append(&item)
@@ -279,7 +295,13 @@ impl AlbumPage {
         let Some(object) = imp.listbox.get().first_child() else {
             return;
         };
-        let Some(widget) = object.downcast::<DiscBox>().unwrap().imp().listbox.first_child() else {
+        let Some(widget) = object
+            .downcast::<DiscBox>()
+            .unwrap()
+            .imp()
+            .listbox
+            .first_child()
+        else {
             return;
         };
         let active_core_song = widget.downcast::<SongWidget>().unwrap().coresong();

@@ -157,8 +157,10 @@ mod imp {
             obj.load_window_size();
             obj.set_servers();
             obj.set_nav_servers();
-            self.selectlist
-                .connect_row_selected(glib::clone!(#[weak] obj, move |_, row| {
+            self.selectlist.connect_row_selected(glib::clone!(
+                #[weak]
+                obj,
+                move |_, row| {
                     if let Some(row) = row {
                         let num = row.index();
                         match num {
@@ -174,7 +176,8 @@ mod imp {
                             _ => {}
                         }
                     }
-                }));
+                }
+            ));
         }
     }
 
@@ -249,15 +252,19 @@ impl Window {
         for account in accounts.accounts {
             listbox.append(&self.set_server_rows(account));
         }
-        listbox.connect_row_activated(glib::clone!(#[weak(rename_to = obj)] self, move |_, row| {
-            unsafe {
-                let account_ptr: std::ptr::NonNull<Account>  = row.data("account").unwrap();
-                let account: &Account = &*account_ptr.as_ptr();
-                EMBY_CLIENT.init(account);
-                SETTINGS.set_preferred_server(&account.servername).unwrap();
+        listbox.connect_row_activated(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |_, row| {
+                unsafe {
+                    let account_ptr: std::ptr::NonNull<Account> = row.data("account").unwrap();
+                    let account: &Account = &*account_ptr.as_ptr();
+                    EMBY_CLIENT.init(account);
+                    SETTINGS.set_preferred_server(&account.servername).unwrap();
+                }
+                obj.reset();
             }
-            obj.reset();
-        }));
+        ));
     }
 
     pub fn set_nav_servers(&self) {
@@ -301,11 +308,15 @@ impl Window {
                 .valign(gtk::Align::Center)
                 .build();
             button.add_css_class("flat");
-            button.connect_clicked(glib::clone!(#[weak(rename_to = obj)] self, move |_| {
-                crate::config::remove(&account_clone).unwrap();
-                obj.set_servers();
-                obj.set_nav_servers();
-            }));
+            button.connect_clicked(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_| {
+                    crate::config::remove(&account_clone).unwrap();
+                    obj.set_servers();
+                    obj.set_nav_servers();
+                }
+            ));
             button
         });
         row.add_css_class("serverrow");
@@ -666,15 +677,20 @@ impl Window {
     }
 
     pub fn set_player_toolbar(&self) {
-        spawn(glib::clone!(#[weak(rename_to = obj)] self,async move {
-            obj.imp().player_toolbar_bin.set_reveal_child(true);
-        }));
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                obj.imp().player_toolbar_bin.set_reveal_child(true);
+            }
+        ));
     }
 
     pub fn set_fraction(&self, to_value: f64) {
         let progressbar = &self.imp().progressbar;
         progressbar.set_inverted(!progressbar.is_inverted());
-        self.progressbar_animation().set_value_from(progressbar.fraction());
+        self.progressbar_animation()
+            .set_value_from(progressbar.fraction());
         self.progressbar_animation().set_value_to(to_value);
         self.progressbar_animation().play();
     }
@@ -682,7 +698,9 @@ impl Window {
     fn progressbar_animation(&self) -> &adw::TimedAnimation {
         self.imp().progress_bar_animation.get_or_init(|| {
             let target = adw::CallbackAnimationTarget::new(glib::clone!(
-                #[weak(rename_to = obj)] self, move |fraction| obj.imp().progressbar.set_fraction(fraction)
+                #[weak(rename_to = obj)]
+                self,
+                move |fraction| obj.imp().progressbar.set_fraction(fraction)
             ));
 
             adw::TimedAnimation::builder()
@@ -733,7 +751,8 @@ impl Window {
 
     pub fn bind_song_model(&self, active_model: gio::ListStore, active_core_song: CoreSong) {
         let imp = self.imp();
-        imp.player_toolbar_box.bind_song_model(active_model, active_core_song);
+        imp.player_toolbar_box
+            .bind_song_model(active_model, active_core_song);
     }
 
     pub fn play_media(

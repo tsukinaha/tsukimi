@@ -360,7 +360,8 @@ impl ImagePaintable {
 
         // Update the frame when the duration is elapsed.
         let update_frame_callback = glib::clone!(
-            #[weak(rename_to = obj)] self,
+            #[weak(rename_to = obj)]
+            self,
             move || {
                 obj.imp().timeout_source_id.take();
                 obj.update_frame();

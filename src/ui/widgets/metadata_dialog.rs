@@ -119,9 +119,11 @@ mod imp {
                     .set_subtitle("This page is READ-ONLY, because it is not finished yet.");
             }
 
-            spawn(glib::clone!(#[weak(rename_to = imp)] self, async move {
-                imp.obj().get_data().await
-            }));
+            spawn(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                async move { imp.obj().get_data().await }
+            ));
         }
 
         pub fn load_data(&self, metadata: Item) {

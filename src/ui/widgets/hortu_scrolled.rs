@@ -81,15 +81,20 @@ mod imp {
             self.list
                 .set_factory(Some(&self.factory(*self.isresume.get().unwrap_or(&false))));
 
-            self.list.connect_activate(
-                glib::clone!(#[weak(rename_to = imp)] self, move |listview, position| {
+            self.list.connect_activate(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                move |listview, position| {
                     let window = imp.obj().root().and_downcast::<Window>().unwrap();
                     let model = listview.model().unwrap();
-                    let item = model.item(position).and_downcast::<glib::BoxedAnyObject>().unwrap();
+                    let item = model
+                        .item(position)
+                        .and_downcast::<glib::BoxedAnyObject>()
+                        .unwrap();
                     let result: std::cell::Ref<SimpleListItem> = item.borrow();
                     imp.activate(window, &result);
-                }),
-            );
+                }
+            ));
         }
     }
 
@@ -144,23 +149,39 @@ mod imp {
                 "TvChannel" => {
                     let id = result.id.clone();
                     let name = result.name.clone();
-                    spawn(glib::clone!(#[weak(rename_to = imp)] self, async move {
-                        let obj = imp.obj();
-                        toast!(obj, "Processing...");
-                        match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&id).await }).await {
-                            Ok(playback) => {
-                                let Some(ref url) = playback.media_sources[0].transcoding_url else {
-                                    toast!(obj, "No transcoding url found");
-                                    return;
-                                };
-                                let window = obj.root().unwrap().downcast::<Window>().unwrap();
-                                window.play_media(url.to_string(), None, Some(name), None, None, 0.0)
-                            }
-                            Err(e) => {
-                                toast!(obj, e.to_user_facing());
+                    spawn(glib::clone!(
+                        #[weak(rename_to = imp)]
+                        self,
+                        async move {
+                            let obj = imp.obj();
+                            toast!(obj, "Processing...");
+                            match spawn_tokio(async move {
+                                EMBY_CLIENT.get_live_playbackinfo(&id).await
+                            })
+                            .await
+                            {
+                                Ok(playback) => {
+                                    let Some(ref url) = playback.media_sources[0].transcoding_url
+                                    else {
+                                        toast!(obj, "No transcoding url found");
+                                        return;
+                                    };
+                                    let window = obj.root().unwrap().downcast::<Window>().unwrap();
+                                    window.play_media(
+                                        url.to_string(),
+                                        None,
+                                        Some(name),
+                                        None,
+                                        None,
+                                        0.0,
+                                    )
+                                }
+                                Err(e) => {
+                                    toast!(obj, e.to_user_facing());
+                                }
                             }
                         }
-                    }));
+                    ));
                 }
                 "Series" => Self::push_page(
                     view,
@@ -317,7 +338,9 @@ impl HortuScrolled {
     fn show_controls_animation(&self) -> &adw::TimedAnimation {
         self.imp().show_button_animation.get_or_init(|| {
             let target = adw::CallbackAnimationTarget::new(glib::clone!(
-                #[weak(rename_to = obj)] self, move |opacity| obj.set_control_opacity(opacity)
+                #[weak(rename_to = obj)]
+                self,
+                move |opacity| obj.set_control_opacity(opacity)
             ));
 
             adw::TimedAnimation::builder()
@@ -332,7 +355,9 @@ impl HortuScrolled {
     fn hide_controls_animation(&self) -> &adw::TimedAnimation {
         self.imp().hide_button_animation.get_or_init(|| {
             let target = adw::CallbackAnimationTarget::new(glib::clone!(
-                #[weak(rename_to = obj)] self, move |opacity| obj.set_control_opacity(opacity)
+                #[weak(rename_to = obj)]
+                self,
+                move |opacity| obj.set_control_opacity(opacity)
             ));
 
             adw::TimedAnimation::builder()

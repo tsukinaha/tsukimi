@@ -186,12 +186,19 @@ impl AccountSettings {
     pub fn set_sidebar(&self) {
         let imp = self.imp();
         imp.sidebarcontrol.set_active(SETTINGS.overlay());
-        imp.sidebarcontrol
-            .connect_active_notify(glib::clone!(#[weak(rename_to = obj)] self,move |control| {
-                let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
+        imp.sidebarcontrol.connect_active_notify(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |control| {
+                let window = obj
+                    .root()
+                    .unwrap()
+                    .downcast::<super::window::Window>()
+                    .unwrap();
                 window.overlay_sidebar(control.is_active());
                 SETTINGS.set_overlay(control.is_active()).unwrap();
-            }));
+            }
+        ));
     }
 
     pub fn set_back(&self) {
@@ -321,14 +328,18 @@ impl AccountSettings {
             _ => (),
         }
         imp.themecontrol.set_selected(pos);
-        imp.themecontrol.connect_selected_item_notify(
-            move |control| {
-                let theme = control.selected_item().and_then(|item| {
-                    item.downcast::<gtk::StringObject>().ok().map(|item| item.string())
-                }).unwrap();
+        imp.themecontrol
+            .connect_selected_item_notify(move |control| {
+                let theme = control
+                    .selected_item()
+                    .and_then(|item| {
+                        item.downcast::<gtk::StringObject>()
+                            .ok()
+                            .map(|item| item.string())
+                    })
+                    .unwrap();
                 SETTINGS.set_theme(&theme).unwrap();
-            },
-        );
+            });
     }
 
     pub fn set_thread(&self) {
@@ -365,28 +376,42 @@ impl AccountSettings {
         let imp = self.imp();
         imp.backgroundspinrow
             .set_value(SETTINGS.pic_opacity().into());
-        imp.backgroundspinrow.connect_value_notify(
-            glib::clone!(#[weak(rename_to = obj)] self,move |control| {
+        imp.backgroundspinrow.connect_value_notify(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |control| {
                 SETTINGS.set_pic_opacity(control.value() as i32).unwrap();
-                let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
+                let window = obj
+                    .root()
+                    .unwrap()
+                    .downcast::<super::window::Window>()
+                    .unwrap();
                 window.set_picopacity(control.value() as i32);
-            }),
-        );
+            }
+        ));
     }
 
     pub fn set_pic(&self) {
         let imp = self.imp();
         imp.backgroundcontrol
             .set_active(SETTINGS.background_enabled());
-        imp.backgroundcontrol.connect_active_notify(
-            glib::clone!(#[weak(rename_to = obj)] self,move |control| {
-                SETTINGS.set_background_enabled(control.is_active()).unwrap();
+        imp.backgroundcontrol.connect_active_notify(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |control| {
+                SETTINGS
+                    .set_background_enabled(control.is_active())
+                    .unwrap();
                 if !control.is_active() {
-                    let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
+                    let window = obj
+                        .root()
+                        .unwrap()
+                        .downcast::<super::window::Window>()
+                        .unwrap();
                     window.clear_pic();
                 }
-            }),
-        );
+            }
+        ));
     }
 
     pub fn set_picblur(&self) {
@@ -410,10 +435,18 @@ impl AccountSettings {
     }
 
     pub fn clearpic(&self) {
-        glib::spawn_future_local(glib::clone!(#[weak(rename_to = obj)] self, async move {
-            let window = obj.root().unwrap().downcast::<super::window::Window>().unwrap();
-            window.clear_pic();
-        }));
+        glib::spawn_future_local(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                let window = obj
+                    .root()
+                    .unwrap()
+                    .downcast::<super::window::Window>()
+                    .unwrap();
+                window.clear_pic();
+            }
+        ));
         SETTINGS.set_root_pic("").unwrap();
     }
 

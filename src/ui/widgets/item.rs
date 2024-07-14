@@ -174,13 +174,17 @@ pub(crate) mod imp {
             let backdrop = self.backdrop.get();
             backdrop.set_height_request(crate::ui::models::SETTINGS.background_height());
             self.actionbox.set_id(Some(obj.id()));
-            spawn_g_timeout(glib::clone!(#[weak] obj, async move {
-                obj.imp().episodescrolled.fix();
-                obj.setup_background().await;
-                obj.logoset();
-                obj.setoverview().await;
-                obj.set_lists().await;
-            }));
+            spawn_g_timeout(glib::clone!(
+                #[weak]
+                obj,
+                async move {
+                    obj.imp().episodescrolled.fix();
+                    obj.setup_background().await;
+                    obj.logoset();
+                    obj.setoverview().await;
+                    obj.set_lists().await;
+                }
+            ));
         }
     }
 
@@ -226,10 +230,14 @@ impl ItemPage {
         if pathbuf.exists() {
             backdrop.set_file(Some(&file));
             self.imp().backrevealer.set_reveal_child(true);
-            spawn(glib::clone!(#[weak(rename_to = obj)] self,async move {
-                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                window.set_rootpic(file);
-            }));
+            spawn(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                async move {
+                    let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                    window.set_rootpic(file);
+                }
+            ));
         }
     }
 
@@ -298,18 +306,33 @@ impl ItemPage {
             }
         };
 
-        spawn(glib::clone!(#[weak(rename_to = obj)] self, async move {
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
                 let mut season_set: HashSet<u32> = HashSet::new();
-                let mut season_map: HashMap<String,u32> = HashMap::new();
-                let min_season = series_info.iter().map(|info| if info.parent_index_number.unwrap_or(0) == 0 { 100 } else { info.parent_index_number.unwrap_or(0) }).min().unwrap_or(1);
+                let mut season_map: HashMap<String, u32> = HashMap::new();
+                let min_season = series_info
+                    .iter()
+                    .map(|info| {
+                        if info.parent_index_number.unwrap_or(0) == 0 {
+                            100
+                        } else {
+                            info.parent_index_number.unwrap_or(0)
+                        }
+                    })
+                    .min()
+                    .unwrap_or(1);
                 let mut pos = 0;
                 let mut set = true;
                 for info in &series_info {
                     if !season_set.contains(&info.parent_index_number.unwrap_or(0)) {
-                        let seasonstring = format!("Season {}", info.parent_index_number.unwrap_or(0));
+                        let seasonstring =
+                            format!("Season {}", info.parent_index_number.unwrap_or(0));
                         seasonstore.append(&seasonstring);
                         season_set.insert(info.parent_index_number.unwrap_or(0));
-                        season_map.insert(seasonstring.clone(), info.parent_index_number.unwrap_or(0));
+                        season_map
+                            .insert(seasonstring.clone(), info.parent_index_number.unwrap_or(0));
                         if set {
                             if info.parent_index_number.unwrap_or(0) == min_season {
                                 set = false;
@@ -331,9 +354,13 @@ impl ItemPage {
                             user_data: info.user_data.clone(),
                             overview: info.overview.clone(),
                         };
-                        spawn(glib::clone!(#[weak] obj, async move {
-                            obj.selectepisode(seriesinfo.clone()).await;
-                        }));
+                        spawn(glib::clone!(
+                            #[weak]
+                            obj,
+                            async move {
+                                obj.selectepisode(seriesinfo.clone()).await;
+                            }
+                        ));
                     }
                 }
                 obj.imp().seasonlist.set_selected(pos);
@@ -344,33 +371,55 @@ impl ItemPage {
                 }
                 let seriesinfo_seasonlist = series_info.clone();
                 let seriesinfo_seasonmap = season_map.clone();
-                seasonlist.connect_selected_item_notify(glib::clone!(#[weak] store, move |dropdown| {
-                    let selected = dropdown.selected_item();
-                    let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
-                    let selected = selected.string().to_string();
-                    store.remove_all();
-                    let season_number = seriesinfo_seasonmap[&selected];
-                    for info in &seriesinfo_seasonlist {
-                        if info.parent_index_number.unwrap_or(0) == season_number {
-                            let object = glib::BoxedAnyObject::new(info.clone());
-                            store.append(&object);
+                seasonlist.connect_selected_item_notify(glib::clone!(
+                    #[weak]
+                    store,
+                    move |dropdown| {
+                        let selected = dropdown.selected_item();
+                        let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
+                        let selected = selected.string().to_string();
+                        store.remove_all();
+                        let season_number = seriesinfo_seasonmap[&selected];
+                        for info in &seriesinfo_seasonlist {
+                            if info.parent_index_number.unwrap_or(0) == season_number {
+                                let object = glib::BoxedAnyObject::new(info.clone());
+                                store.append(&object);
+                            }
                         }
+                        itemlist.first_child().unwrap().activate();
                     }
-                    itemlist.first_child().unwrap().activate();
-                }));
+                ));
                 let episodesearchentry = obj.imp().episodesearchentry.get();
-                episodesearchentry.connect_search_changed(glib::clone!(#[weak] store, move |entry| {
-                    let text = entry.text();
-                    store.remove_all();
-                    for info in &series_info {
-                        if (info.name.to_lowercase().contains(&text.to_lowercase()) || info.index_number.unwrap_or(0).to_string().contains(&text.to_lowercase())) && info.parent_index_number.unwrap_or(0) == season_map[&seasonlist.selected_item().and_downcast_ref::<gtk::StringObject>().unwrap().string().to_string()] {
-                            let object = glib::BoxedAnyObject::new(info.clone());
-                            store.append(&object);
+                episodesearchentry.connect_search_changed(glib::clone!(
+                    #[weak]
+                    store,
+                    move |entry| {
+                        let text = entry.text();
+                        store.remove_all();
+                        for info in &series_info {
+                            if (info.name.to_lowercase().contains(&text.to_lowercase())
+                                || info
+                                    .index_number
+                                    .unwrap_or(0)
+                                    .to_string()
+                                    .contains(&text.to_lowercase()))
+                                && info.parent_index_number.unwrap_or(0)
+                                    == season_map[&seasonlist
+                                        .selected_item()
+                                        .and_downcast_ref::<gtk::StringObject>()
+                                        .unwrap()
+                                        .string()
+                                        .to_string()]
+                            {
+                                let object = glib::BoxedAnyObject::new(info.clone());
+                                store.append(&object);
+                            }
                         }
                     }
-                }));
+                ));
                 itemrevealer.set_reveal_child(true);
-        }));
+            }
+        ));
 
         let factory = gtk::SignalListItemFactory::new();
         factory.connect_setup(move |_, item| {
@@ -453,18 +502,25 @@ impl ItemPage {
         imp.itemlist.set_factory(Some(&factory));
         imp.itemlist.set_model(Some(&imp.selection));
 
-        imp.itemlist
-            .connect_activate(glib::clone!(#[weak(rename_to = obj)] self,move |listview, position| {
+        imp.itemlist.connect_activate(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |listview, position| {
                 let model = listview.model().unwrap();
                 let item = model
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
-                spawn(glib::clone!(#[weak] obj,async move {
-                    let series_info = item.borrow::<SeriesInfo>().clone();
-                    obj.selectepisode(series_info).await;
-                }));
-            }));
+                spawn(glib::clone!(
+                    #[weak]
+                    obj,
+                    async move {
+                        let series_info = item.borrow::<SeriesInfo>().clone();
+                        obj.selectepisode(series_info).await;
+                    }
+                ));
+            }
+        ));
     }
 
     pub fn logoset(&self) {
@@ -614,7 +670,10 @@ impl ItemPage {
             }
         };
 
-        spawn(glib::clone!(#[weak(rename_to = obj)] self,async move {
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
                 {
                     let mut str = String::new();
                     if let Some(communityrating) = item.community_rating {
@@ -687,7 +746,7 @@ impl ItemPage {
                 }
                 if let Some(ref user_data) = item.user_data {
                     let imp = obj.imp();
-                    if let Some (is_favourite) = user_data.is_favorite { 
+                    if let Some(is_favourite) = user_data.is_favorite {
                         imp.actionbox.set_btn_active(is_favourite);
                     }
                     imp.actionbox.set_played(user_data.played);
@@ -704,7 +763,8 @@ impl ItemPage {
                 } else {
                     obj.selectmovie(item.id, item.name, item.user_data).await;
                 }
-        }));
+            }
+        ));
     }
 
     pub async fn createmediabox(
@@ -1005,74 +1065,121 @@ impl ItemPage {
         let subdropdown = imp.subdropdown.get();
         let info = info.clone();
 
-        playbutton.connect_clicked(glib::clone!(#[weak(rename_to = obj)] self, move |_| {
+        playbutton.connect_clicked(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |_| {
+                let nameselected = if let Some(entry) = namedropdown
+                    .selected_item()
+                    .and_downcast::<glib::BoxedAnyObject>()
+                {
+                    let dl: std::cell::Ref<DropdownList> = entry.borrow();
+                    dl.line1.clone().unwrap_or_default()
+                } else {
+                    return;
+                };
 
-            let nameselected = if let Some(entry) = namedropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
-            {
-                let dl: std::cell::Ref<DropdownList> = entry.borrow();
-                dl.line1.clone().unwrap_or_default()
-            } else {
-                return;
-            };
+                let subselected = if let Some(entry) = subdropdown
+                    .selected_item()
+                    .and_downcast::<glib::BoxedAnyObject>()
+                {
+                    let dl: std::cell::Ref<DropdownList> = entry.borrow();
+                    &dl.line1.clone()
+                } else {
+                    &None
+                };
 
-            let subselected =
-                if let Some(entry) = subdropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
-            {
-                let dl: std::cell::Ref<DropdownList> = entry.borrow();
-                &dl.line1.clone()
-            } else {
-                &None
-            };
-
-            for media in playbackinfo.media_sources.clone() {
-                if media.name == nameselected {
-                    let medianameselected = nameselected;
-                    let url = media.direct_stream_url.clone();
-                    let back = Back {
-                        id: info.id.clone(),
-                        mediasourceid: media.id.clone(),
-                        playsessionid: playbackinfo.play_session_id.clone(),
-                        tick: info.user_data.as_ref().map_or(0, |data| data.playback_position_ticks.unwrap_or(0)),
-                    };
-                    let percentage = info.user_data.as_ref().map_or(0., |data| data.played_percentage.unwrap_or(0.));
-                    let id = info.id.clone();
-                    let subselected = subselected.clone();
-                    if let Some(url) = url {
-                        let name = obj.imp().name.borrow().clone();
-                        let selected = obj.imp().selected.borrow().clone();
-                        spawn(async move {
-                            let suburl = match media.media_streams.iter().find(|&mediastream| {
-                                mediastream.stream_type == "Subtitle" && Some(mediastream.display_title.as_ref().unwrap_or(&"".to_string())) == subselected.as_ref() && mediastream.is_external
-                            }) {
-                                Some(mediastream) => match mediastream.delivery_url.clone() {
-                                    Some(url) => Some(url),
-                                    None => {
-                                        let playbackinfo = match spawn_tokio(async move { EMBY_CLIENT.get_sub(&id, &media.id).await}).await {
-                                            Ok(playbackinfo) => playbackinfo,
-                                            Err(e) => {
-                                                toast!(obj, e.to_user_facing());
-                                                return;
-                                            }
-                                        };
-                                        let mediasource = playbackinfo.media_sources.iter().find(|&media| media.name == medianameselected).unwrap();
-                                        let suburl = mediasource.media_streams.iter().find(|&mediastream| {
-                                            mediastream.stream_type == "Subtitle" && Some(mediastream.display_title.as_ref().unwrap_or(&"".to_string())) == subselected.as_ref() && mediastream.is_external
-                                        }).unwrap().delivery_url.clone();
-                                        suburl
+                for media in playbackinfo.media_sources.clone() {
+                    if media.name == nameselected {
+                        let medianameselected = nameselected;
+                        let url = media.direct_stream_url.clone();
+                        let back = Back {
+                            id: info.id.clone(),
+                            mediasourceid: media.id.clone(),
+                            playsessionid: playbackinfo.play_session_id.clone(),
+                            tick: info
+                                .user_data
+                                .as_ref()
+                                .map_or(0, |data| data.playback_position_ticks.unwrap_or(0)),
+                        };
+                        let percentage = info
+                            .user_data
+                            .as_ref()
+                            .map_or(0., |data| data.played_percentage.unwrap_or(0.));
+                        let id = info.id.clone();
+                        let subselected = subselected.clone();
+                        if let Some(url) = url {
+                            let name = obj.imp().name.borrow().clone();
+                            let selected = obj.imp().selected.borrow().clone();
+                            spawn(async move {
+                                let suburl = match media.media_streams.iter().find(|&mediastream| {
+                                    mediastream.stream_type == "Subtitle"
+                                        && Some(
+                                            mediastream
+                                                .display_title
+                                                .as_ref()
+                                                .unwrap_or(&"".to_string()),
+                                        ) == subselected.as_ref()
+                                        && mediastream.is_external
+                                }) {
+                                    Some(mediastream) => match mediastream.delivery_url.clone() {
+                                        Some(url) => Some(url),
+                                        None => {
+                                            let playbackinfo = match spawn_tokio(async move {
+                                                EMBY_CLIENT.get_sub(&id, &media.id).await
+                                            })
+                                            .await
+                                            {
+                                                Ok(playbackinfo) => playbackinfo,
+                                                Err(e) => {
+                                                    toast!(obj, e.to_user_facing());
+                                                    return;
+                                                }
+                                            };
+                                            let mediasource = playbackinfo
+                                                .media_sources
+                                                .iter()
+                                                .find(|&media| media.name == medianameselected)
+                                                .unwrap();
+                                            let suburl = mediasource
+                                                .media_streams
+                                                .iter()
+                                                .find(|&mediastream| {
+                                                    mediastream.stream_type == "Subtitle"
+                                                        && Some(
+                                                            mediastream
+                                                                .display_title
+                                                                .as_ref()
+                                                                .unwrap_or(&"".to_string()),
+                                                        ) == subselected.as_ref()
+                                                        && mediastream.is_external
+                                                })
+                                                .unwrap()
+                                                .delivery_url
+                                                .clone();
+                                            suburl
+                                        }
                                     },
-                                },
-                                None => None,
-                            };
-                            obj.get_window().play_media(url, suburl, name, Some(back), selected, percentage);
-                        });
-                    } else {
-                        toast!(obj,"No Stream URL found");
+                                    None => None,
+                                };
+                                obj.get_window().play_media(
+                                    url,
+                                    suburl,
+                                    name,
+                                    Some(back),
+                                    selected,
+                                    percentage,
+                                );
+                            });
+                        } else {
+                            toast!(obj, "No Stream URL found");
+                            return;
+                        }
                         return;
                     }
-                    return;
                 }
             }
-        }))
+        ))
     }
 
     pub fn get_window(&self) -> Window {

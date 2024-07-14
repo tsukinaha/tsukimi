@@ -136,20 +136,28 @@ impl ImageInfoCard {
         gio::File::for_uri(&path).read_async(
             glib::Priority::LOW,
             None::<&gio::Cancellable>,
-            glib::clone!(#[weak(rename_to = obj)] self, move |res| {
-                if let Ok(stream) = res {
-                    match gtk::gdk_pixbuf::Pixbuf::from_stream(&stream, None::<&gio::Cancellable>) {
-                        Ok(pixbuf) => {
-                            picture.set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(&pixbuf)));
-                            obj.set_picture_visible();
-                        },
-                        Err(_) => {
-                            toast!(obj, "Error loading image");
-                            obj.set_fallback_visible();
+            glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |res| {
+                    if let Ok(stream) = res {
+                        match gtk::gdk_pixbuf::Pixbuf::from_stream(
+                            &stream,
+                            None::<&gio::Cancellable>,
+                        ) {
+                            Ok(pixbuf) => {
+                                picture
+                                    .set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(&pixbuf)));
+                                obj.set_picture_visible();
+                            }
+                            Err(_) => {
+                                toast!(obj, "Error loading image");
+                                obj.set_fallback_visible();
+                            }
                         }
                     }
                 }
-            }),
+            ),
         );
     }
 

@@ -89,9 +89,13 @@ mod imp {
             }
 
             let obj = self.obj();
-            spawn(glib::clone!(#[weak] obj, async move {
-                obj.set_image_items().await;
-            }));
+            spawn(glib::clone!(
+                #[weak]
+                obj,
+                async move {
+                    obj.set_image_items().await;
+                }
+            ));
         }
 
         pub fn set_card(&self, card: &ImageInfoCard, item: &ImageItem) {

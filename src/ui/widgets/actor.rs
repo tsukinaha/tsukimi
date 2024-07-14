@@ -75,11 +75,15 @@ pub(crate) mod imp {
             self.parent_constructed();
             let obj = self.obj();
 
-            spawn_g_timeout(glib::clone!(#[weak] obj, async move {
-                obj.setup_pic();
-                obj.get_item().await;
-                obj.set_lists().await;
-            }));
+            spawn_g_timeout(glib::clone!(
+                #[weak]
+                obj,
+                async move {
+                    obj.setup_pic();
+                    obj.get_item().await;
+                    obj.set_lists().await;
+                }
+            ));
 
             self.actionbox.set_id(Some(obj.id()));
         }
@@ -138,7 +142,10 @@ impl ActorPage {
             }
         };
 
-        spawn(glib::clone!(#[weak(rename_to = obj)] self ,async move {
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
                 if let Some(overview) = item.overview {
                     inscription.set_text(Some(&overview));
                 }
@@ -156,7 +163,8 @@ impl ActorPage {
                 }
                 title.set_text(&item.name);
                 inforevealer.set_reveal_child(true);
-        }));
+            }
+        ));
     }
 
     pub async fn set_lists(&self) {
