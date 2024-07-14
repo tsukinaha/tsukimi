@@ -19,10 +19,13 @@ const LOCALEDIR: &str = "/usr/share/locale";
 fn main() -> glib::ExitCode {
     load_uuid();
 
+    #[cfg(target_os = "linux")]
+    {
     setlocale(LocaleCategory::LcAll, "");
     bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR).expect("Invalid argument passed to bindtextdomain");
     textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
-
+    }
+    
     // Register and include resources
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
 
