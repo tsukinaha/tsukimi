@@ -8,7 +8,7 @@ fn main() {
     );
 
     let po_file = "po/zh_CN.po";
-    let mo_file = "po/locale/zh_CN/LC_MESSAGES/tsukimi.mo";
+    let mo_file = "i18n/locale/zh_CN/LC_MESSAGES/tsukimi.mo";
 
     let mo_path = std::path::Path::new(mo_file);
 
