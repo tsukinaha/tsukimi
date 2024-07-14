@@ -23,6 +23,7 @@ use super::structs::{
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
 static PROFILE: &str = include_str!("stream_profile.json");
+static LIVEPROFILE: &str = include_str!("fuckluke.json");
 static CLIENT_ID: Lazy<String> = Lazy::new(|| format!("Tsukimi/{}", APP_VERSION));
 pub struct EmbyClient {
     pub url: Mutex<Option<Url>>,
@@ -361,7 +362,7 @@ impl EmbyClient {
             ("MaxStreamingBitrate", "160000000"),
             ("reqformat", "json"),
         ];
-        let profile: Value = serde_json::from_str(PROFILE).unwrap();
+        let profile: Value = serde_json::from_str(LIVEPROFILE).unwrap();
         self.post(&path, &params, profile).await?.json().await
     }
 

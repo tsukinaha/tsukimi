@@ -1,0 +1,635 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-07-13 12:46+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: resources/ui/account_settings.ui:4
+msgid "Settings"
+msgstr ""
+
+#: resources/ui/account_settings.ui:13
+msgid "General"
+msgstr ""
+
+#: resources/ui/account_settings.ui:18
+msgid "Appearence"
+msgstr ""
+
+#: resources/ui/account_settings.ui:19
+msgid ""
+"Not all settings and features are guaranteed to be available on Windows. If "
+"you find the component too large, please try adjusting the system scaling. "
+"For more details, see the README."
+msgstr ""
+
+#: resources/ui/account_settings.ui:22
+msgid "Auto Select Last Server"
+msgstr ""
+
+#: resources/ui/account_settings.ui:27
+msgid "Daily Recommend"
+msgstr ""
+
+#: resources/ui/account_settings.ui:32
+msgid "Font Scale"
+msgstr ""
+
+#: resources/ui/account_settings.ui:46
+msgid "Font Family"
+msgstr ""
+
+#: resources/ui/account_settings.ui:64 resources/ui/account_settings.ui:75
+#: resources/ui/account_settings.ui:92 resources/ui/account_settings.ui:109
+msgid "Restart App To Take Effect"
+msgstr ""
+
+#: resources/ui/account_settings.ui:74
+msgid "Accent Color"
+msgstr ""
+
+#: resources/ui/account_settings.ui:91
+msgid "Accent Foreground Color"
+msgstr ""
+
+#: resources/ui/account_settings.ui:108
+msgid "Theme"
+msgstr ""
+
+#: resources/ui/account_settings.ui:126
+msgid "Sidebar Overlay"
+msgstr ""
+
+#: resources/ui/account_settings.ui:127
+msgid "or side by side"
+msgstr ""
+
+#: resources/ui/account_settings.ui:132
+msgid "Picture Height"
+msgstr ""
+
+#: resources/ui/account_settings.ui:148
+msgid "Network"
+msgstr ""
+
+#: resources/ui/account_settings.ui:151
+msgid "HTTP Proxy"
+msgstr ""
+
+#: resources/ui/account_settings.ui:176
+msgid "Threads"
+msgstr ""
+
+#: resources/ui/account_settings.ui:177
+msgid "This only effects on getting images"
+msgstr ""
+
+#: resources/ui/account_settings.ui:193
+msgid "Background"
+msgstr ""
+
+#: resources/ui/account_settings.ui:200
+msgid "This feature may cause significant lag. Please enable it with caution."
+msgstr ""
+
+#: resources/ui/account_settings.ui:203
+msgid "Default"
+msgstr ""
+
+#: resources/ui/account_settings.ui:226
+msgid "Opacity"
+msgstr ""
+
+#: resources/ui/account_settings.ui:240
+msgid "Blur (Experimental)"
+msgstr ""
+
+#: resources/ui/account_settings.ui:241 resources/ui/account_settings.ui:247
+msgid "Warning: High GPU usage"
+msgstr ""
+
+#: resources/ui/account_settings.ui:246
+msgid "Blur Radius (Experimental)"
+msgstr ""
+
+#: resources/ui/account_settings.ui:267
+msgid "Clear Cache"
+msgstr ""
+
+#: resources/ui/account_settings.ui:288
+msgid "Account"
+msgstr ""
+
+#: resources/ui/account_settings.ui:304
+msgid "New Password"
+msgstr ""
+
+#: resources/ui/account_settings.ui:309
+msgid "Confirm Password"
+msgstr ""
+
+#: resources/ui/account_settings.ui:321
+msgid "Change Password"
+msgstr ""
+
+#: resources/ui/account_settings.ui:338 resources/ui/metadata_dialog.ui:219
+msgid "Music"
+msgstr ""
+
+#: resources/ui/account_settings.ui:350
+msgid "Video"
+msgstr ""
+
+#: resources/ui/account_settings.ui:355
+msgid "Player"
+msgstr ""
+
+#: resources/ui/account_settings.ui:356
+msgid ""
+"Gstreamer by default, If you enable mpv, you will get better compatibility "
+"and external subtitle support, but it does not support embedded window."
+msgstr ""
+
+#: resources/ui/account_settings.ui:359
+msgid "Enable MPV (External Window)"
+msgstr ""
+
+#: resources/ui/account_settings.ui:360
+msgid "External Subtitle Support"
+msgstr ""
+
+#: resources/ui/account_settings.ui:370
+msgid "Auto Fullscreen"
+msgstr ""
+
+#: resources/ui/account_settings.ui:375
+msgid "Show Window Immediately"
+msgstr ""
+
+#: resources/ui/account_settings.ui:380
+msgid "--ytdl-format=best"
+msgstr ""
+
+#: resources/ui/account_settings.ui:390
+msgid "Resume"
+msgstr ""
+
+#: resources/ui/account_settings.ui:395
+msgid "Proactively Provide Progress Updates"
+msgstr ""
+
+#: resources/ui/account_settings.ui:396
+msgid "Every 10 Seconds or Every 300 Seconds"
+msgstr ""
+
+#: resources/ui/account.ui:9 resources/ui/account.ui:17
+msgid "Add a New Account"
+msgstr ""
+
+#: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
+#: resources/ui/metadata_dialog.ui:38
+msgid "Cancel"
+msgstr ""
+
+#: resources/ui/account.ui:32
+msgid "_Add"
+msgstr ""
+
+#: resources/ui/account.ui:60 resources/ui/actor.ui:52
+#: resources/ui/boxset.ui:55
+msgid "Name"
+msgstr ""
+
+#: resources/ui/account.ui:65
+msgid "Server"
+msgstr ""
+
+#: resources/ui/account.ui:66
+msgid "Server Address"
+msgstr ""
+
+#: resources/ui/account.ui:71
+msgid "Port"
+msgstr ""
+
+#: resources/ui/account.ui:78
+msgid "Username"
+msgstr ""
+
+#: resources/ui/account.ui:83
+msgid "Password"
+msgstr ""
+
+#: resources/ui/actor.ui:4 resources/ui/album_widget.ui:4
+#: resources/ui/boxset.ui:4 resources/ui/clapperpage.ui:4
+#: resources/ui/history.ui:4 resources/ui/home.ui:4 resources/ui/item.ui:4
+#: resources/ui/search.ui:4 resources/ui/singlelist.ui:4
+#: resources/ui/window.ui:14
+msgid "Tsukimi"
+msgstr ""
+
+#: resources/ui/actor.ui:73 resources/ui/boxset.ui:105
+msgid "No Inscriptions"
+msgstr ""
+
+#: resources/ui/album_widget.ui:94 resources/ui/item.ui:148
+#: resources/ui/player_toolbar.ui:90
+msgid "Play"
+msgstr ""
+
+#: resources/ui/disc_box.ui:9
+msgid "Disc 1"
+msgstr ""
+
+#: resources/ui/image_info_card.ui:89
+msgid "Copy Image To Clipboard"
+msgstr ""
+
+#: resources/ui/image_info_card.ui:100
+msgid "View Image"
+msgstr ""
+
+#: resources/ui/images_dialog.ui:8 resources/ui/images_dialog.ui:17
+#: resources/ui/item_actions.ui:85 resources/ui/pop-menu.ui:41
+#: resources/ui/song_widget.ui:155
+msgid "View Images"
+msgstr ""
+
+#: resources/ui/images_dialog.ui:32 resources/ui/metadata_dialog.ui:44
+msgid "_Save"
+msgstr ""
+
+#: resources/ui/images_dialog.ui:61 resources/ui/metadata_dialog.ui:92
+msgid "Not Available"
+msgstr ""
+
+#: resources/ui/images_dialog.ui:62 resources/ui/metadata_dialog.ui:93
+msgid "This page is READ-ONLY, because you have no permission to modify it."
+msgstr ""
+
+#: resources/ui/images_dialog.ui:71
+msgid "Images"
+msgstr ""
+
+#: resources/ui/images_dialog.ui:129
+msgid "BackDrops"
+msgstr ""
+
+#: resources/ui/item_actions.ui:40 resources/ui/pop-menu.ui:23
+msgid "Mark as Played"
+msgstr ""
+
+#: resources/ui/item_actions.ui:46 resources/ui/pop-menu.ui:29
+msgid "Mark as Unplayed"
+msgstr ""
+
+#: resources/ui/item_actions.ui:53
+msgid "Mark This Episode as Played"
+msgstr ""
+
+#: resources/ui/item_actions.ui:59
+msgid "Mark This Episode as Unplayed"
+msgstr ""
+
+#: resources/ui/item_actions.ui:65
+msgid "Like This Episode"
+msgstr ""
+
+#: resources/ui/item_actions.ui:71
+msgid "Unlike This Episode"
+msgstr ""
+
+#: resources/ui/item_actions.ui:79 resources/ui/metadata_dialog.ui:20
+#: resources/ui/pop-menu.ui:35 resources/ui/song_widget.ui:150
+msgid "View Metadata"
+msgstr ""
+
+#: resources/ui/item_actions.ui:93
+msgid "View This Episode Metadata"
+msgstr ""
+
+#: resources/ui/item_actions.ui:99
+msgid "View This Episode Images"
+msgstr ""
+
+#: resources/ui/item.ui:73 resources/ui/item.ui:129
+msgid "Loading..."
+msgstr ""
+
+#: resources/ui/item.ui:93
+msgid "loading"
+msgstr ""
+
+#: resources/ui/item.ui:183
+msgid "Video: "
+msgstr ""
+
+#: resources/ui/item.ui:203
+msgid "Subtitle: "
+msgstr ""
+
+#: resources/ui/item.ui:256
+msgid "Search episodes in current season"
+msgstr ""
+
+#: resources/ui/item.ui:347 resources/ui/metadata_dialog.ui:200
+msgid "Overview"
+msgstr ""
+
+#: resources/ui/item.ui:377
+msgid "Season"
+msgstr ""
+
+#: resources/ui/item.ui:405
+msgid "Episode"
+msgstr ""
+
+#: resources/ui/item.ui:455
+msgid "MediaInfo"
+msgstr ""
+
+#: resources/ui/listitem.ui:22
+msgid "View Picture"
+msgstr ""
+
+#: resources/ui/media_viewer.ui:6
+msgid "_Copy Image"
+msgstr ""
+
+#: resources/ui/media_viewer.ui:36 resources/ui/media_viewer.ui:38
+msgid "Back"
+msgstr ""
+
+#: resources/ui/media_viewer.ui:46 resources/ui/media_viewer.ui:48
+msgid "Media Menu"
+msgstr ""
+
+#: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
+msgid "Fullscreen"
+msgstr ""
+
+#: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
+msgid "Exit Fullscreen"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:29
+msgid "View Metadata (Read Only)"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:102
+msgid "Path"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:103
+msgid "No data."
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:111 resources/ui/singlelist.ui:90
+msgid "Title"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:116
+msgid "Sort Title"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:121 resources/ui/singlelist.ui:92
+msgid "Date Created"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:127
+msgid "Pick Date"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:147
+msgid "Pick Time"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:220
+msgid ""
+"Single Audio Track.\n"
+"Use commas to separate multiple values."
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:227
+msgid "Artists"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:232
+msgid "Album Artists"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:237
+msgid "Album"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:242
+msgid "Disc"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:247
+msgid "Track Number"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:254
+msgid "External Ids"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:260
+msgid "TheMovieDb Id"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:265
+msgid "TheTVDb Id"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:270
+msgid "IMDb Id"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:278
+msgid "Lock The Item"
+msgstr ""
+
+#: resources/ui/player_toolbar.ui:78
+msgid "Previous"
+msgstr ""
+
+#: resources/ui/player_toolbar.ui:108
+msgid "Next"
+msgstr ""
+
+#: resources/ui/player_toolbar.ui:180
+msgid "Stop And Hide PlayerBar"
+msgstr ""
+
+#: resources/ui/player_toolbar.ui:197
+msgid "Repeat Mode"
+msgstr ""
+
+#: resources/ui/player_toolbar.ui:231
+msgid "Repeat One"
+msgstr ""
+
+#: resources/ui/player_toolbar.ui:235
+msgid "Repeat All"
+msgstr ""
+
+#: resources/ui/player_toolbar.ui:239
+msgid "None"
+msgstr ""
+
+#: resources/ui/pop-menu.ui:5
+msgid "Remove"
+msgstr ""
+
+#: resources/ui/pop-menu.ui:11
+msgid "Like"
+msgstr ""
+
+#: resources/ui/pop-menu.ui:17
+msgid "Unlike"
+msgstr ""
+
+#: resources/ui/pop-menu.ui:47
+msgid "Scan"
+msgstr ""
+
+#: resources/ui/search.ui:15 resources/ui/window.ui:307
+msgid "Search"
+msgstr ""
+
+#: resources/ui/search.ui:29
+msgid "Movie"
+msgstr ""
+
+#: resources/ui/search.ui:40
+msgid "Series"
+msgstr ""
+
+#: resources/ui/search.ui:51
+msgid "Box Set"
+msgstr ""
+
+#: resources/ui/search.ui:62
+msgid "Person"
+msgstr ""
+
+#: resources/ui/search.ui:73
+msgid "Music Album"
+msgstr ""
+
+#: resources/ui/search.ui:132
+msgid "Nothing Here"
+msgstr ""
+
+#: resources/ui/search.ui:133
+msgid "Maybe you should try using different search terms"
+msgstr ""
+
+#: resources/ui/singlelist.ui:34
+msgid "View"
+msgstr ""
+
+#: resources/ui/singlelist.ui:49
+msgid "Filter Panel"
+msgstr ""
+
+#: resources/ui/singlelist.ui:91
+msgid "Bitrate"
+msgstr ""
+
+#: resources/ui/singlelist.ui:93
+msgid "Imdb Rate"
+msgstr ""
+
+#: resources/ui/singlelist.ui:94
+msgid "Critic Rating"
+msgstr ""
+
+#: resources/ui/singlelist.ui:95
+msgid "Premiere Date"
+msgstr ""
+
+#: resources/ui/singlelist.ui:96
+msgid "Offical Rating"
+msgstr ""
+
+#: resources/ui/singlelist.ui:97
+msgid "Production Year"
+msgstr ""
+
+#: resources/ui/singlelist.ui:98
+msgid "Date Played"
+msgstr ""
+
+#: resources/ui/singlelist.ui:99
+msgid "Runtime"
+msgstr ""
+
+#: resources/ui/singlelist.ui:145
+msgid "Poster"
+msgstr ""
+
+#: resources/ui/singlelist.ui:149
+msgid "Backdrop"
+msgstr ""
+
+#: resources/ui/singlelist.ui:153
+msgid "Banner"
+msgstr ""
+
+#: resources/ui/window.ui:5 resources/ui/window.ui:156
+msgid "Sign out"
+msgstr ""
+
+#: resources/ui/window.ui:9
+msgid "About"
+msgstr ""
+
+#: resources/ui/window.ui:97
+msgid "No Server"
+msgstr ""
+
+#: resources/ui/window.ui:98
+msgid ""
+"Add a server to get started.\n"
+"You should install the package `gst-libav` to play media files with built-in "
+"player."
+msgstr ""
+
+#: resources/ui/window.ui:102
+msgid "Add Server"
+msgstr ""
+
+#: resources/ui/window.ui:176
+msgid "Perferences"
+msgstr ""
+
+#: resources/ui/window.ui:192
+msgid "Servers"
+msgstr ""
+
+#: resources/ui/window.ui:221
+msgid "Contents"
+msgstr ""
+
+#: resources/ui/window.ui:247
+msgid "Home"
+msgstr ""
+
+#: resources/ui/window.ui:277
+msgid "Liked"
+msgstr ""

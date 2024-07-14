@@ -2,6 +2,8 @@
 use config::load_uuid;
 use gtk::prelude::*;
 use gtk::{gio, glib};
+use gettextrs::*;
+
 mod client;
 mod config;
 mod gstl;
@@ -9,10 +11,18 @@ mod macros;
 mod ui;
 mod utils;
 
+
 const APP_ID: &str = "moe.tsuna.tsukimi";
+const GETTEXT_PACKAGE: &str = "tsukimi";
+const LOCALEDIR: &str = "/usr/share/locale";
 
 fn main() -> glib::ExitCode {
     load_uuid();
+
+    setlocale(LocaleCategory::LcAll, "");
+    bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR).expect("Invalid argument passed to bindtextdomain");
+    textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
+
     // Register and include resources
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
 

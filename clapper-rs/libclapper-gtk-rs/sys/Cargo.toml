@@ -18,14 +18,14 @@ name = "clapper_gtk_sys"
 
 [dependencies]
 libc = "0.2"
-glib-sys = "0.19"
-gio-sys = "0.19"
+glib-sys = "0.20"
+gio-sys = "0.20"
 gtk-sys = { package = "gtk4-sys", version = "0.8" }
 clapper-sys = { path = "../../libclapper-rs/sys/" }
 
 
 [build-dependencies]
-system-deps = "6"
+system-deps = "7"
 
 [dev-dependencies]
 shell-words = "1.0.0"

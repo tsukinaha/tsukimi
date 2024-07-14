@@ -2,7 +2,7 @@
 <interface>
   <menu id="main-menu">
     <item>
-      <attribute name="label" translatable="yes">Logout</attribute>
+      <attribute name="label" translatable="yes">Sign out</attribute>
       <attribute name="action">win.relogin</attribute>
     </item>
     <item>

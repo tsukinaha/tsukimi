@@ -10,13 +10,13 @@
     </style>
     <child>
       <object class="AdwPreferencesPage">
-        <property name="title">General</property>
+        <property name="title" translatable="yes">General</property>
         <property name="name">General</property>
         <property name="icon-name">preferences-system-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Appearence</property>
-            <property name="description">Not all settings and features are guaranteed to be available on Windows. If you find the component too large, please try adjusting the system scaling. For more details, see the README.</property>
+            <property name="title" translatable="yes">Appearence</property>
+            <property name="description" translatable="yes">Not all settings and features are guaranteed to be available on Windows. If you find the component too large, please try adjusting the system scaling. For more details, see the README.</property>
             <child>
               <object class="AdwSwitchRow" id="selectlastcontrol">
                 <property name="title" translatable="yes">Auto Select Last Server</property>
@@ -58,7 +58,7 @@
                 </child>
                 <child type="suffix">
                   <object class="GtkButton">
-                    <property name="icon-name" translatable="yes">user-trash-symbolic</property>
+                    <property name="icon-name">user-trash-symbolic</property>
                     <property name="valign">center</property>
                     <property name="action-name">setting.fontclear</property>
                     <property name="tooltip-text" translatable="yes">Restart App To Take Effect</property>
@@ -145,7 +145,7 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Network</property>
+            <property name="title" translatable="yes">Network</property>
             <child>
               <object class="AdwEntryRow" id="proxyentry">
                 <property name="title" translatable="yes">HTTP Proxy</property>
@@ -174,7 +174,7 @@
             <child>
               <object class="AdwSpinRow" id="threadspinrow">
                 <property name="title" translatable="yes">Threads</property>
-                <property name="subtitle">This only effects on getting images</property>
+                <property name="subtitle" translatable="yes">This only effects on getting images</property>
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
@@ -190,14 +190,14 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Background</property>
+            <property name="title" translatable="yes">Background</property>
             <property name="header_suffix">
               <object class="GtkSwitch" id="backgroundcontrol">
                 <property name="valign">center</property>
                 <property name="margin-end">12</property>
               </object>
             </property>
-            <property name="description">This feature may cause significant lag. Please enable it with caution.</property>
+            <property name="description" translatable="yes">This feature may cause significant lag. Please enable it with caution.</property>
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Default</property>
@@ -261,7 +261,7 @@
 
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Cache</property>
+            <property name="title" translatable="yes">Cache</property>
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Clear Cache</property>
@@ -285,7 +285,7 @@
     <child>
       <object class="AdwPreferencesPage">
         <property name="name">Account</property>
-        <property name="title">Account</property>
+        <property name="title" translatable="yes">Account</property>
         <property name="icon-name">avatar-default-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
@@ -335,7 +335,7 @@
     </child>
     <child>
       <object class="AdwPreferencesPage">
-        <property name="title">Music</property>
+        <property name="title" translatable="yes">Music</property>
         <property name="name">MusicPlayer</property>
         <property name="icon-name">audio-x-generic-symbolic</property>
         <child>
@@ -347,13 +347,13 @@
     </child>
     <child>
       <object class="AdwPreferencesPage">
-        <property name="title">Video</property>
+        <property name="title" translatable="yes">Video</property>
         <property name="name">VideoPlayer</property>
         <property name="icon-name">video-x-generic-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Player</property>
-            <property name="description">Gstreamer by default, If you enable mpv, you will get better compatibility and external subtitle support, but it does not support embedded window.</property>
+            <property name="title" translatable="yes">Player</property>
+            <property name="description" translatable="yes">Gstreamer by default, If you enable mpv, you will get better compatibility and external subtitle support, but it does not support embedded window.</property>
             <child>
               <object class="AdwSwitchRow" id="mpvcontrol">
                 <property name="title" translatable="yes">Enable MPV (External Window)</property>
@@ -384,7 +384,7 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Others</property>
+            <property name="title" translatable="yes">Others</property>
             <child>
               <object class="AdwSwitchRow" id="resumecontrol">
                 <property name="title" translatable="yes">Resume</property>
