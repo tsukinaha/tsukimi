@@ -1,4 +1,5 @@
 use adw::{prelude::*, subclass::prelude::*};
+use gettextrs::gettext;
 use gtk::{gdk, glib, glib::clone, graphene, CompositeTemplate};
 
 use crate::toast;
@@ -331,6 +332,6 @@ impl MediaViewer {
             return;
         };
         self.clipboard().set_texture(&texture);
-        toast!(self, "Image copied to clipboard");
+        toast!(self, gettext("Image copied to clipboard"));
     }
 }

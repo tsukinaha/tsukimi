@@ -16,6 +16,7 @@ mod imp {
     use crate::client::error::UserFacingError;
     use crate::toast;
     use crate::utils::{spawn, spawn_tokio};
+    use gettextrs::gettext;
     use glib::subclass::InitializingObject;
     use gtk::gio;
 
@@ -154,7 +155,7 @@ mod imp {
                         self,
                         async move {
                             let obj = imp.obj();
-                            toast!(obj, "Processing...");
+                            toast!(obj, gettext("Processing..."));
                             match spawn_tokio(async move {
                                 EMBY_CLIENT.get_live_playbackinfo(&id).await
                             })
@@ -163,7 +164,7 @@ mod imp {
                                 Ok(playback) => {
                                     let Some(ref url) = playback.media_sources[0].transcoding_url
                                     else {
-                                        toast!(obj, "No transcoding url found");
+                                        toast!(obj, gettext("No transcoding url found"));
                                         return;
                                     };
                                     let window = obj.root().unwrap().downcast::<Window>().unwrap();

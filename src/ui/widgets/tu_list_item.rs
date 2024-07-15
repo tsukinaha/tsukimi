@@ -1,4 +1,5 @@
 use adw::prelude::*;
+use gettextrs::gettext;
 use glib::Object;
 use gtk::gdk::Rectangle;
 use gtk::gio::MenuModel;
@@ -667,7 +668,7 @@ impl TuListItem {
 
         match result.await {
             Ok(_) => {
-                toast!(self, "Success")
+                toast!(self, gettext("Success"))
             }
             Err(e) => {
                 toast!(self, e.to_user_facing());
@@ -772,7 +773,7 @@ impl TuListItem {
                 window.media_viewer_show_paintable(picture.paintable());
             }
             Err(_) => {
-                toast!(self, "Error loading image");
+                toast!(self, gettext("Error loading image"));
             }
         }
     }

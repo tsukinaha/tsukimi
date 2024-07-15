@@ -2,6 +2,7 @@ use std::path::PathBuf;
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
+use gettextrs::gettext;
 use glib::Object;
 use gtk::template_callbacks;
 use gtk::{gio, glib};
@@ -210,7 +211,7 @@ impl BoxSetPage {
 
         let linkshorbu = imp.linkshorbu.get();
 
-        linkshorbu.set_title("Links");
+        linkshorbu.set_title(&gettext("Links"));
 
         linkshorbu.set_links(&links);
     }
@@ -220,7 +221,7 @@ impl BoxSetPage {
 
         let id = self.id();
 
-        imp.inititemhortu.set_title("Items");
+        imp.inititemhortu.set_title(&gettext("Items"));
 
         let results = match req_cache(&format!("boxset_{}", &id), async move {
             EMBY_CLIENT.get_includedby(&id).await

@@ -146,7 +146,7 @@ impl SearchPage {
                     window.imp().searchview.push(&item_page);
                     window.set_title(&item.name);
                     window.change_pop_visibility();
-                    env::set_var("HOME_TITLE", &item.name)
+                    env::set_var("SEARCH_TITLE", &item.name)
                 }
             ));
             recommendbox.append(&button);
@@ -231,7 +231,7 @@ impl SearchPage {
         fraction!(self);
 
         if search_results.items.is_empty() {
-            self.imp().stack.set_visible_child_name("fallback");
+            imp.stack.set_visible_child_name("fallback");
             return;
         };
 
@@ -240,6 +240,6 @@ impl SearchPage {
             store.append(&object);
         }
 
-        self.imp().stack.set_visible_child_name("result");
+        imp.stack.set_visible_child_name("result");
     }
 }

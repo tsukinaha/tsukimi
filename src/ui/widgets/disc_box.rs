@@ -1,4 +1,5 @@
 use adw::subclass::prelude::*;
+use gettextrs::gettext;
 use gtk::prelude::*;
 use gtk::{glib, template_callbacks, CompositeTemplate};
 
@@ -72,7 +73,7 @@ impl DiscBox {
 
     pub fn set_disc(&self, disc: u32) {
         let disc_label = self.imp().disc_label.get();
-        disc_label.set_text(&format!("Disc {}", disc));
+        disc_label.set_text(&format!("{} {}", &gettext("Disc"), disc));
     }
 
     pub fn add_song(&self, item: TuItem) {

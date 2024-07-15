@@ -6,6 +6,7 @@ use crate::{
 };
 use adw::prelude::*;
 use adw::subclass::prelude::*;
+use gettextrs::gettext;
 use gtk::{gdk::RGBA, gio, glib, template_callbacks, CompositeTemplate};
 
 use super::window::Window;
@@ -166,19 +167,19 @@ impl AccountSettings {
         let new_password = self.imp().password_entry.text();
         let new_password_second = self.imp().password_second_entry.text();
         if new_password.is_empty() || new_password_second.is_empty() {
-            toast!(self, "Password cannot be empty!");
+            toast!(self, gettext("Password cannot be empty!"));
             return;
         }
         if new_password != new_password_second {
-            toast!(self, "Passwords do not match!");
+            toast!(self, gettext("Passwords do not match!"));
             return;
         }
         match spawn_tokio(async move { EMBY_CLIENT.change_password(&new_password).await }).await {
             Ok(_) => {
-                toast!(self, "Password changed successfully! Please login again.");
+                toast!(self, gettext("Password changed successfully! Please login again."));
             }
             Err(e) => {
-                toast!(self, &format!("Failed to change password: {}", e));
+                toast!(self, &format!("{}: {}", gettext("Failed to change password"), e));
             }
         };
     }
@@ -311,7 +312,7 @@ impl AccountSettings {
         if path.exists() {
             std::fs::remove_dir_all(path).unwrap();
         }
-        toast!(self, "Cache Cleared")
+        toast!(self, gettext("Cache Cleared"))
     }
 
     pub fn set_theme(&self) {
@@ -467,7 +468,7 @@ impl AccountSettings {
 
     pub fn clear_font(&self) {
         SETTINGS.set_font_name("").unwrap();
-        toast!(self, "Font Cleared, Restart to take effect.");
+        toast!(self, gettext("Font Cleared, Restart to take effect."));
     }
 
     pub fn set_daily_recommend(&self) {

@@ -6,6 +6,7 @@ use crate::ui::models::emby_cache_path;
 use crate::ui::provider::tu_item::TuItem;
 use crate::ui::widgets::singlelist::SingleListPage;
 use crate::ui::widgets::tu_list_item::tu_list_item_register;
+use gettextrs::gettext;
 use gtk::glib;
 use gtk::prelude::*;
 
@@ -232,13 +233,13 @@ pub fn tu_list_view_connect_activate(
                 #[weak]
                 window,
                 async move {
-                    toast!(window, "Processing...");
+                    toast!(window, gettext("Processing..."));
                     match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&id).await })
                         .await
                     {
                         Ok(playback) => {
                             let Some(ref url) = playback.media_sources[0].transcoding_url else {
-                                toast!(window, "No transcoding url found");
+                                toast!(window, gettext("No transcoding url found"));
                                 return;
                             };
                             window.play_media(url.to_string(), None, Some(name), None, None, 0.0)

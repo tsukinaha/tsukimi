@@ -1,5 +1,6 @@
 use adw::prelude::AdwDialogExt;
 use adw::Toast;
+use gettextrs::gettext;
 use glib::Object;
 use gtk::glib;
 use gtk::prelude::*;
@@ -9,6 +10,7 @@ use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::config::save_cfg;
 use crate::config::Account;
+use crate::toast;
 use crate::utils::spawn_tokio;
 
 mod imp {
@@ -94,12 +96,7 @@ impl AccountWindow {
         let password = imp.password_entry.text();
         let port = imp.port_entry.text();
         if servername.is_empty() || server.is_empty() || username.is_empty() || port.is_empty() {
-            imp.toast.add_toast(
-                Toast::builder()
-                    .timeout(3)
-                    .title("Fields must be filled in")
-                    .build(),
-            );
+            toast!(self, gettext("Fields must be filled in"));
             imp.spinner.set_visible(false);
             return;
         }
@@ -111,13 +108,8 @@ impl AccountWindow {
         let res =
             match spawn_tokio(async move { EMBY_CLIENT.login(&username, &password).await }).await {
                 Ok(res) => res,
-                Err(_) => {
-                    imp.toast.add_toast(
-                        Toast::builder()
-                            .timeout(3)
-                            .title("Failed to connect to server")
-                            .build(),
-                    );
+                Err(e) => {
+                    toast!(self, e.to_user_facing());
                     imp.spinner.set_visible(false);
                     return;
                 }
@@ -150,7 +142,7 @@ impl AccountWindow {
         imp.spinner.set_visible(false);
         self.close();
         let window = self.root().and_downcast::<super::window::Window>().unwrap();
-        window.toast("Account added successfully");
+        toast!(self, gettext("Account added successfully"));
         window.set_servers();
         window.set_nav_servers();
     }

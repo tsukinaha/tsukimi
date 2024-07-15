@@ -2,6 +2,7 @@ use std::env;
 use std::path::PathBuf;
 
 use adw::prelude::*;
+use gettextrs::gettext;
 use gio::Settings;
 use gtk::subclass::prelude::*;
 mod imp {
@@ -342,7 +343,7 @@ impl Window {
         if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
             if tag.as_str() == "homepage" {
                 imp.navipage
-                    .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
+                    .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| gettext("Home")));
                 self.change_pop_visibility();
             } else {
                 imp.navipage.set_title(&tag);
@@ -355,7 +356,7 @@ impl Window {
         imp.historyview.pop();
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
             if tag.as_str() == "historypage" {
-                imp.navipage.set_title("History & Liked");
+                imp.navipage.set_title(&gettext("Liked"));
                 self.change_pop_visibility();
             } else {
                 imp.navipage.set_title(&tag);
@@ -368,7 +369,7 @@ impl Window {
         imp.searchview.pop();
         if let Some(tag) = imp.searchview.visible_page().unwrap().tag() {
             if tag.as_str() == "searchpage" {
-                imp.navipage.set_title("Search");
+                imp.navipage.set_title(&gettext("Search"));
                 self.change_pop_visibility();
             } else {
                 imp.navipage.set_title(&tag);
@@ -469,21 +470,21 @@ impl Window {
             imp.homepage
                 .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
             imp.navipage
-                .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
+                .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| gettext("Home")));
         }
         if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
             if tag.as_str() == "homepage" {
                 imp.navipage
-                    .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
+                    .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| gettext("Home")));
                 self.set_pop_visibility(false);
             } else {
                 imp.navipage
-                    .set_title(&env::var("HOME_TITLE").unwrap_or_else(|_| "Home".to_string()));
+                    .set_title(&env::var("HOME_TITLE").unwrap_or_else(|_| gettext("Home")));
                 self.set_pop_visibility(true);
             }
         } else {
             imp.navipage
-                .set_title(&env::var("HOME_TITLE").unwrap_or_else(|_| "Home".to_string()));
+                .set_title(&env::var("HOME_TITLE").unwrap_or_else(|_| gettext("Home")));
             self.set_pop_visibility(true);
         }
     }
@@ -497,7 +498,7 @@ impl Window {
         imp.homepage
             .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
         imp.navipage
-            .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| "Home".to_string()));
+            .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| gettext("Home")));
         self.set_pop_visibility(false);
         self.imp().player_toolbar_box.on_stop_button_clicked();
     }
@@ -511,7 +512,7 @@ impl Window {
             .pop_to_page(&imp.historyview.find_page("historypage").unwrap());
         imp.historypage
             .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
-        imp.navipage.set_title("History");
+        imp.navipage.set_title(&gettext("History"));
         self.set_pop_visibility(false);
     }
 
@@ -524,7 +525,7 @@ impl Window {
             .pop_to_page(&imp.searchview.find_page("searchpage").unwrap());
         imp.searchpage
             .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
-        imp.navipage.set_title("Search");
+        imp.navipage.set_title(&gettext("Search"));
         self.set_pop_visibility(false);
     }
 
@@ -534,21 +535,21 @@ impl Window {
         if imp.historypage.child().is_none() {
             imp.historypage
                 .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
-            imp.navipage.set_title("Liked");
+            imp.navipage.set_title(&gettext("Liked"));
         }
         if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
             if tag.as_str() == "historypage" {
-                imp.navipage.set_title("Liked");
+                imp.navipage.set_title(&gettext("Liked"));
                 self.set_pop_visibility(false);
             } else {
                 self.set_pop_visibility(true);
                 imp.navipage
-                    .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "Liked".to_string()));
+                    .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| gettext("Liked")));
             }
         } else {
             self.set_pop_visibility(true);
             imp.navipage
-                .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| "Liked".to_string()));
+                .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| gettext("Liked")));
         }
     }
 
@@ -558,21 +559,21 @@ impl Window {
         if imp.searchpage.child().is_none() {
             imp.searchpage
                 .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
-            imp.navipage.set_title("Search");
+            imp.navipage.set_title(&gettext("Search"));
         }
         if let Some(tag) = imp.searchview.visible_page().unwrap().tag() {
             if tag.as_str() == "searchpage" {
-                imp.navipage.set_title("Search");
+                imp.navipage.set_title(&gettext("Search"));
                 self.set_pop_visibility(false);
             } else {
                 self.set_pop_visibility(true);
                 imp.navipage
-                    .set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| "Search".to_string()));
+                    .set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| gettext("Search")));
             }
         } else {
             self.set_pop_visibility(true);
             imp.navipage
-                .set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| "Search".to_string()));
+                .set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| gettext("Search")));
         }
     }
 

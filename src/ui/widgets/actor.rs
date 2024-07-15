@@ -4,6 +4,7 @@ use crate::client::structs::*;
 use crate::ui::image::set_image;
 use crate::utils::{req_cache, spawn};
 use crate::{fraction, fraction_reset, toast};
+use gettextrs::gettext;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
@@ -183,7 +184,7 @@ impl ActorPage {
             _ => return,
         };
 
-        hortu.set_title(types);
+        hortu.set_title(&gettext(types));
 
         let types = types.to_string();
 
@@ -209,7 +210,7 @@ impl ActorPage {
 
         let linkshorbu = imp.linkshorbu.get();
 
-        linkshorbu.set_title("Links");
+        linkshorbu.set_title(&gettext("Links"));
 
         linkshorbu.set_links(&links);
     }
