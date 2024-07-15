@@ -5,7 +5,7 @@ use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::widgets::item::ItemPage;
 use crate::ui::widgets::window::Window;
-use crate::utils::{spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate};
+use crate::utils::{spawn_tokio, tu_list_item_factory};
 use crate::{fraction, fraction_reset, toast};
 use adw::prelude::NavigationPageExt;
 use glib::Object;
@@ -139,14 +139,7 @@ impl SearchPage {
                 #[weak(rename_to = obj)]
                 self,
                 move |_| {
-                    let window = obj.root().and_downcast::<Window>().unwrap();
-                    let item_page =
-                        ItemPage::new(item.id.clone(), item.id.clone(), item.name.clone());
-                    item_page.set_tag(Some(&item.name));
-                    window.imp().searchview.push(&item_page);
-                    window.set_title(&item.name);
-                    window.change_pop_visibility();
-                    env::set_var("SEARCH_TITLE", &item.name)
+                    
                 }
             ));
             recommendbox.append(&button);
@@ -163,18 +156,16 @@ impl SearchPage {
         imp.searchgrid.set_model(Some(&imp.selection));
         imp.searchgrid.set_min_columns(1);
         imp.searchgrid.set_max_columns(15);
+
         imp.searchgrid.connect_activate(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
             move |listview, position| {
-                let window = obj.root().and_downcast::<Window>().unwrap();
                 let model = listview.model().unwrap();
                 let item = model
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
                 let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                tu_list_view_connect_activate(window, &result, None);
+                result.activate(listview);
             }
         ));
     }

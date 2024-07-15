@@ -3,7 +3,7 @@ use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::image::set_image;
 use crate::ui::models::SETTINGS;
-use crate::utils::{get_data_with_cache_else, req_cache, tu_list_view_connect_activate};
+use crate::utils::{get_data_with_cache_else, req_cache};
 use crate::{fraction, fraction_reset, toast};
 use chrono::{Datelike, Local};
 use gettextrs::gettext;
@@ -125,7 +125,7 @@ impl HomePage {
         let position = self.imp().carousel.position();
         if let Some(item) = self.imp().carouset_items.borrow().get(position as usize) {
             let window = self.root().and_downcast::<super::window::Window>().unwrap();
-            tu_list_view_connect_activate(window, item, None)
+
         }
     }
 

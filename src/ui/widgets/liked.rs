@@ -19,8 +19,8 @@ mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/moe/tsukimi/history.ui")]
-    pub struct HistoryPage {
+    #[template(resource = "/moe/tsukimi/liked.ui")]
+    pub struct LikedPage {
         #[template_child]
         pub moviehortu: TemplateChild<HortuScrolled>,
         #[template_child]
@@ -39,10 +39,10 @@ mod imp {
 
     // The central trait for subclassing a GObject
     #[glib::object_subclass]
-    impl ObjectSubclass for HistoryPage {
+    impl ObjectSubclass for LikedPage {
         // `NAME` needs to match `class` attribute of template
-        const NAME: &'static str = "HistoryPage";
-        type Type = super::HistoryPage;
+        const NAME: &'static str = "LikedPage";
+        type Type = super::LikedPage;
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
@@ -55,7 +55,7 @@ mod imp {
     }
 
     // Trait shared by all GObjects
-    impl ObjectImpl for HistoryPage {
+    impl ObjectImpl for LikedPage {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
@@ -70,31 +70,31 @@ mod imp {
     }
 
     // Trait shared by all widgets
-    impl WidgetImpl for HistoryPage {}
+    impl WidgetImpl for LikedPage {}
 
     // Trait shared by all windows
-    impl WindowImpl for HistoryPage {}
+    impl WindowImpl for LikedPage {}
 
     // Trait shared by all application windows
-    impl ApplicationWindowImpl for HistoryPage {}
+    impl ApplicationWindowImpl for LikedPage {}
 
-    impl adw::subclass::navigation_page::NavigationPageImpl for HistoryPage {}
+    impl adw::subclass::navigation_page::NavigationPageImpl for LikedPage {}
 }
 
 glib::wrapper! {
-    pub struct HistoryPage(ObjectSubclass<imp::HistoryPage>)
+    pub struct LikedPage(ObjectSubclass<imp::LikedPage>)
         @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
-impl Default for HistoryPage {
+impl Default for LikedPage {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl HistoryPage {
+impl LikedPage {
     pub fn new() -> Self {
         Object::builder().build()
     }

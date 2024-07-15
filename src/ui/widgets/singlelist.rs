@@ -7,7 +7,7 @@ use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::models::SETTINGS;
 use crate::utils::{
-    req_cache, spawn, spawn_tokio, tu_list_item_factory, tu_list_view_connect_activate,
+    req_cache, spawn, spawn_tokio, tu_list_item_factory,
 };
 use crate::{fraction, fraction_reset, toast};
 use adw::prelude::*;
@@ -300,18 +300,16 @@ impl SingleListPage {
         imp.listgrid.set_model(Some(&imp.selection));
         imp.listgrid.set_min_columns(1);
         imp.listgrid.set_max_columns(13);
+
         imp.listgrid.connect_activate(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            move |gridview, position| {
-                let model = gridview.model().unwrap();
+            move |listview, position| {
+                let model = listview.model().unwrap();
                 let item = model
                     .item(position)
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
                 let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                let window = obj.root().and_downcast::<Window>().unwrap();
-                tu_list_view_connect_activate(window, &result, obj.imp().id.get().cloned())
+                result.activate(listview);
             }
         ));
     }
