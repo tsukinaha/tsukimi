@@ -111,11 +111,11 @@
                   <object class="GtkStringList">
                     <items>
                       <item translatable="yes">System Default</item>
-                      <item translatable="yes">Adwaita</item>
-                      <item translatable="yes">Adwaita Dark</item>
-                      <item translatable="yes">Catppuccin Latte</item>
-                      <item translatable="yes">Alpha Dark</item>
-                      <item translatable="yes">???</item>
+                      <item>Adwaita</item>
+                      <item>Adwaita Dark</item>
+                      <item>Catppuccin Latte</item>
+                      <item>Alpha Dark</item>
+                      <item>???</item>
                     </items>
                   </object>
                 </property>
@@ -151,7 +151,7 @@
                 <property name="title" translatable="yes">HTTP Proxy</property>
                 <child type="suffix">
                   <object class="GtkToggleButton">
-                    <property name="icon-name" translatable="yes">emblem-ok-symbolic</property>
+                    <property name="icon-name">emblem-ok-symbolic</property>
                     <property name="valign">center</property>
                     <property name="action-name">win.proxy</property>
                     <style>
@@ -161,7 +161,7 @@
                 </child>
                 <child type="suffix">
                   <object class="GtkToggleButton">
-                    <property name="icon-name" translatable="yes">user-trash-symbolic</property>
+                    <property name="icon-name">user-trash-symbolic</property>
                     <property name="valign">center</property>
                     <property name="action-name">win.proxyclear</property>
                     <style>
@@ -211,7 +211,7 @@
                 </child>
                 <child type="suffix">
                   <object class="GtkToggleButton">
-                    <property name="icon-name" translatable="yes">user-trash-symbolic</property>
+                    <property name="icon-name">user-trash-symbolic</property>
                     <property name="valign">center</property>
                     <property name="action-name">setting.backgroundclear</property>
                     <style>

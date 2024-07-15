@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tsukimi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-13 12:46+0800\n"
-"PO-Revision-Date: 2024-07-13 06:19\n"
+"POT-Creation-Date: 2024-07-15 14:23+0800\n"
+"PO-Revision-Date: 2024-07-15 06:43\n"
 "Last-Translator:  <tsukimi@tutanota.com>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -66,6 +66,10 @@ msgstr "强调前景色"
 msgid "Theme"
 msgstr "主题"
 
+#: resources/ui/account_settings.ui:113
+msgid "System Default"
+msgstr "默认值"
+
 #: resources/ui/account_settings.ui:126
 msgid "Sidebar Overlay"
 msgstr "侧边栏覆盖"
@@ -122,6 +126,10 @@ msgstr "警告：GPU 使用率过高"
 msgid "Blur Radius (Experimental)"
 msgstr "模糊半径 (实验性)"
 
+#: resources/ui/account_settings.ui:264
+msgid "Cache"
+msgstr "缓存"
+
 #: resources/ui/account_settings.ui:267
 msgid "Clear Cache"
 msgstr "清除缓存"
@@ -142,51 +150,71 @@ msgstr "确认密码"
 msgid "Change Password"
 msgstr "更改密码"
 
-#: resources/ui/account_settings.ui:338 resources/ui/metadata_dialog.ui:219
+#: resources/ui/account_settings.ui:338
 msgid "Music"
 msgstr "音乐"
 
-#: resources/ui/account_settings.ui:350
+#: resources/ui/account_settings.ui:343 resources/ui/account_settings.ui:369
+msgid "Player"
+msgstr "播放器"
+
+#: resources/ui/account_settings.ui:346 resources/ui/player_toolbar.ui:197
+msgid "Repeat Mode"
+msgstr "重复模式"
+
+#: resources/ui/account_settings.ui:350 resources/ui/player_toolbar.ui:231
+msgid "Repeat One"
+msgstr "单曲循环"
+
+#: resources/ui/account_settings.ui:351 resources/ui/player_toolbar.ui:235
+msgid "Repeat All"
+msgstr "列表循环"
+
+#: resources/ui/account_settings.ui:352 resources/ui/player_toolbar.ui:239
+msgid "None"
+msgstr "顺序播放"
+
+#: resources/ui/account_settings.ui:364
 msgid "Video"
 msgstr "视频"
 
-#: resources/ui/account_settings.ui:355
-msgid "Player"
-msgstr "播放"
-
-#: resources/ui/account_settings.ui:356
+#: resources/ui/account_settings.ui:370
 msgid "Gstreamer by default, If you enable mpv, you will get better compatibility and external subtitle support, but it does not support embedded window."
 msgstr "默认情况下使用 Gstreamer。如果启用 mpv，您将获得更好的兼容性和外部字幕支持，但它不支持嵌入窗口。"
 
-#: resources/ui/account_settings.ui:359
+#: resources/ui/account_settings.ui:373
 msgid "Enable MPV (External Window)"
 msgstr "启用 MPV (外部窗口)"
 
-#: resources/ui/account_settings.ui:360
+#: resources/ui/account_settings.ui:374
 msgid "External Subtitle Support"
 msgstr "外部字幕支持"
 
-#: resources/ui/account_settings.ui:370
+#: resources/ui/account_settings.ui:384
 msgid "Auto Fullscreen"
 msgstr "自动全屏显示"
 
-#: resources/ui/account_settings.ui:375
+#: resources/ui/account_settings.ui:389
 msgid "Show Window Immediately"
 msgstr "立即显示窗口"
 
-#: resources/ui/account_settings.ui:380
+#: resources/ui/account_settings.ui:394
 msgid "--ytdl-format=best"
 msgstr "--ytdl-format=best"
 
-#: resources/ui/account_settings.ui:390
-msgid "Resume"
-msgstr "恢复播放"
+#: resources/ui/account_settings.ui:401
+msgid "Others"
+msgstr "其 他"
 
-#: resources/ui/account_settings.ui:395
+#: resources/ui/account_settings.ui:404 src/ui/widgets/item.rs:1055
+msgid "Resume"
+msgstr "继续播放"
+
+#: resources/ui/account_settings.ui:409
 msgid "Proactively Provide Progress Updates"
 msgstr "积极提供进度更新"
 
-#: resources/ui/account_settings.ui:396
+#: resources/ui/account_settings.ui:410
 msgid "Every 10 Seconds or Every 300 Seconds"
 msgstr "每 10 秒或每 300 秒"
 
@@ -231,8 +259,10 @@ msgstr "密码"
 #: resources/ui/actor.ui:4 resources/ui/album_widget.ui:4
 #: resources/ui/boxset.ui:4 resources/ui/clapperpage.ui:4
 #: resources/ui/history.ui:4 resources/ui/home.ui:4 resources/ui/item.ui:4
-#: resources/ui/search.ui:4 resources/ui/singlelist.ui:4
-#: resources/ui/window.ui:14
+#: resources/ui/list.ui:4 resources/ui/search.ui:4 resources/ui/singlelist.ui:4
+#: resources/ui/window.ui:14 resources/ui/window.ui:148
+#: resources/ui/window.ui:406 resources/ui/window.ui:421
+#: resources/ui/window.ui:436
 msgid "Tsukimi"
 msgstr ""
 
@@ -240,22 +270,14 @@ msgstr ""
 msgid "No Inscriptions"
 msgstr "无内容"
 
-#: resources/ui/album_widget.ui:94 resources/ui/item.ui:148
-#: resources/ui/player_toolbar.ui:90
+#: resources/ui/album_widget.ui:94 resources/ui/item.ui:152
+#: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:1057
 msgid "Play"
 msgstr "播放"
 
 #: resources/ui/disc_box.ui:9
 msgid "Disc 1"
 msgstr "盘 1"
-
-#: resources/ui/image_info_card.ui:89
-msgid "Copy Image To Clipboard"
-msgstr "复制图像到剪贴板"
-
-#: resources/ui/image_info_card.ui:100
-msgid "View Image"
-msgstr "查看图像"
 
 #: resources/ui/images_dialog.ui:8 resources/ui/images_dialog.ui:17
 #: resources/ui/item_actions.ui:85 resources/ui/pop-menu.ui:41
@@ -328,37 +350,33 @@ msgstr "正在载入..."
 msgid "loading"
 msgstr "正在载入"
 
-#: resources/ui/item.ui:183
+#: resources/ui/item.ui:187
 msgid "Video: "
 msgstr "视频: "
 
-#: resources/ui/item.ui:203
+#: resources/ui/item.ui:207
 msgid "Subtitle: "
 msgstr "字幕： "
 
-#: resources/ui/item.ui:256
+#: resources/ui/item.ui:260
 msgid "Search episodes in current season"
 msgstr "在季中搜索剧集"
 
-#: resources/ui/item.ui:347 resources/ui/metadata_dialog.ui:200
+#: resources/ui/item.ui:354 resources/ui/metadata_dialog.ui:200
 msgid "Overview"
 msgstr "概览"
 
-#: resources/ui/item.ui:377
+#: resources/ui/item.ui:384
 msgid "Season"
 msgstr "季"
 
-#: resources/ui/item.ui:405
+#: resources/ui/item.ui:415
 msgid "Episode"
 msgstr "集"
 
-#: resources/ui/item.ui:455
+#: resources/ui/item.ui:469
 msgid "MediaInfo"
 msgstr "媒体信息"
-
-#: resources/ui/listitem.ui:22
-msgid "View Picture"
-msgstr "查看图像"
 
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
@@ -412,12 +430,6 @@ msgstr "选择日期"
 msgid "Pick Time"
 msgstr "选择时间"
 
-#: resources/ui/metadata_dialog.ui:220
-msgid "Single Audio Track.\n"
-"Use commas to separate multiple values."
-msgstr "单音轨。\n"
-"使用逗号分隔多个值。"
-
 #: resources/ui/metadata_dialog.ui:227
 msgid "Artists"
 msgstr "艺术家"
@@ -430,17 +442,13 @@ msgstr "专辑艺术家"
 msgid "Album"
 msgstr "专辑"
 
-#: resources/ui/metadata_dialog.ui:242
+#: resources/ui/metadata_dialog.ui:242 src/ui/widgets/disc_box.rs:76
 msgid "Disc"
 msgstr "盘"
 
 #: resources/ui/metadata_dialog.ui:247
 msgid "Track Number"
 msgstr "音轨编号"
-
-#: resources/ui/metadata_dialog.ui:254
-msgid "External Ids"
-msgstr "外部 ID"
 
 #: resources/ui/metadata_dialog.ui:260
 msgid "TheMovieDb Id"
@@ -470,22 +478,6 @@ msgstr "下一个"
 msgid "Stop And Hide PlayerBar"
 msgstr "停止并隐藏播放器栏"
 
-#: resources/ui/player_toolbar.ui:197
-msgid "Repeat Mode"
-msgstr "重复模式"
-
-#: resources/ui/player_toolbar.ui:231
-msgid "Repeat One"
-msgstr "单曲循环"
-
-#: resources/ui/player_toolbar.ui:235
-msgid "Repeat All"
-msgstr "列表循环"
-
-#: resources/ui/player_toolbar.ui:239
-msgid "None"
-msgstr "顺序播放"
-
 #: resources/ui/pop-menu.ui:5
 msgid "Remove"
 msgstr "移除"
@@ -501,10 +493,6 @@ msgstr "取消收藏"
 #: resources/ui/pop-menu.ui:47
 msgid "Scan"
 msgstr "扫描"
-
-#: resources/ui/search.ui:15 resources/ui/window.ui:307
-msgid "Search"
-msgstr "搜索"
 
 #: resources/ui/search.ui:29
 msgid "Movie"
@@ -525,14 +513,6 @@ msgstr "演员"
 #: resources/ui/search.ui:73
 msgid "Music Album"
 msgstr "音乐专辑"
-
-#: resources/ui/search.ui:132
-msgid "Nothing Here"
-msgstr "没有内容"
-
-#: resources/ui/search.ui:133
-msgid "Maybe you should try using different search terms"
-msgstr "也许你应该尝试使用不同的搜索词"
 
 #: resources/ui/singlelist.ui:34
 msgid "View"
@@ -586,7 +566,7 @@ msgstr "背景图"
 msgid "Banner"
 msgstr "横幅"
 
-#: resources/ui/window.ui:5 resources/ui/window.ui:156
+#: resources/ui/window.ui:5
 msgid "Sign out"
 msgstr "登出"
 
@@ -608,23 +588,135 @@ msgstr "添加一个服务器以开始。\n"
 msgid "Add Server"
 msgstr "添加服务器"
 
-#: resources/ui/window.ui:176
-msgid "Perferences"
-msgstr "首选项"
+#: resources/ui/window.ui:156
+msgid "Log Out"
+msgstr "登出"
 
-#: resources/ui/window.ui:192
+#: resources/ui/window.ui:191
 msgid "Servers"
 msgstr "服务器"
 
-#: resources/ui/window.ui:221
+#: resources/ui/window.ui:220
 msgid "Contents"
 msgstr "目录"
 
-#: resources/ui/window.ui:247
+#: resources/ui/window.ui:246 src/ui/widgets/window.rs:346
+#: src/ui/widgets/window.rs:473 src/ui/widgets/window.rs:478
+#: src/ui/widgets/window.rs:482 src/ui/widgets/window.rs:487
+#: src/ui/widgets/window.rs:501
 msgid "Home"
 msgstr "首页"
 
-#: resources/ui/window.ui:277
+#: resources/ui/window.ui:276 src/ui/widgets/window.rs:359
+#: src/ui/widgets/window.rs:538 src/ui/widgets/window.rs:542
+#: src/ui/widgets/window.rs:547 src/ui/widgets/window.rs:552
 msgid "Liked"
 msgstr "收藏"
+
+#: resources/ui/window.ui:306 src/ui/widgets/window.rs:372
+#: src/ui/widgets/window.rs:528 src/ui/widgets/window.rs:562
+#: src/ui/widgets/window.rs:566 src/ui/widgets/window.rs:571
+#: src/ui/widgets/window.rs:576
+msgid "Search"
+msgstr "搜索"
+
+#: src/ui/widgets/actor.rs:213 src/ui/widgets/boxset.rs:214
+msgid "Links"
+msgstr "外部链接"
+
+#: src/ui/widgets/account_add.rs:99
+msgid "Fields must be filled in"
+msgstr "字段必须填入"
+
+#: src/ui/widgets/account_add.rs:145
+msgid "Account added successfully"
+msgstr "帐户已成功添加"
+
+#: src/ui/widgets/account_settings.rs:170
+msgid "Password cannot be empty!"
+msgstr "密码不能为空！"
+
+#: src/ui/widgets/account_settings.rs:174
+msgid "Passwords do not match!"
+msgstr "密码不匹配！"
+
+#: src/ui/widgets/account_settings.rs:179
+msgid "Password changed successfully! Please login again."
+msgstr "密码修改成功！请重新登录。"
+
+#: src/ui/widgets/account_settings.rs:182
+msgid "Failed to change password"
+msgstr "密码修改失败"
+
+#: src/ui/widgets/account_settings.rs:315
+msgid "Cache Cleared"
+msgstr "缓存已清除"
+
+#: src/ui/widgets/account_settings.rs:471
+msgid "Font Cleared, Restart to take effect."
+msgstr "字体已清除，重启以生效。"
+
+#: src/ui/widgets/boxset.rs:224
+msgid "Items"
+msgstr "项目"
+
+#: src/ui/widgets/history.rs:126
+msgid "Favourite"
+msgstr "收藏的"
+
+#: src/ui/widgets/home.rs:143
+msgid "Continue Watching"
+msgstr "继续观看"
+
+#: src/ui/widgets/home.rs:159
+msgid "Library"
+msgstr "媒体库"
+
+#: src/ui/widgets/home.rs:190
+msgid "Latest"
+msgstr "最新的"
+
+#: src/ui/widgets/image_infocard.rs:96
+msgid "No image to view"
+msgstr "没有图像可查看"
+
+#: src/ui/widgets/image_infocard.rs:112
+msgid "No image to copy"
+msgstr "没有图像可复制"
+
+#: src/ui/widgets/image_infocard.rs:116
+msgid "Image copied to clipboard"
+msgstr "图像已复制到剪贴板"
+
+#: src/ui/widgets/image_infocard.rs:156 src/ui/widgets/tu_list_item.rs:776
+msgid "Error loading image"
+msgstr "加载图像时出错"
+
+#: src/ui/widgets/star_toggle.rs:64
+msgid "Remove from favorites"
+msgstr "从收藏中移除"
+
+#: src/ui/widgets/star_toggle.rs:65
+msgid "Add to favorites"
+msgstr "添加到收藏"
+
+#: src/ui/widgets/tu_list_item.rs:671
+msgid "Success"
+msgstr "成功"
+
+#: src/ui/widgets/window.rs:515
+msgid "History"
+msgstr "历史记录"
+
+msgid "BoxSet"
+msgstr "合集"
+
+msgid "People"
+msgstr "演员"
+
+msgid "MusicAlbum"
+msgstr "音乐专辑"
+
+msgid "TvChannel"
+msgstr "电视频道"
 

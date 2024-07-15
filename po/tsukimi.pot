@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-13 12:46+0800\n"
+"POT-Creation-Date: 2024-07-15 14:23+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,6 +69,30 @@ msgstr ""
 msgid "Theme"
 msgstr ""
 
+#: resources/ui/account_settings.ui:113
+msgid "System Default"
+msgstr ""
+
+#: resources/ui/account_settings.ui:114
+msgid "Adwaita"
+msgstr ""
+
+#: resources/ui/account_settings.ui:115
+msgid "Adwaita Dark"
+msgstr ""
+
+#: resources/ui/account_settings.ui:116
+msgid "Catppuccin Latte"
+msgstr ""
+
+#: resources/ui/account_settings.ui:117
+msgid "Alpha Dark"
+msgstr ""
+
+#: resources/ui/account_settings.ui:118
+msgid "???"
+msgstr ""
+
 #: resources/ui/account_settings.ui:126
 msgid "Sidebar Overlay"
 msgstr ""
@@ -87,6 +111,14 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:151
 msgid "HTTP Proxy"
+msgstr ""
+
+#: resources/ui/account_settings.ui:154
+msgid "emblem-ok-symbolic"
+msgstr ""
+
+#: resources/ui/account_settings.ui:164 resources/ui/account_settings.ui:214
+msgid "user-trash-symbolic"
 msgstr ""
 
 #: resources/ui/account_settings.ui:176
@@ -125,6 +157,10 @@ msgstr ""
 msgid "Blur Radius (Experimental)"
 msgstr ""
 
+#: resources/ui/account_settings.ui:264
+msgid "Cache"
+msgstr ""
+
 #: resources/ui/account_settings.ui:267
 msgid "Clear Cache"
 msgstr ""
@@ -145,53 +181,73 @@ msgstr ""
 msgid "Change Password"
 msgstr ""
 
-#: resources/ui/account_settings.ui:338 resources/ui/metadata_dialog.ui:219
+#: resources/ui/account_settings.ui:338
 msgid "Music"
 msgstr ""
 
-#: resources/ui/account_settings.ui:350
-msgid "Video"
-msgstr ""
-
-#: resources/ui/account_settings.ui:355
+#: resources/ui/account_settings.ui:343 resources/ui/account_settings.ui:369
 msgid "Player"
 msgstr ""
 
-#: resources/ui/account_settings.ui:356
+#: resources/ui/account_settings.ui:346 resources/ui/player_toolbar.ui:197
+msgid "Repeat Mode"
+msgstr ""
+
+#: resources/ui/account_settings.ui:350 resources/ui/player_toolbar.ui:231
+msgid "Repeat One"
+msgstr ""
+
+#: resources/ui/account_settings.ui:351 resources/ui/player_toolbar.ui:235
+msgid "Repeat All"
+msgstr ""
+
+#: resources/ui/account_settings.ui:352 resources/ui/player_toolbar.ui:239
+msgid "None"
+msgstr ""
+
+#: resources/ui/account_settings.ui:364
+msgid "Video"
+msgstr ""
+
+#: resources/ui/account_settings.ui:370
 msgid ""
 "Gstreamer by default, If you enable mpv, you will get better compatibility "
 "and external subtitle support, but it does not support embedded window."
 msgstr ""
 
-#: resources/ui/account_settings.ui:359
+#: resources/ui/account_settings.ui:373
 msgid "Enable MPV (External Window)"
 msgstr ""
 
-#: resources/ui/account_settings.ui:360
+#: resources/ui/account_settings.ui:374
 msgid "External Subtitle Support"
 msgstr ""
 
-#: resources/ui/account_settings.ui:370
+#: resources/ui/account_settings.ui:384
 msgid "Auto Fullscreen"
 msgstr ""
 
-#: resources/ui/account_settings.ui:375
+#: resources/ui/account_settings.ui:389
 msgid "Show Window Immediately"
 msgstr ""
 
-#: resources/ui/account_settings.ui:380
+#: resources/ui/account_settings.ui:394
 msgid "--ytdl-format=best"
 msgstr ""
 
-#: resources/ui/account_settings.ui:390
+#: resources/ui/account_settings.ui:401
+msgid "Others"
+msgstr ""
+
+#: resources/ui/account_settings.ui:404 src/ui/widgets/item.rs:1055
 msgid "Resume"
 msgstr ""
 
-#: resources/ui/account_settings.ui:395
+#: resources/ui/account_settings.ui:409
 msgid "Proactively Provide Progress Updates"
 msgstr ""
 
-#: resources/ui/account_settings.ui:396
+#: resources/ui/account_settings.ui:410
 msgid "Every 10 Seconds or Every 300 Seconds"
 msgstr ""
 
@@ -236,8 +292,10 @@ msgstr ""
 #: resources/ui/actor.ui:4 resources/ui/album_widget.ui:4
 #: resources/ui/boxset.ui:4 resources/ui/clapperpage.ui:4
 #: resources/ui/history.ui:4 resources/ui/home.ui:4 resources/ui/item.ui:4
-#: resources/ui/search.ui:4 resources/ui/singlelist.ui:4
-#: resources/ui/window.ui:14
+#: resources/ui/list.ui:4 resources/ui/search.ui:4 resources/ui/singlelist.ui:4
+#: resources/ui/window.ui:14 resources/ui/window.ui:148
+#: resources/ui/window.ui:406 resources/ui/window.ui:421
+#: resources/ui/window.ui:436
 msgid "Tsukimi"
 msgstr ""
 
@@ -245,21 +303,13 @@ msgstr ""
 msgid "No Inscriptions"
 msgstr ""
 
-#: resources/ui/album_widget.ui:94 resources/ui/item.ui:148
-#: resources/ui/player_toolbar.ui:90
+#: resources/ui/album_widget.ui:94 resources/ui/item.ui:152
+#: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:1057
 msgid "Play"
 msgstr ""
 
 #: resources/ui/disc_box.ui:9
 msgid "Disc 1"
-msgstr ""
-
-#: resources/ui/image_info_card.ui:89
-msgid "Copy Image To Clipboard"
-msgstr ""
-
-#: resources/ui/image_info_card.ui:100
-msgid "View Image"
 msgstr ""
 
 #: resources/ui/images_dialog.ui:8 resources/ui/images_dialog.ui:17
@@ -333,36 +383,32 @@ msgstr ""
 msgid "loading"
 msgstr ""
 
-#: resources/ui/item.ui:183
+#: resources/ui/item.ui:187
 msgid "Video: "
 msgstr ""
 
-#: resources/ui/item.ui:203
+#: resources/ui/item.ui:207
 msgid "Subtitle: "
 msgstr ""
 
-#: resources/ui/item.ui:256
+#: resources/ui/item.ui:260
 msgid "Search episodes in current season"
 msgstr ""
 
-#: resources/ui/item.ui:347 resources/ui/metadata_dialog.ui:200
+#: resources/ui/item.ui:354 resources/ui/metadata_dialog.ui:200
 msgid "Overview"
 msgstr ""
 
-#: resources/ui/item.ui:377
+#: resources/ui/item.ui:384
 msgid "Season"
 msgstr ""
 
-#: resources/ui/item.ui:405
+#: resources/ui/item.ui:415
 msgid "Episode"
 msgstr ""
 
-#: resources/ui/item.ui:455
+#: resources/ui/item.ui:469
 msgid "MediaInfo"
-msgstr ""
-
-#: resources/ui/listitem.ui:22
-msgid "View Picture"
 msgstr ""
 
 #: resources/ui/media_viewer.ui:6
@@ -417,12 +463,6 @@ msgstr ""
 msgid "Pick Time"
 msgstr ""
 
-#: resources/ui/metadata_dialog.ui:220
-msgid ""
-"Single Audio Track.\n"
-"Use commas to separate multiple values."
-msgstr ""
-
 #: resources/ui/metadata_dialog.ui:227
 msgid "Artists"
 msgstr ""
@@ -435,16 +475,12 @@ msgstr ""
 msgid "Album"
 msgstr ""
 
-#: resources/ui/metadata_dialog.ui:242
+#: resources/ui/metadata_dialog.ui:242 src/ui/widgets/disc_box.rs:76
 msgid "Disc"
 msgstr ""
 
 #: resources/ui/metadata_dialog.ui:247
 msgid "Track Number"
-msgstr ""
-
-#: resources/ui/metadata_dialog.ui:254
-msgid "External Ids"
 msgstr ""
 
 #: resources/ui/metadata_dialog.ui:260
@@ -475,22 +511,6 @@ msgstr ""
 msgid "Stop And Hide PlayerBar"
 msgstr ""
 
-#: resources/ui/player_toolbar.ui:197
-msgid "Repeat Mode"
-msgstr ""
-
-#: resources/ui/player_toolbar.ui:231
-msgid "Repeat One"
-msgstr ""
-
-#: resources/ui/player_toolbar.ui:235
-msgid "Repeat All"
-msgstr ""
-
-#: resources/ui/player_toolbar.ui:239
-msgid "None"
-msgstr ""
-
 #: resources/ui/pop-menu.ui:5
 msgid "Remove"
 msgstr ""
@@ -505,10 +525,6 @@ msgstr ""
 
 #: resources/ui/pop-menu.ui:47
 msgid "Scan"
-msgstr ""
-
-#: resources/ui/search.ui:15 resources/ui/window.ui:307
-msgid "Search"
 msgstr ""
 
 #: resources/ui/search.ui:29
@@ -529,14 +545,6 @@ msgstr ""
 
 #: resources/ui/search.ui:73
 msgid "Music Album"
-msgstr ""
-
-#: resources/ui/search.ui:132
-msgid "Nothing Here"
-msgstr ""
-
-#: resources/ui/search.ui:133
-msgid "Maybe you should try using different search terms"
 msgstr ""
 
 #: resources/ui/singlelist.ui:34
@@ -591,7 +599,7 @@ msgstr ""
 msgid "Banner"
 msgstr ""
 
-#: resources/ui/window.ui:5 resources/ui/window.ui:156
+#: resources/ui/window.ui:5
 msgid "Sign out"
 msgstr ""
 
@@ -614,22 +622,122 @@ msgstr ""
 msgid "Add Server"
 msgstr ""
 
-#: resources/ui/window.ui:176
-msgid "Perferences"
+#: resources/ui/window.ui:156
+msgid "Log Out"
 msgstr ""
 
-#: resources/ui/window.ui:192
+#: resources/ui/window.ui:191
 msgid "Servers"
 msgstr ""
 
-#: resources/ui/window.ui:221
+#: resources/ui/window.ui:220
 msgid "Contents"
 msgstr ""
 
-#: resources/ui/window.ui:247
+#: resources/ui/window.ui:246 src/ui/widgets/window.rs:346
+#: src/ui/widgets/window.rs:473 src/ui/widgets/window.rs:478
+#: src/ui/widgets/window.rs:482 src/ui/widgets/window.rs:487
+#: src/ui/widgets/window.rs:501
 msgid "Home"
 msgstr ""
 
-#: resources/ui/window.ui:277
+#: resources/ui/window.ui:276 src/ui/widgets/window.rs:359
+#: src/ui/widgets/window.rs:538 src/ui/widgets/window.rs:542
+#: src/ui/widgets/window.rs:547 src/ui/widgets/window.rs:552
 msgid "Liked"
+msgstr ""
+
+#: resources/ui/window.ui:306 src/ui/widgets/window.rs:372
+#: src/ui/widgets/window.rs:528 src/ui/widgets/window.rs:562
+#: src/ui/widgets/window.rs:566 src/ui/widgets/window.rs:571
+#: src/ui/widgets/window.rs:576
+msgid "Search"
+msgstr ""
+
+#: src/ui/widgets/actor.rs:213 src/ui/widgets/boxset.rs:214
+msgid "Links"
+msgstr ""
+
+#: src/ui/widgets/account_add.rs:99
+msgid "Fields must be filled in"
+msgstr ""
+
+#: src/ui/widgets/account_add.rs:145
+msgid "Account added successfully"
+msgstr ""
+
+#: src/ui/widgets/account_settings.rs:170
+msgid "Password cannot be empty!"
+msgstr ""
+
+#: src/ui/widgets/account_settings.rs:174
+msgid "Passwords do not match!"
+msgstr ""
+
+#: src/ui/widgets/account_settings.rs:179
+msgid "Password changed successfully! Please login again."
+msgstr ""
+
+#: src/ui/widgets/account_settings.rs:182
+msgid "Failed to change password"
+msgstr ""
+
+#: src/ui/widgets/account_settings.rs:315
+msgid "Cache Cleared"
+msgstr ""
+
+#: src/ui/widgets/account_settings.rs:471
+msgid "Font Cleared, Restart to take effect."
+msgstr ""
+
+#: src/ui/widgets/boxset.rs:224
+msgid "Items"
+msgstr ""
+
+#: src/ui/widgets/history.rs:126
+msgid "Favourite"
+msgstr ""
+
+#: src/ui/widgets/home.rs:143
+msgid "Continue Watching"
+msgstr ""
+
+#: src/ui/widgets/home.rs:159
+msgid "Library"
+msgstr ""
+
+#: src/ui/widgets/home.rs:190
+msgid "Latest"
+msgstr ""
+
+#: src/ui/widgets/image_infocard.rs:96
+msgid "No image to view"
+msgstr ""
+
+#: src/ui/widgets/image_infocard.rs:112
+msgid "No image to copy"
+msgstr ""
+
+#: src/ui/widgets/image_infocard.rs:116
+msgid "Image copied to clipboard"
+msgstr ""
+
+#: src/ui/widgets/image_infocard.rs:156 src/ui/widgets/tu_list_item.rs:776
+msgid "Error loading image"
+msgstr ""
+
+#: src/ui/widgets/star_toggle.rs:64
+msgid "Remove from favorites"
+msgstr ""
+
+#: src/ui/widgets/star_toggle.rs:65
+msgid "Add to favorites"
+msgstr ""
+
+#: src/ui/widgets/tu_list_item.rs:671
+msgid "Success"
+msgstr ""
+
+#: src/ui/widgets/window.rs:515
+msgid "History"
 msgstr ""
