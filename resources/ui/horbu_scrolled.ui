@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwBin" class="HorbuScrolled">
+    <property name="margin-start">18</property>
+    <property name="margin-end">18</property>
+    <property name="margin-top">12</property>
     <property name="visible">False</property>
     <child>
       <object class="GtkRevealer" id="revealer">
@@ -26,6 +29,7 @@
             </child>
             <child>
               <object class="GtkFlowBox" id="flow">
+                <property name="margin-top">6</property>
                 <property name="margin-bottom">3</property>
               </object>
             </child>

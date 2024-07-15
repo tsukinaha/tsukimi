@@ -340,7 +340,21 @@
         <property name="icon-name">audio-x-generic-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
-
+            <property name="title" translatable="yes">Player</property>
+            <child>
+              <object class="AdwComboRow" id="repeatcontrol">
+                <property name="title" translatable="yes">Repeat Mode</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Repeat One</item>
+                      <item translatable="yes">Repeat All</item>
+                      <item translatable="yes">None</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
           </object>
         </child>
       </object>

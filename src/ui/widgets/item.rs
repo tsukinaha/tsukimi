@@ -120,6 +120,9 @@ pub(crate) mod imp {
         #[template_child]
         pub toolbar: TemplateChild<gtk::Box>,
 
+        #[template_child]
+        pub buttoncontent: TemplateChild<adw::ButtonContent>,
+
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
         pub playbuttonhandlerid: RefCell<Option<glib::SignalHandlerId>>,
@@ -981,8 +984,6 @@ impl ItemPage {
         subdropdown.set_factory(Some(&factory(true)));
         subdropdown.set_list_factory(Some(&factory(false)));
 
-        let playbutton = imp.playbutton.get();
-
         let vstore = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
         imp.videoselection.set_model(Some(&vstore));
 
@@ -1043,14 +1044,16 @@ impl ItemPage {
             }
         });
 
+        let buttoncontent = &imp.buttoncontent;
+
         if SETTINGS.resume() {
             if let Some(userdata) = &info.user_data {
                 if let Some(ticks) = userdata.playback_position_ticks {
                     if ticks > 0 {
                         let sec = ticks / 10000000;
-                        playbutton.set_label(&format!("Resume {}", format_duration(sec as i64)));
+                        buttoncontent.set_label(&format!("Resume {}", format_duration(sec as i64)));
                     } else {
-                        playbutton.set_label("Play");
+                        buttoncontent.set_label("Play");
                     }
                 }
             }

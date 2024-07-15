@@ -2,6 +2,9 @@
 <interface>
   <template parent="AdwBin" class="HortuScrolled">
     <property name="visible">False</property>
+    <property name="margin-start">18</property>
+    <property name="margin-end">18</property>
+    <property name="margin-top">12</property>
     <child>
       <object class="GtkEventControllerMotion">
         <signal name="enter" handler="on_enter_focus" swapped="yes"/>
@@ -52,6 +55,7 @@
             </child>
             <child>
               <object class="GtkOverlay">
+                <property name="margin-top">6</property>
                 <child>
                   <object class="GtkScrolledWindow" id="scrolled">
                     <property name="overlay-scrolling">true</property>

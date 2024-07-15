@@ -74,7 +74,7 @@
                                         <property name="wrap">true</property>
                                         <attributes>
                                           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                          <attribute name="scale" value="1.3"/>
+                                          <attribute name="scale" value="1.4"/>
                                         </attributes>
                                       </object>
                                     </child>
@@ -93,7 +93,7 @@
                                     <property name="label" translatable="yes">loading</property>
                                     <attributes>
                                       <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                      <attribute name="scale" value="1.0"/>
+                                      <attribute name="scale" value="1.2"/>
                                     </attributes>
                                   </object>
                                 </child>
@@ -130,6 +130,9 @@
                                         <property name="ellipsize">end</property>
                                       </object>
                                     </child>
+                                    <style>
+                                      <class name="title-5" />
+                                    </style>
                                   </object>
                                 </child>
                                 <child>
@@ -140,10 +143,11 @@
                                     <child>
                                       <object class="GtkButton" id="playbutton">
                                         <property name="halign">start</property>
-                                        <property name="width-request">250</property>
+                                        <property name="width-request">280</property>
+                                        <property name="height-request">55</property>
                                         <property name="sensitive">False</property>
                                         <property name="child">
-                                          <object class="AdwButtonContent">
+                                          <object class="AdwButtonContent" id="buttoncontent">
                                             <property name="icon-name">media-playback-start-symbolic</property>
                                             <property name="label" translatable="yes">Play</property>
                                             <property name="use-underline">True</property>
@@ -242,6 +246,8 @@
                 </child>
                 <child>
                   <object class="GtkBox" id="toolbar">
+                    <property name="margin-start">18</property>
+                    <property name="margin-end">18</property>
                     <property name="orientation">horizontal</property>
                     <property name="hexpand">true</property>
                     <property name="visible">False</property>
@@ -293,6 +299,8 @@
                 <child>
                   <object class="GtkRevealer" id="itemrevealer">
                     <property name="reveal-child">False</property>
+                    <property name="margin-start">18</property>
+                    <property name="margin-end">18</property>
                     <child>
                       <object class="GtkScrolledWindow" id="episodescrolled">
                         <property name="overlay-scrolling">true</property>
@@ -338,7 +346,8 @@
                       <object class="GtkBox">
                         <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
-                        <property name="margin-start">12</property>
+                        <property name="margin-start">18</property>
+                        <property name="margin-end">18</property>
                         <property name="margin-top">12</property>
                         <property name="halign">fill</property>
                         <property name="valign">start</property>
@@ -452,7 +461,8 @@
                       <object class="GtkBox">
                         <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
-                        <property name="margin-start">12</property>
+                        <property name="margin-start">18</property>
+                        <property name="margin-end">18</property>
                         <property name="margin-top">12</property>
                         <property name="halign">fill</property>
                         <property name="valign">start</property>
