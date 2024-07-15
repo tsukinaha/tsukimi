@@ -3,6 +3,7 @@ use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::utils::spawn_tokio;
 use crate::{fraction, fraction_reset, toast};
+use gettextrs::gettext;
 use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
@@ -122,7 +123,7 @@ impl HistoryPage {
             _ => return,
         };
 
-        hortu.set_title(&format!("Favourite {}", types));
+        hortu.set_title(&format!("{} {}", gettext("Favourite"), gettext(types)));
 
         let types = types.to_string();
 

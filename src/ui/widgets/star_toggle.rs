@@ -1,3 +1,4 @@
+use gettextrs::gettext;
 use gtk::{glib, prelude::*, subclass::prelude::*};
 
 pub(crate) mod imp {
@@ -60,10 +61,12 @@ impl StarToggle {
         } else {
             "non-starred-symbolic"
         });
+        let rm_text = gettext("Remove from favorites");
+        let add_text = gettext("Add to favorites");
         self.set_tooltip_text(if starred {
-            Some("Remove from favorites")
+            Some(&rm_text)
         } else {
-            Some("Add to favorites")
+            Some(&add_text)
         });
 
         if starred {

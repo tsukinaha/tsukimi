@@ -11,6 +11,7 @@ use crate::{
 };
 use adw::prelude::*;
 use adw::subclass::prelude::*;
+use gettextrs::gettext;
 use gtk::gio;
 use gtk::gio::ListStore;
 use gtk::{glib, template_callbacks, CompositeTemplate};
@@ -255,9 +256,9 @@ impl AlbumPage {
         };
 
         if types == "More From" {
-            hortu.set_title(&format!("More From {}", self.item().albumartist_name()));
+            hortu.set_title(&format!("{} {}", gettext("More From"), self.item().albumartist_name()));
         } else {
-            hortu.set_title(types);
+            hortu.set_title(&gettext(types));
         }
 
         let id = self.item().id();

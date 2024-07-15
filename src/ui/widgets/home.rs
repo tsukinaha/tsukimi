@@ -6,6 +6,7 @@ use crate::ui::models::SETTINGS;
 use crate::utils::{get_data_with_cache_else, req_cache, tu_list_view_connect_activate};
 use crate::{fraction, fraction_reset, toast};
 use chrono::{Datelike, Local};
+use gettextrs::gettext;
 use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
@@ -139,7 +140,7 @@ impl HomePage {
             }
         };
 
-        hortu.set_title("Continue Watching");
+        hortu.set_title(&gettext("Continue Watching"));
 
         hortu.set_items(&results.items);
     }
@@ -155,7 +156,7 @@ impl HomePage {
             }
         };
 
-        hortu.set_title("Library");
+        hortu.set_title(&gettext("Library"));
 
         hortu.set_items(&results);
 
@@ -186,7 +187,7 @@ impl HomePage {
 
             let hortu = HortuScrolled::new(false);
 
-            hortu.set_title(&format!("{} - Latest", view.name));
+            hortu.set_title(&format!("{} {}", gettext("Latest"), view.name));
 
             hortu.set_items(&results);
 

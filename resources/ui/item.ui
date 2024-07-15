@@ -246,14 +246,12 @@
                 </child>
                 <child>
                   <object class="GtkBox" id="toolbar">
-                    <property name="margin-start">18</property>
-                    <property name="margin-end">18</property>
                     <property name="orientation">horizontal</property>
                     <property name="hexpand">true</property>
                     <property name="visible">False</property>
                     <child>
                       <object class="GtkDropDown" id="seasonlist">
-                        <property name="margin-start">10</property>
+                        <property name="margin-start">18</property>
                       </object>
                     </child>
                     <child>
@@ -285,7 +283,7 @@
                     </child>
                     <child>
                       <object class="GtkToggleButton" id="go-last-symbolic">
-                        <property name="margin-end">15</property>
+                        <property name="margin-end">18</property>
                         <property name="halign">end</property>
                         <property name="icon-name">go-last-symbolic</property>
                         <property name="action-name">item.last</property>

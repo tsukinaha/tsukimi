@@ -1,3 +1,4 @@
+use gettextrs::gettext;
 use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
@@ -105,9 +106,9 @@ impl ListPage {
             ("liked", "Liked"),
         ];
 
-        for (name, title) in &pages {
+        for (name, title) in pages {
             let page = SingleListPage::new(id.clone(), collection_type.clone(), name, None, false);
-            stack.add_titled(&page, Some(name), title);
+            stack.add_titled(&page, Some(name), &gettext(title));
         }
     }
 }
