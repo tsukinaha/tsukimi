@@ -779,17 +779,6 @@ impl TuListItem {
     }
 }
 
-pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem, is_resume: bool) {
-    let tu_item = TuItem::from_simple(latest, None);
-    match latest.latest_type.as_str() {
-        "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views"
-        | "Actor" | "Person" | "TvChannel" => {
-            set_list_child(tu_item, list_item, &latest.latest_type, is_resume);
-        }
-        _ => {}
-    }
-}
-
 pub fn tu_list_poster(
     latest: &SimpleListItem,
     list_item: &gtk::ListItem,

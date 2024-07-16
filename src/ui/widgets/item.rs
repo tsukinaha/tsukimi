@@ -1052,7 +1052,11 @@ impl ItemPage {
                 if let Some(ticks) = userdata.playback_position_ticks {
                     if ticks > 0 {
                         let sec = ticks / 10000000;
-                        buttoncontent.set_label(&format!("{} {}",gettext("Resume"), format_duration(sec as i64)));
+                        buttoncontent.set_label(&format!(
+                            "{} {}",
+                            gettext("Resume"),
+                            format_duration(sec as i64)
+                        ));
                     } else {
                         buttoncontent.set_label(&gettext("Play"));
                     }

@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use adw::prelude::*;
 use gio::Settings;
 use gtk::subclass::prelude::*;
+use gtk::Widget;
 mod imp {
     use std::cell::OnceCell;
 
@@ -72,6 +73,12 @@ mod imp {
         pub mainpage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub mainview: TemplateChild<adw::NavigationView>,
+        #[template_child]
+        pub homepage: TemplateChild<adw::Bin>,
+        #[template_child]
+        pub likedpage: TemplateChild<adw::Bin>,
+        #[template_child]
+        pub searchpage: TemplateChild<adw::Bin>,
 
         pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
     }
@@ -199,6 +206,9 @@ use crate::APP_ID;
 use glib::Object;
 use gtk::{gio, glib, template_callbacks};
 
+use super::home::HomePage;
+use super::liked::LikedPage;
+use super::search::SearchPage;
 use super::server_row::ServerRow;
 use super::tu_list_item::PROGRESSBAR_ANIMATION_DURATION;
 
@@ -213,6 +223,10 @@ glib::wrapper! {
 impl Window {
     pub fn homepage(&self) {
         let imp = self.imp();
+        if imp.homepage.child().is_none() {
+            imp.homepage.set_child(Some(&HomePage::new()));
+        }
+        imp.navipage.set_title("");
         imp.mainview.pop_to_tag("mainpage");
         imp.insidestack.set_visible_child_name("homepage");
         imp.popbutton.set_visible(false);
@@ -220,6 +234,10 @@ impl Window {
 
     pub fn likedpage(&self) {
         let imp = self.imp();
+        if imp.likedpage.child().is_none() {
+            imp.likedpage.set_child(Some(&LikedPage::new()));
+        }
+        imp.navipage.set_title("");
         imp.mainview.pop_to_tag("mainpage");
         imp.insidestack.set_visible_child_name("likedpage");
         imp.popbutton.set_visible(false);
@@ -227,6 +245,10 @@ impl Window {
 
     pub fn searchpage(&self) {
         let imp = self.imp();
+        if imp.searchpage.child().is_none() {
+            imp.searchpage.set_child(Some(&SearchPage::new()));
+        }
+        imp.navipage.set_title("");
         imp.mainview.pop_to_tag("mainpage");
         imp.insidestack.set_visible_child_name("searchpage");
         imp.popbutton.set_visible(false);
@@ -244,6 +266,8 @@ impl Window {
         };
         if tag == "mainpage" {
             imp.popbutton.set_visible(false);
+            imp.navipage.set_title("");
+            return;
         }
         imp.navipage.set_title(&tag);
     }
@@ -259,8 +283,7 @@ impl Window {
                 && env::var("EMBY_NAME").is_err()
             {
                 EMBY_CLIENT.init(account);
-                self.mainpage();
-                self.account_setup();
+                self.reset();
             }
         }
         if accounts.accounts.is_empty() {
@@ -304,7 +327,10 @@ impl Window {
 
     pub fn reset(&self) {
         self.mainpage();
+        self.imp().selectlist.unselect_all();
         self.account_setup();
+        self.remove_all();
+        self.homepage();
     }
 
     pub fn set_server_rows(&self, account: Account) -> adw::ActionRow {
@@ -539,7 +565,6 @@ impl Window {
 
     pub fn set_fraction(&self, to_value: f64) {
         let progressbar = &self.imp().progressbar;
-        progressbar.set_inverted(!progressbar.is_inverted());
         self.progressbar_animation()
             .set_value_from(progressbar.fraction());
         self.progressbar_animation().set_value_to(to_value);
@@ -641,8 +666,9 @@ impl Window {
         }
     }
 
-    pub fn push_page<T>(&self, page:&T) 
-    where T: NavigationPageExt
+    pub fn push_page<T>(&self, page: &T)
+    where
+        T: NavigationPageExt,
     {
         let imp = self.imp();
         if let Some(tag) = page.tag() {
@@ -650,5 +676,27 @@ impl Window {
         }
         imp.mainview.push(page);
         imp.popbutton.set_visible(true);
+    }
+
+    #[template_callback]
+    pub fn on_home_update(&self) {
+        if let Some(homepage) = self.imp().homepage.child().and_downcast::<HomePage>() {
+            homepage.update(false);
+        }
+        self.homepage();
+    }
+
+    #[template_callback]
+    pub fn on_liked_update(&self) {
+        if let Some(likedpage) = self.imp().likedpage.child().and_downcast::<LikedPage>() {
+            likedpage.update();
+        }
+        self.likedpage();
+    }
+
+    pub fn remove_all(&self) {
+        self.imp().homepage.set_child(None::<&Widget>);
+        self.imp().likedpage.set_child(None::<&Widget>);
+        self.imp().searchpage.set_child(None::<&Widget>);
     }
 }

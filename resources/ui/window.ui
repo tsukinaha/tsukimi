@@ -261,7 +261,7 @@ You should install the package `gst-libav` to play media files with built-in pla
                                                   <object class="GtkButton">
                                                     <property name="valign">center</property>
                                                     <property name="icon-name">emblem-synchronizing-symbolic</property>
-                                                    <property name="action-name">win.home</property>
+                                                    <signal name="clicked" handler="on_home_update" swapped="yes"/>
                                                     <style>
                                                       <class name="flat" />
                                                     </style>
@@ -291,7 +291,7 @@ You should install the package `gst-libav` to play media files with built-in pla
                                                   <object class="GtkButton">
                                                     <property name="valign">center</property>
                                                     <property name="icon-name">emblem-synchronizing-symbolic</property>
-                                                    <property name="action-name">win.history</property>
+                                                    <signal name="clicked" handler="on_liked_update" swapped="yes"/>
                                                     <style>
                                                       <class name="flat" />
                                                     </style>
@@ -315,16 +315,6 @@ You should install the package `gst-libav` to play media files with built-in pla
                                                     <property name="icon-name">system-search-symbolic</property>
                                                     <property name="margin-end">6</property>
                                                     <property name="halign">start</property>
-                                                  </object>
-                                                </child>
-                                                <child type="suffix">
-                                                  <object class="GtkButton">
-                                                    <property name="valign">center</property>
-                                                    <property name="icon-name">emblem-synchronizing-symbolic</property>
-                                                    <property name="action-name">win.search</property>
-                                                    <style>
-                                                      <class name="flat" />
-                                                    </style>
                                                   </object>
                                                 </child>
                                               </object>
@@ -384,7 +374,6 @@ You should install the package `gst-libav` to play media files with built-in pla
                                       <object class="GtkProgressBar" id="progressbar">
                                         <property name="hexpand">True</property>
                                         <property name="valign">start</property>
-                                        <property name="inverted">true</property>
                                         <style>
                                           <class name="osd" />
                                         </style>
@@ -405,9 +394,7 @@ You should install the package `gst-libav` to play media files with built-in pla
                                                   <object class="GtkStackPage">
                                                     <property name="name">homepage</property>
                                                     <property name="child">
-                                                      <object class="HomePage" id="homepage">
-                                                        <property name="title" translatable="yes">Home</property>
-                                                      </object>
+                                                      <object class="AdwBin" id="homepage"/>
                                                     </property>
                                                   </object>
                                                 </child>
@@ -415,9 +402,7 @@ You should install the package `gst-libav` to play media files with built-in pla
                                                   <object class="GtkStackPage">
                                                     <property name="name">likedpage</property>
                                                     <property name="child">
-                                                      <object class="LikedPage" id="likedpage">
-                                                        <property name="title" translatable="yes">Liked</property>
-                                                      </object>
+                                                      <object class="AdwBin" id="likedpage"/>
                                                     </property>
                                                   </object>
                                                 </child>
@@ -425,9 +410,7 @@ You should install the package `gst-libav` to play media files with built-in pla
                                                   <object class="GtkStackPage">
                                                     <property name="name">searchpage</property>
                                                     <property name="child">
-                                                      <object class="SearchPage" id="searchpage">
-                                                        <property name="title" translatable="yes">Search</property>
-                                                      </object>
+                                                      <object class="AdwBin" id="searchpage"/>
                                                     </property>
                                                   </object>
                                                 </child>

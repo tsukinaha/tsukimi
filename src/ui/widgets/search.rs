@@ -1,25 +1,20 @@
-use std::env;
-
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
-use crate::ui::widgets::item::ItemPage;
-use crate::ui::widgets::window::Window;
-use crate::utils::{spawn_tokio, tu_list_item_factory};
+use crate::utils::{spawn, spawn_tokio};
 use crate::{fraction, fraction_reset, toast};
-use adw::prelude::NavigationPageExt;
 use glib::Object;
 use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
+use gtk::{gio, glib, SignalListItemFactory};
 use gtk::{prelude::*, template_callbacks, SearchEntry};
+
+use super::utils::TuItemBuildExt;
 
 mod imp {
 
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
-
-    use crate::utils::spawn;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -70,13 +65,7 @@ mod imp {
             let obj = self.obj();
             self.parent_constructed();
             obj.setup_search();
-            spawn(glib::clone!(
-                #[weak]
-                obj,
-                async move {
-                    obj.setup_recommend().await;
-                }
-            ));
+            obj.update();
         }
     }
 
@@ -111,6 +100,16 @@ impl SearchPage {
         Object::builder().build()
     }
 
+    pub fn update(&self) {
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                obj.setup_recommend().await;
+            }
+        ));
+    }
+
     pub async fn setup_recommend(&self) {
         let recommend = match spawn_tokio(async { EMBY_CLIENT.get_search_recommend().await }).await
         {
@@ -123,6 +122,10 @@ impl SearchPage {
 
         let imp = self.imp();
         let recommendbox = imp.recommendbox.get();
+        for _ in 0..recommendbox.observe_children().n_items() {
+            recommendbox.remove(&recommendbox.last_child().unwrap());
+        }
+
         for item in recommend.items {
             let button = gtk::Button::new();
             let buttoncontent = adw::ButtonContent::builder()
@@ -139,7 +142,7 @@ impl SearchPage {
                 #[weak(rename_to = obj)]
                 self,
                 move |_| {
-                    
+                    item.activate(&obj);
                 }
             ));
             recommendbox.append(&button);
@@ -151,14 +154,14 @@ impl SearchPage {
 
         let store = gio::ListStore::new::<glib::BoxedAnyObject>();
         imp.selection.set_model(Some(&store));
-        let factory = tu_list_item_factory("".to_string());
-        imp.searchgrid.set_factory(Some(&factory));
+        let factory = SignalListItemFactory::new();
+        imp.searchgrid.set_factory(Some(factory.tu_item(false)));
         imp.searchgrid.set_model(Some(&imp.selection));
         imp.searchgrid.set_min_columns(1);
         imp.searchgrid.set_max_columns(15);
 
-        imp.searchgrid.connect_activate(glib::clone!(
-            move |listview, position| {
+        imp.searchgrid
+            .connect_activate(glib::clone!(move |listview, position| {
                 let model = listview.model().unwrap();
                 let item = model
                     .item(position)
@@ -166,8 +169,7 @@ impl SearchPage {
                     .unwrap();
                 let result: std::cell::Ref<SimpleListItem> = item.borrow();
                 result.activate(listview);
-            }
-        ));
+            }));
     }
 
     #[template_callback]

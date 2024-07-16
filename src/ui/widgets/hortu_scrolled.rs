@@ -2,27 +2,19 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::{gio, glib, template_callbacks, CompositeTemplate};
 
 use crate::client::structs::SimpleListItem;
-use crate::ui::provider::tu_item::TuItem;
 use crate::ui::widgets::fix::ScrolledWindowFixExt;
-
-use super::tu_list_item::TuListItem;
 
 const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
 
 mod imp {
+    use crate::ui::widgets::utils::TuItemBuildExt;
     use std::cell::OnceCell;
 
-    use crate::client::client::EMBY_CLIENT;
-    use crate::client::error::UserFacingError;
-    use crate::toast;
-    use crate::ui::widgets::utils::TuItemBuildExt;
-    use crate::utils::{spawn, spawn_tokio};
-    use gettextrs::gettext;
     use glib::subclass::InitializingObject;
-    use glib::BoxedAnyObject;
-    use gtk::{gio, ListItem, SignalListItemFactory, SingleSelection};
 
-    use crate::{client::structs::SimpleListItem, ui::widgets::window::Window};
+    use gtk::{gio, SignalListItemFactory};
+
+    use crate::client::structs::SimpleListItem;
 
     use super::*;
 
@@ -82,20 +74,19 @@ mod imp {
 
             self.list.set_model(Some(&self.selection));
 
-            self.list
-                .set_factory(Some(SignalListItemFactory::new().tu_item(self.obj().isresume())));
+            self.list.set_factory(Some(
+                SignalListItemFactory::new().tu_item(self.obj().isresume()),
+            ));
 
-                self.list.connect_activate(
-                    move |listview, position| {
-                        let model = listview.model().unwrap();
-                        let item = model
-                            .item(position)
-                            .and_downcast::<glib::BoxedAnyObject>()
-                            .unwrap();
-                        let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                        result.activate(listview);
-                    }
-                );
+            self.list.connect_activate(move |listview, position| {
+                let model = listview.model().unwrap();
+                let item = model
+                    .item(position)
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
+                let result: std::cell::Ref<SimpleListItem> = item.borrow();
+                result.activate(listview);
+            });
         }
     }
 
@@ -124,21 +115,25 @@ impl HortuScrolled {
     }
 
     pub fn set_items(&self, items: &[SimpleListItem]) {
-        if items.is_empty() {
-            return;
-        }
-
-        self.set_visible(true);
-
-        let items = items.to_owned();
-
         let imp = self.imp();
+
         let store = imp
             .selection
             .model()
             .unwrap()
             .downcast::<gio::ListStore>()
             .unwrap();
+
+        store.remove_all();
+
+        if items.is_empty() {
+            self.set_visible(false);
+            return;
+        }
+
+        self.set_visible(true);
+
+        let items = items.to_owned();
 
         for result in items {
             let object = glib::BoxedAnyObject::new(result);

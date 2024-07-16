@@ -1,19 +1,17 @@
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
-use super::window::Window;
+use super::utils::TuItemBuildExt;
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::models::SETTINGS;
-use crate::utils::{
-    req_cache, spawn, spawn_tokio, tu_list_item_factory,
-};
+use crate::utils::{req_cache, spawn, spawn_tokio};
 use crate::{fraction, fraction_reset, toast};
 use adw::prelude::*;
 use glib::Object;
 use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
+use gtk::{gio, glib, SignalListItemFactory};
 mod imp {
 
     use std::cell::{OnceCell, RefCell};
@@ -294,15 +292,15 @@ impl SingleListPage {
             }
         ));
         imp.selection.set_model(Some(&store));
-        let listtype = imp.listtype.get().unwrap().clone();
-        let factory = tu_list_item_factory(listtype);
-        imp.listgrid.set_factory(Some(&factory));
+        let is_resume = self.listtype() == "resume";
+        let factory = SignalListItemFactory::new();
+        imp.listgrid.set_factory(Some(factory.tu_item(is_resume)));
         imp.listgrid.set_model(Some(&imp.selection));
         imp.listgrid.set_min_columns(1);
         imp.listgrid.set_max_columns(13);
 
-        imp.listgrid.connect_activate(glib::clone!(
-            move |listview, position| {
+        imp.listgrid
+            .connect_activate(glib::clone!(move |listview, position| {
                 let model = listview.model().unwrap();
                 let item = model
                     .item(position)
@@ -310,8 +308,7 @@ impl SingleListPage {
                     .unwrap();
                 let result: std::cell::Ref<SimpleListItem> = item.borrow();
                 result.activate(listview);
-            }
-        ));
+            }));
     }
 
     #[template_callback]

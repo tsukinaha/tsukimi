@@ -3,7 +3,7 @@ use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::image::set_image;
 use crate::ui::models::SETTINGS;
-use crate::utils::{get_data_with_cache_else, req_cache};
+use crate::utils::{get_data_with_cache_else, req_cache_single, spawn};
 use crate::{fraction, fraction_reset, toast};
 use chrono::{Datelike, Local};
 use gettextrs::gettext;
@@ -24,7 +24,6 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
 
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
-    use crate::utils::spawn_g_timeout;
 
     use super::SimpleListItem;
     // Object holding the state
@@ -47,6 +46,7 @@ mod imp {
         #[template_child]
         pub carouseloverlay: TemplateChild<gtk::Overlay>,
         pub selection: gtk::SingleSelection,
+        pub timeout: RefCell<Option<glib::source::SourceId>>,
     }
 
     // The central trait for subclassing a GObject
@@ -73,11 +73,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            spawn_g_timeout(glib::clone!(
-                #[weak]
-                obj,
-                async move { obj.setup().await }
-            ));
+            obj.init_load();
         }
     }
 
@@ -111,12 +107,34 @@ impl HomePage {
     pub fn new() -> Self {
         Object::builder().build()
     }
+    
+    pub fn init_load(&self) {
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                obj.setup(true).await;
+                gtk::glib::timeout_future_seconds(1).await;
+                obj.setup(false).await;
+            }
+        ));
+    }
 
-    pub async fn setup(&self) {
+    pub fn update(&self, enable_cache: bool) {
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                obj.setup(enable_cache).await;
+            }
+        ));
+    }
+
+    pub async fn setup(&self, enable_cache: bool) {
         fraction_reset!(self);
         self.set_carousel().await;
-        self.setup_history().await;
-        self.setup_library().await;
+        self.setup_history(enable_cache).await;
+        self.setup_library(enable_cache).await;
         fraction!(self);
     }
 
@@ -124,58 +142,64 @@ impl HomePage {
     fn carousel_pressed_cb(&self) {
         let position = self.imp().carousel.position();
         if let Some(item) = self.imp().carouset_items.borrow().get(position as usize) {
-            let window = self.root().and_downcast::<super::window::Window>().unwrap();
-
+            item.activate(self);
         }
     }
 
-    pub async fn setup_history(&self) {
+    pub async fn setup_history(&self, enable_cache: bool) {
         let hortu = self.imp().hishortu.get();
 
-        let results = match req_cache("history", async { EMBY_CLIENT.get_resume().await }).await {
+        let results = match req_cache_single("history", async { EMBY_CLIENT.get_resume().await }, enable_cache).await {
             Ok(history) => history,
             Err(e) => {
                 toast!(self, e.to_user_facing());
-                List::default()
+                None
             }
-        };
+        }.unwrap_or_default();
 
         hortu.set_title(&gettext("Continue Watching"));
 
         hortu.set_items(&results.items);
     }
 
-    pub async fn setup_library(&self) {
+    pub async fn setup_library(&self, enable_cache: bool) {
         let hortu = self.imp().libhortu.get();
 
-        let results = match req_cache("library", async { EMBY_CLIENT.get_library().await }).await {
-            Ok(history) => history.items,
+        let results = match req_cache_single("library", async { EMBY_CLIENT.get_library().await }, enable_cache).await {
+            Ok(history) => history,
             Err(e) => {
                 toast!(self, e.to_user_facing());
-                Vec::new()
+                None
             }
-        };
+        }.unwrap_or_default();
+
+        let results = results.items;
 
         hortu.set_title(&gettext("Library"));
 
         hortu.set_items(&results);
 
-        self.setup_libsview(results).await;
+        self.setup_libsview(results, enable_cache).await;
     }
 
-    pub async fn setup_libsview(&self, items: Vec<SimpleListItem>) {
+    pub async fn setup_libsview(&self, items: Vec<SimpleListItem>, enable_cache: bool) {
+        let libsbox = &self.imp().libsbox;
+        for _ in 0..libsbox.observe_children().n_items() {
+            libsbox.remove(&libsbox.last_child().unwrap());
+        }
+
         for view in items {
             let Some(collection_type) = view.collection_type else {
                 continue;
             };
 
-            let results = match req_cache(&format!("library_{}", view.id), async move {
+            let results = match req_cache_single(&format!("library_{}", view.id), async move {
                 if collection_type == "livetv" {
                     EMBY_CLIENT.get_channels().await.map(|x| x.items)
                 } else {
                     EMBY_CLIENT.get_latest(&view.id).await
                 }
-            })
+            }, enable_cache)
             .await
             {
                 Ok(history) => history,
@@ -183,7 +207,7 @@ impl HomePage {
                     toast!(self, e.to_user_facing());
                     return;
                 }
-            };
+            }.unwrap_or_default();
 
             let hortu = HortuScrolled::new(false);
 
@@ -191,7 +215,7 @@ impl HomePage {
 
             hortu.set_items(&results);
 
-            self.imp().libsbox.append(&hortu);
+            libsbox.append(&hortu);
         }
     }
 
@@ -231,8 +255,12 @@ impl HomePage {
         if carousel.n_pages() <= 1 {
             return;
         }
+        
+        if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
+            glib::source::SourceId::remove(timeout);
+        }
 
-        glib::timeout_add_seconds_local(7, move || {
+        let handler_id = glib::timeout_add_seconds_local(7, move || {
             let current_page = carousel.position();
             let n_pages = carousel.n_pages();
             let new_page_position = (current_page + 1. + n_pages as f64) % n_pages as f64;
@@ -240,6 +268,8 @@ impl HomePage {
 
             glib::ControlFlow::Continue
         });
+
+        self.imp().timeout.replace(Some(handler_id));
     }
 
     pub fn carousel_add_child(&self, item: SimpleListItem) {

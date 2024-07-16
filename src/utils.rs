@@ -1,14 +1,6 @@
 use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
-use crate::client::{network::RUNTIME, structs::SimpleListItem};
-use crate::toast;
+use crate::client::network::RUNTIME;
 use crate::ui::models::emby_cache_path;
-use crate::ui::provider::tu_item::TuItem;
-use crate::ui::widgets::singlelist::SingleListPage;
-use crate::ui::widgets::tu_list_item::tu_list_item_register;
-use gettextrs::gettext;
-use gtk::glib;
-use gtk::prelude::*;
 
 pub fn _spawn_tokio_blocking<F>(fut: F) -> F::Output
 where
@@ -139,24 +131,27 @@ pub async fn get_image_with_cache(
     Ok(path.to_string_lossy().to_string())
 }
 
-pub fn tu_list_item_factory(listtype: String) -> gtk::SignalListItemFactory {
-    let factory = gtk::SignalListItemFactory::new();
-    factory.connect_bind(move |_, item| {
-        let list_item = item
-            .downcast_ref::<gtk::ListItem>()
-            .expect("Needs to be ListItem");
-        let entry = item
-            .downcast_ref::<gtk::ListItem>()
-            .expect("Needs to be ListItem")
-            .item()
-            .and_downcast::<glib::BoxedAnyObject>()
-            .expect("Needs to be BoxedAnyObject");
-        let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
-        if list_item.child().is_none() {
-            tu_list_item_register(&latest, list_item, &listtype == "resume")
+
+pub async fn req_cache_single<T, F>(tag: &str, future: F, enable_cache: bool) -> Result<Option<T>, reqwest::Error>
+where
+    T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
+    F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
+{
+    let mut path = emby_cache_path();
+    path.push(format!("{}.json", tag));
+
+    if enable_cache {
+        if path.exists() {
+            let data = std::fs::read_to_string(&path).expect("Unable to read file");
+            let data: T = serde_json::from_str(&data).expect("JSON was not well-formatted");
+            Ok(Some(data))
+        } else {
+            return Ok(None);
         }
-    });
-    factory
+    } else {
+        let v = spawn_tokio(future).await?;
+        let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
+        std::fs::write(&path, s_data).expect("Unable to write file");
+        Ok(Some(v))
+    }
 }
-use adw::prelude::NavigationPageExt;
-use gtk::subclass::prelude::ObjectSubclassIsExt;

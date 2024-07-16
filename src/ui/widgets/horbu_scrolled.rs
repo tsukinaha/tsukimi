@@ -9,8 +9,6 @@ mod imp {
 
     use glib::subclass::InitializingObject;
 
-    use crate::ui::widgets::{singlelist::SingleListPage, window::Window};
-
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
@@ -52,7 +50,6 @@ mod imp {
     impl WidgetImpl for HorbuScrolled {}
 
     impl BinImpl for HorbuScrolled {}
-
 }
 
 glib::wrapper! {
@@ -104,7 +101,7 @@ impl HorbuScrolled {
                         #[weak]
                         obj,
                         move |_| {
-                            
+                            result.activate(&obj, obj.list_type().unwrap_or_default());
                         }
                     ));
 

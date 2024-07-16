@@ -1,7 +1,7 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
-use crate::utils::spawn_tokio;
+use crate::utils::{spawn, spawn_tokio};
 use crate::{fraction, fraction_reset, toast};
 use gettextrs::gettext;
 use glib::Object;
@@ -15,7 +15,6 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
 
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
-    use crate::utils::spawn;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -59,13 +58,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            spawn(glib::clone!(
-                #[weak]
-                obj,
-                async move {
-                    obj.set_lists().await;
-                }
-            ));
+            obj.update();
         }
     }
 
@@ -97,6 +90,16 @@ impl Default for LikedPage {
 impl LikedPage {
     pub fn new() -> Self {
         Object::builder().build()
+    }
+
+    pub fn update(&self) {
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                obj.set_lists().await;
+            }
+        ));
     }
 
     pub async fn set_lists(&self) {
