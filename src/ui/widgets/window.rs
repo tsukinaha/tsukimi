@@ -698,5 +698,6 @@ impl Window {
         self.imp().homepage.set_child(None::<&Widget>);
         self.imp().likedpage.set_child(None::<&Widget>);
         self.imp().searchpage.set_child(None::<&Widget>);
+        self.imp().player_toolbar_box.on_stop_button_clicked();
     }
 }
