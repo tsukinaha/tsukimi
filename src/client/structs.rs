@@ -388,6 +388,66 @@ pub struct Items {
     pub total_record_count: Option<u32>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct ExternalIdInfo {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "Key")]
+    pub key: String,
+    #[serde(rename = "UrlFormatString")]
+    pub url_format_string: String,
+    #[serde(rename = "IsSupportedAsIdentifier")]
+    pub is_supported_as_identifier: bool,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct RemoteSearchInfo {
+    #[serde(rename = "ItemId")]
+    pub item_id: String,
+    #[serde(rename = "SearchInfo")]
+    pub search_info: SearchInfo,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct SearchInfo {
+    #[serde(rename = "Name")]
+    pub name: Option<String>,
+    #[serde(rename = "Year")]
+    pub year: Option<u32>,
+    #[serde(rename = "ProviderIds")]
+    pub provider_ids: Vec<SearchProviderId>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct SearchProviderId {
+    #[serde(rename = "MusicBrainzAlbum")]
+    pub music_brainz_album: Option<String>,
+    #[serde(rename = "MusicBrainzAlbumArtist")]
+    pub music_brainz_album_artist: Option<String>,
+    #[serde(rename = "MusicBrainzReleaseGroup")]
+    pub music_brainz_release_group: Option<String>,
+    #[serde(rename = "Tmdb")]
+    pub tmdb: Option<String>,
+    #[serde(rename = "Tvdb")]
+    pub tvdb: Option<String>,
+    #[serde(rename = "Official Website")]
+    pub official_website: Option<String>,
+    #[serde(rename = "IMDB")]
+    pub imdb: Option<String>,
+    #[serde(rename = "Zap2It")]
+    pub zap2it: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct RemoteSearchResult {
+    #[serde(rename = "Name")]
+    name: String,
+    #[serde(rename = "ProductionYear")]
+    production_year: Option<u32>,
+    #[serde(rename = "ImageUrl")]
+    image_url: Option<String>,
+}
+
 #[derive(Deserialize, Debug, Clone)]
 pub struct Back {
     pub id: String,

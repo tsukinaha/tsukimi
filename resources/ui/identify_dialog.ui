@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwDialog" class="IdentifyDialog">
+    <property name="content-width">820</property>
+    <property name="content-height">400</property>
+    <property name="width-request">360</property>
+    <property name="height-request">800</property>
+    <property name="title" translatable="yes">Identify</property>
+    <property name="presentation-mode">bottom-sheet</property>
+    <child>
+      <object class="AdwToastOverlay" id="toast">
+        <child>
+          <object class="AdwNavigationView" id="navigation_view">
+            <child>
+              <object class="AdwNavigationPage" id="page">
+                <property name="tag">main</property>
+                <property name="title" translatable="yes">Identify</property>
+                <property name="child">
+                  <object class="AdwToolbarView">
+                  <child type="top">
+                    <object class="AdwHeaderBar">
+                      <property name="show-end-title-buttons">False</property>
+                      <property name="show-start-title-buttons">False</property>
+                      <child>
+                        <object class="GtkButton">
+                          <property name="label" translatable="yes">Cancel</property>
+                          <property name="action-name">window.close</property>
+                        </object>
+                      </child>
+                    </object>
+                  </child>
+                  <child>
+                    <object class="GtkStack" id="stack">
+                      <property name="transition-type">crossfade</property>
+                      <child>
+                        <object class="GtkStackPage">
+                          <property name="name">loading</property>
+                          <property name="title">Loading</property>
+                          <property name="child">
+                            <object class="GtkSpinner">
+                              <property name="spinning">True</property>
+                              <property name="halign">center</property>
+                              <property name="valign">center</property>
+                              <property name="width-request">32</property>
+                              <property name="height-request">32</property>
+                            </object>
+                          </property>
+                        </object>
+                      </child>
+                      <child>
+                        <object class="GtkStackPage">
+                          <property name="name">page</property>
+                          <property name="title">View Metadata</property>
+                          <property name="child">
+                            <object class="GtkScrolledWindow">
+                              <property name="hscrollbar-policy">never</property>
+                              <child>
+                                <object class="AdwClamp">
+                                  <property name="margin-top">36</property>
+                                  <property name="margin-bottom">12</property>
+                                  <property name="vexpand">True</property>
+                                  <child>
+                                    <object class="GtkBox">
+                                      <property name="orientation">vertical</property>
+                                      <property name="spacing">18</property>
+                                      <child>
+                                        <object class="GtkBox" id="vbox">
+                                        <property name="orientation">vertical</property>
+                                        <property name="spacing">18</property>
+                                            <child>
+                                                <object class="AdwEntryRow" id="title_entry">
+                                                <property name="title" translatable="yes">Title</property>
+                                                </object>
+                                            </child>
+                                            <child>
+                                                <object class="AdwEntryRow" id="year_entry">
+                                                <property name="title" translatable="yes">Year</property>
+                                                </object>
+                                            </child>
+                                        </object>
+                                      </child>
+                                      <child>
+                                        <object class="AdwPreferencesGroup">
+                                            <child>
+                                            <object class="GtkButton">
+                                                <property name="halign">center</property>
+                                                <child>
+                                                <object class="AdwButtonContent">
+                                                    <property name="label" translatable="yes">Search</property>
+                                                    <property name="icon-name">go-next-symbolic</property>
+                                                </object>
+                                                </child>
+                                                <signal name="clicked" handler="on_search" swapped="yes"/>
+                                                <style>
+                                                <class name="suggested-action"/>
+                                                <class name="pill"/>
+                                                </style>
+                                            </object>
+                                            </child>
+                                        </object>
+                                      </child>
+                                    </object>
+                                  </child>
+                                </object>
+                              </child>
+                            </object>
+                          </property>
+                        </object>
+                      </child>
+                    </object>
+                  </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

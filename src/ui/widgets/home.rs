@@ -3,7 +3,7 @@ use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::image::set_image;
 use crate::ui::models::SETTINGS;
-use crate::utils::{get_data_with_cache_else, req_cache_single, spawn};
+use crate::utils::{get_data_with_cache_else, req_cache, req_cache_single, spawn};
 use crate::{fraction, fraction_reset, toast};
 use chrono::{Datelike, Local};
 use gettextrs::gettext;
@@ -179,10 +179,10 @@ impl HomePage {
 
         hortu.set_items(&results);
 
-        self.setup_libsview(results, enable_cache).await;
+        self.setup_libsview(results).await;
     }
 
-    pub async fn setup_libsview(&self, items: Vec<SimpleListItem>, enable_cache: bool) {
+    pub async fn setup_libsview(&self, items: Vec<SimpleListItem>) {
         let libsbox = &self.imp().libsbox;
         for _ in 0..libsbox.observe_children().n_items() {
             libsbox.remove(&libsbox.last_child().unwrap());
@@ -193,13 +193,13 @@ impl HomePage {
                 continue;
             };
 
-            let results = match req_cache_single(&format!("library_{}", view.id), async move {
+            let results = match req_cache(&format!("library_{}", view.id), async move {
                 if collection_type == "livetv" {
                     EMBY_CLIENT.get_channels().await.map(|x| x.items)
                 } else {
                     EMBY_CLIENT.get_latest(&view.id).await
                 }
-            }, enable_cache)
+            })
             .await
             {
                 Ok(history) => history,
@@ -207,7 +207,7 @@ impl HomePage {
                     toast!(self, e.to_user_facing());
                     return;
                 }
-            }.unwrap_or_default();
+            };
 
             let hortu = HortuScrolled::new(false);
 
@@ -217,6 +217,7 @@ impl HomePage {
 
             libsbox.append(&hortu);
         }
+        
     }
 
     pub async fn set_carousel(&self) {

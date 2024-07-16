@@ -16,8 +16,7 @@ use crate::{
 use once_cell::sync::Lazy;
 
 use super::structs::{
-    AuthenticateResponse, Back, ImageItem, Item, List, LiveMedia, LoginResponse, Media, SerInList,
-    SimpleListItem,
+    AuthenticateResponse, Back, ExternalIdInfo, ImageItem, Item, List, LiveMedia, LoginResponse, Media, RemoteSearchInfo, RemoteSearchResult, SerInList, SimpleListItem
 };
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
@@ -374,6 +373,18 @@ impl EmbyClient {
             ("ReplaceAllMetadata", replace_metadata),
         ];
         self.post(&path, &params, json!({})).await
+    }
+
+    pub async fn remote_search(&self, type_: &str, info: &RemoteSearchInfo) -> Result<Vec<RemoteSearchResult>, reqwest::Error> {
+        let path = format!("Items/RemoteSearch/{}",type_);
+        let body = json!(info);
+        self.post(&path, &[],body).await?.json().await
+    }
+
+    pub async fn get_external_id_info(&self, id: &str) -> Result<Vec<ExternalIdInfo>, reqwest::Error> {
+        let path = format!("Items/{}/ExternalIdInfos", id);
+        let params = [("IsSupportedAsIdentifier", "true")];
+        self.request(&path, &params).await
     }
 
     pub async fn get_live_playbackinfo(&self, id: &str) -> Result<LiveMedia, reqwest::Error> {

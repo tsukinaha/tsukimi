@@ -31,3 +31,4 @@ pub mod tu_list_item;
 pub mod utils;
 pub mod window;
 pub mod refresh_dialog;
+pub mod identify_dialog;
