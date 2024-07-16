@@ -225,6 +225,12 @@ impl HomePage {
             return;
         }
 
+        let carousel = self.imp().carousel.get();
+        for _ in 0..carousel.observe_children().n_items() {
+            carousel.remove(&carousel.last_child().unwrap());
+        }
+        self.imp().carouset_items.borrow_mut().clear();
+
         let date = Local::now();
         let formatted_date = format!("{:04}{:02}{:02}", date.year(), date.month(), date.day());
         let results = match get_data_with_cache_else(formatted_date, "carousel", async {
