@@ -1,0 +1,88 @@
+use adw::prelude::*;
+use adw::subclass::prelude::*;
+use gettextrs::gettext;
+use gtk::glib;
+use gtk::template_callbacks;
+
+use crate::{
+    client::{client::EMBY_CLIENT, error::UserFacingError},
+    toast,
+    utils::spawn_tokio,
+};
+
+mod imp {
+    use super::*;
+
+    use glib::subclass::InitializingObject;
+
+    use gtk::{glib, CompositeTemplate};
+    use std::cell::OnceCell;
+
+    #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
+    #[template(resource = "/moe/tsukimi/refresh_dialog.ui")]
+    #[properties(wrapper_type = super::RefreshDialog)]
+    pub struct RefreshDialog {
+        #[property(get, set, construct_only)]
+        pub id: OnceCell<String>,
+        #[template_child]
+        pub metadata_check: TemplateChild<gtk::CheckButton>,
+        #[template_child]
+        pub image_check: TemplateChild<gtk::CheckButton>,
+    }
+
+    #[glib::object_subclass]
+    impl ObjectSubclass for RefreshDialog {
+        const NAME: &'static str = "RefreshDialog";
+        type Type = super::RefreshDialog;
+        type ParentType = adw::Dialog;
+
+        fn class_init(klass: &mut Self::Class) {
+            klass.bind_template();
+            klass.bind_template_instance_callbacks();
+        }
+
+        fn instance_init(obj: &InitializingObject<Self>) {
+            obj.init_template();
+        }
+    }
+
+    #[glib::derived_properties]
+    impl ObjectImpl for RefreshDialog {}
+
+    impl WidgetImpl for RefreshDialog {}
+    impl AdwDialogImpl for RefreshDialog {}
+}
+
+glib::wrapper! {
+    /// Preference Window to display and update room details.
+    pub struct RefreshDialog(ObjectSubclass<imp::RefreshDialog>)
+        @extends gtk::Widget, adw::Dialog, adw::PreferencesDialog, @implements gtk::Accessible, gtk::Root;
+}
+
+#[template_callbacks]
+impl RefreshDialog {
+    pub fn new(id: &str) -> Self {
+        glib::Object::builder().property("id", id).build()
+    }
+
+    #[template_callback]
+    async fn on_refresh(&self) {
+        let id = self.id();
+        let imp = self.imp();
+        let metadata = imp.metadata_check.is_active();
+        let image = imp.image_check.is_active();
+
+        match spawn_tokio(async move {
+            EMBY_CLIENT.fullscan(&id, &metadata.to_string(), &image.to_string()).await
+        }).await  {
+            Ok(_) => {
+                toast!(self, gettext("Scanning..."));
+            }
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+            }
+        }
+
+        self.close();
+    }
+}

@@ -352,6 +352,30 @@ impl EmbyClient {
         self.post(&path, &params, profile).await?.json().await
     }
 
+    pub async fn scan(&self, id: &str) -> Result<Response, reqwest::Error> {
+        let path = format!("Items/{}/Refresh", id);
+        let params = [
+            ("Recursive", "true"),
+            ("ImageRefreshMode", "Default"),
+            ("MetadataRefreshMode", "Default"),
+            ("ReplaceAllImages", "false"),
+            ("ReplaceAllMetadata", "false"),
+        ];
+        self.post(&path, &params, json!({})).await
+    }
+
+    pub async fn fullscan(&self, id: &str, replace_images: &str, replace_metadata: &str) -> Result<Response, reqwest::Error> {
+        let path = format!("Items/{}/Refresh", id);
+        let params = [
+            ("Recursive", "true"),
+            ("ImageRefreshMode", "FullRefresh"),
+            ("MetadataRefreshMode", "FullRefresh"),
+            ("ReplaceAllImages", replace_images),
+            ("ReplaceAllMetadata", replace_metadata),
+        ];
+        self.post(&path, &params, json!({})).await
+    }
+
     pub async fn get_live_playbackinfo(&self, id: &str) -> Result<LiveMedia, reqwest::Error> {
         let path = format!("Items/{}/PlaybackInfo", id);
         let params = [

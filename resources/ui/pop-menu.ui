@@ -44,9 +44,22 @@
         <attribute name="accel">&lt;Control&gt;I</attribute>
       </item>
       <item>
+        <attribute name="label" translatable="yes">Identify</attribute>
+        <attribute name="action">item.identify</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;Y</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Refresh Metadata</attribute>
+        <attribute name="action">item.refresh</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;E</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">Scan</attribute>
         <attribute name="action">item.scan</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;S</attribute>
       </item>
     </section>
   </menu>

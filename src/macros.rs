@@ -33,7 +33,7 @@ macro_rules! toast {
     ($widget:expr, $message:expr) => {{
         $crate::_add_toast!(
             $widget,
-            adw::Toast::builder().timeout(1).title($message).build()
+            adw::Toast::builder().timeout(2).title($message).build()
         );
     }};
 }
