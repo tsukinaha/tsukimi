@@ -377,6 +377,7 @@ impl EmbyClient {
 
     pub async fn remote_search(&self, type_: &str, info: &RemoteSearchInfo) -> Result<Vec<RemoteSearchResult>, reqwest::Error> {
         let path = format!("Items/RemoteSearch/{}",type_);
+        println!("{}", path);
         let body = json!(info);
         self.post(&path, &[],body).await?.json().await
     }

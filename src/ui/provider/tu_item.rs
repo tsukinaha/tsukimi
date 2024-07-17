@@ -107,6 +107,7 @@ impl TuItem {
         let tu_item: TuItem = glib::object::Object::new();
         tu_item.set_id(latest.id.clone());
         tu_item.set_name(latest.name.clone());
+        tu_item.set_item_type(latest.latest_type.clone());
         if let Some(production_year) = latest.production_year {
             tu_item.set_production_year(production_year);
         }

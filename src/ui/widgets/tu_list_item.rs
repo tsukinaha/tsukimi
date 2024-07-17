@@ -607,8 +607,9 @@ impl TuListItem {
                                     obj,
                                     async move {
                                         let id = obj.item().id();
+                                        let type_ = obj.item().item_type();
                                         let dialog =
-                                            crate::ui::widgets::identify_dialog::IdentifyDialog::new(&id);
+                                            crate::ui::widgets::identify_dialog::IdentifyDialog::new(&id, &type_);
                                         crate::insert_editm_dialog!(obj, dialog);
                                     }
                                 ))

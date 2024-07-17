@@ -430,8 +430,6 @@ pub struct SearchProviderId {
     pub tmdb: Option<String>,
     #[serde(rename = "Tvdb")]
     pub tvdb: Option<String>,
-    #[serde(rename = "Official Website")]
-    pub official_website: Option<String>,
     #[serde(rename = "IMDB")]
     pub imdb: Option<String>,
     #[serde(rename = "Zap2It")]
@@ -441,11 +439,11 @@ pub struct SearchProviderId {
 #[derive(Serialize, Deserialize, Clone, Default)]
 pub struct RemoteSearchResult {
     #[serde(rename = "Name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "ProductionYear")]
-    production_year: Option<u32>,
+    pub production_year: Option<u32>,
     #[serde(rename = "ImageUrl")]
-    image_url: Option<String>,
+    pub image_url: Option<String>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
