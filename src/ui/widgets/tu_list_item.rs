@@ -87,7 +87,6 @@ mod imp {
             let obj = self.obj();
             obj.set_up();
             obj.gesture();
-            obj.insert_action_group("item", obj.set_action().as_ref());
             obj.reveals();
         }
 
@@ -505,6 +504,7 @@ impl TuListItem {
             imp,
             move |gesture, _n, x, y| {
                 gesture.set_state(gtk::EventSequenceState::Claimed);
+                imp.obj().insert_action_group("item", imp.obj().set_action().as_ref());
                 if let Some(popover) = imp.popover.borrow().as_ref() {
                     popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
                     popover.popup();
