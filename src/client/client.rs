@@ -23,7 +23,7 @@ pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
 static PROFILE: &str = include_str!("stream_profile.json");
 static LIVEPROFILE: &str = include_str!("test.json");
-static CLIENT_ID: Lazy<String> = Lazy::new(|| format!("Tsukimi/{}", APP_VERSION));
+static CLIENT_ID: Lazy<String> = Lazy::new(|| format!("Tsukimi"));
 pub struct EmbyClient {
     pub url: Mutex<Option<Url>>,
     pub client: reqwest::Client,
