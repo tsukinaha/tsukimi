@@ -115,7 +115,7 @@ impl HomePage {
             async move {
                 obj.setup(true).await;
                 gtk::glib::timeout_future_seconds(1).await;
-                obj.setup(false).await;
+                obj.setup_history(false).await;
             }
         ));
     }
@@ -134,7 +134,7 @@ impl HomePage {
         fraction_reset!(self);
         self.set_carousel().await;
         self.setup_history(enable_cache).await;
-        self.setup_library(enable_cache).await;
+        self.setup_library().await;
         fraction!(self);
     }
 
@@ -162,16 +162,16 @@ impl HomePage {
         hortu.set_items(&results.items);
     }
 
-    pub async fn setup_library(&self, enable_cache: bool) {
+    pub async fn setup_library(&self) {
         let hortu = self.imp().libhortu.get();
 
-        let results = match req_cache_single("library", async { EMBY_CLIENT.get_library().await }, enable_cache).await {
+        let results = match req_cache("library", async { EMBY_CLIENT.get_library().await }).await {
             Ok(history) => history,
             Err(e) => {
                 toast!(self, e.to_user_facing());
-                None
+                return;
             }
-        }.unwrap_or_default();
+        };
 
         let results = results.items;
 
