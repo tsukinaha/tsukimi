@@ -129,6 +129,19 @@ You should install the package `gst-libav` to play media files with built-in pla
                                 </style>
                               </object>
                             </child>
+                            <child type="overlay">
+                              <object class="GtkButton">
+                                <property name="halign">start</property>
+                                <property name="valign">end</property>
+                                <property name="margin-start">30</property>
+                                <property name="margin-bottom">30</property>
+                                <property name="icon-name">applications-system-symbolic</property>
+                                <property name="action-name">setting.account</property>
+                                <style>
+                                  <class name="osd" />
+                                </style>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
