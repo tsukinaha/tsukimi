@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use gettextrs::gettext;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -387,6 +388,64 @@ pub struct Items {
     pub total_record_count: Option<u32>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct ExternalIdInfo {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "Key")]
+    pub key: String,
+    #[serde(rename = "UrlFormatString")]
+    pub url_format_string: String,
+    #[serde(rename = "IsSupportedAsIdentifier")]
+    pub is_supported_as_identifier: bool,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct RemoteSearchInfo {
+    #[serde(rename = "ItemId")]
+    pub item_id: String,
+    #[serde(rename = "SearchInfo")]
+    pub search_info: SearchInfo,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct SearchInfo {
+    #[serde(rename = "Name")]
+    pub name: Option<String>,
+    #[serde(rename = "Year")]
+    pub year: Option<u32>,
+    #[serde(rename = "ProviderIds")]
+    pub provider_ids: Vec<SearchProviderId>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct SearchProviderId {
+    #[serde(rename = "MusicBrainzAlbum")]
+    pub music_brainz_album: Option<String>,
+    #[serde(rename = "MusicBrainzAlbumArtist")]
+    pub music_brainz_album_artist: Option<String>,
+    #[serde(rename = "MusicBrainzReleaseGroup")]
+    pub music_brainz_release_group: Option<String>,
+    #[serde(rename = "Tmdb")]
+    pub tmdb: Option<String>,
+    #[serde(rename = "Tvdb")]
+    pub tvdb: Option<String>,
+    #[serde(rename = "IMDB")]
+    pub imdb: Option<String>,
+    #[serde(rename = "Zap2It")]
+    pub zap2it: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct RemoteSearchResult {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "ProductionYear")]
+    pub production_year: Option<u32>,
+    #[serde(rename = "ImageUrl")]
+    pub image_url: Option<String>,
+}
+
 #[derive(Deserialize, Debug, Clone)]
 pub struct Back {
     pub id: String,
@@ -407,4 +466,119 @@ pub struct LoginResponse {
 pub struct User {
     #[serde(rename = "Id")]
     pub id: String,
+}
+
+use crate::client::client::EMBY_CLIENT;
+use crate::client::error::UserFacingError;
+use crate::ui::widgets::singlelist::SingleListPage;
+use crate::ui::widgets::window::Window;
+use crate::utils::spawn_tokio;
+use crate::{
+    toast,
+    ui::{
+        provider::tu_item::TuItem,
+        widgets::{
+            actor::ActorPage, boxset::BoxSetPage, item::ItemPage, list::ListPage,
+            music_album::AlbumPage,
+        },
+    },
+    utils::spawn,
+};
+use adw::prelude::*;
+use gtk::glib;
+
+impl SGTitem {
+    pub fn activate<T>(&self, widget: &T, list_type: String)
+    where
+        T: gtk::prelude::WidgetExt + glib::clone::Downgrade,
+    {
+        let window = widget.root().and_downcast::<Window>().unwrap();
+        let page = SingleListPage::new(self.id.to_string(),"".to_string(),
+        &list_type,
+        None,
+        true,);
+        push_page_with_tag(window, page, self.name.clone());
+    }
+
+}
+
+impl SimpleListItem {
+    pub fn activate<T>(&self, widget: &T)
+    where
+        T: gtk::prelude::WidgetExt + glib::clone::Downgrade,
+    {
+        let window = widget.root().and_downcast::<Window>().unwrap();
+
+        if self.latest_type == "TvChannel" {
+            self.tvchannel(window);
+            return;
+        }
+
+        match self.latest_type.as_str() {
+            "Series" | "Movie" => {
+                let page = ItemPage::new(self.id.clone(), self.id.clone(), self.name.clone());
+                push_page_with_tag(window, page, self.name.clone());
+            }
+            "Episode" => {
+                let page = ItemPage::new(
+                    self.series_id.clone().unwrap(),
+                    self.id.clone(),
+                    self.name.clone(),
+                );
+                push_page_with_tag(window, page, self.series_name.clone().unwrap_or_default());
+            }
+            "MusicAlbum" => {
+                let page = AlbumPage::new(TuItem::from_simple(self, None));
+                push_page_with_tag(window, page, self.name.clone());
+            }
+            "Actor" | "Director" | "Person" | "Writer" => {
+                let page = ActorPage::new(&self.id);
+                push_page_with_tag(window, page, self.name.clone());
+            }
+            "BoxSet" => {
+                let page = BoxSetPage::new(&self.id);
+                push_page_with_tag(window, page, self.name.clone());
+            }
+            "CollectionFolder" | "UserView" => {
+                let page = ListPage::new(
+                    self.id.clone(),
+                    self.collection_type.clone().unwrap_or_default(),
+                );
+                push_page_with_tag(window, page, self.name.clone());
+            }
+            _ => toast!(window, gettext("Not Supported Type")),
+        }
+    }
+
+    fn tvchannel(&self, window: Window) {
+        spawn(glib::clone!(
+            #[strong(rename_to = item)]
+            self,
+            async move {
+                toast!(window, gettext("Processing..."));
+                match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&item.id).await })
+                    .await
+                {
+                    Ok(playback) => {
+                        let Some(ref url) = playback.media_sources[0].transcoding_url else {
+                            toast!(window, gettext("No transcoding url found"));
+                            return;
+                        };
+                        window.play_media(url.to_string(), None, Some(item.name), None, None, 0.0)
+                    }
+                    Err(e) => {
+                        toast!(window, e.to_user_facing());
+                    }
+                }
+            }
+        ));
+    }
+}
+
+fn push_page_with_tag<T>(window: Window, page: T, tag: String)
+where
+    T: NavigationPageExt,
+{
+    page.set_tag(Some(&tag));
+    window.push_page(&page);
 }

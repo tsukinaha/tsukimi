@@ -2,25 +2,19 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::{gio, glib, template_callbacks, CompositeTemplate};
 
 use crate::client::structs::SimpleListItem;
-use crate::ui::provider::tu_item::TuItem;
 use crate::ui::widgets::fix::ScrolledWindowFixExt;
-
-use super::tu_list_item::TuListItem;
 
 const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
 
 mod imp {
+    use crate::ui::widgets::utils::TuItemBuildExt;
     use std::cell::OnceCell;
 
-    use crate::client::client::EMBY_CLIENT;
-    use crate::client::error::UserFacingError;
-    use crate::toast;
-    use crate::utils::{spawn, spawn_tokio};
-    use gettextrs::gettext;
     use glib::subclass::InitializingObject;
-    use gtk::gio;
 
-    use crate::{client::structs::SimpleListItem, ui::widgets::window::Window};
+    use gtk::{gio, SignalListItemFactory};
+
+    use crate::client::structs::SimpleListItem;
 
     use super::*;
 
@@ -71,6 +65,7 @@ mod imp {
     impl ObjectImpl for HortuScrolled {
         fn constructed(&self) {
             self.parent_constructed();
+
             self.scrolled.fix();
 
             let store = gio::ListStore::new::<glib::BoxedAnyObject>();
@@ -79,199 +74,25 @@ mod imp {
 
             self.list.set_model(Some(&self.selection));
 
-            self.list
-                .set_factory(Some(&self.factory(*self.isresume.get().unwrap_or(&false))));
-
-            self.list.connect_activate(glib::clone!(
-                #[weak(rename_to = imp)]
-                self,
-                move |listview, position| {
-                    let window = imp.obj().root().and_downcast::<Window>().unwrap();
-                    let model = listview.model().unwrap();
-                    let item = model
-                        .item(position)
-                        .and_downcast::<glib::BoxedAnyObject>()
-                        .unwrap();
-                    let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                    imp.activate(window, &result);
-                }
+            self.list.set_factory(Some(
+                SignalListItemFactory::new().tu_item(self.obj().isresume()),
             ));
+
+            self.list.connect_activate(move |listview, position| {
+                let model = listview.model().unwrap();
+                let item = model
+                    .item(position)
+                    .and_downcast::<glib::BoxedAnyObject>()
+                    .unwrap();
+                let result: std::cell::Ref<SimpleListItem> = item.borrow();
+                result.activate(listview);
+            });
         }
     }
 
     impl WidgetImpl for HortuScrolled {}
 
     impl BinImpl for HortuScrolled {}
-
-    impl HortuScrolled {
-        fn factory(&self, is_resume: bool) -> gtk::SignalListItemFactory {
-            let factory = gtk::SignalListItemFactory::new();
-            factory.connect_bind(move |_, item| {
-                let list_item = item
-                    .downcast_ref::<gtk::ListItem>()
-                    .expect("Needs to be ListItem");
-                let entry = item
-                    .downcast_ref::<gtk::ListItem>()
-                    .expect("Needs to be ListItem")
-                    .item()
-                    .and_downcast::<glib::BoxedAnyObject>()
-                    .expect("Needs to be BoxedAnyObject");
-                let item: std::cell::Ref<SimpleListItem> = entry.borrow();
-                if list_item.child().is_none() {
-                    let tu_item = TuItem::from_simple(&item, None);
-                    let list_child = TuListItem::new(tu_item, &item.latest_type, is_resume);
-                    list_item.set_child(Some(&list_child));
-                }
-            });
-            factory
-        }
-
-        fn activate(&self, window: crate::ui::widgets::window::Window, result: &SimpleListItem) {
-            let (view, title_var) = match window.current_view_name().as_str() {
-                "homepage" => (&window.imp().homeview, "HOME_TITLE"),
-                "searchpage" => (&window.imp().searchview, "SEARCH_TITLE"),
-                "historypage" => (&window.imp().historyview, "HISTORY_TITLE"),
-                _ => (&window.imp().searchview, "SEARCH_TITLE"),
-            };
-            window.set_title(&result.name);
-            std::env::set_var(title_var, &result.name);
-
-            match result.latest_type.as_str() {
-                "Movie" | "Video" => Self::push_page(
-                    view,
-                    &window,
-                    &result.name,
-                    crate::ui::widgets::item::ItemPage::new(
-                        result.id.clone(),
-                        result.id.clone(),
-                        result.name.clone(),
-                    ),
-                ),
-                "TvChannel" => {
-                    let id = result.id.clone();
-                    let name = result.name.clone();
-                    spawn(glib::clone!(
-                        #[weak(rename_to = imp)]
-                        self,
-                        async move {
-                            let obj = imp.obj();
-                            toast!(obj, gettext("Processing..."));
-                            match spawn_tokio(async move {
-                                EMBY_CLIENT.get_live_playbackinfo(&id).await
-                            })
-                            .await
-                            {
-                                Ok(playback) => {
-                                    let Some(ref url) = playback.media_sources[0].transcoding_url
-                                    else {
-                                        toast!(obj, gettext("No transcoding url found"));
-                                        return;
-                                    };
-                                    let window = obj.root().unwrap().downcast::<Window>().unwrap();
-                                    window.play_media(
-                                        url.to_string(),
-                                        None,
-                                        Some(name),
-                                        None,
-                                        None,
-                                        0.0,
-                                    )
-                                }
-                                Err(e) => {
-                                    toast!(obj, e.to_user_facing());
-                                }
-                            }
-                        }
-                    ));
-                }
-                "Series" => Self::push_page(
-                    view,
-                    &window,
-                    &result.name,
-                    crate::ui::widgets::item::ItemPage::new(
-                        result.id.clone(),
-                        result.id.clone(),
-                        result.name.clone(),
-                    ),
-                ),
-                "Episode" => Self::push_page(
-                    view,
-                    &window,
-                    &result.series_name.clone().unwrap_or_default(),
-                    crate::ui::widgets::item::ItemPage::new(
-                        result.series_id.as_ref().unwrap().clone(),
-                        result.id.clone(),
-                        result.series_name.clone().unwrap_or("".to_string()),
-                    ),
-                ),
-                "Actor" | "Person" | "Director" => Self::push_page(
-                    view,
-                    &window,
-                    &result.name,
-                    crate::ui::widgets::actor::ActorPage::new(&result.id),
-                ),
-                "BoxSet" => Self::push_page(
-                    view,
-                    &window,
-                    &result.name,
-                    crate::ui::widgets::boxset::BoxSetPage::new(&result.id),
-                ),
-                "MusicAlbum" => {
-                    let item = TuItem::from_simple(result, None);
-                    Self::push_page(
-                        view,
-                        &window,
-                        &result.name,
-                        crate::ui::widgets::music_album::AlbumPage::new(item),
-                    )
-                }
-                "CollectionFolder" => {
-                    let item = TuItem::from_simple(result, None);
-                    Self::push_page(
-                        view,
-                        &window,
-                        &result.name,
-                        crate::ui::widgets::list::ListPage::new(
-                            item.id(),
-                            item.collection_type().unwrap_or_default(),
-                        ),
-                    )
-                }
-                "UserView" => {
-                    let item = TuItem::from_simple(result, None);
-                    Self::push_page(
-                        view,
-                        &window,
-                        &result.name,
-                        crate::ui::widgets::singlelist::SingleListPage::new(
-                            item.id(),
-                            item.collection_type().unwrap_or_default(),
-                            "livetv",
-                            None,
-                            false,
-                        ),
-                    )
-                }
-                _ => {}
-            }
-        }
-
-        fn push_page<T: 'static + Clone + gtk::prelude::IsA<adw::NavigationPage>>(
-            view: &adw::NavigationView,
-            window: &crate::ui::widgets::window::Window,
-            tag: &str,
-            page: T,
-        ) {
-            if view.find_page(tag).is_some() {
-                view.pop_to_tag(tag);
-            } else {
-                let item_page = page;
-                item_page.set_tag(Some(tag));
-                view.push(&item_page);
-                window.set_pop_visibility(true);
-            }
-        }
-    }
 }
 
 glib::wrapper! {
@@ -294,21 +115,25 @@ impl HortuScrolled {
     }
 
     pub fn set_items(&self, items: &[SimpleListItem]) {
-        if items.is_empty() {
-            return;
-        }
-
-        self.set_visible(true);
-
-        let items = items.to_owned();
-
         let imp = self.imp();
+
         let store = imp
             .selection
             .model()
             .unwrap()
             .downcast::<gio::ListStore>()
             .unwrap();
+
+        store.remove_all();
+
+        if items.is_empty() {
+            self.set_visible(false);
+            return;
+        }
+
+        self.set_visible(true);
+
+        let items = items.to_owned();
 
         for result in items {
             let object = glib::BoxedAnyObject::new(result);

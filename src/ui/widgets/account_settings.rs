@@ -176,10 +176,16 @@ impl AccountSettings {
         }
         match spawn_tokio(async move { EMBY_CLIENT.change_password(&new_password).await }).await {
             Ok(_) => {
-                toast!(self, gettext("Password changed successfully! Please login again."));
+                toast!(
+                    self,
+                    gettext("Password changed successfully! Please login again.")
+                );
             }
             Err(e) => {
-                toast!(self, &format!("{}: {}", gettext("Failed to change password"), e));
+                toast!(
+                    self,
+                    &format!("{}: {}", gettext("Failed to change password"), e)
+                );
             }
         };
     }

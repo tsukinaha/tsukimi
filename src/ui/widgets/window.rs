@@ -2,9 +2,9 @@ use std::env;
 use std::path::PathBuf;
 
 use adw::prelude::*;
-use gettextrs::gettext;
 use gio::Settings;
 use gtk::subclass::prelude::*;
+use gtk::Widget;
 mod imp {
     use std::cell::OnceCell;
 
@@ -17,10 +17,13 @@ mod imp {
 
     use crate::ui::clapper::page::ClapperPage;
     use crate::ui::widgets::content_viewer::MediaContentViewer;
+    use crate::ui::widgets::home::HomePage;
     use crate::ui::widgets::image_dialog::ImagesDialog;
     use crate::ui::widgets::item_actionbox::ItemActionsBox;
+    use crate::ui::widgets::liked::LikedPage;
     use crate::ui::widgets::media_viewer::MediaViewer;
     use crate::ui::widgets::player_toolbar::PlayerToolbarBox;
+    use crate::ui::widgets::search::SearchPage;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -35,21 +38,9 @@ mod imp {
         #[template_child]
         pub backgroundstack: TemplateChild<gtk::Stack>,
         #[template_child]
-        pub popbutton: TemplateChild<gtk::ToggleButton>,
-        #[template_child]
-        pub searchpage: TemplateChild<adw::NavigationPage>,
-        #[template_child]
-        pub historypage: TemplateChild<adw::NavigationPage>,
-        #[template_child]
-        pub homepage: TemplateChild<adw::NavigationPage>,
+        pub popbutton: TemplateChild<gtk::Button>,
         #[template_child]
         pub split_view: TemplateChild<adw::OverlaySplitView>,
-        #[template_child]
-        pub homeview: TemplateChild<adw::NavigationView>,
-        #[template_child]
-        pub historyview: TemplateChild<adw::NavigationView>,
-        #[template_child]
-        pub searchview: TemplateChild<adw::NavigationView>,
         #[template_child]
         pub navipage: TemplateChild<adw::NavigationPage>,
         #[template_child]
@@ -78,6 +69,16 @@ mod imp {
         pub media_viewer: TemplateChild<MediaViewer>,
         pub selection: gtk::SingleSelection,
         pub settings: OnceCell<Settings>,
+        #[template_child]
+        pub mainpage: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub mainview: TemplateChild<adw::NavigationView>,
+        #[template_child]
+        pub homepage: TemplateChild<adw::Bin>,
+        #[template_child]
+        pub likedpage: TemplateChild<adw::Bin>,
+        #[template_child]
+        pub searchpage: TemplateChild<adw::Bin>,
 
         pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
     }
@@ -97,17 +98,11 @@ mod imp {
             MediaContentViewer::ensure_type();
             MediaViewer::ensure_type();
             ImagesDialog::ensure_type();
+            HomePage::ensure_type();
+            SearchPage::ensure_type();
+            LikedPage::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
-            klass.install_action("win.home", None, move |window, _action, _parameter| {
-                window.freshhomepage();
-            });
-            klass.install_action("win.history", None, move |window, _action, _parameter| {
-                window.freshhistorypage();
-            });
-            klass.install_action("win.search", None, move |window, _action, _parameter| {
-                window.freshsearchpage();
-            });
             klass.install_action("win.relogin", None, move |window, _action, _parameter| {
                 window.placeholder();
             });
@@ -121,9 +116,6 @@ mod imp {
                     window.account_settings();
                 },
             );
-            klass.install_action_async("win.pop", None, |window, _action, _parameter| async move {
-                window.pop().await;
-            });
             klass.install_action("win.toggle-fullscreen", None, |obj, _, _| {
                 if obj.is_fullscreen() {
                     obj.unfullscreen();
@@ -169,7 +161,7 @@ mod imp {
                                 obj.homepage();
                             }
                             1 => {
-                                obj.historypage();
+                                obj.likedpage();
                             }
                             2 => {
                                 obj.searchpage();
@@ -214,6 +206,9 @@ use crate::APP_ID;
 use glib::Object;
 use gtk::{gio, glib, template_callbacks};
 
+use super::home::HomePage;
+use super::liked::LikedPage;
+use super::search::SearchPage;
 use super::server_row::ServerRow;
 use super::tu_list_item::PROGRESSBAR_ANIMATION_DURATION;
 
@@ -226,6 +221,57 @@ glib::wrapper! {
 
 #[template_callbacks]
 impl Window {
+    pub fn homepage(&self) {
+        let imp = self.imp();
+        if imp.homepage.child().is_none() {
+            imp.homepage.set_child(Some(&HomePage::new()));
+        }
+        imp.navipage.set_title("");
+        imp.mainview.pop_to_tag("mainpage");
+        imp.insidestack.set_visible_child_name("homepage");
+        imp.popbutton.set_visible(false);
+    }
+
+    pub fn likedpage(&self) {
+        let imp = self.imp();
+        if imp.likedpage.child().is_none() {
+            imp.likedpage.set_child(Some(&LikedPage::new()));
+        }
+        imp.navipage.set_title("");
+        imp.mainview.pop_to_tag("mainpage");
+        imp.insidestack.set_visible_child_name("likedpage");
+        imp.popbutton.set_visible(false);
+    }
+
+    pub fn searchpage(&self) {
+        let imp = self.imp();
+        if imp.searchpage.child().is_none() {
+            imp.searchpage.set_child(Some(&SearchPage::new()));
+        }
+        imp.navipage.set_title("");
+        imp.mainview.pop_to_tag("mainpage");
+        imp.insidestack.set_visible_child_name("searchpage");
+        imp.popbutton.set_visible(false);
+    }
+
+    #[template_callback]
+    pub fn on_pop(&self) {
+        let imp = self.imp();
+        imp.mainview.pop();
+        let Some(now_page) = imp.mainview.visible_page() else {
+            return;
+        };
+        let Some(tag) = now_page.tag() else {
+            return;
+        };
+        if tag == "mainpage" {
+            imp.popbutton.set_visible(false);
+            imp.navipage.set_title("");
+            return;
+        }
+        imp.navipage.set_title(&tag);
+    }
+
     pub fn set_servers(&self) {
         let imp = self.imp();
         let listbox = imp.serversbox.get();
@@ -237,11 +283,7 @@ impl Window {
                 && env::var("EMBY_NAME").is_err()
             {
                 EMBY_CLIENT.init(account);
-                imp.historypage.set_child(None::<&gtk::Widget>);
-                imp.searchpage.set_child(None::<&gtk::Widget>);
-                self.mainpage();
-                self.freshhomepage();
-                self.account_setup();
+                self.reset();
             }
         }
         if accounts.accounts.is_empty() {
@@ -284,12 +326,11 @@ impl Window {
     }
 
     pub fn reset(&self) {
-        self.imp().historypage.set_child(None::<&gtk::Widget>);
-        self.imp().searchpage.set_child(None::<&gtk::Widget>);
-
         self.mainpage();
-        self.freshhomepage();
+        self.imp().selectlist.unselect_all();
         self.account_setup();
+        self.remove_all();
+        self.homepage();
     }
 
     pub fn set_server_rows(&self, account: Account) -> adw::ActionRow {
@@ -335,57 +376,6 @@ impl Window {
     pub fn account_settings(&self) {
         let dialog = crate::ui::widgets::account_settings::AccountSettings::new();
         dialog.present(Some(self));
-    }
-
-    async fn homeviewpop(&self) {
-        let imp = self.imp();
-        imp.homeview.pop();
-        if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
-            if tag.as_str() == "homepage" {
-                imp.navipage
-                    .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| gettext("Home")));
-                self.change_pop_visibility();
-            } else {
-                imp.navipage.set_title(&tag);
-            }
-        }
-    }
-
-    async fn historyviewpop(&self) {
-        let imp = self.imp();
-        imp.historyview.pop();
-        if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
-            if tag.as_str() == "historypage" {
-                imp.navipage.set_title(&gettext("Liked"));
-                self.change_pop_visibility();
-            } else {
-                imp.navipage.set_title(&tag);
-            }
-        }
-    }
-
-    async fn searchviewpop(&self) {
-        let imp = self.imp();
-        imp.searchview.pop();
-        if let Some(tag) = imp.searchview.visible_page().unwrap().tag() {
-            if tag.as_str() == "searchpage" {
-                imp.navipage.set_title(&gettext("Search"));
-                self.change_pop_visibility();
-            } else {
-                imp.navipage.set_title(&tag);
-            }
-        }
-    }
-
-    async fn pop(&self) {
-        let imp = self.imp();
-        if imp.insidestack.visible_child_name().unwrap().as_str() == "homepage" {
-            self.homeviewpop().await;
-        } else if imp.insidestack.visible_child_name().unwrap().as_str() == "historypage" {
-            self.historyviewpop().await;
-        } else if imp.insidestack.visible_child_name().unwrap().as_str() == "searchpage" {
-            self.searchviewpop().await;
-        }
     }
 
     pub fn change_pop_visibility(&self) {
@@ -461,120 +451,6 @@ impl Window {
     fn placeholder(&self) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("placeholder");
-    }
-
-    fn homepage(&self) {
-        let imp = self.imp();
-        imp.insidestack.set_visible_child_name("homepage");
-        if imp.homepage.child().is_none() {
-            imp.homepage
-                .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
-            imp.navipage
-                .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| gettext("Home")));
-        }
-        if let Some(tag) = imp.homeview.visible_page().unwrap().tag() {
-            if tag.as_str() == "homepage" {
-                imp.navipage
-                    .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| gettext("Home")));
-                self.set_pop_visibility(false);
-            } else {
-                imp.navipage
-                    .set_title(&env::var("HOME_TITLE").unwrap_or_else(|_| gettext("Home")));
-                self.set_pop_visibility(true);
-            }
-        } else {
-            imp.navipage
-                .set_title(&env::var("HOME_TITLE").unwrap_or_else(|_| gettext("Home")));
-            self.set_pop_visibility(true);
-        }
-    }
-
-    fn freshhomepage(&self) {
-        let imp = self.imp();
-        imp.selectlist
-            .select_row(imp.selectlist.row_at_index(0).as_ref());
-        imp.homeview
-            .pop_to_page(&imp.homeview.find_page("homepage").unwrap());
-        imp.homepage
-            .set_child(Some(&crate::ui::widgets::home::HomePage::new()));
-        imp.navipage
-            .set_title(&env::var("EMBY_NAME").unwrap_or_else(|_| gettext("Home")));
-        self.set_pop_visibility(false);
-        self.imp().player_toolbar_box.on_stop_button_clicked();
-    }
-
-    fn freshhistorypage(&self) {
-        let imp = self.imp();
-        imp.selectlist
-            .select_row(imp.selectlist.row_at_index(1).as_ref());
-        imp.insidestack.set_visible_child_name("historypage");
-        imp.historyview
-            .pop_to_page(&imp.historyview.find_page("historypage").unwrap());
-        imp.historypage
-            .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
-        imp.navipage.set_title(&gettext("History"));
-        self.set_pop_visibility(false);
-    }
-
-    fn freshsearchpage(&self) {
-        let imp = self.imp();
-        imp.selectlist
-            .select_row(imp.selectlist.row_at_index(2).as_ref());
-        imp.insidestack.set_visible_child_name("searchpage");
-        imp.searchview
-            .pop_to_page(&imp.searchview.find_page("searchpage").unwrap());
-        imp.searchpage
-            .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
-        imp.navipage.set_title(&gettext("Search"));
-        self.set_pop_visibility(false);
-    }
-
-    fn historypage(&self) {
-        let imp = self.imp();
-        imp.insidestack.set_visible_child_name("historypage");
-        if imp.historypage.child().is_none() {
-            imp.historypage
-                .set_child(Some(&crate::ui::widgets::history::HistoryPage::new()));
-            imp.navipage.set_title(&gettext("Liked"));
-        }
-        if let Some(tag) = imp.historyview.visible_page().unwrap().tag() {
-            if tag.as_str() == "historypage" {
-                imp.navipage.set_title(&gettext("Liked"));
-                self.set_pop_visibility(false);
-            } else {
-                self.set_pop_visibility(true);
-                imp.navipage
-                    .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| gettext("Liked")));
-            }
-        } else {
-            self.set_pop_visibility(true);
-            imp.navipage
-                .set_title(&env::var("HISTORY_TITLE").unwrap_or_else(|_| gettext("Liked")));
-        }
-    }
-
-    fn searchpage(&self) {
-        let imp = self.imp();
-        imp.insidestack.set_visible_child_name("searchpage");
-        if imp.searchpage.child().is_none() {
-            imp.searchpage
-                .set_child(Some(&crate::ui::widgets::search::SearchPage::new()));
-            imp.navipage.set_title(&gettext("Search"));
-        }
-        if let Some(tag) = imp.searchview.visible_page().unwrap().tag() {
-            if tag.as_str() == "searchpage" {
-                imp.navipage.set_title(&gettext("Search"));
-                self.set_pop_visibility(false);
-            } else {
-                self.set_pop_visibility(true);
-                imp.navipage
-                    .set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| gettext("Search")));
-            }
-        } else {
-            self.set_pop_visibility(true);
-            imp.navipage
-                .set_title(&env::var("SEARCH_TITLE").unwrap_or_else(|_| gettext("Search")));
-        }
     }
 
     fn sidebar(&self) {
@@ -689,7 +565,6 @@ impl Window {
 
     pub fn set_fraction(&self, to_value: f64) {
         let progressbar = &self.imp().progressbar;
-        progressbar.set_inverted(!progressbar.is_inverted());
         self.progressbar_animation()
             .set_value_from(progressbar.fraction());
         self.progressbar_animation().set_value_to(to_value);
@@ -789,5 +664,40 @@ impl Window {
                 back,
             );
         }
+    }
+
+    pub fn push_page<T>(&self, page: &T)
+    where
+        T: NavigationPageExt,
+    {
+        let imp = self.imp();
+        if let Some(tag) = page.tag() {
+            imp.navipage.set_title(&tag);
+        }
+        imp.mainview.push(page);
+        imp.popbutton.set_visible(true);
+    }
+
+    #[template_callback]
+    pub fn on_home_update(&self) {
+        if let Some(homepage) = self.imp().homepage.child().and_downcast::<HomePage>() {
+            homepage.update(false);
+        }
+        self.homepage();
+    }
+
+    #[template_callback]
+    pub fn on_liked_update(&self) {
+        if let Some(likedpage) = self.imp().likedpage.child().and_downcast::<LikedPage>() {
+            likedpage.update();
+        }
+        self.likedpage();
+    }
+
+    pub fn remove_all(&self) {
+        self.imp().homepage.set_child(None::<&Widget>);
+        self.imp().likedpage.set_child(None::<&Widget>);
+        self.imp().searchpage.set_child(None::<&Widget>);
+        self.imp().player_toolbar_box.on_stop_button_clicked();
     }
 }

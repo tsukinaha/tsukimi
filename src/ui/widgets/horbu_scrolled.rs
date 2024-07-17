@@ -9,8 +9,6 @@ mod imp {
 
     use glib::subclass::InitializingObject;
 
-    use crate::ui::widgets::{singlelist::SingleListPage, window::Window};
-
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
@@ -52,50 +50,6 @@ mod imp {
     impl WidgetImpl for HorbuScrolled {}
 
     impl BinImpl for HorbuScrolled {}
-
-    impl HorbuScrolled {
-        pub fn activate(&self, result: &SGTitem, parentid: Option<String>) {
-            let window = self.obj().root().and_downcast::<Window>().unwrap();
-            let (view, title_var) = match window.current_view_name().as_str() {
-                "homepage" => (&window.imp().homeview, "HOME_TITLE"),
-                "searchpage" => (&window.imp().searchview, "SEARCH_TITLE"),
-                "historypage" => (&window.imp().historyview, "HISTORY_TITLE"),
-                _ => (&window.imp().searchview, "SEARCH_TITLE"),
-            };
-            window.set_title(&result.name);
-            std::env::set_var(title_var, &result.name);
-
-            let list_type = self.list_type.get().unwrap().as_ref().unwrap();
-            Self::push_page(
-                view,
-                &window,
-                &result.name,
-                SingleListPage::new(
-                    result.id.to_string(),
-                    "".to_string(),
-                    list_type,
-                    parentid,
-                    true,
-                ),
-            );
-        }
-
-        fn push_page<T: 'static + Clone + gtk::prelude::IsA<adw::NavigationPage>>(
-            view: &adw::NavigationView,
-            window: &crate::ui::widgets::window::Window,
-            tag: &str,
-            page: T,
-        ) {
-            if view.find_page(tag).is_some() {
-                view.pop_to_tag(tag);
-            } else {
-                let item_page = page;
-                item_page.set_tag(Some(tag));
-                view.push(&item_page);
-                window.set_pop_visibility(true);
-            }
-        }
-    }
 }
 
 glib::wrapper! {
@@ -147,7 +101,7 @@ impl HorbuScrolled {
                         #[weak]
                         obj,
                         move |_| {
-                            obj.imp().activate(&result, None);
+                            result.activate(&obj, obj.list_type().unwrap_or_default());
                         }
                     ));
 

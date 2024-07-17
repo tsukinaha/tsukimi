@@ -18,6 +18,7 @@ use crate::client::structs::SimpleListItem;
 use crate::toast;
 use crate::ui::models::emby_cache_path;
 use crate::ui::provider::tu_item::TuItem;
+use crate::ui::provider::IS_ADMIN;
 use crate::utils::spawn;
 use crate::utils::spawn_tokio;
 
@@ -516,55 +517,19 @@ impl TuListItem {
     pub fn set_action(&self) -> Option<gio::SimpleActionGroup> {
         let item_type = self.imp().itemtype.get().unwrap();
         match item_type.as_str() {
-            "Movie" | "Series" | "Episode" => self.set_item_action(true),
+            "Movie" | "Series" | "Episode" => self.set_item_action(true, true, true),
             "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Actor" | "Person"
-            | "TvChannel" => self.set_item_action(false),
+            | "TvChannel" => self.set_item_action(false, true, true),
+            "CollectionFolder" | "UserView" | "Audio" => self.set_item_action(false, false, false),
             _ => None,
         }
     }
 
-    pub fn set_item_action(&self, is_playable: bool) -> Option<gio::SimpleActionGroup> {
+    pub fn set_item_action(&self, is_playable: bool, is_editable: bool, is_favouritable: bool) -> Option<gio::SimpleActionGroup> {
         let action_group = gio::SimpleActionGroup::new();
 
-        action_group.add_action_entries([gio::ActionEntry::builder("editm")
-            .activate(glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                move |_, _, _| {
-                    spawn(glib::clone!(
-                        #[weak]
-                        obj,
-                        async move {
-                            let id = obj.item().id();
-                            let dialog =
-                                crate::ui::widgets::metadata_dialog::MetadataDialog::new(&id);
-                            crate::insert_editm_dialog!(obj, dialog);
-                        }
-                    ))
-                }
-            ))
-            .build()]);
-
-        action_group.add_action_entries([gio::ActionEntry::builder("editi")
-            .activate(glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                move |_, _, _| {
-                    spawn(glib::clone!(
-                        #[weak]
-                        obj,
-                        async move {
-                            let id = obj.item().id();
-                            let dialog = crate::ui::widgets::image_dialog::ImagesDialog::new(&id);
-                            crate::insert_editm_dialog!(obj, dialog);
-                        }
-                    ))
-                }
-            ))
-            .build()]);
-
-        match self.item().is_favorite() {
-            true => action_group.add_action_entries([gio::ActionEntry::builder("unlike")
+        if is_editable {
+            action_group.add_action_entries([gio::ActionEntry::builder("editm")
                 .activate(glib::clone!(
                     #[weak(rename_to = obj)]
                     self,
@@ -573,13 +538,17 @@ impl TuListItem {
                             #[weak]
                             obj,
                             async move {
-                                obj.perform_action(Action::Unlike).await;
+                                let id = obj.item().id();
+                                let dialog =
+                                    crate::ui::widgets::metadata_dialog::MetadataDialog::new(&id);
+                                crate::insert_editm_dialog!(obj, dialog);
                             }
                         ))
                     }
                 ))
-                .build()]),
-            false => action_group.add_action_entries([gio::ActionEntry::builder("like")
+                .build()]);
+
+            action_group.add_action_entries([gio::ActionEntry::builder("editi")
                 .activate(glib::clone!(
                     #[weak(rename_to = obj)]
                     self,
@@ -588,12 +557,124 @@ impl TuListItem {
                             #[weak]
                             obj,
                             async move {
-                                obj.perform_action(Action::Like).await;
+                                let id = obj.item().id();
+                                let dialog = crate::ui::widgets::image_dialog::ImagesDialog::new(&id);
+                                crate::insert_editm_dialog!(obj, dialog);
                             }
                         ))
                     }
                 ))
-                .build()]),
+                .build()]);
+        }
+        
+
+        if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
+            action_group.add_action_entries([gio::ActionEntry::builder("scan")
+                .activate(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_, _, _| {
+                        spawn(glib::clone!(
+                            #[weak]
+                            obj,
+                            async move {
+                                let id = obj.item().id();
+                                match spawn_tokio(async move {
+                                   EMBY_CLIENT.scan(&id).await
+                                }).await {
+                                    Ok(_) => {
+                                        toast!(obj, gettext("Scanning..."));
+                                    }
+                                    Err(e) => {
+                                        toast!(obj, e.to_user_facing());
+                                    }
+                                }
+                            }
+                        ))
+                    }
+                ))
+                .build()]);
+
+            if is_editable {
+                if !self.isresume() {
+                    action_group.add_action_entries([gio::ActionEntry::builder("identify")
+                        .activate(glib::clone!(
+                            #[weak(rename_to = obj)]
+                            self,
+                            move |_, _, _| {
+                                spawn(glib::clone!(
+                                    #[weak]
+                                    obj,
+                                    async move {
+                                        let id = obj.item().id();
+                                        let type_ = obj.item().item_type();
+                                        let dialog =
+                                            crate::ui::widgets::identify_dialog::IdentifyDialog::new(&id, &type_);
+                                        crate::insert_editm_dialog!(obj, dialog);
+                                    }
+                                ))
+                            }
+                        ))
+                        .build()]);
+                }
+                
+                if !self.isresume() {
+                    action_group.add_action_entries([gio::ActionEntry::builder("refresh")
+                        .activate(glib::clone!(
+                            #[weak(rename_to = obj)]
+                            self,
+                            move |_, _, _| {
+                                spawn(glib::clone!(
+                                    #[weak]
+                                    obj,
+                                    async move {
+                                        let id = obj.item().id();
+                                        let dialog =
+                                            crate::ui::widgets::refresh_dialog::RefreshDialog::new(&id);
+                                        crate::insert_editm_dialog!(obj, dialog);
+                                    }
+                                ))
+                            }
+                        ))
+                        .build()]);
+                } 
+            }
+        }
+
+
+        if is_favouritable {
+            match self.item().is_favorite() {
+                true => action_group.add_action_entries([gio::ActionEntry::builder("unlike")
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                async move {
+                                    obj.perform_action(Action::Unlike).await;
+                                }
+                            ))
+                        }
+                    ))
+                    .build()]),
+                false => action_group.add_action_entries([gio::ActionEntry::builder("like")
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                async move {
+                                    obj.perform_action(Action::Like).await;
+                                }
+                            ))
+                        }
+                    ))
+                    .build()]),
+            }
         }
 
         if is_playable {
@@ -776,17 +857,6 @@ impl TuListItem {
                 toast!(self, gettext("Error loading image"));
             }
         }
-    }
-}
-
-pub fn tu_list_item_register(latest: &SimpleListItem, list_item: &gtk::ListItem, is_resume: bool) {
-    let tu_item = TuItem::from_simple(latest, None);
-    match latest.latest_type.as_str() {
-        "Movie" | "Series" | "Episode" | "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views"
-        | "Actor" | "Person" | "TvChannel" => {
-            set_list_child(tu_item, list_item, &latest.latest_type, is_resume);
-        }
-        _ => {}
     }
 }
 

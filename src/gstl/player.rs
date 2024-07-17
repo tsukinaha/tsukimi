@@ -173,7 +173,6 @@ pub mod imp {
                 self,
                 async move {
                     while let Ok(true) = EOS.rx.recv().await {
-                        println!("EOS");
                         let obj = imp.obj();
                         imp.playlist_next();
                         imp.stop();

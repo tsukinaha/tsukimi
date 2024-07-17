@@ -9,7 +9,7 @@
     <file compressed="true" preprocess="xml-stripblanks">window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">search.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">item.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">history.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">liked.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">episoderow.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">home.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">list.ui</file>
@@ -36,5 +36,7 @@
     <file compressed="true" preprocess="xml-stripblanks">content_viewer.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">images_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">image_info_card.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">refresh_dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">identify_dialog.ui</file>
   </gresource>
 </gresources>
