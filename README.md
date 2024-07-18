@@ -11,7 +11,8 @@
 > READ BEFORE INSTALLATION    
 
 - **对 Windows 的支持不做任何保证**
-- Trello Kanban     https://trello.com/b/8GOsuygJ/%E5%95%8A%EF%BC%9F    
+- Trello Kanban     https://trello.com/b/8GOsuygJ/%E5%95%8A%EF%BC%9F  
+- Telegram Group    https://t.me/+-kAfBLQ-ol0yNjA1  
 
 ## Screenshots
 <div align="center">
