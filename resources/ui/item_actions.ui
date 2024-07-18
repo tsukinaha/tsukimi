@@ -11,7 +11,7 @@
         <property name="height-request">35</property>
         <property name="icon-name">non-starred-symbolic</property>
         <property name="valign">center</property>
-        <signal name="toggled" handler="on_favourite_button_toggled" swapped="yes" />
+        <signal name="clicked" handler="on_favourite_button_toggled" swapped="yes" />
         <style>
           <class name="circular" />
           <class name="suggested-action" />
