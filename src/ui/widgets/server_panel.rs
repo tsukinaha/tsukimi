@@ -234,7 +234,7 @@ impl ServerPanel {
                 .subtitle(&utc_to_localstring(&log.date))
                 .build();
 
-            let avator = adw::Avatar::new(32, Some(&log.name), false);
+            let avator = adw::Avatar::new(32, None, false);
 
             row.add_prefix(&avator);
 

@@ -710,7 +710,7 @@ impl Window {
         }
 
         let page = ServerPanel::new();
-        page.set_tag(Some("ServerPanel"));
+        page.set_tag(Some("Server Panel"));
         self.push_page(&page);
     }
 }

@@ -887,12 +887,13 @@ impl ItemPage {
                     .text(&str)
                     .min_lines(14)
                     .hexpand(true)
-                    .margin_start(12)
-                    .margin_end(12)
+                    .margin_start(15)
+                    .margin_end(15)
                     .yalign(0.0)
                     .build();
                 mediapartbox.append(&typebox);
                 mediapartbox.append(&inscription);
+                mediapartbox.add_css_class("card");
                 mediabox.append(&mediapartbox);
             }
 

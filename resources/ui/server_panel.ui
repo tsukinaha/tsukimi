@@ -21,6 +21,7 @@
                         <property name="orientation">vertical</property>
                         <property name="margin-top">20</property>
                         <property name="margin-start">20</property>
+                        <property name="margin-end">40</property>
                         <property name="spacing">20</property>
                         <property name="valign">start</property>
                         <property name="halign">start</property>
