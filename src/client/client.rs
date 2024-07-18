@@ -754,7 +754,8 @@ impl EmbyClient {
             "CurrentPw": old_password,
             "NewPw": new_password
         });
-        self.post(&path, &[], body).await?.json().await
+        self.post(&path, &[], body).await?;
+        Ok(())
     }
 
     pub async fn hide_from_resume(&self, id: &str) -> Result<(), reqwest::Error> {
@@ -764,7 +765,8 @@ impl EmbyClient {
             id
         );
         let params = [("Hide", "true")];
-        self.post(&path, &params, json!({})).await?.json().await
+        self.post(&path, &params, json!({})).await?;
+        Ok(())
     }
 
     pub async fn get_songs(&self, parent_id: &str) -> Result<List, reqwest::Error> {
@@ -845,6 +847,16 @@ impl EmbyClient {
         self.request("System/Info", &[]).await
     }
 
+    pub async fn shut_down(&self) -> Result<Response, reqwest::Error> {
+        self.post("System/Shutdown", &[], json!({}))
+            .await
+    }
+
+    pub async fn restart(&self) -> Result<Response, reqwest::Error> {
+        self.post("System/Restart", &[], json!({}))
+            .await
+    }
+
     pub async fn get_activity_log(
         &self,
         has_user_id: bool,
@@ -863,7 +875,8 @@ impl EmbyClient {
 
     pub async fn run_scheduled_task(&self, id: String) -> Result<(), reqwest::Error> {
         let path = format!("ScheduledTasks/Running/{}", &id);
-        self.post(&path, &[], json!({})).await?.json().await
+        self.post(&path, &[], json!({})).await?;
+        Ok(())
     }
 
     pub fn get_image_path(&self, id: &str, image_type: &str, image_index: Option<u32>) -> String {

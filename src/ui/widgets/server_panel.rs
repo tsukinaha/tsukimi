@@ -71,7 +71,6 @@ impl ServerPanel {
         glib::Object::new()
     }
 
-    #[template_callback]
     pub fn set_up(&self) {
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
@@ -85,6 +84,94 @@ impl ServerPanel {
                 fraction!(obj);
             }
         ));
+    }
+
+    #[template_callback]
+    fn on_shutdown(&self) {
+        let dialog = adw::AlertDialog::new(
+            Some(&gettext("Shut down server")),
+            Some(&gettext("Are you sure you want to shut down the server?")),
+        );
+        dialog.add_responses(&[("revert", "Revert"), ("confirm", "Confirm")]);
+        dialog.set_response_appearance("revert", adw::ResponseAppearance::Destructive);
+        dialog.set_default_response(Some("revert"));
+        dialog.set_close_response("revert");
+        dialog.connect_response(
+            Some("confirm"),
+            glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |dialog, _| {
+                    spawn(glib::clone!(
+                        #[weak]
+                        obj,
+                        #[weak]
+                        dialog,
+                        async move {
+                            obj.shot_down().await;
+                            dialog.close();
+                        }
+                    ));
+                }
+            ),
+        );
+        dialog.present(Some(self));
+    }
+
+    #[template_callback]
+    fn on_restart(&self) {
+        let dialog = adw::AlertDialog::new(
+            Some(&gettext("Restart server")),
+            Some(&gettext("Are you sure you want to restart the server?")),
+        );
+        dialog.add_responses(&[("revert", "Revert"), ("confirm", "Confirm")]);
+        dialog.set_response_appearance("revert", adw::ResponseAppearance::Destructive);
+        dialog.set_default_response(Some("revert"));
+        dialog.set_close_response("revert");
+        dialog.connect_response(
+            Some("confirm"),
+            glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |dialog, _| {
+                    spawn(glib::clone!(
+                        #[weak]
+                        obj,
+                        #[weak]
+                        dialog,
+                        async move {
+                            obj.restart().await;
+                            dialog.close();
+                        }
+                    ));
+                }
+            ),
+        );
+        dialog.present(Some(self));
+    }
+
+    async fn shot_down(&self) {
+        match spawn_tokio(EMBY_CLIENT.shut_down()).await {
+            Ok(_) => (),
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+
+        toast!(self, gettext("Server is shutting down"));
+    }
+
+    async fn restart(&self) {
+        match spawn_tokio(EMBY_CLIENT.restart()).await {
+            Ok(_) => (),
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+
+        toast!(self, gettext("Server is restarting"));
     }
 
     async fn set_server_info(&self) {

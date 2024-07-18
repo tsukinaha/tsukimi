@@ -42,8 +42,18 @@
                             <child>
                               <object class="GtkButton">
                                 <property name="valign">center</property>
-                                <property name="icon-name">emblem-synchronizing-symbolic</property>
-                                <signal name="clicked" handler="set_up" swapped="yes"/>
+                                <property name="icon-name">view-refresh-symbolic</property>
+                                <signal name="clicked" handler="on_restart" swapped="yes"/>
+                                <style>
+                                  <class name="accent" />
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton">
+                                <property name="valign">center</property>
+                                <property name="icon-name">system-shutdown-symbolic</property>
+                                <signal name="clicked" handler="on_shutdown" swapped="yes"/>
                                 <style>
                                   <class name="accent" />
                                 </style>
