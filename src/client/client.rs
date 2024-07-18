@@ -16,7 +16,9 @@ use crate::{
 use once_cell::sync::Lazy;
 
 use super::structs::{
-    AuthenticateResponse, Back, ExternalIdInfo, ImageItem, Item, List, LiveMedia, LoginResponse, Media, RemoteSearchInfo, RemoteSearchResult, SerInList, SimpleListItem
+    ActivityLogs, AuthenticateResponse, Back, ExternalIdInfo, ImageItem, Item, List, LiveMedia,
+    LoginResponse, Media, RemoteSearchInfo, RemoteSearchResult, ScheduledTask, SerInList,
+    ServerInfo, SimpleListItem,
 };
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
@@ -363,7 +365,12 @@ impl EmbyClient {
         self.post(&path, &params, json!({})).await
     }
 
-    pub async fn fullscan(&self, id: &str, replace_images: &str, replace_metadata: &str) -> Result<Response, reqwest::Error> {
+    pub async fn fullscan(
+        &self,
+        id: &str,
+        replace_images: &str,
+        replace_metadata: &str,
+    ) -> Result<Response, reqwest::Error> {
         let path = format!("Items/{}/Refresh", id);
         let params = [
             ("Recursive", "true"),
@@ -375,14 +382,21 @@ impl EmbyClient {
         self.post(&path, &params, json!({})).await
     }
 
-    pub async fn remote_search(&self, type_: &str, info: &RemoteSearchInfo) -> Result<Vec<RemoteSearchResult>, reqwest::Error> {
-        let path = format!("Items/RemoteSearch/{}",type_);
+    pub async fn remote_search(
+        &self,
+        type_: &str,
+        info: &RemoteSearchInfo,
+    ) -> Result<Vec<RemoteSearchResult>, reqwest::Error> {
+        let path = format!("Items/RemoteSearch/{}", type_);
         println!("{}", path);
         let body = json!(info);
-        self.post(&path, &[],body).await?.json().await
+        self.post(&path, &[], body).await?.json().await
     }
 
-    pub async fn get_external_id_info(&self, id: &str) -> Result<Vec<ExternalIdInfo>, reqwest::Error> {
+    pub async fn get_external_id_info(
+        &self,
+        id: &str,
+    ) -> Result<Vec<ExternalIdInfo>, reqwest::Error> {
         let path = format!("Items/{}/ExternalIdInfos", id);
         let params = [("IsSupportedAsIdentifier", "true")];
         self.request(&path, &params).await
@@ -825,6 +839,31 @@ impl EmbyClient {
             ("StartIndex", start_index),
         ];
         self.request("LiveTv/Channels", &params).await
+    }
+
+    pub async fn get_server_info(&self) -> Result<ServerInfo, reqwest::Error> {
+        self.request("System/Info", &[]).await
+    }
+
+    pub async fn get_activity_log(
+        &self,
+        has_user_id: bool,
+    ) -> Result<ActivityLogs, reqwest::Error> {
+        let params = [
+            ("Limit", "15"),
+            ("StartIndex", "0"),
+            ("hasUserId", &has_user_id.to_string()),
+        ];
+        self.request("System/ActivityLog/Entries", &params).await
+    }
+
+    pub async fn get_scheduled_tasks(&self) -> Result<Vec<ScheduledTask>, reqwest::Error> {
+        self.request("ScheduledTasks", &[]).await
+    }
+
+    pub async fn run_scheduled_task(&self, id: String) -> Result<(), reqwest::Error> {
+        let path = format!("ScheduledTasks/Running/{}", &id);
+        self.post(&path, &[], json!({})).await?.json().await
     }
 
     pub fn get_image_path(&self, id: &str, image_type: &str, image_index: Option<u32>) -> String {

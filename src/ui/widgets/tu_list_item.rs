@@ -504,7 +504,8 @@ impl TuListItem {
             imp,
             move |gesture, _n, x, y| {
                 gesture.set_state(gtk::EventSequenceState::Claimed);
-                imp.obj().insert_action_group("item", imp.obj().set_action().as_ref());
+                imp.obj()
+                    .insert_action_group("item", imp.obj().set_action().as_ref());
                 if let Some(popover) = imp.popover.borrow().as_ref() {
                     popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
                     popover.popup();
@@ -525,7 +526,12 @@ impl TuListItem {
         }
     }
 
-    pub fn set_item_action(&self, is_playable: bool, is_editable: bool, is_favouritable: bool) -> Option<gio::SimpleActionGroup> {
+    pub fn set_item_action(
+        &self,
+        is_playable: bool,
+        is_editable: bool,
+        is_favouritable: bool,
+    ) -> Option<gio::SimpleActionGroup> {
         let action_group = gio::SimpleActionGroup::new();
 
         if is_editable {
@@ -558,7 +564,8 @@ impl TuListItem {
                             obj,
                             async move {
                                 let id = obj.item().id();
-                                let dialog = crate::ui::widgets::image_dialog::ImagesDialog::new(&id);
+                                let dialog =
+                                    crate::ui::widgets::image_dialog::ImagesDialog::new(&id);
                                 crate::insert_editm_dialog!(obj, dialog);
                             }
                         ))
@@ -566,7 +573,6 @@ impl TuListItem {
                 ))
                 .build()]);
         }
-        
 
         if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
             action_group.add_action_entries([gio::ActionEntry::builder("scan")
@@ -579,9 +585,8 @@ impl TuListItem {
                             obj,
                             async move {
                                 let id = obj.item().id();
-                                match spawn_tokio(async move {
-                                   EMBY_CLIENT.scan(&id).await
-                                }).await {
+                                match spawn_tokio(async move { EMBY_CLIENT.scan(&id).await }).await
+                                {
                                     Ok(_) => {
                                         toast!(obj, gettext("Scanning..."));
                                     }
@@ -617,7 +622,7 @@ impl TuListItem {
                         ))
                         .build()]);
                 }
-                
+
                 if !self.isresume() {
                     action_group.add_action_entries([gio::ActionEntry::builder("refresh")
                         .activate(glib::clone!(
@@ -630,17 +635,18 @@ impl TuListItem {
                                     async move {
                                         let id = obj.item().id();
                                         let dialog =
-                                            crate::ui::widgets::refresh_dialog::RefreshDialog::new(&id);
+                                            crate::ui::widgets::refresh_dialog::RefreshDialog::new(
+                                                &id,
+                                            );
                                         crate::insert_editm_dialog!(obj, dialog);
                                     }
                                 ))
                             }
                         ))
                         .build()]);
-                } 
+                }
             }
         }
-
 
         if is_favouritable {
             match self.item().is_favorite() {

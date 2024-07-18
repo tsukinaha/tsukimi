@@ -180,6 +180,12 @@ You should install the package `gst-libav` to play media files with built-in pla
                                         <property name="size">30</property>
                                         <property name="margin-start">12</property>
                                         <property name="halign">start</property>
+                                        <child>
+                                          <object class="GtkGestureClick">
+                                            <property name="button">2</property>
+                                            <signal name="released" handler="avatar_pressed_cb" swapped="true" />
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                     <child type="suffix">

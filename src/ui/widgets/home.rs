@@ -107,7 +107,7 @@ impl HomePage {
     pub fn new() -> Self {
         Object::builder().build()
     }
-    
+
     pub fn init_load(&self) {
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
@@ -149,13 +149,20 @@ impl HomePage {
     pub async fn setup_history(&self, enable_cache: bool) {
         let hortu = self.imp().hishortu.get();
 
-        let results = match req_cache_single("history", async { EMBY_CLIENT.get_resume().await }, enable_cache).await {
+        let results = match req_cache_single(
+            "history",
+            async { EMBY_CLIENT.get_resume().await },
+            enable_cache,
+        )
+        .await
+        {
             Ok(history) => history,
             Err(e) => {
                 toast!(self, e.to_user_facing());
                 None
             }
-        }.unwrap_or_default();
+        }
+        .unwrap_or_default();
 
         hortu.set_title(&gettext("Continue Watching"));
 
@@ -217,7 +224,6 @@ impl HomePage {
 
             libsbox.append(&hortu);
         }
-        
     }
 
     pub async fn set_carousel(&self) {
@@ -262,7 +268,7 @@ impl HomePage {
         if carousel.n_pages() <= 1 {
             return;
         }
-        
+
         if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
             glib::source::SourceId::remove(timeout);
         }

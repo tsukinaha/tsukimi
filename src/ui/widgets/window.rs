@@ -201,6 +201,7 @@ use crate::config::load_cfgv2;
 use crate::config::Account;
 use crate::ui::models::SETTINGS;
 use crate::ui::provider::core_song::CoreSong;
+use crate::ui::provider::IS_ADMIN;
 use crate::utils::spawn;
 use crate::APP_ID;
 use glib::Object;
@@ -209,6 +210,7 @@ use gtk::{gio, glib, template_callbacks};
 use super::home::HomePage;
 use super::liked::LikedPage;
 use super::search::SearchPage;
+use super::server_panel::ServerPanel;
 use super::server_row::ServerRow;
 use super::tu_list_item::PROGRESSBAR_ANIMATION_DURATION;
 
@@ -699,5 +701,16 @@ impl Window {
         self.imp().likedpage.set_child(None::<&Widget>);
         self.imp().searchpage.set_child(None::<&Widget>);
         self.imp().player_toolbar_box.on_stop_button_clicked();
+    }
+
+    #[template_callback]
+    fn avatar_pressed_cb(&self) {
+        if !IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
+            return;
+        }
+
+        let page = ServerPanel::new();
+        page.set_tag(Some("ServerPanel"));
+        self.push_page(&page);
     }
 }

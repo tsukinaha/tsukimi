@@ -131,8 +131,11 @@ pub async fn get_image_with_cache(
     Ok(path.to_string_lossy().to_string())
 }
 
-
-pub async fn req_cache_single<T, F>(tag: &str, future: F, enable_cache: bool) -> Result<Option<T>, reqwest::Error>
+pub async fn req_cache_single<T, F>(
+    tag: &str,
+    future: F,
+    enable_cache: bool,
+) -> Result<Option<T>, reqwest::Error>
 where
     T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
     F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,

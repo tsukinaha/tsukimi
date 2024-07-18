@@ -887,6 +887,8 @@ impl ItemPage {
                     .text(&str)
                     .min_lines(14)
                     .hexpand(true)
+                    .margin_start(12)
+                    .margin_end(12)
                     .yalign(0.0)
                     .build();
                 mediapartbox.append(&typebox);

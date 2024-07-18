@@ -155,15 +155,7 @@ tabbar>revealer>box {
     background-color: rgba(0, 0, 0, 0);
 }
 
-box>scrolledwindow>viewport>box>box {
-    margin: 5px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
 
-scrolledwindow>viewport>box>box>label {
-    margin: 15px;
-}
 
 scrolledwindow>viewport>box>box>box {
     margin-left: 15px;
