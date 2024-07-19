@@ -110,21 +110,12 @@ impl EmbyClient {
     where
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
-        let mut params_vec: Vec<(&str, &str)> = params.to_vec();
-        params_vec.push(("X-Emby-Client", &CLIENT_ID));
-        params_vec.push(("X-Emby-Device-Name", &DEVICE_NAME));
-        params_vec.push(("X-Emby-Device-Id", &DEVICE_ID));
-        params_vec.push(("X-Emby-Client-Version", APP_VERSION));
-
-        let request = self.prepare_request(Method::GET, path, &params_vec);
+        let request = self.prepare_request(Method::GET, path, &params);
         let res = self.send_request(request).await?;
 
         match res.error_for_status() {
             Ok(res) => Ok(res.json().await?),
-            Err(e) => {
-                println!("{:?}", e);
-                Err(e)
-            },
+            Err(e) => Err(e),
         }
     }
 
