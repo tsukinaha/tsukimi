@@ -561,7 +561,7 @@ impl SimpleListItem {
         }
 
         match self.latest_type.as_str() {
-            "Series" | "Movie" => {
+            "Series" | "Movie" | "Video" => {
                 let page = ItemPage::new(self.id.clone(), self.id.clone(), self.name.clone());
                 push_page_with_tag(window, page, self.name.clone());
             }
