@@ -142,7 +142,7 @@ impl HomePage {
     fn carousel_pressed_cb(&self) {
         let position = self.imp().carousel.position();
         if let Some(item) = self.imp().carouset_items.borrow().get(position as usize) {
-            item.activate(self);
+            item.activate(self, None);
         }
     }
 

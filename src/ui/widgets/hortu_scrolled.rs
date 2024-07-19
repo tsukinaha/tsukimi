@@ -85,7 +85,7 @@ mod imp {
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
                 let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                result.activate(listview);
+                result.activate(listview, None);
             });
         }
     }

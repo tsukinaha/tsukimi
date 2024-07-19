@@ -142,7 +142,7 @@ impl SearchPage {
                 #[weak(rename_to = obj)]
                 self,
                 move |_| {
-                    item.activate(&obj);
+                    item.activate(&obj, None);
                 }
             ));
             recommendbox.append(&button);
@@ -168,7 +168,7 @@ impl SearchPage {
                     .and_downcast::<glib::BoxedAnyObject>()
                     .unwrap();
                 let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                result.activate(listview);
+                result.activate(listview, None);
             }));
     }
 

@@ -556,11 +556,11 @@ impl EmbyClient {
             ("ImageTypeLimit", "1"),
             ("StartIndex", start),
             ("Recursive", "true"),
-            ("IncludeItemTypes", "Movie,Series,Video,Game,MusicAlbum"),
+            ("IncludeItemTypes", "Movie,Series,MusicAlbum"),
             ("SortBy", sortby),
             ("SortOrder", sort_order),
             ("EnableImageTypes", "Primary,Backdrop,Thumb"),
-            if listtype == "Genres" {
+            if listtype == "Genre" {
                 ("GenreIds", parentid)
             } else if listtype == "Studios" {
                 ("StudioIds", parentid)
@@ -568,7 +568,6 @@ impl EmbyClient {
                 ("TagIds", parentid)
             },
         ];
-
         let id_clone;
         if let Some(id) = id {
             id_clone = id.clone();

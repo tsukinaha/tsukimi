@@ -549,7 +549,7 @@ impl SGTitem {
 }
 
 impl SimpleListItem {
-    pub fn activate<T>(&self, widget: &T)
+    pub fn activate<T>(&self, widget: &T, parentid: Option<String>)
     where
         T: gtk::prelude::WidgetExt + glib::clone::Downgrade,
     {
@@ -599,6 +599,16 @@ impl SimpleListItem {
                     "livetv",
                     None,
                     false,
+                );
+                push_page_with_tag(window, page, self.name.clone());
+            }
+            "Tag" | "Genre" => {
+                let page = SingleListPage::new(
+                    self.id.clone(),
+                    "".to_string(),
+                    &self.latest_type,
+                    parentid,
+                    true,
                 );
                 push_page_with_tag(window, page, self.name.clone());
             }
