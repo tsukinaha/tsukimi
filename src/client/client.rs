@@ -8,7 +8,7 @@ use url::Url;
 use uuid::Uuid;
 
 use crate::{
-    config::{get_device_name, load_env, proxy::ReqClient, Account, APP_VERSION},
+    config::{load_env, proxy::ReqClient, Account, APP_VERSION},
     ui::models::emby_cache_path,
     utils::{spawn, spawn_tokio},
 };
@@ -26,6 +26,8 @@ pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
 static PROFILE: &str = include_str!("stream_profile.json");
 static LIVEPROFILE: &str = include_str!("test.json");
 static CLIENT_ID: Lazy<String> = Lazy::new(|| format!("Tsukimi"));
+static DEVICE_NAME: Lazy<String> = Lazy::new(|| hostname::get().unwrap_or("Unknown".into()).to_string_lossy().to_string());
+
 pub struct EmbyClient {
     pub url: Mutex<Option<Url>>,
     pub client: reqwest::Client,
@@ -40,7 +42,7 @@ impl EmbyClient {
         headers.insert("X-Emby-Client", HeaderValue::from_static(&CLIENT_ID));
         headers.insert(
             "X-Emby-Device-Name",
-            HeaderValue::from_str(&get_device_name()).unwrap(),
+            HeaderValue::from_str(&DEVICE_NAME).unwrap(),
         );
         headers.insert(
             "X-Emby-Device-Id",
@@ -108,12 +110,21 @@ impl EmbyClient {
     where
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
-        let request = self.prepare_request(Method::GET, path, params);
+        let mut params_vec: Vec<(&str, &str)> = params.to_vec();
+        params_vec.push(("X-Emby-Client", &CLIENT_ID));
+        params_vec.push(("X-Emby-Device-Name", &DEVICE_NAME));
+        params_vec.push(("X-Emby-Device-Id", &DEVICE_ID));
+        params_vec.push(("X-Emby-Client-Version", APP_VERSION));
+
+        let request = self.prepare_request(Method::GET, path, &params_vec);
         let res = self.send_request(request).await?;
 
         match res.error_for_status() {
             Ok(res) => Ok(res.json().await?),
-            Err(e) => Err(e),
+            Err(e) => {
+                println!("{:?}", e);
+                Err(e)
+            },
         }
     }
 

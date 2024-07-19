@@ -26,18 +26,6 @@ pub fn load_uuid() {
     env::set_var("UUID", uuid);
 }
 
-pub fn get_device_name() -> String {
-    if cfg!(target_os = "windows") {
-        env::var("COMPUTERNAME").unwrap_or("Unknown Device".to_string())
-    } else {
-        let output = std::process::Command::new("uname")
-            .output()
-            .expect("failed to execute process");
-
-        String::from_utf8_lossy(&output.stdout).trim().to_string()
-    }
-}
-
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Account {
     pub servername: String,

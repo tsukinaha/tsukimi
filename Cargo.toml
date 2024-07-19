@@ -32,6 +32,7 @@ clapper = { path = "clapper-rs/libclapper-rs" }
 clapper-gtk = { path = "clapper-rs/libclapper-gtk-rs" }
 image = "0.25.1"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
+hostname = "0.4.0"
 
 [build-dependencies]
 glib-build-tools = "0.20.0"
