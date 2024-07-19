@@ -298,7 +298,7 @@ impl ItemPage {
         let seasonlist = imp.seasonlist.get();
         seasonlist.set_model(Some(&imp.seasonselection));
 
-        let series_info = match req_cache(&format!("serinfo_{}", &id), async move {
+        let series_info = match spawn_tokio( async move {
             EMBY_CLIENT.get_series_info(&id).await
         })
         .await
