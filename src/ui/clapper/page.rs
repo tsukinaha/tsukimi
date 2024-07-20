@@ -23,9 +23,9 @@ mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/clapperpage.ui")]
-    #[properties(wrapper_type = super::ClapperPage)]
-    pub struct ClapperPage {
+    #[template(resource = "/moe/tsukimi/mpvpage.ui")]
+    #[properties(wrapper_type = super::MPVPage)]
+    pub struct MPVPage {
         #[property(get, set, nullable)]
         pub url: RefCell<Option<String>>,
         #[template_child]
@@ -36,10 +36,10 @@ mod imp {
 
     // The central trait for subclassing a GObject
     #[glib::object_subclass]
-    impl ObjectSubclass for ClapperPage {
+    impl ObjectSubclass for MPVPage {
         // `NAME` needs to match `class` attribute of template
-        const NAME: &'static str = "ClapperPage";
-        type Type = super::ClapperPage;
+        const NAME: &'static str = "MPVPage";
+        type Type = super::MPVPage;
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
@@ -55,7 +55,7 @@ mod imp {
 
     // Trait shared by all GObjects
     #[glib::derived_properties]
-    impl ObjectImpl for ClapperPage {
+    impl ObjectImpl for MPVPage {
         fn constructed(&self) {
             self.parent_constructed();
 
@@ -64,37 +64,44 @@ mod imp {
     }
 
     // Trait shared by all widgets
-    impl WidgetImpl for ClapperPage {}
+    impl WidgetImpl for MPVPage {}
 
     // Trait shared by all windows
-    impl WindowImpl for ClapperPage {}
+    impl WindowImpl for MPVPage {}
 
     // Trait shared by all application windows
-    impl ApplicationWindowImpl for ClapperPage {}
+    impl ApplicationWindowImpl for MPVPage {}
 
-    impl adw::subclass::navigation_page::NavigationPageImpl for ClapperPage {}
+    impl adw::subclass::navigation_page::NavigationPageImpl for MPVPage {}
 }
 
 glib::wrapper! {
-    pub struct ClapperPage(ObjectSubclass<imp::ClapperPage>)
+    pub struct MPVPage(ObjectSubclass<imp::MPVPage>)
         @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
-impl Default for ClapperPage {
+impl Default for MPVPage {
     fn default() -> Self {
         Self::new()
     }
 }
 
 #[gtk::template_callbacks]
-impl ClapperPage {
+impl MPVPage {
     pub fn new() -> Self {
         Object::builder().build()
     }
 
-    pub fn play(&self) {
-        self.imp().video.play();
+    pub fn play(&self,
+        url: &str,
+        suburi: Option<&str>,
+        name: Option<&str>,
+        line2: Option<&str>,
+        back: Option<Back>,
+        percentage: f64
+    ) {
+        self.imp().video.play(url, suburi, name, line2, back, percentage);
     }
 }

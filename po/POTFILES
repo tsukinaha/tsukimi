@@ -3,7 +3,7 @@ resources/ui/account.ui
 resources/ui/actor.ui
 resources/ui/album_widget.ui
 resources/ui/boxset.ui
-resources/ui/clapperpage.ui
+resources/ui/mpvpage.ui
 resources/ui/content_viewer.ui
 resources/ui/disc_box.ui
 resources/ui/dropdown.ui

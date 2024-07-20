@@ -15,7 +15,7 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
-    use crate::ui::clapper::page::ClapperPage;
+    use crate::ui::clapper::page::MPVPage;
     use crate::ui::widgets::content_viewer::MediaContentViewer;
     use crate::ui::widgets::home::HomePage;
     use crate::ui::widgets::image_dialog::ImagesDialog;
@@ -60,9 +60,9 @@ mod imp {
         #[template_child]
         pub progressbar: TemplateChild<gtk::ProgressBar>,
         #[template_child]
-        pub clapperpage: TemplateChild<gtk::StackPage>,
+        pub mpvpage: TemplateChild<gtk::StackPage>,
         #[template_child]
-        pub clappernav: TemplateChild<ClapperPage>,
+        pub clappernav: TemplateChild<MPVPage>,
         #[template_child]
         pub serverselectlist: TemplateChild<gtk::ListBox>,
         #[template_child]
@@ -93,7 +93,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             PlayerToolbarBox::ensure_type();
-            ClapperPage::ensure_type();
+            MPVPage::ensure_type();
             ItemActionsBox::ensure_type();
             MediaContentViewer::ensure_type();
             MediaViewer::ensure_type();
@@ -595,17 +595,18 @@ impl Window {
         }
     }
 
-    pub fn set_clapperpage(
+    pub fn set_mpvpage(
         &self,
         url: &str,
         suburi: Option<&str>,
         name: Option<&str>,
         line2: Option<&str>,
         back: Option<Back>,
+        percentage: f64,
     ) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("clapper");
-        imp.clappernav.play();
+        imp.clappernav.play(url, suburi, name, line2, back, percentage);
     }
 
     pub fn reveal_image(&self, source_widget: &impl IsA<gtk::Widget>) {
@@ -641,30 +642,15 @@ impl Window {
         selected: Option<String>,
         percentage: f64,
     ) {
-        if SETTINGS.mpv() {
-            gio::spawn_blocking(move || {
-                match crate::ui::mpv::event::play(
-                    url,
-                    suburl,
-                    Some(name.unwrap_or("".to_string())),
-                    back,
-                    Some(percentage),
-                ) {
-                    Ok(_) => {}
-                    Err(e) => {
-                        eprintln!("Failed to play: {}", e);
-                    }
-                };
-            });
-        } else {
-            self.set_clapperpage(
+
+            self.set_mpvpage(
                 &url,
                 suburl.as_deref(),
                 name.as_deref(),
                 selected.as_deref(),
                 back,
+                percentage
             );
-        }
     }
 
     pub fn push_page<T>(&self, page: &T)

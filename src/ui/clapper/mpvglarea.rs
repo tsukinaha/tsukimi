@@ -2,6 +2,10 @@ use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
+use crate::client::client::EMBY_CLIENT;
+use crate::client::structs::Back;
+use crate::ui::models::SETTINGS;
+
 mod imp {
 
     use std::sync::Mutex;
@@ -109,7 +113,13 @@ mod imp {
         }
 
         fn unrealize(&self) {
-            
+            self.parent_unrealize();
+            if let Some(mpv) = self.mpv.lock().unwrap().take() {
+                drop(mpv);
+            }
+            if let Some(ctx) = self.ctx.lock().unwrap().take() {
+                drop(ctx);
+            }
         }
     }
 
@@ -151,11 +161,27 @@ impl MPVGLArea {
         Object::builder().build()
     }
 
-    pub fn play(&self) {
+    pub fn play(&self,
+        url: &str,
+        suburi: Option<&str>,
+        name: Option<&str>,
+        line2: Option<&str>,
+        back: Option<Back>,
+        percentage: f64
+    ) {
         let bind = self.imp().mpv.lock().unwrap();
         let Some(mpv) = bind.as_ref() else {
             return;
         };
-        mpv.command("loadfile", &["http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "replace"]).unwrap();
+        let url = EMBY_CLIENT.get_streaming_url(url);
+        mpv.command("loadfile", &[&url, "replace"]).unwrap();
+
+        if let Some(suburi) = suburi {
+            let suburl = EMBY_CLIENT.get_streaming_url(suburi);
+            mpv.command("sub-add", &[&suburl]).unwrap();
+        }
+
+        mpv.set_property("start", format!("{}%", percentage as u32)).unwrap();
+
     }
 }

@@ -450,10 +450,10 @@ You should install the package `gst-libav` to play media files with built-in pla
                   </object>
                 </child>
                 <child>
-                  <object class="GtkStackPage" id="clapperpage">
+                  <object class="GtkStackPage" id="mpvpage">
                     <property name="name">clapper</property>
                     <property name="child">
-                      <object class="ClapperPage" id="clappernav">
+                      <object class="MPVPage" id="clappernav">
                       </object>
                     </property>
                   </object>
