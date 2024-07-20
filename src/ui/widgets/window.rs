@@ -136,7 +136,6 @@ mod imp {
             // Call "constructed" on parent
             self.parent_constructed();
             let obj = self.obj();
-            self.clappernav.bind_fullscreen(&obj);
             obj.set_fonts();
             if crate::ui::models::SETTINGS.font_size() != -1 {
                 let settings = gtk::Settings::default().unwrap();
@@ -606,7 +605,7 @@ impl Window {
     ) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("clapper");
-        imp.clappernav.add_item(url, suburi, name, line2, back);
+        imp.clappernav.play();
     }
 
     pub fn reveal_image(&self, source_widget: &impl IsA<gtk::Widget>) {

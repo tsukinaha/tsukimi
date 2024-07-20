@@ -28,11 +28,12 @@ tracing = "0.1.40"
 gst = { version = "0.23", package = "gstreamer"}
 url = "2.5.2"
 libmpv2 = "=4.0.0"
-clapper = { path = "clapper-rs/libclapper-rs" }
-clapper-gtk = { path = "clapper-rs/libclapper-gtk-rs" }
 image = "0.25.1"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
 hostname = "0.4.0"
+epoxy = "0.1.0"
+gl = "0.14.0"
+libloading = "0.8.4"
 
 [build-dependencies]
 glib-build-tools = "0.20.0"
