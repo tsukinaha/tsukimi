@@ -1,7 +1,6 @@
-mod clapper;
+mod mpv;
 mod image;
 pub(crate) mod models;
-mod mpv;
 pub mod provider;
 pub mod widgets;
 use self::models::SETTINGS;

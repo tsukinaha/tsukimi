@@ -8,6 +8,11 @@
           <object class="GtkBox">
             <property name="orientation">vertical</property>
             <child>
+              <object class="GtkEventControllerMotion">
+                <signal name="motion" handler="on_motion" swapped="yes"/>
+              </object>
+            </child>
+            <child>
               <object class="MPVGLArea" id="video">
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>

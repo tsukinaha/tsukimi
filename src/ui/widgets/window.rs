@@ -15,7 +15,7 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
-    use crate::ui::clapper::page::MPVPage;
+    use crate::ui::mpv::page::MPVPage;
     use crate::ui::widgets::content_viewer::MediaContentViewer;
     use crate::ui::widgets::home::HomePage;
     use crate::ui::widgets::image_dialog::ImagesDialog;

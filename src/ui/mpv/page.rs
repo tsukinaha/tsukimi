@@ -19,7 +19,7 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
 
     use crate::client::structs::Back;
-    use crate::ui::clapper::mpvglarea::MPVGLArea;
+    use crate::ui::mpv::mpvglarea::MPVGLArea;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -103,5 +103,10 @@ impl MPVPage {
         percentage: f64
     ) {
         self.imp().video.play(url, suburi, name, line2, back, percentage);
+    }
+
+    #[template_callback]
+    fn on_motion(&self) {
+
     }
 }
