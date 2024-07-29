@@ -376,7 +376,7 @@ impl Window {
 
     pub fn account_settings(&self) {
         let dialog = crate::ui::widgets::account_settings::AccountSettings::new();
-        dialog.present(Some(self));
+        dialog.present(None::<&gtk::Window>);
     }
 
     pub fn change_pop_visibility(&self) {

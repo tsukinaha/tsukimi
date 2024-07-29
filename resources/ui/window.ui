@@ -95,8 +95,6 @@
                                         <property name="vexpand">True</property>
                                         <property name="icon-name">network-server-symbolic</property>
                                         <property name="title" translatable="yes">No Server</property>
-                                        <property name="description" translatable="yes">Add a server to get started.
-You should install the package `gst-libav` to play media files with built-in player.</property>
                                         <property name="child">
                                           <object class="GtkButton" id="add_server">
                                             <property name="label" translatable="yes">Add Server</property>

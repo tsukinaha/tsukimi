@@ -5,17 +5,44 @@
     <child>
       <object class="AdwToolbarView">
         <property name="content">
-          <object class="GtkBox">
-            <property name="orientation">vertical</property>
+          <object class="GtkOverlay">
             <child>
               <object class="GtkEventControllerMotion">
                 <signal name="motion" handler="on_motion" swapped="yes"/>
+                <signal name="leave" handler="on_leave" swapped="yes"/>
+                <signal name="enter" handler="on_enter" swapped="yes"/>
               </object>
             </child>
             <child>
               <object class="MPVGLArea" id="video">
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
+              </object>
+            </child>
+            <child type="overlay">
+              <object class="GtkRevealer" id="bottom_revealer">
+                <property name="transition-type">crossfade</property>
+                <property name="transition-duration">500</property>
+                <property name="reveal-child">false</property>
+                <property name="halign">center</property>
+                <property name="valign">end</property>
+                <property name="visible" bind-source="bottom_revealer" bind-property="reveal-child" bind-flags="sync-create"/>
+                <child>
+                  <object class="GtkButton" id="_play_button">
+                      <property name="focusable">True</property>
+                      <property name="receives_default">True</property>
+                      <property name="tooltip_text" translatable="yes">Play</property>
+                      <style>
+                          <class name="flat"/>
+                      </style>
+                      <child>
+                          <object class="GtkImage" id="play_pause_image">
+                              <property name="icon_name">media-playback-start-symbolic</property>
+                              <property name="icon_size">2</property>
+                          </object>
+                      </child>
+                  </object>
+                </child>
               </object>
             </child>
           </object>

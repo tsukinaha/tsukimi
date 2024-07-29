@@ -103,7 +103,7 @@
                                 <child>
                                   <object class="GtkInscription" id="inscription">
                                     <property name="text" translatable="yes">No Inscriptions</property>
-                                    <property name="tooltip-text" bind-source="inscription" bind-property="text" bind-flags="sync-create" translatable="yes"/>
+                                    <property name="tooltip-text" bind-source="inscription" bind-property="text" bind-flags="sync-create"/>
                                     <property name="valign">fill</property>
                                     <property name="yalign">0.20</property>
                                     <property name="hexpand">True</property>

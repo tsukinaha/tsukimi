@@ -1,13 +1,9 @@
-use crate::client::client::EMBY_CLIENT;
-use crate::client::network::RUNTIME;
 use crate::client::structs::Back;
-use crate::toast;
-use crate::ui::widgets::song_widget::format_duration;
-use crate::ui::widgets::window::Window;
 use glib::Object;
-use gtk::prelude::*;
 use gtk::subclass::prelude::*;
+use gtk::prelude::*;
 use gtk::{gio, glib};
+static MIN_MOTION_TIME: i64 = 100000;
 
 mod imp {
 
@@ -30,8 +26,14 @@ mod imp {
         pub url: RefCell<Option<String>>,
         #[template_child]
         pub video: TemplateChild<MPVGLArea>,
+        #[template_child]
+        pub bottom_revealer: TemplateChild<gtk::Revealer>,
         pub timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
+        pub x: RefCell<f64>,
+        pub y: RefCell<f64>,
+        pub last_motion_time: RefCell<i64>,
+        pub toolbar_revealed: RefCell<bool>,
     }
 
     // The central trait for subclassing a GObject
@@ -106,7 +108,117 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn on_motion(&self) {
+    fn on_motion(&self, x: f64, y: f64) {
+        let old_x = *self.x();
+        let old_y = *self.y();
+        
+        if old_x == x && old_y == y {
+            return;
+        }
 
+        let imp = self.imp();
+
+        *imp.x.borrow_mut() = x;
+        *imp.y.borrow_mut() = y;
+
+        let now = glib::monotonic_time();
+
+        if now - *self.last_motion_time() < MIN_MOTION_TIME {
+            return;
+        }
+        
+        let is_threshold = (old_x - x).abs() > 5.0 || (old_y - y).abs() > 5.0;
+        
+        
+        
+        if is_threshold {
+            if *imp.toolbar_revealed.borrow() {
+                self.reset_fade_timeout();
+            } else {
+                self.set_reveal_overlay(true);
+            } 
+        }
+
+        *imp.last_motion_time.borrow_mut() = now;
+
+    }
+
+    #[template_callback]
+    fn on_leave(&self) {
+        let imp = self.imp();
+        *imp.x.borrow_mut() = -1.0;
+        *imp.y.borrow_mut() = -1.0;
+
+        if *imp.toolbar_revealed.borrow() && imp.timeout.borrow().is_none() {
+            self.reset_fade_timeout();
+        }
+    }
+
+    #[template_callback]
+    fn on_enter(&self) {
+        let imp = self.imp();
+        
+        if *imp.toolbar_revealed.borrow() {
+            self.reset_fade_timeout();
+        } else {
+            self.set_reveal_overlay(true);
+        }
+    }
+
+    fn reset_fade_timeout(&self) {
+        let imp = self.imp();
+        if let Some(timeout) = imp.timeout.borrow_mut().take() {
+            glib::source::SourceId::remove(timeout);
+        }
+        let timeout = glib::timeout_add_seconds_local_once(
+        3, 
+        glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move || {
+                obj.fade_overlay_delay_cb();
+            }
+        ));
+        *imp.timeout.borrow_mut() = Some(timeout);
+    }
+
+    fn x(&self) -> impl std::ops::Deref<Target=f64>  + '_ {
+        self.imp().x.borrow()
+    }
+
+    fn y(&self) -> impl std::ops::Deref<Target=f64>  + '_ {
+        self.imp().y.borrow()
+    }
+
+    fn last_motion_time(&self) -> impl std::ops::Deref<Target=i64>  + '_ {
+        self.imp().last_motion_time.borrow()
+    }
+
+    fn toolbar_revealed(&self) -> impl std::ops::Deref<Target=bool>  + '_ {
+        self.imp().toolbar_revealed.borrow()
+    }
+
+    fn fade_overlay_delay_cb(&self) {
+        *self.imp().timeout.borrow_mut() = None;
+
+        if *self.toolbar_revealed() {
+            if self.can_fade_overlay() {
+                self.set_reveal_overlay(false);
+            }
+        }
+    }
+
+    fn can_fade_overlay(&self) -> bool {
+        // TODO: Implement this
+        true
+    }
+
+    fn set_reveal_overlay(&self, reveal: bool) {
+        let imp = self.imp();
+        *imp.toolbar_revealed.borrow_mut() = reveal;
+        if reveal {
+            imp.bottom_revealer.set_visible(true);
+        }
+        imp.bottom_revealer.set_reveal_child(reveal);
     }
 }

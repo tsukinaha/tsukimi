@@ -86,7 +86,7 @@ macro_rules! bing_song_model {
             if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
                 window.bind_song_model($active_model, $active_core_song);
             } else {
-                panic!("Trying to display a toast when the parent doesn't support it");
+                panic!("Trying to bind a song model when the parent doesn't support it");
             }
         }
     }};
