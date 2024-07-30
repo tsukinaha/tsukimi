@@ -1,8 +1,13 @@
+use std::borrow::Borrow;
+
 use crate::client::structs::Back;
+use gettextrs::gettext;
 use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::prelude::*;
 use gtk::{gio, glib};
+
+use super::mpvglarea::MPVGLArea;
 static MIN_MOTION_TIME: i64 = 100000;
 
 mod imp {
@@ -28,6 +33,8 @@ mod imp {
         pub video: TemplateChild<MPVGLArea>,
         #[template_child]
         pub bottom_revealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub play_pause_image: TemplateChild<gtk::Image>,
         pub timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
         pub x: RefCell<f64>,
@@ -209,7 +216,16 @@ impl MPVPage {
     }
 
     fn can_fade_overlay(&self) -> bool {
-        // TODO: Implement this
+        let x = *self.x();
+        let y = *self.y();
+        if x >= 0.0 && y >= 0.0 {
+            let widget = self.pick(x, y, gtk::PickFlags::DEFAULT);
+            if let Some(widget) = widget {
+                if !widget.is::<MPVGLArea>() {
+                    return false;
+                }
+            }
+        }
         true
     }
 
@@ -220,5 +236,28 @@ impl MPVPage {
             imp.bottom_revealer.set_visible(true);
         }
         imp.bottom_revealer.set_reveal_child(reveal);
+    }
+
+    #[template_callback]
+    fn on_play_pause_clicked(&self) {
+        let mut guard = self.imp().video.imp().mpv.lock().unwrap();
+        let mpv = guard.as_mut().unwrap();
+        let play_pause_image = &self.imp().play_pause_image.get();
+        let paused: bool = mpv.get_property("pause").unwrap();
+
+        if paused {
+            play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
+            play_pause_image.set_tooltip_text(Some(&gettext("Pause")));
+        } else {
+            play_pause_image.set_icon_name(Some("media-playback-start-symbolic"));
+            play_pause_image.set_tooltip_text(Some(&gettext("Play")));
+        }
+
+        mpv.set_property("pause", !paused).unwrap();
+    }
+
+    #[template_callback]
+    fn on_leave_button_clicked(&self) {
+        
     }
 }

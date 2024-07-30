@@ -28,19 +28,25 @@
                 <property name="valign">end</property>
                 <property name="visible" bind-source="bottom_revealer" bind-property="reveal-child" bind-flags="sync-create"/>
                 <child>
-                  <object class="GtkButton" id="_play_button">
-                      <property name="focusable">True</property>
-                      <property name="receives_default">True</property>
-                      <property name="tooltip_text" translatable="yes">Play</property>
-                      <style>
-                          <class name="flat"/>
-                      </style>
-                      <child>
-                          <object class="GtkImage" id="play_pause_image">
-                              <property name="icon_name">media-playback-start-symbolic</property>
-                              <property name="icon_size">2</property>
-                          </object>
-                      </child>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <child>
+                      <object class="GtkButton" id="_play_button">
+                          <property name="focusable">True</property>
+                          <property name="receives_default">True</property>
+                          <property name="tooltip_text" translatable="yes">Pause</property>
+                          <signal name="clicked" handler="on_play_pause_clicked" swapped="yes"/>
+                          <child>
+                              <object class="GtkImage" id="play_pause_image">
+                                  <property name="icon_name">media-playback-pause-symbolic</property>
+                                  <property name="icon_size">2</property>
+                              </object>
+                          </child>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="toolbar"/>
+                  </style>
                   </object>
                 </child>
               </object>
