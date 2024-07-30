@@ -21,6 +21,7 @@ mod imp {
 
     use crate::client::structs::Back;
     use crate::ui::mpv::mpvglarea::MPVGLArea;
+    use crate::ui::widgets::video_scale::VideoScale;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -35,6 +36,8 @@ mod imp {
         pub bottom_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub play_pause_image: TemplateChild<gtk::Image>,
+        #[template_child]
+        pub video_scale: TemplateChild<VideoScale>,
         pub timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
         pub x: RefCell<f64>,
@@ -53,6 +56,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             MPVGLArea::ensure_type();
+            VideoScale::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }
@@ -68,7 +72,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            
+            self.video_scale.set_player(Some(&self.video.get()));
         }
     }
 
@@ -257,7 +261,13 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn on_leave_button_clicked(&self) {
-        
+    fn on_stop_clicked(&self) {
+        let mut guard = self.imp().video.imp().mpv.lock().unwrap();
+        let mpv = guard.as_mut().unwrap();
+        mpv.set_property("pause", true).unwrap();
+
+        let root = self.root();
+        let window = root.and_downcast_ref::<crate::ui::widgets::window::Window>().unwrap();
+        window.imp().stack.set_visible_child_name("main");
     }
 }

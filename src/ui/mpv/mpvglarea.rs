@@ -184,4 +184,20 @@ impl MPVGLArea {
         mpv.set_property("start", format!("{}%", percentage as u32)).unwrap();
 
     }
+
+    pub fn set_position(&self, value: f64) {
+        let bind = self.imp().mpv.lock().unwrap();
+        let Some(mpv) = bind.as_ref() else {
+            return;
+        };
+        mpv.set_property("percent-pos", value).unwrap();
+    }
+
+    pub fn position(&self) -> f64 {
+        let bind = self.imp().mpv.lock().unwrap();
+        let Some(mpv) = bind.as_ref() else {
+            return 0.0;
+        };
+        mpv.get_property("percent-pos").unwrap()
+    }
 }

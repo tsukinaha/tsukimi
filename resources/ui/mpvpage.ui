@@ -8,9 +8,9 @@
           <object class="GtkOverlay">
             <child>
               <object class="GtkEventControllerMotion">
-                <signal name="motion" handler="on_motion" swapped="yes"/>
-                <signal name="leave" handler="on_leave" swapped="yes"/>
-                <signal name="enter" handler="on_enter" swapped="yes"/>
+                <signal name="motion" handler="on_motion" swapped="yes" />
+                <signal name="leave" handler="on_leave" swapped="yes" />
+                <signal name="enter" handler="on_enter" swapped="yes" />
               </object>
             </child>
             <child>
@@ -26,27 +26,102 @@
                 <property name="reveal-child">false</property>
                 <property name="halign">center</property>
                 <property name="valign">end</property>
-                <property name="visible" bind-source="bottom_revealer" bind-property="reveal-child" bind-flags="sync-create"/>
+                <property name="margin-bottom">10</property>
+                <property name="visible" bind-source="bottom_revealer" bind-property="reveal-child"
+                  bind-flags="sync-create" />
                 <child>
-                  <object class="GtkBox">
-                    <property name="orientation">horizontal</property>
+                  <object class="AdwClamp">
+                    <property name="maximum-size">1000</property>
                     <child>
-                      <object class="GtkButton" id="_play_button">
-                          <property name="focusable">True</property>
-                          <property name="receives_default">True</property>
-                          <property name="tooltip_text" translatable="yes">Pause</property>
-                          <signal name="clicked" handler="on_play_pause_clicked" swapped="yes"/>
-                          <child>
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <child>
+                          <object class="GtkButton" id="_play_button">
+                            <property name="focusable">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="tooltip_text" translatable="yes">Pause</property>
+                            <signal name="clicked" handler="on_play_pause_clicked" swapped="yes" />
+                            <child>
                               <object class="GtkImage" id="play_pause_image">
-                                  <property name="icon_name">media-playback-pause-symbolic</property>
-                                  <property name="icon_size">2</property>
+                                <property name="icon_name">media-playback-pause-symbolic</property>
                               </object>
-                          </child>
+                            </child>
+                            <style>
+                              <class name="flat" />
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="_stop_button">
+                            <property name="focusable">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="tooltip_text" translatable="yes">Stop and quit</property>
+                            <signal name="clicked" handler="on_stop_clicked" swapped="yes" />
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon_name">media-playback-stop-symbolic</property>
+                              </object>
+                            </child>
+                            <style>
+                              <class name="flat" />
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="progress_time_label">
+                            <property name="focusable">False</property>
+                            <property name="halign">start</property>
+                            <property name="valign">center</property>
+                            <property name="label">0:00</property>
+                            <attributes>
+                              <attribute name="font-features" value="tnum=1" />
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="VideoScale" id="video_scale">
+                            <property name="focusable">True</property>
+                            <property name="valign">center</property>
+                            <property name="hexpand">True</property>
+                            <property name="draw_value">False</property>
+                            <style>
+                              <class name="smooth-scale" />
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="duration_label">
+                            <property name="focusable">False</property>
+                            <property name="halign">start</property>
+                            <property name="valign">center</property>
+                            <property name="label">0:00</property>
+                            <attributes>
+                              <attribute name="font-features" value="tnum=1" />
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="icon-name">view-fullscreen-symbolic</property>
+                            <style>
+                              <class name="flat" />
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkScaleButton">
+                            <property name="icons">audio-volume-medium</property>
+                            <style>
+                              <class name="flat" />
+                            </style>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="toolbar" />
+                          <class name="osd" />
+                        </style>
                       </object>
                     </child>
-                    <style>
-                      <class name="toolbar"/>
-                  </style>
                   </object>
                 </child>
               </object>
