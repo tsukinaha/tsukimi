@@ -1,10 +1,17 @@
+use std::sync::Mutex;
+
 use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
-
+use libmpv2::Mpv;
+use once_cell::sync::Lazy;
+use gtk::gdk::GLContext;
+    use gtk::prelude::*;
+    use libc::c_void;
 use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
 use crate::ui::models::SETTINGS;
+use crate::utils::spawn;
 
 mod imp {
 
@@ -19,14 +26,11 @@ mod imp {
         Mpv,
     };
 
-    fn get_proc_address(_ctx: &GLContext, name: &str)  -> *mut c_void  {
-        epoxy::get_proc_addr(name) as *mut c_void
-    }
+    use super::{EmbyPlayer, MPV};
 
     // Object holding the state
     #[derive(Default)]
     pub struct MPVGLArea {
-        pub mpv: Mutex<Option<Mpv>>,
         pub ctx: Mutex<Option<RenderContext>>,
     }
 
@@ -43,46 +47,11 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            unsafe {
-                use libc::setlocale;
-                use libc::LC_NUMERIC;
-                setlocale(LC_NUMERIC, "C\0".as_ptr() as *const _);
-            }
+            let obj = self.obj();
 
-            #[cfg(target_os = "macos")]
-                let library = unsafe { libloading::os::unix::Library::new("libepoxy.0.dylib") }.unwrap();
-            #[cfg(all(unix, not(target_os = "macos")))]
-                let library = unsafe { libloading::os::unix::Library::new("libepoxy.so.0") }.unwrap();
-            #[cfg(windows)]
-                let library = libloading::os::windows::Library::open_already_loaded("libepoxy-0.dll")
-                .or_else(|_| libloading::os::windows::Library::open_already_loaded("epoxy-0.dll"))
-                .unwrap();
-
-            epoxy::load_with(|name| {
-                unsafe { library.get::<_>(name.as_bytes()) }
-                    .map(|symbol| *symbol)
-                    .unwrap_or(std::ptr::null())
-            });
-
-            gl::load_with(|name|{
-                epoxy::get_proc_addr(name) as *const _
-            });
-
-            let mpv = Mpv::with_initializer(|init| {
-                init.set_property("osc", true)?;
-                init.set_property("config", true)?;
-                init.set_property("input-vo-keyboard", true)?;
-                init.set_property("input-default-bindings", true)?;
-                init.set_property("user-agent", "Tsukimi")?;
-                init.set_property("vo", "libmpv")?;
-                Ok(())
-            }).unwrap();
+            obj.set_has_stencil_buffer(true);
             
-            self.mpv.lock().unwrap().replace(mpv);
-
-            self.obj().set_has_stencil_buffer(true);
-            
-            self.obj().add_tick_callback(|area, _| {
+            obj.add_tick_callback(|area, _| {
                 area.queue_render();
                 glib::ControlFlow::Continue
             });
@@ -95,31 +64,9 @@ mod imp {
             let obj = self.obj();
             obj.make_current();
             let gl_context = self.obj().context().unwrap();
-            let mut binding = self.mpv.lock().unwrap();
-            let mpv = binding.as_mut().unwrap();
-            let ctx  = RenderContext::new(
-                unsafe { mpv.ctx.as_mut() },
-                vec![
-                    RenderParam::ApiType(RenderParamApiType::OpenGl),
-                    RenderParam::InitParams(OpenGLInitParams {
-                        get_proc_address,
-                        ctx: gl_context,
-                    }),
-                ],
-            )
-            .expect("Failed creating render context");
+            let ctx = MPV.lock().unwrap().ctx(gl_context);
 
             self.ctx.lock().unwrap().replace(ctx);
-        }
-
-        fn unrealize(&self) {
-            self.parent_unrealize();
-            if let Some(mpv) = self.mpv.lock().unwrap().take() {
-                drop(mpv);
-            }
-            if let Some(ctx) = self.ctx.lock().unwrap().take() {
-                drop(ctx);
-            }
         }
     }
 
@@ -169,10 +116,8 @@ impl MPVGLArea {
         back: Option<Back>,
         percentage: f64
     ) {
-        let bind = self.imp().mpv.lock().unwrap();
-        let Some(mpv) = bind.as_ref() else {
-            return;
-        };
+        let mpv = MPV.lock().unwrap();
+
         let url = EMBY_CLIENT.get_streaming_url(url);
         mpv.command("loadfile", &[&url, "replace"]).unwrap();
 
@@ -182,22 +127,123 @@ impl MPVGLArea {
         }
 
         mpv.set_property("start", format!("{}%", percentage as u32)).unwrap();
-
     }
 
     pub fn set_position(&self, value: f64) {
-        let bind = self.imp().mpv.lock().unwrap();
-        let Some(mpv) = bind.as_ref() else {
-            return;
-        };
-        mpv.set_property("percent-pos", value).unwrap();
+        MPV.lock().unwrap().set_position(value)
     }
 
     pub fn position(&self) -> f64 {
-        let bind = self.imp().mpv.lock().unwrap();
-        let Some(mpv) = bind.as_ref() else {
-            return 0.0;
-        };
-        mpv.get_property("percent-pos").unwrap()
+        MPV.lock().unwrap().position()
+    }
+}
+
+use libmpv2::{
+    render::{OpenGLInitParams, RenderContext, RenderParam, RenderParamApiType},
+};
+
+pub static MPV: Lazy<Mutex<Mpv>> = Lazy::new(|| {
+
+    unsafe {
+        use libc::setlocale;
+        use libc::LC_NUMERIC;
+        setlocale(LC_NUMERIC, "C\0".as_ptr() as *const _);
+    }
+
+    #[cfg(target_os = "macos")]
+        let library = unsafe { libloading::os::unix::Library::new("libepoxy.0.dylib") }.unwrap();
+    #[cfg(all(unix, not(target_os = "macos")))]
+        let library = unsafe { libloading::os::unix::Library::new("libepoxy.so.0") }.unwrap();
+    #[cfg(windows)]
+        let library = libloading::os::windows::Library::open_already_loaded("libepoxy-0.dll")
+        .or_else(|_| libloading::os::windows::Library::open_already_loaded("epoxy-0.dll"))
+        .unwrap();
+
+    epoxy::load_with(|name| {
+        unsafe { library.get::<_>(name.as_bytes()) }
+            .map(|symbol| *symbol)
+            .unwrap_or(std::ptr::null())
+    });
+
+    gl::load_with(|name|{
+        epoxy::get_proc_addr(name) as *const _
+    });
+
+    let mpv = Mpv::with_initializer(|init| {
+        init.set_property("osc", true)?;
+        init.set_property("config", true)?;
+        init.set_property("input-vo-keyboard", true)?;
+        init.set_property("input-default-bindings", true)?;
+        init.set_property("user-agent", "Tsukimi")?;
+        init.set_property("vo", "libmpv")?;
+        Ok(())
+    }).unwrap();
+
+    Mutex::new(mpv)
+});
+
+pub trait EmbyPlayer {
+    fn listen_events(&mut self);
+    fn position(&mut self) -> f64;
+    fn set_position(&mut self, value: f64);
+    fn ctx(&mut self, glcontext: GLContext) -> RenderContext;
+    fn paused(&mut self) -> bool;
+    fn pause(&mut self, value: bool);
+}
+
+fn get_proc_address(_ctx: &GLContext, name: &str)  -> *mut c_void  {
+    epoxy::get_proc_addr(name) as *mut c_void
+}
+
+impl EmbyPlayer for Mpv {
+    fn listen_events(&mut self) {
+        let ev_ctx = self.event_context_mut();
+        crossbeam::scope(|scope| {
+            scope.spawn(move |_| loop {
+                let ev = ev_ctx.wait_event(1.);
+                match ev {
+                    Some(Ok(libmpv2::events::Event::EndFile(r))) => {
+                        println!("End of file: {:?}", r);
+                    }
+                    Some(Ok(mpv_event)) => {
+                        eprintln!("MPV event: {:?}", mpv_event);
+                    }
+                    Some(Err(err)) => {
+                        eprintln!("MPV Error: {}", err);
+                    }
+                    None => {}
+                }
+            });
+        }).unwrap();
+    }
+
+    fn position(&mut self) -> f64 {
+        self.get_property("percent-pos").unwrap()
+    }
+
+    fn set_position(&mut self, value: f64) {
+        self.set_property("percent-pos", value).unwrap();
+    }
+
+    fn ctx(&mut self, glcontext: GLContext) -> RenderContext {
+        RenderContext::new(
+            unsafe { self.ctx.as_mut() },
+            vec![
+                RenderParam::ApiType(RenderParamApiType::OpenGl),
+                RenderParam::InitParams(OpenGLInitParams {
+                    get_proc_address,
+                    ctx: glcontext,
+                }),
+            ],
+        )
+        .expect("Failed creating render context")
+    }
+
+    fn paused(&mut self) -> bool {
+        self.get_property("pause").unwrap()
+    }
+
+    fn pause(&mut self, value: bool) {
+        self.set_property("pause", value).unwrap();
     }
 }

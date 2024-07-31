@@ -24,7 +24,7 @@
                 <property name="transition-type">crossfade</property>
                 <property name="transition-duration">500</property>
                 <property name="reveal-child">false</property>
-                <property name="halign">center</property>
+                <property name="halign">fill</property>
                 <property name="valign">end</property>
                 <property name="margin-bottom">10</property>
                 <property name="visible" bind-source="bottom_revealer" bind-property="reveal-child"
@@ -35,6 +35,22 @@
                     <child>
                       <object class="GtkBox">
                         <property name="orientation">horizontal</property>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="icon-name">go-previous-symbolic</property>
+                            <style>
+                              <class name="flat" />
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="icon-name">go-next-symbolic</property>
+                            <style>
+                              <class name="flat" />
+                            </style>
+                          </object>
+                        </child>
                         <child>
                           <object class="GtkButton" id="_play_button">
                             <property name="focusable">True</property>
@@ -118,7 +134,6 @@
                         </child>
                         <style>
                           <class name="toolbar" />
-                          <class name="osd" />
                         </style>
                       </object>
                     </child>

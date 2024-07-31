@@ -7,7 +7,7 @@ use gtk::subclass::prelude::*;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
-use super::mpvglarea::MPVGLArea;
+use super::mpvglarea::{MPVGLArea, MPV};
 static MIN_MOTION_TIME: i64 = 100000;
 
 mod imp {
@@ -94,6 +94,8 @@ glib::wrapper! {
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
+
+use crate::ui::mpv::mpvglarea::EmbyPlayer;
 
 impl Default for MPVPage {
     fn default() -> Self {
@@ -244,10 +246,10 @@ impl MPVPage {
 
     #[template_callback]
     fn on_play_pause_clicked(&self) {
-        let mut guard = self.imp().video.imp().mpv.lock().unwrap();
-        let mpv = guard.as_mut().unwrap();
         let play_pause_image = &self.imp().play_pause_image.get();
-        let paused: bool = mpv.get_property("pause").unwrap();
+
+        let mut mpv = MPV.lock().unwrap();
+        let paused = mpv.paused();
 
         if paused {
             play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
@@ -257,14 +259,12 @@ impl MPVPage {
             play_pause_image.set_tooltip_text(Some(&gettext("Play")));
         }
 
-        mpv.set_property("pause", !paused).unwrap();
+        mpv.pause(!paused);
     }
 
     #[template_callback]
     fn on_stop_clicked(&self) {
-        let mut guard = self.imp().video.imp().mpv.lock().unwrap();
-        let mpv = guard.as_mut().unwrap();
-        mpv.set_property("pause", true).unwrap();
+        MPV.lock().unwrap().pause(true);
 
         let root = self.root();
         let window = root.and_downcast_ref::<crate::ui::widgets::window::Window>().unwrap();
