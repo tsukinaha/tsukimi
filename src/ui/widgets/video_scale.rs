@@ -3,7 +3,7 @@ mod imp {
     use gtk::{glib, prelude::*, subclass::prelude::*};
     use std::cell::RefCell;
 
-    use crate::{gstl::player::MusicPlayer, ui::mpv::mpvglarea::MPVGLArea};
+    use crate::{ui::mpv::mpvglarea::MPVGLArea};
 
     #[derive(Default, glib::Properties)]
     #[properties(wrapper_type = super::VideoScale)]

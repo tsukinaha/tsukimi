@@ -1,17 +1,13 @@
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
 use glib::Object;
-use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 use libmpv2::Mpv;
 use once_cell::sync::Lazy;
 use gtk::gdk::GLContext;
-    use gtk::prelude::*;
-    use libc::c_void;
+use libc::c_void;
 use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
-use crate::ui::models::SETTINGS;
-use crate::utils::spawn;
 
 mod imp {
 
@@ -20,11 +16,12 @@ mod imp {
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
     use gtk::glib;
-    use libc::c_void;
+    
     use libmpv2::{
-        render::{OpenGLInitParams, RenderContext, RenderParam, RenderParamApiType},
-        Mpv,
+        render::{RenderContext},
     };
+
+    
 
     use super::{EmbyPlayer, MPV};
 
@@ -65,7 +62,6 @@ mod imp {
             obj.make_current();
             let gl_context = self.obj().context().unwrap();
             let ctx = MPV.lock().unwrap().ctx(gl_context);
-
             self.ctx.lock().unwrap().replace(ctx);
         }
     }
@@ -142,7 +138,7 @@ use libmpv2::{
     render::{OpenGLInitParams, RenderContext, RenderParam, RenderParamApiType},
 };
 
-pub static MPV: Lazy<Mutex<Mpv>> = Lazy::new(|| {
+pub static MPV: Lazy<Arc<Mutex<Mpv>>> = Lazy::new(|| {
 
     unsafe {
         use libc::setlocale;
@@ -179,7 +175,7 @@ pub static MPV: Lazy<Mutex<Mpv>> = Lazy::new(|| {
         Ok(())
     }).unwrap();
 
-    Mutex::new(mpv)
+    Arc::new(Mutex::new(mpv))
 });
 
 pub trait EmbyPlayer {
@@ -189,6 +185,7 @@ pub trait EmbyPlayer {
     fn ctx(&mut self, glcontext: GLContext) -> RenderContext;
     fn paused(&mut self) -> bool;
     fn pause(&mut self, value: bool);
+    fn quit(&mut self);
 }
 
 fn get_proc_address(_ctx: &GLContext, name: &str)  -> *mut c_void  {
@@ -245,5 +242,9 @@ impl EmbyPlayer for Mpv {
 
     fn pause(&mut self, value: bool) {
         self.set_property("pause", value).unwrap();
+    }
+
+    fn quit(&mut self) {
+        self.command("quit", &[]).unwrap();
     }
 }

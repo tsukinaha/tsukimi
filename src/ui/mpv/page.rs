@@ -214,10 +214,8 @@ impl MPVPage {
     fn fade_overlay_delay_cb(&self) {
         *self.imp().timeout.borrow_mut() = None;
 
-        if *self.toolbar_revealed() {
-            if self.can_fade_overlay() {
-                self.set_reveal_overlay(false);
-            }
+        if *self.toolbar_revealed() && self.can_fade_overlay() {
+            self.set_reveal_overlay(false);
         }
     }
 
@@ -264,7 +262,7 @@ impl MPVPage {
 
     #[template_callback]
     fn on_stop_clicked(&self) {
-        MPV.lock().unwrap().pause(true);
+        MPV.lock().unwrap().quit();
 
         let root = self.root();
         let window = root.and_downcast_ref::<crate::ui::widgets::window::Window>().unwrap();

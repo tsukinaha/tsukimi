@@ -25,7 +25,7 @@ pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
 static PROFILE: &str = include_str!("stream_profile.json");
 static LIVEPROFILE: &str = include_str!("test.json");
-static CLIENT_ID: Lazy<String> = Lazy::new(|| format!("Tsukimi"));
+static CLIENT_ID: Lazy<String> = Lazy::new(|| "Tsukimi".to_string());
 static DEVICE_NAME: Lazy<String> = Lazy::new(|| hostname::get().unwrap_or("Unknown".into()).to_string_lossy().to_string());
 
 pub struct EmbyClient {
@@ -110,7 +110,7 @@ impl EmbyClient {
     where
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
-        let request = self.prepare_request(Method::GET, path, &params);
+        let request = self.prepare_request(Method::GET, path, params);
         let res = self.send_request(request).await?;
 
         match res.error_for_status() {
@@ -456,8 +456,8 @@ impl EmbyClient {
     }
 
     pub fn get_streaming_url(&self, path: &str) -> String {
-        let url = self.url.lock().unwrap().as_ref().unwrap().clone();
-        url.join(path).unwrap().to_string()
+        let (url, _) = self.get_url_and_headers();
+        url.join(path.trim_start_matches('/')).unwrap().to_string()
     }
 
     pub async fn get_list(
