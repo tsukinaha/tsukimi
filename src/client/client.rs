@@ -457,7 +457,7 @@ impl EmbyClient {
 
     pub fn get_streaming_url(&self, path: &str) -> String {
         let url = self.url.lock().unwrap().as_ref().unwrap().clone();
-        url.join(path).unwrap().to_string()
+        url.join(path.trim_start_matches('/')).unwrap().to_string()
     }
 
     pub async fn get_list(
