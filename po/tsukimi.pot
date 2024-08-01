@@ -290,7 +290,7 @@ msgid "Password"
 msgstr ""
 
 #: resources/ui/actor.ui:4 resources/ui/album_widget.ui:4
-#: resources/ui/boxset.ui:4 resources/ui/clapperpage.ui:4
+#: resources/ui/boxset.ui:4 resources/ui/mpvpage.ui:4
 #: resources/ui/history.ui:4 resources/ui/home.ui:4 resources/ui/item.ui:4
 #: resources/ui/list.ui:4 resources/ui/search.ui:4 resources/ui/singlelist.ui:4
 #: resources/ui/window.ui:14 resources/ui/window.ui:148

@@ -95,8 +95,6 @@
                                         <property name="vexpand">True</property>
                                         <property name="icon-name">network-server-symbolic</property>
                                         <property name="title" translatable="yes">No Server</property>
-                                        <property name="description" translatable="yes">Add a server to get started.
-You should install the package `gst-libav` to play media files with built-in player.</property>
                                         <property name="child">
                                           <object class="GtkButton" id="add_server">
                                             <property name="label" translatable="yes">Add Server</property>
@@ -450,10 +448,10 @@ You should install the package `gst-libav` to play media files with built-in pla
                   </object>
                 </child>
                 <child>
-                  <object class="GtkStackPage" id="clapperpage">
+                  <object class="GtkStackPage" id="mpvpage">
                     <property name="name">clapper</property>
                     <property name="child">
-                      <object class="ClapperPage" id="clappernav">
+                      <object class="MPVPage" id="clappernav">
                       </object>
                     </property>
                   </object>

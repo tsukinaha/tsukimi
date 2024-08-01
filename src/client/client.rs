@@ -863,7 +863,7 @@ impl EmbyClient {
         has_user_id: bool,
     ) -> Result<ActivityLogs, reqwest::Error> {
         let params = [
-            ("Limit", "15"),
+            ("Limit", "7"),
             ("StartIndex", "0"),
             ("hasUserId", &has_user_id.to_string()),
         ];

@@ -1,7 +1,6 @@
-mod clapper;
+mod mpv;
 mod image;
 pub(crate) mod models;
-mod mpv;
 pub mod provider;
 pub mod widgets;
 use self::models::SETTINGS;
@@ -16,7 +15,7 @@ pub fn build_ui(app: &adw::Application) {
                 let about = adw::AboutWindow::builder()
                     .application_name("Tsukimi")
                     .version(crate::config::APP_VERSION)
-                    .comments("A simple third-party Emby client.\nVersion: tsukimi 0.8.2 \n2024.7.18 15:29")
+                    .comments("A simple third-party Emby client.\nVersion: tsukimi 0.10.0 \n2024.7.29 15:29")
                     .website("https://github.com/tsukinaha/tsukimi")
                     .application_icon("tsukimi")
                     .license_type(gtk::License::Gpl30)
