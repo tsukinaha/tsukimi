@@ -10,6 +10,7 @@
             <child>
               <object class="GtkPicture" id="picture">
                 <property name="valign">fill</property>
+                <property name="halign">center</property>
                 <property name="content-fit">cover</property>
               </object>
             </child>

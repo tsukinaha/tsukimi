@@ -9,7 +9,7 @@
             <property name="valign">end</property>
             <child>
               <object class="GtkOverlay" id="overlay">
-                <property name="valign">end</property>
+                <property name="valign">fill</property>
                 <property name="width-request">141</property>
                 <property name="height-request">141</property>
                 <property name="halign">center</property>
