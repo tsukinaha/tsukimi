@@ -13,11 +13,9 @@ use crate::ui::widgets::window::Window;
 use crate::utils::spawn_tokio;
 use crate::{
     toast,
-    ui::{
-        widgets::{
-            actor::ActorPage, boxset::BoxSetPage, item::ItemPage, list::ListPage,
-            music_album::AlbumPage,
-        },
+    ui::widgets::{
+        actor::ActorPage, boxset::BoxSetPage, item::ItemPage, list::ListPage,
+        music_album::AlbumPage,
     },
     utils::spawn,
 };
@@ -243,11 +241,7 @@ impl TuItem {
                 push_page_with_tag(window, page, self.name());
             }
             "Episode" => {
-                let page = ItemPage::new(
-                    self.series_id(),
-                    self.id(),
-                    self.name(),
-                );
+                let page = ItemPage::new(self.series_id(), self.id(), self.name());
                 push_page_with_tag(window, page, self.series_name());
             }
             "MusicAlbum" => {
@@ -263,10 +257,7 @@ impl TuItem {
                 push_page_with_tag(window, page, self.name());
             }
             "CollectionFolder" => {
-                let page = ListPage::new(
-                    self.id(),
-                    self.collection_type().unwrap_or_default(),
-                );
+                let page = ListPage::new(self.id(), self.collection_type().unwrap_or_default());
                 push_page_with_tag(window, page, self.name());
             }
             "UserView" => {
@@ -300,8 +291,7 @@ impl TuItem {
             async move {
                 toast!(window, gettext("Processing..."));
                 let id = item.id();
-                match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&id).await })
-                    .await
+                match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&id).await }).await
                 {
                     Ok(playback) => {
                         let Some(ref url) = playback.media_sources[0].transcoding_url else {

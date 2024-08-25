@@ -222,6 +222,8 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+pub const PROGRESSBAR_FADE_ANIMATION_DURATION: u32 = 500;
+
 #[template_callbacks]
 impl Window {
     pub fn homepage(&self) {
@@ -617,7 +619,7 @@ impl Window {
             ));
 
             adw::TimedAnimation::builder()
-                .duration(PROGRESSBAR_ANIMATION_DURATION)
+                .duration(PROGRESSBAR_FADE_ANIMATION_DURATION)
                 .widget(&self.imp().progressbar.get())
                 .target(&target)
                 .value_to(0.)

@@ -1,11 +1,9 @@
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
-use super::tu_list_item::TuListItem;
 use super::utils::TuItemBuildExt;
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::client::structs::*;
 use crate::ui::models::SETTINGS;
 use crate::ui::provider::tu_object::TuObject;
 use crate::utils::{req_cache, spawn, spawn_tokio};
@@ -303,18 +301,15 @@ impl SingleListPage {
 
         let parentid = self.parentid();
 
-        imp.listgrid
-            .connect_activate(glib::clone!(
-                #[strong]
-                parentid,
-                move |listview, position| {
-                    let model = listview.model().unwrap();
-                    let tu_obj = model
-                        .item(position)
-                        .and_downcast::<TuObject>()
-                        .unwrap();
-                    tu_obj.activate(listview);
-            }));
+        imp.listgrid.connect_activate(glib::clone!(
+            #[strong]
+            parentid,
+            move |listview, position| {
+                let model = listview.model().unwrap();
+                let tu_obj = model.item(position).and_downcast::<TuObject>().unwrap();
+                tu_obj.activate(listview);
+            }
+        ));
     }
 
     #[template_callback]

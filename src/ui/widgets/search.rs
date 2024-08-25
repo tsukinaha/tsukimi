@@ -5,8 +5,8 @@ use crate::utils::{spawn, spawn_tokio};
 use crate::{fraction, fraction_reset, toast};
 use glib::Object;
 use gtk::subclass::prelude::*;
-use gtk::{gio, glib, SignalListItemFactory};
-use gtk::{prelude::*, template_callbacks, SearchEntry};
+use gtk::{gio, glib};
+use gtk::{prelude::*, template_callbacks};
 
 mod imp {
 

@@ -1,48 +1,27 @@
-use std::collections::HashMap;
-use std::path::PathBuf;
-use std::sync::Arc;
-use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::SimpleListItem;
-use std::sync::atomic::{AtomicBool, Ordering};
-use crate::ui::provider::tu_item::{self, TuItem};
+use crate::ui::provider::tu_item::TuItem;
 use crate::ui::provider::tu_object::TuObject;
-use crate::utils::{spawn, spawn_tokio};
-use gtk::gdk::Texture;
-use gtk::glib::{self, clone};
-use gtk::{prelude::*, IconPaintable, Revealer};
-use tracing::{debug, warn};
-use crate::bing_song_model;
-use crate::ui::models::emby_cache_path;
-use crate::ui::provider::core_song::CoreSong;
-use crate::ui::widgets::song_widget::State;
 use adw::prelude::*;
 use adw::subclass::prelude::*;
-use gettextrs::gettext;
 use gtk::gio;
-use gtk::gio::ListStore;
-use gtk::{ template_callbacks, CompositeTemplate};
-
-use super::song_widget::format_duration;
+use gtk::glib::{self, clone};
+use gtk::prelude::*;
+use gtk::{template_callbacks, CompositeTemplate};
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 
 pub(crate) mod imp {
-    use std::cell::{OnceCell, RefCell};
+
     use std::sync::atomic::AtomicBool;
     use std::sync::Arc;
 
     use crate::ui::provider::tu_object::TuObject;
-    use crate::ui::widgets::item_actionbox::ItemActionsBox;
+
     use crate::ui::widgets::utils::TuItemBuildExt;
-    use crate::{
-        ui::{
-            provider::tu_item::TuItem,
-            widgets::{hortu_scrolled::HortuScrolled, star_toggle::StarToggle},
-        },
-        utils::spawn_g_timeout,
-    };
 
     use super::*;
     use glib::subclass::InitializingObject;
-    use glib::SignalHandlerId;
+
     use gtk::SignalListItemFactory;
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -94,6 +73,12 @@ glib::wrapper! {
         @extends gtk::Widget, @implements gtk::Accessible;
 }
 
+impl Default for TuViewScrolled {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[template_callbacks]
 impl TuViewScrolled {
     pub fn new() -> Self {
@@ -120,15 +105,10 @@ impl TuViewScrolled {
         }
     }
 
-
-
     #[template_callback]
     fn on_item_activated(&self, position: u32, listview: &gtk::GridView) {
         let model = listview.model().unwrap();
-        let tu_obj = model
-            .item(position)
-            .and_downcast::<TuObject>()
-            .unwrap();
+        let tu_obj = model.item(position).and_downcast::<TuObject>().unwrap();
         tu_obj.activate(listview);
     }
 
@@ -139,8 +119,7 @@ impl TuViewScrolled {
         self.imp().scrolled_window.connect_edge_overshot(clone!(
             #[weak(rename_to = obj)]
             self,
-            move |_scrolled, pos|
-            if pos == gtk::PositionType::Bottom {
+            move |_scrolled, pos| if pos == gtk::PositionType::Bottom {
                 let is_running = Arc::clone(&obj.imp().lock);
 
                 if is_running
@@ -157,7 +136,12 @@ impl TuViewScrolled {
 
     pub fn n_items(&self) -> u32 {
         let imp = self.imp();
-        let store = imp.selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+        let store = imp
+            .selection
+            .model()
+            .unwrap()
+            .downcast::<gio::ListStore>()
+            .unwrap();
         store.n_items()
     }
 }

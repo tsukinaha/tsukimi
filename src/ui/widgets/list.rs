@@ -105,10 +105,15 @@ impl ListPage {
             ("genres", "Genres"),
             ("liked", "Liked"),
         ];
-        
 
         for (name, title) in pages {
-            let page = SingleListPage::new(id.clone(), collection_type.clone(), name, Some(id.clone()), false);
+            let page = SingleListPage::new(
+                id.clone(),
+                collection_type.clone(),
+                name,
+                Some(id.clone()),
+                false,
+            );
             stack.add_titled(&page, Some(name), &gettext(title));
         }
     }

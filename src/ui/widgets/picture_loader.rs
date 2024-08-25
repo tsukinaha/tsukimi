@@ -1,39 +1,20 @@
-use std::collections::HashMap;
-use std::path::PathBuf;
 use crate::client::client::EMBY_CLIENT;
-use crate::utils::{spawn, spawn_tokio};
-use gtk::gdk::Texture;
-use gtk::glib::{self, clone};
-use gtk::{prelude::*, IconPaintable, Revealer};
-use tracing::{debug, warn};
-use crate::bing_song_model;
 use crate::ui::models::emby_cache_path;
-use crate::ui::provider::core_song::CoreSong;
-use crate::ui::widgets::song_widget::State;
+use crate::utils::{spawn, spawn_tokio};
 use adw::prelude::*;
 use adw::subclass::prelude::*;
-use gettextrs::gettext;
 use gtk::gio;
-use gtk::gio::ListStore;
-use gtk::{ template_callbacks, CompositeTemplate};
-
-use super::song_widget::format_duration;
+use gtk::glib::{self, clone};
+use gtk::prelude::*;
+use gtk::CompositeTemplate;
+use std::path::PathBuf;
+use tracing::{debug, warn};
 
 pub(crate) mod imp {
     use std::cell::{OnceCell, RefCell};
 
-    use crate::ui::widgets::item_actionbox::ItemActionsBox;
-    use crate::{
-        ui::{
-            provider::tu_item::TuItem,
-            widgets::{hortu_scrolled::HortuScrolled, star_toggle::StarToggle},
-        },
-        utils::spawn_g_timeout,
-    };
-
     use super::*;
     use glib::subclass::InitializingObject;
-    use glib::SignalHandlerId;
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/picture_loader.ui")]
@@ -89,7 +70,11 @@ glib::wrapper! {
 
 impl PictureLoader {
     pub fn new(id: &str, image_type: &str, tag: Option<String>) -> Self {
-        glib::Object::builder().property("id", id).property("imagetype", image_type).property("tag", tag).build()
+        glib::Object::builder()
+            .property("id", id)
+            .property("imagetype", image_type)
+            .property("tag", tag)
+            .build()
     }
 
     pub fn load_pic(&self) {
@@ -111,15 +96,20 @@ impl PictureLoader {
         } else {
             imp.broken.set_visible(true);
         }
-        
+
         imp.spinner.stop();
-        
+
         imp.revealer.set_reveal_child(true);
     }
 
     pub fn cache_file(&self) -> PathBuf {
         let cache_path = emby_cache_path();
-        let path = format!("{}-{}-{}", self.id(), self.imagetype(), self.tag().unwrap_or("0".to_string()));
+        let path = format!(
+            "{}-{}-{}",
+            self.id(),
+            self.imagetype(),
+            self.tag().unwrap_or("0".to_string())
+        );
         cache_path.join(path)
     }
 
@@ -135,7 +125,10 @@ impl PictureLoader {
                     let mut retries = 0;
                     while retries < 3 {
                         let tag = tag.clone();
-                        match EMBY_CLIENT.get_image(&id, &image_type, tag.and_then(|s| s.parse::<u8>().ok())).await {
+                        match EMBY_CLIENT
+                            .get_image(&id, &image_type, tag.and_then(|s| s.parse::<u8>().ok()))
+                            .await
+                        {
                             Ok(_) => {
                                 break;
                             }
@@ -152,6 +145,4 @@ impl PictureLoader {
             }
         ));
     }
-    
-
 }

@@ -25,8 +25,13 @@ pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
 static PROFILE: &str = include_str!("stream_profile.json");
 static LIVEPROFILE: &str = include_str!("test.json");
-static CLIENT_ID: Lazy<String> = Lazy::new(|| format!("Tsukimi"));
-static DEVICE_NAME: Lazy<String> = Lazy::new(|| hostname::get().unwrap_or("Unknown".into()).to_string_lossy().to_string());
+static CLIENT_ID: Lazy<String> = Lazy::new(|| "Tsukimi".to_string());
+static DEVICE_NAME: Lazy<String> = Lazy::new(|| {
+    hostname::get()
+        .unwrap_or("Unknown".into())
+        .to_string_lossy()
+        .to_string()
+});
 
 pub struct EmbyClient {
     pub url: Mutex<Option<Url>>,
@@ -110,7 +115,7 @@ impl EmbyClient {
     where
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
-        let request = self.prepare_request(Method::GET, path, &params);
+        let request = self.prepare_request(Method::GET, path, params);
         let res = self.send_request(request).await?;
 
         match res.error_for_status() {
@@ -188,7 +193,12 @@ impl EmbyClient {
         info!("Request URL: {}", url);
     }
 
-    pub async fn search(&self, query: &str, filter: &[&str], start_index: &str) -> Result<List, reqwest::Error> {
+    pub async fn search(
+        &self,
+        query: &str,
+        filter: &[&str],
+        start_index: &str,
+    ) -> Result<List, reqwest::Error> {
         let filter_str = filter.join(",");
         let path = format!("Users/{}/Items", self.user_id());
         let params = [
@@ -849,13 +859,11 @@ impl EmbyClient {
     }
 
     pub async fn shut_down(&self) -> Result<Response, reqwest::Error> {
-        self.post("System/Shutdown", &[], json!({}))
-            .await
+        self.post("System/Shutdown", &[], json!({})).await
     }
 
     pub async fn restart(&self) -> Result<Response, reqwest::Error> {
-        self.post("System/Restart", &[], json!({}))
-            .await
+        self.post("System/Restart", &[], json!({})).await
     }
 
     pub async fn get_activity_log(

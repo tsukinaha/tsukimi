@@ -8,8 +8,8 @@ use crate::ui::widgets::fix::ScrolledWindowFixExt;
 const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
 
 mod imp {
-    use crate::ui::{provider::tu_item::TuItem, widgets::utils::TuItemBuildExt};
-    use std::{borrow::Borrow, cell::{OnceCell, RefCell}};
+    use crate::ui::widgets::utils::TuItemBuildExt;
+    use std::cell::{OnceCell, RefCell};
 
     use glib::subclass::InitializingObject;
 
@@ -76,16 +76,12 @@ mod imp {
 
             self.list.set_model(Some(&self.selection));
 
-            self.list.set_factory(Some(
-                SignalListItemFactory::new().tu_item(),
-            ));
+            self.list
+                .set_factory(Some(SignalListItemFactory::new().tu_item()));
 
             self.list.connect_activate(move |listview, position| {
                 let model = listview.model().unwrap();
-                let tu_obj = model
-                    .item(position)
-                    .and_downcast::<TuObject>()
-                    .unwrap();
+                let tu_obj = model.item(position).and_downcast::<TuObject>().unwrap();
                 tu_obj.activate(listview);
             });
         }
@@ -233,9 +229,7 @@ impl HortuScrolled {
     }
 
     #[template_callback]
-    fn on_morebutton_clicked(&self) {
-        
-    }
+    fn on_morebutton_clicked(&self) {}
 
     fn anime<const R: bool>(&self) {
         let scrolled = self.imp().scrolled.get();
@@ -246,11 +240,7 @@ impl HortuScrolled {
         };
 
         let start = adj.value();
-        let end = if R {
-            start + 800.0
-        } else {
-            start - 800.0
-        };
+        let end = if R { start + 800.0 } else { start - 800.0 };
 
         let start_time = clock.frame_time();
         let end_time = start_time + 1000 * 400;

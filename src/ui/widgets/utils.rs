@@ -1,8 +1,5 @@
-use gtk::glib;
 use gtk::{prelude::*, SignalListItemFactory};
 
-use crate::client::structs::SimpleListItem;
-use crate::ui::provider::tu_item::TuItem;
 use crate::ui::provider::tu_object::TuObject;
 
 use super::tu_list_item::TuListItem;

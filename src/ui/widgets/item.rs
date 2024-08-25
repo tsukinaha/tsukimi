@@ -298,17 +298,14 @@ impl ItemPage {
         let seasonlist = imp.seasonlist.get();
         seasonlist.set_model(Some(&imp.seasonselection));
 
-        let series_info = match spawn_tokio( async move {
-            EMBY_CLIENT.get_series_info(&id).await
-        })
-        .await
-        {
-            Ok(item) => item.items,
-            Err(e) => {
-                toast!(self, e.to_user_facing());
-                Vec::new()
-            }
-        };
+        let series_info =
+            match spawn_tokio(async move { EMBY_CLIENT.get_series_info(&id).await }).await {
+                Ok(item) => item.items,
+                Err(e) => {
+                    toast!(self, e.to_user_facing());
+                    Vec::new()
+                }
+            };
 
         spawn(glib::clone!(
             #[weak(rename_to = obj)]

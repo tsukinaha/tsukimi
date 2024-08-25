@@ -12,20 +12,25 @@ pub fn build_ui(app: &adw::Application) {
     // Create new window and present it
     let window = widgets::window::Window::new(app);
     let about_action = gtk::gio::ActionEntry::builder("about")
-            .activate(|_, _, _| {
-                let about = adw::AboutWindow::builder()
-                    .application_name("Tsukimi")
-                    .version(crate::config::APP_VERSION)
-                    .comments("A simple third-party Emby client.\nVersion: tsukimi 0.8.2 \n2024.7.18 15:29")
-                    .website("https://github.com/tsukinaha/tsukimi")
-                    .application_icon("tsukimi")
-                    .license_type(gtk::License::Gpl30)
-                    .build();
-                about.add_acknowledgement_section(Some("Code"),&["Inaha","Kosette"]);
-                about.add_acknowledgement_section(Some("Special Thanks"), &["Qound","Eikano","amtoaer"]);
-                about.present();
-            })
-            .build();
+        .activate(|_, _, _| {
+            let about = adw::AboutWindow::builder()
+                .application_name("Tsukimi")
+                .version(crate::config::APP_VERSION)
+                .comments(
+                    "A simple third-party Emby client.\nVersion: tsukimi 0.8.2 \n2024.7.18 15:29",
+                )
+                .website("https://github.com/tsukinaha/tsukimi")
+                .application_icon("tsukimi")
+                .license_type(gtk::License::Gpl30)
+                .build();
+            about.add_acknowledgement_section(Some("Code"), &["Inaha", "Kosette"]);
+            about.add_acknowledgement_section(
+                Some("Special Thanks"),
+                &["Qound", "Eikano", "amtoaer"],
+            );
+            about.present();
+        })
+        .build();
     window.add_action_entries([about_action]);
     window.present();
 }

@@ -9,14 +9,11 @@ use gtk::template_callbacks;
 use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
-use tracing::debug;
 use tracing::warn;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::client::structs::SimpleListItem;
 use crate::toast;
-use crate::ui::models::emby_cache_path;
 use crate::ui::provider::tu_item::TuItem;
 use crate::ui::provider::IS_ADMIN;
 use crate::utils::spawn;
@@ -51,7 +48,6 @@ mod imp {
         pub label2: TemplateChild<gtk::Label>,
         #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
-
     }
 
     // The central trait for subclassing a GObject
@@ -94,12 +90,11 @@ mod imp {
 
     impl TuListItem {
         pub fn set_item(&self, item: TuItem) {
-
             self.item.set(item).unwrap();
 
             let obj = self.obj();
-                obj.set_up();
-                obj.gesture();
+            obj.set_up();
+            obj.gesture();
         }
     }
 }
@@ -535,49 +530,47 @@ impl TuListItem {
                 ))
                 .build()]);
 
-            if is_editable {
-                if !self.item().is_resume() {
-                    action_group.add_action_entries([gio::ActionEntry::builder("identify")
-                        .activate(glib::clone!(
-                            #[weak(rename_to = obj)]
-                            self,
-                            move |_, _, _| {
-                                spawn(glib::clone!(
-                                    #[weak]
-                                    obj,
-                                    async move {
-                                        let id = obj.item().id();
-                                        let type_ = obj.item().item_type();
-                                        let dialog =
-                                            crate::ui::widgets::identify_dialog::IdentifyDialog::new(&id, &type_);
-                                        crate::insert_editm_dialog!(obj, dialog);
-                                    }
-                                ))
-                            }
-                        ))
-                        .build()]);
+            if is_editable && !self.item().is_resume() {
+                action_group.add_action_entries([gio::ActionEntry::builder("identify")
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                async move {
+                                    let id = obj.item().id();
+                                    let type_ = obj.item().item_type();
+                                    let dialog =
+                                        crate::ui::widgets::identify_dialog::IdentifyDialog::new(
+                                            &id, &type_,
+                                        );
+                                    crate::insert_editm_dialog!(obj, dialog);
+                                }
+                            ))
+                        }
+                    ))
+                    .build()]);
 
-                        action_group.add_action_entries([gio::ActionEntry::builder("refresh")
-                        .activate(glib::clone!(
-                            #[weak(rename_to = obj)]
-                            self,
-                            move |_, _, _| {
-                                spawn(glib::clone!(
-                                    #[weak]
-                                    obj,
-                                    async move {
-                                        let id = obj.item().id();
-                                        let dialog =
-                                            crate::ui::widgets::refresh_dialog::RefreshDialog::new(
-                                                &id,
-                                            );
-                                        crate::insert_editm_dialog!(obj, dialog);
-                                    }
-                                ))
-                            }
-                        ))
-                        .build()]);
-                }
+                action_group.add_action_entries([gio::ActionEntry::builder("refresh")
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                async move {
+                                    let id = obj.item().id();
+                                    let dialog =
+                                        crate::ui::widgets::refresh_dialog::RefreshDialog::new(&id);
+                                    crate::insert_editm_dialog!(obj, dialog);
+                                }
+                            ))
+                        }
+                    ))
+                    .build()]);
             }
         }
 
@@ -779,26 +772,6 @@ impl TuListItem {
             .and_downcast::<Window>()
             .unwrap();
         window.reveal_image(&picture);
-        window.media_viewer_show_paintable(picture.paintable()); 
+        window.media_viewer_show_paintable(picture.paintable());
     }
-}
-
-pub fn tu_list_poster(
-    latest: &SimpleListItem,
-    list_item: &gtk::ListItem,
-    is_resume: bool,
-    poster: &str,
-) {
-    let tu_item = TuItem::from_simple(latest, Some(poster));
-    match latest.latest_type.as_str() {
-        "Movie" | "Series" => {
-            set_list_child(tu_item, list_item, &latest.latest_type, is_resume);
-        }
-        _ => {}
-    }
-}
-
-fn set_list_child(tu_item: TuItem, list_item: &gtk::ListItem, latest_type: &str, is_resume: bool) {
-    let list_child = TuListItem::new(tu_item, latest_type, is_resume);
-    list_item.set_child(Some(&list_child));
 }

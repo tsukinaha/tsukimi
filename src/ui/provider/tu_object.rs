@@ -40,9 +40,7 @@ glib::wrapper! {
 
 impl TuObject {
     pub fn new(item: &TuItem) -> Self {
-        glib::Object::builder()
-            .property("item", item)
-            .build()
+        glib::Object::builder().property("item", item).build()
     }
 
     pub fn from_simple(latest: &SimpleListItem, poster: Option<&str>) -> Self {
@@ -51,7 +49,8 @@ impl TuObject {
     }
 
     pub fn activate<T>(&self, listview: &T)
-    where T: glib::clone::Downgrade + gtk::prelude::IsA<gtk::Widget>
+    where
+        T: glib::clone::Downgrade + gtk::prelude::IsA<gtk::Widget>,
     {
         let item = self.item();
         let poster = self.poster();
