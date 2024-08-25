@@ -1,7 +1,6 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
-use crate::ui::image::set_image;
 use crate::utils::{req_cache, spawn};
 use crate::{fraction, fraction_reset, toast};
 use gettextrs::gettext;
@@ -9,6 +8,8 @@ use glib::Object;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
+
+use super::picture_loader::PictureLoader;
 
 pub(crate) mod imp {
     use adw::subclass::prelude::*;
@@ -117,7 +118,7 @@ impl ActorPage {
     pub fn setup_pic(&self) {
         let imp = self.imp();
         let id = self.id();
-        let pic = set_image(id, "Primary", None);
+        let pic = PictureLoader::new(&id, "Primary", None);
         pic.set_size_request(218, 328);
         pic.set_halign(gtk::Align::Start);
         pic.set_valign(gtk::Align::Start);

@@ -20,6 +20,7 @@ use crate::utils::{get_image_with_cache, req_cache, spawn, spawn_tokio};
 use chrono::{DateTime, Utc};
 
 use super::fix::ScrolledWindowFixExt;
+use super::picture_loader::PictureLoader;
 use super::song_widget::format_duration;
 use super::window::Window;
 
@@ -473,7 +474,7 @@ impl ItemPage {
                 .expect("Needs to be BoxedAnyObject");
             let seriesinfo: Ref<SeriesInfo> = entry.borrow();
             if picture.first_child().is_none() {
-                let img = crate::ui::image::set_image(seriesinfo.id.clone(), "Primary", None);
+                let img = PictureLoader::new(&seriesinfo.id, "Primary", None);
                 picture.set_child(Some(&img));
                 let progressbar = gtk::ProgressBar::new();
                 progressbar.set_valign(gtk::Align::End);
@@ -527,7 +528,7 @@ impl ItemPage {
     pub fn logoset(&self) {
         let logobox = self.imp().logobox.get();
         let id = self.id();
-        let logo = crate::ui::image::set_image(id.clone(), "Logo", None);
+        let logo = PictureLoader::new(&id, "Logo", None);
         logobox.append(&logo);
         logobox.add_css_class("logo");
     }

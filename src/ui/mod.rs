@@ -1,5 +1,4 @@
 mod clapper;
-mod image;
 pub(crate) mod models;
 mod mpv;
 pub mod provider;

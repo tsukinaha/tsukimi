@@ -10,9 +10,10 @@ use gtk::{gio, glib};
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
-use crate::ui::image::set_image;
 use crate::utils::{get_image_with_cache, req_cache, spawn};
 use crate::{fraction, fraction_reset, toast};
+
+use super::picture_loader::PictureLoader;
 
 pub(crate) mod imp {
     use adw::subclass::prelude::*;
@@ -127,7 +128,7 @@ impl BoxSetPage {
     pub async fn setup_pic(&self) {
         let imp = self.imp();
         let id = self.id();
-        let pic = set_image(id, "Primary", None);
+        let pic = PictureLoader::new(&id, "Primary", None);
         pic.set_halign(gtk::Align::Start);
         pic.set_valign(gtk::Align::Start);
         imp.picbox.append(&pic);

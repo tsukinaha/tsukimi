@@ -1,7 +1,6 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
-use crate::ui::image::set_image;
 use crate::ui::models::SETTINGS;
 use crate::utils::{get_data_with_cache_else, req_cache, req_cache_single, spawn};
 use crate::{fraction, fraction_reset, toast};
@@ -13,6 +12,7 @@ use gtk::{gio, glib};
 use gtk::{prelude::*, template_callbacks};
 
 use super::hortu_scrolled::HortuScrolled;
+use super::picture_loader::PictureLoader;
 
 mod imp {
 
@@ -291,7 +291,7 @@ impl HomePage {
         let imp = self.imp();
         let id = item.id;
 
-        let image = set_image(id.clone(), "Backdrop", Some(0));
+        let image = PictureLoader::new(&id, "Backdrop", Some(0.to_string()));
         image.set_halign(gtk::Align::Center);
 
         let overlay = gtk::Overlay::builder()
@@ -300,7 +300,7 @@ impl HomePage {
             .child(&image)
             .build();
 
-        let logo = set_image(id, "Logo", None);
+        let logo = PictureLoader::new(&id, "Logo", None);
         logo.set_halign(gtk::Align::End);
 
         let logobox = gtk::Box::builder()
