@@ -240,7 +240,7 @@
                 <property name="title" translatable="yes">Blur (Experimental)</property>
                 <property name="subtitle" translatable="yes">Warning: High GPU usage</property>
                 <style>
-                  <class name="warn"/>
+                  <class name="warning"/>
                 </style>
               </object>
             </child>
@@ -258,7 +258,7 @@
                   </object>
                 </property>
                 <style>
-                  <class name="warn"/>
+                  <class name="warning"/>
                 </style>
               </object>
             </child>

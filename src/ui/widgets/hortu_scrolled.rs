@@ -2,19 +2,18 @@ use adw::{prelude::*, subclass::prelude::*};
 use gtk::{gio, glib, template_callbacks, CompositeTemplate};
 
 use crate::client::structs::SimpleListItem;
+use crate::ui::provider::tu_object::TuObject;
 use crate::ui::widgets::fix::ScrolledWindowFixExt;
 
 const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
 
 mod imp {
-    use crate::ui::widgets::utils::TuItemBuildExt;
-    use std::cell::OnceCell;
+    use crate::ui::{provider::tu_item::TuItem, widgets::utils::TuItemBuildExt};
+    use std::{borrow::Borrow, cell::{OnceCell, RefCell}};
 
     use glib::subclass::InitializingObject;
 
     use gtk::{gio, SignalListItemFactory};
-
-    use crate::client::structs::SimpleListItem;
 
     use super::*;
 
@@ -38,6 +37,9 @@ mod imp {
         pub left_button: TemplateChild<gtk::Button>,
         #[template_child]
         pub right_button: TemplateChild<gtk::Button>,
+
+        #[property(get, set, default_value = false)]
+        pub moreview: RefCell<bool>,
 
         pub show_button_animation: OnceCell<adw::TimedAnimation>,
         pub hide_button_animation: OnceCell<adw::TimedAnimation>,
@@ -68,24 +70,23 @@ mod imp {
 
             self.scrolled.fix();
 
-            let store = gio::ListStore::new::<glib::BoxedAnyObject>();
+            let store = gio::ListStore::new::<TuObject>();
 
             self.selection.set_model(Some(&store));
 
             self.list.set_model(Some(&self.selection));
 
             self.list.set_factory(Some(
-                SignalListItemFactory::new().tu_item(self.obj().isresume()),
+                SignalListItemFactory::new().tu_item(),
             ));
 
             self.list.connect_activate(move |listview, position| {
                 let model = listview.model().unwrap();
-                let item = model
+                let tu_obj = model
                     .item(position)
-                    .and_downcast::<glib::BoxedAnyObject>()
+                    .and_downcast::<TuObject>()
                     .unwrap();
-                let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                result.activate(listview);
+                tu_obj.activate(listview);
             });
         }
     }
@@ -136,9 +137,11 @@ impl HortuScrolled {
         let items = items.to_owned();
 
         for result in items {
-            let object = glib::BoxedAnyObject::new(result);
+            let object = TuObject::from_simple(&result, None);
+            object.item().set_is_resume(self.isresume());
             store.append(&object);
         }
+
         imp.revealer.set_reveal_child(true);
     }
 
@@ -197,7 +200,7 @@ impl HortuScrolled {
 
     #[template_callback]
     fn on_rightbutton_clicked(&self) {
-        self.anime(true);
+        self.anime::<true>();
     }
 
     fn controls_opacity(&self) -> f64 {
@@ -226,10 +229,15 @@ impl HortuScrolled {
 
     #[template_callback]
     fn on_leftbutton_clicked(&self) {
-        self.anime(false);
+        self.anime::<false>();
     }
 
-    fn anime(&self, is_right: bool) {
+    #[template_callback]
+    fn on_morebutton_clicked(&self) {
+        
+    }
+
+    fn anime<const R: bool>(&self) {
         let scrolled = self.imp().scrolled.get();
         let adj = scrolled.hadjustment();
 
@@ -238,13 +246,15 @@ impl HortuScrolled {
         };
 
         let start = adj.value();
-        let end = if is_right {
+        let end = if R {
             start + 800.0
         } else {
             start - 800.0
         };
+
         let start_time = clock.frame_time();
         let end_time = start_time + 1000 * 400;
+
         scrolled.add_tick_callback(move |_view, clock| {
             let now = clock.frame_time();
             if now < end_time && adj.value() != end {

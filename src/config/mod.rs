@@ -4,7 +4,7 @@ use std::{env, fs::File, io::Read};
 use uuid::Uuid;
 
 pub mod proxy;
-pub const APP_VERSION: &str = "0.7.1";
+pub const APP_VERSION: &str = "0.8.2";
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
@@ -24,18 +24,6 @@ fn generate_uuid() -> String {
 pub fn load_uuid() {
     let uuid = generate_uuid();
     env::set_var("UUID", uuid);
-}
-
-pub fn get_device_name() -> String {
-    if cfg!(target_os = "windows") {
-        env::var("COMPUTERNAME").unwrap_or("Unknown Device".to_string())
-    } else {
-        let output = std::process::Command::new("uname")
-            .output()
-            .expect("failed to execute process");
-
-        String::from_utf8_lossy(&output.stdout).trim().to_string()
-    }
 }
 
 #[derive(Serialize, Deserialize, Clone)]

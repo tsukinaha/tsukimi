@@ -73,8 +73,12 @@ impl RefreshDialog {
         let image = imp.image_check.is_active();
 
         match spawn_tokio(async move {
-            EMBY_CLIENT.fullscan(&id, &metadata.to_string(), &image.to_string()).await
-        }).await  {
+            EMBY_CLIENT
+                .fullscan(&id, &metadata.to_string(), &image.to_string())
+                .await
+        })
+        .await
+        {
             Ok(_) => {
                 toast!(self, gettext("Scanning..."));
             }

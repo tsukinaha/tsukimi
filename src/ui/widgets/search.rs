@@ -8,13 +8,16 @@ use gtk::subclass::prelude::*;
 use gtk::{gio, glib, SignalListItemFactory};
 use gtk::{prelude::*, template_callbacks, SearchEntry};
 
-use super::utils::TuItemBuildExt;
-
 mod imp {
 
     use glib::subclass::InitializingObject;
+    use gst::prelude::StaticTypeExt;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
+    use std::sync::atomic::Ordering;
+
+    use crate::ui::widgets::tuview_scrolled::TuViewScrolled;
+    use crate::utils::spawn;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -23,7 +26,7 @@ mod imp {
         #[template_child]
         pub searchentry: TemplateChild<gtk::SearchEntry>,
         #[template_child]
-        pub searchgrid: TemplateChild<gtk::GridView>,
+        pub searchscrolled: TemplateChild<TuViewScrolled>,
         #[template_child]
         pub recommendbox: TemplateChild<gtk::Box>,
         #[template_child]
@@ -50,6 +53,7 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
+            TuViewScrolled::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }
@@ -64,7 +68,25 @@ mod imp {
         fn constructed(&self) {
             let obj = self.obj();
             self.parent_constructed();
-            obj.setup_search();
+            self.searchscrolled.connect_end_edge_reached(glib::clone!(
+                #[weak]
+                obj,
+                move |scrolled, lock| {
+                    spawn(glib::clone!(
+                        #[weak]
+                        obj,
+                        #[weak]
+                        scrolled,
+                        async move {
+                            let search_results = obj.get_search_results::<true>().await;
+
+                            scrolled.set_grid::<false>(search_results.items);
+
+                            lock.store(false, Ordering::SeqCst);
+                        },
+                    ))
+                }
+            ));
             obj.update();
         }
     }
@@ -142,48 +164,32 @@ impl SearchPage {
                 #[weak(rename_to = obj)]
                 self,
                 move |_| {
-                    item.activate(&obj);
+                    item.activate(&obj, None);
                 }
             ));
             recommendbox.append(&button);
         }
     }
 
-    pub fn setup_search(&self) {
+    #[template_callback]
+    async fn on_search_activate(&self) {
         let imp = self.imp();
 
-        let store = gio::ListStore::new::<glib::BoxedAnyObject>();
-        imp.selection.set_model(Some(&store));
-        let factory = SignalListItemFactory::new();
-        imp.searchgrid.set_factory(Some(factory.tu_item(false)));
-        imp.searchgrid.set_model(Some(&imp.selection));
-        imp.searchgrid.set_min_columns(1);
-        imp.searchgrid.set_max_columns(15);
+        let search_results = self.get_search_results::<false>().await;
 
-        imp.searchgrid
-            .connect_activate(glib::clone!(move |listview, position| {
-                let model = listview.model().unwrap();
-                let item = model
-                    .item(position)
-                    .and_downcast::<glib::BoxedAnyObject>()
-                    .unwrap();
-                let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                result.activate(listview);
-            }));
+        if search_results.items.is_empty() {
+            imp.stack.set_visible_child_name("fallback");
+            return;
+        };
+
+        imp.searchscrolled.set_grid::<true>(search_results.items);
+
+        imp.stack.set_visible_child_name("result");
     }
 
-    #[template_callback]
-    async fn on_search_activate(&self, entry: &SearchEntry) {
+    pub async fn get_search_results<const F: bool>(&self) -> List {
         let imp = self.imp();
-
-        let store = imp
-            .selection
-            .model()
-            .unwrap()
-            .downcast::<gio::ListStore>()
-            .unwrap();
-
-        let search_content = entry.text().to_string();
+        let search_content = imp.searchentry.text().to_string();
         let search_filter = {
             let mut filter = Vec::new();
             if imp.movie.is_active() {
@@ -203,36 +209,26 @@ impl SearchPage {
             }
             filter
         };
+        let n_items = if F { imp.searchscrolled.n_items() } else { 0 };
 
         fraction_reset!(self);
 
-        let search_results =
-            match spawn_tokio(
-                async move { EMBY_CLIENT.search(&search_content, &search_filter).await },
-            )
-            .await
-            {
-                Ok(list) => list,
-                Err(e) => {
-                    toast!(self, e.to_user_facing());
-                    List::default()
-                }
-            };
-
-        store.remove_all();
+        let search_results = match spawn_tokio(async move {
+            EMBY_CLIENT
+                .search(&search_content, &search_filter, &n_items.to_string())
+                .await
+        })
+        .await
+        {
+            Ok(list) => list,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                List::default()
+            }
+        };
 
         fraction!(self);
 
-        if search_results.items.is_empty() {
-            imp.stack.set_visible_child_name("fallback");
-            return;
-        };
-
-        for result in search_results.items {
-            let object = glib::BoxedAnyObject::new(result);
-            store.append(&object);
-        }
-
-        imp.stack.set_visible_child_name("result");
+        search_results
     }
 }

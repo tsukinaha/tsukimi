@@ -15,30 +15,37 @@
                 <property name="valign">start</property>
                 <child>
                   <object class="HortuScrolled" id="moviehortu">
+                    <property name="moreview">True</property>
                   </object>
                 </child>
                 <child>
                   <object class="HortuScrolled" id="serieshortu">
+                    <property name="moreview">True</property>
                   </object>
                 </child>
                 <child>
                   <object class="HortuScrolled" id="episodehortu">
+                    <property name="moreview">True</property>
                   </object>
                 </child>
                 <child>
                   <object class="HortuScrolled" id="peoplehortu">
+                    <property name="moreview">True</property>
                   </object>
                 </child>
                 <child>
                   <object class="HortuScrolled" id="albumhortu">
+                    <property name="moreview">True</property>
                   </object>
                 </child>
                 <child>
                   <object class="HortuScrolled" id="boxsethortu">
+                    <property name="moreview">True</property>
                   </object>
                 </child>
                 <child>
                   <object class="HortuScrolled" id="tvhortu">
+                    <property name="moreview">True</property>
                   </object>
                 </child>
               </object>

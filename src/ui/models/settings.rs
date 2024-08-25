@@ -221,15 +221,6 @@ impl Settings {
         self.int(Self::KEY_PIC_BLUR)
     }
 
-    /*** pub fn connect_auto_lock_changed<F>(&self, callback: F) -> glib::SignalHandlerId
-    where
-        F: Fn(bool) + 'static,
-    {
-        self.connect_changed(Some(Self::KEY_AUTO_LOCK), move |settings, _key| {
-            callback(settings.boolean(Self::KEY_AUTO_LOCK))
-        })
-    } ***/
-
     pub fn set_background_enabled(&self, background_enabled: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_IS_BACKGROUND_ENABLED, background_enabled)
     }

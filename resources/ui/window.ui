@@ -95,8 +95,6 @@
                                         <property name="vexpand">True</property>
                                         <property name="icon-name">network-server-symbolic</property>
                                         <property name="title" translatable="yes">No Server</property>
-                                        <property name="description" translatable="yes">Add a server to get started.
-You should install the package `gst-libav` to play media files with built-in player.</property>
                                         <property name="child">
                                           <object class="GtkButton" id="add_server">
                                             <property name="label" translatable="yes">Add Server</property>
@@ -126,6 +124,19 @@ You should install the package `gst-libav` to play media files with built-in pla
                                 <style>
                                   <class name="osd" />
                                   <class name="suggested-action" />
+                                </style>
+                              </object>
+                            </child>
+                            <child type="overlay">
+                              <object class="GtkButton">
+                                <property name="halign">start</property>
+                                <property name="valign">end</property>
+                                <property name="margin-start">30</property>
+                                <property name="margin-bottom">30</property>
+                                <property name="icon-name">applications-system-symbolic</property>
+                                <property name="action-name">setting.account</property>
+                                <style>
+                                  <class name="osd" />
                                 </style>
                               </object>
                             </child>
@@ -167,6 +178,12 @@ You should install the package `gst-libav` to play media files with built-in pla
                                         <property name="size">30</property>
                                         <property name="margin-start">12</property>
                                         <property name="halign">start</property>
+                                        <child>
+                                          <object class="GtkGestureClick">
+                                            <property name="button">2</property>
+                                            <signal name="released" handler="avatar_pressed_cb" swapped="true" />
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                     <child type="suffix">

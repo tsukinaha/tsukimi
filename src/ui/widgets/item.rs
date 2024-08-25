@@ -298,7 +298,7 @@ impl ItemPage {
         let seasonlist = imp.seasonlist.get();
         seasonlist.set_model(Some(&imp.seasonselection));
 
-        let series_info = match req_cache(&format!("serinfo_{}", &id), async move {
+        let series_info = match spawn_tokio( async move {
             EMBY_CLIENT.get_series_info(&id).await
         })
         .await
@@ -809,6 +809,8 @@ impl ItemPage {
             let mediascrolled = gtk::ScrolledWindow::builder()
                 .hscrollbar_policy(gtk::PolicyType::Automatic)
                 .vscrollbar_policy(gtk::PolicyType::Never)
+                .margin_start(15)
+                .margin_end(15)
                 .overlay_scrolling(true)
                 .build();
 
@@ -887,10 +889,13 @@ impl ItemPage {
                     .text(&str)
                     .min_lines(14)
                     .hexpand(true)
+                    .margin_start(15)
+                    .margin_end(15)
                     .yalign(0.0)
                     .build();
                 mediapartbox.append(&typebox);
                 mediapartbox.append(&inscription);
+                mediapartbox.add_css_class("card");
                 mediabox.append(&mediapartbox);
             }
 

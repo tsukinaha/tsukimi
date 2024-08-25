@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwBin" class="TuViewScrolled">
+    <child>
+      <object class="GtkScrolledWindow" id="scrolled_window">
+      <property name="hscrollbar-policy">never</property>
+        <child>
+          <object class="GtkGridView" id="grid">
+            <property name="single-click-activate">True</property>
+            <property name="min-columns">1</property>
+            <property name="max-columns">15</property>
+            <signal name="activate" handler="on_item_activated" swapped="yes"/>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

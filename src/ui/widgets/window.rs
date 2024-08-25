@@ -81,6 +81,7 @@ mod imp {
         pub searchpage: TemplateChild<adw::Bin>,
 
         pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
+        pub progress_bar_fade_animation: OnceCell<adw::TimedAnimation>,
     }
 
     // The central trait for subclassing a GObject
@@ -201,6 +202,7 @@ use crate::config::load_cfgv2;
 use crate::config::Account;
 use crate::ui::models::SETTINGS;
 use crate::ui::provider::core_song::CoreSong;
+use crate::ui::provider::IS_ADMIN;
 use crate::utils::spawn;
 use crate::APP_ID;
 use glib::Object;
@@ -209,6 +211,7 @@ use gtk::{gio, glib, template_callbacks};
 use super::home::HomePage;
 use super::liked::LikedPage;
 use super::search::SearchPage;
+use super::server_panel::ServerPanel;
 use super::server_row::ServerRow;
 use super::tu_list_item::PROGRESSBAR_ANIMATION_DURATION;
 
@@ -331,6 +334,12 @@ impl Window {
         self.account_setup();
         self.remove_all();
         self.homepage();
+    }
+
+    pub fn hard_set_fraction(&self, to_value: f64) {
+        let progressbar = &self.imp().progressbar;
+        self.progressbar_animation().pause();
+        progressbar.set_fraction(to_value);
     }
 
     pub fn set_server_rows(&self, account: Account) -> adw::ActionRow {
@@ -483,6 +492,11 @@ impl Window {
         imp.insidestack.visible_child_name().unwrap().to_string()
     }
 
+    pub fn set_progressbar_opacity(&self, opacity: f64) {
+        let imp = self.imp();
+        imp.progressbar.set_opacity(opacity);
+    }
+
     pub fn set_rootpic(&self, file: gio::File) {
         let imp = self.imp();
         let settings = Settings::new(APP_ID);
@@ -571,6 +585,13 @@ impl Window {
         self.progressbar_animation().play();
     }
 
+    pub fn set_progressbar_fade(&self) {
+        let progressbar = &self.imp().progressbar;
+        self.progressbar_fade_animation()
+            .set_value_from(progressbar.opacity());
+        self.progressbar_fade_animation().play();
+    }
+
     fn progressbar_animation(&self) -> &adw::TimedAnimation {
         self.imp().progress_bar_animation.get_or_init(|| {
             let target = adw::CallbackAnimationTarget::new(glib::clone!(
@@ -583,6 +604,23 @@ impl Window {
                 .duration(PROGRESSBAR_ANIMATION_DURATION)
                 .widget(&self.imp().progressbar.get())
                 .target(&target)
+                .build()
+        })
+    }
+
+    fn progressbar_fade_animation(&self) -> &adw::TimedAnimation {
+        self.imp().progress_bar_fade_animation.get_or_init(|| {
+            let target = adw::CallbackAnimationTarget::new(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |opacity| obj.imp().progressbar.set_opacity(opacity)
+            ));
+
+            adw::TimedAnimation::builder()
+                .duration(PROGRESSBAR_ANIMATION_DURATION)
+                .widget(&self.imp().progressbar.get())
+                .target(&target)
+                .value_to(0.)
                 .build()
         })
     }
@@ -699,5 +737,16 @@ impl Window {
         self.imp().likedpage.set_child(None::<&Widget>);
         self.imp().searchpage.set_child(None::<&Widget>);
         self.imp().player_toolbar_box.on_stop_button_clicked();
+    }
+
+    #[template_callback]
+    fn avatar_pressed_cb(&self) {
+        if !IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
+            return;
+        }
+
+        let page = ServerPanel::new();
+        page.set_tag(Some("Server Panel"));
+        self.push_page(&page);
     }
 }

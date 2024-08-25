@@ -96,7 +96,7 @@ impl AccountWindow {
         let password = imp.password_entry.text();
         let port = imp.port_entry.text();
         if servername.is_empty() || server.is_empty() || username.is_empty() || port.is_empty() {
-            toast!(self, gettext("Fields must be filled in"));
+            toast!(imp.spinner, gettext("Fields must be filled in"));
             imp.spinner.set_visible(false);
             return;
         }
@@ -109,7 +109,7 @@ impl AccountWindow {
             match spawn_tokio(async move { EMBY_CLIENT.login(&username, &password).await }).await {
                 Ok(res) => res,
                 Err(e) => {
-                    toast!(self, e.to_user_facing());
+                    toast!(imp.spinner, e.to_user_facing());
                     imp.spinner.set_visible(false);
                     return;
                 }

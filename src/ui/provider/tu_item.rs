@@ -1,9 +1,27 @@
 use crate::client::structs::SimpleListItem;
+use gettextrs::gettext;
 use glib::DateTime;
 use gtk::glib;
 use gtk::glib::prelude::*;
 use gtk::glib::subclass::prelude::*;
 use std::cell::RefCell;
+
+use crate::client::client::EMBY_CLIENT;
+use crate::client::error::UserFacingError;
+use crate::ui::widgets::singlelist::SingleListPage;
+use crate::ui::widgets::window::Window;
+use crate::utils::spawn_tokio;
+use crate::{
+    toast,
+    ui::{
+        widgets::{
+            actor::ActorPage, boxset::BoxSetPage, item::ItemPage, list::ListPage,
+            music_album::AlbumPage,
+        },
+    },
+    utils::spawn,
+};
+use adw::prelude::*;
 
 #[derive(Default, Clone)]
 struct AlbumArtist {
@@ -31,6 +49,8 @@ pub mod imp {
         #[property(get, set)]
         series_name: RefCell<String>,
         #[property(get, set)]
+        series_id: RefCell<String>,
+        #[property(get, set)]
         played_percentage: RefCell<f64>,
         #[property(get, set)]
         played: RefCell<bool>,
@@ -38,6 +58,8 @@ pub mod imp {
         unplayed_item_count: RefCell<u32>,
         #[property(get, set)]
         is_favorite: RefCell<bool>,
+        #[property(get, set)]
+        is_resume: RefCell<bool>,
         #[property(get, set)]
         item_type: RefCell<String>,
         #[property(get, set)]
@@ -100,6 +122,12 @@ pub mod imp {
 
 glib::wrapper! {
     pub struct TuItem(ObjectSubclass<imp::TuItem>);
+}
+
+impl Default for TuItem {
+    fn default() -> Self {
+        glib::Object::new()
+    }
 }
 
 impl TuItem {
@@ -192,10 +220,113 @@ impl TuItem {
                 tu_item.set_program_end_time(Some(&chrono_to_glib(end_time)));
             }
         }
+        if let Some(series_id) = &latest.series_id {
+            tu_item.set_series_id(series_id.clone());
+        }
         tu_item
+    }
+
+    pub fn activate<T>(&self, widget: &T, parentid: Option<String>)
+    where
+        T: gtk::prelude::WidgetExt + glib::clone::Downgrade,
+    {
+        let window = widget.root().and_downcast::<Window>().unwrap();
+
+        if self.item_type() == "TvChannel" {
+            self.tvchannel(window);
+            return;
+        }
+
+        match self.item_type().as_str() {
+            "Series" | "Movie" | "Video" => {
+                let page = ItemPage::new(self.id(), self.id(), self.name());
+                push_page_with_tag(window, page, self.name());
+            }
+            "Episode" => {
+                let page = ItemPage::new(
+                    self.series_id(),
+                    self.id(),
+                    self.name(),
+                );
+                push_page_with_tag(window, page, self.series_name());
+            }
+            "MusicAlbum" => {
+                let page = AlbumPage::new(self.clone());
+                push_page_with_tag(window, page, self.name());
+            }
+            "Actor" | "Director" | "Person" | "Writer" => {
+                let page = ActorPage::new(&self.id());
+                push_page_with_tag(window, page, self.name());
+            }
+            "BoxSet" => {
+                let page = BoxSetPage::new(&self.id());
+                push_page_with_tag(window, page, self.name());
+            }
+            "CollectionFolder" => {
+                let page = ListPage::new(
+                    self.id(),
+                    self.collection_type().unwrap_or_default(),
+                );
+                push_page_with_tag(window, page, self.name());
+            }
+            "UserView" => {
+                let page = SingleListPage::new(
+                    self.id(),
+                    self.collection_type().unwrap_or_default(),
+                    "livetv",
+                    None,
+                    false,
+                );
+                push_page_with_tag(window, page, self.name());
+            }
+            "Tag" | "Genre" => {
+                let page = SingleListPage::new(
+                    self.id(),
+                    "".to_string(),
+                    &self.item_type(),
+                    parentid,
+                    true,
+                );
+                push_page_with_tag(window, page, self.name());
+            }
+            _ => toast!(window, gettext("Not Supported Type")),
+        }
+    }
+
+    fn tvchannel(&self, window: Window) {
+        spawn(glib::clone!(
+            #[strong(rename_to = item)]
+            self,
+            async move {
+                toast!(window, gettext("Processing..."));
+                let id = item.id();
+                match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&id).await })
+                    .await
+                {
+                    Ok(playback) => {
+                        let Some(ref url) = playback.media_sources[0].transcoding_url else {
+                            toast!(window, gettext("No transcoding url found"));
+                            return;
+                        };
+                        window.play_media(url.to_string(), None, Some(item.name()), None, None, 0.0)
+                    }
+                    Err(e) => {
+                        toast!(window, e.to_user_facing());
+                    }
+                }
+            }
+        ));
     }
 }
 
 fn chrono_to_glib(datetime: &chrono::DateTime<chrono::Utc>) -> DateTime {
     DateTime::from_iso8601(&datetime.to_rfc3339(), None).unwrap()
+}
+
+fn push_page_with_tag<T>(window: Window, page: T, tag: String)
+where
+    T: NavigationPageExt,
+{
+    page.set_tag(Some(&tag));
+    window.push_page(&page);
 }

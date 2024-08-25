@@ -109,16 +109,8 @@
                     <property name="name">result</property>
                     <property name="title">Result</property>
                     <property name="child">
-                      <object class="GtkScrolledWindow" id="searchscrolled">
-                        <property name="hscrollbar-policy">never</property>
-                        <property name="visible">True</property>
-                        <property name="vexpand">True</property>
-                        <property name="hexpand">True</property>
-                        <child>
-                          <object class="GtkGridView" id="searchgrid">
-                          <property name="single-click-activate">True</property>
-                          </object>
-                        </child>
+                      <object class="TuViewScrolled" id="searchscrolled">
+                        
                       </object>
                     </property>
                   </object>

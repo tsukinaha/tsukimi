@@ -83,7 +83,6 @@ mod imp {
 
     impl WidgetImpl for IdentifyDialog {}
     impl AdwDialogImpl for IdentifyDialog {}
-
 }
 
 glib::wrapper! {
@@ -95,7 +94,10 @@ glib::wrapper! {
 #[template_callbacks]
 impl IdentifyDialog {
     pub fn new(id: &str, itemtype: &str) -> Self {
-        glib::Object::builder().property("id", id).property("itemtype", itemtype).build()
+        glib::Object::builder()
+            .property("id", id)
+            .property("itemtype", itemtype)
+            .build()
     }
 
     pub fn init(&self) {
@@ -124,12 +126,14 @@ impl IdentifyDialog {
             let entry = match info.key.as_str() {
                 "MusicBrainzAlbum" => Some(self.imp().music_brainz_album_entry.get()),
                 "MusicBrainzAlbumArtist" => Some(self.imp().music_brainz_album_artist_entry.get()),
-                "MusicBrainzReleaseGroup" => Some(self.imp().music_brainz_release_group_entry.get()),
+                "MusicBrainzReleaseGroup" => {
+                    Some(self.imp().music_brainz_release_group_entry.get())
+                }
                 "Tmdb" => Some(self.imp().tmdb_entry.get()),
                 "Imdb" => Some(self.imp().imdb_entry.get()),
                 "Tvdb" => Some(self.imp().tvdb_entry.get()),
                 "Zap2it" => Some(self.imp().zap2it_entry.get()),
-                _ => None
+                _ => None,
             };
 
             if let Some(entry) = entry {
@@ -154,13 +158,17 @@ impl IdentifyDialog {
         }
         if imp.music_brainz_album_artist_entry.is_visible() {
             provider_ids.push(SearchProviderId {
-                music_brainz_album_artist: Some(imp.music_brainz_album_artist_entry.text().to_string()),
+                music_brainz_album_artist: Some(
+                    imp.music_brainz_album_artist_entry.text().to_string(),
+                ),
                 ..Default::default()
             });
         }
         if imp.music_brainz_release_group_entry.is_visible() {
             provider_ids.push(SearchProviderId {
-                music_brainz_release_group: Some(imp.music_brainz_release_group_entry.text().to_string()),
+                music_brainz_release_group: Some(
+                    imp.music_brainz_release_group_entry.text().to_string(),
+                ),
                 ..Default::default()
             });
         }
@@ -204,7 +212,11 @@ impl IdentifyDialog {
 
         imp.stack.set_visible_child_name("loading");
 
-        match spawn_tokio(async move { EMBY_CLIENT.remote_search(&type_, &remote_search_info).await }).await {
+        match spawn_tokio(
+            async move { EMBY_CLIENT.remote_search(&type_, &remote_search_info).await },
+        )
+        .await
+        {
             Ok(data) => {
                 imp.stack.set_visible_child_name("searchresult");
                 self.load_search_result(data);
@@ -218,9 +230,7 @@ impl IdentifyDialog {
     fn load_search_result(&self, data: Vec<RemoteSearchResult>) {
         let imp = self.imp();
         for result in data {
-            let row = adw::ActionRow::builder()
-                .title(&result.name)
-                .build();
+            let row = adw::ActionRow::builder().title(&result.name).build();
             if let Some(year) = result.production_year {
                 row.set_subtitle(&year.to_string());
             }

@@ -1,11 +1,13 @@
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
+use super::tu_list_item::TuListItem;
 use super::utils::TuItemBuildExt;
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::models::SETTINGS;
+use crate::ui::provider::tu_object::TuObject;
 use crate::utils::{req_cache, spawn, spawn_tokio};
 use crate::{fraction, fraction_reset, toast};
 use adw::prelude::*;
@@ -23,6 +25,7 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::ui::provider::tu_object::TuObject;
     use crate::utils::spawn_g_timeout;
 
     // Object holding the state
@@ -101,7 +104,7 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
 
-            let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+            let store = gtk::gio::ListStore::new::<TuObject>();
             self.selection.set_model(Some(&store));
 
             spawn_g_timeout(glib::clone!(
@@ -277,7 +280,7 @@ impl SingleListPage {
             self.imp().status.set_visible(true);
             self.imp().listrevealer.set_visible(false);
         };
-        let store = gio::ListStore::new::<glib::BoxedAnyObject>();
+        let store = gio::ListStore::new::<TuObject>();
         spawn(glib::clone!(
             #[weak]
             store,
@@ -285,29 +288,32 @@ impl SingleListPage {
                 listrevealer.set_reveal_child(true);
                 count.set_text(&format!("{} Items", list_results.total_record_count));
                 for result in list_results.items {
-                    let object = glib::BoxedAnyObject::new(result);
+                    let object = TuObject::from_simple(&result, None);
                     store.append(&object);
                     gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
                 }
             }
         ));
         imp.selection.set_model(Some(&store));
-        let is_resume = self.listtype() == "resume";
         let factory = SignalListItemFactory::new();
-        imp.listgrid.set_factory(Some(factory.tu_item(is_resume)));
+        imp.listgrid.set_factory(Some(factory.tu_item()));
         imp.listgrid.set_model(Some(&imp.selection));
         imp.listgrid.set_min_columns(1);
         imp.listgrid.set_max_columns(13);
 
+        let parentid = self.parentid();
+
         imp.listgrid
-            .connect_activate(glib::clone!(move |listview, position| {
-                let model = listview.model().unwrap();
-                let item = model
-                    .item(position)
-                    .and_downcast::<glib::BoxedAnyObject>()
-                    .unwrap();
-                let result: std::cell::Ref<SimpleListItem> = item.borrow();
-                result.activate(listview);
+            .connect_activate(glib::clone!(
+                #[strong]
+                parentid,
+                move |listview, position| {
+                    let model = listview.model().unwrap();
+                    let tu_obj = model
+                        .item(position)
+                        .and_downcast::<TuObject>()
+                        .unwrap();
+                    tu_obj.activate(listview);
             }));
     }
 
@@ -393,7 +399,7 @@ impl SingleListPage {
         };
 
         for result in list_results.items {
-            let object = glib::BoxedAnyObject::new(result);
+            let object = TuObject::from_simple(&result, None);
             store.append(&object);
         }
     }
@@ -468,30 +474,8 @@ impl SingleListPage {
 
     pub async fn poster(&self, poster: &str) {
         let imp = self.imp();
-        let listgrid = imp.listgrid.get();
-        let listtype = imp.listtype.get().unwrap().clone();
         let poster = poster.to_string();
         let factory = gtk::SignalListItemFactory::new();
-        factory.connect_bind(move |_, item| {
-            let list_item = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem");
-            let entry = item
-                .downcast_ref::<gtk::ListItem>()
-                .expect("Needs to be ListItem")
-                .item()
-                .and_downcast::<glib::BoxedAnyObject>()
-                .expect("Needs to be BoxedAnyObject");
-            let latest: std::cell::Ref<SimpleListItem> = entry.borrow();
-            if list_item.child().is_none() {
-                super::tu_list_item::tu_list_poster(
-                    &latest,
-                    list_item,
-                    &listtype == "resume",
-                    &poster,
-                );
-            }
-        });
-        listgrid.set_factory(Some(&factory));
+        imp.listgrid.set_factory(Some(factory.tu_item()));
     }
 }

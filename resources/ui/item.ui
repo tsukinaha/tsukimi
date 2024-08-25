@@ -351,6 +351,7 @@
                         <property name="valign">start</property>
                         <child>
                           <object class="GtkLabel">
+                            <property name="margin-start">18</property>
                             <property name="label" translatable="yes">Overview</property>
                             <property name="halign">start</property>
                             <attributes>
@@ -466,6 +467,7 @@
                         <property name="valign">start</property>
                         <child>
                           <object class="GtkLabel">
+                            <property name="margin-start">18</property>
                             <property name="label" translatable="yes">MediaInfo</property>
                             <property name="halign">start</property>
                             <attributes>
@@ -480,7 +482,7 @@
                         <child>
                           <object class="GtkBox" id="mediainfobox">
                             <property name="orientation">vertical</property>
-                            <property name="spacing">6</property>
+                            <property name="spacing">12</property>
                           </object>
                         </child>
                       </object>

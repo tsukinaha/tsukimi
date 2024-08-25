@@ -446,6 +446,56 @@ pub struct RemoteSearchResult {
     pub image_url: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct ServerInfo {
+    #[serde(rename = "ServerName")]
+    pub server_name: String,
+    #[serde(rename = "Version")]
+    pub version: String,
+    #[serde(rename = "LocalAddress")]
+    pub local_address: String,
+    #[serde(rename = "WanAddress")]
+    pub wan_address: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct ActivityLog {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "Date")]
+    pub date: DateTime<Utc>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct ScheduledTask {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "State")]
+    pub state: String,
+    #[serde(rename = "Id")]
+    pub id: String,
+    #[serde(rename = "LastExecutionResult")]
+    pub last_execution_result: Option<LastExecutionResult>,
+    #[serde(rename = "Description")]
+    pub description: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct LastExecutionResult {
+    #[serde(rename = "StartTimeUtc")]
+    pub start_time_utc: DateTime<Utc>,
+    #[serde(rename = "EndTimeUtc")]
+    pub end_time_utc: DateTime<Utc>,
+    #[serde(rename = "Status")]
+    pub status: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
+pub struct ActivityLogs {
+    #[serde(rename = "Items")]
+    pub item: Vec<ActivityLog>,
+}
+
 #[derive(Deserialize, Debug, Clone)]
 pub struct Back {
     pub id: String,
@@ -493,17 +543,13 @@ impl SGTitem {
         T: gtk::prelude::WidgetExt + glib::clone::Downgrade,
     {
         let window = widget.root().and_downcast::<Window>().unwrap();
-        let page = SingleListPage::new(self.id.to_string(),"".to_string(),
-        &list_type,
-        None,
-        true,);
+        let page = SingleListPage::new(self.id.to_string(), "".to_string(), &list_type, None, true);
         push_page_with_tag(window, page, self.name.clone());
     }
-
 }
 
 impl SimpleListItem {
-    pub fn activate<T>(&self, widget: &T)
+    pub fn activate<T>(&self, widget: &T, parentid: Option<String>)
     where
         T: gtk::prelude::WidgetExt + glib::clone::Downgrade,
     {
@@ -515,7 +561,7 @@ impl SimpleListItem {
         }
 
         match self.latest_type.as_str() {
-            "Series" | "Movie" => {
+            "Series" | "Movie" | "Video" => {
                 let page = ItemPage::new(self.id.clone(), self.id.clone(), self.name.clone());
                 push_page_with_tag(window, page, self.name.clone());
             }
@@ -539,10 +585,30 @@ impl SimpleListItem {
                 let page = BoxSetPage::new(&self.id);
                 push_page_with_tag(window, page, self.name.clone());
             }
-            "CollectionFolder" | "UserView" => {
+            "CollectionFolder" => {
                 let page = ListPage::new(
                     self.id.clone(),
                     self.collection_type.clone().unwrap_or_default(),
+                );
+                push_page_with_tag(window, page, self.name.clone());
+            }
+            "UserView" => {
+                let page = SingleListPage::new(
+                    self.id.clone(),
+                    self.collection_type.clone().unwrap_or_default(),
+                    "livetv",
+                    None,
+                    false,
+                );
+                push_page_with_tag(window, page, self.name.clone());
+            }
+            "Tag" | "Genre" => {
+                let page = SingleListPage::new(
+                    self.id.clone(),
+                    "".to_string(),
+                    &self.latest_type,
+                    parentid,
+                    true,
                 );
                 push_page_with_tag(window, page, self.name.clone());
             }

@@ -93,7 +93,7 @@ impl ListPage {
 
     pub async fn set_pages(&self) {
         let imp = self.imp();
-        let id = imp.id.get().unwrap();
+        let id = self.id();
         let collection_type = imp.collectiontype.get().unwrap();
         let stack = imp.stack.get();
 
@@ -105,9 +105,10 @@ impl ListPage {
             ("genres", "Genres"),
             ("liked", "Liked"),
         ];
+        
 
         for (name, title) in pages {
-            let page = SingleListPage::new(id.clone(), collection_type.clone(), name, None, false);
+            let page = SingleListPage::new(id.clone(), collection_type.clone(), name, Some(id.clone()), false);
             stack.add_titled(&page, Some(name), &gettext(title));
         }
     }
