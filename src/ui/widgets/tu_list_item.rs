@@ -9,6 +9,7 @@ use gtk::template_callbacks;
 use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
+use imp::PosterType;
 use tracing::warn;
 
 use crate::client::client::EMBY_CLIENT;
@@ -24,15 +25,26 @@ use super::window::Window;
 
 pub const PROGRESSBAR_ANIMATION_DURATION: u32 = 2000;
 
-mod imp {
+pub mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{glib, CompositeTemplate};
     use gtk::{prelude::*, PopoverMenu};
-    use std::cell::{OnceCell, RefCell};
+    use std::cell::{Cell, OnceCell, RefCell};
 
     use crate::ui::provider::tu_item::TuItem;
     use crate::ui::widgets::picture_loader::PictureLoader;
+
+    #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
+    #[repr(u32)]
+    #[enum_type(name = "PosterType")]
+
+    pub enum PosterType {
+        Backdrop,
+        Banner,
+        #[default]
+        Poster,
+    }
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -40,7 +52,9 @@ mod imp {
     #[properties(wrapper_type = super::TuListItem)]
     pub struct TuListItem {
         #[property(get, set = Self::set_item)]
-        pub item: OnceCell<TuItem>,
+        pub item: RefCell<TuItem>,
+        #[property(get, set, builder(PosterType::default()))]
+        pub poster_type: Cell<PosterType>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub listlabel: TemplateChild<gtk::Label>,
@@ -90,8 +104,7 @@ mod imp {
 
     impl TuListItem {
         pub fn set_item(&self, item: TuItem) {
-            self.item.set(item).unwrap();
-
+            self.item.replace(item);
             let obj = self.obj();
             obj.set_up();
             obj.gesture();
@@ -116,7 +129,7 @@ pub enum Action {
 
 #[template_callbacks]
 impl TuListItem {
-    pub fn new(item: TuItem, item_type: &str, isresume: bool) -> Self {
+    pub fn new(item: TuItem, isresume: bool) -> Self {
         Object::builder()
             .property("item", item)
             .property("isresume", isresume)
@@ -129,7 +142,7 @@ impl TuListItem {
 
     pub fn set_up(&self) {
         let imp = self.imp();
-        let item = imp.item.get().unwrap();
+        let item = self.item();
         let item_type = item.item_type();
         match item_type.as_str() {
             "Movie" => {
@@ -263,46 +276,38 @@ impl TuListItem {
         self.set_tooltip_text(Some(&item.name()));
     }
 
-    fn determine_image_type_and_tag<'a>(item: &TuItem, poster: &str) -> (&'a str, Option<String>) {
-        if let Some(imag_tags) = item.image_tags() {
-            match poster {
-                "banner" => {
-                    if imag_tags.banner().is_some() {
-                        return ("Banner", None);
-                    } else if imag_tags.thumb().is_some() {
-                        return ("Thumb", None);
-                    } else if imag_tags.backdrop().is_some() {
-                        return ("Backdrop", Some(0.to_string()));
-                    }
-                }
-                "backdrop" => {
-                    if imag_tags.backdrop().is_some() {
-                        return ("Backdrop", Some(0.to_string()));
-                    } else if imag_tags.thumb().is_some() {
-                        return ("Thumb", None);
-                    }
-                }
-                _ => {}
-            }
-        }
-        ("Primary", None)
-    }
-
     fn set_overlay_size(overlay: &gtk::Overlay, width: i32, height: i32) {
         overlay.set_size_request(width, height);
     }
 
     fn get_image_type_and_tag(&self, item: &TuItem) -> (&str, Option<String>, String) {
         let imp = self.imp();
-        if let Some(poster) = item.poster() {
-            let (image_type, tag) = Self::determine_image_type_and_tag(item, poster.as_str());
-            match poster.as_str() {
-                "banner" => Self::set_overlay_size(&imp.overlay, 375, 70),
-                "backdrop" => Self::set_overlay_size(&imp.overlay, 250, 141),
-                _ => {}
+        if self.poster_type() != PosterType::Poster {
+            if let Some(imag_tags) = item.image_tags() {
+                match self.poster_type() {
+                    PosterType::Banner => {
+                        Self::set_overlay_size(&imp.overlay, 375, 70);
+                        if imag_tags.banner().is_some() {
+                            return ("Banner", None, item.id());
+                        } else if imag_tags.thumb().is_some() {
+                            return ("Thumb", None, item.id());
+                        } else if imag_tags.backdrop().is_some() {
+                            return ("Backdrop", Some(0.to_string()), item.id());
+                        }
+                    }
+                    PosterType::Backdrop => {
+                        Self::set_overlay_size(&imp.overlay, 250, 141);
+                        if imag_tags.backdrop().is_some() {
+                            return ("Backdrop", Some(0.to_string()), item.id());
+                        } else if imag_tags.thumb().is_some() {
+                            return ("Thumb", None, item.id());
+                        }
+                    }
+                    _ => {}
+                }
             }
-            (image_type, tag, item.id())
-        } else if item.is_resume() {
+        }
+        if item.is_resume() {
             if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
                 Self::set_overlay_size(&imp.overlay, 250, 141);
                 ("Thumb", None, parent_thumb_item_id)
@@ -330,7 +335,7 @@ impl TuListItem {
 
     pub fn set_played(&self) {
         let imp = self.imp();
-        let item = imp.item.get().unwrap();
+        let item = self.item();
         if item.played() {
             let mark = gtk::Image::from_icon_name("object-select-symbolic");
             mark.set_halign(gtk::Align::End);
@@ -343,7 +348,7 @@ impl TuListItem {
 
     pub fn set_rating(&self) {
         let imp = self.imp();
-        let item = imp.item.get().unwrap();
+        let item = self.item();
         if let Some(rating) = item.rating() {
             let rating = gtk::Label::new(Some(&rating));
             rating.set_halign(gtk::Align::Start);
@@ -356,7 +361,7 @@ impl TuListItem {
 
     pub fn set_count(&self) {
         let imp = self.imp();
-        let item = imp.item.get().unwrap();
+        let item = self.item();
         let count = item.unplayed_item_count();
         if count > 0 {
             let mark = gtk::Label::new(Some(&count.to_string()));
@@ -369,8 +374,7 @@ impl TuListItem {
     }
 
     pub fn get_played_percentage(&self) -> f64 {
-        let imp = self.imp();
-        let item = imp.item.get().unwrap();
+        let item = self.item();
         item.played_percentage()
     }
 

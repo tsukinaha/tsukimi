@@ -1,6 +1,7 @@
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
+use super::tu_list_item::imp::PosterType;
 use super::utils::TuItemBuildExt;
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
@@ -24,6 +25,7 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
 
     use crate::ui::provider::tu_object::TuObject;
+    use crate::ui::widgets::tu_list_item::imp::PosterType;
     use crate::utils::spawn_g_timeout;
 
     // Object holding the state
@@ -76,17 +78,17 @@ mod imp {
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action_async("poster", None, |window, _action, _parameter| async move {
-                window.poster("poster").await;
+                window.poster(PosterType::Poster).await;
             });
             klass.install_action_async(
                 "backdrop",
                 None,
                 |window, _action, _parameter| async move {
-                    window.poster("backdrop").await;
+                    window.poster(PosterType::Backdrop).await;
                 },
             );
             klass.install_action_async("banner", None, |window, _action, _parameter| async move {
-                window.poster("banner").await;
+                window.poster(PosterType::Banner).await;
             });
         }
 
@@ -294,7 +296,7 @@ impl SingleListPage {
         ));
         imp.selection.set_model(Some(&store));
         let factory = SignalListItemFactory::new();
-        imp.listgrid.set_factory(Some(factory.tu_item()));
+        imp.listgrid.set_factory(Some(factory.tu_item(PosterType::default())));
         imp.listgrid.set_model(Some(&imp.selection));
         imp.listgrid.set_min_columns(1);
         imp.listgrid.set_max_columns(13);
@@ -467,10 +469,10 @@ impl SingleListPage {
         self.imp().sortby.replace(sortby.to_string());
     }
 
-    pub async fn poster(&self, poster: &str) {
+    pub async fn poster(&self, poster: PosterType) {
         let imp = self.imp();
-        let poster = poster.to_string();
         let factory = gtk::SignalListItemFactory::new();
-        imp.listgrid.set_factory(Some(factory.tu_item()));
+        imp.listgrid.set_factory(Some(factory.tu_item(poster)));
+        
     }
 }

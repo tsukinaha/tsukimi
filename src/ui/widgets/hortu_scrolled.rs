@@ -8,7 +8,7 @@ use crate::ui::widgets::fix::ScrolledWindowFixExt;
 const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
 
 mod imp {
-    use crate::ui::widgets::utils::TuItemBuildExt;
+    use crate::ui::widgets::{tu_list_item::imp::PosterType, utils::TuItemBuildExt};
     use std::cell::{OnceCell, RefCell};
 
     use glib::subclass::InitializingObject;
@@ -77,7 +77,7 @@ mod imp {
             self.list.set_model(Some(&self.selection));
 
             self.list
-                .set_factory(Some(SignalListItemFactory::new().tu_item()));
+                .set_factory(Some(SignalListItemFactory::new().tu_item(PosterType::default())));
 
             self.list.connect_activate(move |listview, position| {
                 let model = listview.model().unwrap();

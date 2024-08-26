@@ -17,6 +17,7 @@ pub(crate) mod imp {
 
     use crate::ui::provider::tu_object::TuObject;
 
+    use crate::ui::widgets::tu_list_item::imp::PosterType;
     use crate::ui::widgets::utils::TuItemBuildExt;
 
     use super::*;
@@ -59,7 +60,7 @@ pub(crate) mod imp {
             let store = gio::ListStore::new::<TuObject>();
             self.selection.set_model(Some(&store));
             let factory = SignalListItemFactory::new();
-            self.grid.set_factory(Some(factory.tu_item()));
+            self.grid.set_factory(Some(factory.tu_item(PosterType::default())));
             self.grid.set_model(Some(&self.selection));
         }
     }
