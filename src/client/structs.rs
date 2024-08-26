@@ -339,6 +339,10 @@ pub struct SimpleListItem {
     pub overview: Option<String>,
     #[serde(rename = "CurrentProgram")]
     pub current_program: Option<CurrentProgram>,
+    #[serde(rename = "Status")]
+    pub status: Option<String>,
+    #[serde(rename = "EndDate")]
+    pub end_date: Option<DateTime<Utc>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]

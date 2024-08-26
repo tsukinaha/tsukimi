@@ -93,6 +93,10 @@ pub mod imp {
         program_start_time: RefCell<Option<DateTime>>,
         #[property(get, set, nullable)]
         program_end_time: RefCell<Option<DateTime>>,
+        #[property(get, set, nullable)]
+        status: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        end_date: RefCell<Option<DateTime>>,
     }
 
     #[glib::derived_properties]
@@ -220,6 +224,12 @@ impl TuItem {
         }
         if let Some(series_id) = &latest.series_id {
             tu_item.set_series_id(series_id.clone());
+        }
+        if let Some(status) = &latest.status {
+            tu_item.set_status(Some(status.clone()));
+        }
+        if let Some(end_date) = &latest.end_date {
+            tu_item.set_end_date(Some(&chrono_to_glib(end_date)));
         }
         tu_item
     }
