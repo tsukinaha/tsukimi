@@ -1,39 +1,22 @@
-use std::sync::atomic::Ordering;
-use std::sync::Arc;
-
-use super::item;
 use super::tu_list_item::imp::PosterType;
-use super::utils::TuItemBuildExt;
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
 use crate::client::structs::SimpleListItem;
-use crate::ui::models::SETTINGS;
-use crate::ui::provider::tu_object::TuObject;
-use crate::utils::{req_cache, spawn, spawn_tokio};
-use crate::{fraction, fraction_reset, toast};
 use adw::prelude::*;
 use glib::Object;
 use gtk::subclass::prelude::*;
-use gtk::{gio, glib, SignalListItemFactory};
+use gtk::{gio, glib};
 mod imp {
 
-    use std::cell::{OnceCell, RefCell};
-    use std::future::Future;
-    use std::pin::Pin;
+    use std::cell::RefCell;
     use std::sync::atomic::AtomicBool;
     use std::sync::Arc;
-    use tokio::sync::Mutex;
 
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
-    use crate::client::structs::List;
-    use crate::ui::provider::tu_object::TuObject;
     use crate::ui::widgets::tu_list_item::imp::PosterType;
     use crate::ui::widgets::tuview_scrolled::TuViewScrolled;
-    use crate::utils::{spawn_g_timeout, spawn_tokio};
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -134,13 +117,11 @@ impl SingleGrid {
     #[template_callback]
     async fn sort_order_ascending_cb(&self, _btn: &gtk::ToggleButton) {
         self.imp().sortorder.replace("Ascending".to_string());
-        
     }
 
     #[template_callback]
     async fn sort_order_descending_cb(&self, _btn: &gtk::ToggleButton) {
         self.imp().sortorder.replace("Descending".to_string());
-        
     }
 
     #[template_callback]
@@ -201,9 +182,7 @@ impl SingleGrid {
         self.imp().sortby.replace(sortby.to_string());
     }
 
-    pub async fn poster(&self, poster_type: PosterType) {
-
-    }
+    pub async fn poster(&self, poster_type: PosterType) {}
 
     pub fn add_items<const C: bool>(&self, items: Vec<SimpleListItem>) {
         let imp = self.imp();
@@ -213,5 +192,9 @@ impl SingleGrid {
             imp.stack.set_visible_child_name("fallback");
             return;
         }
+    }
+
+    pub fn set_item_number(&self, n: u32) {
+        self.imp().count.set_text(&format!("{} Items", n));
     }
 }

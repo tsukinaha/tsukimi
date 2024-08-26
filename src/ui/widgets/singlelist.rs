@@ -296,18 +296,18 @@ impl SingleListPage {
         ));
         imp.selection.set_model(Some(&store));
         let factory = SignalListItemFactory::new();
-        imp.listgrid.set_factory(Some(factory.tu_item(PosterType::default())));
+        imp.listgrid
+            .set_factory(Some(factory.tu_item(PosterType::default())));
         imp.listgrid.set_model(Some(&imp.selection));
         imp.listgrid.set_min_columns(1);
         imp.listgrid.set_max_columns(13);
 
-        imp.listgrid.connect_activate(glib::clone!(
-            move |listview, position| {
+        imp.listgrid
+            .connect_activate(glib::clone!(move |listview, position| {
                 let model = listview.model().unwrap();
                 let tu_obj = model.item(position).and_downcast::<TuObject>().unwrap();
                 tu_obj.activate(listview);
-            }
-        ));
+            }));
     }
 
     #[template_callback]
@@ -469,6 +469,5 @@ impl SingleListPage {
         let imp = self.imp();
         let factory = gtk::SignalListItemFactory::new();
         imp.listgrid.set_factory(Some(factory.tu_item(poster)));
-        
     }
 }

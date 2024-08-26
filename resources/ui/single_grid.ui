@@ -101,6 +101,7 @@
                 <property name="title">Result</property>
                 <property name="child">
                   <object class="TuViewScrolled" id="scrolled">
+
                   </object>
                 </property>
               </object>

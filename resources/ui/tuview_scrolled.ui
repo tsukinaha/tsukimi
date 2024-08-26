@@ -6,6 +6,8 @@
       <property name="hscrollbar-policy">never</property>
         <child>
           <object class="GtkGridView" id="grid">
+            <property name="margin-start">18</property>
+            <property name="margin-end">18</property>
             <property name="single-click-activate">True</property>
             <property name="min-columns">1</property>
             <property name="max-columns">15</property>

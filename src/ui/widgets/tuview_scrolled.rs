@@ -5,7 +5,6 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::gio;
 use gtk::glib::{self, clone};
-use gtk::prelude::*;
 use gtk::{template_callbacks, CompositeTemplate};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
@@ -25,9 +24,8 @@ pub(crate) mod imp {
 
     use gtk::SignalListItemFactory;
 
-    #[derive(CompositeTemplate, Default, glib::Properties)]
+    #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsukimi/tuview_scrolled.ui")]
-    #[properties(wrapper_type = super::TuViewScrolled)]
     pub struct TuViewScrolled {
         #[template_child]
         pub scrolled_window: TemplateChild<gtk::ScrolledWindow>,
@@ -53,14 +51,14 @@ pub(crate) mod imp {
         }
     }
 
-    #[glib::derived_properties]
     impl ObjectImpl for TuViewScrolled {
         fn constructed(&self) {
             self.parent_constructed();
             let store = gio::ListStore::new::<TuObject>();
             self.selection.set_model(Some(&store));
             let factory = SignalListItemFactory::new();
-            self.grid.set_factory(Some(factory.tu_item(PosterType::default())));
+            self.grid
+                .set_factory(Some(factory.tu_item(PosterType::default())));
             self.grid.set_model(Some(&self.selection));
         }
     }

@@ -30,7 +30,7 @@ pub mod imp {
     use glib::subclass::InitializingObject;
     use gtk::{glib, CompositeTemplate};
     use gtk::{prelude::*, PopoverMenu};
-    use std::cell::{Cell, OnceCell, RefCell};
+    use std::cell::{Cell, RefCell};
 
     use crate::ui::provider::tu_item::TuItem;
     use crate::ui::widgets::picture_loader::PictureLoader;

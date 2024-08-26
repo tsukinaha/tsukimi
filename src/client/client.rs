@@ -693,7 +693,12 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_favourite(&self, types: &str) -> Result<List, reqwest::Error> {
+    pub async fn get_favourite(
+        &self,
+        types: &str,
+        start: u32,
+        limit: u32,
+    ) -> Result<List, reqwest::Error> {
         let user_id = {
             let user_id = self.user_id.lock().unwrap();
             user_id.to_owned()
@@ -714,7 +719,8 @@ impl EmbyClient {
             ("SortBy", "SortName"),
             ("SortOrder", "Ascending"),
             ("IncludeItemTypes", types),
-            ("Limit", "12"),
+            ("Limit", &limit.to_string()),
+            ("StartIndex", &start.to_string()),
             if types == "People" {
                 ("UserId", &user_id)
             } else {

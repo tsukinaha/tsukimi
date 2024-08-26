@@ -1,5 +1,4 @@
 use chrono::{DateTime, Utc};
-use gettextrs::gettext;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -518,22 +517,8 @@ pub struct User {
     pub id: String,
 }
 
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
 use crate::ui::widgets::singlelist::SingleListPage;
 use crate::ui::widgets::window::Window;
-use crate::utils::spawn_tokio;
-use crate::{
-    toast,
-    ui::{
-        provider::tu_item::TuItem,
-        widgets::{
-            actor::ActorPage, boxset::BoxSetPage, item::ItemPage, list::ListPage,
-            music_album::AlbumPage,
-        },
-    },
-    utils::spawn,
-};
 use adw::prelude::*;
 use gtk::glib;
 
@@ -547,7 +532,7 @@ impl SGTitem {
     }
 }
 
-pub fn push_page_with_tag<T,R>(widget: &R, page: T, tag: String)
+pub fn push_page_with_tag<T, R>(widget: &R, page: T, tag: String)
 where
     T: NavigationPageExt,
     R: gtk::prelude::WidgetExt + glib::clone::Downgrade,

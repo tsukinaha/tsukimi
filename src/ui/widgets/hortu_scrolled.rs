@@ -78,8 +78,9 @@ mod imp {
 
             self.list.set_model(Some(&self.selection));
 
-            self.list
-                .set_factory(Some(SignalListItemFactory::new().tu_item(PosterType::default())));
+            self.list.set_factory(Some(
+                SignalListItemFactory::new().tu_item(PosterType::default()),
+            ));
 
             self.list.connect_activate(move |listview, position| {
                 let model = listview.model().unwrap();

@@ -1,3 +1,5 @@
+use std::sync::atomic::Ordering;
+
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
@@ -119,7 +121,14 @@ impl LikedPage {
 
     fn ensure_items(&self) {
         let imp = self.imp();
-        if !imp.moviehortu.is_visible() && !imp.serieshortu.is_visible() && !imp.episodehortu.is_visible() && !imp.peoplehortu.is_visible() && !imp.albumhortu.is_visible() && !imp.boxsethortu.is_visible() && !imp.tvhortu.is_visible() {
+        if !imp.moviehortu.is_visible()
+            && !imp.serieshortu.is_visible()
+            && !imp.episodehortu.is_visible()
+            && !imp.peoplehortu.is_visible()
+            && !imp.albumhortu.is_visible()
+            && !imp.boxsethortu.is_visible()
+            && !imp.tvhortu.is_visible()
+        {
             imp.stack.set_visible_child_name("fallback");
         }
     }
@@ -142,14 +151,17 @@ impl LikedPage {
 
         let type_ = types.clone();
 
-        let results =
-            match spawn_tokio(async move { EMBY_CLIENT.get_favourite(&types).await }).await {
-                Ok(history) => history,
-                Err(e) => {
-                    toast!(self, e.to_user_facing());
-                    List::default()
-                }
-            };
+        let results = match spawn_tokio(
+            async move { EMBY_CLIENT.get_favourite(&types, 0, 12).await },
+        )
+        .await
+        {
+            Ok(history) => history,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                List::default()
+            }
+        };
 
         if results.items.is_empty() {
             hortu.set_visible(false);
@@ -165,28 +177,72 @@ impl LikedPage {
                 let tag = format!("{} {}", "Favourite", type_);
                 let page = crate::ui::widgets::single_grid::SingleGrid::new();
                 let types = type_.clone();
+                let type_1 = type_.clone();
                 page.connect_realize(glib::clone!(
                     #[weak]
-                    obj, move |page| {
-                    let types_clone = types.clone();
-                    spawn(glib::clone!(
-                        #[weak]
-                        page,
-                        #[weak]
-                        obj,
-                        async move {
-                            let result = match spawn_tokio(async move { EMBY_CLIENT.get_favourite(&types_clone).await }).await {
-                                Ok(history) => history,
-                                Err(e) => {
-                                    toast!(obj, e.to_user_facing());
-                                    List::default()
-                                }
-                            };
-                            page.add_items::<false>(result.items);
-                        }
-                    ));
-                }));
+                    obj,
+                    move |page| {
+                        let types_clone = types.clone();
+                        spawn(glib::clone!(
+                            #[weak]
+                            page,
+                            #[weak]
+                            obj,
+                            async move {
+                                fraction_reset!(obj);
+                                let result = match spawn_tokio(async move {
+                                    EMBY_CLIENT.get_favourite(&types_clone, 0, 50).await
+                                })
+                                .await
+                                {
+                                    Ok(history) => history,
+                                    Err(e) => {
+                                        toast!(obj, e.to_user_facing());
+                                        List::default()
+                                    }
+                                };
+                                page.add_items::<false>(result.items);
+                                page.set_item_number(result.total_record_count);
+                                fraction!(obj);
+                            }
+                        ));
+                    }
+                ));
+                page.imp().scrolled.connect_end_edge_reached(glib::clone!(
+                    #[weak]
+                    obj,
+                    move |scrolled, lock| {
+                        let types_clone = type_1.clone();
+                        spawn(glib::clone!(
+                            #[weak]
+                            obj,
+                            #[weak]
+                            scrolled,
+                            async move {
+                                fraction_reset!(obj);
+                                let n_items = scrolled.n_items();
+                                let search_results = match spawn_tokio(async move {
+                                    EMBY_CLIENT.get_favourite(&types_clone, n_items, 50).await
+                                })
+                                .await
+                                {
+                                    Ok(history) => history,
+                                    Err(e) => {
+                                        toast!(obj, e.to_user_facing());
+                                        List::default()
+                                    }
+                                };
+
+                                scrolled.set_grid::<false>(search_results.items);
+
+                                lock.store(false, Ordering::SeqCst);
+                                fraction!(obj);
+                            },
+                        ))
+                    }
+                ));
                 push_page_with_tag(&obj, page, tag);
-        }));
+            }
+        ));
     }
 }
