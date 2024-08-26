@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwBin" class="PictureLoader">
+    <style>
+      <class name="boxshadow" />
+    </style>
     <child>
       <object class="GtkOverlay" id="overlay">
         <child>

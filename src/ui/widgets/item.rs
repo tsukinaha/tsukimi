@@ -894,6 +894,7 @@ impl ItemPage {
                 mediapartbox.append(&typebox);
                 mediapartbox.append(&inscription);
                 mediapartbox.add_css_class("card");
+                mediapartbox.add_css_class("sbackground");
                 mediabox.append(&mediapartbox);
             }
 

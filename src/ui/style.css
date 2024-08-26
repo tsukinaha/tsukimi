@@ -21,8 +21,8 @@ child {
     background: rgba(0, 0, 0, 0);
 }
 
-.checkwatched {
-    background: rgba(0, 0, 0, 0.1);
+.sbackground {
+    background: rgba(0, 0, 0, 0.15);
 }
 
 .smooth-scale {
@@ -170,7 +170,9 @@ placessidebar {
     box-shadow: none;
 }
 
-overlay {
+
+
+.boxshadow{
 	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 	border-radius: 10px;
 }

@@ -13,6 +13,9 @@
                 <property name="spacing">9</property>
                 <child>
                   <object class="GtkOverlay">
+                    <style>
+                      <class name="boxshadow" />
+                    </style>
                     <child>
                       <object class="GtkRevealer" id="backrevealer">
                         <property name="transition-type">crossfade</property>
@@ -251,7 +254,7 @@
                     <property name="visible">False</property>
                     <child>
                       <object class="GtkDropDown" id="seasonlist">
-                        <property name="margin-start">18</property>
+                        <property name="margin-start">12</property>
                       </object>
                     </child>
                     <child>
@@ -351,7 +354,7 @@
                         <property name="valign">start</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="margin-start">18</property>
+                            <property name="margin-start">12</property>
                             <property name="label" translatable="yes">Overview</property>
                             <property name="halign">start</property>
                             <attributes>
@@ -359,7 +362,6 @@
                             </attributes>
                             <style>
                               <class name="title-4"/>
-                              <class name="dim-label"/>
                             </style>
                           </object>
                         </child>
@@ -467,7 +469,7 @@
                         <property name="valign">start</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="margin-start">18</property>
+                            <property name="margin-start">12</property>
                             <property name="label" translatable="yes">MediaInfo</property>
                             <property name="halign">start</property>
                             <attributes>
@@ -475,7 +477,6 @@
                             </attributes>
                             <style>
                               <class name="title-4"/>
-                              <class name="dim-label"/>
                             </style>
                           </object>
                         </child>
