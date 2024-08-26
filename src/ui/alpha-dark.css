@@ -17,6 +17,10 @@ child {
     border-radius:10px;
 }
 
+.card {
+    box-shadow: none;
+}
+
 .logo {
     background: rgba(0, 0, 0, 0);
 }

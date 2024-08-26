@@ -239,7 +239,9 @@ impl ItemPage {
                 #[weak(rename_to = obj)]
                 self,
                 async move {
-                    let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                    let Some(window) = obj.root().and_downcast::<super::window::Window>() else {
+                        return;
+                    };
                     window.set_rootpic(file);
                 }
             ));

@@ -1,6 +1,7 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
+use crate::ui::provider::tu_item::TuItem;
 use crate::utils::{spawn, spawn_tokio};
 use crate::{fraction, fraction_reset, toast};
 use glib::Object;
@@ -164,7 +165,8 @@ impl SearchPage {
                 #[weak(rename_to = obj)]
                 self,
                 move |_| {
-                    item.activate(&obj, None);
+                    let tu_item = TuItem::from_simple(&item, None);
+                    tu_item.activate(&obj, None);
                 }
             ));
             recommendbox.append(&button);

@@ -66,6 +66,8 @@ mod imp {
     #[glib::derived_properties]
     impl ObjectImpl for HortuScrolled {
         fn constructed(&self) {
+            self.selection.set_autoselect(false);
+
             self.parent_constructed();
 
             self.scrolled.fix();
@@ -228,8 +230,12 @@ impl HortuScrolled {
         self.anime::<false>();
     }
 
-    #[template_callback]
-    fn on_morebutton_clicked(&self) {}
+    pub fn connect_morebutton<F>(&self, cb: F)
+    where
+        F: Fn(&gtk::Button) + 'static,
+    {
+        self.imp().morebutton.connect_clicked(cb);
+    }
 
     fn anime<const R: bool>(&self) {
         let scrolled = self.imp().scrolled.get();

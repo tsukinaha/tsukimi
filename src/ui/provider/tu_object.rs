@@ -1,7 +1,6 @@
 use gtk::glib;
 use gtk::glib::prelude::*;
 use gtk::glib::subclass::prelude::*;
-use gtk::prelude::ListModelExt;
 use std::cell::RefCell;
 
 use crate::client::structs::SimpleListItem;

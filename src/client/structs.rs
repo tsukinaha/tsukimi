@@ -542,109 +542,17 @@ impl SGTitem {
     where
         T: gtk::prelude::WidgetExt + glib::clone::Downgrade,
     {
-        let window = widget.root().and_downcast::<Window>().unwrap();
         let page = SingleListPage::new(self.id.to_string(), "".to_string(), &list_type, None, true);
-        push_page_with_tag(window, page, self.name.clone());
+        push_page_with_tag(widget, page, self.name.clone());
     }
 }
 
-impl SimpleListItem {
-    pub fn activate<T>(&self, widget: &T, parentid: Option<String>)
-    where
-        T: gtk::prelude::WidgetExt + glib::clone::Downgrade,
-    {
-        let window = widget.root().and_downcast::<Window>().unwrap();
-
-        if self.latest_type == "TvChannel" {
-            self.tvchannel(window);
-            return;
-        }
-
-        match self.latest_type.as_str() {
-            "Series" | "Movie" | "Video" => {
-                let page = ItemPage::new(self.id.clone(), self.id.clone(), self.name.clone());
-                push_page_with_tag(window, page, self.name.clone());
-            }
-            "Episode" => {
-                let page = ItemPage::new(
-                    self.series_id.clone().unwrap(),
-                    self.id.clone(),
-                    self.name.clone(),
-                );
-                push_page_with_tag(window, page, self.series_name.clone().unwrap_or_default());
-            }
-            "MusicAlbum" => {
-                let page = AlbumPage::new(TuItem::from_simple(self, None));
-                push_page_with_tag(window, page, self.name.clone());
-            }
-            "Actor" | "Director" | "Person" | "Writer" => {
-                let page = ActorPage::new(&self.id);
-                push_page_with_tag(window, page, self.name.clone());
-            }
-            "BoxSet" => {
-                let page = BoxSetPage::new(&self.id);
-                push_page_with_tag(window, page, self.name.clone());
-            }
-            "CollectionFolder" => {
-                let page = ListPage::new(
-                    self.id.clone(),
-                    self.collection_type.clone().unwrap_or_default(),
-                );
-                push_page_with_tag(window, page, self.name.clone());
-            }
-            "UserView" => {
-                let page = SingleListPage::new(
-                    self.id.clone(),
-                    self.collection_type.clone().unwrap_or_default(),
-                    "livetv",
-                    None,
-                    false,
-                );
-                push_page_with_tag(window, page, self.name.clone());
-            }
-            "Tag" | "Genre" => {
-                let page = SingleListPage::new(
-                    self.id.clone(),
-                    "".to_string(),
-                    &self.latest_type,
-                    parentid,
-                    true,
-                );
-                push_page_with_tag(window, page, self.name.clone());
-            }
-            _ => toast!(window, gettext("Not Supported Type")),
-        }
-    }
-
-    fn tvchannel(&self, window: Window) {
-        spawn(glib::clone!(
-            #[strong(rename_to = item)]
-            self,
-            async move {
-                toast!(window, gettext("Processing..."));
-                match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&item.id).await })
-                    .await
-                {
-                    Ok(playback) => {
-                        let Some(ref url) = playback.media_sources[0].transcoding_url else {
-                            toast!(window, gettext("No transcoding url found"));
-                            return;
-                        };
-                        window.play_media(url.to_string(), None, Some(item.name), None, None, 0.0)
-                    }
-                    Err(e) => {
-                        toast!(window, e.to_user_facing());
-                    }
-                }
-            }
-        ));
-    }
-}
-
-fn push_page_with_tag<T>(window: Window, page: T, tag: String)
+pub fn push_page_with_tag<T,R>(widget: &R, page: T, tag: String)
 where
     T: NavigationPageExt,
+    R: gtk::prelude::WidgetExt + glib::clone::Downgrade,
 {
     page.set_tag(Some(&tag));
+    let window = widget.root().and_downcast::<Window>().unwrap();
     window.push_page(&page);
 }

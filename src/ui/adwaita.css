@@ -171,6 +171,10 @@ placessidebar {
     background-color: rgba(0, 0, 0, 0);
 }
 
+.card {
+    box-shadow: none;
+}
+
 .sidebar-pane {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     background-color: rgba(245, 245, 245, 0);

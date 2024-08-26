@@ -44,7 +44,6 @@
                     <property name="valign">center</property>
                     <property name="margin-end">12</property>
                     <property name="icon-name">view-more-symbolic</property>
-                    <signal name="clicked" handler="on_morebutton_clicked" swapped="yes" />
                     <style>
                       <class name="circular" />
                       <class name="flat" />

@@ -35,6 +35,10 @@ child {
     border-radius: 5px;
 }
 
+.card {
+    box-shadow: none;
+}
+
 .coverimage {
     border-radius: 10px;
 }

@@ -204,7 +204,7 @@ msgstr "--ytdl-format=best"
 
 #: resources/ui/account_settings.ui:401
 msgid "Others"
-msgstr "其 他"
+msgstr "其他"
 
 #: resources/ui/account_settings.ui:404 src/ui/widgets/item.rs:1055
 msgid "Resume"
@@ -356,7 +356,7 @@ msgstr "视频: "
 
 #: resources/ui/item.ui:207
 msgid "Subtitle: "
-msgstr "字幕： "
+msgstr "字幕:  "
 
 #: resources/ui/item.ui:260
 msgid "Search episodes in current season"

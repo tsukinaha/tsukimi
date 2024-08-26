@@ -2,6 +2,7 @@ use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::models::SETTINGS;
+use crate::ui::provider::tu_item::TuItem;
 use crate::utils::{get_data_with_cache_else, req_cache, req_cache_single, spawn};
 use crate::{fraction, fraction_reset, toast};
 use chrono::{Datelike, Local};
@@ -142,7 +143,8 @@ impl HomePage {
     fn carousel_pressed_cb(&self) {
         let position = self.imp().carousel.position();
         if let Some(item) = self.imp().carouset_items.borrow().get(position as usize) {
-            item.activate(self, None);
+            let tu_item = TuItem::from_simple(item, None);
+            tu_item.activate(self, None);
         }
     }
 
@@ -196,6 +198,8 @@ impl HomePage {
         }
 
         for view in items {
+            let ac_view = view.clone();
+
             let Some(collection_type) = view.collection_type else {
                 continue;
             };
@@ -223,6 +227,18 @@ impl HomePage {
             hortu.set_title(&format!("{} {}", gettext("Latest"), view.name));
 
             hortu.set_items(&results);
+
+            hortu.connect_morebutton(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_| {
+                let list_item = TuItem::default();
+                list_item.set_id(ac_view.id.clone());
+                list_item.set_name(ac_view.name.clone());
+                list_item.set_item_type(ac_view.latest_type.clone());
+                list_item.set_collection_type(ac_view.collection_type.clone());
+                list_item.activate(&obj, None);
+            }));
 
             libsbox.append(&hortu);
         }

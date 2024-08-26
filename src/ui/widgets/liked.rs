@@ -140,6 +140,8 @@ impl LikedPage {
 
         let types = types.to_string();
 
+        let type_ = types.clone();
+
         let results =
             match spawn_tokio(async move { EMBY_CLIENT.get_favourite(&types).await }).await {
                 Ok(history) => history,
@@ -155,5 +157,36 @@ impl LikedPage {
         }
 
         hortu.set_items(&results.items);
+
+        hortu.connect_morebutton(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |_| {
+                let tag = format!("{} {}", "Favourite", type_);
+                let page = crate::ui::widgets::single_grid::SingleGrid::new();
+                let types = type_.clone();
+                page.connect_realize(glib::clone!(
+                    #[weak]
+                    obj, move |page| {
+                    let types_clone = types.clone();
+                    spawn(glib::clone!(
+                        #[weak]
+                        page,
+                        #[weak]
+                        obj,
+                        async move {
+                            let result = match spawn_tokio(async move { EMBY_CLIENT.get_favourite(&types_clone).await }).await {
+                                Ok(history) => history,
+                                Err(e) => {
+                                    toast!(obj, e.to_user_facing());
+                                    List::default()
+                                }
+                            };
+                            page.add_items::<false>(result.items);
+                        }
+                    ));
+                }));
+                push_page_with_tag(&obj, page, tag);
+        }));
     }
 }
