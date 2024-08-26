@@ -300,7 +300,7 @@ impl HomePage {
             .child(&image)
             .build();
 
-        let logo = PictureLoader::new(&id, "Logo", None);
+        let logo = super::logo::set_logo(id, "Logo", None);
         logo.set_halign(gtk::Align::End);
 
         let logobox = gtk::Box::builder()

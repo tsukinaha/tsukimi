@@ -528,7 +528,7 @@ impl ItemPage {
     pub fn logoset(&self) {
         let logobox = self.imp().logobox.get();
         let id = self.id();
-        let logo = PictureLoader::new(&id, "Logo", None);
+        let logo = super::logo::set_logo(id, "Logo", None);
         logobox.append(&logo);
         logobox.add_css_class("logo");
     }

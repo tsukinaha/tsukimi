@@ -5,7 +5,6 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::gio;
 use gtk::glib::{self, clone};
-use gtk::prelude::*;
 use gtk::CompositeTemplate;
 use std::path::PathBuf;
 use tracing::{debug, warn};

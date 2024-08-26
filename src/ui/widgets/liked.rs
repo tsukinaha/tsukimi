@@ -34,6 +34,8 @@ mod imp {
         pub boxsethortu: TemplateChild<HortuScrolled>,
         #[template_child]
         pub tvhortu: TemplateChild<HortuScrolled>,
+        #[template_child]
+        pub stack: TemplateChild<gtk::Stack>,
     }
 
     // The central trait for subclassing a GObject
@@ -111,7 +113,15 @@ impl LikedPage {
         self.sets("MusicAlbum").await;
         self.sets("BoxSet").await;
         self.sets("TvChannel").await;
+        self.ensure_items();
         fraction!(self);
+    }
+
+    fn ensure_items(&self) {
+        let imp = self.imp();
+        if !imp.moviehortu.is_visible() && !imp.serieshortu.is_visible() && !imp.episodehortu.is_visible() && !imp.peoplehortu.is_visible() && !imp.albumhortu.is_visible() && !imp.boxsethortu.is_visible() && !imp.tvhortu.is_visible() {
+            imp.stack.set_visible_child_name("fallback");
+        }
     }
 
     pub async fn sets(&self, types: &str) {

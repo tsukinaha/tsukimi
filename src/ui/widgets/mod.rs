@@ -35,3 +35,5 @@ pub mod tu_list_item;
 pub mod tuview_scrolled;
 pub mod utils;
 pub mod window;
+pub mod logo;
+pub mod single_grid;
