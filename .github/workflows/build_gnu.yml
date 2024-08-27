@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'alpha'
+      - 'main'
 
 env:
   CARGO_TERM_COLOR: always

@@ -182,7 +182,7 @@ impl SingleGrid {
         self.imp().sortby.replace(sortby.to_string());
     }
 
-    pub async fn poster(&self, poster_type: PosterType) {}
+    pub async fn poster(&self, _poster_type: PosterType) {}
 
     pub fn add_items<const C: bool>(&self, items: Vec<SimpleListItem>) {
         let imp = self.imp();
