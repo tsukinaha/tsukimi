@@ -9,43 +9,52 @@ use gtk::template_callbacks;
 use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
-use tracing::debug;
+use imp::PosterType;
 use tracing::warn;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::client::structs::SimpleListItem;
 use crate::toast;
-use crate::ui::models::emby_cache_path;
 use crate::ui::provider::tu_item::TuItem;
 use crate::ui::provider::IS_ADMIN;
 use crate::utils::spawn;
 use crate::utils::spawn_tokio;
 
+use super::picture_loader::PictureLoader;
 use super::window::Window;
 
 pub const PROGRESSBAR_ANIMATION_DURATION: u32 = 2000;
 
-mod imp {
+pub mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{glib, CompositeTemplate};
     use gtk::{prelude::*, PopoverMenu};
-    use std::cell::{OnceCell, RefCell};
+    use std::cell::{Cell, RefCell};
 
     use crate::ui::provider::tu_item::TuItem;
+    use crate::ui::widgets::picture_loader::PictureLoader;
+
+    #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
+    #[repr(u32)]
+    #[enum_type(name = "PosterType")]
+
+    pub enum PosterType {
+        Backdrop,
+        Banner,
+        #[default]
+        Poster,
+    }
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/listitem.ui")]
     #[properties(wrapper_type = super::TuListItem)]
     pub struct TuListItem {
-        #[property(get, set, construct_only)]
-        pub item: OnceCell<TuItem>,
-        #[property(get, set, construct_only)]
-        pub itemtype: OnceCell<String>,
-        #[property(get, set, construct_only)]
-        pub isresume: OnceCell<bool>,
+        #[property(get, set = Self::set_item)]
+        pub item: RefCell<TuItem>,
+        #[property(get, set, builder(PosterType::default()))]
+        pub poster_type: Cell<PosterType>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub listlabel: TemplateChild<gtk::Label>,
@@ -53,12 +62,6 @@ mod imp {
         pub label2: TemplateChild<gtk::Label>,
         #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
-        #[template_child]
-        pub revealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub spinner: TemplateChild<gtk::Spinner>,
-        #[template_child]
-        pub broken: TemplateChild<gtk::Box>,
     }
 
     // The central trait for subclassing a GObject
@@ -70,6 +73,7 @@ mod imp {
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
+            PictureLoader::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }
@@ -84,10 +88,6 @@ mod imp {
     impl ObjectImpl for TuListItem {
         fn constructed(&self) {
             self.parent_constructed();
-            let obj = self.obj();
-            obj.set_up();
-            obj.gesture();
-            obj.reveals();
         }
 
         fn dispose(&self) {
@@ -101,6 +101,15 @@ mod imp {
     impl WidgetImpl for TuListItem {}
 
     impl BinImpl for TuListItem {}
+
+    impl TuListItem {
+        pub fn set_item(&self, item: TuItem) {
+            self.item.replace(item);
+            let obj = self.obj();
+            obj.set_up();
+            obj.gesture();
+        }
+    }
 }
 
 glib::wrapper! {
@@ -120,31 +129,34 @@ pub enum Action {
 
 #[template_callbacks]
 impl TuListItem {
-    pub fn new(item: TuItem, item_type: &str, isresume: bool) -> Self {
+    pub fn new(item: TuItem, isresume: bool) -> Self {
         Object::builder()
-            .property("itemtype", item_type)
             .property("item", item)
             .property("isresume", isresume)
             .build()
     }
 
+    pub fn default() -> Self {
+        Object::new()
+    }
+
     pub fn set_up(&self) {
         let imp = self.imp();
-        let item = imp.item.get().unwrap();
-        let item_type = imp.itemtype.get().unwrap();
+        let item = self.item();
+        let item_type = item.item_type();
         match item_type.as_str() {
             "Movie" => {
                 let year = if item.production_year() != 0 {
                     item.production_year().to_string()
                 } else {
-                    String::from("")
+                    String::default()
                 };
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&year);
                 imp.overlay.set_size_request(167, 260);
                 self.set_picture();
                 self.set_played();
-                if let Some(true) = imp.isresume.get() {
+                if item.is_resume() {
                     self.set_played_percentage(self.get_played_percentage());
                     return;
                 }
@@ -202,7 +214,24 @@ impl TuListItem {
                     String::from("")
                 };
                 imp.listlabel.set_text(&item.name());
-                imp.label2.set_text(&year);
+                if let Some(status) = item.status() {
+                    if status == "Continuing" {
+                        imp.label2.set_text(&format!("{} - {}", year, gettext("Present")));
+                    } else if status == "Ended" {
+                        if let Some(end_date) = item.end_date() {
+                            let end_year = end_date.year();
+                            if end_year != year.parse::<i32>().unwrap_or_default() {
+                                imp.label2.set_text(&format!("{} - {}", year, end_date.year()));
+                            } else {
+                                imp.label2.set_text(&format!("{}", end_year));
+                            }
+                        } else {
+                            imp.label2.set_text(&format!("{} - Unknown", year));
+                        }
+                    }
+                } else {
+                    imp.label2.set_text(&year);
+                }
                 imp.overlay.set_size_request(167, 260);
                 self.set_picture();
                 self.set_played();
@@ -264,144 +293,66 @@ impl TuListItem {
         self.set_tooltip_text(Some(&item.name()));
     }
 
-    pub fn set_picture(&self) {
+    fn set_overlay_size(overlay: &gtk::Overlay, width: i32, height: i32) {
+        overlay.set_size_request(width, height);
+    }
+
+    fn get_image_type_and_tag(&self, item: &TuItem) -> (&str, Option<String>, String) {
         let imp = self.imp();
-        let item = imp.item.get().unwrap();
-        let id = item.id();
-        if let Some(poster) = item.poster() {
-            let image = match poster.as_str() {
-                "banner" => {
-                    imp.overlay.set_size_request(375, 70);
-                    if let Some(imag_tags) = item.image_tags() {
+        if self.poster_type() != PosterType::Poster {
+            if let Some(imag_tags) = item.image_tags() {
+                match self.poster_type() {
+                    PosterType::Banner => {
+                        Self::set_overlay_size(&imp.overlay, 375, 70);
                         if imag_tags.banner().is_some() {
-                            self.set_image(id, "Banner", None)
+                            return ("Banner", None, item.id());
                         } else if imag_tags.thumb().is_some() {
-                            self.set_image(id, "Thumb", None)
+                            return ("Thumb", None, item.id());
                         } else if imag_tags.backdrop().is_some() {
-                            self.set_image(id, "Backdrop", Some(0))
-                        } else {
-                            self.set_image(id, "Primary", None)
+                            return ("Backdrop", Some(0.to_string()), item.id());
                         }
-                    } else {
-                        self.set_image(id, "Primary", None)
                     }
-                }
-                "backdrop" => {
-                    imp.overlay.set_size_request(250, 141);
-                    if let Some(imag_tags) = item.image_tags() {
+                    PosterType::Backdrop => {
+                        Self::set_overlay_size(&imp.overlay, 250, 141);
                         if imag_tags.backdrop().is_some() {
-                            self.set_image(id, "Backdrop", Some(0))
+                            return ("Backdrop", Some(0.to_string()), item.id());
                         } else if imag_tags.thumb().is_some() {
-                            self.set_image(id, "Thumb", None)
-                        } else {
-                            self.set_image(id, "Primary", None)
+                            return ("Thumb", None, item.id());
                         }
-                    } else {
-                        self.set_image(id, "Primary", None)
                     }
+                    _ => {}
                 }
-                _ => self.set_image(id, "Primary", None),
-            };
-            imp.overlay.set_child(Some(&image));
-        } else {
-            let image = if let Some(true) = imp.isresume.get() {
-                if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
-                    imp.overlay.set_size_request(250, 141);
-                    self.set_image(parent_thumb_item_id, "Thumb", None)
-                } else if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id() {
-                    imp.overlay.set_size_request(250, 141);
-                    self.set_image(parent_backdrop_item_id, "Backdrop", Some(0))
-                } else {
-                    imp.overlay.set_size_request(250, 141);
-                    self.set_image(id, "Backdrop", Some(0))
-                }
-            } else if let Some(img_tags) = item.primary_image_item_id() {
-                self.set_image(img_tags, "Primary", None)
+            }
+        }
+        if item.is_resume() {
+            if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
+                Self::set_overlay_size(&imp.overlay, 250, 141);
+                ("Thumb", None, parent_thumb_item_id)
+            } else if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id() {
+                Self::set_overlay_size(&imp.overlay, 250, 141);
+                ("Backdrop", Some(0.to_string()), parent_backdrop_item_id)
             } else {
-                self.set_image(id, "Primary", None)
-            };
-            imp.overlay.set_child(Some(&image));
+                Self::set_overlay_size(&imp.overlay, 250, 141);
+                ("Backdrop", Some(0.to_string()), item.id())
+            }
+        } else if let Some(img_tags) = item.primary_image_item_id() {
+            ("Primary", None, img_tags)
+        } else {
+            ("Primary", None, item.id())
         }
     }
 
-    pub fn set_image(&self, id: String, image_type: &str, tag: Option<u8>) -> gtk::Revealer {
-        let image = gtk::Picture::new();
-        image.set_halign(gtk::Align::Fill);
-        image.set_content_fit(gtk::ContentFit::Cover);
-        let revealer = gtk::Revealer::builder()
-            .transition_type(gtk::RevealerTransitionType::Crossfade)
-            .child(&image)
-            .reveal_child(false)
-            .vexpand(true)
-            .transition_duration(400)
-            .build();
-
-        let cache_path = emby_cache_path();
-        let path = format!("{}-{}-{}", id, image_type, tag.unwrap_or(0));
-
-        let spinner = self.imp().spinner.get();
-        let broken = self.imp().broken.get();
-
-        let id = id.to_string();
-
-        let pathbuf = cache_path.join(path);
-
-        if pathbuf.exists() {
-            if image.file().is_none() {
-                image.set_file(Some(&gtk::gio::File::for_path(pathbuf)));
-                revealer.set_reveal_child(true);
-                spinner.stop();
-            }
-            return revealer;
-        }
-
-        let image_type = image_type.to_string();
-
-        spawn(glib::clone!(
-            #[weak]
-            image,
-            #[weak]
-            revealer,
-            #[weak]
-            spinner,
-            async move {
-                spawn_tokio(async move {
-                    let mut retries = 0;
-                    while retries < 3 {
-                        match EMBY_CLIENT.get_image(&id, &image_type, tag).await {
-                            Ok(_) => {
-                                break;
-                            }
-                            Err(e) => {
-                                warn!("Failed to get image: {}, retrying...", e);
-                                retries += 1;
-                            }
-                        }
-                    }
-                })
-                .await;
-
-                debug!("Setting image: {}", &pathbuf.display());
-
-                spinner.stop();
-
-                if !pathbuf.exists() {
-                    broken.set_visible(true);
-                }
-
-                let file = gtk::gio::File::for_path(pathbuf);
-
-                image.set_file(Some(&file));
-                revealer.set_reveal_child(true);
-            }
-        ));
-
-        revealer
+    pub fn set_picture(&self) {
+        let imp = self.imp();
+        let item = self.item();
+        let (image_type, tag, id) = self.get_image_type_and_tag(&item);
+        let picture_loader = PictureLoader::new(&id, image_type, tag);
+        imp.overlay.set_child(Some(&picture_loader));
     }
 
     pub fn set_played(&self) {
         let imp = self.imp();
-        let item = imp.item.get().unwrap();
+        let item = self.item();
         if item.played() {
             let mark = gtk::Image::from_icon_name("object-select-symbolic");
             mark.set_halign(gtk::Align::End);
@@ -414,7 +365,7 @@ impl TuListItem {
 
     pub fn set_rating(&self) {
         let imp = self.imp();
-        let item = imp.item.get().unwrap();
+        let item = self.item();
         if let Some(rating) = item.rating() {
             let rating = gtk::Label::new(Some(&rating));
             rating.set_halign(gtk::Align::Start);
@@ -427,7 +378,7 @@ impl TuListItem {
 
     pub fn set_count(&self) {
         let imp = self.imp();
-        let item = imp.item.get().unwrap();
+        let item = self.item();
         let count = item.unplayed_item_count();
         if count > 0 {
             let mark = gtk::Label::new(Some(&count.to_string()));
@@ -440,8 +391,7 @@ impl TuListItem {
     }
 
     pub fn get_played_percentage(&self) -> f64 {
-        let imp = self.imp();
-        let item = imp.item.get().unwrap();
+        let item = self.item();
         item.played_percentage()
     }
 
@@ -449,8 +399,9 @@ impl TuListItem {
         let imp = self.imp();
 
         let progress = gtk::ProgressBar::builder()
-            .show_text(true)
             .fraction(0.)
+            .margin_end(3)
+            .margin_start(3)
             .valign(gtk::Align::End)
             .build();
 
@@ -516,7 +467,7 @@ impl TuListItem {
     }
 
     pub fn set_action(&self) -> Option<gio::SimpleActionGroup> {
-        let item_type = self.imp().itemtype.get().unwrap();
+        let item_type = self.item().item_type();
         match item_type.as_str() {
             "Movie" | "Series" | "Episode" => self.set_item_action(true, true, true),
             "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Actor" | "Person"
@@ -600,51 +551,47 @@ impl TuListItem {
                 ))
                 .build()]);
 
-            if is_editable {
-                if !self.isresume() {
-                    action_group.add_action_entries([gio::ActionEntry::builder("identify")
-                        .activate(glib::clone!(
-                            #[weak(rename_to = obj)]
-                            self,
-                            move |_, _, _| {
-                                spawn(glib::clone!(
-                                    #[weak]
-                                    obj,
-                                    async move {
-                                        let id = obj.item().id();
-                                        let type_ = obj.item().item_type();
-                                        let dialog =
-                                            crate::ui::widgets::identify_dialog::IdentifyDialog::new(&id, &type_);
-                                        crate::insert_editm_dialog!(obj, dialog);
-                                    }
-                                ))
-                            }
-                        ))
-                        .build()]);
-                }
+            if is_editable && !self.item().is_resume() {
+                action_group.add_action_entries([gio::ActionEntry::builder("identify")
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                async move {
+                                    let id = obj.item().id();
+                                    let type_ = obj.item().item_type();
+                                    let dialog =
+                                        crate::ui::widgets::identify_dialog::IdentifyDialog::new(
+                                            &id, &type_,
+                                        );
+                                    crate::insert_editm_dialog!(obj, dialog);
+                                }
+                            ))
+                        }
+                    ))
+                    .build()]);
 
-                if !self.isresume() {
-                    action_group.add_action_entries([gio::ActionEntry::builder("refresh")
-                        .activate(glib::clone!(
-                            #[weak(rename_to = obj)]
-                            self,
-                            move |_, _, _| {
-                                spawn(glib::clone!(
-                                    #[weak]
-                                    obj,
-                                    async move {
-                                        let id = obj.item().id();
-                                        let dialog =
-                                            crate::ui::widgets::refresh_dialog::RefreshDialog::new(
-                                                &id,
-                                            );
-                                        crate::insert_editm_dialog!(obj, dialog);
-                                    }
-                                ))
-                            }
-                        ))
-                        .build()]);
-                }
+                action_group.add_action_entries([gio::ActionEntry::builder("refresh")
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                async move {
+                                    let id = obj.item().id();
+                                    let dialog =
+                                        crate::ui::widgets::refresh_dialog::RefreshDialog::new(&id);
+                                    crate::insert_editm_dialog!(obj, dialog);
+                                }
+                            ))
+                        }
+                    ))
+                    .build()]);
             }
         }
 
@@ -718,7 +665,7 @@ impl TuListItem {
             }
         }
 
-        if let Some(true) = self.imp().isresume.get() {
+        if self.item().is_resume() {
             action_group.add_action_entries([gio::ActionEntry::builder("remove")
                 .activate(glib::clone!(
                     #[weak(rename_to = obj)]
@@ -773,7 +720,6 @@ impl TuListItem {
             Action::Played => self.item().set_played(true),
             Action::Unplayed => self.item().set_played(false),
             Action::Remove => {
-                self.imp().revealer.set_reveal_child(false);
                 spawn(glib::clone!(
                     #[weak(rename_to = obj)]
                     self,
@@ -811,14 +757,6 @@ impl TuListItem {
         self.gesture();
     }
 
-    pub fn reveals(&self) {
-        let imp = self.imp();
-        let revealer = imp.revealer.get();
-        spawn(async move {
-            revealer.set_reveal_child(true);
-        });
-    }
-
     pub async fn process_item(
         &self,
         action: fn(&String) -> Result<(), Box<dyn std::error::Error>>,
@@ -840,48 +778,21 @@ impl TuListItem {
 
     #[template_callback]
     fn on_view_pic_clicked(&self) {
-        match self
+        let picture = self
             .imp()
             .overlay
             .child()
             .unwrap()
-            .downcast::<gtk::Revealer>()
+            .downcast::<PictureLoader>()
             .unwrap()
-            .child()
-            .unwrap()
-            .downcast::<gtk::Picture>()
-        {
-            Ok(picture) => {
-                let window = self
-                    .ancestor(Window::static_type())
-                    .and_downcast::<Window>()
-                    .unwrap();
-                window.reveal_image(&picture);
-                window.media_viewer_show_paintable(picture.paintable());
-            }
-            Err(_) => {
-                toast!(self, gettext("Error loading image"));
-            }
-        }
+            .imp()
+            .picture
+            .get();
+        let window = self
+            .ancestor(Window::static_type())
+            .and_downcast::<Window>()
+            .unwrap();
+        window.reveal_image(&picture);
+        window.media_viewer_show_paintable(picture.paintable());
     }
-}
-
-pub fn tu_list_poster(
-    latest: &SimpleListItem,
-    list_item: &gtk::ListItem,
-    is_resume: bool,
-    poster: &str,
-) {
-    let tu_item = TuItem::from_simple(latest, Some(poster));
-    match latest.latest_type.as_str() {
-        "Movie" | "Series" => {
-            set_list_child(tu_item, list_item, &latest.latest_type, is_resume);
-        }
-        _ => {}
-    }
-}
-
-fn set_list_child(tu_item: TuItem, list_item: &gtk::ListItem, latest_type: &str, is_resume: bool) {
-    let list_child = TuListItem::new(tu_item, latest_type, is_resume);
-    list_item.set_child(Some(&list_child));
 }

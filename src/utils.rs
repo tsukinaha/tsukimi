@@ -149,7 +149,7 @@ where
             let data: T = serde_json::from_str(&data).expect("JSON was not well-formatted");
             Ok(Some(data))
         } else {
-            return Ok(None);
+            Ok(None)
         }
     } else {
         let v = spawn_tokio(future).await?;

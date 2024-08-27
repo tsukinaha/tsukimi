@@ -65,6 +65,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
 }
 
+impl Default for ServerPanel {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[template_callbacks]
 impl ServerPanel {
     pub fn new() -> Self {

@@ -34,13 +34,12 @@
                     </attributes>
                     <style>
                       <class name="title-4" />
-                      <class name="dim-label" />
                     </style>
                   </object>
                 </child>
                 <child>
                   <object class="GtkButton" id="morebutton">
-                    <property name="visible">False</property>
+                    <property name="visible" bind-source="HortuScrolled" bind-property="moreview" bind-flags="sync-create"/>
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <property name="margin-end">12</property>
@@ -60,6 +59,7 @@
                   <object class="GtkScrolledWindow" id="scrolled">
                     <property name="overlay-scrolling">true</property>
                     <property name="vscrollbar-policy">never</property>
+                    <property name="hscrollbar-policy">external</property>
                     <property name="margin-bottom">3</property>
                     <child>
                       <object class="GtkListView" id="list">

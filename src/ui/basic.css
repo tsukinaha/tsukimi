@@ -1,5 +1,5 @@
-.checkwatched {
-    background: rgba(0, 0, 0, 0.1);
+.sbackground {
+    background: rgba(0, 0, 0, 0.15);
 }
 
 child {
@@ -63,7 +63,7 @@ clapper-gtk-video>overlay>picture {
 	border-radius:0px;
 }
 
-overlay {
+.boxshadow{
 	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 	border-radius: 10px;
 }
@@ -168,6 +168,10 @@ scrolledwindow>viewport>box>box>box {
 
 placessidebar {
     background-color: rgba(0, 0, 0, 0);
+}
+
+.card {
+    box-shadow: none;
 }
 
 .sidebar-pane {

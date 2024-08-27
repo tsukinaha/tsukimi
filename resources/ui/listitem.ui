@@ -2,15 +2,14 @@
 <interface>
   <template parent="AdwBin" class="TuListItem">
     <child>
-      <object class="GtkRevealer" id="revealer">
-        <property name="transition-type">crossfade</property>
-        <property name="reveal-child">False</property>
-        <child>
+
           <object class="GtkBox">
             <property name="orientation">vertical</property>
             <property name="spacing">8</property>
+            <property name="valign">end</property>
             <child>
               <object class="GtkOverlay" id="overlay">
+                <property name="valign">fill</property>
                 <property name="width-request">141</property>
                 <property name="height-request">141</property>
                 <property name="halign">center</property>
@@ -19,39 +18,11 @@
                     <property name="halign">start</property>
                     <property name="valign">start</property>
                     <property name="icon-name">view-fullscreen-symbolic</property>
-                    <signal name="clicked" handler="on_view_pic_clicked" swapped="yes"/>
+                    <signal name="clicked" handler="on_view_pic_clicked" swapped="yes" />
                     <style>
-                      <class name="flat"/>
-                      <class name="circular"/>
-                      <class name="accent"/>
-                    </style>
-                  </object>
-                </child>
-                <child type="overlay">
-                  <object class="GtkSpinner" id="spinner">
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="spinning">True</property>
-                  </object>
-                </child>
-                <child type="overlay">
-                  <object class="GtkBox" id="broken">
-                  <property name="hexpand">True</property>
-                  <property name="visible">False</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="halign">center</property>
-                        <property name="hexpand">True</property>
-                        <property name="valign">center</property>
-                        <property name="icon-name">image-missing-symbolic</property>
-                        <property name="icon-size">GTK_ICON_SIZE_LARGE</property>
-                        <style>
-                          <class name="accent"/>
-                        </style>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="card"/>
+                      <class name="flat" />
+                      <class name="circular" />
+                      <class name="accent" />
                     </style>
                   </object>
                 </child>
@@ -82,8 +53,6 @@
               </object>
             </child>
           </object>
-        </child>
-      </object>
     </child>
   </template>
 </interface>

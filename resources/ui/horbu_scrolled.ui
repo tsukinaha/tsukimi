@@ -23,7 +23,6 @@
                 </attributes>
                 <style>
                   <class name="title-4"/>
-                  <class name="dim-label"/>
                 </style>
               </object>
             </child>

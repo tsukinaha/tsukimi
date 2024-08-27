@@ -29,7 +29,7 @@
                               <object class="GtkBox" id="actorpicbox">
                                 <property name="orientation">vertical</property>
                                 <property name="spacing">6</property>
-                                <property name="margin-start">6</property>
+                                <property name="margin-start">12</property>
                                 <property name="margin-top">12</property>
                                 <property name="halign">fill</property>
                                 <property name="valign">start</property>

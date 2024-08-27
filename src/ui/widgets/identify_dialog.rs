@@ -199,8 +199,8 @@ impl IdentifyDialog {
 
         let searchinfo = SearchInfo {
             name: Some(title.to_string()),
-            year: year,
-            provider_ids: provider_ids,
+            year,
+            provider_ids,
         };
 
         let remote_search_info = RemoteSearchInfo {

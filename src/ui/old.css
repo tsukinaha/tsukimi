@@ -1,5 +1,5 @@
-.checkwatched {
-    background: rgba(0, 0, 0, 0.1);
+.sbackground {
+    background: rgba(0, 0, 0, 0.15);
 }
 
 child {
@@ -35,6 +35,10 @@ child {
     border-radius: 5px;
 }
 
+.card {
+    box-shadow: none;
+}
+
 .coverimage {
     border-radius: 10px;
 }
@@ -63,7 +67,7 @@ clapper-gtk-video>overlay>picture {
 	border-radius:0px;
 }
 
-overlay {
+.boxshadow{
 	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 	border-radius: 10px;
 }

@@ -81,6 +81,7 @@ mod imp {
         pub searchpage: TemplateChild<adw::Bin>,
 
         pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
+        pub progress_bar_fade_animation: OnceCell<adw::TimedAnimation>,
     }
 
     // The central trait for subclassing a GObject
@@ -221,6 +222,8 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+pub const PROGRESSBAR_FADE_ANIMATION_DURATION: u32 = 500;
+
 #[template_callbacks]
 impl Window {
     pub fn homepage(&self) {
@@ -333,6 +336,12 @@ impl Window {
         self.account_setup();
         self.remove_all();
         self.homepage();
+    }
+
+    pub fn hard_set_fraction(&self, to_value: f64) {
+        let progressbar = &self.imp().progressbar;
+        self.progressbar_animation().pause();
+        progressbar.set_fraction(to_value);
     }
 
     pub fn set_server_rows(&self, account: Account) -> adw::ActionRow {
@@ -485,6 +494,11 @@ impl Window {
         imp.insidestack.visible_child_name().unwrap().to_string()
     }
 
+    pub fn set_progressbar_opacity(&self, opacity: f64) {
+        let imp = self.imp();
+        imp.progressbar.set_opacity(opacity);
+    }
+
     pub fn set_rootpic(&self, file: gio::File) {
         let imp = self.imp();
         let settings = Settings::new(APP_ID);
@@ -573,6 +587,13 @@ impl Window {
         self.progressbar_animation().play();
     }
 
+    pub fn set_progressbar_fade(&self) {
+        let progressbar = &self.imp().progressbar;
+        self.progressbar_fade_animation()
+            .set_value_from(progressbar.opacity());
+        self.progressbar_fade_animation().play();
+    }
+
     fn progressbar_animation(&self) -> &adw::TimedAnimation {
         self.imp().progress_bar_animation.get_or_init(|| {
             let target = adw::CallbackAnimationTarget::new(glib::clone!(
@@ -585,6 +606,23 @@ impl Window {
                 .duration(PROGRESSBAR_ANIMATION_DURATION)
                 .widget(&self.imp().progressbar.get())
                 .target(&target)
+                .build()
+        })
+    }
+
+    fn progressbar_fade_animation(&self) -> &adw::TimedAnimation {
+        self.imp().progress_bar_fade_animation.get_or_init(|| {
+            let target = adw::CallbackAnimationTarget::new(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |opacity| obj.imp().progressbar.set_opacity(opacity)
+            ));
+
+            adw::TimedAnimation::builder()
+                .duration(PROGRESSBAR_FADE_ANIMATION_DURATION)
+                .widget(&self.imp().progressbar.get())
+                .target(&target)
+                .value_to(0.)
                 .build()
         })
     }

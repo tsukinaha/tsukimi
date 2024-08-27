@@ -39,5 +39,8 @@
     <file compressed="true" preprocess="xml-stripblanks">refresh_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">identify_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">server_panel.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">picture_loader.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">tuview_scrolled.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">single_grid.ui</file>
   </gresource>
 </gresources>

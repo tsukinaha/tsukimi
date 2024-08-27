@@ -1,12 +1,11 @@
 use crate::client::client::EMBY_CLIENT;
+use crate::ui::models::emby_cache_path;
 use crate::utils::{spawn, spawn_tokio};
 use gtk::glib::{self, clone};
 use gtk::{prelude::*, Revealer};
 use tracing::{debug, warn};
 
-use super::models::emby_cache_path;
-
-pub fn set_image(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
+pub fn set_logo(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Fill);
     image.set_content_fit(gtk::ContentFit::Contain);

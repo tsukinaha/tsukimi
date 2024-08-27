@@ -25,8 +25,13 @@ pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
 static PROFILE: &str = include_str!("stream_profile.json");
 static LIVEPROFILE: &str = include_str!("test.json");
-static CLIENT_ID: Lazy<String> = Lazy::new(|| format!("Tsukimi"));
-static DEVICE_NAME: Lazy<String> = Lazy::new(|| hostname::get().unwrap_or("Unknown".into()).to_string_lossy().to_string());
+static CLIENT_ID: Lazy<String> = Lazy::new(|| "Tsukimi".to_string());
+static DEVICE_NAME: Lazy<String> = Lazy::new(|| {
+    hostname::get()
+        .unwrap_or("Unknown".into())
+        .to_string_lossy()
+        .to_string()
+});
 
 pub struct EmbyClient {
     pub url: Mutex<Option<Url>>,
@@ -110,7 +115,7 @@ impl EmbyClient {
     where
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
-        let request = self.prepare_request(Method::GET, path, &params);
+        let request = self.prepare_request(Method::GET, path, params);
         let res = self.send_request(request).await?;
 
         match res.error_for_status() {
@@ -188,7 +193,12 @@ impl EmbyClient {
         info!("Request URL: {}", url);
     }
 
-    pub async fn search(&self, query: &str, filter: &[&str]) -> Result<List, reqwest::Error> {
+    pub async fn search(
+        &self,
+        query: &str,
+        filter: &[&str],
+        start_index: &str,
+    ) -> Result<List, reqwest::Error> {
         let filter_str = filter.join(",");
         let path = format!("Users/{}/Items", self.user_id());
         let params = [
@@ -198,7 +208,7 @@ impl EmbyClient {
             ),
             ("IncludeItemTypes", &filter_str),
             ("IncludeSearchTypes", &filter_str),
-            ("StartIndex", "0"),
+            ("StartIndex", start_index),
             ("SortBy", "SortName"),
             ("SortOrder", "Ascending"),
             ("EnableImageTypes", "Primary,Backdrop,Thumb"),
@@ -683,7 +693,12 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_favourite(&self, types: &str) -> Result<List, reqwest::Error> {
+    pub async fn get_favourite(
+        &self,
+        types: &str,
+        start: u32,
+        limit: u32,
+    ) -> Result<List, reqwest::Error> {
         let user_id = {
             let user_id = self.user_id.lock().unwrap();
             user_id.to_owned()
@@ -704,7 +719,8 @@ impl EmbyClient {
             ("SortBy", "SortName"),
             ("SortOrder", "Ascending"),
             ("IncludeItemTypes", types),
-            ("Limit", "12"),
+            ("Limit", &limit.to_string()),
+            ("StartIndex", &start.to_string()),
             if types == "People" {
                 ("UserId", &user_id)
             } else {
@@ -849,13 +865,11 @@ impl EmbyClient {
     }
 
     pub async fn shut_down(&self) -> Result<Response, reqwest::Error> {
-        self.post("System/Shutdown", &[], json!({}))
-            .await
+        self.post("System/Shutdown", &[], json!({})).await
     }
 
     pub async fn restart(&self) -> Result<Response, reqwest::Error> {
-        self.post("System/Restart", &[], json!({}))
-            .await
+        self.post("System/Restart", &[], json!({})).await
     }
 
     pub async fn get_activity_log(
@@ -919,7 +933,7 @@ mod tests {
             }
         }
 
-        let result = EMBY_CLIENT.search("你的名字", &["Movie"]);
+        let result = EMBY_CLIENT.search("你的名字", &["Movie"], "0");
         match result.await {
             Ok(items) => {
                 for item in items.items {
