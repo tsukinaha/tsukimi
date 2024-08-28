@@ -29,3 +29,10 @@ impl UserFacingError for std::boxed::Box<dyn std::error::Error> {
         self.to_string()
     }
 }
+
+impl UserFacingError for libmpv2::Error {
+    fn to_user_facing(&self) -> String {
+        warn!("Error: {}", self);
+        self.to_string()
+    }
+}

@@ -216,12 +216,14 @@ impl TuListItem {
                 imp.listlabel.set_text(&item.name());
                 if let Some(status) = item.status() {
                     if status == "Continuing" {
-                        imp.label2.set_text(&format!("{} - {}", year, gettext("Present")));
+                        imp.label2
+                            .set_text(&format!("{} - {}", year, gettext("Present")));
                     } else if status == "Ended" {
                         if let Some(end_date) = item.end_date() {
                             let end_year = end_date.year();
                             if end_year != year.parse::<i32>().unwrap_or_default() {
-                                imp.label2.set_text(&format!("{} - {}", year, end_date.year()));
+                                imp.label2
+                                    .set_text(&format!("{} - {}", year, end_date.year()));
                             } else {
                                 imp.label2.set_text(&format!("{}", end_year));
                             }

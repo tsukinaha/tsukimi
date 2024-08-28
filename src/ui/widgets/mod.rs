@@ -36,4 +36,5 @@ pub mod star_toggle;
 pub mod tu_list_item;
 pub mod tuview_scrolled;
 pub mod utils;
+pub mod video_scale;
 pub mod window;
