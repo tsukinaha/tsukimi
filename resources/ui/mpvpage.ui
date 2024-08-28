@@ -25,10 +25,8 @@
                 <property name="valign">center</property>
                 <property name="halign">center</property>
                 <property name="orientation">vertical</property>
-                <property name="margin-top">10</property>
-                <property name="margin-bottom">10</property>
-                <property name="margin-start">10</property>
-                <property name="margin-end">10</property>
+                <property name="height-request">200</property>
+                <property name="width-request">200</property>
                 <property name="spacing">20</property>
                 <child>
                   <object class="GtkSpinner" id="spinner">
@@ -36,6 +34,7 @@
                     <property name="valign">center</property>
                     <property name="height-request">64</property>
                     <property name="width-request">64</property>
+                    <property name="margin-top">30</property>
                     <style>
                       <class name="accent" />
                     </style>
@@ -62,21 +61,13 @@
                 <property name="reveal-child">false</property>
                 <property name="halign">fill</property>
                 <property name="valign">end</property>
-                <property name="margin-bottom">10</property>
                 <child>
                   <object class="AdwClamp">
+                    <property name="margin-bottom">10</property>
                     <property name="maximum-size">1000</property>
                     <child>
                       <object class="GtkBox">
                         <property name="orientation">horizontal</property>
-                        <child>
-                          <object class="GtkButton">
-                            <property name="icon-name">go-previous-symbolic</property>
-                            <style>
-                              <class name="flat" />
-                            </style>
-                          </object>
-                        </child>
                         <child>
                           <object class="GtkButton">
                             <property name="icon-name">go-next-symbolic</property>
@@ -134,7 +125,8 @@
                             <property name="valign">center</property>
                             <property name="hexpand">True</property>
                             <property name="draw_value">False</property>
-                            <signal name = "value-changed" handler="on_progress_value_changed" swapped="yes"/>
+                            <signal name="value-changed" handler="on_progress_value_changed"
+                              swapped="yes" />
                             <style>
                               <class name="accent" />
                             </style>
@@ -152,16 +144,14 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton">
-                            <property name="icon-name">view-fullscreen-symbolic</property>
-                            <style>
-                              <class name="flat" />
-                            </style>
+                          <object class="GtkMenuButton" id="menu_button">
+                            <property name="popover">menu_popover</property>
+                            <property name="icon-name">emblem-system-symbolic</property>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkScaleButton">
-                            <property name="icons">audio-volume-medium</property>
+                          <object class="GtkButton">
+                            <property name="icon-name">view-fullscreen-symbolic</property>
                             <style>
                               <class name="flat" />
                             </style>
@@ -182,4 +172,87 @@
       </object>
     </child>
   </template>
+  <object class="GtkPopover" id="menu_popover">
+    <property name="height-request">200</property>
+    <property name="width-request">400</property>
+    <property name="has_arrow">False</property>
+    <child>
+      <object class="GtkListBox">
+        <property name="selection-mode">none</property>
+        <child>
+          <object class="AdwSwitchRow">
+            <property name="title" translatable="yes">Autoplay</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Playback speed</property>
+            <child type="suffix">
+              <object class="GtkSpinButton" id="speed_scale">
+                <property name="width-request">150</property>
+                <property name="valign">center</property>
+                <property name="adjustment">playback_speed_adj</property>
+                <property name="digits">2</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Volume</property>
+            <child type="suffix">
+              <object class="GtkSpinButton" id="volume_scale">
+                <property name="width-request">150</property>
+                <property name="valign">center</property>
+                <property name="adjustment">volume_adj</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Audio</property>
+            <child type="suffix">
+              <object class="GtkDropDown" id="audio_dropdown">
+                <property name="width-request">150</property>
+                <property name="valign">center</property>
+
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Subtitle</property>
+            <child type="suffix">
+              <object class="GtkDropDown" id="sub_dropdown">
+                <property name="width-request">150</property>
+                <property name="valign">center</property>
+
+              </object>
+            </child>
+          </object>
+        </child>
+        <style>
+          <class name="osd" />
+          <class name="boxed-list-separate" />
+          <class name="logo" />
+        </style>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAdjustment" id="playback_speed_adj">
+    <property name="lower">0.10</property>
+    <property name="upper">5.00</property>
+    <property name="value">1.00</property>
+    <property name="step_increment">0.05</property>
+    <property name="page_increment">0.2</property>
+  </object>
+  <object class="GtkAdjustment" id="volume_adj">
+    <property name="lower">0</property>
+    <property name="upper">100</property>
+    <property name="value">75</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">4</property>
+  </object>
 </interface>

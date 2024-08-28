@@ -77,7 +77,6 @@ mod imp {
 
         fn on_click_released(&self) {
             let obj = self.obj();
-            println!("{}", obj.value());
             self.on_seek_finished(obj.value());
             obj.update_timeout();
         }

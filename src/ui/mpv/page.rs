@@ -50,6 +50,10 @@ mod imp {
         pub loading_box: TemplateChild<gtk::Box>,
         #[template_child]
         pub network_speed_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub menu_button: TemplateChild<gtk::MenuButton>,
+        #[template_child]
+        pub menu_popover: TemplateChild<gtk::Popover>,
         pub timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
         pub x: RefCell<f64>,
@@ -83,6 +87,9 @@ mod imp {
     impl ObjectImpl for MPVPage {
         fn constructed(&self) {
             self.parent_constructed();
+
+            self.menu_popover.set_position(gtk::PositionType::Top);
+            self.menu_popover.set_offset(0, -20);
 
             self.video_scale.set_player(Some(&self.video.get()));
 
@@ -129,7 +136,12 @@ impl MPVPage {
         back: Option<Back>,
         percentage: f64,
     ) {
-        self.imp().video.play(url, suburi, name, back, percentage);
+        let imp = self.imp();
+        imp.video_scale.update_timeout();
+        imp.spinner.start();
+        imp.loading_box.set_visible(true);
+        imp.network_speed_label.set_text("Initializing...");
+        imp.video.play(url, suburi, name, back, percentage);
     }
 
     #[template_callback]
@@ -321,9 +333,12 @@ impl MPVPage {
             let widget = self.pick(x, y, gtk::PickFlags::DEFAULT);
             if let Some(widget) = widget {
                 if !widget.is::<MPVGLArea>() {
-                    return false;
+                    return false
                 }
             }
+        }
+        if self.imp().menu_button.is_active() {
+            return false
         }
         true
     }
