@@ -1,17 +1,7 @@
-use glib::Object;
 use gtk::gdk::GLContext;
-use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
 use libmpv2::{GetData, SetData};
 
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
-use crate::client::structs::Back;
-use crate::toast;
-use crate::ui::models::SETTINGS;
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
-use std::{cell::RefCell, sync::Mutex};
+use std::cell::RefCell;
 
 use libmpv2::{
     render::{OpenGLInitParams, RenderContext, RenderParam, RenderParamApiType},
@@ -164,10 +154,10 @@ impl TsukimiMPV {
         mpv.command(cmd, args).unwrap();
     }
 
-    pub fn process_events(&self) -> glib::ControlFlow {
+    pub fn process_events(&self) {
         let mut bind = self.mpv.borrow_mut();
         let Some(mpv) = bind.as_mut() else {
-            return glib::ControlFlow::Break;
+            return;
         };
         'event: loop {
             match mpv.event_context_mut().wait_event(0.0) {
@@ -178,7 +168,6 @@ impl TsukimiMPV {
                 None => break 'event,
             }
         }
-        glib::ControlFlow::Break
     }
 
     fn handle_event(&self, event: &libmpv2::events::Event) {

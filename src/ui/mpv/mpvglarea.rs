@@ -4,22 +4,12 @@ use gtk::{gio, glib};
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
-use crate::ui::models::SETTINGS;
 
 mod imp {
-
-    use async_channel::{Receiver, Sender};
     use gtk::gdk::GLContext;
     use gtk::glib;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
-    use libc::c_void;
-    use libmpv2::{
-        render::{OpenGLInitParams, RenderContext, RenderParam, RenderParamApiType},
-        Mpv,
-    };
-    use once_cell::sync::Lazy;
-    use std::{cell::RefCell, sync::Mutex};
 
     use crate::ui::mpv::tsukimi_mpv::TsukimiMPV;
     use crate::ui::mpv::tsukimi_mpv::RENDER_UPDATE;
