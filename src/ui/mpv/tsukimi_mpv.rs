@@ -1,5 +1,5 @@
 use gtk::gdk::GLContext;
-use libmpv2::{GetData, SetData};
+use libmpv2::{events::{EventContext, PropertyData}, GetData, SetData};
 
 use std::cell::RefCell;
 
@@ -59,6 +59,7 @@ impl Default for TsukimiMPV {
 use async_channel::{Receiver, Sender};
 use libc::c_void;
 use once_cell::sync::Lazy;
+use libmpv2::events::Event;
 
 fn get_proc_address(_ctx: &GLContext, name: &str) -> *mut c_void {
     epoxy::get_proc_addr(name) as *mut c_void
@@ -73,6 +74,17 @@ pub static RENDER_UPDATE: Lazy<RenderUpdate> = Lazy::new(|| {
     let (tx, rx) = async_channel::bounded::<bool>(1);
 
     RenderUpdate { tx, rx }
+});
+
+pub struct MPVDurationUpdate {
+    pub tx: Sender<f64>,
+    pub rx: Receiver<f64>,
+}
+
+pub static MPV_DURATION_UPDATE: Lazy<MPVDurationUpdate> = Lazy::new(|| {
+    let (tx, rx) = async_channel::bounded::<f64>(1);
+
+    MPVDurationUpdate { tx, rx }
 });
 
 impl TsukimiMPV {
@@ -99,11 +111,15 @@ impl TsukimiMPV {
     }
 
     pub fn set_position(&self, value: f64) {
+        self.set_property("time-pos", value);
+    }
+
+    pub fn set_percent_position(&self, value: f64) {
         self.set_property("percent-pos", value);
     }
 
     pub fn position(&self) -> f64 {
-        self.get_property("percent-pos").unwrap_or(0.0)
+        self.get_property("time-pos").unwrap_or(0.0)
     }
 
     pub fn paused(&self) -> bool {
@@ -159,10 +175,13 @@ impl TsukimiMPV {
         let Some(mpv) = bind.as_mut() else {
             return;
         };
+        let mut event_context = EventContext::new(mpv.ctx);
+        event_context.disable_deprecated_events().expect("failed to disable deprecated events.");
+        event_context.observe_property("duration", libmpv2::Format::Double, 0).unwrap();
         'event: loop {
-            match mpv.event_context_mut().wait_event(0.0) {
+            match event_context.wait_event(0.0) {
                 Some(Ok(event)) => {
-                    self.handle_event(&event);
+                    self.handle_event(event);
                 }
                 Some(Err(e)) => break 'event,
                 None => break 'event,
@@ -170,8 +189,21 @@ impl TsukimiMPV {
         }
     }
 
-    fn handle_event(&self, event: &libmpv2::events::Event) {
+    fn handle_event(&self, event: libmpv2::events::Event) {
         match event {
+            Event::PropertyChange { 
+                name,
+                change,
+                .. 
+            } => match name {
+                "duration" => {
+                    if let PropertyData::Double(dur) = change {
+                        println!("Duration: {}", dur);
+                        let _ = MPV_DURATION_UPDATE.tx.send_blocking(dur);
+                    }
+                }
+                _ => {}
+            }
             _ => {
                 println!("Event: {:?}", event);
             }

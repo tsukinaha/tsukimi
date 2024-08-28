@@ -1,6 +1,5 @@
-use std::borrow::Borrow;
-
 use crate::client::structs::Back;
+use crate::ui::widgets::song_widget::format_duration;
 use gettextrs::gettext;
 use glib::Object;
 use gtk::prelude::*;
@@ -8,6 +7,8 @@ use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
 use super::mpvglarea::MPVGLArea;
+use super::tsukimi_mpv::MPV_DURATION_UPDATE;
+use super::video_scale::VideoScale;
 static MIN_MOTION_TIME: i64 = 100000;
 
 mod imp {
@@ -21,7 +22,7 @@ mod imp {
 
     use crate::client::structs::Back;
     use crate::ui::mpv::mpvglarea::MPVGLArea;
-    use crate::ui::widgets::video_scale::VideoScale;
+    use crate::ui::mpv::video_scale::VideoScale;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -38,6 +39,10 @@ mod imp {
         pub play_pause_image: TemplateChild<gtk::Image>,
         #[template_child]
         pub video_scale: TemplateChild<VideoScale>,
+        #[template_child]
+        pub progress_time_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub duration_label: TemplateChild<gtk::Label>,
         pub timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
         pub x: RefCell<f64>,
@@ -73,6 +78,8 @@ mod imp {
             self.parent_constructed();
 
             self.video_scale.set_player(Some(&self.video.get()));
+
+            self.obj().listen_duration_changed();
         }
     }
 
@@ -116,6 +123,26 @@ impl MPVPage {
         percentage: f64,
     ) {
         self.imp().video.play(url, suburi, name, back, percentage);
+    }
+
+    #[template_callback]
+    fn on_progress_value_changed(&self, progress_scale: &VideoScale) {
+        let label = &self.imp().progress_time_label.get();
+        let position = progress_scale.value();
+        label.set_text(&format_duration(position as i64));
+    }
+
+    fn listen_duration_changed(&self) {
+        glib::spawn_future_local(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                while let Ok(value) = MPV_DURATION_UPDATE.rx.recv().await {
+                    obj.imp().video_scale.set_range(0.0, value as f64);
+                    obj.imp().duration_label.set_text(&format_duration(value as i64));
+                }
+            }
+        ));
     }
 
     #[template_callback]

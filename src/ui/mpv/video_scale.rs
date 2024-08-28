@@ -1,4 +1,6 @@
 use gtk::{glib, prelude::*, subclass::prelude::*};
+
+use super::tsukimi_mpv::MPV_DURATION_UPDATE;
 mod imp {
     use gtk::{glib, prelude::*, subclass::prelude::*};
     use std::cell::RefCell;
@@ -55,8 +57,6 @@ mod imp {
                     imp.on_click_released();
                 }
             ));
-
-            self.obj().duration_changed();
         }
     }
     impl WidgetImpl for VideoScale {}
@@ -78,7 +78,8 @@ mod imp {
 
         fn on_click_released(&self) {
             let obj = self.obj();
-            self.on_seek_finished(self.obj().value());
+            println!("{}", obj.value());
+            self.on_seek_finished(obj.value());
             obj.update_timeout();
         }
 
@@ -143,11 +144,5 @@ impl VideoScale {
         if let Some(player) = self.imp().player.upgrade() {
             player.set_position(position);
         }
-    }
-
-    fn duration_changed(&self) {
-        self.set_value(0.0);
-        self.set_range(0.0, 200.0);
-        self.set_increments(300.0, 600.0);
     }
 }
