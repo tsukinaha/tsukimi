@@ -1,6 +1,5 @@
 use gtk::{glib, prelude::*, subclass::prelude::*};
 
-use super::tsukimi_mpv::MPV_DURATION_UPDATE;
 mod imp {
     use gtk::{glib, prelude::*, subclass::prelude::*};
     use std::cell::RefCell;
@@ -114,8 +113,6 @@ impl VideoScale {
     }
 
     pub fn update_timeout(&self) {
-        let width = std::cmp::max(self.width(), 1);
-        let timeout_period = std::cmp::min(1000 * 200 / width, 200);
         if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
             glib::source::SourceId::remove(timeout);
         }
@@ -124,7 +121,7 @@ impl VideoScale {
             self,
             move || {
                 self.imp().timeout.replace(Some(glib::timeout_add_local(
-                    std::time::Duration::from_millis(timeout_period as u64),
+                    std::time::Duration::from_millis(250),
                     move || obj.update_position_callback(),
                 )));
             }

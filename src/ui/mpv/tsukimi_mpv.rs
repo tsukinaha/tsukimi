@@ -1,7 +1,16 @@
 use gtk::gdk::GLContext;
-use libmpv2::{events::{EventContext, PropertyData}, GetData, SetData};
+use libmpv2::{
+    events::{EventContext, PropertyData},
+    GetData, SetData,
+};
 
-use std::cell::RefCell;
+use std::{
+    cell::RefCell,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc,
+    },
+};
 
 use libmpv2::{
     render::{OpenGLInitParams, RenderContext, RenderParam, RenderParamApiType},
@@ -11,6 +20,7 @@ use libmpv2::{
 pub struct TsukimiMPV {
     pub mpv: RefCell<Option<Mpv>>,
     pub ctx: RefCell<Option<RenderContext>>,
+    pub event_thread_alive: Arc<AtomicBool>,
 }
 
 impl Default for TsukimiMPV {
@@ -39,8 +49,7 @@ impl Default for TsukimiMPV {
         gl::load_with(|name| epoxy::get_proc_addr(name) as *const _);
 
         let mpv = Mpv::with_initializer(|init| {
-            init.set_property("osc", true)?;
-            init.set_property("config", true)?;
+            init.set_property("config", false)?;
             init.set_property("input-vo-keyboard", true)?;
             init.set_property("input-default-bindings", true)?;
             init.set_property("user-agent", "Tsukimi")?;
@@ -52,14 +61,15 @@ impl Default for TsukimiMPV {
         Self {
             mpv: RefCell::new(Some(mpv)),
             ctx: RefCell::new(None),
+            event_thread_alive: Arc::new(AtomicBool::new(false)),
         }
     }
 }
 
 use async_channel::{Receiver, Sender};
 use libc::c_void;
-use once_cell::sync::Lazy;
 use libmpv2::events::Event;
+use once_cell::sync::Lazy;
 
 fn get_proc_address(_ctx: &GLContext, name: &str) -> *mut c_void {
     epoxy::get_proc_addr(name) as *mut c_void
@@ -76,6 +86,28 @@ pub static RENDER_UPDATE: Lazy<RenderUpdate> = Lazy::new(|| {
     RenderUpdate { tx, rx }
 });
 
+pub struct SeekingUpdate {
+    pub tx: Sender<bool>,
+    pub rx: Receiver<bool>,
+}
+
+pub static SEEKING_UPDATE: Lazy<SeekingUpdate> = Lazy::new(|| {
+    let (tx, rx) = async_channel::bounded::<bool>(1);
+
+    SeekingUpdate { tx, rx }
+});
+
+pub struct PauseUpdate {
+    pub tx: Sender<bool>,
+    pub rx: Receiver<bool>,
+}
+
+pub static PAUSE_UPDATE: Lazy<PauseUpdate> = Lazy::new(|| {
+    let (tx, rx) = async_channel::bounded::<bool>(1);
+
+    PauseUpdate { tx, rx }
+});
+
 pub struct MPVDurationUpdate {
     pub tx: Sender<f64>,
     pub rx: Receiver<f64>,
@@ -85,6 +117,39 @@ pub static MPV_DURATION_UPDATE: Lazy<MPVDurationUpdate> = Lazy::new(|| {
     let (tx, rx) = async_channel::bounded::<f64>(1);
 
     MPVDurationUpdate { tx, rx }
+});
+
+pub struct MPVEndFile {
+    pub tx: Sender<u32>,
+    pub rx: Receiver<u32>,
+}
+
+pub static MPV_END_FILE: Lazy<MPVEndFile> = Lazy::new(|| {
+    let (tx, rx) = async_channel::bounded::<u32>(1);
+
+    MPVEndFile { tx, rx }
+});
+
+pub struct MPVError {
+    pub tx: Sender<String>,
+    pub rx: Receiver<String>,
+}
+
+pub static MPV_ERROR: Lazy<MPVError> = Lazy::new(|| {
+    let (tx, rx) = async_channel::bounded::<String>(1);
+
+    MPVError { tx, rx }
+});
+
+pub struct CacheSpeedUpdate {
+    pub tx: Sender<i64>,
+    pub rx: Receiver<i64>,
+}
+
+pub static CACHE_SPEED_UPDATE: Lazy<CacheSpeedUpdate> = Lazy::new(|| {
+    let (tx, rx) = async_channel::bounded::<i64>(1);
+
+    CacheSpeedUpdate { tx, rx }
 });
 
 impl TsukimiMPV {
@@ -142,6 +207,10 @@ impl TsukimiMPV {
         self.set_property("start", format!("{}%", percentage as u32));
     }
 
+    pub fn stop(&self) {
+        self.command("stop", &[]);
+    }
+
     fn set_property<V>(&self, property: &str, value: V)
     where
         V: SetData,
@@ -176,38 +245,62 @@ impl TsukimiMPV {
             return;
         };
         let mut event_context = EventContext::new(mpv.ctx);
-        event_context.disable_deprecated_events().expect("failed to disable deprecated events.");
-        event_context.observe_property("duration", libmpv2::Format::Double, 0).unwrap();
-        'event: loop {
-            match event_context.wait_event(0.0) {
-                Some(Ok(event)) => {
-                    self.handle_event(event);
+        event_context
+            .disable_deprecated_events()
+            .expect("failed to disable deprecated events.");
+        event_context
+            .observe_property("duration", libmpv2::Format::Double, 0)
+            .unwrap();
+        event_context
+            .observe_property("pause", libmpv2::Format::Flag, 1)
+            .unwrap();
+        event_context
+            .observe_property("cache-speed", libmpv2::Format::Int64, 2)
+            .unwrap();
+        let event_thread_alive = Arc::clone(&self.event_thread_alive);
+        std::thread::Builder::new()
+            .name("mpv event loop".into())
+            .spawn(move || {
+                while event_thread_alive.load(Ordering::Relaxed) {
+                    match event_context.wait_event(0.5) {
+                        Some(Ok(event)) => match event {
+                            Event::PropertyChange { name, change, .. } => match name {
+                                "duration" => {
+                                    if let PropertyData::Double(dur) = change {
+                                        let _ = MPV_DURATION_UPDATE.tx.send_blocking(dur);
+                                    }
+                                }
+                                "pause" => {
+                                    if let PropertyData::Flag(pause) = change {
+                                        let _ = PAUSE_UPDATE.tx.send_blocking(pause);
+                                    }
+                                }
+                                "cache-speed" => {
+                                    if let PropertyData::Int64(speed) = change {
+                                        let _ = CACHE_SPEED_UPDATE.tx.send_blocking(speed);
+                                    }
+                                }
+                                _ => {}
+                            },
+                            Event::Seek { .. } => {
+                                let _ = SEEKING_UPDATE.tx.send_blocking(true);
+                            }
+                            Event::PlaybackRestart { .. } => {
+                                let _ = SEEKING_UPDATE.tx.send_blocking(false);
+                            }
+                            Event::EndFile(r) => {
+                                let _ = MPV_END_FILE.tx.send_blocking(r);
+                            }
+                            _ => {}
+                        },
+                        Some(Err(e)) => {
+                            let _ = MPV_ERROR.tx.send_blocking(format!("{}", e));
+                        }
+                        None => {}
+                    };
                 }
-                Some(Err(e)) => break 'event,
-                None => break 'event,
-            }
-        }
-    }
-
-    fn handle_event(&self, event: libmpv2::events::Event) {
-        match event {
-            Event::PropertyChange { 
-                name,
-                change,
-                .. 
-            } => match name {
-                "duration" => {
-                    if let PropertyData::Double(dur) = change {
-                        println!("Duration: {}", dur);
-                        let _ = MPV_DURATION_UPDATE.tx.send_blocking(dur);
-                    }
-                }
-                _ => {}
-            }
-            _ => {
-                println!("Event: {:?}", event);
-            }
-        }
+            })
+            .expect("Failed to spawn mpv event loop");
     }
 }
 

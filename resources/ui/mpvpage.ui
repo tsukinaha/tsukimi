@@ -21,8 +21,43 @@
               </object>
             </child>
             <child type="overlay">
+              <object class="GtkBox" id="loading_box">
+                <property name="valign">center</property>
+                <property name="halign">center</property>
+                <property name="orientation">vertical</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="spacing">20</property>
+                <child>
+                  <object class="GtkSpinner" id="spinner">
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="height-request">64</property>
+                    <property name="width-request">64</property>
+                    <style>
+                      <class name="accent" />
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="network_speed_label">
+                    <property name="halign">center</property>
+                    <style>
+                      <class name="accent" />
+                    </style>
+                  </object>
+                </child>
+                <style>
+                  <class name="osd" />
+                  <class name="toolbar" />
+                </style>
+              </object>
+            </child>
+            <child type="overlay">
               <object class="GtkRevealer" id="bottom_revealer">
-                <property name="transition-type">crossfade</property>
+                <property name="transition-type">slide-up</property>
                 <property name="transition-duration">500</property>
                 <property name="reveal-child">false</property>
                 <property name="halign">fill</property>
@@ -101,7 +136,7 @@
                             <property name="draw_value">False</property>
                             <signal name = "value-changed" handler="on_progress_value_changed" swapped="yes"/>
                             <style>
-                              <class name="smooth-scale" />
+                              <class name="accent" />
                             </style>
                           </object>
                         </child>
@@ -133,6 +168,7 @@
                           </object>
                         </child>
                         <style>
+                          <class name="osd" />
                           <class name="toolbar" />
                         </style>
                       </object>

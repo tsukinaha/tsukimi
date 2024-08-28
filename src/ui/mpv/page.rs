@@ -1,4 +1,5 @@
 use crate::client::structs::Back;
+use crate::toast;
 use crate::ui::widgets::song_widget::format_duration;
 use gettextrs::gettext;
 use glib::Object;
@@ -7,7 +8,7 @@ use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
 use super::mpvglarea::MPVGLArea;
-use super::tsukimi_mpv::MPV_DURATION_UPDATE;
+use super::tsukimi_mpv::{CACHE_SPEED_UPDATE, MPV_DURATION_UPDATE, MPV_END_FILE, MPV_ERROR, PAUSE_UPDATE, SEEKING_UPDATE};
 use super::video_scale::VideoScale;
 static MIN_MOTION_TIME: i64 = 100000;
 
@@ -43,6 +44,12 @@ mod imp {
         pub progress_time_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub duration_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub spinner: TemplateChild<gtk::Spinner>,
+        #[template_child]
+        pub loading_box: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub network_speed_label: TemplateChild<gtk::Label>,
         pub timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
         pub x: RefCell<f64>,
@@ -79,7 +86,7 @@ mod imp {
 
             self.video_scale.set_player(Some(&self.video.get()));
 
-            self.obj().listen_duration_changed();
+            self.obj().listen_events();
         }
     }
 
@@ -132,14 +139,79 @@ impl MPVPage {
         label.set_text(&format_duration(position as i64));
     }
 
-    fn listen_duration_changed(&self) {
+    fn listen_events(&self) {
         glib::spawn_future_local(glib::clone!(
             #[weak(rename_to = obj)]
             self,
             async move {
                 while let Ok(value) = MPV_DURATION_UPDATE.rx.recv().await {
                     obj.imp().video_scale.set_range(0.0, value as f64);
-                    obj.imp().duration_label.set_text(&format_duration(value as i64));
+                    obj.imp()
+                        .duration_label
+                        .set_text(&format_duration(value as i64));
+                    obj.imp().video_scale.update_timeout();
+                }
+            }
+        ));
+
+        glib::spawn_future_local(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                while let Ok(value) = SEEKING_UPDATE.rx.recv().await {
+                    let spinner = &obj.imp().spinner;
+                    let loading_box = &obj.imp().loading_box;
+                    if value {
+                        loading_box.set_visible(true);
+                        spinner.start();
+                    } else {
+                        loading_box.set_visible(false);
+                        spinner.stop();
+                    }
+                }
+            }
+        ));
+
+        glib::spawn_future_local(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                while let Ok(value) = MPV_END_FILE.rx.recv().await {
+                    if value == 2 {
+                        return;
+                    }
+                    obj.on_stop_clicked();
+                }
+            }
+        ));
+
+        glib::spawn_future_local(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                while let Ok(value) = MPV_ERROR.rx.recv().await {
+                    toast!(obj, value);
+                }
+            }
+        ));
+
+        glib::spawn_future_local(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                while let Ok(value) = PAUSE_UPDATE.rx.recv().await {
+                    obj.pause_icon_set(value);
+                }
+            }
+        ));
+
+        glib::spawn_future_local(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                while let Ok(value) = CACHE_SPEED_UPDATE.rx.recv().await {
+                    let label = &obj.imp().network_speed_label;
+                    label.set_text(&format!("{} KiB/s", value / 1024));
                 }
             }
         ));
@@ -267,25 +339,32 @@ impl MPVPage {
 
     #[template_callback]
     fn on_play_pause_clicked(&self) {
-        let play_pause_image = &self.imp().play_pause_image.get();
-
         let mpv_area = self.imp().video.get();
 
         let paused = mpv_area.imp().mpv.paused();
 
-        if paused {
-            play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
-            play_pause_image.set_tooltip_text(Some(&gettext("Pause")));
-        } else {
-            play_pause_image.set_icon_name(Some("media-playback-start-symbolic"));
-            play_pause_image.set_tooltip_text(Some(&gettext("Play")));
-        }
+        self.pause_icon_set(!paused);
 
         mpv_area.imp().mpv.pause(!paused);
     }
 
+    fn pause_icon_set(&self, paused: bool) {
+        let play_pause_image = &self.imp().play_pause_image.get();
+        if paused {
+            play_pause_image.set_icon_name(Some("media-playback-start-symbolic"));
+            play_pause_image.set_tooltip_text(Some(&gettext("Play")));
+        } else {
+            play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
+            play_pause_image.set_tooltip_text(Some(&gettext("Pause")));
+        }
+    }
+
     #[template_callback]
     fn on_stop_clicked(&self) {
+        self.imp().video_scale.remove_timeout();
+        let mpv = &self.imp().video.imp().mpv;
+        mpv.stop();
+        mpv.event_thread_alive.store(false, std::sync::atomic::Ordering::Relaxed);
         let root = self.root();
         let window = root
             .and_downcast_ref::<crate::ui::widgets::window::Window>()

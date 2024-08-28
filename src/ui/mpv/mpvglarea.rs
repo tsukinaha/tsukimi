@@ -111,6 +111,9 @@ impl MPVGLArea {
     ) {
         let mpv = &self.imp().mpv;
 
+        mpv.event_thread_alive.store(true, std::sync::atomic::Ordering::Relaxed);
+        mpv.process_events();
+
         let url = EMBY_CLIENT.get_streaming_url(url);
         mpv.load_video(&url);
 
@@ -120,10 +123,7 @@ impl MPVGLArea {
 
         mpv.set_start(percentage);
 
-        crossbeam::scope(|s| {
-            s.spawn(move |_| mpv.process_events());
-        })
-        .unwrap();
+        mpv.pause(false);
     }
 
     pub fn set_position(&self, value: f64) {
