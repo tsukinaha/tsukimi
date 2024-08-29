@@ -1,6 +1,6 @@
 [package]
 name = "tsukimi"
-version = "0.11.0"
+version = "0.12.0"
 edition = "2021"
 description = "A simple Emby Client with MPV written by GTK4-RS" 
 license = "GPL"
@@ -33,6 +33,8 @@ hostname = "0.4.0"
 epoxy = "0.1.0"
 gl = "0.14.0"
 libloading = "0.8.5"
+atomic-wait = "1.1.0"
+flume = "0.11.0"
 
 [build-dependencies]
 glib-build-tools = "0.20.0"

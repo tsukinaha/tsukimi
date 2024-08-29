@@ -1,13 +1,13 @@
 use gtk::gdk::GLContext;
 use libmpv2::{
-    events::{EventContext, PropertyData},
-    GetData, SetData,
+    events::{EventContext, PropertyData}, GetData, SetData
 };
+use tokio::time;
 
 use std::{
     cell::RefCell,
     sync::{
-        atomic::{AtomicBool, Ordering},
+        atomic::AtomicU32,
         Arc,
     },
 };
@@ -17,11 +17,19 @@ use libmpv2::{
     Mpv,
 };
 
+pub struct MpvTrack {
+    pub id: i64,
+    pub title: String,
+}
+
 pub struct TsukimiMPV {
     pub mpv: RefCell<Option<Mpv>>,
     pub ctx: RefCell<Option<RenderContext>>,
-    pub event_thread_alive: Arc<AtomicBool>,
+    pub event_thread_alive: Arc<AtomicU32>,
 }
+
+pub const PAUSED: u32 = 0;
+pub const ACTIVE: u32 = 1;
 
 impl Default for TsukimiMPV {
     fn default() -> Self {
@@ -61,12 +69,12 @@ impl Default for TsukimiMPV {
         Self {
             mpv: RefCell::new(Some(mpv)),
             ctx: RefCell::new(None),
-            event_thread_alive: Arc::new(AtomicBool::new(false)),
+            event_thread_alive: Arc::new(AtomicU32::new(PAUSED)),
         }
     }
 }
 
-use async_channel::{Receiver, Sender};
+use flume::{unbounded, Sender, Receiver};
 use libc::c_void;
 use libmpv2::events::Event;
 use once_cell::sync::Lazy;
@@ -81,75 +89,31 @@ pub struct RenderUpdate {
 }
 
 pub static RENDER_UPDATE: Lazy<RenderUpdate> = Lazy::new(|| {
-    let (tx, rx) = async_channel::bounded::<bool>(1);
+    let (tx, rx) = unbounded::<bool>();
 
     RenderUpdate { tx, rx }
 });
 
-pub struct SeekingUpdate {
-    pub tx: Sender<bool>,
-    pub rx: Receiver<bool>,
+pub struct MPVEventChannel {
+    pub tx: Sender<ListenEvent>,
+    pub rx: Receiver<ListenEvent>,
 }
 
-pub static SEEKING_UPDATE: Lazy<SeekingUpdate> = Lazy::new(|| {
-    let (tx, rx) = async_channel::bounded::<bool>(1);
-
-    SeekingUpdate { tx, rx }
-});
-
-pub struct PauseUpdate {
-    pub tx: Sender<bool>,
-    pub rx: Receiver<bool>,
+pub enum ListenEvent {
+    Seek,
+    PlaybackRestart,
+    Eof(u32),
+    StartFile,
+    Duration(f64),
+    Pause(bool),
+    CacheSpeed(i64),
+    Error(String),
 }
 
-pub static PAUSE_UPDATE: Lazy<PauseUpdate> = Lazy::new(|| {
-    let (tx, rx) = async_channel::bounded::<bool>(1);
+pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
+    let (tx, rx) = unbounded::<ListenEvent>();
 
-    PauseUpdate { tx, rx }
-});
-
-pub struct MPVDurationUpdate {
-    pub tx: Sender<f64>,
-    pub rx: Receiver<f64>,
-}
-
-pub static MPV_DURATION_UPDATE: Lazy<MPVDurationUpdate> = Lazy::new(|| {
-    let (tx, rx) = async_channel::bounded::<f64>(1);
-
-    MPVDurationUpdate { tx, rx }
-});
-
-pub struct MPVEndFile {
-    pub tx: Sender<u32>,
-    pub rx: Receiver<u32>,
-}
-
-pub static MPV_END_FILE: Lazy<MPVEndFile> = Lazy::new(|| {
-    let (tx, rx) = async_channel::bounded::<u32>(1);
-
-    MPVEndFile { tx, rx }
-});
-
-pub struct MPVError {
-    pub tx: Sender<String>,
-    pub rx: Receiver<String>,
-}
-
-pub static MPV_ERROR: Lazy<MPVError> = Lazy::new(|| {
-    let (tx, rx) = async_channel::bounded::<String>(1);
-
-    MPVError { tx, rx }
-});
-
-pub struct CacheSpeedUpdate {
-    pub tx: Sender<i64>,
-    pub rx: Receiver<i64>,
-}
-
-pub static CACHE_SPEED_UPDATE: Lazy<CacheSpeedUpdate> = Lazy::new(|| {
-    let (tx, rx) = async_channel::bounded::<i64>(1);
-
-    CacheSpeedUpdate { tx, rx }
+    MPVEventChannel { tx, rx }
 });
 
 impl TsukimiMPV {
@@ -169,7 +133,7 @@ impl TsukimiMPV {
         .expect("Failed creating render context");
 
         ctx.set_update_callback(|| {
-            let _ = RENDER_UPDATE.tx.send_blocking(true);
+            let _ = RENDER_UPDATE.tx.send(true);
         });
 
         self.ctx.replace(Some(ctx));
@@ -196,7 +160,7 @@ impl TsukimiMPV {
     }
 
     pub fn add_sub(&self, url: &str) {
-        self.command("loadfile", &[url, "append"]);
+        self.command("sub-add", &[url, "select"]);
     }
 
     pub fn load_video(&self, url: &str) {
@@ -209,6 +173,35 @@ impl TsukimiMPV {
 
     pub fn stop(&self) {
         self.command("stop", &[]);
+    }
+
+    pub fn display_stats_toggle(&self) {
+        self.command("script-binding", &["stats/display-stats-toggle"]);
+    }
+
+    pub fn get_audio_and_subtitle_tracks(&self) -> (Vec<MpvTrack>, Vec<MpvTrack>) {
+        let tracks = self.get_property("track-list/count").unwrap_or(0);
+        let mut audio_tracks = Vec::new();
+        let mut sub_tracks = Vec::new();
+        for i in 0..tracks {
+            let track_type = self.get_property(&format!("track-list/{}", i)).unwrap_or("Unknown".to_string());
+            if track_type == "audio" {
+                let audio_track_title = self.get_property(&format!("track-list/{}/title", i)).unwrap_or("Unknown".to_string());
+                let audio_track_id = self.get_property(&format!("track-list/{}/id", i)).unwrap_or(0);
+                audio_tracks.push(MpvTrack {
+                    id: audio_track_id,
+                    title: audio_track_title,
+                });
+            } else if track_type == "sub" {
+                let sub_track_title = self.get_property(&format!("track-list/{}/title", i)).unwrap_or("Unknown".to_string());
+                let sub_track_id = self.get_property(&format!("track-list/{}/id", i)).unwrap_or(0);
+                sub_tracks.push(MpvTrack {
+                    id: sub_track_id,
+                    title: sub_track_title,
+                });
+            }
+        }
+        (audio_tracks, sub_tracks)
     }
 
     fn set_property<V>(&self, property: &str, value: V)
@@ -257,47 +250,53 @@ impl TsukimiMPV {
         event_context
             .observe_property("cache-speed", libmpv2::Format::Int64, 2)
             .unwrap();
-        let event_thread_alive = Arc::clone(&self.event_thread_alive);
+        let event_thread_alive = self.event_thread_alive.clone();
         std::thread::Builder::new()
             .name("mpv event loop".into())
             .spawn(move || {
-                while event_thread_alive.load(Ordering::Relaxed) {
-                    match event_context.wait_event(0.5) {
+                loop {
+                    atomic_wait::wait(&event_thread_alive, PAUSED);
+                    match event_context.wait_event(1000.0) {
                         Some(Ok(event)) => match event {
                             Event::PropertyChange { name, change, .. } => match name {
                                 "duration" => {
                                     if let PropertyData::Double(dur) = change {
-                                        let _ = MPV_DURATION_UPDATE.tx.send_blocking(dur);
+                                        let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Duration(dur));
                                     }
                                 }
                                 "pause" => {
                                     if let PropertyData::Flag(pause) = change {
-                                        let _ = PAUSE_UPDATE.tx.send_blocking(pause);
+                                        let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Pause(pause));
                                     }
                                 }
                                 "cache-speed" => {
                                     if let PropertyData::Int64(speed) = change {
-                                        let _ = CACHE_SPEED_UPDATE.tx.send_blocking(speed);
+                                        let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::CacheSpeed(speed));
                                     }
                                 }
                                 _ => {}
                             },
                             Event::Seek { .. } => {
-                                let _ = SEEKING_UPDATE.tx.send_blocking(true);
+                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Seek);
                             }
                             Event::PlaybackRestart { .. } => {
-                                let _ = SEEKING_UPDATE.tx.send_blocking(false);
+                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::PlaybackRestart);
                             }
                             Event::EndFile(r) => {
-                                let _ = MPV_END_FILE.tx.send_blocking(r);
+                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Eof(r));
+                            }
+                            Event::StartFile => {
+                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile);
                             }
                             _ => {}
                         },
                         Some(Err(e)) => {
-                            let _ = MPV_ERROR.tx.send_blocking(format!("{}", e));
+                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Error(e.to_string()));
                         }
-                        None => {}
+                        None => {
+                        }
                     };
+                    std::thread::sleep(time::Duration::from_millis(50));
                 }
             })
             .expect("Failed to spawn mpv event loop");

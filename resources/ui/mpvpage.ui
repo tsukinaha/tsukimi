@@ -25,8 +25,8 @@
                 <property name="valign">center</property>
                 <property name="halign">center</property>
                 <property name="orientation">vertical</property>
-                <property name="height-request">200</property>
-                <property name="width-request">200</property>
+                <property name="height-request">160</property>
+                <property name="width-request">160</property>
                 <property name="spacing">20</property>
                 <child>
                   <object class="GtkSpinner" id="spinner">
@@ -57,7 +57,7 @@
             <child type="overlay">
               <object class="GtkRevealer" id="bottom_revealer">
                 <property name="transition-type">slide-up</property>
-                <property name="transition-duration">500</property>
+                <property name="transition-duration">200</property>
                 <property name="reveal-child">false</property>
                 <property name="halign">fill</property>
                 <property name="valign">end</property>
@@ -70,7 +70,7 @@
                         <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkButton">
-                            <property name="icon-name">go-next-symbolic</property>
+                            <property name="icon-name">media-skip-backward-symbolic</property>
                             <style>
                               <class name="flat" />
                             </style>
@@ -93,16 +93,8 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton" id="_stop_button">
-                            <property name="focusable">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="tooltip_text" translatable="yes">Stop and quit</property>
-                            <signal name="clicked" handler="on_stop_clicked" swapped="yes" />
-                            <child>
-                              <object class="GtkImage">
-                                <property name="icon_name">media-playback-stop-symbolic</property>
-                              </object>
-                            </child>
+                          <object class="GtkButton">
+                            <property name="icon-name">media-skip-forward-symbolic</property>
                             <style>
                               <class name="flat" />
                             </style>
@@ -167,6 +159,75 @@
                 </child>
               </object>
             </child>
+            <child type="overlay">
+              <object class="GtkRevealer" id="top_revealer">
+                <property name="transition-type">slide-down</property>
+                <property name="transition-duration">200</property>
+                <property name="reveal-child">false</property>
+                <property name="halign">fill</property>
+                <property name="valign">start</property>
+                <child>
+                  <object class="AdwClamp">
+                    <property name="margin-top">10</property>
+                    <property name="maximum-size">1000</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="icon-name">go-down-symbolic</property>
+                            <property name="focusable">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="tooltip_text" translatable="yes">Stop and quit</property>
+                            <signal name="clicked" handler="on_stop_clicked" swapped="yes" />
+                            <style>
+                              <class name="flat" />
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="icon-name">go-down-symbolic</property>
+                            <property name="focusable">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="tooltip_text" translatable="yes">test</property>
+                            <signal name="clicked" handler="on_test_clicked" swapped="yes" />
+                            <style>
+                              <class name="flat" />
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="title">
+                            <property name="hexpand">True</property>
+                            <property name="label" translatable="yes">Loading...</property>
+                            <attributes>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="icon-name">help-about-symbolic</property>
+                            <property name="focusable">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="tooltip_text" translatable="yes">Media info (MPV)</property>
+                            <signal name="clicked" handler="on_info_clicked" swapped="yes" />
+                            <style>
+                              <class name="flat" />
+                            </style>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="osd" />
+                          <class name="toolbar" />
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </property>
       </object>
@@ -210,27 +271,13 @@
           </object>
         </child>
         <child>
-          <object class="AdwActionRow">
+          <object class="AdwComboRow" id="audio_tracks_combo_row">
             <property name="title" translatable="yes">Audio</property>
-            <child type="suffix">
-              <object class="GtkDropDown" id="audio_dropdown">
-                <property name="width-request">150</property>
-                <property name="valign">center</property>
-
-              </object>
-            </child>
           </object>
         </child>
         <child>
-          <object class="AdwActionRow">
+          <object class="AdwComboRow" id="subtitle_tracks_combo_row">
             <property name="title" translatable="yes">Subtitle</property>
-            <child type="suffix">
-              <object class="GtkDropDown" id="sub_dropdown">
-                <property name="width-request">150</property>
-                <property name="valign">center</property>
-
-              </object>
-            </child>
           </object>
         </child>
         <style>

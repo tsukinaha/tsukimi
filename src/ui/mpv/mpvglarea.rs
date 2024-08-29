@@ -5,6 +5,8 @@ use gtk::{gio, glib};
 use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
 
+use super::tsukimi_mpv::{MpvTrack, ACTIVE};
+
 mod imp {
     use gtk::gdk::GLContext;
     use gtk::glib;
@@ -52,16 +54,15 @@ mod imp {
                 #[weak]
                 obj,
                 async move {
-                    while let Ok(true) = RENDER_UPDATE.rx.recv().await {
+                    while let Ok(true) = RENDER_UPDATE.rx.recv_async().await {
                         obj.queue_render();
                     }
                 }
             ));
+
+            self.mpv.process_events();
         }
 
-        fn unrealize(&self) {
-            self.parent_unrealize();
-        }
     }
 
     impl GLAreaImpl for MPVGLArea {
@@ -104,26 +105,30 @@ impl MPVGLArea {
     pub fn play(
         &self,
         url: &str,
-        suburi: Option<&str>,
         name: Option<&str>,
         back: Option<Back>,
         percentage: f64,
     ) {
         let mpv = &self.imp().mpv;
 
-        mpv.event_thread_alive.store(true, std::sync::atomic::Ordering::Relaxed);
-        mpv.process_events();
-
+        mpv.event_thread_alive.store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
+        atomic_wait::wake_all(&*mpv.event_thread_alive);
+        
         let url = EMBY_CLIENT.get_streaming_url(url);
         mpv.load_video(&url);
-
-        if let Some(suburi) = suburi {
-            mpv.add_sub(suburi);
-        }
-
+        mpv.pause(true);
+        
         mpv.set_start(percentage);
 
         mpv.pause(false);
+    }
+
+    pub fn add_sub(&self, url: &str) {
+        self.imp().mpv.add_sub(url)
+    }
+
+    pub fn get_audio_and_subtitle_tracks(&self) -> (Vec<MpvTrack>, Vec<MpvTrack>) {
+        self.imp().mpv.get_audio_and_subtitle_tracks()
     }
 
     pub fn set_position(&self, value: f64) {
@@ -132,6 +137,10 @@ impl MPVGLArea {
 
     pub fn position(&self) -> f64 {
         self.imp().mpv.position()
+    }
+
+    pub fn display_stats_toggle(&self) {
+        self.imp().mpv.display_stats_toggle()
     }
 
     pub fn paused(&self) -> bool {
