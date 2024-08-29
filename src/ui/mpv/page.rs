@@ -175,13 +175,6 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn on_test_clicked(&self) {
-        let imp = self.imp();
-        imp.video.imp().mpv.event_thread_alive.store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
-        atomic_wait::wake_all(&*imp.video.imp().mpv.event_thread_alive);
-    }
-
-    #[template_callback]
     fn on_info_clicked(&self) {
         let mpv = &self.imp().video;
         mpv.display_stats_toggle();

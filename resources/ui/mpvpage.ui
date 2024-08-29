@@ -186,18 +186,6 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton">
-                            <property name="icon-name">go-down-symbolic</property>
-                            <property name="focusable">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="tooltip_text" translatable="yes">test</property>
-                            <signal name="clicked" handler="on_test_clicked" swapped="yes" />
-                            <style>
-                              <class name="flat" />
-                            </style>
-                          </object>
-                        </child>
-                        <child>
                           <object class="GtkLabel" id="title">
                             <property name="hexpand">True</property>
                             <property name="label" translatable="yes">Loading...</property>
