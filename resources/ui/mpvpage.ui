@@ -4,15 +4,15 @@
     <property name="title" translatable="yes">Tsukimi</property>
     <child>
       <object class="AdwToolbarView">
+        <child>
+          <object class="GtkEventControllerMotion">
+            <signal name="motion" handler="on_motion" swapped="yes" />
+            <signal name="leave" handler="on_leave" swapped="yes" />
+            <signal name="enter" handler="on_enter" swapped="yes" />
+          </object>
+        </child>
         <property name="content">
           <object class="GtkOverlay">
-            <child>
-              <object class="GtkEventControllerMotion">
-                <signal name="motion" handler="on_motion" swapped="yes" />
-                <signal name="leave" handler="on_leave" swapped="yes" />
-                <signal name="enter" handler="on_enter" swapped="yes" />
-              </object>
-            </child>
             <child>
               <object class="MPVGLArea" id="video">
                 <property name="hexpand">true</property>
@@ -235,6 +235,7 @@
     <property name="height-request">200</property>
     <property name="width-request">400</property>
     <property name="has_arrow">False</property>
+    <property name="cascade-popdown">True</property>
     <child>
       <object class="GtkListBox">
         <property name="selection-mode">none</property>

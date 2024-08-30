@@ -188,6 +188,12 @@ impl MPVPage {
 
     fn vec_to_model(&self, vec: Vec<MpvTrack>) -> gtk::gio::ListStore {
         let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+        let dl = DropdownList {
+            line1: Some("None".to_string()),
+            line2: None,
+        };
+        let object = glib::BoxedAnyObject::new(dl);
+        store.append(&object);
         for item in vec {
             let dl = DropdownList {
                 line1: Some(item.title),
