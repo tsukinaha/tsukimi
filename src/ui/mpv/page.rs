@@ -1,7 +1,9 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
 use crate::toast;
+use crate::ui::provider::dropdown_factory::DropdownList;
 use crate::ui::widgets::song_widget::format_duration;
+use adw::prelude::*;
 use gettextrs::gettext;
 use glib::Object;
 use gtk::prelude::*;
@@ -9,7 +11,7 @@ use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
 use super::mpvglarea::MPVGLArea;
-use super::tsukimi_mpv::{ListenEvent, ACTIVE, MPV_EVENT_CHANNEL, PAUSED};
+use super::tsukimi_mpv::{ListenEvent, MpvTrack, ACTIVE, MPV_EVENT_CHANNEL, PAUSED};
 use super::video_scale::VideoScale;
 static MIN_MOTION_TIME: i64 = 100000;
 
@@ -17,6 +19,7 @@ mod imp {
 
     use std::cell::RefCell;
 
+    use adw::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
@@ -25,6 +28,7 @@ mod imp {
     use crate::client::structs::Back;
     use crate::ui::mpv::mpvglarea::MPVGLArea;
     use crate::ui::mpv::video_scale::VideoScale;
+    use crate::ui::provider::dropdown_factory::factory;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -63,6 +67,10 @@ mod imp {
         pub audio_tracks_combo_row: TemplateChild<adw::ComboRow>,
         #[template_child]
         pub subtitle_tracks_combo_row: TemplateChild<adw::ComboRow>,
+        #[template_child]
+        pub speed_spin: TemplateChild<gtk::SpinButton>,
+        #[template_child]
+        pub volume_spin: TemplateChild<gtk::SpinButton>,
         pub timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
         pub x: RefCell<f64>,
@@ -101,6 +109,15 @@ mod imp {
             self.menu_popover.set_offset(0, -20);
 
             self.video_scale.set_player(Some(&self.video.get()));
+
+            self.audio_tracks_combo_row
+                .set_factory(Some(&factory(true)));
+            self.subtitle_tracks_combo_row
+                .set_factory(Some(&factory(true)));
+            self.audio_tracks_combo_row
+                .set_list_factory(Some(&factory(false)));
+            self.subtitle_tracks_combo_row
+                .set_list_factory(Some(&factory(false)));
 
             self.obj().listen_events();
         }
@@ -146,25 +163,40 @@ impl MPVPage {
         percentage: f64,
     ) {
         let imp = self.imp();
-        
+
         imp.spinner.start();
         imp.loading_box.set_visible(true);
         imp.network_speed_label.set_text("Initializing...");
         if let Some(name) = name {
             imp.title.set_text(name);
         }
-        imp.suburl.replace(suburi.map(|suburi| EMBY_CLIENT.get_streaming_url(suburi)));
+        imp.suburl
+            .replace(suburi.map(|suburi| EMBY_CLIENT.get_streaming_url(suburi)));
         imp.video.play(url, name, back, percentage);
     }
 
-    fn set_audio_and_video_tracks_dropdown(&self) {
+    fn set_audio_and_video_tracks_dropdown(&self, count: i64) {
         let imp = self.imp();
-        let (audio_tracks, subtitle_tracks) = imp.video.get_audio_and_subtitle_tracks();
-
+        let (audio_tracks, subtitle_tracks) = imp.video.get_audio_and_subtitle_tracks(count);
+        let audio_tracks_store = self.vec_to_model(audio_tracks);
+        let subtitle_tracks_store = self.vec_to_model(subtitle_tracks);
+        imp.audio_tracks_combo_row
+            .set_model(Some(&audio_tracks_store));
+        imp.subtitle_tracks_combo_row
+            .set_model(Some(&subtitle_tracks_store));
     }
 
-    fn vec_to_model(&self, vec: Vec<String>)  {
-        
+    fn vec_to_model(&self, vec: Vec<MpvTrack>) -> gtk::gio::ListStore {
+        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
+        for item in vec {
+            let dl = DropdownList {
+                line1: Some(item.title),
+                line2: Some(item.lang),
+            };
+            let object = glib::BoxedAnyObject::new(dl);
+            store.append(&object);
+        }
+        store
     }
 
     #[template_callback]
@@ -211,20 +243,48 @@ impl MPVPage {
                         ListenEvent::StartFile => {
                             obj.on_start_file();
                         }
-                        
+                        ListenEvent::TrackListCount(value) => {
+                            obj.set_audio_and_video_tracks_dropdown(value);
+                        }
+                        ListenEvent::Volume(value) => {
+                            obj.volume_cb(value);
+                        }
+                        ListenEvent::Speed(value) => {
+                            obj.speed_cb(value);
+                        }
                     }
                 }
             }
         ));
     }
 
-    fn update_duration(&self,value: f64) {
+    fn update_duration(&self, value: f64) {
         let imp = self.imp();
         imp.video_scale.set_range(0.0, value as f64);
-        imp
-                    .duration_label
-                    .set_text(&format_duration(value as i64));
-                imp.video_scale.update_timeout();
+        imp.duration_label.set_text(&format_duration(value as i64));
+        imp.video_scale.update_timeout();
+    }
+
+    fn speed_cb(&self, value: f64) {
+        let imp = self.imp();
+        imp.speed_spin.set_value(value);
+    }
+
+    fn volume_cb(&self, value: i64) {
+        let imp = self.imp();
+        imp.volume_spin.set_value(value as f64);
+    }
+
+    #[template_callback]
+    fn on_speed_value_changed(&self, btn: &gtk::SpinButton) {
+        let imp = self.imp();
+        imp.video.set_speed(btn.value());
+    }
+
+    #[template_callback]
+    fn on_volume_value_changed(&self, btn: &gtk::SpinButton) {
+        let imp = self.imp();
+        imp.video.set_volume(btn.value() as i64);
     }
 
     fn on_start_file(&self) {
@@ -235,7 +295,7 @@ impl MPVPage {
         imp.video_scale.update_timeout();
     }
 
-    fn update_seeking(&self,seeking: bool) {
+    fn update_seeking(&self, seeking: bool) {
         let spinner = &self.imp().spinner;
         let loading_box = &self.imp().loading_box;
         if seeking {
@@ -247,22 +307,22 @@ impl MPVPage {
         }
     }
 
-    fn on_end_file(&self,value: u32) {
+    fn on_end_file(&self, value: u32) {
         if value == 2 {
             return;
         }
         self.on_stop_clicked();
     }
 
-    fn on_error(&self,value: &str) {
+    fn on_error(&self, value: &str) {
         toast!(self, value);
     }
 
-    fn on_pause_update(&self,value: bool) {
+    fn on_pause_update(&self, value: bool) {
         self.pause_icon_set(value);
     }
 
-    fn on_cache_speed_update(&self,value: i64) {
+    fn on_cache_speed_update(&self, value: i64) {
         let label = &self.imp().network_speed_label;
         label.set_text(&format!("{} KiB/s", value / 1024));
     }
@@ -369,12 +429,12 @@ impl MPVPage {
             let widget = self.pick(x, y, gtk::PickFlags::DEFAULT);
             if let Some(widget) = widget {
                 if !widget.is::<MPVGLArea>() {
-                    return false
+                    return false;
                 }
             }
         }
         if self.imp().menu_button.is_active() {
-            return false
+            return false;
         }
         true
     }
@@ -414,7 +474,8 @@ impl MPVPage {
         mpv.pause(true);
         mpv.stop();
         self.imp().loading_box.set_visible(true);
-        mpv.event_thread_alive.store(PAUSED, std::sync::atomic::Ordering::SeqCst);
+        mpv.event_thread_alive
+            .store(PAUSED, std::sync::atomic::Ordering::SeqCst);
         let root = self.root();
         let window = root
             .and_downcast_ref::<crate::ui::widgets::window::Window>()

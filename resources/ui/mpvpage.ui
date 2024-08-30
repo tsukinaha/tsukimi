@@ -34,7 +34,7 @@
                     <property name="valign">center</property>
                     <property name="height-request">64</property>
                     <property name="width-request">64</property>
-                    <property name="margin-top">30</property>
+                    <property name="margin-top">20</property>
                     <style>
                       <class name="accent" />
                     </style>
@@ -43,6 +43,7 @@
                 <child>
                   <object class="GtkLabel" id="network_speed_label">
                     <property name="halign">center</property>
+                    <property name="margin_bottom">20</property>
                     <style>
                       <class name="accent" />
                     </style>
@@ -195,6 +196,14 @@
                           </object>
                         </child>
                         <child>
+                          <object class="GtkLabel">
+                            <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create"/>
+                            <style>
+                              <class name="dim-label" />
+                            </style>
+                          </object>
+                        </child>
+                        <child>
                           <object class="GtkButton">
                             <property name="icon-name">help-about-symbolic</property>
                             <property name="focusable">True</property>
@@ -237,11 +246,12 @@
           <object class="AdwActionRow">
             <property name="title" translatable="yes">Playback speed</property>
             <child type="suffix">
-              <object class="GtkSpinButton" id="speed_scale">
+              <object class="GtkSpinButton" id="speed_spin">
                 <property name="width-request">150</property>
                 <property name="valign">center</property>
                 <property name="adjustment">playback_speed_adj</property>
                 <property name="digits">2</property>
+                <signal name="value-changed" handler="on_speed_value_changed" swapped="yes" />
               </object>
             </child>
           </object>
@@ -250,10 +260,11 @@
           <object class="AdwActionRow">
             <property name="title" translatable="yes">Volume</property>
             <child type="suffix">
-              <object class="GtkSpinButton" id="volume_scale">
+              <object class="GtkSpinButton" id="volume_spin">
                 <property name="width-request">150</property>
                 <property name="valign">center</property>
                 <property name="adjustment">volume_adj</property>
+                <signal name="value-changed" handler="on_volume_value_changed" swapped="yes" />
               </object>
             </child>
           </object>
@@ -285,7 +296,7 @@
   </object>
   <object class="GtkAdjustment" id="volume_adj">
     <property name="lower">0</property>
-    <property name="upper">100</property>
+    <property name="upper">150</property>
     <property name="value">75</property>
     <property name="step_increment">1</property>
     <property name="page_increment">4</property>

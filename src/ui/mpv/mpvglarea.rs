@@ -62,7 +62,6 @@ mod imp {
 
             self.mpv.process_events();
         }
-
     }
 
     impl GLAreaImpl for MPVGLArea {
@@ -102,22 +101,17 @@ impl MPVGLArea {
         Object::builder().build()
     }
 
-    pub fn play(
-        &self,
-        url: &str,
-        name: Option<&str>,
-        back: Option<Back>,
-        percentage: f64,
-    ) {
+    pub fn play(&self, url: &str, name: Option<&str>, back: Option<Back>, percentage: f64) {
         let mpv = &self.imp().mpv;
 
-        mpv.event_thread_alive.store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
+        mpv.event_thread_alive
+            .store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
         atomic_wait::wake_all(&*mpv.event_thread_alive);
-        
+
         let url = EMBY_CLIENT.get_streaming_url(url);
         mpv.load_video(&url);
         mpv.pause(true);
-        
+
         mpv.set_start(percentage);
 
         mpv.pause(false);
@@ -127,8 +121,8 @@ impl MPVGLArea {
         self.imp().mpv.add_sub(url)
     }
 
-    pub fn get_audio_and_subtitle_tracks(&self) -> (Vec<MpvTrack>, Vec<MpvTrack>) {
-        self.imp().mpv.get_audio_and_subtitle_tracks()
+    pub fn get_audio_and_subtitle_tracks(&self, count: i64) -> (Vec<MpvTrack>, Vec<MpvTrack>) {
+        self.imp().mpv.get_audio_and_subtitle_tracks(count)
     }
 
     pub fn set_position(&self, value: f64) {
@@ -137,6 +131,14 @@ impl MPVGLArea {
 
     pub fn position(&self) -> f64 {
         self.imp().mpv.position()
+    }
+
+    pub fn set_speed(&self, value: f64) {
+        self.imp().mpv.set_speed(value)
+    }
+
+    pub fn set_volume(&self, value: i64) {
+        self.imp().mpv.set_volume(value)
     }
 
     pub fn display_stats_toggle(&self) {

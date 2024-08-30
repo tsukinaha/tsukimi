@@ -1,15 +1,13 @@
 use gtk::gdk::GLContext;
 use libmpv2::{
-    events::{EventContext, PropertyData}, GetData, SetData
+    events::{EventContext, PropertyData},
+    GetData, SetData,
 };
 use tokio::time;
 
 use std::{
     cell::RefCell,
-    sync::{
-        atomic::AtomicU32,
-        Arc,
-    },
+    sync::{atomic::AtomicU32, Arc},
 };
 
 use libmpv2::{
@@ -17,9 +15,11 @@ use libmpv2::{
     Mpv,
 };
 
+#[derive(Debug)]
 pub struct MpvTrack {
     pub id: i64,
     pub title: String,
+    pub lang: String,
 }
 
 pub struct TsukimiMPV {
@@ -74,7 +74,7 @@ impl Default for TsukimiMPV {
     }
 }
 
-use flume::{unbounded, Sender, Receiver};
+use flume::{unbounded, Receiver, Sender};
 use libc::c_void;
 use libmpv2::events::Event;
 use once_cell::sync::Lazy;
@@ -108,6 +108,9 @@ pub enum ListenEvent {
     Pause(bool),
     CacheSpeed(i64),
     Error(String),
+    TrackListCount(i64),
+    Volume(i64),
+    Speed(f64),
 }
 
 pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
@@ -171,6 +174,14 @@ impl TsukimiMPV {
         self.set_property("start", format!("{}%", percentage as u32));
     }
 
+    pub fn set_volume(&self, volume: i64) {
+        self.set_property("volume", volume);
+    }
+
+    pub fn set_speed(&self, speed: f64) {
+        self.set_property("speed", speed);
+    }
+
     pub fn stop(&self) {
         self.command("stop", &[]);
     }
@@ -179,29 +190,33 @@ impl TsukimiMPV {
         self.command("script-binding", &["stats/display-stats-toggle"]);
     }
 
-    pub fn get_audio_and_subtitle_tracks(&self) -> (Vec<MpvTrack>, Vec<MpvTrack>) {
-        let tracks = self.get_property("track-list/count").unwrap_or(0);
+    pub fn get_audio_and_subtitle_tracks(&self, count: i64) -> (Vec<MpvTrack>, Vec<MpvTrack>) {
         let mut audio_tracks = Vec::new();
         let mut sub_tracks = Vec::new();
-        for i in 0..tracks {
-            let track_type = self.get_property(&format!("track-list/{}", i)).unwrap_or("Unknown".to_string());
+        for i in 0..count {
+            let track_type = self
+                .get_property(&format!("track-list/{}/type", i))
+                .unwrap_or("Unknown".to_string());
             if track_type == "audio" {
-                let audio_track_title = self.get_property(&format!("track-list/{}/title", i)).unwrap_or("Unknown".to_string());
-                let audio_track_id = self.get_property(&format!("track-list/{}/id", i)).unwrap_or(0);
-                audio_tracks.push(MpvTrack {
-                    id: audio_track_id,
-                    title: audio_track_title,
-                });
+                audio_tracks.push(self.get_track_info(i));
             } else if track_type == "sub" {
-                let sub_track_title = self.get_property(&format!("track-list/{}/title", i)).unwrap_or("Unknown".to_string());
-                let sub_track_id = self.get_property(&format!("track-list/{}/id", i)).unwrap_or(0);
-                sub_tracks.push(MpvTrack {
-                    id: sub_track_id,
-                    title: sub_track_title,
-                });
+                sub_tracks.push(self.get_track_info(i));
             }
         }
         (audio_tracks, sub_tracks)
+    }
+
+    fn get_track_info(&self, i: i64) -> MpvTrack {
+        let title = self
+            .get_property(&format!("track-list/{}/title", i))
+            .unwrap_or("Unknown".to_string());
+        let id = self
+            .get_property(&format!("track-list/{}/id", i))
+            .unwrap_or(0);
+        let lang = self
+            .get_property(&format!("track-list/{}/lang", i))
+            .unwrap_or("Unknown".to_string());
+        MpvTrack { id, title, lang }
     }
 
     fn set_property<V>(&self, property: &str, value: V)
@@ -250,54 +265,72 @@ impl TsukimiMPV {
         event_context
             .observe_property("cache-speed", libmpv2::Format::Int64, 2)
             .unwrap();
+        event_context
+            .observe_property("track-list/count", libmpv2::Format::Int64, 3)
+            .unwrap();
         let event_thread_alive = self.event_thread_alive.clone();
         std::thread::Builder::new()
             .name("mpv event loop".into())
-            .spawn(move || {
-                loop {
-                    atomic_wait::wait(&event_thread_alive, PAUSED);
-                    match event_context.wait_event(1000.0) {
-                        Some(Ok(event)) => match event {
-                            Event::PropertyChange { name, change, .. } => match name {
-                                "duration" => {
-                                    if let PropertyData::Double(dur) = change {
-                                        let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Duration(dur));
-                                    }
+            .spawn(move || loop {
+                atomic_wait::wait(&event_thread_alive, PAUSED);
+                match event_context.wait_event(1000.0) {
+                    Some(Ok(event)) => match event {
+                        Event::PropertyChange { name, change, .. } => match name {
+                            "duration" => {
+                                if let PropertyData::Double(dur) = change {
+                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Duration(dur));
                                 }
-                                "pause" => {
-                                    if let PropertyData::Flag(pause) = change {
-                                        let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Pause(pause));
-                                    }
+                            }
+                            "pause" => {
+                                if let PropertyData::Flag(pause) = change {
+                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Pause(pause));
                                 }
-                                "cache-speed" => {
-                                    if let PropertyData::Int64(speed) = change {
-                                        let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::CacheSpeed(speed));
-                                    }
+                            }
+                            "cache-speed" => {
+                                if let PropertyData::Int64(speed) = change {
+                                    let _ =
+                                        MPV_EVENT_CHANNEL.tx.send(ListenEvent::CacheSpeed(speed));
                                 }
-                                _ => {}
-                            },
-                            Event::Seek { .. } => {
-                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Seek);
                             }
-                            Event::PlaybackRestart { .. } => {
-                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::PlaybackRestart);
+                            "track-list/count" => {
+                                if let PropertyData::Int64(count) = change {
+                                    let _ = MPV_EVENT_CHANNEL
+                                        .tx
+                                        .send(ListenEvent::TrackListCount(count));
+                                }
                             }
-                            Event::EndFile(r) => {
-                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Eof(r));
+                            "volume" => {
+                                if let PropertyData::Int64(volume) = change {
+                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Volume(volume));
+                                }
                             }
-                            Event::StartFile => {
-                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile);
+                            "speed" => {
+                                if let PropertyData::Double(speed) = change {
+                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Speed(speed));
+                                }
                             }
                             _ => {}
                         },
-                        Some(Err(e)) => {
-                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Error(e.to_string()));
+                        Event::Seek { .. } => {
+                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Seek);
                         }
-                        None => {
+                        Event::PlaybackRestart { .. } => {
+                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::PlaybackRestart);
                         }
-                    };
-                    std::thread::sleep(time::Duration::from_millis(50));
-                }
+                        Event::EndFile(r) => {
+                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Eof(r));
+                        }
+                        Event::StartFile => {
+                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile);
+                        }
+                        _ => {}
+                    },
+                    Some(Err(e)) => {
+                        let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Error(e.to_string()));
+                    }
+                    None => {}
+                };
+                std::thread::sleep(time::Duration::from_millis(50));
             })
             .expect("Failed to spawn mpv event loop");
     }
