@@ -2,8 +2,9 @@ use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
 use crate::toast;
 use crate::ui::provider::dropdown_factory::DropdownList;
+use crate::ui::widgets::check_row::CheckRow;
 use crate::ui::widgets::song_widget::format_duration;
-use adw::prelude::*;
+use adw::{prelude::*, ActionRow};
 use gettextrs::gettext;
 use glib::Object;
 use gtk::prelude::*;
@@ -11,7 +12,7 @@ use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
 use super::mpvglarea::MPVGLArea;
-use super::tsukimi_mpv::{ListenEvent, MpvTrack, ACTIVE, MPV_EVENT_CHANNEL, PAUSED};
+use super::tsukimi_mpv::{ListenEvent, MpvTrack, TrackSelection, ACTIVE, MPV_EVENT_CHANNEL, PAUSED};
 use super::video_scale::VideoScale;
 static MIN_MOTION_TIME: i64 = 100000;
 
@@ -21,14 +22,13 @@ mod imp {
 
     use adw::prelude::*;
     use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
     use crate::client::structs::Back;
     use crate::ui::mpv::mpvglarea::MPVGLArea;
     use crate::ui::mpv::video_scale::VideoScale;
-    use crate::ui::provider::dropdown_factory::factory;
+    use crate::ui::widgets::action_row::AActionRow;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -64,13 +64,13 @@ mod imp {
         #[template_child]
         pub title: TemplateChild<gtk::Label>,
         #[template_child]
-        pub audio_tracks_combo_row: TemplateChild<adw::ComboRow>,
-        #[template_child]
-        pub subtitle_tracks_combo_row: TemplateChild<adw::ComboRow>,
-        #[template_child]
         pub speed_spin: TemplateChild<gtk::SpinButton>,
         #[template_child]
         pub volume_spin: TemplateChild<gtk::SpinButton>,
+        #[template_child]
+        pub sub_listbox: TemplateChild<gtk::ListBox>,
+        #[template_child]
+        pub audio_listbox: TemplateChild<gtk::ListBox>,
         pub timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
         pub x: RefCell<f64>,
@@ -90,6 +90,7 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             MPVGLArea::ensure_type();
             VideoScale::ensure_type();
+            AActionRow::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }
@@ -109,15 +110,6 @@ mod imp {
             self.menu_popover.set_offset(0, -20);
 
             self.video_scale.set_player(Some(&self.video.get()));
-
-            self.audio_tracks_combo_row
-                .set_factory(Some(&factory(true)));
-            self.subtitle_tracks_combo_row
-                .set_factory(Some(&factory(true)));
-            self.audio_tracks_combo_row
-                .set_list_factory(Some(&factory(false)));
-            self.subtitle_tracks_combo_row
-                .set_list_factory(Some(&factory(false)));
 
             self.obj().listen_events();
         }
@@ -178,31 +170,60 @@ impl MPVPage {
     fn set_audio_and_video_tracks_dropdown(&self, count: i64) {
         let imp = self.imp();
         let (audio_tracks, subtitle_tracks) = imp.video.get_audio_and_subtitle_tracks(count);
-        let audio_tracks_store = self.vec_to_model(audio_tracks);
-        let subtitle_tracks_store = self.vec_to_model(subtitle_tracks);
-        imp.audio_tracks_combo_row
-            .set_model(Some(&audio_tracks_store));
-        imp.subtitle_tracks_combo_row
-            .set_model(Some(&subtitle_tracks_store));
+        self.bind_tracks::<true>(audio_tracks, &imp.audio_listbox.get());
+        self.bind_tracks::<false>(subtitle_tracks, &imp.sub_listbox.get());
     }
 
-    fn vec_to_model(&self, vec: Vec<MpvTrack>) -> gtk::gio::ListStore {
-        let store = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
-        let dl = DropdownList {
-            line1: Some("None".to_string()),
-            line2: None,
-        };
-        let object = glib::BoxedAnyObject::new(dl);
-        store.append(&object);
-        for item in vec {
-            let dl = DropdownList {
-                line1: Some(item.title),
-                line2: Some(item.lang),
-            };
-            let object = glib::BoxedAnyObject::new(dl);
-            store.append(&object);
+    // TODO: Use GAction instead of listening to each button
+    fn bind_tracks<const A: bool>(&self, tracks: Vec<MpvTrack>, listbox: &gtk::ListBox) {
+        while let Some(row) = listbox.first_child() {
+            listbox.remove(&row);
         }
-        store
+
+        let row = CheckRow::new();
+        row.set_title("None");
+        let none_check = &row.imp().check.get();
+        row.connect_activated(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |_| {
+                obj.set_vsid::<A>(0);
+            }
+        ));
+        listbox.append(&row);
+
+        for track in tracks {
+            let row = CheckRow::new();
+            row.set_title(&track.title);
+            row.set_subtitle(&track.lang);
+            let check = &row.imp().check.get();
+            if track.selected {
+                check.set_active(true);
+            }
+            check.set_group(Some(none_check));
+            row.connect_activated(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_| {
+                    obj.set_vsid::<A>(track.id);
+                }
+            ));
+            listbox.append(&row);
+        }
+    }
+
+    fn set_vsid<const A: bool>(&self, track_id: i64) {
+        let track = if track_id == 0 {
+            TrackSelection::None
+        } else {
+            TrackSelection::Track(track_id)
+        };
+
+        if A {
+            self.imp().video.set_aid(track);
+        } else {
+            self.imp().video.set_sid(track);
+        }
     }
 
     #[template_callback]

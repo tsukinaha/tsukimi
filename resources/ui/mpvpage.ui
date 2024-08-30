@@ -191,13 +191,14 @@
                             <property name="hexpand">True</property>
                             <property name="label" translatable="yes">Loading...</property>
                             <attributes>
-                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                             </attributes>
                           </object>
                         </child>
                         <child>
                           <object class="GtkLabel" id="_network_speed_label_2">
-                            <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create"/>
+                            <property name="label" bind-source="network_speed_label"
+                              bind-property="label" bind-flags="sync-create" />
                             <property name="width-request">130</property>
                             <style>
                               <class name="dim-label" />
@@ -237,55 +238,140 @@
     <property name="has_arrow">False</property>
     <property name="cascade-popdown">True</property>
     <child>
-      <object class="GtkListBox">
-        <property name="selection-mode">none</property>
+      <object class="AdwNavigationView">
         <child>
-          <object class="AdwSwitchRow">
-            <property name="title" translatable="yes">Autoplay</property>
-          </object>
-        </child>
-        <child>
-          <object class="AdwActionRow">
-            <property name="title" translatable="yes">Playback speed</property>
-            <child type="suffix">
-              <object class="GtkSpinButton" id="speed_spin">
-                <property name="width-request">150</property>
-                <property name="valign">center</property>
-                <property name="adjustment">playback_speed_adj</property>
-                <property name="digits">2</property>
-                <signal name="value-changed" handler="on_speed_value_changed" swapped="yes" />
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Preferences</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar">
+                    <property name="show-end-title-buttons">false</property>
+                    <style>
+                      <class name="flat" />
+                    </style>
+                  </object>
+                </child>
+                <property name="content">
+                  <object class="GtkListBox">
+                    <property name="selection-mode">none</property>
+                    <child>
+                      <object class="AdwSwitchRow">
+                        <property name="title" translatable="yes">Autoplay</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow">
+                        <property name="title" translatable="yes">Playback speed</property>
+                        <child type="suffix">
+                          <object class="GtkSpinButton" id="speed_spin">
+                            <property name="width-request">150</property>
+                            <property name="valign">center</property>
+                            <property name="adjustment">playback_speed_adj</property>
+                            <property name="digits">2</property>
+                            <signal name="value-changed" handler="on_speed_value_changed"
+                              swapped="yes" />
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow">
+                        <property name="title" translatable="yes">Volume</property>
+                        <child type="suffix">
+                          <object class="GtkSpinButton" id="volume_spin">
+                            <property name="width-request">150</property>
+                            <property name="valign">center</property>
+                            <property name="adjustment">volume_adj</property>
+                            <signal name="value-changed" handler="on_volume_value_changed"
+                              swapped="yes" />
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AActionRow" id="audio_tracks_action_row">
+                        <property name="title" translatable="yes">Audio</property>
+                        <property name="action-name">navigation.push</property>
+                        <property name="action-target">'page-3'</property>
+                        <property name="show-arrow">true</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AActionRow" id="subtitle_tracks_action_row">
+                        <property name="title" translatable="yes">Subtitle</property>
+                        <property name="action-name">navigation.push</property>
+                        <property name="action-target">'page-2'</property>
+                        <property name="show-arrow">true</property>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="osd" />
+                      <class name="boxed-list-separate" />
+                      <class name="logo" />
+                    </style>
+                  </object>
+                </property>
               </object>
-            </child>
+            </property>
           </object>
         </child>
         <child>
-          <object class="AdwActionRow">
-            <property name="title" translatable="yes">Volume</property>
-            <child type="suffix">
-              <object class="GtkSpinButton" id="volume_spin">
-                <property name="width-request">150</property>
-                <property name="valign">center</property>
-                <property name="adjustment">volume_adj</property>
-                <signal name="value-changed" handler="on_volume_value_changed" swapped="yes" />
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="AdwComboRow" id="audio_tracks_combo_row">
-            <property name="title" translatable="yes">Audio</property>
-          </object>
-        </child>
-        <child>
-          <object class="AdwComboRow" id="subtitle_tracks_combo_row">
+          <object class="AdwNavigationPage">
             <property name="title" translatable="yes">Subtitle</property>
+            <property name="tag">page-2</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar">
+                    <property name="show-end-title-buttons">false</property>
+                    <style>
+                      <class name="flat" />
+                    </style>
+                  </object>
+                </child>
+                <property name="content">
+                  <object class="GtkListBox" id="sub_listbox">
+                    <property name="selection-mode">single</property>
+                    <style>
+                      <class name="osd" />
+                      <class name="boxed-list-separate" />
+                      <class name="logo" />
+                    </style>
+                  </object>
+                </property>
+              </object>
+            </property>
           </object>
         </child>
-        <style>
-          <class name="osd" />
-          <class name="boxed-list-separate" />
-          <class name="logo" />
-        </style>
+        <child>
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Audio</property>
+            <property name="tag">page-3</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar">
+                    <property name="show-end-title-buttons">false</property>
+                    <style>
+                      <class name="flat" />
+                    </style>
+                  </object>
+                </child>
+                <property name="content">
+                  <object class="GtkListBox" id="audio_listbox">
+                    <property name="selection-mode">single</property>
+                    <style>
+                      <class name="osd" />
+                      <class name="boxed-list-separate" />
+                      <class name="logo" />
+                    </style>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </child>
       </object>
     </child>
   </object>
@@ -315,7 +401,7 @@
       <widget name="menu_button" />
       <widget name="full_screen_button" />
     </widgets>
-  </object>  
+  </object>
   <object class="GtkSizeGroup">
     <property name="mode">vertical</property>
     <widgets>

@@ -5,7 +5,7 @@ use gtk::{gio, glib};
 use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
 
-use super::tsukimi_mpv::{MpvTrack, ACTIVE};
+use super::tsukimi_mpv::{MpvTrack, TrackSelection, ACTIVE};
 
 mod imp {
     use gtk::gdk::GLContext;
@@ -131,6 +131,14 @@ impl MPVGLArea {
 
     pub fn position(&self) -> f64 {
         self.imp().mpv.position()
+    }
+
+    pub fn set_aid(&self, value: TrackSelection) {
+        self.imp().mpv.set_aid(value)
+    }
+
+    pub fn set_sid(&self, value: TrackSelection) {
+        self.imp().mpv.set_sid(value)
     }
 
     pub fn set_speed(&self, value: f64) {
