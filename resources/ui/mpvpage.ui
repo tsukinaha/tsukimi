@@ -70,7 +70,7 @@
                       <object class="GtkBox">
                         <property name="orientation">horizontal</property>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="_previous_button">
                             <property name="icon-name">media-skip-backward-symbolic</property>
                             <style>
                               <class name="flat" />
@@ -94,7 +94,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="_next_button">
                             <property name="icon-name">media-skip-forward-symbolic</property>
                             <style>
                               <class name="flat" />
@@ -143,7 +143,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="full_screen_button">
                             <property name="icon-name">view-fullscreen-symbolic</property>
                             <style>
                               <class name="flat" />
@@ -175,7 +175,7 @@
                       <object class="GtkBox">
                         <property name="orientation">horizontal</property>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="_back_button">
                             <property name="icon-name">go-down-symbolic</property>
                             <property name="focusable">True</property>
                             <property name="receives_default">True</property>
@@ -196,15 +196,16 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="_network_speed_label_2">
                             <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create"/>
+                            <property name="width-request">130</property>
                             <style>
                               <class name="dim-label" />
                             </style>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="_media_info_button">
                             <property name="icon-name">help-about-symbolic</property>
                             <property name="focusable">True</property>
                             <property name="receives_default">True</property>
@@ -300,5 +301,27 @@
     <property name="value">75</property>
     <property name="step_increment">1</property>
     <property name="page_increment">4</property>
+  </object>
+  <object class="GtkSizeGroup">
+    <property name="mode">vertical</property>
+    <widgets>
+      <widget name="_previous_button" />
+      <widget name="_play_button" />
+      <widget name="_next_button" />
+      <widget name="progress_time_label" />
+      <widget name="video_scale" />
+      <widget name="duration_label" />
+      <widget name="menu_button" />
+      <widget name="full_screen_button" />
+    </widgets>
+  </object>  
+  <object class="GtkSizeGroup">
+    <property name="mode">vertical</property>
+    <widgets>
+      <widget name="_back_button" />
+      <widget name="title" />
+      <widget name="_network_speed_label_2" />
+      <widget name="_media_info_button" />
+    </widgets>
   </object>
 </interface>

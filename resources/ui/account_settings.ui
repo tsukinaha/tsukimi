@@ -372,44 +372,45 @@
         <property name="icon-name">video-x-generic-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Player</property>
-            <property name="description" translatable="yes">Gstreamer by default, If you enable mpv, you will get better compatibility and external subtitle support, but it does not support embedded window.</property>
+            <property name="title">MPV Advanced Settings</property>
+            <property name="description" translatable="yes">Warning: do NOT use any method other than the software's own controls to control the window</property>
             <child>
               <object class="AdwSwitchRow" id="mpvcontrol">
-                <property name="title" translatable="yes">Enable MPV (External Window)</property>
-                <property name="subtitle" translatable="yes">External Subtitle Support</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title">MPV</property>
-            <child>
-              <object class="AdwSwitchRow" id="autofullscreencontrol">
-                <property name="title" translatable="yes">Auto Fullscreen</property>
+                <property name="title" translatable="yes">vo=gpu-next</property>
+                <style>
+                  <class name="error"/>
+                </style>
               </object>
             </child>
             <child>
-              <object class="AdwSwitchRow" id="forcewindowcontrol">
-                <property name="title" translatable="yes">Show Window Immediately</property>
+              <object class="AdwSwitchRow">
+                <property name="title" translatable="yes">hwdec=vaapi</property>
+                <style>
+                  <class name="error"/>
+                </style>
               </object>
             </child>
             <child>
-              <object class="AdwSwitchRow" id="ytdlcontrol">
-                <property name="title" translatable="yes">--ytdl-format=best</property>
+              <object class="AdwSwitchRow">
+                <property name="title" translatable="yes">hwdec-codecs=all</property>
+                <style>
+                  <class name="error"/>
+                </style>
               </object>
             </child>
+            <child>
+              <object class="AdwSwitchRow">
+                <property name="title" translatable="yes">sub-auto=fuzzy</property>
+              </object>
+            </child>
+            <style>
+              <class name="error"/>
+            </style>
           </object>
         </child>
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Others</property>
-            <child>
-              <object class="AdwSwitchRow" id="resumecontrol">
-                <property name="title" translatable="yes">Resume</property>
-              </object>
-            </child>
             <child>
               <object class="AdwSwitchRow" id="backcontrol">
                 <property name="title" translatable="yes">Proactively Provide Progress Updates</property>

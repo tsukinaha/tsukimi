@@ -61,7 +61,11 @@ impl Default for TsukimiMPV {
             init.set_property("input-vo-keyboard", true)?;
             init.set_property("input-default-bindings", true)?;
             init.set_property("user-agent", "Tsukimi")?;
-            init.set_property("vo", "libmpv")?;
+            if SETTINGS.mpv() {
+                init.set_property("vo", "gpu-next")?;
+            } else {
+                init.set_property("vo", "libmpv")?;
+            }
             Ok(())
         })
         .unwrap();
@@ -79,6 +83,8 @@ use libc::c_void;
 use libmpv2::events::Event;
 use once_cell::sync::Lazy;
 
+use crate::ui::models::SETTINGS;
+
 fn get_proc_address(_ctx: &GLContext, name: &str) -> *mut c_void {
     epoxy::get_proc_addr(name) as *mut c_void
 }
@@ -88,6 +94,8 @@ pub struct RenderUpdate {
     pub rx: Receiver<bool>,
 }
 
+
+// Give render update a unique channel
 pub static RENDER_UPDATE: Lazy<RenderUpdate> = Lazy::new(|| {
     let (tx, rx) = unbounded::<bool>();
 
