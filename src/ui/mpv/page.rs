@@ -12,7 +12,7 @@ use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
 use super::mpvglarea::MPVGLArea;
-use super::tsukimi_mpv::{ListenEvent, MpvTrack, TrackSelection, ACTIVE, MPV_EVENT_CHANNEL, PAUSED};
+use super::tsukimi_mpv::{ListenEvent, MpvTrack, MpvTracks, TrackSelection, ACTIVE, MPV_EVENT_CHANNEL, PAUSED};
 use super::video_scale::VideoScale;
 static MIN_MOTION_TIME: i64 = 100000;
 
@@ -192,11 +192,10 @@ impl MPVPage {
         imp.video.play(url, name, back, percentage);
     }
 
-    fn set_audio_and_video_tracks_dropdown(&self, count: i64) {
+    fn set_audio_and_video_tracks_dropdown(&self, value: MpvTracks) {
         let imp = self.imp();
-        let (audio_tracks, subtitle_tracks) = imp.video.get_audio_and_subtitle_tracks(count);
-        self.bind_tracks::<true>(audio_tracks, &imp.audio_listbox.get());
-        self.bind_tracks::<false>(subtitle_tracks, &imp.sub_listbox.get());
+        self.bind_tracks::<true>(value.audio_tracks, &imp.audio_listbox.get());
+        self.bind_tracks::<false>(value.sub_tracks, &imp.sub_listbox.get());
     }
 
     // TODO: Use GAction instead of listening to each button
@@ -205,9 +204,13 @@ impl MPVPage {
             listbox.remove(&row);
         }
 
+        let track_id = self.imp().video.get_track_id(if A { "aid" } else { "sid" });
+
         let row = CheckRow::new();
         row.set_title("None");
-        row.imp().track_id.replace(0);
+        if track_id == 0 {
+            row.imp().check.get().set_active(true);
+        }
         let none_check = &row.imp().check.get();
         row.connect_activated(glib::clone!(
             #[weak(rename_to = obj)]
@@ -225,6 +228,9 @@ impl MPVPage {
             row.imp().track_id.replace(track.id);
             let check = &row.imp().check.get();
             check.set_group(Some(none_check));
+            if track.id == track_id {
+                check.set_active(true);
+            }
             row.connect_activated(glib::clone!(
                 #[weak(rename_to = obj)]
                 self,
@@ -294,7 +300,7 @@ impl MPVPage {
                         ListenEvent::StartFile => {
                             obj.on_start_file();
                         }
-                        ListenEvent::TrackListCount(value) => {
+                        ListenEvent::TrackList(value) => {
                             obj.set_audio_and_video_tracks_dropdown(value);
                         }
                         ListenEvent::Volume(value) => {
@@ -303,31 +309,10 @@ impl MPVPage {
                         ListenEvent::Speed(value) => {
                             obj.speed_cb(value);
                         }
-                        ListenEvent::Aid(value) => {
-                            obj.update_track_cb(&obj.imp().audio_listbox.get(), value);
-                        }
-                        ListenEvent::Sid(value) => {
-                            println!("sid: {}", value);
-                            obj.update_track_cb(&obj.imp().sub_listbox.get(), value);
-                        }
                     }
                 }
             }
         ));
-    }
-
-    fn update_track_cb(&self, listbox: &gtk::ListBox, track_id: i64) {
-        let model = listbox.observe_children();
-        for i in 0..model.n_items() {
-            let item = model.item(i);
-            let Some(row) = item.and_downcast_ref::<CheckRow>() else {
-                continue;
-            };
-            if *row.imp().track_id.borrow() != track_id {
-                continue;
-            } 
-            row.imp().check.get().set_active(true);
-        }
     }
 
     fn update_duration(&self, value: f64) {

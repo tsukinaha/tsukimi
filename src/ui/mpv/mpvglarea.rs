@@ -119,10 +119,6 @@ impl MPVGLArea {
         self.imp().mpv.add_sub(url)
     }
 
-    pub fn get_audio_and_subtitle_tracks(&self, count: i64) -> (Vec<MpvTrack>, Vec<MpvTrack>) {
-        self.imp().mpv.get_audio_and_subtitle_tracks(count)
-    }
-
     pub fn set_position(&self, value: f64) {
         self.imp().mpv.set_position(value)
     }
@@ -133,6 +129,10 @@ impl MPVGLArea {
 
     pub fn set_aid(&self, value: TrackSelection) {
         self.imp().mpv.set_aid(value)
+    }
+
+    pub fn get_track_id(&self, type_: &str) -> i64 {
+        self.imp().mpv.get_track_id(type_)
     }
 
     pub fn set_sid(&self, value: TrackSelection) {

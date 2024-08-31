@@ -1,13 +1,11 @@
 use gtk::gdk::GLContext;
 use libmpv2::{
-    events::{EventContext, PropertyData},
-    GetData, SetData,
+    events::{EventContext, PropertyData}, mpv_node::MpvNode, GetData, SetData
 };
 use tokio::time;
 
 use std::{
-    cell::RefCell,
-    sync::{atomic::AtomicU32, Arc},
+    cell::RefCell, collections::HashMap, sync::{atomic::AtomicU32, Arc}
 };
 
 use libmpv2::{
@@ -20,6 +18,7 @@ pub struct MpvTrack {
     pub id: i64,
     pub title: String,
     pub lang: String,
+    pub type_: String,
 }
 
 pub struct TsukimiMPV {
@@ -130,11 +129,9 @@ pub enum ListenEvent {
     Pause(bool),
     CacheSpeed(i64),
     Error(String),
-    TrackListCount(i64),
+    TrackList(MpvTracks),
     Volume(i64),
     Speed(f64),
-    Aid(i64),
-    Sid(i64),
 }
 
 pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
@@ -222,35 +219,6 @@ impl TsukimiMPV {
         self.command("script-binding", &["stats/display-stats-toggle"]);
     }
 
-    pub fn get_audio_and_subtitle_tracks(&self, count: i64) -> (Vec<MpvTrack>, Vec<MpvTrack>) {
-        let mut audio_tracks = Vec::new();
-        let mut sub_tracks = Vec::new();
-        for i in 0..count {
-            let track_type = self
-                .get_property(&format!("track-list/{}/type", i))
-                .unwrap_or("Unknown".to_string());
-            if track_type == "audio" {
-                audio_tracks.push(self.get_track_info(i));
-            } else if track_type == "sub" {
-                sub_tracks.push(self.get_track_info(i));
-            }
-        }
-        (audio_tracks, sub_tracks)
-    }
-
-    fn get_track_info(&self, i: i64) -> MpvTrack {
-        let title = self
-            .get_property(&format!("track-list/{}/title", i))
-            .unwrap_or("Unknown".to_string());
-        let id = self
-            .get_property(&format!("track-list/{}/id", i))
-            .unwrap_or(0);
-        let lang = self
-            .get_property(&format!("track-list/{}/lang", i))
-            .unwrap_or("Unknown".to_string());
-        MpvTrack { id, title, lang }
-    }
-
     fn set_property<V>(&self, property: &str, value: V)
     where
         V: SetData,
@@ -279,6 +247,13 @@ impl TsukimiMPV {
         mpv.command(cmd, args).unwrap();
     }
 
+    pub fn get_track_id(&self, type_: &str) -> i64 {
+        let Some(track) = self.get_property::<String>(&type_) else {
+            return 0;
+        };
+        track.parse().unwrap_or(0)
+    }
+
     pub fn process_events(&self) {
         let mut bind = self.mpv.borrow_mut();
         let Some(mpv) = bind.as_mut() else {
@@ -298,13 +273,7 @@ impl TsukimiMPV {
             .observe_property("cache-speed", libmpv2::Format::Int64, 2)
             .unwrap();
         event_context
-            .observe_property("track-list/count", libmpv2::Format::Int64, 3)
-            .unwrap();
-        event_context
-            .observe_property("aid", libmpv2::Format::Int64, 4)
-            .unwrap();
-        event_context
-            .observe_property("sid", libmpv2::Format::Int64, 5)
+            .observe_property("track-list", libmpv2::Format::Node, 3)
             .unwrap();
         let event_thread_alive = self.event_thread_alive.clone();
         std::thread::Builder::new()
@@ -330,11 +299,11 @@ impl TsukimiMPV {
                                         MPV_EVENT_CHANNEL.tx.send(ListenEvent::CacheSpeed(speed));
                                 }
                             }
-                            "track-list/count" => {
-                                if let PropertyData::Int64(count) = change {
+                            "track-list" => {
+                                if let PropertyData::Node(node) = change {
                                     let _ = MPV_EVENT_CHANNEL
                                         .tx
-                                        .send(ListenEvent::TrackListCount(count));
+                                        .send(ListenEvent::TrackList(node_to_tracks(node)));
                                 }
                             }
                             "volume" => {
@@ -345,16 +314,6 @@ impl TsukimiMPV {
                             "speed" => {
                                 if let PropertyData::Double(speed) = change {
                                     let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Speed(speed));
-                                }
-                            }
-                            "aid" => {
-                                if let PropertyData::Int64(aid) = change {
-                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Aid(aid));
-                                }
-                            }
-                            "sid" => {
-                                if let PropertyData::Int64(sid) = change {
-                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Sid(sid));
                                 }
                             }
                             _ => {}
@@ -386,3 +345,39 @@ impl TsukimiMPV {
 
 unsafe impl Send for TsukimiMPV {}
 unsafe impl Sync for TsukimiMPV {}
+
+pub struct MpvTracks {
+    pub audio_tracks: Vec<MpvTrack>,
+    pub sub_tracks: Vec<MpvTrack>,
+}
+
+fn node_to_tracks(node: MpvNode) -> MpvTracks {
+    let mut audio_tracks = Vec::new();
+    let mut sub_tracks = Vec::new();
+    let array = node.array().unwrap();
+    for node in array {
+        let range = node.map().unwrap().collect::<HashMap<_, _>>();
+        let id = range.get("id").unwrap().i64().unwrap();
+        let title = range.get("title")
+            .and_then(|v| v.str())
+            .unwrap_or("unknown")
+            .to_string();
+
+        let lang = range.get("lang")
+            .and_then(|v| v.str())
+            .unwrap_or("unknown")
+            .to_string();
+
+        let type_ = range.get("type").unwrap().str().unwrap().to_string();
+        let track = MpvTrack { id, title, lang, type_ };
+        if track.type_ == "audio" {
+            audio_tracks.push(track);
+        } else if track.type_ == "sub" {
+            sub_tracks.push(track);
+        }
+    }
+    MpvTracks {
+        audio_tracks,
+        sub_tracks,
+    }
+}
