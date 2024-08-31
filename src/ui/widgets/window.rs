@@ -15,7 +15,7 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
-    use crate::ui::clapper::page::ClapperPage;
+    use crate::ui::mpv::page::MPVPage;
     use crate::ui::widgets::content_viewer::MediaContentViewer;
     use crate::ui::widgets::home::HomePage;
     use crate::ui::widgets::image_dialog::ImagesDialog;
@@ -62,7 +62,7 @@ mod imp {
         #[template_child]
         pub clapperpage: TemplateChild<gtk::StackPage>,
         #[template_child]
-        pub clappernav: TemplateChild<ClapperPage>,
+        pub clappernav: TemplateChild<MPVPage>,
         #[template_child]
         pub serverselectlist: TemplateChild<gtk::ListBox>,
         #[template_child]
@@ -94,7 +94,6 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             PlayerToolbarBox::ensure_type();
-            ClapperPage::ensure_type();
             ItemActionsBox::ensure_type();
             MediaContentViewer::ensure_type();
             MediaViewer::ensure_type();
@@ -102,6 +101,7 @@ mod imp {
             HomePage::ensure_type();
             SearchPage::ensure_type();
             LikedPage::ensure_type();
+            MPVPage::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("win.relogin", None, move |window, _action, _parameter| {
@@ -137,7 +137,6 @@ mod imp {
             // Call "constructed" on parent
             self.parent_constructed();
             let obj = self.obj();
-            self.clappernav.bind_fullscreen(&obj);
             obj.set_fonts();
             if crate::ui::models::SETTINGS.font_size() != -1 {
                 let settings = gtk::Settings::default().unwrap();
@@ -634,19 +633,6 @@ impl Window {
         }
     }
 
-    pub fn set_clapperpage(
-        &self,
-        url: &str,
-        suburi: Option<&str>,
-        name: Option<&str>,
-        line2: Option<&str>,
-        back: Option<Back>,
-    ) {
-        let imp = self.imp();
-        imp.stack.set_visible_child_name("clapper");
-        imp.clappernav.add_item(url, suburi, name, line2, back);
-    }
-
     pub fn reveal_image(&self, source_widget: &impl IsA<gtk::Widget>) {
         let imp = self.imp();
         imp.media_viewer.reveal(source_widget);
@@ -677,33 +663,13 @@ impl Window {
         suburl: Option<String>,
         name: Option<String>,
         back: Option<Back>,
-        selected: Option<String>,
+        _selected: Option<String>,
         percentage: f64,
     ) {
-        if SETTINGS.mpv() {
-            gio::spawn_blocking(move || {
-                match crate::ui::mpv::event::play(
-                    url,
-                    suburl,
-                    Some(name.unwrap_or("".to_string())),
-                    back,
-                    Some(percentage),
-                ) {
-                    Ok(_) => {}
-                    Err(e) => {
-                        eprintln!("Failed to play: {}", e);
-                    }
-                };
-            });
-        } else {
-            self.set_clapperpage(
-                &url,
-                suburl.as_deref(),
-                name.as_deref(),
-                selected.as_deref(),
-                back,
-            );
-        }
+        let imp = self.imp();
+        imp.stack.set_visible_child_name("clapper");
+        imp.clappernav
+            .play(&url, suburl.as_deref(), name.as_deref(), back, percentage);
     }
 
     pub fn push_page<T>(&self, page: &T)

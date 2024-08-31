@@ -34,7 +34,7 @@
           <object class="AdwToastOverlay" id="toast">
             <child>
               <object class="GtkStack" id="stack">
-                <property name="transition-type">over-left-right</property>
+                <property name="transition-type">over-up-down</property>
                 <child>
                   <object class="GtkStackPage">
                     <property name="name">placeholder</property>
@@ -451,7 +451,7 @@
                   <object class="GtkStackPage" id="clapperpage">
                     <property name="name">clapper</property>
                     <property name="child">
-                      <object class="ClapperPage" id="clappernav">
+                      <object class="MPVPage" id="clappernav">
                       </object>
                     </property>
                   </object>

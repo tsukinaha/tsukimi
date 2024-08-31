@@ -1,27 +1,28 @@
 use gtk::{glib, prelude::*, subclass::prelude::*};
+
 mod imp {
     use gtk::{glib, prelude::*, subclass::prelude::*};
     use std::cell::RefCell;
 
-    use crate::gstl::player::MusicPlayer;
+    use crate::ui::mpv::mpvglarea::MPVGLArea;
 
     #[derive(Default, glib::Properties)]
-    #[properties(wrapper_type = super::SmoothScale)]
-    pub struct SmoothScale {
+    #[properties(wrapper_type = super::VideoScale)]
+    pub struct VideoScale {
         pub timeout: RefCell<Option<glib::source::SourceId>>,
         #[property(get, set = Self::set_player, explicit_notify, nullable)]
-        pub player: glib::WeakRef<MusicPlayer>,
+        pub player: glib::WeakRef<MPVGLArea>,
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for SmoothScale {
-        const NAME: &'static str = "SmoothScale";
-        type Type = super::SmoothScale;
+    impl ObjectSubclass for VideoScale {
+        const NAME: &'static str = "VideoScale";
+        type Type = super::VideoScale;
         type ParentType = gtk::Scale;
     }
 
     #[glib::derived_properties]
-    impl ObjectImpl for SmoothScale {
+    impl ObjectImpl for VideoScale {
         fn constructed(&self) {
             self.parent_constructed();
 
@@ -55,16 +56,14 @@ mod imp {
                     imp.on_click_released();
                 }
             ));
-
-            self.obj().duration_changed();
         }
     }
-    impl WidgetImpl for SmoothScale {}
-    impl RangeImpl for SmoothScale {}
-    impl ScaleImpl for SmoothScale {}
+    impl WidgetImpl for VideoScale {}
+    impl RangeImpl for VideoScale {}
+    impl ScaleImpl for VideoScale {}
 
-    impl SmoothScale {
-        fn set_player(&self, player: Option<MusicPlayer>) {
+    impl VideoScale {
+        fn set_player(&self, player: Option<MPVGLArea>) {
             if self.player.upgrade() == player {
                 return;
             }
@@ -78,34 +77,34 @@ mod imp {
 
         fn on_click_released(&self) {
             let obj = self.obj();
-            self.on_seek_finished(self.obj().value());
+            self.on_seek_finished(obj.value());
             obj.update_timeout();
         }
 
         fn on_seek_finished(&self, value: f64) {
-            self.player.upgrade().unwrap().imp().set_position(value);
+            self.player.upgrade().unwrap().set_position(value);
         }
     }
 }
 
 glib::wrapper! {
-    pub struct SmoothScale(ObjectSubclass<imp::SmoothScale>)
+    pub struct VideoScale(ObjectSubclass<imp::VideoScale>)
         @extends gtk::Widget, gtk::Scale, gtk::Range;
 }
 
-impl Default for SmoothScale {
+impl Default for VideoScale {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl SmoothScale {
+impl VideoScale {
     pub fn new() -> Self {
         glib::Object::builder().build()
     }
 
     pub fn update_position_callback(&self) -> glib::ControlFlow {
-        let position = &self.player().unwrap().imp().position();
+        let position = &self.player().unwrap().position();
         if *position > 0.0 {
             self.set_value(*position);
         }
@@ -113,15 +112,13 @@ impl SmoothScale {
     }
 
     pub fn update_timeout(&self) {
-        let width = std::cmp::max(self.width(), 1);
-        let timeout_period = std::cmp::min(1000 * 200 / width, 200);
         self.remove_timeout();
         let closure = glib::clone!(
             #[weak(rename_to = obj)]
             self,
             move || {
                 self.imp().timeout.replace(Some(glib::timeout_add_local(
-                    std::time::Duration::from_millis(timeout_period as u64),
+                    std::time::Duration::from_millis(250),
                     move || obj.update_position_callback(),
                 )));
             }
@@ -139,13 +136,7 @@ impl SmoothScale {
         let value = self.value();
         let position = value / 60.0;
         if let Some(player) = self.imp().player.upgrade() {
-            player.imp().set_position(position);
+            player.set_position(position);
         }
-    }
-
-    fn duration_changed(&self) {
-        self.set_value(0.0);
-        self.set_range(0.0, 200.0);
-        self.set_increments(300.0, 600.0);
     }
 }

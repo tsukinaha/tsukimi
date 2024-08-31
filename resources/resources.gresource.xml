@@ -27,7 +27,7 @@
     <file compressed="true" preprocess="xml-stripblanks">disc_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">player_toolbar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">server_row.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">clapperpage.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">mpvpage.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">hortu_scrolled.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">horbu_scrolled.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">metadata_dialog.ui</file>
@@ -42,5 +42,7 @@
     <file compressed="true" preprocess="xml-stripblanks">picture_loader.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">tuview_scrolled.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">single_grid.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">action_row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">check_row.ui</file>
   </gresource>
 </gresources>

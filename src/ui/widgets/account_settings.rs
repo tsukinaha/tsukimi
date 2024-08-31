@@ -23,21 +23,13 @@ mod imp {
         #[template_child]
         pub password_second_entry: TemplateChild<adw::PasswordEntryRow>,
         #[template_child]
-        pub backcontrol: TemplateChild<adw::SwitchRow>,
-        #[template_child]
         pub sidebarcontrol: TemplateChild<adw::SwitchRow>,
-        #[template_child]
-        pub autofullscreencontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub spinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub backgroundspinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub threadspinrow: TemplateChild<adw::SpinRow>,
-        #[template_child]
-        pub forcewindowcontrol: TemplateChild<adw::SwitchRow>,
-        #[template_child]
-        pub resumecontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
@@ -58,8 +50,6 @@ mod imp {
         pub dailyrecommendcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub mpvcontrol: TemplateChild<adw::SwitchRow>,
-        #[template_child]
-        pub ytdlcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
@@ -116,12 +106,8 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            obj.set_back();
             obj.set_sidebar();
             obj.set_spin();
-            obj.set_fullscreen();
-            obj.set_forcewindow();
-            obj.set_resume();
             obj.set_proxy();
             obj.set_theme();
             obj.set_thread();
@@ -134,7 +120,6 @@ mod imp {
             obj.set_font();
             obj.set_daily_recommend();
             obj.set_mpvcontrol();
-            obj.set_ytdlcontrol();
             obj.set_color();
         }
     }
@@ -208,14 +193,6 @@ impl AccountSettings {
         ));
     }
 
-    pub fn set_back(&self) {
-        let imp = self.imp();
-        imp.backcontrol.set_active(SETTINGS.progress());
-        imp.backcontrol.connect_active_notify(move |control| {
-            SETTINGS.set_progress(control.is_active()).unwrap();
-        });
-    }
-
     pub fn set_color(&self) {
         let imp = self.imp();
         use std::str::FromStr;
@@ -268,32 +245,6 @@ impl AccountSettings {
         imp.fontspinrow.connect_value_notify(move |control| {
             settings.set_property("gtk-xft-dpi", control.value() as i32 * 1024);
             SETTINGS.set_font_size(control.value() as i32).unwrap();
-        });
-    }
-
-    pub fn set_fullscreen(&self) {
-        let imp = self.imp();
-        imp.autofullscreencontrol.set_active(SETTINGS.fullscreen());
-        imp.autofullscreencontrol
-            .connect_active_notify(move |control| {
-                SETTINGS.set_fullscreen(control.is_active()).unwrap();
-            });
-    }
-
-    pub fn set_forcewindow(&self) {
-        let imp = self.imp();
-        imp.forcewindowcontrol.set_active(SETTINGS.forcewindow());
-        imp.forcewindowcontrol
-            .connect_active_notify(move |control| {
-                SETTINGS.set_forcewindow(control.is_active()).unwrap();
-            });
-    }
-
-    pub fn set_resume(&self) {
-        let imp = self.imp();
-        imp.resumecontrol.set_active(SETTINGS.resume());
-        imp.resumecontrol.connect_active_notify(move |control| {
-            SETTINGS.set_resume(control.is_active()).unwrap();
         });
     }
 
@@ -492,14 +443,6 @@ impl AccountSettings {
         imp.mpvcontrol.set_active(SETTINGS.mpv());
         imp.mpvcontrol.connect_active_notify(move |control| {
             SETTINGS.set_mpv(control.is_active()).unwrap();
-        });
-    }
-
-    pub fn set_ytdlcontrol(&self) {
-        let imp = self.imp();
-        imp.ytdlcontrol.set_active(SETTINGS.ytdl());
-        imp.ytdlcontrol.connect_active_notify(move |control| {
-            SETTINGS.set_ytdl(control.is_active()).unwrap();
         });
     }
 }

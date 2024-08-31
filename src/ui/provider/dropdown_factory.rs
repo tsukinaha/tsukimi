@@ -1,7 +1,10 @@
 use gtk::glib;
 use gtk::prelude::*;
 
-use crate::ui::widgets::item::DropdownList;
+pub struct DropdownList {
+    pub line1: Option<String>,
+    pub line2: Option<String>,
+}
 
 pub fn factory(upbind: bool) -> gtk::SignalListItemFactory {
     let factory = gtk::SignalListItemFactory::new();

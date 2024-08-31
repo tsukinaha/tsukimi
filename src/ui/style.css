@@ -3,6 +3,10 @@ child {
     border-radius: 15px;
 }
 
+.osd {
+    padding: 7px;
+}
+
 .mediainfo {
     padding: 9px;
     border-radius: 15px;

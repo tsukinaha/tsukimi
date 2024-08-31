@@ -15,7 +15,7 @@ use crate::client::structs::*;
 use crate::toast;
 use crate::ui::models::SETTINGS;
 
-use crate::ui::provider::dropdown_factory::factory;
+use crate::ui::provider::dropdown_factory::{factory, DropdownList};
 use crate::utils::{get_image_with_cache, req_cache, spawn, spawn_tokio};
 use chrono::{DateTime, Utc};
 
@@ -1199,11 +1199,6 @@ impl ItemPage {
     pub fn get_window(&self) -> Window {
         self.root().unwrap().downcast::<Window>().unwrap()
     }
-}
-
-pub struct DropdownList {
-    pub line1: Option<String>,
-    pub line2: Option<String>,
 }
 
 pub fn dt(date: Option<chrono::DateTime<Utc>>) -> String {

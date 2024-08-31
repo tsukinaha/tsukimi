@@ -161,7 +161,7 @@ impl ImagePaintable {
     ) -> Result<Self, Box<dyn std::error::Error>> {
         let obj = glib::Object::new::<Self>();
 
-        let mut reader = image::io::Reader::new(reader);
+        let mut reader = image::ImageReader::new(reader);
 
         if let Some(format) = format {
             reader.set_format(format);
@@ -177,7 +177,7 @@ impl ImagePaintable {
     /// Load an image or animation from the given reader.
     fn load_inner<R: BufRead + Seek>(
         &self,
-        reader: image::io::Reader<R>,
+        reader: image::ImageReader<R>,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let imp = self.imp();
         let format = reader.format().ok_or("Could not detect image format")?;

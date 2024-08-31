@@ -11,9 +11,7 @@ use crate::APP_ID;
 pub struct Settings(ThreadGuard<gio::Settings>);
 
 impl Settings {
-    const KEY_IS_PROGRESS_ENABLED: &'static str = "is-progress-enabled";
     const KEY_IS_OVERLAY: &'static str = "is-overlay";
-    const KEY_IS_FULLSCREEN: &'static str = "is-fullscreen";
     const KEY_IS_RESUME: &'static str = "is-resume";
     const KEY_IS_BLUR_ENABLED: &'static str = "is-blurenabled";
     const KEY_THEME: &'static str = "theme";
@@ -21,7 +19,6 @@ impl Settings {
     const KEY_ROOT_PIC: &'static str = "root-pic";
     const KEY_BACKGROUND_HEIGHT: &'static str = "background-height";
     const KEY_IS_BACKGROUND_ENABLED: &'static str = "is-backgroundenabled";
-    const KEY_IS_FORCE_WINDOW: &'static str = "is-force-window";
     const KEY_THREADS: &'static str = "threads";
     const KEY_PIC_OPACITY: &'static str = "pic-opacity";
     const KEY_PIC_BLUR: &'static str = "pic-blur";
@@ -31,7 +28,6 @@ impl Settings {
     const KEY_FONT_NAME: &'static str = "font-name";
     const KEY_DAILY_RECOMMEND: &'static str = "is-daily-recommend";
     const KEY_MPV: &'static str = "mpv";
-    const KEY_YTDL: &'static str = "ytdl";
     const KEY_LIST_SORT: &'static str = "list-sort";
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
     const KEY_ACCENT_FG_COLOR_CODE: &'static str = "accent-fg-color-code";
@@ -72,14 +68,6 @@ impl Settings {
         self.int(Self::KEY_LIST_SORT)
     }
 
-    pub fn set_ytdl(&self, ytdl: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_YTDL, ytdl)
-    }
-
-    pub fn ytdl(&self) -> bool {
-        self.boolean(Self::KEY_YTDL)
-    }
-
     pub fn set_mpv(&self, mpv: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_MPV, mpv)
     }
@@ -112,14 +100,6 @@ impl Settings {
         self.int(Self::KEY_FONT_SIZE)
     }
 
-    pub fn set_forcewindow(&self, force_window: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_IS_FORCE_WINDOW, force_window)
-    }
-
-    pub fn forcewindow(&self) -> bool {
-        self.boolean(Self::KEY_IS_FORCE_WINDOW)
-    }
-
     pub fn set_preferred_server(&self, preferred_server: &str) -> Result<(), glib::BoolError> {
         self.set_string(Self::KEY_PREFERRED_SERVER, preferred_server)
     }
@@ -136,29 +116,11 @@ impl Settings {
         self.boolean(Self::KEY_IS_AUTO_SELECT_SERVER)
     }
 
-    pub fn set_progress(&self, progress: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_IS_PROGRESS_ENABLED, progress)
-    }
-    pub fn progress(&self) -> bool {
-        self.boolean(Self::KEY_IS_PROGRESS_ENABLED)
-    }
-
     pub fn set_overlay(&self, overlay: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_IS_OVERLAY, overlay)
     }
     pub fn overlay(&self) -> bool {
         self.boolean(Self::KEY_IS_OVERLAY)
-    }
-
-    pub fn set_fullscreen(&self, fullscreen: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_IS_FULLSCREEN, fullscreen)
-    }
-    pub fn fullscreen(&self) -> bool {
-        self.boolean(Self::KEY_IS_FULLSCREEN)
-    }
-
-    pub fn set_resume(&self, resume: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_IS_RESUME, resume)
     }
 
     pub fn resume(&self) -> bool {
