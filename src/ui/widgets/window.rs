@@ -663,7 +663,7 @@ impl Window {
         suburl: Option<String>,
         name: Option<String>,
         back: Option<Back>,
-        selected: Option<String>,
+        _selected: Option<String>,
         percentage: f64,
     ) {
         let imp = self.imp();
