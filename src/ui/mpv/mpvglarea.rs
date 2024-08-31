@@ -3,9 +3,8 @@ use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
 use crate::client::client::EMBY_CLIENT;
-use crate::client::structs::Back;
 
-use super::tsukimi_mpv::{MpvTrack, TrackSelection, ACTIVE};
+use super::tsukimi_mpv::{TrackSelection, ACTIVE};
 
 mod imp {
     use gtk::gdk::GLContext;

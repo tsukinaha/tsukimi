@@ -1,23 +1,19 @@
 use adw::subclass::prelude::*;
-use gtk::{
-    glib,
-    CompositeTemplate,
-};
-
+use gtk::{glib, CompositeTemplate};
 
 mod imp {
 
     use std::cell::RefCell;
 
-    use glib::subclass::InitializingObject;
     use super::*;
+    use glib::subclass::InitializingObject;
 
     #[derive(Debug, Default, CompositeTemplate)]
     #[template(resource = "/moe/tsukimi/check_row.ui")]
     pub struct CheckRow {
         #[template_child]
         pub check: TemplateChild<gtk::CheckButton>,
-        pub track_id: RefCell<i64>
+        pub track_id: RefCell<i64>,
     }
 
     #[glib::object_subclass]

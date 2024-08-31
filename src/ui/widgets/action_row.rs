@@ -1,16 +1,12 @@
 use adw::subclass::prelude::*;
-use gtk::{
-    glib,
-    CompositeTemplate,
-};
-
+use gtk::{glib, CompositeTemplate};
 
 mod imp {
     use std::cell::Cell;
 
+    use super::*;
     use glib::{subclass::InitializingObject, Properties};
     use gtk::prelude::*;
-    use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, Properties)]
     #[template(resource = "/moe/tsukimi/action_row.ui")]

@@ -628,7 +628,11 @@ impl EmbyClient {
         Ok(())
     }
 
-    pub async fn position_back(&self, back: &Back, backtype: BackType) -> Result<(), reqwest::Error> {
+    pub async fn position_back(
+        &self,
+        back: &Back,
+        backtype: BackType,
+    ) -> Result<(), reqwest::Error> {
         let path = match backtype {
             BackType::Start => "Sessions/Playing".to_string(),
             BackType::Stop => "Sessions/Playing/Stopped".to_string(),

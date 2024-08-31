@@ -1,7 +1,9 @@
 pub mod account_add;
 pub mod account_settings;
+pub mod action_row;
 pub mod actor;
 pub mod boxset;
+pub mod check_row;
 pub mod content_viewer;
 pub mod disc_box;
 pub mod fix;
@@ -37,5 +39,3 @@ pub mod tu_list_item;
 pub mod tuview_scrolled;
 pub mod utils;
 pub mod window;
-pub mod action_row;
-pub mod check_row;

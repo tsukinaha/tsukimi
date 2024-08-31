@@ -1,20 +1,19 @@
 use crate::client::client::{BackType, EMBY_CLIENT};
-use crate::client::network::RUNTIME;
 use crate::client::structs::Back;
 use crate::toast;
-use crate::ui::provider::dropdown_factory::DropdownList;
 use crate::ui::widgets::check_row::CheckRow;
 use crate::ui::widgets::song_widget::format_duration;
 use crate::utils::{spawn, spawn_tokio};
-use adw::{prelude::*, ActionRow};
+use adw::prelude::*;
 use gettextrs::gettext;
 use glib::Object;
-use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
 use super::mpvglarea::MPVGLArea;
-use super::tsukimi_mpv::{ListenEvent, MpvTrack, MpvTracks, TrackSelection, ACTIVE, MPV_EVENT_CHANNEL, PAUSED};
+use super::tsukimi_mpv::{
+    ListenEvent, MpvTrack, MpvTracks, TrackSelection, MPV_EVENT_CHANNEL, PAUSED,
+};
 use super::video_scale::VideoScale;
 static MIN_MOTION_TIME: i64 = 100000;
 
@@ -565,16 +564,14 @@ impl MPVPage {
             let duration = *position as u64 * 10000000;
             let mut back = back.clone();
             back.tick = duration;
-            spawn(
-                spawn_tokio(async move {
-                    let _ = EMBY_CLIENT
-                        .position_back(&back, backtype)
-                        .await
-                        .map_err(|e| {
-                            eprintln!("send_back error: {:?}", e);
-                        });
-                })
-            )
+            spawn(spawn_tokio(async move {
+                let _ = EMBY_CLIENT
+                    .position_back(&back, backtype)
+                    .await
+                    .map_err(|e| {
+                        eprintln!("send_back error: {:?}", e);
+                    });
+            }))
         }
     }
 
@@ -584,10 +581,11 @@ impl MPVPage {
             #[weak(rename_to = obj)]
             self,
             move || {
-                self.imp().back_timeout.replace(Some(glib::timeout_add_seconds_local(
-                    10,
-                    move || obj.update_position_callback(),
-                )));
+                self.imp()
+                    .back_timeout
+                    .replace(Some(glib::timeout_add_seconds_local(10, move || {
+                        obj.update_position_callback()
+                    })));
             }
         );
         closure();

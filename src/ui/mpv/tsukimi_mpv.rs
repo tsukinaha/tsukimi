@@ -1,11 +1,15 @@
 use gtk::gdk::GLContext;
 use libmpv2::{
-    events::{EventContext, PropertyData}, mpv_node::MpvNode, GetData, SetData
+    events::{EventContext, PropertyData},
+    mpv_node::MpvNode,
+    GetData, SetData,
 };
 use tokio::time;
 
 use std::{
-    cell::RefCell, collections::HashMap, sync::{atomic::AtomicU32, Arc}
+    cell::RefCell,
+    collections::HashMap,
+    sync::{atomic::AtomicU32, Arc},
 };
 
 use libmpv2::{
@@ -106,7 +110,6 @@ pub struct RenderUpdate {
     pub tx: Sender<bool>,
     pub rx: Receiver<bool>,
 }
-
 
 // Give render update a unique channel
 pub static RENDER_UPDATE: Lazy<RenderUpdate> = Lazy::new(|| {
@@ -358,18 +361,25 @@ fn node_to_tracks(node: MpvNode) -> MpvTracks {
     for node in array {
         let range = node.map().unwrap().collect::<HashMap<_, _>>();
         let id = range.get("id").unwrap().i64().unwrap();
-        let title = range.get("title")
+        let title = range
+            .get("title")
             .and_then(|v| v.str())
             .unwrap_or("unknown")
             .to_string();
 
-        let lang = range.get("lang")
+        let lang = range
+            .get("lang")
             .and_then(|v| v.str())
             .unwrap_or("unknown")
             .to_string();
 
         let type_ = range.get("type").unwrap().str().unwrap().to_string();
-        let track = MpvTrack { id, title, lang, type_ };
+        let track = MpvTrack {
+            id,
+            title,
+            lang,
+            type_,
+        };
         if track.type_ == "audio" {
             audio_tracks.push(track);
         } else if track.type_ == "sub" {
