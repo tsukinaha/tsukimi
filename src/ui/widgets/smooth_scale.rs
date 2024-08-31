@@ -115,9 +115,7 @@ impl SmoothScale {
     pub fn update_timeout(&self) {
         let width = std::cmp::max(self.width(), 1);
         let timeout_period = std::cmp::min(1000 * 200 / width, 200);
-        if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
-            glib::source::SourceId::remove(timeout);
-        }
+        self.remove_timeout();
         let closure = glib::clone!(
             #[weak(rename_to = obj)]
             self,

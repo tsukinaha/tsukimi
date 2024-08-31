@@ -23,8 +23,6 @@ mod imp {
         #[template_child]
         pub password_second_entry: TemplateChild<adw::PasswordEntryRow>,
         #[template_child]
-        pub backcontrol: TemplateChild<adw::SwitchRow>,
-        #[template_child]
         pub sidebarcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub spinrow: TemplateChild<adw::SpinRow>,
@@ -108,7 +106,6 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            obj.set_back();
             obj.set_sidebar();
             obj.set_spin();
             obj.set_proxy();
@@ -194,14 +191,6 @@ impl AccountSettings {
                 SETTINGS.set_overlay(control.is_active()).unwrap();
             }
         ));
-    }
-
-    pub fn set_back(&self) {
-        let imp = self.imp();
-        imp.backcontrol.set_active(SETTINGS.progress());
-        imp.backcontrol.connect_active_notify(move |control| {
-            SETTINGS.set_progress(control.is_active()).unwrap();
-        });
     }
 
     pub fn set_color(&self) {

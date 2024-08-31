@@ -112,9 +112,7 @@ impl VideoScale {
     }
 
     pub fn update_timeout(&self) {
-        if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
-            glib::source::SourceId::remove(timeout);
-        }
+        self.remove_timeout();
         let closure = glib::clone!(
             #[weak(rename_to = obj)]
             self,

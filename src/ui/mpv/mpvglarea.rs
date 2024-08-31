@@ -99,7 +99,7 @@ impl MPVGLArea {
         Object::builder().build()
     }
 
-    pub fn play(&self, url: &str, name: Option<&str>, back: Option<Back>, percentage: f64) {
+    pub fn play(&self, url: &str, percentage: f64) {
         let mpv = &self.imp().mpv;
 
         mpv.event_thread_alive

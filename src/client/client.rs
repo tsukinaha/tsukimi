@@ -33,6 +33,12 @@ static DEVICE_NAME: Lazy<String> = Lazy::new(|| {
         .to_string()
 });
 
+pub enum BackType {
+    Start,
+    Stop,
+    Back,
+}
+
 pub struct EmbyClient {
     pub url: Mutex<Option<Url>>,
     pub client: reqwest::Client,
@@ -622,24 +628,12 @@ impl EmbyClient {
         Ok(())
     }
 
-    pub async fn position_back(&self, back: &Back) -> Result<(), reqwest::Error> {
-        let path = "Sessions/Playing/Progress".to_string();
-        let params = [("reqformat", "json")];
-        let body = json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
-        self.post(&path, &params, body).await?;
-        Ok(())
-    }
-
-    pub async fn position_stop(&self, back: &Back) -> Result<(), reqwest::Error> {
-        let path = "Sessions/Playing/Stopped".to_string();
-        let params = [("reqformat", "json")];
-        let body = json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
-        self.post(&path, &params, body).await?;
-        Ok(())
-    }
-
-    pub async fn position_start(&self, back: &Back) -> Result<(), reqwest::Error> {
-        let path = "Sessions/Playing".to_string();
+    pub async fn position_back(&self, back: &Back, backtype: BackType) -> Result<(), reqwest::Error> {
+        let path = match backtype {
+            BackType::Start => "Sessions/Playing".to_string(),
+            BackType::Stop => "Sessions/Playing/Stopped".to_string(),
+            BackType::Back => "Sessions/Playing/Progress".to_string(),
+        };
         let params = [("reqformat", "json")];
         let body = json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate":4000000,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
         self.post(&path, &params, body).await?;

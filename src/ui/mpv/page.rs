@@ -1,9 +1,11 @@
-use crate::client::client::EMBY_CLIENT;
+use crate::client::client::{BackType, EMBY_CLIENT};
+use crate::client::network::RUNTIME;
 use crate::client::structs::Back;
 use crate::toast;
 use crate::ui::provider::dropdown_factory::DropdownList;
 use crate::ui::widgets::check_row::CheckRow;
 use crate::ui::widgets::song_widget::format_duration;
+use crate::utils::{spawn, spawn_tokio};
 use adw::{prelude::*, ActionRow};
 use gettextrs::gettext;
 use glib::Object;
@@ -74,6 +76,7 @@ mod imp {
         #[template_child]
         pub audio_listbox: TemplateChild<gtk::ListBox>,
         pub timeout: RefCell<Option<glib::source::SourceId>>,
+        pub back_timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
         pub x: RefCell<f64>,
         pub y: RefCell<f64>,
@@ -189,7 +192,10 @@ impl MPVPage {
         }
         imp.suburl
             .replace(suburi.map(|suburi| EMBY_CLIENT.get_streaming_url(suburi)));
-        imp.video.play(url, name, back, percentage);
+        imp.video.play(url, percentage);
+        imp.back.replace(back);
+        self.handle_callback(BackType::Start);
+        self.update_timeout();
     }
 
     fn set_audio_and_video_tracks_dropdown(&self, value: MpvTracks) {
@@ -511,6 +517,12 @@ impl MPVPage {
         self.pause_icon_set(!paused);
 
         mpv_area.imp().mpv.pause(!paused);
+
+        if paused {
+            self.update_timeout();
+        } else {
+            self.remove_timeout();
+        }
     }
 
     fn pause_icon_set(&self, paused: bool) {
@@ -526,6 +538,8 @@ impl MPVPage {
 
     #[template_callback]
     fn on_stop_clicked(&self) {
+        self.handle_callback(BackType::Stop);
+        self.remove_timeout();
         self.imp().video_scale.remove_timeout();
         let mpv = &self.imp().video.imp().mpv;
         mpv.pause(true);
@@ -537,5 +551,51 @@ impl MPVPage {
             .and_downcast_ref::<crate::ui::widgets::window::Window>()
             .unwrap();
         window.imp().stack.set_visible_child_name("main");
+    }
+
+    pub fn update_position_callback(&self) -> glib::ControlFlow {
+        self.handle_callback(BackType::Back);
+        glib::ControlFlow::Continue
+    }
+
+    fn handle_callback(&self, backtype: BackType) {
+        let position = &self.imp().video.position();
+        let back = self.imp().back.borrow();
+        if let Some(back) = back.as_ref() {
+            let duration = *position as u64 * 10000000;
+            let mut back = back.clone();
+            back.tick = duration;
+            spawn(
+                spawn_tokio(async move {
+                    let _ = EMBY_CLIENT
+                        .position_back(&back, backtype)
+                        .await
+                        .map_err(|e| {
+                            eprintln!("send_back error: {:?}", e);
+                        });
+                })
+            )
+        }
+    }
+
+    pub fn update_timeout(&self) {
+        self.remove_timeout();
+        let closure = glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move || {
+                self.imp().back_timeout.replace(Some(glib::timeout_add_seconds_local(
+                    10,
+                    move || obj.update_position_callback(),
+                )));
+            }
+        );
+        closure();
+    }
+
+    pub fn remove_timeout(&self) {
+        if let Some(timeout) = self.imp().back_timeout.borrow_mut().take() {
+            glib::source::SourceId::remove(timeout);
+        }
     }
 }

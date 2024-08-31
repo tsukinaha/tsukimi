@@ -408,19 +408,7 @@
             </style>
           </object>
         </child>
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Others</property>
-            <child>
-              <object class="AdwSwitchRow" id="backcontrol">
-                <property name="title" translatable="yes">Proactively Provide Progress Updates</property>
-                <property name="subtitle" translatable="yes">Every 10 Seconds or Every 300 Seconds</property>
-              </object>
-            </child>
-          </object>
-        </child>
       </object>
     </child>
-
   </template>
 </interface>
