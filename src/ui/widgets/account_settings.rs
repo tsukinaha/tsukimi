@@ -54,6 +54,10 @@ mod imp {
         pub color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
         pub fg_color: TemplateChild<gtk::ColorDialogButton>,
+        #[template_child]
+        pub estimate_control: TemplateChild<gtk::Switch>,
+        #[template_child]
+        pub estimate_spinrow: TemplateChild<adw::SpinRow>,
     }
 
     #[glib::object_subclass]
@@ -121,6 +125,7 @@ mod imp {
             obj.set_daily_recommend();
             obj.set_mpvcontrol();
             obj.set_color();
+            obj.set_estimate();
         }
     }
 
@@ -444,5 +449,24 @@ impl AccountSettings {
         imp.mpvcontrol.connect_active_notify(move |control| {
             SETTINGS.set_mpv(control.is_active()).unwrap();
         });
+    }
+
+    pub fn set_estimate(&self) {
+        let imp = self.imp();
+        imp.estimate_control.set_active(SETTINGS.mpv_estimate());
+        imp.estimate_spinrow.set_value(SETTINGS.mpv_estimate_target_frame().into());
+    }
+
+    #[template_callback]
+    pub fn on_estimate_control(&self, control: bool) -> bool {
+        SETTINGS.set_mpv_estimate(control).unwrap();
+        !control
+    }
+
+    #[template_callback]
+    pub fn on_estimate_spinrow(&self, spin: adw::SpinRow) {
+        SETTINGS
+            .set_mpv_estimate_target_frame(spin.value() as i32)
+            .unwrap();
     }
 }

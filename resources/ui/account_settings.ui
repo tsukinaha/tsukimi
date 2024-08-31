@@ -408,6 +408,35 @@
             </style>
           </object>
         </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Estimate Frame Rate</property>
+            <property name="header_suffix">
+              <object class="GtkSwitch" id="estimate_control">
+                <property name="valign">center</property>
+                <property name="margin-end">12</property>
+                <signal name="state-set" handler="on_estimate_control" swapped="yes" />
+              </object>
+            </property>
+            <property name="description" translatable="yes"></property>
+            <child>
+              <object class="AdwSpinRow" id="estimate_spinrow">
+                <property name="title" translatable="yes">vf=lavfi="fps=fps={}:round=down"</property>
+                <property name="subtitle" translatable="yes">Use vf filter to interpolate frames to improve the smoothness of resizing and menus.</property>
+                <signal name="changed" handler="on_estimate_spinrow" swapped="yes" />
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">500</property>
+                    <property name="value">60</property>
+                    <property name="page-increment">1</property>
+                    <property name="step-increment">1</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
   </template>

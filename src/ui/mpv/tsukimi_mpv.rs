@@ -74,7 +74,7 @@ impl Default for TsukimiMPV {
         gl::load_with(|name| epoxy::get_proc_addr(name) as *const _);
 
         let mpv = Mpv::with_initializer(|init| {
-            init.set_property("config", false)?;
+            
             init.set_property("input-vo-keyboard", true)?;
             init.set_property("input-default-bindings", true)?;
             init.set_property("user-agent", "Tsukimi")?;
@@ -82,6 +82,10 @@ impl Default for TsukimiMPV {
                 init.set_property("vo", "gpu-next")?;
             } else {
                 init.set_property("vo", "libmpv")?;
+            }
+            if SETTINGS.mpv_estimate() {
+                let fps = SETTINGS.mpv_estimate_target_frame();
+                init.set_property("vf", format!("lavfi=\"fps=fps={fps}:round=down\""))?;
             }
             Ok(())
         })

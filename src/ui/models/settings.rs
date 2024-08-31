@@ -32,6 +32,27 @@ impl Settings {
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
     const KEY_ACCENT_FG_COLOR_CODE: &'static str = "accent-fg-color-code";
     const KEY_MUSIC_REPEAT_MODE: &'static str = "music-repeat-mode";
+    const KEY_MPV_ESTIMATE: &'static str = "mpv-estimate";
+    const KEY_MPV_ESTIMATE_TARGET_FRAME: &'static str = "mpv-estimate-target-frame";
+
+    pub fn set_mpv_estimate(&self, mpv_estimate: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_MPV_ESTIMATE, mpv_estimate)
+    }
+
+    pub fn mpv_estimate(&self) -> bool {
+        self.boolean(Self::KEY_MPV_ESTIMATE)
+    }
+
+    pub fn set_mpv_estimate_target_frame(
+        &self,
+        mpv_estimate_target_frame: i32,
+    ) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_ESTIMATE_TARGET_FRAME, mpv_estimate_target_frame)
+    }
+
+    pub fn mpv_estimate_target_frame(&self) -> i32 {
+        self.int(Self::KEY_MPV_ESTIMATE_TARGET_FRAME)
+    }
 
     pub fn set_music_repeat_mode(&self, music_repeat_mode: &str) -> Result<(), glib::BoolError> {
         self.set_string(Self::KEY_MUSIC_REPEAT_MODE, music_repeat_mode)
