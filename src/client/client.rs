@@ -1,4 +1,4 @@
-use std::sync::Mutex;
+use std::{env, sync::Mutex};
 
 use reqwest::{header::HeaderValue, Method, RequestBuilder, Response};
 use serde::{Deserialize, Serialize};
@@ -8,7 +8,7 @@ use url::Url;
 use uuid::Uuid;
 
 use crate::{
-    config::{load_env, proxy::ReqClient, Account, APP_VERSION},
+    config::{proxy::ReqClient, Account, APP_VERSION},
     ui::models::emby_cache_path,
     utils::{spawn, spawn_tokio},
 };
@@ -76,7 +76,7 @@ impl EmbyClient {
         self.header_change_url(&account.server, &account.port);
         self.header_change_token(&account.access_token);
         self.set_user_id(&account.user_id);
-        load_env(account);
+        env::set_var("EMBY_NAME", &account.servername);
         crate::ui::provider::set_admin(false);
         spawn(async move {
             spawn_tokio(async move {

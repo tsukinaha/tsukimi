@@ -64,8 +64,7 @@ pub async fn save_cfg(account: Account) -> Result<(), Box<dyn std::error::Error>
 }
 
 pub fn load_cfgv2() -> Result<Accounts, Box<dyn std::error::Error>> {
-    let mut path = dirs::home_dir().ok_or("Failed to get home directory")?;
-    path.push(".config");
+    let mut path = dirs::config_dir().ok_or("Failed to get home directory")?;
     path.push("tsukimi.toml");
     if !path.exists() {
         return Ok(Accounts {
@@ -79,22 +78,8 @@ pub fn load_cfgv2() -> Result<Accounts, Box<dyn std::error::Error>> {
     Ok(accounts)
 }
 
-pub fn load_env(account: &Account) {
-    env::set_var("EMBY_NAME", &account.servername);
-    env::set_var("EMBY_DOMAIN", &account.server);
-    env::set_var("EMBY_USERNAME", &account.username);
-    env::set_var("EMBY_PASSWORD", &account.password);
-    env::set_var("EMBY_PORT", &account.port);
-    env::set_var("EMBY_USER_ID", &account.user_id);
-    env::set_var("EMBY_ACCESS_TOKEN", &account.access_token);
-
-    let uuid = generate_uuid();
-    env::set_var("UUID", uuid);
-}
-
 pub fn remove(account: &Account) -> Result<(), Box<dyn std::error::Error>> {
-    let mut path = dirs::home_dir().ok_or("Failed to get home directory")?;
-    path.push(".config");
+    let mut path = dirs::config_dir().ok_or("Failed to get home directory")?;
     path.push("tsukimi.toml");
     let mut accounts: Accounts = load_cfgv2()?;
     accounts.accounts.retain(|x| {
