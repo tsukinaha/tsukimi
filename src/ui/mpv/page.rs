@@ -509,13 +509,9 @@ impl MPVPage {
 
     #[template_callback]
     fn on_play_pause_clicked(&self) {
-        let mpv_area = self.imp().video.get();
-
-        let paused = mpv_area.imp().mpv.paused();
-
-        self.pause_icon_set(!paused);
-
-        mpv_area.imp().mpv.pause(!paused);
+        let video = &self.imp().video;
+        let paused = video.paused();
+        video.pause(!paused);
 
         if paused {
             self.update_timeout();
@@ -595,5 +591,16 @@ impl MPVPage {
         if let Some(timeout) = self.imp().back_timeout.borrow_mut().take() {
             glib::source::SourceId::remove(timeout);
         }
+    }
+
+    #[template_callback]
+    fn right_click_cb(&self) {
+        
+    }
+
+    #[template_callback]
+    fn left_click_cb(&self) {
+        let video = &self.imp().video;
+        video.pause(!video.paused());
     }
 }

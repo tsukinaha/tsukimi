@@ -17,6 +17,18 @@
               <object class="MPVGLArea" id="video">
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
+                <child>
+                  <object class="GtkGestureClick">
+                    <property name="button">1</property>
+                    <signal name="released" handler="left_click_cb" swapped="yes"/>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkGestureClick">
+                    <property name="button">2</property>
+                    <signal name="released" handler="right_click_cb" swapped="yes"/>
+                  </object>
+                </child>
               </object>
             </child>
             <child type="overlay">
