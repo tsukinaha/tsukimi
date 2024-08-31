@@ -424,6 +424,7 @@
               <object class="AdwSpinRow" id="estimate_spinrow">
                 <property name="title" translatable="yes">vf=lavfi="fps=fps={}:round=down"</property>
                 <property name="subtitle" translatable="yes">Recommended setting value: Current display frame rate</property>
+                <property name="sensitive" bind-source="estimate_control" bind-property="active" bind-flags="sync-create" />
                 <signal name="changed" handler="on_estimate_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
