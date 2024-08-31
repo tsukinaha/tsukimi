@@ -20,7 +20,12 @@ pub struct MpvTrack {
     pub id: i64,
     pub title: String,
     pub lang: String,
-    pub selected: bool,
+}
+
+pub struct TsukimiMPV {
+    pub mpv: RefCell<Option<Mpv>>,
+    pub ctx: RefCell<Option<RenderContext>>,
+    pub event_thread_alive: Arc<AtomicU32>,
 }
 
 pub enum TrackSelection {
@@ -35,12 +40,6 @@ impl TrackSelection {
             TrackSelection::None => "no".to_string(),
         }
     }
-}
-
-pub struct TsukimiMPV {
-    pub mpv: RefCell<Option<Mpv>>,
-    pub ctx: RefCell<Option<RenderContext>>,
-    pub event_thread_alive: Arc<AtomicU32>,
 }
 
 pub const PAUSED: u32 = 0;
@@ -134,6 +133,8 @@ pub enum ListenEvent {
     TrackListCount(i64),
     Volume(i64),
     Speed(f64),
+    Aid(i64),
+    Sid(i64),
 }
 
 pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
@@ -205,16 +206,16 @@ impl TsukimiMPV {
         self.set_property("speed", speed);
     }
 
-    pub fn stop(&self) {
-        self.command("stop", &[]);
-    }
-
     pub fn set_aid(&self, aid: TrackSelection) {
         self.set_property("aid", aid.to_string());
     }
 
     pub fn set_sid(&self, sid: TrackSelection) {
         self.set_property("sid", sid.to_string());
+    }
+
+    pub fn stop(&self) {
+        self.command("stop", &[]);
     }
 
     pub fn display_stats_toggle(&self) {
@@ -224,24 +225,20 @@ impl TsukimiMPV {
     pub fn get_audio_and_subtitle_tracks(&self, count: i64) -> (Vec<MpvTrack>, Vec<MpvTrack>) {
         let mut audio_tracks = Vec::new();
         let mut sub_tracks = Vec::new();
-        let current_audio = self.get_property("current-tracks/audio/id").unwrap_or(-1);
-        let current_sub = self.get_property("current-tracks/sub/id").unwrap_or(-1);
-        println!("Current audio: {}", current_audio);
-        println!("Current sub: {}", current_sub);
         for i in 0..count {
             let track_type = self
                 .get_property(&format!("track-list/{}/type", i))
                 .unwrap_or("Unknown".to_string());
             if track_type == "audio" {
-                audio_tracks.push(self.get_track_info(i, current_audio));
+                audio_tracks.push(self.get_track_info(i));
             } else if track_type == "sub" {
-                sub_tracks.push(self.get_track_info(i, current_sub));
+                sub_tracks.push(self.get_track_info(i));
             }
         }
         (audio_tracks, sub_tracks)
     }
 
-    fn get_track_info(&self, i: i64, c: i64) -> MpvTrack {
+    fn get_track_info(&self, i: i64) -> MpvTrack {
         let title = self
             .get_property(&format!("track-list/{}/title", i))
             .unwrap_or("Unknown".to_string());
@@ -251,8 +248,7 @@ impl TsukimiMPV {
         let lang = self
             .get_property(&format!("track-list/{}/lang", i))
             .unwrap_or("Unknown".to_string());
-        let selected = id == c;
-        MpvTrack { id, title, lang, selected }
+        MpvTrack { id, title, lang }
     }
 
     fn set_property<V>(&self, property: &str, value: V)
@@ -304,6 +300,12 @@ impl TsukimiMPV {
         event_context
             .observe_property("track-list/count", libmpv2::Format::Int64, 3)
             .unwrap();
+        event_context
+            .observe_property("aid", libmpv2::Format::Int64, 4)
+            .unwrap();
+        event_context
+            .observe_property("sid", libmpv2::Format::Int64, 5)
+            .unwrap();
         let event_thread_alive = self.event_thread_alive.clone();
         std::thread::Builder::new()
             .name("mpv event loop".into())
@@ -343,6 +345,16 @@ impl TsukimiMPV {
                             "speed" => {
                                 if let PropertyData::Double(speed) = change {
                                     let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Speed(speed));
+                                }
+                            }
+                            "aid" => {
+                                if let PropertyData::Int64(aid) = change {
+                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Aid(aid));
+                                }
+                            }
+                            "sid" => {
+                                if let PropertyData::Int64(sid) = change {
+                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Sid(sid));
                                 }
                             }
                             _ => {}

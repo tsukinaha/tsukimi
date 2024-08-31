@@ -153,6 +153,7 @@ impl Settings {
     pub fn set_fullscreen(&self, fullscreen: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_IS_FULLSCREEN, fullscreen)
     }
+    
     pub fn fullscreen(&self) -> bool {
         self.boolean(Self::KEY_IS_FULLSCREEN)
     }

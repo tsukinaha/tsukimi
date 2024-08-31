@@ -71,14 +71,12 @@ mod imp {
                 let width = self.obj().width() * factor;
                 let height = self.obj().height() * factor;
                 unsafe {
-                    let mut fbo = 0;
+                    let mut fbo = -1;
                     gl::GetIntegerv(gl::FRAMEBUFFER_BINDING, &mut fbo);
                     ctx.render::<GLContext>(fbo, width, height, true).unwrap();
                 }
-                glib::Propagation::Proceed
-            } else {
-                glib::Propagation::Stop
             }
+            glib::Propagation::Stop
         }
     }
 }

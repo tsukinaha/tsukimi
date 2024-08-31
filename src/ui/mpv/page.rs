@@ -18,7 +18,7 @@ static MIN_MOTION_TIME: i64 = 100000;
 
 mod imp {
 
-    use std::cell::RefCell;
+    use std::cell::{Cell, RefCell};
 
     use adw::prelude::*;
     use glib::subclass::InitializingObject;
@@ -37,6 +37,8 @@ mod imp {
     pub struct MPVPage {
         #[property(get, set, nullable)]
         pub url: RefCell<Option<String>>,
+        #[property(get, set = Self::set_fullscreened, explicit_notify)]
+        pub fullscreened: Cell<bool>,
         #[template_child]
         pub video: TemplateChild<MPVGLArea>,
         #[template_child]
@@ -111,7 +113,18 @@ mod imp {
 
             self.video_scale.set_player(Some(&self.video.get()));
 
-            self.obj().listen_events();
+            let obj = self.obj();
+
+            obj.connect_root_notify(|obj| {
+                if let Some(window) = obj.root().and_downcast::<gtk::Window>() {
+                    window
+                        .bind_property("fullscreened", obj, "fullscreened")
+                        .sync_create()
+                        .build();
+                }
+            });
+
+            obj.listen_events();
         }
     }
 
@@ -125,6 +138,18 @@ mod imp {
     impl ApplicationWindowImpl for MPVPage {}
 
     impl adw::subclass::navigation_page::NavigationPageImpl for MPVPage {}
+
+    impl MPVPage {
+        fn set_fullscreened(&self, fullscreened: bool) {
+            if fullscreened == self.fullscreened.get() {
+                return;
+            }
+
+            self.fullscreened.set(fullscreened);
+
+            self.obj().notify_fullscreened();
+        }
+    }
 }
 
 glib::wrapper! {
@@ -182,6 +207,7 @@ impl MPVPage {
 
         let row = CheckRow::new();
         row.set_title("None");
+        row.imp().track_id.replace(0);
         let none_check = &row.imp().check.get();
         row.connect_activated(glib::clone!(
             #[weak(rename_to = obj)]
@@ -196,10 +222,8 @@ impl MPVPage {
             let row = CheckRow::new();
             row.set_title(&track.title);
             row.set_subtitle(&track.lang);
+            row.imp().track_id.replace(track.id);
             let check = &row.imp().check.get();
-            if track.selected {
-                check.set_active(true);
-            }
             check.set_group(Some(none_check));
             row.connect_activated(glib::clone!(
                 #[weak(rename_to = obj)]
@@ -279,10 +303,31 @@ impl MPVPage {
                         ListenEvent::Speed(value) => {
                             obj.speed_cb(value);
                         }
+                        ListenEvent::Aid(value) => {
+                            obj.update_track_cb(&obj.imp().audio_listbox.get(), value);
+                        }
+                        ListenEvent::Sid(value) => {
+                            println!("sid: {}", value);
+                            obj.update_track_cb(&obj.imp().sub_listbox.get(), value);
+                        }
                     }
                 }
             }
         ));
+    }
+
+    fn update_track_cb(&self, listbox: &gtk::ListBox, track_id: i64) {
+        let model = listbox.observe_children();
+        for i in 0..model.n_items() {
+            let item = model.item(i);
+            let Some(row) = item.and_downcast_ref::<CheckRow>() else {
+                continue;
+            };
+            if *row.imp().track_id.borrow() != track_id {
+                continue;
+            } 
+            row.imp().check.get().set_active(true);
+        }
     }
 
     fn update_duration(&self, value: f64) {
@@ -500,7 +545,6 @@ impl MPVPage {
         let mpv = &self.imp().video.imp().mpv;
         mpv.pause(true);
         mpv.stop();
-        self.imp().loading_box.set_visible(true);
         mpv.event_thread_alive
             .store(PAUSED, std::sync::atomic::Ordering::SeqCst);
         let root = self.root();

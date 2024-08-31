@@ -17,7 +17,6 @@
               <object class="MPVGLArea" id="video">
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
-                <property name="has_stencil_buffer">true</property>
               </object>
             </child>
             <child type="overlay">
@@ -143,11 +142,25 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton" id="full_screen_button">
+                          <object class="GtkButton">
+                            <property name="visible" bind-source="MPVPage" bind-property="fullscreened" bind-flags="sync-create|invert-boolean"/>
                             <property name="icon-name">view-fullscreen-symbolic</property>
-                            <style>
-                              <class name="flat" />
-                            </style>
+                            <property name="action-name">win.toggle-fullscreen</property>
+                            <property name="tooltip-text" translatable="yes">Fullscreen</property>
+                            <accessibility>
+                              <property name="label" translatable="yes">Fullscreen</property>
+                            </accessibility>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="visible" bind-source="MPVPage" bind-property="fullscreened" bind-flags="sync-create"/>
+                            <property name="icon-name">view-restore-symbolic</property>
+                            <property name="action-name">win.toggle-fullscreen</property>
+                            <property name="tooltip-text" translatable="yes">Exit Fullscreen</property>
+                            <accessibility>
+                              <property name="label" translatable="yes">Exit Fullscreen</property>
+                            </accessibility>
                           </object>
                         </child>
                         <style>
@@ -399,7 +412,6 @@
       <widget name="video_scale" />
       <widget name="duration_label" />
       <widget name="menu_button" />
-      <widget name="full_screen_button" />
     </widgets>
   </object>
   <object class="GtkSizeGroup">
