@@ -51,16 +51,6 @@ jobs:
             mingw-w64-x86_64-gst-libav
             git
 
-      - name: Install clapper
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        shell: msys2 {0}
-        run: |
-          git clone https://github.com/Rafostar/clapper.git
-          cd clapper
-          meson setup builddir --prefix=/mingw64 -Dclapper-app=disabled
-          cd builddir
-          meson compile && meson install
-
       - name: Build tsukimi-${{ matrix.target }}
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: powershell
