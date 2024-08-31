@@ -373,10 +373,11 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">MPV Advanced Settings</property>
-            <property name="description" translatable="yes">Warning: do NOT use any method other than the software's own controls to control the window</property>
+            <property name="description" translatable="yes">Warning: do NOT use any method other than the software's own controls to control the window. Restart to take effect</property>
             <child>
               <object class="AdwSwitchRow" id="mpvcontrol">
                 <property name="title" translatable="yes">vo=gpu-next</property>
+                <property name="subtitle" translatable="yes">This option on now only turns embedded mpv into external</property>
                 <style>
                   <class name="error"/>
                 </style>
@@ -418,11 +419,11 @@
                 <signal name="state-set" handler="on_estimate_control" swapped="yes" />
               </object>
             </property>
-            <property name="description" translatable="yes"></property>
+            <property name="description" translatable="yes">Use vf filter to interpolate frames to improve the smoothness of resizing and menus.</property>
             <child>
               <object class="AdwSpinRow" id="estimate_spinrow">
                 <property name="title" translatable="yes">vf=lavfi="fps=fps={}:round=down"</property>
-                <property name="subtitle" translatable="yes">Use vf filter to interpolate frames to improve the smoothness of resizing and menus.</property>
+                <property name="subtitle" translatable="yes">Recommended setting value: Current display frame rate</property>
                 <signal name="changed" handler="on_estimate_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
