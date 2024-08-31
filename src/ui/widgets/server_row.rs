@@ -4,7 +4,7 @@ use gtk::{glib, CompositeTemplate};
 use crate::{config::Account, ui::provider::account_item::AccountItem};
 
 mod imp {
-    use std::{cell::OnceCell, env};
+    use std::cell::OnceCell;
 
     use glib::subclass::InitializingObject;
 

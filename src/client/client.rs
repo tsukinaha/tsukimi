@@ -77,6 +77,7 @@ impl EmbyClient {
         self.header_change_token(&account.access_token);
         self.set_user_id(&account.user_id);
         env::set_var("EMBY_NAME", &account.servername);
+        env::set_var("EMBY_USERNAME", &account.username);
         crate::ui::provider::set_admin(false);
         spawn(async move {
             spawn_tokio(async move {
