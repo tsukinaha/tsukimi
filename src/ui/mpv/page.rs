@@ -619,6 +619,17 @@ impl MPVPage {
         video.pause(!video.paused());
     }
 
+    #[template_callback]
+    fn key_pressed_cb(&self, key: u32) -> bool {
+        println!("key pressed: {}", key);
+        false
+    }
+
+    #[template_callback]
+    fn key_released_cb(&self, key: u32) {
+        println!("key released: {}", key);
+    }
+
     pub fn set_popover(&self) {
         let imp = self.imp();
         let builder = Builder::from_resource("/moe/tsukimi/mpv_menu.ui");

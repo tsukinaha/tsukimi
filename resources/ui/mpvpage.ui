@@ -11,6 +11,12 @@
             <signal name="enter" handler="on_enter" swapped="yes" />
           </object>
         </child>
+        <child>
+          <object class="GtkEventControllerKey">
+            <signal name="key-pressed" handler="key_pressed_cb" swapped="yes"/>
+            <signal name="key-released" handler="key_released_cb" swapped="yes"/>
+          </object>
+        </child>
         <property name="content">
           <object class="GtkOverlay">
             <child>
