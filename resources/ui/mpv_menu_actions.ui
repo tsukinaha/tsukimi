@@ -13,13 +13,7 @@
         <child>
           <object class="GtkButton">
             <property name="tooltip-text" translatable="yes">Backward</property>
-            <property name="child">
-              <object class="AdwButtonContent" id="backward_buttoncontent">
-                <property name="icon-name">media-seek-backward-symbolic</property>
-                <property name="label" translatable="yes">85s</property>
-                <property name="use-underline">True</property>
-              </object>
-            </property>
+            <property name="icon-name">media-seek-backward-symbolic</property>
             <layout>
               <property name="column">0</property>
               <property name="row">0</property>
@@ -32,7 +26,6 @@
         <child>
           <object class="GtkButton">
             <property name="tooltip-text" translatable="yes">Play</property>
-            
             <property name="icon_name">media-playback-start-symbolic</property>
             <layout>
               <property name="column">1</property>
@@ -47,7 +40,6 @@
         <child>
           <object class="GtkButton">
             <property name="tooltip-text" translatable="yes">Pause</property>
-            
             <property name="icon_name">media-playback-pause-symbolic</property>
             <layout>
               <property name="column">2</property>
@@ -62,19 +54,13 @@
         <child>
           <object class="GtkButton">
             <property name="tooltip-text" translatable="yes">Forward</property>
-            
-            <property name="child">
-              <object class="AdwButtonContent" id="forward_buttoncontent">
-                <property name="icon-name">media-seek-forward-symbolic</property>
-                <property name="label" translatable="yes">85s</property>
-                <property name="use-underline">True</property>
-              </object>
-            </property>
+            <property name="icon-name">media-seek-forward-symbolic</property>
             <layout>
               <property name="column">3</property>
               <property name="row">0</property>
             </layout>
             <style>
+              <class name="circular" />
               <class name="flat" />
             </style>
           </object>
