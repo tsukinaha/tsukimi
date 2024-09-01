@@ -375,8 +375,13 @@
             <property name="title">Video Settings</property>
             <child>
               <object class="AdwSpinRow">
-                <property name="title" translatable="yes">Seek backward</property>
+                <property name="title" translatable="yes">Seek Backward</property>
                 <property name="subtitle" translatable="yes">Unit: Seconds</property>
+                <child type="prefix">
+                  <object class="GtkImage">
+                      <property name="icon-name">object-rotate-left-symbolic</property>
+                  </object>
+                </child>
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
@@ -390,8 +395,13 @@
             </child>
             <child>
               <object class="AdwSpinRow">
-                <property name="title" translatable="yes">Seek forward</property>
+                <property name="title" translatable="yes">Seek Forward</property>
                 <property name="subtitle" translatable="yes">Unit: Seconds</property>
+                <child type="prefix">
+                  <object class="GtkImage">
+                      <property name="icon-name">object-rotate-right-symbolic</property>
+                  </object>
+                </child>
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
@@ -401,6 +411,127 @@
                     <property name="step-increment">5</property>
                   </object>
                 </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwSpinRow">
+                <property name="title" translatable="yes">Cache Size</property>
+                <property name="subtitle" translatable="yes">Unit: MB</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">50</property>
+                    <property name="upper">1000</property>
+                    <property name="value">100</property>
+                    <property name="page-increment">50</property>
+                    <property name="step-increment">50</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSpinRow">
+                <property name="title" translatable="yes">Cache Time</property>
+                <property name="subtitle" translatable="yes">Unit: Seconds</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">30</property>
+                    <property name="upper">1000</property>
+                    <property name="value">300</property>
+                    <property name="page-increment">30</property>
+                    <property name="step-increment">30</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwSpinRow">
+                <property name="title" translatable="yes">Subtitle Text Size</property>
+                <property name="subtitle" translatable="yes">This option only takes effect for srt subtitles</property>
+                <child type="prefix">
+                  <object class="GtkImage">
+                      <property name="icon-name">media-view-subtitles-symbolic</property>
+                  </object>
+              </child>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">1</property>
+                    <property name="upper">20</property>
+                    <property name="value">10</property>
+                    <property name="page-increment">1</property>
+                    <property name="step-increment">1</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwSwitchRow">
+                <property name="title" translatable="yes">Force Stereo</property>
+                <child type="prefix">
+                    <object class="GtkImage">
+                        <property name="icon-name">audio-headphones-symbolic</property>
+                    </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwSwitchRow">
+                <property name="title" translatable="yes">Show Buffer Speed</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Action after video ends</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Play Next</property>
+                <property name="activatable-widget">end_group</property>
+                <child type="prefix">
+                    <object class="GtkCheckButton" id="end_group">
+                        <property name="valign">center</property>
+                    </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Loop Playback</property>
+                <property name="activatable-widget">end_group2</property>
+                <child type="prefix">
+                    <object class="GtkCheckButton" id="end_group2">
+                        <property name="valign">center</property>
+                        <property name="group">end_group</property>
+                    </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Stop</property>
+                <property name="activatable-widget">end_group3</property>
+                <child type="prefix">
+                    <object class="GtkCheckButton" id="end_group3">
+                        <property name="valign">center</property>
+                        <property name="group">end_group</property>
+                    </object>
+                </child>
               </object>
             </child>
           </object>
