@@ -372,6 +372,41 @@
         <property name="icon-name">video-x-generic-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title">Video Settings</property>
+            <child>
+              <object class="AdwSpinRow">
+                <property name="title" translatable="yes">Seek backward</property>
+                <property name="subtitle" translatable="yes">Unit: Seconds</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">1</property>
+                    <property name="upper">1000</property>
+                    <property name="value">85</property>
+                    <property name="page-increment">5</property>
+                    <property name="step-increment">5</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSpinRow">
+                <property name="title" translatable="yes">Seek forward</property>
+                <property name="subtitle" translatable="yes">Unit: Seconds</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">1</property>
+                    <property name="upper">1000</property>
+                    <property name="value">85</property>
+                    <property name="page-increment">5</property>
+                    <property name="step-increment">5</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title">MPV Advanced Settings</property>
             <property name="description" translatable="yes">Warning: do NOT use any method other than the software's own controls to control the window. Restart to take effect</property>
             <child>
@@ -435,6 +470,16 @@
                     <property name="step-increment">1</property>
                   </object>
                 </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AActionRow">
+                <property name="title" translatable="yes">More</property>
+                <property name="show-arrow">True</property>
               </object>
             </child>
           </object>
