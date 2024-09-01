@@ -64,7 +64,7 @@ mod imp {
     impl ObjectSubclass for AccountSettings {
         const NAME: &'static str = "AccountSettings";
         type Type = super::AccountSettings;
-        type ParentType = adw::PreferencesDialog;
+        type ParentType = adw::PreferencesWindow;
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
@@ -130,14 +130,15 @@ mod imp {
     }
 
     impl WidgetImpl for AccountSettings {}
-    impl AdwDialogImpl for AccountSettings {}
-    impl PreferencesDialogImpl for AccountSettings {}
+    impl WindowImpl for AccountSettings {}
+    impl AdwWindowImpl for AccountSettings {}
+    impl PreferencesWindowImpl for AccountSettings {}
 }
 
 glib::wrapper! {
-    /// Preference Window to display and update room details.
+    /// Preference Window to display preferences.
     pub struct AccountSettings(ObjectSubclass<imp::AccountSettings>)
-        @extends gtk::Widget, adw::Dialog, adw::PreferencesDialog, @implements gtk::Accessible;
+        @extends gtk::Widget, gtk::Window, adw::PreferencesWindow, @implements gtk::Accessible;
 }
 
 impl Default for AccountSettings {

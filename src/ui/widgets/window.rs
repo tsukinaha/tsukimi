@@ -384,8 +384,9 @@ impl Window {
     }
 
     pub fn account_settings(&self) {
-        let dialog = crate::ui::widgets::account_settings::AccountSettings::new();
-        dialog.present(Some(self));
+        let window = crate::ui::widgets::account_settings::AccountSettings::new();
+        window.set_transient_for(Some(self));
+        window.present();
     }
 
     pub fn change_pop_visibility(&self) {

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template class="AccountSettings" parent="AdwPreferencesDialog">
+  <template class="AccountSettings" parent="AdwPreferencesWindow">
     <property name="title" translatable="yes">Settings</property>
+    <property name="modal">True</property>
     <property name="search-enabled">True</property>
-    <property name="content-height">780</property>
-    <property name="presentation-mode">bottom-sheet</property>
     <style>
       <class name="account-settings"/>
     </style>
