@@ -410,6 +410,14 @@
             <property name="title">MPV Advanced Settings</property>
             <property name="description" translatable="yes">Warning: do NOT use any method other than the software's own controls to control the window. Restart to take effect</property>
             <child>
+              <object class="AdwSwitchRow">
+                <property name="title" translatable="yes">config=true</property>
+                <style>
+                  <class name="error"/>
+                </style>
+              </object>
+            </child>
+            <child>
               <object class="AdwSwitchRow" id="mpvcontrol">
                 <property name="title" translatable="yes">vo=gpu-next</property>
                 <property name="subtitle" translatable="yes">This option on now only turns embedded mpv into external</property>
