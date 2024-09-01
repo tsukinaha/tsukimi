@@ -7,8 +7,9 @@ use crate::utils::{spawn, spawn_tokio};
 use adw::prelude::*;
 use gettextrs::gettext;
 use glib::Object;
+use gtk::gdk::Rectangle;
 use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
+use gtk::{gio, glib, Builder, PopoverMenu};
 
 use super::mpvglarea::MPVGLArea;
 use super::tsukimi_mpv::{
@@ -24,9 +25,10 @@ mod imp {
     use adw::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;
-    use gtk::{glib, CompositeTemplate};
+    use gtk::{glib, CompositeTemplate, PopoverMenu};
 
     use crate::client::structs::Back;
+    use crate::ui::mpv::menu_actions::MenuActions;
     use crate::ui::mpv::mpvglarea::MPVGLArea;
     use crate::ui::mpv::video_scale::VideoScale;
     use crate::ui::widgets::action_row::AActionRow;
@@ -81,6 +83,8 @@ mod imp {
         pub y: RefCell<f64>,
         pub last_motion_time: RefCell<i64>,
         pub suburl: RefCell<Option<String>>,
+        pub popover: RefCell<Option<PopoverMenu>>,
+        pub menu_actions: MenuActions,
     }
 
     // The central trait for subclassing a GObject
@@ -116,6 +120,8 @@ mod imp {
             self.video_scale.set_player(Some(&self.video.get()));
 
             let obj = self.obj();
+
+            obj.set_popover();
 
             obj.connect_root_notify(|obj| {
                 if let Some(window) = obj.root().and_downcast::<gtk::Window>() {
@@ -556,6 +562,12 @@ impl MPVPage {
     fn handle_callback(&self, backtype: BackType) {
         let position = &self.imp().video.position();
         let back = self.imp().back.borrow();
+
+        // close window when vo=gpu-next will set position to 0, so we need to ignore it
+        if position < &9.0 && backtype == BackType::Stop {
+            return;
+        }
+
         if let Some(back) = back.as_ref() {
             let duration = *position as u64 * 10000000;
             let mut back = back.clone();
@@ -594,13 +606,35 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn right_click_cb(&self) {
-        
+    fn right_click_cb(&self, _n: i32, x: f64, y: f64) {
+        if let Some(popover) = self.imp().popover.borrow().as_ref() {
+            popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
+            popover.popup();
+        };
     }
 
     #[template_callback]
     fn left_click_cb(&self) {
         let video = &self.imp().video;
         video.pause(!video.paused());
+    }
+
+    pub fn set_popover(&self) {
+        let imp = self.imp();
+        let builder = Builder::from_resource("/moe/tsukimi/mpv_menu.ui");
+        let menu = builder.object::<gio::MenuModel>("mpv-menu");
+        match menu {
+            Some(popover) => {
+                let popover = PopoverMenu::builder()
+                    .menu_model(&popover)
+                    .halign(gtk::Align::Start)
+                    .has_arrow(false)
+                    .build();
+                popover.set_parent(self);
+                popover.add_child(&imp.menu_actions, "menu-actions");
+                let _ = imp.popover.replace(Some(popover));
+            }
+            None => eprintln!("Failed to load popover"),
+        }
     }
 }

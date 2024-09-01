@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="mpv-menu">
+    <section>
+      <item>
+        <attribute name="custom">menu-actions</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Next</attribute>
+        
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Previous</attribute>
+        
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Media info</attribute>
+        
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Keyboard shortcuts</attribute>
+        
+      </item>
+    </section>
+  </menu>
+</interface>

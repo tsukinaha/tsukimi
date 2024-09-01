@@ -33,6 +33,7 @@ static DEVICE_NAME: Lazy<String> = Lazy::new(|| {
         .to_string()
 });
 
+#[derive(PartialEq)]
 pub enum BackType {
     Start,
     Stop,

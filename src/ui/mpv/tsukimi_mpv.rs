@@ -74,7 +74,6 @@ impl Default for TsukimiMPV {
         gl::load_with(|name| epoxy::get_proc_addr(name) as *const _);
 
         let mpv = Mpv::with_initializer(|init| {
-            
             init.set_property("input-vo-keyboard", true)?;
             init.set_property("input-default-bindings", true)?;
             init.set_property("user-agent", "Tsukimi")?;

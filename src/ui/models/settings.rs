@@ -47,7 +47,10 @@ impl Settings {
         &self,
         mpv_estimate_target_frame: i32,
     ) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_ESTIMATE_TARGET_FRAME, mpv_estimate_target_frame)
+        self.set_int(
+            Self::KEY_MPV_ESTIMATE_TARGET_FRAME,
+            mpv_estimate_target_frame,
+        )
     }
 
     pub fn mpv_estimate_target_frame(&self) -> i32 {

@@ -454,7 +454,8 @@ impl AccountSettings {
     pub fn set_estimate(&self) {
         let imp = self.imp();
         imp.estimate_control.set_active(SETTINGS.mpv_estimate());
-        imp.estimate_spinrow.set_value(SETTINGS.mpv_estimate_target_frame().into());
+        imp.estimate_spinrow
+            .set_value(SETTINGS.mpv_estimate_target_frame().into());
     }
 
     #[template_callback]
