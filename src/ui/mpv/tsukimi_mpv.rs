@@ -416,10 +416,22 @@ fn get_modstr(state: gtk::gdk::ModifierType) -> String {
     }
 
     let mod_map = [
-        ModMap { mask: gtk::gdk::ModifierType::SHIFT_MASK, str: "Shift+" },
-        ModMap { mask: gtk::gdk::ModifierType::CONTROL_MASK, str: "Ctrl+" },
-        ModMap { mask: gtk::gdk::ModifierType::ALT_MASK, str: "Alt+" },
-        ModMap { mask: gtk::gdk::ModifierType::SUPER_MASK, str: "Meta+" },
+        ModMap {
+            mask: gtk::gdk::ModifierType::SHIFT_MASK,
+            str: "Shift+",
+        },
+        ModMap {
+            mask: gtk::gdk::ModifierType::CONTROL_MASK,
+            str: "Ctrl+",
+        },
+        ModMap {
+            mask: gtk::gdk::ModifierType::ALT_MASK,
+            str: "Alt+",
+        },
+        ModMap {
+            mask: gtk::gdk::ModifierType::SUPER_MASK,
+            str: "Meta+",
+        },
     ];
 
     let mut result = String::new();
@@ -439,28 +451,19 @@ fn keyval_to_keystr(keyval: u32) -> String {
     let key = unsafe { gtk::gdk::Key::from_glib(keyval) };
     const KEYSTRING_MAP: &[(&str, &str)] = &[];
 
-    let mut key_utf8 = [0u8; 7]; // 6 bytes for utf8 output, 1 for null terminator
-    let mut result = String::new();
-
     if let Some(unicode_char) = char::from_u32(keyval) {
-        let utf8_str = unicode_char.encode_utf8(&mut key_utf8);
-        result = utf8_str.to_string();
+        return unicode_char.to_string();
     }
 
-    if result.is_empty() {
-        if let Some(key_name) = key.name() {
-            result = key_name.to_string();
+    if let Some(key_name) = key.name() {
+        return key_name.to_string();
+    }
+
+    for &(key, key_str) in KEYSTRING_MAP {
+        if key_str.eq_ignore_ascii_case(&keyval.to_string()) {
+            return key.to_string();
         }
     }
 
-    if result.is_empty() {
-        for &(key, key_str) in KEYSTRING_MAP {
-            if key_str.eq_ignore_ascii_case(&result) {
-                result = key.to_string();
-                break;
-            }
-        }
-    }
-
-    result
+    String::new()
 }

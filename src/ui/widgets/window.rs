@@ -722,12 +722,12 @@ impl Window {
     fn is_on_mpv_stack(&self) -> bool {
         self.imp().stack.visible_child_name() == Some("clapper".into())
     }
-    
+
     #[template_callback]
     fn key_pressed_cb(&self, key: u32, _code: u32, state: gtk::gdk::ModifierType) -> bool {
         if self.is_on_mpv_stack() {
             self.imp().clappernav.key_pressed_cb(key, state);
-            return true
+            return true;
         }
         false
     }

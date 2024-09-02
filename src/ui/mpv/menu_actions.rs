@@ -9,9 +9,7 @@ mod imp {
 
     #[derive(Debug, Default, CompositeTemplate)]
     #[template(resource = "/moe/tsukimi/mpv_menu_actions.ui")]
-    pub struct MenuActions {
-
-    }
+    pub struct MenuActions {}
 
     #[glib::object_subclass]
     impl ObjectSubclass for MenuActions {
