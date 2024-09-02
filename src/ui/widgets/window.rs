@@ -718,4 +718,24 @@ impl Window {
         page.set_tag(Some("Server Panel"));
         self.push_page(&page);
     }
+
+    fn is_on_mpv_stack(&self) -> bool {
+        self.imp().stack.visible_child_name() == Some("clapper".into())
+    }
+    
+    #[template_callback]
+    fn key_pressed_cb(&self, key: u32, _code: u32, state: gtk::gdk::ModifierType) -> bool {
+        if self.is_on_mpv_stack() {
+            self.imp().clappernav.key_pressed_cb(key, state);
+            return true
+        }
+        false
+    }
+
+    #[template_callback]
+    fn key_released_cb(&self, key: u32, _code: u32, state: gtk::gdk::ModifierType) {
+        if self.is_on_mpv_stack() {
+            self.imp().clappernav.key_released_cb(key, state);
+        }
+    }
 }

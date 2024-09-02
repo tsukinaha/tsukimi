@@ -138,6 +138,14 @@ impl MPVGLArea {
         self.imp().mpv.set_sid(value)
     }
 
+    pub fn press_key(&self, key: u32, state: gtk::gdk::ModifierType) {
+        self.imp().mpv.press_key(key, state)
+    }
+
+    pub fn release_key(&self, key: u32, state: gtk::gdk::ModifierType) {
+        self.imp().mpv.release_key(key, state)
+    }
+
     pub fn set_speed(&self, value: f64) {
         self.imp().mpv.set_speed(value)
     }

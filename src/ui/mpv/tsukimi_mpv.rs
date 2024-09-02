@@ -217,6 +217,14 @@ impl TsukimiMPV {
         self.set_property("sid", sid.to_string());
     }
 
+    pub fn press_key(&self, key: u32, state: gtk::gdk::ModifierType) {
+        self.command("keyup", &[&get_full_keystr(key, state)]);
+    }
+
+    pub fn release_key(&self, key: u32, state: gtk::gdk::ModifierType) {
+        self.command("keydown", &[&get_full_keystr(key, state)]);
+    }
+
     pub fn stop(&self) {
         self.command("stop", &[]);
     }
@@ -393,4 +401,66 @@ fn node_to_tracks(node: MpvNode) -> MpvTracks {
         audio_tracks,
         sub_tracks,
     }
+}
+
+fn get_full_keystr(key: u32, state: gtk::gdk::ModifierType) -> String {
+    let modstr = get_modstr(state);
+    let keystr = keyval_to_keystr(key);
+    format!("{}{}", modstr, keystr)
+}
+
+fn get_modstr(state: gtk::gdk::ModifierType) -> String {
+    struct ModMap {
+        mask: gtk::gdk::ModifierType,
+        str: &'static str,
+    }
+
+    let mod_map = [
+        ModMap { mask: gtk::gdk::ModifierType::SHIFT_MASK, str: "Shift+" },
+        ModMap { mask: gtk::gdk::ModifierType::CONTROL_MASK, str: "Ctrl+" },
+        ModMap { mask: gtk::gdk::ModifierType::ALT_MASK, str: "Alt+" },
+        ModMap { mask: gtk::gdk::ModifierType::SUPER_MASK, str: "Meta+" },
+    ];
+
+    let mut result = String::new();
+
+    for mod_item in &mod_map {
+        if state.contains(mod_item.mask) {
+            result.push_str(mod_item.str);
+        }
+    }
+
+    result
+}
+
+use gtk::glib::translate::FromGlib;
+
+fn keyval_to_keystr(keyval: u32) -> String {
+    let key = unsafe { gtk::gdk::Key::from_glib(keyval) };
+    const KEYSTRING_MAP: &[(&str, &str)] = &[];
+
+    let mut key_utf8 = [0u8; 7]; // 6 bytes for utf8 output, 1 for null terminator
+    let mut result = String::new();
+
+    if let Some(unicode_char) = char::from_u32(keyval) {
+        let utf8_str = unicode_char.encode_utf8(&mut key_utf8);
+        result = utf8_str.to_string();
+    }
+
+    if result.is_empty() {
+        if let Some(key_name) = key.name() {
+            result = key_name.to_string();
+        }
+    }
+
+    if result.is_empty() {
+        for &(key, key_str) in KEYSTRING_MAP {
+            if key_str.eq_ignore_ascii_case(&result) {
+                result = key.to_string();
+                break;
+            }
+        }
+    }
+
+    result
 }

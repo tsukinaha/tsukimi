@@ -619,15 +619,12 @@ impl MPVPage {
         video.pause(!video.paused());
     }
 
-    #[template_callback]
-    fn key_pressed_cb(&self, key: u32) -> bool {
-        println!("key pressed: {}", key);
-        false
+    pub fn key_pressed_cb(&self, key: u32, state: gtk::gdk::ModifierType) {
+        self.imp().video.press_key(key, state)
     }
 
-    #[template_callback]
-    fn key_released_cb(&self, key: u32) {
-        println!("key released: {}", key);
+    pub fn key_released_cb(&self, key: u32, state: gtk::gdk::ModifierType) {
+        self.imp().video.release_key(key, state)
     }
 
     pub fn set_popover(&self) {
