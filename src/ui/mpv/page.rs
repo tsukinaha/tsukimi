@@ -25,7 +25,7 @@ mod imp {
     use adw::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;
-    use gtk::{glib, CompositeTemplate, PopoverMenu};
+    use gtk::{glib, CompositeTemplate, PopoverMenu, ShortcutsWindow};
 
     use crate::client::structs::Back;
     use crate::ui::mpv::menu_actions::MenuActions;
@@ -85,6 +85,7 @@ mod imp {
         pub suburl: RefCell<Option<String>>,
         pub popover: RefCell<Option<PopoverMenu>>,
         pub menu_actions: MenuActions,
+        pub shortcuts_window: RefCell<Option<ShortcutsWindow>>,
     }
 
     // The central trait for subclassing a GObject
@@ -101,6 +102,20 @@ mod imp {
             AActionRow::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
+            klass.install_action(
+                "mpv.play-pause",
+                None,
+                move |mpv, _action, _parameter| {
+                    mpv.on_play_pause_clicked();
+                },
+            );
+            klass.install_action(
+                "mpv.show-info",
+                None,
+                move |mpv, _action, _parameter| {
+                    mpv.on_info_clicked();
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -527,13 +542,19 @@ impl MPVPage {
     }
 
     fn pause_icon_set(&self, paused: bool) {
-        let play_pause_image = &self.imp().play_pause_image.get();
+        let imp = self.imp();
+        let play_pause_image = imp.play_pause_image.get();
+        let menu_actions_play_pause_button = imp.menu_actions.imp().play_pause_button.get();
         if paused {
             play_pause_image.set_icon_name(Some("media-playback-start-symbolic"));
             play_pause_image.set_tooltip_text(Some(&gettext("Play")));
+            menu_actions_play_pause_button.set_icon_name("media-playback-start-symbolic");
+            menu_actions_play_pause_button.set_tooltip_text(Some(&gettext("Play")));
         } else {
             play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
             play_pause_image.set_tooltip_text(Some(&gettext("Pause")));
+            menu_actions_play_pause_button.set_icon_name("media-playback-pause-symbolic");
+            menu_actions_play_pause_button.set_tooltip_text(Some(&gettext("Pause")));
         }
     }
 

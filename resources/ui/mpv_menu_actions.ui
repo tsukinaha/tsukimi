@@ -24,25 +24,12 @@
           </object>
         </child>
         <child>
-          <object class="GtkButton">
+          <object class="GtkButton" id="play_pause_button">
             <property name="tooltip-text" translatable="yes">Play</property>
             <property name="icon_name">media-playback-start-symbolic</property>
+            <property name="action_name">mpv.play-pause</property>
             <layout>
               <property name="column">1</property>
-              <property name="row">0</property>
-            </layout>
-            <style>
-              <class name="circular" />
-              <class name="flat" />
-            </style>
-          </object>
-        </child>
-        <child>
-          <object class="GtkButton">
-            <property name="tooltip-text" translatable="yes">Pause</property>
-            <property name="icon_name">media-playback-pause-symbolic</property>
-            <layout>
-              <property name="column">2</property>
               <property name="row">0</property>
             </layout>
             <style>
@@ -56,7 +43,7 @@
             <property name="tooltip-text" translatable="yes">Forward</property>
             <property name="icon-name">media-seek-forward-symbolic</property>
             <layout>
-              <property name="column">3</property>
+              <property name="column">2</property>
               <property name="row">0</property>
             </layout>
             <style>

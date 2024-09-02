@@ -19,13 +19,13 @@
     <section>
       <item>
         <attribute name="label" translatable="yes">_Media info</attribute>
-        
+        <attribute name="action">mpv.show-info</attribute>
       </item>
     </section>
     <section>
       <item>
         <attribute name="label" translatable="yes">_Keyboard shortcuts</attribute>
-        
+        <attribute name="action">win.show-help-overlay</attribute>
       </item>
     </section>
   </menu>

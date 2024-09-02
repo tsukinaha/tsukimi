@@ -9,7 +9,10 @@ mod imp {
 
     #[derive(Debug, Default, CompositeTemplate)]
     #[template(resource = "/moe/tsukimi/mpv_menu_actions.ui")]
-    pub struct MenuActions {}
+    pub struct MenuActions {
+        #[template_child]
+        pub play_pause_button: TemplateChild<gtk::Button>,
+    }
 
     #[glib::object_subclass]
     impl ObjectSubclass for MenuActions {

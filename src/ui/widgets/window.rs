@@ -171,6 +171,7 @@ mod imp {
                     }
                 }
             ));
+            obj.set_shortcuts();
         }
     }
 
@@ -216,7 +217,7 @@ use super::tu_list_item::PROGRESSBAR_ANIMATION_DURATION;
 
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
-        @extends adw::ApplicationWindow, gtk::Window, gtk::Widget, gtk::HeaderBar,
+        @extends adw::ApplicationWindow, gtk::ApplicationWindow, gtk::Window, gtk::Widget, gtk::HeaderBar,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
@@ -737,5 +738,15 @@ impl Window {
         if self.is_on_mpv_stack() {
             self.imp().clappernav.key_released_cb(key, state);
         }
+    }
+
+    pub fn set_shortcuts(&self) {
+        let Some(window) = gtk::Builder::from_resource("/moe/tsukimi/mpv_shortcuts_window.ui")
+                .object::<gtk::ShortcutsWindow>("mpv_shortcuts") 
+        else {
+            eprintln!("Failed to load shortcuts window");
+            return;
+        };
+        self.set_help_overlay(Some(&window));
     }
 }
