@@ -10,7 +10,7 @@ license = "GPL"
 gtk = { version = "0.9", package = "gtk4", features = ["v4_14"] }
 serde = { version = "1.0.209", features = ["derive"] }
 serde_json = "1.0.127"
-tokio = { version = "1.39.3", features = ["full"] }
+tokio = { version = "1.40.0", features = ["full"] }
 reqwest = { version = "0.12", features = ["json"] }
 async-channel = "2.3.1"
 once_cell = "1.19.0"
