@@ -218,11 +218,17 @@ impl TsukimiMPV {
     }
 
     pub fn press_key(&self, key: u32, state: gtk::gdk::ModifierType) {
-        self.command("keypress", &[&get_full_keystr(key, state)]);
+        let keystr = get_full_keystr(key, state);
+        if let Some(keystr) = keystr {
+            self.command("keypress", &[&keystr]);
+        }
     }
 
     pub fn release_key(&self, key: u32, state: gtk::gdk::ModifierType) {
-        self.command("keyup", &[&get_full_keystr(key, state)]);
+        let keystr = get_full_keystr(key, state);
+        if let Some(keystr) = keystr {
+            self.command("keyup", &[&keystr]);
+        }
     }
 
     pub fn stop(&self) {
@@ -258,7 +264,7 @@ impl TsukimiMPV {
         let Some(mpv) = bind.as_ref() else {
             return;
         };
-        mpv.command(cmd, args).unwrap();
+        mpv.command(cmd, args).map_err(|e| eprintln!("Error: {}", e)).ok();
     }
 
     pub fn get_track_id(&self, type_: &str) -> i64 {
@@ -403,10 +409,13 @@ fn node_to_tracks(node: MpvNode) -> MpvTracks {
     }
 }
 
-fn get_full_keystr(key: u32, state: gtk::gdk::ModifierType) -> String {
+fn get_full_keystr(key: u32, state: gtk::gdk::ModifierType) -> Option<String> {
     let modstr = get_modstr(state);
     let keystr = keyval_to_keystr(key);
-    format!("{}{}", modstr, keystr)
+    if let Some(keystr) = keystr {
+        return Some(format!("{}{}", modstr, keystr));
+    }
+    None
 }
 
 fn get_modstr(state: gtk::gdk::ModifierType) -> String {
@@ -447,23 +456,72 @@ fn get_modstr(state: gtk::gdk::ModifierType) -> String {
 
 use gtk::glib::translate::FromGlib;
 
-fn keyval_to_keystr(keyval: u32) -> String {
+const KEYSTRING_MAP: &[(&str, &str)] = &[
+    ("PGUP", "Page_Up"),
+    ("PGDWN", "Page_Down"),
+    ("BS", "\x08"),
+    ("SHARP", "#"),
+    ("UP", "KP_Up"),
+    ("DOWN", "KP_Down"),
+    ("RIGHT", "KP_Right"),
+    ("LEFT", "KP_Left"),
+    ("RIGHT", "Right"),
+    ("LEFT", "Left"),
+    ("UP", "Up"),
+    ("DOWN", "Down"),
+    ("ESC", "\x1b"),
+    ("DEL", "\x7f"),
+    ("ENTER", "\r"),
+    ("ENTER", "Return"),
+    ("INS", "Insert"),
+    ("VOLUME_LOWER", "AudioLowerVolume"),
+    ("MUTE", "AudioMute"),
+    ("VOLUME_UP", "AudioRaiseVolume"),
+    ("PLAY", "AudioPlay"),
+    ("STOP", "AudioStop"),
+    ("PREV", "AudioPrev"),
+    ("NEXT", "AudioNext"),
+    ("FORWARD", "AudioForward"),
+    ("REWIND", "AudioRewind"),
+    ("MENU", "Menu"),
+    ("HOMEPAGE", "HomePage"),
+    ("MAIL", "Mail"),
+    ("FAVORITES", "Favorites"),
+    ("SEARCH", "Search"),
+    ("SLEEP", "Sleep"),
+    ("CANCEL", "Cancel"),
+    ("RECORD", "AudioRecord"),
+    ("", "Control_L"),
+    ("", "Control_R"),
+    ("", "Alt_L"),
+    ("", "Alt_R"),
+    ("", "Meta_L"),
+    ("", "Meta_R"),
+    ("", "Shift_L"),
+    ("", "Shift_R"),
+    ("", "grave"),
+    (" ", "SPACE")
+];
+
+fn keyval_to_keystr(keyval: u32) -> Option<String> {
     let key = unsafe { gtk::gdk::Key::from_glib(keyval) };
-    const KEYSTRING_MAP: &[(&str, &str)] = &[];
+    let key_name = key.name()?.to_string();
 
-    if let Some(unicode_char) = char::from_u32(keyval) {
-        return unicode_char.to_string();
-    }
+    let result = if key_name.is_empty() {
+        let unicode_char = key.to_unicode()?;
 
-    if let Some(key_name) = key.name() {
-        return key_name.to_string();
-    }
+        let mut key_utf8 = [0u8; 7];
+        let key_utf8 = unicode_char.encode_utf8(&mut key_utf8);
+        key_utf8.to_string()
+    } else {
+        key_name
+    };
 
-    for &(key, key_str) in KEYSTRING_MAP {
-        if key_str.eq_ignore_ascii_case(&keyval.to_string()) {
-            return key.to_string();
+    for &(key, value) in KEYSTRING_MAP {
+        if result.eq_ignore_ascii_case(value) {
+            return Some(key.to_string());
         }
     }
 
-    String::new()
+    Some(result)
 }
