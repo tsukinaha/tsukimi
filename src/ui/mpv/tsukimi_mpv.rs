@@ -218,11 +218,11 @@ impl TsukimiMPV {
     }
 
     pub fn press_key(&self, key: u32, state: gtk::gdk::ModifierType) {
-        self.command("keyup", &[&get_full_keystr(key, state)]);
+        self.command("keypress", &[&get_full_keystr(key, state)]);
     }
 
     pub fn release_key(&self, key: u32, state: gtk::gdk::ModifierType) {
-        self.command("keydown", &[&get_full_keystr(key, state)]);
+        self.command("keyup", &[&get_full_keystr(key, state)]);
     }
 
     pub fn stop(&self) {
