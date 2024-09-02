@@ -69,6 +69,14 @@
       <default>""</default>
       <summary>Default switch state</summary>
     </key>
+    <key name="mpv-seek-forward-step" type="i">
+      <default>20</default>
+      <summary>Default mpv-seek-forward-step</summary>
+    </key>
+    <key name="mpv-seek-backward-step" type="i">
+      <default>85</default>
+      <summary>Default mpv-seek-backward-step</summary>
+    </key>
     <key name="background-height" type="i">
       <default>700</default>
       <summary>Default background height</summary>
@@ -76,6 +84,14 @@
     <key name="mpv-estimate-target-frame" type="i">
       <default>60</default>
       <summary>Default estimate target frame</summary>
+    </key>
+    <key name="mpv-cache-size" type="i">
+      <default>100</default>
+      <summary>Default mpv-cache-size</summary>
+    </key>
+    <key name="mpv-cache-time" type="i">
+      <default>300</default>
+      <summary>Default mpv-cache-time</summary>
     </key>
     <key name="threads" type="i">
       <default>1</default>
@@ -100,6 +116,10 @@
     <key name="is-blurenabled" type="b">
       <default>false</default>
       <summary>Default switch state</summary>
+    </key>
+    <key name="mpv-config" type="b">
+      <default>false</default>
+      <summary>Default mpv-config</summary>
     </key>
     <key name="is-backgroundenabled" type="b">
       <default>true</default>

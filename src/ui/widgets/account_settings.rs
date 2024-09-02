@@ -58,6 +58,10 @@ mod imp {
         pub estimate_control: TemplateChild<gtk::Switch>,
         #[template_child]
         pub estimate_spinrow: TemplateChild<adw::SpinRow>,
+        #[template_child]
+        pub seek_forward_spinrow: TemplateChild<adw::SpinRow>,
+        #[template_child]
+        pub seek_backward_spinrow: TemplateChild<adw::SpinRow>,
     }
 
     #[glib::object_subclass]
@@ -457,6 +461,10 @@ impl AccountSettings {
         imp.estimate_control.set_active(SETTINGS.mpv_estimate());
         imp.estimate_spinrow
             .set_value(SETTINGS.mpv_estimate_target_frame().into());
+        imp.seek_backward_spinrow
+            .set_value(SETTINGS.mpv_seek_backward_step().into());
+        imp.seek_forward_spinrow
+            .set_value(SETTINGS.mpv_seek_forward_step().into());
     }
 
     #[template_callback]
@@ -470,5 +478,24 @@ impl AccountSettings {
         SETTINGS
             .set_mpv_estimate_target_frame(spin.value() as i32)
             .unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_seekbackward_spinrow(&self, spin: adw::SpinRow) {
+        SETTINGS
+            .set_mpv_seek_backward_step(spin.value() as i32)
+            .unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_seekforward_spinrow(&self, spin: adw::SpinRow) {
+        SETTINGS
+            .set_mpv_seek_forward_step(spin.value() as i32)
+            .unwrap();  
+    }
+
+    #[template_callback]
+    pub fn on_config_control(&self, switch: adw::SwitchRow) {
+        
     }
 }

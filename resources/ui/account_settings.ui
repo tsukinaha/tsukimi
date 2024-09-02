@@ -373,7 +373,7 @@
           <object class="AdwPreferencesGroup">
             <property name="title">Video Settings</property>
             <child>
-              <object class="AdwSpinRow">
+              <object class="AdwSpinRow" id="seek_backward_spinrow">
                 <property name="title" translatable="yes">Seek Backward</property>
                 <property name="subtitle" translatable="yes">Unit: Seconds</property>
                 <child type="prefix">
@@ -381,6 +381,7 @@
                       <property name="icon-name">object-rotate-left-symbolic</property>
                   </object>
                 </child>
+                <signal name="changed" handler="on_seekbackward_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
@@ -393,7 +394,7 @@
               </object>
             </child>
             <child>
-              <object class="AdwSpinRow">
+              <object class="AdwSpinRow" id="seek_forward_spinrow">
                 <property name="title" translatable="yes">Seek Forward</property>
                 <property name="subtitle" translatable="yes">Unit: Seconds</property>
                 <child type="prefix">
@@ -401,6 +402,7 @@
                       <property name="icon-name">object-rotate-right-symbolic</property>
                   </object>
                 </child>
+                <signal name="changed" handler="on_seekforward_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
@@ -408,6 +410,51 @@
                     <property name="value">85</property>
                     <property name="page-increment">5</property>
                     <property name="step-increment">5</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Preferred Language</property>
+            <child>
+              <object class="AdwComboRow" id="preferred_audio_language_comborow">
+                <property name="title" translatable="yes">Preferred Audio Language</property>
+                <child type="prefix">
+                  <object class="GtkImage">
+                      <property name="icon-name">audio-x-generic-symbolic</property>
+                  </object>
+                </child>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Default</item>
+                      <item>English</item>
+                      <item>简体中文</item>
+                      <item>日本語</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwComboRow" id="preferred_subtitle_language_comborow">
+                <property name="title" translatable="yes">Preferred Subtitle Language</property>
+                <child type="prefix">
+                  <object class="GtkImage">
+                      <property name="icon-name">media-view-subtitles-symbolic</property>
+                  </object>
+                </child>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Default</item>
+                      <item>English</item>
+                      <item>简体中文</item>
+                      <item>日本語</item>
+                    </items>
                   </object>
                 </property>
               </object>
@@ -464,6 +511,29 @@
                     <property name="lower">1</property>
                     <property name="upper">20</property>
                     <property name="value">10</property>
+                    <property name="page-increment">1</property>
+                    <property name="step-increment">1</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwSpinRow">
+                <property name="title" translatable="yes">Default Volume</property>
+                <child type="prefix">
+                  <object class="GtkImage">
+                      <property name="icon-name">audio-volume-medium</property>
+                  </object>
+              </child>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0</property>
+                    <property name="upper">100</property>
+                    <property name="value">75</property>
                     <property name="page-increment">1</property>
                     <property name="step-increment">1</property>
                   </object>
@@ -535,6 +605,8 @@
             </child>
           </object>
         </child>
+        
+        
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title">MPV Advanced Settings</property>
@@ -542,6 +614,7 @@
             <child>
               <object class="AdwSwitchRow">
                 <property name="title" translatable="yes">config=true</property>
+                <signal name="activated" handler="on_config_control" swapped="yes" />
                 <style>
                   <class name="error"/>
                 </style>

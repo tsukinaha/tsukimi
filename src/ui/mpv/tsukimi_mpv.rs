@@ -217,6 +217,14 @@ impl TsukimiMPV {
         self.set_property("sid", sid.to_string());
     }
 
+    pub fn seek_forward(&self, value: i64) {
+        self.command("seek", &[&value.to_string()]);
+    }
+
+    pub fn seek_backward(&self, value: i64) {
+        self.command("seek", &[&(-value).to_string()]);
+    }
+
     pub fn press_key(&self, key: u32, state: gtk::gdk::ModifierType) {
         let keystr = get_full_keystr(key, state);
         if let Some(keystr) = keystr {

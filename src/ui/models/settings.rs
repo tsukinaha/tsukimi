@@ -34,6 +34,58 @@ impl Settings {
     const KEY_MUSIC_REPEAT_MODE: &'static str = "music-repeat-mode";
     const KEY_MPV_ESTIMATE: &'static str = "mpv-estimate";
     const KEY_MPV_ESTIMATE_TARGET_FRAME: &'static str = "mpv-estimate-target-frame";
+    const KEY_MPV_SEEK_FORWARD_STEP: &'static str = "mpv-seek-forward-step";
+    const KEY_MPV_SEEK_BACKWARD_STEP: &'static str = "mpv-seek-backward-step";
+    const KEY_MPV_CONFIG: &'static str = "mpv-config";
+    const KEY_MPV_CACHE_SIZE: &'static str = "mpv-cache-size";
+    const KEY_MPV_CACHE_TIME: &'static str = "mpv-cache-time";
+
+    pub fn set_mpv_cache_time(&self, mpv_cache_time: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_CACHE_TIME, mpv_cache_time)
+    }
+
+    pub fn mpv_cache_time(&self) -> i32 {
+        self.int(Self::KEY_MPV_CACHE_TIME)
+    }
+
+    pub fn set_mpv_cache_size(&self, mpv_cache_size: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_CACHE_SIZE, mpv_cache_size)
+    }
+
+    pub fn mpv_cache_size(&self) -> i32 {
+        self.int(Self::KEY_MPV_CACHE_SIZE)
+    }
+
+    pub fn set_mpv_config(&self, mpv_config: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_MPV_CONFIG, mpv_config)
+    }
+
+    pub fn mpv_config(&self) -> bool {
+        self.boolean(Self::KEY_MPV_CONFIG)
+    }
+
+    pub fn set_mpv_seek_forward_step(
+        &self,
+        mpv_seek_forward_step: i32,
+    ) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_SEEK_FORWARD_STEP, mpv_seek_forward_step)
+    }
+
+    pub fn mpv_seek_forward_step(&self) -> i32 {
+        self.int(Self::KEY_MPV_SEEK_FORWARD_STEP)
+    }
+
+    pub fn set_mpv_seek_backward_step(
+        &self,
+        mpv_seek_backward_step: i32,
+    ) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_SEEK_BACKWARD_STEP, mpv_seek_backward_step)
+    }
+
+    pub fn mpv_seek_backward_step(&self) -> i32 {
+        self.int(Self::KEY_MPV_SEEK_BACKWARD_STEP)
+    }
+
 
     pub fn set_mpv_estimate(&self, mpv_estimate: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_MPV_ESTIMATE, mpv_estimate)
