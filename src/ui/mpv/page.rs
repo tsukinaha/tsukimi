@@ -710,8 +710,9 @@ impl MPVPage {
         if SETTINGS.mpv_estimate() {
             let fps = SETTINGS.mpv_estimate_target_frame();
             mpv.set_property("vf", format!("lavfi=\"fps=fps={fps}:round=down\""));
+        } else {
+            mpv.set_property("vf", "");
         }
-        mpv.set_property("config", SETTINGS.mpv_config());
         mpv.set_property("demuxer-max-bytes", (SETTINGS.mpv_cache_size() * 1024) as i64);
         mpv.set_property("cache-secs", (SETTINGS.mpv_cache_time()) as i64);
         mpv.set_property("volume", SETTINGS.mpv_default_volume() as i64);
@@ -719,6 +720,8 @@ impl MPVPage {
         mpv.set_property("sub-font", SETTINGS.mpv_subtitle_font());
         if SETTINGS.mpv_force_stereo() {
             mpv.set_property("audio-channels", "stereo");
+        } else {
+            mpv.set_property("audio-channels", "auto");
         }
         match SETTINGS.mpv_video_output() {
             0 => mpv.set_property("vo", "libmpv"),
@@ -726,5 +729,6 @@ impl MPVPage {
             2 => mpv.set_property("vo", "dmabuf-wayland"),
             _ => unreachable!(),
         }
+        mpv.set_property("config", SETTINGS.mpv_config());
     }
 }

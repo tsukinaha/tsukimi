@@ -497,21 +497,21 @@ const KEYSTRING_MAP: &[(&str, &str)] = &[
     ("", "Shift_L"),
     ("", "Shift_R"),
     ("", "grave"),
-    (" ", "SPACE")
+    ("SPACE", " ")
 ];
 
 fn keyval_to_keystr(keyval: u32) -> Option<String> {
     let key = unsafe { gtk::gdk::Key::from_glib(keyval) };
-    let key_name = key.name()?.to_string();
 
-    let result = if key_name.is_empty() {
-        let unicode_char = key.to_unicode()?;
+    let unicode_char = key.to_unicode()?;
 
-        let mut key_utf8 = [0u8; 7];
-        let key_utf8 = unicode_char.encode_utf8(&mut key_utf8);
-        key_utf8.to_string()
+    let mut key_utf8 = [0u8; 7];
+    let key_utf8 = unicode_char.encode_utf8(&mut key_utf8).to_string();
+
+    let result = if key_utf8.is_empty() {
+        key.name()?.to_string()
     } else {
-        key_name
+        key_utf8
     };
 
     for &(key, value) in KEYSTRING_MAP {
