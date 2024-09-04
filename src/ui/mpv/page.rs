@@ -1,6 +1,7 @@
 use crate::client::client::{BackType, EMBY_CLIENT};
 use crate::client::structs::Back;
 use crate::toast;
+use crate::ui::models::SETTINGS;
 use crate::ui::widgets::check_row::CheckRow;
 use crate::ui::widgets::song_widget::format_duration;
 use crate::utils::{spawn, spawn_g_timeout, spawn_tokio};
@@ -114,6 +115,20 @@ mod imp {
                 None,
                 move |mpv, _action, _parameter| {
                     mpv.on_info_clicked();
+                },
+            );
+            klass.install_action(
+                "mpv.backward",
+                None,
+                move |mpv, _action, _parameter| {
+                    mpv.on_backward();
+                },
+            );
+            klass.install_action(
+                "mpv.forward",
+                None,
+                move |mpv, _action, _parameter| {
+                    mpv.on_forward();
                 },
             );
         }
@@ -673,5 +688,15 @@ impl MPVPage {
             }
             None => eprintln!("Failed to load popover"),
         }
+    }
+
+    pub fn on_backward(&self) {
+        let video = &self.imp().video;
+        video.seek_backward(SETTINGS.mpv_seek_backward_step() as i64)
+    }
+
+    pub fn on_forward(&self) {
+        let video = &self.imp().video;
+        video.seek_forward(SETTINGS.mpv_seek_forward_step() as i64)
     }
 }

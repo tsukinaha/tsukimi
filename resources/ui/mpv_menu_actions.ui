@@ -14,6 +14,7 @@
           <object class="GtkButton">
             <property name="tooltip-text" translatable="yes">Backward</property>
             <property name="icon-name">media-seek-backward-symbolic</property>
+            <property name="action_name">mpv.backward</property>
             <layout>
               <property name="column">0</property>
               <property name="row">0</property>
@@ -42,6 +43,7 @@
           <object class="GtkButton">
             <property name="tooltip-text" translatable="yes">Forward</property>
             <property name="icon-name">media-seek-forward-symbolic</property>
+            <property name="action_name">mpv.forward</property>
             <layout>
               <property name="column">2</property>
               <property name="row">0</property>

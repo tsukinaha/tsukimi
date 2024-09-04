@@ -117,6 +117,14 @@ impl MPVGLArea {
         self.imp().mpv.add_sub(url)
     }
 
+    pub fn seek_forward(&self, value: i64) {
+        self.imp().mpv.seek_forward(value)
+    }
+
+    pub fn seek_backward(&self, value: i64) {
+        self.imp().mpv.seek_backward(value)
+    }
+
     pub fn set_position(&self, value: f64) {
         self.imp().mpv.set_position(value)
     }
