@@ -26,7 +26,7 @@ pub struct MpvTrack {
 }
 
 pub struct TsukimiMPV {
-    pub mpv: RefCell<Option<Mpv>>,
+    pub mpv: RefCell<Mpv>,
     pub ctx: RefCell<Option<RenderContext>>,
     pub event_thread_alive: Arc<AtomicU32>,
 }
@@ -88,10 +88,10 @@ impl Default for TsukimiMPV {
             }
             Ok(())
         })
-        .unwrap();
+        .expect("Failed to create mpv instance");
 
         Self {
-            mpv: RefCell::new(Some(mpv)),
+            mpv: RefCell::new(mpv),
             ctx: RefCell::new(None),
             event_thread_alive: Arc::new(AtomicU32::new(PAUSED)),
         }
@@ -138,6 +138,7 @@ pub enum ListenEvent {
     TrackList(MpvTracks),
     Volume(i64),
     Speed(f64),
+    PausedForCache(bool),
 }
 
 pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
@@ -148,8 +149,7 @@ pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
 
 impl TsukimiMPV {
     pub fn connect_render_update(&self, gl_context: GLContext) {
-        let mut binding = self.mpv.borrow_mut();
-        let mpv = binding.as_mut().unwrap();
+        let mut mpv = self.mpv.borrow_mut();
         let mut ctx = RenderContext::new(
             unsafe { mpv.ctx.as_mut() },
             vec![
@@ -251,10 +251,7 @@ impl TsukimiMPV {
     where
         V: SetData,
     {
-        let bind = self.mpv.borrow();
-        let Some(mpv) = bind.as_ref() else {
-            return;
-        };
+        let mpv = self.mpv.borrow();
         mpv.set_property(property, value).unwrap();
     }
 
@@ -262,16 +259,12 @@ impl TsukimiMPV {
     where
         V: GetData,
     {
-        let bind = self.mpv.borrow();
-        let mpv = bind.as_ref()?;
+        let mpv = self.mpv.borrow();
         mpv.get_property(property).ok()
     }
 
     fn command(&self, cmd: &str, args: &[&str]) {
-        let bind = self.mpv.borrow();
-        let Some(mpv) = bind.as_ref() else {
-            return;
-        };
+        let mpv = self.mpv.borrow();
         mpv.command(cmd, args).map_err(|e| eprintln!("Error: {}", e)).ok();
     }
 
@@ -283,10 +276,7 @@ impl TsukimiMPV {
     }
 
     pub fn process_events(&self) {
-        let mut bind = self.mpv.borrow_mut();
-        let Some(mpv) = bind.as_mut() else {
-            return;
-        };
+        let mpv = self.mpv.borrow_mut();
         let mut event_context = EventContext::new(mpv.ctx);
         event_context
             .disable_deprecated_events()
@@ -302,6 +292,9 @@ impl TsukimiMPV {
             .unwrap();
         event_context
             .observe_property("track-list", libmpv2::Format::Node, 3)
+            .unwrap();
+        event_context
+            .observe_property("paused-for-cache", libmpv2::Format::Flag, 4)
             .unwrap();
         let event_thread_alive = self.event_thread_alive.clone();
         std::thread::Builder::new()
@@ -342,6 +335,11 @@ impl TsukimiMPV {
                             "speed" => {
                                 if let PropertyData::Double(speed) = change {
                                     let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Speed(speed));
+                                }
+                            }
+                            "paused-for-cache" => {
+                                if let PropertyData::Flag(pause) = change {
+                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::PausedForCache(pause));
                                 }
                             }
                             _ => {}

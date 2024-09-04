@@ -314,7 +314,7 @@ impl MPVPage {
                         ListenEvent::Duration(value) => {
                             obj.update_duration(value);
                         }
-                        ListenEvent::Seek => {
+                        ListenEvent::Seek | ListenEvent::PausedForCache(true) => {
                             obj.update_seeking(true);
                         }
                         ListenEvent::Eof(value) => {
@@ -344,6 +344,7 @@ impl MPVPage {
                         ListenEvent::Speed(value) => {
                             obj.speed_cb(value);
                         }
+                        _ => {}
                     }
                 }
             }
