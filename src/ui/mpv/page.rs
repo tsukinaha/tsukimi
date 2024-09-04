@@ -64,6 +64,8 @@ mod imp {
         #[template_child]
         pub network_speed_label: TemplateChild<gtk::Label>,
         #[template_child]
+        pub network_speed_label_2: TemplateChild<gtk::Label>,
+        #[template_child]
         pub menu_button: TemplateChild<gtk::MenuButton>,
         #[template_child]
         pub menu_popover: TemplateChild<gtk::Popover>,
@@ -224,6 +226,7 @@ impl MPVPage {
             #[weak(rename_to = obj)]
             self,
             async move {
+                obj.load_config();
                 let imp = obj.imp();
                 imp.spinner.start();
                 imp.loading_box.set_visible(true);
@@ -698,5 +701,30 @@ impl MPVPage {
     pub fn on_forward(&self) {
         let video = &self.imp().video;
         video.seek_forward(SETTINGS.mpv_seek_forward_step() as i64)
+    }
+
+    pub fn load_config(&self) {
+        let imp = self.imp();
+        imp.network_speed_label_2.set_visible(SETTINGS.mpv_show_buffer_speed());
+        let mpv = &imp.video.imp().mpv;
+        if SETTINGS.mpv_estimate() {
+            let fps = SETTINGS.mpv_estimate_target_frame();
+            mpv.set_property("vf", format!("lavfi=\"fps=fps={fps}:round=down\""));
+        }
+        mpv.set_property("config", SETTINGS.mpv_config());
+        mpv.set_property("demuxer-max-bytes", (SETTINGS.mpv_cache_size() * 1024) as i64);
+        mpv.set_property("cache-secs", (SETTINGS.mpv_cache_time()) as i64);
+        mpv.set_property("volume", SETTINGS.mpv_default_volume() as i64);
+        mpv.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64);
+        mpv.set_property("sub-font", SETTINGS.mpv_subtitle_font());
+        if SETTINGS.mpv_force_stereo() {
+            mpv.set_property("audio-channels", "stereo");
+        }
+        match SETTINGS.mpv_video_output() {
+            0 => mpv.set_property("vo", "libmpv"),
+            1 => mpv.set_property("vo", "gpu-next"),
+            2 => mpv.set_property("vo", "dmabuf-wayland"),
+            _ => unreachable!(),
+        }
     }
 }

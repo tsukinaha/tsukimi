@@ -6,7 +6,6 @@ use crate::ui::provider::tu_item::TuItem;
 use crate::utils::{get_data_with_cache_else, req_cache, req_cache_single, spawn};
 use crate::{fraction, fraction_reset, toast};
 use chrono::{Datelike, Local};
-use epoxy::R;
 use gettextrs::gettext;
 use glib::Object;
 use gtk::subclass::prelude::*;

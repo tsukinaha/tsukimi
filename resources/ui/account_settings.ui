@@ -381,7 +381,7 @@
                       <property name="icon-name">object-rotate-left-symbolic</property>
                   </object>
                 </child>
-                <signal name="changed" handler="on_seekbackward_spinrow" swapped="yes" />
+                <signal name="notify::value" handler="on_seekbackward_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
@@ -402,7 +402,7 @@
                       <property name="icon-name">object-rotate-right-symbolic</property>
                   </object>
                 </child>
-                <signal name="changed" handler="on_seekforward_spinrow" swapped="yes" />
+                <signal name="notify::value" handler="on_seekforward_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
@@ -427,6 +427,7 @@
                       <property name="icon-name">audio-x-generic-symbolic</property>
                   </object>
                 </child>
+                <signal name="notify::selected-item" handler="on_audio_language_comborow" swapped="yes" />
                 <property name="model">
                   <object class="GtkStringList">
                     <items>
@@ -447,6 +448,7 @@
                       <property name="icon-name">media-view-subtitles-symbolic</property>
                   </object>
                 </child>
+                <signal name="notify::selected-item" handler="on_subtitle_language_comborow" swapped="yes" />
                 <property name="model">
                   <object class="GtkStringList">
                     <items>
@@ -468,6 +470,7 @@
               <object class="AdwSpinRow">
                 <property name="title" translatable="yes">Cache Size</property>
                 <property name="subtitle" translatable="yes">Unit: MB</property>
+                <signal name="notify::value" handler="on_cachesize_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">50</property>
@@ -483,6 +486,7 @@
               <object class="AdwSpinRow">
                 <property name="title" translatable="yes">Cache Time</property>
                 <property name="subtitle" translatable="yes">Unit: Seconds</property>
+                <signal name="notify::value" handler="on_cachetime_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">30</property>
@@ -498,24 +502,50 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Subtitle</property>
             <child>
-              <object class="AdwSpinRow">
+              <object class="AdwSpinRow" id="mpv_sub_size_spinrow">
                 <property name="title" translatable="yes">Subtitle Text Size</property>
                 <property name="subtitle" translatable="yes">This option only takes effect for srt subtitles</property>
+                <signal name="notify::value" handler="on_subsize_spinrow" swapped="yes" />
                 <child type="prefix">
                   <object class="GtkImage">
                       <property name="icon-name">media-view-subtitles-symbolic</property>
                   </object>
-              </child>
+                </child>
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
-                    <property name="upper">20</property>
-                    <property name="value">10</property>
+                    <property name="upper">500</property>
+                    <property name="value">55</property>
                     <property name="page-increment">1</property>
                     <property name="step-increment">1</property>
                   </object>
                 </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Subtitle Text Font</property>
+                <property name="subtitle" translatable="yes">Specify font to use for subtitles that do not themselves specify a particular font</property>
+                <child type="prefix">
+                  <object class="GtkImage">
+                      <property name="icon-name">preferences-desktop-font-symbolic</property>
+                  </object>
+                </child>
+                <child type="suffix">
+                  <object class="GtkFontDialogButton" id="mpv_sub_font_button">
+                    <signal name="notify::font-desc" handler="on_mpvsub_font_dialog_button" swapped="yes" />
+                    <property name="level">family</property>
+                    <property name="valign">center</property>
+                    <property name="dialog">
+                      <object class="GtkFontDialog"/>
+                    </property>
+                    <style>
+                      <class name="flat" />
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -523,17 +553,18 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
-              <object class="AdwSpinRow">
+              <object class="AdwSpinRow" id="volume_spinrow">
                 <property name="title" translatable="yes">Default Volume</property>
                 <child type="prefix">
                   <object class="GtkImage">
                       <property name="icon-name">audio-volume-medium</property>
                   </object>
-              </child>
+                </child>
+                <signal name="notify::value" handler="on_volume_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">0</property>
-                    <property name="upper">100</property>
+                    <property name="upper">150</property>
                     <property name="value">75</property>
                     <property name="page-increment">1</property>
                     <property name="step-increment">1</property>
@@ -546,8 +577,9 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
-              <object class="AdwSwitchRow">
+              <object class="AdwSwitchRow" id="stereo_switchrow">
                 <property name="title" translatable="yes">Force Stereo</property>
+                <signal name="notify::active" handler="on_stereo_switchrow" swapped="yes" />
                 <child type="prefix">
                     <object class="GtkImage">
                         <property name="icon-name">audio-headphones-symbolic</property>
@@ -560,8 +592,9 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
-              <object class="AdwSwitchRow">
+              <object class="AdwSwitchRow" id="buffer_switchrow">
                 <property name="title" translatable="yes">Show Buffer Speed</property>
+                <signal name="notify::active" handler="on_buffer_switchrow" swapped="yes" />
               </object>
             </child>
           </object>
@@ -576,6 +609,8 @@
                 <child type="prefix">
                     <object class="GtkCheckButton" id="end_group">
                         <property name="valign">center</property>
+                        <property name="action-name">setting.video-end</property>
+                        <property name="action-target">0</property>
                     </object>
                 </child>
               </object>
@@ -588,6 +623,8 @@
                     <object class="GtkCheckButton" id="end_group2">
                         <property name="valign">center</property>
                         <property name="group">end_group</property>
+                        <property name="action-name">setting.video-end</property>
+                        <property name="action-target">1</property>
                     </object>
                 </child>
               </object>
@@ -600,6 +637,8 @@
                     <object class="GtkCheckButton" id="end_group3">
                         <property name="valign">center</property>
                         <property name="group">end_group</property>
+                        <property name="action-name">setting.video-end</property>
+                        <property name="action-target">2</property>
                     </object>
                 </child>
               </object>
@@ -617,6 +656,8 @@
                 <child type="prefix">
                   <object class="GtkCheckButton" id="vo_group">
                       <property name="valign">center</property>
+                      <property name="action-name">setting.video-output</property>
+                      <property name="action-target">0</property>
                   </object>
                 </child>
                 <style>
@@ -632,6 +673,8 @@
                   <object class="GtkCheckButton" id="vo_group2">
                       <property name="valign">center</property>
                       <property name="group">vo_group</property>
+                      <property name="action-name">setting.video-output</property>
+                      <property name="action-target">1</property>
                   </object>
                 </child>
                 <style>
@@ -647,6 +690,8 @@
                   <object class="GtkCheckButton" id="vo_group3">
                       <property name="valign">center</property>
                       <property name="group">vo_group</property>
+                      <property name="action-name">setting.video-output</property>
+                      <property name="action-target">2</property>
                   </object>
                 </child>
                 <style>
@@ -675,7 +720,7 @@
                 <property name="title" translatable="yes">vf=lavfi="fps=fps={}:round=down"</property>
                 <property name="subtitle" translatable="yes">Recommended setting value: Current display frame rate</property>
                 <property name="sensitive" bind-source="estimate_control" bind-property="active" bind-flags="sync-create" />
-                <signal name="changed" handler="on_estimate_spinrow" swapped="yes" />
+                <signal name="notify::value" handler="on_estimate_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">0</property>
@@ -694,9 +739,10 @@
             <property name="title" translatable="yes">Load external mpv config</property>
             <property name="description" translatable="yes">May cause crashes, with serious performance issues</property>
             <child>
-              <object class="AdwSwitchRow">
+              <object class="AdwSwitchRow" id="config_switchrow">
                 <property name="title" translatable="yes">config=true</property>
                 <property name="subtitle" translatable="yes">Read from mpv config dir</property>
+                <signal name="notify::active" handler="on_config_switchrow" swapped="yes" />
                 <style>
                   <class name="error"/>
                 </style>

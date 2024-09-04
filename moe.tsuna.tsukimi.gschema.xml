@@ -141,5 +141,32 @@
       <default>false</default>
       <summary>Default switch state</summary>
     </key>
+    <key name="mpv-subtitle-size" type="i">
+      <default>55</default>
+    </key>
+    <key name="mpv-audio-preferred-lang" type="i">
+      <default>0</default>
+    </key>
+    <key name="mpv-default-volume" type="i">
+      <default>75</default>
+    </key>
+    <key name="mpv-video-output" type="i">
+      <default>0</default>
+    </key>
+    <key name="mpv-subtitle-preferred-lang" type="i">
+      <default>0</default>
+    </key>
+    <key name="mpv-action-after-video-end" type="i">
+      <default>0</default>
+    </key>
+    <key name="mpv-force-stereo" type="b">
+      <default>false</default>
+    </key>
+    <key name="mpv-show-buffer-speed" type="b">
+      <default>true</default>
+    </key>
+    <key name="mpv-subtitle-font" type="s">
+      <default>""</default>
+    </key>
   </schema>
 </schemalist>

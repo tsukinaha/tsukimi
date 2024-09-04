@@ -222,7 +222,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="_network_speed_label_2">
+                          <object class="GtkLabel" id="network_speed_label_2">
                             <property name="label" bind-source="network_speed_label"
                               bind-property="label" bind-flags="sync-create" />
                             <property name="width-request">130</property>
@@ -427,7 +427,7 @@
     <widgets>
       <widget name="_back_button" />
       <widget name="title" />
-      <widget name="_network_speed_label_2" />
+      <widget name="network_speed_label_2" />
       <widget name="_media_info_button" />
     </widgets>
   </object>

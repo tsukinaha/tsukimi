@@ -27,7 +27,6 @@ impl Settings {
     const KEY_FONT_SIZE: &'static str = "font-size";
     const KEY_FONT_NAME: &'static str = "font-name";
     const KEY_DAILY_RECOMMEND: &'static str = "is-daily-recommend";
-    const KEY_MPV: &'static str = "mpv";
     const KEY_LIST_SORT: &'static str = "list-sort";
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
     const KEY_ACCENT_FG_COLOR_CODE: &'static str = "accent-fg-color-code";
@@ -39,6 +38,87 @@ impl Settings {
     const KEY_MPV_CONFIG: &'static str = "mpv-config";
     const KEY_MPV_CACHE_SIZE: &'static str = "mpv-cache-size";
     const KEY_MPV_CACHE_TIME: &'static str = "mpv-cache-time";
+    const KEY_MPV_SUBTITLE_SIZE: &'static str = "mpv-subtitle-size"; // i32
+    const KEY_MPV_SUBTITLE_FONT: &'static str = "mpv-subtitle-font"; // String
+    const KEY_MPV_AUDIO_PREFERRED_LANG: &'static str = "mpv-audio-preferred-lang"; // i32
+    const KEY_MPV_SUBTITLE_PREFERRED_LANG: &'static str = "mpv-subtitle-preferred-lang"; // i32
+    const KEY_MPV_DEFAULT_VOLUME: &'static str = "mpv-default-volume"; // i32
+    const KEY_MPV_FORCE_STEREO: &'static str = "mpv-force-stereo"; // bool
+    const KEY_MPV_SHOW_BUFFER_SPEED: &'static str = "mpv-show-buffer-speed"; // bool
+    const KEY_MPV_VIDEO_OUTPUT: &'static str = "mpv-video-output"; // i32
+    const KEY_MPV_ACTION_AFTER_VIDEO_END: &'static str = "mpv-action-after-video-end"; // i32
+
+    pub fn set_mpv_subtitle_size(&self, mpv_subtitle_size: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_SUBTITLE_SIZE, mpv_subtitle_size)
+    }
+
+    pub fn mpv_subtitle_size(&self) -> i32 {
+        self.int(Self::KEY_MPV_SUBTITLE_SIZE)
+    }
+
+    pub fn set_mpv_subtitle_font(&self, mpv_subtitle_font: String) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_MPV_SUBTITLE_FONT, &mpv_subtitle_font)
+    }
+
+    pub fn mpv_subtitle_font(&self) -> String {
+        self.string(Self::KEY_MPV_SUBTITLE_FONT).to_string()
+    }
+
+    pub fn set_mpv_audio_preferred_lang(&self, mpv_audio_preferred_lang: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_AUDIO_PREFERRED_LANG, mpv_audio_preferred_lang)
+    }
+
+    pub fn mpv_audio_preferred_lang(&self) -> i32 {
+        self.int(Self::KEY_MPV_AUDIO_PREFERRED_LANG)
+    }
+
+    pub fn set_mpv_subtitle_preferred_lang(&self, mpv_subtitle_preferred_lang: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_SUBTITLE_PREFERRED_LANG, mpv_subtitle_preferred_lang)
+    }
+
+    pub fn mpv_subtitle_preferred_lang(&self) -> i32 {
+        self.int(Self::KEY_MPV_SUBTITLE_PREFERRED_LANG)
+    }
+
+    pub fn set_mpv_default_volume(&self, mpv_default_volume: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_DEFAULT_VOLUME, mpv_default_volume)
+    }
+
+    pub fn mpv_default_volume(&self) -> i32 {
+        self.int(Self::KEY_MPV_DEFAULT_VOLUME)
+    }
+
+    pub fn set_mpv_force_stereo(&self, mpv_force_stereo: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_MPV_FORCE_STEREO, mpv_force_stereo)
+    }
+
+    pub fn mpv_force_stereo(&self) -> bool {
+        self.boolean(Self::KEY_MPV_FORCE_STEREO)
+    }
+
+    pub fn set_mpv_show_buffer_speed(&self, mpv_show_buffer_speed: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_MPV_SHOW_BUFFER_SPEED, mpv_show_buffer_speed)
+    }
+
+    pub fn mpv_show_buffer_speed(&self) -> bool {
+        self.boolean(Self::KEY_MPV_SHOW_BUFFER_SPEED)
+    }
+
+    pub fn set_mpv_video_output(&self, mpv_video_output: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_VIDEO_OUTPUT, mpv_video_output)
+    }
+
+    pub fn mpv_video_output(&self) -> i32 {
+        self.int(Self::KEY_MPV_VIDEO_OUTPUT)
+    }
+
+    pub fn set_mpv_action_after_video_end(&self, mpv_action_after_video_end: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_ACTION_AFTER_VIDEO_END, mpv_action_after_video_end)
+    }
+
+    pub fn mpv_action_after_video_end(&self) -> i32 {
+        self.int(Self::KEY_MPV_ACTION_AFTER_VIDEO_END)
+    }
 
     pub fn set_mpv_cache_time(&self, mpv_cache_time: i32) -> Result<(), glib::BoolError> {
         self.set_int(Self::KEY_MPV_CACHE_TIME, mpv_cache_time)
@@ -142,14 +222,6 @@ impl Settings {
 
     pub fn list_sort(&self) -> i32 {
         self.int(Self::KEY_LIST_SORT)
-    }
-
-    pub fn set_mpv(&self, mpv: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_MPV, mpv)
-    }
-
-    pub fn mpv(&self) -> bool {
-        self.boolean(Self::KEY_MPV)
     }
 
     pub fn set_daily_recommend(&self, daily_recommend: bool) -> Result<(), glib::BoolError> {

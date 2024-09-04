@@ -77,15 +77,8 @@ impl Default for TsukimiMPV {
             init.set_property("input-vo-keyboard", true)?;
             init.set_property("input-default-bindings", true)?;
             init.set_property("user-agent", "Tsukimi")?;
-            if SETTINGS.mpv() {
-                init.set_property("vo", "gpu-next")?;
-            } else {
-                init.set_property("vo", "libmpv")?;
-            }
-            if SETTINGS.mpv_estimate() {
-                let fps = SETTINGS.mpv_estimate_target_frame();
-                init.set_property("vf", format!("lavfi=\"fps=fps={fps}:round=down\""))?;
-            }
+            init.set_property("vo", "libmpv")?;
+            init.set_property("cache", "yes")?;
             Ok(())
         })
         .expect("Failed to create mpv instance");
@@ -102,8 +95,6 @@ use flume::{unbounded, Receiver, Sender};
 use libc::c_void;
 use libmpv2::events::Event;
 use once_cell::sync::Lazy;
-
-use crate::ui::models::SETTINGS;
 
 fn get_proc_address(_ctx: &GLContext, name: &str) -> *mut c_void {
     epoxy::get_proc_addr(name) as *mut c_void
@@ -247,12 +238,12 @@ impl TsukimiMPV {
         self.command("script-binding", &["stats/display-stats-toggle"]);
     }
 
-    fn set_property<V>(&self, property: &str, value: V)
+    pub fn set_property<V>(&self, property: &str, value: V)
     where
         V: SetData,
     {
         let mpv = self.mpv.borrow();
-        mpv.set_property(property, value).unwrap();
+        mpv.set_property(property, value).map_err(|e| eprintln!("Error: {}, {}", e, property)).ok();
     }
 
     fn get_property<V>(&self, property: &str) -> Option<V>

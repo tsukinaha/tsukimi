@@ -58,6 +58,27 @@ mod imp {
         pub seek_forward_spinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub seek_backward_spinrow: TemplateChild<adw::SpinRow>,
+        #[template_child]
+        pub config_switchrow: TemplateChild<adw::SwitchRow>,
+
+        #[template_child]
+        pub buffer_switchrow: TemplateChild<adw::SwitchRow>,
+    
+        #[template_child]
+        pub stereo_switchrow: TemplateChild<adw::SwitchRow>,
+    
+        #[template_child]
+        pub volume_spinrow: TemplateChild<adw::SpinRow>,
+
+        #[template_child]
+        pub mpv_sub_font_button: TemplateChild<gtk::FontDialogButton>,
+        #[template_child]
+        pub mpv_sub_size_spinrow: TemplateChild<adw::SpinRow>,
+    
+        #[template_child]
+        pub preferred_audio_language_comborow: TemplateChild<adw::ComboRow>,
+        #[template_child]
+        pub preferred_subtitle_language_comborow: TemplateChild<adw::ComboRow>,
     }
 
     #[glib::object_subclass]
@@ -99,6 +120,7 @@ mod imp {
                     set.clear_font();
                 },
             );
+
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -137,7 +159,9 @@ mod imp {
 glib::wrapper! {
     /// Preference Window to display preferences.
     pub struct AccountSettings(ObjectSubclass<imp::AccountSettings>)
-        @extends gtk::Widget, adw::Window, gtk::Window, adw::PreferencesWindow, @implements gtk::Accessible;
+    @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget, adw::PreferencesWindow,
+    @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
+        gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
 impl Default for AccountSettings {
@@ -442,6 +466,56 @@ impl AccountSettings {
             .set_value(SETTINGS.mpv_seek_backward_step().into());
         imp.seek_forward_spinrow
             .set_value(SETTINGS.mpv_seek_forward_step().into());
+        imp.config_switchrow.set_active(SETTINGS.mpv_config());
+        imp.buffer_switchrow.set_active(SETTINGS.mpv_show_buffer_speed());
+        imp.stereo_switchrow.set_active(SETTINGS.mpv_force_stereo());
+        imp.volume_spinrow.set_value(SETTINGS.mpv_default_volume().into());
+        imp.mpv_sub_font_button
+            .set_font_desc(&gtk::pango::FontDescription::from_string(
+                &SETTINGS.mpv_subtitle_font(),
+            ));
+        imp.mpv_sub_size_spinrow
+            .set_value(SETTINGS.mpv_subtitle_size().into());
+        imp.preferred_audio_language_comborow
+            .set_selected(SETTINGS.mpv_audio_preferred_lang() as u32);
+        imp.preferred_subtitle_language_comborow
+            .set_selected(SETTINGS.mpv_subtitle_preferred_lang() as u32);
+        let action_group = gio::SimpleActionGroup::new();
+
+        let action_video_end = gio::ActionEntry::builder("video-end")
+            .parameter_type(Some(&i32::static_variant_type()))
+            .state(SETTINGS.mpv_action_after_video_end().to_variant())
+            .activate(move |_, action, parameter| {
+                
+                let parameter = parameter
+                    .expect("Could not get parameter.")
+                    .get::<i32>()
+                    .expect("The variant needs to be of type `i32`.");
+
+                SETTINGS.set_mpv_action_after_video_end(parameter).unwrap();
+
+                action.set_state(&parameter.to_variant());
+            })
+            .build();
+
+        let action_vo = gio::ActionEntry::builder("video-output")
+            .parameter_type(Some(&i32::static_variant_type()))
+            .state(SETTINGS.mpv_action_after_video_end().to_variant())
+            .activate(move |_, action, parameter| {
+                
+                let parameter = parameter
+                    .expect("Could not get parameter.")
+                    .get::<i32>()
+                    .expect("The variant needs to be of type `i32`.");
+
+                SETTINGS.set_mpv_video_output(parameter).unwrap();
+
+                action.set_state(&parameter.to_variant());
+            })
+            .build();
+
+        action_group.add_action_entries([action_video_end, action_vo]);
+        self.insert_action_group("setting", Some(&action_group));
     }
 
     #[template_callback]
@@ -451,23 +525,88 @@ impl AccountSettings {
     }
 
     #[template_callback]
-    pub fn on_estimate_spinrow(&self, spin: adw::SpinRow) {
+    pub fn on_estimate_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
         SETTINGS
             .set_mpv_estimate_target_frame(spin.value() as i32)
             .unwrap();
     }
 
     #[template_callback]
-    pub fn on_seekbackward_spinrow(&self, spin: adw::SpinRow) {
+    pub fn on_seekbackward_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
         SETTINGS
             .set_mpv_seek_backward_step(spin.value() as i32)
             .unwrap();
     }
 
     #[template_callback]
-    pub fn on_seekforward_spinrow(&self, spin: adw::SpinRow) {
+    pub fn on_seekforward_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
         SETTINGS
             .set_mpv_seek_forward_step(spin.value() as i32)
-            .unwrap();  
+            .unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_cachesize_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
+        SETTINGS
+            .set_mpv_cache_size(spin.value() as i32)
+            .unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_cachetime_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
+        SETTINGS
+            .set_mpv_cache_time(spin.value() as i32)
+            .unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_subsize_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
+        SETTINGS
+            .set_mpv_subtitle_size(spin.value() as i32)
+            .unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_audio_language_comborow(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
+        SETTINGS
+            .set_mpv_audio_preferred_lang(combo.selected() as i32)
+            .unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_subtitle_language_comborow(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
+        SETTINGS
+            .set_mpv_subtitle_preferred_lang(combo.selected() as i32)
+            .unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_mpvsub_font_dialog_button(&self, _param: glib::ParamSpec, button: gtk::FontDialogButton) {
+        let font_desc = button.font_desc().unwrap();
+        SETTINGS
+            .set_mpv_subtitle_font(gtk::pango::FontDescription::to_string(&font_desc))
+            .unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_volume_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
+        SETTINGS
+            .set_mpv_default_volume(spin.value() as i32)
+            .unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_stereo_switchrow(&self, _param: glib::ParamSpec, control: adw::SwitchRow) {
+        SETTINGS.set_mpv_force_stereo(control.is_active()).unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_buffer_switchrow(&self, _param: glib::ParamSpec, control: adw::SwitchRow) {
+        SETTINGS.set_mpv_show_buffer_speed(control.is_active()).unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_config_switchrow(&self, _param: glib::ParamSpec, control: adw::SwitchRow) {
+        SETTINGS.set_mpv_config(control.is_active()).unwrap();
     }
 }
