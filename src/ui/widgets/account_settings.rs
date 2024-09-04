@@ -500,7 +500,7 @@ impl AccountSettings {
 
         let action_vo = gio::ActionEntry::builder("video-output")
             .parameter_type(Some(&i32::static_variant_type()))
-            .state(SETTINGS.mpv_action_after_video_end().to_variant())
+            .state(SETTINGS.mpv_video_output().to_variant())
             .activate(move |_, action, parameter| {
                 
                 let parameter = parameter
