@@ -463,6 +463,7 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Cache</property>
             <child>
               <object class="AdwSpinRow">
                 <property name="title" translatable="yes">Cache Size</property>
@@ -605,53 +606,56 @@
             </child>
           </object>
         </child>
-        
-        
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">MPV Advanced Settings</property>
-            <property name="description" translatable="yes">Warning: do NOT use any method other than the software's own controls to control the window. Restart to take effect</property>
+            <property name="title">Video Output</property>
+            <property name="description" translatable="yes">Warning: Do NOT use any method other than the software's own controls to control the window. Restart to take effect</property>
             <child>
-              <object class="AdwSwitchRow">
-                <property name="title" translatable="yes">config=true</property>
-                <signal name="activated" handler="on_config_control" swapped="yes" />
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">libmpv (default)</property>
+                <property name="activatable-widget">vo_group</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="vo_group">
+                      <property name="valign">center</property>
+                  </object>
+                </child>
                 <style>
-                  <class name="error"/>
+                  <class name="warning"/>
                 </style>
               </object>
             </child>
             <child>
-              <object class="AdwSwitchRow" id="mpvcontrol">
-                <property name="title" translatable="yes">vo=gpu-next</property>
-                <property name="subtitle" translatable="yes">This option on now only turns embedded mpv into external</property>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">gpu-next</property>
+                <property name="activatable-widget">vo_group2</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="vo_group2">
+                      <property name="valign">center</property>
+                      <property name="group">vo_group</property>
+                  </object>
+                </child>
                 <style>
-                  <class name="error"/>
+                  <class name="warning"/>
                 </style>
               </object>
             </child>
             <child>
-              <object class="AdwSwitchRow">
-                <property name="title" translatable="yes">hwdec=vaapi</property>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">dmabuf-wayland</property>
+                <property name="activatable-widget">vo_group3</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="vo_group3">
+                      <property name="valign">center</property>
+                      <property name="group">vo_group</property>
+                  </object>
+                </child>
                 <style>
-                  <class name="error"/>
+                  <class name="warning"/>
                 </style>
-              </object>
-            </child>
-            <child>
-              <object class="AdwSwitchRow">
-                <property name="title" translatable="yes">hwdec-codecs=all</property>
-                <style>
-                  <class name="error"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="AdwSwitchRow">
-                <property name="title" translatable="yes">sub-auto=fuzzy</property>
               </object>
             </child>
             <style>
-              <class name="error"/>
+              <class name="warning"/>
             </style>
           </object>
         </child>
@@ -683,6 +687,24 @@
                 </property>
               </object>
             </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Load external mpv config</property>
+            <property name="description" translatable="yes">May cause crashes, with serious performance issues</property>
+            <child>
+              <object class="AdwSwitchRow">
+                <property name="title" translatable="yes">config=true</property>
+                <property name="subtitle" translatable="yes">Read from mpv config dir</property>
+                <style>
+                  <class name="error"/>
+                </style>
+              </object>
+            </child>
+            <style>
+              <class name="error"/>
+            </style>
           </object>
         </child>
         <child>

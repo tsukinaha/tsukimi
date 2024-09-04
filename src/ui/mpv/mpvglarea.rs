@@ -107,8 +107,7 @@ impl MPVGLArea {
 
         let url = EMBY_CLIENT.get_streaming_url(url);
         mpv.load_video(&url);
-        mpv.pause(true);
-
+        
         mpv.set_start(percentage);
 
         mpv.pause(false);

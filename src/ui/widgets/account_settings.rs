@@ -49,8 +49,6 @@ mod imp {
         #[template_child]
         pub dailyrecommendcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
-        pub mpvcontrol: TemplateChild<adw::SwitchRow>,
-        #[template_child]
         pub color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
         pub fg_color: TemplateChild<gtk::ColorDialogButton>,
@@ -127,7 +125,6 @@ mod imp {
             obj.set_fontsize();
             obj.set_font();
             obj.set_daily_recommend();
-            obj.set_mpvcontrol();
             obj.set_color();
             obj.set_estimate();
         }
@@ -448,14 +445,6 @@ impl AccountSettings {
             });
     }
 
-    pub fn set_mpvcontrol(&self) {
-        let imp = self.imp();
-        imp.mpvcontrol.set_active(SETTINGS.mpv());
-        imp.mpvcontrol.connect_active_notify(move |control| {
-            SETTINGS.set_mpv(control.is_active()).unwrap();
-        });
-    }
-
     pub fn set_estimate(&self) {
         let imp = self.imp();
         imp.estimate_control.set_active(SETTINGS.mpv_estimate());
@@ -492,10 +481,5 @@ impl AccountSettings {
         SETTINGS
             .set_mpv_seek_forward_step(spin.value() as i32)
             .unwrap();  
-    }
-
-    #[template_callback]
-    pub fn on_config_control(&self, switch: adw::SwitchRow) {
-        
     }
 }

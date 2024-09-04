@@ -3,7 +3,7 @@ use crate::client::structs::Back;
 use crate::toast;
 use crate::ui::widgets::check_row::CheckRow;
 use crate::ui::widgets::song_widget::format_duration;
-use crate::utils::{spawn, spawn_tokio};
+use crate::utils::{spawn, spawn_g_timeout, spawn_tokio};
 use adw::prelude::*;
 use gettextrs::gettext;
 use glib::Object;
@@ -202,20 +202,29 @@ impl MPVPage {
         back: Option<Back>,
         percentage: f64,
     ) {
-        let imp = self.imp();
-
-        imp.spinner.start();
-        imp.loading_box.set_visible(true);
-        imp.network_speed_label.set_text("Initializing...");
-        if let Some(name) = name {
-            imp.title.set_text(name);
-        }
-        imp.suburl
-            .replace(suburi.map(|suburi| EMBY_CLIENT.get_streaming_url(suburi)));
-        imp.video.play(url, percentage);
-        imp.back.replace(back);
-        self.handle_callback(BackType::Start);
-        self.update_timeout();
+        let url = url.to_owned();
+        let suburi = suburi.map(|s| s.to_owned());
+        let name = name.map(|s| s.to_owned());
+        spawn_g_timeout(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                let imp = obj.imp();
+                imp.spinner.start();
+                imp.loading_box.set_visible(true);
+                imp.network_speed_label.set_text("Initializing...");
+                if let Some(name) = name {
+                    imp.title.set_text(&name);
+                }
+                imp.suburl
+                    .replace(suburi.map(|suburi| EMBY_CLIENT.get_streaming_url(&suburi)));
+                imp.video.play(&url, percentage);
+                imp.back.replace(back);
+                obj.handle_callback(BackType::Start);
+                obj.update_timeout();
+            }
+        ));
+        
     }
 
     fn set_audio_and_video_tracks_dropdown(&self, value: MpvTracks) {
@@ -375,7 +384,6 @@ impl MPVPage {
         if let Some(suburl) = imp.suburl.borrow().as_ref() {
             imp.video.add_sub(suburl);
         }
-        imp.video_scale.update_timeout();
     }
 
     fn update_seeking(&self, seeking: bool) {
