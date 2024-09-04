@@ -9,8 +9,6 @@ use adw::subclass::prelude::*;
 use gettextrs::gettext;
 use gtk::{gdk::RGBA, gio, glib, template_callbacks, CompositeTemplate};
 
-use super::window::Window;
-
 mod imp {
     use super::*;
     use glib::subclass::InitializingObject;
@@ -139,7 +137,7 @@ mod imp {
 glib::wrapper! {
     /// Preference Window to display preferences.
     pub struct AccountSettings(ObjectSubclass<imp::AccountSettings>)
-        @extends gtk::Widget, gtk::Window, adw::PreferencesWindow, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Window, gtk::Window, adw::PreferencesWindow, @implements gtk::Accessible;
 }
 
 impl Default for AccountSettings {
@@ -189,11 +187,7 @@ impl AccountSettings {
             #[weak(rename_to = obj)]
             self,
             move |control| {
-                let window = obj
-                    .root()
-                    .unwrap()
-                    .downcast::<super::window::Window>()
-                    .unwrap();
+                let window = obj.window();
                 window.overlay_sidebar(control.is_active());
                 SETTINGS.set_overlay(control.is_active()).unwrap();
             }
@@ -321,7 +315,7 @@ impl AccountSettings {
         images_filter.add_pixbuf_formats();
         let model = gio::ListStore::new::<gtk::FileFilter>();
         model.append(&images_filter);
-        let window = self.root().and_downcast::<Window>().unwrap();
+        let window = self.window();
         let filedialog = gtk::FileDialog::builder()
             .modal(true)
             .title("Select a picture")
@@ -346,14 +340,16 @@ impl AccountSettings {
             self,
             move |control| {
                 SETTINGS.set_pic_opacity(control.value() as i32).unwrap();
-                let window = obj
-                    .root()
-                    .unwrap()
-                    .downcast::<super::window::Window>()
-                    .unwrap();
+                let window = obj.window();
                 window.set_picopacity(control.value() as i32);
             }
         ));
+    }
+
+    fn window(&self) -> super::window::Window {
+        let windows = self.application().unwrap().windows();
+        let window = windows.into_iter().find(|w| w.is::<super::window::Window>()).unwrap();
+        window.downcast::<super::window::Window>().unwrap()
     }
 
     pub fn set_pic(&self) {
@@ -368,11 +364,7 @@ impl AccountSettings {
                     .set_background_enabled(control.is_active())
                     .unwrap();
                 if !control.is_active() {
-                    let window = obj
-                        .root()
-                        .unwrap()
-                        .downcast::<super::window::Window>()
-                        .unwrap();
+                    let window = obj.window();
                     window.clear_pic();
                 }
             }
@@ -404,11 +396,7 @@ impl AccountSettings {
             #[weak(rename_to = obj)]
             self,
             async move {
-                let window = obj
-                    .root()
-                    .unwrap()
-                    .downcast::<super::window::Window>()
-                    .unwrap();
+                let window = obj.window();
                 window.clear_pic();
             }
         ));

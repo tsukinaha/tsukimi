@@ -387,6 +387,7 @@ impl Window {
     pub fn account_settings(&self) {
         let window = crate::ui::widgets::account_settings::AccountSettings::new();
         window.set_transient_for(Some(self));
+        window.set_application(Some(&self.application().unwrap()));
         window.present();
     }
 
