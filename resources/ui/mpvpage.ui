@@ -282,11 +282,6 @@
                   <object class="GtkListBox">
                     <property name="selection-mode">none</property>
                     <child>
-                      <object class="AdwSwitchRow">
-                        <property name="title" translatable="yes">Autoplay</property>
-                      </object>
-                    </child>
-                    <child>
                       <object class="AdwActionRow">
                         <property name="title" translatable="yes">Playback speed</property>
                         <child type="suffix">
