@@ -74,6 +74,8 @@ impl Default for TsukimiMPV {
         gl::load_with(|name| epoxy::get_proc_addr(name) as *const _);
 
         let mpv = Mpv::with_initializer(|init| {
+            init.set_property("osc", false)?;
+            init.set_property("config", SETTINGS.mpv_config())?;
             init.set_property("input-vo-keyboard", true)?;
             init.set_property("input-default-bindings", true)?;
             init.set_property("user-agent", "Tsukimi")?;
@@ -452,6 +454,8 @@ fn get_modstr(state: gtk::gdk::ModifierType) -> String {
 }
 
 use gtk::glib::translate::FromGlib;
+
+use crate::ui::models::SETTINGS;
 
 const KEYSTRING_MAP: &[(&str, &str)] = &[
     ("PGUP", "Page_Up"),

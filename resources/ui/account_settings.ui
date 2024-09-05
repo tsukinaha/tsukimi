@@ -737,31 +737,12 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Load external mpv config</property>
-            <property name="description" translatable="yes">May cause crashes, with serious performance issues</property>
+            <property name="description" translatable="yes">May cause crashes, with serious performance issues, Requires restart</property>
             <child>
               <object class="AdwSwitchRow" id="config_switchrow">
                 <property name="title" translatable="yes">config=true</property>
                 <property name="subtitle" translatable="yes">Read from mpv config dir</property>
                 <signal name="notify::active" handler="on_config_switchrow" swapped="yes" />
-                <style>
-                  <class name="error"/>
-                </style>
-              </object>
-            </child>
-            <style>
-              <class name="error"/>
-            </style>
-          </object>
-        </child>
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Load external mpv osc</property>
-            <property name="description" translatable="yes">This should not be enabled with vo=libmpv</property>
-            <child>
-              <object class="AdwSwitchRow" id="osc_switchrow">
-                <property name="title" translatable="yes">osc=true</property>
-                <property name="subtitle" translatable="yes">Read from mpv config dir</property>
-                <signal name="notify::active" handler="on_osc_switchrow" swapped="yes" />
                 <style>
                   <class name="error"/>
                 </style>

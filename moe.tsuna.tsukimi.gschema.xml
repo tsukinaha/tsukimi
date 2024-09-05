@@ -165,9 +165,6 @@
     <key name="mpv-show-buffer-speed" type="b">
       <default>true</default>
     </key>
-    <key name="mpv-osc" type="b">
-      <default>false</default>
-    </key>
     <key name="mpv-subtitle-font" type="s">
       <default>""</default>
     </key>

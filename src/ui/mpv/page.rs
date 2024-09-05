@@ -715,7 +715,6 @@ impl MPVPage {
         mpv.set_property("volume", SETTINGS.mpv_default_volume() as i64);
         mpv.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64);
         mpv.set_property("sub-font", SETTINGS.mpv_subtitle_font());
-        mpv.set_property("osc", SETTINGS.mpv_osc());
         if SETTINGS.mpv_force_stereo() {
             mpv.set_property("audio-channels", "stereo");
         } else {
@@ -727,6 +726,5 @@ impl MPVPage {
             2 => mpv.set_property("vo", "dmabuf-wayland"),
             _ => unreachable!(),
         }
-        mpv.set_property("config", SETTINGS.mpv_config());
     }
 }
