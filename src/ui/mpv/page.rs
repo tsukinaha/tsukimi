@@ -17,7 +17,10 @@ use super::tsukimi_mpv::{
     ListenEvent, MpvTrack, MpvTracks, TrackSelection, MPV_EVENT_CHANNEL, PAUSED,
 };
 use super::video_scale::VideoScale;
-static MIN_MOTION_TIME: i64 = 100000;
+
+const MIN_MOTION_TIME: i64 = 100000;
+const NEXT_CHAPTER_KEYVAL: u32 = 65366;
+const PREV_CHAPTER_KEYVAL: u32 = 65365;
 
 mod imp {
 
@@ -134,6 +137,20 @@ mod imp {
                 None,
                 move |mpv, _action, _parameter| {
                     mpv.on_forward();
+                },
+            );
+            klass.install_action(
+                "mpv.chapter-prev",
+                None,
+                move |mpv, _action, _parameter| {
+                    mpv.chapter_prev();
+                },
+            );
+            klass.install_action(
+                "mpv.chapter-next",
+                None,
+                move |mpv, _action, _parameter| {
+                    mpv.chapter_next();
                 },
             );
         }
@@ -701,6 +718,14 @@ impl MPVPage {
     pub fn on_forward(&self) {
         let video = &self.imp().video;
         video.seek_forward(SETTINGS.mpv_seek_forward_step() as i64)
+    }
+
+    pub fn chapter_prev(&self) {
+        self.key_pressed_cb(PREV_CHAPTER_KEYVAL, gtk::gdk::ModifierType::empty());
+    }
+
+    pub fn chapter_next(&self) {
+        self.key_pressed_cb(NEXT_CHAPTER_KEYVAL, gtk::gdk::ModifierType::empty());
     }
 
     pub fn load_config(&self) {

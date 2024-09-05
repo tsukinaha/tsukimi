@@ -18,6 +18,16 @@
     </section>
     <section>
       <item>
+        <attribute name="label" translatable="yes">_Next chapter</attribute>
+        <attribute name="action">mpv.chapter-next</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Previous chapter</attribute>
+        <attribute name="action">mpv.chapter-prev</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">_Media info</attribute>
         <attribute name="action">mpv.show-info</attribute>
       </item>
