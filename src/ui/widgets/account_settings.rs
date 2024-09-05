@@ -79,6 +79,9 @@ mod imp {
         pub preferred_audio_language_comborow: TemplateChild<adw::ComboRow>,
         #[template_child]
         pub preferred_subtitle_language_comborow: TemplateChild<adw::ComboRow>,
+    
+        #[template_child]
+        pub osc_switchrow: TemplateChild<adw::SwitchRow>,
     }
 
     #[glib::object_subclass]
@@ -480,6 +483,7 @@ impl AccountSettings {
             .set_selected(SETTINGS.mpv_audio_preferred_lang() as u32);
         imp.preferred_subtitle_language_comborow
             .set_selected(SETTINGS.mpv_subtitle_preferred_lang() as u32);
+        imp.osc_switchrow.set_active(SETTINGS.mpv_osc());
         let action_group = gio::SimpleActionGroup::new();
 
         let action_video_end = gio::ActionEntry::builder("video-end")
@@ -608,5 +612,10 @@ impl AccountSettings {
     #[template_callback]
     pub fn on_config_switchrow(&self, _param: glib::ParamSpec, control: adw::SwitchRow) {
         SETTINGS.set_mpv_config(control.is_active()).unwrap();
+    }
+
+    #[template_callback]
+    pub fn on_osc_switchrow(&self, _param: glib::ParamSpec, control: adw::SwitchRow) {
+        SETTINGS.set_mpv_osc(control.is_active()).unwrap();
     }
 }

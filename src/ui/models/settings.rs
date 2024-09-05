@@ -47,6 +47,15 @@ impl Settings {
     const KEY_MPV_SHOW_BUFFER_SPEED: &'static str = "mpv-show-buffer-speed"; // bool
     const KEY_MPV_VIDEO_OUTPUT: &'static str = "mpv-video-output"; // i32
     const KEY_MPV_ACTION_AFTER_VIDEO_END: &'static str = "mpv-action-after-video-end"; // i32
+    const KEY_MPV_OSC: &'static str = "mpv-osc"; // bool
+
+    pub fn set_mpv_osc(&self, mpv_osc: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_MPV_OSC, mpv_osc)
+    }
+
+    pub fn mpv_osc(&self) -> bool {
+        self.boolean(Self::KEY_MPV_OSC)
+    }
 
     pub fn set_mpv_subtitle_size(&self, mpv_subtitle_size: i32) -> Result<(), glib::BoolError> {
         self.set_int(Self::KEY_MPV_SUBTITLE_SIZE, mpv_subtitle_size)

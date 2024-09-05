@@ -622,10 +622,7 @@ impl MPVPage {
             spawn(spawn_tokio(async move {
                 let _ = EMBY_CLIENT
                     .position_back(&back, backtype)
-                    .await
-                    .map_err(|e| {
-                        eprintln!("send_back error: {:?}", e);
-                    });
+                    .await;
             }))
         }
     }
@@ -718,6 +715,7 @@ impl MPVPage {
         mpv.set_property("volume", SETTINGS.mpv_default_volume() as i64);
         mpv.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64);
         mpv.set_property("sub-font", SETTINGS.mpv_subtitle_font());
+        mpv.set_property("osc", SETTINGS.mpv_osc());
         if SETTINGS.mpv_force_stereo() {
             mpv.set_property("audio-channels", "stereo");
         } else {
