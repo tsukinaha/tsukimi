@@ -7,9 +7,6 @@
         <property name="row-spacing">4</property>
         <property name="column-spacing">10</property>
         <property name="halign">center</property>
-        <style>
-          <class name="reaction-chooser" />
-        </style>
         <child>
           <object class="GtkButton">
             <property name="tooltip-text" translatable="yes">Backward</property>
@@ -20,6 +17,7 @@
               <property name="row">0</property>
             </layout>
             <style>
+              <class name="circular" />
               <class name="flat" />
             </style>
           </object>
