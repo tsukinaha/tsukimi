@@ -467,7 +467,7 @@
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Cache</property>
             <child>
-              <object class="AdwSpinRow">
+              <object class="AdwSpinRow" id="cachesize_spinrow">
                 <property name="title" translatable="yes">Cache Size</property>
                 <property name="subtitle" translatable="yes">Unit: MB</property>
                 <signal name="notify::value" handler="on_cachesize_spinrow" swapped="yes" />

@@ -89,6 +89,9 @@ mod imp {
         pub popover: RefCell<Option<PopoverMenu>>,
         pub menu_actions: MenuActions,
         pub shortcuts_window: RefCell<Option<ShortcutsWindow>>,
+        
+        #[template_child]
+        pub volume_adj: TemplateChild<gtk::Adjustment>,
     }
 
     // The central trait for subclassing a GObject
@@ -703,6 +706,7 @@ impl MPVPage {
     pub fn load_config(&self) {
         let imp = self.imp();
         imp.network_speed_label_2.set_visible(SETTINGS.mpv_show_buffer_speed());
+        imp.volume_adj.set_value(SETTINGS.mpv_default_volume() as f64);
         let mpv = &imp.video.imp().mpv;
         if SETTINGS.mpv_estimate() {
             let fps = SETTINGS.mpv_estimate_target_frame();
@@ -710,7 +714,7 @@ impl MPVPage {
         } else {
             mpv.set_property("vf", "");
         }
-        mpv.set_property("demuxer-max-bytes", (SETTINGS.mpv_cache_size() * 1024) as i64);
+        mpv.set_property("demuxer-max-bytes", format!("{}MiB",SETTINGS.mpv_cache_size()));
         mpv.set_property("cache-secs", (SETTINGS.mpv_cache_time()) as i64);
         mpv.set_property("volume", SETTINGS.mpv_default_volume() as i64);
         mpv.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64);

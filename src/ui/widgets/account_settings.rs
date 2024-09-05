@@ -63,6 +63,9 @@ mod imp {
 
         #[template_child]
         pub buffer_switchrow: TemplateChild<adw::SwitchRow>,
+
+        #[template_child]
+        pub cachesize_spinrow: TemplateChild<adw::SpinRow>,
     
         #[template_child]
         pub stereo_switchrow: TemplateChild<adw::SwitchRow>,
@@ -474,6 +477,8 @@ impl AccountSettings {
             .set_font_desc(&gtk::pango::FontDescription::from_string(
                 &SETTINGS.mpv_subtitle_font(),
             ));
+        imp.cachesize_spinrow
+            .set_value(SETTINGS.mpv_cache_size().into());
         imp.mpv_sub_size_spinrow
             .set_value(SETTINGS.mpv_subtitle_size().into());
         imp.preferred_audio_language_comborow
