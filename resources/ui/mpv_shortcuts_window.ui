@@ -15,6 +15,18 @@
                 <property name="title" translatable="yes">Decrease/increase playback speed by 10%</property>
               </object>
             </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="accelerator">braceleft braceright</property>
+                <property name="title" translatable="yes">Halve/double current playback speed</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="accelerator">BackSpace</property>
+                <property name="title" translatable="yes">Reset playback speed to normal</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
