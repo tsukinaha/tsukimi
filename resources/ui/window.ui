@@ -397,9 +397,6 @@
                                       <object class="GtkProgressBar" id="progressbar">
                                         <property name="hexpand">True</property>
                                         <property name="valign">start</property>
-                                        <style>
-                                          <class name="osd" />
-                                        </style>
                                       </object>
                                     </child>
                                     <child>
