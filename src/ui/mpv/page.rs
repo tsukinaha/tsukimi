@@ -631,7 +631,7 @@ impl MPVPage {
         let back = self.imp().back.borrow();
 
         // close window when vo=gpu-next will set position to 0, so we need to ignore it
-        if position < &9.0 && backtype == BackType::Stop {
+        if position < &9.0 {
             return;
         }
 

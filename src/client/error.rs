@@ -33,6 +33,6 @@ impl UserFacingError for std::boxed::Box<dyn std::error::Error> {
 impl UserFacingError for libmpv2::Error {
     fn to_user_facing(&self) -> String {
         warn!("Error: {}", self);
-        self.to_string()
+        format!("MPV Back: {}, Connectivity error occurred", self.to_string())
     }
 }

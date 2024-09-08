@@ -352,7 +352,7 @@ impl TsukimiMPV {
                         _ => {}
                     },
                     Some(Err(e)) => {
-                        let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Error(e.to_string()));
+                        let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Error(e.to_user_facing()));
                     }
                     None => {}
                 };
@@ -455,7 +455,7 @@ fn get_modstr(state: gtk::gdk::ModifierType) -> String {
 
 use gtk::glib::translate::FromGlib;
 
-use crate::ui::models::SETTINGS;
+use crate::{client::error::UserFacingError, ui::models::SETTINGS};
 
 const KEYSTRING_MAP: &[(&str, &str)] = &[
     ("PGUP", "Page_Up"),
