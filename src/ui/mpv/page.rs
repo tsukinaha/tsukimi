@@ -259,7 +259,6 @@ impl MPVPage {
                 imp.video.play(&url, percentage);
                 imp.back.replace(back);
                 obj.handle_callback(BackType::Start);
-                obj.update_timeout();
             }
         ));
         
@@ -422,6 +421,7 @@ impl MPVPage {
         if let Some(suburl) = imp.suburl.borrow().as_ref() {
             imp.video.add_sub(suburl);
         }
+        self.update_timeout();
     }
 
     fn update_seeking(&self, seeking: bool) {
