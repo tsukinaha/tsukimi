@@ -259,7 +259,7 @@
     </child>
   </template>
   <object class="GtkPopover" id="menu_popover">
-    <property name="height-request">200</property>
+    <property name="height-request">600</property>
     <property name="width-request">400</property>
     <property name="has_arrow">False</property>
     <property name="cascade-popdown">True</property>
@@ -352,13 +352,17 @@
                   </object>
                 </child>
                 <property name="content">
-                  <object class="GtkListBox" id="sub_listbox">
-                    <property name="selection-mode">single</property>
-                    <style>
-                      <class name="osd" />
-                      <class name="boxed-list-separate" />
-                      <class name="logo" />
-                    </style>
+                  <object class="GtkScrolledWindow">
+                    <child>
+                      <object class="GtkListBox" id="sub_listbox">
+                        <property name="selection-mode">single</property>
+                        <style>
+                          <class name="osd" />
+                          <class name="boxed-list-separate" />
+                          <class name="logo" />
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </property>
               </object>
@@ -380,13 +384,17 @@
                   </object>
                 </child>
                 <property name="content">
-                  <object class="GtkListBox" id="audio_listbox">
-                    <property name="selection-mode">single</property>
-                    <style>
-                      <class name="osd" />
-                      <class name="boxed-list-separate" />
-                      <class name="logo" />
-                    </style>
+                  <object class="GtkScrolledWindow">
+                    <child>
+                      <object class="GtkListBox" id="audio_listbox">
+                        <property name="selection-mode">single</property>
+                        <style>
+                          <class name="osd" />
+                          <class name="boxed-list-separate" />
+                          <class name="logo" />
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </property>
               </object>
