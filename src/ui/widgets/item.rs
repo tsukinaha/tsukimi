@@ -3,7 +3,7 @@ use adw::subclass::prelude::*;
 use gettextrs::gettext;
 use glib::Object;
 use gtk::pango::AttrList;
-use gtk::template_callbacks;
+use gtk::{template_callbacks, PositionType, ScrolledWindow};
 use gtk::{gio, glib};
 use std::cell::Ref;
 use std::collections::{HashMap, HashSet};
@@ -114,8 +114,6 @@ pub(crate) mod imp {
         #[template_child]
         pub carousel: TemplateChild<adw::Carousel>,
         #[template_child]
-        pub indicator: TemplateChild<adw::CarouselIndicatorLines>,
-        #[template_child]
         pub actionbox: TemplateChild<ItemActionsBox>,
         #[template_child]
         pub tagline: TemplateChild<gtk::Label>,
@@ -135,6 +133,9 @@ pub(crate) mod imp {
 
         pub videoselection: gtk::SingleSelection,
         pub subselection: gtk::SingleSelection,
+
+        #[template_child]
+        pub main_carousel: TemplateChild<adw::Carousel>,
     }
 
     // The central trait for subclassing a GObject
@@ -253,8 +254,6 @@ impl ItemPage {
         let id = self.id();
         let tags = image_tags.len();
         let carousel = imp.carousel.get();
-        let indicator = imp.indicator.get();
-        indicator.set_carousel(Some(&carousel));
         for tag_num in 1..tags {
             let path = get_image_with_cache(&id, "Backdrop", Some(tag_num as u8))
                 .await
@@ -1198,6 +1197,16 @@ impl ItemPage {
 
     pub fn get_window(&self) -> Window {
         self.root().unwrap().downcast::<Window>().unwrap()
+    }
+
+    #[template_callback]
+    fn edge_overshot_cb(&self, pos: PositionType, _window: &ScrolledWindow) {
+        if pos != gtk::PositionType::Top {
+            return;
+        }
+
+        let carousel = self.imp().main_carousel.get();
+        carousel.scroll_to(&carousel.nth_page(0), true);
     }
 }
 
