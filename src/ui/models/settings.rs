@@ -16,7 +16,6 @@ impl Settings {
     const KEY_IS_BLUR_ENABLED: &'static str = "is-blurenabled";
     const KEY_PROXY: &'static str = "proxy";
     const KEY_ROOT_PIC: &'static str = "root-pic";
-    const KEY_BACKGROUND_HEIGHT: &'static str = "background-height";
     const KEY_IS_BACKGROUND_ENABLED: &'static str = "is-backgroundenabled";
     const KEY_THREADS: &'static str = "threads";
     const KEY_PIC_OPACITY: &'static str = "pic-opacity";
@@ -288,14 +287,6 @@ impl Settings {
 
     pub fn root_pic(&self) -> String {
         self.string(Self::KEY_ROOT_PIC).to_string()
-    }
-
-    pub fn set_background_height(&self, background_height: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_BACKGROUND_HEIGHT, background_height)
-    }
-
-    pub fn background_height(&self) -> i32 {
-        self.int(Self::KEY_BACKGROUND_HEIGHT)
     }
 
     pub fn set_threads(&self, threads: i32) -> Result<(), glib::BoolError> {

@@ -73,10 +73,6 @@
       <default>85</default>
       <summary>Default mpv-seek-backward-step</summary>
     </key>
-    <key name="background-height" type="i">
-      <default>700</default>
-      <summary>Default background height</summary>
-    </key>
     <key name="mpv-estimate-target-frame" type="i">
       <default>60</default>
       <summary>Default estimate target frame</summary>

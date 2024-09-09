@@ -177,8 +177,6 @@ pub(crate) mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-            let backdrop = self.backdrop.get();
-            backdrop.set_height_request(crate::ui::models::SETTINGS.background_height());
             self.actionbox.set_id(Some(obj.id()));
             spawn_g_timeout(glib::clone!(
                 #[weak]
@@ -263,7 +261,6 @@ impl ItemPage {
                 .halign(gtk::Align::Fill)
                 .valign(gtk::Align::Fill)
                 .content_fit(gtk::ContentFit::Cover)
-                .height_request(SETTINGS.background_height())
                 .file(&file)
                 .build();
             carousel.append(&picture);
