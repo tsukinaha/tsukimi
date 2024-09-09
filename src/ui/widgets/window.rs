@@ -4,9 +4,10 @@ use std::path::PathBuf;
 use adw::prelude::*;
 use gio::Settings;
 use gtk::subclass::prelude::*;
+use gtk::ListBoxRow;
 use gtk::Widget;
 mod imp {
-    use std::cell::OnceCell;
+    use std::cell::{OnceCell, RefCell};
 
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
@@ -21,6 +22,7 @@ mod imp {
     use crate::ui::widgets::image_dialog::ImagesDialog;
     use crate::ui::widgets::item_actionbox::ItemActionsBox;
     use crate::ui::widgets::liked::LikedPage;
+    use crate::ui::widgets::listexpand_row::ListExpandRow;
     use crate::ui::widgets::media_viewer::MediaViewer;
     use crate::ui::widgets::player_toolbar::PlayerToolbarBox;
     use crate::ui::widgets::search::SearchPage;
@@ -82,6 +84,8 @@ mod imp {
 
         pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
         pub progress_bar_fade_animation: OnceCell<adw::TimedAnimation>,
+    
+        pub last_content_list_selection: RefCell<Option<i32>>
     }
 
     // The central trait for subclassing a GObject
@@ -102,6 +106,7 @@ mod imp {
             SearchPage::ensure_type();
             LikedPage::ensure_type();
             MPVPage::ensure_type();
+            ListExpandRow::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("win.relogin", None, move |window, _action, _parameter| {
@@ -150,27 +155,6 @@ mod imp {
             obj.load_window_size();
             obj.set_servers();
             obj.set_nav_servers();
-            self.selectlist.connect_row_selected(glib::clone!(
-                #[weak]
-                obj,
-                move |_, row| {
-                    if let Some(row) = row {
-                        let num = row.index();
-                        match num {
-                            0 => {
-                                obj.homepage();
-                            }
-                            1 => {
-                                obj.likedpage();
-                            }
-                            2 => {
-                                obj.searchpage();
-                            }
-                            _ => {}
-                        }
-                    }
-                }
-            ));
             obj.set_shortcuts();
         }
     }
@@ -739,6 +723,43 @@ impl Window {
         if self.is_on_mpv_stack() {
             self.imp().clappernav.key_released_cb(key, state);
         }
+    }
+
+    #[template_callback]
+    fn on_listboxrow_activated(&self, row: &ListBoxRow) {
+        row.activate();
+    }
+
+    #[template_callback]
+    fn on_contentsrow_selected(&self, row: &ListBoxRow) {
+        let pos = row.index();
+        
+        let last_pos = *self.imp().last_content_list_selection.borrow();
+
+        if last_pos == Some(pos) {
+            self.update_view(pos);
+            return; 
+        }
+
+        self.imp().last_content_list_selection.replace(Some(pos));
+        self.select_view(pos);  
+    }
+
+    fn select_view(&self, pos: i32) {
+        match pos {
+            0 => self.homepage(),
+            1 => self.likedpage(),
+            2 => self.searchpage(),
+            _ => {}
+        }
+    }
+
+    fn update_view(&self, pos: i32) {
+        match pos {
+            0 => self.on_home_update(),
+            1 => self.on_liked_update(),
+            _ => {}
+        } 
     }
 
     pub fn set_shortcuts(&self) {

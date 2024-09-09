@@ -101,7 +101,7 @@ pub(crate) mod imp {
 }
 
 glib::wrapper! {
-    /// Preference Window to display and update room details.
+    /// A page for displaying an album.
     pub struct AlbumPage(ObjectSubclass<imp::AlbumPage>)
         @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
 }

@@ -256,7 +256,7 @@ impl HortuScrolled {
             let now = clock.frame_time();
             if now < end_time && adj.value() != end {
                 let mut t = (now - start_time) as f64 / (end_time - start_time) as f64;
-                t = Self::ease_out_cubic(t);
+                t = Self::ease_in_out_cubic(t);
                 adj.set_value(start + t * (end - start));
                 glib::ControlFlow::Continue
             } else {
@@ -266,8 +266,12 @@ impl HortuScrolled {
         });
     }
 
-    fn ease_out_cubic(t: f64) -> f64 {
-        let t = t - 1.0;
-        t * t * t + 1.0
+    fn ease_in_out_cubic(t: f64) -> f64 {
+        if t < 0.5 {
+            4.0 * t * t * t
+        } else {
+            let t = 2.0 * t - 2.0;
+            0.5 * t * t * t + 1.0
+        }
     }
 }

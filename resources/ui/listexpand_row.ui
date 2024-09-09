@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ListExpandRow" parent="GtkListBoxRow">
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">horizontal</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="label" bind-source="ListExpandRow" bind-property="label" bind-flags="sync-create"/>
+            <property name="ellipsize">end</property>
+            <property name="hexpand">True</property>
+            <property name="halign">start</property>
+            <style>
+              <class name="dim-label" />
+            </style>
+            <attributes>
+              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkImage">
+            <property name="icon-name">adw-expander-arrow-symbolic</property>
+            <property name="margin-end">6</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <style>
+      <class name="expand" />
+    </style>
+  </template>
+</interface>

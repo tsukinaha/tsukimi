@@ -38,26 +38,7 @@ pub fn load_css() {
 
     let mut styles = String::new();
 
-    match SETTINGS.theme().as_str() {
-        "Catppuccin Latte" => {
-            styles.push_str(include_str!("style.css"));
-        }
-        "Alpha Dark" => {
-            styles.push_str(include_str!("alpha-dark.css"));
-        }
-        "Adwaita" => {
-            styles.push_str(include_str!("adwaita.css"));
-        }
-        "Adwaita Dark" => {
-            styles.push_str(include_str!("adwaitadark.css"));
-        }
-        "???" => {
-            styles.push_str(include_str!("old.css"));
-        }
-        _ => {
-            styles.push_str(include_str!("basic.css"));
-        }
-    }
+    styles.push_str(include_str!("style.css"));
 
     let accent_color = SETTINGS.accent_color_code();
     styles.push_str(&format!(
@@ -81,6 +62,19 @@ pub fn load_css() {
         accent_color,
         accent_color
     ));
+
+    let dark_mode = gtk::Settings::default()
+        .map(|s| s.is_gtk_application_prefer_dark_theme())
+        .unwrap_or(false);
+
+    if dark_mode {
+        styles.push_str(
+            ".mask {
+                        background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.8));
+                        border-radius:10px;
+                    }",
+        );
+    }
 
     provider.load_from_string(&styles);
 

@@ -2,8 +2,13 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="SidebarServerRow" parent="GtkListBoxRow">
-  <property name="height-request">48</property>
+  <property name="height-request">40</property>
   <property name="selectable">False</property>
+  <property name="margin-top">3</property>
+  <property name="margin-bottom">3</property>
+  <style>
+    <class name="coverimage"/>
+  </style>
     <child>
       <object class="GtkBox" id="box1">
         <property name="focusable">False</property>
@@ -31,9 +36,6 @@
                 <attributes>
                   <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                 </attributes>
-                <style>
-                  <class name="dim-label"/>
-                </style>
               </object>
             </child>
           </object>

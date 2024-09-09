@@ -207,139 +207,202 @@
                                 <property name="content">
                                   <object class="GtkScrolledWindow">
                                     <property name="child">
-                                      <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
+                                      <object class="GtkListBox">
+                                        <property name="selection_mode">0</property>
+                                        <signal name="row-activated" handler="on_listboxrow_activated" swapped="yes"/>
+                                        <style>
+                                          <class name="navigation-sidebar" />
+                                        </style>
                                         <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Servers</property>
-                                            <property name="focusable">False</property>
-                                            <property name="xalign">0</property>
-                                            <property name="halign">start</property>
-                                            <property name="hexpand">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="max_width_chars">90</property>
-                                            <property name="justify">fill</property>
-                                            <property name="margin-start">9</property>
-                                            <style>
-                                              <class name="dim-label"/>
-                                            </style>
-                                            <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                            </attributes>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkListBox" id="serverselectlist">
-                                            <property name="selection_mode">0</property>
-                                            <property name="focusable">False</property>
-                                            <signal name="row-activated" handler="account_activated" swapped="yes"/>
-                                            <style>
-                                              <class name="navigation-sidebar" />
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel">
+                                          <object class="ListExpandRow" id="contents_expand_row">
                                             <property name="label" translatable="yes">Contents</property>
-                                            <property name="focusable">False</property>
-                                            <property name="xalign">0</property>
-                                            <property name="halign">start</property>
-                                            <property name="hexpand">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="max_width_chars">90</property>
-                                            <property name="justify">fill</property>
-                                            <property name="margin-start">9</property>
-                                            <style>
-                                              <class name="dim-label"/>
-                                            </style>
-                                            <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                            </attributes>
+                                            <property name="expanded">True</property>
                                           </object>
                                         </child>
                                         <child>
-                                          <object class="GtkListBox" id="selectlist">
+                                          <object class="GtkListBoxRow">
+                                            <property name="selectable">false</property>
+                                            <property name="activatable">false</property>
+                                            <property name="visible" bind-property="expanded" bind-source="contents_expand_row" bind-flags="sync-create"/>
                                             <style>
                                               <class name="navigation-sidebar" />
+                                              <class name="no-padding" />
                                             </style>
                                             <child>
-                                              <object class="AdwActionRow" id="homerow">
-                                                <child type="prefix">
-                                                  <object class="GtkLabel">
-                                                    <property name="label" translatable="yes">Home</property>
-                                                    <property name="halign">start</property>
-                                                    <attributes>
-                                                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                                    </attributes>
-                                                  </object>
-                                                </child>
-                                                <child type="prefix">
-                                                  <object class="GtkImage">
-                                                    <property name="icon-name">go-home-symbolic</property>
-                                                    <property name="margin-end">6</property>
-                                                    <property name="halign">start</property>
-                                                  </object>
-                                                </child>
-                                                <child type="suffix">
-                                                  <object class="GtkButton">
-                                                    <property name="valign">center</property>
-                                                    <property name="icon-name">emblem-synchronizing-symbolic</property>
-                                                    <signal name="clicked" handler="on_home_update" swapped="yes"/>
+                                              <object class="GtkListBox" id="selectlist">
+                                                <signal name="row-selected" handler="on_contentsrow_selected" swapped="yes"/>
+                                                <style>
+                                                  <class name="logo" />
+                                                </style>
+                                                <child>
+                                                  <object class="GtkListBoxRow">
+                                                    <property name="height-request">40</property>
+                                                    <property name="margin-top">3</property>
+                                                    <property name="margin-bottom">3</property>
                                                     <style>
-                                                      <class name="flat" />
+                                                      <class name="coverimage"/>
                                                     </style>
+                                                    <child>
+                                                      <object class="GtkBox">
+                                                        <property name="focusable">False</property>
+                                                        <property name="spacing">6</property>
+                                                        <property name="margin-start">12</property>
+                                                        <child>
+                                                          <object class="GtkImage">
+                                                            <property name="icon-name">go-home-symbolic</property>
+                                                          </object>
+                                                        </child>
+                                                        <child>
+                                                          <object class="GtkBox">
+                                                            <property name="focusable">False</property>
+                                                            <property name="hexpand">True</property>
+                                                            <child>
+                                                              <object class="GtkLabel">
+                                                                <property name="focusable">False</property>
+                                                                <property name="xalign">0</property>
+                                                                <property name="halign">start</property>
+                                                                <property name="hexpand">True</property>
+                                                                <property name="ellipsize">end</property>
+                                                                <property name="max_width_chars">90</property>
+                                                                <property name="justify">fill</property>
+                                                                <property name="margin-start">9</property>
+                                                                <property name="label" translatable="yes">Home</property>
+                                                                <attributes>
+                                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                                </attributes>
+                                                              </object>
+                                                            </child>
+                                                          </object>
+                                                        </child>
+                                                      </object>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkListBoxRow">
+                                                    <property name="height-request">40</property>
+                                                    <property name="margin-top">3</property>
+                                                    <property name="margin-bottom">3</property>
+                                                    <style>
+                                                      <class name="coverimage"/>
+                                                    </style>
+                                                    <child>
+                                                      <object class="GtkBox">
+                                                        <property name="margin-top">3</property>
+                                                        <property name="margin-bottom">3</property>
+                                                        <property name="focusable">False</property>
+                                                        <property name="spacing">6</property>
+                                                        <property name="margin-start">12</property>
+                                                        <style>
+                                                          <class name="coverimage"/>
+                                                        </style>
+                                                        <child>
+                                                          <object class="GtkImage">
+                                                            <property name="icon-name">emblem-favorite-symbolic</property>
+                                                          </object>
+                                                        </child>
+                                                        <child>
+                                                          <object class="GtkBox">
+                                                            <property name="focusable">False</property>
+                                                            <property name="hexpand">True</property>
+                                                            <child>
+                                                              <object class="GtkLabel">
+                                                                <property name="focusable">False</property>
+                                                                <property name="xalign">0</property>
+                                                                <property name="halign">start</property>
+                                                                <property name="hexpand">True</property>
+                                                                <property name="ellipsize">end</property>
+                                                                <property name="max_width_chars">90</property>
+                                                                <property name="justify">fill</property>
+                                                                <property name="margin-start">9</property>
+                                                                <property name="label" translatable="yes">Liked</property>
+                                                                <attributes>
+                                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                                </attributes>
+                                                              </object>
+                                                            </child>
+                                                          </object>
+                                                        </child>
+                                                      </object>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkListBoxRow">
+                                                    <property name="height-request">40</property>
+                                                    <property name="margin-top">3</property>
+                                                    <property name="margin-bottom">3</property>
+                                                    <style>
+                                                      <class name="coverimage"/>
+                                                    </style>
+                                                    <child>
+                                                      <object class="GtkBox">
+                                                        <property name="margin-top">3</property>
+                                                        <property name="margin-bottom">3</property>
+                                                        <property name="focusable">False</property>
+                                                        <property name="spacing">6</property>
+                                                        <property name="margin-start">12</property>
+                                                        <style>
+                                                          <class name="coverimage"/>
+                                                        </style>
+                                                        <child>
+                                                          <object class="GtkImage">
+                                                            <property name="icon-name">system-search-symbolic</property>
+                                                          </object>
+                                                        </child>
+                                                        <child>
+                                                          <object class="GtkBox">
+                                                            <property name="focusable">False</property>
+                                                            <property name="hexpand">True</property>
+                                                            <child>
+                                                              <object class="GtkLabel">
+                                                                <property name="focusable">False</property>
+                                                                <property name="xalign">0</property>
+                                                                <property name="halign">start</property>
+                                                                <property name="hexpand">True</property>
+                                                                <property name="ellipsize">end</property>
+                                                                <property name="max_width_chars">90</property>
+                                                                <property name="justify">fill</property>
+                                                                <property name="margin-start">9</property>
+                                                                <property name="label" translatable="yes">Search</property>
+                                                                <attributes>
+                                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                                </attributes>
+                                                              </object>
+                                                            </child>
+                                                          </object>
+                                                        </child>
+                                                      </object>
+                                                    </child>
                                                   </object>
                                                 </child>
                                               </object>
                                             </child>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="ListExpandRow" id="servers_expand_row">
+                                            <property name="label" translatable="yes">Servers</property>
+                                            <property name="expanded">True</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkListBoxRow">
+                                            <property name="selectable">false</property>
+                                            <property name="activatable">false</property>
+                                            <property name="visible" bind-property="expanded" bind-source="servers_expand_row" bind-flags="sync-create"/>
+                                            <style>
+                                              <class name="navigation-sidebar" />
+                                              <class name="no-padding" />
+                                            </style>
                                             <child>
-                                              <object class="AdwActionRow">
-                                                <child type="prefix">
-                                                  <object class="GtkLabel">
-                                                    <property name="label" translatable="yes">Liked</property>
-                                                    <property name="halign">start</property>
-                                                    <attributes>
-                                                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                                    </attributes>
-                                                  </object>
-                                                </child>
-                                                <child type="prefix">
-                                                  <object class="GtkImage">
-                                                    <property name="icon-name">emblem-favorite-symbolic</property>
-                                                    <property name="margin-end">6</property>
-                                                    <property name="halign">start</property>
-                                                  </object>
-                                                </child>
-                                                <child type="suffix">
-                                                  <object class="GtkButton">
-                                                    <property name="valign">center</property>
-                                                    <property name="icon-name">emblem-synchronizing-symbolic</property>
-                                                    <signal name="clicked" handler="on_liked_update" swapped="yes"/>
-                                                    <style>
-                                                      <class name="flat" />
-                                                    </style>
-                                                  </object>
-                                                </child>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="AdwActionRow">
-                                                <child type="prefix">
-                                                  <object class="GtkLabel">
-                                                    <property name="label" translatable="yes">Search</property>
-                                                    <property name="halign">start</property>
-                                                    <attributes>
-                                                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                                    </attributes>
-                                                  </object>
-                                                </child>
-                                                <child type="prefix">
-                                                  <object class="GtkImage">
-                                                    <property name="icon-name">system-search-symbolic</property>
-                                                    <property name="margin-end">6</property>
-                                                    <property name="halign">start</property>
-                                                  </object>
-                                                </child>
+                                              <object class="GtkListBox" id="serverselectlist">
+                                                <property name="selection_mode">0</property>
+                                                <property name="focusable">False</property>
+                                                <signal name="row-activated" handler="account_activated" swapped="yes"/>
+                                                <style>
+                                                  <class name="logo" />
+                                                </style>
                                               </object>
                                             </child>
                                           </object>

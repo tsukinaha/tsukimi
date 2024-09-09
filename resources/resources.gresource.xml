@@ -47,5 +47,6 @@
     <file compressed="true" preprocess="xml-stripblanks">mpv_menu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">mpv_menu_actions.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">mpv_shortcuts_window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">listexpand_row.ui</file>
   </gresource>
 </gresources>

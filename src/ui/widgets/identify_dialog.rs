@@ -86,7 +86,7 @@ mod imp {
 }
 
 glib::wrapper! {
-    /// Preference Window to display and update room details.
+    /// A identify dialog to search for external ids.
     pub struct IdentifyDialog(ObjectSubclass<imp::IdentifyDialog>)
         @extends gtk::Widget, adw::Dialog, adw::PreferencesDialog, @implements gtk::Accessible, gtk::Root;
 }

@@ -1,10 +1,10 @@
+.sbackground {
+    background: rgba(0, 0, 0, 0.15);
+}
+
 child {
     margin: 9px;
     border-radius: 15px;
-}
-
-.osd {
-    padding: 7px;
 }
 
 .mediainfo {
@@ -12,21 +12,21 @@ child {
     border-radius: 15px;
 }
 
+.osd {
+    padding: 7px;
+}
+
 .mask {
     background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(255,255,255,0.8));
     border-radius:10px;
-}
-
-.bottom-bar {
-    background: transparent;
 }
 
 .logo {
     background: rgba(0, 0, 0, 0);
 }
 
-.sbackground {
-    background: rgba(0, 0, 0, 0.15);
+.bottom-bar {
+    background: transparent;
 }
 
 .smooth-scale {
@@ -34,14 +34,27 @@ child {
     padding-bottom: 0px;
 }
 
-listview>row {
-    margin-left: 9px;
-    margin-right: 9px;
+.frame {
+    border: 2px solid @borders;
+    border-radius: 5px;
+}
+
+.coverimage {
     border-radius: 10px;
 }
 
-picture {
+.pill {
     border-radius: 10px;
+}
+
+.playing-song-label {
+    font-weight: bold;
+}
+
+.home-carousel {
+    border-radius: 10px;
+    margin: 0px;
+    box-shadow: none;
 }
 
 clapper-gtk-video>overlay {
@@ -54,28 +67,9 @@ clapper-gtk-video>overlay>picture {
 	border-radius:0px;
 }
 
-.playing-song-label {
-    font-weight: bold;
-}
-
-.coverimage {
-    border-radius: 10px;
-}
-
-.songwidget {
-    padding: 12px;
-}
-
-listview {
-    background-color: rgba(0, 0, 0, 0);
-}
-
-gridview {
-    background-color: rgba(0, 0, 0, 0);
-}
-
-gridview>child box {
-    margin: 0px;
+.boxshadow{
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+	border-radius: 10px;
 }
 
 /* Starring */
@@ -107,6 +101,43 @@ button.star.interacted:not(.starred) image {
     animation: rotate_unstar 0.4s ease;
 }
 
+.songwidget {
+    padding: 12px;
+}
+
+.no-padding {
+    padding: 0px;
+}
+
+.serverrow {
+    margin: 6px;
+    border-radius: 10px;
+}
+
+listview>row {
+    margin-left: 9px;
+    margin-right: 9px;
+    border-radius: 10px;
+}
+
+picture {
+    border-radius: 10px;
+}
+
+listview {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+gridview {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+gridview>child box {
+    margin: 0px;
+}
+
+
+
 overlay>label {
     background-color: #AEB5FA;
     border-radius: 999px;
@@ -119,15 +150,6 @@ box>overlay>image {
     margin: 3px;
 }
 
-.frame {
-    border: 2px solid @borders;
-    border-radius: 5px;
-}
-
-.pill {
-    border-radius: 10px;
-}
-
 revealer>box>box>widget {
     background-color: rgba(1, 1, 1, 0.1);
     border-radius: 10px;
@@ -137,15 +159,15 @@ revealer>box>box>widget>box {
     margin: 10px;
 }
 
+tabbar>revealer>box {
+    background-color: rgba(0, 0, 0, 0);
+}
+
 
 
 scrolledwindow>viewport>box>box>box {
     margin-left: 15px;
     margin-top: 15px;
-}
-
-tabbar>revealer>box {
-    background-color: rgba(0, 0, 0, 0);
 }
 
 @define-color accent_bg_color #AEB5FA;
@@ -156,106 +178,26 @@ placessidebar {
     background-color: rgba(0, 0, 0, 0);
 }
 
-.sidebar-pane {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    background-color: rgba(0, 0, 0, 0);
-    color: #000;
-}
-
-.serverrow {
-    margin: 6px;
-    border-radius: 10px;
-}
-
-
-.home-carousel {
-    border-radius: 10px;
-    margin: 0px;
-    box-shadow: none;
-}
-
 .card {
     box-shadow: none;
 }
 
-.boxshadow{
-	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-	border-radius: 10px;
+.sidebar-pane {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
-@define-color destructive_color rgb(210, 15, 57);
-@define-color destructive_bg_color rgb(230, 69, 83);
-@define-color destructive_fg_color rgb(239, 241, 245);
-@define-color success_color rgb(23, 146, 153);
-@define-color success_bg_color rgb(64, 160, 43);
-@define-color success_fg_color rgb(239, 241, 245);
-@define-color warning_color rgb(223, 142, 29);
-@define-color warning_bg_color rgb(254, 100, 11);
-@define-color warning_fg_color rgb(76, 79, 105);
-@define-color error_color rgb(210, 15, 57);
-@define-color error_bg_color rgb(230, 69, 83);
-@define-color error_fg_color rgb(239, 241, 245);
-@define-color window_bg_color rgb(239, 241, 245);
-@define-color window_fg_color rgb(76, 79, 105);
-@define-color view_bg_color rgb(230, 233, 239);
-@define-color view_fg_color rgb(76, 79, 105);
-@define-color headerbar_bg_color rgb(220, 224, 232);
-@define-color headerbar_fg_color rgb(76, 79, 105);
-@define-color headerbar_border_color rgb(156, 160, 176);
-@define-color headerbar_backdrop_color @window_bg_color;
-@define-color headerbar_shade_color rgba(0, 0, 0, 0.07);
-@define-color card_bg_color rgb(230, 233, 239);
-@define-color card_fg_color rgb(76, 79, 105);
-@define-color card_shade_color rgba(0, 0, 0, 0.07);
-@define-color dialog_bg_color #e6e9ef;
-@define-color dialog_fg_color rgb(76, 79, 105);
-@define-color popover_bg_color #e6e9ef;
-@define-color popover_fg_color rgb(76, 79, 105);
-@define-color shade_color rgba(0, 0, 0, 0.07);
-@define-color scrollbar_outline_color rgb(255, 255, 255);
-@define-color blue_1 #99c1f1;
-@define-color blue_2 #62a0ea;
-@define-color blue_3 #3584e4;
-@define-color blue_4 #1c71d8;
-@define-color blue_5 #1a5fb4;
-@define-color green_1 #8ff0a4;
-@define-color green_2 #57e389;
-@define-color green_3 #33d17a;
-@define-color green_4 #2ec27e;
-@define-color green_5 #26a269;
-@define-color yellow_1 #f9f06b;
-@define-color yellow_2 #f8e45c;
-@define-color yellow_3 #f6d32d;
-@define-color yellow_4 #f5c211;
-@define-color yellow_5 #e5a50a;
-@define-color orange_1 #ffbe6f;
-@define-color orange_2 #ffa348;
-@define-color orange_3 #ff7800;
-@define-color orange_4 #e66100;
-@define-color orange_5 #c64600;
-@define-color red_1 #f66151;
-@define-color red_2 #ed333b;
-@define-color red_3 #e01b24;
-@define-color red_4 #c01c28;
-@define-color red_5 #a51d2d;
-@define-color purple_1 #dc8add;
-@define-color purple_2 #c061cb;
-@define-color purple_3 #9141ac;
-@define-color purple_4 #813d9c;
-@define-color purple_5 #613583;
-@define-color brown_1 #cdab8f;
-@define-color brown_2 #b5835a;
-@define-color brown_3 #986a44;
-@define-color brown_4 #865e3c;
-@define-color brown_5 #63452c;
-@define-color light_1 #ffffff;
-@define-color light_2 #f6f5f4;
-@define-color light_3 #deddda;
-@define-color light_4 #c0bfbc;
-@define-color light_5 #9a9996;
-@define-color dark_1 #77767b;
-@define-color dark_2 #5e5c64;
-@define-color dark_3 #3d3846;
-@define-color dark_4 #241f31;
-@define-color dark_5 #000000;
+/* Expanding */
+row.expand.interacted.expanded image {
+    transform: rotate(-0.5turn);
+}
 
+
+row image {
+  transition: 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+
+.sidebar-pane {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.1);
+}
