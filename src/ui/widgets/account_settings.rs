@@ -31,8 +31,6 @@ mod imp {
         #[template_child]
         pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
-        pub themecontrol: TemplateChild<adw::ComboRow>,
-        #[template_child]
         pub proxyentry: TemplateChild<adw::EntryRow>,
         #[template_child]
         pub backgroundblurspinrow: TemplateChild<adw::SpinRow>,
@@ -138,7 +136,6 @@ mod imp {
             obj.set_sidebar();
             obj.set_spin();
             obj.set_proxy();
-            obj.set_theme();
             obj.set_thread();
             obj.set_picopactiy();
             obj.set_pic();
@@ -298,34 +295,6 @@ impl AccountSettings {
             std::fs::remove_dir_all(path).unwrap();
         }
         toast!(self, gettext("Cache Cleared"))
-    }
-
-    pub fn set_theme(&self) {
-        let imp = self.imp();
-        let theme = SETTINGS.theme();
-        let mut pos = 0;
-        match theme.as_str() {
-            "default" => pos = 0,
-            "Adwaita" => pos = 1,
-            "Adwaita Dark" => pos = 2,
-            "Catppuccino Latte" => pos = 3,
-            "Alpha Dark" => pos = 4,
-            "???" => pos = 5,
-            _ => (),
-        }
-        imp.themecontrol.set_selected(pos);
-        imp.themecontrol
-            .connect_selected_item_notify(move |control| {
-                let theme = control
-                    .selected_item()
-                    .and_then(|item| {
-                        item.downcast::<gtk::StringObject>()
-                            .ok()
-                            .map(|item| item.string())
-                    })
-                    .unwrap();
-                SETTINGS.set_theme(&theme).unwrap();
-            });
     }
 
     pub fn set_thread(&self) {

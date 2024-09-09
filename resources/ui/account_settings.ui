@@ -103,24 +103,6 @@
               </object>
             </child>
             <child>
-              <object class="AdwComboRow" id="themecontrol">
-                <property name="title" translatable="yes">Theme</property>
-                <property name="subtitle" translatable="yes">Restart App To Take Effect</property>
-                <property name="model">
-                  <object class="GtkStringList">
-                    <items>
-                      <item translatable="yes">System Default</item>
-                      <item>Adwaita</item>
-                      <item>Adwaita Dark</item>
-                      <item>Catppuccin Latte</item>
-                      <item>Alpha Dark</item>
-                      <item>???</item>
-                    </items>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
               <object class="AdwSwitchRow" id="sidebarcontrol">
                 <property name="title" translatable="yes">Sidebar Overlay</property>
                 <property name="subtitle" translatable="yes">or side by side</property>
