@@ -14,7 +14,6 @@ impl Settings {
     const KEY_IS_OVERLAY: &'static str = "is-overlay";
     const KEY_IS_RESUME: &'static str = "is-resume";
     const KEY_IS_BLUR_ENABLED: &'static str = "is-blurenabled";
-    const KEY_THEME: &'static str = "theme";
     const KEY_PROXY: &'static str = "proxy";
     const KEY_ROOT_PIC: &'static str = "root-pic";
     const KEY_BACKGROUND_HEIGHT: &'static str = "background-height";
@@ -273,14 +272,6 @@ impl Settings {
 
     pub fn resume(&self) -> bool {
         self.boolean(Self::KEY_IS_RESUME)
-    }
-
-    pub fn set_theme(&self, theme: &str) -> Result<(), glib::BoolError> {
-        self.set_string(Self::KEY_THEME, theme)
-    }
-
-    pub fn theme(&self) -> String {
-        self.string(Self::KEY_THEME).to_string()
     }
 
     pub fn set_proxy(&self, proxy: &str) -> Result<(), glib::BoolError> {

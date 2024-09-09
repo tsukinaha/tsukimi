@@ -267,9 +267,6 @@
                                                                 <property name="justify">fill</property>
                                                                 <property name="margin-start">9</property>
                                                                 <property name="label" translatable="yes">Home</property>
-                                                                <attributes>
-                                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                                                </attributes>
                                                               </object>
                                                             </child>
                                                           </object>
@@ -316,9 +313,6 @@
                                                                 <property name="justify">fill</property>
                                                                 <property name="margin-start">9</property>
                                                                 <property name="label" translatable="yes">Liked</property>
-                                                                <attributes>
-                                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                                                </attributes>
                                                               </object>
                                                             </child>
                                                           </object>
@@ -365,9 +359,6 @@
                                                                 <property name="justify">fill</property>
                                                                 <property name="margin-start">9</property>
                                                                 <property name="label" translatable="yes">Search</property>
-                                                                <attributes>
-                                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                                                </attributes>
                                                               </object>
                                                             </child>
                                                           </object>

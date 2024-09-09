@@ -33,9 +33,6 @@
                 <property name="max_width_chars">90</property>
                 <property name="justify">fill</property>
                 <property name="margin-start">9</property>
-                <attributes>
-                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                </attributes>
               </object>
             </child>
           </object>
