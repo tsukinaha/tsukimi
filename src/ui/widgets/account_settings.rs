@@ -23,8 +23,6 @@ mod imp {
         #[template_child]
         pub sidebarcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
-        pub spinrow: TemplateChild<adw::SpinRow>,
-        #[template_child]
         pub backgroundspinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub threadspinrow: TemplateChild<adw::SpinRow>,
@@ -134,7 +132,6 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             obj.set_sidebar();
-            obj.set_spin();
             obj.set_proxy();
             obj.set_thread();
             obj.set_picopactiy();
@@ -244,16 +241,6 @@ impl AccountSettings {
         imp.selectlastcontrol.connect_active_notify(move |control| {
             SETTINGS
                 .set_auto_select_server(control.is_active())
-                .unwrap();
-        });
-    }
-
-    pub fn set_spin(&self) {
-        let imp = self.imp();
-        imp.spinrow.set_value(SETTINGS.background_height().into());
-        imp.spinrow.connect_value_notify(move |control| {
-            SETTINGS
-                .set_background_height(control.value() as i32)
                 .unwrap();
         });
     }

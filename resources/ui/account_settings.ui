@@ -108,20 +108,6 @@
                 <property name="subtitle" translatable="yes">or side by side</property>
               </object>
             </child>
-            <child>
-              <object class="AdwSpinRow" id="spinrow">
-                <property name="title" translatable="yes">Picture Height</property>
-                <property name="adjustment">
-                  <object class="GtkAdjustment">
-                    <property name="lower">350</property>
-                    <property name="upper">1500</property>
-                    <property name="value">700</property>
-                    <property name="page-increment">10</property>
-                    <property name="step-increment">50</property>
-                  </object>
-                </property>
-              </object>
-            </child>
           </object>
         </child>
         <child>

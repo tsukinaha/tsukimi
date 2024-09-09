@@ -733,6 +733,9 @@ impl MPVPage {
         imp.network_speed_label_2.set_visible(SETTINGS.mpv_show_buffer_speed());
         imp.volume_adj.set_value(SETTINGS.mpv_default_volume() as f64);
         let mpv = &imp.video.imp().mpv;
+        if !SETTINGS.proxy().is_empty() {
+            mpv.set_property("http-proxy", SETTINGS.proxy());
+        }
         if SETTINGS.mpv_estimate() {
             let fps = SETTINGS.mpv_estimate_target_frame();
             mpv.set_property("vf", format!("lavfi=\"fps=fps={fps}:round=down\""));
