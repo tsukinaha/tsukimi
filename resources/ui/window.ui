@@ -23,7 +23,7 @@
     </child>
     <child>
       <object class="AdwBreakpoint">
-        <condition>max-width: 800sp</condition>
+        <condition>max-width: 500sp</condition>
         <setter object="split_view" property="collapsed">True</setter>
       </object>
     </child>
@@ -179,6 +179,8 @@
                                 <child type="bottom">
                                   <object class="AdwActionRow" id="namerow">
                                     <property name="halign">fill</property>
+                                    <property name="title-lines">1</property>
+                                    <property name="subtitle-lines">1</property>
                                     <child type="prefix">
                                       <object class="AdwAvatar">
                                         <property name="size">30</property>

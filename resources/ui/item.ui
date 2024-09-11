@@ -349,7 +349,6 @@
                         <child>
                           <object class="GtkBox">
                             <property name="orientation">vertical</property>
-                            <property name="height-request">500</property>
                             <child>
                               <object class="HortuScrolled" id="includehortu">
                               </object>
