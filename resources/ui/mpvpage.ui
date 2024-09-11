@@ -196,7 +196,7 @@
                 <child>
                   <object class="AdwClamp">
                     <property name="margin-top">10</property>
-                    <property name="maximum-size">1000</property>
+                    <property name="maximum-size">2000</property>
                     <child>
                       <object class="GtkBox">
                         <property name="orientation">horizontal</property>
