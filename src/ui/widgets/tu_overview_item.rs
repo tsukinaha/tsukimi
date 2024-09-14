@@ -9,8 +9,6 @@ use gtk::template_callbacks;
 use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
-use imp::PosterType;
-use tracing::warn;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
@@ -21,7 +19,6 @@ use crate::utils::spawn;
 use crate::utils::spawn_tokio;
 
 use super::picture_loader::PictureLoader;
-use super::window::Window;
 
 pub const PROGRESSBAR_ANIMATION_DURATION: u32 = 2000;
 
@@ -30,7 +27,7 @@ pub mod imp {
     use glib::subclass::InitializingObject;
     use gtk::{glib, CompositeTemplate};
     use gtk::{prelude::*, PopoverMenu};
-    use std::cell::{Cell, RefCell};
+    use std::cell::RefCell;
 
     use crate::ui::provider::tu_item::TuItem;
     use crate::ui::widgets::picture_loader::PictureLoader;
@@ -48,13 +45,13 @@ pub mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/listitem.ui")]
-    #[properties(wrapper_type = super::TuListItem)]
-    pub struct TuListItem {
+    #[template(resource = "/moe/tsukimi/tu_overview_item.ui")]
+    #[properties(wrapper_type = super::TuOverviewItem)]
+    pub struct TuOverviewItem {
         #[property(get, set = Self::set_item)]
         pub item: RefCell<TuItem>,
-        #[property(get, set, builder(PosterType::default()))]
-        pub poster_type: Cell<PosterType>,
+        #[template_child]
+        pub overview: TemplateChild<gtk::Label>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub listlabel: TemplateChild<gtk::Label>,
@@ -62,14 +59,16 @@ pub mod imp {
         pub label2: TemplateChild<gtk::Label>,
         #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
+        #[template_child]
+        pub time_label: TemplateChild<gtk::Label>,
     }
 
     // The central trait for subclassing a GObject
     #[glib::object_subclass]
-    impl ObjectSubclass for TuListItem {
+    impl ObjectSubclass for TuOverviewItem {
         // `NAME` needs to match `class` attribute of template
-        const NAME: &'static str = "TuListItem";
-        type Type = super::TuListItem;
+        const NAME: &'static str = "TuOverviewItem";
+        type Type = super::TuOverviewItem;
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
@@ -85,7 +84,7 @@ pub mod imp {
 
     // Trait shared by all GObjects
     #[glib::derived_properties]
-    impl ObjectImpl for TuListItem {
+    impl ObjectImpl for TuOverviewItem {
         fn constructed(&self) {
             self.parent_constructed();
         }
@@ -98,11 +97,11 @@ pub mod imp {
     }
 
     // Trait shared by all widgets
-    impl WidgetImpl for TuListItem {}
+    impl WidgetImpl for TuOverviewItem {}
 
-    impl BinImpl for TuListItem {}
+    impl BinImpl for TuOverviewItem {}
 
-    impl TuListItem {
+    impl TuOverviewItem {
         pub fn set_item(&self, item: TuItem) {
             self.item.replace(item);
             let obj = self.obj();
@@ -113,7 +112,7 @@ pub mod imp {
 }
 
 glib::wrapper! {
-    pub struct TuListItem(ObjectSubclass<imp::TuListItem>)
+    pub struct TuOverviewItem(ObjectSubclass<imp::TuOverviewItem>)
         @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
@@ -128,7 +127,7 @@ pub enum Action {
 }
 
 #[template_callbacks]
-impl TuListItem {
+impl TuOverviewItem {
     pub fn new(item: TuItem, isresume: bool) -> Self {
         Object::builder()
             .property("item", item)
@@ -143,213 +142,35 @@ impl TuListItem {
     pub fn set_up(&self) {
         let imp = self.imp();
         let item = self.item();
-        let item_type = item.item_type();
-        match item_type.as_str() {
-            "Movie" => {
-                let year = if item.production_year() != 0 {
-                    item.production_year().to_string()
-                } else {
-                    String::default()
-                };
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_text(&year);
-                imp.overlay.set_size_request(167, 260);
-                self.set_picture();
-                self.set_played();
-                if item.is_resume() {
-                    self.set_played_percentage(self.get_played_percentage());
-                    return;
-                }
-                self.set_rating();
-            }
-            "Video" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                imp.overlay.set_size_request(250, 141);
-                self.set_picture();
-            }
-            "TvChannel" => {
-                imp.listlabel.set_text(&format!(
-                    "{} - {}",
-                    item.name(),
-                    item.program_name().unwrap_or_default()
-                ));
-                imp.overlay.set_size_request(250, 141);
-                self.set_picture();
-
-                let Some(program_start_time) = item.program_start_time() else {
-                    return;
-                };
-
-                let program_start_time = program_start_time.to_local().unwrap();
-
-                let Some(program_end_time) = item.program_end_time() else {
-                    return;
-                };
-
-                let program_end_time = program_end_time.to_local().unwrap();
-
-                let now = glib::DateTime::now_local().unwrap();
-
-                let progress = (now.to_unix() - program_start_time.to_unix()) as f64
-                    / (program_end_time.to_unix() - program_start_time.to_unix()) as f64;
-
-                self.set_played_percentage(progress * 100.0);
-                imp.label2.set_text(&format!(
-                    "{} - {}",
-                    program_start_time.format("%H:%M").unwrap(),
-                    program_end_time.format("%H:%M").unwrap()
-                ));
-            }
-            "CollectionFolder" | "UserView" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                imp.overlay.set_size_request(250, 141);
-                self.set_picture();
-            }
-            "Series" => {
-                let year = if item.production_year() != 0 {
-                    item.production_year().to_string()
-                } else {
-                    String::from("")
-                };
-                imp.listlabel.set_text(&item.name());
-                if let Some(status) = item.status() {
-                    if status == "Continuing" {
-                        imp.label2
-                            .set_text(&format!("{} - {}", year, gettext("Present")));
-                    } else if status == "Ended" {
-                        if let Some(end_date) = item.end_date() {
-                            let end_year = end_date.year();
-                            if end_year != year.parse::<i32>().unwrap_or_default() {
-                                imp.label2
-                                    .set_text(&format!("{} - {}", year, end_date.year()));
-                            } else {
-                                imp.label2.set_text(&format!("{}", end_year));
-                            }
-                        } else {
-                            imp.label2.set_text(&format!("{} - Unknown", year));
-                        }
-                    }
-                } else {
-                    imp.label2.set_text(&year);
-                }
-                imp.overlay.set_size_request(167, 260);
-                self.set_picture();
-                self.set_played();
-                self.set_count();
-                self.set_rating();
-            }
-            "BoxSet" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                imp.overlay.set_size_request(167, 260);
-                self.set_picture();
-            }
-            "Tag" | "Genre" => {
-                imp.overlay.set_size_request(190, 190);
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                self.set_picture();
-            }
-            "Episode" => {
-                imp.listlabel
-                    .set_text(&item.series_name().unwrap_or_default());
-                imp.label2.set_text(&format!(
-                    "S{}E{}: {}",
-                    item.parent_index_number(),
-                    item.index_number(),
-                    item.name()
-                ));
-                imp.overlay.set_size_request(250, 141);
-                self.set_picture();
-                self.set_played();
-                self.set_played_percentage(self.get_played_percentage());
-            }
-            "Views" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                self.set_picture();
-            }
-            "MusicAlbum" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_text(&item.albumartist_name());
-                imp.overlay.set_size_request(190, 190);
-                self.set_picture();
-            }
-            "Actor" | "Person" | "Director" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_text(&item.role().unwrap_or("".to_string()));
-                imp.overlay.set_size_request(167, 260);
-                self.set_picture();
-            }
-            "Audio" => {
-                imp.listlabel.set_text(&item.name());
-                imp.overlay.set_size_request(190, 190);
-                self.set_picture();
-            }
-            _ => {
-                self.set_visible(false);
-                warn!("Unknown item type: {}", item_type)
-            }
+        imp.listlabel.set_text(&format!(
+            "S{}E{}: {}",
+            item.parent_index_number(),
+            item.index_number(),
+            item.name()
+        ));
+        if let Some(premiere_date) = item.premiere_date() {
+            imp.time_label.set_visible(true);
+            imp.time_label
+                .set_text(&premiere_date.format("%Y-%m-%d").unwrap_or_default());
         }
+        imp.label2
+            .set_text(&run_time_ticks_to_label(item.run_time_ticks()));
+        imp.overview.set_text(
+            &item
+                .overview()
+                .unwrap_or("No Inscription".to_string())
+                .replace("\n", " "),
+        );
+        self.set_picture();
+        self.set_played();
+        self.set_played_percentage(self.get_played_percentage());
         self.set_tooltip_text(Some(&item.name()));
-    }
-
-    fn set_overlay_size(overlay: &gtk::Overlay, width: i32, height: i32) {
-        overlay.set_size_request(width, height);
-    }
-
-    fn get_image_type_and_tag(&self, item: &TuItem) -> (&str, Option<String>, String) {
-        let imp = self.imp();
-        if self.poster_type() != PosterType::Poster {
-            if let Some(imag_tags) = item.image_tags() {
-                match self.poster_type() {
-                    PosterType::Banner => {
-                        Self::set_overlay_size(&imp.overlay, 375, 70);
-                        if imag_tags.banner().is_some() {
-                            return ("Banner", None, item.id());
-                        } else if imag_tags.thumb().is_some() {
-                            return ("Thumb", None, item.id());
-                        } else if imag_tags.backdrop().is_some() {
-                            return ("Backdrop", Some(0.to_string()), item.id());
-                        }
-                    }
-                    PosterType::Backdrop => {
-                        Self::set_overlay_size(&imp.overlay, 250, 141);
-                        if imag_tags.backdrop().is_some() {
-                            return ("Backdrop", Some(0.to_string()), item.id());
-                        } else if imag_tags.thumb().is_some() {
-                            return ("Thumb", None, item.id());
-                        }
-                    }
-                    _ => {}
-                }
-            }
-        }
-        if item.is_resume() {
-            if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
-                Self::set_overlay_size(&imp.overlay, 250, 141);
-                ("Thumb", None, parent_thumb_item_id)
-            } else if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id() {
-                Self::set_overlay_size(&imp.overlay, 250, 141);
-                ("Backdrop", Some(0.to_string()), parent_backdrop_item_id)
-            } else {
-                Self::set_overlay_size(&imp.overlay, 250, 141);
-                ("Backdrop", Some(0.to_string()), item.id())
-            }
-        } else if let Some(img_tags) = item.primary_image_item_id() {
-            ("Primary", None, img_tags)
-        } else {
-            ("Primary", None, item.id())
-        }
     }
 
     pub fn set_picture(&self) {
         let imp = self.imp();
         let item = self.item();
-        let (image_type, tag, id) = self.get_image_type_and_tag(&item);
-        let picture_loader = PictureLoader::new(&id, image_type, tag);
+        let picture_loader = PictureLoader::new(&item.id(), "Primary", None);
         imp.overlay.set_child(Some(&picture_loader));
     }
 
@@ -778,24 +599,17 @@ impl TuListItem {
             }
         ));
     }
+}
 
-    #[template_callback]
-    fn on_view_pic_clicked(&self) {
-        let picture = self
-            .imp()
-            .overlay
-            .child()
-            .unwrap()
-            .downcast::<PictureLoader>()
-            .unwrap()
-            .imp()
-            .picture
-            .get();
-        let window = self
-            .ancestor(Window::static_type())
-            .and_downcast::<Window>()
-            .unwrap();
-        window.reveal_image(&picture);
-        window.media_viewer_show_paintable(picture.paintable());
+pub fn run_time_ticks_to_label(run_time_ticks: u64) -> String {
+    let duration = chrono::Duration::seconds((run_time_ticks / 10000000) as i64);
+    let hours = duration.num_hours();
+    let minutes = duration.num_minutes() % 60;
+    let seconds = duration.num_seconds() % 60;
+
+    if hours > 0 {
+        format!("{}:{:02}", hours, minutes)
+    } else {
+        format!("{}:{:02}", minutes, seconds)
     }
 }

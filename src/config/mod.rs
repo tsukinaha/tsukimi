@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 pub mod proxy;
 
-pub const APP_VERSION: &str = "0.12.0";
+pub const APP_VERSION: &str = "0.12.1";
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {

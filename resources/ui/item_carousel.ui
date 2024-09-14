@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template parent="AdwBin" class="ItemCarousel">
+    <child>
+      <object class="GtkRevealer" id="backrevealer">
+        <property name="transition-type">crossfade</property>
+        <property name="transition-duration">700</property>
+        <property name="reveal-child">False</property>
+        <child>
+          <object class="AdwCarousel" id="carousel">
+            <property name="allow_scroll_wheel">False</property>
+            <property name="reveal-duration">700</property>
+            <child>
+              <object class="GtkPicture" id="backdrop">
+                <property name="content-fit">cover</property>
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <property name="height-request">400</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

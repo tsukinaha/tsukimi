@@ -92,7 +92,7 @@ mod imp {
         pub popover: RefCell<Option<PopoverMenu>>,
         pub menu_actions: MenuActions,
         pub shortcuts_window: RefCell<Option<ShortcutsWindow>>,
-        
+
         #[template_child]
         pub volume_adj: TemplateChild<gtk::Adjustment>,
     }
@@ -111,48 +111,24 @@ mod imp {
             AActionRow::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
-            klass.install_action(
-                "mpv.play-pause",
-                None,
-                move |mpv, _action, _parameter| {
-                    mpv.on_play_pause_clicked();
-                },
-            );
-            klass.install_action(
-                "mpv.show-info",
-                None,
-                move |mpv, _action, _parameter| {
-                    mpv.on_info_clicked();
-                },
-            );
-            klass.install_action(
-                "mpv.backward",
-                None,
-                move |mpv, _action, _parameter| {
-                    mpv.on_backward();
-                },
-            );
-            klass.install_action(
-                "mpv.forward",
-                None,
-                move |mpv, _action, _parameter| {
-                    mpv.on_forward();
-                },
-            );
-            klass.install_action(
-                "mpv.chapter-prev",
-                None,
-                move |mpv, _action, _parameter| {
-                    mpv.chapter_prev();
-                },
-            );
-            klass.install_action(
-                "mpv.chapter-next",
-                None,
-                move |mpv, _action, _parameter| {
-                    mpv.chapter_next();
-                },
-            );
+            klass.install_action("mpv.play-pause", None, move |mpv, _action, _parameter| {
+                mpv.on_play_pause_clicked();
+            });
+            klass.install_action("mpv.show-info", None, move |mpv, _action, _parameter| {
+                mpv.on_info_clicked();
+            });
+            klass.install_action("mpv.backward", None, move |mpv, _action, _parameter| {
+                mpv.on_backward();
+            });
+            klass.install_action("mpv.forward", None, move |mpv, _action, _parameter| {
+                mpv.on_forward();
+            });
+            klass.install_action("mpv.chapter-prev", None, move |mpv, _action, _parameter| {
+                mpv.chapter_prev();
+            });
+            klass.install_action("mpv.chapter-next", None, move |mpv, _action, _parameter| {
+                mpv.chapter_next();
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -235,13 +211,13 @@ impl MPVPage {
         &self,
         url: &str,
         suburi: Option<&str>,
-        name: Option<&str>,
+        name: &str,
         back: Option<Back>,
         percentage: f64,
     ) {
         let url = url.to_owned();
         let suburi = suburi.map(|s| s.to_owned());
-        let name = name.map(|s| s.to_owned());
+        let name = name.to_string();
         spawn_g_timeout(glib::clone!(
             #[weak(rename_to = obj)]
             self,
@@ -251,9 +227,7 @@ impl MPVPage {
                 imp.spinner.start();
                 imp.loading_box.set_visible(true);
                 imp.network_speed_label.set_text("Initializing...");
-                if let Some(name) = name {
-                    imp.title.set_text(&name);
-                }
+                imp.title.set_text(&name);
                 imp.suburl
                     .replace(suburi.map(|suburi| EMBY_CLIENT.get_streaming_url(&suburi)));
                 imp.video.play(&url, percentage);
@@ -261,7 +235,6 @@ impl MPVPage {
                 obj.handle_callback(BackType::Start);
             }
         ));
-        
     }
 
     fn set_audio_and_video_tracks_dropdown(&self, value: MpvTracks) {
@@ -640,9 +613,7 @@ impl MPVPage {
             let mut back = back.clone();
             back.tick = duration;
             spawn(spawn_tokio(async move {
-                let _ = EMBY_CLIENT
-                    .position_back(&back, backtype)
-                    .await;
+                let _ = EMBY_CLIENT.position_back(&back, backtype).await;
             }))
         }
     }
@@ -730,8 +701,10 @@ impl MPVPage {
 
     pub fn load_config(&self) {
         let imp = self.imp();
-        imp.network_speed_label_2.set_visible(SETTINGS.mpv_show_buffer_speed());
-        imp.volume_adj.set_value(SETTINGS.mpv_default_volume() as f64);
+        imp.network_speed_label_2
+            .set_visible(SETTINGS.mpv_show_buffer_speed());
+        imp.volume_adj
+            .set_value(SETTINGS.mpv_default_volume() as f64);
         let mpv = &imp.video.imp().mpv;
         if !SETTINGS.proxy().is_empty() {
             mpv.set_property("http-proxy", SETTINGS.proxy());
@@ -742,7 +715,10 @@ impl MPVPage {
         } else {
             mpv.set_property("vf", "");
         }
-        mpv.set_property("demuxer-max-bytes", format!("{}MiB",SETTINGS.mpv_cache_size()));
+        mpv.set_property(
+            "demuxer-max-bytes",
+            format!("{}MiB", SETTINGS.mpv_cache_size()),
+        );
         mpv.set_property("cache-secs", (SETTINGS.mpv_cache_time()) as i64);
         mpv.set_property("volume", SETTINGS.mpv_default_volume() as i64);
         mpv.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64);

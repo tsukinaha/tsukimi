@@ -359,6 +359,18 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
+    pub async fn get_shows_next_up(&self, series_id: &str) -> Result<List, reqwest::Error> {
+        let path = format!("Shows/NextUp");
+        let params = [
+            ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
+            ("Limit", "1"),
+            ("ImageTypeLimit", "1"),
+            ("SeriesId", series_id),
+            ("UserId", &self.user_id()),
+        ];
+        self.request(&path, &params).await
+    }
+
     pub async fn get_playbackinfo(&self, id: &str) -> Result<Media, reqwest::Error> {
         let path = format!("Items/{}/PlaybackInfo", id);
         let params = [
@@ -371,7 +383,7 @@ impl EmbyClient {
             ("MaxStreamingBitrate", "160000000"),
             ("reqformat", "json"),
         ];
-        let profile: Value = serde_json::from_str(PROFILE).unwrap();
+        let profile: Value = serde_json::from_str(PROFILE).expect("Failed to parse profile");
         self.post(&path, &params, profile).await?.json().await
     }
 

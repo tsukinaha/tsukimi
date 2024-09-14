@@ -40,6 +40,15 @@ where
     });
 }
 
+#[macro_export]
+macro_rules! ctx_join {
+    ($fut:expr) => {{
+        spawn(async move {
+            $fut.await;
+        });
+    }};
+}
+
 pub fn spawn_g_timeout<F>(future: F)
 where
     F: std::future::Future<Output = ()> + 'static,

@@ -65,15 +65,21 @@ mod imp {
 
     impl GLAreaImpl for MPVGLArea {
         fn render(&self, _context: &GLContext) -> glib::Propagation {
-            if let Some(ctx) = self.mpv.ctx.borrow().as_ref() {
-                let factor = self.obj().scale_factor();
-                let width = self.obj().width() * factor;
-                let height = self.obj().height() * factor;
-                unsafe {
-                    let mut fbo = -1;
-                    gl::GetIntegerv(gl::FRAMEBUFFER_BINDING, &mut fbo);
-                    ctx.render::<GLContext>(fbo, width, height, true).unwrap();
-                }
+            let Ok(ctx_guard) = self.mpv.ctx.read() else {
+                return glib::Propagation::Stop;
+            };
+
+            let Some(ref ctx) = *ctx_guard else {
+                return glib::Propagation::Stop;
+            };
+
+            let factor = self.obj().scale_factor();
+            let width = self.obj().width() * factor;
+            let height = self.obj().height() * factor;
+            unsafe {
+                let mut fbo = -1;
+                gl::GetIntegerv(gl::FRAMEBUFFER_BINDING, &mut fbo);
+                ctx.render::<GLContext>(fbo, width, height, true).unwrap();
             }
             glib::Propagation::Stop
         }
@@ -107,7 +113,7 @@ impl MPVGLArea {
 
         let url = EMBY_CLIENT.get_streaming_url(url);
         mpv.load_video(&url);
-        
+
         mpv.set_start(percentage);
 
         mpv.pause(false);

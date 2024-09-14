@@ -7,9 +7,8 @@ use libmpv2::{
 use tokio::time;
 
 use std::{
-    cell::RefCell,
     collections::HashMap,
-    sync::{atomic::AtomicU32, Arc},
+    sync::{atomic::AtomicU32, Arc, RwLock},
 };
 
 use libmpv2::{
@@ -26,8 +25,8 @@ pub struct MpvTrack {
 }
 
 pub struct TsukimiMPV {
-    pub mpv: RefCell<Mpv>,
-    pub ctx: RefCell<Option<RenderContext>>,
+    pub mpv: RwLock<Mpv>,
+    pub ctx: RwLock<Option<RenderContext>>,
     pub event_thread_alive: Arc<AtomicU32>,
 }
 
@@ -86,8 +85,8 @@ impl Default for TsukimiMPV {
         .expect("Failed to create mpv instance");
 
         Self {
-            mpv: RefCell::new(mpv),
-            ctx: RefCell::new(None),
+            mpv: RwLock::new(mpv),
+            ctx: RwLock::new(None),
             event_thread_alive: Arc::new(AtomicU32::new(PAUSED)),
         }
     }
@@ -142,7 +141,9 @@ pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
 
 impl TsukimiMPV {
     pub fn connect_render_update(&self, gl_context: GLContext) {
-        let mut mpv = self.mpv.borrow_mut();
+        let Ok(mut mpv) = self.mpv.write() else {
+            return;
+        };
         let mut ctx = RenderContext::new(
             unsafe { mpv.ctx.as_mut() },
             vec![
@@ -159,7 +160,10 @@ impl TsukimiMPV {
             let _ = RENDER_UPDATE.tx.send(true);
         });
 
-        self.ctx.replace(Some(ctx));
+        let Ok(mut write_lock) = self.ctx.write() else {
+            return;
+        };
+        write_lock.replace(ctx);
     }
 
     pub fn set_position(&self, value: f64) {
@@ -244,21 +248,29 @@ impl TsukimiMPV {
     where
         V: SetData,
     {
-        let mpv = self.mpv.borrow();
-        mpv.set_property(property, value).map_err(|e| eprintln!("Error: {}, {}", e, property)).ok();
+        let Ok(mpv) = self.mpv.read() else {
+            return;
+        };
+        mpv.set_property(property, value)
+            .map_err(|e| eprintln!("Error: {}, {}", e, property))
+            .ok();
     }
 
     fn get_property<V>(&self, property: &str) -> Option<V>
     where
         V: GetData,
     {
-        let mpv = self.mpv.borrow();
+        let mpv = self.mpv.read().ok()?;
         mpv.get_property(property).ok()
     }
 
     fn command(&self, cmd: &str, args: &[&str]) {
-        let mpv = self.mpv.borrow();
-        mpv.command(cmd, args).map_err(|e| eprintln!("Error: {}", e)).ok();
+        let Ok(mpv) = self.mpv.read() else {
+            return;
+        };
+        mpv.command(cmd, args)
+            .map_err(|e| eprintln!("Error: {}", e))
+            .ok();
     }
 
     pub fn get_track_id(&self, type_: &str) -> i64 {
@@ -269,7 +281,9 @@ impl TsukimiMPV {
     }
 
     pub fn process_events(&self) {
-        let mpv = self.mpv.borrow_mut();
+        let Ok(mpv) = self.mpv.read() else {
+            return;
+        };
         let mut event_context = EventContext::new(mpv.ctx);
         event_context
             .disable_deprecated_events()
@@ -332,7 +346,9 @@ impl TsukimiMPV {
                             }
                             "paused-for-cache" => {
                                 if let PropertyData::Flag(pause) = change {
-                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::PausedForCache(pause));
+                                    let _ = MPV_EVENT_CHANNEL
+                                        .tx
+                                        .send(ListenEvent::PausedForCache(pause));
                                 }
                             }
                             _ => {}
@@ -352,7 +368,9 @@ impl TsukimiMPV {
                         _ => {}
                     },
                     Some(Err(e)) => {
-                        let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Error(e.to_user_facing()));
+                        let _ = MPV_EVENT_CHANNEL
+                            .tx
+                            .send(ListenEvent::Error(e.to_user_facing()));
                     }
                     None => {}
                 };
@@ -501,7 +519,7 @@ const KEYSTRING_MAP: &[(&str, &str)] = &[
     ("", "Shift_L"),
     ("", "Shift_R"),
     ("", "grave"),
-    ("SPACE", " ")
+    ("SPACE", " "),
 ];
 
 fn keyval_to_keystr(keyval: u32) -> Option<String> {
@@ -512,7 +530,8 @@ fn keyval_to_keystr(keyval: u32) -> Option<String> {
     }
 
     let key_name = key.name()?.to_string();
-    KEYSTRING_MAP.iter()
+    KEYSTRING_MAP
+        .iter()
         .find(|(_, keyval_str)| **keyval_str == key_name)
         .map(|(keystr, _)| keystr.to_string())
         .or(Some(key_name))

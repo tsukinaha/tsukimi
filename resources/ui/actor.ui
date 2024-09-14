@@ -65,9 +65,6 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkSeparator"/>
-                                </child>
-                                <child>
                                   <object class="GtkInscription" id="inscription">
                                     <property name="tooltip-text" bind-source="inscription" bind-property="text" bind-flags="sync-create" translatable="yes"/>
                                     <property name="text" translatable="yes">No Inscriptions</property>

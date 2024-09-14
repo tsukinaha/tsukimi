@@ -12,7 +12,6 @@ pub struct Settings(ThreadGuard<gio::Settings>);
 
 impl Settings {
     const KEY_IS_OVERLAY: &'static str = "is-overlay";
-    const KEY_IS_RESUME: &'static str = "is-resume";
     const KEY_IS_BLUR_ENABLED: &'static str = "is-blurenabled";
     const KEY_PROXY: &'static str = "proxy";
     const KEY_ROOT_PIC: &'static str = "root-pic";
@@ -62,7 +61,10 @@ impl Settings {
         self.string(Self::KEY_MPV_SUBTITLE_FONT).to_string()
     }
 
-    pub fn set_mpv_audio_preferred_lang(&self, mpv_audio_preferred_lang: i32) -> Result<(), glib::BoolError> {
+    pub fn set_mpv_audio_preferred_lang(
+        &self,
+        mpv_audio_preferred_lang: i32,
+    ) -> Result<(), glib::BoolError> {
         self.set_int(Self::KEY_MPV_AUDIO_PREFERRED_LANG, mpv_audio_preferred_lang)
     }
 
@@ -70,8 +72,14 @@ impl Settings {
         self.int(Self::KEY_MPV_AUDIO_PREFERRED_LANG)
     }
 
-    pub fn set_mpv_subtitle_preferred_lang(&self, mpv_subtitle_preferred_lang: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_SUBTITLE_PREFERRED_LANG, mpv_subtitle_preferred_lang)
+    pub fn set_mpv_subtitle_preferred_lang(
+        &self,
+        mpv_subtitle_preferred_lang: i32,
+    ) -> Result<(), glib::BoolError> {
+        self.set_int(
+            Self::KEY_MPV_SUBTITLE_PREFERRED_LANG,
+            mpv_subtitle_preferred_lang,
+        )
     }
 
     pub fn mpv_subtitle_preferred_lang(&self) -> i32 {
@@ -94,7 +102,10 @@ impl Settings {
         self.boolean(Self::KEY_MPV_FORCE_STEREO)
     }
 
-    pub fn set_mpv_show_buffer_speed(&self, mpv_show_buffer_speed: bool) -> Result<(), glib::BoolError> {
+    pub fn set_mpv_show_buffer_speed(
+        &self,
+        mpv_show_buffer_speed: bool,
+    ) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_MPV_SHOW_BUFFER_SPEED, mpv_show_buffer_speed)
     }
 
@@ -110,8 +121,14 @@ impl Settings {
         self.int(Self::KEY_MPV_VIDEO_OUTPUT)
     }
 
-    pub fn set_mpv_action_after_video_end(&self, mpv_action_after_video_end: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_ACTION_AFTER_VIDEO_END, mpv_action_after_video_end)
+    pub fn set_mpv_action_after_video_end(
+        &self,
+        mpv_action_after_video_end: i32,
+    ) -> Result<(), glib::BoolError> {
+        self.set_int(
+            Self::KEY_MPV_ACTION_AFTER_VIDEO_END,
+            mpv_action_after_video_end,
+        )
     }
 
     pub fn mpv_action_after_video_end(&self) -> i32 {
@@ -163,7 +180,6 @@ impl Settings {
     pub fn mpv_seek_backward_step(&self) -> i32 {
         self.int(Self::KEY_MPV_SEEK_BACKWARD_STEP)
     }
-
 
     pub fn set_mpv_estimate(&self, mpv_estimate: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_MPV_ESTIMATE, mpv_estimate)
@@ -267,10 +283,6 @@ impl Settings {
     }
     pub fn overlay(&self) -> bool {
         self.boolean(Self::KEY_IS_OVERLAY)
-    }
-
-    pub fn resume(&self) -> bool {
-        self.boolean(Self::KEY_IS_RESUME)
     }
 
     pub fn set_proxy(&self, proxy: &str) -> Result<(), glib::BoolError> {

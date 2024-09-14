@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -25,23 +26,6 @@ pub struct AuthenticateResponse {
 pub struct Policy {
     #[serde(rename = "IsAdministrator")]
     pub is_administrator: bool,
-}
-
-// single item
-#[derive(Serialize, Deserialize, Clone)]
-pub struct SeriesInfo {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Id")]
-    pub id: String,
-    #[serde(rename = "Overview")]
-    pub overview: Option<String>,
-    #[serde(rename = "IndexNumber")]
-    pub index_number: Option<u32>,
-    #[serde(rename = "ParentIndexNumber")]
-    pub parent_index_number: Option<u32>,
-    #[serde(rename = "UserData")]
-    pub user_data: Option<UserData>,
 }
 
 // media info
@@ -81,6 +65,8 @@ pub struct MediaStream {
     pub channels: Option<u64>,
     #[serde(rename = "ChannelLayout")]
     pub channel_layout: Option<String>,
+    #[serde(rename = "Index")]
+    pub index: u64,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -343,6 +329,8 @@ pub struct SimpleListItem {
     pub status: Option<String>,
     #[serde(rename = "EndDate")]
     pub end_date: Option<DateTime<Utc>>,
+    #[serde(rename = "PremiereDate")]
+    pub premiere_date: Option<DateTime<Utc>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
@@ -380,7 +368,7 @@ pub struct List {
 #[derive(Serialize, Deserialize, Clone, Default)]
 pub struct SerInList {
     #[serde(rename = "Items")]
-    pub items: Vec<SeriesInfo>,
+    pub items: Vec<SimpleListItem>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
@@ -499,7 +487,7 @@ pub struct ActivityLogs {
     pub item: Vec<ActivityLog>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone, Builder)]
 pub struct Back {
     pub id: String,
     pub playsessionid: Option<String>,

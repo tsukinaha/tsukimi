@@ -84,8 +84,8 @@ mod imp {
 
         pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
         pub progress_bar_fade_animation: OnceCell<adw::TimedAnimation>,
-    
-        pub last_content_list_selection: RefCell<Option<i32>>
+
+        pub last_content_list_selection: RefCell<Option<i32>>,
     }
 
     // The central trait for subclassing a GObject
@@ -648,7 +648,7 @@ impl Window {
         &self,
         url: String,
         suburl: Option<String>,
-        name: Option<String>,
+        name: String,
         back: Option<Back>,
         _selected: Option<String>,
         percentage: f64,
@@ -656,7 +656,7 @@ impl Window {
         let imp = self.imp();
         imp.stack.set_visible_child_name("clapper");
         imp.clappernav
-            .play(&url, suburl.as_deref(), name.as_deref(), back, percentage);
+            .play(&url, suburl.as_deref(), &name, back, percentage);
     }
 
     pub fn push_page<T>(&self, page: &T)
@@ -731,18 +731,22 @@ impl Window {
     }
 
     #[template_callback]
-    fn on_contentsrow_selected(&self, row: &ListBoxRow) {
+    fn on_contentsrow_selected(&self, row: Option<&ListBoxRow>) {
+        let Some(row) = row else {
+            return;
+        };
+
         let pos = row.index();
-        
+
         let last_pos = *self.imp().last_content_list_selection.borrow();
 
         if last_pos == Some(pos) {
             self.update_view(pos);
-            return; 
+            return;
         }
 
         self.imp().last_content_list_selection.replace(Some(pos));
-        self.select_view(pos);  
+        self.select_view(pos);
     }
 
     fn select_view(&self, pos: i32) {
@@ -759,12 +763,12 @@ impl Window {
             0 => self.on_home_update(),
             1 => self.on_liked_update(),
             _ => {}
-        } 
+        }
     }
 
     pub fn set_shortcuts(&self) {
         let Some(window) = gtk::Builder::from_resource("/moe/tsukimi/mpv_shortcuts_window.ui")
-                .object::<gtk::ShortcutsWindow>("mpv_shortcuts") 
+            .object::<gtk::ShortcutsWindow>("mpv_shortcuts")
         else {
             eprintln!("Failed to load shortcuts window");
             return;

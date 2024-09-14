@@ -5,7 +5,7 @@ use crate::client::structs::SimpleListItem;
 use crate::ui::provider::tu_object::TuObject;
 use crate::ui::widgets::fix::ScrolledWindowFixExt;
 
-const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
+pub const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
 
 mod imp {
     use crate::ui::widgets::{tu_list_item::imp::PosterType, utils::TuItemBuildExt};

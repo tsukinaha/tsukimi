@@ -59,9 +59,7 @@ glib::wrapper! {
 
 impl ListExpandRow {
     pub fn new(label: String) -> Self {
-        glib::Object::builder()
-            .property("label", label)
-            .build()
+        glib::Object::builder().property("label", label).build()
     }
 
     pub fn set_up(&self) {

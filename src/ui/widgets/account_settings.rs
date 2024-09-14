@@ -62,10 +62,10 @@ mod imp {
 
         #[template_child]
         pub cachesize_spinrow: TemplateChild<adw::SpinRow>,
-    
+
         #[template_child]
         pub stereo_switchrow: TemplateChild<adw::SwitchRow>,
-    
+
         #[template_child]
         pub volume_spinrow: TemplateChild<adw::SpinRow>,
 
@@ -73,7 +73,7 @@ mod imp {
         pub mpv_sub_font_button: TemplateChild<gtk::FontDialogButton>,
         #[template_child]
         pub mpv_sub_size_spinrow: TemplateChild<adw::SpinRow>,
-    
+
         #[template_child]
         pub preferred_audio_language_comborow: TemplateChild<adw::ComboRow>,
         #[template_child]
@@ -119,7 +119,6 @@ mod imp {
                     set.clear_font();
                 },
             );
-
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -331,7 +330,10 @@ impl AccountSettings {
 
     fn window(&self) -> super::window::Window {
         let windows = self.application().unwrap().windows();
-        let window = windows.into_iter().find(|w| w.is::<super::window::Window>()).unwrap();
+        let window = windows
+            .into_iter()
+            .find(|w| w.is::<super::window::Window>())
+            .unwrap();
         window.downcast::<super::window::Window>().unwrap()
     }
 
@@ -426,9 +428,11 @@ impl AccountSettings {
         imp.seek_forward_spinrow
             .set_value(SETTINGS.mpv_seek_forward_step().into());
         imp.config_switchrow.set_active(SETTINGS.mpv_config());
-        imp.buffer_switchrow.set_active(SETTINGS.mpv_show_buffer_speed());
+        imp.buffer_switchrow
+            .set_active(SETTINGS.mpv_show_buffer_speed());
         imp.stereo_switchrow.set_active(SETTINGS.mpv_force_stereo());
-        imp.volume_spinrow.set_value(SETTINGS.mpv_default_volume().into());
+        imp.volume_spinrow
+            .set_value(SETTINGS.mpv_default_volume().into());
         imp.mpv_sub_font_button
             .set_font_desc(&gtk::pango::FontDescription::from_string(
                 &SETTINGS.mpv_subtitle_font(),
@@ -447,7 +451,6 @@ impl AccountSettings {
             .parameter_type(Some(&i32::static_variant_type()))
             .state(SETTINGS.mpv_action_after_video_end().to_variant())
             .activate(move |_, action, parameter| {
-                
                 let parameter = parameter
                     .expect("Could not get parameter.")
                     .get::<i32>()
@@ -463,7 +466,6 @@ impl AccountSettings {
             .parameter_type(Some(&i32::static_variant_type()))
             .state(SETTINGS.mpv_video_output().to_variant())
             .activate(move |_, action, parameter| {
-                
                 let parameter = parameter
                     .expect("Could not get parameter.")
                     .get::<i32>()
@@ -508,23 +510,17 @@ impl AccountSettings {
 
     #[template_callback]
     pub fn on_cachesize_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
-        SETTINGS
-            .set_mpv_cache_size(spin.value() as i32)
-            .unwrap();
+        SETTINGS.set_mpv_cache_size(spin.value() as i32).unwrap();
     }
 
     #[template_callback]
     pub fn on_cachetime_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
-        SETTINGS
-            .set_mpv_cache_time(spin.value() as i32)
-            .unwrap();
+        SETTINGS.set_mpv_cache_time(spin.value() as i32).unwrap();
     }
 
     #[template_callback]
     pub fn on_subsize_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
-        SETTINGS
-            .set_mpv_subtitle_size(spin.value() as i32)
-            .unwrap();
+        SETTINGS.set_mpv_subtitle_size(spin.value() as i32).unwrap();
     }
 
     #[template_callback]
@@ -542,7 +538,11 @@ impl AccountSettings {
     }
 
     #[template_callback]
-    pub fn on_mpvsub_font_dialog_button(&self, _param: glib::ParamSpec, button: gtk::FontDialogButton) {
+    pub fn on_mpvsub_font_dialog_button(
+        &self,
+        _param: glib::ParamSpec,
+        button: gtk::FontDialogButton,
+    ) {
         let font_desc = button.font_desc().unwrap();
         SETTINGS
             .set_mpv_subtitle_font(gtk::pango::FontDescription::to_string(&font_desc))
@@ -563,7 +563,9 @@ impl AccountSettings {
 
     #[template_callback]
     pub fn on_buffer_switchrow(&self, _param: glib::ParamSpec, control: adw::SwitchRow) {
-        SETTINGS.set_mpv_show_buffer_speed(control.is_active()).unwrap();
+        SETTINGS
+            .set_mpv_show_buffer_speed(control.is_active())
+            .unwrap();
     }
 
     #[template_callback]
