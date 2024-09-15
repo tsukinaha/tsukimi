@@ -292,6 +292,8 @@ impl ItemPage {
         self.set_current_item(Some(intro));
 
         play_button.set_sensitive(true);
+
+        self.createmediabox(playback.media_sources, None).await;
     }
 
     async fn set_shows_next_up(&self, id: &str) -> Option<TuItem> {
@@ -635,7 +637,7 @@ impl ItemPage {
             Ok(item) => item,
             Err(e) => {
                 toast!(self, e.to_user_facing());
-                Item::default()
+                return;
             }
         };
 
@@ -644,6 +646,7 @@ impl ItemPage {
             self,
             async move {
                 {
+                    println!("{}", item.name);
                     let mut str = String::new();
                     if let Some(communityrating) = item.community_rating {
                         let formatted_rating = format!("{:.1}", communityrating);
@@ -709,9 +712,7 @@ impl ItemPage {
                     imp.actionbox.bind_edit();
                 }
 
-                if let Some(media_sources) = item.media_sources {
-                    obj.createmediabox(media_sources, item.date_created).await;
-                }
+                
             }
         ));
     }
