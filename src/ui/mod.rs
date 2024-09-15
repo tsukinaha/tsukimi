@@ -63,19 +63,6 @@ pub fn load_css() {
         accent_color
     ));
 
-    let dark_mode = gtk::Settings::default()
-        .map(|s| s.is_gtk_application_prefer_dark_theme())
-        .unwrap_or(false);
-
-    if dark_mode {
-        styles.push_str(
-            ".mask {
-                        background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.8));
-                        border-radius:10px;
-                    }",
-        );
-    }
-
     provider.load_from_string(&styles);
 
     gtk::style_context_add_provider_for_display(

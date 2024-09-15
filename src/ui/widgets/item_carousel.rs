@@ -6,6 +6,18 @@ pub mod imp {
     use glib::subclass::InitializingObject;
     use gtk::{gdk, glib, graphene, CompositeTemplate};
     use gtk::prelude::*;
+    use once_cell::sync::Lazy;
+
+    static MASK: Lazy<gdk::RGBA> = Lazy::new(|| {
+        if gtk::Settings::default()
+            .map(|s| s.is_gtk_application_prefer_dark_theme())
+            .unwrap_or(false)
+        {
+            gdk::RGBA::new(0.0, 0.0, 0.0, 0.3)
+        } else {
+            gdk::RGBA::new(255.0, 255.0, 255.0, 0.3)
+        }
+    });
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -65,9 +77,8 @@ pub mod imp {
             self.parent_snapshot(snapshot);
             snapshot.pop(); 
 
-            let mask_color = gdk::RGBA::new(0.0, 0.0, 0.0, 0.3);
             snapshot.append_color(
-                &mask_color,
+                &MASK,
                 &graphene::Rect::new(0.0, lower_y, width, lower_height),
             );
 
