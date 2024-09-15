@@ -3,12 +3,11 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'main'
+      - "main"
 
 env:
   CARGO_TERM_COLOR: always
   CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
-
 
 jobs:
   build-release:
@@ -42,20 +41,25 @@ jobs:
             mingw-w64-x86_64-mpv
             mingw-w64-x86_64-libadwaita
             mingw-w64-x86_64-gstreamer
-            mingw-w64-x86_64-meson
             mingw-w64-x86_64-glib2
             mingw-w64-x86_64-gst-plugins-base
             mingw-w64-x86_64-gst-plugins-good
             mingw-w64-x86_64-gst-plugins-bad
             mingw-w64-x86_64-gst-plugins-ugly
             mingw-w64-x86_64-gst-libav
-            git
+            curl
 
       - name: Build tsukimi-${{ matrix.target }}
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        shell: powershell
+        shell: msys2 {0}
         run: |
-          $env:Path = "C:\msys64\mingw64\bin;C:\msys64\mingw64\lib;C:\msys64\mingw64\include;" + $env:Path;
+          curl -LO https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-gtk4-4.14.5-1-any.pkg.tar.zst
+          pacman --noconfirm -U ./mingw-w64-x86_64-gtk4-4.14.5-1-any.pkg.tar.zst
+
+          curl -LO https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libadwaita-1.5.3-1-any.pkg.tar.zst
+          pacman --noconfirm -U ./mingw-w64-x86_64-libadwaita-1.5.3-1-any.pkg.tar.zst
+
+          export PATH="/c/Users/runneradmin/.cargo/bin:$PATH"
           rustup default stable-gnu
           cargo build --release --locked
 
@@ -74,8 +78,6 @@ jobs:
           cp -r /mingw64/lib/gio lib/
 
           cp -r /mingw64/lib/gstreamer-1.0 lib/ && find lib/gstreamer-1.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
-
-          cp -r /mingw64/lib/clapper-0.0 lib/ && find lib/clapper-0.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
 
           cp -r /mingw64/share/glib-2.0 share/
           find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rf "{}" \;
@@ -103,13 +105,39 @@ jobs:
           ldd bin/tsukimi.exe | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
           find lib/ -type f -name "*.dll" -exec ldd "{}" \; | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
 
+      - name: Create NSIS installer
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        shell: powershell
+        run: |
+          cp tsukimi_installer.nsi artifact
+          makensis /V4 artifact/tsukimi_installer.nsi
+          rm artifact/tsukimi_installer.nsi
+
+      - name: Build Thin Package
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        shell: powershell
+        run: |
+          cd artifact/tsukimi-windows-gnu-amd64
+          7z.exe a ../tsukimi-${{matrix.arch}}.7z ./*
+
+      - name: Calculate Checksum
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        shell: msys2 {0}
+        run: |
+          cd artifact
+          sha512sum *.7z > tsukimi-7z.sha512sum
+          sha512sum *.7z > tsukimi.sha512sum
+          sha512sum *.exe >> tsukimi.sha512sum
+
       - name: Upload artifact
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/upload-artifact@v4
         with:
           name: tsukimi-${{matrix.arch}}
           path: |
-            artifact/tsukimi-windows-gnu-amd64/*
-          compression-level: 5
+            artifact/*.exe
+            artifact/*.7z
+            artifact/*.sha512sum
+          compression-level: 0
           retention-days: 3
           if-no-files-found: error

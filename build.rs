@@ -1,3 +1,4 @@
+#[cfg(target_os = "linux")]
 use std::process::Command;
 
 fn main() {
@@ -28,5 +29,11 @@ fn main() {
         } else {
             println!("FAILED");
         }
+    }
+
+    #[cfg(windows)]
+    {
+        println!("cargo:rerun-if-changed=tsukimi-manifest.rc");
+        embed_resource::compile("./tsukimi_manifest.rc", embed_resource::NONE);
     }
 }

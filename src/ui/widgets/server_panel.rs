@@ -209,7 +209,7 @@ impl ServerPanel {
         for log in logs.item {
             let row = adw::ActionRow::builder()
                 .title(&log.name)
-                .subtitle(&utc_to_localstring(&log.date))
+                .subtitle(utc_to_localstring(&log.date))
                 .build();
 
             let icon = Image::builder()
@@ -237,7 +237,7 @@ impl ServerPanel {
         for log in logs.item {
             let row = adw::ActionRow::builder()
                 .title(&log.name)
-                .subtitle(&utc_to_localstring(&log.date))
+                .subtitle(utc_to_localstring(&log.date))
                 .build();
 
             let avator = adw::Avatar::new(32, None, false);

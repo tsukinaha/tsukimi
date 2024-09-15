@@ -1,3 +1,6 @@
+#![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
+
+#[cfg(target_os = "linux")]
 use gettextrs::*;
 use gtk::prelude::*;
 use gtk::{gio, glib};
@@ -10,7 +13,10 @@ mod ui;
 mod utils;
 
 const APP_ID: &str = "moe.tsuna.tsukimi";
+
+#[cfg(target_os = "linux")]
 const GETTEXT_PACKAGE: &str = "tsukimi";
+#[cfg(target_os = "linux")]
 const LOCALEDIR: &str = "/usr/share/locale";
 
 fn main() -> glib::ExitCode {
@@ -22,11 +28,29 @@ fn main() -> glib::ExitCode {
         textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
     }
 
+    // redirect cache dir to %LOCALAPPDATA%
+    #[cfg(target_os = "windows")]
+    {
+        let config_local_dir = dirs::config_local_dir().expect("Failed to get %LOCALAPPDATA%");
+        std::env::set_var("XDG_CACHE_HOME", config_local_dir);
+    }
+
     // Register and include resources
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
 
     // Initialize the GTK application
     adw::init().expect("Failed to initialize Adw");
+
+    // Make Application detect Windows system dark mode
+    #[cfg(target_os = "windows")]
+    {
+        use crate::config::theme::is_system_dark_mode_enabled;
+
+        if is_system_dark_mode_enabled() {
+            let style_manager = adw::StyleManager::default();
+            style_manager.set_color_scheme(adw::ColorScheme::PreferDark);
+        }
+    }
 
     // Create a new application
     let app = adw::Application::builder().application_id(APP_ID).build();
