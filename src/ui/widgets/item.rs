@@ -646,7 +646,6 @@ impl ItemPage {
             self,
             async move {
                 {
-                    println!("{}", item.name);
                     let mut str = String::new();
                     if let Some(communityrating) = item.community_rating {
                         let formatted_rating = format!("{:.1}", communityrating);

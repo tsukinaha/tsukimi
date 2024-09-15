@@ -366,7 +366,7 @@ impl EmbyClient {
                 if image_type == "Backdrop" {
                     "1280"
                 } else {
-                    "400"
+                    "300"
                 },
             ),
         ];
