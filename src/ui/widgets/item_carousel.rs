@@ -4,8 +4,8 @@ use gtk::{gio, glib};
 pub mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
-    use gtk::{gdk, glib, graphene, CompositeTemplate};
     use gtk::prelude::*;
+    use gtk::{gdk, glib, graphene, CompositeTemplate};
     use once_cell::sync::Lazy;
 
     static MASK: Lazy<gdk::RGBA> = Lazy::new(|| {
@@ -62,28 +62,51 @@ pub mod imp {
             let width = obj.width() as f32;
             let height = obj.height() as f32;
 
+            let start_point = graphene::Point::new(0.0, 0.0);
+            let end_point = graphene::Point::new(0.0, height);
+            let rect = graphene::Rect::new(0.0, 0.0, width, height);
+
+            let stops = &[
+                gtk::gsk::ColorStop::new(
+                    f32::max(0.0, ((3.0 / 5.0) as f32 * height as f32) / height),
+                    gdk::RGBA::new(1.0, 1.0, 1.0, 1.0),
+                ),
+                gtk::gsk::ColorStop::new(
+                    f32::min(1.0, ((3.0 / 5.0) as f32 * height + 80 as f32) / height),
+                    gdk::RGBA::new(0.0, 0.0, 0.0, 1.0),
+                ),
+            ];
+
             snapshot.save();
-            let upper_height = (2.0 * height) / 3.0;
+            let upper_height = (3.0 * height) / 5.0;
             snapshot.push_clip(&graphene::Rect::new(0.0, 0.0, width, upper_height));
             self.parent_snapshot(snapshot);
-            snapshot.pop(); 
+            snapshot.pop();
             snapshot.restore();
 
             snapshot.save();
-            let lower_y = (2.0 * height) / 3.0;
-            let lower_height = height / 3.0;
+            let lower_y = upper_height - 3.0;
+            let lower_height = (2.0 * height) / 5.0;
             snapshot.push_clip(&graphene::Rect::new(0.0, lower_y, width, lower_height));
             snapshot.push_blur(30.0);
             self.parent_snapshot(snapshot);
-            snapshot.pop(); 
+            snapshot.pop();
 
             snapshot.append_color(
                 &MASK,
                 &graphene::Rect::new(0.0, lower_y, width, lower_height),
             );
-
+            
             snapshot.pop();
             snapshot.restore();
+
+            snapshot.push_mask(gtk::gsk::MaskMode::Luminance);
+            snapshot.append_linear_gradient(&rect, &start_point, &end_point, stops);
+            snapshot.pop();
+
+            self.parent_snapshot(snapshot);
+
+            snapshot.pop();
         }
     }
 

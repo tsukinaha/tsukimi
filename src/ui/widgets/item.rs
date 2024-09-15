@@ -169,6 +169,7 @@ pub(crate) mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             self.scrolled.fix();
+            
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(
                 #[weak]
