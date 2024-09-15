@@ -7,8 +7,7 @@ use libmpv2::{
 use tokio::time;
 
 use std::{
-    collections::HashMap,
-    sync::{atomic::AtomicU32, Arc, RwLock},
+    cell::RefCell, collections::HashMap, sync::{atomic::AtomicU32, Arc}
 };
 
 use libmpv2::{
@@ -25,8 +24,8 @@ pub struct MpvTrack {
 }
 
 pub struct TsukimiMPV {
-    pub mpv: RwLock<Mpv>,
-    pub ctx: RwLock<Option<RenderContext>>,
+    pub mpv: RefCell<Mpv>,
+    pub ctx: RefCell<Option<RenderContext>>,
     pub event_thread_alive: Arc<AtomicU32>,
 }
 
@@ -85,8 +84,8 @@ impl Default for TsukimiMPV {
         .expect("Failed to create mpv instance");
 
         Self {
-            mpv: RwLock::new(mpv),
-            ctx: RwLock::new(None),
+            mpv: RefCell::new(mpv),
+            ctx: RefCell::new(None),
             event_thread_alive: Arc::new(AtomicU32::new(PAUSED)),
         }
     }
@@ -141,9 +140,7 @@ pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
 
 impl TsukimiMPV {
     pub fn connect_render_update(&self, gl_context: GLContext) {
-        let Ok(mut mpv) = self.mpv.write() else {
-            return;
-        };
+        let mut mpv = self.mpv.borrow_mut();
         let mut ctx = RenderContext::new(
             unsafe { mpv.ctx.as_mut() },
             vec![
@@ -160,10 +157,7 @@ impl TsukimiMPV {
             let _ = RENDER_UPDATE.tx.send(true);
         });
 
-        let Ok(mut write_lock) = self.ctx.write() else {
-            return;
-        };
-        write_lock.replace(ctx);
+        self.ctx.replace(Some(ctx));
     }
 
     pub fn set_position(&self, value: f64) {
@@ -248,9 +242,7 @@ impl TsukimiMPV {
     where
         V: SetData,
     {
-        let Ok(mpv) = self.mpv.read() else {
-            return;
-        };
+        let mpv = self.mpv.borrow();
         mpv.set_property(property, value)
             .map_err(|e| eprintln!("Error: {}, {}", e, property))
             .ok();
@@ -260,14 +252,12 @@ impl TsukimiMPV {
     where
         V: GetData,
     {
-        let mpv = self.mpv.read().ok()?;
+        let mpv = self.mpv.borrow();
         mpv.get_property(property).ok()
     }
 
     fn command(&self, cmd: &str, args: &[&str]) {
-        let Ok(mpv) = self.mpv.read() else {
-            return;
-        };
+        let mpv = self.mpv.borrow();
         mpv.command(cmd, args)
             .map_err(|e| eprintln!("Error: {}", e))
             .ok();
@@ -281,9 +271,7 @@ impl TsukimiMPV {
     }
 
     pub fn process_events(&self) {
-        let Ok(mpv) = self.mpv.read() else {
-            return;
-        };
+        let mpv = self.mpv.borrow_mut();
         let mut event_context = EventContext::new(mpv.ctx);
         event_context
             .disable_deprecated_events()

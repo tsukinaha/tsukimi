@@ -65,11 +65,8 @@ mod imp {
 
     impl GLAreaImpl for MPVGLArea {
         fn render(&self, _context: &GLContext) -> glib::Propagation {
-            let Ok(ctx_guard) = self.mpv.ctx.read() else {
-                return glib::Propagation::Stop;
-            };
-
-            let Some(ref ctx) = *ctx_guard else {
+            let binding = self.mpv.ctx.borrow();
+            let Some(ctx) = binding.as_ref() else {
                 return glib::Propagation::Stop;
             };
 
