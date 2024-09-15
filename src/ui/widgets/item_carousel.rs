@@ -88,7 +88,7 @@ pub mod imp {
             let lower_y = upper_height - 3.0;
             let lower_height = (2.0 * height) / 5.0;
             snapshot.push_clip(&graphene::Rect::new(0.0, lower_y, width, lower_height));
-            snapshot.push_blur(30.0);
+            snapshot.push_blur(40.0);
             self.parent_snapshot(snapshot);
             snapshot.pop();
 
@@ -96,7 +96,7 @@ pub mod imp {
                 &MASK,
                 &graphene::Rect::new(0.0, lower_y, width, lower_height),
             );
-            
+
             snapshot.pop();
             snapshot.restore();
 
