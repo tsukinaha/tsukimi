@@ -15,7 +15,7 @@ pub mod imp {
         {
             gdk::RGBA::new(0.0, 0.0, 0.0, 0.3)
         } else {
-            gdk::RGBA::new(255.0, 255.0, 255.0, 0.3)
+            gdk::RGBA::new(1.0, 1.0, 1.0, 0.3)
         }
     });
 
