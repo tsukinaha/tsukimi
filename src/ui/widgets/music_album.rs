@@ -3,11 +3,12 @@ use std::collections::HashMap;
 use crate::bing_song_model;
 use crate::ui::provider::core_song::CoreSong;
 use crate::ui::widgets::song_widget::State;
+use crate::utils::CachePolicy;
 use crate::{
     client::{client::EMBY_CLIENT, error::UserFacingError, structs::List},
     toast,
     ui::{provider::tu_item::TuItem, widgets::song_widget::SongWidget},
-    utils::{get_image_with_cache, req_cache, spawn},
+    utils::{get_image_with_cache, fetch_with_cache, spawn},
 };
 use adw::prelude::*;
 use adw::subclass::prelude::*;
@@ -170,7 +171,7 @@ impl AlbumPage {
         let item = self.item();
         let id = item.id();
 
-        let songs = match req_cache(&format!("audio_{}", item.id()), async move {
+        let songs = match fetch_with_cache(&format!("audio_{}", item.id()), CachePolicy::ReadCacheAndRefresh, async move {
             EMBY_CLIENT.get_songs(&id).await
         })
         .await
@@ -269,7 +270,7 @@ impl AlbumPage {
         let artist_id = self.item().albumartist_id();
         let types = types.to_string();
 
-        let results = match req_cache(&format!("item_{types}_{id}"), async move {
+        let results = match fetch_with_cache(&format!("item_{types}_{id}"), CachePolicy::ReadCacheAndRefresh, async move {
             match types.as_str() {
                 "Recommend" => EMBY_CLIENT.get_similar(&id).await,
                 "More From" => EMBY_CLIENT.get_artist_albums(&id, &artist_id).await,

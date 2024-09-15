@@ -101,8 +101,8 @@ impl AccountWindow {
             return;
         }
 
-        EMBY_CLIENT.header_change_url(&server, &port);
-        EMBY_CLIENT.header_change_token(&servername);
+        let _ = EMBY_CLIENT.header_change_url(&server, &port);
+        let _ = EMBY_CLIENT.header_change_token(&servername);
         let un = username.to_string();
         let pw = password.to_string();
         let res =

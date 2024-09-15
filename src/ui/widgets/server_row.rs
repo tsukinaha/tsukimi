@@ -56,7 +56,7 @@ mod imp {
         fn activate(&self) {
             let account = self.obj().item().account();
             SETTINGS.set_preferred_server(&account.servername).unwrap();
-            EMBY_CLIENT.init(&account);
+            let _ = EMBY_CLIENT.init(&account);
             let window = self.obj().root().and_downcast::<Window>().unwrap();
             window.reset();
         }

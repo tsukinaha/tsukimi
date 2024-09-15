@@ -1,6 +1,10 @@
-use crate::client::client::EMBY_CLIENT;
-use crate::client::network::RUNTIME;
+use std::future::Future;
+use std::path::PathBuf;
+
+use crate::client::{client::EMBY_CLIENT, network::runtime};
 use crate::ui::models::emby_cache_path;
+use anyhow::Result;
+use serde::{Deserialize, Serialize};
 
 pub fn _spawn_tokio_blocking<F>(fut: F) -> F::Output
 where
@@ -9,7 +13,7 @@ where
 {
     let (sender, receiver) = tokio::sync::oneshot::channel();
 
-    RUNTIME.spawn(async {
+    runtime().spawn(async {
         let response = fut.await;
         sender.send(response)
     });
@@ -23,7 +27,7 @@ where
 {
     let (sender, receiver) = tokio::sync::oneshot::channel();
 
-    RUNTIME.spawn(async {
+    runtime().spawn(async {
         let response = fut.await;
         sender.send(response)
     });
@@ -40,15 +44,6 @@ where
     });
 }
 
-#[macro_export]
-macro_rules! ctx_join {
-    ($fut:expr) => {{
-        spawn(async move {
-            $fut.await;
-        });
-    }};
-}
-
 pub fn spawn_g_timeout<F>(future: F)
 where
     F: std::future::Future<Output = ()> + 'static,
@@ -60,110 +55,87 @@ where
     });
 }
 
-pub async fn req_cache<T, F>(tag: &str, future: F) -> Result<T, reqwest::Error>
-where
-    T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
-    F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
-{
-    let mut path = emby_cache_path();
-    path.push(format!("{}.json", tag));
-
-    if path.exists() {
-        let data = std::fs::read_to_string(&path).expect("Unable to read file");
-        let data: T = serde_json::from_str(&data).expect("JSON was not well-formatted");
-        RUNTIME.spawn(async move {
-            let v = match future.await {
-                Ok(v) => v,
-                Err(_) => return,
-            };
-            let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
-            std::fs::write(&path, s_data).expect("Unable to write file");
-        });
-        Ok(data)
-    } else {
-        let v = spawn_tokio(future).await?;
-        let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
-        std::fs::write(&path, s_data).expect("Unable to write file");
-        Ok(v)
-    }
+pub enum CachePolicy {
+    UseCacheIfAvailable,
+    RefreshCache,
+    IgnoreCache,
+    ReadCacheAndRefresh,
 }
 
-pub async fn get_data_with_cache_else<T, F>(
-    id: String,
-    item_type: &str,
+pub async fn fetch_with_cache<T, F>(
+    cache_key: &str,
+    cache_policy: CachePolicy,
     future: F,
-) -> Result<T, reqwest::Error>
+) -> Result<T>
 where
-    T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
-    F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
+    T: for<'de> Deserialize<'de> + Serialize + Send + 'static,
+    F: Future<Output = Result<T>> + Send + 'static,
 {
     let mut path = emby_cache_path();
-    path.push(format!("{}_{}.json", item_type, &id));
+    path.push(format!("{}.json", cache_key));
 
-    if path.exists() {
-        let data = std::fs::read_to_string(&path).expect("Unable to read file");
-        let data: T = serde_json::from_str(&data).expect("JSON was not well-formatted");
-        Ok(data)
-    } else {
-        let v = spawn_tokio(future).await?;
-        let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
-        std::fs::write(&path, s_data).expect("Unable to write file");
-        Ok(v)
+    let read_cache = matches!(
+        cache_policy,
+        CachePolicy::UseCacheIfAvailable | CachePolicy::ReadCacheAndRefresh
+    );
+    let write_cache = matches!(
+        cache_policy,
+        CachePolicy::UseCacheIfAvailable
+            | CachePolicy::RefreshCache
+            | CachePolicy::ReadCacheAndRefresh
+    );
+    let update_in_background = matches!(cache_policy, CachePolicy::ReadCacheAndRefresh);
+
+    if read_cache {
+        if let Some(data) = read_from_cache(&path) {
+            if update_in_background {
+                let future = future;
+                let path = path.clone();
+                runtime().spawn(async move {
+                    if let Ok(data) = future.await {
+                        let _ = write_to_cache(&path, &data);
+                    }
+                });
+            }
+            return Ok(data);
+        }
     }
+
+    let data = spawn_tokio(async { future.await }).await?;
+
+    if write_cache {
+        write_to_cache(&path, &data)?;
+    }
+
+    Ok(data)
 }
 
-pub async fn _get_data<T, F>(id: String, item_type: &str, future: F) -> Result<T, reqwest::Error>
+fn read_from_cache<T>(path: &PathBuf) -> Option<T>
 where
-    T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
-    F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
+    T: for<'de> Deserialize<'de>,
 {
-    let mut path = emby_cache_path();
-    path.push(format!("{}_{}.json", item_type, &id));
-    let v = spawn_tokio(future).await?;
-    let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
-    std::fs::write(&path, s_data).expect("Unable to write file");
-    Ok(v)
+    std::fs::read_to_string(path)
+        .ok()
+        .and_then(|contents| serde_json::from_str(&contents).ok())
 }
 
-pub async fn get_image_with_cache(
-    id: &str,
-    img_type: &str,
-    tag: Option<u8>,
-) -> Result<String, reqwest::Error> {
+fn write_to_cache<T>(path: &PathBuf, data: &T) -> Result<()>
+where
+    T: Serialize,
+{
+    let serialized = serde_json::to_string(data)?;
+    std::fs::write(path, serialized)?;
+    Ok(())
+}
+
+pub async fn get_image_with_cache(id: &str, img_type: &str, tag: Option<u8>) -> Result<String> {
     let mut path = emby_cache_path();
     path.push(format!("{}-{}-{}", id, img_type, tag.unwrap_or(0)));
-    let id = id.to_string();
-    let img_type = img_type.to_string();
+
     if !path.exists() {
-        spawn_tokio(async move { EMBY_CLIENT.get_image(&id, &img_type, tag).await }).await?;
+        // Fetch the image and save it to the path
+        EMBY_CLIENT.get_image(id, img_type, tag).await?;
     }
+
     Ok(path.to_string_lossy().to_string())
-}
-
-pub async fn req_cache_single<T, F>(
-    tag: &str,
-    future: F,
-    enable_cache: bool,
-) -> Result<Option<T>, reqwest::Error>
-where
-    T: for<'de> serde::Deserialize<'de> + Send + serde::Serialize + 'static,
-    F: std::future::Future<Output = Result<T, reqwest::Error>> + 'static + Send,
-{
-    let mut path = emby_cache_path();
-    path.push(format!("{}.json", tag));
-
-    if enable_cache {
-        if path.exists() {
-            let data = std::fs::read_to_string(&path).expect("Unable to read file");
-            let data: T = serde_json::from_str(&data).expect("JSON was not well-formatted");
-            Ok(Some(data))
-        } else {
-            Ok(None)
-        }
-    } else {
-        let v = spawn_tokio(future).await?;
-        let s_data = serde_json::to_string(&v).expect("JSON was not well-formatted");
-        std::fs::write(&path, s_data).expect("Unable to write file");
-        Ok(Some(v))
-    }
 }

@@ -9,6 +9,7 @@ use gtk::template_callbacks;
 use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
+use anyhow::Result;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
@@ -509,7 +510,7 @@ impl TuOverviewItem {
         Some(action_group)
     }
 
-    async fn perform_action_inner(id: &str, action: &Action) -> Result<(), reqwest::Error> {
+    async fn perform_action_inner(id: &str, action: &Action) -> Result<()> {
         match action {
             Action::Like => EMBY_CLIENT.like(id).await,
             Action::Unlike => EMBY_CLIENT.unlike(id).await,

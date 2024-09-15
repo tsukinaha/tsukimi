@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::io::Write;
-use std::{env, fs::File, io::Read};
-use uuid::Uuid;
+use std::{fs::File, io::Read};
 
 pub mod proxy;
 
@@ -15,16 +14,6 @@ pub struct Config {
     pub port: String,
     pub user_id: String,
     pub access_token: String,
-}
-
-fn generate_uuid() -> String {
-    let uuid = Uuid::new_v4();
-    uuid.to_string()
-}
-
-pub fn load_uuid() {
-    let uuid = generate_uuid();
-    env::set_var("UUID", uuid);
 }
 
 #[derive(Serialize, Deserialize, Clone)]

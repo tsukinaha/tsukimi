@@ -62,8 +62,7 @@
                                 </child>
                                 <child>
                                   <object class="AdwEntryRow" id="server_entry">
-                                    <property name="title" translatable="yes">Server</property>
-                                    <property name="text" translatable="yes">Server Address</property>
+                                    <property name="title" translatable="yes">Server Address</property>
                                     <child type="suffix">
                                       <object class="GtkEntry" id="port_entry">
                                         <property name="halign">end</property>

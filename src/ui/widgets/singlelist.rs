@@ -7,7 +7,7 @@ use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::ui::models::SETTINGS;
 use crate::ui::provider::tu_object::TuObject;
-use crate::utils::{req_cache, spawn, spawn_tokio};
+use crate::utils::{fetch_with_cache, spawn, spawn_tokio, CachePolicy};
 use crate::{fraction, fraction_reset, toast};
 use adw::prelude::*;
 use glib::Object;
@@ -244,8 +244,9 @@ impl SingleListPage {
 
         let is_inlist = *imp.isinlist.get().unwrap();
 
-        let list_results = match req_cache(
+        let list_results = match fetch_with_cache(
             &format!("{}_{}_{}", id, listtype.clone(), include_item_types),
+            CachePolicy::ReadCacheAndRefresh,
             async move {
                 if listtype == "livetv" {
                     return EMBY_CLIENT.get_channels_list("0").await;

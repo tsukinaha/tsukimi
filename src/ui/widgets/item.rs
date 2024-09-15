@@ -15,7 +15,7 @@ use crate::toast;
 use crate::ui::provider::dropdown_factory::{factory, DropdownList, DropdownListBuilder};
 use crate::ui::provider::tu_item::TuItem;
 use crate::ui::provider::tu_object::TuObject;
-use crate::utils::{get_image_with_cache, req_cache, spawn, spawn_tokio};
+use crate::utils::{fetch_with_cache, get_image_with_cache, spawn, spawn_tokio, CachePolicy};
 use chrono::{DateTime, Utc};
 
 use super::fix::ScrolledWindowFixExt;
@@ -626,7 +626,7 @@ impl ItemPage {
     pub async fn set_overview(&self, id: &str) {
         let id = id.to_string();
 
-        let item = match req_cache(&format!("item_{}", &id), async move {
+        let item = match fetch_with_cache(&format!("item_{}", &id), CachePolicy::ReadCacheAndRefresh, async move {
             EMBY_CLIENT.get_item_info(&id).await
         })
         .await
@@ -878,7 +878,7 @@ impl ItemPage {
         let id = id.to_string();
         let types = types.to_string();
 
-        let results = match req_cache(&format!("item_{types}_{id}"), async move {
+        let results = match fetch_with_cache(&format!("item_{types}_{id}"), CachePolicy::ReadCacheAndRefresh, async move {
             match types.as_str() {
                 "Recommend" => EMBY_CLIENT.get_similar(&id).await,
                 "Included In" => EMBY_CLIENT.get_included(&id).await,

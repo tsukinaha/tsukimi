@@ -19,6 +19,7 @@ use crate::ui::provider::tu_item::TuItem;
 use crate::ui::provider::IS_ADMIN;
 use crate::utils::spawn;
 use crate::utils::spawn_tokio;
+use anyhow::Result;
 
 use super::picture_loader::PictureLoader;
 use super::window::Window;
@@ -688,7 +689,7 @@ impl TuListItem {
         Some(action_group)
     }
 
-    async fn perform_action_inner(id: &str, action: &Action) -> Result<(), reqwest::Error> {
+    async fn perform_action_inner(id: &str, action: &Action) -> Result<()> {
         match action {
             Action::Like => EMBY_CLIENT.like(id).await,
             Action::Unlike => EMBY_CLIENT.unlike(id).await,

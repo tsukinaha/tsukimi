@@ -1,12 +1,16 @@
-use crate::ui::models::SETTINGS;
-use once_cell::sync::Lazy;
-use tokio::runtime;
+use std::sync::OnceLock;
 
-pub static RUNTIME: Lazy<tokio::runtime::Runtime> = Lazy::new(|| {
-    runtime::Builder::new_multi_thread()
+use crate::ui::models::SETTINGS;
+use tokio::runtime::{self, Runtime};
+
+pub fn runtime() -> &'static Runtime {
+    static RUNTIME: OnceLock<Runtime> = OnceLock::new();
+    RUNTIME.get_or_init(|| {
+        runtime::Builder::new_multi_thread()
         .worker_threads(SETTINGS.threads() as usize)
         .enable_io()
         .enable_time()
         .build()
         .expect("Failed to create runtime")
-});
+    })
+}

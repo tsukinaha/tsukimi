@@ -35,6 +35,7 @@ libloading = "0.8.5"
 atomic-wait = "1.1.0"
 flume = "0.11.0"
 derive_builder = "0.20.1"
+anyhow = "1.0.89"
 
 [build-dependencies]
 glib-build-tools = "0.20.0"

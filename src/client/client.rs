@@ -1,7 +1,9 @@
-use std::{env, sync::Mutex};
+use std::sync::Mutex;
+
+use anyhow::{anyhow, Result};
 
 use reqwest::{header::HeaderValue, Method, RequestBuilder, Response};
-use serde::{Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::{json, Value};
 use tracing::{info, warn};
 use url::Url;
@@ -45,6 +47,10 @@ pub struct EmbyClient {
     pub client: reqwest::Client,
     pub headers: Mutex<reqwest::header::HeaderMap>,
     pub user_id: Mutex<String>,
+    pub user_name: Mutex<String>,
+    pub user_password: Mutex<String>,
+    pub user_access_token: Mutex<String>,
+    pub server_name: Mutex<String>,
 }
 
 impl EmbyClient {
@@ -70,17 +76,21 @@ impl EmbyClient {
             client: ReqClient::build(),
             headers: Mutex::new(headers),
             user_id: Mutex::new(String::new()),
+            user_name: Mutex::new(String::new()),
+            user_password: Mutex::new(String::new()),
+            user_access_token: Mutex::new(String::new()),
+            server_name: Mutex::new(String::new()),
         }
     }
 
-    pub fn init(&self, account: &Account) {
-        self.header_change_url(&account.server, &account.port);
-        self.header_change_token(&account.access_token);
-        self.set_user_id(&account.user_id);
-        env::set_var("EMBY_NAME", &account.servername);
-        env::set_var("EMBY_USERNAME", &account.username);
-        env::set_var("EMBY_PASSWORD", &account.password);
-        env::set_var("EMBY_ACCESS_TOKEN", &account.access_token);
+    pub fn init(&self, account: &Account) -> Result<(), Box<dyn std::error::Error>> {
+        self.header_change_url(&account.server, &account.port)?;
+        self.header_change_token(&account.access_token)?;
+        self.set_user_id(&account.user_id)?;
+        self.set_user_name(&account.username)?;
+        self.set_user_password(&account.password)?;
+        self.set_user_access_token(&account.access_token)?;
+        self.set_server_name(&account.servername)?;
         crate::ui::provider::set_admin(false);
         spawn(async move {
             spawn_tokio(async move {
@@ -95,65 +105,132 @@ impl EmbyClient {
             })
             .await;
         });
+        Ok(())
     }
 
-    pub fn header_change_token(&self, token: &str) {
-        let mut headers = self.headers.lock().unwrap();
-        headers.insert("X-Emby-Token", HeaderValue::from_str(token).unwrap());
+    pub fn header_change_token(&self, token: &str) -> Result<()> {
+        let mut headers = self
+            .headers
+            .lock()
+            .map_err(|_| anyhow!("Failed to acquire lock on headers"))?;
+        headers.insert("X-Emby-Token", HeaderValue::from_str(token)?);
+        Ok(())
     }
 
-    pub fn header_change_url(&self, url: &str, port: &str) {
-        let mut url = Url::parse(url).unwrap();
+    pub fn header_change_url(&self, url: &str, port: &str) -> Result<()> {
+        let mut url = Url::parse(url)?;
         url.set_port(Some(port.parse::<u16>().unwrap_or_default()))
-            .unwrap();
-        let mut url_lock = self.url.lock().unwrap();
-        *url_lock = Some(url.join("emby/").unwrap());
+            .map_err(|_| anyhow!("Failed to set port"))?;
+        let mut url_lock = self
+            .url
+            .lock()
+            .map_err(|_| anyhow!("Failed to acquire lock on URL"))?;
+        *url_lock = Some(url.join("emby/")?);
+        Ok(())
     }
 
-    pub fn set_user_id(&self, user_id: &str) {
-        let mut user_id_lock = self.user_id.lock().unwrap();
+    pub fn set_user_id(&self, user_id: &str) -> Result<()> {
+        let mut user_id_lock = self
+            .user_id
+            .lock()
+            .map_err(|_| anyhow!("Failed to acquire lock on user_id"))?;
         *user_id_lock = user_id.to_string();
+        Ok(())
     }
 
-    pub fn get_url_and_headers(&self) -> (Url, reqwest::header::HeaderMap) {
-        let url = self.url.lock().unwrap().as_ref().unwrap().clone();
-        let headers = self.headers.lock().unwrap().clone();
-        (url, headers)
+    pub fn set_user_name(&self, user_name: &str) -> Result<()> {
+        let mut user_name_lock = self
+            .user_name
+            .lock()
+            .map_err(|_| anyhow!("Failed to acquire lock on user_name"))?;
+        *user_name_lock = user_name.to_string();
+        Ok(())
     }
 
-    pub async fn request<T>(&self, path: &str, params: &[(&str, &str)]) -> Result<T, reqwest::Error>
+    pub fn set_user_password(&self, user_password: &str) -> Result<()> {
+        let mut user_password_lock = self
+            .user_password
+            .lock()
+            .map_err(|_| anyhow!("Failed to acquire lock on user_password"))?;
+        *user_password_lock = user_password.to_string();
+        Ok(())
+    }
+
+    pub fn set_user_access_token(&self, user_access_token: &str) -> Result<()> {
+        let mut user_access_token_lock = self
+            .user_access_token
+            .lock()
+            .map_err(|_| anyhow!("Failed to acquire lock on user_access_token"))?;
+        *user_access_token_lock = user_access_token.to_string();
+        Ok(())
+    }
+
+    pub fn set_server_name(&self, server_name: &str) -> Result<()> {
+        let mut server_name_lock = self
+            .server_name
+            .lock()
+            .map_err(|_| anyhow!("Failed to acquire lock on server_name"))?;
+        *server_name_lock = server_name.to_string();
+        Ok(())
+    }
+
+    pub fn get_url_and_headers(&self) -> Result<(Url, reqwest::header::HeaderMap)> {
+        let url = self
+            .url
+            .lock()
+            .map_err(|_| anyhow!("Failed to acquire lock on URL"))?
+            .as_ref()
+            .ok_or_else(|| anyhow!("URL is not set"))?
+            .clone();
+        let headers = self
+            .headers
+            .lock()
+            .map_err(|_| anyhow!("Failed to acquire lock on headers"))?
+            .clone();
+        Ok((url, headers))
+    }
+
+    pub async fn request<T>(&self, path: &str, params: &[(&str, &str)]) -> Result<T>
     where
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
-        let request = self.prepare_request(Method::GET, path, params);
+        let request = self.prepare_request(Method::GET, path, params)?;
+        let res = self.send_request(request).await?.error_for_status()?;
+
+        let json = res.json().await?;
+        Ok(json)
+    }
+
+    pub async fn request_picture(&self, path: &str, params: &[(&str, &str)]) -> Result<Response> {
+        let request = self.prepare_request(Method::GET, path, params)?;
+        let res = request.send().await?;
+        Ok(res)
+    }
+
+    pub async fn post<B>(&self, path: &str, params: &[(&str, &str)], body: B) -> Result<Response>
+    where
+        B: Serialize,
+    {
+        let request = self
+            .prepare_request(Method::POST, path, params)?
+            .json(&body);
         let res = self.send_request(request).await?;
-
-        match res.error_for_status() {
-            Ok(res) => Ok(res.json().await?),
-            Err(e) => Err(e),
-        }
+        Ok(res)
     }
 
-    pub async fn request_picture(
-        &self,
-        path: &str,
-        params: &[(&str, &str)],
-    ) -> Result<Response, reqwest::Error> {
-        let request = self.prepare_request(Method::GET, path, params);
-        request.send().await
-    }
-
-    pub async fn post<B>(
+    pub async fn post_json<B, T>(
         &self,
         path: &str,
         params: &[(&str, &str)],
         body: B,
-    ) -> Result<Response, reqwest::Error>
+    ) -> Result<T, anyhow::Error>
     where
         B: Serialize,
+        T: DeserializeOwned,
     {
-        let request = self.prepare_request(Method::POST, path, params).json(&body);
-        self.send_request(request).await
+        let response = self.post(path, params, body).await?.error_for_status()?;
+        let parsed = response.json::<T>().await?;
+        Ok(parsed)
     }
 
     fn prepare_request(
@@ -161,39 +238,30 @@ impl EmbyClient {
         method: Method,
         path: &str,
         params: &[(&str, &str)],
-    ) -> RequestBuilder {
-        let (mut url, headers) = self.get_url_and_headers();
-        url = url.join(path).unwrap();
+    ) -> Result<RequestBuilder> {
+        let (mut url, headers) = self.get_url_and_headers()?;
+        url = url.join(path)?;
         self.add_params_to_url(&mut url, params);
-        self.client.request(method, url).headers(headers)
+        Ok(self.client.request(method, url).headers(headers))
     }
 
-    async fn send_request(
-        &self,
-        request: reqwest::RequestBuilder,
-    ) -> Result<Response, reqwest::Error> {
+    async fn send_request(&self, request: RequestBuilder) -> Result<Response> {
         let res = request.send().await?;
         Ok(res)
     }
 
-    pub async fn authenticate_admin(&self) -> Result<AuthenticateResponse, reqwest::Error> {
+    pub async fn authenticate_admin(&self) -> Result<AuthenticateResponse> {
         let path = format!("Users/{}", self.user_id());
-        self.request(&path, &[]).await
+        let res = self.request(&path, &[]).await?;
+        Ok(res)
     }
 
-    pub async fn login(
-        &self,
-        username: &str,
-        password: &str,
-    ) -> Result<LoginResponse, reqwest::Error> {
+    pub async fn login(&self, username: &str, password: &str) -> Result<LoginResponse> {
         let body = json!({
             "Username": username,
             "Pw": password
         });
-        self.post("Users/authenticatebyname", &[], body)
-            .await?
-            .json()
-            .await
+        self.post_json("Users/authenticatebyname", &[], body).await
     }
 
     pub fn add_params_to_url(&self, url: &mut Url, params: &[(&str, &str)]) {
@@ -208,7 +276,7 @@ impl EmbyClient {
         query: &str,
         filter: &[&str],
         start_index: &str,
-    ) -> Result<List, reqwest::Error> {
+    ) -> Result<List> {
         let filter_str = filter.join(",");
         let path = format!("Users/{}/Items", self.user_id());
         let params = [
@@ -231,7 +299,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_series_info(&self, id: &str) -> Result<SerInList, reqwest::Error> {
+    pub async fn get_series_info(&self, id: &str) -> Result<SerInList> {
         let path = format!("Shows/{}/Episodes", id);
         let params = [
             ("Fields", "Overview"),
@@ -242,19 +310,19 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_item_info(&self, id: &str) -> Result<Item, reqwest::Error> {
+    pub async fn get_item_info(&self, id: &str) -> Result<Item> {
         let path = format!("Users/{}/Items/{}", self.user_id(), id);
         let params = [("Fields", "ShareLevel")];
         self.request(&path, &params).await
     }
 
-    pub async fn get_edit_info(&self, id: &str) -> Result<Item, reqwest::Error> {
+    pub async fn get_edit_info(&self, id: &str) -> Result<Item> {
         let path = format!("Users/{}/Items/{}", self.user_id(), id);
         let params = [("Fields", "ChannelMappingInfo")];
         self.request(&path, &params).await
     }
 
-    pub async fn get_resume(&self) -> Result<List, reqwest::Error> {
+    pub async fn get_resume(&self) -> Result<List> {
         let path = format!("Users/{}/Items/Resume", self.user_id());
         let params = [
             ("Recursive", "true"),
@@ -269,7 +337,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_image_items(&self, id: &str) -> Result<Vec<ImageItem>, reqwest::Error> {
+    pub async fn get_image_items(&self, id: &str) -> Result<Vec<ImageItem>> {
         let path = format!("Items/{}/Images", id);
         self.request(&path, &[]).await
     }
@@ -279,7 +347,7 @@ impl EmbyClient {
         id: &str,
         image_type: &str,
         tag: Option<u8>,
-    ) -> Result<Response, reqwest::Error> {
+    ) -> Result<Response> {
         let mut path = format!("Items/{}/Images/{}", id, image_type);
         if let Some(tag) = tag {
             path.push_str(&format!("/{}", tag));
@@ -310,7 +378,7 @@ impl EmbyClient {
         id: &str,
         image_type: &str,
         tag: Option<u8>,
-    ) -> Result<String, reqwest::Error> {
+    ) -> Result<String> {
         match self.image_request(id, image_type, tag).await {
             Ok(response) => {
                 let bytes = response.bytes().await?;
@@ -339,7 +407,7 @@ impl EmbyClient {
         &self,
         id: &str,
         artist_id: &str,
-    ) -> Result<List, reqwest::Error> {
+    ) -> Result<List> {
         let path = format!("Users/{}/Items", self.user_id());
         let params = [
             ("IncludeItemTypes", "MusicAlbum"),
@@ -359,7 +427,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_shows_next_up(&self, series_id: &str) -> Result<List, reqwest::Error> {
+    pub async fn get_shows_next_up(&self, series_id: &str) -> Result<List> {
         let path = format!("Shows/NextUp");
         let params = [
             ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
@@ -371,7 +439,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_playbackinfo(&self, id: &str) -> Result<Media, reqwest::Error> {
+    pub async fn get_playbackinfo(&self, id: &str) -> Result<Media> {
         let path = format!("Items/{}/PlaybackInfo", id);
         let params = [
             ("StartTimeTicks", "0"),
@@ -384,10 +452,10 @@ impl EmbyClient {
             ("reqformat", "json"),
         ];
         let profile: Value = serde_json::from_str(PROFILE).expect("Failed to parse profile");
-        self.post(&path, &params, profile).await?.json().await
+        self.post_json(&path, &params, profile).await
     }
 
-    pub async fn scan(&self, id: &str) -> Result<Response, reqwest::Error> {
+    pub async fn scan(&self, id: &str) -> Result<Response> {
         let path = format!("Items/{}/Refresh", id);
         let params = [
             ("Recursive", "true"),
@@ -404,7 +472,7 @@ impl EmbyClient {
         id: &str,
         replace_images: &str,
         replace_metadata: &str,
-    ) -> Result<Response, reqwest::Error> {
+    ) -> Result<Response> {
         let path = format!("Items/{}/Refresh", id);
         let params = [
             ("Recursive", "true"),
@@ -420,23 +488,22 @@ impl EmbyClient {
         &self,
         type_: &str,
         info: &RemoteSearchInfo,
-    ) -> Result<Vec<RemoteSearchResult>, reqwest::Error> {
+    ) -> Result<Vec<RemoteSearchResult>> {
         let path = format!("Items/RemoteSearch/{}", type_);
-        println!("{}", path);
         let body = json!(info);
-        self.post(&path, &[], body).await?.json().await
+        self.post_json(&path, &[], body).await
     }
 
     pub async fn get_external_id_info(
         &self,
         id: &str,
-    ) -> Result<Vec<ExternalIdInfo>, reqwest::Error> {
+    ) -> Result<Vec<ExternalIdInfo>> {
         let path = format!("Items/{}/ExternalIdInfos", id);
         let params = [("IsSupportedAsIdentifier", "true")];
         self.request(&path, &params).await
     }
 
-    pub async fn get_live_playbackinfo(&self, id: &str) -> Result<LiveMedia, reqwest::Error> {
+    pub async fn get_live_playbackinfo(&self, id: &str) -> Result<LiveMedia> {
         let path = format!("Items/{}/PlaybackInfo", id);
         let params = [
             ("StartTimeTicks", "0"),
@@ -447,10 +514,10 @@ impl EmbyClient {
             ("reqformat", "json"),
         ];
         let profile: Value = serde_json::from_str(LIVEPROFILE).unwrap();
-        self.post(&path, &params, profile).await?.json().await
+        self.post_json(&path, &params, profile).await
     }
 
-    pub async fn get_sub(&self, id: &str, source_id: &str) -> Result<Media, reqwest::Error> {
+    pub async fn get_sub(&self, id: &str, source_id: &str) -> Result<Media> {
         let path = format!("Items/{}/PlaybackInfo", id);
         let params = [
             ("StartTimeTicks", "0"),
@@ -464,15 +531,15 @@ impl EmbyClient {
             ("reqformat", "json"),
         ];
         let profile: Value = serde_json::from_str(PROFILE).unwrap();
-        self.post(&path, &params, profile).await?.json().await
+        self.post_json(&path, &params, profile).await
     }
 
-    pub async fn get_library(&self) -> Result<List, reqwest::Error> {
+    pub async fn get_library(&self) -> Result<List> {
         let path = format!("Users/{}/Views", &self.user_id());
         self.request(&path, &[]).await
     }
 
-    pub async fn get_latest(&self, id: &str) -> Result<Vec<SimpleListItem>, reqwest::Error> {
+    pub async fn get_latest(&self, id: &str) -> Result<Vec<SimpleListItem>> {
         let path = format!("Users/{}/Items/Latest", &self.user_id());
         let params = [
             ("Limit", "16"),
@@ -500,7 +567,7 @@ impl EmbyClient {
         listtype: &str,
         sort_order: &str,
         sortby: &str,
-    ) -> Result<List, reqwest::Error> {
+    ) -> Result<List> {
         let user_id = &self.user_id();
         let path = match listtype {
             "item" => format!("Users/{}/Items", user_id),
@@ -577,7 +644,7 @@ impl EmbyClient {
         parentid: &str,
         sort_order: &str,
         sortby: &str,
-    ) -> Result<List, reqwest::Error> {
+    ) -> Result<List> {
         let path = format!("Users/{}/Items", &self.user_id());
         let mut params = vec![
             ("Limit", "50"),
@@ -608,7 +675,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn like(&self, id: &str) -> Result<(), reqwest::Error> {
+    pub async fn like(&self, id: &str) -> Result<()> {
         let path = format!(
             "Users/{}/FavoriteItems/{}",
             &self.user_id.lock().unwrap(),
@@ -618,7 +685,7 @@ impl EmbyClient {
         Ok(())
     }
 
-    pub async fn unlike(&self, id: &str) -> Result<(), reqwest::Error> {
+    pub async fn unlike(&self, id: &str) -> Result<()> {
         let path = format!(
             "Users/{}/FavoriteItems/{}/Delete",
             &self.user_id.lock().unwrap(),
@@ -628,13 +695,13 @@ impl EmbyClient {
         Ok(())
     }
 
-    pub async fn set_as_played(&self, id: &str) -> Result<(), reqwest::Error> {
+    pub async fn set_as_played(&self, id: &str) -> Result<()> {
         let path = format!("Users/{}/PlayedItems/{}", &self.user_id(), id);
         self.post(&path, &[], json!({})).await?;
         Ok(())
     }
 
-    pub async fn set_as_unplayed(&self, id: &str) -> Result<(), reqwest::Error> {
+    pub async fn set_as_unplayed(&self, id: &str) -> Result<()> {
         let path = format!(
             "Users/{}/PlayedItems/{}/Delete",
             &self.user_id.lock().unwrap(),
@@ -648,7 +715,7 @@ impl EmbyClient {
         &self,
         back: &Back,
         backtype: BackType,
-    ) -> Result<(), reqwest::Error> {
+    ) -> Result<()> {
         let path = match backtype {
             BackType::Start => "Sessions/Playing".to_string(),
             BackType::Stop => "Sessions/Playing/Stopped".to_string(),
@@ -660,7 +727,7 @@ impl EmbyClient {
         Ok(())
     }
 
-    pub async fn get_similar(&self, id: &str) -> Result<List, reqwest::Error> {
+    pub async fn get_similar(&self, id: &str) -> Result<List> {
         let path = format!("Items/{}/Similar", id);
         let params = [
             (
@@ -674,7 +741,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_person(&self, id: &str, types: &str) -> Result<List, reqwest::Error> {
+    pub async fn get_person(&self, id: &str, types: &str) -> Result<List> {
         let path = format!("Users/{}/Items", &self.user_id());
         let params = [
             (
@@ -693,7 +760,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_search_recommend(&self) -> Result<List, reqwest::Error> {
+    pub async fn get_search_recommend(&self) -> Result<List> {
         let path = format!("Users/{}/Items", &self.user_id());
         let params = [
             ("Limit", "20"),
@@ -712,7 +779,7 @@ impl EmbyClient {
         types: &str,
         start: u32,
         limit: u32,
-    ) -> Result<List, reqwest::Error> {
+    ) -> Result<List> {
         let user_id = {
             let user_id = self.user_id.lock().unwrap();
             user_id.to_owned()
@@ -744,7 +811,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_included(&self, id: &str) -> Result<List, reqwest::Error> {
+    pub async fn get_included(&self, id: &str) -> Result<List> {
         let path = format!("Users/{}/Items", &self.user_id());
         let params = [
             (
@@ -761,7 +828,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_includedby(&self, parent_id: &str) -> Result<List, reqwest::Error> {
+    pub async fn get_includedby(&self, parent_id: &str) -> Result<List> {
         let path = format!("Users/{}/Items", &self.user_id());
         let params = [
             (
@@ -778,21 +845,27 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn change_password(&self, new_password: &str) -> Result<(), reqwest::Error> {
+    pub async fn change_password(&self, new_password: &str) -> Result<()> {
         let path = format!("Users/{}/Password", &self.user_id());
-        let old_password = std::env::var("EMBY_PASSWORD").unwrap_or("".to_string());
+    
+        let old_password = match self.user_password.lock() {
+            Ok(guard) => guard.to_string(),
+            Err(_) => return Err(anyhow::anyhow!("Failed to acquire lock on user password")),
+        };
+        
         let body = json!({
             "CurrentPw": old_password,
             "NewPw": new_password
         });
+        
         self.post(&path, &[], body).await?;
         Ok(())
     }
 
-    pub async fn hide_from_resume(&self, id: &str) -> Result<(), reqwest::Error> {
+    pub async fn hide_from_resume(&self, id: &str) -> Result<()> {
         let path = format!(
             "Users/{}/Items/{}/HideFromResume",
-            &self.user_id.lock().unwrap(),
+            &self.user_id(),
             id
         );
         let params = [("Hide", "true")];
@@ -800,7 +873,7 @@ impl EmbyClient {
         Ok(())
     }
 
-    pub async fn get_songs(&self, parent_id: &str) -> Result<List, reqwest::Error> {
+    pub async fn get_songs(&self, parent_id: &str) -> Result<List> {
         let path = format!("Users/{}/Items", &self.user_id());
         let params = [
             (
@@ -818,10 +891,10 @@ impl EmbyClient {
         let url = self.url.lock().unwrap().as_ref().unwrap().clone();
 
         url.join(&format!("Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
-        id, &self.user_id(), &DEVICE_ID.to_string(), std::env::var("EMBY_ACCESS_TOKEN").unwrap(), )).unwrap().to_string()
+        id, &self.user_id(), &DEVICE_ID.to_string(), self.user_access_token.lock().unwrap().to_string(), )).unwrap().to_string()
     }
 
-    pub async fn get_random(&self) -> Result<List, reqwest::Error> {
+    pub async fn get_random(&self) -> Result<List> {
         let path = format!("Users/{}/Items", &self.user_id());
         let params = [
             ("Fields", "ProductionYear,CommunityRating"),
@@ -841,13 +914,13 @@ impl EmbyClient {
         self.user_id.lock().unwrap().to_string()
     }
 
-    pub async fn get_additional(&self, id: &str) -> Result<List, reqwest::Error> {
+    pub async fn get_additional(&self, id: &str) -> Result<List> {
         let path = format!("Videos/{}/AdditionalParts", id);
         let params: [(&str, &str); 1] = [("UserId", &self.user_id())];
         self.request(&path, &params).await
     }
 
-    pub async fn get_channels(&self) -> Result<List, reqwest::Error> {
+    pub async fn get_channels(&self) -> Result<List> {
         let params = [
             ("IsAiring", "true"),
             ("userId", &self.user_id()),
@@ -860,7 +933,7 @@ impl EmbyClient {
         self.request("LiveTv/Channels", &params).await
     }
 
-    pub async fn get_channels_list(&self, start_index: &str) -> Result<List, reqwest::Error> {
+    pub async fn get_channels_list(&self, start_index: &str) -> Result<List> {
         let params = [
             ("IsAiring", "true"),
             ("userId", &self.user_id()),
@@ -874,22 +947,22 @@ impl EmbyClient {
         self.request("LiveTv/Channels", &params).await
     }
 
-    pub async fn get_server_info(&self) -> Result<ServerInfo, reqwest::Error> {
+    pub async fn get_server_info(&self) -> Result<ServerInfo> {
         self.request("System/Info", &[]).await
     }
 
-    pub async fn shut_down(&self) -> Result<Response, reqwest::Error> {
+    pub async fn shut_down(&self) -> Result<Response> {
         self.post("System/Shutdown", &[], json!({})).await
     }
 
-    pub async fn restart(&self) -> Result<Response, reqwest::Error> {
+    pub async fn restart(&self) -> Result<Response> {
         self.post("System/Restart", &[], json!({})).await
     }
 
     pub async fn get_activity_log(
         &self,
         has_user_id: bool,
-    ) -> Result<ActivityLogs, reqwest::Error> {
+    ) -> Result<ActivityLogs> {
         let params = [
             ("Limit", "15"),
             ("StartIndex", "0"),
@@ -898,11 +971,11 @@ impl EmbyClient {
         self.request("System/ActivityLog/Entries", &params).await
     }
 
-    pub async fn get_scheduled_tasks(&self) -> Result<Vec<ScheduledTask>, reqwest::Error> {
+    pub async fn get_scheduled_tasks(&self) -> Result<Vec<ScheduledTask>> {
         self.request("ScheduledTasks", &[]).await
     }
 
-    pub async fn run_scheduled_task(&self, id: String) -> Result<(), reqwest::Error> {
+    pub async fn run_scheduled_task(&self, id: String) -> Result<()> {
         let path = format!("ScheduledTasks/Running/{}", &id);
         self.post(&path, &[], json!({})).await?;
         Ok(())
@@ -934,13 +1007,13 @@ mod tests {
 
     #[tokio::test]
     async fn search() {
-        EMBY_CLIENT.header_change_url("https://example.com", "443");
+        let _ = EMBY_CLIENT.header_change_url("https://example.com", "443");
         let result = EMBY_CLIENT.login("test", "test").await;
         match result {
             Ok(response) => {
                 println!("{}", response.access_token);
-                EMBY_CLIENT.header_change_token(&response.access_token);
-                EMBY_CLIENT.set_user_id(&response.user.id);
+                let _ = EMBY_CLIENT.header_change_token(&response.access_token);
+                let _ = EMBY_CLIENT.set_user_id(&response.user.id);
             }
             Err(e) => {
                 eprintln!("{}", e.to_user_facing());

@@ -3,7 +3,7 @@ use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::ui::models::SETTINGS;
 use crate::ui::provider::tu_item::TuItem;
-use crate::utils::{get_data_with_cache_else, req_cache, req_cache_single, spawn};
+use crate::utils::{fetch_with_cache, spawn, CachePolicy};
 use crate::{fraction, fraction_reset, toast};
 use chrono::{Datelike, Local};
 use gettextrs::gettext;
@@ -151,10 +151,16 @@ impl HomePage {
     pub async fn setup_history(&self, enable_cache: bool) {
         let hortu = self.imp().hishortu.get();
 
-        let results = match req_cache_single(
+        let cache_policy = if enable_cache {
+            CachePolicy::UseCacheIfAvailable
+        } else {
+            CachePolicy::RefreshCache
+        };
+
+        let results = match fetch_with_cache(
             "history",
+            cache_policy,
             async { EMBY_CLIENT.get_resume().await },
-            enable_cache,
         )
         .await
         {
@@ -163,8 +169,7 @@ impl HomePage {
                 toast!(self, e.to_user_facing());
                 return;
             }
-        }
-        .unwrap_or_default();
+        };
 
         hortu.set_title(&gettext("Continue Watching"));
 
@@ -174,7 +179,7 @@ impl HomePage {
     pub async fn setup_library(&self) {
         let hortu = self.imp().libhortu.get();
 
-        let results = match req_cache("library", async { EMBY_CLIENT.get_library().await }).await {
+        let results = match fetch_with_cache("library", CachePolicy::ReadCacheAndRefresh, async { EMBY_CLIENT.get_library().await }).await {
             Ok(history) => history,
             Err(e) => {
                 toast!(self, e.to_user_facing());
@@ -204,7 +209,7 @@ impl HomePage {
                 continue;
             };
 
-            let results = match req_cache(&format!("library_{}", view.id), async move {
+            let results = match fetch_with_cache(&format!("library_{}", view.id), CachePolicy::ReadCacheAndRefresh, async move {
                 if collection_type == "livetv" {
                     EMBY_CLIENT.get_channels().await.map(|x| x.items)
                 } else {
@@ -258,8 +263,8 @@ impl HomePage {
         self.imp().carouset_items.borrow_mut().clear();
 
         let date = Local::now();
-        let formatted_date = format!("{:04}{:02}{:02}", date.year(), date.month(), date.day());
-        let results = match get_data_with_cache_else(formatted_date, "carousel", async {
+        let formatted_date = format!("carousel-{:04}{:02}{:02}", date.year(), date.month(), date.day());
+        let results = match fetch_with_cache(&formatted_date, CachePolicy::UseCacheIfAvailable, async {
             EMBY_CLIENT.get_random().await
         })
         .await

@@ -1,4 +1,3 @@
-use std::env;
 use std::path::PathBuf;
 
 use adw::prelude::*;
@@ -269,9 +268,9 @@ impl Window {
         for account in &accounts.accounts {
             if SETTINGS.auto_select_server()
                 && account.servername == SETTINGS.preferred_server()
-                && env::var("EMBY_NAME").is_err()
+                && EMBY_CLIENT.user_id.lock().unwrap().is_empty()
             {
-                EMBY_CLIENT.init(account);
+                let _ = EMBY_CLIENT.init(account);
                 self.reset();
             }
         }
@@ -291,7 +290,7 @@ impl Window {
                 unsafe {
                     let account_ptr: std::ptr::NonNull<Account> = row.data("account").unwrap();
                     let account: &Account = &*account_ptr.as_ptr();
-                    EMBY_CLIENT.init(account);
+                    let _ = EMBY_CLIENT.init(account);
                     SETTINGS.set_preferred_server(&account.servername).unwrap();
                 }
                 obj.reset();
@@ -363,9 +362,15 @@ impl Window {
     pub fn account_setup(&self) {
         let imp = self.imp();
         imp.namerow
-            .set_title(&env::var("EMBY_USERNAME").unwrap_or_else(|_| "Username".to_string()));
+            .set_title(&match EMBY_CLIENT.user_name.lock() {
+                Ok(guard) => guard.to_string(),
+                Err(_) => "Not logged in".to_string(),
+            });
         imp.namerow
-            .set_subtitle(&env::var("EMBY_NAME").unwrap_or_else(|_| "Server".to_string()));
+            .set_subtitle(&match EMBY_CLIENT.server_name.lock() {
+                Ok(guard) => guard.to_string(),
+                Err(_) => "No server selected".to_string(),
+            });
     }
 
     pub fn account_settings(&self) {

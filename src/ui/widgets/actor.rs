@@ -1,7 +1,7 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
-use crate::utils::{req_cache, spawn};
+use crate::utils::{fetch_with_cache, spawn, CachePolicy};
 use crate::{fraction, fraction_reset, toast};
 use gettextrs::gettext;
 use glib::Object;
@@ -132,7 +132,7 @@ impl ActorPage {
         let inforevealer = imp.inforevealer.get();
         let title = imp.title.get();
 
-        let item = match req_cache(&format!("list_{}", id), async move {
+        let item = match fetch_with_cache(&format!("list_{}", id), CachePolicy::ReadCacheAndRefresh, async move {
             EMBY_CLIENT.get_item_info(&id).await
         })
         .await
@@ -140,7 +140,7 @@ impl ActorPage {
             Ok(item) => item,
             Err(e) => {
                 toast!(self, e.to_user_facing());
-                Item::default()
+                return;
             }
         };
 
@@ -191,7 +191,7 @@ impl ActorPage {
 
         let id = self.id();
 
-        let results = match req_cache(&format!("actor_{}_{}", types, &id), async move {
+        let results = match fetch_with_cache(&format!("actor_{}_{}", types, &id), CachePolicy::ReadCacheAndRefresh, async move {
             EMBY_CLIENT.get_person(&id, &types).await
         })
         .await

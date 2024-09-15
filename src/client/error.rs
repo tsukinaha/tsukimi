@@ -39,3 +39,9 @@ impl UserFacingError for libmpv2::Error {
         )
     }
 }
+
+impl UserFacingError for anyhow::Error {
+    fn to_user_facing(&self) -> String {
+        self.to_string()
+    }
+}
