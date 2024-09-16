@@ -60,21 +60,30 @@
                                     <property name="margin-bottom">20</property>
                                     <property name="margin-top">20</property>
                                     <child>
-                                      <object class="GtkLabel" id="line1">
-                                        <property name="halign">start</property>
-                                        <property name="label" translatable="yes">Loading...</property>
-                                        <property name="wrap">true</property>
-                                        <attributes>
-                                          <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                                          <attribute name="scale" value="1.4" />
-                                        </attributes>
+                                      <object class="GtkBox">
+                                        <property name="orientation">horizontal</property>
+                                        <property name="spacing">6</property>
+                                        <child>
+                                          <object class="GtkLabel" id="line1">
+                                            <property name="halign">start</property>
+                                            <property name="wrap">true</property>
+                                            <attributes>
+                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                                              <attribute name="scale" value="1.4" />
+                                            </attributes>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkSpinner" id="spinner">
+                                            <property name="spinning">false</property>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                     <child>
                                       <object class="GtkLabel" id="tagline">
                                         <property name="halign">start</property>
                                         <property name="visible">False</property>
-                                        <property name="label" translatable="yes">loading</property>
                                         <attributes>
                                           <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                                           <attribute name="scale" value="1.2" />
@@ -248,6 +257,15 @@
                         <property name="margin-start">6</property>
                         <child>
                           <object class="GtkDropDown" id="seasonlist">
+                            <property name="enable-search">true</property>
+                            <signal name="notify::selected" handler="on_season_selected" swapped="yes"/>
+                            <property name="model">
+                              <object class="GtkStringList">
+                                <items>
+                                  <item translatable="yes">Continue Watching</item>
+                                </items>
+                              </object>
+                            </property>
                           </object>
                         </child>
                         <child>
@@ -262,67 +280,93 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkOverlay">
-                        <property name="margin-top">6</property>
+                      <object class="GtkStack" id="episode_stack">
+                        <property name="transition-type">crossfade</property>
+                        <property name="height-request">250</property>
+                        <property name="visible">False</property>
                         <child>
-                          <object class="GtkEventControllerMotion">
-                            <signal name="enter" handler="on_enter_focus" swapped="yes"/>
-                            <signal name="leave" handler="on_leave_focus" swapped="yes"/>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkScrolledWindow" id="scrolled">
-                            <property name="vscrollbar-policy">never</property>
-                            <property name="valign">fill</property>
-                            <property name="margin-bottom">3</property>
-                            <child>
-                              <object class="GtkListView" id="itemlist">
-                                <property name="orientation">horizontal</property>
-                                <property name="single-click-activate">True</property>
-                                <style>
-                                  <class name="horizontal-listview" />
-                                </style>
+                          <object class="GtkStackPage">
+                            <property name="name">loading</property>
+                            <property name="title">Loading</property>
+                            <property name="child">
+                              <object class="GtkSpinner">
+                                <property name="spinning">True</property>
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <property name="width-request">32</property>
+                                <property name="height-request">32</property>
                               </object>
-                            </child>
+                            </property>
                           </object>
                         </child>
-                        <child type="overlay">
-                          <object class="GtkButton" id="right_button">
-                            <property name="halign">end</property>
-                            <property name="valign">center</property>
-                            <property name="height-request">70</property>
-                            <property name="width-request">30</property>
-                            <property name="margin-end">6</property>
-                            <property name="icon-name">go-next-symbolic</property>
-                            <property name="opacity">0</property>
-                            <signal name="clicked" handler="on_rightbutton_clicked" swapped="yes" />
-                            <style>
-                              <class name="osd" />
-                            </style>
-                          </object>
-                        </child>
-                        <child type="overlay">
-                          <object class="GtkButton" id="left_button">
-                            <property name="halign">start</property>
-                            <property name="valign">center</property>
-                            <property name="height-request">70</property>
-                            <property name="width-request">30</property>
-                            <property name="margin-start">6</property>
-                            <property name="icon-name">go-previous-symbolic</property>
-                            <property name="opacity">0</property>
-                            <signal name="clicked" handler="on_leftbutton_clicked" swapped="yes" />
-                            <style>
-                              <class name="osd" />
-                            </style>
+                        <child>
+                          <object class="GtkStackPage">
+                            <property name="name">view</property>
+                            <property name="title">Episodes View</property>
+                            <property name="child">
+                              <object class="GtkOverlay">
+                                <property name="margin-top">6</property>
+                                <child>
+                                  <object class="GtkEventControllerMotion">
+                                    <signal name="enter" handler="on_enter_focus" swapped="yes"/>
+                                    <signal name="leave" handler="on_leave_focus" swapped="yes"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkScrolledWindow" id="scrolled">
+                                    <property name="vscrollbar-policy">never</property>
+                                    <property name="valign">fill</property>
+                                    <property name="margin-bottom">3</property>
+                                    <child>
+                                      <object class="GtkListView" id="itemlist">
+                                        <property name="orientation">horizontal</property>
+                                        <property name="single-click-activate">True</property>
+                                        <signal name="activate" handler="on_item_activated" swapped="yes"/>
+                                        <style>
+                                          <class name="horizontal-listview" />
+                                        </style>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child type="overlay">
+                                  <object class="GtkButton" id="right_button">
+                                    <property name="halign">end</property>
+                                    <property name="valign">center</property>
+                                    <property name="height-request">70</property>
+                                    <property name="width-request">30</property>
+                                    <property name="margin-end">6</property>
+                                    <property name="icon-name">go-next-symbolic</property>
+                                    <property name="opacity">0</property>
+                                    <signal name="clicked" handler="on_rightbutton_clicked" swapped="yes" />
+                                    <style>
+                                      <class name="osd" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child type="overlay">
+                                  <object class="GtkButton" id="left_button">
+                                    <property name="halign">start</property>
+                                    <property name="valign">center</property>
+                                    <property name="height-request">70</property>
+                                    <property name="width-request">30</property>
+                                    <property name="margin-start">6</property>
+                                    <property name="icon-name">go-previous-symbolic</property>
+                                    <property name="opacity">0</property>
+                                    <signal name="clicked" handler="on_leftbutton_clicked" swapped="yes" />
+                                    <style>
+                                      <class name="osd" />
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
                           </object>
                         </child>
                       </object>
                     </child>
-
                   </object>
                 </child>
-
-
                 <child>
                   <object class="GtkScrolledWindow">
                     <property name="hscrollbar-policy">never</property>

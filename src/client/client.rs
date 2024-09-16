@@ -299,12 +299,12 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_series_info(&self, id: &str) -> Result<SerInList> {
+    pub async fn get_episodes(&self, id: &str, season_id: &str) -> Result<SerInList> {
         let path = format!("Shows/{}/Episodes", id);
         let params = [
-            ("Fields", "Overview"),
-            ("EnableTotalRecordCount", "true"),
-            ("EnableImages", "true"),
+            ("Fields", "Overview,PrimaryImageAspectRatio,PremiereDate,ProductionYear,SyncStatus"),
+            ("ImageTypeLimit", "1"),
+            ("SeasonId", season_id),
             ("UserId", &self.user_id()),
         ];
         self.request(&path, &params).await
@@ -756,6 +756,33 @@ impl EmbyClient {
             ("IncludeItemTypes", types),
             ("ImageTypeLimit", "1"),
             ("Limit", "12"),
+        ];
+        self.request(&path, &params).await
+    }
+
+    pub async fn get_continue_play_list(&self, parent_id: &str) -> Result<List> {
+        let path = format!("Shows/NextUp");
+        let params = [
+            ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,Overview"),
+            ("Limit", "40"),
+            ("ImageTypeLimit", "1"),
+            ("SeriesId", parent_id),
+            ("UserId", &self.user_id()),
+        ];
+        self.request(&path, &params).await
+    }
+
+    pub async fn get_season_list(&self, parent_id: &str) -> Result<List> {
+        let path = format!("Shows/{}/Seasons", parent_id);
+        let params = [
+            (
+                "Fields",
+                "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,Overview",
+            ),
+            ("UserId", &self.user_id()),
+            ("EnableUserData", "false"),
+            ("EnableTotalRecordCount", "false"),
+            ("EnableImages", "false"),
         ];
         self.request(&path, &params).await
     }

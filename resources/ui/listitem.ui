@@ -13,19 +13,6 @@
                 <property name="width-request">141</property>
                 <property name="height-request">141</property>
                 <property name="halign">center</property>
-                <child type="overlay">
-                  <object class="GtkButton">
-                    <property name="halign">start</property>
-                    <property name="valign">start</property>
-                    <property name="icon-name">view-fullscreen-symbolic</property>
-                    <signal name="clicked" handler="on_view_pic_clicked" swapped="yes" />
-                    <style>
-                      <class name="flat" />
-                      <class name="circular" />
-                      <class name="accent" />
-                    </style>
-                  </object>
-                </child>
               </object>
             </child>
             <child>

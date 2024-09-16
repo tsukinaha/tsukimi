@@ -22,7 +22,6 @@ use crate::utils::spawn_tokio;
 use anyhow::Result;
 
 use super::picture_loader::PictureLoader;
-use super::window::Window;
 
 pub const PROGRESSBAR_ANIMATION_DURATION: u32 = 2000;
 
@@ -778,25 +777,5 @@ impl TuListItem {
                 window.toast("Success");
             }
         ));
-    }
-
-    #[template_callback]
-    fn on_view_pic_clicked(&self) {
-        let picture = self
-            .imp()
-            .overlay
-            .child()
-            .unwrap()
-            .downcast::<PictureLoader>()
-            .unwrap()
-            .imp()
-            .picture
-            .get();
-        let window = self
-            .ancestor(Window::static_type())
-            .and_downcast::<Window>()
-            .unwrap();
-        window.reveal_image(&picture);
-        window.media_viewer_show_paintable(picture.paintable());
     }
 }

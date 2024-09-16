@@ -2,9 +2,8 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gettextrs::gettext;
 use glib::Object;
-use gtk::{gio, glib};
+use gtk::{gio, glib, ListView};
 use gtk::{template_callbacks, PositionType, ScrolledWindow};
-use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 
 use crate::client::client::EMBY_CLIENT;
@@ -12,7 +11,7 @@ use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::toast;
 
-use crate::ui::provider::dropdown_factory::{factory, DropdownList, DropdownListBuilder};
+use crate::ui::provider::dropdown_factory::{DropdownList, DropdownListBuilder};
 use crate::ui::provider::tu_item::TuItem;
 use crate::ui::provider::tu_object::TuObject;
 use crate::utils::{fetch_with_cache, get_image_with_cache, spawn, spawn_tokio, CachePolicy};
@@ -22,23 +21,27 @@ use super::fix::ScrolledWindowFixExt;
 use super::hortu_scrolled::SHOW_BUTTON_ANIMATION_DURATION;
 use super::song_widget::format_duration;
 use super::tu_overview_item::run_time_ticks_to_label;
-use super::utils::TuItemBuildExt;
 use super::window::Window;
 
 pub(crate) mod imp {
+    use crate::ui::provider::dropdown_factory::factory;
     use crate::ui::provider::tu_item::TuItem;
+    use crate::ui::provider::tu_object::TuObject;
     use crate::ui::widgets::fix::ScrolledWindowFixExt;
     use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
     use crate::ui::widgets::item_actionbox::ItemActionsBox;
     use crate::ui::widgets::item_carousel::ItemCarousel;
     use crate::ui::widgets::star_toggle::StarToggle;
+    use crate::ui::widgets::utils::TuItemBuildExt;
     use crate::utils::spawn_g_timeout;
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
     use std::cell::{OnceCell, RefCell};
+
+    use super::SimpleListItem;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -111,6 +114,9 @@ pub(crate) mod imp {
         pub toolbar: TemplateChild<gtk::Box>,
 
         #[template_child]
+        pub spinner: TemplateChild<gtk::Spinner>,
+
+        #[template_child]
         pub buttoncontent: TemplateChild<adw::ButtonContent>,
 
         pub selection: gtk::SingleSelection,
@@ -132,6 +138,9 @@ pub(crate) mod imp {
         #[template_child]
         pub right_button: TemplateChild<gtk::Button>,
 
+        #[template_child]
+        pub episode_stack: TemplateChild<gtk::Stack>,
+
         pub show_button_animation: OnceCell<adw::TimedAnimation>,
         pub hide_button_animation: OnceCell<adw::TimedAnimation>,
 
@@ -139,6 +148,8 @@ pub(crate) mod imp {
         pub current_item: RefCell<Option<TuItem>>,
         #[property(get, set, nullable)]
         pub play_session_id: RefCell<Option<String>>,
+
+        pub season_list_vec: RefCell<Vec<SimpleListItem>>,
     }
 
     // The central trait for subclassing a GObject
@@ -169,7 +180,28 @@ pub(crate) mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             self.scrolled.fix();
-            
+
+            let namedropdown = self.namedropdown.get();
+            let subdropdown = self.subdropdown.get();
+            namedropdown.set_factory(Some(&factory::<true>()));
+            namedropdown.set_list_factory(Some(&factory::<false>()));
+            subdropdown.set_factory(Some(&factory::<true>()));
+            subdropdown.set_list_factory(Some(&factory::<false>()));
+
+            let store = gtk::gio::ListStore::new::<TuObject>();
+            self.selection.set_model(Some(&store));
+            self.itemlist.set_model(Some(&self.selection));
+            self.itemlist
+                .set_factory(Some(gtk::SignalListItemFactory::new().tu_overview_item()));
+
+            let item_type = self.obj().item().item_type();
+
+            if item_type == "Series" || item_type == "Episode" {
+                self.toolbar.set_visible(true);
+                self.episode_stack.set_visible(true);
+                self.episode_line.set_visible(true);
+            }
+
             let obj = self.obj();
             spawn_g_timeout(glib::clone!(
                 #[weak]
@@ -217,9 +249,8 @@ impl ItemPage {
             imp.line1.set_text(&item.name());
         }
 
-        if type_ == "Series" || type_ == "Episode" {
-            self.imp().toolbar.set_visible(true);
-            let series_id = item.series_id().unwrap_or(item.id());
+        if type_ == "Series" {
+            let series_id = item.id();
 
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
@@ -231,6 +262,22 @@ impl ItemPage {
                         return;
                     };
                     obj.set_intro::<false>(&intro).await;
+                }
+            ));
+
+            self.imp().actionbox.set_id(Some(series_id.clone()));
+            self.setup_item(&series_id).await;
+            self.setup_seasons(&series_id).await;
+        } else if type_ == "Episode" {
+            let series_id = item.series_id().unwrap_or(item.id());
+
+            spawn(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[weak]
+                item,
+                async move {
+                    obj.set_intro::<false>(&item).await;
                 }
             ));
 
@@ -273,10 +320,12 @@ impl ItemPage {
     async fn set_intro<const IS_VIDEO: bool>(&self, intro: &TuItem) {
         let intro_id = intro.id();
         let play_button = self.imp().playbutton.get();
+        let spinner = self.imp().spinner.get();
 
         self.set_now_item::<IS_VIDEO>(&intro);
 
         play_button.set_sensitive(false);
+        spinner.set_spinning(true);
 
         let playback =
             match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&intro_id).await }).await {
@@ -292,8 +341,89 @@ impl ItemPage {
         self.set_current_item(Some(intro));
 
         play_button.set_sensitive(true);
+        spinner.set_spinning(false);
 
         self.createmediabox(playback.media_sources, None).await;
+    }
+
+    #[template_callback]
+    async fn on_season_selected(&self, _param: Option<glib::ParamSpec>, dropdown: gtk::DropDown) {
+        let item = self.item();
+
+        let item_type = item.item_type();
+
+        if item_type != "Series" && item_type != "Episode" {
+            return;
+        }
+
+        let object = dropdown.selected_item();
+        let Some(season_name) = object.and_downcast_ref::<gtk::StringObject>() else {
+            return;
+        };
+
+        let season_name = season_name.string().to_string();
+
+        let imp = self.imp();
+        imp.episode_stack.set_visible_child_name("loading");
+
+        let series_id = item.series_id().unwrap_or(item.id());
+
+        let store_model = imp.selection.model();
+        let Some(store) = store_model.and_downcast_ref::<gio::ListStore>() else {
+            return;
+        };
+
+        store.remove_all();
+
+        let position = dropdown.selected();
+
+        if position == 0 {
+            let continue_play_list =
+                match spawn_tokio(async move { EMBY_CLIENT.get_continue_play_list(&series_id).await }).await {
+                    Ok(item) => item.items,
+                    Err(e) => {
+                        toast!(self, e.to_user_facing());
+                        return;
+                    }
+                };
+            
+            for episode in continue_play_list {
+                let tu_item = TuItem::from_simple(&episode, None);
+                let tu_object = TuObject::new(&tu_item);
+                store.append(&tu_object);
+            }
+
+            imp.episode_stack.set_visible_child_name("view");
+            return;
+        }
+
+        
+        let season_list = imp.season_list_vec.borrow();
+        let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
+            return;
+        };
+
+        let season_id = season.id.clone();
+
+        let episodes = match spawn_tokio(async move {
+            EMBY_CLIENT.get_episodes(&series_id, &season_id).await
+        })
+        .await
+        {
+            Ok(list) => list.items,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+
+        for episode in episodes {
+            let tu_item = TuItem::from_simple(&episode, None);
+            let tu_object = TuObject::new(&tu_item);
+            store.append(&tu_object);
+        }
+
+        imp.episode_stack.set_visible_child_name("view");
     }
 
     async fn set_shows_next_up(&self, id: &str) -> Option<TuItem> {
@@ -308,9 +438,6 @@ impl ItemPage {
             };
 
         let next_up_item = next_up.items.first()?;
-
-        let imp = self.imp();
-        imp.episode_line.set_visible(true);
 
         self.set_now_item::<false>(&TuItem::from_simple(next_up_item, None));
 
@@ -348,10 +475,6 @@ impl ItemPage {
         let imp = self.imp();
         let namedropdown = imp.namedropdown.get();
         let subdropdown = imp.subdropdown.get();
-        namedropdown.set_factory(Some(&factory::<true>()));
-        namedropdown.set_list_factory(Some(&factory::<false>()));
-        subdropdown.set_factory(Some(&factory::<true>()));
-        subdropdown.set_list_factory(Some(&factory::<false>()));
 
         let vstore = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
         imp.videoselection.set_model(Some(&vstore));
@@ -415,8 +538,6 @@ impl ItemPage {
             let object = glib::BoxedAnyObject::new(dl);
             vstore.append(&object);
         }
-
-        namedropdown.set_selected(0);
     }
 
     pub async fn setup_background(&self, id: &str) {
@@ -486,139 +607,45 @@ impl ItemPage {
         let imp = self.imp();
         let id = id.to_string();
 
-        let store = gtk::gio::ListStore::new::<TuObject>();
-        imp.selection.set_autoselect(false);
-        imp.selection.set_model(Some(&store));
+        let Some(season_list_store) = imp
+            .seasonlist
+            .model()
+            .and_downcast::<gtk::StringList>()
+        else {
+            return;
+        };
 
-        let seasonstore = gtk::StringList::new(&[]);
-        imp.seasonselection.set_model(Some(&seasonstore));
-        let seasonlist = imp.seasonlist.get();
-        seasonlist.set_model(Some(&imp.seasonselection));
-
-        let factory = gtk::SignalListItemFactory::new();
-        factory.tu_overview_item();
-        imp.itemlist.set_factory(Some(&factory));
-        imp.itemlist.set_model(Some(&imp.selection));
-
-        let series_info =
-            match spawn_tokio(async move { EMBY_CLIENT.get_series_info(&id).await }).await {
-                Ok(item) => item.items,
-                Err(e) => {
-                    toast!(self, e.to_user_facing());
-                    Vec::new()
-                }
-            };
-
-        spawn(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            async move {
-                let mut season_set: HashSet<u32> = HashSet::new();
-                let mut season_map: HashMap<String, u32> = HashMap::new();
-                let min_season = series_info
-                    .iter()
-                    .map(|info| {
-                        if info.parent_index_number.unwrap_or(0) == 0 {
-                            100
-                        } else {
-                            info.parent_index_number.unwrap_or(0)
-                        }
-                    })
-                    .min()
-                    .unwrap_or(1);
-                let mut pos = 0;
-                let mut set = true;
-                for info in &series_info {
-                    if !season_set.contains(&info.parent_index_number.unwrap_or(0)) {
-                        let seasonstring =
-                            format!("Season {}", info.parent_index_number.unwrap_or(0));
-                        seasonstore.append(&seasonstring);
-                        season_set.insert(info.parent_index_number.unwrap_or(0));
-                        season_map
-                            .insert(seasonstring.clone(), info.parent_index_number.unwrap_or(0));
-                        if set {
-                            if info.parent_index_number.unwrap_or(0) == min_season {
-                                set = false;
-                            } else {
-                                pos += 1;
-                            }
-                        }
-                    }
-                    if info.parent_index_number.unwrap_or(0) == min_season {
-                        let tu_item = TuItem::from_simple(&info, None);
-                        let object = TuObject::new(&tu_item);
-                        store.append(&object);
-                    }
-                }
-                obj.imp().seasonlist.set_selected(pos);
-                let seasonlist = obj.imp().seasonlist.get();
-                let seriesinfo_seasonlist = series_info.clone();
-                let seriesinfo_seasonmap = season_map.clone();
-                seasonlist.connect_selected_item_notify(glib::clone!(
-                    #[weak]
-                    store,
-                    move |dropdown| {
-                        let selected = dropdown.selected_item();
-                        let selected = selected.and_downcast_ref::<gtk::StringObject>().unwrap();
-                        let selected = selected.string().to_string();
-                        store.remove_all();
-                        let season_number = seriesinfo_seasonmap[&selected];
-                        for info in &seriesinfo_seasonlist {
-                            if info.parent_index_number.unwrap_or(0) == season_number {
-                                let tu_item = TuItem::from_simple(&info, None);
-                                let object = TuObject::new(&tu_item);
-                                store.append(&object);
-                            }
-                        }
-                    }
-                ));
-                let episodesearchentry = obj.imp().episodesearchentry.get();
-                episodesearchentry.connect_search_changed(glib::clone!(
-                    #[weak]
-                    store,
-                    move |entry| {
-                        let text = entry.text();
-                        store.remove_all();
-                        for info in &series_info {
-                            if (info.name.to_lowercase().contains(&text.to_lowercase())
-                                || info
-                                    .index_number
-                                    .unwrap_or(0)
-                                    .to_string()
-                                    .contains(&text.to_lowercase()))
-                                && info.parent_index_number.unwrap_or(0)
-                                    == season_map[&seasonlist
-                                        .selected_item()
-                                        .and_downcast_ref::<gtk::StringObject>()
-                                        .unwrap()
-                                        .string()
-                                        .to_string()]
-                            {
-                                let tu_item = TuItem::from_simple(&info, None);
-                                let object = TuObject::new(&tu_item);
-                                store.append(&object);
-                            }
-                        }
-                    }
-                ));
+        let season_list = match fetch_with_cache(
+            &format!("season_{}", &id),
+            CachePolicy::ReadCacheAndRefresh,
+            async move { EMBY_CLIENT.get_season_list(&id).await },
+        )
+        .await
+        {
+            Ok(season_list) => season_list.items,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
             }
-        ));
+        };
 
-        imp.itemlist.connect_activate(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            move |listview, position| {
-                let model = listview.model().unwrap();
-                let item = model.item(position).and_downcast::<TuObject>().unwrap();
-                spawn(glib::clone!(
-                    #[weak]
-                    obj,
-                    async move {
-                        obj.set_intro::<false>(&item.item()).await;
-                    }
-                ));
-            }
-        ));
+        for season in &season_list {
+            season_list_store.append(&season.name);
+        }
+
+        imp.season_list_vec.replace(season_list);
+        self.on_season_selected(None, imp.seasonlist.get()).await;
+    }
+
+    #[template_callback]
+    async fn on_item_activated(&self, position: u32, view: &ListView) {
+        let Some(model) = view.model() else {
+            return;
+        };
+        let Some(item) = model.item(position).and_downcast::<TuObject>() else {
+            return;
+        };
+        self.set_intro::<false>(&item.item()).await;
     }
 
     pub fn set_logo(&self, id: &str) {
@@ -629,9 +656,11 @@ impl ItemPage {
     pub async fn set_overview(&self, id: &str) {
         let id = id.to_string();
 
-        let item = match fetch_with_cache(&format!("item_{}", &id), CachePolicy::ReadCacheAndRefresh, async move {
-            EMBY_CLIENT.get_item_info(&id).await
-        })
+        let item = match fetch_with_cache(
+            &format!("item_{}", &id),
+            CachePolicy::ReadCacheAndRefresh,
+            async move { EMBY_CLIENT.get_item_info(&id).await },
+        )
         .await
         {
             Ok(item) => item,
@@ -710,8 +739,6 @@ impl ItemPage {
                     imp.actionbox.set_played(user_data.played);
                     imp.actionbox.bind_edit();
                 }
-
-                
             }
         ));
     }
@@ -879,14 +906,18 @@ impl ItemPage {
         let id = id.to_string();
         let types = types.to_string();
 
-        let results = match fetch_with_cache(&format!("item_{types}_{id}"), CachePolicy::ReadCacheAndRefresh, async move {
-            match types.as_str() {
-                "Recommend" => EMBY_CLIENT.get_similar(&id).await,
-                "Included In" => EMBY_CLIENT.get_included(&id).await,
-                "Additional Parts" => EMBY_CLIENT.get_additional(&id).await,
-                _ => Ok(List::default()),
-            }
-        })
+        let results = match fetch_with_cache(
+            &format!("item_{types}_{id}"),
+            CachePolicy::ReadCacheAndRefresh,
+            async move {
+                match types.as_str() {
+                    "Recommend" => EMBY_CLIENT.get_similar(&id).await,
+                    "Included In" => EMBY_CLIENT.get_included(&id).await,
+                    "Additional Parts" => EMBY_CLIENT.get_additional(&id).await,
+                    _ => Ok(List::default()),
+                }
+            },
+        )
         .await
         {
             Ok(history) => history,
@@ -944,7 +975,10 @@ impl ItemPage {
         let video_dropdown = self.imp().namedropdown.get();
         let sub_dropdown = self.imp().subdropdown.get();
 
-        let Some(video_object) = video_dropdown.selected_item().and_downcast::<glib::BoxedAnyObject>() else {
+        let Some(video_object) = video_dropdown
+            .selected_item()
+            .and_downcast::<glib::BoxedAnyObject>()
+        else {
             return;
         };
 
@@ -970,18 +1004,26 @@ impl ItemPage {
             tick: 0,
         };
 
-        let sub_url = if let Some(sub_object) = sub_dropdown.selected_item().and_downcast::<glib::BoxedAnyObject>() {
+        let sub_url = if let Some(sub_object) = sub_dropdown
+            .selected_item()
+            .and_downcast::<glib::BoxedAnyObject>()
+        {
             let sub_dl: std::cell::Ref<DropdownList> = sub_object.borrow();
             sub_dl.direct_url.clone()
         } else {
             None
         };
 
-        
-
         let percentage = item.played_percentage();
 
-        self.get_window().play_media(video_url.to_string(), sub_url, item.name(), Some(back), None, percentage);
+        self.get_window().play_media(
+            video_url.to_string(),
+            sub_url,
+            item.name(),
+            Some(back),
+            None,
+            percentage,
+        );
     }
 
     fn set_control_opacity(&self, opacity: f64) {

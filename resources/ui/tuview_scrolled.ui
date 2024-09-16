@@ -4,6 +4,7 @@
     <child>
       <object class="GtkScrolledWindow" id="scrolled_window">
       <property name="hscrollbar-policy">never</property>
+      <property name="vscrollbar-policy">always</property>
         <child>
           <object class="GtkGridView" id="grid">
             <property name="margin-start">18</property>
