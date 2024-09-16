@@ -309,7 +309,7 @@ impl AccountSettings {
                 SETTINGS.set_root_pic(&file_path).unwrap();
                 window.set_rootpic(file);
             }
-            Err(_) => window.toast("Failed to set root picture."),
+            Err(_) => toast!(self, gettext("No file selected")),
         };
     }
 

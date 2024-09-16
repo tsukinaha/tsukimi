@@ -1,7 +1,9 @@
 use crate::client::client::{BackType, EMBY_CLIENT};
+use crate::client::error::UserFacingError;
 use crate::client::structs::Back;
 use crate::toast;
 use crate::ui::models::SETTINGS;
+use crate::ui::provider::tu_item::TuItem;
 use crate::ui::widgets::check_row::CheckRow;
 use crate::ui::widgets::song_widget::format_duration;
 use crate::utils::{spawn, spawn_g_timeout, spawn_tokio};
@@ -35,6 +37,7 @@ mod imp {
     use crate::ui::mpv::menu_actions::MenuActions;
     use crate::ui::mpv::mpvglarea::MPVGLArea;
     use crate::ui::mpv::video_scale::VideoScale;
+    use crate::ui::provider::tu_item::TuItem;
     use crate::ui::widgets::action_row::AActionRow;
 
     // Object holding the state
@@ -95,6 +98,9 @@ mod imp {
 
         #[template_child]
         pub volume_adj: TemplateChild<gtk::Adjustment>,
+
+        pub current_video: RefCell<Option<TuItem>>,
+        pub current_episode_list: RefCell<Vec<TuItem>>,
     }
 
     // The central trait for subclassing a GObject
@@ -128,6 +134,12 @@ mod imp {
             });
             klass.install_action("mpv.chapter-next", None, move |mpv, _action, _parameter| {
                 mpv.chapter_next();
+            });
+            klass.install_action_async("mpv.next-video", None, |mpv, _action, _parameter| async move {
+                mpv.on_next_video().await;
+            });
+            klass.install_action_async("mpv.previous-video", None, move |mpv, _action, _parameter| async move  {
+                mpv.on_previous_video().await;
             });
         }
 
@@ -211,13 +223,17 @@ impl MPVPage {
         &self,
         url: &str,
         suburi: Option<&str>,
-        name: &str,
+        item: TuItem,
+        episode_list: Vec<TuItem>,
         back: Option<Back>,
         percentage: f64,
     ) {
         let url = url.to_owned();
         let suburi = suburi.map(|s| s.to_owned());
-        let name = name.to_string();
+        let name = item.name();
+
+        self.imp().current_video.replace(Some(item));
+        self.imp().current_episode_list.replace(episode_list);
         spawn_g_timeout(glib::clone!(
             #[weak(rename_to = obj)]
             self,
@@ -299,6 +315,58 @@ impl MPVPage {
         } else {
             self.imp().video.set_sid(track);
         }
+    }
+
+    async fn load_video(&self, offset: isize) {
+        toast!(self, "Loading Video...");
+
+        let Some(current_video) = self.imp().current_video.borrow().clone() else {
+            return;
+        };
+
+        let video_list = self.imp().current_episode_list.borrow().clone();
+
+        let next_item = video_list.iter().enumerate().find_map(|(i, item)| {
+            if item.id() == current_video.id() {
+                let new_index = (i as isize + offset) as usize;
+                video_list.get(new_index).cloned()
+            } else {
+                None
+            }
+        });
+
+        let Some(next_item) = next_item else {
+            toast!(self, "No more videos found");
+            return;
+        };
+
+        let next_item_id = next_item.id();
+
+        let playback =
+            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&next_item_id).await }).await {
+                Ok(playback) => playback,
+                Err(e) => {
+                    toast!(self, e.to_user_facing());
+                    return;
+                }
+            };
+
+        let url = playback.media_sources.first().and_then(|ms| ms.direct_stream_url.clone());
+        
+        let Some(url) = url else {
+            toast!(self, "No media sources found");
+            return;
+        };
+
+        self.play(&url, None, next_item.clone(), video_list, None, 0.0);
+    }
+
+    pub async fn on_next_video(&self) {
+        self.load_video(1).await;
+    }
+
+    pub async fn on_previous_video(&self) {
+        self.load_video(-1).await;
     }
 
     #[template_callback]
@@ -410,10 +478,18 @@ impl MPVPage {
     }
 
     fn on_end_file(&self, value: u32) {
-        if value == 2 {
-            return;
-        }
-        self.on_stop_clicked();
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+            if value == 0 {
+                match SETTINGS.mpv_action_after_video_end() {
+                    0 => obj.on_next_video().await,
+                    2 => obj.on_stop_clicked(),
+                    _ => {}
+                }
+            }
+        }));  
     }
 
     fn on_error(&self, value: &str) {
@@ -748,6 +824,11 @@ impl MPVPage {
             2 => mpv.set_property("slang", "chs"),
             3 => mpv.set_property("slang", "jpn"),
             _ => unreachable!(),
+        }
+        if SETTINGS.mpv_action_after_video_end() == 1 {
+            mpv.set_property("loop", "inf");
+        } else {
+            mpv.set_property("loop", "no");
         }
     }
 }

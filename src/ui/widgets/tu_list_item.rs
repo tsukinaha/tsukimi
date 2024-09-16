@@ -773,8 +773,7 @@ impl TuListItem {
             #[weak(rename_to = obj)]
             self,
             async move {
-                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                window.toast("Success");
+                toast!(obj, gettext("Success"));
             }
         ));
     }

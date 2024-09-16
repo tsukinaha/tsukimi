@@ -185,6 +185,7 @@ use crate::config::load_cfgv2;
 use crate::config::Account;
 use crate::ui::models::SETTINGS;
 use crate::ui::provider::core_song::CoreSong;
+use crate::ui::provider::tu_item::TuItem;
 use crate::ui::provider::IS_ADMIN;
 use crate::utils::spawn;
 use crate::APP_ID;
@@ -465,15 +466,6 @@ impl Window {
         imp.split_view.set_collapsed(overlay);
     }
 
-    pub fn toast(&self, message: &str) {
-        let imp = self.imp();
-        let toast = adw::Toast::builder()
-            .title(message.to_string())
-            .timeout(3)
-            .build();
-        imp.toast.add_toast(toast);
-    }
-
     pub fn add_toast(&self, toast: adw::Toast) {
         let imp = self.imp();
         imp.toast.add_toast(toast);
@@ -652,7 +644,8 @@ impl Window {
         &self,
         url: String,
         suburl: Option<String>,
-        name: String,
+        item: TuItem,
+        episode_list: Vec<TuItem>,
         back: Option<Back>,
         _selected: Option<String>,
         percentage: f64,
@@ -660,7 +653,7 @@ impl Window {
         let imp = self.imp();
         imp.stack.set_visible_child_name("clapper");
         imp.clappernav
-            .play(&url, suburl.as_deref(), &name, back, percentage);
+            .play(&url, suburl.as_deref(), item, episode_list, back, percentage);
     }
 
     pub fn push_page<T>(&self, page: &T)

@@ -85,6 +85,7 @@
                         <child>
                           <object class="GtkButton" id="_previous_button">
                             <property name="icon-name">media-skip-backward-symbolic</property>
+                            <property name="action-name">mpv.previous-video</property>
                             <style>
                               <class name="flat" />
                             </style>
@@ -109,6 +110,7 @@
                         <child>
                           <object class="GtkButton" id="_next_button">
                             <property name="icon-name">media-skip-forward-symbolic</property>
+                            <property name="action-name">mpv.next-video</property>
                             <style>
                               <class name="flat" />
                             </style>

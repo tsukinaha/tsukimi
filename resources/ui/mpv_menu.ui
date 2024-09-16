@@ -9,11 +9,11 @@
     <section>
       <item>
         <attribute name="label" translatable="yes">_Next</attribute>
-        
+        <attribute name="action">mpv.next-video</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">_Previous</attribute>
-        
+        <attribute name="action">mpv.previous-video</attribute>
       </item>
     </section>
     <section>

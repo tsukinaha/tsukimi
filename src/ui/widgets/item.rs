@@ -150,6 +150,8 @@ pub(crate) mod imp {
         pub play_session_id: RefCell<Option<String>>,
 
         pub season_list_vec: RefCell<Vec<SimpleListItem>>,
+
+        pub episode_list_vec: RefCell<Vec<SimpleListItem>>,
     }
 
     // The central trait for subclassing a GObject
@@ -377,11 +379,11 @@ impl ItemPage {
 
         let position = dropdown.selected();
 
-        if position == 0 {
-            let continue_play_list =
-                match spawn_tokio(
-                    async move { EMBY_CLIENT.get_continue_play_list(&series_id).await },
-                )
+        match position {
+            0 => {
+                let continue_play_list = match spawn_tokio(async move {
+                    EMBY_CLIENT.get_continue_play_list(&series_id).await
+                })
                 .await
                 {
                     Ok(item) => item.items,
@@ -391,39 +393,42 @@ impl ItemPage {
                     }
                 };
 
-            for episode in continue_play_list {
-                let tu_item = TuItem::from_simple(&episode, None);
-                let tu_object = TuObject::new(&tu_item);
-                store.append(&tu_object);
+                for episode in &continue_play_list {
+                    let tu_item = TuItem::from_simple(episode, None);
+                    let tu_object = TuObject::new(&tu_item);
+                    store.append(&tu_object);
+                }
+
+                imp.episode_list_vec.replace(continue_play_list);
             }
+            _ => {
+                let season_list = imp.season_list_vec.borrow();
+                let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
+                    return;
+                };
 
-            imp.episode_stack.set_visible_child_name("view");
-            return;
-        }
+                let season_id = season.id.clone();
 
-        let season_list = imp.season_list_vec.borrow();
-        let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
-            return;
-        };
+                let episodes = match spawn_tokio(async move {
+                    EMBY_CLIENT.get_episodes(&series_id, &season_id).await
+                })
+                .await
+                {
+                    Ok(list) => list.items,
+                    Err(e) => {
+                        toast!(self, e.to_user_facing());
+                        return;
+                    }
+                };
 
-        let season_id = season.id.clone();
+                for episode in &episodes {
+                    let tu_item = TuItem::from_simple(episode, None);
+                    let tu_object = TuObject::new(&tu_item);
+                    store.append(&tu_object);
+                }
 
-        let episodes = match spawn_tokio(async move {
-            EMBY_CLIENT.get_episodes(&series_id, &season_id).await
-        })
-        .await
-        {
-            Ok(list) => list.items,
-            Err(e) => {
-                toast!(self, e.to_user_facing());
-                return;
+                imp.episode_list_vec.replace(episodes);
             }
-        };
-
-        for episode in episodes {
-            let tu_item = TuItem::from_simple(&episode, None);
-            let tu_object = TuObject::new(&tu_item);
-            store.append(&tu_object);
         }
 
         imp.episode_stack.set_visible_child_name("view");
@@ -548,9 +553,7 @@ impl ItemPage {
         let imp = self.imp();
 
         let backdrop = imp.carousel.imp().backdrop.get();
-        let path = get_image_with_cache(id, "Backdrop", Some(0))
-            .await
-            .unwrap();
+        let path = get_image_with_cache(id, "Backdrop", Some(0)).await.unwrap();
         let file = gtk::gio::File::for_path(&path);
         let pathbuf = PathBuf::from(&path);
         if pathbuf.exists() {
@@ -1010,18 +1013,19 @@ impl ItemPage {
             .and_downcast::<glib::BoxedAnyObject>()
         {
             let sub_dl: std::cell::Ref<DropdownList> = sub_object.borrow();
-            
-            if Some(true) == sub_dl.is_external && sub_dl.direct_url.is_none() {
 
+            if Some(true) == sub_dl.is_external && sub_dl.direct_url.is_none() {
                 let id = item.id();
                 let Some(sub_index) = sub_dl.index else {
                     return;
                 };
                 let media_source_id_clone = media_source_id.to_string();
-                
-                let response = spawn_tokio(async move {
-                    EMBY_CLIENT.get_sub(&id, &media_source_id_clone).await
-                }).await;
+
+                let response =
+                    spawn_tokio(
+                        async move { EMBY_CLIENT.get_sub(&id, &media_source_id_clone).await },
+                    )
+                    .await;
 
                 let media = match response {
                     Ok(media) => media,
@@ -1035,17 +1039,20 @@ impl ItemPage {
             } else {
                 sub_dl.direct_url.clone()
             }
-
         } else {
             None
         };
 
         let percentage = item.played_percentage();
 
+        let episode_list = self.imp().episode_list_vec.borrow();
+        let episode_list: Vec<TuItem> = episode_list.iter().map(|item| TuItem::from_simple(item, None)).collect();
+
         self.get_window().play_media(
             video_url.to_string(),
             sub_url,
-            item.name(),
+            item,
+            episode_list,
             Some(back),
             None,
             percentage,
@@ -1053,11 +1060,15 @@ impl ItemPage {
     }
 
     fn get_sub_url(media: &Media, media_source_id: &str, media_stream_id: &u64) -> Option<String> {
-        media.media_sources.iter().find(|&media_source| {
-                &media_source.id == media_source_id
-            })?.media_streams.iter().find(|&stream| {
-                &stream.index == media_stream_id
-            })?.delivery_url.clone()
+        media
+            .media_sources
+            .iter()
+            .find(|&media_source| &media_source.id == media_source_id)?
+            .media_streams
+            .iter()
+            .find(|&stream| &stream.index == media_stream_id)?
+            .delivery_url
+            .clone()
     }
 
     fn set_control_opacity(&self, opacity: f64) {

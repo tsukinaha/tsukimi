@@ -323,7 +323,7 @@ impl TuItem {
                             toast!(window, gettext("No transcoding url found"));
                             return;
                         };
-                        window.play_media(url.to_string(), None, item.name(), None, None, 0.0)
+                        window.play_media(url.to_string(), None, item, Vec::new(), None, None, 0.0)
                     }
                     Err(e) => {
                         toast!(window, e.to_user_facing());

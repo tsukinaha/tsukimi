@@ -37,7 +37,6 @@ macro_rules! toast {
                 .timeout(2)
                 .use_markup(false)
                 .title($message)
-                .priority(adw::ToastPriority::High)
                 .build()
         );
     }};
