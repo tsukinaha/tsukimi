@@ -11,7 +11,7 @@
     </child>
     <child>
       <object class="AdwToolbarView">
-        
+
         <property name="content">
           <object class="GtkOverlay">
             <child>
@@ -133,8 +133,7 @@
                             <property name="valign">center</property>
                             <property name="hexpand">True</property>
                             <property name="draw_value">False</property>
-                            <signal name="value-changed" handler="on_progress_value_changed"
-                              swapped="yes" />
+                            <signal name="value-changed" handler="on_progress_value_changed" swapped="yes" />
                             <style>
                               <class name="accent" />
                             </style>
@@ -202,49 +201,70 @@
                     <property name="margin-top">10</property>
                     <property name="maximum-size">2000</property>
                     <child>
-                      <object class="GtkBox">
-                        <property name="orientation">horizontal</property>
+                      <object class="GtkWindowHandle">
                         <child>
-                          <object class="GtkButton" id="_back_button">
-                            <property name="icon-name">go-down-symbolic</property>
-                            <property name="focusable">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="tooltip_text" translatable="yes">Stop and quit</property>
-                            <signal name="clicked" handler="on_stop_clicked" swapped="yes" />
-                            <style>
-                              <class name="flat" />
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="title">
-                            <property name="hexpand">True</property>
-                            <property name="label" translatable="yes">Loading...</property>
-                            <attributes>
-                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                            </attributes>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="network_speed_label_2">
-                            <property name="label" bind-source="network_speed_label"
-                              bind-property="label" bind-flags="sync-create" />
-                            <property name="width-request">130</property>
-                            <style>
-                              <class name="dim-label" />
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="_media_info_button">
-                            <property name="icon-name">help-about-symbolic</property>
-                            <property name="focusable">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="tooltip_text" translatable="yes">Media info (MPV)</property>
-                            <signal name="clicked" handler="on_info_clicked" swapped="yes" />
-                            <style>
-                              <class name="flat" />
-                            </style>
+                          <object class="GtkCenterBox">
+                            <child type="start">
+                              <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <child>
+                                  <object class="GtkWindowControls">
+                                    <property name="side">start</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="_back_button">
+                                    <property name="icon-name">go-down-symbolic</property>
+                                    <property name="focusable">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="tooltip_text" translatable="yes">Stop and quit</property>
+                                    <signal name="clicked" handler="on_stop_clicked" swapped="yes" />
+                                    <style>
+                                      <class name="flat" />
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child type="center">
+                              <object class="GtkLabel" id="title">
+                                <property name="label" translatable="yes">Loading...</property>
+                                <attributes>
+                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                                </attributes>
+                              </object>
+                            </child>
+                            <child type="end">
+                              <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <child>
+                                  <object class="GtkLabel" id="network_speed_label_2">
+                                    <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create" />
+                                    <property name="width-request">130</property>
+                                    <style>
+                                      <class name="dim-label" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="_media_info_button">
+                                    <property name="icon-name">help-about-symbolic</property>
+                                    <property name="focusable">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="tooltip_text" translatable="yes">Media info (MPV)</property>
+                                    <signal name="clicked" handler="on_info_clicked" swapped="yes" />
+                                    <style>
+                                      <class name="flat" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkWindowControls">
+                                    <property name="side">end</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <style>
@@ -294,8 +314,7 @@
                             <property name="valign">center</property>
                             <property name="adjustment">playback_speed_adj</property>
                             <property name="digits">2</property>
-                            <signal name="value-changed" handler="on_speed_value_changed"
-                              swapped="yes" />
+                            <signal name="value-changed" handler="on_speed_value_changed" swapped="yes" />
                           </object>
                         </child>
                       </object>
@@ -308,8 +327,7 @@
                             <property name="width-request">150</property>
                             <property name="valign">center</property>
                             <property name="adjustment">volume_adj</property>
-                            <signal name="value-changed" handler="on_volume_value_changed"
-                              swapped="yes" />
+                            <signal name="value-changed" handler="on_volume_value_changed" swapped="yes" />
                           </object>
                         </child>
                       </object>
