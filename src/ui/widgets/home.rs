@@ -157,11 +157,9 @@ impl HomePage {
             CachePolicy::RefreshCache
         };
 
-        let results = match fetch_with_cache(
-            "history",
-            cache_policy,
-            async { EMBY_CLIENT.get_resume().await },
-        )
+        let results = match fetch_with_cache("history", cache_policy, async {
+            EMBY_CLIENT.get_resume().await
+        })
         .await
         {
             Ok(history) => history,
@@ -179,7 +177,11 @@ impl HomePage {
     pub async fn setup_library(&self) {
         let hortu = self.imp().libhortu.get();
 
-        let results = match fetch_with_cache("library", CachePolicy::ReadCacheAndRefresh, async { EMBY_CLIENT.get_library().await }).await {
+        let results = match fetch_with_cache("library", CachePolicy::ReadCacheAndRefresh, async {
+            EMBY_CLIENT.get_library().await
+        })
+        .await
+        {
             Ok(history) => history,
             Err(e) => {
                 toast!(self, e.to_user_facing());
@@ -209,13 +211,17 @@ impl HomePage {
                 continue;
             };
 
-            let results = match fetch_with_cache(&format!("library_{}", view.id), CachePolicy::ReadCacheAndRefresh, async move {
-                if collection_type == "livetv" {
-                    EMBY_CLIENT.get_channels().await.map(|x| x.items)
-                } else {
-                    EMBY_CLIENT.get_latest(&view.id).await
-                }
-            })
+            let results = match fetch_with_cache(
+                &format!("library_{}", view.id),
+                CachePolicy::ReadCacheAndRefresh,
+                async move {
+                    if collection_type == "livetv" {
+                        EMBY_CLIENT.get_channels().await.map(|x| x.items)
+                    } else {
+                        EMBY_CLIENT.get_latest(&view.id).await
+                    }
+                },
+            )
             .await
             {
                 Ok(history) => history,
@@ -263,18 +269,24 @@ impl HomePage {
         self.imp().carouset_items.borrow_mut().clear();
 
         let date = Local::now();
-        let formatted_date = format!("carousel-{:04}{:02}{:02}", date.year(), date.month(), date.day());
-        let results = match fetch_with_cache(&formatted_date, CachePolicy::UseCacheIfAvailable, async {
-            EMBY_CLIENT.get_random().await
-        })
-        .await
-        {
-            Ok(results) => results,
-            Err(e) => {
-                toast!(self, e.to_user_facing());
-                List::default()
-            }
-        };
+        let formatted_date = format!(
+            "carousel-{:04}{:02}{:02}",
+            date.year(),
+            date.month(),
+            date.day()
+        );
+        let results =
+            match fetch_with_cache(&formatted_date, CachePolicy::UseCacheIfAvailable, async {
+                EMBY_CLIENT.get_random().await
+            })
+            .await
+            {
+                Ok(results) => results,
+                Err(e) => {
+                    toast!(self, e.to_user_facing());
+                    List::default()
+                }
+            };
 
         for result in results.items {
             if let Some(image_tags) = &result.image_tags {

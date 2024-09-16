@@ -361,11 +361,10 @@ impl Window {
 
     pub fn account_setup(&self) {
         let imp = self.imp();
-        imp.namerow
-            .set_title(&match EMBY_CLIENT.user_name.lock() {
-                Ok(guard) => guard.to_string(),
-                Err(_) => "Not logged in".to_string(),
-            });
+        imp.namerow.set_title(&match EMBY_CLIENT.user_name.lock() {
+            Ok(guard) => guard.to_string(),
+            Err(_) => "Not logged in".to_string(),
+        });
         imp.namerow
             .set_subtitle(&match EMBY_CLIENT.server_name.lock() {
                 Ok(guard) => guard.to_string(),

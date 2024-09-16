@@ -1,4 +1,5 @@
 use adw::prelude::*;
+use anyhow::Result;
 use gettextrs::gettext;
 use glib::Object;
 use gtk::gdk::Rectangle;
@@ -9,7 +10,6 @@ use gtk::template_callbacks;
 use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
-use anyhow::Result;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
@@ -160,7 +160,7 @@ impl TuOverviewItem {
             &item
                 .overview()
                 .unwrap_or("No Inscription".to_string())
-                .replace("\n", " "),
+                .replace('\n', " "),
         );
         self.set_picture();
         self.set_played();

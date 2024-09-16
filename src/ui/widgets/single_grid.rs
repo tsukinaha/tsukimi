@@ -102,6 +102,12 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+impl Default for SingleGrid {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[gtk::template_callbacks]
 impl SingleGrid {
     pub fn new() -> Self {
@@ -190,7 +196,6 @@ impl SingleGrid {
         scrolled.set_grid::<C>(items);
         if scrolled.n_items() == 0 {
             imp.stack.set_visible_child_name("fallback");
-            return;
         }
     }
 

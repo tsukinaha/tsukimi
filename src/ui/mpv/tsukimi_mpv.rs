@@ -7,7 +7,9 @@ use libmpv2::{
 use tokio::time;
 
 use std::{
-    cell::RefCell, collections::HashMap, sync::{atomic::AtomicU32, Arc}
+    cell::RefCell,
+    collections::HashMap,
+    sync::{atomic::AtomicU32, Arc},
 };
 
 use libmpv2::{
@@ -264,7 +266,7 @@ impl TsukimiMPV {
     }
 
     pub fn get_track_id(&self, type_: &str) -> i64 {
-        let Some(track) = self.get_property::<String>(&type_) else {
+        let Some(track) = self.get_property::<String>(type_) else {
             return 0;
         };
         track.parse().unwrap_or(0)

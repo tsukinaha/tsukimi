@@ -322,7 +322,7 @@ impl ItemPage {
         let play_button = self.imp().playbutton.get();
         let spinner = self.imp().spinner.get();
 
-        self.set_now_item::<IS_VIDEO>(&intro);
+        self.set_now_item::<IS_VIDEO>(intro);
 
         play_button.set_sensitive(false);
         spinner.set_spinning(true);
@@ -379,14 +379,18 @@ impl ItemPage {
 
         if position == 0 {
             let continue_play_list =
-                match spawn_tokio(async move { EMBY_CLIENT.get_continue_play_list(&series_id).await }).await {
+                match spawn_tokio(
+                    async move { EMBY_CLIENT.get_continue_play_list(&series_id).await },
+                )
+                .await
+                {
                     Ok(item) => item.items,
                     Err(e) => {
                         toast!(self, e.to_user_facing());
                         return;
                     }
                 };
-            
+
             for episode in continue_play_list {
                 let tu_item = TuItem::from_simple(&episode, None);
                 let tu_object = TuObject::new(&tu_item);
@@ -397,7 +401,6 @@ impl ItemPage {
             return;
         }
 
-        
         let season_list = imp.season_list_vec.borrow();
         let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
             return;
@@ -507,7 +510,7 @@ impl ItemPage {
                             let Ok(dl) = DropdownListBuilder::default()
                                 .line1(stream.display_title.clone())
                                 .line2(stream.title.clone())
-                                .index(Some(stream.index.clone()))
+                                .index(Some(stream.index))
                                 .direct_url(stream.delivery_url.clone())
                                 .build()
                             else {
@@ -544,7 +547,7 @@ impl ItemPage {
         let imp = self.imp();
 
         let backdrop = imp.carousel.imp().backdrop.get();
-        let path = get_image_with_cache(&id, "Backdrop", Some(0))
+        let path = get_image_with_cache(id, "Backdrop", Some(0))
             .await
             .unwrap();
         let file = gtk::gio::File::for_path(&path);
@@ -607,10 +610,7 @@ impl ItemPage {
         let imp = self.imp();
         let id = id.to_string();
 
-        let Some(season_list_store) = imp
-            .seasonlist
-            .model()
-            .and_downcast::<gtk::StringList>()
+        let Some(season_list_store) = imp.seasonlist.model().and_downcast::<gtk::StringList>()
         else {
             return;
         };

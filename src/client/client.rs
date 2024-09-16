@@ -271,12 +271,7 @@ impl EmbyClient {
         info!("Request URL: {}", url);
     }
 
-    pub async fn search(
-        &self,
-        query: &str,
-        filter: &[&str],
-        start_index: &str,
-    ) -> Result<List> {
+    pub async fn search(&self, query: &str, filter: &[&str], start_index: &str) -> Result<List> {
         let filter_str = filter.join(",");
         let path = format!("Users/{}/Items", self.user_id());
         let params = [
@@ -302,7 +297,10 @@ impl EmbyClient {
     pub async fn get_episodes(&self, id: &str, season_id: &str) -> Result<SerInList> {
         let path = format!("Shows/{}/Episodes", id);
         let params = [
-            ("Fields", "Overview,PrimaryImageAspectRatio,PremiereDate,ProductionYear,SyncStatus"),
+            (
+                "Fields",
+                "Overview,PrimaryImageAspectRatio,PremiereDate,ProductionYear,SyncStatus",
+            ),
             ("ImageTypeLimit", "1"),
             ("SeasonId", season_id),
             ("UserId", &self.user_id()),
@@ -373,12 +371,7 @@ impl EmbyClient {
         self.request_picture(&path, &params).await
     }
 
-    pub async fn get_image(
-        &self,
-        id: &str,
-        image_type: &str,
-        tag: Option<u8>,
-    ) -> Result<String> {
+    pub async fn get_image(&self, id: &str, image_type: &str, tag: Option<u8>) -> Result<String> {
         match self.image_request(id, image_type, tag).await {
             Ok(response) => {
                 let bytes = response.bytes().await?;
@@ -403,11 +396,7 @@ impl EmbyClient {
         path.to_string_lossy().to_string()
     }
 
-    pub async fn get_artist_albums(
-        &self,
-        id: &str,
-        artist_id: &str,
-    ) -> Result<List> {
+    pub async fn get_artist_albums(&self, id: &str, artist_id: &str) -> Result<List> {
         let path = format!("Users/{}/Items", self.user_id());
         let params = [
             ("IncludeItemTypes", "MusicAlbum"),
@@ -428,7 +417,7 @@ impl EmbyClient {
     }
 
     pub async fn get_shows_next_up(&self, series_id: &str) -> Result<List> {
-        let path = format!("Shows/NextUp");
+        let path = "Shows/NextUp".to_string();
         let params = [
             ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
             ("Limit", "1"),
@@ -494,10 +483,7 @@ impl EmbyClient {
         self.post_json(&path, &[], body).await
     }
 
-    pub async fn get_external_id_info(
-        &self,
-        id: &str,
-    ) -> Result<Vec<ExternalIdInfo>> {
+    pub async fn get_external_id_info(&self, id: &str) -> Result<Vec<ExternalIdInfo>> {
         let path = format!("Items/{}/ExternalIdInfos", id);
         let params = [("IsSupportedAsIdentifier", "true")];
         self.request(&path, &params).await
@@ -711,11 +697,7 @@ impl EmbyClient {
         Ok(())
     }
 
-    pub async fn position_back(
-        &self,
-        back: &Back,
-        backtype: BackType,
-    ) -> Result<()> {
+    pub async fn position_back(&self, back: &Back, backtype: BackType) -> Result<()> {
         let path = match backtype {
             BackType::Start => "Sessions/Playing".to_string(),
             BackType::Stop => "Sessions/Playing/Stopped".to_string(),
@@ -761,9 +743,12 @@ impl EmbyClient {
     }
 
     pub async fn get_continue_play_list(&self, parent_id: &str) -> Result<List> {
-        let path = format!("Shows/NextUp");
+        let path = "Shows/NextUp".to_string();
         let params = [
-            ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,Overview"),
+            (
+                "Fields",
+                "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,Overview",
+            ),
             ("Limit", "40"),
             ("ImageTypeLimit", "1"),
             ("SeriesId", parent_id),
@@ -801,12 +786,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_favourite(
-        &self,
-        types: &str,
-        start: u32,
-        limit: u32,
-    ) -> Result<List> {
+    pub async fn get_favourite(&self, types: &str, start: u32, limit: u32) -> Result<List> {
         let user_id = {
             let user_id = self.user_id.lock().unwrap();
             user_id.to_owned()
@@ -874,27 +854,23 @@ impl EmbyClient {
 
     pub async fn change_password(&self, new_password: &str) -> Result<()> {
         let path = format!("Users/{}/Password", &self.user_id());
-    
+
         let old_password = match self.user_password.lock() {
             Ok(guard) => guard.to_string(),
             Err(_) => return Err(anyhow::anyhow!("Failed to acquire lock on user password")),
         };
-        
+
         let body = json!({
             "CurrentPw": old_password,
             "NewPw": new_password
         });
-        
+
         self.post(&path, &[], body).await?;
         Ok(())
     }
 
     pub async fn hide_from_resume(&self, id: &str) -> Result<()> {
-        let path = format!(
-            "Users/{}/Items/{}/HideFromResume",
-            &self.user_id(),
-            id
-        );
+        let path = format!("Users/{}/Items/{}/HideFromResume", &self.user_id(), id);
         let params = [("Hide", "true")];
         self.post(&path, &params, json!({})).await?;
         Ok(())
@@ -918,7 +894,7 @@ impl EmbyClient {
         let url = self.url.lock().unwrap().as_ref().unwrap().clone();
 
         url.join(&format!("Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
-        id, &self.user_id(), &DEVICE_ID.to_string(), self.user_access_token.lock().unwrap().to_string(), )).unwrap().to_string()
+        id, &self.user_id(), &DEVICE_ID.to_string(), self.user_access_token.lock().unwrap(), )).unwrap().to_string()
     }
 
     pub async fn get_random(&self) -> Result<List> {
@@ -986,10 +962,7 @@ impl EmbyClient {
         self.post("System/Restart", &[], json!({})).await
     }
 
-    pub async fn get_activity_log(
-        &self,
-        has_user_id: bool,
-    ) -> Result<ActivityLogs> {
+    pub async fn get_activity_log(&self, has_user_id: bool) -> Result<ActivityLogs> {
         let params = [
             ("Limit", "15"),
             ("StartIndex", "0"),

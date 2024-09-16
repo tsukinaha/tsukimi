@@ -101,7 +101,7 @@ where
         }
     }
 
-    let data = spawn_tokio(async { future.await }).await?;
+    let data = spawn_tokio(future).await?;
 
     if write_cache {
         write_to_cache(&path, &data)?;
@@ -136,9 +136,9 @@ pub async fn get_image_with_cache(id: &str, img_type: &str, tag: Option<u8>) -> 
     let img_type = img_type.to_string();
 
     if !path.exists() {
-        let _ = runtime().spawn(async move {
-            EMBY_CLIENT.get_image(&id, &img_type, tag).await
-        }).await;
+        let _ = runtime()
+            .spawn(async move { EMBY_CLIENT.get_image(&id, &img_type, tag).await })
+            .await;
     }
 
     Ok(path.to_string_lossy().to_string())

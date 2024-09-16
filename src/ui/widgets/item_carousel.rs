@@ -68,11 +68,11 @@ pub mod imp {
 
             let stops = &[
                 gtk::gsk::ColorStop::new(
-                    f32::max(0.0, ((3.0 / 5.0) as f32 * height as f32) / height),
+                    f32::max(0.0, ((3.0 / 5.0) as f32 * height) / height),
                     gdk::RGBA::new(1.0, 1.0, 1.0, 1.0),
                 ),
                 gtk::gsk::ColorStop::new(
-                    f32::min(1.0, ((3.0 / 5.0) as f32 * height + 80 as f32) / height),
+                    f32::min(1.0, ((3.0 / 5.0) as f32 * height + 80_f32) / height),
                     gdk::RGBA::new(0.0, 0.0, 0.0, 1.0),
                 ),
             ];
@@ -120,6 +120,12 @@ glib::wrapper! {
         @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
+}
+
+impl Default for ItemCarousel {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ItemCarousel {

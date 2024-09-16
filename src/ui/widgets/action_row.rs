@@ -47,6 +47,12 @@ glib::wrapper! {
         @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, @implements gtk::Accessible;
 }
 
+impl Default for AActionRow {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AActionRow {
     pub fn new() -> Self {
         glib::Object::new()

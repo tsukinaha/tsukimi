@@ -132,9 +132,11 @@ impl ActorPage {
         let inforevealer = imp.inforevealer.get();
         let title = imp.title.get();
 
-        let item = match fetch_with_cache(&format!("list_{}", id), CachePolicy::ReadCacheAndRefresh, async move {
-            EMBY_CLIENT.get_item_info(&id).await
-        })
+        let item = match fetch_with_cache(
+            &format!("list_{}", id),
+            CachePolicy::ReadCacheAndRefresh,
+            async move { EMBY_CLIENT.get_item_info(&id).await },
+        )
         .await
         {
             Ok(item) => item,
@@ -191,9 +193,11 @@ impl ActorPage {
 
         let id = self.id();
 
-        let results = match fetch_with_cache(&format!("actor_{}_{}", types, &id), CachePolicy::ReadCacheAndRefresh, async move {
-            EMBY_CLIENT.get_person(&id, &types).await
-        })
+        let results = match fetch_with_cache(
+            &format!("actor_{}_{}", types, &id),
+            CachePolicy::ReadCacheAndRefresh,
+            async move { EMBY_CLIENT.get_person(&id, &types).await },
+        )
         .await
         {
             Ok(history) => history,

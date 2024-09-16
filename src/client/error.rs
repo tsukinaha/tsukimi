@@ -18,7 +18,7 @@ impl UserFacingError for reqwest::Error {
             format!("Timeout Error: {}", self)
         } else {
             warn!("Error: {}", self);
-            format!("Error: {}", self.to_string())
+            format!("Error: {}", self)
         }
     }
 }
@@ -35,7 +35,7 @@ impl UserFacingError for libmpv2::Error {
         warn!("Error: {}", self);
         format!(
             "MPV Back: {}, Connectivity error occurred",
-            self.to_string()
+            self
         )
     }
 }

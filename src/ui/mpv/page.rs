@@ -362,7 +362,7 @@ impl MPVPage {
 
     fn update_duration(&self, value: f64) {
         let imp = self.imp();
-        imp.video_scale.set_range(0.0, value as f64);
+        imp.video_scale.set_range(0.0, value);
         imp.duration_label.set_text(&format_duration(value as i64));
         imp.video_scale.update_timeout();
     }
@@ -713,6 +713,7 @@ impl MPVPage {
             let fps = SETTINGS.mpv_estimate_target_frame();
             mpv.set_property("vf", format!("lavfi=\"fps=fps={fps}:round=down\""));
         } else {
+            // clear vf
             mpv.set_property("vf", "");
         }
         mpv.set_property(
@@ -735,14 +736,14 @@ impl MPVPage {
             _ => unreachable!(),
         }
         match SETTINGS.mpv_audio_preferred_lang() {
-            0 => {},
+            0 => mpv.set_property("alang", ""), // clear alang
             1 => mpv.set_property("alang", "eng"),
             2 => mpv.set_property("alang", "chs"),
             3 => mpv.set_property("alang", "jpn"),
             _ => unreachable!(),
         }
         match SETTINGS.mpv_subtitle_preferred_lang() {
-            0 => {},
+            0 => mpv.set_property("slang", ""), // clear slang
             1 => mpv.set_property("slang", "eng"),
             2 => mpv.set_property("slang", "chs"),
             3 => mpv.set_property("slang", "jpn"),

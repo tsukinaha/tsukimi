@@ -8,7 +8,7 @@ use crate::{
     client::{client::EMBY_CLIENT, error::UserFacingError, structs::List},
     toast,
     ui::{provider::tu_item::TuItem, widgets::song_widget::SongWidget},
-    utils::{get_image_with_cache, fetch_with_cache, spawn},
+    utils::{fetch_with_cache, get_image_with_cache, spawn},
 };
 use adw::prelude::*;
 use adw::subclass::prelude::*;
@@ -171,9 +171,11 @@ impl AlbumPage {
         let item = self.item();
         let id = item.id();
 
-        let songs = match fetch_with_cache(&format!("audio_{}", item.id()), CachePolicy::ReadCacheAndRefresh, async move {
-            EMBY_CLIENT.get_songs(&id).await
-        })
+        let songs = match fetch_with_cache(
+            &format!("audio_{}", item.id()),
+            CachePolicy::ReadCacheAndRefresh,
+            async move { EMBY_CLIENT.get_songs(&id).await },
+        )
         .await
         {
             Ok(songs) => songs,
@@ -270,13 +272,17 @@ impl AlbumPage {
         let artist_id = self.item().albumartist_id();
         let types = types.to_string();
 
-        let results = match fetch_with_cache(&format!("item_{types}_{id}"), CachePolicy::ReadCacheAndRefresh, async move {
-            match types.as_str() {
-                "Recommend" => EMBY_CLIENT.get_similar(&id).await,
-                "More From" => EMBY_CLIENT.get_artist_albums(&id, &artist_id).await,
-                _ => Ok(List::default()),
-            }
-        })
+        let results = match fetch_with_cache(
+            &format!("item_{types}_{id}"),
+            CachePolicy::ReadCacheAndRefresh,
+            async move {
+                match types.as_str() {
+                    "Recommend" => EMBY_CLIENT.get_similar(&id).await,
+                    "More From" => EMBY_CLIENT.get_artist_albums(&id, &artist_id).await,
+                    _ => Ok(List::default()),
+                }
+            },
+        )
         .await
         {
             Ok(history) => history,

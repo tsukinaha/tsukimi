@@ -44,6 +44,12 @@ glib::wrapper! {
         @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Accessible;
 }
 
+impl Default for CheckRow {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CheckRow {
     pub fn new() -> Self {
         glib::Object::new()
