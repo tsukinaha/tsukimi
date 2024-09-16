@@ -57,6 +57,7 @@ pub mod imp {
     // Trait shared by all widgets
     impl WidgetImpl for ItemCarousel {
         fn snapshot(&self, snapshot: &gtk::Snapshot) {
+            // blur the lower 1/3 of the widget, and apply a linear gradient
             let obj = self.obj();
 
             let width = obj.width() as f32;
@@ -85,7 +86,7 @@ pub mod imp {
             snapshot.restore();
 
             snapshot.save();
-            let lower_y = upper_height - 3.0;
+            let lower_y = upper_height;
             let lower_height = (2.0 * height) / 5.0;
             snapshot.push_clip(&graphene::Rect::new(0.0, lower_y, width, lower_height));
             snapshot.push_blur(40.0);

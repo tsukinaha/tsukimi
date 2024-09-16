@@ -266,6 +266,9 @@
                                 </items>
                               </object>
                             </property>
+                            <property name="expression">
+                              <lookup type="GtkStringObject" name="string"/>
+                            </property>
                           </object>
                         </child>
                         <child>
@@ -327,6 +330,10 @@
                                         </style>
                                       </object>
                                     </child>
+                                    <style>
+                                      <class name="undershoot-start" />
+                                      <class name="undershoot-end" />
+                                    </style>
                                   </object>
                                 </child>
                                 <child type="overlay">
