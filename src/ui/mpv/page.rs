@@ -734,5 +734,19 @@ impl MPVPage {
             2 => mpv.set_property("vo", "dmabuf-wayland"),
             _ => unreachable!(),
         }
+        match SETTINGS.mpv_audio_preferred_lang() {
+            0 => {},
+            1 => mpv.set_property("alang", "eng"),
+            2 => mpv.set_property("alang", "chs"),
+            3 => mpv.set_property("alang", "jpn"),
+            _ => unreachable!(),
+        }
+        match SETTINGS.mpv_subtitle_preferred_lang() {
+            0 => {},
+            1 => mpv.set_property("slang", "eng"),
+            2 => mpv.set_property("slang", "chs"),
+            3 => mpv.set_property("slang", "jpn"),
+            _ => unreachable!(),
+        }
     }
 }
