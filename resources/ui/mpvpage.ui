@@ -74,6 +74,7 @@
                 <property name="reveal-child">false</property>
                 <property name="halign">fill</property>
                 <property name="valign">end</property>
+                <property name="focusable">False</property>
                 <child>
                   <object class="AdwClamp">
                     <property name="margin-bottom">10</property>
@@ -193,6 +194,7 @@
                 <property name="reveal-child">false</property>
                 <property name="halign">fill</property>
                 <property name="valign">start</property>
+                <property name="focusable">False</property>
                 <child>
                   <object class="AdwClamp">
                     <property name="margin-top">10</property>

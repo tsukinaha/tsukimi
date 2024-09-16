@@ -515,11 +515,12 @@ const KEYSTRING_MAP: &[(&str, &str)] = &[
 fn keyval_to_keystr(keyval: u32) -> Option<String> {
     let key = unsafe { gtk::gdk::Key::from_glib(keyval) };
 
-    if let Some(c) = key.to_unicode() {
-        return Some(c.to_string());
-    }
+    let key_name = if let Some(c) = key.to_unicode() {
+        c.to_string()
+    } else {
+        key.name()?.to_string()
+    };
 
-    let key_name = key.name()?.to_string();
     KEYSTRING_MAP
         .iter()
         .find(|(_, keyval_str)| **keyval_str == key_name)
