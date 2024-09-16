@@ -512,6 +512,7 @@ impl ItemPage {
                                 .line2(stream.title.clone())
                                 .index(Some(stream.index))
                                 .direct_url(stream.delivery_url.clone())
+                                .is_external(Some(stream.is_external))
                                 .build()
                             else {
                                 continue;
@@ -1009,7 +1010,32 @@ impl ItemPage {
             .and_downcast::<glib::BoxedAnyObject>()
         {
             let sub_dl: std::cell::Ref<DropdownList> = sub_object.borrow();
-            sub_dl.direct_url.clone()
+            
+            if Some(true) == sub_dl.is_external && sub_dl.direct_url.is_none() {
+
+                let id = item.id();
+                let Some(sub_index) = sub_dl.index else {
+                    return;
+                };
+                let media_source_id_clone = media_source_id.to_string();
+                
+                let response = spawn_tokio(async move {
+                    EMBY_CLIENT.get_sub(&id, &media_source_id_clone).await
+                }).await;
+
+                let media = match response {
+                    Ok(media) => media,
+                    Err(e) => {
+                        toast!(self, e.to_user_facing());
+                        return;
+                    }
+                };
+
+                Self::get_sub_url(&media, &media_source_id, &sub_index)
+            } else {
+                sub_dl.direct_url.clone()
+            }
+
         } else {
             None
         };
@@ -1024,6 +1050,14 @@ impl ItemPage {
             None,
             percentage,
         );
+    }
+
+    fn get_sub_url(media: &Media, media_source_id: &str, media_stream_id: &u64) -> Option<String> {
+        media.media_sources.iter().find(|&media_source| {
+                &media_source.id == media_source_id
+            })?.media_streams.iter().find(|&stream| {
+                &stream.index == media_stream_id
+            })?.delivery_url.clone()
     }
 
     fn set_control_opacity(&self, opacity: f64) {

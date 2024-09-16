@@ -58,6 +58,7 @@ where
 pub enum CachePolicy {
     UseCacheIfAvailable,
     RefreshCache,
+    #[allow(dead_code)]
     IgnoreCache,
     ReadCacheAndRefresh,
 }
