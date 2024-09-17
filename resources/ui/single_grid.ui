@@ -19,7 +19,7 @@
                 </attributes>
                 <property name="halign">start</property>
                 <property name="valign">center</property>
-                <property name="margin-start">30</property>
+                <property name="margin-start">45</property>
               </object>
             </child>
             <child>
