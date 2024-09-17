@@ -252,7 +252,7 @@
         </child>
 
 
-        
+
       </object>
     </child>
     <child>
@@ -346,7 +346,7 @@
                 <property name="subtitle" translatable="yes">Unit: Seconds</property>
                 <child type="prefix">
                   <object class="GtkImage">
-                      <property name="icon-name">object-rotate-left-symbolic</property>
+                    <property name="icon-name">object-rotate-left-symbolic</property>
                   </object>
                 </child>
                 <signal name="notify::value" handler="on_seekbackward_spinrow" swapped="yes" />
@@ -367,7 +367,7 @@
                 <property name="subtitle" translatable="yes">Unit: Seconds</property>
                 <child type="prefix">
                   <object class="GtkImage">
-                      <property name="icon-name">object-rotate-right-symbolic</property>
+                    <property name="icon-name">object-rotate-right-symbolic</property>
                   </object>
                 </child>
                 <signal name="notify::value" handler="on_seekforward_spinrow" swapped="yes" />
@@ -393,7 +393,7 @@
                 <property name="title" translatable="yes">Preferred Audio Language</property>
                 <child type="prefix">
                   <object class="GtkImage">
-                      <property name="icon-name">audio-x-generic-symbolic</property>
+                    <property name="icon-name">audio-x-generic-symbolic</property>
                   </object>
                 </child>
                 <signal name="notify::selected-item" handler="on_audio_language_comborow" swapped="yes" />
@@ -414,7 +414,7 @@
                 <property name="title" translatable="yes">Preferred Subtitle Language</property>
                 <child type="prefix">
                   <object class="GtkImage">
-                      <property name="icon-name">media-view-subtitles-symbolic</property>
+                    <property name="icon-name">media-view-subtitles-symbolic</property>
                   </object>
                 </child>
                 <signal name="notify::selected-item" handler="on_subtitle_language_comborow" swapped="yes" />
@@ -479,7 +479,7 @@
                 <signal name="notify::value" handler="on_subsize_spinrow" swapped="yes" />
                 <child type="prefix">
                   <object class="GtkImage">
-                      <property name="icon-name">media-view-subtitles-symbolic</property>
+                    <property name="icon-name">media-view-subtitles-symbolic</property>
                   </object>
                 </child>
                 <property name="adjustment">
@@ -499,7 +499,7 @@
                 <property name="subtitle" translatable="yes">Specify font to use for subtitles that do not themselves specify a particular font</property>
                 <child type="prefix">
                   <object class="GtkImage">
-                      <property name="icon-name">preferences-desktop-font-symbolic</property>
+                    <property name="icon-name">preferences-desktop-font-symbolic</property>
                   </object>
                 </child>
                 <child type="suffix">
@@ -526,7 +526,7 @@
                 <property name="title" translatable="yes">Default Volume</property>
                 <child type="prefix">
                   <object class="GtkImage">
-                      <property name="icon-name">audio-volume-medium</property>
+                    <property name="icon-name">audio-volume-medium</property>
                   </object>
                 </child>
                 <signal name="notify::value" handler="on_volume_spinrow" swapped="yes" />
@@ -550,9 +550,9 @@
                 <property name="title" translatable="yes">Force Stereo</property>
                 <signal name="notify::active" handler="on_stereo_switchrow" swapped="yes" />
                 <child type="prefix">
-                    <object class="GtkImage">
-                        <property name="icon-name">audio-headphones-symbolic</property>
-                    </object>
+                  <object class="GtkImage">
+                    <property name="icon-name">audio-headphones-symbolic</property>
+                  </object>
                 </child>
               </object>
             </child>
@@ -576,11 +576,11 @@
                 <property name="title" translatable="yes">Play Next</property>
                 <property name="activatable-widget">end_group</property>
                 <child type="prefix">
-                    <object class="GtkCheckButton" id="end_group">
-                        <property name="valign">center</property>
-                        <property name="action-name">setting.video-end</property>
-                        <property name="action-target">0</property>
-                    </object>
+                  <object class="GtkCheckButton" id="end_group">
+                    <property name="valign">center</property>
+                    <property name="action-name">setting.video-end</property>
+                    <property name="action-target">0</property>
+                  </object>
                 </child>
               </object>
             </child>
@@ -589,12 +589,12 @@
                 <property name="title" translatable="yes">Loop Playback</property>
                 <property name="activatable-widget">end_group2</property>
                 <child type="prefix">
-                    <object class="GtkCheckButton" id="end_group2">
-                        <property name="valign">center</property>
-                        <property name="group">end_group</property>
-                        <property name="action-name">setting.video-end</property>
-                        <property name="action-target">1</property>
-                    </object>
+                  <object class="GtkCheckButton" id="end_group2">
+                    <property name="valign">center</property>
+                    <property name="group">end_group</property>
+                    <property name="action-name">setting.video-end</property>
+                    <property name="action-target">1</property>
+                  </object>
                 </child>
               </object>
             </child>
@@ -603,12 +603,12 @@
                 <property name="title" translatable="yes">Stop</property>
                 <property name="activatable-widget">end_group3</property>
                 <child type="prefix">
-                    <object class="GtkCheckButton" id="end_group3">
-                        <property name="valign">center</property>
-                        <property name="group">end_group</property>
-                        <property name="action-name">setting.video-end</property>
-                        <property name="action-target">2</property>
-                    </object>
+                  <object class="GtkCheckButton" id="end_group3">
+                    <property name="valign">center</property>
+                    <property name="group">end_group</property>
+                    <property name="action-name">setting.video-end</property>
+                    <property name="action-target">2</property>
+                  </object>
                 </child>
               </object>
             </child>
@@ -624,9 +624,9 @@
                 <property name="activatable-widget">vo_group</property>
                 <child type="prefix">
                   <object class="GtkCheckButton" id="vo_group">
-                      <property name="valign">center</property>
-                      <property name="action-name">setting.video-output</property>
-                      <property name="action-target">0</property>
+                    <property name="valign">center</property>
+                    <property name="action-name">setting.video-output</property>
+                    <property name="action-target">0</property>
                   </object>
                 </child>
                 <style>
@@ -640,10 +640,10 @@
                 <property name="activatable-widget">vo_group2</property>
                 <child type="prefix">
                   <object class="GtkCheckButton" id="vo_group2">
-                      <property name="valign">center</property>
-                      <property name="group">vo_group</property>
-                      <property name="action-name">setting.video-output</property>
-                      <property name="action-target">1</property>
+                    <property name="valign">center</property>
+                    <property name="group">vo_group</property>
+                    <property name="action-name">setting.video-output</property>
+                    <property name="action-target">1</property>
                   </object>
                 </child>
                 <style>
@@ -657,10 +657,10 @@
                 <property name="activatable-widget">vo_group3</property>
                 <child type="prefix">
                   <object class="GtkCheckButton" id="vo_group3">
-                      <property name="valign">center</property>
-                      <property name="group">vo_group</property>
-                      <property name="action-name">setting.video-output</property>
-                      <property name="action-target">2</property>
+                    <property name="valign">center</property>
+                    <property name="group">vo_group</property>
+                    <property name="action-name">setting.video-output</property>
+                    <property name="action-target">2</property>
                   </object>
                 </child>
                 <style>
@@ -683,9 +683,9 @@
                 <property name="activatable-widget">hwdec_group</property>
                 <child type="prefix">
                   <object class="GtkCheckButton" id="hwdec_group">
-                      <property name="valign">center</property>
-                      <property name="action-name">setting.hwdec</property>
-                      <property name="action-target">0</property>
+                    <property name="valign">center</property>
+                    <property name="action-name">setting.hwdec</property>
+                    <property name="action-target">0</property>
                   </object>
                 </child>
               </object>
@@ -696,10 +696,10 @@
                 <property name="activatable-widget">hwdec_group2</property>
                 <child type="prefix">
                   <object class="GtkCheckButton" id="hwdec_group2">
-                      <property name="valign">center</property>
-                      <property name="group">hwdec_group</property>
-                      <property name="action-name">setting.hwdec</property>
-                      <property name="action-target">1</property>
+                    <property name="valign">center</property>
+                    <property name="group">hwdec_group</property>
+                    <property name="action-name">setting.hwdec</property>
+                    <property name="action-target">1</property>
                   </object>
                 </child>
               </object>
@@ -711,10 +711,10 @@
                 <property name="subtitle">requires --vo=gpu, --vo=vaapi or --vo=dmabuf-wayland (Linux only)</property>
                 <child type="prefix">
                   <object class="GtkCheckButton" id="hwdec_group3">
-                      <property name="valign">center</property>
-                      <property name="group">hwdec_group</property>
-                      <property name="action-name">setting.hwdec</property>
-                      <property name="action-target">2</property>
+                    <property name="valign">center</property>
+                    <property name="group">hwdec_group</property>
+                    <property name="action-name">setting.hwdec</property>
+                    <property name="action-target">2</property>
                   </object>
                 </child>
               </object>
@@ -776,6 +776,7 @@
               <object class="AActionRow">
                 <property name="title" translatable="yes">More</property>
                 <property name="show-arrow">True</property>
+                <signal name="activated" handler="subpage_activated_cb" swapped="yes"/>
               </object>
             </child>
           </object>
@@ -783,4 +784,42 @@
       </object>
     </child>
   </template>
+  <object class="AdwNavigationPage" id="video_subpage">
+    <property name="title" translatable="yes">More Video Settings</property>
+    <property name="tag">mpv-more-settings</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="show-end-title-buttons">false</property>
+            <style>
+              <class name="flat" />
+            </style>
+          </object>
+        </child>
+        <property name="content">
+          <object class="AdwClamp">
+            <child>
+              <object class="AdwPreferencesGroup">
+                <property name="title">Customizing mpv params</property>
+                <property name="description">One param per line</property>
+                <property name="sensitive">False</property>
+                <property name="margin-start">30</property>
+                <property name="margin-end">30</property>
+                <child>
+                  <object class="GtkTextView">
+                    <property name="wrap-mode">word</property>
+                    <property name="height-request">150</property>
+                    <style>
+                      <class name="monospace" />
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+  </object>
 </interface>

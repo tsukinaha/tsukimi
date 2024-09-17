@@ -78,6 +78,9 @@ mod imp {
         pub preferred_audio_language_comborow: TemplateChild<adw::ComboRow>,
         #[template_child]
         pub preferred_subtitle_language_comborow: TemplateChild<adw::ComboRow>,
+
+        #[template_child]
+        pub video_subpage: TemplateChild<adw::NavigationPage>,
     }
 
     #[glib::object_subclass]
@@ -586,5 +589,11 @@ impl AccountSettings {
     #[template_callback]
     pub fn on_config_switchrow(&self, _param: glib::ParamSpec, control: adw::SwitchRow) {
         SETTINGS.set_mpv_config(control.is_active()).unwrap();
+    }
+
+    #[template_callback]
+    fn subpage_activated_cb(&self) {
+        let subpage = self.imp().video_subpage.get();
+        self.push_subpage(&subpage);
     }
 }

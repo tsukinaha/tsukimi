@@ -355,6 +355,7 @@ impl MPVPage {
 
         let Some(next_item) = next_item else {
             toast!(self, "No more videos found");
+            self.on_stop_clicked();
             return;
         };
 
