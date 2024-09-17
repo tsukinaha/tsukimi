@@ -477,7 +477,22 @@ impl AccountSettings {
             })
             .build();
 
-        action_group.add_action_entries([action_video_end, action_vo]);
+        let action_hwdec = gio::ActionEntry::builder("hwdec")
+            .parameter_type(Some(&i32::static_variant_type()))
+            .state(SETTINGS.mpv_hwdec().to_variant())
+            .activate(move |_, action, parameter| {
+                let parameter = parameter
+                    .expect("Could not get parameter.")
+                    .get::<i32>()
+                    .expect("The variant needs to be of type `i32`.");
+
+                SETTINGS.set_mpv_hwdec(parameter).unwrap();
+
+                action.set_state(&parameter.to_variant());
+            })
+            .build();
+
+        action_group.add_action_entries([action_video_end, action_vo, action_hwdec]);
         self.insert_action_group("setting", Some(&action_group));
     }
 

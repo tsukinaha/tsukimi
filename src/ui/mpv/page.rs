@@ -284,8 +284,8 @@ impl MPVPage {
 
         for track in tracks {
             let row = CheckRow::new();
-            row.set_title(&track.title);
-            row.set_subtitle(&track.lang);
+            row.set_title(&track.title.replace('&', "&amp;"));
+            row.set_subtitle(&track.lang.replace('&', "&amp;"));
             row.imp().track_id.replace(track.id);
             let check = &row.imp().check.get();
             check.set_group(Some(none_check));
@@ -788,6 +788,12 @@ impl MPVPage {
         let mpv = &imp.video.imp().mpv;
         if !SETTINGS.proxy().is_empty() {
             mpv.set_property("http-proxy", SETTINGS.proxy());
+        }
+        match SETTINGS.mpv_hwdec() {
+            0 => mpv.set_property("hwdec", "no"),
+            1 => mpv.set_property("hwdec", "auto-safe"),
+            2 => mpv.set_property("hwdec", "vaapi"),
+            _ => unreachable!(),
         }
         if SETTINGS.mpv_estimate() {
             let fps = SETTINGS.mpv_estimate_target_frame();

@@ -615,7 +615,7 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Video Output</property>
+            <property name="title" translatable="yes">Video Output</property>
             <property name="description" translatable="yes">Warning: Do NOT use any method other than the software's own controls to control the window. Restart to take effect</property>
             <child>
               <object class="AdwActionRow">
@@ -670,6 +670,54 @@
             <style>
               <class name="warning"/>
             </style>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Hardware decoding</property>
+            <property name="description">--hwdec</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">no (default)</property>
+                <property name="activatable-widget">hwdec_group</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="hwdec_group">
+                      <property name="valign">center</property>
+                      <property name="action-name">setting.hwdec</property>
+                      <property name="action-target">0</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">auto-safe</property>
+                <property name="activatable-widget">hwdec_group2</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="hwdec_group2">
+                      <property name="valign">center</property>
+                      <property name="group">hwdec_group</property>
+                      <property name="action-name">setting.hwdec</property>
+                      <property name="action-target">1</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">vaapi</property>
+                <property name="activatable-widget">hwdec_group3</property>
+                <property name="subtitle">requires --vo=gpu, --vo=vaapi or --vo=dmabuf-wayland (Linux only)</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="hwdec_group3">
+                      <property name="valign">center</property>
+                      <property name="group">hwdec_group</property>
+                      <property name="action-name">setting.hwdec</property>
+                      <property name="action-target">2</property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </child>
         <child>

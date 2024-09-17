@@ -149,6 +149,9 @@
     <key name="mpv-video-output" type="i">
       <default>0</default>
     </key>
+    <key name="mpv-hwdec" type="i">
+      <default>0</default>
+    </key>
     <key name="mpv-subtitle-preferred-lang" type="i">
       <default>0</default>
     </key>
