@@ -129,11 +129,8 @@ pub enum Action {
 
 #[template_callbacks]
 impl TuListItem {
-    pub fn new(item: TuItem, isresume: bool) -> Self {
-        Object::builder()
-            .property("item", item)
-            .property("isresume", isresume)
-            .build()
+    pub fn new(item: TuItem) -> Self {
+        Object::builder().property("item", item).build()
     }
 
     pub fn default() -> Self {

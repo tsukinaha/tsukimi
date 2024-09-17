@@ -652,8 +652,14 @@ impl Window {
     ) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("clapper");
-        imp.clappernav
-            .play(&url, suburl.as_deref(), item, episode_list, back, percentage);
+        imp.clappernav.play(
+            &url,
+            suburl.as_deref(),
+            item,
+            episode_list,
+            back,
+            percentage,
+        );
     }
 
     pub fn push_page<T>(&self, page: &T)

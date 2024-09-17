@@ -11,7 +11,7 @@ use uuid::Uuid;
 
 use crate::{
     config::{proxy::ReqClient, Account, APP_VERSION},
-    ui::models::emby_cache_path,
+    ui::{models::emby_cache_path, widgets::single_grid::imp::ListType},
     utils::{spawn, spawn_tokio},
 };
 
@@ -547,51 +547,52 @@ impl EmbyClient {
 
     pub async fn get_list(
         &self,
-        id: String,
-        start: &str,
+        id: &str,
+        start: u32,
         include_item_types: &str,
-        listtype: &str,
+        list_type: ListType,
         sort_order: &str,
         sortby: &str,
     ) -> Result<List> {
         let user_id = &self.user_id();
-        let path = match listtype {
-            "item" => format!("Users/{}/Items", user_id),
-            "resume" => format!("Users/{}/Items/Resume", user_id),
-            "genres" => "Genres".to_string(),
+        let path = match list_type {
+            ListType::All => format!("Users/{}/Items", user_id),
+            ListType::Resume => format!("Users/{}/Items/Resume", user_id),
+            ListType::Genres => "Genres".to_string(),
             _ => format!("Users/{}/Items", user_id),
         };
-        let include_item_type = match listtype {
-            "tags" => "Tag",
-            "boxset" => "BoxSet",
+        let include_item_type = match list_type {
+            ListType::Tags => "Tag",
+            ListType::BoxSet => "BoxSet",
             _ => include_item_types,
         };
-        let params = match listtype {
-            "all" | "liked" | "tags" | "boxset" => {
+        let start_string = start.to_string();
+        let params = match list_type {
+            ListType::All | ListType::Liked | ListType::Tags | ListType::BoxSet => {
                 vec![
                     ("Limit", "50"),
                     (
                         "Fields",
                         "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
                     ),
-                    ("ParentId", &id),
+                    ("ParentId", id),
                     ("ImageTypeLimit", "1"),
-                    ("StartIndex", start),
+                    ("StartIndex", &start_string),
                     ("Recursive", "true"),
                     ("IncludeItemTypes", include_item_type),
                     ("SortBy", sortby),
                     ("SortOrder", sort_order),
                     ("EnableImageTypes", "Primary,Backdrop,Thumb"),
-                    if listtype == "liked" {("Filters", "IsFavorite")} else {("", "")},
+                    if list_type == ListType::Liked {("Filters", "IsFavorite")} else {("", "")},
                 ]
             }
-            "resume" => {
+            ListType::Resume => {
                 vec![
                     (
                         "Fields",
                         "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
                     ),
-                    ("ParentId", &id),
+                    ("ParentId", id),
                     ("EnableImageTypes", "Primary,Backdrop,Thumb"),
                     ("ImageTypeLimit", "1"),
                     (
@@ -604,16 +605,16 @@ impl EmbyClient {
                     ("Limit", "30"),
                 ]
             }
-            "genres" => vec![
+            ListType::Genres => vec![
                 ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
                 ("IncludeItemTypes", include_item_type),
-                ("StartIndex", start),
+                ("StartIndex", &start_string),
                 ("ImageTypeLimit", "1"),
                 ("EnableImageTypes", "Primary,Backdrop,Thumb"),
                 ("Limit", "50"),
                 ("userId", user_id),
                 ("Recursive", "true"),
-                ("ParentId", &id),
+                ("ParentId", id),
                 ("SortBy", sortby),
                 ("SortOrder", sort_order),
             ],
@@ -625,13 +626,14 @@ impl EmbyClient {
     pub async fn get_inlist(
         &self,
         id: Option<String>,
-        start: &str,
+        start: u32,
         listtype: &str,
         parentid: &str,
         sort_order: &str,
         sortby: &str,
     ) -> Result<List> {
         let path = format!("Users/{}/Items", &self.user_id());
+        let start_string = start.to_string();
         let mut params = vec![
             ("Limit", "50"),
             (
@@ -639,7 +641,7 @@ impl EmbyClient {
                 "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
             ),
             ("ImageTypeLimit", "1"),
-            ("StartIndex", start),
+            ("StartIndex", &start_string),
             ("Recursive", "true"),
             ("IncludeItemTypes", "Movie,Series,MusicAlbum"),
             ("SortBy", sortby),
@@ -786,7 +788,14 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_favourite(&self, types: &str, start: u32, limit: u32, sort_by: &str, sort_order: &str) -> Result<List> {
+    pub async fn get_favourite(
+        &self,
+        types: &str,
+        start: u32,
+        limit: u32,
+        sort_by: &str,
+        sort_order: &str,
+    ) -> Result<List> {
         let user_id = {
             let user_id = self.user_id.lock().unwrap();
             user_id.to_owned()
@@ -936,7 +945,7 @@ impl EmbyClient {
         self.request("LiveTv/Channels", &params).await
     }
 
-    pub async fn get_channels_list(&self, start_index: &str) -> Result<List> {
+    pub async fn get_channels_list(&self, start_index: u32) -> Result<List> {
         let params = [
             ("IsAiring", "true"),
             ("userId", &self.user_id()),
@@ -945,7 +954,7 @@ impl EmbyClient {
             ("Fields", "ProgramPrimaryImageAspectRatio"),
             ("SortBy", "DefaultChannelOrder"),
             ("SortOrder", "Ascending"),
-            ("StartIndex", start_index),
+            ("StartIndex", &start_index.to_string()),
         ];
         self.request("LiveTv/Channels", &params).await
     }

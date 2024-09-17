@@ -84,7 +84,7 @@ impl TuViewScrolled {
         glib::Object::new()
     }
 
-    pub fn set_grid<const C: bool>(&self, items: Vec<SimpleListItem>) {
+    pub fn set_grid<const C: bool>(&self, items: Vec<SimpleListItem>, is_resume: bool) {
         let imp = self.imp();
         let store = imp
             .selection
@@ -99,6 +99,7 @@ impl TuViewScrolled {
 
         for item in items {
             let tu_item = TuItem::from_simple(&item, None);
+            tu_item.set_is_resume(is_resume);
             let tu_item = TuObject::new(&tu_item);
             store.append(&tu_item);
         }

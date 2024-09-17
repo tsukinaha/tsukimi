@@ -3,17 +3,17 @@ use std::future::Future;
 use super::tu_list_item::imp::PosterType;
 use crate::client::error::UserFacingError;
 use crate::client::structs::{List, SimpleListItem};
-use crate::{fraction, fraction_reset, toast};
 use crate::ui::models::SETTINGS;
 use crate::utils::{spawn, spawn_tokio};
+use crate::{fraction, fraction_reset, toast};
 use adw::prelude::*;
+use anyhow::Result;
 use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 use imp::{ListType, SortBy, SortOrder};
-use anyhow::Result;
 
-mod imp {
+pub mod imp {
 
     use std::cell::{Cell, RefCell};
     use std::sync::atomic::AtomicBool;
@@ -24,6 +24,7 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::ui::models::SETTINGS;
     use crate::ui::widgets::tu_list_item::imp::PosterType;
     use crate::ui::widgets::tuview_scrolled::TuViewScrolled;
 
@@ -125,7 +126,6 @@ mod imp {
         }
     }
 
-
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/single_grid.ui")]
@@ -191,8 +191,11 @@ mod imp {
     impl ObjectImpl for SingleGrid {
         fn constructed(&self) {
             self.parent_constructed();
-            let obj = self.obj();
-            obj.set_up();
+            self.set_sort_by_and_order(
+                SortBy::from(SETTINGS.list_sort_by()),
+                SortOrder::from(SETTINGS.list_sort_order()),
+            );
+            self.obj().handle_type();
         }
 
         fn signals() -> &'static [Signal] {
@@ -244,11 +247,6 @@ impl Default for SingleGrid {
 impl SingleGrid {
     pub fn new() -> Self {
         Object::new()
-    }
-
-    fn set_up(&self) {
-        self.imp().set_sort_by_and_order(SortBy::from(SETTINGS.list_sort_by()),SortOrder::from(SETTINGS.list_sort_order()));
-        self.handle_type();
     }
 
     #[template_callback]
@@ -335,12 +333,14 @@ impl SingleGrid {
 
     pub async fn poster(&self, _poster_type: PosterType) {}
 
-    pub fn add_items<const C: bool>(&self, items: Vec<SimpleListItem>) {
+    pub fn add_items<const C: bool>(&self, items: Vec<SimpleListItem>, is_resume: bool) {
         let imp = self.imp();
         let scrolled = imp.scrolled.get();
-        scrolled.set_grid::<C>(items);
+        scrolled.set_grid::<C>(items, is_resume);
         if scrolled.n_items() == 0 {
             imp.stack.set_visible_child_name("fallback");
+        } else {
+            imp.stack.set_visible_child_name("result");
         }
     }
 
@@ -349,7 +349,7 @@ impl SingleGrid {
     }
 
     pub fn connect_sort_changed<F>(&self, f: F)
-    where 
+    where
         F: Fn(&Self) + 'static,
     {
         self.connect_closure(
@@ -361,33 +361,37 @@ impl SingleGrid {
         );
     }
 
-    pub fn connect_sort_changed_tokio<F, Fut>(&self, f: F)
+    pub fn connect_sort_changed_tokio<F, Fut>(&self, is_resume: bool, f: F)
     where
         F: Fn(String, String) -> Fut + Send + Sync + 'static,
         Fut: Future<Output = Result<List>> + Send + 'static,
     {
         self.connect_sort_changed(move |obj| {
-            let sort_by = obj.match_sort_by(i32::from(obj.sort_by()) as u32).to_string();
-            let sort_order = obj.match_sort_order(i32::from(obj.sort_order()) as u32).to_string();
+            let sort_by = obj
+                .match_sort_by(i32::from(obj.sort_by()) as u32)
+                .to_string();
+            let sort_order = obj
+                .match_sort_order(i32::from(obj.sort_order()) as u32)
+                .to_string();
             let future = f(sort_by.clone(), sort_order.clone());
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
                 obj,
                 async move {
-                    fraction_reset!(obj);
+                    obj.imp().stack.set_visible_child_name("loading");
                     match spawn_tokio(future).await {
-                        Ok(item) => obj.add_items::<true>(item.items),
+                        Ok(item) => obj.add_items::<true>(item.items, is_resume),
                         Err(e) => {
                             toast!(obj, e.to_user_facing());
                         }
                     }
-                    fraction!(obj);
+                    obj.imp().count.set_text(&format!("{} Items", obj.imp().scrolled.get().n_items()));
                 }
             ));
         });
     }
 
-    pub fn connect_end_edge_overshot_tokio<F, Fut>(&self, f: F)
+    pub fn connect_end_edge_overshot_tokio<F, Fut>(&self, is_resume: bool, f: F)
     where
         F: Fn(String, String, u32) -> Fut + Send + Sync + 'static,
         Fut: Future<Output = Result<List>> + Send + 'static,
@@ -396,8 +400,12 @@ impl SingleGrid {
             #[weak(rename_to = obj)]
             self,
             move |scrolled, lock| {
-                let sort_by = obj.match_sort_by(i32::from(obj.sort_by()) as u32).to_string();
-                let sort_order = obj.match_sort_order(i32::from(obj.sort_order()) as u32).to_string();
+                let sort_by = obj
+                    .match_sort_by(i32::from(obj.sort_by()) as u32)
+                    .to_string();
+                let sort_order = obj
+                    .match_sort_order(i32::from(obj.sort_order()) as u32)
+                    .to_string();
                 let n_items = scrolled.n_items();
 
                 let future = f(sort_by.clone(), sort_order.clone(), n_items);
@@ -407,7 +415,7 @@ impl SingleGrid {
                     async move {
                         fraction_reset!(obj);
                         match spawn_tokio(future).await {
-                            Ok(item) => obj.add_items::<false>(item.items),
+                            Ok(item) => obj.add_items::<false>(item.items, is_resume),
                             Err(e) => {
                                 toast!(obj, e.to_user_facing());
                             }

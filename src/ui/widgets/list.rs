@@ -1,9 +1,13 @@
 use gettextrs::gettext;
 use glib::Object;
+use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-use super::singlelist::SingleListPage;
+use crate::client::client::EMBY_CLIENT;
+
+use super::single_grid::imp::ListType;
+use super::single_grid::SingleGrid;
 mod imp {
 
     use std::cell::OnceCell;
@@ -94,27 +98,89 @@ impl ListPage {
     pub async fn set_pages(&self) {
         let imp = self.imp();
         let id = self.id();
-        let collection_type = imp.collectiontype.get().unwrap();
+        let collection_type = self.collectiontype();
         let stack = imp.stack.get();
 
+        if &collection_type == "livetv" {
+            let page = SingleGrid::new();
+            page.connect_sort_changed_tokio(false, move |_, _| async move {
+                EMBY_CLIENT.get_channels_list(0).await
+            });
+            page.connect_end_edge_overshot_tokio(false, move |_, _, n_items| async move {
+                EMBY_CLIENT.get_channels_list(n_items).await
+            });
+            page.emit_by_name::<()>("sort-changed", &[]);
+            stack.add_titled(&page, Some("channels"), &gettext("Channels"));
+            return;
+        }
+
+        let include_item_types = get_include_item_types(collection_type);
+
         let pages = [
-            ("all", "All"),
-            ("resume", "Resume"),
-            ("boxset", "Boxset"),
-            ("tags", "Tags"),
-            ("genres", "Genres"),
-            ("liked", "Liked"),
+            ("all", "All", ListType::All),
+            ("resume", "Resume", ListType::Resume),
+            ("boxset", "Boxset", ListType::BoxSet),
+            ("tags", "Tags", ListType::Tags),
+            ("genres", "Genres", ListType::Genres),
+            ("liked", "Liked", ListType::Liked),
         ];
 
-        for (name, title) in pages {
-            let page = SingleListPage::new(
-                id.clone(),
-                collection_type.clone(),
-                name,
-                Some(id.clone()),
-                false,
+        for (name, title, list_type) in pages {
+            let page = SingleGrid::new();
+            let id_clone1 = id.clone();
+            let include_item_types_clone1 = include_item_types.clone();
+            page.connect_sort_changed_tokio(
+                list_type == ListType::Resume,
+                move |sort_by, sort_order| {
+                    let id_clone1 = id_clone1.clone();
+                    let include_item_types_clone1 = include_item_types_clone1.clone();
+                    async move {
+                        EMBY_CLIENT
+                            .get_list(
+                                &id_clone1,
+                                0,
+                                &include_item_types_clone1,
+                                list_type,
+                                &sort_order,
+                                &sort_by,
+                            )
+                            .await
+                    }
+                },
             );
+            let id_clone2 = id.clone();
+            let include_item_types_clone2 = include_item_types.clone();
+            page.connect_end_edge_overshot_tokio(
+                list_type == ListType::Resume,
+                move |sort_by, sort_order, n_items| {
+                    let id_clone2 = id_clone2.clone();
+                    let include_item_types_clone2 = include_item_types_clone2.clone();
+                    async move {
+                        EMBY_CLIENT
+                            .get_list(
+                                &id_clone2,
+                                n_items,
+                                &include_item_types_clone2,
+                                list_type,
+                                &sort_order,
+                                &sort_by,
+                            )
+                            .await
+                    }
+                },
+            );
+            page.emit_by_name::<()>("sort-changed", &[]);
             stack.add_titled(&page, Some(name), &gettext(title));
         }
     }
+}
+
+pub fn get_include_item_types(c: String) -> String {
+    let item_type = match c.as_str() {
+        "movies" => "Movie",
+        "tvshows" => "Series",
+        "music" => "MusicAlbum",
+        _ => "Movie, Series",
+    };
+    item_type.to_string()
 }

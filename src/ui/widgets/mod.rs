@@ -33,7 +33,6 @@ pub mod search;
 pub mod server_panel;
 pub mod server_row;
 pub mod single_grid;
-pub mod singlelist;
 pub mod smooth_scale;
 pub mod song_widget;
 pub mod star_toggle;

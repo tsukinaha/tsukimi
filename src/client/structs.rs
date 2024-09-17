@@ -509,17 +509,41 @@ pub struct User {
     pub id: String,
 }
 
-use crate::ui::widgets::singlelist::SingleListPage;
-use crate::ui::widgets::window::Window;
+use crate::ui::widgets::{single_grid::SingleGrid, window::Window};
 use adw::prelude::*;
 use gtk::glib;
+
+use super::client::EMBY_CLIENT;
 
 impl SGTitem {
     pub fn activate<T>(&self, widget: &T, list_type: String)
     where
         T: gtk::prelude::WidgetExt + glib::clone::Downgrade,
     {
-        let page = SingleListPage::new(self.id.to_string(), "".to_string(), &list_type, None, true);
+        let page = SingleGrid::new();
+        let id = self.id.to_string();
+        let list_type_clone = list_type.clone();
+        page.connect_sort_changed_tokio(false, move |sort_by, sort_order| {
+            let id = id.clone();
+            let list_type_clone = list_type_clone.clone();
+            async move {
+                EMBY_CLIENT
+                    .get_inlist(None, 0, &list_type_clone, &id, &sort_order, &sort_by)
+                    .await
+            }
+        });
+        let id = self.id.to_string();
+        let list_type = list_type.clone();
+        page.connect_end_edge_overshot_tokio(false, move |sort_by, sort_order, n_items| {
+            let id = id.clone();
+            let list_type = list_type.clone();
+            async move {
+                EMBY_CLIENT
+                    .get_inlist(None, n_items, &list_type, &id, &sort_order, &sort_by)
+                    .await
+            }
+        });
+        page.emit_by_name::<()>("sort-changed", &[]);
         push_page_with_tag(widget, page, self.name.clone());
     }
 }

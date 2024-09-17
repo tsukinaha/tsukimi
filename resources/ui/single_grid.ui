@@ -98,6 +98,21 @@
             <property name="vexpand">True</property>
             <child>
               <object class="GtkStackPage">
+                <property name="name">loading</property>
+                <property name="title">Loading</property>
+                <property name="child">
+                  <object class="GtkSpinner">
+                    <property name="spinning">True</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="width-request">32</property>
+                    <property name="height-request">32</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage">
                 <property name="name">result</property>
                 <property name="title">Result</property>
                 <property name="child">

@@ -1036,7 +1036,7 @@ impl ItemPage {
                     }
                 };
 
-                Self::get_sub_url(&media, &media_source_id, &sub_index)
+                Self::get_sub_url(&media, media_source_id, &sub_index)
             } else {
                 sub_dl.direct_url.clone()
             }
@@ -1047,7 +1047,10 @@ impl ItemPage {
         let percentage = item.played_percentage();
 
         let episode_list = self.imp().episode_list_vec.borrow();
-        let episode_list: Vec<TuItem> = episode_list.iter().map(|item| TuItem::from_simple(item, None)).collect();
+        let episode_list: Vec<TuItem> = episode_list
+            .iter()
+            .map(|item| TuItem::from_simple(item, None))
+            .collect();
 
         self.get_window().play_media(
             video_url.to_string(),
@@ -1064,7 +1067,7 @@ impl ItemPage {
         media
             .media_sources
             .iter()
-            .find(|&media_source| &media_source.id == media_source_id)?
+            .find(|&media_source| media_source.id == media_source_id)?
             .media_streams
             .iter()
             .find(|&stream| &stream.index == media_stream_id)?

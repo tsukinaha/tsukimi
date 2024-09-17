@@ -81,7 +81,7 @@ mod imp {
                         async move {
                             let search_results = obj.get_search_results::<true>().await;
 
-                            scrolled.set_grid::<false>(search_results.items);
+                            scrolled.set_grid::<false>(search_results.items, false);
 
                             lock.store(false, Ordering::SeqCst);
                         },
@@ -184,7 +184,8 @@ impl SearchPage {
             return;
         };
 
-        imp.searchscrolled.set_grid::<true>(search_results.items);
+        imp.searchscrolled
+            .set_grid::<true>(search_results.items, false);
 
         imp.stack.set_visible_child_name("result");
     }

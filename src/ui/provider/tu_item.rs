@@ -1,4 +1,5 @@
 use crate::client::structs::SimpleListItem;
+use crate::ui::widgets::single_grid::SingleGrid;
 use gettextrs::gettext;
 use glib::DateTime;
 use gtk::glib;
@@ -8,7 +9,6 @@ use std::cell::RefCell;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::ui::widgets::singlelist::SingleListPage;
 use crate::ui::widgets::window::Window;
 use crate::utils::spawn_tokio;
 use crate::{
@@ -286,23 +286,38 @@ impl TuItem {
                 push_page_with_tag(window, page, self.name());
             }
             "UserView" => {
-                let page = SingleListPage::new(
-                    self.id(),
-                    self.collection_type().unwrap_or_default(),
-                    "livetv",
-                    None,
-                    false,
-                );
+                let page = ListPage::new(self.id(), "livetv".to_string());
                 push_page_with_tag(window, page, self.name());
             }
             "Tag" | "Genre" => {
-                let page = SingleListPage::new(
-                    self.id(),
-                    "".to_string(),
-                    &self.item_type(),
-                    parentid,
-                    true,
-                );
+                let page = SingleGrid::new();
+                let id = self.id();
+                let parent_id = parentid.clone();
+                let list_type = self.item_type();
+                page.connect_sort_changed_tokio(false, move |sort_by, sort_order| {
+                    let id = id.clone();
+                    let parent_id = parent_id.clone();
+                    let list_type = list_type.clone();
+                    async move {
+                        EMBY_CLIENT
+                            .get_inlist(parent_id, 0, &list_type, &id, &sort_order, &sort_by)
+                            .await
+                    }
+                });
+                let id = self.id();
+                let parent_id = parentid.clone();
+                let list_type = self.item_type();
+                page.connect_end_edge_overshot_tokio(false, move |sort_by, sort_order, n_items| {
+                    let id = id.clone();
+                    let parent_id = parent_id.clone();
+                    let list_type = list_type.clone();
+                    async move {
+                        EMBY_CLIENT
+                            .get_inlist(parent_id, n_items, &list_type, &id, &sort_order, &sort_by)
+                            .await
+                    }
+                });
+                page.emit_by_name::<()>("sort-changed", &[]);
                 push_page_with_tag(window, page, self.name());
             }
             _ => toast!(window, gettext("Not Supported Type")),
