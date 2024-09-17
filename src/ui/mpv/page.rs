@@ -230,7 +230,11 @@ impl MPVPage {
     ) {
         let url = url.to_owned();
         let suburi = suburi.map(|s| s.to_owned());
-        let name = item.name();
+        let name = if let Some(series_name) = item.series_name() {
+            format!("{} - S{}E{}: {}", series_name, item.parent_index_number(), item.index_number(), item.name())
+        } else {
+            item.name()
+        };
 
         self.imp().current_video.replace(Some(item));
         self.imp().current_episode_list.replace(episode_list);

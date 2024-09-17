@@ -214,7 +214,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="_back_button">
-                                    <property name="icon-name">go-down-symbolic</property>
+                                    <property name="icon-name">go-previous-symbolic</property>
                                     <property name="focusable">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Stop and quit</property>
@@ -224,19 +224,6 @@
                                     </style>
                                   </object>
                                 </child>
-                              </object>
-                            </child>
-                            <child type="center">
-                              <object class="GtkLabel" id="title">
-                                <property name="label" translatable="yes">Loading...</property>
-                                <attributes>
-                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                                </attributes>
-                              </object>
-                            </child>
-                            <child type="end">
-                              <object class="GtkBox">
-                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkLabel" id="network_speed_label_2">
                                     <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create" />
@@ -246,6 +233,21 @@
                                     </style>
                                   </object>
                                 </child>
+                              </object>
+                            </child>
+                            <child type="center">
+                              <object class="GtkLabel" id="title">
+                                <property name="label" translatable="yes">Loading...</property>
+                                <property name="ellipsize">middle</property>
+                                <attributes>
+                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                                </attributes>
+                              </object>
+                            </child>
+                            <child type="end">
+                              <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+
                                 <child>
                                   <object class="GtkButton" id="_media_info_button">
                                     <property name="icon-name">help-about-symbolic</property>
