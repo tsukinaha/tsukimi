@@ -1,6 +1,7 @@
 use std::future::Future;
 
 use super::tu_list_item::imp::PosterType;
+use super::utils::TuItemBuildExt;
 use crate::client::error::UserFacingError;
 use crate::client::structs::{List, SimpleListItem};
 use crate::ui::models::SETTINGS;
@@ -10,7 +11,7 @@ use adw::prelude::*;
 use anyhow::Result;
 use glib::Object;
 use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
+use gtk::{gio, glib, SignalListItemFactory};
 use imp::{ListType, SortBy, SortOrder};
 
 pub mod imp {
@@ -333,7 +334,12 @@ impl SingleGrid {
         }
     }
 
-    pub async fn poster(&self, _poster_type: PosterType) {}
+    pub async fn poster(&self, poster_type: PosterType) {
+        let scrolled = self.imp().scrolled.get();
+        let grid = scrolled.imp().grid.get();
+        let factory = SignalListItemFactory::new();
+        grid.set_factory(Some(factory.tu_item(poster_type)));
+    }
 
     pub fn add_items<const C: bool>(&self, items: Vec<SimpleListItem>, is_resume: bool) {
         let imp = self.imp();
@@ -384,8 +390,10 @@ impl SingleGrid {
                     match spawn_tokio(future).await {
                         Ok(item) => {
                             obj.add_items::<true>(item.items, is_resume);
-                            obj.imp().count.set_text(&format!("{} Items", item.total_record_count));
-                        },
+                            obj.imp()
+                                .count
+                                .set_text(&format!("{} Items", item.total_record_count));
+                        }
                         Err(e) => {
                             toast!(obj, e.to_user_facing());
                         }
