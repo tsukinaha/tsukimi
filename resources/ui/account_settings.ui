@@ -387,6 +387,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Preferred Language</property>
+            <property name="description" translatable="yes">This currently only applies to the player</property>
             <child>
               <object class="AdwComboRow" id="preferred_audio_language_comborow">
                 <property name="title" translatable="yes">Preferred Audio Language</property>
