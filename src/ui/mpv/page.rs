@@ -135,12 +135,20 @@ mod imp {
             klass.install_action("mpv.chapter-next", None, move |mpv, _action, _parameter| {
                 mpv.chapter_next();
             });
-            klass.install_action_async("mpv.next-video", None, |mpv, _action, _parameter| async move {
-                mpv.on_next_video().await;
-            });
-            klass.install_action_async("mpv.previous-video", None, move |mpv, _action, _parameter| async move  {
-                mpv.on_previous_video().await;
-            });
+            klass.install_action_async(
+                "mpv.next-video",
+                None,
+                |mpv, _action, _parameter| async move {
+                    mpv.on_next_video().await;
+                },
+            );
+            klass.install_action_async(
+                "mpv.previous-video",
+                None,
+                move |mpv, _action, _parameter| async move {
+                    mpv.on_previous_video().await;
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -231,7 +239,13 @@ impl MPVPage {
         let url = url.to_owned();
         let suburi = suburi.map(|s| s.to_owned());
         let name = if let Some(series_name) = item.series_name() {
-            format!("{} - S{}E{}: {}", series_name, item.parent_index_number(), item.index_number(), item.name())
+            format!(
+                "{} - S{}E{}: {}",
+                series_name,
+                item.parent_index_number(),
+                item.index_number(),
+                item.name()
+            )
         } else {
             item.name()
         };
@@ -347,7 +361,9 @@ impl MPVPage {
         let next_item_id = next_item.id();
 
         let playback =
-            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&next_item_id).await }).await {
+            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&next_item_id).await })
+                .await
+            {
                 Ok(playback) => playback,
                 Err(e) => {
                     toast!(self, e.to_user_facing());
@@ -355,14 +371,29 @@ impl MPVPage {
                 }
             };
 
-        let url = playback.media_sources.first().and_then(|ms| ms.direct_stream_url.clone());
-        
+        let (media_source_id, url) = if let Some(media_source) = playback.media_sources.first() {
+            (
+                media_source.id.clone(),
+                media_source.direct_stream_url.clone(),
+            )
+        } else {
+            toast!(self, "No media sources found");
+            return;
+        };
+
         let Some(url) = url else {
             toast!(self, "No media sources found");
             return;
         };
 
-        self.play(&url, None, next_item.clone(), video_list, None, 0.0);
+        let back = Back {
+            id: next_item.id(),
+            playsessionid: playback.play_session_id,
+            mediasourceid: media_source_id.to_string(),
+            tick: 0,
+        };
+
+        self.play(&url, None, next_item.clone(), video_list, Some(back), 0.0);
     }
 
     pub async fn on_next_video(&self) {
@@ -486,14 +517,15 @@ impl MPVPage {
             #[weak(rename_to = obj)]
             self,
             async move {
-            if value == 0 {
-                match SETTINGS.mpv_action_after_video_end() {
-                    0 => obj.on_next_video().await,
-                    2 => obj.on_stop_clicked(),
-                    _ => {}
+                if value == 0 {
+                    match SETTINGS.mpv_action_after_video_end() {
+                        0 => obj.on_next_video().await,
+                        2 => obj.on_stop_clicked(),
+                        _ => {}
+                    }
                 }
             }
-        }));  
+        ));
     }
 
     fn on_error(&self, value: &str) {
