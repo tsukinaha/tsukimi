@@ -1,178 +1,176 @@
 .sbackground {
-    background: rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.15);
 }
 
 child {
-    margin: 9px;
-    border-radius: 15px;
+  margin: 9px;
+  border-radius: 15px;
 }
 
 .mediainfo {
-    padding: 9px;
-    border-radius: 15px;
+  padding: 9px;
+  border-radius: 15px;
 }
 
 .osd {
-    padding: 7px;
+  padding: 7px;
 }
 
 .mask {
-    filter: blur(5px);
-    border-radius:10px;
+  filter: blur(5px);
+  border-radius: 10px;
 }
 
 .logo {
-    background: rgba(0, 0, 0, 0);
+  background: rgba(0, 0, 0, 0);
 }
 
 .bottom-bar {
-    background: transparent;
+  background: transparent;
 }
 
 .smooth-scale {
-    padding-top: 0px;
-    padding-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 .frame {
-    border: 2px solid @borders;
-    border-radius: 5px;
+  border: 2px solid @borders;
+  border-radius: 5px;
 }
 
 .coverimage {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 .pill {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 .playing-song-label {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .home-carousel {
-    border-radius: 10px;
-    margin: 0px;
-    box-shadow: none;
+  border-radius: 10px;
+  margin: 0px;
+  box-shadow: none;
 }
 
-clapper-gtk-video>overlay {
-	margin:0px;
-	border-radius:0px;
+clapper-gtk-video > overlay {
+  margin: 0px;
+  border-radius: 0px;
 }
 
-clapper-gtk-video>overlay>picture {
-	margin:0px;
-	border-radius:0px;
+clapper-gtk-video > overlay > picture {
+  margin: 0px;
+  border-radius: 0px;
 }
 
-.boxshadow{
-	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-	border-radius: 10px;
+.boxshadow {
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
 }
 
 /* Starring */
 button.star:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 @keyframes rotate_star {
-    from {
-        -gtk-icon-transform: rotate(-72deg);
-    }
+  from {
+    -gtk-icon-transform: rotate(-72deg);
+  }
 
-    to {}
+  to {
+  }
 }
 
 @keyframes rotate_unstar {
-    from {
-        -gtk-icon-transform: rotate(72deg);
-    }
+  from {
+    -gtk-icon-transform: rotate(72deg);
+  }
 
-    to {}
+  to {
+  }
 }
 
 button.star.interacted.starred image {
-    animation: rotate_star 0.4s ease;
+  animation: rotate_star 0.4s ease;
 }
 
 button.star.interacted:not(.starred) image {
-    animation: rotate_unstar 0.4s ease;
+  animation: rotate_unstar 0.4s ease;
 }
 
 .songwidget {
-    padding: 12px;
+  padding: 12px;
 }
 
 .no-padding {
-    padding: 0px;
+  padding: 0px;
 }
 
 .serverrow {
-    margin: 6px;
-    border-radius: 10px;
+  margin: 6px;
+  border-radius: 10px;
 }
 
 .horizontal-listview > row {
-    margin-left: 9px;
-    margin-right: 9px;
-    border-radius: 10px;
+  margin-left: 9px;
+  margin-right: 9px;
+  border-radius: 10px;
 }
 
 .vertical-listview > row {
-    margin: 9px;
-    border-radius: 10px;
+  margin: 9px;
+  border-radius: 10px;
 }
 
 picture {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 listview {
-    background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
 }
 
 gridview {
-    background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
 }
 
-gridview>child box {
-    margin: 0px;
+gridview > child box {
+  margin: 0px;
 }
 
-
-
-overlay>label {
-    background-color: #AEB5FA;
-    border-radius: 999px;
-    margin: 3px;
+overlay > label {
+  background-color: #aeb5fa;
+  border-radius: 999px;
+  margin: 3px;
 }
 
-box>overlay>image {
-    background-color: #AEB5FA;
-    border-radius: 999px;
-    margin: 3px;
+box > overlay > image {
+  background-color: #aeb5fa;
+  border-radius: 999px;
+  margin: 3px;
 }
 
-revealer>box>box>widget {
-    background-color: rgba(1, 1, 1, 0.1);
-    border-radius: 10px;
+revealer > box > box > widget {
+  background-color: rgba(1, 1, 1, 0.1);
+  border-radius: 10px;
 }
 
-revealer>box>box>widget>box {
-    margin: 10px;
+revealer > box > box > widget > box {
+  margin: 10px;
 }
 
-tabbar>revealer>box {
-    background-color: rgba(0, 0, 0, 0);
+tabbar > revealer > box {
+  background-color: rgba(0, 0, 0, 0);
 }
 
-
-
-scrolledwindow>viewport>box>box>box {
-    margin-left: 15px;
-    margin-top: 15px;
+scrolledwindow > viewport > box > box > box {
+  margin-left: 15px;
+  margin-top: 15px;
 }
 
 @define-color accent_bg_color #AEB5FA;
@@ -180,22 +178,21 @@ scrolledwindow>viewport>box>box>box {
 @define-color accent_color #AEB5FA;
 
 placessidebar {
-    background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .card {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 .sidebar-pane {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 /* Expanding */
 row.expand.interacted.expanded image {
-    transform: rotate(-0.5turn);
+  transform: rotate(-0.5turn);
 }
-
 
 row image {
   transition: 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);

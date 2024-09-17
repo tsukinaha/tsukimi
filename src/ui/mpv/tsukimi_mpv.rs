@@ -36,12 +36,13 @@ pub enum TrackSelection {
     None,
 }
 
-impl TrackSelection {
-    pub fn to_string(&self) -> String {
-        match self {
+impl std::fmt::Display for TrackSelection {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let str = match self {
             TrackSelection::Track(id) => id.to_string(),
             TrackSelection::None => "no".to_string(),
-        }
+        };
+        write!(f, "{}", str)
     }
 }
 

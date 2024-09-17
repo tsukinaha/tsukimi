@@ -34,7 +34,7 @@ pub struct Accounts {
 }
 
 pub async fn save_cfg(account: Account) -> Result<(), Box<dyn std::error::Error>> {
-    let mut path = dirs::config_dir().ok_or("Failed to get home directory")?;
+    let mut path = get_config_dir()?;
     std::fs::DirBuilder::new().recursive(true).create(&path)?;
     path.push("tsukimi.toml");
     let mut accounts: Accounts = load_cfgv2()?;
@@ -53,7 +53,7 @@ pub async fn save_cfg(account: Account) -> Result<(), Box<dyn std::error::Error>
 }
 
 pub fn load_cfgv2() -> Result<Accounts, Box<dyn std::error::Error>> {
-    let mut path = dirs::config_dir().ok_or("Failed to get home directory")?;
+    let mut path = get_config_dir()?;
     path.push("tsukimi.toml");
     if !path.exists() {
         return Ok(Accounts {
@@ -68,7 +68,7 @@ pub fn load_cfgv2() -> Result<Accounts, Box<dyn std::error::Error>> {
 }
 
 pub fn remove(account: &Account) -> Result<(), Box<dyn std::error::Error>> {
-    let mut path = dirs::config_dir().ok_or("Failed to get home directory")?;
+    let mut path = get_config_dir()?;
     path.push("tsukimi.toml");
     let mut accounts: Accounts = load_cfgv2()?;
     accounts.accounts.retain(|x| {
@@ -88,7 +88,66 @@ pub fn remove(account: &Account) -> Result<(), Box<dyn std::error::Error>> {
         .write(true)
         .create(true)
         .truncate(true)
-        .open(&path)?;
+        .open(path)?;
     writeln!(file, "{}", toml)?;
     Ok(())
+}
+
+// Set %APPDATA%\tsukimi as config_dir on Windows
+pub fn get_config_dir() -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
+    #[cfg(windows)]
+    {
+        let path = dirs::config_dir()
+            .ok_or("Failed to get %APPDATA%")?
+            .join("tsukimi");
+        Ok(path)
+    }
+
+    #[cfg(unix)]
+    {
+        let path = dirs::config_dir().ok_or("Failed to get home directory")?;
+        Ok(path)
+    }
+}
+
+pub mod theme {
+    #[cfg(target_os = "windows")]
+    use windows::{core::*, Win32::System::Registry::*};
+
+    /// Use windows crate to detect Windows system dark mode as gtk settings does not respect it
+    #[cfg(target_os = "windows")]
+    pub fn is_system_dark_mode_enabled() -> bool {
+        #[cfg(windows)]
+        unsafe {
+            let subkey = w!("Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
+            let mut key_handle = HKEY::default();
+
+            let result = RegOpenKeyExW(HKEY_CURRENT_USER, subkey, 0, KEY_READ, &mut key_handle);
+
+            if result.is_err() {
+                return false;
+            }
+
+            let mut data: u32 = 0;
+            let mut data_size: u32 = std::mem::size_of::<u32>() as u32;
+            let value_name = w!("SystemUsesLightTheme");
+
+            let result = RegQueryValueExW(
+                key_handle,
+                value_name,
+                None,
+                None,
+                Some(&mut data as *mut u32 as *mut u8),
+                Some(&mut data_size),
+            );
+
+            let _ = RegCloseKey(key_handle);
+
+            if result.is_err() {
+                return false;
+            }
+
+            data == 0
+        }
+    }
 }

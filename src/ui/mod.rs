@@ -63,6 +63,9 @@ pub fn load_css() {
         accent_color
     ));
 
+    #[cfg(target_os = "windows")]
+    styles.push_str("window {box-shadow:none;}");
+
     provider.load_from_string(&styles);
 
     gtk::style_context_add_provider_for_display(
