@@ -127,6 +127,8 @@ impl ListPage {
 
         for (name, title, list_type) in pages {
             let page = SingleGrid::new();
+            page.set_list_type(list_type);
+            page.handle_type();
             let id_clone1 = id.clone();
             let include_item_types_clone1 = include_item_types.clone();
             page.connect_sort_changed_tokio(

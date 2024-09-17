@@ -276,10 +276,12 @@ impl SingleGrid {
         dialog.present(Some(self));
     }
 
-    fn handle_type(&self) {
+    pub fn handle_type(&self) {
         let imp = self.imp();
         match self.list_type() {
-            ListType::All => {}
+            ListType::All => {
+                imp.postmenu.set_visible(true);
+            }
             ListType::Resume => {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
