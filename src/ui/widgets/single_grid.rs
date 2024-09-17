@@ -380,12 +380,14 @@ impl SingleGrid {
                 async move {
                     obj.imp().stack.set_visible_child_name("loading");
                     match spawn_tokio(future).await {
-                        Ok(item) => obj.add_items::<true>(item.items, is_resume),
+                        Ok(item) => {
+                            obj.add_items::<true>(item.items, is_resume);
+                            obj.imp().count.set_text(&format!("{} Items", item.total_record_count));
+                        },
                         Err(e) => {
                             toast!(obj, e.to_user_facing());
                         }
                     }
-                    obj.imp().count.set_text(&format!("{} Items", obj.imp().scrolled.get().n_items()));
                 }
             ));
         });
