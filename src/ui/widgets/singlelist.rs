@@ -5,7 +5,6 @@ use super::tu_list_item::imp::PosterType;
 use super::utils::TuItemBuildExt;
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::ui::models::SETTINGS;
 use crate::ui::provider::tu_object::TuObject;
 use crate::utils::{fetch_with_cache, spawn, spawn_tokio, CachePolicy};
 use crate::{fraction, fraction_reset, toast};
@@ -412,11 +411,6 @@ impl SingleListPage {
         let imp = self.imp();
         let dropdown = imp.dropdown.get();
 
-        let sort = SETTINGS.list_sort();
-        if sort >= 0 {
-            dropdown.set_selected(sort as u32);
-            self.update_sortby(sort as u32);
-        }
         dropdown.connect_selected_item_notify(glib::clone!(
             #[weak(rename_to = obj)]
             self,
@@ -445,7 +439,6 @@ impl SingleListPage {
         let imp = self.imp();
         let dropdown = imp.dropdown.get();
         let selected = dropdown.selected();
-        SETTINGS.set_list_sort(&selected).unwrap();
         self.update_sortby(selected);
     }
 

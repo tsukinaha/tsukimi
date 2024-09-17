@@ -24,7 +24,8 @@ impl Settings {
     const KEY_FONT_SIZE: &'static str = "font-size";
     const KEY_FONT_NAME: &'static str = "font-name";
     const KEY_DAILY_RECOMMEND: &'static str = "is-daily-recommend";
-    const KEY_LIST_SORT: &'static str = "list-sort";
+    const KEY_LIST_SORT_BY: &'static str = "list-sort-by";
+    const KEY_LIST_SORT_ORDER: &'static str = "list-sort-order";
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
     const KEY_ACCENT_FG_COLOR_CODE: &'static str = "accent-fg-color-code";
     const KEY_MUSIC_REPEAT_MODE: &'static str = "music-repeat-mode";
@@ -44,6 +45,14 @@ impl Settings {
     const KEY_MPV_SHOW_BUFFER_SPEED: &'static str = "mpv-show-buffer-speed"; // bool
     const KEY_MPV_VIDEO_OUTPUT: &'static str = "mpv-video-output"; // i32
     const KEY_MPV_ACTION_AFTER_VIDEO_END: &'static str = "mpv-action-after-video-end"; // i32
+
+    pub fn set_list_sord_order(&self, list_sort_order: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_LIST_SORT_ORDER, list_sort_order)
+    }
+
+    pub fn list_sort_order(&self) -> i32 {
+        self.int(Self::KEY_LIST_SORT_ORDER)
+    }
 
     pub fn set_mpv_subtitle_size(&self, mpv_subtitle_size: i32) -> Result<(), glib::BoolError> {
         self.set_int(Self::KEY_MPV_SUBTITLE_SIZE, mpv_subtitle_size)
@@ -230,12 +239,12 @@ impl Settings {
         self.string(Self::KEY_ACCENT_COLOR_CODE).to_string()
     }
 
-    pub fn set_list_sort(&self, list_sort: &u32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_LIST_SORT, *list_sort as i32)
+    pub fn set_list_sort_by(&self, list_sort: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_LIST_SORT_BY, list_sort)
     }
 
-    pub fn list_sort(&self) -> i32 {
-        self.int(Self::KEY_LIST_SORT)
+    pub fn list_sort_by(&self) -> i32 {
+        self.int(Self::KEY_LIST_SORT_BY)
     }
 
     pub fn set_daily_recommend(&self, daily_recommend: bool) -> Result<(), glib::BoolError> {

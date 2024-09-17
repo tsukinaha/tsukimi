@@ -50,32 +50,6 @@
     </item>
     <section>
       <item>
-        <attribute name="label" translatable="yes">Mark This Episode as Played</attribute>
-        <attribute name="action">item.episodeplayed</attribute>
-        <attribute name="hidden-when">action-disabled</attribute>
-        <attribute name="accel">&lt;Control&gt;F3</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Mark This Episode as Unplayed</attribute>
-        <attribute name="action">item.episodeunplayed</attribute>
-        <attribute name="hidden-when">action-disabled</attribute>
-        <attribute name="accel">&lt;Control&gt;F4</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Like This Episode</attribute>
-        <attribute name="action">item.episodelike</attribute>
-        <attribute name="hidden-when">action-disabled</attribute>
-        <attribute name="accel">&lt;Control&gt;F5</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Unlike This Episode</attribute>
-        <attribute name="action">item.episodeunlike</attribute>
-        <attribute name="hidden-when">action-disabled</attribute>
-        <attribute name="accel">&lt;Control&gt;F6</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
         <attribute name="label" translatable="yes">View Metadata</attribute>
         <attribute name="action">item.editm</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
@@ -86,20 +60,6 @@
         <attribute name="action">item.editi</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
         <attribute name="accel">&lt;Control&gt;F8</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">View This Episode Metadata</attribute>
-        <attribute name="action">item.editepisodem</attribute>
-        <attribute name="hidden-when">action-disabled</attribute>
-        <attribute name="accel">&lt;Control&gt;F9</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">View This Episode Images</attribute>
-        <attribute name="action">item.editepisodei</attribute>
-        <attribute name="hidden-when">action-disabled</attribute>
-        <attribute name="accel">&lt;Control&gt;F10</attribute>
       </item>
     </section>
   </menu>

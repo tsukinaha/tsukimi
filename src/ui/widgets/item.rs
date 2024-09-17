@@ -339,6 +339,7 @@ impl ItemPage {
             };
 
         self.set_dropdown(&playback);
+        self.set_play_session_id(playback.play_session_id.clone());
 
         self.set_current_item(Some(intro));
 

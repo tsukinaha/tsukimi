@@ -68,6 +68,7 @@
                 <property name="halign">end</property>
                 <property name="margin-end">55</property>
                 <property name="valign">center</property>
+                <signal name="notify::selected" handler="on_sort_by_selected" swapped="yes"/>
                 <property name="model">
                   <object class="GtkStringList">
                     <items>

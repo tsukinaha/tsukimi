@@ -101,8 +101,12 @@
       <default>-1</default>
       <summary>Default font size</summary>
     </key>
-    <key name="list-sort" type="i">
-      <default>-1</default>
+    <key name="list-sort-order" type="i">
+      <default>0</default>
+      <summary>Default list sort</summary>
+    </key>
+    <key name="list-sort-by" type="i">
+      <default>5</default>
       <summary>Default list sort</summary>
     </key>
     <key name="is-blurenabled" type="b">
