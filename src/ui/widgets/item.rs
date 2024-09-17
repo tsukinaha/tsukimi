@@ -82,8 +82,6 @@ pub(crate) mod imp {
         pub mediainforevealer: TemplateChild<gtk::Revealer>,
         #[template_child]
         pub scrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub episodesearchentry: TemplateChild<gtk::SearchEntry>,
 
         #[template_child]
         pub line1: TemplateChild<gtk::Label>,

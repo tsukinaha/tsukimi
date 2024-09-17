@@ -21,14 +21,12 @@
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
                 <property name="orientation">vertical</property>
-
                 <child>
                   <object class="GtkBox">
                     <property name="orientation">vertical</property>
-                    <property name="spacing">9</property>
+                    <property name="spacing">5</property>
                     <property name="hexpand">true</property>
                     <property name="vexpand">true</property>
-
                     <child>
                       <object class="GtkOverlay">
                         <style>
@@ -272,12 +270,6 @@
                             </property>
                           </object>
                         </child>
-                        <child>
-                          <object class="GtkSearchEntry" id="episodesearchentry">
-                            <property name="hexpand">true</property>
-                            <property name="placeholder-text" translatable="yes">Search episodes in current season</property>
-                          </object>
-                        </child>
                         <style>
                           <class name="toolbar" />
                         </style>
@@ -309,7 +301,6 @@
                             <property name="title">Episodes View</property>
                             <property name="child">
                               <object class="GtkOverlay">
-                                <property name="margin-top">6</property>
                                 <child>
                                   <object class="GtkEventControllerMotion">
                                     <signal name="enter" handler="on_enter_focus" swapped="yes"/>
