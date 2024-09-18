@@ -8,16 +8,16 @@ impl UserFacingError for reqwest::Error {
     fn to_user_facing(&self) -> String {
         let status_code = self.status();
         if let Some(status_code) = status_code {
-            warn!("Error: {}", status_code);
+            warn!("Request Error: {}", status_code);
             format!("Error: {}", status_code)
         } else if self.is_decode() {
-            warn!("Decoding Error: {}", self);
+            warn!("Request Decoding Error: {}", self);
             format!("Decoding Error: {}", self)
         } else if self.is_timeout() {
-            warn!("Timeout Error: {}", self);
+            warn!("Request Timeout Error: {}", self);
             format!("Timeout Error: {}", self)
         } else {
-            warn!("Error: {}", self);
+            warn!("Request Error: {}", self);
             format!("Error: {}", self)
         }
     }
@@ -25,14 +25,14 @@ impl UserFacingError for reqwest::Error {
 
 impl UserFacingError for std::boxed::Box<dyn std::error::Error> {
     fn to_user_facing(&self) -> String {
-        warn!("Error: {}", self);
+        warn!("Unknown Error: {}", self);
         self.to_string()
     }
 }
 
 impl UserFacingError for libmpv2::Error {
     fn to_user_facing(&self) -> String {
-        warn!("Error: {}", self);
+        warn!("MPV Error: {}", self);
         format!("MPV Back: {}, Connectivity error occurred", self)
     }
 }
