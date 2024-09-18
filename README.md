@@ -47,21 +47,8 @@ scoop install tsukimi-full
 ## MPV Config
 Set config=true to enable external config.
 - Linux: `$XDG_CONFIG_HOME/mpv`
-- Windows: 
-```
-|__bin\
-|__share\
-|__lib\
-|__mpv\
-|    |__mpv.conf
-|    |__input.conf
-|    |__scripts\
-|    |    |__ .......
-|    |__ .......
-|__config\
-```
-Priority:
-`./mpv`>`$MPV_HOME`>`%APPDATA%/mpv`
+- Windows: `$MPV_HOME`>`%APPDATA%/mpv`
+
 [MPV-manual#files](https://mpv.io/manual/master/#files) 
 
 ## Credits
