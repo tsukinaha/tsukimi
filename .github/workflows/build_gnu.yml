@@ -79,14 +79,12 @@ jobs:
 
           cp -r /mingw64/lib/gstreamer-1.0 lib/ && find lib/gstreamer-1.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
 
-          cp -r $GITHUB_WORKSPACE/i18n/locale share/
-
           cp -r /mingw64/share/glib-2.0 share/
           find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rf "{}" \;
           mv $GITHUB_WORKSPACE/moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
           glib-compile-schemas.exe share/glib-2.0/schemas/
           find share/glib-2.0/ -type f ! -name "*.compiled" -exec rm -f "{}" \;
-
+                    
           cp -r /mingw64/share/icons share/
           cp $GITHUB_WORKSPACE/resources/ui/icons/tsukimi.png share/icons/
           rm -rf share/icons/hicolor && rm -rf share/icons/AdwaitaLegacy && rm -rf share/icons/Adwaita/scalable && rm -rf share/icons/Adwaita/cursors
