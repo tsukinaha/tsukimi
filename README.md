@@ -1,34 +1,33 @@
-<h1 align="center">Tsukimi</h1>
+![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![AUR Version](https://img.shields.io/aur/version/tsukimi-git)](https://aur.archlinux.org/packages/tsukimi-git) [![Static Badge](https://img.shields.io/badge/Telegram_Group-blue)](https://t.me/tsukimi_chat)
 
-> A Simple Third-party Emby client.    
-> 使用 GTK4-RS 编写的第三方 Emby 客户端
 
-![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Windows GNU CI status](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_release.yml) [![AUR Version](https://img.shields.io/aur/version/tsukimi-git)](https://aur.archlinux.org/packages/tsukimi-git) 
+## Tsukimi
+Tsukimi is a simple third-party Emby client written in GTK4-RS, uses MPV as the video player, and GStreamer as the music player
 
-## Notice
-
-> [!IMPORTANT]
-> READ BEFORE INSTALLATION    
-
-- **对 Windows 的支持不做任何保证**
-- Trello Kanban     https://trello.com/b/8GOsuygJ/%E5%95%8A%EF%BC%9F  
-- Telegram Group    https://t.me/+-kAfBLQ-ol0yNjA1  
+## Frequently Asked Questions
+https://dev.tsukinaha.org/tsukimi
 
 ## Screenshots
 <div align="center">
- <img src="./docs/tsukimi.png"/>
+ <img src="./docs/tsukimi1.png"/>
+</div>
+<div align="center">
+ <img src="./docs/tsukimi2.png"/>
 </div>
 
 ## Build
-### Linux
-- 请见 [Dockerfile](https://github.com/tsukinaha/tsukimi/blob/main/Dockerfile)
+[Build On Linux](./docs/build_on_linux.md)
 
 ## Installation
 ### Linux
 Archlinux
 ```
 # From AUR
+## Git Version
 paru -S tsukimi-git
+
+## Bin
+paru -S tsukimi-bin
 ```
  
 
@@ -46,6 +45,7 @@ scoop install tsukimi-full
 - [Release](https://github.com/tsukinaha/tsukimi/releases/latest)
 
 ## MPV Config
+Set config=true to enable external config.
 - Linux: `$XDG_CONFIG_HOME/mpv`
 - Windows: 
 ```
@@ -63,11 +63,6 @@ scoop install tsukimi-full
 Priority:
 `./mpv`>`$MPV_HOME`>`%APPDATA%/mpv`
 [MPV-manual#files](https://mpv.io/manual/master/#files) 
-
-
-## Themes
-
-- 在自定义样式表时请使用 Default [更多](https://wiki.archlinux.org/title/GTK#Configuration)
 
 ## Credits
 - [gtk4-rs](https://github.com/gtk-rs/gtk4-rs)
