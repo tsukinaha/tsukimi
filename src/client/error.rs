@@ -39,6 +39,7 @@ impl UserFacingError for libmpv2::Error {
 
 impl UserFacingError for anyhow::Error {
     fn to_user_facing(&self) -> String {
+        warn!("Unknown Error: {}", self);
         self.to_string()
     }
 }
