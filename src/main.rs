@@ -35,6 +35,11 @@ fn main() -> glib::ExitCode {
         std::env::set_var("XDG_CACHE_HOME", config_local_dir);
     }
 
+    // Initialize the logger
+    tracing_subscriber::fmt()
+        .with_max_level(tracing::Level::INFO)
+        .init();
+
     // Register and include resources
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
 

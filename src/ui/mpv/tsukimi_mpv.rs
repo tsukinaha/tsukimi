@@ -5,6 +5,7 @@ use libmpv2::{
     GetData, SetData,
 };
 use tokio::time;
+use tracing::{info, warn};
 
 use std::{
     cell::RefCell,
@@ -222,6 +223,7 @@ impl TsukimiMPV {
     pub fn press_key(&self, key: u32, state: gtk::gdk::ModifierType) {
         let keystr = get_full_keystr(key, state);
         if let Some(keystr) = keystr {
+            info!("MPV Catch Key pressed: {}", keystr);
             self.command("keypress", &[&keystr]);
         }
     }
@@ -229,6 +231,7 @@ impl TsukimiMPV {
     pub fn release_key(&self, key: u32, state: gtk::gdk::ModifierType) {
         let keystr = get_full_keystr(key, state);
         if let Some(keystr) = keystr {
+            info!("MPV Catch Key released: {}", keystr);
             self.command("keyup", &[&keystr]);
         }
     }
@@ -247,7 +250,7 @@ impl TsukimiMPV {
     {
         let mpv = self.mpv.borrow();
         mpv.set_property(property, value)
-            .map_err(|e| eprintln!("Error: {}, {}", e, property))
+            .map_err(|e| warn!("MPV set property Error: {}, Property: {}", e, property))
             .ok();
     }
 
@@ -262,7 +265,7 @@ impl TsukimiMPV {
     fn command(&self, cmd: &str, args: &[&str]) {
         let mpv = self.mpv.borrow();
         mpv.command(cmd, args)
-            .map_err(|e| eprintln!("Error: {}", e))
+            .map_err(|e| warn!("MPV command Error: {}, Command: {}", e, cmd))
             .ok();
     }
 
