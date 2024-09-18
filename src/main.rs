@@ -1,9 +1,12 @@
-#![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
+#![cfg_attr(
+    all(target_os = "windows", not(feature = "console")),
+    windows_subsystem = "windows"
+)]
 
-#[cfg(target_os = "linux")]
 use gettextrs::*;
 use gtk::prelude::*;
 use gtk::{gio, glib};
+use std::sync::OnceLock;
 
 mod client;
 mod config;
@@ -14,19 +17,36 @@ mod utils;
 
 const APP_ID: &str = "moe.tsuna.tsukimi";
 
-#[cfg(target_os = "linux")]
 const GETTEXT_PACKAGE: &str = "tsukimi";
+
 #[cfg(target_os = "linux")]
 const LOCALEDIR: &str = "/usr/share/locale";
 
+#[cfg(target_os = "windows")]
+static LOCALEDIR: OnceLock<std::path::PathBuf> = OnceLock::new();
+
 fn main() -> glib::ExitCode {
+    setlocale(LocaleCategory::LcAll, "");
+
+    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8").expect("Failed to set textdomain codeset");
+
     #[cfg(target_os = "linux")]
-    {
-        setlocale(LocaleCategory::LcAll, "");
-        bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR)
-            .expect("Invalid argument passed to bindtextdomain");
-        textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
-    }
+    bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR).expect("Invalid argument passed to bindtextdomain");
+    #[cfg(target_os = "windows")]
+    bindtextdomain(
+        GETTEXT_PACKAGE,
+        LOCALEDIR.get_or_init(|| {
+            std::env::current_exe()
+                .unwrap()
+                .ancestors()
+                .nth(2)
+                .unwrap()
+                .join("share\\locale")
+        }),
+    )
+    .expect("Invalid argument passed to bindtextdomain");
+
+    textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
 
     // redirect cache dir to %LOCALAPPDATA%
     #[cfg(target_os = "windows")]

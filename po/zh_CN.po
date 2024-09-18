@@ -356,7 +356,7 @@ msgstr "视频: "
 
 #: resources/ui/item.ui:207
 msgid "Subtitle: "
-msgstr "字幕:  "
+msgstr "字幕: "
 
 #: resources/ui/item.ui:260
 msgid "Search episodes in current season"
