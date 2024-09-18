@@ -219,6 +219,7 @@ impl Window {
         imp.mainview.pop_to_tag("mainpage");
         imp.insidestack.set_visible_child_name("homepage");
         imp.popbutton.set_visible(false);
+        imp.last_content_list_selection.replace(Some(0));
     }
 
     pub fn likedpage(&self) {
@@ -230,6 +231,7 @@ impl Window {
         imp.mainview.pop_to_tag("mainpage");
         imp.insidestack.set_visible_child_name("likedpage");
         imp.popbutton.set_visible(false);
+        imp.last_content_list_selection.replace(Some(1));
     }
 
     pub fn searchpage(&self) {
@@ -241,6 +243,7 @@ impl Window {
         imp.mainview.pop_to_tag("mainpage");
         imp.insidestack.set_visible_child_name("searchpage");
         imp.popbutton.set_visible(false);
+        imp.last_content_list_selection.replace(Some(2));
     }
 
     #[template_callback]
@@ -748,7 +751,6 @@ impl Window {
             return;
         }
 
-        self.imp().last_content_list_selection.replace(Some(pos));
         self.select_view(pos);
     }
 
