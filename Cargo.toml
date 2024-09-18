@@ -44,7 +44,6 @@ embed-resource = "2.4.3"
 glib-build-tools = "0.20.0"
 
 [features]
-console = [] # Enable console logging
 default = ["protocols", "render"]
 protocols = [] # Enable custom protocol callbacks
 render = [] # Enable custom rendering
