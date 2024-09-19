@@ -15,6 +15,7 @@ macro_rules! _add_toast {
         {
             dialog.add_toast($toast);
         } else if let Some(root) = $widget.root() {
+            #[allow(deprecated)]
             if let Some(window) = root.downcast_ref::<adw::PreferencesWindow>() {
                 use adw::prelude::PreferencesWindowExt;
                 window.add_toast($toast);

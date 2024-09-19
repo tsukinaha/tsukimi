@@ -20,10 +20,10 @@
           </object>
         </child>
         <child type="overlay">
-          <object class="GtkSpinner" id="spinner">
+          <object class="AdwSpinner" id="spinner">
             <property name="halign">center</property>
             <property name="valign">center</property>
-            <property name="spinning">True</property>
+            <property name="visible">True</property>
           </object>
         </child>
         <child type="overlay">

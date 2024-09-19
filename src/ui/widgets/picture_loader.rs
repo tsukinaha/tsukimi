@@ -30,7 +30,7 @@ pub(crate) mod imp {
         #[template_child]
         pub picture: TemplateChild<gtk::Picture>,
         #[template_child]
-        pub spinner: TemplateChild<gtk::Spinner>,
+        pub spinner: TemplateChild<adw::Spinner>,
         #[template_child]
         pub broken: TemplateChild<gtk::Box>,
     }
@@ -96,7 +96,7 @@ impl PictureLoader {
             imp.broken.set_visible(true);
         }
 
-        imp.spinner.stop();
+        imp.spinner.set_visible(false);
 
         imp.revealer.set_reveal_child(true);
     }

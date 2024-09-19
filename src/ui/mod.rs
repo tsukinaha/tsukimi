@@ -5,13 +5,14 @@ pub mod widgets;
 use self::models::SETTINGS;
 use gtk::gdk::Display;
 use gtk::{prelude::*, CssProvider};
+use adw::prelude::*;
 
 pub fn build_ui(app: &adw::Application) {
     // Create new window and present it
     let window = widgets::window::Window::new(app);
     let about_action = gtk::gio::ActionEntry::builder("about")
         .activate(|_, _, _| {
-            let about = adw::AboutWindow::builder()
+            let about = adw::AboutDialog::builder()
                 .application_name("Tsukimi")
                 .version(crate::config::APP_VERSION)
                 .comments(
@@ -26,7 +27,7 @@ pub fn build_ui(app: &adw::Application) {
                 Some("Special Thanks"),
                 &["Qound", "Eikano", "amtoaer"],
             );
-            about.present();
+            about.present(None::<&gtk::Widget>);
         })
         .build();
     window.add_action_entries([about_action]);

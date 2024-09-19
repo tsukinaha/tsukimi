@@ -64,7 +64,7 @@ mod imp {
         #[template_child]
         pub duration_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub spinner: TemplateChild<gtk::Spinner>,
+        pub spinner: TemplateChild<adw::Spinner>,
         #[template_child]
         pub loading_box: TemplateChild<gtk::Box>,
         #[template_child]
@@ -258,7 +258,7 @@ impl MPVPage {
             async move {
                 obj.load_config();
                 let imp = obj.imp();
-                imp.spinner.start();
+                imp.spinner.set_visible(true);
                 imp.loading_box.set_visible(true);
                 imp.network_speed_label.set_text("Initializing...");
                 imp.title.set_text(&name);
@@ -506,10 +506,10 @@ impl MPVPage {
         let loading_box = &self.imp().loading_box;
         if seeking {
             loading_box.set_visible(true);
-            spinner.start();
+            spinner.set_visible(true);
         } else {
             loading_box.set_visible(false);
-            spinner.stop();
+            spinner.set_visible(false);
         }
     }
 

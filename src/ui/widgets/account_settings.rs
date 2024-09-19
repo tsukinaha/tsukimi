@@ -1,3 +1,5 @@
+#![allow(deprecated)]
+
 use crate::{
     client::client::EMBY_CLIENT,
     toast,

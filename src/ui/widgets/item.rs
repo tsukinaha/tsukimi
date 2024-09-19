@@ -112,7 +112,7 @@ pub(crate) mod imp {
         pub toolbar: TemplateChild<gtk::Box>,
 
         #[template_child]
-        pub spinner: TemplateChild<gtk::Spinner>,
+        pub spinner: TemplateChild<adw::Spinner>,
 
         #[template_child]
         pub buttoncontent: TemplateChild<adw::ButtonContent>,
@@ -325,7 +325,7 @@ impl ItemPage {
         self.set_now_item::<IS_VIDEO>(intro);
 
         play_button.set_sensitive(false);
-        spinner.set_spinning(true);
+        spinner.set_visible(true);
 
         let playback =
             match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&intro_id).await }).await {
@@ -342,7 +342,7 @@ impl ItemPage {
         self.set_current_item(Some(intro));
 
         play_button.set_sensitive(true);
-        spinner.set_spinning(false);
+        spinner.set_visible(false);
 
         self.createmediabox(playback.media_sources, None).await;
     }

@@ -18,9 +18,8 @@
           </object>
         </child>
         <child>
-          <object class="GtkSpinner" id="spinner">
+          <object class="AdwSpinner" id="spinner">
             <property name="visible">True</property>
-            <property name="spinning">True</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
             <property name="vexpand">True</property>
