@@ -145,9 +145,8 @@ impl MPVGLArea {
     }
 
     pub fn get_wid(&self) -> Option<u64> {
-
         return None;
-        
+
         // FIXME: x11 and win32 display
         #[allow(unreachable_code)]
         match Display::default()?.backend() {
@@ -163,7 +162,7 @@ impl MPVGLArea {
 
                 #[cfg(not(target_os = "linux"))]
                 {
-                    return None;
+                    None
                 }
             }
             Backend::Win32 => {
@@ -173,12 +172,12 @@ impl MPVGLArea {
                         .native()?
                         .surface()
                         .and_downcast_ref::<gdk4_win32::Win32Surface>()
-                        .map(|s| s.handle() as u64);
+                        .map(|s| s.handle().0 as u64);
                 }
-                
+
                 #[cfg(not(target_os = "windows"))]
                 {
-                    return None;
+                    None
                 }
             }
             _ => None,
