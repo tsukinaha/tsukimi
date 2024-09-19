@@ -53,12 +53,6 @@ jobs:
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: msys2 {0}
         run: |
-          curl -LO https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-gtk4-4.14.5-1-any.pkg.tar.zst
-          pacman --noconfirm -U ./mingw-w64-x86_64-gtk4-4.14.5-1-any.pkg.tar.zst
-
-          curl -LO https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libadwaita-1.5.3-1-any.pkg.tar.zst
-          pacman --noconfirm -U ./mingw-w64-x86_64-libadwaita-1.5.3-1-any.pkg.tar.zst
-
           export PATH="/c/Users/runneradmin/.cargo/bin:$PATH"
           rustup default stable-gnu
           cargo build --release --locked

@@ -59,11 +59,14 @@ fn main() -> glib::ExitCode {
         textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
     }
 
-    // redirect cache dir to %LOCALAPPDATA%
     #[cfg(target_os = "windows")]
     {
+        // redirect cache dir to %LOCALAPPDATA%
         let config_local_dir = dirs::config_local_dir().expect("Failed to get %LOCALAPPDATA%");
         std::env::set_var("XDG_CACHE_HOME", config_local_dir);
+
+        // Set gsk_renderer to gl to avoid memory leak and other issues
+        std::env::set_var("GSK_RENDERER", "gl");
     }
 
     // Initialize the logger
