@@ -41,7 +41,7 @@ fn locale_dir() -> &'static str {
                 .join(WINDOWS_LOCALEDIR);
             Box::leak(locale_path.into_boxed_path())
                 .to_str()
-                .unwrap_or("")
+                .expect("Can not get locale dir")
         }
     })
 }
