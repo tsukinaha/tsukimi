@@ -1,9 +1,12 @@
-#![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
+#![cfg_attr(
+    all(target_os = "windows", not(feature = "console")),
+    windows_subsystem = "windows"
+)]
 
-#[cfg(target_os = "linux")]
 use gettextrs::*;
 use gtk::prelude::*;
 use gtk::{gio, glib};
+use once_cell::sync::OnceCell;
 
 mod client;
 mod config;
@@ -14,16 +17,36 @@ mod utils;
 
 const APP_ID: &str = "moe.tsuna.tsukimi";
 
-#[cfg(target_os = "linux")]
 const GETTEXT_PACKAGE: &str = "tsukimi";
+
 #[cfg(target_os = "linux")]
-const LOCALEDIR: &str = "/usr/share/locale";
+const LINUX_LOCALEDIR: &str = "/usr/share/locale";
+#[cfg(target_os = "windows")]
+const WINDOWS_LOCALEDIR: &str = "share\\locale";
+
+fn locale_dir() -> &'static str {
+    static LOCALEDIR: OnceCell<&'static str> = OnceCell::new();
+    LOCALEDIR.get_or_init(|| {
+        #[cfg(target_os = "linux")]
+        {
+            LINUX_LOCALEDIR
+        }
+        #[cfg(target_os = "windows")]
+        {
+            let exe_path = std::env::current_exe().expect("Can not get locale dir");
+            let locale_path = exe_path.ancestors().nth(2).expect("Can not get locale dir").join(WINDOWS_LOCALEDIR);
+            Box::leak(locale_path.into_boxed_str())
+        }
+    })
+}
 
 fn main() -> glib::ExitCode {
-    #[cfg(target_os = "linux")]
+
+    // Initialize gettext
+    #[cfg(any(target_os = "linux", target_os = "windows"))]
     {
         setlocale(LocaleCategory::LcAll, "");
-        bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR)
+        bindtextdomain(GETTEXT_PACKAGE, locale_dir())
             .expect("Invalid argument passed to bindtextdomain");
         textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
     }

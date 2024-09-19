@@ -1,4 +1,4 @@
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "windows"))]
 use std::process::Command;
 
 fn main() {
@@ -7,8 +7,8 @@ fn main() {
         "resources/resources.gresource.xml",
         "tsukimi.gresource",
     );
-
-    #[cfg(target_os = "linux")]
+    
+    #[cfg(any(target_os = "linux", target_os = "windows"))]
     {
         let po_file = "po/zh_CN.po";
         let mo_file = "i18n/locale/zh_CN/LC_MESSAGES/tsukimi.mo";
