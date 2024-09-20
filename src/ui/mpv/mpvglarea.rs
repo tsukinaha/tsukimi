@@ -146,10 +146,6 @@ impl MPVGLArea {
 
     pub fn get_wid(&self) -> Option<u64> {
         
-        return None;
-        
-        // Using wid will cover the whole window, enable it while fixed
-        #[allow(unreachable_code)]
         match Display::default()?.backend() {
             Backend::X11 => {
                 #[cfg(target_os = "linux")]
