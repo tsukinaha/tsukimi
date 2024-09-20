@@ -82,7 +82,6 @@ impl Default for TsukimiMPV {
             init.set_property("input-default-bindings", true)?;
             init.set_property("user-agent", "Tsukimi")?;
             init.set_property("vo", "libmpv")?;
-            init.set_property("cache", "yes")?;
             Ok(())
         })
         .expect("Failed to create mpv instance");
