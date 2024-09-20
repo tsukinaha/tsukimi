@@ -34,20 +34,28 @@ fn locale_dir() -> &'static str {
         #[cfg(target_os = "windows")]
         {
             let exe_path = std::env::current_exe().expect("Can not get locale dir");
-            let locale_path = exe_path.ancestors().nth(2).expect("Can not get locale dir").join(WINDOWS_LOCALEDIR);
-            Box::leak(locale_path.into_boxed_str())
+            let locale_path = exe_path
+                .ancestors()
+                .nth(2)
+                .expect("Can not get locale dir")
+                .join(WINDOWS_LOCALEDIR);
+            Box::leak(locale_path.into_boxed_path())
+                .to_str()
+                .expect("Can not get locale dir")
         }
     })
 }
 
 fn main() -> glib::ExitCode {
-
     // Initialize gettext
     #[cfg(any(target_os = "linux", target_os = "windows"))]
     {
         setlocale(LocaleCategory::LcAll, "");
+        bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8")
+            .expect("Failed to set textdomain codeset");
         bindtextdomain(GETTEXT_PACKAGE, locale_dir())
             .expect("Invalid argument passed to bindtextdomain");
+
         textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
     }
 
