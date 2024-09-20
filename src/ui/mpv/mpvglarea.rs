@@ -13,6 +13,7 @@ mod imp {
     use gtk::glib;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
+    use tracing::info;
 
     use crate::ui::mpv::tsukimi_mpv::TsukimiMPV;
     use crate::ui::mpv::tsukimi_mpv::RENDER_UPDATE;
@@ -50,6 +51,7 @@ mod imp {
             };
 
             if let Some(wid) = obj.get_wid() {
+                info!("MPV Setting wid: {}", wid);
                 self.mpv.set_wid(wid as i64);
             } else {
                 self.mpv.connect_render_update(gl_context);
@@ -143,13 +145,17 @@ impl MPVGLArea {
     }
 
     pub fn get_wid(&self) -> Option<u64> {
-        let display = Display::default()?;
-
-        match display.backend() {
+        
+        return None;
+        
+        // Using wid will cover the whole window, enable it while fixed
+        #[allow(unreachable_code)]
+        match Display::default()?.backend() {
             Backend::X11 => {
                 #[cfg(target_os = "linux")]
                 {
                     return self
+                        .native()?
                         .surface()
                         .and_downcast_ref::<gdk4_x11::X11Surface>()
                         .map(|s| s.xid());
@@ -164,6 +170,7 @@ impl MPVGLArea {
                 #[cfg(target_os = "windows")]
                 {
                     return self
+                        .native()?
                         .surface()
                         .and_downcast_ref::<gdk4_win32::Win32Surface>()
                         .map(|s| s.handle() as u64);
