@@ -39,7 +39,9 @@ fn locale_dir() -> &'static str {
                 .nth(2)
                 .expect("Can not get locale dir")
                 .join(WINDOWS_LOCALEDIR);
-            Box::leak(locale_path.into_boxed_str())
+            Box::leak(locale_path.into_boxed_path())
+                .to_str()
+                .expect("Can not get locale dir")
         }
     })
 }
@@ -49,8 +51,11 @@ fn main() -> glib::ExitCode {
     #[cfg(any(target_os = "linux", target_os = "windows"))]
     {
         setlocale(LocaleCategory::LcAll, "");
+        bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8")
+            .expect("Failed to set textdomain codeset");
         bindtextdomain(GETTEXT_PACKAGE, locale_dir())
             .expect("Invalid argument passed to bindtextdomain");
+
         textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
     }
 
