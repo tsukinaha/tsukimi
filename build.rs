@@ -7,7 +7,7 @@ fn main() {
         "resources/resources.gresource.xml",
         "tsukimi.gresource",
     );
-    
+
     #[cfg(any(target_os = "linux", target_os = "windows"))]
     {
         let po_file = "po/zh_CN.po";

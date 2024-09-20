@@ -38,6 +38,8 @@ derive_builder = "0.20.1"
 anyhow = "1.0.89"
 windows = { version = "0.58.0", features = ["Win32_Foundation", "Win32_System_Registry", "Win32_UI_WindowsAndMessaging"] }
 tracing-subscriber = "0.3.18"
+gdk4-x11 = { version = "0.9.0", optional = true }
+gdk4-win32 = { version = "0.9.0", optional = true }
 
 [build-dependencies]
 embed-resource = "2.4.3"
@@ -49,6 +51,14 @@ default = ["protocols", "render"]
 protocols = [] # Enable custom protocol callbacks
 render = [] # Enable custom rendering
 build_libmpv = [] # build libmpv automatically, provided MPV_SOURCE is set
+x11 = ["gdk4-x11"]
+win32 = ["gdk4-win32"]
+
+[target.'cfg(target_os = "linux")'.dependencies]
+gdk4-x11 = { version = "0.9.0" }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+gdk4-win32 = { version = "0.9.0" }
 
 [package.metadata.deb]
 maintainer = "Inaha <tsukimi@tutanota.com>"

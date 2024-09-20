@@ -3,9 +3,9 @@ mod mpv;
 pub mod provider;
 pub mod widgets;
 use self::models::SETTINGS;
-use gtk::gdk::Display;
-use gtk::{prelude::*, CssProvider};
 use adw::prelude::*;
+use gtk::gdk::Display;
+use gtk::CssProvider;
 
 pub fn build_ui(app: &adw::Application) {
     // Create new window and present it

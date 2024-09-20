@@ -34,14 +34,17 @@ fn locale_dir() -> &'static str {
         #[cfg(target_os = "windows")]
         {
             let exe_path = std::env::current_exe().expect("Can not get locale dir");
-            let locale_path = exe_path.ancestors().nth(2).expect("Can not get locale dir").join(WINDOWS_LOCALEDIR);
+            let locale_path = exe_path
+                .ancestors()
+                .nth(2)
+                .expect("Can not get locale dir")
+                .join(WINDOWS_LOCALEDIR);
             Box::leak(locale_path.into_boxed_str())
         }
     })
 }
 
 fn main() -> glib::ExitCode {
-
     // Initialize gettext
     #[cfg(any(target_os = "linux", target_os = "windows"))]
     {

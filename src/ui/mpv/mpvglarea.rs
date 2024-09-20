@@ -1,4 +1,6 @@
 use glib::Object;
+use gtk::gdk::{Backend, Display};
+use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
@@ -47,7 +49,11 @@ mod imp {
                 return;
             };
 
-            self.mpv.connect_render_update(gl_context);
+            if let Some(wid) = obj.get_wid() {
+                self.mpv.set_wid(wid as i64);
+            } else {
+                self.mpv.connect_render_update(gl_context);
+            }
 
             glib::spawn_future_local(glib::clone!(
                 #[weak]
@@ -134,6 +140,42 @@ impl MPVGLArea {
 
     pub fn position(&self) -> f64 {
         self.imp().mpv.position()
+    }
+
+    pub fn get_wid(&self) -> Option<u64> {
+        let display = Display::default()?;
+
+        match display.backend() {
+            Backend::X11 => {
+                #[cfg(target_os = "linux")]
+                {
+                    return self
+                        .surface()
+                        .and_downcast_ref::<gdk4_x11::X11Surface>()
+                        .map(|s| s.xid());
+                }
+
+                #[cfg(not(target_os = "linux"))]
+                {
+                    return None;
+                }
+            }
+            Backend::Win32 => {
+                #[cfg(target_os = "windows")]
+                {
+                    return self
+                        .surface()
+                        .and_downcast_ref::<gdk4_win32::Win32Surface>()
+                        .map(|s| s.handle() as u64);
+                }
+                
+                #[cfg(not(target_os = "windows"))]
+                {
+                    return None;
+                }
+            }
+            _ => None,
+        }
     }
 
     pub fn set_aid(&self, value: TrackSelection) {

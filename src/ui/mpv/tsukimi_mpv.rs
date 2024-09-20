@@ -168,6 +168,10 @@ impl TsukimiMPV {
         self.set_property("time-pos", value);
     }
 
+    pub fn set_wid<T: SetData>(&self, value: T) {
+        self.set_property("wid", value);
+    }
+
     pub fn set_percent_position(&self, value: f64) {
         self.set_property("percent-pos", value);
     }
