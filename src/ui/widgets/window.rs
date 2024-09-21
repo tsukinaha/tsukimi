@@ -16,6 +16,7 @@ mod imp {
     use gtk::{glib, CompositeTemplate};
 
     use crate::ui::mpv::page::MPVPage;
+    use crate::ui::provider::tu_object::TuObject;
     use crate::ui::widgets::content_viewer::MediaContentViewer;
     use crate::ui::widgets::home::HomePage;
     use crate::ui::widgets::image_dialog::ImagesDialog;
@@ -25,6 +26,7 @@ mod imp {
     use crate::ui::widgets::media_viewer::MediaViewer;
     use crate::ui::widgets::player_toolbar::PlayerToolbarBox;
     use crate::ui::widgets::search::SearchPage;
+    use crate::ui::widgets::utils::TuItemBuildExt;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -80,11 +82,15 @@ mod imp {
         pub likedpage: TemplateChild<adw::Bin>,
         #[template_child]
         pub searchpage: TemplateChild<adw::Bin>,
+        #[template_child]
+        pub mpv_playlist: TemplateChild<gtk::ListView>,
 
         pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
         pub progress_bar_fade_animation: OnceCell<adw::TimedAnimation>,
 
         pub last_content_list_selection: RefCell<Option<i32>>,
+
+        pub mpv_playlist_selection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -140,6 +146,12 @@ mod imp {
         fn constructed(&self) {
             // Call "constructed" on parent
             self.parent_constructed();
+
+            let store = gtk::gio::ListStore::new::<TuObject>();
+            self.mpv_playlist_selection.set_model(Some(&store));
+            self.mpv_playlist.set_model(Some(&self.mpv_playlist_selection));
+            self.mpv_playlist.set_factory(Some(gtk::SignalListItemFactory::new().tu_overview_item()));
+
             let obj = self.obj();
             obj.set_fonts();
             if crate::ui::models::SETTINGS.font_size() != -1 {
@@ -186,6 +198,7 @@ use crate::config::Account;
 use crate::ui::models::SETTINGS;
 use crate::ui::provider::core_song::CoreSong;
 use crate::ui::provider::tu_item::TuItem;
+use crate::ui::provider::tu_object::TuObject;
 use crate::ui::provider::IS_ADMIN;
 use crate::utils::spawn;
 use crate::APP_ID;
@@ -655,6 +668,7 @@ impl Window {
     ) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("clapper");
+        self.set_mpv_playlist(&episode_list);
         imp.clappernav.play(
             &url,
             suburl.as_deref(),
@@ -779,5 +793,20 @@ impl Window {
             return;
         };
         self.set_help_overlay(Some(&window));
+    }
+
+    pub fn set_mpv_playlist(&self, episode_list: &Vec<TuItem>) {
+        let imp = self.imp();
+        let model = imp.mpv_playlist_selection.model();
+        let Some(store) = model.and_downcast_ref::<gio::ListStore>() else {
+            return;
+        };
+
+        store.remove_all();
+
+        for item in episode_list {
+            let object = TuObject::new(item);
+            store.append(&object);
+        }  
     }
 }

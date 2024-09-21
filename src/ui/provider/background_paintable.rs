@@ -27,8 +27,9 @@ mod imp {
                 let texture = self.texture.borrow();
                 let texture = if texture.is_none() || self.pic.borrow().as_ref() != Some(file) {
                     drop(texture);
-                    let new_texture =
-                        gdk::Texture::from_file(file).expect("Failed to create texture from file");
+                    let Ok(new_texture) = gdk::Texture::from_file(file) else {
+                        return;
+                    };
                     *self.texture.borrow_mut() = Some(new_texture.clone());
                     new_texture
                 } else {

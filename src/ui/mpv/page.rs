@@ -771,6 +771,15 @@ impl MPVPage {
         video.pause(!video.paused());
     }
 
+    #[template_callback]
+    fn on_playlist_clicked(&self) {
+        let binding = self.ancestor(adw::OverlaySplitView::static_type());
+        let Some(view) = binding.and_downcast_ref::<adw::OverlaySplitView>() else {
+            return;
+        };
+        view.set_show_sidebar(!view.shows_sidebar());
+    }
+
     pub fn key_pressed_cb(&self, key: u32, state: gtk::gdk::ModifierType) {
         self.imp().video.press_key(key, state)
     }
