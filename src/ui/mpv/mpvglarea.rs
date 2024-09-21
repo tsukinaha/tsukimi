@@ -145,7 +145,11 @@ impl MPVGLArea {
     }
 
     pub fn get_wid(&self) -> Option<u64> {
+
+        return None;
         
+        // FIXME: x11 and win32 display
+        #[allow(unreachable_code)]
         match Display::default()?.backend() {
             Backend::X11 => {
                 #[cfg(target_os = "linux")]
