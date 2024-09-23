@@ -324,9 +324,9 @@ dependencies = [
 
 [[package]]
 name = "cargo-deb"
-version = "2.6.1"
+version = "2.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ae91d87dc084b4a7962cf4057f1d3ce75891530d36f0776db3cca41af423a98c"
+checksum = "4acc4fba3972a758843b4908ccc47e7b376a9c2d35f05f0d8ed54b6890d0647b"
 dependencies = [
  "ar",
  "cargo_toml",
