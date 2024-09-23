@@ -363,7 +363,7 @@ impl MPVPage {
     }
 
     pub async fn in_play_item(&self, item: TuItem) {
-        toast!(self, "Wait for mediasource...");
+        toast!(self, "Waiting for mediasource...");
 
         let item_id = item.id();
 

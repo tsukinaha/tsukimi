@@ -63,9 +63,9 @@ mod imp {
         #[template_child]
         pub progressbar: TemplateChild<gtk::ProgressBar>,
         #[template_child]
-        pub clapperpage: TemplateChild<gtk::StackPage>,
+        pub mpvpage: TemplateChild<gtk::StackPage>,
         #[template_child]
-        pub clappernav: TemplateChild<MPVPage>,
+        pub mpvnav: TemplateChild<MPVPage>,
         #[template_child]
         pub serverselectlist: TemplateChild<gtk::ListBox>,
         #[template_child]
@@ -667,9 +667,9 @@ impl Window {
         percentage: f64,
     ) {
         let imp = self.imp();
-        imp.stack.set_visible_child_name("clapper");
+        imp.stack.set_visible_child_name("mpv");
         self.set_mpv_playlist(&episode_list);
-        imp.clappernav.play(
+        imp.mpvnav.play(
             &url,
             suburl.as_deref(),
             item,
@@ -726,13 +726,13 @@ impl Window {
     }
 
     fn is_on_mpv_stack(&self) -> bool {
-        self.imp().stack.visible_child_name() == Some("clapper".into())
+        self.imp().stack.visible_child_name() == Some("mpv".into())
     }
 
     #[template_callback]
     fn key_pressed_cb(&self, key: u32, _code: u32, state: gtk::gdk::ModifierType) -> bool {
         if self.is_on_mpv_stack() {
-            self.imp().clappernav.key_pressed_cb(key, state);
+            self.imp().mpvnav.key_pressed_cb(key, state);
             return true;
         }
         false
@@ -741,7 +741,7 @@ impl Window {
     #[template_callback]
     fn key_released_cb(&self, key: u32, _code: u32, state: gtk::gdk::ModifierType) {
         if self.is_on_mpv_stack() {
-            self.imp().clappernav.key_released_cb(key, state);
+            self.imp().mpvnav.key_released_cb(key, state);
         }
     }
 
@@ -820,6 +820,6 @@ impl Window {
             return;
         };
 
-        self.imp().clappernav.in_play_item(item.item()).await;
+        self.imp().mpvnav.in_play_item(item.item()).await;
     }
 }

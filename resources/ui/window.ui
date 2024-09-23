@@ -508,39 +508,52 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkStackPage" id="clapperpage">
-                        <property name="name">clapper</property>
+                      <object class="GtkStackPage" id="mpvpage">
+                        <property name="name">mpv</property>
                         <property name="child">
                           <object class="AdwOverlaySplitView">
                             <property name="collapsed">True</property>
                             <property name="sidebar-position">end</property>
                             <property name="sidebar">
-                              <object class="AdwToolbarView">
-                                <property name="content">
-                                  <object class="GtkScrolledWindow">
-                                    <property name="hscrollbar-policy">never</property>
-                                    <property name="valign">fill</property>
-                                    <property name="margin-bottom">3</property>
-                                    <child>
-                                      <object class="GtkListView" id="mpv_playlist">
-                                        <property name="orientation">vertical</property>
-                                        <property name="single-click-activate">True</property>
-                                        <signal name="activate" handler="on_playlist_item_activated" swapped="yes"/>
+                              <object class="AdwNavigationPage">
+                                <property name="title" translatable="yes">Playlist</property>
+                                <property name="child">
+                                  <object class="AdwToolbarView">
+                                    <child type="top">
+                                      <object class="AdwHeaderBar">
+                                        <property name="show-end-title-buttons">false</property>
                                         <style>
-                                          <class name="vertical-listview" />
+                                          <class name="flat" />
                                         </style>
                                       </object>
                                     </child>
-                                    <style>
-                                      <class name="undershoot-start" />
-                                      <class name="undershoot-end" />
-                                    </style>
+                                    <property name="content">
+                                      <object class="GtkScrolledWindow">
+                                        <property name="hscrollbar-policy">never</property>
+                                        <property name="valign">fill</property>
+                                        <property name="margin-bottom">3</property>
+                                        <child>
+                                          <object class="GtkListView" id="mpv_playlist">
+                                            <property name="orientation">vertical</property>
+                                            <property name="single-click-activate">True</property>
+                                            <signal name="activate" handler="on_playlist_item_activated" swapped="yes"/>
+                                            <style>
+                                              <class name="vertical-listview" />
+                                            </style>
+                                          </object>
+                                        </child>
+                                        <style>
+                                          <class name="undershoot-start" />
+                                          <class name="undershoot-end" />
+                                        </style>
+                                      </object>
+                                    </property>
                                   </object>
                                 </property>
                               </object>
                             </property>
                             <property name="content">
-                              <object class="MPVPage" id="clappernav">
+                              <object class="MPVPage" id="mpvnav">
                               </object>
                             </property>
                           </object>
