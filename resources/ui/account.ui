@@ -6,7 +6,7 @@
     <property name="width-request">360</property>
     <property name="height-request">500</property>
     <property name="presentation-mode">bottom-sheet</property>
-    <property name="title" translatable="yes">Add a New Account</property>
+    <property name="title" translatable="yes">Add a New Server</property>
     <child>
       <object class="AdwToastOverlay" id="toast">
         <child>
@@ -14,7 +14,7 @@
             <child>
               <object class="AdwNavigationPage">
                 <property name="tag">main</property>
-                <property name="title" translatable="yes">Add a New Account</property>
+                <property name="title" translatable="yes">Add a New Server</property>
                 <property name="child">
                   <object class="AdwToolbarView">
                     <child type="top">

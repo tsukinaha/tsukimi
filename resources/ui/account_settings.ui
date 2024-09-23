@@ -15,12 +15,6 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Appearence</property>
-            <property name="description" translatable="yes">Not all settings and features are guaranteed to be available on Windows. If you find the component too large, please try adjusting the system scaling. For more details, see the README.</property>
-            <child>
-              <object class="AdwSwitchRow" id="selectlastcontrol">
-                <property name="title" translatable="yes">Auto Select Last Server</property>
-              </object>
-            </child>
             <child>
               <object class="AdwSwitchRow" id="dailyrecommendcontrol">
                 <property name="title" translatable="yes">Daily Recommend</property>
@@ -104,8 +98,12 @@
             </child>
             <child>
               <object class="AdwSwitchRow" id="sidebarcontrol">
-                <property name="title" translatable="yes">Sidebar Overlay</property>
-                <property name="subtitle" translatable="yes">or side by side</property>
+                <property name="title" translatable="yes">Show Sidebar</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="selectlastcontrol">
+                <property name="title" translatable="yes">Auto Select Last Server</property>
               </object>
             </child>
           </object>
