@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-15 14:23+0800\n"
+"POT-Creation-Date: 2024-09-23 14:33+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,238 +21,318 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: resources/ui/account_settings.ui:13
+#: resources/ui/account_settings.ui:12
 msgid "General"
 msgstr ""
 
-#: resources/ui/account_settings.ui:18
+#: resources/ui/account_settings.ui:17
 msgid "Appearence"
 msgstr ""
 
-#: resources/ui/account_settings.ui:19
-msgid ""
-"Not all settings and features are guaranteed to be available on Windows. If "
-"you find the component too large, please try adjusting the system scaling. "
-"For more details, see the README."
-msgstr ""
-
-#: resources/ui/account_settings.ui:22
-msgid "Auto Select Last Server"
-msgstr ""
-
-#: resources/ui/account_settings.ui:27
+#: resources/ui/account_settings.ui:20
 msgid "Daily Recommend"
 msgstr ""
 
-#: resources/ui/account_settings.ui:32
+#: resources/ui/account_settings.ui:25
 msgid "Font Scale"
 msgstr ""
 
-#: resources/ui/account_settings.ui:46
+#: resources/ui/account_settings.ui:39
 msgid "Font Family"
 msgstr ""
 
-#: resources/ui/account_settings.ui:64 resources/ui/account_settings.ui:75
-#: resources/ui/account_settings.ui:92 resources/ui/account_settings.ui:109
+#: resources/ui/account_settings.ui:57 resources/ui/account_settings.ui:68
+#: resources/ui/account_settings.ui:85
 msgid "Restart App To Take Effect"
 msgstr ""
 
-#: resources/ui/account_settings.ui:74
+#: resources/ui/account_settings.ui:67
 msgid "Accent Color"
 msgstr ""
 
-#: resources/ui/account_settings.ui:91
+#: resources/ui/account_settings.ui:84
 msgid "Accent Foreground Color"
 msgstr ""
 
-#: resources/ui/account_settings.ui:108
-msgid "Theme"
+#: resources/ui/account_settings.ui:101
+msgid "Show Sidebar"
+msgstr ""
+
+#: resources/ui/account_settings.ui:106
+msgid "Auto Select Last Server"
 msgstr ""
 
 #: resources/ui/account_settings.ui:113
-msgid "System Default"
-msgstr ""
-
-#: resources/ui/account_settings.ui:114
-msgid "Adwaita"
-msgstr ""
-
-#: resources/ui/account_settings.ui:115
-msgid "Adwaita Dark"
-msgstr ""
-
-#: resources/ui/account_settings.ui:116
-msgid "Catppuccin Latte"
-msgstr ""
-
-#: resources/ui/account_settings.ui:117
-msgid "Alpha Dark"
-msgstr ""
-
-#: resources/ui/account_settings.ui:118
-msgid "???"
-msgstr ""
-
-#: resources/ui/account_settings.ui:126
-msgid "Sidebar Overlay"
-msgstr ""
-
-#: resources/ui/account_settings.ui:127
-msgid "or side by side"
-msgstr ""
-
-#: resources/ui/account_settings.ui:132
-msgid "Picture Height"
-msgstr ""
-
-#: resources/ui/account_settings.ui:148
 msgid "Network"
 msgstr ""
 
-#: resources/ui/account_settings.ui:151
+#: resources/ui/account_settings.ui:116
 msgid "HTTP Proxy"
 msgstr ""
 
-#: resources/ui/account_settings.ui:154
-msgid "emblem-ok-symbolic"
-msgstr ""
-
-#: resources/ui/account_settings.ui:164 resources/ui/account_settings.ui:214
-msgid "user-trash-symbolic"
-msgstr ""
-
-#: resources/ui/account_settings.ui:176
+#: resources/ui/account_settings.ui:141
 msgid "Threads"
 msgstr ""
 
-#: resources/ui/account_settings.ui:177
+#: resources/ui/account_settings.ui:142
 msgid "This only effects on getting images"
 msgstr ""
 
-#: resources/ui/account_settings.ui:193
+#: resources/ui/account_settings.ui:158
 msgid "Background"
 msgstr ""
 
-#: resources/ui/account_settings.ui:200
+#: resources/ui/account_settings.ui:165
 msgid "This feature may cause significant lag. Please enable it with caution."
 msgstr ""
 
-#: resources/ui/account_settings.ui:203
+#: resources/ui/account_settings.ui:168 resources/ui/account_settings.ui:401
+#: resources/ui/account_settings.ui:422
 msgid "Default"
 msgstr ""
 
-#: resources/ui/account_settings.ui:226
+#: resources/ui/account_settings.ui:191
 msgid "Opacity"
 msgstr ""
 
-#: resources/ui/account_settings.ui:240
+#: resources/ui/account_settings.ui:205
 msgid "Blur (Experimental)"
 msgstr ""
 
-#: resources/ui/account_settings.ui:241 resources/ui/account_settings.ui:247
+#: resources/ui/account_settings.ui:206 resources/ui/account_settings.ui:215
 msgid "Warning: High GPU usage"
 msgstr ""
 
-#: resources/ui/account_settings.ui:246
+#: resources/ui/account_settings.ui:214
 msgid "Blur Radius (Experimental)"
 msgstr ""
 
-#: resources/ui/account_settings.ui:264
+#: resources/ui/account_settings.ui:235 resources/ui/account_settings.ui:435
 msgid "Cache"
 msgstr ""
 
-#: resources/ui/account_settings.ui:267
+#: resources/ui/account_settings.ui:238
 msgid "Clear Cache"
 msgstr ""
 
-#: resources/ui/account_settings.ui:288
+#: resources/ui/account_settings.ui:259
 msgid "Account"
 msgstr ""
 
-#: resources/ui/account_settings.ui:304
+#: resources/ui/account_settings.ui:275
 msgid "New Password"
 msgstr ""
 
-#: resources/ui/account_settings.ui:309
+#: resources/ui/account_settings.ui:280
 msgid "Confirm Password"
 msgstr ""
 
-#: resources/ui/account_settings.ui:321
+#: resources/ui/account_settings.ui:292
 msgid "Change Password"
 msgstr ""
 
-#: resources/ui/account_settings.ui:338
+#: resources/ui/account_settings.ui:309
 msgid "Music"
 msgstr ""
 
-#: resources/ui/account_settings.ui:343 resources/ui/account_settings.ui:369
+#: resources/ui/account_settings.ui:314
 msgid "Player"
 msgstr ""
 
-#: resources/ui/account_settings.ui:346 resources/ui/player_toolbar.ui:197
+#: resources/ui/account_settings.ui:317 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
 msgstr ""
 
-#: resources/ui/account_settings.ui:350 resources/ui/player_toolbar.ui:231
+#: resources/ui/account_settings.ui:321 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
 msgstr ""
 
-#: resources/ui/account_settings.ui:351 resources/ui/player_toolbar.ui:235
+#: resources/ui/account_settings.ui:322 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
 msgstr ""
 
-#: resources/ui/account_settings.ui:352 resources/ui/player_toolbar.ui:239
+#: resources/ui/account_settings.ui:323 resources/ui/player_toolbar.ui:239
 msgid "None"
 msgstr ""
 
-#: resources/ui/account_settings.ui:364
+#: resources/ui/account_settings.ui:335
 msgid "Video"
 msgstr ""
 
-#: resources/ui/account_settings.ui:370
+#: resources/ui/account_settings.ui:343
+msgid "Seek Backward"
+msgstr ""
+
+#: resources/ui/account_settings.ui:344 resources/ui/account_settings.ui:365
+#: resources/ui/account_settings.ui:455
+msgid "Unit: Seconds"
+msgstr ""
+
+#: resources/ui/account_settings.ui:364
+msgid "Seek Forward"
+msgstr ""
+
+#: resources/ui/account_settings.ui:387
+msgid "Preferred Language"
+msgstr ""
+
+#: resources/ui/account_settings.ui:388
+msgid "This currently only applies to the player"
+msgstr ""
+
+#: resources/ui/account_settings.ui:391
+msgid "Preferred Audio Language"
+msgstr ""
+
+#: resources/ui/account_settings.ui:412
+msgid "Preferred Subtitle Language"
+msgstr ""
+
+#: resources/ui/account_settings.ui:438
+msgid "Cache Size"
+msgstr ""
+
+#: resources/ui/account_settings.ui:439
+msgid "Unit: MB"
+msgstr ""
+
+#: resources/ui/account_settings.ui:454
+msgid "Cache Time"
+msgstr ""
+
+#: resources/ui/account_settings.ui:472 resources/ui/mpvpage.ui:358
+#: resources/ui/mpvpage.ui:377
+msgid "Subtitle"
+msgstr ""
+
+#: resources/ui/account_settings.ui:475
+msgid "Subtitle Text Size"
+msgstr ""
+
+#: resources/ui/account_settings.ui:476
+msgid "This option only takes effect for srt subtitles"
+msgstr ""
+
+#: resources/ui/account_settings.ui:496
+msgid "Subtitle Text Font"
+msgstr ""
+
+#: resources/ui/account_settings.ui:497
 msgid ""
-"Gstreamer by default, If you enable mpv, you will get better compatibility "
-"and external subtitle support, but it does not support embedded window."
+"Specify font to use for subtitles that do not themselves specify a "
+"particular font"
 msgstr ""
 
-#: resources/ui/account_settings.ui:373
-msgid "Enable MPV (External Window)"
+#: resources/ui/account_settings.ui:524
+msgid "Default Volume"
 msgstr ""
 
-#: resources/ui/account_settings.ui:374
-msgid "External Subtitle Support"
+#: resources/ui/account_settings.ui:548
+msgid "Force Stereo"
 msgstr ""
 
-#: resources/ui/account_settings.ui:384
-msgid "Auto Fullscreen"
+#: resources/ui/account_settings.ui:563
+msgid "Show Buffer Speed"
 msgstr ""
 
-#: resources/ui/account_settings.ui:389
-msgid "Show Window Immediately"
+#: resources/ui/account_settings.ui:571
+msgid "Action after video ends"
 msgstr ""
 
-#: resources/ui/account_settings.ui:394
-msgid "--ytdl-format=best"
+#: resources/ui/account_settings.ui:574
+msgid "Play Next"
 msgstr ""
 
-#: resources/ui/account_settings.ui:401
-msgid "Others"
+#: resources/ui/account_settings.ui:587
+msgid "Loop Playback"
 msgstr ""
 
-#: resources/ui/account_settings.ui:404 src/ui/widgets/item.rs:1055
-msgid "Resume"
+#: resources/ui/account_settings.ui:601
+msgid "Stop"
 msgstr ""
 
-#: resources/ui/account_settings.ui:409
-msgid "Proactively Provide Progress Updates"
+#: resources/ui/account_settings.ui:617
+msgid "Video Output"
 msgstr ""
 
-#: resources/ui/account_settings.ui:410
-msgid "Every 10 Seconds or Every 300 Seconds"
+#: resources/ui/account_settings.ui:618
+msgid ""
+"Warning: Do NOT use any method other than the software's own controls to "
+"control the window. Restart to take effect"
+msgstr ""
+
+#: resources/ui/account_settings.ui:621
+msgid "libmpv (default)"
+msgstr ""
+
+#: resources/ui/account_settings.ui:637
+msgid "gpu-next"
+msgstr ""
+
+#: resources/ui/account_settings.ui:654
+msgid "dmabuf-wayland"
+msgstr ""
+
+#: resources/ui/account_settings.ui:676
+msgid "Hardware decoding"
+msgstr ""
+
+#: resources/ui/account_settings.ui:680
+msgid "no (default)"
+msgstr ""
+
+#: resources/ui/account_settings.ui:693
+msgid "auto-safe"
+msgstr ""
+
+#: resources/ui/account_settings.ui:707
+msgid "vaapi"
+msgstr ""
+
+#: resources/ui/account_settings.ui:724
+msgid "Estimate Frame Rate"
+msgstr ""
+
+#: resources/ui/account_settings.ui:732
+msgid ""
+"Use vf filter to interpolate frames to improve the smoothness of resizing "
+"and menus."
+msgstr ""
+
+#: resources/ui/account_settings.ui:735
+msgid "vf=lavfi=\"fps=fps={}:round=down\""
+msgstr ""
+
+#: resources/ui/account_settings.ui:736
+msgid "Recommended setting value: Current display frame rate"
+msgstr ""
+
+#: resources/ui/account_settings.ui:754
+msgid "Load external mpv config"
+msgstr ""
+
+#: resources/ui/account_settings.ui:755
+msgid "May cause crashes, with serious performance issues, Requires restart"
+msgstr ""
+
+#: resources/ui/account_settings.ui:758
+msgid "config=true"
+msgstr ""
+
+#: resources/ui/account_settings.ui:759
+msgid "Read from mpv config dir"
+msgstr ""
+
+#: resources/ui/account_settings.ui:775
+msgid "More"
+msgstr ""
+
+#: resources/ui/account_settings.ui:786
+msgid "More Video Settings"
 msgstr ""
 
 #: resources/ui/account.ui:9 resources/ui/account.ui:17
-msgid "Add a New Account"
+msgid "Add a New Server"
 msgstr ""
 
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
@@ -270,42 +350,82 @@ msgid "Name"
 msgstr ""
 
 #: resources/ui/account.ui:65
-msgid "Server"
-msgstr ""
-
-#: resources/ui/account.ui:66
 msgid "Server Address"
 msgstr ""
 
-#: resources/ui/account.ui:71
+#: resources/ui/account.ui:70
 msgid "Port"
 msgstr ""
 
-#: resources/ui/account.ui:78
+#: resources/ui/account.ui:77
 msgid "Username"
 msgstr ""
 
-#: resources/ui/account.ui:83
+#: resources/ui/account.ui:82
 msgid "Password"
 msgstr ""
 
 #: resources/ui/actor.ui:4 resources/ui/album_widget.ui:4
-#: resources/ui/boxset.ui:4 resources/ui/mpvpage.ui:4
-#: resources/ui/history.ui:4 resources/ui/home.ui:4 resources/ui/item.ui:4
+#: resources/ui/boxset.ui:4 resources/ui/mpvpage.ui:4 resources/ui/home.ui:4
 #: resources/ui/list.ui:4 resources/ui/search.ui:4 resources/ui/singlelist.ui:4
-#: resources/ui/window.ui:14 resources/ui/window.ui:148
-#: resources/ui/window.ui:406 resources/ui/window.ui:421
-#: resources/ui/window.ui:436
+#: resources/ui/window.ui:14 resources/ui/window.ui:166
+#: resources/ui/window.ui:464
 msgid "Tsukimi"
 msgstr ""
 
-#: resources/ui/actor.ui:73 resources/ui/boxset.ui:105
+#: resources/ui/actor.ui:70 resources/ui/boxset.ui:105
 msgid "No Inscriptions"
 msgstr ""
 
-#: resources/ui/album_widget.ui:94 resources/ui/item.ui:152
-#: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:1057
+#: resources/ui/album_widget.ui:94 resources/ui/item.ui:155
+#: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:476
 msgid "Play"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:98
+msgid "Pause"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:164 resources/ui/mpvpage.ui:166
+#: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
+msgid "Fullscreen"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:175 resources/ui/mpvpage.ui:177
+#: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
+msgid "Exit Fullscreen"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:220
+msgid "Stop and quit"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:240 resources/ui/item.ui:95 resources/ui/item.ui:131
+msgid "Loading..."
+msgstr ""
+
+#: resources/ui/mpvpage.ui:255 resources/ui/window.ui:519
+msgid "Playlist"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:267
+msgid "Media info (MPV)"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:307
+msgid "Preferences"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:323
+msgid "Playback speed"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:337
+msgid "Volume"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:350 resources/ui/mpvpage.ui:409
+msgid "Audio"
 msgstr ""
 
 #: resources/ui/disc_box.ui:9
@@ -313,7 +433,7 @@ msgid "Disc 1"
 msgstr ""
 
 #: resources/ui/images_dialog.ui:8 resources/ui/images_dialog.ui:17
-#: resources/ui/item_actions.ui:85 resources/ui/pop-menu.ui:41
+#: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:41
 #: resources/ui/song_widget.ui:155
 msgid "View Images"
 msgstr ""
@@ -346,68 +466,24 @@ msgstr ""
 msgid "Mark as Unplayed"
 msgstr ""
 
-#: resources/ui/item_actions.ui:53
-msgid "Mark This Episode as Played"
-msgstr ""
-
-#: resources/ui/item_actions.ui:59
-msgid "Mark This Episode as Unplayed"
-msgstr ""
-
-#: resources/ui/item_actions.ui:65
-msgid "Like This Episode"
-msgstr ""
-
-#: resources/ui/item_actions.ui:71
-msgid "Unlike This Episode"
-msgstr ""
-
-#: resources/ui/item_actions.ui:79 resources/ui/metadata_dialog.ui:20
+#: resources/ui/item_actions.ui:53 resources/ui/metadata_dialog.ui:20
 #: resources/ui/pop-menu.ui:35 resources/ui/song_widget.ui:150
 msgid "View Metadata"
 msgstr ""
 
-#: resources/ui/item_actions.ui:93
-msgid "View This Episode Metadata"
-msgstr ""
-
-#: resources/ui/item_actions.ui:99
-msgid "View This Episode Images"
-msgstr ""
-
-#: resources/ui/item.ui:73 resources/ui/item.ui:129
-msgid "Loading..."
-msgstr ""
-
-#: resources/ui/item.ui:93
-msgid "loading"
-msgstr ""
-
-#: resources/ui/item.ui:187
+#: resources/ui/item.ui:189
 msgid "Video: "
 msgstr ""
 
-#: resources/ui/item.ui:207
+#: resources/ui/item.ui:209
 msgid "Subtitle: "
 msgstr ""
 
-#: resources/ui/item.ui:260
-msgid "Search episodes in current season"
+#: resources/ui/item.ui:264 src/ui/widgets/home.rs:172
+msgid "Continue Watching"
 msgstr ""
 
-#: resources/ui/item.ui:354 resources/ui/metadata_dialog.ui:200
-msgid "Overview"
-msgstr ""
-
-#: resources/ui/item.ui:384
-msgid "Season"
-msgstr ""
-
-#: resources/ui/item.ui:415
-msgid "Episode"
-msgstr ""
-
-#: resources/ui/item.ui:469
+#: resources/ui/item.ui:430
 msgid "MediaInfo"
 msgstr ""
 
@@ -421,14 +497,6 @@ msgstr ""
 
 #: resources/ui/media_viewer.ui:46 resources/ui/media_viewer.ui:48
 msgid "Media Menu"
-msgstr ""
-
-#: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-msgid "Fullscreen"
-msgstr ""
-
-#: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-msgid "Exit Fullscreen"
 msgstr ""
 
 #: resources/ui/metadata_dialog.ui:29
@@ -461,6 +529,10 @@ msgstr ""
 
 #: resources/ui/metadata_dialog.ui:147
 msgid "Pick Time"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:200
+msgid "Overview"
 msgstr ""
 
 #: resources/ui/metadata_dialog.ui:227
@@ -524,6 +596,14 @@ msgid "Unlike"
 msgstr ""
 
 #: resources/ui/pop-menu.ui:47
+msgid "Identify"
+msgstr ""
+
+#: resources/ui/pop-menu.ui:53
+msgid "Refresh Metadata"
+msgstr ""
+
+#: resources/ui/pop-menu.ui:59
 msgid "Scan"
 msgstr ""
 
@@ -607,54 +687,39 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: resources/ui/window.ui:97
+#: resources/ui/window.ui:104
 msgid "No Server"
 msgstr ""
 
-#: resources/ui/window.ui:98
-msgid ""
-"Add a server to get started.\n"
-"You should install the package `gst-libav` to play media files with built-in "
-"player."
-msgstr ""
-
-#: resources/ui/window.ui:102
+#: resources/ui/window.ui:107
 msgid "Add Server"
 msgstr ""
 
-#: resources/ui/window.ui:156
+#: resources/ui/window.ui:174
 msgid "Log Out"
 msgstr ""
 
-#: resources/ui/window.ui:191
-msgid "Servers"
-msgstr ""
-
-#: resources/ui/window.ui:220
+#: resources/ui/window.ui:221
 msgid "Contents"
 msgstr ""
 
-#: resources/ui/window.ui:246 src/ui/widgets/window.rs:346
-#: src/ui/widgets/window.rs:473 src/ui/widgets/window.rs:478
-#: src/ui/widgets/window.rs:482 src/ui/widgets/window.rs:487
-#: src/ui/widgets/window.rs:501
+#: resources/ui/window.ui:272
 msgid "Home"
 msgstr ""
 
-#: resources/ui/window.ui:276 src/ui/widgets/window.rs:359
-#: src/ui/widgets/window.rs:538 src/ui/widgets/window.rs:542
-#: src/ui/widgets/window.rs:547 src/ui/widgets/window.rs:552
+#: resources/ui/window.ui:318
 msgid "Liked"
 msgstr ""
 
-#: resources/ui/window.ui:306 src/ui/widgets/window.rs:372
-#: src/ui/widgets/window.rs:528 src/ui/widgets/window.rs:562
-#: src/ui/widgets/window.rs:566 src/ui/widgets/window.rs:571
-#: src/ui/widgets/window.rs:576
+#: resources/ui/window.ui:364
 msgid "Search"
 msgstr ""
 
-#: src/ui/widgets/actor.rs:213 src/ui/widgets/boxset.rs:214
+#: resources/ui/window.ui:379
+msgid "Servers"
+msgstr ""
+
+#: src/ui/widgets/actor.rs:218 src/ui/widgets/boxset.rs:217
 msgid "Links"
 msgstr ""
 
@@ -666,47 +731,43 @@ msgstr ""
 msgid "Account added successfully"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:170
+#: src/ui/widgets/account_settings.rs:185
 msgid "Password cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:174
+#: src/ui/widgets/account_settings.rs:189
 msgid "Passwords do not match!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:179
+#: src/ui/widgets/account_settings.rs:196
 msgid "Password changed successfully! Please login again."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:182
+#: src/ui/widgets/account_settings.rs:202
 msgid "Failed to change password"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:315
+#: src/ui/widgets/account_settings.rs:288
 msgid "Cache Cleared"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:471
+#: src/ui/widgets/account_settings.rs:317
+msgid "No file selected"
+msgstr ""
+
+#: src/ui/widgets/account_settings.rs:413
 msgid "Font Cleared, Restart to take effect."
 msgstr ""
 
-#: src/ui/widgets/boxset.rs:224
+#: src/ui/widgets/boxset.rs:227
 msgid "Items"
 msgstr ""
 
-#: src/ui/widgets/history.rs:126
-msgid "Favourite"
-msgstr ""
-
-#: src/ui/widgets/home.rs:143
-msgid "Continue Watching"
-msgstr ""
-
-#: src/ui/widgets/home.rs:159
+#: src/ui/widgets/home.rs:194
 msgid "Library"
 msgstr ""
 
-#: src/ui/widgets/home.rs:190
+#: src/ui/widgets/home.rs:238
 msgid "Latest"
 msgstr ""
 
@@ -722,8 +783,16 @@ msgstr ""
 msgid "Image copied to clipboard"
 msgstr ""
 
-#: src/ui/widgets/image_infocard.rs:156 src/ui/widgets/tu_list_item.rs:776
+#: src/ui/widgets/image_infocard.rs:156
 msgid "Error loading image"
+msgstr ""
+
+#: src/ui/widgets/item.rs:472
+msgid "Resume"
+msgstr ""
+
+#: src/ui/widgets/list.rs:113
+msgid "Channels"
 msgstr ""
 
 #: src/ui/widgets/star_toggle.rs:64
@@ -734,10 +803,14 @@ msgstr ""
 msgid "Add to favorites"
 msgstr ""
 
-#: src/ui/widgets/tu_list_item.rs:671
-msgid "Success"
+#: src/ui/widgets/tu_list_item.rs:217
+msgid "Present"
 msgstr ""
 
-#: src/ui/widgets/window.rs:515
-msgid "History"
+#: src/ui/widgets/tu_list_item.rs:542
+msgid "Scanning..."
+msgstr ""
+
+#: src/ui/widgets/tu_list_item.rs:705 src/ui/widgets/tu_list_item.rs:773
+msgid "Success"
 msgstr ""

@@ -7,7 +7,6 @@ resources/ui/mpvpage.ui
 resources/ui/content_viewer.ui
 resources/ui/disc_box.ui
 resources/ui/dropdown.ui
-resources/ui/history.ui
 resources/ui/home.ui
 resources/ui/horbu_scrolled.ui
 resources/ui/hortu_scrolled.ui
@@ -33,7 +32,6 @@ src/ui/widgets/actor.rs
 src/ui/widgets/boxset.rs
 src/ui/widgets/content_viewer.rs
 src/ui/widgets/disc_box.rs
-src/ui/widgets/history.rs
 src/ui/widgets/home.rs
 src/ui/widgets/image_dialog.rs
 src/ui/widgets/image_infocard.rs
