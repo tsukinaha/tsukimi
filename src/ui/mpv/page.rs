@@ -359,10 +359,16 @@ impl MPVPage {
             return;
         };
 
-        let next_item_id = next_item.id();
+        self.in_play_item(next_item).await;
+    }
+
+    pub async fn in_play_item(&self, item: TuItem) {
+        let item_id = item.id();
+
+        let video_list = self.imp().current_episode_list.borrow().clone();
 
         let playback =
-            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&next_item_id).await })
+            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&item_id).await })
                 .await
             {
                 Ok(playback) => playback,
@@ -388,13 +394,13 @@ impl MPVPage {
         };
 
         let back = Back {
-            id: next_item.id(),
+            id: item.id(),
             playsessionid: playback.play_session_id,
             mediasourceid: media_source_id.to_string(),
             tick: 0,
         };
 
-        self.play(&url, None, next_item.clone(), video_list, Some(back), 0.0);
+        self.play(&url, None, item.clone(), video_list, Some(back), 0.0);
     }
 
     pub async fn on_next_video(&self) {
@@ -721,7 +727,7 @@ impl MPVPage {
         let back = self.imp().back.borrow();
 
         // close window when vo=gpu-next will set position to 0, so we need to ignore it
-        if position < &9.0 {
+        if position < &9.0 && backtype != BackType::Start {
             return;
         }
 

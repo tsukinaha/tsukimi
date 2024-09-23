@@ -809,4 +809,17 @@ impl Window {
             store.append(&object);
         }  
     }
+
+    #[template_callback]
+    async fn on_playlist_item_activated(&self, position: u32, view: &gtk::ListView) {
+        let Some(model) = view.model() else {
+            return;
+        };
+
+        let Some(item) = model.item(position).and_downcast::<TuObject>() else {
+            return;
+        };
+
+        self.imp().clappernav.in_play_item(item.item()).await;
+    }
 }

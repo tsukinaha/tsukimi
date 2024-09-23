@@ -8,8 +8,7 @@ pub fn runtime() -> &'static Runtime {
     RUNTIME.get_or_init(|| {
         runtime::Builder::new_multi_thread()
             .worker_threads(SETTINGS.threads() as usize)
-            .enable_io()
-            .enable_time()
+            .enable_all()
             .build()
             .expect("Failed to create runtime")
     })
