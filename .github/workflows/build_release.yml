@@ -137,7 +137,7 @@ jobs:
           docker run -d --name tsukimi tsukimi
           docker cp tsukimi:/usr/src/tsukimi/. artifact/
           cd artifact
-          tar -czf tsukimi-x86_64-linux-gnu.tar.gz tsukimi moe.tsuna.tsukimi.gschema.xml
+          tar -czf tsukimi-x86_64-linux-gnu.tar.gz tsukimi moe.tsuna.tsukimi.gschema.xml i18n
 
       - name: Upload artifact
         if: ${{ matrix.target == 'x86_64-unknown-linux-gnu' }}

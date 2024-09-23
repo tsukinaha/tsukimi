@@ -30,4 +30,6 @@ COPY --from=builder /home/alice/target/debian/*.deb /usr/src/tsukimi/
 
 COPY --from=builder /home/alice/moe.tsuna.tsukimi.gschema.xml /usr/src/tsukimi/
 
+COPY --from=builder /home/alice/i18n /usr/src/tsukimi/i18n
+
 ENTRYPOINT ["sleep","3600"]
