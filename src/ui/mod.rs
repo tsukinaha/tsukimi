@@ -16,7 +16,7 @@ pub fn build_ui(app: &adw::Application) {
                 .application_name("Tsukimi")
                 .version(crate::config::APP_VERSION)
                 .comments(
-                    "A simple third-party Emby client.\nVersion: tsukimi 0.12.2 \n2024.8.29 14:30",
+                    "A simple third-party Emby client.\nVersion: tsukimi 0.12.3 \n2024.9.23 15:21",
                 )
                 .website("https://github.com/tsukinaha/tsukimi")
                 .application_icon("tsukimi")
