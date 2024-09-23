@@ -1,9 +1,8 @@
 name: CI Passing
 on:
-  workflow_dispatch:
-  # push:
-  #   tags:
-  #     - v*
+  push:
+    tags:
+      - v*
 
 env:
   CARGO_TERM_COLOR: always
@@ -19,48 +18,141 @@ jobs:
           - arch: x86_64-linux-gnu
             os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            artifact: tsukimi
-            ext:
-          # x86_64-apple-darwin
-          # - arch: x86_64-apple-darwin
-          #   os: macos-latest
-          #   target: x86_64-apple-darwin
-          #   artifact: tsukimi
-          #   ext:
+          # x86_64-windows-gnu
+          - arch: x86_64-windows-gnu
+            os: windows-latest
+            target: x86_64-pc-windows-gnu
+            artifact: tsukimi.exe
 
-    runs-on: ${{matrix.os}}
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build ${{matrix.target}}
-        if: ${{matrix.target == 'x86_64-unknown-linux-gnu'}}
+      - name: Setup msys2
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          release: false
+          msystem: MINGW64
+          install: >-
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-mpv
+            mingw-w64-x86_64-libadwaita
+            mingw-w64-x86_64-gstreamer
+            mingw-w64-x86_64-glib2
+            mingw-w64-x86_64-gst-plugins-base
+            mingw-w64-x86_64-gst-plugins-good
+            mingw-w64-x86_64-gst-plugins-bad
+            mingw-w64-x86_64-gst-plugins-ugly
+            mingw-w64-x86_64-gst-libav
+            curl
+
+      - name: Build tsukimi-${{ matrix.target }}
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        shell: msys2 {0}
+        run: |
+          export PATH="/c/Users/runneradmin/.cargo/bin:$PATH"
+          rustup default stable-gnu
+          cargo build --release --locked
+
+      - name: Prepare Package
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        shell: msys2 {0}
+        run: |
+          mkdir artifact && cd artifact
+          mkdir tsukimi-windows-gnu-amd64/ && cd tsukimi-windows-gnu-amd64/ && mkdir bin/ && mkdir share/ && mkdir lib/
+          cp $GITHUB_WORKSPACE/target/release/${{ matrix.artifact }} bin/
+          cp /mingw64/bin/gdbus.exe bin/
+
+          cp -r /mingw64/lib/gdk-pixbuf-2.0 lib/
+          find lib/gdk-pixbuf-2.0/2.10.0/loaders -type f ! \( -name "*-svg.dll" -o -name "*-png.dll" -o -name "*-jpeg.dll" \) -exec rm -f "{}" \;
+
+          cp -r /mingw64/lib/gio lib/
+
+          cp -r /mingw64/lib/gstreamer-1.0 lib/ && find lib/gstreamer-1.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
+
+          cp -r /mingw64/share/glib-2.0 share/
+          find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rf "{}" \;
+          mv $GITHUB_WORKSPACE/moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
+          glib-compile-schemas.exe share/glib-2.0/schemas/
+          find share/glib-2.0/ -type f ! -name "*.compiled" -exec rm -f "{}" \;
+
+          cp -r /mingw64/share/icons share/
+          cp $GITHUB_WORKSPACE/resources/ui/icons/tsukimi.png share/icons/
+          rm -rf share/icons/hicolor && rm -rf share/icons/AdwaitaLegacy && rm -rf share/icons/Adwaita/scalable && rm -rf share/icons/Adwaita/cursors
+          rm -rf share/icons/Adwaita/16x16 && rm -rf share/icons/Adwaita/symbolic-up-to-32
+
+          find . -type d -empty -delete
+
+          cd lib/gstreamer-1.0
+          rm -f \
+            libgstadpcmenc.dll libgstamfcodec.dll libgstdvbsubenc.dll libgstencoding.dll \
+            libgstfrei0r.dll libgstinter.dll libgstlame.dll libgstldac.dll libgstmpeg2enc.dll \
+            libgstmpegpsmux.dll libgstmpegtsmux.dll libgstmplex.dll libgstrealmedia.dll \
+            libgstsubenc.dll libgstsvtav1.dll libgstsvthevcenc.dll libgsttwolame.dll \
+            libgstvoamrwbenc.dll libgstwavenc.dll libgstx264.dll libgstx265.dll \
+            libgstxingmux.dll libgsty4menc.dll libgstzbar.dll
+
+          cd $GITHUB_WORKSPACE/artifact/tsukimi-windows-gnu-amd64
+          ldd bin/tsukimi.exe | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
+          find lib/ -type f -name "*.dll" -exec ldd "{}" \; | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
+
+      - name: Create NSIS installer
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        shell: powershell
+        run: |
+          cp tsukimi_installer.nsi artifact
+          makensis /V4 artifact/tsukimi_installer.nsi
+          rm artifact/tsukimi_installer.nsi
+
+      - name: Build Thin Package
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        shell: powershell
+        run: |
+          cd artifact/tsukimi-windows-gnu-amd64
+          7z.exe a ../tsukimi-${{matrix.arch}}-gtk416.7z ./*
+          mv ../TsukimiSetup.exe ../TsukimiSetup-gtk416.exe
+
+      - name: Upload artifact
+        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsukimi-${{ matrix.arch }}
+          path: |
+            artifact/*.exe
+            artifact/*.7z
+          compression-level: 0
+          retention-days: 3
+          if-no-files-found: error
+
+      - name: Build ${{ matrix.target }}
+        if: ${{ matrix.target == 'x86_64-unknown-linux-gnu' }}
         run: |
           mkdir artifact
           docker build -t tsukimi .
           docker run -d --name tsukimi tsukimi
           docker cp tsukimi:/usr/src/tsukimi/. artifact/
-
-      # - name: Build ${{matrix.target}}
-      #   if: ${{matrix.target == 'x86_64-apple-darwin'}}
-      #   run: |
-      #     brew install gtk4
-      #     brew install libadwaita
-      #     rustup target add ${{matrix.target}}
-      #     cargo build --release --locked --target ${{matrix.target}}
-      #     mkdir artifact
-      #     cp target/${{matrix.target}}/release/${{matrix.artifact}} artifact/
+          cd artifact
+          tar -czf tsukimi-x86_64-linux-gnu.tar.gz tsukimi moe.tsuna.tsukimi.gschema.xml
 
       - name: Upload artifact
+        if: ${{ matrix.target == 'x86_64-unknown-linux-gnu' }}
         uses: actions/upload-artifact@v4
         with:
-          name: tsukimi-${{matrix.arch}}
+          name: tsukimi-${{ matrix.arch }}
           path: |
-            artifact/*
+            artifact/tsukimi
+            artifact/*.tar.gz
+            artifact/*.xml
+            artifact/*.deb
           compression-level: 0
           overwrite: true
           retention-days: 3
+          if-no-files-found: error
 
   publish:
     needs: build
@@ -74,28 +166,20 @@ jobs:
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
- 
-      # - name: Package MacOS x86_64
-      #   run: |
-      #     mkdir -p Tsukimi.app/Contents/MacOS
-      #     mkdir -p Tsukimi.app/Contents/Resources
-      #     cp share/macos/Info.plist Tsukimi.app/Contents/
-      #     cp share/macos/AppIcon.icns Tsukimi.app/Contents/Resources/
-      #     mv tsukimi-x86_64-apple-darwin/tsukimi Tsukimi.app/Contents/MacOS/
-      #     tar -czf tsukimi-x86_64-apple-darwin.tar.gz Tsukimi.app/
-
-      - name: Package Linux GNU
-        run: |
-          mv tsukimi-x86_64-linux-gnu/* .
-          tar -czf tsukimi-x86_64-linux-gnu.tar.gz tsukimi gschemas.compiled
 
       - name: Calculate hash
         run: |
-          sha512sum *.tar.gz > tsukimi.sha512sum
+          mv tsukimi-x86_64-linux-gnu/* .
+          mv tsukimi-x86_64-windows-gnu/* .
+          sha512sum *.7z > tsukimi.sha512sum
+          sha512sum *.exe >> tsukimi.sha512sum
+          sha512sum *.tar.gz >> tsukimi.sha512sum
           sha512sum *.deb >> tsukimi.sha512sum
+          sha512sum tsukimi >> tsukimi.sha512sum
 
       - name: Get latest tag name
-        run: echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+        id: tag
+        run: echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
       - name: Upload Github Assets
         uses: softprops/action-gh-release@v2
@@ -103,7 +187,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
+            tsukimi
+            moe.tsuna.tsukimi.gschema.xml
+            *.exe
+            *.7z
             *.tar.gz
             *.deb
             tsukimi.sha512sum
-          tag_name: ${{ env.TAG_NAME }}
+          tag_name: ${{ steps.tag.outputs.TAG_NAME }}
