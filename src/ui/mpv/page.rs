@@ -363,6 +363,8 @@ impl MPVPage {
     }
 
     pub async fn in_play_item(&self, item: TuItem) {
+        toast!(self, "Wait for mediasource...");
+
         let item_id = item.id();
 
         let video_list = self.imp().current_episode_list.borrow().clone();
