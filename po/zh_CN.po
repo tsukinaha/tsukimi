@@ -47,7 +47,7 @@ msgstr "字体族"
 #: resources/ui/account_settings.ui:57 resources/ui/account_settings.ui:68
 #: resources/ui/account_settings.ui:85
 msgid "Restart App To Take Effect"
-msgstr "重启应用程序以取得效果"
+msgstr "重启应用程序生效"
 
 #: resources/ui/account_settings.ui:67
 msgid "Accent Color"
