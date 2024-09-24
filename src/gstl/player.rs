@@ -11,6 +11,7 @@ pub mod imp {
     use std::cell::{Cell, RefCell};
     use std::sync::OnceLock;
     use tracing::debug;
+    use anyhow::Result;
 
     use super::*;
     use crate::ui::widgets::song_widget::State;
@@ -160,7 +161,7 @@ pub mod imp {
                     while let Ok(true) = STREAM_START.rx.recv().await {
                         let obj = imp.obj();
                         if obj.gapless() {
-                            imp.playlist_next();
+                            let _ = imp.playlist_next();
                         }
                         obj.set_gapless(false);
                         obj.emit_by_name::<()>("stream-start", &[]);
@@ -174,7 +175,9 @@ pub mod imp {
                 async move {
                     while let Ok(true) = EOS.rx.recv().await {
                         let obj = imp.obj();
-                        imp.playlist_next();
+                        if imp.playlist_next().is_err() {
+                            return;
+                        };
                         imp.stop();
                         if obj.gapless() {
                             if let Some(core_song) = imp.obj().active_core_song() {
@@ -249,7 +252,7 @@ pub mod imp {
             gst::prelude::ObjectExt::set_property(self.pipeline(), "uri", uri);
         }
 
-        pub fn playlist_next(&self) {
+        pub fn playlist_next(&self) -> Result<()> {
             if let Some(core_song) = self.active_core_song.borrow().as_ref() {
                 core_song.set_state(State::Played);
             };
@@ -257,6 +260,9 @@ pub mod imp {
                 core_song.set_state(State::Playing);
                 debug!("Next Song: {}", core_song.name());
                 self.obj().set_active_core_song(Some(core_song));
+                Ok(())
+            } else {
+                Err(anyhow::Error::msg("No next song"))
             }
         }
 
@@ -347,9 +353,11 @@ pub mod imp {
 
         pub fn set_position(&self, position: f64) {
             let position = gst::ClockTime::from_seconds(position as u64);
-            self.pipeline()
+            if let Err(e) = self.pipeline()
                 .seek_simple(gst::SeekFlags::FLUSH | gst::SeekFlags::KEY_UNIT, position)
-                .expect("Seek failed");
+            {
+                tracing::warn!("Failed to seek: {}", e);
+            }
         }
 
         pub fn load_model(&self, active_model: gtk::gio::ListStore, active_core_song: CoreSong) {
@@ -369,7 +377,7 @@ pub mod imp {
         }
 
         pub fn next(&self) {
-            self.playlist_next();
+            let _ = self.playlist_next();
             self.prepre_play();
         }
 

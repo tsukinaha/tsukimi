@@ -820,4 +820,38 @@
       </object>
     </property>
   </object>
+  <object class="AdwNavigationPage" id="preferred_version_subpage">
+    <property name="title" translatable="yes">Preferred Version</property>
+    <property name="tag">preferred-version</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="show-end-title-buttons">false</property>
+            <style>
+              <class name="flat" />
+            </style>
+          </object>
+        </child>
+        <property name="content">
+          <object class="AdwClamp">
+            <child>
+              <object class="AdwPreferencesGroup">
+                <property name="title" translatable="yes">Preferred Video Version</property>
+                <property name="sensitive">False</property>
+                <property name="margin-start">30</property>
+                <property name="margin-end">30</property>
+                <property name="header_suffix">
+                  <object class="GtkButton">
+                    <property name="valign">center</property>
+                    <property name="icon-name">list-add-symbolic</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+  </object>
 </interface>
