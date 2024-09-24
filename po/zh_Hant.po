@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-24 12:34+0000\n"
+"PO-Revision-Date: 2024-09-24 12:45+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
@@ -167,61 +167,61 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:343
 msgid "Seek Backward"
-msgstr ""
+msgstr "快退"
 
 #: resources/ui/account_settings.ui:344 resources/ui/account_settings.ui:365
 #: resources/ui/account_settings.ui:455
 msgid "Unit: Seconds"
-msgstr ""
+msgstr "單位:秒"
 
 #: resources/ui/account_settings.ui:364
 msgid "Seek Forward"
-msgstr ""
+msgstr "快進"
 
 #: resources/ui/account_settings.ui:387
 msgid "Preferred Language"
-msgstr ""
+msgstr "語言偏好"
 
 #: resources/ui/account_settings.ui:388
 msgid "This currently only applies to the player"
-msgstr ""
+msgstr "目前僅適用於播放器"
 
 #: resources/ui/account_settings.ui:391
 msgid "Preferred Audio Language"
-msgstr ""
+msgstr "首選音軌語言"
 
 #: resources/ui/account_settings.ui:412
 msgid "Preferred Subtitle Language"
-msgstr ""
+msgstr "首選字幕語言"
 
 #: resources/ui/account_settings.ui:438
 msgid "Cache Size"
-msgstr ""
+msgstr "緩存大小"
 
 #: resources/ui/account_settings.ui:439
 msgid "Unit: MB"
-msgstr ""
+msgstr "單位:MB"
 
 #: resources/ui/account_settings.ui:454
 msgid "Cache Time"
-msgstr ""
+msgstr "緩存時間"
 
 #: resources/ui/account_settings.ui:472 resources/ui/mpvpage.ui:358
 #: resources/ui/mpvpage.ui:377
 msgid "Subtitle"
-msgstr ""
+msgstr "字幕"
 
 #: resources/ui/account_settings.ui:475
 msgid "Subtitle Text Size"
-msgstr ""
+msgstr "字幕字體大小"
 
 #: resources/ui/account_settings.ui:476
 msgid "This option only takes effect for srt subtitles"
-msgstr ""
+msgstr "此選項僅對srt字幕生效"
 
 #: resources/ui/account_settings.ui:496
 msgid "Subtitle Text Font"
-msgstr ""
+msgstr "字幕字體"
 
 #: resources/ui/account_settings.ui:497
 msgid ""
