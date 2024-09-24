@@ -149,8 +149,10 @@ mod imp {
 
             let store = gtk::gio::ListStore::new::<TuObject>();
             self.mpv_playlist_selection.set_model(Some(&store));
-            self.mpv_playlist.set_model(Some(&self.mpv_playlist_selection));
-            self.mpv_playlist.set_factory(Some(gtk::SignalListItemFactory::new().tu_overview_item()));
+            self.mpv_playlist
+                .set_model(Some(&self.mpv_playlist_selection));
+            self.mpv_playlist
+                .set_factory(Some(gtk::SignalListItemFactory::new().tu_overview_item()));
 
             let obj = self.obj();
             obj.set_fonts();
@@ -807,7 +809,7 @@ impl Window {
         for item in episode_list {
             let object = TuObject::new(item);
             store.append(&object);
-        }  
+        }
     }
 
     #[template_callback]
