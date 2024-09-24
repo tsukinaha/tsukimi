@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-24 11:33+0000\n"
+"PO-Revision-Date: 2024-09-24 11:54+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
@@ -87,7 +87,7 @@ msgstr "背景"
 
 #: resources/ui/account_settings.ui:165
 msgid "This feature may cause significant lag. Please enable it with caution."
-msgstr "此功能可能会造成严重性能问题。请谨慎地启用它。"
+msgstr "此功能可能会造成严重性能问题，请谨慎启用"
 
 #: resources/ui/account_settings.ui:168 resources/ui/account_settings.ui:401
 #: resources/ui/account_settings.ui:422
@@ -104,7 +104,7 @@ msgstr "模糊(实验性)"
 
 #: resources/ui/account_settings.ui:206 resources/ui/account_settings.ui:215
 msgid "Warning: High GPU usage"
-msgstr "警告: GPU 使用量较高"
+msgstr "警告: GPU 使用率较高"
 
 #: resources/ui/account_settings.ui:214
 msgid "Blur Radius (Experimental)"
@@ -181,7 +181,7 @@ msgstr "向前跳转"
 
 #: resources/ui/account_settings.ui:387
 msgid "Preferred Language"
-msgstr "偏好语言"
+msgstr "语言偏好"
 
 #: resources/ui/account_settings.ui:388
 msgid "This currently only applies to the player"
@@ -533,7 +533,7 @@ msgstr "专辑"
 
 #: resources/ui/metadata_dialog.ui:247
 msgid "Track Number"
-msgstr ""
+msgstr "音轨编号"
 
 #: resources/ui/metadata_dialog.ui:260
 msgid "TheMovieDb Id"
@@ -617,7 +617,7 @@ msgstr "筛选面板"
 
 #: resources/ui/singlelist.ui:91
 msgid "Bitrate"
-msgstr "位速率"
+msgstr "比特率"
 
 #: resources/ui/singlelist.ui:93
 msgid "Imdb Rate"
@@ -801,15 +801,15 @@ msgstr "成功"
 
 #: src/ui/widgets/server_panel.rs:98
 msgid "Shut down server"
-msgstr "关闭服务"
+msgstr "关闭服务器"
 
 #: src/ui/widgets/server_panel.rs:99
 msgid "Are you sure you want to shut down the server?"
-msgstr "您确定要关闭服务吗？"
+msgstr "您确定要关闭服务器吗？"
 
 #: src/ui/widgets/server_panel.rs:130
 msgid "Restart server"
-msgstr "重启服务"
+msgstr "重启服务器"
 
 #: src/ui/widgets/server_panel.rs:131
 msgid "Are you sure you want to restart the server?"
@@ -817,11 +817,11 @@ msgstr "您确定要重启服务吗？"
 
 #: src/ui/widgets/server_panel.rs:168
 msgid "Server is shutting down"
-msgstr "服务正在关闭"
+msgstr "服务器正在关闭"
 
 #: src/ui/widgets/server_panel.rs:180
 msgid "Server is restarting"
-msgstr "服务正在重启"
+msgstr "服务器正在重启"
 
 #: src/ui/widgets/server_panel.rs:321
 msgid "Task started"
