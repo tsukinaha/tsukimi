@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-24 15:23+0000\n"
+"PO-Revision-Date: 2024-09-24 16:02+0000\n"
 "Last-Translator: dyphire <qimoge@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
@@ -657,7 +657,7 @@ msgstr "背景图"
 
 #: resources/ui/singlelist.ui:153
 msgid "Banner"
-msgstr "横幅"
+msgstr "题图"
 
 #: resources/ui/window.ui:5
 msgid "Sign out"
@@ -669,7 +669,7 @@ msgstr "关于"
 
 #: resources/ui/window.ui:104
 msgid "No Server"
-msgstr "没有服务器"
+msgstr "无服务器"
 
 #: resources/ui/window.ui:107
 msgid "Add Server"
@@ -777,7 +777,7 @@ msgstr "未找到视频源"
 
 #: src/ui/widgets/list.rs:113
 msgid "Channels"
-msgstr "频道"
+msgstr "通道"
 
 #: src/ui/widgets/star_toggle.rs:64
 msgid "Remove from favorites"
@@ -813,7 +813,7 @@ msgstr "重启服务器"
 
 #: src/ui/widgets/server_panel.rs:131
 msgid "Are you sure you want to restart the server?"
-msgstr "您确定要重启服务吗？"
+msgstr "您确定要重启服务器吗？"
 
 #: src/ui/widgets/server_panel.rs:168
 msgid "Server is shutting down"
