@@ -15,34 +15,10 @@ https://dev.tsukinaha.org/tsukimi
  <img src="./docs/tsukimi2.png"/>
 </div>
 
-## Build
-[Build On Linux](./docs/build_on_linux.md)
-
 ## Installation
-### Linux
-Archlinux
-```
-# From AUR
-## Git Version
-paru -S tsukimi-git
-
-## Bin
-paru -S tsukimi-bin
-```
+### Native package
+[![Packaging status](https://repology.org/badge/vertical-allrepos/tsukimi.svg)](https://repology.org/project/tsukimi/versions)
  
-
-### Windows
-- Scoop
-```
-# Install tsukimi only, tsukimi included in Scoop/Extras
-## if you want to tansfer previous installed tsukimi from scol to Extras, first uninstall it and reinstall by `scoop install Extras/tsukimi` 
-scoop install tsukimi
-
-# Or install tsukimi with mpv configs
-scoop bucket add scol https://github.com/Kosette/scol.git
-scoop install tsukimi-full
-```
-- [Release](https://github.com/tsukinaha/tsukimi/releases/latest)
 
 ## MPV Config
 Set config=true to enable external config.
@@ -50,6 +26,23 @@ Set config=true to enable external config.
 - Windows: `$MPV_HOME`>`%APPDATA%/mpv`
 
 [MPV-manual#files](https://mpv.io/manual/master/#files) 
+
+## Contributing
+### Code
+Please join our [Telegram Group](https://t.me/+BtTTXtCZFSxjZGU1) (Only for contributing)
+
+### Translations
+
+If you'd like to help translating **Tsukimi** into your language, please head over to [Weblate](https://hosted.weblate.org/projects/tsukimi/).
+
+<a href="https://hosted.weblate.org/engage/tsukimi/">
+<img src="https://hosted.weblate.org/widget/tsukimi/main/multi-auto.svg" alt="翻译状态" />
+</a>
+
+
+
+## Build
+[Build On Linux](./docs/build_on_linux.md)
 
 ## Credits
 - [gtk4-rs](https://github.com/gtk-rs/gtk4-rs)
@@ -60,6 +53,9 @@ Set config=true to enable external config.
 - Gnome Music
 - Fractal
 - Clapper
+
+## Disclaimer
+The developers of this application does not have any affiliation with the content providers available.
 
 ## Star History
 
