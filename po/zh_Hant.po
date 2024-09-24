@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-24 12:08+0000\n"
+"PO-Revision-Date: 2024-09-24 12:29+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
@@ -86,24 +86,24 @@ msgstr "背景"
 
 #: resources/ui/account_settings.ui:165
 msgid "This feature may cause significant lag. Please enable it with caution."
-msgstr ""
+msgstr "此功能可能會導致嚴重性能問題,請謹慎使用"
 
 #: resources/ui/account_settings.ui:168 resources/ui/account_settings.ui:401
 #: resources/ui/account_settings.ui:422
 msgid "Default"
-msgstr ""
+msgstr "默認"
 
 #: resources/ui/account_settings.ui:191
 msgid "Opacity"
-msgstr ""
+msgstr "不透明度"
 
 #: resources/ui/account_settings.ui:205
 msgid "Blur (Experimental)"
-msgstr ""
+msgstr "模糊(實驗性)"
 
 #: resources/ui/account_settings.ui:206 resources/ui/account_settings.ui:215
 msgid "Warning: High GPU usage"
-msgstr ""
+msgstr "警告:GPU使用率較高"
 
 #: resources/ui/account_settings.ui:214
 msgid "Blur Radius (Experimental)"
