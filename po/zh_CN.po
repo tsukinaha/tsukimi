@@ -826,3 +826,9 @@ msgstr ""
 #: src/ui/widgets/server_panel.rs:321
 msgid "Task started"
 msgstr ""
+
+#~ msgid "May cause crashes, with serious performance issues, Requires restart"
+#~ msgstr "可能会造成崩溃，需要重启"
+
+#~ msgid "Disc 1"
+#~ msgstr "盘 1"
