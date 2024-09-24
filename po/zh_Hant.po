@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-24 14:30+0000\n"
+"PO-Revision-Date: 2024-09-24 15:23+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
@@ -46,7 +46,7 @@ msgstr "字型"
 #: resources/ui/account_settings.ui:57 resources/ui/account_settings.ui:68
 #: resources/ui/account_settings.ui:85
 msgid "Restart App To Take Effect"
-msgstr "重啟應用生效"
+msgstr "重啟程式生效"
 
 #: resources/ui/account_settings.ui:67
 msgid "Accent Color"
@@ -74,7 +74,7 @@ msgstr "HTTP代理"
 
 #: resources/ui/account_settings.ui:141
 msgid "Threads"
-msgstr "線程"
+msgstr "執行緒"
 
 #: resources/ui/account_settings.ui:142
 msgid "This only effects on getting images"
@@ -196,7 +196,7 @@ msgstr "首選字幕語言"
 
 #: resources/ui/account_settings.ui:438
 msgid "Cache Size"
-msgstr "緩存大小"
+msgstr "快取大小"
 
 #: resources/ui/account_settings.ui:439
 msgid "Unit: MB"
@@ -204,7 +204,7 @@ msgstr "單位:MB"
 
 #: resources/ui/account_settings.ui:454
 msgid "Cache Time"
-msgstr "緩冲時間"
+msgstr "緩衝時間"
 
 #: resources/ui/account_settings.ui:472 resources/ui/mpvpage.ui:358
 #: resources/ui/mpvpage.ui:377
