@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-24 12:29+0000\n"
+"PO-Revision-Date: 2024-09-24 12:34+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
@@ -41,7 +41,7 @@ msgstr "字體縮放"
 
 #: resources/ui/account_settings.ui:39
 msgid "Font Family"
-msgstr "字體系列"
+msgstr "字體"
 
 #: resources/ui/account_settings.ui:57 resources/ui/account_settings.ui:68
 #: resources/ui/account_settings.ui:85
@@ -107,59 +107,59 @@ msgstr "警告:GPU使用率較高"
 
 #: resources/ui/account_settings.ui:214
 msgid "Blur Radius (Experimental)"
-msgstr ""
+msgstr "模糊半徑(實驗性)"
 
 #: resources/ui/account_settings.ui:235 resources/ui/account_settings.ui:435
 msgid "Cache"
-msgstr ""
+msgstr "緩存"
 
 #: resources/ui/account_settings.ui:238
 msgid "Clear Cache"
-msgstr ""
+msgstr "清除緩存"
 
 #: resources/ui/account_settings.ui:259
 msgid "Account"
-msgstr ""
+msgstr "賬戶"
 
 #: resources/ui/account_settings.ui:275
 msgid "New Password"
-msgstr ""
+msgstr "新密碼"
 
 #: resources/ui/account_settings.ui:280
 msgid "Confirm Password"
-msgstr ""
+msgstr "確認密碼"
 
 #: resources/ui/account_settings.ui:292
 msgid "Change Password"
-msgstr ""
+msgstr "修改密碼"
 
 #: resources/ui/account_settings.ui:309
 msgid "Music"
-msgstr ""
+msgstr "音樂"
 
 #: resources/ui/account_settings.ui:314
 msgid "Player"
-msgstr ""
+msgstr "播放器"
 
 #: resources/ui/account_settings.ui:317 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
-msgstr ""
+msgstr "循環模式"
 
 #: resources/ui/account_settings.ui:321 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
-msgstr ""
+msgstr "單曲循環"
 
 #: resources/ui/account_settings.ui:322 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
-msgstr ""
+msgstr "列表循環"
 
 #: resources/ui/account_settings.ui:323 resources/ui/player_toolbar.ui:239
 msgid "None"
-msgstr ""
+msgstr "無"
 
 #: resources/ui/account_settings.ui:335
 msgid "Video"
-msgstr ""
+msgstr "視頻"
 
 #: resources/ui/account_settings.ui:340
 msgid "Video Settings"
