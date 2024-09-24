@@ -6,7 +6,7 @@
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkLabel" id="disc_label">
-        <property name="label" translatable="yes">Disc 1</property>
+        <property name="label" translatable="yes">Disc</property>
         <property name="focusable">False</property>
         <property name="halign">start</property>
         <property name="valign">center</property>

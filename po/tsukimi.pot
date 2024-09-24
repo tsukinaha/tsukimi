@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-23 14:33+0800\n"
+"POT-Creation-Date: 2024-09-24 18:16+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -159,6 +159,10 @@ msgstr ""
 msgid "Video"
 msgstr ""
 
+#: resources/ui/account_settings.ui:340
+msgid "Video Settings"
+msgstr ""
+
 #: resources/ui/account_settings.ui:343
 msgid "Seek Backward"
 msgstr ""
@@ -265,28 +269,12 @@ msgstr ""
 msgid "libmpv (default)"
 msgstr ""
 
-#: resources/ui/account_settings.ui:637
-msgid "gpu-next"
-msgstr ""
-
-#: resources/ui/account_settings.ui:654
-msgid "dmabuf-wayland"
-msgstr ""
-
 #: resources/ui/account_settings.ui:676
 msgid "Hardware decoding"
 msgstr ""
 
 #: resources/ui/account_settings.ui:680
 msgid "no (default)"
-msgstr ""
-
-#: resources/ui/account_settings.ui:693
-msgid "auto-safe"
-msgstr ""
-
-#: resources/ui/account_settings.ui:707
-msgid "vaapi"
 msgstr ""
 
 #: resources/ui/account_settings.ui:724
@@ -299,20 +287,12 @@ msgid ""
 "and menus."
 msgstr ""
 
-#: resources/ui/account_settings.ui:735
-msgid "vf=lavfi=\"fps=fps={}:round=down\""
-msgstr ""
-
 #: resources/ui/account_settings.ui:736
 msgid "Recommended setting value: Current display frame rate"
 msgstr ""
 
 #: resources/ui/account_settings.ui:754
 msgid "Load external mpv config"
-msgstr ""
-
-#: resources/ui/account_settings.ui:755
-msgid "May cause crashes, with serious performance issues, Requires restart"
 msgstr ""
 
 #: resources/ui/account_settings.ui:758
@@ -329,6 +309,14 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:786
 msgid "More Video Settings"
+msgstr ""
+
+#: resources/ui/account_settings.ui:802
+msgid "Customizing mpv params"
+msgstr ""
+
+#: resources/ui/account_settings.ui:803
+msgid "One param per line"
 msgstr ""
 
 #: resources/ui/account.ui:9 resources/ui/account.ui:17
@@ -363,14 +351,6 @@ msgstr ""
 
 #: resources/ui/account.ui:82
 msgid "Password"
-msgstr ""
-
-#: resources/ui/actor.ui:4 resources/ui/album_widget.ui:4
-#: resources/ui/boxset.ui:4 resources/ui/mpvpage.ui:4 resources/ui/home.ui:4
-#: resources/ui/list.ui:4 resources/ui/search.ui:4 resources/ui/singlelist.ui:4
-#: resources/ui/window.ui:14 resources/ui/window.ui:166
-#: resources/ui/window.ui:464
-msgid "Tsukimi"
 msgstr ""
 
 #: resources/ui/actor.ui:70 resources/ui/boxset.ui:105
@@ -428,8 +408,9 @@ msgstr ""
 msgid "Audio"
 msgstr ""
 
-#: resources/ui/disc_box.ui:9
-msgid "Disc 1"
+#: resources/ui/disc_box.ui:9 resources/ui/metadata_dialog.ui:242
+#: src/ui/widgets/disc_box.rs:76
+msgid "Disc"
 msgstr ""
 
 #: resources/ui/images_dialog.ui:8 resources/ui/images_dialog.ui:17
@@ -545,10 +526,6 @@ msgstr ""
 
 #: resources/ui/metadata_dialog.ui:237
 msgid "Album"
-msgstr ""
-
-#: resources/ui/metadata_dialog.ui:242 src/ui/widgets/disc_box.rs:76
-msgid "Disc"
 msgstr ""
 
 #: resources/ui/metadata_dialog.ui:247
@@ -791,6 +768,10 @@ msgstr ""
 msgid "Resume"
 msgstr ""
 
+#: src/ui/widgets/item.rs:991
+msgid "No video source found"
+msgstr ""
+
 #: src/ui/widgets/list.rs:113
 msgid "Channels"
 msgstr ""
@@ -813,4 +794,32 @@ msgstr ""
 
 #: src/ui/widgets/tu_list_item.rs:705 src/ui/widgets/tu_list_item.rs:773
 msgid "Success"
+msgstr ""
+
+#: src/ui/widgets/server_panel.rs:98
+msgid "Shut down server"
+msgstr ""
+
+#: src/ui/widgets/server_panel.rs:99
+msgid "Are you sure you want to shut down the server?"
+msgstr ""
+
+#: src/ui/widgets/server_panel.rs:130
+msgid "Restart server"
+msgstr ""
+
+#: src/ui/widgets/server_panel.rs:131
+msgid "Are you sure you want to restart the server?"
+msgstr ""
+
+#: src/ui/widgets/server_panel.rs:168
+msgid "Server is shutting down"
+msgstr ""
+
+#: src/ui/widgets/server_panel.rs:180
+msgid "Server is restarting"
+msgstr ""
+
+#: src/ui/widgets/server_panel.rs:321
+msgid "Task started"
 msgstr ""

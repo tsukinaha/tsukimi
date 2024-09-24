@@ -44,3 +44,4 @@ src/ui/widgets/song_widget.rs
 src/ui/widgets/star_toggle.rs
 src/ui/widgets/tu_list_item.rs
 src/ui/widgets/window.rs
+src/ui/widgets/server_panel.rs

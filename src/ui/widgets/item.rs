@@ -988,7 +988,7 @@ impl ItemPage {
         let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
 
         let Some(ref video_url) = video_dl.direct_url else {
-            toast!(self, "No video source found");
+            toast!(self, gettext("No video source found"));
             return;
         };
 

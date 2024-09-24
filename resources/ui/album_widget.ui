@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template class="AlbumPage" parent="AdwNavigationPage">
-    <property name="title" translatable="yes">Tsukimi</property>
+    <property name="title" >Tsukimi</property>
     <child>
       <object class="GtkScrolledWindow">
         <property name="hscrollbar-policy">never</property>

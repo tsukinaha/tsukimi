@@ -336,7 +336,7 @@ impl MPVPage {
     }
 
     async fn load_video(&self, offset: isize) {
-        toast!(self, "Loading Video...");
+        toast!(self, gettext("Loading Video..."));
 
         let Some(current_video) = self.imp().current_video.borrow().clone() else {
             return;
@@ -354,7 +354,7 @@ impl MPVPage {
         });
 
         let Some(next_item) = next_item else {
-            toast!(self, "No more videos found");
+            toast!(self, gettext("No more videos found"));
             self.on_stop_clicked();
             return;
         };
@@ -363,7 +363,7 @@ impl MPVPage {
     }
 
     pub async fn in_play_item(&self, item: TuItem) {
-        toast!(self, "Waiting for mediasource...");
+        toast!(self, gettext("Waiting for mediasource..."));
 
         let item_id = item.id();
 
@@ -386,12 +386,12 @@ impl MPVPage {
                 media_source.direct_stream_url.clone(),
             )
         } else {
-            toast!(self, "No media sources found");
+            toast!(self, gettext("No media sources found"));
             return;
         };
 
         let Some(url) = url else {
-            toast!(self, "No media sources found");
+            toast!(self, gettext("No media sources found"));
             return;
         };
 
