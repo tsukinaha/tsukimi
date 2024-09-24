@@ -3,9 +3,20 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'main'
-  # schedule:
-  #   - cron: '45 3 * * *'
+      - "main"
+    paths-ignore:
+      - "docs/**"
+      - ".gitignore"
+      - LICENSE
+      - "*.md"
+  pull_request:
+    branches:
+      - "main"
+    paths-ignore:
+      - "docs/**"
+      - ".gitignore"
+      - LICENSE
+      - "*.md"
 
 jobs:
   build-release:
