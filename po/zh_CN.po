@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-24 10:42+0000\n"
-"Last-Translator: Inaha <sakuovds@gmail.com>\n"
+"PO-Revision-Date: 2024-09-24 15:23+0000\n"
+"Last-Translator: dyphire <qimoge@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -100,7 +100,7 @@ msgstr "不透明度"
 
 #: resources/ui/account_settings.ui:205
 msgid "Blur (Experimental)"
-msgstr "模糊(实验性)"
+msgstr "模糊（实验性）"
 
 #: resources/ui/account_settings.ui:206 resources/ui/account_settings.ui:215
 msgid "Warning: High GPU usage"
@@ -108,7 +108,7 @@ msgstr "警告: GPU 使用率较高"
 
 #: resources/ui/account_settings.ui:214
 msgid "Blur Radius (Experimental)"
-msgstr "模糊(实验性)"
+msgstr "模糊（实验性）"
 
 #: resources/ui/account_settings.ui:235 resources/ui/account_settings.ui:435
 msgid "Cache"
@@ -266,7 +266,7 @@ msgstr "视频输出"
 msgid ""
 "Warning: Do NOT use any method other than the software's own controls to "
 "control the window. Restart to take effect"
-msgstr "警告: 不要使用tsukimi控制窗口以外的窗口控件。重启生效"
+msgstr "警告: 不要使用 tsukimi 控制窗口以外的窗口控件。重启生效"
 
 #: resources/ui/account_settings.ui:621
 msgid "libmpv (default)"
@@ -282,7 +282,7 @@ msgstr "无 (默认)"
 
 #: resources/ui/account_settings.ui:724
 msgid "Estimate Frame Rate"
-msgstr "测度帧频"
+msgstr "估计帧率"
 
 #: resources/ui/account_settings.ui:732
 msgid ""
@@ -292,7 +292,7 @@ msgstr "使用 vf 滤镜来插帧来降低调整大小和菜单的卡顿。"
 
 #: resources/ui/account_settings.ui:736
 msgid "Recommended setting value: Current display frame rate"
-msgstr "推荐设置值：当前显示帧率"
+msgstr "推荐设置值：当前显示刷新率"
 
 #: resources/ui/account_settings.ui:754
 msgid "Load external mpv config"
@@ -457,11 +457,11 @@ msgstr "查看元数据"
 
 #: resources/ui/item.ui:189
 msgid "Video: "
-msgstr "视频: "
+msgstr "视频： "
 
 #: resources/ui/item.ui:209
 msgid "Subtitle: "
-msgstr "字幕: "
+msgstr "字幕： "
 
 #: resources/ui/item.ui:264 src/ui/widgets/home.rs:172
 msgid "Continue Watching"
@@ -533,19 +533,19 @@ msgstr "专辑"
 
 #: resources/ui/metadata_dialog.ui:247
 msgid "Track Number"
-msgstr "音轨编号"
+msgstr "轨道编号"
 
 #: resources/ui/metadata_dialog.ui:260
 msgid "TheMovieDb Id"
-msgstr "TMDb编号"
+msgstr "TMDb Id"
 
 #: resources/ui/metadata_dialog.ui:265
 msgid "TheTVDb Id"
-msgstr "TheTVDb编号"
+msgstr "TVDb Id"
 
 #: resources/ui/metadata_dialog.ui:270
 msgid "IMDb Id"
-msgstr "IMDb编号"
+msgstr "IMDb Id"
 
 #: resources/ui/metadata_dialog.ui:278
 msgid "Lock The Item"
@@ -625,7 +625,7 @@ msgstr "Imdb 评分"
 
 #: resources/ui/singlelist.ui:94
 msgid "Critic Rating"
-msgstr "公众评分"
+msgstr "影評人评分"
 
 #: resources/ui/singlelist.ui:95
 msgid "Premiere Date"
