@@ -609,7 +609,7 @@ impl MPVPage {
 
     fn reset_fade_timeout(&self) {
         let imp = self.imp();
-        if let Some(timeout) = imp.timeout.borrow_mut().take() {
+        if let Some(timeout) = imp.timeout.take() {
             glib::source::SourceId::remove(timeout);
         }
         let timeout = glib::timeout_add_seconds_local_once(
@@ -760,7 +760,7 @@ impl MPVPage {
     }
 
     pub fn remove_timeout(&self) {
-        if let Some(timeout) = self.imp().back_timeout.borrow_mut().take() {
+        if let Some(timeout) = self.imp().back_timeout.take() {
             glib::source::SourceId::remove(timeout);
         }
     }
