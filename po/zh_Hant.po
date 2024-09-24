@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-24 15:23+0000\n"
-"Last-Translator: dyphire <qimoge@gmail.com>\n"
+"PO-Revision-Date: 2024-09-24 16:02+0000\n"
+"Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
 "Language: zh_Hant\n"
@@ -86,12 +86,12 @@ msgstr "背景"
 
 #: resources/ui/account_settings.ui:165
 msgid "This feature may cause significant lag. Please enable it with caution."
-msgstr "此功能可能會導致嚴重性能問題，請謹慎使用"
+msgstr "此功能可能會導致嚴重效能問題，請謹慎使用"
 
 #: resources/ui/account_settings.ui:168 resources/ui/account_settings.ui:401
 #: resources/ui/account_settings.ui:422
 msgid "Default"
-msgstr "默認"
+msgstr "預設"
 
 #: resources/ui/account_settings.ui:191
 msgid "Opacity"
@@ -103,7 +103,7 @@ msgstr "模糊（實驗性）"
 
 #: resources/ui/account_settings.ui:206 resources/ui/account_settings.ui:215
 msgid "Warning: High GPU usage"
-msgstr "警告：GPU 使用率較高"
+msgstr "警告：GPU 使用佔比較高"
 
 #: resources/ui/account_settings.ui:214
 msgid "Blur Radius (Experimental)"
@@ -159,7 +159,7 @@ msgstr "無"
 
 #: resources/ui/account_settings.ui:335
 msgid "Video"
-msgstr "視頻"
+msgstr "視訊"
 
 #: resources/ui/account_settings.ui:340
 msgid "Video Settings"
@@ -227,11 +227,11 @@ msgstr "字幕字型"
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
-msgstr "指定不特定字型的字幕使用的字型"
+msgstr "設定本身未指定特定字型的字幕的字型"
 
 #: resources/ui/account_settings.ui:524
 msgid "Default Volume"
-msgstr "默認音量"
+msgstr "預設音量"
 
 #: resources/ui/account_settings.ui:548
 msgid "Force Stereo"
@@ -255,11 +255,11 @@ msgstr "循環播放"
 
 #: resources/ui/account_settings.ui:601
 msgid "Stop"
-msgstr "播放暫停"
+msgstr "播完暫停"
 
 #: resources/ui/account_settings.ui:617
 msgid "Video Output"
-msgstr "視頻輸出"
+msgstr "視訊輸出"
 
 #: resources/ui/account_settings.ui:618
 msgid ""
@@ -269,15 +269,15 @@ msgstr "警告：請不要使用調出的外部 mpv 窗口控件。重啟生效"
 
 #: resources/ui/account_settings.ui:621
 msgid "libmpv (default)"
-msgstr "libmpv（默認）"
+msgstr "libmpv（預設）"
 
 #: resources/ui/account_settings.ui:676
 msgid "Hardware decoding"
-msgstr "硬解"
+msgstr "硬體解碼"
 
 #: resources/ui/account_settings.ui:680
 msgid "no (default)"
-msgstr "無（默認）"
+msgstr "無（預設）"
 
 #: resources/ui/account_settings.ui:724
 msgid "Estimate Frame Rate"
@@ -311,7 +311,7 @@ msgstr "更多"
 
 #: resources/ui/account_settings.ui:786
 msgid "More Video Settings"
-msgstr "更多視頻設置"
+msgstr "更多視訊設置"
 
 #: resources/ui/account_settings.ui:802
 msgid "Customizing mpv params"
@@ -456,7 +456,7 @@ msgstr "查看元數據"
 
 #: resources/ui/item.ui:189
 msgid "Video: "
-msgstr "視頻： "
+msgstr "視訊： "
 
 #: resources/ui/item.ui:209
 msgid "Subtitle: "
@@ -720,7 +720,7 @@ msgstr "密碼不匹配！"
 
 #: src/ui/widgets/account_settings.rs:196
 msgid "Password changed successfully! Please login again."
-msgstr "密碼修改成功！請重新登錄。"
+msgstr "密碼修改成功！請重新登入。"
 
 #: src/ui/widgets/account_settings.rs:202
 msgid "Failed to change password"
@@ -732,7 +732,7 @@ msgstr "快取已清除"
 
 #: src/ui/widgets/account_settings.rs:317
 msgid "No file selected"
-msgstr "未選擇文件"
+msgstr "未選擇档案"
 
 #: src/ui/widgets/account_settings.rs:413
 msgid "Font Cleared, Restart to take effect."
@@ -760,11 +760,11 @@ msgstr "暫無可拷貝的圖像"
 
 #: src/ui/widgets/image_infocard.rs:116
 msgid "Image copied to clipboard"
-msgstr "圖像已複製至剪切板"
+msgstr "圖像已拷貝至剪切板"
 
 #: src/ui/widgets/image_infocard.rs:156
 msgid "Error loading image"
-msgstr "圖像加載錯誤"
+msgstr "圖像載入錯誤"
 
 #: src/ui/widgets/item.rs:472
 msgid "Resume"
