@@ -3184,6 +3184,7 @@ dependencies = [
  "libloading",
  "libmpv2",
  "once_cell",
+ "regex",
  "reqwest",
  "serde",
  "serde_json",

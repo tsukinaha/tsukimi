@@ -83,6 +83,20 @@ mod imp {
 
         #[template_child]
         pub video_subpage: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub preferred_version_subpage: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub add_version_preferences_dialog: TemplateChild<adw::Dialog>,
+    
+        #[template_child]
+        pub descriptor_string_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub descriptor_regex_label: TemplateChild<gtk::Label>,
+
+        #[template_child]
+        pub descriptor_type_comborow: TemplateChild<adw::ComboRow>,
+        #[template_child]
+        pub descriptor_entryrow: TemplateChild<adw::EntryRow>,
     }
 
     #[glib::object_subclass]
@@ -124,6 +138,9 @@ mod imp {
                     set.clear_font();
                 },
             );
+            klass.install_action("version.add-perfer", None, move |set, _action, _parameter| {
+                set.add_preferred_version();
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -137,15 +154,10 @@ mod imp {
             let obj = self.obj();
             obj.set_sidebar();
             obj.set_proxy();
-            obj.set_thread();
             obj.set_picopactiy();
             obj.set_pic();
-            obj.set_picblur();
-            obj.change_picblur();
-            obj.set_auto_select_server();
             obj.set_fontsize();
             obj.set_font();
-            obj.set_daily_recommend();
             obj.set_color();
             obj.set_estimate();
         }
@@ -238,17 +250,6 @@ impl AccountSettings {
         });
     }
 
-    pub fn set_auto_select_server(&self) {
-        let imp = self.imp();
-        imp.selectlastcontrol
-            .set_active(SETTINGS.auto_select_server());
-        imp.selectlastcontrol.connect_active_notify(move |control| {
-            SETTINGS
-                .set_auto_select_server(control.is_active())
-                .unwrap();
-        });
-    }
-
     pub fn set_fontsize(&self) {
         let imp = self.imp();
         let settings = gtk::Settings::default().unwrap();
@@ -286,14 +287,6 @@ impl AccountSettings {
             std::fs::remove_dir_all(path).unwrap();
         }
         toast!(self, gettext("Cache Cleared"))
-    }
-
-    pub fn set_thread(&self) {
-        let imp = self.imp();
-        imp.threadspinrow.set_value(SETTINGS.threads().into());
-        imp.threadspinrow.connect_value_notify(move |control| {
-            SETTINGS.set_threads(control.value() as i32).unwrap();
-        });
     }
 
     pub async fn set_rootpic(&self) {
@@ -361,26 +354,6 @@ impl AccountSettings {
         ));
     }
 
-    pub fn set_picblur(&self) {
-        let imp = self.imp();
-        imp.backgroundblurcontrol
-            .set_active(SETTINGS.is_blur_enabled());
-        imp.backgroundblurcontrol
-            .connect_active_notify(move |control| {
-                SETTINGS.set_blur_enabled(control.is_active()).unwrap();
-            });
-    }
-
-    pub fn change_picblur(&self) {
-        let imp = self.imp();
-        imp.backgroundblurspinrow
-            .set_value(SETTINGS.pic_blur().into());
-        imp.backgroundblurspinrow
-            .connect_value_notify(move |control| {
-                SETTINGS.set_pic_blur(control.value() as i32).unwrap();
-            });
-    }
-
     pub fn clearpic(&self) {
         glib::spawn_future_local(glib::clone!(
             #[weak(rename_to = obj)]
@@ -413,43 +386,31 @@ impl AccountSettings {
         toast!(self, gettext("Font Cleared, Restart to take effect."));
     }
 
-    pub fn set_daily_recommend(&self) {
-        let imp = self.imp();
-        imp.dailyrecommendcontrol
-            .set_active(SETTINGS.daily_recommend());
-        imp.dailyrecommendcontrol
-            .connect_active_notify(move |control| {
-                SETTINGS.set_daily_recommend(control.is_active()).unwrap();
-            });
-    }
-
     pub fn set_estimate(&self) {
         let imp = self.imp();
-        imp.estimate_control.set_active(SETTINGS.mpv_estimate());
-        imp.estimate_spinrow
-            .set_value(SETTINGS.mpv_estimate_target_frame().into());
-        imp.seek_backward_spinrow
-            .set_value(SETTINGS.mpv_seek_backward_step().into());
-        imp.seek_forward_spinrow
-            .set_value(SETTINGS.mpv_seek_forward_step().into());
-        imp.config_switchrow.set_active(SETTINGS.mpv_config());
-        imp.buffer_switchrow
-            .set_active(SETTINGS.mpv_show_buffer_speed());
-        imp.stereo_switchrow.set_active(SETTINGS.mpv_force_stereo());
-        imp.volume_spinrow
-            .set_value(SETTINGS.mpv_default_volume().into());
+        SETTINGS.bind("is-blurenabled", &imp.backgroundblurcontrol.get(), "active").build();
+        SETTINGS.bind("pic-blur", &imp.backgroundblurspinrow.get(), "value").build();
+        SETTINGS.bind("is-daily-recommend", &imp.dailyrecommendcontrol.get(), "active").build();
+        SETTINGS.bind("mpv-estimate", &imp.estimate_control.get(), "active").build();
+        SETTINGS.bind("mpv-estimate-target-frame", &imp.estimate_spinrow.get(), "value").build();
+        SETTINGS.bind("mpv-seek-backward-step", &imp.seek_backward_spinrow.get(), "value").build();
+        SETTINGS.bind("mpv-seek-forward-step", &imp.seek_forward_spinrow.get(), "value").build();
+        SETTINGS.bind("mpv-config", &imp.config_switchrow.get(), "active").build();
+        SETTINGS.bind("mpv-show-buffer-speed", &imp.buffer_switchrow.get(), "active").build();
+        SETTINGS.bind("mpv-force-stereo", &imp.stereo_switchrow.get(), "active").build();
+        SETTINGS.bind("mpv-default-volume", &imp.volume_spinrow.get(), "value").build();
+        SETTINGS.bind("mpv-cache-size", &imp.cachesize_spinrow.get(), "value").build();
+        SETTINGS.bind("mpv-subtitle-size", &imp.mpv_sub_size_spinrow.get(), "value").build();
+        SETTINGS.bind("mpv-audio-preferred-lang", &imp.preferred_audio_language_comborow.get(), "selected").build();
+        SETTINGS.bind("mpv-subtitle-preferred-lang", &imp.preferred_subtitle_language_comborow.get(), "selected").build();
+        SETTINGS.bind("is-auto-select-server", &imp.selectlastcontrol.get(), "active").build();
+        SETTINGS.bind("threads", &imp.threadspinrow.get(), "value").build();
+
         imp.mpv_sub_font_button
             .set_font_desc(&gtk::pango::FontDescription::from_string(
                 &SETTINGS.mpv_subtitle_font(),
             ));
-        imp.cachesize_spinrow
-            .set_value(SETTINGS.mpv_cache_size().into());
-        imp.mpv_sub_size_spinrow
-            .set_value(SETTINGS.mpv_subtitle_size().into());
-        imp.preferred_audio_language_comborow
-            .set_selected(SETTINGS.mpv_audio_preferred_lang() as u32);
-        imp.preferred_subtitle_language_comborow
-            .set_selected(SETTINGS.mpv_subtitle_preferred_lang() as u32);
+
         let action_group = gio::SimpleActionGroup::new();
 
         let action_video_end = gio::ActionEntry::builder("video-end")
@@ -502,59 +463,21 @@ impl AccountSettings {
     }
 
     #[template_callback]
-    pub fn on_estimate_control(&self, control: bool) -> bool {
-        SETTINGS.set_mpv_estimate(control).unwrap();
-        !control
+    fn subpage_activated_cb(&self) {
+        let subpage = self.imp().video_subpage.get();
+        self.push_subpage(&subpage);
     }
 
     #[template_callback]
-    pub fn on_estimate_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
-        SETTINGS
-            .set_mpv_estimate_target_frame(spin.value() as i32)
-            .unwrap();
+    fn preferred_subpage_activated_cb(&self) {
+        let subpage = self.imp().preferred_version_subpage.get();
+        self.push_subpage(&subpage);
     }
 
     #[template_callback]
-    pub fn on_seekbackward_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
-        SETTINGS
-            .set_mpv_seek_backward_step(spin.value() as i32)
-            .unwrap();
-    }
-
-    #[template_callback]
-    pub fn on_seekforward_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
-        SETTINGS
-            .set_mpv_seek_forward_step(spin.value() as i32)
-            .unwrap();
-    }
-
-    #[template_callback]
-    pub fn on_cachesize_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
-        SETTINGS.set_mpv_cache_size(spin.value() as i32).unwrap();
-    }
-
-    #[template_callback]
-    pub fn on_cachetime_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
-        SETTINGS.set_mpv_cache_time(spin.value() as i32).unwrap();
-    }
-
-    #[template_callback]
-    pub fn on_subsize_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
-        SETTINGS.set_mpv_subtitle_size(spin.value() as i32).unwrap();
-    }
-
-    #[template_callback]
-    pub fn on_audio_language_comborow(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
-        SETTINGS
-            .set_mpv_audio_preferred_lang(combo.selected() as i32)
-            .unwrap();
-    }
-
-    #[template_callback]
-    pub fn on_subtitle_language_comborow(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
-        SETTINGS
-            .set_mpv_subtitle_preferred_lang(combo.selected() as i32)
-            .unwrap();
+    fn preferred_add_button_cb(&self) {
+        let dialog = self.imp().add_version_preferences_dialog.get();
+        dialog.present(Some(self));
     }
 
     #[template_callback]
@@ -570,32 +493,43 @@ impl AccountSettings {
     }
 
     #[template_callback]
-    pub fn on_volume_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
-        SETTINGS
-            .set_mpv_default_volume(spin.value() as i32)
-            .unwrap();
+    fn on_descriptor_type_changed_comborow(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
+        match combo.selected() {
+            0 => {
+                self.imp().descriptor_string_label.set_visible(true);
+                self.imp().descriptor_regex_label.set_visible(false);
+            }
+            1 => {
+                self.imp().descriptor_string_label.set_visible(false);
+                self.imp().descriptor_regex_label.set_visible(true);
+            }
+            _ => unreachable!(), 
+        }
     }
 
-    #[template_callback]
-    pub fn on_stereo_switchrow(&self, _param: glib::ParamSpec, control: adw::SwitchRow) {
-        SETTINGS.set_mpv_force_stereo(control.is_active()).unwrap();
-    }
-
-    #[template_callback]
-    pub fn on_buffer_switchrow(&self, _param: glib::ParamSpec, control: adw::SwitchRow) {
-        SETTINGS
-            .set_mpv_show_buffer_speed(control.is_active())
-            .unwrap();
-    }
-
-    #[template_callback]
-    pub fn on_config_switchrow(&self, _param: glib::ParamSpec, control: adw::SwitchRow) {
-        SETTINGS.set_mpv_config(control.is_active()).unwrap();
-    }
-
-    #[template_callback]
-    fn subpage_activated_cb(&self) {
-        let subpage = self.imp().video_subpage.get();
-        self.push_subpage(&subpage);
+    pub fn add_preferred_version(&self) {
+        let imp = self.imp();
+        match imp.descriptor_type_comborow.selected() {
+            0 => {
+                let descriptor = imp.descriptor_entryrow.text();
+                if descriptor.is_empty() {
+                    toast!(self, gettext("Descriptor cannot be empty!"));
+                    return;
+                }
+                
+            }
+            1 => {
+                let descriptor = imp.descriptor_entryrow.text();
+                if descriptor.is_empty() {
+                    toast!(self, gettext("Descriptor cannot be empty!"));
+                    return;
+                }
+                match regex::Regex::new(&descriptor) {
+                    Ok(_) => {},
+                    Err(e) => toast!(self, &format!("{}: {}", gettext("Invalid regex"), e)),
+                }
+            }
+            _ => unreachable!(),
+        }
     }
 }
