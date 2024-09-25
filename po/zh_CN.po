@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-24 17:26+0000\n"
+"PO-Revision-Date: 2024-09-25 06:57+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
@@ -414,7 +414,7 @@ msgstr "音频"
 #: resources/ui/disc_box.ui:9 resources/ui/metadata_dialog.ui:242
 #: src/ui/widgets/disc_box.rs:76
 msgid "Disc"
-msgstr "盘"
+msgstr "圆盘"
 
 #: resources/ui/images_dialog.ui:8 resources/ui/images_dialog.ui:17
 #: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:41
@@ -493,7 +493,7 @@ msgstr "路径"
 
 #: resources/ui/metadata_dialog.ui:103
 msgid "No data."
-msgstr "没有数据"
+msgstr "没有数据."
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/singlelist.ui:90
 msgid "Title"
@@ -501,7 +501,7 @@ msgstr "标题"
 
 #: resources/ui/metadata_dialog.ui:116
 msgid "Sort Title"
-msgstr "排序标题"
+msgstr "标题次序"
 
 #: resources/ui/metadata_dialog.ui:121 resources/ui/singlelist.ui:92
 msgid "Date Created"
@@ -669,7 +669,7 @@ msgstr "关于"
 
 #: resources/ui/window.ui:104
 msgid "No Server"
-msgstr "无服务器"
+msgstr "暂无服务器"
 
 #: resources/ui/window.ui:107
 msgid "Add Server"
