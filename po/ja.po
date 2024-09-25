@@ -8,261 +8,266 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-23 14:33+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-09-26 10:41+0000\n"
+"Last-Translator: Flowensity <flowensity@proton.me>\n"
+"Language-Team: Japanese <https://hosted.weblate.org/projects/tsukimi/main/ja/"
+">\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #: resources/ui/account_settings.ui:4
 msgid "Settings"
-msgstr ""
+msgstr "設定"
 
 #: resources/ui/account_settings.ui:12
 msgid "General"
-msgstr ""
+msgstr "一般"
 
 #: resources/ui/account_settings.ui:17
 msgid "Appearence"
-msgstr ""
+msgstr "外観"
 
 #: resources/ui/account_settings.ui:20
 msgid "Daily Recommend"
-msgstr ""
+msgstr "毎日のおすすめ"
 
 #: resources/ui/account_settings.ui:25
 msgid "Font Scale"
-msgstr ""
+msgstr "フォントスケール"
 
 #: resources/ui/account_settings.ui:39
 msgid "Font Family"
-msgstr ""
+msgstr "フォントファミリー"
 
 #: resources/ui/account_settings.ui:57 resources/ui/account_settings.ui:68
 #: resources/ui/account_settings.ui:85
 msgid "Restart App To Take Effect"
-msgstr ""
+msgstr "アプリを再起動して効果を得るために"
 
 #: resources/ui/account_settings.ui:67
 msgid "Accent Color"
-msgstr ""
+msgstr "アクセントカラー"
 
 #: resources/ui/account_settings.ui:84
 msgid "Accent Foreground Color"
-msgstr ""
+msgstr "アクセントの前景色"
 
 #: resources/ui/account_settings.ui:101
 msgid "Show Sidebar"
-msgstr ""
+msgstr "サイドバーを表示する"
 
 #: resources/ui/account_settings.ui:106
 msgid "Auto Select Last Server"
-msgstr ""
+msgstr "最後のサーバーを自動選択"
 
 #: resources/ui/account_settings.ui:113
 msgid "Network"
-msgstr ""
+msgstr "ネットワーク"
 
 #: resources/ui/account_settings.ui:116
 msgid "HTTP Proxy"
-msgstr ""
+msgstr "HTTPプロキシ"
 
 #: resources/ui/account_settings.ui:141
 msgid "Threads"
-msgstr ""
+msgstr "スレッド"
 
 #: resources/ui/account_settings.ui:142
 msgid "This only effects on getting images"
-msgstr ""
+msgstr "これは画像取得にのみ影響する"
 
 #: resources/ui/account_settings.ui:158
 msgid "Background"
-msgstr ""
+msgstr "背景"
 
 #: resources/ui/account_settings.ui:165
 msgid "This feature may cause significant lag. Please enable it with caution."
-msgstr ""
+msgstr "この機能は大きなラグを引き起こす可能性があります。注意して有効にしてください"
+"。"
 
 #: resources/ui/account_settings.ui:168 resources/ui/account_settings.ui:401
 #: resources/ui/account_settings.ui:422
 msgid "Default"
-msgstr ""
+msgstr "デフォルト"
 
 #: resources/ui/account_settings.ui:191
 msgid "Opacity"
-msgstr ""
+msgstr "不透明度"
 
 #: resources/ui/account_settings.ui:205
 msgid "Blur (Experimental)"
-msgstr ""
+msgstr "ブラー（実験的）"
 
 #: resources/ui/account_settings.ui:206 resources/ui/account_settings.ui:215
 msgid "Warning: High GPU usage"
-msgstr ""
+msgstr "警告: GPU使用率が高い"
 
 #: resources/ui/account_settings.ui:214
 msgid "Blur Radius (Experimental)"
-msgstr ""
+msgstr "ブラー半径（実験的）"
 
 #: resources/ui/account_settings.ui:235 resources/ui/account_settings.ui:435
 msgid "Cache"
-msgstr ""
+msgstr "キャッシュ"
 
 #: resources/ui/account_settings.ui:238
 msgid "Clear Cache"
-msgstr ""
+msgstr "キャッシュをクリア"
 
 #: resources/ui/account_settings.ui:259
 msgid "Account"
-msgstr ""
+msgstr "アカウント"
 
 #: resources/ui/account_settings.ui:275
 msgid "New Password"
-msgstr ""
+msgstr "新しいパスワード"
 
 #: resources/ui/account_settings.ui:280
 msgid "Confirm Password"
-msgstr ""
+msgstr "パスワードの確認"
 
 #: resources/ui/account_settings.ui:292
 msgid "Change Password"
-msgstr ""
+msgstr "パスワードの変更"
 
 #: resources/ui/account_settings.ui:309
 msgid "Music"
-msgstr ""
+msgstr "音楽"
 
 #: resources/ui/account_settings.ui:314
 msgid "Player"
-msgstr ""
+msgstr "プレーヤー"
 
 #: resources/ui/account_settings.ui:317 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
-msgstr ""
+msgstr "リピートモード"
 
 #: resources/ui/account_settings.ui:321 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
-msgstr ""
+msgstr "リピート・ワン"
 
 #: resources/ui/account_settings.ui:322 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
-msgstr ""
+msgstr "リピート・オール"
 
 #: resources/ui/account_settings.ui:323 resources/ui/player_toolbar.ui:239
 msgid "None"
-msgstr ""
+msgstr "なし"
 
 #: resources/ui/account_settings.ui:335
 msgid "Video"
-msgstr ""
+msgstr "ビデオ"
 
 #: resources/ui/account_settings.ui:343
 msgid "Seek Backward"
-msgstr ""
+msgstr "シーク・バックワード"
 
 #: resources/ui/account_settings.ui:344 resources/ui/account_settings.ui:365
 #: resources/ui/account_settings.ui:455
 msgid "Unit: Seconds"
-msgstr ""
+msgstr "単位 秒"
 
 #: resources/ui/account_settings.ui:364
 msgid "Seek Forward"
-msgstr ""
+msgstr "シーク・フォワード"
 
 #: resources/ui/account_settings.ui:387
 msgid "Preferred Language"
-msgstr ""
+msgstr "優先言語"
 
 #: resources/ui/account_settings.ui:388
 msgid "This currently only applies to the player"
-msgstr ""
+msgstr "これは現在、プレーヤーにのみ適用されます"
 
 #: resources/ui/account_settings.ui:391
 msgid "Preferred Audio Language"
-msgstr ""
+msgstr "優先音声言語"
 
 #: resources/ui/account_settings.ui:412
 msgid "Preferred Subtitle Language"
-msgstr ""
+msgstr "優先字幕言語"
 
 #: resources/ui/account_settings.ui:438
 msgid "Cache Size"
-msgstr ""
+msgstr "キャッシュサイズ"
 
 #: resources/ui/account_settings.ui:439
 msgid "Unit: MB"
-msgstr ""
+msgstr "単位: MB"
 
 #: resources/ui/account_settings.ui:454
 msgid "Cache Time"
-msgstr ""
+msgstr "キャッシュの時間"
 
 #: resources/ui/account_settings.ui:472 resources/ui/mpvpage.ui:358
 #: resources/ui/mpvpage.ui:377
 msgid "Subtitle"
-msgstr ""
+msgstr "字幕"
 
 #: resources/ui/account_settings.ui:475
 msgid "Subtitle Text Size"
-msgstr ""
+msgstr "字幕の文字サイズ"
 
 #: resources/ui/account_settings.ui:476
 msgid "This option only takes effect for srt subtitles"
-msgstr ""
+msgstr "このオプションはsrt字幕にのみ有効です"
 
 #: resources/ui/account_settings.ui:496
 msgid "Subtitle Text Font"
-msgstr ""
+msgstr "字幕テキストフォント"
 
 #: resources/ui/account_settings.ui:497
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
-msgstr ""
+msgstr "特定のフォントを指定していない字幕に使用するフォントを指定する"
 
 #: resources/ui/account_settings.ui:524
 msgid "Default Volume"
-msgstr ""
+msgstr "デフォルト音量"
 
 #: resources/ui/account_settings.ui:548
 msgid "Force Stereo"
-msgstr ""
+msgstr "フォースステレオ"
 
 #: resources/ui/account_settings.ui:563
 msgid "Show Buffer Speed"
-msgstr ""
+msgstr "バッファ速度を表示"
 
 #: resources/ui/account_settings.ui:571
 msgid "Action after video ends"
-msgstr ""
+msgstr "ビデオ終了後のアクション"
 
 #: resources/ui/account_settings.ui:574
 msgid "Play Next"
-msgstr ""
+msgstr "次へ"
 
 #: resources/ui/account_settings.ui:587
 msgid "Loop Playback"
-msgstr ""
+msgstr "ループ再生"
 
 #: resources/ui/account_settings.ui:601
 msgid "Stop"
-msgstr ""
+msgstr "ストップ"
 
 #: resources/ui/account_settings.ui:617
 msgid "Video Output"
-msgstr ""
+msgstr "ビデオ出力"
 
 #: resources/ui/account_settings.ui:618
 msgid ""
 "Warning: Do NOT use any method other than the software's own controls to "
 "control the window. Restart to take effect"
-msgstr ""
+msgstr "警告：ウィンドウを操作するために、ソフトウェア自身のコントロール以外の方法を"
+"使用しないでください。再起動が必要です"
 
 #: resources/ui/account_settings.ui:621
 msgid "libmpv (default)"
-msgstr ""
+msgstr "libmpv (デフォルト)"
 
 #: resources/ui/account_settings.ui:637
 msgid "gpu-next"
@@ -274,11 +279,11 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:676
 msgid "Hardware decoding"
-msgstr ""
+msgstr "ハードウェアデコード"
 
 #: resources/ui/account_settings.ui:680
 msgid "no (default)"
-msgstr ""
+msgstr "いいえ（デフォルト）"
 
 #: resources/ui/account_settings.ui:693
 msgid "auto-safe"
@@ -290,13 +295,14 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:724
 msgid "Estimate Frame Rate"
-msgstr ""
+msgstr "推定フレームレート"
 
 #: resources/ui/account_settings.ui:732
 msgid ""
 "Use vf filter to interpolate frames to improve the smoothness of resizing "
 "and menus."
-msgstr ""
+msgstr "vfフィルターを使用してフレームを補間し、リサイズやメニューの滑らかさを改善し"
+"ます。"
 
 #: resources/ui/account_settings.ui:735
 msgid "vf=lavfi=\"fps=fps={}:round=down\""
@@ -304,11 +310,11 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:736
 msgid "Recommended setting value: Current display frame rate"
-msgstr ""
+msgstr "推奨設定値：現在の表示フレームレート"
 
 #: resources/ui/account_settings.ui:754
 msgid "Load external mpv config"
-msgstr ""
+msgstr "外部mpv設定を読み込む"
 
 #: resources/ui/account_settings.ui:755
 msgid "May cause crashes, with serious performance issues, Requires restart"
@@ -316,53 +322,53 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:758
 msgid "config=true"
-msgstr ""
+msgstr "設定=true"
 
 #: resources/ui/account_settings.ui:759
 msgid "Read from mpv config dir"
-msgstr ""
+msgstr "mpv設定ディレクトリから読み込む"
 
 #: resources/ui/account_settings.ui:775
 msgid "More"
-msgstr ""
+msgstr "もっと見る"
 
 #: resources/ui/account_settings.ui:786
 msgid "More Video Settings"
-msgstr ""
+msgstr "ビデオ設定の詳細"
 
 #: resources/ui/account.ui:9 resources/ui/account.ui:17
 msgid "Add a New Server"
-msgstr ""
+msgstr "新しいサーバーの追加"
 
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
 #: resources/ui/metadata_dialog.ui:38
 msgid "Cancel"
-msgstr ""
+msgstr "キャンセル"
 
 #: resources/ui/account.ui:32
 msgid "_Add"
-msgstr ""
+msgstr "追加"
 
 #: resources/ui/account.ui:60 resources/ui/actor.ui:52
 #: resources/ui/boxset.ui:55
 msgid "Name"
-msgstr ""
+msgstr "名前"
 
 #: resources/ui/account.ui:65
 msgid "Server Address"
-msgstr ""
+msgstr "サーバーアドレス"
 
 #: resources/ui/account.ui:70
 msgid "Port"
-msgstr ""
+msgstr "ポート"
 
 #: resources/ui/account.ui:77
 msgid "Username"
-msgstr ""
+msgstr "ユーザー名"
 
 #: resources/ui/account.ui:82
 msgid "Password"
-msgstr ""
+msgstr "パスワード"
 
 #: resources/ui/actor.ui:4 resources/ui/album_widget.ui:4
 #: resources/ui/boxset.ui:4 resources/ui/mpvpage.ui:4 resources/ui/home.ui:4
@@ -374,58 +380,58 @@ msgstr ""
 
 #: resources/ui/actor.ui:70 resources/ui/boxset.ui:105
 msgid "No Inscriptions"
-msgstr ""
+msgstr "記載なし"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:155
 #: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:476
 msgid "Play"
-msgstr ""
+msgstr "再生"
 
 #: resources/ui/mpvpage.ui:98
 msgid "Pause"
-msgstr ""
+msgstr "一時停止"
 
 #: resources/ui/mpvpage.ui:164 resources/ui/mpvpage.ui:166
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 msgid "Fullscreen"
-msgstr ""
+msgstr "フルスクリーン"
 
 #: resources/ui/mpvpage.ui:175 resources/ui/mpvpage.ui:177
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
 msgid "Exit Fullscreen"
-msgstr ""
+msgstr "フルスクリーンの終了"
 
 #: resources/ui/mpvpage.ui:220
 msgid "Stop and quit"
-msgstr ""
+msgstr "停止して終了"
 
 #: resources/ui/mpvpage.ui:240 resources/ui/item.ui:95 resources/ui/item.ui:131
 msgid "Loading..."
-msgstr ""
+msgstr "読み込み中..."
 
 #: resources/ui/mpvpage.ui:255 resources/ui/window.ui:519
 msgid "Playlist"
-msgstr ""
+msgstr "プレイリスト"
 
 #: resources/ui/mpvpage.ui:267
 msgid "Media info (MPV)"
-msgstr ""
+msgstr "メディア情報（MPV）"
 
 #: resources/ui/mpvpage.ui:307
 msgid "Preferences"
-msgstr ""
+msgstr "好み"
 
 #: resources/ui/mpvpage.ui:323
 msgid "Playback speed"
-msgstr ""
+msgstr "再生速度"
 
 #: resources/ui/mpvpage.ui:337
 msgid "Volume"
-msgstr ""
+msgstr "ボリューム"
 
 #: resources/ui/mpvpage.ui:350 resources/ui/mpvpage.ui:409
 msgid "Audio"
-msgstr ""
+msgstr "オーディオ"
 
 #: resources/ui/disc_box.ui:9
 msgid "Disc 1"
@@ -435,381 +441,381 @@ msgstr ""
 #: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:41
 #: resources/ui/song_widget.ui:155
 msgid "View Images"
-msgstr ""
+msgstr "画像を見る"
 
 #: resources/ui/images_dialog.ui:32 resources/ui/metadata_dialog.ui:44
 msgid "_Save"
-msgstr ""
+msgstr "_保存する"
 
 #: resources/ui/images_dialog.ui:61 resources/ui/metadata_dialog.ui:92
 msgid "Not Available"
-msgstr ""
+msgstr "入手不可"
 
 #: resources/ui/images_dialog.ui:62 resources/ui/metadata_dialog.ui:93
 msgid "This page is READ-ONLY, because you have no permission to modify it."
-msgstr ""
+msgstr "このページはREAD-ONLYで、あなたには修正する権限がないからです。"
 
 #: resources/ui/images_dialog.ui:71
 msgid "Images"
-msgstr ""
+msgstr "画像"
 
 #: resources/ui/images_dialog.ui:129
 msgid "BackDrops"
-msgstr ""
+msgstr "バックグラウンド"
 
 #: resources/ui/item_actions.ui:40 resources/ui/pop-menu.ui:23
 msgid "Mark as Played"
-msgstr ""
+msgstr "視聴済みとしてマーク"
 
 #: resources/ui/item_actions.ui:46 resources/ui/pop-menu.ui:29
 msgid "Mark as Unplayed"
-msgstr ""
+msgstr "未視聴としてマーク"
 
 #: resources/ui/item_actions.ui:53 resources/ui/metadata_dialog.ui:20
 #: resources/ui/pop-menu.ui:35 resources/ui/song_widget.ui:150
 msgid "View Metadata"
-msgstr ""
+msgstr "メタデータを見る"
 
 #: resources/ui/item.ui:189
 msgid "Video: "
-msgstr ""
+msgstr "ビデオ "
 
 #: resources/ui/item.ui:209
 msgid "Subtitle: "
-msgstr ""
+msgstr "字幕 "
 
 #: resources/ui/item.ui:264 src/ui/widgets/home.rs:172
 msgid "Continue Watching"
-msgstr ""
+msgstr "視聴を続ける"
 
 #: resources/ui/item.ui:430
 msgid "MediaInfo"
-msgstr ""
+msgstr "メディア情報"
 
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
-msgstr ""
+msgstr "画像をコピー"
 
 #: resources/ui/media_viewer.ui:36 resources/ui/media_viewer.ui:38
 msgid "Back"
-msgstr ""
+msgstr "バック"
 
 #: resources/ui/media_viewer.ui:46 resources/ui/media_viewer.ui:48
 msgid "Media Menu"
-msgstr ""
+msgstr "メディアメニュー"
 
 #: resources/ui/metadata_dialog.ui:29
 msgid "View Metadata (Read Only)"
-msgstr ""
+msgstr "メタデータを見る（読み取り専用）"
 
 #: resources/ui/metadata_dialog.ui:102
 msgid "Path"
-msgstr ""
+msgstr "パス"
 
 #: resources/ui/metadata_dialog.ui:103
 msgid "No data."
-msgstr ""
+msgstr "データはない。"
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/singlelist.ui:90
 msgid "Title"
-msgstr ""
+msgstr "タイトル"
 
 #: resources/ui/metadata_dialog.ui:116
 msgid "Sort Title"
-msgstr ""
+msgstr "ソートタイトル"
 
 #: resources/ui/metadata_dialog.ui:121 resources/ui/singlelist.ui:92
 msgid "Date Created"
-msgstr ""
+msgstr "作成日"
 
 #: resources/ui/metadata_dialog.ui:127
 msgid "Pick Date"
-msgstr ""
+msgstr "ピック日"
 
 #: resources/ui/metadata_dialog.ui:147
 msgid "Pick Time"
-msgstr ""
+msgstr "ピックタイム"
 
 #: resources/ui/metadata_dialog.ui:200
 msgid "Overview"
-msgstr ""
+msgstr "概要"
 
 #: resources/ui/metadata_dialog.ui:227
 msgid "Artists"
-msgstr ""
+msgstr "アーティスト"
 
 #: resources/ui/metadata_dialog.ui:232
 msgid "Album Artists"
-msgstr ""
+msgstr "アルバム・アーティスト"
 
 #: resources/ui/metadata_dialog.ui:237
 msgid "Album"
-msgstr ""
+msgstr "アルバム"
 
 #: resources/ui/metadata_dialog.ui:242 src/ui/widgets/disc_box.rs:76
 msgid "Disc"
-msgstr ""
+msgstr "ディスク"
 
 #: resources/ui/metadata_dialog.ui:247
 msgid "Track Number"
-msgstr ""
+msgstr "トラック番号"
 
 #: resources/ui/metadata_dialog.ui:260
 msgid "TheMovieDb Id"
-msgstr ""
+msgstr "TheMovieDb ID"
 
 #: resources/ui/metadata_dialog.ui:265
 msgid "TheTVDb Id"
-msgstr ""
+msgstr "TheTVDb ID"
 
 #: resources/ui/metadata_dialog.ui:270
 msgid "IMDb Id"
-msgstr ""
+msgstr "IMDb ID"
 
 #: resources/ui/metadata_dialog.ui:278
 msgid "Lock The Item"
-msgstr ""
+msgstr "アイテムをロック"
 
 #: resources/ui/player_toolbar.ui:78
 msgid "Previous"
-msgstr ""
+msgstr "前のページ"
 
 #: resources/ui/player_toolbar.ui:108
 msgid "Next"
-msgstr ""
+msgstr "次のページ"
 
 #: resources/ui/player_toolbar.ui:180
 msgid "Stop And Hide PlayerBar"
-msgstr ""
+msgstr "プレイヤーバーの停止と非表示"
 
 #: resources/ui/pop-menu.ui:5
 msgid "Remove"
-msgstr ""
+msgstr "削除"
 
 #: resources/ui/pop-menu.ui:11
 msgid "Like"
-msgstr ""
+msgstr "好き"
 
 #: resources/ui/pop-menu.ui:17
 msgid "Unlike"
-msgstr ""
+msgstr "いいねを取り消す"
 
 #: resources/ui/pop-menu.ui:47
 msgid "Identify"
-msgstr ""
+msgstr "特定する"
 
 #: resources/ui/pop-menu.ui:53
 msgid "Refresh Metadata"
-msgstr ""
+msgstr "メタデータの更新"
 
 #: resources/ui/pop-menu.ui:59
 msgid "Scan"
-msgstr ""
+msgstr "スキャン"
 
 #: resources/ui/search.ui:29
 msgid "Movie"
-msgstr ""
+msgstr "映画"
 
 #: resources/ui/search.ui:40
 msgid "Series"
-msgstr ""
+msgstr "シリーズ"
 
 #: resources/ui/search.ui:51
 msgid "Box Set"
-msgstr ""
+msgstr "ボックスセット"
 
 #: resources/ui/search.ui:62
 msgid "Person"
-msgstr ""
+msgstr "人物"
 
 #: resources/ui/search.ui:73
 msgid "Music Album"
-msgstr ""
+msgstr "音楽アルバム"
 
 #: resources/ui/singlelist.ui:34
 msgid "View"
-msgstr ""
+msgstr "表示"
 
 #: resources/ui/singlelist.ui:49
 msgid "Filter Panel"
-msgstr ""
+msgstr "フィルターパネル"
 
 #: resources/ui/singlelist.ui:91
 msgid "Bitrate"
-msgstr ""
+msgstr "ビットレート"
 
 #: resources/ui/singlelist.ui:93
 msgid "Imdb Rate"
-msgstr ""
+msgstr "IMDb評価"
 
 #: resources/ui/singlelist.ui:94
 msgid "Critic Rating"
-msgstr ""
+msgstr "批評家評価"
 
 #: resources/ui/singlelist.ui:95
 msgid "Premiere Date"
-msgstr ""
+msgstr "初演日"
 
 #: resources/ui/singlelist.ui:96
 msgid "Offical Rating"
-msgstr ""
+msgstr "公式評価"
 
 #: resources/ui/singlelist.ui:97
 msgid "Production Year"
-msgstr ""
+msgstr "生産年"
 
 #: resources/ui/singlelist.ui:98
 msgid "Date Played"
-msgstr ""
+msgstr "プレー日"
 
 #: resources/ui/singlelist.ui:99
 msgid "Runtime"
-msgstr ""
+msgstr "ランタイム"
 
 #: resources/ui/singlelist.ui:145
 msgid "Poster"
-msgstr ""
+msgstr "ポスター"
 
 #: resources/ui/singlelist.ui:149
 msgid "Backdrop"
-msgstr ""
+msgstr "バックドロップ"
 
 #: resources/ui/singlelist.ui:153
 msgid "Banner"
-msgstr ""
+msgstr "バナー"
 
 #: resources/ui/window.ui:5
 msgid "Sign out"
-msgstr ""
+msgstr "サインアウト"
 
 #: resources/ui/window.ui:9
 msgid "About"
-msgstr ""
+msgstr "について"
 
 #: resources/ui/window.ui:104
 msgid "No Server"
-msgstr ""
+msgstr "サーバーなし"
 
 #: resources/ui/window.ui:107
 msgid "Add Server"
-msgstr ""
+msgstr "サーバーの追加"
 
 #: resources/ui/window.ui:174
 msgid "Log Out"
-msgstr ""
+msgstr "ログアウト"
 
 #: resources/ui/window.ui:221
 msgid "Contents"
-msgstr ""
+msgstr "内容"
 
 #: resources/ui/window.ui:272
 msgid "Home"
-msgstr ""
+msgstr "ホーム"
 
 #: resources/ui/window.ui:318
 msgid "Liked"
-msgstr ""
+msgstr "好き"
 
 #: resources/ui/window.ui:364
 msgid "Search"
-msgstr ""
+msgstr "検索"
 
 #: resources/ui/window.ui:379
 msgid "Servers"
-msgstr ""
+msgstr "サーバー"
 
 #: src/ui/widgets/actor.rs:218 src/ui/widgets/boxset.rs:217
 msgid "Links"
-msgstr ""
+msgstr "いいね"
 
 #: src/ui/widgets/account_add.rs:99
 msgid "Fields must be filled in"
-msgstr ""
+msgstr "すべてのフィールドを入力してください"
 
 #: src/ui/widgets/account_add.rs:145
 msgid "Account added successfully"
-msgstr ""
+msgstr "アカウントが正常に追加されました"
 
 #: src/ui/widgets/account_settings.rs:185
 msgid "Password cannot be empty!"
-msgstr ""
+msgstr "パスワードは空にできません！"
 
 #: src/ui/widgets/account_settings.rs:189
 msgid "Passwords do not match!"
-msgstr ""
+msgstr "パスワードが一致しない！"
 
 #: src/ui/widgets/account_settings.rs:196
 msgid "Password changed successfully! Please login again."
-msgstr ""
+msgstr "パスワードの変更に成功しました！もう一度ログインしてください。"
 
 #: src/ui/widgets/account_settings.rs:202
 msgid "Failed to change password"
-msgstr ""
+msgstr "パスワードの変更に失敗しました"
 
 #: src/ui/widgets/account_settings.rs:288
 msgid "Cache Cleared"
-msgstr ""
+msgstr "キャッシュがクリアされました"
 
 #: src/ui/widgets/account_settings.rs:317
 msgid "No file selected"
-msgstr ""
+msgstr "ファイルが選択されていない"
 
 #: src/ui/widgets/account_settings.rs:413
 msgid "Font Cleared, Restart to take effect."
-msgstr ""
+msgstr "フォントがクリアされ、再起動すると有効になります。"
 
 #: src/ui/widgets/boxset.rs:227
 msgid "Items"
-msgstr ""
+msgstr "アイテム"
 
 #: src/ui/widgets/home.rs:194
 msgid "Library"
-msgstr ""
+msgstr "図書館"
 
 #: src/ui/widgets/home.rs:238
 msgid "Latest"
-msgstr ""
+msgstr "最新"
 
 #: src/ui/widgets/image_infocard.rs:96
 msgid "No image to view"
-msgstr ""
+msgstr "画像なし"
 
 #: src/ui/widgets/image_infocard.rs:112
 msgid "No image to copy"
-msgstr ""
+msgstr "コピーする画像がない"
 
 #: src/ui/widgets/image_infocard.rs:116
 msgid "Image copied to clipboard"
-msgstr ""
+msgstr "クリップボードにコピーされた画像"
 
 #: src/ui/widgets/image_infocard.rs:156
 msgid "Error loading image"
-msgstr ""
+msgstr "画像の読み込みエラー"
 
 #: src/ui/widgets/item.rs:472
 msgid "Resume"
-msgstr ""
+msgstr "再開"
 
 #: src/ui/widgets/list.rs:113
 msgid "Channels"
-msgstr ""
+msgstr "チャンネル"
 
 #: src/ui/widgets/star_toggle.rs:64
 msgid "Remove from favorites"
-msgstr ""
+msgstr "お気に入りから削除"
 
 #: src/ui/widgets/star_toggle.rs:65
 msgid "Add to favorites"
-msgstr ""
+msgstr "お気に入りに追加"
 
 #: src/ui/widgets/tu_list_item.rs:217
 msgid "Present"
-msgstr ""
+msgstr "現在"
 
 #: src/ui/widgets/tu_list_item.rs:542
 msgid "Scanning..."
-msgstr ""
+msgstr "スキャン..."
 
 #: src/ui/widgets/tu_list_item.rs:705 src/ui/widgets/tu_list_item.rs:773
 msgid "Success"
-msgstr ""
+msgstr "成功"
