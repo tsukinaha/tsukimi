@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-24 17:26+0000\n"
+"PO-Revision-Date: 2024-09-25 04:43+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
@@ -78,7 +78,7 @@ msgstr "執行緒"
 
 #: resources/ui/account_settings.ui:142
 msgid "This only effects on getting images"
-msgstr "這只會影響獲取圖像"
+msgstr "這僅會影響獲取圖像"
 
 #: resources/ui/account_settings.ui:158
 msgid "Background"
@@ -159,7 +159,7 @@ msgstr "無"
 
 #: resources/ui/account_settings.ui:335
 msgid "Video"
-msgstr "視訊"
+msgstr "視頻"
 
 #: resources/ui/account_settings.ui:340
 msgid "Video Settings"
@@ -259,7 +259,7 @@ msgstr "播完暫停"
 
 #: resources/ui/account_settings.ui:617
 msgid "Video Output"
-msgstr "視訊輸出"
+msgstr "視頻輸出"
 
 #: resources/ui/account_settings.ui:618
 msgid ""
@@ -295,7 +295,7 @@ msgstr "推薦設置：當前顯示器刷新率"
 
 #: resources/ui/account_settings.ui:754
 msgid "Load external mpv config"
-msgstr "加載外部 mpv 配置"
+msgstr "載入外部 mpv 配置"
 
 #: resources/ui/account_settings.ui:758
 msgid "config=true"
@@ -311,7 +311,7 @@ msgstr "更多"
 
 #: resources/ui/account_settings.ui:786
 msgid "More Video Settings"
-msgstr "更多視訊設置"
+msgstr "更多視頻設置"
 
 #: resources/ui/account_settings.ui:802
 msgid "Customizing mpv params"
@@ -447,7 +447,7 @@ msgstr "標記為已觀看"
 
 #: resources/ui/item_actions.ui:46 resources/ui/pop-menu.ui:29
 msgid "Mark as Unplayed"
-msgstr "標記為未播放"
+msgstr "標記為未觀看"
 
 #: resources/ui/item_actions.ui:53 resources/ui/metadata_dialog.ui:20
 #: resources/ui/pop-menu.ui:35 resources/ui/song_widget.ui:150
@@ -456,7 +456,7 @@ msgstr "查看元數據"
 
 #: resources/ui/item.ui:189
 msgid "Video: "
-msgstr "視訊： "
+msgstr "視頻： "
 
 #: resources/ui/item.ui:209
 msgid "Subtitle: "
@@ -500,7 +500,7 @@ msgstr "標題"
 
 #: resources/ui/metadata_dialog.ui:116
 msgid "Sort Title"
-msgstr "標題排序"
+msgstr "標題次序"
 
 #: resources/ui/metadata_dialog.ui:121 resources/ui/singlelist.ui:92
 msgid "Date Created"
@@ -524,7 +524,7 @@ msgstr "藝術家"
 
 #: resources/ui/metadata_dialog.ui:232
 msgid "Album Artists"
-msgstr "專輯藝人"
+msgstr "專輯藝術家"
 
 #: resources/ui/metadata_dialog.ui:237
 msgid "Album"
@@ -532,7 +532,7 @@ msgstr "專輯"
 
 #: resources/ui/metadata_dialog.ui:247
 msgid "Track Number"
-msgstr "軌道號"
+msgstr "音軌號"
 
 #: resources/ui/metadata_dialog.ui:260
 msgid "TheMovieDb Id"
