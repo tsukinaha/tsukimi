@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-24 23:54+0000\n"
+"PO-Revision-Date: 2024-09-26 10:41+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/tsukimi/"
 "main/nb_NO/>\n"
@@ -37,52 +37,53 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:25
 msgid "Font Scale"
-msgstr ""
+msgstr "Skriftstørrelse"
 
 #: resources/ui/account_settings.ui:39
 msgid "Font Family"
-msgstr ""
+msgstr "Skriftfamilie"
 
 #: resources/ui/account_settings.ui:57 resources/ui/account_settings.ui:68
 #: resources/ui/account_settings.ui:85
 msgid "Restart App To Take Effect"
-msgstr ""
+msgstr "Start programmet på ny for å iføre endringer"
 
 #: resources/ui/account_settings.ui:67
 msgid "Accent Color"
-msgstr ""
+msgstr "Aksentfarge"
 
 #: resources/ui/account_settings.ui:84
 msgid "Accent Foreground Color"
-msgstr ""
+msgstr "Aksentforgrunnsfarge"
 
 #: resources/ui/account_settings.ui:101
 msgid "Show Sidebar"
-msgstr ""
+msgstr "Vis sidefelt"
 
 #: resources/ui/account_settings.ui:106
+#, fuzzy
 msgid "Auto Select Last Server"
-msgstr ""
+msgstr "Auto-velg siste tjener"
 
 #: resources/ui/account_settings.ui:113
 msgid "Network"
-msgstr ""
+msgstr "Nettverk"
 
 #: resources/ui/account_settings.ui:116
 msgid "HTTP Proxy"
-msgstr ""
+msgstr "HTTP-mellomtjener"
 
 #: resources/ui/account_settings.ui:141
 msgid "Threads"
-msgstr ""
+msgstr "Tråder"
 
 #: resources/ui/account_settings.ui:142
 msgid "This only effects on getting images"
-msgstr ""
+msgstr "Dette har kun innvirkning på innhenting av bilder"
 
 #: resources/ui/account_settings.ui:158
 msgid "Background"
-msgstr ""
+msgstr "Bakgrunn"
 
 #: resources/ui/account_settings.ui:165
 msgid "This feature may cause significant lag. Please enable it with caution."
@@ -91,96 +92,96 @@ msgstr ""
 #: resources/ui/account_settings.ui:168 resources/ui/account_settings.ui:401
 #: resources/ui/account_settings.ui:422
 msgid "Default"
-msgstr ""
+msgstr "Forvalg"
 
 #: resources/ui/account_settings.ui:191
 msgid "Opacity"
-msgstr ""
+msgstr "Dekkevne"
 
 #: resources/ui/account_settings.ui:205
 msgid "Blur (Experimental)"
-msgstr ""
+msgstr "Tilsløring (eksperimentelt)"
 
 #: resources/ui/account_settings.ui:206 resources/ui/account_settings.ui:215
 msgid "Warning: High GPU usage"
-msgstr ""
+msgstr "Advarsel: Høy grafikkortsbruk"
 
 #: resources/ui/account_settings.ui:214
 msgid "Blur Radius (Experimental)"
-msgstr ""
+msgstr "Tilsløringsradius (eksperimentelt)"
 
 #: resources/ui/account_settings.ui:235 resources/ui/account_settings.ui:435
 msgid "Cache"
-msgstr ""
+msgstr "Hurtiglager"
 
 #: resources/ui/account_settings.ui:238
 msgid "Clear Cache"
-msgstr ""
+msgstr "Tøm hurtiglager"
 
 #: resources/ui/account_settings.ui:259
 msgid "Account"
-msgstr ""
+msgstr "Konto"
 
 #: resources/ui/account_settings.ui:275
 msgid "New Password"
-msgstr ""
+msgstr "Nytt passord"
 
 #: resources/ui/account_settings.ui:280
 msgid "Confirm Password"
-msgstr ""
+msgstr "Bekreft passord"
 
 #: resources/ui/account_settings.ui:292
 msgid "Change Password"
-msgstr ""
+msgstr "Endre passord"
 
 #: resources/ui/account_settings.ui:309
 msgid "Music"
-msgstr ""
+msgstr "Musikk"
 
 #: resources/ui/account_settings.ui:314
 msgid "Player"
-msgstr ""
+msgstr "Avspiller"
 
 #: resources/ui/account_settings.ui:317 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
-msgstr ""
+msgstr "Gjentagelsesmodus"
 
 #: resources/ui/account_settings.ui:321 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
-msgstr ""
+msgstr "Gjenta enkeltspor"
 
 #: resources/ui/account_settings.ui:322 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
-msgstr ""
+msgstr "Gjenta alle"
 
 #: resources/ui/account_settings.ui:323 resources/ui/player_toolbar.ui:239
 msgid "None"
-msgstr ""
+msgstr "Ingen"
 
 #: resources/ui/account_settings.ui:335
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: resources/ui/account_settings.ui:340
 msgid "Video Settings"
-msgstr ""
+msgstr "Videoinnstillinger"
 
 #: resources/ui/account_settings.ui:343
 msgid "Seek Backward"
-msgstr ""
+msgstr "Blafre bakover"
 
 #: resources/ui/account_settings.ui:344 resources/ui/account_settings.ui:365
 #: resources/ui/account_settings.ui:455
 msgid "Unit: Seconds"
-msgstr ""
+msgstr "Enhet: Sekunder"
 
 #: resources/ui/account_settings.ui:364
 msgid "Seek Forward"
-msgstr ""
+msgstr "Blafre forover"
 
 #: resources/ui/account_settings.ui:387
 msgid "Preferred Language"
-msgstr ""
+msgstr "Foretrukket språk"
 
 #: resources/ui/account_settings.ui:388
 msgid "This currently only applies to the player"
@@ -188,7 +189,7 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:391
 msgid "Preferred Audio Language"
-msgstr ""
+msgstr "Foretrukket lydspråk"
 
 #: resources/ui/account_settings.ui:412
 msgid "Preferred Subtitle Language"
@@ -196,24 +197,24 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:438
 msgid "Cache Size"
-msgstr ""
+msgstr "Hurtiglagerstørrelse"
 
 #: resources/ui/account_settings.ui:439
 msgid "Unit: MB"
-msgstr ""
+msgstr "Enhet: MB"
 
 #: resources/ui/account_settings.ui:454
 msgid "Cache Time"
-msgstr ""
+msgstr "Hurtiglagertid"
 
 #: resources/ui/account_settings.ui:472 resources/ui/mpvpage.ui:358
 #: resources/ui/mpvpage.ui:377
 msgid "Subtitle"
-msgstr ""
+msgstr "Undertekst"
 
 #: resources/ui/account_settings.ui:475
 msgid "Subtitle Text Size"
-msgstr ""
+msgstr "Undertekststørrelse"
 
 #: resources/ui/account_settings.ui:476
 msgid "This option only takes effect for srt subtitles"
@@ -231,11 +232,11 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:524
 msgid "Default Volume"
-msgstr ""
+msgstr "Forvalgt lydstyrke"
 
 #: resources/ui/account_settings.ui:548
 msgid "Force Stereo"
-msgstr ""
+msgstr "Påtving stereo"
 
 #: resources/ui/account_settings.ui:563
 msgid "Show Buffer Speed"
@@ -247,7 +248,7 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:574
 msgid "Play Next"
-msgstr ""
+msgstr "Spill neste"
 
 #: resources/ui/account_settings.ui:587
 msgid "Loop Playback"
@@ -255,11 +256,11 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:601
 msgid "Stop"
-msgstr ""
+msgstr "Stopp"
 
 #: resources/ui/account_settings.ui:617
 msgid "Video Output"
-msgstr ""
+msgstr "Videoutdata"
 
 #: resources/ui/account_settings.ui:618
 msgid ""
@@ -273,15 +274,15 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:676
 msgid "Hardware decoding"
-msgstr ""
+msgstr "Maskinvaredekoding"
 
 #: resources/ui/account_settings.ui:680
 msgid "no (default)"
-msgstr ""
+msgstr "ingen (forvalg)"
 
 #: resources/ui/account_settings.ui:724
 msgid "Estimate Frame Rate"
-msgstr ""
+msgstr "Anslå rammetatkt"
 
 #: resources/ui/account_settings.ui:732
 msgid ""
@@ -307,11 +308,11 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:775
 msgid "More"
-msgstr ""
+msgstr "Mer"
 
 #: resources/ui/account_settings.ui:786
 msgid "More Video Settings"
-msgstr ""
+msgstr "Flere videoinnstillinger"
 
 #: resources/ui/account_settings.ui:802
 msgid "Customizing mpv params"
@@ -323,37 +324,37 @@ msgstr ""
 
 #: resources/ui/account.ui:9 resources/ui/account.ui:17
 msgid "Add a New Server"
-msgstr ""
+msgstr "Legg til en ny tjener"
 
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
 #: resources/ui/metadata_dialog.ui:38
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
 #: resources/ui/account.ui:32
 msgid "_Add"
-msgstr ""
+msgstr "_Legg til"
 
 #: resources/ui/account.ui:60 resources/ui/actor.ui:52
 #: resources/ui/boxset.ui:55
 msgid "Name"
-msgstr ""
+msgstr "Navn"
 
 #: resources/ui/account.ui:65
 msgid "Server Address"
-msgstr ""
+msgstr "Tjeneradresse"
 
 #: resources/ui/account.ui:70
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 #: resources/ui/account.ui:77
 msgid "Username"
-msgstr ""
+msgstr "Brukernavn"
 
 #: resources/ui/account.ui:82
 msgid "Password"
-msgstr ""
+msgstr "Passord"
 
 #: resources/ui/actor.ui:70 resources/ui/boxset.ui:105
 msgid "No Inscriptions"
@@ -362,72 +363,72 @@ msgstr ""
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:155
 #: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:476
 msgid "Play"
-msgstr ""
+msgstr "Spill av"
 
 #: resources/ui/mpvpage.ui:98
 msgid "Pause"
-msgstr ""
+msgstr "Pause"
 
 #: resources/ui/mpvpage.ui:164 resources/ui/mpvpage.ui:166
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 msgid "Fullscreen"
-msgstr ""
+msgstr "Fullskjermsvisning"
 
 #: resources/ui/mpvpage.ui:175 resources/ui/mpvpage.ui:177
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
 msgid "Exit Fullscreen"
-msgstr ""
+msgstr "Avslutt fullskjermsvisning"
 
 #: resources/ui/mpvpage.ui:220
 msgid "Stop and quit"
-msgstr ""
+msgstr "Stopp og avslutt …"
 
 #: resources/ui/mpvpage.ui:240 resources/ui/item.ui:95 resources/ui/item.ui:131
 msgid "Loading..."
-msgstr ""
+msgstr "Laster inn …"
 
 #: resources/ui/mpvpage.ui:255 resources/ui/window.ui:519
 msgid "Playlist"
-msgstr ""
+msgstr "Spilleliste"
 
 #: resources/ui/mpvpage.ui:267
 msgid "Media info (MPV)"
-msgstr ""
+msgstr "Mediainfo (MPV)"
 
 #: resources/ui/mpvpage.ui:307
 msgid "Preferences"
-msgstr ""
+msgstr "Innstillinger"
 
 #: resources/ui/mpvpage.ui:323
 msgid "Playback speed"
-msgstr ""
+msgstr "Avspillingshastighet"
 
 #: resources/ui/mpvpage.ui:337
 msgid "Volume"
-msgstr ""
+msgstr "Lydstyrke"
 
 #: resources/ui/mpvpage.ui:350 resources/ui/mpvpage.ui:409
 msgid "Audio"
-msgstr ""
+msgstr "Lyd"
 
 #: resources/ui/disc_box.ui:9 resources/ui/metadata_dialog.ui:242
 #: src/ui/widgets/disc_box.rs:76
 msgid "Disc"
-msgstr ""
+msgstr "Disk"
 
 #: resources/ui/images_dialog.ui:8 resources/ui/images_dialog.ui:17
 #: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:41
 #: resources/ui/song_widget.ui:155
 msgid "View Images"
-msgstr ""
+msgstr "Vis bilder"
 
 #: resources/ui/images_dialog.ui:32 resources/ui/metadata_dialog.ui:44
 msgid "_Save"
-msgstr ""
+msgstr "_Lagre"
 
 #: resources/ui/images_dialog.ui:61 resources/ui/metadata_dialog.ui:92
 msgid "Not Available"
-msgstr ""
+msgstr "Ikke tilgjengelig"
 
 #: resources/ui/images_dialog.ui:62 resources/ui/metadata_dialog.ui:93
 msgid "This page is READ-ONLY, because you have no permission to modify it."
@@ -435,7 +436,7 @@ msgstr ""
 
 #: resources/ui/images_dialog.ui:71
 msgid "Images"
-msgstr ""
+msgstr "Bilder"
 
 #: resources/ui/images_dialog.ui:129
 msgid "BackDrops"
@@ -452,7 +453,7 @@ msgstr ""
 #: resources/ui/item_actions.ui:53 resources/ui/metadata_dialog.ui:20
 #: resources/ui/pop-menu.ui:35 resources/ui/song_widget.ui:150
 msgid "View Metadata"
-msgstr ""
+msgstr "Vis metadata"
 
 #: resources/ui/item.ui:189
 msgid "Video: "
@@ -468,35 +469,35 @@ msgstr ""
 
 #: resources/ui/item.ui:430
 msgid "MediaInfo"
-msgstr ""
+msgstr "Mediainfo"
 
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
-msgstr ""
+msgstr "_Kopier bilde"
 
 #: resources/ui/media_viewer.ui:36 resources/ui/media_viewer.ui:38
 msgid "Back"
-msgstr ""
+msgstr "Tilbake"
 
 #: resources/ui/media_viewer.ui:46 resources/ui/media_viewer.ui:48
 msgid "Media Menu"
-msgstr ""
+msgstr "Mediameny"
 
 #: resources/ui/metadata_dialog.ui:29
 msgid "View Metadata (Read Only)"
-msgstr ""
+msgstr "Vis metadata (skrivebeskyttet)"
 
 #: resources/ui/metadata_dialog.ui:102
 msgid "Path"
-msgstr ""
+msgstr "Sti"
 
 #: resources/ui/metadata_dialog.ui:103
 msgid "No data."
-msgstr ""
+msgstr "Ingen data."
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/singlelist.ui:90
 msgid "Title"
-msgstr ""
+msgstr "Navn"
 
 #: resources/ui/metadata_dialog.ui:116
 msgid "Sort Title"
@@ -504,35 +505,35 @@ msgstr ""
 
 #: resources/ui/metadata_dialog.ui:121 resources/ui/singlelist.ui:92
 msgid "Date Created"
-msgstr ""
+msgstr "Dato opprettet"
 
 #: resources/ui/metadata_dialog.ui:127
 msgid "Pick Date"
-msgstr ""
+msgstr "Velg dato"
 
 #: resources/ui/metadata_dialog.ui:147
 msgid "Pick Time"
-msgstr ""
+msgstr "Velg tid"
 
 #: resources/ui/metadata_dialog.ui:200
 msgid "Overview"
-msgstr ""
+msgstr "Oversikt"
 
 #: resources/ui/metadata_dialog.ui:227
 msgid "Artists"
-msgstr ""
+msgstr "Artister"
 
 #: resources/ui/metadata_dialog.ui:232
 msgid "Album Artists"
-msgstr ""
+msgstr "Albumartister"
 
 #: resources/ui/metadata_dialog.ui:237
 msgid "Album"
-msgstr ""
+msgstr "Album"
 
 #: resources/ui/metadata_dialog.ui:247
 msgid "Track Number"
-msgstr ""
+msgstr "Spornummer"
 
 #: resources/ui/metadata_dialog.ui:260
 msgid "TheMovieDb Id"
@@ -548,15 +549,15 @@ msgstr ""
 
 #: resources/ui/metadata_dialog.ui:278
 msgid "Lock The Item"
-msgstr ""
+msgstr "Lås elementet"
 
 #: resources/ui/player_toolbar.ui:78
 msgid "Previous"
-msgstr ""
+msgstr "Forrige"
 
 #: resources/ui/player_toolbar.ui:108
 msgid "Next"
-msgstr ""
+msgstr "Neste"
 
 #: resources/ui/player_toolbar.ui:180
 msgid "Stop And Hide PlayerBar"
@@ -564,7 +565,7 @@ msgstr ""
 
 #: resources/ui/pop-menu.ui:5
 msgid "Remove"
-msgstr ""
+msgstr "Fjern"
 
 #: resources/ui/pop-menu.ui:11
 msgid "Like"
@@ -584,31 +585,31 @@ msgstr ""
 
 #: resources/ui/pop-menu.ui:59
 msgid "Scan"
-msgstr ""
+msgstr "Skann"
 
 #: resources/ui/search.ui:29
 msgid "Movie"
-msgstr ""
+msgstr "Film"
 
 #: resources/ui/search.ui:40
 msgid "Series"
-msgstr ""
+msgstr "Serie"
 
 #: resources/ui/search.ui:51
 msgid "Box Set"
-msgstr ""
+msgstr "Bokssett"
 
 #: resources/ui/search.ui:62
 msgid "Person"
-msgstr ""
+msgstr "Person"
 
 #: resources/ui/search.ui:73
 msgid "Music Album"
-msgstr ""
+msgstr "Musikkalbum"
 
 #: resources/ui/singlelist.ui:34
 msgid "View"
-msgstr ""
+msgstr "Vis"
 
 #: resources/ui/singlelist.ui:49
 msgid "Filter Panel"
@@ -628,7 +629,7 @@ msgstr ""
 
 #: resources/ui/singlelist.ui:95
 msgid "Premiere Date"
-msgstr ""
+msgstr "Premieredato"
 
 #: resources/ui/singlelist.ui:96
 msgid "Offical Rating"
@@ -636,19 +637,19 @@ msgstr ""
 
 #: resources/ui/singlelist.ui:97
 msgid "Production Year"
-msgstr ""
+msgstr "Produksjonsår"
 
 #: resources/ui/singlelist.ui:98
 msgid "Date Played"
-msgstr ""
+msgstr "Dato avspilt"
 
 #: resources/ui/singlelist.ui:99
 msgid "Runtime"
-msgstr ""
+msgstr "Kjøretid"
 
 #: resources/ui/singlelist.ui:145
 msgid "Poster"
-msgstr ""
+msgstr "Plakat"
 
 #: resources/ui/singlelist.ui:149
 msgid "Backdrop"
@@ -664,27 +665,27 @@ msgstr ""
 
 #: resources/ui/window.ui:9
 msgid "About"
-msgstr ""
+msgstr "Om"
 
 #: resources/ui/window.ui:104
 msgid "No Server"
-msgstr ""
+msgstr "Ingen tjener"
 
 #: resources/ui/window.ui:107
 msgid "Add Server"
-msgstr ""
+msgstr "Legg til tjener"
 
 #: resources/ui/window.ui:174
 msgid "Log Out"
-msgstr ""
+msgstr "Logg ut"
 
 #: resources/ui/window.ui:221
 msgid "Contents"
-msgstr ""
+msgstr "Innhold"
 
 #: resources/ui/window.ui:272
 msgid "Home"
-msgstr ""
+msgstr "Hjem"
 
 #: resources/ui/window.ui:318
 msgid "Liked"
@@ -692,15 +693,15 @@ msgstr ""
 
 #: resources/ui/window.ui:364
 msgid "Search"
-msgstr ""
+msgstr "Søk"
 
 #: resources/ui/window.ui:379
 msgid "Servers"
-msgstr ""
+msgstr "Tjenere"
 
 #: src/ui/widgets/actor.rs:218 src/ui/widgets/boxset.rs:217
 msgid "Links"
-msgstr ""
+msgstr "Lenker"
 
 #: src/ui/widgets/account_add.rs:99
 msgid "Fields must be filled in"
@@ -740,11 +741,11 @@ msgstr ""
 
 #: src/ui/widgets/boxset.rs:227
 msgid "Items"
-msgstr ""
+msgstr "Elementer"
 
 #: src/ui/widgets/home.rs:194
 msgid "Library"
-msgstr ""
+msgstr "Bibliotek"
 
 #: src/ui/widgets/home.rs:238
 msgid "Latest"
@@ -792,15 +793,15 @@ msgstr ""
 
 #: src/ui/widgets/tu_list_item.rs:542
 msgid "Scanning..."
-msgstr ""
+msgstr "Skanner …"
 
 #: src/ui/widgets/tu_list_item.rs:705 src/ui/widgets/tu_list_item.rs:773
 msgid "Success"
-msgstr ""
+msgstr "Vellykket"
 
 #: src/ui/widgets/server_panel.rs:98
 msgid "Shut down server"
-msgstr ""
+msgstr "Slå av tjener"
 
 #: src/ui/widgets/server_panel.rs:99
 msgid "Are you sure you want to shut down the server?"
@@ -808,20 +809,21 @@ msgstr ""
 
 #: src/ui/widgets/server_panel.rs:130
 msgid "Restart server"
-msgstr ""
+msgstr "Omstart av tjener"
 
 #: src/ui/widgets/server_panel.rs:131
 msgid "Are you sure you want to restart the server?"
-msgstr ""
+msgstr "Vil du starte tjeneren på ny?"
 
 #: src/ui/widgets/server_panel.rs:168
 msgid "Server is shutting down"
-msgstr ""
+msgstr "Tjeneren slås av …"
 
 #: src/ui/widgets/server_panel.rs:180
 msgid "Server is restarting"
-msgstr ""
+msgstr "Tjeneren startes på ny …"
 
 #: src/ui/widgets/server_panel.rs:321
+#, fuzzy
 msgid "Task started"
-msgstr ""
+msgstr "Gjøremål startet"
