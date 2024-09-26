@@ -8,295 +8,306 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-09-27 00:00+0000\n"
+"Last-Translator: 11 22 <8802512@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"tsukimi/main/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #: resources/ui/account_settings.ui:4
 msgid "Settings"
-msgstr ""
+msgstr "Configurações"
 
 #: resources/ui/account_settings.ui:12
 msgid "General"
-msgstr ""
+msgstr "Geral"
 
 #: resources/ui/account_settings.ui:17
 msgid "Appearence"
-msgstr ""
+msgstr "Aparência"
 
 #: resources/ui/account_settings.ui:20
 msgid "Daily Recommend"
-msgstr ""
+msgstr "Recomendação Diária"
 
 #: resources/ui/account_settings.ui:25
 msgid "Font Scale"
-msgstr ""
+msgstr "Escala de fonte"
 
 #: resources/ui/account_settings.ui:39
 msgid "Font Family"
-msgstr ""
+msgstr "Família de font"
 
 #: resources/ui/account_settings.ui:57 resources/ui/account_settings.ui:68
 #: resources/ui/account_settings.ui:85
 msgid "Restart App To Take Effect"
-msgstr ""
+msgstr "Reinicie o aplicativo para que a alteração tenha efeito"
 
 #: resources/ui/account_settings.ui:67
 msgid "Accent Color"
-msgstr ""
+msgstr "Cor de destaque"
 
 #: resources/ui/account_settings.ui:84
 msgid "Accent Foreground Color"
-msgstr ""
+msgstr "Cor de primeiro plano de destaque"
 
 #: resources/ui/account_settings.ui:101
 msgid "Show Sidebar"
-msgstr ""
+msgstr "Mostrar barra lateral"
 
 #: resources/ui/account_settings.ui:106
 msgid "Auto Select Last Server"
-msgstr ""
+msgstr "Selecionar automaticamente o último servidor"
 
 #: resources/ui/account_settings.ui:113
 msgid "Network"
-msgstr ""
+msgstr "Rede"
 
 #: resources/ui/account_settings.ui:116
 msgid "HTTP Proxy"
-msgstr ""
+msgstr "Proxy HTTP"
 
 #: resources/ui/account_settings.ui:141
 msgid "Threads"
-msgstr ""
+msgstr "Threads"
 
 #: resources/ui/account_settings.ui:142
 msgid "This only effects on getting images"
-msgstr ""
+msgstr "Isso afeta apenas a obtenção de imagens"
 
 #: resources/ui/account_settings.ui:158
 msgid "Background"
-msgstr ""
+msgstr "Fundo"
 
 #: resources/ui/account_settings.ui:165
 msgid "This feature may cause significant lag. Please enable it with caution."
 msgstr ""
+"Este recurso pode causar uma lag significativa.Ative-o com cautela, Por "
+"favor."
 
 #: resources/ui/account_settings.ui:168 resources/ui/account_settings.ui:401
 #: resources/ui/account_settings.ui:422
 msgid "Default"
-msgstr ""
+msgstr "Padrão"
 
 #: resources/ui/account_settings.ui:191
 msgid "Opacity"
-msgstr ""
+msgstr "Opacidade"
 
 #: resources/ui/account_settings.ui:205
 msgid "Blur (Experimental)"
-msgstr ""
+msgstr "Desfoque (Experimental)"
 
 #: resources/ui/account_settings.ui:206 resources/ui/account_settings.ui:215
 msgid "Warning: High GPU usage"
-msgstr ""
+msgstr "Aviso: Alto uso da GPU"
 
 #: resources/ui/account_settings.ui:214
 msgid "Blur Radius (Experimental)"
-msgstr ""
+msgstr "Raio de Desfoque (Experimental)"
 
 #: resources/ui/account_settings.ui:235 resources/ui/account_settings.ui:435
 msgid "Cache"
-msgstr ""
+msgstr "Cache"
 
 #: resources/ui/account_settings.ui:238
 msgid "Clear Cache"
-msgstr ""
+msgstr "Limpar o Cache"
 
 #: resources/ui/account_settings.ui:259
 msgid "Account"
-msgstr ""
+msgstr "Conta"
 
 #: resources/ui/account_settings.ui:275
 msgid "New Password"
-msgstr ""
+msgstr "Nova Senha"
 
 #: resources/ui/account_settings.ui:280
 msgid "Confirm Password"
-msgstr ""
+msgstr "Confirmar Senha"
 
 #: resources/ui/account_settings.ui:292
 msgid "Change Password"
-msgstr ""
+msgstr "Alterar Senha"
 
 #: resources/ui/account_settings.ui:309
 msgid "Music"
-msgstr ""
+msgstr "Música"
 
 #: resources/ui/account_settings.ui:314
 msgid "Player"
-msgstr ""
+msgstr "Jogador"
 
 #: resources/ui/account_settings.ui:317 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
-msgstr ""
+msgstr "Modo de Repetição"
 
 #: resources/ui/account_settings.ui:321 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
-msgstr ""
+msgstr "Repetir Um"
 
 #: resources/ui/account_settings.ui:322 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
-msgstr ""
+msgstr "Repetir Todos"
 
 #: resources/ui/account_settings.ui:323 resources/ui/player_toolbar.ui:239
 msgid "None"
-msgstr ""
+msgstr "Nenhum"
 
 #: resources/ui/account_settings.ui:335
 msgid "Video"
-msgstr ""
+msgstr "Vídeo"
 
 #: resources/ui/account_settings.ui:340
 msgid "Video Settings"
-msgstr ""
+msgstr "Configurações de Vídeo"
 
 #: resources/ui/account_settings.ui:343
 msgid "Seek Backward"
-msgstr ""
+msgstr "Procure para trás"
 
 #: resources/ui/account_settings.ui:344 resources/ui/account_settings.ui:365
 #: resources/ui/account_settings.ui:455
 msgid "Unit: Seconds"
-msgstr ""
+msgstr "Unidade: Segundos"
 
 #: resources/ui/account_settings.ui:364
 msgid "Seek Forward"
-msgstr ""
+msgstr "Procure avançar"
 
 #: resources/ui/account_settings.ui:387
 msgid "Preferred Language"
-msgstr ""
+msgstr "Idioma Preferido"
 
 #: resources/ui/account_settings.ui:388
 msgid "This currently only applies to the player"
-msgstr ""
+msgstr "Atualmente isso se aplica apenas ao reprodutor"
 
 #: resources/ui/account_settings.ui:391
 msgid "Preferred Audio Language"
-msgstr ""
+msgstr "Idioma de Áudio Preferido"
 
 #: resources/ui/account_settings.ui:412
 msgid "Preferred Subtitle Language"
-msgstr ""
+msgstr "Idioma de Legenda Preferido"
 
 #: resources/ui/account_settings.ui:438
 msgid "Cache Size"
-msgstr ""
+msgstr "Tamanho do Cache"
 
 #: resources/ui/account_settings.ui:439
 msgid "Unit: MB"
-msgstr ""
+msgstr "Unidade: MB"
 
 #: resources/ui/account_settings.ui:454
 msgid "Cache Time"
-msgstr ""
+msgstr "Tempo de Cache"
 
 #: resources/ui/account_settings.ui:472 resources/ui/mpvpage.ui:358
 #: resources/ui/mpvpage.ui:377
 msgid "Subtitle"
-msgstr ""
+msgstr "Legenda"
 
 #: resources/ui/account_settings.ui:475
 msgid "Subtitle Text Size"
-msgstr ""
+msgstr "Tamanho do Texto da Legenda"
 
 #: resources/ui/account_settings.ui:476
 msgid "This option only takes effect for srt subtitles"
-msgstr ""
+msgstr "Esta opção só tem efeito para legendas SRT"
 
 #: resources/ui/account_settings.ui:496
 msgid "Subtitle Text Font"
-msgstr ""
+msgstr "Font do Texto da Legenda"
 
 #: resources/ui/account_settings.ui:497
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
 msgstr ""
+"Especificar a fonte a ser usada para legendas que não especificam uma font "
+"particular"
 
 #: resources/ui/account_settings.ui:524
 msgid "Default Volume"
-msgstr ""
+msgstr "Volume Padrão"
 
 #: resources/ui/account_settings.ui:548
 msgid "Force Stereo"
-msgstr ""
+msgstr "Forçar Estéreo"
 
 #: resources/ui/account_settings.ui:563
 msgid "Show Buffer Speed"
-msgstr ""
+msgstr "Mostrar Velocidade de Buffer"
 
 #: resources/ui/account_settings.ui:571
 msgid "Action after video ends"
-msgstr ""
+msgstr "Ação após o término do vídeo"
 
 #: resources/ui/account_settings.ui:574
 msgid "Play Next"
-msgstr ""
+msgstr "Reproduzir Próximo"
 
 #: resources/ui/account_settings.ui:587
 msgid "Loop Playback"
-msgstr ""
+msgstr "Reprodução em Loop"
 
 #: resources/ui/account_settings.ui:601
 msgid "Stop"
-msgstr ""
+msgstr "Parar"
 
 #: resources/ui/account_settings.ui:617
 msgid "Video Output"
-msgstr ""
+msgstr "Saída de Vídeo"
 
 #: resources/ui/account_settings.ui:618
 msgid ""
 "Warning: Do NOT use any method other than the software's own controls to "
 "control the window. Restart to take effect"
 msgstr ""
+"Aviso: NÃO use nenhum método além dos controles próprios do software para "
+"controlar a janela. Reinicie para que a alteração tenha efeito"
 
 #: resources/ui/account_settings.ui:621
 msgid "libmpv (default)"
-msgstr ""
+msgstr "libmpv (padrão)"
 
 #: resources/ui/account_settings.ui:676
 msgid "Hardware decoding"
-msgstr ""
+msgstr "Decodificação por hardware"
 
 #: resources/ui/account_settings.ui:680
 msgid "no (default)"
-msgstr ""
+msgstr "não (padrão)"
 
 #: resources/ui/account_settings.ui:724
 msgid "Estimate Frame Rate"
-msgstr ""
+msgstr "Estimar Taxa de Quadros"
 
 #: resources/ui/account_settings.ui:732
 msgid ""
 "Use vf filter to interpolate frames to improve the smoothness of resizing "
 "and menus."
 msgstr ""
+"Use o filtro vf para interpolar quadros e melhorar a suavidade do "
+"redimensionamento e dos menus."
 
 #: resources/ui/account_settings.ui:736
 msgid "Recommended setting value: Current display frame rate"
-msgstr ""
+msgstr "Valor de configuração recomendado: Taxa de quadros do display atual"
 
 #: resources/ui/account_settings.ui:754
 msgid "Load external mpv config"
-msgstr ""
+msgstr "Carregar configuração externa do mpv"
 
 #: resources/ui/account_settings.ui:758
 msgid "config=true"
-msgstr ""
+msgstr "config=true"
 
 #: resources/ui/account_settings.ui:759
 msgid "Read from mpv config dir"
