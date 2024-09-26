@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-26 15:26+0000\n"
+"PO-Revision-Date: 2024-09-26 16:01+0000\n"
 "Last-Translator: Abdulrahman <2140398@uj.edu.sa>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/tsukimi/main/ar/>"
 "\n"
@@ -42,7 +42,7 @@ msgstr "حجم الخط"
 
 #: resources/ui/account_settings.ui:39
 msgid "Font Family"
-msgstr ""
+msgstr "نوع الخط"
 
 #: resources/ui/account_settings.ui:57 resources/ui/account_settings.ui:68
 #: resources/ui/account_settings.ui:85
@@ -119,7 +119,6 @@ msgid "Clear Cache"
 msgstr "مسح الذاكرة المؤقتة"
 
 #: resources/ui/account_settings.ui:259
-#, fuzzy
 msgid "Account"
 msgstr "الحساب"
 
@@ -291,7 +290,7 @@ msgstr "تقدير معدل الإطارات"
 msgid ""
 "Use vf filter to interpolate frames to improve the smoothness of resizing "
 "and menus."
-msgstr ""
+msgstr "استخدم تصفية vf لتداخل الإطارات لتحسين سلاسة تغيير الحجم والقوائم."
 
 #: resources/ui/account_settings.ui:736
 msgid "Recommended setting value: Current display frame rate"
@@ -660,172 +659,172 @@ msgstr "الخلفية"
 
 #: resources/ui/singlelist.ui:153
 msgid "Banner"
-msgstr ""
+msgstr "الشعار"
 
 #: resources/ui/window.ui:5
 msgid "Sign out"
-msgstr ""
+msgstr "تسجيل الخروج"
 
 #: resources/ui/window.ui:9
 msgid "About"
-msgstr ""
+msgstr "حول"
 
 #: resources/ui/window.ui:104
 msgid "No Server"
-msgstr ""
+msgstr "لا يوجد خادم"
 
 #: resources/ui/window.ui:107
 msgid "Add Server"
-msgstr ""
+msgstr "إضافة خادم"
 
 #: resources/ui/window.ui:174
 msgid "Log Out"
-msgstr ""
+msgstr "تسجيل الخروج"
 
 #: resources/ui/window.ui:221
 msgid "Contents"
-msgstr ""
+msgstr "المحتويات"
 
 #: resources/ui/window.ui:272
 msgid "Home"
-msgstr ""
+msgstr "الرئيسية"
 
 #: resources/ui/window.ui:318
 msgid "Liked"
-msgstr ""
+msgstr "المفضلة"
 
 #: resources/ui/window.ui:364
 msgid "Search"
-msgstr ""
+msgstr "بحث"
 
 #: resources/ui/window.ui:379
 msgid "Servers"
-msgstr ""
+msgstr "الخوادم"
 
 #: src/ui/widgets/actor.rs:218 src/ui/widgets/boxset.rs:217
 msgid "Links"
-msgstr ""
+msgstr "الروابط"
 
 #: src/ui/widgets/account_add.rs:99
 msgid "Fields must be filled in"
-msgstr ""
+msgstr "يجب ملء جميع الحقول"
 
 #: src/ui/widgets/account_add.rs:145
 msgid "Account added successfully"
-msgstr ""
+msgstr "تمت إضافة الحساب بنجاح"
 
 #: src/ui/widgets/account_settings.rs:185
 msgid "Password cannot be empty!"
-msgstr ""
+msgstr "لا يمكن أن تكون كلمة المرور فارغة!"
 
 #: src/ui/widgets/account_settings.rs:189
 msgid "Passwords do not match!"
-msgstr ""
+msgstr "كلمات المرور غير متطابقة!"
 
 #: src/ui/widgets/account_settings.rs:196
 msgid "Password changed successfully! Please login again."
-msgstr ""
+msgstr "تم تغيير كلمة المرور بنجاح! يرجى تسجيل الدخول مرة أخرى."
 
 #: src/ui/widgets/account_settings.rs:202
 msgid "Failed to change password"
-msgstr ""
+msgstr "فشل في تغيير كلمة المرور"
 
 #: src/ui/widgets/account_settings.rs:288
 msgid "Cache Cleared"
-msgstr ""
+msgstr "تم مسح الذاكرة المؤقتة"
 
 #: src/ui/widgets/account_settings.rs:317
 msgid "No file selected"
-msgstr ""
+msgstr "لم يتم اختيار ملف"
 
 #: src/ui/widgets/account_settings.rs:413
 msgid "Font Cleared, Restart to take effect."
-msgstr ""
+msgstr "تم مسح الخط، أعد التشغيل لتفعيل التغييرات."
 
 #: src/ui/widgets/boxset.rs:227
 msgid "Items"
-msgstr ""
+msgstr "العناصر"
 
 #: src/ui/widgets/home.rs:194
 msgid "Library"
-msgstr ""
+msgstr "المكتبة"
 
 #: src/ui/widgets/home.rs:238
 msgid "Latest"
-msgstr ""
+msgstr "الأحدث"
 
 #: src/ui/widgets/image_infocard.rs:96
 msgid "No image to view"
-msgstr ""
+msgstr "لا توجد صورة لعرضها"
 
 #: src/ui/widgets/image_infocard.rs:112
 msgid "No image to copy"
-msgstr ""
+msgstr "لا توجد صورة لنسخها"
 
 #: src/ui/widgets/image_infocard.rs:116
 msgid "Image copied to clipboard"
-msgstr ""
+msgstr "تم نسخ الصورة إلى الحافظة"
 
 #: src/ui/widgets/image_infocard.rs:156
 msgid "Error loading image"
-msgstr ""
+msgstr "خطأ في تحميل الصورة"
 
 #: src/ui/widgets/item.rs:472
 msgid "Resume"
-msgstr ""
+msgstr "استئناف"
 
 #: src/ui/widgets/item.rs:991
 msgid "No video source found"
-msgstr ""
+msgstr "لم يتم العثور على مصدر الفيديو"
 
 #: src/ui/widgets/list.rs:113
 msgid "Channels"
-msgstr ""
+msgstr "القنوات"
 
 #: src/ui/widgets/star_toggle.rs:64
 msgid "Remove from favorites"
-msgstr ""
+msgstr "إزالة من المفضلة"
 
 #: src/ui/widgets/star_toggle.rs:65
 msgid "Add to favorites"
-msgstr ""
+msgstr "إضافة إلى المفضلة"
 
 #: src/ui/widgets/tu_list_item.rs:217
 msgid "Present"
-msgstr ""
+msgstr "الحاضر"
 
 #: src/ui/widgets/tu_list_item.rs:542
 msgid "Scanning..."
-msgstr ""
+msgstr "جارٍ المسح..."
 
 #: src/ui/widgets/tu_list_item.rs:705 src/ui/widgets/tu_list_item.rs:773
 msgid "Success"
-msgstr ""
+msgstr "تم بنجاح"
 
 #: src/ui/widgets/server_panel.rs:98
 msgid "Shut down server"
-msgstr ""
+msgstr "إيقاف تشغيل الخادم"
 
 #: src/ui/widgets/server_panel.rs:99
 msgid "Are you sure you want to shut down the server?"
-msgstr ""
+msgstr "هل أنت متأكد أنك تريد إيقاف تشغيل الخادم؟"
 
 #: src/ui/widgets/server_panel.rs:130
 msgid "Restart server"
-msgstr ""
+msgstr "إعادة تشغيل الخادم"
 
 #: src/ui/widgets/server_panel.rs:131
 msgid "Are you sure you want to restart the server?"
-msgstr ""
+msgstr "هل أنت متأكد أنك تريد إعادة تشغيل الخادم؟"
 
 #: src/ui/widgets/server_panel.rs:168
 msgid "Server is shutting down"
-msgstr ""
+msgstr "الخادم في طور الإيقاف"
 
 #: src/ui/widgets/server_panel.rs:180
 msgid "Server is restarting"
-msgstr ""
+msgstr "الخادم في طور إعادة التشغيل"
 
 #: src/ui/widgets/server_panel.rs:321
 msgid "Task started"
-msgstr ""
+msgstr "تم بدء المهمة"
