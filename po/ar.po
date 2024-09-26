@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-26 16:01+0000\n"
+"PO-Revision-Date: 2024-09-27 00:00+0000\n"
 "Last-Translator: Abdulrahman <2140398@uj.edu.sa>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/tsukimi/main/ar/>"
 "\n"
@@ -321,8 +321,9 @@ msgid "Customizing mpv params"
 msgstr "تخصيص إعدادات mpv"
 
 #: resources/ui/account_settings.ui:803
+#, fuzzy
 msgid "One param per line"
-msgstr ""
+msgstr "One param per line"
 
 #: resources/ui/account.ui:9 resources/ui/account.ui:17
 msgid "Add a New Server"
@@ -359,8 +360,9 @@ msgid "Password"
 msgstr "كلمة المرور"
 
 #: resources/ui/actor.ui:70 resources/ui/boxset.ui:105
+#, fuzzy
 msgid "No Inscriptions"
-msgstr ""
+msgstr "No Inscriptions"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:155
 #: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:476
