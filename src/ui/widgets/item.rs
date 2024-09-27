@@ -11,6 +11,7 @@ use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::toast;
 
+use crate::ui::provider::descriptor::DescriptorType;
 use crate::ui::provider::dropdown_factory::{DropdownList, DropdownListBuilder};
 use crate::ui::provider::tu_item::TuItem;
 use crate::ui::provider::tu_object::TuObject;
@@ -532,6 +533,8 @@ impl ItemPage {
             }
         });
 
+        let mut v_dl: Vec<DropdownList> = Vec::new();
+
         for media in &playbackinfo.media_sources {
             let Ok(dl) = DropdownListBuilder::default()
                 .line1(Some(media.name.clone()))
@@ -543,8 +546,13 @@ impl ItemPage {
                 continue;
             };
 
+            v_dl.push(dl.clone());
             let object = glib::BoxedAnyObject::new(dl);
             vstore.append(&object);
+        }
+
+        if let Some(p) = make_video_version_choice(v_dl) {
+            namedropdown.set_selected(p as u32);
         }
     }
 
@@ -1199,4 +1207,47 @@ pub fn dt(date: Option<chrono::DateTime<Utc>>) -> String {
         return "".to_string();
     };
     date.format("%Y-%m-%d %H:%M:%S").to_string()
+}
+
+fn make_video_version_choice(dl_list: Vec<DropdownList>) -> Option<usize> {
+    let descriptors = crate::ui::models::SETTINGS.preferred_version_descriptors();
+
+    let mut list = dl_list.clone();
+
+    for descriptor in descriptors {
+        
+        let content = &descriptor.content;
+
+        let temp_list = list.clone();
+
+        for (dl_index, dl) in temp_list.iter().enumerate().rev() {
+            let name = dl.line1.clone()?;
+
+            match descriptor.type_ {
+                DescriptorType::String => {
+                    if !name.contains(content) {
+                        list.remove(dl_index);
+                    }
+                },
+                DescriptorType::Regex => {
+                    let Ok(re) = regex::Regex::new(content) else {
+                        continue;
+                    };
+                    if !re.is_match(&name) {
+                        list.remove(dl_index);
+                    }
+                },
+            }
+        }
+
+        if list.is_empty() {
+            list = temp_list;
+        }
+    }
+
+    if let Some(first_item) = list.first() {
+        dl_list.iter().position(|dl| dl == first_item)
+    } else {
+        None
+    }
 }

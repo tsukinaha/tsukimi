@@ -3,15 +3,18 @@
 use crate::{
     client::client::EMBY_CLIENT,
     toast,
-    ui::models::{emby_cache_path, SETTINGS},
+    ui::{models::{emby_cache_path, SETTINGS}, provider::descriptor::{Descriptor, DescriptorType}},
     utils::spawn_tokio,
 };
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gettextrs::gettext;
-use gtk::{gdk::RGBA, gio, glib, template_callbacks, CompositeTemplate};
+use gtk::{gdk::{ContentProvider, DragAction, RGBA}, gio, glib, template_callbacks, CompositeTemplate};
+
 
 mod imp {
+    use std::cell::{Cell, RefCell};
+
     use super::*;
     use glib::subclass::InitializingObject;
 
@@ -94,9 +97,33 @@ mod imp {
         pub descriptor_regex_label: TemplateChild<gtk::Label>,
 
         #[template_child]
+        pub descriptor_string_label_edit: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub descriptor_regex_label_edit: TemplateChild<gtk::Label>,
+
+        #[template_child]
         pub descriptor_type_comborow: TemplateChild<adw::ComboRow>,
         #[template_child]
         pub descriptor_entryrow: TemplateChild<adw::EntryRow>,
+
+        #[template_child]
+        pub descriptor_type_comborow_edit: TemplateChild<adw::ComboRow>,
+        #[template_child]
+        pub descriptor_entryrow_edit: TemplateChild<adw::EntryRow>,
+
+        #[template_child]
+        pub descriptors_listbox: TemplateChild<gtk::ListBox>,
+
+        #[template_child]
+        pub preferred_version_list_stack: TemplateChild<gtk::Stack>,
+
+        #[template_child]
+        pub edit_descriptor_dialog: TemplateChild<adw::Dialog>,
+
+        pub now_editing_descriptor: RefCell<Option<Descriptor>>,
+
+        pub descriptor_grab_x: Cell<f64>,
+        pub descriptor_grab_y: Cell<f64>,
     }
 
     #[glib::object_subclass]
@@ -138,8 +165,11 @@ mod imp {
                     set.clear_font();
                 },
             );
-            klass.install_action("version.add-perfer", None, move |set, _action, _parameter| {
+            klass.install_action("version.add-prefer", None, move |set, _action, _parameter| {
                 set.add_preferred_version();
+            });
+            klass.install_action("version.edit-prefer", None, move |set, _action, _parameter| {
+                set.edit_preferred_version();
             });
         }
 
@@ -159,7 +189,8 @@ mod imp {
             obj.set_fontsize();
             obj.set_font();
             obj.set_color();
-            obj.set_estimate();
+            obj.bind_settings();
+            obj.refersh_descriptors();
         }
     }
 
@@ -386,7 +417,7 @@ impl AccountSettings {
         toast!(self, gettext("Font Cleared, Restart to take effect."));
     }
 
-    pub fn set_estimate(&self) {
+    pub fn bind_settings(&self) {
         let imp = self.imp();
         SETTINGS.bind("is-blurenabled", &imp.backgroundblurcontrol.get(), "active").build();
         SETTINGS.bind("pic-blur", &imp.backgroundblurspinrow.get(), "value").build();
@@ -476,7 +507,12 @@ impl AccountSettings {
 
     #[template_callback]
     fn preferred_add_button_cb(&self) {
-        let dialog = self.imp().add_version_preferences_dialog.get();
+        let imp = self.imp();
+        let dialog = imp.add_version_preferences_dialog.get();
+
+        // Reset the dialog
+        imp.descriptor_entryrow.set_text("");
+
         dialog.present(Some(self));
     }
 
@@ -507,29 +543,234 @@ impl AccountSettings {
         }
     }
 
+    #[template_callback]
+    fn on_descriptor_type_changed_comborow_edit(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
+        match combo.selected() {
+            0 => {
+                self.imp().descriptor_string_label_edit.set_visible(true);
+                self.imp().descriptor_regex_label_edit.set_visible(false);
+            }
+            1 => {
+                self.imp().descriptor_string_label_edit.set_visible(false);
+                self.imp().descriptor_regex_label_edit.set_visible(true);
+            }
+            _ => unreachable!(), 
+        }
+    }
+
     pub fn add_preferred_version(&self) {
         let imp = self.imp();
+        let descriptor;
         match imp.descriptor_type_comborow.selected() {
             0 => {
-                let descriptor = imp.descriptor_entryrow.text();
-                if descriptor.is_empty() {
+                let descriptor_content = imp.descriptor_entryrow.text();
+                if descriptor_content.is_empty() {
                     toast!(self, gettext("Descriptor cannot be empty!"));
                     return;
                 }
+
+                descriptor = Descriptor::new(descriptor_content.to_string(), DescriptorType::String);
                 
             }
             1 => {
-                let descriptor = imp.descriptor_entryrow.text();
-                if descriptor.is_empty() {
+                let descriptor_content = imp.descriptor_entryrow.text();
+                if descriptor_content.is_empty() {
                     toast!(self, gettext("Descriptor cannot be empty!"));
                     return;
                 }
-                match regex::Regex::new(&descriptor) {
+                match regex::Regex::new(&descriptor_content) {
                     Ok(_) => {},
                     Err(e) => toast!(self, &format!("{}: {}", gettext("Invalid regex"), e)),
                 }
+
+                descriptor = Descriptor::new(descriptor_content.to_string(), DescriptorType::Regex);
             }
             _ => unreachable!(),
         }
+
+        SETTINGS.add_preferred_version_descriptor(descriptor).expect("Failed to add descriptor");
+        self.refersh_descriptors();
+
+        imp.add_version_preferences_dialog.close();
     }
+
+    pub fn edit_preferred_version(&self) {
+        let imp = self.imp();
+
+        let old_descriptor = imp.now_editing_descriptor.borrow().clone().expect("No descriptor to edit");
+
+        let descriptor;
+        match imp.descriptor_type_comborow_edit.selected() {
+            0 => {
+                let descriptor_content = imp.descriptor_entryrow_edit.text();
+                if descriptor_content.is_empty() {
+                    toast!(self, gettext("Descriptor cannot be empty!"));
+                    return;
+                }
+
+                descriptor = Descriptor::new(descriptor_content.to_string(), DescriptorType::String);
+                
+            }
+            1 => {
+                let descriptor_content = imp.descriptor_entryrow_edit.text();
+                if descriptor_content.is_empty() {
+                    toast!(self, gettext("Descriptor cannot be empty!"));
+                    return;
+                }
+                match regex::Regex::new(&descriptor_content) {
+                    Ok(_) => {},
+                    Err(e) => toast!(self, &format!("{}: {}", gettext("Invalid regex"), e)),
+                }
+
+                descriptor = Descriptor::new(descriptor_content.to_string(), DescriptorType::Regex);
+            }
+            _ => unreachable!(),
+        }
+
+        SETTINGS.edit_preferred_version_descriptor(old_descriptor, descriptor).expect("Failed to edit descriptor");
+        self.refersh_descriptors();
+
+        imp.edit_descriptor_dialog.close();
+    }
+
+    fn refersh_descriptors(&self) {
+        let imp = self.imp();
+        let group = imp.descriptors_listbox.get();
+        let descriptors = SETTINGS.preferred_version_descriptors();
+        
+        if descriptors.is_empty() {
+            imp.preferred_version_list_stack.set_visible_child_name("empty");
+            return;
+        } else {
+            imp.preferred_version_list_stack.set_visible_child_name("list");
+        }
+
+        group.remove_all();
+
+        for (index, descriptor) in descriptors.iter().enumerate() {
+            let row = adw::ActionRow::builder()
+                .title(&descriptor.type_.to_string())
+                .subtitle(&descriptor.content)
+                .activatable(true)
+                .build();
+
+            let edit_button = gtk::Button::builder()
+                .icon_name("document-edit-symbolic")
+                .valign(gtk::Align::Center)
+                .css_classes(["flat"])
+                .build();
+
+            edit_button.connect_clicked(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[strong]
+                descriptor,
+                move |_| {
+                    let dialog = obj.imp().edit_descriptor_dialog.get();
+                    let imp = obj.imp();
+                    
+                    imp.descriptor_entryrow_edit.set_text(&descriptor.content);
+                    match descriptor.type_ {
+                        DescriptorType::String => {
+                            imp.descriptor_type_comborow_edit.set_selected(0);
+                        }
+                        DescriptorType::Regex => {
+                            imp.descriptor_type_comborow_edit.set_selected(1);
+                        }
+                    }
+
+                    imp.now_editing_descriptor.replace(Some(descriptor.clone()));
+                    dialog.present(Some(&obj));
+                }
+            ));
+
+            let delete_button = gtk::Button::builder()
+                .icon_name("user-trash-symbolic")
+                .valign(gtk::Align::Center)
+                .css_classes(["flat"])
+                .build();
+
+            delete_button.connect_clicked(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[strong]
+                descriptor,
+                move |_| {
+                    SETTINGS.remove_preferred_version_descriptor(descriptor.clone()).expect("Failed to remove descriptor");
+                    obj.refersh_descriptors();
+                }
+            ));
+
+            let prefix_image = gtk::Image::builder()
+                .icon_name("list-drag-handle-symbolic")
+                .build();
+
+            row.add_suffix(&edit_button);
+            row.add_suffix(&delete_button);
+            row.add_prefix(&prefix_image);
+
+            let drag_source = gtk::DragSource::builder()
+                .name("descriptor-drag-format")
+                .actions(DragAction::MOVE)
+                .build();
+
+            drag_source.connect_prepare(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[weak(rename_to = widget)]
+                row,
+                #[strong]
+                descriptor,
+                #[upgrade_or]
+                None,
+                move |drag_context, _x, _y| {
+                obj.imp().descriptors_listbox.drag_highlight_row(&widget);
+                let icon = gtk::WidgetPaintable::new(Some(&widget));
+                drag_context.set_icon(Some(&icon), 0, 0);
+                let object = glib::BoxedAnyObject::new(descriptor.clone());
+                Some(gtk::gdk::ContentProvider::for_value(&object.to_value()))
+            }));
+
+            let drop_target = gtk::DropTarget::builder()
+                .name("descriptor-drag-format")
+                .propagation_phase(gtk::PropagationPhase::Capture)
+                .actions(gtk::gdk::DragAction::MOVE)
+                .build();
+
+            drop_target.set_types(&[glib::BoxedAnyObject::static_type()]);
+
+            drop_target.connect_drop(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[strong]
+                descriptor,
+                #[upgrade_or]
+                false,
+                move |_drop_target, value, _y, _data| {
+                let lr_descriptor = value
+                    .get::<glib::BoxedAnyObject>()
+                    .expect("Failed to get descriptor from drop data");
+                let lr_descriptor: std::cell::Ref<Descriptor> = lr_descriptor.borrow();
+
+                if descriptor == *lr_descriptor {
+                    return false;
+                }
+
+                let mut descriptors = SETTINGS.preferred_version_descriptors();
+                let lr_index = descriptors.iter().position(|d| *d == *lr_descriptor).unwrap();
+                descriptors.remove(lr_index);
+                descriptors.insert(index, lr_descriptor.clone());
+                SETTINGS.set_preferred_version_descriptors(descriptors).expect("Failed to set descriptors");
+                obj.refersh_descriptors();
+
+                true
+            }));
+
+            row.add_controller(drag_source);
+            row.add_controller(drop_target);
+
+            group.append(&row);
+            
+        }
+    } 
 }

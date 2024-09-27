@@ -3,7 +3,7 @@ use gtk::prelude::*;
 
 use derive_builder::Builder;
 
-#[derive(Builder, Default)]
+#[derive(Builder, Default, Clone, PartialEq)]
 #[builder(default)]
 pub struct DropdownList {
     pub line1: Option<String>,
