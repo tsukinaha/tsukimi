@@ -3,14 +3,19 @@
 use crate::{
     client::client::EMBY_CLIENT,
     toast,
-    ui::{models::{emby_cache_path, SETTINGS}, provider::descriptor::{Descriptor, DescriptorType}},
+    ui::{
+        models::{emby_cache_path, SETTINGS},
+        provider::descriptor::{Descriptor, DescriptorType},
+    },
     utils::spawn_tokio,
 };
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gettextrs::gettext;
-use gtk::{gdk::{ContentProvider, DragAction, RGBA}, gio, glib, template_callbacks, CompositeTemplate};
-
+use gtk::{
+    gdk::{DragAction, RGBA},
+    gio, glib, template_callbacks, CompositeTemplate,
+};
 
 mod imp {
     use std::cell::{Cell, RefCell};
@@ -90,7 +95,7 @@ mod imp {
         pub preferred_version_subpage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub add_version_preferences_dialog: TemplateChild<adw::Dialog>,
-    
+
         #[template_child]
         pub descriptor_string_label: TemplateChild<gtk::Label>,
         #[template_child]
@@ -165,12 +170,20 @@ mod imp {
                     set.clear_font();
                 },
             );
-            klass.install_action("version.add-prefer", None, move |set, _action, _parameter| {
-                set.add_preferred_version();
-            });
-            klass.install_action("version.edit-prefer", None, move |set, _action, _parameter| {
-                set.edit_preferred_version();
-            });
+            klass.install_action(
+                "version.add-prefer",
+                None,
+                move |set, _action, _parameter| {
+                    set.add_preferred_version();
+                },
+            );
+            klass.install_action(
+                "version.edit-prefer",
+                None,
+                move |set, _action, _parameter| {
+                    set.edit_preferred_version();
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -419,23 +432,93 @@ impl AccountSettings {
 
     pub fn bind_settings(&self) {
         let imp = self.imp();
-        SETTINGS.bind("is-blurenabled", &imp.backgroundblurcontrol.get(), "active").build();
-        SETTINGS.bind("pic-blur", &imp.backgroundblurspinrow.get(), "value").build();
-        SETTINGS.bind("is-daily-recommend", &imp.dailyrecommendcontrol.get(), "active").build();
-        SETTINGS.bind("mpv-estimate", &imp.estimate_control.get(), "active").build();
-        SETTINGS.bind("mpv-estimate-target-frame", &imp.estimate_spinrow.get(), "value").build();
-        SETTINGS.bind("mpv-seek-backward-step", &imp.seek_backward_spinrow.get(), "value").build();
-        SETTINGS.bind("mpv-seek-forward-step", &imp.seek_forward_spinrow.get(), "value").build();
-        SETTINGS.bind("mpv-config", &imp.config_switchrow.get(), "active").build();
-        SETTINGS.bind("mpv-show-buffer-speed", &imp.buffer_switchrow.get(), "active").build();
-        SETTINGS.bind("mpv-force-stereo", &imp.stereo_switchrow.get(), "active").build();
-        SETTINGS.bind("mpv-default-volume", &imp.volume_spinrow.get(), "value").build();
-        SETTINGS.bind("mpv-cache-size", &imp.cachesize_spinrow.get(), "value").build();
-        SETTINGS.bind("mpv-subtitle-size", &imp.mpv_sub_size_spinrow.get(), "value").build();
-        SETTINGS.bind("mpv-audio-preferred-lang", &imp.preferred_audio_language_comborow.get(), "selected").build();
-        SETTINGS.bind("mpv-subtitle-preferred-lang", &imp.preferred_subtitle_language_comborow.get(), "selected").build();
-        SETTINGS.bind("is-auto-select-server", &imp.selectlastcontrol.get(), "active").build();
-        SETTINGS.bind("threads", &imp.threadspinrow.get(), "value").build();
+        SETTINGS
+            .bind("is-blurenabled", &imp.backgroundblurcontrol.get(), "active")
+            .build();
+        SETTINGS
+            .bind("pic-blur", &imp.backgroundblurspinrow.get(), "value")
+            .build();
+        SETTINGS
+            .bind(
+                "is-daily-recommend",
+                &imp.dailyrecommendcontrol.get(),
+                "active",
+            )
+            .build();
+        SETTINGS
+            .bind("mpv-estimate", &imp.estimate_control.get(), "active")
+            .build();
+        SETTINGS
+            .bind(
+                "mpv-estimate-target-frame",
+                &imp.estimate_spinrow.get(),
+                "value",
+            )
+            .build();
+        SETTINGS
+            .bind(
+                "mpv-seek-backward-step",
+                &imp.seek_backward_spinrow.get(),
+                "value",
+            )
+            .build();
+        SETTINGS
+            .bind(
+                "mpv-seek-forward-step",
+                &imp.seek_forward_spinrow.get(),
+                "value",
+            )
+            .build();
+        SETTINGS
+            .bind("mpv-config", &imp.config_switchrow.get(), "active")
+            .build();
+        SETTINGS
+            .bind(
+                "mpv-show-buffer-speed",
+                &imp.buffer_switchrow.get(),
+                "active",
+            )
+            .build();
+        SETTINGS
+            .bind("mpv-force-stereo", &imp.stereo_switchrow.get(), "active")
+            .build();
+        SETTINGS
+            .bind("mpv-default-volume", &imp.volume_spinrow.get(), "value")
+            .build();
+        SETTINGS
+            .bind("mpv-cache-size", &imp.cachesize_spinrow.get(), "value")
+            .build();
+        SETTINGS
+            .bind(
+                "mpv-subtitle-size",
+                &imp.mpv_sub_size_spinrow.get(),
+                "value",
+            )
+            .build();
+        SETTINGS
+            .bind(
+                "mpv-audio-preferred-lang",
+                &imp.preferred_audio_language_comborow.get(),
+                "selected",
+            )
+            .build();
+        SETTINGS
+            .bind(
+                "mpv-subtitle-preferred-lang",
+                &imp.preferred_subtitle_language_comborow.get(),
+                "selected",
+            )
+            .build();
+        SETTINGS
+            .bind(
+                "is-auto-select-server",
+                &imp.selectlastcontrol.get(),
+                "active",
+            )
+            .build();
+        SETTINGS
+            .bind("threads", &imp.threadspinrow.get(), "value")
+            .build();
 
         imp.mpv_sub_font_button
             .set_font_desc(&gtk::pango::FontDescription::from_string(
@@ -539,12 +622,16 @@ impl AccountSettings {
                 self.imp().descriptor_string_label.set_visible(false);
                 self.imp().descriptor_regex_label.set_visible(true);
             }
-            _ => unreachable!(), 
+            _ => unreachable!(),
         }
     }
 
     #[template_callback]
-    fn on_descriptor_type_changed_comborow_edit(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
+    fn on_descriptor_type_changed_comborow_edit(
+        &self,
+        _param: glib::ParamSpec,
+        combo: adw::ComboRow,
+    ) {
         match combo.selected() {
             0 => {
                 self.imp().descriptor_string_label_edit.set_visible(true);
@@ -554,7 +641,7 @@ impl AccountSettings {
                 self.imp().descriptor_string_label_edit.set_visible(false);
                 self.imp().descriptor_regex_label_edit.set_visible(true);
             }
-            _ => unreachable!(), 
+            _ => unreachable!(),
         }
     }
 
@@ -569,8 +656,8 @@ impl AccountSettings {
                     return;
                 }
 
-                descriptor = Descriptor::new(descriptor_content.to_string(), DescriptorType::String);
-                
+                descriptor =
+                    Descriptor::new(descriptor_content.to_string(), DescriptorType::String);
             }
             1 => {
                 let descriptor_content = imp.descriptor_entryrow.text();
@@ -579,7 +666,7 @@ impl AccountSettings {
                     return;
                 }
                 match regex::Regex::new(&descriptor_content) {
-                    Ok(_) => {},
+                    Ok(_) => {}
                     Err(e) => toast!(self, &format!("{}: {}", gettext("Invalid regex"), e)),
                 }
 
@@ -588,7 +675,9 @@ impl AccountSettings {
             _ => unreachable!(),
         }
 
-        SETTINGS.add_preferred_version_descriptor(descriptor).expect("Failed to add descriptor");
+        SETTINGS
+            .add_preferred_version_descriptor(descriptor)
+            .expect("Failed to add descriptor");
         self.refersh_descriptors();
 
         imp.add_version_preferences_dialog.close();
@@ -597,7 +686,11 @@ impl AccountSettings {
     pub fn edit_preferred_version(&self) {
         let imp = self.imp();
 
-        let old_descriptor = imp.now_editing_descriptor.borrow().clone().expect("No descriptor to edit");
+        let old_descriptor = imp
+            .now_editing_descriptor
+            .borrow()
+            .clone()
+            .expect("No descriptor to edit");
 
         let descriptor;
         match imp.descriptor_type_comborow_edit.selected() {
@@ -608,8 +701,8 @@ impl AccountSettings {
                     return;
                 }
 
-                descriptor = Descriptor::new(descriptor_content.to_string(), DescriptorType::String);
-                
+                descriptor =
+                    Descriptor::new(descriptor_content.to_string(), DescriptorType::String);
             }
             1 => {
                 let descriptor_content = imp.descriptor_entryrow_edit.text();
@@ -618,7 +711,7 @@ impl AccountSettings {
                     return;
                 }
                 match regex::Regex::new(&descriptor_content) {
-                    Ok(_) => {},
+                    Ok(_) => {}
                     Err(e) => toast!(self, &format!("{}: {}", gettext("Invalid regex"), e)),
                 }
 
@@ -627,7 +720,9 @@ impl AccountSettings {
             _ => unreachable!(),
         }
 
-        SETTINGS.edit_preferred_version_descriptor(old_descriptor, descriptor).expect("Failed to edit descriptor");
+        SETTINGS
+            .edit_preferred_version_descriptor(old_descriptor, descriptor)
+            .expect("Failed to edit descriptor");
         self.refersh_descriptors();
 
         imp.edit_descriptor_dialog.close();
@@ -637,12 +732,14 @@ impl AccountSettings {
         let imp = self.imp();
         let group = imp.descriptors_listbox.get();
         let descriptors = SETTINGS.preferred_version_descriptors();
-        
+
         if descriptors.is_empty() {
-            imp.preferred_version_list_stack.set_visible_child_name("empty");
+            imp.preferred_version_list_stack
+                .set_visible_child_name("empty");
             return;
         } else {
-            imp.preferred_version_list_stack.set_visible_child_name("list");
+            imp.preferred_version_list_stack
+                .set_visible_child_name("list");
         }
 
         group.remove_all();
@@ -668,7 +765,7 @@ impl AccountSettings {
                 move |_| {
                     let dialog = obj.imp().edit_descriptor_dialog.get();
                     let imp = obj.imp();
-                    
+
                     imp.descriptor_entryrow_edit.set_text(&descriptor.content);
                     match descriptor.type_ {
                         DescriptorType::String => {
@@ -696,7 +793,9 @@ impl AccountSettings {
                 #[strong]
                 descriptor,
                 move |_| {
-                    SETTINGS.remove_preferred_version_descriptor(descriptor.clone()).expect("Failed to remove descriptor");
+                    SETTINGS
+                        .remove_preferred_version_descriptor(descriptor.clone())
+                        .expect("Failed to remove descriptor");
                     obj.refersh_descriptors();
                 }
             ));
@@ -724,12 +823,13 @@ impl AccountSettings {
                 #[upgrade_or]
                 None,
                 move |drag_context, _x, _y| {
-                obj.imp().descriptors_listbox.drag_highlight_row(&widget);
-                let icon = gtk::WidgetPaintable::new(Some(&widget));
-                drag_context.set_icon(Some(&icon), 0, 0);
-                let object = glib::BoxedAnyObject::new(descriptor.clone());
-                Some(gtk::gdk::ContentProvider::for_value(&object.to_value()))
-            }));
+                    obj.imp().descriptors_listbox.drag_highlight_row(&widget);
+                    let icon = gtk::WidgetPaintable::new(Some(&widget));
+                    drag_context.set_icon(Some(&icon), 0, 0);
+                    let object = glib::BoxedAnyObject::new(descriptor.clone());
+                    Some(gtk::gdk::ContentProvider::for_value(&object.to_value()))
+                }
+            ));
 
             let drop_target = gtk::DropTarget::builder()
                 .name("descriptor-drag-format")
@@ -747,30 +847,35 @@ impl AccountSettings {
                 #[upgrade_or]
                 false,
                 move |_drop_target, value, _y, _data| {
-                let lr_descriptor = value
-                    .get::<glib::BoxedAnyObject>()
-                    .expect("Failed to get descriptor from drop data");
-                let lr_descriptor: std::cell::Ref<Descriptor> = lr_descriptor.borrow();
+                    let lr_descriptor = value
+                        .get::<glib::BoxedAnyObject>()
+                        .expect("Failed to get descriptor from drop data");
+                    let lr_descriptor: std::cell::Ref<Descriptor> = lr_descriptor.borrow();
 
-                if descriptor == *lr_descriptor {
-                    return false;
+                    if descriptor == *lr_descriptor {
+                        return false;
+                    }
+
+                    let mut descriptors = SETTINGS.preferred_version_descriptors();
+                    let lr_index = descriptors
+                        .iter()
+                        .position(|d| *d == *lr_descriptor)
+                        .unwrap();
+                    descriptors.remove(lr_index);
+                    descriptors.insert(index, lr_descriptor.clone());
+                    SETTINGS
+                        .set_preferred_version_descriptors(descriptors)
+                        .expect("Failed to set descriptors");
+                    obj.refersh_descriptors();
+
+                    true
                 }
-
-                let mut descriptors = SETTINGS.preferred_version_descriptors();
-                let lr_index = descriptors.iter().position(|d| *d == *lr_descriptor).unwrap();
-                descriptors.remove(lr_index);
-                descriptors.insert(index, lr_descriptor.clone());
-                SETTINGS.set_preferred_version_descriptors(descriptors).expect("Failed to set descriptors");
-                obj.refersh_descriptors();
-
-                true
-            }));
+            ));
 
             row.add_controller(drag_source);
             row.add_controller(drop_target);
 
             group.append(&row);
-            
         }
-    } 
+    }
 }

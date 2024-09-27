@@ -370,9 +370,7 @@ impl MPVPage {
         let video_list = self.imp().current_episode_list.borrow().clone();
 
         let playback =
-            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&item_id).await })
-                .await
-            {
+            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&item_id).await }).await {
                 Ok(playback) => playback,
                 Err(e) => {
                     toast!(self, e.to_user_facing());

@@ -6,7 +6,10 @@ use gtk::{
     prelude::*,
 };
 
-use crate::{ui::provider::descriptor::{Descriptor, VecSerialize}, APP_ID};
+use crate::{
+    ui::provider::descriptor::{Descriptor, VecSerialize},
+    APP_ID,
+};
 
 pub struct Settings(ThreadGuard<gio::Settings>);
 
@@ -48,25 +51,42 @@ impl Settings {
     const PREFERRED_VERSION_DESCRIPTORS: &'static str = "video-version-descriptors"; // String
 
     pub fn preferred_version_descriptors(&self) -> Vec<Descriptor> {
-        serde_json::from_str(&self.string(Self::PREFERRED_VERSION_DESCRIPTORS).to_string()).expect("Failed to deserialize preferred version descriptors")
+        serde_json::from_str(&self.string(Self::PREFERRED_VERSION_DESCRIPTORS).to_string())
+            .expect("Failed to deserialize preferred version descriptors")
     }
 
-    pub fn add_preferred_version_descriptor(&self, descriptor: Descriptor) -> Result<(), glib::BoolError> {
+    pub fn add_preferred_version_descriptor(
+        &self,
+        descriptor: Descriptor,
+    ) -> Result<(), glib::BoolError> {
         let mut descriptors = self.preferred_version_descriptors();
         if descriptors.contains(&descriptor) {
             return Ok(());
         }
         descriptors.push(descriptor);
-        self.set_string(Self::PREFERRED_VERSION_DESCRIPTORS, &descriptors.to_string())
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
     }
 
-    pub fn remove_preferred_version_descriptor(&self, descriptor: Descriptor) -> Result<(), glib::BoolError> {
+    pub fn remove_preferred_version_descriptor(
+        &self,
+        descriptor: Descriptor,
+    ) -> Result<(), glib::BoolError> {
         let mut descriptors = self.preferred_version_descriptors();
         descriptors.retain(|d| d != &descriptor);
-        self.set_string(Self::PREFERRED_VERSION_DESCRIPTORS, &descriptors.to_string())
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
     }
 
-    pub fn edit_preferred_version_descriptor(&self, old_descriptor: Descriptor, new_descriptor: Descriptor) -> Result<(), glib::BoolError> {
+    pub fn edit_preferred_version_descriptor(
+        &self,
+        old_descriptor: Descriptor,
+        new_descriptor: Descriptor,
+    ) -> Result<(), glib::BoolError> {
         let mut descriptors = self.preferred_version_descriptors();
         if descriptors.contains(&new_descriptor) {
             return Ok(());
@@ -74,11 +94,20 @@ impl Settings {
         if let Some(index) = descriptors.iter().position(|d| d == &old_descriptor) {
             descriptors[index] = new_descriptor;
         }
-        self.set_string(Self::PREFERRED_VERSION_DESCRIPTORS, &descriptors.to_string())
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
     }
 
-    pub fn set_preferred_version_descriptors(&self, descriptors: Vec<Descriptor>) -> Result<(), glib::BoolError> {
-        self.set_string(Self::PREFERRED_VERSION_DESCRIPTORS, &descriptors.to_string())
+    pub fn set_preferred_version_descriptors(
+        &self,
+        descriptors: Vec<Descriptor>,
+    ) -> Result<(), glib::BoolError> {
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
     }
 
     pub fn set_mpv_hwdec(&self, mpv_hwdec: i32) -> Result<(), glib::BoolError> {

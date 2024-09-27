@@ -6,11 +6,11 @@ pub mod account_item;
 pub mod actions;
 pub mod background_paintable;
 pub mod core_song;
+pub mod descriptor;
 pub mod dropdown_factory;
 pub mod image_tags;
 pub mod tu_item;
 pub mod tu_object;
-pub mod descriptor;
 
 pub static IS_ADMIN: Lazy<AtomicBool> = Lazy::new(|| AtomicBool::new(false));
 

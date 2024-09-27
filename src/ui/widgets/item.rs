@@ -11,7 +11,6 @@ use crate::client::error::UserFacingError;
 use crate::client::structs::*;
 use crate::toast;
 
-use crate::ui::provider::descriptor::DescriptorType;
 use crate::ui::provider::dropdown_factory::{DropdownList, DropdownListBuilder};
 use crate::ui::provider::tu_item::TuItem;
 use crate::ui::provider::tu_object::TuObject;
@@ -20,6 +19,7 @@ use chrono::{DateTime, Utc};
 
 use super::fix::ScrolledWindowFixExt;
 use super::hortu_scrolled::SHOW_BUTTON_ANIMATION_DURATION;
+use super::item_utils::*;
 use super::song_widget::format_duration;
 use super::tu_overview_item::run_time_ticks_to_label;
 use super::window::Window;
@@ -151,6 +151,8 @@ pub(crate) mod imp {
         pub season_list_vec: RefCell<Vec<SimpleListItem>>,
 
         pub episode_list_vec: RefCell<Vec<SimpleListItem>>,
+
+        pub video_version_matcher: RefCell<Option<String>>,
     }
 
     // The central trait for subclassing a GObject
@@ -495,7 +497,28 @@ impl ItemPage {
 
         let media_sources = playbackinfo.media_sources.clone();
 
-        namedropdown.connect_selected_item_notify(move |dropdown| {
+        let mut v_dl: Vec<String> = Vec::new();
+
+        for media in &playbackinfo.media_sources {
+            let Ok(dl) = DropdownListBuilder::default()
+                .line1(Some(media.name.clone()))
+                .line2(Some(media.container.clone()))
+                .direct_url(media.direct_stream_url.clone())
+                .id(Some(media.id.clone()))
+                .build()
+            else {
+                continue;
+            };
+
+            v_dl.push(dl.line1.clone().unwrap_or_default());
+            let object = glib::BoxedAnyObject::new(dl);
+            vstore.append(&object);
+        }
+
+        namedropdown.connect_selected_item_notify(glib::clone!(
+            #[weak]
+            imp,
+            move |dropdown| {
             let Some(entry) = dropdown
                 .selected_item()
                 .and_downcast::<glib::BoxedAnyObject>()
@@ -531,28 +554,21 @@ impl ItemPage {
                     break;
                 }
             }
-        });
 
-        let mut v_dl: Vec<DropdownList> = Vec::new();
+            println!("Selected: {:?}", dl.line1);
+            imp.video_version_matcher.replace(dl.line1.clone());
+        }));
 
-        for media in &playbackinfo.media_sources {
-            let Ok(dl) = DropdownListBuilder::default()
-                .line1(Some(media.name.clone()))
-                .line2(Some(media.container.clone()))
-                .direct_url(media.direct_stream_url.clone())
-                .id(Some(media.id.clone()))
-                .build()
-            else {
-                continue;
-            };
+        let matcher = imp.video_version_matcher.borrow().clone();
 
-            v_dl.push(dl.clone());
-            let object = glib::BoxedAnyObject::new(dl);
-            vstore.append(&object);
-        }
-
-        if let Some(p) = make_video_version_choice(v_dl) {
-            namedropdown.set_selected(p as u32);
+        if let Some(matcher) = matcher {
+            if let Some(p) = make_video_version_choice_from_matcher(v_dl, &matcher) {
+                namedropdown.set_selected(p as u32);
+            }
+        } else {
+            if let Some(p) = make_video_version_choice_from_filter(v_dl) {
+                namedropdown.set_selected(p as u32);
+            }
         }
     }
 
@@ -1207,47 +1223,4 @@ pub fn dt(date: Option<chrono::DateTime<Utc>>) -> String {
         return "".to_string();
     };
     date.format("%Y-%m-%d %H:%M:%S").to_string()
-}
-
-fn make_video_version_choice(dl_list: Vec<DropdownList>) -> Option<usize> {
-    let descriptors = crate::ui::models::SETTINGS.preferred_version_descriptors();
-
-    let mut list = dl_list.clone();
-
-    for descriptor in descriptors {
-        
-        let content = &descriptor.content;
-
-        let temp_list = list.clone();
-
-        for (dl_index, dl) in temp_list.iter().enumerate().rev() {
-            let name = dl.line1.clone()?;
-
-            match descriptor.type_ {
-                DescriptorType::String => {
-                    if !name.contains(content) {
-                        list.remove(dl_index);
-                    }
-                },
-                DescriptorType::Regex => {
-                    let Ok(re) = regex::Regex::new(content) else {
-                        continue;
-                    };
-                    if !re.is_match(&name) {
-                        list.remove(dl_index);
-                    }
-                },
-            }
-        }
-
-        if list.is_empty() {
-            list = temp_list;
-        }
-    }
-
-    if let Some(first_item) = list.first() {
-        dl_list.iter().position(|dl| dl == first_item)
-    } else {
-        None
-    }
 }

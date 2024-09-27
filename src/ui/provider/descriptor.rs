@@ -47,12 +47,8 @@ impl VecSerialize<Descriptor> for Vec<Descriptor> {
     }
 }
 
-
 impl Descriptor {
     pub fn new(content: String, type_: DescriptorType) -> Self {
-        Self {
-            content,
-            type_,
-        }
+        Self { content, type_ }
     }
 }

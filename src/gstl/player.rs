@@ -3,6 +3,7 @@ use gst::prelude::*;
 use gtk::glib;
 
 pub mod imp {
+    use anyhow::Result;
     use async_channel::{Receiver, Sender};
     use gtk::glib::Properties;
     use gtk::prelude::ObjectExt;
@@ -11,7 +12,6 @@ pub mod imp {
     use std::cell::{Cell, RefCell};
     use std::sync::OnceLock;
     use tracing::debug;
-    use anyhow::Result;
 
     use super::*;
     use crate::ui::widgets::song_widget::State;
@@ -353,7 +353,8 @@ pub mod imp {
 
         pub fn set_position(&self, position: f64) {
             let position = gst::ClockTime::from_seconds(position as u64);
-            if let Err(e) = self.pipeline()
+            if let Err(e) = self
+                .pipeline()
                 .seek_simple(gst::SeekFlags::FLUSH | gst::SeekFlags::KEY_UNIT, position)
             {
                 tracing::warn!("Failed to seek: {}", e);
