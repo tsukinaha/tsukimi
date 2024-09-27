@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-25 04:43+0000\n"
+"PO-Revision-Date: 2024-09-27 17:45+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
@@ -291,7 +291,7 @@ msgstr "使用 vf 濾鏡插幀以提高尺寸調整和菜單動效的流暢度"
 
 #: resources/ui/account_settings.ui:736
 msgid "Recommended setting value: Current display frame rate"
-msgstr "推薦設置：當前顯示器刷新率"
+msgstr "當前顯示刷新率推薦設置值"
 
 #: resources/ui/account_settings.ui:754
 msgid "Load external mpv config"
