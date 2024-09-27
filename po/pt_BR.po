@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-27 00:00+0000\n"
+"PO-Revision-Date: 2024-09-27 17:45+0000\n"
 "Last-Translator: 11 22 <8802512@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "tsukimi/main/pt_BR/>\n"
@@ -311,525 +311,527 @@ msgstr "config=true"
 
 #: resources/ui/account_settings.ui:759
 msgid "Read from mpv config dir"
-msgstr ""
+msgstr "Ler do diretório de configuração do mpv"
 
 #: resources/ui/account_settings.ui:775
 msgid "More"
-msgstr ""
+msgstr "Mais"
 
 #: resources/ui/account_settings.ui:786
 msgid "More Video Settings"
-msgstr ""
+msgstr "Mais Configurações de Vídeo"
 
 #: resources/ui/account_settings.ui:802
 msgid "Customizing mpv params"
-msgstr ""
+msgstr "Personalizando parâmetros do mpv"
 
 #: resources/ui/account_settings.ui:803
 msgid "One param per line"
-msgstr ""
+msgstr "Um parâmetro por linha"
 
 #: resources/ui/account.ui:9 resources/ui/account.ui:17
 msgid "Add a New Server"
-msgstr ""
+msgstr "Adicionar um Novo Servidor"
 
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
 #: resources/ui/metadata_dialog.ui:38
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: resources/ui/account.ui:32
 msgid "_Add"
-msgstr ""
+msgstr "Adicionar"
 
 #: resources/ui/account.ui:60 resources/ui/actor.ui:52
 #: resources/ui/boxset.ui:55
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #: resources/ui/account.ui:65
 msgid "Server Address"
-msgstr ""
+msgstr "Endereço do Servidor"
 
 #: resources/ui/account.ui:70
 msgid "Port"
-msgstr ""
+msgstr "Porta"
 
 #: resources/ui/account.ui:77
 msgid "Username"
-msgstr ""
+msgstr "Nome de Usuário"
 
 #: resources/ui/account.ui:82
 msgid "Password"
-msgstr ""
+msgstr "Senha"
 
 #: resources/ui/actor.ui:70 resources/ui/boxset.ui:105
 msgid "No Inscriptions"
-msgstr ""
+msgstr "Sem Inscrições"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:155
 #: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:476
 msgid "Play"
-msgstr ""
+msgstr "Reproduzir"
 
 #: resources/ui/mpvpage.ui:98
 msgid "Pause"
-msgstr ""
+msgstr "Pausar"
 
 #: resources/ui/mpvpage.ui:164 resources/ui/mpvpage.ui:166
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 msgid "Fullscreen"
-msgstr ""
+msgstr "Tela Cheia"
 
 #: resources/ui/mpvpage.ui:175 resources/ui/mpvpage.ui:177
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
 msgid "Exit Fullscreen"
-msgstr ""
+msgstr "Sair da Tela Cheia"
 
 #: resources/ui/mpvpage.ui:220
 msgid "Stop and quit"
-msgstr ""
+msgstr "Parar e sair"
 
 #: resources/ui/mpvpage.ui:240 resources/ui/item.ui:95 resources/ui/item.ui:131
 msgid "Loading..."
-msgstr ""
+msgstr "Carregando..."
 
 #: resources/ui/mpvpage.ui:255 resources/ui/window.ui:519
 msgid "Playlist"
-msgstr ""
+msgstr "Lista de Reprodução"
 
 #: resources/ui/mpvpage.ui:267
 msgid "Media info (MPV)"
-msgstr ""
+msgstr "Informações de Mídia (MPV)"
 
 #: resources/ui/mpvpage.ui:307
 msgid "Preferences"
-msgstr ""
+msgstr "Preferências"
 
 #: resources/ui/mpvpage.ui:323
 msgid "Playback speed"
-msgstr ""
+msgstr "Velocidade de Reprodução"
 
 #: resources/ui/mpvpage.ui:337
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: resources/ui/mpvpage.ui:350 resources/ui/mpvpage.ui:409
 msgid "Audio"
-msgstr ""
+msgstr "Áudio"
 
 #: resources/ui/disc_box.ui:9 resources/ui/metadata_dialog.ui:242
 #: src/ui/widgets/disc_box.rs:76
 msgid "Disc"
-msgstr ""
+msgstr "Disco"
 
 #: resources/ui/images_dialog.ui:8 resources/ui/images_dialog.ui:17
 #: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:41
 #: resources/ui/song_widget.ui:155
 msgid "View Images"
-msgstr ""
+msgstr "Ver imagens"
 
 #: resources/ui/images_dialog.ui:32 resources/ui/metadata_dialog.ui:44
 msgid "_Save"
-msgstr ""
+msgstr "Salvar"
 
 #: resources/ui/images_dialog.ui:61 resources/ui/metadata_dialog.ui:92
 msgid "Not Available"
-msgstr ""
+msgstr "Não disponível"
 
 #: resources/ui/images_dialog.ui:62 resources/ui/metadata_dialog.ui:93
 msgid "This page is READ-ONLY, because you have no permission to modify it."
 msgstr ""
+"Esta página é SOMENTE LEITURA, porque você não tem permissão para "
+"modificá-la."
 
 #: resources/ui/images_dialog.ui:71
 msgid "Images"
-msgstr ""
+msgstr "Imagens"
 
 #: resources/ui/images_dialog.ui:129
 msgid "BackDrops"
-msgstr ""
+msgstr "Fundos"
 
 #: resources/ui/item_actions.ui:40 resources/ui/pop-menu.ui:23
 msgid "Mark as Played"
-msgstr ""
+msgstr "Marcar como Reproduzido"
 
 #: resources/ui/item_actions.ui:46 resources/ui/pop-menu.ui:29
 msgid "Mark as Unplayed"
-msgstr ""
+msgstr "Marcar como Não Reproduzido"
 
 #: resources/ui/item_actions.ui:53 resources/ui/metadata_dialog.ui:20
 #: resources/ui/pop-menu.ui:35 resources/ui/song_widget.ui:150
 msgid "View Metadata"
-msgstr ""
+msgstr "Ver Metadata"
 
 #: resources/ui/item.ui:189
 msgid "Video: "
-msgstr ""
+msgstr "Vídeo: "
 
 #: resources/ui/item.ui:209
 msgid "Subtitle: "
-msgstr ""
+msgstr "Legenda: "
 
 #: resources/ui/item.ui:264 src/ui/widgets/home.rs:172
 msgid "Continue Watching"
-msgstr ""
+msgstr "Continuar Assistindo"
 
 #: resources/ui/item.ui:430
 msgid "MediaInfo"
-msgstr ""
+msgstr "MediaInfo"
 
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
-msgstr ""
+msgstr "_Copiar Imagem"
 
 #: resources/ui/media_viewer.ui:36 resources/ui/media_viewer.ui:38
 msgid "Back"
-msgstr ""
+msgstr "Voltar"
 
 #: resources/ui/media_viewer.ui:46 resources/ui/media_viewer.ui:48
 msgid "Media Menu"
-msgstr ""
+msgstr "Menu de mídia"
 
 #: resources/ui/metadata_dialog.ui:29
 msgid "View Metadata (Read Only)"
-msgstr ""
+msgstr "Ver Metadata (Ler apenas)"
 
 #: resources/ui/metadata_dialog.ui:102
 msgid "Path"
-msgstr ""
+msgstr "Caminho"
 
 #: resources/ui/metadata_dialog.ui:103
 msgid "No data."
-msgstr ""
+msgstr "Sem dados."
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/singlelist.ui:90
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
 #: resources/ui/metadata_dialog.ui:116
 msgid "Sort Title"
-msgstr ""
+msgstr "Título de Classificação"
 
 #: resources/ui/metadata_dialog.ui:121 resources/ui/singlelist.ui:92
 msgid "Date Created"
-msgstr ""
+msgstr "Data de Criação"
 
 #: resources/ui/metadata_dialog.ui:127
 msgid "Pick Date"
-msgstr ""
+msgstr "Selecionar Data"
 
 #: resources/ui/metadata_dialog.ui:147
 msgid "Pick Time"
-msgstr ""
+msgstr "Selecionar Tempo"
 
 #: resources/ui/metadata_dialog.ui:200
 msgid "Overview"
-msgstr ""
+msgstr "Visão geral"
 
 #: resources/ui/metadata_dialog.ui:227
 msgid "Artists"
-msgstr ""
+msgstr "Artistas"
 
 #: resources/ui/metadata_dialog.ui:232
 msgid "Album Artists"
-msgstr ""
+msgstr "Artistas de álbuns"
 
 #: resources/ui/metadata_dialog.ui:237
 msgid "Album"
-msgstr ""
+msgstr "Álbum"
 
 #: resources/ui/metadata_dialog.ui:247
 msgid "Track Number"
-msgstr ""
+msgstr "Número da Faixa"
 
 #: resources/ui/metadata_dialog.ui:260
 msgid "TheMovieDb Id"
-msgstr ""
+msgstr "TMDB Id"
 
 #: resources/ui/metadata_dialog.ui:265
 msgid "TheTVDb Id"
-msgstr ""
+msgstr "TVDB id"
 
 #: resources/ui/metadata_dialog.ui:270
 msgid "IMDb Id"
-msgstr ""
+msgstr "IMDb Id"
 
 #: resources/ui/metadata_dialog.ui:278
 msgid "Lock The Item"
-msgstr ""
+msgstr "Bloquear o item"
 
 #: resources/ui/player_toolbar.ui:78
 msgid "Previous"
-msgstr ""
+msgstr "Anterior"
 
 #: resources/ui/player_toolbar.ui:108
 msgid "Next"
-msgstr ""
+msgstr "Próximo"
 
 #: resources/ui/player_toolbar.ui:180
 msgid "Stop And Hide PlayerBar"
-msgstr ""
+msgstr "Parar e Ocultar a Barra do Reprodutor"
 
 #: resources/ui/pop-menu.ui:5
 msgid "Remove"
-msgstr ""
+msgstr "Remover"
 
 #: resources/ui/pop-menu.ui:11
 msgid "Like"
-msgstr ""
+msgstr "Curtir"
 
 #: resources/ui/pop-menu.ui:17
 msgid "Unlike"
-msgstr ""
+msgstr "Descurtir"
 
 #: resources/ui/pop-menu.ui:47
 msgid "Identify"
-msgstr ""
+msgstr "Identificação"
 
 #: resources/ui/pop-menu.ui:53
 msgid "Refresh Metadata"
-msgstr ""
+msgstr "Refrescar o metadado"
 
 #: resources/ui/pop-menu.ui:59
 msgid "Scan"
-msgstr ""
+msgstr "Escanear"
 
 #: resources/ui/search.ui:29
 msgid "Movie"
-msgstr ""
+msgstr "Filme"
 
 #: resources/ui/search.ui:40
 msgid "Series"
-msgstr ""
+msgstr "Série"
 
 #: resources/ui/search.ui:51
 msgid "Box Set"
-msgstr ""
+msgstr "Box Set"
 
 #: resources/ui/search.ui:62
 msgid "Person"
-msgstr ""
+msgstr "Pessoa"
 
 #: resources/ui/search.ui:73
 msgid "Music Album"
-msgstr ""
+msgstr "Álbum de música"
 
 #: resources/ui/singlelist.ui:34
 msgid "View"
-msgstr ""
+msgstr "Ver"
 
 #: resources/ui/singlelist.ui:49
 msgid "Filter Panel"
-msgstr ""
+msgstr "Painel de Filtro"
 
 #: resources/ui/singlelist.ui:91
 msgid "Bitrate"
-msgstr ""
+msgstr "Bitrate"
 
 #: resources/ui/singlelist.ui:93
 msgid "Imdb Rate"
-msgstr ""
+msgstr "Classificação do IMDb"
 
 #: resources/ui/singlelist.ui:94
 msgid "Critic Rating"
-msgstr ""
+msgstr "Classificação dos Críticos"
 
 #: resources/ui/singlelist.ui:95
 msgid "Premiere Date"
-msgstr ""
+msgstr "Data de Lançamento"
 
 #: resources/ui/singlelist.ui:96
 msgid "Offical Rating"
-msgstr ""
+msgstr "Classificação Oficial"
 
 #: resources/ui/singlelist.ui:97
 msgid "Production Year"
-msgstr ""
+msgstr "Ano de produção"
 
 #: resources/ui/singlelist.ui:98
 msgid "Date Played"
-msgstr ""
+msgstr "Data de Reprodução"
 
 #: resources/ui/singlelist.ui:99
 msgid "Runtime"
-msgstr ""
+msgstr "Tempo de Reproduzir"
 
 #: resources/ui/singlelist.ui:145
 msgid "Poster"
-msgstr ""
+msgstr "Pôster"
 
 #: resources/ui/singlelist.ui:149
 msgid "Backdrop"
-msgstr ""
+msgstr "Fundo"
 
 #: resources/ui/singlelist.ui:153
 msgid "Banner"
-msgstr ""
+msgstr "Banner"
 
 #: resources/ui/window.ui:5
 msgid "Sign out"
-msgstr ""
+msgstr "Sair"
 
 #: resources/ui/window.ui:9
 msgid "About"
-msgstr ""
+msgstr "Sobre"
 
 #: resources/ui/window.ui:104
 msgid "No Server"
-msgstr ""
+msgstr "Sem servidor"
 
 #: resources/ui/window.ui:107
 msgid "Add Server"
-msgstr ""
+msgstr "Adicionar Servidor"
 
 #: resources/ui/window.ui:174
 msgid "Log Out"
-msgstr ""
+msgstr "Desconectar"
 
 #: resources/ui/window.ui:221
 msgid "Contents"
-msgstr ""
+msgstr "Conteúdos"
 
 #: resources/ui/window.ui:272
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 #: resources/ui/window.ui:318
 msgid "Liked"
-msgstr ""
+msgstr "Gostou"
 
 #: resources/ui/window.ui:364
 msgid "Search"
-msgstr ""
+msgstr "Pesquisar"
 
 #: resources/ui/window.ui:379
 msgid "Servers"
-msgstr ""
+msgstr "Servidores"
 
 #: src/ui/widgets/actor.rs:218 src/ui/widgets/boxset.rs:217
 msgid "Links"
-msgstr ""
+msgstr "Links"
 
 #: src/ui/widgets/account_add.rs:99
 msgid "Fields must be filled in"
-msgstr ""
+msgstr "Os campos devem ser preenchidos"
 
 #: src/ui/widgets/account_add.rs:145
 msgid "Account added successfully"
-msgstr ""
+msgstr "Conta adicionada com sucesso"
 
 #: src/ui/widgets/account_settings.rs:185
 msgid "Password cannot be empty!"
-msgstr ""
+msgstr "A senha não pode estar vazia!"
 
 #: src/ui/widgets/account_settings.rs:189
 msgid "Passwords do not match!"
-msgstr ""
+msgstr "As senhas não coincidem!"
 
 #: src/ui/widgets/account_settings.rs:196
 msgid "Password changed successfully! Please login again."
-msgstr ""
+msgstr "A senha mudou com sucesso! Faça login novamente."
 
 #: src/ui/widgets/account_settings.rs:202
 msgid "Failed to change password"
-msgstr ""
+msgstr "Falhado para mudar a senha"
 
 #: src/ui/widgets/account_settings.rs:288
 msgid "Cache Cleared"
-msgstr ""
+msgstr "Cache Limpou"
 
 #: src/ui/widgets/account_settings.rs:317
 msgid "No file selected"
-msgstr ""
+msgstr "Nenhum arquivo selecionado"
 
 #: src/ui/widgets/account_settings.rs:413
 msgid "Font Cleared, Restart to take effect."
-msgstr ""
+msgstr "Fonte Limpa, reinicie para que a alteração tenha efeito."
 
 #: src/ui/widgets/boxset.rs:227
 msgid "Items"
-msgstr ""
+msgstr "Itens"
 
 #: src/ui/widgets/home.rs:194
 msgid "Library"
-msgstr ""
+msgstr "Biblioteca"
 
 #: src/ui/widgets/home.rs:238
 msgid "Latest"
-msgstr ""
+msgstr "Últimos"
 
 #: src/ui/widgets/image_infocard.rs:96
 msgid "No image to view"
-msgstr ""
+msgstr "Nenhuma imagem para ver"
 
 #: src/ui/widgets/image_infocard.rs:112
 msgid "No image to copy"
-msgstr ""
+msgstr "Nenhuma imagem para copiar"
 
 #: src/ui/widgets/image_infocard.rs:116
 msgid "Image copied to clipboard"
-msgstr ""
+msgstr "Imagem copiada para clipboard"
 
 #: src/ui/widgets/image_infocard.rs:156
 msgid "Error loading image"
-msgstr ""
+msgstr "Imagem de carregamento de erro"
 
 #: src/ui/widgets/item.rs:472
 msgid "Resume"
-msgstr ""
+msgstr "Resume"
 
 #: src/ui/widgets/item.rs:991
 msgid "No video source found"
-msgstr ""
+msgstr "Nenhuma fonte de vídeo encontrada"
 
 #: src/ui/widgets/list.rs:113
 msgid "Channels"
-msgstr ""
+msgstr "Canais"
 
 #: src/ui/widgets/star_toggle.rs:64
 msgid "Remove from favorites"
-msgstr ""
+msgstr "Remover dos favoritos"
 
 #: src/ui/widgets/star_toggle.rs:65
 msgid "Add to favorites"
-msgstr ""
+msgstr "Adicionar aos favoritos"
 
 #: src/ui/widgets/tu_list_item.rs:217
 msgid "Present"
-msgstr ""
+msgstr "Presente"
 
 #: src/ui/widgets/tu_list_item.rs:542
 msgid "Scanning..."
-msgstr ""
+msgstr "Procurando..."
 
 #: src/ui/widgets/tu_list_item.rs:705 src/ui/widgets/tu_list_item.rs:773
 msgid "Success"
-msgstr ""
+msgstr "Sucesso"
 
 #: src/ui/widgets/server_panel.rs:98
 msgid "Shut down server"
-msgstr ""
+msgstr "Desligar servidor"
 
 #: src/ui/widgets/server_panel.rs:99
 msgid "Are you sure you want to shut down the server?"
-msgstr ""
+msgstr "Você tem certeza de que deseja desligar o servidor?"
 
 #: src/ui/widgets/server_panel.rs:130
 msgid "Restart server"
-msgstr ""
+msgstr "Reiniciar servidor"
 
 #: src/ui/widgets/server_panel.rs:131
 msgid "Are you sure you want to restart the server?"
-msgstr ""
+msgstr "Você tem certeza de que deseja reiniciar o servidor?"
 
 #: src/ui/widgets/server_panel.rs:168
 msgid "Server is shutting down"
-msgstr ""
+msgstr "O servidor está desligado"
 
 #: src/ui/widgets/server_panel.rs:180
 msgid "Server is restarting"
-msgstr ""
+msgstr "O servidor está reiniciando"
 
 #: src/ui/widgets/server_panel.rs:321
 msgid "Task started"
-msgstr ""
+msgstr "Início da tarefa"
