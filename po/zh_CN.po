@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-24 18:16+0800\n"
-"PO-Revision-Date: 2024-09-27 00:00+0000\n"
-"Last-Translator: Inaha <sakuovds@gmail.com>\n"
+"PO-Revision-Date: 2024-09-27 17:45+0000\n"
+"Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -63,7 +63,7 @@ msgstr "隐藏侧边栏"
 
 #: resources/ui/account_settings.ui:106
 msgid "Auto Select Last Server"
-msgstr "自动选择上一个服务器"
+msgstr "自动选择上次使用的服务器"
 
 #: resources/ui/account_settings.ui:113
 msgid "Network"
@@ -228,7 +228,7 @@ msgstr "字幕文本字体"
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
-msgstr "指定不特定字体的字幕使用的字体"
+msgstr "指定不指定特定字体的字幕使用的字体"
 
 #: resources/ui/account_settings.ui:524
 msgid "Default Volume"
@@ -248,7 +248,7 @@ msgstr "视频结束后的动作"
 
 #: resources/ui/account_settings.ui:574
 msgid "Play Next"
-msgstr "播放下一个"
+msgstr "自动连播"
 
 #: resources/ui/account_settings.ui:587
 msgid "Loop Playback"
@@ -256,7 +256,7 @@ msgstr "循环播放"
 
 #: resources/ui/account_settings.ui:601
 msgid "Stop"
-msgstr "停止"
+msgstr "播完暂停"
 
 #: resources/ui/account_settings.ui:617
 msgid "Video Output"
@@ -292,7 +292,7 @@ msgstr "使用 vf 滤镜插帧来提高调整大小和菜单的流畅度。"
 
 #: resources/ui/account_settings.ui:736
 msgid "Recommended setting value: Current display frame rate"
-msgstr "推荐设置值：当前显示刷新率"
+msgstr "当前软件显示刷新率推荐设置值"
 
 #: resources/ui/account_settings.ui:754
 msgid "Load external mpv config"
@@ -625,7 +625,7 @@ msgstr "Imdb 评分"
 
 #: resources/ui/singlelist.ui:94
 msgid "Critic Rating"
-msgstr "影評人评分"
+msgstr "影评人评分"
 
 #: resources/ui/singlelist.ui:95
 msgid "Premiere Date"
