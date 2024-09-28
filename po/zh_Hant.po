@@ -2,13 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # dyphire <qimoge@gmail.com>, 2024.
+# Gracealina  clover <zhiweishuisheng@gmail.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-28 13:08+0800\n"
-"PO-Revision-Date: 2024-09-28 07:47+0000\n"
-"Last-Translator: dyphire <qimoge@gmail.com>\n"
+"PO-Revision-Date: 2024-09-28 09:09+0000\n"
+"Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
 "Language: zh_Hant\n"
@@ -28,7 +29,7 @@ msgstr "常規"
 
 #: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:851
 msgid "Preferred Video Version"
-msgstr "首選視訊版本"
+msgstr "首選影片版本"
 
 #: resources/ui/account_settings.ui:28
 msgid "Preferred Language"
@@ -61,11 +62,11 @@ msgstr "每日推薦"
 
 #: resources/ui/account_settings.ui:90
 msgid "Font Scale"
-msgstr "字型縮放"
+msgstr "字體縮放"
 
 #: resources/ui/account_settings.ui:104
 msgid "Font Family"
-msgstr "字型"
+msgstr "字體"
 
 #: resources/ui/account_settings.ui:122 resources/ui/account_settings.ui:133
 #: resources/ui/account_settings.ui:150
@@ -90,7 +91,7 @@ msgstr "自動啟動上次使用的媒體庫"
 
 #: resources/ui/account_settings.ui:178
 msgid "Network"
-msgstr "網路"
+msgstr "網絡"
 
 #: resources/ui/account_settings.ui:181
 msgid "HTTP Proxy"
@@ -122,7 +123,7 @@ msgstr "模糊（實驗性）"
 
 #: resources/ui/account_settings.ui:271 resources/ui/account_settings.ui:280
 msgid "Warning: High GPU usage"
-msgstr "警告：GPU 使用佔比較高"
+msgstr "警告：GPU 佔用率較高"
 
 #: resources/ui/account_settings.ui:279
 msgid "Blur Radius (Experimental)"
@@ -138,7 +139,7 @@ msgstr "清除快取"
 
 #: resources/ui/account_settings.ui:324
 msgid "Account"
-msgstr "賬戶"
+msgstr "帳戶"
 
 #: resources/ui/account_settings.ui:340
 msgid "New Password"
@@ -178,11 +179,11 @@ msgstr "無"
 
 #: resources/ui/account_settings.ui:400
 msgid "Video"
-msgstr "視頻"
+msgstr "視訊"
 
 #: resources/ui/account_settings.ui:405
 msgid "Video Settings"
-msgstr "視頻設置"
+msgstr "視頻設定"
 
 #: resources/ui/account_settings.ui:408
 msgid "Seek Backward"
@@ -216,7 +217,7 @@ msgstr "字幕"
 
 #: resources/ui/account_settings.ui:488
 msgid "Subtitle Text Size"
-msgstr "字幕字型大小"
+msgstr "字幕字體大小"
 
 #: resources/ui/account_settings.ui:489
 msgid "This option only takes effect for srt subtitles"
@@ -224,13 +225,13 @@ msgstr "此選項僅對 SRT 字幕生效"
 
 #: resources/ui/account_settings.ui:508
 msgid "Subtitle Text Font"
-msgstr "字幕字型"
+msgstr "字幕字體"
 
 #: resources/ui/account_settings.ui:509
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
-msgstr "設定本身未指定特定字型的字幕的字型"
+msgstr "設定本身未指定特定字體的字幕的字體"
 
 #: resources/ui/account_settings.ui:535
 msgid "Default Volume"
@@ -262,7 +263,7 @@ msgstr "播完暫停"
 
 #: resources/ui/account_settings.ui:625
 msgid "Video Output"
-msgstr "視頻輸出"
+msgstr "視訊輸出"
 
 #: resources/ui/account_settings.ui:626
 msgid ""
@@ -294,7 +295,7 @@ msgstr "使用 vf 濾鏡插幀以提高尺寸調整和菜單動效的流暢度"
 
 #: resources/ui/account_settings.ui:743
 msgid "Recommended setting value: Current display frame rate"
-msgstr "當前顯示刷新率推薦設置值"
+msgstr "當前顯示更新率推薦設定值"
 
 #: resources/ui/account_settings.ui:760
 msgid "Load external mpv config"
@@ -302,7 +303,7 @@ msgstr "載入外部 mpv 配置"
 
 #: resources/ui/account_settings.ui:765
 msgid "Read from mpv config dir"
-msgstr "從 mpv 配置目錄讀取"
+msgstr "從 mpv 配置資料夾讀取"
 
 #: resources/ui/account_settings.ui:780
 msgid "More"
@@ -310,11 +311,11 @@ msgstr "更多"
 
 #: resources/ui/account_settings.ui:791
 msgid "More Video Settings"
-msgstr "更多視頻設置"
+msgstr "更多視頻設定"
 
 #: resources/ui/account_settings.ui:807
 msgid "Customizing mpv params"
-msgstr "自定義 mpv 參數"
+msgstr "自訂 mpv 參數"
 
 #: resources/ui/account_settings.ui:808
 msgid "One param per line"
@@ -497,7 +498,7 @@ msgstr "不可用"
 
 #: resources/ui/images_dialog.ui:62 resources/ui/metadata_dialog.ui:93
 msgid "This page is READ-ONLY, because you have no permission to modify it."
-msgstr "只讀界面，您無權修改。"
+msgstr "只讀介面，您無權修改。"
 
 #: resources/ui/images_dialog.ui:71
 msgid "Images"
@@ -522,7 +523,7 @@ msgstr "查看元數據"
 
 #: resources/ui/item.ui:189
 msgid "Video: "
-msgstr "視頻： "
+msgstr "視訊： "
 
 #: resources/ui/item.ui:209
 msgid "Subtitle: "
@@ -646,7 +647,7 @@ msgstr "辨識"
 
 #: resources/ui/pop-menu.ui:53
 msgid "Refresh Metadata"
-msgstr "刷新元數據"
+msgstr "更新元數據"
 
 #: resources/ui/pop-menu.ui:59
 msgid "Scan"
@@ -758,7 +759,7 @@ msgstr "收藏"
 
 #: resources/ui/window.ui:365
 msgid "Search"
-msgstr "搜索"
+msgstr "搜尋"
 
 #: resources/ui/window.ui:380
 msgid "Servers"
@@ -774,7 +775,7 @@ msgstr "必填欄位"
 
 #: src/ui/widgets/account_add.rs:145
 msgid "Account added successfully"
-msgstr "賬戶添加成功"
+msgstr "帳戶添加成功"
 
 #: src/ui/widgets/account_settings.rs:241
 msgid "Password cannot be empty!"
@@ -802,7 +803,7 @@ msgstr "未選擇档案"
 
 #: src/ui/widgets/account_settings.rs:430
 msgid "Font Cleared, Restart to take effect."
-msgstr "已清除字型，重啟應用生效。"
+msgstr "已清除字體，重啟應用生效。"
 
 #: src/ui/widgets/account_settings.rs:655
 #: src/ui/widgets/account_settings.rs:665
@@ -850,7 +851,7 @@ msgstr "繼續播放"
 
 #: src/ui/widgets/item.rs:1020
 msgid "No video source found"
-msgstr "未找到視頻源"
+msgstr "未找到視訊源"
 
 #: src/ui/widgets/list.rs:113
 msgid "Channels"
