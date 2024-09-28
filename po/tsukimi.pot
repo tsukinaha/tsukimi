@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-28 13:08+0800\n"
+"POT-Creation-Date: 2024-09-28 17:25+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: resources/ui/account_settings.ui:12
+#: resources/ui/account_settings.ui:12 resources/ui/mpv_shortcuts_window.ui:11
 msgid "General"
 msgstr ""
 
@@ -425,7 +425,8 @@ msgid "No Inscriptions"
 msgstr ""
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:155
-#: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:479
+#: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
+#: src/ui/widgets/item.rs:479
 msgid "Play"
 msgstr ""
 
@@ -761,6 +762,50 @@ msgstr ""
 
 #: resources/ui/window.ui:380
 msgid "Servers"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:15
+msgid "Decrease/increase playback speed by 10%"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:21
+msgid "Halve/double current playback speed"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:27
+msgid "Reset playback speed to normal"
+msgstr ""
+
+#: resources/ui/mpv_menu_actions.ui:12
+msgid "Backward"
+msgstr ""
+
+#: resources/ui/mpv_menu_actions.ui:42
+msgid "Forward"
+msgstr ""
+
+#: resources/ui/mpv_menu.ui:11
+msgid "_Next"
+msgstr ""
+
+#: resources/ui/mpv_menu.ui:15
+msgid "_Previous"
+msgstr ""
+
+#: resources/ui/mpv_menu.ui:21
+msgid "_Next chapter"
+msgstr ""
+
+#: resources/ui/mpv_menu.ui:25
+msgid "_Previous chapter"
+msgstr ""
+
+#: resources/ui/mpv_menu.ui:31
+msgid "_Media info"
+msgstr ""
+
+#: resources/ui/mpv_menu.ui:37
+msgid "_Keyboard shortcuts"
 msgstr ""
 
 #: src/ui/widgets/actor.rs:218 src/ui/widgets/boxset.rs:217

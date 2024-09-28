@@ -1,11 +1,4 @@
-const PO_FILES: [&str; 6] = [
-    "po/zh_CN.po",
-    "po/zh_Hant.po",
-    "po/pt_BR.po",
-    "po/ar.po",
-    "po/nb_NO.po",
-    "po/ja.po",
-];
+const LINGUAS: &str = include_str!("po/LINGUAS");
 
 use std::path::Path;
 #[cfg(any(target_os = "linux", target_os = "windows"))]
@@ -20,7 +13,13 @@ fn main() {
 
     #[cfg(any(target_os = "linux", target_os = "windows"))]
     {
-        for po_file in &PO_FILES {
+        let po_files: Vec<String> = LINGUAS
+            .split('\n')
+            .filter(|line| !line.is_empty())
+            .map(|line| format!("po/{}.po", line))
+            .collect();
+
+        for po_file in &po_files {
             let po_path = Path::new(po_file);
             let locale = po_path.file_stem().unwrap().to_str().unwrap();
             let mo_file = format!("i18n/locale/{}/LC_MESSAGES/tsukimi.mo", locale);
