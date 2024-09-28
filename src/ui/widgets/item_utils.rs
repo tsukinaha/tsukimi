@@ -6,13 +6,13 @@ pub fn make_video_version_choice_from_filter(dl_list: Vec<String>) -> Option<usi
     let mut current_list: Vec<_> = dl_list.iter().collect();
 
     for descriptor in descriptors {
-        let content = &descriptor.content;
+        let content = &descriptor.content.to_lowercase();
         let previous_list = current_list.clone();
 
         current_list.retain(|&name| match descriptor.type_ {
-            DescriptorType::String => name.contains(content),
+            DescriptorType::String => name.to_lowercase().contains(content),
             DescriptorType::Regex => {
-                regex::Regex::new(content).map_or(false, |re| re.is_match(name))
+                regex::Regex::new(content).map_or(false, |re| re.is_match(&name.to_lowercase()))
             }
         });
 
