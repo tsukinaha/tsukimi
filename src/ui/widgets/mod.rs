@@ -17,6 +17,7 @@ pub mod image_paintable;
 pub mod item;
 pub mod item_actionbox;
 pub mod item_carousel;
+pub mod item_utils;
 pub mod liked;
 pub mod list;
 pub mod list_dropdown;

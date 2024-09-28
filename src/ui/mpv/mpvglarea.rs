@@ -3,6 +3,7 @@ use gtk::gdk::{Backend, Display};
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
+use tracing::info;
 
 use crate::client::client::EMBY_CLIENT;
 
@@ -117,6 +118,8 @@ impl MPVGLArea {
         atomic_wait::wake_all(&*mpv.event_thread_alive);
 
         let url = EMBY_CLIENT.get_streaming_url(url);
+
+        info!("Now Playing: {}", url);
         mpv.load_video(&url);
 
         mpv.set_start(percentage);

@@ -39,31 +39,31 @@
     </key>
     <key name="mpv-estimate" type="b">
       <default>false</default>
-      <summary>Default switch state</summary>
+      <summary>Whether enable mpv-estimate</summary>
     </key>
     <key name="ytdl" type="b">
       <default>true</default>
-      <summary>Default switch state</summary>
+      <summary>! Deprecreated</summary>
     </key>
     <key name="is-daily-recommend" type="b">
       <default>true</default>
-      <summary>Default switch state</summary>
+      <summary>Whether Daily Recommend is enabled</summary>
     </key>
     <key name="proxy" type="s">
       <default>""</default>
-      <summary>Default switch state</summary>
+      <summary>HTTP Proxy</summary>
     </key>
     <key name="accent-color-code" type="s">
       <default>"#AEB5FA"</default>
-      <summary>Default switch state</summary>
+      <summary>Software Accent Color</summary>
     </key>
     <key name="accent-fg-color-code" type="s">
       <default>"#3C0090"</default>
-      <summary>Default switch state</summary>
+      <summary>Software Accent FG Color</summary>
     </key>
     <key name="root-pic" type="s">
       <default>""</default>
-      <summary>Default switch state</summary>
+      <summary>Default Background Path</summary>
     </key>
     <key name="mpv-seek-forward-step" type="i">
       <default>20</default>
@@ -91,11 +91,11 @@
     </key>
     <key name="pic-opacity" type="i">
       <default>15</default>
-      <summary>Default threads</summary>
+      <summary>Background Opacity</summary>
     </key>
     <key name="pic-blur" type="i">
       <default>15</default>
-      <summary>Default threads</summary>
+      <summary>Background Blur Radius</summary>
     </key>
     <key name="font-size" type="i">
       <default>-1</default>
@@ -111,61 +111,81 @@
     </key>
     <key name="is-blurenabled" type="b">
       <default>false</default>
-      <summary>Default switch state</summary>
+      <summary>Whether to enable blur background</summary>
     </key>
     <key name="mpv-config" type="b">
       <default>false</default>
-      <summary>Default mpv-config</summary>
+      <summary>Whether to use external mpv config</summary>
     </key>
     <key name="is-backgroundenabled" type="b">
       <default>true</default>
-      <summary>Default switch state</summary>
+      <summary>Whether to enable background</summary>
     </key>
     <key name="preferred-server" type="s">
       <default>""</default>
-      <summary>Default switch state</summary>
+      <summary>Last Server</summary>
     </key>
     <key name="font-name" type="s">
       <default>""</default>
-      <summary>Default switch state</summary>
+      <summary>Software Font</summary>
     </key>
     <key name="music-repeat-mode" type="s">
       <default>""</default>
-      <summary>Default switch state</summary>
+      <summary>Gst Music Repeat Mode</summary>
     </key>
     <key name="is-auto-select-server" type="b">
       <default>false</default>
-      <summary>Default switch state</summary>
+      <summary>Auto Select Last Server</summary>
     </key>
     <key name="mpv-subtitle-size" type="i">
       <default>55</default>
+      <summary>MPV Subtitle Size</summary>
     </key>
     <key name="mpv-audio-preferred-lang" type="i">
       <default>0</default>
+      <summary>Preferred audio language</summary>
+      <description>0: None, 1: English, 2: Chinese, 3: Japanese</description>
     </key>
     <key name="mpv-default-volume" type="i">
       <default>75</default>
+      <summary>Default volume</summary>
     </key>
     <key name="mpv-video-output" type="i">
       <default>0</default>
+      <summary>MPV Video output</summary>
+      <description>0: libmpv, 1: gpu-next, 2: dmabuf-wayland</description>
     </key>
     <key name="mpv-hwdec" type="i">
       <default>0</default>
+      <summary>Hardware Decoding</summary>
+      <description>0: no, 1: auto-safe, 2: vaapi</description>
     </key>
     <key name="mpv-subtitle-preferred-lang" type="i">
+      <summary>Preferred subtitle language</summary>
+      <description>0: None, 1: English, 2: Chinese, 3: Japanese</description>
       <default>0</default>
     </key>
     <key name="mpv-action-after-video-end" type="i">
+      <summary>Action after video end</summary>
+      <description>0: Play Next, 1: Loop Playback, 2: Stop</description>
       <default>0</default>
     </key>
     <key name="mpv-force-stereo" type="b">
+      <summary>Whether to force stereo audio output</summary>
       <default>false</default>
     </key>
     <key name="mpv-show-buffer-speed" type="b">
+      <summary>Whether to show buffer speed label on left-top</summary>
       <default>true</default>
     </key>
     <key name="mpv-subtitle-font" type="s">
+      <summary>MPV subtitle font</summary>
       <default>""</default>
     </key>
+    <key type="s" name="video-version-descriptors">
+			<summary>List of the video version preferences</summary>
+      <description>[(descriptor, is_regex, weight)]</description>
+			<default>'[]'</default>
+		</key>
   </schema>
 </schemalist>

@@ -667,6 +667,7 @@ impl Window {
         back: Option<Back>,
         _selected: Option<String>,
         percentage: f64,
+        matcher: Option<String>,
     ) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("mpv");
@@ -678,6 +679,7 @@ impl Window {
             episode_list,
             back,
             percentage,
+            matcher,
         );
     }
 

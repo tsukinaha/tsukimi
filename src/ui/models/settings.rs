@@ -6,13 +6,15 @@ use gtk::{
     prelude::*,
 };
 
-use crate::APP_ID;
+use crate::{
+    ui::provider::descriptor::{Descriptor, VecSerialize},
+    APP_ID,
+};
 
 pub struct Settings(ThreadGuard<gio::Settings>);
 
 impl Settings {
     const KEY_IS_OVERLAY: &'static str = "is-overlay";
-    const KEY_IS_BLUR_ENABLED: &'static str = "is-blurenabled";
     const KEY_PROXY: &'static str = "proxy";
     const KEY_ROOT_PIC: &'static str = "root-pic";
     const KEY_IS_BACKGROUND_ENABLED: &'static str = "is-backgroundenabled";
@@ -46,6 +48,67 @@ impl Settings {
     const KEY_MPV_VIDEO_OUTPUT: &'static str = "mpv-video-output"; // i32
     const KEY_MPV_ACTION_AFTER_VIDEO_END: &'static str = "mpv-action-after-video-end"; // i32
     const KEY_MPV_HWDEC: &'static str = "mpv-hwdec"; // i32
+    const PREFERRED_VERSION_DESCRIPTORS: &'static str = "video-version-descriptors"; // String
+
+    pub fn preferred_version_descriptors(&self) -> Vec<Descriptor> {
+        serde_json::from_str(&self.string(Self::PREFERRED_VERSION_DESCRIPTORS).to_string())
+            .expect("Failed to deserialize preferred version descriptors")
+    }
+
+    pub fn add_preferred_version_descriptor(
+        &self,
+        descriptor: Descriptor,
+    ) -> Result<(), glib::BoolError> {
+        let mut descriptors = self.preferred_version_descriptors();
+        if descriptors.contains(&descriptor) {
+            return Ok(());
+        }
+        descriptors.push(descriptor);
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
+    }
+
+    pub fn remove_preferred_version_descriptor(
+        &self,
+        descriptor: Descriptor,
+    ) -> Result<(), glib::BoolError> {
+        let mut descriptors = self.preferred_version_descriptors();
+        descriptors.retain(|d| d != &descriptor);
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
+    }
+
+    pub fn edit_preferred_version_descriptor(
+        &self,
+        old_descriptor: Descriptor,
+        new_descriptor: Descriptor,
+    ) -> Result<(), glib::BoolError> {
+        let mut descriptors = self.preferred_version_descriptors();
+        if descriptors.contains(&new_descriptor) {
+            return Ok(());
+        }
+        if let Some(index) = descriptors.iter().position(|d| d == &old_descriptor) {
+            descriptors[index] = new_descriptor;
+        }
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
+    }
+
+    pub fn set_preferred_version_descriptors(
+        &self,
+        descriptors: Vec<Descriptor>,
+    ) -> Result<(), glib::BoolError> {
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
+    }
 
     pub fn set_mpv_hwdec(&self, mpv_hwdec: i32) -> Result<(), glib::BoolError> {
         self.set_int(Self::KEY_MPV_HWDEC, mpv_hwdec)
@@ -63,10 +126,6 @@ impl Settings {
         self.int(Self::KEY_LIST_SORT_ORDER)
     }
 
-    pub fn set_mpv_subtitle_size(&self, mpv_subtitle_size: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_SUBTITLE_SIZE, mpv_subtitle_size)
-    }
-
     pub fn mpv_subtitle_size(&self) -> i32 {
         self.int(Self::KEY_MPV_SUBTITLE_SIZE)
     }
@@ -79,52 +138,20 @@ impl Settings {
         self.string(Self::KEY_MPV_SUBTITLE_FONT).to_string()
     }
 
-    pub fn set_mpv_audio_preferred_lang(
-        &self,
-        mpv_audio_preferred_lang: i32,
-    ) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_AUDIO_PREFERRED_LANG, mpv_audio_preferred_lang)
-    }
-
     pub fn mpv_audio_preferred_lang(&self) -> i32 {
         self.int(Self::KEY_MPV_AUDIO_PREFERRED_LANG)
-    }
-
-    pub fn set_mpv_subtitle_preferred_lang(
-        &self,
-        mpv_subtitle_preferred_lang: i32,
-    ) -> Result<(), glib::BoolError> {
-        self.set_int(
-            Self::KEY_MPV_SUBTITLE_PREFERRED_LANG,
-            mpv_subtitle_preferred_lang,
-        )
     }
 
     pub fn mpv_subtitle_preferred_lang(&self) -> i32 {
         self.int(Self::KEY_MPV_SUBTITLE_PREFERRED_LANG)
     }
 
-    pub fn set_mpv_default_volume(&self, mpv_default_volume: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_DEFAULT_VOLUME, mpv_default_volume)
-    }
-
     pub fn mpv_default_volume(&self) -> i32 {
         self.int(Self::KEY_MPV_DEFAULT_VOLUME)
     }
 
-    pub fn set_mpv_force_stereo(&self, mpv_force_stereo: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_MPV_FORCE_STEREO, mpv_force_stereo)
-    }
-
     pub fn mpv_force_stereo(&self) -> bool {
         self.boolean(Self::KEY_MPV_FORCE_STEREO)
-    }
-
-    pub fn set_mpv_show_buffer_speed(
-        &self,
-        mpv_show_buffer_speed: bool,
-    ) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_MPV_SHOW_BUFFER_SPEED, mpv_show_buffer_speed)
     }
 
     pub fn mpv_show_buffer_speed(&self) -> bool {
@@ -153,68 +180,28 @@ impl Settings {
         self.int(Self::KEY_MPV_ACTION_AFTER_VIDEO_END)
     }
 
-    pub fn set_mpv_cache_time(&self, mpv_cache_time: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_CACHE_TIME, mpv_cache_time)
-    }
-
     pub fn mpv_cache_time(&self) -> i32 {
         self.int(Self::KEY_MPV_CACHE_TIME)
-    }
-
-    pub fn set_mpv_cache_size(&self, mpv_cache_size: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_CACHE_SIZE, mpv_cache_size)
     }
 
     pub fn mpv_cache_size(&self) -> i32 {
         self.int(Self::KEY_MPV_CACHE_SIZE)
     }
 
-    pub fn set_mpv_config(&self, mpv_config: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_MPV_CONFIG, mpv_config)
-    }
-
     pub fn mpv_config(&self) -> bool {
         self.boolean(Self::KEY_MPV_CONFIG)
-    }
-
-    pub fn set_mpv_seek_forward_step(
-        &self,
-        mpv_seek_forward_step: i32,
-    ) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_SEEK_FORWARD_STEP, mpv_seek_forward_step)
     }
 
     pub fn mpv_seek_forward_step(&self) -> i32 {
         self.int(Self::KEY_MPV_SEEK_FORWARD_STEP)
     }
 
-    pub fn set_mpv_seek_backward_step(
-        &self,
-        mpv_seek_backward_step: i32,
-    ) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_SEEK_BACKWARD_STEP, mpv_seek_backward_step)
-    }
-
     pub fn mpv_seek_backward_step(&self) -> i32 {
         self.int(Self::KEY_MPV_SEEK_BACKWARD_STEP)
     }
 
-    pub fn set_mpv_estimate(&self, mpv_estimate: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_MPV_ESTIMATE, mpv_estimate)
-    }
-
     pub fn mpv_estimate(&self) -> bool {
         self.boolean(Self::KEY_MPV_ESTIMATE)
-    }
-
-    pub fn set_mpv_estimate_target_frame(
-        &self,
-        mpv_estimate_target_frame: i32,
-    ) -> Result<(), glib::BoolError> {
-        self.set_int(
-            Self::KEY_MPV_ESTIMATE_TARGET_FRAME,
-            mpv_estimate_target_frame,
-        )
     }
 
     pub fn mpv_estimate_target_frame(&self) -> i32 {
@@ -256,10 +243,6 @@ impl Settings {
         self.int(Self::KEY_LIST_SORT_BY)
     }
 
-    pub fn set_daily_recommend(&self, daily_recommend: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_DAILY_RECOMMEND, daily_recommend)
-    }
-
     pub fn daily_recommend(&self) -> bool {
         self.boolean(Self::KEY_DAILY_RECOMMEND)
     }
@@ -286,10 +269,6 @@ impl Settings {
 
     pub fn preferred_server(&self) -> String {
         self.string(Self::KEY_PREFERRED_SERVER).to_string()
-    }
-
-    pub fn set_auto_select_server(&self, auto_select_server: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_IS_AUTO_SELECT_SERVER, auto_select_server)
     }
 
     pub fn auto_select_server(&self) -> bool {
@@ -319,10 +298,6 @@ impl Settings {
         self.string(Self::KEY_ROOT_PIC).to_string()
     }
 
-    pub fn set_threads(&self, threads: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_THREADS, threads)
-    }
-
     pub fn threads(&self) -> i32 {
         self.int(Self::KEY_THREADS)
     }
@@ -335,10 +310,6 @@ impl Settings {
         self.int(Self::KEY_PIC_OPACITY)
     }
 
-    pub fn set_pic_blur(&self, pic_blur: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_PIC_BLUR, pic_blur)
-    }
-
     pub fn pic_blur(&self) -> i32 {
         self.int(Self::KEY_PIC_BLUR)
     }
@@ -349,14 +320,6 @@ impl Settings {
 
     pub fn background_enabled(&self) -> bool {
         self.boolean(Self::KEY_IS_BACKGROUND_ENABLED)
-    }
-
-    pub fn set_blur_enabled(&self, is_blur_enabled: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_IS_BLUR_ENABLED, is_blur_enabled)
-    }
-
-    pub fn is_blur_enabled(&self) -> bool {
-        self.boolean(Self::KEY_IS_BLUR_ENABLED)
     }
 }
 

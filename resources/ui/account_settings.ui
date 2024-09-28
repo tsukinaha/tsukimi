@@ -14,6 +14,71 @@
         <property name="icon-name">preferences-system-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AActionRow">
+                <property name="title" translatable="yes">Preferred Video Version</property>
+                <property name="show-arrow">True</property>
+                <signal name="activated" handler="preferred_subpage_activated_cb" swapped="yes"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Preferred Language</property>
+            <property name="description" translatable="yes">This currently only applies to the player</property>
+            <child>
+              <object class="AdwComboRow" id="preferred_audio_language_comborow">
+                <property name="title" translatable="yes">Preferred Audio Language</property>
+                <child type="prefix">
+                  <object class="GtkImage">
+                    <property name="icon-name">audio-x-generic-symbolic</property>
+                  </object>
+                </child>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Default</item>
+                      <item>English</item>
+                      <item>简体中文</item>
+                      <item>日本語</item>
+                      <item>繁體中文</item>
+                      <item>اَلْعَرَبِيَّةُ</item>
+                      <item>Norwegian Bokmål</item>
+                      <item>Portuguese</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwComboRow" id="preferred_subtitle_language_comborow">
+                <property name="title" translatable="yes">Preferred Subtitle Language</property>
+                <child type="prefix">
+                  <object class="GtkImage">
+                    <property name="icon-name">media-view-subtitles-symbolic</property>
+                  </object>
+                </child>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Default</item>
+                      <item>English</item>
+                      <item>简体中文</item>
+                      <item>日本語</item>
+                      <item>繁體中文</item>
+                      <item>اَلْعَرَبِيَّةُ</item>
+                      <item>Norwegian Bokmål</item>
+                      <item>Portuguese</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Appearence</property>
             <child>
               <object class="AdwSwitchRow" id="dailyrecommendcontrol">
@@ -347,7 +412,6 @@
                     <property name="icon-name">object-rotate-left-symbolic</property>
                   </object>
                 </child>
-                <signal name="notify::value" handler="on_seekbackward_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
@@ -368,7 +432,6 @@
                     <property name="icon-name">object-rotate-right-symbolic</property>
                   </object>
                 </child>
-                <signal name="notify::value" handler="on_seekforward_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
@@ -384,60 +447,11 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Preferred Language</property>
-            <property name="description" translatable="yes">This currently only applies to the player</property>
-            <child>
-              <object class="AdwComboRow" id="preferred_audio_language_comborow">
-                <property name="title" translatable="yes">Preferred Audio Language</property>
-                <child type="prefix">
-                  <object class="GtkImage">
-                    <property name="icon-name">audio-x-generic-symbolic</property>
-                  </object>
-                </child>
-                <signal name="notify::selected-item" handler="on_audio_language_comborow" swapped="yes" />
-                <property name="model">
-                  <object class="GtkStringList">
-                    <items>
-                      <item translatable="yes">Default</item>
-                      <item>English</item>
-                      <item>简体中文</item>
-                      <item>日本語</item>
-                    </items>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwComboRow" id="preferred_subtitle_language_comborow">
-                <property name="title" translatable="yes">Preferred Subtitle Language</property>
-                <child type="prefix">
-                  <object class="GtkImage">
-                    <property name="icon-name">media-view-subtitles-symbolic</property>
-                  </object>
-                </child>
-                <signal name="notify::selected-item" handler="on_subtitle_language_comborow" swapped="yes" />
-                <property name="model">
-                  <object class="GtkStringList">
-                    <items>
-                      <item translatable="yes">Default</item>
-                      <item>English</item>
-                      <item>简体中文</item>
-                      <item>日本語</item>
-                    </items>
-                  </object>
-                </property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Cache</property>
             <child>
               <object class="AdwSpinRow" id="cachesize_spinrow">
                 <property name="title" translatable="yes">Cache Size</property>
                 <property name="subtitle" translatable="yes">Unit: MB</property>
-                <signal name="notify::value" handler="on_cachesize_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">50</property>
@@ -453,7 +467,6 @@
               <object class="AdwSpinRow">
                 <property name="title" translatable="yes">Cache Time</property>
                 <property name="subtitle" translatable="yes">Unit: Seconds</property>
-                <signal name="notify::value" handler="on_cachetime_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">30</property>
@@ -474,7 +487,6 @@
               <object class="AdwSpinRow" id="mpv_sub_size_spinrow">
                 <property name="title" translatable="yes">Subtitle Text Size</property>
                 <property name="subtitle" translatable="yes">This option only takes effect for srt subtitles</property>
-                <signal name="notify::value" handler="on_subsize_spinrow" swapped="yes" />
                 <child type="prefix">
                   <object class="GtkImage">
                     <property name="icon-name">media-view-subtitles-symbolic</property>
@@ -502,7 +514,6 @@
                 </child>
                 <child type="suffix">
                   <object class="GtkFontDialogButton" id="mpv_sub_font_button">
-                    <signal name="notify::font-desc" handler="on_mpvsub_font_dialog_button" swapped="yes" />
                     <property name="level">family</property>
                     <property name="valign">center</property>
                     <property name="dialog">
@@ -527,7 +538,6 @@
                     <property name="icon-name">audio-volume-medium</property>
                   </object>
                 </child>
-                <signal name="notify::value" handler="on_volume_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">0</property>
@@ -546,7 +556,6 @@
             <child>
               <object class="AdwSwitchRow" id="stereo_switchrow">
                 <property name="title" translatable="yes">Force Stereo</property>
-                <signal name="notify::active" handler="on_stereo_switchrow" swapped="yes" />
                 <child type="prefix">
                   <object class="GtkImage">
                     <property name="icon-name">audio-headphones-symbolic</property>
@@ -561,7 +570,6 @@
             <child>
               <object class="AdwSwitchRow" id="buffer_switchrow">
                 <property name="title" translatable="yes">Show Buffer Speed</property>
-                <signal name="notify::active" handler="on_buffer_switchrow" swapped="yes" />
               </object>
             </child>
           </object>
@@ -726,7 +734,6 @@
               <object class="GtkSwitch" id="estimate_control">
                 <property name="valign">center</property>
                 <property name="margin-end">12</property>
-                <signal name="state-set" handler="on_estimate_control" swapped="yes" />
               </object>
             </property>
             <property name="description" translatable="yes">Use vf filter to interpolate frames to improve the smoothness of resizing and menus.</property>
@@ -735,7 +742,6 @@
                 <property name="title">vf=lavfi="fps=fps={}:round=down"</property>
                 <property name="subtitle" translatable="yes">Recommended setting value: Current display frame rate</property>
                 <property name="sensitive" bind-source="estimate_control" bind-property="active" bind-flags="sync-create" />
-                <signal name="notify::value" handler="on_estimate_spinrow" swapped="yes" />
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">0</property>
@@ -755,9 +761,8 @@
             <property name="description">May cause crashes, Requires restart</property>
             <child>
               <object class="AdwSwitchRow" id="config_switchrow">
-                <property name="title" translatable="yes">config=true</property>
+                <property name="title">config=true</property>
                 <property name="subtitle" translatable="yes">Read from mpv config dir</property>
-                <signal name="notify::active" handler="on_config_switchrow" swapped="yes" />
                 <style>
                   <class name="error"/>
                 </style>
@@ -836,22 +841,308 @@
         <property name="content">
           <object class="AdwClamp">
             <child>
-              <object class="AdwPreferencesGroup">
-                <property name="title" translatable="yes">Preferred Video Version</property>
-                <property name="sensitive">False</property>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
                 <property name="margin-start">30</property>
                 <property name="margin-end">30</property>
-                <property name="header_suffix">
-                  <object class="GtkButton">
-                    <property name="valign">center</property>
-                    <property name="icon-name">list-add-symbolic</property>
+                <property name="spacing">12</property>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title" translatable="yes">Preferred Video Version</property>
+                    <property name="description" translatable="yes">Weight is ordered from high to low, until a specific version is matched, or the highest matching version is obtained before clearing the match list</property>
+                    <property name="header_suffix">
+                      <object class="GtkButton">
+                        <property name="valign">center</property>
+                        <property name="icon-name">list-add-symbolic</property>
+                        <signal name="clicked" handler="preferred_add_button_cb" swapped="yes"/>
+                        <style>
+                          <class name="flat" />
+                        </style>
+                      </object>
+                    </property>
                   </object>
-                </property>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup" id="descriptors_group">
+                    <property name="title" translatable="yes">Descriptors</property>
+                    <child>
+                      <object class="GtkStack" id="preferred_version_list_stack">
+                        <property name="valign">start</property>
+                        <property name="vhomogeneous">False</property>
+                        <child>
+                          <object class="GtkStackPage">
+                            <property name="name">list</property>
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkListBox" id="descriptors_listbox">
+                                    <property name="selection-mode">none</property>
+                                    <style>
+                                      <class name="boxed-list" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label" translatable="yes">It is recommended to set no more than 3 lines</property>
+                                    <property name="margin-top">6</property>
+                                    <property name="justify">left</property>
+                                    <property name="halign">start</property>
+                                    <style>
+                                      <class name="dim-label" />
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+
+                        <child>
+                          <object class="GtkStackPage">
+                            <property name="name">empty</property>
+                            <property name="child">
+                              <object class="AdwPreferencesGroup">
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">No Descriptors</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
         </property>
       </object>
     </property>
+  </object>
+  <object class="AdwDialog" id="add_version_preferences_dialog">
+    <property name="title" translatable="yes">Add a descriptor</property>
+    <property name="follows-content-size">1</property>
+    <property name="width-request">360</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="show-end-title-buttons">False</property>
+            <property name="show-start-title-buttons">False</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="action-name">window.close</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Add</property>
+                <property name="use-underline">True</property>
+                <property name="sensitive">False</property>
+                <property name="receives-default">True</property>
+                <property name="action-name">version.add-prefer</property>
+                <style>
+                  <class name="suggested-action" />
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwClamp">
+            <property name="margin-top">36</property>
+            <property name="margin-bottom">12</property>
+            <property name="vexpand">True</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="margin-start">30</property>
+                <property name="margin-end">30</property>
+                <property name="spacing">30</property>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="description" translatable="yes">This will use exact matching to obtain a list</property>
+                    <child>
+                      <object class="AdwComboRow" id="descriptor_type_comborow">
+                        <property name="title" translatable="yes">Descriptor Type</property>
+                        <signal name="notify::selected-item" handler="on_descriptor_type_changed_comborow" swapped="yes" />
+                        <property name="model">
+                          <object class="GtkStringList">
+                            <items>
+                              <item translatable="yes">String</item>
+                              <item translatable="yes">Regular Expression</item>
+                            </items>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <child>
+                      <object class="AdwEntryRow" id="descriptor_entryrow">
+                        <property name="title" translatable="yes">Descriptor</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Descriptor should not be too long</property>
+                        <property name="margin-top">12</property>
+                        <property name="justify">left</property>
+                        <property name="halign">start</property>
+                        <style>
+                          <class name="dim-label" />
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="descriptor_string_label">
+                        <property name="label" translatable="yes">eg. 1080p</property>
+                        <property name="margin-top">6</property>
+                        <property name="justify">left</property>
+                        <property name="halign">start</property>
+                        <style>
+                          <class name="dim-label" />
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="descriptor_regex_label">
+                        <property name="label" translatable="yes">eg. 1080p.*WebDL</property>
+                        <property name="margin-top">6</property>
+                        <property name="justify">left</property>
+                        <property name="halign">start</property>
+                        <property name="visible">False</property>
+                        <style>
+                          <class name="dim-label" />
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="AdwDialog" id="edit_descriptor_dialog">
+    <property name="title" translatable="yes">Add a descriptor</property>
+    <property name="follows-content-size">1</property>
+    <property name="width-request">360</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="show-end-title-buttons">False</property>
+            <property name="show-start-title-buttons">False</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="action-name">window.close</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Save</property>
+                <property name="use-underline">True</property>
+                <property name="sensitive">False</property>
+                <property name="receives-default">True</property>
+                <property name="action-name">version.edit-prefer</property>
+                <style>
+                  <class name="suggested-action" />
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwClamp">
+            <property name="margin-top">36</property>
+            <property name="margin-bottom">12</property>
+            <property name="vexpand">True</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="margin-start">30</property>
+                <property name="margin-end">30</property>
+                <property name="spacing">30</property>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="description" translatable="yes">This will use exact matching to obtain a list</property>
+                    <child>
+                      <object class="AdwComboRow" id="descriptor_type_comborow_edit">
+                        <property name="title" translatable="yes">Descriptor Type</property>
+                        <signal name="notify::selected-item" handler="on_descriptor_type_changed_comborow_edit" swapped="yes" />
+                        <property name="model">
+                          <object class="GtkStringList">
+                            <items>
+                              <item translatable="yes">String</item>
+                              <item translatable="yes">Regular Expression</item>
+                            </items>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <child>
+                      <object class="AdwEntryRow" id="descriptor_entryrow_edit">
+                        <property name="title" translatable="yes">Descriptor</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Descriptor should not be too long</property>
+                        <property name="margin-top">12</property>
+                        <property name="justify">left</property>
+                        <property name="halign">start</property>
+                        <style>
+                          <class name="dim-label" />
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="descriptor_string_label_edit">
+                        <property name="label" translatable="yes">eg. 1080p</property>
+                        <property name="margin-top">6</property>
+                        <property name="justify">left</property>
+                        <property name="halign">start</property>
+                        <style>
+                          <class name="dim-label" />
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="descriptor_regex_label_edit">
+                        <property name="label" translatable="yes">eg. 1080p.*WebDL</property>
+                        <property name="margin-top">6</property>
+                        <property name="justify">left</property>
+                        <property name="halign">start</property>
+                        <property name="visible">False</property>
+                        <style>
+                          <class name="dim-label" />
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
   </object>
 </interface>
