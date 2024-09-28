@@ -1,5 +1,10 @@
-const PO_FILES: [&str; 1] = [
+const PO_FILES: [&str; 6] = [
     "po/zh_CN.po",
+    "po/zh_Hant.po",
+    "po/pt_BR.po",
+    "po/ar.po",
+    "po/nb_NO.po",
+    "po/ja.po",
 ];
 
 use std::path::Path;
