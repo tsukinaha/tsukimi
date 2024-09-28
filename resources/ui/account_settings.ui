@@ -753,7 +753,7 @@
             <property name="description">May cause crashes, Requires restart</property>
             <child>
               <object class="AdwSwitchRow" id="config_switchrow">
-                <property name="title" translatable="yes">config=true</property>
+                <property name="title">config=true</property>
                 <property name="subtitle" translatable="yes">Read from mpv config dir</property>
                 <style>
                   <class name="error"/>
@@ -896,8 +896,12 @@
                           <object class="GtkStackPage">
                             <property name="name">empty</property>
                             <property name="child">
-                              <object class="AdwActionRow">
-                                <property name="title" translatable="yes">No Descriptors</property>
+                              <object class="AdwPreferencesGroup">
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">No Descriptors</property>
+                                  </object>
+                                </child>
                               </object>
                             </property>
                           </object>

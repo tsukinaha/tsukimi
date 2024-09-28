@@ -257,7 +257,6 @@ impl MPVPage {
         };
 
         self.imp().video_version_matcher.replace(matcher);
-
         self.imp().current_video.replace(Some(item));
         self.imp().current_episode_list.replace(episode_list);
         spawn_g_timeout(glib::clone!(
@@ -274,7 +273,6 @@ impl MPVPage {
                     .replace(suburi.map(|suburi| EMBY_CLIENT.get_streaming_url(&suburi)));
                 imp.video.play(&url, percentage);
                 imp.back.replace(back);
-                obj.handle_callback(BackType::Start);
             }
         ));
     }
@@ -419,47 +417,53 @@ impl MPVPage {
         };
 
         let mut lang_list = Vec::new();
+        let mut indices = Vec::new();
 
-        for stream in &media_streams {
+        for (index, stream) in media_streams.iter().enumerate() {
             if stream.stream_type == "Subtitle" {
                 if let Some(title) = stream.display_title.as_ref() {
                     lang_list.push(title.clone());
+                    indices.push(index);
                 }
             }
         }
 
-        let suburi = if let Some(index) = make_subtitle_version_choice(lang_list) {
-            if let Some(stream) = media_streams.get(index) {
-                if stream.delivery_url.is_none() && stream.is_external {
-                    let media_source_id_clone = media_source_id.clone();
-                    let response = spawn_tokio(async move {
-                        EMBY_CLIENT
-                            .get_sub(&item_id_clone, &media_source_id_clone)
-                            .await
-                    })
-                    .await;
-
-                    let media = match response {
-                        Ok(media) => media,
-                        Err(e) => {
-                            toast!(self, e.to_user_facing());
-                            return;
-                        }
-                    };
-
-                    media
-                        .media_sources
-                        .iter()
-                        .find(|&media_source| media_source.id == media_source_id)
-                        .and_then(|media_source| {
-                            media_source
-                                .media_streams
-                                .iter()
-                                .find(|&lstream| lstream.index == stream.index)
-                                .and_then(|stream| stream.delivery_url.clone())
+        let suburi = if let Some(choice_index) = make_subtitle_version_choice(lang_list) {
+            if let Some(&index) = indices.get(choice_index) {
+                if let Some(stream) = media_streams.get(index) {
+                    if stream.delivery_url.is_none() && stream.is_external {
+                        let media_source_id_clone = media_source_id.clone();
+                        let response = spawn_tokio(async move {
+                            EMBY_CLIENT
+                                .get_sub(&item_id_clone, &media_source_id_clone)
+                                .await
                         })
+                        .await;
+
+                        let media = match response {
+                            Ok(media) => media,
+                            Err(e) => {
+                                toast!(self, e.to_user_facing());
+                                return;
+                            }
+                        };
+
+                        media
+                            .media_sources
+                            .iter()
+                            .find(|&media_source| media_source.id == media_source_id)
+                            .and_then(|media_source| {
+                                media_source
+                                    .media_streams
+                                    .iter()
+                                    .find(|&lstream| lstream.index == stream.index)
+                                    .and_then(|stream| stream.delivery_url.clone())
+                            })
+                    } else {
+                        stream.delivery_url.clone()
+                    }
                 } else {
-                    stream.delivery_url.clone()
+                    None
                 }
             } else {
                 None
@@ -588,6 +592,7 @@ impl MPVPage {
             imp.video.add_sub(suburl);
         }
         self.update_timeout();
+        self.handle_callback(BackType::Start);
     }
 
     fn update_seeking(&self, seeking: bool) {
