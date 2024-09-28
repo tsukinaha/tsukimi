@@ -2,15 +2,15 @@
 # PACKAGE 软件包的简体中文翻译.
 # Copyright (C) 2024 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#  <tsukimi@tutanota.com>, 2024.
-#
+# <tsukimi@tutanota.com>, 2024.
+# dyphire <qimoge@gmail.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-28 13:08+0800\n"
-"PO-Revision-Date: 2024-09-28 05:43+0000\n"
-"Last-Translator: Inaha <sakuovds@gmail.com>\n"
+"PO-Revision-Date: 2024-09-28 06:26+0000\n"
+"Last-Translator: dyphire <qimoge@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -30,7 +30,7 @@ msgstr "常规"
 
 #: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:851
 msgid "Preferred Video Version"
-msgstr ""
+msgstr "首选视频版本"
 
 #: resources/ui/account_settings.ui:28
 msgid "Preferred Language"
