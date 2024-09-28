@@ -75,6 +75,8 @@ jobs:
 
           cp -r /mingw64/lib/gstreamer-1.0 lib/ && find lib/gstreamer-1.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
 
+          cp -r $GITHUB_WORKSPACE/i18n/locale share/
+
           cp -r /mingw64/share/glib-2.0 share/
           find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rf "{}" \;
           mv $GITHUB_WORKSPACE/moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
