@@ -2,15 +2,16 @@
 # PACKAGE 软件包的简体中文翻译.
 # Copyright (C) 2024 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#  <tsukimi@tutanota.com>, 2024.
-#
+# <tsukimi@tutanota.com>, 2024.
+# dyphire <qimoge@gmail.com>, 2024.
+# Inaha <sakuovds@gmail.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-28 13:08+0800\n"
-"PO-Revision-Date: 2024-09-28 05:43+0000\n"
-"Last-Translator: Inaha <sakuovds@gmail.com>\n"
+"PO-Revision-Date: 2024-09-28 07:47+0000\n"
+"Last-Translator: dyphire <qimoge@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -30,7 +31,7 @@ msgstr "常规"
 
 #: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:851
 msgid "Preferred Video Version"
-msgstr ""
+msgstr "首选视频版本"
 
 #: resources/ui/account_settings.ui:28
 msgid "Preferred Language"
@@ -83,8 +84,6 @@ msgid "Accent Foreground Color"
 msgstr "前景强调色"
 
 #: resources/ui/account_settings.ui:166
-#, fuzzy
-#| msgid "Show Sidebar"
 msgid "Hide Sidebar"
 msgstr "隐藏侧边栏"
 
@@ -325,36 +324,30 @@ msgid "One param per line"
 msgstr "每行一个参数"
 
 #: resources/ui/account_settings.ui:829
-#, fuzzy
-#| msgid "Preferences"
 msgid "Preferred Version"
-msgstr "首选项"
+msgstr "首选版本"
 
 #: resources/ui/account_settings.ui:852
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
-msgstr ""
+msgstr "权重从高到低排序，直到匹配到特定版本，或在清除匹配列表前获得最高匹配版本为止"
 
 #: resources/ui/account_settings.ui:867
-#, fuzzy
-#| msgid "No Inscriptions"
 msgid "Descriptors"
-msgstr "无内容"
+msgstr "描述符"
 
 #: resources/ui/account_settings.ui:889
 msgid "It is recommended to set no more than 3 lines"
-msgstr ""
+msgstr "建议设置不超过 3 行"
 
 #: resources/ui/account_settings.ui:910
-#, fuzzy
-#| msgid "No Inscriptions"
 msgid "No Descriptors"
-msgstr "无内容"
+msgstr "无描述符"
 
 #: resources/ui/account_settings.ui:929 resources/ui/account_settings.ui:1039
 msgid "Add a descriptor"
-msgstr ""
+msgstr "添加描述符"
 
 #: resources/ui/account_settings.ui:940 resources/ui/account_settings.ui:1050
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
@@ -363,46 +356,42 @@ msgid "Cancel"
 msgstr "取消"
 
 #: resources/ui/account_settings.ui:946
-#, fuzzy
-#| msgid "_Add"
 msgid "Add"
 msgstr "添加"
 
 #: resources/ui/account_settings.ui:971 resources/ui/account_settings.ui:1081
 msgid "This will use exact matching to obtain a list"
-msgstr ""
+msgstr "这将使用精确匹配来获取列表"
 
 #: resources/ui/account_settings.ui:974 resources/ui/account_settings.ui:1084
 msgid "Descriptor Type"
-msgstr ""
+msgstr "描述符类型"
 
 #: resources/ui/account_settings.ui:979 resources/ui/account_settings.ui:1089
 msgid "String"
-msgstr ""
+msgstr "字符串"
 
 #: resources/ui/account_settings.ui:980 resources/ui/account_settings.ui:1090
 msgid "Regular Expression"
-msgstr ""
+msgstr "正则表达式"
 
 #: resources/ui/account_settings.ui:992 resources/ui/account_settings.ui:1102
 msgid "Descriptor"
-msgstr ""
+msgstr "描述符"
 
 #: resources/ui/account_settings.ui:997 resources/ui/account_settings.ui:1107
 msgid "Descriptor should not be too long"
-msgstr ""
+msgstr "描述符不宜太长"
 
 #: resources/ui/account_settings.ui:1008 resources/ui/account_settings.ui:1118
 msgid "eg. 1080p"
-msgstr ""
+msgstr "例如：1080p"
 
 #: resources/ui/account_settings.ui:1019 resources/ui/account_settings.ui:1129
 msgid "eg. 1080p.*WebDL"
-msgstr ""
+msgstr "例如：1080p.*WebDL"
 
 #: resources/ui/account_settings.ui:1056
-#, fuzzy
-#| msgid "_Save"
 msgid "Save"
 msgstr "保存"
 
@@ -822,15 +811,13 @@ msgstr "字体已清除，重启以生效。"
 #: src/ui/widgets/account_settings.rs:665
 #: src/ui/widgets/account_settings.rs:700
 #: src/ui/widgets/account_settings.rs:710
-#, fuzzy
-#| msgid "Password cannot be empty!"
 msgid "Descriptor cannot be empty!"
-msgstr "密码不能为空！"
+msgstr "描述符不能为空！"
 
 #: src/ui/widgets/account_settings.rs:670
 #: src/ui/widgets/account_settings.rs:715
 msgid "Invalid regex"
-msgstr ""
+msgstr "正则表达式无效"
 
 #: src/ui/widgets/boxset.rs:227
 msgid "Items"

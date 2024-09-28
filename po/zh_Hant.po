@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# dyphire <qimoge@gmail.com>, 2024.
+# Gracealina  clover <zhiweishuisheng@gmail.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-28 13:08+0800\n"
-"PO-Revision-Date: 2024-09-27 17:45+0000\n"
+"PO-Revision-Date: 2024-09-28 09:09+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
@@ -29,7 +29,7 @@ msgstr "常規"
 
 #: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:851
 msgid "Preferred Video Version"
-msgstr ""
+msgstr "首選影片版本"
 
 #: resources/ui/account_settings.ui:28
 msgid "Preferred Language"
@@ -62,11 +62,11 @@ msgstr "每日推薦"
 
 #: resources/ui/account_settings.ui:90
 msgid "Font Scale"
-msgstr "字型縮放"
+msgstr "字體縮放"
 
 #: resources/ui/account_settings.ui:104
 msgid "Font Family"
-msgstr "字型"
+msgstr "字體"
 
 #: resources/ui/account_settings.ui:122 resources/ui/account_settings.ui:133
 #: resources/ui/account_settings.ui:150
@@ -82,8 +82,6 @@ msgid "Accent Foreground Color"
 msgstr "強調前景色"
 
 #: resources/ui/account_settings.ui:166
-#, fuzzy
-#| msgid "Show Sidebar"
 msgid "Hide Sidebar"
 msgstr "隱藏側邊欄"
 
@@ -93,7 +91,7 @@ msgstr "自動啟動上次使用的媒體庫"
 
 #: resources/ui/account_settings.ui:178
 msgid "Network"
-msgstr "網路"
+msgstr "網絡"
 
 #: resources/ui/account_settings.ui:181
 msgid "HTTP Proxy"
@@ -125,7 +123,7 @@ msgstr "模糊（實驗性）"
 
 #: resources/ui/account_settings.ui:271 resources/ui/account_settings.ui:280
 msgid "Warning: High GPU usage"
-msgstr "警告：GPU 使用佔比較高"
+msgstr "警告：GPU 佔用率較高"
 
 #: resources/ui/account_settings.ui:279
 msgid "Blur Radius (Experimental)"
@@ -141,7 +139,7 @@ msgstr "清除快取"
 
 #: resources/ui/account_settings.ui:324
 msgid "Account"
-msgstr "賬戶"
+msgstr "帳戶"
 
 #: resources/ui/account_settings.ui:340
 msgid "New Password"
@@ -181,11 +179,11 @@ msgstr "無"
 
 #: resources/ui/account_settings.ui:400
 msgid "Video"
-msgstr "視頻"
+msgstr "視訊"
 
 #: resources/ui/account_settings.ui:405
 msgid "Video Settings"
-msgstr ""
+msgstr "視頻設定"
 
 #: resources/ui/account_settings.ui:408
 msgid "Seek Backward"
@@ -219,7 +217,7 @@ msgstr "字幕"
 
 #: resources/ui/account_settings.ui:488
 msgid "Subtitle Text Size"
-msgstr "字幕字型大小"
+msgstr "字幕字體大小"
 
 #: resources/ui/account_settings.ui:489
 msgid "This option only takes effect for srt subtitles"
@@ -227,13 +225,13 @@ msgstr "此選項僅對 SRT 字幕生效"
 
 #: resources/ui/account_settings.ui:508
 msgid "Subtitle Text Font"
-msgstr "字幕字型"
+msgstr "字幕字體"
 
 #: resources/ui/account_settings.ui:509
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
-msgstr "設定本身未指定特定字型的字幕的字型"
+msgstr "設定本身未指定特定字體的字幕的字體"
 
 #: resources/ui/account_settings.ui:535
 msgid "Default Volume"
@@ -265,7 +263,7 @@ msgstr "播完暫停"
 
 #: resources/ui/account_settings.ui:625
 msgid "Video Output"
-msgstr "視頻輸出"
+msgstr "視訊輸出"
 
 #: resources/ui/account_settings.ui:626
 msgid ""
@@ -297,7 +295,7 @@ msgstr "使用 vf 濾鏡插幀以提高尺寸調整和菜單動效的流暢度"
 
 #: resources/ui/account_settings.ui:743
 msgid "Recommended setting value: Current display frame rate"
-msgstr "當前顯示刷新率推薦設置值"
+msgstr "當前顯示更新率推薦設定值"
 
 #: resources/ui/account_settings.ui:760
 msgid "Load external mpv config"
@@ -305,7 +303,7 @@ msgstr "載入外部 mpv 配置"
 
 #: resources/ui/account_settings.ui:765
 msgid "Read from mpv config dir"
-msgstr "從 mpv 配置目錄讀取"
+msgstr "從 mpv 配置資料夾讀取"
 
 #: resources/ui/account_settings.ui:780
 msgid "More"
@@ -313,47 +311,41 @@ msgstr "更多"
 
 #: resources/ui/account_settings.ui:791
 msgid "More Video Settings"
-msgstr "更多視頻設置"
+msgstr "更多視頻設定"
 
 #: resources/ui/account_settings.ui:807
 msgid "Customizing mpv params"
-msgstr ""
+msgstr "自訂 mpv 參數"
 
 #: resources/ui/account_settings.ui:808
 msgid "One param per line"
-msgstr ""
+msgstr "每行一個參數"
 
 #: resources/ui/account_settings.ui:829
-#, fuzzy
-#| msgid "Preferences"
 msgid "Preferred Version"
-msgstr "首選項"
+msgstr "首選版本"
 
 #: resources/ui/account_settings.ui:852
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
-msgstr ""
+msgstr "權重從高到低排序，直到匹配到特定版本，或者在清除匹配清單之前獲得最高匹配版本"
 
 #: resources/ui/account_settings.ui:867
-#, fuzzy
-#| msgid "No Inscriptions"
 msgid "Descriptors"
-msgstr "暫無內容"
+msgstr "描述符"
 
 #: resources/ui/account_settings.ui:889
 msgid "It is recommended to set no more than 3 lines"
-msgstr ""
+msgstr "建議設定不超過 3 行"
 
 #: resources/ui/account_settings.ui:910
-#, fuzzy
-#| msgid "No Inscriptions"
 msgid "No Descriptors"
-msgstr "暫無內容"
+msgstr "無描述符"
 
 #: resources/ui/account_settings.ui:929 resources/ui/account_settings.ui:1039
 msgid "Add a descriptor"
-msgstr ""
+msgstr "添加描述符"
 
 #: resources/ui/account_settings.ui:940 resources/ui/account_settings.ui:1050
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
@@ -362,46 +354,42 @@ msgid "Cancel"
 msgstr "取消"
 
 #: resources/ui/account_settings.ui:946
-#, fuzzy
-#| msgid "_Add"
 msgid "Add"
 msgstr "添加"
 
 #: resources/ui/account_settings.ui:971 resources/ui/account_settings.ui:1081
 msgid "This will use exact matching to obtain a list"
-msgstr ""
+msgstr "這將使用精確匹配來獲取列表"
 
 #: resources/ui/account_settings.ui:974 resources/ui/account_settings.ui:1084
 msgid "Descriptor Type"
-msgstr ""
+msgstr "描述符類型"
 
 #: resources/ui/account_settings.ui:979 resources/ui/account_settings.ui:1089
 msgid "String"
-msgstr ""
+msgstr "字符串"
 
 #: resources/ui/account_settings.ui:980 resources/ui/account_settings.ui:1090
 msgid "Regular Expression"
-msgstr ""
+msgstr "正則表達式"
 
 #: resources/ui/account_settings.ui:992 resources/ui/account_settings.ui:1102
 msgid "Descriptor"
-msgstr ""
+msgstr "描述符"
 
 #: resources/ui/account_settings.ui:997 resources/ui/account_settings.ui:1107
 msgid "Descriptor should not be too long"
-msgstr ""
+msgstr "描述符不宜太長"
 
 #: resources/ui/account_settings.ui:1008 resources/ui/account_settings.ui:1118
 msgid "eg. 1080p"
-msgstr ""
+msgstr "例如：1080p"
 
 #: resources/ui/account_settings.ui:1019 resources/ui/account_settings.ui:1129
 msgid "eg. 1080p.*WebDL"
-msgstr ""
+msgstr "例如：1080p.*WebDL"
 
 #: resources/ui/account_settings.ui:1056
-#, fuzzy
-#| msgid "_Save"
 msgid "Save"
 msgstr "保存"
 
@@ -510,7 +498,7 @@ msgstr "不可用"
 
 #: resources/ui/images_dialog.ui:62 resources/ui/metadata_dialog.ui:93
 msgid "This page is READ-ONLY, because you have no permission to modify it."
-msgstr "只讀界面，您無權修改。"
+msgstr "只讀介面，您無權修改。"
 
 #: resources/ui/images_dialog.ui:71
 msgid "Images"
@@ -535,7 +523,7 @@ msgstr "查看元數據"
 
 #: resources/ui/item.ui:189
 msgid "Video: "
-msgstr "視頻： "
+msgstr "視訊： "
 
 #: resources/ui/item.ui:209
 msgid "Subtitle: "
@@ -659,7 +647,7 @@ msgstr "辨識"
 
 #: resources/ui/pop-menu.ui:53
 msgid "Refresh Metadata"
-msgstr "刷新元數據"
+msgstr "更新元數據"
 
 #: resources/ui/pop-menu.ui:59
 msgid "Scan"
@@ -771,7 +759,7 @@ msgstr "收藏"
 
 #: resources/ui/window.ui:365
 msgid "Search"
-msgstr "搜索"
+msgstr "搜尋"
 
 #: resources/ui/window.ui:380
 msgid "Servers"
@@ -787,7 +775,7 @@ msgstr "必填欄位"
 
 #: src/ui/widgets/account_add.rs:145
 msgid "Account added successfully"
-msgstr "賬戶添加成功"
+msgstr "帳戶添加成功"
 
 #: src/ui/widgets/account_settings.rs:241
 msgid "Password cannot be empty!"
@@ -815,21 +803,19 @@ msgstr "未選擇档案"
 
 #: src/ui/widgets/account_settings.rs:430
 msgid "Font Cleared, Restart to take effect."
-msgstr "已清除字型，重啟應用生效。"
+msgstr "已清除字體，重啟應用生效。"
 
 #: src/ui/widgets/account_settings.rs:655
 #: src/ui/widgets/account_settings.rs:665
 #: src/ui/widgets/account_settings.rs:700
 #: src/ui/widgets/account_settings.rs:710
-#, fuzzy
-#| msgid "Password cannot be empty!"
 msgid "Descriptor cannot be empty!"
-msgstr "密碼不能為空！"
+msgstr "描述符不能為空！"
 
 #: src/ui/widgets/account_settings.rs:670
 #: src/ui/widgets/account_settings.rs:715
 msgid "Invalid regex"
-msgstr ""
+msgstr "正則表達式無效"
 
 #: src/ui/widgets/boxset.rs:227
 msgid "Items"
@@ -865,7 +851,7 @@ msgstr "繼續播放"
 
 #: src/ui/widgets/item.rs:1020
 msgid "No video source found"
-msgstr ""
+msgstr "未找到視訊源"
 
 #: src/ui/widgets/list.rs:113
 msgid "Channels"
@@ -893,31 +879,31 @@ msgstr "成功"
 
 #: src/ui/widgets/server_panel.rs:98
 msgid "Shut down server"
-msgstr ""
+msgstr "關閉伺服器"
 
 #: src/ui/widgets/server_panel.rs:99
 msgid "Are you sure you want to shut down the server?"
-msgstr ""
+msgstr "您確定要關閉伺服器嗎？"
 
 #: src/ui/widgets/server_panel.rs:130
 msgid "Restart server"
-msgstr ""
+msgstr "重啟伺服器"
 
 #: src/ui/widgets/server_panel.rs:131
 msgid "Are you sure you want to restart the server?"
-msgstr ""
+msgstr "您確定要重新啟動伺服器嗎？"
 
 #: src/ui/widgets/server_panel.rs:168
 msgid "Server is shutting down"
-msgstr ""
+msgstr "伺服器正在關閉"
 
 #: src/ui/widgets/server_panel.rs:180
 msgid "Server is restarting"
-msgstr ""
+msgstr "伺服器正在重新啟動"
 
 #: src/ui/widgets/server_panel.rs:321
 msgid "Task started"
-msgstr ""
+msgstr "任務開始"
 
 #~ msgid "config=true"
 #~ msgstr "開啟配置"
