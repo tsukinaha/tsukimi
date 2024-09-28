@@ -973,6 +973,10 @@ impl MPVPage {
             1 => mpv.set_property("slang", "eng"),
             2 => mpv.set_property("slang", "chs"),
             3 => mpv.set_property("slang", "jpn"),
+            4 => mpv.set_property("slang", "chi"),
+            5 => mpv.set_property("slang", "ara"),
+            6 => mpv.set_property("slang", "nob"),
+            7 => mpv.set_property("slang", "por"),
             _ => unreachable!(),
         }
         if SETTINGS.mpv_action_after_video_end() == 1 {
