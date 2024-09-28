@@ -746,8 +746,8 @@ impl AccountSettings {
 
         for (index, descriptor) in descriptors.iter().enumerate() {
             let row = adw::ActionRow::builder()
-                .title(&descriptor.type_.to_string())
-                .subtitle(&descriptor.content)
+                .subtitle(&descriptor.type_.to_string())
+                .title(&descriptor.content)
                 .activatable(true)
                 .build();
 

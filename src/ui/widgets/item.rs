@@ -486,6 +486,8 @@ impl ItemPage {
         let namedropdown = imp.namedropdown.get();
         let subdropdown = imp.subdropdown.get();
 
+        let matcher = imp.video_version_matcher.borrow().clone();
+
         let vstore = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
         imp.videoselection.set_model(Some(&vstore));
 
@@ -498,6 +500,55 @@ impl ItemPage {
         let media_sources = playbackinfo.media_sources.clone();
 
         let mut v_dl: Vec<String> = Vec::new();
+
+        namedropdown.connect_selected_item_notify(glib::clone!(
+            #[weak]
+            imp,
+            move |dropdown| {
+                let Some(entry) = dropdown
+                    .selected_item()
+                    .and_downcast::<glib::BoxedAnyObject>()
+                else {
+                    return;
+                };
+
+                let dl: std::cell::Ref<DropdownList> = entry.borrow();
+                let selected = &dl.id;
+                for _i in 0..sstore.n_items() {
+                    sstore.remove(0);
+                }
+                for media in &media_sources {
+                    if &Some(media.id.clone()) == selected {
+                        let mut lang_list = Vec::new();
+                        for stream in &media.media_streams {
+                            if stream.stream_type == "Subtitle" {
+                                let Ok(dl) = DropdownListBuilder::default()
+                                    .line1(stream.display_title.clone())
+                                    .line2(stream.title.clone())
+                                    .index(Some(stream.index))
+                                    .direct_url(stream.delivery_url.clone())
+                                    .is_external(Some(stream.is_external))
+                                    .build()
+                                else {
+                                    continue;
+                                };
+
+                                lang_list.push(dl.line1.clone().unwrap_or_default());
+                                let object = glib::BoxedAnyObject::new(dl);
+                                sstore.append(&object);
+                            }
+                        }
+
+                        if let Some(usize) = make_subtitle_version_choice(lang_list) {
+                            subdropdown.set_selected(usize as u32);
+                        }
+                        break;
+                    }
+                }
+
+                imp.video_version_matcher.replace(dl.line1.clone());
+            }
+        ));
 
         for media in &playbackinfo.media_sources {
             let Ok(dl) = DropdownListBuilder::default()
@@ -514,52 +565,6 @@ impl ItemPage {
             let object = glib::BoxedAnyObject::new(dl);
             vstore.append(&object);
         }
-
-        namedropdown.connect_selected_item_notify(glib::clone!(
-            #[weak]
-            imp,
-            move |dropdown| {
-            let Some(entry) = dropdown
-                .selected_item()
-                .and_downcast::<glib::BoxedAnyObject>()
-            else {
-                return;
-            };
-
-            let dl: std::cell::Ref<DropdownList> = entry.borrow();
-            let selected = &dl.id;
-            for _i in 0..sstore.n_items() {
-                sstore.remove(0);
-            }
-            for media in &media_sources {
-                if &Some(media.id.clone()) == selected {
-                    for stream in &media.media_streams {
-                        if stream.stream_type == "Subtitle" {
-                            let Ok(dl) = DropdownListBuilder::default()
-                                .line1(stream.display_title.clone())
-                                .line2(stream.title.clone())
-                                .index(Some(stream.index))
-                                .direct_url(stream.delivery_url.clone())
-                                .is_external(Some(stream.is_external))
-                                .build()
-                            else {
-                                continue;
-                            };
-
-                            let object = glib::BoxedAnyObject::new(dl);
-                            sstore.append(&object);
-                        }
-                    }
-                    subdropdown.set_selected(0);
-                    break;
-                }
-            }
-
-            println!("Selected: {:?}", dl.line1);
-            imp.video_version_matcher.replace(dl.line1.clone());
-        }));
-
-        let matcher = imp.video_version_matcher.borrow().clone();
 
         if let Some(matcher) = matcher {
             if let Some(p) = make_video_version_choice_from_matcher(v_dl, &matcher) {
@@ -1074,6 +1079,8 @@ impl ItemPage {
             .map(|item| TuItem::from_simple(item, None))
             .collect();
 
+        let matcher = self.imp().video_version_matcher.borrow().clone();
+
         self.get_window().play_media(
             video_url.to_string(),
             sub_url,
@@ -1082,6 +1089,7 @@ impl ItemPage {
             Some(back),
             None,
             percentage,
+            matcher,
         );
     }
 

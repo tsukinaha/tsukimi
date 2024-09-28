@@ -5,6 +5,9 @@ use crate::toast;
 use crate::ui::models::SETTINGS;
 use crate::ui::provider::tu_item::TuItem;
 use crate::ui::widgets::check_row::CheckRow;
+use crate::ui::widgets::item_utils::{
+    make_subtitle_version_choice, make_video_version_choice_from_matcher,
+};
 use crate::ui::widgets::song_widget::format_duration;
 use crate::utils::{spawn, spawn_g_timeout, spawn_tokio};
 use adw::prelude::*;
@@ -101,6 +104,8 @@ mod imp {
 
         pub current_video: RefCell<Option<TuItem>>,
         pub current_episode_list: RefCell<Vec<TuItem>>,
+
+        pub video_version_matcher: RefCell<Option<String>>,
     }
 
     // The central trait for subclassing a GObject
@@ -235,6 +240,7 @@ impl MPVPage {
         episode_list: Vec<TuItem>,
         back: Option<Back>,
         percentage: f64,
+        matcher: Option<String>,
     ) {
         let url = url.to_owned();
         let suburi = suburi.map(|s| s.to_owned());
@@ -249,6 +255,8 @@ impl MPVPage {
         } else {
             item.name()
         };
+
+        self.imp().video_version_matcher.replace(matcher);
 
         self.imp().current_video.replace(Some(item));
         self.imp().current_episode_list.replace(episode_list);
@@ -345,7 +353,8 @@ impl MPVPage {
         let video_list = self.imp().current_episode_list.borrow().clone();
 
         let next_item = video_list.iter().enumerate().find_map(|(i, item)| {
-            if item.id() == current_video.id() {
+            // Don't use id() here, because the same video maybe have different id
+            if item.name() == current_video.name() {
                 let new_index = (i as isize + offset) as usize;
                 video_list.get(new_index).cloned()
             } else {
@@ -366,6 +375,7 @@ impl MPVPage {
         toast!(self, gettext("Waiting for mediasource..."));
 
         let item_id = item.id();
+        let item_id_clone = item_id.clone();
 
         let video_list = self.imp().current_episode_list.borrow().clone();
 
@@ -378,10 +388,25 @@ impl MPVPage {
                 }
             };
 
-        let (media_source_id, url) = if let Some(media_source) = playback.media_sources.first() {
+        let video_version_list: Vec<_> = playback
+            .media_sources
+            .iter()
+            .map(|media_source| media_source.name.clone())
+            .collect();
+
+        let media_source = if let Some(matcher) = self.imp().video_version_matcher.borrow().as_ref()
+        {
+            make_video_version_choice_from_matcher(video_version_list, matcher)
+                .and_then(|index| playback.media_sources.get(index))
+        } else {
+            playback.media_sources.first()
+        };
+
+        let (media_source_id, url, media_streams) = if let Some(media_source) = media_source {
             (
                 media_source.id.clone(),
                 media_source.direct_stream_url.clone(),
+                media_source.media_streams.clone(),
             )
         } else {
             toast!(self, gettext("No media sources found"));
@@ -393,6 +418,56 @@ impl MPVPage {
             return;
         };
 
+        let mut lang_list = Vec::new();
+
+        for stream in &media_streams {
+            if stream.stream_type == "Subtitle" {
+                if let Some(title) = stream.display_title.as_ref() {
+                    lang_list.push(title.clone());
+                }
+            }
+        }
+
+        let suburi = if let Some(index) = make_subtitle_version_choice(lang_list) {
+            if let Some(stream) = media_streams.get(index) {
+                if stream.delivery_url.is_none() && stream.is_external {
+                    let media_source_id_clone = media_source_id.clone();
+                    let response = spawn_tokio(async move {
+                        EMBY_CLIENT
+                            .get_sub(&item_id_clone, &media_source_id_clone)
+                            .await
+                    })
+                    .await;
+
+                    let media = match response {
+                        Ok(media) => media,
+                        Err(e) => {
+                            toast!(self, e.to_user_facing());
+                            return;
+                        }
+                    };
+
+                    media
+                        .media_sources
+                        .iter()
+                        .find(|&media_source| media_source.id == media_source_id)
+                        .and_then(|media_source| {
+                            media_source
+                                .media_streams
+                                .iter()
+                                .find(|&lstream| lstream.index == stream.index)
+                                .and_then(|stream| stream.delivery_url.clone())
+                        })
+                } else {
+                    stream.delivery_url.clone()
+                }
+            } else {
+                None
+            }
+        } else {
+            None
+        };
+
         let back = Back {
             id: item.id(),
             playsessionid: playback.play_session_id,
@@ -400,7 +475,15 @@ impl MPVPage {
             tick: 0,
         };
 
-        self.play(&url, None, item.clone(), video_list, Some(back), 0.0);
+        self.play(
+            &url,
+            suburi.as_deref(),
+            item.clone(),
+            video_list,
+            Some(back),
+            0.0,
+            None,
+        );
     }
 
     pub async fn on_next_video(&self) {
