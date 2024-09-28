@@ -51,7 +51,7 @@ impl Settings {
     const PREFERRED_VERSION_DESCRIPTORS: &'static str = "video-version-descriptors"; // String
 
     pub fn preferred_version_descriptors(&self) -> Vec<Descriptor> {
-        serde_json::from_str(&self.string(Self::PREFERRED_VERSION_DESCRIPTORS).to_string())
+        serde_json::from_str(self.string(Self::PREFERRED_VERSION_DESCRIPTORS).as_ref())
             .expect("Failed to deserialize preferred version descriptors")
     }
 
