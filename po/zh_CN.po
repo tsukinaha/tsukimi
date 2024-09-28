@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-24 18:16+0800\n"
+"POT-Creation-Date: 2024-09-28 13:08+0800\n"
 "PO-Revision-Date: 2024-09-27 17:45+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
@@ -28,308 +28,387 @@ msgstr "设置"
 msgid "General"
 msgstr "常规"
 
-#: resources/ui/account_settings.ui:17
-msgid "Appearence"
-msgstr "外观"
+#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:851
+msgid "Preferred Video Version"
+msgstr ""
 
-#: resources/ui/account_settings.ui:20
-msgid "Daily Recommend"
-msgstr "每日推荐"
-
-#: resources/ui/account_settings.ui:25
-msgid "Font Scale"
-msgstr "字体缩放"
-
-#: resources/ui/account_settings.ui:39
-msgid "Font Family"
-msgstr "字体族"
-
-#: resources/ui/account_settings.ui:57 resources/ui/account_settings.ui:68
-#: resources/ui/account_settings.ui:85
-msgid "Restart App To Take Effect"
-msgstr "重启应用程序生效"
-
-#: resources/ui/account_settings.ui:67
-msgid "Accent Color"
-msgstr "强调色"
-
-#: resources/ui/account_settings.ui:84
-msgid "Accent Foreground Color"
-msgstr "前景强调色"
-
-#: resources/ui/account_settings.ui:101
-msgid "Show Sidebar"
-msgstr "隐藏侧边栏"
-
-#: resources/ui/account_settings.ui:106
-msgid "Auto Select Last Server"
-msgstr "自动选择上次使用的服务器"
-
-#: resources/ui/account_settings.ui:113
-msgid "Network"
-msgstr "网络"
-
-#: resources/ui/account_settings.ui:116
-msgid "HTTP Proxy"
-msgstr "HTTP 代理"
-
-#: resources/ui/account_settings.ui:141
-msgid "Threads"
-msgstr "线程"
-
-#: resources/ui/account_settings.ui:142
-msgid "This only effects on getting images"
-msgstr "这只会对获取图像产生影响"
-
-#: resources/ui/account_settings.ui:158
-msgid "Background"
-msgstr "背景"
-
-#: resources/ui/account_settings.ui:165
-msgid "This feature may cause significant lag. Please enable it with caution."
-msgstr "此功能可能会造成严重性能问题，请谨慎启用"
-
-#: resources/ui/account_settings.ui:168 resources/ui/account_settings.ui:401
-#: resources/ui/account_settings.ui:422
-msgid "Default"
-msgstr "默认"
-
-#: resources/ui/account_settings.ui:191
-msgid "Opacity"
-msgstr "不透明度"
-
-#: resources/ui/account_settings.ui:205
-msgid "Blur (Experimental)"
-msgstr "模糊（实验性）"
-
-#: resources/ui/account_settings.ui:206 resources/ui/account_settings.ui:215
-msgid "Warning: High GPU usage"
-msgstr "警告: GPU 使用率较高"
-
-#: resources/ui/account_settings.ui:214
-msgid "Blur Radius (Experimental)"
-msgstr "模糊半径（实验性）"
-
-#: resources/ui/account_settings.ui:235 resources/ui/account_settings.ui:435
-msgid "Cache"
-msgstr "缓存"
-
-#: resources/ui/account_settings.ui:238
-msgid "Clear Cache"
-msgstr "清除缓存"
-
-#: resources/ui/account_settings.ui:259
-msgid "Account"
-msgstr "帐户"
-
-#: resources/ui/account_settings.ui:275
-msgid "New Password"
-msgstr "新密码"
-
-#: resources/ui/account_settings.ui:280
-msgid "Confirm Password"
-msgstr "确认密码"
-
-#: resources/ui/account_settings.ui:292
-msgid "Change Password"
-msgstr "更改密码"
-
-#: resources/ui/account_settings.ui:309
-msgid "Music"
-msgstr "音乐"
-
-#: resources/ui/account_settings.ui:314
-msgid "Player"
-msgstr "播放器"
-
-#: resources/ui/account_settings.ui:317 resources/ui/player_toolbar.ui:197
-msgid "Repeat Mode"
-msgstr "循环模式"
-
-#: resources/ui/account_settings.ui:321 resources/ui/player_toolbar.ui:231
-msgid "Repeat One"
-msgstr "单曲循环"
-
-#: resources/ui/account_settings.ui:322 resources/ui/player_toolbar.ui:235
-msgid "Repeat All"
-msgstr "列表循环"
-
-#: resources/ui/account_settings.ui:323 resources/ui/player_toolbar.ui:239
-msgid "None"
-msgstr "无"
-
-#: resources/ui/account_settings.ui:335
-msgid "Video"
-msgstr "视频"
-
-#: resources/ui/account_settings.ui:340
-msgid "Video Settings"
-msgstr "视频设置"
-
-#: resources/ui/account_settings.ui:343
-msgid "Seek Backward"
-msgstr "向后跳转"
-
-#: resources/ui/account_settings.ui:344 resources/ui/account_settings.ui:365
-#: resources/ui/account_settings.ui:455
-msgid "Unit: Seconds"
-msgstr "单位: 秒"
-
-#: resources/ui/account_settings.ui:364
-msgid "Seek Forward"
-msgstr "向前跳转"
-
-#: resources/ui/account_settings.ui:387
+#: resources/ui/account_settings.ui:28
 msgid "Preferred Language"
 msgstr "语言偏好"
 
-#: resources/ui/account_settings.ui:388
+#: resources/ui/account_settings.ui:29
 msgid "This currently only applies to the player"
 msgstr "当前仅适用于播放器"
 
-#: resources/ui/account_settings.ui:391
+#: resources/ui/account_settings.ui:32
 msgid "Preferred Audio Language"
 msgstr "首选音频语言"
 
-#: resources/ui/account_settings.ui:412
+#: resources/ui/account_settings.ui:41 resources/ui/account_settings.ui:65
+#: resources/ui/account_settings.ui:233
+msgid "Default"
+msgstr "默认"
+
+#: resources/ui/account_settings.ui:56
 msgid "Preferred Subtitle Language"
 msgstr "首选字幕语言"
 
-#: resources/ui/account_settings.ui:438
+#: resources/ui/account_settings.ui:82
+msgid "Appearence"
+msgstr "外观"
+
+#: resources/ui/account_settings.ui:85
+msgid "Daily Recommend"
+msgstr "每日推荐"
+
+#: resources/ui/account_settings.ui:90
+msgid "Font Scale"
+msgstr "字体缩放"
+
+#: resources/ui/account_settings.ui:104
+msgid "Font Family"
+msgstr "字体族"
+
+#: resources/ui/account_settings.ui:122 resources/ui/account_settings.ui:133
+#: resources/ui/account_settings.ui:150
+msgid "Restart App To Take Effect"
+msgstr "重启应用程序生效"
+
+#: resources/ui/account_settings.ui:132
+msgid "Accent Color"
+msgstr "强调色"
+
+#: resources/ui/account_settings.ui:149
+msgid "Accent Foreground Color"
+msgstr "前景强调色"
+
+#: resources/ui/account_settings.ui:166
+#, fuzzy
+#| msgid "Show Sidebar"
+msgid "Hide Sidebar"
+msgstr "隐藏侧边栏"
+
+#: resources/ui/account_settings.ui:171
+msgid "Auto Select Last Server"
+msgstr "自动选择上次使用的服务器"
+
+#: resources/ui/account_settings.ui:178
+msgid "Network"
+msgstr "网络"
+
+#: resources/ui/account_settings.ui:181
+msgid "HTTP Proxy"
+msgstr "HTTP 代理"
+
+#: resources/ui/account_settings.ui:206
+msgid "Threads"
+msgstr "线程"
+
+#: resources/ui/account_settings.ui:207
+msgid "This only effects on getting images"
+msgstr "这只会对获取图像产生影响"
+
+#: resources/ui/account_settings.ui:223
+msgid "Background"
+msgstr "背景"
+
+#: resources/ui/account_settings.ui:230
+msgid "This feature may cause significant lag. Please enable it with caution."
+msgstr "此功能可能会造成严重性能问题，请谨慎启用"
+
+#: resources/ui/account_settings.ui:256
+msgid "Opacity"
+msgstr "不透明度"
+
+#: resources/ui/account_settings.ui:270
+msgid "Blur (Experimental)"
+msgstr "模糊（实验性）"
+
+#: resources/ui/account_settings.ui:271 resources/ui/account_settings.ui:280
+msgid "Warning: High GPU usage"
+msgstr "警告: GPU 使用率较高"
+
+#: resources/ui/account_settings.ui:279
+msgid "Blur Radius (Experimental)"
+msgstr "模糊半径（实验性）"
+
+#: resources/ui/account_settings.ui:300 resources/ui/account_settings.ui:450
+msgid "Cache"
+msgstr "缓存"
+
+#: resources/ui/account_settings.ui:303
+msgid "Clear Cache"
+msgstr "清除缓存"
+
+#: resources/ui/account_settings.ui:324
+msgid "Account"
+msgstr "帐户"
+
+#: resources/ui/account_settings.ui:340
+msgid "New Password"
+msgstr "新密码"
+
+#: resources/ui/account_settings.ui:345
+msgid "Confirm Password"
+msgstr "确认密码"
+
+#: resources/ui/account_settings.ui:357
+msgid "Change Password"
+msgstr "更改密码"
+
+#: resources/ui/account_settings.ui:374
+msgid "Music"
+msgstr "音乐"
+
+#: resources/ui/account_settings.ui:379
+msgid "Player"
+msgstr "播放器"
+
+#: resources/ui/account_settings.ui:382 resources/ui/player_toolbar.ui:197
+msgid "Repeat Mode"
+msgstr "循环模式"
+
+#: resources/ui/account_settings.ui:386 resources/ui/player_toolbar.ui:231
+msgid "Repeat One"
+msgstr "单曲循环"
+
+#: resources/ui/account_settings.ui:387 resources/ui/player_toolbar.ui:235
+msgid "Repeat All"
+msgstr "列表循环"
+
+#: resources/ui/account_settings.ui:388 resources/ui/player_toolbar.ui:239
+msgid "None"
+msgstr "无"
+
+#: resources/ui/account_settings.ui:400
+msgid "Video"
+msgstr "视频"
+
+#: resources/ui/account_settings.ui:405
+msgid "Video Settings"
+msgstr "视频设置"
+
+#: resources/ui/account_settings.ui:408
+msgid "Seek Backward"
+msgstr "向后跳转"
+
+#: resources/ui/account_settings.ui:409 resources/ui/account_settings.ui:429
+#: resources/ui/account_settings.ui:469
+msgid "Unit: Seconds"
+msgstr "单位: 秒"
+
+#: resources/ui/account_settings.ui:428
+msgid "Seek Forward"
+msgstr "向前跳转"
+
+#: resources/ui/account_settings.ui:453
 msgid "Cache Size"
 msgstr "缓存大小"
 
-#: resources/ui/account_settings.ui:439
+#: resources/ui/account_settings.ui:454
 msgid "Unit: MB"
 msgstr "单位: MB"
 
-#: resources/ui/account_settings.ui:454
+#: resources/ui/account_settings.ui:468
 msgid "Cache Time"
 msgstr "缓存时间"
 
-#: resources/ui/account_settings.ui:472 resources/ui/mpvpage.ui:358
+#: resources/ui/account_settings.ui:485 resources/ui/mpvpage.ui:358
 #: resources/ui/mpvpage.ui:377
 msgid "Subtitle"
 msgstr "字幕"
 
-#: resources/ui/account_settings.ui:475
+#: resources/ui/account_settings.ui:488
 msgid "Subtitle Text Size"
 msgstr "字幕文本大小"
 
-#: resources/ui/account_settings.ui:476
+#: resources/ui/account_settings.ui:489
 msgid "This option only takes effect for srt subtitles"
 msgstr "此选项仅对 SRT 字幕生效"
 
-#: resources/ui/account_settings.ui:496
+#: resources/ui/account_settings.ui:508
 msgid "Subtitle Text Font"
 msgstr "字幕文本字体"
 
-#: resources/ui/account_settings.ui:497
+#: resources/ui/account_settings.ui:509
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
 msgstr "指定不指定特定字体的字幕使用的字体"
 
-#: resources/ui/account_settings.ui:524
+#: resources/ui/account_settings.ui:535
 msgid "Default Volume"
 msgstr "默认音量"
 
-#: resources/ui/account_settings.ui:548
+#: resources/ui/account_settings.ui:558
 msgid "Force Stereo"
 msgstr "强制立体声"
 
-#: resources/ui/account_settings.ui:563
+#: resources/ui/account_settings.ui:572
 msgid "Show Buffer Speed"
 msgstr "显示缓冲速度"
 
-#: resources/ui/account_settings.ui:571
+#: resources/ui/account_settings.ui:579
 msgid "Action after video ends"
 msgstr "视频结束后的动作"
 
-#: resources/ui/account_settings.ui:574
+#: resources/ui/account_settings.ui:582
 msgid "Play Next"
 msgstr "自动连播"
 
-#: resources/ui/account_settings.ui:587
+#: resources/ui/account_settings.ui:595
 msgid "Loop Playback"
 msgstr "循环播放"
 
-#: resources/ui/account_settings.ui:601
+#: resources/ui/account_settings.ui:609
 msgid "Stop"
 msgstr "播完暂停"
 
-#: resources/ui/account_settings.ui:617
+#: resources/ui/account_settings.ui:625
 msgid "Video Output"
 msgstr "视频输出"
 
-#: resources/ui/account_settings.ui:618
+#: resources/ui/account_settings.ui:626
 msgid ""
 "Warning: Do NOT use any method other than the software's own controls to "
 "control the window. Restart to take effect"
 msgstr "警告: 不要使用 tsukimi 控制窗口以外的窗口控件。重启生效"
 
-#: resources/ui/account_settings.ui:621
+#: resources/ui/account_settings.ui:629
 msgid "libmpv (default)"
 msgstr "libmpv (默认)"
 
-#: resources/ui/account_settings.ui:676
+#: resources/ui/account_settings.ui:684
 msgid "Hardware decoding"
 msgstr "硬件解码"
 
-#: resources/ui/account_settings.ui:680
+#: resources/ui/account_settings.ui:688
 msgid "no (default)"
 msgstr "无 (默认)"
 
-#: resources/ui/account_settings.ui:724
+#: resources/ui/account_settings.ui:732
 msgid "Estimate Frame Rate"
 msgstr "估计帧率"
 
-#: resources/ui/account_settings.ui:732
+#: resources/ui/account_settings.ui:739
 msgid ""
 "Use vf filter to interpolate frames to improve the smoothness of resizing "
 "and menus."
 msgstr "使用 vf 滤镜插帧来提高调整大小和菜单的流畅度。"
 
-#: resources/ui/account_settings.ui:736
+#: resources/ui/account_settings.ui:743
 msgid "Recommended setting value: Current display frame rate"
 msgstr "当前软件显示刷新率推荐设置值"
 
-#: resources/ui/account_settings.ui:754
+#: resources/ui/account_settings.ui:760
 msgid "Load external mpv config"
 msgstr "加载外部 mpv 配置"
 
-#: resources/ui/account_settings.ui:758
-msgid "config=true"
-msgstr "开启配置"
-
-#: resources/ui/account_settings.ui:759
+#: resources/ui/account_settings.ui:765
 msgid "Read from mpv config dir"
 msgstr "从 mpv 配置目录读取"
 
-#: resources/ui/account_settings.ui:775
+#: resources/ui/account_settings.ui:780
 msgid "More"
 msgstr "更多"
 
-#: resources/ui/account_settings.ui:786
+#: resources/ui/account_settings.ui:791
 msgid "More Video Settings"
 msgstr "更多视频设置"
 
-#: resources/ui/account_settings.ui:802
+#: resources/ui/account_settings.ui:807
 msgid "Customizing mpv params"
 msgstr "自定义 mpv 参数"
 
-#: resources/ui/account_settings.ui:803
+#: resources/ui/account_settings.ui:808
 msgid "One param per line"
 msgstr "每行一个参数"
 
-#: resources/ui/account.ui:9 resources/ui/account.ui:17
-msgid "Add a New Server"
-msgstr "添加一个新服务器"
+#: resources/ui/account_settings.ui:829
+#, fuzzy
+#| msgid "Preferences"
+msgid "Preferred Version"
+msgstr "首选项"
 
+#: resources/ui/account_settings.ui:852
+msgid ""
+"Weight is ordered from high to low, until a specific version is matched, or "
+"the highest matching version is obtained before clearing the match list"
+msgstr ""
+
+#: resources/ui/account_settings.ui:867
+#, fuzzy
+#| msgid "No Inscriptions"
+msgid "Descriptors"
+msgstr "无内容"
+
+#: resources/ui/account_settings.ui:889
+msgid "It is recommended to set no more than 3 lines"
+msgstr ""
+
+#: resources/ui/account_settings.ui:910
+#, fuzzy
+#| msgid "No Inscriptions"
+msgid "No Descriptors"
+msgstr "无内容"
+
+#: resources/ui/account_settings.ui:929 resources/ui/account_settings.ui:1039
+msgid "Add a descriptor"
+msgstr ""
+
+#: resources/ui/account_settings.ui:940 resources/ui/account_settings.ui:1050
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
 #: resources/ui/metadata_dialog.ui:38
 msgid "Cancel"
 msgstr "取消"
+
+#: resources/ui/account_settings.ui:946
+#, fuzzy
+#| msgid "_Add"
+msgid "Add"
+msgstr "添加"
+
+#: resources/ui/account_settings.ui:971 resources/ui/account_settings.ui:1081
+msgid "This will use exact matching to obtain a list"
+msgstr ""
+
+#: resources/ui/account_settings.ui:974 resources/ui/account_settings.ui:1084
+msgid "Descriptor Type"
+msgstr ""
+
+#: resources/ui/account_settings.ui:979 resources/ui/account_settings.ui:1089
+msgid "String"
+msgstr ""
+
+#: resources/ui/account_settings.ui:980 resources/ui/account_settings.ui:1090
+msgid "Regular Expression"
+msgstr ""
+
+#: resources/ui/account_settings.ui:992 resources/ui/account_settings.ui:1102
+msgid "Descriptor"
+msgstr ""
+
+#: resources/ui/account_settings.ui:997 resources/ui/account_settings.ui:1107
+msgid "Descriptor should not be too long"
+msgstr ""
+
+#: resources/ui/account_settings.ui:1008 resources/ui/account_settings.ui:1118
+msgid "eg. 1080p"
+msgstr ""
+
+#: resources/ui/account_settings.ui:1019 resources/ui/account_settings.ui:1129
+msgid "eg. 1080p.*WebDL"
+msgstr ""
+
+#: resources/ui/account_settings.ui:1056
+#, fuzzy
+#| msgid "_Save"
+msgid "Save"
+msgstr "保存"
+
+#: resources/ui/account.ui:9 resources/ui/account.ui:17
+msgid "Add a New Server"
+msgstr "添加一个新服务器"
 
 #: resources/ui/account.ui:32
 msgid "_Add"
@@ -361,7 +440,7 @@ msgid "No Inscriptions"
 msgstr "无内容"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:155
-#: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:476
+#: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:479
 msgid "Play"
 msgstr "播放"
 
@@ -387,7 +466,7 @@ msgstr "停止并退出"
 msgid "Loading..."
 msgstr "正在载入..."
 
-#: resources/ui/mpvpage.ui:255 resources/ui/window.ui:519
+#: resources/ui/mpvpage.ui:255 resources/ui/window.ui:520
 msgid "Playlist"
 msgstr "播放列表"
 
@@ -667,35 +746,35 @@ msgstr "登出"
 msgid "About"
 msgstr "关于"
 
-#: resources/ui/window.ui:104
+#: resources/ui/window.ui:105
 msgid "No Server"
 msgstr "暂无服务器"
 
-#: resources/ui/window.ui:107
+#: resources/ui/window.ui:108
 msgid "Add Server"
 msgstr "添加服务器"
 
-#: resources/ui/window.ui:174
+#: resources/ui/window.ui:175
 msgid "Log Out"
 msgstr "登出"
 
-#: resources/ui/window.ui:221
+#: resources/ui/window.ui:222
 msgid "Contents"
 msgstr "目录"
 
-#: resources/ui/window.ui:272
+#: resources/ui/window.ui:273
 msgid "Home"
 msgstr "首页"
 
-#: resources/ui/window.ui:318
+#: resources/ui/window.ui:319
 msgid "Liked"
 msgstr "收藏"
 
-#: resources/ui/window.ui:364
+#: resources/ui/window.ui:365
 msgid "Search"
 msgstr "搜索"
 
-#: resources/ui/window.ui:379
+#: resources/ui/window.ui:380
 msgid "Servers"
 msgstr "服务器"
 
@@ -711,33 +790,47 @@ msgstr "字段必须填入"
 msgid "Account added successfully"
 msgstr "帐户添加成功"
 
-#: src/ui/widgets/account_settings.rs:185
+#: src/ui/widgets/account_settings.rs:241
 msgid "Password cannot be empty!"
 msgstr "密码不能为空！"
 
-#: src/ui/widgets/account_settings.rs:189
+#: src/ui/widgets/account_settings.rs:245
 msgid "Passwords do not match!"
 msgstr "密码不匹配！"
 
-#: src/ui/widgets/account_settings.rs:196
+#: src/ui/widgets/account_settings.rs:252
 msgid "Password changed successfully! Please login again."
 msgstr "密码修改成功！请重新登录。"
 
-#: src/ui/widgets/account_settings.rs:202
+#: src/ui/widgets/account_settings.rs:258
 msgid "Failed to change password"
 msgstr "更改密码失败"
 
-#: src/ui/widgets/account_settings.rs:288
+#: src/ui/widgets/account_settings.rs:333
 msgid "Cache Cleared"
 msgstr "缓存已清除"
 
-#: src/ui/widgets/account_settings.rs:317
+#: src/ui/widgets/account_settings.rs:354
 msgid "No file selected"
 msgstr "未选择文件"
 
-#: src/ui/widgets/account_settings.rs:413
+#: src/ui/widgets/account_settings.rs:430
 msgid "Font Cleared, Restart to take effect."
 msgstr "字体已清除，重启以生效。"
+
+#: src/ui/widgets/account_settings.rs:655
+#: src/ui/widgets/account_settings.rs:665
+#: src/ui/widgets/account_settings.rs:700
+#: src/ui/widgets/account_settings.rs:710
+#, fuzzy
+#| msgid "Password cannot be empty!"
+msgid "Descriptor cannot be empty!"
+msgstr "密码不能为空！"
+
+#: src/ui/widgets/account_settings.rs:670
+#: src/ui/widgets/account_settings.rs:715
+msgid "Invalid regex"
+msgstr ""
 
 #: src/ui/widgets/boxset.rs:227
 msgid "Items"
@@ -767,11 +860,11 @@ msgstr "图像已复制到剪贴板"
 msgid "Error loading image"
 msgstr "加载图像时出错"
 
-#: src/ui/widgets/item.rs:472
+#: src/ui/widgets/item.rs:475
 msgid "Resume"
 msgstr "继续播放"
 
-#: src/ui/widgets/item.rs:991
+#: src/ui/widgets/item.rs:1020
 msgid "No video source found"
 msgstr "未找到视频源"
 
@@ -826,6 +919,9 @@ msgstr "服务器正在重启"
 #: src/ui/widgets/server_panel.rs:321
 msgid "Task started"
 msgstr "任务开始"
+
+#~ msgid "config=true"
+#~ msgstr "开启配置"
 
 #~ msgid "May cause crashes, with serious performance issues, Requires restart"
 #~ msgstr "可能会造成崩溃，需要重启"
