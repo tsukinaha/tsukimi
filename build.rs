@@ -1,3 +1,8 @@
+const PO_FILES: [&str; 1] = [
+    "po/zh_CN.po",
+];
+
+use std::path::Path;
 #[cfg(any(target_os = "linux", target_os = "windows"))]
 use std::process::Command;
 
@@ -10,24 +15,27 @@ fn main() {
 
     #[cfg(any(target_os = "linux", target_os = "windows"))]
     {
-        let po_file = "po/zh_CN.po";
-        let mo_file = "i18n/locale/zh_CN/LC_MESSAGES/tsukimi.mo";
+        for po_file in &PO_FILES {
+            let po_path = Path::new(po_file);
+            let locale = po_path.file_stem().unwrap().to_str().unwrap();
+            let mo_file = format!("i18n/locale/{}/LC_MESSAGES/tsukimi.mo", locale);
 
-        let mo_path = std::path::Path::new(mo_file);
+            let mo_path = Path::new(&mo_file);
 
-        if !mo_path.exists() {
-            std::fs::create_dir_all(mo_path.parent().unwrap()).unwrap();
-        }
+            if !mo_path.exists() {
+                std::fs::create_dir_all(mo_path.parent().unwrap()).unwrap();
+            }
 
-        let status = Command::new("msgfmt")
-            .args([po_file, "-o", mo_file])
-            .status()
-            .expect("Failed to compile po file");
+            let status = Command::new("msgfmt")
+                .args([po_file, "-o", &mo_file])
+                .status()
+                .expect("Failed to compile po file");
 
-        if status.success() {
-            println!("OK");
-        } else {
-            println!("FAILED");
+            if status.success() {
+                println!("{}: OK", po_file);
+            } else {
+                println!("{}: FAILED", po_file);
+            }
         }
     }
 
