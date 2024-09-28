@@ -14,7 +14,7 @@ fn main() {
     #[cfg(any(target_os = "linux", target_os = "windows"))]
     {
         let po_files: Vec<String> = LINGUAS
-            .split('\n')
+            .lines()
             .filter(|line| !line.is_empty())
             .map(|line| format!("po/{}.po", line))
             .collect();
