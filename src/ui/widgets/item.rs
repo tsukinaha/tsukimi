@@ -571,10 +571,8 @@ impl ItemPage {
             if let Some(p) = make_video_version_choice_from_matcher(v_dl, &matcher) {
                 namedropdown.set_selected(p as u32);
             }
-        } else {
-            if let Some(p) = make_video_version_choice_from_filter(v_dl) {
-                namedropdown.set_selected(p as u32);
-            }
+        } else if let Some(p) = make_video_version_choice_from_filter(v_dl) {
+            namedropdown.set_selected(p as u32);
         }
     }
 

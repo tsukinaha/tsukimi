@@ -26,7 +26,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Preferred Language</property>
-            <property name="description" translatable="yes">This currently only applies to the player</property>
+            <property name="description" translatable="yes">This is globally effective</property>
             <child>
               <object class="AdwComboRow" id="preferred_audio_language_comborow">
                 <property name="title" translatable="yes">Preferred Audio Language</property>
@@ -1008,7 +1008,7 @@
     </child>
   </object>
   <object class="AdwDialog" id="edit_descriptor_dialog">
-    <property name="title" translatable="yes">Add a descriptor</property>
+    <property name="title" translatable="yes">Edit descriptor</property>
     <property name="follows-content-size">1</property>
     <property name="width-request">360</property>
     <child>
