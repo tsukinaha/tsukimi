@@ -741,7 +741,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Load external mpv config</property>
-            <property name="description">May cause crashes, Requires restart</property>
+            <property name="description" translatable="yes">May cause crashes, Requires restart</property>
             <child>
               <object class="AdwSwitchRow" id="config_switchrow">
                 <property name="title">config=true</property>
