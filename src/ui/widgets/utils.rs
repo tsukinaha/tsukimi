@@ -1,5 +1,5 @@
-use gtk::{prelude::*, SignalListItemFactory};
 use crate::ui::provider::tu_object::TuObject;
+use gtk::{prelude::*, SignalListItemFactory};
 
 use super::{
     tu_list_item::{imp::PosterType, TuListItem},

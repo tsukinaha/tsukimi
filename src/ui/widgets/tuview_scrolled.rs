@@ -116,7 +116,8 @@ impl TuViewScrolled {
             }
             ViewType::ListView => {
                 imp.scrolled_window.set_child(Some(&imp.list.get()));
-                imp.list.set_factory(Some(factory.tu_overview_item(ViewGroup::ListView)));
+                imp.list
+                    .set_factory(Some(factory.tu_overview_item(ViewGroup::ListView)));
                 imp.list.set_model(Some(&imp.selection));
             }
         }

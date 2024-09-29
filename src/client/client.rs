@@ -742,6 +742,34 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
+    pub async fn get_person_large_list(
+        &self,
+        id: &str,
+        types: &str,
+        sort_by: &str,
+        sort_order: &str,
+        start_index: u32,
+    ) -> Result<List> {
+        let start_string = start_index.to_string();
+        let path = format!("Users/{}/Items", &self.user_id());
+        let params = [
+            (
+                "Fields",
+                "Overview,PrimaryImageAspectRatio,ProductionYear,CommunityRating",
+            ),
+            ("PersonIds", id),
+            ("Recursive", "true"),
+            ("CollapseBoxSetItems", "false"),
+            ("SortBy", sort_by),
+            ("SortOrder", sort_order),
+            ("IncludeItemTypes", types),
+            ("StartIndex", &start_string),
+            ("ImageTypeLimit", "1"),
+            ("Limit", "50"),
+        ];
+        self.request(&path, &params).await
+    }
+
     pub async fn get_continue_play_list(&self, parent_id: &str) -> Result<List> {
         let path = "Shows/NextUp".to_string();
         let params = [

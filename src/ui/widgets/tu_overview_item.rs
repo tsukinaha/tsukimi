@@ -30,8 +30,8 @@ pub mod imp {
     use glib::subclass::InitializingObject;
     use gtk::{glib, CompositeTemplate};
     use gtk::{prelude::*, PopoverMenu};
-    use std::cell::RefCell;
     use std::cell::Cell;
+    use std::cell::RefCell;
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]

@@ -1,6 +1,7 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
+use crate::ui::provider::tu_item::TuItem;
 use crate::utils::{fetch_with_cache, spawn, CachePolicy};
 use crate::{fraction, fraction_reset, toast};
 use gettextrs::gettext;
@@ -18,6 +19,7 @@ pub(crate) mod imp {
     use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
 
+    use crate::ui::provider::tu_item::TuItem;
     use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
     use crate::ui::widgets::item_actionbox::ItemActionsBox;
@@ -28,7 +30,7 @@ pub(crate) mod imp {
     #[properties(wrapper_type = super::ActorPage)]
     pub struct ActorPage {
         #[property(get, set, construct_only)]
-        pub id: OnceCell<String>,
+        pub item: OnceCell<TuItem>,
         #[template_child]
         pub actorpicbox: TemplateChild<gtk::Box>,
         #[template_child]
@@ -87,7 +89,7 @@ pub(crate) mod imp {
                 }
             ));
 
-            self.actionbox.set_id(Some(obj.id()));
+            self.actionbox.set_id(Some(obj.item().id()));
         }
     }
 
@@ -111,13 +113,13 @@ glib::wrapper! {
 }
 
 impl ActorPage {
-    pub fn new(id: &str) -> Self {
-        Object::builder().property("id", id).build()
+    pub fn new(item: &TuItem) -> Self {
+        Object::builder().property("item", item).build()
     }
 
     pub fn setup_pic(&self) {
         let imp = self.imp();
-        let id = self.id();
+        let id = self.item().id();
         let pic = PictureLoader::new(&id, "Primary", None);
         pic.set_size_request(218, 328);
         pic.set_halign(gtk::Align::Start);
@@ -127,7 +129,7 @@ impl ActorPage {
 
     pub async fn get_item(&self) {
         let imp = self.imp();
-        let id = self.id();
+        let id = self.item().id();
         let inscription = imp.inscription.get();
         let inforevealer = imp.inforevealer.get();
         let title = imp.title.get();
@@ -187,11 +189,57 @@ impl ActorPage {
             _ => return,
         };
 
+        let types_clone = types.to_string();
         hortu.set_title(&gettext(types));
+        hortu.connect_morebutton(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |_| {
+                let id = obj.item().id();
+                let tag = format!("{} of {}", types_clone, obj.item().name());
+                let page = crate::ui::widgets::single_grid::SingleGrid::new();
+                let type_clone1 = types_clone.clone();
+                let type_clone2 = types_clone.clone();
+                let id_clone1 = id.clone();
+                let id_clone2 = id.clone();
+                page.connect_sort_changed_tokio(false, move |sort_by, sort_order| {
+                    let id_clone1 = id_clone1.clone();
+                    let type_clone1 = type_clone1.clone();
+                    async move {
+                        EMBY_CLIENT
+                            .get_person_large_list(
+                                &id_clone1,
+                                &type_clone1,
+                                &sort_by,
+                                &sort_order,
+                                0,
+                            )
+                            .await
+                    }
+                });
+                page.connect_end_edge_overshot_tokio(false, move |sort_by, sort_order, n_items| {
+                    let id_clone2 = id_clone2.clone();
+                    let type_clone2 = type_clone2.clone();
+                    async move {
+                        EMBY_CLIENT
+                            .get_person_large_list(
+                                &id_clone2,
+                                &type_clone2,
+                                &sort_by,
+                                &sort_order,
+                                n_items,
+                            )
+                            .await
+                    }
+                });
+                page.emit_by_name::<()>("sort-changed", &[]);
+                push_page_with_tag(&obj, page, tag);
+            }
+        ));
 
         let types = types.to_string();
 
-        let id = self.id();
+        let id = self.item().id();
 
         let results = match fetch_with_cache(
             &format!("actor_{}_{}", types, &id),

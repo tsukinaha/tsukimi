@@ -279,7 +279,7 @@ impl TuItem {
                 push_page_with_tag(window, page, self.name());
             }
             "Actor" | "Director" | "Person" | "Writer" => {
-                let page = ActorPage::new(&self.id());
+                let page = ActorPage::new(self);
                 push_page_with_tag(window, page, self.name());
             }
             "BoxSet" => {

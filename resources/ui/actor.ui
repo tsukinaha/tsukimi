@@ -91,14 +91,17 @@
                     </child>
                     <child>
                       <object class="HortuScrolled" id="moviehortu">
+                        <property name="moreview">True</property>
                       </object>
                     </child>
                     <child>
                       <object class="HortuScrolled" id="serieshortu">
+                        <property name="moreview">True</property>
                       </object>
                     </child>
                     <child>
                       <object class="HortuScrolled" id="episodehortu">
+                        <property name="moreview">True</property>
                       </object>
                     </child>
                     <child>

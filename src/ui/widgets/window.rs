@@ -154,8 +154,9 @@ mod imp {
             self.mpv_playlist_selection.set_model(Some(&store));
             self.mpv_playlist
                 .set_model(Some(&self.mpv_playlist_selection));
-            self.mpv_playlist
-                .set_factory(Some(gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView)));
+            self.mpv_playlist.set_factory(Some(
+                gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
+            ));
 
             let obj = self.obj();
             obj.set_fonts();
@@ -833,7 +834,11 @@ impl Window {
 
     fn prevent_suspend(&self) {
         let app = self.application().expect("No application found");
-        let cookie = app.inhibit(Some(self), gtk::ApplicationInhibitFlags::SUSPEND, Some("Playing media"));
+        let cookie = app.inhibit(
+            Some(self),
+            gtk::ApplicationInhibitFlags::SUSPEND,
+            Some("Playing media"),
+        );
         self.imp().suspend_cookie.replace(Some(cookie));
     }
 

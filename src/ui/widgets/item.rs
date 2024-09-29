@@ -195,8 +195,9 @@ pub(crate) mod imp {
             let store = gtk::gio::ListStore::new::<TuObject>();
             self.selection.set_model(Some(&store));
             self.itemlist.set_model(Some(&self.selection));
-            self.itemlist
-                .set_factory(Some(gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView)));
+            self.itemlist.set_factory(Some(
+                gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
+            ));
 
             let item_type = self.obj().item().item_type();
 
