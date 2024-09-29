@@ -331,6 +331,8 @@ pub struct SimpleListItem {
     pub end_date: Option<DateTime<Utc>>,
     #[serde(rename = "PremiereDate")]
     pub premiere_date: Option<DateTime<Utc>>,
+    #[serde(rename = "Taglines")]
+    pub taglines: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]

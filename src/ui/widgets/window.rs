@@ -26,6 +26,7 @@ mod imp {
     use crate::ui::widgets::media_viewer::MediaViewer;
     use crate::ui::widgets::player_toolbar::PlayerToolbarBox;
     use crate::ui::widgets::search::SearchPage;
+    use crate::ui::widgets::tu_overview_item::imp::ViewGroup;
     use crate::ui::widgets::utils::TuItemBuildExt;
 
     // Object holding the state
@@ -152,7 +153,7 @@ mod imp {
             self.mpv_playlist
                 .set_model(Some(&self.mpv_playlist_selection));
             self.mpv_playlist
-                .set_factory(Some(gtk::SignalListItemFactory::new().tu_overview_item()));
+                .set_factory(Some(gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView)));
 
             let obj = self.obj();
             obj.set_fonts();

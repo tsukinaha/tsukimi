@@ -41,6 +41,7 @@ src/ui/widgets/image_infocard.rs
 src/ui/widgets/item_actionbox.rs
 src/ui/widgets/item.rs
 src/ui/widgets/list.rs
+src/ui/widgets/liked.rs
 src/ui/widgets/metadata_dialog.rs
 src/ui/widgets/player_toolbar.rs
 src/ui/widgets/song_widget.rs

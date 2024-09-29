@@ -10,6 +10,7 @@ use gtk::template_callbacks;
 use gtk::Builder;
 use gtk::PopoverMenu;
 use gtk::{gio, glib};
+use imp::ViewGroup;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
@@ -20,6 +21,7 @@ use crate::utils::spawn;
 use crate::utils::spawn_tokio;
 
 use super::picture_loader::PictureLoader;
+use super::tu_list_item::Action;
 
 pub const PROGRESSBAR_ANIMATION_DURATION: u32 = 2000;
 
@@ -29,20 +31,20 @@ pub mod imp {
     use gtk::{glib, CompositeTemplate};
     use gtk::{prelude::*, PopoverMenu};
     use std::cell::RefCell;
-
-    use crate::ui::provider::tu_item::TuItem;
-    use crate::ui::widgets::picture_loader::PictureLoader;
+    use std::cell::Cell;
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
-    #[enum_type(name = "PosterType")]
+    #[enum_type(name = "ViewGroup")]
 
-    pub enum PosterType {
-        Backdrop,
-        Banner,
+    pub enum ViewGroup {
+        ListView,
         #[default]
-        Poster,
+        EpisodesView,
     }
+
+    use crate::ui::provider::tu_item::TuItem;
+    use crate::ui::widgets::picture_loader::PictureLoader;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -53,6 +55,10 @@ pub mod imp {
         pub item: RefCell<TuItem>,
         #[template_child]
         pub overview: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub inline_overview: TemplateChild<gtk::Label>,
+        #[property(get, set = Self::set_view_group, builder(ViewGroup::default()))]
+        pub view_group: Cell<ViewGroup>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub listlabel: TemplateChild<gtk::Label>,
@@ -62,6 +68,10 @@ pub mod imp {
         pub overlay: TemplateChild<gtk::Overlay>,
         #[template_child]
         pub time_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub aspect_frame: TemplateChild<gtk::AspectFrame>,
+        #[template_child]
+        pub detail_box: TemplateChild<gtk::Box>,
     }
 
     // The central trait for subclassing a GObject
@@ -109,6 +119,10 @@ pub mod imp {
             obj.set_up();
             obj.gesture();
         }
+
+        fn set_view_group(&self, view_group: ViewGroup) {
+            self.view_group.set(view_group);
+        }
     }
 }
 
@@ -117,14 +131,6 @@ glib::wrapper! {
         @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
-}
-
-pub enum Action {
-    Like,
-    Unlike,
-    Played,
-    Unplayed,
-    Remove,
 }
 
 #[template_callbacks]
@@ -143,28 +149,81 @@ impl TuOverviewItem {
     pub fn set_up(&self) {
         let imp = self.imp();
         let item = self.item();
-        imp.listlabel.set_text(&format!(
-            "S{}E{}: {}",
-            item.parent_index_number(),
-            item.index_number(),
-            item.name()
-        ));
-        if let Some(premiere_date) = item.premiere_date() {
-            imp.time_label.set_visible(true);
-            imp.time_label
-                .set_text(&premiere_date.format("%Y-%m-%d").unwrap_or_default());
+        match self.view_group() {
+            ViewGroup::EpisodesView => {
+                imp.listlabel.set_text(&format!(
+                    "S{}E{}: {}",
+                    item.parent_index_number(),
+                    item.index_number(),
+                    item.name()
+                ));
+                if let Some(premiere_date) = item.premiere_date() {
+                    imp.time_label.set_visible(true);
+                    imp.time_label
+                        .set_text(&premiere_date.format("%Y-%m-%d").unwrap_or_default());
+                }
+                imp.label2
+                    .set_text(&run_time_ticks_to_label(item.run_time_ticks()));
+                imp.overview.set_text(
+                    &item
+                        .overview()
+                        .unwrap_or("No Inscription".to_string())
+                        .replace('\n', " "),
+                );
+                self.set_played_percentage(self.get_played_percentage());
+            }
+            ViewGroup::ListView => {
+                imp.overview.set_visible(false);
+                imp.inline_overview.set_visible(true);
+                imp.inline_overview
+                    .set_text(&item.overview().unwrap_or_default().replace('\n', " "));
+                let item_type = item.item_type();
+                if item_type == "Episode" {
+                    imp.listlabel.set_text(&format!(
+                        "S{}E{}: {}",
+                        item.parent_index_number(),
+                        item.index_number(),
+                        item.name()
+                    ));
+                } else {
+                    imp.listlabel.set_text(&item.name());
+                    imp.aspect_frame.set_ratio(0.67);
+                    imp.overlay.set_size_request(167, 260);
+                    self.set_rating();
+                }
+                let year = if item.production_year() != 0 {
+                    item.production_year().to_string()
+                } else {
+                    String::default()
+                };
+                if let Some(status) = item.status() {
+                    if status == "Continuing" {
+                        imp.label2
+                            .set_text(&format!("{} - {}", year, gettext("Present")));
+                    } else if status == "Ended" {
+                        if let Some(end_date) = item.end_date() {
+                            let end_year = end_date.year();
+                            if end_year != year.parse::<i32>().unwrap_or_default() {
+                                imp.label2
+                                    .set_text(&format!("{} - {}", year, end_date.year()));
+                            } else {
+                                imp.label2.set_text(&format!("{}", end_year));
+                            }
+                        } else {
+                            imp.label2.set_text(&format!("{} - Unknown", year));
+                        }
+                    }
+                } else {
+                    imp.label2.set_text(&year);
+                }
+                if let Some(tagline) = item.tagline() {
+                    imp.time_label.set_text(&tagline);
+                }
+                self.set_count();
+            }
         }
-        imp.label2
-            .set_text(&run_time_ticks_to_label(item.run_time_ticks()));
-        imp.overview.set_text(
-            &item
-                .overview()
-                .unwrap_or("No Inscription".to_string())
-                .replace('\n', " "),
-        );
         self.set_picture();
         self.set_played();
-        self.set_played_percentage(self.get_played_percentage());
         self.set_tooltip_text(Some(&item.name()));
     }
 

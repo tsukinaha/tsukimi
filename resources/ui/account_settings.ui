@@ -729,34 +729,6 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Estimate Frame Rate</property>
-            <property name="header_suffix">
-              <object class="GtkSwitch" id="estimate_control">
-                <property name="valign">center</property>
-                <property name="margin-end">12</property>
-              </object>
-            </property>
-            <property name="description" translatable="yes">Use vf filter to interpolate frames to improve the smoothness of resizing and menus.</property>
-            <child>
-              <object class="AdwSpinRow" id="estimate_spinrow">
-                <property name="title">vf=lavfi="fps=fps={}:round=down"</property>
-                <property name="subtitle" translatable="yes">Recommended setting value: Current display frame rate</property>
-                <property name="sensitive" bind-source="estimate_control" bind-property="active" bind-flags="sync-create" />
-                <property name="adjustment">
-                  <object class="GtkAdjustment">
-                    <property name="lower">0</property>
-                    <property name="upper">500</property>
-                    <property name="value">60</property>
-                    <property name="page-increment">1</property>
-                    <property name="step-increment">1</property>
-                  </object>
-                </property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Load external mpv config</property>
             <property name="description">May cause crashes, Requires restart</property>
             <child>

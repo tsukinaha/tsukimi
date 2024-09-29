@@ -117,12 +117,12 @@ impl ListPage {
         let include_item_types = get_include_item_types(collection_type);
 
         let pages = [
-            ("all", "All", ListType::All),
-            ("resume", "Resume", ListType::Resume),
-            ("boxset", "Boxset", ListType::BoxSet),
-            ("tags", "Tags", ListType::Tags),
-            ("genres", "Genres", ListType::Genres),
-            ("liked", "Liked", ListType::Liked),
+            ("all", &gettext("All"), ListType::All),
+            ("resume", &gettext("Resume"), ListType::Resume),
+            ("boxset", &gettext("BoxSet"), ListType::BoxSet),
+            ("tags", &gettext("Tags"), ListType::Tags),
+            ("genres", &gettext("Genres"), ListType::Genres),
+            ("liked", &gettext("Liked"), ListType::Liked),
         ];
 
         for (name, title, list_type) in pages {
@@ -172,7 +172,7 @@ impl ListPage {
                 },
             );
             page.emit_by_name::<()>("sort-changed", &[]);
-            stack.add_titled(&page, Some(name), &gettext(title));
+            stack.add_titled(&page, Some(name), title);
         }
     }
 }

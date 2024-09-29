@@ -3,11 +3,16 @@ use crate::ui::provider::tu_item::TuItem;
 use crate::ui::provider::tu_object::TuObject;
 use adw::prelude::*;
 use adw::subclass::prelude::*;
-use gtk::gio;
 use gtk::glib::{self, clone};
+use gtk::{gio, SignalListItemFactory};
 use gtk::{template_callbacks, CompositeTemplate};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+
+use super::single_grid::imp::ViewType;
+use super::tu_list_item::imp::PosterType;
+use super::tu_overview_item::imp::ViewGroup;
+use super::utils::TuItemBuildExt;
 
 pub(crate) mod imp {
 
@@ -16,13 +21,8 @@ pub(crate) mod imp {
 
     use crate::ui::provider::tu_object::TuObject;
 
-    use crate::ui::widgets::tu_list_item::imp::PosterType;
-    use crate::ui::widgets::utils::TuItemBuildExt;
-
     use super::*;
     use glib::subclass::InitializingObject;
-
-    use gtk::SignalListItemFactory;
 
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsukimi/tuview_scrolled.ui")]
@@ -31,6 +31,8 @@ pub(crate) mod imp {
         pub scrolled_window: TemplateChild<gtk::ScrolledWindow>,
         #[template_child]
         pub grid: TemplateChild<gtk::GridView>,
+        #[template_child]
+        pub list: TemplateChild<gtk::ListView>,
         pub selection: gtk::SingleSelection,
         pub lock: Arc<AtomicBool>,
     }
@@ -56,10 +58,7 @@ pub(crate) mod imp {
             self.parent_constructed();
             let store = gio::ListStore::new::<TuObject>();
             self.selection.set_model(Some(&store));
-            let factory = SignalListItemFactory::new();
-            self.grid
-                .set_factory(Some(factory.tu_item(PosterType::default())));
-            self.grid.set_model(Some(&self.selection));
+            self.obj().set_view_type(ViewType::GridView);
         }
     }
 
@@ -84,7 +83,7 @@ impl TuViewScrolled {
         glib::Object::new()
     }
 
-    pub fn set_grid<const C: bool>(&self, items: Vec<SimpleListItem>, is_resume: bool) {
+    pub fn set_store<const C: bool>(&self, items: Vec<SimpleListItem>, is_resume: bool) {
         let imp = self.imp();
         let store = imp
             .selection
@@ -105,11 +104,36 @@ impl TuViewScrolled {
         }
     }
 
+    pub fn set_view_type(&self, view_type: ViewType) {
+        let imp = self.imp();
+        let factory = SignalListItemFactory::new();
+        match view_type {
+            ViewType::GridView => {
+                imp.scrolled_window.set_child(Some(&imp.grid.get()));
+                imp.grid
+                    .set_factory(Some(factory.tu_item(PosterType::default())));
+                imp.grid.set_model(Some(&imp.selection));
+            }
+            ViewType::ListView => {
+                imp.scrolled_window.set_child(Some(&imp.list.get()));
+                imp.list.set_factory(Some(factory.tu_overview_item(ViewGroup::ListView)));
+                imp.list.set_model(Some(&imp.selection));
+            }
+        }
+    }
+
     #[template_callback]
-    fn on_item_activated(&self, position: u32, listview: &gtk::GridView) {
-        let model = listview.model().unwrap();
+    fn on_gridview_item_activated(&self, position: u32, view: &gtk::GridView) {
+        let model = view.model().unwrap();
         let tu_obj = model.item(position).and_downcast::<TuObject>().unwrap();
-        tu_obj.activate(listview);
+        tu_obj.activate(view);
+    }
+
+    #[template_callback]
+    fn on_listview_item_activated(&self, position: u32, view: &gtk::ListView) {
+        let model = view.model().unwrap();
+        let tu_obj = model.item(position).and_downcast::<TuObject>().unwrap();
+        tu_obj.activate(view);
     }
 
     pub fn connect_end_edge_reached<F>(&self, cb: F)

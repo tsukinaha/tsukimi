@@ -57,10 +57,6 @@ mod imp {
         #[template_child]
         pub fg_color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
-        pub estimate_control: TemplateChild<gtk::Switch>,
-        #[template_child]
-        pub estimate_spinrow: TemplateChild<adw::SpinRow>,
-        #[template_child]
         pub seek_forward_spinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub seek_backward_spinrow: TemplateChild<adw::SpinRow>,
@@ -443,16 +439,6 @@ impl AccountSettings {
                 "is-daily-recommend",
                 &imp.dailyrecommendcontrol.get(),
                 "active",
-            )
-            .build();
-        SETTINGS
-            .bind("mpv-estimate", &imp.estimate_control.get(), "active")
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-estimate-target-frame",
-                &imp.estimate_spinrow.get(),
-                "value",
             )
             .build();
         SETTINGS

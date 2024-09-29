@@ -81,6 +81,8 @@ impl Default for TsukimiMPV {
             init.set_property("input-vo-keyboard", true)?;
             init.set_property("input-default-bindings", true)?;
             init.set_property("user-agent", "Tsukimi")?;
+            init.set_property("video-timing-offset", 0)?;
+            init.set_property("video-sync", "audio")?;
             init.set_property("vo", "libmpv")?;
             Ok(())
         })

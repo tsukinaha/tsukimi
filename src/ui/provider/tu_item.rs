@@ -101,6 +101,8 @@ pub mod imp {
         end_date: RefCell<Option<DateTime>>,
         #[property(get, set, nullable)]
         overview: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        tagline: RefCell<Option<String>>,
         #[property(get, set)]
         playback_position_ticks: RefCell<u64>,
     }
@@ -209,6 +211,9 @@ impl TuItem {
         }
         if let Some(run_time_ticks) = latest.run_time_ticks {
             tu_item.set_run_time_ticks(run_time_ticks);
+        }
+        if let Some(taglines) = &latest.taglines {
+            tu_item.set_tagline(taglines.first().cloned());
         }
         if let Some(primary_image_item_id) = &latest.primary_image_item_id {
             tu_item.set_primary_image_item_id(Some(primary_image_item_id.clone()));

@@ -34,6 +34,7 @@ pub(crate) mod imp {
     use crate::ui::widgets::item_actionbox::ItemActionsBox;
     use crate::ui::widgets::item_carousel::ItemCarousel;
     use crate::ui::widgets::star_toggle::StarToggle;
+    use crate::ui::widgets::tu_overview_item::imp::ViewGroup;
     use crate::ui::widgets::utils::TuItemBuildExt;
     use crate::utils::spawn_g_timeout;
     use adw::subclass::prelude::*;
@@ -195,7 +196,7 @@ pub(crate) mod imp {
             self.selection.set_model(Some(&store));
             self.itemlist.set_model(Some(&self.selection));
             self.itemlist
-                .set_factory(Some(gtk::SignalListItemFactory::new().tu_overview_item()));
+                .set_factory(Some(gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView)));
 
             let item_type = self.obj().item().item_type();
 

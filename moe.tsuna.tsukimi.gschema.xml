@@ -37,10 +37,6 @@
       <default>false</default>
       <summary>Default switch state</summary>
     </key>
-    <key name="mpv-estimate" type="b">
-      <default>false</default>
-      <summary>Whether enable mpv-estimate</summary>
-    </key>
     <key name="ytdl" type="b">
       <default>true</default>
       <summary>! Deprecreated</summary>
@@ -72,10 +68,6 @@
     <key name="mpv-seek-backward-step" type="i">
       <default>85</default>
       <summary>Default mpv-seek-backward-step</summary>
-    </key>
-    <key name="mpv-estimate-target-frame" type="i">
-      <default>60</default>
-      <summary>Default estimate target frame</summary>
     </key>
     <key name="mpv-cache-size" type="i">
       <default>100</default>

@@ -23,6 +23,7 @@
                             <property name="orientation">horizontal</property>
                             <property name="spacing">6</property>
                             <property name="margin-end">12</property>
+                            <property name="margin-start">18</property>
                             <property name="halign">fill</property>
                             <property name="valign">start</property>
                             <child>

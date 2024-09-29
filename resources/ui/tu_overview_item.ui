@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwBin" class="TuOverviewItem">
+    <property name="margin-top">4</property>
+    <property name="margin-bottom">4</property>
     <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>
@@ -12,15 +14,23 @@
             <property name="spacing">8</property>
             <property name="valign">end</property>
             <child>
-              <object class="GtkOverlay" id="overlay">
+              <object class="GtkAspectFrame" id="aspect_frame">
                 <property name="valign">fill</property>
-                <property name="width-request">250</property>
-                <property name="height-request">141</property>
-                <property name="halign">center</property>
+                <property name="obey-child">False</property>
+                <property name="xalign">0</property>
+                <property name="margin-start">4</property>
+                <child>
+                  <object class="GtkOverlay" id="overlay">
+                    <property name="valign">fill</property>
+                    <property name="width-request">250</property>
+                    <property name="height-request">141</property>
+                    <property name="halign">center</property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
-              <object class="GtkBox">
+              <object class="GtkBox" id="detail_box">
                 <property name="orientation">vertical</property>
                 <property name="spacing">8</property>
                 <property name="valign">center</property>
@@ -73,17 +83,15 @@
                     </child>
                   </object>
                 </child>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-                  <object class="GtkLabel" id="overview">
+                <child>
+                  <object class="GtkLabel" id="inline_overview">
                     <property name="justify">left</property>
                     <property name="wrap">true</property>
-                    <property name="lines">3</property>
+                    <property name="lines">6</property>
                     <property name="ellipsize">end</property>
                     <property name="height-request">90</property>
+                    <property name="xalign">0</property>
+                    <property name="visible">false</property>
                     <attributes>
                       <attribute name="scale" value="0.9"/>
                     </attributes>
@@ -92,6 +100,26 @@
                     </style>
                   </object>
                 </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="overview">
+            <property name="justify">left</property>
+            <property name="wrap">true</property>
+            <property name="lines">3</property>
+            <property name="ellipsize">end</property>
+            <property name="height-request">90</property>
+            <property name="xalign">0</property>
+            <attributes>
+              <attribute name="scale" value="0.9"/>
+            </attributes>
+            <style>
+              <class name="dim-label"/>
+            </style>
+          </object>
+        </child>
       </object>
     </child>
   </template>

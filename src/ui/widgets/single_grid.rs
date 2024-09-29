@@ -1,6 +1,7 @@
 use std::future::Future;
 
 use super::tu_list_item::imp::PosterType;
+use super::tu_overview_item::imp::ViewGroup;
 use super::utils::TuItemBuildExt;
 use crate::client::error::UserFacingError;
 use crate::client::structs::{List, SimpleListItem};
@@ -12,7 +13,7 @@ use anyhow::Result;
 use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib, SignalListItemFactory};
-use imp::{ListType, SortBy, SortOrder};
+use imp::{ListType, SortBy, SortOrder, ViewType};
 
 pub mod imp {
 
@@ -54,6 +55,16 @@ pub mod imp {
         Ascending,
         #[default]
         Descending,
+    }
+
+    #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
+    #[repr(u32)]
+    #[enum_type(name = "ViewType")]
+
+    pub enum ViewType {
+        ListView,
+        #[default]
+        GridView,
     }
 
     impl From<i32> for SortOrder {
@@ -141,12 +152,16 @@ pub mod imp {
         #[template_child]
         pub adbutton: TemplateChild<gtk::Box>,
         #[template_child]
+        pub glbutton: TemplateChild<gtk::Box>,
+        #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
         #[template_child]
         pub scrolled: TemplateChild<TuViewScrolled>,
 
         #[property(get, set, builder(ListType::default()))]
         pub list_type: Cell<ListType>,
+        #[property(get, set = Self::set_view_type, builder(ViewType::default()))]
+        pub view_type: Cell<ViewType>,
 
         pub popovermenu: RefCell<Option<gtk::PopoverMenu>>,
         #[property(get, set = Self::set_sort_order, builder(SortOrder::default()))]
@@ -228,6 +243,11 @@ pub mod imp {
             self.sort_by.set(sort_by);
             self.sort_order.set(sort_order);
         }
+
+        fn set_view_type(&self, view_type: ViewType) {
+            self.view_type.set(view_type);
+            self.scrolled.set_view_type(view_type);
+        }
     }
 }
 
@@ -251,15 +271,24 @@ impl SingleGrid {
     }
 
     #[template_callback]
-    fn sort_order_ascending_cb(&self, _btn: &gtk::ToggleButton) {
-        self.set_sort_order(SortOrder::Ascending);
-        let _ = SETTINGS.set_list_sord_order(SortOrder::Ascending.into());
+    fn sort_order_toggled_cb(&self, btn: &gtk::ToggleButton) {
+        let sort_order = if btn.is_active() {
+            SortOrder::Ascending
+        } else {
+            SortOrder::Descending
+        };
+        self.set_sort_order(sort_order);
+        let _ = SETTINGS.set_list_sord_order(sort_order.into());
     }
 
     #[template_callback]
-    fn sort_order_descending_cb(&self, _btn: &gtk::ToggleButton) {
-        self.set_sort_order(SortOrder::Descending);
-        let _ = SETTINGS.set_list_sord_order(SortOrder::Descending.into());
+    fn view_toggled_cb(&self, btn: &gtk::ToggleButton) {
+        let view_type = if btn.is_active() {
+            ViewType::GridView
+        } else {
+            ViewType::ListView
+        };
+        self.set_view_type(view_type);
     }
 
     #[template_callback]
@@ -295,11 +324,13 @@ impl SingleGrid {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
                 imp.adbutton.set_visible(false);
+                imp.glbutton.set_visible(false);
             }
             ListType::Genres => {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
                 imp.adbutton.set_visible(false);
+                imp.glbutton.set_visible(false);
             }
             ListType::Liked => {
                 imp.postmenu.set_visible(false);
@@ -336,15 +367,27 @@ impl SingleGrid {
 
     pub async fn poster(&self, poster_type: PosterType) {
         let scrolled = self.imp().scrolled.get();
-        let grid = scrolled.imp().grid.get();
         let factory = SignalListItemFactory::new();
-        grid.set_factory(Some(factory.tu_item(poster_type)));
+        match self.view_type() {
+            ViewType::GridView => {
+                scrolled
+                    .imp()
+                    .grid
+                    .set_factory(Some(factory.tu_item(poster_type)));
+            }
+            ViewType::ListView => {
+                scrolled
+                    .imp()
+                    .list
+                    .set_factory(Some(factory.tu_overview_item(ViewGroup::ListView)));
+            }
+        };
     }
 
     pub fn add_items<const C: bool>(&self, items: Vec<SimpleListItem>, is_resume: bool) {
         let imp = self.imp();
         let scrolled = imp.scrolled.get();
-        scrolled.set_grid::<C>(items, is_resume);
+        scrolled.set_store::<C>(items, is_resume);
         if scrolled.n_items() == 0 {
             imp.stack.set_visible_child_name("fallback");
         } else {

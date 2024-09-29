@@ -1,95 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwNavigationPage" class="SingleGrid">
-    <property name="title" >Tsukimi</property>
+    <property name="title">Tsukimi</property>
     <property name="child">
       <object class="GtkBox">
         <property name="margin-top">10</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
-          <object class="GtkBox">
-            <property name="orientation">horizontal</property>
-            <property name="spacing">6</property>
-            <child>
-              <object class="GtkLabel" id="count">
-                <property name="label" translatable="yes"></property>
-                <attributes>
-                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                </attributes>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="margin-start">45</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkMenuButton" id="postmenu">
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="menu-model">poster-menu</property>
-                <property name="direction">GTK_ARROW_RIGHT</property>
-                <property name="child">
-                  <object class="AdwButtonContent">
-                    <property name="icon-name">view-grid-symbolic</property>
-                    <property name="label" translatable="yes">View</property>
-                    <property name="use-underline">True</property>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkBox" id="adbutton">
-                <property name="halign">end</property>
+          <object class="GtkCenterBox">
+            <child type="start">
+              <object class="GtkBox">
                 <property name="orientation">horizontal</property>
-                <property name="hexpand">True</property>
+                <property name="margin-start">45</property>
+                <property name="spacing">6</property>
                 <child>
-                  <object class="GtkToggleButton" id="ascending">
-                    <property name="icon-name">view-sort-ascending-symbolic</property>
+                  <object class="GtkLabel" id="count">
+                    <property name="label" translatable="yes"></property>
+                    <attributes>
+                      <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                    </attributes>
+                    <property name="halign">start</property>
                     <property name="valign">center</property>
-                    <signal name="clicked" handler="sort_order_ascending_cb" swapped="yes" />
                   </object>
                 </child>
                 <child>
-                  <object class="GtkToggleButton">
-                    <property name="icon-name">view-sort-descending-symbolic</property>
+                  <object class="GtkMenuButton" id="postmenu">
+                    <property name="halign">start</property>
                     <property name="valign">center</property>
-                    <property name="group">ascending</property>
-                    <property name="active">True</property>
-                    <signal name="clicked" handler="sort_order_descending_cb" swapped="yes" />
+                    <property name="tooltip-text" translatable="yes">Change Poster</property>
+                    <property name="menu-model">poster-menu</property>
+                    <property name="direction">GTK_ARROW_RIGHT</property>
+                    <property name="child">
+                      <object class="AdwButtonContent">
+                        <property name="icon-name">view-grid-symbolic</property>
+                        <property name="label" translatable="yes">View</property>
+                        <property name="use-underline">True</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">6</property>
+                <property name="margin-end">55</property>
+                <child>
+                  <object class="GtkBox" id="glbutton">
+                    <property name="halign">end</property>
+                    <property name="orientation">horizontal</property>
+                    <child>
+                      <object class="GtkToggleButton" id="list">
+                        <property name="icon-name">view-grid-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">Grid View</property>
+                        <property name="valign">center</property>
+                        <property name="active">True</property>
+                        <signal name="toggled" handler="view_toggled_cb" swapped="yes" />
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton">
+                        <property name="icon-name">view-list-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">List View</property>
+                        <property name="valign">center</property>
+                        <property name="group">list</property>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="linked" />
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="adbutton">
+                    <property name="halign">end</property>
+                    <property name="orientation">horizontal</property>
+                    <child>
+                      <object class="GtkToggleButton" id="ascending">
+                        <property name="icon-name">view-sort-ascending-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">Ascending</property>
+                        <property name="valign">center</property>
+                        <signal name="toggled" handler="sort_order_toggled_cb" swapped="yes" />
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton">
+                        <property name="icon-name">view-sort-descending-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">Descending</property>
+                        <property name="valign">center</property>
+                        <property name="group">ascending</property>
+                        <property name="active">True</property>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="linked" />
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkDropDown" id="dropdown">
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="tooltip-text" translatable="yes">Sort By</property>
+                    <signal name="notify::selected" handler="on_sort_by_selected" swapped="yes"/>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                          <item translatable="yes">Title</item>
+                          <item translatable="yes">Bitrate</item>
+                          <item translatable="yes">Date Created</item>
+                          <item translatable="yes">Imdb Rate</item>
+                          <item translatable="yes">Critic Rating</item>
+                          <item translatable="yes">Premiere Date</item>
+                          <item translatable="yes">Offical Rating</item>
+                          <item translatable="yes">Production Year</item>
+                          <item translatable="yes">Date Played</item>
+                          <item translatable="yes">Runtime</item>
+                        </items>
+                      </object>
+                    </property>
                   </object>
                 </child>
                 <style>
-                  <class name="linked" />
+                  <class name="flat" />
                 </style>
               </object>
             </child>
-            <child>
-              <object class="GtkDropDown" id="dropdown">
-                <property name="halign">end</property>
-                <property name="margin-end">55</property>
-                <property name="valign">center</property>
-                <signal name="notify::selected" handler="on_sort_by_selected" swapped="yes"/>
-                <property name="model">
-                  <object class="GtkStringList">
-                    <items>
-                      <item translatable="yes">Title</item>
-                      <item translatable="yes">Bitrate</item>
-                      <item translatable="yes">Date Created</item>
-                      <item translatable="yes">Imdb Rate</item>
-                      <item translatable="yes">Critic Rating</item>
-                      <item translatable="yes">Premiere Date</item>
-                      <item translatable="yes">Offical Rating</item>
-                      <item translatable="yes">Production Year</item>
-                      <item translatable="yes">Date Played</item>
-                      <item translatable="yes">Runtime</item>
-                    </items>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <style>
-              <class name="flat" />
-            </style>
           </object>
         </child>
         <child>
@@ -105,8 +143,8 @@
                     <property name="visible">True</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
-                    <property name="width-request">32</property>
-                    <property name="height-request">32</property>
+                    <property name="width-request">48</property>
+                    <property name="height-request">48</property>
                   </object>
                 </property>
               </object>

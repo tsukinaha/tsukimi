@@ -1,9 +1,9 @@
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
 use crate::client::structs::*;
+use crate::{fraction, fraction_reset, toast};
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::{spawn, spawn_tokio};
-use crate::{fraction, fraction_reset, toast};
 use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
@@ -81,7 +81,7 @@ mod imp {
                         async move {
                             let search_results = obj.get_search_results::<true>().await;
 
-                            scrolled.set_grid::<false>(search_results.items, false);
+                            scrolled.set_store::<false>(search_results.items, false);
 
                             lock.store(false, Ordering::SeqCst);
                         },
@@ -185,7 +185,7 @@ impl SearchPage {
         };
 
         imp.searchscrolled
-            .set_grid::<true>(search_results.items, false);
+            .set_store::<true>(search_results.items, false);
 
         imp.stack.set_visible_child_name("result");
     }

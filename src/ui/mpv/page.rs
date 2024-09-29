@@ -935,13 +935,6 @@ impl MPVPage {
             2 => mpv.set_property("hwdec", "vaapi"),
             _ => unreachable!(),
         }
-        if SETTINGS.mpv_estimate() {
-            let fps = SETTINGS.mpv_estimate_target_frame();
-            mpv.set_property("vf", format!("lavfi=\"fps=fps={fps}:round=down\""));
-        } else {
-            // clear vf
-            mpv.set_property("vf", "");
-        }
         mpv.set_property(
             "demuxer-max-bytes",
             format!("{}MiB", SETTINGS.mpv_cache_size()),

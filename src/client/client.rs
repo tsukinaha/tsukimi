@@ -284,7 +284,7 @@ impl EmbyClient {
             ("StartIndex", start_index),
             ("SortBy", "SortName"),
             ("SortOrder", "Ascending"),
-            ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+            ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
             ("ImageTypeLimit", "1"),
             ("Recursive", "true"),
             ("SearchTerm", query),
@@ -326,9 +326,9 @@ impl EmbyClient {
             ("Recursive", "true"),
             (
                 "Fields",
-                "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,CommunityRating",
+                "Overview,BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,CommunityRating",
             ),
-            ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+            ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
             ("ImageTypeLimit", "1"),
             ("MediaTypes", "Video"),
         ];
@@ -404,7 +404,7 @@ impl EmbyClient {
             ("ImageTypeLimit", "1"),
             ("Limit", "12"),
             ("SortBy", "ProductionYear,SortName"),
-            ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+            ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
             ("SortOrder", "Descending"),
             (
                 "Fields",
@@ -535,7 +535,7 @@ impl EmbyClient {
             ),
             ("ParentId", id),
             ("ImageTypeLimit", "1"),
-            ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+            ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
         ];
         self.request(&path, &params).await
     }
@@ -573,7 +573,7 @@ impl EmbyClient {
                     ("Limit", "50"),
                     (
                         "Fields",
-                        "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
+                        "Overview,BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
                     ),
                     ("ParentId", id),
                     ("ImageTypeLimit", "1"),
@@ -582,7 +582,7 @@ impl EmbyClient {
                     ("IncludeItemTypes", include_item_type),
                     ("SortBy", sortby),
                     ("SortOrder", sort_order),
-                    ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+                    ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
                     if list_type == ListType::Liked {("Filters", "IsFavorite")} else {("", "")},
                 ]
             }
@@ -590,10 +590,10 @@ impl EmbyClient {
                 vec![
                     (
                         "Fields",
-                        "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
+                        "Overview,BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear",
                     ),
                     ("ParentId", id),
-                    ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+                    ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
                     ("ImageTypeLimit", "1"),
                     (
                         "IncludeItemTypes",
@@ -610,13 +610,11 @@ impl EmbyClient {
                 ("IncludeItemTypes", include_item_type),
                 ("StartIndex", &start_string),
                 ("ImageTypeLimit", "1"),
-                ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+                ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
                 ("Limit", "50"),
                 ("userId", user_id),
                 ("Recursive", "true"),
                 ("ParentId", id),
-                ("SortBy", sortby),
-                ("SortOrder", sort_order),
             ],
             _ => vec![],
         };
@@ -638,7 +636,7 @@ impl EmbyClient {
             ("Limit", "50"),
             (
                 "Fields",
-                "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
+                "Overview,BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
             ),
             ("ImageTypeLimit", "1"),
             ("StartIndex", &start_string),
@@ -646,7 +644,7 @@ impl EmbyClient {
             ("IncludeItemTypes", "Movie,Series,MusicAlbum"),
             ("SortBy", sortby),
             ("SortOrder", sort_order),
-            ("EnableImageTypes", "Primary,Backdrop,Thumb"),
+            ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
             if listtype == "Genre" {
                 ("GenreIds", parentid)
             } else if listtype == "Studios" {
