@@ -83,7 +83,7 @@ jobs:
         shell: msys2 {0}
         run: |
           mkdir artifact && cd artifact
-          mkdir tsukimi-windows-gnu-amd64/ && cd tsukimi-windows-gnu-amd64/ && mkdir bin/ && mkdir share/ && mkdir lib/
+          mkdir tsukimi-x86_64-windows-gnu/ && cd tsukimi-x86_64-windows-gnu/ && mkdir bin/ && mkdir share/ && mkdir lib/
           cp $GITHUB_WORKSPACE/target/release/${{ matrix.artifact }} bin/
           cp /${{ matrix.msystem }}/bin/gdbus.exe bin/
 
@@ -118,7 +118,7 @@ jobs:
             libgstvoamrwbenc.dll libgstwavenc.dll libgstx264.dll libgstx265.dll \
             libgstxingmux.dll libgsty4menc.dll libgstzbar.dll
 
-          cd $GITHUB_WORKSPACE/artifact/tsukimi-windows-gnu-amd64
+          cd $GITHUB_WORKSPACE/artifact/tsukimi-x86_64-windows-gnu
           ldd bin/tsukimi.exe | grep '\/${{ matrix.msystem }}.*\.dll' -o | xargs -I{} cp -n "{}" bin/
           find lib/ -type f -name "*.dll" -exec ldd "{}" \; | grep '\/${{ matrix.msystem }}.*\.dll' -o | xargs -I{} cp -n "{}" bin/
 
@@ -134,7 +134,7 @@ jobs:
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: powershell
         run: |
-          cd artifact/tsukimi-windows-gnu-amd64
+          cd artifact/tsukimi-x86_64-windows-gnu
           7z.exe a ../tsukimi-${{matrix.arch}}.7z ./*
 
       - name: Calculate Checksum
@@ -142,7 +142,6 @@ jobs:
         shell: msys2 {0}
         run: |
           cd artifact
-          sha512sum *.7z > tsukimi-7z.sha512sum
           sha512sum *.7z > tsukimi.sha512sum
           sha512sum *.exe >> tsukimi.sha512sum
 
