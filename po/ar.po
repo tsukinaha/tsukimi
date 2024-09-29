@@ -29,7 +29,7 @@ msgid "General"
 msgstr "عام"
 
 #: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:823
-#: resources/ui/account_settings.ui:834
+#: resources/ui/account_settings.ui:834 resources/ui/account_settings.ui:851
 msgid "Preferred Video Version"
 msgstr "نسخة الفيديو المفضلة"
 
@@ -332,10 +332,12 @@ msgid "One param per line"
 msgstr "معامل واحد في كل سطر."
 
 #: resources/ui/account_settings.ui:801 resources/ui/account_settings.ui:812
+#: resources/ui/account_settings.ui:829
 msgid "Preferred Version"
 msgstr "النسخة المفضلة"
 
 #: resources/ui/account_settings.ui:824 resources/ui/account_settings.ui:835
+#: resources/ui/account_settings.ui:852
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
@@ -350,6 +352,7 @@ msgid "Descriptors"
 msgstr "لا يوجد محتوى."
 
 #: resources/ui/account_settings.ui:861 resources/ui/account_settings.ui:872
+#: resources/ui/account_settings.ui:889
 msgid "It is recommended to set no more than 3 lines"
 msgstr "يوصى بعدم تعيين أكثر من 3 أسطر"
 
@@ -373,11 +376,13 @@ msgid "Cancel"
 msgstr "إلغاء"
 
 #: resources/ui/account_settings.ui:918 resources/ui/account_settings.ui:929
+#: resources/ui/account_settings.ui:946
 msgid "Add"
 msgstr "إضافة"
 
 #: resources/ui/account_settings.ui:943 resources/ui/account_settings.ui:1053
 #: resources/ui/account_settings.ui:954 resources/ui/account_settings.ui:1064
+#: resources/ui/account_settings.ui:971 resources/ui/account_settings.ui:1081
 msgid "This will use exact matching to obtain a list"
 msgstr "سيتم استخدام المطابقة الدقيقة للحصول على قائمة"
 
@@ -389,11 +394,13 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:951 resources/ui/account_settings.ui:1061
 #: resources/ui/account_settings.ui:962 resources/ui/account_settings.ui:1072
+#: resources/ui/account_settings.ui:979 resources/ui/account_settings.ui:1089
 msgid "String"
 msgstr "سلسلة من الأحرف"
 
 #: resources/ui/account_settings.ui:952 resources/ui/account_settings.ui:1062
 #: resources/ui/account_settings.ui:963 resources/ui/account_settings.ui:1073
+#: resources/ui/account_settings.ui:980 resources/ui/account_settings.ui:1090
 msgid "Regular Expression"
 msgstr "التعبير العادي (Regular Expression)"
 
@@ -411,15 +418,18 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:980 resources/ui/account_settings.ui:1090
 #: resources/ui/account_settings.ui:991 resources/ui/account_settings.ui:1101
+#: resources/ui/account_settings.ui:1008 resources/ui/account_settings.ui:1118
 msgid "eg. 1080p"
 msgstr "مثال: 1080p"
 
 #: resources/ui/account_settings.ui:991 resources/ui/account_settings.ui:1101
 #: resources/ui/account_settings.ui:1002 resources/ui/account_settings.ui:1112
+#: resources/ui/account_settings.ui:1019 resources/ui/account_settings.ui:1129
 msgid "eg. 1080p.*WebDL"
 msgstr "مثال: 1080p.*WebDL"
 
 #: resources/ui/account_settings.ui:1028 resources/ui/account_settings.ui:1039
+#: resources/ui/account_settings.ui:1056
 msgid "Save"
 msgstr "حفظ"
 
@@ -929,6 +939,8 @@ msgstr "لا يمكن أن تكون كلمة المرور فارغة!"
 #: src/ui/widgets/account_settings.rs:665
 #: src/ui/widgets/account_settings.rs:710
 #: src/ui/widgets/account_settings.rs:667
+#: src/ui/widgets/account_settings.rs:670
+#: src/ui/widgets/account_settings.rs:715
 msgid "Invalid regex"
 msgstr "تعبير عادي غير صالح (Invalid regex)"
 
