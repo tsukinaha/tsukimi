@@ -218,6 +218,9 @@ use super::server_panel::ServerPanel;
 use super::server_row::ServerRow;
 use super::tu_list_item::PROGRESSBAR_ANIMATION_DURATION;
 
+#[cfg(target_os = "windows")]
+use windows::Win32::System::Power::{SetThreadExecutionState, EXECUTION_STATE};
+
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
         @extends adw::ApplicationWindow, gtk::ApplicationWindow, gtk::Window, gtk::Widget, gtk::HeaderBar,
@@ -832,6 +835,31 @@ impl Window {
         self.imp().mpvnav.in_play_item(item.item()).await;
     }
 
+    #[cfg(target_os = "windows")]
+    fn prevent_suspend(&self) {
+        let state = unsafe {
+            SetThreadExecutionState(
+                EXECUTION_STATE(2u32) | EXECUTION_STATE(1u32) | EXECUTION_STATE(2147483648u32),
+            )
+        }; // ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED | ES_CONTINUOUS
+        if state == EXECUTION_STATE(2147483651u32) {
+            println!("System suspend inhibited");
+        } else {
+            eprintln!("Failed to set thread execution state");
+        }
+    }
+
+    #[cfg(target_os = "windows")]
+    pub fn allow_suspend(&self) {
+        let state = unsafe { SetThreadExecutionState(EXECUTION_STATE(2147483648u32)) }; // ES_CONTINUOUS
+        if state == EXECUTION_STATE(2147483648u32) {
+            println!("System suspend uninhibited");
+        } else {
+            eprintln!("Failed to reset thread execution state");
+        }
+    }
+
+    #[cfg(target_os = "linux")]
     fn prevent_suspend(&self) {
         let app = self.application().expect("No application found");
         let cookie = app.inhibit(
@@ -842,6 +870,7 @@ impl Window {
         self.imp().suspend_cookie.replace(Some(cookie));
     }
 
+    #[cfg(target_os = "linux")]
     pub fn allow_suspend(&self) {
         let app = self.application().expect("No application found");
         if let Some(cookie) = self.imp().suspend_cookie.take() {
