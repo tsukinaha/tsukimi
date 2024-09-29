@@ -4,7 +4,6 @@ use crate::client::structs::*;
 use crate::{fraction, fraction_reset, toast};
 use crate::ui::provider::tu_item::TuItem;
 use crate::utils::{spawn, spawn_tokio};
-use crate::toast;
 use glib::Object;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
@@ -195,7 +194,7 @@ impl SearchPage {
 
     pub async fn get_search_results<const F: bool>(&self) -> List {
         let imp = self.imp();
-        imp.stack.set_visible_child_name("loading");
+        
         let search_content = imp.searchentry.text().to_string();
         let search_filter = {
             let mut filter = Vec::new();
@@ -219,7 +218,13 @@ impl SearchPage {
             }
             filter
         };
-        let n_items = if F { imp.searchscrolled.n_items() } else { 0 };
+        let n_items = if F { 
+            fraction_reset!(self);
+            imp.searchscrolled.n_items()
+        } else { 
+            imp.stack.set_visible_child_name("loading");
+            0 
+        };
 
         let search_results = match spawn_tokio(async move {
             EMBY_CLIENT
@@ -234,6 +239,10 @@ impl SearchPage {
                 List::default()
             }
         };
+
+        if F {
+            fraction!(self)
+        }
 
         search_results
     }
