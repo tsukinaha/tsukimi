@@ -20,7 +20,7 @@
                 <property name="margin-end">12</property>
                 <child>
                   <object class="GtkSearchEntry" id="searchentry">
-                    <property name="placeholder-text">Search</property>
+                    <property name="placeholder-text" translatable="yes">Search</property>
                     <property name="hexpand">True</property>
                     <signal name="activate" handler="on_search_activate" swapped="yes"/>
                   </object>
