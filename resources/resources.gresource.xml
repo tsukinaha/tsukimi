@@ -21,7 +21,6 @@
     <file compressed="true" preprocess="xml-stripblanks">account_settings.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">singlelist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">boxset.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">included.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">album_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">song_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">disc_box.ui</file>

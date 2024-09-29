@@ -166,7 +166,7 @@
                 <property name="title">Fallback</property>
                 <property name="child">
                   <object class="AdwStatusPage" id="status">
-                    <property name="title">Nothing Here</property>
+                    <property name="title" translatable="yes">Nothing Here</property>
                     <property name="vexpand">True</property>
                     <property name="icon-name">document-open-symbolic</property>
                   </object>

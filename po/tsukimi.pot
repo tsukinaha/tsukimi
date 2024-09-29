@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-29 13:17+0800\n"
+"POT-Creation-Date: 2024-09-29 18:37+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -416,7 +416,7 @@ msgstr ""
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:155
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/widgets/item.rs:480
+#: src/ui/widgets/item.rs:481
 msgid "Play"
 msgstr ""
 
@@ -443,6 +443,7 @@ msgid "Loading..."
 msgstr ""
 
 #: resources/ui/mpvpage.ui:255 resources/ui/window.ui:520
+#: resources/ui/window.ui:537
 msgid "Playlist"
 msgstr ""
 
@@ -551,6 +552,7 @@ msgid "No data."
 msgstr ""
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/singlelist.ui:90
+#: resources/ui/single_grid.ui:111
 msgid "Title"
 msgstr ""
 
@@ -559,6 +561,7 @@ msgid "Sort Title"
 msgstr ""
 
 #: resources/ui/metadata_dialog.ui:121 resources/ui/singlelist.ui:92
+#: resources/ui/single_grid.ui:113
 msgid "Date Created"
 msgstr ""
 
@@ -670,7 +673,7 @@ msgstr ""
 msgid "Maybe you should try using different search terms"
 msgstr ""
 
-#: resources/ui/singlelist.ui:34
+#: resources/ui/singlelist.ui:34 resources/ui/single_grid.ui:37
 msgid "View"
 msgstr ""
 
@@ -678,48 +681,96 @@ msgstr ""
 msgid "Filter Panel"
 msgstr ""
 
-#: resources/ui/singlelist.ui:91
+#: resources/ui/singlelist.ui:91 resources/ui/single_grid.ui:112
 msgid "Bitrate"
 msgstr ""
 
-#: resources/ui/singlelist.ui:93
+#: resources/ui/singlelist.ui:93 resources/ui/single_grid.ui:114
 msgid "Imdb Rate"
 msgstr ""
 
-#: resources/ui/singlelist.ui:94
+#: resources/ui/singlelist.ui:94 resources/ui/single_grid.ui:115
 msgid "Critic Rating"
 msgstr ""
 
-#: resources/ui/singlelist.ui:95
+#: resources/ui/singlelist.ui:95 resources/ui/single_grid.ui:116
 msgid "Premiere Date"
 msgstr ""
 
-#: resources/ui/singlelist.ui:96
+#: resources/ui/singlelist.ui:96 resources/ui/single_grid.ui:117
 msgid "Offical Rating"
 msgstr ""
 
-#: resources/ui/singlelist.ui:97
+#: resources/ui/singlelist.ui:97 resources/ui/single_grid.ui:118
 msgid "Production Year"
 msgstr ""
 
-#: resources/ui/singlelist.ui:98
+#: resources/ui/singlelist.ui:98 resources/ui/single_grid.ui:119
 msgid "Date Played"
 msgstr ""
 
-#: resources/ui/singlelist.ui:99
+#: resources/ui/singlelist.ui:99 resources/ui/single_grid.ui:120
 msgid "Runtime"
 msgstr ""
 
-#: resources/ui/singlelist.ui:145
+#: resources/ui/singlelist.ui:145 resources/ui/single_grid.ui:184
 msgid "Poster"
 msgstr ""
 
-#: resources/ui/singlelist.ui:149
+#: resources/ui/singlelist.ui:149 resources/ui/single_grid.ui:188
 msgid "Backdrop"
 msgstr ""
 
-#: resources/ui/singlelist.ui:153
+#: resources/ui/singlelist.ui:153 resources/ui/single_grid.ui:192
 msgid "Banner"
+msgstr ""
+
+#: resources/ui/server_panel.ui:47
+msgid "Restart Server"
+msgstr ""
+
+#: resources/ui/server_panel.ui:58
+msgid "Shutdown Server"
+msgstr ""
+
+#: resources/ui/server_panel.ui:78
+msgid "System Logs"
+msgstr ""
+
+#: resources/ui/server_panel.ui:83
+msgid "Activity Logs"
+msgstr ""
+
+#: resources/ui/server_panel.ui:103
+msgid "Tasks"
+msgstr ""
+
+#: resources/ui/single_grid.ui:31
+msgid "Change Poster"
+msgstr ""
+
+#: resources/ui/single_grid.ui:57
+msgid "Grid View"
+msgstr ""
+
+#: resources/ui/single_grid.ui:66
+msgid "List View"
+msgstr ""
+
+#: resources/ui/single_grid.ui:83
+msgid "Ascending"
+msgstr ""
+
+#: resources/ui/single_grid.ui:91
+msgid "Descending"
+msgstr ""
+
+#: resources/ui/single_grid.ui:106
+msgid "Sort By"
+msgstr ""
+
+#: resources/ui/single_grid.ui:169
+msgid "Nothing Here"
 msgstr ""
 
 #: resources/ui/window.ui:5
@@ -806,7 +857,7 @@ msgstr ""
 msgid "_Keyboard shortcuts"
 msgstr ""
 
-#: src/ui/widgets/actor.rs:218 src/ui/widgets/boxset.rs:217
+#: src/ui/widgets/actor.rs:266 src/ui/widgets/boxset.rs:217
 msgid "Links"
 msgstr ""
 
@@ -818,46 +869,46 @@ msgstr ""
 msgid "Account added successfully"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:189
+#: src/ui/widgets/account_settings.rs:191
 msgid "Font Cleared"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:246
+#: src/ui/widgets/account_settings.rs:248
 msgid "Password cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:250
+#: src/ui/widgets/account_settings.rs:252
 msgid "Passwords do not match!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:257
+#: src/ui/widgets/account_settings.rs:259
 msgid "Password changed successfully! Please login again."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:263
+#: src/ui/widgets/account_settings.rs:265
 msgid "Failed to change password"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:338
+#: src/ui/widgets/account_settings.rs:340
 msgid "Cache Cleared"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:359
+#: src/ui/widgets/account_settings.rs:361
 msgid "No file selected"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:435
+#: src/ui/widgets/account_settings.rs:437
 msgid "Font Cleared, Restart to take effect."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:650
-#: src/ui/widgets/account_settings.rs:660
-#: src/ui/widgets/account_settings.rs:695
+#: src/ui/widgets/account_settings.rs:652
+#: src/ui/widgets/account_settings.rs:662
+#: src/ui/widgets/account_settings.rs:696
 #: src/ui/widgets/account_settings.rs:705
 msgid "Descriptor cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:665
+#: src/ui/widgets/account_settings.rs:667
 #: src/ui/widgets/account_settings.rs:710
 msgid "Invalid regex"
 msgstr ""
@@ -890,11 +941,11 @@ msgstr ""
 msgid "Error loading image"
 msgstr ""
 
-#: src/ui/widgets/item.rs:476 src/ui/widgets/list.rs:121
+#: src/ui/widgets/item.rs:477 src/ui/widgets/list.rs:121
 msgid "Resume"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1019
+#: src/ui/widgets/item.rs:1020
 msgid "No video source found"
 msgstr ""
 

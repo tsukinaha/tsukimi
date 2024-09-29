@@ -44,6 +44,7 @@
                               <object class="GtkButton">
                                 <property name="valign">center</property>
                                 <property name="icon-name">view-refresh-symbolic</property>
+                                <property name="tooltip-text" translatable="yes">Restart Server</property>
                                 <signal name="clicked" handler="on_restart" swapped="yes"/>
                                 <style>
                                   <class name="accent" />
@@ -54,6 +55,7 @@
                               <object class="GtkButton">
                                 <property name="valign">center</property>
                                 <property name="icon-name">system-shutdown-symbolic</property>
+                                <property name="tooltip-text" translatable="yes">Shutdown Server</property>
                                 <signal name="clicked" handler="on_shutdown" swapped="yes"/>
                                 <style>
                                   <class name="accent" />

@@ -11,7 +11,7 @@
     </item>
   </menu>
   <template class="AppWindow" parent="AdwApplicationWindow">
-    <property name="title" >Tsukimi</property>
+    <property name="title">Tsukimi</property>
     <property name="width-request">500</property>
     <property name="height-request">300</property>
     <property name="icon-name">tsukimi</property>
@@ -164,7 +164,7 @@
                             <property name="sidebar-width-fraction">0.19</property>
                             <property name="sidebar">
                               <object class="AdwNavigationPage">
-                                <property name="title" >Tsukimi</property>
+                                <property name="title">Tsukimi</property>
                                 <property name="child">
                                   <object class="AdwToolbarView">
                                     <child type="top">
@@ -462,7 +462,7 @@
                                             <child>
                                               <object class="AdwNavigationPage" id="mainpage">
                                                 <property name="tag">mainpage</property>
-                                                <property name="title" >Tsukimi</property>
+                                                <property name="title">Tsukimi</property>
                                                 <child>
                                                   <object class="GtkStack" id="insidestack">
                                                     <property name="hexpand">True</property>
@@ -529,24 +529,39 @@
                                       </object>
                                     </child>
                                     <property name="content">
-                                      <object class="GtkScrolledWindow">
-                                        <property name="hscrollbar-policy">never</property>
-                                        <property name="valign">fill</property>
-                                        <property name="margin-bottom">3</property>
+                                      <object class="AdwViewStack" id="mpv_view_stack">
                                         <child>
-                                          <object class="GtkListView" id="mpv_playlist">
-                                            <property name="orientation">vertical</property>
-                                            <property name="single-click-activate">True</property>
-                                            <signal name="activate" handler="on_playlist_item_activated" swapped="yes"/>
-                                            <style>
-                                              <class name="vertical-listview" />
-                                            </style>
+                                          <object class="AdwViewStackPage">
+                                            <property name="name">playlist</property>
+                                            <property name="icon-name">view-list-symbolic</property>
+                                            <property name="title" translatable="yes">Playlist</property>
+                                            <property name="child">
+                                              <object class="GtkScrolledWindow">
+                                                <property name="hscrollbar-policy">never</property>
+                                                <property name="valign">fill</property>
+                                                <property name="margin-bottom">3</property>
+                                                <child>
+                                                  <object class="GtkListView" id="mpv_playlist">
+                                                    <property name="orientation">vertical</property>
+                                                    <property name="single-click-activate">True</property>
+                                                    <signal name="activate" handler="on_playlist_item_activated" swapped="yes"/>
+                                                    <style>
+                                                      <class name="vertical-listview" />
+                                                    </style>
+                                                  </object>
+                                                </child>
+                                                <style>
+                                                  <class name="undershoot-start" />
+                                                  <class name="undershoot-end" />
+                                                </style>
+                                              </object>
+                                            </property>
                                           </object>
                                         </child>
-                                        <style>
-                                          <class name="undershoot-start" />
-                                          <class name="undershoot-end" />
-                                        </style>
+                                        <child>
+                                          <object class="AdwViewStackPage">
+                                          </object>
+                                        </child>
                                       </object>
                                     </property>
                                   </object>

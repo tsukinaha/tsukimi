@@ -689,8 +689,7 @@ impl AccountSettings {
             .clone()
             .expect("No descriptor to edit");
 
-        let descriptor;
-        match imp.descriptor_type_comborow_edit.selected() {
+        let descriptor = match imp.descriptor_type_comborow_edit.selected() {
             0 => {
                 let descriptor_content = imp.descriptor_entryrow_edit.text();
                 if descriptor_content.is_empty() {
@@ -698,8 +697,7 @@ impl AccountSettings {
                     return;
                 }
 
-                descriptor =
-                    Descriptor::new(descriptor_content.to_string(), DescriptorType::String);
+                Descriptor::new(descriptor_content.to_string(), DescriptorType::String)
             }
             1 => {
                 let descriptor_content = imp.descriptor_entryrow_edit.text();
@@ -712,10 +710,10 @@ impl AccountSettings {
                     Err(e) => toast!(self, &format!("{}: {}", gettext("Invalid regex"), e)),
                 }
 
-                descriptor = Descriptor::new(descriptor_content.to_string(), DescriptorType::Regex);
+                Descriptor::new(descriptor_content.to_string(), DescriptorType::Regex)
             }
             _ => unreachable!(),
-        }
+        };
 
         SETTINGS
             .edit_preferred_version_descriptor(old_descriptor, descriptor)
