@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-28 13:08+0800\n"
+"POT-Creation-Date: 2024-09-29 18:53+0800\n"
 "PO-Revision-Date: 2024-09-29 04:47+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
@@ -27,8 +27,7 @@ msgstr "設定"
 msgid "General"
 msgstr "常規"
 
-#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:851
-#: resources/ui/account_settings.ui:823 resources/ui/account_settings.ui:834
+#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:834
 msgid "Preferred Video Version"
 msgstr "首選影片版本"
 
@@ -37,8 +36,8 @@ msgid "Preferred Language"
 msgstr "語言偏好"
 
 #: resources/ui/account_settings.ui:29
-msgid "This currently only applies to the player"
-msgstr "目前僅適用於播放器"
+msgid "This is globally effective"
+msgstr "全域有效"
 
 #: resources/ui/account_settings.ui:32
 msgid "Preferred Audio Language"
@@ -234,106 +233,84 @@ msgid ""
 "particular font"
 msgstr "設定本身未指定特定字體的字幕的字體"
 
-#: resources/ui/account_settings.ui:535 resources/ui/account_settings.ui:546
+#: resources/ui/account_settings.ui:546
 msgid "Default Volume"
 msgstr "預設音量"
 
-#: resources/ui/account_settings.ui:558 resources/ui/account_settings.ui:569
+#: resources/ui/account_settings.ui:569
 msgid "Force Stereo"
 msgstr "強制立體聲"
 
-#: resources/ui/account_settings.ui:572 resources/ui/account_settings.ui:583
+#: resources/ui/account_settings.ui:583
 msgid "Show Buffer Speed"
 msgstr "顯示緩衝速度"
 
-#: resources/ui/account_settings.ui:579 resources/ui/account_settings.ui:590
+#: resources/ui/account_settings.ui:590
 msgid "Action after video ends"
 msgstr "播放結束後動作"
 
-#: resources/ui/account_settings.ui:582 resources/ui/account_settings.ui:593
+#: resources/ui/account_settings.ui:593
 msgid "Play Next"
 msgstr "自動連播"
 
-#: resources/ui/account_settings.ui:595 resources/ui/account_settings.ui:606
+#: resources/ui/account_settings.ui:606
 msgid "Loop Playback"
 msgstr "循環播放"
 
-#: resources/ui/account_settings.ui:609 resources/ui/account_settings.ui:620
+#: resources/ui/account_settings.ui:620
 msgid "Stop"
 msgstr "播完暫停"
 
-#: resources/ui/account_settings.ui:625 resources/ui/account_settings.ui:636
+#: resources/ui/account_settings.ui:636
 msgid "Video Output"
 msgstr "影片輸出"
 
-#: resources/ui/account_settings.ui:626 resources/ui/account_settings.ui:637
+#: resources/ui/account_settings.ui:637
 msgid ""
 "Warning: Do NOT use any method other than the software's own controls to "
 "control the window. Restart to take effect"
 msgstr "重啟生效 –「請不要使用調出的外部 mpv 窗口控件」"
 
-#: resources/ui/account_settings.ui:629 resources/ui/account_settings.ui:640
+#: resources/ui/account_settings.ui:640
 msgid "libmpv (default)"
 msgstr "libmpv（預設）"
 
-#: resources/ui/account_settings.ui:684 resources/ui/account_settings.ui:695
+#: resources/ui/account_settings.ui:695
 msgid "Hardware decoding"
 msgstr "硬體解碼"
 
-#: resources/ui/account_settings.ui:688 resources/ui/account_settings.ui:699
+#: resources/ui/account_settings.ui:699
 msgid "no (default)"
 msgstr "無（預設）"
 
-#: resources/ui/account_settings.ui:732
-msgid "Estimate Frame Rate"
-msgstr "估計幀率"
-
-#: resources/ui/account_settings.ui:739
-msgid ""
-"Use vf filter to interpolate frames to improve the smoothness of resizing "
-"and menus."
-msgstr "使用 vf 濾鏡插幀以提高尺寸調整和菜單動效的流暢度"
-
-#: resources/ui/account_settings.ui:743
-msgid "Recommended setting value: Current display frame rate"
-msgstr "當前顯示更新率推薦設定值"
-
-#: resources/ui/account_settings.ui:760 resources/ui/account_settings.ui:732
 #: resources/ui/account_settings.ui:743
 msgid "Load external mpv config"
 msgstr "載入外部 mpv 配置"
 
-#: resources/ui/account_settings.ui:765 resources/ui/account_settings.ui:737
 #: resources/ui/account_settings.ui:748
 msgid "Read from mpv config dir"
 msgstr "從 mpv 配置目錄讀取"
 
-#: resources/ui/account_settings.ui:780 resources/ui/account_settings.ui:752
 #: resources/ui/account_settings.ui:763
 msgid "More"
 msgstr "更多"
 
-#: resources/ui/account_settings.ui:791 resources/ui/account_settings.ui:763
 #: resources/ui/account_settings.ui:774
 msgid "More Video Settings"
 msgstr "更多影片設定"
 
-#: resources/ui/account_settings.ui:807 resources/ui/account_settings.ui:779
 #: resources/ui/account_settings.ui:790
 msgid "Customizing mpv params"
 msgstr "自訂 mpv 參數"
 
-#: resources/ui/account_settings.ui:808 resources/ui/account_settings.ui:780
 #: resources/ui/account_settings.ui:791
 msgid "One param per line"
 msgstr "每行一個參數"
 
-#: resources/ui/account_settings.ui:829 resources/ui/account_settings.ui:801
 #: resources/ui/account_settings.ui:812
 msgid "Preferred Version"
 msgstr "首選版本"
 
-#: resources/ui/account_settings.ui:852 resources/ui/account_settings.ui:824
 #: resources/ui/account_settings.ui:835
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
@@ -341,88 +318,68 @@ msgid ""
 msgstr ""
 "權重從高到低排序，直到匹配到特定版本，或者在清除匹配清單之前獲得最高匹配版本"
 
-#: resources/ui/account_settings.ui:867 resources/ui/account_settings.ui:839
 #: resources/ui/account_settings.ui:850
 msgid "Descriptors"
 msgstr "描述符"
 
-#: resources/ui/account_settings.ui:889 resources/ui/account_settings.ui:861
 #: resources/ui/account_settings.ui:872
 msgid "It is recommended to set no more than 3 lines"
 msgstr "建議設定不超過 3 行"
 
-#: resources/ui/account_settings.ui:910 resources/ui/account_settings.ui:882
 #: resources/ui/account_settings.ui:893
 msgid "No Descriptors"
 msgstr "無描述符"
 
-#: resources/ui/account_settings.ui:929 resources/ui/account_settings.ui:1039
-#: resources/ui/account_settings.ui:901 resources/ui/account_settings.ui:912
+#: resources/ui/account_settings.ui:912
 msgid "Add a descriptor"
 msgstr "添加描述符"
 
-#: resources/ui/account_settings.ui:940 resources/ui/account_settings.ui:1050
+#: resources/ui/account_settings.ui:923 resources/ui/account_settings.ui:1033
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
-#: resources/ui/metadata_dialog.ui:38 resources/ui/account_settings.ui:912
-#: resources/ui/account_settings.ui:1022 resources/ui/account_settings.ui:923
-#: resources/ui/account_settings.ui:1033
+#: resources/ui/metadata_dialog.ui:38
 msgid "Cancel"
 msgstr "取消"
 
-#: resources/ui/account_settings.ui:946 resources/ui/account_settings.ui:918
 #: resources/ui/account_settings.ui:929
 msgid "Add"
 msgstr "添加"
 
-#: resources/ui/account_settings.ui:971 resources/ui/account_settings.ui:1081
-#: resources/ui/account_settings.ui:943 resources/ui/account_settings.ui:1053
 #: resources/ui/account_settings.ui:954 resources/ui/account_settings.ui:1064
 msgid "This will use exact matching to obtain a list"
 msgstr "這將使用精確匹配來獲取列表"
 
-#: resources/ui/account_settings.ui:974 resources/ui/account_settings.ui:1084
-#: resources/ui/account_settings.ui:946 resources/ui/account_settings.ui:1056
 #: resources/ui/account_settings.ui:957 resources/ui/account_settings.ui:1067
 msgid "Descriptor Type"
 msgstr "描述符類型"
 
-#: resources/ui/account_settings.ui:979 resources/ui/account_settings.ui:1089
-#: resources/ui/account_settings.ui:951 resources/ui/account_settings.ui:1061
 #: resources/ui/account_settings.ui:962 resources/ui/account_settings.ui:1072
 msgid "String"
 msgstr "字符串"
 
-#: resources/ui/account_settings.ui:980 resources/ui/account_settings.ui:1090
-#: resources/ui/account_settings.ui:952 resources/ui/account_settings.ui:1062
 #: resources/ui/account_settings.ui:963 resources/ui/account_settings.ui:1073
 msgid "Regular Expression"
 msgstr "正則表達式"
 
-#: resources/ui/account_settings.ui:992 resources/ui/account_settings.ui:1102
-#: resources/ui/account_settings.ui:964 resources/ui/account_settings.ui:1074
 #: resources/ui/account_settings.ui:975 resources/ui/account_settings.ui:1085
 msgid "Descriptor"
 msgstr "描述符"
 
-#: resources/ui/account_settings.ui:997 resources/ui/account_settings.ui:1107
-#: resources/ui/account_settings.ui:969 resources/ui/account_settings.ui:1079
 #: resources/ui/account_settings.ui:980 resources/ui/account_settings.ui:1090
 msgid "Descriptor should not be too long"
 msgstr "描述符不宜太長"
 
-#: resources/ui/account_settings.ui:1008 resources/ui/account_settings.ui:1118
-#: resources/ui/account_settings.ui:980 resources/ui/account_settings.ui:1090
 #: resources/ui/account_settings.ui:991 resources/ui/account_settings.ui:1101
 msgid "eg. 1080p"
 msgstr "例如 –「1080p」"
 
-#: resources/ui/account_settings.ui:1019 resources/ui/account_settings.ui:1129
-#: resources/ui/account_settings.ui:991 resources/ui/account_settings.ui:1101
 #: resources/ui/account_settings.ui:1002 resources/ui/account_settings.ui:1112
 msgid "eg. 1080p.*WebDL"
 msgstr "例如 –「1080p.*WebDL」"
 
-#: resources/ui/account_settings.ui:1056 resources/ui/account_settings.ui:1028
+#: resources/ui/account_settings.ui:1022
+msgid "Edit descriptor"
+msgstr "編輯描述符"
+
 #: resources/ui/account_settings.ui:1039
 msgid "Save"
 msgstr "保存"
@@ -435,8 +392,8 @@ msgstr "添加伺服器"
 msgid "_Add"
 msgstr "添加"
 
-#: resources/ui/account.ui:60 resources/ui/actor.ui:52
-#: resources/ui/boxset.ui:55 resources/ui/actor.ui:53
+#: resources/ui/account.ui:60 resources/ui/actor.ui:53
+#: resources/ui/boxset.ui:55
 msgid "Name"
 msgstr "名稱"
 
@@ -456,13 +413,13 @@ msgstr "用戶名"
 msgid "Password"
 msgstr "密碼"
 
-#: resources/ui/actor.ui:70 resources/ui/boxset.ui:105 resources/ui/actor.ui:71
+#: resources/ui/actor.ui:71 resources/ui/boxset.ui:105
 msgid "No Inscriptions"
 msgstr "暫無內容"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:155
-#: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:479
-#: resources/ui/mpv_menu_actions.ui:27 src/ui/widgets/item.rs:480
+#: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
+#: src/ui/widgets/item.rs:481
 msgid "Play"
 msgstr "播放"
 
@@ -489,6 +446,7 @@ msgid "Loading..."
 msgstr "載入中..."
 
 #: resources/ui/mpvpage.ui:255 resources/ui/window.ui:520
+#: resources/ui/window.ui:537
 msgid "Playlist"
 msgstr "播放列表"
 
@@ -597,6 +555,7 @@ msgid "No data."
 msgstr "暫無數據"
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/singlelist.ui:90
+#: resources/ui/single_grid.ui:111
 msgid "Title"
 msgstr "標題"
 
@@ -605,6 +564,7 @@ msgid "Sort Title"
 msgstr "排序標題"
 
 #: resources/ui/metadata_dialog.ui:121 resources/ui/singlelist.ui:92
+#: resources/ui/single_grid.ui:113
 msgid "Date Created"
 msgstr "創建時間"
 
@@ -688,27 +648,35 @@ msgstr "更新元數據"
 msgid "Scan"
 msgstr "掃描"
 
-#: resources/ui/search.ui:29 resources/ui/search.ui:46
-msgid "Movie"
-msgstr "電影"
-
 #: resources/ui/search.ui:40
 msgid "Series"
 msgstr "系列"
 
-#: resources/ui/search.ui:51
-msgid "Box Set"
+#: resources/ui/search.ui:46
+msgid "Movie"
+msgstr "電影"
+
+#: resources/ui/search.ui:52 src/ui/widgets/list.rs:122
+msgid "BoxSet"
 msgstr "合集"
 
-#: resources/ui/search.ui:62 resources/ui/search.ui:58
+#: resources/ui/search.ui:58
 msgid "Person"
 msgstr "藝術家"
 
-#: resources/ui/search.ui:73 resources/ui/search.ui:64
+#: resources/ui/search.ui:64
 msgid "Music Album"
 msgstr "音樂專輯"
 
-#: resources/ui/singlelist.ui:34
+#: resources/ui/search.ui:137
+msgid "Nothing Here or No type selected"
+msgstr "無內容或未選擇標籤"
+
+#: resources/ui/search.ui:138
+msgid "Maybe you should try using different search terms"
+msgstr "您可能需要使用不同的搜索詞"
+
+#: resources/ui/singlelist.ui:34 resources/ui/single_grid.ui:37
 msgid "View"
 msgstr "視圖"
 
@@ -716,49 +684,107 @@ msgstr "視圖"
 msgid "Filter Panel"
 msgstr "篩選面板"
 
-#: resources/ui/singlelist.ui:91
+#: resources/ui/singlelist.ui:91 resources/ui/single_grid.ui:112
 msgid "Bitrate"
 msgstr "比特率"
 
-#: resources/ui/singlelist.ui:93
+#: resources/ui/singlelist.ui:93 resources/ui/single_grid.ui:114
 msgid "Imdb Rate"
 msgstr "Imdb 評分"
 
-#: resources/ui/singlelist.ui:94
+#: resources/ui/singlelist.ui:94 resources/ui/single_grid.ui:115
 msgid "Critic Rating"
 msgstr "影評人評分"
 
-#: resources/ui/singlelist.ui:95
+#: resources/ui/singlelist.ui:95 resources/ui/single_grid.ui:116
 msgid "Premiere Date"
 msgstr "首映日期"
 
-#: resources/ui/singlelist.ui:96
+#: resources/ui/singlelist.ui:96 resources/ui/single_grid.ui:117
 msgid "Offical Rating"
 msgstr "官方評分"
 
-#: resources/ui/singlelist.ui:97
+#: resources/ui/singlelist.ui:97 resources/ui/single_grid.ui:118
 msgid "Production Year"
 msgstr "出品年份"
 
-#: resources/ui/singlelist.ui:98
+#: resources/ui/singlelist.ui:98 resources/ui/single_grid.ui:119
 msgid "Date Played"
 msgstr "播放日期"
 
-#: resources/ui/singlelist.ui:99
+#: resources/ui/singlelist.ui:99 resources/ui/single_grid.ui:120
 msgid "Runtime"
 msgstr "播放時長"
 
-#: resources/ui/singlelist.ui:145
+#: resources/ui/singlelist.ui:145 resources/ui/single_grid.ui:184
 msgid "Poster"
 msgstr "海報"
 
-#: resources/ui/singlelist.ui:149
+#: resources/ui/singlelist.ui:149 resources/ui/single_grid.ui:188
 msgid "Backdrop"
 msgstr "背景圖"
 
-#: resources/ui/singlelist.ui:153
+#: resources/ui/singlelist.ui:153 resources/ui/single_grid.ui:192
 msgid "Banner"
 msgstr "橫幅"
+
+#: resources/ui/server_panel.ui:47
+#, fuzzy
+#| msgid "Restart server"
+msgid "Restart Server"
+msgstr "重啟伺服器"
+
+#: resources/ui/server_panel.ui:58
+#, fuzzy
+#| msgid "Shut down server"
+msgid "Shutdown Server"
+msgstr "關閉伺服器"
+
+#: resources/ui/server_panel.ui:78
+msgid "System Logs"
+msgstr ""
+
+#: resources/ui/server_panel.ui:83
+msgid "Activity Logs"
+msgstr ""
+
+#: resources/ui/server_panel.ui:103
+msgid "Tasks"
+msgstr ""
+
+#: resources/ui/single_grid.ui:31
+#, fuzzy
+#| msgid "Change Password"
+msgid "Change Poster"
+msgstr "修改密碼"
+
+#: resources/ui/single_grid.ui:57
+#, fuzzy
+#| msgid "View"
+msgid "Grid View"
+msgstr "視圖"
+
+#: resources/ui/single_grid.ui:66
+#, fuzzy
+#| msgid "View"
+msgid "List View"
+msgstr "視圖"
+
+#: resources/ui/single_grid.ui:83
+msgid "Ascending"
+msgstr ""
+
+#: resources/ui/single_grid.ui:91
+msgid "Descending"
+msgstr ""
+
+#: resources/ui/single_grid.ui:106
+msgid "Sort By"
+msgstr ""
+
+#: resources/ui/single_grid.ui:169
+msgid "Nothing Here"
+msgstr ""
 
 #: resources/ui/window.ui:5
 msgid "Sign out"
@@ -799,173 +825,6 @@ msgstr "搜尋"
 #: resources/ui/window.ui:380
 msgid "Servers"
 msgstr "伺服器"
-
-#: src/ui/widgets/actor.rs:218 src/ui/widgets/boxset.rs:217
-msgid "Links"
-msgstr "鏈接"
-
-#: src/ui/widgets/account_add.rs:99
-msgid "Fields must be filled in"
-msgstr "必填欄位"
-
-#: src/ui/widgets/account_add.rs:145
-msgid "Account added successfully"
-msgstr "帳戶添加成功"
-
-#: src/ui/widgets/account_settings.rs:241
-#: src/ui/widgets/account_settings.rs:237
-#: src/ui/widgets/account_settings.rs:246
-msgid "Password cannot be empty!"
-msgstr "密碼不能為空！"
-
-#: src/ui/widgets/account_settings.rs:245
-#: src/ui/widgets/account_settings.rs:241
-#: src/ui/widgets/account_settings.rs:250
-msgid "Passwords do not match!"
-msgstr "密碼不匹配！"
-
-#: src/ui/widgets/account_settings.rs:252
-#: src/ui/widgets/account_settings.rs:248
-#: src/ui/widgets/account_settings.rs:257
-msgid "Password changed successfully! Please login again."
-msgstr "密碼修改成功！請重新登入。"
-
-#: src/ui/widgets/account_settings.rs:258
-#: src/ui/widgets/account_settings.rs:254
-#: src/ui/widgets/account_settings.rs:263
-msgid "Failed to change password"
-msgstr "修改密碼失敗"
-
-#: src/ui/widgets/account_settings.rs:333
-#: src/ui/widgets/account_settings.rs:329
-#: src/ui/widgets/account_settings.rs:338
-msgid "Cache Cleared"
-msgstr "快取已清除"
-
-#: src/ui/widgets/account_settings.rs:354
-#: src/ui/widgets/account_settings.rs:350
-#: src/ui/widgets/account_settings.rs:359
-msgid "No file selected"
-msgstr "未選擇檔案"
-
-#: src/ui/widgets/account_settings.rs:430
-#: src/ui/widgets/account_settings.rs:426
-#: src/ui/widgets/account_settings.rs:435
-msgid "Font Cleared, Restart to take effect."
-msgstr "已清除字體，重啟程式生效。"
-
-#: src/ui/widgets/account_settings.rs:655
-#: src/ui/widgets/account_settings.rs:665
-#: src/ui/widgets/account_settings.rs:700
-#: src/ui/widgets/account_settings.rs:710
-#: src/ui/widgets/account_settings.rs:641
-#: src/ui/widgets/account_settings.rs:651
-#: src/ui/widgets/account_settings.rs:686
-#: src/ui/widgets/account_settings.rs:696
-#: src/ui/widgets/account_settings.rs:650
-#: src/ui/widgets/account_settings.rs:660
-#: src/ui/widgets/account_settings.rs:695
-#: src/ui/widgets/account_settings.rs:705
-msgid "Descriptor cannot be empty!"
-msgstr "描述符不能為空！"
-
-#: src/ui/widgets/account_settings.rs:670
-#: src/ui/widgets/account_settings.rs:715
-#: src/ui/widgets/account_settings.rs:656
-#: src/ui/widgets/account_settings.rs:701
-#: src/ui/widgets/account_settings.rs:665
-#: src/ui/widgets/account_settings.rs:710
-msgid "Invalid regex"
-msgstr "正則表達式無效"
-
-#: src/ui/widgets/boxset.rs:227
-msgid "Items"
-msgstr "條目"
-
-#: src/ui/widgets/home.rs:194
-msgid "Library"
-msgstr "媒體庫"
-
-#: src/ui/widgets/home.rs:238
-msgid "Latest"
-msgstr "最新的"
-
-#: src/ui/widgets/image_infocard.rs:96
-msgid "No image to view"
-msgstr "暫無可查看的圖像"
-
-#: src/ui/widgets/image_infocard.rs:112
-msgid "No image to copy"
-msgstr "暫無可拷貝的圖像"
-
-#: src/ui/widgets/image_infocard.rs:116
-msgid "Image copied to clipboard"
-msgstr "圖像已拷貝至剪切板"
-
-#: src/ui/widgets/image_infocard.rs:156
-msgid "Error loading image"
-msgstr "圖像載入錯誤"
-
-#: src/ui/widgets/item.rs:475 src/ui/widgets/item.rs:476
-#: src/ui/widgets/list.rs:121
-msgid "Resume"
-msgstr "繼續播放"
-
-#: src/ui/widgets/item.rs:1020 src/ui/widgets/item.rs:1019
-msgid "No video source found"
-msgstr "未找到影片源"
-
-#: src/ui/widgets/list.rs:113
-msgid "Channels"
-msgstr "頻道"
-
-#: src/ui/widgets/star_toggle.rs:64
-msgid "Remove from favorites"
-msgstr "從收藏中刪除"
-
-#: src/ui/widgets/star_toggle.rs:65
-msgid "Add to favorites"
-msgstr "添加至收藏"
-
-#: src/ui/widgets/tu_list_item.rs:217
-msgid "Present"
-msgstr "黨前"
-
-#: src/ui/widgets/tu_list_item.rs:542
-msgid "Scanning..."
-msgstr "掃描中..."
-
-#: src/ui/widgets/tu_list_item.rs:705 src/ui/widgets/tu_list_item.rs:773
-msgid "Success"
-msgstr "成功"
-
-#: src/ui/widgets/server_panel.rs:98
-msgid "Shut down server"
-msgstr "關閉伺服器"
-
-#: src/ui/widgets/server_panel.rs:99
-msgid "Are you sure you want to shut down the server?"
-msgstr "您確定要關閉伺服器嗎？"
-
-#: src/ui/widgets/server_panel.rs:130
-msgid "Restart server"
-msgstr "重啟伺服器"
-
-#: src/ui/widgets/server_panel.rs:131
-msgid "Are you sure you want to restart the server?"
-msgstr "您確定要重新啟動伺服器嗎？"
-
-#: src/ui/widgets/server_panel.rs:168 src/ui/widgets/server_panel.rs:171
-msgid "Server is shutting down"
-msgstr "伺服器正在關閉"
-
-#: src/ui/widgets/server_panel.rs:180 src/ui/widgets/server_panel.rs:183
-msgid "Server is restarting"
-msgstr "伺服器正在重新啟動"
-
-#: src/ui/widgets/server_panel.rs:321 src/ui/widgets/server_panel.rs:326
-msgid "Task started"
-msgstr "任務開始"
 
 #: resources/ui/mpv_shortcuts_window.ui:15
 msgid "Decrease/increase playback speed by 10%"
@@ -1011,25 +870,105 @@ msgstr "媒體信息"
 msgid "_Keyboard shortcuts"
 msgstr "鍵盤快捷鍵"
 
-#: resources/ui/account_settings.ui:29
-msgid "This is globally effective"
-msgstr "全域有效"
+#: src/ui/mod.rs:23
+msgid "translator-credits"
+msgstr ""
 
-#: resources/ui/account_settings.ui:1011 resources/ui/account_settings.ui:1022
-msgid "Edit descriptor"
-msgstr "編輯描述符"
+#: src/ui/widgets/actor.rs:266 src/ui/widgets/boxset.rs:217
+msgid "Links"
+msgstr "鏈接"
 
-#: resources/ui/search.ui:52 src/ui/widgets/list.rs:122
-msgid "BoxSet"
-msgstr "合集"
+#: src/ui/widgets/account_add.rs:99
+msgid "Fields must be filled in"
+msgstr "必填欄位"
 
-#: resources/ui/search.ui:137
-msgid "Nothing Here or No type selected"
-msgstr "無內容或未選擇標籤"
+#: src/ui/widgets/account_add.rs:145
+msgid "Account added successfully"
+msgstr "帳戶添加成功"
 
-#: resources/ui/search.ui:138
-msgid "Maybe you should try using different search terms"
-msgstr "您可能需要使用不同的搜索詞"
+#: src/ui/widgets/account_settings.rs:191
+msgid "Font Cleared"
+msgstr "字體已清除"
+
+#: src/ui/widgets/account_settings.rs:248
+msgid "Password cannot be empty!"
+msgstr "密碼不能為空！"
+
+#: src/ui/widgets/account_settings.rs:252
+msgid "Passwords do not match!"
+msgstr "密碼不匹配！"
+
+#: src/ui/widgets/account_settings.rs:259
+msgid "Password changed successfully! Please login again."
+msgstr "密碼修改成功！請重新登入。"
+
+#: src/ui/widgets/account_settings.rs:265
+msgid "Failed to change password"
+msgstr "修改密碼失敗"
+
+#: src/ui/widgets/account_settings.rs:340
+msgid "Cache Cleared"
+msgstr "快取已清除"
+
+#: src/ui/widgets/account_settings.rs:361
+msgid "No file selected"
+msgstr "未選擇檔案"
+
+#: src/ui/widgets/account_settings.rs:437
+msgid "Font Cleared, Restart to take effect."
+msgstr "已清除字體，重啟程式生效。"
+
+#: src/ui/widgets/account_settings.rs:652
+#: src/ui/widgets/account_settings.rs:662
+#: src/ui/widgets/account_settings.rs:696
+#: src/ui/widgets/account_settings.rs:705
+msgid "Descriptor cannot be empty!"
+msgstr "描述符不能為空！"
+
+#: src/ui/widgets/account_settings.rs:667
+#: src/ui/widgets/account_settings.rs:710
+msgid "Invalid regex"
+msgstr "正則表達式無效"
+
+#: src/ui/widgets/boxset.rs:227
+msgid "Items"
+msgstr "條目"
+
+#: src/ui/widgets/home.rs:194
+msgid "Library"
+msgstr "媒體庫"
+
+#: src/ui/widgets/home.rs:238
+msgid "Latest"
+msgstr "最新的"
+
+#: src/ui/widgets/image_infocard.rs:96
+msgid "No image to view"
+msgstr "暫無可查看的圖像"
+
+#: src/ui/widgets/image_infocard.rs:112
+msgid "No image to copy"
+msgstr "暫無可拷貝的圖像"
+
+#: src/ui/widgets/image_infocard.rs:116
+msgid "Image copied to clipboard"
+msgstr "圖像已拷貝至剪切板"
+
+#: src/ui/widgets/image_infocard.rs:156
+msgid "Error loading image"
+msgstr "圖像載入錯誤"
+
+#: src/ui/widgets/item.rs:477 src/ui/widgets/list.rs:121
+msgid "Resume"
+msgstr "繼續播放"
+
+#: src/ui/widgets/item.rs:1020
+msgid "No video source found"
+msgstr "未找到影片源"
+
+#: src/ui/widgets/list.rs:113
+msgid "Channels"
+msgstr "頻道"
 
 #: src/ui/widgets/list.rs:120
 msgid "All"
@@ -1047,6 +986,42 @@ msgstr "片單"
 msgid "Favourite"
 msgstr "收藏"
 
+#: src/ui/widgets/star_toggle.rs:64
+msgid "Remove from favorites"
+msgstr "從收藏中刪除"
+
+#: src/ui/widgets/star_toggle.rs:65
+msgid "Add to favorites"
+msgstr "添加至收藏"
+
+#: src/ui/widgets/tu_list_item.rs:217
+msgid "Present"
+msgstr "黨前"
+
+#: src/ui/widgets/tu_list_item.rs:542
+msgid "Scanning..."
+msgstr "掃描中..."
+
+#: src/ui/widgets/tu_list_item.rs:705 src/ui/widgets/tu_list_item.rs:773
+msgid "Success"
+msgstr "成功"
+
+#: src/ui/widgets/server_panel.rs:98
+msgid "Shut down server"
+msgstr "關閉伺服器"
+
+#: src/ui/widgets/server_panel.rs:99
+msgid "Are you sure you want to shut down the server?"
+msgstr "您確定要關閉伺服器嗎？"
+
+#: src/ui/widgets/server_panel.rs:130
+msgid "Restart server"
+msgstr "重啟伺服器"
+
+#: src/ui/widgets/server_panel.rs:131
+msgid "Are you sure you want to restart the server?"
+msgstr "您確定要重新啟動伺服器嗎？"
+
 #: src/ui/widgets/server_panel.rs:134
 msgid "Revert"
 msgstr "恢復"
@@ -1054,6 +1029,14 @@ msgstr "恢復"
 #: src/ui/widgets/server_panel.rs:135
 msgid "Confirm"
 msgstr "確認"
+
+#: src/ui/widgets/server_panel.rs:171
+msgid "Server is shutting down"
+msgstr "伺服器正在關閉"
+
+#: src/ui/widgets/server_panel.rs:183
+msgid "Server is restarting"
+msgstr "伺服器正在重新啟動"
 
 #: src/ui/widgets/server_panel.rs:270
 msgid "Last execute: "
@@ -1067,9 +1050,26 @@ msgstr "持續時間: "
 msgid "Result: "
 msgstr "結果: "
 
-#: src/ui/widgets/account_settings.rs:189
-msgid "Font Cleared"
-msgstr "字體已清除"
+#: src/ui/widgets/server_panel.rs:326
+msgid "Task started"
+msgstr "任務開始"
+
+#~ msgid "This currently only applies to the player"
+#~ msgstr "目前僅適用於播放器"
+
+#~ msgid "Estimate Frame Rate"
+#~ msgstr "估計幀率"
+
+#~ msgid ""
+#~ "Use vf filter to interpolate frames to improve the smoothness of resizing "
+#~ "and menus."
+#~ msgstr "使用 vf 濾鏡插幀以提高尺寸調整和菜單動效的流暢度"
+
+#~ msgid "Recommended setting value: Current display frame rate"
+#~ msgstr "當前顯示更新率推薦設定值"
+
+#~ msgid "Box Set"
+#~ msgstr "合集"
 
 #~ msgid "config=true"
 #~ msgstr "開啟配置"
