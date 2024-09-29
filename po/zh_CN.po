@@ -733,13 +733,11 @@ msgstr "橫幅"
 
 #: resources/ui/server_panel.ui:47
 #, fuzzy
-#| msgid "Restart server"
 msgid "Restart Server"
 msgstr "重启服务器"
 
 #: resources/ui/server_panel.ui:58
 #, fuzzy
-#| msgid "Shut down server"
 msgid "Shutdown Server"
 msgstr "关闭服务器"
 
@@ -757,19 +755,16 @@ msgstr ""
 
 #: resources/ui/single_grid.ui:31
 #, fuzzy
-#| msgid "Change Password"
 msgid "Change Poster"
 msgstr "更改密码"
 
 #: resources/ui/single_grid.ui:57
 #, fuzzy
-#| msgid "View"
 msgid "Grid View"
 msgstr "视图"
 
 #: resources/ui/single_grid.ui:66
 #, fuzzy
-#| msgid "View"
 msgid "List View"
 msgstr "视图"
 
@@ -873,9 +868,12 @@ msgstr "媒体信息"
 msgid "_Keyboard shortcuts"
 msgstr "快捷键"
 
+#. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
 #: src/ui/mod.rs:23
 msgid "translator-credits"
 msgstr ""
+"Gracealina  clover <zhiweishuisheng@gmail.com>\n"
+"dyphire <qimoge@gmail.com>"
 
 #: src/ui/widgets/actor.rs:266 src/ui/widgets/boxset.rs:217
 msgid "Links"
@@ -1027,7 +1025,7 @@ msgstr "您确定要重启服务器吗？"
 
 #: src/ui/widgets/server_panel.rs:134
 msgid "Revert"
-msgstr "恢复"
+msgstr "取消"
 
 #: src/ui/widgets/server_panel.rs:135
 msgid "Confirm"

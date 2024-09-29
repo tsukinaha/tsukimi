@@ -730,13 +730,11 @@ msgstr "橫幅"
 
 #: resources/ui/server_panel.ui:47
 #, fuzzy
-#| msgid "Restart server"
 msgid "Restart Server"
 msgstr "重啟伺服器"
 
 #: resources/ui/server_panel.ui:58
 #, fuzzy
-#| msgid "Shut down server"
 msgid "Shutdown Server"
 msgstr "關閉伺服器"
 
@@ -754,19 +752,16 @@ msgstr ""
 
 #: resources/ui/single_grid.ui:31
 #, fuzzy
-#| msgid "Change Password"
 msgid "Change Poster"
 msgstr "修改密碼"
 
 #: resources/ui/single_grid.ui:57
 #, fuzzy
-#| msgid "View"
 msgid "Grid View"
 msgstr "視圖"
 
 #: resources/ui/single_grid.ui:66
 #, fuzzy
-#| msgid "View"
 msgid "List View"
 msgstr "視圖"
 
@@ -870,9 +865,12 @@ msgstr "媒體信息"
 msgid "_Keyboard shortcuts"
 msgstr "鍵盤快捷鍵"
 
+#. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
 #: src/ui/mod.rs:23
 msgid "translator-credits"
 msgstr ""
+"Gracealina  clover <zhiweishuisheng@gmail.com>\n"
+"dyphire <qimoge@gmail.com>"
 
 #: src/ui/widgets/actor.rs:266 src/ui/widgets/boxset.rs:217
 msgid "Links"

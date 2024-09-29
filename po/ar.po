@@ -1150,9 +1150,10 @@ msgstr ""
 msgid "Nothing Here"
 msgstr ""
 
+#. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
 #: src/ui/mod.rs:23
 msgid "translator-credits"
-msgstr ""
+msgstr "Abdulrahman <2140398@uj.edu.sa>"
 
 #~ msgid "config=true"
 #~ msgstr "config=true"

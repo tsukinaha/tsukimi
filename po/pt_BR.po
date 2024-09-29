@@ -83,7 +83,6 @@ msgstr "Cor de primeiro plano de destaque"
 
 #: resources/ui/account_settings.ui:166
 #, fuzzy
-#| msgid "Show Sidebar"
 msgid "Hide Sidebar"
 msgstr "Mostrar barra lateral"
 
@@ -317,7 +316,6 @@ msgstr "Um parâmetro por linha"
 
 #: resources/ui/account_settings.ui:812
 #, fuzzy
-#| msgid "Preferences"
 msgid "Preferred Version"
 msgstr "Preferências"
 
@@ -329,7 +327,6 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:850
 #, fuzzy
-#| msgid "No Inscriptions"
 msgid "Descriptors"
 msgstr "Sem Inscrições"
 
@@ -339,7 +336,6 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:893
 #, fuzzy
-#| msgid "No Inscriptions"
 msgid "No Descriptors"
 msgstr "Sem Inscrições"
 
@@ -355,7 +351,6 @@ msgstr "Cancelar"
 
 #: resources/ui/account_settings.ui:929
 #, fuzzy
-#| msgid "_Add"
 msgid "Add"
 msgstr "Adicionar"
 
@@ -393,13 +388,11 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:1022
 #, fuzzy
-#| msgid "No Inscriptions"
 msgid "Edit descriptor"
 msgstr "Sem Inscrições"
 
 #: resources/ui/account_settings.ui:1039
 #, fuzzy
-#| msgid "_Save"
 msgid "Save"
 msgstr "Salvar"
 
@@ -751,13 +744,11 @@ msgstr "Banner"
 
 #: resources/ui/server_panel.ui:47
 #, fuzzy
-#| msgid "Restart server"
 msgid "Restart Server"
 msgstr "Reiniciar servidor"
 
 #: resources/ui/server_panel.ui:58
 #, fuzzy
-#| msgid "Shut down server"
 msgid "Shutdown Server"
 msgstr "Desligar servidor"
 
@@ -775,19 +766,16 @@ msgstr ""
 
 #: resources/ui/single_grid.ui:31
 #, fuzzy
-#| msgid "Change Password"
 msgid "Change Poster"
 msgstr "Alterar Senha"
 
 #: resources/ui/single_grid.ui:57
 #, fuzzy
-#| msgid "View"
 msgid "Grid View"
 msgstr "Ver"
 
 #: resources/ui/single_grid.ui:66
 #, fuzzy
-#| msgid "View"
 msgid "List View"
 msgstr "Ver"
 
@@ -861,25 +849,21 @@ msgstr ""
 
 #: resources/ui/mpv_menu_actions.ui:12
 #, fuzzy
-#| msgid "Seek Backward"
 msgid "Backward"
 msgstr "Procure para trás"
 
 #: resources/ui/mpv_menu_actions.ui:42
 #, fuzzy
-#| msgid "Seek Forward"
 msgid "Forward"
 msgstr "Procure avançar"
 
 #: resources/ui/mpv_menu.ui:11
 #, fuzzy
-#| msgid "Next"
 msgid "_Next"
 msgstr "Próximo"
 
 #: resources/ui/mpv_menu.ui:15
 #, fuzzy
-#| msgid "Previous"
 msgid "_Previous"
 msgstr "Anterior"
 
@@ -889,13 +873,11 @@ msgstr ""
 
 #: resources/ui/mpv_menu.ui:25
 #, fuzzy
-#| msgid "Previous"
 msgid "_Previous chapter"
 msgstr "Anterior"
 
 #: resources/ui/mpv_menu.ui:31
 #, fuzzy
-#| msgid "MediaInfo"
 msgid "_Media info"
 msgstr "MediaInfo"
 
@@ -903,9 +885,10 @@ msgstr "MediaInfo"
 msgid "_Keyboard shortcuts"
 msgstr ""
 
+#. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
 #: src/ui/mod.rs:23
 msgid "translator-credits"
-msgstr ""
+msgstr "11 22 <8802512@gmail.com>"
 
 #: src/ui/widgets/actor.rs:266 src/ui/widgets/boxset.rs:217
 msgid "Links"
@@ -921,7 +904,6 @@ msgstr "Conta adicionada com sucesso"
 
 #: src/ui/widgets/account_settings.rs:191
 #, fuzzy
-#| msgid "Cache Cleared"
 msgid "Font Cleared"
 msgstr "Cache Limpou"
 
@@ -958,7 +940,6 @@ msgstr "Fonte Limpa, reinicie para que a alteração tenha efeito."
 #: src/ui/widgets/account_settings.rs:696
 #: src/ui/widgets/account_settings.rs:705
 #, fuzzy
-#| msgid "Password cannot be empty!"
 msgid "Descriptor cannot be empty!"
 msgstr "A senha não pode estar vazia!"
 
@@ -1065,7 +1046,6 @@ msgstr ""
 
 #: src/ui/widgets/server_panel.rs:135
 #, fuzzy
-#| msgid "Confirm Password"
 msgid "Confirm"
 msgstr "Confirmar Senha"
 
