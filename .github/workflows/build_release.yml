@@ -64,7 +64,7 @@ jobs:
         shell: msys2 {0}
         run: |
           mkdir artifact && cd artifact
-          mkdir tsukimi-windows-gnu-amd64/ && cd tsukimi-windows-gnu-amd64/ && mkdir bin/ && mkdir share/ && mkdir lib/
+          mkdir tsukimi-x86_64-windows-gnu/ && cd tsukimi-x86_64-windows-gnu/ && mkdir bin/ && mkdir share/ && mkdir lib/
           cp $GITHUB_WORKSPACE/target/release/${{ matrix.artifact }} bin/
           cp /mingw64/bin/gdbus.exe bin/
 
@@ -99,7 +99,7 @@ jobs:
             libgstvoamrwbenc.dll libgstwavenc.dll libgstx264.dll libgstx265.dll \
             libgstxingmux.dll libgsty4menc.dll libgstzbar.dll
 
-          cd $GITHUB_WORKSPACE/artifact/tsukimi-windows-gnu-amd64
+          cd $GITHUB_WORKSPACE/artifact/tsukimi-x86_64-windows-gnu
           ldd bin/tsukimi.exe | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
           find lib/ -type f -name "*.dll" -exec ldd "{}" \; | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
 
@@ -111,13 +111,13 @@ jobs:
           makensis /V4 artifact/tsukimi_installer.nsi
           rm artifact/tsukimi_installer.nsi
 
-      - name: Build Thin Package
+      - name: Build Package
         if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
         shell: powershell
         run: |
-          cd artifact/tsukimi-windows-gnu-amd64
-          7z.exe a ../tsukimi-${{matrix.arch}}-gtk416.7z ./*
-          mv ../TsukimiSetup.exe ../TsukimiSetup-gtk416.exe
+          cd artifact/tsukimi-x86_64-windows-gnu
+          7z.exe a ../tsukimi-x86_64-windows-gnu-gtk_416.7z ./*
+          mv ../tsukimi-x86_64-windows-gnu-installer.exe ../tsukimi-x86_64-windows-gnu-gtk_416-installer.exe
 
       - name: Upload artifact
         if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
@@ -139,7 +139,7 @@ jobs:
           docker run -d --name tsukimi tsukimi
           docker cp tsukimi:/usr/src/tsukimi/. artifact/
           cd artifact
-          tar -czf tsukimi-x86_64-linux-gnu.tar.gz tsukimi moe.tsuna.tsukimi.gschema.xml i18n
+          tar -czf tsukimi-x86_64-linux.tar.gz tsukimi moe.tsuna.tsukimi.gschema.xml i18n
 
       - name: Upload artifact
         if: ${{ matrix.target == 'x86_64-unknown-linux-gnu' }}
@@ -147,9 +147,7 @@ jobs:
         with:
           name: tsukimi-${{ matrix.arch }}
           path: |
-            artifact/tsukimi
             artifact/*.tar.gz
-            artifact/*.xml
             artifact/*.deb
           compression-level: 0
           overwrite: true
@@ -177,7 +175,6 @@ jobs:
           sha512sum *.exe >> tsukimi.sha512sum
           sha512sum *.tar.gz >> tsukimi.sha512sum
           sha512sum *.deb >> tsukimi.sha512sum
-          sha512sum tsukimi >> tsukimi.sha512sum
 
       - name: Get latest tag name
         id: tag
@@ -189,11 +186,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            tsukimi
-            moe.tsuna.tsukimi.gschema.xml
-            *.exe
-            *.7z
             *.tar.gz
             *.deb
+            *.7z
+            *.exe
             tsukimi.sha512sum
           tag_name: ${{ steps.tag.outputs.TAG_NAME }}
