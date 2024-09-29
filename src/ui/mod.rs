@@ -4,6 +4,7 @@ pub mod provider;
 pub mod widgets;
 use self::models::SETTINGS;
 use adw::prelude::*;
+use gettextrs::gettext;
 use gtk::gdk::Display;
 use gtk::CssProvider;
 
@@ -18,6 +19,8 @@ pub fn build_ui(app: &adw::Application) {
                 .comments(
                     "A simple third-party Emby client.\nVersion: tsukimi 0.12.3 \n2024.9.23 15:21",
                 )
+                // TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
+                .translator_credits(&gettext("translator-credits"))
                 .website("https://github.com/tsukinaha/tsukimi")
                 .application_icon("tsukimi")
                 .license_type(gtk::License::Gpl30)

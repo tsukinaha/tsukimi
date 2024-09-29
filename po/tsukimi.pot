@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-29 18:37+0800\n"
+"POT-Creation-Date: 2024-09-29 18:53+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -855,6 +855,10 @@ msgstr ""
 
 #: resources/ui/mpv_menu.ui:37
 msgid "_Keyboard shortcuts"
+msgstr ""
+
+#: src/ui/mod.rs:23
+msgid "translator-credits"
 msgstr ""
 
 #: src/ui/widgets/actor.rs:266 src/ui/widgets/boxset.rs:217

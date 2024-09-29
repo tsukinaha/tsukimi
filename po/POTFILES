@@ -30,6 +30,7 @@ resources/ui/window.ui
 resources/ui/mpv_shortcuts_window.ui
 resources/ui/mpv_menu_actions.ui
 resources/ui/mpv_menu.ui
+src/ui/mod.rs
 src/ui/widgets/actor.rs
 src/ui/widgets/account_add.rs
 src/ui/widgets/account_settings.rs
