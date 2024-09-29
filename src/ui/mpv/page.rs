@@ -803,6 +803,7 @@ impl MPVPage {
             .and_downcast_ref::<crate::ui::widgets::window::Window>()
             .unwrap();
         window.imp().stack.set_visible_child_name("main");
+        window.allow_suspend();
     }
 
     pub fn update_position_callback(&self) -> glib::ControlFlow {

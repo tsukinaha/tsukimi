@@ -92,6 +92,8 @@ mod imp {
         pub last_content_list_selection: RefCell<Option<i32>>,
 
         pub mpv_playlist_selection: gtk::SingleSelection,
+
+        pub suspend_cookie: RefCell<Option<u32>>,
     }
 
     // The central trait for subclassing a GObject
@@ -672,6 +674,7 @@ impl Window {
     ) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("mpv");
+        self.prevent_suspend();
         self.set_mpv_playlist(&episode_list);
         imp.mpvnav.play(
             &url,
@@ -826,5 +829,18 @@ impl Window {
         };
 
         self.imp().mpvnav.in_play_item(item.item()).await;
+    }
+
+    fn prevent_suspend(&self) {
+        let app = self.application().expect("No application found");
+        let cookie = app.inhibit(Some(self), gtk::ApplicationInhibitFlags::SUSPEND, Some("Playing media"));
+        self.imp().suspend_cookie.replace(Some(cookie));
+    }
+
+    pub fn allow_suspend(&self) {
+        let app = self.application().expect("No application found");
+        if let Some(cookie) = self.imp().suspend_cookie.take() {
+            app.uninhibit(cookie);
+        }
     }
 }

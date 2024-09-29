@@ -180,6 +180,15 @@ mod imp {
                     set.edit_preferred_version();
                 },
             );
+            klass.install_action(
+                "setting.subfontclear",
+                None,
+                move |set, _action, _parameter| {
+                    SETTINGS.set_mpv_subtitle_font("".to_string()).unwrap();
+                    set.imp().mpv_sub_font_button.set_font_desc(&gtk::pango::FontDescription::from_string(""));
+                    toast!(set, gettext("Font Cleared"));
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {

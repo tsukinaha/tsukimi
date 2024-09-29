@@ -507,6 +507,7 @@
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Subtitle Text Font</property>
                 <property name="subtitle" translatable="yes">Specify font to use for subtitles that do not themselves specify a particular font</property>
+                <property name="activatable-widget">mpv_sub_font_button</property>
                 <child type="prefix">
                   <object class="GtkImage">
                     <property name="icon-name">preferences-desktop-font-symbolic</property>
@@ -519,6 +520,16 @@
                     <property name="dialog">
                       <object class="GtkFontDialog"/>
                     </property>
+                    <style>
+                      <class name="flat" />
+                    </style>
+                  </object>
+                </child>
+                <child type="suffix">
+                  <object class="GtkButton">
+                    <property name="icon-name">user-trash-symbolic</property>
+                    <property name="valign">center</property>
+                    <property name="action-name">setting.subfontclear</property>
                     <style>
                       <class name="flat" />
                     </style>
