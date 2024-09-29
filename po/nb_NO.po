@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-28 13:08+0800\n"
+"POT-Creation-Date: 2024-09-29 18:56+0800\n"
 "PO-Revision-Date: 2024-09-26 15:26+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/tsukimi/"
@@ -23,11 +23,11 @@ msgstr ""
 msgid "Settings"
 msgstr "Innstillinger"
 
-#: resources/ui/account_settings.ui:12
+#: resources/ui/account_settings.ui:12 resources/ui/mpv_shortcuts_window.ui:11
 msgid "General"
 msgstr "Generelt"
 
-#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:851
+#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:834
 msgid "Preferred Video Version"
 msgstr ""
 
@@ -36,7 +36,7 @@ msgid "Preferred Language"
 msgstr "Foretrukket språk"
 
 #: resources/ui/account_settings.ui:29
-msgid "This currently only applies to the player"
+msgid "This is globally effective"
 msgstr ""
 
 #: resources/ui/account_settings.ui:32
@@ -83,7 +83,6 @@ msgstr "Aksentforgrunnsfarge"
 
 #: resources/ui/account_settings.ui:166
 #, fuzzy
-#| msgid "Show Sidebar"
 msgid "Hide Sidebar"
 msgstr "Vis sidefelt"
 
@@ -236,169 +235,156 @@ msgid ""
 "particular font"
 msgstr ""
 
-#: resources/ui/account_settings.ui:535
+#: resources/ui/account_settings.ui:546
 msgid "Default Volume"
 msgstr "Forvalgt lydstyrke"
 
-#: resources/ui/account_settings.ui:558
+#: resources/ui/account_settings.ui:569
 msgid "Force Stereo"
 msgstr "Påtving stereo"
 
-#: resources/ui/account_settings.ui:572
+#: resources/ui/account_settings.ui:583
 msgid "Show Buffer Speed"
 msgstr ""
 
-#: resources/ui/account_settings.ui:579
+#: resources/ui/account_settings.ui:590
 msgid "Action after video ends"
 msgstr ""
 
-#: resources/ui/account_settings.ui:582
+#: resources/ui/account_settings.ui:593
 msgid "Play Next"
 msgstr "Spill neste"
 
-#: resources/ui/account_settings.ui:595
+#: resources/ui/account_settings.ui:606
 msgid "Loop Playback"
 msgstr ""
 
-#: resources/ui/account_settings.ui:609
+#: resources/ui/account_settings.ui:620
 msgid "Stop"
 msgstr "Stopp"
 
-#: resources/ui/account_settings.ui:625
+#: resources/ui/account_settings.ui:636
 msgid "Video Output"
 msgstr "Videoutdata"
 
-#: resources/ui/account_settings.ui:626
+#: resources/ui/account_settings.ui:637
 msgid ""
 "Warning: Do NOT use any method other than the software's own controls to "
 "control the window. Restart to take effect"
 msgstr ""
 
-#: resources/ui/account_settings.ui:629
+#: resources/ui/account_settings.ui:640
 msgid "libmpv (default)"
 msgstr ""
 
-#: resources/ui/account_settings.ui:684
+#: resources/ui/account_settings.ui:695
 msgid "Hardware decoding"
 msgstr "Maskinvaredekoding"
 
-#: resources/ui/account_settings.ui:688
+#: resources/ui/account_settings.ui:699
 msgid "no (default)"
 msgstr "ingen (forvalg)"
 
-#: resources/ui/account_settings.ui:732
-msgid "Estimate Frame Rate"
-msgstr "Anslå rammetatkt"
-
-#: resources/ui/account_settings.ui:739
-msgid ""
-"Use vf filter to interpolate frames to improve the smoothness of resizing "
-"and menus."
-msgstr ""
-
 #: resources/ui/account_settings.ui:743
-msgid "Recommended setting value: Current display frame rate"
-msgstr ""
-
-#: resources/ui/account_settings.ui:760
 msgid "Load external mpv config"
 msgstr ""
 
-#: resources/ui/account_settings.ui:765
+#: resources/ui/account_settings.ui:748
 msgid "Read from mpv config dir"
 msgstr ""
 
-#: resources/ui/account_settings.ui:780
+#: resources/ui/account_settings.ui:763
 msgid "More"
 msgstr "Mer"
 
-#: resources/ui/account_settings.ui:791
+#: resources/ui/account_settings.ui:774
 msgid "More Video Settings"
 msgstr "Flere videoinnstillinger"
 
-#: resources/ui/account_settings.ui:807
+#: resources/ui/account_settings.ui:790
 msgid "Customizing mpv params"
 msgstr ""
 
-#: resources/ui/account_settings.ui:808
+#: resources/ui/account_settings.ui:791
 msgid "One param per line"
 msgstr ""
 
-#: resources/ui/account_settings.ui:829
+#: resources/ui/account_settings.ui:812
 #, fuzzy
-#| msgid "Preferences"
 msgid "Preferred Version"
 msgstr "Innstillinger"
 
-#: resources/ui/account_settings.ui:852
+#: resources/ui/account_settings.ui:835
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:867
+#: resources/ui/account_settings.ui:850
 msgid "Descriptors"
 msgstr ""
 
-#: resources/ui/account_settings.ui:889
+#: resources/ui/account_settings.ui:872
 msgid "It is recommended to set no more than 3 lines"
 msgstr ""
 
-#: resources/ui/account_settings.ui:910
+#: resources/ui/account_settings.ui:893
 msgid "No Descriptors"
 msgstr ""
 
-#: resources/ui/account_settings.ui:929 resources/ui/account_settings.ui:1039
+#: resources/ui/account_settings.ui:912
 msgid "Add a descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:940 resources/ui/account_settings.ui:1050
+#: resources/ui/account_settings.ui:923 resources/ui/account_settings.ui:1033
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
 #: resources/ui/metadata_dialog.ui:38
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: resources/ui/account_settings.ui:946
+#: resources/ui/account_settings.ui:929
 #, fuzzy
-#| msgid "_Add"
 msgid "Add"
 msgstr "_Legg til"
 
-#: resources/ui/account_settings.ui:971 resources/ui/account_settings.ui:1081
+#: resources/ui/account_settings.ui:954 resources/ui/account_settings.ui:1064
 msgid "This will use exact matching to obtain a list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:974 resources/ui/account_settings.ui:1084
+#: resources/ui/account_settings.ui:957 resources/ui/account_settings.ui:1067
 msgid "Descriptor Type"
 msgstr ""
 
-#: resources/ui/account_settings.ui:979 resources/ui/account_settings.ui:1089
+#: resources/ui/account_settings.ui:962 resources/ui/account_settings.ui:1072
 msgid "String"
 msgstr ""
 
-#: resources/ui/account_settings.ui:980 resources/ui/account_settings.ui:1090
+#: resources/ui/account_settings.ui:963 resources/ui/account_settings.ui:1073
 msgid "Regular Expression"
 msgstr ""
 
-#: resources/ui/account_settings.ui:992 resources/ui/account_settings.ui:1102
+#: resources/ui/account_settings.ui:975 resources/ui/account_settings.ui:1085
 msgid "Descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:997 resources/ui/account_settings.ui:1107
+#: resources/ui/account_settings.ui:980 resources/ui/account_settings.ui:1090
 msgid "Descriptor should not be too long"
 msgstr ""
 
-#: resources/ui/account_settings.ui:1008 resources/ui/account_settings.ui:1118
+#: resources/ui/account_settings.ui:991 resources/ui/account_settings.ui:1101
 msgid "eg. 1080p"
 msgstr ""
 
-#: resources/ui/account_settings.ui:1019 resources/ui/account_settings.ui:1129
+#: resources/ui/account_settings.ui:1002 resources/ui/account_settings.ui:1112
 msgid "eg. 1080p.*WebDL"
 msgstr ""
 
-#: resources/ui/account_settings.ui:1056
+#: resources/ui/account_settings.ui:1022
+msgid "Edit descriptor"
+msgstr ""
+
+#: resources/ui/account_settings.ui:1039
 #, fuzzy
-#| msgid "_Save"
 msgid "Save"
 msgstr "_Lagre"
 
@@ -410,7 +396,7 @@ msgstr "Legg til en ny tjener"
 msgid "_Add"
 msgstr "_Legg til"
 
-#: resources/ui/account.ui:60 resources/ui/actor.ui:52
+#: resources/ui/account.ui:60 resources/ui/actor.ui:53
 #: resources/ui/boxset.ui:55
 msgid "Name"
 msgstr "Navn"
@@ -431,12 +417,13 @@ msgstr "Brukernavn"
 msgid "Password"
 msgstr "Passord"
 
-#: resources/ui/actor.ui:70 resources/ui/boxset.ui:105
+#: resources/ui/actor.ui:71 resources/ui/boxset.ui:105
 msgid "No Inscriptions"
 msgstr ""
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:155
-#: resources/ui/player_toolbar.ui:90 src/ui/widgets/item.rs:479
+#: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
+#: src/ui/widgets/item.rs:481
 msgid "Play"
 msgstr "Spill av"
 
@@ -463,6 +450,7 @@ msgid "Loading..."
 msgstr "Laster inn …"
 
 #: resources/ui/mpvpage.ui:255 resources/ui/window.ui:520
+#: resources/ui/window.ui:537
 msgid "Playlist"
 msgstr "Spilleliste"
 
@@ -571,6 +559,7 @@ msgid "No data."
 msgstr "Ingen data."
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/singlelist.ui:90
+#: resources/ui/single_grid.ui:111
 msgid "Title"
 msgstr "Navn"
 
@@ -579,6 +568,7 @@ msgid "Sort Title"
 msgstr ""
 
 #: resources/ui/metadata_dialog.ui:121 resources/ui/singlelist.ui:92
+#: resources/ui/single_grid.ui:113
 msgid "Date Created"
 msgstr "Dato opprettet"
 
@@ -662,27 +652,35 @@ msgstr ""
 msgid "Scan"
 msgstr "Skann"
 
-#: resources/ui/search.ui:29
-msgid "Movie"
-msgstr "Film"
-
 #: resources/ui/search.ui:40
 msgid "Series"
 msgstr "Serie"
 
-#: resources/ui/search.ui:51
-msgid "Box Set"
-msgstr "Bokssett"
+#: resources/ui/search.ui:46
+msgid "Movie"
+msgstr "Film"
 
-#: resources/ui/search.ui:62
+#: resources/ui/search.ui:52 src/ui/widgets/list.rs:122
+msgid "BoxSet"
+msgstr ""
+
+#: resources/ui/search.ui:58
 msgid "Person"
 msgstr "Person"
 
-#: resources/ui/search.ui:73
+#: resources/ui/search.ui:64
 msgid "Music Album"
 msgstr "Musikkalbum"
 
-#: resources/ui/singlelist.ui:34
+#: resources/ui/search.ui:137
+msgid "Nothing Here or No type selected"
+msgstr ""
+
+#: resources/ui/search.ui:138
+msgid "Maybe you should try using different search terms"
+msgstr ""
+
+#: resources/ui/singlelist.ui:34 resources/ui/single_grid.ui:37
 msgid "View"
 msgstr "Vis"
 
@@ -690,48 +688,101 @@ msgstr "Vis"
 msgid "Filter Panel"
 msgstr ""
 
-#: resources/ui/singlelist.ui:91
+#: resources/ui/singlelist.ui:91 resources/ui/single_grid.ui:112
 msgid "Bitrate"
 msgstr ""
 
-#: resources/ui/singlelist.ui:93
+#: resources/ui/singlelist.ui:93 resources/ui/single_grid.ui:114
 msgid "Imdb Rate"
 msgstr ""
 
-#: resources/ui/singlelist.ui:94
+#: resources/ui/singlelist.ui:94 resources/ui/single_grid.ui:115
 msgid "Critic Rating"
 msgstr ""
 
-#: resources/ui/singlelist.ui:95
+#: resources/ui/singlelist.ui:95 resources/ui/single_grid.ui:116
 msgid "Premiere Date"
 msgstr "Premieredato"
 
-#: resources/ui/singlelist.ui:96
+#: resources/ui/singlelist.ui:96 resources/ui/single_grid.ui:117
 msgid "Offical Rating"
 msgstr ""
 
-#: resources/ui/singlelist.ui:97
+#: resources/ui/singlelist.ui:97 resources/ui/single_grid.ui:118
 msgid "Production Year"
 msgstr "Produksjonsår"
 
-#: resources/ui/singlelist.ui:98
+#: resources/ui/singlelist.ui:98 resources/ui/single_grid.ui:119
 msgid "Date Played"
 msgstr "Dato avspilt"
 
-#: resources/ui/singlelist.ui:99
+#: resources/ui/singlelist.ui:99 resources/ui/single_grid.ui:120
 msgid "Runtime"
 msgstr "Kjøretid"
 
-#: resources/ui/singlelist.ui:145
+#: resources/ui/singlelist.ui:145 resources/ui/single_grid.ui:184
 msgid "Poster"
 msgstr "Plakat"
 
-#: resources/ui/singlelist.ui:149
+#: resources/ui/singlelist.ui:149 resources/ui/single_grid.ui:188
 msgid "Backdrop"
 msgstr ""
 
-#: resources/ui/singlelist.ui:153
+#: resources/ui/singlelist.ui:153 resources/ui/single_grid.ui:192
 msgid "Banner"
+msgstr ""
+
+#: resources/ui/server_panel.ui:47
+#, fuzzy
+msgid "Restart Server"
+msgstr "Omstart av tjener"
+
+#: resources/ui/server_panel.ui:58
+#, fuzzy
+msgid "Shutdown Server"
+msgstr "Slå av tjener"
+
+#: resources/ui/server_panel.ui:78
+msgid "System Logs"
+msgstr ""
+
+#: resources/ui/server_panel.ui:83
+msgid "Activity Logs"
+msgstr ""
+
+#: resources/ui/server_panel.ui:103
+msgid "Tasks"
+msgstr ""
+
+#: resources/ui/single_grid.ui:31
+#, fuzzy
+msgid "Change Poster"
+msgstr "Endre passord"
+
+#: resources/ui/single_grid.ui:57
+#, fuzzy
+msgid "Grid View"
+msgstr "Vis"
+
+#: resources/ui/single_grid.ui:66
+#, fuzzy
+msgid "List View"
+msgstr "Vis"
+
+#: resources/ui/single_grid.ui:83
+msgid "Ascending"
+msgstr ""
+
+#: resources/ui/single_grid.ui:91
+msgid "Descending"
+msgstr ""
+
+#: resources/ui/single_grid.ui:106
+msgid "Sort By"
+msgstr ""
+
+#: resources/ui/single_grid.ui:169
+msgid "Nothing Here"
 msgstr ""
 
 #: resources/ui/window.ui:5
@@ -762,7 +813,7 @@ msgstr "Innhold"
 msgid "Home"
 msgstr "Hjem"
 
-#: resources/ui/window.ui:319
+#: resources/ui/window.ui:319 src/ui/widgets/list.rs:125
 msgid "Liked"
 msgstr ""
 
@@ -774,7 +825,62 @@ msgstr "Søk"
 msgid "Servers"
 msgstr "Tjenere"
 
-#: src/ui/widgets/actor.rs:218 src/ui/widgets/boxset.rs:217
+#: resources/ui/mpv_shortcuts_window.ui:15
+msgid "Decrease/increase playback speed by 10%"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:21
+msgid "Halve/double current playback speed"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:27
+msgid "Reset playback speed to normal"
+msgstr ""
+
+#: resources/ui/mpv_menu_actions.ui:12
+#, fuzzy
+msgid "Backward"
+msgstr "Blafre bakover"
+
+#: resources/ui/mpv_menu_actions.ui:42
+#, fuzzy
+msgid "Forward"
+msgstr "Blafre forover"
+
+#: resources/ui/mpv_menu.ui:11
+#, fuzzy
+msgid "_Next"
+msgstr "Neste"
+
+#: resources/ui/mpv_menu.ui:15
+#, fuzzy
+msgid "_Previous"
+msgstr "Forrige"
+
+#: resources/ui/mpv_menu.ui:21
+msgid "_Next chapter"
+msgstr ""
+
+#: resources/ui/mpv_menu.ui:25
+#, fuzzy
+msgid "_Previous chapter"
+msgstr "Forrige"
+
+#: resources/ui/mpv_menu.ui:31
+#, fuzzy
+msgid "_Media info"
+msgstr "Mediainfo"
+
+#: resources/ui/mpv_menu.ui:37
+msgid "_Keyboard shortcuts"
+msgstr ""
+
+#. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
+#: src/ui/mod.rs:23
+msgid "translator-credits"
+msgstr "Allan Nordhøy <epost@anotheragency.no>"
+
+#: src/ui/widgets/actor.rs:266 src/ui/widgets/boxset.rs:217
 msgid "Links"
 msgstr "Lenker"
 
@@ -786,43 +892,48 @@ msgstr ""
 msgid "Account added successfully"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:241
+#: src/ui/widgets/account_settings.rs:191
+#, fuzzy
+msgid "Font Cleared"
+msgstr "Skriftstørrelse"
+
+#: src/ui/widgets/account_settings.rs:248
 msgid "Password cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:245
+#: src/ui/widgets/account_settings.rs:252
 msgid "Passwords do not match!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:252
+#: src/ui/widgets/account_settings.rs:259
 msgid "Password changed successfully! Please login again."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:258
+#: src/ui/widgets/account_settings.rs:265
 msgid "Failed to change password"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:333
+#: src/ui/widgets/account_settings.rs:340
 msgid "Cache Cleared"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:354
+#: src/ui/widgets/account_settings.rs:361
 msgid "No file selected"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:430
+#: src/ui/widgets/account_settings.rs:437
 msgid "Font Cleared, Restart to take effect."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:655
-#: src/ui/widgets/account_settings.rs:665
-#: src/ui/widgets/account_settings.rs:700
-#: src/ui/widgets/account_settings.rs:710
+#: src/ui/widgets/account_settings.rs:652
+#: src/ui/widgets/account_settings.rs:662
+#: src/ui/widgets/account_settings.rs:696
+#: src/ui/widgets/account_settings.rs:705
 msgid "Descriptor cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:670
-#: src/ui/widgets/account_settings.rs:715
+#: src/ui/widgets/account_settings.rs:667
+#: src/ui/widgets/account_settings.rs:710
 msgid "Invalid regex"
 msgstr ""
 
@@ -854,7 +965,7 @@ msgstr ""
 msgid "Error loading image"
 msgstr ""
 
-#: src/ui/widgets/item.rs:475
+#: src/ui/widgets/item.rs:477 src/ui/widgets/list.rs:121
 msgid "Resume"
 msgstr ""
 
@@ -864,6 +975,22 @@ msgstr ""
 
 #: src/ui/widgets/list.rs:113
 msgid "Channels"
+msgstr ""
+
+#: src/ui/widgets/list.rs:120
+msgid "All"
+msgstr ""
+
+#: src/ui/widgets/list.rs:123
+msgid "Tags"
+msgstr ""
+
+#: src/ui/widgets/list.rs:124
+msgid "Genres"
+msgstr ""
+
+#: src/ui/widgets/liked.rs:146
+msgid "Favourite"
 msgstr ""
 
 #: src/ui/widgets/star_toggle.rs:64
@@ -902,15 +1029,42 @@ msgstr "Omstart av tjener"
 msgid "Are you sure you want to restart the server?"
 msgstr "Vil du starte tjeneren på ny?"
 
-#: src/ui/widgets/server_panel.rs:168
+#: src/ui/widgets/server_panel.rs:134
+msgid "Revert"
+msgstr ""
+
+#: src/ui/widgets/server_panel.rs:135
+#, fuzzy
+msgid "Confirm"
+msgstr "Bekreft passord"
+
+#: src/ui/widgets/server_panel.rs:171
 msgid "Server is shutting down"
 msgstr "Tjeneren slås av …"
 
-#: src/ui/widgets/server_panel.rs:180
+#: src/ui/widgets/server_panel.rs:183
 msgid "Server is restarting"
 msgstr "Tjeneren startes på ny …"
 
-#: src/ui/widgets/server_panel.rs:321
+#: src/ui/widgets/server_panel.rs:270
+msgid "Last execute: "
+msgstr ""
+
+#: src/ui/widgets/server_panel.rs:275
+msgid "Duration: "
+msgstr ""
+
+#: src/ui/widgets/server_panel.rs:280
+msgid "Result: "
+msgstr ""
+
+#: src/ui/widgets/server_panel.rs:326
 #, fuzzy
 msgid "Task started"
 msgstr "Gjøremål startet"
+
+#~ msgid "Estimate Frame Rate"
+#~ msgstr "Anslå rammetatkt"
+
+#~ msgid "Box Set"
+#~ msgstr "Bokssett"
