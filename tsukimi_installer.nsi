@@ -2,7 +2,7 @@
 Name "Tsukimi Installer"
 
 ; Define output file
-OutFile "TsukimiSetup.exe"
+OutFile "tsukimi-x86_64-windows-gnu-installer.exe"
 
 ; Default installation directory (in user's personal folder)
 InstallDir "$LOCALAPPDATA\Tsukimi"
@@ -25,7 +25,7 @@ Section "Tsukimi Main Program" SecMain
     SetOutPath "$INSTDIR"
     
     ; Copy entire tsukimi folder
-    File /r "tsukimi-windows-gnu-amd64\*.*"
+    File /r "tsukimi-x86_64-windows-gnu\*.*"
     
     ; Create start menu shortcut
     CreateDirectory "$SMPROGRAMS\Tsukimi"
