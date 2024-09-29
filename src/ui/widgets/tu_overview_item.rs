@@ -151,6 +151,7 @@ impl TuOverviewItem {
         let item = self.item();
         match self.view_group() {
             ViewGroup::EpisodesView => {
+                imp.aspect_frame.set_ratio(1.8);
                 imp.listlabel.set_text(&format!(
                     "S{}E{}: {}",
                     item.parent_index_number(),
