@@ -9,6 +9,7 @@ use crate::ui::widgets::item_utils::{
     make_subtitle_version_choice, make_video_version_choice_from_matcher,
 };
 use crate::ui::widgets::song_widget::format_duration;
+use crate::ui::widgets::window::Window;
 use crate::utils::{spawn, spawn_g_timeout, spawn_tokio};
 use adw::prelude::*;
 use gettextrs::gettext;
@@ -551,10 +552,32 @@ impl MPVPage {
                         ListenEvent::Speed(value) => {
                             obj.speed_cb(value);
                         }
+                        ListenEvent::Shutdown => {
+                            obj.on_shutdown();
+                        }
                     }
                 }
             }
         ));
+    }
+
+    fn on_shutdown(&self) {
+        let binding = self.root();
+        let window = binding.and_downcast_ref::<Window>().expect("No Window");
+        let alert_dialog = adw::AlertDialog::builder()
+            .heading(gettext("Error"))
+            .body(gettext("MPV has been shutdown, Application will exit. \nTsukimi can't restart MPV."))
+            .build();
+        alert_dialog.add_response("shutdown", &gettext("Shutdown"));
+        alert_dialog.set_response_appearance("shutdown", adw::ResponseAppearance::Destructive);
+        alert_dialog.connect_response(Some("shutdown"), glib::clone!(
+            #[weak]
+            window,
+            move |_, _| {
+                window.close();
+            }
+        ));
+        alert_dialog.present(Some(window));
     }
 
     fn update_duration(&self, value: f64) {
