@@ -6,17 +6,19 @@ on:
       - "main"
     paths-ignore:
       - "docs/**"
-      - ".gitignore"
+      - "**/.gitignore"
+      - "**/.dockerignore"
       - LICENSE
-      - "*.md"
+      - "**/*.md"
   pull_request:
     branches:
       - "main"
     paths-ignore:
       - "docs/**"
-      - ".gitignore"
+      - "**/.gitignore"
+      - "**/.dockerignore"
       - LICENSE
-      - "*.md"
+      - "**/*.md"
 
 env:
   CARGO_TERM_COLOR: always

@@ -6,46 +6,57 @@ on:
       - "main"
     paths-ignore:
       - "docs/**"
-      - ".gitignore"
+      - "**/.gitignore"
+      - "**/.dockerignore"
       - LICENSE
-      - "*.md"
+      - "**/*.md"
   pull_request:
     branches:
       - "main"
     paths-ignore:
       - "docs/**"
-      - ".gitignore"
+      - "**/.gitignore"
+      - "**/.dockerignore"
       - LICENSE
-      - "*.md"
+      - "**/*.md"
 
 jobs:
-  build-release:
+  build:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
-          - arch-name: x86_64-linux-gnu
-            os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            artifact: tsukimi
-
-    runs-on: ${{matrix.os}}
+          - platform: amd64
+            arch: x86_64
+          - platform: arm64
+            arch: aarch64
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Build ${{matrix.target}}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Metadata
         run: |
-          mkdir artifact
-          docker build -t tsukimi .
-          docker run -d --name tsukimi tsukimi
-          docker cp tsukimi:/usr/src/tsukimi/. artifact/
+          echo "user=${GITHUB_REPOSITORY_OWNER@L}" >> ${GITHUB_ENV}
+
+      - name: Build Rust project
+        run: |
+          docker run --rm --platform linux/${{matrix.platform}} -v ${{ github.workspace }}:/app ghcr.io/${{ env.user }}/ubuntu-rust-gtk4:latest
+          sudo cp target/release/tsukimi .
+          sudo cp target/debian/*.deb .
+          sudo cp -r i18n/locale .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{matrix.artifact}}-${{matrix.arch-name}}
-          path: artifact/*
-          compression-level: 0
-          overwrite: true
-          retention-days: 7
+          name: tsukimi-${{matrix.arch}}-linux
+          path: |
+            locale/
+            tsukimi
+            *.deb
+            moe*.xml

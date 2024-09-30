@@ -1748,8 +1748,6 @@ dependencies = [
 [[package]]
 name = "libmpv2"
 version = "4.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7befa1412ea58aeed5f36da1ad795f15bc6aefd554455f5134f1d4f7b6522e7f"
 dependencies = [
  "libmpv2-sys",
 ]
@@ -1757,8 +1755,6 @@ dependencies = [
 [[package]]
 name = "libmpv2-sys"
 version = "4.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42124ba90561beede41d5e6ef64eef63fc1395cf83217e3dd1157294f7dcdb56"
 
 [[package]]
 name = "libredox"
