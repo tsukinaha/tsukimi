@@ -644,8 +644,7 @@ impl AccountSettings {
 
     pub fn add_preferred_version(&self) {
         let imp = self.imp();
-        let descriptor;
-        match imp.descriptor_type_comborow.selected() {
+        let descriptor = match imp.descriptor_type_comborow.selected() {
             0 => {
                 let descriptor_content = imp.descriptor_entryrow.text();
                 if descriptor_content.is_empty() {
@@ -653,8 +652,7 @@ impl AccountSettings {
                     return;
                 }
 
-                descriptor =
-                    Descriptor::new(descriptor_content.to_string(), DescriptorType::String);
+                Descriptor::new(descriptor_content.to_string(), DescriptorType::String)
             }
             1 => {
                 let descriptor_content = imp.descriptor_entryrow.text();
@@ -667,10 +665,10 @@ impl AccountSettings {
                     Err(e) => toast!(self, &format!("{}: {}", gettext("Invalid regex"), e)),
                 }
 
-                descriptor = Descriptor::new(descriptor_content.to_string(), DescriptorType::Regex);
+                Descriptor::new(descriptor_content.to_string(), DescriptorType::Regex)
             }
             _ => unreachable!(),
-        }
+        };
 
         SETTINGS
             .add_preferred_version_descriptor(descriptor)
@@ -741,7 +739,7 @@ impl AccountSettings {
 
         for (index, descriptor) in descriptors.iter().enumerate() {
             let row = adw::ActionRow::builder()
-                .subtitle(&descriptor.type_.to_string())
+                .subtitle(descriptor.type_.to_string())
                 .title(&descriptor.content)
                 .activatable(true)
                 .build();

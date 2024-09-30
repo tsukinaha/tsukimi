@@ -20,7 +20,7 @@ pub fn build_ui(app: &adw::Application) {
                     "A simple third-party Emby client.\nVersion: tsukimi 0.13.0 \n2024.9.29 19:08",
                 )
                 // TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-                .translator_credits(&gettext("translator-credits"))
+                .translator_credits(gettext("translator-credits"))
                 .website("https://github.com/tsukinaha/tsukimi")
                 .application_icon("tsukimi")
                 .license_type(gtk::License::Gpl30)
