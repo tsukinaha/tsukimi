@@ -135,6 +135,7 @@ pub enum ListenEvent {
     Volume(i64),
     Speed(f64),
     PausedForCache(bool),
+    Shutdown,
 }
 
 pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
@@ -363,6 +364,10 @@ impl TsukimiMPV {
                         }
                         Event::StartFile => {
                             let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile);
+                        }
+                        Event::Shutdown => {
+                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Shutdown);
+                            event_thread_alive.store(PAUSED, std::sync::atomic::Ordering::SeqCst);
                         }
                         _ => {}
                     },
