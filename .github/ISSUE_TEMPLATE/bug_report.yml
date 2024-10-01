@@ -2,23 +2,27 @@ name: Issue Feedback/Feature Request
 description: Feedback issues or feature requests
 title: "Issue Feedback/Feature Request"
 body:
-  - type: markdown
+  - type: checkboxes
+    id: ensure
     attributes:
-      value: |
-        1. Please confirm the following information
+      label: Ensure the following information
+      description: Please confirm the following information
+      options:
+        - label: When reporting a bug, please attach the complete log, which usually starts with something like this. `2024-10-01T07:55:46.305728Z  INFO tsukimi: Application Version: 0.13.0, Platform: linux unix, CPU Architecture: x86_64`
+          required: true
+        
+        - label: The method to obtain the log is to run the program in the terminal
+          required: true
 
-        2. When reporting a bug, please attach the complete log, which usually starts with something like this.
-        `2024-10-01T07:55:46.305728Z  INFO tsukimi: Application Version: 0.13.0, Platform: linux unix, CPU Architecture: x86_64`
-        
-        3. The method to obtain the log is to run the program in the terminal
-        
-        4. Repeated issues will be closed
-        
-        5. Please make sure you have read the FAQ and pinned issues before submitting
+        - label: Repeated issues will be closed
+          required: true
+
+        - label: Please make sure you have read the FAQ and pinned issues before submitting
+          required: true
   - type: textarea
     id: what-happened
     attributes:
-      label: 问题描述(Description)
-      description: 请详细描述你碰到的问题(Describe the problem you encountered in detail)
+      label: Description
+      description: Describe the problem you encountered in detail
     validations:
       required: true
