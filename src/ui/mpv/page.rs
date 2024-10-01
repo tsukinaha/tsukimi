@@ -566,17 +566,22 @@ impl MPVPage {
         let window = binding.and_downcast_ref::<Window>().expect("No Window");
         let alert_dialog = adw::AlertDialog::builder()
             .heading(gettext("Error"))
-            .body(gettext("MPV has been shutdown, Application will exit. \nTsukimi can't restart MPV."))
+            .body(gettext(
+                "MPV has been shutdown, Application will exit. \nTsukimi can't restart MPV.",
+            ))
             .build();
         alert_dialog.add_response("shutdown", &gettext("Shutdown"));
         alert_dialog.set_response_appearance("shutdown", adw::ResponseAppearance::Destructive);
-        alert_dialog.connect_response(Some("shutdown"), glib::clone!(
-            #[weak]
-            window,
-            move |_, _| {
-                window.close();
-            }
-        ));
+        alert_dialog.connect_response(
+            Some("shutdown"),
+            glib::clone!(
+                #[weak]
+                window,
+                move |_, _| {
+                    window.close();
+                }
+            ),
+        );
         alert_dialog.present(Some(window));
     }
 
