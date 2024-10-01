@@ -555,6 +555,9 @@ impl MPVPage {
                         ListenEvent::Shutdown => {
                             obj.on_shutdown();
                         }
+                        ListenEvent::DemuxerCacheTime(value) => {
+                            obj.on_cache_time_update(value);
+                        }
                     }
                 }
             }
@@ -583,6 +586,10 @@ impl MPVPage {
             ),
         );
         alert_dialog.present(Some(window));
+    }
+
+    fn on_cache_time_update(&self, value: i64) {
+        self.imp().video_scale.set_cache_end_time(value);
     }
 
     fn update_duration(&self, value: f64) {

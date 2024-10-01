@@ -139,4 +139,8 @@ impl VideoScale {
             player.set_position(position);
         }
     }
+
+    pub fn set_cache_end_time(&self, end_time: i64) {
+        self.set_fill_level(end_time as f64);
+    }
 }
