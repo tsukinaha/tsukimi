@@ -257,6 +257,7 @@ impl MPVPage {
             item.name()
         };
 
+        self.imp().video_scale.reset_scale();
         self.imp().video_version_matcher.replace(matcher);
         self.imp().current_video.replace(Some(item));
         self.imp().current_episode_list.replace(episode_list);
