@@ -38,7 +38,7 @@
       </item>
       <item>
         <attribute name="label" translatable="yes">_Advanced settings</attribute>
-        <attribute name="action">mpv.shoow-settings</attribute>
+        <attribute name="action">mpv.show-settings</attribute>
         <attribute name="accel">A</attribute>
       </item>
     </section>
