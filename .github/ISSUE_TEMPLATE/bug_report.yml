@@ -1,4 +1,5 @@
 name: 问题反馈/功能建议 (Issue Feedback/Feature Request)
+description: 反馈问题或提出功能建议 (Feedback issues or feature requests)
 title: "问题反馈/功能建议 (Issue Feedback/Feature Request)"
 labels: ["bug"]
 body:
