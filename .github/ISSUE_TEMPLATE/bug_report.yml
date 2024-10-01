@@ -1,22 +1,20 @@
-name: 问题反馈/功能建议 (Issue Feedback/Feature Request)
-description: 反馈问题或提出功能建议 (Feedback issues or feature requests)
-title: "问题反馈/功能建议 (Issue Feedback/Feature Request)"
-labels: ["bug"]
+name: Issue Feedback/Feature Request
+description: Feedback issues or feature requests
+title: "Issue Feedback/Feature Request"
 body:
   - type: markdown
     attributes:
       value: |
-        请确认以下信息
-        Please confirm the following information
-        反馈问题时请附上完整日志，这通常以下面类似的形式开头
-        When reporting a bug, please attach the complete log, which usually starts with something like this.
+        1. Please confirm the following information
+
+        2. When reporting a bug, please attach the complete log, which usually starts with something like this.
         `2024-10-01T07:55:46.305728Z  INFO tsukimi: Application Version: 0.13.0, Platform: linux unix, CPU Architecture: x86_64`
-        获取日志的方法为在终端运行程序
-        The method to obtain the log is to run the program in the terminal
-        重复的 ISSUE 会被关闭
-        Repeated issues will be closed
-        提交前请确认看过 FAQ 与置顶 ISSUE
-        Please make sure you have read the FAQ and pinned issues before submitting
+        
+        3. The method to obtain the log is to run the program in the terminal
+        
+        4. Repeated issues will be closed
+        
+        5. Please make sure you have read the FAQ and pinned issues before submitting
   - type: textarea
     id: what-happened
     attributes:
