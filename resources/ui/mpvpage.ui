@@ -133,6 +133,8 @@
                             <property name="valign">center</property>
                             <property name="hexpand">True</property>
                             <property name="draw_value">False</property>
+                            <property name="restrict-to-fill-level">False</property>
+                            <property name="show-fill-level">True</property>
                             <signal name="value-changed" handler="on_progress_value_changed" swapped="yes" />
                             <style>
                               <class name="accent" />
