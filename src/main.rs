@@ -3,10 +3,13 @@
     windows_subsystem = "windows"
 )]
 
+use std::env;
+
 use gettextrs::*;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 use once_cell::sync::OnceCell;
+use tracing::info;
 
 mod client;
 mod config;
@@ -73,6 +76,14 @@ fn main() -> glib::ExitCode {
     tracing_subscriber::fmt()
         .with_max_level(tracing::Level::INFO)
         .init();
+
+    info!(
+        "Application Version: {}, Platform: {} {}, CPU Architecture: {}",
+        config::APP_VERSION,
+        env::consts::OS,
+        env::consts::FAMILY,
+        env::consts::ARCH
+    );
 
     // Register and include resources
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
