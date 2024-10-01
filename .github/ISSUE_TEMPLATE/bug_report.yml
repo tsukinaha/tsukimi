@@ -1,6 +1,5 @@
 name: 问题反馈/功能建议 (Issue Feedback/Feature Request)
-description: File a bug report
-title: ""
+title: "问题反馈/功能建议 (Issue Feedback/Feature Request)"
 labels: ["bug"]
 body:
   - type: markdown
