@@ -8,7 +8,7 @@ body:
       label: Ensure the following information
       description: Please confirm the following information
       options:
-        - label: When reporting a bug, please attach the complete log, which usually starts with something like this. `2024-10-01T07:55:46.305728Z  INFO tsukimi: Application Version: 0.13.0, Platform: linux unix, CPU Architecture: x86_64`
+        - label: When reporting a bug, please attach the complete log
           required: true
         
         - label: The method to obtain the log is to run the program in the terminal
