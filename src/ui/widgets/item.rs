@@ -763,15 +763,20 @@ impl ItemPage {
                 if let Some(image_tags) = item.backdrop_image_tags {
                     obj.add_backdrops(image_tags).await;
                 }
-                if let Some(ref user_data) = item.user_data {
-                    let imp = obj.imp();
-                    if let Some(is_favourite) = user_data.is_favorite {
-                        imp.actionbox.set_btn_active(is_favourite);
+                if let Some(part_count) = item.part_count {
+                    if part_count > 1 {
+                        obj.sets("Additional Parts", &item.id).await;
                     }
-                    imp.actionbox.set_played(user_data.played);
-                    imp.actionbox.bind_edit();
+                }  
+                if let Some(ref user_data) = item.user_data {
+                        let imp = obj.imp();
+                        if let Some(is_favourite) = user_data.is_favorite {
+                            imp.actionbox.set_btn_active(is_favourite);
+                        }
+                        imp.actionbox.set_played(user_data.played);
+                        imp.actionbox.bind_edit();
+                    }
                 }
-            }
         ));
     }
 
@@ -922,7 +927,6 @@ impl ItemPage {
     pub async fn set_lists(&self, id: &str) {
         self.sets("Recommend", id).await;
         self.sets("Included In", id).await;
-        self.sets("Additional Parts", id).await;
     }
 
     pub async fn sets(&self, types: &str, id: &str) {
