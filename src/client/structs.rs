@@ -173,6 +173,8 @@ pub struct Item {
     pub artists: Option<Vec<String>>,
     #[serde(rename = "LockData")]
     pub lock_data: Option<bool>,
+    #[serde(rename = "PartCount")]
+    pub part_count: Option<u32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
