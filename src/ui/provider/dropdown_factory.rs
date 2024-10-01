@@ -36,6 +36,7 @@ pub fn factory<const UPBIND: bool>() -> gtk::SignalListItemFactory {
             let list_dropdown = crate::ui::widgets::list_dropdown::ListDropdown::new();
 
             list_dropdown.set_label1(&dl.line1);
+            list_dropdown.set_tooltip_text(dl.line1.as_deref());
 
             if !UPBIND {
                 list_dropdown.set_label2(&dl.line2);

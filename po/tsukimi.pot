@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-29 18:56+0800\n"
+"POT-Creation-Date: 2024-10-01 15:41+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -283,6 +283,10 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:743
 msgid "Load external mpv config"
+msgstr ""
+
+#: resources/ui/account_settings.ui:744
+msgid "May cause crashes, Requires restart"
 msgstr ""
 
 #: resources/ui/account_settings.ui:748
@@ -645,6 +649,10 @@ msgstr ""
 msgid "Scan"
 msgstr ""
 
+#: resources/ui/search.ui:23 resources/ui/window.ui:365
+msgid "Search"
+msgstr ""
+
 #: resources/ui/search.ui:40
 msgid "Series"
 msgstr ""
@@ -805,10 +813,6 @@ msgstr ""
 msgid "Liked"
 msgstr ""
 
-#: resources/ui/window.ui:365
-msgid "Search"
-msgstr ""
-
 #: resources/ui/window.ui:380
 msgid "Servers"
 msgstr ""
@@ -837,23 +841,31 @@ msgstr ""
 msgid "_Next"
 msgstr ""
 
-#: resources/ui/mpv_menu.ui:15
+#: resources/ui/mpv_menu.ui:16
 msgid "_Previous"
 msgstr ""
 
-#: resources/ui/mpv_menu.ui:21
+#: resources/ui/mpv_menu.ui:23
 msgid "_Next chapter"
 msgstr ""
 
-#: resources/ui/mpv_menu.ui:25
+#: resources/ui/mpv_menu.ui:28
 msgid "_Previous chapter"
 msgstr ""
 
-#: resources/ui/mpv_menu.ui:31
+#: resources/ui/mpv_menu.ui:35
+msgid "_Playlist"
+msgstr ""
+
+#: resources/ui/mpv_menu.ui:40
+msgid "_Advanced settings"
+msgstr ""
+
+#: resources/ui/mpv_menu.ui:47
 msgid "_Media info"
 msgstr ""
 
-#: resources/ui/mpv_menu.ui:37
+#: resources/ui/mpv_menu.ui:54
 msgid "_Keyboard shortcuts"
 msgstr ""
 
@@ -906,15 +918,15 @@ msgstr ""
 msgid "Font Cleared, Restart to take effect."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:652
-#: src/ui/widgets/account_settings.rs:662
-#: src/ui/widgets/account_settings.rs:696
-#: src/ui/widgets/account_settings.rs:705
+#: src/ui/widgets/account_settings.rs:651
+#: src/ui/widgets/account_settings.rs:660
+#: src/ui/widgets/account_settings.rs:694
+#: src/ui/widgets/account_settings.rs:703
 msgid "Descriptor cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:667
-#: src/ui/widgets/account_settings.rs:710
+#: src/ui/widgets/account_settings.rs:665
+#: src/ui/widgets/account_settings.rs:708
 msgid "Invalid regex"
 msgstr ""
 
@@ -950,8 +962,12 @@ msgstr ""
 msgid "Resume"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1020
+#: src/ui/widgets/item.rs:1024
 msgid "No video source found"
+msgstr ""
+
+#: src/ui/widgets/music_album.rs:264
+msgid "More From"
 msgstr ""
 
 #: src/ui/widgets/list.rs:113
