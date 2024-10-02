@@ -86,6 +86,8 @@ mod imp {
         pub searchpage: TemplateChild<adw::Bin>,
         #[template_child]
         pub mpv_playlist: TemplateChild<gtk::ListView>,
+        #[template_child]
+        pub mpv_control_sidebar: TemplateChild<MPVControlSidebar>,
 
         pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
         pub progress_bar_fade_animation: OnceCell<adw::TimedAnimation>,
@@ -159,6 +161,7 @@ mod imp {
             self.mpv_playlist.set_factory(Some(
                 gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
             ));
+            self.mpv_control_sidebar.set_player(Some(&self.mpvnav.imp().video.get()));
 
             let obj = self.obj();
             obj.set_fonts();
@@ -747,7 +750,6 @@ impl Window {
     fn key_pressed_cb(&self, key: u32, _code: u32, state: gtk::gdk::ModifierType) -> bool {
         if self.is_on_mpv_stack() {
             self.imp().mpvnav.key_pressed_cb(key, state);
-            return true;
         }
         false
     }

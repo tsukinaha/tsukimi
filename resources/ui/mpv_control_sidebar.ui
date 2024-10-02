@@ -103,7 +103,7 @@
                 <property name="title" translatable="true">Subtitle</property>
                 <child>
                   <object class="AdwExpanderRow">
-                    <property name="title" translatable="true">Composing</property>
+                    <property name="title" translatable="true">Subtitle Composing</property>
                     <child type="suffix">
                       <object class="GtkToggleButton">
                         <property name="icon-name">large-brush-symbolic</property>
@@ -295,7 +295,7 @@
                 </child>
                 <child>
                   <object class="AdwExpanderRow">
-                    <property name="title" translatable="true">Color</property>
+                    <property name="title" translatable="true">Subtitle Color</property>
                     <child type="suffix">
                       <object class="GtkButton">
                         <property name="icon-name">large-brush-symbolic</property>
@@ -358,7 +358,7 @@
                 </child>
                 <child>
                   <object class="AdwExpanderRow">
-                    <property name="title" translatable="true">Offset</property>
+                    <property name="title" translatable="true">Subtitle offset</property>
                     <child type="suffix">
                       <object class="GtkButton">
                         <property name="icon-name">large-brush-symbolic</property>
@@ -371,7 +371,7 @@
                     </child>
                     <child>
                       <object class="AdwSpinRow">
-                        <property name="title" translatable="yes">Subtitle offset</property>
+                        <property name="title" translatable="yes">offset</property>
                         <property name="subtitle" translatable="yes">Unit: ms</property>
                         <property name="adjustment">
                           <object class="GtkAdjustment">
@@ -386,7 +386,7 @@
                     </child>
                     <child>
                       <object class="AdwSpinRow">
-                        <property name="title" translatable="yes">Subtitle speed</property>
+                        <property name="title" translatable="yes">speed</property>
                         <property name="digits">2</property>
                         <property name="adjustment">
                           <object class="GtkAdjustment">
@@ -454,7 +454,7 @@
                 <property name="title" translatable="true">Video</property>
                 <child>
                   <object class="AdwExpanderRow">
-                    <property name="title" translatable="true">Filters</property>
+                    <property name="title" translatable="true">Video Filters</property>
                     <child type="suffix">
                       <object class="GtkButton">
                         <property name="icon-name">large-brush-symbolic</property>
@@ -468,6 +468,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Brightness</property>
+                        <signal name="notify::value" handler="on_brightness_spinrow" swapped="yes" />
                         <property name="adjustment">
                           <object class="GtkAdjustment">
                             <property name="lower">-100</property>
@@ -482,6 +483,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Contrast</property>
+                        <signal name="notify::value" handler="on_contrast_spinrow" swapped="yes" />
                         <property name="adjustment">
                           <object class="GtkAdjustment">
                             <property name="lower">-100</property>
@@ -496,6 +498,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Saturation</property>
+                        <signal name="notify::value" handler="on_saturation_spinrow" swapped="yes" />
                         <property name="adjustment">
                           <object class="GtkAdjustment">
                             <property name="lower">-100</property>
@@ -510,6 +513,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Hue</property>
+                        <signal name="notify::value" handler="on_hue_spinrow" swapped="yes" />
                         <property name="adjustment">
                           <object class="GtkAdjustment">
                             <property name="lower">-100</property>
@@ -524,6 +528,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Gamma</property>
+                        <signal name="notify::value" handler="on_gamma_spinrow" swapped="yes" />
                         <property name="adjustment">
                           <object class="GtkAdjustment">
                             <property name="lower">-100</property>
