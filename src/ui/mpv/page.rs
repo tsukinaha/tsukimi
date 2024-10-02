@@ -141,6 +141,12 @@ mod imp {
             klass.install_action("mpv.chapter-next", None, move |mpv, _action, _parameter| {
                 mpv.chapter_next();
             });
+            klass.install_action("mpv.show-settings", None, move |mpv, _action, _parameter| {
+                mpv.on_playlist_clicked();
+            });
+            klass.install_action("mpv.show-playlist", None, move |mpv, _action, _parameter| {
+                mpv.on_playlist_clicked();
+            });
             klass.install_action_async(
                 "mpv.next-video",
                 None,

@@ -90,6 +90,8 @@ fn main() -> glib::ExitCode {
 
     // Initialize the GTK application
     adw::init().expect("Failed to initialize Adw");
+    gtk::init().expect("Failed to initialize GTK");
+    gtk::glib::set_application_name("Tsukimi");
 
     // Make Application detect Windows system dark mode
     #[cfg(target_os = "windows")]
@@ -103,11 +105,10 @@ fn main() -> glib::ExitCode {
     }
 
     // Create a new application
-    let app = adw::Application::builder().application_id(APP_ID).build();
-
-    // load the icon theme
-    let theme = gtk::IconTheme::for_display(&gtk::gdk::Display::default().unwrap());
-    theme.add_resource_path("/moe/tsukimi/icons");
+    let app = adw::Application::builder()
+        .application_id(APP_ID)
+        .resource_base_path("/moe/tsukimi")
+        .build();
 
     // Load the CSS from the resource file
     app.connect_startup(|_| ui::load_css());

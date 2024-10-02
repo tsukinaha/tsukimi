@@ -69,17 +69,17 @@ pub mod imp {
 
             let stops = &[
                 gtk::gsk::ColorStop::new(
-                    f32::max(0.0, ((3.0 / 5.0) as f32 * height) / height),
+                    f32::max(0.0, (0.5 as f32 * height) / height),
                     gdk::RGBA::new(1.0, 1.0, 1.0, 1.0),
                 ),
                 gtk::gsk::ColorStop::new(
-                    f32::min(1.0, ((3.0 / 5.0) as f32 * height + 80_f32) / height),
+                    f32::min(1.0, (0.5 as f32 * height + 140_f32) / height),
                     gdk::RGBA::new(0.0, 0.0, 0.0, 1.0),
                 ),
             ];
 
             snapshot.save();
-            let upper_height = (3.0 * height) / 5.0;
+            let upper_height = (1.0 * height) / 2.0;
             snapshot.push_clip(&graphene::Rect::new(0.0, 0.0, width, upper_height));
             self.parent_snapshot(snapshot);
             snapshot.pop();
@@ -87,7 +87,7 @@ pub mod imp {
 
             snapshot.save();
             let lower_y = upper_height;
-            let lower_height = (2.0 * height) / 5.0;
+            let lower_height = (1.0 * height) / 2.0;
             snapshot.push_clip(&graphene::Rect::new(0.0, lower_y, width, lower_height));
             snapshot.push_blur(40.0);
             self.parent_snapshot(snapshot);

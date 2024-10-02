@@ -4,7 +4,7 @@ use std::{fs::File, io::Read};
 
 pub mod proxy;
 
-pub const APP_VERSION: &str = "0.13.0";
+pub const APP_VERSION: &str = "0.14.0";
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {

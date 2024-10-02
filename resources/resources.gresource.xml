@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/moe/tsukimi/icons/">
+  <gresource prefix="/moe/tsukimi/icons/scalable/actions/">
     <file alias="tsukimi">icons/tsukimi.png</file>
-    <file preprocess="xml-stripblanks" alias="settings-symbolic.svg">icons/settings-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="series.svg">icons/series.svg</file>
+    <file preprocess="xml-stripblanks" alias="settings-symbolic.svg">icons/scalable/actions/settings-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow-pointing-at-line-down-symbolic.svg">icons/scalable/actions/arrow-pointing-at-line-down-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="large-brush-symbolic.svg">icons/scalable/actions/large-brush-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="speed-svgrepo-com.svg">icons/scalable/actions/speed-svgrepo-com.svg</file>
+    <file preprocess="xml-stripblanks" alias="text-bold-symbolic.svg">icons/scalable/actions/text-bold-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="text-italic-symbolic.svg">icons/scalable/actions/text-italic-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="text-justify-center-symbolic.svg">icons/scalable/actions/text-justify-center-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="text-justify-left-symbolic.svg">icons/scalable/actions/text-justify-left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="text-justify-right-symbolic.svg">icons/scalable/actions/text-justify-right-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="skip-backwards-30-symbolic.svg">icons/scalable/actions/skip-backwards-30-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="skip-forward-30-symbolic.svg">icons/scalable/actions/skip-forward-30-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="video-reel2-symbolic.svg">icons/scalable/actions/video-reel2-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="video-reel-symbolic.svg">icons/scalable/actions/video-reel-symbolic.svg</file>
   </gresource>
   <gresource prefix="/moe/tsukimi/">
     <file compressed="true" preprocess="xml-stripblanks">window.ui</file>
@@ -49,5 +60,6 @@
     <file compressed="true" preprocess="xml-stripblanks">listexpand_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">tu_overview_item.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">item_carousel.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">mpv_control_sidebar.ui</file>
   </gresource>
 </gresources>

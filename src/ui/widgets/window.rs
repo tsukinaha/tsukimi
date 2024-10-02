@@ -15,6 +15,7 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::ui::mpv::control_sidebar::MPVControlSidebar;
     use crate::ui::mpv::page::MPVPage;
     use crate::ui::provider::tu_object::TuObject;
     use crate::ui::widgets::content_viewer::MediaContentViewer;
@@ -115,6 +116,7 @@ mod imp {
             LikedPage::ensure_type();
             MPVPage::ensure_type();
             ListExpandRow::ensure_type();
+            MPVControlSidebar::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("win.relogin", None, move |window, _action, _parameter| {
