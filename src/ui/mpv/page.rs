@@ -881,6 +881,7 @@ impl MPVPage {
     fn on_stop_clicked(&self) {
         self.handle_callback(BackType::Stop);
         self.remove_timeout();
+        
         self.imp().video_scale.remove_timeout();
         let mpv = &self.imp().video.imp().mpv;
         mpv.pause(true);
@@ -893,6 +894,16 @@ impl MPVPage {
             .unwrap();
         window.imp().stack.set_visible_child_name("main");
         window.allow_suspend();
+
+        spawn_g_timeout(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                if let Some(timeout) = obj.imp().timeout.take() {
+                    glib::source::SourceId::remove(timeout);
+                }
+            }
+        ));
     }
 
     pub fn update_position_callback(&self) -> glib::ControlFlow {
