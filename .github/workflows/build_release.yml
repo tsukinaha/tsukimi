@@ -134,6 +134,10 @@ jobs:
           retention-days: 3
           if-no-files-found: error
 
+      - name: Set up QEMU
+        if: ${{ matrix.arch == 'x86_64-linux' || matrix.arch == 'aarch64-linux' }}
+        uses: docker/setup-qemu-action@v3
+
       - name: Build ${{ matrix.arch }}
         if: ${{ matrix.arch == 'x86_64-linux' || matrix.arch == 'aarch64-linux' }}
         run: |
