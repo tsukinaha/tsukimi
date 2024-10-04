@@ -5,7 +5,7 @@
     <file preprocess="xml-stripblanks" alias="settings-symbolic.svg">icons/scalable/actions/settings-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="arrow-pointing-at-line-down-symbolic.svg">icons/scalable/actions/arrow-pointing-at-line-down-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="large-brush-symbolic.svg">icons/scalable/actions/large-brush-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="speed-svgrepo-com.svg">icons/scalable/actions/speed-svgrepo-com.svg</file>
+    <file preprocess="xml-stripblanks" alias="speed-svgrepo-com-symbolic.svg">icons/scalable/actions/speed-svgrepo-com-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="text-bold-symbolic.svg">icons/scalable/actions/text-bold-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="text-italic-symbolic.svg">icons/scalable/actions/text-italic-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="text-justify-center-symbolic.svg">icons/scalable/actions/text-justify-center-symbolic.svg</file>
@@ -15,6 +15,7 @@
     <file preprocess="xml-stripblanks" alias="skip-forward-30-symbolic.svg">icons/scalable/actions/skip-forward-30-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="video-reel2-symbolic.svg">icons/scalable/actions/video-reel2-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="video-reel-symbolic.svg">icons/scalable/actions/video-reel-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="check-round-outline2-symbolic.svg">icons/scalable/actions/check-round-outline2-symbolic.svg</file>
   </gresource>
   <gresource prefix="/moe/tsukimi/">
     <file compressed="true" preprocess="xml-stripblanks">window.ui</file>

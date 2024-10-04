@@ -512,7 +512,7 @@
                       <object class="GtkStackPage" id="mpvpage">
                         <property name="name">mpv</property>
                         <property name="child">
-                          <object class="AdwOverlaySplitView">
+                          <object class="AdwOverlaySplitView" id="mpv_view">
                             <property name="collapsed">True</property>
                             <property name="sidebar-position">end</property>
                             <property name="sidebar">

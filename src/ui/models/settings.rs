@@ -156,6 +156,13 @@ impl Settings {
         self.boolean(Self::KEY_MPV_SHOW_BUFFER_SPEED)
     }
 
+    pub fn set_mpv_show_buffer_speed(
+        &self,
+        mpv_show_buffer_speed: bool,
+    ) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_MPV_SHOW_BUFFER_SPEED, mpv_show_buffer_speed)
+    }
+
     pub fn set_mpv_video_output(&self, mpv_video_output: i32) -> Result<(), glib::BoolError> {
         self.set_int(Self::KEY_MPV_VIDEO_OUTPUT, mpv_video_output)
     }

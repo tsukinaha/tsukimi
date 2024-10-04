@@ -69,11 +69,11 @@ pub mod imp {
 
             let stops = &[
                 gtk::gsk::ColorStop::new(
-                    f32::max(0.0, (0.5 as f32 * height) / height),
+                    f32::max(0.0, (0.5_f32 * height) / height),
                     gdk::RGBA::new(1.0, 1.0, 1.0, 1.0),
                 ),
                 gtk::gsk::ColorStop::new(
-                    f32::min(1.0, (0.5 as f32 * height + 140_f32) / height),
+                    f32::min(1.0, (0.5_f32 * height + 140_f32) / height),
                     gdk::RGBA::new(0.0, 0.0, 0.0, 1.0),
                 ),
             ];

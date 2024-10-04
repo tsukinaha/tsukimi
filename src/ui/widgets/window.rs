@@ -89,6 +89,11 @@ mod imp {
         #[template_child]
         pub mpv_control_sidebar: TemplateChild<MPVControlSidebar>,
 
+        #[template_child]
+        pub mpv_view: TemplateChild<adw::OverlaySplitView>,
+        #[template_child]
+        pub mpv_view_stack: TemplateChild<adw::ViewStack>,
+
         pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
         pub progress_bar_fade_animation: OnceCell<adw::TimedAnimation>,
 
@@ -161,7 +166,8 @@ mod imp {
             self.mpv_playlist.set_factory(Some(
                 gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
             ));
-            self.mpv_control_sidebar.set_player(Some(&self.mpvnav.imp().video.get()));
+            self.mpv_control_sidebar
+                .set_player(Some(&self.mpvnav.imp().video.get()));
 
             let obj = self.obj();
             obj.set_fonts();
@@ -824,6 +830,18 @@ impl Window {
             let object = TuObject::new(item);
             store.append(&object);
         }
+    }
+
+    pub fn view_playlist(&self) {
+        let imp = self.imp();
+        imp.mpv_view.set_show_sidebar(!imp.mpv_view.shows_sidebar());
+        imp.mpv_view_stack.set_visible_child_name("playlist");
+    }
+
+    pub fn view_control_sidebar(&self) {
+        let imp = self.imp();
+        imp.mpv_view.set_show_sidebar(!imp.mpv_view.shows_sidebar());
+        imp.mpv_view_stack.set_visible_child_name("control-bar");
     }
 
     #[template_callback]
