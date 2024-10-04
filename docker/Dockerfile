@@ -1,6 +1,7 @@
 ARG ARCH=amd64
+ARG CODENAME=oracular
 
-FROM $ARCH/ubuntu:oracular
+FROM $ARCH/ubuntu:$CODENAME
 
 ENV CARGO_TERM_COLOR=always \
     CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse \

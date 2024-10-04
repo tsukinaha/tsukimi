@@ -67,7 +67,7 @@ mod imp {
         pub sub_border_color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
         pub sub_background_color: TemplateChild<gtk::ColorDialogButton>,
-    
+
         #[template_child]
         pub sub_offset_adj: TemplateChild<gtk::Adjustment>,
         #[template_child]
@@ -208,7 +208,8 @@ impl MPVControlSidebar {
                 "value",
             )
             .build();
-        imp.buffer_switchrow.set_active(SETTINGS.mpv_show_buffer_speed());
+        imp.buffer_switchrow
+            .set_active(SETTINGS.mpv_show_buffer_speed());
         SETTINGS
             .bind(
                 "mpv-show-buffer-speed",
@@ -228,7 +229,9 @@ impl MPVControlSidebar {
     where
         V: SetData,
     {
-        if let Some(player) = self.player() { player.set_property(property, value) }
+        if let Some(player) = self.player() {
+            player.set_property(property, value)
+        }
     }
 
     #[template_callback]
@@ -289,7 +292,9 @@ impl MPVControlSidebar {
 
     #[template_callback]
     pub fn on_buffer_speed(&self, _param: glib::ParamSpec, switch: adw::SwitchRow) {
-        SETTINGS.set_mpv_show_buffer_speed(switch.is_active()).unwrap();
+        SETTINGS
+            .set_mpv_show_buffer_speed(switch.is_active())
+            .unwrap();
     }
 
     #[template_callback]
@@ -424,7 +429,7 @@ impl MPVControlSidebar {
             self.set_mpv_property("af", "pan=[stereo|c0=c1|c1=c0]");
             return;
         }
-        
+
         let channel = match combo.selected() {
             1 => "auto-safe",
             2 => "mono",
