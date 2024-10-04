@@ -483,6 +483,15 @@ impl EmbyClient {
         self.post_json(&path, &[], body).await
     }
 
+    pub async fn get_user_avatar(&self) -> Result<String> {
+        let path = format!("Users/{}/Images/Primary", self.user_id());
+        let params = [("maxHeight", "50"), ("maxWidth", "50")];
+        let response = self.request_picture(&path, &params).await?;
+        let bytes = response.bytes().await?;
+        let path = self.save_image(&self.user_id(), "Primary", None, &bytes);
+        Ok(path)
+    }
+
     pub async fn get_external_id_info(&self, id: &str) -> Result<Vec<ExternalIdInfo>> {
         let path = format!("Items/{}/ExternalIdInfos", id);
         let params = [("IsSupportedAsIdentifier", "true")];

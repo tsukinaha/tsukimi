@@ -184,7 +184,7 @@
                                         <property name="title-lines">1</property>
                                         <property name="subtitle-lines">1</property>
                                         <child type="prefix">
-                                          <object class="AdwAvatar">
+                                          <object class="AdwAvatar" id="avatar">
                                             <property name="size">30</property>
                                             <property name="margin-start">12</property>
                                             <property name="halign">start</property>

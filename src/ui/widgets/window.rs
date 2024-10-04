@@ -94,6 +94,9 @@ mod imp {
         #[template_child]
         pub mpv_view_stack: TemplateChild<adw::ViewStack>,
 
+        #[template_child]
+        pub avatar: TemplateChild<adw::Avatar>,
+
         pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
         pub progress_bar_fade_animation: OnceCell<adw::TimedAnimation>,
 
@@ -212,12 +215,14 @@ use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
 use crate::config::load_cfgv2;
 use crate::config::Account;
+use crate::toast;
 use crate::ui::models::SETTINGS;
 use crate::ui::provider::core_song::CoreSong;
 use crate::ui::provider::tu_item::TuItem;
 use crate::ui::provider::tu_object::TuObject;
 use crate::ui::provider::IS_ADMIN;
 use crate::utils::spawn;
+use crate::utils::spawn_tokio;
 use crate::APP_ID;
 use glib::Object;
 use gtk::{gio, glib, template_callbacks};
@@ -356,6 +361,29 @@ impl Window {
         self.account_setup();
         self.remove_all();
         self.homepage();
+
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                let avatar = match spawn_tokio(async move {
+                    EMBY_CLIENT.get_user_avatar().await
+                }).await {
+                    Ok(avatar) => avatar,
+                    Err(e) => {
+                        toast!(obj, e.to_string());
+                        return;
+                    },
+                };
+
+                let Some(texture) = gtk::gdk::Texture::from_file(&gio::File::for_path(&avatar)).ok() else {
+                    obj.imp().avatar.set_custom_image(None::<&gtk::gdk::Paintable>);
+                    return;
+                };
+                
+                obj.imp().avatar.set_custom_image(Some(&texture));
+            }
+        ));
     }
 
     pub fn hard_set_fraction(&self, to_value: f64) {

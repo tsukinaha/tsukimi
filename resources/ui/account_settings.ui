@@ -326,7 +326,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
-              <object class="AdwAvatar">
+              <object class="AdwAvatar" id="avatar">
                 <property name="size">100</property>
               </object>
             </child>
