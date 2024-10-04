@@ -723,7 +723,7 @@ impl MPVPage {
             return;
         }
 
-        let is_threshold = (old_x - x).abs() > 5.0 || (old_y - y).abs() > 5.0;
+        let is_threshold = (old_x - x).abs() > 3.0 || (old_y - y).abs() > 3.0;
 
         if is_threshold {
             if !self.toolbar_revealed(){
@@ -731,9 +731,9 @@ impl MPVPage {
             }
 
             self.reset_fade_timeout();
-        }
 
-        *imp.last_motion_time.borrow_mut() = now;
+            *imp.last_motion_time.borrow_mut() = now;
+        }
     }
 
     #[template_callback]
@@ -792,6 +792,15 @@ impl MPVPage {
 
     fn fade_overlay_delay_cb(&self) {
         *self.imp().timeout.borrow_mut() = None;
+
+        let binding = self.ancestor(adw::OverlaySplitView::static_type());
+        let Some(view) = binding.and_downcast_ref::<adw::OverlaySplitView>() else {
+            return;
+        };
+
+        if view.shows_sidebar() {
+            return;
+        }
 
         if self.toolbar_revealed() && self.can_fade_overlay() {
             self.set_reveal_overlay(false);
