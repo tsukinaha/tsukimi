@@ -144,7 +144,7 @@ jobs:
           sudo cp -r i18n artifact
           sudo cp moe*.xml artifact
           cd artifact
-          tar -czf tsukimi-${{matrix.target}}-linux.tar.gz tsukimi moe.tsuna.tsukimi.gschema.xml i18n
+          tar -czf tsukimi-${{matrix.arch}}.tar.gz tsukimi moe.tsuna.tsukimi.gschema.xml i18n
 
       - name: Upload artifact
         if: ${{ matrix.arch == 'x86_64-linux' || matrix.arch == 'aarch64-linux' }}
@@ -174,7 +174,8 @@ jobs:
 
       - name: Calculate hash
         run: |
-          mv tsukimi-x86_64-linux-gnu/* .
+          mv tsukimi-x86_64-linux/* .
+          mv tsukimi-aarch64-linux/* .
           mv tsukimi-x86_64-windows-gnu/* .
           sha512sum *.7z > tsukimi.sha512sum
           sha512sum *.exe >> tsukimi.sha512sum
