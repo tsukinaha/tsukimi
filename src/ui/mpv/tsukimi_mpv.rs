@@ -84,6 +84,30 @@ impl Default for TsukimiMPV {
             init.set_property("video-timing-offset", 0)?;
             init.set_property("video-sync", "audio")?;
             init.set_property("vo", "libmpv")?;
+            init.set_property(
+                "demuxer-max-bytes",
+                format!("{}MiB", SETTINGS.mpv_cache_size()),
+            )?;
+            init.set_property("cache-secs", (SETTINGS.mpv_cache_time()) as i64)?;
+            init.set_property("volume", SETTINGS.mpv_default_volume() as i64)?;
+            init.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64)?;
+            init.set_property("sub-font", SETTINGS.mpv_subtitle_font())?;
+            match SETTINGS.mpv_hwdec() {
+                0 => init.set_property("hwdec", "no")?,
+                1 => init.set_property("hwdec", "auto-safe")?,
+                2 => init.set_property("hwdec", "vaapi")?,
+                _ => unreachable!(),
+            };
+            if SETTINGS.mpv_action_after_video_end() == 1 {
+                init.set_property("loop", "inf")?;
+            } else {
+                init.set_property("loop", "no")?;
+            }
+            if SETTINGS.mpv_force_stereo() {
+                init.set_property("audio-channels", "stereo")?;
+            } else {
+                init.set_property("audio-channels", "auto")?;
+            }
             Ok(())
         })
         .expect("Failed to create mpv instance");

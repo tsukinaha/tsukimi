@@ -15,6 +15,7 @@ mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::ui::mpv::control_sidebar::MPVControlSidebar;
     use crate::ui::mpv::page::MPVPage;
     use crate::ui::provider::tu_object::TuObject;
     use crate::ui::widgets::content_viewer::MediaContentViewer;
@@ -85,6 +86,13 @@ mod imp {
         pub searchpage: TemplateChild<adw::Bin>,
         #[template_child]
         pub mpv_playlist: TemplateChild<gtk::ListView>,
+        #[template_child]
+        pub mpv_control_sidebar: TemplateChild<MPVControlSidebar>,
+
+        #[template_child]
+        pub mpv_view: TemplateChild<adw::OverlaySplitView>,
+        #[template_child]
+        pub mpv_view_stack: TemplateChild<adw::ViewStack>,
 
         pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
         pub progress_bar_fade_animation: OnceCell<adw::TimedAnimation>,
@@ -115,6 +123,7 @@ mod imp {
             LikedPage::ensure_type();
             MPVPage::ensure_type();
             ListExpandRow::ensure_type();
+            MPVControlSidebar::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("win.relogin", None, move |window, _action, _parameter| {
@@ -157,6 +166,8 @@ mod imp {
             self.mpv_playlist.set_factory(Some(
                 gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
             ));
+            self.mpv_control_sidebar
+                .set_player(Some(&self.mpvnav.imp().video.get()));
 
             let obj = self.obj();
             obj.set_fonts();
@@ -745,7 +756,6 @@ impl Window {
     fn key_pressed_cb(&self, key: u32, _code: u32, state: gtk::gdk::ModifierType) -> bool {
         if self.is_on_mpv_stack() {
             self.imp().mpvnav.key_pressed_cb(key, state);
-            return true;
         }
         false
     }
@@ -820,6 +830,18 @@ impl Window {
             let object = TuObject::new(item);
             store.append(&object);
         }
+    }
+
+    pub fn view_playlist(&self) {
+        let imp = self.imp();
+        imp.mpv_view.set_show_sidebar(!imp.mpv_view.shows_sidebar());
+        imp.mpv_view_stack.set_visible_child_name("playlist");
+    }
+
+    pub fn view_control_sidebar(&self) {
+        let imp = self.imp();
+        imp.mpv_view.set_show_sidebar(!imp.mpv_view.shows_sidebar());
+        imp.mpv_view_stack.set_visible_child_name("control-bar");
     }
 
     #[template_callback]

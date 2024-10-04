@@ -38,6 +38,7 @@ mod imp {
     use gtk::{glib, CompositeTemplate, PopoverMenu, ShortcutsWindow};
 
     use crate::client::structs::Back;
+    use crate::ui::models::SETTINGS;
     use crate::ui::mpv::menu_actions::MenuActions;
     use crate::ui::mpv::mpvglarea::MPVGLArea;
     use crate::ui::mpv::video_scale::VideoScale;
@@ -141,6 +142,20 @@ mod imp {
             klass.install_action("mpv.chapter-next", None, move |mpv, _action, _parameter| {
                 mpv.chapter_next();
             });
+            klass.install_action(
+                "mpv.show-settings",
+                None,
+                move |mpv, _action, _parameter| {
+                    mpv.on_sidebar_clicked();
+                },
+            );
+            klass.install_action(
+                "mpv.show-playlist",
+                None,
+                move |mpv, _action, _parameter| {
+                    mpv.on_playlist_clicked();
+                },
+            );
             klass.install_action_async(
                 "mpv.next-video",
                 None,
@@ -170,6 +185,18 @@ mod imp {
 
             self.menu_popover.set_position(gtk::PositionType::Top);
             self.menu_popover.set_offset(0, -20);
+
+            SETTINGS
+                .bind(
+                    "mpv-show-buffer-speed",
+                    &self.network_speed_label_2.get(),
+                    "visible",
+                )
+                .build();
+
+            SETTINGS
+                .bind("mpv-default-volume", &self.volume_adj.get(), "value")
+                .build();
 
             self.video_scale.set_player(Some(&self.video.get()));
 
@@ -904,18 +931,44 @@ impl MPVPage {
 
     #[template_callback]
     fn on_playlist_clicked(&self) {
+        let binding = self.root();
+        let Some(window) = binding.and_downcast_ref::<Window>() else {
+            return;
+        };
+        window.view_playlist();
+    }
+
+    fn on_sidebar_clicked(&self) {
+        let binding = self.root();
+        let Some(window) = binding.and_downcast_ref::<Window>() else {
+            return;
+        };
+        window.view_control_sidebar();
+    }
+
+    pub fn key_pressed_cb(&self, key: u32, state: gtk::gdk::ModifierType) {
         let binding = self.ancestor(adw::OverlaySplitView::static_type());
         let Some(view) = binding.and_downcast_ref::<adw::OverlaySplitView>() else {
             return;
         };
-        view.set_show_sidebar(!view.shows_sidebar());
-    }
 
-    pub fn key_pressed_cb(&self, key: u32, state: gtk::gdk::ModifierType) {
+        if view.shows_sidebar() {
+            return;
+        }
+
         self.imp().video.press_key(key, state)
     }
 
     pub fn key_released_cb(&self, key: u32, state: gtk::gdk::ModifierType) {
+        let binding = self.ancestor(adw::OverlaySplitView::static_type());
+        let Some(view) = binding.and_downcast_ref::<adw::OverlaySplitView>() else {
+            return;
+        };
+
+        if view.shows_sidebar() {
+            return;
+        }
+
         self.imp().video.release_key(key, state)
     }
 
@@ -958,32 +1011,9 @@ impl MPVPage {
 
     pub fn load_config(&self) {
         let imp = self.imp();
-        imp.network_speed_label_2
-            .set_visible(SETTINGS.mpv_show_buffer_speed());
-        imp.volume_adj
-            .set_value(SETTINGS.mpv_default_volume() as f64);
         let mpv = &imp.video.imp().mpv;
         if !SETTINGS.proxy().is_empty() {
             mpv.set_property("http-proxy", SETTINGS.proxy());
-        }
-        match SETTINGS.mpv_hwdec() {
-            0 => mpv.set_property("hwdec", "no"),
-            1 => mpv.set_property("hwdec", "auto-safe"),
-            2 => mpv.set_property("hwdec", "vaapi"),
-            _ => unreachable!(),
-        }
-        mpv.set_property(
-            "demuxer-max-bytes",
-            format!("{}MiB", SETTINGS.mpv_cache_size()),
-        );
-        mpv.set_property("cache-secs", (SETTINGS.mpv_cache_time()) as i64);
-        mpv.set_property("volume", SETTINGS.mpv_default_volume() as i64);
-        mpv.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64);
-        mpv.set_property("sub-font", SETTINGS.mpv_subtitle_font());
-        if SETTINGS.mpv_force_stereo() {
-            mpv.set_property("audio-channels", "stereo");
-        } else {
-            mpv.set_property("audio-channels", "auto");
         }
         match SETTINGS.mpv_video_output() {
             0 => mpv.set_property("vo", "libmpv"),
@@ -1008,11 +1038,6 @@ impl MPVPage {
             6 => mpv.set_property("slang", "nob"),
             7 => mpv.set_property("slang", "por"),
             _ => unreachable!(),
-        }
-        if SETTINGS.mpv_action_after_video_end() == 1 {
-            mpv.set_property("loop", "inf");
-        } else {
-            mpv.set_property("loop", "no");
         }
     }
 }

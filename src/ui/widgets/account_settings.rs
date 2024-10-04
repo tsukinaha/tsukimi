@@ -57,36 +57,13 @@ mod imp {
         #[template_child]
         pub fg_color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
-        pub seek_forward_spinrow: TemplateChild<adw::SpinRow>,
-        #[template_child]
-        pub seek_backward_spinrow: TemplateChild<adw::SpinRow>,
-        #[template_child]
         pub config_switchrow: TemplateChild<adw::SwitchRow>,
-
-        #[template_child]
-        pub buffer_switchrow: TemplateChild<adw::SwitchRow>,
-
-        #[template_child]
-        pub cachesize_spinrow: TemplateChild<adw::SpinRow>,
-
-        #[template_child]
-        pub stereo_switchrow: TemplateChild<adw::SwitchRow>,
-
-        #[template_child]
-        pub volume_spinrow: TemplateChild<adw::SpinRow>,
-
-        #[template_child]
-        pub mpv_sub_font_button: TemplateChild<gtk::FontDialogButton>,
-        #[template_child]
-        pub mpv_sub_size_spinrow: TemplateChild<adw::SpinRow>,
 
         #[template_child]
         pub preferred_audio_language_comborow: TemplateChild<adw::ComboRow>,
         #[template_child]
         pub preferred_subtitle_language_comborow: TemplateChild<adw::ComboRow>,
 
-        #[template_child]
-        pub video_subpage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub preferred_version_subpage: TemplateChild<adw::NavigationPage>,
         #[template_child]
@@ -178,17 +155,6 @@ mod imp {
                 None,
                 move |set, _action, _parameter| {
                     set.edit_preferred_version();
-                },
-            );
-            klass.install_action(
-                "setting.subfontclear",
-                None,
-                move |set, _action, _parameter| {
-                    SETTINGS.set_mpv_subtitle_font("".to_string()).unwrap();
-                    set.imp()
-                        .mpv_sub_font_button
-                        .set_font_desc(&gtk::pango::FontDescription::from_string(""));
-                    toast!(set, gettext("Font Cleared"));
                 },
             );
         }
@@ -453,44 +419,7 @@ impl AccountSettings {
             )
             .build();
         SETTINGS
-            .bind(
-                "mpv-seek-backward-step",
-                &imp.seek_backward_spinrow.get(),
-                "value",
-            )
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-seek-forward-step",
-                &imp.seek_forward_spinrow.get(),
-                "value",
-            )
-            .build();
-        SETTINGS
             .bind("mpv-config", &imp.config_switchrow.get(), "active")
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-show-buffer-speed",
-                &imp.buffer_switchrow.get(),
-                "active",
-            )
-            .build();
-        SETTINGS
-            .bind("mpv-force-stereo", &imp.stereo_switchrow.get(), "active")
-            .build();
-        SETTINGS
-            .bind("mpv-default-volume", &imp.volume_spinrow.get(), "value")
-            .build();
-        SETTINGS
-            .bind("mpv-cache-size", &imp.cachesize_spinrow.get(), "value")
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-subtitle-size",
-                &imp.mpv_sub_size_spinrow.get(),
-                "value",
-            )
             .build();
         SETTINGS
             .bind(
@@ -517,27 +446,7 @@ impl AccountSettings {
             .bind("threads", &imp.threadspinrow.get(), "value")
             .build();
 
-        imp.mpv_sub_font_button
-            .set_font_desc(&gtk::pango::FontDescription::from_string(
-                &SETTINGS.mpv_subtitle_font(),
-            ));
-
         let action_group = gio::SimpleActionGroup::new();
-
-        let action_video_end = gio::ActionEntry::builder("video-end")
-            .parameter_type(Some(&i32::static_variant_type()))
-            .state(SETTINGS.mpv_action_after_video_end().to_variant())
-            .activate(move |_, action, parameter| {
-                let parameter = parameter
-                    .expect("Could not get parameter.")
-                    .get::<i32>()
-                    .expect("The variant needs to be of type `i32`.");
-
-                SETTINGS.set_mpv_action_after_video_end(parameter).unwrap();
-
-                action.set_state(&parameter.to_variant());
-            })
-            .build();
 
         let action_vo = gio::ActionEntry::builder("video-output")
             .parameter_type(Some(&i32::static_variant_type()))
@@ -554,29 +463,8 @@ impl AccountSettings {
             })
             .build();
 
-        let action_hwdec = gio::ActionEntry::builder("hwdec")
-            .parameter_type(Some(&i32::static_variant_type()))
-            .state(SETTINGS.mpv_hwdec().to_variant())
-            .activate(move |_, action, parameter| {
-                let parameter = parameter
-                    .expect("Could not get parameter.")
-                    .get::<i32>()
-                    .expect("The variant needs to be of type `i32`.");
-
-                SETTINGS.set_mpv_hwdec(parameter).unwrap();
-
-                action.set_state(&parameter.to_variant());
-            })
-            .build();
-
-        action_group.add_action_entries([action_video_end, action_vo, action_hwdec]);
+        action_group.add_action_entries([action_vo]);
         self.insert_action_group("setting", Some(&action_group));
-    }
-
-    #[template_callback]
-    fn subpage_activated_cb(&self) {
-        let subpage = self.imp().video_subpage.get();
-        self.push_subpage(&subpage);
     }
 
     #[template_callback]

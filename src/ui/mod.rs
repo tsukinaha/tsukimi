@@ -17,7 +17,7 @@ pub fn build_ui(app: &adw::Application) {
                 .application_name("Tsukimi")
                 .version(crate::config::APP_VERSION)
                 .comments(
-                    "A simple third-party Emby client.\nVersion: tsukimi 0.13.0 \n2024.9.29 19:08",
+                    "A simple third-party Emby client.\nVersion: tsukimi 0.14.0 \n2024.10.02 13:56",
                 )
                 // TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
                 .translator_credits(gettext("translator-credits"))
@@ -66,9 +66,6 @@ pub fn load_css() {
         accent_color,
         accent_color
     ));
-
-    #[cfg(target_os = "windows")]
-    styles.push_str("window {box-shadow:none;}");
 
     provider.load_from_string(&styles);
 

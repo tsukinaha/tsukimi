@@ -18,6 +18,7 @@ resources/ui/list.ui
 resources/ui/listitem.ui
 resources/ui/media_viewer.ui
 resources/ui/metadata_dialog.ui
+resources/ui/mpv_control_sidebar.ui
 resources/ui/player_toolbar.ui
 resources/ui/pop-menu.ui
 resources/ui/search.ui
@@ -39,7 +40,8 @@ src/ui/widgets/boxset.rs
 src/ui/widgets/content_viewer.rs
 src/ui/widgets/disc_box.rs
 src/ui/widgets/home.rs
-src/ui/widgets/image_dialog.rs
+src/ui/mpv/control_sidebar.rs
+src/ui/mpv/page.rs
 src/ui/widgets/image_infocard.rs
 src/ui/widgets/item_actionbox.rs
 src/ui/widgets/item.rs

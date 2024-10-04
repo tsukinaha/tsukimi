@@ -1,3 +1,4 @@
+pub mod control_sidebar;
 pub mod menu_actions;
 pub mod mpvglarea;
 pub mod page;

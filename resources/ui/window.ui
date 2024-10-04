@@ -512,7 +512,7 @@
                       <object class="GtkStackPage" id="mpvpage">
                         <property name="name">mpv</property>
                         <property name="child">
-                          <object class="AdwOverlaySplitView">
+                          <object class="AdwOverlaySplitView" id="mpv_view">
                             <property name="collapsed">True</property>
                             <property name="sidebar-position">end</property>
                             <property name="sidebar">
@@ -523,6 +523,11 @@
                                     <child type="top">
                                       <object class="AdwHeaderBar">
                                         <property name="show-end-title-buttons">false</property>
+                                        <property name="title-widget">
+                                          <object class="AdwViewSwitcher">
+                                            <property name="stack">mpv_view_stack</property>
+                                          </object>
+                                        </property>
                                         <style>
                                           <class name="flat" />
                                         </style>
@@ -560,6 +565,12 @@
                                         </child>
                                         <child>
                                           <object class="AdwViewStackPage">
+                                            <property name="name">control-bar</property>
+                                            <property name="icon-name">settings-symbolic</property>
+                                            <property name="title" translatable="yes">Advanced Settings</property>
+                                            <property name="child">
+                                              <object class="MPVControlSidebar" id="mpv_control_sidebar"/>
+                                            </property>
                                           </object>
                                         </child>
                                       </object>
