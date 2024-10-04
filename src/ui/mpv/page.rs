@@ -726,11 +726,11 @@ impl MPVPage {
         let is_threshold = (old_x - x).abs() > 5.0 || (old_y - y).abs() > 5.0;
 
         if is_threshold {
-            if self.toolbar_revealed() {
-                self.reset_fade_timeout();
-            } else {
+            if !self.toolbar_revealed(){
                 self.set_reveal_overlay(true);
             }
+
+            self.reset_fade_timeout();
         }
 
         *imp.last_motion_time.borrow_mut() = now;
@@ -819,6 +819,21 @@ impl MPVPage {
         let imp = self.imp();
         imp.bottom_revealer.set_reveal_child(reveal);
         imp.top_revealer.set_reveal_child(reveal);
+        let Some(surface) = self.native().and_then(|f| f.surface()) else {
+            return;
+        };
+        let cursor = if reveal {
+            gtk::gdk::Cursor::from_name("default", None)
+        } else {
+            let Some(pixbuf) = gtk::gdk_pixbuf::Pixbuf::new(gtk::gdk_pixbuf::Colorspace::Rgb, true, 8, 1, 1) else {
+                return;
+            };
+            pixbuf.fill(0);
+            let texture = gtk::gdk::Texture::for_pixbuf(&pixbuf);
+            Some(gtk::gdk::Cursor::from_texture(&texture, 0, 0, None))
+        };
+
+        surface.set_cursor(cursor.as_ref());
     }
 
     #[template_callback]
