@@ -1,14 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Abdulrahman <2140398@uj.edu.sa>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-28 17:25+0800\n"
-"PO-Revision-Date: 2024-09-28 04:46+0000\n"
+"PO-Revision-Date: 2024-09-30 00:05+0000\n"
 "Last-Translator: Abdulrahman <2140398@uj.edu.sa>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/tsukimi/main/ar/"
 ">\n"
@@ -533,7 +532,7 @@ msgstr "عرض الصور"
 
 #: resources/ui/images_dialog.ui:32 resources/ui/metadata_dialog.ui:44
 msgid "_Save"
-msgstr "حفظ"
+msgstr "_حفظ"
 
 #: resources/ui/images_dialog.ui:61 resources/ui/metadata_dialog.ui:92
 msgid "Not Available"
@@ -802,7 +801,7 @@ msgstr "الرئيسية"
 msgid "Liked"
 msgstr "المفضلة"
 
-#: resources/ui/window.ui:365
+#: resources/ui/window.ui:365 resources/ui/search.ui:23
 msgid "Search"
 msgstr "بحث"
 
@@ -834,23 +833,23 @@ msgstr "التقديم للأمام"
 msgid "_Next"
 msgstr "_التالي"
 
-#: resources/ui/mpv_menu.ui:15
+#: resources/ui/mpv_menu.ui:15 resources/ui/mpv_menu.ui:16
 msgid "_Previous"
 msgstr "_السابق"
 
-#: resources/ui/mpv_menu.ui:21
+#: resources/ui/mpv_menu.ui:21 resources/ui/mpv_menu.ui:23
 msgid "_Next chapter"
 msgstr "_الفصل التالي"
 
-#: resources/ui/mpv_menu.ui:25
+#: resources/ui/mpv_menu.ui:25 resources/ui/mpv_menu.ui:28
 msgid "_Previous chapter"
 msgstr "_الفصل السابق"
 
-#: resources/ui/mpv_menu.ui:31
+#: resources/ui/mpv_menu.ui:31 resources/ui/mpv_menu.ui:47
 msgid "_Media info"
 msgstr "_معلومات الوسائط"
 
-#: resources/ui/mpv_menu.ui:37
+#: resources/ui/mpv_menu.ui:37 resources/ui/mpv_menu.ui:54
 msgid "_Keyboard shortcuts"
 msgstr "_اختصارات لوحة المفاتيح"
 
@@ -930,6 +929,8 @@ msgstr "تم مسح الخط، أعد التشغيل لتفعيل التغيير
 #: src/ui/widgets/account_settings.rs:705
 #: src/ui/widgets/account_settings.rs:652
 #: src/ui/widgets/account_settings.rs:662
+#: src/ui/widgets/account_settings.rs:694
+#: src/ui/widgets/account_settings.rs:703
 #, fuzzy
 msgid "Descriptor cannot be empty!"
 msgstr "لا يمكن أن تكون كلمة المرور فارغة!"
@@ -941,6 +942,7 @@ msgstr "لا يمكن أن تكون كلمة المرور فارغة!"
 #: src/ui/widgets/account_settings.rs:667
 #: src/ui/widgets/account_settings.rs:670
 #: src/ui/widgets/account_settings.rs:715
+#: src/ui/widgets/account_settings.rs:708
 msgid "Invalid regex"
 msgstr "تعبير عادي غير صالح (Invalid regex)"
 
@@ -978,6 +980,7 @@ msgid "Resume"
 msgstr "استئناف"
 
 #: src/ui/widgets/item.rs:1020 src/ui/widgets/item.rs:1019
+#: src/ui/widgets/item.rs:1024
 msgid "No video source found"
 msgstr "لم يتم العثور على مصدر الفيديو"
 
@@ -1035,7 +1038,7 @@ msgstr "تم بدء المهمة"
 
 #: resources/ui/account_settings.ui:29
 msgid "This is globally effective"
-msgstr ""
+msgstr "هذا يؤثر بشكل عام"
 
 #: resources/ui/account_settings.ui:1011 resources/ui/account_settings.ui:1022
 #, fuzzy
@@ -1044,116 +1047,125 @@ msgstr "لا يوجد محتوى."
 
 #: resources/ui/search.ui:52 src/ui/widgets/list.rs:122
 msgid "BoxSet"
-msgstr ""
+msgstr "مجموعات"
 
 #: resources/ui/search.ui:137
 msgid "Nothing Here or No type selected"
-msgstr ""
+msgstr "لا يوجد شيء هنا أو لم يتم اختيار النوع"
 
 #: resources/ui/search.ui:138
 msgid "Maybe you should try using different search terms"
-msgstr ""
+msgstr "ربما يجب عليك تجربة استخدام مصطلحات بحث مختلفة"
 
 #: src/ui/widgets/list.rs:120
 msgid "All"
-msgstr ""
+msgstr "الكل"
 
 #: src/ui/widgets/list.rs:123
 msgid "Tags"
-msgstr ""
+msgstr "التصنيف"
 
 #: src/ui/widgets/list.rs:124
 msgid "Genres"
-msgstr ""
+msgstr "الأنواع"
 
 #: src/ui/widgets/liked.rs:146
 msgid "Favourite"
-msgstr ""
+msgstr "المفضلة"
 
 #: src/ui/widgets/server_panel.rs:134
 msgid "Revert"
-msgstr ""
+msgstr "تراجع"
 
 #: src/ui/widgets/server_panel.rs:135
-#, fuzzy
 msgid "Confirm"
-msgstr "تأكيد كلمة المرور"
+msgstr "تأكيد"
 
 #: src/ui/widgets/server_panel.rs:270
 msgid "Last execute: "
-msgstr ""
+msgstr "آخر تنفيذ: "
 
 #: src/ui/widgets/server_panel.rs:275
 msgid "Duration: "
-msgstr ""
+msgstr "المدة: "
 
 #: src/ui/widgets/server_panel.rs:280
 msgid "Result: "
-msgstr ""
+msgstr "النتيجة: "
 
 #: src/ui/widgets/account_settings.rs:189
 #: src/ui/widgets/account_settings.rs:191
-#, fuzzy
 msgid "Font Cleared"
-msgstr "تم مسح الذاكرة المؤقتة"
+msgstr "تم مسح الخط"
 
 #: resources/ui/server_panel.ui:47
-#, fuzzy
 msgid "Restart Server"
 msgstr "إعادة تشغيل الخادم"
 
 #: resources/ui/server_panel.ui:58
-#, fuzzy
 msgid "Shutdown Server"
 msgstr "إيقاف تشغيل الخادم"
 
 #: resources/ui/server_panel.ui:78
 msgid "System Logs"
-msgstr ""
+msgstr "سجلات النظام"
 
 #: resources/ui/server_panel.ui:83
 msgid "Activity Logs"
-msgstr ""
+msgstr "سجلات الأنشطة"
 
 #: resources/ui/server_panel.ui:103
 msgid "Tasks"
-msgstr ""
+msgstr "المهام"
 
 #: resources/ui/single_grid.ui:31
-#, fuzzy
 msgid "Change Poster"
-msgstr "تغيير كلمة المرور"
+msgstr "تغيير الملصق"
 
 #: resources/ui/single_grid.ui:57
-#, fuzzy
 msgid "Grid View"
-msgstr "عرض"
+msgstr "عرض الشبكة"
 
 #: resources/ui/single_grid.ui:66
-#, fuzzy
 msgid "List View"
-msgstr "عرض"
+msgstr "عرض القائمة"
 
 #: resources/ui/single_grid.ui:83
 msgid "Ascending"
-msgstr ""
+msgstr "تصاعدي"
 
 #: resources/ui/single_grid.ui:91
 msgid "Descending"
-msgstr ""
+msgstr "تنازلي"
 
 #: resources/ui/single_grid.ui:106
 msgid "Sort By"
-msgstr ""
+msgstr "الترتيب حسب"
 
 #: resources/ui/single_grid.ui:169
 msgid "Nothing Here"
-msgstr ""
+msgstr "لا يوجد شيء هنا"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
 #: src/ui/mod.rs:23
 msgid "translator-credits"
 msgstr "Abdulrahman <2140398@uj.edu.sa>"
+
+#: resources/ui/account_settings.ui:744
+msgid "May cause crashes, Requires restart"
+msgstr "قد يسبب تعطل النظام، يتطلب إعادة التشغيل"
+
+#: resources/ui/mpv_menu.ui:35
+msgid "_Playlist"
+msgstr "_قائمة التشغيل"
+
+#: resources/ui/mpv_menu.ui:40
+msgid "_Advanced settings"
+msgstr "_الإعدادات المتقدمة"
+
+#: src/ui/widgets/music_album.rs:264
+msgid "More From"
+msgstr "المزيد من"
 
 #~ msgid "config=true"
 #~ msgstr "config=true"
