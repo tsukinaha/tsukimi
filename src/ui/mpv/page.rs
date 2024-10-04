@@ -726,7 +726,7 @@ impl MPVPage {
         let is_threshold = (old_x - x).abs() > 3.0 || (old_y - y).abs() > 3.0;
 
         if is_threshold {
-            if !self.toolbar_revealed(){
+            if !self.toolbar_revealed() {
                 self.set_reveal_overlay(true);
             }
 
@@ -834,7 +834,9 @@ impl MPVPage {
         let cursor = if reveal {
             gtk::gdk::Cursor::from_name("default", None)
         } else {
-            let Some(pixbuf) = gtk::gdk_pixbuf::Pixbuf::new(gtk::gdk_pixbuf::Colorspace::Rgb, true, 8, 1, 1) else {
+            let Some(pixbuf) =
+                gtk::gdk_pixbuf::Pixbuf::new(gtk::gdk_pixbuf::Colorspace::Rgb, true, 8, 1, 1)
+            else {
                 return;
             };
             pixbuf.fill(0);

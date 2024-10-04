@@ -28,8 +28,8 @@ jobs:
         include:
           - platform: amd64
             arch: x86_64
-          - platform: arm64
-            arch: aarch64
+          # - platform: arm64
+          #   arch: aarch64
 
     steps:
       - uses: actions/checkout@v4
@@ -44,9 +44,9 @@ jobs:
         run: |
           echo "user=${GITHUB_REPOSITORY_OWNER@L}" >> ${GITHUB_ENV}
 
-      - name: Build Rust project
+      - name: Build tsukimi for ${{ matrix.platform }}
         run: |
-          docker run --rm --platform linux/${{matrix.platform}} -v ${{ github.workspace }}:/app ghcr.io/${{ env.user }}/ubuntu-rust-gtk4:latest
+          docker run --rm --platform linux/${{matrix.platform}} -v ${{ github.workspace }}:/app -v ./docker/entrypoint.sh:/entrypoint.sh ghcr.io/kosette/ubuntu-rust-gtk4:latest
           sudo cp target/release/tsukimi .
           sudo cp target/debian/*.deb .
           sudo cp -r i18n/locale .
