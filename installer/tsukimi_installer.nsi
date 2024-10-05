@@ -1,17 +1,17 @@
+﻿Unicode True
+
 ; Tsukimi Installer Script
 ; 基本设置
 !include "MUI2.nsh"
 !include "FileFunc.nsh"
-
-; 定义版本号
-!define /file VERSION "version.txt"
 
 Name "Tsukimi"
 OutFile "tsukimi-x86_64-windows-gnu-installer.exe"
 InstallDir "$LOCALAPPDATA\Tsukimi"
 RequestExecutionLevel user
 
-; 获取安装大小
+; 获取安装包元数据
+!define /file VERSION "version.txt"
 VIProductVersion "${VERSION}"
 VIAddVersionKey "ProductName" "Tsukimi"
 VIAddVersionKey "FileVersion" "${VERSION}"
@@ -21,16 +21,29 @@ VIAddVersionKey "FileDescription" "Tsukimi Installer"
 
 ; 定义宏以检查并卸载之前的安装
 !macro CheckAndUninstallPrevious
-    IfFileExists "$INSTDIR\uninstall.exe" 0 continue_install
+    ; 初始化一个变量来存储旧安装路径
+    StrCpy $R1 ""
+
+    ; 尝试从注册表读取旧安装路径
+    ReadRegStr $R1 HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tsukimi" "InstallLocation"
+    ${If} $R1 == ""
+        ; 如果注册表中没有，尝试使用默认路径
+        StrCpy $R1 "$LOCALAPPDATA\Tsukimi"
+    ${EndIf}
+
+    ; 检查卸载程序是否存在
+    IfFileExists "$R1\uninstall.exe" 0 continue_install
         MessageBox MB_OKCANCEL|MB_ICONINFORMATION "$(PreviousInstallDetected)" IDOK uninstall
         Abort ; 如果用户选择取消，则中止安装
     uninstall:
         ; 执行卸载操作
-        ExecWait '"$INSTDIR\uninstall.exe" /S _?=$INSTDIR' $0
+        ExecWait '"$R1\uninstall.exe" /S _?=$R1' $0
         ${If} $0 != 0
             MessageBox MB_OK|MB_ICONSTOP "$(UninstallFailed)"
             Abort
         ${EndIf}
+        ; 将安装目录设置为旧版本的目录
+        StrCpy $INSTDIR $R1
     continue_install:
 !macroend
 
@@ -93,6 +106,7 @@ Section "$(SecTsukimiName)" SecTsukimi
 
     ; 写入卸载信息到注册表
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tsukimi" "DisplayName" "Tsukimi"
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tsukimi" "InstallLocation" "$INSTDIR"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tsukimi" "UninstallString" '"$INSTDIR\uninstall.exe"'
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tsukimi" "DisplayIcon" "$INSTDIR\bin\tsukimi.exe"
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tsukimi" "Publisher" "tsukinaha"
@@ -107,6 +121,7 @@ Section "$(SecTsukimiName)" SecTsukimi
 SectionEnd
 
 Section "$(SecDesktopShortcutName)" SecDesktopShortcut
+    SectionIn 1
     CreateShortcut "$DESKTOP\Tsukimi.lnk" "$INSTDIR\bin\tsukimi.exe"
 SectionEnd
 
@@ -135,8 +150,11 @@ SectionEnd
 
 ; 安装程序初始化函数
 Function .onInit
-    ; 设置默认语言为英语
+    ; 设置默认语言
     !insertmacro MUI_LANGDLL_DISPLAY
+
+    ; 设置默认安装目录
+    StrCpy $INSTDIR "$LOCALAPPDATA\Tsukimi"
 
     ; 检查并卸载之前的安装
     !insertmacro CheckAndUninstallPrevious
