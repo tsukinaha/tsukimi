@@ -902,6 +902,7 @@ impl MPVPage {
                 if let Some(timeout) = obj.imp().timeout.take() {
                     glib::source::SourceId::remove(timeout);
                 }
+                obj.set_reveal_overlay(true);
             }
         ));
     }

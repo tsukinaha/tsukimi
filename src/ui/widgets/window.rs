@@ -784,7 +784,12 @@ impl Window {
     fn key_pressed_cb(&self, key: u32, _code: u32, state: gtk::gdk::ModifierType) -> bool {
         if self.is_on_mpv_stack() {
             self.imp().mpvnav.key_pressed_cb(key, state);
+            if self.imp().mpv_view.shows_sidebar() {
+                return false;
+            }
+            return true;
         }
+
         false
     }
 
