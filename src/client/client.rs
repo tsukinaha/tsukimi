@@ -18,9 +18,7 @@ use crate::{
 use once_cell::sync::Lazy;
 
 use super::structs::{
-    ActivityLogs, AuthenticateResponse, Back, ExternalIdInfo, ImageItem, Item, List, LiveMedia,
-    LoginResponse, Media, RemoteSearchInfo, RemoteSearchResult, ScheduledTask, SerInList,
-    ServerInfo, SimpleListItem,
+    ActivityLogs, AuthenticateResponse, Back, ExternalIdInfo, ImageItem, Item, List, LiveMedia, LoginResponse, Media, PublicServerInfo, RemoteSearchInfo, RemoteSearchResult, ScheduledTask, SerInList, ServerInfo, SimpleListItem
 };
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
@@ -996,6 +994,10 @@ impl EmbyClient {
 
     pub async fn get_server_info(&self) -> Result<ServerInfo> {
         self.request("System/Info", &[]).await
+    }
+
+    pub async fn get_server_info_public(&self) -> Result<PublicServerInfo> {
+        self.request("System/Info/Public", &[]).await
     }
 
     pub async fn shut_down(&self) -> Result<Response> {

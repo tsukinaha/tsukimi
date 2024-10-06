@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-04 15:06+0800\n"
+"POT-Creation-Date: 2024-10-06 12:19+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -289,25 +289,28 @@ msgstr ""
 msgid "_Add"
 msgstr ""
 
-#: resources/ui/account.ui:60 resources/ui/actor.ui:53
-#: resources/ui/boxset.ui:55
-msgid "Name"
+#: resources/ui/account.ui:60
+msgid "Name (Nullable)"
 msgstr ""
 
 #: resources/ui/account.ui:65
-msgid "Server Address"
+msgid "Server Address (Auto parse)"
 msgstr ""
 
-#: resources/ui/account.ui:70
+#: resources/ui/account.ui:84
 msgid "Port"
 msgstr ""
 
-#: resources/ui/account.ui:77
+#: resources/ui/account.ui:91
 msgid "Username"
 msgstr ""
 
-#: resources/ui/account.ui:82
-msgid "Password"
+#: resources/ui/account.ui:96
+msgid "Password (Nullable)"
+msgstr ""
+
+#: resources/ui/actor.ui:53 resources/ui/boxset.ui:55
+msgid "Name"
 msgstr ""
 
 #: resources/ui/actor.ui:71 resources/ui/boxset.ui:105
@@ -316,11 +319,11 @@ msgstr ""
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:155
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:843 src/ui/mpv/page.rs:845 src/ui/widgets/item.rs:481
+#: src/ui/mpv/page.rs:869 src/ui/mpv/page.rs:871 src/ui/widgets/item.rs:481
 msgid "Play"
 msgstr ""
 
-#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:848 src/ui/mpv/page.rs:850
+#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:874 src/ui/mpv/page.rs:876
 msgid "Pause"
 msgstr ""
 
@@ -342,8 +345,8 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: resources/ui/mpvpage.ui:257 resources/ui/window.ui:520
-#: resources/ui/window.ui:542 resources/ui/mpv_menu.ui:35
+#: resources/ui/mpvpage.ui:257 resources/ui/window.ui:523
+#: resources/ui/window.ui:545 resources/ui/mpv_menu.ui:35
 msgid "Playlist"
 msgstr ""
 
@@ -834,7 +837,7 @@ msgstr ""
 msgid "Servers"
 msgstr ""
 
-#: resources/ui/window.ui:570
+#: resources/ui/window.ui:573
 msgid "Advanced Settings"
 msgstr ""
 
@@ -895,51 +898,51 @@ msgstr ""
 msgid "Links"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:99
+#: src/ui/widgets/account_add.rs:110
 msgid "Fields must be filled in"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:145
+#: src/ui/widgets/account_add.rs:172
 msgid "Account added successfully"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:214
+#: src/ui/widgets/account_settings.rs:217
 msgid "Password cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:218
+#: src/ui/widgets/account_settings.rs:221
 msgid "Passwords do not match!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:225
+#: src/ui/widgets/account_settings.rs:228
 msgid "Password changed successfully! Please login again."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:231
+#: src/ui/widgets/account_settings.rs:234
 msgid "Failed to change password"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:306
+#: src/ui/widgets/account_settings.rs:309
 msgid "Cache Cleared"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:327
+#: src/ui/widgets/account_settings.rs:330
 msgid "No file selected"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:403
+#: src/ui/widgets/account_settings.rs:406
 msgid "Font Cleared, Restart to take effect."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:539
-#: src/ui/widgets/account_settings.rs:548
-#: src/ui/widgets/account_settings.rs:582
-#: src/ui/widgets/account_settings.rs:591
+#: src/ui/widgets/account_settings.rs:564
+#: src/ui/widgets/account_settings.rs:573
+#: src/ui/widgets/account_settings.rs:607
+#: src/ui/widgets/account_settings.rs:616
 msgid "Descriptor cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:553
-#: src/ui/widgets/account_settings.rs:596
+#: src/ui/widgets/account_settings.rs:578
+#: src/ui/widgets/account_settings.rs:621
 msgid "Invalid regex"
 msgstr ""
 
@@ -955,19 +958,19 @@ msgstr ""
 msgid "Latest"
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:372
+#: src/ui/mpv/control_sidebar.rs:377
 msgid "Video filter settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:389
+#: src/ui/mpv/control_sidebar.rs:394
 msgid "Subtitle settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:402
+#: src/ui/mpv/control_sidebar.rs:407
 msgid "Subtitle color settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:411
+#: src/ui/mpv/control_sidebar.rs:416
 msgid "Subtitle offset settings cleared."
 msgstr ""
 
