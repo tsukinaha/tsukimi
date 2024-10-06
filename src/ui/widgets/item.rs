@@ -553,9 +553,12 @@ impl ItemPage {
         ));
 
         for media in &playbackinfo.media_sources {
+            let line2 = media.bit_rate
+                .map(|bit_rate| format!("{:.2} Kbps", bit_rate as f64 / 1_000.0))
+                .unwrap_or_default();
             let Ok(dl) = DropdownListBuilder::default()
                 .line1(Some(media.name.clone()))
-                .line2(Some(media.container.clone()))
+                .line2(Some(line2))
                 .direct_url(media.direct_stream_url.clone())
                 .id(Some(media.id.clone()))
                 .build()
@@ -798,8 +801,8 @@ impl ItemPage {
             let info = format!(
                 "{}\n{} {} {}\n{}",
                 mediasource.path.unwrap_or_default(),
-                mediasource.container.to_uppercase(),
-                bytefmt::format(mediasource.size),
+                mediasource.container.unwrap_or_default().to_uppercase(),
+                bytefmt::format(mediasource.size.unwrap_or_default()),
                 dt(date_created),
                 mediasource.name
             );

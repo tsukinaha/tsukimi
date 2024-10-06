@@ -668,7 +668,7 @@ pub fn run_time_ticks_to_label(run_time_ticks: u64) -> String {
     let seconds = duration.num_seconds() % 60;
 
     if hours > 0 {
-        format!("{}:{:02}", hours, minutes)
+        format!("{}:{:02}:{:02}", hours, minutes, seconds)
     } else {
         format!("{}:{:02}", minutes, seconds)
     }

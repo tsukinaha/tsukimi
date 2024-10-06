@@ -76,11 +76,15 @@ pub struct MediaSource {
     #[serde(rename = "Name")]
     pub name: String,
     #[serde(rename = "Size")]
-    pub size: u64,
+    pub size: Option<u64>,
     #[serde(rename = "Path")]
     pub path: Option<String>,
+    #[serde(rename = "RunTimeTicks")]
+    pub run_time_ticks: Option<u64>,
+    #[serde(rename = "Bitrate")]
+    pub bit_rate: Option<u64>,
     #[serde(rename = "Container")]
-    pub container: String,
+    pub container: Option<String>,
     #[serde(rename = "DirectStreamUrl")]
     pub direct_stream_url: Option<String>,
     #[serde(rename = "MediaStreams")]
