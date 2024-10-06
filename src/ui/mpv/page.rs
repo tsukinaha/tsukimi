@@ -881,7 +881,7 @@ impl MPVPage {
     fn on_stop_clicked(&self) {
         self.handle_callback(BackType::Stop);
         self.remove_timeout();
-        
+
         self.imp().video_scale.remove_timeout();
         let mpv = &self.imp().video.imp().mpv;
         mpv.pause(true);

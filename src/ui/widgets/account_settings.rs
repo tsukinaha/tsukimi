@@ -448,20 +448,21 @@ impl AccountSettings {
             #[weak(rename_to = obj)]
             self,
             async move {
-                let avatar = match spawn_tokio(async move {
-                    EMBY_CLIENT.get_user_avatar().await
-                }).await {
-                    Ok(avatar) => avatar,
-                    Err(e) => {
-                        toast!(obj, e.to_string());
-                        return;
-                    },
-                };
+                let avatar =
+                    match spawn_tokio(async move { EMBY_CLIENT.get_user_avatar().await }).await {
+                        Ok(avatar) => avatar,
+                        Err(e) => {
+                            toast!(obj, e.to_string());
+                            return;
+                        }
+                    };
 
-                let Some(texture) = gtk::gdk::Texture::from_file(&gio::File::for_path(&avatar)).ok() else {
+                let Some(texture) =
+                    gtk::gdk::Texture::from_file(&gio::File::for_path(&avatar)).ok()
+                else {
                     return;
                 };
-                
+
                 obj.imp().avatar.set_custom_image(Some(&texture));
             }
         ));
