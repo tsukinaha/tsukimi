@@ -169,6 +169,17 @@ impl AccountWindow {
             return;
         };
 
+        // Prevent Gtk-WARNING **: Cannot begin irreversible action while in user action
+        glib::idle_add_local_once(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move || {
+                obj.parse_url(&url);  
+            }
+        ));
+    }
+
+    fn parse_url(&self, url: &url::Url) {
         match url.scheme() {
             "http" => {
                 self.imp().protocol.set_selected(0);
@@ -188,6 +199,7 @@ impl AccountWindow {
 
         if let Some(host) = url.host_str() {
             self.imp().server_entry.set_text(host);
+            self.imp().server_entry.set_position(-1);
         }
     }
 }
