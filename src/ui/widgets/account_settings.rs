@@ -49,8 +49,6 @@ mod imp {
         #[template_child]
         pub font: TemplateChild<gtk::FontDialogButton>,
         #[template_child]
-        pub dailyrecommendcontrol: TemplateChild<adw::SwitchRow>,
-        #[template_child]
         pub color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
         pub fg_color: TemplateChild<gtk::ColorDialogButton>,
@@ -388,13 +386,6 @@ impl AccountSettings {
             .build();
         SETTINGS
             .bind("pic-blur", &imp.backgroundblurspinrow.get(), "value")
-            .build();
-        SETTINGS
-            .bind(
-                "is-daily-recommend",
-                &imp.dailyrecommendcontrol.get(),
-                "active",
-            )
             .build();
         SETTINGS
             .bind("mpv-config", &imp.config_switchrow.get(), "active")

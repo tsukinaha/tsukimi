@@ -941,22 +941,6 @@ impl EmbyClient {
         id, &self.user_id(), &DEVICE_ID.to_string(), self.user_access_token.lock().unwrap(), )).unwrap().to_string()
     }
 
-    pub async fn get_random(&self) -> Result<List> {
-        let path = format!("Users/{}/Items", &self.user_id());
-        let params = [
-            ("Fields", "ProductionYear,CommunityRating"),
-            ("EnableImageTypes", "Logo,Backdrop"),
-            ("ImageTypeLimit", "1"),
-            ("EnableTotalRecordCount", "false"),
-            ("SortBy", "Random"),
-            ("Limit", "10"),
-            ("Recursive", "true"),
-            ("IncludeItemTypes", "Series"),
-            ("EnableUserData", "false"),
-        ];
-        self.request(&path, &params).await
-    }
-
     fn user_id(&self) -> String {
         self.user_id.lock().unwrap().to_string()
     }

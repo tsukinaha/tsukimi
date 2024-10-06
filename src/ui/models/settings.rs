@@ -25,7 +25,6 @@ impl Settings {
     const KEY_IS_AUTO_SELECT_SERVER: &'static str = "is-auto-select-server";
     const KEY_FONT_SIZE: &'static str = "font-size";
     const KEY_FONT_NAME: &'static str = "font-name";
-    const KEY_DAILY_RECOMMEND: &'static str = "is-daily-recommend";
     const KEY_LIST_SORT_BY: &'static str = "list-sort-by";
     const KEY_LIST_SORT_ORDER: &'static str = "list-sort-order";
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
@@ -278,10 +277,6 @@ impl Settings {
 
     pub fn list_sort_by(&self) -> i32 {
         self.int(Self::KEY_LIST_SORT_BY)
-    }
-
-    pub fn daily_recommend(&self) -> bool {
-        self.boolean(Self::KEY_DAILY_RECOMMEND)
     }
 
     pub fn set_font_name(&self, font_name: &str) -> Result<(), glib::BoolError> {
