@@ -604,13 +604,12 @@ impl ItemPage {
         }
     }
 
-    pub async fn add_backdrops(&self, image_tags: Vec<String>) {
+    pub async fn add_backdrops(&self, image_tags: Vec<String>, id: &str) {
         let imp = self.imp();
-        let id = self.item().id();
         let tags = image_tags.len();
         let carousel = imp.carousel.imp().carousel.get();
         for tag_num in 1..tags {
-            let path = get_image_with_cache(&id, "Backdrop", Some(tag_num as u8))
+            let path = get_image_with_cache(id, "Backdrop", Some(tag_num as u8))
                 .await
                 .unwrap();
             let file = gtk::gio::File::for_path(&path);
@@ -761,7 +760,7 @@ impl ItemPage {
                     obj.set_flowbuttons(genres, "Genres");
                 }
                 if let Some(image_tags) = item.backdrop_image_tags {
-                    obj.add_backdrops(image_tags).await;
+                    obj.add_backdrops(image_tags, &item.id).await;
                 }
                 if let Some(part_count) = item.part_count {
                     if part_count > 1 {
