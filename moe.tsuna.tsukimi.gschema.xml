@@ -179,5 +179,9 @@
       <description>[(descriptor, is_regex, weight)]</description>
 			<default>'[]'</default>
 		</key>
+    <key type="s" name="accounts">
+			<summary>List of the accounts</summary>
+			<default>'[]'</default>
+		</key>
   </schema>
 </schemalist>

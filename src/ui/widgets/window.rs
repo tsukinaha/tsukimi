@@ -213,7 +213,6 @@ mod imp {
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
-use crate::config::load_cfgv2;
 use crate::config::Account;
 use crate::toast;
 use crate::ui::models::SETTINGS;
@@ -230,6 +229,7 @@ use gtk::{gio, glib, template_callbacks};
 use super::home::HomePage;
 use super::liked::LikedPage;
 use super::search::SearchPage;
+use super::server_action_row;
 use super::server_panel::ServerPanel;
 use super::server_row::ServerRow;
 use super::tu_list_item::PROGRESSBAR_ANIMATION_DURATION;
@@ -306,8 +306,8 @@ impl Window {
         let imp = self.imp();
         let listbox = imp.serversbox.get();
         listbox.remove_all();
-        let accounts = load_cfgv2().unwrap();
-        for account in &accounts.accounts {
+        let accounts = SETTINGS.accounts();
+        for account in &accounts {
             if SETTINGS.auto_select_server()
                 && account.servername == SETTINGS.preferred_server()
                 && EMBY_CLIENT.user_id.lock().unwrap().is_empty()
@@ -316,36 +316,89 @@ impl Window {
                 self.reset();
             }
         }
-        if accounts.accounts.is_empty() {
+        if accounts.is_empty() {
             imp.login_stack.set_visible_child_name("no-server");
             return;
         } else {
             imp.login_stack.set_visible_child_name("servers");
         }
-        for account in accounts.accounts {
-            listbox.append(&self.set_server_rows(account));
-        }
-        listbox.connect_row_activated(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            move |_, row| {
-                unsafe {
-                    let account_ptr: std::ptr::NonNull<Account> = row.data("account").unwrap();
-                    let account: &Account = &*account_ptr.as_ptr();
-                    let _ = EMBY_CLIENT.init(account);
-                    SETTINGS.set_preferred_server(&account.servername).unwrap();
+        for (index, account) in accounts.iter().enumerate() {
+            let server_action_row = server_action_row::ServerActionRow::new(account.clone());
+
+            let drag_source = gtk::DragSource::builder()
+                .name("descriptor-drag-format")
+                .actions(gtk::gdk::DragAction::MOVE)
+                .build();
+
+            drag_source.connect_prepare(glib::clone!(
+                #[weak(rename_to = widget)]
+                server_action_row,
+                #[weak]
+                listbox,
+                #[strong]
+                account,
+                #[upgrade_or]
+                None,
+                move |drag_context, _x, _y| {
+                    listbox.drag_highlight_row(&widget);
+                    let icon = gtk::WidgetPaintable::new(Some(&widget));
+                    drag_context.set_icon(Some(&icon), 0, 0);
+                    let object = glib::BoxedAnyObject::new(account.clone());
+                    Some(gtk::gdk::ContentProvider::for_value(&object.to_value()))
                 }
-                obj.reset();
-            }
-        ));
+            ));
+
+            let drop_target = gtk::DropTarget::builder()
+                .name("descriptor-drag-format")
+                .propagation_phase(gtk::PropagationPhase::Capture)
+                .actions(gtk::gdk::DragAction::MOVE)
+                .build();
+
+            drop_target.set_types(&[glib::BoxedAnyObject::static_type()]);
+
+            drop_target.connect_drop(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[strong]
+                account,
+                #[upgrade_or]
+                false,
+                move |_drop_target, value, _y, _data| {
+                    let lr_account = value
+                        .get::<glib::BoxedAnyObject>()
+                        .expect("Failed to get descriptor from drop data");
+                    let lr_account: std::cell::Ref<Account> = lr_account.borrow();
+
+                    if account == *lr_account {
+                        return false;
+                    }
+
+                    let mut accounts = SETTINGS.accounts();
+                    let lr_index = accounts.iter().position(|d| *d == *lr_account).unwrap();
+                    accounts.remove(lr_index);
+                    accounts.insert(index, lr_account.clone());
+                    SETTINGS
+                        .set_accounts(accounts)
+                        .expect("Failed to set accounts");
+                    obj.set_servers();
+
+                    true
+                }
+            ));
+
+            server_action_row.add_controller(drag_source);
+            server_action_row.add_controller(drop_target);
+
+            listbox.append(&server_action_row);
+        }
     }
 
     pub fn set_nav_servers(&self) {
         let imp = self.imp();
         let listbox = imp.serverselectlist.get();
         listbox.remove_all();
-        let accounts = load_cfgv2().unwrap();
-        for account in accounts.accounts {
+        let accounts = SETTINGS.accounts();
+        for account in accounts {
             listbox.append(&ServerRow::new(account));
         }
     }
@@ -376,7 +429,7 @@ impl Window {
                     };
 
                 let Some(texture) =
-                    gtk::gdk::Texture::from_file(&gio::File::for_path(&avatar)).ok()
+                    gtk::gdk::Texture::from_file(&gio::File::for_path(avatar)).ok()
                 else {
                     obj.imp()
                         .avatar
@@ -393,38 +446,6 @@ impl Window {
         let progressbar = &self.imp().progressbar;
         self.progressbar_animation().pause();
         progressbar.set_fraction(to_value);
-    }
-
-    pub fn set_server_rows(&self, account: Account) -> adw::ActionRow {
-        let account_clone = account.clone();
-        let row = adw::ActionRow::builder()
-            .title(&account.servername)
-            .subtitle(&account.username)
-            .height_request(80)
-            .activatable(true)
-            .build();
-        unsafe {
-            row.set_data("account", account);
-        }
-        row.add_suffix(&{
-            let button = gtk::Button::builder()
-                .icon_name("user-trash-symbolic")
-                .valign(gtk::Align::Center)
-                .build();
-            button.add_css_class("flat");
-            button.connect_clicked(glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                move |_| {
-                    crate::config::remove(&account_clone).unwrap();
-                    obj.set_servers();
-                    obj.set_nav_servers();
-                }
-            ));
-            button
-        });
-        row.add_css_class("serverrow");
-        row
     }
 
     pub fn account_setup(&self) {

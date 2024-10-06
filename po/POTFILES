@@ -25,6 +25,7 @@ resources/ui/search.ui
 resources/ui/server_row.ui
 resources/ui/singlelist.ui
 resources/ui/server_panel.ui
+resources/ui/server_action_row.ui
 resources/ui/single_grid.ui
 resources/ui/song_widget.ui
 resources/ui/window.ui

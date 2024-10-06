@@ -31,6 +31,7 @@ pub mod player_toolbar;
 pub mod refresh_dialog;
 pub mod scale_revealer;
 pub mod search;
+pub mod server_action_row;
 pub mod server_panel;
 pub mod server_row;
 pub mod single_grid;

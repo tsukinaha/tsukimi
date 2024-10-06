@@ -19,7 +19,6 @@ mod imp {
     #[template(resource = "/moe/tsukimi/server_row.ui")]
     #[properties(wrapper_type = super::ServerRow)]
     pub struct ServerRow {
-        /// The room represented by this row.
         #[property(get, set, construct_only)]
         pub item: OnceCell<AccountItem>,
         #[template_child]
@@ -64,7 +63,6 @@ mod imp {
 }
 
 glib::wrapper! {
-    /// A sidebar row representing a room.
     pub struct ServerRow(ObjectSubclass<imp::ServerRow>)
         @extends gtk::Widget, gtk::ListBoxRow, @implements gtk::Accessible;
 }

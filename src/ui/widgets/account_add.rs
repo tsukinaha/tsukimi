@@ -1,5 +1,4 @@
 use adw::prelude::AdwDialogExt;
-use adw::Toast;
 use gettextrs::gettext;
 use glib::Object;
 use gtk::glib;
@@ -9,9 +8,9 @@ use gtk::template_callbacks;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::config::save_cfg;
 use crate::config::Account;
 use crate::toast;
+use crate::ui::models::SETTINGS;
 use crate::utils::spawn_tokio;
 
 mod imp {
@@ -38,7 +37,7 @@ mod imp {
         #[template_child]
         pub toast: TemplateChild<adw::ToastOverlay>,
         #[template_child]
-        pub spinner: TemplateChild<adw::Spinner>,
+        pub stack: TemplateChild<gtk::Stack>,
 
         #[template_child]
         pub protocol: TemplateChild<gtk::DropDown>,
@@ -103,11 +102,11 @@ impl AccountWindow {
         let password = imp.password_entry.text();
         let port = imp.port_entry.text();
         if server.is_empty() || username.is_empty() || port.is_empty() {
-            toast!(imp.spinner, gettext("Fields must be filled in"));
+            toast!(imp.stack, gettext("Fields must be filled in"));
             return;
         }
 
-        imp.spinner.set_visible(true);
+        imp.stack.set_visible_child_name("loading");
 
         let server = format!("{protocol}{server}");
 
@@ -119,8 +118,8 @@ impl AccountWindow {
             match spawn_tokio(async move { EMBY_CLIENT.login(&username, &password).await }).await {
                 Ok(res) => res,
                 Err(e) => {
-                    toast!(imp.spinner, e.to_user_facing());
-                    imp.spinner.set_visible(false);
+                    toast!(imp.stack, e.to_user_facing());
+                    imp.stack.set_visible_child_name("entry");
                     return;
                 }
             };
@@ -131,8 +130,8 @@ impl AccountWindow {
             {
                 Ok(res) => res,
                 Err(e) => {
-                    toast!(imp.spinner, e.to_user_facing());
-                    imp.spinner.set_visible(false);
+                    toast!(imp.stack, e.to_user_facing());
+                    imp.stack.set_visible_child_name("entry");
                     return;
                 }
             };
@@ -150,21 +149,11 @@ impl AccountWindow {
             access_token: res.access_token,
         };
 
-        match save_cfg(account).await {
-            Ok(_) => (),
-            Err(e) => {
-                imp.toast.add_toast(
-                    Toast::builder()
-                        .timeout(3)
-                        .title(e.to_user_facing())
-                        .build(),
-                );
-                imp.spinner.set_visible(false);
-                return;
-            }
-        };
+        SETTINGS
+            .add_account(account)
+            .expect("Failed to add account");
 
-        imp.spinner.set_visible(false);
+        imp.stack.set_visible_child_name("entry");
         self.close();
         let window = self.root().and_downcast::<super::window::Window>().unwrap();
         toast!(self, gettext("Account added successfully"));
