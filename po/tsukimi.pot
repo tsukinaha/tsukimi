@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-06 17:26+0800\n"
+"POT-Creation-Date: 2024-10-06 18:55+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -422,7 +422,7 @@ msgstr ""
 msgid "Subtitle: "
 msgstr ""
 
-#: resources/ui/item.ui:264 src/ui/widgets/home.rs:172
+#: resources/ui/item.ui:264 src/ui/widgets/home.rs:150
 msgid "Continue Watching"
 msgstr ""
 
@@ -918,43 +918,43 @@ msgstr ""
 msgid "Account added successfully"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:208
+#: src/ui/widgets/account_settings.rs:206
 msgid "Password cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:212
+#: src/ui/widgets/account_settings.rs:210
 msgid "Passwords do not match!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:219
+#: src/ui/widgets/account_settings.rs:217
 msgid "Password changed successfully! Please login again."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:225
+#: src/ui/widgets/account_settings.rs:223
 msgid "Failed to change password"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:284
+#: src/ui/widgets/account_settings.rs:282
 msgid "Cache Cleared"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:305
+#: src/ui/widgets/account_settings.rs:303
 msgid "No file selected"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:381
+#: src/ui/widgets/account_settings.rs:379
 msgid "Font Cleared, Restart to take effect."
 msgstr ""
 
+#: src/ui/widgets/account_settings.rs:531
 #: src/ui/widgets/account_settings.rs:540
-#: src/ui/widgets/account_settings.rs:549
+#: src/ui/widgets/account_settings.rs:574
 #: src/ui/widgets/account_settings.rs:583
-#: src/ui/widgets/account_settings.rs:592
 msgid "Descriptor cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:554
-#: src/ui/widgets/account_settings.rs:597
+#: src/ui/widgets/account_settings.rs:545
+#: src/ui/widgets/account_settings.rs:588
 msgid "Invalid regex"
 msgstr ""
 
@@ -962,11 +962,11 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
-#: src/ui/widgets/home.rs:194
+#: src/ui/widgets/home.rs:172
 msgid "Library"
 msgstr ""
 
-#: src/ui/widgets/home.rs:238
+#: src/ui/widgets/home.rs:216
 msgid "Latest"
 msgstr ""
 

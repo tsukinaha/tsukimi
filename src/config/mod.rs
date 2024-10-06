@@ -4,7 +4,7 @@ use crate::ui::provider::descriptor::VecSerialize;
 
 pub mod proxy;
 
-pub const APP_VERSION: &str = "0.14.1";
+pub const APP_VERSION: &str = "0.15.0";
 
 #[derive(Serialize, Debug, Deserialize)]
 pub struct Config {
