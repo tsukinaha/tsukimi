@@ -177,16 +177,27 @@ impl MPVControlSidebar {
         let action_hwdec = gio::ActionEntry::builder("hwdec")
             .parameter_type(Some(&i32::static_variant_type()))
             .state(SETTINGS.mpv_hwdec().to_variant())
-            .activate(move |_, action, parameter| {
-                let parameter = parameter
-                    .expect("Could not get parameter.")
-                    .get::<i32>()
-                    .expect("The variant needs to be of type `i32`.");
+            .activate(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_, action, parameter| {
+                    let parameter = parameter
+                        .expect("Could not get parameter.")
+                        .get::<i32>()
+                        .expect("The variant needs to be of type `i32`.");
 
-                SETTINGS.set_mpv_hwdec(parameter).unwrap();
+                    match parameter {
+                        0 => obj.set_mpv_property("hwdec", "no"),
+                        1 => obj.set_mpv_property("hwdec", "auto-safe"),
+                        2 => obj.set_mpv_property("hwdec", "vaapi"),
+                        _ => {}
+                    }
 
-                action.set_state(&parameter.to_variant());
-            })
+                    SETTINGS.set_mpv_hwdec(parameter).unwrap();
+
+                    action.set_state(&parameter.to_variant());
+                }
+            ))
             .build();
 
         action_group.add_action_entries([action_text, action_video_end, action_hwdec]);

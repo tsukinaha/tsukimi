@@ -78,10 +78,12 @@
                                                 <property name="margin-top">12</property>
                                                 <property name="margin-bottom">12</property>
                                                 <property name="vexpand">True</property>
+                                                <property name="tightening-threshold">200</property>
                                                 <child>
                                                   <object class="GtkListBox" id="serversbox">
                                                     <property name="halign">fill</property>
                                                     <property name="valign">start</property>
+                                                    <property name="selection-mode">none</property>
                                                     <style>
                                                       <class name="logo" />
                                                       <class name="boxed-list" />

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
-use std::io::Write;
-use std::{fs::File, io::Read};
+
+use crate::ui::provider::descriptor::VecSerialize;
 
 pub mod proxy;
 
@@ -16,7 +16,7 @@ pub struct Config {
     pub access_token: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct Account {
     pub servername: String,
     pub server: String,
@@ -33,80 +33,9 @@ pub struct Accounts {
     pub accounts: Vec<Account>,
 }
 
-pub async fn save_cfg(account: Account) -> Result<(), Box<dyn std::error::Error>> {
-    let mut path = get_config_dir()?;
-    std::fs::DirBuilder::new().recursive(true).create(&path)?;
-    path.push("tsukimi.toml");
-    let mut accounts: Accounts = load_cfgv2()?;
-    accounts.accounts.push(account);
-    let toml = toml::to_string(&accounts).unwrap_or_else(|err| {
-        eprintln!("Error while serializing accounts: {:?}", err);
-        std::process::exit(1);
-    });
-    let mut file = std::fs::OpenOptions::new()
-        .write(true)
-        .create(true)
-        .truncate(true)
-        .open(&path)?;
-    writeln!(file, "{}", toml)?;
-    Ok(())
-}
-
-pub fn load_cfgv2() -> Result<Accounts, Box<dyn std::error::Error>> {
-    let mut path = get_config_dir()?;
-    path.push("tsukimi.toml");
-    if !path.exists() {
-        return Ok(Accounts {
-            accounts: Vec::new(),
-        });
-    }
-    let mut file = File::open(&path)?;
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
-    let accounts: Accounts = toml::from_str(&contents)?;
-    Ok(accounts)
-}
-
-pub fn remove(account: &Account) -> Result<(), Box<dyn std::error::Error>> {
-    let mut path = get_config_dir()?;
-    path.push("tsukimi.toml");
-    let mut accounts: Accounts = load_cfgv2()?;
-    accounts.accounts.retain(|x| {
-        x.servername != account.servername
-            || x.server != account.server
-            || x.username != account.username
-            || x.password != account.password
-            || x.port != account.port
-            || x.user_id != account.user_id
-            || x.access_token != account.access_token
-    });
-    let toml = toml::to_string(&accounts).unwrap_or_else(|err| {
-        eprintln!("Error while serializing accounts: {:?}", err);
-        std::process::exit(1);
-    });
-    let mut file = std::fs::OpenOptions::new()
-        .write(true)
-        .create(true)
-        .truncate(true)
-        .open(path)?;
-    writeln!(file, "{}", toml)?;
-    Ok(())
-}
-
-// Set %APPDATA%\tsukimi as config_dir on Windows
-pub fn get_config_dir() -> Result<std::path::PathBuf, Box<dyn std::error::Error>> {
-    #[cfg(windows)]
-    {
-        let path = dirs::config_dir()
-            .ok_or("Failed to get %APPDATA%")?
-            .join("tsukimi");
-        Ok(path)
-    }
-
-    #[cfg(unix)]
-    {
-        let path = dirs::config_dir().ok_or("Failed to get home directory")?;
-        Ok(path)
+impl VecSerialize<Account> for Vec<Account> {
+    fn to_string(&self) -> String {
+        serde_json::to_string(&self).expect("Failed to serialize Vec<Descriptor>")
     }
 }
 

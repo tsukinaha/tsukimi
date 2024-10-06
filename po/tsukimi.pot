@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-06 12:19+0800\n"
+"POT-Creation-Date: 2024-10-06 17:26+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,7 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:506
+#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:481
 msgid "Preferred Video Version"
 msgstr ""
 
@@ -42,7 +42,7 @@ msgid "Preferred Audio Language"
 msgstr ""
 
 #: resources/ui/account_settings.ui:41 resources/ui/account_settings.ui:65
-#: resources/ui/account_settings.ui:233
+#: resources/ui/account_settings.ui:208
 msgid "Default"
 msgstr ""
 
@@ -92,192 +92,188 @@ msgid "Network"
 msgstr ""
 
 #: resources/ui/account_settings.ui:181
-msgid "HTTP Proxy"
-msgstr ""
-
-#: resources/ui/account_settings.ui:206
 msgid "Threads"
 msgstr ""
 
-#: resources/ui/account_settings.ui:207
+#: resources/ui/account_settings.ui:182
 msgid "This only effects on getting images"
 msgstr ""
 
-#: resources/ui/account_settings.ui:223
+#: resources/ui/account_settings.ui:198
 msgid "Background"
 msgstr ""
 
-#: resources/ui/account_settings.ui:230
+#: resources/ui/account_settings.ui:205
 msgid "This feature may cause significant lag. Please enable it with caution."
 msgstr ""
 
-#: resources/ui/account_settings.ui:256
+#: resources/ui/account_settings.ui:231
 msgid "Opacity"
 msgstr ""
 
-#: resources/ui/account_settings.ui:270
+#: resources/ui/account_settings.ui:245
 msgid "Blur (Experimental)"
 msgstr ""
 
-#: resources/ui/account_settings.ui:271 resources/ui/account_settings.ui:280
+#: resources/ui/account_settings.ui:246 resources/ui/account_settings.ui:255
 msgid "Warning: High GPU usage"
 msgstr ""
 
-#: resources/ui/account_settings.ui:279
+#: resources/ui/account_settings.ui:254
 msgid "Blur Radius (Experimental)"
 msgstr ""
 
-#: resources/ui/account_settings.ui:300
+#: resources/ui/account_settings.ui:275
 msgid "Cache"
 msgstr ""
 
-#: resources/ui/account_settings.ui:303
+#: resources/ui/account_settings.ui:278
 msgid "Clear Cache"
 msgstr ""
 
-#: resources/ui/account_settings.ui:324
+#: resources/ui/account_settings.ui:299
 msgid "Account"
 msgstr ""
 
-#: resources/ui/account_settings.ui:340
+#: resources/ui/account_settings.ui:315
 msgid "New Password"
 msgstr ""
 
-#: resources/ui/account_settings.ui:345
+#: resources/ui/account_settings.ui:320
 msgid "Confirm Password"
 msgstr ""
 
-#: resources/ui/account_settings.ui:357
+#: resources/ui/account_settings.ui:332
 msgid "Change Password"
 msgstr ""
 
-#: resources/ui/account_settings.ui:374
+#: resources/ui/account_settings.ui:349
 msgid "Music"
 msgstr ""
 
-#: resources/ui/account_settings.ui:379
+#: resources/ui/account_settings.ui:354
 msgid "Player"
 msgstr ""
 
-#: resources/ui/account_settings.ui:382 resources/ui/player_toolbar.ui:197
+#: resources/ui/account_settings.ui:357 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
 msgstr ""
 
-#: resources/ui/account_settings.ui:386 resources/ui/player_toolbar.ui:231
+#: resources/ui/account_settings.ui:361 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
 msgstr ""
 
-#: resources/ui/account_settings.ui:387 resources/ui/player_toolbar.ui:235
+#: resources/ui/account_settings.ui:362 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
 msgstr ""
 
-#: resources/ui/account_settings.ui:388 resources/ui/player_toolbar.ui:239
+#: resources/ui/account_settings.ui:363 resources/ui/player_toolbar.ui:239
 msgid "None"
 msgstr ""
 
-#: resources/ui/account_settings.ui:400
+#: resources/ui/account_settings.ui:375
 msgid "Video"
 msgstr ""
 
-#: resources/ui/account_settings.ui:405
+#: resources/ui/account_settings.ui:380
 msgid "Video Output"
 msgstr ""
 
-#: resources/ui/account_settings.ui:406
+#: resources/ui/account_settings.ui:381
 msgid ""
 "Warning: Do NOT use any method other than the software's own controls to "
 "control the window. Restart to take effect"
 msgstr ""
 
-#: resources/ui/account_settings.ui:409
+#: resources/ui/account_settings.ui:384
 msgid "libmpv (default)"
 msgstr ""
 
-#: resources/ui/account_settings.ui:464
+#: resources/ui/account_settings.ui:439
 msgid "Load external mpv config"
 msgstr ""
 
-#: resources/ui/account_settings.ui:465
+#: resources/ui/account_settings.ui:440
 msgid "May cause crashes, Requires restart"
 msgstr ""
 
-#: resources/ui/account_settings.ui:469
+#: resources/ui/account_settings.ui:444
 msgid "Read from mpv config dir"
 msgstr ""
 
-#: resources/ui/account_settings.ui:484
+#: resources/ui/account_settings.ui:459
 msgid "Preferred Version"
 msgstr ""
 
-#: resources/ui/account_settings.ui:507
+#: resources/ui/account_settings.ui:482
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:522
+#: resources/ui/account_settings.ui:497
 msgid "Descriptors"
 msgstr ""
 
-#: resources/ui/account_settings.ui:544
+#: resources/ui/account_settings.ui:519
 msgid "It is recommended to set no more than 3 lines"
 msgstr ""
 
-#: resources/ui/account_settings.ui:565
+#: resources/ui/account_settings.ui:540
 msgid "No Descriptors"
 msgstr ""
 
-#: resources/ui/account_settings.ui:584
+#: resources/ui/account_settings.ui:559
 msgid "Add a descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:595 resources/ui/account_settings.ui:705
+#: resources/ui/account_settings.ui:570 resources/ui/account_settings.ui:680
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
 #: resources/ui/metadata_dialog.ui:38
 msgid "Cancel"
 msgstr ""
 
-#: resources/ui/account_settings.ui:601
+#: resources/ui/account_settings.ui:576
 msgid "Add"
 msgstr ""
 
-#: resources/ui/account_settings.ui:626 resources/ui/account_settings.ui:736
+#: resources/ui/account_settings.ui:601 resources/ui/account_settings.ui:711
 msgid "This will use exact matching to obtain a list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:629 resources/ui/account_settings.ui:739
+#: resources/ui/account_settings.ui:604 resources/ui/account_settings.ui:714
 msgid "Descriptor Type"
 msgstr ""
 
-#: resources/ui/account_settings.ui:634 resources/ui/account_settings.ui:744
+#: resources/ui/account_settings.ui:609 resources/ui/account_settings.ui:719
 msgid "String"
 msgstr ""
 
-#: resources/ui/account_settings.ui:635 resources/ui/account_settings.ui:745
+#: resources/ui/account_settings.ui:610 resources/ui/account_settings.ui:720
 msgid "Regular Expression"
 msgstr ""
 
-#: resources/ui/account_settings.ui:647 resources/ui/account_settings.ui:757
+#: resources/ui/account_settings.ui:622 resources/ui/account_settings.ui:732
 msgid "Descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:652 resources/ui/account_settings.ui:762
+#: resources/ui/account_settings.ui:627 resources/ui/account_settings.ui:737
 msgid "Descriptor should not be too long"
 msgstr ""
 
-#: resources/ui/account_settings.ui:663 resources/ui/account_settings.ui:773
+#: resources/ui/account_settings.ui:638 resources/ui/account_settings.ui:748
 msgid "eg. 1080p"
 msgstr ""
 
-#: resources/ui/account_settings.ui:674 resources/ui/account_settings.ui:784
+#: resources/ui/account_settings.ui:649 resources/ui/account_settings.ui:759
 msgid "eg. 1080p.*WebDL"
 msgstr ""
 
-#: resources/ui/account_settings.ui:694
+#: resources/ui/account_settings.ui:669
 msgid "Edit descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:711
+#: resources/ui/account_settings.ui:686
 msgid "Save"
 msgstr ""
 
@@ -289,23 +285,23 @@ msgstr ""
 msgid "_Add"
 msgstr ""
 
-#: resources/ui/account.ui:60
+#: resources/ui/account.ui:69
 msgid "Name (Nullable)"
 msgstr ""
 
-#: resources/ui/account.ui:65
+#: resources/ui/account.ui:74
 msgid "Server Address (Auto parse)"
 msgstr ""
 
-#: resources/ui/account.ui:84
+#: resources/ui/account.ui:93
 msgid "Port"
 msgstr ""
 
-#: resources/ui/account.ui:91
+#: resources/ui/account.ui:100
 msgid "Username"
 msgstr ""
 
-#: resources/ui/account.ui:96
+#: resources/ui/account.ui:105
 msgid "Password (Nullable)"
 msgstr ""
 
@@ -345,8 +341,8 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: resources/ui/mpvpage.ui:257 resources/ui/window.ui:523
-#: resources/ui/window.ui:545 resources/ui/mpv_menu.ui:35
+#: resources/ui/mpvpage.ui:257 resources/ui/window.ui:525
+#: resources/ui/window.ui:547 resources/ui/mpv_menu.ui:35
 msgid "Playlist"
 msgstr ""
 
@@ -669,7 +665,7 @@ msgstr ""
 msgid "Scan"
 msgstr ""
 
-#: resources/ui/search.ui:23 resources/ui/window.ui:365
+#: resources/ui/search.ui:23 resources/ui/window.ui:367
 msgid "Search"
 msgstr ""
 
@@ -773,6 +769,22 @@ msgstr ""
 msgid "Tasks"
 msgstr ""
 
+#: resources/ui/server_action_row.ui:23
+msgid "Drag to reorder"
+msgstr ""
+
+#: resources/ui/server_action_row.ui:30
+msgid "Edit"
+msgstr ""
+
+#: resources/ui/server_action_row.ui:41
+msgid "Refresh"
+msgstr ""
+
+#: resources/ui/server_action_row.ui:52
+msgid "Delete"
+msgstr ""
+
 #: resources/ui/single_grid.ui:31
 msgid "Change Poster"
 msgstr ""
@@ -809,35 +821,35 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: resources/ui/window.ui:105
+#: resources/ui/window.ui:107
 msgid "No Server"
 msgstr ""
 
-#: resources/ui/window.ui:108
+#: resources/ui/window.ui:110
 msgid "Add Server"
 msgstr ""
 
-#: resources/ui/window.ui:175
+#: resources/ui/window.ui:177
 msgid "Log Out"
 msgstr ""
 
-#: resources/ui/window.ui:222
+#: resources/ui/window.ui:224
 msgid "Contents"
 msgstr ""
 
-#: resources/ui/window.ui:273
+#: resources/ui/window.ui:275
 msgid "Home"
 msgstr ""
 
-#: resources/ui/window.ui:319 src/ui/widgets/list.rs:125
+#: resources/ui/window.ui:321 src/ui/widgets/list.rs:125
 msgid "Liked"
 msgstr ""
 
-#: resources/ui/window.ui:380
+#: resources/ui/window.ui:382
 msgid "Servers"
 msgstr ""
 
-#: resources/ui/window.ui:573
+#: resources/ui/window.ui:575
 msgid "Advanced Settings"
 msgstr ""
 
@@ -898,51 +910,51 @@ msgstr ""
 msgid "Links"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:110
+#: src/ui/widgets/account_add.rs:105
 msgid "Fields must be filled in"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:172
+#: src/ui/widgets/account_add.rs:159
 msgid "Account added successfully"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:217
+#: src/ui/widgets/account_settings.rs:208
 msgid "Password cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:221
+#: src/ui/widgets/account_settings.rs:212
 msgid "Passwords do not match!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:228
+#: src/ui/widgets/account_settings.rs:219
 msgid "Password changed successfully! Please login again."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:234
+#: src/ui/widgets/account_settings.rs:225
 msgid "Failed to change password"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:309
+#: src/ui/widgets/account_settings.rs:284
 msgid "Cache Cleared"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:330
+#: src/ui/widgets/account_settings.rs:305
 msgid "No file selected"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:406
+#: src/ui/widgets/account_settings.rs:381
 msgid "Font Cleared, Restart to take effect."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:564
-#: src/ui/widgets/account_settings.rs:573
-#: src/ui/widgets/account_settings.rs:607
-#: src/ui/widgets/account_settings.rs:616
+#: src/ui/widgets/account_settings.rs:540
+#: src/ui/widgets/account_settings.rs:549
+#: src/ui/widgets/account_settings.rs:583
+#: src/ui/widgets/account_settings.rs:592
 msgid "Descriptor cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:578
-#: src/ui/widgets/account_settings.rs:621
+#: src/ui/widgets/account_settings.rs:554
+#: src/ui/widgets/account_settings.rs:597
 msgid "Invalid regex"
 msgstr ""
 
@@ -958,19 +970,19 @@ msgstr ""
 msgid "Latest"
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:377
+#: src/ui/mpv/control_sidebar.rs:388
 msgid "Video filter settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:394
+#: src/ui/mpv/control_sidebar.rs:405
 msgid "Subtitle settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:407
+#: src/ui/mpv/control_sidebar.rs:418
 msgid "Subtitle color settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:416
+#: src/ui/mpv/control_sidebar.rs:427
 msgid "Subtitle offset settings cleared."
 msgstr ""
 

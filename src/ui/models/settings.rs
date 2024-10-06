@@ -7,6 +7,7 @@ use gtk::{
 };
 
 use crate::{
+    config::Account,
     ui::provider::descriptor::{Descriptor, VecSerialize},
     APP_ID,
 };
@@ -46,6 +47,46 @@ impl Settings {
     const KEY_MPV_ACTION_AFTER_VIDEO_END: &'static str = "mpv-action-after-video-end"; // i32
     const KEY_MPV_HWDEC: &'static str = "mpv-hwdec"; // i32
     const PREFERRED_VERSION_DESCRIPTORS: &'static str = "video-version-descriptors"; // String
+    const ACCOUNTS: &'static str = "accounts"; // String
+
+    pub fn accounts(&self) -> Vec<Account> {
+        serde_json::from_str(self.string(Self::ACCOUNTS).as_ref())
+            .expect("Failed to deserialize accounts")
+    }
+
+    pub fn add_account(&self, account: Account) -> Result<(), glib::BoolError> {
+        let mut accounts = self.accounts();
+        if accounts.contains(&account) {
+            return Ok(());
+        }
+        accounts.push(account);
+        self.set_string(Self::ACCOUNTS, &accounts.to_string())
+    }
+
+    pub fn remove_account(&self, account: Account) -> Result<(), glib::BoolError> {
+        let mut accounts = self.accounts();
+        accounts.retain(|a| a != &account);
+        self.set_string(Self::ACCOUNTS, &accounts.to_string())
+    }
+
+    pub fn _edit_account(
+        &self,
+        old_account: Account,
+        new_account: Account,
+    ) -> Result<(), glib::BoolError> {
+        let mut accounts = self.accounts();
+        if accounts.contains(&new_account) {
+            return Ok(());
+        }
+        if let Some(index) = accounts.iter().position(|a| a == &old_account) {
+            accounts[index] = new_account;
+        }
+        self.set_string(Self::ACCOUNTS, &accounts.to_string())
+    }
+
+    pub fn set_accounts(&self, accounts: Vec<Account>) -> Result<(), glib::BoolError> {
+        self.set_string(Self::ACCOUNTS, &accounts.to_string())
+    }
 
     pub fn preferred_version_descriptors(&self) -> Vec<Descriptor> {
         serde_json::from_str(self.string(Self::PREFERRED_VERSION_DESCRIPTORS).as_ref())
