@@ -623,7 +623,7 @@ impl ItemPage {
                 .file(&file)
                 .build();
             carousel.append(&picture);
-            carousel.set_allow_scroll_wheel(true);
+            carousel.set_allow_scroll_wheel(false);
         }
 
         if carousel.n_pages() == 1 {
