@@ -15,7 +15,6 @@ pub struct Settings(ThreadGuard<gio::Settings>);
 
 impl Settings {
     const KEY_IS_OVERLAY: &'static str = "is-overlay";
-    const KEY_PROXY: &'static str = "proxy";
     const KEY_ROOT_PIC: &'static str = "root-pic";
     const KEY_IS_BACKGROUND_ENABLED: &'static str = "is-backgroundenabled";
     const KEY_THREADS: &'static str = "threads";
@@ -277,14 +276,6 @@ impl Settings {
     }
     pub fn overlay(&self) -> bool {
         self.boolean(Self::KEY_IS_OVERLAY)
-    }
-
-    pub fn set_proxy(&self, proxy: &str) -> Result<(), glib::BoolError> {
-        self.set_string(Self::KEY_PROXY, proxy)
-    }
-
-    pub fn proxy(&self) -> String {
-        self.string(Self::KEY_PROXY).to_string()
     }
 
     pub fn set_root_pic(&self, root_pic: &str) -> Result<(), glib::BoolError> {

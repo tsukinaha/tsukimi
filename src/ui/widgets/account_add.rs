@@ -97,11 +97,7 @@ impl AccountWindow {
         let imp = self.imp();
         let mut servername = imp.servername_entry.text().to_string();
         let scheme = imp.protocol.selected();
-        let protocol = if scheme == 0 {
-            "http://"
-        } else {
-            "https://"
-        };
+        let protocol = if scheme == 0 { "http://" } else { "https://" };
         let server = imp.server_entry.text();
         let username = imp.username_entry.text();
         let password = imp.password_entry.text();
@@ -128,9 +124,11 @@ impl AccountWindow {
                     return;
                 }
             };
-        
+
         if servername.is_empty() {
-            let res = match spawn_tokio(async move { EMBY_CLIENT.get_server_info_public().await }).await {
+            let res = match spawn_tokio(async move { EMBY_CLIENT.get_server_info_public().await })
+                .await
+            {
                 Ok(res) => res,
                 Err(e) => {
                     toast!(imp.spinner, e.to_user_facing());
@@ -195,18 +193,12 @@ impl AccountWindow {
             _ => {}
         }
 
-        match url.port() {
-            Some(port) => {
-                self.imp().port_entry.set_text(&port.to_string());
-            }
-            None => {}
+        if let Some(port) = url.port() {
+            self.imp().port_entry.set_text(&port.to_string());
         }
 
-        match url.host_str() {
-            Some(host) => {
-                self.imp().server_entry.set_text(host);
-            }
-            None => {}
+        if let Some(host) = url.host_str() {
+            self.imp().server_entry.set_text(host);
         }
     }
 }

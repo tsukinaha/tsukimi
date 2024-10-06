@@ -881,7 +881,7 @@ impl MPVPage {
     fn on_stop_clicked(&self) {
         self.handle_callback(BackType::Stop);
         self.remove_timeout();
-        
+
         self.imp().video_scale.remove_timeout();
         let mpv = &self.imp().video.imp().mpv;
         mpv.pause(true);
@@ -1050,8 +1050,8 @@ impl MPVPage {
     pub fn load_config(&self) {
         let imp = self.imp();
         let mpv = &imp.video.imp().mpv;
-        if !SETTINGS.proxy().is_empty() {
-            mpv.set_property("http-proxy", SETTINGS.proxy());
+        if let Some(proxy) = crate::config::proxy::get_proxy_settings() {
+            mpv.set_property("http-proxy", proxy);
         }
         match SETTINGS.mpv_video_output() {
             0 => mpv.set_property("vo", "libmpv"),
