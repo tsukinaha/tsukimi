@@ -39,8 +39,6 @@ mod imp {
         #[template_child]
         pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
-        pub proxyentry: TemplateChild<adw::EntryRow>,
-        #[template_child]
         pub backgroundblurspinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub backgroundblurcontrol: TemplateChild<adw::SwitchRow>,
@@ -116,12 +114,6 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
             klass.bind_template_instance_callbacks();
-            klass.install_action("win.proxy", None, move |set, _action, _parameter| {
-                set.proxy();
-            });
-            klass.install_action("win.proxyclear", None, move |set, _action, _parameter| {
-                set.proxyclear();
-            });
             klass.install_action("setting.clear", None, move |set, _action, _parameter| {
                 set.cacheclear();
             });
@@ -172,7 +164,6 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             obj.set_sidebar();
-            obj.set_proxy();
             obj.set_picopactiy();
             obj.set_pic();
             obj.set_fontsize();
@@ -283,22 +274,6 @@ impl AccountSettings {
             settings.set_property("gtk-xft-dpi", control.value() as i32 * 1024);
             SETTINGS.set_font_size(control.value() as i32).unwrap();
         });
-    }
-
-    pub fn proxy(&self) {
-        let imp = self.imp();
-        SETTINGS.set_proxy(&imp.proxyentry.text()).unwrap();
-    }
-
-    pub fn set_proxy(&self) {
-        let imp = self.imp();
-        imp.proxyentry.set_text(&SETTINGS.proxy());
-    }
-
-    pub fn proxyclear(&self) {
-        let imp = self.imp();
-        SETTINGS.set_proxy("").unwrap();
-        imp.proxyentry.set_text("");
     }
 
     pub fn cacheclear(&self) {

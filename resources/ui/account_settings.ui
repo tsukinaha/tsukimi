@@ -177,31 +177,6 @@
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Network</property>
             <child>
-              <object class="AdwEntryRow" id="proxyentry">
-                <property name="title" translatable="yes">HTTP Proxy</property>
-                <child type="suffix">
-                  <object class="GtkToggleButton">
-                    <property name="icon-name">emblem-ok-symbolic</property>
-                    <property name="valign">center</property>
-                    <property name="action-name">win.proxy</property>
-                    <style>
-                      <class name="flat" />
-                    </style>
-                  </object>
-                </child>
-                <child type="suffix">
-                  <object class="GtkToggleButton">
-                    <property name="icon-name">user-trash-symbolic</property>
-                    <property name="valign">center</property>
-                    <property name="action-name">win.proxyclear</property>
-                    <style>
-                      <class name="flat" />
-                    </style>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
               <object class="AdwSpinRow" id="threadspinrow">
                 <property name="title" translatable="yes">Threads</property>
                 <property name="subtitle" translatable="yes">This only effects on getting images</property>
