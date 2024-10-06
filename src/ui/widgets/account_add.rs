@@ -5,6 +5,7 @@ use glib::Object;
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
+use gtk::template_callbacks;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
@@ -38,6 +39,9 @@ mod imp {
         pub toast: TemplateChild<adw::ToastOverlay>,
         #[template_child]
         pub spinner: TemplateChild<adw::Spinner>,
+
+        #[template_child]
+        pub protocol: TemplateChild<gtk::DropDown>,
     }
 
     // The central trait for subclassing a GObject
@@ -50,6 +54,7 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
             klass.install_action_async("account.add", None, |account, _, _| async move {
                 account.add().await;
             });
@@ -82,6 +87,7 @@ impl Default for AccountWindow {
     }
 }
 
+#[template_callbacks]
 impl AccountWindow {
     pub fn new() -> Self {
         Object::builder().build()
@@ -89,17 +95,25 @@ impl AccountWindow {
 
     pub async fn add(&self) {
         let imp = self.imp();
-        imp.spinner.set_visible(true);
-        let servername = imp.servername_entry.text();
+        let mut servername = imp.servername_entry.text().to_string();
+        let scheme = imp.protocol.selected();
+        let protocol = if scheme == 0 {
+            "http://"
+        } else {
+            "https://"
+        };
         let server = imp.server_entry.text();
         let username = imp.username_entry.text();
         let password = imp.password_entry.text();
         let port = imp.port_entry.text();
-        if servername.is_empty() || server.is_empty() || username.is_empty() || port.is_empty() {
+        if server.is_empty() || username.is_empty() || port.is_empty() {
             toast!(imp.spinner, gettext("Fields must be filled in"));
-            imp.spinner.set_visible(false);
             return;
         }
+
+        imp.spinner.set_visible(true);
+
+        let server = format!("{protocol}{server}");
 
         let _ = EMBY_CLIENT.header_change_url(&server, &port);
         let _ = EMBY_CLIENT.header_change_token(&servername);
@@ -114,6 +128,19 @@ impl AccountWindow {
                     return;
                 }
             };
+        
+        if servername.is_empty() {
+            let res = match spawn_tokio(async move { EMBY_CLIENT.get_server_info_public().await }).await {
+                Ok(res) => res,
+                Err(e) => {
+                    toast!(imp.spinner, e.to_user_facing());
+                    imp.spinner.set_visible(false);
+                    return;
+                }
+            };
+
+            servername = res.server_name;
+        }
 
         let account = Account {
             servername: servername.to_string(),
@@ -145,5 +172,41 @@ impl AccountWindow {
         toast!(self, gettext("Account added successfully"));
         window.set_servers();
         window.set_nav_servers();
+    }
+
+    #[template_callback]
+    fn on_server_entry_changed(&self, entry: &adw::EntryRow) {
+        let text = entry.text().to_string();
+
+        let Some(url) = url::Url::parse(&text).ok() else {
+            return;
+        };
+
+        match url.scheme() {
+            "http" => {
+                self.imp().protocol.set_selected(0);
+            }
+            "https" => {
+                self.imp().protocol.set_selected(1);
+                if url.port().is_none() {
+                    self.imp().port_entry.set_text("443");
+                }
+            }
+            _ => {}
+        }
+
+        match url.port() {
+            Some(port) => {
+                self.imp().port_entry.set_text(&port.to_string());
+            }
+            None => {}
+        }
+
+        match url.host_str() {
+            Some(host) => {
+                self.imp().server_entry.set_text(host);
+            }
+            None => {}
+        }
     }
 }

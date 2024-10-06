@@ -454,6 +454,14 @@ pub struct ServerInfo {
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
+pub struct PublicServerInfo {
+    #[serde(rename = "ServerName")]
+    pub server_name: String,
+    #[serde(rename = "Version")]
+    pub version: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct ActivityLog {
     #[serde(rename = "Name")]
     pub name: String,

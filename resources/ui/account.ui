@@ -57,12 +57,26 @@
                                 <property name="margin-end">12</property>
                                 <child>
                                   <object class="AdwEntryRow" id="servername_entry">
-                                    <property name="title" translatable="yes">Name</property>
+                                    <property name="title" translatable="yes">Name (Nullable)</property>
                                   </object>
                                 </child>
                                 <child>
                                   <object class="AdwEntryRow" id="server_entry">
-                                    <property name="title" translatable="yes">Server Address</property>
+                                    <property name="title" translatable="yes">Server Address (Auto parse)</property>
+                                    <signal name="changed" handler="on_server_entry_changed" swapped="yes" />
+                                    <child type="prefix">
+                                      <object class="GtkDropDown" id="protocol">
+                                        <property name="valign">center</property>
+                                        <property name="model">
+                                          <object class="GtkStringList">
+                                            <items>
+                                              <item>http://</item>
+                                              <item>https://</item>
+                                            </items>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </child>
                                     <child type="suffix">
                                       <object class="GtkEntry" id="port_entry">
                                         <property name="halign">end</property>
@@ -79,7 +93,7 @@
                                 </child>
                                 <child>
                                   <object class="AdwPasswordEntryRow" id="password_entry">
-                                    <property name="title" translatable="yes">Password</property>
+                                    <property name="title" translatable="yes">Password (Nullable)</property>
                                   </object>
                                 </child>
                                 <child>
