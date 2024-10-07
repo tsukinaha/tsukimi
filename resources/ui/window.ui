@@ -1,14 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <menu id="main-menu">
-    <item>
-      <attribute name="label" translatable="yes">Sign out</attribute>
-      <attribute name="action">win.relogin</attribute>
-    </item>
-    <item>
-      <attribute name="label" translatable="yes">About</attribute>
-      <attribute name="action">win.about</attribute>
-    </item>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Sign out</attribute>
+        <attribute name="action">win.relogin</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Fullscreen</attribute>
+        <attribute name="action">win.toggle-fullscreen</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Search</attribute>
+        <attribute name="action">win.search</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Preferences</attribute>
+        <attribute name="action">setting.account</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">About</attribute>
+        <attribute name="action">win.about</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Keyboard shortcuts</attribute>
+        <attribute name="action">win.show-help-overlay</attribute>
+        <attribute name="accel">F1</attribute>
+      </item>
+    </section>
+  </menu>
+  <menu id="sel-menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Fullscreen</attribute>
+        <attribute name="action">win.toggle-fullscreen</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Preferences</attribute>
+        <attribute name="action">setting.account</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">About</attribute>
+        <attribute name="action">win.about</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Keyboard shortcuts</attribute>
+        <attribute name="action">win.show-help-overlay</attribute>
+        <attribute name="accel">F1</attribute>
+      </item>
+    </section>
   </menu>
   <template class="AppWindow" parent="AdwApplicationWindow">
     <property name="title">Tsukimi</property>
@@ -50,108 +96,79 @@
                           <object class="GtkBox">
                             <property name="orientation">vertical</property>
                             <child>
-                              <object class="GtkHeaderBar">
+                              <object class="AdwHeaderBar">
+                                <child type="end">
+                                  <object class="GtkMenuButton">
+                                    <property name="icon-name">open-menu-symbolic</property>
+                                    <property name="menu-model">sel-menu</property>
+                                  </object>
+                                </child>
                                 <style>
                                   <class name="flat" />
                                 </style>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkOverlay">
-                                <property name="hexpand">True</property>
-                                <property name="vexpand">True</property>
-                                <style>
-                                  <class name="home-carousel" />
-                                </style>
+                              <object class="GtkStack" id="login_stack">
+                                <property name="transition-type">crossfade</property>
                                 <child>
-                                  <object class="GtkStack" id="login_stack">
-                                    <property name="transition-type">crossfade</property>
-                                    <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">servers</property>
-                                        <property name="child">
-                                          <object class="GtkScrolledWindow">
-                                            <property name="hexpand">false</property>
-                                            <property name="hscrollbar-policy">never</property>
+                                  <object class="GtkStackPage">
+                                    <property name="name">servers</property>
+                                    <property name="child">
+                                      <object class="GtkScrolledWindow">
+                                        <property name="hexpand">false</property>
+                                        <property name="hscrollbar-policy">never</property>
+                                        <child>
+                                          <object class="AdwClamp">
+                                            <property name="margin-top">12</property>
+                                            <property name="margin-bottom">12</property>
+                                            <property name="vexpand">True</property>
+                                            <property name="tightening-threshold">200</property>
                                             <child>
-                                              <object class="AdwClamp">
-                                                <property name="margin-top">12</property>
-                                                <property name="margin-bottom">12</property>
-                                                <property name="vexpand">True</property>
-                                                <property name="tightening-threshold">200</property>
-                                                <child>
-                                                  <object class="GtkListBox" id="serversbox">
-                                                    <property name="halign">fill</property>
-                                                    <property name="valign">start</property>
-                                                    <property name="selection-mode">none</property>
-                                                    <style>
-                                                      <class name="logo" />
-                                                      <class name="boxed-list" />
-                                                    </style>
-                                                  </object>
-                                                </child>
+                                              <object class="GtkListBox" id="serversbox">
+                                                <property name="halign">fill</property>
+                                                <property name="valign">start</property>
+                                                <property name="selection-mode">none</property>
+                                                <style>
+                                                  <class name="logo" />
+                                                  <class name="boxed-list" />
+                                                </style>
                                               </object>
                                             </child>
                                           </object>
-                                        </property>
+                                        </child>
                                       </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">no-server</property>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkStackPage">
+                                    <property name="name">no-server</property>
+                                    <property name="child">
+                                      <object class="AdwStatusPage">
+                                        <property name="valign">center</property>
+                                        <property name="vexpand">True</property>
+                                        <property name="icon-name">network-server-symbolic</property>
+                                        <property name="title" translatable="yes">No Server</property>
                                         <property name="child">
-                                          <object class="AdwStatusPage">
+                                          <object class="GtkButton" id="add_server">
+                                            <property name="label" translatable="yes">Add Server</property>
+                                            <property name="halign">center</property>
                                             <property name="valign">center</property>
-                                            <property name="vexpand">True</property>
-                                            <property name="icon-name">network-server-symbolic</property>
-                                            <property name="title" translatable="yes">No Server</property>
-                                            <property name="child">
-                                              <object class="GtkButton" id="add_server">
-                                                <property name="label" translatable="yes">Add Server</property>
-                                                <property name="halign">center</property>
-                                                <property name="valign">center</property>
-                                                <signal name="clicked" handler="on_add_server" swapped="yes"/>
-                                                <style>
-                                                  <class name="suggested-action" />
-                                                  <class name="pill" />
-                                                </style>
-                                              </object>
-                                            </property>
+                                            <signal name="clicked" handler="on_add_server" swapped="yes"/>
+                                            <style>
+                                              <class name="suggested-action" />
+                                              <class name="pill" />
+                                            </style>
                                           </object>
                                         </property>
                                       </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <child type="overlay">
-                                  <object class="GtkButton">
-                                    <property name="halign">end</property>
-                                    <property name="valign">end</property>
-                                    <property name="icon-name">list-add-symbolic</property>
-                                    <property name="margin-end">30</property>
-                                    <property name="margin-bottom">30</property>
-                                    <signal name="clicked" handler="on_add_server" swapped="yes"/>
-                                    <style>
-                                      <class name="osd" />
-                                      <class name="suggested-action" />
-                                    </style>
-                                  </object>
-                                </child>
-                                <child type="overlay">
-                                  <object class="GtkButton">
-                                    <property name="halign">start</property>
-                                    <property name="valign">end</property>
-                                    <property name="margin-start">30</property>
-                                    <property name="margin-bottom">30</property>
-                                    <property name="icon-name">applications-system-symbolic</property>
-                                    <property name="action-name">setting.account</property>
-                                    <style>
-                                      <class name="osd" />
-                                    </style>
+                                    </property>
                                   </object>
                                 </child>
                               </object>
                             </child>
+
                           </object>
                         </property>
                       </object>

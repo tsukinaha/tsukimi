@@ -149,6 +149,9 @@ mod imp {
                     obj.fullscreen();
                 }
             });
+            klass.install_action("win.search", None, |obj, _, _| {
+                obj.searchpage();
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
