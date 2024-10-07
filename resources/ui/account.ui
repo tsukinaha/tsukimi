@@ -12,7 +12,7 @@
         <child>
           <object class="AdwNavigationView" id="navigation_view">
             <child>
-              <object class="AdwNavigationPage">
+              <object class="AdwNavigationPage" id="nav">
                 <property name="tag">main</property>
                 <property name="title" translatable="yes">Add a New Server</property>
                 <property name="child">

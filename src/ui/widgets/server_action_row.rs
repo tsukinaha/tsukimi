@@ -6,7 +6,7 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::{glib, template_callbacks, CompositeTemplate};
 
-use super::window::Window;
+use super::{account_add::imp::ActionType, window::Window};
 
 mod imp {
     use std::cell::OnceCell;
@@ -88,6 +88,9 @@ impl ServerActionRow {
     fn on_edit_clicked(&self) {
         let account = self.item().account();
         let account_window = crate::ui::widgets::account_add::AccountWindow::new();
+        account_window.imp().nav.set_title(&gettextrs::gettext("Edit Server"));
+        account_window.set_action_type(ActionType::Edit);
+        account_window.imp().old_account.replace(Some(account.clone()));
         account_window
             .imp()
             .username_entry
@@ -110,7 +113,7 @@ impl ServerActionRow {
         let account = self.item().account();
         SETTINGS
             .remove_account(account)
-            .expect("Failed to remove account");
+            .expect("Failed to remove server");
         let root = self.root();
         let window = root
             .and_downcast_ref::<Window>()

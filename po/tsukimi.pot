@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-06 18:55+0800\n"
+"POT-Creation-Date: 2024-10-07 11:14+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -313,7 +313,7 @@ msgstr ""
 msgid "No Inscriptions"
 msgstr ""
 
-#: resources/ui/album_widget.ui:94 resources/ui/item.ui:155
+#: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
 #: src/ui/mpv/page.rs:869 src/ui/mpv/page.rs:871 src/ui/widgets/item.rs:481
 msgid "Play"
@@ -325,6 +325,7 @@ msgstr ""
 
 #: resources/ui/mpvpage.ui:166 resources/ui/mpvpage.ui:168
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
+#: resources/ui/window.ui:12 resources/ui/window.ui:39
 msgid "Fullscreen"
 msgstr ""
 
@@ -337,12 +338,12 @@ msgstr ""
 msgid "Stop and quit"
 msgstr ""
 
-#: resources/ui/mpvpage.ui:242 resources/ui/item.ui:95 resources/ui/item.ui:131
+#: resources/ui/mpvpage.ui:242 resources/ui/item.ui:96 resources/ui/item.ui:133
 msgid "Loading..."
 msgstr ""
 
-#: resources/ui/mpvpage.ui:257 resources/ui/window.ui:525
-#: resources/ui/window.ui:547 resources/ui/mpv_menu.ui:35
+#: resources/ui/mpvpage.ui:257 resources/ui/window.ui:542
+#: resources/ui/window.ui:564 resources/ui/mpv_menu.ui:35
 msgid "Playlist"
 msgstr ""
 
@@ -350,7 +351,8 @@ msgstr ""
 msgid "Media info (MPV)"
 msgstr ""
 
-#: resources/ui/mpvpage.ui:309
+#: resources/ui/mpvpage.ui:309 resources/ui/window.ui:20
+#: resources/ui/window.ui:43
 msgid "Preferences"
 msgstr ""
 
@@ -414,19 +416,19 @@ msgstr ""
 msgid "View Metadata"
 msgstr ""
 
-#: resources/ui/item.ui:189
+#: resources/ui/item.ui:191
 msgid "Video: "
 msgstr ""
 
-#: resources/ui/item.ui:209
+#: resources/ui/item.ui:211
 msgid "Subtitle: "
 msgstr ""
 
-#: resources/ui/item.ui:264 src/ui/widgets/home.rs:150
+#: resources/ui/item.ui:266 src/ui/widgets/home.rs:150
 msgid "Continue Watching"
 msgstr ""
 
-#: resources/ui/item.ui:430
+#: resources/ui/item.ui:432
 msgid "MediaInfo"
 msgstr ""
 
@@ -665,7 +667,8 @@ msgstr ""
 msgid "Scan"
 msgstr ""
 
-#: resources/ui/search.ui:23 resources/ui/window.ui:367
+#: resources/ui/search.ui:23 resources/ui/window.ui:16
+#: resources/ui/window.ui:384
 msgid "Search"
 msgstr ""
 
@@ -813,43 +816,48 @@ msgstr ""
 msgid "Nothing Here"
 msgstr ""
 
-#: resources/ui/window.ui:5
+#: resources/ui/window.ui:6
 msgid "Sign out"
 msgstr ""
 
-#: resources/ui/window.ui:9
+#: resources/ui/window.ui:26 resources/ui/window.ui:49
 msgid "About"
 msgstr ""
 
-#: resources/ui/window.ui:107
+#: resources/ui/window.ui:30 resources/ui/window.ui:53
+#: resources/ui/mpv_menu.ui:54
+msgid "_Keyboard shortcuts"
+msgstr ""
+
+#: resources/ui/window.ui:152
 msgid "No Server"
 msgstr ""
 
-#: resources/ui/window.ui:110
+#: resources/ui/window.ui:155
 msgid "Add Server"
 msgstr ""
 
-#: resources/ui/window.ui:177
+#: resources/ui/window.ui:194
 msgid "Log Out"
 msgstr ""
 
-#: resources/ui/window.ui:224
+#: resources/ui/window.ui:241
 msgid "Contents"
 msgstr ""
 
-#: resources/ui/window.ui:275
+#: resources/ui/window.ui:292
 msgid "Home"
 msgstr ""
 
-#: resources/ui/window.ui:321 src/ui/widgets/list.rs:125
+#: resources/ui/window.ui:338 src/ui/widgets/list.rs:125
 msgid "Liked"
 msgstr ""
 
-#: resources/ui/window.ui:382
+#: resources/ui/window.ui:399
 msgid "Servers"
 msgstr ""
 
-#: resources/ui/window.ui:575
+#: resources/ui/window.ui:592
 msgid "Advanced Settings"
 msgstr ""
 
@@ -897,10 +905,6 @@ msgstr ""
 msgid "Media info"
 msgstr ""
 
-#: resources/ui/mpv_menu.ui:54
-msgid "_Keyboard shortcuts"
-msgstr ""
-
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
 #: src/ui/mod.rs:23
 msgid "translator-credits"
@@ -910,12 +914,16 @@ msgstr ""
 msgid "Links"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:105
+#: src/ui/widgets/account_add.rs:129
 msgid "Fields must be filled in"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:159
-msgid "Account added successfully"
+#: src/ui/widgets/account_add.rs:187
+msgid "Server edited successfully"
+msgstr ""
+
+#: src/ui/widgets/account_add.rs:198
+msgid "Server added successfully"
 msgstr ""
 
 #: src/ui/widgets/account_settings.rs:206
@@ -1036,7 +1044,7 @@ msgstr ""
 msgid "Resume"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1024
+#: src/ui/widgets/item.rs:1026
 msgid "No video source found"
 msgstr ""
 
@@ -1070,6 +1078,10 @@ msgstr ""
 
 #: src/ui/widgets/star_toggle.rs:65
 msgid "Add to favorites"
+msgstr ""
+
+#: src/ui/widgets/server_action_row.rs:91
+msgid "Edit Server"
 msgstr ""
 
 #: src/ui/widgets/tu_list_item.rs:217

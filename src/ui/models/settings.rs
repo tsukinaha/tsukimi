@@ -68,7 +68,7 @@ impl Settings {
         self.set_string(Self::ACCOUNTS, &accounts.to_string())
     }
 
-    pub fn _edit_account(
+    pub fn edit_account(
         &self,
         old_account: Account,
         new_account: Account,

@@ -5,6 +5,7 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::template_callbacks;
+use imp::ActionType;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
@@ -13,16 +14,32 @@ use crate::toast;
 use crate::ui::models::SETTINGS;
 use crate::utils::spawn_tokio;
 
-mod imp {
+pub mod imp {
+
+    use std::cell::{Cell, RefCell};
 
     use adw::subclass::dialog::AdwDialogImpl;
     use glib::subclass::InitializingObject;
     use gtk::subclass::prelude::*;
+    use gtk::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
+    use crate::config::Account;
+
+    #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
+    #[repr(u32)]
+    #[enum_type(name = "ActionType")]
+
+    pub enum ActionType {
+        Edit,
+        #[default]
+        Add,
+    }
+
     // Object holding the state
-    #[derive(CompositeTemplate, Default)]
+    #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsukimi/account.ui")]
+    #[properties(wrapper_type = super::AccountWindow)]
     pub struct AccountWindow {
         #[template_child]
         pub servername_entry: TemplateChild<adw::EntryRow>,
@@ -40,7 +57,14 @@ mod imp {
         pub stack: TemplateChild<gtk::Stack>,
 
         #[template_child]
+        pub nav: TemplateChild<adw::NavigationPage>,
+
+        #[template_child]
         pub protocol: TemplateChild<gtk::DropDown>,
+
+        #[property(get, set, builder(ActionType::default()))]
+        pub action_type: Cell<ActionType>,
+        pub old_account: RefCell<Option<Account>>,
     }
 
     // The central trait for subclassing a GObject
@@ -64,7 +88,7 @@ mod imp {
         }
     }
 
-    // Trait shared by all GObjects
+    #[glib::derived_properties]
     impl ObjectImpl for AccountWindow {
         fn constructed(&self) {
             self.parent_constructed();
@@ -149,16 +173,35 @@ impl AccountWindow {
             access_token: res.access_token,
         };
 
-        SETTINGS
-            .add_account(account)
-            .expect("Failed to add account");
+        let action_type = imp.action_type.get();
 
-        imp.stack.set_visible_child_name("entry");
-        self.close();
-        let window = self.root().and_downcast::<super::window::Window>().unwrap();
-        toast!(self, gettext("Account added successfully"));
-        window.set_servers();
-        window.set_nav_servers();
+        match action_type {
+            ActionType::Edit => {
+                let old_account = imp.old_account.take().expect("No server to edit");
+                SETTINGS
+                    .edit_account(old_account, account)
+                    .expect("Failed to edit server");
+                imp.stack.set_visible_child_name("entry");
+                self.close();
+                let window = self.root().and_downcast::<super::window::Window>().unwrap();
+                toast!(self, gettext("Server edited successfully"));
+                window.set_servers();
+                window.set_nav_servers();
+            }
+            ActionType::Add => {
+                SETTINGS
+                    .add_account(account)
+                    .expect("Failed to add server");
+                imp.stack.set_visible_child_name("entry");
+                self.close();
+                let window = self.root().and_downcast::<super::window::Window>().unwrap();
+                toast!(self, gettext("Server added successfully"));
+                window.set_servers();
+                window.set_nav_servers();
+            }
+        }
+
+        
     }
 
     #[template_callback]
