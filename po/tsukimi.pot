@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-07 11:14+0800\n"
+"POT-Creation-Date: 2024-10-07 11:19+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -325,7 +325,7 @@ msgstr ""
 
 #: resources/ui/mpvpage.ui:166 resources/ui/mpvpage.ui:168
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/window.ui:12 resources/ui/window.ui:39
+#: resources/ui/window.ui:12 resources/ui/window.ui:45
 msgid "Fullscreen"
 msgstr ""
 
@@ -342,8 +342,8 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: resources/ui/mpvpage.ui:257 resources/ui/window.ui:542
-#: resources/ui/window.ui:564 resources/ui/mpv_menu.ui:35
+#: resources/ui/mpvpage.ui:257 resources/ui/window.ui:548
+#: resources/ui/window.ui:570 resources/ui/mpv_menu.ui:35
 msgid "Playlist"
 msgstr ""
 
@@ -352,7 +352,7 @@ msgid "Media info (MPV)"
 msgstr ""
 
 #: resources/ui/mpvpage.ui:309 resources/ui/window.ui:20
-#: resources/ui/window.ui:43
+#: resources/ui/window.ui:49
 msgid "Preferences"
 msgstr ""
 
@@ -668,7 +668,7 @@ msgid "Scan"
 msgstr ""
 
 #: resources/ui/search.ui:23 resources/ui/window.ui:16
-#: resources/ui/window.ui:384
+#: resources/ui/window.ui:390
 msgid "Search"
 msgstr ""
 
@@ -820,44 +820,48 @@ msgstr ""
 msgid "Sign out"
 msgstr ""
 
-#: resources/ui/window.ui:26 resources/ui/window.ui:49
+#: resources/ui/window.ui:26 resources/ui/window.ui:55
 msgid "About"
 msgstr ""
 
-#: resources/ui/window.ui:30 resources/ui/window.ui:53
+#: resources/ui/window.ui:30 resources/ui/window.ui:59
 #: resources/ui/mpv_menu.ui:54
 msgid "_Keyboard shortcuts"
 msgstr ""
 
-#: resources/ui/window.ui:152
+#: resources/ui/window.ui:39
+msgid "Add server"
+msgstr ""
+
+#: resources/ui/window.ui:158
 msgid "No Server"
 msgstr ""
 
-#: resources/ui/window.ui:155
+#: resources/ui/window.ui:161
 msgid "Add Server"
 msgstr ""
 
-#: resources/ui/window.ui:194
+#: resources/ui/window.ui:200
 msgid "Log Out"
 msgstr ""
 
-#: resources/ui/window.ui:241
+#: resources/ui/window.ui:247
 msgid "Contents"
 msgstr ""
 
-#: resources/ui/window.ui:292
+#: resources/ui/window.ui:298
 msgid "Home"
 msgstr ""
 
-#: resources/ui/window.ui:338 src/ui/widgets/list.rs:125
+#: resources/ui/window.ui:344 src/ui/widgets/list.rs:125
 msgid "Liked"
 msgstr ""
 
-#: resources/ui/window.ui:399
+#: resources/ui/window.ui:405
 msgid "Servers"
 msgstr ""
 
-#: resources/ui/window.ui:592
+#: resources/ui/window.ui:598
 msgid "Advanced Settings"
 msgstr ""
 

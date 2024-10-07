@@ -36,6 +36,12 @@
   <menu id="sel-menu">
     <section>
       <item>
+        <attribute name="label" translatable="yes">Add server</attribute>
+        <attribute name="action">win.add-server</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">Fullscreen</attribute>
         <attribute name="action">win.toggle-fullscreen</attribute>
       </item>

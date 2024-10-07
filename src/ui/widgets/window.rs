@@ -152,6 +152,9 @@ mod imp {
             klass.install_action("win.search", None, |obj, _, _| {
                 obj.searchpage();
             });
+            klass.install_action("win.add-server", None, |obj, _, _| {
+                obj.new_account();
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
