@@ -86,7 +86,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkToggleButton">
+                      <object class="GtkToggleButton" id="descending">
                         <property name="icon-name">view-sort-descending-symbolic</property>
                         <property name="tooltip-text" translatable="yes">Descending</property>
                         <property name="valign">center</property>
@@ -118,6 +118,7 @@
                           <item translatable="yes">Production Year</item>
                           <item translatable="yes">Date Played</item>
                           <item translatable="yes">Runtime</item>
+                          <item translatable="yes">Updated At</item>
                         </items>
                       </object>
                     </property>
