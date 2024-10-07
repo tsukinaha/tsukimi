@@ -449,6 +449,8 @@ impl MPVControlSidebar {
             _ => "auto",
         };
 
+        SETTINGS.set_mpv_audio_channel(combo.selected() as i32).unwrap();
+
         self.set_mpv_property("af", "");
         self.set_mpv_property("audio-channels", channel);
     }

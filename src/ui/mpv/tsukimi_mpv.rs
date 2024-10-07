@@ -103,11 +103,13 @@ impl Default for TsukimiMPV {
             } else {
                 init.set_property("loop", "no")?;
             }
-            if SETTINGS.mpv_force_stereo() {
-                init.set_property("audio-channels", "stereo")?;
-            } else {
-                init.set_property("audio-channels", "auto")?;
-            }
+            let channel = match SETTINGS.mpv_audio_channel() {
+                1 => "auto-safe",
+                2 => "mono",
+                3 => "stereo",
+                _ => "auto",
+            };
+            init.set_property("audio-channels", channel)?;
             Ok(())
         })
         .expect("Failed to create mpv instance");

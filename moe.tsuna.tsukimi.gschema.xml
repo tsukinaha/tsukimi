@@ -162,6 +162,11 @@
       <description>0: Play Next, 1: Loop Playback, 2: Stop</description>
       <default>0</default>
     </key>
+    <key name="mpv-audio-channel" type="i">
+      <summary>Audio channel</summary>
+      <description>0: Auto, 1: Auto(safe), 2. Mono, 3.Dual</description>
+      <default>0</default>
+    </key>
     <key name="mpv-force-stereo" type="b">
       <summary>Whether to force stereo audio output</summary>
       <default>false</default>
