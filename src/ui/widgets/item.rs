@@ -305,6 +305,24 @@ impl ItemPage {
         }
     }
 
+    pub async fn update_intro(&self) {
+        let item = self.item();
+        let series_id = item.series_id().unwrap_or(item.id());
+
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            #[strong]
+            series_id,
+            async move {
+                let Some(intro) = obj.set_shows_next_up(&series_id).await else {
+                    return;
+                };
+                obj.set_intro::<false>(&intro).await;
+            }
+        ));
+    }
+
     async fn setup_item(&self, id: &str) {
         let id = id.to_string();
         let id_clone = id.clone();
@@ -553,7 +571,8 @@ impl ItemPage {
         ));
 
         for media in &playbackinfo.media_sources {
-            let line2 = media.bit_rate
+            let line2 = media
+                .bit_rate
                 .map(|bit_rate| format!("{:.2} Kbps", bit_rate as f64 / 1_000.0))
                 .unwrap_or_default();
             let Ok(dl) = DropdownListBuilder::default()

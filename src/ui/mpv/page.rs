@@ -898,11 +898,14 @@ impl MPVPage {
         spawn_g_timeout(glib::clone!(
             #[weak(rename_to = obj)]
             self,
+            #[weak]
+            window,
             async move {
                 if let Some(timeout) = obj.imp().timeout.take() {
                     glib::source::SourceId::remove(timeout);
                 }
                 obj.set_reveal_overlay(true);
+                window.update_item_page().await;
             }
         ));
     }

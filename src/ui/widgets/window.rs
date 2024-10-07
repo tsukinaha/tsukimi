@@ -233,6 +233,7 @@ use glib::Object;
 use gtk::{gio, glib, template_callbacks};
 
 use super::home::HomePage;
+use super::item::ItemPage;
 use super::liked::LikedPage;
 use super::search::SearchPage;
 use super::server_action_row;
@@ -961,5 +962,15 @@ impl Window {
         if let Some(cookie) = self.imp().suspend_cookie.take() {
             app.uninhibit(cookie);
         }
+    }
+
+    pub async fn update_item_page(&self) {
+        let imp = self.imp();
+        let nav = imp.mainview.visible_page();
+        let Some(now_page) = nav.and_downcast_ref::<ItemPage>() else {
+            return;
+        };
+
+        now_page.update_intro().await;
     }
 }

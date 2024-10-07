@@ -127,6 +127,7 @@ impl HorbuScrolled {
         imp.revealer.set_reveal_child(true);
 
         let flow = imp.flow.get();
+        flow.remove_all();
 
         spawn(glib::clone!(
             #[weak]
@@ -151,8 +152,6 @@ impl HorbuScrolled {
                     });
 
                     flow.append(&button);
-
-                    gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
                 }
             }
         ));
