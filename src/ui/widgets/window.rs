@@ -388,6 +388,7 @@ impl Window {
                         .set_accounts(accounts)
                         .expect("Failed to set accounts");
                     obj.set_servers();
+                    obj.set_nav_servers();
 
                     true
                 }
