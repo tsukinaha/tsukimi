@@ -821,6 +821,16 @@ impl MPVPage {
         if self.imp().menu_button.is_active() {
             return false;
         }
+
+        let binding = self.ancestor(gtk::Stack::static_type());
+        let Some(view) = binding.and_downcast_ref::<gtk::Stack>() else {
+            return false;
+        };
+
+        if view.visible_child_name() != Some("mpv".into()) {
+            return false;
+        }
+
         true
     }
 
