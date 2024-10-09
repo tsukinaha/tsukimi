@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-07 11:19+0800\n"
-"PO-Revision-Date: 2024-10-05 12:15+0000\n"
+"PO-Revision-Date: 2024-10-08 04:16+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
@@ -836,8 +836,6 @@ msgid "_Keyboard shortcuts"
 msgstr "快捷键"
 
 #: resources/ui/window.ui:39
-#, fuzzy
-#| msgid "Add Server"
 msgid "Add server"
 msgstr "添加服务器"
 
@@ -933,16 +931,12 @@ msgid "Fields must be filled in"
 msgstr "字段必须填入"
 
 #: src/ui/widgets/account_add.rs:187
-#, fuzzy
-#| msgid "Account added successfully"
 msgid "Server edited successfully"
-msgstr "帐户添加成功"
+msgstr "服务器编辑成功"
 
 #: src/ui/widgets/account_add.rs:198
-#, fuzzy
-#| msgid "Account added successfully"
 msgid "Server added successfully"
-msgstr "帐户添加成功"
+msgstr "服务器添加成功"
 
 #: src/ui/widgets/account_settings.rs:206
 msgid "Password cannot be empty!"
@@ -1101,10 +1095,8 @@ msgid "Add to favorites"
 msgstr "添加到收藏"
 
 #: src/ui/widgets/server_action_row.rs:91
-#, fuzzy
-#| msgid "Add Server"
 msgid "Edit Server"
-msgstr "添加服务器"
+msgstr "编辑服务器"
 
 #: src/ui/widgets/tu_list_item.rs:217
 msgid "Present"
