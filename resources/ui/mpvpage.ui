@@ -41,7 +41,7 @@
                 <property name="width-request">160</property>
                 <property name="spacing">20</property>
                 <child>
-                  <object class="AdwSpinner" id="spinner">
+                  <object class="GtkSpinner" id="spinner">
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                     <property name="height-request">64</property>

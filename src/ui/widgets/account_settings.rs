@@ -448,8 +448,7 @@ impl AccountSettings {
                         }
                     };
 
-                let Some(texture) =
-                    gtk::gdk::Texture::from_file(&gio::File::for_path(avatar)).ok()
+                let Some(texture) = gtk::gdk::Texture::from_file(&gio::File::for_path(avatar)).ok()
                 else {
                     return;
                 };

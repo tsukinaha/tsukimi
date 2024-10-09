@@ -326,7 +326,9 @@ impl MPVControlSidebar {
     #[template_callback]
     pub fn on_sub_font(&self, _param: glib::ParamSpec, button: gtk::FontDialogButton) {
         let font_desc = button.font_desc().unwrap();
-        SETTINGS.set_mpv_subtitle_font(font_desc.to_string()).unwrap();
+        SETTINGS
+            .set_mpv_subtitle_font(font_desc.to_string())
+            .unwrap();
         self.set_mpv_property("sub-font", font_desc.to_string());
     }
 
@@ -454,7 +456,9 @@ impl MPVControlSidebar {
             _ => "auto",
         };
 
-        SETTINGS.set_mpv_audio_channel(combo.selected() as i32).unwrap();
+        SETTINGS
+            .set_mpv_audio_channel(combo.selected() as i32)
+            .unwrap();
 
         self.set_mpv_property("af", "");
         self.set_mpv_property("audio-channels", channel);
