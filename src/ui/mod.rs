@@ -17,7 +17,7 @@ pub fn build_ui(app: &adw::Application) {
                 .application_name("Tsukimi")
                 .version(crate::config::APP_VERSION)
                 .comments(
-                    "A simple third-party Emby client.\nVersion: tsukimi 0.15.0 \n2024.10.05 11:47",
+                    "A simple third-party Emby client.\nVersion: tsukimi 0.15.1 \n2024.10.09 17:33",
                 )
                 // TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
                 .translator_credits(gettext("translator-credits"))
