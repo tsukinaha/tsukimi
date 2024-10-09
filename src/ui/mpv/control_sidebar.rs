@@ -461,6 +461,16 @@ impl MPVControlSidebar {
     }
 
     #[template_callback]
+    fn on_video_aspect(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
+        let panscan = match combo.selected() {
+            1 => 1.0, 
+            _ => 0.0,
+        };
+
+        self.set_mpv_property("panscan", panscan);
+    }
+
+    #[template_callback]
     pub fn on_audio_clear(&self, _button: gtk::Button) {
         let imp = self.imp();
         imp.audio_offset_adj.set_value(0.0);

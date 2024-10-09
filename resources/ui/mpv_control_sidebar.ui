@@ -488,6 +488,20 @@
               <object class="AdwPreferencesGroup">
                 <property name="title" translatable="yes">Video</property>
                 <child>
+                  <object class="AdwComboRow" id="panscan_combo">
+                    <property name="title" translatable="yes">Video Aspect</property>
+                    <signal name="notify::selected" handler="on_video_aspect" swapped="yes" />
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                          <item translatable="yes">Fit</item>
+                          <item translatable="yes">Crop</item>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
                   <object class="AdwExpanderRow">
                     <property name="title" translatable="yes">Video Filters</property>
                     <child type="suffix">
