@@ -181,27 +181,25 @@ impl AccountWindow {
                 SETTINGS
                     .edit_account(old_account, account)
                     .expect("Failed to edit server");
-                imp.stack.set_visible_child_name("entry");
-                self.close();
-                let window = self.root().and_downcast::<super::window::Window>().unwrap();
-                toast!(self, gettext("Server edited successfully"));
-                window.set_servers();
-                window.set_nav_servers();
+                self.close_dialog(&gettext("Server edited successfully"));
             }
             ActionType::Add => {
                 SETTINGS
                     .add_account(account)
                     .expect("Failed to add server");
-                imp.stack.set_visible_child_name("entry");
-                self.close();
-                let window = self.root().and_downcast::<super::window::Window>().unwrap();
-                toast!(self, gettext("Server added successfully"));
-                window.set_servers();
-                window.set_nav_servers();
+                self.close_dialog(&gettext("Server added successfully"));
             }
-        }
+        }     
+    }
 
-        
+    fn close_dialog(&self, msg: &str) {
+        self.imp().stack.set_visible_child_name("entry");
+        self.close();
+        let root = self.root();
+        let window = root.and_downcast_ref::<super::window::Window>().unwrap();
+        toast!(self, msg);
+        window.set_servers();
+        window.set_nav_servers();
     }
 
     #[template_callback]
