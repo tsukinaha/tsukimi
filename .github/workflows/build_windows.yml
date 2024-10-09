@@ -3,22 +3,21 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "main"
+      - "gtk414"
     paths-ignore:
       - "docs/**"
       - "**/.gitignore"
       - "**/.dockerignore"
       - LICENSE
-      - "**/*.md"
-  pull_request:
-    branches:
-      - "main"
-    paths-ignore:
-      - "docs/**"
-      - "**/.gitignore"
-      - "**/.dockerignore"
-      - LICENSE
-      - "**/*.md"
+      - "*.md"
+  # pull_request:
+  #   branches:
+  #     - "gtk414"
+  #   paths-ignore:
+  #     - "docs/**"
+  #     - ".gitignore"
+  #     - LICENSE
+  #     - "*.md"
 
 env:
   CARGO_TERM_COLOR: always
@@ -33,12 +32,10 @@ jobs:
         include:
           # - arch: x86_64-windows-gnu
           #   os: windows-latest
-          #   target: x86_64-pc-windows-gnu
           #   msystem: mingw64
           #   env: x86_64
           - arch: ucrt64-x86_64-windows-gnu
             os: windows-latest
-            target: x86_64-pc-windows-gnu
             msystem: ucrt64
             env: ucrt-x86_64
 
@@ -72,10 +69,16 @@ jobs:
             mingw-w64-${{ matrix.env }}-gst-libav
             curl
 
-      - name: Build tsukimi-${{ matrix.target }}
+      - name: Build tsukimi-${{ matrix.arch }}
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: msys2 {0}
         run: |
+          curl -LO https://repo.msys2.org/mingw/${{ matrix.msystem }}/mingw-w64-${{ matrix.env }}-gtk4-4.14.5-1-any.pkg.tar.zst
+          pacman --noconfirm -U ./mingw-w64-${{ matrix.env }}-gtk4-4.14.5-1-any.pkg.tar.zst
+
+          curl -LO https://repo.msys2.org/mingw/${{ matrix.msystem }}/mingw-w64-${{ matrix.env }}-libadwaita-1.5.3-1-any.pkg.tar.zst
+          pacman --noconfirm -U ./mingw-w64-${{ matrix.env }}-libadwaita-1.5.3-1-any.pkg.tar.zst
+
           export PATH="/c/Users/runneradmin/.cargo/bin:$PATH"
           rustup default stable-gnu
           cargo build --release --locked
@@ -86,6 +89,7 @@ jobs:
         run: |
           mkdir artifact && cd artifact
           mkdir tsukimi-x86_64-windows-gnu/ && cd tsukimi-x86_64-windows-gnu/ && mkdir bin/ && mkdir share/ && mkdir lib/
+          cp $GITHUB_WORKSPACE/target/release/tsukimi.exe bin/
           cp $GITHUB_WORKSPACE/target/release/tsukimi.exe bin/
           cp /${{ matrix.msystem }}/bin/gdbus.exe bin/
 
@@ -151,7 +155,7 @@ jobs:
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/upload-artifact@v4
         with:
-          name: tsukimi-${{matrix.target}}
+          name: tsukimi-${{matrix.arch}}
           path: |
             artifact/*.exe
             artifact/*.7z

@@ -37,7 +37,7 @@
                             <property name="name">loading</property>
                             <property name="title">Loading</property>
                             <property name="child">
-                              <object class="AdwSpinner">
+                              <object class="GtkSpinner">
                                 <property name="visible">True</property>
                                 <property name="halign">center</property>
                                 <property name="valign">center</property>
