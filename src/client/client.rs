@@ -1064,4 +1064,16 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn parse_url() {
+        let uri = "127.0.0.1";
+        let url = if Url::parse(uri).is_err() {
+            format!("http://{}", uri)
+        } else {
+            uri.to_string()
+        };
+        
+        assert_eq!(url, "http://127.0.0.1");
+    }
 }

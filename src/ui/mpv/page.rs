@@ -17,6 +17,7 @@ use glib::Object;
 use gtk::gdk::Rectangle;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib, Builder, PopoverMenu};
+use url::Url;
 
 use super::mpvglarea::MPVGLArea;
 use super::tsukimi_mpv::{
@@ -1063,8 +1064,9 @@ impl MPVPage {
     pub fn load_config(&self) {
         let imp = self.imp();
         let mpv = &imp.video.imp().mpv;
-        if let Some(proxy) = crate::config::proxy::get_proxy_settings() {
-            mpv.set_property("http-proxy", proxy);
+        if let Some(uri) = crate::config::proxy::get_proxy_settings() {
+            let url = Url::parse(&uri).map_or_else(|_| format!("http://{}", uri), |_| uri.to_string());
+            mpv.set_property("http-proxy", url);
         }
         match SETTINGS.mpv_video_output() {
             0 => mpv.set_property("vo", "libmpv"),
