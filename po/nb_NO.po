@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-07 11:19+0800\n"
+"POT-Creation-Date: 2024-10-09 17:33+0800\n"
 "PO-Revision-Date: 2024-09-26 15:26+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/tsukimi/"
@@ -27,7 +27,7 @@ msgstr "Innstillinger"
 msgid "General"
 msgstr "Generelt"
 
-#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:481
+#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:476
 msgid "Preferred Video Version"
 msgstr ""
 
@@ -44,7 +44,7 @@ msgid "Preferred Audio Language"
 msgstr "Foretrukket lydspråk"
 
 #: resources/ui/account_settings.ui:41 resources/ui/account_settings.ui:65
-#: resources/ui/account_settings.ui:208
+#: resources/ui/account_settings.ui:203
 msgid "Default"
 msgstr "Forvalg"
 
@@ -57,229 +57,225 @@ msgid "Appearence"
 msgstr "Utseende"
 
 #: resources/ui/account_settings.ui:85
-msgid "Daily Recommend"
-msgstr ""
-
-#: resources/ui/account_settings.ui:90
 msgid "Font Scale"
 msgstr "Skriftstørrelse"
 
-#: resources/ui/account_settings.ui:104
+#: resources/ui/account_settings.ui:99
 msgid "Font Family"
 msgstr "Skriftfamilie"
 
-#: resources/ui/account_settings.ui:122 resources/ui/account_settings.ui:133
-#: resources/ui/account_settings.ui:150
+#: resources/ui/account_settings.ui:117 resources/ui/account_settings.ui:128
+#: resources/ui/account_settings.ui:145
 msgid "Restart App To Take Effect"
 msgstr "Start programmet på ny for å iføre endringer"
 
-#: resources/ui/account_settings.ui:132
+#: resources/ui/account_settings.ui:127
 msgid "Accent Color"
 msgstr "Aksentfarge"
 
-#: resources/ui/account_settings.ui:149
+#: resources/ui/account_settings.ui:144
 msgid "Accent Foreground Color"
 msgstr "Aksentforgrunnsfarge"
 
-#: resources/ui/account_settings.ui:166
+#: resources/ui/account_settings.ui:161
 #, fuzzy
 msgid "Hide Sidebar"
 msgstr "Vis sidefelt"
 
-#: resources/ui/account_settings.ui:171
+#: resources/ui/account_settings.ui:166
 #, fuzzy
 msgid "Auto Select Last Server"
 msgstr "Auto-velg siste tjener"
 
-#: resources/ui/account_settings.ui:178
+#: resources/ui/account_settings.ui:173
 msgid "Network"
 msgstr "Nettverk"
 
-#: resources/ui/account_settings.ui:181
+#: resources/ui/account_settings.ui:176
 msgid "Threads"
 msgstr "Tråder"
 
-#: resources/ui/account_settings.ui:182
+#: resources/ui/account_settings.ui:177
 msgid "This only effects on getting images"
 msgstr "Dette har kun innvirkning på innhenting av bilder"
 
-#: resources/ui/account_settings.ui:198
+#: resources/ui/account_settings.ui:193 resources/ui/mpv_control_sidebar.ui:372
 msgid "Background"
 msgstr "Bakgrunn"
 
-#: resources/ui/account_settings.ui:205
+#: resources/ui/account_settings.ui:200
 msgid "This feature may cause significant lag. Please enable it with caution."
 msgstr ""
 
-#: resources/ui/account_settings.ui:231
+#: resources/ui/account_settings.ui:226
 msgid "Opacity"
 msgstr "Dekkevne"
 
-#: resources/ui/account_settings.ui:245
+#: resources/ui/account_settings.ui:240
 msgid "Blur (Experimental)"
 msgstr "Tilsløring (eksperimentelt)"
 
-#: resources/ui/account_settings.ui:246 resources/ui/account_settings.ui:255
+#: resources/ui/account_settings.ui:241 resources/ui/account_settings.ui:250
 msgid "Warning: High GPU usage"
 msgstr "Advarsel: Høy grafikkortsbruk"
 
-#: resources/ui/account_settings.ui:254
+#: resources/ui/account_settings.ui:249
 msgid "Blur Radius (Experimental)"
 msgstr "Tilsløringsradius (eksperimentelt)"
 
-#: resources/ui/account_settings.ui:275
+#: resources/ui/account_settings.ui:270 resources/ui/mpv_control_sidebar.ui:63
 msgid "Cache"
 msgstr "Hurtiglager"
 
-#: resources/ui/account_settings.ui:278
+#: resources/ui/account_settings.ui:273
 msgid "Clear Cache"
 msgstr "Tøm hurtiglager"
 
-#: resources/ui/account_settings.ui:299
+#: resources/ui/account_settings.ui:294
 msgid "Account"
 msgstr "Konto"
 
-#: resources/ui/account_settings.ui:315
+#: resources/ui/account_settings.ui:310
 msgid "New Password"
 msgstr "Nytt passord"
 
-#: resources/ui/account_settings.ui:320
+#: resources/ui/account_settings.ui:315
 msgid "Confirm Password"
 msgstr "Bekreft passord"
 
-#: resources/ui/account_settings.ui:332
+#: resources/ui/account_settings.ui:327
 msgid "Change Password"
 msgstr "Endre passord"
 
-#: resources/ui/account_settings.ui:349
+#: resources/ui/account_settings.ui:344
 msgid "Music"
 msgstr "Musikk"
 
-#: resources/ui/account_settings.ui:354
+#: resources/ui/account_settings.ui:349
 msgid "Player"
 msgstr "Avspiller"
 
-#: resources/ui/account_settings.ui:357 resources/ui/player_toolbar.ui:197
+#: resources/ui/account_settings.ui:352 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
 msgstr "Gjentagelsesmodus"
 
-#: resources/ui/account_settings.ui:361 resources/ui/player_toolbar.ui:231
+#: resources/ui/account_settings.ui:356 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
 msgstr "Gjenta enkeltspor"
 
-#: resources/ui/account_settings.ui:362 resources/ui/player_toolbar.ui:235
+#: resources/ui/account_settings.ui:357 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
 msgstr "Gjenta alle"
 
-#: resources/ui/account_settings.ui:363 resources/ui/player_toolbar.ui:239
+#: resources/ui/account_settings.ui:358 resources/ui/player_toolbar.ui:239
 msgid "None"
 msgstr "Ingen"
 
-#: resources/ui/account_settings.ui:375
+#: resources/ui/account_settings.ui:370 resources/ui/mpv_control_sidebar.ui:489
 msgid "Video"
 msgstr "Video"
 
-#: resources/ui/account_settings.ui:380
+#: resources/ui/account_settings.ui:375
 msgid "Video Output"
 msgstr "Videoutdata"
 
-#: resources/ui/account_settings.ui:381
+#: resources/ui/account_settings.ui:376
 msgid ""
 "Warning: Do NOT use any method other than the software's own controls to "
 "control the window. Restart to take effect"
 msgstr ""
 
-#: resources/ui/account_settings.ui:384
+#: resources/ui/account_settings.ui:379
 msgid "libmpv (default)"
 msgstr ""
 
-#: resources/ui/account_settings.ui:439
+#: resources/ui/account_settings.ui:434
 msgid "Load external mpv config"
 msgstr ""
 
-#: resources/ui/account_settings.ui:440
+#: resources/ui/account_settings.ui:435
 msgid "May cause crashes, Requires restart"
 msgstr ""
 
-#: resources/ui/account_settings.ui:444
+#: resources/ui/account_settings.ui:439
 msgid "Read from mpv config dir"
 msgstr ""
 
-#: resources/ui/account_settings.ui:459
+#: resources/ui/account_settings.ui:454
 #, fuzzy
 msgid "Preferred Version"
 msgstr "Innstillinger"
 
-#: resources/ui/account_settings.ui:482
+#: resources/ui/account_settings.ui:477
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:497
+#: resources/ui/account_settings.ui:492
 msgid "Descriptors"
 msgstr ""
 
-#: resources/ui/account_settings.ui:519
+#: resources/ui/account_settings.ui:514
 msgid "It is recommended to set no more than 3 lines"
 msgstr ""
 
-#: resources/ui/account_settings.ui:540
+#: resources/ui/account_settings.ui:535
 msgid "No Descriptors"
 msgstr ""
 
-#: resources/ui/account_settings.ui:559
+#: resources/ui/account_settings.ui:554
 msgid "Add a descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:570 resources/ui/account_settings.ui:680
+#: resources/ui/account_settings.ui:565 resources/ui/account_settings.ui:675
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
 #: resources/ui/metadata_dialog.ui:38
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: resources/ui/account_settings.ui:576
+#: resources/ui/account_settings.ui:571
 #, fuzzy
 msgid "Add"
 msgstr "_Legg til"
 
-#: resources/ui/account_settings.ui:601 resources/ui/account_settings.ui:711
+#: resources/ui/account_settings.ui:596 resources/ui/account_settings.ui:706
 msgid "This will use exact matching to obtain a list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:604 resources/ui/account_settings.ui:714
+#: resources/ui/account_settings.ui:599 resources/ui/account_settings.ui:709
 msgid "Descriptor Type"
 msgstr ""
 
-#: resources/ui/account_settings.ui:609 resources/ui/account_settings.ui:719
+#: resources/ui/account_settings.ui:604 resources/ui/account_settings.ui:714
 msgid "String"
 msgstr ""
 
-#: resources/ui/account_settings.ui:610 resources/ui/account_settings.ui:720
+#: resources/ui/account_settings.ui:605 resources/ui/account_settings.ui:715
 msgid "Regular Expression"
 msgstr ""
 
-#: resources/ui/account_settings.ui:622 resources/ui/account_settings.ui:732
+#: resources/ui/account_settings.ui:617 resources/ui/account_settings.ui:727
 msgid "Descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:627 resources/ui/account_settings.ui:737
+#: resources/ui/account_settings.ui:622 resources/ui/account_settings.ui:732
 msgid "Descriptor should not be too long"
 msgstr ""
 
-#: resources/ui/account_settings.ui:638 resources/ui/account_settings.ui:748
+#: resources/ui/account_settings.ui:633 resources/ui/account_settings.ui:743
 msgid "eg. 1080p"
 msgstr ""
 
-#: resources/ui/account_settings.ui:649 resources/ui/account_settings.ui:759
+#: resources/ui/account_settings.ui:644 resources/ui/account_settings.ui:754
 msgid "eg. 1080p.*WebDL"
 msgstr ""
 
-#: resources/ui/account_settings.ui:669
+#: resources/ui/account_settings.ui:664
 msgid "Edit descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:686
+#: resources/ui/account_settings.ui:681
 #, fuzzy
 msgid "Save"
 msgstr "_Lagre"
@@ -324,11 +320,11 @@ msgstr ""
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:869 src/ui/mpv/page.rs:871 src/ui/widgets/item.rs:481
+#: src/ui/mpv/page.rs:880 src/ui/mpv/page.rs:882 src/ui/widgets/item.rs:504
 msgid "Play"
 msgstr "Spill av"
 
-#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:874 src/ui/mpv/page.rs:876
+#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:885 src/ui/mpv/page.rs:887
 msgid "Pause"
 msgstr "Pause"
 
@@ -374,10 +370,12 @@ msgid "Volume"
 msgstr "Lydstyrke"
 
 #: resources/ui/mpvpage.ui:352 resources/ui/mpvpage.ui:411
+#: resources/ui/mpv_control_sidebar.ui:441
 msgid "Audio"
 msgstr "Lyd"
 
 #: resources/ui/mpvpage.ui:360 resources/ui/mpvpage.ui:379
+#: resources/ui/mpv_control_sidebar.ui:111
 msgid "Subtitle"
 msgstr "Undertekst"
 
@@ -523,8 +521,86 @@ msgstr ""
 msgid "Lock The Item"
 msgstr "Lås elementet"
 
+#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:598
+#, fuzzy
+#| msgid "Video Settings"
+msgid "Advanced Settings"
+msgstr "Videoinnstillinger"
+
+#: resources/ui/mpv_control_sidebar.ui:18
+msgid "Seek Action"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:21
+msgid "Seek Backward"
+msgstr "Blafre bakover"
+
+#: resources/ui/mpv_control_sidebar.ui:22
+#: resources/ui/mpv_control_sidebar.ui:42
+#: resources/ui/mpv_control_sidebar.ui:94
+msgid "Unit: Seconds"
+msgstr "Enhet: Sekunder"
+
+#: resources/ui/mpv_control_sidebar.ui:41
+msgid "Seek Forward"
+msgstr "Blafre forover"
+
 #: resources/ui/mpv_control_sidebar.ui:72
 msgid "Show Buffer Speed"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:77
+msgid "Cache Size"
+msgstr "Hurtiglagerstørrelse"
+
+#: resources/ui/mpv_control_sidebar.ui:78
+#, fuzzy
+#| msgid "Unit: MB"
+msgid "Unit: MB"
+msgstr "Enhet: MB"
+
+#: resources/ui/mpv_control_sidebar.ui:93
+msgid "Cache Time"
+msgstr "Hurtiglagertid"
+
+#: resources/ui/mpv_control_sidebar.ui:114
+#, fuzzy
+#| msgid "Subtitle"
+msgid "Subtitle Composing"
+msgstr "Undertekst"
+
+#: resources/ui/mpv_control_sidebar.ui:186
+msgid "Position"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:206
+msgid "Subtitle Text Size"
+msgstr "Undertekststørrelse"
+
+#: resources/ui/mpv_control_sidebar.ui:207
+msgid "This option only takes effect for srt subtitles"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:227
+#, fuzzy
+#| msgid "Subtitle Text Size"
+msgid "Subtitle Text Scale"
+msgstr "Undertekststørrelse"
+
+#: resources/ui/mpv_control_sidebar.ui:228
+msgid "This affects ASS subtitles as well"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:249
+#, fuzzy
+#| msgid "Subtitle Text Size"
+msgid "Subtitle Text Font"
+msgstr "Undertekststørrelse"
+
+#: resources/ui/mpv_control_sidebar.ui:251
+msgid ""
+"Specify font to use for subtitles that do not themselves specify a "
+"particular font"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:276
@@ -552,6 +628,26 @@ msgstr ""
 #: resources/ui/mpv_control_sidebar.ui:306
 msgid "Shadow Offset"
 msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:323
+#, fuzzy
+#| msgid "Subtitle"
+msgid "Subtitle Color"
+msgstr "Undertekst"
+
+#: resources/ui/mpv_control_sidebar.ui:336
+msgid "Text"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:354
+msgid "Border"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:392
+#, fuzzy
+#| msgid "Subtitle"
+msgid "Subtitle Offset"
+msgstr "Undertekst"
 
 #: resources/ui/mpv_control_sidebar.ui:405
 msgid "Offset"
@@ -596,6 +692,10 @@ msgstr ""
 msgid "Dual Channel (Invert)"
 msgstr ""
 
+#: resources/ui/mpv_control_sidebar.ui:492
+msgid "Video Filters"
+msgstr ""
+
 #: resources/ui/mpv_control_sidebar.ui:505
 msgid "Brightness"
 msgstr ""
@@ -618,31 +718,35 @@ msgstr ""
 msgid "Gamma"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:584
+#: resources/ui/mpv_control_sidebar.ui:583
+msgid "Deinterlace"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:590
 msgid "Action after video ends"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:587
+#: resources/ui/mpv_control_sidebar.ui:593
 msgid "Play Next"
 msgstr "Spill neste"
 
-#: resources/ui/mpv_control_sidebar.ui:600
+#: resources/ui/mpv_control_sidebar.ui:606
 msgid "Loop Playback"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:614
+#: resources/ui/mpv_control_sidebar.ui:620
 msgid "Stop"
 msgstr "Stopp"
 
-#: resources/ui/mpv_control_sidebar.ui:630
+#: resources/ui/mpv_control_sidebar.ui:636
 msgid "Hardware decoding"
 msgstr "Maskinvaredekoding"
 
-#: resources/ui/mpv_control_sidebar.ui:634
+#: resources/ui/mpv_control_sidebar.ui:640
 msgid "no (default)"
 msgstr "ingen (forvalg)"
 
-#: resources/ui/mpv_control_sidebar.ui:678
+#: resources/ui/mpv_control_sidebar.ui:684
 msgid "Not all settings will be saved"
 msgstr ""
 
@@ -755,15 +859,15 @@ msgstr "Dato avspilt"
 msgid "Runtime"
 msgstr "Kjøretid"
 
-#: resources/ui/singlelist.ui:145 resources/ui/single_grid.ui:184
+#: resources/ui/singlelist.ui:145 resources/ui/single_grid.ui:185
 msgid "Poster"
 msgstr "Plakat"
 
-#: resources/ui/singlelist.ui:149 resources/ui/single_grid.ui:188
+#: resources/ui/singlelist.ui:149 resources/ui/single_grid.ui:189
 msgid "Backdrop"
 msgstr ""
 
-#: resources/ui/singlelist.ui:153 resources/ui/single_grid.ui:192
+#: resources/ui/singlelist.ui:153 resources/ui/single_grid.ui:193
 msgid "Banner"
 msgstr ""
 
@@ -832,7 +936,11 @@ msgstr ""
 msgid "Sort By"
 msgstr ""
 
-#: resources/ui/single_grid.ui:169
+#: resources/ui/single_grid.ui:121
+msgid "Updated At"
+msgstr ""
+
+#: resources/ui/single_grid.ui:170
 msgid "Nothing Here"
 msgstr ""
 
@@ -882,12 +990,6 @@ msgstr ""
 #: resources/ui/window.ui:405
 msgid "Servers"
 msgstr "Tjenere"
-
-#: resources/ui/window.ui:598
-#, fuzzy
-#| msgid "Video Settings"
-msgid "Advanced Settings"
-msgstr "Videoinnstillinger"
 
 #: resources/ui/mpv_shortcuts_window.ui:15
 msgid "Decrease/increase playback speed by 10%"
@@ -955,11 +1057,11 @@ msgstr "Lenker"
 msgid "Fields must be filled in"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:187
+#: src/ui/widgets/account_add.rs:184
 msgid "Server edited successfully"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:198
+#: src/ui/widgets/account_add.rs:190
 msgid "Server added successfully"
 msgstr ""
 
@@ -1015,51 +1117,51 @@ msgstr "Bibliotek"
 msgid "Latest"
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:388
+#: src/ui/mpv/control_sidebar.rs:389
 msgid "Video filter settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:405
+#: src/ui/mpv/control_sidebar.rs:411
 msgid "Subtitle settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:418
+#: src/ui/mpv/control_sidebar.rs:424
 msgid "Subtitle color settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:427
+#: src/ui/mpv/control_sidebar.rs:433
 msgid "Subtitle offset settings cleared."
 msgstr ""
 
-#: src/ui/mpv/page.rs:374
+#: src/ui/mpv/page.rs:375
 #, fuzzy
 #| msgid "Loading..."
 msgid "Loading Video..."
 msgstr "Laster inn …"
 
-#: src/ui/mpv/page.rs:393
+#: src/ui/mpv/page.rs:394
 msgid "No more videos found"
 msgstr ""
 
-#: src/ui/mpv/page.rs:402
+#: src/ui/mpv/page.rs:403
 msgid "Waiting for mediasource..."
 msgstr ""
 
-#: src/ui/mpv/page.rs:439 src/ui/mpv/page.rs:444
+#: src/ui/mpv/page.rs:440 src/ui/mpv/page.rs:445
 msgid "No media sources found"
 msgstr ""
 
-#: src/ui/mpv/page.rs:599
+#: src/ui/mpv/page.rs:600
 msgid "Error"
 msgstr ""
 
-#: src/ui/mpv/page.rs:601
+#: src/ui/mpv/page.rs:602
 msgid ""
 "MPV has been shutdown, Application will exit. \n"
 "Tsukimi can't restart MPV."
 msgstr ""
 
-#: src/ui/mpv/page.rs:604
+#: src/ui/mpv/page.rs:605
 #, fuzzy
 msgid "Shutdown"
 msgstr "Slå av tjener"
@@ -1080,11 +1182,11 @@ msgstr ""
 msgid "Error loading image"
 msgstr ""
 
-#: src/ui/widgets/item.rs:477 src/ui/widgets/list.rs:121
+#: src/ui/widgets/item.rs:500 src/ui/widgets/list.rs:121
 msgid "Resume"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1026
+#: src/ui/widgets/item.rs:1050
 msgid "No video source found"
 msgstr ""
 
@@ -1198,24 +1300,6 @@ msgstr "Gjøremål startet"
 
 #~ msgid "Video Settings"
 #~ msgstr "Videoinnstillinger"
-
-#~ msgid "Seek Backward"
-#~ msgstr "Blafre bakover"
-
-#~ msgid "Unit: Seconds"
-#~ msgstr "Enhet: Sekunder"
-
-#~ msgid "Seek Forward"
-#~ msgstr "Blafre forover"
-
-#~ msgid "Cache Size"
-#~ msgstr "Hurtiglagerstørrelse"
-
-#~ msgid "Cache Time"
-#~ msgstr "Hurtiglagertid"
-
-#~ msgid "Subtitle Text Size"
-#~ msgstr "Undertekststørrelse"
 
 #~ msgid "Default Volume"
 #~ msgstr "Forvalgt lydstyrke"
