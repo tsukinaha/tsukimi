@@ -577,6 +577,12 @@
                     </child>
                   </object>
                 </child>
+                <child>
+                  <object class="AdwSwitchRow" id="video_deinterlace_switchrow">
+                    <signal name="notify::active" handler="on_video_deinterlace" swapped="yes" />
+                    <property name="title" translatable="yes">Deinterlace</property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>

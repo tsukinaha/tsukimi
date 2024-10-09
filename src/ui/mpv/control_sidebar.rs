@@ -390,6 +390,11 @@ impl MPVControlSidebar {
     }
 
     #[template_callback]
+    fn on_video_deinterlace(&self, _param: glib::ParamSpec, switch: adw::SwitchRow) {
+        self.set_mpv_property("deinterlace", switch.is_active());
+    }
+
+    #[template_callback]
     fn on_sub_clear(&self, _button: gtk::Button) {
         let imp = self.imp();
         imp.sub_bold_toggle.set_active(false);
