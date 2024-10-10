@@ -675,26 +675,32 @@ msgid "Dual Channel (Invert)"
 msgstr "Deux canaux (inversé)"
 
 #: resources/ui/mpv_control_sidebar.ui:506
+#: resources/ui/mpv_control_sidebar.ui:492
 msgid "Video Filters"
 msgstr "Filtres vidéo"
 
 #: resources/ui/mpv_control_sidebar.ui:519
+#: resources/ui/mpv_control_sidebar.ui:505
 msgid "Brightness"
 msgstr "Luminosité"
 
 #: resources/ui/mpv_control_sidebar.ui:534
+#: resources/ui/mpv_control_sidebar.ui:520
 msgid "Contrast"
 msgstr "Contraste"
 
 #: resources/ui/mpv_control_sidebar.ui:549
+#: resources/ui/mpv_control_sidebar.ui:535
 msgid "Saturation"
 msgstr "Saturation"
 
 #: resources/ui/mpv_control_sidebar.ui:564
+#: resources/ui/mpv_control_sidebar.ui:550
 msgid "Hue"
 msgstr "Teinte"
 
 #: resources/ui/mpv_control_sidebar.ui:579
+#: resources/ui/mpv_control_sidebar.ui:565
 msgid "Gamma"
 msgstr "Gamma"
 
@@ -703,30 +709,37 @@ msgid "Deinterlace"
 msgstr "Désentrelacer"
 
 #: resources/ui/mpv_control_sidebar.ui:689
+#: resources/ui/mpv_control_sidebar.ui:590
 msgid "Action after video ends"
 msgstr "Action après que la vidéo se termine"
 
 #: resources/ui/mpv_control_sidebar.ui:692
+#: resources/ui/mpv_control_sidebar.ui:593
 msgid "Play Next"
 msgstr "Démarrer la suivante"
 
 #: resources/ui/mpv_control_sidebar.ui:705
+#: resources/ui/mpv_control_sidebar.ui:606
 msgid "Loop Playback"
 msgstr "Lire en boucle"
 
 #: resources/ui/mpv_control_sidebar.ui:719
+#: resources/ui/mpv_control_sidebar.ui:620
 msgid "Stop"
 msgstr "Arrêter"
 
 #: resources/ui/mpv_control_sidebar.ui:735
+#: resources/ui/mpv_control_sidebar.ui:636
 msgid "Hardware decoding"
 msgstr "Décodage matériel"
 
 #: resources/ui/mpv_control_sidebar.ui:739
+#: resources/ui/mpv_control_sidebar.ui:640
 msgid "no (default)"
 msgstr "Non (par défaut)"
 
 #: resources/ui/mpv_control_sidebar.ui:783
+#: resources/ui/mpv_control_sidebar.ui:684
 msgid "Not all settings will be saved"
 msgstr "Certains paramètres ne seront pas sauvegardés"
 
@@ -1082,19 +1095,19 @@ msgstr "Bibliothèque"
 msgid "Latest"
 msgstr "Les plus récents"
 
-#: src/ui/mpv/control_sidebar.rs:411
+#: src/ui/mpv/control_sidebar.rs:411 src/ui/mpv/control_sidebar.rs:389
 msgid "Video filter settings cleared."
 msgstr "Paramètres de filtres vidéo réinitialisés."
 
-#: src/ui/mpv/control_sidebar.rs:433
+#: src/ui/mpv/control_sidebar.rs:433 src/ui/mpv/control_sidebar.rs:411
 msgid "Subtitle settings cleared."
 msgstr "Paramètres des sous-titres réinitialisés."
 
-#: src/ui/mpv/control_sidebar.rs:446
+#: src/ui/mpv/control_sidebar.rs:446 src/ui/mpv/control_sidebar.rs:424
 msgid "Subtitle color settings cleared."
 msgstr "Paramètres de la couleur des sous-titres réinitialisés."
 
-#: src/ui/mpv/control_sidebar.rs:455
+#: src/ui/mpv/control_sidebar.rs:455 src/ui/mpv/control_sidebar.rs:433
 msgid "Subtitle offset settings cleared."
 msgstr "Paramètres du décalage des sous-titres réinitialisés."
 
