@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-10 22:58+0800\n"
-"PO-Revision-Date: 2024-10-10 14:59+0000\n"
+"PO-Revision-Date: 2024-10-11 12:00+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
@@ -669,18 +669,16 @@ msgid "Dual Channel (Invert)"
 msgstr "雙聲道(反轉)"
 
 #: resources/ui/mpv_control_sidebar.ui:492
-#, fuzzy
-#| msgid "Video Output"
 msgid "Video Aspect"
-msgstr "影片輸出"
+msgstr "影片長寬比"
 
 #: resources/ui/mpv_control_sidebar.ui:497
 msgid "Fit"
-msgstr ""
+msgstr "適應"
 
 #: resources/ui/mpv_control_sidebar.ui:498
 msgid "Crop"
-msgstr ""
+msgstr "剪裁"
 
 #: resources/ui/mpv_control_sidebar.ui:506
 msgid "Video Filters"
@@ -707,32 +705,28 @@ msgid "Gamma"
 msgstr "伽馬"
 
 #: resources/ui/mpv_control_sidebar.ui:596
-#, fuzzy
-#| msgid "Video: "
 msgid "Video Deband"
-msgstr "影片： "
+msgstr "影片去除色帶"
 
 #: resources/ui/mpv_control_sidebar.ui:619
 msgid "Deband Iterations"
-msgstr ""
+msgstr "去除色帶迭代次數"
 
 #: resources/ui/mpv_control_sidebar.ui:634
 msgid "Deband Threshold"
-msgstr ""
+msgstr "去除色帶閾值"
 
 #: resources/ui/mpv_control_sidebar.ui:649
 msgid "Deband Range"
-msgstr ""
+msgstr "去除色帶範圍"
 
 #: resources/ui/mpv_control_sidebar.ui:664
 msgid "Deband Grain"
-msgstr ""
+msgstr "去除色帶顆粒"
 
 #: resources/ui/mpv_control_sidebar.ui:682
-#, fuzzy
-#| msgid "Deinterlace"
 msgid "Video Deinterlace"
-msgstr "反交錯"
+msgstr "影片反交錯"
 
 #: resources/ui/mpv_control_sidebar.ui:689
 msgid "Action after video ends"
@@ -1132,10 +1126,8 @@ msgid "Subtitle offset settings cleared."
 msgstr "字幕偏移設定已清除。"
 
 #: src/ui/mpv/control_sidebar.rs:491
-#, fuzzy
-#| msgid "Subtitle settings cleared."
 msgid "Deband settings cleared."
-msgstr "字幕設定已清除。"
+msgstr "去除色帶設定已清除。"
 
 #: src/ui/mpv/page.rs:375
 msgid "Loading Video..."
