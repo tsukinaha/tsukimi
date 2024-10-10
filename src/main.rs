@@ -69,7 +69,8 @@ fn main() -> glib::ExitCode {
         std::env::set_var("XDG_CACHE_HOME", config_local_dir);
 
         // Set gsk_renderer to gl to avoid memory leak and other issues
-        std::env::set_var("GSK_RENDERER", "gl");
+        // Fixed
+        // std::env::set_var("GSK_RENDERER", "gl");
     }
 
     // Initialize the logger
