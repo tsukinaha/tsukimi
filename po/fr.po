@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-09 17:33+0800\n"
+"POT-Creation-Date: 2024-10-10 22:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -674,72 +674,94 @@ msgstr "Deux canaux"
 msgid "Dual Channel (Invert)"
 msgstr "Deux canaux (inversé)"
 
-#: resources/ui/mpv_control_sidebar.ui:506
 #: resources/ui/mpv_control_sidebar.ui:492
+#, fuzzy
+msgid "Video Aspect"
+msgstr "Sortie vidéo"
+
+#: resources/ui/mpv_control_sidebar.ui:497
+msgid "Fit"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:498
+msgid "Crop"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:506
 msgid "Video Filters"
 msgstr "Filtres vidéo"
 
 #: resources/ui/mpv_control_sidebar.ui:519
-#: resources/ui/mpv_control_sidebar.ui:505
 msgid "Brightness"
 msgstr "Luminosité"
 
 #: resources/ui/mpv_control_sidebar.ui:534
-#: resources/ui/mpv_control_sidebar.ui:520
 msgid "Contrast"
 msgstr "Contraste"
 
 #: resources/ui/mpv_control_sidebar.ui:549
-#: resources/ui/mpv_control_sidebar.ui:535
 msgid "Saturation"
 msgstr "Saturation"
 
 #: resources/ui/mpv_control_sidebar.ui:564
-#: resources/ui/mpv_control_sidebar.ui:550
 msgid "Hue"
 msgstr "Teinte"
 
 #: resources/ui/mpv_control_sidebar.ui:579
-#: resources/ui/mpv_control_sidebar.ui:565
 msgid "Gamma"
 msgstr "Gamma"
 
-#: resources/ui/mpv_control_sidebar.ui:583
-msgid "Deinterlace"
+#: resources/ui/mpv_control_sidebar.ui:596
+#, fuzzy
+msgid "Video Deband"
+msgstr "Vidéo : "
+
+#: resources/ui/mpv_control_sidebar.ui:619
+msgid "Deband Iterations"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:634
+msgid "Deband Threshold"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:649
+msgid "Deband Range"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:664
+msgid "Deband Grain"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:682
+#, fuzzy
+msgid "Video Deinterlace"
 msgstr "Désentrelacer"
 
 #: resources/ui/mpv_control_sidebar.ui:689
-#: resources/ui/mpv_control_sidebar.ui:590
 msgid "Action after video ends"
 msgstr "Action après que la vidéo se termine"
 
 #: resources/ui/mpv_control_sidebar.ui:692
-#: resources/ui/mpv_control_sidebar.ui:593
 msgid "Play Next"
 msgstr "Démarrer la suivante"
 
 #: resources/ui/mpv_control_sidebar.ui:705
-#: resources/ui/mpv_control_sidebar.ui:606
 msgid "Loop Playback"
 msgstr "Lire en boucle"
 
 #: resources/ui/mpv_control_sidebar.ui:719
-#: resources/ui/mpv_control_sidebar.ui:620
 msgid "Stop"
 msgstr "Arrêter"
 
 #: resources/ui/mpv_control_sidebar.ui:735
-#: resources/ui/mpv_control_sidebar.ui:636
 msgid "Hardware decoding"
 msgstr "Décodage matériel"
 
 #: resources/ui/mpv_control_sidebar.ui:739
-#: resources/ui/mpv_control_sidebar.ui:640
 msgid "no (default)"
 msgstr "Non (par défaut)"
 
 #: resources/ui/mpv_control_sidebar.ui:783
-#: resources/ui/mpv_control_sidebar.ui:684
 msgid "Not all settings will be saved"
 msgstr "Certains paramètres ne seront pas sauvegardés"
 
@@ -1095,21 +1117,26 @@ msgstr "Bibliothèque"
 msgid "Latest"
 msgstr "Les plus récents"
 
-#: src/ui/mpv/control_sidebar.rs:411 src/ui/mpv/control_sidebar.rs:389
+#: src/ui/mpv/control_sidebar.rs:411
 msgid "Video filter settings cleared."
 msgstr "Paramètres de filtres vidéo réinitialisés."
 
-#: src/ui/mpv/control_sidebar.rs:433 src/ui/mpv/control_sidebar.rs:411
+#: src/ui/mpv/control_sidebar.rs:433
 msgid "Subtitle settings cleared."
 msgstr "Paramètres des sous-titres réinitialisés."
 
-#: src/ui/mpv/control_sidebar.rs:446 src/ui/mpv/control_sidebar.rs:424
+#: src/ui/mpv/control_sidebar.rs:446
 msgid "Subtitle color settings cleared."
 msgstr "Paramètres de la couleur des sous-titres réinitialisés."
 
-#: src/ui/mpv/control_sidebar.rs:455 src/ui/mpv/control_sidebar.rs:433
+#: src/ui/mpv/control_sidebar.rs:455
 msgid "Subtitle offset settings cleared."
 msgstr "Paramètres du décalage des sous-titres réinitialisés."
+
+#: src/ui/mpv/control_sidebar.rs:491
+#, fuzzy
+msgid "Deband settings cleared."
+msgstr "Paramètres des sous-titres réinitialisés."
 
 #: src/ui/mpv/page.rs:375
 msgid "Loading Video..."
@@ -1263,46 +1290,5 @@ msgstr "Résultat : "
 msgid "Task started"
 msgstr "Tâche démarrée"
 
-#: resources/ui/mpv_control_sidebar.ui:492
-#, fuzzy
-msgid "Video Aspect"
-msgstr "Sortie vidéo"
-
-#: resources/ui/mpv_control_sidebar.ui:497
-msgid "Fit"
-msgstr ""
-
-#: resources/ui/mpv_control_sidebar.ui:498
-msgid "Crop"
-msgstr ""
-
-#: resources/ui/mpv_control_sidebar.ui:596
-#, fuzzy
-msgid "Video Deband"
-msgstr "Vidéo : "
-
-#: resources/ui/mpv_control_sidebar.ui:619
-msgid "Deband Iterations"
-msgstr ""
-
-#: resources/ui/mpv_control_sidebar.ui:634
-msgid "Deband Threshold"
-msgstr ""
-
-#: resources/ui/mpv_control_sidebar.ui:649
-msgid "Deband Range"
-msgstr ""
-
-#: resources/ui/mpv_control_sidebar.ui:664
-msgid "Deband Grain"
-msgstr ""
-
-#: resources/ui/mpv_control_sidebar.ui:682
-#, fuzzy
-msgid "Video Deinterlace"
-msgstr "Désentrelacer"
-
-#: src/ui/mpv/control_sidebar.rs:491
-#, fuzzy
-msgid "Deband settings cleared."
-msgstr "Paramètres des sous-titres réinitialisés."
+#~ msgid "Deinterlace"
+#~ msgstr "Désentrelacer"
