@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-09 17:33+0800\n"
+"POT-Creation-Date: 2024-10-10 22:58+0800\n"
 "PO-Revision-Date: 2024-09-26 15:26+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/tsukimi/"
@@ -693,60 +693,96 @@ msgid "Dual Channel (Invert)"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:492
+#, fuzzy
+#| msgid "Video Output"
+msgid "Video Aspect"
+msgstr "Videoutdata"
+
+#: resources/ui/mpv_control_sidebar.ui:497
+msgid "Fit"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:498
+msgid "Crop"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:506
 msgid "Video Filters"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:505
+#: resources/ui/mpv_control_sidebar.ui:519
 msgid "Brightness"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:520
+#: resources/ui/mpv_control_sidebar.ui:534
 #, fuzzy
 #| msgid "Contents"
 msgid "Contrast"
 msgstr "Innhold"
 
-#: resources/ui/mpv_control_sidebar.ui:535
+#: resources/ui/mpv_control_sidebar.ui:549
 msgid "Saturation"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:550
+#: resources/ui/mpv_control_sidebar.ui:564
 msgid "Hue"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:565
+#: resources/ui/mpv_control_sidebar.ui:579
 msgid "Gamma"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:583
-msgid "Deinterlace"
+#: resources/ui/mpv_control_sidebar.ui:596
+#, fuzzy
+#| msgid "Video Settings"
+msgid "Video Deband"
+msgstr "Videoinnstillinger"
+
+#: resources/ui/mpv_control_sidebar.ui:619
+msgid "Deband Iterations"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:590
+#: resources/ui/mpv_control_sidebar.ui:634
+msgid "Deband Threshold"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:649
+msgid "Deband Range"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:664
+msgid "Deband Grain"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:682
+msgid "Video Deinterlace"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:689
 msgid "Action after video ends"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:593
+#: resources/ui/mpv_control_sidebar.ui:692
 msgid "Play Next"
 msgstr "Spill neste"
 
-#: resources/ui/mpv_control_sidebar.ui:606
+#: resources/ui/mpv_control_sidebar.ui:705
 msgid "Loop Playback"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:620
+#: resources/ui/mpv_control_sidebar.ui:719
 msgid "Stop"
 msgstr "Stopp"
 
-#: resources/ui/mpv_control_sidebar.ui:636
+#: resources/ui/mpv_control_sidebar.ui:735
 msgid "Hardware decoding"
 msgstr "Maskinvaredekoding"
 
-#: resources/ui/mpv_control_sidebar.ui:640
+#: resources/ui/mpv_control_sidebar.ui:739
 msgid "no (default)"
 msgstr "ingen (forvalg)"
 
-#: resources/ui/mpv_control_sidebar.ui:684
+#: resources/ui/mpv_control_sidebar.ui:783
 msgid "Not all settings will be saved"
 msgstr ""
 
@@ -1117,20 +1153,24 @@ msgstr "Bibliotek"
 msgid "Latest"
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:389
+#: src/ui/mpv/control_sidebar.rs:411
 msgid "Video filter settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:411
+#: src/ui/mpv/control_sidebar.rs:433
 msgid "Subtitle settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:424
+#: src/ui/mpv/control_sidebar.rs:446
 msgid "Subtitle color settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:433
+#: src/ui/mpv/control_sidebar.rs:455
 msgid "Subtitle offset settings cleared."
+msgstr ""
+
+#: src/ui/mpv/control_sidebar.rs:491
+msgid "Deband settings cleared."
 msgstr ""
 
 #: src/ui/mpv/page.rs:375
@@ -1297,9 +1337,6 @@ msgstr "Gjøremål startet"
 
 #~ msgid "Password"
 #~ msgstr "Passord"
-
-#~ msgid "Video Settings"
-#~ msgstr "Videoinnstillinger"
 
 #~ msgid "Default Volume"
 #~ msgstr "Forvalgt lydstyrke"

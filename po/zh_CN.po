@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-09 17:33+0800\n"
+"POT-Creation-Date: 2024-10-10 22:58+0800\n"
 "PO-Revision-Date: 2024-10-10 14:59+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
@@ -672,58 +672,96 @@ msgid "Dual Channel (Invert)"
 msgstr "双声道(反转)"
 
 #: resources/ui/mpv_control_sidebar.ui:492
+#, fuzzy
+#| msgid "Video Output"
+msgid "Video Aspect"
+msgstr "视频输出"
+
+#: resources/ui/mpv_control_sidebar.ui:497
+msgid "Fit"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:498
+msgid "Crop"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:506
 msgid "Video Filters"
 msgstr "视频滤镜"
 
-#: resources/ui/mpv_control_sidebar.ui:505
+#: resources/ui/mpv_control_sidebar.ui:519
 msgid "Brightness"
 msgstr "亮度"
 
-#: resources/ui/mpv_control_sidebar.ui:520
+#: resources/ui/mpv_control_sidebar.ui:534
 msgid "Contrast"
 msgstr "对比度"
 
-#: resources/ui/mpv_control_sidebar.ui:535
+#: resources/ui/mpv_control_sidebar.ui:549
 msgid "Saturation"
 msgstr "饱和度"
 
-#: resources/ui/mpv_control_sidebar.ui:550
+#: resources/ui/mpv_control_sidebar.ui:564
 msgid "Hue"
 msgstr "色调"
 
-#: resources/ui/mpv_control_sidebar.ui:565
+#: resources/ui/mpv_control_sidebar.ui:579
 msgid "Gamma"
 msgstr "伽马"
 
-#: resources/ui/mpv_control_sidebar.ui:583
-msgid "Deinterlace"
+#: resources/ui/mpv_control_sidebar.ui:596
+#, fuzzy
+#| msgid "Video: "
+msgid "Video Deband"
+msgstr "视频： "
+
+#: resources/ui/mpv_control_sidebar.ui:619
+msgid "Deband Iterations"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:634
+msgid "Deband Threshold"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:649
+msgid "Deband Range"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:664
+msgid "Deband Grain"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:682
+#, fuzzy
+#| msgid "Deinterlace"
+msgid "Video Deinterlace"
 msgstr "反交错"
 
-#: resources/ui/mpv_control_sidebar.ui:590
+#: resources/ui/mpv_control_sidebar.ui:689
 msgid "Action after video ends"
 msgstr "视频结束后的动作"
 
-#: resources/ui/mpv_control_sidebar.ui:593
+#: resources/ui/mpv_control_sidebar.ui:692
 msgid "Play Next"
 msgstr "自动连播"
 
-#: resources/ui/mpv_control_sidebar.ui:606
+#: resources/ui/mpv_control_sidebar.ui:705
 msgid "Loop Playback"
 msgstr "循环播放"
 
-#: resources/ui/mpv_control_sidebar.ui:620
+#: resources/ui/mpv_control_sidebar.ui:719
 msgid "Stop"
 msgstr "播完暂停"
 
-#: resources/ui/mpv_control_sidebar.ui:636
+#: resources/ui/mpv_control_sidebar.ui:735
 msgid "Hardware decoding"
 msgstr "硬件解码"
 
-#: resources/ui/mpv_control_sidebar.ui:640
+#: resources/ui/mpv_control_sidebar.ui:739
 msgid "no (default)"
 msgstr "无 (默认)"
 
-#: resources/ui/mpv_control_sidebar.ui:684
+#: resources/ui/mpv_control_sidebar.ui:783
 msgid "Not all settings will be saved"
 msgstr "不是所有的设置都会被保存"
 
@@ -1080,21 +1118,27 @@ msgstr "媒体库"
 msgid "Latest"
 msgstr "最新的"
 
-#: src/ui/mpv/control_sidebar.rs:389
+#: src/ui/mpv/control_sidebar.rs:411
 msgid "Video filter settings cleared."
 msgstr "视频滤镜设置已清除。"
 
-#: src/ui/mpv/control_sidebar.rs:411
+#: src/ui/mpv/control_sidebar.rs:433
 msgid "Subtitle settings cleared."
 msgstr "字幕设置已清除。"
 
-#: src/ui/mpv/control_sidebar.rs:424
+#: src/ui/mpv/control_sidebar.rs:446
 msgid "Subtitle color settings cleared."
 msgstr "字幕颜色设置已清除。"
 
-#: src/ui/mpv/control_sidebar.rs:433
+#: src/ui/mpv/control_sidebar.rs:455
 msgid "Subtitle offset settings cleared."
 msgstr "字幕偏移设置已清除。"
+
+#: src/ui/mpv/control_sidebar.rs:491
+#, fuzzy
+#| msgid "Subtitle settings cleared."
+msgid "Deband settings cleared."
+msgstr "字幕设置已清除。"
 
 #: src/ui/mpv/page.rs:375
 msgid "Loading Video..."
