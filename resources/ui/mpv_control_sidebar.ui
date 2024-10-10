@@ -592,9 +592,94 @@
                   </object>
                 </child>
                 <child>
+                  <object class="AdwExpanderRow">
+                    <property name="title" translatable="yes">Video Deband</property>
+                    <property name="expanded" bind-source="deband_switch" bind-property="active" bind-flags="sync-create"/>
+                    <child type="suffix">
+                      <object class="GtkButton">
+                        <property name="icon-name">large-brush-symbolic</property>
+                        <property name="valign">3</property>
+                        <signal name="clicked" handler="on_video_deband_clear" swapped="yes" />
+                        <style>
+                          <class name="flat"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child type="suffix">
+                      <object class="GtkSwitch" id="deband_switch">
+                        <property name="valign">3</property>
+                        <signal name="notify::active" handler="on_video_deband" swapped="yes" />
+                        <style>
+                          <class name="flat"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Deband Iterations</property>
+                        <signal name="notify::value" handler="on_deband_iterations_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="deband_iterations_adj">
+                            <property name="lower">0</property>
+                            <property name="upper">16</property>
+                            <property name="value">1</property>
+                            <property name="page-increment">4</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Deband Threshold</property>
+                        <signal name="notify::value" handler="on_deband_threshold_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="deband_threshold_adj">
+                            <property name="lower">0</property>
+                            <property name="upper">4096</property>
+                            <property name="value">48</property>
+                            <property name="page-increment">24</property>
+                            <property name="step-increment">2</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Deband Range</property>
+                        <signal name="notify::value" handler="on_deband_range_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="deband_range_adj">
+                            <property name="lower">1</property>
+                            <property name="upper">64</property>
+                            <property name="value">16</property>
+                            <property name="page-increment">2</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Deband Grain</property>
+                        <signal name="notify::value" handler="on_deband_grain_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="deband_grain_adj">
+                            <property name="lower">0</property>
+                            <property name="upper">4096</property>
+                            <property name="value">32</property>
+                            <property name="page-increment">16</property>
+                            <property name="step-increment">2</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
                   <object class="AdwSwitchRow" id="video_deinterlace_switchrow">
                     <signal name="notify::active" handler="on_video_deinterlace" swapped="yes" />
-                    <property name="title" translatable="yes">Deinterlace</property>
+                    <property name="title" translatable="yes">Video Deinterlace</property>
                   </object>
                 </child>
               </object>

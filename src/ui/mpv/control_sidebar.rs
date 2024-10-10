@@ -77,6 +77,18 @@ mod imp {
         pub audio_offset_adj: TemplateChild<gtk::Adjustment>,
         #[template_child]
         pub audio_channel_combo: TemplateChild<adw::ComboRow>,
+    
+        #[template_child]
+        pub deband_switch: TemplateChild<gtk::Switch>,
+
+        #[template_child]
+        pub deband_iterations_adj: TemplateChild<gtk::Adjustment>,
+        #[template_child]
+        pub deband_threshold_adj: TemplateChild<gtk::Adjustment>,
+        #[template_child]
+        pub deband_range_adj: TemplateChild<gtk::Adjustment>,
+        #[template_child]
+        pub deband_grain_adj: TemplateChild<gtk::Adjustment>,
     }
 
     #[glib::object_subclass]
@@ -221,6 +233,8 @@ impl MPVControlSidebar {
             .build();
         imp.buffer_switchrow
             .set_active(SETTINGS.mpv_show_buffer_speed());
+        imp.sub_font_button
+            .set_font_desc(&gtk::pango::FontDescription::from_string(&SETTINGS.mpv_subtitle_font()));
         SETTINGS
             .bind(
                 "mpv-show-buffer-speed",
@@ -233,6 +247,9 @@ impl MPVControlSidebar {
             .build();
         SETTINGS
             .bind("mpv-cache-time", &imp.cache_time_adj.get(), "value")
+            .build();
+        SETTINGS
+            .bind("mpv-deband", &imp.deband_switch.get(), "active")
             .build();
     }
 
@@ -311,6 +328,11 @@ impl MPVControlSidebar {
     #[template_callback]
     pub fn on_border_size(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
         self.set_mpv_property("sub-border-size", spin.value());
+    }
+
+    #[template_callback]
+    fn on_video_deband(&self, _param: glib::ParamSpec, switch: gtk::Switch) {
+        self.set_mpv_property("deband", switch.is_active());
     }
 
     #[template_callback]
@@ -436,6 +458,37 @@ impl MPVControlSidebar {
     #[template_callback]
     fn on_audio_offset(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
         self.set_mpv_property("audio-delay", spin.value() / 1000.0);
+    }
+
+    #[template_callback]
+    fn on_deband_iterations_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
+        self.set_mpv_property("deband-iterations", spin.value() as i64);
+    }
+
+    #[template_callback]
+    fn on_deband_threshold_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
+        self.set_mpv_property("deband-threshold", spin.value() as i64);
+    }
+
+    #[template_callback]
+    fn on_deband_range_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
+        self.set_mpv_property("deband-range", spin.value() as i64);
+    }
+
+    #[template_callback]
+    fn on_deband_grain_spinrow(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
+        self.set_mpv_property("deband-grain", spin.value() as i64);
+    }
+
+    #[template_callback]
+    fn on_video_deband_clear(&self, _button: gtk::Button) {
+        let imp = self.imp();
+        imp.deband_iterations_adj.set_value(1.0);
+        imp.deband_threshold_adj.set_value(48.0);
+        imp.deband_range_adj.set_value(16.0);
+        imp.deband_grain_adj.set_value(32.0);
+
+        toast!(self, gettext("Deband settings cleared."));
     }
 
     #[template_callback]

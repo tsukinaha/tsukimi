@@ -113,6 +113,10 @@
       <default>true</default>
       <summary>Whether to enable background</summary>
     </key>
+    <key name="mpv-deband" type="b">
+      <default>false</default>
+      <summary>Whether to enable deband filter</summary>
+    </key>
     <key name="preferred-server" type="s">
       <default>""</default>
       <summary>Last Server</summary>
