@@ -481,6 +481,22 @@ impl MPVControlSidebar {
     }
 
     #[template_callback]
+    fn on_video_upscale(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
+        let upscaler = match combo.selected() {
+            1 => "lanczos",
+            2 => "bilinear",
+            3 => "ewa_lanczos",
+            4 => "mitchell",
+            5 => "hermite",
+            6 => "oversample",
+            7 => "linear",
+            _ => "ewa_lanczossharp",
+        };
+
+        self.set_mpv_property("scale", upscaler);
+    }
+
+    #[template_callback]
     fn on_video_deband_clear(&self, _button: gtk::Button) {
         let imp = self.imp();
         imp.deband_iterations_adj.set_value(1.0);

@@ -682,6 +682,26 @@
                     <property name="title" translatable="yes">Video Deinterlace</property>
                   </object>
                 </child>
+                <child>
+                  <object class="AdwComboRow" id="video_upsacle_filter_combo">
+                    <property name="title" translatable="yes">Video Upscale Filter</property>
+                    <signal name="notify::selected" handler="on_video_upscale" swapped="yes" />
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                          <item>lanczos</item>
+                          <item>bilinear</item>
+                          <item>ewa_lanczos</item>
+                          <item>mitchell</item>
+                          <item>hermite</item>
+                          <item>oversample</item>
+                          <item>linear</item>
+                          <item>ewa_lanczossharp</item>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
