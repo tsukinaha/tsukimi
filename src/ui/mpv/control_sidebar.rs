@@ -483,13 +483,13 @@ impl MPVControlSidebar {
     #[template_callback]
     fn on_video_upscale(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
         let upscaler = match combo.selected() {
-            1 => "lanczos",
-            2 => "bilinear",
-            3 => "ewa_lanczos",
-            4 => "mitchell",
-            5 => "hermite",
-            6 => "oversample",
-            7 => "linear",
+            0 => "lanczos",
+            1 => "bilinear",
+            2 => "ewa_lanczos",
+            3 => "mitchell",
+            4 => "hermite",
+            5 => "oversample",
+            6 => "linear",
             _ => "ewa_lanczossharp",
         };
 
