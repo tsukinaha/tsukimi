@@ -490,6 +490,7 @@ impl MPVControlSidebar {
             4 => "hermite",
             5 => "oversample",
             6 => "linear",
+            7 => "ewa_hanning",
             _ => "ewa_lanczossharp",
         };
 

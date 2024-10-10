@@ -696,6 +696,7 @@
                           <item>hermite</item>
                           <item>oversample</item>
                           <item>linear</item>
+                          <item>ewa_hanning</item>
                           <item>ewa_lanczossharp</item>
                         </items>
                       </object>
