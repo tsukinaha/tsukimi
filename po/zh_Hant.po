@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-09 17:33+0800\n"
-"PO-Revision-Date: 2024-10-08 04:16+0000\n"
+"PO-Revision-Date: 2024-10-10 14:59+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
@@ -521,7 +521,7 @@ msgstr "高級設定"
 
 #: resources/ui/mpv_control_sidebar.ui:18
 msgid "Seek Action"
-msgstr ""
+msgstr "跳轉行為"
 
 #: resources/ui/mpv_control_sidebar.ui:21
 msgid "Seek Backward"
@@ -554,16 +554,12 @@ msgid "Cache Time"
 msgstr "緩衝時間"
 
 #: resources/ui/mpv_control_sidebar.ui:114
-#, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Composing"
-msgstr "字幕： "
+msgstr "字幕編排"
 
 #: resources/ui/mpv_control_sidebar.ui:186
-#, fuzzy
-#| msgid "No Inscriptions"
 msgid "Position"
-msgstr "暫無內容"
+msgstr "位置"
 
 #: resources/ui/mpv_control_sidebar.ui:206
 msgid "Subtitle Text Size"
@@ -574,14 +570,12 @@ msgid "This option only takes effect for srt subtitles"
 msgstr "此選項僅對 SRT 字幕生效"
 
 #: resources/ui/mpv_control_sidebar.ui:227
-#, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Subtitle Text Scale"
-msgstr "字幕字體大小"
+msgstr "字幕字體比例"
 
 #: resources/ui/mpv_control_sidebar.ui:228
 msgid "This affects ASS subtitles as well"
-msgstr ""
+msgstr "這也會影響 ASS 字幕"
 
 #: resources/ui/mpv_control_sidebar.ui:249
 msgid "Subtitle Text Font"
@@ -618,26 +612,20 @@ msgid "Shadow Offset"
 msgstr "陰影偏移"
 
 #: resources/ui/mpv_control_sidebar.ui:323
-#, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Color"
-msgstr "字幕： "
+msgstr "字幕顏色"
 
 #: resources/ui/mpv_control_sidebar.ui:336
 msgid "Text"
-msgstr ""
+msgstr "文本"
 
 #: resources/ui/mpv_control_sidebar.ui:354
-#, fuzzy
-#| msgid "Border Size"
 msgid "Border"
-msgstr "邊框尺寸"
+msgstr "邊框"
 
 #: resources/ui/mpv_control_sidebar.ui:392
-#, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Offset"
-msgstr "字幕： "
+msgstr "字幕偏移"
 
 #: resources/ui/mpv_control_sidebar.ui:405
 msgid "Offset"
@@ -681,10 +669,8 @@ msgid "Dual Channel (Invert)"
 msgstr "雙聲道(反轉)"
 
 #: resources/ui/mpv_control_sidebar.ui:492
-#, fuzzy
-#| msgid "Video: "
 msgid "Video Filters"
-msgstr "影片： "
+msgstr "影片濾鏡"
 
 #: resources/ui/mpv_control_sidebar.ui:505
 msgid "Brightness"
@@ -708,7 +694,7 @@ msgstr "伽馬"
 
 #: resources/ui/mpv_control_sidebar.ui:583
 msgid "Deinterlace"
-msgstr ""
+msgstr "反交錯"
 
 #: resources/ui/mpv_control_sidebar.ui:590
 msgid "Action after video ends"
@@ -897,7 +883,7 @@ msgstr "刪除"
 
 #: resources/ui/single_grid.ui:31
 msgid "Change Poster"
-msgstr "更改海報"
+msgstr "更改视图"
 
 #: resources/ui/single_grid.ui:57
 msgid "Grid View"
@@ -921,7 +907,7 @@ msgstr "排序依據"
 
 #: resources/ui/single_grid.ui:121
 msgid "Updated At"
-msgstr ""
+msgstr "更新日期"
 
 #: resources/ui/single_grid.ui:170
 msgid "Nothing Here"
@@ -1157,7 +1143,7 @@ msgstr "圖像載入錯誤"
 
 #: src/ui/widgets/item.rs:500 src/ui/widgets/list.rs:121
 msgid "Resume"
-msgstr "繼續播放"
+msgstr "續看"
 
 #: src/ui/widgets/item.rs:1050
 msgid "No video source found"
