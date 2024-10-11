@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-10 22:58+0800\n"
+"POT-Creation-Date: 2024-10-11 20:08+0800\n"
 "PO-Revision-Date: 2024-10-05 12:15+0000\n"
 "Last-Translator: Abdulrahman <2140398@uj.edu.sa>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/tsukimi/main/ar/"
@@ -322,11 +322,11 @@ msgstr "لا يوجد محتوى."
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:880 src/ui/mpv/page.rs:882 src/ui/widgets/item.rs:504
+#: src/ui/mpv/page.rs:881 src/ui/mpv/page.rs:883 src/ui/widgets/item.rs:504
 msgid "Play"
 msgstr "تشغيل"
 
-#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:885 src/ui/mpv/page.rs:887
+#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888
 msgid "Pause"
 msgstr "إيقاف مؤقت"
 
@@ -756,31 +756,37 @@ msgstr ""
 msgid "Video Deinterlace"
 msgstr "الفيديو: "
 
-#: resources/ui/mpv_control_sidebar.ui:689
+#: resources/ui/mpv_control_sidebar.ui:687
+#, fuzzy
+#| msgid "Video: "
+msgid "Video Upscale Filter"
+msgstr "الفيديو: "
+
+#: resources/ui/mpv_control_sidebar.ui:710
 msgid "Action after video ends"
 msgstr "الإجراء بعد انتهاء الفيديو"
 
-#: resources/ui/mpv_control_sidebar.ui:692
+#: resources/ui/mpv_control_sidebar.ui:713
 msgid "Play Next"
 msgstr "تشغيل التالي"
 
-#: resources/ui/mpv_control_sidebar.ui:705
+#: resources/ui/mpv_control_sidebar.ui:726
 msgid "Loop Playback"
 msgstr "إعادة تشغيل الفيديو"
 
-#: resources/ui/mpv_control_sidebar.ui:719
+#: resources/ui/mpv_control_sidebar.ui:740
 msgid "Stop"
 msgstr "إيقاف"
 
-#: resources/ui/mpv_control_sidebar.ui:735
+#: resources/ui/mpv_control_sidebar.ui:756
 msgid "Hardware decoding"
 msgstr "أجهزة فك التشفير (Hardware decoding)"
 
-#: resources/ui/mpv_control_sidebar.ui:739
+#: resources/ui/mpv_control_sidebar.ui:760
 msgid "no (default)"
 msgstr "لا (افتراضي)"
 
-#: resources/ui/mpv_control_sidebar.ui:783
+#: resources/ui/mpv_control_sidebar.ui:804
 msgid "Not all settings will be saved"
 msgstr "لن يتم حفظ جميع الإعدادات"
 
@@ -1160,7 +1166,7 @@ msgstr "تم مسح إعدادات ألوان الترجمة."
 msgid "Subtitle offset settings cleared."
 msgstr "تم مسح إعدادات إزاحة الترجمة."
 
-#: src/ui/mpv/control_sidebar.rs:491
+#: src/ui/mpv/control_sidebar.rs:508
 #, fuzzy
 #| msgid "Subtitle settings cleared."
 msgid "Deband settings cleared."
@@ -1182,11 +1188,11 @@ msgstr "في انتظار مصدر الوسائط..."
 msgid "No media sources found"
 msgstr "لم يتم العثور على مصادر وسائط"
 
-#: src/ui/mpv/page.rs:600
+#: src/ui/mpv/page.rs:601
 msgid "Error"
 msgstr "خطأ"
 
-#: src/ui/mpv/page.rs:602
+#: src/ui/mpv/page.rs:603
 msgid ""
 "MPV has been shutdown, Application will exit. \n"
 "Tsukimi can't restart MPV."
@@ -1194,7 +1200,7 @@ msgstr ""
 "تم إيقاف MPV، وسيتم إنهاء التطبيق.\n"
 "لا يمكن لـ Tsukimi إعادة تشغيل MPV."
 
-#: src/ui/mpv/page.rs:605
+#: src/ui/mpv/page.rs:606
 msgid "Shutdown"
 msgstr "إيقاف التشغيل"
 

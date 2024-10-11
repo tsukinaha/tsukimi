@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-10 22:58+0800\n"
+"POT-Creation-Date: 2024-10-11 20:08+0800\n"
 "PO-Revision-Date: 2024-10-11 12:00+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
@@ -314,11 +314,11 @@ msgstr "暫無內容"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:880 src/ui/mpv/page.rs:882 src/ui/widgets/item.rs:504
+#: src/ui/mpv/page.rs:881 src/ui/mpv/page.rs:883 src/ui/widgets/item.rs:504
 msgid "Play"
 msgstr "播放"
 
-#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:885 src/ui/mpv/page.rs:887
+#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888
 msgid "Pause"
 msgstr "暫停"
 
@@ -728,31 +728,37 @@ msgstr "去除色帶顆粒"
 msgid "Video Deinterlace"
 msgstr "影片反交錯"
 
-#: resources/ui/mpv_control_sidebar.ui:689
+#: resources/ui/mpv_control_sidebar.ui:687
+#, fuzzy
+#| msgid "Video Filters"
+msgid "Video Upscale Filter"
+msgstr "影片濾鏡"
+
+#: resources/ui/mpv_control_sidebar.ui:710
 msgid "Action after video ends"
 msgstr "播放結束後動作"
 
-#: resources/ui/mpv_control_sidebar.ui:692
+#: resources/ui/mpv_control_sidebar.ui:713
 msgid "Play Next"
 msgstr "自動連播"
 
-#: resources/ui/mpv_control_sidebar.ui:705
+#: resources/ui/mpv_control_sidebar.ui:726
 msgid "Loop Playback"
 msgstr "循環播放"
 
-#: resources/ui/mpv_control_sidebar.ui:719
+#: resources/ui/mpv_control_sidebar.ui:740
 msgid "Stop"
 msgstr "播完暫停"
 
-#: resources/ui/mpv_control_sidebar.ui:735
+#: resources/ui/mpv_control_sidebar.ui:756
 msgid "Hardware decoding"
 msgstr "硬體解碼"
 
-#: resources/ui/mpv_control_sidebar.ui:739
+#: resources/ui/mpv_control_sidebar.ui:760
 msgid "no (default)"
 msgstr "無（預設）"
 
-#: resources/ui/mpv_control_sidebar.ui:783
+#: resources/ui/mpv_control_sidebar.ui:804
 msgid "Not all settings will be saved"
 msgstr "並非所有設定都會被保存"
 
@@ -1125,7 +1131,7 @@ msgstr "字幕顏色設定已清除。"
 msgid "Subtitle offset settings cleared."
 msgstr "字幕偏移設定已清除。"
 
-#: src/ui/mpv/control_sidebar.rs:491
+#: src/ui/mpv/control_sidebar.rs:508
 msgid "Deband settings cleared."
 msgstr "去除色帶設定已清除。"
 
@@ -1145,11 +1151,11 @@ msgstr "正在等待媒體源..."
 msgid "No media sources found"
 msgstr "暂未找到媒體源"
 
-#: src/ui/mpv/page.rs:600
+#: src/ui/mpv/page.rs:601
 msgid "Error"
 msgstr "錯誤"
 
-#: src/ui/mpv/page.rs:602
+#: src/ui/mpv/page.rs:603
 msgid ""
 "MPV has been shutdown, Application will exit. \n"
 "Tsukimi can't restart MPV."
@@ -1157,7 +1163,7 @@ msgstr ""
 "MPV 已關閉，應用程式將退出。\n"
 "Tsukimi將無法重啟 MPV。"
 
-#: src/ui/mpv/page.rs:605
+#: src/ui/mpv/page.rs:606
 msgid "Shutdown"
 msgstr "關閉"
 

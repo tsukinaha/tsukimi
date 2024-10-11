@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-10 22:58+0800\n"
+"POT-Creation-Date: 2024-10-11 20:08+0800\n"
 "PO-Revision-Date: 2024-09-27 17:45+0000\n"
 "Last-Translator: 11 22 <8802512@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
@@ -326,11 +326,11 @@ msgstr "Sem Inscrições"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:880 src/ui/mpv/page.rs:882 src/ui/widgets/item.rs:504
+#: src/ui/mpv/page.rs:881 src/ui/mpv/page.rs:883 src/ui/widgets/item.rs:504
 msgid "Play"
 msgstr "Reproduzir"
 
-#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:885 src/ui/mpv/page.rs:887
+#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888
 msgid "Pause"
 msgstr "Pausar"
 
@@ -776,31 +776,37 @@ msgstr ""
 msgid "Video Deinterlace"
 msgstr "Vídeo: "
 
-#: resources/ui/mpv_control_sidebar.ui:689
+#: resources/ui/mpv_control_sidebar.ui:687
+#, fuzzy
+#| msgid "Video: "
+msgid "Video Upscale Filter"
+msgstr "Vídeo: "
+
+#: resources/ui/mpv_control_sidebar.ui:710
 msgid "Action after video ends"
 msgstr "Ação após o término do vídeo"
 
-#: resources/ui/mpv_control_sidebar.ui:692
+#: resources/ui/mpv_control_sidebar.ui:713
 msgid "Play Next"
 msgstr "Reproduzir Próximo"
 
-#: resources/ui/mpv_control_sidebar.ui:705
+#: resources/ui/mpv_control_sidebar.ui:726
 msgid "Loop Playback"
 msgstr "Reprodução em Loop"
 
-#: resources/ui/mpv_control_sidebar.ui:719
+#: resources/ui/mpv_control_sidebar.ui:740
 msgid "Stop"
 msgstr "Parar"
 
-#: resources/ui/mpv_control_sidebar.ui:735
+#: resources/ui/mpv_control_sidebar.ui:756
 msgid "Hardware decoding"
 msgstr "Decodificação por hardware"
 
-#: resources/ui/mpv_control_sidebar.ui:739
+#: resources/ui/mpv_control_sidebar.ui:760
 msgid "no (default)"
 msgstr "não (padrão)"
 
-#: resources/ui/mpv_control_sidebar.ui:783
+#: resources/ui/mpv_control_sidebar.ui:804
 msgid "Not all settings will be saved"
 msgstr ""
 
@@ -1194,7 +1200,7 @@ msgstr ""
 msgid "Subtitle offset settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:491
+#: src/ui/mpv/control_sidebar.rs:508
 msgid "Deband settings cleared."
 msgstr ""
 
@@ -1220,17 +1226,17 @@ msgstr ""
 msgid "No media sources found"
 msgstr "Nenhuma fonte de vídeo encontrada"
 
-#: src/ui/mpv/page.rs:600
+#: src/ui/mpv/page.rs:601
 msgid "Error"
 msgstr ""
 
-#: src/ui/mpv/page.rs:602
+#: src/ui/mpv/page.rs:603
 msgid ""
 "MPV has been shutdown, Application will exit. \n"
 "Tsukimi can't restart MPV."
 msgstr ""
 
-#: src/ui/mpv/page.rs:605
+#: src/ui/mpv/page.rs:606
 #, fuzzy
 msgid "Shutdown"
 msgstr "Desligar servidor"
