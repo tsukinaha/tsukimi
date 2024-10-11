@@ -4,7 +4,7 @@ use libmpv2::{
     mpv_node::MpvNode,
     GetData, SetData,
 };
-use tokio::time;
+
 use tracing::{info, warn};
 
 use std::{
@@ -415,7 +415,6 @@ impl TsukimiMPV {
                     }
                     None => {}
                 };
-                std::thread::sleep(time::Duration::from_millis(50));
             })
             .expect("Failed to spawn mpv event loop");
     }

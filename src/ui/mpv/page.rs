@@ -566,7 +566,7 @@ impl MPVPage {
                         ListenEvent::CacheSpeed(value) => {
                             obj.on_cache_speed_update(value);
                         }
-                        ListenEvent::PlaybackRestart | ListenEvent::PausedForCache(false) => {
+                        ListenEvent::PlaybackRestart => {
                             obj.update_seeking(false);
                         }
                         ListenEvent::StartFile => {
@@ -587,6 +587,7 @@ impl MPVPage {
                         ListenEvent::DemuxerCacheTime(value) => {
                             obj.on_cache_time_update(value);
                         }
+                        _ => {}
                     }
                 }
             }
