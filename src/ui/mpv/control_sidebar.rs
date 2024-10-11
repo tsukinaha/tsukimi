@@ -77,7 +77,7 @@ mod imp {
         pub audio_offset_adj: TemplateChild<gtk::Adjustment>,
         #[template_child]
         pub audio_channel_combo: TemplateChild<adw::ComboRow>,
-    
+
         #[template_child]
         pub deband_switch: TemplateChild<gtk::Switch>,
 
@@ -234,7 +234,9 @@ impl MPVControlSidebar {
         imp.buffer_switchrow
             .set_active(SETTINGS.mpv_show_buffer_speed());
         imp.sub_font_button
-            .set_font_desc(&gtk::pango::FontDescription::from_string(&SETTINGS.mpv_subtitle_font()));
+            .set_font_desc(&gtk::pango::FontDescription::from_string(
+                &SETTINGS.mpv_subtitle_font(),
+            ));
         SETTINGS
             .bind(
                 "mpv-show-buffer-speed",
@@ -348,7 +350,9 @@ impl MPVControlSidebar {
     #[template_callback]
     pub fn on_sub_font(&self, _param: glib::ParamSpec, button: gtk::FontDialogButton) {
         let font_desc = button.font_desc().unwrap();
-        SETTINGS.set_mpv_subtitle_font(font_desc.to_string()).unwrap();
+        SETTINGS
+            .set_mpv_subtitle_font(font_desc.to_string())
+            .unwrap();
         self.set_mpv_property("sub-font", font_desc.to_string());
     }
 
@@ -524,7 +528,9 @@ impl MPVControlSidebar {
             _ => "auto",
         };
 
-        SETTINGS.set_mpv_audio_channel(combo.selected() as i32).unwrap();
+        SETTINGS
+            .set_mpv_audio_channel(combo.selected() as i32)
+            .unwrap();
 
         self.set_mpv_property("af", "");
         self.set_mpv_property("audio-channels", channel);
@@ -533,7 +539,7 @@ impl MPVControlSidebar {
     #[template_callback]
     fn on_video_aspect(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
         let panscan = match combo.selected() {
-            1 => 1.0, 
+            1 => 1.0,
             _ => 0.0,
         };
 

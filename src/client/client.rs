@@ -1073,7 +1073,7 @@ mod tests {
         } else {
             uri.to_string()
         };
-        
+
         assert_eq!(url, "http://127.0.0.1");
     }
 }

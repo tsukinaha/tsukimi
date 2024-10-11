@@ -88,9 +88,15 @@ impl ServerActionRow {
     fn on_edit_clicked(&self) {
         let account = self.item().account();
         let account_window = crate::ui::widgets::account_add::AccountWindow::new();
-        account_window.imp().nav.set_title(&gettextrs::gettext("Edit Server"));
+        account_window
+            .imp()
+            .nav
+            .set_title(&gettextrs::gettext("Edit Server"));
         account_window.set_action_type(ActionType::Edit);
-        account_window.imp().old_account.replace(Some(account.clone()));
+        account_window
+            .imp()
+            .old_account
+            .replace(Some(account.clone()));
         account_window
             .imp()
             .username_entry

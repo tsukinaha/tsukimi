@@ -311,7 +311,7 @@ impl ItemPage {
         if item.item_type() != "Series" && item.item_type() != "Episode" {
             return;
         }
-        
+
         let series_id = item.series_id().unwrap_or(item.id());
 
         spawn(glib::clone!(

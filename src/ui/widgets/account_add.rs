@@ -20,8 +20,8 @@ pub mod imp {
 
     use adw::subclass::dialog::AdwDialogImpl;
     use glib::subclass::InitializingObject;
-    use gtk::subclass::prelude::*;
     use gtk::prelude::*;
+    use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
     use crate::config::Account;
@@ -184,12 +184,10 @@ impl AccountWindow {
                 self.close_dialog(&gettext("Server edited successfully"));
             }
             ActionType::Add => {
-                SETTINGS
-                    .add_account(account)
-                    .expect("Failed to add server");
+                SETTINGS.add_account(account).expect("Failed to add server");
                 self.close_dialog(&gettext("Server added successfully"));
             }
-        }     
+        }
     }
 
     fn close_dialog(&self, msg: &str) {
@@ -215,7 +213,7 @@ impl AccountWindow {
             #[weak(rename_to = obj)]
             self,
             move || {
-                obj.parse_url(&url);  
+                obj.parse_url(&url);
             }
         ));
     }

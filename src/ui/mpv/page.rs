@@ -1066,7 +1066,8 @@ impl MPVPage {
         let imp = self.imp();
         let mpv = &imp.video.imp().mpv;
         if let Some(uri) = crate::config::proxy::get_proxy_settings() {
-            let url = Url::parse(&uri).map_or_else(|_| format!("http://{}", uri), |_| uri.to_string());
+            let url =
+                Url::parse(&uri).map_or_else(|_| format!("http://{}", uri), |_| uri.to_string());
             mpv.set_property("http-proxy", url);
         }
         match SETTINGS.mpv_video_output() {
