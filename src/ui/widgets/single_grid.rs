@@ -101,6 +101,7 @@ pub mod imp {
         ProductionYear,
         DatePlayed,
         Runtime,
+        UpdatedAt,
     }
 
     impl From<i32> for SortBy {
@@ -116,6 +117,7 @@ pub mod imp {
                 7 => Self::ProductionYear,
                 8 => Self::DatePlayed,
                 9 => Self::Runtime,
+                10 => Self::UpdatedAt,
                 _ => Self::Title,
             }
         }
@@ -134,6 +136,7 @@ pub mod imp {
                 SortBy::ProductionYear => 7,
                 SortBy::DatePlayed => 8,
                 SortBy::Runtime => 9,
+                SortBy::UpdatedAt => 10,
             }
         }
     }
