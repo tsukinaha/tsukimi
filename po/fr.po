@@ -1,738 +1,723 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Abdulrahman <2140398@uj.edu.sa>, 2024.
+# MarioSwitch <druonalexis@outlook.fr>, 2024.
+# MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-11 20:08+0800\n"
-"PO-Revision-Date: 2024-10-05 12:15+0000\n"
-"Last-Translator: Abdulrahman <2140398@uj.edu.sa>\n"
-"Language-Team: Arabic <https://hosted.weblate.org/projects/tsukimi/main/ar/"
+"PO-Revision-Date: 2024-10-11 12:00+0000\n"
+"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github."
+"com>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
 ">\n"
-"Language: ar\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
-"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.8-dev\n"
 
 #: resources/ui/account_settings.ui:4
 msgid "Settings"
-msgstr "الإعدادات"
+msgstr "Paramètres"
 
 #: resources/ui/account_settings.ui:12 resources/ui/mpv_shortcuts_window.ui:11
 msgid "General"
-msgstr "عام"
+msgstr "Général"
 
 #: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:476
 msgid "Preferred Video Version"
-msgstr "نسخة الفيديو المفضلة"
+msgstr "Version vidéo préférée"
 
 #: resources/ui/account_settings.ui:28
 msgid "Preferred Language"
-msgstr "اللغة المفضلة"
+msgstr "Langue préférée"
 
 #: resources/ui/account_settings.ui:29
 msgid "This is globally effective"
-msgstr "هذا يؤثر بشكل عام"
+msgstr "Paramètres globalement effectifs"
 
 #: resources/ui/account_settings.ui:32
 msgid "Preferred Audio Language"
-msgstr "اللغة الصوتية المفضلة"
+msgstr "Langue audio préférée"
 
 #: resources/ui/account_settings.ui:41 resources/ui/account_settings.ui:65
 #: resources/ui/account_settings.ui:203
 msgid "Default"
-msgstr "افتراضي"
+msgstr "Par défaut"
 
 #: resources/ui/account_settings.ui:56
 msgid "Preferred Subtitle Language"
-msgstr "اللغة المفضلة للترجمة"
+msgstr "Langue des sous-titres préférée"
 
 #: resources/ui/account_settings.ui:82
 msgid "Appearence"
-msgstr "المظهر"
+msgstr "Apparence"
 
 #: resources/ui/account_settings.ui:85
 msgid "Font Scale"
-msgstr "حجم الخط"
+msgstr "Échelle de police"
 
 #: resources/ui/account_settings.ui:99
 msgid "Font Family"
-msgstr "نوع الخط"
+msgstr "Famille de police"
 
 #: resources/ui/account_settings.ui:117 resources/ui/account_settings.ui:128
 #: resources/ui/account_settings.ui:145
 msgid "Restart App To Take Effect"
-msgstr "تطبيق هذا الخيار يحتاج إلى إعادة تشغيل البرنامج"
+msgstr "Redémarrer l'application pour prendre effet"
 
 #: resources/ui/account_settings.ui:127
 msgid "Accent Color"
-msgstr "درجة اللون"
+msgstr "Couleur d'accentuation"
 
 #: resources/ui/account_settings.ui:144
 msgid "Accent Foreground Color"
-msgstr "درجة لون الواجهة"
+msgstr "Couleur d'accentuation (avant-plan)"
 
 #: resources/ui/account_settings.ui:161
 msgid "Hide Sidebar"
-msgstr "إخفاء الشريط الجانبي"
+msgstr "Masquer la barre latérale"
 
 #: resources/ui/account_settings.ui:166
 msgid "Auto Select Last Server"
-msgstr "تحديد تلقائي للخادم الأخير"
+msgstr "Sélectionner automatiquement le dernier serveur"
 
 #: resources/ui/account_settings.ui:173
 msgid "Network"
-msgstr "الشبكة"
+msgstr "Réseau"
 
 #: resources/ui/account_settings.ui:176
 msgid "Threads"
-msgstr "Threads"
+msgstr "Fils"
 
 #: resources/ui/account_settings.ui:177
 msgid "This only effects on getting images"
-msgstr "هذا يؤثر فقط على الحصول على الصور"
+msgstr "Cela affecte uniquement les images récupérées"
 
 #: resources/ui/account_settings.ui:193 resources/ui/mpv_control_sidebar.ui:372
 msgid "Background"
-msgstr "الخلفية"
+msgstr "Arrière-plan"
 
 #: resources/ui/account_settings.ui:200
 msgid "This feature may cause significant lag. Please enable it with caution."
-msgstr "قد يتسبب هذا الخيار في تأخير كبير. يرجى تفعيله بحذر."
+msgstr ""
+"Cette fonctionnalité peut impliquer un ralentissement significatif. Veuillez "
+"l'activer avec précaution."
 
 #: resources/ui/account_settings.ui:226
 msgid "Opacity"
-msgstr "التعتيم"
+msgstr "Opacité"
 
 #: resources/ui/account_settings.ui:240
 msgid "Blur (Experimental)"
-msgstr "Blur (تجريبي)"
+msgstr "Flou (expérimental)"
 
 #: resources/ui/account_settings.ui:241 resources/ui/account_settings.ui:250
 msgid "Warning: High GPU usage"
-msgstr "تحذير: استهلاك مرتفع لوحدة معالجة الرسومات"
+msgstr "Attention : utilisation élevée de la carte graphique"
 
 #: resources/ui/account_settings.ui:249
 msgid "Blur Radius (Experimental)"
-msgstr "Blur Radius (تجريبي)"
+msgstr "Rayon de flou (expérimental)"
 
 #: resources/ui/account_settings.ui:270 resources/ui/mpv_control_sidebar.ui:63
 msgid "Cache"
-msgstr "الذاكرة المؤقتة"
+msgstr "Cache"
 
 #: resources/ui/account_settings.ui:273
 msgid "Clear Cache"
-msgstr "مسح الذاكرة المؤقتة"
+msgstr "Vider le cache"
 
 #: resources/ui/account_settings.ui:294
 msgid "Account"
-msgstr "الحساب"
+msgstr "Compte"
 
 #: resources/ui/account_settings.ui:310
 msgid "New Password"
-msgstr "كلمة المرور الجديدة"
+msgstr "Nouveau mot de passe"
 
 #: resources/ui/account_settings.ui:315
 msgid "Confirm Password"
-msgstr "تأكيد كلمة المرور"
+msgstr "Confirmer le mot de passe"
 
 #: resources/ui/account_settings.ui:327
 msgid "Change Password"
-msgstr "تغيير كلمة المرور"
+msgstr "Changer le mot de passe"
 
 #: resources/ui/account_settings.ui:344
 msgid "Music"
-msgstr "الموسيقى"
+msgstr "Musique"
 
 #: resources/ui/account_settings.ui:349
 msgid "Player"
-msgstr "المشغل"
+msgstr "Lecteur"
 
 #: resources/ui/account_settings.ui:352 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
-msgstr "وضع التكرار"
+msgstr "Mode Boucle"
 
 #: resources/ui/account_settings.ui:356 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
-msgstr "تكرار مرة واحدة"
+msgstr "Répéter un seul élément"
 
 #: resources/ui/account_settings.ui:357 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
-msgstr "تكرار الكل"
+msgstr "Répéter toute la liste"
 
 #: resources/ui/account_settings.ui:358 resources/ui/player_toolbar.ui:239
 msgid "None"
-msgstr "بلا"
+msgstr "Aucun"
 
 #: resources/ui/account_settings.ui:370 resources/ui/mpv_control_sidebar.ui:489
 msgid "Video"
-msgstr "الفيديو"
+msgstr "Vidéo"
 
 #: resources/ui/account_settings.ui:375
 msgid "Video Output"
-msgstr "ناتج الفيديو"
+msgstr "Sortie vidéo"
 
 #: resources/ui/account_settings.ui:376
 msgid ""
 "Warning: Do NOT use any method other than the software's own controls to "
 "control the window. Restart to take effect"
 msgstr ""
-"تحذير: لا تستخدم أي طريقة أخرى غير عناصر التحكم الخاصة بالبرنامج للتحكم في "
-"النافذة. أعد التشغيل لتفعيل التغييرات"
+"Avertissement : N'utilisez AUCUNE méthode autre que les contrôles propres au "
+"logiciel pour contrôler la fenêtre. Redémarrer pour prendre effet"
 
 #: resources/ui/account_settings.ui:379
 msgid "libmpv (default)"
-msgstr "libmpv (افتراضي)"
+msgstr "libmpv (par défaut)"
 
 #: resources/ui/account_settings.ui:434
 msgid "Load external mpv config"
-msgstr "تحميل إعدادات mpv الخارجية"
+msgstr "Charger une configuration mpv externe"
 
 #: resources/ui/account_settings.ui:435
 msgid "May cause crashes, Requires restart"
-msgstr "قد يسبب تعطل النظام، يتطلب إعادة التشغيل"
+msgstr "Peut causer des plantages, nécessite un redémarrage"
 
 #: resources/ui/account_settings.ui:439
 msgid "Read from mpv config dir"
-msgstr "القراءة من mpv config dir"
+msgstr "Lire à partir du dossier de configuration mpv"
 
 #: resources/ui/account_settings.ui:454
 msgid "Preferred Version"
-msgstr "النسخة المفضلة"
+msgstr "Version préférée"
 
 #: resources/ui/account_settings.ui:477
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
-"يتم ترتيب الوزن من الأعلى إلى الأدنى، حتى يتم مطابقة إصدار معين، أو يتم "
-"الحصول على أعلى إصدار مطابق قبل إفراغ قائمة المطابقات"
+"Le poids est ordonné du plus élevé au plus faible, jusqu'à ce qu'une version "
+"spécifique corresponde, ou la version correspondante la plus élevée est "
+"obtenue avant de vider la liste des correspondances"
 
 #: resources/ui/account_settings.ui:492
-#, fuzzy
 msgid "Descriptors"
-msgstr "لا يوجد محتوى."
+msgstr "Descripteurs"
 
 #: resources/ui/account_settings.ui:514
 msgid "It is recommended to set no more than 3 lines"
-msgstr "يوصى بعدم تعيين أكثر من 3 أسطر"
+msgstr "Il est recommandé de ne paramétrer pas plus de 3 lignes"
 
 #: resources/ui/account_settings.ui:535
-#, fuzzy
 msgid "No Descriptors"
-msgstr "لا يوجد محتوى."
+msgstr "Pas de descripteurs"
 
 #: resources/ui/account_settings.ui:554
 msgid "Add a descriptor"
-msgstr ""
+msgstr "Ajouter un descripteur"
 
 #: resources/ui/account_settings.ui:565 resources/ui/account_settings.ui:675
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
 #: resources/ui/metadata_dialog.ui:38
 msgid "Cancel"
-msgstr "إلغاء"
+msgstr "Annuler"
 
 #: resources/ui/account_settings.ui:571
 msgid "Add"
-msgstr "إضافة"
+msgstr "Ajouter"
 
 #: resources/ui/account_settings.ui:596 resources/ui/account_settings.ui:706
 msgid "This will use exact matching to obtain a list"
-msgstr "سيتم استخدام المطابقة الدقيقة للحصول على قائمة"
+msgstr "Ceci utilisera des correspondances exactes pour obtenir une liste"
 
 #: resources/ui/account_settings.ui:599 resources/ui/account_settings.ui:709
 msgid "Descriptor Type"
-msgstr ""
+msgstr "Type de descripteur"
 
 #: resources/ui/account_settings.ui:604 resources/ui/account_settings.ui:714
 msgid "String"
-msgstr "سلسلة من الأحرف"
+msgstr "Chaîne"
 
 #: resources/ui/account_settings.ui:605 resources/ui/account_settings.ui:715
 msgid "Regular Expression"
-msgstr "التعبير العادي (Regular Expression)"
+msgstr "Expression régulière"
 
 #: resources/ui/account_settings.ui:617 resources/ui/account_settings.ui:727
 msgid "Descriptor"
-msgstr ""
+msgstr "Descripteur"
 
 #: resources/ui/account_settings.ui:622 resources/ui/account_settings.ui:732
 msgid "Descriptor should not be too long"
-msgstr ""
+msgstr "Le descripteur ne doit pas être trop long"
 
 #: resources/ui/account_settings.ui:633 resources/ui/account_settings.ui:743
 msgid "eg. 1080p"
-msgstr "مثال: 1080p"
+msgstr "ex. 1080p"
 
 #: resources/ui/account_settings.ui:644 resources/ui/account_settings.ui:754
 msgid "eg. 1080p.*WebDL"
-msgstr "مثال: 1080p.*WebDL"
+msgstr "ex. 1080p.*WebDL"
 
 #: resources/ui/account_settings.ui:664
-#, fuzzy
 msgid "Edit descriptor"
-msgstr "لا يوجد محتوى."
+msgstr "Modifier le descripteur"
 
 #: resources/ui/account_settings.ui:681
 msgid "Save"
-msgstr "حفظ"
+msgstr "Sauvegarder"
 
 #: resources/ui/account.ui:9 resources/ui/account.ui:17
 msgid "Add a New Server"
-msgstr "إضافة خادم جديد"
+msgstr "Ajouter un nouveau serveur"
 
 #: resources/ui/account.ui:32
 msgid "_Add"
-msgstr "إضافة"
+msgstr "_Ajouter"
 
 #: resources/ui/account.ui:69
 msgid "Name (Nullable)"
-msgstr ""
+msgstr "Nom (peut être vide)"
 
 #: resources/ui/account.ui:74
-#, fuzzy
-#| msgid "Server Address"
 msgid "Server Address (Auto parse)"
-msgstr "عنوان الخادم"
+msgstr "Adresse du serveur (traitement automatique)"
 
 #: resources/ui/account.ui:93
 msgid "Port"
-msgstr "المنفذ"
+msgstr "Port"
 
 #: resources/ui/account.ui:100
 msgid "Username"
-msgstr "اسم المستخدم"
+msgstr "Nom d'utilisateur"
 
 #: resources/ui/account.ui:105
 msgid "Password (Nullable)"
-msgstr ""
+msgstr "Mot de passe (peut être vide)"
 
 #: resources/ui/actor.ui:53 resources/ui/boxset.ui:55
 msgid "Name"
-msgstr "الاسم"
+msgstr "Nom"
 
 #: resources/ui/actor.ui:71 resources/ui/boxset.ui:105
 msgid "No Inscriptions"
-msgstr "لا يوجد محتوى."
+msgstr "Pas d'inscriptions"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
 #: src/ui/mpv/page.rs:881 src/ui/mpv/page.rs:883 src/ui/widgets/item.rs:504
 msgid "Play"
-msgstr "تشغيل"
+msgstr "Démarrer / Reprendre"
 
 #: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888
 msgid "Pause"
-msgstr "إيقاف مؤقت"
+msgstr "Mettre en pause"
 
 #: resources/ui/mpvpage.ui:166 resources/ui/mpvpage.ui:168
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 #: resources/ui/window.ui:12 resources/ui/window.ui:45
 msgid "Fullscreen"
-msgstr "ملء الشاشة"
+msgstr "Plein écran"
 
 #: resources/ui/mpvpage.ui:177 resources/ui/mpvpage.ui:179
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
 msgid "Exit Fullscreen"
-msgstr "الخروج من وضع ملء الشاشة"
+msgstr "Quitter le plein écran"
 
 #: resources/ui/mpvpage.ui:222
 msgid "Stop and quit"
-msgstr "إيقاف والخروج"
+msgstr "Arrêter et quitter"
 
 #: resources/ui/mpvpage.ui:242 resources/ui/item.ui:96 resources/ui/item.ui:133
 msgid "Loading..."
-msgstr "جارٍ التحميل..."
+msgstr "Chargement..."
 
 #: resources/ui/mpvpage.ui:257 resources/ui/window.ui:548
 #: resources/ui/window.ui:570 resources/ui/mpv_menu.ui:35
 msgid "Playlist"
-msgstr "قائمة التشغيل"
+msgstr "Liste de lecture"
 
 #: resources/ui/mpvpage.ui:269
 msgid "Media info (MPV)"
-msgstr "معلومات الوسائط (MPV)"
+msgstr "Informations du média (MPV)"
 
 #: resources/ui/mpvpage.ui:309 resources/ui/window.ui:20
 #: resources/ui/window.ui:49
 msgid "Preferences"
-msgstr "التفضيلات"
+msgstr "Préférences"
 
 #: resources/ui/mpvpage.ui:325
 msgid "Playback speed"
-msgstr "سرعة التشغيل"
+msgstr "Vitesse de lecture"
 
 #: resources/ui/mpvpage.ui:339
 msgid "Volume"
-msgstr "مستوى الصوت"
+msgstr "Volume"
 
 #: resources/ui/mpvpage.ui:352 resources/ui/mpvpage.ui:411
 #: resources/ui/mpv_control_sidebar.ui:441
 msgid "Audio"
-msgstr "الصوت"
+msgstr "Audio"
 
 #: resources/ui/mpvpage.ui:360 resources/ui/mpvpage.ui:379
 #: resources/ui/mpv_control_sidebar.ui:111
 msgid "Subtitle"
-msgstr "الترجمة"
+msgstr "Sous-titres"
 
 #: resources/ui/disc_box.ui:9 resources/ui/metadata_dialog.ui:242
 #: src/ui/widgets/disc_box.rs:76
 msgid "Disc"
-msgstr "القرص"
+msgstr "Disque"
 
 #: resources/ui/images_dialog.ui:8 resources/ui/images_dialog.ui:17
 #: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:41
 #: resources/ui/song_widget.ui:155
 msgid "View Images"
-msgstr "عرض الصور"
+msgstr "Voir images"
 
 #: resources/ui/images_dialog.ui:32 resources/ui/metadata_dialog.ui:44
 msgid "_Save"
-msgstr "_حفظ"
+msgstr "_Sauvegarder"
 
 #: resources/ui/images_dialog.ui:61 resources/ui/metadata_dialog.ui:92
 msgid "Not Available"
-msgstr "غير متوفر"
+msgstr "Indisponible"
 
 #: resources/ui/images_dialog.ui:62 resources/ui/metadata_dialog.ui:93
 msgid "This page is READ-ONLY, because you have no permission to modify it."
-msgstr "هذه الصفحة للقراءة فقط، لأنك لا تملك إذنًا لتعديلها."
+msgstr ""
+"Cette page est en LECTURE SEULE, parce que vous n'avez pas la permission de "
+"la modifier."
 
 #: resources/ui/images_dialog.ui:71
 msgid "Images"
-msgstr "الصور"
+msgstr "Images"
 
 #: resources/ui/images_dialog.ui:129
 msgid "BackDrops"
-msgstr "الخلفيات"
+msgstr "Images de fond"
 
 #: resources/ui/item_actions.ui:40 resources/ui/pop-menu.ui:23
 msgid "Mark as Played"
-msgstr "وضع علامة كمُشاهَد"
+msgstr "Marquer comme regardé"
 
 #: resources/ui/item_actions.ui:46 resources/ui/pop-menu.ui:29
 msgid "Mark as Unplayed"
-msgstr "وضع علامة كغير مُشاهَد"
+msgstr "Marquer comme non regardé"
 
 #: resources/ui/item_actions.ui:53 resources/ui/metadata_dialog.ui:20
 #: resources/ui/pop-menu.ui:35 resources/ui/song_widget.ui:150
 msgid "View Metadata"
-msgstr "عرض البيانات الوصفية"
+msgstr "Voir les métadonnées"
 
 #: resources/ui/item.ui:191
 msgid "Video: "
-msgstr "الفيديو: "
+msgstr "Vidéo : "
 
 #: resources/ui/item.ui:211
 msgid "Subtitle: "
-msgstr "الترجمة: "
+msgstr "Sous-titres : "
 
 #: resources/ui/item.ui:266 src/ui/widgets/home.rs:150
 msgid "Continue Watching"
-msgstr "متابعة المشاهدة"
+msgstr "Continuer de regarder"
 
 #: resources/ui/item.ui:432
 msgid "MediaInfo"
-msgstr "معلومات الوسائط"
+msgstr "Informations du média"
 
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
-msgstr "نسخ الصورة"
+msgstr "_Copier l'image"
 
 #: resources/ui/media_viewer.ui:36 resources/ui/media_viewer.ui:38
 msgid "Back"
-msgstr "رجوع"
+msgstr "Retour"
 
 #: resources/ui/media_viewer.ui:46 resources/ui/media_viewer.ui:48
 msgid "Media Menu"
-msgstr "قائمة الوسائط"
+msgstr "Menu du média"
 
 #: resources/ui/metadata_dialog.ui:29
 msgid "View Metadata (Read Only)"
-msgstr "عرض البيانات الوصفية (للقراءة فقط)"
+msgstr "Voir les métadonnées (lecture seule)"
 
 #: resources/ui/metadata_dialog.ui:102
 msgid "Path"
-msgstr "المسار"
+msgstr "Chemin"
 
 #: resources/ui/metadata_dialog.ui:103
 msgid "No data."
-msgstr "لا توجد بيانات."
+msgstr "Pas de données."
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/singlelist.ui:90
 #: resources/ui/single_grid.ui:111
 msgid "Title"
-msgstr "العنوان"
+msgstr "Titre"
 
 #: resources/ui/metadata_dialog.ui:116
 msgid "Sort Title"
-msgstr "ترتيب العنوان"
+msgstr "Trier par titre"
 
 #: resources/ui/metadata_dialog.ui:121 resources/ui/singlelist.ui:92
 #: resources/ui/single_grid.ui:113
 msgid "Date Created"
-msgstr "تاريخ الإنشاء"
+msgstr "Date de création"
 
 #: resources/ui/metadata_dialog.ui:127
 msgid "Pick Date"
-msgstr "اختر التاريخ"
+msgstr "Choisir une date"
 
 #: resources/ui/metadata_dialog.ui:147
 msgid "Pick Time"
-msgstr "اختر الوقت"
+msgstr "Choisir une heure"
 
 #: resources/ui/metadata_dialog.ui:200
 msgid "Overview"
-msgstr "نظرة عامة"
+msgstr "Vue d'ensemble"
 
 #: resources/ui/metadata_dialog.ui:227
 msgid "Artists"
-msgstr "الفنانين"
+msgstr "Artistes"
 
 #: resources/ui/metadata_dialog.ui:232
 msgid "Album Artists"
-msgstr "فنانين الألبوم"
+msgstr "Artistes de l'album"
 
 #: resources/ui/metadata_dialog.ui:237
 msgid "Album"
-msgstr "الألبوم"
+msgstr "Album"
 
 #: resources/ui/metadata_dialog.ui:247
 msgid "Track Number"
-msgstr "رقم المسار"
+msgstr "Numéro de piste"
 
 #: resources/ui/metadata_dialog.ui:260
 msgid "TheMovieDb Id"
-msgstr "TheMovieDb Id"
+msgstr "Identifiant TheMovieDb"
 
 #: resources/ui/metadata_dialog.ui:265
 msgid "TheTVDb Id"
-msgstr "TheTVDb Id"
+msgstr "Identifiant TheTVDb"
 
 #: resources/ui/metadata_dialog.ui:270
 msgid "IMDb Id"
-msgstr "IMDb Id"
+msgstr "Identifiant IMDb"
 
 #: resources/ui/metadata_dialog.ui:278
 msgid "Lock The Item"
-msgstr "قفل العنصر"
+msgstr "Verrouiller l'élément"
 
 #: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:598
 msgid "Advanced Settings"
-msgstr "الإعدادات المتقدمة"
+msgstr "Paramètres avancés"
 
 #: resources/ui/mpv_control_sidebar.ui:18
 msgid "Seek Action"
-msgstr ""
+msgstr "Action de saut"
 
 #: resources/ui/mpv_control_sidebar.ui:21
 msgid "Seek Backward"
-msgstr "الرجوع للخلف"
+msgstr "Action de retour arrière"
 
 #: resources/ui/mpv_control_sidebar.ui:22
 #: resources/ui/mpv_control_sidebar.ui:42
 #: resources/ui/mpv_control_sidebar.ui:94
 msgid "Unit: Seconds"
-msgstr "الوحدة: ثواني"
+msgstr "Unité : secondes"
 
 #: resources/ui/mpv_control_sidebar.ui:41
 msgid "Seek Forward"
-msgstr "التقديم للأمام"
+msgstr "Action de saut en avant"
 
 #: resources/ui/mpv_control_sidebar.ui:72
 msgid "Show Buffer Speed"
-msgstr "إظهار سرعة التخزين المؤقت"
+msgstr "Afficher la vitesse du tampon"
 
 #: resources/ui/mpv_control_sidebar.ui:77
 msgid "Cache Size"
-msgstr "حجم الذاكرة المؤقتة"
+msgstr "Taille du cache"
 
 #: resources/ui/mpv_control_sidebar.ui:78
 msgid "Unit: MB"
-msgstr "الوحدة: ميجابايت"
+msgstr "Unité : Mo"
 
 #: resources/ui/mpv_control_sidebar.ui:93
 msgid "Cache Time"
-msgstr "مدة الذاكرة المؤقتة"
+msgstr "Temps du cache"
 
 #: resources/ui/mpv_control_sidebar.ui:114
-#, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Composing"
-msgstr "الترجمة: "
+msgstr "Composition des sous-titres"
 
 #: resources/ui/mpv_control_sidebar.ui:186
-#, fuzzy
-#| msgid "No Inscriptions"
 msgid "Position"
-msgstr "لا يوجد محتوى."
+msgstr "Position"
 
 #: resources/ui/mpv_control_sidebar.ui:206
 msgid "Subtitle Text Size"
-msgstr "حجم نص الترجمة"
+msgstr "Taille du texte des sous-titres"
 
 #: resources/ui/mpv_control_sidebar.ui:207
 msgid "This option only takes effect for srt subtitles"
-msgstr "هذا الخيار ينطبق فقط على ملفات الترجمة بصيغة SRT"
+msgstr "Cette option ne s'applique qu'aux sous-titres SRT"
 
 #: resources/ui/mpv_control_sidebar.ui:227
-#, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Subtitle Text Scale"
-msgstr "حجم نص الترجمة"
+msgstr "Échelle du texte des sous-titres"
 
 #: resources/ui/mpv_control_sidebar.ui:228
 msgid "This affects ASS subtitles as well"
-msgstr ""
+msgstr "Ceci affecte également les sous-titres ASS"
 
 #: resources/ui/mpv_control_sidebar.ui:249
 msgid "Subtitle Text Font"
-msgstr "خط نص الترجمة"
+msgstr "Police du texte des sous-titres"
 
 #: resources/ui/mpv_control_sidebar.ui:251
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
-msgstr "حدد الخط المستخدم للترجمات التي لا تحدد خطًا معينًا"
+msgstr ""
+"Spécifiez une police à utiliser pour les sous-titres qui ne spécifient pas "
+"eux-mêmes une police particulière"
 
 #: resources/ui/mpv_control_sidebar.ui:276
 msgid "Border Style"
-msgstr "نمط الإطار"
+msgstr "Style de bordure"
 
 #: resources/ui/mpv_control_sidebar.ui:281
 msgid "Outline and shadow"
-msgstr "الحد الخارجي والظل"
+msgstr "Contour et ombre"
 
 #: resources/ui/mpv_control_sidebar.ui:282
 msgid "Opaque box"
-msgstr "شفافية خلفية الترجمة"
+msgstr "Boîte opaque"
 
 #: resources/ui/mpv_control_sidebar.ui:283
 msgid "Background box"
-msgstr "خلفية الترجمة"
+msgstr "Boîte de fond"
 
 #: resources/ui/mpv_control_sidebar.ui:291
 msgid "Border Size"
-msgstr "حجم الإطار"
+msgstr "Taille de la bordure"
 
 #: resources/ui/mpv_control_sidebar.ui:306
 msgid "Shadow Offset"
-msgstr "إزاحة الظل"
+msgstr "Décalage de l'ombre"
 
 #: resources/ui/mpv_control_sidebar.ui:323
-#, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Color"
-msgstr "الترجمة: "
+msgstr "Couleur des sous-titres"
 
 #: resources/ui/mpv_control_sidebar.ui:336
 msgid "Text"
-msgstr ""
+msgstr "Texte"
 
 #: resources/ui/mpv_control_sidebar.ui:354
-#, fuzzy
-#| msgid "Border Size"
 msgid "Border"
-msgstr "حجم الإطار"
+msgstr "Bordure"
 
 #: resources/ui/mpv_control_sidebar.ui:392
-#, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Offset"
-msgstr "الترجمة: "
+msgstr "Décalage des sous-titres"
 
 #: resources/ui/mpv_control_sidebar.ui:405
 msgid "Offset"
-msgstr "الإزاحة"
+msgstr "Décalage"
 
 #: resources/ui/mpv_control_sidebar.ui:406
 #: resources/ui/mpv_control_sidebar.ui:455
 msgid "Unit: ms"
-msgstr "الوحدة: مللي ثانية (ms)"
+msgstr "Unité : ms"
 
 #: resources/ui/mpv_control_sidebar.ui:421
 msgid "Speed"
-msgstr "السرعة"
+msgstr "Vitesse"
 
 #: resources/ui/mpv_control_sidebar.ui:454
 msgid "Audio Offset"
-msgstr "إزاحة الصوت"
+msgstr "Décalage de l'audio"
 
 #: resources/ui/mpv_control_sidebar.ui:470
 msgid "Audio Channel"
-msgstr "قناة الصوت"
+msgstr "Canal de l'audio"
 
 #: resources/ui/mpv_control_sidebar.ui:475
 msgid "Auto"
-msgstr "تلقائي"
+msgstr "Automatique"
 
 #: resources/ui/mpv_control_sidebar.ui:476
 msgid "Auto (Safety)"
-msgstr "تلقائي (آمن)"
+msgstr "Automatique (Sécurité)"
 
 #: resources/ui/mpv_control_sidebar.ui:477
 msgid "Mono"
-msgstr "أحادي (Mono)"
+msgstr "Mono"
 
 #: resources/ui/mpv_control_sidebar.ui:478
 msgid "Dual Channel"
-msgstr "قناتان (Dual Channel)"
+msgstr "Deux canaux"
 
 #: resources/ui/mpv_control_sidebar.ui:479
 msgid "Dual Channel (Invert)"
-msgstr "قناتان (معكوسة)"
+msgstr "Deux canaux (inversé)"
 
 #: resources/ui/mpv_control_sidebar.ui:492
-#, fuzzy
-#| msgid "Video Output"
 msgid "Video Aspect"
-msgstr "ناتج الفيديو"
+msgstr "Aspect de la vidéo"
 
 #: resources/ui/mpv_control_sidebar.ui:497
 msgid "Fit"
-msgstr ""
+msgstr "Adapter"
 
 #: resources/ui/mpv_control_sidebar.ui:498
 msgid "Crop"
-msgstr ""
+msgstr "Rogner"
 
 #: resources/ui/mpv_control_sidebar.ui:506
-#, fuzzy
-#| msgid "Video: "
 msgid "Video Filters"
-msgstr "الفيديو: "
+msgstr "Filtres vidéo"
 
 #: resources/ui/mpv_control_sidebar.ui:519
 msgid "Brightness"
-msgstr "السطوع"
+msgstr "Luminosité"
 
 #: resources/ui/mpv_control_sidebar.ui:534
 msgid "Contrast"
-msgstr "التباين"
+msgstr "Contraste"
 
 #: resources/ui/mpv_control_sidebar.ui:549
 msgid "Saturation"
-msgstr "التشبع"
+msgstr "Saturation"
 
 #: resources/ui/mpv_control_sidebar.ui:564
 msgid "Hue"
-msgstr "درجة اللون (Hue)"
+msgstr "Teinte"
 
 #: resources/ui/mpv_control_sidebar.ui:579
 msgid "Gamma"
-msgstr "جاما (Gamma)"
+msgstr "Gamma"
 
 #: resources/ui/mpv_control_sidebar.ui:596
-#, fuzzy
-#| msgid "Video: "
 msgid "Video Deband"
-msgstr "الفيديو: "
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:619
 msgid "Deband Iterations"
@@ -751,645 +736,566 @@ msgid "Deband Grain"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:682
-#, fuzzy
-#| msgid "Video: "
 msgid "Video Deinterlace"
-msgstr "الفيديو: "
+msgstr "Désentrelacer"
 
 #: resources/ui/mpv_control_sidebar.ui:687
 #, fuzzy
-#| msgid "Video: "
+#| msgid "Video Filters"
 msgid "Video Upscale Filter"
-msgstr "الفيديو: "
+msgstr "Filtres vidéo"
 
 #: resources/ui/mpv_control_sidebar.ui:710
 msgid "Action after video ends"
-msgstr "الإجراء بعد انتهاء الفيديو"
+msgstr "Action après que la vidéo se termine"
 
 #: resources/ui/mpv_control_sidebar.ui:713
 msgid "Play Next"
-msgstr "تشغيل التالي"
+msgstr "Démarrer la suivante"
 
 #: resources/ui/mpv_control_sidebar.ui:726
 msgid "Loop Playback"
-msgstr "إعادة تشغيل الفيديو"
+msgstr "Lire en boucle"
 
 #: resources/ui/mpv_control_sidebar.ui:740
 msgid "Stop"
-msgstr "إيقاف"
+msgstr "Arrêter"
 
 #: resources/ui/mpv_control_sidebar.ui:756
 msgid "Hardware decoding"
-msgstr "أجهزة فك التشفير (Hardware decoding)"
+msgstr "Décodage matériel"
 
 #: resources/ui/mpv_control_sidebar.ui:760
 msgid "no (default)"
-msgstr "لا (افتراضي)"
+msgstr "Non (par défaut)"
 
 #: resources/ui/mpv_control_sidebar.ui:804
 msgid "Not all settings will be saved"
-msgstr "لن يتم حفظ جميع الإعدادات"
+msgstr "Certains paramètres ne seront pas sauvegardés"
 
 #: resources/ui/player_toolbar.ui:78
 msgid "Previous"
-msgstr "السابق"
+msgstr "Précédent"
 
 #: resources/ui/player_toolbar.ui:108
 msgid "Next"
-msgstr "التالي"
+msgstr "Suivant"
 
 #: resources/ui/player_toolbar.ui:180
 msgid "Stop And Hide PlayerBar"
-msgstr "إيقاف وإخفاء شريط المشغل"
+msgstr "Arrêter et masquer la barre de lecture"
 
 #: resources/ui/pop-menu.ui:5
 msgid "Remove"
-msgstr "إزالة"
+msgstr "Supprimer"
 
 #: resources/ui/pop-menu.ui:11
 msgid "Like"
-msgstr "إعجاب"
+msgstr "Aimer"
 
 #: resources/ui/pop-menu.ui:17
 msgid "Unlike"
-msgstr "عدم الإعجاب"
+msgstr "N'aime pas"
 
 #: resources/ui/pop-menu.ui:47
 msgid "Identify"
-msgstr "تحديد"
+msgstr "Identifier"
 
 #: resources/ui/pop-menu.ui:53
 msgid "Refresh Metadata"
-msgstr "تحديث البيانات الوصفية"
+msgstr "Rafraîchir les métadonnées"
 
 #: resources/ui/pop-menu.ui:59
 msgid "Scan"
-msgstr "مسح"
+msgstr "Scanner"
 
 #: resources/ui/search.ui:23 resources/ui/window.ui:16
 #: resources/ui/window.ui:390
 msgid "Search"
-msgstr "بحث"
+msgstr "Rechercher"
 
 #: resources/ui/search.ui:40
 msgid "Series"
-msgstr "مسلسل"
+msgstr "Série"
 
 #: resources/ui/search.ui:46
 msgid "Movie"
-msgstr "فيلم"
+msgstr "Film"
 
 #: resources/ui/search.ui:52 src/ui/widgets/list.rs:122
 msgid "BoxSet"
-msgstr "مجموعات"
+msgstr "Compilation"
 
 #: resources/ui/search.ui:58
 msgid "Person"
-msgstr "شخص"
+msgstr "Personne"
 
 #: resources/ui/search.ui:64
 msgid "Music Album"
-msgstr "ألبوم موسيقي"
+msgstr "Album de musique"
 
 #: resources/ui/search.ui:137
 msgid "Nothing Here or No type selected"
-msgstr "لا يوجد شيء هنا أو لم يتم اختيار النوع"
+msgstr "Rien ici ou aucun type sélectionné"
 
 #: resources/ui/search.ui:138
 msgid "Maybe you should try using different search terms"
-msgstr "ربما يجب عليك تجربة استخدام مصطلحات بحث مختلفة"
+msgstr ""
+"Vous pourriez peut-être essayer d'utiliser des termes de recherche différents"
 
 #: resources/ui/singlelist.ui:34 resources/ui/single_grid.ui:37
 msgid "View"
-msgstr "عرض"
+msgstr "Vue"
 
 #: resources/ui/singlelist.ui:49
 msgid "Filter Panel"
-msgstr "لوحة التصفية"
+msgstr "Panneau de filtres"
 
 #: resources/ui/singlelist.ui:91 resources/ui/single_grid.ui:112
 msgid "Bitrate"
-msgstr "معدل البت (Bitrate)"
+msgstr "Débit binaire"
 
 #: resources/ui/singlelist.ui:93 resources/ui/single_grid.ui:114
 msgid "Imdb Rate"
-msgstr "تقييم IMDb"
+msgstr "Évaluation IMDb"
 
 #: resources/ui/singlelist.ui:94 resources/ui/single_grid.ui:115
 msgid "Critic Rating"
-msgstr "تقييم النقاد"
+msgstr "Évaluation Critic"
 
 #: resources/ui/singlelist.ui:95 resources/ui/single_grid.ui:116
 msgid "Premiere Date"
-msgstr "تاريخ العرض الأول"
+msgstr "Date de l'avant-première"
 
 #: resources/ui/singlelist.ui:96 resources/ui/single_grid.ui:117
 msgid "Offical Rating"
-msgstr "التقييم الرسمي"
+msgstr "Évaluation Offical"
 
 #: resources/ui/singlelist.ui:97 resources/ui/single_grid.ui:118
 msgid "Production Year"
-msgstr "سنة الإنتاج"
+msgstr "Année de production"
 
 #: resources/ui/singlelist.ui:98 resources/ui/single_grid.ui:119
 msgid "Date Played"
-msgstr "تاريخ المشاهدة"
+msgstr "Date lue"
 
 #: resources/ui/singlelist.ui:99 resources/ui/single_grid.ui:120
 msgid "Runtime"
-msgstr "مدة العرض"
+msgstr "Durée"
 
 #: resources/ui/singlelist.ui:145 resources/ui/single_grid.ui:185
 msgid "Poster"
-msgstr "الملصق"
+msgstr "Affiche"
 
 #: resources/ui/singlelist.ui:149 resources/ui/single_grid.ui:189
 msgid "Backdrop"
-msgstr "الخلفية"
+msgstr "Image de fond"
 
 #: resources/ui/singlelist.ui:153 resources/ui/single_grid.ui:193
 msgid "Banner"
-msgstr "الشعار"
+msgstr "Bannière"
 
 #: resources/ui/server_panel.ui:47
 msgid "Restart Server"
-msgstr "إعادة تشغيل الخادم"
+msgstr "Redémarrer le serveur"
 
 #: resources/ui/server_panel.ui:58
 msgid "Shutdown Server"
-msgstr "إيقاف تشغيل الخادم"
+msgstr "Arrêter le serveur"
 
 #: resources/ui/server_panel.ui:78
 msgid "System Logs"
-msgstr "سجلات النظام"
+msgstr "Journaux système"
 
 #: resources/ui/server_panel.ui:83
 msgid "Activity Logs"
-msgstr "سجلات الأنشطة"
+msgstr "Journaux d'activité"
 
 #: resources/ui/server_panel.ui:103
 msgid "Tasks"
-msgstr "المهام"
+msgstr "Tâches"
 
 #: resources/ui/server_action_row.ui:23
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Glisser pour réordonner"
 
 #: resources/ui/server_action_row.ui:30
 msgid "Edit"
-msgstr ""
+msgstr "Modifier"
 
 #: resources/ui/server_action_row.ui:41
-#, fuzzy
-#| msgid "Refresh Metadata"
 msgid "Refresh"
-msgstr "تحديث البيانات الوصفية"
+msgstr "Rafraîchir"
 
 #: resources/ui/server_action_row.ui:52
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #: resources/ui/single_grid.ui:31
 msgid "Change Poster"
-msgstr "تغيير الملصق"
+msgstr "Changer l'affiche"
 
 #: resources/ui/single_grid.ui:57
 msgid "Grid View"
-msgstr "عرض الشبكة"
+msgstr "Vue en grille"
 
 #: resources/ui/single_grid.ui:66
 msgid "List View"
-msgstr "عرض القائمة"
+msgstr "Vue en liste"
 
 #: resources/ui/single_grid.ui:83
 msgid "Ascending"
-msgstr "تصاعدي"
+msgstr "Du plus petit au plus grand"
 
 #: resources/ui/single_grid.ui:91
 msgid "Descending"
-msgstr "تنازلي"
+msgstr "Du plus grand au plus petit"
 
 #: resources/ui/single_grid.ui:106
 msgid "Sort By"
-msgstr "الترتيب حسب"
+msgstr "Trier par"
 
 #: resources/ui/single_grid.ui:121
 msgid "Updated At"
-msgstr ""
+msgstr "Mis à jour à"
 
 #: resources/ui/single_grid.ui:170
 msgid "Nothing Here"
-msgstr "لا يوجد شيء هنا"
+msgstr "Rien ici"
 
 #: resources/ui/window.ui:6
 msgid "Sign out"
-msgstr "تسجيل الخروج"
+msgstr "Se déconnecter"
 
 #: resources/ui/window.ui:26 resources/ui/window.ui:55
 msgid "About"
-msgstr "حول"
+msgstr "À propos"
 
 #: resources/ui/window.ui:30 resources/ui/window.ui:59
 #: resources/ui/mpv_menu.ui:54
 msgid "_Keyboard shortcuts"
-msgstr "_اختصارات لوحة المفاتيح"
+msgstr "_Raccourcis clavier"
 
 #: resources/ui/window.ui:39
-#, fuzzy
-#| msgid "Add Server"
 msgid "Add server"
-msgstr "إضافة خادم"
+msgstr "Ajouter un serveur"
 
 #: resources/ui/window.ui:158
 msgid "No Server"
-msgstr "لا يوجد خادم"
+msgstr "Pas de serveur"
 
 #: resources/ui/window.ui:161
 msgid "Add Server"
-msgstr "إضافة خادم"
+msgstr "Ajouter un serveur"
 
 #: resources/ui/window.ui:200
 msgid "Log Out"
-msgstr "تسجيل الخروج"
+msgstr "Se déconnecter"
 
 #: resources/ui/window.ui:247
 msgid "Contents"
-msgstr "المحتويات"
+msgstr "Contenu"
 
 #: resources/ui/window.ui:298
 msgid "Home"
-msgstr "الرئيسية"
+msgstr "Accueil"
 
 #: resources/ui/window.ui:344 src/ui/widgets/list.rs:125
 msgid "Liked"
-msgstr "المفضلة"
+msgstr "Aimé"
 
 #: resources/ui/window.ui:405
 msgid "Servers"
-msgstr "الخوادم"
+msgstr "Serveurs"
 
 #: resources/ui/mpv_shortcuts_window.ui:15
 msgid "Decrease/increase playback speed by 10%"
-msgstr "تقليل/زيادة سرعة التشغيل بنسبة 10%"
+msgstr "Diminuer / augmenter la vitesse de lecture de 10 %"
 
 #: resources/ui/mpv_shortcuts_window.ui:21
 msgid "Halve/double current playback speed"
-msgstr "نصف/مضاعفة سرعة التشغيل الحالية"
+msgstr "Diminuer de moitié / doubler la vitesse de lecture actuelle"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
 msgid "Reset playback speed to normal"
-msgstr "إعادة ضبط سرعة التشغيل إلى الوضع الطبيعي"
+msgstr "Réinitialiser la vitesse de lecture"
 
 #: resources/ui/mpv_menu_actions.ui:12
 msgid "Backward"
-msgstr "الرجوع للخلف"
+msgstr "Retour arrière"
 
 #: resources/ui/mpv_menu_actions.ui:42
 msgid "Forward"
-msgstr "التقديم للأمام"
+msgstr "Saut en avant"
 
 #: resources/ui/mpv_menu.ui:11
 msgid "_Next"
-msgstr "_التالي"
+msgstr "_Suivant"
 
 #: resources/ui/mpv_menu.ui:16
 msgid "_Previous"
-msgstr "_السابق"
+msgstr "_Précédent"
 
 #: resources/ui/mpv_menu.ui:23
 msgid "Next chapter"
-msgstr "الفصل التالي"
+msgstr "Chapitre suivant"
 
 #: resources/ui/mpv_menu.ui:28
 msgid "Previous chapter"
-msgstr "الفصل السابق"
+msgstr "Chapitre précédent"
 
 #: resources/ui/mpv_menu.ui:40
 msgid "Advanced settings"
-msgstr "الإعدادات المتقدمة"
+msgstr "Paramètres avancés"
 
 #: resources/ui/mpv_menu.ui:47
 msgid "Media info"
-msgstr "معلومات الوسائط"
+msgstr "Informations du média"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
 #: src/ui/mod.rs:23
 msgid "translator-credits"
-msgstr "Abdulrahman <2140398@uj.edu.sa>"
+msgstr "MarioSwitch https://marioswitch.fr/"
 
 #: src/ui/widgets/actor.rs:266 src/ui/widgets/boxset.rs:217
 msgid "Links"
-msgstr "الروابط"
+msgstr "Liens"
 
 #: src/ui/widgets/account_add.rs:129
 msgid "Fields must be filled in"
-msgstr "يجب ملء جميع الحقول"
+msgstr "Les champs doivent être remplis"
 
 #: src/ui/widgets/account_add.rs:184
-#, fuzzy
-#| msgid "Account added successfully"
 msgid "Server edited successfully"
-msgstr "تمت إضافة الحساب بنجاح"
+msgstr "Serveur modifié avec succès"
 
 #: src/ui/widgets/account_add.rs:190
-#, fuzzy
-#| msgid "Account added successfully"
 msgid "Server added successfully"
-msgstr "تمت إضافة الحساب بنجاح"
+msgstr "Serveur ajouté avec succès"
 
 #: src/ui/widgets/account_settings.rs:206
 msgid "Password cannot be empty!"
-msgstr "لا يمكن أن تكون كلمة المرور فارغة!"
+msgstr "Le mot de passe ne peut pas être vide !"
 
 #: src/ui/widgets/account_settings.rs:210
 msgid "Passwords do not match!"
-msgstr "كلمات المرور غير متطابقة!"
+msgstr "Les mots de passe ne correspondent pas !"
 
 #: src/ui/widgets/account_settings.rs:217
 msgid "Password changed successfully! Please login again."
-msgstr "تم تغيير كلمة المرور بنجاح! يرجى تسجيل الدخول مرة أخرى."
+msgstr "Mot de passe modifié avec succès ! Veuillez vous reconnecter."
 
 #: src/ui/widgets/account_settings.rs:223
 msgid "Failed to change password"
-msgstr "فشل في تغيير كلمة المرور"
+msgstr "Échec du changement de mot de passe"
 
 #: src/ui/widgets/account_settings.rs:282
 msgid "Cache Cleared"
-msgstr "تم مسح الذاكرة المؤقتة"
+msgstr "Cache vidé"
 
 #: src/ui/widgets/account_settings.rs:303
 msgid "No file selected"
-msgstr "لم يتم اختيار ملف"
+msgstr "Aucun fichier sélectionné"
 
 #: src/ui/widgets/account_settings.rs:379
 msgid "Font Cleared, Restart to take effect."
-msgstr "تم مسح الخط، أعد التشغيل لتفعيل التغييرات."
+msgstr "Police réinitialisée, redémarrez pour appliquer."
 
 #: src/ui/widgets/account_settings.rs:531
 #: src/ui/widgets/account_settings.rs:540
 #: src/ui/widgets/account_settings.rs:574
 #: src/ui/widgets/account_settings.rs:583
-#, fuzzy
 msgid "Descriptor cannot be empty!"
-msgstr "لا يمكن أن تكون كلمة المرور فارغة!"
+msgstr "Le descripteur ne peut pas être vide !"
 
 #: src/ui/widgets/account_settings.rs:545
 #: src/ui/widgets/account_settings.rs:588
 msgid "Invalid regex"
-msgstr "تعبير عادي غير صالح (Invalid regex)"
+msgstr "Expression régulière invalide"
 
 #: src/ui/widgets/boxset.rs:227
 msgid "Items"
-msgstr "العناصر"
+msgstr "Éléments"
 
 #: src/ui/widgets/home.rs:172
 msgid "Library"
-msgstr "المكتبة"
+msgstr "Bibliothèque"
 
 #: src/ui/widgets/home.rs:216
 msgid "Latest"
-msgstr "الأحدث"
+msgstr "Les plus récents"
 
 #: src/ui/mpv/control_sidebar.rs:411
 msgid "Video filter settings cleared."
-msgstr "تم مسح إعدادات مرشح الفيديو."
+msgstr "Paramètres de filtres vidéo réinitialisés."
 
 #: src/ui/mpv/control_sidebar.rs:433
 msgid "Subtitle settings cleared."
-msgstr "تم مسح إعدادات الترجمة."
+msgstr "Paramètres des sous-titres réinitialisés."
 
 #: src/ui/mpv/control_sidebar.rs:446
 msgid "Subtitle color settings cleared."
-msgstr "تم مسح إعدادات ألوان الترجمة."
+msgstr "Paramètres de la couleur des sous-titres réinitialisés."
 
 #: src/ui/mpv/control_sidebar.rs:455
 msgid "Subtitle offset settings cleared."
-msgstr "تم مسح إعدادات إزاحة الترجمة."
+msgstr "Paramètres du décalage des sous-titres réinitialisés."
 
 #: src/ui/mpv/control_sidebar.rs:508
-#, fuzzy
-#| msgid "Subtitle settings cleared."
 msgid "Deband settings cleared."
-msgstr "تم مسح إعدادات الترجمة."
+msgstr ""
 
 #: src/ui/mpv/page.rs:375
 msgid "Loading Video..."
-msgstr "جاري تحميل الفيديو..."
+msgstr "Chargement de la vidéo..."
 
 #: src/ui/mpv/page.rs:394
 msgid "No more videos found"
-msgstr "لم يتم العثور على مزيد من الفيديوهات"
+msgstr "Aucune vidéo supplémentaire trouvée"
 
 #: src/ui/mpv/page.rs:403
 msgid "Waiting for mediasource..."
-msgstr "في انتظار مصدر الوسائط..."
+msgstr "En attente de la source du média..."
 
 #: src/ui/mpv/page.rs:440 src/ui/mpv/page.rs:445
 msgid "No media sources found"
-msgstr "لم يتم العثور على مصادر وسائط"
+msgstr "Aucune source de média trouvée"
 
 #: src/ui/mpv/page.rs:601
 msgid "Error"
-msgstr "خطأ"
+msgstr "Erreur"
 
 #: src/ui/mpv/page.rs:603
 msgid ""
 "MPV has been shutdown, Application will exit. \n"
 "Tsukimi can't restart MPV."
 msgstr ""
-"تم إيقاف MPV، وسيتم إنهاء التطبيق.\n"
-"لا يمكن لـ Tsukimi إعادة تشغيل MPV."
+"MPV a été arrêté, l'application va s'arrêter. \n"
+"Tsukimi ne peut pas redémarrer MPV."
 
 #: src/ui/mpv/page.rs:606
 msgid "Shutdown"
-msgstr "إيقاف التشغيل"
+msgstr "Arrêter"
 
 #: src/ui/widgets/image_infocard.rs:96
 msgid "No image to view"
-msgstr "لا توجد صورة لعرضها"
+msgstr "Aucune image à voir"
 
 #: src/ui/widgets/image_infocard.rs:112
 msgid "No image to copy"
-msgstr "لا توجد صورة لنسخها"
+msgstr "Aucune image à copier"
 
 #: src/ui/widgets/image_infocard.rs:116
 msgid "Image copied to clipboard"
-msgstr "تم نسخ الصورة إلى الحافظة"
+msgstr "Image copiée dans le presse-papiers"
 
 #: src/ui/widgets/image_infocard.rs:156
 msgid "Error loading image"
-msgstr "خطأ في تحميل الصورة"
+msgstr "Erreur de chargement de l'image"
 
 #: src/ui/widgets/item.rs:500 src/ui/widgets/list.rs:121
 msgid "Resume"
-msgstr "استئناف"
+msgstr "Reprendre"
 
 #: src/ui/widgets/item.rs:1050
 msgid "No video source found"
-msgstr "لم يتم العثور على مصدر الفيديو"
+msgstr "Aucune source vidéo trouvée"
 
 #: src/ui/widgets/music_album.rs:264
 msgid "More From"
-msgstr "المزيد من"
+msgstr "Plus de"
 
 #: src/ui/widgets/list.rs:113
 msgid "Channels"
-msgstr "القنوات"
+msgstr "Chaînes"
 
 #: src/ui/widgets/list.rs:120
 msgid "All"
-msgstr "الكل"
+msgstr "Tout"
 
 #: src/ui/widgets/list.rs:123
 msgid "Tags"
-msgstr "التصنيف"
+msgstr "Étiquettes"
 
 #: src/ui/widgets/list.rs:124
 msgid "Genres"
-msgstr "الأنواع"
+msgstr "Genres"
 
 #: src/ui/widgets/liked.rs:146
 msgid "Favourite"
-msgstr "المفضلة"
+msgstr "Favori"
 
 #: src/ui/widgets/star_toggle.rs:64
 msgid "Remove from favorites"
-msgstr "إزالة من المفضلة"
+msgstr "Retirer des favoris"
 
 #: src/ui/widgets/star_toggle.rs:65
 msgid "Add to favorites"
-msgstr "إضافة إلى المفضلة"
+msgstr "Ajouter aux favoris"
 
 #: src/ui/widgets/server_action_row.rs:91
-#, fuzzy
-#| msgid "Add Server"
 msgid "Edit Server"
-msgstr "إضافة خادم"
+msgstr "Modifier le serveur"
 
 #: src/ui/widgets/tu_list_item.rs:217
 msgid "Present"
-msgstr "الحاضر"
+msgstr "Présent"
 
 #: src/ui/widgets/tu_list_item.rs:542
 msgid "Scanning..."
-msgstr "جارٍ المسح..."
+msgstr "Scan..."
 
 #: src/ui/widgets/tu_list_item.rs:705 src/ui/widgets/tu_list_item.rs:773
 msgid "Success"
-msgstr "تم بنجاح"
+msgstr "Succès"
 
 #: src/ui/widgets/server_panel.rs:98
 msgid "Shut down server"
-msgstr "إيقاف تشغيل الخادم"
+msgstr "Arrêter le serveur"
 
 #: src/ui/widgets/server_panel.rs:99
 msgid "Are you sure you want to shut down the server?"
-msgstr "هل أنت متأكد أنك تريد إيقاف تشغيل الخادم؟"
+msgstr "Êtes-vous sûrs de vouloir arrêter le serveur ?"
 
 #: src/ui/widgets/server_panel.rs:130
 msgid "Restart server"
-msgstr "إعادة تشغيل الخادم"
+msgstr "Redémarrer le serveur"
 
 #: src/ui/widgets/server_panel.rs:131
 msgid "Are you sure you want to restart the server?"
-msgstr "هل أنت متأكد أنك تريد إعادة تشغيل الخادم؟"
+msgstr "Êtes-vous sûrs de vouloir redémarrer le serveur ?"
 
 #: src/ui/widgets/server_panel.rs:134
 msgid "Revert"
-msgstr "تراجع"
+msgstr "Annuler"
 
 #: src/ui/widgets/server_panel.rs:135
 msgid "Confirm"
-msgstr "تأكيد"
+msgstr "Confirmer"
 
 #: src/ui/widgets/server_panel.rs:171
 msgid "Server is shutting down"
-msgstr "الخادم في طور الإيقاف"
+msgstr "Arrêt du serveur"
 
 #: src/ui/widgets/server_panel.rs:183
 msgid "Server is restarting"
-msgstr "الخادم في طور إعادة التشغيل"
+msgstr "Redémarrage du serveur"
 
 #: src/ui/widgets/server_panel.rs:270
 msgid "Last execute: "
-msgstr "آخر تنفيذ: "
+msgstr "Dernière exécution : "
 
 #: src/ui/widgets/server_panel.rs:275
 msgid "Duration: "
-msgstr "المدة: "
+msgstr "Durée : "
 
 #: src/ui/widgets/server_panel.rs:280
 msgid "Result: "
-msgstr "النتيجة: "
+msgstr "Résultat : "
 
 #: src/ui/widgets/server_panel.rs:326
 msgid "Task started"
-msgstr "تم بدء المهمة"
+msgstr "Tâche démarrée"
 
-#~ msgid "Daily Recommend"
-#~ msgstr "الموصى به يوميا"
-
-#~ msgid "HTTP Proxy"
-#~ msgstr "HTTP Proxy"
-
-#~ msgid "Password"
-#~ msgstr "كلمة المرور"
-
-#~ msgid "This currently only applies to the player"
-#~ msgstr "ينطبق هذا فقط على مشغل الفيديو حاليًا"
-
-#~ msgid "Video Settings"
-#~ msgstr "إعدادات الفيديو"
-
-#~ msgid "Default Volume"
-#~ msgstr "مستوى الصوت الافتراضي"
-
-#~ msgid "Force Stereo"
-#~ msgstr "إجبار الصوت على ستيريو"
-
-#~ msgid "Estimate Frame Rate"
-#~ msgstr "تقدير معدل الإطارات"
-
-#~ msgid ""
-#~ "Use vf filter to interpolate frames to improve the smoothness of resizing "
-#~ "and menus."
-#~ msgstr "استخدم تصفية vf لتداخل الإطارات لتحسين سلاسة تغيير الحجم والقوائم."
-
-#~ msgid "Recommended setting value: Current display frame rate"
-#~ msgstr "قيمة الإعداد الموصى به: معدل الإطارات الحالي للشاشة"
-
-#~ msgid "More"
-#~ msgstr "المزيد"
-
-#~ msgid "More Video Settings"
-#~ msgstr "إعدادات الفيديو الإضافية"
-
-#~ msgid "Customizing mpv params"
-#~ msgstr "تخصيص إعدادات mpv"
-
-#~ msgid "One param per line"
-#~ msgstr "معامل واحد في كل سطر."
-
-#~ msgid "Box Set"
-#~ msgstr "مجموعة"
-
-#~ msgid "_Next chapter"
-#~ msgstr "_الفصل التالي"
-
-#~ msgid "_Previous chapter"
-#~ msgstr "_الفصل السابق"
-
-#~ msgid "_Media info"
-#~ msgstr "_معلومات الوسائط"
-
-#~ msgid "Font Cleared"
-#~ msgstr "تم مسح الخط"
-
-#~ msgid "_Playlist"
-#~ msgstr "_قائمة التشغيل"
-
-#~ msgid "_Advanced settings"
-#~ msgstr "_الإعدادات المتقدمة"
-
-#~ msgid "config=true"
-#~ msgstr "config=true"
+#~ msgid "Deinterlace"
+#~ msgstr "Désentrelacer"

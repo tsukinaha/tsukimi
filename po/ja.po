@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-09 17:33+0800\n"
+"POT-Creation-Date: 2024-10-11 20:08+0800\n"
 "PO-Revision-Date: 2024-09-26 10:41+0000\n"
 "Last-Translator: Flowensity <flowensity@proton.me>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/tsukimi/main/ja/"
@@ -326,11 +326,11 @@ msgstr "記載なし"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:880 src/ui/mpv/page.rs:882 src/ui/widgets/item.rs:504
+#: src/ui/mpv/page.rs:881 src/ui/mpv/page.rs:883 src/ui/widgets/item.rs:504
 msgid "Play"
 msgstr "再生"
 
-#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:885 src/ui/mpv/page.rs:887
+#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888
 msgid "Pause"
 msgstr "一時停止"
 
@@ -703,61 +703,105 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:492
 #, fuzzy
+#| msgid "Video Output"
+msgid "Video Aspect"
+msgstr "ビデオ出力"
+
+#: resources/ui/mpv_control_sidebar.ui:497
+msgid "Fit"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:498
+msgid "Crop"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:506
+#, fuzzy
 #| msgid "Video: "
 msgid "Video Filters"
 msgstr "ビデオ "
 
-#: resources/ui/mpv_control_sidebar.ui:505
+#: resources/ui/mpv_control_sidebar.ui:519
 msgid "Brightness"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:520
+#: resources/ui/mpv_control_sidebar.ui:534
 #, fuzzy
 #| msgid "Contents"
 msgid "Contrast"
 msgstr "内容"
 
-#: resources/ui/mpv_control_sidebar.ui:535
+#: resources/ui/mpv_control_sidebar.ui:549
 msgid "Saturation"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:550
+#: resources/ui/mpv_control_sidebar.ui:564
 msgid "Hue"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:565
+#: resources/ui/mpv_control_sidebar.ui:579
 msgid "Gamma"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:583
-msgid "Deinterlace"
+#: resources/ui/mpv_control_sidebar.ui:596
+#, fuzzy
+#| msgid "Video: "
+msgid "Video Deband"
+msgstr "ビデオ "
+
+#: resources/ui/mpv_control_sidebar.ui:619
+msgid "Deband Iterations"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:590
+#: resources/ui/mpv_control_sidebar.ui:634
+msgid "Deband Threshold"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:649
+msgid "Deband Range"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:664
+msgid "Deband Grain"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:682
+#, fuzzy
+#| msgid "Video: "
+msgid "Video Deinterlace"
+msgstr "ビデオ "
+
+#: resources/ui/mpv_control_sidebar.ui:687
+#, fuzzy
+#| msgid "Video: "
+msgid "Video Upscale Filter"
+msgstr "ビデオ "
+
+#: resources/ui/mpv_control_sidebar.ui:710
 msgid "Action after video ends"
 msgstr "ビデオ終了後のアクション"
 
-#: resources/ui/mpv_control_sidebar.ui:593
+#: resources/ui/mpv_control_sidebar.ui:713
 msgid "Play Next"
 msgstr "次へ"
 
-#: resources/ui/mpv_control_sidebar.ui:606
+#: resources/ui/mpv_control_sidebar.ui:726
 msgid "Loop Playback"
 msgstr "ループ再生"
 
-#: resources/ui/mpv_control_sidebar.ui:620
+#: resources/ui/mpv_control_sidebar.ui:740
 msgid "Stop"
 msgstr "ストップ"
 
-#: resources/ui/mpv_control_sidebar.ui:636
+#: resources/ui/mpv_control_sidebar.ui:756
 msgid "Hardware decoding"
 msgstr "ハードウェアデコード"
 
-#: resources/ui/mpv_control_sidebar.ui:640
+#: resources/ui/mpv_control_sidebar.ui:760
 msgid "no (default)"
 msgstr "いいえ（デフォルト）"
 
-#: resources/ui/mpv_control_sidebar.ui:684
+#: resources/ui/mpv_control_sidebar.ui:804
 msgid "Not all settings will be saved"
 msgstr ""
 
@@ -1134,20 +1178,24 @@ msgstr "図書館"
 msgid "Latest"
 msgstr "最新"
 
-#: src/ui/mpv/control_sidebar.rs:389
+#: src/ui/mpv/control_sidebar.rs:411
 msgid "Video filter settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:411
+#: src/ui/mpv/control_sidebar.rs:433
 msgid "Subtitle settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:424
+#: src/ui/mpv/control_sidebar.rs:446
 msgid "Subtitle color settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:433
+#: src/ui/mpv/control_sidebar.rs:455
 msgid "Subtitle offset settings cleared."
+msgstr ""
+
+#: src/ui/mpv/control_sidebar.rs:508
+msgid "Deband settings cleared."
 msgstr ""
 
 #: src/ui/mpv/page.rs:375
@@ -1168,17 +1216,17 @@ msgstr ""
 msgid "No media sources found"
 msgstr ""
 
-#: src/ui/mpv/page.rs:600
+#: src/ui/mpv/page.rs:601
 msgid "Error"
 msgstr ""
 
-#: src/ui/mpv/page.rs:602
+#: src/ui/mpv/page.rs:603
 msgid ""
 "MPV has been shutdown, Application will exit. \n"
 "Tsukimi can't restart MPV."
 msgstr ""
 
-#: src/ui/mpv/page.rs:605
+#: src/ui/mpv/page.rs:606
 #, fuzzy
 msgid "Shutdown"
 msgstr "サーバーなし"
