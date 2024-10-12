@@ -303,7 +303,7 @@ impl TsukimiMPV {
         let mpv = Arc::clone(&self.mpv);
         let cmd = cmd.to_string();
         let args = args.iter().map(|&arg| arg.to_string()).collect::<Vec<_>>();
-        runtime().spawn(async move {
+        spawn_tokio_without_await(async move {
             let Some(mpv) = mpv.lock().ok() else {
                 warn!("Failed to lock MPV for command: {}", cmd);
                 return;
@@ -538,7 +538,9 @@ fn get_modstr(state: gtk::gdk::ModifierType) -> String {
 
 use gtk::glib::translate::FromGlib;
 
-use crate::{client::{error::UserFacingError, network::runtime}, ui::models::SETTINGS};
+use crate::{
+    client::error::UserFacingError, ui::models::SETTINGS, utils::spawn_tokio_without_await,
+};
 
 const KEYSTRING_MAP: &[(&str, &str)] = &[
     ("PGUP", "Page_Up"),
