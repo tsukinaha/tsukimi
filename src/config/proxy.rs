@@ -17,8 +17,13 @@ impl ReqClient {
             .pool_max_idle_per_host(settings.int("threads") as usize);
 
         if let Some(proxy_url) = get_proxy_settings() {
-            let proxy = reqwest::Proxy::all(proxy_url).expect("failed to find proxy");
-            client_builder.proxy(proxy)
+            match reqwest::Proxy::all(proxy_url) {
+                Ok(proxy) => client_builder.proxy(proxy),
+                Err(_) => {
+                    tracing::warn!("Failed to set proxy settings, using default client");
+                    client_builder
+                }
+            }
         } else {
             client_builder
         }
