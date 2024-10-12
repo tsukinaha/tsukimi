@@ -17,6 +17,7 @@
     <file preprocess="xml-stripblanks" alias="video-reel-symbolic.svg">icons/scalable/actions/video-reel-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="check-round-outline2-symbolic.svg">icons/scalable/actions/check-round-outline2-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="emby-symbolic.svg">icons/scalable/actions/emby-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="card-bulleted-symbolic.svg">icons/scalable/actions/card-bulleted-symbolic.svg</file>
   </gresource>
   <gresource prefix="/moe/tsukimi/">
     <file compressed="true" preprocess="xml-stripblanks">window.ui</file>
@@ -32,7 +33,6 @@
     <file compressed="true" preprocess="xml-stripblanks">pop-menu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">dropdown.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">account_settings.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">singlelist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">boxset.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">album_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">song_widget.ui</file>

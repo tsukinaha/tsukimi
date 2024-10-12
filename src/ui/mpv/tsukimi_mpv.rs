@@ -10,7 +10,7 @@ use tracing::{info, warn};
 use std::{
     cell::RefCell,
     collections::HashMap,
-    sync::{atomic::AtomicU32, Arc},
+    sync::{atomic::AtomicU32, Arc, Mutex},
 };
 
 use libmpv2::{
@@ -27,7 +27,7 @@ pub struct MpvTrack {
 }
 
 pub struct TsukimiMPV {
-    pub mpv: RefCell<Mpv>,
+    pub mpv: Arc<Mutex<Mpv>>,
     pub ctx: RefCell<Option<RenderContext>>,
     pub event_thread_alive: Arc<AtomicU32>,
 }
@@ -115,7 +115,7 @@ impl Default for TsukimiMPV {
         .expect("Failed to create mpv instance");
 
         Self {
-            mpv: RefCell::new(mpv),
+            mpv: Arc::new(Mutex::new(mpv)),
             ctx: RefCell::new(None),
             event_thread_alive: Arc::new(AtomicU32::new(PAUSED)),
         }
@@ -173,7 +173,9 @@ pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
 
 impl TsukimiMPV {
     pub fn connect_render_update(&self, gl_context: GLContext) {
-        let mut mpv = self.mpv.borrow_mut();
+        let Some(mut mpv) = self.mpv() else {
+            return;
+        };
         let mut ctx = RenderContext::new(
             unsafe { mpv.ctx.as_mut() },
             vec![
@@ -281,7 +283,9 @@ impl TsukimiMPV {
     where
         V: SetData,
     {
-        let mpv = self.mpv.borrow();
+        let Some(mpv) = self.mpv() else {
+            return;
+        };
         mpv.set_property(property, value)
             .map_err(|e| warn!("MPV set property Error: {}, Property: {}", e, property))
             .ok();
@@ -291,15 +295,24 @@ impl TsukimiMPV {
     where
         V: GetData,
     {
-        let mpv = self.mpv.borrow();
+        let mpv = self.mpv()?;
         mpv.get_property(property).ok()
     }
 
     fn command(&self, cmd: &str, args: &[&str]) {
-        let mpv = self.mpv.borrow();
-        mpv.command(cmd, args)
-            .map_err(|e| warn!("MPV command Error: {}, Command: {}", e, cmd))
-            .ok();
+        let mpv = Arc::clone(&self.mpv);
+        let cmd = cmd.to_string();
+        let args = args.iter().map(|&arg| arg.to_string()).collect::<Vec<_>>();
+        runtime().spawn(async move {
+            let Some(mpv) = mpv.lock().ok() else {
+                warn!("Failed to lock MPV for command: {}", cmd);
+                return;
+            };
+            let args_ref: Vec<&str> = args.iter().map(|arg| arg.as_str()).collect();
+            mpv.command(&cmd, &args_ref)
+                .map_err(|e| warn!("MPV command Error: {}, Command: {}", e, cmd))
+                .ok();
+        });
     }
 
     pub fn get_track_id(&self, type_: &str) -> i64 {
@@ -309,8 +322,20 @@ impl TsukimiMPV {
         track.parse().unwrap_or(0)
     }
 
+    fn mpv(&self) -> Option<std::sync::MutexGuard<Mpv>> {
+        match self.mpv.lock() {
+            Ok(mpv) => Some(mpv),
+            Err(e) => {
+                warn!("Failed to lock MPV: {}", e);
+                None
+            }
+        }
+    }
+
     pub fn process_events(&self) {
-        let mpv = self.mpv.borrow_mut();
+        let Some(mpv) = self.mpv() else {
+            return;
+        };
         let mut event_context = EventContext::new(mpv.ctx);
         event_context
             .disable_deprecated_events()
@@ -513,7 +538,7 @@ fn get_modstr(state: gtk::gdk::ModifierType) -> String {
 
 use gtk::glib::translate::FromGlib;
 
-use crate::{client::error::UserFacingError, ui::models::SETTINGS};
+use crate::{client::{error::UserFacingError, network::runtime}, ui::models::SETTINGS};
 
 const KEYSTRING_MAP: &[(&str, &str)] = &[
     ("PGUP", "Page_Up"),
