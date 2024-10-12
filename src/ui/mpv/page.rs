@@ -26,8 +26,8 @@ use super::tsukimi_mpv::{
 use super::video_scale::VideoScale;
 
 const MIN_MOTION_TIME: i64 = 100000;
-const NEXT_CHAPTER_KEYVAL: u32 = 65366;
-const PREV_CHAPTER_KEYVAL: u32 = 65365;
+const PREV_CHAPTER_KEYVAL: u32 = 65366;
+const NEXT_CHAPTER_KEYVAL: u32 = 65365;
 
 mod imp {
 
@@ -554,6 +554,9 @@ impl MPVPage {
                         ListenEvent::Seek | ListenEvent::PausedForCache(true) => {
                             obj.update_seeking(true);
                         }
+                        ListenEvent::PausedForCache(false) | ListenEvent::PlaybackRestart => {
+                            obj.update_seeking(false);
+                        }
                         ListenEvent::Eof(value) => {
                             obj.on_end_file(value);
                         }
@@ -565,9 +568,6 @@ impl MPVPage {
                         }
                         ListenEvent::CacheSpeed(value) => {
                             obj.on_cache_speed_update(value);
-                        }
-                        ListenEvent::PlaybackRestart => {
-                            obj.update_seeking(false);
                         }
                         ListenEvent::StartFile => {
                             obj.on_start_file();
@@ -587,7 +587,6 @@ impl MPVPage {
                         ListenEvent::DemuxerCacheTime(value) => {
                             obj.on_cache_time_update(value);
                         }
-                        _ => {}
                     }
                 }
             }
@@ -789,7 +788,7 @@ impl MPVPage {
     }
 
     fn toolbar_revealed(&self) -> bool {
-        self.imp().top_revealer.is_child_revealed()
+        self.imp().bottom_revealer.is_child_revealed()
     }
 
     fn fade_overlay_delay_cb(&self) {
@@ -940,9 +939,9 @@ impl MPVPage {
             let duration = *position as u64 * 10000000;
             let mut back = back.clone();
             back.tick = duration;
-            spawn(spawn_tokio(async move {
+            crate::utils::spawn_tokio_without_await(async move {
                 let _ = EMBY_CLIENT.position_back(&back, backtype).await;
-            }))
+            });
         }
     }
 
