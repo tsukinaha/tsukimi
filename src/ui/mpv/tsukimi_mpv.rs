@@ -76,14 +76,21 @@ impl Default for TsukimiMPV {
         gl::load_with(|name| epoxy::get_proc_addr(name) as *const _);
 
         let mpv = Mpv::with_initializer(|init| {
-            init.set_property("osc", false)?;
             init.set_property("config", SETTINGS.mpv_config())?;
             init.set_property("input-vo-keyboard", true)?;
             init.set_property("input-default-bindings", true)?;
             init.set_property("user-agent", "Tsukimi")?;
             init.set_property("video-timing-offset", 0)?;
             init.set_property("video-sync", "audio")?;
-            init.set_property("vo", "libmpv")?;
+            match SETTINGS.mpv_video_output() {
+                0 => {
+                    init.set_property("vo", "libmpv")?;
+                    init.set_property("osc", false)?;
+                },
+                1 => init.set_property("vo", "gpu-next")?,
+                2 => init.set_property("vo", "dmabuf-wayland")?,
+                _ => unreachable!(),
+            }
             init.set_property(
                 "demuxer-max-bytes",
                 format!("{}MiB", SETTINGS.mpv_cache_size()),

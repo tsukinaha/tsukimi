@@ -1069,12 +1069,6 @@ impl MPVPage {
                 Url::parse(&uri).map_or_else(|_| format!("http://{}", uri), |_| uri.to_string());
             mpv.set_property("http-proxy", url);
         }
-        match SETTINGS.mpv_video_output() {
-            0 => mpv.set_property("vo", "libmpv"),
-            1 => mpv.set_property("vo", "gpu-next"),
-            2 => mpv.set_property("vo", "dmabuf-wayland"),
-            _ => unreachable!(),
-        }
         match SETTINGS.mpv_audio_preferred_lang() {
             0 => mpv.set_property("alang", ""), // clear alang
             1 => mpv.set_property("alang", "eng"),

@@ -21,6 +21,10 @@ child {
   border-radius: 10px;
 }
 
+.top-bar {
+  padding: 3px;
+}
+
 .logo {
   background: rgba(0, 0, 0, 0);
 }
