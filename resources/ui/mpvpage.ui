@@ -102,7 +102,7 @@
                             <style>
                               <class name="osd" />
                               <class name="toolbar" />
-                              <class name="top-bar" />
+                              <class name="top-control-bar" />
                             </style>
                           </object>
                         </child>
@@ -138,7 +138,7 @@
                             <style>
                               <class name="osd" />
                               <class name="toolbar" />
-                              <class name="top-bar" />
+                              <class name="top-control-bar" />
                             </style>
                           </object>
                         </child>
