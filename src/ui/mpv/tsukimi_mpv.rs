@@ -100,24 +100,14 @@ impl Default for TsukimiMPV {
             init.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64)?;
             init.set_property("sub-font", SETTINGS.mpv_subtitle_font())?;
             init.set_property("sub-scale", SETTINGS.mpv_subtitle_scale())?;
-            match SETTINGS.mpv_hwdec() {
-                0 => init.set_property("hwdec", "no")?,
-                1 => init.set_property("hwdec", "auto-safe")?,
-                2 => init.set_property("hwdec", "vaapi")?,
-                _ => unreachable!(),
-            };
+            init.set_property("hwdec", match_hwdec_interop(SETTINGS.mpv_hwdec()))?;
+            init.set_property("scale", match_video_upscale(SETTINGS.mpv_video_scale()))?;
             if SETTINGS.mpv_action_after_video_end() == 1 {
                 init.set_property("loop", "inf")?;
             } else {
                 init.set_property("loop", "no")?;
             }
-            let channel = match SETTINGS.mpv_audio_channel() {
-                1 => "auto-safe",
-                2 => "mono",
-                3 => "stereo",
-                _ => "auto",
-            };
-            init.set_property("audio-channels", channel)?;
+            init.set_property("audio-channels", match_audio_channels(SETTINGS.mpv_audio_channel()))?;
             Ok(())
         })
         .expect("Failed to create mpv instance");
@@ -549,6 +539,8 @@ use gtk::glib::translate::FromGlib;
 use crate::{
     client::error::UserFacingError, ui::models::SETTINGS, utils::spawn_tokio_without_await,
 };
+
+use super::options_matcher::{match_audio_channels, match_hwdec_interop, match_video_upscale};
 
 const KEYSTRING_MAP: &[(&str, &str)] = &[
     ("PGUP", "Page_Up"),

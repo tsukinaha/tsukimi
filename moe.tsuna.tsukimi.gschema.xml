@@ -171,6 +171,11 @@
       <description>0: Auto, 1: Auto(safe), 2. Mono, 3.Dual</description>
       <default>0</default>
     </key>
+    <key name="mpv-video-scale" type="i">
+      <summary>Video Upscale Method</summary>
+      <description>0: lanczos, 1: bilinear, 2: ewa_lanczos, 3: mitchell, 4: hermite, 5: oversample, 6: linear, 7: ewa_hanning, 8: ewa_lanczossharp</description>
+      <default>0</default>
+    </key>
     <key name="mpv-force-stereo" type="b">
       <summary>Whether to force stereo audio output</summary>
       <default>false</default>
@@ -184,17 +189,17 @@
       <default>""</default>
     </key>
     <key type="s" name="video-version-descriptors">
-			<summary>List of the video version preferences</summary>
+      <summary>List of the video version preferences</summary>
       <description>[(descriptor, is_regex, weight)]</description>
-			<default>'[]'</default>
-		</key>
+      <default>'[]'</default>
+    </key>
     <key type="s" name="accounts">
-			<summary>List of the accounts</summary>
-			<default>'[]'</default>
-		</key>
+      <summary>List of the accounts</summary>
+      <default>'[]'</default>
+    </key>
     <key type="d" name="mpv-subtitle-scale">
-			<summary>MPV subtitle scale</summary>
-			<default>1.0</default>
-		</key>
+      <summary>MPV subtitle scale</summary>
+      <default>1.0</default>
+    </key>
   </schema>
 </schemalist>

@@ -6,6 +6,8 @@ use libmpv2::SetData;
 
 use crate::{toast, ui::models::SETTINGS};
 
+use super::options_matcher::{match_audio_channels, match_hwdec_interop, match_sub_border_style, match_video_upscale};
+
 mod imp {
     use super::*;
     use crate::ui::mpv::mpvglarea::MPVGLArea;
@@ -77,6 +79,9 @@ mod imp {
         pub audio_offset_adj: TemplateChild<gtk::Adjustment>,
         #[template_child]
         pub audio_channel_combo: TemplateChild<adw::ComboRow>,
+
+        #[template_child]
+        pub video_upsacle_filter_combo: TemplateChild<adw::ComboRow>,
 
         #[template_child]
         pub deband_switch: TemplateChild<gtk::Switch>,
@@ -198,12 +203,8 @@ impl MPVControlSidebar {
                         .get::<i32>()
                         .expect("The variant needs to be of type `i32`.");
 
-                    match parameter {
-                        0 => obj.set_mpv_property("hwdec", "no"),
-                        1 => obj.set_mpv_property("hwdec", "auto-safe"),
-                        2 => obj.set_mpv_property("hwdec", "vaapi"),
-                        _ => {}
-                    }
+                    let option = match_hwdec_interop(parameter);
+                    obj.set_mpv_property("hwdec", option);
 
                     SETTINGS.set_mpv_hwdec(parameter).unwrap();
 
@@ -258,6 +259,9 @@ impl MPVControlSidebar {
             .build();
         SETTINGS
             .bind("mpv-subtitle-scale", &imp.sub_scale_adj.get(), "value")
+            .build();
+        SETTINGS
+            .bind("mpv-video-scale", &imp.video_upsacle_filter_combo.get(), "selected")
             .build();
     }
 
@@ -401,11 +405,7 @@ impl MPVControlSidebar {
 
     #[template_callback]
     pub fn on_border_style(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
-        let border_style = match combo.selected() {
-            1 => "opaque-box",
-            2 => "background-box",
-            _ => "outline-and-shadow",
-        };
+        let border_style = match_sub_border_style(combo.selected() as i32);
         self.set_mpv_property("sub-border-style", border_style);
     }
 
@@ -492,18 +492,7 @@ impl MPVControlSidebar {
 
     #[template_callback]
     fn on_video_upscale(&self, _param: glib::ParamSpec, combo: adw::ComboRow) {
-        let upscaler = match combo.selected() {
-            0 => "lanczos",
-            1 => "bilinear",
-            2 => "ewa_lanczos",
-            3 => "mitchell",
-            4 => "hermite",
-            5 => "oversample",
-            6 => "linear",
-            7 => "ewa_hanning",
-            _ => "ewa_lanczossharp",
-        };
-
+        let upscaler = match_video_upscale(combo.selected() as i32);
         self.set_mpv_property("scale", upscaler);
     }
 
@@ -527,12 +516,7 @@ impl MPVControlSidebar {
             return;
         }
 
-        let channel = match combo.selected() {
-            1 => "auto-safe",
-            2 => "mono",
-            3 => "stereo",
-            _ => "auto",
-        };
+        let channel = match_audio_channels(selected as i32);
 
         self.set_mpv_property("af", "");
         self.set_mpv_property("audio-channels", channel);
