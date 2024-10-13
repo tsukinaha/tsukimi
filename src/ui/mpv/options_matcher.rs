@@ -29,7 +29,6 @@ pub fn match_sub_border_style<'a>(matcher: i32) -> &'a str {
     }
 }
 
-
 pub fn match_hwdec_interop<'a>(matcher: i32) -> &'a str {
     match matcher {
         0 => "no",
