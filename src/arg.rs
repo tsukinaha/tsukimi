@@ -1,6 +1,7 @@
 use std::{fs::File, io, sync::Mutex};
 use clap::Parser;
 use tracing::level_filters::LevelFilter;
+use tracing_subscriber::fmt::time::ChronoLocal;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -25,7 +26,7 @@ impl Args {
     ///
     /// Panics if the log file cannot be opened.
     pub fn init_tracing_subscriber(&self) {
-        let builder = tracing_subscriber::fmt().pretty();
+        let builder = tracing_subscriber::fmt().with_timer(ChronoLocal::rfc_3339());
 
         let builder = match self.log_level.as_deref() {
             Some("error") => builder.with_max_level(LevelFilter::ERROR),
