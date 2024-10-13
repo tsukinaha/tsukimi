@@ -9,6 +9,8 @@ use gtk::CompositeTemplate;
 use std::path::PathBuf;
 use tracing::{debug, warn};
 
+use super::image_paintable::ImagePaintable;
+
 pub(crate) mod imp {
     use std::cell::{OnceCell, RefCell};
 
@@ -33,6 +35,8 @@ pub(crate) mod imp {
         pub spinner: TemplateChild<adw::Spinner>,
         #[template_child]
         pub broken: TemplateChild<gtk::Box>,
+        #[property(get, set, default = false, construct_only)]
+        pub animated: std::cell::Cell<bool>,
     }
 
     #[glib::object_subclass]
@@ -76,6 +80,15 @@ impl PictureLoader {
             .build()
     }
 
+    pub fn new_animated(id: &str, image_type: &str, tag: Option<String>) -> Self {
+        glib::Object::builder()
+            .property("id", id)
+            .property("imagetype", image_type)
+            .property("tag", tag)
+            .property("animated", true)
+            .build()
+    }
+
     pub fn load_pic(&self) {
         let cache_file_path = self.cache_file();
 
@@ -91,7 +104,12 @@ impl PictureLoader {
 
         if cache_file_path.exists() {
             let file = gio::File::for_path(cache_file_path);
-            imp.picture.set_file(Some(&file));
+            if self.animated() {
+                let paintable = ImagePaintable::from_file(&file);
+                imp.picture.set_paintable(paintable.ok().as_ref());
+            } else {
+                imp.picture.set_file(Some(&file));
+            }  
         } else {
             imp.broken.set_visible(true);
         }
