@@ -5,7 +5,7 @@ use std::{
 
 use gtk::{gdk, gio, glib, graphene, prelude::*, subclass::prelude::*};
 use image::{
-    codecs::{gif::GifDecoder, png::PngDecoder},
+    codecs::{gif::GifDecoder, png::PngDecoder, webp::WebPDecoder},
     flat::SampleLayout,
     AnimationDecoder, DynamicImage, ImageFormat,
 };
@@ -210,6 +210,23 @@ impl ImagePaintable {
 
                 if decoder.is_apng().unwrap_or_default() {
                     let decoder = decoder.apng()?;
+                    let frames = decoder
+                        .into_frames()
+                        .collect_frames()?
+                        .into_iter()
+                        .map(Frame::from)
+                        .collect::<Vec<_>>();
+                    imp.frames.replace(Some(frames));
+                    self.update_frame();
+                } else {
+                    let image = DynamicImage::from_decoder(decoder)?;
+                    self.set_image(image);
+                }
+            }
+            image::ImageFormat::WebP => {
+                let decoder = WebPDecoder::new(read)?;
+
+                if decoder.has_animation() {
                     let frames = decoder
                         .into_frames()
                         .collect_frames()?
