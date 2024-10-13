@@ -2,7 +2,7 @@
 name = "tsukimi"
 version = "0.16.0"
 edition = "2021"
-description = "A simple Emby Client with MPV written by GTK4-RS"
+description = "A simple Emby Client written by GTK4-RS"
 license = "GPL"
 
 
