@@ -47,9 +47,10 @@ impl Settings {
     const PREFERRED_VERSION_DESCRIPTORS: &'static str = "video-version-descriptors"; // String
     const ACCOUNTS: &'static str = "accounts"; // String
     const KEY_MPV_AUDIO_CHANNEL: &'static str = "mpv-audio-channel"; // i32
+    const KEY_MPV_SUBTITLE_SCALE: &'static str = "mpv-subtitle-scale"; // f64
 
-    pub fn set_mpv_audio_channel(&self, mpv_audio_channel: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_AUDIO_CHANNEL, mpv_audio_channel)
+    pub fn mpv_subtitle_scale(&self) -> f64 {
+        self.double(Self::KEY_MPV_SUBTITLE_SCALE)
     }
 
     pub fn mpv_audio_channel(&self) -> i32 {

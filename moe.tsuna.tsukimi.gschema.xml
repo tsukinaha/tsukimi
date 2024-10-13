@@ -192,5 +192,9 @@
 			<summary>List of the accounts</summary>
 			<default>'[]'</default>
 		</key>
+    <key type="d" name="mpv-subtitle-scale">
+			<summary>MPV subtitle scale</summary>
+			<default>1.0</default>
+		</key>
   </schema>
 </schemalist>

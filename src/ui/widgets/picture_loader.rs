@@ -109,7 +109,7 @@ impl PictureLoader {
                 imp.picture.set_paintable(paintable.ok().as_ref());
             } else {
                 imp.picture.set_file(Some(&file));
-            }  
+            }
         } else {
             imp.broken.set_visible(true);
         }

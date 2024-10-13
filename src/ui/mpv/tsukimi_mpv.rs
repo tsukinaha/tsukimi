@@ -86,7 +86,7 @@ impl Default for TsukimiMPV {
                 0 => {
                     init.set_property("vo", "libmpv")?;
                     init.set_property("osc", false)?;
-                },
+                }
                 1 => init.set_property("vo", "gpu-next")?,
                 2 => init.set_property("vo", "dmabuf-wayland")?,
                 _ => unreachable!(),
@@ -99,6 +99,7 @@ impl Default for TsukimiMPV {
             init.set_property("volume", SETTINGS.mpv_default_volume() as i64)?;
             init.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64)?;
             init.set_property("sub-font", SETTINGS.mpv_subtitle_font())?;
+            init.set_property("sub-scale", SETTINGS.mpv_subtitle_scale())?;
             match SETTINGS.mpv_hwdec() {
                 0 => init.set_property("hwdec", "no")?,
                 1 => init.set_property("hwdec", "auto-safe")?,

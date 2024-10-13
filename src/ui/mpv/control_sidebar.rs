@@ -256,6 +256,9 @@ impl MPVControlSidebar {
         SETTINGS
             .bind("mpv-audio-channel", &imp.audio_channel_combo.get(), "selected")
             .build();
+        SETTINGS
+            .bind("mpv-subtitle-scale", &imp.sub_scale_adj.get(), "value")
+            .build();
     }
 
     pub fn set_mpv_property<V>(&self, property: &str, value: V)
@@ -530,10 +533,6 @@ impl MPVControlSidebar {
             3 => "stereo",
             _ => "auto",
         };
-
-        SETTINGS
-            .set_mpv_audio_channel(combo.selected() as i32)
-            .unwrap();
 
         self.set_mpv_property("af", "");
         self.set_mpv_property("audio-channels", channel);
