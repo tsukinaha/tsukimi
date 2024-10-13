@@ -253,6 +253,9 @@ impl MPVControlSidebar {
         SETTINGS
             .bind("mpv-deband", &imp.deband_switch.get(), "active")
             .build();
+        SETTINGS
+            .bind("mpv-audio-channel", &imp.audio_channel_combo.get(), "selected")
+            .build();
     }
 
     pub fn set_mpv_property<V>(&self, property: &str, value: V)
