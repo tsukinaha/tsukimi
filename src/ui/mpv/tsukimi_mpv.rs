@@ -5,7 +5,7 @@ use libmpv2::{
     GetData, SetData,
 };
 
-use tracing::{info, warn};
+use tracing::{error, info, warn};
 
 use std::{
     cell::RefCell,
@@ -303,7 +303,7 @@ impl TsukimiMPV {
         let args = args.iter().map(|&arg| arg.to_string()).collect::<Vec<_>>();
         spawn_tokio_without_await(async move {
             let Some(mpv) = mpv.lock().ok() else {
-                warn!("Failed to lock MPV for command: {}", cmd);
+                error!("Failed to lock MPV for command: {}", cmd);
                 return;
             };
             let args_ref: Vec<&str> = args.iter().map(|arg| arg.as_str()).collect();
@@ -324,7 +324,7 @@ impl TsukimiMPV {
         match self.mpv.lock() {
             Ok(mpv) => Some(mpv),
             Err(e) => {
-                warn!("Failed to lock MPV: {}", e);
+                error!("Failed to lock MPV: {}", e);
                 None
             }
         }
