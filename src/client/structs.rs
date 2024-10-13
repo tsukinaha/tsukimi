@@ -111,6 +111,8 @@ pub struct LiveMedia {
 pub struct LiveMediaSource {
     #[serde(rename = "TranscodingUrl")]
     pub transcoding_url: Option<String>,
+    #[serde(rename = "Id")]
+    pub id: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]

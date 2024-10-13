@@ -1,4 +1,4 @@
-use crate::client::structs::SimpleListItem;
+use crate::client::structs::{Back, SimpleListItem};
 use crate::ui::widgets::single_grid::SingleGrid;
 use gettextrs::gettext;
 use glib::DateTime;
@@ -343,12 +343,18 @@ impl TuItem {
                             toast!(window, gettext("No transcoding url found"));
                             return;
                         };
+                        let back = Back {
+                            tick: 0,
+                            id: item.id(),
+                            playsessionid: playback.play_session_id,
+                            mediasourceid: playback.media_sources[0].id.clone(),
+                        };
                         window.play_media(
                             url.to_string(),
                             None,
                             item,
                             Vec::new(),
-                            None,
+                            Some(back),
                             None,
                             0.0,
                             None,
