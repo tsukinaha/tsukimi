@@ -6,7 +6,9 @@ use libmpv2::SetData;
 
 use crate::{toast, ui::models::SETTINGS};
 
-use super::options_matcher::{match_audio_channels, match_hwdec_interop, match_sub_border_style, match_video_upscale};
+use super::options_matcher::{
+    match_audio_channels, match_hwdec_interop, match_sub_border_style, match_video_upscale,
+};
 
 mod imp {
     use super::*;
@@ -255,13 +257,21 @@ impl MPVControlSidebar {
             .bind("mpv-deband", &imp.deband_switch.get(), "active")
             .build();
         SETTINGS
-            .bind("mpv-audio-channel", &imp.audio_channel_combo.get(), "selected")
+            .bind(
+                "mpv-audio-channel",
+                &imp.audio_channel_combo.get(),
+                "selected",
+            )
             .build();
         SETTINGS
             .bind("mpv-subtitle-scale", &imp.sub_scale_adj.get(), "value")
             .build();
         SETTINGS
-            .bind("mpv-video-scale", &imp.video_upsacle_filter_combo.get(), "selected")
+            .bind(
+                "mpv-video-scale",
+                &imp.video_upsacle_filter_combo.get(),
+                "selected",
+            )
             .build();
     }
 

@@ -1,5 +1,5 @@
-use std::{fs::File, io, sync::Mutex};
 use clap::Parser;
+use std::{fs::File, io, sync::Mutex};
 use tracing::level_filters::LevelFilter;
 use tracing_subscriber::fmt::time::ChronoLocal;
 
@@ -34,7 +34,7 @@ impl Args {
             Some("info") => builder.with_max_level(LevelFilter::INFO),
             Some("debug") => builder.with_max_level(LevelFilter::DEBUG),
             Some("trace") => builder.with_max_level(LevelFilter::TRACE),
-            _ => builder.with_max_level(LevelFilter::INFO), 
+            _ => builder.with_max_level(LevelFilter::INFO),
         };
 
         match &self.log_file {
