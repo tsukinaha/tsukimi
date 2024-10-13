@@ -8,16 +8,16 @@ body:
       label: Ensure the following information
       description: Please confirm the following information
       options:
-        - label: When reporting a bug, please attach the complete log
+        - label: When reporting a bug, please attach the complete log.
           required: true
         
-        - label: The method to obtain the log is to run the program in the terminal
+        - label: To get instructions on how to retrieve log files in version 0.16.1 and later, use `tsukimi -h`.
           required: true
 
-        - label: Repeated issues will be closed
+        - label: Duplicated issues will be closed.
           required: true
 
-        - label: Please make sure you have read the FAQ and pinned issues before submitting
+        - label: Please make sure you have read the FAQ and pinned issues before submitting.
           required: true
   - type: textarea
     id: what-happened

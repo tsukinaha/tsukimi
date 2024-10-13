@@ -46,6 +46,7 @@ impl Args {
         }
     }
 
+    /// Set the GSK renderer environment variable
     pub fn init_gsk_renderer(&self) {
         if let Some(renderer) = self.gsk_renderer.as_deref() {
             std::env::set_var("GSK_RENDERER", renderer);
