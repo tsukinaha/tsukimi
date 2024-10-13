@@ -92,6 +92,7 @@
                     <property name="height-request">90</property>
                     <property name="xalign">0</property>
                     <property name="visible">false</property>
+                    <property name="tooltip-text" bind-source="inline_overview" bind-property="label" bind-flags="sync-create"/>
                     <attributes>
                       <attribute name="scale" value="0.9"/>
                     </attributes>
@@ -112,6 +113,7 @@
             <property name="ellipsize">end</property>
             <property name="height-request">90</property>
             <property name="xalign">0</property>
+            <property name="tooltip-text" bind-source="overview" bind-property="label" bind-flags="sync-create"/>
             <attributes>
               <attribute name="scale" value="0.9"/>
             </attributes>
