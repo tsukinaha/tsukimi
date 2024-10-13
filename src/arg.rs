@@ -46,6 +46,8 @@ impl Args {
     }
 
     pub fn init_gsk_renderer(&self) {
-        std::env::set_var("GSK_RENDERER", self.gsk_renderer.as_deref().unwrap_or(""));
+        if let Some(renderer) = self.gsk_renderer.as_deref() {
+            std::env::set_var("GSK_RENDERER", renderer);
+        }
     }
 }
