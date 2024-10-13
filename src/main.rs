@@ -3,7 +3,6 @@
     windows_subsystem = "windows"
 )]
 
-use adw::prelude::AdwApplicationExt;
 use arg::Args;
 use clap::Parser;
 use gettextrs::*;
@@ -56,6 +55,11 @@ fn main() -> glib::ExitCode {
     let args = Args::parse();
     args.init_tracing_subscriber();
     args.init_gsk_renderer();
+
+    // TODO: set this in args
+    std::panic::set_hook(Box::new(|p| {
+        tracing::error!("{p}");
+    }));
 
     // Initialize gettext
     #[cfg(any(target_os = "linux", target_os = "windows"))]
@@ -113,7 +117,6 @@ fn main() -> glib::ExitCode {
     app.connect_activate(ui::build_ui);
 
     app.set_accels_for_action("win.about", &["<Ctrl>N"]);
-
     // Run the application
     app.run_with_args::<&str>(&[])
 }

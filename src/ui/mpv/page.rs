@@ -275,7 +275,7 @@ impl MPVPage {
         let suburi = suburi.map(|s| s.to_owned());
         let name = if let Some(series_name) = item.series_name() {
             format!(
-                "{} - S{}E{}: {}",
+                "{} - S{}E{}: {}",
                 series_name,
                 item.parent_index_number(),
                 item.index_number(),
@@ -285,6 +285,7 @@ impl MPVPage {
             item.name()
         };
 
+        self.imp().video.imp().mpv.set_property("force-media-title", name.clone());
         self.imp().video_scale.reset_scale();
         self.imp().video_version_matcher.replace(matcher);
         self.imp().current_video.replace(Some(item));
