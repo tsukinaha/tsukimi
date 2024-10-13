@@ -10,6 +10,8 @@ use gtk::prelude::*;
 use gtk::{gio, glib};
 use once_cell::sync::OnceCell;
 use tracing::info;
+use arg::Args;
+use clap::Parser;
 
 mod client;
 mod config;
@@ -17,6 +19,7 @@ mod gstl;
 mod macros;
 mod ui;
 mod utils;
+mod arg;
 
 const APP_ID: &str = "moe.tsuna.tsukimi";
 
@@ -50,6 +53,10 @@ fn locale_dir() -> &'static str {
 }
 
 fn main() -> glib::ExitCode {
+    let args = Args::parse();
+    args.init_tracing_subscriber();
+    args.init_gsk_renderer();
+
     // Initialize gettext
     #[cfg(any(target_os = "linux", target_os = "windows"))]
     {
@@ -73,11 +80,6 @@ fn main() -> glib::ExitCode {
         // std::env::set_var("GSK_RENDERER", "gl");
     }
 
-    // Initialize the logger
-    tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::INFO)
-        .init();
-
     info!(
         "Application Version: {}, Platform: {} {}, CPU Architecture: {}",
         config::APP_VERSION,
@@ -90,8 +92,6 @@ fn main() -> glib::ExitCode {
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
 
     // Initialize the GTK application
-    adw::init().expect("Failed to initialize Adw");
-    gtk::init().expect("Failed to initialize GTK");
     gtk::glib::set_application_name("Tsukimi");
 
     // Make Application detect Windows system dark mode
@@ -119,5 +119,5 @@ fn main() -> glib::ExitCode {
     app.set_accels_for_action("win.about", &["<Ctrl>N"]);
 
     // Run the application
-    app.run()
+    app.run_with_args::<&str>(&[])
 }
