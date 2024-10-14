@@ -105,7 +105,7 @@
                               <object class="AdwHeaderBar">
                                 <child type="end">
                                   <object class="GtkMenuButton">
-                                    <property name="icon-name">open-menu-symbolic</property>
+                                    <property name="icon-name">view-more-symbolic</property>
                                     <property name="menu-model">sel-menu</property>
                                   </object>
                                 </child>
@@ -459,7 +459,7 @@
                                         </child>
                                         <child type="end">
                                           <object class="GtkMenuButton">
-                                            <property name="icon-name">open-menu-symbolic</property>
+                                            <property name="icon-name">view-more-symbolic</property>
                                             <property name="menu-model">main-menu</property>
                                           </object>
                                         </child>
