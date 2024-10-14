@@ -3,20 +3,6 @@ use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
-pub struct SearchResult {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Type")]
-    pub result_type: String,
-    #[serde(rename = "Id")]
-    pub id: String,
-    #[serde(rename = "UserData")]
-    pub user_data: Option<UserData>,
-    #[serde(rename = "ProductionYear")]
-    pub production_year: Option<i16>,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
 pub struct AuthenticateResponse {
     #[serde(rename = "Policy")]
     pub policy: Policy,
