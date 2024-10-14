@@ -102,74 +102,6 @@ pub struct LiveMediaSource {
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
-pub struct Item {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "Id")]
-    pub id: String,
-    #[serde(rename = "DateCreated")]
-    pub date_created: Option<DateTime<Utc>>,
-    #[serde(rename = "SeriesId")]
-    pub series_id: Option<String>,
-    #[serde(rename = "SeriesName")]
-    pub series_name: Option<String>,
-    #[serde(rename = "Type")]
-    pub item_type: String,
-    #[serde(rename = "ParentIndexNumber")]
-    pub parent_index_number: Option<u32>,
-    #[serde(rename = "IndexNumber")]
-    pub index_number: Option<u32>,
-    #[serde(rename = "ProductionYear")]
-    pub production_year: Option<u32>,
-    #[serde(rename = "ExternalUrls")]
-    pub external_urls: Option<Vec<Urls>>,
-    #[serde(rename = "Overview")]
-    pub overview: Option<String>,
-    #[serde(rename = "People")]
-    pub people: Option<Vec<SimpleListItem>>,
-    #[serde(rename = "Studios")]
-    pub studios: Option<Vec<SGTitem>>,
-    #[serde(rename = "GenreItems")]
-    pub genres: Option<Vec<SGTitem>>,
-    #[serde(rename = "TagItems")]
-    pub tags: Option<Vec<SGTitem>>,
-    #[serde(rename = "UserData")]
-    pub user_data: Option<UserData>,
-    #[serde(rename = "CommunityRating")]
-    pub community_rating: Option<f64>,
-    #[serde(rename = "OfficialRating")]
-    pub official_rating: Option<String>,
-    #[serde(rename = "RunTimeTicks")]
-    pub run_time_ticks: Option<u64>,
-    #[serde(rename = "Taglines")]
-    pub taglines: Option<Vec<String>>,
-    #[serde(rename = "BackdropImageTags")]
-    pub backdrop_image_tags: Option<Vec<String>>,
-    #[serde(rename = "AlbumArtist")]
-    pub album_artist: Option<String>,
-    #[serde(rename = "MediaSources")]
-    pub media_sources: Option<Vec<MediaSource>>,
-    #[serde(rename = "PlaySessionId")]
-    pub play_session_id: Option<String>,
-    #[serde(rename = "OriginalTitle")]
-    pub original_title: Option<String>,
-    #[serde(rename = "SortName")]
-    pub sort_name: Option<String>,
-    #[serde(rename = "ProviderIds")]
-    pub provider_ids: Option<ProviderIds>,
-    #[serde(rename = "Path")]
-    pub path: Option<String>,
-    #[serde(rename = "Album")]
-    pub album: Option<String>,
-    #[serde(rename = "Artists")]
-    pub artists: Option<Vec<String>>,
-    #[serde(rename = "LockData")]
-    pub lock_data: Option<bool>,
-    #[serde(rename = "PartCount")]
-    pub part_count: Option<u32>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct ProviderIds {
     #[serde(rename = "Tmdb")]
     pub tmdb: Option<String>,
@@ -275,8 +207,6 @@ pub struct SimpleListItem {
     pub name: String,
     #[serde(rename = "Id")]
     pub id: String,
-    #[serde(rename = "Type")]
-    pub latest_type: String,
     #[serde(rename = "UserData")]
     pub user_data: Option<UserData>,
     #[serde(rename = "ProductionYear")]
@@ -327,6 +257,42 @@ pub struct SimpleListItem {
     pub premiere_date: Option<DateTime<Utc>>,
     #[serde(rename = "Taglines")]
     pub taglines: Option<Vec<String>>,
+    #[serde(rename = "DateCreated")]
+    pub date_created: Option<DateTime<Utc>>,
+    #[serde(rename = "Type")]
+    pub item_type: String,
+    #[serde(rename = "ExternalUrls")]
+    pub external_urls: Option<Vec<Urls>>,
+    #[serde(rename = "People")]
+    pub people: Option<Vec<SimpleListItem>>,
+    #[serde(rename = "Studios")]
+    pub studios: Option<Vec<SGTitem>>,
+    #[serde(rename = "GenreItems")]
+    pub genres: Option<Vec<SGTitem>>,
+    #[serde(rename = "TagItems")]
+    pub tags: Option<Vec<SGTitem>>,
+    #[serde(rename = "OfficialRating")]
+    pub official_rating: Option<String>,
+    #[serde(rename = "AlbumArtist")]
+    pub album_artist: Option<String>,
+    #[serde(rename = "MediaSources")]
+    pub media_sources: Option<Vec<MediaSource>>,
+    #[serde(rename = "PlaySessionId")]
+    pub play_session_id: Option<String>,
+    #[serde(rename = "OriginalTitle")]
+    pub original_title: Option<String>,
+    #[serde(rename = "SortName")]
+    pub sort_name: Option<String>,
+    #[serde(rename = "ProviderIds")]
+    pub provider_ids: Option<ProviderIds>,
+    #[serde(rename = "Path")]
+    pub path: Option<String>,
+    #[serde(rename = "Album")]
+    pub album: Option<String>,
+    #[serde(rename = "LockData")]
+    pub lock_data: Option<bool>,
+    #[serde(rename = "PartCount")]
+    pub part_count: Option<u32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
@@ -365,14 +331,6 @@ pub struct List {
 pub struct SerInList {
     #[serde(rename = "Items")]
     pub items: Vec<SimpleListItem>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Default)]
-pub struct Items {
-    #[serde(rename = "Items")]
-    pub items: Vec<Item>,
-    #[serde(rename = "TotalRecordCount")]
-    pub total_record_count: Option<u32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]

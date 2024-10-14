@@ -308,24 +308,43 @@ impl ItemPage {
     pub async fn update_intro(&self) {
         let item = self.item();
 
-        if item.item_type() != "Series" && item.item_type() != "Episode" {
-            return;
+        if item.item_type() == "Series" || item.item_type() == "Episode" {
+            let series_id = item.series_id().unwrap_or(item.id());
+
+            spawn(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[strong]
+                series_id,
+                async move {
+                    let Some(intro) = obj.set_shows_next_up(&series_id).await else {
+                        return;
+                    };
+                    obj.set_intro::<false>(&intro).await;
+                }
+            ));
         }
 
-        let series_id = item.series_id().unwrap_or(item.id());
-
-        spawn(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            #[strong]
-            series_id,
-            async move {
-                let Some(intro) = obj.set_shows_next_up(&series_id).await else {
-                    return;
-                };
-                obj.set_intro::<false>(&intro).await;
-            }
-        ));
+        if item.item_type() == "Video" || item.item_type() == "Movie" {
+            spawn(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[weak]
+                item,
+                async move {
+                    let id = item.id();
+                    match spawn_tokio(async move { EMBY_CLIENT.get_item_info(&id).await }).await {
+                        Ok(item) => {
+                            obj.set_intro::<true>(&TuItem::from_simple(&item, None)).await;
+                        }
+                        Err(e) => {
+                            toast!(obj, e.to_user_facing());
+                        }
+                    }
+                }
+            ));
+        }
+        
     }
 
     async fn setup_item(&self, id: &str) {

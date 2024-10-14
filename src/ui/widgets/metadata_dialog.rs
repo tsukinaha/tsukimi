@@ -13,9 +13,7 @@ use crate::{
 mod imp {
     use super::*;
     use crate::{
-        client::structs::Item,
-        ui::{provider::IS_ADMIN, widgets::item::dt},
-        utils::spawn,
+        client::structs::SimpleListItem, ui::{provider::IS_ADMIN, widgets::item::dt}, utils::spawn
     };
 
     use glib::subclass::InitializingObject;
@@ -126,7 +124,7 @@ mod imp {
             ));
         }
 
-        pub fn load_data(&self, metadata: Item) {
+        pub fn load_data(&self, metadata: SimpleListItem) {
             self.path_entry.set_subtitle(
                 &metadata
                     .path

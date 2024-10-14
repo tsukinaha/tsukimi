@@ -18,7 +18,7 @@ use crate::{
 use once_cell::sync::Lazy;
 
 use super::structs::{
-    ActivityLogs, AuthenticateResponse, Back, ExternalIdInfo, ImageItem, Item, List, LiveMedia,
+    ActivityLogs, AuthenticateResponse, Back, ExternalIdInfo, ImageItem, List, LiveMedia,
     LoginResponse, Media, PublicServerInfo, RemoteSearchInfo, RemoteSearchResult, ScheduledTask,
     SerInList, ServerInfo, SimpleListItem,
 };
@@ -308,13 +308,13 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_item_info(&self, id: &str) -> Result<Item> {
+    pub async fn get_item_info(&self, id: &str) -> Result<SimpleListItem> {
         let path = format!("Users/{}/Items/{}", self.user_id(), id);
         let params = [("Fields", "ShareLevel")];
         self.request(&path, &params).await
     }
 
-    pub async fn get_edit_info(&self, id: &str) -> Result<Item> {
+    pub async fn get_edit_info(&self, id: &str) -> Result<SimpleListItem> {
         let path = format!("Users/{}/Items/{}", self.user_id(), id);
         let params = [("Fields", "ChannelMappingInfo")];
         self.request(&path, &params).await

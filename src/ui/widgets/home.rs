@@ -224,7 +224,7 @@ impl HomePage {
                     let list_item = TuItem::default();
                     list_item.set_id(ac_view.id.clone());
                     list_item.set_name(ac_view.name.clone());
-                    list_item.set_item_type(ac_view.latest_type.clone());
+                    list_item.set_item_type(ac_view.item_type.clone());
                     list_item.set_collection_type(ac_view.collection_type.clone());
                     list_item.activate(&obj, None);
                 }

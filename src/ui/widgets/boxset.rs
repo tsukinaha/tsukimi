@@ -163,7 +163,7 @@ impl BoxSetPage {
             Ok(item) => item,
             Err(e) => {
                 toast!(self, e.to_user_facing());
-                Item::default()
+                return;
             }
         };
 
