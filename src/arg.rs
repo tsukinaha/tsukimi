@@ -3,6 +3,8 @@ use std::{fs::File, io, sync::Mutex};
 use tracing::level_filters::LevelFilter;
 use tracing_subscriber::fmt::time::ChronoLocal;
 
+const DEFAULT_RENDERER: &str = "gl";
+
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 pub struct Args {
@@ -50,6 +52,12 @@ impl Args {
     fn init_gsk_renderer(&self) {
         if let Some(renderer) = self.gsk_renderer.as_deref() {
             std::env::set_var("GSK_RENDERER", renderer);
+            return;
+        }
+
+        if std::env::var("GSK_RENDERER").is_err() {
+            std::env::set_var("GSK_RENDERER", DEFAULT_RENDERER);
+            return;
         }
     }
 
