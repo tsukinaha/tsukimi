@@ -49,6 +49,11 @@ impl Settings {
     const KEY_MPV_AUDIO_CHANNEL: &'static str = "mpv-audio-channel"; // i32
     const KEY_MPV_SUBTITLE_SCALE: &'static str = "mpv-subtitle-scale"; // f64
     const KEY_MPV_VIDEO_SCALE: &'static str = "mpv-video-scale"; // i32
+    const KEY_MPV_CONFIG_DIR: &'static str = "mpv-config-path"; // String
+
+    pub fn mpv_config_dir(&self) -> String {
+        self.string(Self::KEY_MPV_CONFIG_DIR).to_string()
+    }
 
     pub fn mpv_subtitle_scale(&self) -> f64 {
         self.double(Self::KEY_MPV_SUBTITLE_SCALE)

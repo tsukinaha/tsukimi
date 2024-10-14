@@ -97,6 +97,12 @@ mod imp {
         #[template_child]
         pub avatar: TemplateChild<adw::Avatar>,
 
+        #[template_child]
+        pub folder_dialog: TemplateChild<gtk::FileDialog>,
+
+        #[template_child]
+        pub folder_button_content: TemplateChild<adw::ButtonContent>,
+
         pub now_editing_descriptor: RefCell<Option<Descriptor>>,
 
         pub descriptor_grab_x: Cell<f64>,
@@ -412,6 +418,9 @@ impl AccountSettings {
             )
             .build();
         SETTINGS
+            .bind("mpv-config-path", &imp.folder_button_content.get(), "label")
+            .build();
+        SETTINGS
             .bind("threads", &imp.threadspinrow.get(), "value")
             .build();
 
@@ -485,6 +494,23 @@ impl AccountSettings {
         SETTINGS
             .set_mpv_subtitle_font(gtk::pango::FontDescription::to_string(&font_desc))
             .unwrap();
+    }
+
+    #[template_callback]
+    async fn dir_cb(&self, _button: gtk::Button) {
+        if let Ok(file) = self
+            .imp()
+            .folder_dialog
+            .select_folder_future(Some(self))
+            .await
+        {
+            self.imp().folder_button_content.set_label(
+                &file
+                    .path()
+                    .map(|p| p.to_string_lossy().into_owned())
+                    .unwrap_or("None".into()),
+            );
+        }
     }
 
     #[template_callback]

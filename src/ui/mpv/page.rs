@@ -285,7 +285,11 @@ impl MPVPage {
             item.name()
         };
 
-        self.imp().video.imp().mpv.set_property("force-media-title", name.clone());
+        self.imp()
+            .video
+            .imp()
+            .mpv
+            .set_property("force-media-title", name.clone());
         self.imp().video_scale.reset_scale();
         self.imp().video_version_matcher.replace(matcher);
         self.imp().current_video.replace(Some(item));
@@ -508,6 +512,7 @@ impl MPVPage {
             playsessionid: playback.play_session_id,
             mediasourceid: media_source_id.to_string(),
             tick: 0,
+            start_tick: 0,
         };
 
         self.play(

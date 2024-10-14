@@ -435,16 +435,28 @@
             <property name="description" translatable="yes">May cause crashes, Requires restart</property>
             <child>
               <object class="AdwSwitchRow" id="config_switchrow">
-                <property name="title">config=true</property>
-                <property name="subtitle" translatable="yes">Read from mpv config dir</property>
-                <style>
-                  <class name="error"/>
-                </style>
+                <property name="title">Enable external config</property>
               </object>
             </child>
-            <style>
-              <class name="error"/>
-            </style>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Config dir</property>
+                <child type="suffix">
+                  <object class="GtkButton" id="config_dir_button">
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="dir_cb" swapped="yes"/>
+                    <property name="child">
+                      <object class="AdwButtonContent" id="folder_button_content">
+                        <property name="icon-name">folder-symbolic</property>
+                        <property name="label" translatable="yes">None</property>
+                        <property name="use-underline">True</property>
+                        <property name="can-shrink">True</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </child>
       </object>
@@ -769,5 +781,10 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkFileDialog" id="folder_dialog">
+    <property name="accept-label" translatable="yes">Change folder</property>
+    <property name="modal">true</property>
+    <property name="title" translatable="yes">Select new mpv config folder</property>
   </object>
 </interface>

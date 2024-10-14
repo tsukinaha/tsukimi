@@ -52,14 +52,7 @@ fn locale_dir() -> &'static str {
 }
 
 fn main() -> glib::ExitCode {
-    let args = Args::parse();
-    args.init_tracing_subscriber();
-    args.init_gsk_renderer();
-
-    // TODO: set this in args
-    std::panic::set_hook(Box::new(|p| {
-        tracing::error!("{p}");
-    }));
+    Args::parse().init();
 
     // Initialize gettext
     #[cfg(any(target_os = "linux", target_os = "windows"))]

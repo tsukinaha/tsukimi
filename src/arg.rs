@@ -25,7 +25,7 @@ impl Args {
     /// ## Panics
     ///
     /// Panics if the log file cannot be opened.
-    pub fn init_tracing_subscriber(&self) {
+    fn init_tracing_subscriber(&self) {
         let builder = tracing_subscriber::fmt().with_timer(ChronoLocal::rfc_3339());
 
         let builder = match self.log_level.as_deref() {
@@ -47,9 +47,18 @@ impl Args {
     }
 
     /// Set the GSK renderer environment variable
-    pub fn init_gsk_renderer(&self) {
+    fn init_gsk_renderer(&self) {
         if let Some(renderer) = self.gsk_renderer.as_deref() {
             std::env::set_var("GSK_RENDERER", renderer);
         }
+    }
+
+    pub fn init(&self) {
+        self.init_tracing_subscriber();
+        self.init_gsk_renderer();
+
+        std::panic::set_hook(Box::new(|p| {
+            tracing::error!("{p}");
+        }));
     }
 }

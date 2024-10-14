@@ -713,7 +713,7 @@ impl EmbyClient {
             BackType::Back => "Sessions/Playing/Progress".to_string(),
         };
         let params = [("reqformat", "json")];
-        let body = json!({"MaxStreamingBitrate": 400000000u64,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id});
+        let body = json!({"VolumeLevel":100,"NowPlayingQueue":[],"IsMuted":false,"IsPaused":false,"MaxStreamingBitrate":2147483647,"RepeatMode":"RepeatNone","PlaybackStartTimeTicks":back.start_tick,"SubtitleOffset":0,"PlaybackRate":1,"PositionTicks":back.tick,"SubtitleStreamIndex":0,"AudioStreamIndex":1,"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"PlaylistIndex":0,"PlaylistLength":1,"CanSeek":true,"ItemId":back.id});
         self.post(&path, &params, body).await?;
         Ok(())
     }

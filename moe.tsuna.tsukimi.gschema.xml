@@ -188,6 +188,10 @@
       <summary>MPV subtitle font</summary>
       <default>""</default>
     </key>
+    <key name="mpv-config-path" type="s">
+      <summary>MPV config path</summary>
+      <default>"None"</default>
+    </key>
     <key type="s" name="video-version-descriptors">
       <summary>List of the video version preferences</summary>
       <description>[(descriptor, is_regex, weight)]</description>

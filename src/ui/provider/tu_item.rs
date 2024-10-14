@@ -348,6 +348,7 @@ impl TuItem {
                             id: item.id(),
                             playsessionid: playback.play_session_id,
                             mediasourceid: playback.media_sources[0].id.clone(),
+                            start_tick: item.playback_position_ticks(),
                         };
                         window.play_media(
                             url.to_string(),

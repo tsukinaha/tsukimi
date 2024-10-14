@@ -1063,7 +1063,8 @@ impl ItemPage {
             id: item.id(),
             playsessionid: self.play_session_id(),
             mediasourceid: media_source_id.to_string(),
-            tick: 0,
+            tick: item.playback_position_ticks(),
+            start_tick: item.playback_position_ticks(),
         };
 
         let sub_url = if let Some(sub_object) = sub_dropdown
