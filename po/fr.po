@@ -8,11 +8,11 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-11 20:08+0800\n"
-"PO-Revision-Date: 2024-10-11 12:00+0000\n"
-"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github."
-"com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
-">\n"
+"PO-Revision-Date: 2024-10-12 14:56+0000\n"
+"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>"
+"\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -740,10 +740,8 @@ msgid "Video Deinterlace"
 msgstr "Désentrelacer"
 
 #: resources/ui/mpv_control_sidebar.ui:687
-#, fuzzy
-#| msgid "Video Filters"
 msgid "Video Upscale Filter"
-msgstr "Filtres vidéo"
+msgstr "Filtre d'agrandissement vidéo"
 
 #: resources/ui/mpv_control_sidebar.ui:710
 msgid "Action after video ends"
