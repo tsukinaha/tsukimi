@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-14 14:17+0800\n"
+"POT-Creation-Date: 2024-10-15 12:18+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -316,7 +316,7 @@ msgstr ""
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:504
+#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:523
 msgid "Play"
 msgstr ""
 
@@ -685,7 +685,7 @@ msgid "Crop"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:506
-msgid "Video Filters"
+msgid "Video color grading"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:519
@@ -733,7 +733,7 @@ msgid "Video Deinterlace"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:687
-msgid "Video Upscale Filter"
+msgid "Video Upscale"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:710
@@ -1177,11 +1177,11 @@ msgstr ""
 msgid "Error loading image"
 msgstr ""
 
-#: src/ui/widgets/item.rs:500 src/ui/widgets/list.rs:121
+#: src/ui/widgets/item.rs:519 src/ui/widgets/list.rs:121
 msgid "Resume"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1050
+#: src/ui/widgets/item.rs:1069
 msgid "No video source found"
 msgstr ""
 
