@@ -435,12 +435,12 @@
             <property name="description" translatable="yes">May cause crashes, Requires restart</property>
             <child>
               <object class="AdwSwitchRow" id="config_switchrow">
-                <property name="title">Enable external config</property>
+                <property name="title" translatable="yes">Enable external config</property>
               </object>
             </child>
             <child>
               <object class="AdwActionRow">
-                <property name="title">Config dir</property>
+                <property name="title" translatable="yes">Config dir</property>
                 <child type="suffix">
                   <object class="GtkButton" id="config_dir_button">
                     <property name="valign">center</property>
