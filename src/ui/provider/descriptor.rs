@@ -28,12 +28,15 @@ impl DescriptorType {
             _ => panic!("Invalid DescriptorType"),
         }
     }
+}
 
-    pub fn to_string(&self) -> String {
-        match self {
-            Self::String => "String".to_string(),
-            Self::Regex => "Regex".to_string(),
-        }
+impl std::fmt::Display for DescriptorType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let str = match self {
+            DescriptorType::String => "String".to_string(),
+            DescriptorType::Regex => "Regex".to_string(),
+        };
+        write!(f, "{}", str)
     }
 }
 

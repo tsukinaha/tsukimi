@@ -1,0 +1,11 @@
+language: rust
+dist: bionic
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install mpv libmpv-dev libmpv1
+
+script:
+  - RUST_BACKTRACE=1 cargo build --release
+  - RUST_BACKTRACE=1 cargo test
+  - RUST_BACKTRACE=1 cargo doc

@@ -202,7 +202,7 @@ impl TuListItem {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
                 imp.overlay.set_size_request(250, 141);
-                self.set_picture();
+                self.set_apicture();
             }
             "Series" => {
                 let year = if item.production_year() != 0 {
@@ -347,6 +347,14 @@ impl TuListItem {
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
         let picture_loader = PictureLoader::new(&id, image_type, tag);
+        imp.overlay.set_child(Some(&picture_loader));
+    }
+
+    pub fn set_apicture(&self) {
+        let imp = self.imp();
+        let item = self.item();
+        let (image_type, tag, id) = self.get_image_type_and_tag(&item);
+        let picture_loader = PictureLoader::new_animated(&id, image_type, tag);
         imp.overlay.set_child(Some(&picture_loader));
     }
 

@@ -6,17 +6,19 @@ on:
       - "main"
     paths-ignore:
       - "docs/**"
-      - ".gitignore"
+      - "**/.gitignore"
+      - "**/.dockerignore"
       - LICENSE
-      - "*.md"
+      - "**/*.md"
   pull_request:
     branches:
       - "main"
     paths-ignore:
       - "docs/**"
-      - ".gitignore"
+      - "**/.gitignore"
+      - "**/.dockerignore"
       - LICENSE
-      - "*.md"
+      - "**/*.md"
 
 env:
   CARGO_TERM_COLOR: always
@@ -29,16 +31,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - arch: x86_64-windows-gnu
+          # - arch: x86_64-windows-gnu
+          #   os: windows-latest
+          #   target: x86_64-pc-windows-gnu
+          #   msystem: mingw64
+          #   env: x86_64
+          - arch: ucrt64-x86_64-windows-gnu
             os: windows-latest
             target: x86_64-pc-windows-gnu
-            artifact: tsukimi.exe
-            msystem: mingw64
-            env: x86_64
-          - arch: ucrt-x86_64-windows-gnu
-            os: windows-latest
-            target: x86_64-pc-windows-gnu
-            artifact: tsukimi.exe
             msystem: ucrt64
             env: ucrt-x86_64
 
@@ -84,7 +84,7 @@ jobs:
         run: |
           mkdir artifact && cd artifact
           mkdir tsukimi-x86_64-windows-gnu/ && cd tsukimi-x86_64-windows-gnu/ && mkdir bin/ && mkdir share/ && mkdir lib/
-          cp $GITHUB_WORKSPACE/target/release/${{ matrix.artifact }} bin/
+          cp $GITHUB_WORKSPACE/target/release/tsukimi.exe bin/
           cp /${{ matrix.msystem }}/bin/gdbus.exe bin/
 
           cp -r /${{ matrix.msystem }}/lib/gdk-pixbuf-2.0 lib/
@@ -126,7 +126,7 @@ jobs:
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: powershell
         run: |
-          cp tsukimi_installer.nsi artifact
+          cp ./installer/* artifact
           makensis /V4 artifact/tsukimi_installer.nsi
           rm artifact/tsukimi_installer.nsi
 

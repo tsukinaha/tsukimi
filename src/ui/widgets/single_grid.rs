@@ -101,6 +101,7 @@ pub mod imp {
         ProductionYear,
         DatePlayed,
         Runtime,
+        UpdatedAt,
     }
 
     impl From<i32> for SortBy {
@@ -116,6 +117,7 @@ pub mod imp {
                 7 => Self::ProductionYear,
                 8 => Self::DatePlayed,
                 9 => Self::Runtime,
+                10 => Self::UpdatedAt,
                 _ => Self::Title,
             }
         }
@@ -134,6 +136,7 @@ pub mod imp {
                 SortBy::ProductionYear => 7,
                 SortBy::DatePlayed => 8,
                 SortBy::Runtime => 9,
+                SortBy::UpdatedAt => 10,
             }
         }
     }
@@ -157,6 +160,11 @@ pub mod imp {
         pub stack: TemplateChild<gtk::Stack>,
         #[template_child]
         pub scrolled: TemplateChild<TuViewScrolled>,
+
+        #[template_child]
+        pub ascending: TemplateChild<gtk::ToggleButton>,
+        #[template_child]
+        pub descending: TemplateChild<gtk::ToggleButton>,
 
         #[property(get, set, builder(ListType::default()))]
         pub list_type: Cell<ListType>,
@@ -206,12 +214,9 @@ pub mod imp {
     #[glib::derived_properties]
     impl ObjectImpl for SingleGrid {
         fn constructed(&self) {
+            self.ascending.set_active(SETTINGS.list_sort_order() == 1);
+            self.dropdown.set_selected(SETTINGS.list_sort_by() as u32);
             self.parent_constructed();
-            self.set_sort_by_and_order(
-                SortBy::from(SETTINGS.list_sort_by()),
-                SortOrder::from(SETTINGS.list_sort_order()),
-            );
-            self.obj().handle_type();
         }
 
         fn signals() -> &'static [Signal] {
@@ -353,6 +358,7 @@ impl SingleGrid {
             7 => "ProductionYear,SortName",
             8 => "DatePlayed,SortName",
             9 => "Runtime,SortName",
+            10 => "DateLastContentAdded,SortName",
             _ => "SortName",
         }
     }

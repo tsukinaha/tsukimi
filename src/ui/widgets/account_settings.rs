@@ -7,7 +7,7 @@ use crate::{
         models::{emby_cache_path, SETTINGS},
         provider::descriptor::{Descriptor, DescriptorType},
     },
-    utils::spawn_tokio,
+    utils::{spawn, spawn_tokio},
 };
 use adw::prelude::*;
 use adw::subclass::prelude::*;
@@ -39,8 +39,6 @@ mod imp {
         #[template_child]
         pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
-        pub proxyentry: TemplateChild<adw::EntryRow>,
-        #[template_child]
         pub backgroundblurspinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub backgroundblurcontrol: TemplateChild<adw::SwitchRow>,
@@ -51,42 +49,17 @@ mod imp {
         #[template_child]
         pub font: TemplateChild<gtk::FontDialogButton>,
         #[template_child]
-        pub dailyrecommendcontrol: TemplateChild<adw::SwitchRow>,
-        #[template_child]
         pub color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
         pub fg_color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
-        pub seek_forward_spinrow: TemplateChild<adw::SpinRow>,
-        #[template_child]
-        pub seek_backward_spinrow: TemplateChild<adw::SpinRow>,
-        #[template_child]
         pub config_switchrow: TemplateChild<adw::SwitchRow>,
-
-        #[template_child]
-        pub buffer_switchrow: TemplateChild<adw::SwitchRow>,
-
-        #[template_child]
-        pub cachesize_spinrow: TemplateChild<adw::SpinRow>,
-
-        #[template_child]
-        pub stereo_switchrow: TemplateChild<adw::SwitchRow>,
-
-        #[template_child]
-        pub volume_spinrow: TemplateChild<adw::SpinRow>,
-
-        #[template_child]
-        pub mpv_sub_font_button: TemplateChild<gtk::FontDialogButton>,
-        #[template_child]
-        pub mpv_sub_size_spinrow: TemplateChild<adw::SpinRow>,
 
         #[template_child]
         pub preferred_audio_language_comborow: TemplateChild<adw::ComboRow>,
         #[template_child]
         pub preferred_subtitle_language_comborow: TemplateChild<adw::ComboRow>,
 
-        #[template_child]
-        pub video_subpage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub preferred_version_subpage: TemplateChild<adw::NavigationPage>,
         #[template_child]
@@ -121,6 +94,15 @@ mod imp {
         #[template_child]
         pub edit_descriptor_dialog: TemplateChild<adw::Dialog>,
 
+        #[template_child]
+        pub avatar: TemplateChild<adw::Avatar>,
+
+        #[template_child]
+        pub folder_dialog: TemplateChild<gtk::FileDialog>,
+
+        #[template_child]
+        pub folder_button_content: TemplateChild<adw::ButtonContent>,
+
         pub now_editing_descriptor: RefCell<Option<Descriptor>>,
 
         pub descriptor_grab_x: Cell<f64>,
@@ -136,12 +118,6 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
             klass.bind_template_instance_callbacks();
-            klass.install_action("win.proxy", None, move |set, _action, _parameter| {
-                set.proxy();
-            });
-            klass.install_action("win.proxyclear", None, move |set, _action, _parameter| {
-                set.proxyclear();
-            });
             klass.install_action("setting.clear", None, move |set, _action, _parameter| {
                 set.cacheclear();
             });
@@ -180,17 +156,6 @@ mod imp {
                     set.edit_preferred_version();
                 },
             );
-            klass.install_action(
-                "setting.subfontclear",
-                None,
-                move |set, _action, _parameter| {
-                    SETTINGS.set_mpv_subtitle_font("".to_string()).unwrap();
-                    set.imp()
-                        .mpv_sub_font_button
-                        .set_font_desc(&gtk::pango::FontDescription::from_string(""));
-                    toast!(set, gettext("Font Cleared"));
-                },
-            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -203,7 +168,6 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             obj.set_sidebar();
-            obj.set_proxy();
             obj.set_picopactiy();
             obj.set_pic();
             obj.set_fontsize();
@@ -314,22 +278,6 @@ impl AccountSettings {
             settings.set_property("gtk-xft-dpi", control.value() as i32 * 1024);
             SETTINGS.set_font_size(control.value() as i32).unwrap();
         });
-    }
-
-    pub fn proxy(&self) {
-        let imp = self.imp();
-        SETTINGS.set_proxy(&imp.proxyentry.text()).unwrap();
-    }
-
-    pub fn set_proxy(&self) {
-        let imp = self.imp();
-        imp.proxyentry.set_text(&SETTINGS.proxy());
-    }
-
-    pub fn proxyclear(&self) {
-        let imp = self.imp();
-        SETTINGS.set_proxy("").unwrap();
-        imp.proxyentry.set_text("");
     }
 
     pub fn cacheclear(&self) {
@@ -446,51 +394,7 @@ impl AccountSettings {
             .bind("pic-blur", &imp.backgroundblurspinrow.get(), "value")
             .build();
         SETTINGS
-            .bind(
-                "is-daily-recommend",
-                &imp.dailyrecommendcontrol.get(),
-                "active",
-            )
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-seek-backward-step",
-                &imp.seek_backward_spinrow.get(),
-                "value",
-            )
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-seek-forward-step",
-                &imp.seek_forward_spinrow.get(),
-                "value",
-            )
-            .build();
-        SETTINGS
             .bind("mpv-config", &imp.config_switchrow.get(), "active")
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-show-buffer-speed",
-                &imp.buffer_switchrow.get(),
-                "active",
-            )
-            .build();
-        SETTINGS
-            .bind("mpv-force-stereo", &imp.stereo_switchrow.get(), "active")
-            .build();
-        SETTINGS
-            .bind("mpv-default-volume", &imp.volume_spinrow.get(), "value")
-            .build();
-        SETTINGS
-            .bind("mpv-cache-size", &imp.cachesize_spinrow.get(), "value")
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-subtitle-size",
-                &imp.mpv_sub_size_spinrow.get(),
-                "value",
-            )
             .build();
         SETTINGS
             .bind(
@@ -514,30 +418,13 @@ impl AccountSettings {
             )
             .build();
         SETTINGS
+            .bind("mpv-config-path", &imp.folder_button_content.get(), "label")
+            .build();
+        SETTINGS
             .bind("threads", &imp.threadspinrow.get(), "value")
             .build();
 
-        imp.mpv_sub_font_button
-            .set_font_desc(&gtk::pango::FontDescription::from_string(
-                &SETTINGS.mpv_subtitle_font(),
-            ));
-
         let action_group = gio::SimpleActionGroup::new();
-
-        let action_video_end = gio::ActionEntry::builder("video-end")
-            .parameter_type(Some(&i32::static_variant_type()))
-            .state(SETTINGS.mpv_action_after_video_end().to_variant())
-            .activate(move |_, action, parameter| {
-                let parameter = parameter
-                    .expect("Could not get parameter.")
-                    .get::<i32>()
-                    .expect("The variant needs to be of type `i32`.");
-
-                SETTINGS.set_mpv_action_after_video_end(parameter).unwrap();
-
-                action.set_state(&parameter.to_variant());
-            })
-            .build();
 
         let action_vo = gio::ActionEntry::builder("video-output")
             .parameter_type(Some(&i32::static_variant_type()))
@@ -554,29 +441,30 @@ impl AccountSettings {
             })
             .build();
 
-        let action_hwdec = gio::ActionEntry::builder("hwdec")
-            .parameter_type(Some(&i32::static_variant_type()))
-            .state(SETTINGS.mpv_hwdec().to_variant())
-            .activate(move |_, action, parameter| {
-                let parameter = parameter
-                    .expect("Could not get parameter.")
-                    .get::<i32>()
-                    .expect("The variant needs to be of type `i32`.");
-
-                SETTINGS.set_mpv_hwdec(parameter).unwrap();
-
-                action.set_state(&parameter.to_variant());
-            })
-            .build();
-
-        action_group.add_action_entries([action_video_end, action_vo, action_hwdec]);
+        action_group.add_action_entries([action_vo]);
         self.insert_action_group("setting", Some(&action_group));
-    }
 
-    #[template_callback]
-    fn subpage_activated_cb(&self) {
-        let subpage = self.imp().video_subpage.get();
-        self.push_subpage(&subpage);
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                let avatar =
+                    match spawn_tokio(async move { EMBY_CLIENT.get_user_avatar().await }).await {
+                        Ok(avatar) => avatar,
+                        Err(e) => {
+                            toast!(obj, e.to_string());
+                            return;
+                        }
+                    };
+
+                let Some(texture) = gtk::gdk::Texture::from_file(&gio::File::for_path(avatar)).ok()
+                else {
+                    return;
+                };
+
+                obj.imp().avatar.set_custom_image(Some(&texture));
+            }
+        ));
     }
 
     #[template_callback]
@@ -606,6 +494,23 @@ impl AccountSettings {
         SETTINGS
             .set_mpv_subtitle_font(gtk::pango::FontDescription::to_string(&font_desc))
             .unwrap();
+    }
+
+    #[template_callback]
+    async fn dir_cb(&self, _button: gtk::Button) {
+        if let Ok(file) = self
+            .imp()
+            .folder_dialog
+            .select_folder_future(Some(self))
+            .await
+        {
+            self.imp().folder_button_content.set_label(
+                &file
+                    .path()
+                    .map(|p| p.to_string_lossy().into_owned())
+                    .unwrap_or("None".into()),
+            );
+        }
     }
 
     #[template_callback]
@@ -644,8 +549,7 @@ impl AccountSettings {
 
     pub fn add_preferred_version(&self) {
         let imp = self.imp();
-        let descriptor;
-        match imp.descriptor_type_comborow.selected() {
+        let descriptor = match imp.descriptor_type_comborow.selected() {
             0 => {
                 let descriptor_content = imp.descriptor_entryrow.text();
                 if descriptor_content.is_empty() {
@@ -653,8 +557,7 @@ impl AccountSettings {
                     return;
                 }
 
-                descriptor =
-                    Descriptor::new(descriptor_content.to_string(), DescriptorType::String);
+                Descriptor::new(descriptor_content.to_string(), DescriptorType::String)
             }
             1 => {
                 let descriptor_content = imp.descriptor_entryrow.text();
@@ -667,10 +570,10 @@ impl AccountSettings {
                     Err(e) => toast!(self, &format!("{}: {}", gettext("Invalid regex"), e)),
                 }
 
-                descriptor = Descriptor::new(descriptor_content.to_string(), DescriptorType::Regex);
+                Descriptor::new(descriptor_content.to_string(), DescriptorType::Regex)
             }
             _ => unreachable!(),
-        }
+        };
 
         SETTINGS
             .add_preferred_version_descriptor(descriptor)
@@ -741,7 +644,7 @@ impl AccountSettings {
 
         for (index, descriptor) in descriptors.iter().enumerate() {
             let row = adw::ActionRow::builder()
-                .subtitle(&descriptor.type_.to_string())
+                .subtitle(descriptor.type_.to_string())
                 .title(&descriptor.content)
                 .activatable(true)
                 .build();

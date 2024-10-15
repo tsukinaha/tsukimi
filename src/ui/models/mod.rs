@@ -20,3 +20,11 @@ pub fn emby_cache_path() -> std::path::PathBuf {
     }
     path
 }
+
+pub fn comments_path() -> std::path::PathBuf {
+    let path = CACHE_PATH.join("comments");
+    if !path.exists() {
+        std::fs::create_dir_all(&path).expect("Failed to create directory");
+    }
+    path
+}

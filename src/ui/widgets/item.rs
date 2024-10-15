@@ -305,6 +305,48 @@ impl ItemPage {
         }
     }
 
+    pub async fn update_intro(&self) {
+        let item = self.item();
+
+        if item.item_type() == "Series" || item.item_type() == "Episode" {
+            let series_id = item.series_id().unwrap_or(item.id());
+
+            spawn(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[strong]
+                series_id,
+                async move {
+                    let Some(intro) = obj.set_shows_next_up(&series_id).await else {
+                        return;
+                    };
+                    obj.set_intro::<false>(&intro).await;
+                }
+            ));
+        }
+
+        if item.item_type() == "Video" || item.item_type() == "Movie" {
+            spawn(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[weak]
+                item,
+                async move {
+                    let id = item.id();
+                    match spawn_tokio(async move { EMBY_CLIENT.get_item_info(&id).await }).await {
+                        Ok(item) => {
+                            obj.set_intro::<true>(&TuItem::from_simple(&item, None)).await;
+                        }
+                        Err(e) => {
+                            toast!(obj, e.to_user_facing());
+                        }
+                    }
+                }
+            ));
+        }
+        
+    }
+
     async fn setup_item(&self, id: &str) {
         let id = id.to_string();
         let id_clone = id.clone();
@@ -553,9 +595,13 @@ impl ItemPage {
         ));
 
         for media in &playbackinfo.media_sources {
+            let line2 = media
+                .bit_rate
+                .map(|bit_rate| format!("{:.2} Kbps", bit_rate as f64 / 1_000.0))
+                .unwrap_or_default();
             let Ok(dl) = DropdownListBuilder::default()
                 .line1(Some(media.name.clone()))
-                .line2(Some(media.container.clone()))
+                .line2(Some(line2))
                 .direct_url(media.direct_stream_url.clone())
                 .id(Some(media.id.clone()))
                 .build()
@@ -604,13 +650,12 @@ impl ItemPage {
         }
     }
 
-    pub async fn add_backdrops(&self, image_tags: Vec<String>) {
+    pub async fn add_backdrops(&self, image_tags: Vec<String>, id: &str) {
         let imp = self.imp();
-        let id = self.item().id();
         let tags = image_tags.len();
         let carousel = imp.carousel.imp().carousel.get();
         for tag_num in 1..tags {
-            let path = get_image_with_cache(&id, "Backdrop", Some(tag_num as u8))
+            let path = get_image_with_cache(id, "Backdrop", Some(tag_num as u8))
                 .await
                 .unwrap();
             let file = gtk::gio::File::for_path(&path);
@@ -621,7 +666,7 @@ impl ItemPage {
                 .file(&file)
                 .build();
             carousel.append(&picture);
-            carousel.set_allow_scroll_wheel(true);
+            carousel.set_allow_scroll_wheel(false);
         }
 
         if carousel.n_pages() == 1 {
@@ -761,7 +806,12 @@ impl ItemPage {
                     obj.set_flowbuttons(genres, "Genres");
                 }
                 if let Some(image_tags) = item.backdrop_image_tags {
-                    obj.add_backdrops(image_tags).await;
+                    obj.add_backdrops(image_tags, &item.id).await;
+                }
+                if let Some(part_count) = item.part_count {
+                    if part_count > 1 {
+                        obj.sets("Additional Parts", &item.id).await;
+                    }
                 }
                 if let Some(ref user_data) = item.user_data {
                     let imp = obj.imp();
@@ -794,8 +844,8 @@ impl ItemPage {
             let info = format!(
                 "{}\n{} {} {}\n{}",
                 mediasource.path.unwrap_or_default(),
-                mediasource.container.to_uppercase(),
-                bytefmt::format(mediasource.size),
+                mediasource.container.unwrap_or_default().to_uppercase(),
+                bytefmt::format(mediasource.size.unwrap_or_default()),
                 dt(date_created),
                 mediasource.name
             );
@@ -922,7 +972,6 @@ impl ItemPage {
     pub async fn set_lists(&self, id: &str) {
         self.sets("Recommend", id).await;
         self.sets("Included In", id).await;
-        self.sets("Additional Parts", id).await;
     }
 
     pub async fn sets(&self, types: &str, id: &str) {
@@ -1033,7 +1082,8 @@ impl ItemPage {
             id: item.id(),
             playsessionid: self.play_session_id(),
             mediasourceid: media_source_id.to_string(),
-            tick: 0,
+            tick: item.playback_position_ticks(),
+            start_tick: item.playback_position_ticks(),
         };
 
         let sub_url = if let Some(sub_object) = sub_dropdown

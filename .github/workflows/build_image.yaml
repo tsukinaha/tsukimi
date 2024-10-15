@@ -1,0 +1,112 @@
+name: Build and Push ubuntu-rust-gtk4
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "docker"
+  # schedule:
+  #   - cron: "15 8 1 */1 *"
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: amd64
+            arch: amd64
+            codename: oracular
+            gtk: 416
+          - platform: arm64
+            arch: arm64v8
+            codename: oracular
+            gtk: 416
+          - platform: amd64
+            arch: amd64
+            codename: noble
+            gtk: 414
+          - platform: arm64
+            arch: arm64v8
+            codename: noble
+            gtk: 414
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Github Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Metadata
+        run: |
+          echo "OWNER=${GITHUB_REPOSITORY_OWNER@L}" >> ${GITHUB_ENV}
+
+      - name: Build and push ${{ matrix.platform }}
+        uses: docker/build-push-action@v6
+        with:
+          context: docker
+          platforms: linux/${{ matrix.platform }}
+          push: true
+          tags: |
+            ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk${{ matrix.gtk }}-${{ matrix.platform }}
+          build-args: |
+            ARCH=${{ matrix.arch }}
+            CODENAME=${{ matrix.codename }}
+          provenance: false
+
+  merge:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Login to Github Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create multi-arch manifest for gtk4.16/latest
+        run: |
+          docker manifest create ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:latest \
+            ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk416-amd64 \
+            ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk416-arm64
+          docker manifest annotate ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:latest \
+            ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk416-amd64 --arch amd64
+          docker manifest annotate ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:latest \
+            ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk416-arm64 --arch arm64
+          docker manifest push ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:latest
+
+      - name: Create multi-arch manifest for gtk4.14
+        run: |
+          docker manifest create ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk414-latest \
+            ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk414-amd64 \
+            ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk414-arm64
+          docker manifest annotate ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk414-latest \
+            ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk414-amd64 --arch amd64
+          docker manifest annotate ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk414-latest \
+            ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk414-arm64 --arch arm64
+          docker manifest push ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk414-latest
+
+      - name: Check push
+        run: |
+          docker buildx imagetools inspect ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:latest
+          docker buildx imagetools inspect ghcr.io/${{ env.OWNER }}/ubuntu-rust-gtk4:gtk414-latest

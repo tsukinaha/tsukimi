@@ -3,11 +3,16 @@
     windows_subsystem = "windows"
 )]
 
+use arg::Args;
+use clap::Parser;
 use gettextrs::*;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 use once_cell::sync::OnceCell;
+use std::env;
+use tracing::info;
 
+mod arg;
 mod client;
 mod config;
 mod gstl;
@@ -47,6 +52,8 @@ fn locale_dir() -> &'static str {
 }
 
 fn main() -> glib::ExitCode {
+    Args::parse().init();
+
     // Initialize gettext
     #[cfg(any(target_os = "linux", target_os = "windows"))]
     {
@@ -64,39 +71,39 @@ fn main() -> glib::ExitCode {
         // redirect cache dir to %LOCALAPPDATA%
         let config_local_dir = dirs::config_local_dir().expect("Failed to get %LOCALAPPDATA%");
         std::env::set_var("XDG_CACHE_HOME", config_local_dir);
-
-        // Set gsk_renderer to gl to avoid memory leak and other issues
-        std::env::set_var("GSK_RENDERER", "gl");
     }
 
-    // Initialize the logger
-    tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::INFO)
-        .init();
+    info!(
+        "Application Version: {}, Platform: {} {}, CPU Architecture: {}",
+        config::APP_VERSION,
+        env::consts::OS,
+        env::consts::FAMILY,
+        env::consts::ARCH
+    );
 
     // Register and include resources
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");
 
     // Initialize the GTK application
-    adw::init().expect("Failed to initialize Adw");
+    gtk::glib::set_application_name("Tsukimi");
+
+    // Create a new application
+    let app = adw::Application::builder()
+        .application_id(APP_ID)
+        .resource_base_path("/moe/tsukimi")
+        .build();
 
     // Make Application detect Windows system dark mode
     #[cfg(target_os = "windows")]
     {
         use crate::config::theme::is_system_dark_mode_enabled;
+        use adw::prelude::AdwApplicationExt;
 
         if is_system_dark_mode_enabled() {
-            let style_manager = adw::StyleManager::default();
-            style_manager.set_color_scheme(adw::ColorScheme::PreferDark);
+            app.style_manager()
+                .set_color_scheme(adw::ColorScheme::PreferDark);
         }
     }
-
-    // Create a new application
-    let app = adw::Application::builder().application_id(APP_ID).build();
-
-    // load the icon theme
-    let theme = gtk::IconTheme::for_display(&gtk::gdk::Display::default().unwrap());
-    theme.add_resource_path("/moe/tsukimi/icons");
 
     // Load the CSS from the resource file
     app.connect_startup(|_| ui::load_css());
@@ -104,7 +111,6 @@ fn main() -> glib::ExitCode {
     app.connect_activate(ui::build_ui);
 
     app.set_accels_for_action("win.about", &["<Ctrl>N"]);
-
     // Run the application
-    app.run()
+    app.run_with_args::<&str>(&[])
 }

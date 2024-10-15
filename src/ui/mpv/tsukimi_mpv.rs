@@ -4,13 +4,13 @@ use libmpv2::{
     mpv_node::MpvNode,
     GetData, SetData,
 };
-use tokio::time;
-use tracing::{info, warn};
+
+use tracing::{error, info, warn};
 
 use std::{
     cell::RefCell,
     collections::HashMap,
-    sync::{atomic::AtomicU32, Arc},
+    sync::{atomic::AtomicU32, Arc, Mutex},
 };
 
 use libmpv2::{
@@ -27,7 +27,7 @@ pub struct MpvTrack {
 }
 
 pub struct TsukimiMPV {
-    pub mpv: RefCell<Mpv>,
+    pub mpv: Arc<Mutex<Mpv>>,
     pub ctx: RefCell<Option<RenderContext>>,
     pub event_thread_alive: Arc<AtomicU32>,
 }
@@ -76,20 +76,50 @@ impl Default for TsukimiMPV {
         gl::load_with(|name| epoxy::get_proc_addr(name) as *const _);
 
         let mpv = Mpv::with_initializer(|init| {
-            init.set_property("osc", false)?;
-            init.set_property("config", SETTINGS.mpv_config())?;
+            if SETTINGS.mpv_config() {
+                init.set_property("config", true)?;
+                init.set_property("config-dir", SETTINGS.mpv_config_dir())?;
+            }
             init.set_property("input-vo-keyboard", true)?;
             init.set_property("input-default-bindings", true)?;
             init.set_property("user-agent", "Tsukimi")?;
             init.set_property("video-timing-offset", 0)?;
             init.set_property("video-sync", "audio")?;
-            init.set_property("vo", "libmpv")?;
+            match SETTINGS.mpv_video_output() {
+                0 => {
+                    init.set_property("vo", "libmpv")?;
+                    init.set_property("osc", false)?;
+                }
+                1 => init.set_property("vo", "gpu-next")?,
+                2 => init.set_property("vo", "dmabuf-wayland")?,
+                _ => unreachable!(),
+            }
+            init.set_property(
+                "demuxer-max-bytes",
+                format!("{}MiB", SETTINGS.mpv_cache_size()),
+            )?;
+            init.set_property("cache-secs", (SETTINGS.mpv_cache_time()) as i64)?;
+            init.set_property("volume", SETTINGS.mpv_default_volume() as i64)?;
+            init.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64)?;
+            init.set_property("sub-font", SETTINGS.mpv_subtitle_font())?;
+            init.set_property("sub-scale", SETTINGS.mpv_subtitle_scale())?;
+            init.set_property("hwdec", match_hwdec_interop(SETTINGS.mpv_hwdec()))?;
+            init.set_property("scale", match_video_upscale(SETTINGS.mpv_video_scale()))?;
+            if SETTINGS.mpv_action_after_video_end() == 1 {
+                init.set_property("loop", "inf")?;
+            } else {
+                init.set_property("loop", "no")?;
+            }
+            init.set_property(
+                "audio-channels",
+                match_audio_channels(SETTINGS.mpv_audio_channel()),
+            )?;
             Ok(())
         })
         .expect("Failed to create mpv instance");
 
         Self {
-            mpv: RefCell::new(mpv),
+            mpv: Arc::new(Mutex::new(mpv)),
             ctx: RefCell::new(None),
             event_thread_alive: Arc::new(AtomicU32::new(PAUSED)),
         }
@@ -135,6 +165,8 @@ pub enum ListenEvent {
     Volume(i64),
     Speed(f64),
     PausedForCache(bool),
+    Shutdown,
+    DemuxerCacheTime(i64),
 }
 
 pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
@@ -145,7 +177,9 @@ pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
 
 impl TsukimiMPV {
     pub fn connect_render_update(&self, gl_context: GLContext) {
-        let mut mpv = self.mpv.borrow_mut();
+        let Some(mut mpv) = self.mpv() else {
+            return;
+        };
         let mut ctx = RenderContext::new(
             unsafe { mpv.ctx.as_mut() },
             vec![
@@ -253,7 +287,9 @@ impl TsukimiMPV {
     where
         V: SetData,
     {
-        let mpv = self.mpv.borrow();
+        let Some(mpv) = self.mpv() else {
+            return;
+        };
         mpv.set_property(property, value)
             .map_err(|e| warn!("MPV set property Error: {}, Property: {}", e, property))
             .ok();
@@ -263,15 +299,24 @@ impl TsukimiMPV {
     where
         V: GetData,
     {
-        let mpv = self.mpv.borrow();
+        let mpv = self.mpv()?;
         mpv.get_property(property).ok()
     }
 
     fn command(&self, cmd: &str, args: &[&str]) {
-        let mpv = self.mpv.borrow();
-        mpv.command(cmd, args)
-            .map_err(|e| warn!("MPV command Error: {}, Command: {}", e, cmd))
-            .ok();
+        let mpv = Arc::clone(&self.mpv);
+        let cmd = cmd.to_string();
+        let args = args.iter().map(|&arg| arg.to_string()).collect::<Vec<_>>();
+        spawn_tokio_without_await(async move {
+            let Some(mpv) = mpv.lock().ok() else {
+                error!("Failed to lock MPV for command: {}", cmd);
+                return;
+            };
+            let args_ref: Vec<&str> = args.iter().map(|arg| arg.as_str()).collect();
+            mpv.command(&cmd, &args_ref)
+                .map_err(|e| warn!("MPV command Error: {}, Command: {}", e, cmd))
+                .ok();
+        });
     }
 
     pub fn get_track_id(&self, type_: &str) -> i64 {
@@ -281,8 +326,20 @@ impl TsukimiMPV {
         track.parse().unwrap_or(0)
     }
 
+    fn mpv(&self) -> Option<std::sync::MutexGuard<Mpv>> {
+        match self.mpv.lock() {
+            Ok(mpv) => Some(mpv),
+            Err(e) => {
+                error!("Failed to lock MPV: {}", e);
+                None
+            }
+        }
+    }
+
     pub fn process_events(&self) {
-        let mpv = self.mpv.borrow_mut();
+        let Some(mpv) = self.mpv() else {
+            return;
+        };
         let mut event_context = EventContext::new(mpv.ctx);
         event_context
             .disable_deprecated_events()
@@ -301,6 +358,9 @@ impl TsukimiMPV {
             .unwrap();
         event_context
             .observe_property("paused-for-cache", libmpv2::Format::Flag, 4)
+            .unwrap();
+        event_context
+            .observe_property("demuxer-cache-time", libmpv2::Format::Int64, 5)
             .unwrap();
         let event_thread_alive = self.event_thread_alive.clone();
         std::thread::Builder::new()
@@ -350,6 +410,13 @@ impl TsukimiMPV {
                                         .send(ListenEvent::PausedForCache(pause));
                                 }
                             }
+                            "demuxer-cache-time" => {
+                                if let PropertyData::Int64(time) = change {
+                                    let _ = MPV_EVENT_CHANNEL
+                                        .tx
+                                        .send(ListenEvent::DemuxerCacheTime(time));
+                                }
+                            }
                             _ => {}
                         },
                         Event::Seek { .. } => {
@@ -364,6 +431,10 @@ impl TsukimiMPV {
                         Event::StartFile => {
                             let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile);
                         }
+                        Event::Shutdown => {
+                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Shutdown);
+                            event_thread_alive.store(PAUSED, std::sync::atomic::Ordering::SeqCst);
+                        }
                         _ => {}
                     },
                     Some(Err(e)) => {
@@ -373,7 +444,6 @@ impl TsukimiMPV {
                     }
                     None => {}
                 };
-                std::thread::sleep(time::Duration::from_millis(50));
             })
             .expect("Failed to spawn mpv event loop");
     }
@@ -472,7 +542,11 @@ fn get_modstr(state: gtk::gdk::ModifierType) -> String {
 
 use gtk::glib::translate::FromGlib;
 
-use crate::{client::error::UserFacingError, ui::models::SETTINGS};
+use crate::{
+    client::error::UserFacingError, ui::models::SETTINGS, utils::spawn_tokio_without_await,
+};
+
+use super::options_matcher::{match_audio_channels, match_hwdec_interop, match_video_upscale};
 
 const KEYSTRING_MAP: &[(&str, &str)] = &[
     ("PGUP", "Page_Up"),

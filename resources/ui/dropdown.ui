@@ -8,7 +8,7 @@
         <property name="spacing">5</property>
         <child>
           <object class="GtkLabel" id="label1">
-            <property name="ellipsize">middle</property>
+            <property name="ellipsize">end</property>
           </object>
         </child>
         <child>

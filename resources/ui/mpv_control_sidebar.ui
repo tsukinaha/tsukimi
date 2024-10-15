@@ -1,0 +1,819 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwNavigationPage" class="MPVControlSidebar">
+    <property name="name">playlist</property>
+    <property name="title" translatable="yes">Advanced Settings</property>
+    <property name="child">
+      <object class="GtkScrolledWindow">
+        <property name="hexpand">true</property>
+        <property name="hscrollbar-policy">never</property>
+        <child>
+          <object class="GtkBox">
+            <property name="margin-start">15</property>
+            <property name="margin-end">15</property>
+            <property name="orientation">1</property>
+            <property name="spacing">18</property>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <property name="title" translatable="yes">Seek Action</property>
+                <child>
+                  <object class="AdwSpinRow">
+                    <property name="title" translatable="yes">Seek Backward</property>
+                    <property name="subtitle" translatable="yes">Unit: Seconds</property>
+                    <child type="prefix">
+                      <object class="GtkImage">
+                        <property name="icon-name">skip-backwards-30-symbolic</property>
+                      </object>
+                    </child>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="seek_backward_adj">
+                        <property name="lower">1</property>
+                        <property name="upper">1000</property>
+                        <property name="value">85</property>
+                        <property name="page-increment">5</property>
+                        <property name="step-increment">5</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwSpinRow">
+                    <property name="title" translatable="yes">Seek Forward</property>
+                    <property name="subtitle" translatable="yes">Unit: Seconds</property>
+                    <child type="prefix">
+                      <object class="GtkImage">
+                        <property name="icon-name">skip-forward-30-symbolic</property>
+                      </object>
+                    </child>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="seek_forward_adj">
+                        <property name="lower">1</property>
+                        <property name="upper">1000</property>
+                        <property name="value">85</property>
+                        <property name="page-increment">5</property>
+                        <property name="step-increment">5</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <property name="title" translatable="yes">Cache</property>
+                <child>
+                  <object class="AdwSwitchRow" id="buffer_switchrow">
+                    <signal name="notify::active" handler="on_buffer_speed" swapped="yes" />
+                    <child type="prefix">
+                      <object class="GtkImage">
+                        <property name="icon-name">speed-svgrepo-com-symbolic</property>
+                      </object>
+                    </child>
+                    <property name="title" translatable="yes">Show Buffer Speed</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwSpinRow">
+                    <property name="title" translatable="yes">Cache Size</property>
+                    <property name="subtitle" translatable="yes">Unit: MB</property>
+                    <signal name="notify::value" handler="on_cache_size" swapped="yes" />
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="cache_size_adj">
+                        <property name="lower">50</property>
+                        <property name="upper">1000</property>
+                        <property name="value">100</property>
+                        <property name="page-increment">50</property>
+                        <property name="step-increment">50</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwSpinRow">
+                    <property name="title" translatable="yes">Cache Time</property>
+                    <property name="subtitle" translatable="yes">Unit: Seconds</property>
+                    <signal name="notify::value" handler="on_cache_time" swapped="yes" />
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="cache_time_adj">
+                        <property name="lower">30</property>
+                        <property name="upper">1000</property>
+                        <property name="value">300</property>
+                        <property name="page-increment">30</property>
+                        <property name="step-increment">30</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <property name="title" translatable="yes">Subtitle</property>
+                <child>
+                  <object class="AdwExpanderRow">
+                    <property name="title" translatable="yes">Subtitle Composing</property>
+                    <child type="suffix">
+                      <object class="GtkToggleButton">
+                        <property name="icon-name">large-brush-symbolic</property>
+                        <property name="valign">3</property>
+                        <signal name="toggled" handler="on_sub_clear" swapped="yes" />
+                        <style>
+                          <class name="flat"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow">
+                        <child type="prefix">
+                          <object class="GtkToggleButton" id="sub_bold_toggle">
+                            <property name="icon-name">text-bold-symbolic</property>
+                            <property name="valign">3</property>
+                            <signal name="toggled" handler="on_sub_bold" swapped="yes" />
+                            <style>
+                              <class name="flat"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child type="prefix">
+                          <object class="GtkToggleButton" id="sub_italic_toggle">
+                            <property name="icon-name">text-italic-symbolic</property>
+                            <property name="valign">3</property>
+                            <signal name="toggled" handler="on_sub_italic" swapped="yes" />
+                            <style>
+                              <class name="flat"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child type="suffix">
+                          <object class="GtkBox">
+                            <property name="orientation">horizontal</property>
+                            <style>
+                              <class name="linked"/>
+                            </style>
+                            <child>
+                              <object class="GtkToggleButton" id="text">
+                                <property name="icon-name">text-justify-left-symbolic</property>
+                                <property name="valign">3</property>
+                                <property name="action-name">mpv.text-justify</property>
+                                <property name="action-target">0</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkToggleButton">
+                                <property name="icon-name">text-justify-center-symbolic</property>
+                                <property name="group">text</property>
+                                <property name="valign">3</property>
+                                <property name="action-name">mpv.text-justify</property>
+                                <property name="action-target">1</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkToggleButton">
+                                <property name="icon-name">text-justify-right-symbolic</property>
+                                <property name="group">text</property>
+                                <property name="valign">3</property>
+                                <property name="action-name">mpv.text-justify</property>
+                                <property name="action-target">2</property>
+                              </object>
+                            </child>
+                          </object>
+
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Position</property>
+                        <signal name="notify::value" handler="on_sub_position" swapped="yes" />
+                        <child type="prefix">
+                          <object class="GtkImage">
+                            <property name="icon-name">arrow-pointing-at-line-down-symbolic</property>
+                          </object>
+                        </child>
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="sub_position_adj">
+                            <property name="lower">1</property>
+                            <property name="upper">150</property>
+                            <property name="value">100</property>
+                            <property name="page-increment">1</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Subtitle Text Size</property>
+                        <property name="subtitle" translatable="yes">This option only takes effect for srt subtitles</property>
+                        <signal name="notify::value" handler="on_sub_size" swapped="yes" />
+                        <child type="prefix">
+                          <object class="GtkImage">
+                            <property name="icon-name">media-view-subtitles-symbolic</property>
+                          </object>
+                        </child>
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="sub_size_adj">
+                            <property name="lower">1</property>
+                            <property name="upper">500</property>
+                            <property name="value">55</property>
+                            <property name="page-increment">1</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Subtitle Text Scale</property>
+                        <property name="subtitle" translatable="yes">This affects ASS subtitles as well</property>
+                        <signal name="notify::value" handler="on_sub_scale" swapped="yes" />
+                        <child type="prefix">
+                          <object class="GtkImage">
+                            <property name="icon-name">media-view-subtitles-symbolic</property>
+                          </object>
+                        </child>
+                        <property name="digits">2</property>
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="sub_scale_adj">
+                            <property name="lower">0.00</property>
+                            <property name="upper">5.00</property>
+                            <property name="value">1.00</property>
+                            <property name="page-increment">0.10</property>
+                            <property name="step-increment">0.01</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow">
+                        <property name="title" translatable="yes">Subtitle Text Font</property>
+                        <property name="title-lines">1</property>
+                        <property name="tooltip-text" translatable="yes">Specify font to use for subtitles that do not themselves specify a particular font</property>
+                        <property name="activatable-widget">sub_font_button</property>
+                        <child type="prefix">
+                          <object class="GtkImage">
+                            <property name="icon-name">preferences-desktop-font-symbolic</property>
+                          </object>
+                        </child>
+                        <child type="suffix">
+                          <object class="GtkFontDialogButton" id="sub_font_button">
+                            <property name="level">0</property>
+                            <property name="valign">3</property>
+                            <property name="level">family</property>
+                            <signal name="notify::font-desc" handler="on_sub_font" swapped="yes" />
+                            <property name="dialog">
+                              <object class="GtkFontDialog"></object>
+                            </property>
+                            <style>
+                              <class name="flat"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwComboRow" id="sub_border_style_combo">
+                        <property name="title" translatable="yes">Border Style</property>
+                        <signal name="notify::selected" handler="on_border_style" swapped="yes" />
+                        <property name="model">
+                          <object class="GtkStringList">
+                            <items>
+                              <item translatable="yes">Outline and shadow</item>
+                              <item translatable="yes">Opaque box</item>
+                              <item translatable="yes">Background box</item>
+                            </items>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Border Size</property>
+                        <signal name="notify::value" handler="on_border_size" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="sub_border_size_adj">
+                            <property name="lower">0</property>
+                            <property name="upper">100</property>
+                            <property name="value">3</property>
+                            <property name="page-increment">10</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Shadow Offset</property>
+                        <signal name="notify::value" handler="on_shadow_offset" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="sub_shadow_offset_adj">
+                            <property name="lower">0</property>
+                            <property name="upper">100</property>
+                            <property name="value">0</property>
+                            <property name="page-increment">10</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwExpanderRow">
+                    <property name="title" translatable="yes">Subtitle Color</property>
+                    <child type="suffix">
+                      <object class="GtkButton">
+                        <property name="icon-name">large-brush-symbolic</property>
+                        <property name="valign">3</property>
+                        <signal name="clicked" handler="on_sub_color_clear" swapped="yes" />
+                        <style>
+                          <class name="flat"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow">
+                        <property name="title" translatable="yes">Text</property>
+                        <child type="suffix">
+                          <object class="GtkColorDialogButton" id="sub_text_color">
+                            <property name="valign">center</property>
+                            <property name="rgba">rgba(255,255,255,255)</property>
+                            <signal name="notify::rgba" handler="on_sub_text_color" swapped="yes" />
+                            <property name="dialog">
+                              <object class="GtkColorDialog"/>
+                            </property>
+                            <style>
+                              <class name="flat"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow">
+                        <property name="title" translatable="yes">Border</property>
+                        <child type="suffix">
+                          <object class="GtkColorDialogButton" id="sub_border_color">
+                            <property name="valign">center</property>
+                            <property name="rgba">rgba(0,0,0,255)</property>
+                            <signal name="notify::rgba" handler="on_sub_border_color" swapped="yes" />
+                            <property name="dialog">
+                              <object class="GtkColorDialog"/>
+                            </property>
+                            <style>
+                              <class name="flat"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow">
+                        <property name="title" translatable="yes">Background</property>
+                        <child type="suffix">
+                          <object class="GtkColorDialogButton" id="sub_background_color">
+                            <property name="valign">center</property>
+                            <property name="rgba">rgba(0,0,0,0)</property>
+                            <signal name="notify::rgba" handler="on_sub_background_color" swapped="yes" />
+                            <property name="dialog">
+                              <object class="GtkColorDialog"/>
+                            </property>
+                            <style>
+                              <class name="flat"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwExpanderRow">
+                    <property name="title" translatable="yes">Subtitle Offset</property>
+                    <child type="suffix">
+                      <object class="GtkButton">
+                        <property name="icon-name">large-brush-symbolic</property>
+                        <property name="valign">3</property>
+                        <signal name="clicked" handler="on_sub_offset_clear" swapped="yes" />
+                        <style>
+                          <class name="flat"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Offset</property>
+                        <property name="subtitle" translatable="yes">Unit: ms</property>
+                        <signal name="notify::value" handler="on_sub_offset" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="sub_offset_adj">
+                            <property name="lower">-10000</property>
+                            <property name="upper">10000</property>
+                            <property name="value">0</property>
+                            <property name="page-increment">100</property>
+                            <property name="step-increment">50</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Speed</property>
+                        <property name="digits">2</property>
+                        <signal name="notify::value" handler="on_sub_speed" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="sub_speed_adj">
+                            <property name="lower">0.10</property>
+                            <property name="upper">10.00</property>
+                            <property name="value">1.00</property>
+                            <property name="page-increment">0.05</property>
+                            <property name="step-increment">0.01</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <property name="title" translatable="yes">Audio</property>
+                <property name="header-suffix">
+                  <object class="GtkButton">
+                    <property name="icon-name">large-brush-symbolic</property>
+                    <property name="valign">3</property>
+                    <signal name="clicked" handler="on_audio_clear" swapped="yes" />
+                    <style>
+                      <class name="flat"/>
+                    </style>
+                  </object>
+                </property>
+                <child>
+                  <object class="AdwSpinRow">
+                    <property name="title" translatable="yes">Audio Offset</property>
+                    <property name="subtitle" translatable="yes">Unit: ms</property>
+                    <signal name="notify::value" handler="on_audio_offset" swapped="yes" />
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="audio_offset_adj">
+                        <property name="lower">-10000</property>
+                        <property name="upper">10000</property>
+                        <property name="value">0</property>
+                        <property name="page-increment">100</property>
+                        <property name="step-increment">50</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwComboRow" id="audio_channel_combo">
+                    <property name="title" translatable="yes">Audio Channel</property>
+                    <signal name="notify::selected" handler="on_audio_channel" swapped="yes" />
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                          <item translatable="yes">Auto</item>
+                          <item translatable="yes">Auto (Safety)</item>
+                          <item translatable="yes">Mono</item>
+                          <item translatable="yes">Dual Channel</item>
+                          <item translatable="yes">Dual Channel (Invert)</item>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <property name="title" translatable="yes">Video</property>
+                <child>
+                  <object class="AdwComboRow" id="panscan_combo">
+                    <property name="title" translatable="yes">Video Aspect</property>
+                    <signal name="notify::selected" handler="on_video_aspect" swapped="yes" />
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                          <item translatable="yes">Fit</item>
+                          <item translatable="yes">Crop</item>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwExpanderRow">
+                    <property name="title" translatable="yes">Video color grading</property>
+                    <child type="suffix">
+                      <object class="GtkButton">
+                        <property name="icon-name">large-brush-symbolic</property>
+                        <property name="valign">3</property>
+                        <signal name="clicked" handler="on_video_filter_clear" swapped="yes" />
+                        <style>
+                          <class name="flat"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Brightness</property>
+                        <signal name="notify::value" handler="on_brightness_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="brightness_adj">
+                            <property name="lower">-100</property>
+                            <property name="upper">100</property>
+                            <property name="value">0</property>
+                            <property name="page-increment">10</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Contrast</property>
+                        <signal name="notify::value" handler="on_contrast_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="contrast_adj">
+                            <property name="lower">-100</property>
+                            <property name="upper">100</property>
+                            <property name="value">0</property>
+                            <property name="page-increment">10</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Saturation</property>
+                        <signal name="notify::value" handler="on_saturation_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="saturation_adj">
+                            <property name="lower">-100</property>
+                            <property name="upper">100</property>
+                            <property name="value">0</property>
+                            <property name="page-increment">10</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Hue</property>
+                        <signal name="notify::value" handler="on_hue_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="hue_adj">
+                            <property name="lower">-100</property>
+                            <property name="upper">100</property>
+                            <property name="value">0</property>
+                            <property name="page-increment">10</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Gamma</property>
+                        <signal name="notify::value" handler="on_gamma_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="gamma_adj">
+                            <property name="lower">-100</property>
+                            <property name="upper">100</property>
+                            <property name="value">0</property>
+                            <property name="page-increment">10</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwExpanderRow">
+                    <property name="title" translatable="yes">Video Deband</property>
+                    <property name="expanded" bind-source="deband_switch" bind-property="active" bind-flags="sync-create"/>
+                    <child type="suffix">
+                      <object class="GtkButton">
+                        <property name="icon-name">large-brush-symbolic</property>
+                        <property name="valign">3</property>
+                        <signal name="clicked" handler="on_video_deband_clear" swapped="yes" />
+                        <style>
+                          <class name="flat"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child type="suffix">
+                      <object class="GtkSwitch" id="deband_switch">
+                        <property name="valign">3</property>
+                        <signal name="notify::active" handler="on_video_deband" swapped="yes" />
+                        <style>
+                          <class name="flat"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Deband Iterations</property>
+                        <signal name="notify::value" handler="on_deband_iterations_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="deband_iterations_adj">
+                            <property name="lower">0</property>
+                            <property name="upper">16</property>
+                            <property name="value">1</property>
+                            <property name="page-increment">4</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Deband Threshold</property>
+                        <signal name="notify::value" handler="on_deband_threshold_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="deband_threshold_adj">
+                            <property name="lower">0</property>
+                            <property name="upper">4096</property>
+                            <property name="value">48</property>
+                            <property name="page-increment">24</property>
+                            <property name="step-increment">2</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Deband Range</property>
+                        <signal name="notify::value" handler="on_deband_range_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="deband_range_adj">
+                            <property name="lower">1</property>
+                            <property name="upper">64</property>
+                            <property name="value">16</property>
+                            <property name="page-increment">2</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwSpinRow">
+                        <property name="title" translatable="yes">Deband Grain</property>
+                        <signal name="notify::value" handler="on_deband_grain_spinrow" swapped="yes" />
+                        <property name="adjustment">
+                          <object class="GtkAdjustment" id="deband_grain_adj">
+                            <property name="lower">0</property>
+                            <property name="upper">4096</property>
+                            <property name="value">32</property>
+                            <property name="page-increment">16</property>
+                            <property name="step-increment">2</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwSwitchRow" id="video_deinterlace_switchrow">
+                    <signal name="notify::active" handler="on_video_deinterlace" swapped="yes" />
+                    <property name="title" translatable="yes">Video Deinterlace</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwComboRow" id="video_upsacle_filter_combo">
+                    <property name="title" translatable="yes">Video Upscale</property>
+                    <signal name="notify::selected" handler="on_video_upscale" swapped="yes" />
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                          <item>lanczos</item>
+                          <item>bilinear</item>
+                          <item>ewa_lanczos</item>
+                          <item>mitchell</item>
+                          <item>hermite</item>
+                          <item>oversample</item>
+                          <item>linear</item>
+                          <item>ewa_hanning</item>
+                          <item>ewa_lanczossharp</item>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <property name="title" translatable="yes">Action after video ends</property>
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title" translatable="yes">Play Next</property>
+                    <property name="activatable-widget">end_group</property>
+                    <child type="prefix">
+                      <object class="GtkCheckButton" id="end_group">
+                        <property name="valign">center</property>
+                        <property name="action-name">mpv.video-end</property>
+                        <property name="action-target">0</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title" translatable="yes">Loop Playback</property>
+                    <property name="activatable-widget">end_group2</property>
+                    <child type="prefix">
+                      <object class="GtkCheckButton" id="end_group2">
+                        <property name="valign">center</property>
+                        <property name="group">end_group</property>
+                        <property name="action-name">mpv.video-end</property>
+                        <property name="action-target">1</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title" translatable="yes">Stop</property>
+                    <property name="activatable-widget">end_group3</property>
+                    <child type="prefix">
+                      <object class="GtkCheckButton" id="end_group3">
+                        <property name="valign">center</property>
+                        <property name="group">end_group</property>
+                        <property name="action-name">mpv.video-end</property>
+                        <property name="action-target">2</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <property name="title" translatable="yes">Hardware decoding</property>
+                <property name="description">--hwdec</property>
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title" translatable="yes">no (default)</property>
+                    <property name="activatable-widget">hwdec_group</property>
+                    <child type="prefix">
+                      <object class="GtkCheckButton" id="hwdec_group">
+                        <property name="valign">center</property>
+                        <property name="action-name">mpv.hwdec</property>
+                        <property name="action-target">0</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title">auto-safe</property>
+                    <property name="activatable-widget">hwdec_group2</property>
+                    <child type="prefix">
+                      <object class="GtkCheckButton" id="hwdec_group2">
+                        <property name="valign">center</property>
+                        <property name="group">hwdec_group</property>
+                        <property name="action-name">mpv.hwdec</property>
+                        <property name="action-target">1</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwActionRow">
+                    <property name="title">vaapi</property>
+                    <property name="activatable-widget">hwdec_group3</property>
+                    <property name="subtitle">requires --vo=gpu, --vo=vaapi or --vo=dmabuf-wayland (Linux only)</property>
+                    <child type="prefix">
+                      <object class="GtkCheckButton" id="hwdec_group3">
+                        <property name="valign">center</property>
+                        <property name="group">hwdec_group</property>
+                        <property name="action-name">mpv.hwdec</property>
+                        <property name="action-target">2</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="label" translatable="yes">Not all settings will be saved</property>
+                <property name="margin-top">12</property>
+                <property name="margin-bottom">24</property>
+                <property name="justify">left</property>
+                <property name="halign">start</property>
+                <style>
+                  <class name="dim-label" />
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

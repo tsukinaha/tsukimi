@@ -10,32 +10,50 @@
       <item>
         <attribute name="label" translatable="yes">_Next</attribute>
         <attribute name="action">mpv.next-video</attribute>
+        <attribute name="accel">N</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">_Previous</attribute>
         <attribute name="action">mpv.previous-video</attribute>
+        <attribute name="accel">P</attribute>
       </item>
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Next chapter</attribute>
+        <attribute name="label" translatable="yes">Next chapter</attribute>
         <attribute name="action">mpv.chapter-next</attribute>
+        <attribute name="accel">&lt;Control&gt;N</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">_Previous chapter</attribute>
+        <attribute name="label" translatable="yes">Previous chapter</attribute>
         <attribute name="action">mpv.chapter-prev</attribute>
+        <attribute name="accel">&lt;Control&gt;P</attribute>
       </item>
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Media info</attribute>
+        <attribute name="label" translatable="yes">Playlist</attribute>
+        <attribute name="action">mpv.show-playlist</attribute>
+        <attribute name="accel">L</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Advanced settings</attribute>
+        <attribute name="action">mpv.show-settings</attribute>
+        <attribute name="accel">A</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Media info</attribute>
         <attribute name="action">mpv.show-info</attribute>
+        <attribute name="accel">I</attribute>
       </item>
     </section>
     <section>
       <item>
         <attribute name="label" translatable="yes">_Keyboard shortcuts</attribute>
         <attribute name="action">win.show-help-overlay</attribute>
+        <attribute name="accel">F1</attribute>
       </item>
     </section>
   </menu>

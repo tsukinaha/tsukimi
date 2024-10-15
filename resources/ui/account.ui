@@ -12,7 +12,7 @@
         <child>
           <object class="AdwNavigationView" id="navigation_view">
             <child>
-              <object class="AdwNavigationPage">
+              <object class="AdwNavigationPage" id="nav">
                 <property name="tag">main</property>
                 <property name="title" translatable="yes">Add a New Server</property>
                 <property name="child">
@@ -42,57 +42,95 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkScrolledWindow">
-                        <property name="hscrollbar-policy">never</property>
+                      <object class="GtkStack" id="stack">
+                        <property name="transition-type">crossfade</property>
+                        <property name="vexpand">True</property>
                         <child>
-                          <object class="AdwClamp">
-                            <property name="margin-top">36</property>
-                            <property name="margin-bottom">12</property>
-                            <property name="vexpand">True</property>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="orientation">vertical</property>
-                                <property name="spacing">18</property>
-                                <property name="margin-start">12</property>
-                                <property name="margin-end">12</property>
+                          <object class="GtkStackPage">
+                            <property name="name">entry</property>
+                            <property name="title">Entry</property>
+                            <property name="child">
+                              <object class="GtkScrolledWindow">
+                                <property name="hscrollbar-policy">never</property>
                                 <child>
-                                  <object class="AdwEntryRow" id="servername_entry">
-                                    <property name="title" translatable="yes">Name</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="AdwEntryRow" id="server_entry">
-                                    <property name="title" translatable="yes">Server Address</property>
-                                    <child type="suffix">
-                                      <object class="GtkEntry" id="port_entry">
-                                        <property name="halign">end</property>
-                                        <property name="valign">center</property>
-                                        <property name="placeholder-text" translatable="yes">Port</property>
+                                  <object class="AdwClamp">
+                                    <property name="margin-top">36</property>
+                                    <property name="margin-bottom">12</property>
+                                    <property name="vexpand">True</property>
+                                    <child>
+                                      <object class="GtkListBox">
+                                        <property name="margin-start">12</property>
+                                        <property name="margin-end">12</property>
+                                        <style>
+                                          <class name="boxed-list-separate" />
+                                        </style>
+                                        <child>
+                                          <object class="AdwEntryRow" id="servername_entry">
+                                            <property name="title" translatable="yes">Name (Nullable)</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwEntryRow" id="server_entry">
+                                            <property name="title" translatable="yes">Server Address (Auto parse)</property>
+                                            <signal name="changed" handler="on_server_entry_changed" swapped="yes" />
+                                            <child type="prefix">
+                                              <object class="GtkDropDown" id="protocol">
+                                                <property name="valign">center</property>
+                                                <property name="model">
+                                                  <object class="GtkStringList">
+                                                    <items>
+                                                      <item>http://</item>
+                                                      <item>https://</item>
+                                                    </items>
+                                                  </object>
+                                                </property>
+                                              </object>
+                                            </child>
+                                            <child type="suffix">
+                                              <object class="GtkEntry" id="port_entry">
+                                                <property name="halign">end</property>
+                                                <property name="valign">center</property>
+                                                <property name="placeholder-text" translatable="yes">Port</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwEntryRow" id="username_entry">
+                                            <property name="title" translatable="yes">Username</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwPasswordEntryRow" id="password_entry">
+                                            <property name="title" translatable="yes">Password (Nullable)</property>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
                                 </child>
-                                <child>
-                                  <object class="AdwEntryRow" id="username_entry">
-                                    <property name="title" translatable="yes">Username</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="AdwPasswordEntryRow" id="password_entry">
-                                    <property name="title" translatable="yes">Password</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="AdwSpinner" id="spinner">
-                                    <property name="visible">False</property>
-                                  </object>
-                                </child>
                               </object>
-                            </child>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkStackPage">
+                            <property name="name">loading</property>
+                            <property name="title">Loading</property>
+                            <property name="child">
+                              <object class="AdwSpinner">
+                                <property name="visible">True</property>
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <property name="width-request">48</property>
+                                <property name="height-request">48</property>
+                              </object>
+                            </property>
                           </object>
                         </child>
                       </object>
                     </child>
+
                   </object>
                 </property>
               </object>

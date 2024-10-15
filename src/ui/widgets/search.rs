@@ -153,7 +153,7 @@ impl SearchPage {
             let button = gtk::Button::new();
             let buttoncontent = adw::ButtonContent::builder()
                 .label(&item.name)
-                .icon_name(if item.latest_type == "Movie" {
+                .icon_name(if item.item_type == "Movie" {
                     "video-display-symbolic"
                 } else {
                     "video-x-generic"

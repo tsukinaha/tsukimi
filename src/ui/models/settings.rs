@@ -7,6 +7,7 @@ use gtk::{
 };
 
 use crate::{
+    config::Account,
     ui::provider::descriptor::{Descriptor, VecSerialize},
     APP_ID,
 };
@@ -15,7 +16,6 @@ pub struct Settings(ThreadGuard<gio::Settings>);
 
 impl Settings {
     const KEY_IS_OVERLAY: &'static str = "is-overlay";
-    const KEY_PROXY: &'static str = "proxy";
     const KEY_ROOT_PIC: &'static str = "root-pic";
     const KEY_IS_BACKGROUND_ENABLED: &'static str = "is-backgroundenabled";
     const KEY_THREADS: &'static str = "threads";
@@ -25,7 +25,6 @@ impl Settings {
     const KEY_IS_AUTO_SELECT_SERVER: &'static str = "is-auto-select-server";
     const KEY_FONT_SIZE: &'static str = "font-size";
     const KEY_FONT_NAME: &'static str = "font-name";
-    const KEY_DAILY_RECOMMEND: &'static str = "is-daily-recommend";
     const KEY_LIST_SORT_BY: &'static str = "list-sort-by";
     const KEY_LIST_SORT_ORDER: &'static str = "list-sort-order";
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
@@ -41,12 +40,71 @@ impl Settings {
     const KEY_MPV_AUDIO_PREFERRED_LANG: &'static str = "mpv-audio-preferred-lang"; // i32
     const KEY_MPV_SUBTITLE_PREFERRED_LANG: &'static str = "mpv-subtitle-preferred-lang"; // i32
     const KEY_MPV_DEFAULT_VOLUME: &'static str = "mpv-default-volume"; // i32
-    const KEY_MPV_FORCE_STEREO: &'static str = "mpv-force-stereo"; // bool
     const KEY_MPV_SHOW_BUFFER_SPEED: &'static str = "mpv-show-buffer-speed"; // bool
     const KEY_MPV_VIDEO_OUTPUT: &'static str = "mpv-video-output"; // i32
     const KEY_MPV_ACTION_AFTER_VIDEO_END: &'static str = "mpv-action-after-video-end"; // i32
     const KEY_MPV_HWDEC: &'static str = "mpv-hwdec"; // i32
     const PREFERRED_VERSION_DESCRIPTORS: &'static str = "video-version-descriptors"; // String
+    const ACCOUNTS: &'static str = "accounts"; // String
+    const KEY_MPV_AUDIO_CHANNEL: &'static str = "mpv-audio-channel"; // i32
+    const KEY_MPV_SUBTITLE_SCALE: &'static str = "mpv-subtitle-scale"; // f64
+    const KEY_MPV_VIDEO_SCALE: &'static str = "mpv-video-scale"; // i32
+    const KEY_MPV_CONFIG_DIR: &'static str = "mpv-config-path"; // String
+
+    pub fn mpv_config_dir(&self) -> String {
+        self.string(Self::KEY_MPV_CONFIG_DIR).to_string()
+    }
+
+    pub fn mpv_subtitle_scale(&self) -> f64 {
+        self.double(Self::KEY_MPV_SUBTITLE_SCALE)
+    }
+
+    pub fn mpv_video_scale(&self) -> i32 {
+        self.int(Self::KEY_MPV_VIDEO_SCALE)
+    }
+
+    pub fn mpv_audio_channel(&self) -> i32 {
+        self.int(Self::KEY_MPV_AUDIO_CHANNEL)
+    }
+
+    pub fn accounts(&self) -> Vec<Account> {
+        serde_json::from_str(self.string(Self::ACCOUNTS).as_ref())
+            .expect("Failed to deserialize accounts")
+    }
+
+    pub fn add_account(&self, account: Account) -> Result<(), glib::BoolError> {
+        let mut accounts = self.accounts();
+        if accounts.contains(&account) {
+            return Ok(());
+        }
+        accounts.push(account);
+        self.set_string(Self::ACCOUNTS, &accounts.to_string())
+    }
+
+    pub fn remove_account(&self, account: Account) -> Result<(), glib::BoolError> {
+        let mut accounts = self.accounts();
+        accounts.retain(|a| a != &account);
+        self.set_string(Self::ACCOUNTS, &accounts.to_string())
+    }
+
+    pub fn edit_account(
+        &self,
+        old_account: Account,
+        new_account: Account,
+    ) -> Result<(), glib::BoolError> {
+        let mut accounts = self.accounts();
+        if accounts.contains(&new_account) {
+            return Ok(());
+        }
+        if let Some(index) = accounts.iter().position(|a| a == &old_account) {
+            accounts[index] = new_account;
+        }
+        self.set_string(Self::ACCOUNTS, &accounts.to_string())
+    }
+
+    pub fn set_accounts(&self, accounts: Vec<Account>) -> Result<(), glib::BoolError> {
+        self.set_string(Self::ACCOUNTS, &accounts.to_string())
+    }
 
     pub fn preferred_version_descriptors(&self) -> Vec<Descriptor> {
         serde_json::from_str(self.string(Self::PREFERRED_VERSION_DESCRIPTORS).as_ref())
@@ -148,12 +206,15 @@ impl Settings {
         self.int(Self::KEY_MPV_DEFAULT_VOLUME)
     }
 
-    pub fn mpv_force_stereo(&self) -> bool {
-        self.boolean(Self::KEY_MPV_FORCE_STEREO)
-    }
-
     pub fn mpv_show_buffer_speed(&self) -> bool {
         self.boolean(Self::KEY_MPV_SHOW_BUFFER_SPEED)
+    }
+
+    pub fn set_mpv_show_buffer_speed(
+        &self,
+        mpv_show_buffer_speed: bool,
+    ) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_MPV_SHOW_BUFFER_SPEED, mpv_show_buffer_speed)
     }
 
     pub fn set_mpv_video_output(&self, mpv_video_output: i32) -> Result<(), glib::BoolError> {
@@ -233,10 +294,6 @@ impl Settings {
         self.int(Self::KEY_LIST_SORT_BY)
     }
 
-    pub fn daily_recommend(&self) -> bool {
-        self.boolean(Self::KEY_DAILY_RECOMMEND)
-    }
-
     pub fn set_font_name(&self, font_name: &str) -> Result<(), glib::BoolError> {
         self.set_string(Self::KEY_FONT_NAME, font_name)
     }
@@ -270,14 +327,6 @@ impl Settings {
     }
     pub fn overlay(&self) -> bool {
         self.boolean(Self::KEY_IS_OVERLAY)
-    }
-
-    pub fn set_proxy(&self, proxy: &str) -> Result<(), glib::BoolError> {
-        self.set_string(Self::KEY_PROXY, proxy)
-    }
-
-    pub fn proxy(&self) -> String {
-        self.string(Self::KEY_PROXY).to_string()
     }
 
     pub fn set_root_pic(&self, root_pic: &str) -> Result<(), glib::BoolError> {

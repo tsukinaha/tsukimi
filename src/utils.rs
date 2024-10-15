@@ -34,6 +34,15 @@ where
     receiver.await.unwrap()
 }
 
+pub fn spawn_tokio_without_await<F>(fut: F)
+where
+    F: std::future::Future + Send + 'static,
+{
+    runtime().spawn(async {
+        let _ = fut.await;
+    });
+}
+
 pub fn spawn<F>(fut: F)
 where
     F: std::future::Future + 'static,

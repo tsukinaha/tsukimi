@@ -12,15 +12,15 @@ use uuid::Uuid;
 use crate::{
     config::{proxy::ReqClient, Account, APP_VERSION},
     ui::{models::emby_cache_path, widgets::single_grid::imp::ListType},
-    utils::{spawn, spawn_tokio},
+    utils::spawn_tokio_without_await,
 };
 
 use once_cell::sync::Lazy;
 
 use super::structs::{
-    ActivityLogs, AuthenticateResponse, Back, ExternalIdInfo, ImageItem, Item, List, LiveMedia,
-    LoginResponse, Media, RemoteSearchInfo, RemoteSearchResult, ScheduledTask, SerInList,
-    ServerInfo, SimpleListItem,
+    ActivityLogs, AuthenticateResponse, Back, ExternalIdInfo, ImageItem, List, LiveMedia,
+    LoginResponse, Media, PublicServerInfo, RemoteSearchInfo, RemoteSearchResult, ScheduledTask,
+    SerInList, ServerInfo, SimpleListItem,
 };
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
@@ -53,24 +53,33 @@ pub struct EmbyClient {
     pub server_name: Mutex<String>,
 }
 
+fn generate_emby_authorization(
+    user_id: &str,
+    client: &str,
+    device: &str,
+    device_id: &str,
+    version: &str,
+) -> String {
+    format!(
+        "Emby UserId={},Client={},Device={},DeviceId={},Version={}",
+        user_id, client, device, device_id, version
+    )
+}
+
 impl EmbyClient {
     pub fn default() -> Self {
         let mut headers = reqwest::header::HeaderMap::new();
-        headers.insert("Authorization", HeaderValue::from_static("Emby"));
-        headers.insert("X-Emby-Client", HeaderValue::from_static(&CLIENT_ID));
+        headers.insert("Accept-Encoding", HeaderValue::from_static("gzip"));
         headers.insert(
-            "X-Emby-Device-Name",
-            HeaderValue::from_str(&DEVICE_NAME).unwrap(),
+            "x-emby-authorization",
+            HeaderValue::from_str(&generate_emby_authorization(
+                "",
+                &CLIENT_ID,
+                &DEVICE_NAME,
+                &DEVICE_ID,
+                &APP_VERSION,
+            )).unwrap(),
         );
-        headers.insert(
-            "X-Emby-Device-Id",
-            HeaderValue::from_str(&DEVICE_ID).unwrap(),
-        );
-        headers.insert(
-            "X-Emby-Client-Version",
-            HeaderValue::from_static(APP_VERSION),
-        );
-        headers.insert("X-Emby-Language", HeaderValue::from_static("zh-cn"));
         Self {
             url: Mutex::new(None),
             client: ReqClient::build(),
@@ -92,18 +101,15 @@ impl EmbyClient {
         self.set_user_access_token(&account.access_token)?;
         self.set_server_name(&account.servername)?;
         crate::ui::provider::set_admin(false);
-        spawn(async move {
-            spawn_tokio(async move {
-                match EMBY_CLIENT.authenticate_admin().await {
-                    Ok(r) => {
-                        if r.policy.is_administrator {
-                            crate::ui::provider::set_admin(true);
-                        }
+        spawn_tokio_without_await(async move {
+            match EMBY_CLIENT.authenticate_admin().await {
+                Ok(r) => {
+                    if r.policy.is_administrator {
+                        crate::ui::provider::set_admin(true);
                     }
-                    Err(e) => warn!("Failed to authenticate as admin: {}", e),
                 }
-            })
-            .await;
+                Err(e) => warn!("Failed to authenticate as admin: {}", e),
+            }
         });
         Ok(())
     }
@@ -135,6 +141,25 @@ impl EmbyClient {
             .lock()
             .map_err(|_| anyhow!("Failed to acquire lock on user_id"))?;
         *user_id_lock = user_id.to_string();
+        self.header_change_user_id(user_id)?;
+        Ok(())
+    }
+
+    pub fn header_change_user_id(&self, user_id: &str) -> Result<()> {
+        let mut headers = self
+            .headers
+            .lock()
+            .map_err(|_| anyhow!("Failed to acquire lock on headers"))?;
+        headers.insert(
+            "x-emby-authorization",
+            HeaderValue::from_str(&generate_emby_authorization(
+                user_id,
+                &CLIENT_ID,
+                &DEVICE_NAME,
+                &DEVICE_ID,
+                &APP_VERSION,
+            ))?,
+        );
         Ok(())
     }
 
@@ -308,13 +333,13 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_item_info(&self, id: &str) -> Result<Item> {
+    pub async fn get_item_info(&self, id: &str) -> Result<SimpleListItem> {
         let path = format!("Users/{}/Items/{}", self.user_id(), id);
         let params = [("Fields", "ShareLevel")];
         self.request(&path, &params).await
     }
 
-    pub async fn get_edit_info(&self, id: &str) -> Result<Item> {
+    pub async fn get_edit_info(&self, id: &str) -> Result<SimpleListItem> {
         let path = format!("Users/{}/Items/{}", self.user_id(), id);
         let params = [("Fields", "ChannelMappingInfo")];
         self.request(&path, &params).await
@@ -483,6 +508,15 @@ impl EmbyClient {
         self.post_json(&path, &[], body).await
     }
 
+    pub async fn get_user_avatar(&self) -> Result<String> {
+        let path = format!("Users/{}/Images/Primary", self.user_id());
+        let params = [("maxHeight", "50"), ("maxWidth", "50")];
+        let response = self.request_picture(&path, &params).await?;
+        let bytes = response.bytes().await?;
+        let path = self.save_image(&self.user_id(), "Primary", None, &bytes);
+        Ok(path)
+    }
+
     pub async fn get_external_id_info(&self, id: &str) -> Result<Vec<ExternalIdInfo>> {
         let path = format!("Items/{}/ExternalIdInfos", id);
         let params = [("IsSupportedAsIdentifier", "true")];
@@ -645,7 +679,7 @@ impl EmbyClient {
             ("SortBy", sortby),
             ("SortOrder", sort_order),
             ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
-            if listtype == "Genre" {
+            if listtype == "Genres" {
                 ("GenreIds", parentid)
             } else if listtype == "Studios" {
                 ("StudioIds", parentid)
@@ -704,7 +738,7 @@ impl EmbyClient {
             BackType::Back => "Sessions/Playing/Progress".to_string(),
         };
         let params = [("reqformat", "json")];
-        let body = json!({"VolumeLevel":100,"IsMuted":false,"IsPaused":false,"RepeatMode":"RepeatNone","SubtitleOffset":0,"PlaybackRate":1,"MaxStreamingBitrate": 400000000u64,"PositionTicks":back.tick,"PlaybackStartTimeTicks":0,"SubtitleStreamIndex":1,"AudioStreamIndex":1,"BufferedRanges":[],"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"CanSeek":true,"ItemId":back.id,"PlaylistIndex":0,"PlaylistLength":23,"NextMediaType":"Video"});
+        let body = json!({"VolumeLevel":100,"NowPlayingQueue":[],"IsMuted":false,"IsPaused":false,"MaxStreamingBitrate":2147483647,"RepeatMode":"RepeatNone","PlaybackStartTimeTicks":back.start_tick,"SubtitleOffset":0,"PlaybackRate":1,"PositionTicks":back.tick,"SubtitleStreamIndex":0,"AudioStreamIndex":1,"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"PlaylistIndex":0,"PlaylistLength":1,"CanSeek":true,"ItemId":back.id});
         self.post(&path, &params, body).await?;
         Ok(())
     }
@@ -932,22 +966,6 @@ impl EmbyClient {
         id, &self.user_id(), &DEVICE_ID.to_string(), self.user_access_token.lock().unwrap(), )).unwrap().to_string()
     }
 
-    pub async fn get_random(&self) -> Result<List> {
-        let path = format!("Users/{}/Items", &self.user_id());
-        let params = [
-            ("Fields", "ProductionYear,CommunityRating"),
-            ("EnableImageTypes", "Logo,Backdrop"),
-            ("ImageTypeLimit", "1"),
-            ("EnableTotalRecordCount", "false"),
-            ("SortBy", "Random"),
-            ("Limit", "10"),
-            ("Recursive", "true"),
-            ("IncludeItemTypes", "Series"),
-            ("EnableUserData", "false"),
-        ];
-        self.request(&path, &params).await
-    }
-
     fn user_id(&self) -> String {
         self.user_id.lock().unwrap().to_string()
     }
@@ -987,6 +1005,10 @@ impl EmbyClient {
 
     pub async fn get_server_info(&self) -> Result<ServerInfo> {
         self.request("System/Info", &[]).await
+    }
+
+    pub async fn get_server_info_public(&self) -> Result<PublicServerInfo> {
+        self.request("System/Info/Public", &[]).await
     }
 
     pub async fn shut_down(&self) -> Result<Response> {
@@ -1066,5 +1088,17 @@ mod tests {
                 eprintln!("{}", e.to_user_facing());
             }
         }
+    }
+
+    #[test]
+    fn parse_url() {
+        let uri = "127.0.0.1";
+        let url = if Url::parse(uri).is_err() {
+            format!("http://{}", uri)
+        } else {
+            uri.to_string()
+        };
+
+        assert_eq!(url, "http://127.0.0.1");
     }
 }

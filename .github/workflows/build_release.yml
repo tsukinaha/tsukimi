@@ -14,15 +14,18 @@ jobs:
     strategy:
       matrix:
         include:
-          # x86_64-linux-gnu
-          - arch: x86_64-linux-gnu
+          # x86_64-linux
+          - arch: x86_64-linux
             os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
+            target: amd64
+          # aarch64-linux
+          - arch: aarch64-linux
+            os: ubuntu-latest
+            target: arm64
           # x86_64-windows-gnu
           - arch: x86_64-windows-gnu
             os: windows-latest
-            target: x86_64-pc-windows-gnu
-            artifact: tsukimi.exe
+            target: amd64
 
     runs-on: ${{ matrix.os }}
 
@@ -31,7 +34,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup msys2
-        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        if: ${{ matrix.arch == 'x86_64-windows-gnu' }}
         uses: msys2/setup-msys2@v2
         with:
           update: true
@@ -51,8 +54,8 @@ jobs:
             mingw-w64-x86_64-gst-libav
             curl
 
-      - name: Build tsukimi-${{ matrix.target }}
-        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+      - name: Build tsukimi-${{ matrix.arch }}
+        if: ${{ matrix.arch == 'x86_64-windows-gnu' }}
         shell: msys2 {0}
         run: |
           export PATH="/c/Users/runneradmin/.cargo/bin:$PATH"
@@ -60,12 +63,12 @@ jobs:
           cargo build --release --locked
 
       - name: Prepare Package
-        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        if: ${{ matrix.arch == 'x86_64-windows-gnu' }}
         shell: msys2 {0}
         run: |
           mkdir artifact && cd artifact
           mkdir tsukimi-x86_64-windows-gnu/ && cd tsukimi-x86_64-windows-gnu/ && mkdir bin/ && mkdir share/ && mkdir lib/
-          cp $GITHUB_WORKSPACE/target/release/${{ matrix.artifact }} bin/
+          cp $GITHUB_WORKSPACE/target/release/tsukimi.exe bin/
           cp /mingw64/bin/gdbus.exe bin/
 
           cp -r /mingw64/lib/gdk-pixbuf-2.0 lib/
@@ -104,23 +107,22 @@ jobs:
           find lib/ -type f -name "*.dll" -exec ldd "{}" \; | grep '\/mingw64.*\.dll' -o | xargs -I{} cp -n "{}" bin/
 
       - name: Create NSIS installer
-        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        if: ${{ matrix.arch == 'x86_64-windows-gnu' }}
         shell: powershell
         run: |
-          cp tsukimi_installer.nsi artifact
+          cp ./installer/* artifact
           makensis /V4 artifact/tsukimi_installer.nsi
           rm artifact/tsukimi_installer.nsi
 
       - name: Build Package
-        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        if: ${{ matrix.arch == 'x86_64-windows-gnu' }}
         shell: powershell
         run: |
           cd artifact/tsukimi-x86_64-windows-gnu
-          7z.exe a ../tsukimi-x86_64-windows-gnu-gtk_416.7z ./*
-          mv ../tsukimi-x86_64-windows-gnu-installer.exe ../tsukimi-x86_64-windows-gnu-gtk_416-installer.exe
+          7z.exe a ../tsukimi-x86_64-windows-gnu.7z ./*
 
       - name: Upload artifact
-        if: ${{ matrix.target == 'x86_64-pc-windows-gnu' }}
+        if: ${{ matrix.arch == 'x86_64-windows-gnu' }}
         uses: actions/upload-artifact@v4
         with:
           name: tsukimi-${{ matrix.arch }}
@@ -131,18 +133,24 @@ jobs:
           retention-days: 3
           if-no-files-found: error
 
-      - name: Build ${{ matrix.target }}
-        if: ${{ matrix.target == 'x86_64-unknown-linux-gnu' }}
+      - name: Set up QEMU
+        if: ${{ matrix.arch == 'x86_64-linux' || matrix.arch == 'aarch64-linux' }}
+        uses: docker/setup-qemu-action@v3
+
+      - name: Build ${{ matrix.arch }}
+        if: ${{ matrix.arch == 'x86_64-linux' || matrix.arch == 'aarch64-linux' }}
         run: |
           mkdir artifact
-          docker build -t tsukimi .
-          docker run -d --name tsukimi tsukimi
-          docker cp tsukimi:/usr/src/tsukimi/. artifact/
+          docker run --rm --platform linux/${{ matrix.target }} -v ${{github.workspace}}:/app -v ./docker/entrypoint.sh:/entrypoint.sh ghcr.io/kosette/ubuntu-rust-gtk4:latest
+          sudo cp target/release/tsukimi artifact
+          sudo cp target/debian/*.deb artifact
+          sudo cp -r i18n artifact
+          sudo cp moe*.xml artifact
           cd artifact
-          tar -czf tsukimi-x86_64-linux.tar.gz tsukimi moe.tsuna.tsukimi.gschema.xml i18n
+          tar -czf tsukimi-${{matrix.arch}}.tar.gz tsukimi moe.tsuna.tsukimi.gschema.xml i18n
 
       - name: Upload artifact
-        if: ${{ matrix.target == 'x86_64-unknown-linux-gnu' }}
+        if: ${{ matrix.arch == 'x86_64-linux' || matrix.arch == 'aarch64-linux' }}
         uses: actions/upload-artifact@v4
         with:
           name: tsukimi-${{ matrix.arch }}
@@ -169,7 +177,8 @@ jobs:
 
       - name: Calculate hash
         run: |
-          mv tsukimi-x86_64-linux-gnu/* .
+          mv tsukimi-x86_64-linux/* .
+          mv tsukimi-aarch64-linux/* .
           mv tsukimi-x86_64-windows-gnu/* .
           sha512sum *.7z > tsukimi.sha512sum
           sha512sum *.exe >> tsukimi.sha512sum
@@ -179,6 +188,10 @@ jobs:
       - name: Get latest tag name
         id: tag
         run: echo "TAG_NAME=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+
+      - name: Set prerelease variable
+        if: startsWith(github.ref, 'refs/tags/v') && endsWith(github.ref, '-alpha')
+        run: echo "PRERELEASE=true" >> $GITHUB_ENV
 
       - name: Upload Github Assets
         uses: softprops/action-gh-release@v2
@@ -192,3 +205,4 @@ jobs:
             *.exe
             tsukimi.sha512sum
           tag_name: ${{ steps.tag.outputs.TAG_NAME }}
+          prerelease: ${{ env.PRERELEASE || false }}

@@ -21,6 +21,10 @@ child {
   border-radius: 10px;
 }
 
+.top-control-bar {
+  padding: 3px;
+}
+
 .logo {
   background: rgba(0, 0, 0, 0);
 }
@@ -62,9 +66,9 @@ child {
   border-radius: 10px;
 }
 
-.tu-listview > row {
+.tu-listview>row {
   margin: 10px;
-  border-radius:10px;
+  border-radius: 10px;
 }
 
 /* Starring */
@@ -77,8 +81,7 @@ button.star:hover {
     -gtk-icon-transform: rotate(-72deg);
   }
 
-  to {
-  }
+  to {}
 }
 
 @keyframes rotate_unstar {
@@ -86,8 +89,7 @@ button.star:hover {
     -gtk-icon-transform: rotate(72deg);
   }
 
-  to {
-  }
+  to {}
 }
 
 button.star.interacted.starred image {
@@ -111,13 +113,13 @@ button.star.interacted:not(.starred) image {
   border-radius: 10px;
 }
 
-.horizontal-listview > row {
+.horizontal-listview>row {
   margin-left: 9px;
   margin-right: 9px;
   border-radius: 10px;
 }
 
-.vertical-listview > row {
+.vertical-listview>row {
   margin: 9px;
   border-radius: 10px;
 }
@@ -134,38 +136,44 @@ gridview {
   background-color: rgba(0, 0, 0, 0);
 }
 
-gridview > child box {
+gridview>child box {
   margin: 0px;
 }
 
-overlay > label {
+overlay>label {
   background-color: #aeb5fa;
   border-radius: 999px;
   margin: 3px;
 }
 
-box > overlay > image {
+box>overlay>image {
   background-color: #aeb5fa;
   border-radius: 999px;
   margin: 3px;
 }
 
-revealer > box > box > widget {
+revealer>box>box>widget {
   background-color: rgba(1, 1, 1, 0.1);
   border-radius: 10px;
 }
 
-revealer > box > box > widget > box {
+revealer>box>box>widget>box {
   margin: 10px;
 }
 
-tabbar > revealer > box {
+tabbar>revealer>box {
   background-color: rgba(0, 0, 0, 0);
 }
 
-scrolledwindow > viewport > box > box > box {
+scrolledwindow>viewport>box>box>box {
   margin-left: 15px;
   margin-top: 15px;
+}
+
+.osd>box {
+  margin: 0px;
+  padding: 0px;
+  border-radius: 10px;
 }
 
 @define-color accent_bg_color #AEB5FA;

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ServerActionRow" parent="AdwActionRow">
+    <property name="activatable">True</property>
+    <property name="use-underline">True</property>
+    <style>
+      <class name="property"/>
+    </style>
+    <child type="prefix">
+      <object class="GtkImage">
+        <property name="valign">center</property>
+        <property name="icon-name">emby-symbolic</property>
+        <property name="icon-size">large</property>
+        <style>
+          <class name="accent"/>
+        </style>
+      </object>
+    </child>
+    <child type="prefix">
+      <object class="GtkImage">
+        <property name="valign">center</property>
+        <property name="icon-name">list-drag-handle-symbolic</property>
+        <property name="tooltip-text" translatable="yes">Drag to reorder</property>
+      </object>
+    </child>
+    <child type="suffix">
+      <object class="GtkButton">
+        <property name="valign">center</property>
+        <property name="icon-name">document-edit-symbolic</property>
+        <property name="tooltip-text" translatable="yes">Edit</property>
+        <signal name="clicked" handler="on_edit_clicked" swapped="yes"/>
+        <style>
+          <class name="flat"/>
+        </style>
+      </object>
+    </child>
+    <child type="suffix">
+      <object class="GtkButton">
+        <property name="valign">center</property>
+        <property name="icon-name">view-refresh-symbolic</property>
+        <property name="tooltip-text" translatable="yes">Refresh</property>
+        <property name="visible">False</property>
+        <style>
+          <class name="flat"/>
+        </style>
+      </object>
+    </child>
+    <child type="suffix">
+      <object class="GtkButton">
+        <property name="valign">center</property>
+        <property name="icon-name">user-trash-symbolic</property>
+        <property name="tooltip-text" translatable="yes">Delete</property>
+        <signal name="clicked" handler="on_delete_clicked" swapped="yes"/>
+        <style>
+          <class name="flat"/>
+        </style>
+      </object>
+    </child>
+  </template>
+</interface>

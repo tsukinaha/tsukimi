@@ -9,6 +9,7 @@ use crate::ui::widgets::item_utils::{
     make_subtitle_version_choice, make_video_version_choice_from_matcher,
 };
 use crate::ui::widgets::song_widget::format_duration;
+use crate::ui::widgets::window::Window;
 use crate::utils::{spawn, spawn_g_timeout, spawn_tokio};
 use adw::prelude::*;
 use gettextrs::gettext;
@@ -16,6 +17,7 @@ use glib::Object;
 use gtk::gdk::Rectangle;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib, Builder, PopoverMenu};
+use url::Url;
 
 use super::mpvglarea::MPVGLArea;
 use super::tsukimi_mpv::{
@@ -24,8 +26,8 @@ use super::tsukimi_mpv::{
 use super::video_scale::VideoScale;
 
 const MIN_MOTION_TIME: i64 = 100000;
-const NEXT_CHAPTER_KEYVAL: u32 = 65366;
-const PREV_CHAPTER_KEYVAL: u32 = 65365;
+const PREV_CHAPTER_KEYVAL: u32 = 65366;
+const NEXT_CHAPTER_KEYVAL: u32 = 65365;
 
 mod imp {
 
@@ -37,6 +39,7 @@ mod imp {
     use gtk::{glib, CompositeTemplate, PopoverMenu, ShortcutsWindow};
 
     use crate::client::structs::Back;
+    use crate::ui::models::SETTINGS;
     use crate::ui::mpv::menu_actions::MenuActions;
     use crate::ui::mpv::mpvglarea::MPVGLArea;
     use crate::ui::mpv::video_scale::VideoScale;
@@ -140,6 +143,20 @@ mod imp {
             klass.install_action("mpv.chapter-next", None, move |mpv, _action, _parameter| {
                 mpv.chapter_next();
             });
+            klass.install_action(
+                "mpv.show-settings",
+                None,
+                move |mpv, _action, _parameter| {
+                    mpv.on_sidebar_clicked();
+                },
+            );
+            klass.install_action(
+                "mpv.show-playlist",
+                None,
+                move |mpv, _action, _parameter| {
+                    mpv.on_playlist_clicked();
+                },
+            );
             klass.install_action_async(
                 "mpv.next-video",
                 None,
@@ -169,6 +186,18 @@ mod imp {
 
             self.menu_popover.set_position(gtk::PositionType::Top);
             self.menu_popover.set_offset(0, -20);
+
+            SETTINGS
+                .bind(
+                    "mpv-show-buffer-speed",
+                    &self.network_speed_label_2.get(),
+                    "visible",
+                )
+                .build();
+
+            SETTINGS
+                .bind("mpv-default-volume", &self.volume_adj.get(), "value")
+                .build();
 
             self.video_scale.set_player(Some(&self.video.get()));
 
@@ -246,7 +275,7 @@ impl MPVPage {
         let suburi = suburi.map(|s| s.to_owned());
         let name = if let Some(series_name) = item.series_name() {
             format!(
-                "{} - S{}E{}: {}",
+                "{} - S{}E{}: {}",
                 series_name,
                 item.parent_index_number(),
                 item.index_number(),
@@ -256,6 +285,12 @@ impl MPVPage {
             item.name()
         };
 
+        self.imp()
+            .video
+            .imp()
+            .mpv
+            .set_property("force-media-title", name.clone());
+        self.imp().video_scale.reset_scale();
         self.imp().video_version_matcher.replace(matcher);
         self.imp().current_video.replace(Some(item));
         self.imp().current_episode_list.replace(episode_list);
@@ -477,6 +512,7 @@ impl MPVPage {
             playsessionid: playback.play_session_id,
             mediasourceid: media_source_id.to_string(),
             tick: 0,
+            start_tick: 0,
         };
 
         self.play(
@@ -524,6 +560,9 @@ impl MPVPage {
                         ListenEvent::Seek | ListenEvent::PausedForCache(true) => {
                             obj.update_seeking(true);
                         }
+                        ListenEvent::PausedForCache(false) | ListenEvent::PlaybackRestart => {
+                            obj.update_seeking(false);
+                        }
                         ListenEvent::Eof(value) => {
                             obj.on_end_file(value);
                         }
@@ -535,9 +574,6 @@ impl MPVPage {
                         }
                         ListenEvent::CacheSpeed(value) => {
                             obj.on_cache_speed_update(value);
-                        }
-                        ListenEvent::PlaybackRestart | ListenEvent::PausedForCache(false) => {
-                            obj.update_seeking(false);
                         }
                         ListenEvent::StartFile => {
                             obj.on_start_file();
@@ -551,10 +587,44 @@ impl MPVPage {
                         ListenEvent::Speed(value) => {
                             obj.speed_cb(value);
                         }
+                        ListenEvent::Shutdown => {
+                            obj.on_shutdown();
+                        }
+                        ListenEvent::DemuxerCacheTime(value) => {
+                            obj.on_cache_time_update(value);
+                        }
                     }
                 }
             }
         ));
+    }
+
+    fn on_shutdown(&self) {
+        let binding = self.root();
+        let window = binding.and_downcast_ref::<Window>().expect("No Window");
+        let alert_dialog = adw::AlertDialog::builder()
+            .heading(gettext("Error"))
+            .body(gettext(
+                "MPV has been shutdown, Application will exit. \nTsukimi can't restart MPV.",
+            ))
+            .build();
+        alert_dialog.add_response("shutdown", &gettext("Shutdown"));
+        alert_dialog.set_response_appearance("shutdown", adw::ResponseAppearance::Destructive);
+        alert_dialog.connect_response(
+            Some("shutdown"),
+            glib::clone!(
+                #[weak]
+                window,
+                move |_, _| {
+                    window.close();
+                }
+            ),
+        );
+        alert_dialog.present(Some(window));
+    }
+
+    fn on_cache_time_update(&self, value: i64) {
+        self.imp().video_scale.set_cache_end_time(value);
     }
 
     fn update_duration(&self, value: f64) {
@@ -660,17 +730,17 @@ impl MPVPage {
             return;
         }
 
-        let is_threshold = (old_x - x).abs() > 5.0 || (old_y - y).abs() > 5.0;
+        let is_threshold = (old_x - x).abs() > 3.0 || (old_y - y).abs() > 3.0;
 
         if is_threshold {
-            if self.toolbar_revealed() {
-                self.reset_fade_timeout();
-            } else {
+            if !self.toolbar_revealed() {
                 self.set_reveal_overlay(true);
             }
-        }
 
-        *imp.last_motion_time.borrow_mut() = now;
+            self.reset_fade_timeout();
+
+            *imp.last_motion_time.borrow_mut() = now;
+        }
     }
 
     #[template_callback]
@@ -724,11 +794,20 @@ impl MPVPage {
     }
 
     fn toolbar_revealed(&self) -> bool {
-        self.imp().top_revealer.is_child_revealed()
+        self.imp().bottom_revealer.is_child_revealed()
     }
 
     fn fade_overlay_delay_cb(&self) {
         *self.imp().timeout.borrow_mut() = None;
+
+        let binding = self.ancestor(adw::OverlaySplitView::static_type());
+        let Some(view) = binding.and_downcast_ref::<adw::OverlaySplitView>() else {
+            return;
+        };
+
+        if view.shows_sidebar() {
+            return;
+        }
 
         if self.toolbar_revealed() && self.can_fade_overlay() {
             self.set_reveal_overlay(false);
@@ -749,6 +828,16 @@ impl MPVPage {
         if self.imp().menu_button.is_active() {
             return false;
         }
+
+        let binding = self.ancestor(gtk::Stack::static_type());
+        let Some(view) = binding.and_downcast_ref::<gtk::Stack>() else {
+            return false;
+        };
+
+        if view.visible_child_name() != Some("mpv".into()) {
+            return false;
+        }
+
         true
     }
 
@@ -756,6 +845,23 @@ impl MPVPage {
         let imp = self.imp();
         imp.bottom_revealer.set_reveal_child(reveal);
         imp.top_revealer.set_reveal_child(reveal);
+        let Some(surface) = self.native().and_then(|f| f.surface()) else {
+            return;
+        };
+        let cursor = if reveal {
+            gtk::gdk::Cursor::from_name("default", None)
+        } else {
+            let Some(pixbuf) =
+                gtk::gdk_pixbuf::Pixbuf::new(gtk::gdk_pixbuf::Colorspace::Rgb, true, 8, 1, 1)
+            else {
+                return;
+            };
+            pixbuf.fill(0);
+            let texture = gtk::gdk::Texture::for_pixbuf(&pixbuf);
+            Some(gtk::gdk::Cursor::from_texture(&texture, 0, 0, None))
+        };
+
+        surface.set_cursor(cursor.as_ref());
     }
 
     #[template_callback]
@@ -792,6 +898,7 @@ impl MPVPage {
     fn on_stop_clicked(&self) {
         self.handle_callback(BackType::Stop);
         self.remove_timeout();
+
         self.imp().video_scale.remove_timeout();
         let mpv = &self.imp().video.imp().mpv;
         mpv.pause(true);
@@ -804,6 +911,20 @@ impl MPVPage {
             .unwrap();
         window.imp().stack.set_visible_child_name("main");
         window.allow_suspend();
+
+        spawn_g_timeout(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            #[weak]
+            window,
+            async move {
+                if let Some(timeout) = obj.imp().timeout.take() {
+                    glib::source::SourceId::remove(timeout);
+                }
+                obj.set_reveal_overlay(true);
+                window.update_item_page().await;
+            }
+        ));
     }
 
     pub fn update_position_callback(&self) -> glib::ControlFlow {
@@ -816,7 +937,7 @@ impl MPVPage {
         let back = self.imp().back.borrow();
 
         // close window when vo=gpu-next will set position to 0, so we need to ignore it
-        if position < &9.0 && backtype != BackType::Start {
+        if position < &9.0 && (backtype != BackType::Start || backtype != BackType::Stop) {
             return;
         }
 
@@ -824,9 +945,9 @@ impl MPVPage {
             let duration = *position as u64 * 10000000;
             let mut back = back.clone();
             back.tick = duration;
-            spawn(spawn_tokio(async move {
+            crate::utils::spawn_tokio_without_await(async move {
                 let _ = EMBY_CLIENT.position_back(&back, backtype).await;
-            }))
+            });
         }
     }
 
@@ -868,18 +989,44 @@ impl MPVPage {
 
     #[template_callback]
     fn on_playlist_clicked(&self) {
+        let binding = self.root();
+        let Some(window) = binding.and_downcast_ref::<Window>() else {
+            return;
+        };
+        window.view_playlist();
+    }
+
+    fn on_sidebar_clicked(&self) {
+        let binding = self.root();
+        let Some(window) = binding.and_downcast_ref::<Window>() else {
+            return;
+        };
+        window.view_control_sidebar();
+    }
+
+    pub fn key_pressed_cb(&self, key: u32, state: gtk::gdk::ModifierType) {
         let binding = self.ancestor(adw::OverlaySplitView::static_type());
         let Some(view) = binding.and_downcast_ref::<adw::OverlaySplitView>() else {
             return;
         };
-        view.set_show_sidebar(!view.shows_sidebar());
-    }
 
-    pub fn key_pressed_cb(&self, key: u32, state: gtk::gdk::ModifierType) {
+        if view.shows_sidebar() {
+            return;
+        }
+
         self.imp().video.press_key(key, state)
     }
 
     pub fn key_released_cb(&self, key: u32, state: gtk::gdk::ModifierType) {
+        let binding = self.ancestor(adw::OverlaySplitView::static_type());
+        let Some(view) = binding.and_downcast_ref::<adw::OverlaySplitView>() else {
+            return;
+        };
+
+        if view.shows_sidebar() {
+            return;
+        }
+
         self.imp().video.release_key(key, state)
     }
 
@@ -922,38 +1069,11 @@ impl MPVPage {
 
     pub fn load_config(&self) {
         let imp = self.imp();
-        imp.network_speed_label_2
-            .set_visible(SETTINGS.mpv_show_buffer_speed());
-        imp.volume_adj
-            .set_value(SETTINGS.mpv_default_volume() as f64);
         let mpv = &imp.video.imp().mpv;
-        if !SETTINGS.proxy().is_empty() {
-            mpv.set_property("http-proxy", SETTINGS.proxy());
-        }
-        match SETTINGS.mpv_hwdec() {
-            0 => mpv.set_property("hwdec", "no"),
-            1 => mpv.set_property("hwdec", "auto-safe"),
-            2 => mpv.set_property("hwdec", "vaapi"),
-            _ => unreachable!(),
-        }
-        mpv.set_property(
-            "demuxer-max-bytes",
-            format!("{}MiB", SETTINGS.mpv_cache_size()),
-        );
-        mpv.set_property("cache-secs", (SETTINGS.mpv_cache_time()) as i64);
-        mpv.set_property("volume", SETTINGS.mpv_default_volume() as i64);
-        mpv.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64);
-        mpv.set_property("sub-font", SETTINGS.mpv_subtitle_font());
-        if SETTINGS.mpv_force_stereo() {
-            mpv.set_property("audio-channels", "stereo");
-        } else {
-            mpv.set_property("audio-channels", "auto");
-        }
-        match SETTINGS.mpv_video_output() {
-            0 => mpv.set_property("vo", "libmpv"),
-            1 => mpv.set_property("vo", "gpu-next"),
-            2 => mpv.set_property("vo", "dmabuf-wayland"),
-            _ => unreachable!(),
+        if let Some(uri) = crate::config::proxy::get_proxy_settings() {
+            let url =
+                Url::parse(&uri).map_or_else(|_| format!("http://{}", uri), |_| uri.to_string());
+            mpv.set_property("http-proxy", url);
         }
         match SETTINGS.mpv_audio_preferred_lang() {
             0 => mpv.set_property("alang", ""), // clear alang
@@ -972,11 +1092,6 @@ impl MPVPage {
             6 => mpv.set_property("slang", "nob"),
             7 => mpv.set_property("slang", "por"),
             _ => unreachable!(),
-        }
-        if SETTINGS.mpv_action_after_video_end() == 1 {
-            mpv.set_property("loop", "inf");
-        } else {
-            mpv.set_property("loop", "no");
         }
     }
 }

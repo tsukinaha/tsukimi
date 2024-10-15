@@ -113,6 +113,10 @@
       <default>true</default>
       <summary>Whether to enable background</summary>
     </key>
+    <key name="mpv-deband" type="b">
+      <default>false</default>
+      <summary>Whether to enable deband filter</summary>
+    </key>
     <key name="preferred-server" type="s">
       <default>""</default>
       <summary>Last Server</summary>
@@ -162,6 +166,16 @@
       <description>0: Play Next, 1: Loop Playback, 2: Stop</description>
       <default>0</default>
     </key>
+    <key name="mpv-audio-channel" type="i">
+      <summary>Audio channel</summary>
+      <description>0: Auto, 1: Auto(safe), 2. Mono, 3.Dual</description>
+      <default>0</default>
+    </key>
+    <key name="mpv-video-scale" type="i">
+      <summary>Video Upscale Method</summary>
+      <description>0: lanczos, 1: bilinear, 2: ewa_lanczos, 3: mitchell, 4: hermite, 5: oversample, 6: linear, 7: ewa_hanning, 8: ewa_lanczossharp</description>
+      <default>0</default>
+    </key>
     <key name="mpv-force-stereo" type="b">
       <summary>Whether to force stereo audio output</summary>
       <default>false</default>
@@ -174,10 +188,22 @@
       <summary>MPV subtitle font</summary>
       <default>""</default>
     </key>
+    <key name="mpv-config-path" type="s">
+      <summary>MPV config path</summary>
+      <default>"None"</default>
+    </key>
     <key type="s" name="video-version-descriptors">
-			<summary>List of the video version preferences</summary>
+      <summary>List of the video version preferences</summary>
       <description>[(descriptor, is_regex, weight)]</description>
-			<default>'[]'</default>
-		</key>
+      <default>'[]'</default>
+    </key>
+    <key type="s" name="accounts">
+      <summary>List of the accounts</summary>
+      <default>'[]'</default>
+    </key>
+    <key type="d" name="mpv-subtitle-scale">
+      <summary>MPV subtitle scale</summary>
+      <default>1.0</default>
+    </key>
   </schema>
 </schemalist>

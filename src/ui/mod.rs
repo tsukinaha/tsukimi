@@ -17,10 +17,10 @@ pub fn build_ui(app: &adw::Application) {
                 .application_name("Tsukimi")
                 .version(crate::config::APP_VERSION)
                 .comments(
-                    "A simple third-party Emby client.\nVersion: tsukimi 0.13.0 \n2024.9.29 19:08",
+                    "A simple third-party Emby client.\nVersion: tsukimi 0.16.2 \n2024.10.11 20:17",
                 )
                 // TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-                .translator_credits(&gettext("translator-credits"))
+                .translator_credits(gettext("translator-credits"))
                 .website("https://github.com/tsukinaha/tsukimi")
                 .application_icon("tsukimi")
                 .license_type(gtk::License::Gpl30)
@@ -66,9 +66,6 @@ pub fn load_css() {
         accent_color,
         accent_color
     ));
-
-    #[cfg(target_os = "windows")]
-    styles.push_str("window {box-shadow:none;}");
 
     provider.load_from_string(&styles);
 

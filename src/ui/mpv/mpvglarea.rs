@@ -3,6 +3,7 @@ use gtk::gdk::{Backend, Display};
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
+use libmpv2::SetData;
 use tracing::info;
 
 use crate::client::client::EMBY_CLIENT;
@@ -225,5 +226,12 @@ impl MPVGLArea {
 
     pub fn pause(&self, pause: bool) {
         self.imp().mpv.pause(pause)
+    }
+
+    pub fn set_property<V>(&self, property: &str, value: V)
+    where
+        V: SetData,
+    {
+        self.imp().mpv.set_property(property, value)
     }
 }
