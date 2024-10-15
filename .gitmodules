@@ -1,0 +1,3 @@
+[submodule "sub-projects/danmaku"]
+	path = sub-projects/danmaku
+	url = https://github.com/tsukimi-rs/danmaku.git
