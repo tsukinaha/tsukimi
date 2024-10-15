@@ -70,6 +70,16 @@ impl EmbyClient {
     pub fn default() -> Self {
         let mut headers = reqwest::header::HeaderMap::new();
         headers.insert("Accept-Encoding", HeaderValue::from_static("gzip"));
+        headers.insert(
+            "x-emby-authorization",
+            HeaderValue::from_str(&generate_emby_authorization(
+                "",
+                &CLIENT_ID,
+                &DEVICE_NAME,
+                &DEVICE_ID,
+                &APP_VERSION,
+            )).unwrap(),
+        );
         Self {
             url: Mutex::new(None),
             client: ReqClient::build(),
