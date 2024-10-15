@@ -321,6 +321,7 @@ impl SingleGrid {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
                 imp.adbutton.set_visible(false);
+                imp.glbutton.set_visible(false);
             }
             ListType::BoxSet => {
                 imp.postmenu.set_visible(false);
@@ -457,6 +458,10 @@ impl SingleGrid {
         F: Fn(String, String, u32) -> Fut + Send + Sync + 'static,
         Fut: Future<Output = Result<List>> + Send + 'static,
     {
+        if is_resume {
+            return;
+        }
+
         self.imp().scrolled.connect_end_edge_reached(glib::clone!(
             #[weak(rename_to = obj)]
             self,

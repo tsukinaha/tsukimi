@@ -679,7 +679,7 @@ impl EmbyClient {
             ("SortBy", sortby),
             ("SortOrder", sort_order),
             ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
-            if listtype == "Genres" {
+            if listtype == "Genres" || listtype == "Genre" {
                 ("GenreIds", parentid)
             } else if listtype == "Studios" {
                 ("StudioIds", parentid)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-15 12:18+0800\n"
+"POT-Creation-Date: 2024-10-15 18:55+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -192,6 +192,14 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:435
 msgid "May cause crashes, Requires restart"
+msgstr ""
+
+#: resources/ui/account_settings.ui:438
+msgid "Enable external config"
+msgstr ""
+
+#: resources/ui/account_settings.ui:443
+msgid "Config dir"
 msgstr ""
 
 #: resources/ui/account_settings.ui:466
