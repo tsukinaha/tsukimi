@@ -2,6 +2,7 @@
 name = "tsukimi"
 version = "0.16.2"
 edition = "2021"
+rust-version = "1.81"
 description = "A simple Emby Client written by GTK4-RS"
 license = "GPL"
 
@@ -44,6 +45,7 @@ gdk4-win32 = { version = "0.9.0", optional = true }
 regex = "1.11.0"
 strsim = "0.11.1"
 clap = { version="4.5.20", features = ["derive"] }
+danmaku = { path = "sub-projects/danmaku", version = "0.0.0" }
 
 [build-dependencies]
 embed-resource = "2.5.0"

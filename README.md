@@ -1,4 +1,4 @@
-![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/tsukimi_chat)
+![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/+BtTTXtCZFSxjZGU1)
 
 ## Tsukimi
 Tsukimi is a simple third-party Emby client written in GTK4-RS, uses MPV as the video player, and GStreamer as the music player
@@ -29,8 +29,6 @@ Set config=true to enable external config.
 [MPV-manual#files](https://mpv.io/manual/master/#files) 
 
 ## Contributing
-### Code
-Please join our [Telegram Group](https://t.me/+BtTTXtCZFSxjZGU1) (Only for contributing)
 
 ### Translations
 
