@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Setup msys2
         if: ${{ matrix.arch == 'x86_64-windows-gnu' }}
