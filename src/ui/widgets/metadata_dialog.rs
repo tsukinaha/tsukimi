@@ -13,7 +13,9 @@ use crate::{
 mod imp {
     use super::*;
     use crate::{
-        client::structs::SimpleListItem, ui::{provider::IS_ADMIN, widgets::item::dt}, utils::spawn
+        client::structs::SimpleListItem,
+        ui::{provider::IS_ADMIN, widgets::item::dt},
+        utils::spawn,
     };
 
     use glib::subclass::InitializingObject;

@@ -335,7 +335,8 @@ impl ItemPage {
                     let id = item.id();
                     match spawn_tokio(async move { EMBY_CLIENT.get_item_info(&id).await }).await {
                         Ok(item) => {
-                            obj.set_intro::<true>(&TuItem::from_simple(&item, None)).await;
+                            obj.set_intro::<true>(&TuItem::from_simple(&item, None))
+                                .await;
                         }
                         Err(e) => {
                             toast!(obj, e.to_user_facing());
@@ -344,7 +345,6 @@ impl ItemPage {
                 }
             ));
         }
-        
     }
 
     async fn setup_item(&self, id: &str) {

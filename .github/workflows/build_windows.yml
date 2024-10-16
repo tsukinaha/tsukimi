@@ -48,6 +48,8 @@ jobs:
       - name: Checkout
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Setup msys2
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}

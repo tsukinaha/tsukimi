@@ -1,5 +1,0 @@
-/target
-/examples/target
-/mpv-sys/target
-Cargo.lock
-.vscode

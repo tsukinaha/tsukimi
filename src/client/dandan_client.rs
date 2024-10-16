@@ -1,12 +1,12 @@
+use crate::config::proxy::ReqClient;
+use anyhow::{anyhow, Result};
+use chrono::NaiveDateTime;
 use once_cell::sync::Lazy;
 use reqwest::{header::HeaderValue, Method, RequestBuilder, Response};
-use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
-use url::Url;
-use std::sync::Mutex;
-use chrono::NaiveDateTime;
 use std::io::Write;
-use crate::config::proxy::ReqClient;
+use std::sync::Mutex;
+use url::Url;
 
 const DANDANAPI: &str = "https://api.dandanplay.net";
 const DANDANCASAPI: &str = "https://cas.dandanplay.net";
@@ -77,17 +77,29 @@ impl DanDanClient {
 
     pub async fn search_anime(&self, keyword: &str) -> Result<SearchAnimeResponse> {
         let params = &[("keyword", keyword)];
-        self.request(&format!("{}{}", DANDANAPI, DANDANAPI_SEARCH_ANIME_PATH), params).await
+        self.request(
+            &format!("{}{}", DANDANAPI, DANDANAPI_SEARCH_ANIME_PATH),
+            params,
+        )
+        .await
     }
 
     pub async fn search_episode(&self, anime_id: u64) -> Result<SearchEpisodesResponse> {
         let anime_id_str = anime_id.to_string();
         let params = &[("anime", anime_id_str.as_str())];
-        self.request(&format!("{}{}", DANDANAPI, DANDANAPI_SEARCH_EPISODE_PATH), params).await
+        self.request(
+            &format!("{}{}", DANDANAPI, DANDANAPI_SEARCH_EPISODE_PATH),
+            params,
+        )
+        .await
     }
 
     pub async fn get_comments(&self, episode_id: u64) -> Result<()> {
-        let request = self.prepare_request(Method::GET, &format!("{}{}{}", DANDANCASAPI, DANDANAPI_COMMENT_PATH, episode_id.to_string()), &[])?;
+        let request = self.prepare_request(
+            Method::GET,
+            &format!("{}{}{}", DANDANCASAPI, DANDANAPI_COMMENT_PATH, episode_id),
+            &[],
+        )?;
         let res = self.send_request(request).await?.error_for_status()?;
         let bytes = res.bytes().await?;
 
@@ -96,7 +108,6 @@ impl DanDanClient {
 
         let mut file = std::fs::File::create(comment_path)?;
         file.write_all(&bytes)?;
-
 
         Ok(())
     }
@@ -197,7 +208,6 @@ pub struct SearchEpisodeDetails {
     pub title: Option<String>,
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -222,7 +232,10 @@ mod tests {
             }
         }
 
-        match DANDAN_CLIENT.search_anime("sadiauhiuhliubalikubcksauiyg").await {
+        match DANDAN_CLIENT
+            .search_anime("sadiauhiuhliubalikubcksauiyg")
+            .await
+        {
             Ok(res) => {
                 println!("{:?}", res);
             }

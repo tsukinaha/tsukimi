@@ -57,7 +57,6 @@ impl Args {
 
         if std::env::var("GSK_RENDERER").is_err() {
             std::env::set_var("GSK_RENDERER", DEFAULT_RENDERER);
-            return;
         }
     }
 

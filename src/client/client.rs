@@ -77,8 +77,9 @@ impl EmbyClient {
                 &CLIENT_ID,
                 &DEVICE_NAME,
                 &DEVICE_ID,
-                &APP_VERSION,
-            )).unwrap(),
+                APP_VERSION,
+            ))
+            .unwrap(),
         );
         Self {
             url: Mutex::new(None),
@@ -157,7 +158,7 @@ impl EmbyClient {
                 &CLIENT_ID,
                 &DEVICE_NAME,
                 &DEVICE_ID,
-                &APP_VERSION,
+                APP_VERSION,
             ))?,
         );
         Ok(())
