@@ -28,7 +28,6 @@ msgid "General"
 msgstr "常規"
 
 #: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:488
-#: resources/ui/account_settings.ui:476
 msgid "Preferred Video Version"
 msgstr "首選影片版本"
 
@@ -205,89 +204,80 @@ msgstr "啟用外部 mpv 配置"
 msgid "Config dir"
 msgstr "配置目錄"
 
-#: resources/ui/account_settings.ui:466 resources/ui/account_settings.ui:454
+#: resources/ui/account_settings.ui:466
 msgid "Preferred Version"
 msgstr "首選版本"
 
-#: resources/ui/account_settings.ui:489 resources/ui/account_settings.ui:477
+#: resources/ui/account_settings.ui:489
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
 "權重從高到低排序，直到匹配到特定版本，或者在清除匹配清單之前獲得最高匹配版本"
 
-#: resources/ui/account_settings.ui:504 resources/ui/account_settings.ui:492
+#: resources/ui/account_settings.ui:504
 msgid "Descriptors"
 msgstr "描述符"
 
-#: resources/ui/account_settings.ui:526 resources/ui/account_settings.ui:514
+#: resources/ui/account_settings.ui:526
 msgid "It is recommended to set no more than 3 lines"
 msgstr "建議設定不超過 3 行"
 
-#: resources/ui/account_settings.ui:547 resources/ui/account_settings.ui:535
+#: resources/ui/account_settings.ui:547
 msgid "No Descriptors"
 msgstr "無描述符"
 
-#: resources/ui/account_settings.ui:566 resources/ui/account_settings.ui:554
+#: resources/ui/account_settings.ui:566
 msgid "Add a descriptor"
 msgstr "添加描述符"
 
 #: resources/ui/account_settings.ui:577 resources/ui/account_settings.ui:687
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
-#: resources/ui/metadata_dialog.ui:38 resources/ui/account_settings.ui:565
-#: resources/ui/account_settings.ui:675
+#: resources/ui/metadata_dialog.ui:38
 msgid "Cancel"
 msgstr "取消"
 
-#: resources/ui/account_settings.ui:583 resources/ui/account_settings.ui:571
+#: resources/ui/account_settings.ui:583
 msgid "Add"
 msgstr "添加"
 
 #: resources/ui/account_settings.ui:608 resources/ui/account_settings.ui:718
-#: resources/ui/account_settings.ui:596 resources/ui/account_settings.ui:706
 msgid "This will use exact matching to obtain a list"
 msgstr "這將使用精確匹配來獲取列表"
 
 #: resources/ui/account_settings.ui:611 resources/ui/account_settings.ui:721
-#: resources/ui/account_settings.ui:599 resources/ui/account_settings.ui:709
 msgid "Descriptor Type"
 msgstr "描述符類型"
 
 #: resources/ui/account_settings.ui:616 resources/ui/account_settings.ui:726
-#: resources/ui/account_settings.ui:604 resources/ui/account_settings.ui:714
 msgid "String"
 msgstr "字符串"
 
 #: resources/ui/account_settings.ui:617 resources/ui/account_settings.ui:727
-#: resources/ui/account_settings.ui:605 resources/ui/account_settings.ui:715
 msgid "Regular Expression"
 msgstr "正則表達式"
 
 #: resources/ui/account_settings.ui:629 resources/ui/account_settings.ui:739
-#: resources/ui/account_settings.ui:617 resources/ui/account_settings.ui:727
 msgid "Descriptor"
 msgstr "描述符"
 
 #: resources/ui/account_settings.ui:634 resources/ui/account_settings.ui:744
-#: resources/ui/account_settings.ui:622 resources/ui/account_settings.ui:732
 msgid "Descriptor should not be too long"
 msgstr "描述符不宜太長"
 
 #: resources/ui/account_settings.ui:645 resources/ui/account_settings.ui:755
-#: resources/ui/account_settings.ui:633 resources/ui/account_settings.ui:743
 msgid "eg. 1080p"
 msgstr "例如 –「1080p」"
 
 #: resources/ui/account_settings.ui:656 resources/ui/account_settings.ui:766
-#: resources/ui/account_settings.ui:644 resources/ui/account_settings.ui:754
 msgid "eg. 1080p.*WebDL"
 msgstr "例如 –「1080p.*WebDL」"
 
-#: resources/ui/account_settings.ui:676 resources/ui/account_settings.ui:664
+#: resources/ui/account_settings.ui:676
 msgid "Edit descriptor"
 msgstr "編輯描述符"
 
-#: resources/ui/account_settings.ui:693 resources/ui/account_settings.ui:681
+#: resources/ui/account_settings.ui:693
 msgid "Save"
 msgstr "保存"
 
@@ -338,31 +328,27 @@ msgstr "暫無內容"
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
 #: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:523
-#: src/ui/mpv/page.rs:881 src/ui/mpv/page.rs:883 src/ui/widgets/item.rs:504
 msgid "Play"
 msgstr "播放"
 
-#: resources/ui/mpvpage.ui:95 resources/ui/mpvpage.ui:222
+#: resources/ui/mpvpage.ui:95
 msgid "Stop and quit"
 msgstr "停止並退出"
 
 #: resources/ui/mpvpage.ui:117 resources/ui/window.ui:548
 #: resources/ui/window.ui:570 resources/ui/mpv_menu.ui:35
-#: resources/ui/mpvpage.ui:257
 msgid "Playlist"
 msgstr "播放列表"
 
-#: resources/ui/mpvpage.ui:129 resources/ui/mpvpage.ui:269
+#: resources/ui/mpvpage.ui:129
 msgid "Media info (MPV)"
 msgstr "媒體信息（MPV）"
 
 #: resources/ui/mpvpage.ui:183 resources/ui/item.ui:96 resources/ui/item.ui:133
-#: resources/ui/mpvpage.ui:242
 msgid "Loading..."
 msgstr "載入中..."
 
 #: resources/ui/mpvpage.ui:208 src/ui/mpv/page.rs:891 src/ui/mpv/page.rs:893
-#: resources/ui/mpvpage.ui:98 src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888
 msgid "Pause"
 msgstr "暫停"
 
@@ -373,38 +359,34 @@ msgstr "彈幕設定"
 #: resources/ui/mpvpage.ui:283 resources/ui/mpvpage.ui:285
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 #: resources/ui/window.ui:12 resources/ui/window.ui:45
-#: resources/ui/mpvpage.ui:166 resources/ui/mpvpage.ui:168
 msgid "Fullscreen"
 msgstr "全屏"
 
 #: resources/ui/mpvpage.ui:294 resources/ui/mpvpage.ui:296
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:177 resources/ui/mpvpage.ui:179
 msgid "Exit Fullscreen"
 msgstr "退出全屏"
 
 #: resources/ui/mpvpage.ui:329 resources/ui/window.ui:20
-#: resources/ui/window.ui:49 resources/ui/mpvpage.ui:309
+#: resources/ui/window.ui:49
 msgid "Preferences"
 msgstr "首選項"
 
-#: resources/ui/mpvpage.ui:345 resources/ui/mpvpage.ui:325
+#: resources/ui/mpvpage.ui:345
 msgid "Playback speed"
 msgstr "播放速度"
 
-#: resources/ui/mpvpage.ui:359 resources/ui/mpvpage.ui:339
+#: resources/ui/mpvpage.ui:359
 msgid "Volume"
 msgstr "音量"
 
 #: resources/ui/mpvpage.ui:372 resources/ui/mpvpage.ui:431
-#: resources/ui/mpv_control_sidebar.ui:441 resources/ui/mpvpage.ui:352
-#: resources/ui/mpvpage.ui:411
+#: resources/ui/mpv_control_sidebar.ui:441
 msgid "Audio"
 msgstr "音軌"
 
 #: resources/ui/mpvpage.ui:380 resources/ui/mpvpage.ui:399
-#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:360
-#: resources/ui/mpvpage.ui:379
+#: resources/ui/mpv_control_sidebar.ui:111
 msgid "Subtitle"
 msgstr "字幕"
 
@@ -493,7 +475,6 @@ msgid "No data."
 msgstr "暫無數據"
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/single_grid.ui:111
-#: resources/ui/singlelist.ui:90
 msgid "Title"
 msgstr "標題"
 
@@ -502,7 +483,6 @@ msgid "Sort Title"
 msgstr "排序標題"
 
 #: resources/ui/metadata_dialog.ui:121 resources/ui/single_grid.ui:113
-#: resources/ui/singlelist.ui:92
 msgid "Date Created"
 msgstr "創建時間"
 
@@ -904,7 +884,7 @@ msgstr "刪除"
 msgid "Change Poster"
 msgstr "更改视图"
 
-#: resources/ui/single_grid.ui:37 resources/ui/singlelist.ui:34
+#: resources/ui/single_grid.ui:37
 msgid "View"
 msgstr "視圖"
 
@@ -928,35 +908,35 @@ msgstr "遞減"
 msgid "Sort By"
 msgstr "排序依據"
 
-#: resources/ui/single_grid.ui:112 resources/ui/singlelist.ui:91
+#: resources/ui/single_grid.ui:112
 msgid "Bitrate"
 msgstr "比特率"
 
-#: resources/ui/single_grid.ui:114 resources/ui/singlelist.ui:93
+#: resources/ui/single_grid.ui:114
 msgid "Imdb Rate"
 msgstr "Imdb 評分"
 
-#: resources/ui/single_grid.ui:115 resources/ui/singlelist.ui:94
+#: resources/ui/single_grid.ui:115
 msgid "Critic Rating"
 msgstr "影評人評分"
 
-#: resources/ui/single_grid.ui:116 resources/ui/singlelist.ui:95
+#: resources/ui/single_grid.ui:116
 msgid "Premiere Date"
 msgstr "首映日期"
 
-#: resources/ui/single_grid.ui:117 resources/ui/singlelist.ui:96
+#: resources/ui/single_grid.ui:117
 msgid "Offical Rating"
 msgstr "官方評分"
 
-#: resources/ui/single_grid.ui:118 resources/ui/singlelist.ui:97
+#: resources/ui/single_grid.ui:118
 msgid "Production Year"
 msgstr "出品年份"
 
-#: resources/ui/single_grid.ui:119 resources/ui/singlelist.ui:98
+#: resources/ui/single_grid.ui:119
 msgid "Date Played"
 msgstr "播放日期"
 
-#: resources/ui/single_grid.ui:120 resources/ui/singlelist.ui:99
+#: resources/ui/single_grid.ui:120
 msgid "Runtime"
 msgstr "播放時長"
 
@@ -968,15 +948,15 @@ msgstr "更新日期"
 msgid "Nothing Here"
 msgstr "空空如也"
 
-#: resources/ui/single_grid.ui:185 resources/ui/singlelist.ui:145
+#: resources/ui/single_grid.ui:185
 msgid "Poster"
 msgstr "海報"
 
-#: resources/ui/single_grid.ui:189 resources/ui/singlelist.ui:149
+#: resources/ui/single_grid.ui:189
 msgid "Backdrop"
 msgstr "背景圖"
 
-#: resources/ui/single_grid.ui:193 resources/ui/singlelist.ui:153
+#: resources/ui/single_grid.ui:193
 msgid "Banner"
 msgstr "橫幅"
 
@@ -1080,51 +1060,43 @@ msgstr ""
 msgid "Links"
 msgstr "鏈接"
 
-#: src/ui/widgets/account_add.rs:134 src/ui/widgets/account_add.rs:129
+#: src/ui/widgets/account_add.rs:134
 msgid "Fields must be filled in"
 msgstr "必填欄位"
 
-#: src/ui/widgets/account_add.rs:189 src/ui/widgets/account_add.rs:184
+#: src/ui/widgets/account_add.rs:189
 msgid "Server edited successfully"
 msgstr "伺服器編輯成功"
 
-#: src/ui/widgets/account_add.rs:193 src/ui/widgets/account_add.rs:190
-#: src/ui/widgets/account_add.rs:188
+#: src/ui/widgets/account_add.rs:193
 msgid "Server added successfully"
 msgstr "伺服器添加成功"
 
 #: src/ui/widgets/account_settings.rs:212
-#: src/ui/widgets/account_settings.rs:206
 msgid "Password cannot be empty!"
 msgstr "密碼不能為空！"
 
 #: src/ui/widgets/account_settings.rs:216
-#: src/ui/widgets/account_settings.rs:210
 msgid "Passwords do not match!"
 msgstr "密碼不匹配！"
 
 #: src/ui/widgets/account_settings.rs:223
-#: src/ui/widgets/account_settings.rs:217
 msgid "Password changed successfully! Please login again."
 msgstr "密碼修改成功！請重新登入。"
 
 #: src/ui/widgets/account_settings.rs:229
-#: src/ui/widgets/account_settings.rs:223
 msgid "Failed to change password"
 msgstr "修改密碼失敗"
 
 #: src/ui/widgets/account_settings.rs:288
-#: src/ui/widgets/account_settings.rs:282
 msgid "Cache Cleared"
 msgstr "快取已清除"
 
 #: src/ui/widgets/account_settings.rs:309
-#: src/ui/widgets/account_settings.rs:303
 msgid "No file selected"
 msgstr "未選擇檔案"
 
 #: src/ui/widgets/account_settings.rs:385
-#: src/ui/widgets/account_settings.rs:379
 msgid "Font Cleared, Restart to take effect."
 msgstr "已清除字體，重啟程式生效。"
 
@@ -1132,17 +1104,11 @@ msgstr "已清除字體，重啟程式生效。"
 #: src/ui/widgets/account_settings.rs:565
 #: src/ui/widgets/account_settings.rs:599
 #: src/ui/widgets/account_settings.rs:608
-#: src/ui/widgets/account_settings.rs:531
-#: src/ui/widgets/account_settings.rs:540
-#: src/ui/widgets/account_settings.rs:574
-#: src/ui/widgets/account_settings.rs:583
 msgid "Descriptor cannot be empty!"
 msgstr "描述符不能為空！"
 
 #: src/ui/widgets/account_settings.rs:570
 #: src/ui/widgets/account_settings.rs:613
-#: src/ui/widgets/account_settings.rs:545
-#: src/ui/widgets/account_settings.rs:588
 msgid "Invalid regex"
 msgstr "正則表達式無效"
 
@@ -1158,47 +1124,47 @@ msgstr "媒體庫"
 msgid "Latest"
 msgstr "最新的"
 
-#: src/ui/mpv/control_sidebar.rs:431 src/ui/mpv/control_sidebar.rs:411
+#: src/ui/mpv/control_sidebar.rs:431
 msgid "Video filter settings cleared."
 msgstr "視頻濾鏡設定已清除。"
 
-#: src/ui/mpv/control_sidebar.rs:453 src/ui/mpv/control_sidebar.rs:433
+#: src/ui/mpv/control_sidebar.rs:453
 msgid "Subtitle settings cleared."
 msgstr "字幕設定已清除。"
 
-#: src/ui/mpv/control_sidebar.rs:466 src/ui/mpv/control_sidebar.rs:446
+#: src/ui/mpv/control_sidebar.rs:466
 msgid "Subtitle color settings cleared."
 msgstr "字幕顏色設定已清除。"
 
-#: src/ui/mpv/control_sidebar.rs:475 src/ui/mpv/control_sidebar.rs:455
+#: src/ui/mpv/control_sidebar.rs:475
 msgid "Subtitle offset settings cleared."
 msgstr "字幕偏移設定已清除。"
 
-#: src/ui/mpv/control_sidebar.rs:517 src/ui/mpv/control_sidebar.rs:508
+#: src/ui/mpv/control_sidebar.rs:517
 msgid "Deband settings cleared."
 msgstr "去除色帶設定已清除。"
 
-#: src/ui/mpv/page.rs:380 src/ui/mpv/page.rs:375
+#: src/ui/mpv/page.rs:380
 msgid "Loading Video..."
 msgstr "載入視頻中..."
 
-#: src/ui/mpv/page.rs:399 src/ui/mpv/page.rs:394
+#: src/ui/mpv/page.rs:399
 msgid "No more videos found"
 msgstr "暫未發現更多視頻"
 
-#: src/ui/mpv/page.rs:408 src/ui/mpv/page.rs:403
+#: src/ui/mpv/page.rs:408
 msgid "Waiting for mediasource..."
 msgstr "正在等待媒體源..."
 
-#: src/ui/mpv/page.rs:445 src/ui/mpv/page.rs:450 src/ui/mpv/page.rs:440
+#: src/ui/mpv/page.rs:445 src/ui/mpv/page.rs:450
 msgid "No media sources found"
 msgstr "暂未找到媒體源"
 
-#: src/ui/mpv/page.rs:606 src/ui/mpv/page.rs:601
+#: src/ui/mpv/page.rs:606
 msgid "Error"
 msgstr "錯誤"
 
-#: src/ui/mpv/page.rs:608 src/ui/mpv/page.rs:603
+#: src/ui/mpv/page.rs:608
 msgid ""
 "MPV has been shutdown, Application will exit. \n"
 "Tsukimi can't restart MPV."
@@ -1206,7 +1172,7 @@ msgstr ""
 "MPV 已關閉，應用程式將退出。\n"
 "Tsukimi將無法重啟 MPV。"
 
-#: src/ui/mpv/page.rs:611 src/ui/mpv/page.rs:606
+#: src/ui/mpv/page.rs:611
 msgid "Shutdown"
 msgstr "關閉"
 
@@ -1227,11 +1193,10 @@ msgid "Error loading image"
 msgstr "圖像載入錯誤"
 
 #: src/ui/widgets/item.rs:519 src/ui/widgets/list.rs:121
-#: src/ui/widgets/item.rs:500
 msgid "Resume"
 msgstr "續看"
 
-#: src/ui/widgets/item.rs:1069 src/ui/widgets/item.rs:1050
+#: src/ui/widgets/item.rs:1069
 msgid "No video source found"
 msgstr "未找到影片源"
 
@@ -1268,7 +1233,6 @@ msgid "Add to favorites"
 msgstr "添加至收藏"
 
 #: src/ui/widgets/server_action_row.rs:94
-#: src/ui/widgets/server_action_row.rs:91
 msgid "Edit Server"
 msgstr "編輯伺服器"
 
@@ -1276,12 +1240,11 @@ msgstr "編輯伺服器"
 msgid "Present"
 msgstr "黨前"
 
-#: src/ui/widgets/tu_list_item.rs:550 src/ui/widgets/tu_list_item.rs:542
+#: src/ui/widgets/tu_list_item.rs:550
 msgid "Scanning..."
 msgstr "掃描中..."
 
 #: src/ui/widgets/tu_list_item.rs:713 src/ui/widgets/tu_list_item.rs:781
-#: src/ui/widgets/tu_list_item.rs:705 src/ui/widgets/tu_list_item.rs:773
 msgid "Success"
 msgstr "成功"
 
@@ -1333,21 +1296,17 @@ msgstr "結果: "
 msgid "Task started"
 msgstr "任務開始"
 
-#: resources/ui/account_settings.ui:439
-msgid "Read from mpv config dir"
-msgstr "從 mpv 配置目錄讀取"
+#~ msgid "Read from mpv config dir"
+#~ msgstr "從 mpv 配置目錄讀取"
 
-#: resources/ui/mpv_control_sidebar.ui:506
-msgid "Video Filters"
-msgstr "影片調色"
+#~ msgid "Video Filters"
+#~ msgstr "影片調色"
 
-#: resources/ui/singlelist.ui:49
-msgid "Filter Panel"
-msgstr "篩選面板"
+#~ msgid "Filter Panel"
+#~ msgstr "篩選面板"
 
-#: resources/ui/mpv_control_sidebar.ui:687
-msgid "Video Upscale Filter"
-msgstr "影片升頻演算法"
+#~ msgid "Video Upscale Filter"
+#~ msgstr "影片升頻演算法"
 
 #~ msgid "Daily Recommend"
 #~ msgstr "每日推薦"

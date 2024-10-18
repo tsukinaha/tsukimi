@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-14 14:17+0800\n"
+"POT-Creation-Date: 2024-10-18 20:44+0800\n"
 "PO-Revision-Date: 2024-09-27 17:45+0000\n"
 "Last-Translator: 11 22 <8802512@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
@@ -201,6 +201,16 @@ msgstr "Carregar configuração externa do mpv"
 msgid "May cause crashes, Requires restart"
 msgstr ""
 
+#: resources/ui/account_settings.ui:438
+#, fuzzy
+msgid "Enable external config"
+msgstr "Carregar configuração externa do mpv"
+
+#: resources/ui/account_settings.ui:443
+#, fuzzy
+msgid "Config dir"
+msgstr "Confirmar Senha"
+
 #: resources/ui/account_settings.ui:466
 #, fuzzy
 msgid "Preferred Version"
@@ -290,7 +300,6 @@ msgstr "Alterar Senha"
 
 #: resources/ui/account_settings.ui:788
 #, fuzzy
-#| msgid "Read from mpv config dir"
 msgid "Select new mpv config folder"
 msgstr "Ler do diretório de configuração do mpv"
 
@@ -308,7 +317,6 @@ msgstr ""
 
 #: resources/ui/account.ui:74
 #, fuzzy
-#| msgid "Server Address"
 msgid "Server Address (Auto parse)"
 msgstr "Endereço do Servidor"
 
@@ -334,7 +342,7 @@ msgstr "Sem Inscrições"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:504
+#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:523
 msgid "Play"
 msgstr "Reproduzir"
 
@@ -361,7 +369,6 @@ msgstr "Pausar"
 
 #: resources/ui/mpvpage.ui:268
 #, fuzzy
-#| msgid "Video Settings"
 msgid "Danmaku Settings"
 msgstr "Configurações de Vídeo"
 
@@ -543,7 +550,6 @@ msgstr "Bloquear o item"
 
 #: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:598
 #, fuzzy
-#| msgid "Video Settings"
 msgid "Advanced Settings"
 msgstr "Configurações de Vídeo"
 
@@ -575,7 +581,6 @@ msgstr "Tamanho do Cache"
 
 #: resources/ui/mpv_control_sidebar.ui:78
 #, fuzzy
-#| msgid "Unit: MB"
 msgid "Unit: MB"
 msgstr "Unidade: MB"
 
@@ -585,13 +590,11 @@ msgstr "Tempo de Cache"
 
 #: resources/ui/mpv_control_sidebar.ui:114
 #, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Composing"
 msgstr "Legenda: "
 
 #: resources/ui/mpv_control_sidebar.ui:186
 #, fuzzy
-#| msgid "No Inscriptions"
 msgid "Position"
 msgstr "Sem Inscrições"
 
@@ -605,7 +608,6 @@ msgstr "Esta opção só tem efeito para legendas SRT"
 
 #: resources/ui/mpv_control_sidebar.ui:227
 #, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Subtitle Text Scale"
 msgstr "Tamanho do Texto da Legenda"
 
@@ -639,7 +641,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:283
 #, fuzzy
-#| msgid "Background"
 msgid "Background box"
 msgstr "Fundo"
 
@@ -653,7 +654,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:323
 #, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Color"
 msgstr "Legenda: "
 
@@ -667,7 +667,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:392
 #, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Offset"
 msgstr "Legenda: "
 
@@ -678,7 +677,6 @@ msgstr ""
 #: resources/ui/mpv_control_sidebar.ui:406
 #: resources/ui/mpv_control_sidebar.ui:455
 #, fuzzy
-#| msgid "Unit: MB"
 msgid "Unit: ms"
 msgstr "Unidade: MB"
 
@@ -692,7 +690,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:470
 #, fuzzy
-#| msgid "Channels"
 msgid "Audio Channel"
 msgstr "Canais"
 
@@ -710,7 +707,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:478
 #, fuzzy
-#| msgid "Channels"
 msgid "Dual Channel"
 msgstr "Canais"
 
@@ -720,7 +716,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:492
 #, fuzzy
-#| msgid "Video Output"
 msgid "Video Aspect"
 msgstr "Saída de Vídeo"
 
@@ -733,10 +728,8 @@ msgid "Crop"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:506
-#, fuzzy
-#| msgid "Video: "
-msgid "Video Filters"
-msgstr "Vídeo: "
+msgid "Video color grading"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:519
 msgid "Brightness"
@@ -744,7 +737,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:534
 #, fuzzy
-#| msgid "Contents"
 msgid "Contrast"
 msgstr "Conteúdos"
 
@@ -762,7 +754,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:596
 #, fuzzy
-#| msgid "Video: "
 msgid "Video Deband"
 msgstr "Vídeo: "
 
@@ -784,14 +775,12 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:682
 #, fuzzy
-#| msgid "Video: "
 msgid "Video Deinterlace"
 msgstr "Vídeo: "
 
 #: resources/ui/mpv_control_sidebar.ui:687
 #, fuzzy
-#| msgid "Video: "
-msgid "Video Upscale Filter"
+msgid "Video Upscale"
 msgstr "Vídeo: "
 
 #: resources/ui/mpv_control_sidebar.ui:710
@@ -923,7 +912,6 @@ msgstr ""
 
 #: resources/ui/server_action_row.ui:41
 #, fuzzy
-#| msgid "Refresh Metadata"
 msgid "Refresh"
 msgstr "Refrescar o metadado"
 
@@ -1029,7 +1017,6 @@ msgstr ""
 
 #: resources/ui/window.ui:39
 #, fuzzy
-#| msgid "Add Server"
 msgid "Add server"
 msgstr "Adicionar Servidor"
 
@@ -1105,7 +1092,6 @@ msgstr "Anterior"
 
 #: resources/ui/mpv_menu.ui:40
 #, fuzzy
-#| msgid "Video Settings"
 msgid "Advanced settings"
 msgstr "Configurações de Vídeo"
 
@@ -1123,19 +1109,17 @@ msgstr "11 22 <8802512@gmail.com>"
 msgid "Links"
 msgstr "Links"
 
-#: src/ui/widgets/account_add.rs:129
+#: src/ui/widgets/account_add.rs:134
 msgid "Fields must be filled in"
 msgstr "Os campos devem ser preenchidos"
 
-#: src/ui/widgets/account_add.rs:184
+#: src/ui/widgets/account_add.rs:189
 #, fuzzy
-#| msgid "Account added successfully"
 msgid "Server edited successfully"
 msgstr "Conta adicionada com sucesso"
 
-#: src/ui/widgets/account_add.rs:188
+#: src/ui/widgets/account_add.rs:193
 #, fuzzy
-#| msgid "Account added successfully"
 msgid "Server added successfully"
 msgstr "Conta adicionada com sucesso"
 
@@ -1214,13 +1198,11 @@ msgstr ""
 
 #: src/ui/mpv/page.rs:380
 #, fuzzy
-#| msgid "Loading..."
 msgid "Loading Video..."
 msgstr "Carregando..."
 
 #: src/ui/mpv/page.rs:399
 #, fuzzy
-#| msgid "No video source found"
 msgid "No more videos found"
 msgstr "Nenhuma fonte de vídeo encontrada"
 
@@ -1230,7 +1212,6 @@ msgstr ""
 
 #: src/ui/mpv/page.rs:445 src/ui/mpv/page.rs:450
 #, fuzzy
-#| msgid "No video source found"
 msgid "No media sources found"
 msgstr "Nenhuma fonte de vídeo encontrada"
 
@@ -1265,17 +1246,16 @@ msgstr "Imagem copiada para clipboard"
 msgid "Error loading image"
 msgstr "Imagem de carregamento de erro"
 
-#: src/ui/widgets/item.rs:500 src/ui/widgets/list.rs:121
+#: src/ui/widgets/item.rs:519 src/ui/widgets/list.rs:121
 msgid "Resume"
 msgstr "Resume"
 
-#: src/ui/widgets/item.rs:1050
+#: src/ui/widgets/item.rs:1069
 msgid "No video source found"
 msgstr "Nenhuma fonte de vídeo encontrada"
 
 #: src/ui/widgets/music_album.rs:264
 #, fuzzy
-#| msgid "More"
 msgid "More From"
 msgstr "Mais"
 
@@ -1309,7 +1289,6 @@ msgstr "Adicionar aos favoritos"
 
 #: src/ui/widgets/server_action_row.rs:94
 #, fuzzy
-#| msgid "Add Server"
 msgid "Edit Server"
 msgstr "Adicionar Servidor"
 
@@ -1373,6 +1352,11 @@ msgstr ""
 #: src/ui/widgets/server_panel.rs:326
 msgid "Task started"
 msgstr "Início da tarefa"
+
+#, fuzzy
+#~| msgid "Video: "
+#~ msgid "Video Filters"
+#~ msgstr "Vídeo: "
 
 #~ msgid "Filter Panel"
 #~ msgstr "Painel de Filtro"

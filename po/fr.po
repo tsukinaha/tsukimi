@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-14 14:17+0800\n"
+"POT-Creation-Date: 2024-10-18 20:44+0800\n"
 "PO-Revision-Date: 2024-10-15 04:19+0000\n"
 "Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github."
 "com>\n"
@@ -201,6 +201,14 @@ msgstr "Charger une configuration mpv externe"
 msgid "May cause crashes, Requires restart"
 msgstr "Peut causer des plantages, nécessite un redémarrage"
 
+#: resources/ui/account_settings.ui:438
+msgid "Enable external config"
+msgstr "Activer une configuration externe"
+
+#: resources/ui/account_settings.ui:443
+msgid "Config dir"
+msgstr "Configurer le répertoire"
+
 #: resources/ui/account_settings.ui:466
 msgid "Preferred Version"
 msgstr "Version préférée"
@@ -326,8 +334,7 @@ msgstr "Pas d'inscriptions"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:504
-#: src/ui/widgets/item.rs:523
+#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:523
 msgid "Play"
 msgstr "Démarrer / Reprendre"
 
@@ -700,8 +707,8 @@ msgid "Crop"
 msgstr "Rogner"
 
 #: resources/ui/mpv_control_sidebar.ui:506
-msgid "Video Filters"
-msgstr "Filtres vidéo"
+msgid "Video color grading"
+msgstr "Étalonnage des couleurs de la vidéo"
 
 #: resources/ui/mpv_control_sidebar.ui:519
 msgid "Brightness"
@@ -748,8 +755,8 @@ msgid "Video Deinterlace"
 msgstr "Désentrelacer"
 
 #: resources/ui/mpv_control_sidebar.ui:687
-msgid "Video Upscale Filter"
-msgstr "Filtre d'agrandissement vidéo"
+msgid "Video Upscale"
+msgstr "Agrandissement vidéo"
 
 #: resources/ui/mpv_control_sidebar.ui:710
 msgid "Action after video ends"
@@ -1063,15 +1070,15 @@ msgstr "MarioSwitch https://marioswitch.fr/"
 msgid "Links"
 msgstr "Liens"
 
-#: src/ui/widgets/account_add.rs:129
+#: src/ui/widgets/account_add.rs:134
 msgid "Fields must be filled in"
 msgstr "Les champs doivent être remplis"
 
-#: src/ui/widgets/account_add.rs:184
+#: src/ui/widgets/account_add.rs:189
 msgid "Server edited successfully"
 msgstr "Serveur modifié avec succès"
 
-#: src/ui/widgets/account_add.rs:188
+#: src/ui/widgets/account_add.rs:193
 msgid "Server added successfully"
 msgstr "Serveur ajouté avec succès"
 
@@ -1195,12 +1202,11 @@ msgstr "Image copiée dans le presse-papiers"
 msgid "Error loading image"
 msgstr "Erreur de chargement de l'image"
 
-#: src/ui/widgets/item.rs:500 src/ui/widgets/list.rs:121
-#: src/ui/widgets/item.rs:519
+#: src/ui/widgets/item.rs:519 src/ui/widgets/list.rs:121
 msgid "Resume"
 msgstr "Reprendre"
 
-#: src/ui/widgets/item.rs:1050 src/ui/widgets/item.rs:1069
+#: src/ui/widgets/item.rs:1069
 msgid "No video source found"
 msgstr "Aucune source vidéo trouvée"
 
@@ -1300,21 +1306,11 @@ msgstr "Résultat : "
 msgid "Task started"
 msgstr "Tâche démarrée"
 
-#: resources/ui/account_settings.ui:438
-msgid "Enable external config"
-msgstr "Activer une configuration externe"
+#~ msgid "Video Filters"
+#~ msgstr "Filtres vidéo"
 
-#: resources/ui/account_settings.ui:443
-msgid "Config dir"
-msgstr "Configurer le répertoire"
-
-#: resources/ui/mpv_control_sidebar.ui:506
-msgid "Video color grading"
-msgstr "Étalonnage des couleurs de la vidéo"
-
-#: resources/ui/mpv_control_sidebar.ui:687
-msgid "Video Upscale"
-msgstr "Agrandissement vidéo"
+#~ msgid "Video Upscale Filter"
+#~ msgstr "Filtre d'agrandissement vidéo"
 
 #~ msgid "Filter Panel"
 #~ msgstr "Panneau de filtres"

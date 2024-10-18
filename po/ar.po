@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-14 14:17+0800\n"
+"POT-Creation-Date: 2024-10-18 20:44+0800\n"
 "PO-Revision-Date: 2024-10-05 12:15+0000\n"
 "Last-Translator: Abdulrahman <2140398@uj.edu.sa>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/tsukimi/main/ar/"
@@ -198,6 +198,16 @@ msgstr "تحميل إعدادات mpv الخارجية"
 msgid "May cause crashes, Requires restart"
 msgstr "قد يسبب تعطل النظام، يتطلب إعادة التشغيل"
 
+#: resources/ui/account_settings.ui:438
+#, fuzzy
+msgid "Enable external config"
+msgstr "تحميل إعدادات mpv الخارجية"
+
+#: resources/ui/account_settings.ui:443
+#, fuzzy
+msgid "Config dir"
+msgstr "تأكيد"
+
 #: resources/ui/account_settings.ui:466
 msgid "Preferred Version"
 msgstr "النسخة المفضلة"
@@ -281,13 +291,11 @@ msgstr "حفظ"
 
 #: resources/ui/account_settings.ui:786
 #, fuzzy
-#| msgid "Change Poster"
 msgid "Change folder"
 msgstr "تغيير الملصق"
 
 #: resources/ui/account_settings.ui:788
 #, fuzzy
-#| msgid "Read from mpv config dir"
 msgid "Select new mpv config folder"
 msgstr "القراءة من mpv config dir"
 
@@ -305,7 +313,6 @@ msgstr ""
 
 #: resources/ui/account.ui:74
 #, fuzzy
-#| msgid "Server Address"
 msgid "Server Address (Auto parse)"
 msgstr "عنوان الخادم"
 
@@ -331,7 +338,7 @@ msgstr "لا يوجد محتوى."
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:504
+#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:523
 msgid "Play"
 msgstr "تشغيل"
 
@@ -358,7 +365,6 @@ msgstr "إيقاف مؤقت"
 
 #: resources/ui/mpvpage.ui:268
 #, fuzzy
-#| msgid "Advanced Settings"
 msgid "Danmaku Settings"
 msgstr "الإعدادات المتقدمة"
 
@@ -576,13 +582,11 @@ msgstr "مدة الذاكرة المؤقتة"
 
 #: resources/ui/mpv_control_sidebar.ui:114
 #, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Composing"
 msgstr "الترجمة: "
 
 #: resources/ui/mpv_control_sidebar.ui:186
 #, fuzzy
-#| msgid "No Inscriptions"
 msgid "Position"
 msgstr "لا يوجد محتوى."
 
@@ -596,7 +600,6 @@ msgstr "هذا الخيار ينطبق فقط على ملفات الترجمة �
 
 #: resources/ui/mpv_control_sidebar.ui:227
 #, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Subtitle Text Scale"
 msgstr "حجم نص الترجمة"
 
@@ -640,7 +643,6 @@ msgstr "إزاحة الظل"
 
 #: resources/ui/mpv_control_sidebar.ui:323
 #, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Color"
 msgstr "الترجمة: "
 
@@ -650,13 +652,11 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:354
 #, fuzzy
-#| msgid "Border Size"
 msgid "Border"
 msgstr "حجم الإطار"
 
 #: resources/ui/mpv_control_sidebar.ui:392
 #, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Offset"
 msgstr "الترجمة: "
 
@@ -703,7 +703,6 @@ msgstr "قناتان (معكوسة)"
 
 #: resources/ui/mpv_control_sidebar.ui:492
 #, fuzzy
-#| msgid "Video Output"
 msgid "Video Aspect"
 msgstr "ناتج الفيديو"
 
@@ -716,10 +715,8 @@ msgid "Crop"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:506
-#, fuzzy
-#| msgid "Video: "
-msgid "Video Filters"
-msgstr "الفيديو: "
+msgid "Video color grading"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:519
 msgid "Brightness"
@@ -743,7 +740,6 @@ msgstr "جاما (Gamma)"
 
 #: resources/ui/mpv_control_sidebar.ui:596
 #, fuzzy
-#| msgid "Video: "
 msgid "Video Deband"
 msgstr "الفيديو: "
 
@@ -765,14 +761,12 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:682
 #, fuzzy
-#| msgid "Video: "
 msgid "Video Deinterlace"
 msgstr "الفيديو: "
 
 #: resources/ui/mpv_control_sidebar.ui:687
 #, fuzzy
-#| msgid "Video: "
-msgid "Video Upscale Filter"
+msgid "Video Upscale"
 msgstr "الفيديو: "
 
 #: resources/ui/mpv_control_sidebar.ui:710
@@ -902,7 +896,6 @@ msgstr ""
 
 #: resources/ui/server_action_row.ui:41
 #, fuzzy
-#| msgid "Refresh Metadata"
 msgid "Refresh"
 msgstr "تحديث البيانات الوصفية"
 
@@ -1005,7 +998,6 @@ msgstr "_اختصارات لوحة المفاتيح"
 
 #: resources/ui/window.ui:39
 #, fuzzy
-#| msgid "Add Server"
 msgid "Add server"
 msgstr "إضافة خادم"
 
@@ -1090,19 +1082,17 @@ msgstr "Abdulrahman <2140398@uj.edu.sa>"
 msgid "Links"
 msgstr "الروابط"
 
-#: src/ui/widgets/account_add.rs:129
+#: src/ui/widgets/account_add.rs:134
 msgid "Fields must be filled in"
 msgstr "يجب ملء جميع الحقول"
 
-#: src/ui/widgets/account_add.rs:184
+#: src/ui/widgets/account_add.rs:189
 #, fuzzy
-#| msgid "Account added successfully"
 msgid "Server edited successfully"
 msgstr "تمت إضافة الحساب بنجاح"
 
-#: src/ui/widgets/account_add.rs:188
+#: src/ui/widgets/account_add.rs:193
 #, fuzzy
-#| msgid "Account added successfully"
 msgid "Server added successfully"
 msgstr "تمت إضافة الحساب بنجاح"
 
@@ -1177,7 +1167,6 @@ msgstr "تم مسح إعدادات إزاحة الترجمة."
 
 #: src/ui/mpv/control_sidebar.rs:517
 #, fuzzy
-#| msgid "Subtitle settings cleared."
 msgid "Deband settings cleared."
 msgstr "تم مسح إعدادات الترجمة."
 
@@ -1229,11 +1218,11 @@ msgstr "تم نسخ الصورة إلى الحافظة"
 msgid "Error loading image"
 msgstr "خطأ في تحميل الصورة"
 
-#: src/ui/widgets/item.rs:500 src/ui/widgets/list.rs:121
+#: src/ui/widgets/item.rs:519 src/ui/widgets/list.rs:121
 msgid "Resume"
 msgstr "استئناف"
 
-#: src/ui/widgets/item.rs:1050
+#: src/ui/widgets/item.rs:1069
 msgid "No video source found"
 msgstr "لم يتم العثور على مصدر الفيديو"
 
@@ -1271,7 +1260,6 @@ msgstr "إضافة إلى المفضلة"
 
 #: src/ui/widgets/server_action_row.rs:94
 #, fuzzy
-#| msgid "Add Server"
 msgid "Edit Server"
 msgstr "إضافة خادم"
 
@@ -1334,6 +1322,11 @@ msgstr "النتيجة: "
 #: src/ui/widgets/server_panel.rs:326
 msgid "Task started"
 msgstr "تم بدء المهمة"
+
+#, fuzzy
+#~| msgid "Video: "
+#~ msgid "Video Filters"
+#~ msgstr "الفيديو: "
 
 #~ msgid "Filter Panel"
 #~ msgstr "لوحة التصفية"
