@@ -566,9 +566,7 @@ name = "danmaku"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "atomic-wait",
  "hex",
- "libmpv2",
  "md-5",
  "rand",
  "reqwest",

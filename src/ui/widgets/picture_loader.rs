@@ -140,7 +140,7 @@ impl PictureLoader {
             async move {
                 spawn_tokio(async move {
                     let mut retries = 0;
-                    while retries < 3 {
+                    while retries < 2 {
                         let tag = tag.clone();
                         match EMBY_CLIENT
                             .get_image(&id, &image_type, tag.and_then(|s| s.parse::<u8>().ok()))
