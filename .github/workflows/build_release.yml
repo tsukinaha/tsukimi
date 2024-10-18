@@ -74,7 +74,7 @@ jobs:
           cp /mingw64/bin/gdbus.exe bin/
 
           cp -r /mingw64/lib/gdk-pixbuf-2.0 lib/
-          find lib/gdk-pixbuf-2.0/2.10.0/loaders -type f ! \( -name "*-svg.dll" -o -name "*-png.dll" -o -name "*-jpeg.dll" \) -exec rm -f "{}" \;
+          find lib/gdk-pixbuf-2.0/2.10.0/loaders -type f ! -name "*.dll" -exec rm -f "{}" \;
 
           cp -r /mingw64/lib/gio lib/
 
