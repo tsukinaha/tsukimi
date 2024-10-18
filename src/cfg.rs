@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::ui::provider::descriptor::VecSerialize;
 
-pub const APP_VERSION: &str = "0.16.2";
+pub const APP_VERSION: &str = "0.16.3";
 
 #[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct Account {
