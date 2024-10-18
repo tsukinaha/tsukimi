@@ -9,7 +9,7 @@ use imp::ActionType;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::config::Account;
+use crate::cfg::Account;
 use crate::toast;
 use crate::ui::models::SETTINGS;
 use crate::utils::spawn_tokio;
@@ -24,7 +24,7 @@ pub mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
-    use crate::config::Account;
+    use crate::cfg::Account;
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]

@@ -7,7 +7,7 @@ use gtk::{
 };
 
 use crate::{
-    config::Account,
+    cfg::Account,
     ui::provider::descriptor::{Descriptor, VecSerialize},
     APP_ID,
 };

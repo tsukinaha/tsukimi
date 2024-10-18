@@ -14,7 +14,7 @@ use tracing::info;
 
 mod arg;
 mod client;
-mod config;
+mod cfg;
 mod gstl;
 mod macros;
 mod ui;
@@ -75,7 +75,7 @@ fn main() -> glib::ExitCode {
 
     info!(
         "Application Version: {}, Platform: {} {}, CPU Architecture: {}",
-        config::APP_VERSION,
+        cfg::APP_VERSION,
         env::consts::OS,
         env::consts::FAMILY,
         env::consts::ARCH
@@ -96,7 +96,7 @@ fn main() -> glib::ExitCode {
     // Make Application detect Windows system dark mode
     #[cfg(target_os = "windows")]
     {
-        use crate::config::theme::is_system_dark_mode_enabled;
+        use crate::cfg::theme::is_system_dark_mode_enabled;
         use adw::prelude::AdwApplicationExt;
 
         if is_system_dark_mode_enabled() {

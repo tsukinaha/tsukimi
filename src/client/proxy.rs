@@ -1,7 +1,7 @@
 use gtk::prelude::*;
 use once_cell::sync::Lazy;
 
-use super::APP_VERSION;
+use crate::cfg::APP_VERSION;
 
 pub struct ReqClient;
 

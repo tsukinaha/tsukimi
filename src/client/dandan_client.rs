@@ -1,4 +1,4 @@
-use crate::config::proxy::ReqClient;
+use super::ReqClient;
 use anyhow::{anyhow, Result};
 use chrono::NaiveDateTime;
 use once_cell::sync::Lazy;

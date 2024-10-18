@@ -3,7 +3,7 @@ use gtk::glib::prelude::*;
 use gtk::glib::subclass::prelude::*;
 use std::cell::RefCell;
 
-use crate::config::Account;
+use crate::cfg::Account;
 
 pub mod imp {
     use gtk::glib::Properties;

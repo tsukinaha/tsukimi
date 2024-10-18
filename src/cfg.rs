@@ -2,19 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::ui::provider::descriptor::VecSerialize;
 
-pub mod proxy;
-
 pub const APP_VERSION: &str = "0.16.2";
-
-#[derive(Serialize, Debug, Deserialize)]
-pub struct Config {
-    pub domain: String,
-    pub username: String,
-    pub password: String,
-    pub port: String,
-    pub user_id: String,
-    pub access_token: String,
-}
 
 #[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct Account {

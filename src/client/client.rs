@@ -8,9 +8,10 @@ use serde_json::{json, Value};
 use tracing::{info, warn};
 use url::Url;
 use uuid::Uuid;
+use super::ReqClient;
 
 use crate::{
-    config::{proxy::ReqClient, Account, APP_VERSION},
+    cfg::{Account, APP_VERSION},
     ui::{models::emby_cache_path, widgets::single_grid::imp::ListType},
     utils::spawn_tokio_without_await,
 };
@@ -51,6 +52,7 @@ pub struct EmbyClient {
     pub user_password: Mutex<String>,
     pub user_access_token: Mutex<String>,
     pub server_name: Mutex<String>,
+    pub server_name_hash: Mutex<String>,
 }
 
 fn generate_emby_authorization(
@@ -90,6 +92,7 @@ impl EmbyClient {
             user_password: Mutex::new(String::new()),
             user_access_token: Mutex::new(String::new()),
             server_name: Mutex::new(String::new()),
+            server_name_hash: Mutex::new(String::new()),
         }
     }
 
@@ -197,6 +200,13 @@ impl EmbyClient {
             .lock()
             .map_err(|_| anyhow!("Failed to acquire lock on server_name"))?;
         *server_name_lock = server_name.to_string();
+
+        let mut server_name_hash_lock = self
+            .server_name_hash
+            .lock()
+            .map_err(|_| anyhow!("Failed to acquire lock on server_name_hash"))?;
+
+        *server_name_hash_lock = format!("{:x}", md5::compute(server_name));
         Ok(())
     }
 

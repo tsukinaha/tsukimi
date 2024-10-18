@@ -219,7 +219,7 @@ mod imp {
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
-use crate::config::Account;
+use crate::cfg::Account;
 use crate::toast;
 use crate::ui::models::SETTINGS;
 use crate::ui::provider::core_song::CoreSong;

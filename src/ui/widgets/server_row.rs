@@ -1,7 +1,7 @@
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::{glib, CompositeTemplate};
 
-use crate::{config::Account, ui::provider::account_item::AccountItem};
+use crate::{cfg::Account, ui::provider::account_item::AccountItem};
 
 mod imp {
     use std::cell::OnceCell;

@@ -15,7 +15,7 @@ pub fn build_ui(app: &adw::Application) {
         .activate(|_, _, _| {
             let about = adw::AboutDialog::builder()
                 .application_name("Tsukimi")
-                .version(crate::config::APP_VERSION)
+                .version(crate::cfg::APP_VERSION)
                 .comments(
                     "A simple third-party Emby client.\nVersion: tsukimi 0.16.2 \n2024.10.11 20:17",
                 )
