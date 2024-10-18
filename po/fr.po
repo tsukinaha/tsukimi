@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-14 14:17+0800\n"
-"PO-Revision-Date: 2024-10-12 14:56+0000\n"
+"PO-Revision-Date: 2024-10-15 04:19+0000\n"
 "Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github."
 "com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8-rc\n"
 
 #: resources/ui/account_settings.ui:4
 msgid "Settings"
@@ -281,16 +281,12 @@ msgid "Save"
 msgstr "Sauvegarder"
 
 #: resources/ui/account_settings.ui:786
-#, fuzzy
-#| msgid "Change Poster"
 msgid "Change folder"
-msgstr "Changer l'affiche"
+msgstr "Changer de dossier"
 
 #: resources/ui/account_settings.ui:788
-#, fuzzy
-#| msgid "Read from mpv config dir"
 msgid "Select new mpv config folder"
-msgstr "Lire à partir du dossier de configuration mpv"
+msgstr "Sélectionnez le nouveau dossier de configuration mpv"
 
 #: resources/ui/account.ui:9 resources/ui/account.ui:17
 msgid "Add a New Server"
@@ -331,6 +327,7 @@ msgstr "Pas d'inscriptions"
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
 #: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:504
+#: src/ui/widgets/item.rs:523
 msgid "Play"
 msgstr "Démarrer / Reprendre"
 
@@ -356,10 +353,8 @@ msgid "Pause"
 msgstr "Mettre en pause"
 
 #: resources/ui/mpvpage.ui:268
-#, fuzzy
-#| msgid "Advanced Settings"
 msgid "Danmaku Settings"
-msgstr "Paramètres avancés"
+msgstr "Paramètres Danmaku"
 
 #: resources/ui/mpvpage.ui:283 resources/ui/mpvpage.ui:285
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
@@ -730,23 +725,23 @@ msgstr "Gamma"
 
 #: resources/ui/mpv_control_sidebar.ui:596
 msgid "Video Deband"
-msgstr ""
+msgstr "Retrait des bandes de couleur"
 
 #: resources/ui/mpv_control_sidebar.ui:619
 msgid "Deband Iterations"
-msgstr ""
+msgstr "Nombre d'itérations de retrait des bandes de couleur"
 
 #: resources/ui/mpv_control_sidebar.ui:634
 msgid "Deband Threshold"
-msgstr ""
+msgstr "Seuil de retrait des bandes de couleur"
 
 #: resources/ui/mpv_control_sidebar.ui:649
 msgid "Deband Range"
-msgstr ""
+msgstr "Plage de retrait des bandes de couleur"
 
 #: resources/ui/mpv_control_sidebar.ui:664
 msgid "Deband Grain"
-msgstr ""
+msgstr "Grain de retrait des bandes de couleur"
 
 #: resources/ui/mpv_control_sidebar.ui:682
 msgid "Video Deinterlace"
@@ -1150,7 +1145,7 @@ msgstr "Paramètres du décalage des sous-titres réinitialisés."
 
 #: src/ui/mpv/control_sidebar.rs:517
 msgid "Deband settings cleared."
-msgstr ""
+msgstr "Paramètres de retrait des bandes de couleurs réinitialisés."
 
 #: src/ui/mpv/page.rs:380
 msgid "Loading Video..."
@@ -1201,10 +1196,11 @@ msgid "Error loading image"
 msgstr "Erreur de chargement de l'image"
 
 #: src/ui/widgets/item.rs:500 src/ui/widgets/list.rs:121
+#: src/ui/widgets/item.rs:519
 msgid "Resume"
 msgstr "Reprendre"
 
-#: src/ui/widgets/item.rs:1050
+#: src/ui/widgets/item.rs:1050 src/ui/widgets/item.rs:1069
 msgid "No video source found"
 msgstr "Aucune source vidéo trouvée"
 
@@ -1303,6 +1299,22 @@ msgstr "Résultat : "
 #: src/ui/widgets/server_panel.rs:326
 msgid "Task started"
 msgstr "Tâche démarrée"
+
+#: resources/ui/account_settings.ui:438
+msgid "Enable external config"
+msgstr "Activer une configuration externe"
+
+#: resources/ui/account_settings.ui:443
+msgid "Config dir"
+msgstr "Configurer le répertoire"
+
+#: resources/ui/mpv_control_sidebar.ui:506
+msgid "Video color grading"
+msgstr "Étalonnage des couleurs de la vidéo"
+
+#: resources/ui/mpv_control_sidebar.ui:687
+msgid "Video Upscale"
+msgstr "Agrandissement vidéo"
 
 #~ msgid "Filter Panel"
 #~ msgstr "Panneau de filtres"
