@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-14 14:17+0800\n"
+"POT-Creation-Date: 2024-10-18 20:44+0800\n"
 "PO-Revision-Date: 2024-09-26 10:41+0000\n"
 "Last-Translator: Flowensity <flowensity@proton.me>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/tsukimi/main/ja/"
@@ -201,6 +201,16 @@ msgstr "外部mpv設定を読み込む"
 msgid "May cause crashes, Requires restart"
 msgstr ""
 
+#: resources/ui/account_settings.ui:438
+#, fuzzy
+msgid "Enable external config"
+msgstr "外部mpv設定を読み込む"
+
+#: resources/ui/account_settings.ui:443
+#, fuzzy
+msgid "Config dir"
+msgstr "パスワードの確認"
+
 #: resources/ui/account_settings.ui:466
 #, fuzzy
 msgid "Preferred Version"
@@ -290,7 +300,6 @@ msgstr "パスワードの変更"
 
 #: resources/ui/account_settings.ui:788
 #, fuzzy
-#| msgid "Read from mpv config dir"
 msgid "Select new mpv config folder"
 msgstr "mpv設定ディレクトリから読み込む"
 
@@ -308,7 +317,6 @@ msgstr ""
 
 #: resources/ui/account.ui:74
 #, fuzzy
-#| msgid "Server Address"
 msgid "Server Address (Auto parse)"
 msgstr "サーバーアドレス"
 
@@ -334,7 +342,7 @@ msgstr "記載なし"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:504
+#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:523
 msgid "Play"
 msgstr "再生"
 
@@ -571,7 +579,6 @@ msgstr "キャッシュサイズ"
 
 #: resources/ui/mpv_control_sidebar.ui:78
 #, fuzzy
-#| msgid "Unit: MB"
 msgid "Unit: MB"
 msgstr "単位: MB"
 
@@ -581,13 +588,11 @@ msgstr "キャッシュの時間"
 
 #: resources/ui/mpv_control_sidebar.ui:114
 #, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Composing"
 msgstr "字幕 "
 
 #: resources/ui/mpv_control_sidebar.ui:186
 #, fuzzy
-#| msgid "No Inscriptions"
 msgid "Position"
 msgstr "記載なし"
 
@@ -601,7 +606,6 @@ msgstr "このオプションはsrt字幕にのみ有効です"
 
 #: resources/ui/mpv_control_sidebar.ui:227
 #, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Subtitle Text Scale"
 msgstr "字幕の文字サイズ"
 
@@ -633,7 +637,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:283
 #, fuzzy
-#| msgid "Background"
 msgid "Background box"
 msgstr "背景"
 
@@ -647,7 +650,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:323
 #, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Color"
 msgstr "字幕 "
 
@@ -661,7 +663,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:392
 #, fuzzy
-#| msgid "Subtitle: "
 msgid "Subtitle Offset"
 msgstr "字幕 "
 
@@ -672,7 +673,6 @@ msgstr ""
 #: resources/ui/mpv_control_sidebar.ui:406
 #: resources/ui/mpv_control_sidebar.ui:455
 #, fuzzy
-#| msgid "Unit: MB"
 msgid "Unit: ms"
 msgstr "単位: MB"
 
@@ -686,7 +686,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:470
 #, fuzzy
-#| msgid "Channels"
 msgid "Audio Channel"
 msgstr "チャンネル"
 
@@ -704,7 +703,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:478
 #, fuzzy
-#| msgid "Channels"
 msgid "Dual Channel"
 msgstr "チャンネル"
 
@@ -714,7 +712,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:492
 #, fuzzy
-#| msgid "Video Output"
 msgid "Video Aspect"
 msgstr "ビデオ出力"
 
@@ -727,10 +724,8 @@ msgid "Crop"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:506
-#, fuzzy
-#| msgid "Video: "
-msgid "Video Filters"
-msgstr "ビデオ "
+msgid "Video color grading"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:519
 msgid "Brightness"
@@ -738,7 +733,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:534
 #, fuzzy
-#| msgid "Contents"
 msgid "Contrast"
 msgstr "内容"
 
@@ -756,7 +750,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:596
 #, fuzzy
-#| msgid "Video: "
 msgid "Video Deband"
 msgstr "ビデオ "
 
@@ -778,14 +771,12 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:682
 #, fuzzy
-#| msgid "Video: "
 msgid "Video Deinterlace"
 msgstr "ビデオ "
 
 #: resources/ui/mpv_control_sidebar.ui:687
 #, fuzzy
-#| msgid "Video: "
-msgid "Video Upscale Filter"
+msgid "Video Upscale"
 msgstr "ビデオ "
 
 #: resources/ui/mpv_control_sidebar.ui:710
@@ -917,7 +908,6 @@ msgstr ""
 
 #: resources/ui/server_action_row.ui:41
 #, fuzzy
-#| msgid "Refresh Metadata"
 msgid "Refresh"
 msgstr "メタデータの更新"
 
@@ -1023,7 +1013,6 @@ msgstr ""
 
 #: resources/ui/window.ui:39
 #, fuzzy
-#| msgid "Add Server"
 msgid "Add server"
 msgstr "サーバーの追加"
 
@@ -1116,19 +1105,17 @@ msgstr "Flowensity <flowensity@proton.me>"
 msgid "Links"
 msgstr "いいね"
 
-#: src/ui/widgets/account_add.rs:129
+#: src/ui/widgets/account_add.rs:134
 msgid "Fields must be filled in"
 msgstr "すべてのフィールドを入力してください"
 
-#: src/ui/widgets/account_add.rs:184
+#: src/ui/widgets/account_add.rs:189
 #, fuzzy
-#| msgid "Account added successfully"
 msgid "Server edited successfully"
 msgstr "アカウントが正常に追加されました"
 
-#: src/ui/widgets/account_add.rs:188
+#: src/ui/widgets/account_add.rs:193
 #, fuzzy
-#| msgid "Account added successfully"
 msgid "Server added successfully"
 msgstr "アカウントが正常に追加されました"
 
@@ -1207,7 +1194,6 @@ msgstr ""
 
 #: src/ui/mpv/page.rs:380
 #, fuzzy
-#| msgid "Loading..."
 msgid "Loading Video..."
 msgstr "読み込み中..."
 
@@ -1254,17 +1240,16 @@ msgstr "クリップボードにコピーされた画像"
 msgid "Error loading image"
 msgstr "画像の読み込みエラー"
 
-#: src/ui/widgets/item.rs:500 src/ui/widgets/list.rs:121
+#: src/ui/widgets/item.rs:519 src/ui/widgets/list.rs:121
 msgid "Resume"
 msgstr "再開"
 
-#: src/ui/widgets/item.rs:1050
+#: src/ui/widgets/item.rs:1069
 msgid "No video source found"
 msgstr ""
 
 #: src/ui/widgets/music_album.rs:264
 #, fuzzy
-#| msgid "More"
 msgid "More From"
 msgstr "もっと見る"
 
@@ -1298,7 +1283,6 @@ msgstr "お気に入りに追加"
 
 #: src/ui/widgets/server_action_row.rs:94
 #, fuzzy
-#| msgid "Add Server"
 msgid "Edit Server"
 msgstr "サーバーの追加"
 
@@ -1362,6 +1346,11 @@ msgstr ""
 #: src/ui/widgets/server_panel.rs:326
 msgid "Task started"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Video: "
+#~ msgid "Video Filters"
+#~ msgstr "ビデオ "
 
 #~ msgid "Filter Panel"
 #~ msgstr "フィルターパネル"

@@ -197,14 +197,12 @@ msgid "May cause crashes, Requires restart"
 msgstr "可能會導致崩潰，重啟程式生效"
 
 #: resources/ui/account_settings.ui:438
-#, fuzzy
 msgid "Enable external config"
-msgstr "載入外部 mpv 配置"
+msgstr "啟用外部 mpv 配置"
 
 #: resources/ui/account_settings.ui:443
-#, fuzzy
 msgid "Config dir"
-msgstr "確認"
+msgstr "配置目錄"
 
 #: resources/ui/account_settings.ui:466
 msgid "Preferred Version"
@@ -699,7 +697,7 @@ msgstr "剪裁"
 
 #: resources/ui/mpv_control_sidebar.ui:506
 msgid "Video color grading"
-msgstr ""
+msgstr "影片調色"
 
 #: resources/ui/mpv_control_sidebar.ui:519
 msgid "Brightness"
@@ -746,9 +744,8 @@ msgid "Video Deinterlace"
 msgstr "影片反交錯"
 
 #: resources/ui/mpv_control_sidebar.ui:687
-#, fuzzy
 msgid "Video Upscale"
-msgstr "影片高級濾鏡"
+msgstr "影片升頻演算法"
 
 #: resources/ui/mpv_control_sidebar.ui:710
 msgid "Action after video ends"
@@ -1303,10 +1300,13 @@ msgstr "任務開始"
 #~ msgstr "從 mpv 配置目錄讀取"
 
 #~ msgid "Video Filters"
-#~ msgstr "影片濾鏡"
+#~ msgstr "影片調色"
 
 #~ msgid "Filter Panel"
 #~ msgstr "篩選面板"
+
+#~ msgid "Video Upscale Filter"
+#~ msgstr "影片升頻演算法"
 
 #~ msgid "Daily Recommend"
 #~ msgstr "每日推薦"

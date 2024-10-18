@@ -200,14 +200,12 @@ msgid "May cause crashes, Requires restart"
 msgstr "可能会造成崩溃，重启生效"
 
 #: resources/ui/account_settings.ui:438
-#, fuzzy
 msgid "Enable external config"
-msgstr "加载外部 mpv 配置"
+msgstr "启用外部 mpv 配置"
 
 #: resources/ui/account_settings.ui:443
-#, fuzzy
 msgid "Config dir"
-msgstr "确认"
+msgstr "配置目录"
 
 #: resources/ui/account_settings.ui:466
 msgid "Preferred Version"
@@ -702,7 +700,7 @@ msgstr "裁剪"
 
 #: resources/ui/mpv_control_sidebar.ui:506
 msgid "Video color grading"
-msgstr ""
+msgstr "视频调色"
 
 #: resources/ui/mpv_control_sidebar.ui:519
 msgid "Brightness"
@@ -749,9 +747,8 @@ msgid "Video Deinterlace"
 msgstr "视频反交错"
 
 #: resources/ui/mpv_control_sidebar.ui:687
-#, fuzzy
 msgid "Video Upscale"
-msgstr "视频高级滤镜"
+msgstr "视频升频算法"
 
 #: resources/ui/mpv_control_sidebar.ui:710
 msgid "Action after video ends"
@@ -1306,10 +1303,13 @@ msgstr "任务开始"
 #~ msgstr "从 mpv 配置目录读取"
 
 #~ msgid "Video Filters"
-#~ msgstr "视频滤镜"
+#~ msgstr "视频调色"
 
 #~ msgid "Filter Panel"
 #~ msgstr "筛选面板"
+
+#~ msgid "Video Upscale Filter"
+#~ msgstr "视频升频算法"
 
 #~ msgid "Daily Recommend"
 #~ msgstr "每日推荐"
