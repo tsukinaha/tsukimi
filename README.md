@@ -22,10 +22,6 @@ https://dev.tsukinaha.org/tsukimi
  
 
 ## MPV Config
-Set config=true to enable external config.
-- Linux: `$XDG_CONFIG_HOME/mpv`
-- Windows: `$MPV_HOME`>`%APPDATA%/mpv`
-
 [MPV-manual#files](https://mpv.io/manual/master/#files) 
 
 ## Contributing
