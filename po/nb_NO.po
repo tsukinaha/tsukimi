@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-14 14:17+0800\n"
+"POT-Creation-Date: 2024-10-18 20:44+0800\n"
 "PO-Revision-Date: 2024-09-26 15:26+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/tsukimi/"
@@ -198,6 +198,15 @@ msgstr ""
 msgid "May cause crashes, Requires restart"
 msgstr ""
 
+#: resources/ui/account_settings.ui:438
+msgid "Enable external config"
+msgstr ""
+
+#: resources/ui/account_settings.ui:443
+#, fuzzy
+msgid "Config dir"
+msgstr "Bekreft passord"
+
 #: resources/ui/account_settings.ui:466
 #, fuzzy
 msgid "Preferred Version"
@@ -300,7 +309,6 @@ msgstr ""
 
 #: resources/ui/account.ui:74
 #, fuzzy
-#| msgid "Server Address"
 msgid "Server Address (Auto parse)"
 msgstr "Tjeneradresse"
 
@@ -326,7 +334,7 @@ msgstr ""
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:504
+#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:523
 msgid "Play"
 msgstr "Spill av"
 
@@ -353,7 +361,6 @@ msgstr "Pause"
 
 #: resources/ui/mpvpage.ui:268
 #, fuzzy
-#| msgid "Video Settings"
 msgid "Danmaku Settings"
 msgstr "Videoinnstillinger"
 
@@ -533,7 +540,6 @@ msgstr "Lås elementet"
 
 #: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:598
 #, fuzzy
-#| msgid "Video Settings"
 msgid "Advanced Settings"
 msgstr "Videoinnstillinger"
 
@@ -565,7 +571,6 @@ msgstr "Hurtiglagerstørrelse"
 
 #: resources/ui/mpv_control_sidebar.ui:78
 #, fuzzy
-#| msgid "Unit: MB"
 msgid "Unit: MB"
 msgstr "Enhet: MB"
 
@@ -575,7 +580,6 @@ msgstr "Hurtiglagertid"
 
 #: resources/ui/mpv_control_sidebar.ui:114
 #, fuzzy
-#| msgid "Subtitle"
 msgid "Subtitle Composing"
 msgstr "Undertekst"
 
@@ -593,7 +597,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:227
 #, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Subtitle Text Scale"
 msgstr "Undertekststørrelse"
 
@@ -603,7 +606,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:249
 #, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Subtitle Text Font"
 msgstr "Undertekststørrelse"
 
@@ -627,7 +629,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:283
 #, fuzzy
-#| msgid "Background"
 msgid "Background box"
 msgstr "Bakgrunn"
 
@@ -641,7 +642,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:323
 #, fuzzy
-#| msgid "Subtitle"
 msgid "Subtitle Color"
 msgstr "Undertekst"
 
@@ -655,7 +655,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:392
 #, fuzzy
-#| msgid "Subtitle"
 msgid "Subtitle Offset"
 msgstr "Undertekst"
 
@@ -666,7 +665,6 @@ msgstr ""
 #: resources/ui/mpv_control_sidebar.ui:406
 #: resources/ui/mpv_control_sidebar.ui:455
 #, fuzzy
-#| msgid "Unit: MB"
 msgid "Unit: ms"
 msgstr "Enhet: MB"
 
@@ -704,7 +702,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:492
 #, fuzzy
-#| msgid "Video Output"
 msgid "Video Aspect"
 msgstr "Videoutdata"
 
@@ -717,7 +714,7 @@ msgid "Crop"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:506
-msgid "Video Filters"
+msgid "Video color grading"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:519
@@ -726,7 +723,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:534
 #, fuzzy
-#| msgid "Contents"
 msgid "Contrast"
 msgstr "Innhold"
 
@@ -744,7 +740,6 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:596
 #, fuzzy
-#| msgid "Video Settings"
 msgid "Video Deband"
 msgstr "Videoinnstillinger"
 
@@ -769,8 +764,9 @@ msgid "Video Deinterlace"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:687
-msgid "Video Upscale Filter"
-msgstr ""
+#, fuzzy
+msgid "Video Upscale"
+msgstr "Videoutdata"
 
 #: resources/ui/mpv_control_sidebar.ui:710
 msgid "Action after video ends"
@@ -1005,7 +1001,6 @@ msgstr ""
 
 #: resources/ui/window.ui:39
 #, fuzzy
-#| msgid "Add Server"
 msgid "Add server"
 msgstr "Legg til tjener"
 
@@ -1081,7 +1076,6 @@ msgstr "Forrige"
 
 #: resources/ui/mpv_menu.ui:40
 #, fuzzy
-#| msgid "Video Settings"
 msgid "Advanced settings"
 msgstr "Videoinnstillinger"
 
@@ -1099,15 +1093,15 @@ msgstr "Allan Nordhøy <epost@anotheragency.no>"
 msgid "Links"
 msgstr "Lenker"
 
-#: src/ui/widgets/account_add.rs:129
+#: src/ui/widgets/account_add.rs:134
 msgid "Fields must be filled in"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:184
+#: src/ui/widgets/account_add.rs:189
 msgid "Server edited successfully"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:188
+#: src/ui/widgets/account_add.rs:193
 msgid "Server added successfully"
 msgstr ""
 
@@ -1185,7 +1179,6 @@ msgstr ""
 
 #: src/ui/mpv/page.rs:380
 #, fuzzy
-#| msgid "Loading..."
 msgid "Loading Video..."
 msgstr "Laster inn …"
 
@@ -1232,17 +1225,16 @@ msgstr ""
 msgid "Error loading image"
 msgstr ""
 
-#: src/ui/widgets/item.rs:500 src/ui/widgets/list.rs:121
+#: src/ui/widgets/item.rs:519 src/ui/widgets/list.rs:121
 msgid "Resume"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1050
+#: src/ui/widgets/item.rs:1069
 msgid "No video source found"
 msgstr ""
 
 #: src/ui/widgets/music_album.rs:264
 #, fuzzy
-#| msgid "More"
 msgid "More From"
 msgstr "Mer"
 
@@ -1276,7 +1268,6 @@ msgstr ""
 
 #: src/ui/widgets/server_action_row.rs:94
 #, fuzzy
-#| msgid "Add Server"
 msgid "Edit Server"
 msgstr "Legg til tjener"
 
