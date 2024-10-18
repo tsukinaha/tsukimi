@@ -277,7 +277,7 @@ impl MPVControlSidebar {
 
     pub fn set_mpv_property<V>(&self, property: &str, value: V)
     where
-        V: SetData,
+        V: SetData + Send + 'static,
     {
         if let Some(player) = self.player() {
             player.set_property(property, value)

@@ -203,10 +203,6 @@ impl TsukimiMPV {
         self.set_property("time-pos", value);
     }
 
-    pub fn set_wid<T: SetData>(&self, value: T) {
-        self.set_property("wid", value);
-    }
-
     pub fn set_percent_position(&self, value: f64) {
         self.set_property("percent-pos", value);
     }
@@ -285,14 +281,19 @@ impl TsukimiMPV {
 
     pub fn set_property<V>(&self, property: &str, value: V)
     where
-        V: SetData,
+        V: SetData + Send + 'static,
     {
-        let Some(mpv) = self.mpv() else {
-            return;
-        };
-        mpv.set_property(property, value)
-            .map_err(|e| warn!("MPV set property Error: {}, Property: {}", e, property))
-            .ok();
+        let mpv = Arc::clone(&self.mpv);
+        let property = property.to_string();
+        spawn_tokio_without_await(async move {
+            let Some(mpv) = mpv.lock().ok() else {
+                error!("Failed to lock MPV for set property: {}", property);
+                return;
+            };
+            mpv.set_property(&property, value)
+                .map_err(|e| warn!("MPV set property Error: {}, Property: {}", e, property))
+                .ok();
+        });
     }
 
     fn get_property<V>(&self, property: &str) -> Option<V>

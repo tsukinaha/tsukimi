@@ -32,8 +32,16 @@ impl UserFacingError for std::boxed::Box<dyn std::error::Error> {
 
 impl UserFacingError for libmpv2::Error {
     fn to_user_facing(&self) -> String {
-        warn!("MPV Error: {}", self);
-        format!("MPV Back: {}, Connectivity error occurred", self)
+        match self {
+            Self::Loadfile { error} => {
+                warn!("MPV ErrorLoadfile: {}", error);
+                return format!("ErrorLoadfile: {}", error)
+            }
+            _ => {
+                warn!("MPV Error: {}", self);
+                return format!("Unknown Error: {}", self)
+            }
+        }
     }
 }
 

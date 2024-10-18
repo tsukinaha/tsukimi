@@ -425,6 +425,10 @@ impl EmbyClient {
     pub async fn get_image(&self, id: &str, image_type: &str, tag: Option<u8>) -> Result<String> {
         match self.image_request(id, image_type, tag).await {
             Ok(response) => {
+                if !response.status().is_success() {
+                    return Err(anyhow!("Failed to get image"));
+                }
+                
                 let bytes = response.bytes().await?;
 
                 let path = if bytes.len() > 1000 {

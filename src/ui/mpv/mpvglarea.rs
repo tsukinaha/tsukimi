@@ -15,7 +15,6 @@ mod imp {
     use gtk::glib;
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
-    use tracing::info;
 
     use crate::ui::mpv::tsukimi_mpv::TsukimiMPV;
     use crate::ui::mpv::tsukimi_mpv::RENDER_UPDATE;
@@ -52,12 +51,7 @@ mod imp {
                 return;
             };
 
-            if let Some(wid) = obj.get_wid() {
-                info!("MPV Setting wid: {}", wid);
-                self.mpv.set_wid(wid as i64);
-            } else {
-                self.mpv.connect_render_update(gl_context);
-            }
+            self.mpv.connect_render_update(gl_context);
 
             glib::spawn_future_local(glib::clone!(
                 #[weak]
@@ -230,7 +224,7 @@ impl MPVGLArea {
 
     pub fn set_property<V>(&self, property: &str, value: V)
     where
-        V: SetData,
+        V: SetData + Send + 'static,
     {
         self.imp().mpv.set_property(property, value)
     }
