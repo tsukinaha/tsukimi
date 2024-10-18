@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-15 18:55+0800\n"
+"POT-Creation-Date: 2024-10-18 20:44+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1055,15 +1055,15 @@ msgstr ""
 msgid "Links"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:129
+#: src/ui/widgets/account_add.rs:134
 msgid "Fields must be filled in"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:184
+#: src/ui/widgets/account_add.rs:189
 msgid "Server edited successfully"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:188
+#: src/ui/widgets/account_add.rs:193
 msgid "Server added successfully"
 msgstr ""
 
