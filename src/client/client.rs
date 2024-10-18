@@ -2,6 +2,7 @@ use std::sync::Mutex;
 
 use anyhow::{anyhow, Result};
 
+use regex::Regex;
 use reqwest::{header::HeaderValue, Method, RequestBuilder, Response};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -9,6 +10,7 @@ use tracing::{info, warn};
 use url::Url;
 use uuid::Uuid;
 use super::ReqClient;
+use std::hash::Hasher;
 
 use crate::{
     cfg::{Account, APP_VERSION},
@@ -27,7 +29,6 @@ use super::structs::{
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
 static PROFILE: &str = include_str!("stream_profile.json");
-static LIVEPROFILE: &str = include_str!("test.json");
 static CLIENT_ID: Lazy<String> = Lazy::new(|| "Tsukimi".to_string());
 static DEVICE_NAME: Lazy<String> = Lazy::new(|| {
     hostname::get()
@@ -66,6 +67,20 @@ fn generate_emby_authorization(
         "Emby UserId={},Client={},Device={},DeviceId={},Version={}",
         user_id, client, device, device_id, version
     )
+}
+
+const DOMAIN_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"(https?://)([^/]+)").unwrap());
+
+fn generate_hash(s: &str) -> String {
+    let mut hasher = fnv::FnvHasher::default();
+    hasher.write(s.as_bytes());
+    format!("{:x}", hasher.finish())
+}
+
+
+fn hide_domain(url: &str) -> String {
+    let hidden = "\x1b[35mDomain Hidden\x1b[0m";
+    DOMAIN_REGEX.replace(url, &format!("$1{}", hidden)).to_string()
 }
 
 impl EmbyClient {
@@ -205,8 +220,8 @@ impl EmbyClient {
             .server_name_hash
             .lock()
             .map_err(|_| anyhow!("Failed to acquire lock on server_name_hash"))?;
-
-        *server_name_hash_lock = format!("{:x}", md5::compute(server_name));
+        
+        *server_name_hash_lock = generate_hash(server_name);
         Ok(())
     }
 
@@ -304,7 +319,7 @@ impl EmbyClient {
         for (key, value) in params {
             url.query_pairs_mut().append_pair(key, value);
         }
-        info!("Request URL: {}", url);
+        info!("Request URL: {}", hide_domain(url.as_str()));
     }
 
     pub async fn search(&self, query: &str, filter: &[&str], start_index: &str) -> Result<List> {
@@ -544,7 +559,7 @@ impl EmbyClient {
             ("MaxStreamingBitrate", "160000000"),
             ("reqformat", "json"),
         ];
-        let profile: Value = serde_json::from_str(LIVEPROFILE).unwrap();
+        let profile: Value = serde_json::from_str(PROFILE).unwrap();
         self.post_json(&path, &params, profile).await
     }
 

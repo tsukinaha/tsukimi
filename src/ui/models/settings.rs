@@ -74,8 +74,8 @@ impl Settings {
 
     pub fn add_account(&self, account: Account) -> Result<(), glib::BoolError> {
         let mut accounts = self.accounts();
-        if accounts.contains(&account) {
-            return Ok(());
+        if accounts.iter().any(|a| a.servername == account.servername) {
+            accounts.retain(|a| a.servername != account.servername);
         }
         accounts.push(account);
         self.set_string(Self::ACCOUNTS, &accounts.to_string())

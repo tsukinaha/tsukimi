@@ -103,6 +103,8 @@
                                         <child>
                                           <object class="AdwPasswordEntryRow" id="password_entry">
                                             <property name="title" translatable="yes">Password (Nullable)</property>
+                                            <property name="activates-default">true</property>
+                                            <signal name="entry-activated" handler="on_password_entry_activated" swapped="yes"/>
                                           </object>
                                         </child>
                                       </object>

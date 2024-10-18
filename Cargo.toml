@@ -46,7 +46,7 @@ regex = "1.11.0"
 strsim = "0.11.1"
 clap = { version="4.5.20", features = ["derive"] }
 danmaku = { path = "sub-projects/danmaku", version = "0.0.0" }
-md5 = "0.7.0"
+fnv = "1.0.7"
 
 [build-dependencies]
 embed-resource = "2.5.0"

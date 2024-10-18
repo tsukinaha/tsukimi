@@ -116,6 +116,11 @@ impl AccountWindow {
         Object::builder().build()
     }
 
+    #[template_callback]
+    async fn on_password_entry_activated(&self) {
+        self.add().await;
+    }
+
     pub async fn add(&self) {
         let imp = self.imp();
         let mut servername = imp.servername_entry.text().to_string();
