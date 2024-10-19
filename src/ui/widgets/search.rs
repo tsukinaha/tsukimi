@@ -22,7 +22,7 @@ mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/moe/tsukimi/search.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/search.ui")]
     pub struct SearchPage {
         #[template_child]
         pub searchentry: TemplateChild<gtk::SearchEntry>,
@@ -156,7 +156,7 @@ impl SearchPage {
                 .icon_name(if item.item_type == "Movie" {
                     "video-display-symbolic"
                 } else {
-                    "video-x-generic"
+                    "video-reel-symbolic"
                 })
                 .build();
             button.set_halign(gtk::Align::Center);

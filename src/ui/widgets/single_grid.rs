@@ -143,7 +143,7 @@ pub mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/single_grid.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/single_grid.ui")]
     #[properties(wrapper_type = super::SingleGrid)]
     pub struct SingleGrid {
         #[template_child]

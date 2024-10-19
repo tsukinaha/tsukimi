@@ -20,7 +20,7 @@ mod macros;
 mod ui;
 mod utils;
 
-const APP_ID: &str = "moe.tsuna.tsukimi";
+const APP_ID: &str = "com.github.inaha.tsukimi";
 
 const GETTEXT_PACKAGE: &str = "tsukimi";
 
@@ -90,7 +90,7 @@ fn main() -> glib::ExitCode {
     // Create a new application
     let app = adw::Application::builder()
         .application_id(APP_ID)
-        .resource_base_path("/moe/tsukimi")
+        .resource_base_path("/com/github/inaha/tsukimi")
         .build();
 
     // Make Application detect Windows system dark mode

@@ -14,7 +14,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/content_viewer.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/content_viewer.ui")]
     #[properties(wrapper_type = super::MediaContentViewer)]
     pub struct MediaContentViewer {
         /// Whether to play the media content automatically.

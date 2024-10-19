@@ -26,7 +26,7 @@ pub(crate) mod imp {
     use crate::utils::spawn_g_timeout;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/actor.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/actor.ui")]
     #[properties(wrapper_type = super::ActorPage)]
     pub struct ActorPage {
         #[property(get, set, construct_only)]

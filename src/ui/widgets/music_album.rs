@@ -36,7 +36,7 @@ pub(crate) mod imp {
     use glib::SignalHandlerId;
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/album_widget.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/album_widget.ui")]
     #[properties(wrapper_type = super::AlbumPage)]
     pub struct AlbumPage {
         #[property(get, set, construct_only)]

@@ -48,7 +48,7 @@ pub mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/listitem.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/listitem.ui")]
     #[properties(wrapper_type = super::TuListItem)]
     pub struct TuListItem {
         #[property(get, set = Self::set_item)]
@@ -442,7 +442,7 @@ impl TuListItem {
 
     pub fn gesture(&self) {
         let imp = self.imp();
-        let builder = Builder::from_resource("/moe/tsukimi/pop-menu.ui");
+        let builder = Builder::from_resource("/com/github/inaha/tsukimi/ui/pop-menu.ui");
         let menu = builder.object::<MenuModel>("rightmenu");
         match menu {
             Some(popover) => {

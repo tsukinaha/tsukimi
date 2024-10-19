@@ -38,7 +38,7 @@ pub mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/account.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/account.ui")]
     #[properties(wrapper_type = super::AccountWindow)]
     pub struct AccountWindow {
         #[template_child]

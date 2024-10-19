@@ -19,7 +19,7 @@ mod imp {
     use std::cell::OnceCell;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/refresh_dialog.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/refresh_dialog.ui")]
     #[properties(wrapper_type = super::RefreshDialog)]
     pub struct RefreshDialog {
         #[property(get, set, construct_only)]

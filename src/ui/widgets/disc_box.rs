@@ -14,7 +14,7 @@ mod imp {
     use glib::subclass::{InitializingObject, Signal};
 
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/moe/tsukimi/disc_box.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/disc_box.ui")]
     pub struct DiscBox {
         #[template_child]
         pub disc_label: TemplateChild<gtk::Label>,

@@ -18,7 +18,7 @@ mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/moe/tsukimi/liked.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/liked.ui")]
     pub struct LikedPage {
         #[template_child]
         pub moviehortu: TemplateChild<HortuScrolled>,

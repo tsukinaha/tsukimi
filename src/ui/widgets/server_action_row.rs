@@ -23,7 +23,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/server_action_row.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/server_action_row.ui")]
     #[properties(wrapper_type = super::ServerActionRow)]
     pub struct ServerActionRow {
         #[property(get, set, construct_only)]
