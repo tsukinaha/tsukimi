@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/moe/tsukimi/icons/scalable/actions/">
+  <gresource prefix="/com/github/inaha/tsukimi/icons/scalable/actions/">
     <file alias="tsukimi">icons/tsukimi.png</file>
     <file preprocess="xml-stripblanks" alias="settings-symbolic.svg">icons/scalable/actions/settings-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="arrow-pointing-at-line-down-symbolic.svg">icons/scalable/actions/arrow-pointing-at-line-down-symbolic.svg</file>
@@ -19,50 +19,50 @@
     <file preprocess="xml-stripblanks" alias="emby-symbolic.svg">icons/scalable/actions/emby-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="card-bulleted-symbolic.svg">icons/scalable/actions/card-bulleted-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/moe/tsukimi/">
-    <file compressed="true" preprocess="xml-stripblanks">window.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">search.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">item.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">liked.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">episoderow.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">home.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">list.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">actor.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">account.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">listitem.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">pop-menu.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">dropdown.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">account_settings.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">boxset.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">album_widget.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">song_widget.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">disc_box.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">player_toolbar.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">server_row.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">mpvpage.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">hortu_scrolled.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">horbu_scrolled.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">metadata_dialog.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">item_actions.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">media_viewer.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">content_viewer.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">images_dialog.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">image_info_card.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">refresh_dialog.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">identify_dialog.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">server_panel.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">picture_loader.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">tuview_scrolled.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">single_grid.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">action_row.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">check_row.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">mpv_menu.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">mpv_menu_actions.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">mpv_shortcuts_window.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">listexpand_row.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">tu_overview_item.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">item_carousel.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">mpv_control_sidebar.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">server_action_row.ui</file>
+  <gresource prefix="/com/github/inaha/tsukimi/">
+    <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/search.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/item.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/liked.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/episoderow.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/home.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/list.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/actor.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/account.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/listitem.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/pop-menu.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/dropdown.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/account_settings.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/boxset.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/album_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/song_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/disc_box.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/player_toolbar.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/server_row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/mpvpage.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/hortu_scrolled.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/horbu_scrolled.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/metadata_dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/item_actions.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/media_viewer.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/content_viewer.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/images_dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/image_info_card.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/refresh_dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/identify_dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/server_panel.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/picture_loader.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/tuview_scrolled.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/single_grid.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/action_row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/check_row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/mpv_menu.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/mpv_menu_actions.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/mpv_shortcuts_window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/listexpand_row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/tu_overview_item.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/item_carousel.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/mpv_control_sidebar.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/server_action_row.ui</file>
   </gresource>
 </gresources>

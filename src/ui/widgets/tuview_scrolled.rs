@@ -25,7 +25,7 @@ pub(crate) mod imp {
     use glib::subclass::InitializingObject;
 
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/moe/tsukimi/tuview_scrolled.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/tuview_scrolled.ui")]
     pub struct TuViewScrolled {
         #[template_child]
         pub scrolled_window: TemplateChild<gtk::ScrolledWindow>,

@@ -20,7 +20,7 @@ mod imp {
     use glib::subclass::InitializingObject;
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/item_actions.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/item_actions.ui")]
     #[properties(wrapper_type = super::ItemActionsBox)]
     pub struct ItemActionsBox {
         #[template_child]

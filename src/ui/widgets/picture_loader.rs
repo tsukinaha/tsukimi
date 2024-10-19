@@ -18,7 +18,7 @@ pub(crate) mod imp {
     use glib::subclass::InitializingObject;
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/picture_loader.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/picture_loader.ui")]
     #[properties(wrapper_type = super::PictureLoader)]
     pub struct PictureLoader {
         #[property(get, set, construct_only)]

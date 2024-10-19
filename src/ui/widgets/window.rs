@@ -32,7 +32,7 @@ mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/moe/tsukimi/window.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/window.ui")]
     pub struct Window {
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
@@ -219,7 +219,7 @@ mod imp {
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::structs::Back;
-use crate::cfg::Account;
+use crate::client::Account;
 use crate::toast;
 use crate::ui::models::SETTINGS;
 use crate::ui::provider::core_song::CoreSong;
@@ -872,8 +872,9 @@ impl Window {
     }
 
     pub fn set_shortcuts(&self) {
-        let Some(window) = gtk::Builder::from_resource("/moe/tsukimi/mpv_shortcuts_window.ui")
-            .object::<gtk::ShortcutsWindow>("mpv_shortcuts")
+        let Some(window) =
+            gtk::Builder::from_resource("/com/github/inaha/tsukimi/ui/mpv_shortcuts_window.ui")
+                .object::<gtk::ShortcutsWindow>("mpv_shortcuts")
         else {
             eprintln!("Failed to load shortcuts window");
             return;

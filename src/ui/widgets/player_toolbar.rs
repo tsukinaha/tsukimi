@@ -21,7 +21,7 @@ mod imp {
     use super::*;
 
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/moe/tsukimi/player_toolbar.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/player_toolbar.ui")]
     pub struct PlayerToolbarBox {
         #[template_child]
         pub toolbar: TemplateChild<gtk::ActionBar>,

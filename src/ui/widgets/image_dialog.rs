@@ -23,7 +23,7 @@ mod imp {
     use std::cell::OnceCell;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/images_dialog.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/images_dialog.ui")]
     #[properties(wrapper_type = super::ImagesDialog)]
     pub struct ImagesDialog {
         #[property(get, set, construct_only)]

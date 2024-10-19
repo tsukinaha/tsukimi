@@ -48,7 +48,7 @@ mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/mpvpage.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/mpvpage.ui")]
     #[properties(wrapper_type = super::MPVPage)]
     pub struct MPVPage {
         #[property(get, set, nullable)]
@@ -1032,7 +1032,7 @@ impl MPVPage {
 
     pub fn set_popover(&self) {
         let imp = self.imp();
-        let builder = Builder::from_resource("/moe/tsukimi/mpv_menu.ui");
+        let builder = Builder::from_resource("/com/github/inaha/tsukimi/ui/mpv_menu.ui");
         let menu = builder.object::<gio::MenuModel>("mpv-menu");
         match menu {
             Some(popover) => {

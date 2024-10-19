@@ -14,15 +14,15 @@ use tracing::info;
 
 mod arg;
 mod client;
-mod cfg;
+mod config;
 mod gstl;
 mod macros;
 mod ui;
 mod utils;
 
-const APP_ID: &str = "moe.tsuna.tsukimi";
+use config::GETTEXT_PACKAGE;
 
-const GETTEXT_PACKAGE: &str = "tsukimi";
+const APP_ID: &str = "com.github.inaha.tsukimi";
 
 #[cfg(target_os = "linux")]
 const LINUX_LOCALEDIR: &str = "/usr/share/locale";
@@ -75,7 +75,7 @@ fn main() -> glib::ExitCode {
 
     info!(
         "Application Version: {}, Platform: {} {}, CPU Architecture: {}",
-        cfg::APP_VERSION,
+        config::VERSION,
         env::consts::OS,
         env::consts::FAMILY,
         env::consts::ARCH
@@ -90,7 +90,7 @@ fn main() -> glib::ExitCode {
     // Create a new application
     let app = adw::Application::builder()
         .application_id(APP_ID)
-        .resource_base_path("/moe/tsukimi")
+        .resource_base_path("/com/github/inaha/tsukimi")
         .build();
 
     // Make Application detect Windows system dark mode

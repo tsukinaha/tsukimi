@@ -24,7 +24,7 @@ mod imp {
     use glib::subclass::InitializingObject;
 
     #[derive(Debug, Default, CompositeTemplate)]
-    #[template(resource = "/moe/tsukimi/account_settings.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/account_settings.ui")]
     pub struct AccountSettings {
         #[template_child]
         pub password_entry: TemplateChild<adw::PasswordEntryRow>,

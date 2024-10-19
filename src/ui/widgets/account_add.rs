@@ -9,7 +9,7 @@ use imp::ActionType;
 
 use crate::client::client::EMBY_CLIENT;
 use crate::client::error::UserFacingError;
-use crate::cfg::Account;
+use crate::client::Account;
 use crate::toast;
 use crate::ui::models::SETTINGS;
 use crate::utils::spawn_tokio;
@@ -24,7 +24,7 @@ pub mod imp {
     use gtk::subclass::prelude::*;
     use gtk::{glib, CompositeTemplate};
 
-    use crate::cfg::Account;
+    use crate::client::Account;
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
@@ -38,7 +38,7 @@ pub mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/moe/tsukimi/account.ui")]
+    #[template(resource = "/com/github/inaha/tsukimi/ui/account.ui")]
     #[properties(wrapper_type = super::AccountWindow)]
     pub struct AccountWindow {
         #[template_child]

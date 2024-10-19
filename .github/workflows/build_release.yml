@@ -84,7 +84,7 @@ jobs:
 
           cp -r /mingw64/share/glib-2.0 share/
           find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rf "{}" \;
-          mv $GITHUB_WORKSPACE/moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
+          mv $GITHUB_WORKSPACE/com.github.inaha.tsukimi.gschema.xml share/glib-2.0/schemas/
           glib-compile-schemas.exe share/glib-2.0/schemas/
           find share/glib-2.0/ -type f ! -name "*.compiled" -exec rm -f "{}" \;
 
@@ -149,7 +149,7 @@ jobs:
           sudo cp -r i18n artifact
           sudo cp moe*.xml artifact
           cd artifact
-          tar -czf tsukimi-${{matrix.arch}}.tar.gz tsukimi moe.tsuna.tsukimi.gschema.xml i18n
+          tar -czf tsukimi-${{matrix.arch}}.tar.gz tsukimi com.github.inaha.tsukimi.gschema.xml i18n
 
       - name: Upload artifact
         if: ${{ matrix.arch == 'x86_64-linux' || matrix.arch == 'aarch64-linux' }}
