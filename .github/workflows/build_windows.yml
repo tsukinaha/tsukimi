@@ -100,12 +100,12 @@ jobs:
 
           cp -r /${{ matrix.msystem }}/share/glib-2.0 share/
           find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rf "{}" \;
-          mv $GITHUB_WORKSPACE/moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
+          mv $GITHUB_WORKSPACE/resources/moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
           glib-compile-schemas.exe share/glib-2.0/schemas/
           find share/glib-2.0/ -type f ! -name "*.compiled" -exec rm -f "{}" \;
 
           cp -r /${{ matrix.msystem }}/share/icons share/
-          cp $GITHUB_WORKSPACE/resources/ui/icons/tsukimi.png share/icons/
+          cp $GITHUB_WORKSPACE/resources/icons/tsukimi.png share/icons/
           rm -rf share/icons/hicolor && rm -rf share/icons/AdwaitaLegacy && rm -rf share/icons/Adwaita/scalable && rm -rf share/icons/Adwaita/cursors
           rm -rf share/icons/Adwaita/16x16 && rm -rf share/icons/Adwaita/symbolic-up-to-32
 
@@ -151,7 +151,7 @@ jobs:
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/upload-artifact@v4
         with:
-          name: tsukimi-${{matrix.arch}}
+          name: tsukimi-${{matrix.target}}
           path: |
             artifact/*.exe
             artifact/*.7z

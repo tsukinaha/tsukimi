@@ -75,7 +75,6 @@ pub mod imp {
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
     #[enum_type(name = "ListType")]
-
     pub enum ListType {
         All,
         Resume,
@@ -90,7 +89,6 @@ pub mod imp {
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
     #[enum_type(name = "SortOrder")]
-
     pub enum SortOrder {
         Ascending,
         #[default]
@@ -100,7 +98,6 @@ pub mod imp {
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
     #[enum_type(name = "ViewType")]
-
     pub enum ViewType {
         ListView,
         #[default]

@@ -162,11 +162,10 @@ impl MPVGLArea {
             Backend::X11 => {
                 #[cfg(target_os = "linux")]
                 {
-                    return self
-                        .native()?
+                    self.native()?
                         .surface()
                         .and_downcast_ref::<gdk4_x11::X11Surface>()
-                        .map(|s| s.xid());
+                        .map(|s| s.xid())
                 }
 
                 #[cfg(not(target_os = "linux"))]
@@ -177,11 +176,10 @@ impl MPVGLArea {
             Backend::Win32 => {
                 #[cfg(target_os = "windows")]
                 {
-                    return self
-                        .native()?
+                    self.native()?
                         .surface()
                         .and_downcast_ref::<gdk4_win32::Win32Surface>()
-                        .map(|s| s.handle().0 as u64);
+                        .map(|s| s.handle().0 as u64)
                 }
 
                 #[cfg(not(target_os = "windows"))]

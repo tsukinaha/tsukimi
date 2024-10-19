@@ -70,7 +70,7 @@ impl Default for TsukimiMPV {
                 setlocale,
                 LC_NUMERIC,
             };
-            setlocale(LC_NUMERIC, "C\0".as_ptr() as *const _);
+            setlocale(LC_NUMERIC, c"C".as_ptr() as *const _);
         }
 
         #[cfg(target_os = "macos")]

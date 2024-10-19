@@ -57,7 +57,6 @@ pub mod imp {
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
     #[enum_type(name = "ViewGroup")]
-
     pub enum ViewGroup {
         ListView,
         #[default]

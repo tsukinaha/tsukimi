@@ -61,4 +61,4 @@ jobs:
             locale/
             tsukimi
             *.deb
-            moe*.xml
+            resources/moe*.xml

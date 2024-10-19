@@ -20,7 +20,6 @@ use crate::{
 #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
 #[repr(u32)]
 #[enum_type(name = "State")]
-
 pub enum State {
     Played,
     Playing,

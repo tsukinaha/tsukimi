@@ -97,7 +97,7 @@ fn generate_emby_authorization(
     )
 }
 
-const DOMAIN_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"(https?://)([^/]+)").unwrap());
+static DOMAIN_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"(https?://)([^/]+)").unwrap());
 
 fn generate_hash(s: &str) -> String {
     let mut hasher = fnv::FnvHasher::default();
