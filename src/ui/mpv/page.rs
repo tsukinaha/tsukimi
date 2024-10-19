@@ -124,7 +124,7 @@ mod imp {
         #[template_child]
         pub menu_popover: TemplateChild<gtk::Popover>,
         #[template_child]
-        pub title: TemplateChild<gtk::Label>,
+        pub title_content: TemplateChild<adw::ButtonContent>,
         #[template_child]
         pub speed_spin: TemplateChild<gtk::SpinButton>,
         #[template_child]
@@ -318,7 +318,7 @@ impl MPVPage {
                 imp.spinner.set_visible(true);
                 imp.loading_box.set_visible(true);
                 imp.network_speed_label.set_text("Initializing...");
-                imp.title.set_text(&name);
+                imp.title_content.set_label(&name);
                 imp.suburl.replace(suburi.map(|suburi| EMBY_CLIENT.get_streaming_url(&suburi)));
                 imp.video.play(&url, percentage);
                 imp.back.replace(back);

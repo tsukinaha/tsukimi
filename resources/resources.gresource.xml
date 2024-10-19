@@ -18,6 +18,7 @@
     <file preprocess="xml-stripblanks" alias="check-round-outline2-symbolic.svg">icons/scalable/actions/check-round-outline2-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="emby-symbolic.svg">icons/scalable/actions/emby-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="card-bulleted-symbolic.svg">icons/scalable/actions/card-bulleted-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow4-left-symbolic.svg">icons/scalable/actions/arrow4-left-symbolic.svg</file>
   </gresource>
   <gresource prefix="/moe/tsuna/tsukimi/">
     <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>

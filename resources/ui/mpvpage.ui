@@ -89,45 +89,19 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="_back_button">
-                                <property name="icon-name">go-previous-symbolic</property>
-                                <property name="focusable">True</property>
-                                <property name="receives_default">True</property>
                                 <property name="tooltip_text" translatable="yes">Stop and quit</property>
                                 <signal name="clicked" handler="on_stop_clicked" swapped="yes" />
                                 <style>
                                   <class name="flat" />
                                 </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="network_speed_label_2">
-                                <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create" />
-                                <property name="width-request">130</property>
-                                <property name="margin-end">10</property>
-                                <style>
-                                  <class name="dim-label" />
-                                </style>
-                              </object>
-                            </child>
-                            <style>
-                              <class name="osd" />
-                              <class name="toolbar" />
-                              <class name="top-control-bar" />
-                            </style>
-                          </object>
-                        </child>
-                        <child type="center">
-                          <object class="GtkBox">
-                            <property name="orientation">horizontal</property>
-                            <child>
-                              <object class="GtkLabel" id="title">
-                                <property name="margin-start">10</property>
-                                <property name="margin-end">10</property>
-                                <property name="label" translatable="yes">Loading...</property>
-                                <property name="ellipsize">middle</property>
-                                <attributes>
-                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                                </attributes>
+                                <property name="child">
+                                  <object class="AdwButtonContent" id="title_content">
+                                    <property name="icon-name">arrow4-left-symbolic</property>
+                                    <property name="label" translatable="yes">Loading...</property>
+                                    <property name="use-underline">True</property>
+                                    <property name="can-shrink">True</property>
+                                  </object>
+                                </property>
                               </object>
                             </child>
                             <style>
@@ -140,6 +114,16 @@
                         <child type="end">
                           <object class="GtkBox">
                             <property name="orientation">horizontal</property>
+                            <child>
+                              <object class="GtkLabel" id="network_speed_label_2">
+                                <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create" />
+                                <property name="width-request">130</property>
+                                <property name="margin-end">10</property>
+                                <style>
+                                  <class name="dim-label" />
+                                </style>
+                              </object>
+                            </child>
                             <child>
                               <object class="GtkButton" id="_playlist_button">
                                 <property name="icon-name">view-dual-symbolic</property>
@@ -491,7 +475,6 @@
     <property name="mode">vertical</property>
     <widgets>
       <widget name="_back_button" />
-      <widget name="title" />
       <widget name="network_speed_label_2" />
       <widget name="_media_info_button" />
       <widget name="_playlist_button" />
