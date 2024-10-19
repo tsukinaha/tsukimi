@@ -32,7 +32,7 @@ mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/window.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/window.ui")]
     pub struct Window {
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
@@ -873,7 +873,7 @@ impl Window {
 
     pub fn set_shortcuts(&self) {
         let Some(window) =
-            gtk::Builder::from_resource("/com/github/inaha/tsukimi/ui/mpv_shortcuts_window.ui")
+            gtk::Builder::from_resource("/moe/tsuna/tsukimi/ui/mpv_shortcuts_window.ui")
                 .object::<gtk::ShortcutsWindow>("mpv_shortcuts")
         else {
             eprintln!("Failed to load shortcuts window");

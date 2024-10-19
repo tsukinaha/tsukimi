@@ -12,7 +12,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/horbu_scrolled.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/horbu_scrolled.ui")]
     #[properties(wrapper_type = super::HorbuScrolled)]
     pub struct HorbuScrolled {
         #[property(get, set, construct_only)]

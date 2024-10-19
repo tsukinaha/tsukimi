@@ -9,7 +9,7 @@ mod imp {
     use glib::subclass::InitializingObject;
 
     #[derive(Debug, Default, CompositeTemplate)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/check_row.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/check_row.ui")]
     pub struct CheckRow {
         #[template_child]
         pub check: TemplateChild<gtk::CheckButton>,

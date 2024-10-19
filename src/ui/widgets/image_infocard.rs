@@ -20,7 +20,7 @@ mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/image_info_card.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/image_info_card.ui")]
     #[properties(wrapper_type = super::ImageInfoCard)]
     pub struct ImageInfoCard {
         #[property(get, set, construct_only)]

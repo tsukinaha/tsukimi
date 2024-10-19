@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-    <id>com.github.inaha.tsukimi</id>
+    <id>moe.tsuna.tsukimi</id>
     <developer_name>Inaha</developer_name>
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>GPL-3.0-or-later</project_license>
@@ -31,5 +31,5 @@
         </screenshot>
     </screenshots>
     <content_rating type="oars-1.1" />
-    <launchable type="desktop-id">com.github.inaha.tsukimi.desktop</launchable>
+    <launchable type="desktop-id">moe.tsuna.tsukimi.desktop</launchable>
 </component>

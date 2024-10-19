@@ -9,7 +9,7 @@ mod imp {
     use gtk::prelude::*;
 
     #[derive(Debug, Default, CompositeTemplate, Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/action_row.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/action_row.ui")]
     #[properties(wrapper_type = super::AActionRow)]
     pub struct AActionRow {
         #[template_child]

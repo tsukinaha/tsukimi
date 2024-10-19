@@ -17,7 +17,7 @@ pub(crate) mod imp {
     use glib::subclass::InitializingObject;
 
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/server_panel.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/server_panel.ui")]
     pub struct ServerPanel {
         #[template_child]
         pub server_title: TemplateChild<gtk::Label>,

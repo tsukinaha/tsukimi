@@ -24,7 +24,7 @@ mod imp {
     use std::cell::OnceCell;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/identify_dialog.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/identify_dialog.ui")]
     #[properties(wrapper_type = super::IdentifyDialog)]
     pub struct IdentifyDialog {
         #[property(get, set, construct_only)]

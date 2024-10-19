@@ -18,7 +18,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/hortu_scrolled.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/hortu_scrolled.ui")]
     #[properties(wrapper_type = super::HortuScrolled)]
     pub struct HortuScrolled {
         #[property(get, set, construct_only)]

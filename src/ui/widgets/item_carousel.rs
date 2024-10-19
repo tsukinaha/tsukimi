@@ -21,7 +21,7 @@ pub mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/item_carousel.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/item_carousel.ui")]
     pub struct ItemCarousel {
         #[template_child]
         pub backdrop: TemplateChild<gtk::Picture>,

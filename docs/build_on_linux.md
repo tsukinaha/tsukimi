@@ -13,7 +13,7 @@
 2. compile gschemas
 ```
 mkdir -p $HOME/.local/share/glib-2.0/schemas
-cp com.github.inaha.tsukimi.gschema.xml $HOME/.local/share/glib-2.0/schemas/
+cp moe.tsuna.tsukimi.gschema.xml $HOME/.local/share/glib-2.0/schemas/
 glib-compile-schemas $HOME/.local/share/glib-2.0/schemas/
 ```
 3. cargo build --release

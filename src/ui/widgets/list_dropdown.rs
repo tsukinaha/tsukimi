@@ -7,7 +7,7 @@ mod imp {
     use glib::subclass::InitializingObject;
 
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/dropdown.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/dropdown.ui")]
     pub struct ListDropdown {
         #[template_child]
         pub label1: TemplateChild<gtk::Label>,

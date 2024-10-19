@@ -20,7 +20,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/media_viewer.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/media_viewer.ui")]
     #[properties(wrapper_type = super::MediaViewer)]
     pub struct MediaViewer {
         /// Whether the viewer is fullscreened.

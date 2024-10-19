@@ -1,4 +1,4 @@
-application_id = 'com.github.inaha.tsukimi'
+application_id = 'moe.tsuna.tsukimi'
 
 scalable_dir = join_paths('scalable', 'actions')
 

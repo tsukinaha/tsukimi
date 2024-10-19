@@ -9,8 +9,8 @@ gnome.compile_resources('tsukimi',
 )
 
 desktop_file = i18n.merge_file(
-  input: 'com.github.inaha.tsukimi.desktop.in',
-  output: 'com.github.inaha.tsukimi.desktop',
+  input: 'moe.tsuna.tsukimi.desktop.in',
+  output: 'moe.tsuna.tsukimi.desktop',
   type: 'desktop',
   po_dir: '../po',
   install: true,
@@ -25,8 +25,8 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-  input: 'com.github.inaha.tsukimi.metainfo.xml.in',
-  output: 'com.github.inaha.tsukimi.metainfo.xml',
+  input: 'moe.tsuna.tsukimi.metainfo.xml.in',
+  output: 'moe.tsuna.tsukimi.metainfo.xml',
   po_dir: '../po',
   install: true,
   install_dir: join_paths(get_option('datadir'), 'metainfo')
@@ -36,7 +36,7 @@ appstreamcli = find_program('appstreamcli', required: false, disabler: true)
 test('Validate appstream file', appstreamcli,
      args: ['validate', '--no-net', '--explain', appstream_file])
 
-install_data('com.github.inaha.tsukimi.gschema.xml',
+install_data('moe.tsuna.tsukimi.gschema.xml',
   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
 )
 

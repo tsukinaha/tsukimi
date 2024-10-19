@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/com/github/inaha/tsukimi/icons/scalable/actions/">
+  <gresource prefix="/moe/tsuna/tsukimi/icons/scalable/actions/">
     <file alias="tsukimi">icons/tsukimi.png</file>
     <file preprocess="xml-stripblanks" alias="settings-symbolic.svg">icons/scalable/actions/settings-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="arrow-pointing-at-line-down-symbolic.svg">icons/scalable/actions/arrow-pointing-at-line-down-symbolic.svg</file>
@@ -19,7 +19,7 @@
     <file preprocess="xml-stripblanks" alias="emby-symbolic.svg">icons/scalable/actions/emby-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="card-bulleted-symbolic.svg">icons/scalable/actions/card-bulleted-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/com/github/inaha/tsukimi/">
+  <gresource prefix="/moe/tsuna/tsukimi/">
     <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/search.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/item.ui</file>

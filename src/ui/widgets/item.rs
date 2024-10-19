@@ -47,7 +47,7 @@ pub(crate) mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/item.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/item.ui")]
     #[properties(wrapper_type = super::ItemPage)]
     pub struct ItemPage {
         #[property(get, set, construct_only)]

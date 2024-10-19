@@ -22,7 +22,7 @@ mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/list.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/list.ui")]
     #[properties(wrapper_type = super::ListPage)]
     pub struct ListPage {
         #[property(get, set, construct_only)]

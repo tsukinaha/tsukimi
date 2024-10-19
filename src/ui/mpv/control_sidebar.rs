@@ -17,7 +17,7 @@ mod imp {
     use gtk::glib;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/mpv_control_sidebar.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/mpv_control_sidebar.ui")]
     #[properties(wrapper_type = super::MPVControlSidebar)]
     pub struct MPVControlSidebar {
         #[property(get, set = Self::set_player, explicit_notify, nullable)]

@@ -9,7 +9,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/listexpand_row.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/listexpand_row.ui")]
     #[properties(wrapper_type = super::ListExpandRow)]
     pub struct ListExpandRow {
         #[property(get, set, nullable)]

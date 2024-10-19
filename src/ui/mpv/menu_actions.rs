@@ -8,7 +8,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/mpv_menu_actions.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/mpv_menu_actions.ui")]
     pub struct MenuActions {
         #[template_child]
         pub play_pause_button: TemplateChild<gtk::Button>,

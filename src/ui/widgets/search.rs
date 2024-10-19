@@ -22,7 +22,7 @@ mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/search.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/search.ui")]
     pub struct SearchPage {
         #[template_child]
         pub searchentry: TemplateChild<gtk::SearchEntry>,

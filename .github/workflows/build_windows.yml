@@ -100,7 +100,7 @@ jobs:
 
           cp -r /${{ matrix.msystem }}/share/glib-2.0 share/
           find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rf "{}" \;
-          mv $GITHUB_WORKSPACE/com.github.inaha.tsukimi.gschema.xml share/glib-2.0/schemas/
+          mv $GITHUB_WORKSPACE/moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
           glib-compile-schemas.exe share/glib-2.0/schemas/
           find share/glib-2.0/ -type f ! -name "*.compiled" -exec rm -f "{}" \;
 

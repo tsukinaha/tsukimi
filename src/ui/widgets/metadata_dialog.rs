@@ -24,7 +24,7 @@ mod imp {
     use std::cell::{OnceCell, RefCell};
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/metadata_dialog.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/metadata_dialog.ui")]
     #[properties(wrapper_type = super::MetadataDialog)]
     pub struct MetadataDialog {
         #[property(get, set, construct_only)]

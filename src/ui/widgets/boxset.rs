@@ -28,7 +28,7 @@ pub(crate) mod imp {
     use crate::utils::spawn_g_timeout;
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/boxset.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/boxset.ui")]
     #[properties(wrapper_type = super::BoxSetPage)]
     pub struct BoxSetPage {
         #[property(get, set, construct_only)]

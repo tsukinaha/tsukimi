@@ -30,7 +30,7 @@ pub(crate) mod imp {
     use std::cell::{Cell, OnceCell};
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/song_widget.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/song_widget.ui")]
     #[properties(wrapper_type = super::SongWidget)]
     pub struct SongWidget {
         #[property(get, set, construct_only)]

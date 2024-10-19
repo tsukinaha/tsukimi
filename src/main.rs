@@ -22,7 +22,7 @@ mod utils;
 
 use config::GETTEXT_PACKAGE;
 
-const APP_ID: &str = "com.github.inaha.tsukimi";
+const APP_ID: &str = "moe.tsuna.tsukimi";
 
 #[cfg(target_os = "linux")]
 const LINUX_LOCALEDIR: &str = "/usr/share/locale";
@@ -90,7 +90,7 @@ fn main() -> glib::ExitCode {
     // Create a new application
     let app = adw::Application::builder()
         .application_id(APP_ID)
-        .resource_base_path("/com/github/inaha/tsukimi")
+        .resource_base_path("/moe/tsuna/tsukimi")
         .build();
 
     // Make Application detect Windows system dark mode

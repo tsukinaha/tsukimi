@@ -23,7 +23,7 @@ mod imp {
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/com/github/inaha/tsukimi/ui/home.ui")]
+    #[template(resource = "/moe/tsuna/tsukimi/ui/home.ui")]
     pub struct HomePage {
         #[template_child]
         pub root: TemplateChild<gtk::ScrolledWindow>,
