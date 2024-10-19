@@ -60,7 +60,6 @@ pub mod imp {
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
     #[enum_type(name = "PosterType")]
-
     pub enum PosterType {
         Backdrop,
         Banner,
