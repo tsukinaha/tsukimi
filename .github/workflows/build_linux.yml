@@ -52,6 +52,7 @@ jobs:
           sudo cp target/release/tsukimi .
           sudo cp target/debian/*.deb .
           sudo cp -r i18n/locale .
+          sudo cp resources/moe*.xml .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -61,4 +62,4 @@ jobs:
             locale/
             tsukimi
             *.deb
-            resources/moe*.xml
+            moe*.xml
