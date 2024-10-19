@@ -1,15 +1,26 @@
-use adw::{prelude::*, subclass::prelude::*};
-use gtk::{gdk, gio, glib, glib::clone};
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gtk::{
+    gdk,
+    gio,
+    glib,
+    glib::clone,
+};
 use tracing::warn;
 
+use super::image_paintable::ImagePaintable;
 use crate::utils::spawn;
 
-use super::image_paintable::ImagePaintable;
-
 mod imp {
-    use glib::subclass::InitializingObject;
-    use gtk::{glib, CompositeTemplate};
     use std::cell::Cell;
+
+    use glib::subclass::InitializingObject;
+    use gtk::{
+        glib,
+        CompositeTemplate,
+    };
 
     use super::*;
 
@@ -61,18 +72,12 @@ glib::wrapper! {
 
 impl MediaContentViewer {
     pub fn new(autoplay: bool) -> Self {
-        glib::Object::builder()
-            .property("autoplay", autoplay)
-            .build()
+        glib::Object::builder().property("autoplay", autoplay).build()
     }
 
     pub fn stop_playback(&self) {
-        if let Some(stream) = self
-            .imp()
-            .viewer
-            .child()
-            .and_downcast::<gtk::Video>()
-            .and_then(|v| v.media_stream())
+        if let Some(stream) =
+            self.imp().viewer.child().and_downcast::<gtk::Video>().and_then(|v| v.media_stream())
         {
             if stream.is_playing() {
                 stream.pause();
@@ -114,10 +119,8 @@ impl MediaContentViewer {
         let picture = if let Some(picture) = imp.viewer.child().and_downcast::<gtk::Picture>() {
             picture
         } else {
-            let picture = gtk::Picture::builder()
-                .valign(gtk::Align::Fill)
-                .halign(gtk::Align::Center)
-                .build();
+            let picture =
+                gtk::Picture::builder().valign(gtk::Align::Fill).halign(gtk::Align::Center).build();
             imp.viewer.set_child(Some(&picture));
             picture
         };

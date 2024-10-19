@@ -1,39 +1,61 @@
 use adw::prelude::*;
+use anyhow::Result;
 use gettextrs::gettext;
 use glib::Object;
-use gtk::gdk::Rectangle;
-use gtk::gio::MenuModel;
-use gtk::glib::subclass::types::ObjectSubclassExt;
-use gtk::glib::subclass::types::ObjectSubclassIsExt;
-use gtk::template_callbacks;
-use gtk::Builder;
-use gtk::PopoverMenu;
-use gtk::{gio, glib};
+use gtk::{
+    gdk::Rectangle,
+    gio,
+    gio::MenuModel,
+    glib,
+    glib::subclass::types::{
+        ObjectSubclassExt,
+        ObjectSubclassIsExt,
+    },
+    template_callbacks,
+    Builder,
+    PopoverMenu,
+};
 use imp::PosterType;
 use tracing::warn;
 
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
-use crate::toast;
-use crate::ui::provider::tu_item::TuItem;
-use crate::ui::provider::IS_ADMIN;
-use crate::utils::spawn;
-use crate::utils::spawn_tokio;
-use anyhow::Result;
-
 use super::picture_loader::PictureLoader;
+use crate::{
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+    },
+    toast,
+    ui::provider::{
+        tu_item::TuItem,
+        IS_ADMIN,
+    },
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
+};
 
 pub const PROGRESSBAR_ANIMATION_DURATION: u32 = 2000;
 
 pub mod imp {
+    use std::cell::{
+        Cell,
+        RefCell,
+    };
+
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
-    use gtk::{glib, CompositeTemplate};
-    use gtk::{prelude::*, PopoverMenu};
-    use std::cell::{Cell, RefCell};
+    use gtk::{
+        glib,
+        prelude::*,
+        CompositeTemplate,
+        PopoverMenu,
+    };
 
-    use crate::ui::provider::tu_item::TuItem;
-    use crate::ui::widgets::picture_loader::PictureLoader;
+    use crate::ui::{
+        provider::tu_item::TuItem,
+        widgets::picture_loader::PictureLoader,
+    };
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
@@ -213,14 +235,12 @@ impl TuListItem {
                 imp.listlabel.set_text(&item.name());
                 if let Some(status) = item.status() {
                     if status == "Continuing" {
-                        imp.label2
-                            .set_text(&format!("{} - {}", year, gettext("Present")));
+                        imp.label2.set_text(&format!("{} - {}", year, gettext("Present")));
                     } else if status == "Ended" {
                         if let Some(end_date) = item.end_date() {
                             let end_year = end_date.year();
                             if end_year != year.parse::<i32>().unwrap_or_default() {
-                                imp.label2
-                                    .set_text(&format!("{} - {}", year, end_date.year()));
+                                imp.label2.set_text(&format!("{} - {}", year, end_date.year()));
                             } else {
                                 imp.label2.set_text(&format!("{}", end_year));
                             }
@@ -250,8 +270,7 @@ impl TuListItem {
                 self.set_picture();
             }
             "Episode" => {
-                imp.listlabel
-                    .set_text(&item.series_name().unwrap_or_default());
+                imp.listlabel.set_text(&item.series_name().unwrap_or_default());
                 imp.label2.set_text(&format!(
                     "S{}E{}: {}",
                     item.parent_index_number(),
@@ -463,8 +482,7 @@ impl TuListItem {
             imp,
             move |gesture, _n, x, y| {
                 gesture.set_state(gtk::EventSequenceState::Claimed);
-                imp.obj()
-                    .insert_action_group("item", imp.obj().set_action().as_ref());
+                imp.obj().insert_action_group("item", imp.obj().set_action().as_ref());
                 if let Some(popover) = imp.popover.borrow().as_ref() {
                     popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
                     popover.popup();
@@ -486,10 +504,7 @@ impl TuListItem {
     }
 
     pub fn set_item_action(
-        &self,
-        is_playable: bool,
-        is_editable: bool,
-        is_favouritable: bool,
+        &self, is_playable: bool, is_editable: bool, is_favouritable: bool,
     ) -> Option<gio::SimpleActionGroup> {
         let action_group = gio::SimpleActionGroup::new();
 
@@ -739,11 +754,8 @@ impl TuListItem {
                                 .unwrap()
                                 .downcast::<gtk::SingleSelection>()
                                 .unwrap();
-                            let store = selection
-                                .model()
-                                .unwrap()
-                                .downcast::<gio::ListStore>()
-                                .unwrap();
+                            let store =
+                                selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
                             store.remove(selection.selected());
                         } else if let Some(grid_view) = parent.downcast_ref::<gtk::GridView>() {
                             let selection = grid_view
@@ -751,11 +763,8 @@ impl TuListItem {
                                 .unwrap()
                                 .downcast::<gtk::SingleSelection>()
                                 .unwrap();
-                            let store = selection
-                                .model()
-                                .unwrap()
-                                .downcast::<gio::ListStore>()
-                                .unwrap();
+                            let store =
+                                selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
                             store.remove(selection.selected());
                         }
                     }
@@ -766,8 +775,7 @@ impl TuListItem {
     }
 
     pub async fn process_item(
-        &self,
-        action: fn(&String) -> Result<(), Box<dyn std::error::Error>>,
+        &self, action: fn(&String) -> Result<(), Box<dyn std::error::Error>>,
     ) {
         let id = self.item().id();
         spawn_tokio(async move {

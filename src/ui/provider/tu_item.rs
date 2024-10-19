@@ -1,25 +1,40 @@
-use crate::client::structs::{Back, SimpleListItem};
-use crate::ui::widgets::single_grid::SingleGrid;
-use gettextrs::gettext;
-use glib::DateTime;
-use gtk::glib;
-use gtk::glib::prelude::*;
-use gtk::glib::subclass::prelude::*;
 use std::cell::RefCell;
 
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
-use crate::ui::widgets::window::Window;
-use crate::utils::spawn_tokio;
+use adw::prelude::*;
+use gettextrs::gettext;
+use glib::DateTime;
+use gtk::{
+    glib,
+    glib::{
+        prelude::*,
+        subclass::prelude::*,
+    },
+};
+
 use crate::{
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+        structs::{
+            Back,
+            SimpleListItem,
+        },
+    },
     toast,
     ui::widgets::{
-        actor::ActorPage, boxset::BoxSetPage, item::ItemPage, list::ListPage,
+        actor::ActorPage,
+        boxset::BoxSetPage,
+        item::ItemPage,
+        list::ListPage,
         music_album::AlbumPage,
+        single_grid::SingleGrid,
+        window::Window,
     },
-    utils::spawn,
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
 };
-use adw::prelude::*;
 
 #[derive(Default, Clone)]
 struct AlbumArtist {

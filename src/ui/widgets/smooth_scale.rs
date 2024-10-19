@@ -1,7 +1,16 @@
-use gtk::{glib, prelude::*, subclass::prelude::*};
+use gtk::{
+    glib,
+    prelude::*,
+    subclass::prelude::*,
+};
 mod imp {
-    use gtk::{glib, prelude::*, subclass::prelude::*};
     use std::cell::RefCell;
+
+    use gtk::{
+        glib,
+        prelude::*,
+        subclass::prelude::*,
+    };
 
     use crate::gstl::player::MusicPlayer;
 
@@ -30,16 +39,13 @@ mod imp {
             // so we need to iterate through the controllers to get the GestureClick
             // and then connect the signals
             let mut gesture = gtk::GestureClick::new();
-            self.obj()
-                .observe_controllers()
-                .into_iter()
-                .for_each(|collection| {
-                    if let Ok(event) = collection {
-                        if event.type_() == gtk::GestureClick::static_type() {
-                            gesture = event.downcast::<gtk::GestureClick>().unwrap();
-                        }
+            self.obj().observe_controllers().into_iter().for_each(|collection| {
+                if let Ok(event) = collection {
+                    if event.type_() == gtk::GestureClick::static_type() {
+                        gesture = event.downcast::<gtk::GestureClick>().unwrap();
                     }
-                });
+                }
+            });
 
             gesture.connect_pressed(glib::clone!(
                 #[weak(rename_to = imp)]

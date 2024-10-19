@@ -1,15 +1,16 @@
-#![cfg_attr(
-    all(target_os = "windows", not(feature = "console")),
-    windows_subsystem = "windows"
-)]
+#![cfg_attr(all(target_os = "windows", not(feature = "console")), windows_subsystem = "windows")]
+
+use std::env;
 
 use arg::Args;
 use clap::Parser;
 use gettextrs::*;
-use gtk::prelude::*;
-use gtk::{gio, glib};
+use gtk::{
+    gio,
+    glib,
+    prelude::*,
+};
 use once_cell::sync::OnceCell;
-use std::env;
 use tracing::info;
 
 mod arg;
@@ -44,9 +45,7 @@ fn locale_dir() -> &'static str {
                 .nth(2)
                 .expect("Can not get locale dir")
                 .join(WINDOWS_LOCALEDIR);
-            Box::leak(locale_path.into_boxed_path())
-                .to_str()
-                .expect("Can not get locale dir")
+            Box::leak(locale_path.into_boxed_path()).to_str().expect("Can not get locale dir")
         }
     })
 }
@@ -96,12 +95,12 @@ fn main() -> glib::ExitCode {
     // Make Application detect Windows system dark mode
     #[cfg(target_os = "windows")]
     {
-        use crate::cfg::theme::is_system_dark_mode_enabled;
         use adw::prelude::AdwApplicationExt;
 
+        use crate::cfg::theme::is_system_dark_mode_enabled;
+
         if is_system_dark_mode_enabled() {
-            app.style_manager()
-                .set_color_scheme(adw::ColorScheme::PreferDark);
+            app.style_manager().set_color_scheme(adw::ColorScheme::PreferDark);
         }
     }
 

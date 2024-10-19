@@ -1,11 +1,20 @@
-use gtk::{gdk, gio::File, glib, graphene, prelude::*, subclass::prelude::*};
+use gtk::{
+    gdk,
+    gio::File,
+    glib,
+    graphene,
+    prelude::*,
+    subclass::prelude::*,
+};
 
 mod imp {
-    use std::{cell::RefCell, rc::Rc};
-
-    use crate::ui::models::SETTINGS;
+    use std::{
+        cell::RefCell,
+        rc::Rc,
+    };
 
     use super::*;
+    use crate::ui::models::SETTINGS;
 
     #[derive(Default)]
     pub struct BackgroundPaintable {

@@ -1,7 +1,11 @@
 use std::sync::OnceLock;
 
+use tokio::runtime::{
+    self,
+    Runtime,
+};
+
 use crate::ui::models::SETTINGS;
-use tokio::runtime::{self, Runtime};
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();

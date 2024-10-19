@@ -1,11 +1,19 @@
 use glib::Object;
-use gtk::{gio, glib};
+use gtk::{
+    gio,
+    glib,
+};
 
 pub mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
-    use gtk::{gdk, glib, graphene, CompositeTemplate};
+    use gtk::{
+        gdk,
+        glib,
+        graphene,
+        prelude::*,
+        CompositeTemplate,
+    };
     use once_cell::sync::Lazy;
 
     static MASK: Lazy<gdk::RGBA> = Lazy::new(|| {
@@ -93,10 +101,7 @@ pub mod imp {
             self.parent_snapshot(snapshot);
             snapshot.pop();
 
-            snapshot.append_color(
-                &MASK,
-                &graphene::Rect::new(0.0, lower_y, width, lower_height),
-            );
+            snapshot.append_color(&MASK, &graphene::Rect::new(0.0, lower_y, width, lower_height));
 
             snapshot.pop();
             snapshot.restore();

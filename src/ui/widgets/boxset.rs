@@ -1,31 +1,54 @@
 use std::path::PathBuf;
 
-use adw::prelude::*;
-use adw::subclass::prelude::*;
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
 use gettextrs::gettext;
 use glib::Object;
-use gtk::template_callbacks;
-use gtk::{gio, glib};
-
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
-use crate::client::structs::*;
-use crate::utils::{fetch_with_cache, get_image_with_cache, spawn, CachePolicy};
-use crate::{fraction, fraction_reset, toast};
+use gtk::{
+    gio,
+    glib,
+    template_callbacks,
+};
 
 use super::picture_loader::PictureLoader;
+use crate::{
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+        structs::*,
+    },
+    fraction,
+    fraction_reset,
+    toast,
+    utils::{
+        fetch_with_cache,
+        get_image_with_cache,
+        spawn,
+        CachePolicy,
+    },
+};
 
 pub(crate) mod imp {
-    use adw::subclass::prelude::*;
-    use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
-    use gtk::{glib, CompositeTemplate};
     use std::cell::OnceCell;
 
-    use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
-    use crate::ui::widgets::hortu_scrolled::HortuScrolled;
-    use crate::ui::widgets::item_actionbox::ItemActionsBox;
-    use crate::utils::spawn_g_timeout;
+    use adw::subclass::prelude::*;
+    use glib::subclass::InitializingObject;
+    use gtk::{
+        glib,
+        prelude::*,
+        CompositeTemplate,
+    };
+
+    use crate::{
+        ui::widgets::{
+            horbu_scrolled::HorbuScrolled,
+            hortu_scrolled::HortuScrolled,
+            item_actionbox::ItemActionsBox,
+        },
+        utils::spawn_g_timeout,
+    };
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/boxset.ui")]

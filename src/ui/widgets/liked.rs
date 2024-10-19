@@ -1,18 +1,34 @@
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
-use crate::client::structs::*;
-use crate::utils::{spawn, spawn_tokio};
-use crate::{fraction, fraction_reset, toast};
 use gettextrs::gettext;
 use glib::Object;
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
+use gtk::{
+    gio,
+    glib,
+    prelude::*,
+    subclass::prelude::*,
+};
+
+use crate::{
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+        structs::*,
+    },
+    fraction,
+    fraction_reset,
+    toast,
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
+};
 
 mod imp {
     use glib::subclass::InitializingObject;
-    use gtk::subclass::prelude::*;
-    use gtk::{glib, CompositeTemplate};
+    use gtk::{
+        glib,
+        subclass::prelude::*,
+        CompositeTemplate,
+    };
 
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
 
@@ -150,9 +166,7 @@ impl LikedPage {
         let type_ = types.clone();
 
         let results = match spawn_tokio(async move {
-            EMBY_CLIENT
-                .get_favourite(&types, 0, 12, "SortName", "Ascending")
-                .await
+            EMBY_CLIENT.get_favourite(&types, 0, 12, "SortName", "Ascending").await
         })
         .await
         {
@@ -181,9 +195,7 @@ impl LikedPage {
                 page.connect_sort_changed_tokio(false, move |sort_by, sort_order| {
                     let type_clone1 = type_clone1.clone();
                     async move {
-                        EMBY_CLIENT
-                            .get_favourite(&type_clone1, 0, 50, &sort_by, &sort_order)
-                            .await
+                        EMBY_CLIENT.get_favourite(&type_clone1, 0, 50, &sort_by, &sort_order).await
                     }
                 });
                 page.connect_end_edge_overshot_tokio(false, move |sort_by, sort_order, n_items| {

@@ -1,26 +1,40 @@
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gtk::{
+    glib,
+    template_callbacks,
+    CompositeTemplate,
+};
+
+use super::{
+    account_add::imp::ActionType,
+    window::Window,
+};
 use crate::{
     client::Account,
-    ui::{models::SETTINGS, provider::account_item::AccountItem},
+    ui::{
+        models::SETTINGS,
+        provider::account_item::AccountItem,
+    },
 };
-use adw::prelude::*;
-use adw::subclass::prelude::*;
-use gtk::{glib, template_callbacks, CompositeTemplate};
-
-use super::{account_add::imp::ActionType, window::Window};
 
 mod imp {
     use std::cell::OnceCell;
 
+    use adw::prelude::*;
     use glib::subclass::InitializingObject;
 
+    use super::*;
     use crate::{
         client::client::EMBY_CLIENT,
-        ui::{models::SETTINGS, provider::account_item::AccountItem, widgets::window::Window},
+        ui::{
+            models::SETTINGS,
+            provider::account_item::AccountItem,
+            widgets::window::Window,
+        },
     };
-
-    use adw::prelude::*;
-
-    use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/server_action_row.ui")]
@@ -79,36 +93,19 @@ glib::wrapper! {
 #[template_callbacks]
 impl ServerActionRow {
     pub fn new(account: Account) -> Self {
-        glib::Object::builder()
-            .property("item", AccountItem::from_simple(&account))
-            .build()
+        glib::Object::builder().property("item", AccountItem::from_simple(&account)).build()
     }
 
     #[template_callback]
     fn on_edit_clicked(&self) {
         let account = self.item().account();
         let account_window = crate::ui::widgets::account_add::AccountWindow::new();
-        account_window
-            .imp()
-            .nav
-            .set_title(&gettextrs::gettext("Edit Server"));
+        account_window.imp().nav.set_title(&gettextrs::gettext("Edit Server"));
         account_window.set_action_type(ActionType::Edit);
-        account_window
-            .imp()
-            .old_account
-            .replace(Some(account.clone()));
-        account_window
-            .imp()
-            .username_entry
-            .set_text(&account.username);
-        account_window
-            .imp()
-            .password_entry
-            .set_text(&account.password);
-        account_window
-            .imp()
-            .servername_entry
-            .set_text(&account.servername);
+        account_window.imp().old_account.replace(Some(account.clone()));
+        account_window.imp().username_entry.set_text(&account.username);
+        account_window.imp().password_entry.set_text(&account.password);
+        account_window.imp().servername_entry.set_text(&account.servername);
         account_window.imp().port_entry.set_text(&account.port);
         account_window.imp().server_entry.set_text(&account.server);
         account_window.present(self.root().as_ref());
@@ -117,13 +114,9 @@ impl ServerActionRow {
     #[template_callback]
     fn on_delete_clicked(&self) {
         let account = self.item().account();
-        SETTINGS
-            .remove_account(account)
-            .expect("Failed to remove server");
+        SETTINGS.remove_account(account).expect("Failed to remove server");
         let root = self.root();
-        let window = root
-            .and_downcast_ref::<Window>()
-            .expect("Failed to get Window");
+        let window = root.and_downcast_ref::<Window>().expect("Failed to get Window");
         window.set_servers();
         window.set_nav_servers();
     }

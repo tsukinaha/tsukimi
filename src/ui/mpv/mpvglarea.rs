@@ -1,24 +1,36 @@
 use glib::Object;
-use gtk::gdk::{Backend, Display};
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
+use gtk::{
+    gdk::{
+        Backend,
+        Display,
+    },
+    gio,
+    glib,
+    prelude::*,
+    subclass::prelude::*,
+};
 use libmpv2::SetData;
 use tracing::info;
 
+use super::tsukimi_mpv::{
+    TrackSelection,
+    ACTIVE,
+};
 use crate::client::client::EMBY_CLIENT;
 
-use super::tsukimi_mpv::{TrackSelection, ACTIVE};
-
 mod imp {
-    use gtk::gdk::GLContext;
-    use gtk::glib;
-    use gtk::prelude::*;
-    use gtk::subclass::prelude::*;
-
-    use crate::ui::mpv::tsukimi_mpv::TsukimiMPV;
-    use crate::ui::mpv::tsukimi_mpv::RENDER_UPDATE;
+    use gtk::{
+        gdk::GLContext,
+        glib,
+        prelude::*,
+        subclass::prelude::*,
+    };
     use tracing::error;
+
+    use crate::ui::mpv::tsukimi_mpv::{
+        TsukimiMPV,
+        RENDER_UPDATE,
+    };
 
     // Object holding the state
     #[derive(Default)]
@@ -108,8 +120,7 @@ impl MPVGLArea {
     pub fn play(&self, url: &str, percentage: f64) {
         let mpv = &self.imp().mpv;
 
-        mpv.event_thread_alive
-            .store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
+        mpv.event_thread_alive.store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
         atomic_wait::wake_all(&*mpv.event_thread_alive);
 
         let url = EMBY_CLIENT.get_streaming_url(url);

@@ -1,4 +1,7 @@
-use serde::{Deserialize, Serialize};
+use serde::{
+    Deserialize,
+    Serialize,
+};
 
 use crate::ui::provider::descriptor::VecSerialize;
 
@@ -27,9 +30,13 @@ impl VecSerialize<Account> for Vec<Account> {
 
 pub mod theme {
     #[cfg(target_os = "windows")]
-    use windows::{core::*, Win32::System::Registry::*};
+    use windows::{
+        core::*,
+        Win32::System::Registry::*,
+    };
 
-    /// Use windows crate to detect Windows system dark mode as gtk settings does not respect it
+    /// Use windows crate to detect Windows system dark mode as gtk settings
+    /// does not respect it
     #[cfg(target_os = "windows")]
     pub fn is_system_dark_mode_enabled() -> bool {
         #[cfg(windows)]

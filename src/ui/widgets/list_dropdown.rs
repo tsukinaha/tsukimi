@@ -1,10 +1,16 @@
-use adw::prelude::*;
-use adw::subclass::prelude::*;
-use gtk::{glib, CompositeTemplate};
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gtk::{
+    glib,
+    CompositeTemplate,
+};
 
 mod imp {
-    use super::*;
     use glib::subclass::InitializingObject;
+
+    use super::*;
 
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/dropdown.ui")]

@@ -1,13 +1,28 @@
-use adw::{prelude::*, subclass::prelude::*};
-use gtk::{gdk, glib, glib::closure_local, graphene};
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gtk::{
+    gdk,
+    glib,
+    glib::closure_local,
+    graphene,
+};
 use tracing::warn;
 
 const ANIMATION_DURATION: u32 = 250;
 
 mod imp {
-    use std::cell::{Cell, OnceCell, RefCell};
+    use std::cell::{
+        Cell,
+        OnceCell,
+        RefCell,
+    };
 
-    use glib::{clone, subclass::Signal};
+    use glib::{
+        clone,
+        subclass::Signal,
+    };
     use once_cell::sync::Lazy;
 
     use super::*;

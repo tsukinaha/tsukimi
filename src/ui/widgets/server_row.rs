@@ -1,19 +1,31 @@
-use adw::{prelude::*, subclass::prelude::*};
-use gtk::{glib, CompositeTemplate};
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gtk::{
+    glib,
+    CompositeTemplate,
+};
 
-use crate::{client::Account, ui::provider::account_item::AccountItem};
+use crate::{
+    client::Account,
+    ui::provider::account_item::AccountItem,
+};
 
 mod imp {
     use std::cell::OnceCell;
 
     use glib::subclass::InitializingObject;
 
+    use super::*;
     use crate::{
         client::client::EMBY_CLIENT,
-        ui::{models::SETTINGS, provider::account_item::AccountItem, widgets::window::Window},
+        ui::{
+            models::SETTINGS,
+            provider::account_item::AccountItem,
+            widgets::window::Window,
+        },
     };
-
-    use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/server_row.ui")]
@@ -69,8 +81,6 @@ glib::wrapper! {
 
 impl ServerRow {
     pub fn new(account: Account) -> Self {
-        glib::Object::builder()
-            .property("item", AccountItem::from_simple(&account))
-            .build()
+        glib::Object::builder().property("item", AccountItem::from_simple(&account)).build()
     }
 }

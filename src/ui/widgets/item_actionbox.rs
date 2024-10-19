@@ -1,23 +1,32 @@
-use crate::utils::spawn;
-
 use adw::subclass::prelude::*;
-use gtk::{gio, prelude::*};
-use gtk::{glib, template_callbacks, CompositeTemplate};
-
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
-use crate::toast;
-use crate::utils::spawn_tokio;
+use gtk::{
+    gio,
+    glib,
+    prelude::*,
+    template_callbacks,
+    CompositeTemplate,
+};
 
 use super::star_toggle::StarToggle;
+use crate::{
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+    },
+    toast,
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
+};
 
 mod imp {
     use std::cell::RefCell;
 
-    use crate::ui::widgets::star_toggle::StarToggle;
+    use glib::subclass::InitializingObject;
 
     use super::*;
-    use glib::subclass::InitializingObject;
+    use crate::ui::widgets::star_toggle::StarToggle;
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/item_actions.ui")]
@@ -77,9 +86,7 @@ impl Default for ItemActionsBox {
 #[template_callbacks]
 impl ItemActionsBox {
     pub fn new() -> Self {
-        glib::Object::builder()
-            .property("id", None::<String>)
-            .build()
+        glib::Object::builder().property("id", None::<String>).build()
     }
 
     #[template_callback]
@@ -111,8 +118,10 @@ impl ItemActionsBox {
                 #[weak(rename_to = obj)]
                 self,
                 move |_, _, _| {
-                    use crate::insert_editm_dialog;
-                    use crate::ui::widgets::metadata_dialog::MetadataDialog;
+                    use crate::{
+                        insert_editm_dialog,
+                        ui::widgets::metadata_dialog::MetadataDialog,
+                    };
                     let id = obj.id();
                     if let Some(id) = id {
                         let dialog = MetadataDialog::new(&id);
@@ -126,8 +135,10 @@ impl ItemActionsBox {
                 #[weak(rename_to = obj)]
                 self,
                 move |_, _, _| {
-                    use crate::insert_editm_dialog;
-                    use crate::ui::widgets::image_dialog::ImagesDialog;
+                    use crate::{
+                        insert_editm_dialog,
+                        ui::widgets::image_dialog::ImagesDialog,
+                    };
                     let id = obj.id();
                     if let Some(id) = id {
                         let dialog = ImagesDialog::new(&id);

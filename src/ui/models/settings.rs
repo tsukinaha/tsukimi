@@ -2,14 +2,19 @@ use std::ops::Deref;
 
 use gtk::{
     gio,
-    glib::{self, thread_guard::ThreadGuard},
+    glib::{
+        self,
+        thread_guard::ThreadGuard,
+    },
     prelude::*,
 };
 
-use crate::client::Account;
-
 use crate::{
-    ui::provider::descriptor::{Descriptor, VecSerialize},
+    client::Account,
+    ui::provider::descriptor::{
+        Descriptor,
+        VecSerialize,
+    },
     APP_ID,
 };
 
@@ -89,9 +94,7 @@ impl Settings {
     }
 
     pub fn edit_account(
-        &self,
-        old_account: Account,
-        new_account: Account,
+        &self, old_account: Account, new_account: Account,
     ) -> Result<(), glib::BoolError> {
         let mut accounts = self.accounts();
         if accounts.contains(&new_account) {
@@ -113,36 +116,26 @@ impl Settings {
     }
 
     pub fn add_preferred_version_descriptor(
-        &self,
-        descriptor: Descriptor,
+        &self, descriptor: Descriptor,
     ) -> Result<(), glib::BoolError> {
         let mut descriptors = self.preferred_version_descriptors();
         if descriptors.contains(&descriptor) {
             return Ok(());
         }
         descriptors.push(descriptor);
-        self.set_string(
-            Self::PREFERRED_VERSION_DESCRIPTORS,
-            &descriptors.to_string(),
-        )
+        self.set_string(Self::PREFERRED_VERSION_DESCRIPTORS, &descriptors.to_string())
     }
 
     pub fn remove_preferred_version_descriptor(
-        &self,
-        descriptor: Descriptor,
+        &self, descriptor: Descriptor,
     ) -> Result<(), glib::BoolError> {
         let mut descriptors = self.preferred_version_descriptors();
         descriptors.retain(|d| d != &descriptor);
-        self.set_string(
-            Self::PREFERRED_VERSION_DESCRIPTORS,
-            &descriptors.to_string(),
-        )
+        self.set_string(Self::PREFERRED_VERSION_DESCRIPTORS, &descriptors.to_string())
     }
 
     pub fn edit_preferred_version_descriptor(
-        &self,
-        old_descriptor: Descriptor,
-        new_descriptor: Descriptor,
+        &self, old_descriptor: Descriptor, new_descriptor: Descriptor,
     ) -> Result<(), glib::BoolError> {
         let mut descriptors = self.preferred_version_descriptors();
         if descriptors.contains(&new_descriptor) {
@@ -151,20 +144,13 @@ impl Settings {
         if let Some(index) = descriptors.iter().position(|d| d == &old_descriptor) {
             descriptors[index] = new_descriptor;
         }
-        self.set_string(
-            Self::PREFERRED_VERSION_DESCRIPTORS,
-            &descriptors.to_string(),
-        )
+        self.set_string(Self::PREFERRED_VERSION_DESCRIPTORS, &descriptors.to_string())
     }
 
     pub fn set_preferred_version_descriptors(
-        &self,
-        descriptors: Vec<Descriptor>,
+        &self, descriptors: Vec<Descriptor>,
     ) -> Result<(), glib::BoolError> {
-        self.set_string(
-            Self::PREFERRED_VERSION_DESCRIPTORS,
-            &descriptors.to_string(),
-        )
+        self.set_string(Self::PREFERRED_VERSION_DESCRIPTORS, &descriptors.to_string())
     }
 
     pub fn set_mpv_hwdec(&self, mpv_hwdec: i32) -> Result<(), glib::BoolError> {
@@ -212,8 +198,7 @@ impl Settings {
     }
 
     pub fn set_mpv_show_buffer_speed(
-        &self,
-        mpv_show_buffer_speed: bool,
+        &self, mpv_show_buffer_speed: bool,
     ) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_MPV_SHOW_BUFFER_SPEED, mpv_show_buffer_speed)
     }
@@ -227,13 +212,9 @@ impl Settings {
     }
 
     pub fn set_mpv_action_after_video_end(
-        &self,
-        mpv_action_after_video_end: i32,
+        &self, mpv_action_after_video_end: i32,
     ) -> Result<(), glib::BoolError> {
-        self.set_int(
-            Self::KEY_MPV_ACTION_AFTER_VIDEO_END,
-            mpv_action_after_video_end,
-        )
+        self.set_int(Self::KEY_MPV_ACTION_AFTER_VIDEO_END, mpv_action_after_video_end)
     }
 
     pub fn mpv_action_after_video_end(&self) -> i32 {
@@ -269,8 +250,7 @@ impl Settings {
     }
 
     pub fn set_accent_fg_color_code(
-        &self,
-        accent_fg_color_code: &str,
+        &self, accent_fg_color_code: &str,
     ) -> Result<(), glib::BoolError> {
         self.set_string(Self::KEY_ACCENT_FG_COLOR_CODE, accent_fg_color_code)
     }

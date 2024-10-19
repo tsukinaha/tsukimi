@@ -1,28 +1,40 @@
 use adw::prelude::AdwDialogExt;
 use gettextrs::gettext;
 use glib::Object;
-use gtk::glib;
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
-use gtk::template_callbacks;
+use gtk::{
+    glib,
+    prelude::*,
+    subclass::prelude::*,
+    template_callbacks,
+};
 use imp::ActionType;
 
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
-use crate::client::Account;
-use crate::toast;
-use crate::ui::models::SETTINGS;
-use crate::utils::spawn_tokio;
+use crate::{
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+        Account,
+    },
+    toast,
+    ui::models::SETTINGS,
+    utils::spawn_tokio,
+};
 
 pub mod imp {
 
-    use std::cell::{Cell, RefCell};
+    use std::cell::{
+        Cell,
+        RefCell,
+    };
 
     use adw::subclass::dialog::AdwDialogImpl;
     use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
-    use gtk::subclass::prelude::*;
-    use gtk::{glib, CompositeTemplate};
+    use gtk::{
+        glib,
+        prelude::*,
+        subclass::prelude::*,
+        CompositeTemplate,
+    };
 
     use crate::client::Account;
 
@@ -183,9 +195,7 @@ impl AccountWindow {
         match action_type {
             ActionType::Edit => {
                 let old_account = imp.old_account.take().expect("No server to edit");
-                SETTINGS
-                    .edit_account(old_account, account)
-                    .expect("Failed to edit server");
+                SETTINGS.edit_account(old_account, account).expect("Failed to edit server");
                 self.close_dialog(&gettext("Server edited successfully"));
             }
             ActionType::Add => {

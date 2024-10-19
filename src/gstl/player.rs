@@ -1,22 +1,40 @@
-use crate::{client::client::EMBY_CLIENT, ui::provider::core_song::CoreSong};
 use gst::prelude::*;
 use gtk::glib;
 
+use crate::{
+    client::client::EMBY_CLIENT,
+    ui::provider::core_song::CoreSong,
+};
+
 pub mod imp {
+    use std::{
+        cell::{
+            Cell,
+            RefCell,
+        },
+        sync::OnceLock,
+    };
+
     use anyhow::Result;
-    use async_channel::{Receiver, Sender};
-    use gtk::glib::Properties;
-    use gtk::prelude::ObjectExt;
-    use gtk::{prelude::*, subclass::prelude::*};
+    use async_channel::{
+        Receiver,
+        Sender,
+    };
+    use glib::subclass::Signal;
+    use gtk::{
+        glib,
+        glib::Properties,
+        prelude::{
+            ObjectExt,
+            *,
+        },
+        subclass::prelude::*,
+    };
     use once_cell::sync::*;
-    use std::cell::{Cell, RefCell};
-    use std::sync::OnceLock;
     use tracing::debug;
 
     use super::*;
     use crate::ui::widgets::song_widget::State;
-    use glib::subclass::Signal;
-    use gtk::glib;
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
@@ -220,10 +238,7 @@ pub mod imp {
         where
             F: Fn(&gst::Bus, &gst::Message) + Send + Sync + 'static,
         {
-            self.pipeline()
-                .bus()
-                .unwrap()
-                .connect_message(Some("stream-start"), cb);
+            self.pipeline().bus().unwrap().connect_message(Some("stream-start"), cb);
         }
 
         pub fn playing(&self) {

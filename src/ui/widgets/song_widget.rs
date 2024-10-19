@@ -1,12 +1,21 @@
-use crate::ui::provider::actions::HasLikeAction;
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use chrono::Duration;
+use gtk::{
+    glib,
+    CompositeTemplate,
+};
+
 use crate::{
-    ui::provider::{core_song::CoreSong, tu_item::TuItem},
+    ui::provider::{
+        actions::HasLikeAction,
+        core_song::CoreSong,
+        tu_item::TuItem,
+    },
     utils::spawn,
 };
-use adw::prelude::*;
-use adw::subclass::prelude::*;
-use chrono::Duration;
-use gtk::{glib, CompositeTemplate};
 
 #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
 #[repr(u32)]
@@ -20,14 +29,28 @@ pub enum State {
 }
 
 pub(crate) mod imp {
-    use super::*;
-    use crate::insert_editm_dialog;
-    use crate::ui::provider::tu_item::TuItem;
-    use crate::ui::widgets::image_dialog::ImagesDialog;
-    use crate::ui::widgets::star_toggle::StarToggle;
-    use crate::ui::{provider::core_song::CoreSong, widgets::metadata_dialog::MetadataDialog};
+    use std::cell::{
+        Cell,
+        OnceCell,
+    };
+
     use glib::subclass::InitializingObject;
-    use std::cell::{Cell, OnceCell};
+
+    use super::*;
+    use crate::{
+        insert_editm_dialog,
+        ui::{
+            provider::{
+                core_song::CoreSong,
+                tu_item::TuItem,
+            },
+            widgets::{
+                image_dialog::ImagesDialog,
+                metadata_dialog::MetadataDialog,
+                star_toggle::StarToggle,
+            },
+        },
+    };
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/song_widget.ui")]
@@ -160,11 +183,9 @@ impl SongWidget {
         let item = imp.item.get().unwrap();
         imp.number_label.set_text(&item.index_number().to_string());
         imp.title_label.set_text(&item.name());
-        imp.artist_label
-            .set_text(&item.artists().unwrap_or("".to_string()));
+        imp.artist_label.set_text(&item.artists().unwrap_or("".to_string()));
         let duration = item.run_time_ticks() / 10000000;
-        imp.duration_label
-            .set_text(&format_duration(duration as i64));
+        imp.duration_label.set_text(&format_duration(duration as i64));
         imp.favourite_button.set_active(item.is_favorite());
 
         let id = item.id();
@@ -178,10 +199,7 @@ impl SongWidget {
     }
 
     fn bind(&self, core_song: &CoreSong) {
-        self.bind_property("state", core_song, "state")
-            .sync_create()
-            .bidirectional()
-            .build();
+        self.bind_property("state", core_song, "state").sync_create().bidirectional().build();
     }
 }
 

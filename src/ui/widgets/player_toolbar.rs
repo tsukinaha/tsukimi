@@ -1,24 +1,42 @@
-use gtk::{glib, prelude::*, subclass::prelude::*, template_callbacks};
-
-use crate::{
-    gstl::player::imp::ListRepeatMode,
-    ui::{models::SETTINGS, provider::core_song::CoreSong},
-    utils::{get_image_with_cache, spawn},
+use gtk::{
+    glib,
+    prelude::*,
+    subclass::prelude::*,
+    template_callbacks,
 };
 
-use super::{smooth_scale::SmoothScale, song_widget::format_duration};
+use super::{
+    smooth_scale::SmoothScale,
+    song_widget::format_duration,
+};
+use crate::{
+    gstl::player::imp::ListRepeatMode,
+    ui::{
+        models::SETTINGS,
+        provider::core_song::CoreSong,
+    },
+    utils::{
+        get_image_with_cache,
+        spawn,
+    },
+};
 
 mod imp {
 
     use adw::subclass::bin::BinImpl;
-    use gtk::{glib::subclass::InitializingObject, CompositeTemplate};
-
-    use crate::{
-        gstl::player::{imp::ListRepeatMode, MusicPlayer},
-        ui::widgets::smooth_scale::SmoothScale,
+    use gtk::{
+        glib::subclass::InitializingObject,
+        CompositeTemplate,
     };
 
     use super::*;
+    use crate::{
+        gstl::player::{
+            imp::ListRepeatMode,
+            MusicPlayer,
+        },
+        ui::widgets::smooth_scale::SmoothScale,
+    };
 
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/player_toolbar.ui")]
@@ -94,8 +112,7 @@ mod imp {
                 obj.change_view();
                 None
             });
-            self.obj()
-                .set_repeat_mode(ListRepeatMode::from_string(&SETTINGS.music_repeat_mode()));
+            self.obj().set_repeat_mode(ListRepeatMode::from_string(&SETTINGS.music_repeat_mode()));
         }
     }
 
@@ -157,23 +174,19 @@ impl PlayerToolbarBox {
         let imp = self.imp();
         imp.title_label.set_text(&core_song.name());
         imp.artist_label.set_text(&core_song.artist());
-        imp.duration_label
-            .set_text(&format_duration(core_song.duration() as i64));
-        imp.progress_scale
-            .set_range(0.0, core_song.duration() as f64);
+        imp.duration_label.set_text(&format_duration(core_song.duration() as i64));
+        imp.progress_scale.set_range(0.0, core_song.duration() as f64);
         spawn(glib::clone!(
             #[weak]
             imp,
             async move {
                 if core_song.have_single_track_image() {
-                    let path = get_image_with_cache(&core_song.id(), "Primary", None)
-                        .await
-                        .unwrap();
+                    let path =
+                        get_image_with_cache(&core_song.id(), "Primary", None).await.unwrap();
                     imp.cover_image.set_from_file(Some(&path));
                 } else {
-                    let path = get_image_with_cache(&core_song.album_id(), "Primary", None)
-                        .await
-                        .unwrap();
+                    let path =
+                        get_image_with_cache(&core_song.album_id(), "Primary", None).await.unwrap();
                     imp.cover_image.set_from_file(Some(&path));
                 }
             }

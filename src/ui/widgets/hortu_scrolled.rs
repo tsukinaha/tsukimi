@@ -1,21 +1,41 @@
-use adw::{prelude::*, subclass::prelude::*};
-use gtk::{gio, glib, template_callbacks, CompositeTemplate};
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gtk::{
+    gio,
+    glib,
+    template_callbacks,
+    CompositeTemplate,
+};
 
-use crate::client::structs::SimpleListItem;
-use crate::ui::provider::tu_object::TuObject;
-use crate::ui::widgets::fix::ScrolledWindowFixExt;
+use crate::{
+    client::structs::SimpleListItem,
+    ui::{
+        provider::tu_object::TuObject,
+        widgets::fix::ScrolledWindowFixExt,
+    },
+};
 
 pub const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
 
 mod imp {
-    use crate::ui::widgets::{tu_list_item::imp::PosterType, utils::TuItemBuildExt};
-    use std::cell::{OnceCell, RefCell};
+    use std::cell::{
+        OnceCell,
+        RefCell,
+    };
 
     use glib::subclass::InitializingObject;
-
-    use gtk::{gio, SignalListItemFactory};
+    use gtk::{
+        gio,
+        SignalListItemFactory,
+    };
 
     use super::*;
+    use crate::ui::widgets::{
+        tu_list_item::imp::PosterType,
+        utils::TuItemBuildExt,
+    };
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/hortu_scrolled.ui")]
@@ -78,9 +98,8 @@ mod imp {
 
             self.list.set_model(Some(&self.selection));
 
-            self.list.set_factory(Some(
-                SignalListItemFactory::new().tu_item(PosterType::default()),
-            ));
+            self.list
+                .set_factory(Some(SignalListItemFactory::new().tu_item(PosterType::default())));
 
             self.list.connect_activate(move |listview, position| {
                 let model = listview.model().unwrap();
@@ -104,9 +123,7 @@ glib::wrapper! {
 #[template_callbacks]
 impl HortuScrolled {
     pub fn new(is_resume: bool) -> Self {
-        glib::Object::builder()
-            .property("isresume", is_resume)
-            .build()
+        glib::Object::builder().property("isresume", is_resume).build()
     }
 
     pub fn set_morebutton(&self) {
@@ -117,12 +134,7 @@ impl HortuScrolled {
     pub fn set_items(&self, items: &[SimpleListItem]) {
         let imp = self.imp();
 
-        let store = imp
-            .selection
-            .model()
-            .unwrap()
-            .downcast::<gio::ListStore>()
-            .unwrap();
+        let store = imp.selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
 
         store.remove_all();
 
@@ -210,8 +222,7 @@ impl HortuScrolled {
     fn on_enter_focus(&self) {
         if !self.are_controls_visible() {
             self.hide_controls_animation().pause();
-            self.show_controls_animation()
-                .set_value_from(self.controls_opacity());
+            self.show_controls_animation().set_value_from(self.controls_opacity());
             self.show_controls_animation().play();
         }
     }
@@ -220,8 +231,7 @@ impl HortuScrolled {
     fn on_leave_focus(&self) {
         if self.are_controls_visible() {
             self.show_controls_animation().pause();
-            self.hide_controls_animation()
-                .set_value_from(self.controls_opacity());
+            self.hide_controls_animation().set_value_from(self.controls_opacity());
             self.hide_controls_animation().play();
         }
     }

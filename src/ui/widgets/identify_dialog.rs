@@ -1,27 +1,41 @@
-use adw::prelude::*;
-use adw::subclass::prelude::*;
-use gtk::glib;
-use gtk::template_callbacks;
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gtk::{
+    glib,
+    template_callbacks,
+};
 
-use crate::client::structs::ExternalIdInfo;
-use crate::client::structs::RemoteSearchInfo;
-use crate::client::structs::RemoteSearchResult;
-use crate::client::structs::SearchInfo;
-use crate::client::structs::SearchProviderId;
-use crate::utils::spawn;
 use crate::{
-    client::{client::EMBY_CLIENT, error::UserFacingError},
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+        structs::{
+            ExternalIdInfo,
+            RemoteSearchInfo,
+            RemoteSearchResult,
+            SearchInfo,
+            SearchProviderId,
+        },
+    },
     toast,
-    utils::spawn_tokio,
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
 };
 
 mod imp {
-    use super::*;
+    use std::cell::OnceCell;
 
     use glib::subclass::InitializingObject;
+    use gtk::{
+        glib,
+        CompositeTemplate,
+    };
 
-    use gtk::{glib, CompositeTemplate};
-    use std::cell::OnceCell;
+    use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/identify_dialog.ui")]
@@ -94,10 +108,7 @@ glib::wrapper! {
 #[template_callbacks]
 impl IdentifyDialog {
     pub fn new(id: &str, itemtype: &str) -> Self {
-        glib::Object::builder()
-            .property("id", id)
-            .property("itemtype", itemtype)
-            .build()
+        glib::Object::builder().property("id", id).property("itemtype", itemtype).build()
     }
 
     pub fn init(&self) {
@@ -197,16 +208,9 @@ impl IdentifyDialog {
             });
         }
 
-        let searchinfo = SearchInfo {
-            name: Some(title.to_string()),
-            year,
-            provider_ids,
-        };
+        let searchinfo = SearchInfo { name: Some(title.to_string()), year, provider_ids };
 
-        let remote_search_info = RemoteSearchInfo {
-            item_id: self.id(),
-            search_info: searchinfo,
-        };
+        let remote_search_info = RemoteSearchInfo { item_id: self.id(), search_info: searchinfo };
 
         let type_ = self.itemtype();
 

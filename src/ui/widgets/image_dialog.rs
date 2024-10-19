@@ -1,26 +1,38 @@
 use adw::subclass::prelude::*;
-use gtk::glib;
-use gtk::prelude::*;
-use gtk::template_callbacks;
+use gtk::{
+    glib,
+    prelude::*,
+    template_callbacks,
+};
 
 use crate::{
-    client::{client::EMBY_CLIENT, error::UserFacingError},
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+    },
     toast,
     utils::spawn_tokio,
 };
 
 mod imp {
+    use std::cell::OnceCell;
+
+    use adw::prelude::*;
+    use glib::subclass::InitializingObject;
+    use gtk::{
+        glib,
+        CompositeTemplate,
+    };
+
     use super::*;
     use crate::{
         client::structs::ImageItem,
-        ui::{provider::IS_ADMIN, widgets::image_infocard::ImageInfoCard},
+        ui::{
+            provider::IS_ADMIN,
+            widgets::image_infocard::ImageInfoCard,
+        },
         utils::spawn,
     };
-    use adw::prelude::*;
-    use glib::subclass::InitializingObject;
-
-    use gtk::{glib, CompositeTemplate};
-    use std::cell::OnceCell;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/images_dialog.ui")]
@@ -84,8 +96,7 @@ mod imp {
         fn init(&self) {
             if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
                 self.page.set_title("View Images");
-                self.hint
-                    .set_subtitle("This page is READ-ONLY, because it is not finished yet.");
+                self.hint.set_subtitle("This page is READ-ONLY, because it is not finished yet.");
             }
 
             let obj = self.obj();

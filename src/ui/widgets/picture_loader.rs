@@ -1,21 +1,41 @@
-use crate::client::client::EMBY_CLIENT;
-use crate::ui::models::emby_cache_path;
-use crate::utils::{spawn, spawn_tokio};
-use adw::prelude::*;
-use adw::subclass::prelude::*;
-use gtk::gio;
-use gtk::glib::{self, clone};
-use gtk::CompositeTemplate;
 use std::path::PathBuf;
-use tracing::{debug, warn};
+
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gtk::{
+    gio,
+    glib::{
+        self,
+        clone,
+    },
+    CompositeTemplate,
+};
+use tracing::{
+    debug,
+    warn,
+};
 
 use super::image_paintable::ImagePaintable;
+use crate::{
+    client::client::EMBY_CLIENT,
+    ui::models::emby_cache_path,
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
+};
 
 pub(crate) mod imp {
-    use std::cell::{OnceCell, RefCell};
+    use std::cell::{
+        OnceCell,
+        RefCell,
+    };
+
+    use glib::subclass::InitializingObject;
 
     use super::*;
-    use glib::subclass::InitializingObject;
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/picture_loader.ui")]
@@ -121,12 +141,8 @@ impl PictureLoader {
 
     pub fn cache_file(&self) -> PathBuf {
         let cache_path = emby_cache_path();
-        let path = format!(
-            "{}-{}-{}",
-            self.id(),
-            self.imagetype(),
-            self.tag().unwrap_or("0".to_string())
-        );
+        let path =
+            format!("{}-{}-{}", self.id(), self.imagetype(), self.tag().unwrap_or("0".to_string()));
         cache_path.join(path)
     }
 

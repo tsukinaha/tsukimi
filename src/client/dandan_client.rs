@@ -1,12 +1,27 @@
-use super::ReqClient;
-use anyhow::{anyhow, Result};
+use std::{
+    io::Write,
+    sync::Mutex,
+};
+
+use anyhow::{
+    anyhow,
+    Result,
+};
 use chrono::NaiveDateTime;
 use once_cell::sync::Lazy;
-use reqwest::{header::HeaderValue, Method, RequestBuilder, Response};
-use serde::{Deserialize, Serialize};
-use std::io::Write;
-use std::sync::Mutex;
+use reqwest::{
+    header::HeaderValue,
+    Method,
+    RequestBuilder,
+    Response,
+};
+use serde::{
+    Deserialize,
+    Serialize,
+};
 use url::Url;
+
+use super::ReqClient;
 
 const DANDANAPI: &str = "https://api.dandanplay.net";
 const DANDANCASAPI: &str = "https://cas.dandanplay.net";
@@ -25,10 +40,7 @@ impl DanDanClient {
         let client = ReqClient::build();
         let mut headers = reqwest::header::HeaderMap::new();
         headers.insert("Accept-Encoding", HeaderValue::from_static("gzip"));
-        Self {
-            client,
-            headers: Mutex::new(headers),
-        }
+        Self { client, headers: Mutex::new(headers) }
     }
 
     pub async fn request<T>(&self, url: &str, params: &[(&str, &str)]) -> Result<T>
@@ -43,10 +55,7 @@ impl DanDanClient {
     }
 
     fn prepare_request(
-        &self,
-        method: Method,
-        url: &str,
-        params: &[(&str, &str)],
+        &self, method: Method, url: &str, params: &[(&str, &str)],
     ) -> Result<RequestBuilder> {
         let mut url = Url::parse(url)?;
         self.add_params_to_url(&mut url, params);
@@ -67,31 +76,20 @@ impl DanDanClient {
     }
 
     pub fn get_headers(&self) -> Result<reqwest::header::HeaderMap> {
-        let headers = self
-            .headers
-            .lock()
-            .map_err(|_| anyhow!("Failed to acquire lock on headers"))?
-            .clone();
+        let headers =
+            self.headers.lock().map_err(|_| anyhow!("Failed to acquire lock on headers"))?.clone();
         Ok(headers)
     }
 
     pub async fn search_anime(&self, keyword: &str) -> Result<SearchAnimeResponse> {
         let params = &[("keyword", keyword)];
-        self.request(
-            &format!("{}{}", DANDANAPI, DANDANAPI_SEARCH_ANIME_PATH),
-            params,
-        )
-        .await
+        self.request(&format!("{}{}", DANDANAPI, DANDANAPI_SEARCH_ANIME_PATH), params).await
     }
 
     pub async fn search_episode(&self, anime_id: u64) -> Result<SearchEpisodesResponse> {
         let anime_id_str = anime_id.to_string();
         let params = &[("anime", anime_id_str.as_str())];
-        self.request(
-            &format!("{}{}", DANDANAPI, DANDANAPI_SEARCH_EPISODE_PATH),
-            params,
-        )
-        .await
+        self.request(&format!("{}{}", DANDANAPI, DANDANAPI_SEARCH_EPISODE_PATH), params).await
     }
 
     pub async fn get_comments(&self, episode_id: u64) -> Result<()> {
@@ -162,7 +160,8 @@ pub struct SearchAnimeDetails {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SearchEpisodesResponse {
-    /// Whether there are more undisplayed search results. This value is true when there are too many search results.
+    /// Whether there are more undisplayed search results. This value is true
+    /// when there are too many search results.
     #[serde(rename = "hasMore")]
     pub has_more: bool,
     /// List of search results (anime information)
@@ -232,10 +231,7 @@ mod tests {
             }
         }
 
-        match DANDAN_CLIENT
-            .search_anime("sadiauhiuhliubalikubcksauiyg")
-            .await
-        {
+        match DANDAN_CLIENT.search_anime("sadiauhiuhliubalikubcksauiyg").await {
             Ok(res) => {
                 println!("{:?}", res);
             }

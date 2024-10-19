@@ -1,49 +1,91 @@
-use adw::prelude::*;
-use adw::subclass::prelude::*;
-use gettextrs::gettext;
-use glib::Object;
-use gtk::{gio, glib, ListView};
-use gtk::{template_callbacks, PositionType, ScrolledWindow};
 use std::path::PathBuf;
 
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
-use crate::client::structs::*;
-use crate::toast;
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use chrono::{
+    DateTime,
+    Utc,
+};
+use gettextrs::gettext;
+use glib::Object;
+use gtk::{
+    gio,
+    glib,
+    template_callbacks,
+    ListView,
+    PositionType,
+    ScrolledWindow,
+};
 
-use crate::ui::provider::dropdown_factory::{DropdownList, DropdownListBuilder};
-use crate::ui::provider::tu_item::TuItem;
-use crate::ui::provider::tu_object::TuObject;
-use crate::utils::{fetch_with_cache, get_image_with_cache, spawn, spawn_tokio, CachePolicy};
-use chrono::{DateTime, Utc};
-
-use super::fix::ScrolledWindowFixExt;
-use super::hortu_scrolled::SHOW_BUTTON_ANIMATION_DURATION;
-use super::item_utils::*;
-use super::song_widget::format_duration;
-use super::tu_overview_item::run_time_ticks_to_label;
-use super::window::Window;
+use super::{
+    fix::ScrolledWindowFixExt,
+    hortu_scrolled::SHOW_BUTTON_ANIMATION_DURATION,
+    item_utils::*,
+    song_widget::format_duration,
+    tu_overview_item::run_time_ticks_to_label,
+    window::Window,
+};
+use crate::{
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+        structs::*,
+    },
+    toast,
+    ui::provider::{
+        dropdown_factory::{
+            DropdownList,
+            DropdownListBuilder,
+        },
+        tu_item::TuItem,
+        tu_object::TuObject,
+    },
+    utils::{
+        fetch_with_cache,
+        get_image_with_cache,
+        spawn,
+        spawn_tokio,
+        CachePolicy,
+    },
+};
 
 pub(crate) mod imp {
-    use crate::ui::provider::dropdown_factory::factory;
-    use crate::ui::provider::tu_item::TuItem;
-    use crate::ui::provider::tu_object::TuObject;
-    use crate::ui::widgets::fix::ScrolledWindowFixExt;
-    use crate::ui::widgets::horbu_scrolled::HorbuScrolled;
-    use crate::ui::widgets::hortu_scrolled::HortuScrolled;
-    use crate::ui::widgets::item_actionbox::ItemActionsBox;
-    use crate::ui::widgets::item_carousel::ItemCarousel;
-    use crate::ui::widgets::star_toggle::StarToggle;
-    use crate::ui::widgets::tu_overview_item::imp::ViewGroup;
-    use crate::ui::widgets::utils::TuItemBuildExt;
-    use crate::utils::spawn_g_timeout;
+    use std::cell::{
+        OnceCell,
+        RefCell,
+    };
+
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
-    use gtk::{glib, CompositeTemplate};
-    use std::cell::{OnceCell, RefCell};
+    use gtk::{
+        glib,
+        prelude::*,
+        CompositeTemplate,
+    };
 
     use super::SimpleListItem;
+    use crate::{
+        ui::{
+            provider::{
+                dropdown_factory::factory,
+                tu_item::TuItem,
+                tu_object::TuObject,
+            },
+            widgets::{
+                fix::ScrolledWindowFixExt,
+                horbu_scrolled::HorbuScrolled,
+                hortu_scrolled::HortuScrolled,
+                item_actionbox::ItemActionsBox,
+                item_carousel::ItemCarousel,
+                star_toggle::StarToggle,
+                tu_overview_item::imp::ViewGroup,
+                utils::TuItemBuildExt,
+            },
+        },
+        utils::spawn_g_timeout,
+    };
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -335,8 +377,7 @@ impl ItemPage {
                     let id = item.id();
                     match spawn_tokio(async move { EMBY_CLIENT.get_item_info(&id).await }).await {
                         Ok(item) => {
-                            obj.set_intro::<true>(&TuItem::from_simple(&item, None))
-                                .await;
+                            obj.set_intro::<true>(&TuItem::from_simple(&item, None)).await;
                         }
                         Err(e) => {
                             toast!(obj, e.to_user_facing());
@@ -549,9 +590,7 @@ impl ItemPage {
             #[weak]
             imp,
             move |dropdown| {
-                let Some(entry) = dropdown
-                    .selected_item()
-                    .and_downcast::<glib::BoxedAnyObject>()
+                let Some(entry) = dropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
                 else {
                     return;
                 };
@@ -632,11 +671,7 @@ impl ItemPage {
         let pathbuf = PathBuf::from(&path);
         if pathbuf.exists() {
             backdrop.set_file(Some(&file));
-            self.imp()
-                .carousel
-                .imp()
-                .backrevealer
-                .set_reveal_child(true);
+            self.imp().carousel.imp().backrevealer.set_reveal_child(true);
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
                 self,
@@ -655,9 +690,7 @@ impl ItemPage {
         let tags = image_tags.len();
         let carousel = imp.carousel.imp().carousel.get();
         for tag_num in 1..tags {
-            let path = get_image_with_cache(id, "Backdrop", Some(tag_num as u8))
-                .await
-                .unwrap();
+            let path = get_image_with_cache(id, "Backdrop", Some(tag_num as u8)).await.unwrap();
             let file = gtk::gio::File::for_path(&path);
             let picture = gtk::Picture::builder()
                 .halign(gtk::Align::Fill)
@@ -826,9 +859,7 @@ impl ItemPage {
     }
 
     pub async fn createmediabox(
-        &self,
-        media_sources: Vec<MediaSource>,
-        date_created: Option<DateTime<Utc>>,
+        &self, media_sources: Vec<MediaSource>, date_created: Option<DateTime<Utc>>,
     ) {
         let imp = self.imp();
         let mediainfobox = imp.mediainfobox.get();
@@ -1056,9 +1087,8 @@ impl ItemPage {
         let video_dropdown = self.imp().namedropdown.get();
         let sub_dropdown = self.imp().subdropdown.get();
 
-        let Some(video_object) = video_dropdown
-            .selected_item()
-            .and_downcast::<glib::BoxedAnyObject>()
+        let Some(video_object) =
+            video_dropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
         else {
             return;
         };
@@ -1086,9 +1116,8 @@ impl ItemPage {
             start_tick: item.playback_position_ticks(),
         };
 
-        let sub_url = if let Some(sub_object) = sub_dropdown
-            .selected_item()
-            .and_downcast::<glib::BoxedAnyObject>()
+        let sub_url = if let Some(sub_object) =
+            sub_dropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
         {
             let sub_dl: std::cell::Ref<DropdownList> = sub_object.borrow();
 
@@ -1124,10 +1153,8 @@ impl ItemPage {
         let percentage = item.played_percentage();
 
         let episode_list = self.imp().episode_list_vec.borrow();
-        let episode_list: Vec<TuItem> = episode_list
-            .iter()
-            .map(|item| TuItem::from_simple(item, None))
-            .collect();
+        let episode_list: Vec<TuItem> =
+            episode_list.iter().map(|item| TuItem::from_simple(item, None)).collect();
 
         let matcher = self.imp().video_version_matcher.borrow().clone();
 
@@ -1217,8 +1244,7 @@ impl ItemPage {
     fn on_enter_focus(&self) {
         if !self.are_controls_visible() {
             self.hide_controls_animation().pause();
-            self.show_controls_animation()
-                .set_value_from(self.controls_opacity());
+            self.show_controls_animation().set_value_from(self.controls_opacity());
             self.show_controls_animation().play();
         }
     }
@@ -1227,8 +1253,7 @@ impl ItemPage {
     fn on_leave_focus(&self) {
         if self.are_controls_visible() {
             self.show_controls_animation().pause();
-            self.hide_controls_animation()
-                .set_value_from(self.controls_opacity());
+            self.hide_controls_animation().set_value_from(self.controls_opacity());
             self.hide_controls_animation().play();
         }
     }

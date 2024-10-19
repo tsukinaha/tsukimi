@@ -1,17 +1,24 @@
 use adw::subclass::prelude::*;
 use gettextrs::gettext;
-use gtk::prelude::*;
-use gtk::{glib, template_callbacks, CompositeTemplate};
-
-use crate::ui::provider::tu_item::TuItem;
+use gtk::{
+    glib,
+    prelude::*,
+    template_callbacks,
+    CompositeTemplate,
+};
 
 use super::song_widget::SongWidget;
+use crate::ui::provider::tu_item::TuItem;
 
 mod imp {
     use std::sync::OnceLock;
 
+    use glib::subclass::{
+        InitializingObject,
+        Signal,
+    };
+
     use super::*;
-    use glib::subclass::{InitializingObject, Signal};
 
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/disc_box.ui")]

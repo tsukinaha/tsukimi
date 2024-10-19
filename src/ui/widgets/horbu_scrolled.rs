@@ -1,8 +1,20 @@
-use adw::{prelude::*, subclass::prelude::*};
-use gtk::{gio, glib, CompositeTemplate};
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gtk::{
+    gio,
+    glib,
+    CompositeTemplate,
+};
 
-use crate::client::structs::{SGTitem, Urls};
-use crate::utils::spawn;
+use crate::{
+    client::structs::{
+        SGTitem,
+        Urls,
+    },
+    utils::spawn,
+};
 
 mod imp {
     use std::cell::OnceCell;
@@ -60,9 +72,7 @@ glib::wrapper! {
 
 impl HorbuScrolled {
     pub fn new(is_resume: bool) -> Self {
-        glib::Object::builder()
-            .property("isresume", is_resume)
-            .build()
+        glib::Object::builder().property("isresume", is_resume).build()
     }
 
     pub fn set_items(&self, items: &[SGTitem]) {
@@ -92,10 +102,8 @@ impl HorbuScrolled {
                         .icon_name("view-list-symbolic")
                         .build();
 
-                    let button = gtk::Button::builder()
-                        .margin_start(10)
-                        .child(&buttoncontent)
-                        .build();
+                    let button =
+                        gtk::Button::builder().margin_start(10).child(&buttoncontent).build();
 
                     button.connect_clicked(glib::clone!(
                         #[weak]
@@ -139,10 +147,8 @@ impl HorbuScrolled {
                         .icon_name("send-to-symbolic")
                         .build();
 
-                    let button = gtk::Button::builder()
-                        .margin_start(10)
-                        .child(&buttoncontent)
-                        .build();
+                    let button =
+                        gtk::Button::builder().margin_start(10).child(&buttoncontent).build();
 
                     button.connect_clicked(move |_| {
                         let _ = gio::AppInfo::launch_default_for_uri(

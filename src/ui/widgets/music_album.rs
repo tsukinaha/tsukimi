@@ -1,39 +1,68 @@
 use std::collections::HashMap;
 
-use crate::bing_song_model;
-use crate::ui::provider::core_song::CoreSong;
-use crate::ui::widgets::song_widget::State;
-use crate::utils::CachePolicy;
-use crate::{
-    client::{client::EMBY_CLIENT, error::UserFacingError, structs::List},
-    toast,
-    ui::{provider::tu_item::TuItem, widgets::song_widget::SongWidget},
-    utils::{fetch_with_cache, get_image_with_cache, spawn},
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
 };
-use adw::prelude::*;
-use adw::subclass::prelude::*;
 use gettextrs::gettext;
-use gtk::gio;
-use gtk::gio::ListStore;
-use gtk::{glib, template_callbacks, CompositeTemplate};
+use gtk::{
+    gio,
+    gio::ListStore,
+    glib,
+    template_callbacks,
+    CompositeTemplate,
+};
 
 use super::song_widget::format_duration;
+use crate::{
+    bing_song_model,
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+        structs::List,
+    },
+    toast,
+    ui::{
+        provider::{
+            core_song::CoreSong,
+            tu_item::TuItem,
+        },
+        widgets::song_widget::{
+            SongWidget,
+            State,
+        },
+    },
+    utils::{
+        fetch_with_cache,
+        get_image_with_cache,
+        spawn,
+        CachePolicy,
+    },
+};
 
 pub(crate) mod imp {
-    use std::cell::{OnceCell, RefCell};
+    use std::cell::{
+        OnceCell,
+        RefCell,
+    };
 
-    use crate::ui::widgets::item_actionbox::ItemActionsBox;
-    use crate::{
-        ui::{
-            provider::tu_item::TuItem,
-            widgets::{hortu_scrolled::HortuScrolled, star_toggle::StarToggle},
-        },
-        utils::spawn_g_timeout,
+    use glib::{
+        subclass::InitializingObject,
+        SignalHandlerId,
     };
 
     use super::*;
-    use glib::subclass::InitializingObject;
-    use glib::SignalHandlerId;
+    use crate::{
+        ui::{
+            provider::tu_item::TuItem,
+            widgets::{
+                hortu_scrolled::HortuScrolled,
+                item_actionbox::ItemActionsBox,
+                star_toggle::StarToggle,
+            },
+        },
+        utils::spawn_g_timeout,
+    };
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/album_widget.ui")]
@@ -133,21 +162,13 @@ impl AlbumPage {
         imp.artist_label.set_text(&item.albumartist_name());
 
         let duration = item.run_time_ticks() / 10000000;
-        let release = format!(
-            "{} , {}",
-            item.production_year(),
-            format_duration(duration as i64)
-        );
+        let release = format!("{} , {}", item.production_year(), format_duration(duration as i64));
         imp.released_label.set_text(&release);
 
         let path = if let Some(image_tags) = item.primary_image_item_id() {
-            get_image_with_cache(&image_tags, "Primary", None)
-                .await
-                .unwrap_or_default()
+            get_image_with_cache(&image_tags, "Primary", None).await.unwrap_or_default()
         } else {
-            get_image_with_cache(&item.id(), "Primary", None)
-                .await
-                .unwrap_or_default()
+            get_image_with_cache(&item.id(), "Primary", None).await.unwrap_or_default()
         };
 
         if !std::path::PathBuf::from(&path).is_file() {
@@ -226,13 +247,7 @@ impl AlbumPage {
         let liststore = gio::ListStore::new::<CoreSong>();
         for child in listbox.observe_children().into_iter().flatten() {
             let discbox = child.downcast::<DiscBox>().unwrap();
-            for child in discbox
-                .imp()
-                .listbox
-                .observe_children()
-                .into_iter()
-                .flatten()
-            {
+            for child in discbox.imp().listbox.observe_children().into_iter().flatten() {
                 let song_widget = child.downcast::<SongWidget>().unwrap();
                 let item = song_widget.coresong();
                 liststore.append(&item)
@@ -307,13 +322,7 @@ impl AlbumPage {
         let Some(object) = imp.listbox.get().first_child() else {
             return;
         };
-        let Some(widget) = object
-            .downcast::<DiscBox>()
-            .unwrap()
-            .imp()
-            .listbox
-            .first_child()
-        else {
+        let Some(widget) = object.downcast::<DiscBox>().unwrap().imp().listbox.first_child() else {
             return;
         };
         let active_core_song = widget.downcast::<SongWidget>().unwrap().coresong();

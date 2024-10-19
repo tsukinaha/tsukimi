@@ -2,33 +2,47 @@ use std::path::PathBuf;
 
 use adw::prelude::*;
 use gio::Settings;
-use gtk::subclass::prelude::*;
-use gtk::ListBoxRow;
-use gtk::Widget;
+use gtk::{
+    subclass::prelude::*,
+    ListBoxRow,
+    Widget,
+};
 mod imp {
-    use std::cell::{OnceCell, RefCell};
+    use std::cell::{
+        OnceCell,
+        RefCell,
+    };
 
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
-    use gtk::gio::Settings;
-    use gtk::prelude::*;
-    use gtk::subclass::prelude::*;
-    use gtk::{glib, CompositeTemplate};
+    use gtk::{
+        gio::Settings,
+        glib,
+        prelude::*,
+        subclass::prelude::*,
+        CompositeTemplate,
+    };
 
-    use crate::ui::mpv::control_sidebar::MPVControlSidebar;
-    use crate::ui::mpv::page::MPVPage;
-    use crate::ui::provider::tu_object::TuObject;
-    use crate::ui::widgets::content_viewer::MediaContentViewer;
-    use crate::ui::widgets::home::HomePage;
-    use crate::ui::widgets::image_dialog::ImagesDialog;
-    use crate::ui::widgets::item_actionbox::ItemActionsBox;
-    use crate::ui::widgets::liked::LikedPage;
-    use crate::ui::widgets::listexpand_row::ListExpandRow;
-    use crate::ui::widgets::media_viewer::MediaViewer;
-    use crate::ui::widgets::player_toolbar::PlayerToolbarBox;
-    use crate::ui::widgets::search::SearchPage;
-    use crate::ui::widgets::tu_overview_item::imp::ViewGroup;
-    use crate::ui::widgets::utils::TuItemBuildExt;
+    use crate::ui::{
+        mpv::{
+            control_sidebar::MPVControlSidebar,
+            page::MPVPage,
+        },
+        provider::tu_object::TuObject,
+        widgets::{
+            content_viewer::MediaContentViewer,
+            home::HomePage,
+            image_dialog::ImagesDialog,
+            item_actionbox::ItemActionsBox,
+            liked::LikedPage,
+            listexpand_row::ListExpandRow,
+            media_viewer::MediaViewer,
+            player_toolbar::PlayerToolbarBox,
+            search::SearchPage,
+            tu_overview_item::imp::ViewGroup,
+            utils::TuItemBuildExt,
+        },
+    };
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -135,13 +149,9 @@ mod imp {
             klass.install_action("win.sidebar", None, move |window, _action, _parameter| {
                 window.sidebar();
             });
-            klass.install_action(
-                "setting.account",
-                None,
-                move |window, _action, _parameter| {
-                    window.account_settings();
-                },
-            );
+            klass.install_action("setting.account", None, move |window, _action, _parameter| {
+                window.account_settings();
+            });
             klass.install_action("win.toggle-fullscreen", None, |obj, _, _| {
                 if obj.is_fullscreen() {
                     obj.unfullscreen();
@@ -170,22 +180,18 @@ mod imp {
 
             let store = gtk::gio::ListStore::new::<TuObject>();
             self.mpv_playlist_selection.set_model(Some(&store));
-            self.mpv_playlist
-                .set_model(Some(&self.mpv_playlist_selection));
+            self.mpv_playlist.set_model(Some(&self.mpv_playlist_selection));
             self.mpv_playlist.set_factory(Some(
                 gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
             ));
-            self.mpv_control_sidebar
-                .set_player(Some(&self.mpvnav.imp().video.get()));
+            self.mpv_control_sidebar.set_player(Some(&self.mpvnav.imp().video.get()));
 
             let obj = self.obj();
             obj.set_fonts();
             if crate::ui::models::SETTINGS.font_size() != -1 {
                 let settings = gtk::Settings::default().unwrap();
-                settings.set_property(
-                    "gtk-xft-dpi",
-                    crate::ui::models::SETTINGS.font_size() * 1024,
-                );
+                settings
+                    .set_property("gtk-xft-dpi", crate::ui::models::SETTINGS.font_size() * 1024);
             }
             obj.setup_rootpic();
             obj.setup_settings();
@@ -204,9 +210,7 @@ mod imp {
         // Save window state right before the window will be closed
         fn close_request(&self) -> glib::Propagation {
             // Save window size
-            self.obj()
-                .save_window_size()
-                .expect("Failed to save window state");
+            self.obj().save_window_size().expect("Failed to save window state");
             // Allow to invoke other event handlers
             glib::Propagation::Proceed
         }
@@ -217,32 +221,50 @@ mod imp {
     impl AdwApplicationWindowImpl for Window {}
 }
 
-use crate::client::client::EMBY_CLIENT;
-use crate::client::structs::Back;
-use crate::client::Account;
-use crate::toast;
-use crate::ui::models::SETTINGS;
-use crate::ui::provider::core_song::CoreSong;
-use crate::ui::provider::tu_item::TuItem;
-use crate::ui::provider::tu_object::TuObject;
-use crate::ui::provider::IS_ADMIN;
-use crate::utils::spawn;
-use crate::utils::spawn_tokio;
-use crate::APP_ID;
 use glib::Object;
-use gtk::{gio, glib, template_callbacks};
-
-use super::home::HomePage;
-use super::item::ItemPage;
-use super::liked::LikedPage;
-use super::search::SearchPage;
-use super::server_action_row;
-use super::server_panel::ServerPanel;
-use super::server_row::ServerRow;
-use super::tu_list_item::PROGRESSBAR_ANIMATION_DURATION;
-
+use gtk::{
+    gio,
+    glib,
+    template_callbacks,
+};
 #[cfg(target_os = "windows")]
-use windows::Win32::System::Power::{SetThreadExecutionState, EXECUTION_STATE};
+use windows::Win32::System::Power::{
+    SetThreadExecutionState,
+    EXECUTION_STATE,
+};
+
+use super::{
+    home::HomePage,
+    item::ItemPage,
+    liked::LikedPage,
+    search::SearchPage,
+    server_action_row,
+    server_panel::ServerPanel,
+    server_row::ServerRow,
+    tu_list_item::PROGRESSBAR_ANIMATION_DURATION,
+};
+use crate::{
+    client::{
+        client::EMBY_CLIENT,
+        structs::Back,
+        Account,
+    },
+    toast,
+    ui::{
+        models::SETTINGS,
+        provider::{
+            core_song::CoreSong,
+            tu_item::TuItem,
+            tu_object::TuObject,
+            IS_ADMIN,
+        },
+    },
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
+    APP_ID,
+};
 
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
@@ -384,9 +406,7 @@ impl Window {
                     let lr_index = accounts.iter().position(|d| *d == *lr_account).unwrap();
                     accounts.remove(lr_index);
                     accounts.insert(index, lr_account.clone());
-                    SETTINGS
-                        .set_accounts(accounts)
-                        .expect("Failed to set accounts");
+                    SETTINGS.set_accounts(accounts).expect("Failed to set accounts");
                     obj.set_servers();
                     obj.set_nav_servers();
 
@@ -438,9 +458,7 @@ impl Window {
 
                 let Some(texture) = gtk::gdk::Texture::from_file(&gio::File::for_path(avatar)).ok()
                 else {
-                    obj.imp()
-                        .avatar
-                        .set_custom_image(None::<&gtk::gdk::Paintable>);
+                    obj.imp().avatar.set_custom_image(None::<&gtk::gdk::Paintable>);
                     return;
                 };
 
@@ -461,11 +479,10 @@ impl Window {
             Ok(guard) => guard.to_string(),
             Err(_) => "Not logged in".to_string(),
         });
-        imp.namerow
-            .set_subtitle(&match EMBY_CLIENT.server_name.lock() {
-                Ok(guard) => guard.to_string(),
-                Err(_) => "No server selected".to_string(),
-            });
+        imp.namerow.set_subtitle(&match EMBY_CLIENT.server_name.lock() {
+            Ok(guard) => guard.to_string(),
+            Err(_) => "No server selected".to_string(),
+        });
     }
 
     pub fn account_settings(&self) {
@@ -496,10 +513,7 @@ impl Window {
     }
 
     fn settings(&self) -> &Settings {
-        self.imp()
-            .settings
-            .get()
-            .expect("`settings` should be set in `setup_settings`.")
+        self.imp().settings.get().expect("`settings` should be set in `setup_settings`.")
     }
 
     pub fn save_window_size(&self) -> Result<(), glib::BoolError> {
@@ -509,8 +523,7 @@ impl Window {
         // Set the window state in `settings`
         self.settings().set_int("window-width", size.0)?;
         self.settings().set_int("window-height", size.1)?;
-        self.settings()
-            .set_boolean("is-maximized", self.is_maximized())?;
+        self.settings().set_boolean("is-maximized", self.is_maximized())?;
 
         Ok(())
     }
@@ -552,8 +565,7 @@ impl Window {
 
     fn sidebar(&self) {
         let imp = self.imp();
-        imp.split_view
-            .set_show_sidebar(!imp.split_view.shows_sidebar());
+        imp.split_view.set_show_sidebar(!imp.split_view.shows_sidebar());
     }
 
     pub fn overlay_sidebar(&self, overlay: bool) {
@@ -658,16 +670,14 @@ impl Window {
 
     pub fn set_fraction(&self, to_value: f64) {
         let progressbar = &self.imp().progressbar;
-        self.progressbar_animation()
-            .set_value_from(progressbar.fraction());
+        self.progressbar_animation().set_value_from(progressbar.fraction());
         self.progressbar_animation().set_value_to(to_value);
         self.progressbar_animation().play();
     }
 
     pub fn set_progressbar_fade(&self) {
         let progressbar = &self.imp().progressbar;
-        self.progressbar_fade_animation()
-            .set_value_from(progressbar.opacity());
+        self.progressbar_fade_animation().set_value_from(progressbar.opacity());
         self.progressbar_fade_animation().play();
     }
 
@@ -731,34 +741,18 @@ impl Window {
 
     pub fn bind_song_model(&self, active_model: gio::ListStore, active_core_song: CoreSong) {
         let imp = self.imp();
-        imp.player_toolbar_box
-            .bind_song_model(active_model, active_core_song);
+        imp.player_toolbar_box.bind_song_model(active_model, active_core_song);
     }
 
     pub fn play_media(
-        &self,
-        url: String,
-        suburl: Option<String>,
-        item: TuItem,
-        episode_list: Vec<TuItem>,
-        back: Option<Back>,
-        _selected: Option<String>,
-        percentage: f64,
-        matcher: Option<String>,
+        &self, url: String, suburl: Option<String>, item: TuItem, episode_list: Vec<TuItem>,
+        back: Option<Back>, _selected: Option<String>, percentage: f64, matcher: Option<String>,
     ) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("mpv");
         self.prevent_suspend();
         self.set_mpv_playlist(&episode_list);
-        imp.mpvnav.play(
-            &url,
-            suburl.as_deref(),
-            item,
-            episode_list,
-            back,
-            percentage,
-            matcher,
-        );
+        imp.mpvnav.play(&url, suburl.as_deref(), item, episode_list, back, percentage, matcher);
     }
 
     pub fn push_page<T>(&self, page: &T)
@@ -949,11 +943,8 @@ impl Window {
     #[cfg(target_os = "linux")]
     fn prevent_suspend(&self) {
         let app = self.application().expect("No application found");
-        let cookie = app.inhibit(
-            Some(self),
-            gtk::ApplicationInhibitFlags::IDLE,
-            Some("Playing media"),
-        );
+        let cookie =
+            app.inhibit(Some(self), gtk::ApplicationInhibitFlags::IDLE, Some("Playing media"));
         self.imp().suspend_cookie.replace(Some(cookie));
     }
 

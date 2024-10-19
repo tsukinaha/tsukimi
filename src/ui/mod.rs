@@ -2,11 +2,14 @@ pub(crate) mod models;
 mod mpv;
 pub mod provider;
 pub mod widgets;
-use self::models::SETTINGS;
 use adw::prelude::*;
 use gettextrs::gettext;
-use gtk::gdk::Display;
-use gtk::CssProvider;
+use gtk::{
+    gdk::Display,
+    CssProvider,
+};
+
+use self::models::SETTINGS;
 
 pub fn build_ui(app: &adw::Application) {
     // Create new window and present it

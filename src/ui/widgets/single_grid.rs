@@ -1,36 +1,76 @@
 use std::future::Future;
 
-use super::tu_list_item::imp::PosterType;
-use super::tu_overview_item::imp::ViewGroup;
-use super::utils::TuItemBuildExt;
-use crate::client::error::UserFacingError;
-use crate::client::structs::{List, SimpleListItem};
-use crate::ui::models::SETTINGS;
-use crate::utils::{spawn, spawn_tokio};
-use crate::{fraction, fraction_reset, toast};
 use adw::prelude::*;
 use anyhow::Result;
 use glib::Object;
-use gtk::subclass::prelude::*;
-use gtk::{gio, glib, SignalListItemFactory};
-use imp::{ListType, SortBy, SortOrder, ViewType};
+use gtk::{
+    gio,
+    glib,
+    subclass::prelude::*,
+    SignalListItemFactory,
+};
+use imp::{
+    ListType,
+    SortBy,
+    SortOrder,
+    ViewType,
+};
+
+use super::{
+    tu_list_item::imp::PosterType,
+    tu_overview_item::imp::ViewGroup,
+    utils::TuItemBuildExt,
+};
+use crate::{
+    client::{
+        error::UserFacingError,
+        structs::{
+            List,
+            SimpleListItem,
+        },
+    },
+    fraction,
+    fraction_reset,
+    toast,
+    ui::models::SETTINGS,
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
+};
 
 pub mod imp {
 
-    use std::cell::{Cell, RefCell};
-    use std::sync::atomic::AtomicBool;
-    use std::sync::{Arc, OnceLock};
+    use std::{
+        cell::{
+            Cell,
+            RefCell,
+        },
+        sync::{
+            atomic::AtomicBool,
+            Arc,
+            OnceLock,
+        },
+    };
 
-    use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
-    use gtk::subclass::prelude::*;
-    use gtk::{glib, CompositeTemplate};
+    use glib::subclass::{
+        InitializingObject,
+        Signal,
+    };
+    use gtk::{
+        glib,
+        prelude::*,
+        subclass::prelude::*,
+        CompositeTemplate,
+    };
 
-    use crate::ui::models::SETTINGS;
-    use crate::ui::widgets::tu_list_item::imp::PosterType;
-    use crate::ui::widgets::tuview_scrolled::TuViewScrolled;
-
-    use glib::subclass::Signal;
+    use crate::ui::{
+        models::SETTINGS,
+        widgets::{
+            tu_list_item::imp::PosterType,
+            tuview_scrolled::TuViewScrolled,
+        },
+    };
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
@@ -277,22 +317,14 @@ impl SingleGrid {
 
     #[template_callback]
     fn sort_order_toggled_cb(&self, btn: &gtk::ToggleButton) {
-        let sort_order = if btn.is_active() {
-            SortOrder::Ascending
-        } else {
-            SortOrder::Descending
-        };
+        let sort_order = if btn.is_active() { SortOrder::Ascending } else { SortOrder::Descending };
         self.set_sort_order(sort_order);
         let _ = SETTINGS.set_list_sord_order(sort_order.into());
     }
 
     #[template_callback]
     fn view_toggled_cb(&self, btn: &gtk::ToggleButton) {
-        let view_type = if btn.is_active() {
-            ViewType::GridView
-        } else {
-            ViewType::ListView
-        };
+        let view_type = if btn.is_active() { ViewType::GridView } else { ViewType::ListView };
         self.set_view_type(view_type);
     }
 
@@ -377,10 +409,7 @@ impl SingleGrid {
         let factory = SignalListItemFactory::new();
         match self.view_type() {
             ViewType::GridView => {
-                scrolled
-                    .imp()
-                    .grid
-                    .set_factory(Some(factory.tu_item(poster_type)));
+                scrolled.imp().grid.set_factory(Some(factory.tu_item(poster_type)));
             }
             ViewType::ListView => {
                 scrolled
@@ -425,12 +454,8 @@ impl SingleGrid {
         Fut: Future<Output = Result<List>> + Send + 'static,
     {
         self.connect_sort_changed(move |obj| {
-            let sort_by = obj
-                .match_sort_by(i32::from(obj.sort_by()) as u32)
-                .to_string();
-            let sort_order = obj
-                .match_sort_order(i32::from(obj.sort_order()) as u32)
-                .to_string();
+            let sort_by = obj.match_sort_by(i32::from(obj.sort_by()) as u32).to_string();
+            let sort_order = obj.match_sort_order(i32::from(obj.sort_order()) as u32).to_string();
             let future = f(sort_by.clone(), sort_order.clone());
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
@@ -440,9 +465,7 @@ impl SingleGrid {
                     match spawn_tokio(future).await {
                         Ok(item) => {
                             obj.add_items::<true>(item.items, is_resume);
-                            obj.imp()
-                                .count
-                                .set_text(&format!("{} Items", item.total_record_count));
+                            obj.imp().count.set_text(&format!("{} Items", item.total_record_count));
                         }
                         Err(e) => {
                             toast!(obj, e.to_user_facing());
@@ -466,12 +489,9 @@ impl SingleGrid {
             #[weak(rename_to = obj)]
             self,
             move |scrolled, lock| {
-                let sort_by = obj
-                    .match_sort_by(i32::from(obj.sort_by()) as u32)
-                    .to_string();
-                let sort_order = obj
-                    .match_sort_order(i32::from(obj.sort_order()) as u32)
-                    .to_string();
+                let sort_by = obj.match_sort_by(i32::from(obj.sort_by()) as u32).to_string();
+                let sort_order =
+                    obj.match_sort_order(i32::from(obj.sort_order()) as u32).to_string();
                 let n_items = scrolled.n_items();
 
                 let future = f(sort_by.clone(), sort_order.clone(), n_items);

@@ -1,24 +1,34 @@
 use gettextrs::gettext;
 use glib::Object;
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
+use gtk::{
+    gio,
+    glib,
+    prelude::*,
+    subclass::prelude::*,
+};
 
+use super::single_grid::{
+    imp::ListType,
+    SingleGrid,
+};
 use crate::client::client::EMBY_CLIENT;
-
-use super::single_grid::imp::ListType;
-use super::single_grid::SingleGrid;
 mod imp {
 
     use std::cell::OnceCell;
 
     use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
-    use gtk::subclass::prelude::*;
-    use gtk::{glib, CompositeTemplate};
+    use gtk::{
+        glib,
+        prelude::*,
+        subclass::prelude::*,
+        CompositeTemplate,
+    };
 
-    use crate::utils::spawn_g_timeout;
-    use crate::{fraction, fraction_reset};
+    use crate::{
+        fraction,
+        fraction_reset,
+        utils::spawn_g_timeout,
+    };
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -89,10 +99,7 @@ glib::wrapper! {
 
 impl ListPage {
     pub fn new(id: String, collection_type: String) -> Self {
-        Object::builder()
-            .property("id", id)
-            .property("collectiontype", collection_type)
-            .build()
+        Object::builder().property("id", id).property("collectiontype", collection_type).build()
     }
 
     pub async fn set_pages(&self) {

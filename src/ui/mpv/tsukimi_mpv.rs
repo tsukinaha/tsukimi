@@ -1,21 +1,34 @@
-use gtk::gdk::GLContext;
-use libmpv2::{
-    events::{EventContext, PropertyData},
-    mpv_node::MpvNode,
-    GetData, SetData,
-};
-
-use tracing::{error, info, warn};
-
 use std::{
     cell::RefCell,
     collections::HashMap,
-    sync::{atomic::AtomicU32, Arc, Mutex},
+    sync::{
+        atomic::AtomicU32,
+        Arc,
+        Mutex,
+    },
 };
 
+use gtk::gdk::GLContext;
 use libmpv2::{
-    render::{OpenGLInitParams, RenderContext, RenderParam, RenderParamApiType},
+    events::{
+        EventContext,
+        PropertyData,
+    },
+    mpv_node::MpvNode,
+    render::{
+        OpenGLInitParams,
+        RenderContext,
+        RenderParam,
+        RenderParamApiType,
+    },
+    GetData,
     Mpv,
+    SetData,
+};
+use tracing::{
+    error,
+    info,
+    warn,
 };
 
 #[derive(Debug)]
@@ -53,8 +66,10 @@ pub const ACTIVE: u32 = 1;
 impl Default for TsukimiMPV {
     fn default() -> Self {
         unsafe {
-            use libc::setlocale;
-            use libc::LC_NUMERIC;
+            use libc::{
+                setlocale,
+                LC_NUMERIC,
+            };
             setlocale(LC_NUMERIC, "C\0".as_ptr() as *const _);
         }
 
@@ -94,10 +109,7 @@ impl Default for TsukimiMPV {
                 2 => init.set_property("vo", "dmabuf-wayland")?,
                 _ => unreachable!(),
             }
-            init.set_property(
-                "demuxer-max-bytes",
-                format!("{}MiB", SETTINGS.mpv_cache_size()),
-            )?;
+            init.set_property("demuxer-max-bytes", format!("{}MiB", SETTINGS.mpv_cache_size()))?;
             init.set_property("cache-secs", (SETTINGS.mpv_cache_time()) as i64)?;
             init.set_property("volume", SETTINGS.mpv_default_volume() as i64)?;
             init.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64)?;
@@ -126,7 +138,11 @@ impl Default for TsukimiMPV {
     }
 }
 
-use flume::{unbounded, Receiver, Sender};
+use flume::{
+    unbounded,
+    Receiver,
+    Sender,
+};
 use libc::c_void;
 use libmpv2::events::Event;
 use once_cell::sync::Lazy;
@@ -184,10 +200,7 @@ impl TsukimiMPV {
             unsafe { mpv.ctx.as_mut() },
             vec![
                 RenderParam::ApiType(RenderParamApiType::OpenGl),
-                RenderParam::InitParams(OpenGLInitParams {
-                    get_proc_address,
-                    ctx: gl_context,
-                }),
+                RenderParam::InitParams(OpenGLInitParams { get_proc_address, ctx: gl_context }),
             ],
         )
         .expect("Failed creating render context");
@@ -342,27 +355,13 @@ impl TsukimiMPV {
             return;
         };
         let mut event_context = EventContext::new(mpv.ctx);
-        event_context
-            .disable_deprecated_events()
-            .expect("failed to disable deprecated events.");
-        event_context
-            .observe_property("duration", libmpv2::Format::Double, 0)
-            .unwrap();
-        event_context
-            .observe_property("pause", libmpv2::Format::Flag, 1)
-            .unwrap();
-        event_context
-            .observe_property("cache-speed", libmpv2::Format::Int64, 2)
-            .unwrap();
-        event_context
-            .observe_property("track-list", libmpv2::Format::Node, 3)
-            .unwrap();
-        event_context
-            .observe_property("paused-for-cache", libmpv2::Format::Flag, 4)
-            .unwrap();
-        event_context
-            .observe_property("demuxer-cache-time", libmpv2::Format::Int64, 5)
-            .unwrap();
+        event_context.disable_deprecated_events().expect("failed to disable deprecated events.");
+        event_context.observe_property("duration", libmpv2::Format::Double, 0).unwrap();
+        event_context.observe_property("pause", libmpv2::Format::Flag, 1).unwrap();
+        event_context.observe_property("cache-speed", libmpv2::Format::Int64, 2).unwrap();
+        event_context.observe_property("track-list", libmpv2::Format::Node, 3).unwrap();
+        event_context.observe_property("paused-for-cache", libmpv2::Format::Flag, 4).unwrap();
+        event_context.observe_property("demuxer-cache-time", libmpv2::Format::Int64, 5).unwrap();
         let event_thread_alive = self.event_thread_alive.clone();
         std::thread::Builder::new()
             .name("mpv event loop".into())
@@ -439,9 +438,7 @@ impl TsukimiMPV {
                         _ => {}
                     },
                     Some(Err(e)) => {
-                        let _ = MPV_EVENT_CHANNEL
-                            .tx
-                            .send(ListenEvent::Error(e.to_user_facing()));
+                        let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Error(e.to_user_facing()));
                     }
                     None => {}
                 };
@@ -465,35 +462,19 @@ fn node_to_tracks(node: MpvNode) -> MpvTracks {
     for node in array {
         let range = node.map().unwrap().collect::<HashMap<_, _>>();
         let id = range.get("id").unwrap().i64().unwrap();
-        let title = range
-            .get("title")
-            .and_then(|v| v.str())
-            .unwrap_or("unknown")
-            .to_string();
+        let title = range.get("title").and_then(|v| v.str()).unwrap_or("unknown").to_string();
 
-        let lang = range
-            .get("lang")
-            .and_then(|v| v.str())
-            .unwrap_or("unknown")
-            .to_string();
+        let lang = range.get("lang").and_then(|v| v.str()).unwrap_or("unknown").to_string();
 
         let type_ = range.get("type").unwrap().str().unwrap().to_string();
-        let track = MpvTrack {
-            id,
-            title,
-            lang,
-            type_,
-        };
+        let track = MpvTrack { id, title, lang, type_ };
         if track.type_ == "audio" {
             audio_tracks.push(track);
         } else if track.type_ == "sub" {
             sub_tracks.push(track);
         }
     }
-    MpvTracks {
-        audio_tracks,
-        sub_tracks,
-    }
+    MpvTracks { audio_tracks, sub_tracks }
 }
 
 fn get_full_keystr(key: u32, state: gtk::gdk::ModifierType) -> Option<String> {
@@ -512,22 +493,10 @@ fn get_modstr(state: gtk::gdk::ModifierType) -> String {
     }
 
     let mod_map = [
-        ModMap {
-            mask: gtk::gdk::ModifierType::SHIFT_MASK,
-            str: "Shift+",
-        },
-        ModMap {
-            mask: gtk::gdk::ModifierType::CONTROL_MASK,
-            str: "Ctrl+",
-        },
-        ModMap {
-            mask: gtk::gdk::ModifierType::ALT_MASK,
-            str: "Alt+",
-        },
-        ModMap {
-            mask: gtk::gdk::ModifierType::SUPER_MASK,
-            str: "Meta+",
-        },
+        ModMap { mask: gtk::gdk::ModifierType::SHIFT_MASK, str: "Shift+" },
+        ModMap { mask: gtk::gdk::ModifierType::CONTROL_MASK, str: "Ctrl+" },
+        ModMap { mask: gtk::gdk::ModifierType::ALT_MASK, str: "Alt+" },
+        ModMap { mask: gtk::gdk::ModifierType::SUPER_MASK, str: "Meta+" },
     ];
 
     let mut result = String::new();
@@ -543,11 +512,16 @@ fn get_modstr(state: gtk::gdk::ModifierType) -> String {
 
 use gtk::glib::translate::FromGlib;
 
-use crate::{
-    client::error::UserFacingError, ui::models::SETTINGS, utils::spawn_tokio_without_await,
+use super::options_matcher::{
+    match_audio_channels,
+    match_hwdec_interop,
+    match_video_upscale,
 };
-
-use super::options_matcher::{match_audio_channels, match_hwdec_interop, match_video_upscale};
+use crate::{
+    client::error::UserFacingError,
+    ui::models::SETTINGS,
+    utils::spawn_tokio_without_await,
+};
 
 const KEYSTRING_MAP: &[(&str, &str)] = &[
     ("PGUP", "Page_Up"),
@@ -599,11 +573,8 @@ const KEYSTRING_MAP: &[(&str, &str)] = &[
 fn keyval_to_keystr(keyval: u32) -> Option<String> {
     let key = unsafe { gtk::gdk::Key::from_glib(keyval) };
 
-    let key_name = if let Some(c) = key.to_unicode() {
-        c.to_string()
-    } else {
-        key.name()?.to_string()
-    };
+    let key_name =
+        if let Some(c) = key.to_unicode() { c.to_string() } else { key.name()?.to_string() };
 
     KEYSTRING_MAP
         .iter()

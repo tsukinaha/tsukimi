@@ -2,36 +2,57 @@ use adw::prelude::*;
 use anyhow::Result;
 use gettextrs::gettext;
 use glib::Object;
-use gtk::gdk::Rectangle;
-use gtk::gio::MenuModel;
-use gtk::glib::subclass::types::ObjectSubclassExt;
-use gtk::glib::subclass::types::ObjectSubclassIsExt;
-use gtk::template_callbacks;
-use gtk::Builder;
-use gtk::PopoverMenu;
-use gtk::{gio, glib};
+use gtk::{
+    gdk::Rectangle,
+    gio,
+    gio::MenuModel,
+    glib,
+    glib::subclass::types::{
+        ObjectSubclassExt,
+        ObjectSubclassIsExt,
+    },
+    template_callbacks,
+    Builder,
+    PopoverMenu,
+};
 use imp::ViewGroup;
 
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
-use crate::toast;
-use crate::ui::provider::tu_item::TuItem;
-use crate::ui::provider::IS_ADMIN;
-use crate::utils::spawn;
-use crate::utils::spawn_tokio;
-
-use super::picture_loader::PictureLoader;
-use super::tu_list_item::Action;
+use super::{
+    picture_loader::PictureLoader,
+    tu_list_item::Action,
+};
+use crate::{
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+    },
+    toast,
+    ui::provider::{
+        tu_item::TuItem,
+        IS_ADMIN,
+    },
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
+};
 
 pub const PROGRESSBAR_ANIMATION_DURATION: u32 = 2000;
 
 pub mod imp {
+    use std::cell::{
+        Cell,
+        RefCell,
+    };
+
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
-    use gtk::{glib, CompositeTemplate};
-    use gtk::{prelude::*, PopoverMenu};
-    use std::cell::Cell;
-    use std::cell::RefCell;
+    use gtk::{
+        glib,
+        prelude::*,
+        CompositeTemplate,
+        PopoverMenu,
+    };
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
@@ -43,8 +64,10 @@ pub mod imp {
         EpisodesView,
     }
 
-    use crate::ui::provider::tu_item::TuItem;
-    use crate::ui::widgets::picture_loader::PictureLoader;
+    use crate::ui::{
+        provider::tu_item::TuItem,
+        widgets::picture_loader::PictureLoader,
+    };
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -136,10 +159,7 @@ glib::wrapper! {
 #[template_callbacks]
 impl TuOverviewItem {
     pub fn new(item: TuItem, isresume: bool) -> Self {
-        Object::builder()
-            .property("item", item)
-            .property("isresume", isresume)
-            .build()
+        Object::builder().property("item", item).property("isresume", isresume).build()
     }
 
     pub fn default() -> Self {
@@ -160,16 +180,11 @@ impl TuOverviewItem {
                 ));
                 if let Some(premiere_date) = item.premiere_date() {
                     imp.time_label.set_visible(true);
-                    imp.time_label
-                        .set_text(&premiere_date.format("%Y-%m-%d").unwrap_or_default());
+                    imp.time_label.set_text(&premiere_date.format("%Y-%m-%d").unwrap_or_default());
                 }
-                imp.label2
-                    .set_text(&run_time_ticks_to_label(item.run_time_ticks()));
+                imp.label2.set_text(&run_time_ticks_to_label(item.run_time_ticks()));
                 imp.overview.set_text(
-                    &item
-                        .overview()
-                        .unwrap_or("No Inscription".to_string())
-                        .replace('\n', " "),
+                    &item.overview().unwrap_or("No Inscription".to_string()).replace('\n', " "),
                 );
                 self.set_played_percentage(self.get_played_percentage());
             }
@@ -199,14 +214,12 @@ impl TuOverviewItem {
                 };
                 if let Some(status) = item.status() {
                     if status == "Continuing" {
-                        imp.label2
-                            .set_text(&format!("{} - {}", year, gettext("Present")));
+                        imp.label2.set_text(&format!("{} - {}", year, gettext("Present")));
                     } else if status == "Ended" {
                         if let Some(end_date) = item.end_date() {
                             let end_year = end_date.year();
                             if end_year != year.parse::<i32>().unwrap_or_default() {
-                                imp.label2
-                                    .set_text(&format!("{} - {}", year, end_date.year()));
+                                imp.label2.set_text(&format!("{} - {}", year, end_date.year()));
                             } else {
                                 imp.label2.set_text(&format!("{}", end_year));
                             }
@@ -340,8 +353,7 @@ impl TuOverviewItem {
             imp,
             move |gesture, _n, x, y| {
                 gesture.set_state(gtk::EventSequenceState::Claimed);
-                imp.obj()
-                    .insert_action_group("item", imp.obj().set_action().as_ref());
+                imp.obj().insert_action_group("item", imp.obj().set_action().as_ref());
                 if let Some(popover) = imp.popover.borrow().as_ref() {
                     popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
                     popover.popup();
@@ -363,10 +375,7 @@ impl TuOverviewItem {
     }
 
     pub fn set_item_action(
-        &self,
-        is_playable: bool,
-        is_editable: bool,
-        is_favouritable: bool,
+        &self, is_playable: bool, is_editable: bool, is_favouritable: bool,
     ) -> Option<gio::SimpleActionGroup> {
         let action_group = gio::SimpleActionGroup::new();
 
@@ -616,11 +625,8 @@ impl TuOverviewItem {
                                 .unwrap()
                                 .downcast::<gtk::SingleSelection>()
                                 .unwrap();
-                            let store = selection
-                                .model()
-                                .unwrap()
-                                .downcast::<gio::ListStore>()
-                                .unwrap();
+                            let store =
+                                selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
                             store.remove(selection.selected());
                         } else if let Some(grid_view) = parent.downcast_ref::<gtk::GridView>() {
                             let selection = grid_view
@@ -628,11 +634,8 @@ impl TuOverviewItem {
                                 .unwrap()
                                 .downcast::<gtk::SingleSelection>()
                                 .unwrap();
-                            let store = selection
-                                .model()
-                                .unwrap()
-                                .downcast::<gio::ListStore>()
-                                .unwrap();
+                            let store =
+                                selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
                             store.remove(selection.selected());
                         }
                     }
@@ -643,8 +646,7 @@ impl TuOverviewItem {
     }
 
     pub async fn process_item(
-        &self,
-        action: fn(&String) -> Result<(), Box<dyn std::error::Error>>,
+        &self, action: fn(&String) -> Result<(), Box<dyn std::error::Error>>,
     ) {
         let id = self.item().id();
         spawn_tokio(async move {

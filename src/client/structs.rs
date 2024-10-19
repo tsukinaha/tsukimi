@@ -1,6 +1,12 @@
-use chrono::{DateTime, Utc};
+use chrono::{
+    DateTime,
+    Utc,
+};
 use derive_builder::Builder;
-use serde::{Deserialize, Serialize};
+use serde::{
+    Deserialize,
+    Serialize,
+};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct AuthenticateResponse {
@@ -472,11 +478,14 @@ pub struct User {
     pub id: String,
 }
 
-use crate::ui::widgets::{single_grid::SingleGrid, window::Window};
 use adw::prelude::*;
 use gtk::glib;
 
 use super::client::EMBY_CLIENT;
+use crate::ui::widgets::{
+    single_grid::SingleGrid,
+    window::Window,
+};
 
 impl SGTitem {
     pub fn activate<T>(&self, widget: &T, list_type: String)
@@ -490,9 +499,7 @@ impl SGTitem {
             let id = id.clone();
             let list_type_clone = list_type_clone.clone();
             async move {
-                EMBY_CLIENT
-                    .get_inlist(None, 0, &list_type_clone, &id, &sort_order, &sort_by)
-                    .await
+                EMBY_CLIENT.get_inlist(None, 0, &list_type_clone, &id, &sort_order, &sort_by).await
             }
         });
         let id = self.id.to_string();
@@ -501,9 +508,7 @@ impl SGTitem {
             let id = id.clone();
             let list_type = list_type.clone();
             async move {
-                EMBY_CLIENT
-                    .get_inlist(None, n_items, &list_type, &id, &sort_order, &sort_by)
-                    .await
+                EMBY_CLIENT.get_inlist(None, n_items, &list_type, &id, &sort_order, &sort_by).await
             }
         });
         page.emit_by_name::<()>("sort-changed", &[]);

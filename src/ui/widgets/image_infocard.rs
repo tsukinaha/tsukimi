@@ -1,22 +1,32 @@
 use gettextrs::gettext;
 use glib::Object;
-use gtk::glib::subclass::types::ObjectSubclassIsExt;
-use gtk::prelude::*;
-use gtk::template_callbacks;
-use gtk::{gio, glib};
+use gtk::{
+    gio,
+    glib,
+    glib::subclass::types::ObjectSubclassIsExt,
+    prelude::*,
+    template_callbacks,
+};
 
-use crate::client::client::EMBY_CLIENT;
-use crate::toast;
-
-use super::image_dialog::ImagesDialog;
-use super::window::Window;
+use super::{
+    image_dialog::ImagesDialog,
+    window::Window,
+};
+use crate::{
+    client::client::EMBY_CLIENT,
+    toast,
+};
 
 mod imp {
+    use std::cell::OnceCell;
+
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
-    use gtk::{glib, CompositeTemplate};
-    use std::cell::OnceCell;
+    use gtk::{
+        glib,
+        prelude::*,
+        CompositeTemplate,
+    };
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -87,10 +97,7 @@ impl ImageInfoCard {
 
     #[template_callback]
     fn on_view(&self) {
-        let window = self
-            .ancestor(Window::static_type())
-            .and_downcast::<Window>()
-            .unwrap();
+        let window = self.ancestor(Window::static_type()).and_downcast::<Window>().unwrap();
         let paintable = self.picture_paintable();
         if paintable.is_none() {
             toast!(self, gettext("No image to view"));
@@ -98,10 +105,8 @@ impl ImageInfoCard {
         }
         window.media_viewer_show_paintable(paintable);
         window.reveal_image(&self.imp().picture.get());
-        let dialog = self
-            .ancestor(ImagesDialog::static_type())
-            .and_downcast::<ImagesDialog>()
-            .unwrap();
+        let dialog =
+            self.ancestor(ImagesDialog::static_type()).and_downcast::<ImagesDialog>().unwrap();
         dialog.close();
     }
 

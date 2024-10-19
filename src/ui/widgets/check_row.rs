@@ -1,12 +1,16 @@
 use adw::subclass::prelude::*;
-use gtk::{glib, CompositeTemplate};
+use gtk::{
+    glib,
+    CompositeTemplate,
+};
 
 mod imp {
 
     use std::cell::RefCell;
 
-    use super::*;
     use glib::subclass::InitializingObject;
+
+    use super::*;
 
     #[derive(Debug, Default, CompositeTemplate)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/check_row.ui")]

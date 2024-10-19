@@ -9,9 +9,8 @@ macro_rules! _add_toast {
         {
             use adw::prelude::PreferencesDialogExt;
             dialog.add_toast($toast);
-        } else if let Some(dialog) = $widget
-            .ancestor(adw::ToastOverlay::static_type())
-            .and_downcast::<adw::ToastOverlay>()
+        } else if let Some(dialog) =
+            $widget.ancestor(adw::ToastOverlay::static_type()).and_downcast::<adw::ToastOverlay>()
         {
             dialog.add_toast($toast);
         } else if let Some(root) = $widget.root() {
@@ -34,11 +33,7 @@ macro_rules! toast {
     ($widget:expr, $message:expr) => {{
         $crate::_add_toast!(
             $widget,
-            adw::Toast::builder()
-                .timeout(2)
-                .use_markup(false)
-                .title($message)
-                .build()
+            adw::Toast::builder().timeout(2).use_markup(false).title($message).build()
         );
     }};
 }

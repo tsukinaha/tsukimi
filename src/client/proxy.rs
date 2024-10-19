@@ -36,7 +36,8 @@ impl ReqClient {
 use windows::{
     core::PCWSTR,
     Win32::Networking::WinHttp::{
-        WinHttpGetIEProxyConfigForCurrentUser, WINHTTP_CURRENT_USER_IE_PROXY_CONFIG,
+        WinHttpGetIEProxyConfigForCurrentUser,
+        WINHTTP_CURRENT_USER_IE_PROXY_CONFIG,
     },
 };
 
@@ -59,7 +60,5 @@ pub fn get_proxy_settings() -> Option<String> {
 pub fn get_proxy_settings() -> Option<String> {
     use std::env;
 
-    env::var("http_proxy")
-        .or_else(|_| env::var("https_proxy"))
-        .ok()
+    env::var("http_proxy").or_else(|_| env::var("https_proxy")).ok()
 }

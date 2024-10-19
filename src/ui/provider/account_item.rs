@@ -1,7 +1,12 @@
-use gtk::glib;
-use gtk::glib::prelude::*;
-use gtk::glib::subclass::prelude::*;
 use std::cell::RefCell;
+
+use gtk::{
+    glib,
+    glib::{
+        prelude::*,
+        subclass::prelude::*,
+    },
+};
 
 use crate::client::Account;
 

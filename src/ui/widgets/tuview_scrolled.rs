@@ -1,28 +1,51 @@
-use crate::client::structs::SimpleListItem;
-use crate::ui::provider::tu_item::TuItem;
-use crate::ui::provider::tu_object::TuObject;
-use adw::prelude::*;
-use adw::subclass::prelude::*;
-use gtk::glib::{self, clone};
-use gtk::{gio, SignalListItemFactory};
-use gtk::{template_callbacks, CompositeTemplate};
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
+use std::sync::{
+    atomic::{
+        AtomicBool,
+        Ordering,
+    },
+    Arc,
+};
 
-use super::single_grid::imp::ViewType;
-use super::tu_list_item::imp::PosterType;
-use super::tu_overview_item::imp::ViewGroup;
-use super::utils::TuItemBuildExt;
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gtk::{
+    gio,
+    glib::{
+        self,
+        clone,
+    },
+    template_callbacks,
+    CompositeTemplate,
+    SignalListItemFactory,
+};
+
+use super::{
+    single_grid::imp::ViewType,
+    tu_list_item::imp::PosterType,
+    tu_overview_item::imp::ViewGroup,
+    utils::TuItemBuildExt,
+};
+use crate::{
+    client::structs::SimpleListItem,
+    ui::provider::{
+        tu_item::TuItem,
+        tu_object::TuObject,
+    },
+};
 
 pub(crate) mod imp {
 
-    use std::sync::atomic::AtomicBool;
-    use std::sync::Arc;
+    use std::sync::{
+        atomic::AtomicBool,
+        Arc,
+    };
 
-    use crate::ui::provider::tu_object::TuObject;
+    use glib::subclass::InitializingObject;
 
     use super::*;
-    use glib::subclass::InitializingObject;
+    use crate::ui::provider::tu_object::TuObject;
 
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/tuview_scrolled.ui")]
@@ -85,12 +108,7 @@ impl TuViewScrolled {
 
     pub fn set_store<const C: bool>(&self, items: Vec<SimpleListItem>, is_resume: bool) {
         let imp = self.imp();
-        let store = imp
-            .selection
-            .model()
-            .unwrap()
-            .downcast::<gio::ListStore>()
-            .unwrap();
+        let store = imp.selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
 
         if C {
             store.remove_all();
@@ -110,14 +128,12 @@ impl TuViewScrolled {
         match view_type {
             ViewType::GridView => {
                 imp.scrolled_window.set_child(Some(&imp.grid.get()));
-                imp.grid
-                    .set_factory(Some(factory.tu_item(PosterType::default())));
+                imp.grid.set_factory(Some(factory.tu_item(PosterType::default())));
                 imp.grid.set_model(Some(&imp.selection));
             }
             ViewType::ListView => {
                 imp.scrolled_window.set_child(Some(&imp.list.get()));
-                imp.list
-                    .set_factory(Some(factory.tu_overview_item(ViewGroup::ListView)));
+                imp.list.set_factory(Some(factory.tu_overview_item(ViewGroup::ListView)));
                 imp.list.set_model(Some(&imp.selection));
             }
         }
@@ -161,12 +177,7 @@ impl TuViewScrolled {
 
     pub fn n_items(&self) -> u32 {
         let imp = self.imp();
-        let store = imp
-            .selection
-            .model()
-            .unwrap()
-            .downcast::<gio::ListStore>()
-            .unwrap();
+        let store = imp.selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
         store.n_items()
     }
 }

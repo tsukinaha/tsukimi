@@ -1,23 +1,40 @@
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
-use crate::client::structs::*;
-use crate::ui::provider::tu_item::TuItem;
-use crate::utils::{fetch_with_cache, spawn, CachePolicy};
-use crate::{fraction, fraction_reset, toast};
 use gettextrs::gettext;
 use glib::Object;
-use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
-use gtk::{prelude::*, template_callbacks};
+use gtk::{
+    gio,
+    glib,
+    prelude::*,
+    subclass::prelude::*,
+    template_callbacks,
+};
 
 use super::hortu_scrolled::HortuScrolled;
+use crate::{
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+        structs::*,
+    },
+    fraction,
+    fraction_reset,
+    toast,
+    ui::provider::tu_item::TuItem,
+    utils::{
+        fetch_with_cache,
+        spawn,
+        CachePolicy,
+    },
+};
 
 mod imp {
 
     use glib::subclass::InitializingObject;
-    use gtk::prelude::StaticTypeExt;
-    use gtk::subclass::prelude::*;
-    use gtk::{glib, CompositeTemplate};
+    use gtk::{
+        glib,
+        prelude::StaticTypeExt,
+        subclass::prelude::*,
+        CompositeTemplate,
+    };
 
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
 
@@ -129,11 +146,8 @@ impl HomePage {
     pub async fn setup_history(&self, enable_cache: bool) {
         let hortu = self.imp().hishortu.get();
 
-        let cache_policy = if enable_cache {
-            CachePolicy::UseCacheIfAvailable
-        } else {
-            CachePolicy::RefreshCache
-        };
+        let cache_policy =
+            if enable_cache { CachePolicy::UseCacheIfAvailable } else { CachePolicy::RefreshCache };
 
         let results = match fetch_with_cache("history", cache_policy, async {
             EMBY_CLIENT.get_resume().await

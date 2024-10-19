@@ -1,5 +1,9 @@
-use crate::ui::{models::SETTINGS, provider::descriptor::DescriptorType};
 use strsim::jaro_winkler;
+
+use crate::ui::{
+    models::SETTINGS,
+    provider::descriptor::DescriptorType,
+};
 
 pub fn make_video_version_choice_from_filter(dl_list: Vec<String>) -> Option<usize> {
     let descriptors = crate::ui::models::SETTINGS.preferred_version_descriptors();
@@ -21,14 +25,11 @@ pub fn make_video_version_choice_from_filter(dl_list: Vec<String>) -> Option<usi
         }
     }
 
-    current_list
-        .first()
-        .and_then(|first_item| dl_list.iter().position(|name| name == *first_item))
+    current_list.first().and_then(|first_item| dl_list.iter().position(|name| name == *first_item))
 }
 
 pub fn make_video_version_choice_from_matcher(
-    dl_list: Vec<String>,
-    matcher: &str,
+    dl_list: Vec<String>, matcher: &str,
 ) -> Option<usize> {
     let mut best_match_index = None;
     let mut highest_similarity = 0.0;

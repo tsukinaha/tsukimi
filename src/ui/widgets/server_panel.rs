@@ -1,20 +1,40 @@
-use crate::utils::spawn_tokio;
-use crate::{
-    client::{client::EMBY_CLIENT, error::UserFacingError},
-    toast,
-    utils::spawn,
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
 };
-use crate::{fraction, fraction_reset};
-use adw::prelude::*;
-use adw::subclass::prelude::*;
-use chrono::{DateTime, Datelike, Timelike, Utc};
+use chrono::{
+    DateTime,
+    Datelike,
+    Timelike,
+    Utc,
+};
 use gettextrs::gettext;
-use gtk::{glib, template_callbacks, CompositeTemplate};
-use gtk::{Button, Image};
+use gtk::{
+    glib,
+    template_callbacks,
+    Button,
+    CompositeTemplate,
+    Image,
+};
+
+use crate::{
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+    },
+    fraction,
+    fraction_reset,
+    toast,
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
+};
 
 pub(crate) mod imp {
-    use super::*;
     use glib::subclass::InitializingObject;
+
+    use super::*;
 
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/server_panel.ui")]
@@ -130,10 +150,7 @@ impl ServerPanel {
             Some(&gettext("Restart server")),
             Some(&gettext("Are you sure you want to restart the server?")),
         );
-        dialog.add_responses(&[
-            ("revert", &gettext("Revert")),
-            ("confirm", &gettext("Confirm")),
-        ]);
+        dialog.add_responses(&[("revert", &gettext("Revert")), ("confirm", &gettext("Confirm"))]);
         dialog.set_response_appearance("revert", adw::ResponseAppearance::Destructive);
         dialog.set_default_response(Some("revert"));
         dialog.set_close_response("revert");
@@ -273,17 +290,12 @@ impl ServerPanel {
                 subtitle.push_str(&format!(
                     "{}{}m\n",
                     gettext("Duration: "),
-                    last.end_time_utc
-                        .signed_duration_since(last.start_time_utc)
-                        .num_minutes()
+                    last.end_time_utc.signed_duration_since(last.start_time_utc).num_minutes()
                 ));
                 subtitle.push_str(&format!("{}{} \n", gettext("Result: "), last.status));
             }
             subtitle.push_str(&task.description);
-            let row = adw::ActionRow::builder()
-                .title(&task.name)
-                .subtitle(&subtitle)
-                .build();
+            let row = adw::ActionRow::builder().title(&task.name).subtitle(&subtitle).build();
 
             let button = Button::builder()
                 .icon_name("media-playback-start-symbolic")

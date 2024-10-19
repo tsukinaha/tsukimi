@@ -1,7 +1,12 @@
-use gtk::glib;
-use gtk::glib::prelude::*;
-use gtk::glib::subclass::prelude::*;
 use std::cell::RefCell;
+
+use gtk::{
+    glib,
+    glib::{
+        prelude::*,
+        subclass::prelude::*,
+    },
+};
 
 use crate::ui::widgets::song_widget::State;
 
@@ -10,9 +15,8 @@ pub mod imp {
 
     use gtk::glib::Properties;
 
-    use crate::ui::widgets::song_widget::State;
-
     use super::*;
+    use crate::ui::widgets::song_widget::State;
 
     #[derive(Properties, Default)]
     #[properties(wrapper_type = super::CoreSong)]

@@ -1,18 +1,21 @@
-use gtk::glib;
-use gtk::glib::prelude::*;
-use gtk::glib::subclass::prelude::*;
 use std::cell::RefCell;
 
-use crate::client::structs::SimpleListItem;
+use gtk::{
+    glib,
+    glib::{
+        prelude::*,
+        subclass::prelude::*,
+    },
+};
 
 use super::tu_item::TuItem;
+use crate::client::structs::SimpleListItem;
 
 pub mod imp {
     use gtk::glib::Properties;
 
-    use crate::ui::provider::tu_item::TuItem;
-
     use super::*;
+    use crate::ui::provider::tu_item::TuItem;
 
     #[derive(Properties, Default)]
     #[properties(wrapper_type = super::TuObject)]

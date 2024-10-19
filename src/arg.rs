@@ -1,5 +1,10 @@
+use std::{
+    fs::File,
+    io,
+    sync::Mutex,
+};
+
 use clap::Parser;
-use std::{fs::File, io, sync::Mutex};
 use tracing::level_filters::LevelFilter;
 use tracing_subscriber::fmt::time::ChronoLocal;
 
@@ -8,7 +13,8 @@ const DEFAULT_RENDERER: &str = "gl";
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 pub struct Args {
-    /// File to write the log to. If not specified, logs will be written to stderr.
+    /// File to write the log to. If not specified, logs will be written to
+    /// stderr.
     #[clap(long, short = 'f')]
     log_file: Option<String>,
 
@@ -22,7 +28,8 @@ pub struct Args {
 }
 
 impl Args {
-    /// Build the tracing subscriber using parameters from the command line arguments
+    /// Build the tracing subscriber using parameters from the command line
+    /// arguments
     ///
     /// ## Panics
     ///
@@ -41,10 +48,9 @@ impl Args {
 
         match &self.log_file {
             None => builder.with_writer(io::stderr).init(),
-            Some(f) => builder
-                .with_ansi(false)
-                .with_writer(Mutex::new(File::create(f).unwrap()))
-                .init(),
+            Some(f) => {
+                builder.with_ansi(false).with_writer(Mutex::new(File::create(f).unwrap())).init()
+            }
         }
     }
 

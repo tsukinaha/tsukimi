@@ -1,24 +1,44 @@
-use crate::client::client::EMBY_CLIENT;
-use crate::client::error::UserFacingError;
-use crate::client::structs::*;
-use crate::ui::provider::tu_item::TuItem;
-use crate::utils::{spawn, spawn_tokio};
-use crate::{fraction, fraction_reset, toast};
 use glib::Object;
-use gtk::subclass::prelude::*;
-use gtk::{gio, glib};
-use gtk::{prelude::*, template_callbacks};
+use gtk::{
+    gio,
+    glib,
+    prelude::*,
+    subclass::prelude::*,
+    template_callbacks,
+};
+
+use crate::{
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+        structs::*,
+    },
+    fraction,
+    fraction_reset,
+    toast,
+    ui::provider::tu_item::TuItem,
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
+};
 
 mod imp {
 
-    use glib::subclass::InitializingObject;
-    use gst::prelude::StaticTypeExt;
-    use gtk::subclass::prelude::*;
-    use gtk::{glib, CompositeTemplate};
     use std::sync::atomic::Ordering;
 
-    use crate::ui::widgets::tuview_scrolled::TuViewScrolled;
-    use crate::utils::spawn;
+    use glib::subclass::InitializingObject;
+    use gst::prelude::StaticTypeExt;
+    use gtk::{
+        glib,
+        subclass::prelude::*,
+        CompositeTemplate,
+    };
+
+    use crate::{
+        ui::widgets::tuview_scrolled::TuViewScrolled,
+        utils::spawn,
+    };
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -186,8 +206,7 @@ impl SearchPage {
             return;
         };
 
-        imp.searchscrolled
-            .set_store::<true>(search_results.items, false);
+        imp.searchscrolled.set_store::<true>(search_results.items, false);
 
         imp.stack.set_visible_child_name("result");
     }
@@ -227,9 +246,7 @@ impl SearchPage {
         };
 
         let search_results = match spawn_tokio(async move {
-            EMBY_CLIENT
-                .search(&search_content, &search_filter, &n_items.to_string())
-                .await
+            EMBY_CLIENT.search(&search_content, &search_filter, &n_items.to_string()).await
         })
         .await
         {

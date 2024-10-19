@@ -1,22 +1,32 @@
-use adw::prelude::*;
-use adw::subclass::prelude::*;
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
 use gettextrs::gettext;
-use gtk::glib;
-use gtk::template_callbacks;
+use gtk::{
+    glib,
+    template_callbacks,
+};
 
 use crate::{
-    client::{client::EMBY_CLIENT, error::UserFacingError},
+    client::{
+        client::EMBY_CLIENT,
+        error::UserFacingError,
+    },
     toast,
     utils::spawn_tokio,
 };
 
 mod imp {
-    use super::*;
+    use std::cell::OnceCell;
 
     use glib::subclass::InitializingObject;
+    use gtk::{
+        glib,
+        CompositeTemplate,
+    };
 
-    use gtk::{glib, CompositeTemplate};
-    use std::cell::OnceCell;
+    use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/refresh_dialog.ui")]
@@ -73,9 +83,7 @@ impl RefreshDialog {
         let image = imp.image_check.is_active();
 
         match spawn_tokio(async move {
-            EMBY_CLIENT
-                .fullscan(&id, &metadata.to_string(), &image.to_string())
-                .await
+            EMBY_CLIENT.fullscan(&id, &metadata.to_string(), &image.to_string()).await
         })
         .await
         {
