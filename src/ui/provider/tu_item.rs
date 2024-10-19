@@ -5,10 +5,7 @@ use gettextrs::gettext;
 use glib::DateTime;
 use gtk::{
     glib,
-    glib::{
-        prelude::*,
-        subclass::prelude::*,
-    },
+    glib::subclass::prelude::*,
 };
 
 use crate::{

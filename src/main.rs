@@ -97,7 +97,7 @@ fn main() -> glib::ExitCode {
     {
         use adw::prelude::AdwApplicationExt;
 
-        use crate::cfg::theme::is_system_dark_mode_enabled;
+        use crate::client::account::theme::is_system_dark_mode_enabled;
 
         if is_system_dark_mode_enabled() {
             app.style_manager().set_color_scheme(adw::ColorScheme::PreferDark);
