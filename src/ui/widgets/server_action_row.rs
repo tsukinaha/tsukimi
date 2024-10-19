@@ -1,5 +1,5 @@
 use crate::{
-    cfg::Account,
+    client::Account,
     ui::{models::SETTINGS, provider::account_item::AccountItem},
 };
 use adw::prelude::*;

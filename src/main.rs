@@ -14,15 +14,15 @@ use tracing::info;
 
 mod arg;
 mod client;
-mod cfg;
+mod config;
 mod gstl;
 mod macros;
 mod ui;
 mod utils;
 
-const APP_ID: &str = "com.github.inaha.tsukimi";
+use config::GETTEXT_PACKAGE;
 
-const GETTEXT_PACKAGE: &str = "tsukimi";
+const APP_ID: &str = "com.github.inaha.tsukimi";
 
 #[cfg(target_os = "linux")]
 const LINUX_LOCALEDIR: &str = "/usr/share/locale";
@@ -75,7 +75,7 @@ fn main() -> glib::ExitCode {
 
     info!(
         "Application Version: {}, Platform: {} {}, CPU Architecture: {}",
-        cfg::APP_VERSION,
+        config::VERSION,
         env::consts::OS,
         env::consts::FAMILY,
         env::consts::ARCH

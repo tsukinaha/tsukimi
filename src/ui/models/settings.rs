@@ -6,8 +6,9 @@ use gtk::{
     prelude::*,
 };
 
+use crate::client::Account;
+
 use crate::{
-    cfg::Account,
     ui::provider::descriptor::{Descriptor, VecSerialize},
     APP_ID,
 };

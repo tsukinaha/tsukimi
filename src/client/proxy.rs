@@ -1,11 +1,11 @@
 use gtk::prelude::*;
 use once_cell::sync::Lazy;
 
-use crate::cfg::APP_VERSION;
+use crate::config::VERSION;
 
 pub struct ReqClient;
 
-static APP_USER_AGENT: Lazy<String> = Lazy::new(|| format!("Tsukimi/{}", APP_VERSION));
+static APP_USER_AGENT: Lazy<String> = Lazy::new(|| format!("Tsukimi/{}", VERSION));
 
 impl ReqClient {
     pub fn build() -> reqwest::Client {

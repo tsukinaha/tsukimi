@@ -2,18 +2,18 @@ use std::sync::Mutex;
 
 use anyhow::{anyhow, Result};
 
+use super::{Account, ReqClient};
 use regex::Regex;
 use reqwest::{header::HeaderValue, Method, RequestBuilder, Response};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::{json, Value};
+use std::hash::Hasher;
 use tracing::{info, warn};
 use url::Url;
 use uuid::Uuid;
-use super::ReqClient;
-use std::hash::Hasher;
 
 use crate::{
-    cfg::{Account, APP_VERSION},
+    config::VERSION,
     ui::{models::emby_cache_path, widgets::single_grid::imp::ListType},
     utils::spawn_tokio_without_await,
 };
@@ -77,10 +77,11 @@ fn generate_hash(s: &str) -> String {
     format!("{:x}", hasher.finish())
 }
 
-
 fn hide_domain(url: &str) -> String {
     let hidden = "\x1b[35mDomain Hidden\x1b[0m";
-    DOMAIN_REGEX.replace(url, &format!("$1{}", hidden)).to_string()
+    DOMAIN_REGEX
+        .replace(url, &format!("$1{}", hidden))
+        .to_string()
 }
 
 impl EmbyClient {
@@ -94,7 +95,7 @@ impl EmbyClient {
                 &CLIENT_ID,
                 &DEVICE_NAME,
                 &DEVICE_ID,
-                APP_VERSION,
+                VERSION,
             ))
             .unwrap(),
         );
@@ -176,7 +177,7 @@ impl EmbyClient {
                 &CLIENT_ID,
                 &DEVICE_NAME,
                 &DEVICE_ID,
-                APP_VERSION,
+                VERSION,
             ))?,
         );
         Ok(())
@@ -220,7 +221,7 @@ impl EmbyClient {
             .server_name_hash
             .lock()
             .map_err(|_| anyhow!("Failed to acquire lock on server_name_hash"))?;
-        
+
         *server_name_hash_lock = generate_hash(server_name);
         Ok(())
     }
@@ -428,7 +429,7 @@ impl EmbyClient {
                 if !response.status().is_success() {
                     return Err(anyhow!("Failed to get image"));
                 }
-                
+
                 let bytes = response.bytes().await?;
 
                 let path = if bytes.len() > 1000 {
