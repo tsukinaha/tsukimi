@@ -10,7 +10,7 @@ license = "GPL"
 [dependencies]
 gtk = { version = "0.9", package = "gtk4", features = ["v4_16"] }
 serde = { version = "1.0.209", features = ["derive"] }
-serde_json = "1.0.128"
+serde_json = "1.0.132"
 tokio = { version = "1.40", features = ["full"] }
 reqwest = { version = "0.12", features = ["json", "gzip"] }
 async-channel = "2.3.1"
@@ -28,6 +28,7 @@ tracing = "0.1.40"
 gst = { version = "0.23", package = "gstreamer" }
 url = "2.5.2"
 libmpv2 = { path = "libmpv2-rs", version = "=4.0.0" }
+danmaku = { path = "sub-projects/danmaku", version = "0.0.0" }
 image = "0.25.2"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
 hostname = "0.4.0"
@@ -45,8 +46,11 @@ gdk4-win32 = { version = "0.9.0", optional = true }
 regex = "1.11.0"
 strsim = "0.11.1"
 clap = { version="4.5.20", features = ["derive"] }
-danmaku = { path = "sub-projects/danmaku", version = "0.0.0" }
 fnv = "1.0.7"
+md-5 = "0.10.6"
+unicode-segmentation = "1.12.0"
+hex = "0.4.3"
+rand = "0.8.5"
 
 [build-dependencies]
 embed-resource = "2.5.0"

@@ -1,6 +1,3 @@
-[submodule "sub-projects/danmaku"]
-	path = sub-projects/danmaku
-	url = https://github.com/tsukimi-rs/danmaku.git
 [submodule "libmpv2-rs"]
 	path = libmpv2-rs
 	url = https://github.com/tsukimi-rs/libmpv2-rs.git

@@ -844,9 +844,9 @@ dependencies = [
 
 [[package]]
 name = "flume"
-version = "0.11.0"
+version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "55ac459de2512911e4b674ce33cf20befaba382d05b62b008afc1c8b57cbf181"
+checksum = "da0e4dd2a88388a1f4ccc7c9ce104604dab68d9f408dc34cd45823d5a9069095"
 dependencies = [
  "futures-core",
  "futures-sink",
@@ -2730,9 +2730,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.131"
+version = "1.0.132"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "67d42a0bd4ac281beff598909bb56a86acaf979b84483e1c79c10dcaf98f8cf3"
+checksum = "d726bfaff4b320266d395898905d0eba0345aae23b54aee3a737e260fd46db03"
 dependencies = [
  "itoa",
  "memchr",
@@ -3217,13 +3217,16 @@ dependencies = [
  "glib-build-tools",
  "gstreamer",
  "gtk4",
+ "hex",
  "hostname",
  "image",
  "libadwaita",
  "libc",
  "libloading",
  "libmpv2",
+ "md-5",
  "once_cell",
+ "rand",
  "regex",
  "reqwest",
  "serde",
@@ -3232,6 +3235,7 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-subscriber",
+ "unicode-segmentation",
  "url",
  "uuid",
  "windows 0.58.0",
