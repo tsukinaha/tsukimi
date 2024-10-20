@@ -28,7 +28,6 @@ tracing = "0.1.40"
 gst = { version = "0.23", package = "gstreamer" }
 url = "2.5.2"
 libmpv2 = { path = "libmpv2-rs", version = "=4.0.0" }
-danmaku = { path = "sub-projects/danmaku", version = "0.0.0" }
 image = "0.25.2"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
 hostname = "0.4.0"
