@@ -5,3 +5,5 @@ pub mod options_matcher;
 pub mod page;
 pub mod tsukimi_mpv;
 pub mod video_scale;
+mod danmaku;
+mod dandanplay;

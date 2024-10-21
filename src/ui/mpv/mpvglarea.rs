@@ -27,9 +27,11 @@ mod imp {
     };
     use tracing::error;
 
-    use crate::ui::mpv::tsukimi_mpv::{
-        TsukimiMPV,
-        RENDER_UPDATE,
+    use crate::{
+        ui::mpv::tsukimi_mpv::{
+            process_danmaku_threads, TsukimiMPV, RENDER_UPDATE
+        },
+        utils::spawn,
     };
 
     // Object holding the state
@@ -76,6 +78,7 @@ mod imp {
             ));
 
             self.mpv.process_events();
+            process_danmaku_threads(self.mpv.mpv.clone(), self.mpv.danmaku_thread_alive.clone(), self.mpv.danmaku_params.clone(), self.mpv.danmaku_options.clone());
         }
     }
 

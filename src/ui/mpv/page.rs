@@ -12,16 +12,9 @@ use gtk::{
 use url::Url;
 
 use super::{
-    mpvglarea::MPVGLArea,
-    tsukimi_mpv::{
-        ListenEvent,
-        MpvTrack,
-        MpvTracks,
-        TrackSelection,
-        MPV_EVENT_CHANNEL,
-        PAUSED,
-    },
-    video_scale::VideoScale,
+    dandanplay::{get, get_danmaku}, mpvglarea::MPVGLArea, tsukimi_mpv::{
+        ListenEvent, MpvTrack, MpvTracks, TrackSelection, ACTIVE, MPV_EVENT_CHANNEL, PAUSED
+    }, video_scale::VideoScale
 };
 use crate::{
     client::{
@@ -1041,6 +1034,22 @@ impl MPVPage {
                 let _ = imp.popover.replace(Some(popover));
             }
             None => eprintln!("Failed to load popover"),
+        }
+    }
+
+    #[template_callback]
+    async fn on_danmaku_settings_clicked(&self) {
+        spawn_tokio(async move {
+            let _ = get(Default::default()).await;
+        }).await;
+        match self.imp().video.imp().mpv.danmaku_thread_alive.load(std::sync::atomic::Ordering::SeqCst) {
+            PAUSED => {
+                self.imp().video.imp().mpv.danmaku_thread_alive.store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
+                atomic_wait::wake_all(&*self.imp().video.imp().mpv.danmaku_thread_alive);
+            }
+            _ => {
+                self.imp().video.imp().mpv.danmaku_thread_alive.store(PAUSED, std::sync::atomic::Ordering::SeqCst);
+            }
         }
     }
 

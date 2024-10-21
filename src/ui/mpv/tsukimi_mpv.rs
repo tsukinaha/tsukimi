@@ -1,30 +1,30 @@
 use std::{
-    cell::RefCell,
-    collections::HashMap,
-    sync::{
-        atomic::AtomicU32,
+    cell::RefCell, collections::HashMap, ffi::CString, ptr::{addr_of_mut, null_mut}, sync::{
+        atomic::{AtomicBool, AtomicU32},
         Arc,
         Mutex,
-    },
+    }
 };
+
+
+use std::os::raw::{c_char, c_int, c_void};
 
 use gtk::gdk::GLContext;
 use libmpv2::{
     events::{
         EventContext,
         PropertyData,
-    },
-    mpv_node::MpvNode,
-    render::{
+    }, mpv_command_node, mpv_format, mpv_node::{
+        MpvNode,
+        MpvNodeArrayIter,
+    }, render::{
         OpenGLInitParams,
         RenderContext,
         RenderParam,
         RenderParamApiType,
-    },
-    GetData,
-    Mpv,
-    SetData,
+    }, GetData, Mpv, MpvFormat, MpvNodeList, MpvNodeU, MpvRawNode, SetData
 };
+use rand::Rng;
 use tracing::{
     error,
     info,
@@ -43,6 +43,9 @@ pub struct TsukimiMPV {
     pub mpv: Arc<Mutex<Mpv>>,
     pub ctx: RefCell<Option<RenderContext>>,
     pub event_thread_alive: Arc<AtomicU32>,
+    pub danmaku_params: Arc<Mutex<Params>>,
+    pub danmaku_options: Arc<Mutex<Options>>,
+    pub danmaku_thread_alive: Arc<AtomicU32>,
 }
 
 pub enum TrackSelection {
@@ -134,6 +137,9 @@ impl Default for TsukimiMPV {
             mpv: Arc::new(Mutex::new(mpv)),
             ctx: RefCell::new(None),
             event_thread_alive: Arc::new(AtomicU32::new(PAUSED)),
+            danmaku_params: Arc::new(Mutex::new(Params::default())),
+            danmaku_options: Arc::new(Mutex::new(Options::default())),
+            danmaku_thread_alive: Arc::new(AtomicU32::new(PAUSED)),
         }
     }
 }
@@ -143,7 +149,6 @@ use flume::{
     Receiver,
     Sender,
 };
-use libc::c_void;
 use libmpv2::events::Event;
 use once_cell::sync::Lazy;
 
@@ -362,7 +367,12 @@ impl TsukimiMPV {
         event_context.observe_property("track-list", libmpv2::Format::Node, 3).unwrap();
         event_context.observe_property("paused-for-cache", libmpv2::Format::Flag, 4).unwrap();
         event_context.observe_property("demuxer-cache-time", libmpv2::Format::Int64, 5).unwrap();
+        event_context.observe_property("osd-width", libmpv2::Format::Double, 6).unwrap();
+        event_context.observe_property("osd-height", libmpv2::Format::Double, 7).unwrap();
+        event_context.observe_property("script-opts", libmpv2::Format::Node, 8).unwrap();
+        event_context.observe_property("speed", libmpv2::Format::Double, 9).unwrap();
         let event_thread_alive = self.event_thread_alive.clone();
+        let arc_params = Arc::clone(&self.danmaku_params);
         std::thread::Builder::new()
             .name("mpv event loop".into())
             .spawn(move || loop {
@@ -401,6 +411,10 @@ impl TsukimiMPV {
                             "speed" => {
                                 if let PropertyData::Double(speed) = change {
                                     let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Speed(speed));
+                                    let lock = arc_params.lock();
+                                    if let Ok(mut params) = lock {
+                                        params.speed = speed;
+                                    }
                                 }
                             }
                             "paused-for-cache" => {
@@ -512,10 +526,20 @@ fn get_modstr(state: gtk::gdk::ModifierType) -> String {
 
 use gtk::glib::translate::FromGlib;
 
-use super::options_matcher::{
-    match_audio_channels,
-    match_hwdec_interop,
-    match_video_upscale,
+use super::{
+    dandanplay::{
+        Danmaku,
+        Status,
+        StatusInner,
+    },
+    danmaku::{
+        Options, Params, Row, COMMENTS, INTERVAL, MAX_STEP, MIN_STEP
+    },
+    options_matcher::{
+        match_audio_channels,
+        match_hwdec_interop,
+        match_video_upscale,
+    },
 };
 use crate::{
     client::error::UserFacingError,
@@ -581,4 +605,155 @@ fn keyval_to_keystr(keyval: u32) -> Option<String> {
         .find(|(_, keyval_str)| **keyval_str == key_name)
         .map(|(keystr, _)| keystr.to_string())
         .or(Some(key_name))
+}
+
+fn reset_status(comments: &mut [Danmaku]) {
+    for comment in comments {
+        comment.status = Status::Uninitialized;
+    }
+}
+
+pub fn process_danmaku_threads(mpv: Arc<Mutex<Mpv>>, danmaku_thread_alive: Arc<AtomicU32>, params: Arc<Mutex<Params>>, options: Arc<Mutex<Options>>) {
+    std::thread::Builder::new()
+        .name("danmaku process loop".into())
+        .spawn(move || loop {
+            atomic_wait::wait(&danmaku_thread_alive, PAUSED);
+            if let Some(comments) = COMMENTS.lock().unwrap().as_mut() {
+                render_danmaku(mpv.clone(), comments, params.clone(), options.clone());
+            } else {
+                continue;
+            }
+            std::thread::sleep(std::time::Duration::from_millis(5));
+        })
+        .expect("Failed to spawn danmaku process loop");
+}
+
+pub fn render_danmaku(mpv: Arc<Mutex<Mpv>>, comments: &mut [Danmaku], params: Arc<Mutex<Params>>, options: Arc<Mutex<Options>>) {
+    let Some(pos) = mpv.lock().ok().and_then(|mpv| mpv.get_property("time-pos").ok()) else {
+        return;
+    };
+    let Some(params) = params.lock().ok() else {
+        return;
+    };
+    let Some(options) = options.lock().ok() else {
+        return;
+    };
+    let mut width = 1920.;
+    let mut height = 1080.;
+    let ratio = params.osd_width / params.osd_height;
+    if width / height < ratio {
+        height = width / ratio;
+    } else if width / height > ratio {
+        width = height * ratio;
+    }
+    let spacing = options.font_size / 10.;
+    let mut rows =
+        vec![
+            Row { end: 0., step: MIN_STEP };
+            ((height * (1. - options.reserved_space) / (options.font_size + spacing)) as usize)
+                .max(1)
+        ];
+
+    let mut danmaku = Vec::new();
+    let mut rng = rand::thread_rng();
+    'it: for comment in comments.iter_mut().filter(|c| !c.blocked) {
+        let time = comment.time + params.delay;
+        if time > pos {
+            break;
+        }
+
+        let status = match &mut comment.status {
+            Status::Status(status) => status,
+            Status::Overlapping => continue,
+            Status::Uninitialized => 'status: {
+                let ticks = (pos - time) / INTERVAL;
+                for (row, status) in rows.iter().enumerate() {
+                    if status.end < width - width * ticks * MIN_STEP {
+                        let max_step = if status.end == 0. {
+                            MAX_STEP
+                        } else {
+                            // 1 / max_step - ticks = status.end / width / status.step
+                            let max_step = 1. / (ticks + status.end / width / status.step);
+                            max_step.min(MAX_STEP)
+                        };
+                        let step = rng.gen_range(MIN_STEP..max_step);
+                        let x = width - width * ticks * step;
+                        break 'status comment.status.insert(StatusInner { x, row, step });
+                    }
+                }
+                if options.no_overlap {
+                    comment.status = Status::Overlapping;
+                    continue 'it;
+                }
+                let row = rows
+                    .iter()
+                    .enumerate()
+                    .min_by(|a, b| a.1.end.partial_cmp(&b.1.end).unwrap())
+                    .map(|(row, _)| row)
+                    .unwrap();
+                let step = MIN_STEP;
+                let x = width - width * ticks * step;
+                comment.status.insert(StatusInner { x, row, step })
+            }
+        };
+        if status.x + comment.count as f64 * options.font_size + spacing <= 0. {
+            continue;
+        }
+        danmaku.push(format!(
+            "{{\\pos({},{})\\c&H{:x}{:x}{:x}&\\alpha&H{:x}\\fs{}\\bord1.5\\shad0\\b1\\q2}}{}",
+            status.x,
+            status.row as f64 * (options.font_size + spacing),
+            comment.b,
+            comment.g,
+            comment.r,
+            options.transparency,
+            options.font_size,
+            comment.message
+        ));
+
+        status.x -= width * status.step * params.speed * options.speed;
+        if let Some(row) = rows.get_mut(status.row) {
+            let end = status.x + comment.count as f64 * options.font_size + spacing;
+            if end / status.step > row.end / row.step {
+                *row = Row { end, step: status.step };
+            }
+        }
+    }
+    osd_overlay(mpv, &danmaku.join("\n"), width as i64, height as i64);
+}
+
+pub fn osd_overlay(mpv: Arc<Mutex<Mpv>>, data: &str, width: i64, height: i64) {
+    let mut keys = [c"name", c"id", c"format", c"data", c"res_x", c"res_y"]
+        .map(|key| CString::from(key).into_raw());
+    let value1 = CString::from(c"osd-overlay").into_raw();
+    let value3 = CString::from(c"ass-events").into_raw();
+    let value4 = CString::new(data).unwrap().into_raw();
+    let mut values = [
+        MpvRawNode { format: mpv_format::String, u: MpvNodeU { string: value1 } },
+        MpvRawNode { format: mpv_format::Int64, u: MpvNodeU { int64: 0 } },
+        MpvRawNode { format: mpv_format::String, u: MpvNodeU { string: value3 } },
+        MpvRawNode { format: mpv_format::String, u: MpvNodeU { string: value4 } },
+        MpvRawNode { format: mpv_format::Int64, u: MpvNodeU { int64: width } },
+        MpvRawNode { format: mpv_format::Int64, u: MpvNodeU { int64: height } },
+    ];
+    assert_eq!(keys.len(), values.len());
+
+    let mut list = MpvNodeList {
+        num: keys.len().try_into().unwrap(),
+        values: values.as_mut_ptr(),
+        keys: keys.as_mut_ptr(),
+    };
+    let mut args =
+    MpvRawNode { format: mpv_format::Map, u: MpvNodeU { list: addr_of_mut!(list) } };
+    let error = unsafe { mpv_command_node(mpv.lock().unwrap().ctx.as_ptr(), addr_of_mut!(args), null_mut()) };
+    if error < 0 {
+        error!("MPV osd overlay error: {}", error);
+    }
+
+    unsafe {
+        _ = keys.map(|key| CString::from_raw(key));
+        _ = CString::from_raw(value1);
+        _ = CString::from_raw(value3);
+        _ = CString::from_raw(value4);
+    }
 }

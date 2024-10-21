@@ -255,7 +255,8 @@
                           <object class="GtkButton">
                             <property name="icon-name">card-bulleted-symbolic</property>
                             <property name="tooltip-text" translatable="yes">Danmaku Settings</property>
-                            <property name="visible">False</property>
+                            <signal name="clicked" handler="on_danmaku_settings_clicked" swapped="yes" />
+                            <property name="visible">True</property>
                           </object>
                         </child>
                         <child>
