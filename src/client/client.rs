@@ -474,7 +474,7 @@ impl EmbyClient {
             ("IsPlayback", "false"),
             ("AudioStreamIndex", "1"),
             ("SubtitleStreamIndex", "1"),
-            ("MaxStreamingBitrate", "160000000"),
+            ("MaxStreamingBitrate", "2147483647"),
             ("reqformat", "json"),
         ];
         let profile: Value = serde_json::from_str(PROFILE).expect("Failed to parse profile");
@@ -535,9 +535,9 @@ impl EmbyClient {
         let params = [
             ("StartTimeTicks", "0"),
             ("UserId", &self.user_id()),
-            ("AutoOpenLiveStream", "true"),
-            ("IsPlayback", "true"),
-            ("MaxStreamingBitrate", "160000000"),
+            ("AutoOpenLiveStream", "false"),
+            ("IsPlayback", "false"),
+            ("MaxStreamingBitrate", "2147483647"),
             ("reqformat", "json"),
         ];
         let profile: Value = serde_json::from_str(PROFILE).unwrap();
