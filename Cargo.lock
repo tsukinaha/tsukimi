@@ -562,21 +562,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "danmaku"
-version = "0.0.0"
-dependencies = [
- "anyhow",
- "hex",
- "md-5",
- "rand",
- "reqwest",
- "serde",
- "serde_json",
- "tokio",
- "unicode-segmentation",
-]
-
-[[package]]
 name = "darling"
 version = "0.20.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3194,7 +3179,7 @@ checksum = "e421abadd41a4225275504ea4d6566923418b7f05506fbc9c0fe86ba7396114b"
 
 [[package]]
 name = "tsukimi"
-version = "0.16.3"
+version = "0.16.4"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -3203,7 +3188,6 @@ dependencies = [
  "cargo-deb",
  "chrono",
  "clap",
- "danmaku",
  "derive_builder",
  "dirs",
  "embed-resource",

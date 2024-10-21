@@ -1,5 +1,5 @@
 project('tsukimi', 'rust',
-          version: '0.16.3',
+          version: '0.16.4',
     meson_version: '>= 1.1',
   default_options: [ 'warning_level=2',
                      'werror=false',
@@ -9,7 +9,7 @@ project('tsukimi', 'rust',
 
 major_version = '0'
 minor_version = '16'
-micro_version = '3'
+micro_version = '4'
 
 version = major_version
 version += '.' + minor_version + '.' + micro_version
