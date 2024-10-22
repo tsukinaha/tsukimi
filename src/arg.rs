@@ -8,6 +8,8 @@ use clap::Parser;
 use tracing::level_filters::LevelFilter;
 use tracing_subscriber::fmt::time::ChronoLocal;
 
+use crate::dyn_event;
+
 const DEFAULT_RENDERER: &str = "gl";
 
 #[derive(Parser, Debug)]
@@ -66,9 +68,32 @@ impl Args {
         }
     }
 
+    fn init_gilb_to_tracing(&self) {
+        gtk::glib::log_set_writer_func(|level, x| {
+            let domain =
+                x.iter().find(|&it| it.key() == "GLIB_DOMAIN").and_then(|it| it.value_str());
+            let Some(message) =
+                x.iter().find(|&it| it.key() == "MESSAGE").and_then(|it| it.value_str())
+            else {
+                return gtk::glib::LogWriterOutput::Unhandled;
+            };
+
+            match domain {
+                Some(domain) => {
+                    dyn_event!(level, domain = domain, "{}", message);
+                }
+                None => {
+                    dyn_event!(level, "{}", message);
+                }
+            }
+            gtk::glib::LogWriterOutput::Handled
+        });
+    }
+
     pub fn init(&self) {
         self.init_tracing_subscriber();
         self.init_gsk_renderer();
+        self.init_gilb_to_tracing();
 
         std::panic::set_hook(Box::new(|p| {
             tracing::error!("{p}");

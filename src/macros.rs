@@ -88,8 +88,20 @@ macro_rules! bing_song_model {
             if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
                 window.bind_song_model($active_model, $active_core_song);
             } else {
-                panic!("Trying to display a toast when the parent doesn't support it");
+                panic!("Trying to bind song model when the parent doesn't support it");
             }
         }
     }};
+}
+
+#[macro_export]
+macro_rules! dyn_event {
+    ($lvl:ident, $($arg:tt)+) => {
+        match $lvl {
+            ::gtk::glib::LogLevel::Debug => ::tracing::debug!($($arg)+),
+            ::gtk::glib::LogLevel::Message | ::gtk::glib::LogLevel::Info => ::tracing::info!($($arg)+),
+            ::gtk::glib::LogLevel::Warning => ::tracing::warn!($($arg)+),
+            ::gtk::glib::LogLevel::Error | ::gtk::glib::LogLevel::Critical  => ::tracing::error!($($arg)+),
+        }
+    };
 }
