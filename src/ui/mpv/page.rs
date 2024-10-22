@@ -696,6 +696,12 @@ impl MPVPage {
     }
 
     fn on_pause_update(&self, value: bool) {
+        if !value {
+            self.update_timeout();
+        } else {
+            self.remove_timeout();
+        }
+
         self.pause_icon_set(value);
     }
 
@@ -867,12 +873,6 @@ impl MPVPage {
         let video = &self.imp().video;
         let paused = video.paused();
         video.pause(!paused);
-
-        if paused {
-            self.update_timeout();
-        } else {
-            self.remove_timeout();
-        }
     }
 
     fn pause_icon_set(&self, paused: bool) {

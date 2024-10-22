@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <schemalist>
-  <schema id="moe.tsuna.tsukimi" path="/moe/tsukimi/">
+  <schema id="moe.tsuna.tsukimi" path="/moe/tsuna/tsukimi/">
     <key name="window-width" type="i">
       <default>-1</default>
       <summary>Default window width</summary>
