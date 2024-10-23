@@ -25,7 +25,9 @@ use serde_json::{
     Value,
 };
 use tracing::{
-    debug, info, warn
+    debug,
+    info,
+    warn,
 };
 use url::Url;
 use uuid::Uuid;

@@ -6,16 +6,31 @@ use gtk::{
     subclass::prelude::*,
 };
 
-use super::{horbu_scrolled::HorbuScrolled, picture_loader::PictureLoader};
+use super::{
+    horbu_scrolled::HorbuScrolled,
+    picture_loader::PictureLoader,
+};
 use crate::{
-    bing_song_model, client::{
+    bing_song_model,
+    client::{
         client::EMBY_CLIENT,
         error::UserFacingError,
         structs::*,
-    }, fraction, fraction_reset, toast, ui::{provider::{core_song::CoreSong, tu_item::TuItem}, widgets::song_widget::SongWidget}, utils::{
+    },
+    fraction,
+    fraction_reset,
+    toast,
+    ui::{
+        provider::{
+            core_song::CoreSong,
+            tu_item::TuItem,
+        },
+        widgets::song_widget::SongWidget,
+    },
+    utils::{
         fetch_with_cache,
         CachePolicy,
-    }
+    },
 };
 
 pub(crate) mod imp {
@@ -211,7 +226,7 @@ impl OtherPage {
                 self.hortu_set_actor_list("Movie").await;
                 self.hortu_set_actor_list("Series").await;
                 self.hortu_set_actor_list("Episode").await;
-            },
+            }
             "BoxSet" => {
                 self.hortu_set_boxset_list().await;
             }
@@ -228,26 +243,22 @@ impl OtherPage {
                     }
                 ));
             }
-            _ => {
-
-            }
+            _ => {}
         }
-        
-
     }
 
     pub fn add_external_link_horbu(&self, links: &[Urls]) {
         let imp = self.imp();
-        imp.linkshorbu.set_links(&links);
+        imp.linkshorbu.set_links(links);
     }
 
     pub fn add_sgt_item_horbu(&self, horbu: &HorbuScrolled, items: &[SGTitem], type_: &str) {
-        horbu.set_items(&items, type_);
+        horbu.set_items(items, type_);
     }
 
     pub fn add_actor_item_hortu(&self, items: &[SimpleListItem]) {
         let hortu = self.imp().actorhortu.get();
-        hortu.set_items(&items);
+        hortu.set_items(items);
     }
 
     async fn hortu_set_boxset_list(&self) {
@@ -257,7 +268,9 @@ impl OtherPage {
             &format!("boxset_{}", id),
             CachePolicy::ReadCacheAndRefresh,
             async move { EMBY_CLIENT.get_includedby(&id).await },
-        ).await {
+        )
+        .await
+        {
             Ok(history) => history,
             Err(e) => {
                 toast!(self, e.to_user_facing());
@@ -268,13 +281,11 @@ impl OtherPage {
         let mut movies = Vec::new();
         let mut series = Vec::new();
         let mut episodes = Vec::new();
-        results.items.into_iter().for_each(|item| {
-            match item.item_type.as_str() {
-                "Movie" => movies.push(item),
-                "Series" => series.push(item),
-                "Episode" => episodes.push(item),
-                _ => {},
-            }
+        results.items.into_iter().for_each(|item| match item.item_type.as_str() {
+            "Movie" => movies.push(item),
+            "Series" => series.push(item),
+            "Episode" => episodes.push(item),
+            _ => {}
         });
 
         imp.moviehortu.set_items(&movies);

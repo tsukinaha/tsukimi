@@ -169,12 +169,13 @@ impl Default for IdType {
     }
 }
 
-impl ToString for IdType {
-    fn to_string(&self) -> String {
-        return match self {
+impl std::fmt::Display for IdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let str = match self {
             IdType::String(s) => s.to_string(),
-            IdType::Int(i) => i.to_string()
-        }
+            IdType::Int(i) => i.to_string(),
+        };
+        write!(f, "{}", str)
     }
 }
 

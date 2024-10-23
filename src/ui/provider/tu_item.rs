@@ -19,10 +19,10 @@ use crate::{
     },
     toast,
     ui::widgets::{
-        other::OtherPage,
         item::ItemPage,
         list::ListPage,
         music_album::AlbumPage,
+        other::OtherPage,
         single_grid::SingleGrid,
         window::Window,
     },
@@ -331,7 +331,7 @@ impl TuItem {
             _ => {
                 let page = OtherPage::new(self);
                 push_page_with_tag(window, page, self.name());
-            },
+            }
         }
     }
 

@@ -7,7 +7,7 @@
           <object class="GtkStackPage">
             <property name="name">loading</property>
             <property name="child">
-              <object class="AdwSpinner" id="spinner">
+              <object class="GtkSpinner" id="spinner">
                 <property name="valign">center</property>
                 <property name="halign">center</property>
                 <property name="vexpand">True</property>

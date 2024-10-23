@@ -755,12 +755,12 @@ impl Window {
         T: NavigationPageExt,
     {
         let imp = self.imp();
-        imp.navipage.set_title(&tag);
+        imp.navipage.set_title(tag);
         if imp.mainview.find_page(tag).is_some() {
             imp.mainview.pop_to_tag(tag);
             return;
         }
-        page.set_tag(Some(&tag));
+        page.set_tag(Some(tag));
         imp.mainview.push(page);
         imp.popbutton.set_visible(true);
     }

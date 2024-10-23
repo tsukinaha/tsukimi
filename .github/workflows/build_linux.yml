@@ -3,22 +3,22 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "main"
+      - "gtk414"
     paths-ignore:
       - "docs/**"
       - "**/.gitignore"
       - "**/.dockerignore"
       - LICENSE
       - "**/*.md"
-  pull_request:
-    branches:
-      - "main"
-    paths-ignore:
-      - "docs/**"
-      - "**/.gitignore"
-      - "**/.dockerignore"
-      - LICENSE
-      - "**/*.md"
+  # pull_request:
+  #   branches:
+  #     - "main"
+  #   paths-ignore:
+  #     - "docs/**"
+  #     - "**/.gitignore"
+  #     - "**/.dockerignore"
+  #     - LICENSE
+  #     - "**/*.md"
 
 jobs:
   build:
@@ -48,7 +48,7 @@ jobs:
 
       - name: Build tsukimi for ${{ matrix.platform }}
         run: |
-          docker run --rm --platform linux/${{matrix.platform}} -v ${{ github.workspace }}:/app -v ./docker/entrypoint.sh:/entrypoint.sh ghcr.io/kosette/ubuntu-rust-gtk4:latest
+          docker run --rm --platform linux/${{matrix.platform}} -v ${{ github.workspace }}:/app -v ./docker/entrypoint.sh:/entrypoint.sh ghcr.io/kosette/ubuntu-rust-gtk4:gtk414-latest
           sudo cp target/release/tsukimi .
           sudo cp target/debian/*.deb .
           sudo cp -r i18n/locale .

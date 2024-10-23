@@ -38,7 +38,7 @@ mod imp {
         #[template_child]
         pub fallback: TemplateChild<adw::StatusPage>,
         #[template_child]
-        pub spinner: TemplateChild<adw::Spinner>,
+        pub spinner: TemplateChild<gtk::Spinner>,
     }
 
     #[glib::object_subclass]

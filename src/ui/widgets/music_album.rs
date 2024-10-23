@@ -231,7 +231,7 @@ impl AlbumPage {
             song_widget.add_song(item);
         }
 
-        for (_, disc_box) in &disc_boxes {
+        for disc_box in disc_boxes.values() {
             self.imp().listbox.append(disc_box);
         }
     }
