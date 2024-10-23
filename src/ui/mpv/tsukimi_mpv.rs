@@ -5,7 +5,7 @@ use std::{
         atomic::AtomicU32,
         Arc,
         Mutex,
-    },
+    }, thread::JoinHandle,
 };
 
 use gtk::gdk::GLContext;
@@ -350,9 +350,9 @@ impl TsukimiMPV {
         }
     }
 
-    pub fn process_events(&self) {
+    pub fn process_events(&self) -> JoinHandle<()> {
         let Some(mpv) = self.mpv() else {
-            return;
+            panic!("Failed to lock MPV for event loop");
         };
         let mut event_context = EventContext::new(mpv.ctx);
         event_context.disable_deprecated_events().expect("failed to disable deprecated events.");
@@ -443,7 +443,7 @@ impl TsukimiMPV {
                     None => {}
                 };
             })
-            .expect("Failed to spawn mpv event loop");
+            .expect("Failed to spawn mpv event loop")
     }
 }
 

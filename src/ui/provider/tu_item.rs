@@ -360,7 +360,7 @@ impl TuItem {
                             id: item.id(),
                             playsessionid: playback.play_session_id,
                             mediasourceid: playback.media_sources[0].id.clone(),
-                            start_tick: item.playback_position_ticks(),
+                            start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
                         };
                         window.play_media(
                             url.to_string(),

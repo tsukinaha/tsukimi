@@ -1113,7 +1113,7 @@ impl ItemPage {
             playsessionid: self.play_session_id(),
             mediasourceid: media_source_id.to_string(),
             tick: item.playback_position_ticks(),
-            start_tick: item.playback_position_ticks(),
+            start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
         };
 
         let sub_url = if let Some(sub_object) =

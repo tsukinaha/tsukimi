@@ -19,13 +19,15 @@ use super::tsukimi_mpv::{
 use crate::client::client::EMBY_CLIENT;
 
 mod imp {
+    use std::thread::JoinHandle;
+
     use gtk::{
         gdk::GLContext,
         glib,
         prelude::*,
         subclass::prelude::*,
     };
-    use tracing::error;
+    use once_cell::sync::OnceCell;
 
     use crate::ui::mpv::tsukimi_mpv::{
         TsukimiMPV,
@@ -36,6 +38,7 @@ mod imp {
     #[derive(Default)]
     pub struct MPVGLArea {
         pub mpv: TsukimiMPV,
+        pub mpv_event_loop: OnceCell<JoinHandle<()>>
     }
 
     // The central trait for subclassing a GObject
@@ -51,6 +54,12 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
         }
+
+        fn dispose(&self) {
+            if let Some(mpv) = self.mpv.mpv.lock().ok() {
+                drop(mpv);
+            }
+        }
     }
 
     impl WidgetImpl for MPVGLArea {
@@ -59,8 +68,7 @@ mod imp {
             let obj = self.obj();
             obj.make_current();
             let Some(gl_context) = self.obj().context() else {
-                error!("Failed to get GLContext");
-                return;
+                panic!("Failed to get GLContext");
             };
 
             self.mpv.connect_render_update(gl_context);

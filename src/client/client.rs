@@ -25,8 +25,7 @@ use serde_json::{
     Value,
 };
 use tracing::{
-    info,
-    warn,
+    info, warn
 };
 use url::Url;
 use uuid::Uuid;
@@ -261,8 +260,11 @@ impl EmbyClient {
         let request = self.prepare_request(Method::GET, path, params)?;
         let res = self.send_request(request).await?.error_for_status()?;
 
-        let json = res.json().await?;
-        Ok(json)
+        let res_text = res.text().await?;
+        match serde_json::from_str(&res_text) {
+            Ok(json) => Ok(json),
+            Err(e) => Err(anyhow!("Failed to parse JSON {}: {}", e, res_text)),
+        }
     }
 
     pub async fn request_picture(&self, path: &str, params: &[(&str, &str)]) -> Result<Response> {
@@ -723,7 +725,7 @@ impl EmbyClient {
             BackType::Back => "Sessions/Playing/Progress".to_string(),
         };
         let params = [("reqformat", "json")];
-        let body = json!({"VolumeLevel":100,"NowPlayingQueue":[],"IsMuted":false,"IsPaused":false,"MaxStreamingBitrate":2147483647,"RepeatMode":"RepeatNone","PlaybackStartTimeTicks":back.start_tick,"SubtitleOffset":0,"PlaybackRate":1,"PositionTicks":back.tick,"SubtitleStreamIndex":0,"AudioStreamIndex":1,"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"PlaylistIndex":0,"PlaylistLength":1,"CanSeek":true,"ItemId":back.id});
+        let body = json!({"VolumeLevel":100,"NowPlayingQueue":[],"IsMuted":false,"IsPaused":false,"MaxStreamingBitrate":2147483647,"RepeatMode":"RepeatNone","PlaybackStartTimeTicks":back.start_tick,"SubtitleOffset":0,"PlaybackRate":1,"PositionTicks":back.tick,"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"PlaylistIndex":0,"PlaylistLength":1,"CanSeek":true,"ItemId":back.id,"Shuffle":false});
         self.post(&path, &params, body).await?;
         Ok(())
     }

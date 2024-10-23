@@ -309,6 +309,7 @@ impl MPVPage {
         self.imp().video_version_matcher.replace(matcher);
         self.imp().current_video.replace(Some(item));
         self.imp().current_episode_list.replace(episode_list);
+        self.imp().back.replace(back);
         spawn_g_timeout(glib::clone!(
             #[weak(rename_to = obj)]
             self,
@@ -321,7 +322,6 @@ impl MPVPage {
                 imp.title_content.set_label(&name);
                 imp.suburl.replace(suburi.map(|suburi| EMBY_CLIENT.get_streaming_url(&suburi)));
                 imp.video.play(&url, percentage);
-                imp.back.replace(back);
             }
         ));
     }
@@ -518,7 +518,7 @@ impl MPVPage {
             playsessionid: playback.play_session_id,
             mediasourceid: media_source_id.to_string(),
             tick: 0,
-            start_tick: 0,
+            start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
         };
 
         self.play(&url, suburi.as_deref(), item.clone(), video_list, Some(back), 0.0, None);
@@ -932,7 +932,7 @@ impl MPVPage {
         let back = self.imp().back.borrow();
 
         // close window when vo=gpu-next will set position to 0, so we need to ignore it
-        if position < &9.0 && (backtype != BackType::Start || backtype != BackType::Stop) {
+        if position < &9.0 && (backtype != BackType::Start && backtype != BackType::Stop) {
             return;
         }
 
