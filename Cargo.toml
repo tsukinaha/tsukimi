@@ -9,7 +9,7 @@ license = "GPL"
 
 [dependencies]
 gtk = { version = "0.9", package = "gtk4", features = ["v4_16"] }
-serde = { version = "1.0.209", features = ["derive"] }
+serde = { version = "1.0.214", features = ["derive"] }
 serde_json = "1.0.132"
 tokio = { version = "1.40", features = ["full"] }
 reqwest = { version = "0.12", features = ["json", "gzip"] }
