@@ -5,7 +5,7 @@ use std::{
 };
 
 use clap::Parser;
-use tracing::level_filters::LevelFilter;
+use tracing::{info, error, level_filters::LevelFilter};
 use tracing_subscriber::fmt::time::ChronoLocal;
 
 use crate::dyn_event;
@@ -51,7 +51,16 @@ impl Args {
         match &self.log_file {
             None => builder.with_writer(io::stderr).init(),
             Some(f) => {
-                builder.with_ansi(false).with_writer(Mutex::new(File::create(f).unwrap())).init()
+                let tracing_writer = match File::create(f) {
+                    Ok(f) => f,
+                    Err(e) => {
+                        error!("Failed to create tracing file {}", e);
+                        return;
+                    },
+                };
+
+                info!("Logging to file {}", f);
+                builder.with_ansi(false).with_writer(Mutex::new(tracing_writer)).init()
             }
         }
     }
@@ -59,11 +68,13 @@ impl Args {
     /// Set the GSK renderer environment variable
     fn init_gsk_renderer(&self) {
         if let Some(renderer) = self.gsk_renderer.as_deref() {
+            info!("Setting GSK_RENDERER to {}", renderer);
             std::env::set_var("GSK_RENDERER", renderer);
             return;
         }
 
         if std::env::var("GSK_RENDERER").is_err() {
+            info!("Falling back to default GSK_RENDERER: {}", DEFAULT_RENDERER);
             std::env::set_var("GSK_RENDERER", DEFAULT_RENDERER);
         }
     }
@@ -88,6 +99,8 @@ impl Args {
             }
             gtk::glib::LogWriterOutput::Handled
         });
+
+        info!("Glib logging redirected to tracing");
     }
 
     pub fn init(&self) {
@@ -98,5 +111,7 @@ impl Args {
         std::panic::set_hook(Box::new(|p| {
             tracing::error!("{p}");
         }));
+
+        info!("Args: {:?}", self);
     }
 }
