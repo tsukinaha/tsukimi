@@ -316,6 +316,12 @@
                         </property>
                       </object>
                     </child>
+                    <child>
+                      <object class="AdwSwitchRow" id="stretch_image_subs_to_screen_switchrow">
+                        <signal name="notify::active" handler="on_stretch_image_subs_to_screen" swapped="yes" />
+                        <property name="title" translatable="yes">Stretch Image Subtitles to Screen</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>

@@ -109,6 +109,9 @@ mod imp {
         pub deband_range_adj: TemplateChild<gtk::Adjustment>,
         #[template_child]
         pub deband_grain_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub stretch_image_subs_to_screen_switchrow: TemplateChild<adw::SwitchRow>,
     }
 
     #[glib::object_subclass]
@@ -339,6 +342,11 @@ impl MPVControlSidebar {
     }
 
     #[template_callback]
+    pub fn on_stretch_image_subs_to_screen(&self, _param: glib::ParamSpec, switch: adw::SwitchRow) {
+        self.set_mpv_property("stretch-image-subs-to-screen", switch.is_active());
+    }
+
+    #[template_callback]
     pub fn on_sub_font(&self, _param: glib::ParamSpec, button: gtk::FontDialogButton) {
         let font_desc = button.font_desc().unwrap();
         SETTINGS.set_mpv_subtitle_font(font_desc.to_string()).unwrap();
@@ -417,6 +425,7 @@ impl MPVControlSidebar {
         imp.sub_border_style_combo.set_selected(0);
         imp.sub_border_size_adj.set_value(3.0);
         imp.sub_shadow_offset_adj.set_value(0.0);
+        imp.stretch_image_subs_to_screen_switchrow.set_active(false);
 
         toast!(self, gettext("Subtitle settings cleared."));
     }
