@@ -698,22 +698,8 @@ impl ItemPage {
                 .content_fit(gtk::ContentFit::Cover)
                 .file(&file)
                 .build();
-            carousel.append(&picture);
-            carousel.set_allow_scroll_wheel(false);
+            carousel.append(&picture);  
         }
-
-        if carousel.n_pages() == 1 {
-            return;
-        }
-
-        glib::timeout_add_seconds_local(10, move || {
-            let current_page = carousel.position();
-            let n_pages = carousel.n_pages();
-            let new_page_position = (current_page + 1. + n_pages as f64) % n_pages as f64;
-            carousel.scroll_to(&carousel.nth_page(new_page_position as u32), true);
-
-            glib::ControlFlow::Continue
-        });
     }
 
     pub async fn setup_seasons(&self, id: &str) {
