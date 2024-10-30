@@ -14,7 +14,10 @@ use super::{
         TuOverviewItem,
     },
 };
-use crate::ui::{models::SETTINGS, provider::tu_object::TuObject};
+use crate::ui::{
+    models::SETTINGS,
+    provider::tu_object::TuObject,
+};
 pub trait TuItemBuildExt {
     fn tu_item(&self, poster: PosterType) -> &Self;
     fn tu_overview_item(&self, view_group: ViewGroup) -> &Self;

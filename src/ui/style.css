@@ -47,8 +47,8 @@ child {
   border-radius: 10px;
 }
 
-.pill {
-  border-radius: 10px;
+.player-toolbar {
+  border-radius: 50px;
 }
 
 .playing-song-label {
@@ -142,13 +142,13 @@ gridview>child box {
 
 overlay>label {
   background-color: #aeb5fa;
-  border-radius: 999px;
+  border-radius: 50px;
   margin: 3px;
 }
 
 box>overlay>image {
   background-color: #aeb5fa;
-  border-radius: 999px;
+  border-radius: 50px;
   margin: 3px;
 }
 

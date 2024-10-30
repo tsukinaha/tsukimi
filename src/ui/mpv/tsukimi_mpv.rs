@@ -5,7 +5,8 @@ use std::{
         atomic::AtomicU32,
         Arc,
         Mutex,
-    }, thread::JoinHandle,
+    },
+    thread::JoinHandle,
 };
 
 use gtk::gdk::GLContext;

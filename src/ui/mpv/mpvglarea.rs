@@ -19,7 +19,10 @@ use super::tsukimi_mpv::{
 use crate::client::client::EMBY_CLIENT;
 
 mod imp {
-    use std::{cell::RefCell, thread::JoinHandle};
+    use std::{
+        cell::RefCell,
+        thread::JoinHandle,
+    };
 
     use gtk::{
         gdk::GLContext,

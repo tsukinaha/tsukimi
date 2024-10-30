@@ -16,6 +16,8 @@ pub mod imp {
     };
     use once_cell::sync::Lazy;
 
+    use super::CUBIC_POINTS;
+
     static MASK: Lazy<gdk::RGBA> = Lazy::new(|| {
         if gtk::Settings::default()
             .map(|s| s.is_gtk_application_prefer_dark_theme())
@@ -75,39 +77,45 @@ pub mod imp {
             let end_point = graphene::Point::new(0.0, height);
             let rect = graphene::Rect::new(0.0, 0.0, width, height);
 
-            let stops = &[
-                gtk::gsk::ColorStop::new(
-                    f32::max(0.0, (0.5_f32 * height) / height),
-                    gdk::RGBA::new(1.0, 1.0, 1.0, 1.0),
-                ),
-                gtk::gsk::ColorStop::new(
-                    f32::min(1.0, (0.5_f32 * height + 140_f32) / height),
-                    gdk::RGBA::new(0.0, 0.0, 0.0, 1.0),
-                ),
-            ];
+            let upper_height = (height - 350.0).max(0.0);
+
+            let heights = [350.0, 340.0, 330.0, 320.0, 310.0, 300.0, 290.0, 280.0];
+            let stops: Vec<gtk::gsk::ColorStop> = heights
+                .iter()
+                .enumerate()
+                .map(|(i, &h)| {
+                    let height_ratio = (height - h).max(0.0) / height;
+                    gtk::gsk::ColorStop::new(
+                        f32::min(1.0, height_ratio as f32),
+                        gdk::RGBA::new(
+                            CUBIC_POINTS[i] as f32,
+                            CUBIC_POINTS[i] as f32,
+                            CUBIC_POINTS[i] as f32,
+                            1.0,
+                        ),
+                    )
+                })
+                .collect();
 
             snapshot.save();
-            let upper_height = (1.0 * height) / 2.0;
             snapshot.push_clip(&graphene::Rect::new(0.0, 0.0, width, upper_height));
             self.parent_snapshot(snapshot);
             snapshot.pop();
             snapshot.restore();
 
             snapshot.save();
-            let lower_y = upper_height;
-            let lower_height = (1.0 * height) / 2.0;
-            snapshot.push_clip(&graphene::Rect::new(0.0, lower_y, width, lower_height));
-            snapshot.push_blur(40.0);
+            snapshot.push_clip(&graphene::Rect::new(0.0, upper_height, width, 350.0));
+            snapshot.push_blur(50.0);
             self.parent_snapshot(snapshot);
             snapshot.pop();
 
-            snapshot.append_color(&MASK, &graphene::Rect::new(0.0, lower_y, width, lower_height));
+            snapshot.append_color(&MASK, &graphene::Rect::new(0.0, upper_height, width, 350.0));
 
             snapshot.pop();
             snapshot.restore();
 
             snapshot.push_mask(gtk::gsk::MaskMode::Luminance);
-            snapshot.append_linear_gradient(&rect, &start_point, &end_point, stops);
+            snapshot.append_linear_gradient(&rect, &start_point, &end_point, &stops);
             snapshot.pop();
 
             self.parent_snapshot(snapshot);
@@ -137,5 +145,35 @@ impl Default for ItemCarousel {
 impl ItemCarousel {
     pub fn new() -> Self {
         Object::new()
+    }
+}
+
+pub const CUBIC_POINTS: [f64; 8] = [
+    1.0,
+    0.629737609329446,
+    0.3644314868804665,
+    0.1865889212827988,
+    0.07871720116618075,
+    0.02332361516034985,
+    0.0029154518950437313,
+    0.0,
+];
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn generate_cubic_points() -> [f64; 8] {
+        let mut points = [0.0; 8];
+        points.iter_mut().enumerate().for_each(|(i, point)| {
+            *point = ((8 - i - 1) as f64 / 7.0).powi(3);
+        });
+        points
+    }
+
+    #[test]
+    fn test_generate_cubic_points() {
+        let points = generate_cubic_points();
+        assert_eq!(points, CUBIC_POINTS);
     }
 }

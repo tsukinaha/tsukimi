@@ -19,7 +19,11 @@ use imp::ViewGroup;
 
 use super::{
     picture_loader::PictureLoader,
-    tu_list_item::Action, utils::{TU_ITEM_POST_SIZE, TU_ITEM_VIDEO_SIZE},
+    tu_list_item::Action,
+    utils::{
+        TU_ITEM_POST_SIZE,
+        TU_ITEM_VIDEO_SIZE,
+    },
 };
 use crate::{
     client::{

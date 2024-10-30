@@ -81,6 +81,7 @@
                         <child type="start">
                           <object class="GtkBox">
                             <property name="orientation">horizontal</property>
+                            <property name="margin-end">20</property>
                             <child>
                               <object class="GtkWindowControls">
                                 <property name="side">start</property>
@@ -108,6 +109,7 @@
                               <class name="osd" />
                               <class name="toolbar" />
                               <class name="top-control-bar" />
+                              <class name="player-toolbar" />
                             </style>
                           </object>
                         </child>
@@ -154,6 +156,7 @@
                               <class name="osd" />
                               <class name="toolbar" />
                               <class name="top-control-bar" />
+                              <class name="player-toolbar" />
                             </style>
                           </object>
                         </child>
@@ -289,6 +292,7 @@
                         <style>
                           <class name="osd" />
                           <class name="toolbar" />
+                          <class name="player-toolbar" />
                         </style>
                       </object>
                     </child>
@@ -369,7 +373,6 @@
                     </child>
                     <style>
                       <class name="osd" />
-                      <class name="boxed-list-separate" />
                       <class name="logo" />
                     </style>
                   </object>
@@ -399,7 +402,6 @@
                         <property name="selection-mode">single</property>
                         <style>
                           <class name="osd" />
-                          <class name="boxed-list-separate" />
                           <class name="logo" />
                         </style>
                       </object>
@@ -431,7 +433,6 @@
                         <property name="selection-mode">single</property>
                         <style>
                           <class name="osd" />
-                          <class name="boxed-list-separate" />
                           <class name="logo" />
                         </style>
                       </object>

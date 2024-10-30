@@ -18,7 +18,15 @@ use gtk::{
 use imp::PosterType;
 use tracing::warn;
 
-use super::{picture_loader::PictureLoader, utils::{TU_ITEM_BANNER_SIZE, TU_ITEM_POST_SIZE, TU_ITEM_SQUARE_SIZE, TU_ITEM_VIDEO_SIZE}};
+use super::{
+    picture_loader::PictureLoader,
+    utils::{
+        TU_ITEM_BANNER_SIZE,
+        TU_ITEM_POST_SIZE,
+        TU_ITEM_SQUARE_SIZE,
+        TU_ITEM_VIDEO_SIZE,
+    },
+};
 use crate::{
     client::{
         client::EMBY_CLIENT,
@@ -321,7 +329,11 @@ impl TuListItem {
             if let Some(imag_tags) = item.image_tags() {
                 match self.poster_type() {
                     PosterType::Banner => {
-                        Self::set_overlay_size(&imp.overlay, TU_ITEM_BANNER_SIZE.0, TU_ITEM_BANNER_SIZE.1);
+                        Self::set_overlay_size(
+                            &imp.overlay,
+                            TU_ITEM_BANNER_SIZE.0,
+                            TU_ITEM_BANNER_SIZE.1,
+                        );
                         if imag_tags.banner().is_some() {
                             return ("Banner", None, item.id());
                         } else if imag_tags.thumb().is_some() {
@@ -331,7 +343,11 @@ impl TuListItem {
                         }
                     }
                     PosterType::Backdrop => {
-                        Self::set_overlay_size(&imp.overlay, TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                        Self::set_overlay_size(
+                            &imp.overlay,
+                            TU_ITEM_VIDEO_SIZE.0,
+                            TU_ITEM_VIDEO_SIZE.1,
+                        );
                         if imag_tags.backdrop().is_some() {
                             return ("Backdrop", Some(0.to_string()), item.id());
                         } else if imag_tags.thumb().is_some() {
