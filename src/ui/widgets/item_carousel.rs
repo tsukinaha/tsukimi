@@ -23,9 +23,9 @@ pub mod imp {
             .map(|s| s.is_gtk_application_prefer_dark_theme())
             .unwrap_or(false)
         {
-            gdk::RGBA::new(0.0, 0.0, 0.0, 0.3)
+            gdk::RGBA::new(0.0, 0.0, 0.0, 0.4)
         } else {
-            gdk::RGBA::new(1.0, 1.0, 1.0, 0.3)
+            gdk::RGBA::new(1.0, 1.0, 1.0, 0.4)
         }
     });
 
@@ -105,7 +105,7 @@ pub mod imp {
 
             snapshot.save();
             snapshot.push_clip(&graphene::Rect::new(0.0, upper_height, width, 350.0));
-            snapshot.push_blur(50.0);
+            snapshot.push_blur(35.0);
             self.parent_snapshot(snapshot);
             snapshot.pop();
 
