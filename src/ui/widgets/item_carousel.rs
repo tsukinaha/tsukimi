@@ -23,9 +23,9 @@ pub mod imp {
             .map(|s| s.is_gtk_application_prefer_dark_theme())
             .unwrap_or(false)
         {
-            gdk::RGBA::new(0.0, 0.0, 0.0, 0.4)
+            gdk::RGBA::new(0.0, 0.0, 0.0, 0.2)
         } else {
-            gdk::RGBA::new(1.0, 1.0, 1.0, 0.4)
+            gdk::RGBA::new(1.0, 1.0, 1.0, 0.2)
         }
     });
 
@@ -77,9 +77,9 @@ pub mod imp {
             let end_point = graphene::Point::new(0.0, height);
             let rect = graphene::Rect::new(0.0, 0.0, width, height);
 
-            let upper_height = (height - 350.0).max(0.0);
+            let upper_height = (height - 300.0).max(0.0);
 
-            let heights = [350.0, 340.0, 330.0, 320.0, 310.0, 300.0, 290.0, 280.0];
+            let heights = [300.0, 290.0, 280.0, 270.0, 260.0, 250.0, 240.0, 230.0];
             let stops: Vec<gtk::gsk::ColorStop> = heights
                 .iter()
                 .enumerate()
@@ -104,12 +104,12 @@ pub mod imp {
             snapshot.restore();
 
             snapshot.save();
-            snapshot.push_clip(&graphene::Rect::new(0.0, upper_height, width, 350.0));
+            snapshot.push_clip(&graphene::Rect::new(0.0, upper_height, width, 300.0));
             snapshot.push_blur(35.0);
             self.parent_snapshot(snapshot);
             snapshot.pop();
 
-            snapshot.append_color(&MASK, &graphene::Rect::new(0.0, upper_height, width, 350.0));
+            snapshot.append_color(&MASK, &graphene::Rect::new(0.0, upper_height, width, 300.0));
 
             snapshot.pop();
             snapshot.restore();
