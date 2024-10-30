@@ -16,7 +16,6 @@
                 <property name="content-fit">cover</property>
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
-                <property name="height-request">400</property>
               </object>
             </child>
           </object>
