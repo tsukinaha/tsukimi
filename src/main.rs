@@ -65,13 +65,6 @@ fn main() -> glib::ExitCode {
         textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
     }
 
-    #[cfg(target_os = "windows")]
-    {
-        // redirect cache dir to %LOCALAPPDATA%
-        let config_local_dir = dirs::config_local_dir().expect("Failed to get %LOCALAPPDATA%");
-        std::env::set_var("XDG_CACHE_HOME", config_local_dir);
-    }
-
     info!(
         "Application Version: {}, Platform: {} {}, CPU Architecture: {}",
         config::VERSION,
