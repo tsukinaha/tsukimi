@@ -18,7 +18,7 @@ use gtk::{
 use imp::PosterType;
 use tracing::warn;
 
-use super::picture_loader::PictureLoader;
+use super::{picture_loader::PictureLoader, utils::{TU_ITEM_BANNER_SIZE, TU_ITEM_POST_SIZE, TU_ITEM_SQUARE_SIZE, TU_ITEM_VIDEO_SIZE}};
 use crate::{
     client::{
         client::EMBY_CLIENT,
@@ -171,7 +171,7 @@ impl TuListItem {
                 };
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&year);
-                imp.overlay.set_size_request(167, 260);
+                imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_picture();
                 self.set_played();
                 if item.is_resume() {
@@ -183,7 +183,7 @@ impl TuListItem {
             "Video" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
-                imp.overlay.set_size_request(250, 141);
+                imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 self.set_picture();
             }
             "TvChannel" => {
@@ -192,7 +192,7 @@ impl TuListItem {
                     item.name(),
                     item.program_name().unwrap_or_default()
                 ));
-                imp.overlay.set_size_request(250, 141);
+                imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 self.set_picture();
 
                 let Some(program_start_time) = item.program_start_time() else {
@@ -222,7 +222,7 @@ impl TuListItem {
             "CollectionFolder" | "UserView" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
-                imp.overlay.set_size_request(250, 141);
+                imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 self.set_apicture();
             }
             "Series" => {
@@ -250,7 +250,7 @@ impl TuListItem {
                 } else {
                     imp.label2.set_text(&year);
                 }
-                imp.overlay.set_size_request(167, 260);
+                imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_picture();
                 self.set_played();
                 self.set_count();
@@ -259,11 +259,11 @@ impl TuListItem {
             "BoxSet" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
-                imp.overlay.set_size_request(167, 260);
+                imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_picture();
             }
             "Tag" | "Genre" => {
-                imp.overlay.set_size_request(190, 190);
+                imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
                 self.set_picture();
@@ -276,7 +276,7 @@ impl TuListItem {
                     item.index_number(),
                     item.name()
                 ));
-                imp.overlay.set_size_request(250, 141);
+                imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 self.set_picture();
                 self.set_played();
                 self.set_played_percentage(self.get_played_percentage());
@@ -289,18 +289,18 @@ impl TuListItem {
             "MusicAlbum" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&item.albumartist_name());
-                imp.overlay.set_size_request(190, 190);
+                imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 self.set_picture();
             }
             "Actor" | "Person" | "Director" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&item.role().unwrap_or("".to_string()));
-                imp.overlay.set_size_request(167, 260);
+                imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_picture();
             }
             "Audio" => {
                 imp.listlabel.set_text(&item.name());
-                imp.overlay.set_size_request(190, 190);
+                imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 self.set_picture();
             }
             _ => {
@@ -321,7 +321,7 @@ impl TuListItem {
             if let Some(imag_tags) = item.image_tags() {
                 match self.poster_type() {
                     PosterType::Banner => {
-                        Self::set_overlay_size(&imp.overlay, 375, 70);
+                        Self::set_overlay_size(&imp.overlay, TU_ITEM_BANNER_SIZE.0, TU_ITEM_BANNER_SIZE.1);
                         if imag_tags.banner().is_some() {
                             return ("Banner", None, item.id());
                         } else if imag_tags.thumb().is_some() {
@@ -331,7 +331,7 @@ impl TuListItem {
                         }
                     }
                     PosterType::Backdrop => {
-                        Self::set_overlay_size(&imp.overlay, 250, 141);
+                        Self::set_overlay_size(&imp.overlay, TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                         if imag_tags.backdrop().is_some() {
                             return ("Backdrop", Some(0.to_string()), item.id());
                         } else if imag_tags.thumb().is_some() {
@@ -343,14 +343,12 @@ impl TuListItem {
             }
         }
         if item.is_resume() {
+            Self::set_overlay_size(&imp.overlay, TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
             if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
-                Self::set_overlay_size(&imp.overlay, 250, 141);
                 ("Thumb", None, parent_thumb_item_id)
             } else if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id() {
-                Self::set_overlay_size(&imp.overlay, 250, 141);
                 ("Backdrop", Some(0.to_string()), parent_backdrop_item_id)
             } else {
-                Self::set_overlay_size(&imp.overlay, 250, 141);
                 ("Backdrop", Some(0.to_string()), item.id())
             }
         } else if let Some(img_tags) = item.primary_image_item_id() {

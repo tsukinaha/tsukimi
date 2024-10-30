@@ -78,6 +78,9 @@ mod imp {
         pub config_switchrow: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
+        pub post_spinrow: TemplateChild<adw::SpinRow>,
+
+        #[template_child]
         pub preferred_audio_language_comborow: TemplateChild<adw::ComboRow>,
         #[template_child]
         pub preferred_subtitle_language_comborow: TemplateChild<adw::ComboRow>,
@@ -394,6 +397,7 @@ impl AccountSettings {
         SETTINGS.bind("is-auto-select-server", &imp.selectlastcontrol.get(), "active").build();
         SETTINGS.bind("mpv-config-path", &imp.folder_button_content.get(), "label").build();
         SETTINGS.bind("threads", &imp.threadspinrow.get(), "value").build();
+        SETTINGS.bind("post-scale", &imp.post_spinrow.get(), "value").build();
 
         let action_group = gio::SimpleActionGroup::new();
 

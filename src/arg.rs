@@ -27,6 +27,14 @@ pub struct Args {
     /// GSK renderer to use. Possible values are: gl, ngl, vulkan.
     #[clap(long, short)]
     gsk_renderer: Option<String>,
+
+    /// XDG_CACHE_HOME. If not set, it will be set to %LOCALAPPDATA% on *Windows*. Never set on *Linux*.
+    #[clap(long)]
+    xdg_cache_home: Option<String>,
+
+    /// GDK_SCALE. If not set, it will be set to 1. Never set on *Linux*.
+    #[clap(long)]
+    gdk_scale: Option<String>,
 }
 
 impl Args {
@@ -103,10 +111,42 @@ impl Args {
         info!("Glib logging redirected to tracing");
     }
 
+    #[cfg(target_os = "windows")]
+    fn init_config_dirs(&self) {
+        if let Some(xdg_cache_home) = self.xdg_cache_home.as_deref() {
+            info!("Windows: Setting XDG_CACHE_HOME to {}", xdg_cache_home);
+            std::env::set_var("XDG_CACHE_HOME", xdg_cache_home);
+        }
+
+        if std::env::var("XDG_CACHE_HOME").is_err() {
+            info!("Windows: Falling back to default XDG_CACHE_HOME: %LOCALAPPDATA%");
+            let config_local_dir = dirs::config_local_dir().expect("Failed to get %LOCALAPPDATA%");
+            std::env::set_var("XDG_CACHE_HOME", config_local_dir);
+        } 
+    }
+
+    #[cfg(target_os = "windows")]
+    fn init_gdk_scale(&self) {
+        if let Some(scale) = self.gdk_scale.as_deref() {
+            info!("Windows: Setting GDK_SCALE to {}", scale);
+            std::env::set_var("GDK_SCALE", scale);
+        }
+
+        if std::env::var("GDK_SCALE").is_err() {
+            info!("Windows: Falling back to default GDK_SCALE: 1");
+            std::env::set_var("GDK_SCALE", "1");
+        }
+    }
+
     pub fn init(&self) {
         self.init_tracing_subscriber();
         self.init_gsk_renderer();
         self.init_gilb_to_tracing();
+
+        #[cfg(target_os = "windows")]
+        self.init_config_dirs();
+        #[cfg(target_os = "windows")]
+        self.init_gdk_scale();
 
         std::panic::set_hook(Box::new(|p| {
             tracing::error!("{p}");

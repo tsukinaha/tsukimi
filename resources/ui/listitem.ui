@@ -10,16 +10,15 @@
             <child>
               <object class="GtkOverlay" id="overlay">
                 <property name="valign">fill</property>
-                <property name="width-request">141</property>
-                <property name="height-request">141</property>
+                <property name="width-request">100</property>
+                <property name="height-request">100</property>
                 <property name="halign">center</property>
               </object>
             </child>
             <child>
               <object class="GtkLabel" id="listlabel">
                 <property name="justify">center</property>
-                <property name="width-request">167</property>
-                <property name="ellipsize">end</property>
+                <property name="ellipsize">middle</property>
                 <attributes>
                   <attribute name="scale" value="0.9"/>
                   <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
@@ -29,7 +28,6 @@
             <child>
               <object class="GtkLabel" id="label2">
                 <property name="justify">center</property>
-                <property name="width-request">167</property>
                 <property name="ellipsize">middle</property>
                 <attributes>
                   <attribute name="scale" value="0.8"/>

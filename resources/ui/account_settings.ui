@@ -81,6 +81,21 @@
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Appearence</property>
             <child>
+              <object class="AdwSpinRow" id="post_spinrow">
+                <property name="title" translatable="yes">Post Scale</property>
+                <property name="digits">3</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">0.300</property>
+                    <property name="upper">1.800</property>
+                    <property name="value">0.900</property>
+                    <property name="page-increment">0.003</property>
+                    <property name="step-increment">0.001</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
               <object class="AdwSpinRow" id="fontspinrow">
                 <property name="title" translatable="yes">Font Scale</property>
                 <property name="adjustment">

@@ -19,7 +19,7 @@ use imp::ViewGroup;
 
 use super::{
     picture_loader::PictureLoader,
-    tu_list_item::Action,
+    tu_list_item::Action, utils::{TU_ITEM_POST_SIZE, TU_ITEM_VIDEO_SIZE},
 };
 use crate::{
     client::{
@@ -177,6 +177,7 @@ impl TuOverviewItem {
                     item.index_number(),
                     item.name()
                 ));
+                imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 if let Some(premiere_date) = item.premiere_date() {
                     imp.time_label.set_visible(true);
                     imp.time_label.set_text(&premiere_date.format("%Y-%m-%d").unwrap_or_default());
@@ -200,10 +201,11 @@ impl TuOverviewItem {
                         item.index_number(),
                         item.name()
                     ));
+                    imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 } else {
                     imp.listlabel.set_text(&item.name());
                     imp.aspect_frame.set_ratio(0.67);
-                    imp.overlay.set_size_request(167, 260);
+                    imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                     self.set_rating();
                 }
                 let year = if item.production_year() != 0 {
