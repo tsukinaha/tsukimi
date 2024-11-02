@@ -892,7 +892,11 @@ impl ItemPage {
 
             let mediascrolled = mediascrolled.fix();
 
-            let mediabox = gtk::Box::new(gtk::Orientation::Horizontal, 5);
+            let mediabox = gtk::Box::builder()
+                .orientation(gtk::Orientation::Horizontal)
+                .halign(gtk::Align::Start)
+                .spacing(5)
+                .build();
             for mediapart in mediasource.media_streams {
                 if mediapart.stream_type == "Attachment" {
                     continue;
@@ -902,7 +906,6 @@ impl ItemPage {
                     .spacing(0)
                     .width_request(300)
                     .build();
-                let mut str: String = Default::default();
                 let icon = gtk::Image::builder().margin_end(5).build();
                 if mediapart.stream_type == "Video" {
                     icon.set_icon_name(Some("video-x-generic-symbolic"))
@@ -918,48 +921,53 @@ impl ItemPage {
                     .spacing(5)
                     .build();
                 typebox.append(&icon);
-                typebox.append(&gtk::Label::new(Some(&mediapart.stream_type)));
+                let label = gtk::Label::builder()
+                    .label(&gettext(mediapart.stream_type))
+                    .attributes(&gtk::pango::AttrList::from_string("0 4294967295 weight bold").expect("Failed to create attribute list"))
+                    .build();
+                typebox.append(&label);
+                let mut str: String = Default::default();
                 if let Some(codec) = mediapart.codec {
-                    str.push_str(format!("Codec: {}", codec).as_str());
+                    str.push_str(format!("{}: {}", gettext("Codec"), codec).as_str());
                 }
                 if let Some(language) = mediapart.display_language {
-                    str.push_str(format!("\nLanguage: {}", language).as_str());
+                    str.push_str(format!("\n{}: {}", gettext("Language"), language).as_str());
                 }
                 if let Some(title) = mediapart.title {
-                    str.push_str(format!("\nTitle: {}", title).as_str());
+                    str.push_str(format!("\n{}: {}", gettext("Title"), title).as_str());
                 }
                 if let Some(bitrate) = mediapart.bit_rate {
-                    str.push_str(format!("\nBitrate: {}it/s", bytefmt::format(bitrate)).as_str());
+                    str.push_str(format!("\n{}: {}it/s", gettext("Bitrate"), bytefmt::format(bitrate)).as_str());
                 }
                 if let Some(bitdepth) = mediapart.bit_depth {
-                    str.push_str(format!("\nBitDepth: {} bit", bitdepth).as_str());
+                    str.push_str(format!("\n{}: {} bit", gettext("BitDepth"), bitdepth).as_str());
                 }
                 if let Some(samplerate) = mediapart.sample_rate {
-                    str.push_str(format!("\nSampleRate: {} Hz", samplerate).as_str());
+                    str.push_str(format!("\n{}: {} Hz", gettext("SampleRate"), samplerate).as_str());
                 }
                 if let Some(height) = mediapart.height {
-                    str.push_str(format!("\nHeight: {}", height).as_str());
+                    str.push_str(format!("\n{}: {}", gettext("Height"), height).as_str());
                 }
                 if let Some(width) = mediapart.width {
-                    str.push_str(format!("\nWidth: {}", width).as_str());
+                    str.push_str(format!("\n{}: {}", gettext("Width"), width).as_str());
                 }
                 if let Some(colorspace) = mediapart.color_space {
-                    str.push_str(format!("\nColorSpace: {}", colorspace).as_str());
+                    str.push_str(format!("\n{}: {}", gettext("ColorSpace"), colorspace).as_str());
                 }
                 if let Some(displaytitle) = mediapart.display_title {
-                    str.push_str(format!("\nDisplayTitle: {}", displaytitle).as_str());
+                    str.push_str(format!("\n{}: {}", gettext("DisplayTitle"), displaytitle).as_str());
                 }
                 if let Some(channel) = mediapart.channels {
-                    str.push_str(format!("\nChannel: {}", channel).as_str());
+                    str.push_str(format!("\n{}: {}", gettext("Channel"), channel).as_str());
                 }
                 if let Some(channellayout) = mediapart.channel_layout {
-                    str.push_str(format!("\nChannelLayout: {}", channellayout).as_str());
+                    str.push_str(format!("\n{}: {}", gettext("ChannelLayout"), channellayout).as_str());
                 }
                 if let Some(averageframerate) = mediapart.average_frame_rate {
-                    str.push_str(format!("\nAverageFrameRate: {}", averageframerate).as_str());
+                    str.push_str(format!("\n{}: {}", gettext("AverageFrameRate"), averageframerate).as_str());
                 }
                 if let Some(pixelformat) = mediapart.pixel_format {
-                    str.push_str(format!("\nPixelFormat: {}", pixelformat).as_str());
+                    str.push_str(format!("\n{}: {}", gettext("PixelFormat"), pixelformat).as_str());
                 }
                 let inscription = gtk::Inscription::builder()
                     .text(&str)
