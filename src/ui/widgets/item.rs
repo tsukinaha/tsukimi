@@ -161,6 +161,9 @@ pub(crate) mod imp {
         #[template_child]
         pub buttoncontent: TemplateChild<adw::ButtonContent>,
 
+        #[template_child]
+        pub indicator: TemplateChild<adw::CarouselIndicatorDots>,
+
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
         pub playbuttonhandlerid: RefCell<Option<glib::SignalHandlerId>>,
@@ -226,6 +229,8 @@ pub(crate) mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             self.scrolled.fix();
+
+            self.indicator.set_carousel(Some(&self.carousel.imp().carousel));
 
             let namedropdown = self.namedropdown.get();
             let subdropdown = self.subdropdown.get();
