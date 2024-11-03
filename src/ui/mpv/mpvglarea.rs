@@ -235,8 +235,8 @@ impl MPVGLArea {
         self.imp().mpv.paused()
     }
 
-    pub fn pause(&self, pause: bool) {
-        self.imp().mpv.pause(pause)
+    pub fn pause(&self) {
+        self.imp().mpv.command_pause();
     }
 
     pub fn set_property<V>(&self, property: &str, value: V)

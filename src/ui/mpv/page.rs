@@ -871,8 +871,7 @@ impl MPVPage {
     #[template_callback]
     fn on_play_pause_clicked(&self) {
         let video = &self.imp().video;
-        let paused = video.paused();
-        video.pause(!paused);
+        video.pause();
     }
 
     fn pause_icon_set(&self, paused: bool) {
@@ -979,7 +978,7 @@ impl MPVPage {
     #[template_callback]
     fn left_click_cb(&self) {
         let video = &self.imp().video;
-        video.pause(!video.paused());
+        video.pause();
     }
 
     #[template_callback]

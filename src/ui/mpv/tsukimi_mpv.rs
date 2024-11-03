@@ -233,6 +233,10 @@ impl TsukimiMPV {
         self.set_property("pause", pause);
     }
 
+    pub fn command_pause(&self) {
+        self.command("cycle", &["pause"]);
+    }
+
     pub fn add_sub(&self, url: &str) {
         self.command("sub-add", &[url, "select"]);
     }
