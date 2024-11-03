@@ -40,6 +40,7 @@
                           <object class="AdwBreakpointBin">
                             <property name="width-request">150</property>
                             <property name="height-request">150</property>
+                            <property name="valign">end</property>
                             <child>
                               <object class="AdwBreakpoint">
                                 <condition>max-width: 845px</condition>
