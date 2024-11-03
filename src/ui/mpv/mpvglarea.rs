@@ -19,10 +19,7 @@ use super::tsukimi_mpv::{
 use crate::client::client::EMBY_CLIENT;
 
 mod imp {
-    use std::{
-        cell::RefCell,
-        thread::JoinHandle,
-    };
+    use std::thread::JoinHandle;
 
     use gtk::{
         gdk::GLContext,
@@ -42,8 +39,6 @@ mod imp {
     pub struct MPVGLArea {
         pub mpv: TsukimiMPV,
         pub mpv_event_loop: OnceCell<JoinHandle<()>>,
-        pub scaled_x: RefCell<i32>,
-        pub scaled_y: RefCell<i32>,
     }
 
     // The central trait for subclassing a GObject
@@ -58,13 +53,6 @@ mod imp {
     impl ObjectImpl for MPVGLArea {
         fn constructed(&self) {
             self.parent_constructed();
-
-            let factor = self.obj().scale_factor();
-            let width = self.obj().width() * factor;
-            let height = self.obj().height() * factor;
-
-            self.scaled_x.replace(width);
-            self.scaled_y.replace(height);
         }
 
         fn dispose(&self) {
@@ -105,21 +93,16 @@ mod imp {
             let Some(ctx) = binding.as_ref() else {
                 return glib::Propagation::Stop;
             };
-            let width = self.scaled_x.borrow();
-            let height = self.scaled_y.borrow();
+
+            let factor = self.obj().scale_factor();
+            let width = self.obj().width() * factor;
+            let height = self.obj().height() * factor;
             unsafe {
                 let mut fbo = -1;
                 gl::GetIntegerv(gl::FRAMEBUFFER_BINDING, &mut fbo);
-                ctx.render::<GLContext>(fbo, *width, *height, true).unwrap();
+                ctx.render::<GLContext>(fbo, width, height, true).unwrap();
             }
             glib::Propagation::Stop
-        }
-
-        fn resize(&self, width: i32, height: i32) {
-            let scale = self.obj().scale_factor();
-            self.scaled_x.replace(width * scale);
-            self.scaled_y.replace(height * scale);
-            self.parent_resize(width, height);
         }
     }
 }
