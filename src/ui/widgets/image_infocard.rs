@@ -148,20 +148,23 @@ impl ImageInfoCard {
                 self,
                 move |res| {
                     if let Ok(stream) = res {
-                        match gtk::gdk_pixbuf::Pixbuf::from_stream(
+                        gtk::gdk_pixbuf::Pixbuf::from_stream_async(
                             &stream,
                             None::<&gio::Cancellable>,
-                        ) {
-                            Ok(pixbuf) => {
-                                picture
-                                    .set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(&pixbuf)));
-                                obj.set_picture_visible();
+                            move |r| {
+                                match r {
+                                    Ok(pixbuf) => {
+                                        picture
+                                            .set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(&pixbuf)));
+                                        obj.set_picture_visible();
+                                    }
+                                    Err(_) => {
+                                        toast!(obj, gettext("Error loading image"));
+                                        obj.set_fallback_visible();
+                                    } 
+                                }
                             }
-                            Err(_) => {
-                                toast!(obj, gettext("Error loading image"));
-                                obj.set_fallback_visible();
-                            }
-                        }
+                        );
                     }
                 }
             ),

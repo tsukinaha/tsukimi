@@ -155,21 +155,12 @@ impl PictureLoader {
             self,
             async move {
                 spawn_tokio(async move {
-                    let mut retries = 0;
-                    while retries < 2 {
-                        let tag = tag.clone();
-                        match EMBY_CLIENT
-                            .get_image(&id, &image_type, tag.and_then(|s| s.parse::<u8>().ok()))
-                            .await
-                        {
-                            Ok(_) => {
-                                break;
-                            }
-                            Err(e) => {
-                                warn!("Failed to get image: {}, retrying...", e);
-                                retries += 1;
-                            }
-                        }
+                    let tag = tag.clone();
+                    if let Err(e) = EMBY_CLIENT
+                        .get_image(&id, &image_type, tag.and_then(|s| s.parse::<u8>().ok()))
+                        .await
+                    {
+                        warn!("Failed to get image: {}", e);
                     }
                 })
                 .await;
