@@ -192,6 +192,12 @@ mod imp {
                 let settings = gtk::Settings::default().unwrap();
                 settings
                     .set_property("gtk-xft-dpi", crate::ui::models::SETTINGS.font_size() * 1024);
+            } else {
+                #[cfg(target_os = "windows")]
+                {
+                    let settings = gtk::Settings::default().unwrap();
+                    settings.set_property("gtk-xft-dpi", 100 * 1024);
+                }
             }
             obj.setup_rootpic();
             obj.setup_settings();
