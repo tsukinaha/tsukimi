@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template parent="AdwNavigationPage" class="ActorPage">
+  <template parent="AdwNavigationPage" class="OtherPage">
     <property name="title" >Tsukimi</property>
     <child>
       <object class="AdwToolbarView">
@@ -10,10 +10,11 @@
               <object class="GtkScrolledWindow">
                 <property name="hscrollbar-policy">never</property>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkBox" id="listbox">
                     <property name="orientation">vertical</property>
                     <property name="spacing">9</property>
                     <property name="valign">start</property>
+                    <property name="margin-bottom">18</property>
                     <child>
                       <object class="GtkRevealer" id="inforevealer">
                         <property name="transition-duration">300</property>
@@ -27,7 +28,7 @@
                             <property name="halign">fill</property>
                             <property name="valign">start</property>
                             <child>
-                              <object class="GtkBox" id="actorpicbox">
+                              <object class="GtkBox" id="picbox">
                                 <property name="orientation">vertical</property>
                                 <property name="spacing">6</property>
                                 <property name="margin-start">12</property>
@@ -90,22 +91,52 @@
                       </object>
                     </child>
                     <child>
+                      <object class="HortuScrolled" id="actorhortu">
+                        <property name="title" translatable="yes">Actors</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="HortuScrolled" id="moviehortu">
+                        <property name="title" translatable="yes">Movie</property>
                         <property name="moreview">True</property>
                       </object>
                     </child>
                     <child>
                       <object class="HortuScrolled" id="serieshortu">
+                        <property name="title" translatable="yes">Series</property>
                         <property name="moreview">True</property>
                       </object>
                     </child>
                     <child>
                       <object class="HortuScrolled" id="episodehortu">
+                        <property name="title" translatable="yes">Episode</property>
                         <property name="moreview">True</property>
                       </object>
                     </child>
                     <child>
+                      <object class="HortuScrolled" id="videohortu">
+                        <property name="title" translatable="yes">Video</property>
+                        <property name="moreview">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="HorbuScrolled" id="studioshorbu">
+                        <property name="title" translatable="yes">Studios</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="HorbuScrolled" id="tagshorbu">
+                        <property name="title" translatable="yes">Tags</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="HorbuScrolled" id="genreshorbu">
+                        <property name="title" translatable="yes">Genres</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="HorbuScrolled" id="linkshorbu">
+                        <property name="title" translatable="yes">Links</property>
                       </object>
                     </child>
                   </object>

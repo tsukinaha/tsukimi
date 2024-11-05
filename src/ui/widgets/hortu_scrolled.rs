@@ -41,7 +41,7 @@ mod imp {
     #[template(resource = "/moe/tsuna/tsukimi/ui/hortu_scrolled.ui")]
     #[properties(wrapper_type = super::HortuScrolled)]
     pub struct HortuScrolled {
-        #[property(get, set, construct_only)]
+        #[property(get, set, construct_only, default_value = false)]
         pub isresume: OnceCell<bool>,
         #[template_child]
         pub label: TemplateChild<gtk::Label>,
@@ -60,6 +60,8 @@ mod imp {
 
         #[property(get, set, default_value = false)]
         pub moreview: RefCell<bool>,
+        #[property(get, set)]
+        pub title: RefCell<String>,
 
         pub show_button_animation: OnceCell<adw::TimedAnimation>,
         pub hide_button_animation: OnceCell<adw::TimedAnimation>,
@@ -122,8 +124,8 @@ glib::wrapper! {
 
 #[template_callbacks]
 impl HortuScrolled {
-    pub fn new(is_resume: bool) -> Self {
-        glib::Object::builder().property("isresume", is_resume).build()
+    pub fn new() -> Self {
+        glib::Object::new()
     }
 
     pub fn set_morebutton(&self) {
@@ -154,10 +156,6 @@ impl HortuScrolled {
         }
 
         imp.revealer.set_reveal_child(true);
-    }
-
-    pub fn set_title(&self, title: &str) {
-        self.imp().label.set_text(title);
     }
 
     fn set_control_opacity(&self, opacity: f64) {

@@ -16,10 +16,12 @@
                     <property name="spacing">15</property>
                     <child>
                       <object class="HortuScrolled" id="libhortu">
+                        <property name="title" translatable="yes">Library</property>
                       </object>
                     </child>
                     <child>
                       <object class="HortuScrolled" id="hishortu">
+                        <property name="title" translatable="yes">Continue Watching</property>
                         <property name="isresume">True</property>
                       </object>
                     </child>

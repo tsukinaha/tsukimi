@@ -28,13 +28,12 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/episoderow.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/home.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/list.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/actor.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/other.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/account.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/listitem.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pop-menu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/dropdown.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/account_settings.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/boxset.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/album_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/song_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/disc_box.ui</file>

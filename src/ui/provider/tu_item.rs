@@ -19,8 +19,7 @@ use crate::{
     },
     toast,
     ui::widgets::{
-        actor::ActorPage,
-        boxset::BoxSetPage,
+        other::OtherPage,
         item::ItemPage,
         list::ListPage,
         music_album::AlbumPage,
@@ -290,14 +289,6 @@ impl TuItem {
                 let page = AlbumPage::new(self.clone());
                 push_page_with_tag(window, page, self.name());
             }
-            "Actor" | "Director" | "Person" | "Writer" => {
-                let page = ActorPage::new(self);
-                push_page_with_tag(window, page, self.name());
-            }
-            "BoxSet" => {
-                let page = BoxSetPage::new(&self.id());
-                push_page_with_tag(window, page, self.name());
-            }
             "CollectionFolder" => {
                 let page = ListPage::new(self.id(), self.collection_type().unwrap_or_default());
                 push_page_with_tag(window, page, self.name());
@@ -337,7 +328,10 @@ impl TuItem {
                 page.emit_by_name::<()>("sort-changed", &[]);
                 push_page_with_tag(window, page, self.name());
             }
-            _ => toast!(window, gettext("Not Supported Type")),
+            _ => {
+                let page = OtherPage::new(self);
+                push_page_with_tag(window, page, self.name());
+            },
         }
     }
 
@@ -390,6 +384,5 @@ fn push_page_with_tag<T>(window: Window, page: T, tag: String)
 where
     T: NavigationPageExt,
 {
-    page.set_tag(Some(&tag));
-    window.push_page(&page);
+    window.push_page(&page, &tag);
 }

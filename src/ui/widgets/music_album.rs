@@ -274,13 +274,13 @@ impl AlbumPage {
         };
 
         if types == "More From" {
-            hortu.set_title(&format!(
+            hortu.set_title(format!(
                 "{} {}",
                 gettext("More From"),
                 self.item().albumartist_name()
             ));
         } else {
-            hortu.set_title(&gettext(types));
+            hortu.set_title(gettext(types));
         }
 
         let id = self.item().id();

@@ -1,8 +1,7 @@
 pub mod account_add;
 pub mod account_settings;
 pub mod action_row;
-pub mod actor;
-pub mod boxset;
+pub mod other;
 pub mod check_row;
 pub mod content_viewer;
 pub mod disc_box;

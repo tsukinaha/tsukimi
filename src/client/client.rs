@@ -25,8 +25,7 @@ use serde_json::{
     Value,
 };
 use tracing::{
-    info,
-    warn,
+    debug, info, warn
 };
 use url::Url;
 use uuid::Uuid;
@@ -262,6 +261,7 @@ impl EmbyClient {
         let res = self.send_request(request).await?.error_for_status()?;
 
         let res_text = res.text().await?;
+        debug!("Response: {}", res_text);
         match serde_json::from_str(&res_text) {
             Ok(json) => Ok(json),
             Err(e) => Err(anyhow!("Failed to parse JSON {}: {}", e, res_text)),
@@ -745,7 +745,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_person(&self, id: &str, types: &str) -> Result<List> {
+    pub async fn get_actor_item_list(&self, id: &str, types: &str) -> Result<List> {
         let path = format!("Users/{}/Items", &self.user_id());
         let params = [
             ("Fields", "PrimaryImageAspectRatio,ProductionYear,CommunityRating"),

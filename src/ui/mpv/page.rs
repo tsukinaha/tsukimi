@@ -1074,6 +1074,11 @@ impl MPVPage {
             1 => mpv.set_property("alang", "eng"),
             2 => mpv.set_property("alang", "chs"),
             3 => mpv.set_property("alang", "jpn"),
+            4 => mpv.set_property("alang", "chi"),
+            5 => mpv.set_property("alang", "ara"),
+            6 => mpv.set_property("alang", "nob"),
+            7 => mpv.set_property("alang", "por"),
+            8 => mpv.set_property("alang", "fre"),
             _ => unreachable!(),
         }
         match SETTINGS.mpv_subtitle_preferred_lang() {
@@ -1085,6 +1090,7 @@ impl MPVPage {
             5 => mpv.set_property("slang", "ara"),
             6 => mpv.set_property("slang", "nob"),
             7 => mpv.set_property("slang", "por"),
+            8 => mpv.set_property("alang", "fre"),
             _ => unreachable!(),
         }
     }

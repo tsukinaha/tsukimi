@@ -646,6 +646,7 @@ impl ItemPage {
             let Ok(dl) = DropdownListBuilder::default()
                 .line1(Some(media.name.clone()))
                 .line2(Some(line2))
+                .transcoding_url(media.transcoding_url.clone())
                 .direct_url(media.direct_stream_url.clone())
                 .id(Some(media.id.clone()))
                 .build()
@@ -703,7 +704,7 @@ impl ItemPage {
                 .content_fit(gtk::ContentFit::Cover)
                 .file(&file)
                 .build();
-            carousel.append(&picture);  
+            carousel.append(&picture);
         }
     }
 
@@ -923,7 +924,10 @@ impl ItemPage {
                 typebox.append(&icon);
                 let label = gtk::Label::builder()
                     .label(&gettext(mediapart.stream_type))
-                    .attributes(&gtk::pango::AttrList::from_string("0 4294967295 weight bold").expect("Failed to create attribute list"))
+                    .attributes(
+                        &gtk::pango::AttrList::from_string("0 4294967295 weight bold")
+                            .expect("Failed to create attribute list"),
+                    )
                     .build();
                 typebox.append(&label);
                 let mut str: String = Default::default();
@@ -937,13 +941,18 @@ impl ItemPage {
                     str.push_str(format!("\n{}: {}", gettext("Title"), title).as_str());
                 }
                 if let Some(bitrate) = mediapart.bit_rate {
-                    str.push_str(format!("\n{}: {}it/s", gettext("Bitrate"), bytefmt::format(bitrate)).as_str());
+                    str.push_str(
+                        format!("\n{}: {}it/s", gettext("Bitrate"), bytefmt::format(bitrate))
+                            .as_str(),
+                    );
                 }
                 if let Some(bitdepth) = mediapart.bit_depth {
                     str.push_str(format!("\n{}: {} bit", gettext("BitDepth"), bitdepth).as_str());
                 }
                 if let Some(samplerate) = mediapart.sample_rate {
-                    str.push_str(format!("\n{}: {} Hz", gettext("SampleRate"), samplerate).as_str());
+                    str.push_str(
+                        format!("\n{}: {} Hz", gettext("SampleRate"), samplerate).as_str(),
+                    );
                 }
                 if let Some(height) = mediapart.height {
                     str.push_str(format!("\n{}: {}", gettext("Height"), height).as_str());
@@ -955,16 +964,22 @@ impl ItemPage {
                     str.push_str(format!("\n{}: {}", gettext("ColorSpace"), colorspace).as_str());
                 }
                 if let Some(displaytitle) = mediapart.display_title {
-                    str.push_str(format!("\n{}: {}", gettext("DisplayTitle"), displaytitle).as_str());
+                    str.push_str(
+                        format!("\n{}: {}", gettext("DisplayTitle"), displaytitle).as_str(),
+                    );
                 }
                 if let Some(channel) = mediapart.channels {
                     str.push_str(format!("\n{}: {}", gettext("Channel"), channel).as_str());
                 }
                 if let Some(channellayout) = mediapart.channel_layout {
-                    str.push_str(format!("\n{}: {}", gettext("ChannelLayout"), channellayout).as_str());
+                    str.push_str(
+                        format!("\n{}: {}", gettext("ChannelLayout"), channellayout).as_str(),
+                    );
                 }
                 if let Some(averageframerate) = mediapart.average_frame_rate {
-                    str.push_str(format!("\n{}: {}", gettext("AverageFrameRate"), averageframerate).as_str());
+                    str.push_str(
+                        format!("\n{}: {}", gettext("AverageFrameRate"), averageframerate).as_str(),
+                    );
                 }
                 if let Some(pixelformat) = mediapart.pixel_format {
                     str.push_str(format!("\n{}: {}", gettext("PixelFormat"), pixelformat).as_str());
@@ -993,9 +1008,6 @@ impl ItemPage {
 
     pub async fn setactorscrolled(&self, actors: Vec<SimpleListItem>) {
         let hortu = self.imp().actorhortu.get();
-
-        hortu.set_title("Actors");
-
         hortu.set_items(&actors);
     }
 
@@ -1011,8 +1023,6 @@ impl ItemPage {
             "Additional Parts" => self.imp().additionalhortu.get(),
             _ => return,
         };
-
-        hortu.set_title(types);
 
         let id = id.to_string();
         let types = types.to_string();
@@ -1049,12 +1059,8 @@ impl ItemPage {
             "Tags" => imp.tagshorbu.get(),
             _ => return,
         };
-
-        horbu.set_title(type_);
-
-        horbu.set_list_type(Some(type_.to_string()));
-
-        horbu.set_items(&infos);
+        
+        horbu.set_items(&infos, type_);
     }
 
     pub fn set_flowlinks(&self, links: Vec<Urls>) {
@@ -1094,7 +1100,8 @@ impl ItemPage {
 
         let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
 
-        let Some(ref video_url) = video_dl.direct_url else {
+        let Some(video_url) = video_dl.direct_url.as_ref().or(video_dl.transcoding_url.as_ref())
+        else {
             toast!(self, gettext("No video source found"));
             return;
         };

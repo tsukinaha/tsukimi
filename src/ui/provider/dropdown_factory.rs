@@ -12,6 +12,7 @@ pub struct DropdownList {
     pub index: Option<u64>,
     pub id: Option<String>,
     pub direct_url: Option<String>,
+    pub transcoding_url: Option<String>,
     pub is_external: Option<bool>,
 }
 

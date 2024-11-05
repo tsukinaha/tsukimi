@@ -300,7 +300,7 @@ impl TuListItem {
                 imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 self.set_picture();
             }
-            "Actor" | "Person" | "Director" => {
+            "Actor" | "Person" | "Director" | "Writer" | "Producer" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&item.role().unwrap_or("".to_string()));
                 imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
@@ -509,7 +509,7 @@ impl TuListItem {
         let item_type = self.item().item_type();
         match item_type.as_str() {
             "Movie" | "Series" | "Episode" => self.set_item_action(true, true, true),
-            "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Actor" | "Person"
+            "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Person" | "Actor" | "Director" | "Writer" | "Producer"
             | "TvChannel" => self.set_item_action(false, true, true),
             "CollectionFolder" | "UserView" | "Audio" => self.set_item_action(false, false, false),
             _ => None,

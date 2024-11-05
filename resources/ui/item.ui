@@ -388,42 +388,45 @@
                       <object class="GtkBox">
                         <property name="orientation">vertical</property>
                         <property name="spacing">9</property>
-
+                        <property name="margin-bottom">18</property>
                         <child>
-                          <object class="GtkBox">
-                            <property name="orientation">vertical</property>
-                            <child>
-                              <object class="HortuScrolled" id="includehortu">
-                              </object>
-                            </child>
-                            <child>
-                              <object class="HortuScrolled" id="additionalhortu">
-                              </object>
-                            </child>
-                            <child>
-                              <object class="HortuScrolled" id="actorhortu">
-                              </object>
-                            </child>
-                            <child>
-                              <object class="HortuScrolled" id="recommendhortu">
-                              </object>
-                            </child>
+                          <object class="HortuScrolled" id="includehortu">
+                            <property name="title" translatable="yes">Included In</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="HortuScrolled" id="additionalhortu">
+                            <property name="title" translatable="yes">Additional Parts</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="HortuScrolled" id="actorhortu">
+                            <property name="title" translatable="yes">Actors</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="HortuScrolled" id="recommendhortu">
+                            <property name="title" translatable="yes">Recommend</property>
                           </object>
                         </child>
                         <child>
                           <object class="HorbuScrolled" id="linkshorbu">
+                            <property name="title" translatable="yes">Links</property>
                           </object>
                         </child>
                         <child>
                           <object class="HorbuScrolled" id="studioshorbu">
+                            <property name="title" translatable="yes">Studios</property>
                           </object>
                         </child>
                         <child>
                           <object class="HorbuScrolled" id="genreshorbu">
+                            <property name="title" translatable="yes">Genres</property>
                           </object>
                         </child>
                         <child>
                           <object class="HorbuScrolled" id="tagshorbu">
+                            <property name="title" translatable="yes">Tags</property>
                           </object>
                         </child>
                         <child>

@@ -17,7 +17,7 @@ use crate::{
 };
 
 mod imp {
-    use std::cell::OnceCell;
+    use std::cell::RefCell;
 
     use glib::subclass::InitializingObject;
 
@@ -27,16 +27,15 @@ mod imp {
     #[template(resource = "/moe/tsuna/tsukimi/ui/horbu_scrolled.ui")]
     #[properties(wrapper_type = super::HorbuScrolled)]
     pub struct HorbuScrolled {
-        #[property(get, set, construct_only)]
-        pub isresume: OnceCell<bool>,
-        #[property(get, set, nullable)]
-        pub list_type: OnceCell<Option<String>>,
         #[template_child]
         pub label: TemplateChild<gtk::Label>,
         #[template_child]
         pub flow: TemplateChild<gtk::FlowBox>,
         #[template_child]
         pub revealer: TemplateChild<gtk::Revealer>,
+
+        #[property(get, set)]
+        pub title: RefCell<String>,
 
         pub selection: gtk::SingleSelection,
     }
@@ -71,11 +70,11 @@ glib::wrapper! {
 }
 
 impl HorbuScrolled {
-    pub fn new(is_resume: bool) -> Self {
-        glib::Object::builder().property("isresume", is_resume).build()
+    pub fn new() -> Self {
+        glib::Object::new()
     }
 
-    pub fn set_items(&self, items: &[SGTitem]) {
+    pub fn set_items(&self, items: &[SGTitem], type_: &str) {
         if items.is_empty() {
             return;
         }
@@ -89,6 +88,7 @@ impl HorbuScrolled {
         imp.revealer.set_reveal_child(true);
 
         let flow = imp.flow.get();
+        let type_ = type_.to_string();
 
         spawn(glib::clone!(
             #[weak]
@@ -105,11 +105,12 @@ impl HorbuScrolled {
                     let button =
                         gtk::Button::builder().margin_start(10).child(&buttoncontent).build();
 
+                    let type_ = type_.to_string();
                     button.connect_clicked(glib::clone!(
                         #[weak]
                         obj,
                         move |_| {
-                            result.activate(&obj, obj.list_type().unwrap_or_default());
+                            result.activate(&obj, type_.to_string());
                         }
                     ));
 
@@ -161,9 +162,5 @@ impl HorbuScrolled {
                 }
             }
         ));
-    }
-
-    pub fn set_title(&self, title: &str) {
-        self.imp().label.set_text(title);
     }
 }

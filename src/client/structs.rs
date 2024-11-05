@@ -79,6 +79,8 @@ pub struct MediaSource {
     pub container: Option<String>,
     #[serde(rename = "DirectStreamUrl")]
     pub direct_stream_url: Option<String>,
+    #[serde(rename = "TranscodingUrl")]
+    pub transcoding_url: Option<String>,
     #[serde(rename = "MediaStreams")]
     pub media_streams: Vec<MediaStream>,
 }
@@ -150,7 +152,30 @@ pub struct SGTitem {
     #[serde(rename = "Name")]
     pub name: String,
     #[serde(rename = "Id")]
-    pub id: i32,
+    pub id: IdType,
+}
+
+// in jellyfin, Studio/Genres/Tags Id is String.
+#[derive(Serialize, Deserialize, Clone)]
+#[serde(untagged)]
+pub enum IdType {
+    String(String),
+    Int(i32),
+}
+
+impl Default for IdType {
+    fn default() -> Self {
+        IdType::String(String::default())
+    }
+}
+
+impl ToString for IdType {
+    fn to_string(&self) -> String {
+        return match self {
+            IdType::String(s) => s.to_string(),
+            IdType::Int(i) => i.to_string()
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -348,7 +373,7 @@ pub struct ExternalIdInfo {
     #[serde(rename = "UrlFormatString")]
     pub url_format_string: String,
     #[serde(rename = "IsSupportedAsIdentifier")]
-    pub is_supported_as_identifier: bool,
+    pub is_supported_as_identifier: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
@@ -521,7 +546,7 @@ where
     T: NavigationPageExt,
     R: gtk::prelude::WidgetExt + glib::clone::Downgrade,
 {
-    page.set_tag(Some(&tag));
-    let window = widget.root().and_downcast::<Window>().unwrap();
-    window.push_page(&page);
+    let binding = widget.root();
+    let window = binding.and_downcast_ref::<Window>().unwrap();
+    window.push_page(&page, &tag);
 }

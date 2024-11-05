@@ -159,7 +159,7 @@ impl LikedPage {
             _ => return,
         };
 
-        hortu.set_title(&format!("{} {}", gettext("Favourite"), gettext(types)));
+        hortu.set_title(format!("{} {}", gettext("Favourite"), gettext(types)));
 
         let types = types.to_string();
 

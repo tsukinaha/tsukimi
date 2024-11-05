@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use adw::prelude::*;
+use gettextrs::gettext;
 use gio::Settings;
 use gtk::{
     subclass::prelude::*,
@@ -761,14 +762,17 @@ impl Window {
         imp.mpvnav.play(&url, suburl.as_deref(), item, episode_list, back, percentage, matcher);
     }
 
-    pub fn push_page<T>(&self, page: &T)
+    pub fn push_page<T>(&self, page: &T, tag: &str)
     where
         T: NavigationPageExt,
     {
         let imp = self.imp();
-        if let Some(tag) = page.tag() {
-            imp.navipage.set_title(&tag);
+        imp.navipage.set_title(&tag);
+        if imp.mainview.find_page(tag).is_some() {
+            imp.mainview.pop_to_tag(tag);
+            return;
         }
+        page.set_tag(Some(&tag));
         imp.mainview.push(page);
         imp.popbutton.set_visible(true);
     }
@@ -803,8 +807,9 @@ impl Window {
         }
 
         let page = ServerPanel::new();
-        page.set_tag(Some("Server Panel"));
-        self.push_page(&page);
+        let tag = gettext("Server Panel");
+        page.set_tag(Some(&tag));
+        self.push_page(&page, &tag);
     }
 
     fn is_on_mpv_stack(&self) -> bool {

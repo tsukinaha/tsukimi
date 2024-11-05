@@ -161,7 +161,7 @@ impl HomePage {
             }
         };
 
-        hortu.set_title(&gettext("Continue Watching"));
+        hortu.set_title(gettext("Continue Watching"));
 
         hortu.set_items(&results.items);
     }
@@ -183,7 +183,7 @@ impl HomePage {
 
         let results = results.items;
 
-        hortu.set_title(&gettext("Library"));
+        hortu.set_title(gettext("Library"));
 
         hortu.set_items(&results);
 
@@ -223,11 +223,11 @@ impl HomePage {
                 }
             };
 
-            let hortu = HortuScrolled::new(false);
+            let hortu = HortuScrolled::new();
 
             hortu.set_moreview(true);
 
-            hortu.set_title(&format!("{} {}", gettext("Latest"), view.name));
+            hortu.set_title(format!("{} {}", gettext("Latest"), view.name));
 
             hortu.set_items(&results);
 
