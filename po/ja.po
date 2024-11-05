@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-18 20:44+0800\n"
+"POT-Creation-Date: 2024-11-05 23:01+0800\n"
 "PO-Revision-Date: 2024-09-26 10:41+0000\n"
 "Last-Translator: Flowensity <flowensity@proton.me>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/tsukimi/main/ja/"
@@ -27,7 +27,7 @@ msgstr "設定"
 msgid "General"
 msgstr "一般"
 
-#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:488
+#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:505
 msgid "Preferred Video Version"
 msgstr ""
 
@@ -43,145 +43,150 @@ msgstr ""
 msgid "Preferred Audio Language"
 msgstr "優先音声言語"
 
-#: resources/ui/account_settings.ui:41 resources/ui/account_settings.ui:65
-#: resources/ui/account_settings.ui:203
+#: resources/ui/account_settings.ui:41 resources/ui/account_settings.ui:66
+#: resources/ui/account_settings.ui:220
 msgid "Default"
 msgstr "デフォルト"
 
-#: resources/ui/account_settings.ui:56
+#: resources/ui/account_settings.ui:57
 msgid "Preferred Subtitle Language"
 msgstr "優先字幕言語"
 
-#: resources/ui/account_settings.ui:82
+#: resources/ui/account_settings.ui:84
 msgid "Appearence"
 msgstr "外観"
 
-#: resources/ui/account_settings.ui:85
+#: resources/ui/account_settings.ui:87
+msgid "Post Scale"
+msgstr ""
+
+#: resources/ui/account_settings.ui:102
 msgid "Font Scale"
 msgstr "フォントスケール"
 
-#: resources/ui/account_settings.ui:99
+#: resources/ui/account_settings.ui:116
 msgid "Font Family"
 msgstr "フォントファミリー"
 
-#: resources/ui/account_settings.ui:117 resources/ui/account_settings.ui:128
-#: resources/ui/account_settings.ui:145
+#: resources/ui/account_settings.ui:134 resources/ui/account_settings.ui:145
+#: resources/ui/account_settings.ui:162
 msgid "Restart App To Take Effect"
 msgstr "アプリを再起動して効果を得るために"
 
-#: resources/ui/account_settings.ui:127
+#: resources/ui/account_settings.ui:144
 msgid "Accent Color"
 msgstr "アクセントカラー"
 
-#: resources/ui/account_settings.ui:144
+#: resources/ui/account_settings.ui:161
 msgid "Accent Foreground Color"
 msgstr "アクセントの前景色"
 
-#: resources/ui/account_settings.ui:161
+#: resources/ui/account_settings.ui:178
 #, fuzzy
 msgid "Hide Sidebar"
 msgstr "サイドバーを表示する"
 
-#: resources/ui/account_settings.ui:166
+#: resources/ui/account_settings.ui:183
 msgid "Auto Select Last Server"
 msgstr "最後のサーバーを自動選択"
 
-#: resources/ui/account_settings.ui:173
+#: resources/ui/account_settings.ui:190
 msgid "Network"
 msgstr "ネットワーク"
 
-#: resources/ui/account_settings.ui:176
+#: resources/ui/account_settings.ui:193
 msgid "Threads"
 msgstr "スレッド"
 
-#: resources/ui/account_settings.ui:177
+#: resources/ui/account_settings.ui:194
 msgid "This only effects on getting images"
 msgstr "これは画像取得にのみ影響する"
 
-#: resources/ui/account_settings.ui:193 resources/ui/mpv_control_sidebar.ui:372
+#: resources/ui/account_settings.ui:210 resources/ui/mpv_control_sidebar.ui:378
 msgid "Background"
 msgstr "背景"
 
-#: resources/ui/account_settings.ui:200
+#: resources/ui/account_settings.ui:217
 msgid "This feature may cause significant lag. Please enable it with caution."
 msgstr ""
 "この機能は大きなラグを引き起こす可能性があります。注意して有効にしてくださ"
 "い。"
 
-#: resources/ui/account_settings.ui:226
+#: resources/ui/account_settings.ui:243
 msgid "Opacity"
 msgstr "不透明度"
 
-#: resources/ui/account_settings.ui:240
+#: resources/ui/account_settings.ui:257
 msgid "Blur (Experimental)"
 msgstr "ブラー（実験的）"
 
-#: resources/ui/account_settings.ui:241 resources/ui/account_settings.ui:250
+#: resources/ui/account_settings.ui:258 resources/ui/account_settings.ui:267
 msgid "Warning: High GPU usage"
 msgstr "警告: GPU使用率が高い"
 
-#: resources/ui/account_settings.ui:249
+#: resources/ui/account_settings.ui:266
 msgid "Blur Radius (Experimental)"
 msgstr "ブラー半径（実験的）"
 
-#: resources/ui/account_settings.ui:270 resources/ui/mpv_control_sidebar.ui:63
+#: resources/ui/account_settings.ui:287 resources/ui/mpv_control_sidebar.ui:63
 msgid "Cache"
 msgstr "キャッシュ"
 
-#: resources/ui/account_settings.ui:273
+#: resources/ui/account_settings.ui:290
 msgid "Clear Cache"
 msgstr "キャッシュをクリア"
 
-#: resources/ui/account_settings.ui:294
+#: resources/ui/account_settings.ui:311
 msgid "Account"
 msgstr "アカウント"
 
-#: resources/ui/account_settings.ui:307 resources/ui/account_settings.ui:327
-msgid "Change Password"
-msgstr "パスワードの変更"
-
-#: resources/ui/account_settings.ui:310
+#: resources/ui/account_settings.ui:327
 msgid "New Password"
 msgstr "新しいパスワード"
 
-#: resources/ui/account_settings.ui:315
+#: resources/ui/account_settings.ui:332
 msgid "Confirm Password"
 msgstr "パスワードの確認"
 
 #: resources/ui/account_settings.ui:344
+msgid "Change Password"
+msgstr "パスワードの変更"
+
+#: resources/ui/account_settings.ui:361
 msgid "Music"
 msgstr "音楽"
 
-#: resources/ui/account_settings.ui:349
+#: resources/ui/account_settings.ui:366
 msgid "Player"
 msgstr "プレーヤー"
 
-#: resources/ui/account_settings.ui:352 resources/ui/player_toolbar.ui:197
+#: resources/ui/account_settings.ui:369 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
 msgstr "リピートモード"
 
-#: resources/ui/account_settings.ui:356 resources/ui/player_toolbar.ui:231
+#: resources/ui/account_settings.ui:373 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
 msgstr "リピート・ワン"
 
-#: resources/ui/account_settings.ui:357 resources/ui/player_toolbar.ui:235
+#: resources/ui/account_settings.ui:374 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
 msgstr "リピート・オール"
 
-#: resources/ui/account_settings.ui:358 resources/ui/account_settings.ui:451
+#: resources/ui/account_settings.ui:375 resources/ui/account_settings.ui:468
 #: resources/ui/player_toolbar.ui:239
 msgid "None"
 msgstr "なし"
 
-#: resources/ui/account_settings.ui:370 resources/ui/mpv_control_sidebar.ui:489
+#: resources/ui/account_settings.ui:387 resources/ui/other.ui:118
+#: resources/ui/mpv_control_sidebar.ui:495
 msgid "Video"
 msgstr "ビデオ"
 
-#: resources/ui/account_settings.ui:375
+#: resources/ui/account_settings.ui:392
 msgid "Video Output"
 msgstr "ビデオ出力"
 
-#: resources/ui/account_settings.ui:376
+#: resources/ui/account_settings.ui:393
 msgid ""
 "Warning: Do NOT use any method other than the software's own controls to "
 "control the window. Restart to take effect"
@@ -189,116 +194,116 @@ msgstr ""
 "警告：ウィンドウを操作するために、ソフトウェア自身のコントロール以外の方法を"
 "使用しないでください。再起動が必要です"
 
-#: resources/ui/account_settings.ui:379
+#: resources/ui/account_settings.ui:396
 msgid "libmpv (default)"
 msgstr "libmpv (デフォルト)"
 
-#: resources/ui/account_settings.ui:434
+#: resources/ui/account_settings.ui:451
 msgid "Load external mpv config"
 msgstr "外部mpv設定を読み込む"
 
-#: resources/ui/account_settings.ui:435
+#: resources/ui/account_settings.ui:452
 msgid "May cause crashes, Requires restart"
 msgstr ""
 
-#: resources/ui/account_settings.ui:438
+#: resources/ui/account_settings.ui:455
 #, fuzzy
 msgid "Enable external config"
 msgstr "外部mpv設定を読み込む"
 
-#: resources/ui/account_settings.ui:443
+#: resources/ui/account_settings.ui:460
 #, fuzzy
 msgid "Config dir"
 msgstr "パスワードの確認"
 
-#: resources/ui/account_settings.ui:466
+#: resources/ui/account_settings.ui:483
 #, fuzzy
 msgid "Preferred Version"
 msgstr "好み"
 
-#: resources/ui/account_settings.ui:489
+#: resources/ui/account_settings.ui:506
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:504
+#: resources/ui/account_settings.ui:521
 #, fuzzy
 msgid "Descriptors"
 msgstr "記載なし"
 
-#: resources/ui/account_settings.ui:526
+#: resources/ui/account_settings.ui:543
 msgid "It is recommended to set no more than 3 lines"
 msgstr ""
 
-#: resources/ui/account_settings.ui:547
+#: resources/ui/account_settings.ui:564
 #, fuzzy
 msgid "No Descriptors"
 msgstr "記載なし"
 
-#: resources/ui/account_settings.ui:566
+#: resources/ui/account_settings.ui:583
 msgid "Add a descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:577 resources/ui/account_settings.ui:687
+#: resources/ui/account_settings.ui:594 resources/ui/account_settings.ui:704
 #: resources/ui/account.ui:26 resources/ui/images_dialog.ui:26
 #: resources/ui/metadata_dialog.ui:38
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: resources/ui/account_settings.ui:583
+#: resources/ui/account_settings.ui:600
 #, fuzzy
 msgid "Add"
 msgstr "追加"
 
-#: resources/ui/account_settings.ui:608 resources/ui/account_settings.ui:718
+#: resources/ui/account_settings.ui:625 resources/ui/account_settings.ui:735
 msgid "This will use exact matching to obtain a list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:611 resources/ui/account_settings.ui:721
+#: resources/ui/account_settings.ui:628 resources/ui/account_settings.ui:738
 msgid "Descriptor Type"
 msgstr ""
 
-#: resources/ui/account_settings.ui:616 resources/ui/account_settings.ui:726
+#: resources/ui/account_settings.ui:633 resources/ui/account_settings.ui:743
 msgid "String"
 msgstr ""
 
-#: resources/ui/account_settings.ui:617 resources/ui/account_settings.ui:727
+#: resources/ui/account_settings.ui:634 resources/ui/account_settings.ui:744
 msgid "Regular Expression"
 msgstr ""
 
-#: resources/ui/account_settings.ui:629 resources/ui/account_settings.ui:739
+#: resources/ui/account_settings.ui:646 resources/ui/account_settings.ui:756
 msgid "Descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:634 resources/ui/account_settings.ui:744
+#: resources/ui/account_settings.ui:651 resources/ui/account_settings.ui:761
 msgid "Descriptor should not be too long"
 msgstr ""
 
-#: resources/ui/account_settings.ui:645 resources/ui/account_settings.ui:755
+#: resources/ui/account_settings.ui:662 resources/ui/account_settings.ui:772
 msgid "eg. 1080p"
 msgstr ""
 
-#: resources/ui/account_settings.ui:656 resources/ui/account_settings.ui:766
+#: resources/ui/account_settings.ui:673 resources/ui/account_settings.ui:783
 msgid "eg. 1080p.*WebDL"
 msgstr ""
 
-#: resources/ui/account_settings.ui:676
+#: resources/ui/account_settings.ui:693
 #, fuzzy
 msgid "Edit descriptor"
 msgstr "記載なし"
 
-#: resources/ui/account_settings.ui:693
+#: resources/ui/account_settings.ui:710
 #, fuzzy
 msgid "Save"
 msgstr "_保存する"
 
-#: resources/ui/account_settings.ui:786
+#: resources/ui/account_settings.ui:803
 #, fuzzy
 msgid "Change folder"
 msgstr "パスワードの変更"
 
-#: resources/ui/account_settings.ui:788
+#: resources/ui/account_settings.ui:805
 #, fuzzy
 msgid "Select new mpv config folder"
 msgstr "mpv設定ディレクトリから読み込む"
@@ -332,84 +337,85 @@ msgstr "ユーザー名"
 msgid "Password (Nullable)"
 msgstr ""
 
-#: resources/ui/actor.ui:53 resources/ui/boxset.ui:55
-msgid "Name"
-msgstr "名前"
-
-#: resources/ui/actor.ui:71 resources/ui/boxset.ui:105
-msgid "No Inscriptions"
-msgstr "記載なし"
-
-#: resources/ui/album_widget.ui:94 resources/ui/item.ui:157
+#: resources/ui/album_widget.ui:94 resources/ui/item.ui:169
 #: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:886 src/ui/mpv/page.rs:888 src/ui/widgets/item.rs:523
+#: src/ui/mpv/page.rs:883 src/ui/mpv/page.rs:885 src/ui/widgets/item.rs:569
 msgid "Play"
 msgstr "再生"
 
-#: resources/ui/mpvpage.ui:95
+#: resources/ui/mpvpage.ui:93
 msgid "Stop and quit"
 msgstr "停止して終了"
 
-#: resources/ui/mpvpage.ui:117 resources/ui/window.ui:548
+#: resources/ui/mpvpage.ui:101 resources/ui/item.ui:108
+#: resources/ui/item.ui:145
+msgid "Loading..."
+msgstr "読み込み中..."
+
+#: resources/ui/mpvpage.ui:134 resources/ui/window.ui:548
 #: resources/ui/window.ui:570 resources/ui/mpv_menu.ui:35
 msgid "Playlist"
 msgstr "プレイリスト"
 
-#: resources/ui/mpvpage.ui:129
+#: resources/ui/mpvpage.ui:146
 msgid "Media info (MPV)"
 msgstr "メディア情報（MPV）"
 
-#: resources/ui/mpvpage.ui:183 resources/ui/item.ui:96 resources/ui/item.ui:133
-msgid "Loading..."
-msgstr "読み込み中..."
-
-#: resources/ui/mpvpage.ui:208 src/ui/mpv/page.rs:891 src/ui/mpv/page.rs:893
+#: resources/ui/mpvpage.ui:200 src/ui/mpv/page.rs:888 src/ui/mpv/page.rs:890
 msgid "Pause"
 msgstr "一時停止"
 
-#: resources/ui/mpvpage.ui:268
+#: resources/ui/mpvpage.ui:260
 #, fuzzy
 msgid "Danmaku Settings"
 msgstr "ビデオ設定の詳細"
 
-#: resources/ui/mpvpage.ui:283 resources/ui/mpvpage.ui:285
+#: resources/ui/mpvpage.ui:275 resources/ui/mpvpage.ui:277
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 #: resources/ui/window.ui:12 resources/ui/window.ui:45
 msgid "Fullscreen"
 msgstr "フルスクリーン"
 
-#: resources/ui/mpvpage.ui:294 resources/ui/mpvpage.ui:296
+#: resources/ui/mpvpage.ui:286 resources/ui/mpvpage.ui:288
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
 msgid "Exit Fullscreen"
 msgstr "フルスクリーンの終了"
 
-#: resources/ui/mpvpage.ui:329 resources/ui/window.ui:20
+#: resources/ui/mpvpage.ui:317 resources/ui/window.ui:20
 #: resources/ui/window.ui:49
 msgid "Preferences"
 msgstr "好み"
 
-#: resources/ui/mpvpage.ui:345
+#: resources/ui/mpvpage.ui:333
 msgid "Playback speed"
 msgstr "再生速度"
 
-#: resources/ui/mpvpage.ui:359
+#: resources/ui/mpvpage.ui:347
 msgid "Volume"
 msgstr "ボリューム"
 
-#: resources/ui/mpvpage.ui:372 resources/ui/mpvpage.ui:431
-#: resources/ui/mpv_control_sidebar.ui:441
+#: resources/ui/mpvpage.ui:360 resources/ui/mpvpage.ui:417
+#: resources/ui/mpv_control_sidebar.ui:447
 msgid "Audio"
 msgstr "オーディオ"
 
-#: resources/ui/mpvpage.ui:380 resources/ui/mpvpage.ui:399
+#: resources/ui/mpvpage.ui:368 resources/ui/mpvpage.ui:386
 #: resources/ui/mpv_control_sidebar.ui:111
 msgid "Subtitle"
 msgstr "字幕"
 
 #: resources/ui/disc_box.ui:9 resources/ui/metadata_dialog.ui:242
-#: src/ui/widgets/disc_box.rs:76
+#: src/ui/widgets/disc_box.rs:83
 msgid "Disc"
 msgstr "ディスク"
+
+#: resources/ui/home.ui:19 src/ui/widgets/home.rs:186
+msgid "Library"
+msgstr "図書館"
+
+#: resources/ui/home.ui:24 resources/ui/item.ui:278 src/ui/widgets/home.rs:164
+msgid "Continue Watching"
+msgstr "視聴を続ける"
 
 #: resources/ui/images_dialog.ui:8 resources/ui/images_dialog.ui:17
 #: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:41
@@ -450,19 +456,69 @@ msgstr "未視聴としてマーク"
 msgid "View Metadata"
 msgstr "メタデータを見る"
 
-#: resources/ui/item.ui:191
+#: resources/ui/other.ui:54
+msgid "Name"
+msgstr "名前"
+
+#: resources/ui/other.ui:72
+msgid "No Inscriptions"
+msgstr "記載なし"
+
+#: resources/ui/other.ui:95 resources/ui/item.ui:404
+msgid "Actors"
+msgstr ""
+
+#: resources/ui/other.ui:100 resources/ui/search.ui:46
+msgid "Movie"
+msgstr "映画"
+
+#: resources/ui/other.ui:106 resources/ui/search.ui:40
+msgid "Series"
+msgstr "シリーズ"
+
+#: resources/ui/other.ui:112
+msgid "Episode"
+msgstr ""
+
+#: resources/ui/other.ui:124 resources/ui/item.ui:419
+msgid "Studios"
+msgstr ""
+
+#: resources/ui/other.ui:129 resources/ui/item.ui:429
+#: src/ui/widgets/list.rs:130
+msgid "Tags"
+msgstr ""
+
+#: resources/ui/other.ui:134 resources/ui/item.ui:424
+#: src/ui/widgets/list.rs:131
+msgid "Genres"
+msgstr ""
+
+#: resources/ui/other.ui:139 resources/ui/item.ui:414
+msgid "Links"
+msgstr "いいね"
+
+#: resources/ui/item.ui:203
 msgid "Video: "
 msgstr "ビデオ "
 
-#: resources/ui/item.ui:211
+#: resources/ui/item.ui:223
 msgid "Subtitle: "
 msgstr "字幕 "
 
-#: resources/ui/item.ui:266 src/ui/widgets/home.rs:150
-msgid "Continue Watching"
-msgstr "視聴を続ける"
+#: resources/ui/item.ui:394
+msgid "Included In"
+msgstr ""
 
-#: resources/ui/item.ui:432
+#: resources/ui/item.ui:399
+msgid "Additional Parts"
+msgstr ""
+
+#: resources/ui/item.ui:409
+msgid "Recommend"
+msgstr ""
+
+#: resources/ui/item.ui:447
 msgid "MediaInfo"
 msgstr "メディア情報"
 
@@ -491,6 +547,7 @@ msgid "No data."
 msgstr "データはない。"
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/single_grid.ui:111
+#: src/ui/widgets/item.rs:941
 msgid "Title"
 msgstr "タイトル"
 
@@ -648,162 +705,166 @@ msgstr ""
 msgid "Shadow Offset"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:323
+#: resources/ui/mpv_control_sidebar.ui:322
+msgid "Stretch Image Subtitles to Screen"
+msgstr ""
+
+#: resources/ui/mpv_control_sidebar.ui:329
 #, fuzzy
 msgid "Subtitle Color"
 msgstr "字幕 "
 
-#: resources/ui/mpv_control_sidebar.ui:336
+#: resources/ui/mpv_control_sidebar.ui:342
 msgid "Text"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:354
+#: resources/ui/mpv_control_sidebar.ui:360
 msgid "Border"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:392
+#: resources/ui/mpv_control_sidebar.ui:398
 #, fuzzy
 msgid "Subtitle Offset"
 msgstr "字幕 "
 
-#: resources/ui/mpv_control_sidebar.ui:405
+#: resources/ui/mpv_control_sidebar.ui:411
 msgid "Offset"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:406
-#: resources/ui/mpv_control_sidebar.ui:455
+#: resources/ui/mpv_control_sidebar.ui:412
+#: resources/ui/mpv_control_sidebar.ui:461
 #, fuzzy
 msgid "Unit: ms"
 msgstr "単位: MB"
 
-#: resources/ui/mpv_control_sidebar.ui:421
+#: resources/ui/mpv_control_sidebar.ui:427
 msgid "Speed"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:454
+#: resources/ui/mpv_control_sidebar.ui:460
 msgid "Audio Offset"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:470
+#: resources/ui/mpv_control_sidebar.ui:476
 #, fuzzy
 msgid "Audio Channel"
 msgstr "チャンネル"
 
-#: resources/ui/mpv_control_sidebar.ui:475
+#: resources/ui/mpv_control_sidebar.ui:481
 msgid "Auto"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:476
+#: resources/ui/mpv_control_sidebar.ui:482
 msgid "Auto (Safety)"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:477
+#: resources/ui/mpv_control_sidebar.ui:483
 msgid "Mono"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:478
+#: resources/ui/mpv_control_sidebar.ui:484
 #, fuzzy
 msgid "Dual Channel"
 msgstr "チャンネル"
 
-#: resources/ui/mpv_control_sidebar.ui:479
+#: resources/ui/mpv_control_sidebar.ui:485
 msgid "Dual Channel (Invert)"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:492
+#: resources/ui/mpv_control_sidebar.ui:498
 #, fuzzy
 msgid "Video Aspect"
 msgstr "ビデオ出力"
 
-#: resources/ui/mpv_control_sidebar.ui:497
+#: resources/ui/mpv_control_sidebar.ui:503
 msgid "Fit"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:498
+#: resources/ui/mpv_control_sidebar.ui:504
 msgid "Crop"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:506
+#: resources/ui/mpv_control_sidebar.ui:512
 msgid "Video color grading"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:519
+#: resources/ui/mpv_control_sidebar.ui:525
 msgid "Brightness"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:534
+#: resources/ui/mpv_control_sidebar.ui:540
 #, fuzzy
 msgid "Contrast"
 msgstr "内容"
 
-#: resources/ui/mpv_control_sidebar.ui:549
+#: resources/ui/mpv_control_sidebar.ui:555
 msgid "Saturation"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:564
+#: resources/ui/mpv_control_sidebar.ui:570
 msgid "Hue"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:579
+#: resources/ui/mpv_control_sidebar.ui:585
 msgid "Gamma"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:596
+#: resources/ui/mpv_control_sidebar.ui:602
 #, fuzzy
 msgid "Video Deband"
 msgstr "ビデオ "
 
-#: resources/ui/mpv_control_sidebar.ui:619
+#: resources/ui/mpv_control_sidebar.ui:625
 msgid "Deband Iterations"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:634
+#: resources/ui/mpv_control_sidebar.ui:640
 msgid "Deband Threshold"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:649
+#: resources/ui/mpv_control_sidebar.ui:655
 msgid "Deband Range"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:664
+#: resources/ui/mpv_control_sidebar.ui:670
 msgid "Deband Grain"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:682
+#: resources/ui/mpv_control_sidebar.ui:688
 #, fuzzy
 msgid "Video Deinterlace"
 msgstr "ビデオ "
 
-#: resources/ui/mpv_control_sidebar.ui:687
+#: resources/ui/mpv_control_sidebar.ui:693
 #, fuzzy
 msgid "Video Upscale"
 msgstr "ビデオ "
 
-#: resources/ui/mpv_control_sidebar.ui:710
+#: resources/ui/mpv_control_sidebar.ui:716
 msgid "Action after video ends"
 msgstr "ビデオ終了後のアクション"
 
-#: resources/ui/mpv_control_sidebar.ui:713
+#: resources/ui/mpv_control_sidebar.ui:719
 msgid "Play Next"
 msgstr "次へ"
 
-#: resources/ui/mpv_control_sidebar.ui:726
+#: resources/ui/mpv_control_sidebar.ui:732
 msgid "Loop Playback"
 msgstr "ループ再生"
 
-#: resources/ui/mpv_control_sidebar.ui:740
+#: resources/ui/mpv_control_sidebar.ui:746
 msgid "Stop"
 msgstr "ストップ"
 
-#: resources/ui/mpv_control_sidebar.ui:756
+#: resources/ui/mpv_control_sidebar.ui:762
 msgid "Hardware decoding"
 msgstr "ハードウェアデコード"
 
-#: resources/ui/mpv_control_sidebar.ui:760
+#: resources/ui/mpv_control_sidebar.ui:766
 msgid "no (default)"
 msgstr "いいえ（デフォルト）"
 
-#: resources/ui/mpv_control_sidebar.ui:804
+#: resources/ui/mpv_control_sidebar.ui:810
 msgid "Not all settings will be saved"
 msgstr ""
 
@@ -848,15 +909,7 @@ msgstr "スキャン"
 msgid "Search"
 msgstr "検索"
 
-#: resources/ui/search.ui:40
-msgid "Series"
-msgstr "シリーズ"
-
-#: resources/ui/search.ui:46
-msgid "Movie"
-msgstr "映画"
-
-#: resources/ui/search.ui:52 src/ui/widgets/list.rs:122
+#: resources/ui/search.ui:52 src/ui/widgets/list.rs:129
 msgid "BoxSet"
 msgstr ""
 
@@ -946,7 +999,7 @@ msgstr ""
 msgid "Sort By"
 msgstr ""
 
-#: resources/ui/single_grid.ui:112
+#: resources/ui/single_grid.ui:112 src/ui/widgets/item.rs:945
 msgid "Bitrate"
 msgstr "ビットレート"
 
@@ -1036,7 +1089,7 @@ msgstr "内容"
 msgid "Home"
 msgstr "ホーム"
 
-#: resources/ui/window.ui:344 src/ui/widgets/list.rs:125
+#: resources/ui/window.ui:344 src/ui/widgets/list.rs:132
 msgid "Liked"
 msgstr "好き"
 
@@ -1096,42 +1149,37 @@ msgstr "ビデオ設定の詳細"
 msgid "Media info"
 msgstr "メディア情報"
 
-#. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/mod.rs:23
+#: src/ui/mod.rs:26
 msgid "translator-credits"
 msgstr "Flowensity <flowensity@proton.me>"
 
-#: src/ui/widgets/actor.rs:266 src/ui/widgets/boxset.rs:217
-msgid "Links"
-msgstr "いいね"
-
-#: src/ui/widgets/account_add.rs:134
+#: src/ui/widgets/account_add.rs:145
 msgid "Fields must be filled in"
 msgstr "すべてのフィールドを入力してください"
 
-#: src/ui/widgets/account_add.rs:189
+#: src/ui/widgets/account_add.rs:198
 #, fuzzy
 msgid "Server edited successfully"
 msgstr "アカウントが正常に追加されました"
 
-#: src/ui/widgets/account_add.rs:193
+#: src/ui/widgets/account_add.rs:202
 #, fuzzy
 msgid "Server added successfully"
 msgstr "アカウントが正常に追加されました"
 
-#: src/ui/widgets/account_settings.rs:212
+#: src/ui/widgets/account_settings.rs:225
 msgid "Password cannot be empty!"
 msgstr "パスワードは空にできません！"
 
-#: src/ui/widgets/account_settings.rs:216
+#: src/ui/widgets/account_settings.rs:229
 msgid "Passwords do not match!"
 msgstr "パスワードが一致しない！"
 
-#: src/ui/widgets/account_settings.rs:223
+#: src/ui/widgets/account_settings.rs:234
 msgid "Password changed successfully! Please login again."
 msgstr "パスワードの変更に成功しました！もう一度ログインしてください。"
 
-#: src/ui/widgets/account_settings.rs:229
+#: src/ui/widgets/account_settings.rs:237
 msgid "Failed to change password"
 msgstr "パスワードの変更に失敗しました"
 
@@ -1143,133 +1191,165 @@ msgstr "キャッシュがクリアされました"
 msgid "No file selected"
 msgstr "ファイルが選択されていない"
 
-#: src/ui/widgets/account_settings.rs:385
+#: src/ui/widgets/account_settings.rs:375
 msgid "Font Cleared, Restart to take effect."
 msgstr "フォントがクリアされ、再起動すると有効になります。"
 
-#: src/ui/widgets/account_settings.rs:556
-#: src/ui/widgets/account_settings.rs:565
-#: src/ui/widgets/account_settings.rs:599
-#: src/ui/widgets/account_settings.rs:608
+#: src/ui/widgets/account_settings.rs:517
+#: src/ui/widgets/account_settings.rs:526
+#: src/ui/widgets/account_settings.rs:555
+#: src/ui/widgets/account_settings.rs:564
 #, fuzzy
 msgid "Descriptor cannot be empty!"
 msgstr "パスワードは空にできません！"
 
-#: src/ui/widgets/account_settings.rs:570
-#: src/ui/widgets/account_settings.rs:613
+#: src/ui/widgets/account_settings.rs:531
+#: src/ui/widgets/account_settings.rs:569
 msgid "Invalid regex"
 msgstr ""
 
-#: src/ui/widgets/boxset.rs:227
-msgid "Items"
-msgstr "アイテム"
-
-#: src/ui/widgets/home.rs:172
-msgid "Library"
-msgstr "図書館"
-
-#: src/ui/widgets/home.rs:216
+#: src/ui/widgets/home.rs:230
 msgid "Latest"
 msgstr "最新"
 
-#: src/ui/mpv/control_sidebar.rs:431
+#: src/ui/mpv/control_sidebar.rs:408
 msgid "Video filter settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:453
+#: src/ui/mpv/control_sidebar.rs:430
 msgid "Subtitle settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:466
+#: src/ui/mpv/control_sidebar.rs:440
 msgid "Subtitle color settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:475
+#: src/ui/mpv/control_sidebar.rs:449
 msgid "Subtitle offset settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:517
+#: src/ui/mpv/control_sidebar.rs:491
 msgid "Deband settings cleared."
 msgstr ""
 
-#: src/ui/mpv/page.rs:380
+#: src/ui/mpv/page.rs:391
 #, fuzzy
 msgid "Loading Video..."
 msgstr "読み込み中..."
 
-#: src/ui/mpv/page.rs:399
+#: src/ui/mpv/page.rs:410
 msgid "No more videos found"
 msgstr ""
 
-#: src/ui/mpv/page.rs:408
+#: src/ui/mpv/page.rs:419
 msgid "Waiting for mediasource..."
 msgstr ""
 
-#: src/ui/mpv/page.rs:445 src/ui/mpv/page.rs:450
+#: src/ui/mpv/page.rs:453 src/ui/mpv/page.rs:458
 msgid "No media sources found"
 msgstr ""
 
-#: src/ui/mpv/page.rs:606
+#: src/ui/mpv/page.rs:604
 msgid "Error"
 msgstr ""
 
-#: src/ui/mpv/page.rs:608
+#: src/ui/mpv/page.rs:606
 msgid ""
 "MPV has been shutdown, Application will exit. \n"
 "Tsukimi can't restart MPV."
 msgstr ""
 
-#: src/ui/mpv/page.rs:611
+#: src/ui/mpv/page.rs:609
 #, fuzzy
 msgid "Shutdown"
 msgstr "サーバーなし"
 
-#: src/ui/widgets/image_infocard.rs:96
+#: src/ui/widgets/image_infocard.rs:103
 msgid "No image to view"
 msgstr "画像なし"
 
-#: src/ui/widgets/image_infocard.rs:112
+#: src/ui/widgets/image_infocard.rs:117
 msgid "No image to copy"
 msgstr "コピーする画像がない"
 
-#: src/ui/widgets/image_infocard.rs:116
+#: src/ui/widgets/image_infocard.rs:121
 msgid "Image copied to clipboard"
 msgstr "クリップボードにコピーされた画像"
 
-#: src/ui/widgets/image_infocard.rs:156
+#: src/ui/widgets/image_infocard.rs:162
 msgid "Error loading image"
 msgstr "画像の読み込みエラー"
 
-#: src/ui/widgets/item.rs:519 src/ui/widgets/list.rs:121
+#: src/ui/widgets/item.rs:565 src/ui/widgets/list.rs:128
 msgid "Resume"
 msgstr "再開"
 
-#: src/ui/widgets/item.rs:1069
+#: src/ui/widgets/item.rs:935
+msgid "Codec"
+msgstr ""
+
+#: src/ui/widgets/item.rs:938
+msgid "Language"
+msgstr ""
+
+#: src/ui/widgets/item.rs:950
+msgid "BitDepth"
+msgstr ""
+
+#: src/ui/widgets/item.rs:954
+msgid "SampleRate"
+msgstr ""
+
+#: src/ui/widgets/item.rs:958
+msgid "Height"
+msgstr ""
+
+#: src/ui/widgets/item.rs:961
+msgid "Width"
+msgstr ""
+
+#: src/ui/widgets/item.rs:964
+msgid "ColorSpace"
+msgstr ""
+
+#: src/ui/widgets/item.rs:968
+msgid "DisplayTitle"
+msgstr ""
+
+#: src/ui/widgets/item.rs:972
+msgid "Channel"
+msgstr ""
+
+#: src/ui/widgets/item.rs:976
+msgid "ChannelLayout"
+msgstr ""
+
+#: src/ui/widgets/item.rs:981
+msgid "AverageFrameRate"
+msgstr ""
+
+#: src/ui/widgets/item.rs:985
+msgid "PixelFormat"
+msgstr ""
+
+#: src/ui/widgets/item.rs:1105
 msgid "No video source found"
 msgstr ""
 
-#: src/ui/widgets/music_album.rs:264
+#: src/ui/widgets/music_album.rs:279
 #, fuzzy
 msgid "More From"
 msgstr "もっと見る"
 
-#: src/ui/widgets/list.rs:113
+#: src/ui/widgets/list.rs:120
 msgid "Channels"
 msgstr "チャンネル"
 
-#: src/ui/widgets/list.rs:120
+#: src/ui/widgets/list.rs:127
 msgid "All"
 msgstr ""
 
-#: src/ui/widgets/list.rs:123
-msgid "Tags"
-msgstr ""
-
-#: src/ui/widgets/list.rs:124
-msgid "Genres"
-msgstr ""
-
-#: src/ui/widgets/liked.rs:146
+#: src/ui/widgets/liked.rs:162
 msgid "Favourite"
 msgstr ""
 
@@ -1281,71 +1361,78 @@ msgstr "お気に入りから削除"
 msgid "Add to favorites"
 msgstr "お気に入りに追加"
 
-#: src/ui/widgets/server_action_row.rs:94
+#: src/ui/widgets/server_action_row.rs:103
 #, fuzzy
 msgid "Edit Server"
 msgstr "サーバーの追加"
 
-#: src/ui/widgets/tu_list_item.rs:217
+#: src/ui/widgets/tu_list_item.rs:245
 msgid "Present"
 msgstr "現在"
 
-#: src/ui/widgets/tu_list_item.rs:550
+#: src/ui/widgets/tu_list_item.rs:578
 msgid "Scanning..."
 msgstr "スキャン..."
 
-#: src/ui/widgets/tu_list_item.rs:713 src/ui/widgets/tu_list_item.rs:781
+#: src/ui/widgets/tu_list_item.rs:741 src/ui/widgets/tu_list_item.rs:802
 msgid "Success"
 msgstr "成功"
 
-#: src/ui/widgets/server_panel.rs:98
+#: src/ui/widgets/window.rs:810
+msgid "Server Panel"
+msgstr ""
+
+#: src/ui/widgets/server_panel.rs:118
 msgid "Shut down server"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:99
+#: src/ui/widgets/server_panel.rs:119
 msgid "Are you sure you want to shut down the server?"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:130
+#: src/ui/widgets/server_panel.rs:150
 msgid "Restart server"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:131
+#: src/ui/widgets/server_panel.rs:151
 msgid "Are you sure you want to restart the server?"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:134
+#: src/ui/widgets/server_panel.rs:153
 msgid "Revert"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:135
+#: src/ui/widgets/server_panel.rs:153
 #, fuzzy
 msgid "Confirm"
 msgstr "パスワードの確認"
 
-#: src/ui/widgets/server_panel.rs:171
+#: src/ui/widgets/server_panel.rs:188
 msgid "Server is shutting down"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:183
+#: src/ui/widgets/server_panel.rs:200
 msgid "Server is restarting"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:270
+#: src/ui/widgets/server_panel.rs:287
 msgid "Last execute: "
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:275
+#: src/ui/widgets/server_panel.rs:292
 msgid "Duration: "
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:280
+#: src/ui/widgets/server_panel.rs:295
 msgid "Result: "
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:326
+#: src/ui/widgets/server_panel.rs:338
 msgid "Task started"
 msgstr ""
+
+#~ msgid "Items"
+#~ msgstr "アイテム"
 
 #, fuzzy
 #~| msgid "Video: "
