@@ -1,8 +1,6 @@
 resources/ui/account_settings.ui
 resources/ui/account.ui
-resources/ui/actor.ui
 resources/ui/album_widget.ui
-resources/ui/boxset.ui
 resources/ui/mpvpage.ui
 resources/ui/content_viewer.ui
 resources/ui/disc_box.ui
@@ -13,6 +11,7 @@ resources/ui/hortu_scrolled.ui
 resources/ui/image_info_card.ui
 resources/ui/images_dialog.ui
 resources/ui/item_actions.ui
+resources/ui/other.ui
 resources/ui/item.ui
 resources/ui/list.ui
 resources/ui/listitem.ui
@@ -32,11 +31,9 @@ resources/ui/mpv_shortcuts_window.ui
 resources/ui/mpv_menu_actions.ui
 resources/ui/mpv_menu.ui
 src/ui/mod.rs
-src/ui/widgets/actor.rs
 src/ui/widgets/account_add.rs
 src/ui/widgets/account_settings.rs
-src/ui/widgets/actor.rs
-src/ui/widgets/boxset.rs
+src/ui/widgets/other.rs
 src/ui/widgets/content_viewer.rs
 src/ui/widgets/disc_box.rs
 src/ui/widgets/home.rs
