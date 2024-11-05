@@ -12,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-02 15:25+0800\n"
 "PO-Revision-Date: 2024-11-04 02:57+0000\n"
-"Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
+"Last-Translator: Inaha <sakuovds@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -1183,11 +1183,11 @@ msgstr "去色带设置已清除。"
 
 #: src/ui/mpv/page.rs:391
 msgid "Loading Video..."
-msgstr "正在载入视频中..."
+msgstr "正在载入视频..."
 
 #: src/ui/mpv/page.rs:410
 msgid "No more videos found"
-msgstr "暂未找到更多视频"
+msgstr "未找到更多视频"
 
 #: src/ui/mpv/page.rs:419
 msgid "Waiting for mediasource..."
