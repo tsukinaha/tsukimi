@@ -359,12 +359,6 @@ pub struct List {
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
-pub struct SerInList {
-    #[serde(rename = "Items")]
-    pub items: Vec<SimpleListItem>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct ExternalIdInfo {
     #[serde(rename = "Name")]
     pub name: String,

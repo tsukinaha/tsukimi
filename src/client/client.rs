@@ -47,7 +47,6 @@ use super::{
         RemoteSearchInfo,
         RemoteSearchResult,
         ScheduledTask,
-        SerInList,
         ServerInfo,
         SimpleListItem,
     },
@@ -355,7 +354,7 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_episodes(&self, id: &str, season_id: &str) -> Result<SerInList> {
+    pub async fn get_episodes(&self, id: &str, season_id: &str) -> Result<List> {
         let path = format!("Shows/{}/Episodes", id);
         let params = [
             ("Fields", "Overview,PrimaryImageAspectRatio,PremiereDate,ProductionYear,SyncStatus"),
@@ -898,7 +897,7 @@ impl EmbyClient {
             ("ParentId", parent_id),
             ("SortBy", &sort_by),
             ("SortOrder", sort_order),
-            ("EnableTotalRecordCount", "false"),
+            ("EnableTotalRecordCount", "true"),
         ];
         self.request(&path, &params).await
     }

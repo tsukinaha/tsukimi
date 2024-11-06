@@ -317,7 +317,7 @@ impl TuListItem {
                 self.set_picture();
             }
             "Folder" => {
-                imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
                 self.set_picture();
@@ -449,6 +449,10 @@ impl TuListItem {
         let mark = gtk::Image::builder()
             .icon_name("folder-symbolic")
             .icon_size(gtk::IconSize::Large)
+            .halign(gtk::Align::Start)
+            .valign(gtk::Align::Start)
+            .margin_top(10)
+            .margin_start(10)
             .build();
         mark.add_css_class("accent");
         self.imp().overlay.add_overlay(&mark);

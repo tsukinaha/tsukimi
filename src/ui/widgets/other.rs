@@ -254,6 +254,9 @@ impl OtherPage {
                     }
                 ));
             }
+            "Season" => {
+                self.hortu_set_season_episode_list().await;
+            }
             _ => {}
         }
     }
@@ -282,6 +285,28 @@ impl OtherPage {
             label.add_css_class("caption-heading");
             mediainfo_box.append(&label);
         }
+    }
+
+    async fn hortu_set_season_episode_list(&self) {
+        let id = self.item().id();
+        let Some(series_id) = self.item().series_id() else {
+            return;
+        };
+        let results = match fetch_with_cache(
+            &format!("season_{}", id),
+            CachePolicy::ReadCacheAndRefresh,
+            async move { EMBY_CLIENT.get_episodes(&series_id, &id).await },
+        )
+        .await
+        {
+            Ok(history) => history,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+
+        self.imp().episodehortu.set_items(&results.items);
     }
 
     pub fn add_external_link_horbu(&self, links: &[Urls]) {
