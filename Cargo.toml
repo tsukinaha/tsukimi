@@ -1,6 +1,6 @@
 [package]
 name = "tsukimi"
-version = "0.16.9"
+version = "0.17.0"
 edition = "2021"
 rust-version = "1.81"
 description = "A simple Emby Client written by GTK4-RS"
@@ -28,7 +28,7 @@ tracing = "0.1.40"
 gst = { version = "0.23", package = "gstreamer" }
 url = "2.5.3"
 libmpv2 = { path = "libmpv2-rs", version = "=4.0.0" }
-image = "0.25.2"
+image = "0.25.5"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
 hostname = "0.4.0"
 epoxy = "0.1.0"
@@ -96,3 +96,6 @@ assets = [
 
 [profile.release]
 lto = true
+
+[profile.dev]
+debug = true

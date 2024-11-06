@@ -61,6 +61,12 @@ mod imp {
         #[template_child]
         pub music: TemplateChild<adw::SwitchRow>,
         #[template_child]
+        pub audio: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub video: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub episode: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
         pub selection: gtk::SingleSelection,
     }
@@ -231,6 +237,15 @@ impl SearchPage {
             }
             if imp.music.is_active() {
                 filter.push("MusicAlbum");
+            }
+            if imp.audio.is_active() {
+                filter.push("Audio");
+            }
+            if imp.video.is_active() {
+                filter.push("Video");
+            }
+            if imp.episode.is_active() {
+                filter.push("Episode");
             }
             if filter.is_empty() {
                 return List::default();

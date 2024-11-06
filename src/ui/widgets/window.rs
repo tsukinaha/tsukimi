@@ -74,8 +74,6 @@ mod imp {
         #[template_child]
         pub namerow: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub player_toolbar_bin: TemplateChild<gtk::Revealer>,
-        #[template_child]
         pub player_toolbar_box: TemplateChild<PlayerToolbarBox>,
         #[template_child]
         pub progressbar: TemplateChild<gtk::ProgressBar>,
@@ -663,16 +661,6 @@ impl Window {
     pub fn new_account(&self) {
         let dialog = crate::ui::widgets::account_add::AccountWindow::new();
         dialog.present(Some(self));
-    }
-
-    pub fn set_player_toolbar(&self) {
-        spawn(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            async move {
-                obj.imp().player_toolbar_bin.set_reveal_child(true);
-            }
-        ));
     }
 
     pub fn set_fraction(&self, to_value: f64) {

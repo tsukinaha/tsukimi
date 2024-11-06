@@ -8,19 +8,14 @@ use gtk::{
 
 use super::{horbu_scrolled::HorbuScrolled, picture_loader::PictureLoader};
 use crate::{
-    client::{
+    bing_song_model, client::{
         client::EMBY_CLIENT,
         error::UserFacingError,
         structs::*,
-    },
-    fraction,
-    fraction_reset,
-    toast,
-    ui::provider::tu_item::TuItem,
-    utils::{
+    }, fraction, fraction_reset, toast, ui::{provider::{core_song::CoreSong, tu_item::TuItem}, widgets::song_widget::SongWidget}, utils::{
         fetch_with_cache,
         CachePolicy,
-    },
+    }
 };
 
 pub(crate) mod imp {
@@ -83,6 +78,8 @@ pub(crate) mod imp {
 
         #[template_child]
         pub actionbox: TemplateChild<ItemActionsBox>,
+        #[template_child]
+        pub play_button: TemplateChild<gtk::Button>,
     }
 
     // The central trait for subclassing a GObject
@@ -217,6 +214,19 @@ impl OtherPage {
             },
             "BoxSet" => {
                 self.hortu_set_boxset_list().await;
+            }
+            "Audio" => {
+                self.imp().play_button.set_visible(true);
+                self.imp().play_button.connect_clicked(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_| {
+                        let item = obj.item();
+                        let song_widget = SongWidget::new(item);
+                        let model = gio::ListStore::new::<CoreSong>();
+                        bing_song_model!(obj, model, song_widget.coresong());
+                    }
+                ));
             }
             _ => {
 

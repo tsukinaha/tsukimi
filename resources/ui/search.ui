@@ -65,6 +65,24 @@
                                 <property name="active">True</property>
                               </object>
                             </child>
+                            <child>
+                              <object class="AdwSwitchRow" id="audio">
+                                <property name="title" translatable="yes">Audio</property>
+                                <property name="active">False</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwSwitchRow" id="video">
+                                <property name="title" translatable="yes">Video</property>
+                                <property name="active">False</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwSwitchRow" id="episode">
+                                <property name="title" translatable="yes">Episode</property>
+                                <property name="active">False</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>

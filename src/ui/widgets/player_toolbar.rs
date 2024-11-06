@@ -222,8 +222,7 @@ impl PlayerToolbarBox {
     }
 
     pub fn bind_song_model(&self, active_model: gtk::gio::ListStore, active_core_song: CoreSong) {
-        let player = &self.imp().player.imp();
-        player.load_model(active_model, active_core_song);
+        self.imp().player.imp().load_model(active_model, active_core_song);
         self.update_play_state();
     }
 

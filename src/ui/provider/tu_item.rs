@@ -297,7 +297,7 @@ impl TuItem {
                 let page = ListPage::new(self.id(), "livetv".to_string());
                 push_page_with_tag(window, page, self.name());
             }
-            "Tag" | "Genre" => {
+            "Tag" | "Genre" | "MusicGenre" => {
                 let page = SingleGrid::new();
                 let id = self.id();
                 let parent_id = parentid.clone();

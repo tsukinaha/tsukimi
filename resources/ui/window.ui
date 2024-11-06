@@ -466,13 +466,7 @@
                                       </object>
                                     </child>
                                     <child type="bottom">
-                                      <object class="GtkRevealer" id="player_toolbar_bin">
-                                        <property name="reveal-child">False</property>
-                                        <property name="valign">end</property>
-                                        <child>
-                                          <object class="PlayerToolbarBox" id="player_toolbar_box" />
-                                        </child>
-                                      </object>
+                                      <object class="PlayerToolbarBox" id="player_toolbar_box" />
                                     </child>
                                     <property name="content">
                                       <object class="GtkOverlay">

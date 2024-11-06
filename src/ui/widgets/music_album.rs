@@ -116,7 +116,6 @@ pub(crate) mod imp {
                 #[weak]
                 obj,
                 async move {
-                    obj.set_toolbar();
                     obj.set_album().await;
                     obj.get_songs().await;
                     obj.set_lists().await;
@@ -261,11 +260,6 @@ impl AlbumPage {
             }
         }
         liststore
-    }
-
-    pub fn set_toolbar(&self) {
-        let window = self.root().and_downcast::<super::window::Window>().unwrap();
-        window.set_player_toolbar();
     }
 
     pub async fn set_lists(&self) {

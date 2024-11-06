@@ -195,15 +195,11 @@ impl HomePage {
         for view in items {
             let ac_view = view.clone();
 
-            let Some(collection_type) = view.collection_type else {
-                continue;
-            };
-
             let results = match fetch_with_cache(
                 &format!("library_{}", view.id),
                 CachePolicy::ReadCacheAndRefresh,
                 async move {
-                    if collection_type == "livetv" {
+                    if view.collection_type.as_deref() == Some("livetv") {
                         EMBY_CLIENT.get_channels().await.map(|x| x.items)
                     } else {
                         EMBY_CLIENT.get_latest(&view.id).await
