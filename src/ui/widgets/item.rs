@@ -1305,5 +1305,5 @@ pub fn dt(date: Option<chrono::DateTime<Utc>>) -> String {
     let Some(date) = date else {
         return "".to_string();
     };
-    date.format("%Y-%m-%d %H:%M:%S").to_string()
+    date.naive_local().format("%Y-%m-%d %H:%M:%S").to_string()
 }

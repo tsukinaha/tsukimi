@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use glib::Object;
 use gtk::{
     gio,
@@ -6,7 +7,7 @@ use gtk::{
     subclass::prelude::*,
 };
 
-use super::{horbu_scrolled::HorbuScrolled, picture_loader::PictureLoader};
+use super::{horbu_scrolled::HorbuScrolled, item::dt, picture_loader::PictureLoader};
 use crate::{
     bing_song_model, client::{
         client::EMBY_CLIENT,
@@ -80,6 +81,9 @@ pub(crate) mod imp {
         pub actionbox: TemplateChild<ItemActionsBox>,
         #[template_child]
         pub play_button: TemplateChild<gtk::Button>,
+
+        #[template_child]
+        pub information_box: TemplateChild<gtk::Box>
     }
 
     // The central trait for subclassing a GObject
@@ -200,6 +204,9 @@ impl OtherPage {
         if let Some(tags) = item.tags {
             self.add_sgt_item_horbu(&self.imp().tagshorbu, &tags, "Studios");
         }
+        if let Some(media_source) = item.media_sources {
+            self.add_media_source(media_source, item.date_created);
+        }
         if let Some(userdata) = item.user_data {
             if let Some(is_favorite) = userdata.is_favorite {
                 imp.actionbox.set_btn_active(is_favorite);
@@ -228,12 +235,32 @@ impl OtherPage {
                     }
                 ));
             }
-            _ => {
-
-            }
+            _ => {}
         }
-        
+    }
 
+    pub fn add_media_source(&self, media_sources: Vec<MediaSource>, date_created: Option<DateTime<Utc>>,) {
+        let mediainfo_box = self.imp().information_box.get();
+        for mediasource in media_sources {
+            let info = format!(
+                "{}\n{} {} {}\n{}",
+                mediasource.path.unwrap_or_default(),
+                mediasource.container.unwrap_or_default().to_uppercase(),
+                bytefmt::format(mediasource.size.unwrap_or_default()),
+                dt(date_created),
+                mediasource.name
+            );
+            let label = gtk::Label::builder()
+                .label(&info)
+                .halign(gtk::Align::Start)
+                .margin_start(15)
+                .valign(gtk::Align::Start)
+                .margin_top(5)
+                .ellipsize(gtk::pango::EllipsizeMode::End)
+                .build();
+            label.add_css_class("caption-heading");
+            mediainfo_box.append(&label);
+        }
     }
 
     pub fn add_external_link_horbu(&self, links: &[Urls]) {
@@ -252,7 +279,6 @@ impl OtherPage {
 
     async fn hortu_set_boxset_list(&self) {
         let id = self.item().id();
-        let imp = self.imp();
         let results = match fetch_with_cache(
             &format!("boxset_{}", id),
             CachePolicy::ReadCacheAndRefresh,
@@ -265,10 +291,15 @@ impl OtherPage {
             }
         };
 
+        self.load_list_items(results.items);
+    }
+
+    fn load_list_items(&self, items: Vec<SimpleListItem>) {
+        let imp = self.imp();
         let mut movies = Vec::new();
         let mut series = Vec::new();
         let mut episodes = Vec::new();
-        results.items.into_iter().for_each(|item| {
+        items.into_iter().for_each(|item| {
             match item.item_type.as_str() {
                 "Movie" => movies.push(item),
                 "Series" => series.push(item),

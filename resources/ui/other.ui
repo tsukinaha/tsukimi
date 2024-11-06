@@ -160,6 +160,13 @@
                         <property name="title" translatable="yes">Links</property>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkBox" id="information_box">
+                        <property name="margin-start">18</property>
+                        <property name="spacing">30</property>
+                        <property name="orientation">vertical</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
