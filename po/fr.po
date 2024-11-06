@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-05 23:01+0800\n"
+"POT-Creation-Date: 2024-11-06 23:19+0800\n"
 "PO-Revision-Date: 2024-10-21 18:16+0000\n"
 "Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
@@ -177,8 +177,8 @@ msgstr "Répéter toute la liste"
 msgid "None"
 msgstr "Aucun"
 
-#: resources/ui/account_settings.ui:387 resources/ui/other.ui:118
-#: resources/ui/mpv_control_sidebar.ui:495
+#: resources/ui/account_settings.ui:387 resources/ui/other.ui:134
+#: resources/ui/mpv_control_sidebar.ui:495 resources/ui/search.ui:76
 msgid "Video"
 msgstr "Vidéo"
 
@@ -329,9 +329,10 @@ msgstr "Nom d'utilisateur"
 msgid "Password (Nullable)"
 msgstr "Mot de passe (peut être vide)"
 
-#: resources/ui/album_widget.ui:94 resources/ui/item.ui:169
-#: resources/ui/player_toolbar.ui:90 resources/ui/mpv_menu_actions.ui:27
-#: src/ui/mpv/page.rs:883 src/ui/mpv/page.rs:885 src/ui/widgets/item.rs:569
+#: resources/ui/album_widget.ui:94 resources/ui/other.ui:76
+#: resources/ui/item.ui:169 resources/ui/player_toolbar.ui:90
+#: resources/ui/mpv_menu_actions.ui:27 src/ui/mpv/page.rs:883
+#: src/ui/mpv/page.rs:885 src/ui/widgets/item.rs:571
 msgid "Play"
 msgstr "Démarrer / Reprendre"
 
@@ -344,8 +345,8 @@ msgstr "Arrêter et quitter"
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: resources/ui/mpvpage.ui:134 resources/ui/window.ui:548
-#: resources/ui/window.ui:570 resources/ui/mpv_menu.ui:35
+#: resources/ui/mpvpage.ui:134 resources/ui/window.ui:542
+#: resources/ui/window.ui:564 resources/ui/mpv_menu.ui:35
 msgid "Playlist"
 msgstr "Liste de lecture"
 
@@ -386,7 +387,7 @@ msgid "Volume"
 msgstr "Volume"
 
 #: resources/ui/mpvpage.ui:360 resources/ui/mpvpage.ui:417
-#: resources/ui/mpv_control_sidebar.ui:447
+#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/search.ui:70
 msgid "Audio"
 msgstr "Audio"
 
@@ -400,11 +401,11 @@ msgstr "Sous-titres"
 msgid "Disc"
 msgstr "Disque"
 
-#: resources/ui/home.ui:19 src/ui/widgets/home.rs:186
+#: resources/ui/home.ui:19
 msgid "Library"
 msgstr "Bibliothèque"
 
-#: resources/ui/home.ui:24 resources/ui/item.ui:278 src/ui/widgets/home.rs:164
+#: resources/ui/home.ui:24 resources/ui/item.ui:278
 msgid "Continue Watching"
 msgstr "Continuer de regarder"
 
@@ -453,41 +454,41 @@ msgstr "Voir les métadonnées"
 msgid "Name"
 msgstr "Nom"
 
-#: resources/ui/other.ui:72
+#: resources/ui/other.ui:94
 msgid "No Inscriptions"
 msgstr "Pas d'inscriptions"
 
-#: resources/ui/other.ui:95 resources/ui/item.ui:404
-msgid "Actors"
-msgstr ""
-
-#: resources/ui/other.ui:100 resources/ui/search.ui:46
+#: resources/ui/other.ui:116 resources/ui/search.ui:46
 msgid "Movie"
 msgstr "Film"
 
-#: resources/ui/other.ui:106 resources/ui/search.ui:40
+#: resources/ui/other.ui:122 resources/ui/search.ui:40
 msgid "Series"
 msgstr "Série"
 
-#: resources/ui/other.ui:112
+#: resources/ui/other.ui:128 resources/ui/search.ui:82
 msgid "Episode"
 msgstr ""
 
-#: resources/ui/other.ui:124 resources/ui/item.ui:419
+#: resources/ui/other.ui:140 resources/ui/item.ui:425
+msgid "Actors"
+msgstr ""
+
+#: resources/ui/other.ui:145 resources/ui/item.ui:440
 msgid "Studios"
 msgstr ""
 
-#: resources/ui/other.ui:129 resources/ui/item.ui:429
-#: src/ui/widgets/list.rs:130
+#: resources/ui/other.ui:150 resources/ui/item.ui:450
+#: src/ui/widgets/list.rs:128
 msgid "Tags"
 msgstr "Étiquettes"
 
-#: resources/ui/other.ui:134 resources/ui/item.ui:424
-#: src/ui/widgets/list.rs:131
+#: resources/ui/other.ui:155 resources/ui/item.ui:445
+#: src/ui/widgets/list.rs:129
 msgid "Genres"
 msgstr "Genres"
 
-#: resources/ui/other.ui:139 resources/ui/item.ui:414
+#: resources/ui/other.ui:160 resources/ui/item.ui:435
 msgid "Links"
 msgstr "Liens"
 
@@ -499,19 +500,23 @@ msgstr "Vidéo : "
 msgid "Subtitle: "
 msgstr "Sous-titres : "
 
-#: resources/ui/item.ui:394
+#: resources/ui/item.ui:388 resources/ui/single_grid.ui:170
+msgid "Nothing Here"
+msgstr "Rien ici"
+
+#: resources/ui/item.ui:415
 msgid "Included In"
 msgstr ""
 
-#: resources/ui/item.ui:399
+#: resources/ui/item.ui:420
 msgid "Additional Parts"
 msgstr ""
 
-#: resources/ui/item.ui:409
+#: resources/ui/item.ui:430
 msgid "Recommend"
 msgstr ""
 
-#: resources/ui/item.ui:447
+#: resources/ui/item.ui:468
 msgid "MediaInfo"
 msgstr "Informations du média"
 
@@ -540,7 +545,7 @@ msgid "No data."
 msgstr "Pas de données."
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/single_grid.ui:111
-#: src/ui/widgets/item.rs:941
+#: src/ui/widgets/item.rs:943
 msgid "Title"
 msgstr "Titre"
 
@@ -596,7 +601,7 @@ msgstr "Identifiant IMDb"
 msgid "Lock The Item"
 msgstr "Verrouiller l'élément"
 
-#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:598
+#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:592
 msgid "Advanced Settings"
 msgstr "Paramètres avancés"
 
@@ -884,11 +889,11 @@ msgid "Scan"
 msgstr "Scanner"
 
 #: resources/ui/search.ui:23 resources/ui/window.ui:16
-#: resources/ui/window.ui:390
+#: resources/ui/window.ui:390 src/ui/widgets/window.rs:314
 msgid "Search"
 msgstr "Rechercher"
 
-#: resources/ui/search.ui:52 src/ui/widgets/list.rs:129
+#: resources/ui/search.ui:52 src/ui/widgets/list.rs:127
 msgid "BoxSet"
 msgstr "Compilation"
 
@@ -900,11 +905,11 @@ msgstr "Personne"
 msgid "Music Album"
 msgstr "Album de musique"
 
-#: resources/ui/search.ui:137
+#: resources/ui/search.ui:155
 msgid "Nothing Here or No type selected"
 msgstr "Rien ici ou aucun type sélectionné"
 
-#: resources/ui/search.ui:138
+#: resources/ui/search.ui:156
 msgid "Maybe you should try using different search terms"
 msgstr ""
 "Vous pourriez peut-être essayer d'utiliser des termes de recherche différents"
@@ -973,7 +978,7 @@ msgstr "Du plus grand au plus petit"
 msgid "Sort By"
 msgstr "Trier par"
 
-#: resources/ui/single_grid.ui:112 src/ui/widgets/item.rs:945
+#: resources/ui/single_grid.ui:112 src/ui/widgets/item.rs:947
 msgid "Bitrate"
 msgstr "Débit binaire"
 
@@ -1008,10 +1013,6 @@ msgstr "Durée"
 #: resources/ui/single_grid.ui:121
 msgid "Updated At"
 msgstr "Mis à jour à"
-
-#: resources/ui/single_grid.ui:170
-msgid "Nothing Here"
-msgstr "Rien ici"
 
 #: resources/ui/single_grid.ui:185
 msgid "Poster"
@@ -1058,11 +1059,12 @@ msgstr "Se déconnecter"
 msgid "Contents"
 msgstr "Contenu"
 
-#: resources/ui/window.ui:298
+#: resources/ui/window.ui:298 src/ui/widgets/window.rs:290
 msgid "Home"
 msgstr "Accueil"
 
-#: resources/ui/window.ui:344 src/ui/widgets/list.rs:132
+#: resources/ui/window.ui:344 src/ui/widgets/list.rs:130
+#: src/ui/widgets/window.rs:302
 msgid "Liked"
 msgstr "Aimé"
 
@@ -1170,7 +1172,7 @@ msgstr "Le descripteur ne peut pas être vide !"
 msgid "Invalid regex"
 msgstr "Expression régulière invalide"
 
-#: src/ui/widgets/home.rs:230
+#: src/ui/widgets/home.rs:222
 msgid "Latest"
 msgstr "Les plus récents"
 
@@ -1242,73 +1244,81 @@ msgstr "Image copiée dans le presse-papiers"
 msgid "Error loading image"
 msgstr "Erreur de chargement de l'image"
 
-#: src/ui/widgets/item.rs:565 src/ui/widgets/list.rs:128
+#: src/ui/widgets/item.rs:318
+msgid "Select an episode"
+msgstr ""
+
+#: src/ui/widgets/item.rs:567 src/ui/widgets/list.rs:126
 msgid "Resume"
 msgstr "Reprendre"
 
-#: src/ui/widgets/item.rs:935
+#: src/ui/widgets/item.rs:937
 msgid "Codec"
 msgstr ""
 
-#: src/ui/widgets/item.rs:938
+#: src/ui/widgets/item.rs:940
 msgid "Language"
 msgstr ""
 
-#: src/ui/widgets/item.rs:950
+#: src/ui/widgets/item.rs:952
 msgid "BitDepth"
 msgstr ""
 
-#: src/ui/widgets/item.rs:954
+#: src/ui/widgets/item.rs:956
 msgid "SampleRate"
 msgstr ""
 
-#: src/ui/widgets/item.rs:958
+#: src/ui/widgets/item.rs:960
 msgid "Height"
 msgstr ""
 
-#: src/ui/widgets/item.rs:961
+#: src/ui/widgets/item.rs:963
 msgid "Width"
 msgstr ""
 
-#: src/ui/widgets/item.rs:964
+#: src/ui/widgets/item.rs:966
 msgid "ColorSpace"
 msgstr ""
 
-#: src/ui/widgets/item.rs:968
+#: src/ui/widgets/item.rs:970
 msgid "DisplayTitle"
 msgstr ""
 
-#: src/ui/widgets/item.rs:972
+#: src/ui/widgets/item.rs:974
 msgid "Channel"
 msgstr ""
 
-#: src/ui/widgets/item.rs:976
+#: src/ui/widgets/item.rs:978
 msgid "ChannelLayout"
 msgstr ""
 
-#: src/ui/widgets/item.rs:981
+#: src/ui/widgets/item.rs:983
 msgid "AverageFrameRate"
 msgstr ""
 
-#: src/ui/widgets/item.rs:985
+#: src/ui/widgets/item.rs:987
 msgid "PixelFormat"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1105
+#: src/ui/widgets/item.rs:1101
 msgid "No video source found"
 msgstr "Aucune source vidéo trouvée"
 
-#: src/ui/widgets/music_album.rs:279
+#: src/ui/widgets/music_album.rs:278
 msgid "More From"
 msgstr "Plus de"
 
-#: src/ui/widgets/list.rs:120
+#: src/ui/widgets/list.rs:118
 msgid "Channels"
 msgstr "Chaînes"
 
-#: src/ui/widgets/list.rs:127
+#: src/ui/widgets/list.rs:125
 msgid "All"
 msgstr "Tout"
+
+#: src/ui/widgets/list.rs:131
+msgid "Folder"
+msgstr ""
 
 #: src/ui/widgets/liked.rs:162
 msgid "Favourite"
@@ -1330,15 +1340,15 @@ msgstr "Modifier le serveur"
 msgid "Present"
 msgstr "Présent"
 
-#: src/ui/widgets/tu_list_item.rs:578
+#: src/ui/widgets/tu_list_item.rs:610
 msgid "Scanning..."
 msgstr "Scan..."
 
-#: src/ui/widgets/tu_list_item.rs:741 src/ui/widgets/tu_list_item.rs:802
+#: src/ui/widgets/tu_list_item.rs:773 src/ui/widgets/tu_list_item.rs:834
 msgid "Success"
 msgstr "Succès"
 
-#: src/ui/widgets/window.rs:810
+#: src/ui/widgets/window.rs:799
 msgid "Server Panel"
 msgstr ""
 
