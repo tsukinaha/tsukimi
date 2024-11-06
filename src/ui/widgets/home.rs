@@ -161,8 +161,6 @@ impl HomePage {
             }
         };
 
-        hortu.set_title(gettext("Continue Watching"));
-
         hortu.set_items(&results.items);
     }
 
@@ -182,8 +180,6 @@ impl HomePage {
         };
 
         let results = results.items;
-
-        hortu.set_title(gettext("Library"));
 
         hortu.set_items(&results);
 

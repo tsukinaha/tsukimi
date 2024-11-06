@@ -154,7 +154,7 @@ impl OtherPage {
         let id = self.item().id();
         let pic = PictureLoader::new(&id, "Primary", None);
         pic.set_size_request(218, 328);
-        pic.set_halign(gtk::Align::Start);
+        pic.set_halign(gtk::Align::Fill);
         pic.set_valign(gtk::Align::Start);
         imp.picbox.append(&pic);
     }

@@ -154,6 +154,8 @@ pub(crate) mod imp {
         pub tagline: TemplateChild<gtk::Label>,
         #[template_child]
         pub toolbar: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub episode_list_revealer: TemplateChild<gtk::Revealer>,
 
         #[template_child]
         pub spinner: TemplateChild<adw::Spinner>,
@@ -250,7 +252,7 @@ pub(crate) mod imp {
 
             if item_type == "Series" || item_type == "Episode" {
                 self.toolbar.set_visible(true);
-                self.episode_stack.set_visible(true);
+                self.episode_list_revealer.set_reveal_child(true);
                 self.episode_line.set_visible(true);
             }
 
@@ -311,6 +313,7 @@ impl ItemPage {
                 series_id,
                 async move {
                     let Some(intro) = obj.set_shows_next_up(&series_id).await else {
+                        obj.imp().buttoncontent.set_label(&gettext("Select an episode"));
                         return;
                     };
                     obj.set_intro::<false>(&intro).await;
@@ -471,9 +474,9 @@ impl ItemPage {
 
         let position = dropdown.selected();
 
-        match position {
+        let list = match position {
             0 => {
-                let continue_play_list = match spawn_tokio(async move {
+                match spawn_tokio(async move {
                     EMBY_CLIENT.get_continue_play_list(&series_id).await
                 })
                 .await
@@ -483,15 +486,7 @@ impl ItemPage {
                         toast!(self, e.to_user_facing());
                         return;
                     }
-                };
-
-                for episode in &continue_play_list {
-                    let tu_item = TuItem::from_simple(episode, None);
-                    let tu_object = TuObject::new(&tu_item);
-                    store.append(&tu_object);
                 }
-
-                imp.episode_list_vec.replace(continue_play_list);
             }
             _ => {
                 let season_list = imp.season_list_vec.borrow();
@@ -501,7 +496,7 @@ impl ItemPage {
 
                 let season_id = season.id.clone();
 
-                let episodes = match spawn_tokio(async move {
+                match spawn_tokio(async move {
                     EMBY_CLIENT.get_episodes(&series_id, &season_id).await
                 })
                 .await
@@ -511,17 +506,22 @@ impl ItemPage {
                         toast!(self, e.to_user_facing());
                         return;
                     }
-                };
-
-                for episode in &episodes {
-                    let tu_item = TuItem::from_simple(episode, None);
-                    let tu_object = TuObject::new(&tu_item);
-                    store.append(&tu_object);
                 }
-
-                imp.episode_list_vec.replace(episodes);
             }
+        };
+
+        if list.is_empty() {
+            imp.episode_stack.set_visible_child_name("fallback");
+            return;
         }
+
+        for episode in &list {
+            let tu_item = TuItem::from_simple(episode, None);
+            let tu_object = TuObject::new(&tu_item);
+            store.append(&tu_object);
+        }
+
+        imp.episode_list_vec.replace(list);
 
         imp.episode_stack.set_visible_child_name("view");
     }
@@ -1064,13 +1064,7 @@ impl ItemPage {
     }
 
     pub fn set_flowlinks(&self, links: Vec<Urls>) {
-        let imp = self.imp();
-
-        let horbu = imp.linkshorbu.get();
-
-        horbu.set_title("Links");
-
-        horbu.set_links(&links);
+        self.imp().linkshorbu.set_links(&links);
     }
 
     pub fn get_window(&self) -> Window {

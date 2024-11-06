@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use adw::{
     prelude::*,
@@ -192,7 +192,7 @@ impl AlbumPage {
         let item = self.item();
         let id = item.id();
 
-        let songs = match fetch_with_cache(
+        let mut songs = match fetch_with_cache(
             &format!("audio_{}", item.id()),
             CachePolicy::ReadCacheAndRefresh,
             async move { EMBY_CLIENT.get_songs(&id).await },
@@ -206,8 +206,9 @@ impl AlbumPage {
             }
         };
 
-        let mut disc_boxes: HashMap<u32, super::disc_box::DiscBox> = HashMap::new();
+        let mut disc_boxes: BTreeMap<u32, super::disc_box::DiscBox> = BTreeMap::new();
 
+        songs.items.sort_by_key(|song| song.index_number);
         for song in songs.items {
             let item = TuItem::from_simple(&song, None);
             let parent_index_number = item.parent_index_number();
@@ -226,11 +227,13 @@ impl AlbumPage {
                         }
                     ),
                 );
-                self.imp().listbox.append(&new_disc_box);
                 new_disc_box
             });
-
             song_widget.add_song(item);
+        }
+
+        for (_, disc_box) in &disc_boxes {
+            self.imp().listbox.append(disc_box);
         }
     }
 
@@ -246,9 +249,13 @@ impl AlbumPage {
         let listbox = imp.listbox.get();
         let liststore = gio::ListStore::new::<CoreSong>();
         for child in listbox.observe_children().into_iter().flatten() {
-            let discbox = child.downcast::<DiscBox>().unwrap();
+            let Ok(discbox) = child.downcast::<DiscBox>() else {
+                continue;
+            };
             for child in discbox.imp().listbox.observe_children().into_iter().flatten() {
-                let song_widget = child.downcast::<SongWidget>().unwrap();
+                let Ok(song_widget) = child.downcast::<SongWidget>() else {
+                    continue;
+                };
                 let item = song_widget.coresong();
                 liststore.append(&item)
             }
@@ -274,11 +281,7 @@ impl AlbumPage {
         };
 
         if types == "More From" {
-            hortu.set_title(format!(
-                "{} {}",
-                gettext("More From"),
-                self.item().albumartist_name()
-            ));
+            hortu.set_title(format!("{} {}", gettext("More From"), self.item().albumartist_name()));
         } else {
             hortu.set_title(gettext(types));
         }
