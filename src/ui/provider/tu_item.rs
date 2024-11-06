@@ -23,7 +23,10 @@ use crate::{
         list::ListPage,
         music_album::AlbumPage,
         other::OtherPage,
-        single_grid::{imp::ListType, SingleGrid},
+        single_grid::{
+            imp::ListType,
+            SingleGrid,
+        },
         window::Window,
     },
     utils::{
@@ -283,7 +286,12 @@ impl TuItem {
             }
             "Episode" => {
                 let page = ItemPage::new(self);
-                push_page_with_tag(window, page, self.id(), &self.series_name().unwrap_or_default());
+                push_page_with_tag(
+                    window,
+                    page,
+                    self.id(),
+                    &self.series_name().unwrap_or_default(),
+                );
             }
             "MusicAlbum" => {
                 let page = AlbumPage::new(self.clone());

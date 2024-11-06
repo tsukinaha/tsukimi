@@ -1,3 +1,4 @@
+use gettextrs::gettext;
 use tracing::warn;
 
 pub trait UserFacingError {
@@ -15,7 +16,10 @@ impl UserFacingError for reqwest::Error {
             format!("Decoding Error: {}", self)
         } else if self.is_timeout() {
             warn!("Request Timeout Error: {}", self);
-            format!("Timeout Error: {}", self)
+            gettext("Timeout Error, Check your internet connection")
+        } else if self.is_connect() {
+            warn!("Request Connection Error: {}", self);
+            gettext("Connection Error, Check your internet connection")
         } else {
             warn!("Request Error: {}", self);
             format!("Error: {}", self)

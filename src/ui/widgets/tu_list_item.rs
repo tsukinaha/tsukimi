@@ -536,7 +536,9 @@ impl TuListItem {
     pub fn set_action(&self) -> Option<gio::SimpleActionGroup> {
         let item_type = self.item().item_type();
         match item_type.as_str() {
-            "Movie" | "Series" | "Episode" | "MusicVideo" | "AdultVideo" | "Audio" => self.set_item_action(true, true, true),
+            "Movie" | "Series" | "Episode" | "MusicVideo" | "AdultVideo" | "Audio" => {
+                self.set_item_action(true, true, true)
+            }
             "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Person" | "Actor"
             | "Director" | "Writer" | "Producer" | "TvChannel" | "Folder" => {
                 self.set_item_action(false, true, true)

@@ -112,11 +112,6 @@
                       </object>
                     </child>
                     <child>
-                      <object class="HortuScrolled" id="actorhortu">
-                        <property name="title" translatable="yes">Actors</property>
-                      </object>
-                    </child>
-                    <child>
                       <object class="HortuScrolled" id="moviehortu">
                         <property name="title" translatable="yes">Movie</property>
                         <property name="moreview">True</property>
@@ -138,6 +133,11 @@
                       <object class="HortuScrolled" id="videohortu">
                         <property name="title" translatable="yes">Video</property>
                         <property name="moreview">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="HortuScrolled" id="actorhortu">
+                        <property name="title" translatable="yes">Actors</property>
                       </object>
                     </child>
                     <child>

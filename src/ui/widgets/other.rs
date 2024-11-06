@@ -238,7 +238,7 @@ impl OtherPage {
                 self.hortu_set_actor_list("Series").await;
                 self.hortu_set_actor_list("Episode").await;
             }
-            "BoxSet" => {
+            "BoxSet" | "Playlist" => {
                 self.hortu_set_boxset_list().await;
             }
             "Audio" => {

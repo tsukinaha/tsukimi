@@ -1,3 +1,4 @@
+use gst::ClockTime;
 use gtk::{
     glib,
     prelude::*,
@@ -24,6 +25,7 @@ use crate::{
 mod imp {
 
     use adw::subclass::bin::BinImpl;
+    use glib::closure_local;
     use gtk::{
         glib::subclass::InitializingObject,
         CompositeTemplate,
@@ -108,10 +110,13 @@ mod imp {
             self.parent_constructed();
             self.progress_scale.set_player(Some(&self.player));
             let obj = self.obj().clone();
-            self.player.connect_local("stream-start", true, move |_| {
-                obj.change_view();
-                None
-            });
+            self.player.connect_closure(
+                "stream-start",
+                false,
+                closure_local!(move |_player: MusicPlayer, duration: ClockTime| {
+                    obj.change_view(duration);
+                }),
+            );
             self.obj().set_repeat_mode(ListRepeatMode::from_string(&SETTINGS.music_repeat_mode()));
         }
     }
@@ -167,15 +172,16 @@ impl PlayerToolbarBox {
         self.imp().toolbar.set_revealed(true);
     }
 
-    pub fn change_view(&self) {
+    pub fn change_view(&self, duration: ClockTime) {
         let Some(core_song) = self.imp().player.active_core_song() else {
             return;
         };
         let imp = self.imp();
         imp.title_label.set_text(&core_song.name());
         imp.artist_label.set_text(&core_song.artist());
-        imp.duration_label.set_text(&format_duration(core_song.duration() as i64));
-        imp.progress_scale.set_range(0.0, core_song.duration() as f64);
+        let duration = duration.seconds();
+        imp.duration_label.set_text(&format_duration(duration as i64));
+        imp.progress_scale.set_range(0.0, duration as f64);
         spawn(glib::clone!(
             #[weak]
             imp,

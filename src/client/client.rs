@@ -33,6 +33,7 @@ use url::Url;
 use uuid::Uuid;
 
 use super::{
+    error::UserFacingError,
     structs::{
         ActivityLogs,
         AuthenticateResponse,
@@ -259,7 +260,17 @@ impl EmbyClient {
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
         let request = self.prepare_request(Method::GET, path, params)?;
-        let res = self.send_request(request).await?.error_for_status()?;
+        let res = self.send_request(request).await?;
+
+        let res = match res.error_for_status() {
+            Ok(r) => r,
+            Err(e) => {
+                let Some(status) = e.status() else {
+                    return Err(anyhow!("Failed to get status"));
+                };
+                return Err(anyhow!("{}", status));
+            }
+        };
 
         let res_text = res.text().await?;
         debug!("Response: {}", res_text);
@@ -306,7 +317,10 @@ impl EmbyClient {
     }
 
     async fn send_request(&self, request: RequestBuilder) -> Result<Response> {
-        let res = request.send().await?;
+        let res = match request.send().await {
+            Ok(r) => r,
+            Err(e) => return Err(anyhow!(e.to_user_facing())),
+        };
         Ok(res)
     }
 

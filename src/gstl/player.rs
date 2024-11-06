@@ -16,11 +16,13 @@ pub mod imp {
     };
 
     use anyhow::Result;
-    use async_channel::{
+    use flume::{
+        unbounded,
         Receiver,
         Sender,
     };
     use glib::subclass::Signal;
+    use gst::ClockTime;
     use gtk::{
         glib,
         glib::Properties,
@@ -65,37 +67,21 @@ pub mod imp {
         }
     }
 
-    struct AboutToFinish {
-        tx: Sender<bool>,
-        rx: Receiver<bool>,
+    pub enum GstreamerEvent {
+        AboutToFinish,
+        StreamStart,
+        Eos,
     }
 
-    static ABOUT_TO_FINISH: Lazy<AboutToFinish> = Lazy::new(|| {
-        let (tx, rx) = async_channel::bounded::<bool>(1);
-
-        AboutToFinish { tx, rx }
-    });
-
-    struct StreamStart {
-        tx: Sender<bool>,
-        rx: Receiver<bool>,
+    pub struct GstreamerEventChannel {
+        pub tx: Sender<GstreamerEvent>,
+        pub rx: Receiver<GstreamerEvent>,
     }
 
-    static STREAM_START: Lazy<StreamStart> = Lazy::new(|| {
-        let (tx, rx) = async_channel::bounded::<bool>(1);
+    static GSTREAMER_EVENT_CHANNEL: Lazy<GstreamerEventChannel> = Lazy::new(|| {
+        let (tx, rx) = unbounded::<GstreamerEvent>();
 
-        StreamStart { tx, rx }
-    });
-
-    struct Eos {
-        tx: Sender<bool>,
-        rx: Receiver<bool>,
-    }
-
-    static EOS: Lazy<Eos> = Lazy::new(|| {
-        let (tx, rx) = async_channel::bounded::<bool>(1);
-
-        Eos { tx, rx }
+        GstreamerEventChannel { tx, rx }
     });
 
     #[derive(Properties, Default)]
@@ -128,7 +114,7 @@ pub mod imp {
 
             bus.connect_message(Some("eos"), {
                 move |_, _| {
-                    let _ = EOS.tx.send_blocking(true);
+                    let _ = GSTREAMER_EVENT_CHANNEL.tx.send(GstreamerEvent::Eos);
                 }
             });
             bus.connect_message(Some("buffering"), {
@@ -147,62 +133,57 @@ pub mod imp {
                     }
                 )
             });
-
+            
             self.pipeline.set(pipeline).unwrap();
 
             self.connect_about_to_finish(move |_| {
-                let _ = ABOUT_TO_FINISH.tx.send_blocking(true);
+                let _ = GSTREAMER_EVENT_CHANNEL.tx.send(GstreamerEvent::AboutToFinish);
                 None
             });
 
             self.connect_stream_start(move |_, _| {
-                let _ = STREAM_START.tx.send_blocking(true);
+                let _ = GSTREAMER_EVENT_CHANNEL.tx.send(GstreamerEvent::StreamStart);
             });
 
             glib::spawn_future_local(glib::clone!(
                 #[weak(rename_to = imp)]
                 self,
                 async move {
-                    while let Ok(true) = ABOUT_TO_FINISH.rx.recv().await {
-                        if let Some(core_song) = imp.next_song() {
-                            imp.add_song(&core_song);
-                            imp.obj().set_gapless(true);
+                    while let Ok(value) = GSTREAMER_EVENT_CHANNEL.rx.recv_async().await {
+                        match value {
+                            GstreamerEvent::AboutToFinish => {
+                                if let Some(core_song) = imp.next_song() {
+                                    imp.add_song(&core_song);
+                                    imp.obj().set_gapless(true);
+                                }
+                            }
+                            GstreamerEvent::StreamStart => {
+                                let obj = imp.obj();
+                                if obj.gapless() {
+                                    let _ = imp.playlist_next();
+                                }
+                                obj.set_gapless(false);
+                                let Some(duration) =
+                                    imp.pipeline().query_duration::<gst::ClockTime>()
+                                else {
+                                    continue;
+                                };
+                                obj.emit_by_name::<()>("stream-start", &[&duration]);
+                            }
+                            GstreamerEvent::Eos => {
+                                let obj = imp.obj();
+                                if imp.playlist_next().is_err() {
+                                    return;
+                                };
+                                imp.stop();
+                                if obj.gapless() {
+                                    if let Some(core_song) = imp.obj().active_core_song() {
+                                        imp.play(&core_song);
+                                    };
+                                }
+                                obj.set_gapless(false);
+                            }
                         }
-                    }
-                }
-            ));
-
-            glib::spawn_future_local(glib::clone!(
-                #[weak(rename_to = imp)]
-                self,
-                async move {
-                    while let Ok(true) = STREAM_START.rx.recv().await {
-                        let obj = imp.obj();
-                        if obj.gapless() {
-                            let _ = imp.playlist_next();
-                        }
-                        obj.set_gapless(false);
-                        obj.emit_by_name::<()>("stream-start", &[]);
-                    }
-                }
-            ));
-
-            glib::spawn_future_local(glib::clone!(
-                #[weak(rename_to = imp)]
-                self,
-                async move {
-                    while let Ok(true) = EOS.rx.recv().await {
-                        let obj = imp.obj();
-                        if imp.playlist_next().is_err() {
-                            return;
-                        };
-                        imp.stop();
-                        if obj.gapless() {
-                            if let Some(core_song) = imp.obj().active_core_song() {
-                                imp.play(&core_song);
-                            };
-                        }
-                        obj.set_gapless(false);
                     }
                 }
             ));
@@ -210,7 +191,9 @@ pub mod imp {
 
         fn signals() -> &'static [Signal] {
             static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
-            SIGNALS.get_or_init(|| vec![Signal::builder("stream-start").build()])
+            SIGNALS.get_or_init(|| {
+                vec![Signal::builder("stream-start").param_types([ClockTime::static_type()]).build()]
+            })
         }
     }
 
