@@ -146,12 +146,6 @@ overlay>label {
   margin: 3px;
 }
 
-box>overlay>image {
-  background-color: #aeb5fa;
-  border-radius: 50px;
-  margin: 3px;
-}
-
 revealer>box>box>widget {
   background-color: rgba(1, 1, 1, 0.1);
   border-radius: 10px;

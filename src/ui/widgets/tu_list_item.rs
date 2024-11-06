@@ -316,6 +316,13 @@ impl TuListItem {
                 imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 self.set_picture();
             }
+            "Folder" => {
+                imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_visible(false);
+                self.set_picture();
+                self.set_folder();
+            }
             _ => {
                 imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 imp.listlabel.set_text(&item.name());
@@ -438,6 +445,15 @@ impl TuListItem {
         }
     }
 
+    pub fn set_folder(&self) {
+        let mark = gtk::Image::builder()
+            .icon_name("folder-symbolic")
+            .icon_size(gtk::IconSize::Large)
+            .build();
+        mark.add_css_class("accent");
+        self.imp().overlay.add_overlay(&mark);
+    }
+
     pub fn get_played_percentage(&self) -> f64 {
         let item = self.item();
         item.played_percentage()
@@ -516,10 +532,12 @@ impl TuListItem {
     pub fn set_action(&self) -> Option<gio::SimpleActionGroup> {
         let item_type = self.item().item_type();
         match item_type.as_str() {
-            "Movie" | "Series" | "Episode" | "MusicVideo" => self.set_item_action(true, true, true),
-            "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Person" | "Actor" | "Director" | "Writer" | "Producer"
-            | "TvChannel" => self.set_item_action(false, true, true),
-            "CollectionFolder" | "UserView" | "Audio" => self.set_item_action(false, false, false),
+            "Movie" | "Series" | "Episode" | "MusicVideo" | "AdultVideo" | "Audio" => self.set_item_action(true, true, true),
+            "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Person" | "Actor"
+            | "Director" | "Writer" | "Producer" | "TvChannel" | "Folder" => {
+                self.set_item_action(false, true, true)
+            }
+            "CollectionFolder" | "UserView" => self.set_item_action(false, false, false),
             _ => None,
         }
     }

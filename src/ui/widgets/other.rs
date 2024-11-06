@@ -1,4 +1,7 @@
-use chrono::{DateTime, Utc};
+use chrono::{
+    DateTime,
+    Utc,
+};
 use glib::Object;
 use gtk::{
     gio,
@@ -7,16 +10,32 @@ use gtk::{
     subclass::prelude::*,
 };
 
-use super::{horbu_scrolled::HorbuScrolled, item::dt, picture_loader::PictureLoader};
+use super::{
+    horbu_scrolled::HorbuScrolled,
+    item::dt,
+    picture_loader::PictureLoader,
+};
 use crate::{
-    bing_song_model, client::{
+    bing_song_model,
+    client::{
         client::EMBY_CLIENT,
         error::UserFacingError,
         structs::*,
-    }, fraction, fraction_reset, toast, ui::{provider::{core_song::CoreSong, tu_item::TuItem}, widgets::song_widget::SongWidget}, utils::{
+    },
+    fraction,
+    fraction_reset,
+    toast,
+    ui::{
+        provider::{
+            core_song::CoreSong,
+            tu_item::TuItem,
+        },
+        widgets::song_widget::SongWidget,
+    },
+    utils::{
         fetch_with_cache,
         CachePolicy,
-    }
+    },
 };
 
 pub(crate) mod imp {
@@ -83,7 +102,7 @@ pub(crate) mod imp {
         pub play_button: TemplateChild<gtk::Button>,
 
         #[template_child]
-        pub information_box: TemplateChild<gtk::Box>
+        pub information_box: TemplateChild<gtk::Box>,
     }
 
     // The central trait for subclassing a GObject
@@ -218,7 +237,7 @@ impl OtherPage {
                 self.hortu_set_actor_list("Movie").await;
                 self.hortu_set_actor_list("Series").await;
                 self.hortu_set_actor_list("Episode").await;
-            },
+            }
             "BoxSet" => {
                 self.hortu_set_boxset_list().await;
             }
@@ -239,7 +258,9 @@ impl OtherPage {
         }
     }
 
-    pub fn add_media_source(&self, media_sources: Vec<MediaSource>, date_created: Option<DateTime<Utc>>,) {
+    pub fn add_media_source(
+        &self, media_sources: Vec<MediaSource>, date_created: Option<DateTime<Utc>>,
+    ) {
         let mediainfo_box = self.imp().information_box.get();
         for mediasource in media_sources {
             let info = format!(
@@ -283,7 +304,9 @@ impl OtherPage {
             &format!("boxset_{}", id),
             CachePolicy::ReadCacheAndRefresh,
             async move { EMBY_CLIENT.get_includedby(&id).await },
-        ).await {
+        )
+        .await
+        {
             Ok(history) => history,
             Err(e) => {
                 toast!(self, e.to_user_facing());
@@ -299,13 +322,11 @@ impl OtherPage {
         let mut movies = Vec::new();
         let mut series = Vec::new();
         let mut episodes = Vec::new();
-        items.into_iter().for_each(|item| {
-            match item.item_type.as_str() {
-                "Movie" => movies.push(item),
-                "Series" => series.push(item),
-                "Episode" => episodes.push(item),
-                _ => {},
-            }
+        items.into_iter().for_each(|item| match item.item_type.as_str() {
+            "Movie" => movies.push(item),
+            "Series" => series.push(item),
+            "Episode" => episodes.push(item),
+            _ => {}
         });
 
         imp.moviehortu.set_items(&movies);
@@ -366,8 +387,7 @@ impl OtherPage {
                             .await
                     }
                 });
-                page.emit_by_name::<()>("sort-changed", &[]);
-                push_page_with_tag(&obj, page, tag);
+                push_page_with_tag(&obj, page, &tag, &tag);
             }
         ));
 

@@ -19,11 +19,11 @@ use crate::{
     },
     toast,
     ui::widgets::{
-        other::OtherPage,
         item::ItemPage,
         list::ListPage,
         music_album::AlbumPage,
-        single_grid::SingleGrid,
+        other::OtherPage,
+        single_grid::{imp::ListType, SingleGrid},
         window::Window,
     },
     utils::{
@@ -279,23 +279,23 @@ impl TuItem {
         match self.item_type().as_str() {
             "Series" | "Movie" | "Video" | "MusicVideo" | "AdultVideo" => {
                 let page = ItemPage::new(self);
-                push_page_with_tag(window, page, self.name());
+                push_page_with_tag(window, page, self.id(), &self.name());
             }
             "Episode" => {
                 let page = ItemPage::new(self);
-                push_page_with_tag(window, page, self.series_name().unwrap_or_default());
+                push_page_with_tag(window, page, self.id(), &self.series_name().unwrap_or_default());
             }
             "MusicAlbum" => {
                 let page = AlbumPage::new(self.clone());
-                push_page_with_tag(window, page, self.name());
+                push_page_with_tag(window, page, self.id(), &self.name());
             }
             "CollectionFolder" => {
                 let page = ListPage::new(self.id(), self.collection_type().unwrap_or_default());
-                push_page_with_tag(window, page, self.name());
+                push_page_with_tag(window, page, self.id(), &self.name());
             }
             "UserView" => {
                 let page = ListPage::new(self.id(), "livetv".to_string());
-                push_page_with_tag(window, page, self.name());
+                push_page_with_tag(window, page, self.id(), &self.name());
             }
             "Tag" | "Genre" | "MusicGenre" => {
                 let page = SingleGrid::new();
@@ -325,13 +325,31 @@ impl TuItem {
                             .await
                     }
                 });
-                page.emit_by_name::<()>("sort-changed", &[]);
-                push_page_with_tag(window, page, self.name());
+                push_page_with_tag(window, page, self.id(), &self.name());
+            }
+            "Folder" => {
+                let page = SingleGrid::new();
+                page.set_list_type(ListType::Folder);
+                let id = self.id();
+                page.connect_sort_changed_tokio(false, move |sort_by, sort_order| {
+                    let id = id.clone();
+                    async move {
+                        EMBY_CLIENT.get_folder_include(&id, &sort_by, &sort_order, 0).await
+                    }
+                });
+                let id = self.id();
+                page.connect_end_edge_overshot_tokio(false, move |sort_by, sort_order, n_items| {
+                    let id = id.clone();
+                    async move {
+                        EMBY_CLIENT.get_folder_include(&id, &sort_by, &sort_order, n_items).await
+                    }
+                });
+                push_page_with_tag(window, page, self.id(), &self.name());
             }
             _ => {
                 let page = OtherPage::new(self);
-                push_page_with_tag(window, page, self.name());
-            },
+                push_page_with_tag(window, page, self.id(), &self.name());
+            }
         }
     }
 
@@ -380,9 +398,9 @@ fn chrono_to_glib(datetime: &chrono::DateTime<chrono::Utc>) -> DateTime {
     DateTime::from_iso8601(&datetime.to_rfc3339(), None).unwrap()
 }
 
-fn push_page_with_tag<T>(window: Window, page: T, tag: String)
+fn push_page_with_tag<T>(window: Window, page: T, tag: String, name: &str)
 where
     T: NavigationPageExt,
 {
-    window.push_page(&page, &tag);
+    window.push_page(&page, &tag, name);
 }

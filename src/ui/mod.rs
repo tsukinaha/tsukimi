@@ -57,16 +57,10 @@ pub fn load_css() {
                     border-radius: 999px;
                     margin: 3px;
                 }}
-                
-                box>overlay>image {{
-                    background-color: {};
-                    border-radius: 999px;
-                    margin: 3px;
-                }}",
+                ",
         accent_color,
         accent_color,
         SETTINGS.accent_fg_color_code(),
-        accent_color,
         accent_color
     ));
 

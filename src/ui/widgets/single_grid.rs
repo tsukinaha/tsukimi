@@ -82,6 +82,7 @@ pub mod imp {
         Tags,
         Genres,
         Liked,
+        Folder,
         #[default]
         None,
     }
@@ -203,7 +204,7 @@ pub mod imp {
         #[template_child]
         pub descending: TemplateChild<gtk::ToggleButton>,
 
-        #[property(get, set, builder(ListType::default()))]
+        #[property(get, set = Self::set_list_type, builder(ListType::default()))]
         pub list_type: Cell<ListType>,
         #[property(get, set = Self::set_view_type, builder(ViewType::default()))]
         pub view_type: Cell<ViewType>,
@@ -262,7 +263,12 @@ pub mod imp {
         }
     }
 
-    impl WidgetImpl for SingleGrid {}
+    impl WidgetImpl for SingleGrid {
+        fn realize(&self) {
+            self.parent_realize();
+            self.obj().emit_by_name::<()>("sort-changed", &[]);
+        }
+    }
 
     impl WindowImpl for SingleGrid {}
 
@@ -289,6 +295,11 @@ pub mod imp {
         fn set_view_type(&self, view_type: ViewType) {
             self.view_type.set(view_type);
             self.scrolled.set_view_type(view_type);
+        }
+
+        pub fn set_list_type(&self, list_type: ListType) {
+            self.list_type.set(list_type);
+            self.obj().handle_type();
         }
     }
 }
@@ -368,6 +379,9 @@ impl SingleGrid {
                 imp.glbutton.set_visible(false);
             }
             ListType::Liked => {
+                imp.postmenu.set_visible(false);
+            }
+            ListType::Folder => {
                 imp.postmenu.set_visible(false);
             }
             ListType::None => {

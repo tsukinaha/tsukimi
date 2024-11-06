@@ -250,7 +250,9 @@ pub(crate) mod imp {
 
             let item = self.obj().item();
 
-            if item.item_type() == "Series" || (item.item_type() == "Episode" && item.series_name().is_some()) {
+            if item.item_type() == "Series"
+                || (item.item_type() == "Episode" && item.series_name().is_some())
+            {
                 self.toolbar.set_visible(true);
                 self.episode_list_revealer.set_reveal_child(true);
                 self.episode_line.set_visible(true);
@@ -476,9 +478,9 @@ impl ItemPage {
 
         let list = match position {
             0 => {
-                match spawn_tokio(async move {
-                    EMBY_CLIENT.get_continue_play_list(&series_id).await
-                })
+                match spawn_tokio(
+                    async move { EMBY_CLIENT.get_continue_play_list(&series_id).await },
+                )
                 .await
                 {
                     Ok(item) => item.items,
@@ -496,9 +498,9 @@ impl ItemPage {
 
                 let season_id = season.id.clone();
 
-                match spawn_tokio(async move {
-                    EMBY_CLIENT.get_episodes(&series_id, &season_id).await
-                })
+                match spawn_tokio(
+                    async move { EMBY_CLIENT.get_episodes(&series_id, &season_id).await },
+                )
                 .await
                 {
                     Ok(list) => list.items,
@@ -1059,7 +1061,7 @@ impl ItemPage {
             "Tags" => imp.tagshorbu.get(),
             _ => return,
         };
-        
+
         horbu.set_items(&infos, type_);
     }
 

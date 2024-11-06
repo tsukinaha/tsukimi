@@ -25,7 +25,9 @@ use serde_json::{
     Value,
 };
 use tracing::{
-    debug, info, warn
+    debug,
+    info,
+    warn,
 };
 use url::Url;
 use uuid::Uuid;
@@ -875,7 +877,28 @@ impl EmbyClient {
             ("SortBy", "DisplayOrder"),
             ("SortOrder", "Ascending"),
             ("EnableTotalRecordCount", "false"),
-            ("X-Emby-Client", "Tsukimi"),
+        ];
+        self.request(&path, &params).await
+    }
+
+    pub async fn get_folder_include(
+        &self, parent_id: &str, sort_by: &str, sort_order: &str, start_index: u32,
+    ) -> Result<List> {
+        let path = format!("Users/{}/Items", &self.user_id());
+        let start_index_string = start_index.to_string();
+        let sort_by = format!("IsFolder,{}", sort_by);
+        let params = [
+            (
+                "Fields",
+                "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
+            ),
+            ("StartIndex", &start_index_string),
+            ("ImageTypeLimit", "1"),
+            ("Limit", "50"),
+            ("ParentId", parent_id),
+            ("SortBy", &sort_by),
+            ("SortOrder", sort_order),
+            ("EnableTotalRecordCount", "false"),
         ];
         self.request(&path, &params).await
     }

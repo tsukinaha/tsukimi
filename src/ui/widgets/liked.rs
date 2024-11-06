@@ -206,8 +206,7 @@ impl LikedPage {
                             .await
                     }
                 });
-                page.emit_by_name::<()>("sort-changed", &[]);
-                push_page_with_tag(&obj, page, tag);
+                push_page_with_tag(&obj, page, &tag, &tag);
             }
         ));
     }

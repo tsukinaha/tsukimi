@@ -151,19 +151,18 @@ impl ImageInfoCard {
                         gtk::gdk_pixbuf::Pixbuf::from_stream_async(
                             &stream,
                             None::<&gio::Cancellable>,
-                            move |r| {
-                                match r {
-                                    Ok(pixbuf) => {
-                                        picture
-                                            .set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(&pixbuf)));
-                                        obj.set_picture_visible();
-                                    }
-                                    Err(_) => {
-                                        toast!(obj, gettext("Error loading image"));
-                                        obj.set_fallback_visible();
-                                    } 
+                            move |r| match r {
+                                Ok(pixbuf) => {
+                                    picture.set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(
+                                        &pixbuf,
+                                    )));
+                                    obj.set_picture_visible();
                                 }
-                            }
+                                Err(_) => {
+                                    toast!(obj, gettext("Error loading image"));
+                                    obj.set_fallback_visible();
+                                }
+                            },
                         );
                     }
                 }

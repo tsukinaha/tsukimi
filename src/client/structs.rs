@@ -173,8 +173,8 @@ impl ToString for IdType {
     fn to_string(&self) -> String {
         return match self {
             IdType::String(s) => s.to_string(),
-            IdType::Int(i) => i.to_string()
-        }
+            IdType::Int(i) => i.to_string(),
+        };
     }
 }
 
@@ -536,17 +536,16 @@ impl SGTitem {
                 EMBY_CLIENT.get_inlist(None, n_items, &list_type, &id, &sort_order, &sort_by).await
             }
         });
-        page.emit_by_name::<()>("sort-changed", &[]);
-        push_page_with_tag(widget, page, self.name.clone());
+        push_page_with_tag(widget, page, &self.id.to_string(), &self.name.clone());
     }
 }
 
-pub fn push_page_with_tag<T, R>(widget: &R, page: T, tag: String)
+pub fn push_page_with_tag<T, R>(widget: &R, page: T, tag: &str, name: &str)
 where
     T: NavigationPageExt,
     R: gtk::prelude::WidgetExt + glib::clone::Downgrade,
 {
     let binding = widget.root();
     let window = binding.and_downcast_ref::<Window>().unwrap();
-    window.push_page(&page, &tag);
+    window.push_page(&page, &tag, name);
 }

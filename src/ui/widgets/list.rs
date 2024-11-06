@@ -3,7 +3,6 @@ use glib::Object;
 use gtk::{
     gio,
     glib,
-    prelude::*,
     subclass::prelude::*,
 };
 
@@ -116,7 +115,6 @@ impl ListPage {
             page.connect_end_edge_overshot_tokio(false, move |_, _, n_items| async move {
                 EMBY_CLIENT.get_channels_list(n_items).await
             });
-            page.emit_by_name::<()>("sort-changed", &[]);
             stack.add_titled(&page, Some("channels"), &gettext("Channels"));
             return;
         }
@@ -130,12 +128,12 @@ impl ListPage {
             ("tags", &gettext("Tags"), ListType::Tags),
             ("genres", &gettext("Genres"), ListType::Genres),
             ("liked", &gettext("Liked"), ListType::Liked),
+            ("folder", &gettext("Folder"), ListType::Folder),
         ];
 
         for (name, title, list_type) in pages {
             let page = SingleGrid::new();
             page.set_list_type(list_type);
-            page.handle_type();
             let id_clone1 = id.clone();
             let include_item_types_clone1 = include_item_types.clone();
             page.connect_sort_changed_tokio(
@@ -144,16 +142,22 @@ impl ListPage {
                     let id_clone1 = id_clone1.clone();
                     let include_item_types_clone1 = include_item_types_clone1.clone();
                     async move {
-                        EMBY_CLIENT
-                            .get_list(
-                                &id_clone1,
-                                0,
-                                &include_item_types_clone1,
-                                list_type,
-                                &sort_order,
-                                &sort_by,
-                            )
-                            .await
+                        if list_type == ListType::Folder {
+                            EMBY_CLIENT
+                                .get_folder_include(&id_clone1, &sort_by, &sort_order, 0)
+                                .await
+                        } else {
+                            EMBY_CLIENT
+                                .get_list(
+                                    &id_clone1,
+                                    0,
+                                    &include_item_types_clone1,
+                                    list_type,
+                                    &sort_order,
+                                    &sort_by,
+                                )
+                                .await
+                        }
                     }
                 },
             );
@@ -165,20 +169,26 @@ impl ListPage {
                     let id_clone2 = id_clone2.clone();
                     let include_item_types_clone2 = include_item_types_clone2.clone();
                     async move {
-                        EMBY_CLIENT
-                            .get_list(
-                                &id_clone2,
-                                n_items,
-                                &include_item_types_clone2,
-                                list_type,
-                                &sort_order,
-                                &sort_by,
-                            )
-                            .await
+                        if list_type == ListType::Folder {
+                            EMBY_CLIENT
+                                .get_folder_include(&id_clone2, &sort_by, &sort_order, n_items)
+                                .await
+                        } else {
+                            EMBY_CLIENT
+                                .get_list(
+                                    &id_clone2,
+                                    n_items,
+                                    &include_item_types_clone2,
+                                    list_type,
+                                    &sort_order,
+                                    &sort_by,
+                                )
+                                .await
+                        }
                     }
                 },
             );
-            page.emit_by_name::<()>("sort-changed", &[]);
+
             stack.add_titled(&page, Some(name), title);
         }
     }

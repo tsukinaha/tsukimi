@@ -287,7 +287,7 @@ impl Window {
         if imp.homepage.child().is_none() {
             imp.homepage.set_child(Some(&HomePage::new()));
         }
-        imp.navipage.set_title("");
+        imp.navipage.set_title(&gettext("Home"));
         imp.mainview.pop_to_tag("mainpage");
         imp.insidestack.set_visible_child_name("homepage");
         imp.popbutton.set_visible(false);
@@ -299,7 +299,7 @@ impl Window {
         if imp.likedpage.child().is_none() {
             imp.likedpage.set_child(Some(&LikedPage::new()));
         }
-        imp.navipage.set_title("");
+        imp.navipage.set_title(&gettext("Liked"));
         imp.mainview.pop_to_tag("mainpage");
         imp.insidestack.set_visible_child_name("likedpage");
         imp.popbutton.set_visible(false);
@@ -311,7 +311,7 @@ impl Window {
         if imp.searchpage.child().is_none() {
             imp.searchpage.set_child(Some(&SearchPage::new()));
         }
-        imp.navipage.set_title("");
+        imp.navipage.set_title(&gettext("Search"));
         imp.mainview.pop_to_tag("mainpage");
         imp.insidestack.set_visible_child_name("searchpage");
         imp.popbutton.set_visible(false);
@@ -333,7 +333,7 @@ impl Window {
             imp.navipage.set_title("");
             return;
         }
-        imp.navipage.set_title(&tag);
+        imp.navipage.set_title(&now_page.title());
     }
 
     pub fn set_servers(&self) {
@@ -750,12 +750,13 @@ impl Window {
         imp.mpvnav.play(&url, suburl.as_deref(), item, episode_list, back, percentage, matcher);
     }
 
-    pub fn push_page<T>(&self, page: &T, tag: &str)
+    pub fn push_page<T>(&self, page: &T, tag: &str, name: &str)
     where
         T: NavigationPageExt,
     {
         let imp = self.imp();
-        imp.navipage.set_title(&tag);
+        page.set_title(&name);
+        imp.navipage.set_title(&name);
         if imp.mainview.find_page(tag).is_some() {
             imp.mainview.pop_to_tag(tag);
             return;
@@ -797,7 +798,7 @@ impl Window {
         let page = ServerPanel::new();
         let tag = gettext("Server Panel");
         page.set_tag(Some(&tag));
-        self.push_page(&page, &tag);
+        self.push_page(&page, &tag, &tag);
     }
 
     fn is_on_mpv_stack(&self) -> bool {
