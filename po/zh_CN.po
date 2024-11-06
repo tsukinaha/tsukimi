@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-05 23:01+0800\n"
-"PO-Revision-Date: 2024-11-04 02:57+0000\n"
-"Last-Translator: Inaha <sakuovds@gmail.com>\n"
+"PO-Revision-Date: 2024-11-06 15:16+0000\n"
+"Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -453,7 +453,7 @@ msgstr "无内容"
 
 #: resources/ui/other.ui:95 resources/ui/item.ui:404
 msgid "Actors"
-msgstr ""
+msgstr "演员"
 
 #: resources/ui/other.ui:100 resources/ui/search.ui:46
 msgid "Movie"
@@ -465,11 +465,11 @@ msgstr "系列"
 
 #: resources/ui/other.ui:112
 msgid "Episode"
-msgstr ""
+msgstr "剧集"
 
 #: resources/ui/other.ui:124 resources/ui/item.ui:419
 msgid "Studios"
-msgstr ""
+msgstr "工作室"
 
 #: resources/ui/other.ui:129 resources/ui/item.ui:429
 #: src/ui/widgets/list.rs:130
@@ -495,15 +495,15 @@ msgstr "字幕： "
 
 #: resources/ui/item.ui:394
 msgid "Included In"
-msgstr ""
+msgstr "包括在"
 
 #: resources/ui/item.ui:399
 msgid "Additional Parts"
-msgstr ""
+msgstr "附加部分"
 
 #: resources/ui/item.ui:409
 msgid "Recommend"
-msgstr ""
+msgstr "推荐"
 
 #: resources/ui/item.ui:447
 msgid "MediaInfo"
@@ -1333,7 +1333,7 @@ msgstr "成功"
 
 #: src/ui/widgets/window.rs:810
 msgid "Server Panel"
-msgstr ""
+msgstr "服务器面板"
 
 #: src/ui/widgets/server_panel.rs:118
 msgid "Shut down server"
