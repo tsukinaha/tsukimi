@@ -188,7 +188,7 @@ impl TuListItem {
                 }
                 self.set_rating();
             }
-            "Video" => {
+            "Video" | "MusicVideo" | "AdultVideo" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
                 imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
@@ -277,13 +277,18 @@ impl TuListItem {
                 self.set_picture();
             }
             "Episode" => {
-                imp.listlabel.set_text(&item.series_name().unwrap_or_default());
-                imp.label2.set_text(&format!(
-                    "S{}E{}: {}",
-                    item.parent_index_number(),
-                    item.index_number(),
-                    item.name()
-                ));
+                if let Some(series_name) = item.series_name() {
+                    imp.listlabel.set_text(&series_name);
+                    imp.label2.set_text(&format!(
+                        "S{}E{}: {}",
+                        item.parent_index_number(),
+                        item.index_number(),
+                        item.name()
+                    ));
+                } else {
+                    imp.listlabel.set_text(&item.name());
+                    imp.label2.set_visible(false);
+                }
                 imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 self.set_picture();
                 self.set_played();
@@ -312,7 +317,10 @@ impl TuListItem {
                 self.set_picture();
             }
             _ => {
-                self.set_visible(false);
+                imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_visible(false);
+                self.set_picture();
                 warn!("Unknown item type: {}", item_type)
             }
         }
@@ -508,7 +516,7 @@ impl TuListItem {
     pub fn set_action(&self) -> Option<gio::SimpleActionGroup> {
         let item_type = self.item().item_type();
         match item_type.as_str() {
-            "Movie" | "Series" | "Episode" => self.set_item_action(true, true, true),
+            "Movie" | "Series" | "Episode" | "MusicVideo" => self.set_item_action(true, true, true),
             "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Person" | "Actor" | "Director" | "Writer" | "Producer"
             | "TvChannel" => self.set_item_action(false, true, true),
             "CollectionFolder" | "UserView" | "Audio" => self.set_item_action(false, false, false),

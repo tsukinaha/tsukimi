@@ -277,7 +277,7 @@ impl TuItem {
         }
 
         match self.item_type().as_str() {
-            "Series" | "Movie" | "Video" => {
+            "Series" | "Movie" | "Video" | "MusicVideo" | "AdultVideo" => {
                 let page = ItemPage::new(self);
                 push_page_with_tag(window, page, self.name());
             }

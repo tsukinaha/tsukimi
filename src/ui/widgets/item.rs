@@ -248,9 +248,9 @@ pub(crate) mod imp {
                 gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
             ));
 
-            let item_type = self.obj().item().item_type();
+            let item = self.obj().item();
 
-            if item_type == "Series" || item_type == "Episode" {
+            if item.item_type() == "Series" || (item.item_type() == "Episode" && item.series_name().is_some()) {
                 self.toolbar.set_visible(true);
                 self.episode_list_revealer.set_reveal_child(true);
                 self.episode_line.set_visible(true);
@@ -323,7 +323,7 @@ impl ItemPage {
             self.imp().actionbox.set_id(Some(series_id.clone()));
             self.setup_item(&series_id).await;
             self.setup_seasons(&series_id).await;
-        } else if type_ == "Episode" {
+        } else if type_ == "Episode" && item.series_name().is_some() {
             let series_id = item.series_id().unwrap_or(item.id());
 
             spawn(glib::clone!(
