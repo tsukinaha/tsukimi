@@ -173,13 +173,13 @@ impl PlayerToolbarBox {
     }
 
     pub fn change_view(&self, duration: ClockTime) {
+        let duration = duration.seconds();
         let Some(core_song) = self.imp().player.active_core_song() else {
             return;
         };
         let imp = self.imp();
         imp.title_label.set_text(&core_song.name());
         imp.artist_label.set_text(&core_song.artist());
-        let duration = duration.seconds();
         imp.duration_label.set_text(&format_duration(duration as i64));
         imp.progress_scale.set_range(0.0, duration as f64);
         spawn(glib::clone!(

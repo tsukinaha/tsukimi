@@ -133,7 +133,7 @@ pub mod imp {
                     }
                 )
             });
-            
+
             self.pipeline.set(pipeline).unwrap();
 
             self.connect_about_to_finish(move |_| {
@@ -192,7 +192,9 @@ pub mod imp {
         fn signals() -> &'static [Signal] {
             static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
             SIGNALS.get_or_init(|| {
-                vec![Signal::builder("stream-start").param_types([ClockTime::static_type()]).build()]
+                vec![Signal::builder("stream-start")
+                    .param_types([ClockTime::static_type()])
+                    .build()]
             })
         }
     }
