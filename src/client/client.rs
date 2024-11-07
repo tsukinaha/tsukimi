@@ -354,11 +354,11 @@ impl EmbyClient {
         let path = format!("Videos/{}/stream.{}", media_source_id, continer);
         let mut url = url.join(&path).unwrap();
         url.query_pairs_mut()
+            .append_pair("Static", "true")
             .append_pair("mediaSourceId", media_source_id)
             .append_pair("deviceId", &DEVICE_ID)
             .append_pair("api_key", self.user_access_token.lock().unwrap().as_str())
             .append_pair("Tag", etag);
-        println!("Direct stream URL: {}", url.to_string());
         url.to_string()
     }
 
