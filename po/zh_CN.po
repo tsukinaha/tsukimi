@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-06 23:19+0800\n"
-"PO-Revision-Date: 2024-11-06 15:16+0000\n"
+"PO-Revision-Date: 2024-11-07 04:23+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
@@ -1239,7 +1239,7 @@ msgstr "加载图像时出错"
 
 #: src/ui/widgets/item.rs:318
 msgid "Select an episode"
-msgstr ""
+msgstr "选择一集"
 
 #: src/ui/widgets/item.rs:567 src/ui/widgets/list.rs:126
 msgid "Resume"
@@ -1311,7 +1311,7 @@ msgstr "全部"
 
 #: src/ui/widgets/list.rs:131
 msgid "Folder"
-msgstr ""
+msgstr "文件夹"
 
 #: src/ui/widgets/liked.rs:162
 msgid "Favourite"
