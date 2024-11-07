@@ -83,6 +83,10 @@ pub struct MediaSource {
     pub transcoding_url: Option<String>,
     #[serde(rename = "MediaStreams")]
     pub media_streams: Vec<MediaStream>,
+
+    // jellyfin
+    #[serde(rename = "ETag")]
+    pub etag: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

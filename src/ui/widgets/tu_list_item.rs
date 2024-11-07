@@ -540,7 +540,7 @@ impl TuListItem {
                 self.set_item_action(true, true, true)
             }
             "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Person" | "Actor"
-            | "Director" | "Writer" | "Producer" | "TvChannel" | "Folder" => {
+            | "Director" | "Writer" | "Producer" | "TvChannel" | "Folder" | "Season" => {
                 self.set_item_action(false, true, true)
             }
             "CollectionFolder" | "UserView" => self.set_item_action(false, false, false),

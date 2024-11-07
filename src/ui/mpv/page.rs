@@ -30,7 +30,10 @@ use crate::{
             EMBY_CLIENT,
         },
         error::UserFacingError,
-        structs::Back,
+        structs::{
+            Back,
+            MediaSource,
+        },
     },
     toast,
     ui::{
@@ -443,15 +446,19 @@ impl MPVPage {
             playback.media_sources.first()
         };
 
-        let (media_source_id, url, media_streams) = if let Some(media_source) = media_source {
-            (
-                media_source.id.clone(),
-                media_source.direct_stream_url.clone(),
-                media_source.media_streams.clone(),
-            )
-        } else {
-            toast!(self, gettext("No media sources found"));
-            return;
+        let (media_source_id, url, media_streams) = match media_source {
+            Some(source) => {
+                let url = source
+                    .direct_stream_url
+                    .clone()
+                    .or(source.transcoding_url.clone())
+                    .or(direct_stream_url(source));
+                (source.id.clone(), url, source.media_streams.clone())
+            }
+            None => {
+                toast!(self, gettext("No media sources found"));
+                return;
+            }
         };
 
         let Some(url) = url else {
@@ -1094,4 +1101,10 @@ impl MPVPage {
             _ => unreachable!(),
         }
     }
+}
+
+pub fn direct_stream_url(source: &MediaSource) -> Option<String> {
+    let container = source.container.clone()?;
+    let etag = source.etag.clone()?;
+    Some(EMBY_CLIENT.get_direct_stream_url(&container, &source.id.clone(), &etag))
 }

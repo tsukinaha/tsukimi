@@ -34,13 +34,16 @@ use crate::{
         structs::*,
     },
     toast,
-    ui::provider::{
-        dropdown_factory::{
-            DropdownList,
-            DropdownListBuilder,
+    ui::{
+        mpv::page::direct_stream_url,
+        provider::{
+            dropdown_factory::{
+                DropdownList,
+                DropdownListBuilder,
+            },
+            tu_item::TuItem,
+            tu_object::TuObject,
         },
-        tu_item::TuItem,
-        tu_object::TuObject,
     },
     utils::{
         fetch_with_cache,
@@ -618,7 +621,7 @@ impl ItemPage {
                                     .line1(stream.display_title.clone())
                                     .line2(stream.title.clone())
                                     .index(Some(stream.index))
-                                    .direct_url(stream.delivery_url.clone())
+                                    .url(stream.delivery_url.clone())
                                     .is_external(Some(stream.is_external))
                                     .build()
                                 else {
@@ -647,11 +650,15 @@ impl ItemPage {
                 .bit_rate
                 .map(|bit_rate| format!("{:.2} Kbps", bit_rate as f64 / 1_000.0))
                 .unwrap_or_default();
+            let play_url = media
+                .direct_stream_url
+                .clone()
+                .or(media.transcoding_url.clone())
+                .or(direct_stream_url(media));
             let Ok(dl) = DropdownListBuilder::default()
                 .line1(Some(media.name.clone()))
                 .line2(Some(line2))
-                .transcoding_url(media.transcoding_url.clone())
-                .direct_url(media.direct_stream_url.clone())
+                .url(play_url)
                 .id(Some(media.id.clone()))
                 .build()
             else {
@@ -1100,8 +1107,7 @@ impl ItemPage {
 
         let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
 
-        let Some(video_url) = video_dl.direct_url.as_ref().or(video_dl.transcoding_url.as_ref())
-        else {
+        let Some(video_url) = video_dl.url.as_ref() else {
             toast!(self, gettext("No video source found"));
             return;
         };
@@ -1127,7 +1133,7 @@ impl ItemPage {
         {
             let sub_dl: std::cell::Ref<DropdownList> = sub_object.borrow();
 
-            if Some(true) == sub_dl.is_external && sub_dl.direct_url.is_none() {
+            if Some(true) == sub_dl.is_external && sub_dl.url.is_none() {
                 let id = item.id();
                 let Some(sub_index) = sub_dl.index else {
                     return;
@@ -1150,7 +1156,7 @@ impl ItemPage {
 
                 Self::get_sub_url(&media, media_source_id, &sub_index)
             } else {
-                sub_dl.direct_url.clone()
+                sub_dl.url.clone()
             }
         } else {
             None

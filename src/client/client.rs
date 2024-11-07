@@ -345,6 +345,23 @@ impl EmbyClient {
         info!("Request URL: {}", hide_domain(url.as_str()));
     }
 
+    // jellyfin
+    pub fn get_direct_stream_url(
+        &self, continer: &str, media_source_id: &str, etag: &str,
+    ) -> String {
+        let mut url = self.url.lock().unwrap().as_ref().unwrap().clone();
+        url.path_segments_mut().unwrap().pop();
+        let path = format!("Videos/{}/stream.{}", media_source_id, continer);
+        let mut url = url.join(&path).unwrap();
+        url.query_pairs_mut()
+            .append_pair("mediaSourceId", media_source_id)
+            .append_pair("deviceId", &DEVICE_ID)
+            .append_pair("api_key", self.user_access_token.lock().unwrap().as_str())
+            .append_pair("Tag", etag);
+        println!("Direct stream URL: {}", url.to_string());
+        url.to_string()
+    }
+
     pub async fn search(&self, query: &str, filter: &[&str], start_index: &str) -> Result<List> {
         let filter_str = filter.join(",");
         let path = format!("Users/{}/Items", self.user_id());
