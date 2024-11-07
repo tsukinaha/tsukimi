@@ -54,7 +54,7 @@
                                         <property name="label" translatable="yes">Name</property>
                                         <property name="halign">start</property>
                                         <property name="valign">end</property>
-                                        <property name="ellipsize">middle</property>
+                                        <property name="wrap">true</property>
                                         <attributes>
                                           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                                           <attribute name="scale" value="1.5"/>
@@ -163,6 +163,7 @@
                     <child>
                       <object class="GtkRevealer" id="episode_list_revealer">
                         <property name="reveal-child">False</property>
+                        <property name="vexpand-set">True</property>
                         <child>
                           <object class="GtkScrolledWindow">
                             <property name="hscrollbar-policy">never</property>

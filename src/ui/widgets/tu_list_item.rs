@@ -233,7 +233,7 @@ impl TuListItem {
                 imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 self.set_apicture();
             }
-            "Series" => {
+            "Series" | "Season" => {
                 let year = if item.production_year() != 0 {
                     item.production_year().to_string()
                 } else {

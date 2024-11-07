@@ -428,6 +428,11 @@
                           </object>
                         </child>
                         <child>
+                          <object class="HortuScrolled" id="seasonshortu">
+                            <property name="title" translatable="yes">Seasons</property>
+                          </object>
+                        </child>
+                        <child>
                           <object class="HortuScrolled" id="actorhortu">
                             <property name="title" translatable="yes">Actors</property>
                           </object>

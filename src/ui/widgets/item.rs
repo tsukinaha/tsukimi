@@ -98,6 +98,8 @@ pub(crate) mod imp {
         pub includehortu: TemplateChild<HortuScrolled>,
         #[template_child]
         pub additionalhortu: TemplateChild<HortuScrolled>,
+        #[template_child]
+        pub seasonshortu: TemplateChild<HortuScrolled>,
 
         #[template_child]
         pub studioshorbu: TemplateChild<HorbuScrolled>,
@@ -731,6 +733,8 @@ impl ItemPage {
         for season in &season_list {
             season_list_store.append(&season.name);
         }
+
+        imp.seasonshortu.set_items(&season_list);
 
         imp.season_list_vec.replace(season_list);
         self.on_season_selected(None, imp.seasonlist.get()).await;
