@@ -45,7 +45,6 @@ jobs:
           install: >-
             mingw-w64-ucrt-x86_64-pkgconf
             mingw-w64-ucrt-x86_64-gcc
-            mingw-w64-ucrt-x86_64-mpv
             mingw-w64-ucrt-x86_64-libadwaita
             mingw-w64-ucrt-x86_64-gstreamer
             mingw-w64-ucrt-x86_64-glib2
@@ -55,6 +54,18 @@ jobs:
             mingw-w64-ucrt-x86_64-gst-plugins-ugly
             mingw-w64-ucrt-x86_64-gst-libav
             curl
+
+      - name: Install latest libmpv
+        if: ${{ matrix.arch == 'x86_64-windows-gnu' }}
+        shell: pwsh
+        run: |
+          $json = curl -s "https://api.github.com/repos/shinchiro/mpv-winbuild-cmake/releases/latest" | ConvertFrom-Json
+          $asset = $json.assets | Where-Object { $_.name -match "mpv-dev-x86_64-\d{8}-git" } | Select-Object -First 1
+          curl -L -o $asset.name $asset.browser_download_url
+          7z x -y $asset.name -olibmpv
+          cp -force libmpv/libmpv.dll.a c:/msys64/ucrt64/lib/
+          cp -force libmpv/libmpv-2.dll c:/msys64/ucrt64/bin/
+          cp -force -recurse libmpv/include/mpv c:/msys64/ucrt64/include/
 
       - name: Build tsukimi-${{ matrix.arch }}
         if: ${{ matrix.arch == 'x86_64-windows-gnu' }}
