@@ -147,13 +147,16 @@ impl HortuScrolled {
 
         self.set_visible(true);
 
-        let items = items.to_owned();
+        let items = items
+            .iter()
+            .map(|item| {
+                let object = TuObject::from_simple(item, None);
+                object.item().set_is_resume(self.isresume());
+                object
+            })
+            .collect::<Vec<_>>();
 
-        for result in items {
-            let object = TuObject::from_simple(&result, None);
-            object.item().set_is_resume(self.isresume());
-            store.append(&object);
-        }
+        store.extend_from_slice(&items);
 
         imp.revealer.set_reveal_child(true);
     }
