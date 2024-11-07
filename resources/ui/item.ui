@@ -265,7 +265,6 @@
                     <child>
                       <object class="GtkBox" id="toolbar">
                         <property name="orientation">horizontal</property>
-                        <property name="hexpand">true</property>
                         <property name="visible">False</property>
                         <property name="margin-start">6</property>
                         <child>
@@ -282,6 +281,13 @@
                             <property name="expression">
                               <lookup type="GtkStringObject" name="string"/>
                             </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="icon-name">view-more-symbolic</property>
+                            <property name="halign">start</property>
+                            <signal name="clicked" handler="on_season_view_more_clicked" swapped="yes"/>
                           </object>
                         </child>
                         <style>

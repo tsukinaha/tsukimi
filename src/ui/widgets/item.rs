@@ -20,12 +20,7 @@ use gtk::{
 };
 
 use super::{
-    fix::ScrolledWindowFixExt,
-    hortu_scrolled::SHOW_BUTTON_ANIMATION_DURATION,
-    item_utils::*,
-    song_widget::format_duration,
-    tu_overview_item::run_time_ticks_to_label,
-    window::Window,
+    fix::ScrolledWindowFixExt, hortu_scrolled::SHOW_BUTTON_ANIMATION_DURATION, item_utils::*, song_widget::format_duration, tu_overview_item::run_time_ticks_to_label, window::Window
 };
 use crate::{
     client::{
@@ -1263,6 +1258,24 @@ impl ItemPage {
     #[template_callback]
     fn on_leftbutton_clicked(&self) {
         self.anime::<false>();
+    }
+
+    #[template_callback]
+    async fn on_season_view_more_clicked(&self) {
+        let object = self.imp().seasonlist.selected_item();
+        let Some(season_name) = object.and_downcast_ref::<gtk::StringObject>() else {
+            return;
+        };
+
+        let season_name = season_name.string().to_string();
+
+        let season_list = self.imp().season_list_vec.borrow();
+        let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
+            return;
+        };
+
+        let item = TuItem::from_simple(season, None);
+        item.activate(self, None);
     }
 
     fn anime<const R: bool>(&self) {
