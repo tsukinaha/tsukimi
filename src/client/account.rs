@@ -14,6 +14,7 @@ pub struct Account {
     pub port: String,
     pub user_id: String,
     pub access_token: String,
+    pub server_type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize)]

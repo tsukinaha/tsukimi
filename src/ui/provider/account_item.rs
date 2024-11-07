@@ -32,6 +32,8 @@ pub mod imp {
         user_id: RefCell<String>,
         #[property(get, set)]
         access_token: RefCell<String>,
+        #[property(get, set)]
+        server_type: RefCell<String>,
     }
 
     #[glib::derived_properties]
@@ -59,6 +61,9 @@ impl AccountItem {
         item.set_port(account.port);
         item.set_user_id(account.user_id);
         item.set_access_token(account.access_token);
+        if let Some(server_type) = account.server_type {
+            item.set_server_type(server_type);
+        }
         item
     }
 
@@ -71,6 +76,7 @@ impl AccountItem {
             port: self.port(),
             user_id: self.user_id(),
             access_token: self.access_token(),
+            server_type: Some(self.server_type()),
         }
     }
 }

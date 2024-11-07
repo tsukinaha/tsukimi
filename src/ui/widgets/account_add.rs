@@ -72,6 +72,8 @@ pub mod imp {
 
         #[template_child]
         pub protocol: TemplateChild<gtk::DropDown>,
+        #[template_child]
+        pub server_type: TemplateChild<gtk::DropDown>,
 
         #[property(get, set, builder(ActionType::default()))]
         pub action_type: Cell<ActionType>,
@@ -179,6 +181,8 @@ impl AccountWindow {
             servername = res.server_name;
         }
 
+        let server_type = if imp.server_type.selected() == 0 { "Emby" } else { "Jellyfin" };
+
         let account = Account {
             servername: servername.to_string(),
             server: server.to_string(),
@@ -187,6 +191,7 @@ impl AccountWindow {
             port: port.to_string(),
             user_id: res.user.id,
             access_token: res.access_token,
+            server_type: Some(server_type.to_string()),
         };
 
         let action_type = imp.action_type.get();

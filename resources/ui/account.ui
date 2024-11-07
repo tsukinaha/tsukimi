@@ -67,6 +67,19 @@
                                         <child>
                                           <object class="AdwEntryRow" id="servername_entry">
                                             <property name="title" translatable="yes">Name (Nullable)</property>
+                                            <child type="suffix">
+                                              <object class="GtkDropDown" id="server_type">
+                                                <property name="valign">center</property>
+                                                <property name="model">
+                                                  <object class="GtkStringList">
+                                                    <items>
+                                                      <item>Emby</item>
+                                                      <item>Jellyfin</item>
+                                                    </items>
+                                                  </object>
+                                                </property>
+                                              </object>
+                                            </child>
                                           </object>
                                         </child>
                                         <child>
@@ -132,7 +145,6 @@
                         </child>
                       </object>
                     </child>
-
                   </object>
                 </property>
               </object>

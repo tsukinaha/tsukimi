@@ -42,6 +42,8 @@ mod imp {
     pub struct ServerActionRow {
         #[property(get, set, construct_only)]
         pub item: OnceCell<AccountItem>,
+        #[template_child]
+        pub server_image: TemplateChild<gtk::Image>,
     }
 
     #[glib::object_subclass]
@@ -68,6 +70,9 @@ mod imp {
             let obj = self.obj();
             obj.set_title(&obj.item().servername());
             obj.set_subtitle(&obj.item().username());
+            if obj.item().server_type() == "Jellyfin" {
+                self.server_image.set_icon_name(Some("jellyfin-symbolic"));
+            }
         }
     }
 
@@ -108,6 +113,10 @@ impl ServerActionRow {
         account_window.imp().servername_entry.set_text(&account.servername);
         account_window.imp().port_entry.set_text(&account.port);
         account_window.imp().server_entry.set_text(&account.server);
+        account_window
+            .imp()
+            .server_type
+            .set_selected(if account.server_type == Some("Emby".to_string()) { 0 } else { 1 });
         account_window.present(self.root().as_ref());
     }
 
