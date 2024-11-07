@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-06 23:19+0800\n"
+"POT-Creation-Date: 2024-11-07 12:22+0800\n"
 "PO-Revision-Date: 2024-10-28 00:00+0000\n"
 "Last-Translator: Abdulrahman <2140398@uj.edu.sa>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/tsukimi/main/ar/"
@@ -328,7 +328,7 @@ msgstr "كلمة المرور (يمكن تركها فارغة)"
 #: resources/ui/album_widget.ui:94 resources/ui/other.ui:76
 #: resources/ui/item.ui:169 resources/ui/player_toolbar.ui:90
 #: resources/ui/mpv_menu_actions.ui:27 src/ui/mpv/page.rs:883
-#: src/ui/mpv/page.rs:885 src/ui/widgets/item.rs:571
+#: src/ui/mpv/page.rs:885 src/ui/widgets/item.rs:573
 msgid "Play"
 msgstr "تشغيل"
 
@@ -401,7 +401,7 @@ msgstr "القرص"
 msgid "Library"
 msgstr "المكتبة"
 
-#: resources/ui/home.ui:24 resources/ui/item.ui:278
+#: resources/ui/home.ui:24 resources/ui/item.ui:277
 msgid "Continue Watching"
 msgstr "متابعة المشاهدة"
 
@@ -464,25 +464,25 @@ msgstr "مسلسل"
 msgid "Episode"
 msgstr ""
 
-#: resources/ui/other.ui:140 resources/ui/item.ui:425
+#: resources/ui/other.ui:140 resources/ui/item.ui:437
 msgid "Actors"
 msgstr ""
 
-#: resources/ui/other.ui:145 resources/ui/item.ui:440
+#: resources/ui/other.ui:145 resources/ui/item.ui:452
 msgid "Studios"
 msgstr ""
 
-#: resources/ui/other.ui:150 resources/ui/item.ui:450
+#: resources/ui/other.ui:150 resources/ui/item.ui:462
 #: src/ui/widgets/list.rs:128
 msgid "Tags"
 msgstr "التصنيف"
 
-#: resources/ui/other.ui:155 resources/ui/item.ui:445
+#: resources/ui/other.ui:155 resources/ui/item.ui:457
 #: src/ui/widgets/list.rs:129
 msgid "Genres"
 msgstr "الأنواع"
 
-#: resources/ui/other.ui:160 resources/ui/item.ui:435
+#: resources/ui/other.ui:160 resources/ui/item.ui:447
 msgid "Links"
 msgstr "الروابط"
 
@@ -494,23 +494,31 @@ msgstr "الفيديو: "
 msgid "Subtitle: "
 msgstr "الترجمة: "
 
-#: resources/ui/item.ui:388 resources/ui/single_grid.ui:170
+#: resources/ui/item.ui:291
+msgid "View this season"
+msgstr ""
+
+#: resources/ui/item.ui:395 resources/ui/single_grid.ui:170
 msgid "Nothing Here"
 msgstr "لا يوجد شيء هنا"
 
-#: resources/ui/item.ui:415
+#: resources/ui/item.ui:422
 msgid "Included In"
 msgstr ""
 
-#: resources/ui/item.ui:420
+#: resources/ui/item.ui:427
 msgid "Additional Parts"
 msgstr ""
 
-#: resources/ui/item.ui:430
+#: resources/ui/item.ui:432
+msgid "Seasons"
+msgstr ""
+
+#: resources/ui/item.ui:442
 msgid "Recommend"
 msgstr ""
 
-#: resources/ui/item.ui:468
+#: resources/ui/item.ui:480
 msgid "MediaInfo"
 msgstr "معلومات الوسائط"
 
@@ -539,7 +547,7 @@ msgid "No data."
 msgstr "لا توجد بيانات."
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/single_grid.ui:111
-#: src/ui/widgets/item.rs:943
+#: src/ui/widgets/item.rs:947
 msgid "Title"
 msgstr "العنوان"
 
@@ -969,7 +977,7 @@ msgstr "تنازلي"
 msgid "Sort By"
 msgstr "الترتيب حسب"
 
-#: resources/ui/single_grid.ui:112 src/ui/widgets/item.rs:947
+#: resources/ui/single_grid.ui:112 src/ui/widgets/item.rs:951
 msgid "Bitrate"
 msgstr "معدل البت (Bitrate)"
 
@@ -1235,65 +1243,69 @@ msgstr "تم نسخ الصورة إلى الحافظة"
 msgid "Error loading image"
 msgstr "خطأ في تحميل الصورة"
 
-#: src/ui/widgets/item.rs:318
+#: src/ui/widgets/item.rs:320
 msgid "Select an episode"
 msgstr ""
 
-#: src/ui/widgets/item.rs:567 src/ui/widgets/list.rs:126
+#: src/ui/widgets/item.rs:569 src/ui/widgets/list.rs:126
 msgid "Resume"
 msgstr "استئناف"
 
-#: src/ui/widgets/item.rs:937
+#: src/ui/widgets/item.rs:941
 msgid "Codec"
 msgstr ""
 
-#: src/ui/widgets/item.rs:940
+#: src/ui/widgets/item.rs:944
 msgid "Language"
 msgstr ""
 
-#: src/ui/widgets/item.rs:952
+#: src/ui/widgets/item.rs:956
 msgid "BitDepth"
 msgstr ""
 
-#: src/ui/widgets/item.rs:956
+#: src/ui/widgets/item.rs:960
 msgid "SampleRate"
 msgstr ""
 
-#: src/ui/widgets/item.rs:960
+#: src/ui/widgets/item.rs:964
 msgid "Height"
 msgstr ""
 
-#: src/ui/widgets/item.rs:963
+#: src/ui/widgets/item.rs:967
 msgid "Width"
 msgstr ""
 
-#: src/ui/widgets/item.rs:966
+#: src/ui/widgets/item.rs:970
 msgid "ColorSpace"
 msgstr ""
 
-#: src/ui/widgets/item.rs:970
+#: src/ui/widgets/item.rs:974
 msgid "DisplayTitle"
 msgstr ""
 
-#: src/ui/widgets/item.rs:974
+#: src/ui/widgets/item.rs:978
 msgid "Channel"
 msgstr ""
 
-#: src/ui/widgets/item.rs:978
+#: src/ui/widgets/item.rs:982
 msgid "ChannelLayout"
 msgstr ""
 
-#: src/ui/widgets/item.rs:983
+#: src/ui/widgets/item.rs:987
 msgid "AverageFrameRate"
 msgstr ""
 
-#: src/ui/widgets/item.rs:987
+#: src/ui/widgets/item.rs:991
 msgid "PixelFormat"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1101
+#: src/ui/widgets/item.rs:1105
 msgid "No video source found"
 msgstr "لم يتم العثور على مصدر الفيديو"
+
+#: src/ui/widgets/item.rs:1283
+msgid "Season not found. Is this a continue watching list?"
+msgstr ""
 
 #: src/ui/widgets/music_album.rs:278
 msgid "More From"
