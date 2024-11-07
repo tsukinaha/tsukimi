@@ -13,12 +13,12 @@
                   <object class="GtkBox" id="listbox">
                     <property name="orientation">vertical</property>
                     <property name="spacing">9</property>
-                    <property name="valign">start</property>
                     <property name="margin-bottom">18</property>
                     <child>
                       <object class="GtkRevealer" id="inforevealer">
                         <property name="transition-duration">300</property>
                         <property name="reveal-child">False</property>
+                        <property name="vexpand-set">True</property>
                         <child>
                           <object class="GtkBox">
                             <property name="orientation">horizontal</property>
@@ -158,6 +158,30 @@
                     <child>
                       <object class="HorbuScrolled" id="linkshorbu">
                         <property name="title" translatable="yes">Links</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRevealer" id="episode_list_revealer">
+                        <property name="reveal-child">False</property>
+                        <child>
+                          <object class="GtkScrolledWindow">
+                            <property name="hscrollbar-policy">never</property>
+                            <property name="vscrollbar-policy">always</property>
+                            <property name="overlay-scrolling">False</property>
+                            <property name="vexpand">True</property>
+                            <child>
+                              <object class="GtkListView" id="episode_list">
+                                <property name="margin-start">18</property>
+                                <property name="margin-end">18</property>
+                                <property name="single-click-activate">True</property>
+                                <signal name="activate" handler="on_listview_item_activated" swapped="yes"/>
+                                <style>
+                                  <class name="tu-listview"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>

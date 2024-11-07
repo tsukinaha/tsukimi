@@ -1271,6 +1271,7 @@ impl ItemPage {
 
         let season_list = self.imp().season_list_vec.borrow();
         let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
+            toast!(self, gettext("Season not found. Is this a continue watching list?"));
             return;
         };
 

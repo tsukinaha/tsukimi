@@ -7,7 +7,7 @@ use gtk::{
     gio,
     glib,
     prelude::*,
-    subclass::prelude::*,
+    subclass::prelude::*, template_callbacks,
 };
 
 use super::{
@@ -28,7 +28,7 @@ use crate::{
     ui::{
         provider::{
             core_song::CoreSong,
-            tu_item::TuItem,
+            tu_item::TuItem, tu_object::TuObject,
         },
         widgets::song_widget::SongWidget,
     },
@@ -44,18 +44,16 @@ pub(crate) mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{
-        glib,
-        prelude::*,
-        CompositeTemplate,
+        gio, glib, prelude::*, CompositeTemplate, SignalListItemFactory
     };
 
     use crate::{
         ui::{
-            provider::tu_item::TuItem,
+            provider::{tu_item::TuItem, tu_object::TuObject},
             widgets::{
                 horbu_scrolled::HorbuScrolled,
                 hortu_scrolled::HortuScrolled,
-                item_actionbox::ItemActionsBox,
+                item_actionbox::ItemActionsBox, tu_overview_item::imp::ViewGroup, utils::TuItemBuildExt,
             },
         },
         utils::spawn_g_timeout,
@@ -103,6 +101,13 @@ pub(crate) mod imp {
 
         #[template_child]
         pub information_box: TemplateChild<gtk::Box>,
+
+        #[template_child]
+        pub episode_list: TemplateChild<gtk::ListView>,
+        #[template_child]
+        pub episode_list_revealer: TemplateChild<gtk::Revealer>,
+
+        pub selection: gtk::SingleSelection,
     }
 
     // The central trait for subclassing a GObject
@@ -118,6 +123,7 @@ pub(crate) mod imp {
             HorbuScrolled::ensure_type();
             ItemActionsBox::ensure_type();
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -131,7 +137,8 @@ pub(crate) mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
-
+            let store = gio::ListStore::new::<TuObject>();
+            
             spawn_g_timeout(glib::clone!(
                 #[weak]
                 obj,
@@ -142,6 +149,9 @@ pub(crate) mod imp {
             ));
 
             self.actionbox.set_id(Some(obj.item().id()));
+            self.selection.set_model(Some(&store));
+            self.episode_list.set_factory(Some(SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView)));
+            self.episode_list.set_model(Some(&self.selection));
         }
     }
 
@@ -164,6 +174,7 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+#[template_callbacks]
 impl OtherPage {
     pub fn new(item: &TuItem) -> Self {
         Object::builder().property("item", item).build()
@@ -292,7 +303,7 @@ impl OtherPage {
         let Some(series_id) = self.item().series_id() else {
             return;
         };
-        let results = match fetch_with_cache(
+        let list = match fetch_with_cache(
             &format!("season_{}", id),
             CachePolicy::ReadCacheAndRefresh,
             async move { EMBY_CLIENT.get_episodes(&series_id, &id).await },
@@ -306,7 +317,16 @@ impl OtherPage {
             }
         };
 
-        self.imp().episodehortu.set_items(&results.items);
+        let store = self.imp().selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+
+        for item in list.items {
+            let tu_item = TuItem::from_simple(&item, None);
+            tu_item.set_is_resume(true);
+            let tu_item = TuObject::new(&tu_item);
+            store.append(&tu_item);
+        }
+
+        self.imp().episode_list_revealer.set_reveal_child(true);
     }
 
     pub fn add_external_link_horbu(&self, links: &[Urls]) {
@@ -316,6 +336,13 @@ impl OtherPage {
 
     pub fn add_sgt_item_horbu(&self, horbu: &HorbuScrolled, items: &[SGTitem], type_: &str) {
         horbu.set_items(&items, type_);
+    }
+
+    #[template_callback]
+    fn on_listview_item_activated(&self, position: u32, view: &gtk::ListView) {
+        let model = view.model().unwrap();
+        let tu_obj = model.item(position).and_downcast::<TuObject>().unwrap();
+        tu_obj.activate(view);
     }
 
     pub fn add_actor_item_hortu(&self, items: &[SimpleListItem]) {
