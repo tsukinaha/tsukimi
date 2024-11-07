@@ -20,7 +20,12 @@ use gtk::{
 };
 
 use super::{
-    fix::ScrolledWindowFixExt, hortu_scrolled::SHOW_BUTTON_ANIMATION_DURATION, item_utils::*, song_widget::format_duration, tu_overview_item::run_time_ticks_to_label, window::Window
+    fix::ScrolledWindowFixExt,
+    hortu_scrolled::SHOW_BUTTON_ANIMATION_DURATION,
+    item_utils::*,
+    song_widget::format_duration,
+    tu_overview_item::run_time_ticks_to_label,
+    window::Window,
 };
 use crate::{
     client::{

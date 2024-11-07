@@ -7,7 +7,8 @@ use gtk::{
     gio,
     glib,
     prelude::*,
-    subclass::prelude::*, template_callbacks,
+    subclass::prelude::*,
+    template_callbacks,
 };
 
 use super::{
@@ -28,7 +29,8 @@ use crate::{
     ui::{
         provider::{
             core_song::CoreSong,
-            tu_item::TuItem, tu_object::TuObject,
+            tu_item::TuItem,
+            tu_object::TuObject,
         },
         widgets::song_widget::SongWidget,
     },
@@ -44,16 +46,25 @@ pub(crate) mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{
-        gio, glib, prelude::*, CompositeTemplate, SignalListItemFactory
+        gio,
+        glib,
+        prelude::*,
+        CompositeTemplate,
+        SignalListItemFactory,
     };
 
     use crate::{
         ui::{
-            provider::{tu_item::TuItem, tu_object::TuObject},
+            provider::{
+                tu_item::TuItem,
+                tu_object::TuObject,
+            },
             widgets::{
                 horbu_scrolled::HorbuScrolled,
                 hortu_scrolled::HortuScrolled,
-                item_actionbox::ItemActionsBox, tu_overview_item::imp::ViewGroup, utils::TuItemBuildExt,
+                item_actionbox::ItemActionsBox,
+                tu_overview_item::imp::ViewGroup,
+                utils::TuItemBuildExt,
             },
         },
         utils::spawn_g_timeout,
@@ -138,7 +149,7 @@ pub(crate) mod imp {
             self.parent_constructed();
             let obj = self.obj();
             let store = gio::ListStore::new::<TuObject>();
-            
+
             spawn_g_timeout(glib::clone!(
                 #[weak]
                 obj,
@@ -150,7 +161,9 @@ pub(crate) mod imp {
 
             self.actionbox.set_id(Some(obj.item().id()));
             self.selection.set_model(Some(&store));
-            self.episode_list.set_factory(Some(SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView)));
+            self.episode_list.set_factory(Some(
+                SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
+            ));
             self.episode_list.set_model(Some(&self.selection));
         }
     }

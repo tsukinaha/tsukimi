@@ -120,7 +120,15 @@
                 "Type": "Video"
             }
         ],
-        "MaxStreamingBitrate": 40000000,
+        "MaxStreamingBitrate": 120000000,
+        "DirectPlayProfiles": [
+            {
+                "Container": "mov,fmp4,mp3,mpegts,flac,3gp,aac,flv,ogg,wav,mp4,mkv,ts,hls,webm,webma",
+                "Type": "Video",
+                "VideoCodec": "h263,av1,mpeg4,h264,mpeg1video,mpeg2video,hevc,dvhe,dvh1,h264,hevc,hev1,mpeg4,vp8,vp9",
+                "AudioCodec": "aac,mp1,alac,mp2,mp4als,mp3,vorbis,wav,ac3,eac3,mlp,flac,truehd,dts,dca,opus,pcm,pcm_s24le,pcm_s8,pcm_s16be,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le,pcm_alaw,pcm_mulaw,webma"
+            }
+        ],
         "TranscodingProfiles": [
             {
                 "Container": "ts",
@@ -134,14 +142,6 @@
                 "MinSegments": 2
             }
         ],
-        "DirectPlayProfiles": [
-            {
-                "Container": "mov,fmp4,mp3,mpegts,flac,3gp,aac,flv,ogg,wav,mp4,mkv,ts,hls,webm",
-                "Type": "Video",
-                "VideoCodec": "h263,av1,mpeg4,h264,mpeg1video,mpeg2video,hevc,dvhe,dvh1,h264,hevc,hev1,mpeg4,vp8,vp9",
-                "AudioCodec": "aac,mp1,alac,mp2,mp4als,mp3,vorbis,wav,ac3,eac3,mlp,flac,truehd,dts,dca,opus,pcm,pcm_s24le,pcm_s8,pcm_s16be,pcm_s16le,pcm_s24le,pcm_s32le,pcm_f32le,pcm_alaw,pcm_mulaw"
-            }
-        ],
         "ResponseProfiles": [
             {
                 "MimeType": "video/mp4",
@@ -150,7 +150,7 @@
             }
         ],
         "ContainerProfiles": [],
-        "MusicStreamingTranscodingBitrate": 40000000,
-        "MaxStaticBitrate": 40000000
+        "MusicStreamingTranscodingBitrate": 120000000,
+        "MaxStaticBitrate": 120000000
     }
 }

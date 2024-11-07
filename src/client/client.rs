@@ -489,7 +489,7 @@ impl EmbyClient {
             ("StartTimeTicks", "0"),
             ("UserId", &self.user_id()),
             ("AutoOpenLiveStream", "true"),
-            ("IsPlayback", "false"),
+            ("IsPlayback", "true"),
             ("AudioStreamIndex", "1"),
             ("SubtitleStreamIndex", "1"),
             ("MaxStreamingBitrate", "2147483647"),
