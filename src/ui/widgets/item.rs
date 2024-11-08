@@ -496,12 +496,13 @@ impl ItemPage {
                 }
             }
             _ => {
-                let season_list = imp.season_list_vec.borrow();
-                let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
-                    return;
+                let season_id = {
+                    let season_list = imp.season_list_vec.borrow();
+                    let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
+                        return;
+                    };
+                    season.id.clone()
                 };
-
-                let season_id = season.id.clone();
 
                 match spawn_tokio(
                     async move { EMBY_CLIENT.get_episodes(&series_id, &season_id).await },
@@ -1105,16 +1106,24 @@ impl ItemPage {
             return;
         };
 
-        let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
+        let video_url;
+        let media_source_id;
+        {
+            let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
 
-        let Some(video_url) = video_dl.url.as_ref() else {
-            toast!(self, gettext("No video source found"));
-            return;
-        };
+            video_url = match video_dl.url.as_ref() {
+                Some(url) => url.clone(),
+                None => {
+                    toast!(self, gettext("No video source found"));
+                    return;
+                }
+            };
 
-        let Some(ref media_source_id) = video_dl.id else {
-            return;
-        };
+            media_source_id = match video_dl.id {
+                Some(ref id) => id.clone(),
+                None => return,
+            };
+        }
 
         let Some(item) = self.current_item() else {
             return;
@@ -1131,7 +1140,7 @@ impl ItemPage {
         let sub_url = if let Some(sub_object) =
             sub_dropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
         {
-            let sub_dl: std::cell::Ref<DropdownList> = sub_object.borrow();
+            let sub_dl= sub_object.borrow::<std::cell::Ref<DropdownList>>().clone();
 
             if Some(true) == sub_dl.is_external && sub_dl.url.is_none() {
                 let id = item.id();
@@ -1154,7 +1163,7 @@ impl ItemPage {
                     }
                 };
 
-                Self::get_sub_url(&media, media_source_id, &sub_index)
+                Self::get_sub_url(&media, &media_source_id, &sub_index)
             } else {
                 sub_dl.url.clone()
             }
