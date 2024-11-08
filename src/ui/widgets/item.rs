@@ -1140,7 +1140,10 @@ impl ItemPage {
         let sub_url = if let Some(sub_object) =
             sub_dropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
         {
-            let sub_dl= sub_object.borrow::<std::cell::Ref<DropdownList>>().clone();
+            let sub_dl = {
+                let sub_dl: std::cell::Ref<DropdownList> = sub_object.borrow();
+                sub_dl.clone()
+            };
 
             if Some(true) == sub_dl.is_external && sub_dl.url.is_none() {
                 let id = item.id();

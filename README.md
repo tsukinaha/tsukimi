@@ -7,6 +7,11 @@ Tsukimi is a simple third-party Emby client written in GTK4-RS, uses MPV as the 
 
 ## Frequently Asked Questions
 https://dev.tsukinaha.org/tsukimi
+> [!IMPORTANT]    
+> This application may encounter various compatibility issues on **Windows**, such as scaling issues, inability to open links, and more.   
+> Please refer to the **documentation** for detailed information and solutions.   
+> 请注意，此应用在 **Windows** 上可能诸多遇到兼容性问题，例如：缩放，无法打开链接，等等。   
+> 请您 **查阅相关文档** 获取详细信息和解决方案
 
 ## Screenshots
 <div align="center">
