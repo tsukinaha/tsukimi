@@ -28,7 +28,7 @@ mod imp {
 
     use super::*;
     use crate::{
-        client::client::EMBY_CLIENT,
+        client::emby_client::EMBY_CLIENT,
         ui::{
             models::SETTINGS,
             provider::account_item::AccountItem,

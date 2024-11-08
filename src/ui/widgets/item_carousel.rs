@@ -86,7 +86,7 @@ pub mod imp {
                 .map(|(i, &h)| {
                     let height_ratio = (height - h).max(0.0) / height;
                     gtk::gsk::ColorStop::new(
-                        f32::min(1.0, height_ratio as f32),
+                        f32::min(1.0, height_ratio),
                         gdk::RGBA::new(
                             CUBIC_POINTS[i] as f32,
                             CUBIC_POINTS[i] as f32,

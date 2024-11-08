@@ -17,7 +17,7 @@ use gtk::{
 };
 
 use crate::{
-    client::client::EMBY_CLIENT,
+    client::emby_client::EMBY_CLIENT,
     toast,
     ui::{
         models::{

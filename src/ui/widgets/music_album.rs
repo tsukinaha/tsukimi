@@ -17,7 +17,7 @@ use super::song_widget::format_duration;
 use crate::{
     bing_song_model,
     client::{
-        client::EMBY_CLIENT,
+        emby_client::EMBY_CLIENT,
         error::UserFacingError,
         structs::List,
     },
@@ -231,7 +231,7 @@ impl AlbumPage {
             song_widget.add_song(item);
         }
 
-        for (_, disc_box) in &disc_boxes {
+        for disc_box in disc_boxes.values() {
             self.imp().listbox.append(disc_box);
         }
     }

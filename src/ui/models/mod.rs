@@ -1,7 +1,7 @@
 use once_cell::sync::Lazy;
 pub mod settings;
 pub use self::settings::Settings;
-use crate::client::client::EMBY_CLIENT;
+use crate::client::emby_client::EMBY_CLIENT;
 pub static SETTINGS: Lazy<Settings> = Lazy::new(Settings::default);
 
 pub static CACHE_PATH: Lazy<std::path::PathBuf> = Lazy::new(|| {

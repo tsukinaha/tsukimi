@@ -19,7 +19,7 @@ use super::{
 use crate::{
     bing_song_model,
     client::{
-        client::EMBY_CLIENT,
+        emby_client::EMBY_CLIENT,
         error::UserFacingError,
         structs::*,
     },
@@ -345,11 +345,11 @@ impl OtherPage {
 
     pub fn add_external_link_horbu(&self, links: &[Urls]) {
         let imp = self.imp();
-        imp.linkshorbu.set_links(&links);
+        imp.linkshorbu.set_links(links);
     }
 
     pub fn add_sgt_item_horbu(&self, horbu: &HorbuScrolled, items: &[SGTitem], type_: &str) {
-        horbu.set_items(&items, type_);
+        horbu.set_items(items, type_);
     }
 
     #[template_callback]
@@ -361,7 +361,7 @@ impl OtherPage {
 
     pub fn add_actor_item_hortu(&self, items: &[SimpleListItem]) {
         let hortu = self.imp().actorhortu.get();
-        hortu.set_items(&items);
+        hortu.set_items(items);
     }
 
     async fn hortu_set_boxset_list(&self) {

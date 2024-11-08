@@ -10,7 +10,7 @@ use super::single_grid::{
     imp::ListType,
     SingleGrid,
 };
-use crate::client::client::EMBY_CLIENT;
+use crate::client::emby_client::EMBY_CLIENT;
 mod imp {
 
     use std::cell::OnceCell;

@@ -12,7 +12,7 @@ use tracing::{
 };
 
 use crate::{
-    client::client::EMBY_CLIENT,
+    client::emby_client::EMBY_CLIENT,
     ui::models::emby_cache_path,
     utils::{
         spawn,

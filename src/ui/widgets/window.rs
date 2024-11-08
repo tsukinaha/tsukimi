@@ -250,7 +250,7 @@ use super::{
 };
 use crate::{
     client::{
-        client::EMBY_CLIENT,
+        emby_client::EMBY_CLIENT,
         structs::Back,
         Account,
     },
@@ -755,13 +755,13 @@ impl Window {
         T: NavigationPageExt,
     {
         let imp = self.imp();
-        page.set_title(&name);
-        imp.navipage.set_title(&name);
+        page.set_title(name);
+        imp.navipage.set_title(name);
         if imp.mainview.find_page(tag).is_some() {
             imp.mainview.pop_to_tag(tag);
             return;
         }
-        page.set_tag(Some(&tag));
+        page.set_tag(Some(tag));
         imp.mainview.push(page);
         imp.popbutton.set_visible(true);
     }

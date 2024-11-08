@@ -173,12 +173,14 @@ impl Default for IdType {
     }
 }
 
-impl ToString for IdType {
-    fn to_string(&self) -> String {
-        return match self {
-            IdType::String(s) => s.to_string(),
-            IdType::Int(i) => i.to_string(),
-        };
+use std::fmt;
+
+impl fmt::Display for IdType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            IdType::String(s) => write!(f, "{}", s),
+            IdType::Int(i) => write!(f, "{}", i),
+        }
     }
 }
 
@@ -504,7 +506,7 @@ pub struct User {
 use adw::prelude::*;
 use gtk::glib;
 
-use super::client::EMBY_CLIENT;
+use super::emby_client::EMBY_CLIENT;
 use crate::ui::widgets::{
     single_grid::SingleGrid,
     window::Window,
@@ -545,5 +547,5 @@ where
 {
     let binding = widget.root();
     let window = binding.and_downcast_ref::<Window>().unwrap();
-    window.push_page(&page, &tag, name);
+    window.push_page(&page, tag, name);
 }

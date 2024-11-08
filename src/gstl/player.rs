@@ -2,7 +2,7 @@ use gst::prelude::*;
 use gtk::glib;
 
 use crate::{
-    client::client::EMBY_CLIENT,
+    client::emby_client::EMBY_CLIENT,
     ui::provider::core_song::CoreSong,
 };
 

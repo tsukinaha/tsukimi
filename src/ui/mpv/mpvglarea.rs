@@ -16,7 +16,7 @@ use super::tsukimi_mpv::{
     TrackSelection,
     ACTIVE,
 };
-use crate::client::client::EMBY_CLIENT;
+use crate::client::emby_client::EMBY_CLIENT;
 
 mod imp {
     use std::thread::JoinHandle;
@@ -56,7 +56,7 @@ mod imp {
         }
 
         fn dispose(&self) {
-            if let Some(mpv) = self.mpv.mpv.lock().ok() {
+            if let Ok(mpv) = self.mpv.mpv.lock() {
                 drop(mpv);
             }
         }

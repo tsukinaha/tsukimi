@@ -69,6 +69,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
 }
 
+impl Default for HorbuScrolled {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl HorbuScrolled {
     pub fn new() -> Self {
         glib::Object::new()

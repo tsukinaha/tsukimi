@@ -29,7 +29,7 @@ use super::{
 };
 use crate::{
     client::{
-        client::EMBY_CLIENT,
+        emby_client::EMBY_CLIENT,
         error::UserFacingError,
         structs::*,
     },
@@ -936,7 +936,7 @@ impl ItemPage {
                     .build();
                 typebox.append(&icon);
                 let label = gtk::Label::builder()
-                    .label(&gettext(mediapart.stream_type))
+                    .label(gettext(mediapart.stream_type))
                     .attributes(
                         &gtk::pango::AttrList::from_string("0 4294967295 weight bold")
                             .expect("Failed to create attribute list"),

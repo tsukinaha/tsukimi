@@ -122,6 +122,12 @@ glib::wrapper! {
         @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
 }
 
+impl Default for HortuScrolled {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[template_callbacks]
 impl HortuScrolled {
     pub fn new() -> Self {

@@ -13,7 +13,7 @@ use super::{
     window::Window,
 };
 use crate::{
-    client::client::EMBY_CLIENT,
+    client::emby_client::EMBY_CLIENT,
     toast,
 };
 

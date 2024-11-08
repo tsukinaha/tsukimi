@@ -11,7 +11,7 @@ use serde::{
 
 use crate::{
     client::{
-        client::EMBY_CLIENT,
+        emby_client::EMBY_CLIENT,
         network::runtime,
     },
     ui::models::emby_cache_path,

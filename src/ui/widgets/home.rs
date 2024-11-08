@@ -11,7 +11,7 @@ use gtk::{
 use super::hortu_scrolled::HortuScrolled;
 use crate::{
     client::{
-        client::EMBY_CLIENT,
+        emby_client::EMBY_CLIENT,
         error::UserFacingError,
         structs::*,
     },

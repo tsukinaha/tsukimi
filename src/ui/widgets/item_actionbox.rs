@@ -10,7 +10,7 @@ use gtk::{
 use super::star_toggle::StarToggle;
 use crate::{
     client::{
-        client::EMBY_CLIENT,
+        emby_client::EMBY_CLIENT,
         error::UserFacingError,
     },
     toast,

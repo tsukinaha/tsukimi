@@ -9,7 +9,7 @@ use gtk::{
 
 use crate::{
     client::{
-        client::EMBY_CLIENT,
+        emby_client::EMBY_CLIENT,
         error::UserFacingError,
         structs::*,
     },

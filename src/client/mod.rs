@@ -1,5 +1,5 @@
 pub mod account;
-pub mod client;
+pub mod emby_client;
 pub mod error;
 pub mod network;
 pub mod proxy;

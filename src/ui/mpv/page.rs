@@ -25,7 +25,7 @@ use super::{
 };
 use crate::{
     client::{
-        client::{
+        emby_client::{
             BackType,
             EMBY_CLIENT,
         },
