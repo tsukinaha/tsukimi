@@ -17,7 +17,6 @@ use super::{
     picture_loader::PictureLoader,
 };
 use crate::{
-    bing_song_model,
     client::{
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
@@ -26,13 +25,9 @@ use crate::{
     fraction,
     fraction_reset,
     toast,
-    ui::{
-        provider::{
-            core_song::CoreSong,
-            tu_item::TuItem,
-            tu_object::TuObject,
-        },
-        widgets::song_widget::SongWidget,
+    ui::provider::{
+        tu_item::TuItem,
+        tu_object::TuObject,
     },
     utils::{
         fetch_with_cache,
@@ -271,15 +266,22 @@ impl OtherPage {
                     #[weak(rename_to = obj)]
                     self,
                     move |_| {
-                        let item = obj.item();
-                        let song_widget = SongWidget::new(item);
-                        let model = gio::ListStore::new::<CoreSong>();
-                        bing_song_model!(obj, model, song_widget.coresong());
+                        obj.item().play_single_audio(&obj);
                     }
                 ));
             }
             "Season" => {
                 self.hortu_set_season_episode_list().await;
+            }
+            "TvChannel" => {
+                self.imp().play_button.set_visible(true);
+                self.imp().play_button.connect_clicked(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_| {
+                        obj.item().play_tvchannel(&obj);
+                    }
+                ));
             }
             _ => {}
         }

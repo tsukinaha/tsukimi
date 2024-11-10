@@ -84,6 +84,8 @@ pub mod imp {
         pub item: RefCell<TuItem>,
         #[property(get, set, builder(PosterType::default()))]
         pub poster_type: Cell<PosterType>,
+        #[property(get, set, default = false)]
+        pub can_direct_play: Cell<bool>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub listlabel: TemplateChild<gtk::Label>,
@@ -166,6 +168,23 @@ impl TuListItem {
         Object::new()
     }
 
+    #[template_callback]
+    fn on_play_clicked(&self) {
+        let item = self.item();
+        let item_type = item.item_type();
+        match item_type.as_str() {
+            "TvChannel" => {
+                item.play_tvchannel(self);
+            }
+            "Audio" => {
+                item.play_single_audio(self);
+            }
+            _ => {
+                toast!(self, "Not implemented");
+            }
+        }
+    }
+
     pub fn set_up(&self) {
         let imp = self.imp();
         let item = self.item();
@@ -180,6 +199,7 @@ impl TuListItem {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&year);
                 imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                self.set_can_direct_play(true);
                 self.set_picture();
                 self.set_played();
                 if item.is_resume() {
@@ -192,6 +212,7 @@ impl TuListItem {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
                 imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                self.set_can_direct_play(true);
                 self.set_picture();
             }
             "TvChannel" => {
@@ -201,6 +222,7 @@ impl TuListItem {
                     item.program_name().unwrap_or_default()
                 ));
                 imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                self.set_can_direct_play(true);
                 self.set_picture();
 
                 let Some(program_start_time) = item.program_start_time() else {
@@ -233,7 +255,7 @@ impl TuListItem {
                 imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 self.set_apicture();
             }
-            "Series" | "Season" => {
+            "Series" => {
                 let year = if item.production_year() != 0 {
                     item.production_year().to_string()
                 } else {
@@ -259,6 +281,7 @@ impl TuListItem {
                     imp.label2.set_text(&year);
                 }
                 imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                self.set_can_direct_play(true);
                 self.set_picture();
                 self.set_played();
                 self.set_count();
@@ -290,6 +313,7 @@ impl TuListItem {
                     imp.label2.set_visible(false);
                 }
                 imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                self.set_can_direct_play(true);
                 self.set_picture();
                 self.set_played();
                 self.set_played_percentage(self.get_played_percentage());
@@ -303,6 +327,7 @@ impl TuListItem {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&item.albumartist_name());
                 imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
+                self.set_can_direct_play(true);
                 self.set_picture();
             }
             "Actor" | "Person" | "Director" | "Writer" | "Producer" => {
@@ -314,6 +339,7 @@ impl TuListItem {
             "Audio" => {
                 imp.listlabel.set_text(&item.name());
                 imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
+                self.set_can_direct_play(true);
                 self.set_picture();
             }
             "Folder" => {
@@ -322,6 +348,37 @@ impl TuListItem {
                 imp.label2.set_visible(false);
                 self.set_picture();
                 self.set_folder();
+            }
+            "Season" => {
+                let year = if item.production_year() != 0 {
+                    item.production_year().to_string()
+                } else {
+                    String::from("")
+                };
+                imp.listlabel.set_text(&item.name());
+                if let Some(status) = item.status() {
+                    if status == "Continuing" {
+                        imp.label2.set_text(&format!("{} - {}", year, gettext("Present")));
+                    } else if status == "Ended" {
+                        if let Some(end_date) = item.end_date() {
+                            let end_year = end_date.year();
+                            if end_year != year.parse::<i32>().unwrap_or_default() {
+                                imp.label2.set_text(&format!("{} - {}", year, end_date.year()));
+                            } else {
+                                imp.label2.set_text(&format!("{}", end_year));
+                            }
+                        } else {
+                            imp.label2.set_text(&format!("{} - Unknown", year));
+                        }
+                    }
+                } else {
+                    imp.label2.set_text(&year);
+                }
+                imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                self.set_picture();
+                self.set_played();
+                self.set_count();
+                self.set_rating();
             }
             _ => {
                 imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);

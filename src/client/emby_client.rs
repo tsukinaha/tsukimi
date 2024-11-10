@@ -830,9 +830,7 @@ impl EmbyClient {
         let params = [
             ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,Overview"),
             ("UserId", &self.user_id()),
-            ("EnableUserData", "false"),
-            ("EnableTotalRecordCount", "false"),
-            ("EnableImages", "false"),
+            ("ImageTypeLimit", "1"),
         ];
         self.request(&path, &params).await
     }

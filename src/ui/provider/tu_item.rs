@@ -4,11 +4,15 @@ use adw::prelude::*;
 use gettextrs::gettext;
 use glib::DateTime;
 use gtk::{
-    glib,
-    glib::subclass::prelude::*,
+    gio,
+    glib::{
+        self,
+        subclass::prelude::*,
+    },
 };
 
 use crate::{
+    bing_song_model,
     client::{
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
@@ -18,16 +22,20 @@ use crate::{
         },
     },
     toast,
-    ui::widgets::{
-        item::ItemPage,
-        list::ListPage,
-        music_album::AlbumPage,
-        other::OtherPage,
-        single_grid::{
-            imp::ListType,
-            SingleGrid,
+    ui::{
+        provider::core_song::CoreSong,
+        widgets::{
+            item::ItemPage,
+            list::ListPage,
+            music_album::AlbumPage,
+            other::OtherPage,
+            single_grid::{
+                imp::ListType,
+                SingleGrid,
+            },
+            song_widget::SongWidget,
+            window::Window,
         },
-        window::Window,
     },
     utils::{
         spawn,
@@ -274,11 +282,6 @@ impl TuItem {
     {
         let window = widget.root().and_downcast::<Window>().unwrap();
 
-        if self.item_type() == "TvChannel" {
-            self.tvchannel(window);
-            return;
-        }
-
         match self.item_type().as_str() {
             "Series" | "Movie" | "Video" | "MusicVideo" | "AdultVideo" => {
                 let page = ItemPage::new(self);
@@ -361,10 +364,16 @@ impl TuItem {
         }
     }
 
-    fn tvchannel(&self, window: Window) {
+    pub fn play_tvchannel(&self, obj: &impl IsA<gtk::Widget>) {
+        let binding = obj.root();
+        let Some(window) = binding.and_downcast_ref::<Window>() else {
+            return;
+        };
         spawn(glib::clone!(
             #[strong(rename_to = item)]
             self,
+            #[weak]
+            window,
             async move {
                 toast!(window, gettext("Processing..."));
                 let id = item.id();
@@ -399,6 +408,12 @@ impl TuItem {
                 }
             }
         ));
+    }
+
+    pub fn play_single_audio(&self, obj: &impl IsA<gtk::Widget>) {
+        let song_widget = SongWidget::new(self.clone());
+        let model = gio::ListStore::new::<CoreSong>();
+        bing_song_model!(obj, model, song_widget.coresong());
     }
 }
 
