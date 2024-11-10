@@ -116,7 +116,7 @@ impl ServerActionRow {
         account_window
             .imp()
             .server_type
-            .set_selected(if account.server_type == Some("Emby".to_string()) { 0 } else { 1 });
+            .set_selected(if account.server_type == Some("Jellyfin".to_string()) { 1 } else { 0 });
         account_window.present(self.root().as_ref());
     }
 
