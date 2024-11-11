@@ -52,7 +52,7 @@ hex = "0.4.3"
 rand = "0.8.5"
 
 [build-dependencies]
-embed-resource = "2.5.0"
+embed-resource = "3.0.1"
 glib-build-tools = "0.20.0"
 
 [features]
