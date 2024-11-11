@@ -328,12 +328,20 @@ impl Window {
         let Some(tag) = now_page.tag() else {
             return;
         };
-        if tag == "mainpage" {
-            imp.popbutton.set_visible(false);
-            imp.navipage.set_title("");
+        if tag != "mainpage" {
+            imp.navipage.set_title(&now_page.title());
             return;
         }
-        imp.navipage.set_title(&now_page.title());
+
+        imp.popbutton.set_visible(false);
+        imp.navipage.set_title("");
+        if imp.insidestack.visible_child_name() == Some("homepage".into()) {
+            let binding = imp.homepage.child();
+            let Some(homepage) = binding.and_downcast_ref::<HomePage>() else {
+                return;
+            };
+            homepage.update(false);
+        }
     }
 
     pub fn set_servers(&self) {
