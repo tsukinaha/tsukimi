@@ -70,7 +70,7 @@ mod imp {
             let obj = self.obj();
             obj.set_title(&obj.item().servername());
             obj.set_subtitle(&obj.item().username());
-            if obj.item().server_type() == "Jellyfin" {
+            if obj.item().server_type() == Some("Jellyfin".to_string()) {
                 self.server_image.set_icon_name(Some("jellyfin-symbolic"));
             }
         }

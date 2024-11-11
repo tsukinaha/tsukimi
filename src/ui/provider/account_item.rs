@@ -33,7 +33,7 @@ pub mod imp {
         #[property(get, set)]
         access_token: RefCell<String>,
         #[property(get, set)]
-        server_type: RefCell<String>,
+        server_type: RefCell<Option<String>>,
     }
 
     #[glib::derived_properties]
@@ -76,7 +76,7 @@ impl AccountItem {
             port: self.port(),
             user_id: self.user_id(),
             access_token: self.access_token(),
-            server_type: Some(self.server_type()),
+            server_type: self.server_type(),
         }
     }
 }
