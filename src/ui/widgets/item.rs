@@ -11,12 +11,7 @@ use chrono::{
 use gettextrs::gettext;
 use glib::Object;
 use gtk::{
-    gio,
-    glib,
-    template_callbacks,
-    ListView,
-    PositionType,
-    ScrolledWindow,
+    gio, glib, template_callbacks, ListScrollFlags, ListView, PositionType, ScrollInfo, ScrolledWindow
 };
 
 use super::{
@@ -479,23 +474,47 @@ impl ItemPage {
 
         store.remove_all();
 
-        let season_id = {
-            let season_list = imp.season_list_vec.borrow();
-            let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
-                return;
-            };
-            season.id.clone()
-        };
+        let position = dropdown.selected();
 
-        let list = match spawn_tokio(
-            async move { EMBY_CLIENT.get_episodes(&series_id, &season_id).await },
-        )
-        .await
-        {
-            Ok(list) => list.items,
-            Err(e) => {
-                toast!(self, e.to_user_facing());
-                return;
+        let list = match position {
+            0 => {
+                let Some(season_id) = self.item().season_id() else {
+                    toast!(self, gettext("No season id found"));
+                    return;
+                };
+
+                match spawn_tokio(
+                    async move { EMBY_CLIENT.get_episodes(&series_id, &season_id.to_string()).await },
+                )
+                .await
+                {
+                    Ok(item) => item.items,
+                    Err(e) => {
+                        toast!(self, e.to_user_facing());
+                        return;
+                    }
+                }
+            }
+            _ => {
+                let season_id = {
+                    let season_list = imp.season_list_vec.borrow();
+                    let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
+                        return;
+                    };
+                    season.id.clone()
+                };
+
+                match spawn_tokio(
+                    async move { EMBY_CLIENT.get_episodes(&series_id, &season_id).await },
+                )
+                .await
+                {
+                    Ok(list) => list.items,
+                    Err(e) => {
+                        toast!(self, e.to_user_facing());
+                        return;
+                    }
+                }
             }
         };
 
@@ -504,14 +523,14 @@ impl ItemPage {
             return;
         }
 
-        let items = list
-            .iter()
-            .map(|item| {
-                TuObject::from_simple(item, None)
-            })
-            .collect::<Vec<_>>();
+        let items = list.iter().map(|item| TuObject::from_simple(item, None)).collect::<Vec<_>>();
 
         store.extend_from_slice(&items);
+
+        if position == 0 {
+            // FIXME: This is not working on the first time
+            imp.itemlist.scroll_to(3, ListScrollFlags::SELECT, None); 
+        }
 
         imp.episode_stack.set_visible_child_name("view");
     }

@@ -264,6 +264,8 @@ pub struct SimpleListItem {
     pub image_tags: Option<ImageTags>,
     #[serde(rename = "SeriesId")]
     pub series_id: Option<String>,
+    #[serde(rename = "SeasonId")]
+    pub season_id: Option<String>,
     #[serde(rename = "AlbumArtists")]
     pub album_artists: Option<Vec<View>>,
     #[serde(rename = "Artists")]

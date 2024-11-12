@@ -66,10 +66,12 @@ pub mod imp {
         index_number: RefCell<u32>,
         #[property(get, set)]
         parent_index_number: RefCell<u32>,
-        #[property(get, set)]
+        #[property(get, set, nullable)]
         series_name: RefCell<Option<String>>,
-        #[property(get, set)]
+        #[property(get, set, nullable)]
         series_id: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        season_id: RefCell<Option<String>>,
         #[property(get, set)]
         played_percentage: RefCell<f64>,
         #[property(get, set)]
@@ -165,45 +167,32 @@ impl Default for TuItem {
 impl TuItem {
     pub fn from_simple(latest: &SimpleListItem, poster: Option<&str>) -> Self {
         let tu_item: TuItem = glib::object::Object::new();
-        tu_item.set_id(latest.id.clone());
-        tu_item.set_name(latest.name.clone());
-        tu_item.set_item_type(latest.item_type.clone());
-        if let Some(production_year) = latest.production_year {
-            tu_item.set_production_year(production_year);
-        }
-        if let Some(index_number) = latest.index_number {
-            tu_item.set_index_number(index_number);
-        }
-        if let Some(parent_index_number) = latest.parent_index_number {
-            tu_item.set_parent_index_number(parent_index_number);
-        }
-        if let Some(userdata) = &latest.user_data {
+        let item = latest.clone();
+        tu_item.set_id(item.id);
+        tu_item.set_name(item.name);
+        tu_item.set_item_type(item.item_type);
+        tu_item.set_production_year(item.production_year.unwrap_or_default());
+        tu_item.set_index_number(item.index_number.unwrap_or_default());
+        tu_item.set_parent_index_number(item.parent_index_number.unwrap_or_default());
+    
+        if let Some(userdata) = &item.user_data {
             tu_item.set_played(userdata.played);
-            if let Some(played_percentage) = userdata.played_percentage {
-                tu_item.set_played_percentage(played_percentage);
-            }
-            if let Some(unplayed_item_count) = userdata.unplayed_item_count {
-                tu_item.set_unplayed_item_count(unplayed_item_count);
-            }
-            if let Some(playback_position_ticks) = userdata.playback_position_ticks {
-                tu_item.set_playback_position_ticks(playback_position_ticks);
-            }
+            tu_item.set_played_percentage(userdata.played_percentage.unwrap_or_default());
+            tu_item.set_unplayed_item_count(userdata.unplayed_item_count.unwrap_or_default());
+            tu_item.set_playback_position_ticks(userdata.playback_position_ticks.unwrap_or_default());
             tu_item.set_is_favorite(userdata.is_favorite.unwrap_or(false));
         }
+    
         if let Some(poster) = poster {
             tu_item.set_poster(poster);
         }
-        tu_item.imp().set_image_tags(latest.image_tags.clone());
-        if let Some(parent_thumb_item_id) = &latest.parent_thumb_item_id {
-            tu_item.set_parent_thumb_item_id(Some(parent_thumb_item_id.clone()));
-        }
-        if let Some(parent_backdrop_item_id) = &latest.parent_backdrop_item_id {
-            tu_item.set_parent_backdrop_item_id(Some(parent_backdrop_item_id.clone()));
-        }
-        if let Some(series_name) = &latest.series_name {
-            tu_item.set_series_name(series_name.clone());
-        }
-        if let Some(album_artist) = &latest.album_artists {
+    
+        tu_item.imp().set_image_tags(item.image_tags);
+        tu_item.set_parent_thumb_item_id(item.parent_thumb_item_id);
+        tu_item.set_parent_backdrop_item_id(item.parent_backdrop_item_id);
+        tu_item.set_series_name(item.series_name);
+    
+        if let Some(album_artist) = &item.album_artists {
             tu_item.set_albumartist_name(
                 album_artist
                     .first()
@@ -221,58 +210,29 @@ impl TuItem {
                     .to_string(),
             );
         }
-        if let Some(role) = &latest.role {
-            tu_item.set_role(Some(role.clone()));
+    
+        tu_item.set_role(item.role);
+        tu_item.set_artists(item.artists.map(|artists| artists.join(" , ")));
+        tu_item.set_album_id(item.album_id);
+        tu_item.set_run_time_ticks(item.run_time_ticks.unwrap_or_default());
+        tu_item.set_tagline(item.taglines.and_then(|taglines| taglines.first().cloned()));
+        tu_item.set_primary_image_item_id(item.primary_image_item_id);
+        tu_item.set_rating(item.community_rating.map(|rating| format!("{:.1}", rating)));
+        tu_item.set_collection_type(item.collection_type);
+    
+        if let Some(current_program) = item.current_program {
+            tu_item.set_program_name(current_program.name);
+            tu_item.set_program_start_time(current_program.start_date.as_ref().map(|date| chrono_to_glib(date)));
+            tu_item.set_program_end_time(current_program.end_date.as_ref().map(|date| chrono_to_glib(date)));
         }
-        if let Some(artists) = &latest.artists {
-            let artist = artists.join(" , ");
-            tu_item.set_artists(Some(artist));
-        }
-        if let Some(album_id) = &latest.album_id {
-            tu_item.set_album_id(Some(album_id.clone()));
-        }
-        if let Some(run_time_ticks) = latest.run_time_ticks {
-            tu_item.set_run_time_ticks(run_time_ticks);
-        }
-        if let Some(taglines) = &latest.taglines {
-            tu_item.set_tagline(taglines.first().cloned());
-        }
-        if let Some(primary_image_item_id) = &latest.primary_image_item_id {
-            tu_item.set_primary_image_item_id(Some(primary_image_item_id.clone()));
-        }
-        if let Some(rating) = &latest.community_rating {
-            let rating = format!("{:.1}", rating);
-            tu_item.set_rating(Some(rating));
-        }
-        if let Some(collection_type) = &latest.collection_type {
-            tu_item.set_collection_type(Some(collection_type.clone()));
-        }
-        if let Some(current_program) = &latest.current_program {
-            if let Some(program_name) = &current_program.name {
-                tu_item.set_program_name(Some(program_name.clone()));
-            }
-            if let Some(start_time) = &current_program.start_date {
-                tu_item.set_program_start_time(Some(&chrono_to_glib(start_time)));
-            }
-            if let Some(end_time) = &current_program.end_date {
-                tu_item.set_program_end_time(Some(&chrono_to_glib(end_time)));
-            }
-        }
-        if let Some(premiere_date) = &latest.premiere_date {
-            tu_item.set_premiere_date(Some(&chrono_to_glib(premiere_date)));
-        }
-        if let Some(series_id) = &latest.series_id {
-            tu_item.set_series_id(series_id.clone());
-        }
-        if let Some(status) = &latest.status {
-            tu_item.set_status(Some(status.clone()));
-        }
-        if let Some(end_date) = &latest.end_date {
-            tu_item.set_end_date(Some(&chrono_to_glib(end_date)));
-        }
-        if let Some(overview) = &latest.overview {
-            tu_item.set_overview(Some(overview.clone()));
-        }
+    
+        tu_item.set_premiere_date(item.premiere_date.as_ref().map(|date| chrono_to_glib(date)));
+        tu_item.set_series_id(item.series_id);
+        tu_item.set_status(item.status);
+        tu_item.set_end_date(item.end_date.as_ref().map(|date| chrono_to_glib(date)));
+        tu_item.set_overview(item.overview);
+        tu_item.set_season_id(item.season_id);
+    
         tu_item
     }
 

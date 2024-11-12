@@ -273,6 +273,9 @@
                             <signal name="notify::selected" handler="on_season_selected" swapped="yes"/>
                             <property name="model">
                               <object class="GtkStringList">
+                                <items>
+                                  <item translatable="yes">Continue Watching</item>
+                                </items>
                               </object>
                             </property>
                             <property name="expression">
