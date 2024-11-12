@@ -174,24 +174,25 @@ impl TuItem {
         tu_item.set_production_year(item.production_year.unwrap_or_default());
         tu_item.set_index_number(item.index_number.unwrap_or_default());
         tu_item.set_parent_index_number(item.parent_index_number.unwrap_or_default());
-    
+
         if let Some(userdata) = &item.user_data {
             tu_item.set_played(userdata.played);
             tu_item.set_played_percentage(userdata.played_percentage.unwrap_or_default());
             tu_item.set_unplayed_item_count(userdata.unplayed_item_count.unwrap_or_default());
-            tu_item.set_playback_position_ticks(userdata.playback_position_ticks.unwrap_or_default());
+            tu_item
+                .set_playback_position_ticks(userdata.playback_position_ticks.unwrap_or_default());
             tu_item.set_is_favorite(userdata.is_favorite.unwrap_or(false));
         }
-    
+
         if let Some(poster) = poster {
             tu_item.set_poster(poster);
         }
-    
+
         tu_item.imp().set_image_tags(item.image_tags);
         tu_item.set_parent_thumb_item_id(item.parent_thumb_item_id);
         tu_item.set_parent_backdrop_item_id(item.parent_backdrop_item_id);
         tu_item.set_series_name(item.series_name);
-    
+
         if let Some(album_artist) = &item.album_artists {
             tu_item.set_albumartist_name(
                 album_artist
@@ -210,7 +211,7 @@ impl TuItem {
                     .to_string(),
             );
         }
-    
+
         tu_item.set_role(item.role);
         tu_item.set_artists(item.artists.map(|artists| artists.join(" , ")));
         tu_item.set_album_id(item.album_id);
@@ -219,20 +220,24 @@ impl TuItem {
         tu_item.set_primary_image_item_id(item.primary_image_item_id);
         tu_item.set_rating(item.community_rating.map(|rating| format!("{:.1}", rating)));
         tu_item.set_collection_type(item.collection_type);
-    
+
         if let Some(current_program) = item.current_program {
             tu_item.set_program_name(current_program.name);
-            tu_item.set_program_start_time(current_program.start_date.as_ref().map(|date| chrono_to_glib(date)));
-            tu_item.set_program_end_time(current_program.end_date.as_ref().map(|date| chrono_to_glib(date)));
+            tu_item.set_program_start_time(
+                current_program.start_date.as_ref().map(chrono_to_glib),
+            );
+            tu_item.set_program_end_time(
+                current_program.end_date.as_ref().map(chrono_to_glib),
+            );
         }
-    
-        tu_item.set_premiere_date(item.premiere_date.as_ref().map(|date| chrono_to_glib(date)));
+
+        tu_item.set_premiere_date(item.premiere_date.as_ref().map(chrono_to_glib));
         tu_item.set_series_id(item.series_id);
         tu_item.set_status(item.status);
-        tu_item.set_end_date(item.end_date.as_ref().map(|date| chrono_to_glib(date)));
+        tu_item.set_end_date(item.end_date.as_ref().map(chrono_to_glib));
         tu_item.set_overview(item.overview);
         tu_item.set_season_id(item.season_id);
-    
+
         tu_item
     }
 

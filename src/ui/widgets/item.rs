@@ -11,7 +11,13 @@ use chrono::{
 use gettextrs::gettext;
 use glib::Object;
 use gtk::{
-    gio, glib, template_callbacks, ListScrollFlags, ListView, PositionType, ScrollInfo, ScrolledWindow
+    gio,
+    glib,
+    template_callbacks,
+    ListScrollFlags,
+    ListView,
+    PositionType,
+    ScrolledWindow,
 };
 
 use super::{
@@ -483,9 +489,9 @@ impl ItemPage {
                     return;
                 };
 
-                match spawn_tokio(
-                    async move { EMBY_CLIENT.get_episodes(&series_id, &season_id.to_string()).await },
-                )
+                match spawn_tokio(async move {
+                    EMBY_CLIENT.get_episodes(&series_id, &season_id.to_string()).await
+                })
                 .await
                 {
                     Ok(item) => item.items,
@@ -529,7 +535,7 @@ impl ItemPage {
 
         if position == 0 {
             // FIXME: This is not working on the first time
-            imp.itemlist.scroll_to(3, ListScrollFlags::SELECT, None); 
+            imp.itemlist.scroll_to(3, ListScrollFlags::SELECT, None);
         }
 
         imp.episode_stack.set_visible_child_name("view");
