@@ -534,8 +534,9 @@ impl ItemPage {
         store.extend_from_slice(&items);
 
         if position == 0 {
+            let index = list.iter().position(|item| item.index_number == Some(self.item().index_number())).unwrap_or(0);
             // FIXME: This is not working on the first time
-            imp.itemlist.scroll_to(3, ListScrollFlags::SELECT, None);
+            imp.itemlist.scroll_to(index as u32, ListScrollFlags::all(), None);
         }
 
         imp.episode_stack.set_visible_child_name("view");
