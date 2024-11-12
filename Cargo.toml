@@ -9,7 +9,7 @@ license = "GPL"
 
 [dependencies]
 gtk = { version = "0.9", package = "gtk4", features = ["v4_16"] }
-serde = { version = "1.0.214", features = ["derive"] }
+serde = { version = "1.0.215", features = ["derive"] }
 serde_json = "1.0.132"
 tokio = { version = "1.41", features = ["full"] }
 reqwest = { version = "0.12", default-features = false, features = ["http2", "native-tls", "native-tls-alpn", "json", "gzip"] }
@@ -52,7 +52,7 @@ hex = "0.4.3"
 rand = "0.8.5"
 
 [build-dependencies]
-embed-resource = "2.5.0"
+embed-resource = "3.0.1"
 glib-build-tools = "0.20.0"
 
 [features]
