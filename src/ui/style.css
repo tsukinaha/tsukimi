@@ -202,6 +202,6 @@ row image {
   border-radius: 10px;
 }
 
-.tulistitem-pic:hover {
+.tulistitem:hover .tulistitem-pic {
   opacity: 1;
 }

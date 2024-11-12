@@ -479,42 +479,23 @@ impl ItemPage {
 
         store.remove_all();
 
-        let position = dropdown.selected();
+        let season_id = {
+            let season_list = imp.season_list_vec.borrow();
+            let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
+                return;
+            };
+            season.id.clone()
+        };
 
-        let list = match position {
-            0 => {
-                match spawn_tokio(
-                    async move { EMBY_CLIENT.get_continue_play_list(&series_id).await },
-                )
-                .await
-                {
-                    Ok(item) => item.items,
-                    Err(e) => {
-                        toast!(self, e.to_user_facing());
-                        return;
-                    }
-                }
-            }
-            _ => {
-                let season_id = {
-                    let season_list = imp.season_list_vec.borrow();
-                    let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
-                        return;
-                    };
-                    season.id.clone()
-                };
-
-                match spawn_tokio(
-                    async move { EMBY_CLIENT.get_episodes(&series_id, &season_id).await },
-                )
-                .await
-                {
-                    Ok(list) => list.items,
-                    Err(e) => {
-                        toast!(self, e.to_user_facing());
-                        return;
-                    }
-                }
+        let list = match spawn_tokio(
+            async move { EMBY_CLIENT.get_episodes(&series_id, &season_id).await },
+        )
+        .await
+        {
+            Ok(list) => list.items,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
             }
         };
 
@@ -523,13 +504,14 @@ impl ItemPage {
             return;
         }
 
-        for episode in &list {
-            let tu_item = TuItem::from_simple(episode, None);
-            let tu_object = TuObject::new(&tu_item);
-            store.append(&tu_object);
-        }
+        let items = list
+            .iter()
+            .map(|item| {
+                TuObject::from_simple(item, None)
+            })
+            .collect::<Vec<_>>();
 
-        imp.episode_list_vec.replace(list);
+        store.extend_from_slice(&items);
 
         imp.episode_stack.set_visible_child_name("view");
     }

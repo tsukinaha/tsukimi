@@ -43,7 +43,7 @@ mod imp {
 }
 
 glib::wrapper! {
-    /// Preference Window to display and update room details.
+    /// A dropdown widget with two labels.
     pub struct ListDropdown(ObjectSubclass<imp::ListDropdown>)
         @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
 }

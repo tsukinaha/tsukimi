@@ -62,6 +62,9 @@
             </style>
           </object>
         </child>
+        <style>
+        <class name="tulistitem"/>
+      </style>
       </object>
     </child>
   </template>

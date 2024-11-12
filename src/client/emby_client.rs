@@ -813,22 +813,10 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_continue_play_list(&self, parent_id: &str) -> Result<List> {
-        let path = "Shows/NextUp".to_string();
-        let params = [
-            ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,Overview"),
-            ("Limit", "40"),
-            ("ImageTypeLimit", "1"),
-            ("SeriesId", parent_id),
-            ("UserId", &self.user_id()),
-        ];
-        self.request(&path, &params).await
-    }
-
     pub async fn get_season_list(&self, parent_id: &str) -> Result<List> {
         let path = format!("Shows/{}/Seasons", parent_id);
         let params = [
-            ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,Overview"),
+            ("Fields", "BasicSyncInfo,CanDelete,PremiereDate,PrimaryImageAspectRatio,Overview"),
             ("UserId", &self.user_id()),
             ("ImageTypeLimit", "1"),
         ];
