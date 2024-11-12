@@ -543,13 +543,16 @@ impl TuListItem {
         let menu = builder.object::<MenuModel>("rightmenu");
         match menu {
             Some(popover) => {
-                let popover = PopoverMenu::builder()
+                let new_popover = PopoverMenu::builder()
                     .menu_model(&popover)
                     .halign(gtk::Align::Start)
                     .has_arrow(false)
                     .build();
-                popover.set_parent(self);
-                let _ = imp.popover.replace(Some(popover));
+                if let Some(popover) = imp.popover.borrow_mut().take() {
+                    popover.unparent(); 
+                }
+                new_popover.set_parent(self);
+                imp.popover.replace(Some(new_popover));
             }
             None => eprintln!("Failed to load popover"),
         }

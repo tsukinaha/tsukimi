@@ -47,11 +47,7 @@ use crate::{
         },
     },
     utils::{
-        fetch_with_cache,
-        get_image_with_cache,
-        spawn,
-        spawn_tokio,
-        CachePolicy,
+        fetch_with_cache, get_image_with_cache, spawn, spawn_g_timeout, spawn_tokio, CachePolicy
     },
 };
 
@@ -482,15 +478,23 @@ impl ItemPage {
 
         let position = dropdown.selected();
 
-        let list = match position {
-            0 => {
-                let Some(season_id) = self.item().season_id() else {
-                    toast!(self, gettext("No season id found"));
-                    return;
-                };
-
+        let list = match (position, self.item().season_id()) {
+            (0, Some(season_id)) => {
                 match spawn_tokio(async move {
                     EMBY_CLIENT.get_episodes(&series_id, &season_id.to_string()).await
+                })
+                .await
+                {
+                    Ok(item) => item.items,
+                    Err(e) => {
+                        toast!(self, e.to_user_facing());
+                        return;
+                    }
+                }
+            }
+            (0, None) => {
+                match spawn_tokio(async move {
+                    EMBY_CLIENT.get_continue_play_list(&series_id).await
                 })
                 .await
                 {
@@ -535,8 +539,14 @@ impl ItemPage {
 
         if position == 0 {
             let index = list.iter().position(|item| item.index_number == Some(self.item().index_number())).unwrap_or(0);
-            // FIXME: This is not working on the first time
-            imp.itemlist.scroll_to(index as u32, ListScrollFlags::all(), None);
+            // itemlist need wait for property binding to scroll
+            spawn_g_timeout(glib::clone!(
+                #[weak]
+                imp,
+                async move {
+                    imp.itemlist.scroll_to(index as u32, ListScrollFlags::all(), None);
+                },
+            ));
         }
 
         imp.episode_stack.set_visible_child_name("view");
