@@ -421,8 +421,13 @@ impl TuItem {
     }
 
     pub async fn play_video(&self, obj: &impl IsA<gtk::Widget>) {
-        let id = self.id();
+        self.direct_play_video_id(obj, self.clone(), Vec::new()).await;
+    }
 
+    pub async fn direct_play_video_id(
+        &self, obj: &impl IsA<gtk::Widget>, video: TuItem, episode_list: Vec<TuItem>,
+    ) {
+        let id = video.id();
         let playback =
             match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&id).await }).await {
                 Ok(playback) => playback,
@@ -447,16 +452,47 @@ impl TuItem {
             start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
         };
 
-        if let Some(window) = obj.root().and_downcast_ref::<Window>() { window.play_media(
+        if let Some(window) = obj.root().and_downcast_ref::<Window>() {
+            window.play_media(
                 url.to_string(),
                 None,
                 self.clone(),
-                Vec::new(),
+                episode_list,
                 Some(back),
                 None,
                 self.played_percentage(),
                 None,
-            ) }
+            )
+        }
+    }
+
+    pub async fn play_series(&self, obj: &impl IsA<gtk::Widget>) {
+        let id = self.id();
+
+        let nextup_list =
+            match spawn_tokio(async move { EMBY_CLIENT.get_shows_next_up(&id).await }).await {
+                Ok(list) => list,
+                Err(e) => {
+                    toast!(obj, e.to_user_facing());
+                    return;
+                }
+            };
+
+        let Some(nextup_item) = nextup_list.items.first() else {
+            toast!(obj, gettext("No next up video found"));
+            return;
+        };
+
+        self.direct_play_video_id(
+            obj,
+            TuItem::from_simple(nextup_item, None),
+            nextup_list
+                .items
+                .iter()
+                .map(|item| TuItem::from_simple(item, None))
+                .collect(),
+        )
+        .await;
     }
 }
 

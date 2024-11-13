@@ -179,9 +179,13 @@ impl TuListItem {
             "Audio" => {
                 item.play_single_audio(self);
             }
-            "Video" | "MusicVideo" | "AdultVideo" | "Movie" | "Series" | "Episode" => {
+            "Video" | "MusicVideo" | "AdultVideo" | "Movie" | "Episode" => {
                 toast!(self, gettext("Waiting for mediasource ..."));
                 item.play_video(self).await;
+            }
+            "Series" => {
+                toast!(self, gettext("Waiting for mediasource ..."));
+                item.play_series(self).await;
             }
             "MusicAlbum" => {
                 toast!(self, gettext("Waiting for mediasource ..."));
