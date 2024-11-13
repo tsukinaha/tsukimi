@@ -567,6 +567,7 @@ impl ItemPage {
             ));
         }
 
+        imp.episode_list_vec.replace(list);
         imp.episode_stack.set_visible_child_name("view");
     }
 
