@@ -108,8 +108,10 @@ impl HorbuScrolled {
                         .icon_name("view-list-symbolic")
                         .build();
 
-                    let button =
-                        gtk::Button::builder().margin_start(10).child(&buttoncontent).build();
+                    let button = gtk::Button::builder()
+                        .margin_start(10)
+                        .child(&buttoncontent)
+                        .build();
 
                     let type_ = type_.to_string();
                     button.connect_clicked(glib::clone!(
@@ -154,8 +156,10 @@ impl HorbuScrolled {
                         .icon_name("send-to-symbolic")
                         .build();
 
-                    let button =
-                        gtk::Button::builder().margin_start(10).child(&buttoncontent).build();
+                    let button = gtk::Button::builder()
+                        .margin_start(10)
+                        .child(&buttoncontent)
+                        .build();
 
                     button.connect_clicked(move |_| {
                         let _ = gio::AppInfo::launch_default_for_uri(

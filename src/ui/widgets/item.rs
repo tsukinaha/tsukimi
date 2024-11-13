@@ -47,7 +47,12 @@ use crate::{
         },
     },
     utils::{
-        fetch_with_cache, get_image_with_cache, spawn, spawn_g_timeout, spawn_tokio, CachePolicy
+        fetch_with_cache,
+        get_image_with_cache,
+        spawn,
+        spawn_g_timeout,
+        spawn_tokio,
+        CachePolicy,
     },
 };
 
@@ -234,7 +239,8 @@ pub(crate) mod imp {
             self.parent_constructed();
             self.scrolled.fix();
 
-            self.indicator.set_carousel(Some(&self.carousel.imp().carousel));
+            self.indicator
+                .set_carousel(Some(&self.carousel.imp().carousel));
 
             let namedropdown = self.namedropdown.get();
             let subdropdown = self.subdropdown.get();
@@ -317,7 +323,9 @@ impl ItemPage {
                 series_id,
                 async move {
                     let Some(intro) = obj.set_shows_next_up(&series_id).await else {
-                        obj.imp().buttoncontent.set_label(&gettext("Select an episode"));
+                        obj.imp()
+                            .buttoncontent
+                            .set_label(&gettext("Select an episode"));
                         return;
                     };
                     obj.set_intro::<false>(&intro).await;
@@ -389,7 +397,8 @@ impl ItemPage {
                     let id = item.id();
                     match spawn_tokio(async move { EMBY_CLIENT.get_item_info(&id).await }).await {
                         Ok(item) => {
-                            obj.set_intro::<true>(&TuItem::from_simple(&item, None)).await;
+                            obj.set_intro::<true>(&TuItem::from_simple(&item, None))
+                                .await;
                         }
                         Err(e) => {
                             toast!(obj, e.to_user_facing());
@@ -481,7 +490,9 @@ impl ItemPage {
         let list = match (position, self.item().season_id()) {
             (0, Some(season_id)) => {
                 match spawn_tokio(async move {
-                    EMBY_CLIENT.get_episodes(&series_id, &season_id.to_string()).await
+                    EMBY_CLIENT
+                        .get_episodes(&series_id, &season_id.to_string())
+                        .await
                 })
                 .await
                 {
@@ -493,9 +504,9 @@ impl ItemPage {
                 }
             }
             (0, None) => {
-                match spawn_tokio(async move {
-                    EMBY_CLIENT.get_continue_play_list(&series_id).await
-                })
+                match spawn_tokio(
+                    async move { EMBY_CLIENT.get_continue_play_list(&series_id).await },
+                )
                 .await
                 {
                     Ok(item) => item.items,
@@ -533,18 +544,25 @@ impl ItemPage {
             return;
         }
 
-        let items = list.iter().map(|item| TuObject::from_simple(item, None)).collect::<Vec<_>>();
+        let items = list
+            .iter()
+            .map(|item| TuObject::from_simple(item, None))
+            .collect::<Vec<_>>();
 
         store.extend_from_slice(&items);
 
         if position == 0 {
-            let index = list.iter().position(|item| item.index_number == Some(self.item().index_number())).unwrap_or(0);
+            let index = list
+                .iter()
+                .position(|item| item.index_number == Some(self.item().index_number()))
+                .unwrap_or(0);
             // itemlist need wait for property binding to scroll
             spawn_g_timeout(glib::clone!(
                 #[weak]
                 imp,
                 async move {
-                    imp.itemlist.scroll_to(index as u32, ListScrollFlags::all(), None);
+                    imp.itemlist
+                        .scroll_to(index as u32, ListScrollFlags::all(), None);
                 },
             ));
         }
@@ -621,7 +639,9 @@ impl ItemPage {
             #[weak]
             imp,
             move |dropdown| {
-                let Some(entry) = dropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
+                let Some(entry) = dropdown
+                    .selected_item()
+                    .and_downcast::<glib::BoxedAnyObject>()
                 else {
                     return;
                 };
@@ -707,7 +727,11 @@ impl ItemPage {
         let pathbuf = PathBuf::from(&path);
         if pathbuf.exists() {
             backdrop.set_file(Some(&file));
-            self.imp().carousel.imp().backrevealer.set_reveal_child(true);
+            self.imp()
+                .carousel
+                .imp()
+                .backrevealer
+                .set_reveal_child(true);
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
                 self,
@@ -726,7 +750,9 @@ impl ItemPage {
         let tags = image_tags.len();
         let carousel = imp.carousel.imp().carousel.get();
         for tag_num in 1..tags {
-            let path = get_image_with_cache(id, "Backdrop", Some(tag_num as u8)).await.unwrap();
+            let path = get_image_with_cache(id, "Backdrop", Some(tag_num as u8))
+                .await
+                .unwrap();
             let file = gtk::gio::File::for_path(&path);
             let picture = gtk::Picture::builder()
                 .halign(gtk::Align::Fill)
@@ -1118,8 +1144,9 @@ impl ItemPage {
         let video_dropdown = self.imp().namedropdown.get();
         let sub_dropdown = self.imp().subdropdown.get();
 
-        let Some(video_object) =
-            video_dropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
+        let Some(video_object) = video_dropdown
+            .selected_item()
+            .and_downcast::<glib::BoxedAnyObject>()
         else {
             return;
         };
@@ -1155,8 +1182,9 @@ impl ItemPage {
             start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
         };
 
-        let sub_url = if let Some(sub_object) =
-            sub_dropdown.selected_item().and_downcast::<glib::BoxedAnyObject>()
+        let sub_url = if let Some(sub_object) = sub_dropdown
+            .selected_item()
+            .and_downcast::<glib::BoxedAnyObject>()
         {
             let sub_dl = {
                 let sub_dl: std::cell::Ref<DropdownList> = sub_object.borrow();
@@ -1195,8 +1223,10 @@ impl ItemPage {
         let percentage = item.played_percentage();
 
         let episode_list = self.imp().episode_list_vec.borrow();
-        let episode_list: Vec<TuItem> =
-            episode_list.iter().map(|item| TuItem::from_simple(item, None)).collect();
+        let episode_list: Vec<TuItem> = episode_list
+            .iter()
+            .map(|item| TuItem::from_simple(item, None))
+            .collect();
 
         let matcher = self.imp().video_version_matcher.borrow().clone();
 
@@ -1286,7 +1316,8 @@ impl ItemPage {
     fn on_enter_focus(&self) {
         if !self.are_controls_visible() {
             self.hide_controls_animation().pause();
-            self.show_controls_animation().set_value_from(self.controls_opacity());
+            self.show_controls_animation()
+                .set_value_from(self.controls_opacity());
             self.show_controls_animation().play();
         }
     }
@@ -1295,7 +1326,8 @@ impl ItemPage {
     fn on_leave_focus(&self) {
         if self.are_controls_visible() {
             self.show_controls_animation().pause();
-            self.hide_controls_animation().set_value_from(self.controls_opacity());
+            self.hide_controls_animation()
+                .set_value_from(self.controls_opacity());
             self.hide_controls_animation().play();
         }
     }
@@ -1316,7 +1348,10 @@ impl ItemPage {
 
         let season_list = self.imp().season_list_vec.borrow();
         let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
-            toast!(self, gettext("Season not found. Is this a continue watching list?"));
+            toast!(
+                self,
+                gettext("Season not found. Is this a continue watching list?")
+            );
             return;
         };
 

@@ -96,7 +96,8 @@ mod imp {
         fn init(&self) {
             if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
                 self.page.set_title("View Images");
-                self.hint.set_subtitle("This page is READ-ONLY, because it is not finished yet.");
+                self.hint
+                    .set_subtitle("This page is READ-ONLY, because it is not finished yet.");
             }
 
             let obj = self.obj();

@@ -131,7 +131,8 @@ mod imp {
         fn init(&self) {
             if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
                 self.page.set_title("View Metadata");
-                self.hint.set_subtitle("This page is READ-ONLY, because it is not finished yet.");
+                self.hint
+                    .set_subtitle("This page is READ-ONLY, because it is not finished yet.");
             }
 
             spawn(glib::clone!(
@@ -143,24 +144,39 @@ mod imp {
 
         pub fn load_data(&self, metadata: SimpleListItem) {
             self.path_entry.set_subtitle(
-                &metadata.path.unwrap_or("No Data".to_string()).replace('&', "&amp;"),
+                &metadata
+                    .path
+                    .unwrap_or("No Data".to_string())
+                    .replace('&', "&amp;"),
             );
             self.title_entry.set_text(&metadata.name);
-            self.sorttitle_entry.set_text(&metadata.sort_name.unwrap_or_default());
-            self.timezone.replace(metadata.date_created.as_ref().map(|x| {
-                glib::DateTime::from_iso8601(&x.to_rfc3339(), None).unwrap().to_local().unwrap()
-            }));
+            self.sorttitle_entry
+                .set_text(&metadata.sort_name.unwrap_or_default());
+            self.timezone
+                .replace(metadata.date_created.as_ref().map(|x| {
+                    glib::DateTime::from_iso8601(&x.to_rfc3339(), None)
+                        .unwrap()
+                        .to_local()
+                        .unwrap()
+                }));
             self.date_entry.set_subtitle(&dt(metadata.date_created));
-            self.overview_entry.buffer().set_text(&metadata.overview.unwrap_or_default());
-            self.lock_check.set_active(metadata.lock_data.unwrap_or_default());
+            self.overview_entry
+                .buffer()
+                .set_text(&metadata.overview.unwrap_or_default());
+            self.lock_check
+                .set_active(metadata.lock_data.unwrap_or_default());
 
             if metadata.item_type == "Audio" {
-                self.artist_entry.set_text(&metadata.artists.unwrap_or_default().join(","));
-                self.album_artist_entry.set_text(&metadata.album_artist.unwrap_or_default());
-                self.album_entry.set_text(&metadata.album.unwrap_or_default());
+                self.artist_entry
+                    .set_text(&metadata.artists.unwrap_or_default().join(","));
+                self.album_artist_entry
+                    .set_text(&metadata.album_artist.unwrap_or_default());
+                self.album_entry
+                    .set_text(&metadata.album.unwrap_or_default());
                 self.disc_entry
                     .set_text(&metadata.parent_index_number.unwrap_or_default().to_string());
-                self.track_entry.set_text(&metadata.index_number.unwrap_or_default().to_string());
+                self.track_entry
+                    .set_text(&metadata.index_number.unwrap_or_default().to_string());
                 self.music_group.set_visible(true);
                 return;
             }
@@ -170,9 +186,12 @@ mod imp {
             }
 
             if let Some(provider_ids) = metadata.provider_ids {
-                self.moviedb_entry.set_text(&provider_ids.tmdb.unwrap_or_default());
-                self.tvdb_entry.set_text(&provider_ids.tvdb.unwrap_or_default());
-                self.imdb_entry.set_text(&provider_ids.imdb.unwrap_or_default());
+                self.moviedb_entry
+                    .set_text(&provider_ids.tmdb.unwrap_or_default());
+                self.tvdb_entry
+                    .set_text(&provider_ids.tvdb.unwrap_or_default());
+                self.imdb_entry
+                    .set_text(&provider_ids.imdb.unwrap_or_default());
                 self.ids_group.set_visible(true);
             }
         }

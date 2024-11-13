@@ -161,13 +161,21 @@ impl AlbumPage {
         imp.artist_label.set_text(&item.albumartist_name());
 
         let duration = item.run_time_ticks() / 10000000;
-        let release = format!("{} , {}", item.production_year(), format_duration(duration as i64));
+        let release = format!(
+            "{} , {}",
+            item.production_year(),
+            format_duration(duration as i64)
+        );
         imp.released_label.set_text(&release);
 
         let path = if let Some(image_tags) = item.primary_image_item_id() {
-            get_image_with_cache(&image_tags, "Primary", None).await.unwrap_or_default()
+            get_image_with_cache(&image_tags, "Primary", None)
+                .await
+                .unwrap_or_default()
         } else {
-            get_image_with_cache(&item.id(), "Primary", None).await.unwrap_or_default()
+            get_image_with_cache(&item.id(), "Primary", None)
+                .await
+                .unwrap_or_default()
         };
 
         if !std::path::PathBuf::from(&path).is_file() {
@@ -251,7 +259,13 @@ impl AlbumPage {
             let Ok(discbox) = child.downcast::<DiscBox>() else {
                 continue;
             };
-            for child in discbox.imp().listbox.observe_children().into_iter().flatten() {
+            for child in discbox
+                .imp()
+                .listbox
+                .observe_children()
+                .into_iter()
+                .flatten()
+            {
                 let Ok(song_widget) = child.downcast::<SongWidget>() else {
                     continue;
                 };
@@ -275,7 +289,11 @@ impl AlbumPage {
         };
 
         if types == "More From" {
-            hortu.set_title(format!("{} {}", gettext("More From"), self.item().albumartist_name()));
+            hortu.set_title(format!(
+                "{} {}",
+                gettext("More From"),
+                self.item().albumartist_name()
+            ));
         } else {
             hortu.set_title(gettext(types));
         }
@@ -319,7 +337,13 @@ impl AlbumPage {
         let Some(object) = imp.listbox.get().first_child() else {
             return;
         };
-        let Some(widget) = object.downcast::<DiscBox>().unwrap().imp().listbox.first_child() else {
+        let Some(widget) = object
+            .downcast::<DiscBox>()
+            .unwrap()
+            .imp()
+            .listbox
+            .first_child()
+        else {
             return;
         };
         let active_core_song = widget.downcast::<SongWidget>().unwrap().coresong();

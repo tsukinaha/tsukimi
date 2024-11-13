@@ -212,7 +212,8 @@ impl SearchPage {
             return;
         };
 
-        imp.searchscrolled.set_store::<true>(search_results.items, false);
+        imp.searchscrolled
+            .set_store::<true>(search_results.items, false);
 
         imp.stack.set_visible_child_name("result");
     }
@@ -261,7 +262,9 @@ impl SearchPage {
         };
 
         let search_results = match spawn_tokio(async move {
-            EMBY_CLIENT.search(&search_content, &search_filter, &n_items.to_string()).await
+            EMBY_CLIENT
+                .search(&search_content, &search_filter, &n_items.to_string())
+                .await
         })
         .await
         {

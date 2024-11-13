@@ -128,7 +128,8 @@ impl MPVGLArea {
     pub fn play(&self, url: &str, percentage: f64) {
         let mpv = &self.imp().mpv;
 
-        mpv.event_thread_alive.store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
+        mpv.event_thread_alive
+            .store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
         atomic_wait::wake_all(&*mpv.event_thread_alive);
 
         let url = EMBY_CLIENT.get_streaming_url(url);

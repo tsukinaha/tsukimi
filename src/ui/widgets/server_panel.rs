@@ -150,7 +150,10 @@ impl ServerPanel {
             Some(&gettext("Restart server")),
             Some(&gettext("Are you sure you want to restart the server?")),
         );
-        dialog.add_responses(&[("revert", &gettext("Revert")), ("confirm", &gettext("Confirm"))]);
+        dialog.add_responses(&[
+            ("revert", &gettext("Revert")),
+            ("confirm", &gettext("Confirm")),
+        ]);
         dialog.set_response_appearance("revert", adw::ResponseAppearance::Destructive);
         dialog.set_default_response(Some("revert"));
         dialog.set_close_response("revert");
@@ -290,12 +293,17 @@ impl ServerPanel {
                 subtitle.push_str(&format!(
                     "{}{}m\n",
                     gettext("Duration: "),
-                    last.end_time_utc.signed_duration_since(last.start_time_utc).num_minutes()
+                    last.end_time_utc
+                        .signed_duration_since(last.start_time_utc)
+                        .num_minutes()
                 ));
                 subtitle.push_str(&format!("{}{} \n", gettext("Result: "), last.status));
             }
             subtitle.push_str(&task.description);
-            let row = adw::ActionRow::builder().title(&task.name).subtitle(&subtitle).build();
+            let row = adw::ActionRow::builder()
+                .title(&task.name)
+                .subtitle(&subtitle)
+                .build();
 
             let button = Button::builder()
                 .icon_name("media-playback-start-symbolic")

@@ -98,34 +98,58 @@ glib::wrapper! {
 #[template_callbacks]
 impl ServerActionRow {
     pub fn new(account: Account) -> Self {
-        glib::Object::builder().property("item", AccountItem::from_simple(&account)).build()
+        glib::Object::builder()
+            .property("item", AccountItem::from_simple(&account))
+            .build()
     }
 
     #[template_callback]
     fn on_edit_clicked(&self) {
         let account = self.item().account();
         let account_window = crate::ui::widgets::account_add::AccountWindow::new();
-        account_window.imp().nav.set_title(&gettextrs::gettext("Edit Server"));
-        account_window.set_action_type(ActionType::Edit);
-        account_window.imp().old_account.replace(Some(account.clone()));
-        account_window.imp().username_entry.set_text(&account.username);
-        account_window.imp().password_entry.set_text(&account.password);
-        account_window.imp().servername_entry.set_text(&account.servername);
-        account_window.imp().port_entry.set_text(&account.port);
-        account_window.imp().server_entry.set_text(&account.server);
         account_window
             .imp()
-            .server_type
-            .set_selected(if account.server_type == Some("Jellyfin".to_string()) { 1 } else { 0 });
+            .nav
+            .set_title(&gettextrs::gettext("Edit Server"));
+        account_window.set_action_type(ActionType::Edit);
+        account_window
+            .imp()
+            .old_account
+            .replace(Some(account.clone()));
+        account_window
+            .imp()
+            .username_entry
+            .set_text(&account.username);
+        account_window
+            .imp()
+            .password_entry
+            .set_text(&account.password);
+        account_window
+            .imp()
+            .servername_entry
+            .set_text(&account.servername);
+        account_window.imp().port_entry.set_text(&account.port);
+        account_window.imp().server_entry.set_text(&account.server);
+        account_window.imp().server_type.set_selected(
+            if account.server_type == Some("Jellyfin".to_string()) {
+                1
+            } else {
+                0
+            },
+        );
         account_window.present(self.root().as_ref());
     }
 
     #[template_callback]
     fn on_delete_clicked(&self) {
         let account = self.item().account();
-        SETTINGS.remove_account(account).expect("Failed to remove server");
+        SETTINGS
+            .remove_account(account)
+            .expect("Failed to remove server");
         let root = self.root();
-        let window = root.and_downcast_ref::<Window>().expect("Failed to get Window");
+        let window = root
+            .and_downcast_ref::<Window>()
+            .expect("Failed to get Window");
         window.set_servers();
         window.set_nav_servers();
     }

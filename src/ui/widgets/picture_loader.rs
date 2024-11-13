@@ -141,8 +141,12 @@ impl PictureLoader {
 
     pub fn cache_file(&self) -> PathBuf {
         let cache_path = emby_cache_path();
-        let path =
-            format!("{}-{}-{}", self.id(), self.imagetype(), self.tag().unwrap_or("0".to_string()));
+        let path = format!(
+            "{}-{}-{}",
+            self.id(),
+            self.imagetype(),
+            self.tag().unwrap_or("0".to_string())
+        );
         cache_path.join(path)
     }
 

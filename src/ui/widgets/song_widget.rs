@@ -182,9 +182,11 @@ impl SongWidget {
         let item = imp.item.get().unwrap();
         imp.number_label.set_text(&item.index_number().to_string());
         imp.title_label.set_text(&item.name());
-        imp.artist_label.set_text(&item.artists().unwrap_or("".to_string()));
+        imp.artist_label
+            .set_text(&item.artists().unwrap_or("".to_string()));
         let duration = item.run_time_ticks() / 10000000;
-        imp.duration_label.set_text(&format_duration(duration as i64));
+        imp.duration_label
+            .set_text(&format_duration(duration as i64));
         imp.favourite_button.set_active(item.is_favorite());
 
         let id = item.id();
@@ -198,7 +200,10 @@ impl SongWidget {
     }
 
     fn bind(&self, core_song: &CoreSong) {
-        self.bind_property("state", core_song, "state").sync_create().bidirectional().build();
+        self.bind_property("state", core_song, "state")
+            .sync_create()
+            .bidirectional()
+            .build();
     }
 }
 

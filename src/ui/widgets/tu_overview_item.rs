@@ -163,7 +163,10 @@ glib::wrapper! {
 #[template_callbacks]
 impl TuOverviewItem {
     pub fn new(item: TuItem, isresume: bool) -> Self {
-        Object::builder().property("item", item).property("isresume", isresume).build()
+        Object::builder()
+            .property("item", item)
+            .property("isresume", isresume)
+            .build()
     }
 
     pub fn default() -> Self {
@@ -182,14 +185,20 @@ impl TuOverviewItem {
                     item.index_number(),
                     item.name()
                 ));
-                imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 if let Some(premiere_date) = item.premiere_date() {
                     imp.time_label.set_visible(true);
-                    imp.time_label.set_text(&premiere_date.format("%Y-%m-%d").unwrap_or_default());
+                    imp.time_label
+                        .set_text(&premiere_date.format("%Y-%m-%d").unwrap_or_default());
                 }
-                imp.label2.set_text(&run_time_ticks_to_label(item.run_time_ticks()));
+                imp.label2
+                    .set_text(&run_time_ticks_to_label(item.run_time_ticks()));
                 imp.overview.set_text(
-                    &item.overview().unwrap_or("No Inscription".to_string()).replace('\n', " "),
+                    &item
+                        .overview()
+                        .unwrap_or("No Inscription".to_string())
+                        .replace('\n', " "),
                 );
                 self.set_played_percentage(self.get_played_percentage());
             }
@@ -206,11 +215,13 @@ impl TuOverviewItem {
                         item.index_number(),
                         item.name()
                     ));
-                    imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                    imp.overlay
+                        .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 } else {
                     imp.listlabel.set_text(&item.name());
                     imp.aspect_frame.set_ratio(0.67);
-                    imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                    imp.overlay
+                        .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                     self.set_rating();
                 }
                 let year = if item.production_year() != 0 {
@@ -220,12 +231,14 @@ impl TuOverviewItem {
                 };
                 if let Some(status) = item.status() {
                     if status == "Continuing" {
-                        imp.label2.set_text(&format!("{} - {}", year, gettext("Present")));
+                        imp.label2
+                            .set_text(&format!("{} - {}", year, gettext("Present")));
                     } else if status == "Ended" {
                         if let Some(end_date) = item.end_date() {
                             let end_year = end_date.year();
                             if end_year != year.parse::<i32>().unwrap_or_default() {
-                                imp.label2.set_text(&format!("{} - {}", year, end_date.year()));
+                                imp.label2
+                                    .set_text(&format!("{} - {}", year, end_date.year()));
                             } else {
                                 imp.label2.set_text(&format!("{}", end_year));
                             }
@@ -348,7 +361,7 @@ impl TuOverviewItem {
                     .has_arrow(false)
                     .build();
                 if let Some(popover) = imp.popover.borrow_mut().take() {
-                    popover.unparent(); 
+                    popover.unparent();
                 }
                 new_popover.set_parent(self);
                 imp.popover.replace(Some(new_popover));
@@ -362,7 +375,8 @@ impl TuOverviewItem {
             imp,
             move |gesture, _n, x, y| {
                 gesture.set_state(gtk::EventSequenceState::Claimed);
-                imp.obj().insert_action_group("item", imp.obj().set_action().as_ref());
+                imp.obj()
+                    .insert_action_group("item", imp.obj().set_action().as_ref());
                 if let Some(popover) = imp.popover.borrow().as_ref() {
                     popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
                     popover.popup();
@@ -634,8 +648,11 @@ impl TuOverviewItem {
                                 .unwrap()
                                 .downcast::<gtk::SingleSelection>()
                                 .unwrap();
-                            let store =
-                                selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+                            let store = selection
+                                .model()
+                                .unwrap()
+                                .downcast::<gio::ListStore>()
+                                .unwrap();
                             store.remove(selection.selected());
                         } else if let Some(grid_view) = parent.downcast_ref::<gtk::GridView>() {
                             let selection = grid_view
@@ -643,8 +660,11 @@ impl TuOverviewItem {
                                 .unwrap()
                                 .downcast::<gtk::SingleSelection>()
                                 .unwrap();
-                            let store =
-                                selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+                            let store = selection
+                                .model()
+                                .unwrap()
+                                .downcast::<gio::ListStore>()
+                                .unwrap();
                             store.remove(selection.selected());
                         }
                     }

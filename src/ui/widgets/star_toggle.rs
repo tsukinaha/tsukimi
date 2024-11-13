@@ -60,10 +60,18 @@ impl StarToggle {
 
     fn update(&self) {
         let starred = self.is_active();
-        self.set_icon_name(if starred { "starred-symbolic" } else { "non-starred-symbolic" });
+        self.set_icon_name(if starred {
+            "starred-symbolic"
+        } else {
+            "non-starred-symbolic"
+        });
         let rm_text = gettext("Remove from favorites");
         let add_text = gettext("Add to favorites");
-        self.set_tooltip_text(if starred { Some(&rm_text) } else { Some(&add_text) });
+        self.set_tooltip_text(if starred {
+            Some(&rm_text)
+        } else {
+            Some(&add_text)
+        });
 
         if starred {
             self.add_css_class("starred")

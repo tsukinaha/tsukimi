@@ -18,7 +18,9 @@ pub struct DropdownList {
 pub fn factory<const UPBIND: bool>() -> gtk::SignalListItemFactory {
     let factory = gtk::SignalListItemFactory::new();
     factory.connect_bind(move |_, item| {
-        let list_item = item.downcast_ref::<gtk::ListItem>().expect("Needs to be ListItem");
+        let list_item = item
+            .downcast_ref::<gtk::ListItem>()
+            .expect("Needs to be ListItem");
 
         if list_item.child().is_some() && !UPBIND {
             return;

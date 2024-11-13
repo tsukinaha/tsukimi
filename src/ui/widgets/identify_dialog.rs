@@ -108,7 +108,10 @@ glib::wrapper! {
 #[template_callbacks]
 impl IdentifyDialog {
     pub fn new(id: &str, itemtype: &str) -> Self {
-        glib::Object::builder().property("id", id).property("itemtype", itemtype).build()
+        glib::Object::builder()
+            .property("id", id)
+            .property("itemtype", itemtype)
+            .build()
     }
 
     pub fn init(&self) {
@@ -208,9 +211,16 @@ impl IdentifyDialog {
             });
         }
 
-        let searchinfo = SearchInfo { name: Some(title.to_string()), year, provider_ids };
+        let searchinfo = SearchInfo {
+            name: Some(title.to_string()),
+            year,
+            provider_ids,
+        };
 
-        let remote_search_info = RemoteSearchInfo { item_id: self.id(), search_info: searchinfo };
+        let remote_search_info = RemoteSearchInfo {
+            item_id: self.id(),
+            search_info: searchinfo,
+        };
 
         let type_ = self.itemtype();
 

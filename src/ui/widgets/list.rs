@@ -98,7 +98,10 @@ glib::wrapper! {
 
 impl ListPage {
     pub fn new(id: String, collection_type: String) -> Self {
-        Object::builder().property("id", id).property("collectiontype", collection_type).build()
+        Object::builder()
+            .property("id", id)
+            .property("collectiontype", collection_type)
+            .build()
     }
 
     pub async fn set_pages(&self) {

@@ -181,7 +181,11 @@ impl AccountWindow {
             servername = res.server_name;
         }
 
-        let server_type = if imp.server_type.selected() == 0 { "Emby" } else { "Jellyfin" };
+        let server_type = if imp.server_type.selected() == 0 {
+            "Emby"
+        } else {
+            "Jellyfin"
+        };
 
         let account = Account {
             servername: servername.to_string(),
@@ -199,7 +203,9 @@ impl AccountWindow {
         match action_type {
             ActionType::Edit => {
                 let old_account = imp.old_account.take().expect("No server to edit");
-                SETTINGS.edit_account(old_account, account).expect("Failed to edit server");
+                SETTINGS
+                    .edit_account(old_account, account)
+                    .expect("Failed to edit server");
                 self.close_dialog(&gettext("Server edited successfully"));
             }
             ActionType::Add => {

@@ -526,7 +526,9 @@ impl SGTitem {
             let id = id.clone();
             let list_type_clone = list_type_clone.clone();
             async move {
-                EMBY_CLIENT.get_inlist(None, 0, &list_type_clone, &id, &sort_order, &sort_by).await
+                EMBY_CLIENT
+                    .get_inlist(None, 0, &list_type_clone, &id, &sort_order, &sort_by)
+                    .await
             }
         });
         let id = self.id.to_string();
@@ -535,7 +537,9 @@ impl SGTitem {
             let id = id.clone();
             let list_type = list_type.clone();
             async move {
-                EMBY_CLIENT.get_inlist(None, n_items, &list_type, &id, &sort_order, &sort_by).await
+                EMBY_CLIENT
+                    .get_inlist(None, n_items, &list_type, &id, &sort_order, &sort_by)
+                    .await
             }
         });
         push_page_with_tag(widget, page, &self.id.to_string(), &self.name.clone());

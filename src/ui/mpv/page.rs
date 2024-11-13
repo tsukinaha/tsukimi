@@ -188,12 +188,20 @@ mod imp {
             klass.install_action("mpv.chapter-next", None, move |mpv, _action, _parameter| {
                 mpv.chapter_next();
             });
-            klass.install_action("mpv.show-settings", None, move |mpv, _action, _parameter| {
-                mpv.on_sidebar_clicked();
-            });
-            klass.install_action("mpv.show-playlist", None, move |mpv, _action, _parameter| {
-                mpv.on_playlist_clicked();
-            });
+            klass.install_action(
+                "mpv.show-settings",
+                None,
+                move |mpv, _action, _parameter| {
+                    mpv.on_sidebar_clicked();
+                },
+            );
+            klass.install_action(
+                "mpv.show-playlist",
+                None,
+                move |mpv, _action, _parameter| {
+                    mpv.on_playlist_clicked();
+                },
+            );
             klass.install_action_async(
                 "mpv.next-video",
                 None,
@@ -225,10 +233,16 @@ mod imp {
             self.menu_popover.set_offset(0, -20);
 
             SETTINGS
-                .bind("mpv-show-buffer-speed", &self.network_speed_label_2.get(), "visible")
+                .bind(
+                    "mpv-show-buffer-speed",
+                    &self.network_speed_label_2.get(),
+                    "visible",
+                )
                 .build();
 
-            SETTINGS.bind("mpv-default-volume", &self.volume_adj.get(), "value").build();
+            SETTINGS
+                .bind("mpv-default-volume", &self.volume_adj.get(), "value")
+                .build();
 
             self.video_scale.set_player(Some(&self.video.get()));
 
@@ -238,7 +252,10 @@ mod imp {
 
             obj.connect_root_notify(|obj| {
                 if let Some(window) = obj.root().and_downcast::<gtk::Window>() {
-                    window.bind_property("fullscreened", obj, "fullscreened").sync_create().build();
+                    window
+                        .bind_property("fullscreened", obj, "fullscreened")
+                        .sync_create()
+                        .build();
                 }
             });
 
@@ -307,7 +324,11 @@ impl MPVPage {
             item.name()
         };
 
-        self.imp().video.imp().mpv.set_property("force-media-title", name.clone());
+        self.imp()
+            .video
+            .imp()
+            .mpv
+            .set_property("force-media-title", name.clone());
         self.imp().video_scale.reset_scale();
         self.imp().video_version_matcher.replace(matcher);
         self.imp().current_video.replace(Some(item));
@@ -323,7 +344,8 @@ impl MPVPage {
                 imp.loading_box.set_visible(true);
                 imp.network_speed_label.set_text("Initializing...");
                 imp.title_content.set_label(&name);
-                imp.suburl.replace(suburi.map(|suburi| EMBY_CLIENT.get_streaming_url(&suburi)));
+                imp.suburl
+                    .replace(suburi.map(|suburi| EMBY_CLIENT.get_streaming_url(&suburi)));
                 imp.video.play(&url, percentage);
             }
         ));
@@ -380,8 +402,11 @@ impl MPVPage {
     }
 
     fn set_vsid<const A: bool>(&self, track_id: i64) {
-        let track =
-            if track_id == 0 { TrackSelection::None } else { TrackSelection::Track(track_id) };
+        let track = if track_id == 0 {
+            TrackSelection::None
+        } else {
+            TrackSelection::Track(track_id)
+        };
 
         if A {
             self.imp().video.set_aid(track);
@@ -435,8 +460,11 @@ impl MPVPage {
                 }
             };
 
-        let video_version_list: Vec<_> =
-            playback.media_sources.iter().map(|media_source| media_source.name.clone()).collect();
+        let video_version_list: Vec<_> = playback
+            .media_sources
+            .iter()
+            .map(|media_source| media_source.name.clone())
+            .collect();
 
         let media_source = if let Some(matcher) = self.imp().video_version_matcher.borrow().as_ref()
         {
@@ -446,25 +474,18 @@ impl MPVPage {
             playback.media_sources.first()
         };
 
-        let (media_source_id, url, media_streams) = match media_source {
-            Some(source) => {
-                let url = source
-                    .direct_stream_url
-                    .clone()
-                    .or(source.transcoding_url.clone())
-                    .or(direct_stream_url(source));
-                (source.id.clone(), url, source.media_streams.clone())
-            }
-            None => {
-                toast!(self, gettext("No media sources found"));
-                return;
-            }
-        };
-
-        let Some(url) = url else {
+        let Some(media_source) = media_source else {
             toast!(self, gettext("No media sources found"));
             return;
         };
+
+        let Some(url) = extract_url(media_source) else {
+            toast!(self, gettext("No media sources found"));
+            return;
+        };
+
+        let media_streams = &media_source.media_streams;
+        let media_source_id = media_source.id.clone();
 
         let mut lang_list = Vec::new();
         let mut indices = Vec::new();
@@ -484,7 +505,9 @@ impl MPVPage {
                     if stream.delivery_url.is_none() && stream.is_external {
                         let media_source_id_clone = media_source_id.clone();
                         let response = spawn_tokio(async move {
-                            EMBY_CLIENT.get_sub(&item_id_clone, &media_source_id_clone).await
+                            EMBY_CLIENT
+                                .get_sub(&item_id_clone, &media_source_id_clone)
+                                .await
                         })
                         .await;
 
@@ -528,7 +551,15 @@ impl MPVPage {
             start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
         };
 
-        self.play(&url, suburi.as_deref(), item.clone(), video_list, Some(back), 0.0, None);
+        self.play(
+            &url,
+            suburi.as_deref(),
+            item.clone(),
+            video_list,
+            Some(back),
+            0.0,
+            None,
+        );
     }
 
     pub async fn on_next_video(&self) {
@@ -907,9 +938,12 @@ impl MPVPage {
         let mpv = &self.imp().video.imp().mpv;
         mpv.pause(true);
         mpv.stop();
-        mpv.event_thread_alive.store(PAUSED, std::sync::atomic::Ordering::SeqCst);
+        mpv.event_thread_alive
+            .store(PAUSED, std::sync::atomic::Ordering::SeqCst);
         let root = self.root();
-        let window = root.and_downcast_ref::<crate::ui::widgets::window::Window>().unwrap();
+        let window = root
+            .and_downcast_ref::<crate::ui::widgets::window::Window>()
+            .unwrap();
         window.imp().stack.set_visible_child_name("main");
         window.allow_suspend();
 
@@ -1107,4 +1141,15 @@ pub fn direct_stream_url(source: &MediaSource) -> Option<String> {
     let container = source.container.clone()?;
     let etag = source.etag.clone()?;
     Some(EMBY_CLIENT.get_direct_stream_url(&container, &source.id.clone(), &etag))
+}
+
+pub fn extract_url(source: &MediaSource) -> Option<String> {
+    source
+        .direct_stream_url
+        .as_ref()
+        .or(source
+            .transcoding_url
+            .as_ref()
+            .or(direct_stream_url(source).as_ref()))
+        .map(|url| url.to_string())
 }

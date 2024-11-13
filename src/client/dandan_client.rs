@@ -40,7 +40,10 @@ impl DanDanClient {
         let client = ReqClient::build();
         let mut headers = reqwest::header::HeaderMap::new();
         headers.insert("Accept-Encoding", HeaderValue::from_static("gzip"));
-        Self { client, headers: Mutex::new(headers) }
+        Self {
+            client,
+            headers: Mutex::new(headers),
+        }
     }
 
     pub async fn request<T>(&self, url: &str, params: &[(&str, &str)]) -> Result<T>
@@ -76,20 +79,31 @@ impl DanDanClient {
     }
 
     pub fn get_headers(&self) -> Result<reqwest::header::HeaderMap> {
-        let headers =
-            self.headers.lock().map_err(|_| anyhow!("Failed to acquire lock on headers"))?.clone();
+        let headers = self
+            .headers
+            .lock()
+            .map_err(|_| anyhow!("Failed to acquire lock on headers"))?
+            .clone();
         Ok(headers)
     }
 
     pub async fn search_anime(&self, keyword: &str) -> Result<SearchAnimeResponse> {
         let params = &[("keyword", keyword)];
-        self.request(&format!("{}{}", DANDANAPI, DANDANAPI_SEARCH_ANIME_PATH), params).await
+        self.request(
+            &format!("{}{}", DANDANAPI, DANDANAPI_SEARCH_ANIME_PATH),
+            params,
+        )
+        .await
     }
 
     pub async fn search_episode(&self, anime_id: u64) -> Result<SearchEpisodesResponse> {
         let anime_id_str = anime_id.to_string();
         let params = &[("anime", anime_id_str.as_str())];
-        self.request(&format!("{}{}", DANDANAPI, DANDANAPI_SEARCH_EPISODE_PATH), params).await
+        self.request(
+            &format!("{}{}", DANDANAPI, DANDANAPI_SEARCH_EPISODE_PATH),
+            params,
+        )
+        .await
     }
 
     pub async fn get_comments(&self, episode_id: u64) -> Result<()> {
@@ -231,7 +245,10 @@ mod tests {
             }
         }
 
-        match DANDAN_CLIENT.search_anime("sadiauhiuhliubalikubcksauiyg").await {
+        match DANDAN_CLIENT
+            .search_anime("sadiauhiuhliubalikubcksauiyg")
+            .await
+        {
             Ok(res) => {
                 println!("{:?}", res);
             }

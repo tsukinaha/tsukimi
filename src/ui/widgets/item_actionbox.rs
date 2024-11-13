@@ -86,7 +86,9 @@ impl Default for ItemActionsBox {
 #[template_callbacks]
 impl ItemActionsBox {
     pub fn new() -> Self {
-        glib::Object::builder().property("id", None::<String>).build()
+        glib::Object::builder()
+            .property("id", None::<String>)
+            .build()
     }
 
     #[template_callback]

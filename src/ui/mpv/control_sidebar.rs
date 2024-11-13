@@ -236,19 +236,59 @@ impl MPVControlSidebar {
 
         let imp = self.imp();
 
-        SETTINGS.bind("mpv-seek-backward-step", &imp.seek_backward_adj.get(), "value").build();
-        SETTINGS.bind("mpv-seek-forward-step", &imp.seek_forward_adj.get(), "value").build();
-        imp.buffer_switchrow.set_active(SETTINGS.mpv_show_buffer_speed());
-        imp.sub_font_button.set_font_desc(&gtk::pango::FontDescription::from_string(
-            &SETTINGS.mpv_subtitle_font(),
-        ));
-        SETTINGS.bind("mpv-show-buffer-speed", &imp.buffer_switchrow.get(), "active").build();
-        SETTINGS.bind("mpv-cache-size", &imp.cache_size_adj.get(), "value").build();
-        SETTINGS.bind("mpv-cache-time", &imp.cache_time_adj.get(), "value").build();
-        SETTINGS.bind("mpv-deband", &imp.deband_switch.get(), "active").build();
-        SETTINGS.bind("mpv-audio-channel", &imp.audio_channel_combo.get(), "selected").build();
-        SETTINGS.bind("mpv-subtitle-scale", &imp.sub_scale_adj.get(), "value").build();
-        SETTINGS.bind("mpv-video-scale", &imp.video_upsacle_filter_combo.get(), "selected").build();
+        SETTINGS
+            .bind(
+                "mpv-seek-backward-step",
+                &imp.seek_backward_adj.get(),
+                "value",
+            )
+            .build();
+        SETTINGS
+            .bind(
+                "mpv-seek-forward-step",
+                &imp.seek_forward_adj.get(),
+                "value",
+            )
+            .build();
+        imp.buffer_switchrow
+            .set_active(SETTINGS.mpv_show_buffer_speed());
+        imp.sub_font_button
+            .set_font_desc(&gtk::pango::FontDescription::from_string(
+                &SETTINGS.mpv_subtitle_font(),
+            ));
+        SETTINGS
+            .bind(
+                "mpv-show-buffer-speed",
+                &imp.buffer_switchrow.get(),
+                "active",
+            )
+            .build();
+        SETTINGS
+            .bind("mpv-cache-size", &imp.cache_size_adj.get(), "value")
+            .build();
+        SETTINGS
+            .bind("mpv-cache-time", &imp.cache_time_adj.get(), "value")
+            .build();
+        SETTINGS
+            .bind("mpv-deband", &imp.deband_switch.get(), "active")
+            .build();
+        SETTINGS
+            .bind(
+                "mpv-audio-channel",
+                &imp.audio_channel_combo.get(),
+                "selected",
+            )
+            .build();
+        SETTINGS
+            .bind("mpv-subtitle-scale", &imp.sub_scale_adj.get(), "value")
+            .build();
+        SETTINGS
+            .bind(
+                "mpv-video-scale",
+                &imp.video_upsacle_filter_combo.get(),
+                "selected",
+            )
+            .build();
     }
 
     pub fn set_mpv_property<V>(&self, property: &str, value: V)
@@ -318,7 +358,9 @@ impl MPVControlSidebar {
 
     #[template_callback]
     pub fn on_buffer_speed(&self, _param: glib::ParamSpec, switch: adw::SwitchRow) {
-        SETTINGS.set_mpv_show_buffer_speed(switch.is_active()).unwrap();
+        SETTINGS
+            .set_mpv_show_buffer_speed(switch.is_active())
+            .unwrap();
     }
 
     #[template_callback]
@@ -349,7 +391,9 @@ impl MPVControlSidebar {
     #[template_callback]
     pub fn on_sub_font(&self, _param: glib::ParamSpec, button: gtk::FontDialogButton) {
         let font_desc = button.font_desc().unwrap();
-        SETTINGS.set_mpv_subtitle_font(font_desc.to_string()).unwrap();
+        SETTINGS
+            .set_mpv_subtitle_font(font_desc.to_string())
+            .unwrap();
         self.set_mpv_property("sub-font", font_desc.to_string());
     }
 
@@ -421,7 +465,8 @@ impl MPVControlSidebar {
         imp.sub_position_adj.set_value(100.0);
         imp.sub_size_adj.set_value(55.0);
         imp.sub_scale_adj.set_value(1.0);
-        imp.sub_font_button.set_font_desc(&gtk::pango::FontDescription::from_string(""));
+        imp.sub_font_button
+            .set_font_desc(&gtk::pango::FontDescription::from_string(""));
         imp.sub_border_style_combo.set_selected(0);
         imp.sub_border_size_adj.set_value(3.0);
         imp.sub_shadow_offset_adj.set_value(0.0);
@@ -433,9 +478,12 @@ impl MPVControlSidebar {
     #[template_callback]
     fn on_sub_color_clear(&self, _button: gtk::Button) {
         let imp = self.imp();
-        imp.sub_text_color.set_rgba(&gtk::gdk::RGBA::new(1.0, 1.0, 1.0, 1.0));
-        imp.sub_border_color.set_rgba(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 1.0));
-        imp.sub_background_color.set_rgba(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 0.0));
+        imp.sub_text_color
+            .set_rgba(&gtk::gdk::RGBA::new(1.0, 1.0, 1.0, 1.0));
+        imp.sub_border_color
+            .set_rgba(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 1.0));
+        imp.sub_background_color
+            .set_rgba(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 0.0));
 
         toast!(self, gettext("Subtitle color settings cleared."));
     }

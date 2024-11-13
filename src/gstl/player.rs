@@ -137,7 +137,9 @@ pub mod imp {
             self.pipeline.set(pipeline).unwrap();
 
             self.connect_about_to_finish(move |_| {
-                let _ = GSTREAMER_EVENT_CHANNEL.tx.send(GstreamerEvent::AboutToFinish);
+                let _ = GSTREAMER_EVENT_CHANNEL
+                    .tx
+                    .send(GstreamerEvent::AboutToFinish);
                 None
             });
 
@@ -223,7 +225,10 @@ pub mod imp {
         where
             F: Fn(&gst::Bus, &gst::Message) + Send + Sync + 'static,
         {
-            self.pipeline().bus().unwrap().connect_message(Some("stream-start"), cb);
+            self.pipeline()
+                .bus()
+                .unwrap()
+                .connect_message(Some("stream-start"), cb);
         }
 
         pub fn playing(&self) {

@@ -29,13 +29,14 @@ impl TuItemBuildExt for SignalListItemFactory {
             let tu_item = TuListItem::default();
             tu_item.set_poster_type(poster);
 
-            let list_item = item.downcast_ref::<gtk::ListItem>().expect("Needs to be ListItem");
+            let list_item = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem");
             list_item.set_child(Some(&tu_item));
-            list_item.property_expression("item").chain_property::<TuObject>("item").bind(
-                &tu_item,
-                "item",
-                gtk::Widget::NONE,
-            );
+            list_item
+                .property_expression("item")
+                .chain_property::<TuObject>("item")
+                .bind(&tu_item, "item", gtk::Widget::NONE);
         });
         self
     }
@@ -44,13 +45,14 @@ impl TuItemBuildExt for SignalListItemFactory {
         self.connect_setup(move |_, item| {
             let tu_item = TuOverviewItem::default();
             tu_item.set_view_group(view_group);
-            let list_item = item.downcast_ref::<gtk::ListItem>().expect("Needs to be ListItem");
+            let list_item = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem");
             list_item.set_child(Some(&tu_item));
-            list_item.property_expression("item").chain_property::<TuObject>("item").bind(
-                &tu_item,
-                "item",
-                gtk::Widget::NONE,
-            );
+            list_item
+                .property_expression("item")
+                .chain_property::<TuObject>("item")
+                .bind(&tu_item, "item", gtk::Widget::NONE);
         });
         self
     }
@@ -63,5 +65,8 @@ pub static TU_ITEM_BANNER_SIZE: Lazy<(i32, i32)> = Lazy::new(|| init_size(375, 7
 
 fn init_size(width: i32, height: i32) -> (i32, i32) {
     let scale = SETTINGS.post_scale();
-    ((width as f64 * scale) as i32, (height as f64 * scale) as i32)
+    (
+        (width as f64 * scale) as i32,
+        (height as f64 * scale) as i32,
+    )
 }

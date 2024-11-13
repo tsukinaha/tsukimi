@@ -52,7 +52,10 @@ impl From<image::Frame> for Frame {
             image::ColorType::Rgba8.bytes_per_pixel(),
         );
 
-        Frame { texture: texture.upcast(), duration }
+        Frame {
+            texture: texture.upcast(),
+            duration,
+        }
     }
 }
 
@@ -102,11 +105,19 @@ mod imp {
 
     impl PaintableImpl for ImagePaintable {
         fn intrinsic_height(&self) -> i32 {
-            self.frame.borrow().as_ref().map(|texture| texture.height()).unwrap_or(-1)
+            self.frame
+                .borrow()
+                .as_ref()
+                .map(|texture| texture.height())
+                .unwrap_or(-1)
         }
 
         fn intrinsic_width(&self) -> i32 {
-            self.frame.borrow().as_ref().map(|texture| texture.width()).unwrap_or(-1)
+            self.frame
+                .borrow()
+                .as_ref()
+                .map(|texture| texture.width())
+                .unwrap_or(-1)
         }
 
         fn snapshot(&self, snapshot: &gdk::Snapshot, width: f64, height: f64) {
@@ -280,8 +291,11 @@ impl ImagePaintable {
             }
             image::ColorType::L16 | image::ColorType::Rgb16 => {
                 let sample = image.into_rgb16().into_flat_samples();
-                let bytes =
-                    sample.samples.into_iter().flat_map(|b| b.to_ne_bytes()).collect::<Vec<_>>();
+                let bytes = sample
+                    .samples
+                    .into_iter()
+                    .flat_map(|b| b.to_ne_bytes())
+                    .collect::<Vec<_>>();
                 texture_from_data(
                     &bytes,
                     sample.layout,
@@ -291,8 +305,11 @@ impl ImagePaintable {
             }
             image::ColorType::La16 | image::ColorType::Rgba16 => {
                 let sample = image.into_rgba16().into_flat_samples();
-                let bytes =
-                    sample.samples.into_iter().flat_map(|b| b.to_ne_bytes()).collect::<Vec<_>>();
+                let bytes = sample
+                    .samples
+                    .into_iter()
+                    .flat_map(|b| b.to_ne_bytes())
+                    .collect::<Vec<_>>();
                 texture_from_data(
                     &bytes,
                     sample.layout,
@@ -302,8 +319,11 @@ impl ImagePaintable {
             }
             image::ColorType::Rgb32F => {
                 let sample = image.into_rgb32f().into_flat_samples();
-                let bytes =
-                    sample.samples.into_iter().flat_map(|b| b.to_ne_bytes()).collect::<Vec<_>>();
+                let bytes = sample
+                    .samples
+                    .into_iter()
+                    .flat_map(|b| b.to_ne_bytes())
+                    .collect::<Vec<_>>();
                 texture_from_data(
                     &bytes,
                     sample.layout,
@@ -313,8 +333,11 @@ impl ImagePaintable {
             }
             image::ColorType::Rgba32F => {
                 let sample = image.into_rgb32f().into_flat_samples();
-                let bytes =
-                    sample.samples.into_iter().flat_map(|b| b.to_ne_bytes()).collect::<Vec<_>>();
+                let bytes = sample
+                    .samples
+                    .into_iter()
+                    .flat_map(|b| b.to_ne_bytes())
+                    .collect::<Vec<_>>();
                 texture_from_data(
                     &bytes,
                     sample.layout,
@@ -335,7 +358,9 @@ impl ImagePaintable {
     pub fn from_file(file: &gio::File) -> Result<Self, Box<dyn std::error::Error>> {
         let stream = file.read(gio::Cancellable::NONE)?;
         let reader = BufReader::new(stream.into_read());
-        let format = file.path().and_then(|path| ImageFormat::from_path(path).ok());
+        let format = file
+            .path()
+            .and_then(|path| ImageFormat::from_path(path).ok());
 
         Self::new(reader, format)
     }

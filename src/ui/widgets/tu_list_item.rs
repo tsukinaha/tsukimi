@@ -169,7 +169,7 @@ impl TuListItem {
     }
 
     #[template_callback]
-    fn on_play_clicked(&self) {
+    async fn on_play_clicked(&self) {
         let item = self.item();
         let item_type = item.item_type();
         match item_type.as_str() {
@@ -178,6 +178,14 @@ impl TuListItem {
             }
             "Audio" => {
                 item.play_single_audio(self);
+            }
+            "Video" | "MusicVideo" | "AdultVideo" | "Movie" | "Series" | "Episode" => {
+                toast!(self, gettext("Waiting for mediasource ..."));
+                item.play_video(self).await;
+            }
+            "MusicAlbum" => {
+                toast!(self, gettext("Waiting for mediasource ..."));
+                item.play_album(self).await;
             }
             _ => {
                 toast!(self, "Not implemented");
@@ -198,7 +206,8 @@ impl TuListItem {
                 };
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&year);
-                imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_can_direct_play(true);
                 self.set_picture();
                 self.set_played();
@@ -211,7 +220,8 @@ impl TuListItem {
             "Video" | "MusicVideo" | "AdultVideo" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
-                imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 self.set_can_direct_play(true);
                 self.set_picture();
             }
@@ -221,7 +231,8 @@ impl TuListItem {
                     item.name(),
                     item.program_name().unwrap_or_default()
                 ));
-                imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 self.set_can_direct_play(true);
                 self.set_picture();
 
@@ -252,7 +263,8 @@ impl TuListItem {
             "CollectionFolder" | "UserView" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
-                imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 self.set_apicture();
             }
             "Series" => {
@@ -264,12 +276,14 @@ impl TuListItem {
                 imp.listlabel.set_text(&item.name());
                 if let Some(status) = item.status() {
                     if status == "Continuing" {
-                        imp.label2.set_text(&format!("{} - {}", year, gettext("Present")));
+                        imp.label2
+                            .set_text(&format!("{} - {}", year, gettext("Present")));
                     } else if status == "Ended" {
                         if let Some(end_date) = item.end_date() {
                             let end_year = end_date.year();
                             if end_year != year.parse::<i32>().unwrap_or_default() {
-                                imp.label2.set_text(&format!("{} - {}", year, end_date.year()));
+                                imp.label2
+                                    .set_text(&format!("{} - {}", year, end_date.year()));
                             } else {
                                 imp.label2.set_text(&format!("{}", end_year));
                             }
@@ -280,7 +294,8 @@ impl TuListItem {
                 } else {
                     imp.label2.set_text(&year);
                 }
-                imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_can_direct_play(true);
                 self.set_picture();
                 self.set_played();
@@ -290,11 +305,13 @@ impl TuListItem {
             "BoxSet" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
-                imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_picture();
             }
             "Tag" | "Genre" => {
-                imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
                 self.set_picture();
@@ -312,7 +329,8 @@ impl TuListItem {
                     imp.listlabel.set_text(&item.name());
                     imp.label2.set_visible(false);
                 }
-                imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 self.set_can_direct_play(true);
                 self.set_picture();
                 self.set_played();
@@ -326,24 +344,28 @@ impl TuListItem {
             "MusicAlbum" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&item.albumartist_name());
-                imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 self.set_can_direct_play(true);
                 self.set_picture();
             }
             "Actor" | "Person" | "Director" | "Writer" | "Producer" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&item.role().unwrap_or("".to_string()));
-                imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_picture();
             }
             "Audio" => {
                 imp.listlabel.set_text(&item.name());
-                imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 self.set_can_direct_play(true);
                 self.set_picture();
             }
             "Folder" => {
-                imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
                 self.set_picture();
@@ -352,16 +374,19 @@ impl TuListItem {
             "Season" => {
                 imp.listlabel.set_text(&item.name());
                 if let Some(premiere_date) = item.premiere_date() {
-                    imp.label2.set_text(&premiere_date.format("%Y-%m-%d").unwrap());
+                    imp.label2
+                        .set_text(&premiere_date.format("%Y-%m-%d").unwrap());
                 }
-                imp.overlay.set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_picture();
                 self.set_played();
                 self.set_count();
                 self.set_rating();
             }
             _ => {
-                imp.overlay.set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
                 self.set_picture();
@@ -549,7 +574,7 @@ impl TuListItem {
                     .has_arrow(false)
                     .build();
                 if let Some(popover) = imp.popover.borrow_mut().take() {
-                    popover.unparent(); 
+                    popover.unparent();
                 }
                 new_popover.set_parent(self);
                 imp.popover.replace(Some(new_popover));
@@ -563,7 +588,8 @@ impl TuListItem {
             imp,
             move |gesture, _n, x, y| {
                 gesture.set_state(gtk::EventSequenceState::Claimed);
-                imp.obj().insert_action_group("item", imp.obj().set_action().as_ref());
+                imp.obj()
+                    .insert_action_group("item", imp.obj().set_action().as_ref());
                 if let Some(popover) = imp.popover.borrow().as_ref() {
                     popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
                     popover.popup();
@@ -839,8 +865,11 @@ impl TuListItem {
                                 .unwrap()
                                 .downcast::<gtk::SingleSelection>()
                                 .unwrap();
-                            let store =
-                                selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+                            let store = selection
+                                .model()
+                                .unwrap()
+                                .downcast::<gio::ListStore>()
+                                .unwrap();
                             store.remove(selection.selected());
                         } else if let Some(grid_view) = parent.downcast_ref::<gtk::GridView>() {
                             let selection = grid_view
@@ -848,8 +877,11 @@ impl TuListItem {
                                 .unwrap()
                                 .downcast::<gtk::SingleSelection>()
                                 .unwrap();
-                            let store =
-                                selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+                            let store = selection
+                                .model()
+                                .unwrap()
+                                .downcast::<gio::ListStore>()
+                                .unwrap();
                             store.remove(selection.selected());
                         }
                     }

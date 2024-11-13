@@ -146,8 +146,11 @@ impl HomePage {
     pub async fn setup_history(&self, enable_cache: bool) {
         let hortu = self.imp().hishortu.get();
 
-        let cache_policy =
-            if enable_cache { CachePolicy::UseCacheIfAvailable } else { CachePolicy::RefreshCache };
+        let cache_policy = if enable_cache {
+            CachePolicy::UseCacheIfAvailable
+        } else {
+            CachePolicy::RefreshCache
+        };
 
         let results = match fetch_with_cache("history", cache_policy, async {
             EMBY_CLIENT.get_resume().await

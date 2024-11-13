@@ -332,7 +332,13 @@ impl OtherPage {
             }
         };
 
-        let store = self.imp().selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+        let store = self
+            .imp()
+            .selection
+            .model()
+            .unwrap()
+            .downcast::<gio::ListStore>()
+            .unwrap();
 
         for item in list.items {
             let tu_item = TuItem::from_simple(&item, None);
@@ -390,12 +396,14 @@ impl OtherPage {
         let mut movies = Vec::new();
         let mut series = Vec::new();
         let mut episodes = Vec::new();
-        items.into_iter().for_each(|item| match item.item_type.as_str() {
-            "Movie" => movies.push(item),
-            "Series" => series.push(item),
-            "Episode" => episodes.push(item),
-            _ => {}
-        });
+        items
+            .into_iter()
+            .for_each(|item| match item.item_type.as_str() {
+                "Movie" => movies.push(item),
+                "Series" => series.push(item),
+                "Episode" => episodes.push(item),
+                _ => {}
+            });
 
         imp.moviehortu.set_items(&movies);
         imp.serieshortu.set_items(&series);

@@ -25,7 +25,9 @@ pub fn make_video_version_choice_from_filter(dl_list: Vec<String>) -> Option<usi
         }
     }
 
-    current_list.first().and_then(|first_item| dl_list.iter().position(|name| name == *first_item))
+    current_list
+        .first()
+        .and_then(|first_item| dl_list.iter().position(|name| name == *first_item))
 }
 
 pub fn make_video_version_choice_from_matcher(

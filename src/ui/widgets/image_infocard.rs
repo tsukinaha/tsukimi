@@ -97,7 +97,10 @@ impl ImageInfoCard {
 
     #[template_callback]
     fn on_view(&self) {
-        let window = self.ancestor(Window::static_type()).and_downcast::<Window>().unwrap();
+        let window = self
+            .ancestor(Window::static_type())
+            .and_downcast::<Window>()
+            .unwrap();
         let paintable = self.picture_paintable();
         if paintable.is_none() {
             toast!(self, gettext("No image to view"));
@@ -105,8 +108,10 @@ impl ImageInfoCard {
         }
         window.media_viewer_show_paintable(paintable);
         window.reveal_image(&self.imp().picture.get());
-        let dialog =
-            self.ancestor(ImagesDialog::static_type()).and_downcast::<ImagesDialog>().unwrap();
+        let dialog = self
+            .ancestor(ImagesDialog::static_type())
+            .and_downcast::<ImagesDialog>()
+            .unwrap();
         dialog.close();
     }
 

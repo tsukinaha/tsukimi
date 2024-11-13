@@ -73,7 +73,10 @@ impl Args {
                 };
 
                 info!("Logging to file {}", f);
-                builder.with_ansi(false).with_writer(Mutex::new(tracing_writer)).init()
+                builder
+                    .with_ansi(false)
+                    .with_writer(Mutex::new(tracing_writer))
+                    .init()
             }
         }
     }
@@ -94,10 +97,14 @@ impl Args {
 
     fn init_gilb_to_tracing(&self) {
         gtk::glib::log_set_writer_func(|level, x| {
-            let domain =
-                x.iter().find(|&it| it.key() == "GLIB_DOMAIN").and_then(|it| it.value_str());
-            let Some(message) =
-                x.iter().find(|&it| it.key() == "MESSAGE").and_then(|it| it.value_str())
+            let domain = x
+                .iter()
+                .find(|&it| it.key() == "GLIB_DOMAIN")
+                .and_then(|it| it.value_str());
+            let Some(message) = x
+                .iter()
+                .find(|&it| it.key() == "MESSAGE")
+                .and_then(|it| it.value_str())
             else {
                 return gtk::glib::LogWriterOutput::Unhandled;
             };

@@ -160,15 +160,27 @@ mod imp {
                     set.clearpic();
                 },
             );
-            klass.install_action("setting.fontclear", None, move |set, _action, _parameter| {
-                set.clear_font();
-            });
-            klass.install_action("version.add-prefer", None, move |set, _action, _parameter| {
-                set.add_preferred_version();
-            });
-            klass.install_action("version.edit-prefer", None, move |set, _action, _parameter| {
-                set.edit_preferred_version();
-            });
+            klass.install_action(
+                "setting.fontclear",
+                None,
+                move |set, _action, _parameter| {
+                    set.clear_font();
+                },
+            );
+            klass.install_action(
+                "version.add-prefer",
+                None,
+                move |set, _action, _parameter| {
+                    set.add_preferred_version();
+                },
+            );
+            klass.install_action(
+                "version.edit-prefer",
+                None,
+                move |set, _action, _parameter| {
+                    set.edit_preferred_version();
+                },
+            );
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -231,10 +243,16 @@ impl AccountSettings {
         }
         match spawn_tokio(async move { EMBY_CLIENT.change_password(&new_password).await }).await {
             Ok(_) => {
-                toast!(self, gettext("Password changed successfully! Please login again."));
+                toast!(
+                    self,
+                    gettext("Password changed successfully! Please login again.")
+                );
             }
             Err(e) => {
-                toast!(self, &format!("{}: {}", gettext("Failed to change password"), e));
+                toast!(
+                    self,
+                    &format!("{}: {}", gettext("Failed to change password"), e)
+                );
             }
         };
     }
@@ -256,13 +274,19 @@ impl AccountSettings {
     pub fn set_color(&self) {
         let imp = self.imp();
         use std::str::FromStr;
-        imp.color.set_rgba(&RGBA::from_str(&SETTINGS.accent_color_code()).unwrap());
+        imp.color
+            .set_rgba(&RGBA::from_str(&SETTINGS.accent_color_code()).unwrap());
         imp.color.connect_rgba_notify(move |control| {
-            SETTINGS.set_accent_color_code(&control.rgba().to_string()).unwrap();
+            SETTINGS
+                .set_accent_color_code(&control.rgba().to_string())
+                .unwrap();
         });
-        imp.fg_color.set_rgba(&RGBA::from_str(&SETTINGS.accent_fg_color_code()).unwrap());
+        imp.fg_color
+            .set_rgba(&RGBA::from_str(&SETTINGS.accent_fg_color_code()).unwrap());
         imp.fg_color.connect_rgba_notify(move |control| {
-            SETTINGS.set_accent_fg_color_code(&control.rgba().to_string()).unwrap();
+            SETTINGS
+                .set_accent_fg_color_code(&control.rgba().to_string())
+                .unwrap();
         });
     }
 
@@ -270,7 +294,8 @@ impl AccountSettings {
         let imp = self.imp();
         let settings = gtk::Settings::default().unwrap();
         if SETTINGS.font_size() == -1 {
-            imp.fontspinrow.set_value((settings.property::<i32>("gtk-xft-dpi") / 1024).into());
+            imp.fontspinrow
+                .set_value((settings.property::<i32>("gtk-xft-dpi") / 1024).into());
         } else {
             imp.fontspinrow.set_value(SETTINGS.font_size().into());
         }
@@ -312,7 +337,8 @@ impl AccountSettings {
 
     pub fn set_picopactiy(&self) {
         let imp = self.imp();
-        imp.backgroundspinrow.set_value(SETTINGS.pic_opacity().into());
+        imp.backgroundspinrow
+            .set_value(SETTINGS.pic_opacity().into());
         imp.backgroundspinrow.connect_value_notify(glib::clone!(
             #[weak(rename_to = obj)]
             self,
@@ -326,18 +352,24 @@ impl AccountSettings {
 
     fn window(&self) -> super::window::Window {
         let windows = self.application().unwrap().windows();
-        let window = windows.into_iter().find(|w| w.is::<super::window::Window>()).unwrap();
+        let window = windows
+            .into_iter()
+            .find(|w| w.is::<super::window::Window>())
+            .unwrap();
         window.downcast::<super::window::Window>().unwrap()
     }
 
     pub fn set_pic(&self) {
         let imp = self.imp();
-        imp.backgroundcontrol.set_active(SETTINGS.background_enabled());
+        imp.backgroundcontrol
+            .set_active(SETTINGS.background_enabled());
         imp.backgroundcontrol.connect_active_notify(glib::clone!(
             #[weak(rename_to = obj)]
             self,
             move |control| {
-                SETTINGS.set_background_enabled(control.is_active()).unwrap();
+                SETTINGS
+                    .set_background_enabled(control.is_active())
+                    .unwrap();
                 if !control.is_active() {
                     let window = obj.window();
                     window.clear_pic();
@@ -361,7 +393,10 @@ impl AccountSettings {
     pub fn set_font(&self) {
         let imp = self.imp();
         let settings = self.settings();
-        imp.font.set_font_desc(&gtk::pango::FontDescription::from_string(&SETTINGS.font_name()));
+        imp.font
+            .set_font_desc(&gtk::pango::FontDescription::from_string(
+                &SETTINGS.font_name(),
+            ));
         imp.font.connect_font_desc_notify(move |font| {
             let font_desc = font.font_desc().unwrap();
             let font_string = gtk::pango::FontDescription::to_string(&font_desc);
@@ -377,9 +412,15 @@ impl AccountSettings {
 
     pub fn bind_settings(&self) {
         let imp = self.imp();
-        SETTINGS.bind("is-blurenabled", &imp.backgroundblurcontrol.get(), "active").build();
-        SETTINGS.bind("pic-blur", &imp.backgroundblurspinrow.get(), "value").build();
-        SETTINGS.bind("mpv-config", &imp.config_switchrow.get(), "active").build();
+        SETTINGS
+            .bind("is-blurenabled", &imp.backgroundblurcontrol.get(), "active")
+            .build();
+        SETTINGS
+            .bind("pic-blur", &imp.backgroundblurspinrow.get(), "value")
+            .build();
+        SETTINGS
+            .bind("mpv-config", &imp.config_switchrow.get(), "active")
+            .build();
         SETTINGS
             .bind(
                 "mpv-audio-preferred-lang",
@@ -394,10 +435,22 @@ impl AccountSettings {
                 "selected",
             )
             .build();
-        SETTINGS.bind("is-auto-select-server", &imp.selectlastcontrol.get(), "active").build();
-        SETTINGS.bind("mpv-config-path", &imp.folder_button_content.get(), "label").build();
-        SETTINGS.bind("threads", &imp.threadspinrow.get(), "value").build();
-        SETTINGS.bind("post-scale", &imp.post_spinrow.get(), "value").build();
+        SETTINGS
+            .bind(
+                "is-auto-select-server",
+                &imp.selectlastcontrol.get(),
+                "active",
+            )
+            .build();
+        SETTINGS
+            .bind("mpv-config-path", &imp.folder_button_content.get(), "label")
+            .build();
+        SETTINGS
+            .bind("threads", &imp.threadspinrow.get(), "value")
+            .build();
+        SETTINGS
+            .bind("post-scale", &imp.post_spinrow.get(), "value")
+            .build();
 
         let action_group = gio::SimpleActionGroup::new();
 
@@ -464,14 +517,24 @@ impl AccountSettings {
         &self, _param: glib::ParamSpec, button: gtk::FontDialogButton,
     ) {
         let font_desc = button.font_desc().unwrap();
-        SETTINGS.set_mpv_subtitle_font(gtk::pango::FontDescription::to_string(&font_desc)).unwrap();
+        SETTINGS
+            .set_mpv_subtitle_font(gtk::pango::FontDescription::to_string(&font_desc))
+            .unwrap();
     }
 
     #[template_callback]
     async fn dir_cb(&self, _button: gtk::Button) {
-        if let Ok(file) = self.imp().folder_dialog.select_folder_future(Some(self)).await {
+        if let Ok(file) = self
+            .imp()
+            .folder_dialog
+            .select_folder_future(Some(self))
+            .await
+        {
             self.imp().folder_button_content.set_label(
-                &file.path().map(|p| p.to_string_lossy().into_owned()).unwrap_or("None".into()),
+                &file
+                    .path()
+                    .map(|p| p.to_string_lossy().into_owned())
+                    .unwrap_or("None".into()),
             );
         }
     }
@@ -536,7 +599,9 @@ impl AccountSettings {
             _ => unreachable!(),
         };
 
-        SETTINGS.add_preferred_version_descriptor(descriptor).expect("Failed to add descriptor");
+        SETTINGS
+            .add_preferred_version_descriptor(descriptor)
+            .expect("Failed to add descriptor");
         self.refersh_descriptors();
 
         imp.add_version_preferences_dialog.close();
@@ -545,8 +610,11 @@ impl AccountSettings {
     pub fn edit_preferred_version(&self) {
         let imp = self.imp();
 
-        let old_descriptor =
-            imp.now_editing_descriptor.borrow().clone().expect("No descriptor to edit");
+        let old_descriptor = imp
+            .now_editing_descriptor
+            .borrow()
+            .clone()
+            .expect("No descriptor to edit");
 
         let descriptor = match imp.descriptor_type_comborow_edit.selected() {
             0 => {
@@ -588,10 +656,12 @@ impl AccountSettings {
         let descriptors = SETTINGS.preferred_version_descriptors();
 
         if descriptors.is_empty() {
-            imp.preferred_version_list_stack.set_visible_child_name("empty");
+            imp.preferred_version_list_stack
+                .set_visible_child_name("empty");
             return;
         } else {
-            imp.preferred_version_list_stack.set_visible_child_name("list");
+            imp.preferred_version_list_stack
+                .set_visible_child_name("list");
         }
 
         group.remove_all();
@@ -652,7 +722,9 @@ impl AccountSettings {
                 }
             ));
 
-            let prefix_image = gtk::Image::builder().icon_name("list-drag-handle-symbolic").build();
+            let prefix_image = gtk::Image::builder()
+                .icon_name("list-drag-handle-symbolic")
+                .build();
 
             row.add_suffix(&edit_button);
             row.add_suffix(&delete_button);
@@ -707,7 +779,10 @@ impl AccountSettings {
                     }
 
                     let mut descriptors = SETTINGS.preferred_version_descriptors();
-                    let lr_index = descriptors.iter().position(|d| *d == *lr_descriptor).unwrap();
+                    let lr_index = descriptors
+                        .iter()
+                        .position(|d| *d == *lr_descriptor)
+                        .unwrap();
                     descriptors.remove(lr_index);
                     descriptors.insert(index, lr_descriptor.clone());
                     SETTINGS

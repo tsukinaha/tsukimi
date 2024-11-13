@@ -23,6 +23,7 @@ use crate::{
     },
     toast,
     ui::{
+        mpv::page::extract_url,
         provider::core_song::CoreSong,
         widgets::{
             item::ItemPage,
@@ -38,8 +39,10 @@ use crate::{
         },
     },
     utils::{
+        fetch_with_cache,
         spawn,
         spawn_tokio,
+        CachePolicy,
     },
 };
 
@@ -223,12 +226,8 @@ impl TuItem {
 
         if let Some(current_program) = item.current_program {
             tu_item.set_program_name(current_program.name);
-            tu_item.set_program_start_time(
-                current_program.start_date.as_ref().map(chrono_to_glib),
-            );
-            tu_item.set_program_end_time(
-                current_program.end_date.as_ref().map(chrono_to_glib),
-            );
+            tu_item.set_program_start_time(current_program.start_date.as_ref().map(chrono_to_glib));
+            tu_item.set_program_end_time(current_program.end_date.as_ref().map(chrono_to_glib));
         }
 
         tu_item.set_premiere_date(item.premiere_date.as_ref().map(chrono_to_glib));
@@ -310,14 +309,18 @@ impl TuItem {
                 page.connect_sort_changed_tokio(false, move |sort_by, sort_order| {
                     let id = id.clone();
                     async move {
-                        EMBY_CLIENT.get_folder_include(&id, &sort_by, &sort_order, 0).await
+                        EMBY_CLIENT
+                            .get_folder_include(&id, &sort_by, &sort_order, 0)
+                            .await
                     }
                 });
                 let id = self.id();
                 page.connect_end_edge_overshot_tokio(false, move |sort_by, sort_order, n_items| {
                     let id = id.clone();
                     async move {
-                        EMBY_CLIENT.get_folder_include(&id, &sort_by, &sort_order, n_items).await
+                        EMBY_CLIENT
+                            .get_folder_include(&id, &sort_by, &sort_order, n_items)
+                            .await
                     }
                 });
                 push_page_with_tag(window, page, self.id(), &self.name());
@@ -379,6 +382,81 @@ impl TuItem {
         let song_widget = SongWidget::new(self.clone());
         let model = gio::ListStore::new::<CoreSong>();
         bing_song_model!(obj, model, song_widget.coresong());
+    }
+
+    pub async fn play_album(&self, obj: &impl IsA<gtk::Widget>) {
+        let id = self.id();
+
+        let songs = match fetch_with_cache(
+            &format!("audio_{}", &id),
+            CachePolicy::ReadCacheAndRefresh,
+            async move { EMBY_CLIENT.get_songs(&id).await },
+        )
+        .await
+        {
+            Ok(songs) => songs,
+            Err(e) => {
+                toast!(obj, e.to_user_facing());
+                return;
+            }
+        };
+
+        let song_widgets = songs
+            .items
+            .iter()
+            .map(|song| {
+                let item = TuItem::from_simple(song, None);
+                let song_widget = SongWidget::new(item);
+                song_widget.coresong()
+            })
+            .collect::<Vec<_>>();
+
+        let Some(first) = song_widgets.first() else {
+            return;
+        };
+
+        let model = gio::ListStore::new::<CoreSong>();
+        model.extend_from_slice(&song_widgets);
+        bing_song_model!(obj, model, first.clone());
+    }
+
+    pub async fn play_video(&self, obj: &impl IsA<gtk::Widget>) {
+        let id = self.id();
+
+        let playback =
+            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&id).await }).await {
+                Ok(playback) => playback,
+                Err(e) => {
+                    toast!(obj, e.to_user_facing());
+                    return;
+                }
+            };
+
+        let source = playback.media_sources[0].clone();
+
+        let Some(url) = extract_url(&source) else {
+            toast!(obj, gettext("No mediasource found"));
+            return;
+        };
+
+        let back = Back {
+            tick: 0,
+            id: self.id(),
+            playsessionid: playback.play_session_id,
+            mediasourceid: source.id.clone(),
+            start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
+        };
+
+        if let Some(window) = obj.root().and_downcast_ref::<Window>() { window.play_media(
+                url.to_string(),
+                None,
+                self.clone(),
+                Vec::new(),
+                Some(back),
+                None,
+                self.played_percentage(),
+                None,
+            ) }
     }
 }
 

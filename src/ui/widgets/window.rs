@@ -148,9 +148,13 @@ mod imp {
             klass.install_action("win.sidebar", None, move |window, _action, _parameter| {
                 window.sidebar();
             });
-            klass.install_action("setting.account", None, move |window, _action, _parameter| {
-                window.account_settings();
-            });
+            klass.install_action(
+                "setting.account",
+                None,
+                move |window, _action, _parameter| {
+                    window.account_settings();
+                },
+            );
             klass.install_action("win.toggle-fullscreen", None, |obj, _, _| {
                 if obj.is_fullscreen() {
                     obj.unfullscreen();
@@ -179,18 +183,22 @@ mod imp {
 
             let store = gtk::gio::ListStore::new::<TuObject>();
             self.mpv_playlist_selection.set_model(Some(&store));
-            self.mpv_playlist.set_model(Some(&self.mpv_playlist_selection));
+            self.mpv_playlist
+                .set_model(Some(&self.mpv_playlist_selection));
             self.mpv_playlist.set_factory(Some(
                 gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
             ));
-            self.mpv_control_sidebar.set_player(Some(&self.mpvnav.imp().video.get()));
+            self.mpv_control_sidebar
+                .set_player(Some(&self.mpvnav.imp().video.get()));
 
             let obj = self.obj();
             obj.set_fonts();
             if crate::ui::models::SETTINGS.font_size() != -1 {
                 let settings = gtk::Settings::default().unwrap();
-                settings
-                    .set_property("gtk-xft-dpi", crate::ui::models::SETTINGS.font_size() * 1024);
+                settings.set_property(
+                    "gtk-xft-dpi",
+                    crate::ui::models::SETTINGS.font_size() * 1024,
+                );
             } else {
                 #[cfg(target_os = "windows")]
                 {
@@ -215,7 +223,9 @@ mod imp {
         // Save window state right before the window will be closed
         fn close_request(&self) -> glib::Propagation {
             // Save window size
-            self.obj().save_window_size().expect("Failed to save window state");
+            self.obj()
+                .save_window_size()
+                .expect("Failed to save window state");
             // Allow to invoke other event handlers
             glib::Propagation::Proceed
         }
@@ -419,7 +429,9 @@ impl Window {
                     let lr_index = accounts.iter().position(|d| *d == *lr_account).unwrap();
                     accounts.remove(lr_index);
                     accounts.insert(index, lr_account.clone());
-                    SETTINGS.set_accounts(accounts).expect("Failed to set accounts");
+                    SETTINGS
+                        .set_accounts(accounts)
+                        .expect("Failed to set accounts");
                     obj.set_servers();
                     obj.set_nav_servers();
 
@@ -471,7 +483,9 @@ impl Window {
 
                 let Some(texture) = gtk::gdk::Texture::from_file(&gio::File::for_path(avatar)).ok()
                 else {
-                    obj.imp().avatar.set_custom_image(None::<&gtk::gdk::Paintable>);
+                    obj.imp()
+                        .avatar
+                        .set_custom_image(None::<&gtk::gdk::Paintable>);
                     return;
                 };
 
@@ -492,10 +506,11 @@ impl Window {
             Ok(guard) => guard.to_string(),
             Err(_) => "Not logged in".to_string(),
         });
-        imp.namerow.set_subtitle(&match EMBY_CLIENT.server_name.lock() {
-            Ok(guard) => guard.to_string(),
-            Err(_) => "No server selected".to_string(),
-        });
+        imp.namerow
+            .set_subtitle(&match EMBY_CLIENT.server_name.lock() {
+                Ok(guard) => guard.to_string(),
+                Err(_) => "No server selected".to_string(),
+            });
     }
 
     pub fn account_settings(&self) {
@@ -526,7 +541,10 @@ impl Window {
     }
 
     fn settings(&self) -> &Settings {
-        self.imp().settings.get().expect("`settings` should be set in `setup_settings`.")
+        self.imp()
+            .settings
+            .get()
+            .expect("`settings` should be set in `setup_settings`.")
     }
 
     pub fn save_window_size(&self) -> Result<(), glib::BoolError> {
@@ -536,7 +554,8 @@ impl Window {
         // Set the window state in `settings`
         self.settings().set_int("window-width", size.0)?;
         self.settings().set_int("window-height", size.1)?;
-        self.settings().set_boolean("is-maximized", self.is_maximized())?;
+        self.settings()
+            .set_boolean("is-maximized", self.is_maximized())?;
 
         Ok(())
     }
@@ -578,7 +597,8 @@ impl Window {
 
     fn sidebar(&self) {
         let imp = self.imp();
-        imp.split_view.set_show_sidebar(!imp.split_view.shows_sidebar());
+        imp.split_view
+            .set_show_sidebar(!imp.split_view.shows_sidebar());
     }
 
     pub fn overlay_sidebar(&self, overlay: bool) {
@@ -673,14 +693,16 @@ impl Window {
 
     pub fn set_fraction(&self, to_value: f64) {
         let progressbar = &self.imp().progressbar;
-        self.progressbar_animation().set_value_from(progressbar.fraction());
+        self.progressbar_animation()
+            .set_value_from(progressbar.fraction());
         self.progressbar_animation().set_value_to(to_value);
         self.progressbar_animation().play();
     }
 
     pub fn set_progressbar_fade(&self) {
         let progressbar = &self.imp().progressbar;
-        self.progressbar_fade_animation().set_value_from(progressbar.opacity());
+        self.progressbar_fade_animation()
+            .set_value_from(progressbar.opacity());
         self.progressbar_fade_animation().play();
     }
 
@@ -744,7 +766,8 @@ impl Window {
 
     pub fn bind_song_model(&self, active_model: gio::ListStore, active_core_song: CoreSong) {
         let imp = self.imp();
-        imp.player_toolbar_box.bind_song_model(active_model, active_core_song);
+        imp.player_toolbar_box
+            .bind_song_model(active_model, active_core_song);
     }
 
     pub fn play_media(
@@ -755,7 +778,15 @@ impl Window {
         imp.stack.set_visible_child_name("mpv");
         self.prevent_suspend();
         self.set_mpv_playlist(&episode_list);
-        imp.mpvnav.play(&url, suburl.as_deref(), item, episode_list, back, percentage, matcher);
+        imp.mpvnav.play(
+            &url,
+            suburl.as_deref(),
+            item,
+            episode_list,
+            back,
+            percentage,
+            matcher,
+        );
     }
 
     pub fn push_page<T>(&self, page: &T, tag: &str, name: &str)
@@ -951,8 +982,11 @@ impl Window {
     #[cfg(target_os = "linux")]
     fn prevent_suspend(&self) {
         let app = self.application().expect("No application found");
-        let cookie =
-            app.inhibit(Some(self), gtk::ApplicationInhibitFlags::IDLE, Some("Playing media"));
+        let cookie = app.inhibit(
+            Some(self),
+            gtk::ApplicationInhibitFlags::IDLE,
+            Some("Playing media"),
+        );
         self.imp().suspend_cookie.replace(Some(cookie));
     }
 

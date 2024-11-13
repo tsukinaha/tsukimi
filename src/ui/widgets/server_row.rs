@@ -81,6 +81,8 @@ glib::wrapper! {
 
 impl ServerRow {
     pub fn new(account: Account) -> Self {
-        glib::Object::builder().property("item", AccountItem::from_simple(&account)).build()
+        glib::Object::builder()
+            .property("item", AccountItem::from_simple(&account))
+            .build()
     }
 }

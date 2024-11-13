@@ -93,8 +93,10 @@ where
     let mut path = emby_cache_path();
     path.push(format!("{}.json", cache_key));
 
-    let read_cache =
-        matches!(cache_policy, CachePolicy::UseCacheIfAvailable | CachePolicy::ReadCacheAndRefresh);
+    let read_cache = matches!(
+        cache_policy,
+        CachePolicy::UseCacheIfAvailable | CachePolicy::ReadCacheAndRefresh
+    );
     let write_cache = matches!(
         cache_policy,
         CachePolicy::UseCacheIfAvailable
@@ -131,7 +133,9 @@ fn read_from_cache<T>(path: &PathBuf) -> Option<T>
 where
     T: for<'de> Deserialize<'de>,
 {
-    std::fs::read_to_string(path).ok().and_then(|contents| serde_json::from_str(&contents).ok())
+    std::fs::read_to_string(path)
+        .ok()
+        .and_then(|contents| serde_json::from_str(&contents).ok())
 }
 
 fn write_to_cache<T>(path: &PathBuf, data: &T) -> Result<()>
@@ -151,8 +155,9 @@ pub async fn get_image_with_cache(id: &str, img_type: &str, tag: Option<u8>) -> 
     let img_type = img_type.to_string();
 
     if !path.exists() {
-        let _ =
-            runtime().spawn(async move { EMBY_CLIENT.get_image(&id, &img_type, tag).await }).await;
+        let _ = runtime()
+            .spawn(async move { EMBY_CLIENT.get_image(&id, &img_type, tag).await })
+            .await;
     }
 
     Ok(path.to_string_lossy().to_string())

@@ -100,8 +100,9 @@ mod imp {
 
             self.list.set_model(Some(&self.selection));
 
-            self.list
-                .set_factory(Some(SignalListItemFactory::new().tu_item(PosterType::default())));
+            self.list.set_factory(Some(
+                SignalListItemFactory::new().tu_item(PosterType::default()),
+            ));
 
             self.list.connect_activate(move |listview, position| {
                 let model = listview.model().unwrap();
@@ -142,7 +143,12 @@ impl HortuScrolled {
     pub fn set_items(&self, items: &[SimpleListItem]) {
         let imp = self.imp();
 
-        let store = imp.selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+        let store = imp
+            .selection
+            .model()
+            .unwrap()
+            .downcast::<gio::ListStore>()
+            .unwrap();
 
         store.remove_all();
 
@@ -229,7 +235,8 @@ impl HortuScrolled {
     fn on_enter_focus(&self) {
         if !self.are_controls_visible() {
             self.hide_controls_animation().pause();
-            self.show_controls_animation().set_value_from(self.controls_opacity());
+            self.show_controls_animation()
+                .set_value_from(self.controls_opacity());
             self.show_controls_animation().play();
         }
     }
@@ -238,7 +245,8 @@ impl HortuScrolled {
     fn on_leave_focus(&self) {
         if self.are_controls_visible() {
             self.show_controls_animation().pause();
-            self.hide_controls_animation().set_value_from(self.controls_opacity());
+            self.hide_controls_animation()
+                .set_value_from(self.controls_opacity());
             self.hide_controls_animation().play();
         }
     }

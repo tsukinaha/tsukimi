@@ -1,4 +1,7 @@
-#![cfg_attr(all(target_os = "windows", not(feature = "console")), windows_subsystem = "windows")]
+#![cfg_attr(
+    all(target_os = "windows", not(feature = "console")),
+    windows_subsystem = "windows"
+)]
 
 use std::env;
 
@@ -45,7 +48,9 @@ fn locale_dir() -> &'static str {
                 .nth(2)
                 .expect("Can not get locale dir")
                 .join(WINDOWS_LOCALEDIR);
-            Box::leak(locale_path.into_boxed_path()).to_str().expect("Can not get locale dir")
+            Box::leak(locale_path.into_boxed_path())
+                .to_str()
+                .expect("Can not get locale dir")
         }
     })
 }
@@ -93,7 +98,8 @@ fn main() -> glib::ExitCode {
         use crate::client::account::theme::is_system_dark_mode_enabled;
 
         if is_system_dark_mode_enabled() {
-            app.style_manager().set_color_scheme(adw::ColorScheme::PreferDark);
+            app.style_manager()
+                .set_color_scheme(adw::ColorScheme::PreferDark);
         }
     }
 

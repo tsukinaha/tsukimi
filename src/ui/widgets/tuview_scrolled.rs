@@ -108,7 +108,12 @@ impl TuViewScrolled {
 
     pub fn set_store<const C: bool>(&self, items: Vec<SimpleListItem>, is_resume: bool) {
         let imp = self.imp();
-        let store = imp.selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+        let store = imp
+            .selection
+            .model()
+            .unwrap()
+            .downcast::<gio::ListStore>()
+            .unwrap();
 
         if C {
             store.remove_all();
@@ -128,12 +133,14 @@ impl TuViewScrolled {
         match view_type {
             ViewType::GridView => {
                 imp.scrolled_window.set_child(Some(&imp.grid.get()));
-                imp.grid.set_factory(Some(factory.tu_item(PosterType::default())));
+                imp.grid
+                    .set_factory(Some(factory.tu_item(PosterType::default())));
                 imp.grid.set_model(Some(&imp.selection));
             }
             ViewType::ListView => {
                 imp.scrolled_window.set_child(Some(&imp.list.get()));
-                imp.list.set_factory(Some(factory.tu_overview_item(ViewGroup::ListView)));
+                imp.list
+                    .set_factory(Some(factory.tu_overview_item(ViewGroup::ListView)));
                 imp.list.set_model(Some(&imp.selection));
             }
         }
@@ -177,7 +184,12 @@ impl TuViewScrolled {
 
     pub fn n_items(&self) -> u32 {
         let imp = self.imp();
-        let store = imp.selection.model().unwrap().downcast::<gio::ListStore>().unwrap();
+        let store = imp
+            .selection
+            .model()
+            .unwrap()
+            .downcast::<gio::ListStore>()
+            .unwrap();
         store.n_items()
     }
 }

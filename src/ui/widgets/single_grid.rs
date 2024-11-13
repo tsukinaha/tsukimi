@@ -325,14 +325,22 @@ impl SingleGrid {
 
     #[template_callback]
     fn sort_order_toggled_cb(&self, btn: &gtk::ToggleButton) {
-        let sort_order = if btn.is_active() { SortOrder::Ascending } else { SortOrder::Descending };
+        let sort_order = if btn.is_active() {
+            SortOrder::Ascending
+        } else {
+            SortOrder::Descending
+        };
         self.set_sort_order(sort_order);
         let _ = SETTINGS.set_list_sord_order(sort_order.into());
     }
 
     #[template_callback]
     fn view_toggled_cb(&self, btn: &gtk::ToggleButton) {
-        let view_type = if btn.is_active() { ViewType::GridView } else { ViewType::ListView };
+        let view_type = if btn.is_active() {
+            ViewType::GridView
+        } else {
+            ViewType::ListView
+        };
         self.set_view_type(view_type);
     }
 
@@ -420,7 +428,10 @@ impl SingleGrid {
         let factory = SignalListItemFactory::new();
         match self.view_type() {
             ViewType::GridView => {
-                scrolled.imp().grid.set_factory(Some(factory.tu_item(poster_type)));
+                scrolled
+                    .imp()
+                    .grid
+                    .set_factory(Some(factory.tu_item(poster_type)));
             }
             ViewType::ListView => {
                 scrolled
@@ -465,8 +476,12 @@ impl SingleGrid {
         Fut: Future<Output = Result<List>> + Send + 'static,
     {
         self.connect_sort_changed(move |obj| {
-            let sort_by = obj.match_sort_by(i32::from(obj.sort_by()) as u32).to_string();
-            let sort_order = obj.match_sort_order(i32::from(obj.sort_order()) as u32).to_string();
+            let sort_by = obj
+                .match_sort_by(i32::from(obj.sort_by()) as u32)
+                .to_string();
+            let sort_order = obj
+                .match_sort_order(i32::from(obj.sort_order()) as u32)
+                .to_string();
             let future = f(sort_by.clone(), sort_order.clone());
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
@@ -476,7 +491,9 @@ impl SingleGrid {
                     match spawn_tokio(future).await {
                         Ok(item) => {
                             obj.add_items::<true>(item.items, is_resume);
-                            obj.imp().count.set_text(&format!("{} Items", item.total_record_count));
+                            obj.imp()
+                                .count
+                                .set_text(&format!("{} Items", item.total_record_count));
                         }
                         Err(e) => {
                             toast!(obj, e.to_user_facing());
@@ -500,9 +517,12 @@ impl SingleGrid {
             #[weak(rename_to = obj)]
             self,
             move |scrolled, lock| {
-                let sort_by = obj.match_sort_by(i32::from(obj.sort_by()) as u32).to_string();
-                let sort_order =
-                    obj.match_sort_order(i32::from(obj.sort_order()) as u32).to_string();
+                let sort_by = obj
+                    .match_sort_by(i32::from(obj.sort_by()) as u32)
+                    .to_string();
+                let sort_order = obj
+                    .match_sort_order(i32::from(obj.sort_order()) as u32)
+                    .to_string();
                 let n_items = scrolled.n_items();
 
                 let future = f(sort_by.clone(), sort_order.clone(), n_items);

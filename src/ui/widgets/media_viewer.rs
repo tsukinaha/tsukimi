@@ -166,7 +166,10 @@ mod imp {
             // Bind `fullscreened` to the window property of the same name.
             obj.connect_root_notify(|obj| {
                 if let Some(window) = obj.root().and_downcast::<gtk::Window>() {
-                    window.bind_property("fullscreened", obj, "fullscreened").sync_create().build();
+                    window
+                        .bind_property("fullscreened", obj, "fullscreened")
+                        .sync_create()
+                        .build();
                 }
             });
 
@@ -249,7 +252,8 @@ mod imp {
             if fullscreened {
                 // Upscale the media on fullscreen
                 self.media.set_halign(gtk::Align::Fill);
-                self.toolbar_view.set_top_bar_style(adw::ToolbarStyle::Raised);
+                self.toolbar_view
+                    .set_top_bar_style(adw::ToolbarStyle::Raised);
             } else {
                 self.media.set_halign(gtk::Align::Center);
                 self.toolbar_view.set_top_bar_style(adw::ToolbarStyle::Flat);
@@ -286,7 +290,8 @@ impl MediaViewer {
         imp.menu.grab_focus();
 
         imp.swipe_progress.set(0.0);
-        imp.revealer.set_source_widget(Some(source_widget.upcast_ref()));
+        imp.revealer
+            .set_source_widget(Some(source_widget.upcast_ref()));
         imp.revealer.set_reveal_child(true);
 
         let animation = imp.animation.get().unwrap();

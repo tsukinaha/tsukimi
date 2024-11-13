@@ -128,7 +128,10 @@ impl Settings {
             return Ok(());
         }
         descriptors.push(descriptor);
-        self.set_string(Self::PREFERRED_VERSION_DESCRIPTORS, &descriptors.to_string())
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
     }
 
     pub fn remove_preferred_version_descriptor(
@@ -136,7 +139,10 @@ impl Settings {
     ) -> Result<(), glib::BoolError> {
         let mut descriptors = self.preferred_version_descriptors();
         descriptors.retain(|d| d != &descriptor);
-        self.set_string(Self::PREFERRED_VERSION_DESCRIPTORS, &descriptors.to_string())
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
     }
 
     pub fn edit_preferred_version_descriptor(
@@ -149,13 +155,19 @@ impl Settings {
         if let Some(index) = descriptors.iter().position(|d| d == &old_descriptor) {
             descriptors[index] = new_descriptor;
         }
-        self.set_string(Self::PREFERRED_VERSION_DESCRIPTORS, &descriptors.to_string())
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
     }
 
     pub fn set_preferred_version_descriptors(
         &self, descriptors: Vec<Descriptor>,
     ) -> Result<(), glib::BoolError> {
-        self.set_string(Self::PREFERRED_VERSION_DESCRIPTORS, &descriptors.to_string())
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
     }
 
     pub fn set_mpv_hwdec(&self, mpv_hwdec: i32) -> Result<(), glib::BoolError> {
@@ -219,7 +231,10 @@ impl Settings {
     pub fn set_mpv_action_after_video_end(
         &self, mpv_action_after_video_end: i32,
     ) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_ACTION_AFTER_VIDEO_END, mpv_action_after_video_end)
+        self.set_int(
+            Self::KEY_MPV_ACTION_AFTER_VIDEO_END,
+            mpv_action_after_video_end,
+        )
     }
 
     pub fn mpv_action_after_video_end(&self) -> i32 {
