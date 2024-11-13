@@ -1,17 +1,10 @@
-![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/+BtTTXtCZFSxjZGU1)
 
 ## Tsukimi
+![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/+BtTTXtCZFSxjZGU1)
+
 Tsukimi is a simple third-party Emby client written in GTK4-RS, uses MPV as the video player, and GStreamer as the music player
 
 ![Alt](https://repobeats.axiom.co/api/embed/82b1088ba840d89c50e1b5b3c1c40f4575b321a6.svg "Repobeats analytics image")
-
-## Frequently Asked Questions
-https://dev.tsukinaha.org/tsukimi
-> [!IMPORTANT]    
-> This application may encounter various compatibility issues on **Windows**, such as scaling issues, inability to open links, and more.   
-> Please refer to the **documentation** for detailed information and solutions.   
-> 请注意，此应用在 **Windows** 上可能诸多遇到兼容性问题，例如：缩放，无法打开链接，等等。   
-> 请您 **查阅相关文档** 获取详细信息和解决方案
 
 ## Screenshots
 <div align="center">
@@ -39,10 +32,11 @@ If you'd like to help translating **Tsukimi** into your language, please head ov
 <img src="https://hosted.weblate.org/widget/tsukimi/main/multi-auto.svg" alt="翻译状态" />
 </a>
 
-
-
 ## Build
 [Build On Linux](./docs/build_on_linux.md)
+
+## Frequently Asked Questions
+https://dev.tsukinaha.org/tsukimi
 
 ## Credits
 - [gtk4-rs](https://github.com/gtk-rs/gtk4-rs)
