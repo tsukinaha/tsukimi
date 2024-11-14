@@ -419,7 +419,7 @@ impl MPVControlSidebar {
     pub fn on_sub_background_color(&self, _param: glib::ParamSpec, color: gtk::ColorDialogButton) {
         let rgba = color.rgba();
         self.set_mpv_property(
-            "sub-background-color",
+            "sub-back-color",
             rgba_to_mpv_color((rgba.red(), rgba.green(), rgba.blue(), rgba.alpha())),
         );
     }
