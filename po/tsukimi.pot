@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-07 12:22+0800\n"
+"POT-Creation-Date: 2024-11-14 12:29+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -303,26 +303,26 @@ msgstr ""
 msgid "Name (Nullable)"
 msgstr ""
 
-#: resources/ui/account.ui:74
+#: resources/ui/account.ui:87
 msgid "Server Address (Auto parse)"
 msgstr ""
 
-#: resources/ui/account.ui:93
+#: resources/ui/account.ui:106
 msgid "Port"
 msgstr ""
 
-#: resources/ui/account.ui:100
+#: resources/ui/account.ui:113
 msgid "Username"
 msgstr ""
 
-#: resources/ui/account.ui:105
+#: resources/ui/account.ui:118
 msgid "Password (Nullable)"
 msgstr ""
 
 #: resources/ui/album_widget.ui:94 resources/ui/other.ui:76
 #: resources/ui/item.ui:169 resources/ui/player_toolbar.ui:90
-#: resources/ui/mpv_menu_actions.ui:27 src/ui/mpv/page.rs:883
-#: src/ui/mpv/page.rs:885 src/ui/widgets/item.rs:573
+#: resources/ui/mpv_menu_actions.ui:27 src/ui/mpv/page.rs:921
+#: src/ui/mpv/page.rs:923 src/ui/widgets/item.rs:614
 msgid "Play"
 msgstr ""
 
@@ -344,7 +344,7 @@ msgstr ""
 msgid "Media info (MPV)"
 msgstr ""
 
-#: resources/ui/mpvpage.ui:200 src/ui/mpv/page.rs:888 src/ui/mpv/page.rs:890
+#: resources/ui/mpvpage.ui:200 src/ui/mpv/page.rs:926 src/ui/mpv/page.rs:928
 msgid "Pause"
 msgstr ""
 
@@ -467,12 +467,12 @@ msgid "Studios"
 msgstr ""
 
 #: resources/ui/other.ui:150 resources/ui/item.ui:462
-#: src/ui/widgets/list.rs:128
+#: src/ui/widgets/list.rs:131
 msgid "Tags"
 msgstr ""
 
 #: resources/ui/other.ui:155 resources/ui/item.ui:457
-#: src/ui/widgets/list.rs:129
+#: src/ui/widgets/list.rs:132
 msgid "Genres"
 msgstr ""
 
@@ -541,7 +541,7 @@ msgid "No data."
 msgstr ""
 
 #: resources/ui/metadata_dialog.ui:111 resources/ui/single_grid.ui:111
-#: src/ui/widgets/item.rs:947
+#: src/ui/widgets/item.rs:1000
 msgid "Title"
 msgstr ""
 
@@ -883,11 +883,11 @@ msgid "Scan"
 msgstr ""
 
 #: resources/ui/search.ui:23 resources/ui/window.ui:16
-#: resources/ui/window.ui:390 src/ui/widgets/window.rs:314
+#: resources/ui/window.ui:390 src/ui/widgets/window.rs:324
 msgid "Search"
 msgstr ""
 
-#: resources/ui/search.ui:52 src/ui/widgets/list.rs:127
+#: resources/ui/search.ui:52 src/ui/widgets/list.rs:130
 msgid "BoxSet"
 msgstr ""
 
@@ -971,7 +971,7 @@ msgstr ""
 msgid "Sort By"
 msgstr ""
 
-#: resources/ui/single_grid.ui:112 src/ui/widgets/item.rs:951
+#: resources/ui/single_grid.ui:112 src/ui/widgets/item.rs:1004
 msgid "Bitrate"
 msgstr ""
 
@@ -1052,12 +1052,12 @@ msgstr ""
 msgid "Contents"
 msgstr ""
 
-#: resources/ui/window.ui:298 src/ui/widgets/window.rs:290
+#: resources/ui/window.ui:298 src/ui/widgets/window.rs:300
 msgid "Home"
 msgstr ""
 
-#: resources/ui/window.ui:344 src/ui/widgets/list.rs:130
-#: src/ui/widgets/window.rs:302
+#: resources/ui/window.ui:344 src/ui/widgets/list.rs:133
+#: src/ui/widgets/window.rs:312
 msgid "Liked"
 msgstr ""
 
@@ -1113,205 +1113,205 @@ msgstr ""
 msgid "translator-credits"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:145
+#: src/ui/widgets/account_add.rs:147
 msgid "Fields must be filled in"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:198
+#: src/ui/widgets/account_add.rs:209
 msgid "Server edited successfully"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:202
+#: src/ui/widgets/account_add.rs:213
 msgid "Server added successfully"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:225
+#: src/ui/widgets/account_settings.rs:237
 msgid "Password cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:229
+#: src/ui/widgets/account_settings.rs:241
 msgid "Passwords do not match!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:234
+#: src/ui/widgets/account_settings.rs:248
 msgid "Password changed successfully! Please login again."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:237
+#: src/ui/widgets/account_settings.rs:254
 msgid "Failed to change password"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:288
+#: src/ui/widgets/account_settings.rs:313
 msgid "Cache Cleared"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:309
+#: src/ui/widgets/account_settings.rs:334
 msgid "No file selected"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:375
+#: src/ui/widgets/account_settings.rs:410
 msgid "Font Cleared, Restart to take effect."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:517
-#: src/ui/widgets/account_settings.rs:526
-#: src/ui/widgets/account_settings.rs:555
-#: src/ui/widgets/account_settings.rs:564
+#: src/ui/widgets/account_settings.rs:580
+#: src/ui/widgets/account_settings.rs:589
+#: src/ui/widgets/account_settings.rs:623
+#: src/ui/widgets/account_settings.rs:632
 msgid "Descriptor cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:531
-#: src/ui/widgets/account_settings.rs:569
+#: src/ui/widgets/account_settings.rs:594
+#: src/ui/widgets/account_settings.rs:637
 msgid "Invalid regex"
 msgstr ""
 
-#: src/ui/widgets/home.rs:222
+#: src/ui/widgets/home.rs:225
 msgid "Latest"
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:408
+#: src/ui/mpv/control_sidebar.rs:452
 msgid "Video filter settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:430
+#: src/ui/mpv/control_sidebar.rs:475
 msgid "Subtitle settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:440
+#: src/ui/mpv/control_sidebar.rs:488
 msgid "Subtitle color settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:449
+#: src/ui/mpv/control_sidebar.rs:497
 msgid "Subtitle offset settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:491
+#: src/ui/mpv/control_sidebar.rs:539
 msgid "Deband settings cleared."
 msgstr ""
 
-#: src/ui/mpv/page.rs:391
+#: src/ui/mpv/page.rs:419
 msgid "Loading Video..."
 msgstr ""
 
-#: src/ui/mpv/page.rs:410
+#: src/ui/mpv/page.rs:438
 msgid "No more videos found"
 msgstr ""
 
-#: src/ui/mpv/page.rs:419
+#: src/ui/mpv/page.rs:447
 msgid "Waiting for mediasource..."
 msgstr ""
 
-#: src/ui/mpv/page.rs:453 src/ui/mpv/page.rs:458
+#: src/ui/mpv/page.rs:478 src/ui/mpv/page.rs:483
 msgid "No media sources found"
 msgstr ""
 
-#: src/ui/mpv/page.rs:604
+#: src/ui/mpv/page.rs:642
 msgid "Error"
 msgstr ""
 
-#: src/ui/mpv/page.rs:606
+#: src/ui/mpv/page.rs:644
 msgid ""
 "MPV has been shutdown, Application will exit. \n"
 "Tsukimi can't restart MPV."
 msgstr ""
 
-#: src/ui/mpv/page.rs:609
+#: src/ui/mpv/page.rs:647
 msgid "Shutdown"
 msgstr ""
 
-#: src/ui/widgets/image_infocard.rs:103
+#: src/ui/widgets/image_infocard.rs:106
 msgid "No image to view"
 msgstr ""
 
-#: src/ui/widgets/image_infocard.rs:117
+#: src/ui/widgets/image_infocard.rs:122
 msgid "No image to copy"
 msgstr ""
 
-#: src/ui/widgets/image_infocard.rs:121
+#: src/ui/widgets/image_infocard.rs:126
 msgid "Image copied to clipboard"
 msgstr ""
 
-#: src/ui/widgets/image_infocard.rs:162
+#: src/ui/widgets/image_infocard.rs:167
 msgid "Error loading image"
 msgstr ""
 
-#: src/ui/widgets/item.rs:320
+#: src/ui/widgets/item.rs:328
 msgid "Select an episode"
 msgstr ""
 
-#: src/ui/widgets/item.rs:569 src/ui/widgets/list.rs:126
+#: src/ui/widgets/item.rs:610 src/ui/widgets/list.rs:129
 msgid "Resume"
 msgstr ""
 
-#: src/ui/widgets/item.rs:941
+#: src/ui/widgets/item.rs:994
 msgid "Codec"
 msgstr ""
 
-#: src/ui/widgets/item.rs:944
+#: src/ui/widgets/item.rs:997
 msgid "Language"
 msgstr ""
 
-#: src/ui/widgets/item.rs:956
+#: src/ui/widgets/item.rs:1009
 msgid "BitDepth"
 msgstr ""
 
-#: src/ui/widgets/item.rs:960
+#: src/ui/widgets/item.rs:1013
 msgid "SampleRate"
 msgstr ""
 
-#: src/ui/widgets/item.rs:964
+#: src/ui/widgets/item.rs:1017
 msgid "Height"
 msgstr ""
 
-#: src/ui/widgets/item.rs:967
+#: src/ui/widgets/item.rs:1020
 msgid "Width"
 msgstr ""
 
-#: src/ui/widgets/item.rs:970
+#: src/ui/widgets/item.rs:1023
 msgid "ColorSpace"
 msgstr ""
 
-#: src/ui/widgets/item.rs:974
+#: src/ui/widgets/item.rs:1027
 msgid "DisplayTitle"
 msgstr ""
 
-#: src/ui/widgets/item.rs:978
+#: src/ui/widgets/item.rs:1031
 msgid "Channel"
 msgstr ""
 
-#: src/ui/widgets/item.rs:982
+#: src/ui/widgets/item.rs:1035
 msgid "ChannelLayout"
 msgstr ""
 
-#: src/ui/widgets/item.rs:987
+#: src/ui/widgets/item.rs:1040
 msgid "AverageFrameRate"
 msgstr ""
 
-#: src/ui/widgets/item.rs:991
+#: src/ui/widgets/item.rs:1044
 msgid "PixelFormat"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1105
+#: src/ui/widgets/item.rs:1163
 msgid "No video source found"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1283
+#: src/ui/widgets/item.rs:1354
 msgid "Season not found. Is this a continue watching list?"
 msgstr ""
 
-#: src/ui/widgets/music_album.rs:278
+#: src/ui/widgets/music_album.rs:294
 msgid "More From"
 msgstr ""
 
-#: src/ui/widgets/list.rs:118
+#: src/ui/widgets/list.rs:121
 msgid "Channels"
 msgstr ""
 
-#: src/ui/widgets/list.rs:125
+#: src/ui/widgets/list.rs:128
 msgid "All"
 msgstr ""
 
-#: src/ui/widgets/list.rs:131
+#: src/ui/widgets/list.rs:134
 msgid "Folder"
 msgstr ""
 
@@ -1319,31 +1319,36 @@ msgstr ""
 msgid "Favourite"
 msgstr ""
 
-#: src/ui/widgets/star_toggle.rs:64
+#: src/ui/widgets/star_toggle.rs:68
 msgid "Remove from favorites"
 msgstr ""
 
-#: src/ui/widgets/star_toggle.rs:65
+#: src/ui/widgets/star_toggle.rs:69
 msgid "Add to favorites"
 msgstr ""
 
-#: src/ui/widgets/server_action_row.rs:103
+#: src/ui/widgets/server_action_row.rs:113
 msgid "Edit Server"
 msgstr ""
 
-#: src/ui/widgets/tu_list_item.rs:245
+#: src/ui/widgets/tu_list_item.rs:183 src/ui/widgets/tu_list_item.rs:187
+#: src/ui/widgets/tu_list_item.rs:191
+msgid "Waiting for mediasource ..."
+msgstr ""
+
+#: src/ui/widgets/tu_list_item.rs:284
 msgid "Present"
 msgstr ""
 
-#: src/ui/widgets/tu_list_item.rs:610
+#: src/ui/widgets/tu_list_item.rs:680
 msgid "Scanning..."
 msgstr ""
 
-#: src/ui/widgets/tu_list_item.rs:773 src/ui/widgets/tu_list_item.rs:834
+#: src/ui/widgets/tu_list_item.rs:843 src/ui/widgets/tu_list_item.rs:910
 msgid "Success"
 msgstr ""
 
-#: src/ui/widgets/window.rs:799
+#: src/ui/widgets/window.rs:838
 msgid "Server Panel"
 msgstr ""
 
@@ -1363,34 +1368,34 @@ msgstr ""
 msgid "Are you sure you want to restart the server?"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:153
+#: src/ui/widgets/server_panel.rs:154
 msgid "Revert"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:153
+#: src/ui/widgets/server_panel.rs:155
 msgid "Confirm"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:188
+#: src/ui/widgets/server_panel.rs:191
 msgid "Server is shutting down"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:200
+#: src/ui/widgets/server_panel.rs:203
 msgid "Server is restarting"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:287
+#: src/ui/widgets/server_panel.rs:290
 msgid "Last execute: "
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:292
+#: src/ui/widgets/server_panel.rs:295
 msgid "Duration: "
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:295
+#: src/ui/widgets/server_panel.rs:300
 msgid "Result: "
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:338
+#: src/ui/widgets/server_panel.rs:346
 msgid "Task started"
 msgstr ""
