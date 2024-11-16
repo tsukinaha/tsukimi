@@ -10,12 +10,12 @@ pub trait ScrolledWindowFixExt {
 /// fix scrolledwindow fucking up the vscroll event
 impl ScrolledWindowFixExt for ScrolledWindow {
     fn fix(&self) -> &Self {
-        let controller = self.observe_controllers();
-        let count = controller.n_items();
-        for i in 0..count {
-            let item = controller.item(i).unwrap();
-            if item.is::<gtk::EventControllerScroll>() {
-                let controller = item.downcast::<gtk::EventControllerScroll>().unwrap();
+        let controller_model = self.observe_controllers();
+        for i in 0..controller_model.n_items() {
+            if let Some(controller) = controller_model
+                .item(i)
+                .and_downcast_ref::<gtk::EventControllerScroll>()
+            {
                 controller.set_flags(
                     gtk::EventControllerScrollFlags::HORIZONTAL
                         | gtk::EventControllerScrollFlags::KINETIC,
