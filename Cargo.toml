@@ -21,7 +21,7 @@ adw = { version = "0.7", package = "libadwaita", features = [
 ] }
 cargo-deb = "2.8.0"
 bytefmt = "0.1.7"
-libc = "0.2.162"
+libc = "0.2.164"
 uuid = { version = "1.10.0", features = ["v4"] }
 chrono = { version = "0.4.38", features = ["serde"] }
 tracing = "0.1.40"
