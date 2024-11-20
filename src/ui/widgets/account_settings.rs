@@ -59,6 +59,8 @@ mod imp {
         #[template_child]
         pub threadspinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
+        pub refresh_control: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub backgroundblurspinrow: TemplateChild<adw::SpinRow>,
@@ -450,6 +452,9 @@ impl AccountSettings {
             .build();
         SETTINGS
             .bind("post-scale", &imp.post_spinrow.get(), "value")
+            .build();
+        SETTINGS
+            .bind("is-refresh", &imp.refresh_control.get(), "active")
             .build();
 
         let action_group = gio::SimpleActionGroup::new();

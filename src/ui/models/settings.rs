@@ -57,6 +57,11 @@ impl Settings {
     const KEY_MPV_VIDEO_SCALE: &'static str = "mpv-video-scale"; // i32
     const KEY_MPV_CONFIG_DIR: &'static str = "mpv-config-path"; // String
     const KEY_POST_SCALE: &'static str = "post-scale"; // f64
+    const KEY_IS_REFRESH: &'static str = "is-refresh"; // bool
+
+    pub fn is_refresh(&self) -> bool {
+        self.boolean(Self::KEY_IS_REFRESH)
+    }
 
     pub fn post_scale(&self) -> f64 {
         self.double(Self::KEY_POST_SCALE)

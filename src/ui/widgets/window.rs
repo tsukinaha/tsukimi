@@ -345,7 +345,7 @@ impl Window {
 
         imp.popbutton.set_visible(false);
         imp.navipage.set_title("");
-        if imp.insidestack.visible_child_name() == Some("homepage".into()) {
+        if imp.insidestack.visible_child_name() == Some("homepage".into()) && SETTINGS.is_refresh() {
             let binding = imp.homepage.child();
             let Some(homepage) = binding.and_downcast_ref::<HomePage>() else {
                 return;

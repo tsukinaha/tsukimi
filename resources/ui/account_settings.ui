@@ -203,6 +203,11 @@
                 </property>
               </object>
             </child>
+            <child>
+              <object class="AdwSwitchRow" id="refresh_control">
+                <property name="title" translatable="yes">Refresh when returning to home page</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
