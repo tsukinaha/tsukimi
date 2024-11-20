@@ -44,7 +44,7 @@ impl ReqClient {
 
             client_builder.build().expect("failed to initialize client")
         };
-        
+
         tower::ServiceBuilder::new()
             .concurrency_limit(SETTINGS.threads() as usize)
             .service(client)
@@ -67,6 +67,16 @@ pub fn get_proxy_settings() -> Option<String> {
             && !proxy_config.lpszProxy.is_null()
         {
             let proxy = PCWSTR(proxy_config.lpszProxy.0).to_string().unwrap();
+            return Some(proxy);
+        } else if WinHttpGetIEProxyConfigForCurrentUser(&mut proxy_config).is_ok()
+            && !proxy_config.lpszAutoConfigUrl.is_null()
+        {
+            let proxy_url = PCWSTR(proxy_config.lpszAutoConfigUrl.0)
+                .to_string()
+                .unwrap();
+            let proxy = proxy_url.split('/').collect::<Vec<_>>()[..3]
+                .join("/")
+                .to_string();
             return Some(proxy);
         }
     }
