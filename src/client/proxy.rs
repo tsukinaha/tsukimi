@@ -25,14 +25,26 @@ impl ReqClient {
             .expect("failed to initialize client");
 
         #[cfg(target_os = "windows")]
-        let client = reqwest::Client::builder()
-            .user_agent(APP_USER_AGENT.to_string())
-            .timeout(std::time::Duration::from_secs(10))
-            .pool_max_idle_per_host(settings.int("threads") as usize)
-            .proxy(reqwest::Proxy::all(get_proxy_settings().unwrap_or_default()))
-            .build()
-            .expect("failed to initialize client");
+        let client = {
+            let client_builder = reqwest::Client::builder()
+                .user_agent(APP_USER_AGENT.to_string())
+                .timeout(std::time::Duration::from_secs(10))
+                .pool_max_idle_per_host(settings.int("threads") as usize);
 
+            let client_builder = match get_proxy_settings() {
+                Some(proxy_settings) => {
+                    if let Ok(proxy) = reqwest::Proxy::all(proxy_settings) {
+                        client_builder.proxy(proxy)
+                    } else {
+                        client_builder
+                    }
+                }
+                _ => client_builder,
+            };
+
+            client_builder.build().expect("failed to initialize client")
+        };
+        
         tower::ServiceBuilder::new()
             .concurrency_limit(SETTINGS.threads() as usize)
             .service(client)
