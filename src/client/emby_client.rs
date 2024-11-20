@@ -65,8 +65,8 @@ use crate::{
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
-static PROFILE: &str = include_str!("stream_profile.json");
-static CLIENT_ID: Lazy<String> = Lazy::new(|| "Tsukimi".to_string());
+const PROFILE: &str = include_str!("stream_profile.json");
+const CLIENT_ID: &str = "Tsukimi";
 static DEVICE_NAME: Lazy<String> = Lazy::new(|| {
     hostname::get()
         .unwrap_or("Unknown".into())
@@ -279,6 +279,7 @@ impl EmbyClient {
     where
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
+        println!("request start");
         let request = self.prepare_request(Method::GET, path, params)?;
         let res = self.send_request(request).await?;
 
@@ -294,6 +295,7 @@ impl EmbyClient {
 
         let res_text = res.text().await?;
         debug!("Response: {}", res_text);
+        println!("request end");
         match serde_json::from_str(&res_text) {
             Ok(json) => Ok(json),
             Err(e) => Err(anyhow!("Failed to parse JSON {}: {}", e, res_text)),

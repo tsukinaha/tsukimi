@@ -5,7 +5,7 @@ use crate::config::VERSION;
 
 pub struct ReqClient;
 
-static APP_USER_AGENT: Lazy<String> = Lazy::new(|| format!("Tsukimi/{}", VERSION));
+const APP_USER_AGENT: Lazy<String> = Lazy::new(|| format!("Tsukimi/{}", VERSION));
 
 impl ReqClient {
     pub fn build() -> reqwest::Client {
