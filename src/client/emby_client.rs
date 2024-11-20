@@ -10,7 +10,11 @@ use anyhow::{
 use once_cell::sync::Lazy;
 use regex::Regex;
 use reqwest::{
-    header::HeaderValue, Client, Method, RequestBuilder, Response
+    header::HeaderValue,
+    Client,
+    Method,
+    RequestBuilder,
+    Response,
 };
 use serde::{
     de::DeserializeOwned,
@@ -123,7 +127,7 @@ impl EmbyClient {
             "x-emby-authorization",
             HeaderValue::from_str(&generate_emby_authorization(
                 "",
-                &CLIENT_ID,
+                CLIENT_ID,
                 &DEVICE_NAME,
                 &DEVICE_ID,
                 VERSION,
@@ -205,7 +209,7 @@ impl EmbyClient {
             "x-emby-authorization",
             HeaderValue::from_str(&generate_emby_authorization(
                 user_id,
-                &CLIENT_ID,
+                CLIENT_ID,
                 &DEVICE_NAME,
                 &DEVICE_ID,
                 VERSION,

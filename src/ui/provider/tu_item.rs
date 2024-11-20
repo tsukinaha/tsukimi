@@ -421,7 +421,8 @@ impl TuItem {
     }
 
     pub async fn play_video(&self, obj: &impl IsA<gtk::Widget>) {
-        self.direct_play_video_id(obj, self.clone(), Vec::new()).await;
+        self.direct_play_video_id(obj, self.clone(), Vec::new())
+            .await;
     }
 
     pub async fn direct_play_video_id(

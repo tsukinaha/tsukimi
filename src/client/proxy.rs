@@ -3,11 +3,14 @@ use once_cell::sync::Lazy;
 use reqwest::Client;
 use tower::limit::ConcurrencyLimit;
 
-use crate::{config::VERSION, ui::models::SETTINGS};
+use crate::{
+    config::VERSION,
+    ui::models::SETTINGS,
+};
 
 pub struct ReqClient;
 
-const APP_USER_AGENT: Lazy<String> = Lazy::new(|| format!("Tsukimi/{}", VERSION));
+static APP_USER_AGENT: Lazy<String> = Lazy::new(|| format!("Tsukimi/{}", VERSION));
 
 impl ReqClient {
     pub fn build() -> ConcurrencyLimit<Client> {
