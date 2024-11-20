@@ -7,6 +7,3 @@ pub mod structs;
 
 pub use account::Account;
 pub use proxy::ReqClient;
-
-#[allow(dead_code)]
-pub mod dandan_client;

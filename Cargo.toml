@@ -50,6 +50,7 @@ md-5 = "0.10.6"
 unicode-segmentation = "1.12.0"
 hex = "0.4.3"
 rand = "0.8.5"
+tower = { version="0.5.1", features = ["limit"] }
 
 [build-dependencies]
 embed-resource = "3.0.1"

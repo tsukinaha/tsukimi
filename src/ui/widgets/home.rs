@@ -196,50 +196,60 @@ impl HomePage {
         }
 
         for view in items {
-            let ac_view = view.clone();
-
-            let results = match fetch_with_cache(
-                &format!("library_{}", view.id),
-                CachePolicy::ReadCacheAndRefresh,
-                async move {
-                    if view.collection_type.as_deref() == Some("livetv") {
-                        EMBY_CLIENT.get_channels().await.map(|x| x.items)
-                    } else {
-                        EMBY_CLIENT.get_latest(&view.id).await
-                    }
-                },
-            )
-            .await
-            {
-                Ok(history) => history,
-                Err(e) => {
-                    toast!(self, e.to_user_facing());
-                    return;
-                }
-            };
-
-            let hortu = HortuScrolled::new();
-
-            hortu.set_moreview(true);
-
-            hortu.set_title(format!("{} {}", gettext("Latest"), view.name));
-
-            hortu.set_items(&results);
-
-            hortu.connect_morebutton(glib::clone!(
+            spawn(glib::clone!(
                 #[weak(rename_to = obj)]
                 self,
-                move |_| {
-                    let list_item = TuItem::default();
-                    list_item.set_id(ac_view.id.clone());
-                    list_item.set_name(ac_view.name.clone());
-                    list_item.set_item_type(ac_view.item_type.clone());
-                    list_item.set_collection_type(ac_view.collection_type.clone());
-                    list_item.activate(&obj, None);
+                async move {
+                    obj.setup_libview(view).await;
                 }
             ));
-
-            libsbox.append(&hortu);
         }
+    }
+
+    async fn setup_libview(&self, view: SimpleListItem) {
+        let ac_view = view.clone();
+
+        let results = match fetch_with_cache(
+            &format!("library_{}", view.id),
+            CachePolicy::ReadCacheAndRefresh,
+            async move {
+                if view.collection_type.as_deref() == Some("livetv") {
+                    EMBY_CLIENT.get_channels().await.map(|x| x.items)
+                } else {
+                    EMBY_CLIENT.get_latest(&view.id).await
+                }
+            },
+        )
+        .await
+        {
+            Ok(history) => history,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+
+        let hortu = HortuScrolled::new();
+
+        hortu.set_moreview(true);
+
+        hortu.set_title(format!("{} {}", gettext("Latest"), view.name));
+
+        hortu.set_items(&results);
+
+        hortu.connect_morebutton(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |_| {
+                let list_item = TuItem::default();
+                list_item.set_id(ac_view.id.clone());
+                list_item.set_name(ac_view.name.clone());
+                list_item.set_item_type(ac_view.item_type.clone());
+                list_item.set_collection_type(ac_view.collection_type.clone());
+                list_item.activate(&obj, None);
+            }
+        ));
+
+        self.imp().libsbox.append(&hortu);
     }
 }

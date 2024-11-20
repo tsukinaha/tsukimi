@@ -191,12 +191,12 @@
             <child>
               <object class="AdwSpinRow" id="threadspinrow">
                 <property name="title" translatable="yes">Threads</property>
-                <property name="subtitle" translatable="yes">This only effects on getting images</property>
+                <property name="subtitle" translatable="yes">This only effects on getting images/updating cache</property>
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">1</property>
-                    <property name="upper">2</property>
-                    <property name="value">1</property>
+                    <property name="upper">4</property>
+                    <property name="value">2</property>
                     <property name="page-increment">1</property>
                     <property name="step-increment">1</property>
                   </object>

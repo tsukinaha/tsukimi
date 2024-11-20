@@ -10,10 +10,7 @@ use anyhow::{
 use once_cell::sync::Lazy;
 use regex::Regex;
 use reqwest::{
-    header::HeaderValue,
-    Method,
-    RequestBuilder,
-    Response,
+    header::HeaderValue, Client, Method, RequestBuilder, Response
 };
 use serde::{
     de::DeserializeOwned,
@@ -24,6 +21,7 @@ use serde_json::{
     json,
     Value,
 };
+use tower::limit::ConcurrencyLimit;
 use tracing::{
     debug,
     info,
@@ -83,7 +81,7 @@ pub enum BackType {
 
 pub struct EmbyClient {
     pub url: Mutex<Option<Url>>,
-    pub client: reqwest::Client,
+    pub client: ConcurrencyLimit<Client>,
     pub headers: Mutex<reqwest::header::HeaderMap>,
     pub user_id: Mutex<String>,
     pub user_name: Mutex<String>,
@@ -279,7 +277,6 @@ impl EmbyClient {
     where
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
-        println!("request start");
         let request = self.prepare_request(Method::GET, path, params)?;
         let res = self.send_request(request).await?;
 
@@ -295,7 +292,6 @@ impl EmbyClient {
 
         let res_text = res.text().await?;
         debug!("Response: {}", res_text);
-        println!("request end");
         match serde_json::from_str(&res_text) {
             Ok(json) => Ok(json),
             Err(e) => Err(anyhow!("Failed to parse JSON {}: {}", e, res_text)),
@@ -337,7 +333,7 @@ impl EmbyClient {
         let (mut url, headers) = self.get_url_and_headers()?;
         url = url.join(path)?;
         self.add_params_to_url(&mut url, params);
-        Ok(self.client.request(method, url).headers(headers))
+        Ok(self.client.get_ref().request(method, url).headers(headers))
     }
 
     async fn send_request(&self, request: RequestBuilder) -> Result<Response> {
