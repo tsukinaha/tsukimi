@@ -46,6 +46,8 @@ fn main() {
     #[cfg(windows)]
     {
         println!("cargo:rerun-if-changed=tsukimi-manifest.rc");
-        embed_resource::compile("./tsukimi_manifest.rc", embed_resource::NONE);
+        embed_resource::compile("./tsukimi_manifest.rc", embed_resource::NONE)
+            .manifest_optional()
+            .unwrap();
     }
 }
