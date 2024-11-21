@@ -1,6 +1,6 @@
 [package]
 name = "tsukimi"
-version = "0.17.2"
+version = "0.17.3"
 edition = "2021"
 rust-version = "1.81"
 description = "A simple Emby Client written by GTK4-RS"
