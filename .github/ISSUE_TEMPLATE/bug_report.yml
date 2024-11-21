@@ -17,7 +17,7 @@ body:
         - label: Duplicated issues will be closed.
           required: true
 
-        - label: Please make sure you have read the FAQ and pinned issues before submitting.
+        - label: Please make sure you have read the FAQ and related issues before open this issue.
           required: true
   - type: textarea
     id: what-happened
