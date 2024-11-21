@@ -44,7 +44,7 @@ impl ReqClient {
 
             client_builder.build().expect("failed to initialize client")
         };
-        
+
         tower::ServiceBuilder::new()
             .concurrency_limit(SETTINGS.threads() as usize)
             .service(client)
@@ -63,15 +63,28 @@ use windows::{
 pub fn get_proxy_settings() -> Option<String> {
     unsafe {
         let mut proxy_config = WINHTTP_CURRENT_USER_IE_PROXY_CONFIG::default();
-        if WinHttpGetIEProxyConfigForCurrentUser(&mut proxy_config).is_ok()
-            && !proxy_config.lpszProxy.is_null()
-        {
-            let proxy = PCWSTR(proxy_config.lpszProxy.0).to_string().unwrap();
-            return Some(proxy);
+        if WinHttpGetIEProxyConfigForCurrentUser(&mut proxy_config).is_err() {
+            return None;
+        }
+
+        if !proxy_config.lpszProxy.is_null() {
+            return PCWSTR(proxy_config.lpszProxy.0).to_string().ok();
+        }
+
+        if !proxy_config.lpszAutoConfigUrl.is_null() {
+            return PCWSTR(proxy_config.lpszAutoConfigUrl.0)
+                .to_string()
+                .map(|proxy_url| {
+                    proxy_url.split('/').collect::<Vec<_>>()[..3]
+                        .join("/")
+                        .to_string()
+                })
+                .ok();
         }
     }
     None
 }
+
 #[cfg(target_os = "linux")]
 pub fn get_proxy_settings() -> Option<String> {
     use std::env;
