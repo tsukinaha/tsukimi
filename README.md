@@ -1,7 +1,7 @@
 
 
 <h1 align="center">tsukimi</h1>
-<p align="center">A simple third-party Emby client.</p>
+<p align="center">A simple third-party Emby client for Linux.</p>
 
 ![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/+BtTTXtCZFSxjZGU1)
 
