@@ -643,29 +643,23 @@ impl TuOverviewItem {
                     async move {
                         let parent = obj.parent().unwrap().parent().unwrap();
                         if let Some(list_view) = parent.downcast_ref::<gtk::ListView>() {
-                            let selection = list_view
+                            list_view
                                 .model()
-                                .unwrap()
-                                .downcast::<gtk::SingleSelection>()
-                                .unwrap();
-                            let store = selection
-                                .model()
-                                .unwrap()
-                                .downcast::<gio::ListStore>()
-                                .unwrap();
-                            store.remove(selection.selected());
+                                .and_downcast::<gtk::SingleSelection>()
+                                .map(|sel| {
+                                    sel.model()
+                                        .and_downcast::<gio::ListStore>()
+                                        .map(|store| store.remove(sel.selected()))
+                                });
                         } else if let Some(grid_view) = parent.downcast_ref::<gtk::GridView>() {
-                            let selection = grid_view
+                            grid_view
                                 .model()
-                                .unwrap()
-                                .downcast::<gtk::SingleSelection>()
-                                .unwrap();
-                            let store = selection
-                                .model()
-                                .unwrap()
-                                .downcast::<gio::ListStore>()
-                                .unwrap();
-                            store.remove(selection.selected());
+                                .and_downcast::<gtk::SingleSelection>()
+                                .map(|sel| {
+                                    sel.model()
+                                        .and_downcast::<gio::ListStore>()
+                                        .map(|store| store.remove(sel.selected()))
+                                });
                         }
                     }
                 ));
