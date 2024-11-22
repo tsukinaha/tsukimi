@@ -57,7 +57,7 @@ https://dev.tsukinaha.org/tsukimi
 ## License
 tsukimi is licensed under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html) license.
 
-Thanks to open-source projects like GNOME Music, Fractal, and Clapper for their inspiration during development, and everyone who contributed code or translations!
+Thanks to open-source projects like GNOME Music, Fractal, and Clapper—we referenced a lot from them during development, and everyone who contributed code or translations!
 
 ## Disclaimer
 The developers of this application does not have any affiliation with the content providers available.
