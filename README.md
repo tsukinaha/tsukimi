@@ -35,7 +35,9 @@ You can play music and albums, as well as videos with more advanced settings (yo
 
 ### Translations
 
-If you'd like to help translating **Tsukimi** into your language, please head over to [Weblate](https://hosted.weblate.org/projects/tsukimi/).
+If you'd like to help translating **Tsukimi** into your language, please head over to [Weblate](https://hosted.weblate.org/projects/tsukimi/).   
+ 
+If you don’t see your language, feel free to add it! :)
 
 <a href="https://hosted.weblate.org/engage/tsukimi/">
 <img src="https://hosted.weblate.org/widget/tsukimi/main/multi-auto.svg" alt="翻译状态" />
@@ -52,10 +54,10 @@ https://dev.tsukinaha.org/tsukimi
 - [MPV](https://github.com/mpv-player/mpv)
 - [Adwaita](https://gitlab.gnome.org/GNOME/libadwaita/)
 
-## Thanks
-- Gnome Music
-- Fractal
-- Clapper
+## License
+tsukimi is licensed under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html) license.
+
+Thanks to open-source projects like GNOME Music, Fractal, and Clapper for their inspiration during development, and everyone who contributed code or translations!
 
 ## Disclaimer
 The developers of this application does not have any affiliation with the content providers available.
