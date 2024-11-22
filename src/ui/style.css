@@ -202,6 +202,15 @@ row image {
   border-radius: 10px;
 }
 
+.tulistitempic-button {
+  transition: transform 0.3s ease;
+  transform: translateY(6px);
+}
+
 .tulistitem:hover .tulistitem-pic {
   opacity: 1;
+}
+
+.tulistitem:hover .tulistitempic-button {
+  transform: translateY(0);
 }

@@ -30,6 +30,7 @@
                     </child>
                     <style>
                       <class name="circular"/>
+                      <class name="tulistitempic-button"/>
                     </style>
                   </object>
                 </child>
