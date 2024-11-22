@@ -36,7 +36,7 @@ paru -S tsukimi-bin
 paru -S tsukimi-git
 
 # archlinuxcn repo https://github.com/archlinuxcn/repo/blob/master/archlinuxcn/tsukimi-git/PKGBUILD
-sudo pacman -Syu tsukimi
+sudo pacman -Syu tsukimi-git
 ```
 
 ### Nix
