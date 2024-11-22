@@ -40,9 +40,7 @@ sudo pacman -Syu tsukimi-git
 ```
 
 ### Nix
-```bash
-nix-shell -p tsukimi
-```
+`tsukimi` is available in nixpkgs since 24.11. 
 
 ### Windows
 ```bash
