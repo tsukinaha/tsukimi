@@ -24,9 +24,33 @@ You can play music and albums, as well as videos with more advanced settings (yo
 </div>
 
 ## Installation
-### Native package
+### Packages
 [![Packaging status](https://repology.org/badge/vertical-allrepos/tsukimi.svg)](https://repology.org/project/tsukimi/versions)
- 
+
+### Archlinux
+```bash
+# AUR release (https://aur.archlinux.org/packages/tsukimi-bin)
+paru -S tsukimi-bin
+
+# AUR latest commit (https://aur.archlinux.org/packages/tsukimi-git)
+paru -S tsukimi-git
+
+# archlinuxcn repo https://github.com/archlinuxcn/repo/blob/master/archlinuxcn/tsukimi-git/PKGBUILD
+sudo pacman -Syu tsukimi-git
+```
+
+### Nix
+`tsukimi` is available in nixpkgs since 24.11. 
+
+### Windows
+```bash
+# Scoop extra
+scoop bucket add extras
+scoop install extras/tsukimi
+```
+
+### Source code
+[Build on Linux](./docs/build_on_linux.md)
 
 ## MPV Config
 [MPV-manual#files](https://mpv.io/manual/master/#files) 
@@ -42,9 +66,6 @@ If you don’t see your language, feel free to add it! :)
 <a href="https://hosted.weblate.org/engage/tsukimi/">
 <img src="https://hosted.weblate.org/widget/tsukimi/main/multi-auto.svg" alt="翻译状态" />
 </a>
-
-## Build
-[Build On Linux](./docs/build_on_linux.md)
 
 ## Frequently Asked Questions
 https://dev.tsukinaha.org/tsukimi
