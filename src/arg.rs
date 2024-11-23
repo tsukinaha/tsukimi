@@ -111,10 +111,10 @@ impl Args {
 
             match domain {
                 Some(domain) => {
-                    dyn_event!(level, domain = domain, "{}", message);
+                    dyn_event!(level, domain = %domain, message);
                 }
                 None => {
-                    dyn_event!(level, "{}", message);
+                    dyn_event!(level, message);
                 }
             }
             gtk::glib::LogWriterOutput::Handled
