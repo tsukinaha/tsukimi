@@ -26,7 +26,7 @@ uuid = { version = "1.10.0", features = ["v4"] }
 chrono = { version = "0.4.38", features = ["serde"] }
 tracing = "0.1.40"
 gst = { version = "0.23", package = "gstreamer" }
-url = "2.5.3"
+url = "2.5.4"
 libmpv2 = { git = "https://github.com/kohsine/libmpv2-rs.git", package = "libmpv2" }
 image = "0.25.5"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
