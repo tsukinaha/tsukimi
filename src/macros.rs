@@ -110,3 +110,15 @@ macro_rules! dyn_event {
         }
     };
 }
+
+#[macro_export]
+macro_rules! close_on_error {
+    ($widget:expr, $des:expr) => {{
+        use gtk::prelude::WidgetExt;
+        if let Some(root) = $widget.root() {
+            if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
+                window.close_on_error($des);
+            }
+        }
+    }};
+}

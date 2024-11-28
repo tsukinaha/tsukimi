@@ -1008,4 +1008,28 @@ impl Window {
 
         now_page.update_intro().await;
     }
+
+    pub fn close_on_error(&self, description: String) {
+        let alert_dialog = adw::AlertDialog::builder()
+            .heading(gettext("Fatal Error"))
+            .body(gettext(
+                &description,
+            ))
+            .build();
+        alert_dialog.add_response("close", &gettext("Copy Error & Close"));
+        alert_dialog.set_response_appearance("close", adw::ResponseAppearance::Destructive);
+        alert_dialog.connect_response(
+            Some("close"),
+            glib::clone!(
+                #[weak(rename_to = window)]
+                self,
+                move |_, _| {
+                    let clipboard = window.clipboard();
+                    clipboard.set_text(&description);
+                    window.close();
+                }
+            ),
+        );
+        alert_dialog.present(Some(self));
+    }
 }

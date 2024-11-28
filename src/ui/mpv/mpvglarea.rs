@@ -21,6 +21,7 @@ use crate::client::emby_client::EMBY_CLIENT;
 mod imp {
     use std::thread::JoinHandle;
 
+    use gettextrs::gettext;
     use gtk::{
         gdk::GLContext,
         glib,
@@ -29,10 +30,10 @@ mod imp {
     };
     use once_cell::sync::OnceCell;
 
-    use crate::ui::mpv::tsukimi_mpv::{
+    use crate::{close_on_error, ui::mpv::tsukimi_mpv::{
         TsukimiMPV,
         RENDER_UPDATE,
-    };
+    }};
 
     // Object holding the state
     #[derive(Default)]
@@ -68,7 +69,8 @@ mod imp {
             let obj = self.obj();
             obj.make_current();
             let Some(gl_context) = self.obj().context() else {
-                panic!("Failed to get GLContext");
+                close_on_error!(self.obj(), gettext("Failed to get GLContext"));
+                return;
             };
 
             self.mpv.connect_render_update(gl_context);
