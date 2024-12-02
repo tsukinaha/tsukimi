@@ -19,7 +19,7 @@ dirs = "5.0.1"
 adw = { version = "0.7", package = "libadwaita", features = [
     "v1_6",
 ] }
-cargo-deb = "2.9.0"
+cargo-deb = "2.9.1"
 bytefmt = "0.1.7"
 libc = "0.2.165"
 uuid = { version = "1.10.0", features = ["v4"] }
