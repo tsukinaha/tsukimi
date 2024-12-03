@@ -1,3 +1,5 @@
+@define-color transparent #00000000;
+
 .sbackground {
   background: rgba(0, 0, 0, 0.15);
 }
@@ -26,8 +28,9 @@ child {
 }
 
 .logo {
-  background: rgba(0, 0, 0, 0);
+  background: transparent;
 }
+
 
 .bottom-bar {
   background: transparent;
@@ -129,11 +132,11 @@ picture {
 }
 
 listview {
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
 }
 
 gridview {
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
 }
 
 gridview>child box {
@@ -156,7 +159,7 @@ revealer>box>box>widget>box {
 }
 
 tabbar>revealer>box {
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
 }
 
 scrolledwindow>viewport>box>box>box {
@@ -175,7 +178,7 @@ scrolledwindow>viewport>box>box>box {
 @define-color accent_color #AEB5FA;
 
 placessidebar {
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
 }
 
 .card {
@@ -183,6 +186,7 @@ placessidebar {
 }
 
 .sidebar-pane {
+  background-color: transparent;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
