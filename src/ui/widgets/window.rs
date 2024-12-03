@@ -357,7 +357,7 @@ impl Window {
 
     pub fn set_servers(&self) {
         let imp = self.imp();
-        let listbox = imp.serversbox.get();
+        let listbox = &imp.serversbox;
         listbox.remove_all();
         let accounts = SETTINGS.accounts();
         for account in &accounts {
@@ -448,8 +448,7 @@ impl Window {
     }
 
     pub fn set_nav_servers(&self) {
-        let imp = self.imp();
-        let listbox = imp.serverselectlist.get();
+        let listbox = &self.imp().serverselectlist;
         listbox.remove_all();
         let accounts = SETTINGS.accounts();
         for account in accounts {
@@ -527,8 +526,7 @@ impl Window {
     }
 
     pub fn set_pop_visibility(&self, visible: bool) {
-        let imp = self.imp();
-        imp.popbutton.set_visible(visible);
+        self.imp().popbutton.set_visible(visible);
     }
 
     fn setup_settings(&self) {
@@ -582,18 +580,15 @@ impl Window {
     }
 
     pub fn set_title(&self, title: &str) {
-        let imp = self.imp();
-        imp.navipage.set_title(title);
+        self.imp().navipage.set_title(title);
     }
 
     pub fn mainpage(&self) {
-        let imp = self.imp();
-        imp.stack.set_visible_child_name("main");
+        self.imp().stack.set_visible_child_name("main");
     }
 
     fn placeholder(&self) {
-        let imp = self.imp();
-        imp.stack.set_visible_child_name("placeholder");
+        self.imp().stack.set_visible_child_name("placeholder");
     }
 
     fn sidebar(&self) {
@@ -603,30 +598,25 @@ impl Window {
     }
 
     pub fn overlay_sidebar(&self, overlay: bool) {
-        let imp = self.imp();
-        imp.split_view.set_collapsed(overlay);
+        self.imp().split_view.set_collapsed(overlay);
     }
 
     pub fn add_toast(&self, toast: adw::Toast) {
-        let imp = self.imp();
-        imp.toast.add_toast(toast);
+        self.imp().toast.add_toast(toast);
     }
 
     pub fn current_view_name(&self) -> String {
-        let imp = self.imp();
-        imp.insidestack.visible_child_name().unwrap().to_string()
+        self.imp().insidestack.visible_child_name().unwrap().to_string()
     }
 
     pub fn set_progressbar_opacity(&self, opacity: f64) {
-        let imp = self.imp();
-        imp.progressbar.set_opacity(opacity);
+        self.imp().progressbar.set_opacity(opacity);
     }
 
     pub fn set_rootpic(&self, file: gio::File) {
-        let imp = self.imp();
         let settings = Settings::new(APP_ID);
         if settings.boolean("is-backgroundenabled") {
-            let backgroundstack = imp.backgroundstack.get();
+            let backgroundstack =  &self.imp().backgroundstack;
             let pic: gtk::Picture = if settings.boolean("is-blurenabled") {
                 let paintbale =
                     crate::ui::provider::background_paintable::BackgroundPaintable::default();
@@ -671,9 +661,7 @@ impl Window {
     }
 
     pub fn set_picopacity(&self, opacity: i32) {
-        let imp = self.imp();
-        let backgroundstack = imp.backgroundstack.get();
-        if let Some(child) = backgroundstack.last_child() {
+        if let Some(child) =  self.imp().backgroundstack.last_child() {
             let pic = child.downcast::<gtk::Picture>().unwrap();
             pic.set_opacity(opacity as f64 / 100.0);
         }
@@ -917,8 +905,7 @@ impl Window {
     }
 
     pub fn set_mpv_playlist(&self, episode_list: &Vec<TuItem>) {
-        let imp = self.imp();
-        let model = imp.mpv_playlist_selection.model();
+        let model = self.imp().mpv_playlist_selection.model();
         let Some(store) = model.and_downcast_ref::<gio::ListStore>() else {
             return;
         };
