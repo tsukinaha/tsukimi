@@ -606,7 +606,11 @@ impl Window {
     }
 
     pub fn current_view_name(&self) -> String {
-        self.imp().insidestack.visible_child_name().unwrap().to_string()
+        self.imp()
+            .insidestack
+            .visible_child_name()
+            .unwrap()
+            .to_string()
     }
 
     pub fn set_progressbar_opacity(&self, opacity: f64) {
@@ -616,7 +620,7 @@ impl Window {
     pub fn set_rootpic(&self, file: gio::File) {
         let settings = Settings::new(APP_ID);
         if settings.boolean("is-backgroundenabled") {
-            let backgroundstack =  &self.imp().backgroundstack;
+            let backgroundstack = &self.imp().backgroundstack;
             let pic: gtk::Picture = if settings.boolean("is-blurenabled") {
                 let paintbale =
                     crate::ui::provider::background_paintable::BackgroundPaintable::default();
@@ -661,7 +665,7 @@ impl Window {
     }
 
     pub fn set_picopacity(&self, opacity: i32) {
-        if let Some(child) =  self.imp().backgroundstack.last_child() {
+        if let Some(child) = self.imp().backgroundstack.last_child() {
             let pic = child.downcast::<gtk::Picture>().unwrap();
             pic.set_opacity(opacity as f64 / 100.0);
         }
@@ -999,9 +1003,7 @@ impl Window {
     pub fn close_on_error(&self, description: String) {
         let alert_dialog = adw::AlertDialog::builder()
             .heading(gettext("Fatal Error"))
-            .body(gettext(
-                &description,
-            ))
+            .body(gettext(&description))
             .build();
         alert_dialog.add_response("close", &gettext("Copy Error & Close"));
         alert_dialog.set_response_appearance("close", adw::ResponseAppearance::Destructive);

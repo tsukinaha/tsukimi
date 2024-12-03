@@ -641,7 +641,6 @@ impl MPVPage {
             self,
             gettext("MPV has been shutdown, Application will exit.\nTsukimi can't restart MPV.",)
         );
-        return;
     }
 
     fn on_cache_time_update(&self, value: i64) {

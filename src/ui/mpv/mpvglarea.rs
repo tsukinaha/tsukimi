@@ -30,10 +30,13 @@ mod imp {
     };
     use once_cell::sync::OnceCell;
 
-    use crate::{close_on_error, ui::mpv::tsukimi_mpv::{
-        TsukimiMPV,
-        RENDER_UPDATE,
-    }};
+    use crate::{
+        close_on_error,
+        ui::mpv::tsukimi_mpv::{
+            TsukimiMPV,
+            RENDER_UPDATE,
+        },
+    };
 
     // Object holding the state
     #[derive(Default)]
