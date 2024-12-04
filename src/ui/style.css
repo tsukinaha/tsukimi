@@ -14,10 +14,6 @@ child {
   border-radius: 15px;
 }
 
-.osd {
-  padding: 7px;
-}
-
 .mask {
   filter: blur(5px);
   border-radius: 10px;
@@ -52,6 +48,7 @@ child {
 
 .player-toolbar {
   border-radius: 50px;
+  padding: 7px;
 }
 
 .playing-song-label {
