@@ -123,8 +123,6 @@ impl HorbuScrolled {
                     ));
 
                     flow.append(&button);
-
-                    gtk::glib::timeout_future(std::time::Duration::from_millis(30)).await;
                 }
             }
         ));
