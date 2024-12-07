@@ -295,10 +295,9 @@ impl EmbyClient {
         };
 
         let res_text = res.text().await?;
-        debug!("Response: {}", res_text);
         match serde_json::from_str(&res_text) {
             Ok(json) => Ok(json),
-            Err(e) => Err(anyhow!("Failed to parse JSON {}: {}", e, res_text)),
+            Err(e) => Err(anyhow!("Request Path: {}\nFailed parsing response to json {}: {}", path, e, res_text)),
         }
     }
 
@@ -366,7 +365,7 @@ impl EmbyClient {
         for (key, value) in params {
             url.query_pairs_mut().append_pair(key, value);
         }
-        info!("Request URL: {}", hide_domain(url.as_str()));
+        debug!("Request URL: {}", hide_domain(url.as_str()));
     }
 
     // jellyfin
