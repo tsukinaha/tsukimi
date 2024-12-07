@@ -28,7 +28,6 @@ use serde_json::{
 use tower::limit::ConcurrencyLimit;
 use tracing::{
     debug,
-    info,
     warn,
 };
 use url::Url;
@@ -297,7 +296,12 @@ impl EmbyClient {
         let res_text = res.text().await?;
         match serde_json::from_str(&res_text) {
             Ok(json) => Ok(json),
-            Err(e) => Err(anyhow!("Request Path: {}\nFailed parsing response to json {}: {}", path, e, res_text)),
+            Err(e) => Err(anyhow!(
+                "Request Path: {}\nFailed parsing response to json {}: {}",
+                path,
+                e,
+                res_text
+            )),
         }
     }
 
