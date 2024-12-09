@@ -57,7 +57,6 @@ fn locale_dir() -> &'static str {
 
 fn main() -> glib::ExitCode {
     Args::parse().init();
-
     // Initialize gettext
     #[cfg(any(target_os = "linux", target_os = "windows"))]
     {

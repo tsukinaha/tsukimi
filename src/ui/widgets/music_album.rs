@@ -209,7 +209,7 @@ impl AlbumPage {
             Ok(songs) => songs,
             Err(e) => {
                 toast!(self, e.to_user_facing());
-                List::default()
+                return;
             }
         };
 

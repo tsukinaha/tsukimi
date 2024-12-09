@@ -1,5 +1,3 @@
-
-
 <h1 align="center">tsukimi</h1>
 <p align="center">A simple third-party Emby client for Linux.</p>
 
@@ -60,8 +58,6 @@ scoop install extras/tsukimi
 ### Translations
 
 If you'd like to help translating **Tsukimi** into your language, please head over to [Weblate](https://hosted.weblate.org/projects/tsukimi/).   
- 
-If you don’t see your language, feel free to add it! :)
 
 <a href="https://hosted.weblate.org/engage/tsukimi/">
 <img src="https://hosted.weblate.org/widget/tsukimi/main/multi-auto.svg" alt="翻译状态" />

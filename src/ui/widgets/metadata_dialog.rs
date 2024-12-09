@@ -268,15 +268,15 @@ impl MetadataDialog {
         let hour = self.imp().hour_spin.value() as i32;
         let minute = self.imp().minute_spin.value() as i32;
         let second = self.imp().second_spin.value();
-        let date = glib::DateTime::from_local(
+        if let Ok(date) = glib::DateTime::from_local(
             date_time.year(),
             date_time.month(),
             date_time.day_of_month(),
             hour,
             minute,
             second,
-        )
-        .unwrap();
-        self.set_time(date);
+        ) {
+            self.set_time(date);
+        }
     }
 }

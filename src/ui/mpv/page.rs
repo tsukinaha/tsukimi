@@ -304,7 +304,7 @@ impl Default for MPVPage {
 #[gtk::template_callbacks]
 impl MPVPage {
     pub fn new() -> Self {
-        Object::builder().build()
+        Object::new()
     }
 
     pub fn play(
