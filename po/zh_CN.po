@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-07 16:33+0800\n"
-"PO-Revision-Date: 2024-11-14 15:48+0000\n"
+"PO-Revision-Date: 2024-12-10 10:10+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
@@ -102,11 +102,11 @@ msgstr "线程"
 
 #: resources/ui/account_settings.ui:194
 msgid "This only effects on getting images/updating cache"
-msgstr ""
+msgstr "这仅对获取图像/更新缓存有影响"
 
 #: resources/ui/account_settings.ui:208
 msgid "Refresh when returning to home page"
-msgstr ""
+msgstr "返回主页时刷新"
 
 #: resources/ui/account_settings.ui:215 resources/ui/mpv_control_sidebar.ui:378
 msgid "Background"
@@ -1222,6 +1222,8 @@ msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
 msgstr ""
+"MPV 已关闭，应用将退出。\n"
+"Tsukimi 无法重新启动 MPV。"
 
 #: src/ui/widgets/image_infocard.rs:106
 msgid "No image to view"
@@ -1358,11 +1360,11 @@ msgstr "服务器面板"
 
 #: src/ui/widgets/window.rs:1005
 msgid "Fatal Error"
-msgstr ""
+msgstr "致命错误"
 
 #: src/ui/widgets/window.rs:1008
 msgid "Copy Error & Close"
-msgstr ""
+msgstr "复制错误并关闭"
 
 #: src/ui/widgets/server_panel.rs:118
 msgid "Shut down server"
