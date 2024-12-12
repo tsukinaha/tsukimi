@@ -271,11 +271,16 @@ impl TuOverviewItem {
         let imp = self.imp();
         let item = self.item();
         if item.played() {
-            let mark = gtk::Image::from_icon_name("object-select-symbolic");
-            mark.set_halign(gtk::Align::End);
-            mark.set_valign(gtk::Align::Start);
-            mark.set_height_request(30);
-            mark.set_width_request(30);
+            let mark = gtk::Button::builder()
+                .icon_name("emblem-ok-symbolic")
+                .halign(gtk::Align::End)
+                .valign(gtk::Align::Start)
+                .margin_end(4)
+                .margin_top(4)
+                .build();
+            mark.add_css_class("circular");
+            mark.add_css_class("small");
+            mark.add_css_class("accent");
             imp.overlay.add_overlay(&mark);
         }
     }
@@ -284,11 +289,16 @@ impl TuOverviewItem {
         let imp = self.imp();
         let item = self.item();
         if let Some(rating) = item.rating() {
-            let rating = gtk::Label::new(Some(&rating));
-            rating.set_halign(gtk::Align::Start);
-            rating.set_valign(gtk::Align::End);
-            rating.set_height_request(40);
-            rating.set_width_request(60);
+            let rating = gtk::Button::builder()
+                .label(&rating.to_string())
+                .halign(gtk::Align::Start)
+                .valign(gtk::Align::End)
+                .margin_start(8)
+                .margin_bottom(8)
+                .build();
+            rating.add_css_class("pill");
+            rating.add_css_class("small");
+            rating.add_css_class("suggested-action");
             imp.overlay.add_overlay(&rating);
         }
     }
@@ -298,11 +308,16 @@ impl TuOverviewItem {
         let item = self.item();
         let count = item.unplayed_item_count();
         if count > 0 {
-            let mark = gtk::Label::new(Some(&count.to_string()));
-            mark.set_halign(gtk::Align::End);
-            mark.set_valign(gtk::Align::Start);
-            mark.set_height_request(40);
-            mark.set_width_request(40);
+            let mark = gtk::Button::builder()
+                .label(&count.to_string())
+                .halign(gtk::Align::End)
+                .valign(gtk::Align::Start)
+                .margin_end(8)
+                .margin_top(8)
+                .build();
+            mark.add_css_class("pill");
+            mark.add_css_class("small");
+            mark.add_css_class("suggested-action");
             imp.overlay.add_overlay(&mark);
         }
     }
@@ -433,7 +448,7 @@ impl TuOverviewItem {
                             async move {
                                 let id = obj.item().id();
                                 let dialog =
-                                    crate::ui::widgets::image_dialog::ImagesDialog::new(&id);
+                                    crate::ui::widgets::image_dialog::ImageDialog::new(&id);
                                 crate::insert_editm_dialog!(obj, dialog);
                             }
                         ))

@@ -5,7 +5,6 @@
     <property name="content-height">400</property>
     <property name="width-request">360</property>
     <property name="height-request">800</property>
-    <property name="presentation-mode">bottom-sheet</property>
     <property name="title" translatable="yes">Refresh Metadata</property>
     <child>
       <object class="AdwToastOverlay">

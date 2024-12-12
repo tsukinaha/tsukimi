@@ -10,7 +10,6 @@ pub mod horbu_scrolled;
 pub mod hortu_scrolled;
 pub mod identify_dialog;
 pub mod image_dialog;
-pub mod image_infocard;
 pub mod image_paintable;
 pub mod item;
 pub mod item_actionbox;

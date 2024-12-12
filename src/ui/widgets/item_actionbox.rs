@@ -139,11 +139,11 @@ impl ItemActionsBox {
                 move |_, _, _| {
                     use crate::{
                         insert_editm_dialog,
-                        ui::widgets::image_dialog::ImagesDialog,
+                        ui::widgets::image_dialog::ImageDialog,
                     };
                     let id = obj.id();
                     if let Some(id) = id {
-                        let dialog = ImagesDialog::new(&id);
+                        let dialog = ImageDialog::new(&id);
                         insert_editm_dialog!(obj, dialog);
                     }
                 }

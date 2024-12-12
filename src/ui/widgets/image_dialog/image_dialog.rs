@@ -28,8 +28,7 @@ mod imp {
     use crate::{
         client::structs::ImageItem,
         ui::{
-            provider::IS_ADMIN,
-            widgets::image_infocard::ImageInfoCard,
+            provider::IS_ADMIN, widgets::image_dialog::ImageInfoCard,
         },
         utils::spawn,
     };

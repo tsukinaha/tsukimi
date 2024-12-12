@@ -2,8 +2,6 @@
 <interface>
   <template parent="AdwBin" class="ImageInfoCard">
     <property name="halign">start</property>
-    <property name="width-request">250</property>
-    <property name="height-request">170</property>
     <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>
@@ -85,8 +83,7 @@
               <object class="GtkButton">
                 <property name="icon-name">edit-copy-symbolic</property>
                 <property name="halign">start</property>
-                <property name="hexpand">true</property>
-                <property name="tooltip_text">Copy Image To Clipboard</property>
+                <property name="tooltip_text" translatable="yes">Copy Image To Clipboard</property>
                 <signal name="clicked" handler="on_copy" swapped="true"/>
                 <style>
                   <class name="flat" />
@@ -96,9 +93,43 @@
             <child>
               <object class="GtkButton">
                 <property name="icon-name">view-fullscreen-symbolic</property>
-                <property name="halign">end</property>
-                <property name="tooltip_text">View Image</property>
+                <property name="halign">start</property>
+                <property name="hexpand">true</property>
+                <property name="tooltip_text" translatable="yes">View Image</property>
                 <signal name="clicked" handler="on_view" swapped="true"/>
+                <style>
+                  <class name="flat" />
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="search_btn">
+                <property name="icon-name">system-search-symbolic</property>
+                <property name="halign">end</property>
+                <property name="tooltip_text" translatable="yes">Search Image</property>
+                <signal name="clicked" handler="on_search" swapped="true"/>
+                <style>
+                  <class name="flat" />
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="edit_btn">
+                <property name="icon-name">document-edit-symbolic</property>
+                <property name="halign">end</property>
+                <property name="tooltip_text" translatable="yes">Edit Image</property>
+                <signal name="clicked" handler="on_edit" swapped="true"/>
+                <style>
+                  <class name="flat" />
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="delete_btn">
+                <property name="icon-name">user-trash-symbolic</property>
+                <property name="halign">end</property>
+                <property name="tooltip_text" translatable="yes">Delete Image</property>
+                <signal name="clicked" handler="on_delete" swapped="true"/>
                 <style>
                   <class name="flat" />
                 </style>

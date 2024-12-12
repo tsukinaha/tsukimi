@@ -18,7 +18,6 @@
     <property name="width-request">360</property>
     <property name="height-request">800</property>
     <property name="title" translatable="yes">View Metadata</property>
-    <property name="presentation-mode">bottom-sheet</property>
     <child>
       <object class="AdwToastOverlay" id="toast">
         <child>

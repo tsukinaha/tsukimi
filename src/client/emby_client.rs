@@ -66,8 +66,10 @@ use crate::{
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
+
 const PROFILE: &str = include_str!("stream_profile.json");
 const CLIENT_ID: &str = "Tsukimi";
+
 static DEVICE_NAME: Lazy<String> = Lazy::new(|| {
     hostname::get()
         .unwrap_or("Unknown".into())
@@ -322,6 +324,15 @@ impl EmbyClient {
         Ok(res)
     }
 
+    pub async fn post_raw<B>(&self, path: &str, body: B) -> Result<Response>
+    where
+        reqwest::Body: From<B>,
+    {
+        let request = self.prepare_request(Method::POST, path, &[])?.body(body);
+        let res = self.send_request(request).await?;
+        Ok(res)
+    }
+
     pub async fn post_json<B, T>(
         &self, path: &str, params: &[(&str, &str)], body: B,
     ) -> Result<T, anyhow::Error>
@@ -505,6 +516,25 @@ impl EmbyClient {
             }
             Err(e) => Err(e),
         }
+    }
+
+    pub async fn post_image(
+        &self, id: &str, image_type: &str, tag: Option<u8>, bytes: Vec<u8>,
+    ) -> Result<Response> {
+        let path = format!("Items/{}/Images/{}", id, image_type);
+        self.post_raw(&path, bytes)
+            .await?
+            .error_for_status()
+            .map_err(|e| e.into())
+    }
+
+    pub async fn delete_image(&self, id: &str, image_type: &str, tag: Option<u8>) -> Result<Response> {
+        let mut path = format!("Items/{}/Images/{}", id, image_type);
+        if let Some(tag) = tag {
+            path.push_str(&format!("/{}", tag));
+        }
+        path.push_str("/Delete");
+        self.post(&path, &[], json!({})).await
     }
 
     pub fn save_image(&self, id: &str, image_type: &str, tag: Option<u8>, bytes: &[u8]) -> String {

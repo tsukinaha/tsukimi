@@ -8,25 +8,23 @@ use gtk::{
     template_callbacks,
 };
 
-use super::{
-    image_dialog::ImagesDialog,
-    window::Window,
-};
 use crate::{
-    client::emby_client::EMBY_CLIENT,
-    toast,
+    client::emby_client::EMBY_CLIENT, toast, ui::widgets::{search::SearchPage, window::Window}, utils::spawn_tokio
 };
 
 mod imp {
-    use std::cell::OnceCell;
+    use std::cell::{OnceCell, RefCell};
 
     use adw::subclass::prelude::*;
+    use gettextrs::gettext;
     use glib::subclass::InitializingObject;
     use gtk::{
         glib,
         prelude::*,
         CompositeTemplate,
     };
+
+    use crate::ui::provider::IS_ADMIN;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -35,11 +33,26 @@ mod imp {
     pub struct ImageInfoCard {
         #[property(get, set, construct_only)]
         pub imgtype: OnceCell<String>,
+        #[property(get, set, construct_only, default_value = false)]
+        pub searchable: OnceCell<bool>,
+
+        // properties for delete_image
+        #[property(get, set, nullable)]
+        pub imgid: RefCell<Option<String>>,
+        #[property(get, set, default_value = 0)]
+        pub image_index: RefCell<u8>,
 
         #[template_child]
         pub label1: TemplateChild<gtk::Label>,
         #[template_child]
         pub label2: TemplateChild<gtk::Label>,
+
+        #[template_child]
+        pub search_btn: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub edit_btn: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub delete_btn: TemplateChild<gtk::Button>,
 
         #[template_child]
         pub picture: TemplateChild<gtk::Picture>,
@@ -71,7 +84,14 @@ mod imp {
     impl ObjectImpl for ImageInfoCard {
         fn constructed(&self) {
             self.parent_constructed();
-            self.label1.set_text(&self.obj().imgtype());
+
+            if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
+                self.search_btn.set_visible(self.obj().searchable());
+                self.edit_btn.set_visible(true);
+                self.delete_btn.set_visible(true);
+            }
+
+            self.label1.set_text(&gettext(self.obj().imgtype()));
         }
     }
 
@@ -82,6 +102,8 @@ mod imp {
 }
 
 use adw::prelude::AdwDialogExt;
+
+use super::ImageDialog;
 glib::wrapper! {
     pub struct ImageInfoCard(ObjectSubclass<imp::ImageInfoCard>)
         @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
@@ -109,8 +131,8 @@ impl ImageInfoCard {
         window.media_viewer_show_paintable(paintable);
         window.reveal_image(&self.imp().picture.get());
         let dialog = self
-            .ancestor(ImagesDialog::static_type())
-            .and_downcast::<ImagesDialog>()
+            .ancestor(ImageDialog::static_type())
+            .and_downcast::<ImageDialog>()
             .unwrap();
         dialog.close();
     }
@@ -124,6 +146,45 @@ impl ImageInfoCard {
         };
         clipboard.set_texture(&texture);
         toast!(self, gettext("Image copied to clipboard"));
+    }
+
+    #[template_callback]
+    fn on_search(&self) {
+
+    }
+
+    #[template_callback]
+    fn on_edit(&self) {
+        self.navigation_view().map(|nav| {
+            let page = super::ImageDialogEditPage::new();
+            nav.push(&page);
+        });
+    }
+
+    #[template_callback]
+    async fn on_delete(&self) {
+        let Some(id) = self.imgid() else {
+            return;
+        };
+
+        self.set_loading_visible();
+
+        let img_type = self.imgtype();
+        let image_index = self.image_index();
+
+        match spawn_tokio(async move {
+            EMBY_CLIENT.delete_image(&id, &img_type, Some(image_index)).await
+        }).await {
+            Ok(_) => {
+                toast!(self, gettext("Image deleted"));
+                self.set_fallback_visible();
+            }
+            Err(e) => {
+                tracing::error!("Error deleting image: {}", e);
+                toast!(self, gettext("Error deleting image"));
+                self.set_picture_visible();
+            }
+        }
     }
 
     pub fn set_size(&self, width: &Option<u32>, height: &Option<u32>, size: &Option<u64>) {
@@ -196,5 +257,11 @@ impl ImageInfoCard {
             .picture
             .paintable()
             .and_then(|paintable| paintable.downcast::<gtk::gdk::Texture>().ok())
+    }
+
+    pub fn navigation_view(&self) -> Option<adw::NavigationView> {
+        self.ancestor(adw::NavigationView::static_type())
+            .and_downcast_ref::<adw::NavigationView>()
+            .cloned()
     }
 }

@@ -44,7 +44,7 @@ pub(crate) mod imp {
                 tu_item::TuItem,
             },
             widgets::{
-                image_dialog::ImagesDialog,
+                image_dialog::ImageDialog,
                 metadata_dialog::MetadataDialog,
                 star_toggle::StarToggle,
             },
@@ -98,7 +98,7 @@ pub(crate) mod imp {
                 None,
                 |window, _action, _parameter| async move {
                     let id = window.item().id();
-                    let dialog = ImagesDialog::new(&id);
+                    let dialog = ImageDialog::new(&id);
                     insert_editm_dialog!(window, dialog);
                 },
             );

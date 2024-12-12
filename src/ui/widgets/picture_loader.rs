@@ -164,7 +164,7 @@ impl PictureLoader {
                         .get_image(&id, &image_type, tag.and_then(|s| s.parse::<u8>().ok()))
                         .await
                     {
-                        warn!("Failed to get image: {}", e);
+                        warn!("{}: {}-{}", e, id, image_type);
                     }
                 })
                 .await;

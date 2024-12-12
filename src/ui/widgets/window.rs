@@ -33,7 +33,7 @@ mod imp {
         widgets::{
             content_viewer::MediaContentViewer,
             home::HomePage,
-            image_dialog::ImagesDialog,
+            image_dialog::ImageDialog,
             item_actionbox::ItemActionsBox,
             liked::LikedPage,
             listexpand_row::ListExpandRow,
@@ -133,7 +133,7 @@ mod imp {
             ItemActionsBox::ensure_type();
             MediaContentViewer::ensure_type();
             MediaViewer::ensure_type();
-            ImagesDialog::ensure_type();
+            ImageDialog::ensure_type();
             HomePage::ensure_type();
             SearchPage::ensure_type();
             LikedPage::ensure_type();

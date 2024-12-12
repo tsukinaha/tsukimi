@@ -151,7 +151,7 @@ impl HorbuScrolled {
                 for result in items {
                     let buttoncontent = adw::ButtonContent::builder()
                         .label(&result.name)
-                        .icon_name("send-to-symbolic")
+                        .icon_name("external-link-symbolic")
                         .build();
 
                     let button = gtk::Button::builder()

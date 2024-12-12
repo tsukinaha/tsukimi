@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ImageDropRow" parent="AdwPreferencesRow">
+    <property name="selectable">False</property>
+    <property name="accessible-role">combo-box</property>
+    <property name="child">
+      <object class="GtkBox" id="header">
+        <property name="valign">center</property>
+        <property name="hexpand">False</property>
+        <property name="orientation">vertical</property>
+        <style>
+          <class name="header"/>
+        </style>
+        <child>
+          <object class="GtkBox" id="title_box">
+            <property name="orientation">horizontal</property>
+            <property name="valign">center</property>
+            <property name="hexpand">True</property>
+            <style>
+              <class name="title"/>
+            </style>
+            <child>
+              <object class="GtkCheckButton" id="upload_check_button">
+                <property name="active">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="title">
+                <property name="ellipsize">none</property>
+                <property name="label" bind-source="ImageDropRow" bind-property="title" bind-flags="sync-create"/>
+                <property name="lines">0</property>
+                <property name="mnemonic-widget">ImageDropRow</property>
+                <property name="margin-start">5</property>
+                <property name="wrap">True</property>
+                <property name="wrap-mode">word-char</property>
+                <property name="xalign">0</property>
+                <property name="hexpand">True</property>
+                <style>
+                  <class name="title"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="upload_button">
+                <signal name="clicked" handler="on_upload_button_clicked" swapped="yes"/>
+                <property name="child">
+                  <object class="AdwButtonContent">
+                    <property name="icon-name">document-open-symbolic</property>
+                    <property name="label" translatable="yes">Open</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="suffixes">
+            <style>
+              <class name="suffixes"/>
+            </style>
+            <child>
+              <object class="GtkFrame" id="frame">
+                <property name="height-request">150</property>
+                <property name="hexpand">True</property>
+                <property name="margin-bottom">5</property>
+                <child>
+                  <object class="GtkDropTarget" id="drop_target">
+                    <property name="actions">move|copy</property>
+                    <signal name="enter" handler="enter_cb" swapped="yes"/>
+                    <signal name="leave" handler="leave_cb" swapped="yes"/>
+                    <signal name="drop" handler="drop_cb" swapped="yes"/>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStack" id="stack">
+                    <child>
+                      <object class="GtkStackPage">
+                        <property name="name">upload-page</property>
+                        <property name="title">Upload</property>
+                        <property name="child">
+                          <object class="GtkLabel">
+                            <property name="hexpand">True</property>
+                            <property name="label">Drop Here to Upload</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkStackPage">
+                        <property name="name">image-page</property>
+                        <property name="title">Image</property>
+                        <property name="child">
+                          <object class="GtkPicture" id="image">
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+  <object class="GtkFileDialog" id="file_dialog">
+    <property name="accept-label" translatable="yes">Pick Image</property>
+    <property name="modal">true</property>
+    <property name="default-filter">
+      <object class="GtkFileFilter">
+        <property name="name" translatable="yes">Images</property>
+        <mime-types>
+          <mime-type>image/*</mime-type>
+        </mime-types>
+      </object>
+    </property>
+    <property name="title" translatable="yes">Pick image to upload</property>
+  </object>
+</interface>

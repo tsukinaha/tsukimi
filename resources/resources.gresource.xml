@@ -20,6 +20,8 @@
     <file preprocess="xml-stripblanks" alias="jellyfin-symbolic.svg">icons/scalable/actions/jellyfin-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="card-bulleted-symbolic.svg">icons/scalable/actions/card-bulleted-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="arrow4-left-symbolic.svg">icons/scalable/actions/arrow4-left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="external-link-symbolic.svg">icons/scalable/actions/external-link-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="chain-link-loose-symbolic.svg">icons/scalable/actions/chain-link-loose-symbolic.svg</file>
   </gresource>
   <gresource prefix="/moe/tsuna/tsukimi/">
     <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
@@ -45,6 +47,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/horbu_scrolled.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/metadata_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/item_actions.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/image_dialog_edit_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/media_viewer.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/content_viewer.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/images_dialog.ui</file>
@@ -65,5 +68,6 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/item_carousel.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/mpv_control_sidebar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/server_action_row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/image_drop_row.ui</file>
   </gresource>
 </gresources>
