@@ -102,20 +102,25 @@ impl ImageDropRow {
     }
 
     #[template_callback]
-    fn drop_cb(&self, value: glib::Value, _x: f64, _y: f64) -> bool {
-        let Ok(file) = value.get::<gtk::gio::File>() else {
-            return false;
-        };
-        self.imp().stack.set_visible_child_name("image-page");
-        self.imp().image_file.set(Some(&file));
-        self.imp().image.set_file(Some(&file));
-        true
+    fn drop_cb(&self, _value: glib::Value, _x: f64, _y: f64, target: gtk::DropTarget) -> bool {
+        match target.value_as::<gtk::gio::File>() {
+            Some(file) => {
+                self.imp().stack.set_visible_child_name("image-page");
+                self.imp().image_file.set(Some(&file));
+                self.imp().image.set_file(Some(&file));
+                true
+            }
+            _ => {
+                tracing::warn!("Invalid drop target");
+                false
+            }
+        }
     }
 
     #[template_callback]
     fn enter_cb(&self, _x: f64, _y: f64) -> gtk::gdk::DragAction {
         self.imp().frame.add_css_class("hovered-drop");
-        gtk::gdk::DragAction::MOVE | gtk::gdk::DragAction::COPY
+        gtk::gdk::DragAction::MOVE
     }
 
     #[template_callback]

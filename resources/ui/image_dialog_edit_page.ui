@@ -17,7 +17,7 @@
                   </object>
                 </child>
                 <child>
-                  <object class="AdwEntryRow">
+                  <object class="AdwEntryRow" id="entry">
                     <property name="title">External Url</property>
                     <child type="prefix">
                       <object class="GtkCheckButton" id="url_check_button">
@@ -30,6 +30,7 @@
                 </child>
                 <child>
                   <object class="AdwButtonRow">
+                    <signal name="activated" handler="on_save_button_clicked" swapped="yes" />
                     <property name="title">Save</property>
                   </object>
                 </child>

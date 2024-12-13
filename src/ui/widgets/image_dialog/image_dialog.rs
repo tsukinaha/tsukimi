@@ -61,6 +61,9 @@ mod imp {
 
         #[template_child]
         pub flowbox: TemplateChild<gtk::FlowBox>,
+
+        #[template_child]
+        pub stack: TemplateChild<gtk::Stack>,
     }
 
     #[glib::object_subclass]
@@ -84,6 +87,13 @@ mod imp {
     impl ObjectImpl for ImagesDialog {
         fn constructed(&self) {
             self.parent_constructed();
+            let id = self.obj().id();
+            self.primary.set_imgid(id.clone());
+            self.logo.set_imgid(id.clone());
+            self.thumb.set_imgid(id.clone());
+            self.banner.set_imgid(id.clone());
+            self.disc.set_imgid(id.clone());
+            self.art.set_imgid(id.clone());
             self.init();
         }
     }
@@ -116,7 +126,7 @@ mod imp {
         }
 
         pub fn add_backdrop(&self, item: &ImageItem) {
-            let card = ImageInfoCard::new("Backdrop");
+            let card = ImageInfoCard::new("Backdrop", &self.obj().id());
             card.set_loading_visible();
             card.set_size(&item.width, &item.height, &item.size);
             card.set_picture(&item.image_type, &self.obj().id(), &item.image_index);
@@ -160,8 +170,19 @@ glib::wrapper! {
 
 #[template_callbacks]
 impl ImagesDialog {
+    const LOADING_STACK_PAGE: &'static str = "loading";
+    const VIEW_STACK_PAGE: &'static str = "view";
+
     pub fn new(id: &str) -> Self {
         glib::Object::builder().property("id", id).build()
+    }
+
+    pub fn loading_page(&self) {
+        self.imp().stack.set_visible_child_name(Self::LOADING_STACK_PAGE);
+    }
+
+    pub fn view_page(&self) {
+        self.imp().stack.set_visible_child_name(Self::VIEW_STACK_PAGE);
     }
 
     pub async fn set_image_items(&self) {
@@ -176,5 +197,7 @@ impl ImagesDialog {
                 toast!(self, e.to_user_facing());
             }
         }
+
+        self.view_page();
     }
 }

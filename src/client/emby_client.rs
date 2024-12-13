@@ -10,7 +10,7 @@ use anyhow::{
 use once_cell::sync::Lazy;
 use regex::Regex;
 use reqwest::{
-    header::HeaderValue,
+    header::{self, HeaderValue},
     Client,
     Method,
     RequestBuilder,
@@ -324,11 +324,11 @@ impl EmbyClient {
         Ok(res)
     }
 
-    pub async fn post_raw<B>(&self, path: &str, body: B) -> Result<Response>
+    pub async fn post_raw<B>(&self, path: &str, body: B, content_type: &str) -> Result<Response>
     where
         reqwest::Body: From<B>,
     {
-        let request = self.prepare_request(Method::POST, path, &[])?.body(body);
+        let request = self.prepare_request_headers(Method::POST, path, &[], content_type)?.body(body);
         let res = self.send_request(request).await?;
         Ok(res)
     }
@@ -350,6 +350,16 @@ impl EmbyClient {
     ) -> Result<RequestBuilder> {
         let (mut url, headers) = self.get_url_and_headers()?;
         url = url.join(path)?;
+        self.add_params_to_url(&mut url, params);
+        Ok(self.client.get_ref().request(method, url).headers(headers))
+    }
+
+    fn prepare_request_headers(
+        &self, method: Method, path: &str, params: &[(&str, &str)], content_type: &str,
+    ) -> Result<RequestBuilder> {
+        let (mut url, mut headers) = self.get_url_and_headers()?;
+        url = url.join(path)?;
+        headers.insert(reqwest::header::CONTENT_TYPE, HeaderValue::from_str(content_type)?);
         self.add_params_to_url(&mut url, params);
         Ok(self.client.get_ref().request(method, url).headers(headers))
     }
@@ -518,17 +528,28 @@ impl EmbyClient {
         }
     }
 
-    pub async fn post_image(
-        &self, id: &str, image_type: &str, tag: Option<u8>, bytes: Vec<u8>,
-    ) -> Result<Response> {
+    pub async fn post_image<B>(&self, id: &str, image_type: &str, bytes: B, content_type: &str) -> Result<Response>
+    where
+        reqwest::Body: From<B>,
+    {
         let path = format!("Items/{}/Images/{}", id, image_type);
-        self.post_raw(&path, bytes)
+        self.post_raw(&path, bytes, content_type)
             .await?
             .error_for_status()
             .map_err(|e| e.into())
     }
 
-    pub async fn delete_image(&self, id: &str, image_type: &str, tag: Option<u8>) -> Result<Response> {
+    pub async fn post_image_url(
+        &self, id: &str, image_type: &str, tag: u8, url: &str,
+    ) -> Result<Response> {
+        let path = format!("Items/{}/Images/{}/{}", id, tag, image_type);
+        let body = json!({ "Url": url });
+        self.post(&path, &[], body).await
+    }
+
+    pub async fn delete_image(
+        &self, id: &str, image_type: &str, tag: Option<u8>,
+    ) -> Result<Response> {
         let mut path = format!("Items/{}/Images/{}", id, image_type);
         if let Some(tag) = tag {
             path.push_str(&format!("/{}", tag));

@@ -66,7 +66,7 @@
                 <property name="margin-bottom">5</property>
                 <child>
                   <object class="GtkDropTarget" id="drop_target">
-                    <property name="actions">move|copy</property>
+                    <property name="actions">move</property>
                     <signal name="enter" handler="enter_cb" swapped="yes"/>
                     <signal name="leave" handler="leave_cb" swapped="yes"/>
                     <signal name="drop" handler="drop_cb" swapped="yes"/>
@@ -81,7 +81,7 @@
                         <property name="child">
                           <object class="GtkLabel">
                             <property name="hexpand">True</property>
-                            <property name="label">Drop Here to Upload</property>
+                            <property name="label">Drop Here</property>
                           </object>
                         </property>
                       </object>

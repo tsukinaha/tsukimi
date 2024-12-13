@@ -36,9 +36,8 @@ mod imp {
         #[property(get, set, construct_only, default_value = false)]
         pub searchable: OnceCell<bool>,
 
-        // properties for delete_image
-        #[property(get, set, nullable)]
-        pub imgid: RefCell<Option<String>>,
+        #[property(get, set)]
+        pub imgid: RefCell<String>,
         #[property(get, set, default_value = 0)]
         pub image_index: RefCell<u8>,
 
@@ -113,8 +112,8 @@ glib::wrapper! {
 
 #[template_callbacks]
 impl ImageInfoCard {
-    pub fn new(img_type: &str) -> Self {
-        Object::builder().property("imgtype", img_type).build()
+    pub fn new(img_type: &str, id: &str) -> Self {
+        Object::builder().property("imgtype", img_type).property("imgid", id).build()
     }
 
     #[template_callback]
@@ -156,19 +155,16 @@ impl ImageInfoCard {
     #[template_callback]
     fn on_edit(&self) {
         self.navigation_view().map(|nav| {
-            let page = super::ImageDialogEditPage::new();
+            let page = super::ImageDialogEditPage::new(self.imgid(), self.imgtype(), self.image_index());
             nav.push(&page);
         });
     }
 
     #[template_callback]
     async fn on_delete(&self) {
-        let Some(id) = self.imgid() else {
-            return;
-        };
-
         self.set_loading_visible();
 
+        let id = self.imgid();
         let img_type = self.imgtype();
         let image_index = self.image_index();
 
