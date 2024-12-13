@@ -1,25 +1,20 @@
 use adw::subclass::prelude::*;
-use gettextrs::gettext;
 use gtk::{
     glib, prelude::WidgetExt, template_callbacks, CompositeTemplate
 };
 
-use crate::toast;
 
 mod imp {
-    use std::cell::Cell;
-
     use glib::{
         subclass::InitializingObject,
-        Properties, WeakRef,
+        WeakRef,
     };
     use gtk::prelude::*;
 
     use super::*;
 
-    #[derive(Debug, Default, CompositeTemplate, Properties)]
+    #[derive(Debug, Default, CompositeTemplate)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/image_drop_row.ui")]
-    #[properties(wrapper_type = super::ImageDropRow)]
     pub struct ImageDropRow {
         #[template_child]
         pub upload_check_button: TemplateChild<gtk::CheckButton>,
@@ -56,7 +51,6 @@ mod imp {
         }
     }
 
-    #[glib::derived_properties]
     impl ObjectImpl for ImageDropRow {
         fn constructed(&self) {
             self.parent_constructed();

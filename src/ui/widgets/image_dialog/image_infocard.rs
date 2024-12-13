@@ -9,7 +9,7 @@ use gtk::{
 };
 
 use crate::{
-    client::emby_client::EMBY_CLIENT, toast, ui::widgets::{search::SearchPage, window::Window}, utils::spawn_tokio
+    client::emby_client::EMBY_CLIENT, toast, ui::widgets::window::Window, utils::spawn_tokio
 };
 
 mod imp {

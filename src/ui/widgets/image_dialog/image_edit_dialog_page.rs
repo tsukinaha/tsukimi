@@ -3,18 +3,18 @@ use std::io::Read;
 use adw::subclass::prelude::*;
 use gettextrs::gettext;
 use gtk::{
-    gio::Cancellable, glib, prelude::*, CompositeTemplate
+    glib, prelude::*, CompositeTemplate
 };
 
 use gtk::template_callbacks;
 use reqwest::Response;
 
-use crate::{client::{emby_client::EMBY_CLIENT, error::UserFacingError}, toast, utils::{spawn, spawn_tokio}};
+use crate::{client::emby_client::EMBY_CLIENT, toast, utils::{spawn, spawn_tokio}};
 
 use super::ImageDialog;
 
 mod imp {
-    use std::cell::{Cell, OnceCell, RefCell};
+    use std::cell::OnceCell;
 
     use glib::{
         subclass::InitializingObject,
@@ -22,10 +22,7 @@ mod imp {
     };
     use gtk::prelude::*;
 
-    use crate::ui::widgets::{
-        check_row::CheckRow,
-        image_dialog::ImageDropRow,
-    };
+    use crate::ui::widgets::image_dialog::ImageDropRow;
 
     use super::*;
 

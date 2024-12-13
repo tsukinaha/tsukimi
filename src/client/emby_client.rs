@@ -10,7 +10,7 @@ use anyhow::{
 use once_cell::sync::Lazy;
 use regex::Regex;
 use reqwest::{
-    header::{self, HeaderValue},
+    header::HeaderValue,
     Client,
     Method,
     RequestBuilder,

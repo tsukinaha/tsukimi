@@ -494,7 +494,7 @@ impl TuListItem {
         let item = self.item();
         if let Some(rating) = item.rating() {
             let rating = gtk::Button::builder()
-                .label(&rating.to_string())
+                .label(rating.to_string())
                 .halign(gtk::Align::Start)
                 .valign(gtk::Align::End)
                 .margin_start(8)
@@ -513,7 +513,7 @@ impl TuListItem {
         let count = item.unplayed_item_count();
         if count > 0 {
             let mark = gtk::Button::builder()
-                .label(&count.to_string())
+                .label(count.to_string())
                 .halign(gtk::Align::End)
                 .valign(gtk::Align::Start)
                 .margin_end(8)
