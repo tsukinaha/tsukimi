@@ -13,11 +13,17 @@ use imp::PosterType;
 use tracing::warn;
 
 use super::{
-    tu_item::{TuItemBasic, TuItemMenuPrelude, TuItemOverlay, TuItemOverlayPrelude}, utils::{
+    tu_item::{
+        TuItemBasic,
+        TuItemMenuPrelude,
+        TuItemOverlay,
+        TuItemOverlayPrelude,
+    },
+    utils::{
         TU_ITEM_POST_SIZE,
         TU_ITEM_SQUARE_SIZE,
         TU_ITEM_VIDEO_SIZE,
-    }
+    },
 };
 use crate::{
     toast,
@@ -44,9 +50,11 @@ pub mod imp {
 
     use crate::ui::{
         provider::tu_item::TuItem,
-        widgets::picture_loader::PictureLoader,
+        widgets::{
+            picture_loader::PictureLoader,
+            tu_item::TuItemAction,
+        },
     };
-    use crate::ui::widgets::tu_item::TuItemAction;
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
@@ -133,14 +141,6 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
-pub enum Action {
-    Like,
-    Unlike,
-    Played,
-    Unplayed,
-    Remove,
-}
-
 impl TuItemBasic for TuListItem {
     fn item(&self) -> TuItem {
         self.item()
@@ -152,7 +152,7 @@ impl TuItemOverlayPrelude for TuListItem {
         self.imp().overlay.get()
     }
 
-    fn poster_type(&self) -> PosterType {
+    fn poster_type_ext(&self) -> PosterType {
         self.poster_type()
     }
 }

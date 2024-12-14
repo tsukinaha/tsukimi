@@ -1,44 +1,32 @@
+use std::cell::RefCell;
+
 use adw::prelude::*;
-use anyhow::Result;
 use gettextrs::gettext;
 use glib::Object;
 use gtk::{
-    gdk::Rectangle,
     gio,
-    gio::MenuModel,
     glib,
-    glib::subclass::types::{
-        ObjectSubclassExt,
-        ObjectSubclassIsExt,
-    },
+    glib::subclass::types::ObjectSubclassIsExt,
     template_callbacks,
-    Builder,
-    PopoverMenu,
 };
 use imp::ViewGroup;
 
 use super::{
-    picture_loader::PictureLoader,
-    tu_list_item::Action,
+    tu_item::{
+        TuItemBasic,
+        TuItemMenuPrelude,
+        TuItemOverlay,
+        TuItemOverlayPrelude,
+    },
+    tu_list_item::imp::PosterType,
     utils::{
         TU_ITEM_POST_SIZE,
         TU_ITEM_VIDEO_SIZE,
     },
 };
 use crate::{
-    client::{
-        emby_client::EMBY_CLIENT,
-        error::UserFacingError,
-    },
-    toast,
-    ui::provider::{
-        tu_item::TuItem,
-        IS_ADMIN,
-    },
-    utils::{
-        spawn,
-        spawn_tokio,
-    },
+    ui::provider::tu_item::TuItem,
+    utils::spawn,
 };
 
 pub const PROGRESSBAR_ANIMATION_DURATION: u32 = 2000;
@@ -69,7 +57,10 @@ pub mod imp {
 
     use crate::ui::{
         provider::tu_item::TuItem,
-        widgets::picture_loader::PictureLoader,
+        widgets::{
+            picture_loader::PictureLoader,
+            tu_item::TuItemAction,
+        },
     };
 
     // Object holding the state
@@ -160,6 +151,31 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+impl TuItemBasic for TuOverviewItem {
+    fn item(&self) -> TuItem {
+        self.item()
+    }
+}
+
+impl TuItemOverlayPrelude for TuOverviewItem {
+    fn overlay(&self) -> gtk::Overlay {
+        self.imp().overlay.get()
+    }
+
+    fn poster_type_ext(&self) -> PosterType {
+        match self.view_group() {
+            ViewGroup::EpisodesView => PosterType::Backdrop,
+            ViewGroup::ListView => PosterType::Poster,
+        }
+    }
+}
+
+impl TuItemMenuPrelude for TuOverviewItem {
+    fn popover(&self) -> &RefCell<Option<gtk::PopoverMenu>> {
+        &self.imp().popover
+    }
+}
+
 #[template_callbacks]
 impl TuOverviewItem {
     pub fn new(item: TuItem, isresume: bool) -> Self {
@@ -198,15 +214,19 @@ impl TuOverviewItem {
                     &item
                         .overview()
                         .unwrap_or("No Inscription".to_string())
-                        .replace('\n', " "),
+                        .replace(['\n', '\r'], " "),
                 );
                 self.set_played_percentage(self.get_played_percentage());
             }
             ViewGroup::ListView => {
                 imp.overview.set_visible(false);
                 imp.inline_overview.set_visible(true);
-                imp.inline_overview
-                    .set_text(&item.overview().unwrap_or_default().replace('\n', " "));
+                imp.inline_overview.set_text(
+                    &item
+                        .overview()
+                        .unwrap_or_default()
+                        .replace(['\n', '\r'], " "),
+                );
                 let item_type = item.item_type();
                 if item_type == "Episode" {
                     imp.listlabel.set_text(&format!(
@@ -260,68 +280,6 @@ impl TuOverviewItem {
         self.set_tooltip_text(Some(&item.name()));
     }
 
-    pub fn set_picture(&self) {
-        let imp = self.imp();
-        let item = self.item();
-        let picture_loader = PictureLoader::new(&item.id(), "Primary", None);
-        imp.overlay.set_child(Some(&picture_loader));
-    }
-
-    pub fn set_played(&self) {
-        let imp = self.imp();
-        let item = self.item();
-        if item.played() {
-            let mark = gtk::Button::builder()
-                .icon_name("emblem-ok-symbolic")
-                .halign(gtk::Align::End)
-                .valign(gtk::Align::Start)
-                .margin_end(4)
-                .margin_top(4)
-                .build();
-            mark.add_css_class("circular");
-            mark.add_css_class("small");
-            mark.add_css_class("accent");
-            imp.overlay.add_overlay(&mark);
-        }
-    }
-
-    pub fn set_rating(&self) {
-        let imp = self.imp();
-        let item = self.item();
-        if let Some(rating) = item.rating() {
-            let rating = gtk::Button::builder()
-                .label(rating.to_string())
-                .halign(gtk::Align::Start)
-                .valign(gtk::Align::End)
-                .margin_start(8)
-                .margin_bottom(8)
-                .build();
-            rating.add_css_class("pill");
-            rating.add_css_class("small");
-            rating.add_css_class("suggested-action");
-            imp.overlay.add_overlay(&rating);
-        }
-    }
-
-    pub fn set_count(&self) {
-        let imp = self.imp();
-        let item = self.item();
-        let count = item.unplayed_item_count();
-        if count > 0 {
-            let mark = gtk::Button::builder()
-                .label(count.to_string())
-                .halign(gtk::Align::End)
-                .valign(gtk::Align::Start)
-                .margin_end(8)
-                .margin_top(8)
-                .build();
-            mark.add_css_class("pill");
-            mark.add_css_class("small");
-            mark.add_css_class("suggested-action");
-            imp.overlay.add_overlay(&mark);
-        }
-    }
-
     pub fn get_played_percentage(&self) -> f64 {
         let item = self.item();
         item.played_percentage()
@@ -360,342 +318,6 @@ impl TuOverviewItem {
 
                 glib::timeout_future_seconds(1).await;
                 animation.play();
-            }
-        ));
-    }
-
-    pub fn gesture(&self) {
-        let imp = self.imp();
-        let builder = Builder::from_resource("/moe/tsuna/tsukimi/ui/pop-menu.ui");
-        let menu = builder.object::<MenuModel>("rightmenu");
-        match menu {
-            Some(popover) => {
-                let new_popover = PopoverMenu::builder()
-                    .menu_model(&popover)
-                    .halign(gtk::Align::Start)
-                    .has_arrow(false)
-                    .build();
-                if let Some(popover) = imp.popover.borrow_mut().take() {
-                    popover.unparent();
-                }
-                new_popover.set_parent(self);
-                imp.popover.replace(Some(new_popover));
-            }
-            None => eprintln!("Failed to load popover"),
-        }
-        let gesture = gtk::GestureClick::new();
-        gesture.set_button(3);
-        gesture.connect_released(glib::clone!(
-            #[weak]
-            imp,
-            move |gesture, _n, x, y| {
-                gesture.set_state(gtk::EventSequenceState::Claimed);
-                imp.obj()
-                    .insert_action_group("item", imp.obj().set_action().as_ref());
-                if let Some(popover) = imp.popover.borrow().as_ref() {
-                    popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
-                    popover.popup();
-                };
-            }
-        ));
-        self.add_controller(gesture);
-    }
-
-    pub fn set_action(&self) -> Option<gio::SimpleActionGroup> {
-        let item_type = self.item().item_type();
-        match item_type.as_str() {
-            "Movie" | "Series" | "Episode" => self.set_item_action(true, true, true),
-            "MusicAlbum" | "BoxSet" | "Tag" | "Genre" | "Views" | "Actor" | "Person"
-            | "TvChannel" => self.set_item_action(false, true, true),
-            "CollectionFolder" | "UserView" | "Audio" => self.set_item_action(false, false, false),
-            _ => None,
-        }
-    }
-
-    pub fn set_item_action(
-        &self, is_playable: bool, is_editable: bool, is_favouritable: bool,
-    ) -> Option<gio::SimpleActionGroup> {
-        let action_group = gio::SimpleActionGroup::new();
-
-        if is_editable {
-            action_group.add_action_entries([gio::ActionEntry::builder("editm")
-                .activate(glib::clone!(
-                    #[weak(rename_to = obj)]
-                    self,
-                    move |_, _, _| {
-                        spawn(glib::clone!(
-                            #[weak]
-                            obj,
-                            async move {
-                                let id = obj.item().id();
-                                let dialog =
-                                    crate::ui::widgets::metadata_dialog::MetadataDialog::new(&id);
-                                crate::insert_editm_dialog!(obj, dialog);
-                            }
-                        ))
-                    }
-                ))
-                .build()]);
-
-            action_group.add_action_entries([gio::ActionEntry::builder("editi")
-                .activate(glib::clone!(
-                    #[weak(rename_to = obj)]
-                    self,
-                    move |_, _, _| {
-                        spawn(glib::clone!(
-                            #[weak]
-                            obj,
-                            async move {
-                                let id = obj.item().id();
-                                let dialog =
-                                    crate::ui::widgets::image_dialog::ImageDialog::new(&id);
-                                crate::insert_editm_dialog!(obj, dialog);
-                            }
-                        ))
-                    }
-                ))
-                .build()]);
-        }
-
-        if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
-            action_group.add_action_entries([gio::ActionEntry::builder("scan")
-                .activate(glib::clone!(
-                    #[weak(rename_to = obj)]
-                    self,
-                    move |_, _, _| {
-                        spawn(glib::clone!(
-                            #[weak]
-                            obj,
-                            async move {
-                                let id = obj.item().id();
-                                match spawn_tokio(async move { EMBY_CLIENT.scan(&id).await }).await
-                                {
-                                    Ok(_) => {
-                                        toast!(obj, gettext("Scanning..."));
-                                    }
-                                    Err(e) => {
-                                        toast!(obj, e.to_user_facing());
-                                    }
-                                }
-                            }
-                        ))
-                    }
-                ))
-                .build()]);
-
-            if is_editable && !self.item().is_resume() {
-                action_group.add_action_entries([gio::ActionEntry::builder("identify")
-                    .activate(glib::clone!(
-                        #[weak(rename_to = obj)]
-                        self,
-                        move |_, _, _| {
-                            spawn(glib::clone!(
-                                #[weak]
-                                obj,
-                                async move {
-                                    let id = obj.item().id();
-                                    let type_ = obj.item().item_type();
-                                    let dialog =
-                                        crate::ui::widgets::identify_dialog::IdentifyDialog::new(
-                                            &id, &type_,
-                                        );
-                                    crate::insert_editm_dialog!(obj, dialog);
-                                }
-                            ))
-                        }
-                    ))
-                    .build()]);
-
-                action_group.add_action_entries([gio::ActionEntry::builder("refresh")
-                    .activate(glib::clone!(
-                        #[weak(rename_to = obj)]
-                        self,
-                        move |_, _, _| {
-                            spawn(glib::clone!(
-                                #[weak]
-                                obj,
-                                async move {
-                                    let id = obj.item().id();
-                                    let dialog =
-                                        crate::ui::widgets::refresh_dialog::RefreshDialog::new(&id);
-                                    crate::insert_editm_dialog!(obj, dialog);
-                                }
-                            ))
-                        }
-                    ))
-                    .build()]);
-            }
-        }
-
-        if is_favouritable {
-            match self.item().is_favorite() {
-                true => action_group.add_action_entries([gio::ActionEntry::builder("unlike")
-                    .activate(glib::clone!(
-                        #[weak(rename_to = obj)]
-                        self,
-                        move |_, _, _| {
-                            spawn(glib::clone!(
-                                #[weak]
-                                obj,
-                                async move {
-                                    obj.perform_action(Action::Unlike).await;
-                                }
-                            ))
-                        }
-                    ))
-                    .build()]),
-                false => action_group.add_action_entries([gio::ActionEntry::builder("like")
-                    .activate(glib::clone!(
-                        #[weak(rename_to = obj)]
-                        self,
-                        move |_, _, _| {
-                            spawn(glib::clone!(
-                                #[weak]
-                                obj,
-                                async move {
-                                    obj.perform_action(Action::Like).await;
-                                }
-                            ))
-                        }
-                    ))
-                    .build()]),
-            }
-        }
-
-        if is_playable {
-            match self.item().played() {
-                true => action_group.add_action_entries([gio::ActionEntry::builder("unplayed")
-                    .activate(glib::clone!(
-                        #[weak(rename_to = obj)]
-                        self,
-                        move |_, _, _| {
-                            spawn(glib::clone!(
-                                #[weak]
-                                obj,
-                                async move {
-                                    obj.perform_action(Action::Unplayed).await;
-                                }
-                            ))
-                        }
-                    ))
-                    .build()]),
-                false => action_group.add_action_entries([gio::ActionEntry::builder("played")
-                    .activate(glib::clone!(
-                        #[weak(rename_to = obj)]
-                        self,
-                        move |_, _, _| {
-                            spawn(glib::clone!(
-                                #[weak]
-                                obj,
-                                async move {
-                                    obj.perform_action(Action::Played).await;
-                                }
-                            ))
-                        }
-                    ))
-                    .build()]),
-            }
-        }
-
-        if self.item().is_resume() {
-            action_group.add_action_entries([gio::ActionEntry::builder("remove")
-                .activate(glib::clone!(
-                    #[weak(rename_to = obj)]
-                    self,
-                    move |_, _, _| {
-                        spawn(glib::clone!(
-                            #[weak]
-                            obj,
-                            async move {
-                                obj.perform_action(Action::Remove).await;
-                            }
-                        ))
-                    }
-                ))
-                .build()]);
-        }
-        Some(action_group)
-    }
-
-    async fn perform_action_inner(id: &str, action: &Action) -> Result<()> {
-        match action {
-            Action::Like => EMBY_CLIENT.like(id).await,
-            Action::Unlike => EMBY_CLIENT.unlike(id).await,
-            Action::Played => EMBY_CLIENT.set_as_played(id).await,
-            Action::Unplayed => EMBY_CLIENT.set_as_unplayed(id).await,
-            Action::Remove => EMBY_CLIENT.hide_from_resume(id).await,
-        }
-    }
-
-    pub async fn perform_action(&self, action: Action) {
-        let id = self.item().id().clone();
-        self.update_state(&action);
-        let result = spawn_tokio(async move { Self::perform_action_inner(&id, &action).await });
-
-        match result.await {
-            Ok(_) => {
-                toast!(self, gettext("Success"))
-            }
-            Err(e) => {
-                toast!(self, e.to_user_facing());
-            }
-        }
-
-        let obj = self.imp().obj();
-        obj.insert_action_group("item", obj.set_action().as_ref());
-    }
-
-    pub fn update_state(&self, action: &Action) {
-        match action {
-            Action::Like => self.item().set_is_favorite(true),
-            Action::Unlike => self.item().set_is_favorite(false),
-            Action::Played => self.item().set_played(true),
-            Action::Unplayed => self.item().set_played(false),
-            Action::Remove => {
-                spawn(glib::clone!(
-                    #[weak(rename_to = obj)]
-                    self,
-                    async move {
-                        let parent = obj.parent().unwrap().parent().unwrap();
-                        if let Some(list_view) = parent.downcast_ref::<gtk::ListView>() {
-                            list_view
-                                .model()
-                                .and_downcast::<gtk::SingleSelection>()
-                                .map(|sel| {
-                                    sel.model()
-                                        .and_downcast::<gio::ListStore>()
-                                        .map(|store| store.remove(sel.selected()))
-                                });
-                        } else if let Some(grid_view) = parent.downcast_ref::<gtk::GridView>() {
-                            grid_view
-                                .model()
-                                .and_downcast::<gtk::SingleSelection>()
-                                .map(|sel| {
-                                    sel.model()
-                                        .and_downcast::<gio::ListStore>()
-                                        .map(|store| store.remove(sel.selected()))
-                                });
-                        }
-                    }
-                ));
-            }
-        }
-        self.gesture();
-    }
-
-    pub async fn process_item(
-        &self, action: fn(&String) -> Result<(), Box<dyn std::error::Error>>,
-    ) {
-        let id = self.item().id();
-        spawn_tokio(async move {
-            action(&id).unwrap();
-        })
-        .await;
-        spawn(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            async move {
-                toast!(obj, gettext("Success"));
             }
         ));
     }

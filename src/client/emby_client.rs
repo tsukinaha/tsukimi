@@ -328,7 +328,9 @@ impl EmbyClient {
     where
         reqwest::Body: From<B>,
     {
-        let request = self.prepare_request_headers(Method::POST, path, &[], content_type)?.body(body);
+        let request = self
+            .prepare_request_headers(Method::POST, path, &[], content_type)?
+            .body(body);
         let res = self.send_request(request).await?;
         Ok(res)
     }
@@ -359,7 +361,10 @@ impl EmbyClient {
     ) -> Result<RequestBuilder> {
         let (mut url, mut headers) = self.get_url_and_headers()?;
         url = url.join(path)?;
-        headers.insert(reqwest::header::CONTENT_TYPE, HeaderValue::from_str(content_type)?);
+        headers.insert(
+            reqwest::header::CONTENT_TYPE,
+            HeaderValue::from_str(content_type)?,
+        );
         self.add_params_to_url(&mut url, params);
         Ok(self.client.get_ref().request(method, url).headers(headers))
     }
@@ -529,7 +534,9 @@ impl EmbyClient {
     }
 
     // Only support base64 encoded images
-    pub async fn post_image<B>(&self, id: &str, image_type: &str, bytes: B, content_type: &str) -> Result<Response>
+    pub async fn post_image<B>(
+        &self, id: &str, image_type: &str, bytes: B, content_type: &str,
+    ) -> Result<Response>
     where
         reqwest::Body: From<B>,
     {
@@ -1266,7 +1273,10 @@ mod tests {
         }
 
         let image = std::fs::read("/home/inaha/Works/tsukimi/target/debug/test.jpg").unwrap();
-        use base64::{Engine as _, engine::general_purpose::STANDARD};
+        use base64::{
+            engine::general_purpose::STANDARD,
+            Engine as _,
+        };
         let image = STANDARD.encode(&image);
         match EMBY_CLIENT
             .post_image("293", "Thumb", image, "image/jpeg")

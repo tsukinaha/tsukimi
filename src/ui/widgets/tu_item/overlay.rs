@@ -1,6 +1,13 @@
 use gtk::prelude::*;
 
-use crate::ui::{provider::tu_item::TuItem, widgets::{picture_loader::PictureLoader, tu_list_item::imp::PosterType, utils::*}};
+use crate::ui::{
+    provider::tu_item::TuItem,
+    widgets::{
+        picture_loader::PictureLoader,
+        tu_list_item::imp::PosterType,
+        utils::*,
+    },
+};
 
 use super::TuItemBasic;
 
@@ -10,9 +17,9 @@ pub trait TuItemOverlayPrelude {
     }
 
     fn get_image_type_and_tag(&self, item: &TuItem) -> (&str, Option<String>, String) {
-        if self.poster_type() != PosterType::Poster {
+        if self.poster_type_ext() != PosterType::Poster {
             if let Some(imag_tags) = item.image_tags() {
-                match self.poster_type() {
+                match self.poster_type_ext() {
                     PosterType::Banner => {
                         Self::set_overlay_size(
                             &self.overlay(),
@@ -60,8 +67,8 @@ pub trait TuItemOverlayPrelude {
     }
 
     fn overlay(&self) -> gtk::Overlay;
-    
-    fn poster_type(&self) -> PosterType;
+
+    fn poster_type_ext(&self) -> PosterType;
 }
 
 pub trait TuItemOverlay: TuItemBasic + TuItemOverlayPrelude {
@@ -78,9 +85,9 @@ pub trait TuItemOverlay: TuItemBasic + TuItemOverlayPrelude {
     fn set_folder(&self);
 }
 
-impl<T> TuItemOverlay for T 
+impl<T> TuItemOverlay for T
 where
-    T: TuItemBasic + TuItemOverlayPrelude
+    T: TuItemBasic + TuItemOverlayPrelude,
 {
     fn set_picture(&self) {
         let item = self.item();

@@ -43,8 +43,6 @@ pub trait TuItemAction {
 
     fn update_state(&self, action: &Action);
 
-    async fn process_item(&self, action: fn(&String) -> Result<(), Box<dyn std::error::Error>>);
-
     fn gesture(&self);
 
     fn set_action(&self) -> Option<gio::SimpleActionGroup>;
@@ -123,21 +121,6 @@ where
                 ));
             }
         }
-    }
-
-    async fn process_item(&self, action: fn(&String) -> Result<(), Box<dyn std::error::Error>>) {
-        let id = self.item().id();
-        spawn_tokio(async move {
-            action(&id).unwrap();
-        })
-        .await;
-        spawn(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            async move {
-                toast!(obj, gettext("Success"));
-            }
-        ));
     }
 
     fn gesture(&self) {

@@ -1,6 +1,5 @@
 use std::cell::RefCell;
 
-
 use crate::ui::provider::tu_item::TuItem;
 
 pub trait TuItemBasic {
