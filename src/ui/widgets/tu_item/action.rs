@@ -123,7 +123,6 @@ where
                 ));
             }
         }
-        self.gesture();
     }
 
     async fn process_item(&self, action: fn(&String) -> Result<(), Box<dyn std::error::Error>>) {
