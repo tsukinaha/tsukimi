@@ -9,11 +9,11 @@ macro_rules! _add_toast {
         {
             use adw::prelude::PreferencesDialogExt;
             dialog.add_toast($toast);
-        } else if let Some(dialog) = $widget
+        } else if let Some(overlay) = $widget
             .ancestor(adw::ToastOverlay::static_type())
             .and_downcast::<adw::ToastOverlay>()
         {
-            dialog.add_toast($toast);
+            overlay.add_toast($toast);
         } else if let Some(root) = $widget.root() {
             #[allow(deprecated)]
             if let Some(window) = root.downcast_ref::<adw::PreferencesWindow>() {

@@ -3,13 +3,22 @@ use std::io::Read;
 use adw::subclass::prelude::*;
 use gettextrs::gettext;
 use gtk::{
-    glib, prelude::*, CompositeTemplate
+    glib,
+    prelude::*,
+    CompositeTemplate,
 };
 
 use gtk::template_callbacks;
 use reqwest::Response;
 
-use crate::{client::emby_client::EMBY_CLIENT, toast, utils::{spawn, spawn_tokio}};
+use crate::{
+    client::emby_client::EMBY_CLIENT,
+    toast,
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
+};
 
 use super::ImageDialog;
 
@@ -83,12 +92,14 @@ glib::wrapper! {
         @extends gtk::Widget, adw::NavigationPage, @implements gtk::Accessible;
 }
 
-use anyhow::anyhow;
-use anyhow::Result;
+use anyhow::{
+    anyhow,
+    Result,
+};
 
 #[template_callbacks]
 impl ImageDialogEditPage {
-    pub fn new(id: String, image_type: String, image_tag: u8) -> Self {
+    pub fn new(id: &str, image_type: &str, image_tag: u8) -> Self {
         glib::Object::builder()
             .property("id", id)
             .property("image-type", image_type)
@@ -110,22 +121,31 @@ impl ImageDialogEditPage {
             return Err(anyhow!("Failed to read file"));
         };
 
-        let content_type = if let Some(mime) = file.query_info_future(
-            "standard::content-type",
-            gtk::gio::FileQueryInfoFlags::NONE,
-            glib::Priority::LOW,
-        )
-        .await
-        .ok()
-        .and_then(|info| info.content_type()) 
+        let content_type = if let Some(mime) = file
+            .query_info_future(
+                "standard::content-type",
+                gtk::gio::FileQueryInfoFlags::NONE,
+                glib::Priority::LOW,
+            )
+            .await
+            .ok()
+            .and_then(|info| info.content_type())
         {
             mime.to_string()
         } else {
             "image/jpeg".to_string()
         };
 
+        use base64::{
+            engine::general_purpose::STANDARD,
+            Engine as _,
+        };
+        let bytes = STANDARD.encode(bytes);
+
         spawn_tokio(async move {
-            EMBY_CLIENT.post_image(&id, &image_type, bytes, &content_type).await
+            EMBY_CLIENT
+                .post_image(&id, &image_type, bytes, &content_type)
+                .await
         })
         .await
     }
@@ -147,9 +167,11 @@ impl ImageDialogEditPage {
         let result = if self.imp().url_check_button.is_active() {
             let url = self.imp().entry.text().to_string();
             let image_tag = self.image_tag();
-            
+
             spawn_tokio(async move {
-                EMBY_CLIENT.post_image_url(&id, &image_type, image_tag, &url).await
+                EMBY_CLIENT
+                    .post_image_url(&id, &image_type, image_tag, &url)
+                    .await
             })
             .await
         } else {

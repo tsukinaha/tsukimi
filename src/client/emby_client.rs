@@ -528,6 +528,7 @@ impl EmbyClient {
         }
     }
 
+    // Only support base64 encoded images
     pub async fn post_image<B>(&self, id: &str, image_type: &str, bytes: B, content_type: &str) -> Result<Response>
     where
         reqwest::Body: From<B>,
@@ -1238,5 +1239,45 @@ mod tests {
         };
 
         assert_eq!(url, "http://127.0.0.1");
+    }
+
+    #[tokio::test]
+    async fn test_upload_image() {
+        let _ = EMBY_CLIENT.header_change_url("http://127.0.0.1", "8096");
+        let result = EMBY_CLIENT.login("inaha", "").await;
+        match result {
+            Ok(response) => {
+                println!("{}", response.access_token);
+                let account = Account {
+                    servername: "test".to_string(),
+                    server: "http://127.0.0.1".to_string(),
+                    username: "inaha".to_string(),
+                    password: String::new(),
+                    port: "8096".to_string(),
+                    user_id: response.user.id,
+                    access_token: response.access_token,
+                    server_type: Some("Emby".to_string()),
+                };
+                let _ = EMBY_CLIENT.init(&account);
+            }
+            Err(e) => {
+                eprintln!("{}", e.to_user_facing());
+            }
+        }
+
+        let image = std::fs::read("/home/inaha/Works/tsukimi/target/debug/test.jpg").unwrap();
+        use base64::{Engine as _, engine::general_purpose::STANDARD};
+        let image = STANDARD.encode(&image);
+        match EMBY_CLIENT
+            .post_image("293", "Thumb", image, "image/jpeg")
+            .await
+        {
+            Ok(_) => {
+                println!("success");
+            }
+            Err(e) => {
+                eprintln!("{}", e.to_user_facing());
+            }
+        }
     }
 }

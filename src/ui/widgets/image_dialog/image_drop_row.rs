@@ -1,8 +1,10 @@
 use adw::subclass::prelude::*;
 use gtk::{
-    glib, prelude::WidgetExt, template_callbacks, CompositeTemplate
+    glib,
+    prelude::WidgetExt,
+    template_callbacks,
+    CompositeTemplate,
 };
-
 
 mod imp {
     use glib::{

@@ -103,33 +103,11 @@
               </object>
             </child>
             <child>
-              <object class="GtkButton" id="search_btn">
-                <property name="icon-name">system-search-symbolic</property>
-                <property name="halign">end</property>
-                <property name="tooltip_text" translatable="yes">Search Image</property>
-                <signal name="clicked" handler="on_search" swapped="true"/>
-                <style>
-                  <class name="flat" />
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="edit_btn">
+              <object class="GtkMenuButton" id="edit_menu_button">
                 <property name="icon-name">document-edit-symbolic</property>
                 <property name="halign">end</property>
-                <property name="tooltip_text" translatable="yes">Edit Image</property>
-                <signal name="clicked" handler="on_edit" swapped="true"/>
-                <style>
-                  <class name="flat" />
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="delete_btn">
-                <property name="icon-name">user-trash-symbolic</property>
-                <property name="halign">end</property>
-                <property name="tooltip_text" translatable="yes">Delete Image</property>
-                <signal name="clicked" handler="on_delete" swapped="true"/>
+                <property name="tooltip_text" translatable="yes">Edit</property>
+                <property name="menu-model">edit_menu</property>
                 <style>
                   <class name="flat" />
                 </style>
@@ -143,4 +121,26 @@
       </object>
     </child>
   </template>
+  <menu id="edit_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Search</attribute>
+        <attribute name="action">image.search</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;S</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Edit</attribute>
+        <attribute name="action">image.edit</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;E</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Delete</attribute>
+        <attribute name="action">image.delete</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;D</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>

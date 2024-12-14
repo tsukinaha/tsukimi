@@ -8,30 +8,35 @@
           <object class="AdwHeaderBar" />
         </child>
         <child>
-          <object class="AdwClamp">
+          <object class="GtkScrolledWindow">
+            <property name="hscrollbar-policy">never</property>
             <child>
-              <object class="AdwPreferencesGroup">
+              <object class="AdwClamp">
                 <child>
-                  <object class="ImageDropRow" id="image_drop_row">
-                    <property name="title">Upload Image</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwEntryRow" id="entry">
-                    <property name="title">External Url</property>
-                    <child type="prefix">
-                      <object class="GtkCheckButton" id="url_check_button">
+                  <object class="AdwPreferencesGroup">
+                    <child>
+                      <object class="ImageDropRow" id="image_drop_row">
+                        <property name="title">Upload Image</property>
                       </object>
                     </child>
-                    <style>
-                      <class name="property" />
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwButtonRow">
-                    <signal name="activated" handler="on_save_button_clicked" swapped="yes" />
-                    <property name="title">Save</property>
+                    <child>
+                      <object class="AdwEntryRow" id="entry">
+                        <property name="title">External Url</property>
+                        <child type="prefix">
+                          <object class="GtkCheckButton" id="url_check_button">
+                          </object>
+                        </child>
+                        <style>
+                          <class name="property" />
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwButtonRow">
+                        <signal name="activated" handler="on_save_button_clicked" swapped="yes" />
+                        <property name="title">Save</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

@@ -28,7 +28,8 @@ mod imp {
     use crate::{
         client::structs::ImageItem,
         ui::{
-            provider::IS_ADMIN, widgets::image_dialog::ImageInfoCard,
+            provider::IS_ADMIN,
+            widgets::image_dialog::ImageInfoCard,
         },
         utils::spawn,
     };
@@ -178,11 +179,15 @@ impl ImagesDialog {
     }
 
     pub fn loading_page(&self) {
-        self.imp().stack.set_visible_child_name(Self::LOADING_STACK_PAGE);
+        self.imp()
+            .stack
+            .set_visible_child_name(Self::LOADING_STACK_PAGE);
     }
 
     pub fn view_page(&self) {
-        self.imp().stack.set_visible_child_name(Self::VIEW_STACK_PAGE);
+        self.imp()
+            .stack
+            .set_visible_child_name(Self::VIEW_STACK_PAGE);
     }
 
     pub async fn set_image_items(&self) {

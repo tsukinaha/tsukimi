@@ -9,11 +9,17 @@ use gtk::{
 };
 
 use crate::{
-    client::emby_client::EMBY_CLIENT, toast, ui::widgets::window::Window, utils::spawn_tokio
+    client::emby_client::EMBY_CLIENT,
+    toast,
+    ui::widgets::window::Window,
+    utils::spawn_tokio,
 };
 
 mod imp {
-    use std::cell::{OnceCell, RefCell};
+    use std::cell::{
+        OnceCell,
+        RefCell,
+    };
 
     use adw::subclass::prelude::*;
     use gettextrs::gettext;
@@ -47,11 +53,7 @@ mod imp {
         pub label2: TemplateChild<gtk::Label>,
 
         #[template_child]
-        pub search_btn: TemplateChild<gtk::Button>,
-        #[template_child]
-        pub edit_btn: TemplateChild<gtk::Button>,
-        #[template_child]
-        pub delete_btn: TemplateChild<gtk::Button>,
+        pub edit_menu_button: TemplateChild<gtk::MenuButton>,
 
         #[template_child]
         pub picture: TemplateChild<gtk::Picture>,
@@ -71,6 +73,30 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
             klass.bind_template_instance_callbacks();
+
+            if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
+                klass.install_action(
+                    "image.edit",
+                    None,
+                    move |image_info_card, _action, _parameter| {
+                        image_info_card.on_edit();
+                    },
+                );
+                klass.install_action_async(
+                    "image.delete",
+                    None,
+                    |image_info_card, _action, _parameter| async move {
+                        image_info_card.on_delete().await;
+                    },
+                );
+                klass.install_action(
+                    "image.search",
+                    None,
+                    move |image_info_card, _action, _parameter| {
+                        image_info_card.on_search();
+                    },
+                );
+            }
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -84,13 +110,10 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
-                self.search_btn.set_visible(self.obj().searchable());
-                self.edit_btn.set_visible(true);
-                self.delete_btn.set_visible(true);
-            }
-
             self.label1.set_text(&gettext(self.obj().imgtype()));
+
+            self.obj()
+                .action_set_enabled("image.search", self.obj().searchable());
         }
     }
 
@@ -106,14 +129,17 @@ use super::ImageDialog;
 glib::wrapper! {
     pub struct ImageInfoCard(ObjectSubclass<imp::ImageInfoCard>)
         @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
-        @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
+        @implements gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
 #[template_callbacks]
 impl ImageInfoCard {
     pub fn new(img_type: &str, id: &str) -> Self {
-        Object::builder().property("imgtype", img_type).property("imgid", id).build()
+        Object::builder()
+            .property("imgtype", img_type)
+            .property("imgid", id)
+            .build()
     }
 
     #[template_callback]
@@ -147,20 +173,16 @@ impl ImageInfoCard {
         toast!(self, gettext("Image copied to clipboard"));
     }
 
-    #[template_callback]
-    fn on_search(&self) {
+    fn on_search(&self) {}
 
-    }
-
-    #[template_callback]
     fn on_edit(&self) {
         self.navigation_view().map(|nav| {
-            let page = super::ImageDialogEditPage::new(self.imgid(), self.imgtype(), self.image_index());
+            let page =
+                super::ImageDialogEditPage::new(&self.imgid(), &self.imgtype(), self.image_index());
             nav.push(&page);
         });
     }
 
-    #[template_callback]
     async fn on_delete(&self) {
         self.set_loading_visible();
 
@@ -169,8 +191,12 @@ impl ImageInfoCard {
         let image_index = self.image_index();
 
         match spawn_tokio(async move {
-            EMBY_CLIENT.delete_image(&id, &img_type, Some(image_index)).await
-        }).await {
+            EMBY_CLIENT
+                .delete_image(&id, &img_type, Some(image_index))
+                .await
+        })
+        .await
+        {
             Ok(_) => {
                 toast!(self, gettext("Image deleted"));
                 self.set_fallback_visible();
