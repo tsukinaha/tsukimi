@@ -53,7 +53,7 @@ pub mod theme {
 
             let mut data: u32 = 0;
             let mut data_size: u32 = std::mem::size_of::<u32>() as u32;
-            let value_name = w!("SystemUsesLightTheme");
+            let value_name = w!("AppsUsesLightTheme");
 
             let result = RegQueryValueExW(
                 key_handle,
