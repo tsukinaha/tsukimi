@@ -69,6 +69,9 @@ mod imp {
         pub stack: TemplateChild<gtk::Stack>,
 
         #[template_child]
+        pub toast_overlay: TemplateChild<adw::ToastOverlay>,
+
+        #[template_child]
         pub size_group: TemplateChild<gtk::SizeGroup>,
     }
 
@@ -204,6 +207,10 @@ impl ImagesDialog {
         self.imp()
             .stack
             .set_visible_child_name(Self::VIEW_STACK_PAGE);
+    }
+
+    pub fn add_toast(&self, toast: adw::Toast) {
+        self.imp().toast_overlay.add_toast(toast);
     }
 
     pub async fn set_image_items(&self) {

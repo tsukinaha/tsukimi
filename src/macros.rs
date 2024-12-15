@@ -3,6 +3,7 @@
 macro_rules! _add_toast {
     ($widget:expr, $toast:expr) => {{
         use gtk::prelude::WidgetExt;
+        use crate::ui::widgets::image_dialog::ImageDialog;
         if let Some(dialog) = $widget
             .ancestor(adw::PreferencesDialog::static_type())
             .and_downcast::<adw::PreferencesDialog>()
@@ -14,6 +15,11 @@ macro_rules! _add_toast {
             .and_downcast::<adw::ToastOverlay>()
         {
             overlay.add_toast($toast);
+        } else if let Some(dialog) = $widget
+            .ancestor(ImageDialog::static_type())
+            .and_downcast::<ImageDialog>()
+        {
+            dialog.add_toast($toast);
         } else if let Some(root) = $widget.root() {
             #[allow(deprecated)]
             if let Some(window) = root.downcast_ref::<adw::PreferencesWindow>() {

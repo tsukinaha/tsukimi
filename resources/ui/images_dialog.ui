@@ -5,7 +5,7 @@
     <property name="content-height">1000</property>
     <property name="title" translatable="yes">View Images</property>
     <child>
-      <object class="AdwToastOverlay" id="toast">
+      <object class="AdwToastOverlay" id="toast_overlay">
         <child>
           <object class="AdwNavigationView" id="view">
             <child>
