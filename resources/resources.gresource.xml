@@ -69,5 +69,6 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/mpv_control_sidebar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/server_action_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/image_drop_row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/image_dialog_search_page.ui</file>
   </gresource>
 </gresources>

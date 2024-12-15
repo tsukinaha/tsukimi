@@ -173,7 +173,12 @@ impl ImageInfoCard {
         toast!(self, gettext("Image copied to clipboard"));
     }
 
-    fn on_search(&self) {}
+    fn on_search(&self) {
+        if let Some(view) = self.navigation_view() {
+            let page = super::ImageDialogSearchPage::new(&self.imgid());
+            view.push(&page);
+        }
+    }
 
     fn on_edit(&self) {
         if let Some(view) = self.navigation_view() {

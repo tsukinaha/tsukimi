@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwNavigationPage" class="ImageDialogSearchPage">
+    <property name="title">Choose Image</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <child type="end">
+              <object class="GtkDropDown" id="dropdown">
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="tooltip-text" translatable="yes">Provider</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item>All</item>
+                      <item>TheTVDB</item>
+                      <item>Date Created</item>
+                      <item>FanArt</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="GtkGridView" />
+            </child>
+          </object>
+        </child>
+        <child type="bottom">
+          <object class="GtkActionBar">
+            <child type="start">
+              <object class="GtkLabel" id="items_label">
+                <property name="margin-start">10</property>
+                <property name="margin-bottom">5</property>
+                <property name="label" translatable="yes">Loading...</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkCheckButton" id="all_languages_check">
+                <property name="margin-end">10</property>
+                <property name="margin-bottom">5</property>
+                <property name="label" translatable="yes">All Languages</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
