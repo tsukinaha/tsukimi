@@ -18,6 +18,8 @@ use super::{
         TuItemMenuPrelude,
         TuItemOverlay,
         TuItemOverlayPrelude,
+        TuItemProgressbarAnimation,
+        TuItemProgressbarAnimationPrelude,
     },
     utils::{
         TU_ITEM_POST_SIZE,
@@ -28,10 +30,7 @@ use super::{
 use crate::{
     toast,
     ui::provider::tu_item::TuItem,
-    utils::spawn,
 };
-
-pub const PROGRESSBAR_ANIMATION_DURATION: u32 = 2000;
 
 pub mod imp {
     use std::cell::{
@@ -163,6 +162,12 @@ impl TuItemMenuPrelude for TuListItem {
     }
 }
 
+impl TuItemProgressbarAnimationPrelude for TuListItem {
+    fn overlay(&self) -> gtk::Overlay {
+        self.imp().overlay.get()
+    }
+}
+
 #[template_callbacks]
 impl TuListItem {
     pub fn new(item: TuItem) -> Self {
@@ -221,7 +226,7 @@ impl TuListItem {
                 self.set_picture();
                 self.set_played();
                 if item.is_resume() {
-                    self.set_played_percentage(self.get_played_percentage());
+                    self.set_progress(item.played_percentage());
                     return;
                 }
                 self.set_rating();
@@ -262,7 +267,7 @@ impl TuListItem {
                 let progress = (now.to_unix() - program_start_time.to_unix()) as f64
                     / (program_end_time.to_unix() - program_start_time.to_unix()) as f64;
 
-                self.set_played_percentage(progress * 100.0);
+                self.set_progress(progress * 100.0);
                 imp.label2.set_text(&format!(
                     "{} - {}",
                     program_start_time.format("%H:%M").unwrap(),
@@ -343,7 +348,7 @@ impl TuListItem {
                 self.set_can_direct_play(true);
                 self.set_picture();
                 self.set_played();
-                self.set_played_percentage(self.get_played_percentage());
+                self.set_progress(item.played_percentage());
             }
             "Views" => {
                 imp.listlabel.set_text(&item.name());
@@ -403,47 +408,5 @@ impl TuListItem {
             }
         }
         self.set_tooltip_text(Some(&item.name()));
-    }
-
-    pub fn get_played_percentage(&self) -> f64 {
-        let item = self.item();
-        item.played_percentage()
-    }
-
-    pub fn set_played_percentage(&self, percentage: f64) {
-        let imp = self.imp();
-
-        let progress = gtk::ProgressBar::builder()
-            .fraction(0.)
-            .margin_end(3)
-            .margin_start(3)
-            .valign(gtk::Align::End)
-            .build();
-
-        imp.overlay.add_overlay(&progress);
-
-        spawn(glib::clone!(
-            #[weak]
-            progress,
-            async move {
-                let target = adw::CallbackAnimationTarget::new(glib::clone!(
-                    #[weak]
-                    progress,
-                    move |process| progress.set_fraction(process)
-                ));
-
-                let animation = adw::TimedAnimation::builder()
-                    .duration(PROGRESSBAR_ANIMATION_DURATION)
-                    .widget(&progress)
-                    .target(&target)
-                    .easing(adw::Easing::EaseOutQuart)
-                    .value_from(0.)
-                    .value_to(percentage / 100.0)
-                    .build();
-
-                glib::timeout_future_seconds(1).await;
-                animation.play();
-            }
-        ));
     }
 }

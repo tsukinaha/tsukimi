@@ -17,6 +17,8 @@ use super::{
         TuItemMenuPrelude,
         TuItemOverlay,
         TuItemOverlayPrelude,
+        TuItemProgressbarAnimation,
+        TuItemProgressbarAnimationPrelude,
     },
     tu_list_item::imp::PosterType,
     utils::{
@@ -24,12 +26,7 @@ use super::{
         TU_ITEM_VIDEO_SIZE,
     },
 };
-use crate::{
-    ui::provider::tu_item::TuItem,
-    utils::spawn,
-};
-
-pub const PROGRESSBAR_ANIMATION_DURATION: u32 = 2000;
+use crate::ui::provider::tu_item::TuItem;
 
 pub mod imp {
     use std::cell::{
@@ -176,6 +173,12 @@ impl TuItemMenuPrelude for TuOverviewItem {
     }
 }
 
+impl TuItemProgressbarAnimationPrelude for TuOverviewItem {
+    fn overlay(&self) -> gtk::Overlay {
+        self.imp().overlay.get()
+    }
+}
+
 #[template_callbacks]
 impl TuOverviewItem {
     pub fn new(item: TuItem, isresume: bool) -> Self {
@@ -216,7 +219,7 @@ impl TuOverviewItem {
                         .unwrap_or("No Inscription".to_string())
                         .replace(['\n', '\r'], " "),
                 );
-                self.set_played_percentage(self.get_played_percentage());
+                self.set_progress(self.item().played_percentage());
             }
             ViewGroup::ListView => {
                 imp.overview.set_visible(false);
@@ -278,48 +281,6 @@ impl TuOverviewItem {
         self.set_picture();
         self.set_played();
         self.set_tooltip_text(Some(&item.name()));
-    }
-
-    pub fn get_played_percentage(&self) -> f64 {
-        let item = self.item();
-        item.played_percentage()
-    }
-
-    pub fn set_played_percentage(&self, percentage: f64) {
-        let imp = self.imp();
-
-        let progress = gtk::ProgressBar::builder()
-            .fraction(0.)
-            .margin_end(3)
-            .margin_start(3)
-            .valign(gtk::Align::End)
-            .build();
-
-        imp.overlay.add_overlay(&progress);
-
-        spawn(glib::clone!(
-            #[weak]
-            progress,
-            async move {
-                let target = adw::CallbackAnimationTarget::new(glib::clone!(
-                    #[weak]
-                    progress,
-                    move |process| progress.set_fraction(process)
-                ));
-
-                let animation = adw::TimedAnimation::builder()
-                    .duration(PROGRESSBAR_ANIMATION_DURATION)
-                    .widget(&progress)
-                    .target(&target)
-                    .easing(adw::Easing::EaseOutQuart)
-                    .value_from(0.)
-                    .value_to(percentage / 100.0)
-                    .build();
-
-                glib::timeout_future_seconds(1).await;
-                animation.play();
-            }
-        ));
     }
 }
 

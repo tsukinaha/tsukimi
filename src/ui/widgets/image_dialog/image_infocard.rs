@@ -176,11 +176,11 @@ impl ImageInfoCard {
     fn on_search(&self) {}
 
     fn on_edit(&self) {
-        self.navigation_view().map(|nav| {
+        if let Some(view) = self.navigation_view() {
             let page =
                 super::ImageDialogEditPage::new(&self.imgid(), &self.imgtype(), self.image_index());
-            nav.push(&page);
-        });
+            view.push(&page);
+        }
     }
 
     async fn on_delete(&self) {

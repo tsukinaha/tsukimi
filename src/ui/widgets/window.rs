@@ -256,7 +256,7 @@ use super::{
     server_action_row,
     server_panel::ServerPanel,
     server_row::ServerRow,
-    tu_list_item::PROGRESSBAR_ANIMATION_DURATION,
+    tu_item::PROGRESSBAR_ANIMATION_DURATION,
 };
 use crate::{
     client::{
