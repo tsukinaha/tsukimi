@@ -181,8 +181,10 @@ impl ImageDialogEditPage {
         match result {
             Ok(_) => {
                 spawn(async move {
+                    dialog.pop_page();
                     dialog.set_image_items().await;
                     dialog.view_page();
+                    toast!(dialog, gettext("Image saved"));
                 });
             }
             Err(e) => {

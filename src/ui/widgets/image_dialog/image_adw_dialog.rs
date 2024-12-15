@@ -46,6 +46,8 @@ mod imp {
 
         #[template_child]
         pub page: TemplateChild<adw::NavigationPage>,
+        #[template_child]
+        pub view: TemplateChild<adw::NavigationView>,
 
         #[template_child]
         pub primary: TemplateChild<ImageInfoCard>,
@@ -65,6 +67,9 @@ mod imp {
 
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
+
+        #[template_child]
+        pub size_group: TemplateChild<gtk::SizeGroup>,
     }
 
     #[glib::object_subclass]
@@ -88,13 +93,23 @@ mod imp {
     impl ObjectImpl for ImagesDialog {
         fn constructed(&self) {
             self.parent_constructed();
+
             let id = self.obj().id();
+
             self.primary.set_imgid(id.clone());
             self.logo.set_imgid(id.clone());
             self.thumb.set_imgid(id.clone());
             self.banner.set_imgid(id.clone());
             self.disc.set_imgid(id.clone());
             self.art.set_imgid(id.clone());
+
+            self.size_group.add_widget(&self.primary.imp().stack.get());
+            self.size_group.add_widget(&self.logo.imp().stack.get());
+            self.size_group.add_widget(&self.thumb.imp().stack.get());
+            self.size_group.add_widget(&self.banner.imp().stack.get());
+            self.size_group.add_widget(&self.disc.imp().stack.get());
+            self.size_group.add_widget(&self.art.imp().stack.get());
+
             self.init();
         }
     }
@@ -131,6 +146,7 @@ mod imp {
             card.set_loading_visible();
             card.set_size(&item.width, &item.height, &item.size);
             card.set_picture(&item.image_type, &self.obj().id(), &item.image_index);
+            self.size_group.add_widget(&card.imp().stack.get());
             self.flowbox.append(&card);
         }
 
@@ -204,5 +220,9 @@ impl ImagesDialog {
         }
 
         self.view_page();
+    }
+
+    pub fn pop_page(&self) {
+        self.imp().view.pop();
     }
 }

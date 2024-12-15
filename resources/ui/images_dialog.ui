@@ -7,7 +7,7 @@
     <child>
       <object class="AdwToastOverlay" id="toast">
         <child>
-          <object class="AdwNavigationView" id="navigation_view">
+          <object class="AdwNavigationView" id="view">
             <child>
               <object class="AdwNavigationPage" id="page">
                 <property name="tag">main</property>
@@ -188,4 +188,7 @@
       </object>
     </child>
   </template>
+  <object class="GtkSizeGroup" id="size_group">
+    <property name="mode">both</property>
+  </object>
 </interface>
