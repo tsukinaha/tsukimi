@@ -174,11 +174,11 @@ impl PictureLoader {
 
     pub fn load_pic(&self) {
         let cache_file_path = self.cache_file();
-        self.reveal_picture(&cache_file_path);
+        self.reveal_picture::<true>(&cache_file_path);
         self.get_file(cache_file_path);
     }
 
-    pub fn reveal_picture(&self, cache_file_path: &PathBuf) {
+    pub fn reveal_picture<const R: bool>(&self, cache_file_path: &PathBuf) {
         let imp = self.imp();
 
         if cache_file_path.exists() {
@@ -190,6 +190,9 @@ impl PictureLoader {
                 imp.picture.set_file(Some(&file));
             }
         } else {
+            if R {
+                return;
+            }
             imp.broken.set_visible(true);
         }
 
@@ -228,7 +231,7 @@ impl PictureLoader {
                 })
                 .await;
                 debug!("Setting image: {}", &pathbuf.display());
-                obj.reveal_picture(&pathbuf);
+                obj.reveal_picture::<false>(&pathbuf);
             }
         ));
     }

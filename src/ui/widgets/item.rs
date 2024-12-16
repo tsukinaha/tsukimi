@@ -723,7 +723,7 @@ impl ItemPage {
         let backdrop = imp.carousel.imp().backdrop.get();
         let path = get_image_with_cache(id.to_string(), "Backdrop".to_string(), Some(0))
             .await
-            .unwrap();
+            .unwrap_or_default();
         let file = gtk::gio::File::for_path(&path);
         backdrop.set_file(Some(&file));
         self.imp()
@@ -751,7 +751,7 @@ impl ItemPage {
             let path =
                 get_image_with_cache(id.to_string(), "Backdrop".to_string(), Some(tag_num as u8))
                     .await
-                    .unwrap();
+                    .unwrap_or_default();
             let file = gtk::gio::File::for_path(&path);
             let picture = gtk::Picture::builder()
                 .halign(gtk::Align::Fill)

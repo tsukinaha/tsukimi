@@ -191,13 +191,13 @@ impl PlayerToolbarBox {
                 if core_song.have_single_track_image() {
                     let path = get_image_with_cache(core_song.id(), "Primary".to_string(), None)
                         .await
-                        .unwrap();
+                        .unwrap_or_default();
                     imp.cover_image.set_from_file(Some(&path));
                 } else {
                     let path =
                         get_image_with_cache(core_song.album_id(), "Primary".to_string(), None)
                             .await
-                            .unwrap();
+                            .unwrap_or_default();
                     imp.cover_image.set_from_file(Some(&path));
                 }
             }

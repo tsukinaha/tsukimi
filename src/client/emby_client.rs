@@ -542,7 +542,7 @@ impl EmbyClient {
         match self.image_request(id, image_type, tag, etag).await {
             Ok(response) => {
                 if !response.status().is_success() {
-                    return Err(anyhow!("Failed to get image or not modified"));
+                    return Ok(path.to_string_lossy().to_string());
                 }
 
                 let etag = response
