@@ -8,9 +8,8 @@ use gtk::template_callbacks;
 
 use super::EuItem;
 
-
 mod imp {
-    use std::cell::OnceCell;
+    use std::cell::RefCell;
 
     use glib::{
         subclass::InitializingObject,
@@ -24,8 +23,8 @@ mod imp {
     #[template(resource = "/moe/tsuna/tsukimi/ui/eu_item.ui")]
     #[properties(wrapper_type = super::EuListItem)]
     pub struct EuListItem {
-        #[property(get, set, construct_only)]
-        pub item: OnceCell<EuItem>,
+        #[property(get, set = Self::set_item)]
+        pub item: RefCell<EuItem>,
 
         #[template_child]
         pub label1: TemplateChild<gtk::Label>,
@@ -61,6 +60,20 @@ mod imp {
     impl WidgetImpl for EuListItem {}
 
     impl BinImpl for EuListItem {}
+
+    impl EuListItem {
+        pub fn set_item(&self, item: EuItem) {
+            self.label1.set_text(&item.line1().unwrap_or_default());
+            if let Some(line2) = item.line2() {
+                self.label2.set_text(&line2);
+            }
+            if let Some(line3) = item.line3() {
+                self.label3.set_text(&line3);
+                self.label3.set_visible(true);
+            }
+            self.item.replace(item);
+        }
+    }
 }
 
 glib::wrapper! {
@@ -79,6 +92,4 @@ impl EuListItem {
     pub fn new(item: &EuItem) -> Self {
         glib::Object::builder().property("item", item).build()
     }
-
-    pub async fn init() {}
 }

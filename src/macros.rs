@@ -2,8 +2,8 @@
 #[macro_export]
 macro_rules! _add_toast {
     ($widget:expr, $toast:expr) => {{
-        use $crate::ui::widgets::image_dialog::ImageDialog;
         use gtk::prelude::WidgetExt;
+        use $crate::ui::widgets::image_dialog::ImageDialog;
         if let Some(dialog) = $widget
             .ancestor(adw::PreferencesDialog::static_type())
             .and_downcast::<adw::PreferencesDialog>()

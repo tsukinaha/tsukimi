@@ -37,7 +37,7 @@
           <object class="GtkScrolledWindow">
             <property name="hscrollbar-policy">never</property>
             <child>
-              <object class="GtkGridView" />
+              <object class="GtkGridView" id="grid" />
             </child>
           </object>
         </child>

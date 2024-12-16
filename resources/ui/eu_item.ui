@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template parent="AdwBin" class="EuItem">
+  <template parent="AdwBin" class="EuListItem">
     <child>
       <object class="GtkBox" id="picture_container">
         <property name="orientation">vertical</property>
