@@ -169,11 +169,11 @@ impl AlbumPage {
         imp.released_label.set_text(&release);
 
         let path = if let Some(image_tags) = item.primary_image_item_id() {
-            get_image_with_cache(&image_tags, "Primary", None)
+            get_image_with_cache(image_tags, "Primary".to_string(), None)
                 .await
                 .unwrap_or_default()
         } else {
-            get_image_with_cache(&item.id(), "Primary", None)
+            get_image_with_cache(item.id(), "Primary".to_string(), None)
                 .await
                 .unwrap_or_default()
         };

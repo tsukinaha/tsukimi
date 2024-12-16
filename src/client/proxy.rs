@@ -1,6 +1,6 @@
+use gtk::prelude::*;
 use once_cell::sync::Lazy;
 use reqwest::Client;
-use gtk::prelude::*;
 
 use crate::config::VERSION;
 

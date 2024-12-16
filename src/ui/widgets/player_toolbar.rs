@@ -189,14 +189,15 @@ impl PlayerToolbarBox {
             imp,
             async move {
                 if core_song.have_single_track_image() {
-                    let path = get_image_with_cache(&core_song.id(), "Primary", None)
+                    let path = get_image_with_cache(core_song.id(), "Primary".to_string(), None)
                         .await
                         .unwrap();
                     imp.cover_image.set_from_file(Some(&path));
                 } else {
-                    let path = get_image_with_cache(&core_song.album_id(), "Primary", None)
-                        .await
-                        .unwrap();
+                    let path =
+                        get_image_with_cache(core_song.album_id(), "Primary".to_string(), None)
+                            .await
+                            .unwrap();
                     imp.cover_image.set_from_file(Some(&path));
                 }
             }

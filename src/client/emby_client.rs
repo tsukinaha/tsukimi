@@ -1,6 +1,9 @@
 use std::{
     hash::Hasher,
-    sync::{Arc, Mutex},
+    sync::{
+        Arc,
+        Mutex,
+    },
 };
 
 use anyhow::{
@@ -58,7 +61,10 @@ use super::{
 use crate::{
     config::VERSION,
     ui::{
-        models::{emby_cache_path, SETTINGS},
+        models::{
+            emby_cache_path,
+            SETTINGS,
+        },
         widgets::single_grid::imp::ListType,
     },
     utils::spawn_tokio_without_await,
@@ -309,8 +315,12 @@ impl EmbyClient {
         }
     }
 
-    pub async fn request_picture(&self, path: &str, params: &[(&str, &str)]) -> Result<Response> {
-        let request = self.prepare_request(Method::GET, path, params)?;
+    pub async fn request_picture(
+        &self, path: &str, params: &[(&str, &str)], etag: Option<String>,
+    ) -> Result<Response> {
+        let request = self
+            .prepare_request(Method::GET, path, params)?
+            .header("If-None-Match", etag.unwrap_or_default());
         let res = request.send().await?;
         Ok(res)
     }
@@ -489,7 +499,7 @@ impl EmbyClient {
     }
 
     pub async fn image_request(
-        &self, id: &str, image_type: &str, tag: Option<u8>,
+        &self, id: &str, image_type: &str, tag: Option<u8>, etag: Option<String>,
     ) -> Result<Response> {
         let mut path = format!("Items/{}/Images/{}", id, image_type);
         if let Some(tag) = tag {
@@ -513,20 +523,37 @@ impl EmbyClient {
                 },
             ),
         ];
-        self.request_picture(&path, &params).await
+        self.request_picture(&path, &params, etag).await
     }
 
     pub async fn get_image(&self, id: &str, image_type: &str, tag: Option<u8>) -> Result<String> {
-        match self.image_request(id, image_type, tag).await {
+        let mut path = emby_cache_path();
+        path.push(format!("{}-{}-{}", id, image_type, tag.unwrap_or(0)));
+
+        let mut etag: Option<String> = None;
+
+        if path.exists() {
+            etag = xattr::get(&path, "user.etag")
+                .ok()
+                .flatten()
+                .and_then(|v| String::from_utf8(v).ok());
+        }
+
+        match self.image_request(id, image_type, tag, etag).await {
             Ok(response) => {
                 if !response.status().is_success() {
-                    return Err(anyhow!("Failed to get image"));
+                    return Err(anyhow!("Failed to get image or not modified"));
                 }
+
+                let etag = response
+                    .headers()
+                    .get("ETag")
+                    .map(|v| v.to_str().unwrap_or_default().to_string());
 
                 let bytes = response.bytes().await?;
 
                 let path = if bytes.len() > 1000 {
-                    self.save_image(id, image_type, tag, &bytes)
+                    self.save_image(id, image_type, tag, &bytes, etag)
                 } else {
                     String::new()
                 };
@@ -570,11 +597,18 @@ impl EmbyClient {
         self.post(&path, &[], json!({})).await
     }
 
-    pub fn save_image(&self, id: &str, image_type: &str, tag: Option<u8>, bytes: &[u8]) -> String {
+    pub fn save_image(
+        &self, id: &str, image_type: &str, tag: Option<u8>, bytes: &[u8], etag: Option<String>,
+    ) -> String {
         let cache_path = emby_cache_path();
         let path = format!("{}-{}-{}", id, image_type, tag.unwrap_or(0));
         let path = cache_path.join(path);
         std::fs::write(&path, bytes).unwrap();
+        if let Some(etag) = etag {
+            xattr::set(&path, "user.etag", etag.as_bytes()).unwrap_or_else(|e| {
+                tracing::warn!("Failed to set etag xattr: {}", e);
+            });
+        }
         path.to_string_lossy().to_string()
     }
 
@@ -663,9 +697,13 @@ impl EmbyClient {
     pub async fn get_user_avatar(&self) -> Result<String> {
         let path = format!("Users/{}/Images/Primary", self.user_id());
         let params = [("maxHeight", "50"), ("maxWidth", "50")];
-        let response = self.request_picture(&path, &params).await?;
+        let response = self.request_picture(&path, &params, None).await?;
+        let etag = response
+            .headers()
+            .get("ETag")
+            .map(|v| v.to_str().unwrap_or_default().to_string());
         let bytes = response.bytes().await?;
-        let path = self.save_image(&self.user_id(), "Primary", None, &bytes);
+        let path = self.save_image(&self.user_id(), "Primary", None, &bytes, etag);
         Ok(path)
     }
 

@@ -147,18 +147,8 @@ where
     Ok(())
 }
 
-pub async fn get_image_with_cache(id: &str, img_type: &str, tag: Option<u8>) -> Result<String> {
-    let mut path = emby_cache_path();
-    path.push(format!("{}-{}-{}", id, img_type, tag.unwrap_or(0)));
-
-    let id = id.to_string();
-    let img_type = img_type.to_string();
-
-    if !path.exists() {
-        let _ = runtime()
-            .spawn(async move { EMBY_CLIENT.get_image(&id, &img_type, tag).await })
-            .await;
-    }
-
-    Ok(path.to_string_lossy().to_string())
+pub async fn get_image_with_cache(id: String, img_type: String, tag: Option<u8>) -> Result<String> {
+    runtime()
+        .spawn(async move { EMBY_CLIENT.get_image(&id, &img_type, tag).await })
+        .await?
 }

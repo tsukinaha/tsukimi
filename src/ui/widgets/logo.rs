@@ -6,10 +6,7 @@ use gtk::{
     prelude::*,
     Revealer,
 };
-use tracing::{
-    debug,
-    warn,
-};
+use tracing::debug;
 
 use crate::{
     client::emby_client::EMBY_CLIENT,
@@ -54,21 +51,8 @@ pub fn set_logo(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
         #[weak]
         revealer,
         async move {
-            spawn_tokio(async move {
-                let mut retries = 0;
-                while retries < 3 {
-                    match EMBY_CLIENT.get_image(&id, &image_type, tag).await {
-                        Ok(_) => {
-                            break;
-                        }
-                        Err(e) => {
-                            warn!("Failed to get image: {}, retrying...", e);
-                            retries += 1;
-                        }
-                    }
-                }
-            })
-            .await;
+            let _ = spawn_tokio(async move { EMBY_CLIENT.get_image(&id, &image_type, tag).await })
+                .await;
             debug!("Setting image: {}", &pathbuf.display());
             let file = gtk::gio::File::for_path(pathbuf);
             image.set_file(Some(&file));

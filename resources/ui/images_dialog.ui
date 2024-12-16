@@ -67,7 +67,6 @@
                                         <child>
                                           <object class="GtkLabel">
                                             <property name="label" translatable="yes">Images</property>
-                                            <property name="margin-start">12</property>
                                             <property name="halign">start</property>
                                             <style>
                                               <class name="title-4" />
@@ -151,7 +150,6 @@
                                         <child>
                                           <object class="GtkLabel">
                                             <property name="label" translatable="yes">BackDrops</property>
-                                            <property name="margin-start">12</property>
                                             <property name="halign">start</property>
                                             <style>
                                               <class name="title-4" />

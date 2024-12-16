@@ -1,5 +1,3 @@
-use std::path::PathBuf;
-
 use adw::{
     prelude::*,
     subclass::prelude::*,
@@ -723,27 +721,26 @@ impl ItemPage {
         let imp = self.imp();
 
         let backdrop = imp.carousel.imp().backdrop.get();
-        let path = get_image_with_cache(id, "Backdrop", Some(0)).await.unwrap();
+        let path = get_image_with_cache(id.to_string(), "Backdrop".to_string(), Some(0))
+            .await
+            .unwrap();
         let file = gtk::gio::File::for_path(&path);
-        let pathbuf = PathBuf::from(&path);
-        if pathbuf.exists() {
-            backdrop.set_file(Some(&file));
-            self.imp()
-                .carousel
-                .imp()
-                .backrevealer
-                .set_reveal_child(true);
-            spawn(glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                async move {
-                    let Some(window) = obj.root().and_downcast::<super::window::Window>() else {
-                        return;
-                    };
-                    window.set_rootpic(file);
-                }
-            ));
-        }
+        backdrop.set_file(Some(&file));
+        self.imp()
+            .carousel
+            .imp()
+            .backrevealer
+            .set_reveal_child(true);
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                let Some(window) = obj.root().and_downcast::<super::window::Window>() else {
+                    return;
+                };
+                window.set_rootpic(file);
+            }
+        ));
     }
 
     pub async fn add_backdrops(&self, image_tags: Vec<String>, id: &str) {
@@ -751,9 +748,10 @@ impl ItemPage {
         let tags = image_tags.len();
         let carousel = imp.carousel.imp().carousel.get();
         for tag_num in 1..tags {
-            let path = get_image_with_cache(id, "Backdrop", Some(tag_num as u8))
-                .await
-                .unwrap();
+            let path =
+                get_image_with_cache(id.to_string(), "Backdrop".to_string(), Some(tag_num as u8))
+                    .await
+                    .unwrap();
             let file = gtk::gio::File::for_path(&path);
             let picture = gtk::Picture::builder()
                 .halign(gtk::Align::Fill)

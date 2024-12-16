@@ -17,7 +17,13 @@ use tracing::{
     warn,
 };
 
-use super::{image_paintable::ImagePaintable, utils::{TU_ITEM_POST_SIZE, TU_ITEM_VIDEO_SIZE}};
+use super::{
+    image_paintable::ImagePaintable,
+    utils::{
+        TU_ITEM_POST_SIZE,
+        TU_ITEM_VIDEO_SIZE,
+    },
+};
 use crate::{
     client::emby_client::EMBY_CLIENT,
     ui::models::emby_cache_path,
@@ -149,9 +155,9 @@ impl PictureLoader {
                             None::<&gio::Cancellable>,
                             move |r| match r {
                                 Ok(pixbuf) => {
-                                    obj.imp().picture.set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(
-                                        &pixbuf,
-                                    )));
+                                    obj.imp().picture.set_paintable(Some(
+                                        &gtk::gdk::Texture::for_pixbuf(&pixbuf),
+                                    ));
                                     obj.imp().spinner.set_visible(false);
                                     obj.imp().revealer.set_reveal_child(true);
                                 }
@@ -168,15 +174,11 @@ impl PictureLoader {
 
     pub fn load_pic(&self) {
         let cache_file_path = self.cache_file();
-
-        if cache_file_path.exists() {
-            self.reveal_picture(cache_file_path);
-        } else {
-            self.get_file(cache_file_path);
-        }
+        self.reveal_picture(&cache_file_path);
+        self.get_file(cache_file_path);
     }
 
-    pub fn reveal_picture(&self, cache_file_path: PathBuf) {
+    pub fn reveal_picture(&self, cache_file_path: &PathBuf) {
         let imp = self.imp();
 
         if cache_file_path.exists() {
@@ -226,7 +228,7 @@ impl PictureLoader {
                 })
                 .await;
                 debug!("Setting image: {}", &pathbuf.display());
-                obj.reveal_picture(pathbuf);
+                obj.reveal_picture(&pathbuf);
             }
         ));
     }
