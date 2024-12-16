@@ -128,7 +128,7 @@ use adw::prelude::AdwDialogExt;
 use super::ImageDialog;
 glib::wrapper! {
     pub struct ImageInfoCard(ObjectSubclass<imp::ImageInfoCard>)
-        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
+        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget, adw::NavigationPage,
         @implements gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
@@ -175,7 +175,7 @@ impl ImageInfoCard {
 
     fn on_search(&self) {
         if let Some(view) = self.navigation_view() {
-            let page = super::ImageDialogSearchPage::new(&self.imgid());
+            let page = super::ImageDialogSearchPage::new(&self.imgid(), &self.imgtype());
             view.push(&page);
         }
     }

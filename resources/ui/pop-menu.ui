@@ -32,13 +32,13 @@
         <attribute name="accel">&lt;Control&gt;N</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">View Metadata</attribute>
+        <attribute name="label" translatable="yes">Edit Metadata</attribute>
         <attribute name="action">item.editm</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
         <attribute name="accel">&lt;Control&gt;M</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">View Images</attribute>
+        <attribute name="label" translatable="yes">Edit Images</attribute>
         <attribute name="action">item.editi</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
         <attribute name="accel">&lt;Control&gt;I</attribute>
@@ -48,6 +48,12 @@
         <attribute name="action">item.identify</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
         <attribute name="accel">&lt;Control&gt;Y</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Remove Identification</attribute>
+        <attribute name="action">item.remove-identify</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Alt&gt;R</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Refresh Metadata</attribute>
@@ -60,6 +66,18 @@
         <attribute name="action">item.scan</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
         <attribute name="accel">&lt;Control&gt;S</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">View Missing Episodes</attribute>
+        <attribute name="action">item.view-missing</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;V</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Delete</attribute>
+        <attribute name="action">item.delete</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;D</attribute>
       </item>
     </section>
   </menu>

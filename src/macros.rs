@@ -2,8 +2,8 @@
 #[macro_export]
 macro_rules! _add_toast {
     ($widget:expr, $toast:expr) => {{
+        use $crate::ui::widgets::image_dialog::ImageDialog;
         use gtk::prelude::WidgetExt;
-        use crate::ui::widgets::image_dialog::ImageDialog;
         if let Some(dialog) = $widget
             .ancestor(adw::PreferencesDialog::static_type())
             .and_downcast::<adw::PreferencesDialog>()
@@ -124,6 +124,18 @@ macro_rules! close_on_error {
         if let Some(root) = $widget.root() {
             if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
                 window.close_on_error($des);
+            }
+        }
+    }};
+}
+
+#[macro_export]
+macro_rules! alert_dialog {
+    ($widget:expr, $dialog:expr) => {{
+        use gtk::prelude::WidgetExt;
+        if let Some(root) = $widget.root() {
+            if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
+                window.alert_dialog($dialog);
             }
         }
     }};

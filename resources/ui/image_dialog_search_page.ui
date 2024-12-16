@@ -7,20 +7,28 @@
         <child type="top">
           <object class="AdwHeaderBar">
             <child type="end">
-              <object class="GtkDropDown" id="dropdown">
-                <property name="halign">end</property>
-                <property name="valign">center</property>
-                <property name="tooltip-text" translatable="yes">Provider</property>
-                <property name="model">
-                  <object class="GtkStringList">
-                    <items>
-                      <item>All</item>
-                      <item>TheTVDB</item>
-                      <item>Date Created</item>
-                      <item>FanArt</item>
-                    </items>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Provider:</property>
                   </object>
-                </property>
+                </child>
+                <child>
+                  <object class="GtkDropDown" id="dropdown">
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="tooltip-text" translatable="yes">Provider</property>
+                    <property name="model">
+                      <object class="GtkStringList" id="dropdown_string_list">
+                        <items>
+                          <item>All</item>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -36,10 +44,13 @@
         <child type="bottom">
           <object class="GtkActionBar">
             <child type="start">
-              <object class="GtkLabel" id="items_label">
+              <object class="GtkLabel" id="items_count_label">
                 <property name="margin-start">10</property>
                 <property name="margin-bottom">5</property>
                 <property name="label" translatable="yes">Loading...</property>
+                <attributes>
+                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                </attributes>
               </object>
             </child>
             <child type="end">
@@ -47,6 +58,10 @@
                 <property name="margin-end">10</property>
                 <property name="margin-bottom">5</property>
                 <property name="label" translatable="yes">All Languages</property>
+                <style>
+                  <class name="heading" />
+                  <class name="accent" />
+                </style>
               </object>
             </child>
           </object>

@@ -1021,4 +1021,8 @@ impl Window {
         );
         alert_dialog.present(Some(self));
     }
+
+    pub fn alert_dialog(&self, alert_dialog: adw::AlertDialog) {
+        alert_dialog.present(Some(self));
+    }
 }

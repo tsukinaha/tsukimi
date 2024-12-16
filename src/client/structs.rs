@@ -505,6 +505,40 @@ pub struct User {
     pub id: String,
 }
 
+#[derive(Serialize, Deserialize, Clone)]
+pub struct ImageSearchResult {
+    #[serde(rename = "Images")]
+    pub images: Vec<ImageSearchResultItem>,
+    #[serde(rename = "TotalRecordCount")]
+    pub total_record_count: u32,
+    #[serde(rename = "Providers")]
+    pub providers: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct ImageSearchResultItem {
+    #[serde(rename = "ProviderName")]
+    pub provider_name: String,
+    #[serde(rename = "Url")]
+    pub url: String,
+    #[serde(rename = "ThumbnailUrl")]
+    pub thumbnail_url: Option<String>,
+    #[serde(rename = "Height")]
+    pub height: Option<u32>,
+    #[serde(rename = "Width")]
+    pub width: Option<u32>,
+    #[serde(rename = "CommunityRating")]
+    pub community_rating: Option<f32>,
+    #[serde(rename = "Language")]
+    pub language: Option<String>,
+    #[serde(rename = "VoteCount")]
+    pub vote_count: Option<u32>,
+    #[serde(rename = "Type")]
+    pub type_: String,
+    #[serde(rename = "RatingType")]
+    pub rating_type: String,
+}
+
 use adw::prelude::*;
 use gtk::glib;
 

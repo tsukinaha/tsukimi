@@ -20,7 +20,7 @@ use crate::{
     },
 };
 
-use super::ImageDialog;
+use super::ImageDialogNavigtion;
 
 mod imp {
     use std::cell::OnceCell;
@@ -152,10 +152,7 @@ impl ImageDialogEditPage {
 
     #[template_callback]
     async fn on_save_button_clicked(&self) {
-        let Some(dialog) = self
-            .ancestor(super::ImageDialog::static_type())
-            .and_then(|dialog| dialog.downcast::<ImageDialog>().ok())
-        else {
+        let Some(dialog) = self.image_dialog() else {
             return;
         };
 

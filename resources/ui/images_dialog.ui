@@ -70,7 +70,7 @@
                                             <property name="margin-start">12</property>
                                             <property name="halign">start</property>
                                             <style>
-                                              <class name="title-5" />
+                                              <class name="title-4" />
                                             </style>
                                           </object>
                                         </child>
@@ -154,19 +154,18 @@
                                             <property name="margin-start">12</property>
                                             <property name="halign">start</property>
                                             <style>
-                                              <class name="title-5" />
+                                              <class name="title-4" />
                                             </style>
                                           </object>
                                         </child>
                                         <child>
                                           <object class="GtkFlowBox" id="flowbox">
-                                            <property name="margin-start">12</property>
-                                            <property name="margin-end">12</property>
                                             <property name="selection-mode">none</property>
                                             <property name="homogeneous">False</property>
                                             <property name="column-spacing">3</property>
                                             <property name="row-spacing">12</property>
                                             <property name="min-children-per-line">3</property>
+                                            <property name="max-children-per-line">3</property>
                                           </object>
                                         </child>
                                       </object>

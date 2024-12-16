@@ -41,6 +41,7 @@ use super::{
         Back,
         ExternalIdInfo,
         ImageItem,
+        ImageSearchResult,
         List,
         LiveMedia,
         LoginResponse,
@@ -1200,6 +1201,23 @@ impl EmbyClient {
             Some(index) => url.join(&index.to_string()).unwrap().to_string(),
             None => url.to_string(),
         }
+    }
+
+    pub async fn get_remote_image_list(
+        &self, id: &str, start_index: u32, include_all_languages: bool, type_: &str,
+        provider_name: &str,
+    ) -> Result<ImageSearchResult> {
+        let path = format!("Items/{}/RemoteImages", id);
+        let start_string = start_index.to_string();
+        let params = [
+            ("Limit", "50"),
+            ("StartIndex", &start_string),
+            ("Type", type_),
+            ("IncludeAllLanguages", &include_all_languages.to_string()),
+            ("ProviderName", provider_name),
+        ];
+
+        self.request(&path, &params).await
     }
 }
 
