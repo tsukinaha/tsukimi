@@ -1,6 +1,6 @@
 use std::{
     hash::Hasher,
-    sync::Mutex,
+    sync::{Arc, Mutex},
 };
 
 use anyhow::{
@@ -25,7 +25,6 @@ use serde_json::{
     json,
     Value,
 };
-use tower::limit::ConcurrencyLimit;
 use tracing::{
     debug,
     warn,
@@ -59,7 +58,7 @@ use super::{
 use crate::{
     config::VERSION,
     ui::{
-        models::emby_cache_path,
+        models::{emby_cache_path, SETTINGS},
         widgets::single_grid::imp::ListType,
     },
     utils::spawn_tokio_without_await,
@@ -87,7 +86,8 @@ pub enum BackType {
 
 pub struct EmbyClient {
     pub url: Mutex<Option<Url>>,
-    pub client: ConcurrencyLimit<Client>,
+    pub client: Client,
+    pub semaphore: Arc<tokio::sync::Semaphore>,
     pub headers: Mutex<reqwest::header::HeaderMap>,
     pub user_id: Mutex<String>,
     pub user_name: Mutex<String>,
@@ -139,6 +139,7 @@ impl EmbyClient {
         Self {
             url: Mutex::new(None),
             client: ReqClient::build(),
+            semaphore: Arc::new(tokio::sync::Semaphore::new(SETTINGS.threads() as usize)),
             headers: Mutex::new(headers),
             user_id: Mutex::new(String::new()),
             user_name: Mutex::new(String::new()),
@@ -354,7 +355,7 @@ impl EmbyClient {
         let (mut url, headers) = self.get_url_and_headers()?;
         url = url.join(path)?;
         self.add_params_to_url(&mut url, params);
-        Ok(self.client.get_ref().request(method, url).headers(headers))
+        Ok(self.client.request(method, url).headers(headers))
     }
 
     fn prepare_request_headers(
@@ -367,14 +368,16 @@ impl EmbyClient {
             HeaderValue::from_str(content_type)?,
         );
         self.add_params_to_url(&mut url, params);
-        Ok(self.client.get_ref().request(method, url).headers(headers))
+        Ok(self.client.request(method, url).headers(headers))
     }
 
     async fn send_request(&self, request: RequestBuilder) -> Result<Response> {
+        let permit = self.semaphore.acquire().await?;
         let res = match request.send().await {
             Ok(r) => r,
             Err(e) => return Err(anyhow!(e.to_user_facing())),
         };
+        drop(permit);
         Ok(res)
     }
 

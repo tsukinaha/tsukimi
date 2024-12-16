@@ -1,19 +1,15 @@
-use gtk::prelude::*;
 use once_cell::sync::Lazy;
 use reqwest::Client;
-use tower::limit::ConcurrencyLimit;
+use gtk::prelude::*;
 
-use crate::{
-    config::VERSION,
-    ui::models::SETTINGS,
-};
+use crate::config::VERSION;
 
 pub struct ReqClient;
 
 static APP_USER_AGENT: Lazy<String> = Lazy::new(|| format!("Tsukimi/{}", VERSION));
 
 impl ReqClient {
-    pub fn build() -> ConcurrencyLimit<Client> {
+    pub fn build() -> Client {
         let settings = gtk::gio::Settings::new(crate::APP_ID);
 
         #[cfg(target_os = "linux")]
@@ -45,9 +41,7 @@ impl ReqClient {
             client_builder.build().expect("failed to initialize client")
         };
 
-        tower::ServiceBuilder::new()
-            .concurrency_limit(SETTINGS.threads() as usize)
-            .service(client)
+        client
     }
 }
 

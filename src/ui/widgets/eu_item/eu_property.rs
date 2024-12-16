@@ -20,6 +20,8 @@ pub mod imp {
         #[property(get, set, nullable)]
         image_original_url: RefCell<Option<String>>,
         #[property(get, set, nullable)]
+        image_type: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
         line1: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         line2: RefCell<Option<String>>,
@@ -50,14 +52,15 @@ impl Default for EuItem {
 impl EuItem {
     pub fn new(
         image_url: Option<String>, image_original_url: Option<String>, line1: Option<String>,
-        line2: Option<String>, line3: Option<String>,
+        line2: Option<String>, line3: Option<String>, image_type: Option<String>,
     ) -> Self {
         glib::Object::builder()
-            .property("image-url", &image_url)
-            .property("image-original-url", &image_original_url)
-            .property("line1", &line1)
-            .property("line2", &line2)
-            .property("line3", &line3)
+            .property("image-url", image_url)
+            .property("image-original-url", image_original_url)
+            .property("image-type", image_type)
+            .property("line1", line1)
+            .property("line2", line2)
+            .property("line3", line3)
             .build()
     }
 }

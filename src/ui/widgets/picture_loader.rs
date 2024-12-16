@@ -17,7 +17,7 @@ use tracing::{
     warn,
 };
 
-use super::image_paintable::ImagePaintable;
+use super::{image_paintable::ImagePaintable, utils::{TU_ITEM_POST_SIZE, TU_ITEM_VIDEO_SIZE}};
 use crate::{
     client::emby_client::EMBY_CLIENT,
     ui::models::emby_cache_path,
@@ -47,6 +47,8 @@ pub(crate) mod imp {
         pub imagetype: OnceCell<String>,
         #[property(get, set, nullable, construct_only)]
         pub tag: RefCell<Option<String>>,
+        #[property(get, set, nullable, construct_only)]
+        pub url: RefCell<Option<String>>,
         #[template_child]
         pub revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
@@ -78,7 +80,14 @@ pub(crate) mod imp {
     impl ObjectImpl for PictureLoader {
         fn constructed(&self) {
             self.parent_constructed();
-            self.obj().load_pic();
+
+            let obj = self.obj();
+
+            if let Some(url) = obj.url() {
+                obj.load_pic_for_url(url);
+            } else {
+                obj.load_pic();
+            }
         }
     }
 
@@ -107,6 +116,54 @@ impl PictureLoader {
             .property("tag", tag)
             .property("animated", true)
             .build()
+    }
+
+    pub fn new_for_url(image_type: &str, url: &str) -> Self {
+        glib::Object::builder()
+            .property("id", "")
+            .property("imagetype", image_type)
+            .property("url", url)
+            .build()
+    }
+
+    // for EuListItem
+    pub fn load_pic_for_url(&self, url: String) {
+        let size = match self.imagetype().as_str() {
+            "Episode" => &TU_ITEM_VIDEO_SIZE,
+            _ => &TU_ITEM_POST_SIZE,
+        };
+
+        self.imp().picture.set_width_request(size.0);
+        self.imp().picture.set_height_request(size.1);
+
+        gio::File::for_uri(&url).read_async(
+            glib::Priority::LOW,
+            None::<&gio::Cancellable>,
+            glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |res| {
+                    if let Ok(stream) = res {
+                        gtk::gdk_pixbuf::Pixbuf::from_stream_async(
+                            &stream,
+                            None::<&gio::Cancellable>,
+                            move |r| match r {
+                                Ok(pixbuf) => {
+                                    obj.imp().picture.set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(
+                                        &pixbuf,
+                                    )));
+                                    obj.imp().spinner.set_visible(false);
+                                    obj.imp().revealer.set_reveal_child(true);
+                                }
+                                Err(_) => {
+                                    obj.imp().broken.set_visible(true);
+                                }
+                            },
+                        );
+                    }
+                }
+            ),
+        );
     }
 
     pub fn load_pic(&self) {

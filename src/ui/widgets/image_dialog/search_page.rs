@@ -172,6 +172,7 @@ impl ImageDialogSearchPage {
                 Some(item.provider_name),
                 Some(line2),
                 item.community_rating.map(|x| x.to_string()),
+                Some(self.image_type().to_string()),
             );
             let eu_object = eu_item::EuObject::new(&eu_item);
             store.append(&eu_object);

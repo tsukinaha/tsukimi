@@ -2,10 +2,15 @@
 <interface>
   <template parent="AdwBin" class="EuListItem">
     <child>
-      <object class="GtkBox" id="picture_container">
+      <object class="GtkBox">
         <property name="orientation">vertical</property>
         <property name="spacing">8</property>
         <property name="valign">start</property>
+        <child>
+          <object class="GtkBox" id="picture_container">
+            <property name="halign">center</property>
+          </object>
+        </child>
         <child>
           <object class="GtkLabel" id="label1">
             <property name="justify">center</property>

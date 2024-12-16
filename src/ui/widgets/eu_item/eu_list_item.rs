@@ -17,6 +17,8 @@ mod imp {
     };
     use gtk::prelude::*;
 
+    use crate::ui::widgets::picture_loader::PictureLoader;
+
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, Properties)]
@@ -32,6 +34,9 @@ mod imp {
         pub label2: TemplateChild<gtk::Label>,
         #[template_child]
         pub label3: TemplateChild<gtk::Label>,
+
+        #[template_child]
+        pub picture_container: TemplateChild<gtk::Box>,
     }
 
     #[glib::object_subclass]
@@ -70,6 +75,10 @@ mod imp {
             if let Some(line3) = item.line3() {
                 self.label3.set_text(&line3);
                 self.label3.set_visible(true);
+            }
+            if let Some(url) = item.image_url().or(item.image_original_url()) {
+                let picture_loader = PictureLoader::new_for_url(&item.image_type().unwrap_or_default(), &url);
+                self.picture_container.append(&picture_loader);
             }
             self.item.replace(item);
         }
