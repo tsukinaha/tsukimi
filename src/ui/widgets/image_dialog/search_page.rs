@@ -178,4 +178,10 @@ impl ImageDialogSearchPage {
             store.append(&eu_object);
         }
     }
+
+    #[template_callback]
+    fn on_provider_changed(&self) {}
+
+    #[template_callback]
+    fn on_all_languages_check_toggled(&self) {}
 }

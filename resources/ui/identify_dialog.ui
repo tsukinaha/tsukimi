@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwDialog" class="IdentifyDialog">
-    <property name="content-width">820</property>
-    <property name="content-height">400</property>
-    <property name="width-request">360</property>
-    <property name="height-request">800</property>
+    <property name="content-width">800</property>
+    <property name="content-height">1000</property>
     <property name="title" translatable="yes">Identify</property>
     <property name="presentation-mode">bottom-sheet</property>
     <child>

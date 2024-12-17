@@ -20,7 +20,6 @@
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <property name="tooltip-text" translatable="yes">Provider</property>
-                    <signal name="notify::selected" handler="on_provider_changed" swapped="yes"/>
                     <property name="model">
                       <object class="GtkStringList" id="dropdown_string_list">
                         <items>
@@ -59,7 +58,6 @@
                 <property name="margin-end">10</property>
                 <property name="margin-bottom">5</property>
                 <property name="label" translatable="yes">All Languages</property>
-                <signal name="toggled" handler="on_all_languages_check_toggled" swapped="yes"/>
                 <style>
                   <class name="heading" />
                   <class name="accent" />
