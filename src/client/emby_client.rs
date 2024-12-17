@@ -35,6 +35,8 @@ use tracing::{
 use url::Url;
 use uuid::Uuid;
 
+#[cfg(target_os = "windows")]
+use super::windows_compat::xattr;
 use super::{
     error::UserFacingError,
     structs::{
@@ -551,7 +553,7 @@ impl EmbyClient {
             }
             #[cfg(target_os = "windows")]
             {
-                etag = get_xattr(&path, "user.etag").ok();
+                etag = xattr::get_xattr(&path, "user.etag").ok();
             }
         }
 
@@ -628,7 +630,7 @@ impl EmbyClient {
                 tracing::warn!("Failed to set etag xattr: {}", e);
             });
             #[cfg(target_os = "windows")]
-            set_xattr(&path, "user.etag", etag).unwrap_or_else(|e| {
+            xattr::set_xattr(&path, "user.etag", etag).unwrap_or_else(|e| {
                 tracing::warn!("Failed to set etag xattr: {}", e);
             });
         }
@@ -1371,157 +1373,5 @@ mod tests {
                 eprintln!("{}", e.to_user_facing());
             }
         }
-    }
-}
-
-#[cfg(target_os = "windows")]
-fn get_xattr(path: &std::path::Path, attr_name: &str) -> Result<String> {
-    use std::{
-        ffi::OsStr,
-        io,
-        os::windows::ffi::OsStrExt,
-        str,
-    };
-    use windows::{
-        core::{
-            Error,
-            PCWSTR,
-        },
-        Win32::{
-            Foundation::{
-                CloseHandle,
-                INVALID_HANDLE_VALUE,
-            },
-            Storage::FileSystem::{
-                CreateFileW,
-                GetFileInformationByHandle,
-                ReadFile,
-                BY_HANDLE_FILE_INFORMATION,
-                FILE_ATTRIBUTE_NORMAL,
-                OPEN_EXISTING,
-            },
-        },
-    };
-
-    let stream_name = format!(":{}$DATA", attr_name);
-    let full_path = format!("{}\\{}", path.display(), stream_name);
-
-    let wide_path: Vec<u16> = OsStr::new(&full_path)
-        .encode_wide()
-        .chain(std::iter::once(0))
-        .collect();
-    let wide_path_pcwstr = PCWSTR::from_raw(wide_path.as_ptr());
-
-    unsafe {
-        let handle = CreateFileW(
-            wide_path_pcwstr,
-            2147483648u32,
-            windows::Win32::Storage::FileSystem::FILE_SHARE_MODE(0),
-            None,
-            OPEN_EXISTING,
-            FILE_ATTRIBUTE_NORMAL,
-            None,
-        )?;
-
-        if handle == INVALID_HANDLE_VALUE {
-            let err = Error::from(io::Error::last_os_error());
-            if err.code().0 as u32 == 2 {
-                return Err(anyhow!(io::Error::new(
-                    io::ErrorKind::NotFound,
-                    format!("Attribute {} not found", attr_name),
-                )));
-            }
-            return Err(anyhow!(err));
-        }
-
-        let mut file_info = BY_HANDLE_FILE_INFORMATION::default();
-        GetFileInformationByHandle(handle, &mut file_info)?;
-
-        let file_size = (file_info.nFileSizeHigh as u64) << 32 | (file_info.nFileSizeLow as u64);
-
-        let mut buffer = vec![0u8; file_size as usize];
-        let mut bytes_read: u32 = 0;
-
-        ReadFile(handle, Some(&mut buffer), Some(&mut bytes_read), None)?;
-        CloseHandle(handle)?;
-
-        if bytes_read != file_size as u32 {
-            return Err(anyhow!(io::Error::new(
-                io::ErrorKind::Other,
-                "Failed to read entire stream",
-            )));
-        }
-
-        match str::from_utf8(&buffer) {
-            Ok(s) => Ok(s.to_string()),
-            Err(_) => Err(anyhow!(io::Error::new(
-                io::ErrorKind::InvalidData,
-                "Stream data is not valid UTF-8",
-            ))),
-        }
-    }
-}
-
-#[cfg(target_os = "windows")]
-fn set_xattr(path: &std::path::Path, attr_name: &str, value: String) -> Result<()> {
-    use std::{
-        ffi::OsStr,
-        io,
-        os::windows::ffi::OsStrExt,
-    };
-    use windows::{
-        core::PCWSTR,
-        Win32::{
-            Foundation::{
-                CloseHandle,
-                INVALID_HANDLE_VALUE,
-            },
-            Storage::FileSystem::{
-                CreateFileW,
-                WriteFile,
-                CREATE_ALWAYS,
-                FILE_ATTRIBUTE_NORMAL,
-            },
-        },
-    };
-
-    let stream_name = format!(":{}$DATA", attr_name);
-    let full_path = format!("{}\\{}", path.display(), stream_name);
-
-    let wide_path: Vec<u16> = OsStr::new(&full_path)
-        .encode_wide()
-        .chain(std::iter::once(0))
-        .collect();
-    let wide_path_pcwstr = PCWSTR::from_raw(wide_path.as_ptr());
-
-    unsafe {
-        let handle = CreateFileW(
-            wide_path_pcwstr,
-            1073741824u32,
-            windows::Win32::Storage::FileSystem::FILE_SHARE_MODE(0),
-            None,
-            CREATE_ALWAYS,
-            FILE_ATTRIBUTE_NORMAL,
-            None,
-        )?;
-
-        if handle == INVALID_HANDLE_VALUE {
-            return Err(anyhow!(io::Error::last_os_error()));
-        }
-
-        let buffer = value.as_bytes();
-        let mut bytes_written: u32 = 0;
-
-        WriteFile(handle, Some(buffer), Some(&mut bytes_written), None)?;
-        CloseHandle(handle)?;
-
-        if bytes_written != buffer.len() as u32 {
-            return Err(anyhow!(io::Error::new(
-                io::ErrorKind::Other,
-                "Failed to write entire stream",
-            )));
-        }
-
-        Ok(())
     }
 }
