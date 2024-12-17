@@ -58,6 +58,15 @@ impl Settings {
     const KEY_MPV_CONFIG_DIR: &'static str = "mpv-config-path"; // String
     const KEY_POST_SCALE: &'static str = "post-scale"; // f64
     const KEY_IS_REFRESH: &'static str = "is-refresh"; // bool
+    const KEY_DEVICE_UUID: &'static str = "device-uuid"; // String
+
+    pub fn device_uuid(&self) -> String {
+        self.string(Self::KEY_DEVICE_UUID).to_string()
+    }
+
+    pub fn set_device_uuid(&self, device_uuid: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_DEVICE_UUID, device_uuid)
+    }
 
     pub fn is_refresh(&self) -> bool {
         self.boolean(Self::KEY_IS_REFRESH)

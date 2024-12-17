@@ -3,6 +3,7 @@ use gtk::{
     gio,
     glib,
     CompositeTemplate,
+    StringObject,
 };
 
 use gtk::{
@@ -53,6 +54,12 @@ mod imp {
 
         #[template_child]
         pub items_count_label: TemplateChild<gtk::Label>,
+
+        #[template_child]
+        pub dropdown: TemplateChild<gtk::DropDown>,
+        #[template_child]
+        pub all_languages_check: TemplateChild<gtk::CheckButton>,
+
         #[template_child]
         pub dropdown_string_list: TemplateChild<gtk::StringList>,
         #[template_child]
@@ -87,13 +94,7 @@ mod imp {
                 .set_factory(Some(gtk::SignalListItemFactory::new().eu_item()));
             self.grid.set_model(Some(&self.selection));
 
-            spawn(glib::clone!(
-                #[weak(rename_to = imp)]
-                self,
-                async move {
-                    imp.obj().init().await;
-                }
-            ));
+            self.obj().call_init::<true>();
         }
     }
 
@@ -116,7 +117,7 @@ impl ImageDialogSearchPage {
             .build()
     }
 
-    pub async fn init(&self) {
+    pub async fn init<const FIRST_INIT: bool>(&self) {
         let id = self.id();
         let type_ = self.image_type();
 
@@ -129,15 +130,20 @@ impl ImageDialogSearchPage {
             return;
         };
 
+        store.remove_all();
+
         let Some(dialog) = self.image_dialog() else {
             return;
         };
 
         dialog.loading_page();
 
+        let if_all_language = self.imp().all_languages_check.is_active();
+        let providers = self.providers();
+
         let remote_image_list = match spawn_tokio(async move {
             EMBY_CLIENT
-                .get_remote_image_list(&id, 0, false, &type_, "")
+                .get_remote_image_list(&id, 0, if_all_language, &type_, &providers)
                 .await
         })
         .await
@@ -155,8 +161,10 @@ impl ImageDialogSearchPage {
             .items_count_label
             .set_text(&format!("{} Items", remote_image_list.total_record_count));
 
-        for provider in remote_image_list.providers {
-            self.imp().dropdown_string_list.append(&provider);
+        if FIRST_INIT {
+            for provider in remote_image_list.providers {
+                self.imp().dropdown_string_list.append(&provider);
+            }
         }
 
         for item in remote_image_list.images {
@@ -179,9 +187,34 @@ impl ImageDialogSearchPage {
         }
     }
 
-    #[template_callback]
-    fn on_provider_changed(&self) {}
+    fn providers(&self) -> String {
+        self.imp()
+            .dropdown
+            .selected_item()
+            .and_downcast_ref::<StringObject>()
+            .map(|object| object.string())
+            .filter(|s| s != "All")
+            .unwrap_or_default()
+            .to_string()
+    }
 
     #[template_callback]
-    fn on_all_languages_check_toggled(&self) {}
+    fn on_provider_changed(&self) {
+        self.call_init::<false>();
+    }
+
+    #[template_callback]
+    fn on_all_languages_check_toggled(&self) {
+        self.call_init::<false>();
+    }
+
+    pub fn call_init<const FIRST_INIT: bool>(&self) {
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                obj.init::<FIRST_INIT>().await;
+            }
+        ));
+    }
 }

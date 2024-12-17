@@ -188,6 +188,10 @@
       <summary>MPV subtitle font</summary>
       <default>""</default>
     </key>
+    <key name="device-uuid" type="s">
+      <summary>Device UUID</summary>
+      <default>""</default>
+    </key>
     <key name="mpv-config-path" type="s">
       <summary>MPV config path</summary>
       <default>"None"</default>

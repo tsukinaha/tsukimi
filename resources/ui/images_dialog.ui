@@ -7,39 +7,39 @@
     <child>
       <object class="AdwToastOverlay" id="toast_overlay">
         <child>
-          <object class="AdwNavigationView" id="view">
+          <object class="GtkStack" id="stack">
+            <property name="transition-type">crossfade</property>
             <child>
-              <object class="AdwNavigationPage" id="page">
-                <property name="tag">main</property>
-                <property name="title" translatable="yes">View Images</property>
+              <object class="GtkStackPage">
+                <property name="name">loading</property>
+                <property name="title">Loading</property>
                 <property name="child">
-                  <object class="AdwToolbarView">
-                    <child type="top">
-                      <object class="AdwHeaderBar" />
-                    </child>
+                  <object class="AdwSpinner">
+                    <property name="visible">True</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="width-request">24</property>
+                    <property name="height-request">24</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage">
+                <property name="name">view</property>
+                <property name="title">View</property>
+                <property name="child">
+                  <object class="AdwNavigationView" id="view">
                     <child>
-                      <object class="GtkStack" id="stack">
-                        <property name="transition-type">crossfade</property>
-                        <child>
-                          <object class="GtkStackPage">
-                            <property name="name">loading</property>
-                            <property name="title">Loading</property>
-                            <property name="child">
-                              <object class="AdwSpinner">
-                                <property name="visible">True</property>
-                                <property name="halign">center</property>
-                                <property name="valign">center</property>
-                                <property name="width-request">24</property>
-                                <property name="height-request">24</property>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkStackPage">
-                            <property name="name">view</property>
-                            <property name="title">View</property>
-                            <property name="child">
+                      <object class="AdwNavigationPage" id="page">
+                        <property name="tag">main</property>
+                        <property name="title" translatable="yes">View Images</property>
+                        <property name="child">
+                          <object class="AdwToolbarView">
+                            <child type="top">
+                              <object class="AdwHeaderBar" />
+                            </child>
+                            <child>
                               <object class="GtkScrolledWindow">
                                 <property name="hscrollbar-policy">never</property>
                                 <child>
@@ -171,9 +171,9 @@
                                   </object>
                                 </child>
                               </object>
-                            </property>
+                            </child>
                           </object>
-                        </child>
+                        </property>
                       </object>
                     </child>
                   </object>

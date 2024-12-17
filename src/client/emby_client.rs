@@ -71,7 +71,16 @@ use crate::{
 };
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
-pub static DEVICE_ID: Lazy<String> = Lazy::new(|| Uuid::new_v4().to_string());
+pub static DEVICE_ID: Lazy<String> = Lazy::new(|| {
+    let uuid = SETTINGS.device_uuid();
+    if uuid.is_empty() {
+        let uuid = Uuid::new_v4().to_string();
+        let _ = SETTINGS.set_device_uuid(&uuid);
+        uuid
+    } else {
+        uuid
+    }
+});
 
 const PROFILE: &str = include_str!("stream_profile.json");
 const CLIENT_ID: &str = "Tsukimi";
