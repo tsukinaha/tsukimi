@@ -72,7 +72,7 @@ mod imp {
 }
 
 glib::wrapper! {
-    
+
     pub struct ItemActionsBox(ObjectSubclass<imp::ItemActionsBox>)
         @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
 }

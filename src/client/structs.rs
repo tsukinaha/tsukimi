@@ -173,7 +173,10 @@ impl Default for IdType {
     }
 }
 
-use std::{collections::HashMap, fmt};
+use std::{
+    collections::HashMap,
+    fmt,
+};
 
 impl fmt::Display for IdType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -424,6 +427,8 @@ pub struct RemoteSearchResult {
     pub production_year: Option<u32>,
     #[serde(rename = "ImageUrl")]
     pub image_url: Option<String>,
+    #[serde(rename = "SearchProviderName")]
+    pub search_provider_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]

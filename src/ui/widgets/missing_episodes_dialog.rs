@@ -124,10 +124,14 @@ impl MissingEpisodesDialog {
         let special_checked = self.imp().specials_check.is_active();
         let upcoming_checked = self.imp().upcoming_check.is_active();
 
-        let items = match spawn_tokio(async move { EMBY_CLIENT.get_show_missing(&id, special_checked, upcoming_checked).await }).await {
-            Ok(list) => {
-                list.items
-            }
+        let items = match spawn_tokio(async move {
+            EMBY_CLIENT
+                .get_show_missing(&id, special_checked, upcoming_checked)
+                .await
+        })
+        .await
+        {
+            Ok(list) => list.items,
             Err(e) => {
                 toast!(self, e.to_user_facing());
                 self.view_page();
@@ -149,7 +153,7 @@ impl MissingEpisodesDialog {
             };
 
             let date = if let Some(date) = item.premiere_date {
-                format!("{}\n", date.format("%Y-%m-%d").to_string())
+                format!("{}\n", date.format("%Y-%m-%d"))
             } else {
                 String::new()
             };

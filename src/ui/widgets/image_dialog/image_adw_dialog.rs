@@ -182,7 +182,7 @@ mod imp {
 }
 
 glib::wrapper! {
-    
+
     pub struct ImagesDialog(ObjectSubclass<imp::ImagesDialog>)
         @extends gtk::Widget, adw::Dialog, adw::PreferencesDialog, @implements gtk::Accessible, gtk::Root;
 }

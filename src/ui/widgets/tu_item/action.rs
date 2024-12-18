@@ -260,7 +260,7 @@ where
                 ))
                 .build()]);
 
-            if is_editable && !self.item().is_resume() {
+            if is_playable && is_editable && !self.item().is_resume() {
                 action_group.add_action_entries([gio::ActionEntry::builder("identify")
                     .activate(glib::clone!(
                         #[weak(rename_to = obj)]
@@ -272,10 +272,9 @@ where
                                 async move {
                                     let id = obj.item().id();
                                     let type_ = obj.item().item_type();
-                                    let dialog =
-                                        crate::ui::widgets::identify_dialog::IdentifyDialog::new(
-                                            &id, &type_,
-                                        );
+                                    let dialog = crate::ui::widgets::identify::IdentifyDialog::new(
+                                        &id, &type_,
+                                    );
                                     crate::insert_editm_dialog!(obj, dialog);
                                 }
                             ))

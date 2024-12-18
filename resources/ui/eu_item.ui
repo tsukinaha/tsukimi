@@ -37,6 +37,7 @@
           <object class="GtkLabel" id="label3">
             <property name="justify">center</property>
             <property name="ellipsize">middle</property>
+            <property name="visible">False</property>
             <attributes>
               <attribute name="scale" value="0.8"/>
             </attributes>

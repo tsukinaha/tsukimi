@@ -17,8 +17,7 @@ use crate::{
         structs::{
             ExternalIdInfo,
             RemoteSearchInfo,
-            RemoteSearchResult,
-            SearchInfo
+            SearchInfo,
         },
     },
     toast,
@@ -51,8 +50,6 @@ mod imp {
         pub stack: TemplateChild<gtk::Stack>,
         #[template_child]
         pub entries_group: TemplateChild<adw::PreferencesGroup>,
-        #[template_child]
-        pub result_box: TemplateChild<gtk::Box>,
 
         #[template_child]
         pub name_entry: TemplateChild<adw::EntryRow>,
@@ -61,6 +58,9 @@ mod imp {
 
         #[template_child]
         pub path_row: TemplateChild<adw::ActionRow>,
+
+        #[template_child]
+        pub navigation_view: TemplateChild<adw::NavigationView>,
     }
 
     #[glib::object_subclass]
@@ -174,13 +174,16 @@ impl IdentifyDialog {
         let name = imp.name_entry.text().to_string();
         let year = imp.year_entry.text().to_string().parse::<u32>().ok();
 
-        imp.entries_group.observe_children().into_iter().for_each(|child| {
-            if let Some(entry) = child.ok().and_downcast_ref::<adw::EntryRow>() {
-                let provider_id = entry.text().to_string();
-                let provider = entry.title().to_string();
-                provider_ids.insert(provider, provider_id);
-            }
-        });
+        imp.entries_group
+            .observe_children()
+            .into_iter()
+            .for_each(|child| {
+                if let Some(entry) = child.ok().and_downcast_ref::<adw::EntryRow>() {
+                    let provider_id = entry.text().to_string();
+                    let provider = entry.title().to_string();
+                    provider_ids.insert(provider, provider_id);
+                }
+            });
 
         let searchinfo = SearchInfo {
             name: Some(name),
@@ -203,23 +206,14 @@ impl IdentifyDialog {
         .await
         {
             Ok(data) => {
-                imp.stack.set_visible_child_name("searchresult");
-                self.load_search_result(data);
+                let search_page = super::IdentifyDialogSearchPage::new();
+                search_page.extend_item(data, self.itemtype());
+                self.imp().stack.set_visible_child_name("page");
+                self.imp().navigation_view.push(&search_page);
             }
             Err(e) => {
                 toast!(self, e.to_user_facing());
             }
-        }
-    }
-
-    fn load_search_result(&self, data: Vec<RemoteSearchResult>) {
-        let imp = self.imp();
-        for result in data {
-            let row = adw::ActionRow::builder().title(&result.name).build();
-            if let Some(year) = result.production_year {
-                row.set_subtitle(&year.to_string());
-            }
-            imp.result_box.append(&row);
         }
     }
 }

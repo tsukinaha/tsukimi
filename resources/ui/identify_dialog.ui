@@ -16,14 +16,6 @@
                   <object class="AdwToolbarView">
                     <child type="top">
                       <object class="AdwHeaderBar">
-                        <property name="show-end-title-buttons">False</property>
-                        <property name="show-start-title-buttons">False</property>
-                        <child>
-                          <object class="GtkButton">
-                            <property name="label" translatable="yes">Cancel</property>
-                            <property name="action-name">window.close</property>
-                          </object>
-                        </child>
                       </object>
                     </child>
                     <child>
@@ -99,7 +91,7 @@
                                             <child>
                                               <object class="AdwButtonRow">
                                                 <signal name="activated" handler="on_search_button_clicked" swapped="yes" />
-                                                <property name="title">Search</property>
+                                                <property name="title" translatable="yes">Search</property>
                                                 <property name="start-icon-name">system-search-symbolic</property>
                                                 <style>
                                                   <class name="suggested-action" />
@@ -111,20 +103,6 @@
                                       </object>
                                     </child>
                                   </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkStackPage">
-                            <property name="name">searchresult</property>
-                            <property name="title">Search Result</property>
-                            <property name="child">
-                              <object class="GtkBox" id="result_box">
-                                <property name="orientation">vertical</property>
-                                <child>
-
                                 </child>
                               </object>
                             </property>

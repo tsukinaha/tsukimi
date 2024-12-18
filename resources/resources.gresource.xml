@@ -54,6 +54,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/image_info_card.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/refresh_dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/identify_dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/identify_dialog_search_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/server_panel.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/picture_loader.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/tuview_scrolled.ui</file>

@@ -64,7 +64,7 @@ mod imp {
 }
 
 glib::wrapper! {
-    
+
     pub struct RefreshDialog(ObjectSubclass<imp::RefreshDialog>)
         @extends gtk::Widget, adw::Dialog, adw::PreferencesDialog, @implements gtk::Accessible, gtk::Root;
 }

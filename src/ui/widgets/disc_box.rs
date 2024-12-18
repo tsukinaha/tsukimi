@@ -61,7 +61,7 @@ mod imp {
 }
 
 glib::wrapper! {
-    
+
     pub struct DiscBox(ObjectSubclass<imp::DiscBox>)
         @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
 }
