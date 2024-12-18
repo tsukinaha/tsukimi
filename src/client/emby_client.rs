@@ -1310,6 +1310,10 @@ impl EmbyClient {
         ];
         self.request("Shows/Missing", &params).await
     }
+
+    pub async fn reset_metadata(&self, ids: &str) -> Result<Response> {
+        self.post("items/metadata/reset", &[], json!({"Ids": ids})).await
+    }
 }
 
 #[cfg(test)]

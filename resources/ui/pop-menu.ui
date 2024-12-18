@@ -31,6 +31,8 @@
         <attribute name="hidden-when">action-disabled</attribute>
         <attribute name="accel">&lt;Control&gt;N</attribute>
       </item>
+    </section>
+    <section>
       <item>
         <attribute name="label" translatable="yes">Edit Metadata</attribute>
         <attribute name="action">item.editm</attribute>
@@ -43,6 +45,8 @@
         <attribute name="hidden-when">action-disabled</attribute>
         <attribute name="accel">&lt;Control&gt;I</attribute>
       </item>
+    </section>
+    <section>
       <item>
         <attribute name="label" translatable="yes">Identify</attribute>
         <attribute name="action">item.identify</attribute>
@@ -51,10 +55,20 @@
       </item>
       <item>
         <attribute name="label" translatable="yes">Remove Identification</attribute>
-        <attribute name="action">item.remove-identify</attribute>
+        <attribute name="action">item.remove-identification</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
         <attribute name="accel">&lt;Alt&gt;R</attribute>
       </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">View Missing Episodes</attribute>
+        <attribute name="action">item.view-missing</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">&lt;Control&gt;V</attribute>
+      </item>
+    </section>
+    <section>
       <item>
         <attribute name="label" translatable="yes">Refresh Metadata</attribute>
         <attribute name="action">item.refresh</attribute>
@@ -67,12 +81,8 @@
         <attribute name="hidden-when">action-disabled</attribute>
         <attribute name="accel">&lt;Control&gt;S</attribute>
       </item>
-      <item>
-        <attribute name="label" translatable="yes">View Missing Episodes</attribute>
-        <attribute name="action">item.view-missing</attribute>
-        <attribute name="hidden-when">action-disabled</attribute>
-        <attribute name="accel">&lt;Control&gt;V</attribute>
-      </item>
+    </section>
+    <section>
       <item>
         <attribute name="label" translatable="yes">Delete</attribute>
         <attribute name="action">item.delete</attribute>

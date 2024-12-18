@@ -65,6 +65,8 @@ pub trait TuItemAction {
     async fn delete_item(&self);
 
     async fn view_missing_episodes(&self);
+
+    async fn remove_identification(&self);
 }
 
 impl<T> TuItemAction for T
@@ -316,6 +318,22 @@ where
                         }
                     ))
                     .build()]);
+
+                action_group.add_action_entries([gio::ActionEntry::builder("remove-identification")
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                async move {
+                                    obj.remove_identification().await;
+                                }
+                            ))
+                        }
+                    ))
+                    .build()]);
             }
 
             if self.item().item_type() == "Series" {
@@ -453,6 +471,7 @@ where
 
         alert_dialog.add_response("close", &gettext("Cancel"));
         alert_dialog.add_response("delete", &gettext("Delete"));
+        alert_dialog.set_response_appearance("delete", adw::ResponseAppearance::Destructive);
 
         alert_dialog.connect_response(
             Some("delete"),
@@ -498,5 +517,49 @@ where
 
         let dialog = MissingEpisodesDialog::new(&id);
         dialog.present(Some(window));
+    }
+
+    async fn remove_identification(&self) {
+        let id = self.item().id();
+        let alert_dialog = adw::AlertDialog::builder()
+            .heading(gettext("Remove Identification"))
+            .title(gettext("Remove Identification"))
+            .body(gettext("Are you sure you wish to reset all metadata?"))
+            .build();
+
+        alert_dialog.add_response("close", &gettext("Cancel"));
+        alert_dialog.add_response("remove", &gettext("Remove Identification"));
+        alert_dialog.set_response_appearance("remove", adw::ResponseAppearance::Destructive);
+
+        alert_dialog.connect_response(
+            Some("remove"),
+            glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_, _| {
+                    let id = id.clone();
+
+                    spawn(glib::clone!(
+                        #[weak]
+                        obj,
+                        async move {
+                            match spawn_tokio(async move { EMBY_CLIENT.reset_metadata(&id).await })
+                                .await
+                                .and_then(|r| r.error_for_status().map_err(|e| e.into()))
+                            {
+                                Ok(_) => {
+                                    toast!(obj, gettext("Item deleted"));
+                                }
+                                Err(e) => {
+                                    toast!(obj, e.to_user_facing());
+                                }
+                            }
+                        }
+                    ));
+                }
+            ),
+        );
+
+        alert_dialog!(self, alert_dialog);
     }
 }
