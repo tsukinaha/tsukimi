@@ -1,4 +1,5 @@
 use crate::{
+    alert_dialog,
     client::{
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
@@ -12,6 +13,7 @@ use crate::{
 };
 
 use super::prelude::TuItemMenuPrelude;
+use adw::prelude::AlertDialogExt;
 use gettextrs::gettext;
 use gtk::{
     gdk::Rectangle,
@@ -37,6 +39,9 @@ pub enum Action {
 }
 
 pub trait TuItemAction {
+    const DELETE_TITLE: &str = "Delete Item";
+    const DELETE_BODY: &str = "Deleting this item will delete it from both the file system and your media library.\nThe following files and folders will be deleted:";
+    const DELETE_CONFIRM: &str = "Are you sure you wish to continue?";
     async fn perform_action_inner(id: &str, action: &Action) -> Result<()>;
 
     async fn perform_action(&self, action: Action);
@@ -50,6 +55,8 @@ pub trait TuItemAction {
     fn set_item_action(
         &self, is_playable: bool, is_editable: bool, is_favouritable: bool,
     ) -> Option<gio::SimpleActionGroup>;
+
+    async fn delete_item(&self);
 }
 
 impl<T> TuItemAction for T
@@ -245,6 +252,22 @@ where
                 ))
                 .build()]);
 
+            action_group.add_action_entries([gio::ActionEntry::builder("delete")
+                .activate(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_, _, _| {
+                        spawn(glib::clone!(
+                            #[weak]
+                            obj,
+                            async move {
+                                obj.delete_item().await;
+                            }
+                        ))
+                    }
+                ))
+                .build()]);
+
             if is_editable && !self.item().is_resume() {
                 action_group.add_action_entries([gio::ActionEntry::builder("identify")
                     .activate(glib::clone!(
@@ -377,5 +400,64 @@ where
                 .build()]);
         }
         Some(action_group)
+    }
+
+    async fn delete_item(&self) {
+        let id = self.item().id();
+        let id_clone = id.clone();
+
+        let delete_info = match spawn_tokio(async move { EMBY_CLIENT.delete_info(&id).await }).await
+        {
+            Ok(info) => info,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+
+        let alert_dialog = adw::AlertDialog::builder()
+            .heading(Self::DELETE_TITLE)
+            .title(Self::DELETE_TITLE)
+            .body(format!(
+                "{}\n{}\n{}",
+                gettext(Self::DELETE_BODY),
+                delete_info.paths.join("\n"),
+                gettext(Self::DELETE_CONFIRM)
+            ))
+            .build();
+
+        alert_dialog.add_response("close", &gettext("Cancel"));
+        alert_dialog.add_response("delete", &gettext("Delete"));
+
+        alert_dialog.connect_response(
+            Some("delete"),
+            glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_, _| {
+                    let id_clone = id_clone.clone();
+
+                    spawn(glib::clone!(
+                        #[weak]
+                        obj,
+                        async move {
+                            match spawn_tokio(async move { EMBY_CLIENT.delete(&id_clone).await })
+                                .await
+                                .and_then(|r| r.error_for_status().map_err(|e| e.into()))
+                            {
+                                Ok(_) => {
+                                    toast!(obj, gettext("Item deleted"));
+                                }
+                                Err(e) => {
+                                    toast!(obj, e.to_user_facing());
+                                }
+                            }
+                        }
+                    ));
+                }
+            ),
+        );
+
+        alert_dialog!(self, alert_dialog);
     }
 }

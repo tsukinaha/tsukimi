@@ -40,22 +40,7 @@ use super::windows_compat::xattr;
 use super::{
     error::UserFacingError,
     structs::{
-        ActivityLogs,
-        AuthenticateResponse,
-        Back,
-        ExternalIdInfo,
-        ImageItem,
-        ImageSearchResult,
-        List,
-        LiveMedia,
-        LoginResponse,
-        Media,
-        PublicServerInfo,
-        RemoteSearchInfo,
-        RemoteSearchResult,
-        ScheduledTask,
-        ServerInfo,
-        SimpleListItem,
+        ActivityLogs, AuthenticateResponse, Back, DeleteInfo, ExternalIdInfo, ImageItem, ImageSearchResult, List, LiveMedia, LoginResponse, Media, PublicServerInfo, RemoteSearchInfo, RemoteSearchResult, ScheduledTask, ServerInfo, SimpleListItem
     },
     Account,
     ReqClient,
@@ -1284,6 +1269,16 @@ impl EmbyClient {
         ];
 
         self.request(&path, &params).await
+    }
+
+    pub async fn delete_info(&self, id: &str) -> Result<DeleteInfo> {
+        let path = format!("Items/{}/DeleteInfo", id);
+        self.request(&path, &[]).await
+    }
+
+    pub async fn delete(&self, ids: &str) -> Result<Response> {
+        let params = [("Ids", ids)];
+        self.post("Items/Delete", &params, json!({})).await
     }
 }
 

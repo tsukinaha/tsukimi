@@ -539,6 +539,12 @@ pub struct ImageSearchResultItem {
     pub rating_type: String,
 }
 
+#[derive(Serialize, Deserialize, Clone)]
+pub struct DeleteInfo {
+    #[serde(rename = "Paths")]
+    pub paths: Vec<String>,
+}
+
 use adw::prelude::*;
 use gtk::glib;
 
