@@ -545,6 +545,28 @@ pub struct DeleteInfo {
     pub paths: Vec<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone)]
+pub struct MissingEpisodesList {
+    #[serde(rename = "TotalRecordCount")]
+    pub total_record_count: u32,
+    #[serde(rename = "Items")]
+    pub items: Vec<MissingEpisodesItem>,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct MissingEpisodesItem {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "Overview")]
+    pub overview: Option<String>,
+    #[serde(rename = "IndexNumber")]
+    pub index_number: Option<u32>,
+    #[serde(rename = "ParentIndexNumber")]
+    pub parent_index_number: Option<u32>,
+    #[serde(rename = "PremiereDate")]
+    pub premiere_date: Option<DateTime<Utc>>,
+}
+
 use adw::prelude::*;
 use gtk::glib;
 

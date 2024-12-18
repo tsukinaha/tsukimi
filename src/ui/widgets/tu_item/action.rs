@@ -5,7 +5,13 @@ use crate::{
         error::UserFacingError,
     },
     toast,
-    ui::provider::IS_ADMIN,
+    ui::{
+        provider::IS_ADMIN,
+        widgets::{
+            missing_episodes_dialog::MissingEpisodesDialog,
+            window::Window,
+        },
+    },
     utils::{
         spawn,
         spawn_tokio,
@@ -57,6 +63,8 @@ pub trait TuItemAction {
     ) -> Option<gio::SimpleActionGroup>;
 
     async fn delete_item(&self);
+
+    async fn view_missing_episodes(&self);
 }
 
 impl<T> TuItemAction for T
@@ -310,6 +318,24 @@ where
                     ))
                     .build()]);
             }
+
+            if self.item().item_type() == "Series" {
+                action_group.add_action_entries([gio::ActionEntry::builder("view-missing")
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                async move {
+                                    obj.view_missing_episodes().await;
+                                }
+                            ))
+                        }
+                    ))
+                    .build()]);
+            }
         }
 
         if is_favouritable {
@@ -459,5 +485,19 @@ where
         );
 
         alert_dialog!(self, alert_dialog);
+    }
+
+    async fn view_missing_episodes(&self) {
+        let binding = self.root();
+        let Some(window) = binding.and_downcast_ref::<Window>() else {
+            return;
+        };
+
+        let id = self.item().id();
+
+        use adw::prelude::*;
+
+        let dialog = MissingEpisodesDialog::new(&id);
+        dialog.present(Some(window));
     }
 }

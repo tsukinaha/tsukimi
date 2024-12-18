@@ -199,7 +199,7 @@ mod imp {
 }
 
 glib::wrapper! {
-    /// Preference Window to display and update room details.
+    
     pub struct MetadataDialog(ObjectSubclass<imp::MetadataDialog>)
         @extends gtk::Widget, adw::Dialog, adw::PreferencesDialog, @implements gtk::Accessible, gtk::Root;
 }

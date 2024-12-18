@@ -127,7 +127,7 @@ mod imp {
 }
 
 glib::wrapper! {
-    /// Preference Window to display and update room details.
+    
     pub struct PlayerToolbarBox(ObjectSubclass<imp::PlayerToolbarBox>)
         @extends gtk::Widget, gtk::ToggleButton, gtk::Button;
 }

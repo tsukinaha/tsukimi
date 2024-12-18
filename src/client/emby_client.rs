@@ -40,7 +40,7 @@ use super::windows_compat::xattr;
 use super::{
     error::UserFacingError,
     structs::{
-        ActivityLogs, AuthenticateResponse, Back, DeleteInfo, ExternalIdInfo, ImageItem, ImageSearchResult, List, LiveMedia, LoginResponse, Media, PublicServerInfo, RemoteSearchInfo, RemoteSearchResult, ScheduledTask, ServerInfo, SimpleListItem
+        ActivityLogs, AuthenticateResponse, Back, DeleteInfo, ExternalIdInfo, ImageItem, ImageSearchResult, List, LiveMedia, LoginResponse, Media, MissingEpisodesList, PublicServerInfo, RemoteSearchInfo, RemoteSearchResult, ScheduledTask, ServerInfo, SimpleListItem
     },
     Account,
     ReqClient,
@@ -1279,6 +1279,17 @@ impl EmbyClient {
     pub async fn delete(&self, ids: &str) -> Result<Response> {
         let params = [("Ids", ids)];
         self.post("Items/Delete", &params, json!({})).await
+    }
+
+    pub async fn get_show_missing(&self, id: &str, include_specials: bool, upcoming: bool) -> Result<MissingEpisodesList> {
+        let params = [
+            ("Fields", "Overview"),
+            ("UserId", &self.user_id()),
+            ("ParentId", id),
+            ("IncludeSpecials", &include_specials.to_string()),
+            ("IncludeUnaired", &upcoming.to_string()),
+        ];
+        self.request("Shows/Missing", &params).await
     }
 }
 
