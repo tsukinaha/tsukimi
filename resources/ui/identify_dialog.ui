@@ -4,7 +4,6 @@
     <property name="content-width">800</property>
     <property name="content-height">1000</property>
     <property name="title" translatable="yes">Identify</property>
-    <property name="presentation-mode">bottom-sheet</property>
     <child>
       <object class="AdwToastOverlay" id="toast">
         <child>
@@ -62,60 +61,16 @@
                                         <property name="orientation">vertical</property>
                                         <property name="spacing">18</property>
                                         <child>
-                                          <object class="GtkBox" id="vbox">
-                                            <property name="orientation">vertical</property>
-                                            <property name="spacing">18</property>
+                                          <object class="AdwPreferencesGroup">
+                                            <property name="description" translatable="yes">Enter one or more search criteria. Remove criteria to increase search results.</property>
                                             <child>
-                                              <object class="AdwEntryRow" id="title_entry">
-                                                <property name="title" translatable="yes">Title</property>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="AdwEntryRow" id="year_entry">
-                                                <property name="title" translatable="yes">Year</property>
-                                                <property name="input-purpose">number</property>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="AdwEntryRow" id="music_brainz_album_entry">
-                                                <property name="title" translatable="yes">MusicBrainzAlbum</property>
-                                                <property name="visible">False</property>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="AdwEntryRow" id="music_brainz_album_artist_entry">
-                                                <property name="title" translatable="yes">MusicBrainzAlbumArtist</property>
-                                                <property name="visible">False</property>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="AdwEntryRow" id="music_brainz_release_group_entry">
-                                                <property name="title" translatable="yes">MusicBrainzReleaseGroup</property>
-                                                <property name="visible">False</property>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="AdwEntryRow" id="tmdb_entry">
-                                                <property name="title" translatable="yes">Tmdb</property>
-                                                <property name="visible">False</property>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="AdwEntryRow" id="tvdb_entry">
-                                                <property name="title" translatable="yes">Tvdb</property>
-                                                <property name="visible">False</property>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="AdwEntryRow" id="imdb_entry">
-                                                <property name="title" translatable="yes">IMDB</property>
-                                                <property name="visible">False</property>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="AdwEntryRow" id="zap2it_entry">
-                                                <property name="title" translatable="yes">Zap2It</property>
-                                                <property name="visible">False</property>
+                                              <object class="AdwActionRow" id="path_row">
+                                                <property name="title" translatable="yes">Path</property>
+                                                <property name="subtitle" translatable="yes">Loading...</property>
+                                                <property name="subtitle-selectable">True</property>
+                                                <style>
+                                                  <class name="property" />
+                                                </style>
                                               </object>
                                             </child>
                                           </object>
@@ -123,22 +78,34 @@
                                         <child>
                                           <object class="AdwPreferencesGroup">
                                             <child>
-                                              <object class="AdwActionRow">
-                                                <property name="title" translatable="yes">Search</property>
-                                                <property name="activatable">True</property>
-                                                <child>
-                                                  <object class="GtkImage">
-                                                    <property name="icon_name">system-search-symbolic</property>
-                                                    <property name="accessible-role">presentation</property>
-                                                  </object>
-                                                </child>
-                                                <signal name="activated" handler="on_search" swapped="yes" />
+                                              <object class="AdwEntryRow" id="name_entry">
+                                                <property name="title">Name</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="AdwEntryRow" id="year_entry">
+                                                <property name="title">Year</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwPreferencesGroup" id="entries_group">
+                                            <property name="title" translatable="yes">External</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwPreferencesGroup">
+                                            <child>
+                                              <object class="AdwButtonRow">
+                                                <signal name="activated" handler="on_search_button_clicked" swapped="yes" />
+                                                <property name="title">Search</property>
+                                                <property name="start-icon-name">system-search-symbolic</property>
                                                 <style>
-                                                  <class name="accent" />
+                                                  <class name="suggested-action" />
                                                 </style>
                                               </object>
                                             </child>
-
                                           </object>
                                         </child>
                                       </object>

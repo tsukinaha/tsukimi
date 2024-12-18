@@ -130,6 +130,8 @@ pub mod imp {
         overview: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         tagline: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        path: RefCell<Option<String>>,
         #[property(get, set)]
         playback_position_ticks: RefCell<u64>,
     }
@@ -177,6 +179,7 @@ impl TuItem {
         tu_item.set_production_year(item.production_year.unwrap_or_default());
         tu_item.set_index_number(item.index_number.unwrap_or_default());
         tu_item.set_parent_index_number(item.parent_index_number.unwrap_or_default());
+        tu_item.set_path(item.path);
 
         if let Some(userdata) = &item.user_data {
             tu_item.set_played(userdata.played);

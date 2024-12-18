@@ -173,7 +173,7 @@ impl Default for IdType {
     }
 }
 
-use std::fmt;
+use std::{collections::HashMap, fmt};
 
 impl fmt::Display for IdType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -373,9 +373,11 @@ pub struct ExternalIdInfo {
     #[serde(rename = "Key")]
     pub key: String,
     #[serde(rename = "UrlFormatString")]
-    pub url_format_string: String,
+    pub url_format_string: Option<String>,
     #[serde(rename = "IsSupportedAsIdentifier")]
     pub is_supported_as_identifier: Option<bool>,
+    #[serde(rename = "Website")]
+    pub website: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
@@ -393,7 +395,7 @@ pub struct SearchInfo {
     #[serde(rename = "Year")]
     pub year: Option<u32>,
     #[serde(rename = "ProviderIds")]
-    pub provider_ids: Vec<SearchProviderId>,
+    pub provider_ids: HashMap<String, String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]

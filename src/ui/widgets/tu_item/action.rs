@@ -260,22 +260,6 @@ where
                 ))
                 .build()]);
 
-            action_group.add_action_entries([gio::ActionEntry::builder("delete")
-                .activate(glib::clone!(
-                    #[weak(rename_to = obj)]
-                    self,
-                    move |_, _, _| {
-                        spawn(glib::clone!(
-                            #[weak]
-                            obj,
-                            async move {
-                                obj.delete_item().await;
-                            }
-                        ))
-                    }
-                ))
-                .build()]);
-
             if is_editable && !self.item().is_resume() {
                 action_group.add_action_entries([gio::ActionEntry::builder("identify")
                     .activate(glib::clone!(
@@ -312,6 +296,22 @@ where
                                     let dialog =
                                         crate::ui::widgets::refresh_dialog::RefreshDialog::new(&id);
                                     crate::insert_editm_dialog!(obj, dialog);
+                                }
+                            ))
+                        }
+                    ))
+                    .build()]);
+
+                action_group.add_action_entries([gio::ActionEntry::builder("delete")
+                    .activate(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        move |_, _, _| {
+                            spawn(glib::clone!(
+                                #[weak]
+                                obj,
+                                async move {
+                                    obj.delete_item().await;
                                 }
                             ))
                         }

@@ -1,7 +1,10 @@
+use std::collections::HashMap;
+
 use adw::{
     prelude::*,
     subclass::prelude::*,
 };
+use gettextrs::gettext;
 use gtk::{
     glib,
     template_callbacks,
@@ -15,8 +18,7 @@ use crate::{
             ExternalIdInfo,
             RemoteSearchInfo,
             RemoteSearchResult,
-            SearchInfo,
-            SearchProviderId,
+            SearchInfo
         },
     },
     toast,
@@ -48,27 +50,17 @@ mod imp {
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
         #[template_child]
-        pub vbox: TemplateChild<gtk::Box>,
-        #[template_child]
-        pub title_entry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub year_entry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub music_brainz_album_entry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub music_brainz_album_artist_entry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub music_brainz_release_group_entry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub tmdb_entry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub imdb_entry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub tvdb_entry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub zap2it_entry: TemplateChild<adw::EntryRow>,
+        pub entries_group: TemplateChild<adw::PreferencesGroup>,
         #[template_child]
         pub result_box: TemplateChild<gtk::Box>,
+
+        #[template_child]
+        pub name_entry: TemplateChild<adw::EntryRow>,
+        #[template_child]
+        pub year_entry: TemplateChild<adw::EntryRow>,
+
+        #[template_child]
+        pub path_row: TemplateChild<adw::ActionRow>,
     }
 
     #[glib::object_subclass]
@@ -124,6 +116,7 @@ impl IdentifyDialog {
 
     async fn get_data(&self) {
         let id = self.id();
+        let id_clone = id.clone();
         match spawn_tokio(async move { EMBY_CLIENT.get_external_id_info(&id).await }).await {
             Ok(data) => {
                 self.imp().stack.set_visible_child_name("page");
@@ -133,86 +126,64 @@ impl IdentifyDialog {
                 toast!(self, e.to_user_facing());
             }
         }
-    }
-
-    fn load_data(&self, data: Vec<ExternalIdInfo>) {
-        for info in data {
-            let entry = match info.key.as_str() {
-                "MusicBrainzAlbum" => Some(self.imp().music_brainz_album_entry.get()),
-                "MusicBrainzAlbumArtist" => Some(self.imp().music_brainz_album_artist_entry.get()),
-                "MusicBrainzReleaseGroup" => {
-                    Some(self.imp().music_brainz_release_group_entry.get())
-                }
-                "Tmdb" => Some(self.imp().tmdb_entry.get()),
-                "Imdb" => Some(self.imp().imdb_entry.get()),
-                "Tvdb" => Some(self.imp().tvdb_entry.get()),
-                "Zap2it" => Some(self.imp().zap2it_entry.get()),
-                _ => None,
-            };
-
-            if let Some(entry) = entry {
-                entry.set_visible(true);
+        match spawn_tokio(async move { EMBY_CLIENT.get_item_info(&id_clone).await }).await {
+            Ok(item) => {
+                self.imp()
+                    .path_row
+                    .set_subtitle(&item.path.unwrap_or_default());
+            }
+            Err(_) => {
+                self.imp()
+                    .path_row
+                    .set_subtitle(&gettext("Failed to get path"));
             }
         }
     }
 
+    fn load_data(&self, data: Vec<ExternalIdInfo>) {
+        for info in data {
+            let entry = adw::EntryRow::builder().title(&info.name).build();
+
+            if let Some(url) = &info.website {
+                let button = gtk::Button::builder()
+                    .icon_name("external-link-symbolic")
+                    .valign(gtk::Align::Center)
+                    .build();
+
+                let url = url.to_owned();
+                button.connect_clicked(move |_| {
+                    let _ = gtk::gio::AppInfo::launch_default_for_uri(
+                        &url,
+                        Option::<&gtk::gio::AppLaunchContext>::None,
+                    );
+                });
+
+                entry.add_suffix(&button);
+            }
+
+            self.imp().entries_group.add(&entry);
+        }
+    }
+
     #[template_callback]
-    async fn on_search(&self) {
+    async fn on_search_button_clicked(&self) {
         let imp = self.imp();
 
-        let mut provider_ids: Vec<SearchProviderId> = Vec::new();
+        let mut provider_ids = HashMap::new();
 
-        let title = imp.title_entry.text();
+        let name = imp.name_entry.text().to_string();
         let year = imp.year_entry.text().to_string().parse::<u32>().ok();
-        if imp.music_brainz_album_entry.is_visible() {
-            provider_ids.push(SearchProviderId {
-                music_brainz_album: Some(imp.music_brainz_album_entry.text().to_string()),
-                ..Default::default()
-            });
-        }
-        if imp.music_brainz_album_artist_entry.is_visible() {
-            provider_ids.push(SearchProviderId {
-                music_brainz_album_artist: Some(
-                    imp.music_brainz_album_artist_entry.text().to_string(),
-                ),
-                ..Default::default()
-            });
-        }
-        if imp.music_brainz_release_group_entry.is_visible() {
-            provider_ids.push(SearchProviderId {
-                music_brainz_release_group: Some(
-                    imp.music_brainz_release_group_entry.text().to_string(),
-                ),
-                ..Default::default()
-            });
-        }
-        if imp.tmdb_entry.is_visible() {
-            provider_ids.push(SearchProviderId {
-                tmdb: Some(imp.tmdb_entry.text().to_string()),
-                ..Default::default()
-            });
-        }
-        if imp.imdb_entry.is_visible() {
-            provider_ids.push(SearchProviderId {
-                imdb: Some(imp.imdb_entry.text().to_string()),
-                ..Default::default()
-            });
-        }
-        if imp.tvdb_entry.is_visible() {
-            provider_ids.push(SearchProviderId {
-                tvdb: Some(imp.tvdb_entry.text().to_string()),
-                ..Default::default()
-            });
-        }
-        if imp.zap2it_entry.is_visible() {
-            provider_ids.push(SearchProviderId {
-                zap2it: Some(imp.zap2it_entry.text().to_string()),
-                ..Default::default()
-            });
-        }
+
+        imp.entries_group.observe_children().into_iter().for_each(|child| {
+            if let Some(entry) = child.ok().and_downcast_ref::<adw::EntryRow>() {
+                let provider_id = entry.text().to_string();
+                let provider = entry.title().to_string();
+                provider_ids.insert(provider, provider_id);
+            }
+        });
 
         let searchinfo = SearchInfo {
-            name: Some(title.to_string()),
+            name: Some(name),
             year,
             provider_ids,
         };
