@@ -73,5 +73,6 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/image_dialog_search_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/eu_item.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/missing_episodes.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/theme_switcher.ui</file>
   </gresource>
 </gresources>

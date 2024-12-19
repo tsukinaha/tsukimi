@@ -31,17 +31,7 @@ mod imp {
         },
         provider::tu_object::TuObject,
         widgets::{
-            content_viewer::MediaContentViewer,
-            home::HomePage,
-            image_dialog::ImageDialog,
-            item_actionbox::ItemActionsBox,
-            liked::LikedPage,
-            listexpand_row::ListExpandRow,
-            media_viewer::MediaViewer,
-            player_toolbar::PlayerToolbarBox,
-            search::SearchPage,
-            tu_overview_item::imp::ViewGroup,
-            utils::TuItemBuildExt,
+            content_viewer::MediaContentViewer, home::HomePage, image_dialog::ImageDialog, item_actionbox::ItemActionsBox, liked::LikedPage, listexpand_row::ListExpandRow, media_viewer::MediaViewer, player_toolbar::PlayerToolbarBox, search::SearchPage, theme_switcher::ThemeSwitcher, tu_overview_item::imp::ViewGroup, utils::TuItemBuildExt
         },
     };
 
@@ -140,6 +130,7 @@ mod imp {
             MPVPage::ensure_type();
             ListExpandRow::ensure_type();
             MPVControlSidebar::ensure_type();
+            ThemeSwitcher::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("win.relogin", None, move |window, _action, _parameter| {

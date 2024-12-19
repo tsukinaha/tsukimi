@@ -1,0 +1,69 @@
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="ThemeSwitcher" parent="AdwBin">
+    <property name="hexpand">true</property>
+    <style>
+              <class name="themeselector"/>
+            </style>
+    <child>
+      <object class="GtkBox" id="box">
+        <property name="hexpand">true</property>
+        <property name="orientation">0</property>
+        <property name="spacing">12</property>
+        <child>
+          <object class="GtkCheckButton" id="follow">
+            <style>
+              <class name="theme-selector"/>
+              <class name="follow"/>
+            </style>
+            <property name="hexpand">true</property>
+            <property name="halign">3</property>
+            <property name="focus-on-click">false</property>
+            <property name="action-name">app.color-scheme</property>
+            <property name="action-target">0</property>
+            <property name="tooltip-text" translatable="true">Follow system style</property>
+            <accessibility>
+              <property name="label" translatable="true">Follow system style</property>
+            </accessibility>
+          </object>
+        </child>
+        <child>
+          <object class="GtkCheckButton">
+            <style>
+              <class name="theme-selector"/>
+              <class name="light"/>
+            </style>
+            <property name="hexpand">true</property>
+            <property name="halign">3</property>
+            <property name="group">follow</property>
+            <property name="focus-on-click">false</property>
+            <property name="action-name">app.color-scheme</property>
+            <property name="action-target">1</property>
+            <property name="tooltip-text" translatable="true">Light style</property>
+            <accessibility>
+              <property name="label" translatable="true">Light style</property>
+            </accessibility>
+          </object>
+        </child>
+        <child>
+          <object class="GtkCheckButton">
+            <style>
+              <class name="theme-selector"/>
+              <class name="dark"/>
+            </style>
+            <property name="hexpand">true</property>
+            <property name="halign">3</property>
+            <property name="group">follow</property>
+            <property name="focus-on-click">false</property>
+            <property name="action-name">app.color-scheme</property>
+            <property name="action-target">4</property>
+            <property name="tooltip-text" translatable="true">Dark style</property>
+            <accessibility>
+              <property name="label" translatable="true">Dark style</property>
+            </accessibility>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

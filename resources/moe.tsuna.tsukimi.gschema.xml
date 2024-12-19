@@ -171,6 +171,11 @@
       <description>0: Auto, 1: Auto(safe), 2. Mono, 3.Dual</description>
       <default>0</default>
     </key>
+    <key name="main-theme" type="i">
+      <summary>Theme</summary>
+      <description>0: Auto, 1: Light, 2. Dark</description>
+      <default>0</default>
+    </key>
     <key name="mpv-video-scale" type="i">
       <summary>Video Upscale Method</summary>
       <description>0: lanczos, 1: bilinear, 2: ewa_lanczos, 3: mitchell, 4: hermite, 5: oversample, 6: linear, 7: ewa_hanning, 8: ewa_lanczossharp</description>

@@ -3,6 +3,11 @@
   <menu id="main-menu">
     <section>
       <item>
+        <attribute name="custom">theme-switcher</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">Sign out</attribute>
         <attribute name="action">win.relogin</attribute>
       </item>
@@ -460,7 +465,14 @@
                                         <child type="end">
                                           <object class="GtkMenuButton">
                                             <property name="icon-name">view-more-symbolic</property>
-                                            <property name="menu-model">main-menu</property>
+                                            <property name="popover">
+                                              <object class="GtkPopoverMenu">
+                                                <property name="menu-model">main-menu</property>
+                                                <child type="theme-switcher">
+                                                  <object class="ThemeSwitcher"/>
+                                                </child>
+                                              </object>
+                                            </property>
                                           </object>
                                         </child>
                                       </object>

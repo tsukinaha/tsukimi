@@ -44,3 +44,4 @@ pub mod tu_overview_item;
 pub mod tuview_scrolled;
 pub mod utils;
 pub mod window;
+pub mod theme_switcher;

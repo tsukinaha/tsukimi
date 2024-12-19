@@ -59,6 +59,15 @@ impl Settings {
     const KEY_POST_SCALE: &'static str = "post-scale"; // f64
     const KEY_IS_REFRESH: &'static str = "is-refresh"; // bool
     const KEY_DEVICE_UUID: &'static str = "device-uuid"; // String
+    const KEY_MAIN_THEME: &'static str = "main-theme"; // i32
+
+    pub fn main_theme(&self) -> i32 {
+        self.int(Self::KEY_MAIN_THEME)
+    }
+
+    pub fn set_main_theme(&self, main_theme: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MAIN_THEME, main_theme)
+    }
 
     pub fn device_uuid(&self) -> String {
         self.string(Self::KEY_DEVICE_UUID).to_string()
