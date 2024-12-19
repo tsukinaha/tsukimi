@@ -41,10 +41,9 @@ pub mod imp {
         pub backrevealer: TemplateChild<gtk::Revealer>,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for ItemCarousel {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "ItemCarousel";
         type Type = super::ItemCarousel;
         type ParentType = adw::Bin;
@@ -64,7 +63,6 @@ pub mod imp {
         }
     }
 
-    // Trait shared by all widgets
     impl WidgetImpl for ItemCarousel {
         fn snapshot(&self, snapshot: &gtk::Snapshot) {
             // blur the lower 1/3 of the widget, and apply a linear gradient

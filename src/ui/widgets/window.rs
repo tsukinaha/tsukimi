@@ -121,10 +121,9 @@ mod imp {
         pub suspend_cookie: RefCell<Option<u32>>,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for Window {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "AppWindow";
         type Type = super::Window;
         type ParentType = adw::ApplicationWindow;
@@ -177,7 +176,6 @@ mod imp {
         }
     }
 
-    // Trait shared by all GObjects
     impl ObjectImpl for Window {
         fn constructed(&self) {
             // Call "constructed" on parent
@@ -217,10 +215,8 @@ mod imp {
         }
     }
 
-    // Trait shared by all widgets
     impl WidgetImpl for Window {}
 
-    // Trait shared by all windows
     impl WindowImpl for Window {
         // Save window state right before the window will be closed
         fn close_request(&self) -> glib::Propagation {
@@ -233,7 +229,6 @@ mod imp {
         }
     }
 
-    // Trait shared by all application windows
     impl ApplicationWindowImpl for Window {}
     impl AdwApplicationWindowImpl for Window {}
 }

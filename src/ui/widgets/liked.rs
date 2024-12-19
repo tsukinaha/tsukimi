@@ -54,10 +54,9 @@ mod imp {
         pub stack: TemplateChild<gtk::Stack>,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for LikedPage {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "LikedPage";
         type Type = super::LikedPage;
         type ParentType = adw::NavigationPage;
@@ -71,7 +70,6 @@ mod imp {
         }
     }
 
-    // Trait shared by all GObjects
     impl ObjectImpl for LikedPage {
         fn constructed(&self) {
             self.parent_constructed();
@@ -80,13 +78,10 @@ mod imp {
         }
     }
 
-    // Trait shared by all widgets
     impl WidgetImpl for LikedPage {}
 
-    // Trait shared by all windows
     impl WindowImpl for LikedPage {}
 
-    // Trait shared by all application windows
     impl ApplicationWindowImpl for LikedPage {}
 
     impl adw::subclass::navigation_page::NavigationPageImpl for LikedPage {}

@@ -116,10 +116,9 @@ pub(crate) mod imp {
         pub selection: gtk::SingleSelection,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for OtherPage {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "OtherPage";
         type Type = super::OtherPage;
         type ParentType = adw::NavigationPage;
@@ -137,7 +136,6 @@ pub(crate) mod imp {
         }
     }
 
-    // Trait shared by all GObjects
     #[glib::derived_properties]
     impl ObjectImpl for OtherPage {
         fn constructed(&self) {
@@ -163,13 +161,10 @@ pub(crate) mod imp {
         }
     }
 
-    // Trait shared by all widgets
     impl WidgetImpl for OtherPage {}
 
-    // Trait shared by all windows
     impl WindowImpl for OtherPage {}
 
-    // Trait shared by all application windows
     impl ApplicationWindowImpl for OtherPage {}
 
     impl adw::subclass::navigation_page::NavigationPageImpl for OtherPage {}

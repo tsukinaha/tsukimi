@@ -62,10 +62,9 @@ mod imp {
         pub stack: TemplateChild<gtk::Stack>,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for ImageInfoCard {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "ImageInfoCard";
         type Type = super::ImageInfoCard;
         type ParentType = adw::Bin;
@@ -104,7 +103,6 @@ mod imp {
         }
     }
 
-    // Trait shared by all GObjects
     #[glib::derived_properties]
     impl ObjectImpl for ImageInfoCard {
         fn constructed(&self) {
@@ -117,7 +115,6 @@ mod imp {
         }
     }
 
-    // Trait shared by all widgets
     impl WidgetImpl for ImageInfoCard {}
 
     impl BinImpl for ImageInfoCard {}

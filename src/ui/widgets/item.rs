@@ -208,10 +208,9 @@ pub(crate) mod imp {
         pub video_version_matcher: RefCell<Option<String>>,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for ItemPage {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "ItemPage";
         type Type = super::ItemPage;
         type ParentType = adw::NavigationPage;
@@ -230,7 +229,6 @@ pub(crate) mod imp {
         }
     }
 
-    // Trait shared by all GObjects
     #[glib::derived_properties]
     impl ObjectImpl for ItemPage {
         fn constructed(&self) {
@@ -275,13 +273,10 @@ pub(crate) mod imp {
         }
     }
 
-    // Trait shared by all widgets
     impl WidgetImpl for ItemPage {}
 
-    // Trait shared by all windows
     impl WindowImpl for ItemPage {}
 
-    // Trait shared by all application windows
     impl ApplicationWindowImpl for ItemPage {}
 
     impl adw::subclass::navigation_page::NavigationPageImpl for ItemPage {}

@@ -88,10 +88,9 @@ pub mod imp {
         pub detail_box: TemplateChild<gtk::Box>,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for TuOverviewItem {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "TuOverviewItem";
         type Type = super::TuOverviewItem;
         type ParentType = adw::Bin;
@@ -107,7 +106,6 @@ pub mod imp {
         }
     }
 
-    // Trait shared by all GObjects
     #[glib::derived_properties]
     impl ObjectImpl for TuOverviewItem {
         fn constructed(&self) {
@@ -122,7 +120,6 @@ pub mod imp {
         }
     }
 
-    // Trait shared by all widgets
     impl WidgetImpl for TuOverviewItem {}
 
     impl BinImpl for TuOverviewItem {}

@@ -85,10 +85,9 @@ pub mod imp {
         pub overlay: TemplateChild<gtk::Overlay>,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for TuListItem {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "TuListItem";
         type Type = super::TuListItem;
         type ParentType = adw::Bin;
@@ -104,7 +103,6 @@ pub mod imp {
         }
     }
 
-    // Trait shared by all GObjects
     #[glib::derived_properties]
     impl ObjectImpl for TuListItem {
         fn constructed(&self) {
@@ -118,7 +116,6 @@ pub mod imp {
         }
     }
 
-    // Trait shared by all widgets
     impl WidgetImpl for TuListItem {}
 
     impl BinImpl for TuListItem {}

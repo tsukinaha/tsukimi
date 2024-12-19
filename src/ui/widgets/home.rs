@@ -55,10 +55,9 @@ mod imp {
         pub selection: gtk::SingleSelection,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for HomePage {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "HomePage";
         type Type = super::HomePage;
         type ParentType = adw::NavigationPage;
@@ -74,7 +73,6 @@ mod imp {
         }
     }
 
-    // Trait shared by all GObjects
     impl ObjectImpl for HomePage {
         fn constructed(&self) {
             self.parent_constructed();
@@ -83,13 +81,10 @@ mod imp {
         }
     }
 
-    // Trait shared by all widgets
     impl WidgetImpl for HomePage {}
 
-    // Trait shared by all windows
     impl WindowImpl for HomePage {}
 
-    // Trait shared by all application windows
     impl ApplicationWindowImpl for HomePage {}
 
     impl adw::subclass::navigation_page::NavigationPageImpl for HomePage {}

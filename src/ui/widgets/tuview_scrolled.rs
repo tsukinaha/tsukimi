@@ -56,6 +56,8 @@ pub(crate) mod imp {
         pub grid: TemplateChild<gtk::GridView>,
         #[template_child]
         pub list: TemplateChild<gtk::ListView>,
+        #[template_child]
+        pub spinner_revealer: TemplateChild<gtk::Revealer>,
         pub selection: gtk::SingleSelection,
         pub lock: Arc<AtomicBool>,
     }
@@ -191,5 +193,9 @@ impl TuViewScrolled {
             .downcast::<gio::ListStore>()
             .unwrap();
         store.n_items()
+    }
+
+    pub fn reveal_spinner(&self, reveal: bool) {
+        self.imp().spinner_revealer.set_reveal_child(reveal);
     }
 }

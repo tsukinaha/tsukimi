@@ -2,10 +2,38 @@
 <interface>
   <template parent="AdwBin" class="TuViewScrolled">
     <child>
-      <object class="GtkScrolledWindow" id="scrolled_window">
-        <property name="hscrollbar-policy">never</property>
-        <property name="vscrollbar-policy">always</property>
-        <property name="overlay-scrolling">False</property>
+      <object class="GtkOverlay" id="overlay">
+        <child>
+          <object class="GtkScrolledWindow" id="scrolled_window">
+            <property name="hscrollbar-policy">never</property>
+            <property name="vscrollbar-policy">always</property>
+            <property name="overlay-scrolling">False</property>
+          </object>
+        </child>
+        <child type="overlay">
+          <object class="GtkRevealer" id="spinner_revealer">
+            <property name="halign">center</property>
+            <property name="valign">end</property>
+            <property name="transition-type">slide-up</property>
+            <child>
+              <object class="AdwBin">
+                <property name="margin-bottom">50</property>
+                <child>
+                  <object class="AdwSpinner">
+                    <property name="height-request">30</property>
+                    <property name="width-request">30</property>
+                    <style>
+                      <class name="accent"/>
+                    </style>
+                  </object>
+                </child>
+                <style>
+                  <class name="scroll-spinner"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
   </template>

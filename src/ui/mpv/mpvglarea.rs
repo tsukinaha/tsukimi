@@ -45,10 +45,9 @@ mod imp {
         pub mpv_event_loop: OnceCell<JoinHandle<()>>,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for MPVGLArea {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "MPVGLArea";
         type Type = super::MPVGLArea;
         type ParentType = gtk::GLArea;

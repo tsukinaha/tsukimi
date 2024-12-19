@@ -238,6 +238,12 @@ row image {
   box-shadow: inset 0 0 0 1px @borders;
 }
 
+.scroll-spinner {
+	background-color: rgba(0,0,0,0.5);
+	padding: 8px;
+	border-radius: 99px;
+}
+
 .themeselector checkbutton.follow:checked,
 .themeselector checkbutton.light:checked,
 .themeselector checkbutton.dark:checked {

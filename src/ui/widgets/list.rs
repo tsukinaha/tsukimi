@@ -23,11 +23,7 @@ mod imp {
         CompositeTemplate,
     };
 
-    use crate::{
-        fraction,
-        fraction_reset,
-        utils::spawn_g_timeout,
-    };
+    use crate::utils::spawn_g_timeout;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -42,10 +38,9 @@ mod imp {
         pub stack: TemplateChild<gtk::Stack>,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for ListPage {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "ListPage";
         type Type = super::ListPage;
         type ParentType = adw::NavigationPage;
@@ -59,7 +54,6 @@ mod imp {
         }
     }
 
-    // Trait shared by all GObjects
     #[glib::derived_properties]
     impl ObjectImpl for ListPage {
         fn constructed(&self) {
@@ -69,21 +63,16 @@ mod imp {
                 #[weak]
                 obj,
                 async move {
-                    fraction_reset!(obj);
                     obj.set_pages().await;
-                    fraction!(obj);
                 }
             ));
         }
     }
 
-    // Trait shared by all widgets
     impl WidgetImpl for ListPage {}
 
-    // Trait shared by all windows
     impl WindowImpl for ListPage {}
 
-    // Trait shared by all application windows
     impl ApplicationWindowImpl for ListPage {}
 
     impl adw::subclass::navigation_page::NavigationPageImpl for ListPage {}

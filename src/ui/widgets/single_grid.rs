@@ -29,8 +29,6 @@ use crate::{
             SimpleListItem,
         },
     },
-    fraction,
-    fraction_reset,
     toast,
     ui::models::SETTINGS,
     utils::{
@@ -217,10 +215,9 @@ pub mod imp {
         pub lock: Arc<AtomicBool>,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for SingleGrid {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "SingleGrid";
         type Type = super::SingleGrid;
         type ParentType = adw::NavigationPage;
@@ -529,16 +526,21 @@ impl SingleGrid {
                 spawn(glib::clone!(
                     #[weak]
                     obj,
+                    #[weak]
+                    scrolled,
                     async move {
-                        fraction_reset!(obj);
+                        scrolled.reveal_spinner(true);
+
                         match spawn_tokio(future).await {
                             Ok(item) => obj.add_items::<false>(item.items, is_resume),
                             Err(e) => {
                                 toast!(obj, e.to_user_facing());
                             }
                         }
+
+                        scrolled.reveal_spinner(false);
+
                         lock.store(false, std::sync::atomic::Ordering::Relaxed);
-                        fraction!(obj);
                     }
                 ));
             }

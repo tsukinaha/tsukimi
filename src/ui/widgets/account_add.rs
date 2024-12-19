@@ -80,10 +80,9 @@ pub mod imp {
         pub old_account: RefCell<Option<Account>>,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for AccountWindow {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "AccountWindow";
         type Type = super::AccountWindow;
         type ParentType = adw::Dialog;

@@ -157,10 +157,9 @@ mod imp {
         pub video_version_matcher: RefCell<Option<String>>,
     }
 
-    // The central trait for subclassing a GObject
     #[glib::object_subclass]
     impl ObjectSubclass for MPVPage {
-        // `NAME` needs to match `class` attribute of template
+
         const NAME: &'static str = "MPVPage";
         type Type = super::MPVPage;
         type ParentType = adw::NavigationPage;
@@ -224,7 +223,6 @@ mod imp {
         }
     }
 
-    // Trait shared by all GObjects
     #[glib::derived_properties]
     impl ObjectImpl for MPVPage {
         fn constructed(&self) {
@@ -264,13 +262,10 @@ mod imp {
         }
     }
 
-    // Trait shared by all widgets
     impl WidgetImpl for MPVPage {}
 
-    // Trait shared by all windows
     impl WindowImpl for MPVPage {}
 
-    // Trait shared by all application windows
     impl ApplicationWindowImpl for MPVPage {}
 
     impl adw::subclass::navigation_page::NavigationPageImpl for MPVPage {}
