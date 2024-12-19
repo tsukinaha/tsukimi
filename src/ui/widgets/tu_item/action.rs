@@ -319,21 +319,23 @@ where
                     ))
                     .build()]);
 
-                action_group.add_action_entries([gio::ActionEntry::builder("remove-identification")
-                    .activate(glib::clone!(
-                        #[weak(rename_to = obj)]
-                        self,
-                        move |_, _, _| {
-                            spawn(glib::clone!(
-                                #[weak]
-                                obj,
-                                async move {
-                                    obj.remove_identification().await;
-                                }
-                            ))
-                        }
-                    ))
-                    .build()]);
+                action_group.add_action_entries([gio::ActionEntry::builder(
+                    "remove-identification",
+                )
+                .activate(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_, _, _| {
+                        spawn(glib::clone!(
+                            #[weak]
+                            obj,
+                            async move {
+                                obj.remove_identification().await;
+                            }
+                        ))
+                    }
+                ))
+                .build()]);
             }
 
             if self.item().item_type() == "Series" {

@@ -72,5 +72,3 @@ pub fn load_css() {
         gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
     );
 }
-
-

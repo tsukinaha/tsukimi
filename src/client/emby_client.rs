@@ -1312,7 +1312,8 @@ impl EmbyClient {
     }
 
     pub async fn reset_metadata(&self, ids: &str) -> Result<Response> {
-        self.post("items/metadata/reset", &[], json!({"Ids": ids})).await
+        self.post("items/metadata/reset", &[], json!({"Ids": ids}))
+            .await
     }
 }
 

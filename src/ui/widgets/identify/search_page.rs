@@ -20,7 +20,6 @@ use crate::{
 };
 
 mod imp {
-    
 
     use eu_item::EuListItemExt;
     use glib::subclass::InitializingObject;

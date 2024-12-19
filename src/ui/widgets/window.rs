@@ -31,7 +31,18 @@ mod imp {
         },
         provider::tu_object::TuObject,
         widgets::{
-            content_viewer::MediaContentViewer, home::HomePage, image_dialog::ImageDialog, item_actionbox::ItemActionsBox, liked::LikedPage, listexpand_row::ListExpandRow, media_viewer::MediaViewer, player_toolbar::PlayerToolbarBox, search::SearchPage, theme_switcher::ThemeSwitcher, tu_overview_item::imp::ViewGroup, utils::TuItemBuildExt
+            content_viewer::MediaContentViewer,
+            home::HomePage,
+            image_dialog::ImageDialog,
+            item_actionbox::ItemActionsBox,
+            liked::LikedPage,
+            listexpand_row::ListExpandRow,
+            media_viewer::MediaViewer,
+            player_toolbar::PlayerToolbarBox,
+            search::SearchPage,
+            theme_switcher::ThemeSwitcher,
+            tu_overview_item::imp::ViewGroup,
+            utils::TuItemBuildExt,
         },
     };
 

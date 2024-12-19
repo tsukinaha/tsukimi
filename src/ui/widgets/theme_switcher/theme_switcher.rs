@@ -12,9 +12,7 @@ mod imp {
 
     #[derive(Debug, Default, CompositeTemplate)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/theme_switcher.ui")]
-    pub struct ThemeSwitcher {
-
-    }
+    pub struct ThemeSwitcher {}
 
     #[glib::object_subclass]
     impl ObjectSubclass for ThemeSwitcher {
@@ -51,6 +49,11 @@ glib::wrapper! {
 impl ThemeSwitcher {
     pub fn new() -> Self {
         glib::Object::new()
+    }
+
+    pub fn theme_selected(&self) {
+        let style_provider = adw::StyleManager::default();
+        
     }
 }
 
