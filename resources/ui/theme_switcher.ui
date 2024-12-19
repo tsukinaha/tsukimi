@@ -20,7 +20,7 @@
             <property name="halign">3</property>
             <property name="focus-on-click">false</property>
             <property name="action-name">app.color-scheme</property>
-            <property name="action-target">0</property>
+            <property name="action-target">1</property>
             <property name="tooltip-text" translatable="true">Follow system style</property>
             <accessibility>
               <property name="label" translatable="true">Follow system style</property>
@@ -38,7 +38,7 @@
             <property name="group">follow</property>
             <property name="focus-on-click">false</property>
             <property name="action-name">app.color-scheme</property>
-            <property name="action-target">1</property>
+            <property name="action-target">2</property>
             <property name="tooltip-text" translatable="true">Light style</property>
             <accessibility>
               <property name="label" translatable="true">Light style</property>
@@ -56,7 +56,7 @@
             <property name="group">follow</property>
             <property name="focus-on-click">false</property>
             <property name="action-name">app.color-scheme</property>
-            <property name="action-target">4</property>
+            <property name="action-target">3</property>
             <property name="tooltip-text" translatable="true">Dark style</property>
             <accessibility>
               <property name="label" translatable="true">Dark style</property>

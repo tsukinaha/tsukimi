@@ -1,3 +1,3 @@
-mod theme_switcher;
+mod switcher;
 
-pub use theme_switcher::ThemeSwitcher;
+pub use switcher::ThemeSwitcher;

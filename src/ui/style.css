@@ -211,6 +211,7 @@ row image {
 }
 
 .tulistitempic-button {
+  color: white;
   transition: transform 0.3s ease;
   transform: translateY(6px);
 }
