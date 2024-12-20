@@ -40,7 +40,6 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for ListPage {
-
         const NAME: &'static str = "ListPage";
         type Type = super::ListPage;
         type ParentType = adw::NavigationPage;

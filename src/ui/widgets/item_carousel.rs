@@ -43,7 +43,6 @@ pub mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for ItemCarousel {
-
         const NAME: &'static str = "ItemCarousel";
         type Type = super::ItemCarousel;
         type ParentType = adw::Bin;

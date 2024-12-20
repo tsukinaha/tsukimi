@@ -123,7 +123,6 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for Window {
-
         const NAME: &'static str = "AppWindow";
         type Type = super::Window;
         type ParentType = adw::ApplicationWindow;

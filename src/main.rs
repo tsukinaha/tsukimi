@@ -14,7 +14,6 @@ use gtk::{
     prelude::*,
 };
 use once_cell::sync::OnceCell;
-use tracing::info;
 
 mod arg;
 mod client;
@@ -58,24 +57,12 @@ fn locale_dir() -> &'static str {
 fn main() -> glib::ExitCode {
     Args::parse().init();
     // Initialize gettext
-    #[cfg(any(target_os = "linux", target_os = "windows"))]
-    {
-        setlocale(LocaleCategory::LcAll, "");
-        bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8")
-            .expect("Failed to set textdomain codeset");
-        bindtextdomain(GETTEXT_PACKAGE, locale_dir())
-            .expect("Invalid argument passed to bindtextdomain");
+    setlocale(LocaleCategory::LcAll, "");
+    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8").expect("Failed to set textdomain codeset");
+    bindtextdomain(GETTEXT_PACKAGE, locale_dir())
+        .expect("Invalid argument passed to bindtextdomain");
 
-        textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
-    }
-
-    info!(
-        "Application Version: {}, Platform: {} {}, CPU Architecture: {}",
-        config::VERSION,
-        env::consts::OS,
-        env::consts::FAMILY,
-        env::consts::ARCH
-    );
+    textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
 
     // Register and include resources
     gio::resources_register_include!("tsukimi.gresource").expect("Failed to register resources.");

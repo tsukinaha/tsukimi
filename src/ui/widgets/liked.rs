@@ -56,7 +56,6 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for LikedPage {
-
         const NAME: &'static str = "LikedPage";
         type Type = super::LikedPage;
         type ParentType = adw::NavigationPage;

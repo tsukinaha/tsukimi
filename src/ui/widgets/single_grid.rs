@@ -217,7 +217,6 @@ pub mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for SingleGrid {
-
         const NAME: &'static str = "SingleGrid";
         type Type = super::SingleGrid;
         type ParentType = adw::NavigationPage;

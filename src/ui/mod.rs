@@ -43,28 +43,17 @@ pub fn build_ui(app: &adw::Application) {
 pub fn load_css() {
     let provider = CssProvider::new();
 
-    let mut styles = String::new();
-
-    styles.push_str(include_str!("style.css"));
-
     let accent_color = SETTINGS.accent_color_code();
-    styles.push_str(&format!(
+
+    provider.load_from_string(&format!(
         "@define-color accent_color {};
         @define-color accent_bg_color {};
         @define-color accent_fg_color {};
-        overlay>label {{
-            background-color: {};
-            border-radius: 999px;
-            margin: 3px;
-        }}
         ",
         accent_color,
         accent_color,
-        SETTINGS.accent_fg_color_code(),
-        accent_color
+        SETTINGS.accent_fg_color_code()
     ));
-
-    provider.load_from_string(&styles);
 
     gtk::style_context_add_provider_for_display(
         &Display::default().expect("Could not connect to a display."),

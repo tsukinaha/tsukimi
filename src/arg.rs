@@ -1,4 +1,5 @@
 use std::{
+    env,
     fs::File,
     io,
     sync::Mutex,
@@ -165,5 +166,13 @@ impl Args {
         }));
 
         info!("Args: {:?}", self);
+
+        info!(
+            "Application Version: {}, Platform: {} {}, CPU Architecture: {}",
+            crate::config::VERSION,
+            env::consts::OS,
+            env::consts::FAMILY,
+            env::consts::ARCH
+        );
     }
 }

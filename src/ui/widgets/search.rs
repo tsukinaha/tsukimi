@@ -73,7 +73,6 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for SearchPage {
-
         const NAME: &'static str = "SearchPage";
         type Type = super::SearchPage;
         type ParentType = adw::NavigationPage;

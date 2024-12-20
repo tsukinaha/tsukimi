@@ -47,7 +47,6 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for MPVGLArea {
-
         const NAME: &'static str = "MPVGLArea";
         type Type = super::MPVGLArea;
         type ParentType = gtk::GLArea;

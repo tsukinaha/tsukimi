@@ -64,7 +64,6 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for ImageInfoCard {
-
         const NAME: &'static str = "ImageInfoCard";
         type Type = super::ImageInfoCard;
         type ParentType = adw::Bin;

@@ -90,7 +90,6 @@ pub mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for TuOverviewItem {
-
         const NAME: &'static str = "TuOverviewItem";
         type Type = super::TuOverviewItem;
         type ParentType = adw::Bin;

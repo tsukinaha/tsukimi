@@ -118,7 +118,6 @@ pub(crate) mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for OtherPage {
-
         const NAME: &'static str = "OtherPage";
         type Type = super::OtherPage;
         type ParentType = adw::NavigationPage;

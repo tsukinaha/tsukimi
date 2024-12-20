@@ -210,7 +210,6 @@ pub(crate) mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for ItemPage {
-
         const NAME: &'static str = "ItemPage";
         type Type = super::ItemPage;
         type ParentType = adw::NavigationPage;

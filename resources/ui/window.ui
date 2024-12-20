@@ -589,6 +589,7 @@
                                                     <signal name="activate" handler="on_playlist_item_activated" swapped="yes"/>
                                                     <style>
                                                       <class name="vertical-listview" />
+                                                      <class name="osd" />
                                                     </style>
                                                   </object>
                                                 </child>
@@ -612,6 +613,9 @@
                                         </child>
                                       </object>
                                     </property>
+                                    <style>
+                                      <class name="osd" />
+                                    </style>
                                   </object>
                                 </property>
                               </object>

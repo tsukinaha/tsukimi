@@ -82,7 +82,6 @@ pub mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for AccountWindow {
-
         const NAME: &'static str = "AccountWindow";
         type Type = super::AccountWindow;
         type ParentType = adw::Dialog;

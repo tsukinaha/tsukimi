@@ -159,7 +159,6 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for MPVPage {
-
         const NAME: &'static str = "MPVPage";
         type Type = super::MPVPage;
         type ParentType = adw::NavigationPage;
