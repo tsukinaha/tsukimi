@@ -22,6 +22,8 @@
     <file preprocess="xml-stripblanks" alias="arrow4-left-symbolic.svg">icons/scalable/actions/arrow4-left-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="external-link-symbolic.svg">icons/scalable/actions/external-link-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="chain-link-loose-symbolic.svg">icons/scalable/actions/chain-link-loose-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="funnel-outline-symbolic.svg">icons/scalable/actions/funnel-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="cross-small-symbolic.svg">icons/scalable/actions/cross-small-symbolic.svg</file>
   </gresource>
   <gresource prefix="/moe/tsuna/tsukimi/">
     <file compressed="true">style.css</file>
@@ -76,5 +78,8 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/eu_item.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/missing_episodes.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/theme_switcher.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/filter.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/filter_row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/filter_label.ui</file>
   </gresource>
 </gresources>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="FilterLabel" parent="GtkButton">
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">horizontal</property>
+        <property name="spacing">5</property>
+        <child>
+          <object class="GtkImage" id="image"/>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="label" bind-source="FilterLabel" bind-property="label" bind-flags="sync-create"/>
+            <property name="hexpand">true</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="icon-name">cross-small-symbolic</property>
+            <signal name="clicked" handler="on_delete_button_clicked" swapped="yes"/>
+            <style>
+              <class name="flat"/>
+              <class name="circular"/>
+            </style>
+          </object>
+        </child>
+      </object>
+    </child>
+    <style>
+      <class name="pill"/>
+      <class name="small"/>
+    </style>
+  </template>
+</interface>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template parent="AdwDialog" class="FilterPanelDialog">
+    <property name="content-width">800</property>
+    <property name="content-height">1000</property>
+    <property name="title" translatable="yes">Filter Panel</property>
+    <child>
+      <object class="AdwToastOverlay" id="toast_overlay">
+        <child>
+          <object class="AdwNavigationView" id="navigation_view">
+            <child>
+              <object class="AdwNavigationPage" id="page">
+                <property name="tag">main</property>
+                <property name="title" translatable="yes">Filter Panel</property>
+                <property name="child">
+                  <object class="AdwToolbarView">
+                    <child type="top">
+                      <object class="AdwHeaderBar">
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkStack" id="stack">
+                        <property name="transition-type">crossfade</property>
+                        <child>
+                          <object class="GtkStackPage">
+                            <property name="name">view</property>
+                            <property name="title">Filter Panel</property>
+                            <property name="child">
+                              <object class="GtkScrolledWindow">
+                                <property name="hscrollbar-policy">never</property>
+                                <child>
+                                  <object class="AdwClamp">
+                                    <property name="margin-top">36</property>
+                                    <property name="margin-bottom">12</property>
+                                    <property name="vexpand">True</property>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="orientation">vertical</property>
+                                        <property name="spacing">18</property>
+                                        <child>
+                                          <object class="AdwPreferencesGroup">
+                                            <property name="title" translatable="yes">Filters</property>
+                                            <child>
+                                              <object class="AdwComboRow" id="playback_status_combo">
+                                                <property name="title" translatable="yes">Playback Status</property>
+                                                <property name="model">
+                                                  <object class="GtkStringList">
+                                                    <items>
+                                                      <item translatable="yes">Any</item>
+                                                      <item translatable="yes">Played</item>
+                                                      <item translatable="yes">Unplayed</item>
+                                                      <item translatable="yes">Continue Play</item>
+                                                    </items>
+                                                  </object>
+                                                </property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="AdwActionRow" id="favourite_check">
+                                                <property name="title">Favourite</property>
+                                                <property name="activatable-widget">check</property>
+                                                <child type="prefix">
+                                                  <object class="GtkCheckButton" id="check">
+                                                    <style>
+                                                      <class name="accent" />
+                                                    </style>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwPreferencesGroup">
+                                            <child>
+                                              <object class="FilterRow">
+                                                <property name="title" translatable="yes">Genres</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="FilterRow">
+                                                <property name="title" translatable="yes">Tags</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="FilterRow">
+                                                <property name="title" translatable="yes">Years</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="FilterRow">
+                                                <property name="title" translatable="yes">Official Rating</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkStackPage">
+                            <property name="name">loading</property>
+                            <property name="title">Loading</property>
+                            <property name="child">
+                              <object class="AdwSpinner">
+                                <property name="visible">True</property>
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <property name="width-request">32</property>
+                                <property name="height-request">32</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

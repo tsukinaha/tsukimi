@@ -40,6 +40,14 @@
                     </property>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkButton" id="filter">
+                    <property name="icon-name">funnel-outline-symbolic</property>
+                    <property name="tooltip-text" translatable="yes">Filter Panel</property>
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="filter_panel_cb" swapped="yes" />
+                  </object>
+                </child>
               </object>
             </child>
             <child type="end">

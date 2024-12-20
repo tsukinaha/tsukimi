@@ -135,12 +135,13 @@ impl PictureLoader {
     // for EuListItem
     pub fn load_pic_for_url(&self, url: String) {
         let size = match self.imagetype().as_str() {
-            "Episode" => &TU_ITEM_VIDEO_SIZE,
-            _ => &TU_ITEM_POST_SIZE,
+            "Primary" => &TU_ITEM_POST_SIZE,
+            _ => &TU_ITEM_VIDEO_SIZE,
         };
 
         self.imp().picture.set_width_request(size.0);
         self.imp().picture.set_height_request(size.1);
+        self.imp().picture.set_content_fit(gtk::ContentFit::Contain);
 
         gio::File::for_uri(&url).read_async(
             glib::Priority::LOW,

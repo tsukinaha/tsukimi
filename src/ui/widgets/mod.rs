@@ -5,6 +5,7 @@ pub mod check_row;
 pub mod content_viewer;
 pub mod disc_box;
 pub mod eu_item;
+pub mod filter_panel;
 pub mod fix;
 pub mod home;
 pub mod horbu_scrolled;

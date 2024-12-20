@@ -193,6 +193,8 @@ pub mod imp {
         #[template_child]
         pub glbutton: TemplateChild<gtk::Box>,
         #[template_child]
+        pub filter: TemplateChild<gtk::Button>,
+        #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
         #[template_child]
         pub scrolled: TemplateChild<TuViewScrolled>,
@@ -348,10 +350,7 @@ impl SingleGrid {
 
     #[template_callback]
     fn filter_panel_cb(&self, _btn: &gtk::Button) {
-        let dialog = adw::Dialog::builder()
-            .title("Filter")
-            .presentation_mode(adw::DialogPresentationMode::BottomSheet)
-            .build();
+        let dialog = crate::ui::widgets::filter_panel::FilterPanelDialog::new();
         dialog.present(Some(self));
     }
 
@@ -366,21 +365,25 @@ impl SingleGrid {
                 imp.dropdown.set_visible(false);
                 imp.adbutton.set_visible(false);
                 imp.glbutton.set_visible(false);
+                imp.filter.set_visible(false);
             }
             ListType::BoxSet => {
                 imp.postmenu.set_visible(false);
+                imp.filter.set_visible(false);
             }
             ListType::Tags => {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
                 imp.adbutton.set_visible(false);
                 imp.glbutton.set_visible(false);
+                imp.filter.set_visible(false);
             }
             ListType::Genres => {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
                 imp.adbutton.set_visible(false);
                 imp.glbutton.set_visible(false);
+                imp.filter.set_visible(false);
             }
             ListType::Liked => {
                 imp.postmenu.set_visible(false);
