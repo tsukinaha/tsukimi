@@ -17,6 +17,7 @@ use imp::{
 };
 
 use super::{
+    filter_panel::FilterPanelDialog,
     tu_list_item::imp::PosterType,
     tu_overview_item::imp::ViewGroup,
     utils::TuItemBuildExt,
@@ -61,10 +62,12 @@ pub mod imp {
         subclass::prelude::*,
         CompositeTemplate,
     };
+    use std::cell::OnceCell;
 
     use crate::ui::{
         models::SETTINGS,
         widgets::{
+            filter_panel::FilterPanelDialog,
             tu_list_item::imp::PosterType,
             tuview_scrolled::TuViewScrolled,
         },
@@ -215,6 +218,8 @@ pub mod imp {
         #[property(get, set = Self::set_sort_by, builder(SortBy::default()))]
         pub sort_by: Cell<SortBy>,
         pub lock: Arc<AtomicBool>,
+
+        pub filter_panel: OnceCell<FilterPanelDialog>,
     }
 
     #[glib::object_subclass]
@@ -350,8 +355,11 @@ impl SingleGrid {
 
     #[template_callback]
     fn filter_panel_cb(&self, _btn: &gtk::Button) {
-        let dialog = crate::ui::widgets::filter_panel::FilterPanelDialog::new();
-        dialog.present(Some(self));
+        let panel = self
+            .imp()
+            .filter_panel
+            .get_or_init(FilterPanelDialog::new);
+        panel.present(Some(self));
     }
 
     pub fn handle_type(&self) {

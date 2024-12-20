@@ -11,9 +11,11 @@ mod imp {
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
 
+    use crate::client::structs::FilterItem;
+
     use super::*;
 
-    #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
+    #[derive(Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/filter_row.ui")]
     #[properties(wrapper_type = super::FilterRow)]
     pub struct FilterRow {
@@ -23,6 +25,8 @@ mod imp {
         pub icon_name: RefCell<Option<String>>,
         #[template_child]
         pub flowbox: TemplateChild<gtk::FlowBox>,
+
+        pub filter_list: RefCell<Vec<FilterItem>>,
     }
 
     #[glib::object_subclass]
@@ -54,6 +58,12 @@ mod imp {
 glib::wrapper! {
     pub struct FilterRow(ObjectSubclass<imp::FilterRow>)
         @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Actionable, gtk::Accessible;
+}
+
+impl Default for FilterRow {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[template_callbacks]

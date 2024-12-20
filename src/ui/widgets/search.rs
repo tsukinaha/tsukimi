@@ -7,6 +7,8 @@ use gtk::{
     template_callbacks,
 };
 
+use adw::prelude::*;
+
 use crate::{
     client::{
         emby_client::EMBY_CLIENT,
@@ -23,9 +25,14 @@ use crate::{
     },
 };
 
+use super::filter_panel::FilterPanelDialog;
+
 mod imp {
 
-    use std::sync::atomic::Ordering;
+    use std::{
+        cell::OnceCell,
+        sync::atomic::Ordering,
+    };
 
     use glib::subclass::InitializingObject;
     use gtk::{
@@ -37,7 +44,10 @@ mod imp {
     use gtk::prelude::*;
 
     use crate::{
-        ui::widgets::tuview_scrolled::TuViewScrolled,
+        ui::widgets::{
+            filter_panel::FilterPanelDialog,
+            tuview_scrolled::TuViewScrolled,
+        },
         utils::spawn,
     };
 
@@ -69,6 +79,8 @@ mod imp {
         pub episode: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
+
+        pub filter_panel: OnceCell<FilterPanelDialog>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -275,5 +287,14 @@ impl SearchPage {
         }
 
         search_results
+    }
+
+    #[template_callback]
+    fn filter_panel_cb(&self, _btn: &gtk::Button) {
+        let panel = self
+            .imp()
+            .filter_panel
+            .get_or_init(FilterPanelDialog::new);
+        panel.present(Some(self));
     }
 }

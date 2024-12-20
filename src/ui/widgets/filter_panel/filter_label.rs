@@ -44,7 +44,8 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            self.obj().add_css_class(&format!("color{}", rand::random::<u32>() % 4 + 1));
+            self.obj()
+                .add_css_class(&format!("color{}", rand::random::<u32>() % 4 + 1));
         }
     }
 

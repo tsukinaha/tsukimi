@@ -28,6 +28,10 @@
     <file preprocess="xml-stripblanks" alias="tag-outline-symbolic.svg">icons/scalable/actions/tag-outline-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="month-symbolic.svg">icons/scalable/actions/month-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="minus-circle-outline-symbolic.svg">icons/scalable/actions/minus-circle-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="music-note-single-outline-symbolic.svg">icons/scalable/actions/music-note-single-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="display-projector-symbolic.svg">icons/scalable/actions/display-projector-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="video-encoder-symbolic.svg">icons/scalable/actions/video-encoder-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="axes-one-quadrant-symbolic.svg">icons/scalable/actions/axes-one-quadrant-symbolic.svg</file>
   </gresource>
   <gresource prefix="/moe/tsuna/tsukimi/">
     <file compressed="true">style.css</file>

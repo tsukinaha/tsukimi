@@ -574,6 +574,22 @@ pub struct MissingEpisodesItem {
     pub premiere_date: Option<DateTime<Utc>>,
 }
 
+#[derive(Serialize, Deserialize, Clone)]
+pub struct FilterList {
+    #[serde(rename = "Items")]
+    pub items: Vec<FilterItem>,
+    #[serde(rename = "TotalRecordCount")]
+    pub total_record_count: Option<u32>,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct FilterItem {
+    #[serde(rename = "Name")]
+    pub name: String,
+    #[serde(rename = "Id")]
+    pub id: Option<String>,
+}
+
 use adw::prelude::*;
 use gtk::glib;
 

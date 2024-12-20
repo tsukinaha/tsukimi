@@ -4,7 +4,6 @@ use gtk::{
     template_callbacks,
 };
 
-
 mod imp {
     use adw::prelude::*;
     use glib::subclass::InitializingObject;
@@ -54,6 +53,12 @@ glib::wrapper! {
 
     pub struct FilterPanelDialog(ObjectSubclass<imp::FilterPanelDialog>)
         @extends gtk::Widget, adw::Dialog, adw::PreferencesDialog, @implements gtk::Accessible, gtk::Root;
+}
+
+impl Default for FilterPanelDialog {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[template_callbacks]
