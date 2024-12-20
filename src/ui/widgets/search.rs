@@ -28,12 +28,13 @@ mod imp {
     use std::sync::atomic::Ordering;
 
     use glib::subclass::InitializingObject;
-    use gst::prelude::StaticTypeExt;
     use gtk::{
         glib,
         subclass::prelude::*,
         CompositeTemplate,
     };
+
+    use gtk::prelude::*;
 
     use crate::{
         ui::widgets::tuview_scrolled::TuViewScrolled,

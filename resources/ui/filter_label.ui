@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template class="FilterLabel" parent="GtkButton">
+  <template class="FilterLabel" parent="AdwBin">
     <child>
       <object class="GtkBox">
         <property name="orientation">horizontal</property>
         <property name="spacing">5</property>
         <child>
-          <object class="GtkImage" id="image"/>
+          <object class="GtkImage" id="image">
+            <property name="margin-start">10</property>
+            <property name="icon-name" bind-source="FilterLabel" bind-property="icon-name" bind-flags="sync-create"/>
+          </object>
         </child>
         <child>
           <object class="GtkLabel">
@@ -27,8 +30,8 @@
       </object>
     </child>
     <style>
-      <class name="pill"/>
-      <class name="small"/>
+      <class name="filter-label"/>
+      <class name="no-padding-small"/>
     </style>
   </template>
 </interface>

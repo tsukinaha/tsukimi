@@ -19,6 +19,8 @@ mod imp {
     pub struct FilterRow {
         #[property(get, set, nullable)]
         pub title: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        pub icon_name: RefCell<Option<String>>,
         #[template_child]
         pub flowbox: TemplateChild<gtk::FlowBox>,
     }
@@ -61,8 +63,10 @@ impl FilterRow {
     }
 
     #[template_callback]
-    async fn on_add_button_clicked(&self) {
+    fn on_add_button_clicked(&self) {
         let label = super::FilterLabel::new();
+        label.set_label(Some("Test"));
+        label.set_icon_name(self.icon_name());
         self.imp().flowbox.append(&label);
     }
 }

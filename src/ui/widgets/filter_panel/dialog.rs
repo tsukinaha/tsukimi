@@ -23,6 +23,8 @@ mod imp {
         pub stack: TemplateChild<gtk::Stack>,
         #[template_child]
         pub toast_overlay: TemplateChild<adw::ToastOverlay>,
+        #[template_child]
+        pub apply_button_row: TemplateChild<adw::ButtonRow>,
     }
 
     #[glib::object_subclass]
@@ -77,5 +79,9 @@ impl FilterPanelDialog {
 
     pub fn add_toast(&self, toast: adw::Toast) {
         self.imp().toast_overlay.add_toast(toast);
+    }
+
+    pub fn connect_applied<F: Fn(&adw::ButtonRow) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.imp().apply_button_row.connect_activated(f)
     }
 }

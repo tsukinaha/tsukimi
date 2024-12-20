@@ -45,6 +45,7 @@
                 <property name="valign">center</property>
                 <style>
                   <class name="circular"/>
+                  <class name="smaller"/>
                 </style>
               </object>
             </child>
@@ -60,6 +61,8 @@
                 <property name="hexpand">True</property>
                 <property name="margin-bottom">5</property>
                 <property name="selection-mode">none</property>
+                <property name="column-spacing">5</property>
+                <property name="row-spacing">5</property>
               </object>
             </child>
           </object>

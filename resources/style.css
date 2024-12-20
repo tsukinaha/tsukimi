@@ -16,6 +16,18 @@ button.pill.small {
   padding: 1px 12px;
 }
 
+button.pill.no-padding-small {
+  font-size: 0.83333em;
+  border-radius: 99px;
+  margin: 0;
+  padding: 0px;
+}
+
+.circular.smaller {
+  min-height:28px;
+  min-width:28px;
+}
+
 .mediainfo {
   padding: 9px;
   border-radius: 15px;
@@ -283,6 +295,24 @@ checkbutton.theme-selector radio:checked {
   color: @theme_selected_fg_color;
 }
 
-.no-padding {
-	padding: 0px;
+.filter-label {
+	outline-style: solid;
+	outline-width: 2px;
+	border-radius: 99px;
+}
+
+.filter-label.color1 {
+  color: rgb(162, 184, 241);
+}
+
+.filter-label.color2 {
+  color: rgb(153, 199, 255);
+}
+
+.filter-label.color3 {
+  color: rgb(112, 177, 230);
+}
+
+.filter-label.color4 {
+  color: rgb(125, 210, 227);
 }
