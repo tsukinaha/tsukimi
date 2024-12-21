@@ -6,6 +6,10 @@ use gtk::{
     CompositeTemplate,
 };
 
+use crate::client::structs::FilterItem;
+
+use super::FiltersRow;
+
 mod imp {
     use std::cell::RefCell;
 
@@ -19,6 +23,10 @@ mod imp {
     pub struct FilterLabel {
         #[property(get, set, nullable)]
         pub label: RefCell<Option<String>>,
+        #[property(get, set)]
+        pub name: RefCell<String>,
+        #[property(get, set, nullable)]
+        pub id: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         pub icon_name: RefCell<Option<String>>,
     }
@@ -73,14 +81,20 @@ impl FilterLabel {
 
     #[template_callback]
     fn on_delete_button_clicked(&self) {
-        let Some(flowbox) = self
-            .parent()
-            .and_then(|p| p.parent())
-            .and_downcast::<gtk::FlowBox>()
+        let Some(fillter_row) = self
+            .ancestor(FiltersRow::static_type())
+            .and_downcast::<FiltersRow>()
         else {
             return;
         };
 
-        flowbox.remove(self);
+        fillter_row.remove_filter(self.filter_item());
+    }
+
+    pub fn filter_item(&self) -> FilterItem {
+        FilterItem {
+            name: self.name(),
+            id: self.id(),
+        }
     }
 }

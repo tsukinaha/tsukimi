@@ -1,39 +1,43 @@
 use adw::subclass::prelude::*;
 use gtk::{
     glib,
-    template_callbacks,
+    prelude::*,
     CompositeTemplate,
 };
+
+use crate::client::structs::FilterItem;
+
+use super::FilterDialogSearchPage;
 
 mod imp {
     use std::cell::RefCell;
 
-    use glib::subclass::InitializingObject;
+    use glib::{
+        subclass::InitializingObject,
+        Properties,
+    };
     use gtk::prelude::*;
-
-    use crate::client::structs::FilterItem;
 
     use super::*;
 
-    #[derive(Default, CompositeTemplate, glib::Properties)]
+    #[derive(Debug, Default, CompositeTemplate, Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/filter_row.ui")]
     #[properties(wrapper_type = super::FilterRow)]
     pub struct FilterRow {
+        #[property(get, set)]
+        pub name: RefCell<String>,
         #[property(get, set, nullable)]
-        pub title: RefCell<Option<String>>,
-        #[property(get, set, nullable)]
-        pub icon_name: RefCell<Option<String>>,
-        #[template_child]
-        pub flowbox: TemplateChild<gtk::FlowBox>,
+        pub id: RefCell<Option<String>>,
 
-        pub filter_list: RefCell<Vec<FilterItem>>,
+        #[template_child]
+        pub check: TemplateChild<gtk::CheckButton>,
     }
 
     #[glib::object_subclass]
     impl ObjectSubclass for FilterRow {
         const NAME: &'static str = "FilterRow";
         type Type = super::FilterRow;
-        type ParentType = adw::PreferencesRow;
+        type ParentType = adw::ActionRow;
 
         fn class_init(klass: &mut Self::Class) {
             Self::bind_template(klass);
@@ -49,34 +53,49 @@ mod imp {
     impl ObjectImpl for FilterRow {}
 
     impl WidgetImpl for FilterRow {}
-
     impl ListBoxRowImpl for FilterRow {}
-
     impl PreferencesRowImpl for FilterRow {}
+    impl ActionRowImpl for FilterRow {}
 }
 
 glib::wrapper! {
     pub struct FilterRow(ObjectSubclass<imp::FilterRow>)
-        @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Actionable, gtk::Accessible;
+        @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Accessible;
 }
 
-impl Default for FilterRow {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-#[template_callbacks]
+#[gtk::template_callbacks]
 impl FilterRow {
-    pub fn new() -> Self {
-        glib::Object::new()
+    pub fn new(name: &str, id: Option<String>) -> Self {
+        glib::Object::builder()
+            .property("name", name)
+            .property("id", id)
+            .build()
     }
 
     #[template_callback]
-    fn on_add_button_clicked(&self) {
-        let label = super::FilterLabel::new();
-        label.set_label(Some("Test"));
-        label.set_icon_name(self.icon_name());
-        self.imp().flowbox.append(&label);
+    fn on_check_toggled(&self, check_button: &gtk::CheckButton) {
+        let binding = self.ancestor(FilterDialogSearchPage::static_type());
+        let Some(search_page) = binding.and_downcast_ref::<FilterDialogSearchPage>() else {
+            return;
+        };
+
+        let filter = FilterItem {
+            id: self.id(),
+            name: self.name(),
+        };
+        match check_button.is_active() {
+            true => {
+                search_page.add_active_rows(self);
+                search_page.add_filter(filter)
+            }
+            false => {
+                search_page.remove_active_rows(self);
+                search_page.remove_filter(filter);
+            }
+        }
+    }
+
+    pub fn set_active(&self, active: bool) {
+        self.imp().check.set_active(active);
     }
 }

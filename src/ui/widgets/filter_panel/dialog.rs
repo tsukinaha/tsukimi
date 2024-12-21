@@ -1,4 +1,8 @@
-use adw::subclass::prelude::*;
+use super::FiltersRow;
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
 use gtk::{
     glib,
     template_callbacks,
@@ -13,7 +17,6 @@ mod imp {
     };
 
     use super::*;
-    use crate::ui::widgets::filter_panel::FilterRow;
 
     #[derive(Debug, Default, CompositeTemplate)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/filter.ui")]
@@ -24,6 +27,8 @@ mod imp {
         pub toast_overlay: TemplateChild<adw::ToastOverlay>,
         #[template_child]
         pub apply_button_row: TemplateChild<adw::ButtonRow>,
+        #[template_child]
+        pub navigation_view: TemplateChild<adw::NavigationView>,
     }
 
     #[glib::object_subclass]
@@ -33,7 +38,7 @@ mod imp {
         type ParentType = adw::Dialog;
 
         fn class_init(klass: &mut Self::Class) {
-            FilterRow::ensure_type();
+            FiltersRow::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }
@@ -88,5 +93,12 @@ impl FilterPanelDialog {
 
     pub fn connect_applied<F: Fn(&adw::ButtonRow) + 'static>(&self, f: F) -> glib::SignalHandlerId {
         self.imp().apply_button_row.connect_activated(f)
+    }
+
+    pub fn push_page<P>(&self, page: &P)
+    where
+        P: IsA<adw::NavigationPage>,
+    {
+        self.imp().navigation_view.push(page);
     }
 }

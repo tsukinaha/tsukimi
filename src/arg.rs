@@ -15,7 +15,9 @@ use tracing_subscriber::fmt::time::ChronoLocal;
 
 use crate::dyn_event;
 
-const DEFAULT_RENDERER: &str = "gl";
+/// gl renderer will glitch on fractional scaling
+/// vulkan renderer has poor performance
+const DEFAULT_RENDERER: &str = "ngl";
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]

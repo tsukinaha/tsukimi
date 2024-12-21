@@ -582,7 +582,7 @@ pub struct FilterList {
     pub total_record_count: Option<u32>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct FilterItem {
     #[serde(rename = "Name")]
     pub name: String,

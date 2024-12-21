@@ -45,9 +45,6 @@ pub enum Action {
 }
 
 pub trait TuItemAction {
-    const DELETE_TITLE: &str = "Delete Item";
-    const DELETE_BODY: &str = "Deleting this item will delete it from both the file system and your media library.\nThe following files and folders will be deleted:";
-    const DELETE_CONFIRM: &str = "Are you sure you wish to continue?";
     async fn perform_action_inner(id: &str, action: &Action) -> Result<()>;
 
     async fn perform_action(&self, action: Action);
@@ -461,13 +458,13 @@ where
         };
 
         let alert_dialog = adw::AlertDialog::builder()
-            .heading(Self::DELETE_TITLE)
-            .title(Self::DELETE_TITLE)
+            .heading(gettext("Delete Item"))
+            .title("Delete Item")
             .body(format!(
                 "{}\n{}\n{}",
-                gettext(Self::DELETE_BODY),
+                gettext("Deleting this item will delete it from both the file system and your media library.\nThe following files and folders will be deleted:"),
                 delete_info.paths.join("\n"),
-                gettext(Self::DELETE_CONFIRM)
+                gettext("Are you sure you wish to continue?")
             ))
             .build();
 

@@ -61,6 +61,8 @@ mod imp {
 
         #[template_child]
         pub navigation_view: TemplateChild<adw::NavigationView>,
+        #[template_child]
+        pub toast_overlay: TemplateChild<adw::ToastOverlay>,
     }
 
     #[glib::object_subclass]
@@ -130,7 +132,7 @@ impl IdentifyDialog {
             Ok(item) => {
                 self.imp()
                     .path_row
-                    .set_subtitle(&item.path.unwrap_or_default());
+                    .set_subtitle(&item.path.unwrap_or_default().replace("&", "&amp;"));
             }
             Err(_) => {
                 self.imp()
@@ -163,6 +165,10 @@ impl IdentifyDialog {
 
             self.imp().entries_group.add(&entry);
         }
+    }
+
+    pub fn add_toast(&self, toast: adw::Toast) {
+        self.imp().toast_overlay.add_toast(toast);
     }
 
     #[template_callback]

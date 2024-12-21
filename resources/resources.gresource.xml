@@ -88,6 +88,8 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/theme_switcher.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/filter.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/filter_row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/filters_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/filter_label.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/filter_search_page.ui</file>
   </gresource>
 </gresources>

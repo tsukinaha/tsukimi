@@ -45,6 +45,7 @@ use super::{
         Back,
         DeleteInfo,
         ExternalIdInfo,
+        FilterList,
         ImageItem,
         ImageSearchResult,
         List,
@@ -1314,6 +1315,22 @@ impl EmbyClient {
     pub async fn reset_metadata(&self, ids: &str) -> Result<Response> {
         self.post("items/metadata/reset", &[], json!({"Ids": ids}))
             .await
+    }
+
+    pub async fn filters(&self, type_: &str) -> Result<FilterList> {
+        let params = [
+            ("SortBy", "SortName"),
+            ("SortOrder", "Ascending"),
+            ("Recursive", "true"),
+            ("EnableImages", "false"),
+            ("EnableUserData", "false"),
+            (
+                "IncludeItemTypes",
+                "Movie,Series,Episode,BoxSet,Person,MusicAlbum,Audio,Video",
+            ),
+            ("userId", &self.user_id()),
+        ];
+        self.request(type_, &params).await
     }
 }
 

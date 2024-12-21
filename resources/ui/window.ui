@@ -299,7 +299,7 @@
                                                                     <property name="ellipsize">end</property>
                                                                     <property name="max_width_chars">90</property>
                                                                     <property name="justify">fill</property>
-                                                                    <property name="margin-start">9</property>
+                                                                    <property name="margin-start">3</property>
                                                                     <property name="label" translatable="yes">Home</property>
                                                                   </object>
                                                                 </child>
@@ -345,7 +345,7 @@
                                                                     <property name="ellipsize">end</property>
                                                                     <property name="max_width_chars">90</property>
                                                                     <property name="justify">fill</property>
-                                                                    <property name="margin-start">9</property>
+                                                                    <property name="margin-start">3</property>
                                                                     <property name="label" translatable="yes">Liked</property>
                                                                   </object>
                                                                 </child>
@@ -391,7 +391,7 @@
                                                                     <property name="ellipsize">end</property>
                                                                     <property name="max_width_chars">90</property>
                                                                     <property name="justify">fill</property>
-                                                                    <property name="margin-start">9</property>
+                                                                    <property name="margin-start">3</property>
                                                                     <property name="label" translatable="yes">Search</property>
                                                                   </object>
                                                                 </child>

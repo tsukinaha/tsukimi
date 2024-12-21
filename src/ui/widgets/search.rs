@@ -291,10 +291,7 @@ impl SearchPage {
 
     #[template_callback]
     fn filter_panel_cb(&self, _btn: &gtk::Button) {
-        let panel = self
-            .imp()
-            .filter_panel
-            .get_or_init(FilterPanelDialog::new);
+        let panel = self.imp().filter_panel.get_or_init(FilterPanelDialog::new);
         panel.present(Some(self));
     }
 }

@@ -7,25 +7,25 @@
     <child>
       <object class="AdwToastOverlay" id="toast_overlay">
         <child>
-          <object class="AdwNavigationView" id="navigation_view">
+          <object class="GtkStack" id="stack">
+            <property name="transition-type">crossfade</property>
             <child>
-              <object class="AdwNavigationPage" id="page">
-                <property name="tag">main</property>
-                <property name="title" translatable="yes">Filter Panel</property>
+              <object class="GtkStackPage">
+                <property name="name">view</property>
+                <property name="title">Filter Panel</property>
                 <property name="child">
-                  <object class="AdwToolbarView">
-                    <child type="top">
-                      <object class="AdwHeaderBar">
-                      </object>
-                    </child>
+                  <object class="AdwNavigationView" id="navigation_view">
                     <child>
-                      <object class="GtkStack" id="stack">
-                        <property name="transition-type">crossfade</property>
-                        <child>
-                          <object class="GtkStackPage">
-                            <property name="name">view</property>
-                            <property name="title">Filter Panel</property>
-                            <property name="child">
+                      <object class="AdwNavigationPage" id="page">
+                        <property name="tag">main</property>
+                        <property name="title" translatable="yes">Filter Panel</property>
+                        <property name="child">
+                          <object class="AdwToolbarView">
+                            <child type="top">
+                              <object class="AdwHeaderBar">
+                              </object>
+                            </child>
+                            <child>
                               <object class="GtkScrolledWindow">
                                 <property name="hscrollbar-policy">never</property>
                                 <child>
@@ -43,6 +43,7 @@
                                             <child>
                                               <object class="AdwComboRow" id="playback_status_combo">
                                                 <property name="title" translatable="yes">Playback Status</property>
+                                                <property name="use-subtitle">True</property>
                                                 <property name="model">
                                                   <object class="GtkStringList">
                                                     <items>
@@ -59,7 +60,7 @@
                                               <object class="AdwActionRow" id="favourite_check">
                                                 <property name="title">Favourite</property>
                                                 <property name="activatable-widget">check</property>
-                                                <child type="prefix">
+                                                <child type="suffix">
                                                   <object class="GtkCheckButton" id="check">
                                                     <style>
                                                       <class name="accent" />
@@ -73,33 +74,38 @@
                                         <child>
                                           <object class="AdwPreferencesGroup">
                                             <child>
-                                              <object class="FilterRow">
+                                              <object class="FiltersRow">
                                                 <property name="title" translatable="yes">Genres</property>
                                                 <property name="icon-name">music-note-single-outline-symbolic</property>
+                                                <property name="filter-type">Genres</property>
                                               </object>
                                             </child>
                                             <child>
-                                              <object class="FilterRow">
+                                              <object class="FiltersRow">
                                                 <property name="title" translatable="yes">Tags</property>
                                                 <property name="icon-name">tag-outline-symbolic</property>
+                                                <property name="filter-type">Tags</property>
                                               </object>
                                             </child>
                                             <child>
-                                              <object class="FilterRow">
+                                              <object class="FiltersRow">
                                                 <property name="title" translatable="yes">Years</property>
                                                 <property name="icon-name">month-symbolic</property>
+                                                <property name="filter-type">Years</property>
                                               </object>
                                             </child>
                                             <child>
-                                              <object class="FilterRow">
-                                                <property name="title" translatable="yes">Official Rating</property>
+                                              <object class="FiltersRow">
+                                                <property name="title" translatable="yes">Official Ratings</property>
                                                 <property name="icon-name">minus-circle-outline-symbolic</property>
+                                                <property name="filter-type">OfficialRatings</property>
                                               </object>
                                             </child>
                                             <child>
-                                              <object class="FilterRow">
+                                              <object class="FiltersRow">
                                                 <property name="title" translatable="yes">Studios</property>
                                                 <property name="icon-name">sound-symbolic</property>
+                                                <property name="filter-type">Studios</property>
                                               </object>
                                             </child>
                                           </object>
@@ -108,27 +114,59 @@
                                           <object class="AdwPreferencesGroup">
                                             <property name="title" translatable="yes">Media Info</property>
                                             <child>
-                                              <object class="FilterRow">
-                                                <property name="title" translatable="yes">Container</property>
+                                              <object class="FiltersRow">
+                                                <property name="title" translatable="yes">Containers</property>
                                                 <property name="icon-name">display-projector-symbolic</property>
+                                                <property name="filter-type">Containers</property>
                                               </object>
                                             </child>
                                             <child>
-                                              <object class="FilterRow">
-                                                <property name="title" translatable="yes">Encoder</property>
+                                              <object class="FiltersRow">
+                                                <property name="title" translatable="yes">Encoders</property>
                                                 <property name="icon-name">video-encoder-symbolic</property>
+                                                <property name="filter-type">VideoCodecs</property>
                                               </object>
                                             </child>
                                             <child>
-                                              <object class="FilterRow">
-                                                <property name="title" translatable="yes">Resolution</property>
-                                                <property name="icon-name">axes-one-quadrant-symbolic</property>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="FilterRow">
+                                              <object class="FiltersRow">
                                                 <property name="title" translatable="yes">Video Types</property>
                                                 <property name="icon-name">video-reel2-symbolic</property>
+                                                <property name="filter-type">ExtendedVideoTypes</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="AdwComboRow">
+                                                <property name="title" translatable="yes">Resolution</property>
+                                                <property name="use-subtitle">True</property>
+                                                <child type="prefix">
+                                                  <object class="GtkImage">
+                                                    <property name="icon-name">axes-one-quadrant-symbolic</property>
+                                                  </object>
+                                                </child>
+                                                <property name="model">
+                                                  <object class="GtkStringList">
+                                                    <items>
+                                                      <item translatable="yes">Any</item>
+                                                      <item>2160p</item>
+                                                      <item>1080p</item>
+                                                      <item>720p</item>
+                                                      <item>480p</item>
+                                                    </items>
+                                                  </object>
+                                                </property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwPreferencesGroup">
+                                            <child>
+                                              <object class="AdwButtonRow" id="clear_button_row">
+                                                <property name="title" translatable="yes">Clear</property>
+                                                <property name="start-icon-name">large-brush-symbolic</property>
+                                                <style>
+                                                  <class name="raised" />
+                                                </style>
                                               </object>
                                             </child>
                                           </object>
@@ -151,26 +189,26 @@
                                   </object>
                                 </child>
                               </object>
-                            </property>
+                            </child>
                           </object>
-                        </child>
-                        <child>
-                          <object class="GtkStackPage">
-                            <property name="name">loading</property>
-                            <property name="title">Loading</property>
-                            <property name="child">
-                              <object class="AdwSpinner">
-                                <property name="visible">True</property>
-                                <property name="halign">center</property>
-                                <property name="valign">center</property>
-                                <property name="width-request">32</property>
-                                <property name="height-request">32</property>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
+                        </property>
                       </object>
                     </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage">
+                <property name="name">loading</property>
+                <property name="title">Loading</property>
+                <property name="child">
+                  <object class="AdwSpinner">
+                    <property name="visible">True</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="width-request">32</property>
+                    <property name="height-request">32</property>
                   </object>
                 </property>
               </object>
