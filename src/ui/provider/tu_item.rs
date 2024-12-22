@@ -280,52 +280,80 @@ impl TuItem {
                 let id = self.id();
                 let parent_id = parentid.clone();
                 let list_type = self.item_type();
-                page.connect_sort_changed_tokio(false, move |sort_by, sort_order| {
+                page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
                     let id = id.clone();
                     let parent_id = parent_id.clone();
                     let list_type = list_type.clone();
                     async move {
                         EMBY_CLIENT
-                            .get_inlist(parent_id, 0, &list_type, &id, &sort_order, &sort_by)
+                            .get_inlist(
+                                parent_id,
+                                0,
+                                &list_type,
+                                &id,
+                                &sort_order,
+                                &sort_by,
+                                &filters_list,
+                            )
                             .await
                     }
                 });
                 let id = self.id();
                 let parent_id = parentid.clone();
                 let list_type = self.item_type();
-                page.connect_end_edge_overshot_tokio(false, move |sort_by, sort_order, n_items| {
-                    let id = id.clone();
-                    let parent_id = parent_id.clone();
-                    let list_type = list_type.clone();
-                    async move {
-                        EMBY_CLIENT
-                            .get_inlist(parent_id, n_items, &list_type, &id, &sort_order, &sort_by)
-                            .await
-                    }
-                });
+                page.connect_end_edge_overshot_tokio(
+                    false,
+                    move |sort_by, sort_order, n_items, filters_list| {
+                        let id = id.clone();
+                        let parent_id = parent_id.clone();
+                        let list_type = list_type.clone();
+                        async move {
+                            EMBY_CLIENT
+                                .get_inlist(
+                                    parent_id,
+                                    n_items,
+                                    &list_type,
+                                    &id,
+                                    &sort_order,
+                                    &sort_by,
+                                    &filters_list,
+                                )
+                                .await
+                        }
+                    },
+                );
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
             "Folder" => {
                 let page = SingleGrid::new();
                 page.set_list_type(ListType::Folder);
                 let id = self.id();
-                page.connect_sort_changed_tokio(false, move |sort_by, sort_order| {
+                page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
                     let id = id.clone();
                     async move {
                         EMBY_CLIENT
-                            .get_folder_include(&id, &sort_by, &sort_order, 0)
+                            .get_folder_include(&id, &sort_by, &sort_order, 0, &filters_list)
                             .await
                     }
                 });
                 let id = self.id();
-                page.connect_end_edge_overshot_tokio(false, move |sort_by, sort_order, n_items| {
-                    let id = id.clone();
-                    async move {
-                        EMBY_CLIENT
-                            .get_folder_include(&id, &sort_by, &sort_order, n_items)
-                            .await
-                    }
-                });
+                page.connect_end_edge_overshot_tokio(
+                    false,
+                    move |sort_by, sort_order, n_items, filters_list| {
+                        let id = id.clone();
+                        async move {
+                            EMBY_CLIENT
+                                .get_folder_include(
+                                    &id,
+                                    &sort_by,
+                                    &sort_order,
+                                    n_items,
+                                    &filters_list,
+                                )
+                                .await
+                        }
+                    },
+                );
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
             _ => {

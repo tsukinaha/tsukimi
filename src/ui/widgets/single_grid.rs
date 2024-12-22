@@ -17,7 +17,10 @@ use imp::{
 };
 
 use super::{
-    filter_panel::FilterPanelDialog,
+    filter_panel::{
+        FilterPanelDialog,
+        FiltersList,
+    },
     tu_list_item::imp::PosterType,
     tu_overview_item::imp::ViewGroup,
     utils::TuItemBuildExt,
@@ -355,7 +358,20 @@ impl SingleGrid {
 
     #[template_callback]
     fn filter_panel_cb(&self, _btn: &gtk::Button) {
-        let panel = self.imp().filter_panel.get_or_init(FilterPanelDialog::new);
+        let panel = self.imp().filter_panel.get_or_init(|| {
+            let dialog = FilterPanelDialog::new();
+            dialog.connect_applied(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[weak]
+                dialog,
+                move |_| {
+                    dialog.close();
+                    obj.emit_by_name::<()>("sort-changed", &[]);
+                }
+            ));
+            dialog
+        });
         panel.present(Some(self));
     }
 
@@ -476,7 +492,7 @@ impl SingleGrid {
 
     pub fn connect_sort_changed_tokio<F, Fut>(&self, is_resume: bool, f: F)
     where
-        F: Fn(String, String) -> Fut + Send + Sync + 'static,
+        F: Fn(String, String, FiltersList) -> Fut + Send + Sync + 'static,
         Fut: Future<Output = Result<List>> + Send + 'static,
     {
         self.connect_sort_changed(move |obj| {
@@ -486,7 +502,13 @@ impl SingleGrid {
             let sort_order = obj
                 .match_sort_order(i32::from(obj.sort_order()) as u32)
                 .to_string();
-            let future = f(sort_by.clone(), sort_order.clone());
+            let filters_list = obj
+                .imp()
+                .filter_panel
+                .get()
+                .map(|f| f.filters_list())
+                .unwrap_or_default();
+            let future = f(sort_by.clone(), sort_order.clone(), filters_list);
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
                 obj,
@@ -510,7 +532,7 @@ impl SingleGrid {
 
     pub fn connect_end_edge_overshot_tokio<F, Fut>(&self, is_resume: bool, f: F)
     where
-        F: Fn(String, String, u32) -> Fut + Send + Sync + 'static,
+        F: Fn(String, String, u32, FiltersList) -> Fut + Send + Sync + 'static,
         Fut: Future<Output = Result<List>> + Send + 'static,
     {
         if is_resume {
@@ -528,8 +550,13 @@ impl SingleGrid {
                     .match_sort_order(i32::from(obj.sort_order()) as u32)
                     .to_string();
                 let n_items = scrolled.n_items();
-
-                let future = f(sort_by.clone(), sort_order.clone(), n_items);
+                let filters_list = obj
+                    .imp()
+                    .filter_panel
+                    .get()
+                    .map(|f| f.filters_list())
+                    .unwrap_or_default();
+                let future = f(sort_by.clone(), sort_order.clone(), n_items, filters_list);
                 spawn(glib::clone!(
                     #[weak]
                     obj,

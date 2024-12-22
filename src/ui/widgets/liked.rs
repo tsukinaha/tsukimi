@@ -161,7 +161,7 @@ impl LikedPage {
 
         let results = match spawn_tokio(async move {
             EMBY_CLIENT
-                .get_favourite(&types, 0, 12, "SortName", "Ascending")
+                .get_favourite(&types, 0, 12, "SortName", "Ascending", &Default::default())
                 .await
         })
         .await
@@ -188,22 +188,39 @@ impl LikedPage {
                 let page = crate::ui::widgets::single_grid::SingleGrid::new();
                 let type_clone1 = type_.clone();
                 let type_clone2 = type_.clone();
-                page.connect_sort_changed_tokio(false, move |sort_by, sort_order| {
+                page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
                     let type_clone1 = type_clone1.clone();
                     async move {
                         EMBY_CLIENT
-                            .get_favourite(&type_clone1, 0, 50, &sort_by, &sort_order)
+                            .get_favourite(
+                                &type_clone1,
+                                0,
+                                50,
+                                &sort_by,
+                                &sort_order,
+                                &filters_list,
+                            )
                             .await
                     }
                 });
-                page.connect_end_edge_overshot_tokio(false, move |sort_by, sort_order, n_items| {
-                    let type_clone2 = type_clone2.clone();
-                    async move {
-                        EMBY_CLIENT
-                            .get_favourite(&type_clone2, n_items, 50, &sort_by, &sort_order)
-                            .await
-                    }
-                });
+                page.connect_end_edge_overshot_tokio(
+                    false,
+                    move |sort_by, sort_order, n_items, filters_list| {
+                        let type_clone2 = type_clone2.clone();
+                        async move {
+                            EMBY_CLIENT
+                                .get_favourite(
+                                    &type_clone2,
+                                    n_items,
+                                    50,
+                                    &sort_by,
+                                    &sort_order,
+                                    &filters_list,
+                                )
+                                .await
+                        }
+                    },
+                );
                 push_page_with_tag(&obj, page, &tag, &tag);
             }
         ));

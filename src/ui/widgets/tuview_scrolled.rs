@@ -110,12 +110,9 @@ impl TuViewScrolled {
 
     pub fn set_store<const C: bool>(&self, items: Vec<SimpleListItem>, is_resume: bool) {
         let imp = self.imp();
-        let store = imp
-            .selection
-            .model()
-            .unwrap()
-            .downcast::<gio::ListStore>()
-            .unwrap();
+        let Some(store) = imp.selection.model().and_downcast::<gio::ListStore>() else {
+            return;
+        };
 
         if C {
             store.remove_all();
@@ -150,15 +147,23 @@ impl TuViewScrolled {
 
     #[template_callback]
     fn on_gridview_item_activated(&self, position: u32, view: &gtk::GridView) {
-        let model = view.model().unwrap();
-        let tu_obj = model.item(position).and_downcast::<TuObject>().unwrap();
+        let Some(model) = view.model() else {
+            return;
+        };
+        let Some(tu_obj) = model.item(position).and_downcast::<TuObject>() else {
+            return;
+        };
         tu_obj.activate(view);
     }
 
     #[template_callback]
     fn on_listview_item_activated(&self, position: u32, view: &gtk::ListView) {
-        let model = view.model().unwrap();
-        let tu_obj = model.item(position).and_downcast::<TuObject>().unwrap();
+        let Some(model) = view.model() else {
+            return;
+        };
+        let Some(tu_obj) = model.item(position).and_downcast::<TuObject>() else {
+            return;
+        };
         tu_obj.activate(view);
     }
 
@@ -186,12 +191,9 @@ impl TuViewScrolled {
 
     pub fn n_items(&self) -> u32 {
         let imp = self.imp();
-        let store = imp
-            .selection
-            .model()
-            .unwrap()
-            .downcast::<gio::ListStore>()
-            .unwrap();
+        let Some(store) = imp.selection.model().and_downcast::<gio::ListStore>() else {
+            return 0;
+        };
         store.n_items()
     }
 

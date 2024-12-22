@@ -759,6 +759,7 @@ impl Window {
             .bind_song_model(active_model, active_core_song);
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn play_media(
         &self, url: String, suburl: Option<String>, item: TuItem, episode_list: Vec<TuItem>,
         back: Option<Back>, _selected: Option<String>, percentage: f64, matcher: Option<String>,

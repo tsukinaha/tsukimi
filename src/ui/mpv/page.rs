@@ -301,6 +301,7 @@ impl MPVPage {
         Object::new()
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn play(
         &self, url: &str, suburi: Option<&str>, item: TuItem, episode_list: Vec<TuItem>,
         back: Option<Back>, percentage: f64, matcher: Option<String>,

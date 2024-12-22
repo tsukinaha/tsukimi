@@ -162,6 +162,14 @@ impl FilterDialogSearchPage {
         self.emit_by_name::<()>("filters-changed", &[]);
     }
 
+    pub fn filters(&self) -> Option<Vec<FilterItem>> {
+        self.imp()
+            .filter_list
+            .lock()
+            .ok()
+            .map(|filters| filters.clone())
+    }
+
     pub fn add_filter(&self, filter: FilterItem) {
         let _ = self
             .imp()

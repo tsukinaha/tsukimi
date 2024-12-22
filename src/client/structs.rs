@@ -607,26 +607,45 @@ impl SGTitem {
         let page = SingleGrid::new();
         let id = self.id.to_string();
         let list_type_clone = list_type.clone();
-        page.connect_sort_changed_tokio(false, move |sort_by, sort_order| {
+        page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
             let id = id.clone();
             let list_type_clone = list_type_clone.clone();
             async move {
                 EMBY_CLIENT
-                    .get_inlist(None, 0, &list_type_clone, &id, &sort_order, &sort_by)
+                    .get_inlist(
+                        None,
+                        0,
+                        &list_type_clone,
+                        &id,
+                        &sort_order,
+                        &sort_by,
+                        &filters_list,
+                    )
                     .await
             }
         });
         let id = self.id.to_string();
         let list_type = list_type.clone();
-        page.connect_end_edge_overshot_tokio(false, move |sort_by, sort_order, n_items| {
-            let id = id.clone();
-            let list_type = list_type.clone();
-            async move {
-                EMBY_CLIENT
-                    .get_inlist(None, n_items, &list_type, &id, &sort_order, &sort_by)
-                    .await
-            }
-        });
+        page.connect_end_edge_overshot_tokio(
+            false,
+            move |sort_by, sort_order, n_items, filters_list| {
+                let id = id.clone();
+                let list_type = list_type.clone();
+                async move {
+                    EMBY_CLIENT
+                        .get_inlist(
+                            None,
+                            n_items,
+                            &list_type,
+                            &id,
+                            &sort_order,
+                            &sort_by,
+                            &filters_list,
+                        )
+                        .await
+                }
+            },
+        );
         push_page_with_tag(widget, page, &self.id.to_string(), &self.name.clone());
     }
 }

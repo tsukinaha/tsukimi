@@ -70,7 +70,10 @@ use crate::{
             emby_cache_path,
             SETTINGS,
         },
-        widgets::single_grid::imp::ListType,
+        widgets::{
+            filter_panel::FiltersList,
+            single_grid::imp::ListType,
+        },
     },
     utils::spawn_tokio_without_await,
 };
@@ -443,10 +446,12 @@ impl EmbyClient {
         url.to_string()
     }
 
-    pub async fn search(&self, query: &str, filter: &[&str], start_index: &str) -> Result<List> {
+    pub async fn search(
+        &self, query: &str, filter: &[&str], start_index: &str, filters_list: &FiltersList,
+    ) -> Result<List> {
         let filter_str = filter.join(",");
         let path = format!("Users/{}/Items", self.user_id());
-        let params = [
+        let mut params = vec![
             (
                 "Fields",
                 "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
@@ -463,6 +468,12 @@ impl EmbyClient {
             ("GroupProgramsBySeries", "true"),
             ("Limit", "50"),
         ];
+
+        let kv = filters_list.to_kv();
+        kv.iter().for_each(|(k, v)| {
+            params.push((k.as_str(), v.as_str()));
+        });
+
         self.request(&path, &params).await
     }
 
@@ -797,9 +808,10 @@ impl EmbyClient {
         url.join(path.trim_start_matches('/')).unwrap().to_string()
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub async fn get_list(
         &self, id: &str, start: u32, include_item_types: &str, list_type: ListType,
-        sort_order: &str, sortby: &str,
+        sort_order: &str, sortby: &str, filters_list: &FiltersList,
     ) -> Result<List> {
         let user_id = &self.user_id();
         let path = match list_type {
@@ -814,7 +826,7 @@ impl EmbyClient {
             _ => include_item_types,
         };
         let start_string = start.to_string();
-        let params = match list_type {
+        let mut params = match list_type {
             ListType::All | ListType::Liked | ListType::Tags | ListType::BoxSet => {
                 vec![
                     ("Limit", "50"),
@@ -865,12 +877,17 @@ impl EmbyClient {
             ],
             _ => vec![],
         };
+        let kv = filters_list.to_kv();
+        kv.iter().for_each(|(k, v)| {
+            params.push((k.as_str(), v.as_str()));
+        });
         self.request(&path, &params).await
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub async fn get_inlist(
         &self, id: Option<String>, start: u32, listtype: &str, parentid: &str, sort_order: &str,
-        sortby: &str,
+        sortby: &str, filters_list: &FiltersList,
     ) -> Result<List> {
         let path = format!("Users/{}/Items", &self.user_id());
         let start_string = start.to_string();
@@ -900,6 +917,11 @@ impl EmbyClient {
             id_clone = id.clone();
             params.push(("ParentId", &id_clone));
         }
+
+        let kv = filters_list.to_kv();
+        kv.iter().for_each(|(k, v)| {
+            params.push((k.as_str(), v.as_str()));
+        });
         self.request(&path, &params).await
     }
 
@@ -986,10 +1008,11 @@ impl EmbyClient {
 
     pub async fn get_person_large_list(
         &self, id: &str, types: &str, sort_by: &str, sort_order: &str, start_index: u32,
+        filters_list: &FiltersList,
     ) -> Result<List> {
         let start_string = start_index.to_string();
         let path = format!("Users/{}/Items", &self.user_id());
-        let params = [
+        let mut params = vec![
             (
                 "Fields",
                 "Overview,PrimaryImageAspectRatio,ProductionYear,CommunityRating",
@@ -1004,6 +1027,12 @@ impl EmbyClient {
             ("ImageTypeLimit", "1"),
             ("Limit", "50"),
         ];
+
+        let kv = filters_list.to_kv();
+        kv.iter().for_each(|(k, v)| {
+            params.push((k.as_str(), v.as_str()));
+        });
+
         self.request(&path, &params).await
     }
 
@@ -1051,6 +1080,7 @@ impl EmbyClient {
 
     pub async fn get_favourite(
         &self, types: &str, start: u32, limit: u32, sort_by: &str, sort_order: &str,
+        filters_list: &FiltersList,
     ) -> Result<List> {
         let user_id = {
             let user_id = self.user_id.lock().unwrap();
@@ -1061,7 +1091,9 @@ impl EmbyClient {
         } else {
             format!("Users/{}/Items", user_id)
         };
-        let params = [
+        let limit_string = limit.to_string();
+        let start_string = start.to_string();
+        let mut params = vec![
             (
                 "Fields",
                 "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,CommunityRating",
@@ -1072,14 +1104,20 @@ impl EmbyClient {
             ("SortBy", sort_by),
             ("SortOrder", sort_order),
             ("IncludeItemTypes", types),
-            ("Limit", &limit.to_string()),
-            ("StartIndex", &start.to_string()),
+            ("Limit", &limit_string),
+            ("StartIndex", &start_string),
             if types == "People" {
                 ("UserId", &user_id)
             } else {
                 ("", "")
             },
         ];
+
+        let kv = filters_list.to_kv();
+        kv.iter().for_each(|(k, v)| {
+            params.push((k.as_str(), v.as_str()));
+        });
+
         self.request(&path, &params).await
     }
 
@@ -1118,11 +1156,12 @@ impl EmbyClient {
 
     pub async fn get_folder_include(
         &self, parent_id: &str, sort_by: &str, sort_order: &str, start_index: u32,
+        filters_list: &FiltersList,
     ) -> Result<List> {
         let path = format!("Users/{}/Items", &self.user_id());
         let start_index_string = start_index.to_string();
         let sort_by = format!("IsFolder,{}", sort_by);
-        let params = [
+        let mut params = vec![
             (
                 "Fields",
                 "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
@@ -1135,6 +1174,11 @@ impl EmbyClient {
             ("SortOrder", sort_order),
             ("EnableTotalRecordCount", "true"),
         ];
+
+        let kv = filters_list.to_kv();
+        kv.iter().for_each(|(k, v)| {
+            params.push((k.as_str(), v.as_str()));
+        });
         self.request(&path, &params).await
     }
 
@@ -1353,8 +1397,8 @@ mod tests {
                 eprintln!("{}", e.to_user_facing());
             }
         }
-
-        let result = EMBY_CLIENT.search("你的名字", &["Movie"], "0");
+        let filters_list = FiltersList::default();
+        let result = EMBY_CLIENT.search("你的名字", &["Movie"], "0", &filters_list);
         match result.await {
             Ok(items) => {
                 for item in items.items {

@@ -100,10 +100,10 @@ impl ListPage {
 
         if &collection_type == "livetv" {
             let page = SingleGrid::new();
-            page.connect_sort_changed_tokio(false, move |_, _| async move {
+            page.connect_sort_changed_tokio(false, move |_, _, _| async move {
                 EMBY_CLIENT.get_channels_list(0).await
             });
-            page.connect_end_edge_overshot_tokio(false, move |_, _, n_items| async move {
+            page.connect_end_edge_overshot_tokio(false, move |_, _, n_items, _| async move {
                 EMBY_CLIENT.get_channels_list(n_items).await
             });
             stack.add_titled(&page, Some("channels"), &gettext("Channels"));
@@ -129,13 +129,19 @@ impl ListPage {
             let include_item_types_clone1 = include_item_types.clone();
             page.connect_sort_changed_tokio(
                 list_type == ListType::Resume,
-                move |sort_by, sort_order| {
+                move |sort_by, sort_order, filters_list| {
                     let id_clone1 = id_clone1.clone();
                     let include_item_types_clone1 = include_item_types_clone1.clone();
                     async move {
                         if list_type == ListType::Folder {
                             EMBY_CLIENT
-                                .get_folder_include(&id_clone1, &sort_by, &sort_order, 0)
+                                .get_folder_include(
+                                    &id_clone1,
+                                    &sort_by,
+                                    &sort_order,
+                                    0,
+                                    &filters_list,
+                                )
                                 .await
                         } else {
                             EMBY_CLIENT
@@ -146,6 +152,7 @@ impl ListPage {
                                     list_type,
                                     &sort_order,
                                     &sort_by,
+                                    &filters_list,
                                 )
                                 .await
                         }
@@ -156,13 +163,19 @@ impl ListPage {
             let include_item_types_clone2 = include_item_types.clone();
             page.connect_end_edge_overshot_tokio(
                 list_type == ListType::Resume,
-                move |sort_by, sort_order, n_items| {
+                move |sort_by, sort_order, n_items, filters_list| {
                     let id_clone2 = id_clone2.clone();
                     let include_item_types_clone2 = include_item_types_clone2.clone();
                     async move {
                         if list_type == ListType::Folder {
                             EMBY_CLIENT
-                                .get_folder_include(&id_clone2, &sort_by, &sort_order, n_items)
+                                .get_folder_include(
+                                    &id_clone2,
+                                    &sort_by,
+                                    &sort_order,
+                                    n_items,
+                                    &filters_list,
+                                )
                                 .await
                         } else {
                             EMBY_CLIENT
@@ -173,6 +186,7 @@ impl ListPage {
                                     list_type,
                                     &sort_order,
                                     &sort_by,
+                                    &filters_list,
                                 )
                                 .await
                         }

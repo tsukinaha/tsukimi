@@ -150,4 +150,18 @@ impl FiltersRow {
 
         search_page.remove_filter(filter);
     }
+
+    pub fn clear_filters(&self) {
+        let Some(search_page) = self.imp().search_page.get() else {
+            return;
+        };
+
+        search_page.clear_filters();
+    }
+
+    pub fn filters(&self) -> Option<Vec<FilterItem>> {
+        let search_page = self.imp().search_page.get()?;
+
+        search_page.filters()
+    }
 }

@@ -15,8 +15,6 @@ use crate::{
         error::UserFacingError,
         structs::*,
     },
-    fraction,
-    fraction_reset,
     toast,
     ui::provider::tu_item::TuItem,
     utils::{
@@ -229,6 +227,9 @@ impl SearchPage {
         let imp = self.imp();
 
         let search_content = imp.searchentry.text().to_string();
+        if search_content.len() < 2 {
+            return List::default();
+        }
         let search_filter = {
             let mut filter = Vec::new();
             if imp.movie.is_active() {
@@ -261,16 +262,26 @@ impl SearchPage {
             filter
         };
         let n_items = if F {
-            fraction_reset!(self);
             imp.searchscrolled.n_items()
         } else {
             imp.stack.set_visible_child_name("loading");
             0
         };
 
-        let search_results = match spawn_tokio(async move {
+        let filters_list = imp
+            .filter_panel
+            .get()
+            .map(|f| f.filters_list())
+            .unwrap_or_default();
+
+        match spawn_tokio(async move {
             EMBY_CLIENT
-                .search(&search_content, &search_filter, &n_items.to_string())
+                .search(
+                    &search_content,
+                    &search_filter,
+                    &n_items.to_string(),
+                    &filters_list,
+                )
                 .await
         })
         .await
@@ -280,18 +291,35 @@ impl SearchPage {
                 toast!(self, e.to_user_facing());
                 List::default()
             }
-        };
-
-        if F {
-            fraction!(self)
         }
-
-        search_results
     }
 
     #[template_callback]
     fn filter_panel_cb(&self, _btn: &gtk::Button) {
-        let panel = self.imp().filter_panel.get_or_init(FilterPanelDialog::new);
+        let panel = self.imp().filter_panel.get_or_init(|| {
+            let dialog = FilterPanelDialog::new();
+            dialog.connect_applied(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[weak]
+                dialog,
+                move |_| {
+                    dialog.close();
+                    obj.on_filter_applied();
+                }
+            ));
+            dialog
+        });
         panel.present(Some(self));
+    }
+
+    pub fn on_filter_applied(&self) {
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                obj.on_search_activate().await;
+            }
+        ));
     }
 }
