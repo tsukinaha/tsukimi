@@ -508,6 +508,11 @@ impl SingleGrid {
                 .get()
                 .map(|f| f.filters_list())
                 .unwrap_or_default();
+            if !filters_list.is_empty() {
+                obj.imp().filter.add_css_class("accent");
+            } else {
+                obj.imp().filter.remove_css_class("accent");
+            }
             let future = f(sort_by.clone(), sort_order.clone(), filters_list);
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]

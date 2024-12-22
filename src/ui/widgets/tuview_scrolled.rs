@@ -58,6 +58,7 @@ pub(crate) mod imp {
         pub list: TemplateChild<gtk::ListView>,
         #[template_child]
         pub spinner_revealer: TemplateChild<gtk::Revealer>,
+
         pub selection: gtk::SingleSelection,
         pub lock: Arc<AtomicBool>,
     }

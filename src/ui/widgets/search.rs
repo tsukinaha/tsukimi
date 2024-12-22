@@ -78,6 +78,9 @@ mod imp {
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
 
+        #[template_child]
+        pub filter: TemplateChild<gtk::Button>,
+
         pub filter_panel: OnceCell<FilterPanelDialog>,
         pub selection: gtk::SingleSelection,
     }
@@ -273,6 +276,12 @@ impl SearchPage {
             .get()
             .map(|f| f.filters_list())
             .unwrap_or_default();
+
+        if !filters_list.is_empty() {
+            imp.filter.add_css_class("accent");
+        } else {
+            imp.filter.remove_css_class("accent");
+        }
 
         match spawn_tokio(async move {
             EMBY_CLIENT
