@@ -102,14 +102,12 @@ impl FiltersList {
         }
 
         if let Some(video_types) = &self.video_types {
-            kv.push((
-                "ExtendedVideoTypes".to_owned(),
-                video_types
-                    .iter()
-                    .map(|f| f.name.to_owned())
-                    .collect::<Vec<_>>()
-                    .join(","),
-            ));
+            let video_type_ids: Vec<_> =
+                video_types.iter().filter_map(|f| f.id.to_owned()).collect();
+
+            if !video_type_ids.is_empty() {
+                kv.push(("ExtendedVideoTypes".to_owned(), video_type_ids.join(",")));
+            }
         }
 
         match self.resolution {
