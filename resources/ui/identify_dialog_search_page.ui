@@ -12,7 +12,10 @@
           <object class="GtkScrolledWindow">
             <property name="hscrollbar-policy">never</property>
             <child>
-              <object class="GtkGridView" id="grid" />
+              <object class="GtkGridView" id="grid">
+                <property name="single-click-activate">true</property>
+                <signal name="activate" handler="item_activated_cb" swapped="yes" />
+              </object>
             </child>
           </object>
         </child>

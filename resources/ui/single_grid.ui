@@ -17,6 +17,7 @@
                 <child>
                   <object class="GtkLabel" id="count">
                     <property name="label" translatable="yes"></property>
+                    <property name="ellipsize">end</property>
                     <attributes>
                       <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                     </attributes>

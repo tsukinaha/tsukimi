@@ -199,7 +199,13 @@ impl PictureLoader {
 
         imp.spinner.set_visible(false);
 
-        imp.revealer.set_reveal_child(true);
+        spawn(clone!(
+            #[weak]
+            imp,
+            async move {
+                imp.revealer.set_reveal_child(true);
+            }
+        ));
     }
 
     pub fn cache_file(&self) -> PathBuf {

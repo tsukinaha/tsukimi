@@ -184,9 +184,8 @@ impl ImageDialogEditPage {
                     toast!(dialog, gettext("Image saved"));
                 });
             }
-            Err(e) => {
+            Err(_) => {
                 dialog.view_page();
-                println!("Failed to save image {}", e);
                 toast!(dialog, gettext("Failed to load image"));
             }
         }

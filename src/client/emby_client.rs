@@ -55,7 +55,6 @@ use super::{
         MissingEpisodesList,
         PublicServerInfo,
         RemoteSearchInfo,
-        RemoteSearchResult,
         ScheduledTask,
         ServerInfo,
         SimpleListItem,
@@ -725,12 +724,18 @@ impl EmbyClient {
         self.post(&path, &params, json!({})).await
     }
 
-    pub async fn remote_search(
-        &self, type_: &str, info: &RemoteSearchInfo,
-    ) -> Result<Vec<RemoteSearchResult>> {
+    pub async fn remote_search(&self, type_: &str, info: &RemoteSearchInfo) -> Result<Value> {
         let path = format!("Items/RemoteSearch/{}", type_);
         let body = json!(info);
         self.post_json(&path, &[], body).await
+    }
+
+    pub async fn apply_remote_search(
+        &self, id: &str, value: Value, replace_all_images: bool,
+    ) -> Result<Response> {
+        let path = format!("Items/RemoteSearch/Apply/{}", id);
+        let params: [(&str, &str); 1] = [("ReplaceAllImages", &replace_all_images.to_string())];
+        self.post(&path, &params, json! {value}).await
     }
 
     pub async fn get_user_avatar(&self) -> Result<String> {

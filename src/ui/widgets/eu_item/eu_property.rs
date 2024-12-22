@@ -27,6 +27,9 @@ pub mod imp {
         line2: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         line3: RefCell<Option<String>>,
+
+        #[property(get, set, nullable)]
+        pub json_value: RefCell<Option<String>>,
     }
 
     #[glib::derived_properties]
@@ -53,6 +56,7 @@ impl EuItem {
     pub fn new(
         image_url: Option<String>, image_original_url: Option<String>, line1: Option<String>,
         line2: Option<String>, line3: Option<String>, image_type: Option<String>,
+        json_value: Option<String>,
     ) -> Self {
         glib::Object::builder()
             .property("image-url", image_url)
@@ -61,6 +65,7 @@ impl EuItem {
             .property("line1", line1)
             .property("line2", line2)
             .property("line3", line3)
+            .property("json-value", json_value)
             .build()
     }
 }

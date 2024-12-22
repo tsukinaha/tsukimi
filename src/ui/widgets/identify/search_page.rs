@@ -1,25 +1,38 @@
-use adw::subclass::prelude::*;
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gettextrs::gettext;
 use gtk::{
     gio,
     glib,
     CompositeTemplate,
 };
 
-use gtk::{
-    prelude::*,
-    template_callbacks,
-};
+use gtk::template_callbacks;
+use serde_json::Value;
 
 use crate::{
-    client::structs::RemoteSearchResult,
+    client::{
+        emby_client::EMBY_CLIENT,
+        error::UserFacingError,
+        structs::RemoteSearchResult,
+    },
+    toast,
     ui::widgets::eu_item::{
         self,
         EuItem,
         EuObject,
     },
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
 };
 
 mod imp {
+
+    use std::cell::OnceCell;
 
     use eu_item::EuListItemExt;
     use glib::subclass::InitializingObject;
@@ -29,9 +42,13 @@ mod imp {
 
     use super::*;
 
-    #[derive(Debug, Default, CompositeTemplate)]
+    #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/identify_dialog_search_page.ui")]
+    #[properties(wrapper_type = super::IdentifyDialogSearchPage)]
     pub struct IdentifyDialogSearchPage {
+        #[property(get, set, construct_only)]
+        pub id: OnceCell<String>,
+
         #[template_child]
         pub grid: TemplateChild<gtk::GridView>,
 
@@ -54,6 +71,7 @@ mod imp {
         }
     }
 
+    #[glib::derived_properties]
     impl ObjectImpl for IdentifyDialogSearchPage {
         fn constructed(&self) {
             self.parent_constructed();
@@ -75,19 +93,85 @@ glib::wrapper! {
         @extends gtk::Widget, adw::NavigationPage, @implements gtk::Accessible;
 }
 
-impl Default for IdentifyDialogSearchPage {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 #[template_callbacks]
 impl IdentifyDialogSearchPage {
-    pub fn new() -> Self {
-        glib::Object::new()
+    pub fn new(id: &str) -> Self {
+        glib::Object::builder().property("id", id).build()
     }
 
-    pub fn extend_item(&self, items: Vec<RemoteSearchResult>, item_type: String) {
+    #[template_callback]
+    fn item_activated_cb(&self, pos: u32, gridview: &gtk::GridView) {
+        let Some(item) = gridview.model().and_then(|m| {
+            m.item(pos)
+                .and_downcast::<EuObject>()
+                .and_then(|o| o.item())
+        }) else {
+            return;
+        };
+
+        let Some(value): Option<Value> = item
+            .json_value()
+            .and_then(|v| serde_json::from_str(&v).ok())
+        else {
+            return;
+        };
+
+        let id = self.id();
+
+        let alert_dialog = adw::AlertDialog::builder()
+            .heading(gettext("Identify"))
+            .title("Identify")
+            .body(gettext("Are you sure you wish to continue?"))
+            .build();
+
+        alert_dialog.add_response("close", &gettext("Cancel"));
+        alert_dialog.add_response("ok", &gettext("Ok"));
+        alert_dialog.set_response_appearance("ok", adw::ResponseAppearance::Suggested);
+
+        let check_button = gtk::CheckButton::with_label(&gettext("Replace existing images"));
+        alert_dialog.set_extra_child(Some(&check_button));
+
+        alert_dialog.connect_response(
+            Some("ok"),
+            glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                #[weak]
+                check_button,
+                move |_, _| {
+                    let id = id.clone();
+                    let value = value.clone();
+                    let replace = check_button.is_active();
+                    spawn(glib::clone!(
+                        #[weak]
+                        obj,
+                        async move {
+                            match spawn_tokio(async move {
+                                EMBY_CLIENT.apply_remote_search(&id, value, replace).await
+                            })
+                            .await
+                            {
+                                Ok(_) => {
+                                    toast!(obj, gettext("Success"));
+                                }
+                                Err(e) => {
+                                    toast!(obj, e.to_user_facing());
+                                }
+                            }
+                        }
+                    ))
+                }
+            ),
+        );
+
+        alert_dialog.present(Some(self));
+    }
+
+    pub fn extend_item(&self, items: Value, item_type: String) {
+        let Value::Array(ref items) = items else {
+            return;
+        };
+
         let Some(store) = self
             .imp()
             .selection
@@ -96,7 +180,10 @@ impl IdentifyDialogSearchPage {
         else {
             return;
         };
-        for item in items {
+        for item_value in items {
+            let Ok(item) = serde_json::from_value::<RemoteSearchResult>(item_value.clone()) else {
+                continue;
+            };
             let eu_item = EuItem::new(
                 item.image_url,
                 None,
@@ -104,6 +191,7 @@ impl IdentifyDialogSearchPage {
                 item.production_year.map(|p| p.to_string()),
                 None,
                 Some(item_type.to_owned()),
+                Some(item_value.to_string()),
             );
             let eu_object = EuObject::new(&eu_item);
             store.append(&eu_object);

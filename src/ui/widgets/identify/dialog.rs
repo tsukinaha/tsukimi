@@ -212,7 +212,7 @@ impl IdentifyDialog {
         .await
         {
             Ok(data) => {
-                let search_page = super::IdentifyDialogSearchPage::new();
+                let search_page = super::IdentifyDialogSearchPage::new(&self.id());
                 search_page.extend_item(data, self.itemtype());
                 self.imp().stack.set_visible_child_name("page");
                 self.imp().navigation_view.push(&search_page);
