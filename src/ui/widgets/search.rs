@@ -116,9 +116,13 @@ mod imp {
                         #[weak]
                         scrolled,
                         async move {
+                            scrolled.reveal_spinner(true);
+
                             let search_results = obj.get_search_results::<true>().await;
 
                             scrolled.set_store::<false>(search_results.items, false);
+                            
+                            scrolled.reveal_spinner(false);
 
                             lock.store(false, Ordering::SeqCst);
                         },
