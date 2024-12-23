@@ -111,6 +111,8 @@ mod imp {
 
             self.obj()
                 .action_set_enabled("image.search", self.obj().searchable());
+            self.obj()
+                .action_set_enabled("image.edit", self.obj().searchable());
         }
     }
 

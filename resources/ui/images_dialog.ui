@@ -3,7 +3,7 @@
   <template parent="AdwDialog" class="ImagesDialog">
     <property name="content-width">800</property>
     <property name="content-height">1000</property>
-    <property name="title" translatable="yes">View Images</property>
+    <property name="title" translatable="yes">Edit Images</property>
     <child>
       <object class="AdwToastOverlay" id="toast_overlay">
         <child>
@@ -33,7 +33,7 @@
                     <child>
                       <object class="AdwNavigationPage" id="page">
                         <property name="tag">main</property>
-                        <property name="title" translatable="yes">View Images</property>
+                        <property name="title" translatable="yes">Edit Images</property>
                         <property name="child">
                           <object class="AdwToolbarView">
                             <child type="top">
@@ -148,12 +148,45 @@
                                           </object>
                                         </child>
                                         <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">BackDrops</property>
-                                            <property name="halign">start</property>
-                                            <style>
-                                              <class name="title-4" />
-                                            </style>
+                                          <object class="GtkBox">
+                                            <property name="orientation">horizontal</property>
+                                            <property name="spacing">12</property>
+                                            <property name="valign">end</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">BackDrops</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                  <class name="title-4" />
+                                                </style>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton">
+                                                <property name="valign">center</property>
+                                                <property name="margin-end">6</property>
+                                                <property name="margin-bottom">6</property>
+                                                <property name="icon-name">system-search-symbolic</property>
+                                                <signal name="clicked" handler="on_backdrop_search_clicked" swapped="yes" />
+                                                <style>
+                                                  <class name="circular"/>
+                                                  <class name="smaller"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton">
+                                                <property name="valign">center</property>
+                                                <property name="margin-end">6</property>
+                                                <property name="margin-bottom">6</property>
+                                                <property name="icon-name">list-add-symbolic</property>
+                                                <signal name="clicked" handler="on_backdrop_add_clicked" swapped="yes" />
+                                                <style>
+                                                  <class name="circular"/>
+                                                  <class name="smaller"/>
+                                                </style>
+                                              </object>
+                                            </child>
                                           </object>
                                         </child>
                                         <child>

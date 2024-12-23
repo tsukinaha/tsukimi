@@ -216,6 +216,7 @@ impl ImagesDialog {
         let id = self.id();
         match spawn_tokio(async move { EMBY_CLIENT.get_image_items(&id).await }).await {
             Ok(items) => {
+                self.imp().flowbox.remove_all();
                 for item in items {
                     self.imp().set_item(&item);
                 }
@@ -230,5 +231,17 @@ impl ImagesDialog {
 
     pub fn pop_page(&self) {
         self.imp().view.pop();
+    }
+
+    #[template_callback]
+    fn on_backdrop_search_clicked(&self) {
+        let page = super::ImageDialogSearchPage::new(&self.id(), "Backdrop");
+        self.imp().view.push(&page);
+    }
+
+    #[template_callback]
+    fn on_backdrop_add_clicked(&self) {
+        let page = super::ImageDialogEditPage::new(&self.id(), "Backdrop", 0);
+        self.imp().view.push(&page);
     }
 }
