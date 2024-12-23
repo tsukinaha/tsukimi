@@ -286,7 +286,6 @@
             </child>
           </object>
         </child>
-
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Cache</property>
@@ -305,9 +304,6 @@
             </child>
           </object>
         </child>
-
-
-
       </object>
     </child>
     <child>
@@ -342,18 +338,12 @@
         <child>
           <object class="AdwPreferencesGroup">
             <child>
-              <object class="GtkButton">
-                <property name="halign">center</property>
-                <child>
-                  <object class="AdwButtonContent">
-                    <property name="label" translatable="yes">Change Password</property>
-                    <property name="icon-name">go-next-symbolic</property>
-                  </object>
-                </child>
-                <signal name="clicked" handler="on_change_password" swapped="yes"/>
+              <object class="AdwButtonRow">
+                <property name="title" translatable="yes">Change Password</property>
+                <property name="start-icon-name">go-next-symbolic</property>
+                <signal name="activated" handler="on_change_password" swapped="yes"/>
                 <style>
                   <class name="suggested-action"/>
-                  <class name="pill"/>
                 </style>
               </object>
             </child>

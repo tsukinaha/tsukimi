@@ -98,7 +98,7 @@
               <object class="AdwToastOverlay" id="toast">
                 <child>
                   <object class="GtkStack" id="stack">
-                    <property name="transition-type">over-up-down</property>
+                    <property name="transition-type">crossfade</property>
                     <property name="transition-duration">200</property>
                     <child>
                       <object class="GtkStackPage">

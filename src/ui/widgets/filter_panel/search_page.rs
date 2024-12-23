@@ -48,6 +48,8 @@ mod imp {
 
         #[template_child]
         pub listbox: TemplateChild<gtk::ListBox>,
+        #[template_child]
+        pub search_entry: TemplateChild<gtk::SearchEntry>,
 
         pub filter_row_ref: WeakRef<FiltersRow>,
         pub active_filter_rows: RefCell<Vec<WeakRef<FilterRow>>>,
@@ -81,6 +83,19 @@ mod imp {
             self.obj().connect_filters_changed(|obj| {
                 obj.listbox_retain_filters();
             });
+            self.listbox.set_filter_func(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                #[upgrade_or]
+                true,
+                move |row| {
+                    let filter = row.downcast_ref::<FilterRow>().unwrap();
+                    filter
+                        .name()
+                        .to_lowercase()
+                        .contains(&imp.search_entry.text().to_lowercase())
+                }
+            ));
         }
     }
 
@@ -110,6 +125,11 @@ impl Default for FilterDialogSearchPage {
 impl FilterDialogSearchPage {
     pub fn new() -> Self {
         glib::Object::new()
+    }
+
+    #[template_callback]
+    fn on_search_changed(&self, _: &gtk::SearchEntry) {
+        self.imp().listbox.invalidate_filter();
     }
 
     pub fn push_filter(&self, filter_type: String) {

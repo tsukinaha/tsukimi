@@ -5,7 +5,14 @@
     <child>
       <object class="AdwToolbarView">
         <child type="top">
-          <object class="AdwHeaderBar" />
+          <object class="AdwHeaderBar">
+            <child>
+              <object class="GtkSearchEntry" id="search_entry">
+                <property name="placeholder-text">Search</property>
+                <signal name="search-changed" handler="on_search_changed" swapped="yes"/>
+              </object>
+            </child>
+          </object>
         </child>
         <child>
           <object class="GtkScrolledWindow">
