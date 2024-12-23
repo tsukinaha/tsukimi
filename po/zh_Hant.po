@@ -27,19 +27,19 @@ msgstr "超時錯誤，檢查您的網際網路連線"
 msgid "Connection Error, Check your internet connection"
 msgstr "連線錯誤, 檢查您的網際網路連線"
 
-#: src/ui/provider/tu_item.rs:377
+#: src/ui/provider/tu_item.rs:377 src/ui/provider/tu_item.rs:349
 msgid "Processing..."
 msgstr "處理中..."
 
-#: src/ui/provider/tu_item.rs:383
+#: src/ui/provider/tu_item.rs:383 src/ui/provider/tu_item.rs:355
 msgid "No transcoding url found"
 msgstr "未找到轉檔 URL"
 
-#: src/ui/provider/tu_item.rs:475
+#: src/ui/provider/tu_item.rs:475 src/ui/provider/tu_item.rs:447
 msgid "No mediasource found"
 msgstr "未找到媒體來源"
 
-#: src/ui/provider/tu_item.rs:514
+#: src/ui/provider/tu_item.rs:514 src/ui/provider/tu_item.rs:486
 msgid "No next up video found"
 msgstr "未找到下一個視訊"
 
@@ -301,6 +301,7 @@ msgid "Image saved"
 msgstr "儲存的影像"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:189
+#: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:190
 msgid "Failed to load image"
 msgstr "載入影像失敗"
 
@@ -315,10 +316,12 @@ msgid "No image to copy"
 msgstr "暫無可拷貝的圖像"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:204
+#: src/ui/widgets/image_dialog/image_infocard.rs:202
 msgid "Image deleted"
 msgstr "圖片已刪除"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:209
+#: src/ui/widgets/image_dialog/image_infocard.rs:207
 msgid "Error deleting image"
 msgstr "刪除影像出錯"
 
@@ -378,15 +381,18 @@ msgid "Delete"
 msgstr "刪除"
 
 #: src/ui/widgets/tu_item/action.rs:492 src/ui/widgets/tu_item/action.rs:550
+#: src/ui/widgets/tu_item/action.rs:495 src/ui/widgets/tu_item/action.rs:553
 msgid "Item deleted"
 msgstr "項目已刪除"
 
 #: src/ui/widgets/tu_item/action.rs:524 src/ui/widgets/tu_item/action.rs:525
 #: src/ui/widgets/tu_item/action.rs:530 resources/ui/pop-menu.ui:57
+#: src/ui/widgets/tu_item/action.rs:527 src/ui/widgets/tu_item/action.rs:528
+#: src/ui/widgets/tu_item/action.rs:533
 msgid "Remove Identification"
 msgstr "移除識別"
 
-#: src/ui/widgets/tu_item/action.rs:526
+#: src/ui/widgets/tu_item/action.rs:526 src/ui/widgets/tu_item/action.rs:529
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "您確定要重設所有數據？"
 
@@ -399,7 +405,7 @@ msgstr "正在等待媒體源"
 msgid "Special"
 msgstr "特別"
 
-#: src/ui/widgets/identify/dialog.rs:140
+#: src/ui/widgets/identify/dialog.rs:140 src/ui/widgets/identify/dialog.rs:138
 msgid "Failed to get path"
 msgstr "取得路徑失敗"
 
@@ -1572,6 +1578,7 @@ msgid "Provider"
 msgstr "提供者"
 
 #: resources/ui/image_dialog_search_page.ui:64
+#: resources/ui/image_dialog_search_page.ui:61
 msgid "All Languages"
 msgstr "所有語言"
 
@@ -1579,11 +1586,11 @@ msgstr "所有語言"
 msgid "Missing Episodes"
 msgstr "遺漏集數"
 
-#: resources/ui/missing_episodes.ui:60
+#: resources/ui/missing_episodes.ui:60 resources/ui/missing_episodes.ui:57
 msgid "Specials"
 msgstr "特別節目"
 
-#: resources/ui/missing_episodes.ui:72
+#: resources/ui/missing_episodes.ui:72 resources/ui/missing_episodes.ui:69
 msgid "Upcoming"
 msgstr "即將推出"
 
@@ -1596,39 +1603,40 @@ msgid "Playback Status"
 msgstr "播放狀態"
 
 #: resources/ui/filter.ui:50 resources/ui/filter.ui:149
+#: resources/ui/filter.ui:49
 msgid "Any"
 msgstr "任意"
 
-#: resources/ui/filter.ui:51
+#: resources/ui/filter.ui:51 resources/ui/filter.ui:50
 msgid "Played"
 msgstr "已播放"
 
-#: resources/ui/filter.ui:52
+#: resources/ui/filter.ui:52 resources/ui/filter.ui:51
 msgid "Unplayed"
 msgstr "未播放"
 
-#: resources/ui/filter.ui:53
+#: resources/ui/filter.ui:53 resources/ui/filter.ui:52
 msgid "Continue Play"
 msgstr "繼續播放"
 
-#: resources/ui/filter.ui:92
+#: resources/ui/filter.ui:92 resources/ui/filter.ui:89
 msgid "Years"
 msgstr "年數"
 
-#: resources/ui/filter.ui:115
+#: resources/ui/filter.ui:115 resources/ui/filter.ui:109
 msgid "Media Info"
 msgstr "媒體信息"
 
-#: resources/ui/filter.ui:139
+#: resources/ui/filter.ui:139 resources/ui/filter.ui:124
 msgid "Resolution"
 msgstr "解析度"
 
-#: resources/ui/filter.ui:132
+#: resources/ui/filter.ui:132 resources/ui/filter.ui:130
 msgid "Video Types"
 msgstr "視訊類型"
 
 #: src/ui/widgets/metadata_dialog.rs:290 resources/ui/metadata_dialog.ui:232
-#: resources/ui/filter.ui:179
+#: resources/ui/filter.ui:179 resources/ui/filter.ui:140
 msgid "Apply"
 msgstr "使用"
 
@@ -1692,14 +1700,17 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
-#~ msgid "Official Rating"
-#~ msgstr "官方評級"
+#: resources/ui/filter.ui:95
+msgid "Official Rating"
+msgstr "官方評級"
 
-#~ msgid "Container"
-#~ msgstr "容器"
+#: resources/ui/filter.ui:112
+msgid "Container"
+msgstr "容器"
 
-#~ msgid "Encoder"
-#~ msgstr "編碼器"
+#: resources/ui/filter.ui:118
+msgid "Encoder"
+msgstr "編碼器"
 
 #~ msgid "This only effects on getting images/updating cache"
 #~ msgstr "這只影響取得圖片/更新快取記憶體"
