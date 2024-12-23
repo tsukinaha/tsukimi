@@ -37,7 +37,7 @@ libloading = "0.8.6"
 atomic-wait = "1.1.0"
 flume = "0.11.1"
 derive_builder = "0.20.2"
-anyhow = "1.0.94"
+anyhow = "1.0.95"
 windows = { version = "0.58.0", features = ["Win32_Foundation", "Win32_Networking_WinHttp", "Win32_Storage_FileSystem", "Win32_Security", "Win32_System_IO", "Win32_System_Power", "Win32_System_Registry"] }
 tracing-subscriber = { version="0.3.19", features = ["chrono"] }
 gdk4-x11 = { version = "0.9", optional = true }
