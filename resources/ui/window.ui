@@ -451,7 +451,7 @@
                                         <property name="show-back-button">False</property>
                                         <child type="start">
                                           <object class="GtkToggleButton" id="sidebar">
-                                            <property name="icon-name">format-indent-less-symbolic</property>
+                                            <property name="icon-name">sidebar-show-symbolic</property>
                                             <property name="action-name">win.sidebar</property>
                                           </object>
                                         </child>
