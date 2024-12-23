@@ -89,7 +89,9 @@ mod imp {
                 #[upgrade_or]
                 true,
                 move |row| {
-                    let filter = row.downcast_ref::<FilterRow>().unwrap();
+                    let Some(filter) = row.downcast_ref::<FilterRow>() else {
+                        return true;
+                    };
                     filter
                         .name()
                         .to_lowercase()
