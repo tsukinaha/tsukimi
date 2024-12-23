@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 23:19+0800\n"
+"POT-Creation-Date: 2024-12-23 13:18+0800\n"
 "PO-Revision-Date: 2024-12-22 11:15+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
@@ -30,19 +30,19 @@ msgstr "超时错误，请检查您的网络连接"
 msgid "Connection Error, Check your internet connection"
 msgstr "连接错误, 请检查您的网络连接"
 
-#: src/ui/provider/tu_item.rs:377 src/ui/provider/tu_item.rs:349
+#: src/ui/provider/tu_item.rs:377
 msgid "Processing..."
 msgstr "处理中..."
 
-#: src/ui/provider/tu_item.rs:383 src/ui/provider/tu_item.rs:355
+#: src/ui/provider/tu_item.rs:383
 msgid "No transcoding url found"
 msgstr "未找到转码URL"
 
-#: src/ui/provider/tu_item.rs:475 src/ui/provider/tu_item.rs:447
+#: src/ui/provider/tu_item.rs:475
 msgid "No mediasource found"
 msgstr "未找到媒体源"
 
-#: src/ui/provider/tu_item.rs:514 src/ui/provider/tu_item.rs:486
+#: src/ui/provider/tu_item.rs:514
 msgid "No next up video found"
 msgstr "未找到下一个视频"
 
@@ -95,7 +95,6 @@ msgid "Invalid regex"
 msgstr "正则表达式无效"
 
 #: src/ui/widgets/disc_box.rs:83 resources/ui/disc_box.ui:9
-#: resources/ui/metadata_dialog.ui:231
 msgid "Disc"
 msgstr "圆盘"
 
@@ -124,12 +123,12 @@ msgid "BoxSet"
 msgstr "合集"
 
 #: src/ui/widgets/list.rs:119 resources/ui/other.ui:150
-#: resources/ui/item.ui:462 resources/ui/filter.ui:83 resources/ui/filter.ui:85
+#: resources/ui/item.ui:462 resources/ui/filter.ui:85
 msgid "Tags"
 msgstr "标签"
 
 #: src/ui/widgets/list.rs:120 resources/ui/other.ui:155
-#: resources/ui/item.ui:457 resources/ui/filter.ui:77 resources/ui/filter.ui:78
+#: resources/ui/item.ui:457 resources/ui/filter.ui:78
 msgid "Genres"
 msgstr "片单"
 
@@ -143,17 +142,49 @@ msgid "Folder"
 msgstr "文件夹"
 
 #: src/ui/widgets/media_viewer.rs:350
-#: src/ui/widgets/image_dialog/image_infocard.rs:169
 #: src/ui/widgets/image_dialog/image_infocard.rs:171
 msgid "Image copied to clipboard"
 msgstr "图像已复制到剪贴板"
+
+#: src/ui/widgets/metadata_dialog.rs:290 resources/ui/metadata_dialog.ui:232
+#: resources/ui/filter.ui:179
+msgid "Apply"
+msgstr "应用"
+
+#: src/ui/widgets/metadata_dialog.rs:292
+#: src/ui/widgets/image_dialog/search_page.rs:146
+#: src/ui/widgets/tu_item/action.rs:467
+#: src/ui/widgets/identify/search_page.rs:124
+msgid "Are you sure you wish to continue?"
+msgstr ""
+
+#: src/ui/widgets/metadata_dialog.rs:295
+#: src/ui/widgets/image_dialog/search_page.rs:149
+#: src/ui/widgets/tu_item/action.rs:471 src/ui/widgets/tu_item/action.rs:529
+#: src/ui/widgets/identify/search_page.rs:127
+#: resources/ui/account_settings.ui:599 resources/ui/account_settings.ui:709
+#: resources/ui/refresh_dialog.ui:19
+msgid "Cancel"
+msgstr "取消"
+
+#: src/ui/widgets/metadata_dialog.rs:296
+#: src/ui/widgets/image_dialog/search_page.rs:150
+#: src/ui/widgets/identify/search_page.rs:128
+msgid "Ok"
+msgstr ""
+
+#: src/ui/widgets/metadata_dialog.rs:319
+#: src/ui/widgets/image_dialog/search_page.rs:179
+#: src/ui/widgets/tu_item/action.rs:91
+#: src/ui/widgets/identify/search_page.rs:157
+msgid "Success"
+msgstr "成功"
 
 #: src/ui/widgets/music_album.rs:294
 msgid "More From"
 msgstr "更多来自"
 
-#: src/ui/widgets/refresh_dialog.rs:93 src/ui/widgets/tu_item/action.rs:253
-#: src/ui/widgets/tu_item/action.rs:250
+#: src/ui/widgets/refresh_dialog.rs:93 src/ui/widgets/tu_item/action.rs:250
 msgid "Scanning..."
 msgstr "正在扫描..."
 
@@ -225,10 +256,10 @@ msgstr "服务器添加成功"
 msgid "Select an episode"
 msgstr "选择一集"
 
-#: src/ui/widgets/item.rs:606 src/ui/mpv/page.rs:899 src/ui/mpv/page.rs:901
+#: src/ui/widgets/item.rs:606 src/ui/mpv/page.rs:900 src/ui/mpv/page.rs:902
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
-#: resources/ui/item.ui:169 src/ui/mpv/page.rs:900 src/ui/mpv/page.rs:902
+#: resources/ui/item.ui:169
 msgid "Play"
 msgstr "播放"
 
@@ -240,14 +271,12 @@ msgstr "编解码器"
 msgid "Language"
 msgstr "语言"
 
-#: src/ui/widgets/item.rs:992 resources/ui/single_grid.ui:119
-#: resources/ui/metadata_dialog.ui:100 resources/ui/single_grid.ui:120
+#: src/ui/widgets/item.rs:992 resources/ui/single_grid.ui:120
 #: resources/ui/metadata_dialog.ui:89
 msgid "Title"
 msgstr "标题"
 
-#: src/ui/widgets/item.rs:996 resources/ui/single_grid.ui:120
-#: resources/ui/single_grid.ui:121
+#: src/ui/widgets/item.rs:996 resources/ui/single_grid.ui:121
 msgid "Bitrate"
 msgstr "比特率"
 
@@ -304,34 +333,32 @@ msgid "Image saved"
 msgstr "保存的图像"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:189
-#: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:190
 msgid "Failed to load image"
 msgstr "加载图像失败"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:149
 #: src/ui/widgets/image_dialog/image_infocard.rs:151
 msgid "No image to view"
 msgstr "没有图像可查看"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:165
 #: src/ui/widgets/image_dialog/image_infocard.rs:167
 msgid "No image to copy"
 msgstr "没有图像可复制"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:204
-#: src/ui/widgets/image_dialog/image_infocard.rs:202
 msgid "Image deleted"
 msgstr "图片已删除"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:209
-#: src/ui/widgets/image_dialog/image_infocard.rs:207
 msgid "Error deleting image"
 msgstr "删除图像出错"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:251
 #: src/ui/widgets/image_dialog/image_infocard.rs:253
 msgid "Error loading image"
 msgstr "加载图像时出错"
+
+#: src/ui/widgets/image_dialog/search_page.rs:144
+msgid "Replace Image"
+msgstr ""
 
 #: src/ui/widgets/window.rs:296 resources/ui/window.ui:303
 msgid "Home"
@@ -339,20 +366,19 @@ msgstr "首页"
 
 #: src/ui/widgets/window.rs:320 resources/ui/search.ui:23
 #: resources/ui/window.ui:21 resources/ui/window.ui:395
-#: resources/ui/danmaku_select_dialog.ui:26 resources/ui/image_info_card.ui:127
-#: resources/ui/identify_dialog.ui:94
+#: resources/ui/image_info_card.ui:127 resources/ui/identify_dialog.ui:94
 msgid "Search"
 msgstr "搜索"
 
-#: src/ui/widgets/window.rs:827 src/ui/widgets/window.rs:828
+#: src/ui/widgets/window.rs:828
 msgid "Server Panel"
 msgstr "服务器面板"
 
-#: src/ui/widgets/window.rs:1001 src/ui/widgets/window.rs:1002
+#: src/ui/widgets/window.rs:1002
 msgid "Fatal Error"
 msgstr "致命错误"
 
-#: src/ui/widgets/window.rs:1004 src/ui/widgets/window.rs:1005
+#: src/ui/widgets/window.rs:1005
 msgid "Copy Error & Close"
 msgstr "复制错误并关闭"
 
@@ -360,42 +386,32 @@ msgstr "复制错误并关闭"
 msgid "Present"
 msgstr "现在"
 
-#: src/ui/widgets/tu_item/action.rs:94 src/ui/widgets/metadata_dialog.rs:319
-#: src/ui/widgets/image_dialog/search_page.rs:179
-#: src/ui/widgets/tu_item/action.rs:91
-#: src/ui/widgets/identify/search_page.rs:157
-msgid "Success"
-msgstr "成功"
+#: src/ui/widgets/tu_item/action.rs:461
+msgid "Delete Item"
+msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:474 src/ui/widgets/tu_item/action.rs:532
-#: resources/ui/account.ui:26 resources/ui/account_settings.ui:599
-#: resources/ui/account_settings.ui:709 resources/ui/refresh_dialog.ui:19
-#: src/ui/widgets/metadata_dialog.rs:295
-#: src/ui/widgets/image_dialog/search_page.rs:149
-#: src/ui/widgets/tu_item/action.rs:471 src/ui/widgets/tu_item/action.rs:529
-#: src/ui/widgets/identify/search_page.rs:127
-msgid "Cancel"
-msgstr "取消"
+#: src/ui/widgets/tu_item/action.rs:465
+msgid ""
+"Deleting this item will delete it from both the file system and your media "
+"library.\n"
+"The following files and folders will be deleted:"
+msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:475 resources/ui/pop-menu.ui:87
+#: src/ui/widgets/tu_item/action.rs:472 resources/ui/pop-menu.ui:87
 #: resources/ui/server_action_row.ui:52 resources/ui/image_info_card.ui:139
-#: src/ui/widgets/tu_item/action.rs:472
 msgid "Delete"
 msgstr "删除"
 
 #: src/ui/widgets/tu_item/action.rs:492 src/ui/widgets/tu_item/action.rs:550
-#: src/ui/widgets/tu_item/action.rs:495 src/ui/widgets/tu_item/action.rs:553
 msgid "Item deleted"
 msgstr "删除的项目"
 
 #: src/ui/widgets/tu_item/action.rs:524 src/ui/widgets/tu_item/action.rs:525
 #: src/ui/widgets/tu_item/action.rs:530 resources/ui/pop-menu.ui:57
-#: src/ui/widgets/tu_item/action.rs:527 src/ui/widgets/tu_item/action.rs:528
-#: src/ui/widgets/tu_item/action.rs:533
 msgid "Remove Identification"
 msgstr "删除标识"
 
-#: src/ui/widgets/tu_item/action.rs:526 src/ui/widgets/tu_item/action.rs:529
+#: src/ui/widgets/tu_item/action.rs:526
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "您确定要重置所有元数据吗？"
 
@@ -408,9 +424,19 @@ msgstr "正在等待媒体源..."
 msgid "Special"
 msgstr "特别"
 
-#: src/ui/widgets/identify/dialog.rs:140 src/ui/widgets/identify/dialog.rs:138
+#: src/ui/widgets/identify/dialog.rs:140
 msgid "Failed to get path"
 msgstr "获取路径失败"
+
+#: src/ui/widgets/identify/search_page.rs:122 resources/ui/pop-menu.ui:51
+#: resources/ui/identify_dialog.ui:6 resources/ui/identify_dialog.ui:14
+#: resources/ui/identify_dialog_search_page.ui:4
+msgid "Identify"
+msgstr "识别"
+
+#: src/ui/widgets/identify/search_page.rs:131
+msgid "Replace existing images"
+msgstr ""
 
 #: src/ui/mpv/control_sidebar.rs:452
 msgid "Video filter settings cleared."
@@ -436,24 +462,23 @@ msgstr "去色带设置已清除。"
 msgid "Failed to get GLContext"
 msgstr "获取 GLContext 失败"
 
-#: src/ui/mpv/page.rs:414 src/ui/mpv/page.rs:415
+#: src/ui/mpv/page.rs:415
 msgid "Loading Video..."
 msgstr "正在载入视频..."
 
-#: src/ui/mpv/page.rs:433 src/ui/mpv/page.rs:434
+#: src/ui/mpv/page.rs:434
 msgid "No more videos found"
 msgstr "未找到更多视频"
 
-#: src/ui/mpv/page.rs:442 src/ui/mpv/page.rs:443
+#: src/ui/mpv/page.rs:443
 msgid "Waiting for mediasource..."
 msgstr "正在等待媒体源..."
 
-#: src/ui/mpv/page.rs:473 src/ui/mpv/page.rs:478 src/ui/mpv/page.rs:474
-#: src/ui/mpv/page.rs:479
+#: src/ui/mpv/page.rs:474 src/ui/mpv/page.rs:479
 msgid "No media sources found"
 msgstr "暂未找到媒体源"
 
-#: src/ui/mpv/page.rs:636 src/ui/mpv/page.rs:637
+#: src/ui/mpv/page.rs:637
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -461,8 +486,7 @@ msgstr ""
 "MPV 已关闭，应用将退出。\n"
 "Tsukimi 无法重新启动 MPV。"
 
-#: src/ui/mpv/page.rs:904 src/ui/mpv/page.rs:906 resources/ui/mpvpage.ui:200
-#: src/ui/mpv/page.rs:905 src/ui/mpv/page.rs:907
+#: src/ui/mpv/page.rs:905 src/ui/mpv/page.rs:907 resources/ui/mpvpage.ui:200
 msgid "Pause"
 msgstr "暂停"
 
@@ -485,7 +509,6 @@ msgid "View Metadata"
 msgstr "查看元数据"
 
 #: resources/ui/item_actions.ui:59 resources/ui/song_widget.ui:155
-#: resources/ui/images_dialog.ui:6 resources/ui/images_dialog.ui:36
 msgid "View Images"
 msgstr "查看图像"
 
@@ -563,14 +586,6 @@ msgstr "编辑元数据"
 msgid "Edit Images"
 msgstr "编辑图片"
 
-#: resources/ui/pop-menu.ui:51 resources/ui/danmaku_select_dialog.ui:8
-#: resources/ui/danmaku_select_dialog.ui:17 resources/ui/identify_dialog.ui:6
-#: resources/ui/identify_dialog.ui:14
-#: resources/ui/identify_dialog_search_page.ui:4
-#: src/ui/widgets/identify/search_page.rs:122
-msgid "Identify"
-msgstr "识别"
-
 #: resources/ui/pop-menu.ui:65
 msgid "View Missing Episodes"
 msgstr "查看缺失剧集"
@@ -627,91 +642,88 @@ msgstr "将当前播放速度减半/加倍"
 msgid "Reset playback speed to normal"
 msgstr "重置播放速度"
 
-#: resources/ui/single_grid.ui:31 resources/ui/single_grid.ui:32
+#: resources/ui/single_grid.ui:32
 msgid "Change Poster"
 msgstr "修改视图"
 
-#: resources/ui/single_grid.ui:37 resources/ui/single_grid.ui:38
+#: resources/ui/single_grid.ui:38
 msgid "View"
 msgstr "视图"
 
-#: resources/ui/single_grid.ui:46 resources/ui/search.ui:31
-#: resources/ui/filter.ui:6 resources/ui/filter.ui:14
-#: resources/ui/single_grid.ui:47 resources/ui/filter.ui:21
+#: resources/ui/single_grid.ui:47 resources/ui/search.ui:31
+#: resources/ui/filter.ui:6 resources/ui/filter.ui:21
 msgid "Filter Panel"
 msgstr "筛选面板"
 
-#: resources/ui/single_grid.ui:65 resources/ui/single_grid.ui:66
+#: resources/ui/single_grid.ui:66
 msgid "Grid View"
 msgstr "网络视图"
 
-#: resources/ui/single_grid.ui:74 resources/ui/single_grid.ui:75
+#: resources/ui/single_grid.ui:75
 msgid "List View"
 msgstr "列表视图"
 
-#: resources/ui/single_grid.ui:91 resources/ui/single_grid.ui:92
+#: resources/ui/single_grid.ui:92
 msgid "Ascending"
 msgstr "升序"
 
-#: resources/ui/single_grid.ui:99 resources/ui/single_grid.ui:100
+#: resources/ui/single_grid.ui:100
 msgid "Descending"
 msgstr "降序"
 
-#: resources/ui/single_grid.ui:114 resources/ui/single_grid.ui:115
+#: resources/ui/single_grid.ui:115
 msgid "Sort By"
 msgstr "排序方式"
 
-#: resources/ui/single_grid.ui:121 resources/ui/metadata_dialog.ui:110
 #: resources/ui/single_grid.ui:122 resources/ui/metadata_dialog.ui:99
 msgid "Date Created"
 msgstr "创建日期"
 
-#: resources/ui/single_grid.ui:122 resources/ui/single_grid.ui:123
+#: resources/ui/single_grid.ui:123
 msgid "Imdb Rate"
 msgstr "Imdb 评分"
 
-#: resources/ui/single_grid.ui:123 resources/ui/single_grid.ui:124
+#: resources/ui/single_grid.ui:124
 msgid "Critic Rating"
 msgstr "影评人评分"
 
-#: resources/ui/single_grid.ui:124 resources/ui/single_grid.ui:125
+#: resources/ui/single_grid.ui:125
 msgid "Premiere Date"
 msgstr "首映日期"
 
-#: resources/ui/single_grid.ui:125 resources/ui/single_grid.ui:126
+#: resources/ui/single_grid.ui:126
 msgid "Offical Rating"
 msgstr "官方评分"
 
-#: resources/ui/single_grid.ui:126 resources/ui/single_grid.ui:127
+#: resources/ui/single_grid.ui:127
 msgid "Production Year"
 msgstr "出品年份"
 
-#: resources/ui/single_grid.ui:127 resources/ui/single_grid.ui:128
+#: resources/ui/single_grid.ui:128
 msgid "Date Played"
 msgstr "播放日期"
 
-#: resources/ui/single_grid.ui:128 resources/ui/single_grid.ui:129
+#: resources/ui/single_grid.ui:129
 msgid "Runtime"
 msgstr "播放时长"
 
-#: resources/ui/single_grid.ui:129 resources/ui/single_grid.ui:130
+#: resources/ui/single_grid.ui:130
 msgid "Updated At"
 msgstr "更新日期"
 
-#: resources/ui/single_grid.ui:178 resources/ui/item.ui:395
-#: resources/ui/single_grid.ui:179
+#: resources/ui/single_grid.ui:179 resources/ui/item.ui:395
 msgid "Nothing Here"
 msgstr "空空如也"
 
-#: resources/ui/single_grid.ui:193 resources/ui/single_grid.ui:194
+#: resources/ui/single_grid.ui:194
 msgid "Poster"
 msgstr "海报"
 
-#: resources/ui/single_grid.ui:197 resources/ui/single_grid.ui:198
+#: resources/ui/single_grid.ui:198
 msgid "Backdrop"
 msgstr "背景图"
 
-#: resources/ui/single_grid.ui:201 resources/ui/single_grid.ui:202
+#: resources/ui/single_grid.ui:202
 msgid "Banner"
 msgstr "横幅"
 
@@ -1049,34 +1061,37 @@ msgstr "媒体信息"
 msgid "_Keyboard shortcuts"
 msgstr "快捷键"
 
-#: resources/ui/account.ui:9 resources/ui/account.ui:17
 #: resources/ui/account.ui:6 resources/ui/account.ui:14
 msgid "Add a New Server"
 msgstr "添加一个新服务器"
 
-#: resources/ui/account.ui:32
-msgid "_Add"
-msgstr "添加"
+#: resources/ui/account.ui:45
+msgid "Enter the server details below."
+msgstr ""
 
-#: resources/ui/account.ui:69
-msgid "Name (Nullable)"
-msgstr "名称(可为空)"
+#: resources/ui/account.ui:48 resources/ui/other.ui:54
+msgid "Name"
+msgstr "名称"
 
-#: resources/ui/account.ui:87
-msgid "Server Address (Auto parse)"
-msgstr "服务器地址(自动解析)"
+#: resources/ui/account.ui:66
+msgid "Server Address"
+msgstr "服务器地址"
 
-#: resources/ui/account.ui:106 resources/ui/account.ui:85
+#: resources/ui/account.ui:85
 msgid "Port"
 msgstr "端口"
 
-#: resources/ui/account.ui:113 resources/ui/account.ui:92
+#: resources/ui/account.ui:92
 msgid "Username"
 msgstr "用户名"
 
-#: resources/ui/account.ui:118
-msgid "Password (Nullable)"
-msgstr "密码(可为空)"
+#: resources/ui/account.ui:97
+msgid "Password"
+msgstr "密码"
+
+#: resources/ui/account.ui:108 resources/ui/account_settings.ui:605
+msgid "Add"
+msgstr "添加"
 
 #: resources/ui/server_action_row.ui:23
 msgid "Drag to reorder"
@@ -1323,10 +1338,6 @@ msgstr "无描述符"
 msgid "Add a descriptor"
 msgstr "添加描述符"
 
-#: resources/ui/account_settings.ui:605 resources/ui/account.ui:108
-msgid "Add"
-msgstr "添加"
-
 #: resources/ui/account_settings.ui:630 resources/ui/account_settings.ui:740
 msgid "This will use exact matching to obtain a list"
 msgstr "这将使用精确匹配来获取列表"
@@ -1381,7 +1392,6 @@ msgstr "停止并退出"
 
 #: resources/ui/mpvpage.ui:101 resources/ui/item.ui:108
 #: resources/ui/item.ui:145 resources/ui/identify_dialog.ui:61
-#: resources/ui/image_dialog_search_page.ui:51
 #: resources/ui/image_dialog_search_page.ui:54
 msgid "Loading..."
 msgstr "正在载入..."
@@ -1402,10 +1412,6 @@ msgstr "播放速度"
 msgid "Volume"
 msgstr "音量"
 
-#: resources/ui/other.ui:54 resources/ui/account.ui:48
-msgid "Name"
-msgstr "名称"
-
 #: resources/ui/other.ui:94
 msgid "No Inscriptions"
 msgstr "无内容"
@@ -1415,7 +1421,7 @@ msgid "Actors"
 msgstr "演员"
 
 #: resources/ui/other.ui:145 resources/ui/item.ui:452
-#: resources/ui/filter.ui:101 resources/ui/filter.ui:106
+#: resources/ui/filter.ui:106
 msgid "Studios"
 msgstr "工作室"
 
@@ -1455,74 +1461,51 @@ msgstr "推荐"
 msgid "MediaInfo"
 msgstr "媒体信息"
 
-#: resources/ui/metadata_dialog.ui:33
-msgid "_Save"
-msgstr "保存"
-
-#: resources/ui/metadata_dialog.ui:81 resources/ui/images_dialog.ui:59
-#: resources/ui/metadata_dialog.ui:69
+#: resources/ui/metadata_dialog.ui:69 resources/ui/images_dialog.ui:59
 msgid "Not Available"
 msgstr "不可用"
 
-#: resources/ui/metadata_dialog.ui:82 resources/ui/images_dialog.ui:60
-#: resources/ui/metadata_dialog.ui:70
+#: resources/ui/metadata_dialog.ui:70 resources/ui/images_dialog.ui:60
 msgid "This page is READ-ONLY, because you have no permission to modify it."
 msgstr "此页面是只读的，因为您没有权限修改它。"
 
-#: resources/ui/metadata_dialog.ui:91 resources/ui/identify_dialog.ui:60
-#: resources/ui/metadata_dialog.ui:79
+#: resources/ui/metadata_dialog.ui:79 resources/ui/identify_dialog.ui:60
 msgid "Path"
 msgstr "路径"
 
-#: resources/ui/metadata_dialog.ui:92 resources/ui/metadata_dialog.ui:80
+#: resources/ui/metadata_dialog.ui:80
 msgid "No data."
 msgstr "没有数据."
 
-#: resources/ui/metadata_dialog.ui:105 resources/ui/metadata_dialog.ui:94
+#: resources/ui/metadata_dialog.ui:94
 msgid "Sort Title"
 msgstr "排序标题"
 
-#: resources/ui/metadata_dialog.ui:116 resources/ui/metadata_dialog.ui:105
+#: resources/ui/metadata_dialog.ui:105
 msgid "Pick Date"
 msgstr "选择日期"
 
-#: resources/ui/metadata_dialog.ui:136 resources/ui/metadata_dialog.ui:125
+#: resources/ui/metadata_dialog.ui:125
 msgid "Pick Time"
 msgstr "选择时间"
 
-#: resources/ui/metadata_dialog.ui:189 resources/ui/metadata_dialog.ui:178
+#: resources/ui/metadata_dialog.ui:178
 msgid "Overview"
 msgstr "概览"
 
-#: resources/ui/metadata_dialog.ui:216
-msgid "Artists"
-msgstr "艺人"
-
-#: resources/ui/metadata_dialog.ui:221
-msgid "Album Artists"
-msgstr "专辑艺人"
-
-#: resources/ui/metadata_dialog.ui:226
-msgid "Album"
-msgstr "专辑"
-
-#: resources/ui/metadata_dialog.ui:236
-msgid "Track Number"
-msgstr "轨道编号"
-
-#: resources/ui/metadata_dialog.ui:249 resources/ui/metadata_dialog.ui:204
+#: resources/ui/metadata_dialog.ui:204
 msgid "TheMovieDb Id"
 msgstr "TMDb Id"
 
-#: resources/ui/metadata_dialog.ui:254 resources/ui/metadata_dialog.ui:209
+#: resources/ui/metadata_dialog.ui:209
 msgid "TheTVDb Id"
 msgstr "TVDb Id"
 
-#: resources/ui/metadata_dialog.ui:259 resources/ui/metadata_dialog.ui:214
+#: resources/ui/metadata_dialog.ui:214
 msgid "IMDb Id"
 msgstr "IMDb Id"
 
-#: resources/ui/metadata_dialog.ui:267 resources/ui/metadata_dialog.ui:222
+#: resources/ui/metadata_dialog.ui:222
 msgid "Lock The Item"
 msgstr "锁定此项目"
 
@@ -1550,7 +1533,7 @@ msgstr "图像"
 msgid "Pick image to upload"
 msgstr "选择要上传的图片"
 
-#: resources/ui/images_dialog.ui:152 resources/ui/images_dialog.ui:157
+#: resources/ui/images_dialog.ui:157
 msgid "BackDrops"
 msgstr "背景"
 
@@ -1581,21 +1564,8 @@ msgid "Provider"
 msgstr "提供者"
 
 #: resources/ui/image_dialog_search_page.ui:64
-#: resources/ui/image_dialog_search_page.ui:61
 msgid "All Languages"
 msgstr "所有语言"
-
-#: resources/ui/missing_episodes.ui:6 resources/ui/missing_episodes.ui:36
-msgid "Missing Episodes"
-msgstr "缺失剧集"
-
-#: resources/ui/missing_episodes.ui:60 resources/ui/missing_episodes.ui:57
-msgid "Specials"
-msgstr "特殊"
-
-#: resources/ui/missing_episodes.ui:72 resources/ui/missing_episodes.ui:69
-msgid "Upcoming"
-msgstr "即将到来"
 
 #: resources/ui/filter.ui:42
 msgid "Filters"
@@ -1606,90 +1576,32 @@ msgid "Playback Status"
 msgstr "播放状态"
 
 #: resources/ui/filter.ui:50 resources/ui/filter.ui:149
-#: resources/ui/filter.ui:49
 msgid "Any"
 msgstr "任意"
 
-#: resources/ui/filter.ui:51 resources/ui/filter.ui:50
+#: resources/ui/filter.ui:51
 msgid "Played"
 msgstr "已播放"
 
-#: resources/ui/filter.ui:52 resources/ui/filter.ui:51
+#: resources/ui/filter.ui:52
 msgid "Unplayed"
 msgstr "未播放"
 
-#: resources/ui/filter.ui:53 resources/ui/filter.ui:52
+#: resources/ui/filter.ui:53
 msgid "Continue Play"
 msgstr "继续播放"
 
-#: resources/ui/filter.ui:92 resources/ui/filter.ui:89
+#: resources/ui/filter.ui:92
 msgid "Years"
 msgstr "年份"
-
-#: resources/ui/filter.ui:115 resources/ui/filter.ui:109
-msgid "Media Info"
-msgstr "媒体信息"
-
-#: resources/ui/filter.ui:139 resources/ui/filter.ui:124
-msgid "Resolution"
-msgstr "分辨率"
-
-#: resources/ui/filter.ui:132 resources/ui/filter.ui:130
-msgid "Video Types"
-msgstr "视频类型"
-
-#: src/ui/widgets/metadata_dialog.rs:290 resources/ui/metadata_dialog.ui:232
-#: resources/ui/filter.ui:179 resources/ui/filter.ui:140
-msgid "Apply"
-msgstr "应用"
-
-#: resources/ui/account.ui:66
-msgid "Server Address"
-msgstr "服务器地址"
-
-#: resources/ui/account.ui:97
-msgid "Password"
-msgstr "密码"
-
-#: src/ui/widgets/metadata_dialog.rs:292
-#: src/ui/widgets/image_dialog/search_page.rs:146
-#: src/ui/widgets/tu_item/action.rs:467
-#: src/ui/widgets/identify/search_page.rs:124
-msgid "Are you sure you wish to continue?"
-msgstr ""
-
-#: src/ui/widgets/metadata_dialog.rs:296
-#: src/ui/widgets/image_dialog/search_page.rs:150
-#: src/ui/widgets/identify/search_page.rs:128
-msgid "Ok"
-msgstr ""
-
-#: src/ui/widgets/image_dialog/search_page.rs:144
-msgid "Replace Image"
-msgstr ""
-
-#: src/ui/widgets/tu_item/action.rs:461
-msgid "Delete Item"
-msgstr ""
-
-#: src/ui/widgets/tu_item/action.rs:465
-msgid ""
-"Deleting this item will delete it from both the file system and your media "
-"library.\n"
-"The following files and folders will be deleted:"
-msgstr ""
-
-#: src/ui/widgets/identify/search_page.rs:131
-msgid "Replace existing images"
-msgstr ""
-
-#: resources/ui/account.ui:45
-msgid "Enter the server details below."
-msgstr ""
 
 #: resources/ui/filter.ui:99
 msgid "Official Ratings"
 msgstr ""
+
+#: resources/ui/filter.ui:115
+msgid "Media Info"
+msgstr "媒体信息"
 
 #: resources/ui/filter.ui:118
 msgid "Containers"
@@ -1699,21 +1611,65 @@ msgstr ""
 msgid "Encoders"
 msgstr ""
 
+#: resources/ui/filter.ui:132
+msgid "Video Types"
+msgstr "视频类型"
+
+#: resources/ui/filter.ui:139
+msgid "Resolution"
+msgstr "分辨率"
+
 #: resources/ui/filter.ui:165
 msgid "Clear"
 msgstr ""
 
-#: resources/ui/filter.ui:95
-msgid "Official Rating"
-msgstr "官方评级"
+#: resources/ui/missing_episodes.ui:6 resources/ui/missing_episodes.ui:36
+msgid "Missing Episodes"
+msgstr "缺失剧集"
 
-#: resources/ui/filter.ui:112
-msgid "Container"
-msgstr "容器"
+#: resources/ui/missing_episodes.ui:60
+msgid "Specials"
+msgstr "特殊"
 
-#: resources/ui/filter.ui:118
-msgid "Encoder"
-msgstr "编码器"
+#: resources/ui/missing_episodes.ui:72
+msgid "Upcoming"
+msgstr "即将到来"
+
+#~ msgid "_Add"
+#~ msgstr "添加"
+
+#~ msgid "Name (Nullable)"
+#~ msgstr "名称(可为空)"
+
+#~ msgid "Server Address (Auto parse)"
+#~ msgstr "服务器地址(自动解析)"
+
+#~ msgid "Password (Nullable)"
+#~ msgstr "密码(可为空)"
+
+#~ msgid "_Save"
+#~ msgstr "保存"
+
+#~ msgid "Artists"
+#~ msgstr "艺人"
+
+#~ msgid "Album Artists"
+#~ msgstr "专辑艺人"
+
+#~ msgid "Album"
+#~ msgstr "专辑"
+
+#~ msgid "Track Number"
+#~ msgstr "轨道编号"
+
+#~ msgid "Official Rating"
+#~ msgstr "官方评级"
+
+#~ msgid "Container"
+#~ msgstr "容器"
+
+#~ msgid "Encoder"
+#~ msgstr "编码器"
 
 #~ msgid "This only effects on getting images/updating cache"
 #~ msgstr "这仅对获取图像/更新缓存有影响"
