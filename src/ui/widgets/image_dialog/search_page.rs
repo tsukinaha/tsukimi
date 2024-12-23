@@ -1,4 +1,5 @@
 use adw::subclass::prelude::*;
+use gettextrs::gettext;
 use gtk::{
     gio,
     glib,
@@ -6,10 +7,8 @@ use gtk::{
     StringObject,
 };
 
-use gtk::{
-    prelude::*,
-    template_callbacks,
-};
+use adw::prelude::*;
+use gtk::template_callbacks;
 
 use crate::{
     client::{
@@ -17,7 +16,10 @@ use crate::{
         error::UserFacingError,
     },
     toast,
-    ui::widgets::eu_item,
+    ui::widgets::eu_item::{
+        self,
+        EuObject,
+    },
     utils::{
         spawn,
         spawn_tokio,
@@ -115,6 +117,78 @@ impl ImageDialogSearchPage {
             .property("id", id)
             .property("image-type", image_type)
             .build()
+    }
+
+    #[template_callback]
+    async fn item_activated_cb(&self, pos: u32, gridview: &gtk::GridView) {
+        let Some(item) = gridview.model().and_then(|m| {
+            m.item(pos)
+                .and_downcast::<EuObject>()
+                .and_then(|o| o.item())
+        }) else {
+            return;
+        };
+
+        let Some(provider_name) = item.line1() else {
+            return;
+        };
+
+        let Some(url) = item.image_original_url() else {
+            return;
+        };
+
+        let id = self.id();
+        let image_type = self.image_type();
+
+        let alert_dialog = adw::AlertDialog::builder()
+            .heading(gettext("Replace Image"))
+            .title("Replace Image")
+            .body(gettext("Are you sure you wish to continue?"))
+            .build();
+
+        alert_dialog.add_response("close", &gettext("Cancel"));
+        alert_dialog.add_response("ok", &gettext("Ok"));
+        alert_dialog.set_response_appearance("ok", adw::ResponseAppearance::Suggested);
+
+        alert_dialog.connect_response(
+            Some("ok"),
+            glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_, _| {
+                    spawn(glib::clone!(
+                        #[weak]
+                        obj,
+                        #[strong]
+                        id,
+                        #[strong]
+                        image_type,
+                        #[strong]
+                        provider_name,
+                        #[strong]
+                        url,
+                        async move {
+                            match spawn_tokio(async move {
+                                EMBY_CLIENT
+                                    .download_remote_images(&id, &image_type, &provider_name, &url)
+                                    .await
+                            })
+                            .await
+                            {
+                                Ok(_) => {
+                                    toast!(obj, gettext("Success"));
+                                }
+                                Err(e) => {
+                                    toast!(obj, e.to_user_facing());
+                                }
+                            }
+                        }
+                    ))
+                }
+            ),
+        );
+
+        alert_dialog.present(Some(self));
     }
 
     pub async fn init<const FIRST_INIT: bool>(&self) {

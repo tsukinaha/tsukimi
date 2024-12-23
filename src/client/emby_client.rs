@@ -1348,6 +1348,19 @@ impl EmbyClient {
         self.post("Items/Delete", &params, json!({})).await
     }
 
+    pub async fn download_remote_images(
+        &self, id: &str, type_: &str, provider_name: &str, image_url: &str,
+    ) -> Result<()> {
+        let path = format!("Items/{}/RemoteImages/Download", id);
+        let params = [
+            ("Type", type_),
+            ("ProviderName", provider_name),
+            ("ImageUrl", image_url),
+        ];
+        self.post(&path, &params, json!({})).await?;
+        Ok(())
+    }
+
     pub async fn get_show_missing(
         &self, id: &str, include_specials: bool, upcoming: bool,
     ) -> Result<MissingEpisodesList> {

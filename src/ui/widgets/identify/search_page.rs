@@ -139,12 +139,14 @@ impl IdentifyDialogSearchPage {
                 #[weak]
                 check_button,
                 move |_, _| {
-                    let id = id.clone();
-                    let value = value.clone();
                     let replace = check_button.is_active();
                     spawn(glib::clone!(
                         #[weak]
                         obj,
+                        #[strong]
+                        id,
+                        #[strong]
+                        value,
                         async move {
                             match spawn_tokio(async move {
                                 EMBY_CLIENT.apply_remote_search(&id, value, replace).await
