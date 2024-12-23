@@ -69,6 +69,7 @@ mod imp {
     };
 
     use adw::prelude::*;
+    use gettextrs::gettext;
     use glib::subclass::InitializingObject;
     use gtk::{
         glib,
@@ -101,6 +102,8 @@ mod imp {
         pub url: RefCell<Option<String>>,
         #[property(get, set = Self::set_fullscreened, explicit_notify)]
         pub fullscreened: Cell<bool>,
+        #[property(get, set = Self::set_paused)]
+        pub paused: Cell<bool>,
         #[template_child]
         pub video: TemplateChild<MPVGLArea>,
         #[template_child]
@@ -279,6 +282,23 @@ mod imp {
 
             self.obj().notify_fullscreened();
         }
+
+        fn set_paused(&self, paused: bool) {
+            let play_pause_image = self.play_pause_image.get();
+            let menu_actions_play_pause_button = self.menu_actions.imp().play_pause_button.get();
+            if paused {
+                play_pause_image.set_icon_name(Some("media-playback-start-symbolic"));
+                play_pause_image.set_tooltip_text(Some(&gettext("Play")));
+                menu_actions_play_pause_button.set_icon_name("media-playback-start-symbolic");
+                menu_actions_play_pause_button.set_tooltip_text(Some(&gettext("Play")));
+            } else {
+                play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
+                play_pause_image.set_tooltip_text(Some(&gettext("Pause")));
+                menu_actions_play_pause_button.set_icon_name("media-playback-pause-symbolic");
+                menu_actions_play_pause_button.set_tooltip_text(Some(&gettext("Pause")));
+            }
+            self.paused.set(paused);
+        }
     }
 }
 
@@ -413,6 +433,10 @@ impl MPVPage {
 
     async fn load_video(&self, offset: isize) {
         toast!(self, gettext("Loading Video..."));
+
+        if self.paused() {
+            self.imp().video.pause();
+        }
 
         let Some(current_video) = self.imp().current_video.borrow().clone() else {
             return;
@@ -719,7 +743,7 @@ impl MPVPage {
             self.remove_timeout();
         }
 
-        self.pause_icon_set(value);
+        self.set_paused(value);
     }
 
     fn on_cache_speed_update(&self, value: i64) {
@@ -889,23 +913,6 @@ impl MPVPage {
     fn on_play_pause_clicked(&self) {
         let video = &self.imp().video;
         video.pause();
-    }
-
-    fn pause_icon_set(&self, paused: bool) {
-        let imp = self.imp();
-        let play_pause_image = imp.play_pause_image.get();
-        let menu_actions_play_pause_button = imp.menu_actions.imp().play_pause_button.get();
-        if paused {
-            play_pause_image.set_icon_name(Some("media-playback-start-symbolic"));
-            play_pause_image.set_tooltip_text(Some(&gettext("Play")));
-            menu_actions_play_pause_button.set_icon_name("media-playback-start-symbolic");
-            menu_actions_play_pause_button.set_tooltip_text(Some(&gettext("Play")));
-        } else {
-            play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
-            play_pause_image.set_tooltip_text(Some(&gettext("Pause")));
-            menu_actions_play_pause_button.set_icon_name("media-playback-pause-symbolic");
-            menu_actions_play_pause_button.set_tooltip_text(Some(&gettext("Pause")));
-        }
     }
 
     #[template_callback]
