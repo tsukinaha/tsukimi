@@ -4,8 +4,8 @@ src/client/runtime.rs
 src/client/account.rs
 src/client/mod.rs
 src/client/windows_compat.rs
-src/client/emby_client.rs
 src/client/structs.rs
+src/client/emby_client.rs
 src/gstl/mod.rs
 src/gstl/player.rs
 src/ui/models/mod.rs
@@ -83,10 +83,13 @@ src/ui/widgets/identify/dialog.rs
 src/ui/widgets/identify/search_page.rs
 src/ui/widgets/theme_switcher/mod.rs
 src/ui/widgets/theme_switcher/switcher.rs
-src/ui/widgets/filter_panel/mod.rs
-src/ui/widgets/filter_panel/filter_row.rs
 src/ui/widgets/filter_panel/dialog.rs
 src/ui/widgets/filter_panel/filter_label.rs
+src/ui/widgets/filter_panel/filters_row.rs
+src/ui/widgets/filter_panel/filter_row.rs
+src/ui/widgets/filter_panel/mod.rs
+src/ui/widgets/filter_panel/search_page.rs
+src/ui/widgets/filter_panel/filters_list.rs
 src/ui/mpv/video_scale.rs
 src/ui/mpv/options_matcher.rs
 src/ui/mpv/control_sidebar.rs
@@ -133,7 +136,6 @@ resources/ui/account.ui
 resources/ui/server_action_row.ui
 resources/ui/window.ui
 resources/ui/home.ui
-resources/ui/danmaku_select_dialog.ui
 resources/ui/account_settings.ui
 resources/ui/horbu_scrolled.ui
 resources/ui/hortu_scrolled.ui
@@ -151,8 +153,10 @@ resources/ui/eu_item.ui
 resources/ui/identify_dialog.ui
 resources/ui/identify_dialog_search_page.ui
 resources/ui/image_dialog_search_page.ui
-resources/ui/missing_episodes.ui
 resources/ui/theme_switcher.ui
 resources/ui/filter.ui
-resources/ui/filter_row.ui
 resources/ui/filter_label.ui
+resources/ui/filters_row.ui
+resources/ui/filter_row.ui
+resources/ui/filter_search_page.ui
+resources/ui/missing_episodes.ui

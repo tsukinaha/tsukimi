@@ -12,10 +12,14 @@ use gtk::{
 use crate::{
     client::{
         emby_client::EMBY_CLIENT,
-        error::UserFacingError, structs::SimpleListItem,
+        error::UserFacingError,
+        structs::SimpleListItem,
     },
     toast,
-    utils::{spawn, spawn_tokio},
+    utils::{
+        spawn,
+        spawn_tokio,
+    },
 };
 
 mod imp {
@@ -188,7 +192,9 @@ mod imp {
             }
 
             let buffer = self.overview_entry.buffer();
-            let overview = buffer.text(&buffer.start_iter(), &buffer.end_iter(), false).to_string();
+            let overview = buffer
+                .text(&buffer.start_iter(), &buffer.end_iter(), false)
+                .to_string();
             if !overview.is_empty() {
                 value["Overview"] = Value::String(overview);
             }
@@ -279,7 +285,7 @@ impl MetadataDialog {
         };
 
         let id = self.id();
-        
+
         let alert_dialog = adw::AlertDialog::builder()
             .heading(gettext("Apply"))
             .title("Apply")
@@ -304,12 +310,13 @@ impl MetadataDialog {
                         #[strong]
                         value,
                         async move {
-                            match spawn_tokio(async move {
-                                EMBY_CLIENT.post_item(&id, value).await
-                            })
+                            match spawn_tokio(
+                                async move { EMBY_CLIENT.post_item(&id, value).await },
+                            )
                             .await
                             {
                                 Ok(_) => {
+                                    toast!(obj, gettext("Success"));
                                     obj.close();
                                 }
                                 Err(e) => {
