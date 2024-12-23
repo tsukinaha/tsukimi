@@ -496,10 +496,15 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_edit_info(&self, id: &str) -> Result<SimpleListItem> {
+    pub async fn get_edit_info(&self, id: &str) -> Result<Value> {
         let path = format!("Users/{}/Items/{}", self.user_id(), id);
         let params = [("Fields", "ChannelMappingInfo")];
         self.request(&path, &params).await
+    }
+
+    pub async fn post_item(&self, id: &str, body: Value) -> Result<Response> {
+        let path = format!("Items/{}", id);
+        self.post(&path, &[], body).await
     }
 
     pub async fn get_resume(&self) -> Result<List> {

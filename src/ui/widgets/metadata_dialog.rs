@@ -2,6 +2,7 @@ use adw::{
     prelude::*,
     subclass::prelude::*,
 };
+use gettextrs::gettext;
 use gtk::{
     glib,
     template_callbacks,
@@ -11,10 +12,10 @@ use gtk::{
 use crate::{
     client::{
         emby_client::EMBY_CLIENT,
-        error::UserFacingError,
+        error::UserFacingError, structs::SimpleListItem,
     },
     toast,
-    utils::spawn_tokio,
+    utils::{spawn, spawn_tokio},
 };
 
 mod imp {
@@ -28,6 +29,7 @@ mod imp {
         glib,
         CompositeTemplate,
     };
+    use serde_json::Value;
 
     use super::*;
     use crate::{
@@ -66,19 +68,6 @@ mod imp {
         pub overview_entry: TemplateChild<gtk::TextView>,
 
         #[template_child]
-        pub music_group: TemplateChild<adw::PreferencesGroup>,
-        #[template_child]
-        pub artist_entry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub album_artist_entry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub album_entry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub disc_entry: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub track_entry: TemplateChild<adw::EntryRow>,
-
-        #[template_child]
         pub ids_group: TemplateChild<adw::PreferencesGroup>,
         #[template_child]
         pub moviedb_entry: TemplateChild<adw::EntryRow>,
@@ -96,8 +85,11 @@ mod imp {
         pub minute_spin: TemplateChild<gtk::SpinButton>,
         #[template_child]
         pub second_spin: TemplateChild<gtk::SpinButton>,
+        #[template_child]
+        pub apply_button: TemplateChild<adw::ButtonRow>,
 
         pub timezone: RefCell<Option<glib::DateTime>>,
+        pub value: OnceCell<Value>,
     }
 
     #[glib::object_subclass]
@@ -131,6 +123,7 @@ mod imp {
         fn init(&self) {
             if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
                 self.hint.set_visible(false);
+                self.apply_button.set_sensitive(true);
             }
 
             spawn(glib::clone!(
@@ -164,22 +157,7 @@ mod imp {
             self.lock_check
                 .set_active(metadata.lock_data.unwrap_or_default());
 
-            if metadata.item_type == "Audio" {
-                self.artist_entry
-                    .set_text(&metadata.artists.unwrap_or_default().join(","));
-                self.album_artist_entry
-                    .set_text(&metadata.album_artist.unwrap_or_default());
-                self.album_entry
-                    .set_text(&metadata.album.unwrap_or_default());
-                self.disc_entry
-                    .set_text(&metadata.parent_index_number.unwrap_or_default().to_string());
-                self.track_entry
-                    .set_text(&metadata.index_number.unwrap_or_default().to_string());
-                self.music_group.set_visible(true);
-                return;
-            }
-
-            if metadata.item_type == "MusicAlbum" {
+            if metadata.item_type == "MusicAlbum" || metadata.item_type == "Audio" {
                 return;
             }
 
@@ -192,6 +170,56 @@ mod imp {
                     .set_text(&provider_ids.imdb.unwrap_or_default());
                 self.ids_group.set_visible(true);
             }
+        }
+
+        pub fn get_edit_data(&self) -> Option<Value> {
+            let value = self.value.get()?;
+
+            let mut value = value.clone();
+
+            let title = self.title_entry.text().to_string();
+            if !title.is_empty() {
+                value["Name"] = Value::String(title);
+            }
+
+            let sort_title = self.sorttitle_entry.text().to_string();
+            if !sort_title.is_empty() {
+                value["SortName"] = Value::String(sort_title);
+            }
+
+            let buffer = self.overview_entry.buffer();
+            let overview = buffer.text(&buffer.start_iter(), &buffer.end_iter(), false).to_string();
+            if !overview.is_empty() {
+                value["Overview"] = Value::String(overview);
+            }
+
+            let lock_data = self.lock_check.is_active();
+            value["LockData"] = Value::Bool(lock_data);
+
+            if let Some(date) = self.timezone.borrow().as_ref() {
+                let Ok(date) = date.to_utc().and_then(|x| x.format_iso8601()) else {
+                    println!("Error converting date");
+                    return None;
+                };
+                value["DateCreated"] = Value::String(date.to_string());
+            }
+
+            let tmdb = self.moviedb_entry.text().to_string();
+            if !tmdb.is_empty() {
+                value["ProviderIds"]["Tmdb"] = Value::String(tmdb);
+            }
+
+            let tvdb = self.tvdb_entry.text().to_string();
+            if !tvdb.is_empty() {
+                value["ProviderIds"]["Tvdb"] = Value::String(tvdb);
+            }
+
+            let imdb = self.imdb_entry.text().to_string();
+            if !imdb.is_empty() {
+                value["ProviderIds"]["IMDB"] = Value::String(imdb);
+            }
+
+            Some(value)
         }
     }
 }
@@ -213,7 +241,12 @@ impl MetadataDialog {
         match spawn_tokio(async move { EMBY_CLIENT.get_edit_info(&id).await }).await {
             Ok(metadata) => {
                 self.imp().stack.set_visible_child_name("page");
-                self.imp().load_data(metadata);
+                let value = metadata.clone();
+                let _ = self.imp().value.set(value);
+                let Ok(item) = serde_json::from_value::<SimpleListItem>(metadata.clone()) else {
+                    return;
+                };
+                self.imp().load_data(item);
             }
             Err(e) => {
                 toast!(self, e.to_user_facing());
@@ -237,6 +270,59 @@ impl MetadataDialog {
         .unwrap();
 
         self.set_time(date)
+    }
+
+    #[template_callback]
+    fn on_apply_button_clicked(&self) {
+        let Some(value) = self.imp().get_edit_data() else {
+            return;
+        };
+
+        let id = self.id();
+        
+        let alert_dialog = adw::AlertDialog::builder()
+            .heading(gettext("Apply"))
+            .title("Apply")
+            .body(gettext("Are you sure you wish to continue?"))
+            .build();
+
+        alert_dialog.add_response("close", &gettext("Cancel"));
+        alert_dialog.add_response("ok", &gettext("Ok"));
+        alert_dialog.set_response_appearance("ok", adw::ResponseAppearance::Suggested);
+
+        alert_dialog.connect_response(
+            Some("ok"),
+            glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_, _| {
+                    spawn(glib::clone!(
+                        #[weak]
+                        obj,
+                        #[strong]
+                        id,
+                        #[strong]
+                        value,
+                        async move {
+                            match spawn_tokio(async move {
+                                EMBY_CLIENT.post_item(&id, value).await
+                            })
+                            .await
+                            {
+                                Ok(_) => {
+                                    obj.close();
+                                }
+                                Err(e) => {
+                                    toast!(obj, e.to_user_facing());
+                                }
+                            }
+                        }
+                    ))
+                }
+            ),
+        );
+
+        alert_dialog.present(Some(self));
     }
 
     fn get_time(&self) -> glib::DateTime {
