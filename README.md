@@ -20,6 +20,9 @@ You can play music and albums, as well as videos with more advanced settings (yo
 <div align="center">
  <img src="./docs/tsukimi2.png"/>
 </div>
+<div align="center">
+ <img src="./docs/tsukimi3.png"/>
+</div>
 
 ## Installation
 ### Packages
