@@ -9,40 +9,42 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-23 13:18+0800\n"
-"PO-Revision-Date: 2024-10-21 18:16+0000\n"
-"Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
-">\n"
+"PO-Revision-Date: 2024-12-24 03:51+0000\n"
+"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>"
+"\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-rc\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: src/client/error.rs:19
 msgid "Timeout Error, Check your internet connection"
 msgstr ""
+"Erreur : tentative de connexion expirée. Vérifiez votre connexion Internet"
 
 #: src/client/error.rs:22
 msgid "Connection Error, Check your internet connection"
-msgstr ""
+msgstr "Erreur de connexion, vérifiez votre connexion Internet"
 
 #: src/ui/provider/tu_item.rs:377
 msgid "Processing..."
-msgstr ""
+msgstr "Traitement..."
 
 #: src/ui/provider/tu_item.rs:383
 msgid "No transcoding url found"
-msgstr ""
+msgstr "Aucun URL de transcodage trouvé"
 
 #: src/ui/provider/tu_item.rs:475
 msgid "No mediasource found"
-msgstr ""
+msgstr "Aucun URL de source média trouvé"
 
 #: src/ui/provider/tu_item.rs:514
 msgid "No next up video found"
-msgstr ""
+msgstr "Aucune vidéo suivante trouvée"
 
 #: src/ui/widgets/star_toggle.rs:68
 msgid "Remove from favorites"
@@ -137,7 +139,7 @@ msgstr "Aimé"
 
 #: src/ui/widgets/list.rs:122
 msgid "Folder"
-msgstr ""
+msgstr "Dossier"
 
 #: src/ui/widgets/media_viewer.rs:350
 #: src/ui/widgets/image_dialog/image_infocard.rs:171
@@ -147,14 +149,14 @@ msgstr "Image copiée dans le presse-papiers"
 #: src/ui/widgets/metadata_dialog.rs:290 resources/ui/metadata_dialog.ui:232
 #: resources/ui/filter.ui:179
 msgid "Apply"
-msgstr ""
+msgstr "Appliquer"
 
 #: src/ui/widgets/metadata_dialog.rs:292
 #: src/ui/widgets/image_dialog/search_page.rs:146
 #: src/ui/widgets/tu_item/action.rs:467
 #: src/ui/widgets/identify/search_page.rs:124
 msgid "Are you sure you wish to continue?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir continuer ?"
 
 #: src/ui/widgets/metadata_dialog.rs:295
 #: src/ui/widgets/image_dialog/search_page.rs:149
@@ -169,7 +171,7 @@ msgstr "Annuler"
 #: src/ui/widgets/image_dialog/search_page.rs:150
 #: src/ui/widgets/identify/search_page.rs:128
 msgid "Ok"
-msgstr ""
+msgstr "OK"
 
 #: src/ui/widgets/metadata_dialog.rs:319
 #: src/ui/widgets/image_dialog/search_page.rs:179
@@ -252,7 +254,7 @@ msgstr "Serveur ajouté avec succès"
 
 #: src/ui/widgets/item.rs:320
 msgid "Select an episode"
-msgstr ""
+msgstr "Sélectionnez un épisode"
 
 #: src/ui/widgets/item.rs:606 src/ui/mpv/page.rs:900 src/ui/mpv/page.rs:902
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
@@ -263,11 +265,11 @@ msgstr "Démarrer / Reprendre"
 
 #: src/ui/widgets/item.rs:986
 msgid "Codec"
-msgstr ""
+msgstr "Codec"
 
 #: src/ui/widgets/item.rs:989
 msgid "Language"
-msgstr ""
+msgstr "Langue"
 
 #: src/ui/widgets/item.rs:992 resources/ui/single_grid.ui:120
 #: resources/ui/metadata_dialog.ui:89
@@ -280,43 +282,43 @@ msgstr "Débit binaire"
 
 #: src/ui/widgets/item.rs:1001
 msgid "BitDepth"
-msgstr ""
+msgstr "Profondeur de bit"
 
 #: src/ui/widgets/item.rs:1005
 msgid "SampleRate"
-msgstr ""
+msgstr "Fréquence d'échantillonnage"
 
 #: src/ui/widgets/item.rs:1009
 msgid "Height"
-msgstr ""
+msgstr "Hauteur"
 
 #: src/ui/widgets/item.rs:1012
 msgid "Width"
-msgstr ""
+msgstr "Largeur"
 
 #: src/ui/widgets/item.rs:1015
 msgid "ColorSpace"
-msgstr ""
+msgstr "Espace de couleurs"
 
 #: src/ui/widgets/item.rs:1019
 msgid "DisplayTitle"
-msgstr ""
+msgstr "Titre d'affichage"
 
 #: src/ui/widgets/item.rs:1023
 msgid "Channel"
-msgstr ""
+msgstr "Canal"
 
 #: src/ui/widgets/item.rs:1027
 msgid "ChannelLayout"
-msgstr ""
+msgstr "Disposition des canaux"
 
 #: src/ui/widgets/item.rs:1032
 msgid "AverageFrameRate"
-msgstr ""
+msgstr "Fréquence d'images moyen"
 
 #: src/ui/widgets/item.rs:1036
 msgid "PixelFormat"
-msgstr ""
+msgstr "Format de pixel"
 
 #: src/ui/widgets/item.rs:1155
 msgid "No video source found"
@@ -324,15 +326,15 @@ msgstr "Aucune source vidéo trouvée"
 
 #: src/ui/widgets/item.rs:1346
 msgid "Season not found. Is this a continue watching list?"
-msgstr ""
+msgstr "Saison introuvable. Est-ce une liste de lecture continue ?"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:184
 msgid "Image saved"
-msgstr ""
+msgstr "Image sauvegardée"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:189
 msgid "Failed to load image"
-msgstr ""
+msgstr "Échec du chargement de l'image"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:151
 msgid "No image to view"
@@ -344,11 +346,11 @@ msgstr "Aucune image à copier"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:204
 msgid "Image deleted"
-msgstr ""
+msgstr "Image supprimée"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:209
 msgid "Error deleting image"
-msgstr ""
+msgstr "Erreur lors de la suppression de l'image"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:253
 msgid "Error loading image"
@@ -356,7 +358,7 @@ msgstr "Erreur de chargement de l'image"
 
 #: src/ui/widgets/image_dialog/search_page.rs:144
 msgid "Replace Image"
-msgstr ""
+msgstr "Remplacer l'image"
 
 #: src/ui/widgets/window.rs:296 resources/ui/window.ui:303
 msgid "Home"
@@ -370,15 +372,15 @@ msgstr "Rechercher"
 
 #: src/ui/widgets/window.rs:828
 msgid "Server Panel"
-msgstr ""
+msgstr "Panel du serveur"
 
 #: src/ui/widgets/window.rs:1002
 msgid "Fatal Error"
-msgstr ""
+msgstr "Erreur fatale"
 
 #: src/ui/widgets/window.rs:1005
 msgid "Copy Error & Close"
-msgstr ""
+msgstr "Copier l'erreur et fermer"
 
 #: src/ui/widgets/tu_overview_item.rs:254 src/ui/widgets/tu_list_item.rs:290
 msgid "Present"
@@ -386,7 +388,7 @@ msgstr "Présent"
 
 #: src/ui/widgets/tu_item/action.rs:461
 msgid "Delete Item"
-msgstr ""
+msgstr "Supprimer l'élément"
 
 #: src/ui/widgets/tu_item/action.rs:465
 msgid ""
@@ -394,6 +396,9 @@ msgid ""
 "library.\n"
 "The following files and folders will be deleted:"
 msgstr ""
+"Supprimer cet élément le supprimera à la fois du système de fichiers et de "
+"votre bibliothèque.\n"
+"Les fichiers et dossiers suivants seront supprimés :"
 
 #: src/ui/widgets/tu_item/action.rs:472 resources/ui/pop-menu.ui:87
 #: resources/ui/server_action_row.ui:52 resources/ui/image_info_card.ui:139
@@ -402,29 +407,29 @@ msgstr "Supprimer"
 
 #: src/ui/widgets/tu_item/action.rs:492 src/ui/widgets/tu_item/action.rs:550
 msgid "Item deleted"
-msgstr ""
+msgstr "Élément supprimé"
 
 #: src/ui/widgets/tu_item/action.rs:524 src/ui/widgets/tu_item/action.rs:525
 #: src/ui/widgets/tu_item/action.rs:530 resources/ui/pop-menu.ui:57
 msgid "Remove Identification"
-msgstr ""
+msgstr "Supprimer l'identification"
 
 #: src/ui/widgets/tu_item/action.rs:526
 msgid "Are you sure you wish to reset all metadata?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir réinitialiser toutes les métadonnées ?"
 
 #: src/ui/widgets/tu_list_item.rs:189 src/ui/widgets/tu_list_item.rs:193
 #: src/ui/widgets/tu_list_item.rs:197
 msgid "Waiting for mediasource ..."
-msgstr ""
+msgstr "En attente d'une source de média..."
 
 #: src/ui/widgets/missing_episodes_dialog.rs:149
 msgid "Special"
-msgstr ""
+msgstr "Spécial"
 
 #: src/ui/widgets/identify/dialog.rs:140
 msgid "Failed to get path"
-msgstr ""
+msgstr "Erreur lors de la récupération du chemin d'accès"
 
 #: src/ui/widgets/identify/search_page.rs:122 resources/ui/pop-menu.ui:51
 #: resources/ui/identify_dialog.ui:6 resources/ui/identify_dialog.ui:14
@@ -434,7 +439,7 @@ msgstr "Identifier"
 
 #: src/ui/widgets/identify/search_page.rs:131
 msgid "Replace existing images"
-msgstr ""
+msgstr "Remplacer les images existantes"
 
 #: src/ui/mpv/control_sidebar.rs:452
 msgid "Video filter settings cleared."
@@ -458,7 +463,7 @@ msgstr "Paramètres de retrait des bandes de couleurs réinitialisés."
 
 #: src/ui/mpv/mpvglarea.rs:73
 msgid "Failed to get GLContext"
-msgstr ""
+msgstr "Erreur lors de la récupération de GLContext"
 
 #: src/ui/mpv/page.rs:415
 msgid "Loading Video..."
@@ -481,6 +486,8 @@ msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
 msgstr ""
+"MPV a été arrêté, l'application va s'arrêter.\n"
+"Tsukimi ne peut pas redémarrer MPV."
 
 #: src/ui/mpv/page.rs:905 src/ui/mpv/page.rs:907 resources/ui/mpvpage.ui:200
 msgid "Pause"
@@ -573,16 +580,16 @@ msgstr "N'aime pas"
 #: resources/ui/pop-menu.ui:37 resources/ui/metadata_dialog.ui:18
 #: resources/ui/metadata_dialog.ui:26
 msgid "Edit Metadata"
-msgstr ""
+msgstr "Modifier les métadonnées"
 
 #: resources/ui/pop-menu.ui:43 resources/ui/images_dialog.ui:6
 #: resources/ui/images_dialog.ui:36
 msgid "Edit Images"
-msgstr ""
+msgstr "Modifier les images"
 
 #: resources/ui/pop-menu.ui:65
 msgid "View Missing Episodes"
-msgstr ""
+msgstr "Voir les épisodes manquants"
 
 #: resources/ui/pop-menu.ui:73 resources/ui/refresh_dialog.ui:8
 msgid "Refresh Metadata"
@@ -749,7 +756,7 @@ msgstr "Vidéo"
 
 #: resources/ui/search.ui:90 resources/ui/other.ui:128
 msgid "Episode"
-msgstr ""
+msgstr "Épisode"
 
 #: resources/ui/search.ui:163
 msgid "Nothing Here or No type selected"
@@ -869,7 +876,7 @@ msgstr "Décalage de l'ombre"
 
 #: resources/ui/mpv_control_sidebar.ui:322
 msgid "Stretch Image Subtitles to Screen"
-msgstr ""
+msgstr "Étirer les sous-titres de l'image à l'écran"
 
 #: resources/ui/mpv_control_sidebar.ui:329
 msgid "Subtitle Color"
@@ -1064,7 +1071,7 @@ msgstr "Ajouter un nouveau serveur"
 
 #: resources/ui/account.ui:45
 msgid "Enter the server details below."
-msgstr ""
+msgstr "Entrez les détails du serveur ci-dessous."
 
 #: resources/ui/account.ui:48 resources/ui/other.ui:54
 msgid "Name"
@@ -1072,7 +1079,7 @@ msgstr "Nom"
 
 #: resources/ui/account.ui:66
 msgid "Server Address"
-msgstr ""
+msgstr "Adresse du serveur"
 
 #: resources/ui/account.ui:85
 msgid "Port"
@@ -1084,7 +1091,7 @@ msgstr "Nom d'utilisateur"
 
 #: resources/ui/account.ui:97
 msgid "Password"
-msgstr ""
+msgstr "Mot de passe"
 
 #: resources/ui/account.ui:108 resources/ui/account_settings.ui:605
 msgid "Add"
@@ -1183,7 +1190,7 @@ msgstr "Apparence"
 
 #: resources/ui/account_settings.ui:87
 msgid "Post Scale"
-msgstr ""
+msgstr "Échelle Post"
 
 #: resources/ui/account_settings.ui:102
 msgid "Font Scale"
@@ -1225,10 +1232,11 @@ msgstr "Fils"
 #: resources/ui/account_settings.ui:194
 msgid "Excessive thread counts may exhaust the system's connection pool"
 msgstr ""
+"Un nombre excessif de threads peut épuiser le pool de connexions du système"
 
 #: resources/ui/account_settings.ui:208
 msgid "Refresh when returning to home page"
-msgstr ""
+msgstr "Rafraîchir lors du retour à la page d'accueil"
 
 #: resources/ui/account_settings.ui:222
 msgid "This feature may cause significant lag. Please enable it with caution."
@@ -1421,12 +1429,12 @@ msgstr "Pas d'inscriptions"
 
 #: resources/ui/other.ui:140 resources/ui/item.ui:437
 msgid "Actors"
-msgstr ""
+msgstr "Acteurs"
 
 #: resources/ui/other.ui:145 resources/ui/item.ui:452
 #: resources/ui/filter.ui:106
 msgid "Studios"
-msgstr ""
+msgstr "Studios"
 
 #: resources/ui/other.ui:160 resources/ui/item.ui:447
 msgid "Links"
@@ -1442,23 +1450,23 @@ msgstr "Sous-titres : "
 
 #: resources/ui/item.ui:291
 msgid "View this season"
-msgstr ""
+msgstr "Voir cette saison"
 
 #: resources/ui/item.ui:422
 msgid "Included In"
-msgstr ""
+msgstr "Inclus dans"
 
 #: resources/ui/item.ui:427
 msgid "Additional Parts"
-msgstr ""
+msgstr "Parties additionnelles"
 
 #: resources/ui/item.ui:432
 msgid "Seasons"
-msgstr ""
+msgstr "Saisons"
 
 #: resources/ui/item.ui:442
 msgid "Recommend"
-msgstr ""
+msgstr "Recommander"
 
 #: resources/ui/item.ui:480
 msgid "MediaInfo"
@@ -1516,19 +1524,19 @@ msgstr "Verrouiller l'élément"
 
 #: resources/ui/refresh_dialog.ui:50
 msgid "Replace All Metadata"
-msgstr ""
+msgstr "Remplacer toutes les métadonnées"
 
 #: resources/ui/refresh_dialog.ui:59
 msgid "Replace All Images"
-msgstr ""
+msgstr "Remplacer toutes les images"
 
 #: resources/ui/image_drop_row.ui:49
 msgid "Open"
-msgstr ""
+msgstr "Ouvrir"
 
 #: resources/ui/image_drop_row.ui:109
 msgid "Pick Image"
-msgstr ""
+msgstr "Choisir une image"
 
 #: resources/ui/image_drop_row.ui:113 resources/ui/images_dialog.ui:69
 msgid "Images"
@@ -1536,7 +1544,7 @@ msgstr "Images"
 
 #: resources/ui/image_drop_row.ui:119
 msgid "Pick image to upload"
-msgstr ""
+msgstr "Choisir une image à téléverser"
 
 #: resources/ui/images_dialog.ui:157
 msgid "BackDrops"
@@ -1544,101 +1552,103 @@ msgstr "Images de fond"
 
 #: resources/ui/image_info_card.ui:86
 msgid "Copy Image To Clipboard"
-msgstr ""
+msgstr "Copier l'image dans le presse-papiers"
 
 #: resources/ui/image_info_card.ui:98
 msgid "View Image"
-msgstr ""
+msgstr "Voir l'image"
 
 #: resources/ui/identify_dialog.ui:57
 msgid ""
 "Enter one or more search criteria. Remove criteria to increase search "
 "results."
 msgstr ""
+"Entrez un ou plusieurs critères de recherche. Retirez des critères pour "
+"augmenter le nombre de résultats."
 
 #: resources/ui/identify_dialog.ui:86
 msgid "External"
-msgstr ""
+msgstr "Externe"
 
 #: resources/ui/image_dialog_search_page.ui:15
 msgid "Provider:"
-msgstr ""
+msgstr "Fournisseur :"
 
 #: resources/ui/image_dialog_search_page.ui:22
 msgid "Provider"
-msgstr ""
+msgstr "Fournisseur"
 
 #: resources/ui/image_dialog_search_page.ui:64
 msgid "All Languages"
-msgstr ""
+msgstr "Toutes les langues"
 
 #: resources/ui/filter.ui:42
 msgid "Filters"
-msgstr ""
+msgstr "Filtres"
 
 #: resources/ui/filter.ui:45
 msgid "Playback Status"
-msgstr ""
+msgstr "État de lecture"
 
 #: resources/ui/filter.ui:50 resources/ui/filter.ui:149
 msgid "Any"
-msgstr ""
+msgstr "N'importe"
 
 #: resources/ui/filter.ui:51
 msgid "Played"
-msgstr ""
+msgstr "Regardé"
 
 #: resources/ui/filter.ui:52
 msgid "Unplayed"
-msgstr ""
+msgstr "Non regardé"
 
 #: resources/ui/filter.ui:53
 msgid "Continue Play"
-msgstr ""
+msgstr "Reprendre la lecture"
 
 #: resources/ui/filter.ui:92
 msgid "Years"
-msgstr ""
+msgstr "Années"
 
 #: resources/ui/filter.ui:99
 msgid "Official Ratings"
-msgstr ""
+msgstr "Évaluations officielles"
 
 #: resources/ui/filter.ui:115
 msgid "Media Info"
-msgstr ""
+msgstr "Informations du média"
 
 #: resources/ui/filter.ui:118
 msgid "Containers"
-msgstr ""
+msgstr "Conteneurs"
 
 #: resources/ui/filter.ui:125
 msgid "Encoders"
-msgstr ""
+msgstr "Encodeurs"
 
 #: resources/ui/filter.ui:132
 msgid "Video Types"
-msgstr ""
+msgstr "Types de vidéo"
 
 #: resources/ui/filter.ui:139
 msgid "Resolution"
-msgstr ""
+msgstr "Résolution"
 
 #: resources/ui/filter.ui:165
 msgid "Clear"
-msgstr ""
+msgstr "Effacer"
 
 #: resources/ui/missing_episodes.ui:6 resources/ui/missing_episodes.ui:36
 msgid "Missing Episodes"
-msgstr ""
+msgstr "Épisodes manquants"
 
 #: resources/ui/missing_episodes.ui:60
 msgid "Specials"
-msgstr ""
+msgstr "Spéciaux"
 
 #: resources/ui/missing_episodes.ui:72
 msgid "Upcoming"
-msgstr ""
+msgstr "À venir"
 
 #~ msgid "_Add"
 #~ msgstr "_Ajouter"
