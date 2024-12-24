@@ -985,9 +985,9 @@ dependencies = [
 
 [[package]]
 name = "gdk4-win32"
-version = "0.9.3"
+version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7bfc32196e899bffd0d98238d10284d0ce4fe2bff4e5da07f56205e1657ae30f"
+checksum = "e54beb3e19bff7ccc05153e043bf0eea9cf76c07a3387fb0151bfa0fbfce9df0"
 dependencies = [
  "gdk4",
  "gdk4-win32-sys",
@@ -998,9 +998,9 @@ dependencies = [
 
 [[package]]
 name = "gdk4-win32-sys"
-version = "0.9.3"
+version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c3f535dc7768918e5a3b0224d5ce9674ecc9a698fbdac645040627b33db2d183"
+checksum = "d554341f26b2f6191aaf2ecb4d0089f3696a40cadb2dba75dad03e48a6dc0eb9"
 dependencies = [
  "gdk4-sys",
  "glib-sys",
