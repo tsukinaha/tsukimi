@@ -19,9 +19,7 @@ pub fn build_ui(app: &adw::Application) {
             let about = adw::AboutDialog::builder()
                 .application_name("Tsukimi")
                 .version(crate::config::VERSION)
-                .comments(
-                    "A simple third-party Emby client.",
-                )
+                .comments("A simple third-party Emby client.")
                 // TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
                 .translator_credits(gettext("translator-credits"))
                 .website("https://github.com/tsukinaha/tsukimi")

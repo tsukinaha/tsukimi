@@ -5,6 +5,7 @@
     <child>
 
       <object class="GtkOverlay">
+        <property name="overflow">hidden</property>
         <child type="overlay">
           <object class="AdwCarouselIndicatorDots">
             <property name="margin-end">10</property>

@@ -80,7 +80,7 @@ license-file = ["LICENSE", "4"]
 extended-description = """\
 A simple Emby Client with MPV \
 Written by GTK4-RS."""
-depends = "$auto"
+depends = "libmpv2"
 section = "utility"
 priority = "optional"
 assets = [
@@ -88,6 +88,16 @@ assets = [
         "target/release/tsukimi",
         "usr/bin/",
         "755",
+    ],
+    [
+        "resources/icons/tsukimi.png",
+        "usr/share/pixmaps/",
+        "644",
+    ],
+    [
+        "i18n/locale/*",
+        "usr/share/locale",
+        "644",
     ],
     [
         "README.md",

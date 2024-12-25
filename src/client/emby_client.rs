@@ -11,7 +11,6 @@ use anyhow::{
     Result,
 };
 use once_cell::sync::Lazy;
-use regex::Regex;
 use reqwest::{
     header::HeaderValue,
     Client,
@@ -128,19 +127,10 @@ fn generate_emby_authorization(
     )
 }
 
-static DOMAIN_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"(https?://)([^/]+)").unwrap());
-
 fn generate_hash(s: &str) -> String {
     let mut hasher = fnv::FnvHasher::default();
     hasher.write(s.as_bytes());
     format!("{:x}", hasher.finish())
-}
-
-fn hide_domain(url: &str) -> String {
-    let hidden = "\x1b[35mDomain Hidden\x1b[0m";
-    DOMAIN_REGEX
-        .replace(url, &format!("$1{}", hidden))
-        .to_string()
 }
 
 impl EmbyClient {
@@ -425,7 +415,7 @@ impl EmbyClient {
         for (key, value) in params {
             url.query_pairs_mut().append_pair(key, value);
         }
-        debug!("Request URL: {}", hide_domain(url.as_str()));
+        debug!("Request URL: {}", url);
     }
 
     // jellyfin
