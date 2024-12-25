@@ -90,16 +90,6 @@ assets = [
         "755",
     ],
     [
-        "resources/icons/tsukimi.png",
-        "usr/share/pixmaps/",
-        "644",
-    ],
-    [
-        "i18n/locale/*",
-        "usr/share/locale",
-        "644",
-    ],
-    [
         "README.md",
         "usr/share/doc/tsukimi/README",
         "644",
