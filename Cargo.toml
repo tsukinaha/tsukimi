@@ -97,7 +97,10 @@ assets = [
 ]
 
 [profile.release]
-lto = true
+lto = "thin"
+strip = true
+debug = "limited"
+codegen-units = 1
 
 [profile.dev]
 debug = true
