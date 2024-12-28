@@ -241,7 +241,6 @@ impl TuOverviewItem {
                     imp.aspect_frame.set_ratio(0.67);
                     imp.overlay
                         .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
-                    self.set_rating();
                 }
                 let year = if item.production_year() != 0 {
                     item.production_year().to_string()

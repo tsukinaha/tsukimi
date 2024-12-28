@@ -78,8 +78,6 @@ pub trait TuItemOverlay: TuItemBasic + TuItemOverlayPrelude {
 
     fn set_played(&self);
 
-    fn set_rating(&self);
-
     fn set_count(&self);
 
     fn set_folder(&self);
@@ -117,23 +115,6 @@ where
             mark.add_css_class("small");
             mark.add_css_class("accent");
             self.overlay().add_overlay(&mark);
-        }
-    }
-
-    fn set_rating(&self) {
-        let item = self.item();
-        if let Some(rating) = item.rating() {
-            let rating = gtk::Button::builder()
-                .label(rating.to_string())
-                .halign(gtk::Align::Start)
-                .valign(gtk::Align::End)
-                .margin_start(8)
-                .margin_bottom(8)
-                .build();
-            rating.add_css_class("pill");
-            rating.add_css_class("small");
-            rating.add_css_class("suggested-action");
-            self.overlay().add_overlay(&rating);
         }
     }
 

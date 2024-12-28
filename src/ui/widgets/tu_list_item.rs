@@ -204,18 +204,24 @@ impl TuListItem {
     }
 
     pub fn set_up(&self) {
+        // FIXME: This shit function should be refactored
         let imp = self.imp();
         let item = self.item();
         let item_type = item.item_type();
         match item_type.as_str() {
             "Movie" => {
+                imp.listlabel.set_text(&item.name());
                 let year = if item.production_year() != 0 {
                     item.production_year().to_string()
                 } else {
                     String::default()
                 };
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_text(&year);
+                let label2 = if let Some(rating) = item.rating() {
+                    format!("{} / {}", year, rating)
+                } else {
+                    year
+                };
+                imp.label2.set_text(&label2);
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_can_direct_play(true);
@@ -225,7 +231,6 @@ impl TuListItem {
                     self.set_progress(item.played_percentage());
                     return;
                 }
-                self.set_rating();
             }
             "Video" | "MusicVideo" | "AdultVideo" => {
                 imp.listlabel.set_text(&item.name());
@@ -284,33 +289,38 @@ impl TuListItem {
                     String::from("")
                 };
                 imp.listlabel.set_text(&item.name());
-                if let Some(status) = item.status() {
+                let fmt_year = if let Some(status) = item.status() {
                     if status == "Continuing" {
-                        imp.label2
-                            .set_text(&format!("{} - {}", year, gettext("Present")));
+                        format!("{} - {}", year, gettext("Present"))
                     } else if status == "Ended" {
                         if let Some(end_date) = item.end_date() {
                             let end_year = end_date.year();
                             if end_year != year.parse::<i32>().unwrap_or_default() {
-                                imp.label2
-                                    .set_text(&format!("{} - {}", year, end_date.year()));
+                                format!("{} - {}", year, end_date.year())
                             } else {
-                                imp.label2.set_text(&format!("{}", end_year));
+                                format!("{}", end_year)
                             }
                         } else {
-                            imp.label2.set_text(&format!("{} - Unknown", year));
+                            format!("{} - Unknown", year)
                         }
+                    } else {
+                        year
                     }
                 } else {
-                    imp.label2.set_text(&year);
-                }
+                    year
+                };
+                let label2 = if let Some(rating) = item.rating() {
+                    format!("{} / {}", fmt_year, rating)
+                } else {
+                    fmt_year
+                };
+                imp.label2.set_text(&label2);
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_can_direct_play(true);
                 self.set_picture();
                 self.set_played();
                 self.set_count();
-                self.set_rating();
             }
             "BoxSet" => {
                 imp.listlabel.set_text(&item.name());
@@ -383,16 +393,21 @@ impl TuListItem {
             }
             "Season" => {
                 imp.listlabel.set_text(&item.name());
-                if let Some(premiere_date) = item.premiere_date() {
-                    imp.label2
-                        .set_text(&premiere_date.format("%Y-%m-%d").unwrap());
-                }
+                let premiere_date = item
+                    .premiere_date()
+                    .and_then(|premiere_date| premiere_date.format("%Y-%m-%d").ok())
+                    .unwrap_or_default();
+                let label2 = if let Some(rating) = item.rating() {
+                    format!("{} / {}", premiere_date, rating)
+                } else {
+                    premiere_date.to_string()
+                };
+                imp.label2.set_text(&label2);
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_picture();
                 self.set_played();
                 self.set_count();
-                self.set_rating();
             }
             _ => {
                 imp.overlay

@@ -1,3 +1,8 @@
 .scroll-spinner {
 	background-color: rgba(0,0,0,0.5);
 }
+
+.tulistitem-pic {
+	background: linear-gradient(30deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.6) 30%, rgba(0, 0, 0, 0) 	50%);
+}
+  
