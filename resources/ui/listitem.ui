@@ -26,6 +26,7 @@
                 <style>
                   <class name="circular"/>
                   <class name="tulistitempic-button"/>
+                  <class name="suggested-action"/>
                 </style>
               </object>
             </child>

@@ -23,7 +23,7 @@ pub mod imp {
             .map(|s| s.is_gtk_application_prefer_dark_theme())
             .unwrap_or(false)
         {
-            gdk::RGBA::new(0.0, 0.0, 0.0, 0.2)
+            gdk::RGBA::new(0.0, 0.0, 0.0, 0.4)
         } else {
             gdk::RGBA::new(1.0, 1.0, 1.0, 0.2)
         }

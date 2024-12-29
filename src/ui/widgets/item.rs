@@ -160,7 +160,7 @@ pub(crate) mod imp {
         #[template_child]
         pub toolbar: TemplateChild<gtk::Box>,
         #[template_child]
-        pub episode_list_revealer: TemplateChild<gtk::Revealer>,
+        pub episode_list_bin: TemplateChild<adw::Bin>,
 
         #[template_child]
         pub spinner: TemplateChild<adw::Spinner>,
@@ -257,7 +257,7 @@ pub(crate) mod imp {
                 || (item.item_type() == "Episode" && item.series_name().is_some())
             {
                 self.toolbar.set_visible(true);
-                self.episode_list_revealer.set_reveal_child(true);
+                self.episode_list_bin.set_visible(true);
                 self.episode_line.set_visible(true);
             }
 

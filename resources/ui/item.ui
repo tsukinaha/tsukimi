@@ -30,6 +30,7 @@
                     <property name="vexpand">true</property>
                     <child>
                       <object class="GtkOverlay">
+                        <property name="overflow">hidden</property>
                         <style>
                           <class name="boxshadow" />
                         </style>
@@ -298,9 +299,9 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkRevealer" id="episode_list_revealer">
-                        <property name="reveal-child">False</property>
+                      <object class="AdwBin" id="episode_list_bin">
                         <property name="vexpand-set">True</property>
+                        <property name="visible">False</property>
                         <child>
                           <object class="GtkStack" id="episode_stack">
                             <property name="transition-type">crossfade</property>
