@@ -998,9 +998,9 @@ dependencies = [
 
 [[package]]
 name = "gdk4-x11"
-version = "0.9.4"
+version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6deaed327de665b03a93c104d339185e715fc9fa161507898e54522689743aa0"
+checksum = "c058172a0f8ebd25751bbee5ebbb68897e8dd08036af3530cde0be1f39639f29"
 dependencies = [
  "gdk4",
  "gdk4-x11-sys",
@@ -2437,7 +2437,7 @@ dependencies = [
  "once_cell",
  "socket2",
  "tracing",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
