@@ -12,6 +12,15 @@ assignees: tsukinaha
 - [ ] I have searched this in existing issues
 - [ ] I have obtained the complete log
 
+<details>
+<summary>To get the log</summary>
+
+Run `tsukimi -f /path/to/log` in your terminal    
+If you use Windows, use your PowerShell and run `.\tsukimi.exe -f log.txt`      
+Paste the log at the bottom
+
+</details>
+
 **Complete the following information**
  - OS: [e.g. NixOS 24.11]
  - Architecture: [e.g. x86_64]
