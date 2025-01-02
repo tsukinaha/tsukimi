@@ -317,3 +317,7 @@ checkbutton.theme-selector radio:checked {
 .filter-label.color4 {
   color: rgb(125, 210, 227);
 }
+
+.pgb > trough {
+  min-height: 4px;
+}

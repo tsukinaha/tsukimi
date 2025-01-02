@@ -24,6 +24,8 @@ where
             .valign(gtk::Align::End)
             .build();
 
+        progress.add_css_class("pgb");
+
         self.overlay().add_overlay(&progress);
 
         spawn(glib::clone!(
