@@ -52,6 +52,7 @@
                 <property name="yalign">1.0</property>
                 <property name="xalign">0.0</property>
                 <property name="lines">2</property>
+                <property name="wrap-mode">word-char</property>
                 <attributes>
                   <attribute name="scale" value="0.9"/>
                   <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>

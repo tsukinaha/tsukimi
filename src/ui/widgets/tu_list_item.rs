@@ -214,6 +214,7 @@ impl TuListItem {
                 let year = if item.production_year() != 0 {
                     item.production_year().to_string()
                 } else {
+                    imp.label2.set_visible(false);
                     String::default()
                 };
                 let label2 = if let Some(rating) = item.rating() {
@@ -378,6 +379,7 @@ impl TuListItem {
             }
             "Audio" => {
                 imp.listlabel.set_text(&item.name());
+                imp.label2.set_visible(false);
                 imp.overlay
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 self.set_can_direct_play(true);
