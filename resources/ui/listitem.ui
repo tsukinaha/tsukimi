@@ -9,27 +9,6 @@
         <property name="halign">center</property>
         <child type="overlay">
           <object class="AdwBin">
-            <child>
-              <object class="GtkButton">
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="width-request">50</property>
-                <property name="height-request">50</property>
-                <property name="visible" bind-source="TuListItem" bind-property="can-direct-play" bind-flags="sync-create"/>
-                <signal name="clicked" handler="on_play_clicked" swapped="yes"/>
-                <child>
-                  <object class="GtkImage">
-                    <property name="icon-name">media-playback-start-symbolic</property>
-                    <property name="icon-size">2</property>
-                  </object>
-                </child>
-                <style>
-                  <class name="circular"/>
-                  <class name="tulistitempic-button"/>
-                  <class name="suggested-action"/>
-                </style>
-              </object>
-            </child>
             <style>
               <class name="tulistitem-pic"/>
             </style>
@@ -73,6 +52,27 @@
                 </style>
               </object>
             </child>
+          </object>
+        </child>
+        <child type="overlay">
+          <object class="GtkButton">
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="width-request">50</property>
+            <property name="height-request">50</property>
+            <property name="visible" bind-source="TuListItem" bind-property="can-direct-play" bind-flags="sync-create"/>
+            <signal name="clicked" handler="on_play_clicked" swapped="yes"/>
+            <child>
+              <object class="GtkImage">
+                <property name="icon-name">media-playback-start-symbolic</property>
+                <property name="icon-size">2</property>
+              </object>
+            </child>
+            <style>
+              <class name="circular"/>
+              <class name="tulistitempic-button"/>
+              <class name="suggested-action"/>
+            </style>
           </object>
         </child>
         <style>
