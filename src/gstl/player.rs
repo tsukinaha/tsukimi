@@ -155,7 +155,7 @@ pub mod imp {
                         match value {
                             GstreamerEvent::AboutToFinish => {
                                 if let Some(core_song) = imp.next_song() {
-                                    imp.add_song(&core_song);
+                                    imp.add_song(&core_song).await;
                                     imp.obj().set_gapless(true);
                                 }
                             }
@@ -180,7 +180,7 @@ pub mod imp {
                                 imp.stop();
                                 if obj.gapless() {
                                     if let Some(core_song) = imp.obj().active_core_song() {
-                                        imp.play(&core_song);
+                                        imp.play(&core_song).await;
                                     };
                                 }
                                 obj.set_gapless(false);
@@ -237,7 +237,7 @@ pub mod imp {
                 .expect("Unable to set the pipeline to the `Playing` state");
         }
 
-        pub fn play(&self, core_song: &CoreSong) {
+        pub async fn play(&self, core_song: &CoreSong) {
             core_song.set_state(State::Playing);
             if let Some(core_song_old) = self.active_core_song.borrow().as_ref() {
                 if core_song_old != core_song {
@@ -246,14 +246,14 @@ pub mod imp {
             }
 
             self.stop();
-            let uri = EMBY_CLIENT.get_song_streaming_uri(&core_song.id());
+            let uri = EMBY_CLIENT.get_song_streaming_uri(&core_song.id()).await;
 
             gst::prelude::ObjectExt::set_property(self.pipeline(), "uri", uri);
             self.playing();
         }
 
-        pub fn add_song(&self, core_song: &CoreSong) {
-            let uri = EMBY_CLIENT.get_song_streaming_uri(&core_song.id());
+        pub async fn add_song(&self, core_song: &CoreSong) {
+            let uri = EMBY_CLIENT.get_song_streaming_uri(&core_song.id()).await;
             gst::prelude::ObjectExt::set_property(self.pipeline(), "uri", uri);
         }
 
@@ -366,30 +366,32 @@ pub mod imp {
             }
         }
 
-        pub fn load_model(&self, active_model: gtk::gio::ListStore, active_core_song: CoreSong) {
+        pub async fn load_model(
+            &self, active_model: gtk::gio::ListStore, active_core_song: CoreSong,
+        ) {
             if let Some(core_song) = self.active_core_song.borrow().as_ref() {
                 core_song.set_state(State::Played);
             };
             self.active_model.replace(Some(active_model));
             self.active_core_song.replace(Some(active_core_song));
-            self.prepre_play();
+            self.prepre_play().await;
         }
 
-        pub fn prepre_play(&self) {
+        pub async fn prepre_play(&self) {
             let Some(active_core_song) = self.obj().active_core_song() else {
                 return;
             };
-            self.play(&active_core_song);
+            self.play(&active_core_song).await;
         }
 
-        pub fn next(&self) {
+        pub async fn next(&self) {
             let _ = self.playlist_next();
-            self.prepre_play();
+            self.prepre_play().await;
         }
 
-        pub fn prev(&self) {
+        pub async fn prev(&self) {
             self.playlist_prev();
-            self.prepre_play();
+            self.prepre_play().await;
         }
 
         pub fn playlist_prev(&self) {

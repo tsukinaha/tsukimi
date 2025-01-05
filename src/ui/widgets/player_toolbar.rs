@@ -232,21 +232,24 @@ impl PlayerToolbarBox {
         }
     }
 
-    pub fn bind_song_model(&self, active_model: gtk::gio::ListStore, active_core_song: CoreSong) {
+    pub async fn bind_song_model(
+        &self, active_model: gtk::gio::ListStore, active_core_song: CoreSong,
+    ) {
         self.imp()
             .player
             .imp()
-            .load_model(active_model, active_core_song);
+            .load_model(active_model, active_core_song)
+            .await;
         self.update_play_state();
     }
 
     #[template_callback]
-    fn on_next_button_clicked(&self) {
-        self.imp().player.imp().next();
+    async fn on_next_button_clicked(&self) {
+        self.imp().player.imp().next().await;
     }
 
     #[template_callback]
-    fn on_prev_button_clicked(&self) {
-        self.imp().player.imp().prev();
+    async fn on_prev_button_clicked(&self) {
+        self.imp().player.imp().prev().await;
     }
 }

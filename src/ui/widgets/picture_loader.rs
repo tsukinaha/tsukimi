@@ -92,7 +92,13 @@ pub(crate) mod imp {
             if let Some(url) = obj.url() {
                 obj.load_pic_for_url(url);
             } else {
-                obj.load_pic();
+                spawn(clone!(
+                    #[weak]
+                    obj,
+                    async move {
+                        obj.load_pic().await;
+                    }
+                ));
             }
         }
     }
@@ -173,8 +179,8 @@ impl PictureLoader {
         );
     }
 
-    pub fn load_pic(&self) {
-        let cache_file_path = self.cache_file();
+    pub async fn load_pic(&self) {
+        let cache_file_path = self.cache_file().await;
         self.reveal_picture::<true>(&cache_file_path);
         self.get_file(cache_file_path);
     }
@@ -208,8 +214,8 @@ impl PictureLoader {
         ));
     }
 
-    pub fn cache_file(&self) -> PathBuf {
-        let cache_path = emby_cache_path();
+    pub async fn cache_file(&self) -> PathBuf {
+        let cache_path = emby_cache_path().await;
         let path = format!(
             "{}-{}-{}",
             self.id(),

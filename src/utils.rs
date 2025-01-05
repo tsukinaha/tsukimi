@@ -90,7 +90,7 @@ where
     T: for<'de> Deserialize<'de> + Serialize + Send + 'static,
     F: Future<Output = Result<T>> + Send + 'static,
 {
-    let mut path = emby_cache_path();
+    let mut path = emby_cache_path().await;
     path.push(format!("{}.json", cache_key));
 
     let read_cache = matches!(

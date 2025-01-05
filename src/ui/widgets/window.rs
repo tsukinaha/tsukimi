@@ -24,26 +24,29 @@ mod imp {
         CompositeTemplate,
     };
 
-    use crate::ui::{
-        mpv::{
-            control_sidebar::MPVControlSidebar,
-            page::MPVPage,
+    use crate::{
+        ui::{
+            mpv::{
+                control_sidebar::MPVControlSidebar,
+                page::MPVPage,
+            },
+            provider::tu_object::TuObject,
+            widgets::{
+                content_viewer::MediaContentViewer,
+                home::HomePage,
+                image_dialog::ImageDialog,
+                item_actionbox::ItemActionsBox,
+                liked::LikedPage,
+                listexpand_row::ListExpandRow,
+                media_viewer::MediaViewer,
+                player_toolbar::PlayerToolbarBox,
+                search::SearchPage,
+                theme_switcher::ThemeSwitcher,
+                tu_overview_item::imp::ViewGroup,
+                utils::TuItemBuildExt,
+            },
         },
-        provider::tu_object::TuObject,
-        widgets::{
-            content_viewer::MediaContentViewer,
-            home::HomePage,
-            image_dialog::ImageDialog,
-            item_actionbox::ItemActionsBox,
-            liked::LikedPage,
-            listexpand_row::ListExpandRow,
-            media_viewer::MediaViewer,
-            player_toolbar::PlayerToolbarBox,
-            search::SearchPage,
-            theme_switcher::ThemeSwitcher,
-            tu_overview_item::imp::ViewGroup,
-            utils::TuItemBuildExt,
-        },
+        utils::spawn,
     };
 
     // Object holding the state
@@ -205,12 +208,19 @@ mod imp {
                     settings.set_property("gtk-xft-dpi", 100 * 1024);
                 }
             }
-            obj.setup_rootpic();
-            obj.setup_settings();
-            obj.load_window_size();
-            obj.set_servers();
-            obj.set_nav_servers();
-            obj.set_shortcuts();
+
+            spawn(glib::clone!(
+                #[weak(rename_to = obj)]
+                obj,
+                async move {
+                    obj.setup_rootpic();
+                    obj.setup_settings();
+                    obj.load_window_size();
+                    obj.set_servers().await;
+                    obj.set_nav_servers();
+                    obj.set_shortcuts();
+                },
+            ));
         }
     }
 
@@ -351,7 +361,7 @@ impl Window {
         }
     }
 
-    pub fn set_servers(&self) {
+    pub async fn set_servers(&self) {
         let imp = self.imp();
         let listbox = &imp.serversbox;
         listbox.remove_all();
@@ -359,9 +369,9 @@ impl Window {
         for account in &accounts {
             if SETTINGS.auto_select_server()
                 && account.servername == SETTINGS.preferred_server()
-                && EMBY_CLIENT.user_id.lock().unwrap().is_empty()
+                && EMBY_CLIENT.user_id.lock().await.is_empty()
             {
-                let _ = EMBY_CLIENT.init(account);
+                let _ = EMBY_CLIENT.init(account).await;
                 self.reset();
             }
         }
@@ -429,8 +439,15 @@ impl Window {
                     SETTINGS
                         .set_accounts(accounts)
                         .expect("Failed to set accounts");
-                    obj.set_servers();
-                    obj.set_nav_servers();
+
+                    spawn(glib::clone!(
+                        #[weak]
+                        obj,
+                        async move {
+                            obj.set_servers().await;
+                            obj.set_nav_servers();
+                        }
+                    ));
 
                     true
                 }
@@ -460,14 +477,15 @@ impl Window {
     pub fn reset(&self) {
         self.mainpage();
         self.imp().selectlist.unselect_all();
-        self.account_setup();
-        self.remove_all();
-        self.homepage();
 
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
             self,
             async move {
+                obj.account_setup().await;
+                obj.remove_all();
+                obj.homepage();
+
                 let avatar =
                     match spawn_tokio(async move { EMBY_CLIENT.get_user_avatar().await }).await {
                         Ok(avatar) => avatar,
@@ -496,17 +514,11 @@ impl Window {
         progressbar.set_fraction(to_value);
     }
 
-    pub fn account_setup(&self) {
+    pub async fn account_setup(&self) {
         let imp = self.imp();
-        imp.namerow.set_title(&match EMBY_CLIENT.user_name.lock() {
-            Ok(guard) => guard.to_string(),
-            Err(_) => "Not logged in".to_string(),
-        });
+        imp.namerow.set_title(&EMBY_CLIENT.user_name.lock().await);
         imp.namerow
-            .set_subtitle(&match EMBY_CLIENT.server_name.lock() {
-                Ok(guard) => guard.to_string(),
-                Err(_) => "No server selected".to_string(),
-            });
+            .set_subtitle(&EMBY_CLIENT.server_name.lock().await);
     }
 
     pub fn account_settings(&self) {
@@ -753,10 +765,11 @@ impl Window {
         self.new_account();
     }
 
-    pub fn bind_song_model(&self, active_model: gio::ListStore, active_core_song: CoreSong) {
+    pub async fn bind_song_model(&self, active_model: gio::ListStore, active_core_song: CoreSong) {
         let imp = self.imp();
         imp.player_toolbar_box
-            .bind_song_model(active_model, active_core_song);
+            .bind_song_model(active_model, active_core_song)
+            .await;
     }
 
     #[allow(clippy::too_many_arguments)]

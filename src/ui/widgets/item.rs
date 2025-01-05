@@ -409,7 +409,7 @@ impl ItemPage {
             #[weak(rename_to = obj)]
             self,
             async move {
-                obj.set_logo(&id_clone);
+                obj.set_logo(&id_clone).await;
             }
         ));
 
@@ -801,8 +801,8 @@ impl ItemPage {
         self.set_intro::<false>(&item.item()).await;
     }
 
-    pub fn set_logo(&self, id: &str) {
-        let logo = super::logo::set_logo(id.to_string(), "Logo", None);
+    pub async fn set_logo(&self, id: &str) {
+        let logo = super::logo::set_logo(id.to_string(), "Logo", None).await;
         self.imp().logobox.append(&logo);
     }
 

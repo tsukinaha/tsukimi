@@ -34,6 +34,7 @@ mod imp {
             provider::account_item::AccountItem,
             widgets::window::Window,
         },
+        utils::spawn,
     };
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
@@ -81,11 +82,20 @@ mod imp {
     impl WidgetImpl for ServerActionRow {}
     impl ActionRowImpl for ServerActionRow {
         fn activate(&self) {
-            let account = self.obj().item().account();
-            SETTINGS.set_preferred_server(&account.servername).unwrap();
-            let _ = EMBY_CLIENT.init(&account);
-            let window = self.obj().root().and_downcast::<Window>().unwrap();
-            window.reset();
+            let obj = self.obj();
+
+            spawn(glib::clone!(
+                #[weak]
+                obj,
+                async move {
+                    let account = obj.item().account();
+                    SETTINGS.set_preferred_server(&account.servername).unwrap();
+                    let _ = EMBY_CLIENT.init(&account).await;
+                    if let Some(w) = obj.root().and_downcast::<Window>() {
+                        w.reset()
+                    }
+                }
+            ));
         }
     }
 }
@@ -141,7 +151,7 @@ impl ServerActionRow {
     }
 
     #[template_callback]
-    fn on_delete_clicked(&self) {
+    async fn on_delete_clicked(&self) {
         let account = self.item().account();
         SETTINGS
             .remove_account(account)
@@ -150,7 +160,7 @@ impl ServerActionRow {
         let window = root
             .and_downcast_ref::<Window>()
             .expect("Failed to get Window");
-        window.set_servers();
+        window.set_servers().await;
         window.set_nav_servers();
     }
 }

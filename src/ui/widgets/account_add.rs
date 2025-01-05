@@ -150,8 +150,8 @@ impl AccountWindow {
 
         let server = format!("{protocol}{server}");
 
-        let _ = EMBY_CLIENT.header_change_url(&server, &port);
-        let _ = EMBY_CLIENT.header_change_token(&servername);
+        let _ = EMBY_CLIENT.header_change_url(&server, &port).await;
+        let _ = EMBY_CLIENT.header_change_token(&servername).await;
         let un = username.to_string();
         let pw = password.to_string();
         let res =
@@ -204,22 +204,24 @@ impl AccountWindow {
                 SETTINGS
                     .edit_account(old_account, account)
                     .expect("Failed to edit server");
-                self.close_dialog(&gettext("Server edited successfully"));
+                self.close_dialog(&gettext("Server edited successfully"))
+                    .await;
             }
             ActionType::Add => {
                 SETTINGS.add_account(account).expect("Failed to add server");
-                self.close_dialog(&gettext("Server added successfully"));
+                self.close_dialog(&gettext("Server added successfully"))
+                    .await;
             }
         }
     }
 
-    fn close_dialog(&self, msg: &str) {
+    async fn close_dialog(&self, msg: &str) {
         self.imp().stack.set_visible_child_name("entry");
         self.close();
         let root = self.root();
         let window = root.and_downcast_ref::<super::window::Window>().unwrap();
         toast!(self, msg);
-        window.set_servers();
+        window.set_servers().await;
         window.set_nav_servers();
     }
 

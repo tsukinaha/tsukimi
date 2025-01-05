@@ -17,7 +17,7 @@ use crate::{
     },
 };
 
-pub fn set_logo(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
+pub async fn set_logo(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Fill);
     image.set_content_fit(gtk::ContentFit::Contain);
@@ -29,7 +29,7 @@ pub fn set_logo(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
         .transition_duration(400)
         .build();
 
-    let cache_path = emby_cache_path();
+    let cache_path = emby_cache_path().await;
     let path = format!("{}-{}-{}", id, image_type, tag.unwrap_or(0));
 
     let id = id.to_string();

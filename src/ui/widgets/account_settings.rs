@@ -145,9 +145,13 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
             klass.bind_template_instance_callbacks();
-            klass.install_action("setting.clear", None, move |set, _action, _parameter| {
-                set.cacheclear();
-            });
+            klass.install_action_async(
+                "setting.clear",
+                None,
+                |set, _action, _parameter| async move {
+                    set.cacheclear().await;
+                },
+            );
             klass.install_action_async(
                 "setting.rootpic",
                 None,
@@ -307,8 +311,8 @@ impl AccountSettings {
         });
     }
 
-    pub fn cacheclear(&self) {
-        let path = emby_cache_path();
+    pub async fn cacheclear(&self) {
+        let path = emby_cache_path().await;
         if path.exists() {
             std::fs::remove_dir_all(path).unwrap();
         }

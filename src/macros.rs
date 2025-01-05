@@ -111,7 +111,17 @@ macro_rules! bing_song_model {
         use gtk::prelude::WidgetExt;
         if let Some(root) = $widget.root() {
             if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
-                window.bind_song_model($active_model, $active_core_song);
+                spawn(glib::clone!(
+                    #[weak]
+                    window,
+                    #[weak(rename_to = active_core_song)]
+                    $active_core_song,
+                    async move {
+                        window
+                            .bind_song_model($active_model, active_core_song)
+                            .await;
+                    }
+                ));
             } else {
                 panic!("Trying to bind song model when the parent doesn't support it");
             }
