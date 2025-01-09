@@ -216,8 +216,8 @@ row image {
 }
 
 .tulistitem-pic {
-  opacity: 0.7;
-  background: linear-gradient(30deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.6) 30%, rgba(255, 255, 255, 0) 	50%);
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.4);
   transition: opacity 0.3s ease;
   border-radius: 10px;
 }
@@ -320,4 +320,16 @@ checkbutton.theme-selector radio:checked {
 
 .pgb > trough {
   min-height: 4px;
+}
+
+.count {
+  background-color: rgb(101, 144, 154);
+}
+
+.rating {
+  background-color: rgb(39, 75, 132);
+}
+
+.folder {
+  background-color: rgb(36, 96, 86);
 }

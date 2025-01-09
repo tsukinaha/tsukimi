@@ -2,76 +2,74 @@
 <interface>
   <template parent="AdwBin" class="TuListItem">
     <child>
-      <object class="GtkOverlay" id="overlay">
-        <property name="valign">fill</property>
-        <property name="width-request">100</property>
-        <property name="height-request">100</property>
-        <property name="halign">center</property>
-        <child type="overlay">
-          <object class="AdwBin">
-            <style>
-              <class name="tulistitem-pic"/>
-            </style>
-          </object>
-        </child>
-        <child type="overlay">
-          <object class="GtkBox">
-            <property name="orientation">vertical</property>
-            <property name="spacing">8</property>
-            <property name="valign">end</property>
-            <property name="halign">start</property>
-            <property name="margin-start">10</property>
-            <property name="margin-bottom">10</property>
-            <property name="margin-end">10</property>
-            <child>
-              <object class="GtkLabel" id="listlabel">
-                <property name="justify">left</property>
-                <property name="ellipsize">end</property>
-                <property name="halign">start</property>
-                <property name="yalign">1.0</property>
-                <property name="xalign">0.0</property>
-                <property name="lines">2</property>
-                <property name="wrap-mode">word-char</property>
-                <attributes>
-                  <attribute name="scale" value="0.9"/>
-                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                </attributes>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label2">
-                <property name="justify">left</property>
-                <property name="ellipsize">middle</property>
-                <property name="halign">start</property>
-                <attributes>
-                  <attribute name="scale" value="0.8"/>
-                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                </attributes>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">8</property>
+        <property name="valign">start</property>
+        <child>
+          <object class="GtkOverlay" id="overlay">
+            <property name="valign">fill</property>
+            <property name="width-request">100</property>
+            <property name="height-request">100</property>
+            <property name="halign">center</property>
+            <child type="overlay">
+              <object class="AdwBin">
+                <child>
+                  <object class="GtkButton">
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="width-request">50</property>
+                    <property name="height-request">50</property>
+                    <property name="visible" bind-source="TuListItem" bind-property="can-direct-play" bind-flags="sync-create"/>
+                    <signal name="clicked" handler="on_play_clicked" swapped="yes"/>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon-name">media-playback-start-symbolic</property>
+                        <property name="icon-size">2</property>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="circular"/>
+                      <class name="tulistitempic-button"/>
+                      <class name="suggested-action"/>
+                    </style>
+                  </object>
+                </child>
                 <style>
-                  <class name="dim-label"/>
+                  <class name="tulistitem-pic"/>
                 </style>
               </object>
             </child>
-          </object>
-        </child>
-        <child type="overlay">
-          <object class="GtkButton">
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="width-request">50</property>
-            <property name="height-request">50</property>
-            <property name="visible" bind-source="TuListItem" bind-property="can-direct-play" bind-flags="sync-create"/>
-            <signal name="clicked" handler="on_play_clicked" swapped="yes"/>
-            <child>
-              <object class="GtkImage">
-                <property name="icon-name">media-playback-start-symbolic</property>
-                <property name="icon-size">2</property>
+            <child type="overlay">
+              <object class="GtkBox" id="overlay_button_box">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">12</property>
+                <property name="halign">end</property>
+                <property name="valign">start</property>
+                <property name="margin-end">8</property>
+                <property name="margin-top">8</property>
               </object>
             </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="listlabel">
+            <property name="justify">center</property>
+            <property name="ellipsize">middle</property>
+            <attributes>
+              <attribute name="scale" value="0.9"/>
+              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label2">
+            <property name="justify">center</property>
+            <attributes>
+              <attribute name="scale" value="0.8"/>
+            </attributes>
             <style>
-              <class name="circular"/>
-              <class name="tulistitempic-button"/>
-              <class name="suggested-action"/>
+              <class name="dim-label"/>
             </style>
           </object>
         </child>

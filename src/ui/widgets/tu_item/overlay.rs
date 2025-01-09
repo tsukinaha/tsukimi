@@ -68,6 +68,8 @@ pub trait TuItemOverlayPrelude {
 
     fn overlay(&self) -> gtk::Overlay;
 
+    fn overlay_button_box(&self) -> gtk::Box;
+
     fn poster_type_ext(&self) -> PosterType;
 }
 
@@ -81,6 +83,8 @@ pub trait TuItemOverlay: TuItemBasic + TuItemOverlayPrelude {
     fn set_count(&self);
 
     fn set_folder(&self);
+
+    fn set_rating(&self);
 }
 
 impl<T> TuItemOverlay for T
@@ -108,13 +112,11 @@ where
                 .icon_name("emblem-ok-symbolic")
                 .halign(gtk::Align::End)
                 .valign(gtk::Align::Start)
-                .margin_end(4)
-                .margin_top(4)
                 .build();
             mark.add_css_class("circular");
             mark.add_css_class("small");
             mark.add_css_class("accent");
-            self.overlay().add_overlay(&mark);
+            self.overlay_button_box().append(&mark);
         }
     }
 
@@ -126,13 +128,28 @@ where
                 .label(count.to_string())
                 .halign(gtk::Align::End)
                 .valign(gtk::Align::Start)
-                .margin_end(8)
-                .margin_top(8)
                 .build();
             mark.add_css_class("pill");
             mark.add_css_class("small");
             mark.add_css_class("suggested-action");
-            self.overlay().add_overlay(&mark);
+            mark.add_css_class("count");
+            self.overlay_button_box().append(&mark);
+        }
+    }
+
+    fn set_rating(&self) {
+        let item = self.item();
+        if let Some(rating) = item.rating() {
+            let rating = gtk::Button::builder()
+                .label(rating.to_string())
+                .halign(gtk::Align::Start)
+                .valign(gtk::Align::End)
+                .build();
+            rating.add_css_class("pill");
+            rating.add_css_class("small");
+            rating.add_css_class("suggested-action");
+            rating.add_css_class("rating");
+            self.overlay_button_box().append(&rating);
         }
     }
 
@@ -141,12 +158,11 @@ where
             .icon_name("folder-symbolic")
             .halign(gtk::Align::End)
             .valign(gtk::Align::Start)
-            .margin_top(10)
-            .margin_start(10)
             .build();
         mark.add_css_class("pill");
         mark.add_css_class("small");
         mark.add_css_class("suggested-action");
-        self.overlay().add_overlay(&mark);
+        mark.add_css_class("folder");
+        self.overlay_button_box().append(&mark);
     }
 }

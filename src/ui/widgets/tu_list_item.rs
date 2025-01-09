@@ -83,6 +83,8 @@ pub mod imp {
         pub label2: TemplateChild<gtk::Label>,
         #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
+        #[template_child]
+        pub overlay_button_box: TemplateChild<gtk::Box>,
     }
 
     #[glib::object_subclass]
@@ -149,6 +151,10 @@ impl TuItemOverlayPrelude for TuListItem {
 
     fn poster_type_ext(&self) -> PosterType {
         self.poster_type()
+    }
+
+    fn overlay_button_box(&self) -> gtk::Box {
+        self.imp().overlay_button_box.get()
     }
 }
 
@@ -217,12 +223,7 @@ impl TuListItem {
                     imp.label2.set_visible(false);
                     String::default()
                 };
-                let label2 = if let Some(rating) = item.rating() {
-                    format!("{} / {}", year, rating)
-                } else {
-                    year
-                };
-                imp.label2.set_text(&label2);
+                imp.label2.set_text(&year);
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_can_direct_play(true);
@@ -310,12 +311,7 @@ impl TuListItem {
                 } else {
                     year
                 };
-                let label2 = if let Some(rating) = item.rating() {
-                    format!("{} / {}", fmt_year, rating)
-                } else {
-                    fmt_year
-                };
-                imp.label2.set_text(&label2);
+                imp.label2.set_text(&fmt_year);
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_can_direct_play(true);
@@ -399,12 +395,7 @@ impl TuListItem {
                     .premiere_date()
                     .and_then(|premiere_date| premiere_date.format("%Y-%m-%d").ok())
                     .unwrap_or_default();
-                let label2 = if let Some(rating) = item.rating() {
-                    format!("{} / {}", premiere_date, rating)
-                } else {
-                    premiere_date.to_string()
-                };
-                imp.label2.set_text(&label2);
+                imp.label2.set_text(&premiere_date);
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_picture();
@@ -420,6 +411,8 @@ impl TuListItem {
                 warn!("Unknown item type: {}", item_type)
             }
         }
+
+        self.set_rating();
         self.set_tooltip_text(Some(&item.name()));
     }
 }

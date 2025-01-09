@@ -25,6 +25,16 @@
                     <property name="width-request">250</property>
                     <property name="height-request">141</property>
                     <property name="halign">center</property>
+                    <child type="overlay">
+                      <object class="GtkBox" id="overlay_button_box">
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">12</property>
+                        <property name="halign">end</property>
+                        <property name="valign">start</property>
+                        <property name="margin-end">8</property>
+                        <property name="margin-top">8</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

@@ -86,6 +86,8 @@ pub mod imp {
         pub aspect_frame: TemplateChild<gtk::AspectFrame>,
         #[template_child]
         pub detail_box: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub overlay_button_box: TemplateChild<gtk::Box>,
     }
 
     #[glib::object_subclass]
@@ -160,6 +162,10 @@ impl TuItemOverlayPrelude for TuOverviewItem {
             ViewGroup::EpisodesView => PosterType::Backdrop,
             ViewGroup::ListView => PosterType::Poster,
         }
+    }
+
+    fn overlay_button_box(&self) -> gtk::Box {
+        self.imp().overlay_button_box.get()
     }
 }
 
