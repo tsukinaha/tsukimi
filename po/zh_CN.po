@@ -6,13 +6,14 @@
 # dyphire <qimoge@gmail.com>, 2024.
 # Inaha <sakuovds@gmail.com>, 2024.
 # Gracealina  clover <zhiweishuisheng@gmail.com>, 2024.
+# HLiang Shao <792332448@qq.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-23 13:18+0800\n"
-"PO-Revision-Date: 2024-12-22 11:15+0000\n"
-"Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
+"PO-Revision-Date: 2024-12-29 15:00+0000\n"
+"Last-Translator: HLiang Shao <792332448@qq.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -156,7 +157,7 @@ msgstr "应用"
 #: src/ui/widgets/tu_item/action.rs:467
 #: src/ui/widgets/identify/search_page.rs:124
 msgid "Are you sure you wish to continue?"
-msgstr ""
+msgstr "确认要继续吗？"
 
 #: src/ui/widgets/metadata_dialog.rs:295
 #: src/ui/widgets/image_dialog/search_page.rs:149
@@ -171,7 +172,7 @@ msgstr "取消"
 #: src/ui/widgets/image_dialog/search_page.rs:150
 #: src/ui/widgets/identify/search_page.rs:128
 msgid "Ok"
-msgstr ""
+msgstr "好的"
 
 #: src/ui/widgets/metadata_dialog.rs:319
 #: src/ui/widgets/image_dialog/search_page.rs:179
@@ -358,7 +359,7 @@ msgstr "加载图像时出错"
 
 #: src/ui/widgets/image_dialog/search_page.rs:144
 msgid "Replace Image"
-msgstr ""
+msgstr "替换图片"
 
 #: src/ui/widgets/window.rs:296 resources/ui/window.ui:303
 msgid "Home"
@@ -388,7 +389,7 @@ msgstr "现在"
 
 #: src/ui/widgets/tu_item/action.rs:461
 msgid "Delete Item"
-msgstr ""
+msgstr "删除项目"
 
 #: src/ui/widgets/tu_item/action.rs:465
 msgid ""
@@ -396,6 +397,8 @@ msgid ""
 "library.\n"
 "The following files and folders will be deleted:"
 msgstr ""
+"删除该项目将同时将它从文件系统和媒体库中删除。\n"
+"以下的文件和文件夹将被删除："
 
 #: src/ui/widgets/tu_item/action.rs:472 resources/ui/pop-menu.ui:87
 #: resources/ui/server_action_row.ui:52 resources/ui/image_info_card.ui:139
@@ -436,7 +439,7 @@ msgstr "识别"
 
 #: src/ui/widgets/identify/search_page.rs:131
 msgid "Replace existing images"
-msgstr ""
+msgstr "替换现有图片"
 
 #: src/ui/mpv/control_sidebar.rs:452
 msgid "Video filter settings cleared."
@@ -1067,7 +1070,7 @@ msgstr "添加一个新服务器"
 
 #: resources/ui/account.ui:45
 msgid "Enter the server details below."
-msgstr ""
+msgstr "在下面填入服务器的信息。"
 
 #: resources/ui/account.ui:48 resources/ui/other.ui:54
 msgid "Name"
@@ -1597,7 +1600,7 @@ msgstr "年份"
 
 #: resources/ui/filter.ui:99
 msgid "Official Ratings"
-msgstr ""
+msgstr "官方分级"
 
 #: resources/ui/filter.ui:115
 msgid "Media Info"
@@ -1605,11 +1608,11 @@ msgstr "媒体信息"
 
 #: resources/ui/filter.ui:118
 msgid "Containers"
-msgstr ""
+msgstr "封装"
 
 #: resources/ui/filter.ui:125
 msgid "Encoders"
-msgstr ""
+msgstr "编码方式"
 
 #: resources/ui/filter.ui:132
 msgid "Video Types"
@@ -1621,7 +1624,7 @@ msgstr "分辨率"
 
 #: resources/ui/filter.ui:165
 msgid "Clear"
-msgstr ""
+msgstr "清除"
 
 #: resources/ui/missing_episodes.ui:6 resources/ui/missing_episodes.ui:36
 msgid "Missing Episodes"
