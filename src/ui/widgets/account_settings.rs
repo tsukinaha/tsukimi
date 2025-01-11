@@ -287,13 +287,6 @@ impl AccountSettings {
                 .set_accent_color_code(&control.rgba().to_string())
                 .unwrap();
         });
-        imp.fg_color
-            .set_rgba(&RGBA::from_str(&SETTINGS.accent_fg_color_code()).unwrap());
-        imp.fg_color.connect_rgba_notify(move |control| {
-            SETTINGS
-                .set_accent_fg_color_code(&control.rgba().to_string())
-                .unwrap();
-        });
     }
 
     pub fn set_fontsize(&self) {

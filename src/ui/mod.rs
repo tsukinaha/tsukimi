@@ -46,11 +46,9 @@ pub fn load_css() {
     provider.load_from_string(&format!(
         "@define-color accent_color {};
         @define-color accent_bg_color {};
-        @define-color accent_fg_color {};
         ",
         accent_color,
         accent_color,
-        SETTINGS.accent_fg_color_code()
     ));
 
     gtk::style_context_add_provider_for_display(

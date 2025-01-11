@@ -190,7 +190,7 @@ scrolledwindow>viewport>box>box>box {
 }
 
 @define-color accent_bg_color #AEB5FA;
-@define-color accent_fg_color #3C0090;
+@define-color accent_fg_color #FFFFFF;
 @define-color accent_color #AEB5FA;
 
 placessidebar {

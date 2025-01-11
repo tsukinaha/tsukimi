@@ -65,6 +65,7 @@
         <child>
           <object class="GtkLabel" id="label2">
             <property name="justify">center</property>
+            <property name="ellipsize">middle</property>
             <attributes>
               <attribute name="scale" value="0.8"/>
             </attributes>
