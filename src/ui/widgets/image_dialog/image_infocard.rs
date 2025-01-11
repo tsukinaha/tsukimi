@@ -226,8 +226,8 @@ impl ImageInfoCard {
         self.imp().label2.set_text(&str);
     }
 
-    pub fn set_picture(&self, img_type: &str, id: &str, image_index: &Option<u32>) {
-        let path = EMBY_CLIENT.get_image_path(id, img_type, *image_index);
+    pub async fn set_picture(&self, img_type: &str, id: &str, image_index: &Option<u32>) {
+        let path = EMBY_CLIENT.get_image_path(id, img_type, *image_index).await;
 
         let picture = self.imp().picture.get();
 

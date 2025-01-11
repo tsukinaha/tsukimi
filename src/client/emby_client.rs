@@ -390,10 +390,10 @@ impl EmbyClient {
     }
 
     // jellyfin
-    pub fn get_direct_stream_url(
+    pub async fn get_direct_stream_url(
         &self, continer: &str, media_source_id: &str, etag: &str,
     ) -> String {
-        let mut url = self.url.blocking_lock().as_ref().unwrap().clone();
+        let mut url = self.url.lock().await.as_ref().unwrap().clone();
         url.path_segments_mut().unwrap().pop();
         let path = format!("Videos/{}/stream.{}", media_source_id, continer);
         let mut url = url.join(&path).unwrap();
@@ -401,7 +401,7 @@ impl EmbyClient {
             .append_pair("Static", "true")
             .append_pair("mediaSourceId", media_source_id)
             .append_pair("deviceId", &DEVICE_ID)
-            .append_pair("api_key", self.user_access_token.blocking_lock().as_str())
+            .append_pair("api_key", self.user_access_token.lock().await.as_str())
             .append_pair("Tag", etag);
         url.to_string()
     }
@@ -776,8 +776,8 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub fn get_streaming_url(&self, path: &str) -> String {
-        let url = self.url.blocking_lock().as_ref().unwrap().clone();
+    pub async fn get_streaming_url(&self, path: &str) -> String {
+        let url = self.url.lock().await.as_ref().unwrap().clone();
         url.join(path.trim_start_matches('/')).unwrap().to_string()
     }
 
@@ -1047,10 +1047,7 @@ impl EmbyClient {
         &self, types: &str, start: u32, limit: u32, sort_by: &str, sort_order: &str,
         filters_list: &FiltersList,
     ) -> Result<List> {
-        let user_id = {
-            let user_id = self.user_id.blocking_lock();
-            user_id.to_owned()
-        };
+        let user_id = self.user_id.lock().await;
         let path = if types == "People" {
             "Persons".to_string()
         } else {
@@ -1187,10 +1184,10 @@ impl EmbyClient {
     }
 
     pub async fn get_song_streaming_uri(&self, id: &str) -> String {
-        let url = self.url.blocking_lock().as_ref().unwrap().clone();
+        let url = self.url.lock().await.as_ref().unwrap().clone();
 
         url.join(&format!("Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
-        id, &self.user_id().await, &DEVICE_ID.to_string(), self.user_access_token.blocking_lock(), )).unwrap().to_string()
+        id, &self.user_id().await, &DEVICE_ID.to_string(), self.user_access_token.lock().await, )).unwrap().to_string()
     }
 
     async fn user_id(&self) -> String {
@@ -1265,11 +1262,14 @@ impl EmbyClient {
         Ok(())
     }
 
-    pub fn get_image_path(&self, id: &str, image_type: &str, image_index: Option<u32>) -> String {
+    pub async fn get_image_path(
+        &self, id: &str, image_type: &str, image_index: Option<u32>,
+    ) -> String {
         let path = format!("Items/{}/Images/{}/", id, image_type);
         let url = self
             .url
-            .blocking_lock()
+            .lock()
+            .await
             .as_ref()
             .unwrap()
             .clone()

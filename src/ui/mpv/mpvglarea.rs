@@ -16,7 +16,10 @@ use super::tsukimi_mpv::{
     TrackSelection,
     ACTIVE,
 };
-use crate::client::emby_client::EMBY_CLIENT;
+use crate::{
+    client::emby_client::EMBY_CLIENT,
+    utils::spawn,
+};
 
 mod imp {
     use std::thread::JoinHandle;
@@ -129,20 +132,28 @@ impl MPVGLArea {
     }
 
     pub fn play(&self, url: &str, percentage: f64) {
-        let mpv = &self.imp().mpv;
+        let url = url.to_owned();
 
-        mpv.event_thread_alive
-            .store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
-        atomic_wait::wake_all(&*mpv.event_thread_alive);
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                let mpv = &obj.imp().mpv;
 
-        let url = EMBY_CLIENT.get_streaming_url(url);
+                mpv.event_thread_alive
+                    .store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
+                atomic_wait::wake_all(&*mpv.event_thread_alive);
 
-        info!("Now Playing: {}", url);
-        mpv.load_video(&url);
+                let url = EMBY_CLIENT.get_streaming_url(&url).await;
 
-        mpv.set_start(percentage);
+                info!("Now Playing: {}", url);
+                mpv.load_video(&url);
 
-        mpv.pause(false);
+                mpv.set_start(percentage);
+
+                mpv.pause(false);
+            }
+        ));
     }
 
     pub fn add_sub(&self, url: &str) {

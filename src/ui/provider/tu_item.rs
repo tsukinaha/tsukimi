@@ -471,7 +471,7 @@ impl TuItem {
 
         let source = playback.media_sources[0].clone();
 
-        let Some(url) = extract_url(&source) else {
+        let Some(url) = extract_url(&source).await else {
             toast!(obj, gettext("No mediasource found"));
             return;
         };

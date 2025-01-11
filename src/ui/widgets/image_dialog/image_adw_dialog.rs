@@ -137,43 +137,45 @@ mod imp {
             ));
         }
 
-        pub fn set_card(&self, card: &ImageInfoCard, item: &ImageItem) {
+        pub async fn set_card(&self, card: &ImageInfoCard, item: &ImageItem) {
             card.set_loading_visible();
             card.set_size(&item.width, &item.height, &item.size);
-            card.set_picture(&item.image_type, &self.obj().id(), &None);
+            card.set_picture(&item.image_type, &self.obj().id(), &None)
+                .await;
         }
 
-        pub fn add_backdrop(&self, item: &ImageItem) {
+        pub async fn add_backdrop(&self, item: &ImageItem) {
             let card = ImageInfoCard::new("Backdrop", &self.obj().id());
             card.set_loading_visible();
             card.set_size(&item.width, &item.height, &item.size);
-            card.set_picture(&item.image_type, &self.obj().id(), &item.image_index);
+            card.set_picture(&item.image_type, &self.obj().id(), &item.image_index)
+                .await;
             self.size_group.add_widget(&card.imp().stack.get());
             self.flowbox.append(&card);
         }
 
-        pub fn set_item(&self, item: &ImageItem) {
+        pub async fn set_item(&self, item: &ImageItem) {
             match item.image_type.as_str() {
                 "Primary" => {
-                    self.set_card(&self.primary, item);
+                    self.set_card(&self.primary, item).await;
                 }
                 "Logo" => {
-                    self.set_card(&self.logo, item);
+                    self.set_card(&self.logo, item).await;
                 }
                 "Thumb" => {
-                    self.set_card(&self.thumb, item);
+                    self.set_card(&self.thumb, item).await;
                 }
                 "Banner" => {
-                    self.set_card(&self.banner, item);
+                    self.set_card(&self.banner, item).await;
                 }
                 "Disc" => {
-                    self.set_card(&self.disc, item);
+                    self.set_card(&self.disc, item).await;
                 }
                 "Art" => {
-                    self.set_card(&self.art, item);
+                    self.set_card(&self.art, item).await;
                 }
                 "Backdrop" => {
-                    self.add_backdrop(item);
+                    self.add_backdrop(item).await;
                 }
                 _ => {}
             }
@@ -218,7 +220,7 @@ impl ImagesDialog {
             Ok(items) => {
                 self.imp().flowbox.remove_all();
                 for item in items {
-                    self.imp().set_item(&item);
+                    self.imp().set_item(&item).await;
                 }
             }
             Err(e) => {

@@ -360,8 +360,12 @@ impl MPVPage {
                 imp.loading_box.set_visible(true);
                 imp.network_speed_label.set_text("Initializing...");
                 imp.title_content.set_label(&name);
-                imp.suburl
-                    .replace(suburi.map(|suburi| EMBY_CLIENT.get_streaming_url(&suburi)));
+
+                if let Some(sub_uri) = suburi {
+                    let stream_url = EMBY_CLIENT.get_streaming_url(&sub_uri).await;
+                    imp.suburl.replace(Some(stream_url));
+                }
+
                 imp.video.play(&url, percentage);
             }
         ));
@@ -499,7 +503,7 @@ impl MPVPage {
             return;
         };
 
-        let Some(url) = extract_url(media_source) else {
+        let Some(url) = extract_url(media_source).await else {
             toast!(self, gettext("No media sources found"));
             return;
         };
@@ -1123,19 +1127,23 @@ impl MPVPage {
     }
 }
 
-pub fn direct_stream_url(source: &MediaSource) -> Option<String> {
+pub async fn direct_stream_url(source: &MediaSource) -> Option<String> {
     let container = source.container.clone()?;
     let etag = source.etag.clone()?;
-    Some(EMBY_CLIENT.get_direct_stream_url(&container, &source.id.clone(), &etag))
+    Some(
+        EMBY_CLIENT
+            .get_direct_stream_url(&container, &source.id.clone(), &etag)
+            .await,
+    )
 }
 
-pub fn extract_url(source: &MediaSource) -> Option<String> {
+pub async fn extract_url(source: &MediaSource) -> Option<String> {
     source
         .direct_stream_url
         .as_ref()
         .or(source
             .transcoding_url
             .as_ref()
-            .or(direct_stream_url(source).as_ref()))
+            .or(direct_stream_url(source).await.as_ref()))
         .map(|url| url.to_string())
 }

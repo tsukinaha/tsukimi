@@ -47,8 +47,7 @@ pub fn load_css() {
         "@define-color accent_color {};
         @define-color accent_bg_color {};
         ",
-        accent_color,
-        accent_color,
+        accent_color, accent_color,
     ));
 
     gtk::style_context_add_provider_for_display(

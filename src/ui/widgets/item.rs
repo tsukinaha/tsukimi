@@ -437,7 +437,7 @@ impl ItemPage {
                 }
             };
 
-        self.set_dropdown(&playback);
+        self.set_dropdown(&playback).await;
         self.set_play_session_id(playback.play_session_id.clone());
 
         self.set_current_item(Some(intro));
@@ -607,7 +607,7 @@ impl ItemPage {
         }
     }
 
-    pub fn set_dropdown(&self, playbackinfo: &Media) {
+    pub async fn set_dropdown(&self, playbackinfo: &Media) {
         let playbackinfo = playbackinfo.clone();
         let imp = self.imp();
         let namedropdown = imp.namedropdown.get();
@@ -686,7 +686,7 @@ impl ItemPage {
                 .direct_stream_url
                 .clone()
                 .or(media.transcoding_url.clone())
-                .or(direct_stream_url(media));
+                .or(direct_stream_url(media).await);
             let Ok(dl) = DropdownListBuilder::default()
                 .line1(Some(media.name.clone()))
                 .line2(Some(line2))
