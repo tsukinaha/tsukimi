@@ -75,8 +75,6 @@ mod imp {
         #[template_child]
         pub color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
-        pub fg_color: TemplateChild<gtk::ColorDialogButton>,
-        #[template_child]
         pub config_switchrow: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
