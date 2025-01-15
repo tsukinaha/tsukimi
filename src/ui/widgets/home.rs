@@ -47,8 +47,6 @@ mod imp {
         #[template_child]
         pub libsbox: TemplateChild<gtk::Box>,
         #[template_child]
-        pub toast: TemplateChild<adw::ToastOverlay>,
-        #[template_child]
         pub hishortu: TemplateChild<HortuScrolled>,
         #[template_child]
         pub libhortu: TemplateChild<HortuScrolled>,

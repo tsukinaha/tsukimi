@@ -1,37 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwNavigationPage" class="HomePage">
-    <property name="title" >Tsukimi</property>
+    <property name="title">Tsukimi</property>
     <child>
       <object class="AdwToolbarView">
         <child>
-          <object class="AdwToastOverlay" id="toast">
+          <object class="GtkScrolledWindow" id="root">
+            <property name="hscrollbar-policy">never</property>
             <child>
-              <object class="GtkScrolledWindow" id="root">
-                <property name="hscrollbar-policy">never</property>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="valign">start</property>
+                <property name="spacing">15</property>
                 <child>
-                  <object class="GtkBox">
+                  <object class="HortuScrolled" id="libhortu">
+                    <property name="title" translatable="yes">Library</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="HortuScrolled" id="hishortu">
+                    <property name="title" translatable="yes">Continue Watching</property>
+                    <property name="isresume">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="libsbox">
                     <property name="orientation">vertical</property>
-                    <property name="valign">start</property>
-                    <property name="spacing">15</property>
-                    <child>
-                      <object class="HortuScrolled" id="libhortu">
-                        <property name="title" translatable="yes">Library</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="HortuScrolled" id="hishortu">
-                        <property name="title" translatable="yes">Continue Watching</property>
-                        <property name="isresume">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkBox" id="libsbox">
-                        <property name="orientation">vertical</property>
-                        <property name="spacing">6</property>
-                        <property name="height-request">1000</property>
-                      </object>
-                    </child>
+                    <property name="spacing">6</property>
+                    <property name="height-request">1000</property>
                   </object>
                 </child>
               </object>
