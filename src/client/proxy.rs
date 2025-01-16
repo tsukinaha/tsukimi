@@ -30,6 +30,7 @@ impl ReqClient {
             let client_builder = match get_proxy_settings() {
                 Some(proxy_settings) => {
                     if let Ok(proxy) = reqwest::Proxy::all(proxy_settings) {
+                        tracing::info!("Windows: Using proxy {}", proxy);
                         client_builder.proxy(proxy)
                     } else {
                         client_builder
