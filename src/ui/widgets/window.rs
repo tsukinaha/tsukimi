@@ -202,17 +202,13 @@ mod imp {
 
             let obj = self.obj();
             obj.set_fonts();
+
             if crate::ui::models::SETTINGS.font_size() != -1 {
-                let settings = gtk::Settings::default().unwrap();
-                settings.set_property(
-                    "gtk-xft-dpi",
-                    crate::ui::models::SETTINGS.font_size() * 1024,
-                );
-            } else {
-                #[cfg(target_os = "windows")]
-                {
-                    let settings = gtk::Settings::default().unwrap();
-                    settings.set_property("gtk-xft-dpi", 100 * 1024);
+                if let Some(settings) = gtk::Settings::default() {
+                    settings.set_property(
+                        "gtk-xft-dpi",
+                        crate::ui::models::SETTINGS.font_size() * 1024,
+                    );
                 }
             }
 
