@@ -176,7 +176,13 @@ pub mod theme {
             let subkey = w!("Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
             let mut key_handle = HKEY::default();
 
-            let result = RegOpenKeyExW(HKEY_CURRENT_USER, subkey, Some(0), KEY_READ, &mut key_handle);
+            let result = RegOpenKeyExW(
+                HKEY_CURRENT_USER,
+                subkey,
+                Some(0),
+                KEY_READ,
+                &mut key_handle,
+            );
 
             if result.is_err() {
                 return false;

@@ -42,6 +42,10 @@ button.pill.no-padding-small {
   padding: 3px;
 }
 
+.transparent-bg {
+  background: transparent;
+}
+
 .logo {
   background: transparent;
 }
