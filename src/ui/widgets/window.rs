@@ -107,9 +107,6 @@ mod imp {
         pub mpv_control_sidebar: TemplateChild<MPVControlSidebar>,
 
         #[template_child]
-        pub sidebar_page: TemplateChild<adw::NavigationPage>,
-
-        #[template_child]
         pub mpv_view: TemplateChild<adw::OverlaySplitView>,
         #[template_child]
         pub mpv_view_stack: TemplateChild<adw::ViewStack>,
@@ -195,10 +192,6 @@ mod imp {
             ));
             self.mpv_control_sidebar
                 .set_player(Some(&self.mpvnav.imp().video.get()));
-
-            if let Some(parent) = self.sidebar_page.parent() {
-                parent.add_css_class("osd");
-            }
 
             let obj = self.obj();
             obj.set_fonts();

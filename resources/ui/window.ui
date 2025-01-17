@@ -83,6 +83,7 @@
       <object class="AdwBreakpoint">
         <condition>max-width: 500sp</condition>
         <setter object="split_view" property="collapsed">True</setter>
+        <setter object="mpv_view" property="show-sidebar">False</setter>
       </object>
     </child>
     <property name="content">
@@ -547,13 +548,13 @@
                         <property name="name">mpv</property>
                         <property name="child">
                           <object class="AdwOverlaySplitView" id="mpv_view">
-                            <property name="collapsed">True</property>
+                            <property name="collapsed">False</property>
+                            <property name="show-sidebar">False</property>
                             <property name="sidebar-position">end</property>
                             <property name="sidebar">
-                              <object class="AdwNavigationPage" id="sidebar_page">
+                              <object class="AdwNavigationPage">
                                 <style>
                                   <class name="osd" />
-                                  <class name="transparent-bg" />
                                 </style>
                                 <property name="title" translatable="yes">Playlist</property>
                                 <property name="child">
@@ -616,7 +617,6 @@
                                     </property>
                                     <style>
                                       <class name="osd" />
-                                      <class name="transparent-bg" />
                                     </style>
                                   </object>
                                 </property>
