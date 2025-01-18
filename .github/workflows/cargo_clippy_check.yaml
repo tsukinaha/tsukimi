@@ -1,16 +1,19 @@
-on: push
 name: Clippy check
-
-# Make sure CI fails on all warnings, including Clippy lints
-env:
-  RUSTFLAGS: "-Dwarnings"
+on: push
 
 jobs:
   clippy_check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: |
+          cat > entrypoint.sh <<EOF
+          #!/bin/bash
+          set -e
+          export PATH=/root/.cargo/bin:\$PATH
+          RUSTFLAGS="-D warnings" cargo clippy --all-targets
+          EOF
+
       - name: Run Clippy
         run: |
-            sudo apt install libgtk-4-dev build-essential
-            cargo clippy --all-targets --all-features
+          docker run --rm -v ${{ github.workspace }}:/app -v ./entrypoint.sh:/entrypoint.sh ghcr.io/kosette/ubuntu-rust-gtk4:latest
