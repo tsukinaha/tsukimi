@@ -131,7 +131,9 @@ mod imp {
         #[template_child]
         pub menu_popover: TemplateChild<gtk::Popover>,
         #[template_child]
-        pub title_content: TemplateChild<adw::ButtonContent>,
+        pub title_label1: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub title_label2: TemplateChild<gtk::Label>,
         #[template_child]
         pub speed_spin: TemplateChild<gtk::SpinButton>,
         #[template_child]
@@ -328,23 +330,35 @@ impl MPVPage {
     ) {
         let url = url.to_owned();
         let suburi = suburi.map(|s| s.to_owned());
-        let name = if let Some(series_name) = item.series_name() {
-            format!(
-                "{} - S{}E{}: {}",
-                series_name,
+
+        let (title1, title2) = if let Some(series_name) = item.series_name() {
+            let episode_info = format!(
+                "S{}E{}: {}",
                 item.parent_index_number(),
                 item.index_number(),
                 item.name()
-            )
+            );
+            (series_name, Some(episode_info))
         } else {
-            item.name()
+            (item.name(), None)
         };
+
+        self.imp().title_label1.set_text(&title1);
+
+        if let Some(ref subtitle) = title2 {
+            self.imp().title_label2.set_text(subtitle);
+        }
+
+        let media_title = title2
+            .map(|t| format!("{} - {}", title1, t))
+            .unwrap_or_else(|| title1);
 
         self.imp()
             .video
             .imp()
             .mpv
-            .set_property("force-media-title", name.clone());
+            .set_property("force-media-title", media_title);
+
         self.imp().video_scale.reset_scale();
         self.imp().video_version_matcher.replace(matcher);
         self.imp().current_video.replace(Some(item));
@@ -359,7 +373,6 @@ impl MPVPage {
                 imp.spinner.set_visible(true);
                 imp.loading_box.set_visible(true);
                 imp.network_speed_label.set_text("Initializing...");
-                imp.title_content.set_label(&name);
 
                 if let Some(sub_uri) = suburi {
                     let stream_url = EMBY_CLIENT.get_streaming_url(&sub_uri).await;

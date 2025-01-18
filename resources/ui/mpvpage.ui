@@ -75,96 +75,101 @@
                 <property name="valign">start</property>
                 <property name="focusable">False</property>
                 <child>
-                  <object class="GtkWindowHandle">
+                  <object class="AdwClamp">
+                    <property name="margin-top">10</property>
+                    <property name="maximum-size">2000</property>
                     <child>
-                      <object class="GtkCenterBox">
-                        <child type="start">
-                          <object class="GtkBox">
-                            <property name="orientation">horizontal</property>
-                            <property name="margin-end">20</property>
-                            <child>
-                              <object class="GtkWindowControls">
-                                <property name="side">start</property>
-                                <property name="visible">False</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="_back_button">
-                                <property name="tooltip_text" translatable="yes">Stop and quit</property>
-                                <signal name="clicked" handler="on_stop_clicked" swapped="yes" />
-                                <style>
-                                  <class name="flat" />
-                                </style>
-                                <property name="child">
-                                  <object class="AdwButtonContent" id="title_content">
-                                    <property name="icon-name">arrow4-left-symbolic</property>
-                                    <property name="label" translatable="yes">Loading...</property>
-                                    <property name="use-underline">True</property>
-                                    <property name="can-shrink">True</property>
+                      <object class="GtkWindowHandle">
+                        <child>
+                          <object class="GtkCenterBox">
+                            <child type="start">
+                              <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <property name="margin-end">20</property>
+                                <property name="spacing">10</property>
+                                <child>
+                                  <object class="GtkWindowControls">
+                                    <property name="side">start</property>
+                                    <property name="visible">False</property>
                                   </object>
-                                </property>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="_back_button">
+                                    <property name="tooltip_text" translatable="yes">Stop and quit</property>
+                                    <property name="icon-name">arrow4-left-symbolic</property>
+                                    <signal name="clicked" handler="on_stop_clicked" swapped="yes" />
+                                    <style>
+                                      <class name="flat" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="title_label1">
+                                    <property name="halign">center</property>
+                                    <property name="ellipsize">middle</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="title_label2">
+                                    <property name="halign">center</property>
+                                    <property name="ellipsize">middle</property>
+                                    <style>
+                                      <class name="dim-label" />
+                                    </style>
+                                  </object>
+                                </child>
                               </object>
                             </child>
-                            <style>
-                              <class name="osd" />
-                              <class name="toolbar" />
-                              <class name="top-control-bar" />
-                              <class name="player-toolbar" />
-                            </style>
+                            <child type="end">
+                              <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <child>
+                                  <object class="GtkLabel" id="network_speed_label_2">
+                                    <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create" />
+                                    <property name="width-request">130</property>
+                                    <property name="margin-end">10</property>
+                                    <style>
+                                      <class name="dim-label" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="_playlist_button">
+                                    <property name="icon-name">view-dual-symbolic</property>
+                                    <property name="focusable">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="tooltip_text" translatable="yes">Playlist</property>
+                                    <signal name="clicked" handler="on_playlist_clicked" swapped="yes" />
+                                    <style>
+                                      <class name="flat" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="_media_info_button">
+                                    <property name="icon-name">help-about-symbolic</property>
+                                    <property name="focusable">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="tooltip_text" translatable="yes">Media info (MPV)</property>
+                                    <signal name="clicked" handler="on_info_clicked" swapped="yes" />
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkWindowControls">
+                                    <property name="side">end</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
                           </object>
                         </child>
-                        <child type="end">
-                          <object class="GtkBox">
-                            <property name="orientation">horizontal</property>
-                            <child>
-                              <object class="GtkLabel" id="network_speed_label_2">
-                                <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create" />
-                                <property name="width-request">130</property>
-                                <property name="margin-end">10</property>
-                                <style>
-                                  <class name="dim-label" />
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="_playlist_button">
-                                <property name="icon-name">view-dual-symbolic</property>
-                                <property name="focusable">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_text" translatable="yes">Playlist</property>
-                                <signal name="clicked" handler="on_playlist_clicked" swapped="yes" />
-                                <style>
-                                  <class name="flat" />
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="_media_info_button">
-                                <property name="icon-name">help-about-symbolic</property>
-                                <property name="focusable">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_text" translatable="yes">Media info (MPV)</property>
-                                <signal name="clicked" handler="on_info_clicked" swapped="yes" />
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkWindowControls">
-                                <property name="side">end</property>
-                              </object>
-                            </child>
-                            <style>
-                              <class name="osd" />
-                              <class name="toolbar" />
-                              <class name="top-control-bar" />
-                              <class name="player-toolbar" />
-                            </style>
-                          </object>
-                        </child>
+                        <style>
+                          <class name="osd" />
+                          <class name="toolbar" />
+                          <class name="player-toolbar" />
+                        </style>
                       </object>
                     </child>
-                    <style>
-                      <class name="toolbar" />
-                    </style>
                   </object>
                 </child>
               </object>
