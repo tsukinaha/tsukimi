@@ -20,7 +20,7 @@ jobs:
             target: amd64
           # aarch64-linux
           - arch: aarch64-linux
-            os: ubuntu-latest
+            os: ubuntu-24.04-arm
             target: arm64
           # x86_64-windows-gnu
           - arch: x86_64-windows-gnu
@@ -145,10 +145,6 @@ jobs:
           compression-level: 0
           retention-days: 3
           if-no-files-found: error
-
-      - name: Set up QEMU
-        if: ${{ matrix.arch == 'x86_64-linux' || matrix.arch == 'aarch64-linux' }}
-        uses: docker/setup-qemu-action@v3
 
       - name: Build ${{ matrix.arch }}
         if: ${{ matrix.arch == 'x86_64-linux' || matrix.arch == 'aarch64-linux' }}
