@@ -1,11 +1,9 @@
 <h1 align="center">tsukimi</h1>
 <p align="center">A simple third-party Emby client for Linux.</p>
 
-![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/tsukimi_frying_crab)
+![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/tsukimi_frying_crab) [<img src="https://api.gitsponsors.com/api/badge/img?id=766925713" height="20">](https://api.gitsponsors.com/api/badge/link?p=PkLkQNjSYIOCWUeL7uqSBclJv68kGTjTgCSiQCDFT++AwGEttelTq9sLftyezTamb5oago9ekRKP8Scm2ouMYYZQRDKqBObzfTK/uX9SjF3yO686lLEDtW/TLa3aD3se+BHuCON26ph1+7v+WyXb+g==)
 
 ![Alt](https://repobeats.axiom.co/api/embed/82b1088ba840d89c50e1b5b3c1c40f4575b321a6.svg "Repobeats analytics image")
-
-[<img src="https://api.gitsponsors.com/api/badge/img?id=766925713" height="0">](https://api.gitsponsors.com/api/badge/link?p=PkLkQNjSYIOCWUeL7uqSBclJv68kGTjTgCSiQCDFT++AwGEttelTq9sLftyezTamb5oago9ekRKP8Scm2ouMYYZQRDKqBObzfTK/uX9SjF3yO686lLEDtW/TLa3aD3se+BHuCON26ph1+7v+WyXb+g==)
 
 ## About
 A simple third-party Emby client written in GTK4-RS, uses MPV as the video player, and GStreamer as the music player.
