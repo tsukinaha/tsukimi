@@ -5,6 +5,8 @@
 
 ![Alt](https://repobeats.axiom.co/api/embed/82b1088ba840d89c50e1b5b3c1c40f4575b321a6.svg "Repobeats analytics image")
 
+[<img src="https://api.gitsponsors.com/api/badge/img?id=766925713" height="0">](https://api.gitsponsors.com/api/badge/link?p=PkLkQNjSYIOCWUeL7uqSBclJv68kGTjTgCSiQCDFT++AwGEttelTq9sLftyezTamb5oago9ekRKP8Scm2ouMYYZQRDKqBObzfTK/uX9SjF3yO686lLEDtW/TLa3aD3se+BHuCON26ph1+7v+WyXb+g==)
+
 ## About
 A simple third-party Emby client written in GTK4-RS, uses MPV as the video player, and GStreamer as the music player.
 
