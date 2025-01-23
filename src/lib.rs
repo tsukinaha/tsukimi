@@ -4,12 +4,13 @@ use std::{
 };
 
 mod arg;
-mod client;
 mod config;
 mod gstl;
 mod macros;
 mod ui;
 mod utils;
+
+pub mod client;
 
 #[cfg(target_os = "windows")]
 pub use client::windows_compat::theme::is_system_dark_mode_enabled;
