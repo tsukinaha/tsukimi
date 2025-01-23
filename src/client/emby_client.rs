@@ -131,8 +131,8 @@ fn generate_hash(s: &str) -> String {
     format!("{:x}", hasher.finish())
 }
 
-impl EmbyClient {
-    pub fn default() -> Self {
+impl Default for EmbyClient {
+    fn default() -> Self {
         let mut headers = reqwest::header::HeaderMap::new();
         headers.insert("Accept-Encoding", HeaderValue::from_static("gzip"));
         headers.insert(
@@ -159,7 +159,9 @@ impl EmbyClient {
             server_name_hash: Mutex::new(String::new()),
         }
     }
+}
 
+impl EmbyClient {
     pub async fn init(&self, account: &Account) -> Result<(), Box<dyn std::error::Error>> {
         self.header_change_url(&account.server, &account.port)
             .await?;

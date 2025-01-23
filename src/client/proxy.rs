@@ -51,28 +51,23 @@ use windows::{
 };
 #[cfg(target_os = "windows")]
 pub fn get_proxy_settings() -> Option<String> {
-    unsafe {
-        let mut proxy_config = WINHTTP_CURRENT_USER_IE_PROXY_CONFIG::default();
-        if WinHttpGetIEProxyConfigForCurrentUser(&mut proxy_config).is_err() {
-            return None;
-        }
+    // FIXME: proxy should be a dynamic constructor
+    //
+    // This is only a temporary solution to get the proxy settings on Windows.
+    // ProxyFactory::get_proxies() is a blocking method, PAC may be a stream.
+    const EXAMPLE_PROXY: &str = "http://example.com";
 
-        if !proxy_config.lpszProxy.is_null() {
-            return PCWSTR(proxy_config.lpszProxy.0).to_string().ok();
-        }
-
-        if !proxy_config.lpszAutoConfigUrl.is_null() {
-            return PCWSTR(proxy_config.lpszAutoConfigUrl.0)
-                .to_string()
-                .map(|proxy_url| {
-                    proxy_url.split('/').collect::<Vec<_>>()[..3]
-                        .join("/")
-                        .to_string()
-                })
-                .ok();
-        }
-    }
-    None
+    // FIEXME: user:password@ is not supported
+    //
+    // libproxy will return "direct://", if no proxy is found.
+    // protocol://[user:password@]proxyhost[:port], but reqwest cant parse [user:password@]
+    use libproxy::ProxyFactory;
+    ProxyFactory::new()?
+        .get_proxies(EXAMPLE_PROXY)
+        .ok()?
+        .first()
+        .filter(|&proxy| proxy != "direct://")
+        .cloned()
 }
 
 #[cfg(target_os = "linux")]
