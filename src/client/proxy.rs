@@ -51,11 +51,22 @@ use windows::{
 };
 #[cfg(target_os = "windows")]
 pub fn get_proxy_settings() -> Option<String> {
+    // FIXME: proxy should be a dynamic constructor
+    //
+    // This is only a temporary solution to get the proxy settings on Windows.
+    // ProxyFactory::get_proxies() is a blocking method, PAC may be a stream.
+    const EXAMPLE_PROXY: &str = "http://example.com";
+
+    // FIEXME: user:password@ is not supported
+    //
+    // libproxy will return "direct://", if no proxy is found.
+    // protocol://[user:password@]proxyhost[:port], but reqwest cant parse [user:password@]
     use libproxy::ProxyFactory;
     ProxyFactory::new()?
-        .get_proxies(&String::new())
+        .get_proxies(EXAMPLE_PROXY)
         .ok()?
         .first()
+        .filter(|&proxy| proxy != "direct://")
         .cloned()
 }
 
