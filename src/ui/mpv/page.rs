@@ -9,7 +9,6 @@ use gtk::{
     Builder,
     PopoverMenu,
 };
-use url::Url;
 
 use super::{
     mpvglarea::MPVGLArea,
@@ -18,6 +17,7 @@ use super::{
         MpvTrack,
         MpvTracks,
         TrackSelection,
+        TsukimiMPV,
         MPV_EVENT_CHANNEL,
         PAUSED,
     },
@@ -232,7 +232,6 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            self.menu_popover.set_position(gtk::PositionType::Top);
             self.menu_popover.set_offset(0, -20);
 
             SETTINGS
@@ -353,11 +352,7 @@ impl MPVPage {
             .map(|t| format!("{} - {}", title1, t))
             .unwrap_or_else(|| title1);
 
-        self.imp()
-            .video
-            .imp()
-            .mpv
-            .set_property("force-media-title", media_title);
+        self.mpv().set_property("force-media-title", media_title);
 
         self.imp().video_scale.reset_scale();
         self.imp().video_version_matcher.replace(matcher);
@@ -368,15 +363,16 @@ impl MPVPage {
             #[weak(rename_to = obj)]
             self,
             async move {
-                obj.load_config();
                 let imp = obj.imp();
                 imp.spinner.set_visible(true);
                 imp.loading_box.set_visible(true);
                 imp.network_speed_label.set_text("Initializing...");
 
-                if let Some(sub_uri) = suburi {
-                    let stream_url = EMBY_CLIENT.get_streaming_url(&sub_uri).await;
-                    imp.suburl.replace(Some(stream_url));
+                if let Some(s) = suburi {
+                    let url = EMBY_CLIENT.get_streaming_url(&s).await;
+                    imp.suburl.replace(Some(url));
+                } else {
+                    imp.suburl.replace(None);
                 }
 
                 imp.video.play(&url, percentage);
@@ -938,7 +934,7 @@ impl MPVPage {
         self.remove_timeout();
 
         self.imp().video_scale.remove_timeout();
-        let mpv = &self.imp().video.imp().mpv;
+        let mpv = self.mpv();
         mpv.pause(true);
         mpv.stop();
         mpv.event_thread_alive
@@ -1105,38 +1101,8 @@ impl MPVPage {
         self.key_pressed_cb(NEXT_CHAPTER_KEYVAL, gtk::gdk::ModifierType::empty());
     }
 
-    pub fn load_config(&self) {
-        let imp = self.imp();
-        let mpv = &imp.video.imp().mpv;
-        if let Some(uri) = crate::client::proxy::get_proxy_settings() {
-            let url =
-                Url::parse(&uri).map_or_else(|_| format!("http://{}", uri), |_| uri.to_string());
-            mpv.set_property("http-proxy", url);
-        }
-        match SETTINGS.mpv_audio_preferred_lang() {
-            0 => mpv.set_property("alang", ""), // clear alang
-            1 => mpv.set_property("alang", "eng"),
-            2 => mpv.set_property("alang", "chs"),
-            3 => mpv.set_property("alang", "jpn"),
-            4 => mpv.set_property("alang", "chi"),
-            5 => mpv.set_property("alang", "ara"),
-            6 => mpv.set_property("alang", "nob"),
-            7 => mpv.set_property("alang", "por"),
-            8 => mpv.set_property("alang", "fre"),
-            _ => unreachable!(),
-        }
-        match SETTINGS.mpv_subtitle_preferred_lang() {
-            0 => mpv.set_property("slang", ""), // clear slang
-            1 => mpv.set_property("slang", "eng"),
-            2 => mpv.set_property("slang", "chs"),
-            3 => mpv.set_property("slang", "jpn"),
-            4 => mpv.set_property("slang", "chi"),
-            5 => mpv.set_property("slang", "ara"),
-            6 => mpv.set_property("slang", "nob"),
-            7 => mpv.set_property("slang", "por"),
-            8 => mpv.set_property("alang", "fre"),
-            _ => unreachable!(),
-        }
+    pub fn mpv(&self) -> &TsukimiMPV {
+        self.imp().video.imp().mpv()
     }
 }
 

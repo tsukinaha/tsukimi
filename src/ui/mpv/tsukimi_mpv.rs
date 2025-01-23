@@ -4,30 +4,22 @@ use std::{
     sync::{
         atomic::AtomicU32,
         Arc,
-        Mutex,
     },
     thread::JoinHandle,
 };
 
-use gtk::gdk::GLContext;
 use libmpv2::{
     events::{
         EventContext,
         PropertyData,
     },
     mpv_node::MpvNode,
-    render::{
-        OpenGLInitParams,
-        RenderContext,
-        RenderParam,
-        RenderParamApiType,
-    },
+    render::RenderContext,
     GetData,
     Mpv,
     SetData,
 };
 use tracing::{
-    error,
     info,
     warn,
 };
@@ -41,9 +33,15 @@ pub struct MpvTrack {
 }
 
 pub struct TsukimiMPV {
-    pub mpv: Arc<Mutex<Mpv>>,
+    pub mpv: Arc<Mpv>,
     pub ctx: RefCell<Option<RenderContext>>,
     pub event_thread_alive: Arc<AtomicU32>,
+}
+
+impl std::fmt::Debug for TsukimiMPV {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("TsukimiMPV").finish()
+    }
 }
 
 pub enum TrackSelection {
@@ -63,6 +61,7 @@ impl std::fmt::Display for TrackSelection {
 
 pub const PAUSED: u32 = 0;
 pub const ACTIVE: u32 = 1;
+pub const SHUTDOWN: u32 = 2;
 
 impl Default for TsukimiMPV {
     fn default() -> Self {
@@ -98,7 +97,7 @@ impl Default for TsukimiMPV {
             }
             init.set_property("input-vo-keyboard", true)?;
             init.set_property("input-default-bindings", true)?;
-            init.set_property("user-agent", "Tsukimi")?;
+            init.set_property("user-agent", crate::USER_AGENT.as_str())?;
             init.set_property("video-timing-offset", 0)?;
             init.set_property("video-sync", "audio")?;
             match SETTINGS.mpv_video_output() {
@@ -130,12 +129,41 @@ impl Default for TsukimiMPV {
                 "audio-channels",
                 match_audio_channels(SETTINGS.mpv_audio_channel()),
             )?;
+            if let Some(uri) = crate::client::proxy::get_proxy_settings() {
+                let url = Url::parse(&uri)
+                    .map_or_else(|_| format!("http://{}", uri), |_| uri.to_string());
+                init.set_property("http-proxy", url)?;
+            };
+            match SETTINGS.mpv_audio_preferred_lang() {
+                0 => init.set_property("alang", "")?,
+                1 => init.set_property("alang", "eng")?,
+                2 => init.set_property("alang", "chs")?,
+                3 => init.set_property("alang", "jpn")?,
+                4 => init.set_property("alang", "chi")?,
+                5 => init.set_property("alang", "ara")?,
+                6 => init.set_property("alang", "nob")?,
+                7 => init.set_property("alang", "por")?,
+                8 => init.set_property("alang", "fre")?,
+                _ => unreachable!(),
+            }
+            match SETTINGS.mpv_subtitle_preferred_lang() {
+                0 => init.set_property("slang", "")?,
+                1 => init.set_property("slang", "eng")?,
+                2 => init.set_property("slang", "chs")?,
+                3 => init.set_property("slang", "jpn")?,
+                4 => init.set_property("slang", "chi")?,
+                5 => init.set_property("slang", "ara")?,
+                6 => init.set_property("slang", "nob")?,
+                7 => init.set_property("slang", "por")?,
+                8 => init.set_property("alang", "fre")?,
+                _ => unreachable!(),
+            }
             Ok(())
         })
         .expect("Failed to create mpv instance");
 
         Self {
-            mpv: Arc::new(Mutex::new(mpv)),
+            mpv: Arc::new(mpv),
             ctx: RefCell::new(None),
             event_thread_alive: Arc::new(AtomicU32::new(PAUSED)),
         }
@@ -147,13 +175,8 @@ use flume::{
     Receiver,
     Sender,
 };
-use libc::c_void;
 use libmpv2::events::Event;
 use once_cell::sync::Lazy;
-
-fn get_proc_address(_ctx: &GLContext, name: &str) -> *mut c_void {
-    epoxy::get_proc_addr(name) as *mut c_void
-}
 
 pub struct RenderUpdate {
     pub tx: Sender<bool>,
@@ -196,29 +219,6 @@ pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
 });
 
 impl TsukimiMPV {
-    pub fn connect_render_update(&self, gl_context: GLContext) {
-        let Some(mut mpv) = self.mpv() else {
-            return;
-        };
-        let mut ctx = RenderContext::new(
-            unsafe { mpv.ctx.as_mut() },
-            vec![
-                RenderParam::ApiType(RenderParamApiType::OpenGl),
-                RenderParam::InitParams(OpenGLInitParams {
-                    get_proc_address,
-                    ctx: gl_context,
-                }),
-            ],
-        )
-        .expect("Failed creating render context");
-
-        ctx.set_update_callback(|| {
-            let _ = RENDER_UPDATE.tx.send(true);
-        });
-
-        self.ctx.replace(Some(ctx));
-    }
-
     pub fn set_position(&self, value: f64) {
         self.set_property("time-pos", value);
     }
@@ -310,10 +310,6 @@ impl TsukimiMPV {
         let mpv = Arc::clone(&self.mpv);
         let property = property.to_string();
         spawn_tokio_without_await(async move {
-            let Some(mpv) = mpv.lock().ok() else {
-                error!("Failed to lock MPV for set property: {}", property);
-                return;
-            };
             mpv.set_property(&property, value)
                 .map_err(|e| warn!("MPV set property Error: {}, Property: {}", e, property))
                 .ok();
@@ -324,7 +320,7 @@ impl TsukimiMPV {
     where
         V: GetData,
     {
-        let mpv = self.mpv()?;
+        let mpv = Arc::clone(&self.mpv);
         mpv.get_property(property).ok()
     }
 
@@ -333,10 +329,6 @@ impl TsukimiMPV {
         let cmd = cmd.to_string();
         let args = args.iter().map(|&arg| arg.to_string()).collect::<Vec<_>>();
         spawn_tokio_without_await(async move {
-            let Some(mpv) = mpv.lock().ok() else {
-                error!("Failed to lock MPV for command: {}", cmd);
-                return;
-            };
             let args_ref: Vec<&str> = args.iter().map(|arg| arg.as_str()).collect();
             mpv.command(&cmd, &args_ref)
                 .map_err(|e| warn!("MPV command Error: {}, Command: {}", e, cmd))
@@ -351,20 +343,8 @@ impl TsukimiMPV {
         track.parse().unwrap_or(0)
     }
 
-    fn mpv(&self) -> Option<std::sync::MutexGuard<Mpv>> {
-        match self.mpv.lock() {
-            Ok(mpv) => Some(mpv),
-            Err(e) => {
-                error!("Failed to lock MPV: {}", e);
-                None
-            }
-        }
-    }
-
     pub fn process_events(&self) -> JoinHandle<()> {
-        let Some(mpv) = self.mpv() else {
-            panic!("Failed to lock MPV for event loop");
-        };
+        let mpv = Arc::clone(&self.mpv);
         let mut event_context = EventContext::new(mpv.ctx);
         event_context
             .disable_deprecated_events()
@@ -391,7 +371,13 @@ impl TsukimiMPV {
         std::thread::Builder::new()
             .name("mpv event loop".into())
             .spawn(move || loop {
-                atomic_wait::wait(&event_thread_alive, PAUSED);
+                let state = event_thread_alive.load(std::sync::atomic::Ordering::SeqCst);
+                match state {
+                    SHUTDOWN => break,
+                    PAUSED => atomic_wait::wait(&event_thread_alive, PAUSED),
+                    _ => {}
+                }
+
                 match event_context.wait_event(1000.0) {
                     Some(Ok(event)) => match event {
                         Event::PropertyChange { name, change, .. } => match name {
@@ -566,6 +552,7 @@ fn get_modstr(state: gtk::gdk::ModifierType) -> String {
 }
 
 use gtk::glib::translate::FromGlib;
+use url::Url;
 
 use super::options_matcher::{
     match_audio_channels,

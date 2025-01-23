@@ -1,12 +1,7 @@
 use glib::Object;
 use gtk::{
-    gdk::{
-        Backend,
-        Display,
-    },
     gio,
     glib,
-    prelude::*,
     subclass::prelude::*,
 };
 use libmpv2::SetData;
@@ -22,7 +17,10 @@ use crate::{
 };
 
 mod imp {
-    use std::thread::JoinHandle;
+    use std::{
+        ffi::c_void,
+        thread::JoinHandle,
+    };
 
     use gettextrs::gettext;
     use gtk::{
@@ -31,6 +29,12 @@ mod imp {
         prelude::*,
         subclass::prelude::*,
     };
+    use libmpv2::render::{
+        OpenGLInitParams,
+        RenderContext,
+        RenderParam,
+        RenderParamApiType,
+    };
     use once_cell::sync::OnceCell;
 
     use crate::{
@@ -38,6 +42,7 @@ mod imp {
         ui::mpv::tsukimi_mpv::{
             TsukimiMPV,
             RENDER_UPDATE,
+            SHUTDOWN,
         },
     };
 
@@ -61,9 +66,9 @@ mod imp {
         }
 
         fn dispose(&self) {
-            if let Ok(mpv) = self.mpv.mpv.lock() {
-                drop(mpv);
-            }
+            self.mpv
+                .event_thread_alive
+                .store(SHUTDOWN, std::sync::atomic::Ordering::SeqCst);
         }
     }
 
@@ -71,13 +76,14 @@ mod imp {
         fn realize(&self) {
             self.parent_realize();
             let obj = self.obj();
+
             obj.make_current();
-            let Some(gl_context) = self.obj().context() else {
-                close_on_error!(self.obj(), gettext("Failed to get GLContext"));
+            let Some(gl_context) = obj.context() else {
+                close_on_error!(obj, gettext("Failed to get GLContext"));
                 return;
             };
 
-            self.mpv.connect_render_update(gl_context);
+            self.setup_mpv(gl_context);
 
             glib::spawn_future_local(glib::clone!(
                 #[weak]
@@ -88,14 +94,12 @@ mod imp {
                     }
                 }
             ));
-
-            self.mpv.process_events();
         }
     }
 
     impl GLAreaImpl for MPVGLArea {
         fn render(&self, _context: &GLContext) -> glib::Propagation {
-            let binding = self.mpv.ctx.borrow();
+            let binding = self.mpv().ctx.borrow();
             let Some(ctx) = binding.as_ref() else {
                 return glib::Propagation::Stop;
             };
@@ -110,6 +114,40 @@ mod imp {
             }
             glib::Propagation::Stop
         }
+    }
+
+    impl MPVGLArea {
+        pub fn mpv(&self) -> &TsukimiMPV {
+            &self.mpv
+        }
+
+        fn setup_mpv(&self, gl_context: GLContext) {
+            let tmpv = self.mpv();
+            let mut handle = tmpv.mpv.ctx;
+            let mut ctx = RenderContext::new(
+                unsafe { handle.as_mut() },
+                vec![
+                    RenderParam::ApiType(RenderParamApiType::OpenGl),
+                    RenderParam::InitParams(OpenGLInitParams {
+                        get_proc_address,
+                        ctx: gl_context,
+                    }),
+                ],
+            )
+            .expect("Failed creating render context");
+
+            ctx.set_update_callback(|| {
+                let _ = RENDER_UPDATE.tx.send(true);
+            });
+
+            tmpv.ctx.replace(Some(ctx));
+
+            tmpv.process_events();
+        }
+    }
+
+    fn get_proc_address(_ctx: &GLContext, name: &str) -> *mut c_void {
+        epoxy::get_proc_addr(name) as *mut c_void
     }
 }
 
@@ -138,7 +176,7 @@ impl MPVGLArea {
             #[weak(rename_to = obj)]
             self,
             async move {
-                let mpv = &obj.imp().mpv;
+                let mpv = &obj.imp().mpv();
 
                 mpv.event_thread_alive
                     .store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
@@ -157,107 +195,69 @@ impl MPVGLArea {
     }
 
     pub fn add_sub(&self, url: &str) {
-        self.imp().mpv.add_sub(url)
+        self.imp().mpv().add_sub(url)
     }
 
     pub fn seek_forward(&self, value: i64) {
-        self.imp().mpv.seek_forward(value)
+        self.imp().mpv().seek_forward(value)
     }
 
     pub fn seek_backward(&self, value: i64) {
-        self.imp().mpv.seek_backward(value)
+        self.imp().mpv().seek_backward(value)
     }
 
     pub fn set_position(&self, value: f64) {
-        self.imp().mpv.set_position(value)
+        self.imp().mpv().set_position(value)
     }
 
     pub fn position(&self) -> f64 {
-        self.imp().mpv.position()
-    }
-
-    pub fn get_wid(&self) -> Option<u64> {
-        return None;
-
-        // FIXME: x11 and win32 display
-        #[allow(unreachable_code)]
-        match Display::default()?.backend() {
-            Backend::X11 => {
-                #[cfg(target_os = "linux")]
-                {
-                    self.native()?
-                        .surface()
-                        .and_downcast_ref::<gdk4_x11::X11Surface>()
-                        .map(|s| s.xid())
-                }
-
-                #[cfg(not(target_os = "linux"))]
-                {
-                    None
-                }
-            }
-            Backend::Win32 => {
-                #[cfg(target_os = "windows")]
-                {
-                    self.native()?
-                        .surface()
-                        .and_downcast_ref::<gdk4_win32::Win32Surface>()
-                        .map(|s| s.handle().0 as u64)
-                }
-
-                #[cfg(not(target_os = "windows"))]
-                {
-                    None
-                }
-            }
-            _ => None,
-        }
+        self.imp().mpv().position()
     }
 
     pub fn set_aid(&self, value: TrackSelection) {
-        self.imp().mpv.set_aid(value)
+        self.imp().mpv().set_aid(value)
     }
 
     pub fn get_track_id(&self, type_: &str) -> i64 {
-        self.imp().mpv.get_track_id(type_)
+        self.imp().mpv().get_track_id(type_)
     }
 
     pub fn set_sid(&self, value: TrackSelection) {
-        self.imp().mpv.set_sid(value)
+        self.imp().mpv().set_sid(value)
     }
 
     pub fn press_key(&self, key: u32, state: gtk::gdk::ModifierType) {
-        self.imp().mpv.press_key(key, state)
+        self.imp().mpv().press_key(key, state)
     }
 
     pub fn release_key(&self, key: u32, state: gtk::gdk::ModifierType) {
-        self.imp().mpv.release_key(key, state)
+        self.imp().mpv().release_key(key, state)
     }
 
     pub fn set_speed(&self, value: f64) {
-        self.imp().mpv.set_speed(value)
+        self.imp().mpv().set_speed(value)
     }
 
     pub fn set_volume(&self, value: i64) {
-        self.imp().mpv.set_volume(value)
+        self.imp().mpv().set_volume(value)
     }
 
     pub fn display_stats_toggle(&self) {
-        self.imp().mpv.display_stats_toggle()
+        self.imp().mpv().display_stats_toggle()
     }
 
     pub fn paused(&self) -> bool {
-        self.imp().mpv.paused()
+        self.imp().mpv().paused()
     }
 
     pub fn pause(&self) {
-        self.imp().mpv.command_pause();
+        self.imp().mpv().command_pause();
     }
 
     pub fn set_property<V>(&self, property: &str, value: V)
     where
         V: SetData + Send + 'static,
     {
-        self.imp().mpv.set_property(property, value)
+        self.imp().mpv().set_property(property, value)
     }
 }

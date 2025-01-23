@@ -1,12 +1,7 @@
 use gtk::prelude::*;
-use once_cell::sync::Lazy;
 use reqwest::Client;
 
-use crate::config::VERSION;
-
 pub struct ReqClient;
-
-static APP_USER_AGENT: Lazy<String> = Lazy::new(|| format!("Tsukimi/{}", VERSION));
 
 impl ReqClient {
     pub fn build() -> Client {
@@ -14,7 +9,7 @@ impl ReqClient {
 
         #[cfg(target_os = "linux")]
         let client = reqwest::Client::builder()
-            .user_agent(APP_USER_AGENT.to_string())
+            .user_agent(crate::USER_AGENT.as_str())
             .timeout(std::time::Duration::from_secs(10))
             .pool_max_idle_per_host(settings.int("threads") as usize)
             .build()
@@ -23,7 +18,7 @@ impl ReqClient {
         #[cfg(target_os = "windows")]
         let client = {
             let client_builder = reqwest::Client::builder()
-                .user_agent(APP_USER_AGENT.to_string())
+                .user_agent(crate::USER_AGENTT.as_str())
                 .timeout(std::time::Duration::from_secs(10))
                 .pool_max_idle_per_host(settings.int("threads") as usize);
 
