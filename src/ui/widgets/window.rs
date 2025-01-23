@@ -982,7 +982,7 @@ impl Window {
         let app = self.application().expect("No application found");
         let cookie = app.inhibit(
             Some(self),
-            gtk::ApplicationInhibitFlags::IDLE,
+            gtk::ApplicationInhibitFlags::LOGOUT | gtk::ApplicationInhibitFlags::IDLE | gtk::ApplicationInhibitFlags::SUSPEND,
             Some("Playing media"),
         );
         self.imp().suspend_cookie.replace(Some(cookie));
