@@ -623,38 +623,42 @@ impl Window {
 
     pub fn set_rootpic(&self, file: gio::File) {
         let settings = Settings::new(APP_ID);
-        if settings.boolean("is-backgroundenabled") {
-            let backgroundstack = &self.imp().backgroundstack;
-            let pic: gtk::Picture = if settings.boolean("is-blurenabled") {
-                let paintbale =
-                    crate::ui::provider::background_paintable::BackgroundPaintable::default();
-                paintbale.set_pic(file);
-                gtk::Picture::builder()
-                    .paintable(&paintbale)
-                    .halign(gtk::Align::Fill)
-                    .valign(gtk::Align::Fill)
-                    .hexpand(true)
-                    .vexpand(true)
-                    .content_fit(gtk::ContentFit::Cover)
-                    .build()
-            } else {
-                gtk::Picture::builder()
-                    .halign(gtk::Align::Fill)
-                    .valign(gtk::Align::Fill)
-                    .hexpand(true)
-                    .vexpand(true)
-                    .content_fit(gtk::ContentFit::Cover)
-                    .file(&file)
-                    .build()
-            };
-            let opacity = settings.int("pic-opacity");
-            pic.set_opacity(opacity as f64 / 100.0);
-            backgroundstack.add_child(&pic);
-            backgroundstack.set_visible_child(&pic);
-            if backgroundstack.observe_children().n_items() > 2 {
-                if let Some(child) = backgroundstack.first_child() {
-                    backgroundstack.remove(&child);
-                }
+
+        if !settings.boolean("is-backgroundenabled") {
+            return;
+        }
+
+        let backgroundstack = &self.imp().backgroundstack;
+        let pic: gtk::Picture = if settings.boolean("is-blurenabled") {
+            let paintbale =
+                crate::ui::provider::background_paintable::BackgroundPaintable::default();
+            paintbale.set_pic(file);
+            gtk::Picture::builder()
+                .paintable(&paintbale)
+                .halign(gtk::Align::Fill)
+                .valign(gtk::Align::Fill)
+                .hexpand(true)
+                .vexpand(true)
+                .content_fit(gtk::ContentFit::Cover)
+                .build()
+        } else {
+            gtk::Picture::builder()
+                .halign(gtk::Align::Fill)
+                .valign(gtk::Align::Fill)
+                .hexpand(true)
+                .vexpand(true)
+                .content_fit(gtk::ContentFit::Cover)
+                .file(&file)
+                .build()
+        };
+        let opacity = settings.int("pic-opacity");
+        pic.set_opacity(opacity as f64 / 100.0);
+        backgroundstack.add_child(&pic);
+        backgroundstack.set_visible_child(&pic);
+
+        if backgroundstack.observe_children().n_items() > 2 {
+            if let Some(child) = backgroundstack.first_child() {
+                backgroundstack.remove(&child);
             }
         }
     }
@@ -752,8 +756,8 @@ impl Window {
         let Some(paintable) = paintable else {
             return;
         };
-        let imp = self.imp();
-        imp.media_viewer.view_image(paintable);
+
+        self.imp().media_viewer.view_image(paintable);
     }
 
     #[template_callback]
@@ -762,8 +766,8 @@ impl Window {
     }
 
     pub async fn bind_song_model(&self, active_model: gio::ListStore, active_core_song: CoreSong) {
-        let imp = self.imp();
-        imp.player_toolbar_box
+        self.imp()
+            .player_toolbar_box
             .bind_song_model(active_model, active_core_song)
             .await;
     }
@@ -982,7 +986,9 @@ impl Window {
         let app = self.application().expect("No application found");
         let cookie = app.inhibit(
             Some(self),
-            gtk::ApplicationInhibitFlags::LOGOUT | gtk::ApplicationInhibitFlags::IDLE | gtk::ApplicationInhibitFlags::SUSPEND,
+            gtk::ApplicationInhibitFlags::LOGOUT
+                | gtk::ApplicationInhibitFlags::IDLE
+                | gtk::ApplicationInhibitFlags::SUSPEND,
             Some("Playing media"),
         );
         self.imp().suspend_cookie.replace(Some(cookie));
@@ -997,8 +1003,7 @@ impl Window {
     }
 
     pub async fn update_item_page(&self) {
-        let imp = self.imp();
-        let nav = imp.mainview.visible_page();
+        let nav = self.imp().mainview.visible_page();
         let Some(now_page) = nav.and_downcast_ref::<ItemPage>() else {
             return;
         };

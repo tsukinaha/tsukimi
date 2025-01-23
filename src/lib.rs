@@ -11,6 +11,9 @@ mod macros;
 mod ui;
 mod utils;
 
+#[cfg(target_os = "windows")]
+pub use client::windows_compat::theme::is_system_dark_mode_enabled;
+
 pub use arg::Args;
 pub use config::{
     GETTEXT_PACKAGE,
