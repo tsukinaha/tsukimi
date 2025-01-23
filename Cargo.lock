@@ -1908,6 +1908,15 @@ version = "4.0.0"
 source = "git+https://github.com/kohsine/libmpv2-rs.git#906d957e7bbc4c2a52c33cdb4f93c2a22e72f3c3"
 
 [[package]]
+name = "libproxy"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "579703403a8f387e407bf0326c9ecd865bbd19bca62ca40f370870f8d8a0e7dc"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "libredox"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3347,6 +3356,7 @@ dependencies = [
  "libc",
  "libloading",
  "libmpv2",
+ "libproxy",
  "md-5",
  "once_cell",
  "rand",

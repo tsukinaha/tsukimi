@@ -72,6 +72,7 @@ xattr ={ version = "1.4.0" }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 gdk4-win32 = { version = "0.9" }
+libproxy = { version = "0.1.1" }
 
 [package.metadata.deb]
 maintainer = "Inaha <tsukimi@tutanota.com>"

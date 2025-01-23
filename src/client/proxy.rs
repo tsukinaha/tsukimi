@@ -51,28 +51,12 @@ use windows::{
 };
 #[cfg(target_os = "windows")]
 pub fn get_proxy_settings() -> Option<String> {
-    unsafe {
-        let mut proxy_config = WINHTTP_CURRENT_USER_IE_PROXY_CONFIG::default();
-        if WinHttpGetIEProxyConfigForCurrentUser(&mut proxy_config).is_err() {
-            return None;
-        }
-
-        if !proxy_config.lpszProxy.is_null() {
-            return PCWSTR(proxy_config.lpszProxy.0).to_string().ok();
-        }
-
-        if !proxy_config.lpszAutoConfigUrl.is_null() {
-            return PCWSTR(proxy_config.lpszAutoConfigUrl.0)
-                .to_string()
-                .map(|proxy_url| {
-                    proxy_url.split('/').collect::<Vec<_>>()[..3]
-                        .join("/")
-                        .to_string()
-                })
-                .ok();
-        }
-    }
-    None
+    use libproxy::ProxyFactory;
+    ProxyFactory::new()?
+        .get_proxies(&String::new())
+        .ok()?
+        .first()
+        .cloned()
 }
 
 #[cfg(target_os = "linux")]
