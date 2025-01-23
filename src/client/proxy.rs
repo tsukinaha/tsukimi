@@ -18,7 +18,7 @@ impl ReqClient {
         #[cfg(target_os = "windows")]
         let client = {
             let client_builder = reqwest::Client::builder()
-                .user_agent(crate::USER_AGENTT.as_str())
+                .user_agent(crate::USER_AGENT.as_str())
                 .timeout(std::time::Duration::from_secs(10))
                 .pool_max_idle_per_host(settings.int("threads") as usize);
 
