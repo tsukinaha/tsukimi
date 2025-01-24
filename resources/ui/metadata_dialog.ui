@@ -174,28 +174,25 @@
                                           </object>
                                         </child>
                                         <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Overview</property>
-                                            <property name="halign">start</property>
-                                            <property name="margin-start">12</property>
-                                            <style>
-                                              <class name="title-5" />
-                                              <class name="dim-label" />
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkTextView" id="overview_entry">
-                                            <property name="wrap-mode">word</property>
-                                            <property name="height-request">150</property>
+                                          <object class="AdwPreferencesGroup">
+                                            <property name="description">Overview</property>
                                             <property name="margin-start">12</property>
                                             <property name="margin-end">12</property>
-                                            <property name="valign">start</property>
+                                            <child>
+                                              <object class="GtkTextView" id="overview_entry">
+                                                <property name="wrap-mode">word</property>
+                                                <property name="height-request">150</property>
+                                                <property name="valign">start</property>
+                                                <style>
+                                                  <class name="card" />
+                                                </style>
+                                              </object>
+                                            </child>
                                           </object>
                                         </child>
                                         <child>
                                           <object class="AdwPreferencesGroup" id="ids_group">
-                                            <property name="title">External Ids</property>
+                                            <property name="description">External Ids</property>
                                             <property name="margin-start">12</property>
                                             <property name="margin-end">12</property>
                                             <property name="visible">false</property>
