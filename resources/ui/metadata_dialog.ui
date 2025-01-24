@@ -64,6 +64,7 @@
                                       <object class="GtkBox">
                                         <property name="orientation">vertical</property>
                                         <property name="spacing">18</property>
+                                        <property name="valign">start</property>
                                         <child>
                                           <object class="AdwActionRow" id="hint">
                                             <property name="title" translatable="yes">Not Available</property>
