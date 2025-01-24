@@ -17,10 +17,7 @@ use crate::{
 };
 
 mod imp {
-    use std::{
-        ffi::c_void,
-        thread::JoinHandle,
-    };
+    use std::ffi::c_void;
 
     use gettextrs::gettext;
     use gtk::{
@@ -35,7 +32,6 @@ mod imp {
         RenderParam,
         RenderParamApiType,
     };
-    use once_cell::sync::OnceCell;
 
     use crate::{
         close_on_error,
@@ -50,7 +46,6 @@ mod imp {
     #[derive(Default)]
     pub struct MPVGLArea {
         pub mpv: TsukimiMPV,
-        pub mpv_event_loop: OnceCell<JoinHandle<()>>,
     }
 
     #[glib::object_subclass]

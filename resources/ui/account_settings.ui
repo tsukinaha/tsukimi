@@ -336,12 +336,12 @@
     </child>
     <child>
       <object class="AdwPreferencesPage">
-        <property name="title" translatable="yes">Music</property>
-        <property name="name">MusicPlayer</property>
+        <property name="title" translatable="yes">Media</property>
+        <property name="name">media</property>
         <property name="icon-name">audio-x-generic-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Player</property>
+            <property name="title" translatable="yes">Music Player</property>
             <child>
               <object class="AdwComboRow" id="repeatcontrol">
                 <property name="title" translatable="yes">Repeat Mode</property>
@@ -358,17 +358,51 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Video Player</property>
+            <property name="description" translatable="yes">Requires restart</property>
+            <child>
+              <object class="AdwSwitchRow" id="config_switchrow">
+                <property name="title" translatable="yes">Enable external config</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Config dir</property>
+                <property name="activatable-widget">config_dir_button</property>
+                <child type="suffix">
+                  <object class="GtkButton" id="config_dir_button">
+                    <property name="valign">center</property>
+                    <signal name="clicked" handler="dir_cb" swapped="yes"/>
+                    <property name="child">
+                      <object class="AdwButtonContent" id="folder_button_content">
+                        <property name="icon-name">folder-symbolic</property>
+                        <property name="label" translatable="yes">None</property>
+                        <property name="use-underline">True</property>
+                        <property name="can-shrink">True</property>
+                      </object>
+                    </property>
+                    <style>
+                      <class name="flat" />
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
     <child>
       <object class="AdwPreferencesPage">
-        <property name="title" translatable="yes">Video</property>
-        <property name="name">VideoPlayer</property>
-        <property name="icon-name">video-x-generic-symbolic</property>
+        <property name="title" translatable="yes">Others</property>
+        <property name="name">Others</property>
+        <property name="icon-name">preferences-other-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Video Output</property>
-            <property name="description" translatable="yes">Warning: Do NOT use any method other than the software's own controls to control the window. Restart to take effect</property>
+            <property name="description" translatable="yes">Only for debugging</property>
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">libmpv (default)</property>
@@ -380,9 +414,6 @@
                     <property name="action-target">0</property>
                   </object>
                 </child>
-                <style>
-                  <class name="warning"/>
-                </style>
               </object>
             </child>
             <child>
@@ -397,9 +428,6 @@
                     <property name="action-target">1</property>
                   </object>
                 </child>
-                <style>
-                  <class name="warning"/>
-                </style>
               </object>
             </child>
             <child>
@@ -412,42 +440,6 @@
                     <property name="group">vo_group</property>
                     <property name="action-name">setting.video-output</property>
                     <property name="action-target">2</property>
-                  </object>
-                </child>
-                <style>
-                  <class name="warning"/>
-                </style>
-              </object>
-            </child>
-            <style>
-              <class name="warning"/>
-            </style>
-          </object>
-        </child>
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Load external mpv config</property>
-            <property name="description" translatable="yes">May cause crashes, Requires restart</property>
-            <child>
-              <object class="AdwSwitchRow" id="config_switchrow">
-                <property name="title" translatable="yes">Enable external config</property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwActionRow">
-                <property name="title" translatable="yes">Config dir</property>
-                <child type="suffix">
-                  <object class="GtkButton" id="config_dir_button">
-                    <property name="valign">center</property>
-                    <signal name="clicked" handler="dir_cb" swapped="yes"/>
-                    <property name="child">
-                      <object class="AdwButtonContent" id="folder_button_content">
-                        <property name="icon-name">folder-symbolic</property>
-                        <property name="label" translatable="yes">None</property>
-                        <property name="use-underline">True</property>
-                        <property name="can-shrink">True</property>
-                      </object>
-                    </property>
                   </object>
                 </child>
               </object>

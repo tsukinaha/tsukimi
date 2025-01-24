@@ -445,7 +445,6 @@ impl TsukimiMPV {
                         }
                         Event::Shutdown => {
                             let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Shutdown);
-                            event_thread_alive.store(PAUSED, std::sync::atomic::Ordering::SeqCst);
                         }
                         _ => {}
                     },

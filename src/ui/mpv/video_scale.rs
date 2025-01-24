@@ -5,8 +5,6 @@ use gtk::{
 };
 
 mod imp {
-    use std::cell::RefCell;
-
     use gtk::{
         glib,
         prelude::*,
@@ -18,7 +16,6 @@ mod imp {
     #[derive(Default, glib::Properties)]
     #[properties(wrapper_type = super::VideoScale)]
     pub struct VideoScale {
-        pub timeout: RefCell<Option<glib::source::SourceId>>,
         #[property(get, set = Self::set_player, explicit_notify, nullable)]
         pub player: glib::WeakRef<MPVGLArea>,
     }

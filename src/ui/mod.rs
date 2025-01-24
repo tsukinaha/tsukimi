@@ -15,7 +15,7 @@ pub fn build_ui(app: &adw::Application) {
     // Create new window and present it
     let window = widgets::window::Window::new(app);
     let about_action = gtk::gio::ActionEntry::builder("about")
-        .activate(|_, _, _| {
+        .activate(|window, _, _| {
             let about = adw::AboutDialog::builder()
                 .application_name("Tsukimi")
                 .version(crate::config::VERSION)
@@ -31,7 +31,7 @@ pub fn build_ui(app: &adw::Application) {
                 Some("Special Thanks"),
                 &["Qound", "Eikano", "amtoaer"],
             );
-            about.present(None::<&gtk::Widget>);
+            about.present(Some(window));
         })
         .build();
     window.add_action_entries([about_action]);
