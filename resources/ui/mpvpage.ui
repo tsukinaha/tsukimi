@@ -60,10 +60,6 @@
                     </style>
                   </object>
                 </child>
-                <style>
-                  <class name="osd" />
-                  <class name="toolbar" />
-                </style>
               </object>
             </child>
             <child type="overlay">

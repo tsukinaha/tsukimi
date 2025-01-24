@@ -207,9 +207,9 @@ pub enum ListenEvent {
     TrackList(MpvTracks),
     Volume(i64),
     Speed(f64),
-    PausedForCache(bool),
     Shutdown,
     DemuxerCacheTime(i64),
+    TimePos(i64),
 }
 
 pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
@@ -367,6 +367,9 @@ impl TsukimiMPV {
         event_context
             .observe_property("demuxer-cache-time", libmpv2::Format::Int64, 5)
             .unwrap();
+        event_context
+            .observe_property("time-pos", libmpv2::Format::Int64, 6)
+            .unwrap();
         let event_thread_alive = self.event_thread_alive.clone();
         std::thread::Builder::new()
             .name("mpv event loop".into())
@@ -414,18 +417,16 @@ impl TsukimiMPV {
                                     let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Speed(speed));
                                 }
                             }
-                            "paused-for-cache" => {
-                                if let PropertyData::Flag(pause) = change {
-                                    let _ = MPV_EVENT_CHANNEL
-                                        .tx
-                                        .send(ListenEvent::PausedForCache(pause));
-                                }
-                            }
                             "demuxer-cache-time" => {
                                 if let PropertyData::Int64(time) = change {
                                     let _ = MPV_EVENT_CHANNEL
                                         .tx
                                         .send(ListenEvent::DemuxerCacheTime(time));
+                                }
+                            }
+                            "time-pos" => {
+                                if let PropertyData::Int64(time) = change {
+                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::TimePos(time));
                                 }
                             }
                             _ => {}

@@ -626,10 +626,10 @@ impl MPVPage {
                         ListenEvent::Duration(value) => {
                             obj.update_duration(value);
                         }
-                        ListenEvent::Seek | ListenEvent::PausedForCache(true) => {
+                        ListenEvent::Seek => {
                             obj.update_seeking(true);
                         }
-                        ListenEvent::PausedForCache(false) | ListenEvent::PlaybackRestart => {
+                        ListenEvent::PlaybackRestart => {
                             obj.update_seeking(false);
                         }
                         ListenEvent::Eof(value) => {
@@ -662,6 +662,9 @@ impl MPVPage {
                         ListenEvent::DemuxerCacheTime(value) => {
                             obj.on_cache_time_update(value);
                         }
+                        ListenEvent::TimePos(value) => {
+                            obj.scale_cb(value);
+                        }
                     }
                 }
             }
@@ -683,17 +686,18 @@ impl MPVPage {
         let imp = self.imp();
         imp.video_scale.set_range(0.0, value);
         imp.duration_label.set_text(&format_duration(value as i64));
-        imp.video_scale.update_timeout();
     }
 
     fn speed_cb(&self, value: f64) {
-        let imp = self.imp();
-        imp.speed_spin.set_value(value);
+        self.imp().speed_spin.set_value(value);
     }
 
     fn volume_cb(&self, value: i64) {
-        let imp = self.imp();
-        imp.volume_spin.set_value(value as f64);
+        self.imp().volume_spin.set_value(value as f64);
+    }
+
+    fn scale_cb(&self, value: i64) {
+        self.imp().video_scale.set_value(value as f64);
     }
 
     #[template_callback]
@@ -933,7 +937,6 @@ impl MPVPage {
         self.handle_callback(BackType::Stop);
         self.remove_timeout();
 
-        self.imp().video_scale.remove_timeout();
         let mpv = self.mpv();
         mpv.pause(true);
         mpv.stop();
@@ -971,7 +974,7 @@ impl MPVPage {
         let back = self.imp().back.borrow();
 
         // close window when vo=gpu-next will set position to 0, so we need to ignore it
-        if position < &9.0 && (backtype != BackType::Start && backtype != BackType::Stop) {
+        if position < &20.0 && (backtype != BackType::Start && backtype != BackType::Stop) {
             return;
         }
 
@@ -1017,8 +1020,7 @@ impl MPVPage {
 
     #[template_callback]
     fn left_click_cb(&self) {
-        let video = &self.imp().video;
-        video.pause();
+        self.imp().video.pause();
     }
 
     #[template_callback]

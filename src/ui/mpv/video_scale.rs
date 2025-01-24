@@ -51,13 +51,6 @@ mod imp {
                     }
                 });
 
-            gesture.connect_pressed(glib::clone!(
-                #[weak(rename_to = imp)]
-                self,
-                move |_, _, _, _| {
-                    imp.on_click_pressed();
-                }
-            ));
             gesture.connect_released(glib::clone!(
                 #[weak(rename_to = imp)]
                 self,
@@ -79,15 +72,9 @@ mod imp {
             self.player.set(player.as_ref());
         }
 
-        fn on_click_pressed(&self) {
-            let obj = self.obj();
-            obj.remove_timeout();
-        }
-
         fn on_click_released(&self) {
             let obj = self.obj();
             self.on_seek_finished(obj.value());
-            obj.update_timeout();
         }
 
         fn on_seek_finished(&self, value: f64) {
@@ -118,27 +105,6 @@ impl VideoScale {
             self.set_value(*position);
         }
         glib::ControlFlow::Continue
-    }
-
-    pub fn update_timeout(&self) {
-        self.remove_timeout();
-        let closure = glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            move || {
-                self.imp().timeout.replace(Some(glib::timeout_add_local(
-                    std::time::Duration::from_millis(250),
-                    move || obj.update_position_callback(),
-                )));
-            }
-        );
-        closure();
-    }
-
-    pub fn remove_timeout(&self) {
-        if let Some(timeout) = self.imp().timeout.borrow_mut().take() {
-            glib::source::SourceId::remove(timeout);
-        }
     }
 
     pub fn on_smooth_scale_value_changed(&self) {
