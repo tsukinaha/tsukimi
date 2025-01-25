@@ -210,6 +210,7 @@ pub enum ListenEvent {
     Shutdown,
     DemuxerCacheTime(i64),
     TimePos(i64),
+    PausedForCache(bool),
 }
 
 pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
@@ -429,6 +430,14 @@ impl TsukimiMPV {
                                     let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::TimePos(time));
                                 }
                             }
+                            "paused-for-cache" => {
+                                if let PropertyData::Flag(pause) = change {
+                                    let seeking = mpv.get_property::<bool>("seeking").unwrap_or(false);
+                                    let _ = MPV_EVENT_CHANNEL
+                                        .tx
+                                        .send(ListenEvent::PausedForCache(pause || seeking));
+                                }
+                            }
                             _ => {}
                         },
                         Event::Seek { .. } => {
@@ -441,7 +450,7 @@ impl TsukimiMPV {
                             let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Eof(r));
                         }
                         Event::StartFile => {
-                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile);
+                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile); 
                         }
                         Event::Shutdown => {
                             let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Shutdown);

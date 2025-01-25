@@ -626,10 +626,10 @@ impl MPVPage {
                         ListenEvent::Duration(value) => {
                             obj.update_duration(value);
                         }
-                        ListenEvent::Seek => {
+                        ListenEvent::PausedForCache(true) | ListenEvent::Seek => {
                             obj.update_seeking(true);
                         }
-                        ListenEvent::PlaybackRestart => {
+                        ListenEvent::PausedForCache(false) | ListenEvent::PlaybackRestart => {
                             obj.update_seeking(false);
                         }
                         ListenEvent::Eof(value) => {
