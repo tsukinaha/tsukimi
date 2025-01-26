@@ -9,18 +9,18 @@
           <object class="GtkBox" id="box1">
             <property name="orientation">vertical</property>
             <property name="spacing">12</property>
-            <property name="margin-top">6</property>
-            <property name="margin-bottom">6</property>
             <child>
               <object class="GtkProgressBar" id="progress">
                 <property name="orientation">vertical</property>
                 <property name="inverted">True</property>
                 <property name="height-request">200</property>
+                <property name="margin-top">6</property>
               </object>
             </child>
             <child>
               <object class="GtkImage" id="icon">
                 <property name="icon-name">audio-volume-muted-symbolic</property>
+                <property name="margin-bottom">6</property>
               </object>
             </child>
             <style>

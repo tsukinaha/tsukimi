@@ -440,7 +440,8 @@ impl TsukimiMPV {
                             }
                             "paused-for-cache" => {
                                 if let PropertyData::Flag(pause) = change {
-                                    let seeking = mpv.get_property::<bool>("seeking").unwrap_or(false);
+                                    let seeking =
+                                        mpv.get_property::<bool>("seeking").unwrap_or(false);
                                     let _ = MPV_EVENT_CHANNEL
                                         .tx
                                         .send(ListenEvent::PausedForCache(pause || seeking));
@@ -458,7 +459,7 @@ impl TsukimiMPV {
                             let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Eof(r));
                         }
                         Event::StartFile => {
-                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile); 
+                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile);
                         }
                         Event::Shutdown => {
                             let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Shutdown);

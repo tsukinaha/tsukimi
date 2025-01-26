@@ -64,18 +64,23 @@ mod imp {
             match level {
                 0.0 => self.icon.set_icon_name(Some("audio-volume-muted-symbolic")),
                 level if level < 0.33 => self.icon.set_icon_name(Some("audio-volume-low-symbolic")),
-                level if level < 0.66 => self.icon.set_icon_name(Some("audio-volume-medium-symbolic")),
-                level if level <= 1.0 => self.icon.set_icon_name(Some("audio-volume-high-symbolic")),
-                _ => { 
-                    self.icon.set_icon_name(Some("audio-volume-overamplified-symbolic"));
+                level if level < 0.66 => self
+                    .icon
+                    .set_icon_name(Some("audio-volume-medium-symbolic")),
+                level if level <= 1.0 => {
+                    self.icon.set_icon_name(Some("audio-volume-high-symbolic"))
+                }
+                _ => {
+                    self.icon
+                        .set_icon_name(Some("audio-volume-overamplified-symbolic"));
                     self.progress.add_css_class("warning");
-                },
+                }
             }
 
             self.revealer.set_reveal_child(true);
 
             self.remove_timeout();
-            
+
             let source_id = glib::timeout_add_seconds_local_once(
                 2,
                 glib::clone!(
