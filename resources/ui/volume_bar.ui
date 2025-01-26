@@ -5,6 +5,7 @@
     <child>
       <object class="GtkRevealer" id="revealer">
         <property name="reveal-child">False</property>
+        <property name="transition-type">crossfade</property>
         <child>
           <object class="GtkBox" id="box1">
             <property name="orientation">vertical</property>
