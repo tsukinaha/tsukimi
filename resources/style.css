@@ -67,7 +67,7 @@ button.pill.no-padding-small {
 
 .player-toolbar {
   border-radius: 50px;
-  padding: 7px;
+  padding: 5px;
 }
 
 .playing-song-label {
@@ -332,4 +332,9 @@ checkbutton.theme-selector radio:checked {
 
 .folder {
   background-color: rgb(36, 96, 86);
+}
+
+.volume-bar {
+  padding: 10px;
+  border-radius: 50px;
 }

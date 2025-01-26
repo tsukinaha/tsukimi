@@ -29,6 +29,19 @@
                     <signal name="released" handler="right_click_cb" swapped="yes"/>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkEventControllerScroll">
+                    <property name="flags">vertical</property>
+                    <signal name="scroll" handler="video_scroll_cb" swapped="yes"/>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="overlay">
+              <object class="VolumeBar" id="volume_bar">
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="margin-start">10</property>
               </object>
             </child>
             <child type="overlay">
@@ -65,7 +78,7 @@
             <child type="overlay">
               <object class="GtkRevealer" id="top_revealer">
                 <property name="transition-type">crossfade</property>
-                <property name="transition-duration">200</property>
+                <property name="transition-duration">800</property>
                 <property name="reveal-child">false</property>
                 <property name="halign">fill</property>
                 <property name="valign">start</property>
@@ -173,7 +186,7 @@
             <child type="overlay">
               <object class="GtkRevealer" id="bottom_revealer">
                 <property name="transition-type">crossfade</property>
-                <property name="transition-duration">200</property>
+                <property name="transition-duration">800</property>
                 <property name="reveal-child">false</property>
                 <property name="halign">fill</property>
                 <property name="valign">end</property>

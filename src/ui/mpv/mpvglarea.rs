@@ -249,6 +249,10 @@ impl MPVGLArea {
         self.imp().mpv().command_pause();
     }
 
+    pub fn volume_scroll(&self, value: i64) {
+        self.imp().mpv().volume_scroll(value)
+    }
+
     pub fn set_property<V>(&self, property: &str, value: V)
     where
         V: SetData + Send + 'static,

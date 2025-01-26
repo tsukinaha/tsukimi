@@ -104,6 +104,7 @@ impl Default for TsukimiMPV {
                 0 => {
                     init.set_property("vo", "libmpv")?;
                     init.set_property("osc", false)?;
+                    init.set_property("osd-level", 0)?;
                 }
                 1 => init.set_property("vo", "gpu-next")?,
                 2 => init.set_property("vo", "dmabuf-wayland")?,
@@ -260,6 +261,10 @@ impl TsukimiMPV {
         self.set_property("volume", volume);
     }
 
+    pub fn volume_scroll(&self, value: i64) {
+        self.command("add", &["volume", &value.to_string()]);
+    }
+
     pub fn set_speed(&self, speed: f64) {
         self.set_property("speed", speed);
     }
@@ -370,6 +375,9 @@ impl TsukimiMPV {
             .unwrap();
         event_context
             .observe_property("time-pos", libmpv2::Format::Int64, 6)
+            .unwrap();
+        event_context
+            .observe_property("volume", libmpv2::Format::Int64, 7)
             .unwrap();
         let event_thread_alive = self.event_thread_alive.clone();
         std::thread::Builder::new()

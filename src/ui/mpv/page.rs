@@ -87,6 +87,7 @@ mod imp {
                 menu_actions::MenuActions,
                 mpvglarea::MPVGLArea,
                 video_scale::VideoScale,
+                VolumeBar,
             },
             provider::tu_item::TuItem,
             widgets::action_row::AActionRow,
@@ -156,6 +157,9 @@ mod imp {
         #[template_child]
         pub volume_adj: TemplateChild<gtk::Adjustment>,
 
+        #[template_child]
+        pub volume_bar: TemplateChild<VolumeBar>,
+
         pub current_video: RefCell<Option<TuItem>>,
         pub current_episode_list: RefCell<Vec<TuItem>>,
 
@@ -172,6 +176,7 @@ mod imp {
             MPVGLArea::ensure_type();
             VideoScale::ensure_type();
             AActionRow::ensure_type();
+            VolumeBar::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("mpv.play-pause", None, move |mpv, _action, _parameter| {
@@ -694,10 +699,17 @@ impl MPVPage {
 
     fn volume_cb(&self, value: i64) {
         self.imp().volume_spin.set_value(value as f64);
+        self.imp().volume_bar.set_level(value as f64 / 100.0);
     }
 
     fn scale_cb(&self, value: i64) {
         self.imp().video_scale.set_value(value as f64);
+    }
+
+    #[template_callback]
+    fn video_scroll_cb(&self, _: f64, dy: f64) -> bool {
+        self.imp().video.volume_scroll(-dy as i64);
+        true
     }
 
     #[template_callback]
