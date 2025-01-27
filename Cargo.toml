@@ -22,7 +22,7 @@ adw = { version = "0.7", package = "libadwaita", features = [
 cargo-deb = "2.10.0"
 bytefmt = "0.1.7"
 libc = "0.2.169"
-uuid = { version = "1.12.0", features = ["v4"] }
+uuid = { version = "1.12.1", features = ["v4"] }
 chrono = { version = "0.4.39", features = ["serde"] }
 tracing = "0.1.41"
 gst = { version = "0.23", package = "gstreamer" }
