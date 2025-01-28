@@ -5,7 +5,7 @@
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>GPL-3.0-or-later</project_license>
     <releases>
-        <release version="0.18.3" date="2024-10-18" />
+        <release version="0.19.0" date="2024-10-18" />
     </releases>
     <name>Tsukimi</name>
     <summary>A simple third-party Emby client</summary>
