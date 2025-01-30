@@ -367,7 +367,7 @@ impl TuListItem {
                 self.set_can_direct_play(true);
                 self.set_picture();
             }
-            "Actor" | "Person" | "Director" | "Writer" | "Producer" => {
+            "Actor" | "Person" | "Director" | "Writer" | "Producer" | "GuestStar" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_text(&item.role().unwrap_or("".to_string()));
                 imp.overlay

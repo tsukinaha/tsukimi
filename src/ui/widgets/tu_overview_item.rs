@@ -68,7 +68,7 @@ pub mod imp {
         #[property(get, set = Self::set_item)]
         pub item: RefCell<TuItem>,
         #[template_child]
-        pub overview: TemplateChild<gtk::Label>,
+        pub overview: TemplateChild<gtk::Inscription>,
         #[template_child]
         pub inline_overview: TemplateChild<gtk::Label>,
         #[property(get, set = Self::set_view_group, builder(ViewGroup::default()))]
@@ -203,8 +203,7 @@ impl TuOverviewItem {
                     item.index_number(),
                     item.name()
                 ));
-                // If the height is over than 200, the text will be cut off.
-                imp.overlay.set_size_request(200, -1);
+                imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 if let Some(premiere_date) = item.premiere_date() {
                     imp.time_label.set_visible(true);
                     imp.time_label
@@ -213,11 +212,11 @@ impl TuOverviewItem {
                 imp.label2
                     .set_text(&run_time_ticks_to_label(item.run_time_ticks()));
                 imp.overview.set_text(
-                    &item
+                    Some(&item
                         .overview()
                         .unwrap_or("No Inscription".to_string())
                         .replace(['\n', '\r'], " "),
-                );
+                ));
                 self.set_progress(self.item().played_percentage());
             }
             ViewGroup::ListView => {

@@ -109,16 +109,13 @@
           </object>
         </child>
         <child>
-          <object class="GtkLabel" id="overview">
-            <property name="justify">left</property>
-            <property name="wrap">true</property>
-            <property name="lines">3</property>
-            <property name="ellipsize">end</property>
-            <property name="xalign">0</property>
-            <property name="tooltip-text" bind-source="overview" bind-property="label" bind-flags="sync-create"/>
-            <attributes>
-              <attribute name="scale" value="0.9"/>
-            </attributes>
+          <object class="GtkInscription" id="overview">
+            <property name="min-lines">3</property>
+            <property name="tooltip-text" bind-source="overview" bind-property="text" bind-flags="sync-create"/>
+            <property name="text-overflow">ellipsize-end</property>
+            <property name="attributes">
+              0 4294967295 scale 0.9
+            </property>
             <style>
               <class name="dim-label"/>
             </style>
