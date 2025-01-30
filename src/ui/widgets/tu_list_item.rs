@@ -63,6 +63,7 @@ pub mod imp {
         Banner,
         #[default]
         Poster,
+        NoRequest,
     }
 
     // Object holding the state

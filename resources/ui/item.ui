@@ -305,7 +305,6 @@
                         <child>
                           <object class="GtkStack" id="episode_stack">
                             <property name="transition-type">crossfade</property>
-                            <property name="height-request">250</property>
                             <child>
                               <object class="GtkStackPage">
                                 <property name="name">loading</property>

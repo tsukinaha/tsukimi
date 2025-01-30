@@ -7,34 +7,26 @@
       <object class="GtkBox">
         <property name="orientation">vertical</property>
         <property name="spacing">8</property>
-        <property name="valign">end</property>
+        <property name="valign">fill</property>
         <child>
-          <object class="GtkBox">
+          <object class="GtkBox" id="header_box">
             <property name="orientation">horizontal</property>
             <property name="spacing">8</property>
-            <property name="valign">end</property>
+            <property name="valign">fill</property>
             <child>
-              <object class="GtkAspectFrame" id="aspect_frame">
+              <object class="GtkOverlay" id="overlay">
                 <property name="valign">fill</property>
-                <property name="obey-child">False</property>
-                <property name="xalign">0</property>
-                <property name="margin-start">4</property>
-                <child>
-                  <object class="GtkOverlay" id="overlay">
-                    <property name="valign">fill</property>
-                    <property name="width-request">250</property>
-                    <property name="height-request">141</property>
-                    <property name="halign">center</property>
-                    <child type="overlay">
-                      <object class="GtkBox" id="overlay_button_box">
-                        <property name="orientation">horizontal</property>
-                        <property name="spacing">12</property>
-                        <property name="halign">end</property>
-                        <property name="valign">start</property>
-                        <property name="margin-end">8</property>
-                        <property name="margin-top">8</property>
-                      </object>
-                    </child>
+                <property name="width-request">250</property>
+                <property name="height-request">141</property>
+                <property name="halign">center</property>
+                <child type="overlay">
+                  <object class="GtkBox" id="overlay_button_box">
+                    <property name="orientation">horizontal</property>
+                    <property name="spacing">12</property>
+                    <property name="halign">end</property>
+                    <property name="valign">start</property>
+                    <property name="margin-end">8</property>
+                    <property name="margin-top">8</property>
                   </object>
                 </child>
               </object>
@@ -54,6 +46,8 @@
                     <property name="justify">left</property>
                     <property name="wrap">true</property>
                     <property name="xalign">0</property>
+                    <property name="lines">3</property>
+                    <property name="ellipsize">middle</property>
                     <attributes>
                       <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                     </attributes>
@@ -99,7 +93,6 @@
                     <property name="wrap">true</property>
                     <property name="lines">6</property>
                     <property name="ellipsize">end</property>
-                    <property name="height-request">90</property>
                     <property name="xalign">0</property>
                     <property name="visible">false</property>
                     <property name="tooltip-text" bind-source="inline_overview" bind-property="label" bind-flags="sync-create"/>
@@ -121,7 +114,6 @@
             <property name="wrap">true</property>
             <property name="lines">3</property>
             <property name="ellipsize">end</property>
-            <property name="height-request">90</property>
             <property name="xalign">0</property>
             <property name="tooltip-text" bind-source="overview" bind-property="label" bind-flags="sync-create"/>
             <attributes>

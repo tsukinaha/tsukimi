@@ -348,7 +348,9 @@ impl MPVPage {
         };
 
         self.imp().title_label1.set_text(&title1);
-        self.imp().title_label2.set_text(title2.as_deref().unwrap_or_default());
+        self.imp()
+            .title_label2
+            .set_text(title2.as_deref().unwrap_or_default());
 
         let media_title = title2
             .map(|t| format!("{} - {}", title1, t))

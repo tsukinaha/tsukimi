@@ -83,8 +83,6 @@ pub mod imp {
         #[template_child]
         pub time_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub aspect_frame: TemplateChild<gtk::AspectFrame>,
-        #[template_child]
         pub detail_box: TemplateChild<gtk::Box>,
         #[template_child]
         pub overlay_button_box: TemplateChild<gtk::Box>,
@@ -159,7 +157,7 @@ impl TuItemOverlayPrelude for TuOverviewItem {
 
     fn poster_type_ext(&self) -> PosterType {
         match self.view_group() {
-            ViewGroup::EpisodesView => PosterType::Backdrop,
+            ViewGroup::EpisodesView => PosterType::NoRequest,
             ViewGroup::ListView => PosterType::Poster,
         }
     }
@@ -199,15 +197,14 @@ impl TuOverviewItem {
         let item = self.item();
         match self.view_group() {
             ViewGroup::EpisodesView => {
-                imp.aspect_frame.set_ratio(1.8);
                 imp.listlabel.set_text(&format!(
                     "S{}E{}: {}",
                     item.parent_index_number(),
                     item.index_number(),
                     item.name()
                 ));
-                imp.overlay
-                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                // If the height is over than 200, the text will be cut off.
+                imp.overlay.set_size_request(200, -1);
                 if let Some(premiere_date) = item.premiere_date() {
                     imp.time_label.set_visible(true);
                     imp.time_label
@@ -244,7 +241,6 @@ impl TuOverviewItem {
                         .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 } else {
                     imp.listlabel.set_text(&item.name());
-                    imp.aspect_frame.set_ratio(0.67);
                     imp.overlay
                         .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 }

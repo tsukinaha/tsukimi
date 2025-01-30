@@ -50,6 +50,7 @@ pub trait TuItemOverlayPrelude {
                 }
             }
         }
+
         if item.is_resume() {
             Self::set_overlay_size(&self.overlay(), TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
             if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
