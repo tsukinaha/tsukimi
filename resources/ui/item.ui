@@ -293,6 +293,11 @@
                             <property name="tooltip-text" translatable="yes">View this season</property>
                           </object>
                         </child>
+                        <child>
+                          <object class="EpisodeSwitcher" id="episode_switcher">
+                            
+                          </object>
+                        </child>
                         <style>
                           <class name="toolbar" />
                         </style>

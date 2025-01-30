@@ -4,6 +4,7 @@ pub mod action_row;
 pub mod check_row;
 pub mod content_viewer;
 pub mod disc_box;
+pub mod episode_switcher;
 pub mod eu_item;
 pub mod filter_panel;
 pub mod fix;
@@ -46,3 +47,5 @@ pub mod tu_overview_item;
 pub mod tuview_scrolled;
 pub mod utils;
 pub mod window;
+
+pub use episode_switcher::EpisodeSwitcher;

@@ -92,5 +92,6 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/filter_label.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/filter_search_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/volume_bar.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/episode_switcher.ui</file>
   </gresource>
 </gresources>

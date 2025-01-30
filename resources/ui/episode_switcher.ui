@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <template class="EpisodeSwitcher" parent="AdwBin">
+        <property name="hexpand">true</property>
+        <property name="halign">fill</property>
+        <child>
+            <object class="GtkScrolledWindow" id="scrolled_window">
+                <property name="vscrollbar-policy">never</property>
+                <property name="hscrollbar-policy">external</property>
+                <child>
+                    <object class="GtkEventControllerScroll">
+                        <property name="flags">horizontal | vertical</property>
+                        <signal name="scroll" handler="scroll_cb" object="scrolled_window" swapped="yes"/>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox" id="container">
+                        <property name="halign">end</property>
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">12</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

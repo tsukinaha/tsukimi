@@ -19,6 +19,7 @@ use gtk::{
 };
 
 use super::{
+    episode_switcher::EpisodeButton,
     fix::ScrolledWindowFixExt,
     hortu_scrolled::SHOW_BUTTON_ANIMATION_DURATION,
     item_utils::*,
@@ -85,6 +86,7 @@ pub(crate) mod imp {
                 star_toggle::StarToggle,
                 tu_overview_item::imp::ViewGroup,
                 utils::TuItemBuildExt,
+                EpisodeSwitcher,
             },
         },
         utils::spawn_g_timeout,
@@ -193,8 +195,13 @@ pub(crate) mod imp {
         #[template_child]
         pub episode_stack: TemplateChild<gtk::Stack>,
 
+        #[template_child]
+        pub episode_switcher: TemplateChild<EpisodeSwitcher>,
+
         pub show_button_animation: OnceCell<adw::TimedAnimation>,
         pub hide_button_animation: OnceCell<adw::TimedAnimation>,
+
+        pub season_id: RefCell<Option<String>>,
 
         #[property(get, set, nullable)]
         pub current_item: RefCell<Option<TuItem>>,
@@ -219,6 +226,7 @@ pub(crate) mod imp {
             StarToggle::ensure_type();
             HortuScrolled::ensure_type();
             HorbuScrolled::ensure_type();
+            EpisodeSwitcher::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }
@@ -470,25 +478,19 @@ impl ItemPage {
 
         let series_id = item.series_id().unwrap_or(item.id());
 
-        let store_model = imp.selection.model();
-        let Some(store) = store_model.and_downcast_ref::<gio::ListStore>() else {
-            return;
-        };
-
-        store.remove_all();
-
         let position = dropdown.selected();
+        let season_id = item.season_id();
 
-        let list = match (position, self.item().season_id()) {
+        let list = match (position, season_id.clone()) {
             (0, Some(season_id)) => {
                 match spawn_tokio(async move {
                     EMBY_CLIENT
-                        .get_episodes(&series_id, &season_id.to_string())
+                        .get_episodes(&series_id, &season_id.to_string(), 0)
                         .await
                 })
                 .await
                 {
-                    Ok(item) => item.items,
+                    Ok(item) => item,
                     Err(e) => {
                         toast!(self, e.to_user_facing());
                         return;
@@ -501,7 +503,7 @@ impl ItemPage {
                 )
                 .await
                 {
-                    Ok(item) => item.items,
+                    Ok(item) => item,
                     Err(e) => {
                         toast!(self, e.to_user_facing());
                         return;
@@ -514,15 +516,16 @@ impl ItemPage {
                     let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
                         return;
                     };
+                    self.imp().season_id.replace(Some(season.id.clone()));
                     season.id.clone()
                 };
 
-                match spawn_tokio(
-                    async move { EMBY_CLIENT.get_episodes(&series_id, &season_id).await },
-                )
+                match spawn_tokio(async move {
+                    EMBY_CLIENT.get_episodes(&series_id, &season_id, 0).await
+                })
                 .await
                 {
-                    Ok(list) => list.items,
+                    Ok(list) => list,
                     Err(e) => {
                         toast!(self, e.to_user_facing());
                         return;
@@ -530,6 +533,54 @@ impl ItemPage {
                 }
             }
         };
+
+        self.set_episode_list(&list.items);
+
+        if position == 0 {
+            let index = list
+                .items
+                .iter()
+                .position(|item| item.index_number == Some(self.item().index_number()))
+                .unwrap_or(0);
+            // itemlist need wait for property binding to scroll
+            spawn_g_timeout(glib::clone!(
+                #[weak]
+                imp,
+                async move {
+                    imp.itemlist
+                        .scroll_to(index as u32, ListScrollFlags::all(), None);
+                },
+            ));
+        } else {
+            self.imp().episode_switcher.load_from_n_items(
+                list.total_record_count as usize,
+                glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |btn| {
+                        spawn(glib::clone!(
+                            #[weak]
+                            obj,
+                            #[weak]
+                            btn,
+                            async move {
+                                obj.on_episode_switcher_clicked(&btn).await;
+                            }
+                        ))
+                    }
+                ),
+            );
+        }
+    }
+
+    fn set_episode_list(&self, list: &[SimpleListItem]) {
+        let imp = self.imp();
+        let store_model = imp.selection.model();
+        let Some(store) = store_model.and_downcast_ref::<gio::ListStore>() else {
+            return;
+        };
+
+        store.remove_all();
 
         if list.is_empty() {
             imp.episode_stack.set_visible_child_name("fallback");
@@ -543,24 +594,37 @@ impl ItemPage {
 
         store.extend_from_slice(&items);
 
-        if position == 0 {
-            let index = list
-                .iter()
-                .position(|item| item.index_number == Some(self.item().index_number()))
-                .unwrap_or(0);
-            // itemlist need wait for property binding to scroll
-            spawn_g_timeout(glib::clone!(
-                #[weak]
-                imp,
-                async move {
-                    imp.itemlist
-                        .scroll_to(index as u32, ListScrollFlags::all(), None);
-                },
-            ));
-        }
-
-        imp.episode_list_vec.replace(list);
+        imp.episode_list_vec.replace(list.to_owned());
         imp.episode_stack.set_visible_child_name("view");
+    }
+
+    async fn on_episode_switcher_clicked(&self, btn: &EpisodeButton) {
+        let imp = self.imp();
+
+        let start_index = btn.start_index();
+        let item = self.item();
+        let series_id = item.series_id().unwrap_or(item.id());
+        let Some(season_id) = item.season_id().or(self.imp().season_id.borrow().clone()) else {
+            return;
+        };
+
+        imp.episode_stack.set_visible_child_name("loading");
+
+        let list = match spawn_tokio(async move {
+            EMBY_CLIENT
+                .get_episodes(&series_id, &season_id, start_index)
+                .await
+        })
+        .await
+        {
+            Ok(list) => list,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
+
+        self.set_episode_list(&list.items);
     }
 
     async fn set_shows_next_up(&self, id: &str) -> Option<TuItem> {

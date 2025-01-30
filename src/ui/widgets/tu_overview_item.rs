@@ -203,7 +203,8 @@ impl TuOverviewItem {
                     item.index_number(),
                     item.name()
                 ));
-                imp.overlay.set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                imp.overlay
+                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 if let Some(premiere_date) = item.premiere_date() {
                     imp.time_label.set_visible(true);
                     imp.time_label
@@ -211,8 +212,8 @@ impl TuOverviewItem {
                 }
                 imp.label2
                     .set_text(&run_time_ticks_to_label(item.run_time_ticks()));
-                imp.overview.set_text(
-                    Some(&item
+                imp.overview.set_text(Some(
+                    &item
                         .overview()
                         .unwrap_or("No Inscription".to_string())
                         .replace(['\n', '\r'], " "),

@@ -315,7 +315,7 @@ impl OtherPage {
         let list = match fetch_with_cache(
             &format!("season_{}", id),
             CachePolicy::ReadCacheAndRefresh,
-            async move { EMBY_CLIENT.get_episodes(&series_id, &id).await },
+            async move { EMBY_CLIENT.get_episodes_all(&series_id, &id).await },
         )
         .await
         {

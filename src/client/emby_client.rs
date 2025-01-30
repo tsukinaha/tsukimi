@@ -439,7 +439,23 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_episodes(&self, id: &str, season_id: &str) -> Result<List> {
+    pub async fn get_episodes(&self, id: &str, season_id: &str, start_index: u32) -> Result<List> {
+        let path = format!("Shows/{}/Episodes", id);
+        let params = [
+            (
+                "Fields",
+                "Overview,PrimaryImageAspectRatio,PremiereDate,ProductionYear,SyncStatus",
+            ),
+            ("Limit", "50"),
+            ("StartIndex", &start_index.to_string()),
+            ("ImageTypeLimit", "1"),
+            ("SeasonId", season_id),
+            ("UserId", &self.user_id().await),
+        ];
+        self.request(&path, &params).await
+    }
+
+    pub async fn get_episodes_all(&self, id: &str, season_id: &str) -> Result<List> {
         let path = format!("Shows/{}/Episodes", id);
         let params = [
             (
