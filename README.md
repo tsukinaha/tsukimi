@@ -9,9 +9,9 @@
 A simple third-party Emby client written in GTK4-RS, uses MPV as the video player, and GStreamer as the music player.
 
 It’s also partially compatible with Jellyfin.    
-Playlists, Choose preferred versions/subtitles, and Handle basic management tasks like scanning are supported.    
+Playlists, Choose preferred versions/subtitles, and most of admin functions are supported.    
 
-You can play music and albums, as well as videos with more advanced settings (you can even use an external MPV window if you want).
+You can play music and albums, as well as videos with more advanced settings.
 
 ## Screenshots
 <div align="center">
