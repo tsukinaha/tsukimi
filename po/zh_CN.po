@@ -6,13 +6,13 @@
 # dyphire <qimoge@gmail.com>, 2024.
 # Inaha <sakuovds@gmail.com>, 2024.
 # Gracealina  clover <zhiweishuisheng@gmail.com>, 2024.
-# HLiang Shao <792332448@qq.com>, 2024.
+# HLiang Shao <792332448@qq.com>, 2024, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-25 16:17+0800\n"
-"PO-Revision-Date: 2024-12-29 15:00+0000\n"
+"PO-Revision-Date: 2025-01-30 09:01+0000\n"
 "Last-Translator: HLiang Shao <792332448@qq.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
