@@ -62,18 +62,9 @@ impl EpisodeSwitcher {
     }
 
     pub fn clear(&self) {
-        self.imp()
-            .container
-            .observe_children()
-            .into_iter()
-            .for_each(|child| {
-                if let Some(child) = child
-                    .ok()
-                    .and_then(|child| child.downcast::<gtk::Widget>().ok())
-                {
-                    self.imp().container.remove(&child);
-                }
-            });
+        while let Some(widget) = self.imp().container.last_child() {
+            self.imp().container.remove(&widget);
+        }
     }
 
     pub fn add_button_from_index<F>(&self, start_index: u32, length: u32, callback: F)
