@@ -238,8 +238,6 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            self.menu_popover.set_offset(0, -20);
-
             SETTINGS
                 .bind(
                     "mpv-show-buffer-speed",
