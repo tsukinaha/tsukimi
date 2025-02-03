@@ -46,7 +46,6 @@ use super::{
         ImageItem,
         ImageSearchResult,
         List,
-        LiveMedia,
         LoginResponse,
         Media,
         MissingEpisodesList,
@@ -666,22 +665,24 @@ impl EmbyClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_playbackinfo(&self, id: &str) -> Result<Media> {
+    pub async fn get_playbackinfo(
+        &self, id: &str, sub_stream_index: Option<u64>, media_source_id: Option<String>,
+        is_playback: bool,
+    ) -> Result<Media> {
         let path = format!("Items/{}/PlaybackInfo", id);
+        let subtitle_stream_index = sub_stream_index.map(|s| s.to_string()).unwrap_or_default();
         let params = [
             ("StartTimeTicks", "0"),
             ("UserId", &self.user_id().await),
             ("AutoOpenLiveStream", "true"),
-            ("IsPlayback", "true"),
-            ("AudioStreamIndex", "1"),
-            ("SubtitleStreamIndex", "1"),
+            ("IsPlayback", &is_playback.to_string()),
+            ("MediaSourceId", &media_source_id.unwrap_or_default()),
+            ("SubtitleStreamIndex", &subtitle_stream_index),
             ("MaxStreamingBitrate", "2147483647"),
-            ("reqformat", "json"),
         ];
         let profile: Value = serde_json::from_str(PROFILE).expect("Failed to parse profile");
         self.post_json(&path, &params, profile).await
     }
-
     pub async fn scan(&self, id: &str) -> Result<Response> {
         let path = format!("Items/{}/Refresh", id);
         let params = [
@@ -741,37 +742,6 @@ impl EmbyClient {
         let path = format!("Items/{}/ExternalIdInfos", id);
         let params = [("IsSupportedAsIdentifier", "true")];
         self.request(&path, &params).await
-    }
-
-    pub async fn get_live_playbackinfo(&self, id: &str) -> Result<LiveMedia> {
-        let path = format!("Items/{}/PlaybackInfo", id);
-        let params = [
-            ("StartTimeTicks", "0"),
-            ("UserId", &self.user_id().await),
-            ("AutoOpenLiveStream", "false"),
-            ("IsPlayback", "false"),
-            ("MaxStreamingBitrate", "2147483647"),
-            ("reqformat", "json"),
-        ];
-        let profile: Value = serde_json::from_str(PROFILE).unwrap();
-        self.post_json(&path, &params, profile).await
-    }
-
-    pub async fn get_sub(&self, id: &str, source_id: &str) -> Result<Media> {
-        let path = format!("Items/{}/PlaybackInfo", id);
-        let params = [
-            ("StartTimeTicks", "0"),
-            ("UserId", &self.user_id().await),
-            ("AutoOpenLiveStream", "true"),
-            ("IsPlayback", "true"),
-            ("AudioStreamIndex", "1"),
-            ("SubtitleStreamIndex", "1"),
-            ("MediaSourceId", source_id),
-            ("MaxStreamingBitrate", "4000000"),
-            ("reqformat", "json"),
-        ];
-        let profile: Value = serde_json::from_str(PROFILE).unwrap();
-        self.post_json(&path, &params, profile).await
     }
 
     pub async fn get_library(&self) -> Result<List> {

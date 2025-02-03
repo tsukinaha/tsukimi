@@ -29,6 +29,8 @@ pub struct MediaStream {
     pub stream_type: String,
     #[serde(rename = "DeliveryUrl")]
     pub delivery_url: Option<String>,
+    #[serde(rename = "Language")]
+    pub language: Option<String>,
     #[serde(rename = "IsExternal")]
     pub is_external: bool,
     #[serde(rename = "Title")]

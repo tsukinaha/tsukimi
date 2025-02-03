@@ -252,7 +252,10 @@ use windows::Win32::System::Power::{
 
 use super::{
     home::HomePage,
-    item::ItemPage,
+    item::{
+        ItemPage,
+        SelectedVideoSubInfo,
+    },
     liked::LikedPage,
     search::SearchPage,
     server_action_row,
@@ -263,7 +266,6 @@ use super::{
 use crate::{
     client::{
         emby_client::EMBY_CLIENT,
-        structs::Back,
         Account,
     },
     toast,
@@ -772,24 +774,15 @@ impl Window {
             .await;
     }
 
-    #[allow(clippy::too_many_arguments)]
     pub fn play_media(
-        &self, url: String, suburl: Option<String>, item: TuItem, episode_list: Vec<TuItem>,
-        back: Option<Back>, _selected: Option<String>, percentage: f64, matcher: Option<String>,
+        &self, selected: Option<SelectedVideoSubInfo>, item: TuItem, episode_list: Vec<TuItem>,
+        matcher: Option<String>, per: f64,
     ) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("mpv");
         self.prevent_suspend();
         self.set_mpv_playlist(&episode_list);
-        imp.mpvnav.play(
-            &url,
-            suburl.as_deref(),
-            item,
-            episode_list,
-            back,
-            percentage,
-            matcher,
-        );
+        imp.mpvnav.play(selected, item, episode_list, matcher, per);
     }
 
     pub fn push_page<T>(&self, page: &T, tag: &str, name: &str)

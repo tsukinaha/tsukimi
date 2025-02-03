@@ -16,14 +16,10 @@ use crate::{
     client::{
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
-        structs::{
-            Back,
-            SimpleListItem,
-        },
+        structs::SimpleListItem,
     },
     toast,
     ui::{
-        mpv::page::extract_url,
         provider::core_song::CoreSong,
         widgets::{
             item::ItemPage,
@@ -374,37 +370,7 @@ impl TuItem {
             #[weak]
             window,
             async move {
-                toast!(window, gettext("Processing..."));
-                let id = item.id();
-                match spawn_tokio(async move { EMBY_CLIENT.get_live_playbackinfo(&id).await }).await
-                {
-                    Ok(playback) => {
-                        let Some(ref url) = playback.media_sources[0].transcoding_url else {
-                            toast!(window, gettext("No transcoding url found"));
-                            return;
-                        };
-                        let back = Back {
-                            tick: 0,
-                            id: item.id(),
-                            playsessionid: playback.play_session_id,
-                            mediasourceid: playback.media_sources[0].id.clone(),
-                            start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
-                        };
-                        window.play_media(
-                            url.to_string(),
-                            None,
-                            item,
-                            Vec::new(),
-                            Some(back),
-                            None,
-                            0.0,
-                            None,
-                        )
-                    }
-                    Err(e) => {
-                        toast!(window, e.to_user_facing());
-                    }
-                }
+                window.play_media(None, item, vec![], None, 0.0);
             }
         ));
     }
@@ -459,42 +425,8 @@ impl TuItem {
     pub async fn direct_play_video_id(
         &self, obj: &impl IsA<gtk::Widget>, video: TuItem, episode_list: Vec<TuItem>,
     ) {
-        let id = video.id();
-        let playback =
-            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&id).await }).await {
-                Ok(playback) => playback,
-                Err(e) => {
-                    toast!(obj, e.to_user_facing());
-                    return;
-                }
-            };
-
-        let source = playback.media_sources[0].clone();
-
-        let Some(url) = extract_url(&source).await else {
-            toast!(obj, gettext("No mediasource found"));
-            return;
-        };
-
-        let back = Back {
-            tick: 0,
-            id: self.id(),
-            playsessionid: playback.play_session_id,
-            mediasourceid: source.id.clone(),
-            start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
-        };
-
         if let Some(window) = obj.root().and_downcast_ref::<Window>() {
-            window.play_media(
-                url.to_string(),
-                None,
-                self.clone(),
-                episode_list,
-                Some(back),
-                None,
-                self.played_percentage(),
-                None,
-            )
+            window.play_media(None, video, episode_list, None, self.played_percentage())
         }
     }
 

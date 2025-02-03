@@ -436,14 +436,19 @@ impl ItemPage {
         play_button.set_sensitive(false);
         spinner.set_visible(true);
 
-        let playback =
-            match spawn_tokio(async move { EMBY_CLIENT.get_playbackinfo(&intro_id).await }).await {
-                Ok(playback) => playback,
-                Err(e) => {
-                    toast!(self, e.to_user_facing());
-                    return;
-                }
-            };
+        let playback = match spawn_tokio(async move {
+            EMBY_CLIENT
+                .get_playbackinfo(&intro_id, None, None, false)
+                .await
+        })
+        .await
+        {
+            Ok(playback) => playback,
+            Err(e) => {
+                toast!(self, e.to_user_facing());
+                return;
+            }
+        };
 
         self.set_dropdown(&playback).await;
         self.set_play_session_id(playback.play_session_id.clone());
@@ -716,6 +721,7 @@ impl ItemPage {
                                 let Ok(dl) = DropdownListBuilder::default()
                                     .line1(stream.display_title.clone())
                                     .line2(stream.title.clone())
+                                    .sub_lang(stream.language.clone())
                                     .index(Some(stream.index))
                                     .url(stream.delivery_url.clone())
                                     .is_external(Some(stream.is_external))
@@ -972,11 +978,10 @@ impl ItemPage {
         let mediainfobox = imp.mediainfobox.get();
         let mediainforevealer = imp.mediainforevealer.get();
 
-        while mediainfobox.last_child().is_some() {
-            if let Some(child) = mediainfobox.last_child() {
-                mediainfobox.remove(&child)
-            }
+        while let Some(child) = mediainfobox.last_child() {
+            mediainfobox.remove(&child)
         }
+
         for mediasource in media_sources {
             let singlebox = gtk::Box::new(gtk::Orientation::Vertical, 5);
             let info = format!(
@@ -1182,7 +1187,7 @@ impl ItemPage {
         self.imp().linkshorbu.set_links(&links);
     }
 
-    pub fn get_window(&self) -> Window {
+    pub fn window(&self) -> Window {
         self.root().unwrap().downcast::<Window>().unwrap()
     }
 
@@ -1208,76 +1213,25 @@ impl ItemPage {
             return;
         };
 
-        let video_url;
-        let media_source_id;
-        {
-            let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
-
-            video_url = match video_dl.url.as_ref() {
-                Some(url) => url.clone(),
-                None => {
-                    toast!(self, gettext("No video source found"));
-                    return;
-                }
-            };
-
-            media_source_id = match video_dl.id {
-                Some(ref id) => id.clone(),
-                None => return,
-            };
-        }
-
-        let Some(item) = self.current_item() else {
+        let Some(sub_object) = sub_dropdown
+            .selected_item()
+            .and_downcast::<glib::BoxedAnyObject>()
+        else {
             return;
         };
 
-        let back = Back {
-            id: item.id(),
-            playsessionid: self.play_session_id(),
-            mediasourceid: media_source_id.to_string(),
-            tick: item.playback_position_ticks(),
-            start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
+        let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
+        let sub_dl: std::cell::Ref<DropdownList> = sub_object.borrow();
+
+        let info = SelectedVideoSubInfo {
+            sub_index: sub_dl.index.unwrap_or_default(),
+            video_index: video_dl.index.unwrap_or_default(),
+            sub_lang: sub_dl.sub_lang.clone().unwrap_or_default(),
+            media_source_id: video_dl.id.clone().unwrap_or_default(),
         };
 
-        let sub_url = if let Some(sub_object) = sub_dropdown
-            .selected_item()
-            .and_downcast::<glib::BoxedAnyObject>()
-        {
-            let sub_dl = {
-                let sub_dl: std::cell::Ref<DropdownList> = sub_object.borrow();
-                sub_dl.clone()
-            };
-
-            if Some(true) == sub_dl.is_external && sub_dl.url.is_none() {
-                let id = item.id();
-                let Some(sub_index) = sub_dl.index else {
-                    return;
-                };
-                let media_source_id_clone = media_source_id.to_string();
-
-                let response =
-                    spawn_tokio(
-                        async move { EMBY_CLIENT.get_sub(&id, &media_source_id_clone).await },
-                    )
-                    .await;
-
-                let media = match response {
-                    Ok(media) => media,
-                    Err(e) => {
-                        toast!(self, e.to_user_facing());
-                        return;
-                    }
-                };
-
-                Self::get_sub_url(&media, &media_source_id, &sub_index)
-            } else {
-                sub_dl.url.clone()
-            }
-        } else {
-            None
-        };
-
-        let percentage = item.played_percentage();
+        let item = self.current_item().unwrap_or(self.item());
+        let played_percentage = item.played_percentage();
 
         let episode_list = self.imp().episode_list_vec.borrow();
         let episode_list: Vec<TuItem> = episode_list
@@ -1287,28 +1241,8 @@ impl ItemPage {
 
         let matcher = self.imp().video_version_matcher.borrow().clone();
 
-        self.get_window().play_media(
-            video_url.to_string(),
-            sub_url,
-            item,
-            episode_list,
-            Some(back),
-            None,
-            percentage,
-            matcher,
-        );
-    }
-
-    fn get_sub_url(media: &Media, media_source_id: &str, media_stream_id: &u64) -> Option<String> {
-        media
-            .media_sources
-            .iter()
-            .find(|&media_source| media_source.id == media_source_id)?
-            .media_streams
-            .iter()
-            .find(|&stream| &stream.index == media_stream_id)?
-            .delivery_url
-            .clone()
+        self.window()
+            .play_media(Some(info), item, episode_list, matcher, played_percentage);
     }
 
     fn set_control_opacity(&self, opacity: f64) {
@@ -1459,4 +1393,12 @@ pub fn dt(date: Option<chrono::DateTime<Utc>>) -> String {
         return "".to_string();
     };
     date.naive_local().format("%Y-%m-%d %H:%M:%S").to_string()
+}
+
+#[derive(Debug, Clone)]
+pub struct SelectedVideoSubInfo {
+    pub sub_lang: String,
+    pub sub_index: u64,
+    pub video_index: u64,
+    pub media_source_id: String,
 }
