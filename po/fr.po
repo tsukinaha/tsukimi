@@ -2,18 +2,18 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # MarioSwitch <druonalexis@outlook.fr>, 2024.
-# MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>, 2024.
+# MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>, 2024, 2025.
 # "J. Lavoie" <j.lavoie@net-c.ca>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-25 16:17+0800\n"
-"PO-Revision-Date: 2024-12-24 03:51+0000\n"
-"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github."
-"com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
-">\n"
+"PO-Revision-Date: 2025-01-28 00:57+0000\n"
+"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>"
+"\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
