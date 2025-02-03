@@ -430,20 +430,28 @@ impl MPVPage {
 
                 imp.back.replace(Some(back));
 
-                let media_stream = if let Some(sub_stream_index) = selected.map(|s| s.sub_index) {
-                    media_source.media_streams.get(sub_stream_index as usize)
-                } else {
-                    let sub_version_list: Vec<_> = media_source
-                        .media_streams
-                        .iter()
-                        .filter(|stream| stream.stream_type == "Subtitle")
-                        .filter_map(|stream| stream.display_title.as_ref())
-                        .cloned()
-                        .collect();
+                let media_stream =
+                    if let Some(sub_stream_index) = selected.clone().map(|s| s.sub_index) {
+                        media_source.media_streams.get(sub_stream_index as usize)
+                    } else {
+                        let sub_version_list: Vec<_> = media_source
+                            .media_streams
+                            .iter()
+                            .filter(|stream| stream.stream_type == "Subtitle")
+                            .filter_map(|stream| stream.display_title.as_ref())
+                            .cloned()
+                            .collect();
 
-                    make_subtitle_version_choice(sub_version_list)
-                        .and_then(|index| media_source.media_streams.get(index))
-                };
+                        make_subtitle_version_choice(sub_version_list)
+                            .and_then(|index| media_source.media_streams.get(index))
+                    };
+
+                if let Some(slang) = selected.clone().map(|s| s.sub_lang) {
+                    imp.video.set_slang(slang);
+                } else {
+                    imp.video
+                        .set_slang(SETTINGS.mpv_subtitle_preferred_lang_str());
+                }
 
                 let sub_url = match media_stream {
                     Some(stream) if stream.is_external => match &stream.delivery_url {

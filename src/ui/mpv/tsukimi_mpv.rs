@@ -147,18 +147,6 @@ impl Default for TsukimiMPV {
                 8 => init.set_property("alang", "fre")?,
                 _ => unreachable!(),
             }
-            match SETTINGS.mpv_subtitle_preferred_lang() {
-                0 => init.set_property("slang", "")?,
-                1 => init.set_property("slang", "eng")?,
-                2 => init.set_property("slang", "chs")?,
-                3 => init.set_property("slang", "jpn")?,
-                4 => init.set_property("slang", "chi")?,
-                5 => init.set_property("slang", "ara")?,
-                6 => init.set_property("slang", "nob")?,
-                7 => init.set_property("slang", "por")?,
-                8 => init.set_property("alang", "fre")?,
-                _ => unreachable!(),
-            }
             Ok(())
         })
         .expect("Failed to create mpv instance");
@@ -307,6 +295,10 @@ impl TsukimiMPV {
 
     pub fn display_stats_toggle(&self) {
         self.command("script-binding", &["stats/display-stats-toggle"]);
+    }
+
+    pub fn set_slang(&self, value: String) {
+        self.set_property("slang", value);
     }
 
     pub fn set_property<V>(&self, property: &str, value: V)

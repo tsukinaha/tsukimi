@@ -228,6 +228,21 @@ impl Settings {
         self.int(Self::KEY_MPV_SUBTITLE_PREFERRED_LANG)
     }
 
+    pub fn mpv_subtitle_preferred_lang_str(&self) -> String {
+        match self.mpv_subtitle_preferred_lang() {
+            1 => "eng",
+            2 => "chs",
+            3 => "jpn",
+            4 => "chi",
+            5 => "ara",
+            6 => "nob",
+            7 => "por",
+            8 => "fre",
+            _ => "",
+        }
+        .to_string()
+    }
+
     pub fn mpv_default_volume(&self) -> i32 {
         self.int(Self::KEY_MPV_DEFAULT_VOLUME)
     }

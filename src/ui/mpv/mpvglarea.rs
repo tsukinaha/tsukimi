@@ -253,6 +253,10 @@ impl MPVGLArea {
         self.imp().mpv().volume_scroll(value)
     }
 
+    pub fn set_slang(&self, value: String) {
+        self.imp().mpv().set_slang(value)
+    }
+
     pub fn set_property<V>(&self, property: &str, value: V)
     where
         V: SetData + Send + 'static,
