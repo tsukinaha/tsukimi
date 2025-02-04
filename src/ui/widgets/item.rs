@@ -1220,7 +1220,12 @@ impl ItemPage {
 
         let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
         let (sub_index, sub_lang) = sub_dl
-            .and_then(|sub_dl| Some((sub_dl.index?, sub_dl.sub_lang.clone()?)))
+            .and_then(|sub_dl| {
+                Some((
+                    sub_dl.index.unwrap_or_default(),
+                    sub_dl.sub_lang.clone().unwrap_or_default(),
+                ))
+            })
             .unwrap_or_default();
 
         let info = SelectedVideoSubInfo {
