@@ -123,6 +123,7 @@
                                             <child>
                                               <object class="GtkImage" id="star">
                                                 <property name="icon-name">starred-symbolic</property>
+                                                <property name="margin-end">5</property>
                                                 <property name="visible">False</property>
                                               </object>
                                             </child>
@@ -130,7 +131,7 @@
                                               <object class="GtkLabel" id="crating">
                                                 <property name="label" translatable="yes"></property>
                                                 <property name="visible">False</property>
-                                                <property name="margin-start">5</property>
+                                                <property name="margin-end">15</property>
                                                 <attributes>
                                                   <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                                                   <attribute name="scale" value="1.1" />
@@ -141,7 +142,7 @@
                                               <object class="GtkLabel" id="orating">
                                                 <property name="label" translatable="yes"></property>
                                                 <property name="visible">False</property>
-                                                <property name="margin-start">15</property>
+                                                <property name="margin-end">15</property>
                                                 <attributes>
                                                   <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                                                   <attribute name="scale" value="1.1" />
@@ -155,7 +156,6 @@
                                               <object class="GtkLabel" id="line2">
                                                 <property name="halign">start</property>
                                                 <property name="label" translatable="yes">Loading...</property>
-                                                <property name="margin-start">15</property>
                                                 <property name="ellipsize">end</property>
                                                 <attributes>
                                                   <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
