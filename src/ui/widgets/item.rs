@@ -1216,7 +1216,7 @@ impl ItemPage {
         let sub_dl = sub_dropdown
             .selected_item()
             .and_downcast::<glib::BoxedAnyObject>()
-            .map(|obj| obj.borrow::<std::cell::Ref<DropdownList>>().clone());
+            .map(|obj| obj.borrow::<DropdownList>().clone());
 
         let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
         let (sub_index, sub_lang) = sub_dl
