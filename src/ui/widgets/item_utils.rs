@@ -46,7 +46,7 @@ pub fn make_video_version_choice_from_matcher(
     best_match_index
 }
 
-pub fn make_subtitle_version_choice(lang_list: Vec<String>) -> Option<usize> {
+pub fn make_subtitle_version_choice(lang_list: Vec<(u64, String)>) -> Option<(u64, usize)> {
     let lang = match SETTINGS.mpv_subtitle_preferred_lang() {
         1 => "English",
         2 => "Chinese Simplified",
@@ -60,14 +60,16 @@ pub fn make_subtitle_version_choice(lang_list: Vec<String>) -> Option<usize> {
     };
 
     let mut best_match_index = None;
+    let mut best_match_usize = None;
     let mut highest_similarity = 0.0;
-    for (index, name) in lang_list.iter().enumerate() {
-        let similarity = jaro_winkler(name, lang);
+    for (index, i) in lang_list.iter().enumerate() {
+        let similarity = jaro_winkler(&i.1, lang);
         if similarity > highest_similarity {
             highest_similarity = similarity;
-            best_match_index = Some(index);
+            best_match_index = Some(i.0);
+            best_match_usize = Some(index);
         }
     }
 
-    best_match_index
+    Some((best_match_index?, best_match_usize?))
 }

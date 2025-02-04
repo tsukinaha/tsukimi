@@ -730,14 +730,15 @@ impl ItemPage {
                                     continue;
                                 };
 
-                                lang_list.push(dl.line1.clone().unwrap_or_default());
+                                lang_list
+                                    .push((stream.index, dl.line1.clone().unwrap_or_default()));
                                 let object = glib::BoxedAnyObject::new(dl);
                                 sstore.append(&object);
                             }
                         }
 
-                        if let Some(usize) = make_subtitle_version_choice(lang_list) {
-                            subdropdown.set_selected(usize as u32);
+                        if let Some(u) = make_subtitle_version_choice(lang_list) {
+                            subdropdown.set_selected(u.1 as u32);
                         }
                         break;
                     }
@@ -1210,6 +1211,7 @@ impl ItemPage {
             .selected_item()
             .and_downcast::<glib::BoxedAnyObject>()
         else {
+            toast!(self, gettext("No video source found"));
             return;
         };
 
@@ -1219,13 +1221,10 @@ impl ItemPage {
             .map(|obj| obj.borrow::<DropdownList>().clone());
 
         let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
-        let (sub_index, sub_lang) = sub_dl
-            .and_then(|sub_dl| {
-                Some((
+        let (sub_index, sub_lang) = sub_dl.map(|sub_dl| (
                     sub_dl.index.unwrap_or_default(),
                     sub_dl.sub_lang.clone().unwrap_or_default(),
                 ))
-            })
             .unwrap_or_default();
 
         let info = SelectedVideoSubInfo {

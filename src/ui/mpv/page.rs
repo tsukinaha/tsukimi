@@ -33,6 +33,7 @@ use crate::{
         structs::{
             Back,
             MediaSource,
+            MediaStream,
         },
     },
     close_on_error,
@@ -419,7 +420,7 @@ impl MPVPage {
                 };
 
                 let back = Back {
-                    id,
+                    id: id.clone(),
                     playsessionid: playback_info.play_session_id,
                     mediasourceid: media_source.id.clone(),
                     tick: media_source.run_time_ticks.unwrap_or(0),
@@ -436,12 +437,16 @@ impl MPVPage {
                             .media_streams
                             .iter()
                             .filter(|stream| stream.stream_type == "Subtitle")
-                            .filter_map(|stream| stream.display_title.as_ref())
-                            .cloned()
+                            .map(|stream| {
+                                (
+                                    stream.index,
+                                    stream.display_title.clone().unwrap_or_default(),
+                                )
+                            })
                             .collect();
 
                         make_subtitle_version_choice(sub_version_list)
-                            .and_then(|index| media_source.media_streams.get(index))
+                            .and_then(|index| media_source.media_streams.get(index.0 as usize))
                     };
 
                 if let Some(slang) = selected.clone().map(|s| s.sub_lang) {
@@ -454,7 +459,16 @@ impl MPVPage {
                 let sub_url = match media_stream {
                     Some(stream) if stream.is_external => match &stream.delivery_url {
                         Some(url) => Some(EMBY_CLIENT.get_streaming_url(url).await),
-                        None => None,
+                        None => {
+                            println!("External Subtitle without selected source");
+                            imp.obj()
+                                .external_sub_url_without_selected_source(
+                                    id,
+                                    stream,
+                                    media_source.id.clone(),
+                                )
+                                .await
+                        }
                     },
                     _ => None,
                 };
@@ -469,6 +483,33 @@ impl MPVPage {
                 imp.video.play(&video_url, per);
             }
         ));
+    }
+
+    async fn external_sub_url_without_selected_source(
+        &self, id: String, media_stream: &MediaStream, media_source_id: String,
+    ) -> Option<String> {
+        let id_clone = id.clone();
+        let stream_index = media_stream.index;
+        let media_source_id_clone = media_source_id.clone();
+        let playback_info = spawn_tokio(async move {
+            EMBY_CLIENT
+                .get_playbackinfo(&id_clone, Some(stream_index), Some(media_source_id), true)
+                .await
+        })
+        .await
+        .ok()?;
+
+        let media_source = playback_info
+            .media_sources
+            .iter().find(|source| source.id == media_source_id_clone);
+
+        let url = media_source?
+            .media_streams
+            .get(stream_index as usize)?
+            .delivery_url
+            .clone()?;
+
+        Some(EMBY_CLIENT.get_streaming_url(&url).await)
     }
 
     fn set_audio_and_video_tracks_dropdown(&self, value: MpvTracks) {
