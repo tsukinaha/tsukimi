@@ -718,7 +718,7 @@ impl MPVPage {
 
     #[template_callback]
     fn video_scroll_cb(&self, _: f64, dy: f64) -> bool {
-        self.imp().video.volume_scroll(-dy as i64);
+        self.imp().video.volume_scroll(-dy as i64 * 5);
         true
     }
 
