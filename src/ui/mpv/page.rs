@@ -501,7 +501,8 @@ impl MPVPage {
 
         let media_source = playback_info
             .media_sources
-            .iter().find(|source| source.id == media_source_id_clone);
+            .iter()
+            .find(|source| source.id == media_source_id_clone);
 
         let url = media_source?
             .media_streams

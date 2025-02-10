@@ -101,8 +101,7 @@ impl Settings {
     }
 
     pub fn accounts(&self) -> Vec<Account> {
-        serde_json::from_str(self.string(Self::ACCOUNTS).as_ref())
-            .expect("Failed to deserialize accounts")
+        serde_json::from_str(self.string(Self::ACCOUNTS).as_ref()).unwrap_or_default()
     }
 
     pub fn add_account(&self, account: Account) -> Result<(), glib::BoolError> {
@@ -139,7 +138,7 @@ impl Settings {
 
     pub fn preferred_version_descriptors(&self) -> Vec<Descriptor> {
         serde_json::from_str(self.string(Self::PREFERRED_VERSION_DESCRIPTORS).as_ref())
-            .expect("Failed to deserialize preferred version descriptors")
+            .unwrap_or_default()
     }
 
     pub fn add_preferred_version_descriptor(

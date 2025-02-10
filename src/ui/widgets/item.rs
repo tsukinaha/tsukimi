@@ -1221,10 +1221,13 @@ impl ItemPage {
             .map(|obj| obj.borrow::<DropdownList>().clone());
 
         let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
-        let (sub_index, sub_lang) = sub_dl.map(|sub_dl| (
+        let (sub_index, sub_lang) = sub_dl
+            .map(|sub_dl| {
+                (
                     sub_dl.index.unwrap_or_default(),
                     sub_dl.sub_lang.clone().unwrap_or_default(),
-                ))
+                )
+            })
             .unwrap_or_default();
 
         let info = SelectedVideoSubInfo {
