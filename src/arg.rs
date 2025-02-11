@@ -88,13 +88,13 @@ impl Args {
     fn init_gsk_renderer(&self) {
         if let Some(renderer) = self.gsk_renderer.as_deref() {
             info!("Setting GSK_RENDERER to {}", renderer);
-            std::env::set_var("GSK_RENDERER", renderer);
+            unsafe { std::env::set_var("GSK_RENDERER", renderer) };
             return;
         }
 
         if std::env::var("GSK_RENDERER").is_err() {
             info!("Falling back to default GSK_RENDERER: {}", DEFAULT_RENDERER);
-            std::env::set_var("GSK_RENDERER", DEFAULT_RENDERER);
+            unsafe { std::env::set_var("GSK_RENDERER", DEFAULT_RENDERER) };
         }
     }
 
