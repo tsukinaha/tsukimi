@@ -42,14 +42,6 @@ impl ReqClient {
 }
 
 #[cfg(target_os = "windows")]
-use windows::{
-    core::PCWSTR,
-    Win32::Networking::WinHttp::{
-        WinHttpGetIEProxyConfigForCurrentUser,
-        WINHTTP_CURRENT_USER_IE_PROXY_CONFIG,
-    },
-};
-#[cfg(target_os = "windows")]
 pub fn get_proxy_settings() -> Option<String> {
     // FIXME: proxy should be a dynamic constructor
     //
