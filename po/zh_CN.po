@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-03 23:34+0800\n"
-"PO-Revision-Date: 2025-01-30 09:01+0000\n"
+"PO-Revision-Date: 2025-02-12 13:02+0000\n"
 "Last-Translator: HLiang Shao <792332448@qq.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
@@ -455,15 +455,15 @@ msgstr "暂停"
 
 #: src/ui/mpv/page.rs:381
 msgid "Initializing..."
-msgstr ""
+msgstr "初始化中..."
 
 #: src/ui/mpv/page.rs:419 src/ui/mpv/page.rs:467
 msgid "No media source found"
-msgstr ""
+msgstr "未找到媒体源"
 
 #: src/ui/mpv/page.rs:562
 msgid "No more video found"
-msgstr ""
+msgstr "未找到更多视频"
 
 #: src/ui/mpv/page.rs:653
 msgid ""
@@ -1539,15 +1539,15 @@ msgstr "所有语言"
 
 #: resources/ui/theme_switcher.ui:24 resources/ui/theme_switcher.ui:26
 msgid "Follow system style"
-msgstr ""
+msgstr "跟随系统风格"
 
 #: resources/ui/theme_switcher.ui:42 resources/ui/theme_switcher.ui:44
 msgid "Light style"
-msgstr ""
+msgstr "浅色风格"
 
 #: resources/ui/theme_switcher.ui:60 resources/ui/theme_switcher.ui:62
 msgid "Dark style"
-msgstr ""
+msgstr "深色风格"
 
 #: resources/ui/filter.ui:42
 msgid "Filters"
