@@ -17,7 +17,6 @@ mod imp {
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
     use gtk::{
-        gio::Settings,
         glib,
         prelude::*,
         subclass::prelude::*,
@@ -90,7 +89,7 @@ mod imp {
         #[template_child]
         pub media_viewer: TemplateChild<MediaViewer>,
         pub selection: gtk::SingleSelection,
-        pub settings: OnceCell<Settings>,
+
         #[template_child]
         pub mainpage: TemplateChild<adw::NavigationPage>,
         #[template_child]
@@ -195,23 +194,15 @@ mod imp {
 
             let obj = self.obj();
             obj.set_fonts();
+            obj.load_font_size();
 
-            if crate::ui::models::SETTINGS.font_size() != -1 {
-                if let Some(settings) = gtk::Settings::default() {
-                    settings.set_property(
-                        "gtk-xft-dpi",
-                        crate::ui::models::SETTINGS.font_size() * 1024,
-                    );
-                }
-            }
+            obj.bind_about_action();
 
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
                 obj,
                 async move {
                     obj.setup_rootpic();
-                    obj.setup_settings();
-                    obj.load_window_size();
                     obj.set_servers().await;
                     obj.set_nav_servers();
                     obj.set_shortcuts();
@@ -227,7 +218,7 @@ mod imp {
         fn close_request(&self) -> glib::Propagation {
             // Save window size
             self.obj()
-                .save_window_size()
+                .save_window_state()
                 .expect("Failed to save window state");
             // Allow to invoke other event handlers
             glib::Propagation::Proceed
@@ -535,57 +526,40 @@ impl Window {
         self.imp().popbutton.set_visible(visible);
     }
 
-    fn setup_settings(&self) {
-        let settings = Settings::new(APP_ID);
-        let is_overlay = settings.boolean("is-overlay");
-        self.overlay_sidebar(is_overlay);
-        self.imp()
-            .settings
-            .set(settings)
-            .expect("`settings` should not be set before calling `setup_settings`.");
-    }
+    pub fn save_window_state(&self) -> Result<(), glib::BoolError> {
+        let (width, height) = self.default_size();
+        SETTINGS.set_window_dismension(width, height)?;
 
-    fn settings(&self) -> &Settings {
-        self.imp()
-            .settings
-            .get()
-            .expect("`settings` should be set in `setup_settings`.")
-    }
-
-    pub fn save_window_size(&self) -> Result<(), glib::BoolError> {
-        // Get the size of the window
-        let size = self.default_size();
-
-        // Set the window state in `settings`
-        self.settings().set_int("window-width", size.0)?;
-        tracing::info!("Saved window width: {}", size.0);
-        self.settings().set_int("window-height", size.1)?;
-        tracing::info!("Saved window height: {}", size.1);
-        self.settings()
-            .set_boolean("is-maximized", self.is_maximized())?;
-        tracing::info!("Saved window state: {}", self.is_maximized());
+        SETTINGS.set_is_maximized(self.is_maximized())?;
+        SETTINGS.set_is_fullscreen(self.is_fullscreen())?;
 
         Ok(())
     }
 
-    fn load_window_size(&self) {
-        // Get the window state from `settings`
-        let width = self.settings().int("window-width");
-        let height = self.settings().int("window-height");
-        let is_maximized = self.settings().boolean("is-maximized");
-
-        // Set the size of the window
+    pub fn load_window_state(&self) {
+        let (width, height) = SETTINGS.window_dismension();
         self.set_default_size(width, height);
 
-        // If the window was maximized when it was closed, maximize it again
-        if is_maximized {
+        if SETTINGS.is_maximized() {
             self.maximize();
         }
 
-        tracing::info!("Loaded window size: {}x{}", width, height);
+        if SETTINGS.is_fullscreen() {
+            self.fullscreen();
+        }
+
+        self.overlay_sidebar(SETTINGS.is_overlay());
     }
 
-    pub fn new(app: &adw::Application) -> Self {
+    fn load_font_size(&self) {
+        if SETTINGS.font_size() != -1 {
+            if let Some(settings) = gtk::Settings::default() {
+                settings.set_property("gtk-xft-dpi", SETTINGS.font_size() * 1024);
+            }
+        }
+    }
+
+    pub fn new(app: &crate::Application) -> Self {
         // Create new window
         Object::builder().property("application", app).build()
     }
@@ -1033,5 +1007,30 @@ impl Window {
 
     pub fn alert_dialog(&self, alert_dialog: adw::AlertDialog) {
         alert_dialog.present(Some(self));
+    }
+
+    pub fn bind_about_action(&self) {
+        let about_action = gtk::gio::ActionEntry::builder("about")
+            .activate(|window, _, _| {
+                let about = adw::AboutDialog::builder()
+                    .application_name("Tsukimi")
+                    .version(crate::config::VERSION)
+                    .comments("A simple third-party Emby client.")
+                    // TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
+                    .translator_credits(gettext("translator-credits"))
+                    .website("https://github.com/tsukinaha/tsukimi")
+                    .application_icon("tsukimi")
+                    .license_type(gtk::License::Gpl30)
+                    .build();
+                about.add_acknowledgement_section(Some("Code"), &["Inaha", "Kosette"]);
+                about.add_acknowledgement_section(
+                    Some("Special Thanks"),
+                    &["Qound", "Eikano", "amtoaer"],
+                );
+                about.present(Some(window));
+            })
+            .build();
+
+        self.add_action_entries([about_action]);
     }
 }

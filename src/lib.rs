@@ -1,8 +1,14 @@
+#![cfg_attr(
+    all(target_os = "windows", not(feature = "console")),
+    windows_subsystem = "windows"
+)]
+
 use std::{
     env,
     sync::LazyLock,
 };
 
+mod app;
 mod arg;
 mod config;
 mod gstl;
@@ -12,24 +18,27 @@ mod utils;
 
 pub mod client;
 
-#[cfg(target_os = "windows")]
-pub use client::windows_compat::theme::is_system_dark_mode_enabled;
-
 pub use arg::Args;
 pub use config::{
     GETTEXT_PACKAGE,
     VERSION,
 };
 use once_cell::sync::OnceCell;
-pub use ui::{
-    build_ui,
-    load_css,
-};
+
+use clap::Parser;
+use gettextrs::*;
+use gtk::prelude::*;
+
+pub use ui::Window;
+
+pub use app::TsukimiApplication as Application;
 
 pub static USER_AGENT: LazyLock<String> =
-    LazyLock::new(|| format!("Tsukimi/{} - {}", VERSION, env::consts::OS));
+    LazyLock::new(|| format!("{}/{} - {}", CLIENT_ID, VERSION, env::consts::OS));
 
 pub const APP_ID: &str = "moe.tsuna.tsukimi";
+pub const CLIENT_ID: &str = "Tsukimi";
+const APP_RESOURCE_PATH: &str = "/moe/tsuna/tsukimi";
 
 #[cfg(target_os = "linux")]
 const LINUX_LOCALEDIR: &str = "/usr/share/locale";
@@ -56,4 +65,25 @@ pub fn locale_dir() -> &'static str {
                 .expect("Can not get locale dir")
         }
     })
+}
+
+pub fn run() -> gtk::glib::ExitCode {
+    Args::parse().init();
+    // Initialize gettext
+    setlocale(LocaleCategory::LcAll, "");
+    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8").expect("Failed to set textdomain codeset");
+    bindtextdomain(GETTEXT_PACKAGE, locale_dir())
+        .expect("Invalid argument passed to bindtextdomain");
+
+    textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
+
+    adw::init().expect("Failed to initialize Adwaita");
+    // Register and include resources
+    gtk::gio::resources_register_include!("tsukimi.gresource")
+        .expect("Failed to register resources.");
+
+    // Initialize the GTK application
+    gtk::glib::set_application_name(CLIENT_ID);
+
+    Application::new().run_with_args::<&str>(&[])
 }

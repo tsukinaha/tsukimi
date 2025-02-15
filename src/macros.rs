@@ -107,12 +107,12 @@ macro_rules! insert_editm_dialog {
 #[macro_export]
 macro_rules! bing_song_model {
     ($widget:expr, $active_model:expr, $active_core_song:expr) => {{
-        use $crate::utils::spawn;
         use adw::prelude::*;
         use gtk::{
             glib,
             prelude::WidgetExt,
         };
+        use $crate::utils::spawn;
 
         let root = $widget.root();
         let Some(window) = root.and_downcast_ref::<$crate::ui::widgets::window::Window>() else {
