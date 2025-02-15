@@ -558,9 +558,12 @@ impl Window {
 
         // Set the window state in `settings`
         self.settings().set_int("window-width", size.0)?;
+        tracing::info!("Saved window width: {}", size.0);
         self.settings().set_int("window-height", size.1)?;
+        tracing::info!("Saved window height: {}", size.1);
         self.settings()
             .set_boolean("is-maximized", self.is_maximized())?;
+        tracing::info!("Saved window state: {}", self.is_maximized());
 
         Ok(())
     }
@@ -578,6 +581,8 @@ impl Window {
         if is_maximized {
             self.maximize();
         }
+
+        tracing::info!("Loaded window size: {}x{}", width, height);
     }
 
     pub fn new(app: &adw::Application) -> Self {
