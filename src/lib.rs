@@ -1,8 +1,3 @@
-#![cfg_attr(
-    all(target_os = "windows", not(feature = "console")),
-    windows_subsystem = "windows"
-)]
-
 use std::{
     env,
     sync::LazyLock,
