@@ -59,6 +59,17 @@ impl Settings {
     const KEY_IS_REFRESH: &'static str = "is-refresh"; // bool
     const KEY_DEVICE_UUID: &'static str = "device-uuid"; // String
     const KEY_MAIN_THEME: &'static str = "main-theme"; // i32
+    const KEY_WINDOW_WIDTH: &'static str = "window-width"; // i32
+    const KEY_WINDOW_HEIGHT: &'static str = "window-height"; // i32
+
+    pub fn window_dismension(&self) -> (i32, i32) {
+        (self.int(Self::KEY_WINDOW_WIDTH), self.int(Self::KEY_WINDOW_HEIGHT))
+    }
+
+    pub fn set_window_dismension(&self, width: i32, height: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_WINDOW_WIDTH, width)?;
+        self.set_int(Self::KEY_WINDOW_HEIGHT, height)
+    }
 
     pub fn main_theme(&self) -> i32 {
         self.int(Self::KEY_MAIN_THEME)

@@ -34,6 +34,9 @@ pub fn build_ui(app: &adw::Application) {
             about.present(Some(window));
         })
         .build();
+
+    let (width, height) = SETTINGS.window_dismension();
+    window.set_default_size(width, height);
     window.add_action_entries([about_action]);
     window.present();
 }
