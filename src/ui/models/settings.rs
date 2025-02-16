@@ -68,12 +68,12 @@ impl Settings {
 
     #[cfg(target_os = "windows")]
     pub fn is_first_run(&self) -> bool {
-        self.get_boolean(Self::KEY_IS_FIRST_RUN).unwrap_or(true)
+        self.boolean(Self::KEY_IS_FIRST_RUN).unwrap_or(true)
     }
 
     #[cfg(target_os = "windows")]
     pub fn set_is_first_run(&self, is_first_run: bool) -> Result<(), glib::BoolError> {
-        self.boolean(Self::KEY_IS_FIRST_RUN, is_first_run)
+        self.set_boolean(Self::KEY_IS_FIRST_RUN, is_first_run)
     }
 
     pub fn is_overlay(&self) -> bool {
