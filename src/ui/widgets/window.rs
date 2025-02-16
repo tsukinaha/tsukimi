@@ -206,6 +206,7 @@ mod imp {
                     obj.set_servers().await;
                     obj.set_nav_servers();
                     obj.set_shortcuts();
+                    obj.alert_windows();
                 },
             ));
         }
@@ -1003,6 +1004,26 @@ impl Window {
             ),
         );
         alert_dialog.present(Some(self));
+    }
+
+    pub fn alert_windows(&self) {
+        #[cfg(target_os = "windows")]
+        {
+            if !SETTINGS.is_first_run() {
+                return;
+            }
+
+            let alert_dialog = adw::AlertDialog::builder()
+                .heading(gettext("Windows Alert"))
+                .body(gettext("It seems you're using Tsukimi on Windows. Please note that GTK used by this application is designed for Linux, and no functionality is guaranteed to work on Windows, including but not limited to video rendering, audio playback, network connections, and external links. Additionally, there are known issues that cannot be fixed, such as black borders, image rendering, font rendering, DPI scaling, video rendering, GL renderer, fullscreen mode, HDR, and locale detection. \nIf you wish to open an issue, please ensure that it is related to this software and not an upstream issue. Choose the appropriate issue template and fill in all required fields without any omissions."))
+                .build();
+            alert_dialog.add_response("close", &gettext("Close"));
+            alert_dialog.present(Some(self));
+
+            SETTINGS
+                .set_first_run(false)
+                .expect("Failed to set first run");
+        }
     }
 
     pub fn alert_dialog(&self, alert_dialog: adw::AlertDialog) {
