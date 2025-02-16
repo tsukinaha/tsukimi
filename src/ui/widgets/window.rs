@@ -1021,7 +1021,7 @@ impl Window {
             alert_dialog.present(Some(self));
 
             SETTINGS
-                .set_first_run(false)
+                .set_is_first_run(false)
                 .expect("Failed to set first run");
         }
     }
