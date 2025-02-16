@@ -200,6 +200,7 @@ pub enum ListenEvent {
     DemuxerCacheTime(i64),
     TimePos(i64),
     PausedForCache(bool),
+    ChapterList(ChapterList),
 }
 
 pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
@@ -371,6 +372,9 @@ impl TsukimiMPV {
         event_context
             .observe_property("volume", libmpv2::Format::Int64, 7)
             .unwrap();
+        event_context
+            .observe_property("chapter-list", libmpv2::Format::Node, 8)
+            .unwrap();
         let event_thread_alive = self.event_thread_alive.clone();
         std::thread::Builder::new()
             .name("mpv event loop".into())
@@ -406,6 +410,13 @@ impl TsukimiMPV {
                                     let _ = MPV_EVENT_CHANNEL
                                         .tx
                                         .send(ListenEvent::TrackList(node_to_tracks(node)));
+                                }
+                            }
+                            "chapter-list" => {
+                                if let PropertyData::Node(node) = change {
+                                    let _ = MPV_EVENT_CHANNEL
+                                        .tx
+                                        .send(ListenEvent::ChapterList(node_to_chapter_list(node)));
                                 }
                             }
                             "volume" => {
@@ -514,6 +525,38 @@ fn node_to_tracks(node: MpvNode) -> MpvTracks {
         audio_tracks,
         sub_tracks,
     }
+}
+
+pub struct ChapterList(pub Vec<Chapter>);
+
+impl IntoIterator for ChapterList {
+    type Item = Chapter;
+    type IntoIter = std::vec::IntoIter<Chapter>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
+    }
+}
+
+pub struct Chapter {
+    pub title: String,
+    pub time: f64,
+}
+
+fn node_to_chapter_list(node: MpvNode) -> ChapterList {
+    let mut chapters = Vec::new();
+    let array = node.array().unwrap();
+    for node in array {
+        let range = node.map().unwrap().collect::<HashMap<_, _>>();
+        let title = range
+            .get("title")
+            .and_then(|v| v.str())
+            .unwrap_or("unknown")
+            .to_string();
+        let time = range.get("time").unwrap().f64().unwrap();
+        chapters.push(Chapter { title, time });
+    }
+    ChapterList(chapters)
 }
 
 fn get_full_keystr(key: u32, state: gtk::gdk::ModifierType) -> Option<String> {

@@ -322,6 +322,10 @@ checkbutton.theme-selector radio:checked {
   min-height: 4px;
 }
 
+.mpv-seekbar > trough {
+  min-height: 5px;
+}
+
 .count {
   background-color: rgb(101, 144, 154);
 }
