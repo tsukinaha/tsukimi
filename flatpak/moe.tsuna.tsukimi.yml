@@ -1,0 +1,240 @@
+id: moe.tsuna.tsukimi
+runtime: org.gnome.Platform
+runtime-version: "47"
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+  - org.freedesktop.Sdk.Extension.llvm18
+add-extensions:
+  org.freedesktop.Platform.ffmpeg-full:
+    version: "24.08"
+    directory: lib/ffmpeg
+    add-ld-path: .
+command: tsukimi
+finish-args:
+  - "--device=dri"
+  - "--share=ipc"
+  - "--share=network"
+  - "--socket=fallback-x11"
+  - "--socket=wayland"
+  - "--socket=pulseaudio"
+  - "--env=RUST_BACKTRACE=full"
+cleanup:
+  - /include
+  - /lib/pkconfig
+  - /man
+  - /share/gtk-doc
+  - /share/man
+  - /share/doc
+  - /share/pkgconfig
+  - "*.la"
+  - "*.a"
+  - /bin/mold
+build-options:
+  append-path: "/usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/llvm18/bin"
+  env:
+    CARGO_HOME: /run/build/tsukimi/cargo
+    CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+    CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER: clang
+    CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "-C linker=clang -C link-arg=-fuse-ld=lld"
+    CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: clang
+    CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "-C linker=clang -C link-arg=-fuse-ld=lld"
+
+modules:
+  - name: tsukimi
+    buildsystem: meson
+    run-tests: true
+    sources:
+      - type: git
+        url: "https://github.com/caesarw/tsukimi.git"
+        branch_name: flatpak
+        commit: 81fa701e086b442890e3525c0397cb77a9451202
+        # tag: v0.19.3
+        # commit: ebc6870fafb1e965a81854b0670e42d02a033b3d
+      - cargo-sources.json
+      - type: shell
+        commands:
+          - mkdir .cargo
+          - cp cargo/config .cargo/
+          - cargo --offline fetch --manifest-path Cargo.toml --verbose
+    modules:
+      - name: gstreamer
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.24.11.tar.xz
+            sha256: 093a379602a250d5cd33b88e723757c80198317efde33893edf3c87b6e53b907
+
+      - name: libmpv
+        cleanup:
+          - /share/applications
+          - /share/bash-completion
+          - /share/icons
+          - /share/zsh
+        buildsystem: meson
+        config-opts:
+          - -Dlibmpv=true
+          - -Dbuild-date=false
+          - -Dalsa=disabled
+          - -Dlua=enabled
+        sources:
+          - type: archive
+            url: https://github.com/mpv-player/mpv/archive/v0.39.0.tar.gz
+            sha256: 2ca92437affb62c2b559b4419ea4785c70d023590500e8a52e95ea3ab4554683
+            x-checker-data:
+              type: anitya
+              project-id: 5348
+              stable-only: true
+              url-template: https://github.com/mpv-player/mpv/archive/v$version.tar.gz
+              is-important: true
+
+        modules:
+          - "shared-modules/lua5.1/lua-5.1.5.json"
+
+          - name: libv4l2
+            buildsystem: meson
+            cleanup:
+              - /sbin
+              - /bin
+            config-opts:
+              - -Dbpf=disabled
+              - -Dudevdir=/app/lib/udev
+              - -Dsystemdsystemunitdir=/dev/null
+            sources:
+              - type: archive
+                url: https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.28.1.tar.xz
+                sha256: 0fa075ce59b6618847af6ea191b6155565ccaa44de0504581ddfed795a328a82
+                x-checker-data:
+                  type: anitya
+                  project-id: 9998
+                  stable-only: true
+                  url-template: https://linuxtv.org/downloads/v4l-utils/v4l-utils-$version.tar.xz
+
+          - name: nv-codec-headers
+            cleanup:
+              - "*"
+            no-autogen: true
+            make-install-args:
+              - PREFIX=/app
+            sources:
+              - type: git
+                url: https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
+                tag: n12.2.72.0
+                commit: c69278340ab1d5559c7d7bf0edf615dc33ddbba7
+                x-checker-data:
+                  type: git
+                  tag-pattern: ^n([\d.]+)$
+
+          - name: libopenmpt
+            config-opts:
+              - --disable-static
+              - --disable-tests
+              - --disable-examples
+              - --disable-openmpt123
+              - --disable-doxygen-doc
+              - --without-portaudio
+            cleanup:
+              - /lib/*.la
+            sources:
+              - type: archive
+                url: https://lib.openmpt.org/files/libopenmpt/src/libopenmpt-0.7.10+release.autotools.tar.gz
+                sha256: 093713c1c1024f4f10c4779a66ceb2af51fb7c908a9e99feb892d04019220ba1
+                x-checker-data:
+                  type: anitya
+                  project-id: 141468
+                  stable-only: true
+                  url-template: https://lib.openmpt.org/files/libopenmpt/src/libopenmpt-$version+release.autotools.tar.gz
+
+          - name: libass
+            cleanup:
+              - /lib/*.la
+            config-opts:
+              - --disable-static
+            sources:
+              - type: archive
+                url: https://github.com/libass/libass/releases/download/0.17.3/libass-0.17.3.tar.xz
+                sha256: eae425da50f0015c21f7b3a9c7262a910f0218af469e22e2931462fed3c50959
+                x-checker-data:
+                  type: anitya
+                  project-id: 1560
+                  stable-only: true
+                  url-template: https://github.com/libass/libass/releases/download/$version/libass-$version.tar.xz
+
+          - name: uchardet
+            buildsystem: cmake-ninja
+            config-opts:
+              - -DCMAKE_BUILD_TYPE=Release
+              - -DBUILD_STATIC=0
+            cleanup:
+              - /bin
+              - /lib/cmake
+            sources:
+              - type: archive
+                url: https://www.freedesktop.org/software/uchardet/releases/uchardet-0.0.8.tar.xz
+                sha256: e97a60cfc00a1c147a674b097bb1422abd9fa78a2d9ce3f3fdcc2e78a34ac5f0
+                x-checker-data:
+                  type: anitya
+                  project-id: 9265
+                  stable-only: true
+                  url-template: https://www.freedesktop.org/software/uchardet/releases/uchardet-$version.tar.xz
+
+          - name: rubberband
+            buildsystem: meson
+            config-opts:
+              - -Ddefault_library=shared
+            cleanup:
+              - /bin
+              - /lib/ladspa
+            sources:
+              - type: archive
+                url: https://breakfastquay.com/files/releases/rubberband-3.3.0.tar.bz2
+                sha256: d9ef89e2b8ef9f85b13ac3c2faec30e20acf2c9f3a9c8c45ce637f2bc95e576c
+                x-checker-data:
+                  type: anitya
+                  project-id: 4222
+                  stable-only: true
+                  url-template: https://breakfastquay.com/files/releases/rubberband-$version.tar.bz2
+
+          - name: mujs
+            cleanup:
+              - /bin
+              - /lib/libmujs.a
+            no-autogen: true
+            make-args:
+              - release
+              - prefix=/app
+            make-install-args:
+              - prefix=/app
+              - install-shared
+            sources:
+              - type: git
+                url: https://github.com/ccxvii/mujs
+                tag: 1.3.5
+                commit: 0df0707f2f10187127e36acfbc3ba9b9ca5b5cf0
+                x-checker-data:
+                  type: git
+                  tag-pattern: ^([\d.]+)$
+
+          - name: libplacebo
+            buildsystem: meson
+            sources:
+              - type: git
+                url: https://github.com/haasn/libplacebo.git
+                commit: 1fd3c7bde7b943fe8985c893310b5269a09b46c5
+                x-checker-data:
+                  type: git
+                  tag-pattern: ^v([\d.]+)$
+                tag: v7.349.0
+            modules:
+              - name: glslang
+                buildsystem: cmake-ninja
+                config-opts:
+                  - -DBUILD_SHARED_LIBS=ON
+                cleanup:
+                  - /bin
+                  - /include
+                  - /lib/cmake
+                sources:
+                  - type: archive
+                    url: https://github.com/KhronosGroup/glslang/archive/refs/tags/11.12.0.tar.gz
+                    sha256: 7795a97450fecd9779f3d821858fbc2d1a3bf1dd602617d95b685ccbcabc302f
