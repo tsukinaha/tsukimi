@@ -68,7 +68,7 @@ impl Settings {
 
     #[cfg(target_os = "windows")]
     pub fn is_first_run(&self) -> bool {
-        self.boolean(Self::KEY_IS_FIRST_RUN).unwrap_or(true)
+        self.boolean(Self::KEY_IS_FIRST_RUN)
     }
 
     #[cfg(target_os = "windows")]
