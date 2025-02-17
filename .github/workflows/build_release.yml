@@ -150,9 +150,8 @@ jobs:
         if: ${{ matrix.arch == 'x86_64-linux' || matrix.arch == 'aarch64-linux' }}
         run: |
           mkdir artifact
-          docker run --rm --platform linux/${{ matrix.target }} -v ${{github.workspace}}:/app -v ./docker/entrypoint.sh:/entrypoint.sh ghcr.io/kosette/ubuntu-rust-gtk4:latest
+          docker run --rm --platform linux/${{ matrix.target }} -v ${{github.workspace}}:/app -v ./docker/entrypoint.sh:/entrypoint.sh ghcr.io/tsukinaha/ubuntu-rust-gtk4:latest
           sudo cp target/release/tsukimi artifact
-          sudo cp target/debian/*.deb artifact
           sudo cp -r i18n artifact
           sudo cp resources/moe*.xml artifact
           cd artifact
@@ -165,7 +164,6 @@ jobs:
           name: tsukimi-${{ matrix.arch }}
           path: |
             artifact/*.tar.gz
-            artifact/*.deb
           compression-level: 0
           overwrite: true
           retention-days: 3
@@ -192,7 +190,6 @@ jobs:
           sha512sum *.7z > tsukimi.sha512sum
           sha512sum *.exe >> tsukimi.sha512sum
           sha512sum *.tar.gz >> tsukimi.sha512sum
-          sha512sum *.deb >> tsukimi.sha512sum
 
       - name: Get latest tag name
         id: tag
@@ -209,7 +206,6 @@ jobs:
         with:
           files: |
             *.tar.gz
-            *.deb
             *.7z
             *.exe
             tsukimi.sha512sum

@@ -12,12 +12,16 @@ gtk = { version = "0.9", package = "gtk4", features = ["v4_16"] }
 serde = { version = "1.0.217", features = ["derive"] }
 serde_json = "1.0.138"
 tokio = { version = "1.43", features = ["full"] }
-reqwest = { version = "0.12", default-features = false, features = ["http2", "rustls-tls", "rustls-tls-native-roots", "json", "gzip"] }
+reqwest = { version = "0.12", default-features = false, features = [
+  "http2",
+  "rustls-tls",
+  "rustls-tls-native-roots",
+  "json",
+  "gzip",
+] }
 once_cell = "1.20.3"
 dirs = "6.0.0"
-adw = { version = "0.7", package = "libadwaita", features = [
-    "v1_6",
-] }
+adw = { version = "0.7", package = "libadwaita", features = ["v1_6"] }
 bytefmt = "0.1.7"
 libc = "0.2.169"
 uuid = { version = "1.13.1", features = ["v4"] }
@@ -36,13 +40,19 @@ atomic-wait = "1.1.0"
 flume = "0.11.1"
 derive_builder = "0.20.2"
 anyhow = "1.0.95"
-windows = { version = "0.59.0", features = ["Win32_Foundation", "Win32_Networking_WinHttp", "Win32_Storage_FileSystem", "Win32_Security", "Win32_System_IO", "Win32_System_Power", "Win32_System_Registry"] }
-tracing-subscriber = { version="0.3.19", features = ["chrono"] }
+windows = { version = "0.59.0", features = [
+  "Win32_Foundation",
+  "Win32_Storage_FileSystem",
+  "Win32_Security",
+  "Win32_System_IO",
+  "Win32_System_Power",
+] }
+tracing-subscriber = { version = "0.3.19", features = ["chrono"] }
 gdk4-x11 = { version = "0.9", optional = true }
 gdk4-win32 = { version = "0.9", optional = true }
 regex = "1.11.1"
 strsim = "0.11.1"
-clap = { version="4.5.28", features = ["derive"] }
+clap = { version = "4.5.28", features = ["derive"] }
 fnv = "1.0.7"
 rand = "0.9.0"
 base64 = "0.22.1"
@@ -52,18 +62,17 @@ embed-resource = "3.0.1"
 glib-build-tools = "0.20.0"
 
 [features]
-console = [] # Enable console logging
+console = []                      # Enable console logging
 default = ["protocols", "render"]
-protocols = [] # Enable custom protocol callbacks
-render = [] # Enable custom rendering
-build_libmpv = [
-] # build libmpv automatically, provided MPV_SOURCE is set
+protocols = []                    # Enable custom protocol callbacks
+render = []                       # Enable custom rendering
+build_libmpv = []                 # build libmpv automatically, provided MPV_SOURCE is set
 x11 = ["gdk4-x11"]
 win32 = ["gdk4-win32"]
 
 [target.'cfg(target_os = "linux")'.dependencies]
 gdk4-x11 = { version = "0.9" }
-xattr ={ version = "1.4.0" }
+xattr = { version = "1.4.0" }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 gdk4-win32 = { version = "0.9" }
