@@ -120,8 +120,8 @@ modules:
             sources:
               - type: git
                 url: https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
-                tag: n12.2.72.0
-                commit: c69278340ab1d5559c7d7bf0edf615dc33ddbba7
+                tag: n13.0.19.0
+                commit: e844e5b26f46bb77479f063029595293aa8f812d
                 x-checker-data:
                   type: git
                   tag-pattern: ^n([\d.]+)$
@@ -188,8 +188,8 @@ modules:
               - /lib/ladspa
             sources:
               - type: archive
-                url: https://breakfastquay.com/files/releases/rubberband-3.3.0.tar.bz2
-                sha256: d9ef89e2b8ef9f85b13ac3c2faec30e20acf2c9f3a9c8c45ce637f2bc95e576c
+                url: https://breakfastquay.com/files/releases/rubberband-4.0.0.tar.bz2
+                sha256: af050313ee63bc18b35b2e064e5dce05b276aaf6d1aa2b8a82ced1fe2f8028e9
                 x-checker-data:
                   type: anitya
                   project-id: 4222
@@ -210,8 +210,8 @@ modules:
             sources:
               - type: git
                 url: https://github.com/ccxvii/mujs
-                tag: 1.3.5
-                commit: 0df0707f2f10187127e36acfbc3ba9b9ca5b5cf0
+                tag: 1.3.6
+                commit: cc569c5fa9a7a2498177693b5617605c2ff5b260
                 x-checker-data:
                   type: git
                   tag-pattern: ^([\d.]+)$
