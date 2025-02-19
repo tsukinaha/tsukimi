@@ -47,10 +47,11 @@ modules:
     sources:
       - type: git
         url: "https://github.com/caesarw/tsukimi.git"
-        branch_name: flatpak
-        commit: 81fa701e086b442890e3525c0397cb77a9451202
-        # tag: v0.19.3
-        # commit: ebc6870fafb1e965a81854b0670e42d02a033b3d
+        tag: v0.19.3
+        x-checker-data:
+          type: git
+          version-scheme: semantic
+          tag-pattern: "^v([\\d.]+)$"
       - cargo-sources.json
       - type: shell
         commands:
