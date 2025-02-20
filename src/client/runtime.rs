@@ -5,7 +5,7 @@ use tokio::runtime::{
     Runtime,
 };
 
-use crate::ui::models::SETTINGS;
+use crate::ui::SETTINGS;
 
 pub fn runtime() -> &'static Runtime {
     static RUNTIME: OnceLock<Runtime> = OnceLock::new();

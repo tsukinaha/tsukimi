@@ -61,16 +61,15 @@ use super::{
 use crate::{
     config::VERSION,
     ui::{
-        models::{
-            emby_cache_path,
-            SETTINGS,
-        },
+        emby_cache_path,
         widgets::{
             filter_panel::FiltersList,
             single_grid::imp::ListType,
         },
+        SETTINGS,
     },
     utils::spawn_tokio_without_await,
+    CLIENT_ID,
 };
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
@@ -86,7 +85,6 @@ pub static DEVICE_ID: Lazy<String> = Lazy::new(|| {
 });
 
 const PROFILE: &str = include_str!("stream_profile.json");
-const CLIENT_ID: &str = "Tsukimi";
 
 static DEVICE_NAME: Lazy<String> = Lazy::new(|| {
     hostname::get()

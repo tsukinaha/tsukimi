@@ -108,24 +108,27 @@ macro_rules! insert_editm_dialog {
 macro_rules! bing_song_model {
     ($widget:expr, $active_model:expr, $active_core_song:expr) => {{
         use adw::prelude::*;
-        use gtk::prelude::WidgetExt;
-        if let Some(root) = $widget.root() {
-            if let Some(window) = root.downcast_ref::<$crate::ui::widgets::window::Window>() {
-                spawn(glib::clone!(
-                    #[weak]
-                    window,
-                    #[weak(rename_to = active_core_song)]
-                    $active_core_song,
-                    async move {
-                        window
-                            .bind_song_model($active_model, active_core_song)
-                            .await;
-                    }
-                ));
-            } else {
-                panic!("Trying to bind song model when the parent doesn't support it");
+        use gtk::{
+            glib,
+            prelude::WidgetExt,
+        };
+        use $crate::utils::spawn;
+
+        let root = $widget.root();
+        let Some(window) = root.and_downcast_ref::<$crate::ui::widgets::window::Window>() else {
+            return;
+        };
+        spawn(glib::clone!(
+            #[strong]
+            window,
+            #[strong(rename_to = active_core_song)]
+            $active_core_song,
+            async move {
+                window
+                    .bind_song_model($active_model, active_core_song)
+                    .await;
             }
-        }
+        ));
     }};
 }
 

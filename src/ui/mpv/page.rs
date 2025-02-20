@@ -13,6 +13,7 @@ use gtk::{
 use super::{
     mpvglarea::MPVGLArea,
     tsukimi_mpv::{
+        ChapterList,
         ListenEvent,
         MpvTrack,
         MpvTracks,
@@ -681,6 +682,9 @@ impl MPVPage {
                         ListenEvent::TimePos(value) => {
                             obj.scale_cb(value);
                         }
+                        ListenEvent::ChapterList(value) => {
+                            obj.on_chapter_list(value);
+                        }
                     }
                 }
             }
@@ -696,6 +700,10 @@ impl MPVPage {
 
     fn on_cache_time_update(&self, value: i64) {
         self.imp().video_scale.set_cache_end_time(value);
+    }
+
+    fn on_chapter_list(&self, value: ChapterList) {
+        self.imp().video_scale.set_chapter_list(value);
     }
 
     fn update_duration(&self, value: f64) {

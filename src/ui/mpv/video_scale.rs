@@ -4,6 +4,8 @@ use gtk::{
     subclass::prelude::*,
 };
 
+use super::tsukimi_mpv::ChapterList;
+
 mod imp {
     use gtk::{
         glib,
@@ -119,5 +121,13 @@ impl VideoScale {
     pub fn reset_scale(&self) {
         self.set_value(0.0);
         self.set_fill_level(0.0);
+    }
+
+    pub fn set_chapter_list(&self, chapter_list: ChapterList) {
+        self.clear_marks();
+
+        for chapter in chapter_list {
+            self.add_mark(chapter.time, gtk::PositionType::Top, None);
+        }
     }
 }

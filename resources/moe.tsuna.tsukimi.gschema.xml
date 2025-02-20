@@ -222,5 +222,9 @@
       <summary>Frefresh when returning to home page</summary>
       <default>false</default>
     </key>
+    <key name="is-first-run" type="b">
+      <summary>Whether the app is first run</summary>
+      <default>true</default>
+    </key>
   </schema>
 </schemalist>

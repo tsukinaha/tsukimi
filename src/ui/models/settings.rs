@@ -59,6 +59,54 @@ impl Settings {
     const KEY_IS_REFRESH: &'static str = "is-refresh"; // bool
     const KEY_DEVICE_UUID: &'static str = "device-uuid"; // String
     const KEY_MAIN_THEME: &'static str = "main-theme"; // i32
+    const KEY_WINDOW_WIDTH: &'static str = "window-width"; // i32
+    const KEY_WINDOW_HEIGHT: &'static str = "window-height"; // i32
+    const KEY_IS_MAXIMIZED: &'static str = "is-maximized"; // bool
+    const KEY_IS_FULLSCREEN: &'static str = "is-fullscreen"; // bool
+    #[cfg(target_os = "windows")]
+    const KEY_IS_FIRST_RUN: &'static str = "is-first-run"; // bool
+
+    #[cfg(target_os = "windows")]
+    pub fn is_first_run(&self) -> bool {
+        self.boolean(Self::KEY_IS_FIRST_RUN)
+    }
+
+    #[cfg(target_os = "windows")]
+    pub fn set_is_first_run(&self, is_first_run: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_IS_FIRST_RUN, is_first_run)
+    }
+
+    pub fn is_overlay(&self) -> bool {
+        self.boolean(Self::KEY_IS_OVERLAY)
+    }
+
+    pub fn is_maximized(&self) -> bool {
+        self.boolean(Self::KEY_IS_MAXIMIZED)
+    }
+
+    pub fn set_is_maximized(&self, is_maximized: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_IS_MAXIMIZED, is_maximized)
+    }
+
+    pub fn is_fullscreen(&self) -> bool {
+        self.boolean(Self::KEY_IS_FULLSCREEN)
+    }
+
+    pub fn set_is_fullscreen(&self, is_fullscreen: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_IS_FULLSCREEN, is_fullscreen)
+    }
+
+    pub fn window_dismension(&self) -> (i32, i32) {
+        (
+            self.int(Self::KEY_WINDOW_WIDTH),
+            self.int(Self::KEY_WINDOW_HEIGHT),
+        )
+    }
+
+    pub fn set_window_dismension(&self, width: i32, height: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_WINDOW_WIDTH, width)?;
+        self.set_int(Self::KEY_WINDOW_HEIGHT, height)
+    }
 
     pub fn main_theme(&self) -> i32 {
         self.int(Self::KEY_MAIN_THEME)

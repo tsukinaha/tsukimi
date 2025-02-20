@@ -31,7 +31,7 @@ pub struct Args {
     #[clap(long, short)]
     log_level: Option<String>,
 
-    /// GSK renderer to use. Possible values are: gl, ngl, vulkan.
+    /// GSK renderer to use. Possible values are: gl, ngl, vulkan and cairo (CPU rendering).
     #[clap(long, short)]
     gsk_renderer: Option<String>,
 

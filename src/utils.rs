@@ -14,7 +14,7 @@ use crate::{
         emby_client::EMBY_CLIENT,
         runtime::runtime,
     },
-    ui::models::emby_cache_path,
+    ui::emby_cache_path,
 };
 
 pub fn _spawn_tokio_blocking<F>(fut: F) -> F::Output

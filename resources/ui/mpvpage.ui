@@ -254,6 +254,7 @@
                             <signal name="value-changed" handler="on_progress_value_changed" swapped="yes" />
                             <style>
                               <class name="accent" />
+                              <class name="mpv-seekbar" />
                             </style>
                           </object>
                         </child>
