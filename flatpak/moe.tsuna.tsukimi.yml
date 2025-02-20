@@ -30,6 +30,8 @@ cleanup:
   - "*.la"
   - "*.a"
   - /bin/mold
+cleanup-commands:
+  - mkdir -p ${FLATPAK_DEST}/lib/ffmpeg
 build-options:
   append-path: "/usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/llvm18/bin"
   env:
