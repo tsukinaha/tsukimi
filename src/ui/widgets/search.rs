@@ -34,9 +34,9 @@ mod imp {
 
     use glib::subclass::InitializingObject;
     use gtk::{
+        CompositeTemplate,
         glib,
         subclass::prelude::*,
-        CompositeTemplate,
     };
 
     use gtk::prelude::*;

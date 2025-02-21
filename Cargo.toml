@@ -1,8 +1,8 @@
 [package]
 name = "tsukimi"
 version = "0.19.4"
-edition = "2021"
-rust-version = "1.81"
+edition = "2024"
+rust-version = "1.85"
 description = "A simple Emby Client written by GTK4-RS"
 license = "GPL"
 

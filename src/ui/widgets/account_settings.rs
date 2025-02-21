@@ -6,6 +6,7 @@ use adw::{
 };
 use gettextrs::gettext;
 use gtk::{
+    CompositeTemplate,
     gdk::{
         DragAction,
         RGBA,
@@ -13,7 +14,6 @@ use gtk::{
     gio,
     glib,
     template_callbacks,
-    CompositeTemplate,
 };
 
 use crate::{
@@ -21,8 +21,8 @@ use crate::{
     toast,
     ui::{
         models::{
-            emby_cache_path,
             SETTINGS,
+            emby_cache_path,
         },
         provider::descriptor::{
             Descriptor,

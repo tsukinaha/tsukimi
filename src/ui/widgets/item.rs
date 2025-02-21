@@ -9,13 +9,13 @@ use chrono::{
 use gettextrs::gettext;
 use glib::Object;
 use gtk::{
-    gio,
-    glib,
-    template_callbacks,
     ListScrollFlags,
     ListView,
     PositionType,
     ScrolledWindow,
+    gio,
+    glib,
+    template_callbacks,
 };
 
 use super::{
@@ -46,12 +46,12 @@ use crate::{
         },
     },
     utils::{
+        CachePolicy,
         fetch_with_cache,
         get_image_with_cache,
         spawn,
         spawn_g_timeout,
         spawn_tokio,
-        CachePolicy,
     },
 };
 
@@ -64,9 +64,9 @@ pub(crate) mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{
+        CompositeTemplate,
         glib,
         prelude::*,
-        CompositeTemplate,
     };
 
     use super::SimpleListItem;
@@ -78,6 +78,7 @@ pub(crate) mod imp {
                 tu_object::TuObject,
             },
             widgets::{
+                EpisodeSwitcher,
                 fix::ScrolledWindowFixExt,
                 horbu_scrolled::HorbuScrolled,
                 hortu_scrolled::HortuScrolled,
@@ -86,7 +87,6 @@ pub(crate) mod imp {
                 star_toggle::StarToggle,
                 tu_overview_item::imp::ViewGroup,
                 utils::TuItemBuildExt,
-                EpisodeSwitcher,
             },
         },
         utils::spawn_g_timeout,

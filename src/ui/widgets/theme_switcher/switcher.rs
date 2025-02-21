@@ -1,9 +1,9 @@
 use adw::subclass::prelude::*;
 use gtk::{
+    CompositeTemplate,
     gio,
     glib,
     prelude::*,
-    CompositeTemplate,
 };
 
 use crate::ui::models::SETTINGS;

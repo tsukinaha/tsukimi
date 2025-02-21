@@ -1,6 +1,6 @@
 use gtk::{
-    prelude::*,
     ScrolledWindow,
+    prelude::*,
 };
 
 pub trait ScrolledWindowFixExt {

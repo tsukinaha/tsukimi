@@ -17,15 +17,15 @@ use gtk::{
     subclass::prelude::*,
 };
 use image::{
+    AnimationDecoder,
+    DynamicImage,
+    ImageFormat,
     codecs::{
         gif::GifDecoder,
         png::PngDecoder,
         webp::WebPDecoder,
     },
     flat::SampleLayout,
-    AnimationDecoder,
-    DynamicImage,
-    ImageFormat,
 };
 use tracing::error;
 

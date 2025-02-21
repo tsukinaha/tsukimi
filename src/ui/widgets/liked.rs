@@ -25,9 +25,9 @@ use crate::{
 mod imp {
     use glib::subclass::InitializingObject;
     use gtk::{
+        CompositeTemplate,
         glib,
         subclass::prelude::*,
-        CompositeTemplate,
     };
 
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;

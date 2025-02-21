@@ -1,8 +1,8 @@
 pub mod xattr {
     #[cfg(target_os = "windows")]
     use anyhow::{
-        anyhow,
         Result,
+        anyhow,
     };
 
     /// Implementing xattr-like feature on Windows using Alternate Data Streams(ADS)
@@ -17,23 +17,23 @@ pub mod xattr {
             str,
         };
         use windows::{
-            core::{
-                Error,
-                PCWSTR,
-            },
             Win32::{
                 Foundation::{
                     CloseHandle,
                     INVALID_HANDLE_VALUE,
                 },
                 Storage::FileSystem::{
-                    CreateFileW,
-                    GetFileInformationByHandle,
-                    ReadFile,
                     BY_HANDLE_FILE_INFORMATION,
+                    CreateFileW,
                     FILE_ATTRIBUTE_NORMAL,
+                    GetFileInformationByHandle,
                     OPEN_EXISTING,
+                    ReadFile,
                 },
+            },
+            core::{
+                Error,
+                PCWSTR,
             },
         };
 
@@ -104,19 +104,19 @@ pub mod xattr {
             os::windows::ffi::OsStrExt,
         };
         use windows::{
-            core::PCWSTR,
             Win32::{
                 Foundation::{
                     CloseHandle,
                     INVALID_HANDLE_VALUE,
                 },
                 Storage::FileSystem::{
-                    CreateFileW,
-                    WriteFile,
                     CREATE_ALWAYS,
+                    CreateFileW,
                     FILE_ATTRIBUTE_NORMAL,
+                    WriteFile,
                 },
             },
+            core::PCWSTR,
         };
 
         let full_path = format!("{}:{}", path.display(), attr_name);

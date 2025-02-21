@@ -1,10 +1,10 @@
 use adw::subclass::prelude::*;
 use gtk::{
+    CompositeTemplate,
     gio,
     glib,
     prelude::*,
     template_callbacks,
-    CompositeTemplate,
 };
 
 use super::star_toggle::StarToggle;

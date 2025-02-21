@@ -88,17 +88,17 @@ impl Args {
     fn init_gsk_renderer(&self) {
         if let Some(renderer) = self.gsk_renderer.as_deref() {
             info!("Setting GSK_RENDERER to {}", renderer);
-            std::env::set_var("GSK_RENDERER", renderer);
+            unsafe { std::env::set_var("GSK_RENDERER", renderer) };
             return;
         }
 
         if std::env::var("GSK_RENDERER").is_err() {
             info!("Falling back to default GSK_RENDERER: {}", DEFAULT_RENDERER);
-            std::env::set_var("GSK_RENDERER", DEFAULT_RENDERER);
+            unsafe { std::env::set_var("GSK_RENDERER", DEFAULT_RENDERER) };
         }
     }
 
-    fn init_gilb_to_tracing(&self) {
+    fn init_glib_to_tracing(&self) {
         gtk::glib::log_set_writer_func(|level, x| {
             let domain = x
                 .iter()
@@ -130,13 +130,13 @@ impl Args {
     fn init_config_dirs(&self) {
         if let Some(xdg_cache_home) = self.xdg_cache_home.as_deref() {
             info!("Windows: Setting XDG_CACHE_HOME to {}", xdg_cache_home);
-            std::env::set_var("XDG_CACHE_HOME", xdg_cache_home);
+            unsafe { std::env::set_var("XDG_CACHE_HOME", xdg_cache_home) };
         }
 
         if std::env::var("XDG_CACHE_HOME").is_err() {
             info!("Windows: Falling back to default XDG_CACHE_HOME: %LOCALAPPDATA%");
             let config_local_dir = dirs::config_local_dir().expect("Failed to get %LOCALAPPDATA%");
-            std::env::set_var("XDG_CACHE_HOME", config_local_dir);
+            unsafe { std::env::set_var("XDG_CACHE_HOME", config_local_dir) };
         }
     }
 
@@ -144,19 +144,19 @@ impl Args {
     fn init_gdk_scale(&self) {
         if let Some(scale) = self.gdk_scale {
             info!("Windows: Setting GDK_SCALE to {}", scale);
-            std::env::set_var("GDK_SCALE", scale.to_string());
+            unsafe { std::env::set_var("GDK_SCALE", scale.to_string()) };
         }
 
         if std::env::var("GDK_SCALE").is_err() {
             info!("Windows: Falling back to default GDK_SCALE: 1");
-            std::env::set_var("GDK_SCALE", "1");
+            unsafe { std::env::set_var("GDK_SCALE", "1") };
         }
     }
 
     pub fn init(&self) {
         self.init_tracing_subscriber();
         self.init_gsk_renderer();
-        self.init_gilb_to_tracing();
+        self.init_glib_to_tracing();
 
         #[cfg(target_os = "windows")]
         self.init_config_dirs();

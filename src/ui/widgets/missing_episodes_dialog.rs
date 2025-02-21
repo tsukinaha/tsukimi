@@ -23,8 +23,8 @@ mod imp {
     use adw::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{
-        glib,
         CompositeTemplate,
+        glib,
     };
 
     use super::*;

@@ -30,8 +30,8 @@ use crate::{
         tu_object::TuObject,
     },
     utils::{
-        fetch_with_cache,
         CachePolicy,
+        fetch_with_cache,
     },
 };
 
@@ -41,11 +41,11 @@ pub(crate) mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{
+        CompositeTemplate,
+        SignalListItemFactory,
         gio,
         glib,
         prelude::*,
-        CompositeTemplate,
-        SignalListItemFactory,
     };
 
     use crate::{

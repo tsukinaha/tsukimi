@@ -7,8 +7,8 @@ use gtk::{
 };
 
 use super::single_grid::{
-    imp::ListType,
     SingleGrid,
+    imp::ListType,
 };
 use crate::client::emby_client::EMBY_CLIENT;
 mod imp {
@@ -17,10 +17,10 @@ mod imp {
 
     use glib::subclass::InitializingObject;
     use gtk::{
+        CompositeTemplate,
         glib,
         prelude::*,
         subclass::prelude::*,
-        CompositeTemplate,
     };
 
     use crate::utils::spawn_g_timeout;

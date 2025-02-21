@@ -4,11 +4,11 @@ use adw::{
 };
 use gettextrs::gettext;
 use gtk::{
+    CompositeTemplate,
     gdk,
     glib,
     glib::clone,
     graphene,
-    CompositeTemplate,
 };
 
 use crate::toast;

@@ -4,10 +4,10 @@ use adw::{
 };
 use gettextrs::gettext;
 use gtk::{
+    CompositeTemplate,
     gio,
     glib,
     template_callbacks,
-    CompositeTemplate,
 };
 use libmpv2::SetData;
 

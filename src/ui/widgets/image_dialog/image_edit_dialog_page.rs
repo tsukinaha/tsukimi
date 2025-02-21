@@ -3,9 +3,9 @@ use std::io::Read;
 use adw::subclass::prelude::*;
 use gettextrs::gettext;
 use gtk::{
+    CompositeTemplate,
     glib,
     prelude::*,
-    CompositeTemplate,
 };
 
 use gtk::template_callbacks;
@@ -26,8 +26,8 @@ mod imp {
     use std::cell::OnceCell;
 
     use glib::{
-        subclass::InitializingObject,
         Properties,
+        subclass::InitializingObject,
     };
     use gtk::prelude::*;
 
@@ -93,8 +93,8 @@ glib::wrapper! {
 }
 
 use anyhow::{
-    anyhow,
     Result,
+    anyhow,
 };
 
 #[template_callbacks]
@@ -137,8 +137,8 @@ impl ImageDialogEditPage {
         };
 
         use base64::{
-            engine::general_purpose::STANDARD,
             Engine as _,
+            engine::general_purpose::STANDARD,
         };
         let bytes = STANDARD.encode(bytes);
 

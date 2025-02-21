@@ -17,9 +17,9 @@ pub mod imp {
 
     use anyhow::Result;
     use flume::{
-        unbounded,
         Receiver,
         Sender,
+        unbounded,
     };
     use glib::subclass::Signal;
     use gst::ClockTime;
@@ -194,9 +194,11 @@ pub mod imp {
         fn signals() -> &'static [Signal] {
             static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
             SIGNALS.get_or_init(|| {
-                vec![Signal::builder("stream-start")
-                    .param_types([ClockTime::static_type()])
-                    .build()]
+                vec![
+                    Signal::builder("stream-start")
+                        .param_types([ClockTime::static_type()])
+                        .build(),
+                ]
             })
         }
     }

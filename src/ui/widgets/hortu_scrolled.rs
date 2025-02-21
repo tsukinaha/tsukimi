@@ -3,10 +3,10 @@ use adw::{
     subclass::prelude::*,
 };
 use gtk::{
+    CompositeTemplate,
     gio,
     glib,
     template_callbacks,
-    CompositeTemplate,
 };
 
 use crate::{
@@ -27,8 +27,8 @@ mod imp {
 
     use glib::subclass::InitializingObject;
     use gtk::{
-        gio,
         SignalListItemFactory,
+        gio,
     };
 
     use super::*;

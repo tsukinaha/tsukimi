@@ -4,25 +4,25 @@ use std::{
 };
 
 use anyhow::{
-    anyhow,
     Result,
+    anyhow,
 };
 use once_cell::sync::Lazy;
 use reqwest::{
-    header::HeaderValue,
     Client,
     Method,
     RequestBuilder,
     Response,
+    header::HeaderValue,
 };
 use serde::{
-    de::DeserializeOwned,
     Deserialize,
     Serialize,
+    de::DeserializeOwned,
 };
 use serde_json::{
-    json,
     Value,
+    json,
 };
 use tokio::sync::Mutex;
 use tracing::{
@@ -35,6 +35,8 @@ use uuid::Uuid;
 #[cfg(target_os = "windows")]
 use super::windows_compat::xattr;
 use super::{
+    Account,
+    ReqClient,
     error::UserFacingError,
     structs::{
         ActivityLogs,
@@ -55,21 +57,19 @@ use super::{
         ServerInfo,
         SimpleListItem,
     },
-    Account,
-    ReqClient,
 };
 use crate::{
+    CLIENT_ID,
     config::VERSION,
     ui::{
+        SETTINGS,
         emby_cache_path,
         widgets::{
             filter_panel::FiltersList,
             single_grid::imp::ListType,
         },
-        SETTINGS,
     },
     utils::spawn_tokio_without_await,
-    CLIENT_ID,
 };
 
 pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
@@ -801,7 +801,11 @@ impl EmbyClient {
                     ("SortBy", sortby),
                     ("SortOrder", sort_order),
                     ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
-                    if list_type == ListType::Liked {("Filters", "IsFavorite")} else {("", "")},
+                    if list_type == ListType::Liked {
+                        ("Filters", "IsFavorite")
+                    } else {
+                        ("", "")
+                    },
                 ]
             }
             ListType::Resume => {
@@ -813,13 +817,10 @@ impl EmbyClient {
                     ("ParentId", id),
                     ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
                     ("ImageTypeLimit", "1"),
-                    (
-                        "IncludeItemTypes",
-                        match include_item_type {
-                            "Series" => "Episode",
-                            _ => include_item_type,
-                        },
-                    ),
+                    ("IncludeItemTypes", match include_item_type {
+                        "Series" => "Episode",
+                        _ => include_item_type,
+                    }),
                     ("Limit", "30"),
                 ]
             }
@@ -1419,8 +1420,8 @@ mod tests {
 
         let image = std::fs::read("/home/inaha/Works/tsukimi/target/debug/test.jpg").unwrap();
         use base64::{
-            engine::general_purpose::STANDARD,
             Engine as _,
+            engine::general_purpose::STANDARD,
         };
         let image = STANDARD.encode(&image);
         match EMBY_CLIENT

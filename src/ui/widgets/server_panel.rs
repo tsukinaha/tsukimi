@@ -10,11 +10,11 @@ use chrono::{
 };
 use gettextrs::gettext;
 use gtk::{
-    glib,
-    template_callbacks,
     Button,
     CompositeTemplate,
     Image,
+    glib,
+    template_callbacks,
 };
 
 use crate::{

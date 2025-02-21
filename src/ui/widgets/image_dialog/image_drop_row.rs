@@ -1,15 +1,15 @@
 use adw::subclass::prelude::*;
 use gtk::{
+    CompositeTemplate,
     glib,
     prelude::WidgetExt,
     template_callbacks,
-    CompositeTemplate,
 };
 
 mod imp {
     use glib::{
-        subclass::InitializingObject,
         WeakRef,
+        subclass::InitializingObject,
     };
     use gtk::prelude::*;
 

@@ -4,10 +4,10 @@ use gst::prelude::{
     StaticType,
 };
 use gtk::{
+    CompositeTemplate,
     glib,
     prelude::*,
     template_callbacks,
-    CompositeTemplate,
 };
 
 use crate::client::structs::FilterItem;

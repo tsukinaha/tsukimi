@@ -20,9 +20,9 @@ use crate::{
     toast,
     ui::provider::tu_item::TuItem,
     utils::{
+        CachePolicy,
         fetch_with_cache,
         spawn,
-        CachePolicy,
     },
 };
 
@@ -30,10 +30,10 @@ mod imp {
 
     use glib::subclass::InitializingObject;
     use gtk::{
+        CompositeTemplate,
         glib,
         prelude::StaticTypeExt,
         subclass::prelude::*,
-        CompositeTemplate,
     };
 
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;

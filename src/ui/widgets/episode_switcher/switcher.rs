@@ -1,8 +1,8 @@
 use adw::subclass::prelude::*;
 use gtk::{
+    CompositeTemplate,
     glib,
     prelude::*,
-    CompositeTemplate,
 };
 
 use super::EpisodeButton;

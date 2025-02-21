@@ -41,10 +41,10 @@ pub mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{
-        glib,
-        prelude::*,
         CompositeTemplate,
         PopoverMenu,
+        glib,
+        prelude::*,
     };
 
     use crate::ui::{

@@ -22,6 +22,8 @@ use super::prelude::TuItemMenuPrelude;
 use adw::prelude::AlertDialogExt;
 use gettextrs::gettext;
 use gtk::{
+    Builder,
+    PopoverMenu,
     gdk::Rectangle,
     gio::{
         self,
@@ -29,8 +31,6 @@ use gtk::{
     },
     glib,
     prelude::*,
-    Builder,
-    PopoverMenu,
 };
 
 use super::TuItemBasic;

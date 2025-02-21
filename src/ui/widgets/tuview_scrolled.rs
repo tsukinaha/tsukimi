@@ -1,9 +1,9 @@
 use std::sync::{
+    Arc,
     atomic::{
         AtomicBool,
         Ordering,
     },
-    Arc,
 };
 
 use adw::{
@@ -11,14 +11,14 @@ use adw::{
     subclass::prelude::*,
 };
 use gtk::{
+    CompositeTemplate,
+    SignalListItemFactory,
     gio,
     glib::{
         self,
         clone,
     },
     template_callbacks,
-    CompositeTemplate,
-    SignalListItemFactory,
 };
 
 use super::{
@@ -38,8 +38,8 @@ use crate::{
 pub(crate) mod imp {
 
     use std::sync::{
-        atomic::AtomicBool,
         Arc,
+        atomic::AtomicBool,
     };
 
     use glib::subclass::InitializingObject;
