@@ -2,22 +2,22 @@ use std::{
     cell::RefCell,
     collections::HashMap,
     sync::{
-        atomic::AtomicU32,
         Arc,
+        atomic::AtomicU32,
     },
     thread::JoinHandle,
 };
 
 use libmpv2::{
+    GetData,
+    Mpv,
+    SetData,
     events::{
         EventContext,
         PropertyData,
     },
     mpv_node::MpvNode,
     render::RenderContext,
-    GetData,
-    Mpv,
-    SetData,
 };
 use tracing::{
     info,
@@ -67,8 +67,8 @@ impl Default for TsukimiMPV {
     fn default() -> Self {
         unsafe {
             use libc::{
-                setlocale,
                 LC_NUMERIC,
+                setlocale,
             };
             setlocale(LC_NUMERIC, c"C".as_ptr() as *const _);
         }
@@ -160,9 +160,9 @@ impl Default for TsukimiMPV {
 }
 
 use flume::{
-    unbounded,
     Receiver,
     Sender,
+    unbounded,
 };
 use libmpv2::events::Event;
 use once_cell::sync::Lazy;
@@ -378,104 +378,112 @@ impl TsukimiMPV {
         let event_thread_alive = self.event_thread_alive.clone();
         std::thread::Builder::new()
             .name("mpv event loop".into())
-            .spawn(move || loop {
-                let state = event_thread_alive.load(std::sync::atomic::Ordering::SeqCst);
-                match state {
-                    SHUTDOWN => break,
-                    PAUSED => atomic_wait::wait(&event_thread_alive, PAUSED),
-                    _ => {}
-                }
+            .spawn(move || {
+                loop {
+                    let state = event_thread_alive.load(std::sync::atomic::Ordering::SeqCst);
+                    match state {
+                        SHUTDOWN => break,
+                        PAUSED => atomic_wait::wait(&event_thread_alive, PAUSED),
+                        _ => {}
+                    }
 
-                match event_context.wait_event(1000.0) {
-                    Some(Ok(event)) => match event {
-                        Event::PropertyChange { name, change, .. } => match name {
-                            "duration" => {
-                                if let PropertyData::Double(dur) = change {
-                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Duration(dur));
+                    match event_context.wait_event(1000.0) {
+                        Some(Ok(event)) => match event {
+                            Event::PropertyChange { name, change, .. } => match name {
+                                "duration" => {
+                                    if let PropertyData::Double(dur) = change {
+                                        let _ =
+                                            MPV_EVENT_CHANNEL.tx.send(ListenEvent::Duration(dur));
+                                    }
                                 }
+                                "pause" => {
+                                    if let PropertyData::Flag(pause) = change {
+                                        let _ =
+                                            MPV_EVENT_CHANNEL.tx.send(ListenEvent::Pause(pause));
+                                    }
+                                }
+                                "cache-speed" => {
+                                    if let PropertyData::Int64(speed) = change {
+                                        let _ = MPV_EVENT_CHANNEL
+                                            .tx
+                                            .send(ListenEvent::CacheSpeed(speed));
+                                    }
+                                }
+                                "track-list" => {
+                                    if let PropertyData::Node(node) = change {
+                                        let _ = MPV_EVENT_CHANNEL
+                                            .tx
+                                            .send(ListenEvent::TrackList(node_to_tracks(node)));
+                                    }
+                                }
+                                "chapter-list" => {
+                                    if let PropertyData::Node(node) = change {
+                                        let _ = MPV_EVENT_CHANNEL.tx.send(
+                                            ListenEvent::ChapterList(node_to_chapter_list(node)),
+                                        );
+                                    }
+                                }
+                                "volume" => {
+                                    if let PropertyData::Int64(volume) = change {
+                                        let _ =
+                                            MPV_EVENT_CHANNEL.tx.send(ListenEvent::Volume(volume));
+                                    }
+                                }
+                                "speed" => {
+                                    if let PropertyData::Double(speed) = change {
+                                        let _ =
+                                            MPV_EVENT_CHANNEL.tx.send(ListenEvent::Speed(speed));
+                                    }
+                                }
+                                "demuxer-cache-time" => {
+                                    if let PropertyData::Int64(time) = change {
+                                        let _ = MPV_EVENT_CHANNEL
+                                            .tx
+                                            .send(ListenEvent::DemuxerCacheTime(time));
+                                    }
+                                }
+                                "time-pos" => {
+                                    if let PropertyData::Int64(time) = change {
+                                        let _ =
+                                            MPV_EVENT_CHANNEL.tx.send(ListenEvent::TimePos(time));
+                                    }
+                                }
+                                "paused-for-cache" => {
+                                    if let PropertyData::Flag(pause) = change {
+                                        let seeking =
+                                            mpv.get_property::<bool>("seeking").unwrap_or(false);
+                                        let _ = MPV_EVENT_CHANNEL
+                                            .tx
+                                            .send(ListenEvent::PausedForCache(pause || seeking));
+                                    }
+                                }
+                                _ => {}
+                            },
+                            Event::Seek { .. } => {
+                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Seek);
                             }
-                            "pause" => {
-                                if let PropertyData::Flag(pause) = change {
-                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Pause(pause));
-                                }
+                            Event::PlaybackRestart { .. } => {
+                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::PlaybackRestart);
                             }
-                            "cache-speed" => {
-                                if let PropertyData::Int64(speed) = change {
-                                    let _ =
-                                        MPV_EVENT_CHANNEL.tx.send(ListenEvent::CacheSpeed(speed));
-                                }
+                            Event::EndFile(r) => {
+                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Eof(r));
                             }
-                            "track-list" => {
-                                if let PropertyData::Node(node) = change {
-                                    let _ = MPV_EVENT_CHANNEL
-                                        .tx
-                                        .send(ListenEvent::TrackList(node_to_tracks(node)));
-                                }
+                            Event::StartFile => {
+                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile);
                             }
-                            "chapter-list" => {
-                                if let PropertyData::Node(node) = change {
-                                    let _ = MPV_EVENT_CHANNEL
-                                        .tx
-                                        .send(ListenEvent::ChapterList(node_to_chapter_list(node)));
-                                }
-                            }
-                            "volume" => {
-                                if let PropertyData::Int64(volume) = change {
-                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Volume(volume));
-                                }
-                            }
-                            "speed" => {
-                                if let PropertyData::Double(speed) = change {
-                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Speed(speed));
-                                }
-                            }
-                            "demuxer-cache-time" => {
-                                if let PropertyData::Int64(time) = change {
-                                    let _ = MPV_EVENT_CHANNEL
-                                        .tx
-                                        .send(ListenEvent::DemuxerCacheTime(time));
-                                }
-                            }
-                            "time-pos" => {
-                                if let PropertyData::Int64(time) = change {
-                                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::TimePos(time));
-                                }
-                            }
-                            "paused-for-cache" => {
-                                if let PropertyData::Flag(pause) = change {
-                                    let seeking =
-                                        mpv.get_property::<bool>("seeking").unwrap_or(false);
-                                    let _ = MPV_EVENT_CHANNEL
-                                        .tx
-                                        .send(ListenEvent::PausedForCache(pause || seeking));
-                                }
+                            Event::Shutdown => {
+                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Shutdown);
                             }
                             _ => {}
                         },
-                        Event::Seek { .. } => {
-                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Seek);
+                        Some(Err(e)) => {
+                            let _ = MPV_EVENT_CHANNEL
+                                .tx
+                                .send(ListenEvent::Error(e.to_user_facing()));
                         }
-                        Event::PlaybackRestart { .. } => {
-                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::PlaybackRestart);
-                        }
-                        Event::EndFile(r) => {
-                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Eof(r));
-                        }
-                        Event::StartFile => {
-                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile);
-                        }
-                        Event::Shutdown => {
-                            let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Shutdown);
-                        }
-                        _ => {}
-                    },
-                    Some(Err(e)) => {
-                        let _ = MPV_EVENT_CHANNEL
-                            .tx
-                            .send(ListenEvent::Error(e.to_user_facing()));
-                    }
-                    None => {}
-                };
+                        None => {}
+                    };
+                }
             })
             .expect("Failed to spawn mpv event loop")
     }

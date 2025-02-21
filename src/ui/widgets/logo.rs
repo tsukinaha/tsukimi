@@ -1,10 +1,10 @@
 use gtk::{
+    Revealer,
     glib::{
         self,
         clone,
     },
     prelude::*,
-    Revealer,
 };
 use tracing::debug;
 

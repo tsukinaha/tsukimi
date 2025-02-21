@@ -130,14 +130,14 @@ impl FiltersList {
     pub fn is_empty(&self) -> bool {
         self.playback_status == 0
             && !self.favourite
-            && self.genres.as_ref().map_or(true, |v| v.is_empty())
-            && self.tags.as_ref().map_or(true, |v| v.is_empty())
-            && self.years.as_ref().map_or(true, |v| v.is_empty())
-            && self.ratings.as_ref().map_or(true, |v| v.is_empty())
-            && self.studios.as_ref().map_or(true, |v| v.is_empty())
-            && self.containers.as_ref().map_or(true, |v| v.is_empty())
-            && self.encoders.as_ref().map_or(true, |v| v.is_empty())
-            && self.video_types.as_ref().map_or(true, |v| v.is_empty())
+            && self.genres.as_ref().is_none_or(|v| v.is_empty())
+            && self.tags.as_ref().is_none_or(|v| v.is_empty())
+            && self.years.as_ref().is_none_or(|v| v.is_empty())
+            && self.ratings.as_ref().is_none_or(|v| v.is_empty())
+            && self.studios.as_ref().is_none_or(|v| v.is_empty())
+            && self.containers.as_ref().is_none_or(|v| v.is_empty())
+            && self.encoders.as_ref().is_none_or(|v| v.is_empty())
+            && self.video_types.as_ref().is_none_or(|v| v.is_empty())
             && self.resolution == 0
     }
 }

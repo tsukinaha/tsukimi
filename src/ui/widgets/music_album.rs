@@ -6,11 +6,11 @@ use adw::{
 };
 use gettextrs::gettext;
 use gtk::{
+    CompositeTemplate,
     gio,
     gio::ListStore,
     glib,
     template_callbacks,
-    CompositeTemplate,
 };
 
 use super::song_widget::format_duration;
@@ -33,10 +33,10 @@ use crate::{
         },
     },
     utils::{
+        CachePolicy,
         fetch_with_cache,
         get_image_with_cache,
         spawn,
-        CachePolicy,
     },
 };
 
@@ -47,8 +47,8 @@ pub(crate) mod imp {
     };
 
     use glib::{
-        subclass::InitializingObject,
         SignalHandlerId,
+        subclass::InitializingObject,
     };
 
     use super::*;

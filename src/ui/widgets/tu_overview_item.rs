@@ -37,10 +37,10 @@ pub mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{
-        glib,
-        prelude::*,
         CompositeTemplate,
         PopoverMenu,
+        glib,
+        prelude::*,
     };
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]

@@ -27,15 +27,15 @@ mod imp {
     use adw::subclass::bin::BinImpl;
     use glib::closure_local;
     use gtk::{
-        glib::subclass::InitializingObject,
         CompositeTemplate,
+        glib::subclass::InitializingObject,
     };
 
     use super::*;
     use crate::{
         gstl::player::{
-            imp::ListRepeatMode,
             MusicPlayer,
+            imp::ListRepeatMode,
         },
         ui::widgets::smooth_scale::SmoothScale,
     };

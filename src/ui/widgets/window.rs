@@ -4,9 +4,9 @@ use adw::prelude::*;
 use gettextrs::gettext;
 use gio::Settings;
 use gtk::{
-    subclass::prelude::*,
     ListBoxRow,
     Widget,
+    subclass::prelude::*,
 };
 mod imp {
     use std::cell::{
@@ -17,10 +17,10 @@ mod imp {
     use adw::subclass::application_window::AdwApplicationWindowImpl;
     use glib::subclass::InitializingObject;
     use gtk::{
+        CompositeTemplate,
         glib,
         prelude::*,
         subclass::prelude::*,
-        CompositeTemplate,
     };
 
     use crate::{
@@ -238,8 +238,8 @@ use gtk::{
 };
 #[cfg(target_os = "windows")]
 use windows::Win32::System::Power::{
-    SetThreadExecutionState,
     EXECUTION_STATE,
+    SetThreadExecutionState,
 };
 
 use super::{
@@ -256,25 +256,25 @@ use super::{
     tu_item::PROGRESSBAR_ANIMATION_DURATION,
 };
 use crate::{
+    APP_ID,
     client::{
-        emby_client::EMBY_CLIENT,
         Account,
+        emby_client::EMBY_CLIENT,
     },
     toast,
     ui::{
         models::SETTINGS,
         provider::{
+            IS_ADMIN,
             core_song::CoreSong,
             tu_item::TuItem,
             tu_object::TuObject,
-            IS_ADMIN,
         },
     },
     utils::{
         spawn,
         spawn_tokio,
     },
-    APP_ID,
 };
 
 glib::wrapper! {
@@ -1044,10 +1044,9 @@ impl Window {
                     .license_type(gtk::License::Gpl30)
                     .build();
                 about.add_acknowledgement_section(Some("Code"), &["Inaha", "Kosette"]);
-                about.add_acknowledgement_section(
-                    Some("Special Thanks"),
-                    &["Qound", "Eikano", "amtoaer"],
-                );
+                about.add_acknowledgement_section(Some("Special Thanks"), &[
+                    "Qound", "Eikano", "amtoaer",
+                ]);
                 about.present(Some(window));
             })
             .build();

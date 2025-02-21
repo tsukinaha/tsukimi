@@ -3,8 +3,8 @@ use adw::{
     subclass::prelude::*,
 };
 use gtk::{
-    glib,
     CompositeTemplate,
+    glib,
 };
 
 use crate::{

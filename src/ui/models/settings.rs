@@ -10,12 +10,12 @@ use gtk::{
 };
 
 use crate::{
+    APP_ID,
     client::Account,
     ui::provider::descriptor::{
         Descriptor,
         VecSerialize,
     },
-    APP_ID,
 };
 
 pub struct Settings(ThreadGuard<gio::Settings>);

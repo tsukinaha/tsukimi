@@ -1,17 +1,17 @@
 use gtk::{
-    prelude::*,
     SignalListItemFactory,
+    prelude::*,
 };
 use once_cell::sync::Lazy;
 
 use super::{
     tu_list_item::{
-        imp::PosterType,
         TuListItem,
+        imp::PosterType,
     },
     tu_overview_item::{
-        imp::ViewGroup,
         TuOverviewItem,
+        imp::ViewGroup,
     },
 };
 use crate::ui::{

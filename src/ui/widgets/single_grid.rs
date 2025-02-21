@@ -4,10 +4,10 @@ use adw::prelude::*;
 use anyhow::Result;
 use glib::Object;
 use gtk::{
+    SignalListItemFactory,
     gio,
     glib,
     subclass::prelude::*,
-    SignalListItemFactory,
 };
 use imp::{
     ListType,
@@ -49,9 +49,9 @@ pub mod imp {
             RefCell,
         },
         sync::{
-            atomic::AtomicBool,
             Arc,
             OnceLock,
+            atomic::AtomicBool,
         },
     };
 
@@ -60,10 +60,10 @@ pub mod imp {
         Signal,
     };
     use gtk::{
+        CompositeTemplate,
         glib,
         prelude::*,
         subclass::prelude::*,
-        CompositeTemplate,
     };
     use std::cell::OnceCell;
 

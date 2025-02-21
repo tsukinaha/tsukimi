@@ -11,9 +11,9 @@ use imp::ActionType;
 
 use crate::{
     client::{
+        Account,
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
-        Account,
     },
     toast,
     ui::models::SETTINGS,
@@ -30,10 +30,10 @@ pub mod imp {
     use adw::subclass::dialog::AdwDialogImpl;
     use glib::subclass::InitializingObject;
     use gtk::{
+        CompositeTemplate,
         glib,
         prelude::*,
         subclass::prelude::*,
-        CompositeTemplate,
     };
 
     use crate::client::Account;

@@ -1,7 +1,7 @@
 use adw::subclass::prelude::*;
 use gtk::{
-    glib,
     CompositeTemplate,
+    glib,
 };
 
 use gtk::template_callbacks;
@@ -12,8 +12,8 @@ mod imp {
     use std::cell::RefCell;
 
     use glib::{
-        subclass::InitializingObject,
         Properties,
+        subclass::InitializingObject,
     };
     use gtk::prelude::*;
 

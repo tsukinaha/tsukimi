@@ -16,4 +16,4 @@ jobs:
 
       - name: Run Clippy
         run: |
-          docker run --rm -v ${{ github.workspace }}:/app -v ./entrypoint.sh:/entrypoint.sh ghcr.io/kosette/ubuntu-rust-gtk4:latest
+          docker run --rm -v ${{ github.workspace }}:/app -v ./entrypoint.sh:/entrypoint.sh ghcr.io/tsukinaha/ubuntu-rust-gtk4:latest

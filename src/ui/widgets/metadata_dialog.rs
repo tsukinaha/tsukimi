@@ -4,9 +4,9 @@ use adw::{
 };
 use gettextrs::gettext;
 use gtk::{
+    SpinButton,
     glib,
     template_callbacks,
-    SpinButton,
 };
 
 use crate::{
@@ -30,8 +30,8 @@ mod imp {
 
     use glib::subclass::InitializingObject;
     use gtk::{
-        glib,
         CompositeTemplate,
+        glib,
     };
     use serde_json::Value;
 

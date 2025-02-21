@@ -27,18 +27,18 @@ use crate::{
             music_album::AlbumPage,
             other::OtherPage,
             single_grid::{
-                imp::ListType,
                 SingleGrid,
+                imp::ListType,
             },
             song_widget::SongWidget,
             window::Window,
         },
     },
     utils::{
+        CachePolicy,
         fetch_with_cache,
         spawn,
         spawn_tokio,
-        CachePolicy,
     },
 };
 

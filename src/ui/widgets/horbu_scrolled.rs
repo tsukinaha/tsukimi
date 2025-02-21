@@ -3,9 +3,9 @@ use adw::{
     subclass::prelude::*,
 };
 use gtk::{
+    CompositeTemplate,
     gio,
     glib,
-    CompositeTemplate,
 };
 
 use crate::{

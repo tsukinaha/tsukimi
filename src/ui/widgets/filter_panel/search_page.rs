@@ -3,8 +3,8 @@ use adw::{
     subclass::prelude::*,
 };
 use gtk::{
-    glib,
     CompositeTemplate,
+    glib,
 };
 
 use gtk::template_callbacks;
@@ -32,11 +32,11 @@ mod imp {
     };
 
     use glib::{
+        WeakRef,
         subclass::{
             InitializingObject,
             Signal,
         },
-        WeakRef,
     };
 
     use super::*;

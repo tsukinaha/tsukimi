@@ -4,9 +4,9 @@ use adw::{
 };
 use gettextrs::gettext;
 use gtk::{
+    CompositeTemplate,
     gio,
     glib,
-    CompositeTemplate,
 };
 
 use gtk::template_callbacks;

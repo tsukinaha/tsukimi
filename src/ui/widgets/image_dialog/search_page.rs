@@ -1,10 +1,10 @@
 use adw::subclass::prelude::*;
 use gettextrs::gettext;
 use gtk::{
-    gio,
-    glib,
     CompositeTemplate,
     StringObject,
+    gio,
+    glib,
 };
 
 use adw::prelude::*;
@@ -33,8 +33,8 @@ mod imp {
 
     use eu_item::EuListItemExt;
     use glib::{
-        subclass::InitializingObject,
         Properties,
+        subclass::InitializingObject,
     };
     use gtk::{
         gio,

@@ -3,9 +3,9 @@ use adw::{
     subclass::prelude::*,
 };
 use gtk::{
+    CompositeTemplate,
     glib,
     template_callbacks,
-    CompositeTemplate,
 };
 
 use super::{

@@ -25,9 +25,9 @@ mod imp {
     use gettextrs::gettext;
     use glib::subclass::InitializingObject;
     use gtk::{
+        CompositeTemplate,
         glib,
         prelude::*,
-        CompositeTemplate,
     };
 
     use crate::ui::provider::IS_ADMIN;

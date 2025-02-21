@@ -5,12 +5,12 @@ use adw::{
     subclass::prelude::*,
 };
 use gtk::{
+    CompositeTemplate,
     gio,
     glib::{
         self,
         clone,
     },
-    CompositeTemplate,
 };
 use tracing::{
     debug,

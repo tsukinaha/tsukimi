@@ -4,8 +4,8 @@ use adw::{
 };
 use chrono::Duration;
 use gtk::{
-    glib,
     CompositeTemplate,
+    glib,
 };
 
 use crate::{

@@ -1,8 +1,8 @@
 use adw::subclass::prelude::*;
 use gtk::{
+    CompositeTemplate,
     glib,
     prelude::*,
-    CompositeTemplate,
 };
 
 use crate::client::structs::FilterItem;
@@ -13,8 +13,8 @@ mod imp {
     use std::cell::RefCell;
 
     use glib::{
-        subclass::InitializingObject,
         Properties,
+        subclass::InitializingObject,
     };
     use gtk::prelude::*;
 

@@ -4,7 +4,7 @@ pub mod provider;
 pub mod widgets;
 
 pub use models::{
-    emby_cache_path,
     SETTINGS,
+    emby_cache_path,
 };
 pub use widgets::window::Window;

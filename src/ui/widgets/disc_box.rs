@@ -1,10 +1,10 @@
 use adw::subclass::prelude::*;
 use gettextrs::gettext;
 use gtk::{
+    CompositeTemplate,
     glib,
     prelude::*,
     template_callbacks,
-    CompositeTemplate,
 };
 
 use super::song_widget::SongWidget;
@@ -49,9 +49,11 @@ mod imp {
         fn signals() -> &'static [Signal] {
             static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
             SIGNALS.get_or_init(|| {
-                vec![Signal::builder("song-activated")
-                    .param_types([SongWidget::static_type()])
-                    .build()]
+                vec![
+                    Signal::builder("song-activated")
+                        .param_types([SongWidget::static_type()])
+                        .build(),
+                ]
             })
         }
     }

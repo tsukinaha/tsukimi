@@ -13,7 +13,7 @@ pub use prelude::{
     TuItemMenuPrelude,
 };
 pub use progressbar_animation::{
+    PROGRESSBAR_ANIMATION_DURATION,
     TuItemProgressbarAnimation,
     TuItemProgressbarAnimationPrelude,
-    PROGRESSBAR_ANIMATION_DURATION,
 };

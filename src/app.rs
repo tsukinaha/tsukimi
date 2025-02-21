@@ -7,8 +7,8 @@ use gtk::glib;
 mod imp {
 
     use gtk::{
-        gdk::Display,
         CssProvider,
+        gdk::Display,
     };
 
     use crate::ui::SETTINGS;

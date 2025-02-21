@@ -8,11 +8,11 @@ pub mod imp {
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{
+        CompositeTemplate,
         gdk,
         glib,
         graphene,
         prelude::*,
-        CompositeTemplate,
     };
     use once_cell::sync::Lazy;
 

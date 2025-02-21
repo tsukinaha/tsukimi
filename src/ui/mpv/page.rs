@@ -2,12 +2,12 @@ use adw::prelude::*;
 use gettextrs::gettext;
 use glib::Object;
 use gtk::{
+    Builder,
+    PopoverMenu,
     gdk::Rectangle,
     gio,
     glib,
     subclass::prelude::*,
-    Builder,
-    PopoverMenu,
 };
 
 use super::{
@@ -15,12 +15,12 @@ use super::{
     tsukimi_mpv::{
         ChapterList,
         ListenEvent,
+        MPV_EVENT_CHANNEL,
         MpvTrack,
         MpvTracks,
+        PAUSED,
         TrackSelection,
         TsukimiMPV,
-        MPV_EVENT_CHANNEL,
-        PAUSED,
     },
     video_scale::VideoScale,
 };
@@ -75,11 +75,11 @@ mod imp {
     use gettextrs::gettext;
     use glib::subclass::InitializingObject;
     use gtk::{
-        glib,
-        subclass::prelude::*,
         CompositeTemplate,
         PopoverMenu,
         ShortcutsWindow,
+        glib,
+        subclass::prelude::*,
     };
 
     use crate::{
@@ -87,10 +87,10 @@ mod imp {
         ui::{
             models::SETTINGS,
             mpv::{
+                VolumeBar,
                 menu_actions::MenuActions,
                 mpvglarea::MPVGLArea,
                 video_scale::VideoScale,
-                VolumeBar,
             },
             provider::tu_item::TuItem,
             widgets::action_row::AActionRow,

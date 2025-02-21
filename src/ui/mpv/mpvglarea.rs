@@ -8,8 +8,8 @@ use libmpv2::SetData;
 use tracing::info;
 
 use super::tsukimi_mpv::{
-    TrackSelection,
     ACTIVE,
+    TrackSelection,
 };
 use crate::{
     client::emby_client::EMBY_CLIENT,
@@ -36,9 +36,9 @@ mod imp {
     use crate::{
         close_on_error,
         ui::mpv::tsukimi_mpv::{
-            TsukimiMPV,
             RENDER_UPDATE,
             SHUTDOWN,
+            TsukimiMPV,
         },
     };
 
@@ -119,16 +119,13 @@ mod imp {
         fn setup_mpv(&self, gl_context: GLContext) {
             let tmpv = self.mpv();
             let mut handle = tmpv.mpv.ctx;
-            let mut ctx = RenderContext::new(
-                unsafe { handle.as_mut() },
-                vec![
-                    RenderParam::ApiType(RenderParamApiType::OpenGl),
-                    RenderParam::InitParams(OpenGLInitParams {
-                        get_proc_address,
-                        ctx: gl_context,
-                    }),
-                ],
-            )
+            let mut ctx = RenderContext::new(unsafe { handle.as_mut() }, vec![
+                RenderParam::ApiType(RenderParamApiType::OpenGl),
+                RenderParam::InitParams(OpenGLInitParams {
+                    get_proc_address,
+                    ctx: gl_context,
+                }),
+            ])
             .expect("Failed creating render context");
 
             ctx.set_update_callback(|| {
