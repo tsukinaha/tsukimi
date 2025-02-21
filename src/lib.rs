@@ -14,10 +14,8 @@ mod utils;
 pub mod client;
 
 pub use arg::Args;
-pub use config::{
-    GETTEXT_PACKAGE,
-    VERSION,
-};
+use config::{LOCALEDIR, VERSION};
+pub use config::GETTEXT_PACKAGE;
 use once_cell::sync::OnceCell;
 
 use clap::Parser;
@@ -35,17 +33,15 @@ pub const APP_ID: &str = "moe.tsuna.tsukimi";
 pub const CLIENT_ID: &str = "Tsukimi";
 const APP_RESOURCE_PATH: &str = "/moe/tsuna/tsukimi";
 
-#[cfg(target_os = "linux")]
-const LINUX_LOCALEDIR: &str = "/usr/share/locale";
 #[cfg(target_os = "windows")]
 const WINDOWS_LOCALEDIR: &str = "share\\locale";
 
 pub fn locale_dir() -> &'static str {
-    static LOCALEDIR: OnceCell<&'static str> = OnceCell::new();
-    LOCALEDIR.get_or_init(|| {
+    static FLOCALEDIR: OnceCell<&'static str> = OnceCell::new();
+    FLOCALEDIR.get_or_init(|| {
         #[cfg(target_os = "linux")]
         {
-            LINUX_LOCALEDIR
+            LOCALEDIR
         }
         #[cfg(target_os = "windows")]
         {
@@ -65,7 +61,7 @@ pub fn locale_dir() -> &'static str {
 pub fn run() -> gtk::glib::ExitCode {
     Args::parse().init();
     // Initialize gettext
-    setlocale(LocaleCategory::LcAll, "");
+    setlocale(LocaleCategory::LcAll, String::new());
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8").expect("Failed to set textdomain codeset");
     bindtextdomain(GETTEXT_PACKAGE, locale_dir())
         .expect("Invalid argument passed to bindtextdomain");

@@ -71,7 +71,7 @@
     <property name="title">Tsukimi</property>
     <property name="width-request">500</property>
     <property name="height-request">350</property>
-    <property name="icon-name">tsukimi</property>
+    <property name="icon-name">moe.tsuna.tsukimi</property>
     <child>
       <object class="GtkEventControllerKey">
         <property name="propagation-phase">capture</property>

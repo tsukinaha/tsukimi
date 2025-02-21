@@ -1040,7 +1040,7 @@ impl Window {
                     // TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
                     .translator_credits(gettext("translator-credits"))
                     .website("https://github.com/tsukinaha/tsukimi")
-                    .application_icon("tsukimi")
+                    .application_icon("moe.tsuna.tsukimi")
                     .license_type(gtk::License::Gpl30)
                     .build();
                 about.add_acknowledgement_section(Some("Code"), &["Inaha", "Kosette"]);

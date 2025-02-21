@@ -100,7 +100,7 @@ jobs:
           find share/glib-2.0/ -type f ! -name "*.compiled" -exec rm -f "{}" \;
 
           cp -r /ucrt64/share/icons share/
-          cp $GITHUB_WORKSPACE/resources/icons/tsukimi.png share/icons/
+          cp $GITHUB_WORKSPACE/resources/icons/moe.tsuna.tsukimi.png share/icons/
           rm -rf share/icons/hicolor && rm -rf share/icons/AdwaitaLegacy && rm -rf share/icons/Adwaita/scalable && rm -rf share/icons/Adwaita/cursors
           rm -rf share/icons/Adwaita/16x16 && rm -rf share/icons/Adwaita/symbolic-up-to-32
 
