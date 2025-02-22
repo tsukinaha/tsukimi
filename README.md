@@ -1,5 +1,5 @@
-<h1 align="center">tsukimi</h1>
-<p align="center">A simple third-party Emby client for Linux.</p>
+# tsukimi
+A simple third-party Emby client for Linux.
 
 ![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/tsukimi_frying_crab)
 
@@ -40,6 +40,11 @@ paru -S tsukimi-git
 sudo pacman -Syu tsukimi-git
 ```
 
+### AOSC
+```bash
+sudo oma install tsukimi
+```
+
 ### Nix
 `tsukimi` is available in nixpkgs since 24.11. 
 
@@ -69,26 +74,22 @@ If you'd like to help translating **Tsukimi** into your language, please head ov
 ## Frequently Asked Questions
 https://dev.tsukinaha.org/tsukimi
 
-## Credits
-- [gtk4-rs](https://github.com/gtk-rs/gtk4-rs)
-- [MPV](https://github.com/mpv-player/mpv)
-- [Adwaita](https://gitlab.gnome.org/GNOME/libadwaita/)
+## Disclaimer
+The developers of this application does not have any affiliation with the content providers available.
 
 ## License
 tsukimi is licensed under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html) license.
 
 Thanks to open-source projects like GNOME Music, Fractal, and Clapper—we referenced a lot from them during development, and everyone who contributed code or translations!
 
-## Disclaimer
-The developers of this application does not have any affiliation with the content providers available.
+### Credits
+- [GTK4-RS](https://github.com/gtk-rs/gtk4-rs)
+- [MPV](https://github.com/mpv-player/mpv)
+- [Adwaita](https://gitlab.gnome.org/GNOME/libadwaita/)
 
-## Star History
+<sup>
+Fonts used in screenshots: <a href="https://github.com/lxgw/LxgwWenKai-Screen">LXGW WenKai Screen</a>
 
-<a href="https://star-history.com/#tsukinaha/tsukimi&Timeline">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=tsukinaha/tsukimi&type=Timeline&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=tsukinaha/tsukimi&type=Timeline" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=tsukinaha/tsukimi&type=Timeline" />
- </picture>
-</a>
+Anime in screenshots: <a href="http://www.planet-es.net/">PLANETES</a>
+</sup>
 
