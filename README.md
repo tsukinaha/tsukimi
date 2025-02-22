@@ -88,8 +88,8 @@ Thanks to open-source projects like GNOME Music, Fractal, and Clapper—we refer
 - [Adwaita](https://gitlab.gnome.org/GNOME/libadwaita/)
 
 <sup>
-Fonts used in screenshots: <a href="https://github.com/lxgw/LxgwWenKai-Screen">LXGW WenKai Screen</a>
-
+Fonts used in screenshots: <a href="https://github.com/lxgw/LxgwWenKai-Screen">LXGW WenKai Screen</a> 
+<br />
 Anime in screenshots: <a href="http://www.planet-es.net/">PLANETES</a>
 </sup>
 
