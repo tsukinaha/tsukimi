@@ -70,6 +70,7 @@
                     <property name="margin_bottom">20</property>
                     <style>
                       <class name="accent" />
+                      <class name="speed-label" />
                     </style>
                   </object>
                 </child>

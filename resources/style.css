@@ -24,8 +24,8 @@ button.pill.no-padding-small {
 }
 
 .circular.smaller {
-  min-height:28px;
-  min-width:28px;
+  min-height: 28px;
+  min-width: 28px;
 }
 
 .mediainfo {
@@ -252,9 +252,9 @@ row image {
 }
 
 .scroll-spinner {
-	background-color: rgba(255,255,255,0.5);
-	padding: 8px;
-	border-radius: 99px;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 8px;
+  border-radius: 99px;
 }
 
 .themeselector checkbutton.follow:checked,
@@ -264,11 +264,9 @@ row image {
 }
 
 .themeselector checkbutton.follow {
-  background-image: linear-gradient(
-    to bottom right,
-    #fff 49.99%,
-    #202020 50.01%
-  );
+  background-image: linear-gradient(to bottom right,
+      #fff 49.99%,
+      #202020 50.01%);
 }
 
 .themeselector checkbutton.light {
@@ -297,9 +295,9 @@ checkbutton.theme-selector radio:checked {
 }
 
 .filter-label {
-	outline-style: solid;
-	outline-width: 2px;
-	border-radius: 99px;
+  outline-style: solid;
+  outline-width: 2px;
+  border-radius: 99px;
 }
 
 .filter-label.color1 {
@@ -318,11 +316,11 @@ checkbutton.theme-selector radio:checked {
   color: rgb(125, 210, 227);
 }
 
-.pgb > trough {
+.pgb>trough {
   min-height: 4px;
 }
 
-.mpv-seekbar > trough {
+.mpv-seekbar>trough {
   min-height: 5px;
 }
 
@@ -341,4 +339,8 @@ checkbutton.theme-selector radio:checked {
 .volume-bar {
   padding: 10px;
   border-radius: 50px;
+}
+
+.speed-label {
+  text-shadow: 3px 3px 5px alpha(black, 1);
 }
