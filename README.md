@@ -28,7 +28,7 @@ You can play music and albums, as well as videos with more advanced settings.
 ### Packages
 [![Packaging status](https://repology.org/badge/vertical-allrepos/tsukimi.svg)](https://repology.org/project/tsukimi/versions)
 
-### Archlinux
+### Arch Linux
 ```bash
 # AUR release (https://aur.archlinux.org/packages/tsukimi-bin)
 paru -S tsukimi-bin
@@ -40,7 +40,7 @@ paru -S tsukimi-git
 sudo pacman -Syu tsukimi-git
 ```
 
-### AOSC
+### AOSC OS
 ```bash
 sudo oma install tsukimi
 ```
