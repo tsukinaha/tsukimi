@@ -372,7 +372,7 @@ impl Window {
             imp.login_stack.set_visible_child_name("servers");
         }
         for (index, account) in accounts.iter().enumerate() {
-            let server_action_row = server_action_row::ServerActionRow::new(account.clone());
+            let server_action_row = server_action_row::ServerActionRow::new(account.to_owned());
 
             let drag_source = gtk::DragSource::builder()
                 .name("descriptor-drag-format")
@@ -392,7 +392,7 @@ impl Window {
                     listbox.drag_highlight_row(&widget);
                     let icon = gtk::WidgetPaintable::new(Some(&widget));
                     drag_context.set_icon(Some(&icon), 0, 0);
-                    let object = glib::BoxedAnyObject::new(account.clone());
+                    let object = glib::BoxedAnyObject::new(account.to_owned());
                     Some(gtk::gdk::ContentProvider::for_value(&object.to_value()))
                 }
             ));
@@ -425,7 +425,7 @@ impl Window {
                     let mut accounts = SETTINGS.accounts();
                     let lr_index = accounts.iter().position(|d| *d == *lr_account).unwrap();
                     accounts.remove(lr_index);
-                    accounts.insert(index, lr_account.clone());
+                    accounts.insert(index, lr_account.to_owned());
                     SETTINGS
                         .set_accounts(accounts)
                         .expect("Failed to set accounts");
@@ -1044,9 +1044,10 @@ impl Window {
                     .license_type(gtk::License::Gpl30)
                     .build();
                 about.add_acknowledgement_section(Some("Code"), &["Inaha", "Kosette"]);
-                about.add_acknowledgement_section(Some("Special Thanks"), &[
-                    "Qound", "Eikano", "amtoaer",
-                ]);
+                about.add_acknowledgement_section(
+                    Some("Special Thanks"),
+                    &["Qound", "Eikano", "amtoaer"],
+                );
                 about.present(Some(window));
             })
             .build();

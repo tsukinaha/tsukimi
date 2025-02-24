@@ -109,7 +109,7 @@ where
         if let Some(data) = read_from_cache(&path) {
             if update_in_background {
                 let future = future;
-                let path = path.clone();
+                let path = path.to_owned();
                 runtime().spawn(async move {
                     if let Ok(data) = future.await {
                         let _ = write_to_cache(&path, &data);

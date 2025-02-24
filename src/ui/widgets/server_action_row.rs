@@ -125,7 +125,7 @@ impl ServerActionRow {
         account_window
             .imp()
             .old_account
-            .replace(Some(account.clone()));
+            .replace(Some(account.to_owned()));
         account_window
             .imp()
             .username_entry

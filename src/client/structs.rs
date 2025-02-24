@@ -608,10 +608,10 @@ impl SGTitem {
     {
         let page = SingleGrid::new();
         let id = self.id.to_string();
-        let list_type_clone = list_type.clone();
+        let list_type_clone = list_type.to_owned();
         page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
-            let id = id.clone();
-            let list_type_clone = list_type_clone.clone();
+            let id = id.to_owned();
+            let list_type_clone = list_type_clone.to_owned();
             async move {
                 EMBY_CLIENT
                     .get_inlist(
@@ -627,12 +627,12 @@ impl SGTitem {
             }
         });
         let id = self.id.to_string();
-        let list_type = list_type.clone();
+        let list_type = list_type.to_owned();
         page.connect_end_edge_overshot_tokio(
             false,
             move |sort_by, sort_order, n_items, filters_list| {
-                let id = id.clone();
-                let list_type = list_type.clone();
+                let id = id.to_owned();
+                let list_type = list_type.to_owned();
                 async move {
                     EMBY_CLIENT
                         .get_inlist(
@@ -648,7 +648,7 @@ impl SGTitem {
                 }
             },
         );
-        push_page_with_tag(widget, page, &self.id.to_string(), &self.name.clone());
+        push_page_with_tag(widget, page, &self.id.to_string(), &self.name.to_owned());
     }
 }
 

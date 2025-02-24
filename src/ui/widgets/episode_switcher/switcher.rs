@@ -88,7 +88,7 @@ impl EpisodeSwitcher {
             let start = i;
             let end = (i + Self::EPISODES_PER_GROUP).min(n_items);
 
-            let callback = callback.clone();
+            let callback = callback.to_owned();
             let cb = move |btn: &EpisodeButton| {
                 callback(btn);
             };

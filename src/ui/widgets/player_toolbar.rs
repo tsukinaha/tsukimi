@@ -109,7 +109,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             self.progress_scale.set_player(Some(&self.player));
-            let obj = self.obj().clone();
+            let obj = self.obj().to_owned();
             self.player.connect_closure(
                 "stream-start",
                 false,

@@ -39,10 +39,10 @@ mod imp {
                     let Ok(new_texture) = gdk::Texture::from_file(file) else {
                         return;
                     };
-                    *self.texture.borrow_mut() = Some(new_texture.clone());
+                    *self.texture.borrow_mut() = Some(new_texture.to_owned());
                     new_texture
                 } else {
-                    texture.as_ref().unwrap().clone()
+                    texture.as_ref().unwrap().to_owned()
                 };
                 let texture_width = texture.width() as f64;
                 let texture_height = texture.height() as f64;

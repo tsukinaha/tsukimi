@@ -375,7 +375,7 @@ impl TsukimiMPV {
         event_context
             .observe_property("chapter-list", libmpv2::Format::Node, 8)
             .unwrap();
-        let event_thread_alive = self.event_thread_alive.clone();
+        let event_thread_alive = self.event_thread_alive.to_owned();
         std::thread::Builder::new()
             .name("mpv event loop".into())
             .spawn(move || {

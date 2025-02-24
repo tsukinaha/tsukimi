@@ -125,13 +125,13 @@ impl ListPage {
         for (name, title, list_type) in pages {
             let page = SingleGrid::new();
             page.set_list_type(list_type);
-            let id_clone1 = id.clone();
-            let include_item_types_clone1 = include_item_types.clone();
+            let id_clone1 = id.to_owned();
+            let include_item_types_clone1 = include_item_types.to_owned();
             page.connect_sort_changed_tokio(
                 list_type == ListType::Resume,
                 move |sort_by, sort_order, filters_list| {
-                    let id_clone1 = id_clone1.clone();
-                    let include_item_types_clone1 = include_item_types_clone1.clone();
+                    let id_clone1 = id_clone1.to_owned();
+                    let include_item_types_clone1 = include_item_types_clone1.to_owned();
                     async move {
                         if list_type == ListType::Folder {
                             EMBY_CLIENT
@@ -159,13 +159,13 @@ impl ListPage {
                     }
                 },
             );
-            let id_clone2 = id.clone();
-            let include_item_types_clone2 = include_item_types.clone();
+            let id_clone2 = id.to_owned();
+            let include_item_types_clone2 = include_item_types.to_owned();
             page.connect_end_edge_overshot_tokio(
                 list_type == ListType::Resume,
                 move |sort_by, sort_order, n_items, filters_list| {
-                    let id_clone2 = id_clone2.clone();
-                    let include_item_types_clone2 = include_item_types_clone2.clone();
+                    let id_clone2 = id_clone2.to_owned();
+                    let include_item_types_clone2 = include_item_types_clone2.to_owned();
                     async move {
                         if list_type == ListType::Folder {
                             EMBY_CLIENT

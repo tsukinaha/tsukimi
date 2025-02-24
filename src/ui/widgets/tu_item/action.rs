@@ -82,7 +82,7 @@ where
     }
 
     async fn perform_action(&self, action: Action) {
-        let id = self.item().id().clone();
+        let id = self.item().id().to_owned();
         self.update_state(&action);
         let result = spawn_tokio(async move { Self::perform_action_inner(&id, &action).await });
 
@@ -445,7 +445,7 @@ where
 
     async fn delete_item(&self) {
         let id = self.item().id();
-        let id_clone = id.clone();
+        let id_clone = id.to_owned();
 
         let delete_info = match spawn_tokio(async move { EMBY_CLIENT.delete_info(&id).await }).await
         {
@@ -477,7 +477,7 @@ where
                 #[weak(rename_to = obj)]
                 self,
                 move |_, _| {
-                    let id_clone = id_clone.clone();
+                    let id_clone = id_clone.to_owned();
 
                     spawn(glib::clone!(
                         #[weak]
@@ -535,7 +535,7 @@ where
                 #[weak(rename_to = obj)]
                 self,
                 move |_, _| {
-                    let id = id.clone();
+                    let id = id.to_owned();
 
                     spawn(glib::clone!(
                         #[weak]

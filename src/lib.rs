@@ -14,8 +14,11 @@ mod utils;
 pub mod client;
 
 pub use arg::Args;
-use config::{LOCALEDIR, VERSION};
 pub use config::GETTEXT_PACKAGE;
+use config::{
+    LOCALEDIR,
+    VERSION,
+};
 use once_cell::sync::OnceCell;
 
 use clap::Parser;

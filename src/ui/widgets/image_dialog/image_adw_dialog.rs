@@ -99,12 +99,12 @@ mod imp {
 
             let id = self.obj().id();
 
-            self.primary.set_imgid(id.clone());
-            self.logo.set_imgid(id.clone());
-            self.thumb.set_imgid(id.clone());
-            self.banner.set_imgid(id.clone());
-            self.disc.set_imgid(id.clone());
-            self.art.set_imgid(id.clone());
+            self.primary.set_imgid(id.to_owned());
+            self.logo.set_imgid(id.to_owned());
+            self.thumb.set_imgid(id.to_owned());
+            self.banner.set_imgid(id.to_owned());
+            self.disc.set_imgid(id.to_owned());
+            self.art.set_imgid(id.to_owned());
 
             self.size_group.add_widget(&self.primary.imp().stack.get());
             self.size_group.add_widget(&self.logo.imp().stack.get());

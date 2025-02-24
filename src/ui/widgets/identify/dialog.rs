@@ -118,7 +118,7 @@ impl IdentifyDialog {
 
     async fn get_data(&self) {
         let id = self.id();
-        let id_clone = id.clone();
+        let id_clone = id.to_owned();
         match spawn_tokio(async move { EMBY_CLIENT.get_external_id_info(&id).await }).await {
             Ok(data) => {
                 self.imp().stack.set_visible_child_name("page");

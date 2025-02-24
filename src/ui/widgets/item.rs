@@ -332,7 +332,7 @@ impl ItemPage {
                 }
             ));
 
-            self.imp().actionbox.set_id(Some(series_id.clone()));
+            self.imp().actionbox.set_id(Some(series_id.to_owned()));
             self.setup_item(&series_id).await;
             self.setup_seasons(&series_id).await;
         } else if type_ == "Episode" && item.series_name().is_some() {
@@ -348,7 +348,7 @@ impl ItemPage {
                 }
             ));
 
-            self.imp().actionbox.set_id(Some(series_id.clone()));
+            self.imp().actionbox.set_id(Some(series_id.to_owned()));
             self.setup_item(&series_id).await;
             self.setup_seasons(&series_id).await;
         } else {
@@ -362,7 +362,7 @@ impl ItemPage {
                 }
             ));
 
-            self.imp().actionbox.set_id(Some(id.clone()));
+            self.imp().actionbox.set_id(Some(id.to_owned()));
             self.setup_item(&id).await;
         }
     }
@@ -411,7 +411,7 @@ impl ItemPage {
 
     async fn setup_item(&self, id: &str) {
         let id = id.to_string();
-        let id_clone = id.clone();
+        let id_clone = id.to_owned();
 
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
@@ -451,7 +451,7 @@ impl ItemPage {
         };
 
         self.set_dropdown(&playback).await;
-        self.set_play_session_id(playback.play_session_id.clone());
+        self.set_play_session_id(playback.play_session_id.to_owned());
 
         self.set_current_item(Some(intro));
 
@@ -486,7 +486,7 @@ impl ItemPage {
         let position = dropdown.selected();
         let season_id = item.season_id();
 
-        let list = match (position, season_id.clone()) {
+        let list = match (position, season_id.to_owned()) {
             (0, Some(season_id)) => {
                 match spawn_tokio(async move {
                     EMBY_CLIENT
@@ -521,8 +521,8 @@ impl ItemPage {
                     let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
                         return;
                     };
-                    self.imp().season_id.replace(Some(season.id.clone()));
-                    season.id.clone()
+                    self.imp().season_id.replace(Some(season.id.to_owned()));
+                    season.id.to_owned()
                 };
 
                 match spawn_tokio(async move {
@@ -609,7 +609,10 @@ impl ItemPage {
         let start_index = btn.start_index();
         let item = self.item();
         let series_id = item.series_id().unwrap_or(item.id());
-        let Some(season_id) = item.season_id().or(self.imp().season_id.borrow().clone()) else {
+        let Some(season_id) = item
+            .season_id()
+            .or(self.imp().season_id.borrow().to_owned())
+        else {
             return;
         };
 
@@ -677,12 +680,12 @@ impl ItemPage {
     }
 
     pub async fn set_dropdown(&self, playbackinfo: &Media) {
-        let playbackinfo = playbackinfo.clone();
+        let playbackinfo = playbackinfo.to_owned();
         let imp = self.imp();
         let namedropdown = imp.namedropdown.get();
         let subdropdown = imp.subdropdown.get();
 
-        let matcher = imp.video_version_matcher.borrow().clone();
+        let matcher = imp.video_version_matcher.borrow().to_owned();
 
         let vstore = gtk::gio::ListStore::new::<glib::BoxedAnyObject>();
         imp.videoselection.set_model(Some(&vstore));
@@ -693,7 +696,7 @@ impl ItemPage {
         namedropdown.set_model(Some(&imp.videoselection));
         subdropdown.set_model(Some(&imp.subselection));
 
-        let media_sources = playbackinfo.media_sources.clone();
+        let media_sources = playbackinfo.media_sources.to_owned();
 
         let mut v_dl: Vec<String> = Vec::new();
 
@@ -714,16 +717,16 @@ impl ItemPage {
                     sstore.remove(0);
                 }
                 for media in &media_sources {
-                    if &Some(media.id.clone()) == selected {
+                    if &Some(media.id.to_owned()) == selected {
                         let mut lang_list = Vec::new();
                         for stream in &media.media_streams {
                             if stream.stream_type == "Subtitle" {
                                 let Ok(dl) = DropdownListBuilder::default()
-                                    .line1(stream.display_title.clone())
-                                    .line2(stream.title.clone())
-                                    .sub_lang(stream.language.clone())
+                                    .line1(stream.display_title.to_owned())
+                                    .line2(stream.title.to_owned())
+                                    .sub_lang(stream.language.to_owned())
                                     .index(Some(stream.index))
-                                    .url(stream.delivery_url.clone())
+                                    .url(stream.delivery_url.to_owned())
                                     .is_external(Some(stream.is_external))
                                     .build()
                                 else {
@@ -731,7 +734,7 @@ impl ItemPage {
                                 };
 
                                 lang_list
-                                    .push((stream.index, dl.line1.clone().unwrap_or_default()));
+                                    .push((stream.index, dl.line1.to_owned().unwrap_or_default()));
                                 let object = glib::BoxedAnyObject::new(dl);
                                 sstore.append(&object);
                             }
@@ -744,7 +747,7 @@ impl ItemPage {
                     }
                 }
 
-                imp.video_version_matcher.replace(dl.line1.clone());
+                imp.video_version_matcher.replace(dl.line1.to_owned());
             }
         ));
 
@@ -755,20 +758,20 @@ impl ItemPage {
                 .unwrap_or_default();
             let play_url = media
                 .direct_stream_url
-                .clone()
-                .or(media.transcoding_url.clone())
+                .to_owned()
+                .or(media.transcoding_url.to_owned())
                 .or(direct_stream_url(media).await);
             let Ok(dl) = DropdownListBuilder::default()
-                .line1(Some(media.name.clone()))
+                .line1(Some(media.name.to_owned()))
                 .line2(Some(line2))
                 .url(play_url)
-                .id(Some(media.id.clone()))
+                .id(Some(media.id.to_owned()))
                 .build()
             else {
                 continue;
             };
 
-            v_dl.push(dl.line1.clone().unwrap_or_default());
+            v_dl.push(dl.line1.to_owned().unwrap_or_default());
             let object = glib::BoxedAnyObject::new(dl);
             vstore.append(&object);
         }
@@ -1218,14 +1221,14 @@ impl ItemPage {
         let sub_dl = sub_dropdown
             .selected_item()
             .and_downcast::<glib::BoxedAnyObject>()
-            .map(|obj| obj.borrow::<DropdownList>().clone());
+            .map(|obj| obj.borrow::<DropdownList>().to_owned());
 
         let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
         let (sub_index, sub_lang) = sub_dl
             .map(|sub_dl| {
                 (
                     sub_dl.index.unwrap_or_default(),
-                    sub_dl.sub_lang.clone().unwrap_or_default(),
+                    sub_dl.sub_lang.to_owned().unwrap_or_default(),
                 )
             })
             .unwrap_or_default();
@@ -1234,7 +1237,7 @@ impl ItemPage {
             sub_index,
             video_index: video_dl.index.unwrap_or_default(),
             sub_lang,
-            media_source_id: video_dl.id.clone().unwrap_or_default(),
+            media_source_id: video_dl.id.to_owned().unwrap_or_default(),
         };
 
         let item = self.current_item().unwrap_or(self.item());
@@ -1246,7 +1249,7 @@ impl ItemPage {
             .map(|item| TuItem::from_simple(item, None))
             .collect();
 
-        let matcher = self.imp().video_version_matcher.borrow().clone();
+        let matcher = self.imp().video_version_matcher.borrow().to_owned();
 
         self.window()
             .play_media(Some(info), item, episode_list, matcher, played_percentage);

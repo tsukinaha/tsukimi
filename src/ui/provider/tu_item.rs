@@ -145,10 +145,10 @@ pub mod imp {
         pub fn set_image_tags(&self, s: Option<crate::client::structs::ImageTags>) {
             let image_tags = crate::ui::provider::image_tags::ImageTags::new();
             if let Some(s) = s {
-                image_tags.set_backdrop(s.backdrop.clone());
-                image_tags.set_primary(s.primary.clone());
-                image_tags.set_thumb(s.thumb.clone());
-                image_tags.set_banner(s.banner.clone());
+                image_tags.set_backdrop(s.backdrop.to_owned());
+                image_tags.set_primary(s.primary.to_owned());
+                image_tags.set_thumb(s.thumb.to_owned());
+                image_tags.set_banner(s.banner.to_owned());
             }
             self.image_tags.replace(Some(image_tags));
         }
@@ -168,7 +168,7 @@ impl Default for TuItem {
 impl TuItem {
     pub fn from_simple(latest: &SimpleListItem, poster: Option<&str>) -> Self {
         let tu_item: TuItem = glib::object::Object::new();
-        let item = latest.clone();
+        let item = latest.to_owned();
         tu_item.set_id(item.id);
         tu_item.set_name(item.name);
         tu_item.set_item_type(item.item_type);
@@ -260,7 +260,7 @@ impl TuItem {
                 );
             }
             "MusicAlbum" => {
-                let page = AlbumPage::new(self.clone());
+                let page = AlbumPage::new(self.to_owned());
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
             "CollectionFolder" => {
@@ -274,12 +274,12 @@ impl TuItem {
             "Tag" | "Genre" | "MusicGenre" => {
                 let page = SingleGrid::new();
                 let id = self.id();
-                let parent_id = parentid.clone();
+                let parent_id = parentid.to_owned();
                 let list_type = self.item_type();
                 page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
-                    let id = id.clone();
-                    let parent_id = parent_id.clone();
-                    let list_type = list_type.clone();
+                    let id = id.to_owned();
+                    let parent_id = parent_id.to_owned();
+                    let list_type = list_type.to_owned();
                     async move {
                         EMBY_CLIENT
                             .get_inlist(
@@ -295,14 +295,14 @@ impl TuItem {
                     }
                 });
                 let id = self.id();
-                let parent_id = parentid.clone();
+                let parent_id = parentid.to_owned();
                 let list_type = self.item_type();
                 page.connect_end_edge_overshot_tokio(
                     false,
                     move |sort_by, sort_order, n_items, filters_list| {
-                        let id = id.clone();
-                        let parent_id = parent_id.clone();
-                        let list_type = list_type.clone();
+                        let id = id.to_owned();
+                        let parent_id = parent_id.to_owned();
+                        let list_type = list_type.to_owned();
                         async move {
                             EMBY_CLIENT
                                 .get_inlist(
@@ -325,7 +325,7 @@ impl TuItem {
                 page.set_list_type(ListType::Folder);
                 let id = self.id();
                 page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
-                    let id = id.clone();
+                    let id = id.to_owned();
                     async move {
                         EMBY_CLIENT
                             .get_folder_include(&id, &sort_by, &sort_order, 0, &filters_list)
@@ -336,7 +336,7 @@ impl TuItem {
                 page.connect_end_edge_overshot_tokio(
                     false,
                     move |sort_by, sort_order, n_items, filters_list| {
-                        let id = id.clone();
+                        let id = id.to_owned();
                         async move {
                             EMBY_CLIENT
                                 .get_folder_include(
@@ -376,7 +376,7 @@ impl TuItem {
     }
 
     pub fn play_single_audio(&self, obj: &impl IsA<gtk::Widget>) {
-        let song_widget = SongWidget::new(self.clone());
+        let song_widget = SongWidget::new(self.to_owned());
         let model = gio::ListStore::new::<CoreSong>();
         bing_song_model!(obj, model, song_widget.coresong());
     }
@@ -414,11 +414,11 @@ impl TuItem {
 
         let model = gio::ListStore::new::<CoreSong>();
         model.extend_from_slice(&song_widgets);
-        bing_song_model!(obj, model, first.clone());
+        bing_song_model!(obj, model, first.to_owned());
     }
 
     pub async fn play_video(&self, obj: &impl IsA<gtk::Widget>) {
-        self.direct_play_video_id(obj, self.clone(), Vec::new())
+        self.direct_play_video_id(obj, self.to_owned(), Vec::new())
             .await;
     }
 

@@ -254,8 +254,8 @@ impl EmbyClient {
             .await
             .as_ref()
             .ok_or_else(|| anyhow!("URL is not set"))?
-            .clone();
-        let headers = self.headers.lock().await.clone();
+            .to_owned();
+        let headers = self.headers.lock().await.to_owned();
         Ok((url, headers))
     }
 
@@ -392,7 +392,7 @@ impl EmbyClient {
     pub async fn get_direct_stream_url(
         &self, continer: &str, media_source_id: &str, etag: &str,
     ) -> String {
-        let mut url = self.url.lock().await.as_ref().unwrap().clone();
+        let mut url = self.url.lock().await.as_ref().unwrap().to_owned();
         url.path_segments_mut().unwrap().pop();
         let path = format!("Videos/{}/stream.{}", media_source_id, continer);
         let mut url = url.join(&path).unwrap();
@@ -763,7 +763,7 @@ impl EmbyClient {
     }
 
     pub async fn get_streaming_url(&self, path: &str) -> String {
-        let url = self.url.lock().await.as_ref().unwrap().clone();
+        let url = self.url.lock().await.as_ref().unwrap().to_owned();
         url.join(path.trim_start_matches('/')).unwrap().to_string()
     }
 
@@ -817,10 +817,13 @@ impl EmbyClient {
                     ("ParentId", id),
                     ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
                     ("ImageTypeLimit", "1"),
-                    ("IncludeItemTypes", match include_item_type {
-                        "Series" => "Episode",
-                        _ => include_item_type,
-                    }),
+                    (
+                        "IncludeItemTypes",
+                        match include_item_type {
+                            "Series" => "Episode",
+                            _ => include_item_type,
+                        },
+                    ),
                     ("Limit", "30"),
                 ]
             }
@@ -874,7 +877,7 @@ impl EmbyClient {
         ];
         let id_clone;
         if let Some(id) = id {
-            id_clone = id.clone();
+            id_clone = id.to_owned();
             params.push(("ParentId", &id_clone));
         }
 
@@ -1134,7 +1137,7 @@ impl EmbyClient {
     pub async fn change_password(&self, new_password: &str) -> Result<()> {
         let path = format!("Users/{}/Password", &self.user_id().await);
 
-        let old_password = self.user_password.lock().await.clone();
+        let old_password = self.user_password.lock().await.to_owned();
 
         let body = json!({
             "CurrentPw": old_password,
@@ -1171,7 +1174,7 @@ impl EmbyClient {
     }
 
     pub async fn get_song_streaming_uri(&self, id: &str) -> String {
-        let url = self.url.lock().await.as_ref().unwrap().clone();
+        let url = self.url.lock().await.as_ref().unwrap().to_owned();
 
         url.join(&format!("Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
         id, &self.user_id().await, &DEVICE_ID.to_string(), self.user_access_token.lock().await, )).unwrap().to_string()
@@ -1259,7 +1262,7 @@ impl EmbyClient {
             .await
             .as_ref()
             .unwrap()
-            .clone()
+            .to_owned()
             .join(&path)
             .unwrap();
         match image_index {

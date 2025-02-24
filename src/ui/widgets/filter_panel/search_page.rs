@@ -162,8 +162,8 @@ impl FilterDialogSearchPage {
 
                 let listbox = &obj.imp().listbox;
                 filters.items.iter().for_each(|filter| {
-                    let filter_row = FilterRow::new(&filter.name, filter.id.clone());
-                    filter_row.set_title(&filter.name.clone().replace("&", "&amp;"));
+                    let filter_row = FilterRow::new(&filter.name, filter.id.to_owned());
+                    filter_row.set_title(&filter.name.to_owned().replace("&", "&amp;"));
 
                     listbox.append(&filter_row);
                 });
@@ -189,7 +189,7 @@ impl FilterDialogSearchPage {
             .filter_list
             .lock()
             .ok()
-            .map(|filters| filters.clone())
+            .map(|filters| filters.to_owned())
     }
 
     pub fn add_filter(&self, filter: FilterItem) {

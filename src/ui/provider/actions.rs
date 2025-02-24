@@ -30,7 +30,7 @@ macro_rules! impl_has_likeaction {
         $(
             impl HasLikeAction for $t {
                 fn like_button(&self) -> StarToggle {
-                    self.imp().favourite_button.clone()
+                    self.imp().favourite_button.to_owned()
                 }
 
                 async fn bind_like(&self, id: &str) {

@@ -143,7 +143,7 @@ mod imp {
         fn current_image(&self) -> gdk::Paintable {
             self.frame
                 .borrow()
-                .clone()
+                .to_owned()
                 .map(|frame| frame.upcast())
                 .or_else(|| {
                     let snapshot = gtk::Snapshot::new();
@@ -388,7 +388,7 @@ impl ImagePaintable {
 
         let idx = imp.current_idx.get();
         let next_frame = frames.get(idx).unwrap();
-        imp.frame.replace(Some(next_frame.texture.clone()));
+        imp.frame.replace(Some(next_frame.texture.to_owned()));
 
         // Invalidate the contents so that the new frame will be rendered.
         self.invalidate_contents();
@@ -415,7 +415,7 @@ impl ImagePaintable {
 
     /// Get the current frame of this `ImagePaintable`, if any.
     pub fn current_frame(&self) -> Option<gdk::Texture> {
-        self.imp().frame.borrow().clone()
+        self.imp().frame.borrow().to_owned()
     }
 }
 

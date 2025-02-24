@@ -183,7 +183,8 @@ impl IdentifyDialogSearchPage {
             return;
         };
         for item_value in items {
-            let Ok(item) = serde_json::from_value::<RemoteSearchResult>(item_value.clone()) else {
+            let Ok(item) = serde_json::from_value::<RemoteSearchResult>(item_value.to_owned())
+            else {
                 continue;
             };
             let eu_item = EuItem::new(

@@ -199,7 +199,7 @@ impl HomePage {
     }
 
     async fn setup_libview(&self, view: SimpleListItem) {
-        let ac_view = view.clone();
+        let ac_view = view.to_owned();
 
         let results = match fetch_with_cache(
             &format!("library_{}", view.id),
@@ -234,10 +234,10 @@ impl HomePage {
             self,
             move |_| {
                 let list_item = TuItem::default();
-                list_item.set_id(ac_view.id.clone());
-                list_item.set_name(ac_view.name.clone());
-                list_item.set_item_type(ac_view.item_type.clone());
-                list_item.set_collection_type(ac_view.collection_type.clone());
+                list_item.set_id(ac_view.id.to_owned());
+                list_item.set_name(ac_view.name.to_owned());
+                list_item.set_item_type(ac_view.item_type.to_owned());
+                list_item.set_collection_type(ac_view.collection_type.to_owned());
                 list_item.activate(&obj, None);
             }
         ));

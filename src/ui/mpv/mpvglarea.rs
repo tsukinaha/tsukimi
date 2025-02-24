@@ -119,13 +119,16 @@ mod imp {
         fn setup_mpv(&self, gl_context: GLContext) {
             let tmpv = self.mpv();
             let mut handle = tmpv.mpv.ctx;
-            let mut ctx = RenderContext::new(unsafe { handle.as_mut() }, vec![
-                RenderParam::ApiType(RenderParamApiType::OpenGl),
-                RenderParam::InitParams(OpenGLInitParams {
-                    get_proc_address,
-                    ctx: gl_context,
-                }),
-            ])
+            let mut ctx = RenderContext::new(
+                unsafe { handle.as_mut() },
+                vec![
+                    RenderParam::ApiType(RenderParamApiType::OpenGl),
+                    RenderParam::InitParams(OpenGLInitParams {
+                        get_proc_address,
+                        ctx: gl_context,
+                    }),
+                ],
+            )
             .expect("Failed creating render context");
 
             ctx.set_update_callback(|| {

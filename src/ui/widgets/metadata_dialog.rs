@@ -179,7 +179,7 @@ mod imp {
         pub fn get_edit_data(&self) -> Option<Value> {
             let value = self.value.get()?;
 
-            let mut value = value.clone();
+            let mut value = value.to_owned();
 
             let title = self.title_entry.text().to_string();
             if !title.is_empty() {
@@ -247,9 +247,9 @@ impl MetadataDialog {
         match spawn_tokio(async move { EMBY_CLIENT.get_edit_info(&id).await }).await {
             Ok(metadata) => {
                 self.imp().stack.set_visible_child_name("page");
-                let value = metadata.clone();
+                let value = metadata.to_owned();
                 let _ = self.imp().value.set(value);
-                let Ok(item) = serde_json::from_value::<SimpleListItem>(metadata.clone()) else {
+                let Ok(item) = serde_json::from_value::<SimpleListItem>(metadata.to_owned()) else {
                     return;
                 };
                 self.imp().load_data(item);
@@ -335,7 +335,7 @@ impl MetadataDialog {
     fn get_time(&self) -> glib::DateTime {
         let timezone = self.imp().timezone.borrow();
         let now_local = glib::DateTime::now_local().unwrap();
-        timezone.as_ref().unwrap_or(&now_local).clone()
+        timezone.as_ref().unwrap_or(&now_local).to_owned()
     }
 
     fn set_time(&self, date: glib::DateTime) {

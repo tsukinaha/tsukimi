@@ -613,7 +613,7 @@ impl AccountSettings {
         let old_descriptor = imp
             .now_editing_descriptor
             .borrow()
-            .clone()
+            .to_owned()
             .expect("No descriptor to edit");
 
         let descriptor = match imp.descriptor_type_comborow_edit.selected() {
@@ -698,7 +698,8 @@ impl AccountSettings {
                         }
                     }
 
-                    imp.now_editing_descriptor.replace(Some(descriptor.clone()));
+                    imp.now_editing_descriptor
+                        .replace(Some(descriptor.to_owned()));
                     dialog.present(Some(&obj));
                 }
             ));
@@ -716,7 +717,7 @@ impl AccountSettings {
                 descriptor,
                 move |_| {
                     SETTINGS
-                        .remove_preferred_version_descriptor(descriptor.clone())
+                        .remove_preferred_version_descriptor(descriptor.to_owned())
                         .expect("Failed to remove descriptor");
                     obj.refersh_descriptors();
                 }
@@ -748,7 +749,7 @@ impl AccountSettings {
                     obj.imp().descriptors_listbox.drag_highlight_row(&widget);
                     let icon = gtk::WidgetPaintable::new(Some(&widget));
                     drag_context.set_icon(Some(&icon), 0, 0);
-                    let object = glib::BoxedAnyObject::new(descriptor.clone());
+                    let object = glib::BoxedAnyObject::new(descriptor.to_owned());
                     Some(gtk::gdk::ContentProvider::for_value(&object.to_value()))
                 }
             ));
@@ -784,7 +785,7 @@ impl AccountSettings {
                         .position(|d| *d == *lr_descriptor)
                         .unwrap();
                     descriptors.remove(lr_index);
-                    descriptors.insert(index, lr_descriptor.clone());
+                    descriptors.insert(index, lr_descriptor.to_owned());
                     SETTINGS
                         .set_preferred_version_descriptors(descriptors)
                         .expect("Failed to set descriptors");

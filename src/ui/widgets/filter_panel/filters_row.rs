@@ -135,9 +135,9 @@ impl FiltersRow {
 
         for filter in filter_list.iter() {
             let label = super::FilterLabel::new();
-            label.set_label(Some(filter.name.clone().replace("&", "&amp;")));
-            label.set_name(filter.name.clone());
-            label.set_id(filter.id.clone());
+            label.set_label(Some(filter.name.to_owned().replace("&", "&amp;")));
+            label.set_name(filter.name.to_owned());
+            label.set_id(filter.id.to_owned());
             label.set_icon_name(self.icon_name());
             flowbox.append(&label);
         }

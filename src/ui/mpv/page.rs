@@ -380,9 +380,9 @@ impl MPVPage {
                 imp.network_speed_label
                     .set_text(&gettext("Initializing..."));
 
-                let sub_stream_index = selected.clone().map(|s| s.sub_index);
-                let media_source_id = selected.clone().map(|s| s.media_source_id);
-                let id_clone = id.clone();
+                let sub_stream_index = selected.to_owned().map(|s| s.sub_index);
+                let media_source_id = selected.to_owned().map(|s| s.media_source_id);
+                let id_clone = id.to_owned();
                 let playback_info = match spawn_tokio(async move {
                     EMBY_CLIENT
                         .get_playbackinfo(&id_clone, sub_stream_index, media_source_id, true)
@@ -398,13 +398,13 @@ impl MPVPage {
                 };
 
                 let media_source =
-                    if let Some(video_stream_index) = selected.clone().map(|s| s.video_index) {
+                    if let Some(video_stream_index) = selected.to_owned().map(|s| s.video_index) {
                         playback_info.media_sources.get(video_stream_index as usize)
                     } else {
                         let video_version_list: Vec<_> = playback_info
                             .media_sources
                             .iter()
-                            .map(|media_source| media_source.name.clone())
+                            .map(|media_source| media_source.name.to_owned())
                             .collect();
 
                         if let Some(matcher) = imp.video_version_matcher.borrow().as_ref() {
@@ -421,9 +421,9 @@ impl MPVPage {
                 };
 
                 let back = Back {
-                    id: id.clone(),
+                    id: id.to_owned(),
                     playsessionid: playback_info.play_session_id,
-                    mediasourceid: media_source.id.clone(),
+                    mediasourceid: media_source.id.to_owned(),
                     tick: media_source.run_time_ticks.unwrap_or(0),
                     start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
                 };
@@ -431,7 +431,7 @@ impl MPVPage {
                 imp.back.replace(Some(back));
 
                 let media_stream =
-                    if let Some(sub_stream_index) = selected.clone().map(|s| s.sub_index) {
+                    if let Some(sub_stream_index) = selected.to_owned().map(|s| s.sub_index) {
                         media_source.media_streams.get(sub_stream_index as usize)
                     } else {
                         let sub_version_list: Vec<_> = media_source
@@ -441,7 +441,7 @@ impl MPVPage {
                             .map(|stream| {
                                 (
                                     stream.index,
-                                    stream.display_title.clone().unwrap_or_default(),
+                                    stream.display_title.to_owned().unwrap_or_default(),
                                 )
                             })
                             .collect();
@@ -450,7 +450,7 @@ impl MPVPage {
                             .and_then(|index| media_source.media_streams.get(index.0 as usize))
                     };
 
-                if let Some(slang) = selected.clone().map(|s| s.sub_lang) {
+                if let Some(slang) = selected.to_owned().map(|s| s.sub_lang) {
                     imp.video.set_slang(slang);
                 } else {
                     imp.video
@@ -466,7 +466,7 @@ impl MPVPage {
                                 .external_sub_url_without_selected_source(
                                     id,
                                     stream,
-                                    media_source.id.clone(),
+                                    media_source.id.to_owned(),
                                 )
                                 .await
                         }
@@ -489,9 +489,9 @@ impl MPVPage {
     async fn external_sub_url_without_selected_source(
         &self, id: String, media_stream: &MediaStream, media_source_id: String,
     ) -> Option<String> {
-        let id_clone = id.clone();
+        let id_clone = id.to_owned();
         let stream_index = media_stream.index;
-        let media_source_id_clone = media_source_id.clone();
+        let media_source_id_clone = media_source_id.to_owned();
         let playback_info = spawn_tokio(async move {
             EMBY_CLIENT
                 .get_playbackinfo(&id_clone, Some(stream_index), Some(media_source_id), true)
@@ -509,7 +509,7 @@ impl MPVPage {
             .media_streams
             .get(stream_index as usize)?
             .delivery_url
-            .clone()?;
+            .to_owned()?;
 
         Some(EMBY_CLIENT.get_streaming_url(&url).await)
     }
@@ -583,11 +583,11 @@ impl MPVPage {
             self.imp().video.pause();
         }
 
-        let Some(current_video) = self.imp().current_video.borrow().clone() else {
+        let Some(current_video) = self.imp().current_video.borrow().to_owned() else {
             return;
         };
 
-        let video_list = self.imp().current_episode_list.borrow().clone();
+        let video_list = self.imp().current_episode_list.borrow().to_owned();
 
         let next_item = video_list.iter().enumerate().find_map(|(i, item)| {
             // Don't use id() here, because the same video maybe have different id
@@ -1011,7 +1011,7 @@ impl MPVPage {
 
         if let Some(back) = back.as_ref() {
             let duration = *position as u64 * 10000000;
-            let mut back = back.clone();
+            let mut back = back.to_owned();
             back.tick = duration;
             crate::utils::spawn_tokio_without_await(async move {
                 let _ = EMBY_CLIENT.position_back(&back, backtype).await;
@@ -1140,11 +1140,11 @@ impl MPVPage {
 }
 
 pub async fn direct_stream_url(source: &MediaSource) -> Option<String> {
-    let container = source.container.clone()?;
-    let etag = source.etag.clone()?;
+    let container = source.container.to_owned()?;
+    let etag = source.etag.to_owned()?;
     Some(
         EMBY_CLIENT
-            .get_direct_stream_url(&container, &source.id.clone(), &etag)
+            .get_direct_stream_url(&container, &source.id.to_owned(), &etag)
             .await,
     )
 }

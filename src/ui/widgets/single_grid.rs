@@ -513,7 +513,7 @@ impl SingleGrid {
             } else {
                 obj.imp().filter.remove_css_class("accent");
             }
-            let future = f(sort_by.clone(), sort_order.clone(), filters_list);
+            let future = f(sort_by.to_owned(), sort_order.to_owned(), filters_list);
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
                 obj,
@@ -561,7 +561,12 @@ impl SingleGrid {
                     .get()
                     .map(|f| f.filters_list())
                     .unwrap_or_default();
-                let future = f(sort_by.clone(), sort_order.clone(), n_items, filters_list);
+                let future = f(
+                    sort_by.to_owned(),
+                    sort_order.to_owned(),
+                    n_items,
+                    filters_list,
+                );
                 spawn(glib::clone!(
                     #[weak]
                     obj,

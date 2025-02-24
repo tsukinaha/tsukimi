@@ -52,7 +52,7 @@ glib::wrapper! {
 
 impl AccountItem {
     pub fn from_simple(account: &Account) -> Self {
-        let account = account.clone();
+        let account = account.to_owned();
         let item: AccountItem = glib::object::Object::new();
         item.set_server(account.server);
         item.set_servername(account.servername);

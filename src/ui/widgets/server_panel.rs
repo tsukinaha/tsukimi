@@ -316,7 +316,7 @@ impl ServerPanel {
                 #[weak(rename_to = obj)]
                 self,
                 move |_| {
-                    let id = task.id.clone();
+                    let id = task.id.to_owned();
                     spawn(glib::clone!(
                         #[weak]
                         obj,
