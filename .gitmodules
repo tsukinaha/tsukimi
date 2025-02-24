@@ -1,3 +1,0 @@
-[submodule "libmpv2-rs"]
-	path = libmpv2-rs
-	url = https://github.com/tsukimi-rs/libmpv2-rs.git
