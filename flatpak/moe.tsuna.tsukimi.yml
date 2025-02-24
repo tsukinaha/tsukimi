@@ -47,8 +47,8 @@ modules:
     buildsystem: meson
     sources:
       - type: git
-        url: "https://github.com/tsukinaha/tsukimi.git"
-        commit: 9eb0a072b18f3970f7808c1a2670cfd9725be674
+        url: "https://github.com/caesarw/tsukimi.git"
+        commit: 92f9465096004a6dd14e42583435a3dcc8920971
         # Checker will be enabled once the upstream gets a new release tag
         # x-checker-data:
         #   type: git
