@@ -18,7 +18,6 @@ finish-args:
   - "--socket=fallback-x11"
   - "--socket=wayland"
   - "--socket=pulseaudio"
-  - "--env=RUST_BACKTRACE=full"
 cleanup:
   - /include
   - /lib/pkconfig
@@ -29,7 +28,6 @@ cleanup:
   - /share/pkgconfig
   - "*.la"
   - "*.a"
-  - /bin/mold
 cleanup-commands:
   - mkdir -p ${FLATPAK_DEST}/lib/ffmpeg
 build-options:
@@ -41,19 +39,21 @@ build-options:
     CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "-C link-arg=-fuse-ld=/usr/lib/sdk/rust-stable/bin/mold"
     CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: clang
     CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "-C link-arg=-fuse-ld=/usr/lib/sdk/rust-stable/bin/mold"
+    # Workaround for linkers
+    RUSTFLAGS: "-L /app/lib"
 
 modules:
   - name: tsukimi
     buildsystem: meson
-    run-tests: true
     sources:
       - type: git
-        url: "https://github.com/caesarw/tsukimi.git"
-        tag: v0.19.3
-        x-checker-data:
-          type: git
-          version-scheme: semantic
-          tag-pattern: "^v([\\d.]+)$"
+        url: "https://github.com/tsukinaha/tsukimi.git"
+        commit: 9eb0a072b18f3970f7808c1a2670cfd9725be674
+        # Checker will be enabled once the upstream gets a new release tag
+        # x-checker-data:
+        #   type: git
+        #   version-scheme: semantic
+        #   tag-pattern: "^v([\\d.]+)$"
       - cargo-sources.json
       - type: shell
         commands:
@@ -61,12 +61,6 @@ modules:
           - cp cargo/config .cargo/
           - cargo --offline fetch --manifest-path Cargo.toml --verbose
     modules:
-      - name: gstreamer
-        buildsystem: meson
-        sources:
-          - type: archive
-            url: https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.24.11.tar.xz
-            sha256: 093a379602a250d5cd33b88e723757c80198317efde33893edf3c87b6e53b907
 
       - name: libmpv
         cleanup:
@@ -77,6 +71,7 @@ modules:
         buildsystem: meson
         config-opts:
           - -Dlibmpv=true
+          - -Dcplayer=false
           - -Dbuild-date=false
           - -Dalsa=disabled
           - -Dlua=enabled
@@ -93,25 +88,6 @@ modules:
 
         modules:
           - "shared-modules/lua5.1/lua-5.1.5.json"
-
-          - name: libv4l2
-            buildsystem: meson
-            cleanup:
-              - /sbin
-              - /bin
-            config-opts:
-              - -Dbpf=disabled
-              - -Dudevdir=/app/lib/udev
-              - -Dsystemdsystemunitdir=/dev/null
-            sources:
-              - type: archive
-                url: https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.28.1.tar.xz
-                sha256: 0fa075ce59b6618847af6ea191b6155565ccaa44de0504581ddfed795a328a82
-                x-checker-data:
-                  type: anitya
-                  project-id: 9998
-                  stable-only: true
-                  url-template: https://linuxtv.org/downloads/v4l-utils/v4l-utils-$version.tar.xz
 
           - name: nv-codec-headers
             cleanup:
