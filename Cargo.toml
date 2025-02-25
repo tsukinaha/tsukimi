@@ -29,7 +29,6 @@ chrono = { version = "0.4.39", features = ["serde"] }
 tracing = "0.1.41"
 gst = { version = "0.23", package = "gstreamer" }
 url = "2.5.4"
-libmpv2 = { git = "https://github.com/kohsine/libmpv2-rs.git", package = "libmpv2" }
 image = "0.25.5"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
 hostname = "0.4.0"
@@ -56,6 +55,7 @@ clap = { version = "4.5.30", features = ["derive"] }
 fnv = "1.0.7"
 rand = "0.9.0"
 base64 = "0.22.1"
+libmpv2 = "4.1.0"
 
 [build-dependencies]
 embed-resource = "3.0.1"
