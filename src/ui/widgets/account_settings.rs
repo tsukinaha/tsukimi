@@ -38,16 +38,22 @@ use crate::{
 mod imp {
     use std::cell::{
         Cell,
+        OnceCell,
         RefCell,
     };
 
     use glib::subclass::InitializingObject;
 
+    use crate::Window;
+
     use super::*;
 
-    #[derive(Debug, Default, CompositeTemplate)]
+    #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/account_settings.ui")]
+    #[properties(wrapper_type = super::AccountSettings)]
     pub struct AccountSettings {
+        #[property(get, set, construct_only)]
+        pub window: OnceCell<Window>,
         #[template_child]
         pub password_entry: TemplateChild<adw::PasswordEntryRow>,
         #[template_child]
@@ -76,6 +82,9 @@ mod imp {
         pub color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
         pub config_switchrow: TemplateChild<adw::SwitchRow>,
+
+        #[template_child]
+        pub decorated_switchrow: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub post_spinrow: TemplateChild<adw::SpinRow>,
@@ -192,6 +201,7 @@ mod imp {
         }
     }
 
+    #[glib::derived_properties]
     impl ObjectImpl for AccountSettings {
         fn constructed(&self) {
             self.parent_constructed();
@@ -221,16 +231,10 @@ glib::wrapper! {
         gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
-impl Default for AccountSettings {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 #[template_callbacks]
 impl AccountSettings {
-    pub fn new() -> Self {
-        glib::Object::builder().build()
+    pub fn new(window: crate::Window) -> Self {
+        glib::Object::builder().property("window", window).build()
     }
 
     #[template_callback]
@@ -347,15 +351,6 @@ impl AccountSettings {
         ));
     }
 
-    fn window(&self) -> super::window::Window {
-        let windows = self.application().unwrap().windows();
-        let window = windows
-            .into_iter()
-            .find(|w| w.is::<super::window::Window>())
-            .unwrap();
-        window.downcast::<super::window::Window>().unwrap()
-    }
-
     pub fn set_pic(&self) {
         let imp = self.imp();
         imp.backgroundcontrol
@@ -450,6 +445,17 @@ impl AccountSettings {
             .build();
         SETTINGS
             .bind("is-refresh", &imp.refresh_control.get(), "active")
+            .build();
+        SETTINGS
+            .bind(
+                "is-window-decorated",
+                &imp.decorated_switchrow.get(),
+                "active",
+            )
+            .build();
+
+        SETTINGS
+            .bind("is-window-decorated", &self.window(), "decorated")
             .build();
 
         let action_group = gio::SimpleActionGroup::new();
