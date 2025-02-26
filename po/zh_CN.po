@@ -4,7 +4,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # <tsukimi@tutanota.com>, 2024.
 # dyphire <qimoge@gmail.com>, 2024.
-# Inaha <sakuovds@gmail.com>, 2024.
+# Inaha <sakuovds@gmail.com>, 2024, 2025.
 # Gracealina  clover <zhiweishuisheng@gmail.com>, 2024.
 # HLiang Shao <792332448@qq.com>, 2024, 2025.
 msgid ""
@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-21 12:08+0800\n"
-"PO-Revision-Date: 2025-02-25 02:45+0000\n"
-"Last-Translator: HLiang Shao <792332448@qq.com>\n"
+"PO-Revision-Date: 2025-02-26 03:09+0000\n"
+"Last-Translator: Inaha <sakuovds@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -388,8 +388,8 @@ msgid ""
 "software and not an upstream issue. Choose the appropriate issue template "
 "and fill in all required fields without any omissions."
 msgstr ""
-"您似乎正在 Windows 上使用 Tsukimi。请注意，此应用程序使用的 GTK 是为 Linux "
-"设计的，无法保证所有功能都在 Windows "
+"您似乎正在 Windows 上使用 Tsukimi。请注意，此应用程序使用的 GTK 框架是为 "
+"Linux 设计的，所有功能都无法保证在 Windows "
 "上正常运行，包括但不限于视频渲染、音频回放、网络连接和外部链接。此外，还存在"
 "一些无法修复的已知问题，例如黑边、图片渲染、字体渲染、DPI 缩放、视频渲染、GL "
 "渲染器、全屏模式、HDR 和区域检测。\n"
