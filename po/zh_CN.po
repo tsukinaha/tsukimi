@@ -4,16 +4,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # <tsukimi@tutanota.com>, 2024.
 # dyphire <qimoge@gmail.com>, 2024.
-# Inaha <sakuovds@gmail.com>, 2024.
+# Inaha <sakuovds@gmail.com>, 2024, 2025.
 # Gracealina  clover <zhiweishuisheng@gmail.com>, 2024.
 # HLiang Shao <792332448@qq.com>, 2024, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-03 23:34+0800\n"
-"PO-Revision-Date: 2025-02-12 13:02+0000\n"
-"Last-Translator: HLiang Shao <792332448@qq.com>\n"
+"POT-Creation-Date: 2025-02-21 12:08+0800\n"
+"PO-Revision-Date: 2025-02-26 03:09+0000\n"
+"Last-Translator: Inaha <sakuovds@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.10.2-dev\n"
 
 #: src/client/error.rs:19
 msgid "Timeout Error, Check your internet connection"
@@ -35,11 +35,11 @@ msgstr "连接错误, 请检查您的网络连接"
 msgid "No next up video found"
 msgstr "未找到下一个视频"
 
-#: src/ui/widgets/star_toggle.rs:68
+#: src/ui/widgets/star_toggle.rs:65
 msgid "Remove from favorites"
 msgstr "从收藏中删除"
 
-#: src/ui/widgets/star_toggle.rs:69
+#: src/ui/widgets/star_toggle.rs:70
 msgid "Add to favorites"
 msgstr "添加到收藏"
 
@@ -83,7 +83,7 @@ msgstr "描述符不能为空！"
 msgid "Invalid regex"
 msgstr "正则表达式无效"
 
-#: src/ui/widgets/disc_box.rs:83 resources/ui/disc_box.ui:9
+#: src/ui/widgets/disc_box.rs:85 resources/ui/disc_box.ui:9
 msgid "Disc"
 msgstr "圆盘"
 
@@ -112,16 +112,16 @@ msgid "BoxSet"
 msgstr "合集"
 
 #: src/ui/widgets/list.rs:119 resources/ui/other.ui:150
-#: resources/ui/item.ui:468 resources/ui/filter.ui:85
+#: resources/ui/item.ui:483 resources/ui/filter.ui:85
 msgid "Tags"
 msgstr "标签"
 
 #: src/ui/widgets/list.rs:120 resources/ui/other.ui:155
-#: resources/ui/item.ui:463 resources/ui/filter.ui:78
+#: resources/ui/item.ui:478 resources/ui/filter.ui:78
 msgid "Genres"
 msgstr "片单"
 
-#: src/ui/widgets/list.rs:121 src/ui/widgets/window.rs:316
+#: src/ui/widgets/list.rs:121 src/ui/widgets/window.rs:308
 #: resources/ui/window.ui:350
 msgid "Liked"
 msgstr "收藏"
@@ -248,68 +248,72 @@ msgstr "选择一集"
 #: src/ui/widgets/item.rs:675 src/ui/mpv/page.rs:298 src/ui/mpv/page.rs:300
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
-#: resources/ui/item.ui:171
+#: resources/ui/item.ui:186
 msgid "Play"
 msgstr "播放"
 
-#: src/ui/widgets/item.rs:1055
+#: src/ui/widgets/item.rs:1056
 msgid "Codec"
 msgstr "编解码器"
 
-#: src/ui/widgets/item.rs:1058
+#: src/ui/widgets/item.rs:1059
 msgid "Language"
 msgstr "语言"
 
-#: src/ui/widgets/item.rs:1061 resources/ui/single_grid.ui:120
+#: src/ui/widgets/item.rs:1062 resources/ui/single_grid.ui:120
 #: resources/ui/metadata_dialog.ui:90
 msgid "Title"
 msgstr "标题"
 
-#: src/ui/widgets/item.rs:1065 resources/ui/single_grid.ui:121
+#: src/ui/widgets/item.rs:1066 resources/ui/single_grid.ui:121
 msgid "Bitrate"
 msgstr "比特率"
 
-#: src/ui/widgets/item.rs:1070
+#: src/ui/widgets/item.rs:1071
 msgid "BitDepth"
 msgstr "位深度"
 
-#: src/ui/widgets/item.rs:1074
+#: src/ui/widgets/item.rs:1075
 msgid "SampleRate"
 msgstr "采样率"
 
-#: src/ui/widgets/item.rs:1078
+#: src/ui/widgets/item.rs:1079
 msgid "Height"
 msgstr "高度"
 
-#: src/ui/widgets/item.rs:1081
+#: src/ui/widgets/item.rs:1082
 msgid "Width"
 msgstr "宽度"
 
-#: src/ui/widgets/item.rs:1084
+#: src/ui/widgets/item.rs:1085
 msgid "ColorSpace"
 msgstr "色彩空间"
 
-#: src/ui/widgets/item.rs:1088
+#: src/ui/widgets/item.rs:1089
 msgid "DisplayTitle"
 msgstr "显示标题"
 
-#: src/ui/widgets/item.rs:1092
+#: src/ui/widgets/item.rs:1093
 msgid "Channel"
 msgstr "声道"
 
-#: src/ui/widgets/item.rs:1096
+#: src/ui/widgets/item.rs:1097
 msgid "ChannelLayout"
 msgstr "声道布局"
 
-#: src/ui/widgets/item.rs:1101
+#: src/ui/widgets/item.rs:1102
 msgid "AverageFrameRate"
 msgstr "平均帧率"
 
-#: src/ui/widgets/item.rs:1105
+#: src/ui/widgets/item.rs:1106
 msgid "PixelFormat"
 msgstr "像素格式"
 
-#: src/ui/widgets/item.rs:1344
+#: src/ui/widgets/item.rs:1214
+msgid "No video source found"
+msgstr "未找到视频源"
+
+#: src/ui/widgets/item.rs:1351
 msgid "Season not found. Is this a continue watching list?"
 msgstr "未找到该季，确认不是继续观看列表吗？"
 
@@ -345,27 +349,62 @@ msgstr "加载图像时出错"
 msgid "Replace Image"
 msgstr "替换图片"
 
-#: src/ui/widgets/window.rs:304 resources/ui/window.ui:304
+#: src/ui/widgets/window.rs:296 resources/ui/window.ui:304
 msgid "Home"
 msgstr "首页"
 
-#: src/ui/widgets/window.rs:328 resources/ui/search.ui:23
+#: src/ui/widgets/window.rs:320 resources/ui/search.ui:23
 #: resources/ui/window.ui:21 resources/ui/window.ui:396
 #: resources/ui/image_info_card.ui:127 resources/ui/identify_dialog.ui:94
 msgid "Search"
 msgstr "搜索"
 
-#: src/ui/widgets/window.rs:834
+#: src/ui/widgets/window.rs:814
 msgid "Server Panel"
 msgstr "服务器面板"
 
-#: src/ui/widgets/window.rs:1009
+#: src/ui/widgets/window.rs:989
 msgid "Fatal Error"
 msgstr "致命错误"
 
-#: src/ui/widgets/window.rs:1012
+#: src/ui/widgets/window.rs:992
 msgid "Copy Error & Close"
 msgstr "复制错误并关闭"
+
+#: src/ui/widgets/window.rs:1017
+msgid "Windows Alert"
+msgstr "Windows 警告"
+
+#: src/ui/widgets/window.rs:1018
+msgid ""
+"It seems you're using Tsukimi on Windows. Please note that GTK used by this "
+"application is designed for Linux, and no functionality is guaranteed to "
+"work on Windows, including but not limited to video rendering, audio "
+"playback, network connections, and external links. Additionally, there are "
+"known issues that cannot be fixed, such as black borders, image rendering, "
+"font rendering, DPI scaling, video rendering, GL renderer, fullscreen mode, "
+"HDR, and locale detection. \n"
+"If you wish to open an issue, please ensure that it is related to this "
+"software and not an upstream issue. Choose the appropriate issue template "
+"and fill in all required fields without any omissions."
+msgstr ""
+"您似乎正在 Windows 上使用 Tsukimi。请注意，此应用程序使用的 GTK 框架是为 "
+"Linux 设计的，所有功能都无法保证在 Windows "
+"上正常运行，包括但不限于视频渲染、音频回放、网络连接和外部链接。此外，还存在"
+"一些无法修复的已知问题，例如黑边、图片渲染、字体渲染、DPI 缩放、视频渲染、GL "
+"渲染器、全屏模式、HDR 和区域检测。\n"
+"如果您希望提交问题，请确保问题与此软件相关，而非上游问题。选择合适的问题模板"
+"，并完整填写所有必填项，不要遗漏任何信息。"
+
+#: src/ui/widgets/window.rs:1020
+msgid "Close"
+msgstr "关闭"
+
+#: src/ui/widgets/window.rs:1041
+msgid "translator-credits"
+msgstr ""
+"Gracealina  clover <zhiweishuisheng@gmail.com>\n"
+"dyphire <qimoge@gmail.com>"
 
 #: src/ui/widgets/tu_overview_item.rs:255 src/ui/widgets/tu_list_item.rs:297
 msgid "Present"
@@ -457,27 +496,21 @@ msgstr "暂停"
 msgid "Initializing..."
 msgstr "初始化中..."
 
-#: src/ui/mpv/page.rs:419 src/ui/mpv/page.rs:467
+#: src/ui/mpv/page.rs:419 src/ui/mpv/page.rs:480
 msgid "No media source found"
 msgstr "未找到媒体源"
 
-#: src/ui/mpv/page.rs:562
+#: src/ui/mpv/page.rs:603
 msgid "No more video found"
 msgstr "未找到更多视频"
 
-#: src/ui/mpv/page.rs:653
+#: src/ui/mpv/page.rs:697
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
 msgstr ""
 "MPV 已关闭，应用将退出。\n"
 "Tsukimi 无法重新启动 MPV。"
-
-#: src/ui/mod.rs:24
-msgid "translator-credits"
-msgstr ""
-"Gracealina  clover <zhiweishuisheng@gmail.com>\n"
-"dyphire <qimoge@gmail.com>"
 
 #: resources/ui/item_actions.ui:40 resources/ui/pop-menu.ui:23
 msgid "Mark as Played"
@@ -513,12 +546,12 @@ msgstr "媒体菜单"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
-#: resources/ui/mpvpage.ui:289 resources/ui/mpvpage.ui:291
+#: resources/ui/mpvpage.ui:290 resources/ui/mpvpage.ui:292
 msgid "Fullscreen"
 msgstr "全屏"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:300 resources/ui/mpvpage.ui:302
+#: resources/ui/mpvpage.ui:301 resources/ui/mpvpage.ui:303
 msgid "Exit Fullscreen"
 msgstr "退出全屏"
 
@@ -688,7 +721,7 @@ msgstr "播放时长"
 msgid "Updated At"
 msgstr "更新日期"
 
-#: resources/ui/single_grid.ui:179 resources/ui/item.ui:401
+#: resources/ui/single_grid.ui:179 resources/ui/item.ui:416
 msgid "Nothing Here"
 msgstr "空空如也"
 
@@ -1124,7 +1157,7 @@ msgstr "服务器"
 msgid "Library"
 msgstr "媒体库"
 
-#: resources/ui/home.ui:22 resources/ui/item.ui:279
+#: resources/ui/home.ui:22 resources/ui/item.ui:294
 msgid "Continue Watching"
 msgstr "继续观看"
 
@@ -1368,7 +1401,7 @@ msgstr "停止并退出"
 msgid "Media info (MPV)"
 msgstr "媒体信息 (MPV)"
 
-#: resources/ui/mpvpage.ui:274
+#: resources/ui/mpvpage.ui:275
 msgid "Danmaku Settings"
 msgstr "弹幕设置"
 
@@ -1384,54 +1417,54 @@ msgstr "音量"
 msgid "No Inscriptions"
 msgstr "无内容"
 
-#: resources/ui/other.ui:140 resources/ui/item.ui:443
+#: resources/ui/other.ui:140 resources/ui/item.ui:458
 msgid "Actors"
 msgstr "演员"
 
-#: resources/ui/other.ui:145 resources/ui/item.ui:458
+#: resources/ui/other.ui:145 resources/ui/item.ui:473
 #: resources/ui/filter.ui:106
 msgid "Studios"
 msgstr "工作室"
 
-#: resources/ui/other.ui:160 resources/ui/item.ui:453
+#: resources/ui/other.ui:160 resources/ui/item.ui:468
 msgid "Links"
 msgstr "链接"
 
-#: resources/ui/item.ui:110 resources/ui/item.ui:147
+#: resources/ui/item.ui:110 resources/ui/item.ui:158
 #: resources/ui/identify_dialog.ui:61
 #: resources/ui/image_dialog_search_page.ui:54
 msgid "Loading..."
 msgstr "正在载入..."
 
-#: resources/ui/item.ui:205
+#: resources/ui/item.ui:220
 msgid "Video: "
 msgstr "视频： "
 
-#: resources/ui/item.ui:225
+#: resources/ui/item.ui:240
 msgid "Subtitle: "
 msgstr "字幕： "
 
-#: resources/ui/item.ui:293
+#: resources/ui/item.ui:308
 msgid "View this season"
 msgstr "查看本季"
 
-#: resources/ui/item.ui:428
+#: resources/ui/item.ui:443
 msgid "Included In"
 msgstr "包括在"
 
-#: resources/ui/item.ui:433
+#: resources/ui/item.ui:448
 msgid "Additional Parts"
 msgstr "附加部分"
 
-#: resources/ui/item.ui:438
+#: resources/ui/item.ui:453
 msgid "Seasons"
 msgstr "季"
 
-#: resources/ui/item.ui:448
+#: resources/ui/item.ui:463
 msgid "Recommend"
 msgstr "推荐"
 
-#: resources/ui/item.ui:486
+#: resources/ui/item.ui:501
 msgid "MediaInfo"
 msgstr "媒体信息"
 
@@ -1625,9 +1658,6 @@ msgstr "即将到来"
 
 #~ msgid "No mediasource found"
 #~ msgstr "未找到媒体源"
-
-#~ msgid "No video source found"
-#~ msgstr "未找到视频源"
 
 #~ msgid "Loading Video..."
 #~ msgstr "正在载入视频..."
