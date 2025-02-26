@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-26 20:02+0800\n"
-"PO-Revision-Date: 2025-02-26 03:09+0000\n"
+"PO-Revision-Date: 2025-02-26 12:08+0000\n"
 "Last-Translator: Inaha <sakuovds@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
@@ -1320,11 +1320,11 @@ msgstr "libmpv (默认)"
 
 #: resources/ui/account_settings.ui:454
 msgid "Disable Client Side Decoration"
-msgstr ""
+msgstr "禁用客户端装饰"
 
 #: resources/ui/account_settings.ui:455
 msgid "This may helpful for eliminating black border in specific platforms."
-msgstr ""
+msgstr "这可能有助于消除特定平台上的黑边。"
 
 #: resources/ui/account_settings.ui:464
 msgid "Preferred Version"
