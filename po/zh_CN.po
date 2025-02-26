@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-21 12:08+0800\n"
-"PO-Revision-Date: 2025-02-12 13:02+0000\n"
+"PO-Revision-Date: 2025-02-25 02:45+0000\n"
 "Last-Translator: HLiang Shao <792332448@qq.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.10.2-dev\n"
 
 #: src/client/error.rs:19
 msgid "Timeout Error, Check your internet connection"
@@ -373,7 +373,7 @@ msgstr "复制错误并关闭"
 
 #: src/ui/widgets/window.rs:1017
 msgid "Windows Alert"
-msgstr ""
+msgstr "Windows 警告"
 
 #: src/ui/widgets/window.rs:1018
 msgid ""
@@ -388,10 +388,17 @@ msgid ""
 "software and not an upstream issue. Choose the appropriate issue template "
 "and fill in all required fields without any omissions."
 msgstr ""
+"您似乎正在 Windows 上使用 Tsukimi。请注意，此应用程序使用的 GTK 是为 Linux "
+"设计的，无法保证所有功能都在 Windows "
+"上正常运行，包括但不限于视频渲染、音频回放、网络连接和外部链接。此外，还存在"
+"一些无法修复的已知问题，例如黑边、图片渲染、字体渲染、DPI 缩放、视频渲染、GL "
+"渲染器、全屏模式、HDR 和区域检测。\n"
+"如果您希望提交问题，请确保问题与此软件相关，而非上游问题。选择合适的问题模板"
+"，并完整填写所有必填项，不要遗漏任何信息。"
 
 #: src/ui/widgets/window.rs:1020
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 
 #: src/ui/widgets/window.rs:1041
 msgid "translator-credits"
