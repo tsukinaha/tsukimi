@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-21 12:08+0800\n"
+"POT-Creation-Date: 2025-02-26 20:02+0800\n"
 "PO-Revision-Date: 2025-02-14 08:29+0000\n"
 "Last-Translator: skrido <zkrido@proton.me>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tsukimi/main/de/"
@@ -38,43 +38,43 @@ msgstr "Von Favoriten entfernen"
 msgid "Add to favorites"
 msgstr "Zu Favoriten entfernen"
 
-#: src/ui/widgets/account_settings.rs:241
+#: src/ui/widgets/account_settings.rs:245
 msgid "Password cannot be empty!"
 msgstr "Passwort kann nicht leer sein!"
 
-#: src/ui/widgets/account_settings.rs:245
+#: src/ui/widgets/account_settings.rs:249
 msgid "Passwords do not match!"
 msgstr "Passwörter stimmen nicht überein!"
 
-#: src/ui/widgets/account_settings.rs:252
+#: src/ui/widgets/account_settings.rs:256
 msgid "Password changed successfully! Please login again."
 msgstr "Passwort erfolgreich geändert! Bitte loggen Sie sich wieder ein."
 
-#: src/ui/widgets/account_settings.rs:258
+#: src/ui/widgets/account_settings.rs:262
 msgid "Failed to change password"
 msgstr "Passwortänderung fehlgeschlagen"
 
-#: src/ui/widgets/account_settings.rs:310
+#: src/ui/widgets/account_settings.rs:314
 msgid "Cache Cleared"
 msgstr "Cache geleert"
 
-#: src/ui/widgets/account_settings.rs:331
+#: src/ui/widgets/account_settings.rs:335
 msgid "No file selected"
 msgstr "Keine Datei ausgewählt"
 
-#: src/ui/widgets/account_settings.rs:407
+#: src/ui/widgets/account_settings.rs:402
 msgid "Font Cleared, Restart to take effect."
 msgstr "Schriftart zurückgesetzt, Neustart erforderlich um wirksam zu werden."
 
-#: src/ui/widgets/account_settings.rs:580
-#: src/ui/widgets/account_settings.rs:589
-#: src/ui/widgets/account_settings.rs:623
-#: src/ui/widgets/account_settings.rs:632
+#: src/ui/widgets/account_settings.rs:586
+#: src/ui/widgets/account_settings.rs:595
+#: src/ui/widgets/account_settings.rs:629
+#: src/ui/widgets/account_settings.rs:638
 msgid "Descriptor cannot be empty!"
 msgstr "Deskriptor kann nicht leer sein!"
 
-#: src/ui/widgets/account_settings.rs:594
-#: src/ui/widgets/account_settings.rs:637
+#: src/ui/widgets/account_settings.rs:600
+#: src/ui/widgets/account_settings.rs:643
 msgid "Invalid regex"
 msgstr "ungültiger regex"
 
@@ -98,7 +98,7 @@ msgstr "Kanäle"
 msgid "All"
 msgstr "Alle"
 
-#: src/ui/widgets/list.rs:117 src/ui/widgets/item.rs:671
+#: src/ui/widgets/list.rs:117 src/ui/widgets/item.rs:674
 msgid "Resume"
 msgstr "Wiederaufnehmen"
 
@@ -146,7 +146,7 @@ msgstr "Sind Sie sich sicher, dass Sie fortfahren möchten?"
 #: src/ui/widgets/image_dialog/search_page.rs:149
 #: src/ui/widgets/tu_item/action.rs:470 src/ui/widgets/tu_item/action.rs:528
 #: src/ui/widgets/identify/search_page.rs:127
-#: resources/ui/account_settings.ui:564 resources/ui/account_settings.ui:674
+#: resources/ui/account_settings.ui:575 resources/ui/account_settings.ui:685
 #: resources/ui/refresh_dialog.ui:19
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -240,75 +240,75 @@ msgstr "Server erfolgreich hinzugefügt"
 msgid "Select an episode"
 msgstr "Wähle eine Episode aus"
 
-#: src/ui/widgets/item.rs:675 src/ui/mpv/page.rs:298 src/ui/mpv/page.rs:300
+#: src/ui/widgets/item.rs:678 src/ui/mpv/page.rs:298 src/ui/mpv/page.rs:300
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/item.ui:186
 msgid "Play"
 msgstr "Abspielen"
 
-#: src/ui/widgets/item.rs:1056
+#: src/ui/widgets/item.rs:1059
 msgid "Codec"
 msgstr "Codec"
 
-#: src/ui/widgets/item.rs:1059
+#: src/ui/widgets/item.rs:1062
 msgid "Language"
 msgstr "Sprache"
 
-#: src/ui/widgets/item.rs:1062 resources/ui/single_grid.ui:120
+#: src/ui/widgets/item.rs:1065 resources/ui/single_grid.ui:120
 #: resources/ui/metadata_dialog.ui:90
 msgid "Title"
 msgstr "Titel"
 
-#: src/ui/widgets/item.rs:1066 resources/ui/single_grid.ui:121
+#: src/ui/widgets/item.rs:1069 resources/ui/single_grid.ui:121
 msgid "Bitrate"
 msgstr "Bitrate"
 
-#: src/ui/widgets/item.rs:1071
+#: src/ui/widgets/item.rs:1074
 msgid "BitDepth"
 msgstr "Bittiefe"
 
-#: src/ui/widgets/item.rs:1075
+#: src/ui/widgets/item.rs:1078
 msgid "SampleRate"
 msgstr "Samplerate"
 
-#: src/ui/widgets/item.rs:1079
+#: src/ui/widgets/item.rs:1082
 msgid "Height"
 msgstr "Höhe"
 
-#: src/ui/widgets/item.rs:1082
+#: src/ui/widgets/item.rs:1085
 msgid "Width"
 msgstr "Breite"
 
-#: src/ui/widgets/item.rs:1085
+#: src/ui/widgets/item.rs:1088
 msgid "ColorSpace"
 msgstr "Farbraum"
 
-#: src/ui/widgets/item.rs:1089
+#: src/ui/widgets/item.rs:1092
 msgid "DisplayTitle"
 msgstr "Anzeigetitel"
 
-#: src/ui/widgets/item.rs:1093
+#: src/ui/widgets/item.rs:1096
 msgid "Channel"
 msgstr "Kanal"
 
-#: src/ui/widgets/item.rs:1097
+#: src/ui/widgets/item.rs:1100
 msgid "ChannelLayout"
 msgstr "Kanallayout"
 
-#: src/ui/widgets/item.rs:1102
+#: src/ui/widgets/item.rs:1105
 msgid "AverageFrameRate"
 msgstr "Durchschnittliche Bildwiederholrate"
 
-#: src/ui/widgets/item.rs:1106
+#: src/ui/widgets/item.rs:1109
 msgid "PixelFormat"
 msgstr "Pixelformat"
 
-#: src/ui/widgets/item.rs:1214
+#: src/ui/widgets/item.rs:1217
 msgid "No video source found"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1351
+#: src/ui/widgets/item.rs:1354
 msgid "Season not found. Is this a continue watching list?"
 msgstr "Staffel nicht gefunden. Ist das eine Liste zum Weiterschauen?"
 
@@ -354,23 +354,23 @@ msgstr "Startseite"
 msgid "Search"
 msgstr "Suche"
 
-#: src/ui/widgets/window.rs:814
+#: src/ui/widgets/window.rs:815
 msgid "Server Panel"
 msgstr "Server-Panel"
 
-#: src/ui/widgets/window.rs:989
+#: src/ui/widgets/window.rs:990
 msgid "Fatal Error"
 msgstr "Fataler Fehler"
 
-#: src/ui/widgets/window.rs:992
+#: src/ui/widgets/window.rs:993
 msgid "Copy Error & Close"
 msgstr "Fehler kopieren und schließen"
 
-#: src/ui/widgets/window.rs:1017
+#: src/ui/widgets/window.rs:1018
 msgid "Windows Alert"
 msgstr ""
 
-#: src/ui/widgets/window.rs:1018
+#: src/ui/widgets/window.rs:1019
 msgid ""
 "It seems you're using Tsukimi on Windows. Please note that GTK used by this "
 "application is designed for Linux, and no functionality is guaranteed to "
@@ -384,11 +384,11 @@ msgid ""
 "and fill in all required fields without any omissions."
 msgstr ""
 
-#: src/ui/widgets/window.rs:1020
+#: src/ui/widgets/window.rs:1021
 msgid "Close"
 msgstr ""
 
-#: src/ui/widgets/window.rs:1041
+#: src/ui/widgets/window.rs:1042
 msgid "translator-credits"
 msgstr "Skrido <zkrido@proton.me>"
 
@@ -475,7 +475,7 @@ msgstr "Deband-Einstellungen gelöscht."
 msgid "Failed to get GLContext"
 msgstr "Gescheitert GLContext zu bekommen"
 
-#: src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305 resources/ui/mpvpage.ui:214
+#: src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305 resources/ui/mpvpage.ui:215
 msgid "Pause"
 msgstr "Pause"
 
@@ -533,12 +533,12 @@ msgstr "Medienmenü"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
-#: resources/ui/mpvpage.ui:290 resources/ui/mpvpage.ui:292
+#: resources/ui/mpvpage.ui:291 resources/ui/mpvpage.ui:293
 msgid "Fullscreen"
 msgstr "Vollbild"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:301 resources/ui/mpvpage.ui:303
+#: resources/ui/mpvpage.ui:302 resources/ui/mpvpage.ui:304
 msgid "Exit Fullscreen"
 msgstr "Vollbild schließen"
 
@@ -741,7 +741,7 @@ msgid "Music Album"
 msgstr "Musikalbum"
 
 #: resources/ui/search.ui:78 resources/ui/mpv_control_sidebar.ui:447
-#: resources/ui/mpvpage.ui:375 resources/ui/mpvpage.ui:432
+#: resources/ui/mpvpage.ui:376 resources/ui/mpvpage.ui:433
 msgid "Audio"
 msgstr "Audio"
 
@@ -804,8 +804,8 @@ msgstr "Einheit: MB"
 msgid "Cache Time"
 msgstr "Cachezeit"
 
-#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:383
-#: resources/ui/mpvpage.ui:401
+#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:384
+#: resources/ui/mpvpage.ui:402
 msgid "Subtitle"
 msgstr "Untertitel"
 
@@ -1043,7 +1043,7 @@ msgid "Previous chapter"
 msgstr "Vorheriges Kapitel"
 
 #: resources/ui/mpv_menu.ui:35 resources/ui/window.ui:559
-#: resources/ui/window.ui:581 resources/ui/mpvpage.ui:150
+#: resources/ui/window.ui:581 resources/ui/mpvpage.ui:151
 msgid "Playlist"
 msgstr "Playlist"
 
@@ -1088,7 +1088,7 @@ msgstr "Benutzername"
 msgid "Password"
 msgstr "Passwort"
 
-#: resources/ui/account.ui:108 resources/ui/account_settings.ui:570
+#: resources/ui/account.ui:108 resources/ui/account_settings.ui:581
 msgid "Add"
 msgstr "Hinzufügen"
 
@@ -1110,7 +1110,7 @@ msgid "Sign out"
 msgstr "Abmelden"
 
 #: resources/ui/window.ui:25 resources/ui/window.ui:54
-#: resources/ui/mpvpage.ui:332
+#: resources/ui/mpvpage.ui:333
 msgid "Preferences"
 msgstr "Präferenzen"
 
@@ -1154,7 +1154,7 @@ msgstr "Weiterschauen"
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:475
+#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:486
 msgid "Preferred Video Version"
 msgstr "Bevorzugte Videoversion"
 
@@ -1295,7 +1295,7 @@ msgstr "Aktivieren Sie externe Konfiguration"
 msgid "Config dir"
 msgstr "Konfigurationsordner"
 
-#: resources/ui/account_settings.ui:399
+#: resources/ui/account_settings.ui:399 resources/ui/account_settings.ui:451
 msgid "Others"
 msgstr "Sonstige"
 
@@ -1311,11 +1311,19 @@ msgstr "Nur für Debugging"
 msgid "libmpv (default)"
 msgstr "libmpv (standard)"
 
-#: resources/ui/account_settings.ui:453
+#: resources/ui/account_settings.ui:454
+msgid "Disable Client Side Decoration"
+msgstr ""
+
+#: resources/ui/account_settings.ui:455
+msgid "This may helpful for eliminating black border in specific platforms."
+msgstr ""
+
+#: resources/ui/account_settings.ui:464
 msgid "Preferred Version"
 msgstr "Bevorzugte Version"
 
-#: resources/ui/account_settings.ui:476
+#: resources/ui/account_settings.ui:487
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
@@ -1324,87 +1332,87 @@ msgstr ""
 "übereinstimmt oder die höchste übereinstimmende Version erreicht ist, bevor "
 "die Übereinstimmungsliste gelöscht wird"
 
-#: resources/ui/account_settings.ui:491
+#: resources/ui/account_settings.ui:502
 msgid "Descriptors"
 msgstr "Deskriptoren"
 
-#: resources/ui/account_settings.ui:513
+#: resources/ui/account_settings.ui:524
 msgid "It is recommended to set no more than 3 lines"
 msgstr "Es wird empfohlen, nicht mehr als 3 Zeilen einzustellen"
 
-#: resources/ui/account_settings.ui:534
+#: resources/ui/account_settings.ui:545
 msgid "No Descriptors"
 msgstr "Keine Deskriptoren"
 
-#: resources/ui/account_settings.ui:553
+#: resources/ui/account_settings.ui:564
 msgid "Add a descriptor"
 msgstr "Einen Deskriptor hinzufügen"
 
-#: resources/ui/account_settings.ui:595 resources/ui/account_settings.ui:705
+#: resources/ui/account_settings.ui:606 resources/ui/account_settings.ui:716
 msgid "This will use exact matching to obtain a list"
 msgstr "Durch exakten Abgleich wird eine Liste erstellt"
 
-#: resources/ui/account_settings.ui:598 resources/ui/account_settings.ui:708
+#: resources/ui/account_settings.ui:609 resources/ui/account_settings.ui:719
 msgid "Descriptor Type"
 msgstr "Deskriptor-Art"
 
-#: resources/ui/account_settings.ui:603 resources/ui/account_settings.ui:713
+#: resources/ui/account_settings.ui:614 resources/ui/account_settings.ui:724
 msgid "String"
 msgstr "String"
 
-#: resources/ui/account_settings.ui:604 resources/ui/account_settings.ui:714
+#: resources/ui/account_settings.ui:615 resources/ui/account_settings.ui:725
 msgid "Regular Expression"
 msgstr "Regulärer Ausdruck"
 
-#: resources/ui/account_settings.ui:616 resources/ui/account_settings.ui:726
+#: resources/ui/account_settings.ui:627 resources/ui/account_settings.ui:737
 msgid "Descriptor"
 msgstr "Deskriptor"
 
-#: resources/ui/account_settings.ui:621 resources/ui/account_settings.ui:731
+#: resources/ui/account_settings.ui:632 resources/ui/account_settings.ui:742
 msgid "Descriptor should not be too long"
 msgstr "Deskriptor sollte nicht zu lang sein"
 
-#: resources/ui/account_settings.ui:632 resources/ui/account_settings.ui:742
+#: resources/ui/account_settings.ui:643 resources/ui/account_settings.ui:753
 msgid "eg. 1080p"
 msgstr "z.B. 1080p"
 
-#: resources/ui/account_settings.ui:643 resources/ui/account_settings.ui:753
+#: resources/ui/account_settings.ui:654 resources/ui/account_settings.ui:764
 msgid "eg. 1080p.*WebDL"
 msgstr "z.B. 1080p.*WebDL"
 
-#: resources/ui/account_settings.ui:663
+#: resources/ui/account_settings.ui:674
 msgid "Edit descriptor"
 msgstr "Deskriptor bearbeiten"
 
-#: resources/ui/account_settings.ui:680
+#: resources/ui/account_settings.ui:691
 msgid "Save"
 msgstr "Speichern"
 
-#: resources/ui/account_settings.ui:773
+#: resources/ui/account_settings.ui:784
 msgid "Change folder"
 msgstr "Ordner ändern"
 
-#: resources/ui/account_settings.ui:775
+#: resources/ui/account_settings.ui:786
 msgid "Select new mpv config folder"
 msgstr "Wählen Sie den neuen mpv Konfigurationsordner"
 
-#: resources/ui/mpvpage.ui:107
+#: resources/ui/mpvpage.ui:108
 msgid "Stop and quit"
 msgstr "Stoppen und verlassen"
 
-#: resources/ui/mpvpage.ui:162
+#: resources/ui/mpvpage.ui:163
 msgid "Media info (MPV)"
 msgstr "Medieninfo (MPV)"
 
-#: resources/ui/mpvpage.ui:275
+#: resources/ui/mpvpage.ui:276
 msgid "Danmaku Settings"
 msgstr "Danmaku Einstellungen"
 
-#: resources/ui/mpvpage.ui:348
+#: resources/ui/mpvpage.ui:349
 msgid "Playback speed"
 msgstr "Wiedergabegeschwindigkeit"
 
-#: resources/ui/mpvpage.ui:362
+#: resources/ui/mpvpage.ui:363
 msgid "Volume"
 msgstr "Lautstärke"
 
