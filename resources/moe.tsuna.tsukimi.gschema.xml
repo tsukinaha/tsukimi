@@ -226,5 +226,9 @@
       <summary>Whether the app is first run</summary>
       <default>true</default>
     </key>
+    <key name="is-window-decorated" type="b">
+      <summary>Whether the window is decorated</summary>
+      <default>true</default>
+    </key>
   </schema>
 </schemalist>

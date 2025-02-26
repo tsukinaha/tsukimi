@@ -512,10 +512,11 @@ impl Window {
     }
 
     pub fn account_settings(&self) {
-        let window = crate::ui::widgets::account_settings::AccountSettings::new();
-        window.set_transient_for(Some(self));
-        window.set_application(Some(&self.application().unwrap()));
-        window.present();
+        let window_clone = self.clone();
+        let ac = crate::ui::widgets::account_settings::AccountSettings::new(window_clone);
+        ac.set_transient_for(Some(self));
+        ac.set_application(Some(&self.application().unwrap()));
+        ac.present();
     }
 
     pub fn change_pop_visibility(&self) {

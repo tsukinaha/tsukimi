@@ -446,6 +446,17 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Others</property>
+            <child>
+              <object class="AdwSwitchRow" id="decorated_switchrow">
+                <property name="title" translatable="yes">Disable Client Side Decoration</property>
+                <property name="subtitle" translatable="yes">This may helpful for eliminating black border in specific platforms.</property>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
   </template>
