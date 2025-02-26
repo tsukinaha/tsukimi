@@ -25,7 +25,17 @@ You can play music and albums, as well as videos with more advanced settings.
 </div>
 
 ## Installation
-### Packages
+
+<a href="https://flathub.org/apps/details/moe.tsuna.tsukimi">
+<img
+    src="https://flathub.org/assets/badges/flathub-badge-i-en.svg"
+    alt="Download Tsukimi on Flathub"
+    width="240px"
+    height="80px"
+/>
+</a>
+
+### Native Packages
 [![Packaging status](https://repology.org/badge/vertical-allrepos/tsukimi.svg)](https://repology.org/project/tsukimi/versions)
 
 ### Arch Linux
