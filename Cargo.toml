@@ -9,7 +9,7 @@ license = "GPL"
 
 [dependencies]
 gtk = { version = "0.9", package = "gtk4", features = ["v4_16"] }
-serde = { version = "1.0.217", features = ["derive"] }
+serde = { version = "1.0.218", features = ["derive"] }
 serde_json = "1.0.138"
 tokio = { version = "1.43", features = ["full"] }
 reqwest = { version = "0.12", default-features = false, features = [
@@ -23,7 +23,7 @@ once_cell = "1.20.3"
 dirs = "6.0.0"
 adw = { version = "0.7", package = "libadwaita", features = ["v1_6"] }
 bytefmt = "0.1.7"
-libc = "0.2.169"
+libc = "0.2.170"
 uuid = { version = "1.15.1", features = ["v4"] }
 chrono = { version = "0.4.39", features = ["serde"] }
 tracing = "0.1.41"
@@ -39,7 +39,7 @@ atomic-wait = "1.1.0"
 flume = "0.11.1"
 derive_builder = "0.20.2"
 anyhow = "1.0.95"
-windows = { version = "0.59.0", features = [
+windows = { version = "0.60.0", features = [
   "Win32_Foundation",
   "Win32_Storage_FileSystem",
   "Win32_Security",
@@ -51,7 +51,7 @@ gdk4-x11 = { version = "0.9", optional = true }
 gdk4-win32 = { version = "0.9", optional = true }
 regex = "1.11.1"
 strsim = "0.11.1"
-clap = { version = "4.5.30", features = ["derive"] }
+clap = { version = "4.5.31", features = ["derive"] }
 fnv = "1.0.7"
 rand = "0.9.0"
 base64 = "0.22.1"
