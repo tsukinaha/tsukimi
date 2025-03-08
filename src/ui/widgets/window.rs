@@ -550,6 +550,10 @@ impl Window {
             self.fullscreen();
         }
 
+        SETTINGS
+            .bind("is-window-decorated", self, "decorated")
+            .build();
+
         self.overlay_sidebar(SETTINGS.is_overlay());
     }
 

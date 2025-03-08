@@ -452,10 +452,7 @@ impl AccountSettings {
                 &imp.decorated_switchrow.get(),
                 "active",
             )
-            .build();
-
-        SETTINGS
-            .bind("is-window-decorated", &self.window(), "decorated")
+            .flags(gio::SettingsBindFlags::INVERT_BOOLEAN)
             .build();
 
         let action_group = gio::SimpleActionGroup::new();
