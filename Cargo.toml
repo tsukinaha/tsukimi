@@ -58,7 +58,7 @@ base64 = "0.22.1"
 libmpv2 = "4.1.0"
 
 [build-dependencies]
-embed-resource = "3.0.1"
+embed-resource = "3.0.2"
 glib-build-tools = "0.20.0"
 
 [features]
