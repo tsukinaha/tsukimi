@@ -20,6 +20,12 @@
     <key>LSMinimumSystemVersion</key>
     <string>12.7.3</string>
 
+    <key>LSEnvironment</key>
+    <dict>
+        <key>GSETTINGS_SCHEMA_DIR</key>
+        <string>/Applications/Tsukimi.app/Contents/Resources/glib-2.0/schemas</string>
+    </dict>
+
     <!-- 网络权限 -->
     <key>NSAppTransportSecurity</key>
     <dict>
