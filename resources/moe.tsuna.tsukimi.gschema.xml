@@ -206,10 +206,6 @@
       <summary>MPV subtitle scale</summary>
       <default>1.0</default>
     </key>
-    <key type="d" name="post-scale">
-      <summary>any item picture scale</summary>
-      <default>0.900</default>
-    </key>
     <key name="is-refresh" type="b">
       <summary>Frefresh when returning to home page</summary>
       <default>false</default>
