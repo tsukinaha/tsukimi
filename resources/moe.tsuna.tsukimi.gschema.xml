@@ -89,10 +89,6 @@
       <default>15</default>
       <summary>Background Blur Radius</summary>
     </key>
-    <key name="font-size" type="i">
-      <default>-1</default>
-      <summary>Default font size</summary>
-    </key>
     <key name="list-sort-order" type="i">
       <default>0</default>
       <summary>Default list sort</summary>
@@ -120,10 +116,6 @@
     <key name="preferred-server" type="s">
       <default>""</default>
       <summary>Last Server</summary>
-    </key>
-    <key name="font-name" type="s">
-      <default>""</default>
-      <summary>Software Font</summary>
     </key>
     <key name="music-repeat-mode" type="s">
       <default>""</default>
@@ -224,10 +216,6 @@
     </key>
     <key name="is-first-run" type="b">
       <summary>Whether the app is first run</summary>
-      <default>true</default>
-    </key>
-    <key name="is-window-decorated" type="b">
-      <summary>Whether the window is decorated</summary>
       <default>true</default>
     </key>
   </schema>

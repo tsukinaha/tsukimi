@@ -29,8 +29,6 @@ impl Settings {
     const KEY_PIC_BLUR: &'static str = "pic-blur";
     const KEY_PREFERRED_SERVER: &'static str = "preferred-server";
     const KEY_IS_AUTO_SELECT_SERVER: &'static str = "is-auto-select-server";
-    const KEY_FONT_SIZE: &'static str = "font-size";
-    const KEY_FONT_NAME: &'static str = "font-name";
     const KEY_LIST_SORT_BY: &'static str = "list-sort-by";
     const KEY_LIST_SORT_ORDER: &'static str = "list-sort-order";
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
@@ -367,22 +365,6 @@ impl Settings {
 
     pub fn list_sort_by(&self) -> i32 {
         self.int(Self::KEY_LIST_SORT_BY)
-    }
-
-    pub fn set_font_name(&self, font_name: &str) -> Result<(), glib::BoolError> {
-        self.set_string(Self::KEY_FONT_NAME, font_name)
-    }
-
-    pub fn font_name(&self) -> String {
-        self.string(Self::KEY_FONT_NAME).to_string()
-    }
-
-    pub fn set_font_size(&self, font_size: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_FONT_SIZE, font_size)
-    }
-
-    pub fn font_size(&self) -> i32 {
-        self.int(Self::KEY_FONT_SIZE)
     }
 
     pub fn set_preferred_server(&self, preferred_server: &str) -> Result<(), glib::BoolError> {

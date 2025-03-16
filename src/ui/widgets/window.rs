@@ -193,8 +193,6 @@ mod imp {
                 .set_player(Some(&self.mpvnav.imp().video.get()));
 
             let obj = self.obj();
-            obj.set_fonts();
-            obj.load_font_size();
 
             obj.bind_about_action();
 
@@ -550,19 +548,7 @@ impl Window {
             self.fullscreen();
         }
 
-        SETTINGS
-            .bind("is-window-decorated", self, "decorated")
-            .build();
-
         self.overlay_sidebar(SETTINGS.is_overlay());
-    }
-
-    fn load_font_size(&self) {
-        if SETTINGS.font_size() != -1 {
-            if let Some(settings) = gtk::Settings::default() {
-                settings.set_property("gtk-xft-dpi", SETTINGS.font_size() * 1024);
-            }
-        }
     }
 
     pub fn new(app: &crate::Application) -> Self {
@@ -725,13 +711,6 @@ impl Window {
                 .value_to(0.)
                 .build()
         })
-    }
-
-    pub fn set_fonts(&self) {
-        if !SETTINGS.font_name().is_empty() {
-            let settings = self.imp().stack.settings();
-            settings.set_gtk_font_name(Some(&SETTINGS.font_name()));
-        }
     }
 
     pub fn reveal_image(&self, source_widget: &impl IsA<gtk::Widget>) {
