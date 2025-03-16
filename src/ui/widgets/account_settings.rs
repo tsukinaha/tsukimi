@@ -75,19 +75,9 @@ mod imp {
         #[template_child]
         pub backgroundcontrol: TemplateChild<gtk::Switch>,
         #[template_child]
-        pub fontspinrow: TemplateChild<adw::SpinRow>,
-        #[template_child]
-        pub font: TemplateChild<gtk::FontDialogButton>,
-        #[template_child]
         pub color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
         pub config_switchrow: TemplateChild<adw::SwitchRow>,
-
-        #[template_child]
-        pub decorated_switchrow: TemplateChild<adw::SwitchRow>,
-
-        #[template_child]
-        pub post_spinrow: TemplateChild<adw::SpinRow>,
 
         #[template_child]
         pub preferred_audio_language_comborow: TemplateChild<adw::ComboRow>,
@@ -174,13 +164,6 @@ mod imp {
                 },
             );
             klass.install_action(
-                "setting.fontclear",
-                None,
-                move |set, _action, _parameter| {
-                    set.clear_font();
-                },
-            );
-            klass.install_action(
                 "version.add-prefer",
                 None,
                 move |set, _action, _parameter| {
@@ -209,8 +192,6 @@ mod imp {
             obj.set_sidebar();
             obj.set_picopactiy();
             obj.set_pic();
-            obj.set_fontsize();
-            obj.set_font();
             obj.set_color();
             obj.bind_settings();
             obj.refersh_descriptors();
@@ -291,21 +272,6 @@ impl AccountSettings {
         });
     }
 
-    pub fn set_fontsize(&self) {
-        let imp = self.imp();
-        let settings = gtk::Settings::default().unwrap();
-        if SETTINGS.font_size() == -1 {
-            imp.fontspinrow
-                .set_value((settings.property::<i32>("gtk-xft-dpi") / 1024).into());
-        } else {
-            imp.fontspinrow.set_value(SETTINGS.font_size().into());
-        }
-        imp.fontspinrow.connect_value_notify(move |control| {
-            settings.set_property("gtk-xft-dpi", control.value() as i32 * 1024);
-            SETTINGS.set_font_size(control.value() as i32).unwrap();
-        });
-    }
-
     pub async fn cacheclear(&self) {
         let path = emby_cache_path().await;
         if path.exists() {
@@ -382,26 +348,6 @@ impl AccountSettings {
         SETTINGS.set_root_pic("").unwrap();
     }
 
-    pub fn set_font(&self) {
-        let imp = self.imp();
-        let settings = self.settings();
-        imp.font
-            .set_font_desc(&gtk::pango::FontDescription::from_string(
-                &SETTINGS.font_name(),
-            ));
-        imp.font.connect_font_desc_notify(move |font| {
-            let font_desc = font.font_desc().unwrap();
-            let font_string = gtk::pango::FontDescription::to_string(&font_desc);
-            settings.set_gtk_font_name(Some(&font_string));
-            SETTINGS.set_font_name(&font_string).unwrap();
-        });
-    }
-
-    pub fn clear_font(&self) {
-        SETTINGS.set_font_name("").unwrap();
-        toast!(self, gettext("Font Cleared, Restart to take effect."));
-    }
-
     pub fn bind_settings(&self) {
         let imp = self.imp();
         SETTINGS
@@ -441,18 +387,7 @@ impl AccountSettings {
             .bind("threads", &imp.threadspinrow.get(), "value")
             .build();
         SETTINGS
-            .bind("post-scale", &imp.post_spinrow.get(), "value")
-            .build();
-        SETTINGS
             .bind("is-refresh", &imp.refresh_control.get(), "active")
-            .build();
-        SETTINGS
-            .bind(
-                "is-window-decorated",
-                &imp.decorated_switchrow.get(),
-                "active",
-            )
-            .flags(gio::SettingsBindFlags::INVERT_BOOLEAN)
             .build();
 
         let action_group = gio::SimpleActionGroup::new();

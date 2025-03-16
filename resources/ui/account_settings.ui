@@ -83,63 +83,6 @@
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Appearence</property>
             <child>
-              <object class="AdwSpinRow" id="post_spinrow">
-                <property name="title" translatable="yes">Post Scale</property>
-                <property name="digits">3</property>
-                <property name="adjustment">
-                  <object class="GtkAdjustment">
-                    <property name="lower">0.300</property>
-                    <property name="upper">1.800</property>
-                    <property name="value">0.900</property>
-                    <property name="page-increment">0.003</property>
-                    <property name="step-increment">0.001</property>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwSpinRow" id="fontspinrow">
-                <property name="title" translatable="yes">Font Scale</property>
-                <property name="adjustment">
-                  <object class="GtkAdjustment">
-                    <property name="lower">30</property>
-                    <property name="upper">200</property>
-                    <property name="value">100</property>
-                    <property name="page-increment">1</property>
-                    <property name="step-increment">1</property>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwActionRow">
-                <property name="title" translatable="yes">Font Family</property>
-                <child type="suffix">
-                  <object class="GtkFontDialogButton" id="font">
-                    <property name="level">family</property>
-                    <property name="valign">center</property>
-                    <property name="dialog">
-                      <object class="GtkFontDialog"/>
-                    </property>
-                    <style>
-                      <class name="flat" />
-                    </style>
-                  </object>
-                </child>
-                <child type="suffix">
-                  <object class="GtkButton">
-                    <property name="icon-name">user-trash-symbolic</property>
-                    <property name="valign">center</property>
-                    <property name="action-name">setting.fontclear</property>
-                    <property name="tooltip-text" translatable="yes">Restart App To Take Effect</property>
-                    <style>
-                      <class name="flat" />
-                    </style>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Accent Color</property>
                 <property name="subtitle" translatable="yes">Restart App To Take Effect</property>
@@ -442,17 +385,6 @@
                     <property name="action-target">2</property>
                   </object>
                 </child>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Others</property>
-            <child>
-              <object class="AdwSwitchRow" id="decorated_switchrow">
-                <property name="title" translatable="yes">Disable Client Side Decoration</property>
-                <property name="subtitle" translatable="yes">This may helpful for eliminating black border in specific platforms.</property>
               </object>
             </child>
           </object>

@@ -39,10 +39,6 @@ pub struct Args {
     /// *Linux*.
     #[clap(long)]
     xdg_cache_home: Option<String>,
-
-    /// GDK_SCALE. If not set, it will be set to 1. Never set on *Linux*.
-    #[clap(long)]
-    gdk_scale: Option<i8>,
 }
 
 impl Args {
@@ -140,19 +136,6 @@ impl Args {
         }
     }
 
-    #[cfg(target_os = "windows")]
-    fn init_gdk_scale(&self) {
-        if let Some(scale) = self.gdk_scale {
-            info!("Windows: Setting GDK_SCALE to {}", scale);
-            unsafe { std::env::set_var("GDK_SCALE", scale.to_string()) };
-        }
-
-        if std::env::var("GDK_SCALE").is_err() {
-            info!("Windows: Falling back to default GDK_SCALE: 1");
-            unsafe { std::env::set_var("GDK_SCALE", "1") };
-        }
-    }
-
     pub fn init(&self) {
         self.init_tracing_subscriber();
         self.init_gsk_renderer();
@@ -160,8 +143,6 @@ impl Args {
 
         #[cfg(target_os = "windows")]
         self.init_config_dirs();
-        #[cfg(target_os = "windows")]
-        self.init_gdk_scale();
 
         std::panic::set_hook(Box::new(|p| {
             tracing::error!("{p}");

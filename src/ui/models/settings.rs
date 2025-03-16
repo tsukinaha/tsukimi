@@ -29,8 +29,6 @@ impl Settings {
     const KEY_PIC_BLUR: &'static str = "pic-blur";
     const KEY_PREFERRED_SERVER: &'static str = "preferred-server";
     const KEY_IS_AUTO_SELECT_SERVER: &'static str = "is-auto-select-server";
-    const KEY_FONT_SIZE: &'static str = "font-size";
-    const KEY_FONT_NAME: &'static str = "font-name";
     const KEY_LIST_SORT_BY: &'static str = "list-sort-by";
     const KEY_LIST_SORT_ORDER: &'static str = "list-sort-order";
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
@@ -55,7 +53,6 @@ impl Settings {
     const KEY_MPV_SUBTITLE_SCALE: &'static str = "mpv-subtitle-scale"; // f64
     const KEY_MPV_VIDEO_SCALE: &'static str = "mpv-video-scale"; // i32
     const KEY_MPV_CONFIG_DIR: &'static str = "mpv-config-path"; // String
-    const KEY_POST_SCALE: &'static str = "post-scale"; // f64
     const KEY_IS_REFRESH: &'static str = "is-refresh"; // bool
     const KEY_DEVICE_UUID: &'static str = "device-uuid"; // String
     const KEY_MAIN_THEME: &'static str = "main-theme"; // i32
@@ -126,10 +123,6 @@ impl Settings {
 
     pub fn is_refresh(&self) -> bool {
         self.boolean(Self::KEY_IS_REFRESH)
-    }
-
-    pub fn post_scale(&self) -> f64 {
-        self.double(Self::KEY_POST_SCALE)
     }
 
     pub fn mpv_config_dir(&self) -> String {
@@ -367,22 +360,6 @@ impl Settings {
 
     pub fn list_sort_by(&self) -> i32 {
         self.int(Self::KEY_LIST_SORT_BY)
-    }
-
-    pub fn set_font_name(&self, font_name: &str) -> Result<(), glib::BoolError> {
-        self.set_string(Self::KEY_FONT_NAME, font_name)
-    }
-
-    pub fn font_name(&self) -> String {
-        self.string(Self::KEY_FONT_NAME).to_string()
-    }
-
-    pub fn set_font_size(&self, font_size: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_FONT_SIZE, font_size)
-    }
-
-    pub fn font_size(&self) -> i32 {
-        self.int(Self::KEY_FONT_SIZE)
     }
 
     pub fn set_preferred_server(&self, preferred_server: &str) -> Result<(), glib::BoolError> {
