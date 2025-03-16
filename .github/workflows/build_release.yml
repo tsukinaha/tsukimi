@@ -1,4 +1,4 @@
-name: CI Passing
+name: Publish Release
 on:
   push:
     tags:
@@ -22,10 +22,6 @@ jobs:
           - arch: aarch64-linux
             os: ubuntu-24.04-arm
             target: arm64
-          # x86_64-windows-gnu
-          - arch: x86_64-windows-gnu
-            os: windows-latest
-            target: amd64
 
     runs-on: ${{ matrix.os }}
 
