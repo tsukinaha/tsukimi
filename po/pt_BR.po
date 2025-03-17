@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-26 20:02+0800\n"
-"PO-Revision-Date: 2025-02-26 17:37+0000\n"
-"Last-Translator: watilon fazolin santana <watilon@proton.me>\n"
+"PO-Revision-Date: 2025-02-26 17:38+0000\n"
+"Last-Translator: John Peter Sa <johnppetersa@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "tsukimi/main/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -156,7 +156,7 @@ msgstr "Cancelar"
 #: src/ui/widgets/image_dialog/search_page.rs:150
 #: src/ui/widgets/identify/search_page.rs:128
 msgid "Ok"
-msgstr "ok"
+msgstr "Ok"
 
 #: src/ui/widgets/metadata_dialog.rs:319
 #: src/ui/widgets/image_dialog/search_page.rs:179
@@ -402,7 +402,7 @@ msgstr "Fechar"
 
 #: src/ui/widgets/window.rs:1042
 msgid "translator-credits"
-msgstr "Créditos ao tradutor"
+msgstr "créditos do tradutor"
 
 #: src/ui/widgets/tu_overview_item.rs:255 src/ui/widgets/tu_list_item.rs:297
 msgid "Present"
@@ -895,7 +895,7 @@ msgstr "Texto"
 
 #: resources/ui/mpv_control_sidebar.ui:360
 msgid "Border"
-msgstr "Borda"
+msgstr "Fronteira"
 
 #: resources/ui/mpv_control_sidebar.ui:378 resources/ui/account_settings.ui:198
 msgid "Background"
@@ -948,7 +948,7 @@ msgstr "Canal duplo (inverter)"
 
 #: resources/ui/mpv_control_sidebar.ui:498
 msgid "Video Aspect"
-msgstr "Proporção do vídeo"
+msgstr "Aspecto do vídeo"
 
 #: resources/ui/mpv_control_sidebar.ui:503
 msgid "Fit"
@@ -1036,27 +1036,23 @@ msgstr "não (padrão)"
 
 #: resources/ui/mpv_control_sidebar.ui:810
 msgid "Not all settings will be saved"
-msgstr ""
+msgstr "Nem todas as configurações serão salvas"
 
 #: resources/ui/mpv_menu.ui:11
-#, fuzzy
 msgid "_Next"
-msgstr "Próximo"
+msgstr "_Próximo"
 
 #: resources/ui/mpv_menu.ui:16
-#, fuzzy
 msgid "_Previous"
-msgstr "Anterior"
+msgstr "_Anterior"
 
 #: resources/ui/mpv_menu.ui:23
-#, fuzzy
 msgid "Next chapter"
-msgstr "Anterior"
+msgstr "Próximo capítulo"
 
 #: resources/ui/mpv_menu.ui:28
-#, fuzzy
 msgid "Previous chapter"
-msgstr "Anterior"
+msgstr "Capítulo anterior"
 
 #: resources/ui/mpv_menu.ui:35 resources/ui/window.ui:559
 #: resources/ui/window.ui:581 resources/ui/mpvpage.ui:151
@@ -1064,19 +1060,17 @@ msgid "Playlist"
 msgstr "Lista de Reprodução"
 
 #: resources/ui/mpv_menu.ui:40
-#, fuzzy
 msgid "Advanced settings"
-msgstr "Configurações de Vídeo"
+msgstr "Configurações avançadas"
 
 #: resources/ui/mpv_menu.ui:47
-#, fuzzy
 msgid "Media info"
-msgstr "MediaInfo"
+msgstr "Informações para a mídia"
 
 #: resources/ui/mpv_menu.ui:54 resources/ui/window.ui:35
 #: resources/ui/window.ui:64
 msgid "_Keyboard shortcuts"
-msgstr ""
+msgstr "_Atalhos de teclado"
 
 #: resources/ui/account.ui:6 resources/ui/account.ui:14
 msgid "Add a New Server"
@@ -1084,7 +1078,7 @@ msgstr "Adicionar um Novo Servidor"
 
 #: resources/ui/account.ui:45
 msgid "Enter the server details below."
-msgstr ""
+msgstr "Insira os detalhes do servidor abaixo."
 
 #: resources/ui/account.ui:48 resources/ui/other.ui:54
 msgid "Name"
@@ -1092,7 +1086,7 @@ msgstr "Nome"
 
 #: resources/ui/account.ui:66
 msgid "Server Address"
-msgstr ""
+msgstr "Endereço do servidor"
 
 #: resources/ui/account.ui:85
 msgid "Port"
@@ -1107,23 +1101,21 @@ msgid "Password"
 msgstr "Senha"
 
 #: resources/ui/account.ui:108 resources/ui/account_settings.ui:581
-#, fuzzy
 msgid "Add"
 msgstr "Adicionar"
 
 #: resources/ui/server_action_row.ui:23
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Arraste para reordenar"
 
 #: resources/ui/server_action_row.ui:30 resources/ui/image_info_card.ui:109
 #: resources/ui/image_info_card.ui:133
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: resources/ui/server_action_row.ui:41 resources/ui/refresh_dialog.ui:25
-#, fuzzy
 msgid "Refresh"
-msgstr "Refrescar o metadado"
+msgstr "Atualizar"
 
 #: resources/ui/window.ui:11
 msgid "Sign out"
@@ -1139,9 +1131,8 @@ msgid "About"
 msgstr "Sobre"
 
 #: resources/ui/window.ui:44
-#, fuzzy
 msgid "Add server"
-msgstr "Adicionar Servidor"
+msgstr "Adicionar servidor"
 
 #: resources/ui/window.ui:164
 msgid "No Server"
@@ -1177,7 +1168,7 @@ msgstr "Configurações"
 
 #: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:486
 msgid "Preferred Video Version"
-msgstr ""
+msgstr "Versão de vídeo preferida"
 
 #: resources/ui/account_settings.ui:28
 msgid "Preferred Language"
@@ -1185,7 +1176,7 @@ msgstr "Idioma Preferido"
 
 #: resources/ui/account_settings.ui:29
 msgid "This is globally effective"
-msgstr ""
+msgstr "Isto é globalmente eficaz"
 
 #: resources/ui/account_settings.ui:32
 msgid "Preferred Audio Language"
@@ -1206,7 +1197,7 @@ msgstr "Aparência"
 
 #: resources/ui/account_settings.ui:87
 msgid "Post Scale"
-msgstr ""
+msgstr "Escala de postagem"
 
 #: resources/ui/account_settings.ui:102
 msgid "Font Scale"
@@ -1225,9 +1216,8 @@ msgid "Accent Color"
 msgstr "Cor de destaque"
 
 #: resources/ui/account_settings.ui:161
-#, fuzzy
 msgid "Hide Sidebar"
-msgstr "Mostrar barra lateral"
+msgstr "Ocultar barra lateral"
 
 #: resources/ui/account_settings.ui:166
 msgid "Auto Select Last Server"
@@ -1244,10 +1234,11 @@ msgstr "Threads"
 #: resources/ui/account_settings.ui:177
 msgid "Excessive thread counts may exhaust the system's connection pool"
 msgstr ""
+"Contagens excessivas de threads podem esgotar o pool de conexões do sistema"
 
 #: resources/ui/account_settings.ui:191
 msgid "Refresh when returning to home page"
-msgstr ""
+msgstr "Atualizar ao retornar à página inicial"
 
 #: resources/ui/account_settings.ui:205
 msgid "This feature may cause significant lag. Please enable it with caution."
@@ -1293,33 +1284,31 @@ msgstr "Confirmar Senha"
 
 #: resources/ui/account_settings.ui:339
 msgid "Media"
-msgstr ""
+msgstr "Mídia"
 
 #: resources/ui/account_settings.ui:344
 msgid "Music Player"
-msgstr ""
+msgstr "Tocador de música"
 
 #: resources/ui/account_settings.ui:363
 msgid "Video Player"
-msgstr ""
+msgstr "Reprodutor de vídeo"
 
 #: resources/ui/account_settings.ui:364
 msgid "Requires restart"
-msgstr ""
+msgstr "Requer reinicialização"
 
 #: resources/ui/account_settings.ui:367
-#, fuzzy
 msgid "Enable external config"
-msgstr "Carregar configuração externa do mpv"
+msgstr "Habilitar configuração externa"
 
 #: resources/ui/account_settings.ui:372
-#, fuzzy
 msgid "Config dir"
-msgstr "Confirmar Senha"
+msgstr "Diretório de configuração"
 
 #: resources/ui/account_settings.ui:399 resources/ui/account_settings.ui:451
 msgid "Others"
-msgstr ""
+msgstr "Outros"
 
 #: resources/ui/account_settings.ui:404
 msgid "Video Output"
@@ -1327,7 +1316,7 @@ msgstr "Saída de Vídeo"
 
 #: resources/ui/account_settings.ui:405
 msgid "Only for debugging"
-msgstr ""
+msgstr "Somente para depuração"
 
 #: resources/ui/account_settings.ui:408
 msgid "libmpv (default)"
@@ -1335,92 +1324,89 @@ msgstr "libmpv (padrão)"
 
 #: resources/ui/account_settings.ui:454
 msgid "Disable Client Side Decoration"
-msgstr ""
+msgstr "Desabilitar decoração do lado do cliente"
 
 #: resources/ui/account_settings.ui:455
 msgid "This may helpful for eliminating black border in specific platforms."
 msgstr ""
+"Isso pode ser útil para eliminar bordas pretas em plataformas específicas."
 
 #: resources/ui/account_settings.ui:464
-#, fuzzy
 msgid "Preferred Version"
-msgstr "Preferências"
+msgstr "Preferred Version"
 
 #: resources/ui/account_settings.ui:487
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
+"O peso é ordenado do maior para o menor, até que uma versão específica seja "
+"correspondida, ou a versão correspondente mais alta seja obtida antes de "
+"limpar a lista de correspondências"
 
 #: resources/ui/account_settings.ui:502
-#, fuzzy
 msgid "Descriptors"
-msgstr "Sem Inscrições"
+msgstr "Descritores"
 
 #: resources/ui/account_settings.ui:524
 msgid "It is recommended to set no more than 3 lines"
-msgstr ""
+msgstr "É recomendável definir no máximo 3 linhas"
 
 #: resources/ui/account_settings.ui:545
-#, fuzzy
 msgid "No Descriptors"
-msgstr "Sem Inscrições"
+msgstr "Sem descritores"
 
 #: resources/ui/account_settings.ui:564
 msgid "Add a descriptor"
-msgstr ""
+msgstr "Adicionar um descritor"
 
 #: resources/ui/account_settings.ui:606 resources/ui/account_settings.ui:716
 msgid "This will use exact matching to obtain a list"
-msgstr ""
+msgstr "Isso usará correspondência exata para obter uma lista"
 
 #: resources/ui/account_settings.ui:609 resources/ui/account_settings.ui:719
 msgid "Descriptor Type"
-msgstr ""
+msgstr "Tipo de descritor"
 
 #: resources/ui/account_settings.ui:614 resources/ui/account_settings.ui:724
 msgid "String"
-msgstr ""
+msgstr "Corda"
 
 #: resources/ui/account_settings.ui:615 resources/ui/account_settings.ui:725
 msgid "Regular Expression"
-msgstr ""
+msgstr "Expressão regular"
 
 #: resources/ui/account_settings.ui:627 resources/ui/account_settings.ui:737
 msgid "Descriptor"
-msgstr ""
+msgstr "Descritor"
 
 #: resources/ui/account_settings.ui:632 resources/ui/account_settings.ui:742
 msgid "Descriptor should not be too long"
-msgstr ""
+msgstr "O descritor não deve ser muito longo"
 
 #: resources/ui/account_settings.ui:643 resources/ui/account_settings.ui:753
 msgid "eg. 1080p"
-msgstr ""
+msgstr "eg. 1080p"
 
 #: resources/ui/account_settings.ui:654 resources/ui/account_settings.ui:764
 msgid "eg. 1080p.*WebDL"
-msgstr ""
+msgstr "eg. 1080p.*WebDL"
 
 #: resources/ui/account_settings.ui:674
-#, fuzzy
 msgid "Edit descriptor"
-msgstr "Sem Inscrições"
+msgstr "Editar descritor"
 
 #: resources/ui/account_settings.ui:691
-#, fuzzy
 msgid "Save"
-msgstr "Salvar"
+msgstr "Salve"
 
 #: resources/ui/account_settings.ui:784
-#, fuzzy
 msgid "Change folder"
-msgstr "Alterar Senha"
+msgstr "Alterar pasta"
 
 #: resources/ui/account_settings.ui:786
-#, fuzzy
 msgid "Select new mpv config folder"
-msgstr "Ler do diretório de configuração do mpv"
+msgstr "Selecione a nova pasta de configuração do mpv"
 
 #: resources/ui/mpvpage.ui:108
 msgid "Stop and quit"
@@ -1431,9 +1417,8 @@ msgid "Media info (MPV)"
 msgstr "Informações de Mídia (MPV)"
 
 #: resources/ui/mpvpage.ui:276
-#, fuzzy
 msgid "Danmaku Settings"
-msgstr "Configurações de Vídeo"
+msgstr "Configurações do Danmaku"
 
 #: resources/ui/mpvpage.ui:349
 msgid "Playback speed"
@@ -1449,12 +1434,12 @@ msgstr "Sem Inscrições"
 
 #: resources/ui/other.ui:140 resources/ui/item.ui:458
 msgid "Actors"
-msgstr ""
+msgstr "Atores"
 
 #: resources/ui/other.ui:145 resources/ui/item.ui:473
 #: resources/ui/filter.ui:106
 msgid "Studios"
-msgstr ""
+msgstr "Estúdios"
 
 #: resources/ui/other.ui:160 resources/ui/item.ui:468
 msgid "Links"
@@ -1476,23 +1461,23 @@ msgstr "Legenda: "
 
 #: resources/ui/item.ui:308
 msgid "View this season"
-msgstr ""
+msgstr "Ver esta temporada"
 
 #: resources/ui/item.ui:443
 msgid "Included In"
-msgstr ""
+msgstr "Incluído em"
 
 #: resources/ui/item.ui:448
 msgid "Additional Parts"
-msgstr ""
+msgstr "Peças Adicionais"
 
 #: resources/ui/item.ui:453
 msgid "Seasons"
-msgstr ""
+msgstr "Estações"
 
 #: resources/ui/item.ui:463
 msgid "Recommend"
-msgstr ""
+msgstr "Recomendar"
 
 #: resources/ui/item.ui:501
 msgid "MediaInfo"
@@ -1546,19 +1531,19 @@ msgstr "Bloquear o item"
 
 #: resources/ui/refresh_dialog.ui:50
 msgid "Replace All Metadata"
-msgstr ""
+msgstr "Substituir todos os metadados"
 
 #: resources/ui/refresh_dialog.ui:59
 msgid "Replace All Images"
-msgstr ""
+msgstr "Substituir todas as imagens"
 
 #: resources/ui/image_drop_row.ui:49
 msgid "Open"
-msgstr ""
+msgstr "Abrir"
 
 #: resources/ui/image_drop_row.ui:109
 msgid "Pick Image"
-msgstr ""
+msgstr "Escolha a imagem"
 
 #: resources/ui/image_drop_row.ui:113 resources/ui/images_dialog.ui:69
 msgid "Images"
@@ -1566,7 +1551,7 @@ msgstr "Imagens"
 
 #: resources/ui/image_drop_row.ui:119
 msgid "Pick image to upload"
-msgstr ""
+msgstr "Selecione a imagem para enviar"
 
 #: resources/ui/images_dialog.ui:157
 msgid "BackDrops"
@@ -1574,113 +1559,115 @@ msgstr "Fundos"
 
 #: resources/ui/image_info_card.ui:86
 msgid "Copy Image To Clipboard"
-msgstr ""
+msgstr "Copiar imagem para área de transferência"
 
 #: resources/ui/image_info_card.ui:98
 msgid "View Image"
-msgstr ""
+msgstr "Ver imagem"
 
 #: resources/ui/identify_dialog.ui:57
 msgid ""
 "Enter one or more search criteria. Remove criteria to increase search "
 "results."
 msgstr ""
+"Insira um ou mais critérios de pesquisa. Remova os critérios para aumentar "
+"os resultados da pesquisa."
 
 #: resources/ui/identify_dialog.ui:86
 msgid "External"
-msgstr ""
+msgstr "Externo"
 
 #: resources/ui/image_dialog_search_page.ui:15
 msgid "Provider:"
-msgstr ""
+msgstr "Provedor:"
 
 #: resources/ui/image_dialog_search_page.ui:22
 msgid "Provider"
-msgstr ""
+msgstr "Provedor"
 
 #: resources/ui/image_dialog_search_page.ui:64
 msgid "All Languages"
-msgstr ""
+msgstr "Todos os idiomas"
 
 #: resources/ui/theme_switcher.ui:24 resources/ui/theme_switcher.ui:26
 msgid "Follow system style"
-msgstr ""
+msgstr "Siga o estilo do sistema"
 
 #: resources/ui/theme_switcher.ui:42 resources/ui/theme_switcher.ui:44
 msgid "Light style"
-msgstr ""
+msgstr "Estilo leve"
 
 #: resources/ui/theme_switcher.ui:60 resources/ui/theme_switcher.ui:62
 msgid "Dark style"
-msgstr ""
+msgstr "Estilo escuro"
 
 #: resources/ui/filter.ui:42
 msgid "Filters"
-msgstr ""
+msgstr "Filtros"
 
 #: resources/ui/filter.ui:45
 msgid "Playback Status"
-msgstr ""
+msgstr "Status de reprodução"
 
 #: resources/ui/filter.ui:50 resources/ui/filter.ui:149
 msgid "Any"
-msgstr ""
+msgstr "Qualquer"
 
 #: resources/ui/filter.ui:51
 msgid "Played"
-msgstr ""
+msgstr "Jogado"
 
 #: resources/ui/filter.ui:52
 msgid "Unplayed"
-msgstr ""
+msgstr "Não jogado"
 
 #: resources/ui/filter.ui:53
 msgid "Continue Play"
-msgstr ""
+msgstr "Continuar a reprodução"
 
 #: resources/ui/filter.ui:92
 msgid "Years"
-msgstr ""
+msgstr "Anos"
 
 #: resources/ui/filter.ui:99
 msgid "Official Ratings"
-msgstr ""
+msgstr "Classificações oficiais"
 
 #: resources/ui/filter.ui:115
 msgid "Media Info"
-msgstr ""
+msgstr "Informações da mídia"
 
 #: resources/ui/filter.ui:118
 msgid "Containers"
-msgstr ""
+msgstr "Recipientes"
 
 #: resources/ui/filter.ui:125
 msgid "Encoders"
-msgstr ""
+msgstr "Codificadores"
 
 #: resources/ui/filter.ui:132
 msgid "Video Types"
-msgstr ""
+msgstr "Tipos de vídeo"
 
 #: resources/ui/filter.ui:139
 msgid "Resolution"
-msgstr ""
+msgstr "Resolução"
 
 #: resources/ui/filter.ui:165
 msgid "Clear"
-msgstr ""
+msgstr "Limpar"
 
 #: resources/ui/missing_episodes.ui:6 resources/ui/missing_episodes.ui:36
 msgid "Missing Episodes"
-msgstr ""
+msgstr "Episódios Faltantes"
 
 #: resources/ui/missing_episodes.ui:60
 msgid "Specials"
-msgstr ""
+msgstr "Especiais"
 
 #: resources/ui/missing_episodes.ui:72
 msgid "Upcoming"
-msgstr ""
+msgstr "Por vir"
 
 #, fuzzy
 #~ msgid "Loading Video..."
