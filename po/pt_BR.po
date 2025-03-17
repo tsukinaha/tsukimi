@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-26 20:02+0800\n"
 "PO-Revision-Date: 2025-02-26 17:10+0000\n"
-"Last-Translator: John Peter Sa <johnppetersa@gmail.com>\n"
+"Last-Translator: watilon fazolin santana <watilon@proton.me>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "tsukimi/main/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -649,12 +649,11 @@ msgstr "Reduzir pela metade/duplicar a velocidade de reprodução atual"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
 msgid "Reset playback speed to normal"
-msgstr ""
+msgstr "Resetar velocidade de reprodução ao normal"
 
 #: resources/ui/single_grid.ui:32
-#, fuzzy
 msgid "Change Poster"
-msgstr "Alterar Senha"
+msgstr "Alterar capa"
 
 #: resources/ui/single_grid.ui:38
 msgid "View"
@@ -663,29 +662,27 @@ msgstr "Ver"
 #: resources/ui/single_grid.ui:47 resources/ui/search.ui:31
 #: resources/ui/filter.ui:6 resources/ui/filter.ui:21
 msgid "Filter Panel"
-msgstr "Painel de Filtro"
+msgstr "Painel de Filtros"
 
 #: resources/ui/single_grid.ui:66
-#, fuzzy
 msgid "Grid View"
-msgstr "Ver"
+msgstr "Modo em tabela"
 
 #: resources/ui/single_grid.ui:75
-#, fuzzy
 msgid "List View"
-msgstr "Ver"
+msgstr "Modo em lista"
 
 #: resources/ui/single_grid.ui:92
 msgid "Ascending"
-msgstr ""
+msgstr "Crescente"
 
 #: resources/ui/single_grid.ui:100
 msgid "Descending"
-msgstr ""
+msgstr "Decrescente"
 
 #: resources/ui/single_grid.ui:115
 msgid "Sort By"
-msgstr ""
+msgstr "Sortear por"
 
 #: resources/ui/single_grid.ui:122 resources/ui/metadata_dialog.ui:100
 msgid "Date Created"
@@ -717,15 +714,15 @@ msgstr "Data de Reprodução"
 
 #: resources/ui/single_grid.ui:129
 msgid "Runtime"
-msgstr "Tempo de Reproduzir"
+msgstr "Tempo de Reprodução"
 
 #: resources/ui/single_grid.ui:130
 msgid "Updated At"
-msgstr ""
+msgstr "Atualizado em"
 
 #: resources/ui/single_grid.ui:179 resources/ui/item.ui:416
 msgid "Nothing Here"
-msgstr ""
+msgstr "Nada aqui"
 
 #: resources/ui/single_grid.ui:194
 msgid "Poster"
@@ -741,7 +738,7 @@ msgstr "Banner"
 
 #: resources/ui/search.ui:48 resources/ui/other.ui:122
 msgid "Series"
-msgstr "Série"
+msgstr "Séries"
 
 #: resources/ui/search.ui:54 resources/ui/other.ui:116
 msgid "Movie"
@@ -767,24 +764,23 @@ msgstr "Vídeo"
 
 #: resources/ui/search.ui:90 resources/ui/other.ui:128
 msgid "Episode"
-msgstr ""
+msgstr "Episódio"
 
 #: resources/ui/search.ui:163
 msgid "Nothing Here or No type selected"
-msgstr ""
+msgstr "Nada aqui ou sem tipo selecionado"
 
 #: resources/ui/search.ui:164
 msgid "Maybe you should try using different search terms"
-msgstr ""
+msgstr "Talvez deveria tentar usar termos diferentes na pesquisa"
 
 #: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:610
-#, fuzzy
 msgid "Advanced Settings"
-msgstr "Configurações de Vídeo"
+msgstr "Configurações avançadas"
 
 #: resources/ui/mpv_control_sidebar.ui:18
 msgid "Seek Action"
-msgstr ""
+msgstr "Procurar ação"
 
 #: resources/ui/mpv_control_sidebar.ui:21
 msgid "Seek Backward"
