@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-26 20:02+0800\n"
-"PO-Revision-Date: 2025-02-26 17:10+0000\n"
-"Last-Translator: watilon fazolin santana <watilon@proton.me>\n"
+"PO-Revision-Date: 2025-02-26 17:13+0000\n"
+"Last-Translator: John Peter Sa <johnppetersa@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "tsukimi/main/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -649,11 +649,11 @@ msgstr "Reduzir pela metade/duplicar a velocidade de reprodução atual"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
 msgid "Reset playback speed to normal"
-msgstr "Resetar velocidade de reprodução ao normal"
+msgstr "Redefinir a velocidade de reprodução para o normal"
 
 #: resources/ui/single_grid.ui:32
 msgid "Change Poster"
-msgstr "Alterar capa"
+msgstr "Cartaz de mudança"
 
 #: resources/ui/single_grid.ui:38
 msgid "View"
@@ -666,23 +666,23 @@ msgstr "Painel de Filtros"
 
 #: resources/ui/single_grid.ui:66
 msgid "Grid View"
-msgstr "Modo em tabela"
+msgstr "Exibição em grade"
 
 #: resources/ui/single_grid.ui:75
 msgid "List View"
-msgstr "Modo em lista"
+msgstr "Exibição de lista"
 
 #: resources/ui/single_grid.ui:92
 msgid "Ascending"
-msgstr "Crescente"
+msgstr "Ascendente"
 
 #: resources/ui/single_grid.ui:100
 msgid "Descending"
-msgstr "Decrescente"
+msgstr "Descendente"
 
 #: resources/ui/single_grid.ui:115
 msgid "Sort By"
-msgstr "Sortear por"
+msgstr "Ordenar por"
 
 #: resources/ui/single_grid.ui:122 resources/ui/metadata_dialog.ui:100
 msgid "Date Created"
@@ -809,7 +809,6 @@ msgid "Cache Size"
 msgstr "Tamanho do Cache"
 
 #: resources/ui/mpv_control_sidebar.ui:78
-#, fuzzy
 msgid "Unit: MB"
 msgstr "Unidade: MB"
 
