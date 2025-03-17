@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-26 20:02+0800\n"
-"PO-Revision-Date: 2025-02-26 17:13+0000\n"
-"Last-Translator: John Peter Sa <johnppetersa@gmail.com>\n"
+"PO-Revision-Date: 2025-02-26 17:14+0000\n"
+"Last-Translator: watilon fazolin santana <watilon@proton.me>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "tsukimi/main/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -794,7 +794,7 @@ msgstr "Unidade: Segundos"
 
 #: resources/ui/mpv_control_sidebar.ui:41
 msgid "Seek Forward"
-msgstr "Procure avançar"
+msgstr "Procure à frente"
 
 #: resources/ui/mpv_control_sidebar.ui:63 resources/ui/account_settings.ui:274
 msgid "Cache"
@@ -822,14 +822,12 @@ msgid "Subtitle"
 msgstr "Legenda"
 
 #: resources/ui/mpv_control_sidebar.ui:114
-#, fuzzy
 msgid "Subtitle Composing"
-msgstr "Legenda: "
+msgstr "Editar legenda"
 
 #: resources/ui/mpv_control_sidebar.ui:186
-#, fuzzy
 msgid "Position"
-msgstr "Sem Inscrições"
+msgstr "Posição"
 
 #: resources/ui/mpv_control_sidebar.ui:206
 msgid "Subtitle Text Size"
@@ -840,24 +838,23 @@ msgid "This option only takes effect for srt subtitles"
 msgstr "Esta opção só tem efeito para legendas SRT"
 
 #: resources/ui/mpv_control_sidebar.ui:227
-#, fuzzy
 msgid "Subtitle Text Scale"
-msgstr "Tamanho do Texto da Legenda"
+msgstr "Escala do Texto da Legenda"
 
 #: resources/ui/mpv_control_sidebar.ui:228
 msgid "This affects ASS subtitles as well"
-msgstr ""
+msgstr "Isso afeta legendas ASS também"
 
 #: resources/ui/mpv_control_sidebar.ui:249
 msgid "Subtitle Text Font"
-msgstr "Font do Texto da Legenda"
+msgstr "Fonte do Texto da Legenda"
 
 #: resources/ui/mpv_control_sidebar.ui:251
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
 msgstr ""
-"Especificar a fonte a ser usada para legendas que não especificam uma font "
+"Especificar a fonte a ser usada para legendas que não especificam uma fonte "
 "particular"
 
 #: resources/ui/mpv_control_sidebar.ui:276
