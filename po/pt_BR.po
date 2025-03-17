@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-26 20:02+0800\n"
+"POT-Creation-Date: 2025-03-16 13:55+0800\n"
 "PO-Revision-Date: 2025-02-26 17:40+0000\n"
 "Last-Translator: watilon fazolin santana <watilon@proton.me>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
@@ -39,43 +39,39 @@ msgstr "Remover dos favoritos"
 msgid "Add to favorites"
 msgstr "Adicionar aos favoritos"
 
-#: src/ui/widgets/account_settings.rs:245
+#: src/ui/widgets/account_settings.rs:226
 msgid "Password cannot be empty!"
 msgstr "A senha não pode estar vazia!"
 
-#: src/ui/widgets/account_settings.rs:249
+#: src/ui/widgets/account_settings.rs:230
 msgid "Passwords do not match!"
 msgstr "As senhas não coincidem!"
 
-#: src/ui/widgets/account_settings.rs:256
+#: src/ui/widgets/account_settings.rs:237
 msgid "Password changed successfully! Please login again."
 msgstr "A senha mudou com sucesso! Faça login novamente."
 
-#: src/ui/widgets/account_settings.rs:262
+#: src/ui/widgets/account_settings.rs:243
 msgid "Failed to change password"
 msgstr "Falhado para mudar a senha"
 
-#: src/ui/widgets/account_settings.rs:314
+#: src/ui/widgets/account_settings.rs:280
 msgid "Cache Cleared"
 msgstr "Cache Limpou"
 
-#: src/ui/widgets/account_settings.rs:335
+#: src/ui/widgets/account_settings.rs:301
 msgid "No file selected"
 msgstr "Nenhum arquivo selecionado"
 
-#: src/ui/widgets/account_settings.rs:402
-msgid "Font Cleared, Restart to take effect."
-msgstr "Fonte Limpa, reinicie para que a alteração tenha efeito."
-
-#: src/ui/widgets/account_settings.rs:586
-#: src/ui/widgets/account_settings.rs:595
-#: src/ui/widgets/account_settings.rs:629
-#: src/ui/widgets/account_settings.rs:638
+#: src/ui/widgets/account_settings.rs:518
+#: src/ui/widgets/account_settings.rs:527
+#: src/ui/widgets/account_settings.rs:561
+#: src/ui/widgets/account_settings.rs:570
 msgid "Descriptor cannot be empty!"
 msgstr "A descrição não pode estar vazia!"
 
-#: src/ui/widgets/account_settings.rs:600
-#: src/ui/widgets/account_settings.rs:643
+#: src/ui/widgets/account_settings.rs:532
+#: src/ui/widgets/account_settings.rs:575
 msgid "Invalid regex"
 msgstr "Regex inválido"
 
@@ -117,7 +113,7 @@ msgstr "Etiquetas"
 msgid "Genres"
 msgstr "Gêneros"
 
-#: src/ui/widgets/list.rs:121 src/ui/widgets/window.rs:308
+#: src/ui/widgets/list.rs:121 src/ui/widgets/window.rs:306
 #: resources/ui/window.ui:350
 msgid "Liked"
 msgstr "Gostou"
@@ -147,7 +143,7 @@ msgstr "Tem certeza que quer continuar?"
 #: src/ui/widgets/image_dialog/search_page.rs:149
 #: src/ui/widgets/tu_item/action.rs:470 src/ui/widgets/tu_item/action.rs:528
 #: src/ui/widgets/identify/search_page.rs:127
-#: resources/ui/account_settings.ui:575 resources/ui/account_settings.ui:685
+#: resources/ui/account_settings.ui:507 resources/ui/account_settings.ui:617
 #: resources/ui/refresh_dialog.ui:19
 msgid "Cancel"
 msgstr "Cancelar"
@@ -158,24 +154,13 @@ msgstr "Cancelar"
 msgid "Ok"
 msgstr "Ok"
 
-#: src/ui/widgets/metadata_dialog.rs:319
-#: src/ui/widgets/image_dialog/search_page.rs:179
-#: src/ui/widgets/tu_item/action.rs:91
-#: src/ui/widgets/identify/search_page.rs:157
-msgid "Success"
-msgstr "Sucesso"
-
 #: src/ui/widgets/music_album.rs:294
 msgid "More From"
 msgstr "Mais de"
 
-#: src/ui/widgets/refresh_dialog.rs:93 src/ui/widgets/tu_item/action.rs:249
+#: src/ui/widgets/refresh_dialog.rs:93
 msgid "Scanning..."
 msgstr "Procurando..."
-
-#: src/ui/widgets/server_action_row.rs:123
-msgid "Edit Server"
-msgstr "Editar Servidor"
 
 #: src/ui/widgets/server_panel.rs:118
 msgid "Shut down server"
@@ -236,10 +221,6 @@ msgstr "Servidor editado com sucesso"
 #: src/ui/widgets/account_add.rs:212
 msgid "Server added successfully"
 msgstr "Servidor adicionado com sucesso"
-
-#: src/ui/widgets/item.rs:328
-msgid "Select an episode"
-msgstr "Selecione um episódio"
 
 #: src/ui/widgets/item.rs:678 src/ui/mpv/page.rs:298 src/ui/mpv/page.rs:300
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
@@ -337,41 +318,37 @@ msgstr "Imagem deletada"
 msgid "Error deleting image"
 msgstr "Erro em deletar a imagem"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:253
-msgid "Error loading image"
-msgstr "Erro carregando a imagem"
-
 #: src/ui/widgets/image_dialog/search_page.rs:144
 msgid "Replace Image"
 msgstr "Substituir imagem"
 
-#: src/ui/widgets/window.rs:296 resources/ui/window.ui:304
+#: src/ui/widgets/window.rs:294 resources/ui/window.ui:304
 msgid "Home"
 msgstr "Home"
 
-#: src/ui/widgets/window.rs:320 resources/ui/search.ui:23
+#: src/ui/widgets/window.rs:318 resources/ui/search.ui:23
 #: resources/ui/window.ui:21 resources/ui/window.ui:396
 #: resources/ui/image_info_card.ui:127 resources/ui/identify_dialog.ui:94
 msgid "Search"
 msgstr "Pesquisar"
 
-#: src/ui/widgets/window.rs:815
+#: src/ui/widgets/window.rs:798
 msgid "Server Panel"
 msgstr "Painel do servidor"
 
-#: src/ui/widgets/window.rs:990
+#: src/ui/widgets/window.rs:973
 msgid "Fatal Error"
 msgstr "Erro fatal"
 
-#: src/ui/widgets/window.rs:993
+#: src/ui/widgets/window.rs:976
 msgid "Copy Error & Close"
 msgstr "Erro de cópia e fechar"
 
-#: src/ui/widgets/window.rs:1018
+#: src/ui/widgets/window.rs:1001
 msgid "Windows Alert"
 msgstr "Alerta do Windows"
 
-#: src/ui/widgets/window.rs:1019
+#: src/ui/widgets/window.rs:1002
 msgid ""
 "It seems you're using Tsukimi on Windows. Please note that GTK used by this "
 "application is designed for Linux, and no functionality is guaranteed to "
@@ -396,17 +373,21 @@ msgstr ""
 "relacionado a este software e não a um problema upstream. Escolha o modelo "
 "de problema apropriado e preencha todos os campos obrigatórios sem omissões."
 
-#: src/ui/widgets/window.rs:1021
+#: src/ui/widgets/window.rs:1004
 msgid "Close"
 msgstr "Fechar"
 
-#: src/ui/widgets/window.rs:1042
+#: src/ui/widgets/window.rs:1025
 msgid "translator-credits"
 msgstr "créditos do tradutor"
 
 #: src/ui/widgets/tu_overview_item.rs:255 src/ui/widgets/tu_list_item.rs:297
 msgid "Present"
 msgstr "Presente"
+
+#: src/ui/widgets/tu_item/action.rs:91
+msgid "Success"
+msgstr "Sucesso"
 
 #: src/ui/widgets/tu_item/action.rs:460
 msgid "Delete Item"
@@ -426,10 +407,6 @@ msgstr ""
 #: resources/ui/server_action_row.ui:52 resources/ui/image_info_card.ui:139
 msgid "Delete"
 msgstr "Deletar"
-
-#: src/ui/widgets/tu_item/action.rs:491 src/ui/widgets/tu_item/action.rs:549
-msgid "Item deleted"
-msgstr "Item deletado"
 
 #: src/ui/widgets/tu_item/action.rs:523 src/ui/widgets/tu_item/action.rs:524
 #: src/ui/widgets/tu_item/action.rs:529 resources/ui/pop-menu.ui:57
@@ -490,14 +467,6 @@ msgstr "Falha ao obter GLContext"
 #: src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305 resources/ui/mpvpage.ui:215
 msgid "Pause"
 msgstr "Pausar"
-
-#: src/ui/mpv/page.rs:381
-msgid "Initializing..."
-msgstr "Iniciando..."
-
-#: src/ui/mpv/page.rs:419 src/ui/mpv/page.rs:480
-msgid "No media source found"
-msgstr "Sem fonte de mídia"
 
 #: src/ui/mpv/page.rs:603
 msgid "No more video found"
@@ -566,20 +535,20 @@ msgstr "Próximo"
 msgid "Stop And Hide PlayerBar"
 msgstr "Parar e Ocultar a Barra do Reprodutor"
 
-#: resources/ui/player_toolbar.ui:197 resources/ui/account_settings.ui:347
+#: resources/ui/player_toolbar.ui:197 resources/ui/account_settings.ui:290
 msgid "Repeat Mode"
 msgstr "Modo de Repetição"
 
-#: resources/ui/player_toolbar.ui:231 resources/ui/account_settings.ui:351
+#: resources/ui/player_toolbar.ui:231 resources/ui/account_settings.ui:294
 msgid "Repeat One"
 msgstr "Repetir Um"
 
-#: resources/ui/player_toolbar.ui:235 resources/ui/account_settings.ui:352
+#: resources/ui/player_toolbar.ui:235 resources/ui/account_settings.ui:295
 msgid "Repeat All"
 msgstr "Repetir Todos"
 
-#: resources/ui/player_toolbar.ui:239 resources/ui/account_settings.ui:353
-#: resources/ui/account_settings.ui:381
+#: resources/ui/player_toolbar.ui:239 resources/ui/account_settings.ui:296
+#: resources/ui/account_settings.ui:324
 msgid "None"
 msgstr "Nenhum"
 
@@ -796,7 +765,7 @@ msgstr "Unidade: Segundos"
 msgid "Seek Forward"
 msgstr "Procure à frente"
 
-#: resources/ui/mpv_control_sidebar.ui:63 resources/ui/account_settings.ui:274
+#: resources/ui/mpv_control_sidebar.ui:63 resources/ui/account_settings.ui:217
 msgid "Cache"
 msgstr "Cache"
 
@@ -897,7 +866,7 @@ msgstr "Texto"
 msgid "Border"
 msgstr "Fronteira"
 
-#: resources/ui/mpv_control_sidebar.ui:378 resources/ui/account_settings.ui:198
+#: resources/ui/mpv_control_sidebar.ui:378 resources/ui/account_settings.ui:141
 msgid "Background"
 msgstr "Fundo"
 
@@ -1100,7 +1069,7 @@ msgstr "Nome de Usuário"
 msgid "Password"
 msgstr "Senha"
 
-#: resources/ui/account.ui:108 resources/ui/account_settings.ui:581
+#: resources/ui/account.ui:108 resources/ui/account_settings.ui:513
 msgid "Add"
 msgstr "Adicionar"
 
@@ -1166,7 +1135,7 @@ msgstr "Continuar Assistindo"
 msgid "Settings"
 msgstr "Configurações"
 
-#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:486
+#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:418
 msgid "Preferred Video Version"
 msgstr "Versão de vídeo preferida"
 
@@ -1183,7 +1152,7 @@ msgid "Preferred Audio Language"
 msgstr "Idioma de Áudio Preferido"
 
 #: resources/ui/account_settings.ui:41 resources/ui/account_settings.ui:66
-#: resources/ui/account_settings.ui:208
+#: resources/ui/account_settings.ui:151
 msgid "Default"
 msgstr "Padrão"
 
@@ -1196,146 +1165,125 @@ msgid "Appearence"
 msgstr "Aparência"
 
 #: resources/ui/account_settings.ui:87
-msgid "Post Scale"
-msgstr "Escala de postagem"
-
-#: resources/ui/account_settings.ui:102
-msgid "Font Scale"
-msgstr "Escala de fonte"
-
-#: resources/ui/account_settings.ui:116
-msgid "Font Family"
-msgstr "Família de font"
-
-#: resources/ui/account_settings.ui:134 resources/ui/account_settings.ui:145
-msgid "Restart App To Take Effect"
-msgstr "Reinicie o aplicativo para que a alteração tenha efeito"
-
-#: resources/ui/account_settings.ui:144
 msgid "Accent Color"
 msgstr "Cor de destaque"
 
-#: resources/ui/account_settings.ui:161
+#: resources/ui/account_settings.ui:88
+msgid "Restart App To Take Effect"
+msgstr "Reinicie o aplicativo para que a alteração tenha efeito"
+
+#: resources/ui/account_settings.ui:104
 msgid "Hide Sidebar"
 msgstr "Ocultar barra lateral"
 
-#: resources/ui/account_settings.ui:166
+#: resources/ui/account_settings.ui:109
 msgid "Auto Select Last Server"
 msgstr "Selecionar automaticamente o último servidor"
 
-#: resources/ui/account_settings.ui:173
+#: resources/ui/account_settings.ui:116
 msgid "Network"
 msgstr "Rede"
 
-#: resources/ui/account_settings.ui:176
+#: resources/ui/account_settings.ui:119
 msgid "Threads"
 msgstr "Threads"
 
-#: resources/ui/account_settings.ui:177
+#: resources/ui/account_settings.ui:120
 msgid "Excessive thread counts may exhaust the system's connection pool"
 msgstr ""
 "Contagens excessivas de threads podem esgotar o pool de conexões do sistema"
 
-#: resources/ui/account_settings.ui:191
+#: resources/ui/account_settings.ui:134
 msgid "Refresh when returning to home page"
 msgstr "Atualizar ao retornar à página inicial"
 
-#: resources/ui/account_settings.ui:205
+#: resources/ui/account_settings.ui:148
 msgid "This feature may cause significant lag. Please enable it with caution."
 msgstr ""
 "Este recurso pode causar uma lag significativa.Ative-o com cautela, Por "
 "favor."
 
-#: resources/ui/account_settings.ui:231
+#: resources/ui/account_settings.ui:174
 msgid "Opacity"
 msgstr "Opacidade"
 
-#: resources/ui/account_settings.ui:245
+#: resources/ui/account_settings.ui:188
 msgid "Blur (Experimental)"
 msgstr "Desfoque (Experimental)"
 
-#: resources/ui/account_settings.ui:246 resources/ui/account_settings.ui:255
+#: resources/ui/account_settings.ui:189 resources/ui/account_settings.ui:198
 msgid "Warning: High GPU usage"
 msgstr "Aviso: Alto uso da GPU"
 
-#: resources/ui/account_settings.ui:254
+#: resources/ui/account_settings.ui:197
 msgid "Blur Radius (Experimental)"
 msgstr "Raio de Desfoque (Experimental)"
 
-#: resources/ui/account_settings.ui:277
+#: resources/ui/account_settings.ui:220
 msgid "Clear Cache"
 msgstr "Limpar o Cache"
 
-#: resources/ui/account_settings.ui:295
+#: resources/ui/account_settings.ui:238
 msgid "Account"
 msgstr "Conta"
 
-#: resources/ui/account_settings.ui:308 resources/ui/account_settings.ui:325
+#: resources/ui/account_settings.ui:251 resources/ui/account_settings.ui:268
 msgid "Change Password"
 msgstr "Alterar Senha"
 
-#: resources/ui/account_settings.ui:311
+#: resources/ui/account_settings.ui:254
 msgid "New Password"
 msgstr "Nova Senha"
 
-#: resources/ui/account_settings.ui:316
+#: resources/ui/account_settings.ui:259
 msgid "Confirm Password"
 msgstr "Confirmar Senha"
 
-#: resources/ui/account_settings.ui:339
+#: resources/ui/account_settings.ui:282
 msgid "Media"
 msgstr "Mídia"
 
-#: resources/ui/account_settings.ui:344
+#: resources/ui/account_settings.ui:287
 msgid "Music Player"
 msgstr "Tocador de música"
 
-#: resources/ui/account_settings.ui:363
+#: resources/ui/account_settings.ui:306
 msgid "Video Player"
 msgstr "Reprodutor de vídeo"
 
-#: resources/ui/account_settings.ui:364
+#: resources/ui/account_settings.ui:307
 msgid "Requires restart"
 msgstr "Requer reinicialização"
 
-#: resources/ui/account_settings.ui:367
+#: resources/ui/account_settings.ui:310
 msgid "Enable external config"
 msgstr "Habilitar configuração externa"
 
-#: resources/ui/account_settings.ui:372
+#: resources/ui/account_settings.ui:315
 msgid "Config dir"
 msgstr "Diretório de configuração"
 
-#: resources/ui/account_settings.ui:399 resources/ui/account_settings.ui:451
+#: resources/ui/account_settings.ui:342
 msgid "Others"
 msgstr "Outros"
 
-#: resources/ui/account_settings.ui:404
+#: resources/ui/account_settings.ui:347
 msgid "Video Output"
 msgstr "Saída de Vídeo"
 
-#: resources/ui/account_settings.ui:405
+#: resources/ui/account_settings.ui:348
 msgid "Only for debugging"
 msgstr "Somente para depuração"
 
-#: resources/ui/account_settings.ui:408
+#: resources/ui/account_settings.ui:351
 msgid "libmpv (default)"
 msgstr "libmpv (padrão)"
 
-#: resources/ui/account_settings.ui:454
-msgid "Disable Client Side Decoration"
-msgstr "Desabilitar decoração do lado do cliente"
-
-#: resources/ui/account_settings.ui:455
-msgid "This may helpful for eliminating black border in specific platforms."
-msgstr ""
-"Isso pode ser útil para eliminar bordas pretas em plataformas específicas."
-
-#: resources/ui/account_settings.ui:464
+#: resources/ui/account_settings.ui:396
 msgid "Preferred Version"
 msgstr "Versão preferida"
 
-#: resources/ui/account_settings.ui:487
+#: resources/ui/account_settings.ui:419
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
@@ -1344,67 +1292,67 @@ msgstr ""
 "correspondida, ou a versão correspondente mais alta seja obtida antes de "
 "limpar a lista de correspondências"
 
-#: resources/ui/account_settings.ui:502
+#: resources/ui/account_settings.ui:434
 msgid "Descriptors"
 msgstr "Descritores"
 
-#: resources/ui/account_settings.ui:524
+#: resources/ui/account_settings.ui:456
 msgid "It is recommended to set no more than 3 lines"
 msgstr "É recomendável definir no máximo 3 linhas"
 
-#: resources/ui/account_settings.ui:545
+#: resources/ui/account_settings.ui:477
 msgid "No Descriptors"
 msgstr "Sem descritores"
 
-#: resources/ui/account_settings.ui:564
+#: resources/ui/account_settings.ui:496
 msgid "Add a descriptor"
 msgstr "Adicionar um descritor"
 
-#: resources/ui/account_settings.ui:606 resources/ui/account_settings.ui:716
+#: resources/ui/account_settings.ui:538 resources/ui/account_settings.ui:648
 msgid "This will use exact matching to obtain a list"
 msgstr "Isso usará correspondência exata para obter uma lista"
 
-#: resources/ui/account_settings.ui:609 resources/ui/account_settings.ui:719
+#: resources/ui/account_settings.ui:541 resources/ui/account_settings.ui:651
 msgid "Descriptor Type"
 msgstr "Tipo de descritor"
 
-#: resources/ui/account_settings.ui:614 resources/ui/account_settings.ui:724
+#: resources/ui/account_settings.ui:546 resources/ui/account_settings.ui:656
 msgid "String"
 msgstr "Corda"
 
-#: resources/ui/account_settings.ui:615 resources/ui/account_settings.ui:725
+#: resources/ui/account_settings.ui:547 resources/ui/account_settings.ui:657
 msgid "Regular Expression"
 msgstr "Expressão regular"
 
-#: resources/ui/account_settings.ui:627 resources/ui/account_settings.ui:737
+#: resources/ui/account_settings.ui:559 resources/ui/account_settings.ui:669
 msgid "Descriptor"
 msgstr "Descritor"
 
-#: resources/ui/account_settings.ui:632 resources/ui/account_settings.ui:742
+#: resources/ui/account_settings.ui:564 resources/ui/account_settings.ui:674
 msgid "Descriptor should not be too long"
 msgstr "O descritor não deve ser muito longo"
 
-#: resources/ui/account_settings.ui:643 resources/ui/account_settings.ui:753
+#: resources/ui/account_settings.ui:575 resources/ui/account_settings.ui:685
 msgid "eg. 1080p"
 msgstr "eg. 1080p"
 
-#: resources/ui/account_settings.ui:654 resources/ui/account_settings.ui:764
+#: resources/ui/account_settings.ui:586 resources/ui/account_settings.ui:696
 msgid "eg. 1080p.*WebDL"
 msgstr "eg. 1080p.*WebDL"
 
-#: resources/ui/account_settings.ui:674
+#: resources/ui/account_settings.ui:606
 msgid "Edit descriptor"
 msgstr "Editar descritor"
 
-#: resources/ui/account_settings.ui:691
+#: resources/ui/account_settings.ui:623
 msgid "Save"
 msgstr "Salve"
 
-#: resources/ui/account_settings.ui:784
+#: resources/ui/account_settings.ui:716
 msgid "Change folder"
 msgstr "Alterar pasta"
 
-#: resources/ui/account_settings.ui:786
+#: resources/ui/account_settings.ui:718
 msgid "Select new mpv config folder"
 msgstr "Selecione a nova pasta de configuração do mpv"
 
@@ -1668,6 +1616,43 @@ msgstr "Especiais"
 #: resources/ui/missing_episodes.ui:72
 msgid "Upcoming"
 msgstr "Por vir"
+
+#~ msgid "Font Cleared, Restart to take effect."
+#~ msgstr "Fonte Limpa, reinicie para que a alteração tenha efeito."
+
+#~ msgid "Edit Server"
+#~ msgstr "Editar Servidor"
+
+#~ msgid "Select an episode"
+#~ msgstr "Selecione um episódio"
+
+#~ msgid "Error loading image"
+#~ msgstr "Erro carregando a imagem"
+
+#~ msgid "Item deleted"
+#~ msgstr "Item deletado"
+
+#~ msgid "Initializing..."
+#~ msgstr "Iniciando..."
+
+#~ msgid "No media source found"
+#~ msgstr "Sem fonte de mídia"
+
+#~ msgid "Post Scale"
+#~ msgstr "Escala de postagem"
+
+#~ msgid "Font Scale"
+#~ msgstr "Escala de fonte"
+
+#~ msgid "Font Family"
+#~ msgstr "Família de font"
+
+#~ msgid "Disable Client Side Decoration"
+#~ msgstr "Desabilitar decoração do lado do cliente"
+
+#~ msgid "This may helpful for eliminating black border in specific platforms."
+#~ msgstr ""
+#~ "Isso pode ser útil para eliminar bordas pretas em plataformas específicas."
 
 #, fuzzy
 #~ msgid "Loading Video..."
