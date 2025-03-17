@@ -72,7 +72,7 @@ win32 = ["gdk4-win32"]
 
 [target.'cfg(target_os = "linux")'.dependencies]
 gdk4-x11 = { version = "0.9" }
-xattr = { version = "1.4.0" }
+xattr = { version = "1.5.0" }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 gdk4-win32 = { version = "0.9" }
