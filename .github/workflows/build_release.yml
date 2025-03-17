@@ -182,9 +182,6 @@ jobs:
         run: |
           mv tsukimi-x86_64-linux/* .
           mv tsukimi-aarch64-linux/* .
-          mv tsukimi-x86_64-windows-gnu/* .
-          sha512sum *.7z > tsukimi.sha512sum
-          sha512sum *.exe >> tsukimi.sha512sum
           sha512sum *.tar.gz >> tsukimi.sha512sum
 
       - name: Get latest tag name
@@ -202,8 +199,6 @@ jobs:
         with:
           files: |
             *.tar.gz
-            *.7z
-            *.exe
             tsukimi.sha512sum
           tag_name: ${{ steps.tag.outputs.TAG_NAME }}
           prerelease: ${{ env.PRERELEASE || false }}
