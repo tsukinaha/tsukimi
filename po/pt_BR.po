@@ -2,13 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # watilon fazolin santana <watilon@proton.me>, 2025.
+# John Peter Sa <johnppetersa@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-26 20:02+0800\n"
-"PO-Revision-Date: 2025-02-26 17:06+0000\n"
-"Last-Translator: watilon fazolin santana <watilon@proton.me>\n"
+"PO-Revision-Date: 2025-02-26 17:10+0000\n"
+"Last-Translator: John Peter Sa <johnppetersa@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "tsukimi/main/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -70,13 +71,11 @@ msgstr "Fonte Limpa, reinicie para que a alteração tenha efeito."
 #: src/ui/widgets/account_settings.rs:595
 #: src/ui/widgets/account_settings.rs:629
 #: src/ui/widgets/account_settings.rs:638
-#, fuzzy
 msgid "Descriptor cannot be empty!"
 msgstr "A descrição não pode estar vazia!"
 
 #: src/ui/widgets/account_settings.rs:600
 #: src/ui/widgets/account_settings.rs:643
-#, fuzzy
 msgid "Invalid regex"
 msgstr "Regex inválido"
 
@@ -267,7 +266,6 @@ msgid "Bitrate"
 msgstr "Bitrate"
 
 #: src/ui/widgets/item.rs:1074
-#, fuzzy
 msgid "BitDepth"
 msgstr "BitDepth"
 
@@ -284,21 +282,18 @@ msgid "Width"
 msgstr "Largura"
 
 #: src/ui/widgets/item.rs:1088
-#, fuzzy
 msgid "ColorSpace"
 msgstr "Paleta de cores"
 
 #: src/ui/widgets/item.rs:1092
-#, fuzzy
 msgid "DisplayTitle"
-msgstr "Título"
+msgstr "Exibir título"
 
 #: src/ui/widgets/item.rs:1096
 msgid "Channel"
 msgstr "Canal"
 
 #: src/ui/widgets/item.rs:1100
-#, fuzzy
 msgid "ChannelLayout"
 msgstr "Layout do canal"
 
@@ -307,18 +302,16 @@ msgid "AverageFrameRate"
 msgstr "Média de frames"
 
 #: src/ui/widgets/item.rs:1109
-#, fuzzy
 msgid "PixelFormat"
-msgstr "Formato dos pixels"
+msgstr "Formato de pixel"
 
 #: src/ui/widgets/item.rs:1217
 msgid "No video source found"
 msgstr "Nenhuma fonte de vídeo encontrada"
 
 #: src/ui/widgets/item.rs:1354
-#, fuzzy
 msgid "Season not found. Is this a continue watching list?"
-msgstr "Temporada não encontrada. É uma lista contínua?"
+msgstr "Temporada não encontrada. Esta é uma lista de continuar assistindo?"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:184
 msgid "Image saved"
@@ -379,7 +372,6 @@ msgid "Windows Alert"
 msgstr "Alerta do Windows"
 
 #: src/ui/widgets/window.rs:1019
-#, fuzzy
 msgid ""
 "It seems you're using Tsukimi on Windows. Please note that GTK used by this "
 "application is designed for Linux, and no functionality is guaranteed to "
@@ -392,17 +384,17 @@ msgid ""
 "software and not an upstream issue. Choose the appropriate issue template "
 "and fill in all required fields without any omissions."
 msgstr ""
-"É provável que esteja usando o Tsukimi no Windows. Note que o GTK usado "
-"nessa aplicação é desenvolvido para Linux, e nenhuma funcionalidade tem "
-"garantias que funcionará no Windows, incluindo mas não limitado a "
-"renderização de vídeo, reprodução de áudio, conexão com a rede, e links "
-"externos. Ademais, há problemas conhecidos que não podem ser resolvidos, "
-"como bordas pretas, renderização de imagens, renderização de fontes, escala "
-"de resolução, renderização de vídeos, renderização de OpenGL, modo tele "
-"cheia, HDR, e detecção de local.\n"
-"Se desejam abrir reclamação, tenha certeza que é relacionada ao Software e "
-"não a outros fatores. Escolha o template correto e preencha todos os campos "
-"requeridos sem qualquer omissão."
+"Parece que você está usando o Tsukimi no Windows. Observe que o GTK usado "
+"por este aplicativo foi projetado para Linux, e nenhuma funcionalidade tem "
+"garantia de funcionar no Windows, incluindo, mas não se limitando a "
+"renderização de vídeo, reprodução de áudio, conexões de rede e links "
+"externos. Além disso, há problemas conhecidos que não podem ser corrigidos, "
+"como bordas pretas, renderização de imagem, renderização de fonte, "
+"dimensionamento de DPI, renderização de vídeo, renderizador GL, modo de tela "
+"cheia, HDR e detecção de localidade.\n"
+"Se você deseja abrir um problema, certifique-se de que ele esteja "
+"relacionado a este software e não a um problema upstream. Escolha o modelo "
+"de problema apropriado e preencha todos os campos obrigatórios sem omissões."
 
 #: src/ui/widgets/window.rs:1021
 msgid "Close"
@@ -413,9 +405,8 @@ msgid "translator-credits"
 msgstr "Créditos ao tradutor"
 
 #: src/ui/widgets/tu_overview_item.rs:255 src/ui/widgets/tu_list_item.rs:297
-#, fuzzy
 msgid "Present"
-msgstr "Apresentar"
+msgstr "Presente"
 
 #: src/ui/widgets/tu_item/action.rs:460
 msgid "Delete Item"
@@ -486,16 +477,15 @@ msgstr "Configurações de cor de legenda foram limpas."
 
 #: src/ui/mpv/control_sidebar.rs:497
 msgid "Subtitle offset settings cleared."
-msgstr ""
+msgstr "Configurações de deslocamento de legenda apagadas."
 
 #: src/ui/mpv/control_sidebar.rs:539
 msgid "Deband settings cleared."
 msgstr "Configurações de Deband limpas."
 
 #: src/ui/mpv/mpvglarea.rs:77
-#, fuzzy
 msgid "Failed to get GLContext"
-msgstr "Falha em obter contexto GL"
+msgstr "Falha ao obter GLContext"
 
 #: src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305 resources/ui/mpvpage.ui:215
 msgid "Pause"
@@ -618,14 +608,12 @@ msgid "Scan"
 msgstr "Escanear"
 
 #: resources/ui/server_panel.ui:47
-#, fuzzy
 msgid "Restart Server"
-msgstr "Reiniciar servidor"
+msgstr "Reiniciar Servidor"
 
 #: resources/ui/server_panel.ui:58
-#, fuzzy
 msgid "Shutdown Server"
-msgstr "Desligar servidor"
+msgstr "Desligar Servidor"
 
 #: resources/ui/server_panel.ui:78
 msgid "System Logs"
@@ -641,7 +629,7 @@ msgstr "Tarefas"
 
 #: resources/ui/mpv_menu_actions.ui:12
 msgid "Backward"
-msgstr "Rebobinar"
+msgstr "Para trás"
 
 #: resources/ui/mpv_menu_actions.ui:42
 msgid "Forward"
@@ -653,11 +641,11 @@ msgstr "Geral"
 
 #: resources/ui/mpv_shortcuts_window.ui:15
 msgid "Decrease/increase playback speed by 10%"
-msgstr "Diminuir/aumentar velocidade de reprodução em 10%"
+msgstr "Diminuir/aumentar a velocidade de reprodução em 10%"
 
 #: resources/ui/mpv_shortcuts_window.ui:21
 msgid "Halve/double current playback speed"
-msgstr "Metade/dobro da velocidade de reprodução"
+msgstr "Reduzir pela metade/duplicar a velocidade de reprodução atual"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
 msgid "Reset playback speed to normal"
