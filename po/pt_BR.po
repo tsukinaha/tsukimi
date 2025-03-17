@@ -1,15 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# watilon fazolin santana <watilon@proton.me>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-26 20:02+0800\n"
-"PO-Revision-Date: 2024-09-27 17:45+0000\n"
-"Last-Translator: 11 22 <8802512@gmail.com>\n"
+"PO-Revision-Date: 2025-02-26 17:06+0000\n"
+"Last-Translator: watilon fazolin santana <watilon@proton.me>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "tsukimi/main/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -17,19 +16,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.10.2-dev\n"
 
 #: src/client/error.rs:19
 msgid "Timeout Error, Check your internet connection"
-msgstr ""
+msgstr "Tempo esgotado, verifique sua conexão com a internet"
 
 #: src/client/error.rs:22
 msgid "Connection Error, Check your internet connection"
-msgstr ""
+msgstr "Erro de conexão, verifique sua conexão com a internet"
 
 #: src/ui/provider/tu_item.rs:446
 msgid "No next up video found"
-msgstr ""
+msgstr "Próximo vídeo não encontrado"
 
 #: src/ui/widgets/star_toggle.rs:65
 msgid "Remove from favorites"
@@ -73,12 +72,13 @@ msgstr "Fonte Limpa, reinicie para que a alteração tenha efeito."
 #: src/ui/widgets/account_settings.rs:638
 #, fuzzy
 msgid "Descriptor cannot be empty!"
-msgstr "A senha não pode estar vazia!"
+msgstr "A descrição não pode estar vazia!"
 
 #: src/ui/widgets/account_settings.rs:600
 #: src/ui/widgets/account_settings.rs:643
+#, fuzzy
 msgid "Invalid regex"
-msgstr ""
+msgstr "Regex inválido"
 
 #: src/ui/widgets/disc_box.rs:85 resources/ui/disc_box.ui:9
 msgid "Disc"
@@ -90,7 +90,7 @@ msgstr "Últimos"
 
 #: src/ui/widgets/liked.rs:156
 msgid "Favourite"
-msgstr ""
+msgstr "Favorito"
 
 #: src/ui/widgets/list.rs:109
 msgid "Channels"
@@ -98,25 +98,25 @@ msgstr "Canais"
 
 #: src/ui/widgets/list.rs:116
 msgid "All"
-msgstr ""
+msgstr "Todos"
 
 #: src/ui/widgets/list.rs:117 src/ui/widgets/item.rs:674
 msgid "Resume"
-msgstr "Resume"
+msgstr "Resumo"
 
 #: src/ui/widgets/list.rs:118 resources/ui/search.ui:60
 msgid "BoxSet"
-msgstr ""
+msgstr "Coletânea"
 
 #: src/ui/widgets/list.rs:119 resources/ui/other.ui:150
 #: resources/ui/item.ui:483 resources/ui/filter.ui:85
 msgid "Tags"
-msgstr ""
+msgstr "Etiquetas"
 
 #: src/ui/widgets/list.rs:120 resources/ui/other.ui:155
 #: resources/ui/item.ui:478 resources/ui/filter.ui:78
 msgid "Genres"
-msgstr ""
+msgstr "Gêneros"
 
 #: src/ui/widgets/list.rs:121 src/ui/widgets/window.rs:308
 #: resources/ui/window.ui:350
@@ -125,7 +125,7 @@ msgstr "Gostou"
 
 #: src/ui/widgets/list.rs:122
 msgid "Folder"
-msgstr ""
+msgstr "Diretório"
 
 #: src/ui/widgets/media_viewer.rs:350
 #: src/ui/widgets/image_dialog/image_infocard.rs:171
@@ -135,14 +135,14 @@ msgstr "Imagem copiada para clipboard"
 #: src/ui/widgets/metadata_dialog.rs:290 resources/ui/metadata_dialog.ui:230
 #: resources/ui/filter.ui:179
 msgid "Apply"
-msgstr ""
+msgstr "Aplicar"
 
 #: src/ui/widgets/metadata_dialog.rs:292
 #: src/ui/widgets/image_dialog/search_page.rs:146
 #: src/ui/widgets/tu_item/action.rs:466
 #: src/ui/widgets/identify/search_page.rs:124
 msgid "Are you sure you wish to continue?"
-msgstr ""
+msgstr "Tem certeza que quer continuar?"
 
 #: src/ui/widgets/metadata_dialog.rs:295
 #: src/ui/widgets/image_dialog/search_page.rs:149
@@ -157,7 +157,7 @@ msgstr "Cancelar"
 #: src/ui/widgets/image_dialog/search_page.rs:150
 #: src/ui/widgets/identify/search_page.rs:128
 msgid "Ok"
-msgstr ""
+msgstr "ok"
 
 #: src/ui/widgets/metadata_dialog.rs:319
 #: src/ui/widgets/image_dialog/search_page.rs:179
@@ -167,18 +167,16 @@ msgid "Success"
 msgstr "Sucesso"
 
 #: src/ui/widgets/music_album.rs:294
-#, fuzzy
 msgid "More From"
-msgstr "Mais"
+msgstr "Mais de"
 
 #: src/ui/widgets/refresh_dialog.rs:93 src/ui/widgets/tu_item/action.rs:249
 msgid "Scanning..."
 msgstr "Procurando..."
 
 #: src/ui/widgets/server_action_row.rs:123
-#, fuzzy
 msgid "Edit Server"
-msgstr "Adicionar Servidor"
+msgstr "Editar Servidor"
 
 #: src/ui/widgets/server_panel.rs:118
 msgid "Shut down server"
@@ -198,12 +196,11 @@ msgstr "Você tem certeza de que deseja reiniciar o servidor?"
 
 #: src/ui/widgets/server_panel.rs:154
 msgid "Revert"
-msgstr ""
+msgstr "Reverter"
 
 #: src/ui/widgets/server_panel.rs:155
-#, fuzzy
 msgid "Confirm"
-msgstr "Confirmar Senha"
+msgstr "Confirmar"
 
 #: src/ui/widgets/server_panel.rs:191
 msgid "Server is shutting down"
@@ -215,15 +212,15 @@ msgstr "O servidor está reiniciando"
 
 #: src/ui/widgets/server_panel.rs:290
 msgid "Last execute: "
-msgstr ""
+msgstr "Último reproduzido: "
 
 #: src/ui/widgets/server_panel.rs:295
 msgid "Duration: "
-msgstr ""
+msgstr "Duração: "
 
 #: src/ui/widgets/server_panel.rs:300
 msgid "Result: "
-msgstr ""
+msgstr "Resultado: "
 
 #: src/ui/widgets/server_panel.rs:346
 msgid "Task started"
@@ -234,18 +231,16 @@ msgid "Fields must be filled in"
 msgstr "Os campos devem ser preenchidos"
 
 #: src/ui/widgets/account_add.rs:207
-#, fuzzy
 msgid "Server edited successfully"
-msgstr "Conta adicionada com sucesso"
+msgstr "Servidor editado com sucesso"
 
 #: src/ui/widgets/account_add.rs:212
-#, fuzzy
 msgid "Server added successfully"
-msgstr "Conta adicionada com sucesso"
+msgstr "Servidor adicionado com sucesso"
 
 #: src/ui/widgets/item.rs:328
 msgid "Select an episode"
-msgstr ""
+msgstr "Selecione um episódio"
 
 #: src/ui/widgets/item.rs:678 src/ui/mpv/page.rs:298 src/ui/mpv/page.rs:300
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
@@ -256,11 +251,11 @@ msgstr "Reproduzir"
 
 #: src/ui/widgets/item.rs:1059
 msgid "Codec"
-msgstr ""
+msgstr "Codec"
 
 #: src/ui/widgets/item.rs:1062
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 #: src/ui/widgets/item.rs:1065 resources/ui/single_grid.ui:120
 #: resources/ui/metadata_dialog.ui:90
@@ -272,60 +267,66 @@ msgid "Bitrate"
 msgstr "Bitrate"
 
 #: src/ui/widgets/item.rs:1074
+#, fuzzy
 msgid "BitDepth"
-msgstr ""
+msgstr "BitDepth"
 
 #: src/ui/widgets/item.rs:1078
 msgid "SampleRate"
-msgstr ""
+msgstr "Taxa de amostragem"
 
 #: src/ui/widgets/item.rs:1082
 msgid "Height"
-msgstr ""
+msgstr "Altura"
 
 #: src/ui/widgets/item.rs:1085
 msgid "Width"
-msgstr ""
+msgstr "Largura"
 
 #: src/ui/widgets/item.rs:1088
+#, fuzzy
 msgid "ColorSpace"
-msgstr ""
+msgstr "Paleta de cores"
 
 #: src/ui/widgets/item.rs:1092
+#, fuzzy
 msgid "DisplayTitle"
-msgstr ""
+msgstr "Título"
 
 #: src/ui/widgets/item.rs:1096
 msgid "Channel"
-msgstr ""
+msgstr "Canal"
 
 #: src/ui/widgets/item.rs:1100
+#, fuzzy
 msgid "ChannelLayout"
-msgstr ""
+msgstr "Layout do canal"
 
 #: src/ui/widgets/item.rs:1105
 msgid "AverageFrameRate"
-msgstr ""
+msgstr "Média de frames"
 
 #: src/ui/widgets/item.rs:1109
+#, fuzzy
 msgid "PixelFormat"
-msgstr ""
+msgstr "Formato dos pixels"
 
 #: src/ui/widgets/item.rs:1217
 msgid "No video source found"
 msgstr "Nenhuma fonte de vídeo encontrada"
 
 #: src/ui/widgets/item.rs:1354
+#, fuzzy
 msgid "Season not found. Is this a continue watching list?"
-msgstr ""
+msgstr "Temporada não encontrada. É uma lista contínua?"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:184
 msgid "Image saved"
-msgstr ""
+msgstr "Imagem salva"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:189
 msgid "Failed to load image"
-msgstr ""
+msgstr "Falha em carregar a imagem"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:151
 msgid "No image to view"
@@ -337,19 +338,19 @@ msgstr "Nenhuma imagem para copiar"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:204
 msgid "Image deleted"
-msgstr ""
+msgstr "Imagem deletada"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:209
 msgid "Error deleting image"
-msgstr ""
+msgstr "Erro em deletar a imagem"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:253
 msgid "Error loading image"
-msgstr "Imagem de carregamento de erro"
+msgstr "Erro carregando a imagem"
 
 #: src/ui/widgets/image_dialog/search_page.rs:144
 msgid "Replace Image"
-msgstr ""
+msgstr "Substituir imagem"
 
 #: src/ui/widgets/window.rs:296 resources/ui/window.ui:304
 msgid "Home"
@@ -363,21 +364,22 @@ msgstr "Pesquisar"
 
 #: src/ui/widgets/window.rs:815
 msgid "Server Panel"
-msgstr ""
+msgstr "Painel do servidor"
 
 #: src/ui/widgets/window.rs:990
 msgid "Fatal Error"
-msgstr ""
+msgstr "Erro fatal"
 
 #: src/ui/widgets/window.rs:993
 msgid "Copy Error & Close"
-msgstr ""
+msgstr "Erro de cópia e fechar"
 
 #: src/ui/widgets/window.rs:1018
 msgid "Windows Alert"
-msgstr ""
+msgstr "Alerta do Windows"
 
 #: src/ui/widgets/window.rs:1019
+#, fuzzy
 msgid ""
 "It seems you're using Tsukimi on Windows. Please note that GTK used by this "
 "application is designed for Linux, and no functionality is guaranteed to "
@@ -390,22 +392,34 @@ msgid ""
 "software and not an upstream issue. Choose the appropriate issue template "
 "and fill in all required fields without any omissions."
 msgstr ""
+"É provável que esteja usando o Tsukimi no Windows. Note que o GTK usado "
+"nessa aplicação é desenvolvido para Linux, e nenhuma funcionalidade tem "
+"garantias que funcionará no Windows, incluindo mas não limitado a "
+"renderização de vídeo, reprodução de áudio, conexão com a rede, e links "
+"externos. Ademais, há problemas conhecidos que não podem ser resolvidos, "
+"como bordas pretas, renderização de imagens, renderização de fontes, escala "
+"de resolução, renderização de vídeos, renderização de OpenGL, modo tele "
+"cheia, HDR, e detecção de local.\n"
+"Se desejam abrir reclamação, tenha certeza que é relacionada ao Software e "
+"não a outros fatores. Escolha o template correto e preencha todos os campos "
+"requeridos sem qualquer omissão."
 
 #: src/ui/widgets/window.rs:1021
 msgid "Close"
-msgstr ""
+msgstr "Fechar"
 
 #: src/ui/widgets/window.rs:1042
 msgid "translator-credits"
-msgstr "11 22 <8802512@gmail.com>"
+msgstr "Créditos ao tradutor"
 
 #: src/ui/widgets/tu_overview_item.rs:255 src/ui/widgets/tu_list_item.rs:297
+#, fuzzy
 msgid "Present"
-msgstr "Presente"
+msgstr "Apresentar"
 
 #: src/ui/widgets/tu_item/action.rs:460
 msgid "Delete Item"
-msgstr ""
+msgstr "Deletar item"
 
 #: src/ui/widgets/tu_item/action.rs:464
 msgid ""
@@ -413,59 +427,62 @@ msgid ""
 "library.\n"
 "The following files and folders will be deleted:"
 msgstr ""
+"Deletando esse item irá deletá-lo de ambos seu sistema de arquivos e sua "
+"biblioteca de mídia.\n"
+"Os seguintes arquivos e diretórios serão deletados:"
 
 #: src/ui/widgets/tu_item/action.rs:471 resources/ui/pop-menu.ui:87
 #: resources/ui/server_action_row.ui:52 resources/ui/image_info_card.ui:139
 msgid "Delete"
-msgstr ""
+msgstr "Deletar"
 
 #: src/ui/widgets/tu_item/action.rs:491 src/ui/widgets/tu_item/action.rs:549
 msgid "Item deleted"
-msgstr ""
+msgstr "Item deletado"
 
 #: src/ui/widgets/tu_item/action.rs:523 src/ui/widgets/tu_item/action.rs:524
 #: src/ui/widgets/tu_item/action.rs:529 resources/ui/pop-menu.ui:57
 msgid "Remove Identification"
-msgstr ""
+msgstr "Remover identificação"
 
 #: src/ui/widgets/tu_item/action.rs:525
 msgid "Are you sure you wish to reset all metadata?"
-msgstr ""
+msgstr "Está certo que quer resetar todos os metadados?"
 
 #: src/ui/widgets/tu_list_item.rs:196 src/ui/widgets/tu_list_item.rs:200
 #: src/ui/widgets/tu_list_item.rs:204
 msgid "Waiting for mediasource ..."
-msgstr ""
+msgstr "Aguardando fonte de mídia ..."
 
 #: src/ui/widgets/missing_episodes_dialog.rs:149
 msgid "Special"
-msgstr ""
+msgstr "Especial"
 
 #: src/ui/widgets/identify/dialog.rs:140
 msgid "Failed to get path"
-msgstr ""
+msgstr "Falha no caminho"
 
 #: src/ui/widgets/identify/search_page.rs:122 resources/ui/pop-menu.ui:51
 #: resources/ui/identify_dialog.ui:6 resources/ui/identify_dialog.ui:14
 #: resources/ui/identify_dialog_search_page.ui:4
 msgid "Identify"
-msgstr "Identificação"
+msgstr "Identificar"
 
 #: src/ui/widgets/identify/search_page.rs:131
 msgid "Replace existing images"
-msgstr ""
+msgstr "Substituir imagens existentes"
 
 #: src/ui/mpv/control_sidebar.rs:452
 msgid "Video filter settings cleared."
-msgstr ""
+msgstr "Configurações de filtros limpas."
 
 #: src/ui/mpv/control_sidebar.rs:475
 msgid "Subtitle settings cleared."
-msgstr ""
+msgstr "Configurações de legenda foram limpas."
 
 #: src/ui/mpv/control_sidebar.rs:488
 msgid "Subtitle color settings cleared."
-msgstr ""
+msgstr "Configurações de cor de legenda foram limpas."
 
 #: src/ui/mpv/control_sidebar.rs:497
 msgid "Subtitle offset settings cleared."
@@ -473,11 +490,12 @@ msgstr ""
 
 #: src/ui/mpv/control_sidebar.rs:539
 msgid "Deband settings cleared."
-msgstr ""
+msgstr "Configurações de Deband limpas."
 
 #: src/ui/mpv/mpvglarea.rs:77
+#, fuzzy
 msgid "Failed to get GLContext"
-msgstr ""
+msgstr "Falha em obter contexto GL"
 
 #: src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305 resources/ui/mpvpage.ui:215
 msgid "Pause"
@@ -485,21 +503,23 @@ msgstr "Pausar"
 
 #: src/ui/mpv/page.rs:381
 msgid "Initializing..."
-msgstr ""
+msgstr "Iniciando..."
 
 #: src/ui/mpv/page.rs:419 src/ui/mpv/page.rs:480
 msgid "No media source found"
-msgstr ""
+msgstr "Sem fonte de mídia"
 
 #: src/ui/mpv/page.rs:603
 msgid "No more video found"
-msgstr ""
+msgstr "Próximos vídeos não encontrados"
 
 #: src/ui/mpv/page.rs:697
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
 msgstr ""
+"MPV foi desligado, a aplicação se encerrará.\n"
+"Tsukimi não pode reiniciar MPV."
 
 #: resources/ui/item_actions.ui:40 resources/ui/pop-menu.ui:23
 msgid "Mark as Played"
@@ -513,13 +533,13 @@ msgstr "Marcar como Não Reproduzido"
 #: resources/ui/song_widget.ui:150 resources/ui/metadata_dialog.ui:18
 #: resources/ui/metadata_dialog.ui:26
 msgid "Edit Metadata"
-msgstr ""
+msgstr "Editar metadados"
 
 #: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:43
 #: resources/ui/song_widget.ui:155 resources/ui/images_dialog.ui:6
 #: resources/ui/images_dialog.ui:36
 msgid "Edit Images"
-msgstr ""
+msgstr "Editar imagens"
 
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
@@ -587,11 +607,11 @@ msgstr "Descurtir"
 
 #: resources/ui/pop-menu.ui:65
 msgid "View Missing Episodes"
-msgstr ""
+msgstr "Ver episódios perdidos"
 
 #: resources/ui/pop-menu.ui:73 resources/ui/refresh_dialog.ui:8
 msgid "Refresh Metadata"
-msgstr "Refrescar o metadado"
+msgstr "Atualizar metadados"
 
 #: resources/ui/pop-menu.ui:79
 msgid "Scan"
@@ -609,25 +629,23 @@ msgstr "Desligar servidor"
 
 #: resources/ui/server_panel.ui:78
 msgid "System Logs"
-msgstr ""
+msgstr "Logs do sistema"
 
 #: resources/ui/server_panel.ui:83
 msgid "Activity Logs"
-msgstr ""
+msgstr "Logs de atividade"
 
 #: resources/ui/server_panel.ui:103
 msgid "Tasks"
-msgstr ""
+msgstr "Tarefas"
 
 #: resources/ui/mpv_menu_actions.ui:12
-#, fuzzy
 msgid "Backward"
-msgstr "Procure para trás"
+msgstr "Rebobinar"
 
 #: resources/ui/mpv_menu_actions.ui:42
-#, fuzzy
 msgid "Forward"
-msgstr "Procure avançar"
+msgstr "Avançar"
 
 #: resources/ui/mpv_shortcuts_window.ui:11 resources/ui/account_settings.ui:12
 msgid "General"
@@ -635,11 +653,11 @@ msgstr "Geral"
 
 #: resources/ui/mpv_shortcuts_window.ui:15
 msgid "Decrease/increase playback speed by 10%"
-msgstr ""
+msgstr "Diminuir/aumentar velocidade de reprodução em 10%"
 
 #: resources/ui/mpv_shortcuts_window.ui:21
 msgid "Halve/double current playback speed"
-msgstr ""
+msgstr "Metade/dobro da velocidade de reprodução"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
 msgid "Reset playback speed to normal"
