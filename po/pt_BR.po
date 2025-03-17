@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-26 20:02+0800\n"
-"PO-Revision-Date: 2025-02-26 17:14+0000\n"
-"Last-Translator: watilon fazolin santana <watilon@proton.me>\n"
+"PO-Revision-Date: 2025-02-26 17:20+0000\n"
+"Last-Translator: John Peter Sa <johnppetersa@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "tsukimi/main/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -267,7 +267,7 @@ msgstr "Bitrate"
 
 #: src/ui/widgets/item.rs:1074
 msgid "BitDepth"
-msgstr "BitDepth"
+msgstr "Profundidade de bits"
 
 #: src/ui/widgets/item.rs:1078
 msgid "SampleRate"
@@ -843,7 +843,7 @@ msgstr "Escala do Texto da Legenda"
 
 #: resources/ui/mpv_control_sidebar.ui:228
 msgid "This affects ASS subtitles as well"
-msgstr "Isso afeta legendas ASS também"
+msgstr "Isso afeta também as legendas ASS"
 
 #: resources/ui/mpv_control_sidebar.ui:249
 msgid "Subtitle Text Font"
@@ -859,128 +859,120 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:276
 msgid "Border Style"
-msgstr ""
+msgstr "Estilo de Borda"
 
 #: resources/ui/mpv_control_sidebar.ui:281
 msgid "Outline and shadow"
-msgstr ""
+msgstr "Contorno e sombra"
 
 #: resources/ui/mpv_control_sidebar.ui:282
 msgid "Opaque box"
-msgstr ""
+msgstr "Caixa opaca"
 
 #: resources/ui/mpv_control_sidebar.ui:283
-#, fuzzy
 msgid "Background box"
-msgstr "Fundo"
+msgstr "Caixa de fundo"
 
 #: resources/ui/mpv_control_sidebar.ui:291
 msgid "Border Size"
-msgstr ""
+msgstr "Tamanho da borda"
 
 #: resources/ui/mpv_control_sidebar.ui:306
 msgid "Shadow Offset"
-msgstr ""
+msgstr "Deslocamento de sombra"
 
 #: resources/ui/mpv_control_sidebar.ui:322
 msgid "Stretch Image Subtitles to Screen"
-msgstr ""
+msgstr "Esticar legendas de imagens para a tela"
 
 #: resources/ui/mpv_control_sidebar.ui:329
-#, fuzzy
 msgid "Subtitle Color"
-msgstr "Legenda: "
+msgstr "Cor da legenda"
 
 #: resources/ui/mpv_control_sidebar.ui:342
 msgid "Text"
-msgstr ""
+msgstr "Texto"
 
 #: resources/ui/mpv_control_sidebar.ui:360
 msgid "Border"
-msgstr ""
+msgstr "Fronteira"
 
 #: resources/ui/mpv_control_sidebar.ui:378 resources/ui/account_settings.ui:198
 msgid "Background"
 msgstr "Fundo"
 
 #: resources/ui/mpv_control_sidebar.ui:398
-#, fuzzy
 msgid "Subtitle Offset"
-msgstr "Legenda: "
+msgstr "Deslocamento de legenda"
 
 #: resources/ui/mpv_control_sidebar.ui:411
 msgid "Offset"
-msgstr ""
+msgstr "Desvio"
 
 #: resources/ui/mpv_control_sidebar.ui:412
 #: resources/ui/mpv_control_sidebar.ui:461
-#, fuzzy
 msgid "Unit: ms"
-msgstr "Unidade: MB"
+msgstr "Unidade: ms"
 
 #: resources/ui/mpv_control_sidebar.ui:427
 msgid "Speed"
-msgstr ""
+msgstr "Velocidade"
 
 #: resources/ui/mpv_control_sidebar.ui:460
 msgid "Audio Offset"
-msgstr ""
+msgstr "Deslocamento de áudio"
 
 #: resources/ui/mpv_control_sidebar.ui:476
-#, fuzzy
 msgid "Audio Channel"
-msgstr "Canais"
+msgstr "Canal de Áudio"
 
 #: resources/ui/mpv_control_sidebar.ui:481
 msgid "Auto"
-msgstr ""
+msgstr "Auto"
 
 #: resources/ui/mpv_control_sidebar.ui:482
 msgid "Auto (Safety)"
-msgstr ""
+msgstr "Auto (Segurança)"
 
 #: resources/ui/mpv_control_sidebar.ui:483
 msgid "Mono"
-msgstr ""
+msgstr "Mono"
 
 #: resources/ui/mpv_control_sidebar.ui:484
-#, fuzzy
 msgid "Dual Channel"
-msgstr "Canais"
+msgstr "Canal duplo"
 
 #: resources/ui/mpv_control_sidebar.ui:485
 msgid "Dual Channel (Invert)"
-msgstr ""
+msgstr "Canal duplo (inverter)"
 
 #: resources/ui/mpv_control_sidebar.ui:498
-#, fuzzy
 msgid "Video Aspect"
-msgstr "Saída de Vídeo"
+msgstr "Aspecto do vídeo"
 
 #: resources/ui/mpv_control_sidebar.ui:503
 msgid "Fit"
-msgstr ""
+msgstr "Ajustar"
 
 #: resources/ui/mpv_control_sidebar.ui:504
 msgid "Crop"
-msgstr ""
+msgstr "Cortar"
 
 #: resources/ui/mpv_control_sidebar.ui:512
 msgid "Video color grading"
-msgstr ""
+msgstr "Classificação de cores de vídeo"
 
 #: resources/ui/mpv_control_sidebar.ui:525
 msgid "Brightness"
-msgstr ""
+msgstr "Brilho"
 
 #: resources/ui/mpv_control_sidebar.ui:540
-#, fuzzy
 msgid "Contrast"
-msgstr "Conteúdos"
+msgstr "Contraste"
 
 #: resources/ui/mpv_control_sidebar.ui:555
 msgid "Saturation"
-msgstr ""
+msgstr "Saturação"
 
 #: resources/ui/mpv_control_sidebar.ui:570
 msgid "Hue"
@@ -991,9 +983,8 @@ msgid "Gamma"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:602
-#, fuzzy
 msgid "Video Deband"
-msgstr "Vídeo: "
+msgstr "Video Deband"
 
 #: resources/ui/mpv_control_sidebar.ui:625
 msgid "Deband Iterations"
@@ -1012,14 +1003,12 @@ msgid "Deband Grain"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:688
-#, fuzzy
 msgid "Video Deinterlace"
-msgstr "Vídeo: "
+msgstr "Desentrelaçamento de vídeo"
 
 #: resources/ui/mpv_control_sidebar.ui:693
-#, fuzzy
 msgid "Video Upscale"
-msgstr "Vídeo: "
+msgstr "Vídeo Upscale"
 
 #: resources/ui/mpv_control_sidebar.ui:716
 msgid "Action after video ends"
@@ -1507,7 +1496,7 @@ msgstr ""
 
 #: resources/ui/item.ui:501
 msgid "MediaInfo"
-msgstr "MediaInfo"
+msgstr "Informações de mídia"
 
 #: resources/ui/metadata_dialog.ui:70 resources/ui/images_dialog.ui:59
 msgid "Not Available"
