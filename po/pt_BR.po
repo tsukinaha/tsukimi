@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-26 20:02+0800\n"
-"PO-Revision-Date: 2025-02-26 17:20+0000\n"
-"Last-Translator: John Peter Sa <johnppetersa@gmail.com>\n"
+"PO-Revision-Date: 2025-02-26 17:37+0000\n"
+"Last-Translator: watilon fazolin santana <watilon@proton.me>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "tsukimi/main/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -895,7 +895,7 @@ msgstr "Texto"
 
 #: resources/ui/mpv_control_sidebar.ui:360
 msgid "Border"
-msgstr "Fronteira"
+msgstr "Borda"
 
 #: resources/ui/mpv_control_sidebar.ui:378 resources/ui/account_settings.ui:198
 msgid "Background"
@@ -948,7 +948,7 @@ msgstr "Canal duplo (inverter)"
 
 #: resources/ui/mpv_control_sidebar.ui:498
 msgid "Video Aspect"
-msgstr "Aspecto do vídeo"
+msgstr "Proporção do vídeo"
 
 #: resources/ui/mpv_control_sidebar.ui:503
 msgid "Fit"
@@ -976,11 +976,11 @@ msgstr "Saturação"
 
 #: resources/ui/mpv_control_sidebar.ui:570
 msgid "Hue"
-msgstr ""
+msgstr "Matiz"
 
 #: resources/ui/mpv_control_sidebar.ui:585
 msgid "Gamma"
-msgstr ""
+msgstr "Gamma"
 
 #: resources/ui/mpv_control_sidebar.ui:602
 msgid "Video Deband"
