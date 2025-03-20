@@ -7,133 +7,135 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-03-16 13:55+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-03-19 23:56+0000\n"
+"Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
+"Language-Team: Tamil <https://hosted.weblate.org/projects/tsukimi/main/ta/>\n"
 "Language: ta\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: src/client/error.rs:19
 msgid "Timeout Error, Check your internet connection"
-msgstr ""
+msgstr "காலக்கெடு பிழை, உங்கள் இணைய இணைப்பை சரிபார்க்கவும்"
 
 #: src/client/error.rs:22
 msgid "Connection Error, Check your internet connection"
-msgstr ""
+msgstr "இணைப்பு பிழை, உங்கள் இணைய இணைப்பை சரிபார்க்கவும்"
 
 #: src/ui/provider/tu_item.rs:446
 msgid "No next up video found"
-msgstr ""
+msgstr "அடுத்த வீடியோ எதுவும் கிடைக்கவில்லை"
 
 #: src/ui/widgets/star_toggle.rs:65
 msgid "Remove from favorites"
-msgstr ""
+msgstr "பிடித்தவைகளிலிருந்து அகற்று"
 
 #: src/ui/widgets/star_toggle.rs:70
 msgid "Add to favorites"
-msgstr ""
+msgstr "பிடித்தவைகளில் சேர்க்கவும்"
 
 #: src/ui/widgets/account_settings.rs:226
 msgid "Password cannot be empty!"
-msgstr ""
+msgstr "கடவுச்சொல் காலியாக இருக்க முடியாது!"
 
 #: src/ui/widgets/account_settings.rs:230
 msgid "Passwords do not match!"
-msgstr ""
+msgstr "கடவுச்சொற்கள் பொருந்தவில்லை!"
 
 #: src/ui/widgets/account_settings.rs:237
 msgid "Password changed successfully! Please login again."
-msgstr ""
+msgstr "கடவுச்சொல் வெற்றிகரமாக மாற்றப்பட்டது! மீண்டும் உள்நுழைக."
 
 #: src/ui/widgets/account_settings.rs:243
 msgid "Failed to change password"
-msgstr ""
+msgstr "கடவுச்சொல்லை மாற்றுவதில் தோல்வி"
 
 #: src/ui/widgets/account_settings.rs:280
 msgid "Cache Cleared"
-msgstr ""
+msgstr "கேச் அழிக்கப்பட்டது"
 
 #: src/ui/widgets/account_settings.rs:301
 msgid "No file selected"
-msgstr ""
+msgstr "எந்த கோப்பும் தேர்ந்தெடுக்கப்படவில்லை"
 
 #: src/ui/widgets/account_settings.rs:518
 #: src/ui/widgets/account_settings.rs:527
 #: src/ui/widgets/account_settings.rs:561
 #: src/ui/widgets/account_settings.rs:570
 msgid "Descriptor cannot be empty!"
-msgstr ""
+msgstr "விவரிப்பான் காலியாக இருக்க முடியாது!"
 
 #: src/ui/widgets/account_settings.rs:532
 #: src/ui/widgets/account_settings.rs:575
 msgid "Invalid regex"
-msgstr ""
+msgstr "தவறான ரீசெக்ச்"
 
 #: src/ui/widgets/disc_box.rs:85 resources/ui/disc_box.ui:9
 msgid "Disc"
-msgstr ""
+msgstr "வட்டு"
 
 #: src/ui/widgets/home.rs:228
 msgid "Latest"
-msgstr ""
+msgstr "அண்மைக் கால"
 
 #: src/ui/widgets/liked.rs:156
 msgid "Favourite"
-msgstr ""
+msgstr "பிடித்த"
 
 #: src/ui/widgets/list.rs:109
 msgid "Channels"
-msgstr ""
+msgstr "சேனல்கள்"
 
 #: src/ui/widgets/list.rs:116
 msgid "All"
-msgstr ""
+msgstr "அனைத்தும்"
 
 #: src/ui/widgets/list.rs:117 src/ui/widgets/item.rs:674
 msgid "Resume"
-msgstr ""
+msgstr "மீண்டும் தொடங்குங்கள்"
 
 #: src/ui/widgets/list.rs:118 resources/ui/search.ui:60
 msgid "BoxSet"
-msgstr ""
+msgstr "பாக்ச் செட்"
 
 #: src/ui/widgets/list.rs:119 resources/ui/other.ui:150
 #: resources/ui/item.ui:483 resources/ui/filter.ui:85
 msgid "Tags"
-msgstr ""
+msgstr "குறிச்சொற்கள்"
 
 #: src/ui/widgets/list.rs:120 resources/ui/other.ui:155
 #: resources/ui/item.ui:478 resources/ui/filter.ui:78
 msgid "Genres"
-msgstr ""
+msgstr "வகைகள்"
 
 #: src/ui/widgets/list.rs:121 src/ui/widgets/window.rs:306
 #: resources/ui/window.ui:350
 msgid "Liked"
-msgstr ""
+msgstr "பிடித்திருந்தது"
 
 #: src/ui/widgets/list.rs:122
 msgid "Folder"
-msgstr ""
+msgstr "கோப்புறை"
 
 #: src/ui/widgets/media_viewer.rs:350
 #: src/ui/widgets/image_dialog/image_infocard.rs:171
 msgid "Image copied to clipboard"
-msgstr ""
+msgstr "படம் இடைநிலைப்பலகைக்கு நகலெடுக்கப்பட்டது"
 
 #: src/ui/widgets/metadata_dialog.rs:290 resources/ui/metadata_dialog.ui:230
 #: resources/ui/filter.ui:179
 msgid "Apply"
-msgstr ""
+msgstr "இடு"
 
 #: src/ui/widgets/metadata_dialog.rs:292
 #: src/ui/widgets/image_dialog/search_page.rs:146
 #: src/ui/widgets/tu_item/action.rs:466
 #: src/ui/widgets/identify/search_page.rs:124
 msgid "Are you sure you wish to continue?"
-msgstr ""
+msgstr "நீங்கள் தொடர விரும்புகிறீர்களா?"
 
 #: src/ui/widgets/metadata_dialog.rs:295
 #: src/ui/widgets/image_dialog/search_page.rs:149
@@ -142,207 +144,207 @@ msgstr ""
 #: resources/ui/account_settings.ui:507 resources/ui/account_settings.ui:617
 #: resources/ui/refresh_dialog.ui:19
 msgid "Cancel"
-msgstr ""
+msgstr "ரத்துசெய்"
 
 #: src/ui/widgets/metadata_dialog.rs:296
 #: src/ui/widgets/image_dialog/search_page.rs:150
 #: src/ui/widgets/identify/search_page.rs:128
 msgid "Ok"
-msgstr ""
+msgstr "சரி"
 
 #: src/ui/widgets/music_album.rs:294
 msgid "More From"
-msgstr ""
+msgstr "மேலும்"
 
 #: src/ui/widgets/refresh_dialog.rs:93
 msgid "Scanning..."
-msgstr ""
+msgstr "ச்கேனிங் ..."
 
 #: src/ui/widgets/server_panel.rs:118
 msgid "Shut down server"
-msgstr ""
+msgstr "சேவையகத்தை மூடு"
 
 #: src/ui/widgets/server_panel.rs:119
 msgid "Are you sure you want to shut down the server?"
-msgstr ""
+msgstr "சேவையகத்தை மூட விரும்புகிறீர்களா?"
 
 #: src/ui/widgets/server_panel.rs:150
 msgid "Restart server"
-msgstr ""
+msgstr "சேவையகத்தை மறுதொடக்கம் செய்யுங்கள்"
 
 #: src/ui/widgets/server_panel.rs:151
 msgid "Are you sure you want to restart the server?"
-msgstr ""
+msgstr "சேவையகத்தை மறுதொடக்கம் செய்ய விரும்புகிறீர்களா?"
 
 #: src/ui/widgets/server_panel.rs:154
 msgid "Revert"
-msgstr ""
+msgstr "மாற்றியமைக்கவும்"
 
 #: src/ui/widgets/server_panel.rs:155
 msgid "Confirm"
-msgstr ""
+msgstr "உறுதிப்படுத்தவும்"
 
 #: src/ui/widgets/server_panel.rs:191
 msgid "Server is shutting down"
-msgstr ""
+msgstr "சேவையகம் மூடப்படுகிறது"
 
 #: src/ui/widgets/server_panel.rs:203
 msgid "Server is restarting"
-msgstr ""
+msgstr "சேவையகம் மறுதொடக்கம் செய்கிறது"
 
 #: src/ui/widgets/server_panel.rs:290
 msgid "Last execute: "
-msgstr ""
+msgstr "கடைசியாக செயல்படுத்த: "
 
 #: src/ui/widgets/server_panel.rs:295
 msgid "Duration: "
-msgstr ""
+msgstr "காலம்: "
 
 #: src/ui/widgets/server_panel.rs:300
 msgid "Result: "
-msgstr ""
+msgstr "முடிவு: "
 
 #: src/ui/widgets/server_panel.rs:346
 msgid "Task started"
-msgstr ""
+msgstr "பணி தொடங்கியது"
 
 #: src/ui/widgets/account_add.rs:145
 msgid "Fields must be filled in"
-msgstr ""
+msgstr "புலங்கள் நிரப்பப்பட வேண்டும்"
 
 #: src/ui/widgets/account_add.rs:207
 msgid "Server edited successfully"
-msgstr ""
+msgstr "சேவையகம் வெற்றிகரமாக திருத்தப்பட்டது"
 
 #: src/ui/widgets/account_add.rs:212
 msgid "Server added successfully"
-msgstr ""
+msgstr "சேவையகம் வெற்றிகரமாக சேர்க்கப்பட்டது"
 
 #: src/ui/widgets/item.rs:678 src/ui/mpv/page.rs:298 src/ui/mpv/page.rs:300
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/item.ui:186
 msgid "Play"
-msgstr ""
+msgstr "விளையாடுங்கள்"
 
 #: src/ui/widgets/item.rs:1059
 msgid "Codec"
-msgstr ""
+msgstr "புரிப்பு"
 
 #: src/ui/widgets/item.rs:1062
 msgid "Language"
-msgstr ""
+msgstr "மொழி"
 
 #: src/ui/widgets/item.rs:1065 resources/ui/single_grid.ui:120
 #: resources/ui/metadata_dialog.ui:90
 msgid "Title"
-msgstr ""
+msgstr "தலைப்பு"
 
 #: src/ui/widgets/item.rs:1069 resources/ui/single_grid.ui:121
 msgid "Bitrate"
-msgstr ""
+msgstr "பிட்ரேட்"
 
 #: src/ui/widgets/item.rs:1074
 msgid "BitDepth"
-msgstr ""
+msgstr "பிட்டெப்ட்"
 
 #: src/ui/widgets/item.rs:1078
 msgid "SampleRate"
-msgstr ""
+msgstr "மாதிரி"
 
 #: src/ui/widgets/item.rs:1082
 msgid "Height"
-msgstr ""
+msgstr "உயரம்"
 
 #: src/ui/widgets/item.rs:1085
 msgid "Width"
-msgstr ""
+msgstr "அகலம்"
 
 #: src/ui/widgets/item.rs:1088
 msgid "ColorSpace"
-msgstr ""
+msgstr "வண்ணங்கள்"
 
 #: src/ui/widgets/item.rs:1092
 msgid "DisplayTitle"
-msgstr ""
+msgstr "டிச்ப்ளே டிடில்"
 
 #: src/ui/widgets/item.rs:1096
 msgid "Channel"
-msgstr ""
+msgstr "வாய்க்கால்"
 
 #: src/ui/widgets/item.rs:1100
 msgid "ChannelLayout"
-msgstr ""
+msgstr "சேன்லேஅவுட்"
 
 #: src/ui/widgets/item.rs:1105
 msgid "AverageFrameRate"
-msgstr ""
+msgstr "சராசரி ஃபிரமரேட்"
 
 #: src/ui/widgets/item.rs:1109
 msgid "PixelFormat"
-msgstr ""
+msgstr "பிக்சல்ஃபார்மட்"
 
 #: src/ui/widgets/item.rs:1217
 msgid "No video source found"
-msgstr ""
+msgstr "வீடியோ மூலமும் கிடைக்கவில்லை"
 
 #: src/ui/widgets/item.rs:1354
 msgid "Season not found. Is this a continue watching list?"
-msgstr ""
+msgstr "சீசன் கிடைக்கவில்லை. இது தொடர்ந்து பார்க்கும் பட்டியலா?"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:184
 msgid "Image saved"
-msgstr ""
+msgstr "படம் சேமிக்கப்பட்டது"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:189
 msgid "Failed to load image"
-msgstr ""
+msgstr "படத்தை ஏற்றுவதில் தோல்வி"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:151
 msgid "No image to view"
-msgstr ""
+msgstr "பார்க்க படம் இல்லை"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:167
 msgid "No image to copy"
-msgstr ""
+msgstr "நகலெடுக்க படம் இல்லை"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:204
 msgid "Image deleted"
-msgstr ""
+msgstr "படம் நீக்கப்பட்டது"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:209
 msgid "Error deleting image"
-msgstr ""
+msgstr "படத்தை நீக்குவதில் பிழை"
 
 #: src/ui/widgets/image_dialog/search_page.rs:144
 msgid "Replace Image"
-msgstr ""
+msgstr "படத்தை மாற்றவும்"
 
 #: src/ui/widgets/window.rs:294 resources/ui/window.ui:304
 msgid "Home"
-msgstr ""
+msgstr "வீடு"
 
 #: src/ui/widgets/window.rs:318 resources/ui/search.ui:23
 #: resources/ui/window.ui:21 resources/ui/window.ui:396
 #: resources/ui/image_info_card.ui:127 resources/ui/identify_dialog.ui:94
 msgid "Search"
-msgstr ""
+msgstr "தேடல்"
 
 #: src/ui/widgets/window.rs:798
 msgid "Server Panel"
-msgstr ""
+msgstr "சேவையக குழு"
 
 #: src/ui/widgets/window.rs:973
 msgid "Fatal Error"
-msgstr ""
+msgstr "அபாயகரமான பிழை"
 
 #: src/ui/widgets/window.rs:976
 msgid "Copy Error & Close"
-msgstr ""
+msgstr "பிழை மற்றும் மூடு"
 
 #: src/ui/widgets/window.rs:1001
 msgid "Windows Alert"
-msgstr ""
+msgstr "சாளரங்கள் எச்சரிக்கை"
 
 #: src/ui/widgets/window.rs:1002
 msgid ""
@@ -357,26 +359,35 @@ msgid ""
 "software and not an upstream issue. Choose the appropriate issue template "
 "and fill in all required fields without any omissions."
 msgstr ""
+"நீங்கள் சாளரங்களில் சுகிமியைப் பயன்படுத்துகிறீர்கள் என்று தெரிகிறது. இந்த பயன்பாட்டால் "
+"பயன்படுத்தப்படும் சி.டி.கே லினக்சிற்காக வடிவமைக்கப்பட்டுள்ளது என்பதை நினைவில் கொள்க, மேலும்"
+" வீடியோ வழங்குதல், ஆடியோ பிளேபேக், பிணையம் இணைப்புகள் மற்றும் வெளிப்புற இணைப்புகள் "
+"உள்ளிட்டவை அல்ல, ஆனால் அவை மட்டுமல்ல. கூடுதலாக, கருப்பு எல்லைகள், பட வழங்குதல், எழுத்துரு"
+" வழங்குதல், டிபிஐ அளவிடுதல், வீடியோ வழங்குதல், சிஎல் ரெண்டரர், ஃபுல்ச்கிரீன் பயன்முறை, "
+"எச்டிஆர் மற்றும் லோகேல் கண்டறிதல் போன்றவற்றை சரிசெய்ய முடியாத சிக்கல்கள் உள்ளன.\n"
+" நீங்கள் ஒரு சிக்கலைத் திறக்க விரும்பினால், இது இந்த மென்பொருளுடன் தொடர்புடையது என்பதை "
+"உறுதிப்படுத்தவும், மேலோடை சிக்கல் அல்ல. பொருத்தமான வெளியீட்டு வார்ப்புருவைத் தேர்ந்தெடுத்து"
+", எந்த குறைபாடுகளும் இல்லாமல் தேவையான அனைத்து புலங்களையும் நிரப்பவும்."
 
 #: src/ui/widgets/window.rs:1004
 msgid "Close"
-msgstr ""
+msgstr "மூடு"
 
 #: src/ui/widgets/window.rs:1025
 msgid "translator-credits"
-msgstr ""
+msgstr "மொழிபெயர்ப்பாளர்-வரவு"
 
 #: src/ui/widgets/tu_overview_item.rs:255 src/ui/widgets/tu_list_item.rs:297
 msgid "Present"
-msgstr ""
+msgstr "தற்போது"
 
 #: src/ui/widgets/tu_item/action.rs:91
 msgid "Success"
-msgstr ""
+msgstr "செய்"
 
 #: src/ui/widgets/tu_item/action.rs:460
 msgid "Delete Item"
-msgstr ""
+msgstr "உருப்படியை நீக்கு"
 
 #: src/ui/widgets/tu_item/action.rs:464
 msgid ""
@@ -384,1203 +395,1218 @@ msgid ""
 "library.\n"
 "The following files and folders will be deleted:"
 msgstr ""
+"இந்த உருப்படியை நீக்குவது கோப்பு முறைமை மற்றும் உங்கள் ஊடக நூலகம் இரண்டிலிருந்தும் அதை "
+"நீக்கிவிடும்.\n"
+" பின்வரும் கோப்புகள் மற்றும் கோப்புறைகள் நீக்கப்படும்:"
 
 #: src/ui/widgets/tu_item/action.rs:471 resources/ui/pop-menu.ui:87
 #: resources/ui/server_action_row.ui:52 resources/ui/image_info_card.ui:139
 msgid "Delete"
-msgstr ""
+msgstr "நீக்கு"
 
 #: src/ui/widgets/tu_item/action.rs:523 src/ui/widgets/tu_item/action.rs:524
 #: src/ui/widgets/tu_item/action.rs:529 resources/ui/pop-menu.ui:57
 msgid "Remove Identification"
-msgstr ""
+msgstr "அடையாளத்தை அகற்று"
 
 #: src/ui/widgets/tu_item/action.rs:525
 msgid "Are you sure you wish to reset all metadata?"
-msgstr ""
+msgstr "எல்லா மெட்டாடேட்டாவையும் மீட்டமைக்க விரும்புகிறீர்களா?"
 
 #: src/ui/widgets/tu_list_item.rs:196 src/ui/widgets/tu_list_item.rs:200
 #: src/ui/widgets/tu_list_item.rs:204
 msgid "Waiting for mediasource ..."
-msgstr ""
+msgstr "மீடியாசோர்சுக்காக காத்திருக்கிறது ..."
 
 #: src/ui/widgets/missing_episodes_dialog.rs:149
 msgid "Special"
-msgstr ""
+msgstr "சிறப்பு"
 
 #: src/ui/widgets/identify/dialog.rs:140
 msgid "Failed to get path"
-msgstr ""
+msgstr "பாதையைப் பெறுவதில் தோல்வி"
 
 #: src/ui/widgets/identify/search_page.rs:122 resources/ui/pop-menu.ui:51
 #: resources/ui/identify_dialog.ui:6 resources/ui/identify_dialog.ui:14
 #: resources/ui/identify_dialog_search_page.ui:4
 msgid "Identify"
-msgstr ""
+msgstr "அடையாளம் காணவும்"
 
 #: src/ui/widgets/identify/search_page.rs:131
 msgid "Replace existing images"
-msgstr ""
+msgstr "இருக்கும் படங்களை மாற்றவும்"
 
 #: src/ui/mpv/control_sidebar.rs:452
 msgid "Video filter settings cleared."
-msgstr ""
+msgstr "வீடியோ வடிகட்டி அமைப்புகள் அழிக்கப்பட்டன."
 
 #: src/ui/mpv/control_sidebar.rs:475
 msgid "Subtitle settings cleared."
-msgstr ""
+msgstr "வசன அமைப்புகள் அழிக்கப்பட்டன."
 
 #: src/ui/mpv/control_sidebar.rs:488
 msgid "Subtitle color settings cleared."
-msgstr ""
+msgstr "வசன வண்ண அமைப்புகள் அழிக்கப்பட்டன."
 
 #: src/ui/mpv/control_sidebar.rs:497
 msgid "Subtitle offset settings cleared."
-msgstr ""
+msgstr "வசன ஆஃப்செட் அமைப்புகள் அழிக்கப்பட்டன."
 
 #: src/ui/mpv/control_sidebar.rs:539
 msgid "Deband settings cleared."
-msgstr ""
+msgstr "டெபாண்ட் அமைப்புகள் அழிக்கப்பட்டன."
 
 #: src/ui/mpv/mpvglarea.rs:77
 msgid "Failed to get GLContext"
-msgstr ""
+msgstr "Glcontext ஐப் பெறுவதில் தோல்வி"
 
 #: src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305 resources/ui/mpvpage.ui:215
 msgid "Pause"
-msgstr ""
+msgstr "இடைநிறுத்தம்"
 
 #: src/ui/mpv/page.rs:603
 msgid "No more video found"
-msgstr ""
+msgstr "மேலும் வீடியோ கிடைக்கவில்லை"
 
 #: src/ui/mpv/page.rs:697
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
 msgstr ""
+"MPV பணிநிறுத்தம் செய்யப்பட்டுள்ளது, விண்ணப்பம் வெளியேறும்.\n"
+" சுகிமி எம்.பி.வி.யை மறுதொடக்கம் செய்ய முடியாது."
 
 #: resources/ui/item_actions.ui:40 resources/ui/pop-menu.ui:23
 msgid "Mark as Played"
-msgstr ""
+msgstr "விளையாடியபடி குறி"
 
 #: resources/ui/item_actions.ui:46 resources/ui/pop-menu.ui:29
 msgid "Mark as Unplayed"
-msgstr ""
+msgstr "விளையாடப்படாததைக் குறிக்கவும்"
 
 #: resources/ui/item_actions.ui:53 resources/ui/pop-menu.ui:37
 #: resources/ui/song_widget.ui:150 resources/ui/metadata_dialog.ui:18
 #: resources/ui/metadata_dialog.ui:26
 msgid "Edit Metadata"
-msgstr ""
+msgstr "மெட்டாடேட்டாவைத் திருத்து"
 
 #: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:43
 #: resources/ui/song_widget.ui:155 resources/ui/images_dialog.ui:6
 #: resources/ui/images_dialog.ui:36
 msgid "Edit Images"
-msgstr ""
+msgstr "படங்களைத் திருத்தவும்"
 
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
-msgstr ""
+msgstr "_ கோபி படம்"
 
 #: resources/ui/media_viewer.ui:36 resources/ui/media_viewer.ui:38
 msgid "Back"
-msgstr ""
+msgstr "பின்"
 
 #: resources/ui/media_viewer.ui:46 resources/ui/media_viewer.ui:48
 msgid "Media Menu"
-msgstr ""
+msgstr "மீடியா பட்டியல்"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 #: resources/ui/mpvpage.ui:291 resources/ui/mpvpage.ui:293
 msgid "Fullscreen"
-msgstr ""
+msgstr "முழு திரை"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
 #: resources/ui/mpvpage.ui:302 resources/ui/mpvpage.ui:304
 msgid "Exit Fullscreen"
-msgstr ""
+msgstr "முழுத்திரை வெளியேறவும்"
 
 #: resources/ui/player_toolbar.ui:78
 msgid "Previous"
-msgstr ""
+msgstr "முந்தைய"
 
 #: resources/ui/player_toolbar.ui:108
 msgid "Next"
-msgstr ""
+msgstr "அடுத்தது"
 
 #: resources/ui/player_toolbar.ui:180
 msgid "Stop And Hide PlayerBar"
-msgstr ""
+msgstr "பிளேயர்பரை நிறுத்தி மறைக்கவும்"
 
 #: resources/ui/player_toolbar.ui:197 resources/ui/account_settings.ui:290
 msgid "Repeat Mode"
-msgstr ""
+msgstr "மீண்டும் பயன்முறை"
 
 #: resources/ui/player_toolbar.ui:231 resources/ui/account_settings.ui:294
 msgid "Repeat One"
-msgstr ""
+msgstr "ஒன்றை மீண்டும் செய்யவும்"
 
 #: resources/ui/player_toolbar.ui:235 resources/ui/account_settings.ui:295
 msgid "Repeat All"
-msgstr ""
+msgstr "அனைத்தையும் மீண்டும் செய்யவும்"
 
 #: resources/ui/player_toolbar.ui:239 resources/ui/account_settings.ui:296
 #: resources/ui/account_settings.ui:324
 msgid "None"
-msgstr ""
+msgstr "எதுவுமில்லை"
 
 #: resources/ui/pop-menu.ui:5
 msgid "Remove"
-msgstr ""
+msgstr "அகற்று"
 
 #: resources/ui/pop-menu.ui:11
 msgid "Like"
-msgstr ""
+msgstr "போன்ற"
 
 #: resources/ui/pop-menu.ui:17
 msgid "Unlike"
-msgstr ""
+msgstr "போலல்லாமல்"
 
 #: resources/ui/pop-menu.ui:65
 msgid "View Missing Episodes"
-msgstr ""
+msgstr "காணாமல் போன அத்தியாயங்களைக் காண்க"
 
 #: resources/ui/pop-menu.ui:73 resources/ui/refresh_dialog.ui:8
 msgid "Refresh Metadata"
-msgstr ""
+msgstr "மெட்டாடேட்டாவை புதுப்பிக்கவும்"
 
 #: resources/ui/pop-menu.ui:79
 msgid "Scan"
-msgstr ""
+msgstr "ச்கேன்"
 
 #: resources/ui/server_panel.ui:47
 msgid "Restart Server"
-msgstr ""
+msgstr "சேவையகத்தை மறுதொடக்கம் செய்யுங்கள்"
 
 #: resources/ui/server_panel.ui:58
 msgid "Shutdown Server"
-msgstr ""
+msgstr "பணிநிறுத்தம் சேவையகம்"
 
 #: resources/ui/server_panel.ui:78
 msgid "System Logs"
-msgstr ""
+msgstr "கணினி பதிவுகள்"
 
 #: resources/ui/server_panel.ui:83
 msgid "Activity Logs"
-msgstr ""
+msgstr "செயல்பாட்டு பதிவுகள்"
 
 #: resources/ui/server_panel.ui:103
 msgid "Tasks"
-msgstr ""
+msgstr "பணிகள்"
 
 #: resources/ui/mpv_menu_actions.ui:12
 msgid "Backward"
-msgstr ""
+msgstr "பின்னோக்கு"
 
 #: resources/ui/mpv_menu_actions.ui:42
 msgid "Forward"
-msgstr ""
+msgstr "முன்னோக்கி"
 
 #: resources/ui/mpv_shortcuts_window.ui:11 resources/ui/account_settings.ui:12
 msgid "General"
-msgstr ""
+msgstr "பொது"
 
 #: resources/ui/mpv_shortcuts_window.ui:15
 msgid "Decrease/increase playback speed by 10%"
-msgstr ""
+msgstr "பிளேபேக் வேகத்தை 10% குறைக்க/அதிகரிக்கவும்"
 
 #: resources/ui/mpv_shortcuts_window.ui:21
 msgid "Halve/double current playback speed"
-msgstr ""
+msgstr "பாதி/இரட்டை தற்போதைய பின்னணி விரைவு"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
 msgid "Reset playback speed to normal"
-msgstr ""
+msgstr "பிளேபேக் வேகத்தை இயல்புநிலைக்கு மீட்டமைக்கவும்"
 
 #: resources/ui/single_grid.ui:32
 msgid "Change Poster"
-msgstr ""
+msgstr "சுவரொட்டியை மாற்றவும்"
 
 #: resources/ui/single_grid.ui:38
 msgid "View"
-msgstr ""
+msgstr "பார்வை"
 
 #: resources/ui/single_grid.ui:47 resources/ui/search.ui:31
 #: resources/ui/filter.ui:6 resources/ui/filter.ui:21
 msgid "Filter Panel"
-msgstr ""
+msgstr "வடிகட்டி குழு"
 
 #: resources/ui/single_grid.ui:66
 msgid "Grid View"
-msgstr ""
+msgstr "கட்டம் பார்வை"
 
 #: resources/ui/single_grid.ui:75
 msgid "List View"
-msgstr ""
+msgstr "பட்டியல் பார்வை"
 
 #: resources/ui/single_grid.ui:92
 msgid "Ascending"
-msgstr ""
+msgstr "ஏறுதல்"
 
 #: resources/ui/single_grid.ui:100
 msgid "Descending"
-msgstr ""
+msgstr "இறங்கு"
 
 #: resources/ui/single_grid.ui:115
 msgid "Sort By"
-msgstr ""
+msgstr "வரிசைப்படுத்தவும்"
 
 #: resources/ui/single_grid.ui:122 resources/ui/metadata_dialog.ui:100
 msgid "Date Created"
-msgstr ""
+msgstr "தேதி உருவாக்கப்பட்டது"
 
 #: resources/ui/single_grid.ui:123
 msgid "Imdb Rate"
-msgstr ""
+msgstr "IMDB வீதம்"
 
 #: resources/ui/single_grid.ui:124
 msgid "Critic Rating"
-msgstr ""
+msgstr "விமர்சகர் மதிப்பீடு"
 
 #: resources/ui/single_grid.ui:125
 msgid "Premiere Date"
-msgstr ""
+msgstr "பிரீமியர் தேதி"
 
 #: resources/ui/single_grid.ui:126
 msgid "Offical Rating"
-msgstr ""
+msgstr "அதிகாரப்பூர்வ மதிப்பீடு"
 
 #: resources/ui/single_grid.ui:127
 msgid "Production Year"
-msgstr ""
+msgstr "விளைவாக்கம் ஆண்டு"
 
 #: resources/ui/single_grid.ui:128
 msgid "Date Played"
-msgstr ""
+msgstr "விளையாடிய தேதி"
 
 #: resources/ui/single_grid.ui:129
 msgid "Runtime"
-msgstr ""
+msgstr "இயக்க நேரம்"
 
 #: resources/ui/single_grid.ui:130
 msgid "Updated At"
-msgstr ""
+msgstr "இல் புதுப்பிக்கப்பட்டது"
 
 #: resources/ui/single_grid.ui:179 resources/ui/item.ui:416
 msgid "Nothing Here"
-msgstr ""
+msgstr "இங்கே எதுவும் இல்லை"
 
 #: resources/ui/single_grid.ui:194
 msgid "Poster"
-msgstr ""
+msgstr "சுவரொட்டி"
 
 #: resources/ui/single_grid.ui:198
 msgid "Backdrop"
-msgstr ""
+msgstr "பின்னணி"
 
 #: resources/ui/single_grid.ui:202
 msgid "Banner"
-msgstr ""
+msgstr "பேனர்"
 
 #: resources/ui/search.ui:48 resources/ui/other.ui:122
 msgid "Series"
-msgstr ""
+msgstr "தொடர்"
 
 #: resources/ui/search.ui:54 resources/ui/other.ui:116
 msgid "Movie"
-msgstr ""
+msgstr "படம்"
 
 #: resources/ui/search.ui:66
 msgid "Person"
-msgstr ""
+msgstr "ஆள்"
 
 #: resources/ui/search.ui:72
 msgid "Music Album"
-msgstr ""
+msgstr "இசை ஆல்பம்"
 
 #: resources/ui/search.ui:78 resources/ui/mpv_control_sidebar.ui:447
 #: resources/ui/mpvpage.ui:376 resources/ui/mpvpage.ui:433
 msgid "Audio"
-msgstr ""
+msgstr "ஆடியோ"
 
 #: resources/ui/search.ui:84 resources/ui/mpv_control_sidebar.ui:495
 #: resources/ui/other.ui:134
 msgid "Video"
-msgstr ""
+msgstr "ஒளிதோற்றம்"
 
 #: resources/ui/search.ui:90 resources/ui/other.ui:128
 msgid "Episode"
-msgstr ""
+msgstr "அத்தியாயம்"
 
 #: resources/ui/search.ui:163
 msgid "Nothing Here or No type selected"
-msgstr ""
+msgstr "இங்கே எதுவும் இல்லை அல்லது வகை தேர்ந்தெடுக்கப்படவில்லை"
 
 #: resources/ui/search.ui:164
 msgid "Maybe you should try using different search terms"
-msgstr ""
+msgstr "ஒருவேளை நீங்கள் வெவ்வேறு தேடல் சொற்களைப் பயன்படுத்த முயற்சிக்க வேண்டும்"
 
 #: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:610
 msgid "Advanced Settings"
-msgstr ""
+msgstr "மேம்பட்ட அமைப்புகள்"
 
 #: resources/ui/mpv_control_sidebar.ui:18
 msgid "Seek Action"
-msgstr ""
+msgstr "நடவடிக்கை தேடுங்கள்"
 
 #: resources/ui/mpv_control_sidebar.ui:21
 msgid "Seek Backward"
-msgstr ""
+msgstr "பின்தங்கிய தேடுங்கள்"
 
 #: resources/ui/mpv_control_sidebar.ui:22
 #: resources/ui/mpv_control_sidebar.ui:42
 #: resources/ui/mpv_control_sidebar.ui:94
 msgid "Unit: Seconds"
-msgstr ""
+msgstr "அலகு: விநாடிகள்"
 
 #: resources/ui/mpv_control_sidebar.ui:41
 msgid "Seek Forward"
-msgstr ""
+msgstr "முன்னோக்கி தேடுங்கள்"
 
 #: resources/ui/mpv_control_sidebar.ui:63 resources/ui/account_settings.ui:217
 msgid "Cache"
-msgstr ""
+msgstr "கேச்"
 
 #: resources/ui/mpv_control_sidebar.ui:72
 msgid "Show Buffer Speed"
-msgstr ""
+msgstr "இடையக வேகத்தைக் காட்டு"
 
 #: resources/ui/mpv_control_sidebar.ui:77
 msgid "Cache Size"
-msgstr ""
+msgstr "கேச் அளவு"
 
 #: resources/ui/mpv_control_sidebar.ui:78
 msgid "Unit: MB"
-msgstr ""
+msgstr "அலகு: எம்பி"
 
 #: resources/ui/mpv_control_sidebar.ui:93
 msgid "Cache Time"
-msgstr ""
+msgstr "கேச் நேரம்"
 
 #: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:384
 #: resources/ui/mpvpage.ui:402
 msgid "Subtitle"
-msgstr ""
+msgstr "வசன வரிகள்"
 
 #: resources/ui/mpv_control_sidebar.ui:114
 msgid "Subtitle Composing"
-msgstr ""
+msgstr "வசன இசையமைத்தல்"
 
 #: resources/ui/mpv_control_sidebar.ui:186
 msgid "Position"
-msgstr ""
+msgstr "நிலை"
 
 #: resources/ui/mpv_control_sidebar.ui:206
 msgid "Subtitle Text Size"
-msgstr ""
+msgstr "வசன உரை அளவு"
 
 #: resources/ui/mpv_control_sidebar.ui:207
 msgid "This option only takes effect for srt subtitles"
-msgstr ""
+msgstr "இந்த விருப்பம் எச்ஆர்டி வசனங்களுக்கு மட்டுமே நடைமுறைக்கு வருகிறது"
 
 #: resources/ui/mpv_control_sidebar.ui:227
 msgid "Subtitle Text Scale"
-msgstr ""
+msgstr "வசன உரை அளவு"
 
 #: resources/ui/mpv_control_sidebar.ui:228
 msgid "This affects ASS subtitles as well"
-msgstr ""
+msgstr "இது கழுதை வசனங்களையும் பாதிக்கிறது"
 
 #: resources/ui/mpv_control_sidebar.ui:249
 msgid "Subtitle Text Font"
-msgstr ""
+msgstr "வசன உரை எழுத்துரு"
 
 #: resources/ui/mpv_control_sidebar.ui:251
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
 msgstr ""
+"ஒரு குறிப்பிட்ட எழுத்துருவைக் குறிப்பிடாத வசன வரிகளுக்குப் பயன்படுத்த எழுத்துருவைக் "
+"குறிப்பிடவும்"
 
 #: resources/ui/mpv_control_sidebar.ui:276
 msgid "Border Style"
-msgstr ""
+msgstr "எல்லை நடை"
 
 #: resources/ui/mpv_control_sidebar.ui:281
 msgid "Outline and shadow"
-msgstr ""
+msgstr "அவுட்லைன் மற்றும் நிழல்"
 
 #: resources/ui/mpv_control_sidebar.ui:282
 msgid "Opaque box"
-msgstr ""
+msgstr "ஒளிபுகா பெட்டி"
 
 #: resources/ui/mpv_control_sidebar.ui:283
 msgid "Background box"
-msgstr ""
+msgstr "பின்னணி பெட்டி"
 
 #: resources/ui/mpv_control_sidebar.ui:291
 msgid "Border Size"
-msgstr ""
+msgstr "எல்லை அளவு"
 
 #: resources/ui/mpv_control_sidebar.ui:306
 msgid "Shadow Offset"
-msgstr ""
+msgstr "நிழல் ஆஃப்செட்"
 
 #: resources/ui/mpv_control_sidebar.ui:322
 msgid "Stretch Image Subtitles to Screen"
-msgstr ""
+msgstr "திரைக்கு பட வசன வரிகள் நீட்டவும்"
 
 #: resources/ui/mpv_control_sidebar.ui:329
 msgid "Subtitle Color"
-msgstr ""
+msgstr "வசன வண்ணம்"
 
 #: resources/ui/mpv_control_sidebar.ui:342
 msgid "Text"
-msgstr ""
+msgstr "உரை"
 
 #: resources/ui/mpv_control_sidebar.ui:360
 msgid "Border"
-msgstr ""
+msgstr "எல்லை"
 
 #: resources/ui/mpv_control_sidebar.ui:378 resources/ui/account_settings.ui:141
 msgid "Background"
-msgstr ""
+msgstr "பின்னணி"
 
 #: resources/ui/mpv_control_sidebar.ui:398
 msgid "Subtitle Offset"
-msgstr ""
+msgstr "வசன வரிகள் ஆஃப்செட்"
 
 #: resources/ui/mpv_control_sidebar.ui:411
 msgid "Offset"
-msgstr ""
+msgstr "ஈடுசெய்யும்"
 
 #: resources/ui/mpv_control_sidebar.ui:412
 #: resources/ui/mpv_control_sidebar.ui:461
 msgid "Unit: ms"
-msgstr ""
+msgstr "அலகு: எம்.எச்"
 
 #: resources/ui/mpv_control_sidebar.ui:427
 msgid "Speed"
-msgstr ""
+msgstr "வேகம்"
 
 #: resources/ui/mpv_control_sidebar.ui:460
 msgid "Audio Offset"
-msgstr ""
+msgstr "ஆடியோ ஆஃப்செட்"
 
 #: resources/ui/mpv_control_sidebar.ui:476
 msgid "Audio Channel"
-msgstr ""
+msgstr "ஆடியோ சேனல்"
 
 #: resources/ui/mpv_control_sidebar.ui:481
 msgid "Auto"
-msgstr ""
+msgstr "தானி"
 
 #: resources/ui/mpv_control_sidebar.ui:482
 msgid "Auto (Safety)"
-msgstr ""
+msgstr "ஆட்டோ (பாதுகாப்பு)"
 
 #: resources/ui/mpv_control_sidebar.ui:483
 msgid "Mono"
-msgstr ""
+msgstr "மோனோ"
 
 #: resources/ui/mpv_control_sidebar.ui:484
 msgid "Dual Channel"
-msgstr ""
+msgstr "இரட்டை சேனல்"
 
 #: resources/ui/mpv_control_sidebar.ui:485
 msgid "Dual Channel (Invert)"
-msgstr ""
+msgstr "இரட்டை சேனல் (தலைகீழ்)"
 
 #: resources/ui/mpv_control_sidebar.ui:498
 msgid "Video Aspect"
-msgstr ""
+msgstr "வீடியோ நற்பொருத்தம்"
 
 #: resources/ui/mpv_control_sidebar.ui:503
 msgid "Fit"
-msgstr ""
+msgstr "பொருத்தம்"
 
 #: resources/ui/mpv_control_sidebar.ui:504
 msgid "Crop"
-msgstr ""
+msgstr "பயிர்"
 
 #: resources/ui/mpv_control_sidebar.ui:512
 msgid "Video color grading"
-msgstr ""
+msgstr "வீடியோ வண்ண தகுதி"
 
 #: resources/ui/mpv_control_sidebar.ui:525
 msgid "Brightness"
-msgstr ""
+msgstr "ஒளி"
 
 #: resources/ui/mpv_control_sidebar.ui:540
 msgid "Contrast"
-msgstr ""
+msgstr "மாறுபாடு"
 
 #: resources/ui/mpv_control_sidebar.ui:555
 msgid "Saturation"
-msgstr ""
+msgstr "தெவிட்டல்"
 
 #: resources/ui/mpv_control_sidebar.ui:570
 msgid "Hue"
-msgstr ""
+msgstr "வண்ணச்சாயல்"
 
 #: resources/ui/mpv_control_sidebar.ui:585
 msgid "Gamma"
-msgstr ""
+msgstr "காமா"
 
 #: resources/ui/mpv_control_sidebar.ui:602
 msgid "Video Deband"
-msgstr ""
+msgstr "வீடியோ டெபாண்ட்"
 
 #: resources/ui/mpv_control_sidebar.ui:625
 msgid "Deband Iterations"
-msgstr ""
+msgstr "டெபாண்ட் மறு செய்கைகள்"
 
 #: resources/ui/mpv_control_sidebar.ui:640
 msgid "Deband Threshold"
-msgstr ""
+msgstr "டெபாண்ட் வாசல்"
 
 #: resources/ui/mpv_control_sidebar.ui:655
 msgid "Deband Range"
-msgstr ""
+msgstr "டெபாண்ட் வரம்பு"
 
 #: resources/ui/mpv_control_sidebar.ui:670
 msgid "Deband Grain"
-msgstr ""
+msgstr "டெபாண்ட் தானியங்கள்"
 
 #: resources/ui/mpv_control_sidebar.ui:688
 msgid "Video Deinterlace"
-msgstr ""
+msgstr "வீடியோ deinterlace"
 
 #: resources/ui/mpv_control_sidebar.ui:693
 msgid "Video Upscale"
-msgstr ""
+msgstr "வீடியோ மேல்தட்டு"
 
 #: resources/ui/mpv_control_sidebar.ui:716
 msgid "Action after video ends"
-msgstr ""
+msgstr "வீடியோ முடிந்ததும் நடவடிக்கை"
 
 #: resources/ui/mpv_control_sidebar.ui:719
 msgid "Play Next"
-msgstr ""
+msgstr "அடுத்து விளையாடுங்கள்"
 
 #: resources/ui/mpv_control_sidebar.ui:732
 msgid "Loop Playback"
-msgstr ""
+msgstr "லூப் பிளேபேக்"
 
 #: resources/ui/mpv_control_sidebar.ui:746
 msgid "Stop"
-msgstr ""
+msgstr "நிறுத்து"
 
 #: resources/ui/mpv_control_sidebar.ui:762
 msgid "Hardware decoding"
-msgstr ""
+msgstr "வன்பொருள் டிகோடிங்"
 
 #: resources/ui/mpv_control_sidebar.ui:766
 msgid "no (default)"
-msgstr ""
+msgstr "இல்லை (இயல்புநிலை)"
 
 #: resources/ui/mpv_control_sidebar.ui:810
 msgid "Not all settings will be saved"
-msgstr ""
+msgstr "எல்லா அமைப்புகளும் சேமிக்கப்படாது"
 
 #: resources/ui/mpv_menu.ui:11
 msgid "_Next"
-msgstr ""
+msgstr "அடுத்தது (_N)"
 
 #: resources/ui/mpv_menu.ui:16
 msgid "_Previous"
-msgstr ""
+msgstr "முன்தைய (_P)"
 
 #: resources/ui/mpv_menu.ui:23
 msgid "Next chapter"
-msgstr ""
+msgstr "அடுத்த அத்தியாயம்"
 
 #: resources/ui/mpv_menu.ui:28
 msgid "Previous chapter"
-msgstr ""
+msgstr "முந்தைய அத்தியாயம்"
 
 #: resources/ui/mpv_menu.ui:35 resources/ui/window.ui:559
 #: resources/ui/window.ui:581 resources/ui/mpvpage.ui:151
 msgid "Playlist"
-msgstr ""
+msgstr "பிளேலிச்ட்"
 
 #: resources/ui/mpv_menu.ui:40
 msgid "Advanced settings"
-msgstr ""
+msgstr "மேம்பட்ட அமைப்புகள்"
 
 #: resources/ui/mpv_menu.ui:47
 msgid "Media info"
-msgstr ""
+msgstr "ஊடக செய்தி"
 
 #: resources/ui/mpv_menu.ui:54 resources/ui/window.ui:35
 #: resources/ui/window.ui:64
 msgid "_Keyboard shortcuts"
-msgstr ""
+msgstr "விசைப்பலகை குறுக்குவழிகள்"
 
 #: resources/ui/account.ui:6 resources/ui/account.ui:14
 msgid "Add a New Server"
-msgstr ""
+msgstr "புதிய சேவையகத்தைச் சேர்க்கவும்"
 
 #: resources/ui/account.ui:45
 msgid "Enter the server details below."
-msgstr ""
+msgstr "சேவையக விவரங்களை கீழே உள்ளிடவும்."
 
 #: resources/ui/account.ui:48 resources/ui/other.ui:54
 msgid "Name"
-msgstr ""
+msgstr "பெயர்"
 
 #: resources/ui/account.ui:66
 msgid "Server Address"
-msgstr ""
+msgstr "சேவையக முகவரி"
 
 #: resources/ui/account.ui:85
 msgid "Port"
-msgstr ""
+msgstr "துறைமுகம்"
 
 #: resources/ui/account.ui:92
 msgid "Username"
-msgstr ""
+msgstr "பயனர்பெயர்"
 
 #: resources/ui/account.ui:97
 msgid "Password"
-msgstr ""
+msgstr "கடவுச்சொல்"
 
 #: resources/ui/account.ui:108 resources/ui/account_settings.ui:513
 msgid "Add"
-msgstr ""
+msgstr "கூட்டு"
 
 #: resources/ui/server_action_row.ui:23
 msgid "Drag to reorder"
-msgstr ""
+msgstr "மறுவரிசைப்படுத்த இழுக்கவும்"
 
 #: resources/ui/server_action_row.ui:30 resources/ui/image_info_card.ui:109
 #: resources/ui/image_info_card.ui:133
 msgid "Edit"
-msgstr ""
+msgstr "தொகு"
 
 #: resources/ui/server_action_row.ui:41 resources/ui/refresh_dialog.ui:25
 msgid "Refresh"
-msgstr ""
+msgstr "புதுப்பிப்பு"
 
 #: resources/ui/window.ui:11
 msgid "Sign out"
-msgstr ""
+msgstr "விடுபதிகை"
 
 #: resources/ui/window.ui:25 resources/ui/window.ui:54
 #: resources/ui/mpvpage.ui:333
 msgid "Preferences"
-msgstr ""
+msgstr "விருப்பத்தேர்வுகள்"
 
 #: resources/ui/window.ui:31 resources/ui/window.ui:60
 msgid "About"
-msgstr ""
+msgstr "பற்றி"
 
 #: resources/ui/window.ui:44
 msgid "Add server"
-msgstr ""
+msgstr "சேவையகத்தைச் சேர்க்கவும்"
 
 #: resources/ui/window.ui:164
 msgid "No Server"
-msgstr ""
+msgstr "சேவையகம் இல்லை"
 
 #: resources/ui/window.ui:167
 msgid "Add Server"
-msgstr ""
+msgstr "சேவையகத்தைச் சேர்க்கவும்"
 
 #: resources/ui/window.ui:206
 msgid "Log Out"
-msgstr ""
+msgstr "விடுபதிகை"
 
 #: resources/ui/window.ui:253
 msgid "Contents"
-msgstr ""
+msgstr "உள்ளடக்கங்கள்"
 
 #: resources/ui/window.ui:411
 msgid "Servers"
-msgstr ""
+msgstr "சேவையகங்கள்"
 
 #: resources/ui/home.ui:17
 msgid "Library"
-msgstr ""
+msgstr "நூலகம்"
 
 #: resources/ui/home.ui:22 resources/ui/item.ui:294
 msgid "Continue Watching"
-msgstr ""
+msgstr "தொடர்ந்து பார்த்துக் கொள்ளுங்கள்"
 
 #: resources/ui/account_settings.ui:4
 msgid "Settings"
-msgstr ""
+msgstr "அமைப்புகள்"
 
 #: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:418
 msgid "Preferred Video Version"
-msgstr ""
+msgstr "விருப்பமான வீடியோ பதிப்பு"
 
 #: resources/ui/account_settings.ui:28
 msgid "Preferred Language"
-msgstr ""
+msgstr "விருப்பமான மொழி"
 
 #: resources/ui/account_settings.ui:29
 msgid "This is globally effective"
-msgstr ""
+msgstr "இது உலகளவில் பயனுள்ளதாக இருக்கும்"
 
 #: resources/ui/account_settings.ui:32
 msgid "Preferred Audio Language"
-msgstr ""
+msgstr "விருப்பமான ஆடியோ மொழி"
 
 #: resources/ui/account_settings.ui:41 resources/ui/account_settings.ui:66
 #: resources/ui/account_settings.ui:151
 msgid "Default"
-msgstr ""
+msgstr "இயல்புநிலை"
 
 #: resources/ui/account_settings.ui:57
 msgid "Preferred Subtitle Language"
-msgstr ""
+msgstr "விருப்பமான வசன மொழி"
 
 #: resources/ui/account_settings.ui:84
 msgid "Appearence"
-msgstr ""
+msgstr "தோற்றம்"
 
 #: resources/ui/account_settings.ui:87
 msgid "Accent Color"
-msgstr ""
+msgstr "உச்சரிப்பு நிறம்"
 
 #: resources/ui/account_settings.ui:88
 msgid "Restart App To Take Effect"
-msgstr ""
+msgstr "பயன்பாட்டை மறுதொடக்கம் செய்யுங்கள்"
 
 #: resources/ui/account_settings.ui:104
 msgid "Hide Sidebar"
-msgstr ""
+msgstr "பக்கப்பட்டியை மறைக்கவும்"
 
 #: resources/ui/account_settings.ui:109
 msgid "Auto Select Last Server"
-msgstr ""
+msgstr "ஆட்டோ கடைசி சேவையகத்தைத் தேர்ந்தெடுக்கவும்"
 
 #: resources/ui/account_settings.ui:116
 msgid "Network"
-msgstr ""
+msgstr "பிணையம்"
 
 #: resources/ui/account_settings.ui:119
 msgid "Threads"
-msgstr ""
+msgstr "நூல்கள்"
 
 #: resources/ui/account_settings.ui:120
 msgid "Excessive thread counts may exhaust the system's connection pool"
 msgstr ""
+"அதிகப்படியான நூல் எண்ணிக்கைகள் கணினியின் இணைப்புக் குளத்தை வெளியேற்றக்கூடும்"
 
 #: resources/ui/account_settings.ui:134
 msgid "Refresh when returning to home page"
-msgstr ""
+msgstr "முகப்பு பக்கத்திற்குத் திரும்பும்போது புதுப்பிக்கவும்"
 
 #: resources/ui/account_settings.ui:148
 msgid "This feature may cause significant lag. Please enable it with caution."
 msgstr ""
+"இந்த நற்பொருத்தம் குறிப்பிடத்தக்க பின்னடைவை ஏற்படுத்தக்கூடும். தயவுசெய்து அதை எச்சரிக்கையுடன்"
+" இயக்கவும்."
 
 #: resources/ui/account_settings.ui:174
 msgid "Opacity"
-msgstr ""
+msgstr "ஒளிபுகாநிலை"
 
 #: resources/ui/account_settings.ui:188
 msgid "Blur (Experimental)"
-msgstr ""
+msgstr "மங்கலான (சோதனை)"
 
 #: resources/ui/account_settings.ui:189 resources/ui/account_settings.ui:198
 msgid "Warning: High GPU usage"
-msgstr ""
+msgstr "எச்சரிக்கை: உயர் சி.பீ.யூ பயன்பாடு"
 
 #: resources/ui/account_settings.ui:197
 msgid "Blur Radius (Experimental)"
-msgstr ""
+msgstr "மங்கலான ஆரம் (சோதனை)"
 
 #: resources/ui/account_settings.ui:220
 msgid "Clear Cache"
-msgstr ""
+msgstr "தெளிவான தற்காலிக சேமிப்பு"
 
 #: resources/ui/account_settings.ui:238
 msgid "Account"
-msgstr ""
+msgstr "கணக்கு"
 
 #: resources/ui/account_settings.ui:251 resources/ui/account_settings.ui:268
 msgid "Change Password"
-msgstr ""
+msgstr "கடவுச்சொல்லை மாற்றவும்"
 
 #: resources/ui/account_settings.ui:254
 msgid "New Password"
-msgstr ""
+msgstr "புதிய கடவுச்சொல்"
 
 #: resources/ui/account_settings.ui:259
 msgid "Confirm Password"
-msgstr ""
+msgstr "கடவுச்சொல்லை உறுதிப்படுத்தவும்"
 
 #: resources/ui/account_settings.ui:282
 msgid "Media"
-msgstr ""
+msgstr "ஊடகம்"
 
 #: resources/ui/account_settings.ui:287
 msgid "Music Player"
-msgstr ""
+msgstr "மியூசிக் பிளேயர்"
 
 #: resources/ui/account_settings.ui:306
 msgid "Video Player"
-msgstr ""
+msgstr "வீடியோ பிளேயர்"
 
 #: resources/ui/account_settings.ui:307
 msgid "Requires restart"
-msgstr ""
+msgstr "மறுதொடக்கம் தேவை"
 
 #: resources/ui/account_settings.ui:310
 msgid "Enable external config"
-msgstr ""
+msgstr "வெளிப்புற கட்டமைப்பை இயக்கவும்"
 
 #: resources/ui/account_settings.ui:315
 msgid "Config dir"
-msgstr ""
+msgstr "கட்டமைப்பு அடைவு"
 
 #: resources/ui/account_settings.ui:342
 msgid "Others"
-msgstr ""
+msgstr "மற்றவர்கள்"
 
 #: resources/ui/account_settings.ui:347
 msgid "Video Output"
-msgstr ""
+msgstr "வீடியோ வெளியீடு"
 
 #: resources/ui/account_settings.ui:348
 msgid "Only for debugging"
-msgstr ""
+msgstr "பிழைத்திருத்தத்திற்கு மட்டுமே"
 
 #: resources/ui/account_settings.ui:351
 msgid "libmpv (default)"
-msgstr ""
+msgstr "libmpv (இயல்புநிலை)"
 
 #: resources/ui/account_settings.ui:396
 msgid "Preferred Version"
-msgstr ""
+msgstr "விருப்பமான பதிப்பு"
 
 #: resources/ui/account_settings.ui:419
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
+"ஒரு குறிப்பிட்ட பதிப்பு பொருந்தும் வரை, அல்லது மேட்ச் பட்டியலை அழிப்பதற்கு முன்பு அதிக "
+"பொருந்தக்கூடிய பதிப்பு பெறப்படும் வரை எடை அதிகமாக இருந்து குறைந்த வரை ஆர்டர் "
+"செய்யப்படுகிறது"
 
 #: resources/ui/account_settings.ui:434
 msgid "Descriptors"
-msgstr ""
+msgstr "விவரிப்பவர்கள்"
 
 #: resources/ui/account_settings.ui:456
 msgid "It is recommended to set no more than 3 lines"
-msgstr ""
+msgstr "3 வரிகளுக்கு மேல் அமைக்க பரிந்துரைக்கப்படுகிறது"
 
 #: resources/ui/account_settings.ui:477
 msgid "No Descriptors"
-msgstr ""
+msgstr "விளக்கங்கள் இல்லை"
 
 #: resources/ui/account_settings.ui:496
 msgid "Add a descriptor"
-msgstr ""
+msgstr "ஒரு விவரிப்பாளரைச் சேர்க்கவும்"
 
 #: resources/ui/account_settings.ui:538 resources/ui/account_settings.ui:648
 msgid "This will use exact matching to obtain a list"
-msgstr ""
+msgstr "பட்டியலைப் பெற இது சரியான பொருத்தத்தைப் பயன்படுத்தும்"
 
 #: resources/ui/account_settings.ui:541 resources/ui/account_settings.ui:651
 msgid "Descriptor Type"
-msgstr ""
+msgstr "விவரிப்பான் வகை"
 
 #: resources/ui/account_settings.ui:546 resources/ui/account_settings.ui:656
 msgid "String"
-msgstr ""
+msgstr "சரம்"
 
 #: resources/ui/account_settings.ui:547 resources/ui/account_settings.ui:657
 msgid "Regular Expression"
-msgstr ""
+msgstr "வழக்கமான வெளிப்பாடு"
 
 #: resources/ui/account_settings.ui:559 resources/ui/account_settings.ui:669
 msgid "Descriptor"
-msgstr ""
+msgstr "விவரிப்பான்"
 
 #: resources/ui/account_settings.ui:564 resources/ui/account_settings.ui:674
 msgid "Descriptor should not be too long"
-msgstr ""
+msgstr "விவரிப்பான் மிக நீளமாக இருக்கக்கூடாது"
 
 #: resources/ui/account_settings.ui:575 resources/ui/account_settings.ui:685
 msgid "eg. 1080p"
-msgstr ""
+msgstr "எ.கா. 1080 ப"
 
 #: resources/ui/account_settings.ui:586 resources/ui/account_settings.ui:696
 msgid "eg. 1080p.*WebDL"
-msgstr ""
+msgstr "எ.கா. 1080p.*Webdl"
 
 #: resources/ui/account_settings.ui:606
 msgid "Edit descriptor"
-msgstr ""
+msgstr "விவரிப்பைத் திருத்து"
 
 #: resources/ui/account_settings.ui:623
 msgid "Save"
-msgstr ""
+msgstr "சேமி"
 
 #: resources/ui/account_settings.ui:716
 msgid "Change folder"
-msgstr ""
+msgstr "கோப்புறையை மாற்றவும்"
 
 #: resources/ui/account_settings.ui:718
 msgid "Select new mpv config folder"
-msgstr ""
+msgstr "புதிய MPV கட்டமைப்பு கோப்புறையைத் தேர்ந்தெடுக்கவும்"
 
 #: resources/ui/mpvpage.ui:108
 msgid "Stop and quit"
-msgstr ""
+msgstr "நிறுத்தி வெளியேறவும்"
 
 #: resources/ui/mpvpage.ui:163
 msgid "Media info (MPV)"
-msgstr ""
+msgstr "மீடியா செய்தி (எம்.பி.வி)"
 
 #: resources/ui/mpvpage.ui:276
 msgid "Danmaku Settings"
-msgstr ""
+msgstr "டான்மகு அமைப்புகள்"
 
 #: resources/ui/mpvpage.ui:349
 msgid "Playback speed"
-msgstr ""
+msgstr "பின்னணி விரைவு"
 
 #: resources/ui/mpvpage.ui:363
 msgid "Volume"
-msgstr ""
+msgstr "தொகுதி"
 
 #: resources/ui/other.ui:94
 msgid "No Inscriptions"
-msgstr ""
+msgstr "கல்வெட்டுகள் இல்லை"
 
 #: resources/ui/other.ui:140 resources/ui/item.ui:458
 msgid "Actors"
-msgstr ""
+msgstr "நடிகர்கள்"
 
 #: resources/ui/other.ui:145 resources/ui/item.ui:473
 #: resources/ui/filter.ui:106
 msgid "Studios"
-msgstr ""
+msgstr "ச்டுடியோச்"
 
 #: resources/ui/other.ui:160 resources/ui/item.ui:468
 msgid "Links"
-msgstr ""
+msgstr "இணைப்புகள்"
 
 #: resources/ui/item.ui:110 resources/ui/item.ui:158
 #: resources/ui/identify_dialog.ui:61
 #: resources/ui/image_dialog_search_page.ui:54
 msgid "Loading..."
-msgstr ""
+msgstr "ஏற்றுகிறது ..."
 
 #: resources/ui/item.ui:220
 msgid "Video: "
-msgstr ""
+msgstr "வீடியோ: "
 
 #: resources/ui/item.ui:240
 msgid "Subtitle: "
-msgstr ""
+msgstr "வசன வரிகள்: "
 
 #: resources/ui/item.ui:308
 msgid "View this season"
-msgstr ""
+msgstr "இந்த பருவத்தைக் காண்க"
 
 #: resources/ui/item.ui:443
 msgid "Included In"
-msgstr ""
+msgstr "இதில் சேர்க்கப்பட்டுள்ளது"
 
 #: resources/ui/item.ui:448
 msgid "Additional Parts"
-msgstr ""
+msgstr "கூடுதல் பாகங்கள்"
 
 #: resources/ui/item.ui:453
 msgid "Seasons"
-msgstr ""
+msgstr "பருவங்கள்"
 
 #: resources/ui/item.ui:463
 msgid "Recommend"
-msgstr ""
+msgstr "பரிந்துரைக்கவும்"
 
 #: resources/ui/item.ui:501
 msgid "MediaInfo"
-msgstr ""
+msgstr "மீடியாஇன்ஃபோ"
 
 #: resources/ui/metadata_dialog.ui:70 resources/ui/images_dialog.ui:59
 msgid "Not Available"
-msgstr ""
+msgstr "கிடைக்கவில்லை"
 
 #: resources/ui/metadata_dialog.ui:71 resources/ui/images_dialog.ui:60
 msgid "This page is READ-ONLY, because you have no permission to modify it."
-msgstr ""
+msgstr "இந்த பக்கம் படிக்க மட்டுமே, ஏனெனில் அதை மாற்ற உங்களுக்கு இசைவு இல்லை."
 
 #: resources/ui/metadata_dialog.ui:80 resources/ui/identify_dialog.ui:60
 msgid "Path"
-msgstr ""
+msgstr "பாதை"
 
 #: resources/ui/metadata_dialog.ui:81
 msgid "No data."
-msgstr ""
+msgstr "தரவு இல்லை."
 
 #: resources/ui/metadata_dialog.ui:95
 msgid "Sort Title"
-msgstr ""
+msgstr "வரிசை தலைப்பு"
 
 #: resources/ui/metadata_dialog.ui:106
 msgid "Pick Date"
-msgstr ""
+msgstr "தேதியைத் தேர்ந்தெடுங்கள்"
 
 #: resources/ui/metadata_dialog.ui:126
 msgid "Pick Time"
-msgstr ""
+msgstr "நேரம் தேர்வு"
 
 #: resources/ui/metadata_dialog.ui:202
 msgid "TheMovieDb Id"
-msgstr ""
+msgstr "Themoviedb ஐடி"
 
 #: resources/ui/metadata_dialog.ui:207
 msgid "TheTVDb Id"
-msgstr ""
+msgstr "Thetvdb ஐடி"
 
 #: resources/ui/metadata_dialog.ui:212
 msgid "IMDb Id"
-msgstr ""
+msgstr "IMDB ஐடி"
 
 #: resources/ui/metadata_dialog.ui:220
 msgid "Lock The Item"
-msgstr ""
+msgstr "உருப்படியைப் பூட்டவும்"
 
 #: resources/ui/refresh_dialog.ui:50
 msgid "Replace All Metadata"
-msgstr ""
+msgstr "அனைத்து மெட்டாடேட்டாவையும் மாற்றவும்"
 
 #: resources/ui/refresh_dialog.ui:59
 msgid "Replace All Images"
-msgstr ""
+msgstr "எல்லா படங்களையும் மாற்றவும்"
 
 #: resources/ui/image_drop_row.ui:49
 msgid "Open"
-msgstr ""
+msgstr "திற"
 
 #: resources/ui/image_drop_row.ui:109
 msgid "Pick Image"
-msgstr ""
+msgstr "படத்தைத் தேர்ந்தெடுங்கள்"
 
 #: resources/ui/image_drop_row.ui:113 resources/ui/images_dialog.ui:69
 msgid "Images"
-msgstr ""
+msgstr "படங்கள்"
 
 #: resources/ui/image_drop_row.ui:119
 msgid "Pick image to upload"
-msgstr ""
+msgstr "பதிவேற்ற படத்தைத் தேர்ந்தெடுக்கவும்"
 
 #: resources/ui/images_dialog.ui:157
 msgid "BackDrops"
-msgstr ""
+msgstr "பின்னணி"
 
 #: resources/ui/image_info_card.ui:86
 msgid "Copy Image To Clipboard"
-msgstr ""
+msgstr "இடைநிலைப் பலகைக்கு படத்தை நகலெடுக்கவும்"
 
 #: resources/ui/image_info_card.ui:98
 msgid "View Image"
-msgstr ""
+msgstr "படத்தைக் காண்க"
 
 #: resources/ui/identify_dialog.ui:57
 msgid ""
 "Enter one or more search criteria. Remove criteria to increase search "
 "results."
 msgstr ""
+"ஒன்று அல்லது அதற்கு மேற்பட்ட தேடல் அளவுகோல்களை உள்ளிடவும். தேடல் முடிவுகளை அதிகரிக்க "
+"அளவுகோல்களை அகற்று."
 
 #: resources/ui/identify_dialog.ui:86
 msgid "External"
-msgstr ""
+msgstr "வெளிப்புறம்"
 
 #: resources/ui/image_dialog_search_page.ui:15
 msgid "Provider:"
-msgstr ""
+msgstr "வழங்குநர்:"
 
 #: resources/ui/image_dialog_search_page.ui:22
 msgid "Provider"
-msgstr ""
+msgstr "வழங்குநர்"
 
 #: resources/ui/image_dialog_search_page.ui:64
 msgid "All Languages"
-msgstr ""
+msgstr "அனைத்து மொழிகளும்"
 
 #: resources/ui/theme_switcher.ui:24 resources/ui/theme_switcher.ui:26
 msgid "Follow system style"
-msgstr ""
+msgstr "கணினி பாணியைப் பின்பற்றுங்கள்"
 
 #: resources/ui/theme_switcher.ui:42 resources/ui/theme_switcher.ui:44
 msgid "Light style"
-msgstr ""
+msgstr "ஒளி நடை"
 
 #: resources/ui/theme_switcher.ui:60 resources/ui/theme_switcher.ui:62
 msgid "Dark style"
-msgstr ""
+msgstr "இருண்ட நடை"
 
 #: resources/ui/filter.ui:42
 msgid "Filters"
-msgstr ""
+msgstr "வடிப்பான்கள்"
 
 #: resources/ui/filter.ui:45
 msgid "Playback Status"
-msgstr ""
+msgstr "பிளேபேக் நிலை"
 
 #: resources/ui/filter.ui:50 resources/ui/filter.ui:149
 msgid "Any"
-msgstr ""
+msgstr "ஏதேனும்"
 
 #: resources/ui/filter.ui:51
 msgid "Played"
-msgstr ""
+msgstr "விளையாடியது"
 
 #: resources/ui/filter.ui:52
 msgid "Unplayed"
-msgstr ""
+msgstr "விளையாடப்படாதது"
 
 #: resources/ui/filter.ui:53
 msgid "Continue Play"
-msgstr ""
+msgstr "தொடர்ந்து விளையாடுங்கள்"
 
 #: resources/ui/filter.ui:92
 msgid "Years"
-msgstr ""
+msgstr "ஆண்டுகள்"
 
 #: resources/ui/filter.ui:99
 msgid "Official Ratings"
-msgstr ""
+msgstr "அதிகாரப்பூர்வ மதிப்பீடுகள்"
 
 #: resources/ui/filter.ui:115
 msgid "Media Info"
-msgstr ""
+msgstr "ஊடக செய்தி"
 
 #: resources/ui/filter.ui:118
 msgid "Containers"
-msgstr ""
+msgstr "கொள்கலன்கள்"
 
 #: resources/ui/filter.ui:125
 msgid "Encoders"
-msgstr ""
+msgstr "குறியாக்கிகள்"
 
 #: resources/ui/filter.ui:132
 msgid "Video Types"
-msgstr ""
+msgstr "வீடியோ வகைகள்"
 
 #: resources/ui/filter.ui:139
 msgid "Resolution"
-msgstr ""
+msgstr "பகுத்தல்"
 
 #: resources/ui/filter.ui:165
 msgid "Clear"
-msgstr ""
+msgstr "தெளிவான"
 
 #: resources/ui/missing_episodes.ui:6 resources/ui/missing_episodes.ui:36
 msgid "Missing Episodes"
-msgstr ""
+msgstr "எபிசோடுகளைக் காணவில்லை"
 
 #: resources/ui/missing_episodes.ui:60
 msgid "Specials"
-msgstr ""
+msgstr "சிறப்பு"
 
 #: resources/ui/missing_episodes.ui:72
 msgid "Upcoming"
-msgstr ""
+msgstr "வரவிருக்கும்"
