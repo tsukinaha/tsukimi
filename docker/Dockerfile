@@ -1,5 +1,5 @@
 ARG ARCH=amd64
-ARG CODENAME=oracular
+ARG CODENAME=plucky
 
 FROM $ARCH/ubuntu:$CODENAME
 
