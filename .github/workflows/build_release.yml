@@ -35,7 +35,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: target
-          key: tsukimi-build-${{ matrix.arch }}-linux
+          key: tsukimi-build-${{ matrix.arch }}-linux-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            tsukimi-build-${{ matrix.arch }}-linux-
 
       - name: Build ${{ matrix.arch }}
         run: |
