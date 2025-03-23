@@ -40,6 +40,12 @@ jobs:
         with:
           submodules: true
 
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: tsukimi-build-${{ matrix.arch }}-linux
+
       - name: Build tsukimi for ${{ matrix.platform }}
         run: |
           docker run --rm --platform linux/${{matrix.platform}} -v ${{ github.workspace }}:/app -v ./docker/entrypoint.sh:/entrypoint.sh ghcr.io/tsukinaha/ubuntu-rust-gtk4:latest
