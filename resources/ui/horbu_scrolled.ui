@@ -27,9 +27,12 @@
               </object>
             </child>
             <child>
-              <object class="GtkFlowBox" id="flow">
+              <object class="AdwWrapBox" id="wrapbox">
                 <property name="margin-top">6</property>
+                <property name="margin-start">12</property>
                 <property name="margin-bottom">3</property>
+                <property name="line-spacing">10</property>
+                <property name="child-spacing">10</property>
               </object>
             </child>
           </object>
