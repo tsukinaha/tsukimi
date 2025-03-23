@@ -1,0 +1,166 @@
+name: Windows GNU CI
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - "docs/**"
+      - "**/.gitignore"
+      - "**/.dockerignore"
+      - LICENSE
+      - "**/*.md"
+  pull_request:
+    branches:
+      - "main"
+    paths-ignore:
+      - "docs/**"
+      - "**/.gitignore"
+      - "**/.dockerignore"
+      - LICENSE
+        - "**/*.md"
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
+jobs:
+  build-release:
+    env:
+      RUST_BACKTRACE: full
+    strategy:
+      matrix:
+        include:
+          # - arch: x86_64-windows-gnu
+          #   os: windows-latest
+          #   target: x86_64-pc-windows-gnu
+          #   msystem: mingw64
+          #   env: x86_64
+          - arch: ucrt64-x86_64-windows-gnu
+            os: windows-latest
+            target: x86_64-pc-windows-gnu
+            msystem: ucrt64
+            env: ucrt-x86_64
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          release: false
+          msystem: ${{ matrix.msystem }}
+          install: >-
+            mingw-w64-${{ matrix.env }}-pkgconf
+            mingw-w64-${{ matrix.env }}-gcc
+            mingw-w64-${{ matrix.env }}-libadwaita
+            mingw-w64-${{ matrix.env }}-gstreamer
+            mingw-w64-${{ matrix.env }}-glib2
+            mingw-w64-${{ matrix.env }}-gst-plugins-base
+            mingw-w64-${{ matrix.env }}-gst-plugins-good
+            mingw-w64-${{ matrix.env }}-gst-plugins-bad
+            mingw-w64-${{ matrix.env }}-gst-plugins-ugly
+            mingw-w64-${{ matrix.env }}-gst-libav
+            curl
+
+      - name: Install latest libmpv
+        shell: pwsh
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $TOKEN = $env:TOKEN
+          $json = curl -s "https://api.github.com/repos/shinchiro/mpv-winbuild-cmake/releases/latest" -H "Authorization: Bearer $TOKEN" | ConvertFrom-Json
+          $asset = $json.assets | Where-Object { $_.name -match "mpv-dev-x86_64-\d{8}-git" } | Select-Object -First 1
+          curl -L -o $asset.name $asset.browser_download_url
+          7z x -y $asset.name -olibmpv
+          cp -force libmpv/libmpv.dll.a c:/msys64/${{ matrix.msystem }}/lib/
+          cp -force libmpv/libmpv-2.dll c:/msys64/${{ matrix.msystem }}/bin/
+          cp -force -recurse libmpv/include/mpv c:/msys64/${{ matrix.msystem }}/include/
+
+      - name: Build tsukimi-${{ matrix.target }}
+        shell: msys2 {0}
+        run: |
+          export PATH="/c/Users/runneradmin/.cargo/bin:$PATH"
+          rustup default stable-gnu
+          cargo build --release --locked
+
+      - name: Prepare Package
+        shell: msys2 {0}
+        run: |
+          mkdir artifact && cd artifact
+          mkdir tsukimi-x86_64-windows-gnu/ && cd tsukimi-x86_64-windows-gnu/ && mkdir bin/ && mkdir share/ && mkdir lib/
+          cp $GITHUB_WORKSPACE/target/release/tsukimi.exe bin/
+          cp /${{ matrix.msystem }}/bin/gdbus.exe bin/
+
+          cp -r /${{ matrix.msystem }}/lib/gdk-pixbuf-2.0 lib/
+          find lib/gdk-pixbuf-2.0/2.10.0/loaders -type f ! -name "*.dll" -exec rm -f "{}" \;
+
+          cp -r /${{ matrix.msystem }}/lib/gio lib/
+
+          cp -r /${{ matrix.msystem }}/lib/gstreamer-1.0 lib/ && find lib/gstreamer-1.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
+
+          cp -r $GITHUB_WORKSPACE/i18n/locale share/
+
+          cp -r /${{ matrix.msystem }}/share/glib-2.0 share/
+          find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rf "{}" \;
+          mv $GITHUB_WORKSPACE/resources/moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
+          glib-compile-schemas.exe share/glib-2.0/schemas/
+          find share/glib-2.0/ -type f ! -name "*.compiled" -exec rm -f "{}" \;
+
+          cp -r /${{ matrix.msystem }}/share/icons share/
+          cp $GITHUB_WORKSPACE/resources/icons/moe.tsuna.tsukimi.png share/icons/
+          rm -rf share/icons/hicolor && rm -rf share/icons/AdwaitaLegacy && rm -rf share/icons/Adwaita/scalable && rm -rf share/icons/Adwaita/cursors
+          rm -rf share/icons/Adwaita/16x16 && rm -rf share/icons/Adwaita/symbolic-up-to-32
+
+          find . -type d -empty -delete
+
+          cd lib/gstreamer-1.0 
+          rm -f \
+            libgstadpcmenc.dll libgstamfcodec.dll libgstdvbsubenc.dll libgstencoding.dll \
+            libgstfrei0r.dll libgstinter.dll libgstlame.dll libgstldac.dll libgstmpeg2enc.dll \
+            libgstmpegpsmux.dll libgstmpegtsmux.dll libgstmplex.dll libgstrealmedia.dll \
+            libgstsubenc.dll libgstsvtav1.dll libgstsvthevcenc.dll libgsttwolame.dll \
+            libgstvoamrwbenc.dll libgstwavenc.dll libgstx264.dll libgstx265.dll \
+            libgstxingmux.dll libgsty4menc.dll libgstzbar.dll
+
+          cd $GITHUB_WORKSPACE/artifact/tsukimi-x86_64-windows-gnu
+          ldd bin/tsukimi.exe | grep '\/${{ matrix.msystem }}.*\.dll' -o | xargs -I{} cp -n "{}" bin/
+          find lib/ -type f -name "*.dll" -exec ldd "{}" \; | grep '\/${{ matrix.msystem }}.*\.dll' -o | xargs -I{} cp -n "{}" bin/
+
+      - name: Create NSIS installer
+        shell: powershell
+        run: |
+          cp ./installer/* artifact
+          makensis /V4 artifact/tsukimi_installer.nsi
+          rm artifact/tsukimi_installer.nsi
+
+      - name: Build Thin Package
+        shell: powershell
+        run: |
+          cd artifact/tsukimi-x86_64-windows-gnu
+          7z.exe a ../tsukimi-${{matrix.arch}}.7z ./*
+
+      - name: Calculate Checksum
+        shell: msys2 {0}
+        run: |
+          cd artifact
+          sha512sum *.7z > tsukimi.sha512sum
+          sha512sum *.exe >> tsukimi.sha512sum
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsukimi-${{matrix.target}}
+          path: |
+            artifact/*.exe
+            artifact/*.7z
+            artifact/*.sha512sum
+          compression-level: 0
+          retention-days: 3
+          if-no-files-found: error
