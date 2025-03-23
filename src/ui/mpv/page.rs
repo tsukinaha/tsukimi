@@ -1,3 +1,6 @@
+#![allow(deprecated)]
+// FIXME: replace GtkShortcutsWindow when the replacement is appeared on libadwaita
+
 use adw::prelude::*;
 use gettextrs::gettext;
 use glib::Object;

@@ -128,7 +128,7 @@ pub mod imp {
 
 glib::wrapper! {
     pub struct ItemCarousel(ObjectSubclass<imp::ItemCarousel>)
-        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
+        @extends gtk::ApplicationWindow, adw::Bin, gtk::Window, gtk::Widget ,adw::NavigationPage,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }

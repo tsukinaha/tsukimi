@@ -1,3 +1,6 @@
+#![allow(deprecated)]
+// FIXME: replace GtkShortcutsWindow when the replacement is appeared on libadwaita
+
 use std::path::PathBuf;
 
 use adw::prelude::*;
