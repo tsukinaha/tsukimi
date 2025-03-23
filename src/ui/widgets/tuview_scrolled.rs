@@ -94,7 +94,7 @@ pub(crate) mod imp {
 
 glib::wrapper! {
     pub struct TuViewScrolled(ObjectSubclass<imp::TuViewScrolled>)
-        @extends gtk::Widget, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
 }
 
 impl Default for TuViewScrolled {

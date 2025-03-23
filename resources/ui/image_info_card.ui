@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwBin" class="ImageInfoCard">
-    <property name="halign">start</property>
+    <property name="halign">fill</property>
     <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>

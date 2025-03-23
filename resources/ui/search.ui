@@ -132,11 +132,9 @@
                         <property name="vexpand">True</property>
                         <property name="hexpand">True</property>
                         <child>
-                          <object class="GtkBox" id="recommendbox">
-                            <property name="orientation">vertical</property>
-                            <property name="margin-start">6</property>
-                            <property name="margin-end">6</property>
-                            <property name="spacing">6</property>
+                          <object class="AdwWrapBox" id="recommendbox">
+                            <property name="child-spacing">6</property>
+                            <property name="line-spacing">12</property>
                           </object>
                         </child>
                       </object>

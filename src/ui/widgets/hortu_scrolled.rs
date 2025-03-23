@@ -98,7 +98,9 @@ mod imp {
 
             self.selection.set_model(Some(&store));
 
-            self.list.set_model(Some(&self.selection));
+            let selection = gtk::NoSelection::new(Some(store));
+
+            self.list.set_model(Some(&selection));
 
             self.list.set_factory(Some(
                 SignalListItemFactory::new().tu_item(PosterType::default()),

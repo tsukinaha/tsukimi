@@ -45,7 +45,7 @@ mod imp {
 glib::wrapper! {
     /// A dropdown widget with two labels.
     pub struct ListDropdown(ObjectSubclass<imp::ListDropdown>)
-        @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Bin, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
 }
 
 impl Default for ListDropdown {

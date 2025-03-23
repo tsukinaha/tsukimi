@@ -51,7 +51,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct AActionRow(ObjectSubclass<imp::AActionRow>)
-        @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, @implements gtk::Accessible;
+        @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Accessible;
 }
 
 impl Default for AActionRow {

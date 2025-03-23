@@ -190,13 +190,9 @@
                                           </object>
                                         </child>
                                         <child>
-                                          <object class="GtkFlowBox" id="flowbox">
-                                            <property name="selection-mode">none</property>
-                                            <property name="homogeneous">False</property>
-                                            <property name="column-spacing">3</property>
-                                            <property name="row-spacing">12</property>
-                                            <property name="min-children-per-line">3</property>
-                                            <property name="max-children-per-line">3</property>
+                                          <object class="AdwWrapBox" id="wrapbox">
+                                            <property name="child-spacing">12</property>
+                                            <property name="line-spacing">12</property>
                                           </object>
                                         </child>
                                       </object>

@@ -207,7 +207,7 @@ mod imp {
 glib::wrapper! {
     /// Preference Window to display preferences.
     pub struct AccountSettings(ObjectSubclass<imp::AccountSettings>)
-    @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget, adw::PreferencesWindow,
+    @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget, adw::PreferencesWindow, adw::Window,
     @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
         gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }

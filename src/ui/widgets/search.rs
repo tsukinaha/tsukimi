@@ -58,7 +58,7 @@ mod imp {
         #[template_child]
         pub searchscrolled: TemplateChild<TuViewScrolled>,
         #[template_child]
-        pub recommendbox: TemplateChild<gtk::Box>,
+        pub recommendbox: TemplateChild<adw::WrapBox>,
         #[template_child]
         pub movie: TemplateChild<adw::SwitchRow>,
         #[template_child]

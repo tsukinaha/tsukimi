@@ -109,7 +109,7 @@ pub(crate) mod imp {
 
 glib::wrapper! {
     pub struct PictureLoader(ObjectSubclass<imp::PictureLoader>)
-        @extends gtk::Widget, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
 }
 
 impl PictureLoader {

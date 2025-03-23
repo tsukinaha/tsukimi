@@ -134,7 +134,7 @@ pub mod imp {
 
 glib::wrapper! {
     pub struct TuListItem(ObjectSubclass<imp::TuListItem>)
-        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
+        @extends gtk::ApplicationWindow, gtk::Window, adw::Bin, gtk::Widget ,adw::NavigationPage,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }

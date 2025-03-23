@@ -63,7 +63,7 @@ mod imp {
         pub art: TemplateChild<ImageInfoCard>,
 
         #[template_child]
-        pub flowbox: TemplateChild<gtk::FlowBox>,
+        pub wrapbox: TemplateChild<adw::WrapBox>,
 
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
@@ -151,7 +151,7 @@ mod imp {
             card.set_picture(&item.image_type, &self.obj().id(), &item.image_index)
                 .await;
             self.size_group.add_widget(&card.imp().stack.get());
-            self.flowbox.append(&card);
+            self.wrapbox.append(&card);
         }
 
         pub async fn set_item(&self, item: &ImageItem) {
@@ -218,7 +218,10 @@ impl ImagesDialog {
         let id = self.id();
         match spawn_tokio(async move { EMBY_CLIENT.get_image_items(&id).await }).await {
             Ok(items) => {
-                self.imp().flowbox.remove_all();
+                while let Some(item) = self.imp().wrapbox.first_child() {
+                    self.imp().wrapbox.remove(&item);
+                }
+
                 for item in items {
                     self.imp().set_item(&item).await;
                 }
