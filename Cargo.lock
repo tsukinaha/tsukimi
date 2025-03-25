@@ -1653,9 +1653,9 @@ checksum = "03087c2bad5e1034e8cace5926dec053fb3790248370865f5117a7d0213354c8"
 
 [[package]]
 name = "libadwaita"
-version = "0.7.2"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "500135d29c16aabf67baafd3e7741d48e8b8978ca98bac39e589165c8dc78191"
+checksum = "8611ee9fb85e7606c362b513afcaf5b59853f79e4d98caaaf581d99465014247"
 dependencies = [
  "gdk4",
  "gio",
