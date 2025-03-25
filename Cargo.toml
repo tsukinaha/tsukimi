@@ -24,7 +24,7 @@ dirs = "6.0.0"
 adw = { version = "0.7", package = "libadwaita", features = ["v1_6"] }
 bytefmt = "0.1.7"
 libc = "0.2.171"
-uuid = { version = "1.15.1", features = ["v4"] }
+uuid = { version = "1.16.0", features = ["v4"] }
 chrono = { version = "0.4.40", features = ["serde"] }
 tracing = "0.1.41"
 gst = { version = "0.23", package = "gstreamer" }
