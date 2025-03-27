@@ -110,7 +110,7 @@ where
         let item = self.item();
         if item.played() {
             let mark = gtk::Button::builder()
-                .icon_name("emblem-ok-symbolic")
+                .icon_name("checkmark-small-symbolic")
                 .halign(gtk::Align::End)
                 .valign(gtk::Align::Start)
                 .build();

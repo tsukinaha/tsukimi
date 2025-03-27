@@ -330,7 +330,7 @@
                                                             </style>
                                                             <child>
                                                               <object class="GtkImage">
-                                                                <property name="icon-name">emblem-favorite-symbolic</property>
+                                                                <property name="icon-name">emote-love-symbolic</property>
                                                               </object>
                                                             </child>
                                                             <child>
