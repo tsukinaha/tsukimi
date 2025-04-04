@@ -126,6 +126,11 @@ pub mod imp {
         pub fn set_item(&self, item: TuItem) {
             self.item.replace(item);
             let obj = self.obj();
+
+            while let Some(child) = self.overlay_button_box.first_child() {
+                self.overlay_button_box.remove(&child);
+            }
+            
             obj.set_up();
             obj.gesture();
         }
