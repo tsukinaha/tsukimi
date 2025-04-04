@@ -7,6 +7,13 @@ assignees: tsukinaha
 
 ---
 
+<details>
+<summary>IMPORTANT</summary>
+IF FLOWING CONTENTS DELETED WITH NO REASON, YOUR ISSUE MIGHT BE LOCKED   
+ 
+请您遵守 ISSUE TEMPLATE，如果您无故删掉以下内容，您提交的 ISSUE 将会被视为是无效的
+</details>
+
 **Confirm the following information**
 - [ ] I have read the [FAQ](https://dev.tsukinaha.org/tsukimi)
 - [ ] I have searched this in existing issues

@@ -18,7 +18,7 @@ on:
       - "**/.gitignore"
       - "**/.dockerignore"
       - LICENSE
-      - "**/*.md"
+        - "**/*.md"
 
 env:
   CARGO_TERM_COLOR: always
@@ -46,13 +46,11 @@ jobs:
 
     steps:
       - name: Checkout
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/checkout@v4
         with:
           submodules: true
 
       - name: Setup msys2
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: msys2/setup-msys2@v2
         with:
           update: true
@@ -72,10 +70,12 @@ jobs:
             curl
 
       - name: Install latest libmpv
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: pwsh
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          $json = curl -s "https://api.github.com/repos/shinchiro/mpv-winbuild-cmake/releases/latest" | ConvertFrom-Json
+          $TOKEN = $env:TOKEN
+          $json = curl -s "https://api.github.com/repos/shinchiro/mpv-winbuild-cmake/releases/latest" -H "Authorization: Bearer $TOKEN" | ConvertFrom-Json
           $asset = $json.assets | Where-Object { $_.name -match "mpv-dev-x86_64-\d{8}-git" } | Select-Object -First 1
           curl -L -o $asset.name $asset.browser_download_url
           7z x -y $asset.name -olibmpv
@@ -84,7 +84,6 @@ jobs:
           cp -force -recurse libmpv/include/mpv c:/msys64/${{ matrix.msystem }}/include/
 
       - name: Build tsukimi-${{ matrix.target }}
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: msys2 {0}
         run: |
           export PATH="/c/Users/runneradmin/.cargo/bin:$PATH"
@@ -92,7 +91,6 @@ jobs:
           cargo build --release --locked
 
       - name: Prepare Package
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: msys2 {0}
         run: |
           mkdir artifact && cd artifact
@@ -136,7 +134,6 @@ jobs:
           find lib/ -type f -name "*.dll" -exec ldd "{}" \; | grep '\/${{ matrix.msystem }}.*\.dll' -o | xargs -I{} cp -n "{}" bin/
 
       - name: Create NSIS installer
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: powershell
         run: |
           cp ./installer/* artifact
@@ -144,14 +141,12 @@ jobs:
           rm artifact/tsukimi_installer.nsi
 
       - name: Build Thin Package
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: powershell
         run: |
           cd artifact/tsukimi-x86_64-windows-gnu
           7z.exe a ../tsukimi-${{matrix.arch}}.7z ./*
 
       - name: Calculate Checksum
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         shell: msys2 {0}
         run: |
           cd artifact
@@ -159,7 +154,6 @@ jobs:
           sha512sum *.exe >> tsukimi.sha512sum
 
       - name: Upload artifact
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/upload-artifact@v4
         with:
           name: tsukimi-${{matrix.target}}

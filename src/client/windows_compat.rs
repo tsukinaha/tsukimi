@@ -71,7 +71,7 @@ pub mod xattr {
             GetFileInformationByHandle(handle, &mut file_info)?;
 
             let file_size =
-                (file_info.nFileSizeHigh as u64) << 32 | (file_info.nFileSizeLow as u64);
+                ((file_info.nFileSizeHigh as u64) << 32) | (file_info.nFileSizeLow as u64);
 
             let mut buffer = vec![0u8; file_size as usize];
             let mut bytes_read: u32 = 0;
