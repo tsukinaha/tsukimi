@@ -31,7 +31,7 @@ gst = { version = "0.23", package = "gstreamer" }
 url = "2.5.4"
 image = "0.25.5"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
-hostname = "0.4.0"
+hostname = "0.4.1"
 epoxy = "0.1.0"
 gl = "0.14.0"
 libloading = "0.8.6"
