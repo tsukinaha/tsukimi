@@ -22,15 +22,13 @@ use super::{
         TuItemProgressbarAnimationPrelude,
     },
     utils::{
+        GlobalToast,
         TU_ITEM_POST_SIZE,
         TU_ITEM_SQUARE_SIZE,
         TU_ITEM_VIDEO_SIZE,
     },
 };
-use crate::{
-    toast,
-    ui::provider::tu_item::TuItem,
-};
+use crate::ui::provider::tu_item::TuItem;
 
 pub mod imp {
     use std::cell::{
@@ -130,7 +128,7 @@ pub mod imp {
             while let Some(child) = self.overlay_button_box.first_child() {
                 self.overlay_button_box.remove(&child);
             }
-            
+
             obj.set_up();
             obj.gesture();
         }
@@ -198,19 +196,19 @@ impl TuListItem {
                 item.play_single_audio(self);
             }
             "Video" | "MusicVideo" | "AdultVideo" | "Movie" | "Episode" => {
-                toast!(self, gettext("Waiting for mediasource ..."));
+                self.toast(gettext("Waiting for mediasource ..."));
                 item.play_video(self).await;
             }
             "Series" => {
-                toast!(self, gettext("Waiting for mediasource ..."));
+                self.toast(gettext("Waiting for mediasource ..."));
                 item.play_series(self).await;
             }
             "MusicAlbum" => {
-                toast!(self, gettext("Waiting for mediasource ..."));
+                self.toast(gettext("Waiting for mediasource ..."));
                 item.play_album(self).await;
             }
             _ => {
-                toast!(self, "Not implemented");
+                self.toast(gettext("Not implemented"));
             }
         }
     }

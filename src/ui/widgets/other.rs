@@ -1,3 +1,26 @@
+use super::{
+    horbu_scrolled::HorbuScrolled,
+    item::dt,
+    picture_loader::PictureLoader,
+    utils::GlobalToast,
+};
+use crate::{
+    client::{
+        emby_client::EMBY_CLIENT,
+        error::UserFacingError,
+        structs::*,
+    },
+    fraction,
+    fraction_reset,
+    ui::provider::{
+        tu_item::TuItem,
+        tu_object::TuObject,
+    },
+    utils::{
+        CachePolicy,
+        fetch_with_cache,
+    },
+};
 use chrono::{
     DateTime,
     Utc,
@@ -9,30 +32,6 @@ use gtk::{
     prelude::*,
     subclass::prelude::*,
     template_callbacks,
-};
-
-use super::{
-    horbu_scrolled::HorbuScrolled,
-    item::dt,
-    picture_loader::PictureLoader,
-};
-use crate::{
-    client::{
-        emby_client::EMBY_CLIENT,
-        error::UserFacingError,
-        structs::*,
-    },
-    fraction,
-    fraction_reset,
-    toast,
-    ui::provider::{
-        tu_item::TuItem,
-        tu_object::TuObject,
-    },
-    utils::{
-        CachePolicy,
-        fetch_with_cache,
-    },
 };
 
 pub(crate) mod imp {
@@ -205,7 +204,7 @@ impl OtherPage {
         {
             Ok(item) => item,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -321,7 +320,7 @@ impl OtherPage {
         {
             Ok(history) => history,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -377,7 +376,7 @@ impl OtherPage {
         {
             Ok(history) => history,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -479,7 +478,7 @@ impl OtherPage {
         {
             Ok(history) => history,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 List::default()
             }
         };

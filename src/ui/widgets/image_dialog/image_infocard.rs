@@ -10,8 +10,10 @@ use gtk::{
 
 use crate::{
     client::emby_client::EMBY_CLIENT,
-    toast,
-    ui::widgets::window::Window,
+    ui::{
+        GlobalToast,
+        widgets::window::Window,
+    },
     utils::spawn_tokio,
 };
 
@@ -148,7 +150,7 @@ impl ImageInfoCard {
             .unwrap();
         let paintable = self.picture_paintable();
         if paintable.is_none() {
-            toast!(self, gettext("No image to view"));
+            self.toast(gettext("No image to view"));
             return;
         }
         window.media_viewer_show_paintable(paintable);
@@ -164,11 +166,11 @@ impl ImageInfoCard {
     fn on_copy(&self) {
         let clipboard = self.clipboard();
         let Some(texture) = self.picture_texture() else {
-            toast!(self, gettext("No image to copy"));
+            self.toast(gettext("No image to copy"));
             return;
         };
         clipboard.set_texture(&texture);
-        toast!(self, gettext("Image copied to clipboard"));
+        self.toast(gettext("Image copied to clipboard"));
     }
 
     fn on_search(&self) {
@@ -201,12 +203,12 @@ impl ImageInfoCard {
         .await
         {
             Ok(_) => {
-                toast!(self, gettext("Image deleted"));
+                self.toast(gettext("Image deleted"));
                 self.set_fallback_visible();
             }
             Err(e) => {
                 tracing::error!("Error deleting image: {}", e);
-                toast!(self, gettext("Error deleting image"));
+                self.toast(gettext("Error deleting image"));
                 self.set_picture_visible();
             }
         }
@@ -250,7 +252,7 @@ impl ImageInfoCard {
                                     obj.set_picture_visible();
                                 }
                                 Err(_) => {
-                                    toast!(obj, gettext("Error loading image"));
+                                    obj.toast(gettext("Error loading image"));
                                     obj.set_fallback_visible();
                                 }
                             },

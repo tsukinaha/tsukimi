@@ -1,24 +1,8 @@
 #![allow(deprecated)]
 
-use adw::{
-    prelude::*,
-    subclass::prelude::*,
-};
-use gettextrs::gettext;
-use gtk::{
-    CompositeTemplate,
-    gdk::{
-        DragAction,
-        RGBA,
-    },
-    gio,
-    glib,
-    template_callbacks,
-};
-
+use super::utils::GlobalToast;
 use crate::{
     client::emby_client::EMBY_CLIENT,
-    toast,
     ui::{
         models::{
             SETTINGS,
@@ -33,6 +17,21 @@ use crate::{
         spawn,
         spawn_tokio,
     },
+};
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gettextrs::gettext;
+use gtk::{
+    CompositeTemplate,
+    gdk::{
+        DragAction,
+        RGBA,
+    },
+    gio,
+    glib,
+    template_callbacks,
 };
 
 mod imp {
@@ -223,25 +222,21 @@ impl AccountSettings {
         let new_password = self.imp().password_entry.text();
         let new_password_second = self.imp().password_second_entry.text();
         if new_password.is_empty() || new_password_second.is_empty() {
-            toast!(self, gettext("Password cannot be empty!"));
+            self.toast(gettext("Password cannot be empty!"));
             return;
         }
         if new_password != new_password_second {
-            toast!(self, gettext("Passwords do not match!"));
+            self.toast(gettext("Passwords do not match!"));
             return;
         }
         match spawn_tokio(async move { EMBY_CLIENT.change_password(&new_password).await }).await {
             Ok(_) => {
-                toast!(
-                    self,
-                    gettext("Password changed successfully! Please login again.")
-                );
+                self.toast(gettext(
+                    "Password changed successfully! Please login again.",
+                ));
             }
             Err(e) => {
-                toast!(
-                    self,
-                    &format!("{}: {}", gettext("Failed to change password"), e)
-                );
+                self.toast(format!("{}: {}", gettext("Failed to change password"), e));
             }
         };
     }
@@ -277,7 +272,7 @@ impl AccountSettings {
         if path.exists() {
             std::fs::remove_dir_all(path).unwrap();
         }
-        toast!(self, gettext("Cache Cleared"))
+        self.toast(gettext("Cache Cleared"))
     }
 
     pub async fn set_rootpic(&self) {
@@ -298,7 +293,7 @@ impl AccountSettings {
                 SETTINGS.set_root_pic(&file_path).unwrap();
                 window.set_rootpic(file);
             }
-            Err(_) => toast!(self, gettext("No file selected")),
+            Err(_) => self.toast(gettext("No file selected")),
         };
     }
 
@@ -418,7 +413,7 @@ impl AccountSettings {
                     match spawn_tokio(async move { EMBY_CLIENT.get_user_avatar().await }).await {
                         Ok(avatar) => avatar,
                         Err(e) => {
-                            toast!(obj, e.to_string());
+                            obj.toast(e.to_string());
                             return;
                         }
                     };
@@ -515,7 +510,7 @@ impl AccountSettings {
             0 => {
                 let descriptor_content = imp.descriptor_entryrow.text();
                 if descriptor_content.is_empty() {
-                    toast!(self, gettext("Descriptor cannot be empty!"));
+                    self.toast(gettext("Descriptor cannot be empty!"));
                     return;
                 }
 
@@ -524,12 +519,12 @@ impl AccountSettings {
             1 => {
                 let descriptor_content = imp.descriptor_entryrow.text();
                 if descriptor_content.is_empty() {
-                    toast!(self, gettext("Descriptor cannot be empty!"));
+                    self.toast(gettext("Descriptor cannot be empty!"));
                     return;
                 }
                 match regex::Regex::new(&descriptor_content) {
                     Ok(_) => {}
-                    Err(e) => toast!(self, &format!("{}: {}", gettext("Invalid regex"), e)),
+                    Err(e) => self.toast(format!("{}: {}", gettext("Invalid regex"), e)),
                 }
 
                 Descriptor::new(descriptor_content.to_string(), DescriptorType::Regex)
@@ -558,7 +553,7 @@ impl AccountSettings {
             0 => {
                 let descriptor_content = imp.descriptor_entryrow_edit.text();
                 if descriptor_content.is_empty() {
-                    toast!(self, gettext("Descriptor cannot be empty!"));
+                    self.toast(gettext("Descriptor cannot be empty!"));
                     return;
                 }
 
@@ -567,12 +562,12 @@ impl AccountSettings {
             1 => {
                 let descriptor_content = imp.descriptor_entryrow_edit.text();
                 if descriptor_content.is_empty() {
-                    toast!(self, gettext("Descriptor cannot be empty!"));
+                    self.toast(gettext("Descriptor cannot be empty!"));
                     return;
                 }
                 match regex::Regex::new(&descriptor_content) {
                     Ok(_) => {}
-                    Err(e) => toast!(self, &format!("{}: {}", gettext("Invalid regex"), e)),
+                    Err(e) => self.toast(format!("{}: {}", gettext("Invalid regex"), e)),
                 }
 
                 Descriptor::new(descriptor_content.to_string(), DescriptorType::Regex)

@@ -9,17 +9,16 @@ use gtk::{
 };
 use imp::ActionType;
 
+use super::utils::GlobalToast;
 use crate::{
     client::{
         Account,
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
     },
-    toast,
     ui::models::SETTINGS,
     utils::spawn_tokio,
 };
-
 pub mod imp {
 
     use std::cell::{
@@ -142,7 +141,7 @@ impl AccountWindow {
         let password = imp.password_entry.text();
         let port = imp.port_entry.text();
         if server.is_empty() || username.is_empty() || port.is_empty() {
-            toast!(imp.stack, gettext("Fields must be filled in"));
+            imp.stack.toast(gettext("Fields must be filled in"));
             return;
         }
 
@@ -158,7 +157,7 @@ impl AccountWindow {
             match spawn_tokio(async move { EMBY_CLIENT.login(&username, &password).await }).await {
                 Ok(res) => res,
                 Err(e) => {
-                    toast!(imp.stack, e.to_user_facing());
+                    imp.stack.toast(e.to_user_facing());
                     imp.stack.set_visible_child_name("entry");
                     return;
                 }
@@ -170,7 +169,7 @@ impl AccountWindow {
             {
                 Ok(res) => res,
                 Err(e) => {
-                    toast!(imp.stack, e.to_user_facing());
+                    imp.stack.toast(e.to_user_facing());
                     imp.stack.set_visible_child_name("entry");
                     return;
                 }
@@ -220,7 +219,7 @@ impl AccountWindow {
         self.close();
         let root = self.root();
         let window = root.and_downcast_ref::<super::window::Window>().unwrap();
-        toast!(self, msg);
+        self.toast(msg);
         window.set_servers().await;
         window.set_nav_servers();
     }

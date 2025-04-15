@@ -15,7 +15,6 @@ use crate::{
         error::UserFacingError,
         structs::*,
     },
-    toast,
     ui::provider::tu_item::TuItem,
     utils::{
         spawn,
@@ -23,7 +22,10 @@ use crate::{
     },
 };
 
-use super::filter_panel::FilterPanelDialog;
+use super::{
+    filter_panel::FilterPanelDialog,
+    utils::GlobalToast,
+};
 
 mod imp {
 
@@ -176,7 +178,7 @@ impl SearchPage {
         {
             Ok(list) => list,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 List::default()
             }
         };
@@ -301,7 +303,7 @@ impl SearchPage {
         {
             Ok(list) => list,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 List::default()
             }
         }

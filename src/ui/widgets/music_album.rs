@@ -13,7 +13,10 @@ use gtk::{
     template_callbacks,
 };
 
-use super::song_widget::format_duration;
+use super::{
+    song_widget::format_duration,
+    utils::GlobalToast,
+};
 use crate::{
     bing_song_model,
     client::{
@@ -21,7 +24,6 @@ use crate::{
         error::UserFacingError,
         structs::List,
     },
-    toast,
     ui::{
         provider::{
             core_song::CoreSong,
@@ -208,7 +210,7 @@ impl AlbumPage {
         {
             Ok(songs) => songs,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -317,7 +319,7 @@ impl AlbumPage {
         {
             Ok(history) => history,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 List::default()
             }
         };

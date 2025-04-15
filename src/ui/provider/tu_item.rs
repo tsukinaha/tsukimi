@@ -18,8 +18,8 @@ use crate::{
         error::UserFacingError,
         structs::SimpleListItem,
     },
-    toast,
     ui::{
+        GlobalToast,
         provider::core_song::CoreSong,
         widgets::{
             item::ItemPage,
@@ -393,7 +393,7 @@ impl TuItem {
         {
             Ok(songs) => songs,
             Err(e) => {
-                toast!(obj, e.to_user_facing());
+                obj.toast(e.to_user_facing());
                 return;
             }
         };
@@ -437,13 +437,13 @@ impl TuItem {
             match spawn_tokio(async move { EMBY_CLIENT.get_shows_next_up(&id).await }).await {
                 Ok(list) => list,
                 Err(e) => {
-                    toast!(obj, e.to_user_facing());
+                    obj.toast(e.to_user_facing());
                     return;
                 }
             };
 
         let Some(nextup_item) = nextup_list.items.first() else {
-            toast!(obj, gettext("No next up video found"));
+            obj.toast(gettext("No next up video found"));
             return;
         };
 

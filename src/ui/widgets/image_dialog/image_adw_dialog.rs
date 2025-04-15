@@ -1,7 +1,6 @@
 use adw::subclass::prelude::*;
 use gtk::{
     glib,
-    prelude::*,
     template_callbacks,
 };
 
@@ -10,7 +9,7 @@ use crate::{
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
     },
-    toast,
+    ui::GlobalToast,
     utils::spawn_tokio,
 };
 
@@ -224,7 +223,7 @@ impl ImagesDialog {
                 }
             }
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
             }
         }
 

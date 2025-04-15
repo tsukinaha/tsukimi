@@ -252,6 +252,7 @@ use super::{
     server_panel::ServerPanel,
     server_row::ServerRow,
     tu_item::PROGRESSBAR_ANIMATION_DURATION,
+    utils::GlobalToast,
 };
 use crate::{
     APP_ID,
@@ -259,7 +260,6 @@ use crate::{
         Account,
         emby_client::EMBY_CLIENT,
     },
-    toast,
     ui::{
         models::SETTINGS,
         provider::{
@@ -478,7 +478,7 @@ impl Window {
                     match spawn_tokio(async move { EMBY_CLIENT.get_user_avatar().await }).await {
                         Ok(avatar) => avatar,
                         Err(e) => {
-                            toast!(obj, e.to_string());
+                            obj.toast(e.to_string());
                             return;
                         }
                     };

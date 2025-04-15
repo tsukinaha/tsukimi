@@ -38,8 +38,8 @@ use crate::{
         },
     },
     close_on_error,
-    toast,
     ui::{
+        GlobalToast,
         models::SETTINGS,
         provider::tu_item::TuItem,
         widgets::{
@@ -392,7 +392,7 @@ impl MPVPage {
                 {
                     Ok(playback_info) => playback_info,
                     Err(e) => {
-                        toast!(obj, e.to_user_facing());
+                        obj.toast(e.to_user_facing());
                         return;
                     }
                 };
@@ -416,7 +416,7 @@ impl MPVPage {
                     };
 
                 let Some(media_source) = media_source else {
-                    toast!(obj, gettext("No media source found"));
+                    obj.toast(gettext("No media source found"));
                     return;
                 };
 
@@ -477,7 +477,7 @@ impl MPVPage {
                 imp.suburl.replace(sub_url);
 
                 let Some(video_url) = extract_url(media_source).await else {
-                    toast!(obj, gettext("No media source found"));
+                    obj.toast(gettext("No media source found"));
                     return;
                 };
 
@@ -600,7 +600,7 @@ impl MPVPage {
         });
 
         let Some(next_item) = next_item else {
-            toast!(self, gettext("No more video found"));
+            self.toast(gettext("No more video found"));
             self.on_stop_clicked();
             return;
         };
@@ -781,7 +781,7 @@ impl MPVPage {
     }
 
     fn on_error(&self, value: &str) {
-        toast!(self, value);
+        self.toast(value);
     }
 
     fn on_pause_update(&self, value: bool) {

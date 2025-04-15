@@ -18,11 +18,13 @@ use crate::{
         error::UserFacingError,
         structs::RemoteSearchResult,
     },
-    toast,
-    ui::widgets::eu_item::{
-        self,
-        EuItem,
-        EuObject,
+    ui::{
+        GlobalToast,
+        widgets::eu_item::{
+            self,
+            EuItem,
+            EuObject,
+        },
     },
     utils::{
         spawn,
@@ -154,10 +156,10 @@ impl IdentifyDialogSearchPage {
                             .await
                             {
                                 Ok(_) => {
-                                    toast!(obj, gettext("Success"));
+                                    obj.toast(gettext("Success"));
                                 }
                                 Err(e) => {
-                                    toast!(obj, e.to_user_facing());
+                                    obj.toast(e.to_user_facing());
                                 }
                             }
                         }

@@ -8,7 +8,10 @@ use gtk::{
     template_callbacks,
 };
 
-use super::hortu_scrolled::HortuScrolled;
+use super::{
+    hortu_scrolled::HortuScrolled,
+    utils::GlobalToast,
+};
 use crate::{
     client::{
         emby_client::EMBY_CLIENT,
@@ -17,7 +20,6 @@ use crate::{
     },
     fraction,
     fraction_reset,
-    toast,
     ui::provider::tu_item::TuItem,
     utils::{
         CachePolicy,
@@ -25,7 +27,6 @@ use crate::{
         spawn,
     },
 };
-
 mod imp {
 
     use glib::subclass::InitializingObject;
@@ -151,7 +152,7 @@ impl HomePage {
         {
             Ok(history) => history,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -169,7 +170,7 @@ impl HomePage {
         {
             Ok(history) => history,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -216,7 +217,7 @@ impl HomePage {
         {
             Ok(history) => history,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };

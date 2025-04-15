@@ -1,23 +1,3 @@
-use adw::{
-    prelude::*,
-    subclass::prelude::*,
-};
-use chrono::{
-    DateTime,
-    Utc,
-};
-use gettextrs::gettext;
-use glib::Object;
-use gtk::{
-    ListScrollFlags,
-    ListView,
-    PositionType,
-    ScrolledWindow,
-    gio,
-    glib,
-    template_callbacks,
-};
-
 use super::{
     episode_switcher::EpisodeButton,
     fix::ScrolledWindowFixExt,
@@ -25,6 +5,7 @@ use super::{
     item_utils::*,
     song_widget::format_duration,
     tu_overview_item::run_time_ticks_to_label,
+    utils::GlobalToast,
     window::Window,
 };
 use crate::{
@@ -33,7 +14,6 @@ use crate::{
         error::UserFacingError,
         structs::*,
     },
-    toast,
     ui::{
         mpv::page::direct_stream_url,
         provider::{
@@ -53,6 +33,25 @@ use crate::{
         spawn_g_timeout,
         spawn_tokio,
     },
+};
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use chrono::{
+    DateTime,
+    Utc,
+};
+use gettextrs::gettext;
+use glib::Object;
+use gtk::{
+    ListScrollFlags,
+    ListView,
+    PositionType,
+    ScrolledWindow,
+    gio,
+    glib,
+    template_callbacks,
 };
 
 pub(crate) mod imp {
@@ -401,7 +400,7 @@ impl ItemPage {
                                 .await;
                         }
                         Err(e) => {
-                            toast!(obj, e.to_user_facing());
+                            obj.toast(e.to_user_facing());
                         }
                     }
                 }
@@ -445,7 +444,7 @@ impl ItemPage {
         {
             Ok(playback) => playback,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -497,7 +496,7 @@ impl ItemPage {
                 {
                     Ok(item) => item,
                     Err(e) => {
-                        toast!(self, e.to_user_facing());
+                        self.toast(e.to_user_facing());
                         return;
                     }
                 }
@@ -510,7 +509,7 @@ impl ItemPage {
                 {
                     Ok(item) => item,
                     Err(e) => {
-                        toast!(self, e.to_user_facing());
+                        self.toast(e.to_user_facing());
                         return;
                     }
                 }
@@ -532,7 +531,7 @@ impl ItemPage {
                 {
                     Ok(list) => list,
                     Err(e) => {
-                        toast!(self, e.to_user_facing());
+                        self.toast(e.to_user_facing());
                         return;
                     }
                 }
@@ -627,7 +626,7 @@ impl ItemPage {
         {
             Ok(list) => list,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -641,7 +640,7 @@ impl ItemPage {
             match spawn_tokio(async move { EMBY_CLIENT.get_shows_next_up(&id).await }).await {
                 Ok(next_up) => next_up,
                 Err(e) => {
-                    toast!(self, e.to_user_facing());
+                    self.toast(e.to_user_facing());
                     return None;
                 }
             };
@@ -849,7 +848,7 @@ impl ItemPage {
         {
             Ok(season_list) => season_list.items,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -892,7 +891,7 @@ impl ItemPage {
         {
             Ok(item) => item,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -1167,7 +1166,7 @@ impl ItemPage {
         {
             Ok(history) => history,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 List::default()
             }
         };
@@ -1214,7 +1213,7 @@ impl ItemPage {
             .selected_item()
             .and_downcast::<glib::BoxedAnyObject>()
         else {
-            toast!(self, gettext("No video source found"));
+            self.toast(gettext("No video source found"));
             return;
         };
 
@@ -1349,10 +1348,9 @@ impl ItemPage {
 
         let season_list = self.imp().season_list_vec.borrow();
         let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
-            toast!(
-                self,
-                gettext("Season not found. Is this a continue watching list?")
-            );
+            self.toast(gettext(
+                "Season not found. Is this a continue watching list?",
+            ));
             return;
         };
 

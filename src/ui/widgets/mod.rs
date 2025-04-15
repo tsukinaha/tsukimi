@@ -49,3 +49,4 @@ pub mod utils;
 pub mod window;
 
 pub use episode_switcher::EpisodeSwitcher;
+pub use utils::GlobalToast;

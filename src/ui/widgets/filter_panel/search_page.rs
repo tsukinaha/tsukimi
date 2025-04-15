@@ -15,7 +15,7 @@ use crate::{
         error::UserFacingError,
         structs::FilterItem,
     },
-    toast,
+    ui::GlobalToast,
     utils::{
         spawn,
         spawn_tokio,
@@ -153,7 +153,7 @@ impl FilterDialogSearchPage {
                     {
                         Ok(filters) => filters,
                         Err(e) => {
-                            toast!(obj, e.to_user_facing());
+                            obj.toast(e.to_user_facing());
                             return;
                         }
                     };

@@ -13,7 +13,7 @@ use reqwest::Response;
 
 use crate::{
     client::emby_client::EMBY_CLIENT,
-    toast,
+    ui::GlobalToast,
     utils::{
         spawn,
         spawn_tokio,
@@ -181,12 +181,12 @@ impl ImageDialogEditPage {
                     dialog.pop_page();
                     dialog.set_image_items().await;
                     dialog.view_page();
-                    toast!(dialog, gettext("Image saved"));
+                    dialog.toast(gettext("Image saved"));
                 });
             }
             Err(_) => {
                 dialog.view_page();
-                toast!(dialog, gettext("Failed to load image"));
+                dialog.toast(gettext("Failed to load image"));
             }
         }
     }
