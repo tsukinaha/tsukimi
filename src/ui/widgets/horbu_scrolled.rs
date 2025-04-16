@@ -105,8 +105,19 @@ impl HorbuScrolled {
                 for result in items {
                     let buttoncontent = adw::ButtonContent::builder()
                         .label(&result.name)
-                        .icon_name("view-list-symbolic")
                         .build();
+
+                    match type_.as_str() {
+                        "Studios" => {
+                            buttoncontent.set_icon_name("sound-symbolic");
+                        }
+                        "Genres" => {
+                            buttoncontent.set_icon_name("music-note-single-outline-symbolic");
+                        }
+                        _ => {
+                            buttoncontent.set_icon_name("tag-outline-symbolic");
+                        }
+                    }
 
                     let button = gtk::Button::builder().child(&buttoncontent).build();
 
