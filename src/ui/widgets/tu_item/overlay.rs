@@ -144,7 +144,7 @@ where
             let rating = gtk::Button::builder()
                 .label(rating.to_string())
                 .halign(gtk::Align::Start)
-                .valign(gtk::Align::End)
+                .valign(gtk::Align::Start)
                 .build();
             rating.add_css_class("pill");
             rating.add_css_class("small");

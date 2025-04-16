@@ -227,6 +227,7 @@ impl TuListItem {
                 imp.label2.set_text(&year);
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                self.set_rating();
                 self.set_can_direct_play(true);
                 self.set_picture();
                 self.set_played();
@@ -240,6 +241,7 @@ impl TuListItem {
                 imp.label2.set_visible(false);
                 imp.overlay
                     .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                self.set_rating();
                 self.set_can_direct_play(true);
                 self.set_picture();
             }
@@ -251,6 +253,7 @@ impl TuListItem {
                 ));
                 imp.overlay
                     .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                self.set_rating();
                 self.set_can_direct_play(true);
                 self.set_picture();
 
@@ -283,6 +286,7 @@ impl TuListItem {
                 imp.label2.set_visible(false);
                 imp.overlay
                     .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                self.set_rating();
                 self.set_animated_picture();
             }
             "Series" => {
@@ -316,15 +320,17 @@ impl TuListItem {
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 self.set_can_direct_play(true);
+                self.set_rating();
                 self.set_picture();
-                self.set_played();
                 self.set_count();
+                self.set_played();
             }
             "BoxSet" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                self.set_rating();
                 self.set_picture();
             }
             "Tag" | "Genre" => {
@@ -332,6 +338,7 @@ impl TuListItem {
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
+                self.set_rating();
                 self.set_picture();
             }
             "Episode" => {
@@ -350,6 +357,7 @@ impl TuListItem {
                 imp.overlay
                     .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 self.set_can_direct_play(true);
+                self.set_rating();
                 self.set_picture();
                 self.set_played();
                 self.set_progress(item.played_percentage());
@@ -357,6 +365,7 @@ impl TuListItem {
             "Views" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
+                self.set_rating();
                 self.set_picture();
             }
             "MusicAlbum" => {
@@ -364,6 +373,7 @@ impl TuListItem {
                 imp.label2.set_text(&item.albumartist_name());
                 imp.overlay
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
+                self.set_rating();
                 self.set_can_direct_play(true);
                 self.set_picture();
             }
@@ -372,6 +382,7 @@ impl TuListItem {
                 imp.label2.set_text(&item.role().unwrap_or("".to_string()));
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                self.set_rating();
                 self.set_picture();
             }
             "Audio" => {
@@ -380,6 +391,7 @@ impl TuListItem {
                 imp.overlay
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 self.set_can_direct_play(true);
+                self.set_rating();
                 self.set_picture();
             }
             "Folder" => {
@@ -387,6 +399,7 @@ impl TuListItem {
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
+                self.set_rating();
                 self.set_picture();
                 self.set_folder();
             }
@@ -399,21 +412,22 @@ impl TuListItem {
                 imp.label2.set_text(&premiere_date);
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                self.set_rating();
                 self.set_picture();
-                self.set_played();
                 self.set_count();
+                self.set_played();
             }
             _ => {
                 imp.overlay
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
+                self.set_rating();
                 self.set_picture();
                 warn!("Unknown item type: {}", item_type)
             }
         }
 
-        self.set_rating();
         self.set_tooltip_text(Some(&item.name()));
     }
 }

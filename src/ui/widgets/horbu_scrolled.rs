@@ -103,9 +103,7 @@ impl HorbuScrolled {
             self,
             async move {
                 for result in items {
-                    let buttoncontent = adw::ButtonContent::builder()
-                        .label(&result.name)
-                        .build();
+                    let buttoncontent = adw::ButtonContent::builder().label(&result.name).build();
 
                     match type_.as_str() {
                         "Studios" => {
