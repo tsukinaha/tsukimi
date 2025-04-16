@@ -14,17 +14,6 @@
         <property name="icon-name">preferences-system-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
-            <child>
-              <object class="AActionRow">
-                <property name="title" translatable="yes">Preferred Video Version</property>
-                <property name="show-arrow">True</property>
-                <signal name="activated" handler="preferred_subpage_activated_cb" swapped="yes"/>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Preferred Language</property>
             <property name="description" translatable="yes">This is globally effective</property>
             <child>
@@ -226,6 +215,18 @@
                     <property name="accessible-role">presentation</property>
                   </object>
                 </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Others</property>
+            <child>
+              <object class="AActionRow">
+                <property name="title" translatable="yes">Preferred Video Version</property>
+                <property name="show-arrow">True</property>
+                <signal name="activated" handler="preferred_subpage_activated_cb" swapped="yes"/>
               </object>
             </child>
           </object>

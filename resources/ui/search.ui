@@ -132,11 +132,14 @@
                         <property name="vexpand">True</property>
                         <property name="hexpand">True</property>
                         <child>
-                          <object class="GtkBox" id="recommendbox">
-                            <property name="orientation">vertical</property>
-                            <property name="margin-start">6</property>
-                            <property name="margin-end">6</property>
-                            <property name="spacing">6</property>
+                          <object class="AdwClamp">
+                            <child>
+                              <object class="GtkListBox" id="recommend_group">
+                                <style>
+                                  <class name="boxed-list"/>
+                                </style>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>

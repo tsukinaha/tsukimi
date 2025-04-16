@@ -298,7 +298,6 @@ impl TuItem {
                 let parent_id = parentid.to_owned();
                 let list_type = self.item_type();
                 page.connect_end_edge_overshot_tokio(
-                    false,
                     move |sort_by, sort_order, n_items, filters_list| {
                         let id = id.to_owned();
                         let parent_id = parent_id.to_owned();
@@ -334,7 +333,6 @@ impl TuItem {
                 });
                 let id = self.id();
                 page.connect_end_edge_overshot_tokio(
-                    false,
                     move |sort_by, sort_order, n_items, filters_list| {
                         let id = id.to_owned();
                         async move {

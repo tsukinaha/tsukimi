@@ -103,7 +103,7 @@ impl ListPage {
             page.connect_sort_changed_tokio(false, move |_, _, _| async move {
                 EMBY_CLIENT.get_channels_list(0).await
             });
-            page.connect_end_edge_overshot_tokio(false, move |_, _, n_items, _| async move {
+            page.connect_end_edge_overshot_tokio(move |_, _, n_items, _| async move {
                 EMBY_CLIENT.get_channels_list(n_items).await
             });
             stack.add_titled(&page, Some("channels"), &gettext("Channels"));
@@ -161,38 +161,40 @@ impl ListPage {
             );
             let id_clone2 = id.to_owned();
             let include_item_types_clone2 = include_item_types.to_owned();
-            page.connect_end_edge_overshot_tokio(
-                list_type == ListType::Resume,
-                move |sort_by, sort_order, n_items, filters_list| {
-                    let id_clone2 = id_clone2.to_owned();
-                    let include_item_types_clone2 = include_item_types_clone2.to_owned();
-                    async move {
-                        if list_type == ListType::Folder {
-                            EMBY_CLIENT
-                                .get_folder_include(
-                                    &id_clone2,
-                                    &sort_by,
-                                    &sort_order,
-                                    n_items,
-                                    &filters_list,
-                                )
-                                .await
-                        } else {
-                            EMBY_CLIENT
-                                .get_list(
-                                    &id_clone2,
-                                    n_items,
-                                    &include_item_types_clone2,
-                                    list_type,
-                                    &sort_order,
-                                    &sort_by,
-                                    &filters_list,
-                                )
-                                .await
+
+            if list_type != ListType::Resume {
+                page.connect_end_edge_overshot_tokio(
+                    move |sort_by, sort_order, n_items, filters_list| {
+                        let id_clone2 = id_clone2.to_owned();
+                        let include_item_types_clone2 = include_item_types_clone2.to_owned();
+                        async move {
+                            if list_type == ListType::Folder {
+                                EMBY_CLIENT
+                                    .get_folder_include(
+                                        &id_clone2,
+                                        &sort_by,
+                                        &sort_order,
+                                        n_items,
+                                        &filters_list,
+                                    )
+                                    .await
+                            } else {
+                                EMBY_CLIENT
+                                    .get_list(
+                                        &id_clone2,
+                                        n_items,
+                                        &include_item_types_clone2,
+                                        list_type,
+                                        &sort_order,
+                                        &sort_by,
+                                        &filters_list,
+                                    )
+                                    .await
+                            }
                         }
-                    }
-                },
-            );
+                    },
+                );
+            };
 
             stack.add_titled(&page, Some(name), title);
         }

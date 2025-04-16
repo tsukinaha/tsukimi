@@ -110,13 +110,14 @@ where
         let item = self.item();
         if item.played() {
             let mark = gtk::Button::builder()
-                .icon_name("emblem-ok-symbolic")
+                .icon_name("checkmark-small-symbolic")
                 .halign(gtk::Align::End)
                 .valign(gtk::Align::Start)
                 .build();
             mark.add_css_class("circular");
             mark.add_css_class("small");
             mark.add_css_class("accent");
+            mark.add_css_class("played-mark");
             self.overlay_button_box().append(&mark);
         }
     }
@@ -144,7 +145,7 @@ where
             let rating = gtk::Button::builder()
                 .label(rating.to_string())
                 .halign(gtk::Align::Start)
-                .valign(gtk::Align::End)
+                .valign(gtk::Align::Start)
                 .build();
             rating.add_css_class("pill");
             rating.add_css_class("small");

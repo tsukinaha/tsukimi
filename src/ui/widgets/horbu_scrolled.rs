@@ -30,7 +30,7 @@ mod imp {
         #[template_child]
         pub label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub flow: TemplateChild<gtk::FlowBox>,
+        pub wrapbox: TemplateChild<adw::WrapBox>,
         #[template_child]
         pub revealer: TemplateChild<gtk::Revealer>,
 
@@ -93,25 +93,31 @@ impl HorbuScrolled {
 
         imp.revealer.set_reveal_child(true);
 
-        let flow = imp.flow.get();
+        let wrapbox = imp.wrapbox.get();
         let type_ = type_.to_string();
 
         spawn(glib::clone!(
             #[weak]
-            flow,
+            wrapbox,
             #[weak(rename_to = obj)]
             self,
             async move {
                 for result in items {
-                    let buttoncontent = adw::ButtonContent::builder()
-                        .label(&result.name)
-                        .icon_name("view-list-symbolic")
-                        .build();
+                    let buttoncontent = adw::ButtonContent::builder().label(&result.name).build();
 
-                    let button = gtk::Button::builder()
-                        .margin_start(10)
-                        .child(&buttoncontent)
-                        .build();
+                    match type_.as_str() {
+                        "Studios" => {
+                            buttoncontent.set_icon_name("sound-symbolic");
+                        }
+                        "Genres" => {
+                            buttoncontent.set_icon_name("music-note-single-outline-symbolic");
+                        }
+                        _ => {
+                            buttoncontent.set_icon_name("tag-outline-symbolic");
+                        }
+                    }
+
+                    let button = gtk::Button::builder().child(&buttoncontent).build();
 
                     let type_ = type_.to_string();
                     button.connect_clicked(glib::clone!(
@@ -122,7 +128,7 @@ impl HorbuScrolled {
                         }
                     ));
 
-                    flow.append(&button);
+                    wrapbox.append(&button);
                 }
             }
         ));
@@ -141,12 +147,15 @@ impl HorbuScrolled {
 
         imp.revealer.set_reveal_child(true);
 
-        let flow = imp.flow.get();
-        flow.remove_all();
+        let wrapbox = imp.wrapbox.get();
+
+        while let Some(child) = wrapbox.last_child() {
+            wrapbox.remove(&child);
+        }
 
         spawn(glib::clone!(
             #[weak]
-            flow,
+            wrapbox,
             async move {
                 for result in items {
                     let buttoncontent = adw::ButtonContent::builder()
@@ -154,10 +163,7 @@ impl HorbuScrolled {
                         .icon_name("external-link-symbolic")
                         .build();
 
-                    let button = gtk::Button::builder()
-                        .margin_start(10)
-                        .child(&buttoncontent)
-                        .build();
+                    let button = gtk::Button::builder().child(&buttoncontent).build();
 
                     button.connect_clicked(move |_| {
                         let _ = gio::AppInfo::launch_default_for_uri(
@@ -166,7 +172,7 @@ impl HorbuScrolled {
                         );
                     });
 
-                    flow.append(&button);
+                    wrapbox.append(&button);
                 }
             }
         ));

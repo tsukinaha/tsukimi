@@ -60,7 +60,7 @@ mod imp {
         #[template_child]
         pub searchscrolled: TemplateChild<TuViewScrolled>,
         #[template_child]
-        pub recommendbox: TemplateChild<gtk::Box>,
+        pub recommend_group: TemplateChild<gtk::ListBox>,
         #[template_child]
         pub movie: TemplateChild<adw::SwitchRow>,
         #[template_child]
@@ -184,24 +184,34 @@ impl SearchPage {
         };
 
         let imp = self.imp();
-        let recommendbox = imp.recommendbox.get();
-        for _ in 0..recommendbox.observe_children().n_items() {
-            recommendbox.remove(&recommendbox.last_child().unwrap());
-        }
+        imp.recommend_group.remove_all();
 
         for item in recommend.items {
-            let button = gtk::Button::new();
-            let buttoncontent = adw::ButtonContent::builder()
-                .label(&item.name)
-                .icon_name(if item.item_type == "Movie" {
-                    "video-display-symbolic"
-                } else {
-                    "video-reel-symbolic"
-                })
+            let action_row = adw::ActionRow::builder()
+                .title(&item.name)
+                .subtitle(
+                    item.overview
+                        .to_owned()
+                        .unwrap_or_else(|| gettextrs::gettext("No overview"))
+                        .replace("\n", " ")
+                        .replace("&", "&amp;"),
+                )
+                .subtitle_lines(2)
+                .use_markup(false)
+                .activatable(true)
                 .build();
-            button.set_halign(gtk::Align::Center);
-            button.set_child(Some(&buttoncontent));
-            button.connect_clicked(glib::clone!(
+
+            let icon = gtk::Image::new();
+
+            if item.item_type == "Movie" {
+                icon.set_icon_name(Some("video-display-symbolic"));
+            } else {
+                icon.set_icon_name(Some("video-reel-symbolic"));
+            }
+
+            action_row.add_prefix(&icon);
+
+            action_row.connect_activated(glib::clone!(
                 #[weak(rename_to = obj)]
                 self,
                 move |_| {
@@ -209,7 +219,8 @@ impl SearchPage {
                     tu_item.activate(&obj, None);
                 }
             ));
-            recommendbox.append(&button);
+
+            imp.recommend_group.append(&action_row);
         }
 
         imp.stack.set_visible_child_name("recommend");

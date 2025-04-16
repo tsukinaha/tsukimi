@@ -128,7 +128,7 @@ use adw::prelude::AdwDialogExt;
 use super::ImageDialog;
 glib::wrapper! {
     pub struct ImageInfoCard(ObjectSubclass<imp::ImageInfoCard>)
-        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget, adw::NavigationPage,
+        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget, adw::NavigationPage, adw::Bin,
         @implements gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }

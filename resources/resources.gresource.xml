@@ -32,6 +32,7 @@
     <file preprocess="xml-stripblanks" alias="display-projector-symbolic.svg">icons/scalable/actions/display-projector-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="video-encoder-symbolic.svg">icons/scalable/actions/video-encoder-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="axes-one-quadrant-symbolic.svg">icons/scalable/actions/axes-one-quadrant-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="checkmark-small-symbolic.svg">icons/scalable/actions/checkmark-small-symbolic.svg</file>
   </gresource>
   <gresource prefix="/moe/tsuna/tsukimi/">
     <file compressed="true">style.css</file>

@@ -539,15 +539,11 @@ impl SingleGrid {
         });
     }
 
-    pub fn connect_end_edge_overshot_tokio<F, Fut>(&self, is_resume: bool, f: F)
+    pub fn connect_end_edge_overshot_tokio<F, Fut>(&self, f: F)
     where
         F: Fn(String, String, u32, FiltersList) -> Fut + Send + Sync + 'static,
         Fut: Future<Output = Result<List>> + Send + 'static,
     {
-        if is_resume {
-            return;
-        }
-
         self.imp().scrolled.connect_end_edge_reached(glib::clone!(
             #[weak(rename_to = obj)]
             self,
@@ -580,7 +576,7 @@ impl SingleGrid {
                         scrolled.reveal_spinner(true);
 
                         match spawn_tokio(future).await {
-                            Ok(item) => obj.add_items::<false>(item.items, is_resume),
+                            Ok(item) => obj.add_items::<false>(item.items, false),
                             Err(e) => {
                                 obj.toast(e.to_user_facing());
                             }

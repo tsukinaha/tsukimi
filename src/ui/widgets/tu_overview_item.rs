@@ -139,7 +139,7 @@ pub mod imp {
 
 glib::wrapper! {
     pub struct TuOverviewItem(ObjectSubclass<imp::TuOverviewItem>)
-        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,adw::NavigationPage,
+        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget, adw::Bin ,adw::NavigationPage,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }

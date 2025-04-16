@@ -23,6 +23,13 @@ button.pill.no-padding-small {
   padding: 0px;
 }
 
+button.pill.ultrasmall {
+  font-size: 0.75em;
+  border-radius: 99px;
+  margin: 0;
+  padding: 0px 8px;
+}
+
 .circular.smaller {
   min-height: 28px;
   min-width: 28px;
@@ -343,4 +350,8 @@ checkbutton.theme-selector radio:checked {
 
 .speed-label {
   text-shadow: 3px 3px 5px alpha(black, 1);
+}
+
+.played-mark {
+	background-color: rgba(255, 255, 255, 0.5);
 }

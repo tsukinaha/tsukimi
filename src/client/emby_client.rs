@@ -1023,6 +1023,7 @@ impl EmbyClient {
         let path = format!("Users/{}/Items", &self.user_id().await);
         let params = [
             ("Limit", "20"),
+            ("Fields", "Overview"),
             ("EnableTotalRecordCount", "false"),
             ("ImageTypeLimit", "0"),
             ("Recursive", "true"),
