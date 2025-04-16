@@ -190,8 +190,7 @@ impl SearchPage {
             let action_row = adw::ActionRow::builder()
                 .title(&item.name)
                 .subtitle(
-                    item
-                        .overview
+                    item.overview
                         .to_owned()
                         .unwrap_or_else(|| gettextrs::gettext("No overview"))
                         .replace("\n", " ")

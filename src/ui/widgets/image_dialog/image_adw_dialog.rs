@@ -1,6 +1,7 @@
 use adw::subclass::prelude::*;
 use gtk::{
     glib,
+    prelude::*,
     template_callbacks,
 };
 
