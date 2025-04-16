@@ -1030,6 +1030,18 @@ impl Window {
                     .application_icon("moe.tsuna.tsukimi")
                     .license_type(gtk::License::Gpl30)
                     .build();
+                about.set_debug_info(&format!(
+                    "Version: {}\nArchitecture: {}\nGTK Version: {}.{}.{}\nADW Version: {}.{}.{}\nOS: {}\n",
+                    crate::config::VERSION,
+                    std::env::consts::ARCH,
+                    gtk::major_version(),
+                    gtk::minor_version(),
+                    gtk::micro_version(),
+                    adw::major_version(),
+                    adw::minor_version(),
+                    adw::micro_version(),
+                    std::env::consts::OS
+                ));
                 about.add_acknowledgement_section(Some("Code"), &["Inaha", "Kosette"]);
                 about.add_acknowledgement_section(
                     Some("Special Thanks"),

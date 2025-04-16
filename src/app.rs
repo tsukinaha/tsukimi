@@ -59,8 +59,14 @@ mod imp {
             let accent_color = SETTINGS.accent_color_code();
 
             provider.load_from_string(&format!(
-                "@define-color  accent_color     {};
-                 @define-color  accent_bg_color  {};",
+                "
+                :root {{
+                    --accent-color:{};
+                }}
+
+                :root {{
+                    --accent-bg-color:{};
+                }}",
                 accent_color, accent_color,
             ));
 
