@@ -628,26 +628,23 @@ impl SGTitem {
         });
         let id = self.id.to_string();
         let list_type = list_type.to_owned();
-        page.connect_end_edge_overshot_tokio(
-            false,
-            move |sort_by, sort_order, n_items, filters_list| {
-                let id = id.to_owned();
-                let list_type = list_type.to_owned();
-                async move {
-                    EMBY_CLIENT
-                        .get_inlist(
-                            None,
-                            n_items,
-                            &list_type,
-                            &id,
-                            &sort_order,
-                            &sort_by,
-                            &filters_list,
-                        )
-                        .await
-                }
-            },
-        );
+        page.connect_end_edge_overshot_tokio(move |sort_by, sort_order, n_items, filters_list| {
+            let id = id.to_owned();
+            let list_type = list_type.to_owned();
+            async move {
+                EMBY_CLIENT
+                    .get_inlist(
+                        None,
+                        n_items,
+                        &list_type,
+                        &id,
+                        &sort_order,
+                        &sort_by,
+                        &filters_list,
+                    )
+                    .await
+            }
+        });
         push_page_with_tag(widget, page, &self.id.to_string(), &self.name.to_owned());
     }
 }

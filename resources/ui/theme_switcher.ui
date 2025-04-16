@@ -3,8 +3,8 @@
   <template class="ThemeSwitcher" parent="AdwBin">
     <property name="hexpand">true</property>
     <style>
-              <class name="themeselector"/>
-            </style>
+      <class name="themeselector"/>
+    </style>
     <child>
       <object class="GtkBox" id="box">
         <property name="hexpand">true</property>

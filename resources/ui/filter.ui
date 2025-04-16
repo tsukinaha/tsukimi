@@ -177,7 +177,7 @@
                                             <child>
                                               <object class="AdwButtonRow" id="apply_button_row">
                                                 <property name="title" translatable="yes">Apply</property>
-                                                <property name="start-icon-name">emblem-ok-symbolic</property>
+                                                <property name="start-icon-name">echeckmark-small-symbolic</property>
                                                 <style>
                                                   <class name="suggested-action" />
                                                 </style>

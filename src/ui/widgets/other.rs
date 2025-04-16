@@ -444,7 +444,6 @@ impl OtherPage {
                     }
                 });
                 page.connect_end_edge_overshot_tokio(
-                    false,
                     move |sort_by, sort_order, n_items, filters_list| {
                         let id_clone2 = id_clone2.to_owned();
                         let type_clone2 = type_clone2.to_owned();

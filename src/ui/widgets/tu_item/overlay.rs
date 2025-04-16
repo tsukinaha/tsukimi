@@ -117,6 +117,7 @@ where
             mark.add_css_class("circular");
             mark.add_css_class("small");
             mark.add_css_class("accent");
+            mark.add_css_class("played-mark");
             self.overlay_button_box().append(&mark);
         }
     }

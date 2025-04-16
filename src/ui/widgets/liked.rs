@@ -204,7 +204,6 @@ impl LikedPage {
                     }
                 });
                 page.connect_end_edge_overshot_tokio(
-                    false,
                     move |sort_by, sort_order, n_items, filters_list| {
                         let type_clone2 = type_clone2.to_owned();
                         async move {

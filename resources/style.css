@@ -351,3 +351,7 @@ checkbutton.theme-selector radio:checked {
 .speed-label {
   text-shadow: 3px 3px 5px alpha(black, 1);
 }
+
+.played-mark {
+	background-color: rgba(255, 255, 255, 0.5);
+}
