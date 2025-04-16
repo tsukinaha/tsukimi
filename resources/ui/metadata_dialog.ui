@@ -176,7 +176,7 @@
                                         </child>
                                         <child>
                                           <object class="AdwPreferencesGroup">
-                                            <property name="description">Overview</property>
+                                            <property name="description" translatable="yes">Overview</property>
                                             <property name="margin-start">12</property>
                                             <property name="margin-end">12</property>
                                             <child>
@@ -193,7 +193,7 @@
                                         </child>
                                         <child>
                                           <object class="AdwPreferencesGroup" id="ids_group">
-                                            <property name="description">External Ids</property>
+                                            <property name="description" translatable="yes">External Ids</property>
                                             <property name="margin-start">12</property>
                                             <property name="margin-end">12</property>
                                             <property name="visible">false</property>

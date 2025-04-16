@@ -123,7 +123,7 @@ mod imp {
     impl ImagesDialog {
         fn init(&self) {
             if IS_ADMIN.load(std::sync::atomic::Ordering::Relaxed) {
-                self.page.set_title("View Images");
+                self.page.set_title(&gettextrs::gettext("View Images"));
                 self.hint.set_visible(false);
             }
 

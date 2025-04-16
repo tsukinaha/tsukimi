@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwNavigationPage" class="ImageDialogSearchPage">
-    <property name="title">Choose Image</property>
+    <property name="title" translatable="yes">Choose Image</property>
     <child>
       <object class="AdwToolbarView">
         <child type="top">

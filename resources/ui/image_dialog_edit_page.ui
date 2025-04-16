@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwNavigationPage" class="ImageDialogEditPage">
-    <property name="title">Edit Image</property>
+    <property name="title" translatable="yes">Edit Image</property>
     <child>
       <object class="AdwToolbarView">
         <child type="top">
@@ -16,12 +16,12 @@
                   <object class="AdwPreferencesGroup">
                     <child>
                       <object class="ImageDropRow" id="image_drop_row">
-                        <property name="title">Upload Image</property>
+                        <property name="title" translatable="yes">Upload Image</property>
                       </object>
                     </child>
                     <child>
                       <object class="AdwEntryRow" id="entry">
-                        <property name="title">External Url</property>
+                        <property name="title" translatable="yes">External Url</property>
                         <child type="prefix">
                           <object class="GtkCheckButton" id="url_check_button">
                           </object>
@@ -34,7 +34,7 @@
                     <child>
                       <object class="AdwButtonRow">
                         <signal name="activated" handler="on_save_button_clicked" swapped="yes" />
-                        <property name="title">Save</property>
+                        <property name="title" translatable="yes">Save</property>
                       </object>
                     </child>
                   </object>

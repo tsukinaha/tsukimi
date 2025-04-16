@@ -71,12 +71,12 @@
                                           <object class="AdwPreferencesGroup">
                                             <child>
                                               <object class="AdwEntryRow" id="name_entry">
-                                                <property name="title">Name</property>
+                                                <property name="title" translatable="yes">Name</property>
                                               </object>
                                             </child>
                                             <child>
                                               <object class="AdwEntryRow" id="year_entry">
-                                                <property name="title">Year</property>
+                                                <property name="title" translatable="yes">Year</property>
                                               </object>
                                             </child>
                                           </object>
