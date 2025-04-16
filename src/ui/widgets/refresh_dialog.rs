@@ -13,9 +13,10 @@ use crate::{
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
     },
-    toast,
     utils::spawn_tokio,
 };
+
+use super::utils::GlobalToast;
 
 mod imp {
     use std::cell::OnceCell;
@@ -90,10 +91,10 @@ impl RefreshDialog {
         .await
         {
             Ok(_) => {
-                toast!(self, gettext("Scanning..."));
+                self.toast(gettext("Scanning..."));
             }
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
             }
         }
 

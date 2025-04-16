@@ -1,3 +1,4 @@
+use super::utils::GlobalToast;
 use adw::{
     prelude::*,
     subclass::prelude::*,
@@ -10,8 +11,6 @@ use gtk::{
     glib::clone,
     graphene,
 };
-
-use crate::toast;
 
 const ANIMATION_DURATION: u32 = 250;
 const CANCEL_SWIPE_ANIMATION_DURATION: u32 = 400;
@@ -347,6 +346,6 @@ impl MediaViewer {
             return;
         };
         self.clipboard().set_texture(&texture);
-        toast!(self, gettext("Image copied to clipboard"));
+        self.toast(gettext("Image copied to clipboard"));
     }
 }

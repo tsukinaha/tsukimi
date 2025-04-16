@@ -15,10 +15,12 @@ use crate::{
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
     },
-    toast,
-    ui::widgets::eu_item::{
-        self,
-        EuObject,
+    ui::{
+        GlobalToast,
+        widgets::eu_item::{
+            self,
+            EuObject,
+        },
     },
     utils::{
         spawn,
@@ -176,10 +178,10 @@ impl ImageDialogSearchPage {
                             .await
                             {
                                 Ok(_) => {
-                                    toast!(obj, gettext("Success"));
+                                    obj.toast(gettext("Success"));
                                 }
                                 Err(e) => {
-                                    toast!(obj, e.to_user_facing());
+                                    obj.toast(e.to_user_facing());
                                 }
                             }
                         }
@@ -224,7 +226,7 @@ impl ImageDialogSearchPage {
         {
             Ok(remote_image_list) => remote_image_list,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };

@@ -20,7 +20,7 @@ use crate::{
             SearchInfo,
         },
     },
-    toast,
+    ui::GlobalToast,
     utils::{
         spawn,
         spawn_tokio,
@@ -125,7 +125,7 @@ impl IdentifyDialog {
                 self.load_data(data);
             }
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
             }
         }
         match spawn_tokio(async move { EMBY_CLIENT.get_item_info(&id_clone).await }).await {
@@ -218,7 +218,7 @@ impl IdentifyDialog {
                 self.imp().navigation_view.push(&search_page);
             }
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
             }
         }
     }

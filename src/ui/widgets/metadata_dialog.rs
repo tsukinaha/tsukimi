@@ -9,19 +9,18 @@ use gtk::{
     template_callbacks,
 };
 
+use super::utils::GlobalToast;
 use crate::{
     client::{
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
         structs::SimpleListItem,
     },
-    toast,
     utils::{
         spawn,
         spawn_tokio,
     },
 };
-
 mod imp {
     use std::cell::{
         OnceCell,
@@ -255,7 +254,7 @@ impl MetadataDialog {
                 self.imp().load_data(item);
             }
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
             }
         }
     }
@@ -316,11 +315,11 @@ impl MetadataDialog {
                             .await
                             {
                                 Ok(_) => {
-                                    toast!(obj, gettext("Success"));
+                                    obj.toast(gettext("Success"));
                                     obj.close();
                                 }
                                 Err(e) => {
-                                    toast!(obj, e.to_user_facing());
+                                    obj.toast(e.to_user_facing());
                                 }
                             }
                         }

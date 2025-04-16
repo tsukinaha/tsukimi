@@ -4,7 +4,6 @@ use crate::{
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
     },
-    toast,
     ui::{
         provider::IS_ADMIN,
         widgets::{
@@ -17,6 +16,8 @@ use crate::{
         spawn_tokio,
     },
 };
+
+use crate::ui::GlobalToast;
 
 use super::prelude::TuItemMenuPrelude;
 use adw::prelude::AlertDialogExt;
@@ -87,11 +88,9 @@ where
         let result = spawn_tokio(async move { Self::perform_action_inner(&id, &action).await });
 
         match result.await {
-            Ok(_) => {
-                toast!(self, gettext("Success"))
-            }
+            Ok(_) => self.toast(gettext("Success")),
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
             }
         }
 
@@ -246,10 +245,10 @@ where
                                 match spawn_tokio(async move { EMBY_CLIENT.scan(&id).await }).await
                                 {
                                     Ok(_) => {
-                                        toast!(obj, gettext("Scanning..."));
+                                        obj.toast(gettext("Scanning..."));
                                     }
                                     Err(e) => {
-                                        toast!(obj, e.to_user_facing());
+                                        obj.toast(e.to_user_facing());
                                     }
                                 }
                             }
@@ -451,7 +450,7 @@ where
         {
             Ok(info) => info,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -488,10 +487,10 @@ where
                                 .and_then(|r| r.error_for_status().map_err(|e| e.into()))
                             {
                                 Ok(_) => {
-                                    toast!(obj, gettext("Item deleted"));
+                                    obj.toast(gettext("Item deleted"));
                                 }
                                 Err(e) => {
-                                    toast!(obj, e.to_user_facing());
+                                    obj.toast(e.to_user_facing());
                                 }
                             }
                         }
@@ -546,10 +545,10 @@ where
                                 .and_then(|r| r.error_for_status().map_err(|e| e.into()))
                             {
                                 Ok(_) => {
-                                    toast!(obj, gettext("Item deleted"));
+                                    obj.toast(gettext("Item deleted"));
                                 }
                                 Err(e) => {
-                                    toast!(obj, e.to_user_facing());
+                                    obj.toast(e.to_user_facing());
                                 }
                             }
                         }

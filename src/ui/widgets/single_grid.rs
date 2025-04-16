@@ -23,7 +23,10 @@ use super::{
     },
     tu_list_item::imp::PosterType,
     tu_overview_item::imp::ViewGroup,
-    utils::TuItemBuildExt,
+    utils::{
+        GlobalToast,
+        TuItemBuildExt,
+    },
 };
 use crate::{
     client::{
@@ -33,7 +36,6 @@ use crate::{
             SimpleListItem,
         },
     },
-    toast,
     ui::models::SETTINGS,
     utils::{
         spawn,
@@ -474,7 +476,9 @@ impl SingleGrid {
     }
 
     pub fn set_item_number(&self, n: u32) {
-        self.imp().count.set_text(&format!("{} Items", n));
+        self.imp()
+            .count
+            .set_text(&format!("{} {}", n, gettextrs::gettext("Items")));
     }
 
     pub fn connect_sort_changed<F>(&self, f: F)
@@ -527,7 +531,7 @@ impl SingleGrid {
                                 .set_text(&format!("{} Items", item.total_record_count));
                         }
                         Err(e) => {
-                            toast!(obj, e.to_user_facing());
+                            obj.toast(e.to_user_facing());
                         }
                     }
                 }
@@ -574,7 +578,7 @@ impl SingleGrid {
                         match spawn_tokio(future).await {
                             Ok(item) => obj.add_items::<false>(item.items, false),
                             Err(e) => {
-                                toast!(obj, e.to_user_facing());
+                                obj.toast(e.to_user_facing());
                             }
                         }
 

@@ -8,15 +8,14 @@ use gtk::{
     template_callbacks,
 };
 
+use super::utils::GlobalToast;
 use crate::{
     client::{
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
     },
-    toast,
     utils::spawn_tokio,
 };
-
 mod imp {
     use std::cell::OnceCell;
 
@@ -133,7 +132,7 @@ impl MissingEpisodesDialog {
         {
             Ok(list) => list.items,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 self.view_page();
                 return;
             }

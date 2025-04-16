@@ -145,12 +145,12 @@ pub(crate) mod imp {
             }
             let obj = self.obj();
             let ctx = self.title_label.get();
-            ctx.remove_css_class("dim-label");
+            ctx.remove_css_class("dimmed");
             ctx.remove_css_class("playing-song-label");
             self.play_icon.set_visible(false);
             match state {
                 State::Played => {
-                    ctx.add_css_class("dim-label");
+                    ctx.add_css_class("dimmed");
                 }
                 State::Playing => {
                     ctx.add_css_class("playing-song-label");

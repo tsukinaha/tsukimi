@@ -7,6 +7,7 @@ use gtk::{
     subclass::prelude::*,
 };
 
+use super::utils::GlobalToast;
 use crate::{
     client::{
         emby_client::EMBY_CLIENT,
@@ -15,13 +16,11 @@ use crate::{
     },
     fraction,
     fraction_reset,
-    toast,
     utils::{
         spawn,
         spawn_tokio,
     },
 };
-
 mod imp {
     use glib::subclass::InitializingObject;
     use gtk::{
@@ -168,7 +167,7 @@ impl LikedPage {
         {
             Ok(history) => history,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 List::default()
             }
         };

@@ -9,7 +9,7 @@
         <property name="ellipsize">end</property>
         <property name="selectable" bind-source="AActionRow" bind-property="activatable" bind-flags="sync-create|invert-boolean" />
         <style>
-          <class name="dim-label"/>
+          <class name="dimmed"/>
         </style>
       </object>
     </child>

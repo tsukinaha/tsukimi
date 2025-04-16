@@ -15,10 +15,9 @@ pub mod client;
 
 pub use arg::Args;
 pub use config::GETTEXT_PACKAGE;
-use config::{
-    LOCALEDIR,
-    VERSION,
-};
+#[cfg(target_os = "linux")]
+use config::LOCALEDIR;
+use config::VERSION;
 use once_cell::sync::OnceCell;
 
 use clap::Parser;

@@ -7,19 +7,20 @@ use gtk::{
     template_callbacks,
 };
 
-use super::star_toggle::StarToggle;
+use super::{
+    star_toggle::StarToggle,
+    utils::GlobalToast,
+};
 use crate::{
     client::{
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
     },
-    toast,
     utils::{
         spawn,
         spawn_tokio,
     },
 };
-
 mod imp {
     use std::cell::RefCell;
 
@@ -104,10 +105,10 @@ impl ItemActionsBox {
 
             match result {
                 Ok(_) => {
-                    toast!(self, "Success");
+                    self.toast("Success");
                 }
                 Err(e) => {
-                    toast!(self, e.to_user_facing());
+                    self.toast(e.to_user_facing());
                 }
             }
         }
@@ -169,11 +170,11 @@ impl ItemActionsBox {
                                         {
                                             Ok(_) => {
                                                 obj.set_played(false);
-                                                toast!(obj, "Success");
+                                                obj.toast("Success");
                                                 obj.bind_edit();
                                             }
                                             Err(e) => {
-                                                toast!(obj, e.to_user_facing());
+                                                obj.toast(e.to_user_facing());
                                             }
                                         }
                                     }
@@ -201,11 +202,11 @@ impl ItemActionsBox {
                                         {
                                             Ok(_) => {
                                                 obj.set_played(true);
-                                                toast!(obj, "Success");
+                                                obj.toast("Success");
                                                 obj.bind_edit();
                                             }
                                             Err(e) => {
-                                                toast!(obj, e.to_user_facing());
+                                                obj.toast(e.to_user_facing());
                                             }
                                         }
                                     }

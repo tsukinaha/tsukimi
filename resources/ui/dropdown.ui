@@ -19,7 +19,7 @@
               <attribute name="scale" value="0.9"/>
             </attributes>
             <style>
-              <class name="dim-label"/>
+              <class name="dimmed"/>
             </style>
           </object>
         </child>

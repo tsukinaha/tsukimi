@@ -9,10 +9,12 @@ use crate::{
         emby_client::EMBY_CLIENT,
         error::UserFacingError,
     },
-    toast,
-    ui::widgets::{
-        song_widget::SongWidget,
-        star_toggle::StarToggle,
+    ui::{
+        GlobalToast,
+        widgets::{
+            song_widget::SongWidget,
+            star_toggle::StarToggle,
+        },
     },
     utils::{
         spawn,
@@ -51,10 +53,10 @@ macro_rules! impl_has_likeaction {
 
                                     match result {
                                         Ok(_) => {
-                                            toast!(obj, "Success");
+                                            obj.toast("Success");
                                         }
                                         Err(e) => {
-                                            toast!(obj, e.to_user_facing());
+                                            obj.toast(e.to_user_facing());
                                         }
                                     }
                                 })

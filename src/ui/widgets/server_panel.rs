@@ -24,12 +24,13 @@ use crate::{
     },
     fraction,
     fraction_reset,
-    toast,
     utils::{
         spawn,
         spawn_tokio,
     },
 };
+
+use super::utils::GlobalToast;
 
 pub(crate) mod imp {
     use glib::subclass::InitializingObject;
@@ -183,31 +184,31 @@ impl ServerPanel {
         match spawn_tokio(EMBY_CLIENT.shut_down()).await {
             Ok(_) => (),
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
 
-        toast!(self, gettext("Server is shutting down"));
+        self.toast(gettext("Server is shutting down"));
     }
 
     async fn restart(&self) {
         match spawn_tokio(EMBY_CLIENT.restart()).await {
             Ok(_) => (),
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
 
-        toast!(self, gettext("Server is restarting"));
+        self.toast(gettext("Server is restarting"));
     }
 
     async fn set_server_info(&self) {
         let server_info = match spawn_tokio(EMBY_CLIENT.get_server_info()).await {
             Ok(server_info) => server_info,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -222,7 +223,7 @@ impl ServerPanel {
         let logs = match spawn_tokio(EMBY_CLIENT.get_activity_log(false)).await {
             Ok(logs) => logs,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -250,7 +251,7 @@ impl ServerPanel {
         let logs = match spawn_tokio(EMBY_CLIENT.get_activity_log(true)).await {
             Ok(logs) => logs,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -275,7 +276,7 @@ impl ServerPanel {
         let tasks = match spawn_tokio(EMBY_CLIENT.get_scheduled_tasks()).await {
             Ok(tasks) => tasks,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
@@ -338,12 +339,12 @@ impl ServerPanel {
         match spawn_tokio(EMBY_CLIENT.run_scheduled_task(id)).await {
             Ok(result) => result,
             Err(e) => {
-                toast!(self, e.to_user_facing());
+                self.toast(e.to_user_facing());
                 return;
             }
         };
 
-        toast!(self, gettext("Task started"));
+        self.toast(gettext("Task started"));
     }
 }
 

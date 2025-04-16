@@ -11,7 +11,7 @@
             <property name="hexpand">True</property>
             <property name="halign">start</property>
             <style>
-              <class name="dim-label" />
+              <class name="dimmed" />
             </style>
             <attributes>
               <attribute name="weight" value="PANGO_WEIGHT_BOLD" />

@@ -17,9 +17,9 @@ use super::options_matcher::{
     match_sub_border_style,
     match_video_upscale,
 };
-use crate::{
-    toast,
-    ui::models::SETTINGS,
+use crate::ui::{
+    GlobalToast,
+    models::SETTINGS,
 };
 
 mod imp {
@@ -449,7 +449,7 @@ impl MPVControlSidebar {
         imp.hue_adj.set_value(0.0);
         imp.saturation_adj.set_value(0.0);
 
-        toast!(self, gettext("Video filter settings cleared."));
+        self.toast(gettext("Video filter settings cleared."));
     }
 
     #[template_callback]
@@ -472,7 +472,7 @@ impl MPVControlSidebar {
         imp.sub_shadow_offset_adj.set_value(0.0);
         imp.stretch_image_subs_to_screen_switchrow.set_active(false);
 
-        toast!(self, gettext("Subtitle settings cleared."));
+        self.toast(gettext("Subtitle settings cleared."));
     }
 
     #[template_callback]
@@ -485,7 +485,7 @@ impl MPVControlSidebar {
         imp.sub_background_color
             .set_rgba(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 0.0));
 
-        toast!(self, gettext("Subtitle color settings cleared."));
+        self.toast(gettext("Subtitle color settings cleared."));
     }
 
     #[template_callback]
@@ -494,7 +494,7 @@ impl MPVControlSidebar {
         imp.sub_offset_adj.set_value(0.0);
         imp.sub_speed_adj.set_value(0.0);
 
-        toast!(self, gettext("Subtitle offset settings cleared."));
+        self.toast(gettext("Subtitle offset settings cleared."));
     }
 
     #[template_callback]
@@ -536,7 +536,7 @@ impl MPVControlSidebar {
         imp.deband_range_adj.set_value(16.0);
         imp.deband_grain_adj.set_value(32.0);
 
-        toast!(self, gettext("Deband settings cleared."));
+        self.toast(gettext("Deband settings cleared."));
     }
 
     #[template_callback]
