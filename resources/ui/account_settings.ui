@@ -458,7 +458,7 @@
                                     <property name="justify">left</property>
                                     <property name="halign">start</property>
                                     <style>
-                                      <class name="dim-label" />
+                                      <class name="dimmed" />
                                     </style>
                                   </object>
                                 </child>
@@ -566,7 +566,7 @@
                         <property name="justify">left</property>
                         <property name="halign">start</property>
                         <style>
-                          <class name="dim-label" />
+                          <class name="dimmed" />
                         </style>
                       </object>
                     </child>
@@ -577,7 +577,7 @@
                         <property name="justify">left</property>
                         <property name="halign">start</property>
                         <style>
-                          <class name="dim-label" />
+                          <class name="dimmed" />
                         </style>
                       </object>
                     </child>
@@ -589,7 +589,7 @@
                         <property name="halign">start</property>
                         <property name="visible">False</property>
                         <style>
-                          <class name="dim-label" />
+                          <class name="dimmed" />
                         </style>
                       </object>
                     </child>
@@ -676,7 +676,7 @@
                         <property name="justify">left</property>
                         <property name="halign">start</property>
                         <style>
-                          <class name="dim-label" />
+                          <class name="dimmed" />
                         </style>
                       </object>
                     </child>
@@ -687,7 +687,7 @@
                         <property name="justify">left</property>
                         <property name="halign">start</property>
                         <style>
-                          <class name="dim-label" />
+                          <class name="dimmed" />
                         </style>
                       </object>
                     </child>
@@ -699,7 +699,7 @@
                         <property name="halign">start</property>
                         <property name="visible">False</property>
                         <style>
-                          <class name="dim-label" />
+                          <class name="dimmed" />
                         </style>
                       </object>
                     </child>

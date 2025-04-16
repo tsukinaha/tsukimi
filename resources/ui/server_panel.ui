@@ -69,7 +69,7 @@
                             <property name="label" translatable="yes"></property>
                             <property name="halign">start</property>
                             <style>
-                              <class name="dim-label" />
+                              <class name="dimmed" />
                             </style>
                           </object>
                         </child>

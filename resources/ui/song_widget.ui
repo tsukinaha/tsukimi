@@ -35,7 +35,7 @@
                 <property name="halign">end</property>
                 <property name="justify">right</property>
                 <style>
-                  <class name="dim-label"/>
+                  <class name="dimmed"/>
                 </style>
               </object>
             </child>
@@ -75,7 +75,7 @@
                 <property name="justify">fill</property>
                 <property name="margin-start">9</property>
                 <style>
-                  <class name="dim-label"/>
+                  <class name="dimmed"/>
                 </style>
               </object>
             </child>

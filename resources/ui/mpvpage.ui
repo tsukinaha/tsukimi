@@ -124,7 +124,7 @@
                                     <property name="halign">center</property>
                                     <property name="ellipsize">middle</property>
                                     <style>
-                                      <class name="dim-label" />
+                                      <class name="dimmed" />
                                     </style>
                                   </object>
                                 </child>
@@ -139,7 +139,7 @@
                                     <property name="width-request">130</property>
                                     <property name="margin-end">10</property>
                                     <style>
-                                      <class name="dim-label" />
+                                      <class name="dimmed" />
                                     </style>
                                   </object>
                                 </child>
