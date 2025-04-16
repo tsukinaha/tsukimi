@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-16 21:25+0800\n"
+"POT-Creation-Date: 2025-04-16 21:47+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -142,7 +142,6 @@ msgstr ""
 #: src/ui/widgets/tu_item/action.rs:469 src/ui/widgets/tu_item/action.rs:527
 #: src/ui/widgets/identify/search_page.rs:129
 #: resources/ui/account_settings.ui:508 resources/ui/account_settings.ui:618
-#: resources/ui/refresh_dialog.ui:19
 msgid "Cancel"
 msgstr ""
 
@@ -1038,6 +1037,7 @@ msgid "Enter the server details below."
 msgstr ""
 
 #: resources/ui/account.ui:48 resources/ui/other.ui:54
+#: resources/ui/identify_dialog.ui:74
 msgid "Name"
 msgstr ""
 
@@ -1070,7 +1070,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: resources/ui/server_action_row.ui:41 resources/ui/refresh_dialog.ui:25
+#: resources/ui/server_action_row.ui:41 resources/ui/refresh_dialog.ui:49
 msgid "Refresh"
 msgstr ""
 
@@ -1327,6 +1327,7 @@ msgid "Edit descriptor"
 msgstr ""
 
 #: resources/ui/account_settings.ui:624
+#: resources/ui/image_dialog_edit_page.ui:37
 msgid "Save"
 msgstr ""
 
@@ -1441,6 +1442,14 @@ msgstr ""
 msgid "Pick Time"
 msgstr ""
 
+#: resources/ui/metadata_dialog.ui:179
+msgid "Overview"
+msgstr ""
+
+#: resources/ui/metadata_dialog.ui:196
+msgid "External Ids"
+msgstr ""
+
 #: resources/ui/metadata_dialog.ui:202
 msgid "TheMovieDb Id"
 msgstr ""
@@ -1457,11 +1466,11 @@ msgstr ""
 msgid "Lock The Item"
 msgstr ""
 
-#: resources/ui/refresh_dialog.ui:50
+#: resources/ui/refresh_dialog.ui:30
 msgid "Replace All Metadata"
 msgstr ""
 
-#: resources/ui/refresh_dialog.ui:59
+#: resources/ui/refresh_dialog.ui:39
 msgid "Replace All Images"
 msgstr ""
 
@@ -1485,6 +1494,18 @@ msgstr ""
 msgid "BackDrops"
 msgstr ""
 
+#: resources/ui/image_dialog_edit_page.ui:4
+msgid "Edit Image"
+msgstr ""
+
+#: resources/ui/image_dialog_edit_page.ui:19
+msgid "Upload Image"
+msgstr ""
+
+#: resources/ui/image_dialog_edit_page.ui:24
+msgid "External Url"
+msgstr ""
+
 #: resources/ui/image_info_card.ui:86
 msgid "Copy Image To Clipboard"
 msgstr ""
@@ -1499,8 +1520,16 @@ msgid ""
 "results."
 msgstr ""
 
+#: resources/ui/identify_dialog.ui:79
+msgid "Year"
+msgstr ""
+
 #: resources/ui/identify_dialog.ui:86
 msgid "External"
+msgstr ""
+
+#: resources/ui/image_dialog_search_page.ui:4
+msgid "Choose Image"
 msgstr ""
 
 #: resources/ui/image_dialog_search_page.ui:15

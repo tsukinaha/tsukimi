@@ -11,27 +11,7 @@
         <child>
           <object class="AdwToolbarView">
             <child type="top">
-              <object class="AdwHeaderBar">
-                <property name="show-end-title-buttons">False</property>
-                <property name="show-start-title-buttons">False</property>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Cancel</property>
-                    <property name="action-name">window.close</property>
-                  </object>
-                </child>
-                <child type="end">
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Refresh</property>
-                    <property name="use-underline">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="on_refresh" swapped="yes"/>
-                    <style>
-                      <class name="suggested-action" />
-                    </style>
-                  </object>
-                </child>
-              </object>
+              <object class="AdwHeaderBar" />
             </child>
             <child>
               <object class="AdwClamp">
@@ -60,6 +40,20 @@
                         <style>
                           <class name="accent" />
                         </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup">
+                        <child>
+                          <object class="AdwButtonRow">
+                            <property name="title" translatable="yes">Refresh</property>
+                            <property name="start-icon-name">checkmark-small-symbolic</property>
+                            <signal name="activated" handler="on_refresh" swapped="yes"/>
+                            <style>
+                              <class name="suggested-action" />
+                            </style>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
