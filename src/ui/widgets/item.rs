@@ -204,6 +204,10 @@ pub(crate) mod imp {
 
         #[property(get, set, nullable)]
         pub current_item: RefCell<Option<TuItem>>,
+
+        // None if season not changed
+        #[property(get, set, nullable)]
+        pub current_season: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         pub play_session_id: RefCell<Option<String>>,
 
@@ -487,6 +491,7 @@ impl ItemPage {
 
         let list = match (position, season_id.to_owned()) {
             (0, Some(season_id)) => {
+                let season_id_clone = season_id.to_owned();
                 match spawn_tokio(async move {
                     EMBY_CLIENT
                         .get_episodes(&series_id, &season_id.to_string(), 0)
@@ -494,7 +499,10 @@ impl ItemPage {
                 })
                 .await
                 {
-                    Ok(item) => item,
+                    Ok(item) => {
+                        self.set_current_season(Some(season_id_clone));
+                        item
+                    }
                     Err(e) => {
                         self.toast(e.to_user_facing());
                         return;
@@ -608,9 +616,11 @@ impl ItemPage {
         let start_index = btn.start_index();
         let item = self.item();
         let series_id = item.series_id().unwrap_or(item.id());
-        let Some(season_id) = item
-            .season_id()
-            .or(self.imp().season_id.borrow().to_owned())
+
+        let Some(season_id) =
+            self.current_season().or(item
+                .season_id()
+                .or(self.imp().season_id.borrow().to_owned()))
         else {
             return;
         };
