@@ -1,0 +1,58 @@
+name: CI
+
+on:
+    workflow_dispatch:
+    push:
+      branches:
+        - "main"
+      paths-ignore:
+        - "docs/**"
+        - "**/.gitignore"
+        - "**/.dockerignore"
+        - LICENSE
+        - "**/*.md"
+    pull_request:
+      branches:
+        - "main"
+      paths-ignore:
+        - "docs/**"
+        - "**/.gitignore"
+        - "**/.dockerignore"
+        - LICENSE
+        - "**/*.md"
+
+jobs:
+  linux:
+    uses: ./.github/workflows/build_linux.yml
+    secrets: inherit
+
+  windows:
+    uses: ./.github/workflows/build_windows.yml
+    secrets: inherit
+
+  upload:
+    runs-on: ubuntu-latest
+    needs: [linux, windows]
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Zip artifact
+        id: zip
+        run: echo "zip_files<<EOF"; for d in */; do zip -r "${d%/}.zip" "$d"; echo "${d%/}.zip"; done; echo "EOF";  >> $GITHUB_OUTPUT
+        working-directory: artifacts
+
+      - name: Upload to Telegram
+        uses: nyaruta/tg-file-action@v0.1.0
+        with:
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          files: ${{ steps.zip.outputs.zip_files }}
+          body: 'Tsukimi CI\nCommit Message: ${{ github.event.head_commit.message}}\nCommit URL: ${{ github.event.head_commit.url }}'
+
+
+
+        
+    
