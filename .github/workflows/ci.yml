@@ -49,9 +49,26 @@ jobs:
           done >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
 
+      - name: Start Telegram Bot API
+        run: | 
+          docker run -d -p 8081:8081 \
+          --name=telegram-bot-api \
+          -e TELEGRAM_API_ID=${{ secrets.TELEGRAM_API_ID }} \
+          -e TELEGRAM_API_HASH=${{ secrets.TELEGRAM_API_HASH }} \
+          aiogram/telegram-bot-api:latest
+
+      - name: Wait for Telegram Bot API to be ready
+        run: |
+          while ! curl -s -f -o /dev/null http://localhost:8081; do
+            echo "Waiting for Telegram Bot API..."
+            sleep 5
+          done
+          echo "Telegram Bot API is ready!"
+
       - name: Upload to Telegram
-        uses: nyaruta/tg-file-action@v0.1.0
+        uses: nyaruta/tg-file-action@v0.2.0
         with:
+          api-url: 'http://localhost:8081'
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
           files: ${{ steps.zip.outputs.zip_files }}
