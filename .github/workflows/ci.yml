@@ -1,4 +1,4 @@
-name: CI
+name: Upload Artifacts
 
 on:
     workflow_dispatch:
