@@ -72,7 +72,10 @@ jobs:
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
           files: ${{ steps.zip.outputs.zip_files }}
-          body: 'Tsukimi CI\nCommit Message: ${{ github.event.head_commit.message}}\nCommit URL: ${{ github.event.head_commit.url }}'
+          body: |
+            Tsukimi CI
+            Commit Message: ${{ github.event.head_commit.message}}
+            Commit URL: ${{ github.event.head_commit.url }}
 
       - name: Clean up
         run: |
