@@ -59,7 +59,7 @@ jobs:
 
       - name: Wait for Telegram Bot API to be ready
         run: |
-          while ! curl -s -f -o /dev/null http://localhost:8081; do
+          while ! curl -s -o /dev/null http://localhost:8081; do
             echo "Waiting for Telegram Bot API..."
             sleep 5
           done
@@ -73,6 +73,13 @@ jobs:
           chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
           files: ${{ steps.zip.outputs.zip_files }}
           body: 'Tsukimi CI\nCommit Message: ${{ github.event.head_commit.message}}\nCommit URL: ${{ github.event.head_commit.url }}'
+
+      - name: Clean up
+        run: |
+          docker stop telegram-bot-api
+          docker rm telegram-bot-api
+          docker rmi aiogram/telegram-bot-api:latest
+          rm -rf artifacts
 
 
 
