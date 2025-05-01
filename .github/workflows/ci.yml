@@ -83,8 +83,3 @@ jobs:
           docker rm telegram-bot-api
           docker rmi aiogram/telegram-bot-api:latest
           rm -rf artifacts
-
-
-
-        
-    
