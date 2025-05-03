@@ -204,7 +204,7 @@ impl SearchPage {
             let icon = gtk::Image::new();
 
             if item.item_type == "Movie" {
-                icon.set_icon_name(Some("video-display-symbolic"));
+                icon.set_icon_name(Some("display-projector-symbolic"));
             } else {
                 icon.set_icon_name(Some("video-reel-symbolic"));
             }

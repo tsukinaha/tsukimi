@@ -136,6 +136,8 @@ mod imp {
         #[template_child]
         pub menu_button: TemplateChild<gtk::MenuButton>,
         #[template_child]
+        pub danmaku_button: TemplateChild<gtk::MenuButton>,
+        #[template_child]
         pub menu_popover: TemplateChild<gtk::Popover>,
         #[template_child]
         pub title_label1: TemplateChild<gtk::Label>,
@@ -921,7 +923,12 @@ impl MPVPage {
                 }
             }
         }
+
         if self.imp().menu_button.is_active() {
+            return false;
+        }
+
+        if self.imp().danmaku_button.is_active() {
             return false;
         }
 

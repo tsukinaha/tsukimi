@@ -564,7 +564,7 @@ impl Window {
     }
 
     pub fn mainpage(&self) {
-        self.imp().stack.set_visible_child_name("main");
+        self.imp().stack.set_visible_child_name("mpv");
     }
 
     fn placeholder(&self) {
