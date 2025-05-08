@@ -16,13 +16,13 @@ fn main() {
         let po_files: Vec<String> = LINGUAS
             .lines()
             .filter(|line| !line.is_empty())
-            .map(|line| format!("po/{}.po", line))
+            .map(|line| format!("po/{line}.po"))
             .collect();
 
         for po_file in &po_files {
             let po_path = Path::new(po_file);
             let locale = po_path.file_stem().unwrap().to_str().unwrap();
-            let mo_file = format!("i18n/locale/{}/LC_MESSAGES/tsukimi.mo", locale);
+            let mo_file = format!("i18n/locale/{locale}/LC_MESSAGES/tsukimi.mo");
 
             let mo_path = Path::new(&mo_file);
 
@@ -36,9 +36,9 @@ fn main() {
                 .expect("Failed to compile po file");
 
             if status.success() {
-                println!("{}: OK", po_file);
+                println!("{po_file}: OK");
             } else {
-                println!("{}: FAILED", po_file);
+                println!("{po_file}: FAILED");
             }
         }
     }

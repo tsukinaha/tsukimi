@@ -102,6 +102,7 @@ mod imp {
             let factor = self.obj().scale_factor();
             let width = self.obj().width() * factor;
             let height = self.obj().height() * factor;
+            
             unsafe {
                 let mut fbo = -1;
                 gl::GetIntegerv(gl::FRAMEBUFFER_BINDING, &mut fbo);
