@@ -34,7 +34,7 @@ gettext-rs = { version = "~0.7", features = ["gettext-system"] }
 hostname = "0.4.1"
 epoxy = "0.1.0"
 gl = "0.14.0"
-libloading = "0.8.6"
+libloading = "0.8.7"
 atomic-wait = "1.1.0"
 flume = "0.11.1"
 derive_builder = "0.20.2"
