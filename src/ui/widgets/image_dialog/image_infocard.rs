@@ -221,7 +221,7 @@ impl ImageInfoCard {
         let Some(height) = height else {
             return;
         };
-        let mut str = format!("{}x{}", width, height);
+        let mut str = format!("{width}x{height}");
         if let Some(size) = size {
             str.push_str(format!(" {}", bytefmt::format(*size)).as_str());
         }

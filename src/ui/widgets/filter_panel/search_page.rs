@@ -246,7 +246,7 @@ impl FilterDialogSearchPage {
                 return;
             };
 
-            let is_active = filters.iter().any(|f| *f == filter);
+            let is_active = filters.contains(&filter);
             filter_row.set_active(is_active);
         }
     }

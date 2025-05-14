@@ -211,5 +211,5 @@ pub fn format_duration(seconds: i64) -> String {
     let duration = Duration::seconds(seconds);
     let minutes = duration.num_minutes();
     let seconds = duration.num_seconds() % 60;
-    format!("{}:{:02}", minutes, seconds)
+    format!("{minutes}:{seconds:02}")
 }

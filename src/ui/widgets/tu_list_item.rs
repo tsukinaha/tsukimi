@@ -308,10 +308,10 @@ impl TuListItem {
                             if end_year != year.parse::<i32>().unwrap_or_default() {
                                 format!("{} - {}", year, end_date.year())
                             } else {
-                                format!("{}", end_year)
+                                format!("{end_year}")
                             }
                         } else {
-                            format!("{} - Unknown", year)
+                            format!("{year} - Unknown")
                         }
                     } else {
                         year

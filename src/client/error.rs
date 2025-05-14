@@ -10,10 +10,10 @@ impl UserFacingError for reqwest::Error {
         let status_code = self.status();
         if let Some(status_code) = status_code {
             warn!("Request Error: {}", status_code);
-            format!("Error: {}", status_code)
+            format!("Error: {status_code}")
         } else if self.is_decode() {
             warn!("Request Decoding Error: {}", self);
-            format!("Decoding Error: {}", self)
+            format!("Decoding Error: {self}")
         } else if self.is_timeout() {
             warn!("Request Timeout Error: {}", self);
             gettext("Timeout Error, Check your internet connection")
@@ -22,7 +22,7 @@ impl UserFacingError for reqwest::Error {
             gettext("Connection Error, Check your internet connection")
         } else {
             warn!("Request Error: {}", self);
-            format!("Error: {}", self)
+            format!("Error: {self}")
         }
     }
 }
@@ -39,16 +39,16 @@ impl UserFacingError for libmpv2::Error {
         match self {
             Self::Loadfile { error } => {
                 warn!("MPV ErrorLoadfile: {}", error);
-                format!("ErrorLoadfile: {}", error)
+                format!("ErrorLoadfile: {error}")
             }
             Self::Raw(error) => {
                 let string = mpv_error_to_string(*error);
                 warn!("MPV Error: {} ({})", string, error);
-                format!("Error: {} ({})", string, error)
+                format!("Error: {string} ({error})")
             }
             _ => {
                 warn!("MPV Error: {}", self);
-                format!("Unknown Error: {}", self)
+                format!("Unknown Error: {self}")
             }
         }
     }

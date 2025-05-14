@@ -183,8 +183,8 @@ use std::{
 impl fmt::Display for IdType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            IdType::String(s) => write!(f, "{}", s),
-            IdType::Int(i) => write!(f, "{}", i),
+            IdType::String(s) => write!(f, "{s}"),
+            IdType::Int(i) => write!(f, "{i}"),
         }
     }
 }

@@ -220,7 +220,7 @@ impl TuItem {
         tu_item.set_run_time_ticks(item.run_time_ticks.unwrap_or_default());
         tu_item.set_tagline(item.taglines.and_then(|taglines| taglines.first().cloned()));
         tu_item.set_primary_image_item_id(item.primary_image_item_id);
-        tu_item.set_rating(item.community_rating.map(|rating| format!("{:.1}", rating)));
+        tu_item.set_rating(item.community_rating.map(|rating| format!("{rating:.1}")));
         tu_item.set_collection_type(item.collection_type);
 
         if let Some(current_program) = item.current_program {

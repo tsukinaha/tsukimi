@@ -197,20 +197,15 @@ pub mod imp {
         #[template_child]
         pub dropdown: TemplateChild<gtk::DropDown>,
         #[template_child]
-        pub adbutton: TemplateChild<gtk::Box>,
+        pub adgroup: TemplateChild<adw::ToggleGroup>,
         #[template_child]
-        pub glbutton: TemplateChild<gtk::Box>,
+        pub glgroup: TemplateChild<adw::ToggleGroup>,
         #[template_child]
         pub filter: TemplateChild<gtk::Button>,
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
         #[template_child]
         pub scrolled: TemplateChild<TuViewScrolled>,
-
-        #[template_child]
-        pub ascending: TemplateChild<gtk::ToggleButton>,
-        #[template_child]
-        pub descending: TemplateChild<gtk::ToggleButton>,
 
         #[property(get, set = Self::set_list_type, builder(ListType::default()))]
         pub list_type: Cell<ListType>,
@@ -260,7 +255,11 @@ pub mod imp {
     #[glib::derived_properties]
     impl ObjectImpl for SingleGrid {
         fn constructed(&self) {
-            self.ascending.set_active(SETTINGS.list_sort_order() == 1);
+            if SETTINGS.list_sort_order() == 1 {
+                self.adgroup.set_active_name(Some("asce"));
+            } else {
+                self.adgroup.set_active_name(Some("desc"));
+            }
             self.dropdown.set_selected(SETTINGS.list_sort_by() as u32);
             self.parent_constructed();
         }
@@ -332,24 +331,24 @@ impl SingleGrid {
     }
 
     #[template_callback]
-    fn sort_order_toggled_cb(&self, btn: &gtk::ToggleButton) {
-        let sort_order = if btn.is_active() {
+    fn on_view_changed_cb(&self, _param: Option<glib::ParamSpec>, group: &adw::ToggleGroup) {
+        let view_type = if group.active_name() == Some(glib::GString::from("grid")) {
+            ViewType::GridView
+        } else {
+            ViewType::ListView
+        };
+        self.set_view_type(view_type);
+    }
+
+    #[template_callback]
+    fn on_sort_order_toggled_cb(&self, _param: Option<glib::ParamSpec>, group: &adw::ToggleGroup) {
+        let sort_order = if group.active_name() == Some(glib::GString::from("asce")) {
             SortOrder::Ascending
         } else {
             SortOrder::Descending
         };
         self.set_sort_order(sort_order);
         let _ = SETTINGS.set_list_sord_order(sort_order.into());
-    }
-
-    #[template_callback]
-    fn view_toggled_cb(&self, btn: &gtk::ToggleButton) {
-        let view_type = if btn.is_active() {
-            ViewType::GridView
-        } else {
-            ViewType::ListView
-        };
-        self.set_view_type(view_type);
     }
 
     #[template_callback]
@@ -386,8 +385,8 @@ impl SingleGrid {
             ListType::Resume => {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
-                imp.adbutton.set_visible(false);
-                imp.glbutton.set_visible(false);
+                imp.adgroup.set_visible(false);
+                imp.glgroup.set_visible(false);
                 imp.filter.set_visible(false);
             }
             ListType::BoxSet => {
@@ -397,15 +396,15 @@ impl SingleGrid {
             ListType::Tags => {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
-                imp.adbutton.set_visible(false);
-                imp.glbutton.set_visible(false);
+                imp.adgroup.set_visible(false);
+                imp.glgroup.set_visible(false);
                 imp.filter.set_visible(false);
             }
             ListType::Genres => {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
-                imp.adbutton.set_visible(false);
-                imp.glbutton.set_visible(false);
+                imp.adgroup.set_visible(false);
+                imp.glgroup.set_visible(false);
                 imp.filter.set_visible(false);
             }
             ListType::Liked => {
