@@ -147,7 +147,7 @@ impl MissingEpisodesDialog {
                 if parent_index_number == 0 {
                     gettext("Special")
                 } else {
-                    format!("S{}E{}", parent_index_number, index_number)
+                    format!("S{parent_index_number}E{index_number}")
                 }
             };
 

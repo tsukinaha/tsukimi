@@ -20,6 +20,7 @@ mod imp {
     use std::ffi::c_void;
 
     use gettextrs::gettext;
+    use glow::HasContext;
     use gtk::{
         gdk::GLContext,
         glib,
@@ -32,20 +33,21 @@ mod imp {
         RenderParam,
         RenderParamApiType,
     };
+    use once_cell::sync::OnceCell;
 
     use crate::{
         close_on_error,
         ui::mpv::tsukimi_mpv::{
             RENDER_UPDATE,
-            SHUTDOWN,
             TsukimiMPV,
         },
     };
 
-    // Object holding the state
     #[derive(Default)]
     pub struct MPVGLArea {
         pub mpv: TsukimiMPV,
+
+        pub ctx: OnceCell<glow::Context>,
     }
 
     #[glib::object_subclass]
@@ -61,9 +63,7 @@ mod imp {
         }
 
         fn dispose(&self) {
-            self.mpv
-                .event_thread_alive
-                .store(SHUTDOWN, std::sync::atomic::Ordering::SeqCst);
+            self.mpv().shutdown_event_thread();
         }
     }
 
@@ -71,6 +71,11 @@ mod imp {
         fn realize(&self) {
             self.parent_realize();
             let obj = self.obj();
+
+            if obj.error().is_some() {
+                close_on_error!(obj, gettext("Failed to realize GLArea"));
+                return;
+            }
 
             obj.make_current();
             let Some(gl_context) = obj.context() else {
@@ -84,11 +89,15 @@ mod imp {
                 #[weak]
                 obj,
                 async move {
-                    while let Ok(true) = RENDER_UPDATE.rx.recv_async().await {
+                    while RENDER_UPDATE.rx.recv_async().await.is_ok() {
                         obj.queue_render();
                     }
                 }
             ));
+        }
+
+        fn unrealize(&self) {
+            self.parent_unrealize();
         }
     }
 
@@ -102,10 +111,9 @@ mod imp {
             let factor = self.obj().scale_factor();
             let width = self.obj().width() * factor;
             let height = self.obj().height() * factor;
-            
+
             unsafe {
-                let mut fbo = -1;
-                gl::GetIntegerv(gl::FRAMEBUFFER_BINDING, &mut fbo);
+                let fbo = self.glow_cxt().get_parameter_i32(glow::FRAMEBUFFER_BINDING);
                 ctx.render::<GLContext>(fbo, width, height, true).unwrap();
             }
             glib::Propagation::Stop
@@ -140,6 +148,12 @@ mod imp {
 
             tmpv.process_events();
         }
+
+        fn glow_cxt(&self) -> &glow::Context {
+            self.ctx.get_or_init(|| unsafe {
+                glow::Context::from_loader_function(epoxy::get_proc_addr)
+            })
+        }
     }
 
     fn get_proc_address(_ctx: &GLContext, name: &str) -> *mut c_void {
@@ -149,9 +163,9 @@ mod imp {
 
 glib::wrapper! {
     pub struct MPVGLArea(ObjectSubclass<imp::MPVGLArea>)
-        @extends gtk::ApplicationWindow, gtk::Window, gtk::Widget ,gtk::GLArea,
+        @extends gtk::Widget ,gtk::GLArea,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
-                    gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
+                    gtk::ConstraintTarget, gtk::Native, gtk::ShortcutManager;
 }
 
 impl Default for MPVGLArea {

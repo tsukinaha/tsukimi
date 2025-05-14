@@ -13,6 +13,8 @@ use gtk::{
     subclass::prelude::*,
 };
 
+use danmakw::DanmakwArea;
+
 use super::{
     mpvglarea::MPVGLArea,
     tsukimi_mpv::{
@@ -100,7 +102,8 @@ mod imp {
         },
     };
 
-    // Object holding the state
+    use super::*;
+
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/mpvpage.ui")]
     #[properties(wrapper_type = super::MPVPage)]
@@ -167,6 +170,12 @@ mod imp {
 
         #[template_child]
         pub volume_bar: TemplateChild<VolumeBar>,
+
+        #[template_child]
+        pub video_overlay: TemplateChild<gtk::Overlay>,
+
+        #[template_child]
+        pub danmaku_area: TemplateChild<DanmakwArea>,
 
         pub current_video: RefCell<Option<TuItem>>,
         pub current_episode_list: RefCell<Vec<TuItem>>,
@@ -276,7 +285,14 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for MPVPage {}
+    impl WidgetImpl for MPVPage {
+        fn unrealize(&self) {
+            self.video_overlay
+                .get()
+                .remove_overlay(&self.danmaku_area.get());
+            self.parent_unrealize();
+        }
+    }
 
     impl WindowImpl for MPVPage {}
 
@@ -355,7 +371,7 @@ impl MPVPage {
             .set_text(title2.as_deref().unwrap_or_default());
 
         let media_title = title2
-            .map(|t| format!("{} - {}", title1, t))
+            .map(|t| format!("{title1} - {t}"))
             .unwrap_or_else(|| title1);
 
         self.mpv().set_property("force-media-title", media_title);
@@ -918,7 +934,7 @@ impl MPVPage {
         if x >= 0.0 && y >= 0.0 {
             let widget = self.pick(x, y, gtk::PickFlags::DEFAULT);
             if let Some(widget) = widget {
-                if !widget.is::<MPVGLArea>() {
+                if !widget.is::<MPVGLArea>() && !widget.is::<DanmakwArea>() {
                     return false;
                 }
             }

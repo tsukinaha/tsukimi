@@ -117,8 +117,7 @@ fn generate_emby_authorization(
     user_id: &str, client: &str, device: &str, device_id: &str, version: &str,
 ) -> String {
     format!(
-        "Emby UserId={},Client={},Device={},DeviceId={},Version={}",
-        user_id, client, device, device_id, version
+        "Emby UserId={user_id},Client={client},Device={device},DeviceId={device_id},Version={version}"
     )
 }
 
@@ -394,7 +393,7 @@ impl EmbyClient {
     ) -> String {
         let mut url = self.url.lock().await.as_ref().unwrap().to_owned();
         url.path_segments_mut().unwrap().pop();
-        let path = format!("Videos/{}/stream.{}", media_source_id, continer);
+        let path = format!("Videos/{media_source_id}/stream.{continer}");
         let mut url = url.join(&path).unwrap();
         url.query_pairs_mut()
             .append_pair("Static", "true")
@@ -437,7 +436,7 @@ impl EmbyClient {
     }
 
     pub async fn get_episodes(&self, id: &str, season_id: &str, start_index: u32) -> Result<List> {
-        let path = format!("Shows/{}/Episodes", id);
+        let path = format!("Shows/{id}/Episodes");
         let params = [
             (
                 "Fields",
@@ -453,7 +452,7 @@ impl EmbyClient {
     }
 
     pub async fn get_episodes_all(&self, id: &str, season_id: &str) -> Result<List> {
-        let path = format!("Shows/{}/Episodes", id);
+        let path = format!("Shows/{id}/Episodes");
         let params = [
             (
                 "Fields",
@@ -479,7 +478,7 @@ impl EmbyClient {
     }
 
     pub async fn post_item(&self, id: &str, body: Value) -> Result<Response> {
-        let path = format!("Items/{}", id);
+        let path = format!("Items/{id}");
         self.post(&path, &[], body).await
     }
 
@@ -499,16 +498,16 @@ impl EmbyClient {
     }
 
     pub async fn get_image_items(&self, id: &str) -> Result<Vec<ImageItem>> {
-        let path = format!("Items/{}/Images", id);
+        let path = format!("Items/{id}/Images");
         self.request(&path, &[]).await
     }
 
     pub async fn image_request(
         &self, id: &str, image_type: &str, tag: Option<u8>, etag: Option<String>,
     ) -> Result<Response> {
-        let mut path = format!("Items/{}/Images/{}", id, image_type);
+        let mut path = format!("Items/{id}/Images/{image_type}");
         if let Some(tag) = tag {
-            path.push_str(&format!("/{}", tag));
+            path.push_str(&format!("/{tag}"));
         }
         let params = [
             (
@@ -585,7 +584,7 @@ impl EmbyClient {
     where
         reqwest::Body: From<B>,
     {
-        let path = format!("Items/{}/Images/{}", id, image_type);
+        let path = format!("Items/{id}/Images/{image_type}");
         self.post_raw(&path, bytes, content_type)
             .await?
             .error_for_status()
@@ -595,7 +594,7 @@ impl EmbyClient {
     pub async fn post_image_url(
         &self, id: &str, image_type: &str, tag: u8, url: &str,
     ) -> Result<Response> {
-        let path = format!("Items/{}/Images/{}/{}", id, tag, image_type);
+        let path = format!("Items/{id}/Images/{tag}/{image_type}");
         let body = json!({ "Url": url });
         self.post(&path, &[], body).await
     }
@@ -603,9 +602,9 @@ impl EmbyClient {
     pub async fn delete_image(
         &self, id: &str, image_type: &str, tag: Option<u8>,
     ) -> Result<Response> {
-        let mut path = format!("Items/{}/Images/{}", id, image_type);
+        let mut path = format!("Items/{id}/Images/{image_type}");
         if let Some(tag) = tag {
-            path.push_str(&format!("/{}", tag));
+            path.push_str(&format!("/{tag}"));
         }
         path.push_str("/Delete");
         self.post(&path, &[], json!({})).await
@@ -667,7 +666,7 @@ impl EmbyClient {
         &self, id: &str, sub_stream_index: Option<u64>, media_source_id: Option<String>,
         is_playback: bool,
     ) -> Result<Media> {
-        let path = format!("Items/{}/PlaybackInfo", id);
+        let path = format!("Items/{id}/PlaybackInfo");
         let subtitle_stream_index = sub_stream_index.map(|s| s.to_string()).unwrap_or_default();
         let params = [
             ("StartTimeTicks", "0"),
@@ -682,7 +681,7 @@ impl EmbyClient {
         self.post_json(&path, &params, profile).await
     }
     pub async fn scan(&self, id: &str) -> Result<Response> {
-        let path = format!("Items/{}/Refresh", id);
+        let path = format!("Items/{id}/Refresh");
         let params = [
             ("Recursive", "true"),
             ("ImageRefreshMode", "Default"),
@@ -696,7 +695,7 @@ impl EmbyClient {
     pub async fn fullscan(
         &self, id: &str, replace_images: &str, replace_metadata: &str,
     ) -> Result<Response> {
-        let path = format!("Items/{}/Refresh", id);
+        let path = format!("Items/{id}/Refresh");
         let params = [
             ("Recursive", "true"),
             ("ImageRefreshMode", "FullRefresh"),
@@ -708,7 +707,7 @@ impl EmbyClient {
     }
 
     pub async fn remote_search(&self, type_: &str, info: &RemoteSearchInfo) -> Result<Value> {
-        let path = format!("Items/RemoteSearch/{}", type_);
+        let path = format!("Items/RemoteSearch/{type_}");
         let body = json!(info);
         self.post_json(&path, &[], body).await
     }
@@ -716,7 +715,7 @@ impl EmbyClient {
     pub async fn apply_remote_search(
         &self, id: &str, value: Value, replace_all_images: bool,
     ) -> Result<Response> {
-        let path = format!("Items/RemoteSearch/Apply/{}", id);
+        let path = format!("Items/RemoteSearch/Apply/{id}");
         let params: [(&str, &str); 1] = [("ReplaceAllImages", &replace_all_images.to_string())];
         self.post(&path, &params, json! {value}).await
     }
@@ -737,7 +736,7 @@ impl EmbyClient {
     }
 
     pub async fn get_external_id_info(&self, id: &str) -> Result<Vec<ExternalIdInfo>> {
-        let path = format!("Items/{}/ExternalIdInfos", id);
+        let path = format!("Items/{id}/ExternalIdInfos");
         let params = [("IsSupportedAsIdentifier", "true")];
         self.request(&path, &params).await
     }
@@ -774,10 +773,10 @@ impl EmbyClient {
     ) -> Result<List> {
         let user_id = &self.user_id().await;
         let path = match list_type {
-            ListType::All => format!("Users/{}/Items", user_id),
-            ListType::Resume => format!("Users/{}/Items/Resume", user_id),
+            ListType::All => format!("Users/{user_id}/Items"),
+            ListType::Resume => format!("Users/{user_id}/Items/Resume"),
             ListType::Genres => "Genres".to_string(),
-            _ => format!("Users/{}/Items", user_id),
+            _ => format!("Users/{user_id}/Items"),
         };
         let include_item_type = match list_type {
             ListType::Tags => "Tag",
@@ -929,7 +928,7 @@ impl EmbyClient {
     }
 
     pub async fn get_similar(&self, id: &str) -> Result<List> {
-        let path = format!("Items/{}/Similar", id);
+        let path = format!("Items/{id}/Similar");
         let params = [
             (
                 "Fields",
@@ -1007,7 +1006,7 @@ impl EmbyClient {
     }
 
     pub async fn get_season_list(&self, parent_id: &str) -> Result<List> {
-        let path = format!("Shows/{}/Seasons", parent_id);
+        let path = format!("Shows/{parent_id}/Seasons");
         let params = [
             (
                 "Fields",
@@ -1042,7 +1041,7 @@ impl EmbyClient {
         let path = if types == "People" {
             "Persons".to_string()
         } else {
-            format!("Users/{}/Items", user_id)
+            format!("Users/{user_id}/Items")
         };
         let limit_string = limit.to_string();
         let start_string = start.to_string();
@@ -1113,7 +1112,7 @@ impl EmbyClient {
     ) -> Result<List> {
         let path = format!("Users/{}/Items", &self.user_id().await);
         let start_index_string = start_index.to_string();
-        let sort_by = format!("IsFolder,{}", sort_by);
+        let sort_by = format!("IsFolder,{sort_by}");
         let mut params = vec![
             (
                 "Fields",
@@ -1186,7 +1185,7 @@ impl EmbyClient {
     }
 
     pub async fn get_additional(&self, id: &str) -> Result<List> {
-        let path = format!("Videos/{}/AdditionalParts", id);
+        let path = format!("Videos/{id}/AdditionalParts");
         let params: [(&str, &str); 1] = [("UserId", &self.user_id().await)];
         self.request(&path, &params).await
     }
@@ -1256,7 +1255,7 @@ impl EmbyClient {
     pub async fn get_image_path(
         &self, id: &str, image_type: &str, image_index: Option<u32>,
     ) -> String {
-        let path = format!("Items/{}/Images/{}/", id, image_type);
+        let path = format!("Items/{id}/Images/{image_type}/");
         let url = self
             .url
             .lock()
@@ -1276,7 +1275,7 @@ impl EmbyClient {
         &self, id: &str, start_index: u32, include_all_languages: bool, type_: &str,
         provider_name: &str,
     ) -> Result<ImageSearchResult> {
-        let path = format!("Items/{}/RemoteImages", id);
+        let path = format!("Items/{id}/RemoteImages");
         let start_string = start_index.to_string();
         let params = [
             ("Limit", "50"),
@@ -1290,7 +1289,7 @@ impl EmbyClient {
     }
 
     pub async fn delete_info(&self, id: &str) -> Result<DeleteInfo> {
-        let path = format!("Items/{}/DeleteInfo", id);
+        let path = format!("Items/{id}/DeleteInfo");
         self.request(&path, &[]).await
     }
 
@@ -1302,7 +1301,7 @@ impl EmbyClient {
     pub async fn download_remote_images(
         &self, id: &str, type_: &str, provider_name: &str, image_url: &str,
     ) -> Result<()> {
-        let path = format!("Items/{}/RemoteImages/Download", id);
+        let path = format!("Items/{id}/RemoteImages/Download");
         let params = [
             ("Type", type_),
             ("ProviderName", provider_name),
@@ -1388,7 +1387,7 @@ mod tests {
     fn parse_url() {
         let uri = "127.0.0.1";
         let url = if Url::parse(uri).is_err() {
-            format!("http://{}", uri)
+            format!("http://{uri}")
         } else {
             uri.to_string()
         };

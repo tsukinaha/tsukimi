@@ -91,7 +91,7 @@ where
     F: Future<Output = Result<T>> + Send + 'static,
 {
     let mut path = emby_cache_path().await;
-    path.push(format!("{}.json", cache_key));
+    path.push(format!("{cache_key}.json"));
 
     let read_cache = matches!(
         cache_policy,

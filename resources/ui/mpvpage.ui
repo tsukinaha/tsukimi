@@ -14,9 +14,13 @@
         <property name="content">
           <object class="GtkOverlay">
             <child>
-              <object class="MPVGLArea" id="video">
-                <property name="hexpand">true</property>
-                <property name="vexpand">true</property>
+              <object class="GtkOverlay" id="video_overlay">
+                <child>
+                  <object class="MPVGLArea" id="video">
+                    <property name="hexpand">true</property>
+                    <property name="vexpand">true</property>
+                  </object>
+                </child>
                 <child>
                   <object class="GtkGestureClick">
                     <property name="button">1</property>
@@ -33,6 +37,11 @@
                   <object class="GtkEventControllerScroll">
                     <property name="flags">vertical</property>
                     <signal name="scroll" handler="video_scroll_cb" swapped="yes"/>
+                  </object>
+                </child>
+                <child type="overlay">
+                  <object class="DanmakwArea" id="danmaku_area">
+                    
                   </object>
                 </child>
               </object>
@@ -525,7 +534,7 @@
                                     <property name="level">0</property>
                                     <property name="valign">3</property>
                                     <property name="level">family</property>
-                                    
+
                                     <property name="dialog">
                                       <object class="GtkFontDialog"></object>
                                     </property>
@@ -612,7 +621,7 @@
                         <child>
                           <object class="AdwButtonRow">
                             <property name="title" translatable="yes">Search</property>
-                            <property name="action-name">danmaku.search</property>
+
                             <property name="start-icon-name">edit-find-symbolic</property>
                             <style>
                               <class name="suggested-action" />

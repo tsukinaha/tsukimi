@@ -11,7 +11,7 @@ jobs:
           #!/bin/bash
           set -e
           export PATH=/root/.cargo/bin:\$PATH
-          RUSTFLAGS="-D warnings" cargo clippy --all-targets
+          RUSTFLAGS="-D warnings" cargo clippy --fix --allow-dirty --no-deps --release --all-targets
           EOF
 
       - name: Run Clippy

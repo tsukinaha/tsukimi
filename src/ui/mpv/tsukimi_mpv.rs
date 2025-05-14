@@ -36,6 +36,7 @@ pub struct TsukimiMPV {
     pub mpv: Arc<Mpv>,
     pub ctx: RefCell<Option<RenderContext>>,
     pub event_thread_alive: Arc<AtomicU32>,
+    pub event_handle: RefCell<Option<JoinHandle<()>>>,
 }
 
 impl std::fmt::Debug for TsukimiMPV {
@@ -55,7 +56,7 @@ impl std::fmt::Display for TrackSelection {
             TrackSelection::Track(id) => id.to_string(),
             TrackSelection::None => "no".to_string(),
         };
-        write!(f, "{}", str)
+        write!(f, "{str}")
     }
 }
 
@@ -87,8 +88,6 @@ impl Default for TsukimiMPV {
                 .map(|symbol| *symbol)
                 .unwrap_or(std::ptr::null())
         });
-
-        gl::load_with(|name| epoxy::get_proc_addr(name) as *const _);
 
         let mpv = Mpv::with_initializer(|init| {
             if SETTINGS.mpv_config() {
@@ -132,7 +131,7 @@ impl Default for TsukimiMPV {
             )?;
             if let Some(uri) = crate::client::proxy::get_proxy_settings() {
                 let url = Url::parse(&uri)
-                    .map_or_else(|_| format!("http://{}", uri), |_| uri.to_string());
+                    .map_or_else(|_| format!("http://{uri}"), |_| uri.to_string());
                 init.set_property("http-proxy", url)?;
             };
             match SETTINGS.mpv_audio_preferred_lang() {
@@ -155,6 +154,7 @@ impl Default for TsukimiMPV {
             mpv: Arc::new(mpv),
             ctx: RefCell::new(None),
             event_thread_alive: Arc::new(AtomicU32::new(PAUSED)),
+            event_handle: RefCell::new(None),
         }
     }
 }
@@ -342,7 +342,7 @@ impl TsukimiMPV {
         track.parse().unwrap_or(0)
     }
 
-    pub fn process_events(&self) -> JoinHandle<()> {
+    pub fn process_events(&self) {
         let mpv = Arc::clone(&self.mpv);
         let mut event_context = EventContext::new(mpv.ctx);
         event_context
@@ -376,7 +376,7 @@ impl TsukimiMPV {
             .observe_property("chapter-list", libmpv2::Format::Node, 8)
             .unwrap();
         let event_thread_alive = self.event_thread_alive.to_owned();
-        std::thread::Builder::new()
+        let handle = std::thread::Builder::new()
             .name("mpv event loop".into())
             .spawn(move || {
                 loop {
@@ -384,7 +384,7 @@ impl TsukimiMPV {
                     match state {
                         SHUTDOWN => break,
                         PAUSED => atomic_wait::wait(&event_thread_alive, PAUSED),
-                        _ => {}
+                        _ => (),
                     }
 
                     match event_context.wait_event(1000.0) {
@@ -485,7 +485,16 @@ impl TsukimiMPV {
                     };
                 }
             })
-            .expect("Failed to spawn mpv event loop")
+            .expect("Failed to spawn mpv event loop");
+        self.event_handle.replace(Some(handle));
+    }
+
+    pub fn shutdown_event_thread(&self) {
+        self.event_thread_alive
+            .store(SHUTDOWN, std::sync::atomic::Ordering::SeqCst);
+        if let Some(handle) = self.event_handle.borrow_mut().take() {
+            let _ = handle.join();
+        }
     }
 }
 
@@ -571,7 +580,7 @@ fn get_full_keystr(key: u32, state: gtk::gdk::ModifierType) -> Option<String> {
     let modstr = get_modstr(state);
     let keystr = keyval_to_keystr(key);
     if let Some(keystr) = keystr {
-        return Some(format!("{}{}", modstr, keystr));
+        return Some(format!("{modstr}{keystr}"));
     }
     None
 }

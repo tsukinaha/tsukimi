@@ -39,7 +39,7 @@ impl std::fmt::Display for DescriptorType {
             DescriptorType::String => "String".to_string(),
             DescriptorType::Regex => "Regex".to_string(),
         };
-        write!(f, "{}", str)
+        write!(f, "{str}")
     }
 }
 
