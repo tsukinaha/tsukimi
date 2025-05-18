@@ -18,6 +18,6 @@ VOLUME /app
 
 COPY ./entrypoint.sh /
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain nightly
 
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]

@@ -183,17 +183,43 @@ mod imp {
 
         #[template_child]
         pub danmaku_page: TemplateChild<adw::PreferencesPage>,
+
         #[template_child]
         pub danmaku_popover: TemplateChild<gtk::Popover>,
+
         #[template_child]
         pub danmaku_switch: TemplateChild<gtk::Switch>,
 
+        #[template_child]
+        pub danmaku_top_padding_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub danmaku_font_size_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub topcenter_danmaku_max_lines_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub scroll_danmaku_max_lines_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub bottomcenter_danmaku_max_lines_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub danmaku_speed_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub danmaku_row_spacing_adj: TemplateChild<gtk::Adjustment>,
+
+        #[property(get, set, nullable)]
         pub current_video: RefCell<Option<TuItem>>,
         pub current_episode_list: RefCell<Vec<TuItem>>,
 
         pub video_version_matcher: RefCell<Option<String>>,
 
         pub danmaku_client: OnceCell<dandanapi::DanDanClient>,
+
+        pub danmaku_list: RefCell<Option<Vec<danmakw::Danmaku>>>,
     }
 
     #[glib::object_subclass]
@@ -282,6 +308,38 @@ mod imp {
             SETTINGS
                 .bind("is-danmaku-enabled", &self.danmaku_switch.get(), "active")
                 .build();
+
+            self.danmaku_area
+                .set_enable_danmaku(SETTINGS.is_danmaku_enabled());
+
+            self.danmaku_area
+                .bind_property("font-size", &self.danmaku_font_size_adj.get(), "value")
+                .build();
+
+            self.danmaku_area
+                .bind_property("top-padding", &self.danmaku_top_padding_adj.get(), "value")
+                .build();
+
+            self.danmaku_area
+                .bind_property("max-lines", &self.scroll_danmaku_max_lines_adj.get(), "value")
+                .build();
+
+            self.danmaku_area
+                .bind_property("bottom-center-max-lines", &self.bottomcenter_danmaku_max_lines_adj.get(), "value")
+                .build();
+
+            self.danmaku_area
+                .bind_property("top-center-max-lines", &self.topcenter_danmaku_max_lines_adj.get(), "value")
+                .build();
+
+            self.danmaku_area
+                .bind_property("speed-factor", &self.danmaku_speed_adj.get(), "value")
+                .build();
+
+            self.danmaku_area
+                .bind_property("row-spacing", &self.danmaku_row_spacing_adj.get(), "value")
+                .build();
+                
 
             self.video_scale.set_player(Some(&self.video.get()));
 
@@ -377,6 +435,7 @@ mod imp {
         }
 
         pub fn init_danmaku(&self, danmaku: Vec<danmakw::Danmaku>, time_milis: f64) {
+            self.danmaku_list.replace(Some(danmaku.clone()));
             self.danmaku_area.set_danmaku(danmaku);
             self.danmaku_area.set_time_milis(time_milis);
         }
@@ -439,7 +498,7 @@ impl MPVPage {
                 .replace(Some(video_matcher));
         }
 
-        self.imp().current_video.replace(Some(item.clone()));
+        self.set_current_video(Some(item.clone()));
         self.imp().current_episode_list.replace(episode_list);
 
         spawn_g_timeout(glib::clone!(
@@ -447,8 +506,6 @@ impl MPVPage {
             self,
             #[strong]
             selected,
-            #[weak]
-            item,
             async move {
                 let imp = obj.imp();
                 imp.spinner.set_visible(true);
@@ -560,20 +617,9 @@ impl MPVPage {
                 imp.video.play(&video_url, per);
 
                 if SETTINGS.is_danmaku_enabled() {
-                    let (anime, episode, time_ticks) = {
-                        if let Some(series_name) = item.series_name() {
-                            (series_name, item.name(), item.playback_position_ticks())
-                        } else {
-                            (
-                                item.name(),
-                                "movie".to_string(),
-                                item.playback_position_ticks(),
-                            )
-                        }
-                    };
-
-                    obj.load_danmaku(anime, episode, (time_ticks / 10000) as f64)
-                        .await;
+                    obj.load_danmaku().await;
+                } else {
+                    imp.danmaku_list.replace(None);
                 };
             }
         ));
@@ -1238,7 +1284,25 @@ impl MPVPage {
         self.imp().video.imp().mpv()
     }
 
-    pub async fn load_danmaku(&self, anime: String, episode: String, time_milis: f64) {
+    pub async fn load_danmaku(&self) {
+        let Some(item) = self.current_video() else {
+            return;
+        };
+
+        let (anime, episode, time_ticks) = {
+            if let Some(series_name) = item.series_name() {
+                (series_name, item.name(), item.playback_position_ticks())
+            } else {
+                (
+                    item.name(),
+                    "movie".to_string(),
+                    item.playback_position_ticks(),
+                )
+            }
+        };
+
+        let time_milis = (time_ticks / 10000) as f64;
+
         let imp = self.imp();
         let danmaku = self
             .request_danmaku(dandanapi::RequestEpisodes {
@@ -1309,6 +1373,29 @@ impl MPVPage {
         .await?;
 
         Ok(danmaku)
+    }
+
+    #[template_callback]
+    pub fn on_danmaku_switch_state_set(&self, state: bool) -> bool {
+        if state {
+            if let Some(danmaku) = self.imp().danmaku_list.borrow().as_ref() {
+                self.imp().danmaku_area.set_danmaku(danmaku.to_owned());
+            } else {
+                spawn(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    async move {
+                        obj.load_danmaku().await;
+                    }
+                ));
+            }
+        } else {
+            self.imp().danmaku_area.set_enable_danmaku(false);
+        }
+
+        let _ = SETTINGS.set_danmaku_enabled(state);
+
+        false
     }
 }
 

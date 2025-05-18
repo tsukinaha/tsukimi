@@ -915,7 +915,7 @@ dependencies = [
 [[package]]
 name = "danmakw"
 version = "0.0.1"
-source = "git+https://github.com/tsukinaha/danmakw.git#83989cf5f97bffcb6603df047243c3bcfb91b2b7"
+source = "git+https://github.com/tsukinaha/danmakw.git#ffbc6efe4c727ca2b17f0c4f9dcbdb26848814b2"
 dependencies = [
  "ash",
  "cosmic-text",
