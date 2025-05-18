@@ -60,6 +60,16 @@ impl Settings {
     const KEY_WINDOW_HEIGHT: &'static str = "window-height"; // i32
     const KEY_IS_MAXIMIZED: &'static str = "is-maximized"; // bool
     const KEY_IS_FULLSCREEN: &'static str = "is-fullscreen"; // bool
+    const KEY_IS_DANMAKU_ENABLED: &'static str = "is-danmaku-enabled"; // bool
+
+    pub fn is_danmaku_enabled(&self) -> bool {
+        self.boolean(Self::KEY_IS_DANMAKU_ENABLED)
+    }
+
+    pub fn set_danmaku_enabled(&self, is_danmaku_enabled: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_IS_DANMAKU_ENABLED, is_danmaku_enabled)
+    }
+
     #[cfg(target_os = "windows")]
     const KEY_IS_FIRST_RUN: &'static str = "is-first-run"; // bool
 

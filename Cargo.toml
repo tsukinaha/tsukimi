@@ -49,6 +49,7 @@ rand = "0.9.0"
 base64 = "0.22.1"
 libmpv2 = "4.1.0"
 danmakw = { git = "https://github.com/tsukinaha/danmakw.git" }
+dandanapi = { git = "https://github.com/tsukinaha/dandanapi.git" }
 glow = "0.16.0"
 
 [build-dependencies]

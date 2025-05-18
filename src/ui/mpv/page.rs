@@ -31,6 +31,7 @@ use super::{
 };
 use crate::{
     client::{
+        DanmakuConvert,
         emby_client::{
             BackType,
             EMBY_CLIENT,
@@ -64,6 +65,7 @@ use crate::{
         spawn_tokio,
     },
 };
+use anyhow::Result;
 
 const MIN_MOTION_TIME: i64 = 100000;
 const PREV_CHAPTER_KEYVAL: u32 = 65366;
@@ -86,12 +88,14 @@ mod imp {
         glib,
         subclass::prelude::*,
     };
+    use once_cell::sync::OnceCell;
 
     use crate::{
         client::structs::Back,
         ui::{
             models::SETTINGS,
             mpv::{
+                MpvTimer,
                 VolumeBar,
                 menu_actions::MenuActions,
                 mpvglarea::MPVGLArea,
@@ -177,10 +181,19 @@ mod imp {
         #[template_child]
         pub danmaku_area: TemplateChild<DanmakwArea>,
 
+        #[template_child]
+        pub danmaku_page: TemplateChild<adw::PreferencesPage>,
+        #[template_child]
+        pub danmaku_popover: TemplateChild<gtk::Popover>,
+        #[template_child]
+        pub danmaku_switch: TemplateChild<gtk::Switch>,
+
         pub current_video: RefCell<Option<TuItem>>,
         pub current_episode_list: RefCell<Vec<TuItem>>,
 
         pub video_version_matcher: RefCell<Option<String>>,
+
+        pub danmaku_client: OnceCell<dandanapi::DanDanClient>,
     }
 
     #[glib::object_subclass]
@@ -266,6 +279,10 @@ mod imp {
                 .bind("mpv-default-volume", &self.volume_adj.get(), "value")
                 .build();
 
+            SETTINGS
+                .bind("is-danmaku-enabled", &self.danmaku_switch.get(), "active")
+                .build();
+
             self.video_scale.set_player(Some(&self.video.get()));
 
             let obj = self.obj();
@@ -282,6 +299,8 @@ mod imp {
             });
 
             obj.listen_events();
+
+            self.init_dandanapi_client();
         }
     }
 
@@ -326,6 +345,40 @@ mod imp {
                 menu_actions_play_pause_button.set_tooltip_text(Some(&gettext("Pause")));
             }
             self.paused.set(paused);
+        }
+
+        fn init_dandanapi_client(&self) {
+            use crate::client::*;
+            use dandanapi::*;
+
+            let generator = SecretGenerator::new(
+                include_bytes!("../../../secret/secret").to_vec(),
+                SECRETE_KEY.to_string(),
+            );
+
+            let Ok(()) = DanDanClient::init(X_APPID.to_string(), generator) else {
+                self.danmaku_page
+                    .set_description(&gettext("Danmaku feature requires an official build"));
+                self.danmaku_popover.set_sensitive(false);
+
+                return;
+            };
+
+            self.danmaku_client.get_or_init(DanDanClient::instance);
+        }
+
+        pub fn pause_danmaku(&self) {
+            self.danmaku_area.stop_rendering();
+        }
+
+        pub fn resume_danmaku(&self) {
+            self.danmaku_area
+                .start_rendering(MpvTimer::new(self.video.imp().mpv().mpv.clone()));
+        }
+
+        pub fn init_danmaku(&self, danmaku: Vec<danmakw::Danmaku>, time_milis: f64) {
+            self.danmaku_area.set_danmaku(danmaku);
+            self.danmaku_area.set_time_milis(time_milis);
         }
     }
 }
@@ -386,7 +439,7 @@ impl MPVPage {
                 .replace(Some(video_matcher));
         }
 
-        self.imp().current_video.replace(Some(item));
+        self.imp().current_video.replace(Some(item.clone()));
         self.imp().current_episode_list.replace(episode_list);
 
         spawn_g_timeout(glib::clone!(
@@ -394,6 +447,8 @@ impl MPVPage {
             self,
             #[strong]
             selected,
+            #[weak]
+            item,
             async move {
                 let imp = obj.imp();
                 imp.spinner.set_visible(true);
@@ -503,6 +558,23 @@ impl MPVPage {
                 };
 
                 imp.video.play(&video_url, per);
+
+                if SETTINGS.is_danmaku_enabled() {
+                    let (anime, episode, time_ticks) = {
+                        if let Some(series_name) = item.series_name() {
+                            (series_name, item.name(), item.playback_position_ticks())
+                        } else {
+                            (
+                                item.name(),
+                                "movie".to_string(),
+                                item.playback_position_ticks(),
+                            )
+                        }
+                    };
+
+                    obj.load_danmaku(anime, episode, (time_ticks / 10000) as f64)
+                        .await;
+                };
             }
         ));
     }
@@ -665,9 +737,11 @@ impl MPVPage {
                             obj.update_duration(value);
                         }
                         ListenEvent::PausedForCache(true) | ListenEvent::Seek => {
+                            obj.imp().pause_danmaku();
                             obj.update_seeking(true);
                         }
                         ListenEvent::PausedForCache(false) | ListenEvent::PlaybackRestart => {
+                            obj.imp().resume_danmaku();
                             obj.update_seeking(false);
                         }
                         ListenEvent::Eof(value) => {
@@ -1162,6 +1236,79 @@ impl MPVPage {
 
     pub fn mpv(&self) -> &TsukimiMPV {
         self.imp().video.imp().mpv()
+    }
+
+    pub async fn load_danmaku(&self, anime: String, episode: String, time_milis: f64) {
+        let imp = self.imp();
+        let danmaku = self
+            .request_danmaku(dandanapi::RequestEpisodes {
+                anime,
+                episode,
+                tmdb_id: None,
+            })
+            .await;
+
+        let Ok(danmaku) = danmaku else {
+            self.toast(gettext("Failed to load danmaku"));
+            return;
+        };
+
+        self.imp().danmaku_page.set_description(&format!(
+            "{} {}",
+            danmaku.len(),
+            gettext("Danmakus Loaded",)
+        ));
+
+        imp.init_danmaku(danmaku, time_milis);
+    }
+
+    pub async fn request_danmaku(
+        &self, request_episodes: dandanapi::RequestEpisodes,
+    ) -> Result<Vec<danmakw::Danmaku>> {
+        let client = self
+            .imp()
+            .danmaku_client
+            .get()
+            .ok_or_else(|| anyhow::anyhow!("Danmaku client not initialized"))?;
+
+        let route = client.route(dandanapi::Episodes(request_episodes));
+
+        let response = spawn_tokio(async move {
+            let response = route.await?;
+            Ok::<dandanapi::SearchEpisodesResponse, anyhow::Error>(response)
+        })
+        .await?;
+
+        let episode_id = response
+            .animes
+            .and_then(|anims| anims.first()?.episodes.first().map(|ep| ep.episode_id))
+            .ok_or_else(|| anyhow::anyhow!("No episode found"))?;
+
+        let route = client.route(dandanapi::Comments {
+            episode_id,
+            request_comments: dandanapi::RequestComments {
+                from: 0,
+                with_related: true,
+                ch_convert: dandanapi::ChConvert::NONE,
+            },
+        });
+
+        let danmaku = spawn_tokio(async move {
+            let comments = route
+                .await?
+                .comments
+                .ok_or_else(|| anyhow::anyhow!("No comment found"))?;
+
+            let danmaku = comments
+                .into_iter()
+                .map(|comment| comment.into_danmaku())
+                .collect::<Vec<_>>();
+
+            Ok::<Vec<danmakw::Danmaku>, anyhow::Error>(danmaku)
+        })
+        .await?;
+
+        Ok(danmaku)
     }
 }
 

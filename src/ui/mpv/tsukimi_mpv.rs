@@ -130,8 +130,8 @@ impl Default for TsukimiMPV {
                 match_audio_channels(SETTINGS.mpv_audio_channel()),
             )?;
             if let Some(uri) = crate::client::proxy::get_proxy_settings() {
-                let url = Url::parse(&uri)
-                    .map_or_else(|_| format!("http://{uri}"), |_| uri.to_string());
+                let url =
+                    Url::parse(&uri).map_or_else(|_| format!("http://{uri}"), |_| uri.to_string());
                 init.set_property("http-proxy", url)?;
             };
             match SETTINGS.mpv_audio_preferred_lang() {

@@ -214,5 +214,9 @@
       <summary>Whether the app is first run</summary>
       <default>true</default>
     </key>
+    <key name="is-danmaku-enabled" type="b">
+      <summary>Whether the danmaku is enabled</summary>
+      <default>false</default>
+    </key>
   </schema>
 </schemalist>
