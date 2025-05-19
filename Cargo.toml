@@ -4,14 +4,14 @@ version = "25.5.0"
 edition = "2024"
 rust-version = "1.85"
 description = "A simple Emby Client written by GTK4-RS"
-license = "GPL"
+license = "GPL-3.0"
 
 
 [dependencies]
 gtk = { version = "0.9", package = "gtk4", features = ["v4_18"] }
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.140"
-tokio = { version = "1.44", features = ["full"] }
+tokio = { version = "1.45", features = ["full"] }
 reqwest = { version = "0.12", default-features = false, features = [
   "http2",
   "rustls-tls",
@@ -25,7 +25,7 @@ adw = { version = "0.7", package = "libadwaita", features = ["v1_7"] }
 bytefmt = "0.1.7"
 libc = "0.2.172"
 uuid = { version = "1.16", features = ["v4"] }
-chrono = { version = "0.4.40", features = ["serde"] }
+chrono = { version = "0.4.41", features = ["serde"] }
 tracing = "0.1.41"
 gst = { version = "0.23", package = "gstreamer" }
 url = "2.5.4"
@@ -33,7 +33,7 @@ image = "0.25.5"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
 hostname = "0.4.1"
 epoxy = "0.1.0"
-libloading = "0.8.6"
+libloading = "0.8.7"
 atomic-wait = "1.1.0"
 flume = "0.11.1"
 derive_builder = "0.20.2"
@@ -43,9 +43,9 @@ gdk4-x11 = { version = "0.9", optional = true }
 gdk4-win32 = { version = "0.9", optional = true }
 regex = "1.11.1"
 strsim = "0.11.1"
-clap = { version = "4.5.37", features = ["derive"] }
+clap = { version = "4.5.38", features = ["derive"] }
 fnv = "1.0.7"
-rand = "0.9.0"
+rand = "0.9.1"
 base64 = "0.22.1"
 libmpv2 = "4.1.0"
 danmakw = { git = "https://github.com/tsukinaha/danmakw.git" }

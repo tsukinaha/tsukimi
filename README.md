@@ -56,6 +56,13 @@ sudo pacman -Syu tsukimi-git
 sudo oma install tsukimi
 ```
 
+### Gentoo Linux
+```bash
+sudo eselect repository enable gentoo-zh
+sudo emerge --sync gentoo-zh
+sudo emerge --ask media-video/tsukimi
+```
+
 ### Nix
 `tsukimi` is available in nixpkgs since 24.11. 
 

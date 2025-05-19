@@ -1,24 +1,6 @@
 name: Windows GNU CI
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - "main"
-    paths-ignore:
-      - "docs/**"
-      - "**/.gitignore"
-      - "**/.dockerignore"
-      - LICENSE
-      - "**/*.md"
-  pull_request:
-    branches:
-      - "main"
-    paths-ignore:
-      - "docs/**"
-      - "**/.gitignore"
-      - "**/.dockerignore"
-      - LICENSE
-        - "**/*.md"
+  workflow_call:
 
 env:
   CARGO_TERM_COLOR: always
@@ -162,5 +144,5 @@ jobs:
             artifact/*.7z
             artifact/*.sha512sum
           compression-level: 0
-          retention-days: 3
           if-no-files-found: error
+
