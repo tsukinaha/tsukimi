@@ -517,7 +517,7 @@
                                 <property name="width-request">50</property>
                                 <property name="valign">center</property>
                                 <property name="adjustment">danmaku_opacity_adj</property>
-                                
+                                <property name="digits">2</property>
                               </object>
                             </child>
                           </object>
@@ -547,25 +547,6 @@
                                     <property name="valign">center</property>
                                     <property name="adjustment">danmaku_row_spacing_adj</property>
 
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="AdwActionRow">
-                                <property name="title" translatable="yes">Font family</property>
-                                <child type="suffix">
-                                  <object class="GtkFontDialogButton" id="danmaku_font_button">
-                                    <property name="level">0</property>
-                                    <property name="valign">3</property>
-                                    <property name="level">family</property>
-                                    <signal name="notify::font-desc" handler="on_danmaku_font" swapped="yes" />
-                                    <property name="dialog">
-                                      <object class="GtkFontDialog"></object>
-                                    </property>
-                                    <style>
-                                      <class name="flat"/>
-                                    </style>
                                   </object>
                                 </child>
                               </object>

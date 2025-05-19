@@ -218,6 +218,9 @@ mod imp {
         pub current_video: RefCell<Option<TuItem>>,
         pub current_episode_list: RefCell<Vec<TuItem>>,
 
+        #[property(get, set, default_value = true)]
+        pub key_vaild: RefCell<bool>,
+
         pub video_version_matcher: RefCell<Option<String>>,
 
         pub danmaku_client: OnceCell<dandanapi::DanDanClient>,
@@ -436,9 +439,12 @@ mod imp {
                 self.danmaku_page
                     .set_description(&gettext("Danmaku feature requires an official build"));
                 self.danmaku_popover.set_sensitive(false);
-
+                self.obj().set_key_vaild(false);
                 return;
             };
+
+            // I dont know why but this is required
+            self.obj().set_key_vaild(true);
 
             self.danmaku_client.get_or_init(DanDanClient::instance);
         }
@@ -1304,6 +1310,10 @@ impl MPVPage {
     }
 
     pub async fn load_danmaku(&self) {
+        if !self.key_vaild() {
+            return;
+        }
+
         let Some(item) = self.current_video() else {
             return;
         };
@@ -1331,14 +1341,22 @@ impl MPVPage {
             })
             .await;
 
-        let Ok(danmaku) = danmaku else {
-            self.imp()
-                .danmaku_page
-                .set_description(&gettext("No Danmaku Loaded"));
-            return;
-        };
-
-        imp.init_danmaku(danmaku, time_milis);
+        match danmaku {
+            Ok(danmaku) => {
+                self.imp().danmaku_page.set_description(&format!(
+                    "{} {}",
+                    danmaku.len(),
+                    gettext("Danmaku Loaded")
+                ));
+                imp.init_danmaku(danmaku, time_milis);
+            }
+            Err(e) => {
+                tracing::error!("Loading danmaku error: {}", e);
+                self.imp()
+                    .danmaku_page
+                    .set_description(&gettext("No Danmaku Loaded"));
+            }
+        }
     }
 
     pub async fn request_danmaku(
@@ -1406,17 +1424,13 @@ impl MPVPage {
             }
         } else {
             self.imp().danmaku_area.set_enable_danmaku(false);
+            self.imp().danmaku_area.clear();
+            self.imp().resume_danmaku();
         }
 
         let _ = SETTINGS.set_danmaku_enabled(state);
 
         false
-    }
-
-    #[template_callback]
-    pub fn on_danmaku_font(&self, _param: glib::ParamSpec, button: gtk::FontDialogButton) {
-        let font_desc = button.font_desc().unwrap();
-        self.imp().danmaku_area.set_font_name(font_desc.to_string());
     }
 }
 
