@@ -16,4 +16,5 @@ jobs:
 
       - name: Run Clippy
         run: |
+          echo "testing" > secret/key
           docker run --rm -v ${{ github.workspace }}:/app -v ./entrypoint.sh:/entrypoint.sh ghcr.io/tsukinaha/ubuntu-rust-gtk4:latest
