@@ -32,7 +32,7 @@ jobs:
 
       - name: Build tsukimi for ${{ matrix.platform }}
         run: |
-          echo "${{ secrets.DANDANPLAY_API_KEY }}" > secret/key
+          echo "${{ secrets.DANDANAPI_SECRET_KEY }}" > secret/key
           docker run --rm --platform linux/${{matrix.platform}} -v ${{ github.workspace }}:/app -v ./docker/entrypoint.sh:/entrypoint.sh ghcr.io/tsukinaha/ubuntu-rust-gtk4:latest
           sudo cp target/release/tsukimi .
           sudo cp -r i18n/locale .
