@@ -196,7 +196,7 @@ impl OtherPage {
 
         fraction_reset!(self);
         let item = match fetch_with_cache(
-            &format!("list_{}", id),
+            &format!("list_{id}"),
             CachePolicy::ReadCacheAndRefresh,
             async move { EMBY_CLIENT.get_item_info(&id).await },
         )
@@ -312,7 +312,7 @@ impl OtherPage {
             return;
         };
         let list = match fetch_with_cache(
-            &format!("season_{}", id),
+            &format!("season_{id}"),
             CachePolicy::ReadCacheAndRefresh,
             async move { EMBY_CLIENT.get_episodes_all(&series_id, &id).await },
         )
@@ -368,7 +368,7 @@ impl OtherPage {
     async fn hortu_set_boxset_list(&self) {
         let id = self.item().id();
         let results = match fetch_with_cache(
-            &format!("boxset_{}", id),
+            &format!("boxset_{id}"),
             CachePolicy::ReadCacheAndRefresh,
             async move { EMBY_CLIENT.get_includedby(&id).await },
         )

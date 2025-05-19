@@ -57,55 +57,43 @@
                 <property name="spacing">6</property>
                 <property name="margin-end">55</property>
                 <child>
-                  <object class="GtkBox" id="glbutton">
-                    <property name="halign">end</property>
-                    <property name="orientation">horizontal</property>
+                  <object class="AdwToggleGroup" id="glgroup">
+                    <property name="active-name">grid</property>
                     <child>
-                      <object class="GtkToggleButton" id="list">
+                      <object class="AdwToggle">
                         <property name="icon-name">view-grid-symbolic</property>
-                        <property name="tooltip-text" translatable="yes">Grid View</property>
-                        <property name="valign">center</property>
-                        <property name="active">True</property>
-                        <signal name="toggled" handler="view_toggled_cb" swapped="yes" />
+                        <property name="tooltip" translatable="yes">Grid View</property>
+                        <property name="name">grid</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkToggleButton">
+                      <object class="AdwToggle">
                         <property name="icon-name">view-list-symbolic</property>
-                        <property name="tooltip-text" translatable="yes">List View</property>
-                        <property name="valign">center</property>
-                        <property name="group">list</property>
+                        <property name="tooltip" translatable="yes">List View</property>
+                        <property name="name">list</property>
                       </object>
                     </child>
-                    <style>
-                      <class name="linked" />
-                    </style>
+                    <signal name="notify::active" handler="on_view_changed_cb" swapped="yes"/>
                   </object>
                 </child>
+
                 <child>
-                  <object class="GtkBox" id="adbutton">
-                    <property name="halign">end</property>
-                    <property name="orientation">horizontal</property>
+                  <object class="AdwToggleGroup" id="adgroup">
                     <child>
-                      <object class="GtkToggleButton" id="ascending">
+                      <object class="AdwToggle">
                         <property name="icon-name">view-sort-ascending-symbolic</property>
-                        <property name="tooltip-text" translatable="yes">Ascending</property>
-                        <property name="valign">center</property>
-                        <signal name="toggled" handler="sort_order_toggled_cb" swapped="yes" />
+                        <property name="tooltip" translatable="yes">Ascending</property>
+                        <property name="name">asce</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkToggleButton" id="descending">
+                      <object class="AdwToggle">
                         <property name="icon-name">view-sort-descending-symbolic</property>
-                        <property name="tooltip-text" translatable="yes">Descending</property>
-                        <property name="valign">center</property>
-                        <property name="group">ascending</property>
-                        <property name="active">True</property>
+                        <property name="tooltip" translatable="yes">Descending</property>
+                        <property name="name">desc</property>
                       </object>
                     </child>
-                    <style>
-                      <class name="linked" />
-                    </style>
+                    <signal name="notify::active" handler="on_sort_order_toggled_cb" swapped="yes"/>
                   </object>
                 </child>
                 <child>

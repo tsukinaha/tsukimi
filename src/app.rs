@@ -61,13 +61,12 @@ mod imp {
             provider.load_from_string(&format!(
                 "
                 :root {{
-                    --accent-color:{};
+                    --accent-color:{accent_color};
                 }}
 
                 :root {{
-                    --accent-bg-color:{};
+                    --accent-bg-color:{accent_color};
                 }}",
-                accent_color, accent_color,
             ));
 
             gtk::style_context_add_provider_for_display(

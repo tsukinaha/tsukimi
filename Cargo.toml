@@ -1,6 +1,6 @@
 [package]
 name = "tsukimi"
-version = "0.21.0"
+version = "25.5.0"
 edition = "2024"
 rust-version = "1.85"
 description = "A simple Emby Client written by GTK4-RS"
@@ -33,7 +33,6 @@ image = "0.25.5"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
 hostname = "0.4.1"
 epoxy = "0.1.0"
-gl = "0.14.0"
 libloading = "0.8.7"
 atomic-wait = "1.1.0"
 flume = "0.11.1"
@@ -49,6 +48,9 @@ fnv = "1.0.7"
 rand = "0.9.1"
 base64 = "0.22.1"
 libmpv2 = "4.1.0"
+danmakw = { git = "https://github.com/tsukinaha/danmakw.git" }
+dandanapi = { git = "https://github.com/tsukinaha/dandanapi.git" }
+glow = "0.16.0"
 
 [build-dependencies]
 embed-resource = "3.0.2"

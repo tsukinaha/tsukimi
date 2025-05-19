@@ -260,10 +260,10 @@ impl TuOverviewItem {
                                 imp.label2
                                     .set_text(&format!("{} - {}", year, end_date.year()));
                             } else {
-                                imp.label2.set_text(&format!("{}", end_year));
+                                imp.label2.set_text(&format!("{end_year}"));
                             }
                         } else {
-                            imp.label2.set_text(&format!("{} - Unknown", year));
+                            imp.label2.set_text(&format!("{year} - Unknown"));
                         }
                     }
                 } else {
@@ -288,8 +288,8 @@ pub fn run_time_ticks_to_label(run_time_ticks: u64) -> String {
     let seconds = duration.num_seconds() % 60;
 
     if hours > 0 {
-        format!("{}:{:02}:{:02}", hours, minutes, seconds)
+        format!("{hours}:{minutes:02}:{seconds:02}")
     } else {
-        format!("{}:{:02}", minutes, seconds)
+        format!("{minutes}:{seconds:02}")
     }
 }

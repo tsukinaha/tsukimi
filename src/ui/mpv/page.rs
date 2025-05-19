@@ -13,6 +13,8 @@ use gtk::{
     subclass::prelude::*,
 };
 
+use danmakw::DanmakwArea;
+
 use super::{
     mpvglarea::MPVGLArea,
     tsukimi_mpv::{
@@ -29,6 +31,7 @@ use super::{
 };
 use crate::{
     client::{
+        DanmakuConvert,
         emby_client::{
             BackType,
             EMBY_CLIENT,
@@ -62,6 +65,7 @@ use crate::{
         spawn_tokio,
     },
 };
+use anyhow::Result;
 
 const MIN_MOTION_TIME: i64 = 100000;
 const PREV_CHAPTER_KEYVAL: u32 = 65366;
@@ -84,12 +88,14 @@ mod imp {
         glib,
         subclass::prelude::*,
     };
+    use once_cell::sync::OnceCell;
 
     use crate::{
         client::structs::Back,
         ui::{
             models::SETTINGS,
             mpv::{
+                MpvTimer,
                 VolumeBar,
                 menu_actions::MenuActions,
                 mpvglarea::MPVGLArea,
@@ -100,7 +106,8 @@ mod imp {
         },
     };
 
-    // Object holding the state
+    use super::*;
+
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/mpvpage.ui")]
     #[properties(wrapper_type = super::MPVPage)]
@@ -136,6 +143,8 @@ mod imp {
         #[template_child]
         pub menu_button: TemplateChild<gtk::MenuButton>,
         #[template_child]
+        pub danmaku_button: TemplateChild<gtk::MenuButton>,
+        #[template_child]
         pub menu_popover: TemplateChild<gtk::Popover>,
         #[template_child]
         pub title_label1: TemplateChild<gtk::Label>,
@@ -166,10 +175,54 @@ mod imp {
         #[template_child]
         pub volume_bar: TemplateChild<VolumeBar>,
 
+        #[template_child]
+        pub video_overlay: TemplateChild<gtk::Overlay>,
+
+        #[template_child]
+        pub danmaku_area: TemplateChild<DanmakwArea>,
+
+        #[template_child]
+        pub danmaku_page: TemplateChild<adw::PreferencesPage>,
+
+        #[template_child]
+        pub danmaku_popover: TemplateChild<gtk::Popover>,
+
+        #[template_child]
+        pub danmaku_switch: TemplateChild<gtk::Switch>,
+
+        #[template_child]
+        pub danmaku_top_padding_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub danmaku_font_size_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub topcenter_danmaku_max_lines_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub scroll_danmaku_max_lines_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub bottomcenter_danmaku_max_lines_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub danmaku_speed_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub danmaku_row_spacing_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub danmaku_opacity_adj: TemplateChild<gtk::Adjustment>,
+
+        #[property(get, set, nullable)]
         pub current_video: RefCell<Option<TuItem>>,
         pub current_episode_list: RefCell<Vec<TuItem>>,
 
         pub video_version_matcher: RefCell<Option<String>>,
+
+        pub danmaku_client: OnceCell<dandanapi::DanDanClient>,
+
+        pub danmaku_list: RefCell<Option<Vec<danmakw::Danmaku>>>,
     }
 
     #[glib::object_subclass]
@@ -255,6 +308,57 @@ mod imp {
                 .bind("mpv-default-volume", &self.volume_adj.get(), "value")
                 .build();
 
+            SETTINGS
+                .bind("is-danmaku-enabled", &self.danmaku_switch.get(), "active")
+                .build();
+
+            self.danmaku_area
+                .set_enable_danmaku(SETTINGS.is_danmaku_enabled());
+
+            self.danmaku_font_size_adj
+                .bind_property("value", &self.danmaku_area.get(), "font-size")
+                .flags(glib::BindingFlags::BIDIRECTIONAL)
+                .build();
+
+            self.danmaku_top_padding_adj
+                .bind_property("value", &self.danmaku_area.get(), "top-padding")
+                .flags(glib::BindingFlags::BIDIRECTIONAL)
+                .build();
+
+            self.scroll_danmaku_max_lines_adj
+                .bind_property("value", &self.danmaku_area.get(), "max-lines")
+                .flags(glib::BindingFlags::BIDIRECTIONAL)
+                .build();
+
+            self.bottomcenter_danmaku_max_lines_adj
+                .bind_property("value", &self.danmaku_area.get(), "bottom-center-max-lines")
+                .flags(glib::BindingFlags::BIDIRECTIONAL)
+                .build();
+
+            self.topcenter_danmaku_max_lines_adj
+                .bind_property("value", &self.danmaku_area.get(), "top-center-max-lines")
+                .flags(glib::BindingFlags::BIDIRECTIONAL)
+                .build();
+
+            self.danmaku_speed_adj
+                .bind_property("value", &self.danmaku_area.get(), "speed-factor")
+                .flags(glib::BindingFlags::BIDIRECTIONAL)
+                .build();
+
+            self.danmaku_row_spacing_adj
+                .bind_property("value", &self.danmaku_area.get(), "row-spacing")
+                .flags(glib::BindingFlags::BIDIRECTIONAL)
+                .build();
+
+            self.danmaku_opacity_adj
+                .bind_property("value", &self.danmaku_area.get(), "opacity")
+                .flags(glib::BindingFlags::BIDIRECTIONAL)
+                .build();
+
+            SETTINGS
+                .bind("danmaku-opacity", &self.danmaku_opacity_adj.get(), "value")
+                .build();
+
             self.video_scale.set_player(Some(&self.video.get()));
 
             let obj = self.obj();
@@ -271,10 +375,19 @@ mod imp {
             });
 
             obj.listen_events();
+
+            self.init_dandanapi_client();
         }
     }
 
-    impl WidgetImpl for MPVPage {}
+    impl WidgetImpl for MPVPage {
+        fn unrealize(&self) {
+            self.video_overlay
+                .get()
+                .remove_overlay(&self.danmaku_area.get());
+            self.parent_unrealize();
+        }
+    }
 
     impl WindowImpl for MPVPage {}
 
@@ -308,6 +421,41 @@ mod imp {
                 menu_actions_play_pause_button.set_tooltip_text(Some(&gettext("Pause")));
             }
             self.paused.set(paused);
+        }
+
+        fn init_dandanapi_client(&self) {
+            use crate::client::*;
+            use dandanapi::*;
+
+            let generator = SecretGenerator::new(
+                include_bytes!("../../../secret/secret").to_vec(),
+                SECRETE_KEY.to_string(),
+            );
+
+            let Ok(()) = DanDanClient::init(X_APPID.to_string(), generator) else {
+                self.danmaku_page
+                    .set_description(&gettext("Danmaku feature requires an official build"));
+                self.danmaku_popover.set_sensitive(false);
+
+                return;
+            };
+
+            self.danmaku_client.get_or_init(DanDanClient::instance);
+        }
+
+        pub fn pause_danmaku(&self) {
+            self.danmaku_area.stop_rendering();
+        }
+
+        pub fn resume_danmaku(&self) {
+            self.danmaku_area
+                .start_rendering(MpvTimer::new(self.video.imp().mpv().mpv.clone()));
+        }
+
+        pub fn init_danmaku(&self, danmaku: Vec<danmakw::Danmaku>, time_milis: f64) {
+            self.danmaku_list.replace(Some(danmaku.clone()));
+            self.danmaku_area.set_danmaku(danmaku);
+            self.danmaku_area.set_time_milis(time_milis);
         }
     }
 }
@@ -353,7 +501,7 @@ impl MPVPage {
             .set_text(title2.as_deref().unwrap_or_default());
 
         let media_title = title2
-            .map(|t| format!("{} - {}", title1, t))
+            .map(|t| format!("{title1} - {t}"))
             .unwrap_or_else(|| title1);
 
         self.mpv().set_property("force-media-title", media_title);
@@ -368,7 +516,7 @@ impl MPVPage {
                 .replace(Some(video_matcher));
         }
 
-        self.imp().current_video.replace(Some(item));
+        self.set_current_video(Some(item.clone()));
         self.imp().current_episode_list.replace(episode_list);
 
         spawn_g_timeout(glib::clone!(
@@ -485,6 +633,12 @@ impl MPVPage {
                 };
 
                 imp.video.play(&video_url, per);
+
+                if SETTINGS.is_danmaku_enabled() {
+                    obj.load_danmaku().await;
+                } else {
+                    imp.danmaku_list.replace(None);
+                };
             }
         ));
     }
@@ -594,7 +748,7 @@ impl MPVPage {
 
         let next_item = video_list.iter().enumerate().find_map(|(i, item)| {
             // Don't use id() here, because the same video maybe have different id
-            if item.name() == current_video.name() {
+            if item.index_number() == current_video.index_number() {
                 let new_index = (i as isize + offset) as usize;
                 video_list.get(new_index).cloned()
             } else {
@@ -647,9 +801,11 @@ impl MPVPage {
                             obj.update_duration(value);
                         }
                         ListenEvent::PausedForCache(true) | ListenEvent::Seek => {
+                            obj.imp().pause_danmaku();
                             obj.update_seeking(true);
                         }
                         ListenEvent::PausedForCache(false) | ListenEvent::PlaybackRestart => {
+                            obj.imp().resume_danmaku();
                             obj.update_seeking(false);
                         }
                         ListenEvent::Eof(value) => {
@@ -916,12 +1072,17 @@ impl MPVPage {
         if x >= 0.0 && y >= 0.0 {
             let widget = self.pick(x, y, gtk::PickFlags::DEFAULT);
             if let Some(widget) = widget {
-                if !widget.is::<MPVGLArea>() {
+                if !widget.is::<MPVGLArea>() && !widget.is::<DanmakwArea>() {
                     return false;
                 }
             }
         }
+
         if self.imp().menu_button.is_active() {
+            return false;
+        }
+
+        if self.imp().danmaku_button.is_active() {
             return false;
         }
 
@@ -970,6 +1131,7 @@ impl MPVPage {
     fn on_stop_clicked(&self) {
         self.handle_callback(BackType::Stop);
         self.remove_timeout();
+        self.imp().pause_danmaku();
 
         let mpv = self.mpv();
         mpv.pause(true);
@@ -1139,6 +1301,122 @@ impl MPVPage {
 
     pub fn mpv(&self) -> &TsukimiMPV {
         self.imp().video.imp().mpv()
+    }
+
+    pub async fn load_danmaku(&self) {
+        let Some(item) = self.current_video() else {
+            return;
+        };
+
+        let (anime, episode, time_ticks) = {
+            if let Some(series_name) = item.series_name() {
+                (series_name, item.name(), item.playback_position_ticks())
+            } else {
+                (
+                    item.name(),
+                    "movie".to_string(),
+                    item.playback_position_ticks(),
+                )
+            }
+        };
+
+        let time_milis = (time_ticks / 10000) as f64;
+
+        let imp = self.imp();
+        let danmaku = self
+            .request_danmaku(dandanapi::RequestEpisodes {
+                anime,
+                episode,
+                tmdb_id: None,
+            })
+            .await;
+
+        let Ok(danmaku) = danmaku else {
+            self.imp()
+                .danmaku_page
+                .set_description(&gettext("No Danmaku Loaded"));
+            return;
+        };
+
+        imp.init_danmaku(danmaku, time_milis);
+    }
+
+    pub async fn request_danmaku(
+        &self, request_episodes: dandanapi::RequestEpisodes,
+    ) -> Result<Vec<danmakw::Danmaku>> {
+        let client = self
+            .imp()
+            .danmaku_client
+            .get()
+            .ok_or_else(|| anyhow::anyhow!("Danmaku client not initialized"))?;
+
+        let route = client.route(dandanapi::Episodes(request_episodes));
+
+        let response = spawn_tokio(async move {
+            let response = route.await?;
+            Ok::<dandanapi::SearchEpisodesResponse, anyhow::Error>(response)
+        })
+        .await?;
+
+        let episode_id = response
+            .animes
+            .and_then(|anims| anims.first()?.episodes.first().map(|ep| ep.episode_id))
+            .ok_or_else(|| anyhow::anyhow!("No episode found"))?;
+
+        let route = client.route(dandanapi::Comments {
+            episode_id,
+            request_comments: dandanapi::RequestComments {
+                from: 0,
+                with_related: true,
+                ch_convert: dandanapi::ChConvert::NONE,
+            },
+        });
+
+        let danmaku = spawn_tokio(async move {
+            let comments = route
+                .await?
+                .comments
+                .ok_or_else(|| anyhow::anyhow!("No comment found"))?;
+
+            let danmaku = comments
+                .into_iter()
+                .map(|comment| comment.into_danmaku())
+                .collect::<Vec<_>>();
+
+            Ok::<Vec<danmakw::Danmaku>, anyhow::Error>(danmaku)
+        })
+        .await?;
+
+        Ok(danmaku)
+    }
+
+    #[template_callback]
+    pub fn on_danmaku_switch_state_set(&self, state: bool) -> bool {
+        if state {
+            if let Some(danmaku) = self.imp().danmaku_list.borrow().as_ref() {
+                self.imp().danmaku_area.set_danmaku(danmaku.to_owned());
+            } else {
+                spawn(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    async move {
+                        obj.load_danmaku().await;
+                    }
+                ));
+            }
+        } else {
+            self.imp().danmaku_area.set_enable_danmaku(false);
+        }
+
+        let _ = SETTINGS.set_danmaku_enabled(state);
+
+        false
+    }
+
+    #[template_callback]
+    pub fn on_danmaku_font(&self, _param: glib::ParamSpec, button: gtk::FontDialogButton) {
+        let font_desc = button.font_desc().unwrap();
+        self.imp().danmaku_area.set_font_name(font_desc.to_string());
     }
 }
 

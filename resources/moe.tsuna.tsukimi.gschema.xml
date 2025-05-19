@@ -206,6 +206,10 @@
       <summary>MPV subtitle scale</summary>
       <default>1.0</default>
     </key>
+    <key type="d" name="danmaku-opacity">
+      <summary>Danmaku opacity</summary>
+      <default>1.0</default>
+    </key>
     <key name="is-refresh" type="b">
       <summary>Frefresh when returning to home page</summary>
       <default>false</default>
@@ -213,6 +217,10 @@
     <key name="is-first-run" type="b">
       <summary>Whether the app is first run</summary>
       <default>true</default>
+    </key>
+    <key name="is-danmaku-enabled" type="b">
+      <summary>Whether the danmaku is enabled</summary>
+      <default>false</default>
     </key>
   </schema>
 </schemalist>

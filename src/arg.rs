@@ -144,8 +144,15 @@ impl Args {
         #[cfg(target_os = "windows")]
         self.init_config_dirs();
 
-        std::panic::set_hook(Box::new(|p| {
-            tracing::error!("{p}");
+        std::panic::set_hook(Box::new(|info| {
+            if let Some(s) = info.payload().downcast_ref::<&str>() {
+                eprintln!("{s}");
+            } else if let Some(s) = info.payload().downcast_ref::<String>() {
+                eprintln!("{s}");
+            }
+            if let Some(loc) = info.location() {
+                eprintln!("At {}:{}", loc.file(), loc.line());
+            }
         }));
 
         info!("Args: {:?}", self);

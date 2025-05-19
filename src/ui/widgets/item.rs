@@ -913,7 +913,7 @@ impl ItemPage {
                 {
                     let mut str = String::new();
                     if let Some(communityrating) = item.community_rating {
-                        let formatted_rating = format!("{:.1}", communityrating);
+                        let formatted_rating = format!("{communityrating:.1}");
                         let crating = obj.imp().crating.get();
                         crating.set_text(&formatted_rating);
                         crating.set_visible(true);
