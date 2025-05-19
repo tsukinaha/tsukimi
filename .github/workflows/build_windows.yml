@@ -13,11 +13,6 @@ jobs:
     strategy:
       matrix:
         include:
-          # - arch: x86_64-windows-gnu
-          #   os: windows-latest
-          #   target: x86_64-pc-windows-gnu
-          #   msystem: mingw64
-          #   env: x86_64
           - arch: ucrt64-x86_64-windows-gnu
             os: windows-latest
             target: x86_64-pc-windows-gnu
@@ -69,7 +64,8 @@ jobs:
         shell: msys2 {0}
         run: |
           export PATH="/c/Users/runneradmin/.cargo/bin:$PATH"
-          rustup default stable-gnu
+          rustup default nightly-gnu
+          echo "${{ secrets.DANDANPLAY_API_KEY }}" > secret/key
           cargo build --release --locked
 
       - name: Prepare Package
@@ -145,4 +141,3 @@ jobs:
             artifact/*.sha512sum
           compression-level: 0
           if-no-files-found: error
-

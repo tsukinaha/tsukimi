@@ -42,6 +42,7 @@ jobs:
       - name: Build ${{ matrix.arch }}
         run: |
           mkdir artifact
+          echo "${{ secrets.DANDANPLAY_API_KEY }}" > secret/key
           docker run --rm --platform linux/${{ matrix.target }} -v ${{github.workspace}}:/app -v ./docker/entrypoint.sh:/entrypoint.sh ghcr.io/tsukinaha/ubuntu-rust-gtk4:latest
           sudo cp target/release/tsukimi artifact
           sudo cp -r i18n artifact

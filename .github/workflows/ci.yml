@@ -1,25 +1,25 @@
 name: Upload Artifacts
 
 on:
-    workflow_dispatch:
-    push:
-      branches:
-        - "main"
-      paths-ignore:
-        - "docs/**"
-        - "**/.gitignore"
-        - "**/.dockerignore"
-        - LICENSE
-        - "**/*.md"
-    pull_request:
-      branches:
-        - "main"
-      paths-ignore:
-        - "docs/**"
-        - "**/.gitignore"
-        - "**/.dockerignore"
-        - LICENSE
-        - "**/*.md"
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - "docs/**"
+      - "**/.gitignore"
+      - "**/.dockerignore"
+      - LICENSE
+      - "**/*.md"
+  pull_request:
+    branches:
+      - "main"
+    paths-ignore:
+      - "docs/**"
+      - "**/.gitignore"
+      - "**/.dockerignore"
+      - LICENSE
+      - "**/*.md"
 
 jobs:
   linux:
@@ -50,7 +50,7 @@ jobs:
           echo "EOF" >> "$GITHUB_OUTPUT"
 
       - name: Start Telegram Bot API
-        run: | 
+        run: |
           docker run -d -p 8081:8081 \
           --name=telegram-bot-api \
           -e TELEGRAM_API_ID=${{ secrets.TELEGRAM_API_ID }} \
@@ -68,7 +68,7 @@ jobs:
       - name: Upload to Telegram
         uses: nyaruta/tg-file-action@v0.2.0
         with:
-          api-url: 'http://localhost:8081'
+          api-url: "http://localhost:8081"
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
           files: ${{ steps.zip.outputs.zip_files }}
