@@ -65,7 +65,7 @@ jobs:
         run: |
           export PATH="/c/Users/runneradmin/.cargo/bin:$PATH"
           rustup default nightly-gnu
-          echo "${{ secrets.DANDANPLAY_API_KEY }}" > secret/key
+          echo "${{ secrets.DANDANAPI_SECRET_KEY }}" > secret/key
           cargo build --release --locked
 
       - name: Prepare Package
