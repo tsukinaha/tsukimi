@@ -2,7 +2,7 @@ use dandanapi::CommentData;
 use danmakw::Danmaku;
 
 pub const X_APPID: &str = "e9imrhcexn";
-pub const SECRETE_KEY: &str = "";
+pub const SECRETE_KEY: &str = include_str!("../../secret/key");
 
 pub trait DanmakuConvert {
     fn into_danmaku(self) -> Danmaku;
@@ -39,7 +39,8 @@ impl DanmakuConvert for CommentData {
         };
 
         let parts: Vec<&str> = p.split(',').collect();
-        let start = parts.first()
+        let start = parts
+            .first()
             .and_then(|s| s.parse::<f64>().ok())
             .unwrap_or_default();
         let mode = parts

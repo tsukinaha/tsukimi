@@ -41,7 +41,6 @@
                 </child>
                 <child type="overlay">
                   <object class="DanmakwArea" id="danmaku_area">
-                    
                   </object>
                 </child>
               </object>
@@ -511,6 +510,19 @@
                         <property name="title" translatable="yes">Appearence</property>
                         <property name="sensitive" bind-source="danmaku_switch" bind-property="active" bind-flags="sync-create"/>
                         <child>
+                          <object class="AdwActionRow">
+                            <property name="title" translatable="yes">Danmaku Opacity</property>
+                            <child type="suffix">
+                              <object class="GtkSpinButton" id="danmaku_opacity">
+                                <property name="width-request">50</property>
+                                <property name="valign">center</property>
+                                <property name="adjustment">danmaku_opacity_adj</property>
+                                
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
                           <object class="AdwExpanderRow">
                             <property name="title" translatable="yes" comments="Translators: if you want reserve the 'and' char, keep it '&amp;amp;amp;'">Margin &amp;amp; Size</property>
                             <child>
@@ -547,7 +559,7 @@
                                     <property name="level">0</property>
                                     <property name="valign">3</property>
                                     <property name="level">family</property>
-
+                                    <signal name="notify::font-desc" handler="on_danmaku_font" swapped="yes" />
                                     <property name="dialog">
                                       <object class="GtkFontDialog"></object>
                                     </property>
@@ -629,7 +641,7 @@
                     </child>
                     <child>
                       <object class="AdwPreferencesGroup">
-                        <property name="title" translatable="yes">Search danmaku manually</property>
+                        <property name="title" translatable="yes">Search danmaku manually (Not available yet)</property>
                         <property name="sensitive" bind-source="danmaku_switch" bind-property="active" bind-flags="sync-create"/>
                         <child>
                           <object class="AdwButtonRow">
@@ -713,6 +725,14 @@
   <object class="GtkAdjustment" id="danmaku_speed_adj">
     <property name="lower">0.10</property>
     <property name="upper">5.00</property>
+    <property name="value">1.00</property>
+    <property name="step_increment">0.05</property>
+    <property name="page_increment">0.2</property>
+  </object>
+
+  <object class="GtkAdjustment" id="danmaku_opacity_adj">
+    <property name="lower">0.01</property>
+    <property name="upper">1.00</property>
     <property name="value">1.00</property>
     <property name="step_increment">0.05</property>
     <property name="page_increment">0.2</property>

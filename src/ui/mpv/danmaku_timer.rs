@@ -12,7 +12,8 @@ impl Timer for MpvTimer {
     fn time_milis(&self) -> f64 {
         self.mpv
             .get_property::<f64>("audio-pts/full")
-            .unwrap_or_default() * 1000.0
+            .unwrap_or_default()
+            * 1000.0
     }
 }
 

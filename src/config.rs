@@ -1,4 +1,4 @@
-pub const VERSION: &str = "0.21.0";
+pub const VERSION: &str = "25.05-danmaku-test-alpha01";
 pub const GETTEXT_PACKAGE: &str = "tsukimi";
 
 // If you are using meson, this will be replaced with the correct path.

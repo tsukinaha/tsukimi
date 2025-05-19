@@ -915,7 +915,7 @@ dependencies = [
 [[package]]
 name = "danmakw"
 version = "0.0.1"
-source = "git+https://github.com/tsukinaha/danmakw.git#ffbc6efe4c727ca2b17f0c4f9dcbdb26848814b2"
+source = "git+https://github.com/tsukinaha/danmakw.git#47113d91b702fcc3f90f3adb5f88b66a35afd105"
 dependencies = [
  "ash",
  "cosmic-text",
@@ -5066,7 +5066,7 @@ checksum = "e421abadd41a4225275504ea4d6566923418b7f05506fbc9c0fe86ba7396114b"
 
 [[package]]
 name = "tsukimi"
-version = "0.21.0"
+version = "25.5.0"
 dependencies = [
  "anyhow",
  "atomic-wait",

@@ -206,6 +206,10 @@
       <summary>MPV subtitle scale</summary>
       <default>1.0</default>
     </key>
+    <key type="d" name="danmaku-opacity">
+      <summary>Danmaku opacity</summary>
+      <default>1.0</default>
+    </key>
     <key name="is-refresh" type="b">
       <summary>Frefresh when returning to home page</summary>
       <default>false</default>
