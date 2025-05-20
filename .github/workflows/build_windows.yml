@@ -62,10 +62,12 @@ jobs:
 
       - name: Build tsukimi-${{ matrix.target }}
         shell: msys2 {0}
+        env:
+          DANDANAPI_SECRET_KEY: ${{ secrets.DANDANAPI_SECRET_KEY }}
         run: |
           export PATH="/c/Users/runneradmin/.cargo/bin:$PATH"
           rustup default nightly-gnu
-          echo "${{ secrets.DANDANAPI_SECRET_KEY }}" > secret/key
+          echo $DANDANAPI_SECRET_KEY > secret/key
           cargo build --release --locked
 
       - name: Prepare Package
