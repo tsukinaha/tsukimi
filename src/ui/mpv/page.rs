@@ -1425,7 +1425,7 @@ impl MPVPage {
         } else {
             self.imp().danmaku_area.set_enable_danmaku(false);
             self.imp().danmaku_area.clear();
-            self.imp().resume_danmaku();
+            self.imp().pause_danmaku();
         }
 
         let _ = SETTINGS.set_danmaku_enabled(state);
