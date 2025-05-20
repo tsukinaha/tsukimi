@@ -1410,9 +1410,12 @@ impl MPVPage {
 
     #[template_callback]
     pub fn on_danmaku_switch_state_set(&self, state: bool) -> bool {
+        self.imp().danmaku_area.set_enable_danmaku(state);
+
         if state {
             if let Some(danmaku) = self.imp().danmaku_list.borrow().as_ref() {
                 self.imp().danmaku_area.set_danmaku(danmaku.to_owned());
+                self.imp().resume_danmaku();
             } else {
                 spawn(glib::clone!(
                     #[weak(rename_to = obj)]
@@ -1423,7 +1426,6 @@ impl MPVPage {
                 ));
             }
         } else {
-            self.imp().danmaku_area.set_enable_danmaku(false);
             self.imp().danmaku_area.clear();
             self.imp().pause_danmaku();
         }
