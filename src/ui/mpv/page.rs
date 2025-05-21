@@ -754,7 +754,9 @@ impl MPVPage {
 
         let next_item = video_list.iter().enumerate().find_map(|(i, item)| {
             // Don't use id() here, because the same video maybe have different id
-            if item.index_number() == current_video.index_number() {
+            if item.index_number() == current_video.index_number()
+                && item.parent_index_number() == current_video.parent_index_number()
+            {
                 let new_index = (i as isize + offset) as usize;
                 video_list.get(new_index).cloned()
             } else {
