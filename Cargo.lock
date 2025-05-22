@@ -1524,56 +1524,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gdk4-win32"
-version = "0.9.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e54beb3e19bff7ccc05153e043bf0eea9cf76c07a3387fb0151bfa0fbfce9df0"
-dependencies = [
- "gdk4",
- "gdk4-win32-sys",
- "gio",
- "glib",
- "libc",
-]
-
-[[package]]
-name = "gdk4-win32-sys"
-version = "0.9.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d554341f26b2f6191aaf2ecb4d0089f3696a40cadb2dba75dad03e48a6dc0eb9"
-dependencies = [
- "gdk4-sys",
- "glib-sys",
- "libc",
- "system-deps 7.0.3",
-]
-
-[[package]]
-name = "gdk4-x11"
-version = "0.9.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5c3e7380a9a206b170e1b52b5f25581406db816c68f4e7140dbef89a9e5b52ac"
-dependencies = [
- "gdk4",
- "gdk4-x11-sys",
- "gio",
- "glib",
- "libc",
-]
-
-[[package]]
-name = "gdk4-x11-sys"
-version = "0.9.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "070bd50a053f90d7fdf6be1d75672ea0f97c0e5da3a10dc6d02e5defcb0db32f"
-dependencies = [
- "gdk4-sys",
- "glib-sys",
- "libc",
- "system-deps 7.0.3",
-]
-
-[[package]]
 name = "generic-array"
 version = "0.14.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5082,8 +5032,6 @@ dependencies = [
  "epoxy",
  "flume",
  "fnv",
- "gdk4-win32",
- "gdk4-x11",
  "gettext-rs",
  "glib-build-tools",
  "glow",

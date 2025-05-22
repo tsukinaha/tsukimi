@@ -39,8 +39,6 @@ flume = "0.11.1"
 derive_builder = "0.20.2"
 anyhow = "1.0.98"
 tracing-subscriber = { version = "0.3.19", features = ["chrono"] }
-gdk4-x11 = { version = "0.9", optional = true }
-gdk4-win32 = { version = "0.9", optional = true }
 regex = "1.11.1"
 strsim = "0.11.1"
 clap = { version = "4.5.38", features = ["derive"] }
@@ -62,15 +60,11 @@ default = ["protocols", "render"]
 protocols = []                    # Enable custom protocol callbacks
 render = []                       # Enable custom rendering
 build_libmpv = []                 # build libmpv automatically, provided MPV_SOURCE is set
-x11 = ["gdk4-x11"]
-win32 = ["gdk4-win32"]
 
 [target.'cfg(target_os = "linux")'.dependencies]
-gdk4-x11 = { version = "0.9" }
 xattr = { version = "1.5.0" }
 
 [target.'cfg(target_os = "windows")'.dependencies]
-gdk4-win32 = { version = "0.9" }
 libproxy = { version = "0.1.1" }
 windows = { version = "0.61.1", features = [
   "Win32_Foundation",
@@ -81,7 +75,7 @@ windows = { version = "0.61.1", features = [
 ] }
 
 [profile.release]
-lto = "thin"
+lto = true
 strip = true
 debug = "limited"
 codegen-units = 1
