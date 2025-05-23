@@ -1428,7 +1428,7 @@ impl MPVPage {
                 ));
             }
         } else {
-            self.imp().danmaku_area.clear();
+            self.imp().danmaku_area.clear_danmaku();
             self.imp().pause_danmaku();
         }
 

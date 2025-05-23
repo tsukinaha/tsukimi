@@ -11,8 +11,6 @@ use gtk::{
 };
 use imp::{
     ListType,
-    SortBy,
-    SortOrder,
     ViewType,
 };
 
@@ -36,7 +34,6 @@ use crate::{
             SimpleListItem,
         },
     },
-    ui::models::SETTINGS,
     utils::{
         spawn,
         spawn_tokio,
@@ -50,6 +47,7 @@ pub mod imp {
             Cell,
             RefCell,
         },
+        fmt::Display,
         sync::{
             Arc,
             OnceLock,
@@ -97,9 +95,45 @@ pub mod imp {
     #[repr(u32)]
     #[enum_type(name = "SortOrder")]
     pub enum SortOrder {
-        Ascending,
+        Ascending = 0,
         #[default]
-        Descending,
+        Descending = 1,
+    }
+
+    impl From<SortOrder> for u32 {
+        fn from(val: SortOrder) -> Self {
+            val as u32
+        }
+    }
+
+    impl From<SortOrder> for i32 {
+        fn from(val: SortOrder) -> Self {
+            val as i32
+        }
+    }
+
+    impl From<i32> for SortOrder {
+        fn from(value: i32) -> Self {
+            match value {
+                0 => SortOrder::Ascending,
+                _ => SortOrder::Descending,
+            }
+        }
+    }
+
+    impl From<u32> for SortOrder {
+        fn from(value: u32) -> Self {
+            Self::from(value as i32)
+        }
+    }
+
+    impl Display for SortOrder {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            match self {
+                SortOrder::Ascending => f.write_str("Ascending"),
+                SortOrder::Descending => f.write_str("Descending"),
+            }
+        }
     }
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
@@ -111,76 +145,74 @@ pub mod imp {
         GridView,
     }
 
-    impl From<i32> for SortOrder {
-        fn from(value: i32) -> Self {
-            match value {
-                0 => Self::Descending,
-                1 => Self::Ascending,
-                _ => Self::Descending,
-            }
-        }
-    }
-
-    impl From<SortOrder> for i32 {
-        fn from(value: SortOrder) -> Self {
-            match value {
-                SortOrder::Ascending => 1,
-                SortOrder::Descending => 0,
-            }
-        }
-    }
-
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
     #[repr(u32)]
     #[enum_type(name = "SortBy")]
     pub enum SortBy {
-        Title,
-        Bitrate,
-        DateCreated,
-        ImdbRate,
-        CriticRating,
+        Title = 0,
+        Bitrate = 1,
+        DateCreated = 2,
+        ImdbRate = 3,
+        CriticRating = 4,
         #[default]
-        PremiereDate,
-        OfficialRating,
-        ProductionYear,
-        DatePlayed,
-        Runtime,
-        UpdatedAt,
+        PremiereDate = 5,
+        OfficialRating = 6,
+        ProductionYear = 7,
+        DatePlayed = 8,
+        Runtime = 9,
+        UpdatedAt = 10,
+    }
+
+    impl From<SortBy> for u32 {
+        fn from(val: SortBy) -> Self {
+            val as u32
+        }
+    }
+
+    impl From<SortBy> for i32 {
+        fn from(val: SortBy) -> Self {
+            val as i32
+        }
     }
 
     impl From<i32> for SortBy {
         fn from(value: i32) -> Self {
             match value {
-                0 => Self::Title,
-                1 => Self::Bitrate,
-                2 => Self::DateCreated,
-                3 => Self::ImdbRate,
-                4 => Self::CriticRating,
-                5 => Self::PremiereDate,
-                6 => Self::OfficialRating,
-                7 => Self::ProductionYear,
-                8 => Self::DatePlayed,
-                9 => Self::Runtime,
-                10 => Self::UpdatedAt,
-                _ => Self::Title,
+                0 => SortBy::Title,
+                1 => SortBy::Bitrate,
+                2 => SortBy::DateCreated,
+                3 => SortBy::ImdbRate,
+                4 => SortBy::CriticRating,
+                5 => SortBy::PremiereDate,
+                6 => SortBy::OfficialRating,
+                7 => SortBy::ProductionYear,
+                8 => SortBy::DatePlayed,
+                9 => SortBy::Runtime,
+                _ => SortBy::UpdatedAt,
             }
         }
     }
 
-    impl From<SortBy> for i32 {
-        fn from(value: SortBy) -> Self {
-            match value {
-                SortBy::Title => 0,
-                SortBy::Bitrate => 1,
-                SortBy::DateCreated => 2,
-                SortBy::ImdbRate => 3,
-                SortBy::CriticRating => 4,
-                SortBy::PremiereDate => 5,
-                SortBy::OfficialRating => 6,
-                SortBy::ProductionYear => 7,
-                SortBy::DatePlayed => 8,
-                SortBy::Runtime => 9,
-                SortBy::UpdatedAt => 10,
+    impl From<u32> for SortBy {
+        fn from(value: u32) -> Self {
+            Self::from(value as i32)
+        }
+    }
+
+    impl Display for SortBy {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            match self {
+                SortBy::Title => f.write_str("SortName"),
+                SortBy::Bitrate => f.write_str("TotalBitrate,SortName"),
+                SortBy::DateCreated => f.write_str("DateCreated,SortName"),
+                SortBy::ImdbRate => f.write_str("CommunityRating,SortName"),
+                SortBy::CriticRating => f.write_str("CriticRating,SortName"),
+                SortBy::PremiereDate => f.write_str("ProductionYear,PremiereDate,SortName"),
+                SortBy::OfficialRating => f.write_str("OfficialRating,SortName"),
+                SortBy::ProductionYear => f.write_str("ProductionYear,SortName"),
+                SortBy::DatePlayed => f.write_str("DatePlayed,SortName"),
+                SortBy::Runtime => f.write_str("Runtime,SortName"),
+                SortBy::UpdatedAt => f.write_str("DateLastContentAdded,SortName"),
             }
         }
     }
@@ -255,12 +287,35 @@ pub mod imp {
     #[glib::derived_properties]
     impl ObjectImpl for SingleGrid {
         fn constructed(&self) {
-            if SETTINGS.list_sort_order() == 1 {
-                self.adgroup.set_active_name(Some("asce"));
-            } else {
-                self.adgroup.set_active_name(Some("desc"));
-            }
-            self.dropdown.set_selected(SETTINGS.list_sort_by() as u32);
+            self.set_sort_by_and_order(
+                SortBy::from(SETTINGS.list_sort_by()),
+                SortOrder::from(SETTINGS.list_sort_order()),
+            );
+
+            self.obj()
+                .bind_property("sort-by", &self.dropdown.get(), "selected")
+                .flags(glib::BindingFlags::BIDIRECTIONAL | glib::BindingFlags::SYNC_CREATE)
+                .build();
+
+            self.obj()
+                .bind_property("sort-order", &self.adgroup.get(), "active-name")
+                .flags(glib::BindingFlags::BIDIRECTIONAL | glib::BindingFlags::SYNC_CREATE)
+                .transform_from(|_, value: &str| {
+                    if value == "asce" {
+                        Some(SortOrder::Ascending)
+                    } else {
+                        Some(SortOrder::Descending)
+                    }
+                })
+                .transform_to(|_, value: SortOrder| {
+                    if value == SortOrder::Ascending {
+                        Some("asce")
+                    } else {
+                        Some("desc")
+                    }
+                })
+                .build();
+
             self.parent_constructed();
         }
 
@@ -286,11 +341,13 @@ pub mod imp {
     impl SingleGrid {
         fn set_sort_by(&self, sort_by: SortBy) {
             self.sort_by.set(sort_by);
+            let _ = SETTINGS.set_list_sort_by(sort_by.into());
             self.obj().emit_by_name::<()>("sort-changed", &[]);
         }
 
         fn set_sort_order(&self, sort_order: SortOrder) {
             self.sort_order.set(sort_order);
+            let _ = SETTINGS.set_list_sort_order(sort_order.into());
             self.obj().emit_by_name::<()>("sort-changed", &[]);
         }
 
@@ -338,23 +395,6 @@ impl SingleGrid {
             ViewType::ListView
         };
         self.set_view_type(view_type);
-    }
-
-    #[template_callback]
-    fn on_sort_order_toggled_cb(&self, _param: Option<glib::ParamSpec>, group: &adw::ToggleGroup) {
-        let sort_order = if group.active_name() == Some(glib::GString::from("asce")) {
-            SortOrder::Ascending
-        } else {
-            SortOrder::Descending
-        };
-        self.set_sort_order(sort_order);
-        let _ = SETTINGS.set_list_sord_order(sort_order.into());
-    }
-
-    #[template_callback]
-    fn on_sort_by_selected(&self, _param: Option<glib::ParamSpec>, dropdown: gtk::DropDown) {
-        self.set_sort_by(SortBy::from(dropdown.selected() as i32));
-        let _ = SETTINGS.set_list_sort_by(dropdown.selected() as i32);
     }
 
     #[template_callback]
@@ -419,31 +459,6 @@ impl SingleGrid {
         }
     }
 
-    pub fn match_sort_by(&self, selected: u32) -> &str {
-        match selected {
-            0 => "SortName",
-            1 => "TotalBitrate,SortName",
-            2 => "DateCreated,SortName",
-            3 => "CommunityRating,SortName",
-            4 => "CriticRating,SortName",
-            5 => "ProductionYear,PremiereDate,SortName",
-            6 => "OfficialRating,SortName",
-            7 => "ProductionYear,SortName",
-            8 => "DatePlayed,SortName",
-            9 => "Runtime,SortName",
-            10 => "DateLastContentAdded,SortName",
-            _ => "SortName",
-        }
-    }
-
-    pub fn match_sort_order(&self, selected: u32) -> &str {
-        match selected {
-            0 => "Descending",
-            1 => "Ascending",
-            _ => "Descending",
-        }
-    }
-
     pub async fn poster(&self, poster_type: PosterType) {
         let scrolled = self.imp().scrolled.get();
         let factory = SignalListItemFactory::new();
@@ -499,12 +514,8 @@ impl SingleGrid {
         Fut: Future<Output = Result<List>> + Send + 'static,
     {
         self.connect_sort_changed(move |obj| {
-            let sort_by = obj
-                .match_sort_by(i32::from(obj.sort_by()) as u32)
-                .to_string();
-            let sort_order = obj
-                .match_sort_order(i32::from(obj.sort_order()) as u32)
-                .to_string();
+            let sort_by = obj.sort_by().to_string();
+            let sort_order = obj.sort_order().to_string();
             let filters_list = obj
                 .imp()
                 .filter_panel
@@ -547,12 +558,8 @@ impl SingleGrid {
             #[weak(rename_to = obj)]
             self,
             move |scrolled, lock| {
-                let sort_by = obj
-                    .match_sort_by(i32::from(obj.sort_by()) as u32)
-                    .to_string();
-                let sort_order = obj
-                    .match_sort_order(i32::from(obj.sort_order()) as u32)
-                    .to_string();
+                let sort_by = obj.sort_by().to_string();
+                let sort_order = obj.sort_order().to_string();
                 let n_items = scrolled.n_items();
                 let filters_list = obj
                     .imp()

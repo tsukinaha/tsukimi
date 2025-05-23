@@ -93,7 +93,7 @@
                         <property name="name">desc</property>
                       </object>
                     </child>
-                    <signal name="notify::active" handler="on_sort_order_toggled_cb" swapped="yes"/>
+                    
                   </object>
                 </child>
                 <child>
@@ -101,7 +101,7 @@
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <property name="tooltip-text" translatable="yes">Sort By</property>
-                    <signal name="notify::selected" handler="on_sort_by_selected" swapped="yes"/>
+                    
                     <property name="model">
                       <object class="GtkStringList">
                         <items>

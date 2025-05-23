@@ -250,7 +250,7 @@ impl Settings {
         self.int(Self::KEY_MPV_HWDEC)
     }
 
-    pub fn set_list_sord_order(&self, list_sort_order: i32) -> Result<(), glib::BoolError> {
+    pub fn set_list_sort_order(&self, list_sort_order: i32) -> Result<(), glib::BoolError> {
         self.set_int(Self::KEY_LIST_SORT_ORDER, list_sort_order)
     }
 
