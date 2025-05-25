@@ -641,6 +641,7 @@ impl MPVPage {
                 imp.video.play(&video_url, per);
 
                 if SETTINGS.is_danmaku_enabled() {
+                    obj.imp().danmaku_area.clear_danmaku();
                     obj.load_danmaku().await;
                 } else {
                     imp.danmaku_list.replace(None);
