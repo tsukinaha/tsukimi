@@ -924,7 +924,7 @@ dependencies = [
 [[package]]
 name = "danmakw"
 version = "0.0.1"
-source = "git+https://github.com/tsukinaha/danmakw.git#5e6df6242196c73d1562e403df4d3efeac03ffb8"
+source = "git+https://github.com/tsukinaha/danmakw.git#63f861d12c4f97c7857f035540fd672ba34c443a"
 dependencies = [
  "ash 0.32.1",
  "cosmic-text",
@@ -5721,7 +5721,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]
