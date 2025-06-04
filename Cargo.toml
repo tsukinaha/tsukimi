@@ -41,7 +41,7 @@ anyhow = "1.0.98"
 tracing-subscriber = { version = "0.3.19", features = ["chrono"] }
 regex = "1.11.1"
 strsim = "0.11.1"
-clap = { version = "4.5.38", features = ["derive"] }
+clap = { version = "4.5.39", features = ["derive"] }
 fnv = "1.0.7"
 rand = "0.9.1"
 base64 = "0.22.1"
@@ -51,7 +51,7 @@ dandanapi = { git = "https://github.com/tsukinaha/dandanapi.git" }
 glow = "0.16.0"
 
 [build-dependencies]
-embed-resource = "3.0.2"
+embed-resource = "3.0.3"
 glib-build-tools = "0.20.0"
 
 [features]
