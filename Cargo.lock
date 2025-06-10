@@ -259,7 +259,7 @@ version = "0.38.0+1.3.281"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0bb44936d800fea8f016d7f2311c6a4f97aebd5dc86f09906139ec848cf3a46f"
 dependencies = [
- "libloading 0.8.8",
+ "libloading",
 ]
 
 [[package]]
@@ -915,7 +915,7 @@ dependencies = [
 [[package]]
 name = "danmakw"
 version = "0.0.1"
-source = "git+https://github.com/tsukinaha/danmakw.git#84fbca0f107abe7ba8bc433bd37feb4c78ed5acf"
+source = "git+https://github.com/tsukinaha/danmakw.git#5c8b65304d7c9b6e797b374dc1b487fee23d86cf"
 dependencies = [
  "ash",
  "cosmic-text",
@@ -926,7 +926,7 @@ dependencies = [
  "glyphon",
  "gtk4",
  "libadwaita",
- "libloading 0.8.8",
+ "libloading",
  "once_cell",
  "pollster",
  "quick-xml",
@@ -1061,7 +1061,7 @@ version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "330c60081dcc4c72131f8eb70510f1ac07223e5d4163db481a04a0befcffa412"
 dependencies = [
- "libloading 0.7.4",
+ "libloading",
 ]
 
 [[package]]
@@ -1735,7 +1735,7 @@ dependencies = [
 [[package]]
 name = "glyphon"
 version = "0.9.0"
-source = "git+https://github.com/tsukinaha/glyphon.git#e5317e20f618b923de7851672ce331b284ae90d1"
+source = "git+https://github.com/tsukinaha/glyphon.git#ee4ca15d7fedef18ef475329b82bdbbf5b82363f"
 dependencies = [
  "cosmic-text",
  "etagere",
@@ -1788,9 +1788,9 @@ dependencies = [
 
 [[package]]
 name = "gpu-descriptor"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcf29e94d6d243368b7a56caa16bc213e4f9f8ed38c4d9557069527b5d5281ca"
+checksum = "b89c83349105e3732062a895becfc71a8f921bb71ecbbdd8ff99263e3b53a0ca"
 dependencies = [
  "bitflags 2.9.1",
  "gpu-descriptor-types",
@@ -2552,7 +2552,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6aae1df220ece3c0ada96b8153459b67eebe9ae9212258bb0134ae60416fdf76"
 dependencies = [
  "libc",
- "libloading 0.8.8",
+ "libloading",
  "pkg-config",
 ]
 
@@ -2625,16 +2625,6 @@ checksum = "cf78f52d400cf2d84a3a973a78a592b4adc535739e0a5597a0da6f0c357adc75"
 dependencies = [
  "arbitrary",
  "cc",
-]
-
-[[package]]
-name = "libloading"
-version = "0.7.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b67380fd3b2fbe7527a606e18729d21c6f3951633d0500574c4dc22d2d638b9f"
-dependencies = [
- "cfg-if",
- "winapi",
 ]
 
 [[package]]
@@ -2862,7 +2852,7 @@ checksum = "956787520e75e9bd233246045d19f42fb73242759cc57fba9611d940ae96d4b0"
 [[package]]
 name = "naga"
 version = "25.0.0"
-source = "git+https://github.com/Doublonmousse/wgpu?branch=external-gles-framebuffer#01939f038c7d2a0a77d62a8ed841034af49aeefb"
+source = "git+https://github.com/gfx-rs/wgpu.git#e10bceb1dc193a3702947542465c820ab5f942ff"
 dependencies = [
  "arrayvec",
  "bit-set",
@@ -2874,6 +2864,7 @@ dependencies = [
  "hashbrown",
  "hexf-parse",
  "indexmap",
+ "libm",
  "log",
  "num-traits",
  "once_cell",
@@ -5084,7 +5075,7 @@ dependencies = [
  "image",
  "libadwaita",
  "libc",
- "libloading 0.8.8",
+ "libloading",
  "libmpv2",
  "libproxy",
  "once_cell",
@@ -5566,7 +5557,7 @@ checksum = "a751b3277700db47d3e574514de2eced5e54dc8a5436a3bf7a0b248b2cee16f3"
 [[package]]
 name = "wgpu"
 version = "25.0.0"
-source = "git+https://github.com/Doublonmousse/wgpu?branch=external-gles-framebuffer#01939f038c7d2a0a77d62a8ed841034af49aeefb"
+source = "git+https://github.com/gfx-rs/wgpu.git#e10bceb1dc193a3702947542465c820ab5f942ff"
 dependencies = [
  "arrayvec",
  "bitflags 2.9.1",
@@ -5593,7 +5584,7 @@ dependencies = [
 [[package]]
 name = "wgpu-core"
 version = "25.0.0"
-source = "git+https://github.com/Doublonmousse/wgpu?branch=external-gles-framebuffer#01939f038c7d2a0a77d62a8ed841034af49aeefb"
+source = "git+https://github.com/gfx-rs/wgpu.git#e10bceb1dc193a3702947542465c820ab5f942ff"
 dependencies = [
  "arrayvec",
  "bit-set",
@@ -5623,7 +5614,7 @@ dependencies = [
 [[package]]
 name = "wgpu-core-deps-apple"
 version = "25.0.0"
-source = "git+https://github.com/Doublonmousse/wgpu?branch=external-gles-framebuffer#01939f038c7d2a0a77d62a8ed841034af49aeefb"
+source = "git+https://github.com/gfx-rs/wgpu.git#e10bceb1dc193a3702947542465c820ab5f942ff"
 dependencies = [
  "wgpu-hal",
 ]
@@ -5631,7 +5622,7 @@ dependencies = [
 [[package]]
 name = "wgpu-core-deps-emscripten"
 version = "25.0.0"
-source = "git+https://github.com/Doublonmousse/wgpu?branch=external-gles-framebuffer#01939f038c7d2a0a77d62a8ed841034af49aeefb"
+source = "git+https://github.com/gfx-rs/wgpu.git#e10bceb1dc193a3702947542465c820ab5f942ff"
 dependencies = [
  "wgpu-hal",
 ]
@@ -5639,7 +5630,7 @@ dependencies = [
 [[package]]
 name = "wgpu-core-deps-windows-linux-android"
 version = "25.0.0"
-source = "git+https://github.com/Doublonmousse/wgpu?branch=external-gles-framebuffer#01939f038c7d2a0a77d62a8ed841034af49aeefb"
+source = "git+https://github.com/gfx-rs/wgpu.git#e10bceb1dc193a3702947542465c820ab5f942ff"
 dependencies = [
  "wgpu-hal",
 ]
@@ -5647,7 +5638,7 @@ dependencies = [
 [[package]]
 name = "wgpu-hal"
 version = "25.0.0"
-source = "git+https://github.com/Doublonmousse/wgpu?branch=external-gles-framebuffer#01939f038c7d2a0a77d62a8ed841034af49aeefb"
+source = "git+https://github.com/gfx-rs/wgpu.git#e10bceb1dc193a3702947542465c820ab5f942ff"
 dependencies = [
  "android_system_properties",
  "arrayvec",
@@ -5668,7 +5659,7 @@ dependencies = [
  "js-sys",
  "khronos-egl",
  "libc",
- "libloading 0.8.8",
+ "libloading",
  "log",
  "metal",
  "naga",
@@ -5693,7 +5684,7 @@ dependencies = [
 [[package]]
 name = "wgpu-types"
 version = "25.0.0"
-source = "git+https://github.com/Doublonmousse/wgpu?branch=external-gles-framebuffer#01939f038c7d2a0a77d62a8ed841034af49aeefb"
+source = "git+https://github.com/gfx-rs/wgpu.git#e10bceb1dc193a3702947542465c820ab5f942ff"
 dependencies = [
  "bitflags 2.9.1",
  "bytemuck",
@@ -6319,7 +6310,7 @@ dependencies = [
  "as-raw-xcb-connection",
  "gethostname",
  "libc",
- "libloading 0.8.8",
+ "libloading",
  "once_cell",
  "rustix 0.38.44",
  "x11rb-protocol",
