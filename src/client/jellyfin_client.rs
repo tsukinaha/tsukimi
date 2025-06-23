@@ -63,7 +63,7 @@ use crate::{
     config::VERSION,
     ui::{
         SETTINGS,
-        emby_cache_path,
+        jellyfin_cache_path,
         widgets::{
             filter_panel::FiltersList,
             single_grid::imp::ListType,
@@ -72,7 +72,7 @@ use crate::{
     utils::spawn_tokio_without_await,
 };
 
-pub static EMBY_CLIENT: Lazy<EmbyClient> = Lazy::new(EmbyClient::default);
+pub static JELLYFIN_CLIENT: Lazy<JellyfinClient> = Lazy::new(JellyfinClient::default);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| {
     let uuid = SETTINGS.device_uuid();
     if uuid.is_empty() {
@@ -100,7 +100,7 @@ pub enum BackType {
     Back,
 }
 
-pub struct EmbyClient {
+pub struct JellyfinClient {
     pub url: Mutex<Option<Url>>,
     pub client: Client,
     pub semaphore: Arc<tokio::sync::Semaphore>,
@@ -113,11 +113,11 @@ pub struct EmbyClient {
     pub server_name_hash: Mutex<String>,
 }
 
-fn generate_emby_authorization(
+fn generate_jellyfin_authorization(
     user_id: &str, client: &str, device: &str, device_id: &str, version: &str,
 ) -> String {
     format!(
-        "Emby UserId={user_id},Client={client},Device={device},DeviceId={device_id},Version={version}"
+        "Jellyfin UserId={user_id},Client={client},Device={device},DeviceId={device_id},Version={version}"
     )
 }
 
@@ -127,13 +127,13 @@ fn generate_hash(s: &str) -> String {
     format!("{:x}", hasher.finish())
 }
 
-impl Default for EmbyClient {
+impl Default for JellyfinClient {
     fn default() -> Self {
         let mut headers = reqwest::header::HeaderMap::new();
         headers.insert("Accept-Encoding", HeaderValue::from_static("gzip"));
         headers.insert(
-            "x-emby-authorization",
-            HeaderValue::from_str(&generate_emby_authorization(
+            "X-Emby-authorization",
+            HeaderValue::from_str(&generate_jellyfin_authorization(
                 "",
                 CLIENT_ID,
                 &DEVICE_NAME,
@@ -157,7 +157,7 @@ impl Default for EmbyClient {
     }
 }
 
-impl EmbyClient {
+impl JellyfinClient {
     pub async fn init(&self, account: &Account) -> Result<(), Box<dyn std::error::Error>> {
         self.header_change_url(&account.server, &account.port)
             .await?;
@@ -169,7 +169,7 @@ impl EmbyClient {
         self.set_server_name(&account.servername).await?;
         crate::ui::provider::set_admin(false);
         spawn_tokio_without_await(async move {
-            match EMBY_CLIENT.authenticate_admin().await {
+            match JELLYFIN_CLIENT.authenticate_admin().await {
                 Ok(r) => {
                     if r.policy.is_administrator {
                         crate::ui::provider::set_admin(true);
@@ -206,8 +206,8 @@ impl EmbyClient {
     pub async fn header_change_user_id(&self, user_id: &str) -> Result<()> {
         let mut headers = self.headers.lock().await;
         headers.insert(
-            "x-emby-authorization",
-            HeaderValue::from_str(&generate_emby_authorization(
+            "X-Emby-authorization",
+            HeaderValue::from_str(&generate_jellyfin_authorization(
                 user_id,
                 CLIENT_ID,
                 &DEVICE_NAME,
@@ -531,7 +531,7 @@ impl EmbyClient {
     }
 
     pub async fn get_image(&self, id: &str, image_type: &str, tag: Option<u8>) -> Result<String> {
-        let mut path = emby_cache_path().await;
+        let mut path = jellyfin_cache_path().await;
         path.push(format!("{}-{}-{}", id, image_type, tag.unwrap_or(0)));
 
         let mut etag: Option<String> = None;
@@ -613,7 +613,7 @@ impl EmbyClient {
     pub async fn save_image(
         &self, id: &str, image_type: &str, tag: Option<u8>, bytes: &[u8], etag: Option<String>,
     ) -> String {
-        let cache_path = emby_cache_path().await;
+        let cache_path = jellyfin_cache_path().await;
         let path = format!("{}-{}-{}", id, image_type, tag.unwrap_or(0));
         let path = cache_path.join(path);
         std::fs::write(&path, bytes).unwrap();
@@ -1353,24 +1353,24 @@ mod tests {
 
     #[tokio::test]
     async fn search() {
-        let _ = EMBY_CLIENT
+        let _ = JELLYFIN_CLIENT
             .header_change_url("https://example.com", "443")
             .await;
-        let result = EMBY_CLIENT.login("test", "test").await;
+        let result = JELLYFIN_CLIENT.login("test", "test").await;
         match result {
             Ok(response) => {
                 println!("{}", response.access_token);
-                let _ = EMBY_CLIENT
+                let _ = JELLYFIN_CLIENT
                     .header_change_token(&response.access_token)
                     .await;
-                let _ = EMBY_CLIENT.set_user_id(&response.user.id).await;
+                let _ = JELLYFIN_CLIENT.set_user_id(&response.user.id).await;
             }
             Err(e) => {
                 eprintln!("{}", e.to_user_facing());
             }
         }
         let filters_list = FiltersList::default();
-        let result = EMBY_CLIENT.search("你的名字", &["Movie"], "0", &filters_list);
+        let result = JELLYFIN_CLIENT.search("你的名字", &["Movie"], "0", &filters_list);
         match result.await {
             Ok(items) => {
                 for item in items.items {
@@ -1397,10 +1397,10 @@ mod tests {
 
     #[tokio::test]
     async fn test_upload_image() {
-        let _ = EMBY_CLIENT
+        let _ = JELLYFIN_CLIENT
             .header_change_url("http://127.0.0.1", "8096")
             .await;
-        let result = EMBY_CLIENT.login("inaha", "").await;
+        let result = JELLYFIN_CLIENT.login("inaha", "").await;
         match result {
             Ok(response) => {
                 println!("{}", response.access_token);
@@ -1412,9 +1412,9 @@ mod tests {
                     port: "8096".to_string(),
                     user_id: response.user.id,
                     access_token: response.access_token,
-                    server_type: Some("Emby".to_string()),
+                    server_type: Some("Jellyfin".to_string()),
                 };
-                let _ = EMBY_CLIENT.init(&account).await;
+                let _ = JELLYFIN_CLIENT.init(&account).await;
             }
             Err(e) => {
                 eprintln!("{}", e.to_user_facing());
@@ -1427,7 +1427,7 @@ mod tests {
             engine::general_purpose::STANDARD,
         };
         let image = STANDARD.encode(&image);
-        match EMBY_CLIENT
+        match JELLYFIN_CLIENT
             .post_image("293", "Thumb", image, "image/jpeg")
             .await
         {

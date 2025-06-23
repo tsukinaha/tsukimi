@@ -19,8 +19,8 @@ use gtk::{
 
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
     },
     fraction,
     fraction_reset,
@@ -181,7 +181,7 @@ impl ServerPanel {
     }
 
     async fn shot_down(&self) {
-        match spawn_tokio(EMBY_CLIENT.shut_down()).await {
+        match spawn_tokio(JELLYFIN_CLIENT.shut_down()).await {
             Ok(_) => (),
             Err(e) => {
                 self.toast(e.to_user_facing());
@@ -193,7 +193,7 @@ impl ServerPanel {
     }
 
     async fn restart(&self) {
-        match spawn_tokio(EMBY_CLIENT.restart()).await {
+        match spawn_tokio(JELLYFIN_CLIENT.restart()).await {
             Ok(_) => (),
             Err(e) => {
                 self.toast(e.to_user_facing());
@@ -205,7 +205,7 @@ impl ServerPanel {
     }
 
     async fn set_server_info(&self) {
-        let server_info = match spawn_tokio(EMBY_CLIENT.get_server_info()).await {
+        let server_info = match spawn_tokio(JELLYFIN_CLIENT.get_server_info()).await {
             Ok(server_info) => server_info,
             Err(e) => {
                 self.toast(e.to_user_facing());
@@ -220,7 +220,7 @@ impl ServerPanel {
     }
 
     async fn set_server_logs(&self) {
-        let logs = match spawn_tokio(EMBY_CLIENT.get_activity_log(false)).await {
+        let logs = match spawn_tokio(JELLYFIN_CLIENT.get_activity_log(false)).await {
             Ok(logs) => logs,
             Err(e) => {
                 self.toast(e.to_user_facing());
@@ -248,7 +248,7 @@ impl ServerPanel {
     }
 
     async fn set_activity_logs(&self) {
-        let logs = match spawn_tokio(EMBY_CLIENT.get_activity_log(true)).await {
+        let logs = match spawn_tokio(JELLYFIN_CLIENT.get_activity_log(true)).await {
             Ok(logs) => logs,
             Err(e) => {
                 self.toast(e.to_user_facing());
@@ -273,7 +273,7 @@ impl ServerPanel {
     }
 
     async fn set_tasks(&self) {
-        let tasks = match spawn_tokio(EMBY_CLIENT.get_scheduled_tasks()).await {
+        let tasks = match spawn_tokio(JELLYFIN_CLIENT.get_scheduled_tasks()).await {
             Ok(tasks) => tasks,
             Err(e) => {
                 self.toast(e.to_user_facing());
@@ -336,7 +336,7 @@ impl ServerPanel {
 
     pub async fn run_task(&self, id: &str) {
         let id = id.to_string();
-        match spawn_tokio(EMBY_CLIENT.run_scheduled_task(id)).await {
+        match spawn_tokio(JELLYFIN_CLIENT.run_scheduled_task(id)).await {
             Ok(result) => result,
             Err(e) => {
                 self.toast(e.to_user_facing());

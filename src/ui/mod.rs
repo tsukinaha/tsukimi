@@ -5,7 +5,7 @@ pub mod widgets;
 
 pub use models::{
     SETTINGS,
-    emby_cache_path,
+    jellyfin_cache_path,
 };
 pub use widgets::{
     GlobalToast,

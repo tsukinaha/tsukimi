@@ -6,8 +6,8 @@ use gtk::{
 
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
     },
     ui::{
         GlobalToast,
@@ -46,9 +46,9 @@ macro_rules! impl_has_likeaction {
                                 glib::clone!(#[weak] obj, #[strong] id, async move {
 
                                     let result = if active {
-                                        spawn_tokio(async move {EMBY_CLIENT.like(&id).await} ).await
+                                        spawn_tokio(async move {JELLYFIN_CLIENT.like(&id).await} ).await
                                     } else {
-                                        spawn_tokio(async move {EMBY_CLIENT.unlike(&id).await} ).await
+                                        spawn_tokio(async move {JELLYFIN_CLIENT.unlike(&id).await} ).await
                                     };
 
                                     match result {

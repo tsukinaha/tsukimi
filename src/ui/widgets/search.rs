@@ -11,8 +11,8 @@ use adw::prelude::*;
 
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
         structs::*,
     },
     ui::provider::tu_item::TuItem,
@@ -174,14 +174,14 @@ impl SearchPage {
     }
 
     pub async fn setup_recommend(&self) {
-        let recommend = match spawn_tokio(async { EMBY_CLIENT.get_search_recommend().await }).await
-        {
-            Ok(list) => list,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                List::default()
-            }
-        };
+        let recommend =
+            match spawn_tokio(async { JELLYFIN_CLIENT.get_search_recommend().await }).await {
+                Ok(list) => list,
+                Err(e) => {
+                    self.toast(e.to_user_facing());
+                    List::default()
+                }
+            };
 
         let imp = self.imp();
         imp.recommend_group.remove_all();
@@ -301,7 +301,7 @@ impl SearchPage {
         }
 
         match spawn_tokio(async move {
-            EMBY_CLIENT
+            JELLYFIN_CLIENT
                 .search(
                     &search_content,
                     &search_filter,

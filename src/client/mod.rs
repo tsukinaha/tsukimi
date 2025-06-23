@@ -1,7 +1,7 @@
 pub mod account;
 pub mod dandan;
-pub mod emby_client;
 pub mod error;
+pub mod jellyfin_client;
 pub mod proxy;
 pub mod runtime;
 pub mod structs;

@@ -12,8 +12,8 @@ use gtk::{
 
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
         structs::{
             ExternalIdInfo,
             RemoteSearchInfo,
@@ -119,7 +119,7 @@ impl IdentifyDialog {
     async fn get_data(&self) {
         let id = self.id();
         let id_clone = id.to_owned();
-        match spawn_tokio(async move { EMBY_CLIENT.get_external_id_info(&id).await }).await {
+        match spawn_tokio(async move { JELLYFIN_CLIENT.get_external_id_info(&id).await }).await {
             Ok(data) => {
                 self.imp().stack.set_visible_child_name("page");
                 self.load_data(data);
@@ -128,7 +128,7 @@ impl IdentifyDialog {
                 self.toast(e.to_user_facing());
             }
         }
-        match spawn_tokio(async move { EMBY_CLIENT.get_item_info(&id_clone).await }).await {
+        match spawn_tokio(async move { JELLYFIN_CLIENT.get_item_info(&id_clone).await }).await {
             Ok(item) => {
                 self.imp()
                     .path_row
@@ -206,9 +206,11 @@ impl IdentifyDialog {
 
         imp.stack.set_visible_child_name("loading");
 
-        match spawn_tokio(
-            async move { EMBY_CLIENT.remote_search(&type_, &remote_search_info).await },
-        )
+        match spawn_tokio(async move {
+            JELLYFIN_CLIENT
+                .remote_search(&type_, &remote_search_info)
+                .await
+        })
         .await
         {
             Ok(data) => {

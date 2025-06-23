@@ -25,8 +25,8 @@ use super::{
     },
 };
 use crate::{
-    client::emby_client::EMBY_CLIENT,
-    ui::models::emby_cache_path,
+    client::jellyfin_client::JELLYFIN_CLIENT,
+    ui::models::jellyfin_cache_path,
     utils::{
         spawn,
         spawn_tokio,
@@ -215,7 +215,7 @@ impl PictureLoader {
     }
 
     pub async fn cache_file(&self) -> PathBuf {
-        let cache_path = emby_cache_path().await;
+        let cache_path = jellyfin_cache_path().await;
         let path = format!(
             "{}-{}-{}",
             self.id(),
@@ -235,7 +235,7 @@ impl PictureLoader {
             async move {
                 spawn_tokio(async move {
                     let tag = tag.to_owned();
-                    if let Err(e) = EMBY_CLIENT
+                    if let Err(e) = JELLYFIN_CLIENT
                         .get_image(&id, &image_type, tag.and_then(|s| s.parse::<u8>().ok()))
                         .await
                     {

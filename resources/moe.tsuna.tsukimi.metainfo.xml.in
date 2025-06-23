@@ -14,9 +14,9 @@
     </releases>
 
     <name>Tsukimi</name>
-    <summary>A simple third-party Emby client</summary>
-    <summary xml:lang="zh_TW">一個簡單的第三方 Emby 客戶端</summary>
-    <summary xml:lang="zh_CN">一个简单的第三方 Emby 客户端</summary>
+    <summary>A simple third-party Jellyfin client</summary>
+    <summary xml:lang="zh_TW">一個簡單的第三方 Jellyfin 客戶端</summary>
+    <summary xml:lang="zh_CN">一个简单的第三方 Jellyfin 客户端</summary>
 
     <url type="homepage">https://tsukimi.tsuna.moe/</url>
     <url type="bugtracker">https://github.com/tsukinaha/tsukimi/issues</url>
@@ -28,11 +28,11 @@
     </recommends>
 
     <description>
-        <p>Tsukimi is a simple third-party Emby client written in GTK4-RS, uses MPV as the video
+        <p>Tsukimi is a simple third-party Jellyfin client written in GTK4-RS, uses MPV as the video
             player, and GStreamer as the music player.</p>
-        <p xml:lang="zh_CN">Tsukimi 是一个使用 GTK4-RS 编写的简单第三方 Emby 客户端，使用 MPV 作为视频播放器，并使用 GStreamer
+        <p xml:lang="zh_CN">Tsukimi 是一个使用 GTK4-RS 编写的简单第三方 Jellyfin 客户端，使用 MPV 作为视频播放器，并使用 GStreamer
             作为音乐播放器。</p>
-        <p xml:lang="zh_TW">Tsukimi 是一個使用 GTK4-RS 編寫的簡單第三方 Emby 客戶端，使用 MPV 作為視頻播放器，並使用 GStreamer
+        <p xml:lang="zh_TW">Tsukimi 是一個使用 GTK4-RS 編寫的簡單第三方 Jellyfin 客戶端，使用 MPV 作為視頻播放器，並使用 GStreamer
             作為音樂播放器。</p>
     </description>
     <screenshots>

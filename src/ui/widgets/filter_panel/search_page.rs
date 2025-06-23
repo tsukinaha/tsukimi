@@ -11,8 +11,8 @@ use gtk::template_callbacks;
 
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
         structs::FilterItem,
     },
     ui::GlobalToast,
@@ -149,7 +149,8 @@ impl FilterDialogSearchPage {
                 dialog.loading_page();
 
                 let filters =
-                    match spawn_tokio(async move { EMBY_CLIENT.filters(&filter_type).await }).await
+                    match spawn_tokio(async move { JELLYFIN_CLIENT.filters(&filter_type).await })
+                        .await
                     {
                         Ok(filters) => filters,
                         Err(e) => {

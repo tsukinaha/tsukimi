@@ -595,7 +595,7 @@ pub struct FilterItem {
 use adw::prelude::*;
 use gtk::glib;
 
-use super::emby_client::EMBY_CLIENT;
+use super::jellyfin_client::JELLYFIN_CLIENT;
 use crate::ui::widgets::{
     single_grid::SingleGrid,
     window::Window,
@@ -613,7 +613,7 @@ impl SGTitem {
             let id = id.to_owned();
             let list_type_clone = list_type_clone.to_owned();
             async move {
-                EMBY_CLIENT
+                JELLYFIN_CLIENT
                     .get_inlist(
                         None,
                         0,
@@ -632,7 +632,7 @@ impl SGTitem {
             let id = id.to_owned();
             let list_type = list_type.to_owned();
             async move {
-                EMBY_CLIENT
+                JELLYFIN_CLIENT
                     .get_inlist(
                         None,
                         n_items,

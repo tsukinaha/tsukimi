@@ -20,8 +20,8 @@ use super::{
 use crate::{
     bing_song_model,
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
         structs::List,
     },
     ui::{
@@ -204,7 +204,7 @@ impl AlbumPage {
         let mut songs = match fetch_with_cache(
             &format!("audio_{}", item.id()),
             CachePolicy::ReadCacheAndRefresh,
-            async move { EMBY_CLIENT.get_songs(&id).await },
+            async move { JELLYFIN_CLIENT.get_songs(&id).await },
         )
         .await
         {
@@ -309,8 +309,8 @@ impl AlbumPage {
             CachePolicy::ReadCacheAndRefresh,
             async move {
                 match types.as_str() {
-                    "Recommend" => EMBY_CLIENT.get_similar(&id).await,
-                    "More From" => EMBY_CLIENT.get_artist_albums(&id, &artist_id).await,
+                    "Recommend" => JELLYFIN_CLIENT.get_similar(&id).await,
+                    "More From" => JELLYFIN_CLIENT.get_artist_albums(&id, &artist_id).await,
                     _ => Ok(List::default()),
                 }
             },

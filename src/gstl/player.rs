@@ -2,7 +2,7 @@ use gst::prelude::*;
 use gtk::glib;
 
 use crate::{
-    client::emby_client::EMBY_CLIENT,
+    client::jellyfin_client::JELLYFIN_CLIENT,
     ui::provider::core_song::CoreSong,
 };
 
@@ -248,14 +248,18 @@ pub mod imp {
             }
 
             self.stop();
-            let uri = EMBY_CLIENT.get_song_streaming_uri(&core_song.id()).await;
+            let uri = JELLYFIN_CLIENT
+                .get_song_streaming_uri(&core_song.id())
+                .await;
 
             gst::prelude::ObjectExt::set_property(self.pipeline(), "uri", uri);
             self.playing();
         }
 
         pub async fn add_song(&self, core_song: &CoreSong) {
-            let uri = EMBY_CLIENT.get_song_streaming_uri(&core_song.id()).await;
+            let uri = JELLYFIN_CLIENT
+                .get_song_streaming_uri(&core_song.id())
+                .await;
             gst::prelude::ObjectExt::set_property(self.pipeline(), "uri", uri);
         }
 

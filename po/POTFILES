@@ -5,7 +5,7 @@ src/client/account.rs
 src/client/mod.rs
 src/client/windows_compat.rs
 src/client/structs.rs
-src/client/emby_client.rs
+src/client/jellyfin_client.rs
 src/gstl/mod.rs
 src/gstl/player.rs
 src/ui/models/mod.rs

@@ -11,10 +11,10 @@ use serde::{
 
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
+        jellyfin_client::JELLYFIN_CLIENT,
         runtime::runtime,
     },
-    ui::emby_cache_path,
+    ui::jellyfin_cache_path,
 };
 
 pub fn _spawn_tokio_blocking<F>(fut: F) -> F::Output
@@ -90,7 +90,7 @@ where
     T: for<'de> Deserialize<'de> + Serialize + Send + 'static,
     F: Future<Output = Result<T>> + Send + 'static,
 {
-    let mut path = emby_cache_path().await;
+    let mut path = jellyfin_cache_path().await;
     path.push(format!("{cache_key}.json"));
 
     let read_cache = matches!(
@@ -149,6 +149,6 @@ where
 
 pub async fn get_image_with_cache(id: String, img_type: String, tag: Option<u8>) -> Result<String> {
     runtime()
-        .spawn(async move { EMBY_CLIENT.get_image(&id, &img_type, tag).await })
+        .spawn(async move { JELLYFIN_CLIENT.get_image(&id, &img_type, tag).await })
         .await?
 }

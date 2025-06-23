@@ -10,8 +10,8 @@ use super::{
 };
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
         structs::*,
     },
     ui::{
@@ -398,7 +398,8 @@ impl ItemPage {
                 item,
                 async move {
                     let id = item.id();
-                    match spawn_tokio(async move { EMBY_CLIENT.get_item_info(&id).await }).await {
+                    match spawn_tokio(async move { JELLYFIN_CLIENT.get_item_info(&id).await }).await
+                    {
                         Ok(item) => {
                             obj.set_intro::<true>(&TuItem::from_simple(&item, None))
                                 .await;
@@ -440,7 +441,7 @@ impl ItemPage {
         spinner.set_visible(true);
 
         let playback = match spawn_tokio(async move {
-            EMBY_CLIENT
+            JELLYFIN_CLIENT
                 .get_playbackinfo(&intro_id, None, None, false)
                 .await
         })
@@ -493,7 +494,7 @@ impl ItemPage {
             (0, Some(season_id)) => {
                 let season_id_clone = season_id.to_owned();
                 match spawn_tokio(async move {
-                    EMBY_CLIENT
+                    JELLYFIN_CLIENT
                         .get_episodes(&series_id, &season_id.to_string(), 0)
                         .await
                 })
@@ -510,9 +511,9 @@ impl ItemPage {
                 }
             }
             (0, None) => {
-                match spawn_tokio(
-                    async move { EMBY_CLIENT.get_continue_play_list(&series_id).await },
-                )
+                match spawn_tokio(async move {
+                    JELLYFIN_CLIENT.get_continue_play_list(&series_id).await
+                })
                 .await
                 {
                     Ok(item) => item,
@@ -533,7 +534,9 @@ impl ItemPage {
                 };
 
                 match spawn_tokio(async move {
-                    EMBY_CLIENT.get_episodes(&series_id, &season_id, 0).await
+                    JELLYFIN_CLIENT
+                        .get_episodes(&series_id, &season_id, 0)
+                        .await
                 })
                 .await
                 {
@@ -628,7 +631,7 @@ impl ItemPage {
         imp.episode_stack.set_visible_child_name("loading");
 
         let list = match spawn_tokio(async move {
-            EMBY_CLIENT
+            JELLYFIN_CLIENT
                 .get_episodes(&series_id, &season_id, start_index)
                 .await
         })
@@ -647,7 +650,7 @@ impl ItemPage {
     async fn set_shows_next_up(&self, id: &str) -> Option<TuItem> {
         let id = id.to_string();
         let next_up =
-            match spawn_tokio(async move { EMBY_CLIENT.get_shows_next_up(&id).await }).await {
+            match spawn_tokio(async move { JELLYFIN_CLIENT.get_shows_next_up(&id).await }).await {
                 Ok(next_up) => next_up,
                 Err(e) => {
                     self.toast(e.to_user_facing());
@@ -852,7 +855,7 @@ impl ItemPage {
         let season_list = match fetch_with_cache(
             &format!("season_{}", &id),
             CachePolicy::ReadCacheAndRefresh,
-            async move { EMBY_CLIENT.get_season_list(&id).await },
+            async move { JELLYFIN_CLIENT.get_season_list(&id).await },
         )
         .await
         {
@@ -895,7 +898,7 @@ impl ItemPage {
         let item = match fetch_with_cache(
             &format!("item_{}", &id),
             CachePolicy::ReadCacheAndRefresh,
-            async move { EMBY_CLIENT.get_item_info(&id).await },
+            async move { JELLYFIN_CLIENT.get_item_info(&id).await },
         )
         .await
         {
@@ -1165,9 +1168,9 @@ impl ItemPage {
             CachePolicy::ReadCacheAndRefresh,
             async move {
                 match types.as_str() {
-                    "Recommend" => EMBY_CLIENT.get_similar(&id).await,
-                    "Included In" => EMBY_CLIENT.get_included(&id).await,
-                    "Additional Parts" => EMBY_CLIENT.get_additional(&id).await,
+                    "Recommend" => JELLYFIN_CLIENT.get_similar(&id).await,
+                    "Included In" => JELLYFIN_CLIENT.get_included(&id).await,
+                    "Additional Parts" => JELLYFIN_CLIENT.get_additional(&id).await,
                     _ => Ok(List::default()),
                 }
             },

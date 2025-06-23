@@ -2,11 +2,11 @@
 
 use super::utils::GlobalToast;
 use crate::{
-    client::emby_client::EMBY_CLIENT,
+    client::jellyfin_client::JELLYFIN_CLIENT,
     ui::{
         models::{
             SETTINGS,
-            emby_cache_path,
+            jellyfin_cache_path,
         },
         provider::descriptor::{
             Descriptor,
@@ -229,7 +229,8 @@ impl AccountSettings {
             self.toast(gettext("Passwords do not match!"));
             return;
         }
-        match spawn_tokio(async move { EMBY_CLIENT.change_password(&new_password).await }).await {
+        match spawn_tokio(async move { JELLYFIN_CLIENT.change_password(&new_password).await }).await
+        {
             Ok(_) => {
                 self.toast(gettext(
                     "Password changed successfully! Please login again.",
@@ -268,7 +269,7 @@ impl AccountSettings {
     }
 
     pub async fn cacheclear(&self) {
-        let path = emby_cache_path().await;
+        let path = jellyfin_cache_path().await;
         if path.exists() {
             std::fs::remove_dir_all(path).unwrap();
         }
@@ -410,7 +411,8 @@ impl AccountSettings {
             self,
             async move {
                 let avatar =
-                    match spawn_tokio(async move { EMBY_CLIENT.get_user_avatar().await }).await {
+                    match spawn_tokio(async move { JELLYFIN_CLIENT.get_user_avatar().await }).await
+                    {
                         Ok(avatar) => avatar,
                         Err(e) => {
                             obj.toast(e.to_string());

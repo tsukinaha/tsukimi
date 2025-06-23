@@ -9,8 +9,8 @@ use gtk::{
 use tracing::debug;
 
 use crate::{
-    client::emby_client::EMBY_CLIENT,
-    ui::models::emby_cache_path,
+    client::jellyfin_client::JELLYFIN_CLIENT,
+    ui::models::jellyfin_cache_path,
     utils::{
         spawn,
         spawn_tokio,
@@ -29,7 +29,7 @@ pub async fn set_logo(id: String, image_type: &str, tag: Option<u8>) -> Revealer
         .transition_duration(400)
         .build();
 
-    let cache_path = emby_cache_path().await;
+    let cache_path = jellyfin_cache_path().await;
     let path = format!("{}-{}-{}", id, image_type, tag.unwrap_or(0));
 
     let id = id.to_string();
@@ -51,8 +51,9 @@ pub async fn set_logo(id: String, image_type: &str, tag: Option<u8>) -> Revealer
         #[weak]
         revealer,
         async move {
-            let _ = spawn_tokio(async move { EMBY_CLIENT.get_image(&id, &image_type, tag).await })
-                .await;
+            let _ =
+                spawn_tokio(async move { JELLYFIN_CLIENT.get_image(&id, &image_type, tag).await })
+                    .await;
             debug!("Setting image: {}", &pathbuf.display());
             let file = gtk::gio::File::for_path(pathbuf);
             image.set_file(Some(&file));

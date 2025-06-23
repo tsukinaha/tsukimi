@@ -3,7 +3,7 @@ name = "tsukimi"
 version = "25.5.0"
 edition = "2024"
 rust-version = "1.85"
-description = "A simple Emby Client written by GTK4-RS"
+description = "A simple Jellyfin Client written by GTK4-RS"
 license = "GPL-3.0"
 
 

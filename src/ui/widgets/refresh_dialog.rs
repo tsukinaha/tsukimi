@@ -10,8 +10,8 @@ use gtk::{
 
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
     },
     utils::spawn_tokio,
 };
@@ -84,7 +84,7 @@ impl RefreshDialog {
         let image = imp.image_check.is_active();
 
         match spawn_tokio(async move {
-            EMBY_CLIENT
+            JELLYFIN_CLIENT
                 .fullscan(&id, &metadata.to_string(), &image.to_string())
                 .await
         })

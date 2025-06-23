@@ -13,8 +13,8 @@ use super::utils::GlobalToast;
 use crate::{
     client::{
         Account,
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
     },
     ui::models::SETTINGS,
     utils::spawn_tokio,
@@ -149,22 +149,12 @@ impl AccountWindow {
 
         let server = format!("{protocol}{server}");
 
-        let _ = EMBY_CLIENT.header_change_url(&server, &port).await;
-        let _ = EMBY_CLIENT.header_change_token(&servername).await;
+        let _ = JELLYFIN_CLIENT.header_change_url(&server, &port).await;
+        let _ = JELLYFIN_CLIENT.header_change_token(&servername).await;
         let un = username.to_string();
         let pw = password.to_string();
         let res =
-            match spawn_tokio(async move { EMBY_CLIENT.login(&username, &password).await }).await {
-                Ok(res) => res,
-                Err(e) => {
-                    imp.stack.toast(e.to_user_facing());
-                    imp.stack.set_visible_child_name("entry");
-                    return;
-                }
-            };
-
-        if servername.is_empty() {
-            let res = match spawn_tokio(async move { EMBY_CLIENT.get_server_info_public().await })
+            match spawn_tokio(async move { JELLYFIN_CLIENT.login(&username, &password).await })
                 .await
             {
                 Ok(res) => res,
@@ -174,6 +164,19 @@ impl AccountWindow {
                     return;
                 }
             };
+
+        if servername.is_empty() {
+            let res =
+                match spawn_tokio(async move { JELLYFIN_CLIENT.get_server_info_public().await })
+                    .await
+                {
+                    Ok(res) => res,
+                    Err(e) => {
+                        imp.stack.toast(e.to_user_facing());
+                        imp.stack.set_visible_child_name("entry");
+                        return;
+                    }
+                };
 
             servername = res.server_name;
         }

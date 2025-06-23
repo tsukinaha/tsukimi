@@ -11,8 +11,8 @@ use gtk::{
 use super::utils::GlobalToast;
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
     },
     utils::spawn_tokio,
 };
@@ -124,7 +124,7 @@ impl MissingEpisodesDialog {
         let upcoming_checked = self.imp().upcoming_check.is_active();
 
         let items = match spawn_tokio(async move {
-            EMBY_CLIENT
+            JELLYFIN_CLIENT
                 .get_show_missing(&id, special_checked, upcoming_checked)
                 .await
         })

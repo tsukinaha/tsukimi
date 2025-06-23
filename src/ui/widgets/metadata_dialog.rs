@@ -12,8 +12,8 @@ use gtk::{
 use super::utils::GlobalToast;
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
         structs::SimpleListItem,
     },
     utils::{
@@ -243,7 +243,7 @@ impl MetadataDialog {
 
     async fn get_data(&self) {
         let id = self.id();
-        match spawn_tokio(async move { EMBY_CLIENT.get_edit_info(&id).await }).await {
+        match spawn_tokio(async move { JELLYFIN_CLIENT.get_edit_info(&id).await }).await {
             Ok(metadata) => {
                 self.imp().stack.set_visible_child_name("page");
                 let value = metadata.to_owned();
@@ -310,7 +310,7 @@ impl MetadataDialog {
                         value,
                         async move {
                             match spawn_tokio(
-                                async move { EMBY_CLIENT.post_item(&id, value).await },
+                                async move { JELLYFIN_CLIENT.post_item(&id, value).await },
                             )
                             .await
                             {

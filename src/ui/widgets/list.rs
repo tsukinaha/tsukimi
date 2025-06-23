@@ -10,7 +10,7 @@ use super::single_grid::{
     SingleGrid,
     imp::ListType,
 };
-use crate::client::emby_client::EMBY_CLIENT;
+use crate::client::jellyfin_client::JELLYFIN_CLIENT;
 mod imp {
 
     use std::cell::OnceCell;
@@ -101,10 +101,10 @@ impl ListPage {
         if &collection_type == "livetv" {
             let page = SingleGrid::new();
             page.connect_sort_changed_tokio(false, move |_, _, _| async move {
-                EMBY_CLIENT.get_channels_list(0).await
+                JELLYFIN_CLIENT.get_channels_list(0).await
             });
             page.connect_end_edge_overshot_tokio(move |_, _, n_items, _| async move {
-                EMBY_CLIENT.get_channels_list(n_items).await
+                JELLYFIN_CLIENT.get_channels_list(n_items).await
             });
             stack.add_titled(&page, Some("channels"), &gettext("Channels"));
             return;
@@ -134,7 +134,7 @@ impl ListPage {
                     let include_item_types_clone1 = include_item_types_clone1.to_owned();
                     async move {
                         if list_type == ListType::Folder {
-                            EMBY_CLIENT
+                            JELLYFIN_CLIENT
                                 .get_folder_include(
                                     &id_clone1,
                                     &sort_by,
@@ -144,7 +144,7 @@ impl ListPage {
                                 )
                                 .await
                         } else {
-                            EMBY_CLIENT
+                            JELLYFIN_CLIENT
                                 .get_list(
                                     &id_clone1,
                                     0,
@@ -169,7 +169,7 @@ impl ListPage {
                         let include_item_types_clone2 = include_item_types_clone2.to_owned();
                         async move {
                             if list_type == ListType::Folder {
-                                EMBY_CLIENT
+                                JELLYFIN_CLIENT
                                     .get_folder_include(
                                         &id_clone2,
                                         &sort_by,
@@ -179,7 +179,7 @@ impl ListPage {
                                     )
                                     .await
                             } else {
-                                EMBY_CLIENT
+                                JELLYFIN_CLIENT
                                     .get_list(
                                         &id_clone2,
                                         n_items,

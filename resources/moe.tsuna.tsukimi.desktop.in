@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=Tsukimi
-Comment=A simple third-party Emby client
-Comment[zh_CN]=一个简单的第三方 Emby 客户端
-Comment[zh_TW]=一個簡單的第三方 Emby 客戶端
+Comment=A simple third-party Jellyfin client
+Comment[zh_CN]=一个简单的第三方 Jellyfin 客户端
+Comment[zh_TW]=一個簡單的第三方 Jellyfin 客戶端
 Exec=tsukimi
 Icon=moe.tsuna.tsukimi
 StartupWMClass=moe.tsuna.tsukimi
@@ -10,6 +10,6 @@ Terminal=false
 Type=Application
 Categories=GNOME;GTK;AudioVideo;Player;Audio;Video;
 StartupNotify=true
-Keywords=player;audio;video;multimedia;Emby
+Keywords=player;audio;video;multimedia;Jellyfin
 Keywords[zh_CN]=播放器;音频;视频;多媒体
 Keywords[zh_TW]=播放器;音頻;視頻;多媒體

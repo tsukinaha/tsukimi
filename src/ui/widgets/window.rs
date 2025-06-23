@@ -261,7 +261,7 @@ use crate::{
     APP_ID,
     client::{
         Account,
-        emby_client::EMBY_CLIENT,
+        jellyfin_client::JELLYFIN_CLIENT,
     },
     ui::{
         models::SETTINGS,
@@ -360,9 +360,9 @@ impl Window {
         for account in &accounts {
             if SETTINGS.auto_select_server()
                 && account.servername == SETTINGS.preferred_server()
-                && EMBY_CLIENT.user_id.lock().await.is_empty()
+                && JELLYFIN_CLIENT.user_id.lock().await.is_empty()
             {
-                let _ = EMBY_CLIENT.init(account).await;
+                let _ = JELLYFIN_CLIENT.init(account).await;
                 self.reset();
             }
         }
@@ -478,7 +478,8 @@ impl Window {
                 obj.homepage();
 
                 let avatar =
-                    match spawn_tokio(async move { EMBY_CLIENT.get_user_avatar().await }).await {
+                    match spawn_tokio(async move { JELLYFIN_CLIENT.get_user_avatar().await }).await
+                    {
                         Ok(avatar) => avatar,
                         Err(e) => {
                             obj.toast(e.to_string());
@@ -507,9 +508,10 @@ impl Window {
 
     pub async fn account_setup(&self) {
         let imp = self.imp();
-        imp.namerow.set_title(&EMBY_CLIENT.user_name.lock().await);
         imp.namerow
-            .set_subtitle(&EMBY_CLIENT.server_name.lock().await);
+            .set_title(&JELLYFIN_CLIENT.user_name.lock().await);
+        imp.namerow
+            .set_subtitle(&JELLYFIN_CLIENT.server_name.lock().await);
     }
 
     pub fn account_settings(&self) {
@@ -1023,7 +1025,7 @@ impl Window {
                 let about = adw::AboutDialog::builder()
                     .application_name("Tsukimi")
                     .version(crate::config::VERSION)
-                    .comments("A simple third-party Emby client.")
+                    .comments("A simple third-party Jellyfin client.")
                     // TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
                     .translator_credits(gettext("translator-credits"))
                     .website("https://github.com/tsukinaha/tsukimi")

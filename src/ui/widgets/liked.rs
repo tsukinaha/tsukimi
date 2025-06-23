@@ -10,8 +10,8 @@ use gtk::{
 use super::utils::GlobalToast;
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
         structs::*,
     },
     fraction,
@@ -159,7 +159,7 @@ impl LikedPage {
         let type_ = types.to_owned();
 
         let results = match spawn_tokio(async move {
-            EMBY_CLIENT
+            JELLYFIN_CLIENT
                 .get_favourite(&types, 0, 12, "SortName", "Ascending", &Default::default())
                 .await
         })
@@ -190,7 +190,7 @@ impl LikedPage {
                 page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
                     let type_clone1 = type_clone1.to_owned();
                     async move {
-                        EMBY_CLIENT
+                        JELLYFIN_CLIENT
                             .get_favourite(
                                 &type_clone1,
                                 0,
@@ -206,7 +206,7 @@ impl LikedPage {
                     move |sort_by, sort_order, n_items, filters_list| {
                         let type_clone2 = type_clone2.to_owned();
                         async move {
-                            EMBY_CLIENT
+                            JELLYFIN_CLIENT
                                 .get_favourite(
                                     &type_clone2,
                                     n_items,

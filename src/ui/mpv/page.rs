@@ -32,11 +32,11 @@ use super::{
 use crate::{
     client::{
         DanmakuConvert,
-        emby_client::{
-            BackType,
-            EMBY_CLIENT,
-        },
         error::UserFacingError,
+        jellyfin_client::{
+            BackType,
+            JELLYFIN_CLIENT,
+        },
         structs::{
             Back,
             MediaSource,
@@ -541,7 +541,7 @@ impl MPVPage {
                 let media_source_id = selected.to_owned().map(|s| s.media_source_id);
                 let id_clone = id.to_owned();
                 let playback_info = match spawn_tokio(async move {
-                    EMBY_CLIENT
+                    JELLYFIN_CLIENT
                         .get_playbackinfo(&id_clone, sub_stream_index, media_source_id, true)
                         .await
                 })
@@ -616,7 +616,7 @@ impl MPVPage {
 
                 let sub_url = match media_stream {
                     Some(stream) if stream.is_external => match &stream.delivery_url {
-                        Some(url) => Some(EMBY_CLIENT.get_streaming_url(url).await),
+                        Some(url) => Some(JELLYFIN_CLIENT.get_streaming_url(url).await),
                         None => {
                             println!("External Subtitle without selected source");
                             imp.obj()
@@ -657,7 +657,7 @@ impl MPVPage {
         let stream_index = media_stream.index;
         let media_source_id_clone = media_source_id.to_owned();
         let playback_info = spawn_tokio(async move {
-            EMBY_CLIENT
+            JELLYFIN_CLIENT
                 .get_playbackinfo(&id_clone, Some(stream_index), Some(media_source_id), true)
                 .await
         })
@@ -675,7 +675,7 @@ impl MPVPage {
             .delivery_url
             .to_owned()?;
 
-        Some(EMBY_CLIENT.get_streaming_url(&url).await)
+        Some(JELLYFIN_CLIENT.get_streaming_url(&url).await)
     }
 
     fn set_audio_and_video_tracks_dropdown(&self, value: MpvTracks) {
@@ -1188,7 +1188,7 @@ impl MPVPage {
             let mut back = back.to_owned();
             back.tick = duration;
             crate::utils::spawn_tokio_without_await(async move {
-                let _ = EMBY_CLIENT.position_back(&back, backtype).await;
+                let _ = JELLYFIN_CLIENT.position_back(&back, backtype).await;
             });
         }
     }
@@ -1443,7 +1443,7 @@ pub async fn direct_stream_url(source: &MediaSource) -> Option<String> {
     let container = source.container.to_owned()?;
     let etag = source.etag.to_owned()?;
     Some(
-        EMBY_CLIENT
+        JELLYFIN_CLIENT
             .get_direct_stream_url(&container, &source.id.to_owned(), &etag)
             .await,
     )

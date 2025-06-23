@@ -1,8 +1,8 @@
 use crate::{
     alert_dialog,
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
     },
     ui::{
         provider::IS_ADMIN,
@@ -74,11 +74,11 @@ where
 {
     async fn perform_action_inner(id: &str, action: &Action) -> Result<()> {
         match action {
-            Action::Like => EMBY_CLIENT.like(id).await,
-            Action::Unlike => EMBY_CLIENT.unlike(id).await,
-            Action::Played => EMBY_CLIENT.set_as_played(id).await,
-            Action::Unplayed => EMBY_CLIENT.set_as_unplayed(id).await,
-            Action::Remove => EMBY_CLIENT.hide_from_resume(id).await,
+            Action::Like => JELLYFIN_CLIENT.like(id).await,
+            Action::Unlike => JELLYFIN_CLIENT.unlike(id).await,
+            Action::Played => JELLYFIN_CLIENT.set_as_played(id).await,
+            Action::Unplayed => JELLYFIN_CLIENT.set_as_unplayed(id).await,
+            Action::Remove => JELLYFIN_CLIENT.hide_from_resume(id).await,
         }
     }
 
@@ -242,7 +242,8 @@ where
                             obj,
                             async move {
                                 let id = obj.item().id();
-                                match spawn_tokio(async move { EMBY_CLIENT.scan(&id).await }).await
+                                match spawn_tokio(async move { JELLYFIN_CLIENT.scan(&id).await })
+                                    .await
                                 {
                                     Ok(_) => {
                                         obj.toast(gettext("Scanning..."));
@@ -446,14 +447,14 @@ where
         let id = self.item().id();
         let id_clone = id.to_owned();
 
-        let delete_info = match spawn_tokio(async move { EMBY_CLIENT.delete_info(&id).await }).await
-        {
-            Ok(info) => info,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                return;
-            }
-        };
+        let delete_info =
+            match spawn_tokio(async move { JELLYFIN_CLIENT.delete_info(&id).await }).await {
+                Ok(info) => info,
+                Err(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
+                }
+            };
 
         let alert_dialog = adw::AlertDialog::builder()
             .heading(gettext("Delete Item"))
@@ -482,9 +483,11 @@ where
                         #[weak]
                         obj,
                         async move {
-                            match spawn_tokio(async move { EMBY_CLIENT.delete(&id_clone).await })
-                                .await
-                                .and_then(|r| r.error_for_status().map_err(|e| e.into()))
+                            match spawn_tokio(
+                                async move { JELLYFIN_CLIENT.delete(&id_clone).await },
+                            )
+                            .await
+                            .and_then(|r| r.error_for_status().map_err(|e| e.into()))
                             {
                                 Ok(_) => {
                                     obj.toast(gettext("Item deleted"));
@@ -540,9 +543,11 @@ where
                         #[weak]
                         obj,
                         async move {
-                            match spawn_tokio(async move { EMBY_CLIENT.reset_metadata(&id).await })
-                                .await
-                                .and_then(|r| r.error_for_status().map_err(|e| e.into()))
+                            match spawn_tokio(
+                                async move { JELLYFIN_CLIENT.reset_metadata(&id).await },
+                            )
+                            .await
+                            .and_then(|r| r.error_for_status().map_err(|e| e.into()))
                             {
                                 Ok(_) => {
                                     obj.toast(gettext("Item deleted"));

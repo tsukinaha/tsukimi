@@ -28,7 +28,7 @@ mod imp {
 
     use super::*;
     use crate::{
-        client::emby_client::EMBY_CLIENT,
+        client::jellyfin_client::JELLYFIN_CLIENT,
         ui::{
             models::SETTINGS,
             provider::account_item::AccountItem,
@@ -90,7 +90,7 @@ mod imp {
                 async move {
                     let account = obj.item().account();
                     SETTINGS.set_preferred_server(&account.servername).unwrap();
-                    let _ = EMBY_CLIENT.init(&account).await;
+                    let _ = JELLYFIN_CLIENT.init(&account).await;
                     if let Some(w) = obj.root().and_downcast::<Window>() {
                         w.reset()
                     }

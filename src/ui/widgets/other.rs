@@ -6,8 +6,8 @@ use super::{
 };
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
         structs::*,
     },
     fraction,
@@ -198,7 +198,7 @@ impl OtherPage {
         let item = match fetch_with_cache(
             &format!("list_{id}"),
             CachePolicy::ReadCacheAndRefresh,
-            async move { EMBY_CLIENT.get_item_info(&id).await },
+            async move { JELLYFIN_CLIENT.get_item_info(&id).await },
         )
         .await
         {
@@ -314,7 +314,7 @@ impl OtherPage {
         let list = match fetch_with_cache(
             &format!("season_{id}"),
             CachePolicy::ReadCacheAndRefresh,
-            async move { EMBY_CLIENT.get_episodes_all(&series_id, &id).await },
+            async move { JELLYFIN_CLIENT.get_episodes_all(&series_id, &id).await },
         )
         .await
         {
@@ -370,7 +370,7 @@ impl OtherPage {
         let results = match fetch_with_cache(
             &format!("boxset_{id}"),
             CachePolicy::ReadCacheAndRefresh,
-            async move { EMBY_CLIENT.get_includedby(&id).await },
+            async move { JELLYFIN_CLIENT.get_includedby(&id).await },
         )
         .await
         {
@@ -430,7 +430,7 @@ impl OtherPage {
                     let id_clone1 = id_clone1.to_owned();
                     let type_clone1 = type_clone1.to_owned();
                     async move {
-                        EMBY_CLIENT
+                        JELLYFIN_CLIENT
                             .get_person_large_list(
                                 &id_clone1,
                                 &type_clone1,
@@ -447,7 +447,7 @@ impl OtherPage {
                         let id_clone2 = id_clone2.to_owned();
                         let type_clone2 = type_clone2.to_owned();
                         async move {
-                            EMBY_CLIENT
+                            JELLYFIN_CLIENT
                                 .get_person_large_list(
                                     &id_clone2,
                                     &type_clone2,
@@ -471,7 +471,7 @@ impl OtherPage {
         let results = match fetch_with_cache(
             &format!("other_{}_{}", type_, &id),
             CachePolicy::ReadCacheAndRefresh,
-            async move { EMBY_CLIENT.get_actor_item_list(&id, &type_).await },
+            async move { JELLYFIN_CLIENT.get_actor_item_list(&id, &type_).await },
         )
         .await
         {

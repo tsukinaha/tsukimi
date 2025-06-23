@@ -14,8 +14,8 @@ use super::{
 };
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
         structs::*,
     },
     fraction,
@@ -146,7 +146,7 @@ impl HomePage {
         };
 
         let results = match fetch_with_cache("history", cache_policy, async {
-            EMBY_CLIENT.get_resume().await
+            JELLYFIN_CLIENT.get_resume().await
         })
         .await
         {
@@ -164,7 +164,7 @@ impl HomePage {
         let hortu = self.imp().libhortu.get();
 
         let results = match fetch_with_cache("library", CachePolicy::ReadCacheAndRefresh, async {
-            EMBY_CLIENT.get_library().await
+            JELLYFIN_CLIENT.get_library().await
         })
         .await
         {
@@ -207,9 +207,9 @@ impl HomePage {
             CachePolicy::ReadCacheAndRefresh,
             async move {
                 if view.collection_type.as_deref() == Some("livetv") {
-                    EMBY_CLIENT.get_channels().await.map(|x| x.items)
+                    JELLYFIN_CLIENT.get_channels().await.map(|x| x.items)
                 } else {
-                    EMBY_CLIENT.get_latest(&view.id).await
+                    JELLYFIN_CLIENT.get_latest(&view.id).await
                 }
             },
         )

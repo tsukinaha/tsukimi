@@ -12,7 +12,7 @@ use super::tsukimi_mpv::{
     TrackSelection,
 };
 use crate::{
-    client::emby_client::EMBY_CLIENT,
+    client::jellyfin_client::JELLYFIN_CLIENT,
     utils::spawn,
 };
 
@@ -192,7 +192,7 @@ impl MPVGLArea {
                     .store(ACTIVE, std::sync::atomic::Ordering::SeqCst);
                 atomic_wait::wake_all(&*mpv.event_thread_alive);
 
-                let url = EMBY_CLIENT.get_streaming_url(&url).await;
+                let url = JELLYFIN_CLIENT.get_streaming_url(&url).await;
 
                 info!("Now Playing: {}", url);
                 mpv.load_video(&url);

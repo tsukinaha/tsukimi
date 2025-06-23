@@ -14,8 +14,8 @@ use gtk::{
 use crate::{
     bing_song_model,
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
         structs::SimpleListItem,
     },
     ui::{
@@ -281,7 +281,7 @@ impl TuItem {
                     let parent_id = parent_id.to_owned();
                     let list_type = list_type.to_owned();
                     async move {
-                        EMBY_CLIENT
+                        JELLYFIN_CLIENT
                             .get_inlist(
                                 parent_id,
                                 0,
@@ -303,7 +303,7 @@ impl TuItem {
                         let parent_id = parent_id.to_owned();
                         let list_type = list_type.to_owned();
                         async move {
-                            EMBY_CLIENT
+                            JELLYFIN_CLIENT
                                 .get_inlist(
                                     parent_id,
                                     n_items,
@@ -326,7 +326,7 @@ impl TuItem {
                 page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
                     let id = id.to_owned();
                     async move {
-                        EMBY_CLIENT
+                        JELLYFIN_CLIENT
                             .get_folder_include(&id, &sort_by, &sort_order, 0, &filters_list)
                             .await
                     }
@@ -336,7 +336,7 @@ impl TuItem {
                     move |sort_by, sort_order, n_items, filters_list| {
                         let id = id.to_owned();
                         async move {
-                            EMBY_CLIENT
+                            JELLYFIN_CLIENT
                                 .get_folder_include(
                                     &id,
                                     &sort_by,
@@ -385,7 +385,7 @@ impl TuItem {
         let songs = match fetch_with_cache(
             &format!("audio_{}", &id),
             CachePolicy::ReadCacheAndRefresh,
-            async move { EMBY_CLIENT.get_songs(&id).await },
+            async move { JELLYFIN_CLIENT.get_songs(&id).await },
         )
         .await
         {
@@ -432,7 +432,7 @@ impl TuItem {
         let id = self.id();
 
         let nextup_list =
-            match spawn_tokio(async move { EMBY_CLIENT.get_shows_next_up(&id).await }).await {
+            match spawn_tokio(async move { JELLYFIN_CLIENT.get_shows_next_up(&id).await }).await {
                 Ok(list) => list,
                 Err(e) => {
                     obj.toast(e.to_user_facing());

@@ -13,8 +13,8 @@ use super::{
 };
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
     },
     utils::{
         spawn,
@@ -98,9 +98,9 @@ impl ItemActionsBox {
 
         if let Some(id) = id {
             let result = if btn.is_active() {
-                spawn_tokio(async move { EMBY_CLIENT.like(&id).await }).await
+                spawn_tokio(async move { JELLYFIN_CLIENT.like(&id).await }).await
             } else {
-                spawn_tokio(async move { EMBY_CLIENT.unlike(&id).await }).await
+                spawn_tokio(async move { JELLYFIN_CLIENT.unlike(&id).await }).await
             };
 
             match result {
@@ -164,7 +164,7 @@ impl ItemActionsBox {
                                     obj,
                                     async move {
                                         match spawn_tokio(async move {
-                                            EMBY_CLIENT.set_as_unplayed(&id).await
+                                            JELLYFIN_CLIENT.set_as_unplayed(&id).await
                                         })
                                         .await
                                         {
@@ -196,7 +196,7 @@ impl ItemActionsBox {
                                     obj,
                                     async move {
                                         match spawn_tokio(async move {
-                                            EMBY_CLIENT.set_as_played(&id).await
+                                            JELLYFIN_CLIENT.set_as_played(&id).await
                                         })
                                         .await
                                         {

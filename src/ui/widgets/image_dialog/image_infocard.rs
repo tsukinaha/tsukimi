@@ -9,7 +9,7 @@ use gtk::{
 };
 
 use crate::{
-    client::emby_client::EMBY_CLIENT,
+    client::jellyfin_client::JELLYFIN_CLIENT,
     ui::{
         GlobalToast,
         widgets::window::Window,
@@ -196,7 +196,7 @@ impl ImageInfoCard {
         let image_index = self.image_index();
 
         match spawn_tokio(async move {
-            EMBY_CLIENT
+            JELLYFIN_CLIENT
                 .delete_image(&id, &img_type, Some(image_index))
                 .await
         })
@@ -229,7 +229,9 @@ impl ImageInfoCard {
     }
 
     pub async fn set_picture(&self, img_type: &str, id: &str, image_index: &Option<u32>) {
-        let path = EMBY_CLIENT.get_image_path(id, img_type, *image_index).await;
+        let path = JELLYFIN_CLIENT
+            .get_image_path(id, img_type, *image_index)
+            .await;
 
         let picture = self.imp().picture.get();
 

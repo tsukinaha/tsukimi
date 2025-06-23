@@ -12,7 +12,7 @@ use gtk::template_callbacks;
 use reqwest::Response;
 
 use crate::{
-    client::emby_client::EMBY_CLIENT,
+    client::jellyfin_client::JELLYFIN_CLIENT,
     ui::GlobalToast,
     utils::{
         spawn,
@@ -143,7 +143,7 @@ impl ImageDialogEditPage {
         let bytes = STANDARD.encode(bytes);
 
         spawn_tokio(async move {
-            EMBY_CLIENT
+            JELLYFIN_CLIENT
                 .post_image(&id, &image_type, bytes, &content_type)
                 .await
         })
@@ -166,7 +166,7 @@ impl ImageDialogEditPage {
             let image_tag = self.image_tag();
 
             spawn_tokio(async move {
-                EMBY_CLIENT
+                JELLYFIN_CLIENT
                     .post_image_url(&id, &image_type, image_tag, &url)
                     .await
             })

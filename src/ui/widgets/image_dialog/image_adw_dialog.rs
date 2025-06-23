@@ -7,8 +7,8 @@ use gtk::{
 
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
     },
     ui::GlobalToast,
     utils::spawn_tokio,
@@ -216,7 +216,7 @@ impl ImagesDialog {
 
     pub async fn set_image_items(&self) {
         let id = self.id();
-        match spawn_tokio(async move { EMBY_CLIENT.get_image_items(&id).await }).await {
+        match spawn_tokio(async move { JELLYFIN_CLIENT.get_image_items(&id).await }).await {
             Ok(items) => {
                 while let Some(item) = self.imp().wrapbox.first_child() {
                     self.imp().wrapbox.remove(&item);

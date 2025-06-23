@@ -14,8 +14,8 @@ use serde_json::Value;
 
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
         structs::RemoteSearchResult,
     },
     ui::{
@@ -151,7 +151,9 @@ impl IdentifyDialogSearchPage {
                         value,
                         async move {
                             match spawn_tokio(async move {
-                                EMBY_CLIENT.apply_remote_search(&id, value, replace).await
+                                JELLYFIN_CLIENT
+                                    .apply_remote_search(&id, value, replace)
+                                    .await
                             })
                             .await
                             {

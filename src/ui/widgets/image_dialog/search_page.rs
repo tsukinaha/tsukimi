@@ -12,8 +12,8 @@ use gtk::template_callbacks;
 
 use crate::{
     client::{
-        emby_client::EMBY_CLIENT,
         error::UserFacingError,
+        jellyfin_client::JELLYFIN_CLIENT,
     },
     ui::{
         GlobalToast,
@@ -171,7 +171,7 @@ impl ImageDialogSearchPage {
                         url,
                         async move {
                             match spawn_tokio(async move {
-                                EMBY_CLIENT
+                                JELLYFIN_CLIENT
                                     .download_remote_images(&id, &image_type, &provider_name, &url)
                                     .await
                             })
@@ -218,7 +218,7 @@ impl ImageDialogSearchPage {
         let providers = self.providers();
 
         let remote_image_list = match spawn_tokio(async move {
-            EMBY_CLIENT
+            JELLYFIN_CLIENT
                 .get_remote_image_list(&id, 0, if_all_language, &type_, &providers)
                 .await
         })
