@@ -1,7 +1,7 @@
 # tsukimi
 A simple third-party Jellyfin client for Linux.
 
-[![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/tsukimi_frying_crab) ![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Flathub Version](https://img.shields.io/flathub/v/moe.tsuna.tsukimi?color=white)](https://flathub.org/apps/details/moe.tsuna.tsukimi)
+[![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/tsukimi_frying_crab) ![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Flathub Version](https://img.shields.io/flathub/v/moe.tsuna.tsukimi?color=white)](https://flathub.org/apps/details/moe.tsuna.tsukimi) [![Wiki](https://img.shields.io/badge/-Wiki-red?color=blue&logo=github&logoColor=white)](https://github.com/tsukinaha/tsukimi/wiki)
 
 
 ![Alt](https://repobeats.axiom.co/api/embed/82b1088ba840d89c50e1b5b3c1c40f4575b321a6.svg "Repobeats analytics image")
@@ -9,7 +9,7 @@ A simple third-party Jellyfin client for Linux.
 ## About
 A simple third-party Jellyfin client written in GTK4-RS, uses MPV as the video player, and GStreamer as the music player.
 
-It’s also partially compatible with Jellyfin.    
+It’s also partially compatible with Emby.    
 All of basic functions and most of admin functions are supported.    
 
 You can play music and albums, as well as videos with more advanced settings.
@@ -81,9 +81,6 @@ If you'd like to help translating **Tsukimi** into your language, please head ov
 <a href="https://hosted.weblate.org/engage/tsukimi/">
 <img src="https://hosted.weblate.org/widget/tsukimi/main/multi-auto.svg" alt="翻译状态" />
 </a>
-
-## Frequently Asked Questions
-https://dev.tsukinaha.org/tsukimi
 
 ## Disclaimer
 The developers of this application does not have any affiliation with the content providers available.
