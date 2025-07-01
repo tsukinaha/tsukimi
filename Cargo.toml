@@ -62,7 +62,7 @@ render = []                       # Enable custom rendering
 build_libmpv = []                 # build libmpv automatically, provided MPV_SOURCE is set
 
 [target.'cfg(target_os = "linux")'.dependencies]
-xattr = { version = "1.5.0" }
+xattr = { version = "1.5.1" }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 libproxy = { version = "0.1.1" }
