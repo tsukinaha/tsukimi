@@ -117,7 +117,7 @@ fn generate_jellyfin_authorization(
     user_id: &str, client: &str, device: &str, device_id: &str, version: &str,
 ) -> String {
     format!(
-        "Jellyfin UserId={user_id},Client={client},Device={device},DeviceId={device_id},Version={version}"
+        "Emby UserId={user_id},Client={client},Device={device},DeviceId={device_id},Version={version}"
     )
 }
 
