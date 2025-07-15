@@ -5,3 +5,8 @@
 .played-mark {
 	background-color: rgba(0, 0, 0, 0.5);
 }
+
+.serverrow.current-server {
+  background-color: @accent_bg_color;
+  color: @accent_fg_color;
+}

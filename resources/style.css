@@ -139,6 +139,11 @@ button.star.interacted:not(.starred) image {
   border-radius: 10px;
 }
 
+.serverrow.current-server {
+  background-color: @accent_bg_color;
+  color: @accent_fg_color;
+}
+
 .horizontal-listview>row {
   margin-left: 9px;
   margin-right: 9px;

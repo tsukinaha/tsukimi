@@ -9,7 +9,10 @@ use gtk::{
 
 use crate::{
     client::Account,
-    ui::provider::account_item::AccountItem,
+    ui::{
+        models::SETTINGS,
+        provider::account_item::AccountItem,
+    },
 };
 
 mod imp {
@@ -60,6 +63,9 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             self.title_label.set_text(&obj.item().servername());
+            
+            // Check if this is the current preferred server and add highlighting
+            obj.update_current_server_highlighting();
         }
     }
 
@@ -94,5 +100,16 @@ impl ServerRow {
         glib::Object::builder()
             .property("item", AccountItem::from_simple(&account))
             .build()
+    }
+
+    pub fn update_current_server_highlighting(&self) {
+        let account = self.item().account();
+        let preferred_server = SETTINGS.preferred_server();
+        
+        if account.servername == preferred_server {
+            self.add_css_class("current-server");
+        } else {
+            self.remove_css_class("current-server");
+        }
     }
 }
