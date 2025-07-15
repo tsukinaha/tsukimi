@@ -1,20 +1,7 @@
-use adw::{
-    prelude::*,
-    subclass::prelude::*,
-};
-use gtk::{
-    CompositeTemplate,
-    glib,
-};
+use adw::{prelude::*, subclass::prelude::*};
+use gtk::{glib, CompositeTemplate};
 
-use crate::{
-    client::Account,
-    ui::{
-        models::SETTINGS,
-        provider::account_item::AccountItem,
-        widgets::window::Window,
-    },
-};
+use crate::{client::Account, ui::provider::account_item::AccountItem};
 
 mod imp {
     use std::cell::OnceCell;
@@ -24,11 +11,7 @@ mod imp {
     use super::*;
     use crate::{
         client::jellyfin_client::JELLYFIN_CLIENT,
-        ui::{
-            models::SETTINGS,
-            provider::account_item::AccountItem,
-            widgets::window::Window,
-        },
+        ui::{models::SETTINGS, provider::account_item::AccountItem, widgets::window::Window},
         utils::spawn,
     };
 
@@ -64,10 +47,10 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             self.title_label.set_text(&obj.item().servername());
-            
+
             // Add the base serverrow CSS class
             obj.add_css_class("serverrow");
-            
+
             // Check if this is the current preferred server and add highlighting
             obj.update_current_server_highlighting();
         }
@@ -111,7 +94,7 @@ impl ServerRow {
     pub fn update_current_server_highlighting(&self) {
         let account = self.item().account();
         let preferred_server = SETTINGS.preferred_server();
-        
+
         if account.servername == preferred_server {
             self.add_css_class("current-server");
         } else {

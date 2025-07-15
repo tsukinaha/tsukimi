@@ -463,7 +463,7 @@ impl Window {
     pub fn update_server_highlighting(&self) {
         let listbox = &self.imp().serverselectlist;
         let mut child = listbox.first_child();
-        
+
         while let Some(row) = child {
             if let Ok(server_row) = row.downcast::<ServerRow>() {
                 server_row.update_current_server_highlighting();
@@ -475,7 +475,7 @@ impl Window {
     #[template_callback]
     pub fn account_activated(&self, account_row: &ServerRow) {
         account_row.activate();
-        
+
         // Update highlighting for all server rows after server change
         self.update_server_highlighting();
     }

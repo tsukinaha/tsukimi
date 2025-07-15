@@ -10,7 +10,6 @@ use gtk::{
 
 use super::{
     account_add::imp::ActionType,
-    window::Window,
 };
 use crate::{
     client::Account,
