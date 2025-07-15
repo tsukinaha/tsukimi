@@ -92,7 +92,9 @@ mod imp {
                     SETTINGS.set_preferred_server(&account.servername).unwrap();
                     let _ = JELLYFIN_CLIENT.init(&account).await;
                     if let Some(w) = obj.root().and_downcast::<Window>() {
-                        w.reset()
+                        w.reset();
+                        // Update server highlighting in navigation panel
+                        w.update_server_highlighting();
                     }
                 }
             ));

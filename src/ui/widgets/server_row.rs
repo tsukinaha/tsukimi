@@ -12,6 +12,7 @@ use crate::{
     ui::{
         models::SETTINGS,
         provider::account_item::AccountItem,
+        widgets::window::Window,
     },
 };
 
@@ -64,6 +65,9 @@ mod imp {
             let obj = self.obj();
             self.title_label.set_text(&obj.item().servername());
             
+            // Add the base serverrow CSS class
+            obj.add_css_class("serverrow");
+            
             // Check if this is the current preferred server and add highlighting
             obj.update_current_server_highlighting();
         }
@@ -82,7 +86,9 @@ mod imp {
                     SETTINGS.set_preferred_server(&account.servername).unwrap();
                     let _ = JELLYFIN_CLIENT.init(&account).await;
                     if let Some(w) = obj.root().and_downcast::<Window>() {
-                        w.reset()
+                        w.reset();
+                        // Update highlighting after server change
+                        w.update_server_highlighting();
                     }
                 }
             ));
