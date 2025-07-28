@@ -45,7 +45,7 @@ clap = { version = "4.5.41", features = ["derive"] }
 fnv = "1.0.7"
 rand = "0.9.1"
 base64 = "0.22.1"
-libmpv2 = "4.1.0"
+libmpv2 = "5.0.0"
 danmakw = { git = "https://github.com/tsukinaha/danmakw.git" }
 dandanapi = { git = "https://github.com/tsukinaha/dandanapi.git" }
 glow = "0.16.0"
