@@ -19,11 +19,15 @@ use crate::{
 mod imp {
     use std::ffi::c_void;
 
+    #[cfg(target_os = "linux")]
     use gdk_wayland::{
         WaylandDisplay,
         wayland_client::Proxy,
     };
+
+    #[cfg(target_os = "linux")]
     use gdk_x11::X11Display;
+
     use gettextrs::gettext;
     use glow::HasContext;
     use gtk::{
