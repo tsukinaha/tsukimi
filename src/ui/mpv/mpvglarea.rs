@@ -19,10 +19,18 @@ use crate::{
 mod imp {
     use std::ffi::c_void;
 
+    use gdk_wayland::{
+        WaylandDisplay,
+        wayland_client::Proxy,
+    };
+    use gdk_x11::X11Display;
     use gettextrs::gettext;
     use glow::HasContext;
     use gtk::{
-        gdk::GLContext,
+        gdk::{
+            Display,
+            GLContext,
+        },
         glib,
         prelude::*,
         subclass::prelude::*,
@@ -83,7 +91,7 @@ mod imp {
                 return;
             };
 
-            self.setup_mpv(gl_context);
+            self.setup_mpv(gl_context, obj.display());
 
             glib::spawn_future_local(glib::clone!(
                 #[weak]
@@ -125,20 +133,35 @@ mod imp {
             &self.mpv
         }
 
-        fn setup_mpv(&self, gl_context: GLContext) {
+        fn setup_mpv(&self, gl_context: GLContext, display: Display) {
+            let mut render_params = vec![
+                RenderParam::ApiType(RenderParamApiType::OpenGl),
+                RenderParam::InitParams(OpenGLInitParams {
+                    get_proc_address,
+                    ctx: gl_context,
+                }),
+            ];
+
+            // MPV render params to enable hardware decoding on X11 and Wayland
+            // displays.
+            //
+            // https://github.com/mpv-player/mpv/blob/86e12929aa0bbc61946d3804982acf887786a7cb/include/mpv/render_gl.h#L91
+            if let Some(display_wrapper) = display.clone().downcast::<X11Display>().ok() {
+                render_params.push(RenderParam::X11Display(
+                    unsafe { display_wrapper.xdisplay() } as *const c_void,
+                ));
+            } else if let Some(display_wrapper) = display.clone().downcast::<WaylandDisplay>().ok()
+                && let Some(wl_display) = display_wrapper.wl_display()
+            {
+                render_params.push(RenderParam::WaylandDisplay(
+                    wl_display.id().as_ptr() as *const c_void
+                ));
+            }
+
             let tmpv = self.mpv();
             let mut handle = tmpv.mpv.ctx;
-            let mut ctx = RenderContext::new(
-                unsafe { handle.as_mut() },
-                vec![
-                    RenderParam::ApiType(RenderParamApiType::OpenGl),
-                    RenderParam::InitParams(OpenGLInitParams {
-                        get_proc_address,
-                        ctx: gl_context,
-                    }),
-                ],
-            )
-            .expect("Failed creating render context");
+            let mut ctx = RenderContext::new(unsafe { handle.as_mut() }, render_params)
+                .expect("Failed creating render context");
 
             ctx.set_update_callback(|| {
                 let _ = RENDER_UPDATE.tx.send(true);
