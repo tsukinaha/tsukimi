@@ -63,6 +63,14 @@ build_libmpv = []                 # build libmpv automatically, provided MPV_SOU
 
 [target.'cfg(target_os = "linux")'.dependencies]
 xattr = { version = "1.5.1" }
+gdk-x11 = { version = "0.9", package = "gdk4-x11", features = [
+  "v4_18",
+  "xlib",
+] }
+gdk-wayland = { version = "0.9", package = "gdk4-wayland", features = [
+  "v4_18",
+  "wayland_crate",
+] }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 libproxy = { version = "0.1.1" }
