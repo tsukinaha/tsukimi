@@ -43,7 +43,7 @@ regex = "1.11.1"
 strsim = "0.11.1"
 clap = { version = "4.5.41", features = ["derive"] }
 fnv = "1.0.7"
-rand = "0.9.1"
+rand = "0.9.2"
 base64 = "0.22.1"
 libmpv2 = "4.1.0"
 danmakw = { git = "https://github.com/tsukinaha/danmakw.git" }
