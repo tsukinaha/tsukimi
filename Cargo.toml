@@ -52,7 +52,7 @@ glow = "0.16.0"
 
 [build-dependencies]
 embed-resource = "3.0.5"
-glib-build-tools = "0.20.0"
+glib-build-tools = "0.21.0"
 
 [features]
 console = []                      # Enable console logging
