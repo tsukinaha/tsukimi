@@ -302,7 +302,7 @@
                         </child>
                         <child>
                           <object class="GtkButton">
-                            <property name="icon-name">view-more-symbolic</property>
+                            <property name="icon-name">view-more-horizontal-symbolic</property>
                             <property name="halign">start</property>
                             <signal name="clicked" handler="on_season_view_more_clicked" swapped="yes"/>
                             <property name="tooltip-text" translatable="yes">View this season</property>
@@ -310,7 +310,7 @@
                         </child>
                         <child>
                           <object class="EpisodeSwitcher" id="episode_switcher">
-                            
+
                           </object>
                         </child>
                         <style>
