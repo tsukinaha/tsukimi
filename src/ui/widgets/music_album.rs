@@ -164,7 +164,7 @@ impl AlbumPage {
 
         let duration = item.run_time_ticks() / 10000000;
         let release = format!(
-            "{} , {}",
+            "{}, {}",
             item.production_year(),
             format_duration(duration as i64)
         );
