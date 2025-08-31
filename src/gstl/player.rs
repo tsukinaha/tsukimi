@@ -358,6 +358,14 @@ pub mod imp {
                 .expect("Unable to set the pipeline to the `Playing` state");
         }
 
+        pub fn play_pause(&self) {
+            match self.state() {
+                gst::State::Playing => self.pause(),
+                gst::State::Paused => self.unpause(),
+                _ => {}
+            }
+        }
+
         pub fn state(&self) -> gst::State {
             self.pipeline().current_state()
         }
