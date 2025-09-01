@@ -3,24 +3,11 @@ name: Process Artifacts
 on:
   workflow_call:
 
-env:
-    TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
-    TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
-
 jobs:
     telegram:
-      name: Upload to Telegram
+      name: Upload
       runs-on: ubuntu-latest
-      if: ${{ github.env.TELEGRAM_API_ID && github.env.TELEGRAM_API_HASH }}
-      services:
-        telegram-bot-api:
-          image: aiogram/telegram-bot-api
-          ports:
-            - 8081:8081
-          env:
-            TELEGRAM_API_ID: ${{ env.TELEGRAM_API_ID }}
-            TELEGRAM_API_HASH: ${{ env.TELEGRAM_API_HASH }}
-
+      if:  ${{ github.repository == 'tsukinaha/tsukimi' }}
       steps:
         - name: Download artifact
           uses: actions/download-artifact@v5
@@ -35,7 +22,15 @@ jobs:
               fi
             done
 
+        - name: Bot API
+          run: |
+            docker run -d --name telegram-bot-api -p 8081:8081 \
+              -e TELEGRAM_API_ID=${{ secrets.TELEGRAM_API_ID }} \
+              -e TELEGRAM_API_HASH=${{ secrets.TELEGRAM_API_HASH }} \
+              aiogram/telegram-bot-api
+
         - name: Test Telegram Bot API
+          id: test-api
           shell: bash
           run: |
             MAX_RETRIES=5
@@ -67,6 +62,11 @@ jobs:
               Tsukimi CI
               Commit Message: ${{ github.event.head_commit.message}}
               Commit URL: ${{ github.event.head_commit.url }}
+
+        - name: Cleanup
+          run: |
+            docker stop telegram-bot-api
+            docker rm telegram-bot-api
 
     release:
       name: Release
