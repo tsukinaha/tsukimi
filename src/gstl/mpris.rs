@@ -132,6 +132,10 @@ impl MusicPlayer {
         ]);
     }
 
+    pub fn notify_mpris_loop_status(&self, status: ListRepeatMode) {
+        self.mpris_properties_changed([Property::LoopStatus(status.into())]);
+    }
+
     pub fn notify_mpris_art_changed(&self) {
         let mut metadata = self.metadata().clone();
         spawn(glib::clone!(
@@ -279,20 +283,11 @@ impl LocalPlayerInterface for MusicPlayer {
     }
 
     async fn loop_status(&self) -> fdo::Result<LoopStatus> {
-        Ok(match self.imp().obj().repeat_mode() {
-            ListRepeatMode::None => LoopStatus::None,
-            ListRepeatMode::RepeatOne => LoopStatus::Track,
-            ListRepeatMode::Repeat => LoopStatus::Playlist,
-        })
+        Ok(self.imp().obj().repeat_mode().into())
     }
 
     async fn set_loop_status(&self, status: LoopStatus) -> zbus::Result<()> {
-        let repeat_mode = match status {
-            LoopStatus::None => ListRepeatMode::None,
-            LoopStatus::Track => ListRepeatMode::RepeatOne,
-            LoopStatus::Playlist => ListRepeatMode::Repeat,
-        };
-        self.set_repeat_mode(repeat_mode);
+        self.set_repeat_mode(ListRepeatMode::from(status));
         Ok(())
     }
 
@@ -366,5 +361,25 @@ impl LocalPlayerInterface for MusicPlayer {
 
     async fn can_control(&self) -> fdo::Result<bool> {
         Ok(true)
+    }
+}
+
+impl From<ListRepeatMode> for LoopStatus {
+    fn from(mode: ListRepeatMode) -> Self {
+        match mode {
+            ListRepeatMode::None => LoopStatus::None,
+            ListRepeatMode::RepeatOne => LoopStatus::Track,
+            ListRepeatMode::Repeat => LoopStatus::Playlist,
+        }
+    }
+}
+
+impl From<LoopStatus> for ListRepeatMode {
+    fn from(status: LoopStatus) -> Self {
+        match status {
+            LoopStatus::None => ListRepeatMode::None,
+            LoopStatus::Track => ListRepeatMode::RepeatOne,
+            LoopStatus::Playlist => ListRepeatMode::Repeat,
+        }
     }
 }
