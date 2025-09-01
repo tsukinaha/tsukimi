@@ -32,6 +32,7 @@ pub mod imp {
         },
         subclass::prelude::*,
     };
+    use mpris_server::LocalServer;
     use once_cell::sync::*;
     use tracing::debug;
 
@@ -96,6 +97,7 @@ pub mod imp {
         pub repeat_mode: Cell<ListRepeatMode>,
         #[property(get, set, default_value = false)]
         pub gapless: RefCell<bool>,
+        pub mpris_server: OnceCell<LocalServer<super::MusicPlayer>>,
     }
 
     #[glib::derived_properties]
@@ -108,6 +110,19 @@ pub mod imp {
 
             // Build the pipeline
             let pipeline = gst::ElementFactory::make("playbin3").build().unwrap();
+
+            // Initialize the mpris server
+            glib::spawn_future_local(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                async move {
+                    if let Err(e) = imp.obj().initialize_mpris().await {
+                        dbg!("Failed to initialize mpris server: {}", e);
+                    }
+                    dbg!("MPRIS server initialized");
+                }
+            ));
+
             // Start playing
             let bus = pipeline.bus().unwrap();
             bus.add_signal_watch();
@@ -237,6 +252,7 @@ pub mod imp {
             self.pipeline()
                 .set_state(gst::State::Playing)
                 .expect("Unable to set the pipeline to the `Playing` state");
+            self.obj().notify_playing();
         }
 
         pub async fn play(&self, core_song: &CoreSong) {
@@ -254,6 +270,8 @@ pub mod imp {
 
             gst::prelude::ObjectExt::set_property(self.pipeline(), "uri", uri);
             self.playing();
+            self.obj()
+                .notify_song_changed(self.prev_song().is_some(), self.next_song().is_some());
         }
 
         pub async fn add_song(&self, core_song: &CoreSong) {
@@ -350,12 +368,14 @@ pub mod imp {
             self.pipeline()
                 .set_state(gst::State::Paused)
                 .expect("Unable to set the pipeline to the `Paused` state");
+            self.obj().notify_paused();
         }
 
         pub fn unpause(&self) {
             self.pipeline()
                 .set_state(gst::State::Playing)
                 .expect("Unable to set the pipeline to the `Playing` state");
+            self.obj().notify_playing();
         }
 
         pub fn play_pause(&self) {
@@ -434,5 +454,17 @@ impl Default for MusicPlayer {
 impl MusicPlayer {
     pub fn new() -> MusicPlayer {
         glib::Object::builder().build()
+    }
+    // Todo: Conditional compilation depending on platform for these notifications?
+    pub fn notify_playing(&self) {
+        self.notify_mpris_playing();
+    }
+
+    pub fn notify_paused(&self) {
+        self.notify_mpris_paused();
+    }
+
+    pub fn notify_song_changed(&self, has_prev: bool, has_next: bool) {
+        self.notify_mpris_song_changed(has_prev, has_next);
     }
 }

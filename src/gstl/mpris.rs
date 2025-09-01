@@ -1,14 +1,19 @@
+use anyhow::Result;
+
 use adw::subclass::prelude::{
     ObjectSubclassExt,
     ObjectSubclassIsExt,
 };
+use gtk::glib;
 use mpris_server::{
     LocalPlayerInterface,
     LocalRootInterface,
+    LocalServer,
     LoopStatus,
     Metadata,
     PlaybackRate,
     PlaybackStatus,
+    Property,
     Time,
     TrackId,
     Volume,
@@ -23,7 +28,85 @@ use crate::{
     APP_ID,
     CLIENT_ID,
     gstl::player::imp::ListRepeatMode,
+    utils::spawn,
 };
+
+impl MusicPlayer {
+    pub async fn initialize_mpris(&self) -> Result<()> {
+        let server = LocalServer::new(APP_ID, self.imp().obj().clone()).await?;
+        spawn(server.run());
+        self.imp()
+            .mpris_server
+            .set(server)
+            .map_err(|_| anyhow::anyhow!("Mpris server already initialized"))?;
+        Ok(())
+    }
+
+    pub fn mpris_server(&self) -> Option<&LocalServer<MusicPlayer>> {
+        self.imp().mpris_server.get()
+    }
+
+    pub fn mpris_properties_changed(&self, property: impl IntoIterator<Item = Property> + 'static) {
+        spawn(glib::clone!(
+            #[weak(rename_to=imp)]
+            self,
+            async move {
+                match imp.mpris_server() {
+                    Some(server) => {
+                        if let Err(err) = server.properties_changed(property).await {
+                            dbg!("Failed to emit properties changed: {}", err);
+                        }
+                    }
+                    None => {
+                        dbg!("Failed to get MPRIS server ");
+                    }
+                }
+            }
+        ));
+    }
+
+    pub fn notify_mpris_song_changed(&self, has_prev: bool, has_next: bool) {
+        self.mpris_properties_changed([
+            Property::Metadata(self.metadata().clone()),
+            Property::CanGoPrevious(has_prev),
+            Property::CanGoNext(has_next),
+        ]);
+    }
+
+    pub fn notify_mpris_playing(&self) {
+        self.mpris_properties_changed([
+            Property::Metadata(self.metadata().clone()),
+            Property::CanPlay(true),
+            Property::CanPause(true),
+            Property::CanSeek(true),
+            Property::PlaybackStatus(PlaybackStatus::Playing),
+        ]);
+    }
+
+    pub fn notify_mpris_paused(&self) {
+        self.mpris_properties_changed([
+            Property::Metadata(self.metadata().clone()),
+            Property::CanPlay(true),
+            Property::CanPause(false),
+            Property::CanSeek(true),
+            Property::PlaybackStatus(PlaybackStatus::Paused),
+        ]);
+    }
+
+    pub fn metadata(&self) -> Metadata {
+        self.imp()
+            .obj()
+            .active_core_song()
+            .as_ref()
+            .map_or_else(Metadata::new, |song| {
+                Metadata::builder()
+                    .album(song.album_id())
+                    .title(song.name())
+                    .artist([song.artist()])
+                    .build()
+            })
+    }
+}
 
 impl LocalRootInterface for MusicPlayer {
     async fn can_raise(&self) -> fdo::Result<bool> {
@@ -179,18 +262,7 @@ impl LocalPlayerInterface for MusicPlayer {
     }
 
     async fn metadata(&self) -> fdo::Result<Metadata> {
-        Ok(self
-            .imp()
-            .obj()
-            .active_core_song()
-            .as_ref()
-            .map_or_else(Metadata::new, |song| {
-                Metadata::builder()
-                    .album(song.album_id())
-                    .title(song.name())
-                    .artist([song.artist()])
-                    .build()
-            }))
+        Ok(self.metadata())
     }
 
     async fn volume(&self) -> fdo::Result<Volume> {
