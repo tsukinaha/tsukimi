@@ -252,7 +252,7 @@ pub mod imp {
             self.pipeline()
                 .set_state(gst::State::Playing)
                 .expect("Unable to set the pipeline to the `Playing` state");
-            self.obj().notify_playing();
+            self.notify_playing();
         }
 
         pub async fn play(&self, core_song: &CoreSong) {
@@ -270,8 +270,7 @@ pub mod imp {
 
             gst::prelude::ObjectExt::set_property(self.pipeline(), "uri", uri);
             self.playing();
-            self.obj()
-                .notify_song_changed(self.prev_song().is_some(), self.next_song().is_some());
+            self.notify_song_changed();
         }
 
         pub async fn add_song(&self, core_song: &CoreSong) {
@@ -289,6 +288,7 @@ pub mod imp {
                 core_song.set_state(State::Playing);
                 debug!("Next Song: {}", core_song.name());
                 self.obj().set_active_core_song(Some(core_song));
+                self.notify_song_changed();
                 Ok(())
             } else {
                 Err(anyhow::Error::msg("No next song"))
@@ -368,14 +368,14 @@ pub mod imp {
             self.pipeline()
                 .set_state(gst::State::Paused)
                 .expect("Unable to set the pipeline to the `Paused` state");
-            self.obj().notify_paused();
+            self.notify_paused();
         }
 
         pub fn unpause(&self) {
             self.pipeline()
                 .set_state(gst::State::Playing)
                 .expect("Unable to set the pipeline to the `Playing` state");
-            self.obj().notify_playing();
+            self.notify_playing();
         }
 
         pub fn play_pause(&self) {
@@ -436,7 +436,23 @@ pub mod imp {
                 core_song.set_state(State::Playing);
                 debug!("Prev Song: {}", core_song.name());
                 self.active_core_song.replace(Some(core_song));
+                self.notify_song_changed();
             }
+        }
+
+        // Todo: Conditional compilation depending on platform for these notifications?
+        pub fn notify_song_changed(&self) {
+            let has_prev = self.prev_song().is_some();
+            let has_next = self.next_song().is_some();
+            self.obj().notify_mpris_song_changed(has_prev, has_next);
+        }
+
+        pub fn notify_playing(&self) {
+            self.obj().notify_mpris_playing();
+        }
+
+        pub fn notify_paused(&self) {
+            self.obj().notify_mpris_paused();
         }
     }
 }
@@ -454,17 +470,5 @@ impl Default for MusicPlayer {
 impl MusicPlayer {
     pub fn new() -> MusicPlayer {
         glib::Object::builder().build()
-    }
-    // Todo: Conditional compilation depending on platform for these notifications?
-    pub fn notify_playing(&self) {
-        self.notify_mpris_playing();
-    }
-
-    pub fn notify_paused(&self) {
-        self.notify_mpris_paused();
-    }
-
-    pub fn notify_song_changed(&self, has_prev: bool, has_next: bool) {
-        self.notify_mpris_song_changed(has_prev, has_next);
     }
 }
