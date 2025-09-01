@@ -1,4 +1,4 @@
-name: Windows GNU CI
+name: Windows
 on:
   workflow_call:
 
@@ -8,18 +8,22 @@ env:
 
 jobs:
   build-release:
+    name: Build (${{ matrix.msystem }})
     env:
       RUST_BACKTRACE: full
+      RUSTC_WRAPPER: sccache
+      SCCACHE_DIRECT: false
+      SCCACHE_DIR: ${{ github.workspace }}\.sccache
+      SCCACHE_IDLE_TIMEOUT: 0
     strategy:
       matrix:
         include:
           - arch: ucrt64-x86_64-windows-gnu
-            os: windows-latest
             target: x86_64-pc-windows-gnu
             msystem: ucrt64
             env: ucrt-x86_64
 
-    runs-on: ${{matrix.os}}
+    runs-on: windows-latest
 
     steps:
       - name: Checkout
@@ -46,6 +50,23 @@ jobs:
             mingw-w64-${{ matrix.env }}-gst-libav
             curl
 
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/.sccache
+            ${{ github.workspace }}/target
+          key: tsukimi-build-${{ matrix.arch }}-windows-${{ hashFiles('Cargo.toml', '*/Cargo.toml') }}
+          restore-keys: |
+            tsukimi-build-${{ matrix.arch }}-windows-
+
+      - name: Setup sccache
+        run: |
+            choco install sccache
+            sccache --start-server
+            sccache -z
+            sccache -s
+
       - name: Install latest libmpv
         shell: pwsh
         env:
@@ -65,7 +86,7 @@ jobs:
         env:
           DANDANAPI_SECRET_KEY: ${{ secrets.DANDANAPI_SECRET_KEY }}
         run: |
-          export PATH="/c/Users/runneradmin/.cargo/bin:$PATH"
+          export PATH="/c/ProgramData/chocolatey/bin:/c/Users/runneradmin/.cargo/bin:$PATH"
           rustup default nightly-gnu
           echo $DANDANAPI_SECRET_KEY > secret/key
           cargo build --release --locked
@@ -143,3 +164,8 @@ jobs:
             artifact/*.sha512sum
           compression-level: 0
           if-no-files-found: error
+
+      - name: Post Setup sccache
+        run: |
+          sccache -s
+          sccache --stop-server
