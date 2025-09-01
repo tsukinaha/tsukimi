@@ -1,0 +1,97 @@
+name: Process Artifacts
+
+on:
+  workflow_call:
+
+env:
+    HAVE_TG_API: ${{ secrets.TELEGRAM_API_ID && secrets.TELEGRAM_API_HASH }}
+    HAVE_TG_BOT: ${{ secrets.TELEGRAM_BOT_TOKEN && secrets.TELEGRAM_CHAT_ID }}
+
+jobs:
+    telegram:
+      name: Upload to Telegram
+      runs-on: ubuntu-latest
+      if: ${{ github.env.HAVE_TG_API && github.env.HAVE_TG_BOT }}
+      services:
+        telegram-bot-api:
+          image: aiogram/telegram-bot-api
+          ports:
+            - 8081:8081
+          env:
+            TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+            TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+
+      steps:
+        - name: Download artifact
+          uses: actions/download-artifact@v5
+
+        - name: Create compressed file
+          run: |
+            for d in $(ls -d */); do
+              if [[ "$d" == *-linux/ ]]; then
+                tar -czf "${d%/}.tar.gz" "$d"
+              else
+                zip -r "${d%/}.zip" "$d"
+              fi
+            done
+
+        - name: Test Telegram Bot API
+          shell: bash
+          run: |
+            MAX_RETRIES=5
+            RETRY_COUNT=0
+
+            while ! curl -s -o /dev/null http://localhost:8081; do
+              echo "Waiting for Telegram Bot API..."
+              sleep 5
+
+              ((RETRY_COUNT++))
+              if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+                echo "Failed to connect to Telegram Bot API after $MAX_RETRIES attempts."
+                exit 1
+              fi
+            done
+
+            echo "Telegram Bot API is ready!"
+
+        - name: Upload to Telegram
+          uses: RyogiMutsuki/telegram-files@v1
+          with:
+            api-url: "http://localhost:8081"
+            token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+            chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+            files: |
+              *.zip
+              *.tar.gz
+            body: |
+              Tsukimi CI
+              Commit Message: ${{ github.event.head_commit.message}}
+              Commit URL: ${{ github.event.head_commit.url }}
+
+        - name: Clean up
+          run: rm -rf artifacts
+
+    release:
+      name: Release
+      runs-on: ubuntu-latest
+      if: github.ref_type == 'tag'
+      steps:
+        - name: Download artifact
+          uses: actions/download-artifact@v5
+          with:
+            pattern: '**-linux'
+
+        - name: Create compressed file
+          run: |
+            for d in $(ls -d */); do
+              tar -czf "${d%/}.tar.gz" "$d"
+            done
+            sha512sum *.tar.gz >> tsukimi.sha512sum
+        
+        - name: Create release
+          uses: softprops/action-gh-release@v2
+          with:
+            files: |
+              *.tar.gz
+              tsukimi.sha512sum
+            prerelease: ${{ github.ref_type == 'tag' && contains(github.ref_name, 'rc') }}

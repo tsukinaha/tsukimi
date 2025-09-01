@@ -3,18 +3,30 @@ on: push
 
 jobs:
   clippy_check:
+    name: Clippy
+
     runs-on: ubuntu-latest
+
+    container:
+      image: ubuntu:plucky
     steps:
-      - uses: actions/checkout@v4
-      - run: |
-          cat > entrypoint.sh <<EOF
-          #!/bin/bash
-          set -e
-          export PATH=/root/.cargo/bin:\$PATH
-          RUSTFLAGS="-D warnings" cargo clippy --fix --allow-dirty --no-deps --release --all-targets
-          EOF
+
+      - name: Setup Environment
+        run: |
+          apt-get update
+          apt-get upgrade -y
+          apt install -y git build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
+          libadwaita-1-dev libmpv-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev \
+          libgstreamer-plugins-base1.0-dev libgstreamer-plugins-good1.0-dev gstreamer1.0-libav
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@nightly
 
       - name: Run Clippy
         run: |
           echo "testing" > secret/key
-          docker run --rm -v ${{ github.workspace }}:/app -v ./entrypoint.sh:/entrypoint.sh ghcr.io/tsukinaha/ubuntu-rust-gtk4:latest
+          rustup component add clippy
+          RUSTFLAGS="-D warnings" cargo clippy --fix --allow-dirty --no-deps --release --all-targets

@@ -1,50 +1,80 @@
-name: Linux CI
+name: Linux
 on:
   workflow_call:
 
 jobs:
   build:
+    name: Build (${{ matrix.platform }})
+
     strategy:
       matrix:
         include:
           - platform: amd64
             os: ubuntu-latest
-            arch: x86_64
           - platform: arm64
             os: ubuntu-24.04-arm
-            arch: aarch64
+
+    container:
+      image: ubuntu:plucky
 
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Setup Git
+        run: |
+          apt-get update
+          apt-get upgrade -y
+          apt-get install -y git build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
+          libadwaita-1-dev libmpv-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev \
+          libgstreamer-plugins-base1.0-dev libgstreamer-plugins-good1.0-dev gstreamer1.0-libav \
+          sccache
+
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: true
 
       - name: Cache
         uses: actions/cache@v4
         with:
-          path: target
-          key: tsukimi-build-${{ matrix.arch }}-linux-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ${{ github.workspace }}/.sccache
+            ${{ github.workspace }}/target
+          key: tsukimi-build-${{ matrix.platform }}-linux-${{ github.sha }}
           restore-keys: |
-            tsukimi-build-${{ matrix.arch }}-linux-
+            tsukimi-build-${{ matrix.platform }}-linux-
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@nightly
+
+      - name: Setup sccache
+        uses: gacts/run-and-post-run@v1
+        env:
+          SCCACHE_DIR: ${{ github.workspace }}/.sccache
+          SCCACHE_IDLE_TIMEOUT: 0
+          SCCACHE_DIRECT: false
+        with:
+          run: |
+            sccache --start-server
+            sccache -z
+            sccache -s
+          post: |
+            sccache -s
+            sccache --stop-server
 
       - name: Build tsukimi for ${{ matrix.platform }}
         env:
+          RUSTC_WRAPPER: sccache
           DANDANAPI_SECRET_KEY: ${{ secrets.DANDANAPI_SECRET_KEY }}
         run: |
           echo $DANDANAPI_SECRET_KEY > secret/key
-          docker run --rm --platform linux/${{matrix.platform}} -v ${{ github.workspace }}:/app -v ./docker/entrypoint.sh:/entrypoint.sh ghcr.io/tsukinaha/ubuntu-rust-gtk4:latest
-          sudo cp target/release/tsukimi .
-          sudo cp -r i18n/locale .
-          sudo cp resources/moe*.xml .
+          cargo build --release --locked
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tsukimi-${{matrix.arch}}-linux
+          name: tsukimi-${{ matrix.platform }}-linux
           path: |
-            locale/
-            tsukimi
-            moe*.xml
+            target/release/tsukimi
+            i18n/locale
+            resources/moe*.xml
