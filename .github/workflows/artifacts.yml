@@ -68,9 +68,6 @@ jobs:
               Commit Message: ${{ github.event.head_commit.message}}
               Commit URL: ${{ github.event.head_commit.url }}
 
-        - name: Clean up
-          run: rm -rf artifacts
-
     release:
       name: Release
       runs-on: ubuntu-latest
