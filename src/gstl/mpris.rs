@@ -14,6 +14,7 @@ use mpris_server::{
     PlaybackRate,
     PlaybackStatus,
     Property,
+    Signal,
     Time,
     TrackId,
     Volume,
@@ -32,6 +33,10 @@ use crate::{
         get_image_with_cache,
         spawn,
     },
+};
+use tracing::{
+    info,
+    warn,
 };
 
 impl MusicPlayer {
@@ -68,6 +73,28 @@ impl MusicPlayer {
         ));
     }
 
+    pub fn notify_mpris_seeked(&self, position: i64) {
+        spawn(glib::clone!(
+            #[weak(rename_to=obj)]
+            self,
+            async move {
+                match obj.mpris_server() {
+                    Some(server) => {
+                        let signal = Signal::Seeked {
+                            position: Time::from_millis(position),
+                        };
+                        if let Err(err) = server.emit(signal).await {
+                            warn!("Failed to emit mpris_seeked: {}", err);
+                        }
+                    }
+                    None => {
+                        info!("Failed to get MPRIS server.");
+                    }
+                }
+            }
+        ));
+    }
+
     pub fn notify_mpris_song_changed(&self, has_prev: bool, has_next: bool) {
         self.mpris_properties_changed([
             Property::Metadata(self.metadata().clone()),
@@ -92,6 +119,15 @@ impl MusicPlayer {
             Property::CanPause(false),
             Property::CanSeek(true),
             Property::PlaybackStatus(PlaybackStatus::Paused),
+        ]);
+    }
+
+    pub fn notify_mpris_stopped(&self) {
+        self.mpris_properties_changed([
+            Property::CanPlay(true),
+            Property::CanPause(false),
+            Property::CanSeek(false),
+            Property::PlaybackStatus(PlaybackStatus::Stopped),
         ]);
     }
 
@@ -127,6 +163,7 @@ impl MusicPlayer {
                 Metadata::builder()
                     .album(song.album_id())
                     .title(song.name())
+                    .length(Time::from_secs(song.duration() as i64))
                     .artist([song.artist()])
                     .build()
             })

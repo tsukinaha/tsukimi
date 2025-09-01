@@ -396,6 +396,8 @@ pub mod imp {
                 .seek_simple(gst::SeekFlags::FLUSH | gst::SeekFlags::KEY_UNIT, position)
             {
                 tracing::warn!("Failed to seek: {}", e);
+            } else {
+                self.notify_seeked(position.mseconds() as i64);
             }
         }
 
@@ -451,6 +453,14 @@ pub mod imp {
 
         pub fn notify_paused(&self) {
             self.obj().notify_mpris_paused();
+        }
+
+        pub fn notify_stopped(&self) {
+            self.obj().notify_mpris_stopped();
+        }
+
+        pub fn notify_seeked(&self, position: i64) {
+            self.obj().notify_mpris_seeked(position);
         }
     }
 }
