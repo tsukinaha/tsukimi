@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "*"
+    paths-ignore:
+      - "docs/**"
+      - "**/.gitignore"
+      - "**/.dockerignore"
+      - LICENSE
+      - "**/*.md"
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - "main"
+    paths-ignore:
+      - "docs/**"
+      - "**/.gitignore"
+      - "**/.dockerignore"
+      - LICENSE
+      - "**/*.md"
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    name: Linux
+    uses: ./.github/workflows/build_linux.yml
+    secrets: inherit
+
+  windows:
+    name: Windows
+    uses: ./.github/workflows/build_windows.yml
+    secrets: inherit
+
+  artifacts:
+    name: Artifacts
+    uses: ./.github/workflows/artifacts.yml
+    needs: [linux, windows]
+    secrets: inherit

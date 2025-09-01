@@ -1,0 +1,94 @@
+name: Process Artifacts
+
+on:
+  workflow_call:
+
+jobs:
+    telegram:
+      name: Upload
+      runs-on: ubuntu-latest
+      if:  ${{ github.repository == 'tsukinaha/tsukimi' }}
+      steps:
+        - name: Download artifact
+          uses: actions/download-artifact@v5
+
+        - name: Create compressed file
+          run: |
+            for d in $(ls -d */); do
+              if [[ "$d" == *-linux/ ]]; then
+                tar -czf "${d%/}.tar.gz" "$d"
+              else
+                zip -r "${d%/}.zip" "$d"
+              fi
+            done
+
+        - name: Bot API
+          run: |
+            docker run -d --name telegram-bot-api -p 8081:8081 \
+              -e TELEGRAM_API_ID=${{ secrets.TELEGRAM_API_ID }} \
+              -e TELEGRAM_API_HASH=${{ secrets.TELEGRAM_API_HASH }} \
+              aiogram/telegram-bot-api
+
+        - name: Test Telegram Bot API
+          id: test-api
+          shell: bash
+          run: |
+            MAX_RETRIES=5
+            RETRY_COUNT=0
+
+            while ! curl -s -o /dev/null http://localhost:8081; do
+              echo "Waiting for Telegram Bot API..."
+              sleep 5
+
+              ((RETRY_COUNT++))
+              if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+                echo "Failed to connect to Telegram Bot API after $MAX_RETRIES attempts."
+                exit 1
+              fi
+            done
+
+            echo "Telegram Bot API is ready!"
+
+        - name: Upload to Telegram
+          uses: RyogiMutsuki/telegram-files@v1
+          with:
+            api-url: "http://localhost:8081"
+            token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+            chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+            files: |
+              *.zip
+              *.tar.gz
+            body: |
+              Tsukimi CI
+              Commit Message: ${{ github.event.head_commit.message}}
+              Commit URL: ${{ github.event.head_commit.url }}
+
+        - name: Cleanup
+          run: |
+            docker stop telegram-bot-api
+            docker rm telegram-bot-api
+
+    release:
+      name: Release
+      runs-on: ubuntu-latest
+      if: github.ref_type == 'tag'
+      steps:
+        - name: Download artifact
+          uses: actions/download-artifact@v5
+          with:
+            pattern: '**-linux'
+
+        - name: Create compressed file
+          run: |
+            for d in $(ls -d */); do
+              tar -czf "${d%/}.tar.gz" "$d"
+            done
+            sha512sum *.tar.gz >> tsukimi.sha512sum
+        
+        - name: Create release
+          uses: softprops/action-gh-release@v2
+          with:
+            files: |
+              *.tar.gz
+              tsukimi.sha512sum
+            prerelease: ${{ github.ref_type == 'tag' && contains(github.ref_name, 'rc') }}
