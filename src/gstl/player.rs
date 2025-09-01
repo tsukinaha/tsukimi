@@ -288,7 +288,6 @@ pub mod imp {
                 core_song.set_state(State::Playing);
                 debug!("Next Song: {}", core_song.name());
                 self.obj().set_active_core_song(Some(core_song));
-                self.notify_song_changed();
                 Ok(())
             } else {
                 Err(anyhow::Error::msg("No next song"))
@@ -436,7 +435,6 @@ pub mod imp {
                 core_song.set_state(State::Playing);
                 debug!("Prev Song: {}", core_song.name());
                 self.active_core_song.replace(Some(core_song));
-                self.notify_song_changed();
             }
         }
 

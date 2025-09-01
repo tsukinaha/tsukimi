@@ -28,7 +28,10 @@ use crate::{
     APP_ID,
     CLIENT_ID,
     gstl::player::imp::ListRepeatMode,
-    utils::spawn,
+    utils::{
+        get_image_with_cache,
+        spawn,
+    },
 };
 
 impl MusicPlayer {
@@ -71,11 +74,11 @@ impl MusicPlayer {
             Property::CanGoPrevious(has_prev),
             Property::CanGoNext(has_next),
         ]);
+        self.notify_mpris_art_changed();
     }
 
     pub fn notify_mpris_playing(&self) {
         self.mpris_properties_changed([
-            Property::Metadata(self.metadata().clone()),
             Property::CanPlay(true),
             Property::CanPause(true),
             Property::CanSeek(true),
@@ -85,12 +88,34 @@ impl MusicPlayer {
 
     pub fn notify_mpris_paused(&self) {
         self.mpris_properties_changed([
-            Property::Metadata(self.metadata().clone()),
             Property::CanPlay(true),
             Property::CanPause(false),
             Property::CanSeek(true),
             Property::PlaybackStatus(PlaybackStatus::Paused),
         ]);
+    }
+
+    pub fn notify_mpris_art_changed(&self) {
+        let mut metadata = self.metadata().clone();
+        spawn(glib::clone!(
+            #[weak(rename_to = imp)]
+            self,
+            async move {
+                if let Some(core_song) = imp.active_core_song().as_ref() {
+                    let id = if core_song.have_single_track_image() {
+                        core_song.id()
+                    } else {
+                        core_song.album_id()
+                    };
+                    let path = get_image_with_cache(id, "Primary".to_string(), None)
+                        .await
+                        .unwrap_or_default();
+                    let url = format!("file://{}", path);
+                    metadata.set_art_url(Some(url));
+                    imp.mpris_properties_changed([Property::Metadata(metadata)]);
+                }
+            }
+        ));
     }
 
     pub fn metadata(&self) -> Metadata {
