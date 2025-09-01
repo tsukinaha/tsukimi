@@ -34,7 +34,10 @@ pub mod imp {
     };
     use mpris_server::LocalServer;
     use once_cell::sync::*;
-    use tracing::debug;
+    use tracing::{
+        debug,
+        warn,
+    };
 
     use super::*;
     use crate::ui::widgets::song_widget::State;
@@ -117,9 +120,8 @@ pub mod imp {
                 self,
                 async move {
                     if let Err(e) = imp.obj().initialize_mpris().await {
-                        dbg!("Failed to initialize mpris server: {}", e);
+                        warn!("Failed to initialize mpris server: {}", e);
                     }
-                    dbg!("MPRIS server initialized");
                 }
             ));
 

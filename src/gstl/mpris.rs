@@ -35,6 +35,7 @@ use crate::{
     },
 };
 use tracing::{
+    debug,
     info,
     warn,
 };
@@ -62,11 +63,11 @@ impl MusicPlayer {
                 match imp.mpris_server() {
                     Some(server) => {
                         if let Err(err) = server.properties_changed(property).await {
-                            dbg!("Failed to emit properties changed: {}", err);
+                            warn!("Failed to emit properties changed: {}", err);
                         }
                     }
                     None => {
-                        dbg!("Failed to get MPRIS server ");
+                        info!("Failed to get MPRIS server.");
                     }
                 }
             }
@@ -176,7 +177,7 @@ impl LocalRootInterface for MusicPlayer {
     }
 
     async fn raise(&self) -> fdo::Result<()> {
-        dbg!("Attempted to raise");
+        debug!("TODO: implement raise");
         Ok(())
     }
 
@@ -185,7 +186,7 @@ impl LocalRootInterface for MusicPlayer {
     }
 
     async fn quit(&self) -> fdo::Result<()> {
-        dbg!("Attempted to quit");
+        debug!("TODO: implement quit");
         Ok(())
     }
 
@@ -197,8 +198,7 @@ impl LocalRootInterface for MusicPlayer {
         Ok(false)
     }
 
-    async fn set_fullscreen(&self, fullscreen: bool) -> zbus::Result<()> {
-        dbg!("Request to set fullscreen", fullscreen);
+    async fn set_fullscreen(&self, _fullscreen: bool) -> zbus::Result<()> {
         Ok(())
     }
 
@@ -225,48 +225,41 @@ impl LocalRootInterface for MusicPlayer {
 
 impl LocalPlayerInterface for MusicPlayer {
     async fn next(&self) -> fdo::Result<()> {
-        dbg!("Attempted to next");
         self.imp().next().await;
         Ok(())
     }
 
     async fn previous(&self) -> fdo::Result<()> {
-        dbg!("Attempted to previous");
         self.imp().prev().await;
         Ok(())
     }
 
     async fn pause(&self) -> fdo::Result<()> {
-        dbg!("Attempted to pause");
         self.imp().pause();
         Ok(())
     }
 
     async fn play_pause(&self) -> fdo::Result<()> {
-        dbg!("Attempted to play/pause");
         self.imp().play_pause();
         Ok(())
     }
 
     async fn stop(&self) -> fdo::Result<()> {
-        dbg!("Attempted to stop");
         self.imp().stop();
         Ok(())
     }
 
     async fn play(&self) -> fdo::Result<()> {
-        dbg!("Attempted to play");
         self.imp().prepre_play().await;
         Ok(())
     }
 
     async fn seek(&self, _offset: Time) -> fdo::Result<()> {
-        dbg!("TODO: implement seek");
+        debug!("TODO: implement seek");
         Ok(())
     }
 
     async fn set_position(&self, _track_id: TrackId, position: Time) -> fdo::Result<()> {
-        dbg!("Setting position");
         let position = position.as_millis() as f64 / 1000.0;
         self.imp().set_position(position);
         Ok(())
