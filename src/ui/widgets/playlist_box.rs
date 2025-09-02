@@ -1,5 +1,4 @@
 use adw::subclass::prelude::*;
-use gettextrs::gettext;
 use gtk::{
     CompositeTemplate,
     glib,

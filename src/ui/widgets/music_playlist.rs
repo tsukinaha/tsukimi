@@ -1,5 +1,3 @@
-use std::collections::BTreeMap;
-
 use adw::{
     prelude::*,
     subclass::prelude::*,
@@ -198,7 +196,7 @@ impl PlaylistPage {
         let item = self.item();
         let id = item.id();
 
-        let mut songs = match fetch_with_cache(
+        let songs = match fetch_with_cache(
             &format!("audio_{}", item.id()),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_songs(&id).await },
@@ -212,7 +210,7 @@ impl PlaylistPage {
             }
         };
 
-        let mut playlist_box: super::playlist_box::PlaylistBox = super::playlist_box::PlaylistBox::new();
+        let playlist_box: super::playlist_box::PlaylistBox = super::playlist_box::PlaylistBox::new();
         playlist_box.connect_closure(
             "song-activated",
             true,

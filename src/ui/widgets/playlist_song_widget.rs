@@ -18,12 +18,7 @@ use crate::{
         song_widget::State,
         picture_loader::PictureLoader,
     },
-    utils::{
-        CachePolicy,
-        fetch_with_cache,
-        get_image_with_cache,
-        spawn,
-    },
+    utils::spawn,
 };
 
 pub(crate) mod imp {
