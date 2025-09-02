@@ -8,6 +8,7 @@ mod arg;
 mod config;
 mod gstl;
 mod macros;
+mod mpris_common;
 mod ui;
 mod utils;
 

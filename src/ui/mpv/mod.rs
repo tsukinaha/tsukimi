@@ -1,6 +1,7 @@
 pub mod control_sidebar;
 pub mod danmaku_timer;
 pub mod menu_actions;
+pub mod mpris;
 pub mod mpvglarea;
 pub mod options_matcher;
 pub mod page;

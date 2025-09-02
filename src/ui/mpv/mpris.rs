@@ -27,15 +27,12 @@ use mpris_server::{
     },
 };
 
-use super::player::MusicPlayer;
 use crate::{
     APP_ID,
     CLIENT_ID,
     gstl::player::imp::ListRepeatMode,
-    utils::{
-        get_image_with_cache,
-        spawn,
-    },
+    ui::mpv::page::MPVPage,
+    utils::spawn,
 };
 use tracing::{
     debug,
@@ -43,9 +40,9 @@ use tracing::{
     warn,
 };
 
-impl MusicPlayer {
-    pub async fn initialize_mpris(&self) -> Result<()> {
-        let server = LocalServer::new(APP_ID, self.imp().obj().clone()).await?;
+impl MPVPage {
+    pub async fn initialize_mpris(&self, app_id: &str) -> Result<()> {
+        let server = LocalServer::new(app_id, self.imp().obj().clone()).await?;
         spawn(server.run());
         self.imp()
             .mpris_server
@@ -54,7 +51,7 @@ impl MusicPlayer {
         Ok(())
     }
 
-    pub fn mpris_server(&self) -> Option<&LocalServer<MusicPlayer>> {
+    pub fn mpris_server(&self) -> Option<&LocalServer<MPVPage>> {
         self.imp().mpris_server.get()
     }
 
@@ -99,12 +96,8 @@ impl MusicPlayer {
         ));
     }
 
-    pub fn notify_mpris_song_changed(&self, has_prev: bool, has_next: bool) {
-        self.mpris_properties_changed([
-            Property::Metadata(self.metadata().clone()),
-            Property::CanGoPrevious(has_prev),
-            Property::CanGoNext(has_next),
-        ]);
+    pub fn notify_mpris_media_changed(&self) {
+        self.mpris_properties_changed([Property::Metadata(self.metadata().clone())]);
         self.notify_mpris_art_changed();
     }
 
@@ -139,46 +132,32 @@ impl MusicPlayer {
         self.mpris_properties_changed([Property::LoopStatus(status.into())]);
     }
 
-    pub fn notify_mpris_art_changed(&self) {
-        let mut metadata = self.metadata().clone();
-        spawn(glib::clone!(
-            #[weak(rename_to = imp)]
-            self,
-            async move {
-                if let Some(core_song) = imp.active_core_song().as_ref() {
-                    let id = if core_song.have_single_track_image() {
-                        core_song.id()
-                    } else {
-                        core_song.album_id()
-                    };
-                    let path = get_image_with_cache(id, "Primary".to_string(), None)
-                        .await
-                        .unwrap_or_default();
-                    let url = format!("file://{}", path);
-                    metadata.set_art_url(Some(url));
-                    imp.mpris_properties_changed([Property::Metadata(metadata)]);
-                }
-            }
-        ));
+    pub fn notify_mpris_has_chapters(&self, has_chapters: bool) {
+        self.mpris_properties_changed([
+            Property::CanGoNext(has_chapters),
+            Property::CanGoPrevious(has_chapters),
+        ]);
     }
+
+    pub fn notify_mpris_art_changed(&self) {}
 
     pub fn metadata(&self) -> Metadata {
         self.imp()
             .obj()
-            .active_core_song()
+            .current_video()
             .as_ref()
-            .map_or_else(Metadata::new, |song| {
+            .map_or_else(Metadata::new, |video| {
+                dbg!(&video.poster());
                 Metadata::builder()
-                    .album(song.album_id())
-                    .title(song.name())
-                    .length(Time::from_secs(song.duration() as i64))
-                    .artist([song.artist()])
+                    .title(video.name())
+                    .artist([video.artists().unwrap_or_default()])
+                    .art_url(video.poster().unwrap_or_default())
                     .build()
             })
     }
 }
 
-impl LocalRootInterface for MusicPlayer {
+impl LocalRootInterface for MPVPage {
     async fn can_raise(&self) -> fdo::Result<bool> {
         Ok(true)
     }
@@ -228,34 +207,42 @@ impl LocalRootInterface for MusicPlayer {
     }
 }
 
-impl LocalPlayerInterface for MusicPlayer {
+impl LocalPlayerInterface for MPVPage {
     async fn next(&self) -> fdo::Result<()> {
-        self.imp().next().await;
+        self.chapter_next();
         Ok(())
     }
 
     async fn previous(&self) -> fdo::Result<()> {
-        self.imp().prev().await;
+        self.chapter_next();
         Ok(())
     }
 
     async fn pause(&self) -> fdo::Result<()> {
-        self.imp().pause();
+        self.on_pause_update(true);
+        self.mpv().pause(true);
         Ok(())
     }
 
     async fn play_pause(&self) -> fdo::Result<()> {
-        self.imp().play_pause();
+        if self.imp().video.paused() {
+            self.on_pause_update(false);
+            self.mpv().pause(false);
+        } else {
+            self.on_pause_update(true);
+            self.mpv().pause(true);
+        }
         Ok(())
     }
 
     async fn stop(&self) -> fdo::Result<()> {
-        self.imp().stop();
+        // TODO implement
         Ok(())
     }
 
     async fn play(&self) -> fdo::Result<()> {
-        self.imp().prepre_play().await;
+        self.on_pause_update(false);
+        self.mpv().pause(false);
         Ok(())
     }
 
@@ -264,9 +251,8 @@ impl LocalPlayerInterface for MusicPlayer {
         Ok(())
     }
 
-    async fn set_position(&self, _track_id: TrackId, position: Time) -> fdo::Result<()> {
-        let position = position.as_millis() as f64 / 1000.0;
-        self.imp().set_position(position);
+    async fn set_position(&self, _track_id: TrackId, _position: Time) -> fdo::Result<()> {
+        // TODO implement
         Ok(())
     }
 
@@ -275,20 +261,15 @@ impl LocalPlayerInterface for MusicPlayer {
     }
 
     async fn playback_status(&self) -> fdo::Result<PlaybackStatus> {
-        Ok(match self.imp().state() {
-            gst::State::Playing => PlaybackStatus::Playing,
-            gst::State::Paused => PlaybackStatus::Paused,
-            gst::State::Null => PlaybackStatus::Stopped,
-            _ => PlaybackStatus::Stopped,
-        })
+        Ok(PlaybackStatus::Stopped)
     }
 
     async fn loop_status(&self) -> fdo::Result<LoopStatus> {
-        Ok(self.imp().obj().repeat_mode().into())
+        // TODO implement
+        Ok(LoopStatus::None)
     }
 
-    async fn set_loop_status(&self, status: LoopStatus) -> zbus::Result<()> {
-        self.set_repeat_mode(ListRepeatMode::from(status));
+    async fn set_loop_status(&self, _status: LoopStatus) -> zbus::Result<()> {
         Ok(())
     }
 
@@ -327,9 +308,8 @@ impl LocalPlayerInterface for MusicPlayer {
     }
 
     async fn position(&self) -> fdo::Result<Time> {
-        Ok(Time::from_micros(
-            self.imp().get_position().useconds() as i64
-        ))
+        //TODO implement
+        Ok(Time::from_micros(123))
     }
 
     async fn minimum_rate(&self) -> fdo::Result<PlaybackRate> {
@@ -341,46 +321,26 @@ impl LocalPlayerInterface for MusicPlayer {
     }
 
     async fn can_go_next(&self) -> fdo::Result<bool> {
-        Ok(self.imp().next_song().is_some())
+        Ok(self.current_video().is_some())
     }
 
     async fn can_go_previous(&self) -> fdo::Result<bool> {
-        Ok(self.imp().prev_song().is_some())
+        Ok(self.current_video().is_some())
     }
 
     async fn can_play(&self) -> fdo::Result<bool> {
-        Ok(self.imp().active_core_song.borrow().is_some())
+        Ok(self.current_video().is_some())
     }
 
     async fn can_pause(&self) -> fdo::Result<bool> {
-        Ok(self.imp().active_core_song.borrow().is_some())
+        Ok(self.current_video().is_some())
     }
 
     async fn can_seek(&self) -> fdo::Result<bool> {
-        Ok(self.imp().active_core_song.borrow().is_some())
+        Ok(self.current_video().is_some())
     }
 
     async fn can_control(&self) -> fdo::Result<bool> {
         Ok(true)
-    }
-}
-
-impl From<ListRepeatMode> for LoopStatus {
-    fn from(mode: ListRepeatMode) -> Self {
-        match mode {
-            ListRepeatMode::None => LoopStatus::None,
-            ListRepeatMode::RepeatOne => LoopStatus::Track,
-            ListRepeatMode::Repeat => LoopStatus::Playlist,
-        }
-    }
-}
-
-impl From<LoopStatus> for ListRepeatMode {
-    fn from(status: LoopStatus) -> Self {
-        match status {
-            LoopStatus::None => ListRepeatMode::None,
-            LoopStatus::Track => ListRepeatMode::RepeatOne,
-            LoopStatus::Playlist => ListRepeatMode::Repeat,
-        }
     }
 }
