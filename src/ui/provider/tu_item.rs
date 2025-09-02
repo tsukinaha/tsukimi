@@ -25,6 +25,7 @@ use crate::{
             item::ItemPage,
             list::ListPage,
             music_album::AlbumPage,
+            music_playlist::PlaylistPage,
             other::OtherPage,
             single_grid::{
                 SingleGrid,
@@ -263,12 +264,12 @@ impl TuItem {
                 let page = AlbumPage::new(self.to_owned());
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
-            "CollectionFolder" => {
-                let page = ListPage::new(self.id(), self.collection_type().unwrap_or_default());
+            "Playlist" => {
+                let page = PlaylistPage::new(self.to_owned());
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
-            "UserView" => {
-                let page = ListPage::new(self.id(), "livetv".to_string());
+            "CollectionFolder" | "UserView" => {
+                let page = ListPage::new(self.id(), self.collection_type().unwrap_or_default());
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
             "Tag" | "Genre" | "MusicGenre" => {

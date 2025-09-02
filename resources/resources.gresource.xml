@@ -54,6 +54,9 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/song_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/disc_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/player_toolbar.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/playlist_box.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/playlist_song_widget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/playlist_widget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/server_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/mpvpage.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/hortu_scrolled.ui</file>

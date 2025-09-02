@@ -336,7 +336,7 @@ impl TuListItem {
                 self.set_rating();
                 self.set_picture();
             }
-            "Tag" | "Genre" => {
+            "Tag" | "Genre" | "MusicGenre" => {
                 imp.overlay
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
                 imp.listlabel.set_text(&item.name());
@@ -388,7 +388,15 @@ impl TuListItem {
                 self.set_rating();
                 self.set_picture();
             }
-            "Audio" => {
+            "MusicArtist" => {
+                imp.listlabel.set_text(&item.name());
+                imp.label2.set_text(&item.role().unwrap_or("".to_string()));
+                imp.overlay
+                    .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
+                self.set_rating();
+                self.set_picture();
+            }
+            "Audio" | "Playlist" => {
                 imp.listlabel.set_text(&item.name());
                 imp.label2.set_visible(false);
                 imp.overlay
