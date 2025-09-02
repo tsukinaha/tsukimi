@@ -81,8 +81,6 @@ pub(crate) mod imp {
         #[template_child]
         pub recommendhortu: TemplateChild<HortuScrolled>,
         #[template_child]
-        pub artisthortu: TemplateChild<HortuScrolled>,
-        #[template_child]
         pub actionbox: TemplateChild<ItemActionsBox>,
         pub signal_id: RefCell<Option<SignalHandlerId>>,
     }
@@ -278,7 +276,6 @@ impl PlaylistPage {
     pub async fn sets(&self, types: &str) {
         let hortu = match types {
             "Recommend" => self.imp().recommendhortu.get(),
-            "More From" => self.imp().artisthortu.get(),
             _ => return,
         };
 

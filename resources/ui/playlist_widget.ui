@@ -124,10 +124,6 @@
               </object>
             </child>
             <child>
-              <object class="HortuScrolled" id="artisthortu">
-              </object>
-            </child>
-            <child>
               <object class="HortuScrolled" id="recommendhortu">
               </object>
             </child>
