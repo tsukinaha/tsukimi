@@ -4,7 +4,12 @@ use adw::subclass::prelude::{
     ObjectSubclassExt,
     ObjectSubclassIsExt,
 };
-use gtk::glib;
+use gtk::{
+    self,
+    gio,
+    glib,
+    prelude::*,
+};
 use mpris_server::{
     LocalPlayerInterface,
     LocalRootInterface,
@@ -181,8 +186,15 @@ impl LocalRootInterface for MusicPlayer {
     }
 
     async fn raise(&self) -> fdo::Result<()> {
-        debug!("TODO: implement raise");
-        Ok(())
+        if let Some(app) = gio::Application::default() {
+            if let Ok(gtk_app) = app.downcast::<gtk::Application>() {
+                if let Some(window) = gtk_app.active_window() {
+                    window.present();
+                    return Ok(());
+                }
+            }
+        }
+        Err(fdo::Error::Failed("Failed to raise window".to_string()))
     }
 
     async fn can_quit(&self) -> fdo::Result<bool> {
@@ -190,12 +202,16 @@ impl LocalRootInterface for MusicPlayer {
     }
 
     async fn quit(&self) -> fdo::Result<()> {
-        debug!("TODO: implement quit");
-        Ok(())
+        if let Some(app) = gio::Application::default() {
+            app.quit();
+            Ok(())
+        } else {
+            Err(fdo::Error::Failed("Failed to quit".to_string()))
+        }
     }
 
     async fn can_set_fullscreen(&self) -> fdo::Result<bool> {
-        Ok(true)
+        Ok(false)
     }
 
     async fn fullscreen(&self) -> fdo::Result<bool> {
