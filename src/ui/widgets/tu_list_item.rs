@@ -203,7 +203,7 @@ impl TuListItem {
                 self.toast(gettext("Waiting for mediasource ..."));
                 item.play_series(self).await;
             }
-            "MusicAlbum" => {
+            "MusicAlbum" | "Playlist" => {
                 self.toast(gettext("Waiting for mediasource ..."));
                 item.play_album(self).await;
             }
