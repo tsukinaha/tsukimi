@@ -1187,6 +1187,7 @@ impl MPVPage {
                 window.update_item_page().await;
             }
         ));
+        self.notify_stopped();
     }
 
     pub fn update_position_callback(&self) -> glib::ControlFlow {
@@ -1312,12 +1313,16 @@ impl MPVPage {
 
     pub fn on_backward(&self) {
         let video = &self.imp().video;
-        video.seek_backward(SETTINGS.mpv_seek_backward_step() as i64)
+        let step = SETTINGS.mpv_seek_backward_step() as i64;
+        video.seek_backward(step);
+        self.notify_seeked(step);
     }
 
     pub fn on_forward(&self) {
         let video = &self.imp().video;
-        video.seek_forward(SETTINGS.mpv_seek_forward_step() as i64)
+        let step = SETTINGS.mpv_seek_forward_step() as i64;
+        video.seek_forward(step);
+        self.notify_seeked(step);
     }
 
     pub fn chapter_prev(&self) {
@@ -1464,11 +1469,18 @@ impl MPVPage {
 
     pub fn notify_playing(&self) {
         self.notify_mpris_playing();
-        self.notify_mpris_media_changed();
     }
 
     pub fn notify_player_paused(&self) {
         self.notify_mpris_paused();
+    }
+
+    pub fn notify_stopped(&self) {
+        self.notify_mpris_stopped();
+    }
+
+    pub fn notify_seeked(&self, position: i64) {
+        self.notify_mpris_seeked(position);
     }
 }
 

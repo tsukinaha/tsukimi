@@ -35,7 +35,6 @@ use crate::{
     utils::spawn,
 };
 use tracing::{
-    debug,
     info,
     warn,
 };
@@ -96,13 +95,9 @@ impl MPVPage {
         ));
     }
 
-    pub fn notify_mpris_media_changed(&self) {
-        self.mpris_properties_changed([Property::Metadata(self.metadata().clone())]);
-        self.notify_mpris_art_changed();
-    }
-
     pub fn notify_mpris_playing(&self) {
         self.mpris_properties_changed([
+            Property::Metadata(self.metadata().clone()),
             Property::CanPlay(true),
             Property::CanPause(true),
             Property::CanSeek(true),
@@ -112,6 +107,7 @@ impl MPVPage {
 
     pub fn notify_mpris_paused(&self) {
         self.mpris_properties_changed([
+            Property::Metadata(self.metadata().clone()),
             Property::CanPlay(true),
             Property::CanPause(false),
             Property::CanSeek(true),
@@ -121,6 +117,7 @@ impl MPVPage {
 
     pub fn notify_mpris_stopped(&self) {
         self.mpris_properties_changed([
+            Property::Metadata(self.metadata().clone()),
             Property::CanPlay(true),
             Property::CanPause(false),
             Property::CanSeek(false),
@@ -147,12 +144,7 @@ impl MPVPage {
             .current_video()
             .as_ref()
             .map_or_else(Metadata::new, |video| {
-                dbg!(&video.poster());
-                Metadata::builder()
-                    .title(video.name())
-                    .artist([video.artists().unwrap_or_default()])
-                    .art_url(video.poster().unwrap_or_default())
-                    .build()
+                Metadata::builder().title(video.name()).build()
             })
     }
 }
@@ -236,7 +228,9 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn stop(&self) -> fdo::Result<()> {
-        // TODO implement
+        // same as pause
+        self.on_pause_update(true);
+        self.mpv().pause(true);
         Ok(())
     }
 
@@ -246,14 +240,19 @@ impl LocalPlayerInterface for MPVPage {
         Ok(())
     }
 
-    async fn seek(&self, _offset: Time) -> fdo::Result<()> {
-        debug!("TODO: implement seek");
+    async fn seek(&self, offset: Time) -> fdo::Result<()> {
+        if offset.is_positive() {
+            self.imp().video.seek_forward(offset.as_secs());
+        } else {
+            self.imp().video.seek_backward(offset.as_secs());
+        }
         Ok(())
     }
 
     async fn set_position(&self, _track_id: TrackId, _position: Time) -> fdo::Result<()> {
-        // TODO implement
-        Ok(())
+        Err(fdo::Error::NotSupported(
+            "SetPosition is not supported".into(),
+        ))
     }
 
     async fn open_uri(&self, _uri: String) -> fdo::Result<()> {
@@ -265,7 +264,6 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn loop_status(&self) -> fdo::Result<LoopStatus> {
-        // TODO implement
         Ok(LoopStatus::None)
     }
 
@@ -308,8 +306,8 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn position(&self) -> fdo::Result<Time> {
-        //TODO implement
-        Ok(Time::from_micros(123))
+        let position = Time::from_micros(self.imp().video.position() as i64);
+        Ok(position)
     }
 
     async fn minimum_rate(&self) -> fdo::Result<PlaybackRate> {
