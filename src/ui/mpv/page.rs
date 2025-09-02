@@ -385,6 +385,7 @@ mod imp {
             self.init_dandanapi_client();
 
             // Initialize MPRIS server
+            #[cfg(target_os = "linux")]
             glib::spawn_future_local(glib::clone!(
                 #[weak(rename_to = imp)]
                 self,
@@ -1464,22 +1465,27 @@ impl MPVPage {
     }
 
     pub fn notify_has_chapters(&self, has_chapters: bool) {
+        #[cfg(target_os = "linux")]
         self.notify_mpris_has_chapters(has_chapters);
     }
 
     pub fn notify_playing(&self) {
+        #[cfg(target_os = "linux")]
         self.notify_mpris_playing();
     }
 
     pub fn notify_player_paused(&self) {
+        #[cfg(target_os = "linux")]
         self.notify_mpris_paused();
     }
 
     pub fn notify_stopped(&self) {
+        #[cfg(target_os = "linux")]
         self.notify_mpris_stopped();
     }
 
     pub fn notify_seeked(&self, position: i64) {
+        #[cfg(target_os = "linux")]
         self.notify_mpris_seeked(position);
     }
 }

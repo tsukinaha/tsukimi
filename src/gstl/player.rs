@@ -115,6 +115,7 @@ pub mod imp {
             let pipeline = gst::ElementFactory::make("playbin3").build().unwrap();
 
             // Initialize the mpris server
+            #[cfg(target_os = "linux")]
             glib::spawn_future_local(glib::clone!(
                 #[weak(rename_to = imp)]
                 self,
@@ -442,26 +443,30 @@ pub mod imp {
             }
         }
 
-        // Todo: Conditional compilation depending on platform for these notifications?
         pub fn notify_song_changed(&self) {
             let has_prev = self.prev_song().is_some();
             let has_next = self.next_song().is_some();
+            #[cfg(target_os = "linux")]
             self.obj().notify_mpris_song_changed(has_prev, has_next);
         }
 
         pub fn notify_playing(&self) {
+            #[cfg(target_os = "linux")]
             self.obj().notify_mpris_playing();
         }
 
         pub fn notify_paused(&self) {
+            #[cfg(target_os = "linux")]
             self.obj().notify_mpris_paused();
         }
 
         pub fn notify_stopped(&self) {
+            #[cfg(target_os = "linux")]
             self.obj().notify_mpris_stopped();
         }
 
         pub fn notify_seeked(&self, position: i64) {
+            #[cfg(target_os = "linux")]
             self.obj().notify_mpris_seeked(position);
         }
     }
