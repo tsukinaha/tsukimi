@@ -1830,7 +1830,8 @@ dependencies = [
 [[package]]
 name = "gettext-rs"
 version = "0.7.2"
-source = "git+https://github.com/Fingel/gettext-rs.git?branch=fix%2Fborrow-fail-nightly#44e3820aced208e2d663638311acde9e4a9c73c1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a44e92f7dc08430aca7ed55de161253a22276dfd69c5526e5c5e95d1f7cf338a"
 dependencies = [
  "gettext-sys",
  "locale_config",
@@ -1839,7 +1840,8 @@ dependencies = [
 [[package]]
 name = "gettext-sys"
 version = "0.22.5"
-source = "git+https://github.com/Fingel/gettext-rs.git?branch=fix%2Fborrow-fail-nightly#44e3820aced208e2d663638311acde9e4a9c73c1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bb45773f5b8945f12aecd04558f545964f943dacda1b1155b3d738f5469ef661"
 dependencies = [
  "cc",
  "temp-dir",
