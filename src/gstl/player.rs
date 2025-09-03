@@ -32,6 +32,7 @@ pub mod imp {
         },
         subclass::prelude::*,
     };
+    #[cfg(target_os = "linux")]
     use mpris_server::LocalServer;
     use once_cell::sync::*;
     use tracing::{
@@ -100,6 +101,7 @@ pub mod imp {
         pub repeat_mode: Cell<ListRepeatMode>,
         #[property(get, set, default_value = false)]
         pub gapless: RefCell<bool>,
+        #[cfg(target_os = "linux")]
         pub mpris_server: OnceCell<LocalServer<super::MusicPlayer>>,
     }
 

@@ -8,6 +8,7 @@ mod arg;
 mod config;
 mod gstl;
 mod macros;
+#[cfg(target_os = "linux")]
 mod mpris_common;
 mod ui;
 mod utils;

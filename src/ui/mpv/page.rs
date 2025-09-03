@@ -88,6 +88,7 @@ mod imp {
         glib,
         subclass::prelude::*,
     };
+    #[cfg(target_os = "linux")]
     use mpris_server::LocalServer;
     use once_cell::sync::OnceCell;
 
@@ -170,6 +171,7 @@ mod imp {
         pub popover: RefCell<Option<PopoverMenu>>,
         pub menu_actions: MenuActions,
         pub shortcuts_window: RefCell<Option<ShortcutsWindow>>,
+        #[cfg(target_os = "linux")]
         pub mpris_server: OnceCell<LocalServer<super::MPVPage>>,
 
         #[template_child]
