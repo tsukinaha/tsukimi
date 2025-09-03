@@ -49,7 +49,6 @@ libmpv2 = "4.1.0"
 danmakw = { git = "https://github.com/tsukinaha/danmakw.git" }
 dandanapi = { git = "https://github.com/tsukinaha/dandanapi.git" }
 glow = "0.16.0"
-mpris-server = "0.9.0"
 
 [build-dependencies]
 embed-resource = "3.0.5"
@@ -63,6 +62,7 @@ render = []                       # Enable custom rendering
 build_libmpv = []                 # build libmpv automatically, provided MPV_SOURCE is set
 
 [target.'cfg(target_os = "linux")'.dependencies]
+mpris-server = "0.9.0"
 xattr = { version = "1.5.1" }
 gdk-x11 = { version = "0.9", package = "gdk4-x11", features = [
   "v4_18",
