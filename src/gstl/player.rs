@@ -384,7 +384,7 @@ pub mod imp {
             match self.state() {
                 gst::State::Playing => self.pause(),
                 gst::State::Paused => self.unpause(),
-                _ => {}
+                _ => (),
             }
         }
 
@@ -441,6 +441,10 @@ pub mod imp {
                 debug!("Prev Song: {}", core_song.name());
                 self.active_core_song.replace(Some(core_song));
             }
+        }
+
+        pub fn set_volume(&self, volume: f64) {
+            gst::prelude::ObjectExt::set_property(self.pipeline(), "volume", volume);
         }
 
         pub fn notify_song_changed(&self) {

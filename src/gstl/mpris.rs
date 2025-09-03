@@ -38,7 +38,6 @@ use crate::{
     },
 };
 use tracing::{
-    debug,
     info,
     warn,
 };
@@ -259,13 +258,14 @@ impl LocalPlayerInterface for MusicPlayer {
         Ok(())
     }
 
-    async fn seek(&self, _offset: Time) -> fdo::Result<()> {
-        debug!("TODO: implement seek");
+    async fn seek(&self, offset: Time) -> fdo::Result<()> {
+        let position = self.imp().position() + offset.as_secs() as f64;
+        self.imp().set_position(position);
         Ok(())
     }
 
     async fn set_position(&self, _track_id: TrackId, position: Time) -> fdo::Result<()> {
-        let position = position.as_millis() as f64 / 1000.0;
+        let position = position.as_secs() as f64;
         self.imp().set_position(position);
         Ok(())
     }
@@ -320,10 +320,9 @@ impl LocalPlayerInterface for MusicPlayer {
         Ok(1.0)
     }
 
-    async fn set_volume(&self, _volume: Volume) -> zbus::Result<()> {
-        Err(zbus::Error::from(fdo::Error::NotSupported(
-            "SetVolume is not supported".into(),
-        )))
+    async fn set_volume(&self, volume: Volume) -> zbus::Result<()> {
+        self.imp().set_volume(volume);
+        Ok(())
     }
 
     async fn position(&self) -> fdo::Result<Time> {

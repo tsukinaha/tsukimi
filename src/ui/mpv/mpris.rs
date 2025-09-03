@@ -167,14 +167,15 @@ impl LocalRootInterface for MPVPage {
     }
 
     async fn can_set_fullscreen(&self) -> fdo::Result<bool> {
-        Ok(false)
+        Ok(true)
     }
 
     async fn fullscreen(&self) -> fdo::Result<bool> {
-        Ok(false)
+        Ok(self.fullscreened())
     }
 
-    async fn set_fullscreen(&self, _fullscreen: bool) -> zbus::Result<()> {
+    async fn set_fullscreen(&self, fullscreen: bool) -> zbus::Result<()> {
+        self.set_fullscreened(fullscreen);
         Ok(())
     }
 
@@ -217,13 +218,9 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn play_pause(&self) -> fdo::Result<()> {
-        if self.imp().video.paused() {
-            self.on_pause_update(false);
-            self.mpv().pause(false);
-        } else {
-            self.on_pause_update(true);
-            self.mpv().pause(true);
-        }
+        let paused = self.imp().video.paused();
+        self.on_pause_update(!paused);
+        self.mpv().pause(!paused);
         Ok(())
     }
 
@@ -249,10 +246,9 @@ impl LocalPlayerInterface for MPVPage {
         Ok(())
     }
 
-    async fn set_position(&self, _track_id: TrackId, _position: Time) -> fdo::Result<()> {
-        Err(fdo::Error::NotSupported(
-            "SetPosition is not supported".into(),
-        ))
+    async fn set_position(&self, _track_id: TrackId, position: Time) -> fdo::Result<()> {
+        self.mpv().set_position(position.as_secs() as f64);
+        Ok(())
     }
 
     async fn open_uri(&self, _uri: String) -> fdo::Result<()> {
@@ -275,10 +271,9 @@ impl LocalPlayerInterface for MPVPage {
         Ok(1.0)
     }
 
-    async fn set_rate(&self, _rate: PlaybackRate) -> zbus::Result<()> {
-        Err(zbus::Error::from(fdo::Error::NotSupported(
-            "SetRate is not supported".into(),
-        )))
+    async fn set_rate(&self, rate: PlaybackRate) -> zbus::Result<()> {
+        self.mpv().set_speed(rate);
+        Ok(())
     }
 
     async fn shuffle(&self) -> fdo::Result<bool> {
@@ -299,10 +294,9 @@ impl LocalPlayerInterface for MPVPage {
         Ok(1.0)
     }
 
-    async fn set_volume(&self, _volume: Volume) -> zbus::Result<()> {
-        Err(zbus::Error::from(fdo::Error::NotSupported(
-            "SetVolume is not supported".into(),
-        )))
+    async fn set_volume(&self, volume: Volume) -> zbus::Result<()> {
+        self.mpv().set_volume(volume as i64);
+        Ok(())
     }
 
     async fn position(&self) -> fdo::Result<Time> {
@@ -311,11 +305,11 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn minimum_rate(&self) -> fdo::Result<PlaybackRate> {
-        Ok(1.0)
+        Ok(0.1)
     }
 
     async fn maximum_rate(&self) -> fdo::Result<PlaybackRate> {
-        Ok(1.0)
+        Ok(5.0)
     }
 
     async fn can_go_next(&self) -> fdo::Result<bool> {
