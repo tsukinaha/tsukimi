@@ -88,9 +88,12 @@ mod imp {
         glib,
         subclass::prelude::*,
     };
+    #[cfg(target_os = "linux")]
+    use mpris_server::LocalServer;
     use once_cell::sync::OnceCell;
 
     use crate::{
+        APP_ID,
         client::structs::Back,
         ui::{
             models::SETTINGS,
@@ -168,6 +171,8 @@ mod imp {
         pub popover: RefCell<Option<PopoverMenu>>,
         pub menu_actions: MenuActions,
         pub shortcuts_window: RefCell<Option<ShortcutsWindow>>,
+        #[cfg(target_os = "linux")]
+        pub mpris_server: OnceCell<LocalServer<super::MPVPage>>,
 
         #[template_child]
         pub volume_adj: TemplateChild<gtk::Adjustment>,
@@ -380,6 +385,19 @@ mod imp {
             obj.listen_events();
 
             self.init_dandanapi_client();
+
+            // Initialize MPRIS server
+            #[cfg(target_os = "linux")]
+            glib::spawn_future_local(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                async move {
+                    let app_id = format!("{}.{}", APP_ID, "mpv");
+                    if let Err(e) = imp.obj().initialize_mpris(&app_id).await {
+                        tracing::warn!("Failed to initialize mpris server: {}", e);
+                    }
+                }
+            ));
         }
     }
 
@@ -648,6 +666,7 @@ impl MPVPage {
                 };
             }
         ));
+        self.notify_playing();
     }
 
     async fn external_sub_url_without_selected_source(
@@ -871,7 +890,9 @@ impl MPVPage {
     }
 
     fn on_chapter_list(&self, value: ChapterList) {
+        let chapter_len = value.0.len();
         self.imp().video_scale.set_chapter_list(value);
+        self.notify_has_chapters(chapter_len > 0);
     }
 
     fn update_duration(&self, value: f64) {
@@ -952,11 +973,13 @@ impl MPVPage {
         self.toast(value);
     }
 
-    fn on_pause_update(&self, value: bool) {
+    pub fn on_pause_update(&self, value: bool) {
         if !value {
             self.update_timeout();
+            self.notify_playing();
         } else {
             self.remove_timeout();
+            self.notify_player_paused();
         }
 
         self.set_paused(value);
@@ -1167,6 +1190,7 @@ impl MPVPage {
                 window.update_item_page().await;
             }
         ));
+        self.notify_stopped();
     }
 
     pub fn update_position_callback(&self) -> glib::ControlFlow {
@@ -1292,12 +1316,16 @@ impl MPVPage {
 
     pub fn on_backward(&self) {
         let video = &self.imp().video;
-        video.seek_backward(SETTINGS.mpv_seek_backward_step() as i64)
+        let step = SETTINGS.mpv_seek_backward_step() as i64;
+        video.seek_backward(step);
+        self.notify_seeked(step);
     }
 
     pub fn on_forward(&self) {
         let video = &self.imp().video;
-        video.seek_forward(SETTINGS.mpv_seek_forward_step() as i64)
+        let step = SETTINGS.mpv_seek_forward_step() as i64;
+        video.seek_forward(step);
+        self.notify_seeked(step);
     }
 
     pub fn chapter_prev(&self) {
@@ -1436,6 +1464,31 @@ impl MPVPage {
         let _ = SETTINGS.set_danmaku_enabled(state);
 
         false
+    }
+
+    pub fn notify_has_chapters(&self, has_chapters: bool) {
+        #[cfg(target_os = "linux")]
+        self.notify_mpris_has_chapters(has_chapters);
+    }
+
+    pub fn notify_playing(&self) {
+        #[cfg(target_os = "linux")]
+        self.notify_mpris_playing();
+    }
+
+    pub fn notify_player_paused(&self) {
+        #[cfg(target_os = "linux")]
+        self.notify_mpris_paused();
+    }
+
+    pub fn notify_stopped(&self) {
+        #[cfg(target_os = "linux")]
+        self.notify_mpris_stopped();
+    }
+
+    pub fn notify_seeked(&self, position: i64) {
+        #[cfg(target_os = "linux")]
+        self.notify_mpris_seeked(position);
     }
 }
 
