@@ -160,6 +160,3 @@ resources/ui/filters_row.ui
 resources/ui/filter_row.ui
 resources/ui/filter_search_page.ui
 resources/ui/missing_episodes.ui
-resources/ui/playlist_box.ui
-resources/ui/playlist_song_widget.ui
-resources/ui/playlist_widget.ui
