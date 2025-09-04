@@ -13,7 +13,6 @@ use crate::{
         GlobalToast,
         widgets::{
             song_widget::SongWidget,
-            playlist_song_widget::PlaylistSongWidget,
             star_toggle::StarToggle,
         },
     },
@@ -71,4 +70,3 @@ macro_rules! impl_has_likeaction {
 }
 
 impl_has_likeaction!(SongWidget);
-impl_has_likeaction!(PlaylistSongWidget);

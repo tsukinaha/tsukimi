@@ -223,7 +223,7 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
-#: src/ui/widgets/music_playlist.rs:229
+#: src/ui/widgets/music_album.rs:246
 msgid "Songs"
 msgstr ""
 

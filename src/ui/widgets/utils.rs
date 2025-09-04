@@ -123,3 +123,16 @@ where
         }
     }
 }
+
+pub fn run_time_ticks_to_label(run_time_ticks: u64) -> String {
+    let duration = chrono::Duration::seconds((run_time_ticks / 10000000) as i64);
+    let hours = duration.num_hours();
+    let minutes = duration.num_minutes() % 60;
+    let seconds = duration.num_seconds() % 60;
+
+    if hours > 0 {
+        format!("{hours}:{minutes:02}:{seconds:02}")
+    } else {
+        format!("{minutes}:{seconds:02}")
+    }
+}

@@ -43,9 +43,6 @@ src/ui/widgets/listexpand_row.rs
 src/ui/widgets/media_viewer.rs
 src/ui/widgets/metadata_dialog.rs
 src/ui/widgets/music_album.rs
-src/ui/widgets/music_playlist.rs
-src/ui/widgets/playlist_box.rs
-src/ui/widgets/playlist_song_widget.rs
 src/ui/widgets/player_toolbar.rs
 src/ui/widgets/refresh_dialog.rs
 src/ui/widgets/search.rs
