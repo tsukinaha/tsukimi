@@ -32,8 +32,13 @@ pub mod imp {
         },
         subclass::prelude::*,
     };
+    #[cfg(target_os = "linux")]
+    use mpris_server::LocalServer;
     use once_cell::sync::*;
-    use tracing::debug;
+    use tracing::{
+        debug,
+        warn,
+    };
 
     use super::*;
     use crate::ui::widgets::song_widget::State;
@@ -96,6 +101,8 @@ pub mod imp {
         pub repeat_mode: Cell<ListRepeatMode>,
         #[property(get, set, default_value = false)]
         pub gapless: RefCell<bool>,
+        #[cfg(target_os = "linux")]
+        pub mpris_server: OnceCell<LocalServer<super::MusicPlayer>>,
     }
 
     #[glib::derived_properties]
@@ -108,6 +115,19 @@ pub mod imp {
 
             // Build the pipeline
             let pipeline = gst::ElementFactory::make("playbin3").build().unwrap();
+
+            // Initialize the mpris server
+            #[cfg(target_os = "linux")]
+            glib::spawn_future_local(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                async move {
+                    if let Err(e) = imp.obj().initialize_mpris().await {
+                        warn!("Failed to initialize mpris server: {}", e);
+                    }
+                }
+            ));
+
             // Start playing
             let bus = pipeline.bus().unwrap();
             bus.add_signal_watch();
@@ -237,6 +257,7 @@ pub mod imp {
             self.pipeline()
                 .set_state(gst::State::Playing)
                 .expect("Unable to set the pipeline to the `Playing` state");
+            self.notify_playing();
         }
 
         pub async fn play(&self, core_song: &CoreSong) {
@@ -254,6 +275,7 @@ pub mod imp {
 
             gst::prelude::ObjectExt::set_property(self.pipeline(), "uri", uri);
             self.playing();
+            self.notify_song_changed();
         }
 
         pub async fn add_song(&self, core_song: &CoreSong) {
@@ -350,12 +372,22 @@ pub mod imp {
             self.pipeline()
                 .set_state(gst::State::Paused)
                 .expect("Unable to set the pipeline to the `Paused` state");
+            self.notify_paused();
         }
 
         pub fn unpause(&self) {
             self.pipeline()
                 .set_state(gst::State::Playing)
                 .expect("Unable to set the pipeline to the `Playing` state");
+            self.notify_playing();
+        }
+
+        pub fn play_pause(&self) {
+            match self.state() {
+                gst::State::Playing => self.pause(),
+                gst::State::Paused => self.unpause(),
+                _ => (),
+            }
         }
 
         pub fn state(&self) -> gst::State {
@@ -369,6 +401,8 @@ pub mod imp {
                 .seek_simple(gst::SeekFlags::FLUSH | gst::SeekFlags::KEY_UNIT, position)
             {
                 tracing::warn!("Failed to seek: {}", e);
+            } else {
+                self.notify_seeked(position.mseconds() as i64);
             }
         }
 
@@ -409,6 +443,37 @@ pub mod imp {
                 debug!("Prev Song: {}", core_song.name());
                 self.active_core_song.replace(Some(core_song));
             }
+        }
+
+        pub fn set_volume(&self, volume: f64) {
+            gst::prelude::ObjectExt::set_property(self.pipeline(), "volume", volume);
+        }
+
+        pub fn notify_song_changed(&self) {
+            let has_prev = self.prev_song().is_some();
+            let has_next = self.next_song().is_some();
+            #[cfg(target_os = "linux")]
+            self.obj().notify_mpris_song_changed(has_prev, has_next);
+        }
+
+        pub fn notify_playing(&self) {
+            #[cfg(target_os = "linux")]
+            self.obj().notify_mpris_playing();
+        }
+
+        pub fn notify_paused(&self) {
+            #[cfg(target_os = "linux")]
+            self.obj().notify_mpris_paused();
+        }
+
+        pub fn notify_stopped(&self) {
+            #[cfg(target_os = "linux")]
+            self.obj().notify_mpris_stopped();
+        }
+
+        pub fn notify_seeked(&self, position: i64) {
+            #[cfg(target_os = "linux")]
+            self.obj().notify_mpris_seeked(position);
         }
     }
 }

@@ -11,7 +11,7 @@ license = "GPL-3.0"
 gtk = { version = "0.9", package = "gtk4", features = ["v4_18"] }
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.140"
-tokio = { version = "1.46", features = ["full"] }
+tokio = { version = "1.47", features = ["full"] }
 reqwest = { version = "0.12", default-features = false, features = [
   "http2",
   "rustls-tls",
@@ -38,12 +38,12 @@ atomic-wait = "1.1.0"
 flume = "0.11.1"
 derive_builder = "0.20.2"
 anyhow = "1.0.98"
-tracing-subscriber = { version = "0.3.19", features = ["chrono"] }
+tracing-subscriber = { version = "0.3.20", features = ["chrono"] }
 regex = "1.11.1"
 strsim = "0.11.1"
 clap = { version = "4.5.41", features = ["derive"] }
 fnv = "1.0.7"
-rand = "0.9.1"
+rand = "0.9.2"
 base64 = "0.22.1"
 libmpv2 = "4.1.0"
 danmakw = { git = "https://github.com/tsukinaha/danmakw.git" }
@@ -52,7 +52,7 @@ glow = "0.16.0"
 
 [build-dependencies]
 embed-resource = "3.0.5"
-glib-build-tools = "0.20.0"
+glib-build-tools = "0.21.0"
 
 [features]
 console = []                      # Enable console logging
@@ -62,6 +62,7 @@ render = []                       # Enable custom rendering
 build_libmpv = []                 # build libmpv automatically, provided MPV_SOURCE is set
 
 [target.'cfg(target_os = "linux")'.dependencies]
+mpris-server = "0.9.0"
 xattr = { version = "1.5.1" }
 gdk-x11 = { version = "0.9", package = "gdk4-x11", features = [
   "v4_18",
