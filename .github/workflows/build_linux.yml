@@ -39,7 +39,6 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/.sccache
-            ${{ github.workspace }}/target
           key: tsukimi-build-${{ matrix.platform }}-linux-${{ github.sha }}
           restore-keys: |
             tsukimi-build-${{ matrix.platform }}-linux-
@@ -53,13 +52,13 @@ jobs:
           SCCACHE_DIR: ${{ github.workspace }}/.sccache
           SCCACHE_IDLE_TIMEOUT: 0
           SCCACHE_DIRECT: false
+          SCCACHE_CACHE_SIZE: 1G
         with:
           run: |
             sccache --start-server
             sccache -z
             sccache -s
           post: |
-            sccache -s
             sccache --stop-server
 
       - name: Build tsukimi for ${{ matrix.platform }}
