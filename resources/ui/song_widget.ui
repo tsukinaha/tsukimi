@@ -39,6 +39,12 @@
                 </style>
               </object>
             </child>
+            <child>
+                <object class="GtkBox" id="cover_container">
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                </object>
+            </child>
           </object>
         </child>
         <child>

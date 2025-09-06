@@ -14,6 +14,7 @@ use crate::{
         core_song::CoreSong,
         tu_item::TuItem,
     },
+    ui::widgets::picture_loader::PictureLoader,
     utils::spawn,
 };
 
@@ -57,8 +58,12 @@ pub(crate) mod imp {
     pub struct SongWidget {
         #[property(get, set, construct_only)]
         pub item: OnceCell<TuItem>,
+        #[property(get, set, construct_only)]
+        pub itemtype: OnceCell<String>,
         #[property(get, set = Self::set_state, explicit_notify, builder(State::default()))]
         pub state: Cell<State>,
+        #[template_child]
+        pub cover_container: TemplateChild<gtk::Box>,
         #[template_child]
         pub number_label: TemplateChild<gtk::Label>,
         #[template_child]
@@ -170,16 +175,18 @@ glib::wrapper! {
 }
 
 impl SongWidget {
-    pub fn new(item: TuItem) -> Self {
+    pub fn new(item: TuItem, item_type: String) -> Self {
         glib::Object::builder()
             .property("coresong", CoreSong::new(&item.id()))
             .property("item", item)
+            .property("itemtype", item_type)
             .build()
     }
 
     pub fn set_up(&self) {
         let imp = self.imp();
         let item = imp.item.get().unwrap();
+        let item_type = self.itemtype();
         imp.number_label.set_text(&item.index_number().to_string());
         imp.title_label.set_text(&item.name());
         imp.artist_label
@@ -188,6 +195,20 @@ impl SongWidget {
         imp.duration_label
             .set_text(&format_duration(duration as i64));
         imp.favourite_button.set_active(item.is_favorite());
+
+        if &item_type == "MusicAlbum" {
+            imp.cover_container.set_visible(false);
+        }
+        else {
+            let picture_loader = if let Some(image_tags) = item.primary_image_item_id() {
+                PictureLoader::new(&image_tags, "Primary", None)
+            } else {
+                PictureLoader::new(&item.id(), "Primary", None)
+            };
+
+            imp.cover_container.append(&picture_loader);
+            imp.number_label.set_visible(false);
+        }
 
         let id = item.id();
         spawn(glib::clone!(
