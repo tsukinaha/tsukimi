@@ -9,6 +9,7 @@ use gtk::{
 };
 
 use crate::{
+    client::structs::SongWidgetView,
     ui::provider::{
         actions::HasLikeAction,
         core_song::CoreSong,
@@ -58,8 +59,8 @@ pub(crate) mod imp {
     pub struct SongWidget {
         #[property(get, set, construct_only)]
         pub item: OnceCell<TuItem>,
-        #[property(get, set, construct_only)]
-        pub itemtype: OnceCell<String>,
+        #[property(get, set, construct_only, builder(SongWidgetView::default()))]
+        pub view_type: OnceCell<SongWidgetView>,
         #[property(get, set = Self::set_state, explicit_notify, builder(State::default()))]
         pub state: Cell<State>,
         #[template_child]
@@ -175,18 +176,18 @@ glib::wrapper! {
 }
 
 impl SongWidget {
-    pub fn new(item: TuItem, item_type: String) -> Self {
+    pub fn new(item: TuItem, view_type: SongWidgetView) -> Self {
         glib::Object::builder()
             .property("coresong", CoreSong::new(&item.id()))
             .property("item", item)
-            .property("itemtype", item_type)
+            .property("view_type", view_type)
             .build()
     }
 
     pub fn set_up(&self) {
         let imp = self.imp();
         let item = imp.item.get().unwrap();
-        let item_type = self.itemtype();
+        let view_type = self.view_type();
         imp.number_label.set_text(&item.index_number().to_string());
         imp.title_label.set_text(&item.name());
         imp.artist_label
@@ -196,7 +197,7 @@ impl SongWidget {
             .set_text(&format_duration(duration as i64));
         imp.favourite_button.set_active(item.is_favorite());
 
-        if &item_type == "MusicAlbum" {
+        if view_type == SongWidgetView::MusicAlbumItem {
             imp.cover_container.set_visible(false);
         }
         else {

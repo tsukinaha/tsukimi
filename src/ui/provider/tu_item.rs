@@ -16,7 +16,10 @@ use crate::{
     client::{
         error::UserFacingError,
         jellyfin_client::JELLYFIN_CLIENT,
-        structs::SimpleListItem,
+        structs::{
+            SimpleListItem,
+            SongWidgetView
+        },
     },
     ui::{
         GlobalToast,
@@ -260,7 +263,7 @@ impl TuItem {
                 );
             }
             "MusicAlbum" | "Playlist" => {
-                let page = AlbumPage::new(self.to_owned(), self.item_type());
+                let page = AlbumPage::new(self.to_owned());
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
             "CollectionFolder" | "UserView" => {
@@ -370,7 +373,7 @@ impl TuItem {
     }
 
     pub fn play_single_audio(&self, obj: &impl IsA<gtk::Widget>) {
-        let song_widget = SongWidget::new(self.to_owned(), "MusicAlbum".to_string());
+        let song_widget = SongWidget::new(self.to_owned(), SongWidgetView::MusicAlbumItem);
         let model = gio::ListStore::new::<CoreSong>();
         bing_song_model!(obj, model, song_widget.coresong());
     }
@@ -397,7 +400,7 @@ impl TuItem {
             .iter()
             .map(|song| {
                 let item = TuItem::from_simple(song, None);
-                let song_widget = SongWidget::new(item, "MusicAlbum".to_string());
+                let song_widget = SongWidget::new(item, SongWidgetView::MusicAlbumItem);
                 song_widget.coresong()
             })
             .collect::<Vec<_>>();

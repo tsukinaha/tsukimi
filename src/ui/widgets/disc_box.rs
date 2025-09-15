@@ -8,7 +8,7 @@ use gtk::{
 };
 
 use super::song_widget::SongWidget;
-use crate::ui::provider::tu_item::TuItem;
+use crate::{client::structs::SongWidgetView, ui::provider::tu_item::TuItem};
 
 mod imp {
     use std::sync::OnceLock;
@@ -25,8 +25,8 @@ mod imp {
     #[template(resource = "/moe/tsuna/tsukimi/ui/disc_box.ui")]
     #[properties(wrapper_type = super::DiscBox)]
     pub struct DiscBox {
-        #[property(get, set, construct_only)]
-        pub itemtype: OnceCell<String>,
+        #[property(get, set, construct_only, builder(SongWidgetView::default()))]
+        pub view_type: OnceCell<SongWidgetView>,
         #[template_child]
         pub disc_label: TemplateChild<gtk::Label>,
         #[template_child]
@@ -75,22 +75,22 @@ glib::wrapper! {
 
 impl Default for DiscBox {
     fn default() -> Self {
-        Self::new("MusicAlbum".to_string())
+        Self::new(SongWidgetView::MusicAlbumItem)
     }
 }
 
 #[template_callbacks]
 impl DiscBox {
-    pub fn new(item_type: String) -> Self {
+    pub fn new(view_type: SongWidgetView) -> Self {
         glib::Object::builder()
-            .property("itemtype", item_type)
+            .property("view_type", view_type)
             .build()
     }
 
     pub fn set_disc(&self, disc: u32) {
         let disc_label = self.imp().disc_label.get();
-        let item_type = self.itemtype();
-        if &item_type == "MusicAlbum" {
+        let view_type = self.view_type();
+        if view_type == SongWidgetView::MusicAlbumItem {
             disc_label.set_text(&format!("{} {}", &gettext("Disc"), disc));
         }
         else {
@@ -100,7 +100,7 @@ impl DiscBox {
 
     pub fn add_song(&self, item: TuItem) {
         let listbox = self.imp().listbox.get();
-        let song_widget = SongWidget::new(item, self.itemtype().to_string());
+        let song_widget = SongWidget::new(item, self.view_type());
         listbox.append(&song_widget);
     }
 

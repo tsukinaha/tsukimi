@@ -25,7 +25,10 @@ use crate::{
     client::{
         error::UserFacingError,
         jellyfin_client::JELLYFIN_CLIENT,
-        structs::List,
+        structs::{
+            List,
+            SongWidgetView
+        },
     },
     ui::{
         provider::{
@@ -75,8 +78,8 @@ pub(crate) mod imp {
     pub struct AlbumPage {
         #[property(get, set, construct_only)]
         pub item: OnceCell<TuItem>,
-        #[property(get, set, construct_only)]
-        pub itemtype: OnceCell<String>,
+        #[property(get, set, construct_only, builder(SongWidgetView::default()))]
+        pub view_type: OnceCell<SongWidgetView>,
         #[template_child]
         pub cover_image: TemplateChild<gtk::Picture>,
         #[template_child]
@@ -146,16 +149,17 @@ use crate::ui::widgets::disc_box::DiscBox;
 
 #[template_callbacks]
 impl AlbumPage {
-    pub fn new(item: TuItem, item_type: String) -> Self {
+    pub fn new(item: TuItem) -> Self {
+        let view_type = if &item.item_type() == "MusicAlbum" { SongWidgetView::MusicAlbumItem } else { SongWidgetView::PlaylistItem };
         glib::Object::builder()
             .property("item", item)
-            .property("itemtype", item_type)
+            .property("view_type", view_type)
             .build()
     }
 
     pub async fn set_album(&self) {
         let item = self.item();
-        let item_type = self.itemtype();
+        let view_type = self.view_type();
 
         let imp = self.imp();
 
@@ -169,7 +173,7 @@ impl AlbumPage {
 
         imp.title_label.set_text(&item.name());
 
-        if &item_type == "MusicAlbum" {
+        if view_type == SongWidgetView::MusicAlbumItem {
             imp.artist_label.set_text(&item.albumartist_name());
 
             let duration = item.run_time_ticks() / 10000000;
@@ -221,7 +225,7 @@ impl AlbumPage {
 
     pub async fn get_songs(&self) {
         let item = self.item();
-        let item_type = self.itemtype();
+        let view_type = self.view_type();
         let id = item.id();
 
         let mut songs = match fetch_with_cache(
@@ -238,7 +242,7 @@ impl AlbumPage {
             }
         };
 
-        if &item_type == "Playlist" {
+        if view_type == SongWidgetView::PlaylistItem {
             self.imp().artist_label
                 .set_text(
                     &format!("{} {}",
@@ -249,15 +253,15 @@ impl AlbumPage {
 
         let mut disc_boxes: BTreeMap<u32, super::disc_box::DiscBox> = BTreeMap::new();
 
-        if &item_type == "MusicAlbum" {
+        if view_type == SongWidgetView::MusicAlbumItem {
             songs.items.sort_by_key(|song| song.index_number);
         }
         for song in songs.items {
             let item = TuItem::from_simple(&song, None);
-            let parent_index_number = if &item_type == "MusicAlbum" {item.parent_index_number()} else {0};
+            let parent_index_number = if view_type == SongWidgetView::MusicAlbumItem {item.parent_index_number()} else {0};
 
             let song_widget = disc_boxes.entry(parent_index_number).or_insert_with(|| {
-                let new_disc_box = super::disc_box::DiscBox::new(item_type.to_owned());
+                let new_disc_box = super::disc_box::DiscBox::new(view_type.to_owned());
                 new_disc_box.set_disc(parent_index_number);
                 new_disc_box.connect_closure(
                     "song-activated",

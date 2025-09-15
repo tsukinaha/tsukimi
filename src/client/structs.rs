@@ -189,6 +189,15 @@ impl fmt::Display for IdType {
     }
 }
 
+#[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
+#[repr(u32)]
+#[enum_type(name = "SongWidgetView")]
+pub enum SongWidgetView {
+    #[default]
+    MusicAlbumItem,
+    PlaylistItem,
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Urls {
     #[serde(rename = "Name")]
