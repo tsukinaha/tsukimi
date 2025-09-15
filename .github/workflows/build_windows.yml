@@ -15,6 +15,7 @@ jobs:
       SCCACHE_DIRECT: false
       SCCACHE_DIR: ${{ github.workspace }}\.sccache
       SCCACHE_IDLE_TIMEOUT: 0
+      SCCACHE_CACHE_SIZE: 1G
     strategy:
       matrix:
         include:
@@ -55,7 +56,6 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/.sccache
-            ${{ github.workspace }}/target
           key: tsukimi-build-${{ matrix.arch }}-windows-${{ hashFiles('Cargo.toml', '*/Cargo.toml') }}
           restore-keys: |
             tsukimi-build-${{ matrix.arch }}-windows-
@@ -167,5 +167,4 @@ jobs:
 
       - name: Post Setup sccache
         run: |
-          sccache -s
           sccache --stop-server
