@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-16 21:47+0800\n"
-"PO-Revision-Date: 2025-03-19 23:56+0000\n"
+"PO-Revision-Date: 2025-04-26 05:01+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/tsukimi/main/ta/>\n"
 "Language: ta\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: src/client/error.rs:19
 msgid "Timeout Error, Check your internet connection"
@@ -221,7 +221,7 @@ msgstr "சேவையகம் வெற்றிகரமாக சேர்�
 
 #: src/ui/widgets/single_grid.rs:481
 msgid "Items"
-msgstr ""
+msgstr "உருப்படிகள்"
 
 #: src/ui/widgets/item.rs:677 src/ui/mpv/page.rs:301 src/ui/mpv/page.rs:303
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
@@ -423,7 +423,7 @@ msgstr "மீடியாசோர்சுக்காக காத்தி�
 
 #: src/ui/widgets/tu_list_item.rs:211
 msgid "Not implemented"
-msgstr ""
+msgstr "செயல்படுத்தப்படவில்லை"
 
 #: src/ui/widgets/missing_episodes_dialog.rs:148
 msgid "Special"
@@ -702,7 +702,7 @@ msgstr "சுவரொட்டி"
 
 #: resources/ui/single_grid.ui:198
 msgid "Backdrop"
-msgstr "பின்னணி"
+msgstr "பின்விடு"
 
 #: resources/ui/single_grid.ui:202
 msgid "Banner"
@@ -1465,11 +1465,11 @@ msgstr "நேரம் தேர்வு"
 
 #: resources/ui/metadata_dialog.ui:179
 msgid "Overview"
-msgstr ""
+msgstr "கண்ணோட்டம்"
 
 #: resources/ui/metadata_dialog.ui:196
 msgid "External Ids"
-msgstr ""
+msgstr "வெளிப்புற ஐடிகள்"
 
 #: resources/ui/metadata_dialog.ui:202
 msgid "TheMovieDb Id"
@@ -1513,19 +1513,19 @@ msgstr "பதிவேற்ற படத்தைத் தேர்ந்த�
 
 #: resources/ui/images_dialog.ui:157
 msgid "BackDrops"
-msgstr "பின்னணி"
+msgstr "பின்விடுகள்"
 
 #: resources/ui/image_dialog_edit_page.ui:4
 msgid "Edit Image"
-msgstr ""
+msgstr "படத்தைத் திருத்து"
 
 #: resources/ui/image_dialog_edit_page.ui:19
 msgid "Upload Image"
-msgstr ""
+msgstr "படத்தைப் பதிவேற்று"
 
 #: resources/ui/image_dialog_edit_page.ui:24
 msgid "External Url"
-msgstr ""
+msgstr "வெளிப்புற முகவரி"
 
 #: resources/ui/image_info_card.ui:86
 msgid "Copy Image To Clipboard"
@@ -1545,7 +1545,7 @@ msgstr ""
 
 #: resources/ui/identify_dialog.ui:79
 msgid "Year"
-msgstr ""
+msgstr "ஆண்டு"
 
 #: resources/ui/identify_dialog.ui:86
 msgid "External"
@@ -1553,7 +1553,7 @@ msgstr "வெளிப்புறம்"
 
 #: resources/ui/image_dialog_search_page.ui:4
 msgid "Choose Image"
-msgstr ""
+msgstr "படத்தைத் தேர்வுசெய்"
 
 #: resources/ui/image_dialog_search_page.ui:15
 msgid "Provider:"
