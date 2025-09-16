@@ -8,10 +8,11 @@ use gtk::{
 };
 
 use super::song_widget::SongWidget;
-use crate::ui::provider::tu_item::TuItem;
+use crate::{client::structs::SongWidgetView, ui::provider::tu_item::TuItem};
 
 mod imp {
     use std::sync::OnceLock;
+    use std::cell::OnceCell;
 
     use glib::subclass::{
         InitializingObject,
@@ -20,9 +21,12 @@ mod imp {
 
     use super::*;
 
-    #[derive(CompositeTemplate, Default)]
+    #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/disc_box.ui")]
+    #[properties(wrapper_type = super::DiscBox)]
     pub struct DiscBox {
+        #[property(get, set, construct_only, builder(SongWidgetView::default()))]
+        pub view_type: OnceCell<SongWidgetView>,
         #[template_child]
         pub disc_label: TemplateChild<gtk::Label>,
         #[template_child]
@@ -45,6 +49,7 @@ mod imp {
         }
     }
 
+    #[glib::derived_properties]
     impl ObjectImpl for DiscBox {
         fn signals() -> &'static [Signal] {
             static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
@@ -70,24 +75,32 @@ glib::wrapper! {
 
 impl Default for DiscBox {
     fn default() -> Self {
-        Self::new()
+        Self::new(SongWidgetView::MusicAlbumItem)
     }
 }
 
 #[template_callbacks]
 impl DiscBox {
-    pub fn new() -> Self {
-        glib::Object::builder().build()
+    pub fn new(view_type: SongWidgetView) -> Self {
+        glib::Object::builder()
+            .property("view_type", view_type)
+            .build()
     }
 
     pub fn set_disc(&self, disc: u32) {
         let disc_label = self.imp().disc_label.get();
-        disc_label.set_text(&format!("{} {}", &gettext("Disc"), disc));
+        let view_type = self.view_type();
+        if view_type == SongWidgetView::MusicAlbumItem {
+            disc_label.set_text(&format!("{} {}", &gettext("Disc"), disc));
+        }
+        else {
+            disc_label.set_visible(false);
+        }
     }
 
     pub fn add_song(&self, item: TuItem) {
         let listbox = self.imp().listbox.get();
-        let song_widget = SongWidget::new(item);
+        let song_widget = SongWidget::new(item, self.view_type());
         listbox.append(&song_widget);
     }
 

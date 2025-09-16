@@ -15,14 +15,20 @@ use gtk::{
 
 use super::{
     song_widget::format_duration,
-    utils::GlobalToast,
+    utils::{
+        GlobalToast,
+        run_time_ticks_to_label
+    }
 };
 use crate::{
     bing_song_model,
     client::{
         error::UserFacingError,
         jellyfin_client::JELLYFIN_CLIENT,
-        structs::List,
+        structs::{
+            List,
+            SongWidgetView
+        },
     },
     ui::{
         provider::{
@@ -72,6 +78,8 @@ pub(crate) mod imp {
     pub struct AlbumPage {
         #[property(get, set, construct_only)]
         pub item: OnceCell<TuItem>,
+        #[property(get, set, construct_only, builder(SongWidgetView::default()))]
+        pub view_type: OnceCell<SongWidgetView>,
         #[template_child]
         pub cover_image: TemplateChild<gtk::Picture>,
         #[template_child]
@@ -142,11 +150,16 @@ use crate::ui::widgets::disc_box::DiscBox;
 #[template_callbacks]
 impl AlbumPage {
     pub fn new(item: TuItem) -> Self {
-        glib::Object::builder().property("item", item).build()
+        let view_type = if &item.item_type() == "MusicAlbum" { SongWidgetView::MusicAlbumItem } else { SongWidgetView::PlaylistItem };
+        glib::Object::builder()
+            .property("item", item)
+            .property("view_type", view_type)
+            .build()
     }
 
     pub async fn set_album(&self) {
         let item = self.item();
+        let view_type = self.view_type();
 
         let imp = self.imp();
 
@@ -160,15 +173,28 @@ impl AlbumPage {
 
         imp.title_label.set_text(&item.name());
 
-        imp.artist_label.set_text(&item.albumartist_name());
+        if view_type == SongWidgetView::MusicAlbumItem {
+            imp.artist_label.set_text(&item.albumartist_name());
 
-        let duration = item.run_time_ticks() / 10000000;
-        let release = format!(
-            "{}, {}",
-            item.production_year(),
-            format_duration(duration as i64)
-        );
-        imp.released_label.set_text(&release);
+            let duration = item.run_time_ticks() / 10000000;
+            let release = format!(
+                "{}, {}",
+                item.production_year(),
+                format_duration(duration as i64)
+            );
+            imp.released_label.set_text(&release);
+        }
+        else {
+            imp.artist_label.set_text("...");
+
+            let duration = item.run_time_ticks();
+            let release = format!(
+                "{}",
+                run_time_ticks_to_label(duration as u64)
+            );
+            imp.released_label.set_text(&release);
+        }
+
 
         let path = if let Some(image_tags) = item.primary_image_item_id() {
             get_image_with_cache(image_tags, "Primary".to_string(), None)
@@ -199,6 +225,7 @@ impl AlbumPage {
 
     pub async fn get_songs(&self) {
         let item = self.item();
+        let view_type = self.view_type();
         let id = item.id();
 
         let mut songs = match fetch_with_cache(
@@ -215,15 +242,26 @@ impl AlbumPage {
             }
         };
 
+        if view_type == SongWidgetView::PlaylistItem {
+            self.imp().artist_label
+                .set_text(
+                    &format!("{} {}",
+                        songs.items.len(),
+                        gettext("Songs"))
+                );
+        }
+
         let mut disc_boxes: BTreeMap<u32, super::disc_box::DiscBox> = BTreeMap::new();
 
-        songs.items.sort_by_key(|song| song.index_number);
+        if view_type == SongWidgetView::MusicAlbumItem {
+            songs.items.sort_by_key(|song| song.index_number);
+        }
         for song in songs.items {
             let item = TuItem::from_simple(&song, None);
-            let parent_index_number = item.parent_index_number();
+            let parent_index_number = if view_type == SongWidgetView::MusicAlbumItem {item.parent_index_number()} else {0};
 
             let song_widget = disc_boxes.entry(parent_index_number).or_insert_with(|| {
-                let new_disc_box = super::disc_box::DiscBox::new();
+                let new_disc_box = super::disc_box::DiscBox::new(view_type.to_owned());
                 new_disc_box.set_disc(parent_index_number);
                 new_disc_box.connect_closure(
                     "song-activated",
