@@ -138,7 +138,7 @@ jobs:
         shell: powershell
         run: |
           cp ./installer/* artifact
-          makensis /V4 artifact/tsukimi_installer.nsi
+          & 'C:\Program Files (x86)\NSIS\makensis.exe' /V4 artifact/tsukimi_installer.nsi
           rm artifact/tsukimi_installer.nsi
 
       - name: Build Thin Package

@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Setup Git
+      - name: Install dependencies
         run: |
           apt-get update
           apt-get upgrade -y
