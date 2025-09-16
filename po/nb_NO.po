@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-16 13:55+0800\n"
+"POT-Creation-Date: 2025-05-03 21:25+0800\n"
 "PO-Revision-Date: 2024-09-26 15:26+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/tsukimi/"
@@ -27,7 +27,7 @@ msgstr ""
 msgid "Connection Error, Check your internet connection"
 msgstr ""
 
-#: src/ui/provider/tu_item.rs:446
+#: src/ui/provider/tu_item.rs:444
 msgid "No next up video found"
 msgstr ""
 
@@ -39,39 +39,39 @@ msgstr ""
 msgid "Add to favorites"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:226
+#: src/ui/widgets/account_settings.rs:225
 msgid "Password cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:230
+#: src/ui/widgets/account_settings.rs:229
 msgid "Passwords do not match!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:237
+#: src/ui/widgets/account_settings.rs:235
 msgid "Password changed successfully! Please login again."
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:243
+#: src/ui/widgets/account_settings.rs:239
 msgid "Failed to change password"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:280
+#: src/ui/widgets/account_settings.rs:275
 msgid "Cache Cleared"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:301
+#: src/ui/widgets/account_settings.rs:296
 msgid "No file selected"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:518
-#: src/ui/widgets/account_settings.rs:527
-#: src/ui/widgets/account_settings.rs:561
-#: src/ui/widgets/account_settings.rs:570
+#: src/ui/widgets/account_settings.rs:513
+#: src/ui/widgets/account_settings.rs:522
+#: src/ui/widgets/account_settings.rs:556
+#: src/ui/widgets/account_settings.rs:565
 msgid "Descriptor cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:532
-#: src/ui/widgets/account_settings.rs:575
+#: src/ui/widgets/account_settings.rs:527
+#: src/ui/widgets/account_settings.rs:570
 msgid "Invalid regex"
 msgstr ""
 
@@ -79,11 +79,11 @@ msgstr ""
 msgid "Disc"
 msgstr "Disk"
 
-#: src/ui/widgets/home.rs:228
+#: src/ui/widgets/home.rs:229
 msgid "Latest"
 msgstr ""
 
-#: src/ui/widgets/liked.rs:156
+#: src/ui/widgets/liked.rs:155
 msgid "Favourite"
 msgstr ""
 
@@ -95,7 +95,7 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: src/ui/widgets/list.rs:117 src/ui/widgets/item.rs:674
+#: src/ui/widgets/list.rs:117 src/ui/widgets/item.rs:683
 msgid "Resume"
 msgstr ""
 
@@ -113,8 +113,8 @@ msgstr ""
 msgid "Genres"
 msgstr ""
 
-#: src/ui/widgets/list.rs:121 src/ui/widgets/window.rs:306
-#: resources/ui/window.ui:350
+#: src/ui/widgets/list.rs:121 src/ui/widgets/window.rs:309
+#: resources/ui/window.ui:351
 msgid "Liked"
 msgstr ""
 
@@ -122,178 +122,185 @@ msgstr ""
 msgid "Folder"
 msgstr ""
 
-#: src/ui/widgets/media_viewer.rs:350
-#: src/ui/widgets/image_dialog/image_infocard.rs:171
+#: src/ui/widgets/media_viewer.rs:349
+#: src/ui/widgets/image_dialog/image_infocard.rs:173
 msgid "Image copied to clipboard"
 msgstr ""
 
-#: src/ui/widgets/metadata_dialog.rs:290 resources/ui/metadata_dialog.ui:230
+#: src/ui/widgets/metadata_dialog.rs:289 resources/ui/metadata_dialog.ui:230
 #: resources/ui/filter.ui:179
 msgid "Apply"
 msgstr ""
 
-#: src/ui/widgets/metadata_dialog.rs:292
-#: src/ui/widgets/image_dialog/search_page.rs:146
-#: src/ui/widgets/tu_item/action.rs:466
-#: src/ui/widgets/identify/search_page.rs:124
+#: src/ui/widgets/metadata_dialog.rs:291
+#: src/ui/widgets/image_dialog/search_page.rs:148
+#: src/ui/widgets/tu_item/action.rs:465
+#: src/ui/widgets/identify/search_page.rs:126
 msgid "Are you sure you wish to continue?"
 msgstr ""
 
-#: src/ui/widgets/metadata_dialog.rs:295
-#: src/ui/widgets/image_dialog/search_page.rs:149
-#: src/ui/widgets/tu_item/action.rs:470 src/ui/widgets/tu_item/action.rs:528
-#: src/ui/widgets/identify/search_page.rs:127
-#: resources/ui/account_settings.ui:507 resources/ui/account_settings.ui:617
-#: resources/ui/refresh_dialog.ui:19
+#: src/ui/widgets/metadata_dialog.rs:294
+#: src/ui/widgets/image_dialog/search_page.rs:151
+#: src/ui/widgets/tu_item/action.rs:469 src/ui/widgets/tu_item/action.rs:527
+#: src/ui/widgets/identify/search_page.rs:129
+#: resources/ui/account_settings.ui:508 resources/ui/account_settings.ui:618
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: src/ui/widgets/metadata_dialog.rs:296
-#: src/ui/widgets/image_dialog/search_page.rs:150
-#: src/ui/widgets/identify/search_page.rs:128
+#: src/ui/widgets/metadata_dialog.rs:295
+#: src/ui/widgets/image_dialog/search_page.rs:152
+#: src/ui/widgets/identify/search_page.rs:130
 msgid "Ok"
 msgstr ""
 
-#: src/ui/widgets/music_album.rs:294
+#: src/ui/widgets/music_album.rs:296
 #, fuzzy
 msgid "More From"
 msgstr "Mer"
 
-#: src/ui/widgets/refresh_dialog.rs:93
+#: src/ui/widgets/refresh_dialog.rs:94
 msgid "Scanning..."
 msgstr "Skanner …"
 
-#: src/ui/widgets/server_panel.rs:118
+#: src/ui/widgets/server_panel.rs:119
 msgid "Shut down server"
 msgstr "Slå av tjener"
 
-#: src/ui/widgets/server_panel.rs:119
+#: src/ui/widgets/server_panel.rs:120
 msgid "Are you sure you want to shut down the server?"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:150
+#: src/ui/widgets/server_panel.rs:151
 msgid "Restart server"
 msgstr "Omstart av tjener"
 
-#: src/ui/widgets/server_panel.rs:151
+#: src/ui/widgets/server_panel.rs:152
 msgid "Are you sure you want to restart the server?"
 msgstr "Vil du starte tjeneren på ny?"
 
-#: src/ui/widgets/server_panel.rs:154
+#: src/ui/widgets/server_panel.rs:155
 msgid "Revert"
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:155
+#: src/ui/widgets/server_panel.rs:156
 #, fuzzy
 msgid "Confirm"
 msgstr "Bekreft passord"
 
-#: src/ui/widgets/server_panel.rs:191
+#: src/ui/widgets/server_panel.rs:192
 msgid "Server is shutting down"
 msgstr "Tjeneren slås av …"
 
-#: src/ui/widgets/server_panel.rs:203
+#: src/ui/widgets/server_panel.rs:204
 msgid "Server is restarting"
 msgstr "Tjeneren startes på ny …"
 
-#: src/ui/widgets/server_panel.rs:290
+#: src/ui/widgets/server_panel.rs:291
 msgid "Last execute: "
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:295
+#: src/ui/widgets/server_panel.rs:296
 msgid "Duration: "
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:300
+#: src/ui/widgets/server_panel.rs:301
 msgid "Result: "
 msgstr ""
 
-#: src/ui/widgets/server_panel.rs:346
+#: src/ui/widgets/server_panel.rs:347
 #, fuzzy
 msgid "Task started"
 msgstr "Gjøremål startet"
 
-#: src/ui/widgets/account_add.rs:145
+#: src/ui/widgets/account_add.rs:144
 msgid "Fields must be filled in"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:207
+#: src/ui/widgets/account_add.rs:206
 msgid "Server edited successfully"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:212
+#: src/ui/widgets/account_add.rs:211
 msgid "Server added successfully"
 msgstr ""
 
-#: src/ui/widgets/item.rs:678 src/ui/mpv/page.rs:298 src/ui/mpv/page.rs:300
+#: src/ui/widgets/single_grid.rs:480
+msgid "Items"
+msgstr "Elementer"
+
+#: src/ui/widgets/music_album.rs:246
+msgid "Songs"
+msgstr ""
+
+#: src/ui/widgets/item.rs:687 src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/item.ui:186
 msgid "Play"
 msgstr "Spill av"
 
-#: src/ui/widgets/item.rs:1059
+#: src/ui/widgets/item.rs:1068
 msgid "Codec"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1062
+#: src/ui/widgets/item.rs:1071
 msgid "Language"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1065 resources/ui/single_grid.ui:120
+#: src/ui/widgets/item.rs:1074 resources/ui/single_grid.ui:108
 #: resources/ui/metadata_dialog.ui:90
 msgid "Title"
 msgstr "Navn"
 
-#: src/ui/widgets/item.rs:1069 resources/ui/single_grid.ui:121
+#: src/ui/widgets/item.rs:1078 resources/ui/single_grid.ui:109
 msgid "Bitrate"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1074
+#: src/ui/widgets/item.rs:1083
 msgid "BitDepth"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1078
+#: src/ui/widgets/item.rs:1087
 msgid "SampleRate"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1082
+#: src/ui/widgets/item.rs:1091
 msgid "Height"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1085
+#: src/ui/widgets/item.rs:1094
 msgid "Width"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1088
+#: src/ui/widgets/item.rs:1097
 msgid "ColorSpace"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1092
+#: src/ui/widgets/item.rs:1101
 msgid "DisplayTitle"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1096
+#: src/ui/widgets/item.rs:1105
 msgid "Channel"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1100
+#: src/ui/widgets/item.rs:1109
 msgid "ChannelLayout"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1105
+#: src/ui/widgets/item.rs:1114
 msgid "AverageFrameRate"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1109
+#: src/ui/widgets/item.rs:1118
 msgid "PixelFormat"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1217
+#: src/ui/widgets/item.rs:1226
 msgid "No video source found"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1354
+#: src/ui/widgets/item.rs:1362
 msgid "Season not found. Is this a continue watching list?"
 msgstr ""
 
@@ -305,53 +312,53 @@ msgstr ""
 msgid "Failed to load image"
 msgstr ""
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:151
+#: src/ui/widgets/image_dialog/image_infocard.rs:153
 msgid "No image to view"
 msgstr ""
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:167
+#: src/ui/widgets/image_dialog/image_infocard.rs:169
 msgid "No image to copy"
 msgstr ""
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:204
+#: src/ui/widgets/image_dialog/image_infocard.rs:206
 msgid "Image deleted"
 msgstr ""
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:209
+#: src/ui/widgets/image_dialog/image_infocard.rs:211
 msgid "Error deleting image"
 msgstr ""
 
-#: src/ui/widgets/image_dialog/search_page.rs:144
+#: src/ui/widgets/image_dialog/search_page.rs:146
 msgid "Replace Image"
 msgstr ""
 
-#: src/ui/widgets/window.rs:294 resources/ui/window.ui:304
+#: src/ui/widgets/window.rs:297 resources/ui/window.ui:305
 msgid "Home"
 msgstr "Hjem"
 
-#: src/ui/widgets/window.rs:318 resources/ui/search.ui:23
-#: resources/ui/window.ui:21 resources/ui/window.ui:396
+#: src/ui/widgets/window.rs:321 resources/ui/search.ui:23
+#: resources/ui/window.ui:21 resources/ui/window.ui:397
 #: resources/ui/image_info_card.ui:127 resources/ui/identify_dialog.ui:94
 msgid "Search"
 msgstr "Søk"
 
-#: src/ui/widgets/window.rs:798
+#: src/ui/widgets/window.rs:801
 msgid "Server Panel"
 msgstr ""
 
-#: src/ui/widgets/window.rs:973
+#: src/ui/widgets/window.rs:976
 msgid "Fatal Error"
 msgstr ""
 
-#: src/ui/widgets/window.rs:976
+#: src/ui/widgets/window.rs:979
 msgid "Copy Error & Close"
 msgstr ""
 
-#: src/ui/widgets/window.rs:1001
+#: src/ui/widgets/window.rs:1004
 msgid "Windows Alert"
 msgstr ""
 
-#: src/ui/widgets/window.rs:1002
+#: src/ui/widgets/window.rs:1005
 msgid ""
 "It seems you're using Tsukimi on Windows. Please note that GTK used by this "
 "application is designed for Linux, and no functionality is guaranteed to "
@@ -365,15 +372,15 @@ msgid ""
 "and fill in all required fields without any omissions."
 msgstr ""
 
-#: src/ui/widgets/window.rs:1004
+#: src/ui/widgets/window.rs:1007
 msgid "Close"
 msgstr ""
 
-#: src/ui/widgets/window.rs:1025
+#: src/ui/widgets/window.rs:1028
 msgid "translator-credits"
 msgstr "Allan Nordhøy <epost@anotheragency.no>"
 
-#: src/ui/widgets/tu_overview_item.rs:255 src/ui/widgets/tu_list_item.rs:297
+#: src/ui/widgets/tu_overview_item.rs:255 src/ui/widgets/tu_list_item.rs:304
 msgid "Present"
 msgstr ""
 
@@ -381,37 +388,41 @@ msgstr ""
 msgid "Success"
 msgstr "Vellykket"
 
-#: src/ui/widgets/tu_item/action.rs:460
+#: src/ui/widgets/tu_item/action.rs:459
 msgid "Delete Item"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:464
+#: src/ui/widgets/tu_item/action.rs:463
 msgid ""
 "Deleting this item will delete it from both the file system and your media "
 "library.\n"
 "The following files and folders will be deleted:"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:471 resources/ui/pop-menu.ui:87
+#: src/ui/widgets/tu_item/action.rs:470 resources/ui/pop-menu.ui:87
 #: resources/ui/server_action_row.ui:52 resources/ui/image_info_card.ui:139
 msgid "Delete"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:523 src/ui/widgets/tu_item/action.rs:524
-#: src/ui/widgets/tu_item/action.rs:529 resources/ui/pop-menu.ui:57
+#: src/ui/widgets/tu_item/action.rs:522 src/ui/widgets/tu_item/action.rs:523
+#: src/ui/widgets/tu_item/action.rs:528 resources/ui/pop-menu.ui:57
 msgid "Remove Identification"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:525
+#: src/ui/widgets/tu_item/action.rs:524
 msgid "Are you sure you wish to reset all metadata?"
 msgstr ""
 
-#: src/ui/widgets/tu_list_item.rs:196 src/ui/widgets/tu_list_item.rs:200
-#: src/ui/widgets/tu_list_item.rs:204
+#: src/ui/widgets/tu_list_item.rs:199 src/ui/widgets/tu_list_item.rs:203
+#: src/ui/widgets/tu_list_item.rs:207
 msgid "Waiting for mediasource ..."
 msgstr ""
 
-#: src/ui/widgets/missing_episodes_dialog.rs:149
+#: src/ui/widgets/tu_list_item.rs:211
+msgid "Not implemented"
+msgstr ""
+
+#: src/ui/widgets/missing_episodes_dialog.rs:148
 msgid "Special"
 msgstr ""
 
@@ -419,13 +430,13 @@ msgstr ""
 msgid "Failed to get path"
 msgstr ""
 
-#: src/ui/widgets/identify/search_page.rs:122 resources/ui/pop-menu.ui:51
+#: src/ui/widgets/identify/search_page.rs:124 resources/ui/pop-menu.ui:51
 #: resources/ui/identify_dialog.ui:6 resources/ui/identify_dialog.ui:14
 #: resources/ui/identify_dialog_search_page.ui:4
 msgid "Identify"
 msgstr ""
 
-#: src/ui/widgets/identify/search_page.rs:131
+#: src/ui/widgets/identify/search_page.rs:133
 msgid "Replace existing images"
 msgstr ""
 
@@ -453,15 +464,15 @@ msgstr ""
 msgid "Failed to get GLContext"
 msgstr ""
 
-#: src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305 resources/ui/mpvpage.ui:215
+#: src/ui/mpv/page.rs:308 src/ui/mpv/page.rs:310 resources/ui/mpvpage.ui:215
 msgid "Pause"
 msgstr "Pause"
 
-#: src/ui/mpv/page.rs:603
+#: src/ui/mpv/page.rs:608
 msgid "No more video found"
 msgstr ""
 
-#: src/ui/mpv/page.rs:697
+#: src/ui/mpv/page.rs:702
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -501,12 +512,12 @@ msgstr "Mediameny"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
-#: resources/ui/mpvpage.ui:291 resources/ui/mpvpage.ui:293
+#: resources/ui/mpvpage.ui:290 resources/ui/mpvpage.ui:292
 msgid "Fullscreen"
 msgstr "Fullskjermsvisning"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:302 resources/ui/mpvpage.ui:304
+#: resources/ui/mpvpage.ui:301 resources/ui/mpvpage.ui:303
 msgid "Exit Fullscreen"
 msgstr "Avslutt fullskjermsvisning"
 
@@ -522,20 +533,20 @@ msgstr "Neste"
 msgid "Stop And Hide PlayerBar"
 msgstr ""
 
-#: resources/ui/player_toolbar.ui:197 resources/ui/account_settings.ui:290
+#: resources/ui/player_toolbar.ui:197 resources/ui/account_settings.ui:291
 msgid "Repeat Mode"
 msgstr "Gjentagelsesmodus"
 
-#: resources/ui/player_toolbar.ui:231 resources/ui/account_settings.ui:294
+#: resources/ui/player_toolbar.ui:231 resources/ui/account_settings.ui:295
 msgid "Repeat One"
 msgstr "Gjenta enkeltspor"
 
-#: resources/ui/player_toolbar.ui:235 resources/ui/account_settings.ui:295
+#: resources/ui/player_toolbar.ui:235 resources/ui/account_settings.ui:296
 msgid "Repeat All"
 msgstr "Gjenta alle"
 
-#: resources/ui/player_toolbar.ui:239 resources/ui/account_settings.ui:296
-#: resources/ui/account_settings.ui:324
+#: resources/ui/player_toolbar.ui:239 resources/ui/account_settings.ui:297
+#: resources/ui/account_settings.ui:325
 msgid "None"
 msgstr "Ingen"
 
@@ -625,77 +636,77 @@ msgstr "Vis"
 msgid "Filter Panel"
 msgstr ""
 
-#: resources/ui/single_grid.ui:66
+#: resources/ui/single_grid.ui:65
 #, fuzzy
 msgid "Grid View"
 msgstr "Vis"
 
-#: resources/ui/single_grid.ui:75
+#: resources/ui/single_grid.ui:72
 #, fuzzy
 msgid "List View"
 msgstr "Vis"
 
-#: resources/ui/single_grid.ui:92
+#: resources/ui/single_grid.ui:85
 msgid "Ascending"
 msgstr ""
 
-#: resources/ui/single_grid.ui:100
+#: resources/ui/single_grid.ui:92
 msgid "Descending"
 msgstr ""
 
-#: resources/ui/single_grid.ui:115
+#: resources/ui/single_grid.ui:103
 msgid "Sort By"
 msgstr ""
 
-#: resources/ui/single_grid.ui:122 resources/ui/metadata_dialog.ui:100
+#: resources/ui/single_grid.ui:110 resources/ui/metadata_dialog.ui:100
 msgid "Date Created"
 msgstr "Dato opprettet"
 
-#: resources/ui/single_grid.ui:123
+#: resources/ui/single_grid.ui:111
 msgid "Imdb Rate"
 msgstr ""
 
-#: resources/ui/single_grid.ui:124
+#: resources/ui/single_grid.ui:112
 msgid "Critic Rating"
 msgstr ""
 
-#: resources/ui/single_grid.ui:125
+#: resources/ui/single_grid.ui:113
 msgid "Premiere Date"
 msgstr "Premieredato"
 
-#: resources/ui/single_grid.ui:126
+#: resources/ui/single_grid.ui:114
 msgid "Offical Rating"
 msgstr ""
 
-#: resources/ui/single_grid.ui:127
+#: resources/ui/single_grid.ui:115
 msgid "Production Year"
 msgstr "Produksjonsår"
 
-#: resources/ui/single_grid.ui:128
+#: resources/ui/single_grid.ui:116
 msgid "Date Played"
 msgstr "Dato avspilt"
 
-#: resources/ui/single_grid.ui:129
+#: resources/ui/single_grid.ui:117
 msgid "Runtime"
 msgstr "Kjøretid"
 
-#: resources/ui/single_grid.ui:130
+#: resources/ui/single_grid.ui:118
 msgid "Updated At"
 msgstr ""
 
-#: resources/ui/single_grid.ui:179 resources/ui/item.ui:416
+#: resources/ui/single_grid.ui:167 resources/ui/item.ui:416
 msgid "Nothing Here"
 msgstr ""
 
-#: resources/ui/single_grid.ui:194
+#: resources/ui/single_grid.ui:182
 msgid "Poster"
 msgstr "Plakat"
 
-#: resources/ui/single_grid.ui:198
+#: resources/ui/single_grid.ui:186
 msgid "Backdrop"
 msgstr ""
 
-#: resources/ui/single_grid.ui:202
+#: resources/ui/single_grid.ui:190
 msgid "Banner"
 msgstr ""
 
@@ -716,7 +727,7 @@ msgid "Music Album"
 msgstr "Musikkalbum"
 
 #: resources/ui/search.ui:78 resources/ui/mpv_control_sidebar.ui:447
-#: resources/ui/mpvpage.ui:376 resources/ui/mpvpage.ui:433
+#: resources/ui/mpvpage.ui:376 resources/ui/mpvpage.ui:436
 msgid "Audio"
 msgstr "Lyd"
 
@@ -729,15 +740,15 @@ msgstr "Video"
 msgid "Episode"
 msgstr ""
 
-#: resources/ui/search.ui:163
+#: resources/ui/search.ui:166
 msgid "Nothing Here or No type selected"
 msgstr ""
 
-#: resources/ui/search.ui:164
+#: resources/ui/search.ui:167
 msgid "Maybe you should try using different search terms"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:610
+#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:611
 #, fuzzy
 msgid "Advanced Settings"
 msgstr "Videoinnstillinger"
@@ -760,7 +771,7 @@ msgstr "Enhet: Sekunder"
 msgid "Seek Forward"
 msgstr "Blafre forover"
 
-#: resources/ui/mpv_control_sidebar.ui:63 resources/ui/account_settings.ui:217
+#: resources/ui/mpv_control_sidebar.ui:63 resources/ui/account_settings.ui:206
 msgid "Cache"
 msgstr "Hurtiglager"
 
@@ -782,7 +793,7 @@ msgid "Cache Time"
 msgstr "Hurtiglagertid"
 
 #: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:384
-#: resources/ui/mpvpage.ui:402
+#: resources/ui/mpvpage.ui:403
 msgid "Subtitle"
 msgstr "Undertekst"
 
@@ -865,7 +876,7 @@ msgstr ""
 msgid "Border"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:378 resources/ui/account_settings.ui:141
+#: resources/ui/mpv_control_sidebar.ui:378 resources/ui/account_settings.ui:130
 msgid "Background"
 msgstr "Bakgrunn"
 
@@ -1032,8 +1043,8 @@ msgstr "Forrige"
 msgid "Previous chapter"
 msgstr "Forrige"
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/window.ui:559
-#: resources/ui/window.ui:581 resources/ui/mpvpage.ui:151
+#: resources/ui/mpv_menu.ui:35 resources/ui/window.ui:560
+#: resources/ui/window.ui:582 resources/ui/mpvpage.ui:151
 msgid "Playlist"
 msgstr "Spilleliste"
 
@@ -1061,6 +1072,7 @@ msgid "Enter the server details below."
 msgstr ""
 
 #: resources/ui/account.ui:48 resources/ui/other.ui:54
+#: resources/ui/identify_dialog.ui:74
 msgid "Name"
 msgstr "Navn"
 
@@ -1080,7 +1092,7 @@ msgstr "Brukernavn"
 msgid "Password"
 msgstr "Passord"
 
-#: resources/ui/account.ui:108 resources/ui/account_settings.ui:513
+#: resources/ui/account.ui:108 resources/ui/account_settings.ui:514
 #, fuzzy
 msgid "Add"
 msgstr "_Legg til"
@@ -1094,7 +1106,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: resources/ui/server_action_row.ui:41 resources/ui/refresh_dialog.ui:25
+#: resources/ui/server_action_row.ui:41 resources/ui/refresh_dialog.ui:49
 msgid "Refresh"
 msgstr ""
 
@@ -1103,7 +1115,7 @@ msgid "Sign out"
 msgstr ""
 
 #: resources/ui/window.ui:25 resources/ui/window.ui:54
-#: resources/ui/mpvpage.ui:333
+#: resources/ui/mpvpage.ui:332
 msgid "Preferences"
 msgstr "Innstillinger"
 
@@ -1124,15 +1136,15 @@ msgstr "Ingen tjener"
 msgid "Add Server"
 msgstr "Legg til tjener"
 
-#: resources/ui/window.ui:206
+#: resources/ui/window.ui:207
 msgid "Log Out"
 msgstr "Logg ut"
 
-#: resources/ui/window.ui:253
+#: resources/ui/window.ui:254
 msgid "Contents"
 msgstr "Innhold"
 
-#: resources/ui/window.ui:411
+#: resources/ui/window.ui:412
 msgid "Servers"
 msgstr "Tjenere"
 
@@ -1148,224 +1160,225 @@ msgstr ""
 msgid "Settings"
 msgstr "Innstillinger"
 
-#: resources/ui/account_settings.ui:19 resources/ui/account_settings.ui:418
-msgid "Preferred Video Version"
-msgstr ""
-
-#: resources/ui/account_settings.ui:28
+#: resources/ui/account_settings.ui:17
 msgid "Preferred Language"
 msgstr "Foretrukket språk"
 
-#: resources/ui/account_settings.ui:29
+#: resources/ui/account_settings.ui:18
 msgid "This is globally effective"
 msgstr ""
 
-#: resources/ui/account_settings.ui:32
+#: resources/ui/account_settings.ui:21
 msgid "Preferred Audio Language"
 msgstr "Foretrukket lydspråk"
 
-#: resources/ui/account_settings.ui:41 resources/ui/account_settings.ui:66
-#: resources/ui/account_settings.ui:151
+#: resources/ui/account_settings.ui:30 resources/ui/account_settings.ui:55
+#: resources/ui/account_settings.ui:140
 msgid "Default"
 msgstr "Forvalg"
 
-#: resources/ui/account_settings.ui:57
+#: resources/ui/account_settings.ui:46
 msgid "Preferred Subtitle Language"
 msgstr ""
 
-#: resources/ui/account_settings.ui:84
+#: resources/ui/account_settings.ui:73 resources/ui/mpvpage.ui:502
 msgid "Appearence"
 msgstr "Utseende"
 
-#: resources/ui/account_settings.ui:87
+#: resources/ui/account_settings.ui:76
 msgid "Accent Color"
 msgstr "Aksentfarge"
 
-#: resources/ui/account_settings.ui:88
+#: resources/ui/account_settings.ui:77
 msgid "Restart App To Take Effect"
 msgstr "Start programmet på ny for å iføre endringer"
 
-#: resources/ui/account_settings.ui:104
+#: resources/ui/account_settings.ui:93
 #, fuzzy
 msgid "Hide Sidebar"
 msgstr "Vis sidefelt"
 
-#: resources/ui/account_settings.ui:109
+#: resources/ui/account_settings.ui:98
 #, fuzzy
 msgid "Auto Select Last Server"
 msgstr "Auto-velg siste tjener"
 
-#: resources/ui/account_settings.ui:116
+#: resources/ui/account_settings.ui:105
 msgid "Network"
 msgstr "Nettverk"
 
-#: resources/ui/account_settings.ui:119
+#: resources/ui/account_settings.ui:108
 msgid "Threads"
 msgstr "Tråder"
 
-#: resources/ui/account_settings.ui:120
+#: resources/ui/account_settings.ui:109
 msgid "Excessive thread counts may exhaust the system's connection pool"
 msgstr ""
 
-#: resources/ui/account_settings.ui:134
+#: resources/ui/account_settings.ui:123
 msgid "Refresh when returning to home page"
 msgstr ""
 
-#: resources/ui/account_settings.ui:148
+#: resources/ui/account_settings.ui:137
 msgid "This feature may cause significant lag. Please enable it with caution."
 msgstr ""
 
-#: resources/ui/account_settings.ui:174
+#: resources/ui/account_settings.ui:163
 msgid "Opacity"
 msgstr "Dekkevne"
 
-#: resources/ui/account_settings.ui:188
+#: resources/ui/account_settings.ui:177
 msgid "Blur (Experimental)"
 msgstr "Tilsløring (eksperimentelt)"
 
-#: resources/ui/account_settings.ui:189 resources/ui/account_settings.ui:198
+#: resources/ui/account_settings.ui:178 resources/ui/account_settings.ui:187
 msgid "Warning: High GPU usage"
 msgstr "Advarsel: Høy grafikkortsbruk"
 
-#: resources/ui/account_settings.ui:197
+#: resources/ui/account_settings.ui:186
 msgid "Blur Radius (Experimental)"
 msgstr "Tilsløringsradius (eksperimentelt)"
 
-#: resources/ui/account_settings.ui:220
+#: resources/ui/account_settings.ui:209
 msgid "Clear Cache"
 msgstr "Tøm hurtiglager"
 
-#: resources/ui/account_settings.ui:238
+#: resources/ui/account_settings.ui:224 resources/ui/account_settings.ui:343
+msgid "Others"
+msgstr ""
+
+#: resources/ui/account_settings.ui:227 resources/ui/account_settings.ui:419
+msgid "Preferred Video Version"
+msgstr ""
+
+#: resources/ui/account_settings.ui:239
 msgid "Account"
 msgstr "Konto"
 
-#: resources/ui/account_settings.ui:251 resources/ui/account_settings.ui:268
+#: resources/ui/account_settings.ui:252 resources/ui/account_settings.ui:269
 msgid "Change Password"
 msgstr "Endre passord"
 
-#: resources/ui/account_settings.ui:254
+#: resources/ui/account_settings.ui:255
 msgid "New Password"
 msgstr "Nytt passord"
 
-#: resources/ui/account_settings.ui:259
+#: resources/ui/account_settings.ui:260
 msgid "Confirm Password"
 msgstr "Bekreft passord"
 
-#: resources/ui/account_settings.ui:282
+#: resources/ui/account_settings.ui:283
 msgid "Media"
 msgstr ""
 
-#: resources/ui/account_settings.ui:287
+#: resources/ui/account_settings.ui:288
 msgid "Music Player"
 msgstr ""
 
-#: resources/ui/account_settings.ui:306
+#: resources/ui/account_settings.ui:307
 msgid "Video Player"
 msgstr ""
 
-#: resources/ui/account_settings.ui:307
+#: resources/ui/account_settings.ui:308
 msgid "Requires restart"
 msgstr ""
 
-#: resources/ui/account_settings.ui:310
+#: resources/ui/account_settings.ui:311
 msgid "Enable external config"
 msgstr ""
 
-#: resources/ui/account_settings.ui:315
+#: resources/ui/account_settings.ui:316
 #, fuzzy
 msgid "Config dir"
 msgstr "Bekreft passord"
 
-#: resources/ui/account_settings.ui:342
-msgid "Others"
-msgstr ""
-
-#: resources/ui/account_settings.ui:347
+#: resources/ui/account_settings.ui:348
 msgid "Video Output"
 msgstr "Videoutdata"
 
-#: resources/ui/account_settings.ui:348
+#: resources/ui/account_settings.ui:349
 msgid "Only for debugging"
 msgstr ""
 
-#: resources/ui/account_settings.ui:351
+#: resources/ui/account_settings.ui:352
 msgid "libmpv (default)"
 msgstr ""
 
-#: resources/ui/account_settings.ui:396
+#: resources/ui/account_settings.ui:397
 #, fuzzy
 msgid "Preferred Version"
 msgstr "Innstillinger"
 
-#: resources/ui/account_settings.ui:419
+#: resources/ui/account_settings.ui:420
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:434
+#: resources/ui/account_settings.ui:435
 msgid "Descriptors"
 msgstr ""
 
-#: resources/ui/account_settings.ui:456
+#: resources/ui/account_settings.ui:457
 msgid "It is recommended to set no more than 3 lines"
 msgstr ""
 
-#: resources/ui/account_settings.ui:477
+#: resources/ui/account_settings.ui:478
 msgid "No Descriptors"
 msgstr ""
 
-#: resources/ui/account_settings.ui:496
+#: resources/ui/account_settings.ui:497
 msgid "Add a descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:538 resources/ui/account_settings.ui:648
+#: resources/ui/account_settings.ui:539 resources/ui/account_settings.ui:649
 msgid "This will use exact matching to obtain a list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:541 resources/ui/account_settings.ui:651
+#: resources/ui/account_settings.ui:542 resources/ui/account_settings.ui:652
 msgid "Descriptor Type"
 msgstr ""
 
-#: resources/ui/account_settings.ui:546 resources/ui/account_settings.ui:656
+#: resources/ui/account_settings.ui:547 resources/ui/account_settings.ui:657
 msgid "String"
 msgstr ""
 
-#: resources/ui/account_settings.ui:547 resources/ui/account_settings.ui:657
+#: resources/ui/account_settings.ui:548 resources/ui/account_settings.ui:658
 msgid "Regular Expression"
 msgstr ""
 
-#: resources/ui/account_settings.ui:559 resources/ui/account_settings.ui:669
+#: resources/ui/account_settings.ui:560 resources/ui/account_settings.ui:670
 msgid "Descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:564 resources/ui/account_settings.ui:674
+#: resources/ui/account_settings.ui:565 resources/ui/account_settings.ui:675
 msgid "Descriptor should not be too long"
 msgstr ""
 
-#: resources/ui/account_settings.ui:575 resources/ui/account_settings.ui:685
+#: resources/ui/account_settings.ui:576 resources/ui/account_settings.ui:686
 msgid "eg. 1080p"
 msgstr ""
 
-#: resources/ui/account_settings.ui:586 resources/ui/account_settings.ui:696
+#: resources/ui/account_settings.ui:587 resources/ui/account_settings.ui:697
 msgid "eg. 1080p.*WebDL"
 msgstr ""
 
-#: resources/ui/account_settings.ui:606
+#: resources/ui/account_settings.ui:607
 msgid "Edit descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:623
+#: resources/ui/account_settings.ui:624
+#: resources/ui/image_dialog_edit_page.ui:37
 #, fuzzy
 msgid "Save"
 msgstr "_Lagre"
 
-#: resources/ui/account_settings.ui:716
+#: resources/ui/account_settings.ui:717
 #, fuzzy
 msgid "Change folder"
 msgstr "Endre passord"
 
-#: resources/ui/account_settings.ui:718
+#: resources/ui/account_settings.ui:719
 msgid "Select new mpv config folder"
 msgstr ""
 
@@ -1377,11 +1390,6 @@ msgstr "Stopp og avslutt …"
 msgid "Media info (MPV)"
 msgstr "Mediainfo (MPV)"
 
-#: resources/ui/mpvpage.ui:276
-#, fuzzy
-msgid "Danmaku Settings"
-msgstr "Videoinnstillinger"
-
 #: resources/ui/mpvpage.ui:349
 msgid "Playback speed"
 msgstr "Avspillingshastighet"
@@ -1389,6 +1397,51 @@ msgstr "Avspillingshastighet"
 #: resources/ui/mpvpage.ui:363
 msgid "Volume"
 msgstr "Lydstyrke"
+
+#: resources/ui/mpvpage.ui:480
+msgid "Danmaku"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:499
+msgid "No danmakus loaded"
+msgstr ""
+
+#. Translators: if you want reserve the 'and' char, keep it '&amp;amp;'
+#: resources/ui/mpvpage.ui:506
+msgid "Margin &amp; Size"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:509
+msgid "Top padding"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:522
+msgid "Font family"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:541
+msgid "Font size"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:554
+msgid "Scroll danmaku max lines"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:567
+msgid "Topcenter danmaku max lines"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:580
+msgid "Bottomcenter danmaku max lines"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:593
+msgid "Danmaku speed"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:610
+msgid "API from DanDanPlay"
+msgstr ""
 
 #: resources/ui/other.ui:94
 msgid "No Inscriptions"
@@ -1473,6 +1526,14 @@ msgstr "Velg dato"
 msgid "Pick Time"
 msgstr "Velg tid"
 
+#: resources/ui/metadata_dialog.ui:179
+msgid "Overview"
+msgstr "Oversikt"
+
+#: resources/ui/metadata_dialog.ui:196
+msgid "External Ids"
+msgstr ""
+
 #: resources/ui/metadata_dialog.ui:202
 msgid "TheMovieDb Id"
 msgstr ""
@@ -1489,11 +1550,11 @@ msgstr ""
 msgid "Lock The Item"
 msgstr "Lås elementet"
 
-#: resources/ui/refresh_dialog.ui:50
+#: resources/ui/refresh_dialog.ui:30
 msgid "Replace All Metadata"
 msgstr ""
 
-#: resources/ui/refresh_dialog.ui:59
+#: resources/ui/refresh_dialog.ui:39
 msgid "Replace All Images"
 msgstr ""
 
@@ -1517,6 +1578,18 @@ msgstr ""
 msgid "BackDrops"
 msgstr ""
 
+#: resources/ui/image_dialog_edit_page.ui:4
+msgid "Edit Image"
+msgstr ""
+
+#: resources/ui/image_dialog_edit_page.ui:19
+msgid "Upload Image"
+msgstr ""
+
+#: resources/ui/image_dialog_edit_page.ui:24
+msgid "External Url"
+msgstr ""
+
 #: resources/ui/image_info_card.ui:86
 msgid "Copy Image To Clipboard"
 msgstr ""
@@ -1531,8 +1604,16 @@ msgid ""
 "results."
 msgstr ""
 
+#: resources/ui/identify_dialog.ui:79
+msgid "Year"
+msgstr ""
+
 #: resources/ui/identify_dialog.ui:86
 msgid "External"
+msgstr ""
+
+#: resources/ui/image_dialog_search_page.ui:4
+msgid "Choose Image"
 msgstr ""
 
 #: resources/ui/image_dialog_search_page.ui:15
@@ -1628,6 +1709,10 @@ msgid "Upcoming"
 msgstr ""
 
 #, fuzzy
+#~ msgid "Danmaku Settings"
+#~ msgstr "Videoinnstillinger"
+
+#, fuzzy
 #~ msgid "Edit Server"
 #~ msgstr "Legg til tjener"
 
@@ -1655,9 +1740,6 @@ msgstr ""
 
 #~ msgid "Player"
 #~ msgstr "Avspiller"
-
-#~ msgid "Overview"
-#~ msgstr "Oversikt"
 
 #~ msgid "_Add"
 #~ msgstr "_Legg til"
@@ -1690,9 +1772,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Shutdown"
 #~ msgstr "Slå av tjener"
-
-#~ msgid "Items"
-#~ msgstr "Elementer"
 
 #~ msgid "HTTP Proxy"
 #~ msgstr "HTTP-mellomtjener"
