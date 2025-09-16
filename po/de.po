@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-16 21:47+0800\n"
+"POT-Creation-Date: 2025-05-03 21:25+0800\n"
 "PO-Revision-Date: 2025-02-14 08:29+0000\n"
 "Last-Translator: skrido <zkrido@proton.me>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tsukimi/main/de/"
@@ -94,7 +94,7 @@ msgstr "Kanäle"
 msgid "All"
 msgstr "Alle"
 
-#: src/ui/widgets/list.rs:117 src/ui/widgets/item.rs:673
+#: src/ui/widgets/list.rs:117 src/ui/widgets/item.rs:683
 msgid "Resume"
 msgstr "Wiederaufnehmen"
 
@@ -113,7 +113,7 @@ msgid "Genres"
 msgstr "Genres"
 
 #: src/ui/widgets/list.rs:121 src/ui/widgets/window.rs:309
-#: resources/ui/window.ui:350
+#: resources/ui/window.ui:351
 msgid "Liked"
 msgstr "Gelikt"
 
@@ -220,79 +220,79 @@ msgstr "Server erfolgreich geändert"
 msgid "Server added successfully"
 msgstr "Server erfolgreich hinzugefügt"
 
-#: src/ui/widgets/single_grid.rs:481
+#: src/ui/widgets/single_grid.rs:480
 msgid "Items"
 msgstr ""
 
-#: src/ui/widgets/item.rs:677 src/ui/mpv/page.rs:301 src/ui/mpv/page.rs:303
+#: src/ui/widgets/item.rs:687 src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/item.ui:186
 msgid "Play"
 msgstr "Abspielen"
 
-#: src/ui/widgets/item.rs:1058
+#: src/ui/widgets/item.rs:1068
 msgid "Codec"
 msgstr "Codec"
 
-#: src/ui/widgets/item.rs:1061
+#: src/ui/widgets/item.rs:1071
 msgid "Language"
 msgstr "Sprache"
 
-#: src/ui/widgets/item.rs:1064 resources/ui/single_grid.ui:120
+#: src/ui/widgets/item.rs:1074 resources/ui/single_grid.ui:108
 #: resources/ui/metadata_dialog.ui:90
 msgid "Title"
 msgstr "Titel"
 
-#: src/ui/widgets/item.rs:1068 resources/ui/single_grid.ui:121
+#: src/ui/widgets/item.rs:1078 resources/ui/single_grid.ui:109
 msgid "Bitrate"
 msgstr "Bitrate"
 
-#: src/ui/widgets/item.rs:1073
+#: src/ui/widgets/item.rs:1083
 msgid "BitDepth"
 msgstr "Bittiefe"
 
-#: src/ui/widgets/item.rs:1077
+#: src/ui/widgets/item.rs:1087
 msgid "SampleRate"
 msgstr "Samplerate"
 
-#: src/ui/widgets/item.rs:1081
+#: src/ui/widgets/item.rs:1091
 msgid "Height"
 msgstr "Höhe"
 
-#: src/ui/widgets/item.rs:1084
+#: src/ui/widgets/item.rs:1094
 msgid "Width"
 msgstr "Breite"
 
-#: src/ui/widgets/item.rs:1087
+#: src/ui/widgets/item.rs:1097
 msgid "ColorSpace"
 msgstr "Farbraum"
 
-#: src/ui/widgets/item.rs:1091
+#: src/ui/widgets/item.rs:1101
 msgid "DisplayTitle"
 msgstr "Anzeigetitel"
 
-#: src/ui/widgets/item.rs:1095
+#: src/ui/widgets/item.rs:1105
 msgid "Channel"
 msgstr "Kanal"
 
-#: src/ui/widgets/item.rs:1099
+#: src/ui/widgets/item.rs:1109
 msgid "ChannelLayout"
 msgstr "Kanallayout"
 
-#: src/ui/widgets/item.rs:1104
+#: src/ui/widgets/item.rs:1114
 msgid "AverageFrameRate"
 msgstr "Durchschnittliche Bildwiederholrate"
 
-#: src/ui/widgets/item.rs:1108
+#: src/ui/widgets/item.rs:1118
 msgid "PixelFormat"
 msgstr "Pixelformat"
 
-#: src/ui/widgets/item.rs:1216
+#: src/ui/widgets/item.rs:1226
 msgid "No video source found"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1352
+#: src/ui/widgets/item.rs:1362
 msgid "Season not found. Is this a continue watching list?"
 msgstr "Staffel nicht gefunden. Ist das eine Liste zum Weiterschauen?"
 
@@ -324,12 +324,12 @@ msgstr "Fehler beim Löschen des Bildes"
 msgid "Replace Image"
 msgstr "Bild austauschen"
 
-#: src/ui/widgets/window.rs:297 resources/ui/window.ui:304
+#: src/ui/widgets/window.rs:297 resources/ui/window.ui:305
 msgid "Home"
 msgstr "Startseite"
 
 #: src/ui/widgets/window.rs:321 resources/ui/search.ui:23
-#: resources/ui/window.ui:21 resources/ui/window.ui:396
+#: resources/ui/window.ui:21 resources/ui/window.ui:397
 #: resources/ui/image_info_card.ui:127 resources/ui/identify_dialog.ui:94
 msgid "Search"
 msgstr "Suche"
@@ -459,15 +459,15 @@ msgstr "Deband-Einstellungen gelöscht."
 msgid "Failed to get GLContext"
 msgstr "Gescheitert GLContext zu bekommen"
 
-#: src/ui/mpv/page.rs:306 src/ui/mpv/page.rs:308 resources/ui/mpvpage.ui:215
+#: src/ui/mpv/page.rs:308 src/ui/mpv/page.rs:310 resources/ui/mpvpage.ui:215
 msgid "Pause"
 msgstr "Pause"
 
-#: src/ui/mpv/page.rs:606
+#: src/ui/mpv/page.rs:608
 msgid "No more video found"
 msgstr "Keine weiteren Videos gefunden"
 
-#: src/ui/mpv/page.rs:700
+#: src/ui/mpv/page.rs:702
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -509,12 +509,12 @@ msgstr "Medienmenü"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
-#: resources/ui/mpvpage.ui:291 resources/ui/mpvpage.ui:293
+#: resources/ui/mpvpage.ui:290 resources/ui/mpvpage.ui:292
 msgid "Fullscreen"
 msgstr "Vollbild"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:302 resources/ui/mpvpage.ui:304
+#: resources/ui/mpvpage.ui:301 resources/ui/mpvpage.ui:303
 msgid "Exit Fullscreen"
 msgstr "Vollbild schließen"
 
@@ -628,75 +628,75 @@ msgstr "Anschauen"
 msgid "Filter Panel"
 msgstr "Filter-Panel"
 
-#: resources/ui/single_grid.ui:66
+#: resources/ui/single_grid.ui:65
 msgid "Grid View"
 msgstr "Gitteransicht"
 
-#: resources/ui/single_grid.ui:75
+#: resources/ui/single_grid.ui:72
 msgid "List View"
 msgstr "Listenansicht"
 
-#: resources/ui/single_grid.ui:92
+#: resources/ui/single_grid.ui:85
 msgid "Ascending"
 msgstr "Aufsteigend"
 
-#: resources/ui/single_grid.ui:100
+#: resources/ui/single_grid.ui:92
 msgid "Descending"
 msgstr "Absteigend"
 
-#: resources/ui/single_grid.ui:115
+#: resources/ui/single_grid.ui:103
 msgid "Sort By"
 msgstr "Sortieren nach"
 
-#: resources/ui/single_grid.ui:122 resources/ui/metadata_dialog.ui:100
+#: resources/ui/single_grid.ui:110 resources/ui/metadata_dialog.ui:100
 msgid "Date Created"
 msgstr "Erstellungsdatum"
 
-#: resources/ui/single_grid.ui:123
+#: resources/ui/single_grid.ui:111
 msgid "Imdb Rate"
 msgstr "Imdb-Bewertung"
 
-#: resources/ui/single_grid.ui:124
+#: resources/ui/single_grid.ui:112
 msgid "Critic Rating"
 msgstr "Kritikerbewertung"
 
-#: resources/ui/single_grid.ui:125
+#: resources/ui/single_grid.ui:113
 msgid "Premiere Date"
 msgstr "Premierendatum"
 
-#: resources/ui/single_grid.ui:126
+#: resources/ui/single_grid.ui:114
 msgid "Offical Rating"
 msgstr "Offizielle Bewertung"
 
-#: resources/ui/single_grid.ui:127
+#: resources/ui/single_grid.ui:115
 msgid "Production Year"
 msgstr "Produktionsjahr"
 
-#: resources/ui/single_grid.ui:128
+#: resources/ui/single_grid.ui:116
 msgid "Date Played"
 msgstr "Datum abgespielt"
 
-#: resources/ui/single_grid.ui:129
+#: resources/ui/single_grid.ui:117
 msgid "Runtime"
 msgstr "Laufzeit"
 
-#: resources/ui/single_grid.ui:130
+#: resources/ui/single_grid.ui:118
 msgid "Updated At"
 msgstr "Aktualisiert am"
 
-#: resources/ui/single_grid.ui:179 resources/ui/item.ui:416
+#: resources/ui/single_grid.ui:167 resources/ui/item.ui:416
 msgid "Nothing Here"
 msgstr "Nichts hier"
 
-#: resources/ui/single_grid.ui:194
+#: resources/ui/single_grid.ui:182
 msgid "Poster"
 msgstr "Plakat"
 
-#: resources/ui/single_grid.ui:198
+#: resources/ui/single_grid.ui:186
 msgid "Backdrop"
 msgstr "Hintergrund"
 
-#: resources/ui/single_grid.ui:202
+#: resources/ui/single_grid.ui:190
 msgid "Banner"
 msgstr "Banner"
 
@@ -717,7 +717,7 @@ msgid "Music Album"
 msgstr "Musikalbum"
 
 #: resources/ui/search.ui:78 resources/ui/mpv_control_sidebar.ui:447
-#: resources/ui/mpvpage.ui:376 resources/ui/mpvpage.ui:433
+#: resources/ui/mpvpage.ui:376 resources/ui/mpvpage.ui:436
 msgid "Audio"
 msgstr "Audio"
 
@@ -738,7 +738,7 @@ msgstr "Nichts hier oder kein Typ ausgewählt"
 msgid "Maybe you should try using different search terms"
 msgstr "Vielleicht sollten Sie versuchen, andere Suchbegriffe zu verwenden"
 
-#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:610
+#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:611
 msgid "Advanced Settings"
 msgstr "Erweiterte Einstellungen"
 
@@ -781,7 +781,7 @@ msgid "Cache Time"
 msgstr "Cachezeit"
 
 #: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:384
-#: resources/ui/mpvpage.ui:402
+#: resources/ui/mpvpage.ui:403
 msgid "Subtitle"
 msgstr "Untertitel"
 
@@ -1018,8 +1018,8 @@ msgstr "Nächstes Kapitel"
 msgid "Previous chapter"
 msgstr "Vorheriges Kapitel"
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/window.ui:559
-#: resources/ui/window.ui:581 resources/ui/mpvpage.ui:151
+#: resources/ui/mpv_menu.ui:35 resources/ui/window.ui:560
+#: resources/ui/window.ui:582 resources/ui/mpvpage.ui:151
 msgid "Playlist"
 msgstr "Playlist"
 
@@ -1087,7 +1087,7 @@ msgid "Sign out"
 msgstr "Abmelden"
 
 #: resources/ui/window.ui:25 resources/ui/window.ui:54
-#: resources/ui/mpvpage.ui:333
+#: resources/ui/mpvpage.ui:332
 msgid "Preferences"
 msgstr "Präferenzen"
 
@@ -1107,15 +1107,15 @@ msgstr "Kein Server"
 msgid "Add Server"
 msgstr "Server hinzufügen"
 
-#: resources/ui/window.ui:206
+#: resources/ui/window.ui:207
 msgid "Log Out"
 msgstr "Abmelden"
 
-#: resources/ui/window.ui:253
+#: resources/ui/window.ui:254
 msgid "Contents"
 msgstr "Inhalte"
 
-#: resources/ui/window.ui:411
+#: resources/ui/window.ui:412
 msgid "Servers"
 msgstr "Server"
 
@@ -1152,7 +1152,7 @@ msgstr "Standard"
 msgid "Preferred Subtitle Language"
 msgstr "Bevorzugte Untertitelsprache"
 
-#: resources/ui/account_settings.ui:73
+#: resources/ui/account_settings.ui:73 resources/ui/mpvpage.ui:502
 msgid "Appearence"
 msgstr "Erscheinungsbild"
 
@@ -1362,10 +1362,6 @@ msgstr "Stoppen und verlassen"
 msgid "Media info (MPV)"
 msgstr "Medieninfo (MPV)"
 
-#: resources/ui/mpvpage.ui:276
-msgid "Danmaku Settings"
-msgstr "Danmaku Einstellungen"
-
 #: resources/ui/mpvpage.ui:349
 msgid "Playback speed"
 msgstr "Wiedergabegeschwindigkeit"
@@ -1373,6 +1369,51 @@ msgstr "Wiedergabegeschwindigkeit"
 #: resources/ui/mpvpage.ui:363
 msgid "Volume"
 msgstr "Lautstärke"
+
+#: resources/ui/mpvpage.ui:480
+msgid "Danmaku"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:499
+msgid "No danmakus loaded"
+msgstr ""
+
+#. Translators: if you want reserve the 'and' char, keep it '&amp;amp;'
+#: resources/ui/mpvpage.ui:506
+msgid "Margin &amp; Size"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:509
+msgid "Top padding"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:522
+msgid "Font family"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:541
+msgid "Font size"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:554
+msgid "Scroll danmaku max lines"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:567
+msgid "Topcenter danmaku max lines"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:580
+msgid "Bottomcenter danmaku max lines"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:593
+msgid "Danmaku speed"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:610
+msgid "API from DanDanPlay"
+msgstr ""
 
 #: resources/ui/other.ui:94
 msgid "No Inscriptions"
@@ -1641,6 +1682,9 @@ msgstr "Speziale"
 #: resources/ui/missing_episodes.ui:72
 msgid "Upcoming"
 msgstr "Aufkommen"
+
+#~ msgid "Danmaku Settings"
+#~ msgstr "Danmaku Einstellungen"
 
 #~ msgid "Font Cleared, Restart to take effect."
 #~ msgstr ""

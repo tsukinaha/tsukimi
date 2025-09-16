@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-16 21:47+0800\n"
+"POT-Creation-Date: 2025-05-03 21:25+0800\n"
 "PO-Revision-Date: 2025-04-26 05:01+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/tsukimi/main/ta/>\n"
@@ -93,7 +93,7 @@ msgstr "சேனல்கள்"
 msgid "All"
 msgstr "அனைத்தும்"
 
-#: src/ui/widgets/list.rs:117 src/ui/widgets/item.rs:673
+#: src/ui/widgets/list.rs:117 src/ui/widgets/item.rs:683
 msgid "Resume"
 msgstr "மீண்டும் தொடங்குங்கள்"
 
@@ -112,7 +112,7 @@ msgid "Genres"
 msgstr "வகைகள்"
 
 #: src/ui/widgets/list.rs:121 src/ui/widgets/window.rs:309
-#: resources/ui/window.ui:350
+#: resources/ui/window.ui:351
 msgid "Liked"
 msgstr "பிடித்திருந்தது"
 
@@ -219,79 +219,79 @@ msgstr "சேவையகம் வெற்றிகரமாக திரு�
 msgid "Server added successfully"
 msgstr "சேவையகம் வெற்றிகரமாக சேர்க்கப்பட்டது"
 
-#: src/ui/widgets/single_grid.rs:481
+#: src/ui/widgets/single_grid.rs:480
 msgid "Items"
 msgstr "உருப்படிகள்"
 
-#: src/ui/widgets/item.rs:677 src/ui/mpv/page.rs:301 src/ui/mpv/page.rs:303
+#: src/ui/widgets/item.rs:687 src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/item.ui:186
 msgid "Play"
 msgstr "விளையாடுங்கள்"
 
-#: src/ui/widgets/item.rs:1058
+#: src/ui/widgets/item.rs:1068
 msgid "Codec"
 msgstr "புரிப்பு"
 
-#: src/ui/widgets/item.rs:1061
+#: src/ui/widgets/item.rs:1071
 msgid "Language"
 msgstr "மொழி"
 
-#: src/ui/widgets/item.rs:1064 resources/ui/single_grid.ui:120
+#: src/ui/widgets/item.rs:1074 resources/ui/single_grid.ui:108
 #: resources/ui/metadata_dialog.ui:90
 msgid "Title"
 msgstr "தலைப்பு"
 
-#: src/ui/widgets/item.rs:1068 resources/ui/single_grid.ui:121
+#: src/ui/widgets/item.rs:1078 resources/ui/single_grid.ui:109
 msgid "Bitrate"
 msgstr "பிட்ரேட்"
 
-#: src/ui/widgets/item.rs:1073
+#: src/ui/widgets/item.rs:1083
 msgid "BitDepth"
 msgstr "பிட்டெப்ட்"
 
-#: src/ui/widgets/item.rs:1077
+#: src/ui/widgets/item.rs:1087
 msgid "SampleRate"
 msgstr "மாதிரி"
 
-#: src/ui/widgets/item.rs:1081
+#: src/ui/widgets/item.rs:1091
 msgid "Height"
 msgstr "உயரம்"
 
-#: src/ui/widgets/item.rs:1084
+#: src/ui/widgets/item.rs:1094
 msgid "Width"
 msgstr "அகலம்"
 
-#: src/ui/widgets/item.rs:1087
+#: src/ui/widgets/item.rs:1097
 msgid "ColorSpace"
 msgstr "வண்ணங்கள்"
 
-#: src/ui/widgets/item.rs:1091
+#: src/ui/widgets/item.rs:1101
 msgid "DisplayTitle"
 msgstr "டிச்ப்ளே டிடில்"
 
-#: src/ui/widgets/item.rs:1095
+#: src/ui/widgets/item.rs:1105
 msgid "Channel"
 msgstr "வாய்க்கால்"
 
-#: src/ui/widgets/item.rs:1099
+#: src/ui/widgets/item.rs:1109
 msgid "ChannelLayout"
 msgstr "சேன்லேஅவுட்"
 
-#: src/ui/widgets/item.rs:1104
+#: src/ui/widgets/item.rs:1114
 msgid "AverageFrameRate"
 msgstr "சராசரி ஃபிரமரேட்"
 
-#: src/ui/widgets/item.rs:1108
+#: src/ui/widgets/item.rs:1118
 msgid "PixelFormat"
 msgstr "பிக்சல்ஃபார்மட்"
 
-#: src/ui/widgets/item.rs:1216
+#: src/ui/widgets/item.rs:1226
 msgid "No video source found"
 msgstr "வீடியோ மூலமும் கிடைக்கவில்லை"
 
-#: src/ui/widgets/item.rs:1352
+#: src/ui/widgets/item.rs:1362
 msgid "Season not found. Is this a continue watching list?"
 msgstr "சீசன் கிடைக்கவில்லை. இது தொடர்ந்து பார்க்கும் பட்டியலா?"
 
@@ -323,12 +323,12 @@ msgstr "படத்தை நீக்குவதில் பிழை"
 msgid "Replace Image"
 msgstr "படத்தை மாற்றவும்"
 
-#: src/ui/widgets/window.rs:297 resources/ui/window.ui:304
+#: src/ui/widgets/window.rs:297 resources/ui/window.ui:305
 msgid "Home"
 msgstr "வீடு"
 
 #: src/ui/widgets/window.rs:321 resources/ui/search.ui:23
-#: resources/ui/window.ui:21 resources/ui/window.ui:396
+#: resources/ui/window.ui:21 resources/ui/window.ui:397
 #: resources/ui/image_info_card.ui:127 resources/ui/identify_dialog.ui:94
 msgid "Search"
 msgstr "தேடல்"
@@ -467,15 +467,15 @@ msgstr "டெபாண்ட் அமைப்புகள் அழிக்�
 msgid "Failed to get GLContext"
 msgstr "Glcontext ஐப் பெறுவதில் தோல்வி"
 
-#: src/ui/mpv/page.rs:306 src/ui/mpv/page.rs:308 resources/ui/mpvpage.ui:215
+#: src/ui/mpv/page.rs:308 src/ui/mpv/page.rs:310 resources/ui/mpvpage.ui:215
 msgid "Pause"
 msgstr "இடைநிறுத்தம்"
 
-#: src/ui/mpv/page.rs:606
+#: src/ui/mpv/page.rs:608
 msgid "No more video found"
 msgstr "மேலும் வீடியோ கிடைக்கவில்லை"
 
-#: src/ui/mpv/page.rs:700
+#: src/ui/mpv/page.rs:702
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -517,12 +517,12 @@ msgstr "மீடியா பட்டியல்"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
-#: resources/ui/mpvpage.ui:291 resources/ui/mpvpage.ui:293
+#: resources/ui/mpvpage.ui:290 resources/ui/mpvpage.ui:292
 msgid "Fullscreen"
 msgstr "முழு திரை"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:302 resources/ui/mpvpage.ui:304
+#: resources/ui/mpvpage.ui:301 resources/ui/mpvpage.ui:303
 msgid "Exit Fullscreen"
 msgstr "முழுத்திரை வெளியேறவும்"
 
@@ -636,75 +636,75 @@ msgstr "பார்வை"
 msgid "Filter Panel"
 msgstr "வடிகட்டி குழு"
 
-#: resources/ui/single_grid.ui:66
+#: resources/ui/single_grid.ui:65
 msgid "Grid View"
 msgstr "கட்டம் பார்வை"
 
-#: resources/ui/single_grid.ui:75
+#: resources/ui/single_grid.ui:72
 msgid "List View"
 msgstr "பட்டியல் பார்வை"
 
-#: resources/ui/single_grid.ui:92
+#: resources/ui/single_grid.ui:85
 msgid "Ascending"
 msgstr "ஏறுதல்"
 
-#: resources/ui/single_grid.ui:100
+#: resources/ui/single_grid.ui:92
 msgid "Descending"
 msgstr "இறங்கு"
 
-#: resources/ui/single_grid.ui:115
+#: resources/ui/single_grid.ui:103
 msgid "Sort By"
 msgstr "வரிசைப்படுத்தவும்"
 
-#: resources/ui/single_grid.ui:122 resources/ui/metadata_dialog.ui:100
+#: resources/ui/single_grid.ui:110 resources/ui/metadata_dialog.ui:100
 msgid "Date Created"
 msgstr "தேதி உருவாக்கப்பட்டது"
 
-#: resources/ui/single_grid.ui:123
+#: resources/ui/single_grid.ui:111
 msgid "Imdb Rate"
 msgstr "IMDB வீதம்"
 
-#: resources/ui/single_grid.ui:124
+#: resources/ui/single_grid.ui:112
 msgid "Critic Rating"
 msgstr "விமர்சகர் மதிப்பீடு"
 
-#: resources/ui/single_grid.ui:125
+#: resources/ui/single_grid.ui:113
 msgid "Premiere Date"
 msgstr "பிரீமியர் தேதி"
 
-#: resources/ui/single_grid.ui:126
+#: resources/ui/single_grid.ui:114
 msgid "Offical Rating"
 msgstr "அதிகாரப்பூர்வ மதிப்பீடு"
 
-#: resources/ui/single_grid.ui:127
+#: resources/ui/single_grid.ui:115
 msgid "Production Year"
 msgstr "விளைவாக்கம் ஆண்டு"
 
-#: resources/ui/single_grid.ui:128
+#: resources/ui/single_grid.ui:116
 msgid "Date Played"
 msgstr "விளையாடிய தேதி"
 
-#: resources/ui/single_grid.ui:129
+#: resources/ui/single_grid.ui:117
 msgid "Runtime"
 msgstr "இயக்க நேரம்"
 
-#: resources/ui/single_grid.ui:130
+#: resources/ui/single_grid.ui:118
 msgid "Updated At"
 msgstr "இல் புதுப்பிக்கப்பட்டது"
 
-#: resources/ui/single_grid.ui:179 resources/ui/item.ui:416
+#: resources/ui/single_grid.ui:167 resources/ui/item.ui:416
 msgid "Nothing Here"
 msgstr "இங்கே எதுவும் இல்லை"
 
-#: resources/ui/single_grid.ui:194
+#: resources/ui/single_grid.ui:182
 msgid "Poster"
 msgstr "சுவரொட்டி"
 
-#: resources/ui/single_grid.ui:198
+#: resources/ui/single_grid.ui:186
 msgid "Backdrop"
 msgstr "பின்விடு"
 
-#: resources/ui/single_grid.ui:202
+#: resources/ui/single_grid.ui:190
 msgid "Banner"
 msgstr "பேனர்"
 
@@ -725,7 +725,7 @@ msgid "Music Album"
 msgstr "இசை ஆல்பம்"
 
 #: resources/ui/search.ui:78 resources/ui/mpv_control_sidebar.ui:447
-#: resources/ui/mpvpage.ui:376 resources/ui/mpvpage.ui:433
+#: resources/ui/mpvpage.ui:376 resources/ui/mpvpage.ui:436
 msgid "Audio"
 msgstr "ஆடியோ"
 
@@ -746,7 +746,7 @@ msgstr "இங்கே எதுவும் இல்லை அல்லது
 msgid "Maybe you should try using different search terms"
 msgstr "ஒருவேளை நீங்கள் வெவ்வேறு தேடல் சொற்களைப் பயன்படுத்த முயற்சிக்க வேண்டும்"
 
-#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:610
+#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:611
 msgid "Advanced Settings"
 msgstr "மேம்பட்ட அமைப்புகள்"
 
@@ -789,7 +789,7 @@ msgid "Cache Time"
 msgstr "கேச் நேரம்"
 
 #: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:384
-#: resources/ui/mpvpage.ui:402
+#: resources/ui/mpvpage.ui:403
 msgid "Subtitle"
 msgstr "வசன வரிகள்"
 
@@ -1026,8 +1026,8 @@ msgstr "அடுத்த அத்தியாயம்"
 msgid "Previous chapter"
 msgstr "முந்தைய அத்தியாயம்"
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/window.ui:559
-#: resources/ui/window.ui:581 resources/ui/mpvpage.ui:151
+#: resources/ui/mpv_menu.ui:35 resources/ui/window.ui:560
+#: resources/ui/window.ui:582 resources/ui/mpvpage.ui:151
 msgid "Playlist"
 msgstr "பிளேலிச்ட்"
 
@@ -1095,7 +1095,7 @@ msgid "Sign out"
 msgstr "விடுபதிகை"
 
 #: resources/ui/window.ui:25 resources/ui/window.ui:54
-#: resources/ui/mpvpage.ui:333
+#: resources/ui/mpvpage.ui:332
 msgid "Preferences"
 msgstr "விருப்பத்தேர்வுகள்"
 
@@ -1115,15 +1115,15 @@ msgstr "சேவையகம் இல்லை"
 msgid "Add Server"
 msgstr "சேவையகத்தைச் சேர்க்கவும்"
 
-#: resources/ui/window.ui:206
+#: resources/ui/window.ui:207
 msgid "Log Out"
 msgstr "விடுபதிகை"
 
-#: resources/ui/window.ui:253
+#: resources/ui/window.ui:254
 msgid "Contents"
 msgstr "உள்ளடக்கங்கள்"
 
-#: resources/ui/window.ui:411
+#: resources/ui/window.ui:412
 msgid "Servers"
 msgstr "சேவையகங்கள்"
 
@@ -1160,7 +1160,7 @@ msgstr "இயல்புநிலை"
 msgid "Preferred Subtitle Language"
 msgstr "விருப்பமான வசன மொழி"
 
-#: resources/ui/account_settings.ui:73
+#: resources/ui/account_settings.ui:73 resources/ui/mpvpage.ui:502
 msgid "Appearence"
 msgstr "தோற்றம்"
 
@@ -1368,10 +1368,6 @@ msgstr "நிறுத்தி வெளியேறவும்"
 msgid "Media info (MPV)"
 msgstr "மீடியா செய்தி (எம்.பி.வி)"
 
-#: resources/ui/mpvpage.ui:276
-msgid "Danmaku Settings"
-msgstr "டான்மகு அமைப்புகள்"
-
 #: resources/ui/mpvpage.ui:349
 msgid "Playback speed"
 msgstr "பின்னணி விரைவு"
@@ -1379,6 +1375,51 @@ msgstr "பின்னணி விரைவு"
 #: resources/ui/mpvpage.ui:363
 msgid "Volume"
 msgstr "தொகுதி"
+
+#: resources/ui/mpvpage.ui:480
+msgid "Danmaku"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:499
+msgid "No danmakus loaded"
+msgstr ""
+
+#. Translators: if you want reserve the 'and' char, keep it '&amp;amp;'
+#: resources/ui/mpvpage.ui:506
+msgid "Margin &amp; Size"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:509
+msgid "Top padding"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:522
+msgid "Font family"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:541
+msgid "Font size"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:554
+msgid "Scroll danmaku max lines"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:567
+msgid "Topcenter danmaku max lines"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:580
+msgid "Bottomcenter danmaku max lines"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:593
+msgid "Danmaku speed"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:610
+msgid "API from DanDanPlay"
+msgstr ""
 
 #: resources/ui/other.ui:94
 msgid "No Inscriptions"
@@ -1646,3 +1687,6 @@ msgstr "சிறப்பு"
 #: resources/ui/missing_episodes.ui:72
 msgid "Upcoming"
 msgstr "வரவிருக்கும்"
+
+#~ msgid "Danmaku Settings"
+#~ msgstr "டான்மகு அமைப்புகள்"
