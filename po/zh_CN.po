@@ -5,15 +5,15 @@
 # <tsukimi@tutanota.com>, 2024.
 # dyphire <qimoge@gmail.com>, 2024.
 # Inaha <sakuovds@gmail.com>, 2024, 2025.
-# Gracealina  clover <zhiweishuisheng@gmail.com>, 2024.
+# Gracealina  clover <zhiweishuisheng@gmail.com>, 2024, 2025.
 # HLiang Shao <792332448@qq.com>, 2024, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-03 21:25+0800\n"
-"PO-Revision-Date: 2025-04-25 03:54+0000\n"
-"Last-Translator: HLiang Shao <792332448@qq.com>\n"
+"PO-Revision-Date: 2025-05-22 05:09+0000\n"
+"Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.11.1-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: src/client/error.rs:19
 msgid "Timeout Error, Check your internet connection"
@@ -1377,48 +1377,50 @@ msgstr "音量"
 
 #: resources/ui/mpvpage.ui:480
 msgid "Danmaku"
-msgstr ""
+msgstr "弹幕"
 
 #: resources/ui/mpvpage.ui:499
 msgid "No danmakus loaded"
-msgstr ""
+msgstr "无弹幕加载"
 
 #. Translators: if you want reserve the 'and' char, keep it '&amp;amp;'
 #: resources/ui/mpvpage.ui:506
 msgid "Margin &amp; Size"
-msgstr ""
+msgstr "边距 &amp; 大小"
 
 #: resources/ui/mpvpage.ui:509
 msgid "Top padding"
-msgstr ""
+msgstr "顶部内边距"
 
 #: resources/ui/mpvpage.ui:522
 msgid "Font family"
-msgstr ""
+msgstr "字体系列"
 
 #: resources/ui/mpvpage.ui:541
 msgid "Font size"
-msgstr ""
+msgstr "字体大小"
 
 #: resources/ui/mpvpage.ui:554
 msgid "Scroll danmaku max lines"
-msgstr ""
+msgstr "滚动弹幕最大显示行数"
 
 #: resources/ui/mpvpage.ui:567
+#, fuzzy
 msgid "Topcenter danmaku max lines"
-msgstr ""
+msgstr "顶部居中弹幕最大显示行数"
 
 #: resources/ui/mpvpage.ui:580
+#, fuzzy
 msgid "Bottomcenter danmaku max lines"
-msgstr ""
+msgstr "底部居中弹幕最大显示行数"
 
 #: resources/ui/mpvpage.ui:593
 msgid "Danmaku speed"
-msgstr ""
+msgstr "弹幕速度"
 
 #: resources/ui/mpvpage.ui:610
 msgid "API from DanDanPlay"
-msgstr ""
+msgstr "来自 DanDanPlay 的 API"
 
 #: resources/ui/other.ui:94
 msgid "No Inscriptions"
