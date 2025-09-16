@@ -60,9 +60,9 @@ jobs:
           restore-keys: |
             tsukimi-build-${{ matrix.arch }}-windows-
 
-      - name: Setup sccache
+      - name: Install sccache and nsis
         run: |
-            choco install sccache
+            choco install sccache nsis
             sccache --start-server
             sccache -z
             sccache -s
