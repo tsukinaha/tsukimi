@@ -29,7 +29,7 @@ chrono = { version = "0.4.41", features = ["serde"] }
 tracing = "0.1.41"
 gst = { version = "0.23", package = "gstreamer" }
 url = "2.5.4"
-image = "0.25.5"
+image = "0.25.8"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
 hostname = "0.4.1"
 epoxy = "0.1.0"
