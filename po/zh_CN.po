@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-16 21:47+0800\n"
-"PO-Revision-Date: 2025-02-26 12:08+0000\n"
-"Last-Translator: Inaha <sakuovds@gmail.com>\n"
+"PO-Revision-Date: 2025-04-25 03:54+0000\n"
+"Last-Translator: HLiang Shao <792332448@qq.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.10.2-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #: src/client/error.rs:19
 msgid "Timeout Error, Check your internet connection"
@@ -428,7 +428,7 @@ msgstr "正在等待媒体源..."
 
 #: src/ui/widgets/tu_list_item.rs:211
 msgid "Not implemented"
-msgstr ""
+msgstr "未实现"
 
 #: src/ui/widgets/missing_episodes_dialog.rs:148
 msgid "Special"
@@ -1468,7 +1468,7 @@ msgstr "概览"
 
 #: resources/ui/metadata_dialog.ui:196
 msgid "External Ids"
-msgstr ""
+msgstr "外部ID"
 
 #: resources/ui/metadata_dialog.ui:202
 msgid "TheMovieDb Id"
@@ -1516,15 +1516,15 @@ msgstr "背景"
 
 #: resources/ui/image_dialog_edit_page.ui:4
 msgid "Edit Image"
-msgstr ""
+msgstr "编辑图片"
 
 #: resources/ui/image_dialog_edit_page.ui:19
 msgid "Upload Image"
-msgstr ""
+msgstr "上传图片"
 
 #: resources/ui/image_dialog_edit_page.ui:24
 msgid "External Url"
-msgstr ""
+msgstr "外部链接"
 
 #: resources/ui/image_info_card.ui:86
 msgid "Copy Image To Clipboard"
@@ -1542,7 +1542,7 @@ msgstr "输入一个或多个搜索条件，删除条件可增加搜索结果。
 
 #: resources/ui/identify_dialog.ui:79
 msgid "Year"
-msgstr ""
+msgstr "年份"
 
 #: resources/ui/identify_dialog.ui:86
 msgid "External"
@@ -1550,7 +1550,7 @@ msgstr "外部"
 
 #: resources/ui/image_dialog_search_page.ui:4
 msgid "Choose Image"
-msgstr ""
+msgstr "选择图片"
 
 #: resources/ui/image_dialog_search_page.ui:15
 msgid "Provider:"
