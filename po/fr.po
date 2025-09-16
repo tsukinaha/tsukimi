@@ -9,17 +9,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-16 21:47+0800\n"
-"PO-Revision-Date: 2025-03-08 05:50+0000\n"
-"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github."
-"com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
-">\n"
+"PO-Revision-Date: 2025-04-18 17:01+0000\n"
+"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>"
+"\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10.3-dev\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 
 #: src/client/error.rs:19
 msgid "Timeout Error, Check your internet connection"
@@ -430,7 +430,7 @@ msgstr "En attente d'une source de média..."
 
 #: src/ui/widgets/tu_list_item.rs:211
 msgid "Not implemented"
-msgstr ""
+msgstr "Non implémenté"
 
 #: src/ui/widgets/missing_episodes_dialog.rs:148
 msgid "Special"
@@ -1480,7 +1480,7 @@ msgstr "Vue d'ensemble"
 
 #: resources/ui/metadata_dialog.ui:196
 msgid "External Ids"
-msgstr ""
+msgstr "Identifiants externes"
 
 #: resources/ui/metadata_dialog.ui:202
 msgid "TheMovieDb Id"
@@ -1528,15 +1528,15 @@ msgstr "Images de fond"
 
 #: resources/ui/image_dialog_edit_page.ui:4
 msgid "Edit Image"
-msgstr ""
+msgstr "Modifier l'image"
 
 #: resources/ui/image_dialog_edit_page.ui:19
 msgid "Upload Image"
-msgstr ""
+msgstr "Téléverser l'image"
 
 #: resources/ui/image_dialog_edit_page.ui:24
 msgid "External Url"
-msgstr ""
+msgstr "URL externe"
 
 #: resources/ui/image_info_card.ui:86
 msgid "Copy Image To Clipboard"
@@ -1556,7 +1556,7 @@ msgstr ""
 
 #: resources/ui/identify_dialog.ui:79
 msgid "Year"
-msgstr ""
+msgstr "Année"
 
 #: resources/ui/identify_dialog.ui:86
 msgid "External"
@@ -1564,7 +1564,7 @@ msgstr "Externe"
 
 #: resources/ui/image_dialog_search_page.ui:4
 msgid "Choose Image"
-msgstr ""
+msgstr "Choisir une image"
 
 #: resources/ui/image_dialog_search_page.ui:15
 msgid "Provider:"
