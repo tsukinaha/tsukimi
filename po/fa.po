@@ -9,8 +9,8 @@ msgstr ""
 "POT-Creation-Date: 2025-05-03 21:25+0800\n"
 "PO-Revision-Date: 2025-08-17 13:01+0000\n"
 "Last-Translator: Hadi <xhopeter@proton.me>\n"
-"Language-Team: Persian <https://hosted.weblate.org/projects/tsukimi/main/fa/>"
-"\n"
+"Language-Team: Persian <https://hosted.weblate.org/projects/tsukimi/main/fa/"
+">\n"
 "Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -224,6 +224,10 @@ msgstr "سرور با موفقیت افزوده شد"
 msgid "Items"
 msgstr "آیتم‌ها"
 
+#: src/ui/widgets/music_album.rs:246
+msgid "Songs"
+msgstr ""
+
 #: src/ui/widgets/item.rs:687 src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
@@ -367,8 +371,9 @@ msgstr ""
 "طور پیش‌فرض GTK استفاده شده در این برنامه برای لینوکس طراحی شده است و هیچ "
 "تضمینی برای کارکرد آن‌ها در ویندوز نیست، از جمله اما نه محدود به پخش ویدئو، "
 "پخش صدا، اتصالات شبکه و لینک‌های خارجی. علاوه بر این، مشکلات شناخته شده‌ای "
-"وجود دارند که قابل رفع نیستند، مانند حاشیه‌های سیاه، رندر تصاویر، رندر فونت‌ها،"
-" مقیاس‌بندی DPI، رندر ویدئو، رندر GL، حالت تمام صفحه، HDR و تشخیص محل.\n"
+"وجود دارند که قابل رفع نیستند، مانند حاشیه‌های سیاه، رندر تصاویر، رندر "
+"فونت‌ها، مقیاس‌بندی DPI، رندر ویدئو، رندر GL، حالت تمام صفحه، HDR و تشخیص "
+"محل.\n"
 "اگر قصد دارید مشکلی گزارش کنید، لطفاً مطمئن شوید که مربوط به این نرم‌افزار است "
 "و به مسائل اصلی GTK مربوط نمی‌شود. قالب مناسب مسئله را انتخاب کنید و تمام "
 "فیلدهای مورد نیاز را بدون هیچ کم و کاستی پر کنید."

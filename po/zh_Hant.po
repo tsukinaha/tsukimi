@@ -225,6 +225,10 @@ msgstr "伺服器添加成功"
 msgid "Items"
 msgstr "條目"
 
+#: src/ui/widgets/music_album.rs:246
+msgid "Songs"
+msgstr ""
+
 #: src/ui/widgets/item.rs:687 src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76

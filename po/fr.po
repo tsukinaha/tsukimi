@@ -10,10 +10,10 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-03 21:25+0800\n"
 "PO-Revision-Date: 2025-07-28 21:05+0000\n"
-"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>"
-"\n"
-"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/>"
-"\n"
+"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github."
+"com>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
+">\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -227,6 +227,10 @@ msgstr "Serveur ajouté avec succès"
 #: src/ui/widgets/single_grid.rs:480
 msgid "Items"
 msgstr "Éléments"
+
+#: src/ui/widgets/music_album.rs:246
+msgid "Songs"
+msgstr ""
 
 #: src/ui/widgets/item.rs:687 src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
