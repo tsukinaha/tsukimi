@@ -39,7 +39,7 @@ flume = "0.11.1"
 derive_builder = "0.20.2"
 anyhow = "1.0.100"
 tracing-subscriber = { version = "0.3.20", features = ["chrono"] }
-regex = "1.11.2"
+regex = "1.12.2"
 strsim = "0.11.1"
 clap = { version = "4.5.48", features = ["derive"] }
 fnv = "1.0.7"
