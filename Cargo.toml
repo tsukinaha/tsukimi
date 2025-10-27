@@ -75,7 +75,7 @@ gdk-wayland = { version = "0.9", package = "gdk4-wayland", features = [
 
 [target.'cfg(target_os = "windows")'.dependencies]
 libproxy = { version = "0.1.1" }
-windows = { version = "0.62.1", features = [
+windows = { version = "0.62.2", features = [
   "Win32_Foundation",
   "Win32_Storage_FileSystem",
   "Win32_Security",
