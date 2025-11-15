@@ -12,6 +12,8 @@ assignees: tsukinaha
 IF FLOWING CONTENTS DELETED WITH NO REASON, YOUR ISSUE MIGHT BE LOCKED   
  
 请您遵守 ISSUE TEMPLATE，如果您无故删掉以下内容，您提交的 ISSUE 将会被视为是无效的
+
+如果日志存在敏感信息，可以考虑作为附件发送到邮箱 tkmreport@notalium.co
 </details>
 
 **Confirm the following information**
