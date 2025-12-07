@@ -26,7 +26,7 @@ bytefmt = "0.1.7"
 libc = "0.2.177"
 uuid = { version = "1.18", features = ["v4"] }
 chrono = { version = "0.4.42", features = ["serde"] }
-tracing = "0.1.41"
+tracing = "0.1.43"
 gst = { version = "0.23", package = "gstreamer" }
 url = "2.5.7"
 image = "0.25.9"
