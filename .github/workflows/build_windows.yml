@@ -15,7 +15,7 @@ jobs:
       SCCACHE_DIRECT: false
       SCCACHE_DIR: ${{ github.workspace }}\.sccache
       SCCACHE_IDLE_TIMEOUT: 0
-      SCCACHE_CACHE_SIZE: 1G
+      SCCACHE_CACHE_SIZE: 550M
     strategy:
       matrix:
         include:
@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
 
@@ -38,6 +38,7 @@ jobs:
           update: true
           release: false
           msystem: ${{ matrix.msystem }}
+          cache: false
           install: >-
             mingw-w64-${{ matrix.env }}-pkgconf
             mingw-w64-${{ matrix.env }}-gcc
@@ -52,11 +53,11 @@ jobs:
             curl
 
       - name: Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ${{ github.workspace }}/.sccache
-          key: tsukimi-build-${{ matrix.arch }}-windows-${{ hashFiles('Cargo.toml', '*/Cargo.toml') }}
+          key: tsukimi-build-${{ matrix.arch }}-windows-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             tsukimi-build-${{ matrix.arch }}-windows-
 

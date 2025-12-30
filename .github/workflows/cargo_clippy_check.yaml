@@ -1,32 +1,34 @@
 name: Clippy check
-on: push
+on: 
+  workflow_call:
 
 jobs:
   clippy_check:
     name: Clippy
-
     runs-on: ubuntu-latest
-
     container:
       image: ubuntu:plucky
     steps:
-
       - name: Setup Environment
         run: |
           apt-get update
           apt-get upgrade -y
-          apt install -y git build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
+          apt-get install -y git
+          apt-get install -y --no-install-recommends build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
           libadwaita-1-dev libmpv-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev \
           libgstreamer-plugins-base1.0-dev libgstreamer-plugins-good1.0-dev gstreamer1.0-libav
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@nightly
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+          components: clippy
+          cache: false
 
       - name: Run Clippy
         run: |
           echo "testing" > secret/key
-          rustup component add clippy
-          RUSTFLAGS="-D warnings" cargo clippy --fix --allow-dirty --no-deps --release --all-targets
+          cargo clippy --fix --allow-dirty --no-deps --release --all-targets

@@ -24,27 +24,34 @@ jobs:
         run: |
           apt-get update
           apt-get upgrade -y
-          apt-get install -y git build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
+          apt-get install -y git
+          apt-get install -y --no-install-recommends build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
           libadwaita-1-dev libmpv-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev \
           libgstreamer-plugins-base1.0-dev libgstreamer-plugins-good1.0-dev gstreamer1.0-libav \
           sccache
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: true
 
+      - name: Get lockfile hash
+        run: echo "LOCKFILE_HASH=$(sha256sum Cargo.lock | cut -d ' ' -f 1)" >> $GITHUB_ENV
+
       - name: Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ${{ github.workspace }}/.sccache
-          key: tsukimi-build-${{ matrix.platform }}-linux-${{ github.sha }}
+          key: tsukimi-build-${{ matrix.platform }}-linux-${{ env.LOCKFILE_HASH }}
           restore-keys: |
             tsukimi-build-${{ matrix.platform }}-linux-
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@nightly
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+          cache: false
 
       - name: Setup sccache
         uses: gacts/run-and-post-run@v1
@@ -52,7 +59,7 @@ jobs:
           SCCACHE_DIR: ${{ github.workspace }}/.sccache
           SCCACHE_IDLE_TIMEOUT: 0
           SCCACHE_DIRECT: false
-          SCCACHE_CACHE_SIZE: 1G
+          SCCACHE_CACHE_SIZE: 550M
         with:
           run: |
             sccache --start-server
