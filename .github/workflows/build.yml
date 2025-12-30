@@ -27,6 +27,11 @@ permissions:
   contents: write
 
 jobs:
+  clippy_check:
+    name: Check
+    uses: ./.github/workflows/cargo_clippy_check.yaml
+    secrets: inherit
+
   linux:
     name: Linux
     uses: ./.github/workflows/build_linux.yml
