@@ -222,5 +222,13 @@
       <summary>Whether the danmaku is enabled</summary>
       <default>false</default>
     </key>
+    <key name="danmaku-appid" type="s">
+      <summary>Danmaku custom app id</summary>
+      <default>""</default>
+    </key>
+    <key name="danmaku-appsecret" type="s">
+      <summary>Danmaku custom app secret</summary>
+      <default>""</default>
+    </key>
   </schema>
 </schemalist>

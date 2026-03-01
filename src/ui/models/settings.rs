@@ -61,6 +61,18 @@ impl Settings {
     const KEY_IS_MAXIMIZED: &'static str = "is-maximized"; // bool
     const KEY_IS_FULLSCREEN: &'static str = "is-fullscreen"; // bool
     const KEY_IS_DANMAKU_ENABLED: &'static str = "is-danmaku-enabled"; // bool
+    const KEY_DANMAKU_APPID: &'static str = "danmaku-appid"; // String
+    const KEY_DANMAKU_APPSECRET: &'static str = "danmaku-appsecret"; // String
+
+    fn has_key(&self, key: &str) -> bool {
+        self.settings_schema()
+            .as_ref()
+            .is_some_and(|schema| schema.has_key(key))
+    }
+
+    pub fn has_danmaku_custom_credentials_keys(&self) -> bool {
+        self.has_key(Self::KEY_DANMAKU_APPID) && self.has_key(Self::KEY_DANMAKU_APPSECRET)
+    }
 
     pub fn is_danmaku_enabled(&self) -> bool {
         self.boolean(Self::KEY_IS_DANMAKU_ENABLED)
@@ -68,6 +80,20 @@ impl Settings {
 
     pub fn set_danmaku_enabled(&self, is_danmaku_enabled: bool) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_IS_DANMAKU_ENABLED, is_danmaku_enabled)
+    }
+
+    pub fn set_danmaku_appid(&self, appid: &str) -> Result<(), glib::BoolError> {
+        if !self.has_key(Self::KEY_DANMAKU_APPID) {
+            return Ok(());
+        }
+        self.set_string(Self::KEY_DANMAKU_APPID, appid)
+    }
+
+    pub fn set_danmaku_appsecret(&self, appsecret: &str) -> Result<(), glib::BoolError> {
+        if !self.has_key(Self::KEY_DANMAKU_APPSECRET) {
+            return Ok(());
+        }
+        self.set_string(Self::KEY_DANMAKU_APPSECRET, appsecret)
     }
 
     #[cfg(target_os = "windows")]

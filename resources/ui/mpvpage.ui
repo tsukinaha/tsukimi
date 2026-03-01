@@ -638,7 +638,21 @@
                     </child>
                     <child>
                       <object class="AdwPreferencesGroup">
-                        <property name="description" translatable="yes">API from DanDanPlay</property>
+                        <property name="title" translatable="yes">DanDanPlay API (Optional)</property>
+                        <property name="description" translatable="yes">Leave empty to use built-in defaults. Credentials are auto-saved when both fields are filled.</property>
+                        <property name="sensitive" bind-source="danmaku_switch" bind-property="active" bind-flags="sync-create"/>
+                        <child>
+                          <object class="AdwEntryRow" id="danmaku_appid_row">
+                            <property name="title">App ID</property>
+                            <signal name="changed" handler="on_danmaku_appid_changed" swapped="yes"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPasswordEntryRow" id="danmaku_appsecret_row">
+                            <property name="title">App Secret</property>
+                            <signal name="changed" handler="on_danmaku_appsecret_changed" swapped="yes"/>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <style>
