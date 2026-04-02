@@ -35,38 +35,10 @@ jobs:
         with:
           submodules: true
 
-      - name: Get lockfile hash
-        run: echo "LOCKFILE_HASH=$(sha256sum Cargo.lock | cut -d ' ' -f 1)" >> $GITHUB_ENV
-
-      - name: Cache
-        uses: actions/cache@v5
-        with:
-          path: |
-            ${{ github.workspace }}/.sccache
-          key: tsukimi-build-${{ matrix.platform }}-linux-${{ env.LOCKFILE_HASH }}
-          restore-keys: |
-            tsukimi-build-${{ matrix.platform }}-linux-
-
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: nightly
-          cache: false
-
-      - name: Setup sccache
-        uses: gacts/run-and-post-run@v1
-        env:
-          SCCACHE_DIR: ${{ github.workspace }}/.sccache
-          SCCACHE_IDLE_TIMEOUT: 0
-          SCCACHE_DIRECT: false
-          SCCACHE_CACHE_SIZE: 550M
-        with:
-          run: |
-            sccache --start-server
-            sccache -z
-            sccache -s
-          post: |
-            sccache --stop-server
 
       - name: Build tsukimi for ${{ matrix.platform }}
         env:
@@ -77,7 +49,7 @@ jobs:
           cargo build --release --locked
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: tsukimi-${{ matrix.platform }}-linux
           path: |

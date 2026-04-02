@@ -19,25 +19,19 @@ jobs:
           
       steps:
         - name: Download artifact
-          uses: actions/download-artifact@v6
+          uses: actions/download-artifact@v8
+          with:
+            skip-decompress: true
+            path: artifacts
+            merge-multiple: true
 
-        - name: Create compressed file
-          run: |
-            for d in $(ls -d */); do
-              if [[ "$d" == *-linux/ ]]; then
-                tar --posix -czf "${d%/}.tgz" "$d"
-              fi
-            done
         - name: Upload to Telegram
           uses: MutsukiC/telegram-files@v1
           with:
             api-url: "http://localhost:8081"
             token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
             chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
-            files: |
-              **/*.tgz
-              **/*.7z
-              **/*.exe
+            files: artifacts/*
             body: |
               Tsukimi CI
               Commit Message: ${{ github.event.head_commit.message}}
@@ -49,18 +43,14 @@ jobs:
       if: github.ref_type == 'tag'
       steps:
         - name: Download artifact
-          uses: actions/download-artifact@v6
+          uses: actions/download-artifact@v8
           with:
             pattern: '**-linux'
-            path: artifacts-linux
-
-        - name: Create compressed file
-          run: |
-            tar --posix -czf artifacts-linux/tsukimi-linux.tgz artifacts-linux/tsukimi-linux
+            path: artifacts-linux/*
+            skip-decompress: true
         
         - name: Create release
           uses: softprops/action-gh-release@v2
           with:
-            files: |
-              *.tgz
+            files: artifacts-linux
             prerelease: ${{ github.ref_type == 'tag' && contains(github.ref_name, 'rc') }}

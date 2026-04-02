@@ -7,15 +7,10 @@ env:
   CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
 
 jobs:
-  build-release:
+  build:
     name: Build (${{ matrix.msystem }})
     env:
       RUST_BACKTRACE: full
-      RUSTC_WRAPPER: sccache
-      SCCACHE_DIRECT: false
-      SCCACHE_DIR: ${{ github.workspace }}\.sccache
-      SCCACHE_IDLE_TIMEOUT: 0
-      SCCACHE_CACHE_SIZE: 550M
     strategy:
       matrix:
         include:
@@ -35,6 +30,7 @@ jobs:
       - name: Setup msys2
         uses: msys2/setup-msys2@v2
         with:
+          path-type: inherit
           update: true
           release: false
           msystem: ${{ matrix.msystem }}
@@ -52,21 +48,15 @@ jobs:
             mingw-w64-${{ matrix.env }}-gst-libav
             curl
 
-      - name: Cache
-        uses: actions/cache@v5
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          path: |
-            ${{ github.workspace }}/.sccache
-          key: tsukimi-build-${{ matrix.arch }}-windows-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            tsukimi-build-${{ matrix.arch }}-windows-
-
-      - name: Install sccache and nsis
-        run: |
-            choco install sccache nsis
-            sccache --start-server
-            sccache -z
-            sccache -s
+          target: ${{ matrix.target }}
+          rustflags: ""
+          toolchain: nightly-${{ matrix.target }}
+  
+      - name: Install nsis
+        run: choco install nsis
 
       - name: Install latest libmpv
         shell: pwsh
@@ -87,8 +77,6 @@ jobs:
         env:
           DANDANAPI_SECRET_KEY: ${{ secrets.DANDANAPI_SECRET_KEY }}
         run: |
-          export PATH="/c/ProgramData/chocolatey/bin:/c/Users/runneradmin/.cargo/bin:$PATH"
-          rustup default nightly-gnu
           echo $DANDANAPI_SECRET_KEY > secret/key
           cargo build --release --locked
 
@@ -97,33 +85,33 @@ jobs:
         run: |
           mkdir artifact && cd artifact
           mkdir tsukimi-x86_64-windows-gnu/ && cd tsukimi-x86_64-windows-gnu/ && mkdir bin/ && mkdir share/ && mkdir lib/
-          cp $GITHUB_WORKSPACE/target/release/tsukimi.exe bin/
-          cp /${{ matrix.msystem }}/bin/gdbus.exe bin/
+          cp -v $GITHUB_WORKSPACE/target/release/tsukimi.exe bin/
+          cp -v /${{ matrix.msystem }}/bin/gdbus.exe bin/
 
-          cp -r /${{ matrix.msystem }}/lib/gdk-pixbuf-2.0 lib/
+          cp -rv /${{ matrix.msystem }}/lib/gdk-pixbuf-2.0 lib/
           find lib/gdk-pixbuf-2.0/2.10.0/loaders -type f ! -name "*.dll" -exec rm -f "{}" \;
 
-          cp -r /${{ matrix.msystem }}/lib/gio lib/
+          cp -rv /${{ matrix.msystem }}/lib/gio lib/
 
-          cp -r /${{ matrix.msystem }}/lib/gstreamer-1.0 lib/ && find lib/gstreamer-1.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
+          cp -rv /${{ matrix.msystem }}/lib/gstreamer-1.0 lib/ && find lib/gstreamer-1.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
 
-          cp -r $GITHUB_WORKSPACE/i18n/locale share/
+          cp -rv $GITHUB_WORKSPACE/i18n/locale share/
 
-          cp -r /${{ matrix.msystem }}/share/glib-2.0 share/
+          cp -rv /${{ matrix.msystem }}/share/glib-2.0 share/
           find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rf "{}" \;
-          mv $GITHUB_WORKSPACE/resources/moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
+          mv -v $GITHUB_WORKSPACE/resources/moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
           glib-compile-schemas.exe share/glib-2.0/schemas/
           find share/glib-2.0/ -type f ! -name "*.compiled" -exec rm -f "{}" \;
 
           cp -r /${{ matrix.msystem }}/share/icons share/
-          cp $GITHUB_WORKSPACE/resources/icons/moe.tsuna.tsukimi.png share/icons/
-          rm -rf share/icons/hicolor && rm -rf share/icons/AdwaitaLegacy && rm -rf share/icons/Adwaita/scalable && rm -rf share/icons/Adwaita/cursors
-          rm -rf share/icons/Adwaita/16x16 && rm -rf share/icons/Adwaita/symbolic-up-to-32
+          cp -v $GITHUB_WORKSPACE/resources/icons/moe.tsuna.tsukimi.png share/icons/
+          rm -rfv share/icons/hicolor && rm -rf share/icons/AdwaitaLegacy && rm -rf share/icons/Adwaita/scalable && rm -rf share/icons/Adwaita/cursors
+          rm -rfv share/icons/Adwaita/16x16 && rm -rf share/icons/Adwaita/symbolic-up-to-32
 
           find . -type d -empty -delete
 
           cd lib/gstreamer-1.0 
-          rm -f \
+          rm -fv \
             libgstadpcmenc.dll libgstamfcodec.dll libgstdvbsubenc.dll libgstencoding.dll \
             libgstfrei0r.dll libgstinter.dll libgstlame.dll libgstldac.dll libgstmpeg2enc.dll \
             libgstmpegpsmux.dll libgstmpegtsmux.dll libgstmplex.dll libgstrealmedia.dll \
@@ -144,28 +132,18 @@ jobs:
 
       - name: Build Thin Package
         shell: powershell
-        run: |
-          cd artifact/tsukimi-x86_64-windows-gnu
-          7z.exe a ../tsukimi-${{matrix.arch}}.7z ./*
+        working-directory: artifact/tsukimi-x86_64-windows-gnu
+        run: 7z.exe a ../tsukimi-${{matrix.arch}}.7z ./*
 
-      - name: Calculate Checksum
-        shell: msys2 {0}
-        run: |
-          cd artifact
-          sha512sum *.7z > tsukimi.sha512sum
-          sha512sum *.exe >> tsukimi.sha512sum
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload artifact (EXE)
+        uses: actions/upload-artifact@v7
         with:
-          name: tsukimi-${{matrix.target}}
-          path: |
-            artifact/*.exe
-            artifact/*.7z
-            artifact/*.sha512sum
-          compression-level: 0
-          if-no-files-found: error
+          path: artifact/*.exe
+          archive: false
 
-      - name: Post Setup sccache
-        run: |
-          sccache --stop-server
+      - name: Upload artifact (7z)
+        uses: actions/upload-artifact@v7
+        with:
+          path: artifact/*.7z
+          archive: false
+          if-no-files-found: error
