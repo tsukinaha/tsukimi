@@ -404,6 +404,28 @@ impl JellyfinClient {
         url.to_string()
     }
 
+    pub async fn get_item_stream_url(
+        &self, container: &str, item_id: &str, media_source_id: &str,
+    ) -> Result<String> {
+        let (mut url, _) = self.get_url_and_headers().await?;
+        url.path_segments_mut()
+            .map_err(|_| anyhow!("Failed to build item stream URL path"))?
+            .pop();
+        let path = format!("Videos/{}/stream.{}", item_id, container);
+        let mut url = url
+            .join(&path)
+            .map_err(|e| anyhow!("Failed to build item stream URL: {}", e))?;
+        {
+            let mut pairs = url.query_pairs_mut();
+            pairs
+                .append_pair("Static", "true")
+                .append_pair("deviceId", &DEVICE_ID)
+                .append_pair("api_key", self.user_access_token.lock().await.as_str())
+                .append_pair("MediaSourceId", media_source_id);
+        }
+        Ok(url.to_string())
+    }
+
     pub async fn search(
         &self, query: &str, filter: &[&str], start_index: &str, filters_list: &FiltersList,
     ) -> Result<List> {

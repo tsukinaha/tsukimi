@@ -595,9 +595,10 @@ impl MPVPage {
                     return;
                 };
 
+                let play_session_id = playback_info.play_session_id.to_owned();
                 let back = Back {
                     id: id.to_owned(),
-                    playsessionid: playback_info.play_session_id,
+                    playsessionid: play_session_id.to_owned(),
                     mediasourceid: media_source.id.to_owned(),
                     tick: media_source.run_time_ticks.unwrap_or(0),
                     start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
@@ -639,7 +640,7 @@ impl MPVPage {
                             println!("External Subtitle without selected source");
                             imp.obj()
                                 .external_sub_url_without_selected_source(
-                                    id,
+                                    id.to_owned(),
                                     stream,
                                     media_source.id.to_owned(),
                                 )
@@ -651,9 +652,12 @@ impl MPVPage {
 
                 imp.suburl.replace(sub_url);
 
-                let Some(video_url) = extract_url(media_source).await else {
-                    obj.toast(gettext("No media source found"));
-                    return;
+                let video_url = match extract_url(media_source).await {
+                    Some(video_url) => video_url,
+                    None => {
+                        obj.toast(gettext("No media source found"));
+                        return;
+                    }
                 };
 
                 imp.video.play(&video_url, per);
@@ -1493,6 +1497,14 @@ impl MPVPage {
 }
 
 pub async fn direct_stream_url(source: &MediaSource) -> Option<String> {
+    let container = source.container.as_deref()?;
+    JELLYFIN_CLIENT
+        .get_item_stream_url(container, source.id.as_str(), &source.id.to_owned())
+        .await
+        .ok()
+}
+
+pub async fn media_source_stream_url(source: &MediaSource) -> Option<String> {
     let container = source.container.to_owned()?;
     let etag = source.etag.to_owned()?;
     Some(
@@ -1503,12 +1515,8 @@ pub async fn direct_stream_url(source: &MediaSource) -> Option<String> {
 }
 
 pub async fn extract_url(source: &MediaSource) -> Option<String> {
-    source
-        .direct_stream_url
-        .as_ref()
-        .or(source
-            .transcoding_url
-            .as_ref()
-            .or(direct_stream_url(source).await.as_ref()))
-        .map(|url| url.to_string())
+    if let Some(url) = media_source_stream_url(source).await {
+        return Some(url);
+    }
+    direct_stream_url(source).await
 }
