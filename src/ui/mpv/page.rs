@@ -652,11 +652,16 @@ impl MPVPage {
 
                 imp.suburl.replace(sub_url);
 
-                let Some(video_url) =
-                    extract_url(&id, play_session_id.as_deref(), media_source).await
-                else {
-                    obj.toast(gettext("No media source found"));
-                    return;
+                let video_url = match extract_url(media_source).await {
+                    Ok(Some(video_url)) => video_url,
+                    Ok(None) => {
+                        obj.toast(gettext("No media source found"));
+                        return;
+                    }
+                    Err(e) => {
+                        obj.toast(e.to_user_facing());
+                        return;
+                    }
                 };
 
                 imp.video.play(&video_url, per);
@@ -1496,20 +1501,15 @@ impl MPVPage {
 }
 
 pub async fn direct_stream_url(
-    item_id: &str, play_session_id: Option<&str>, source: &MediaSource,
-) -> Option<String> {
-    let container = source.container.to_owned()?;
-    Some(
-        JELLYFIN_CLIENT
-            .get_item_stream_url(
-                &container,
-                item_id,
-                Some(source.id.as_str()),
-                play_session_id,
-                source.etag.as_deref(),
-            )
-            .await,
-    )
+    source: &MediaSource,
+) -> Result<Option<String>> {
+    let Some(container) = source.container.as_deref() else {
+        return Ok(None);
+    };
+    JELLYFIN_CLIENT
+        .get_item_stream_url(container, source.id.as_str(), &source.id.to_owned())
+        .await
+        .map(Some)
 }
 
 pub async fn media_source_stream_url(source: &MediaSource) -> Option<String> {
@@ -1523,17 +1523,10 @@ pub async fn media_source_stream_url(source: &MediaSource) -> Option<String> {
 }
 
 pub async fn extract_url(
-    item_id: &str, play_session_id: Option<&str>, source: &MediaSource,
-) -> Option<String> {
-    if let Some(url) = source.direct_stream_url.as_ref() {
-        return Some(url.to_string());
-    }
-
-    if let Some(url) = source.transcoding_url.as_ref() {
-        return Some(url.to_string());
-    }
-
-    direct_stream_url(item_id, play_session_id, source)
-        .await
-        .or(media_source_stream_url(source).await)
+    source: &MediaSource,
+) -> Result<Option<String>> {
+        if let Some(url) = media_source_stream_url(source).await {
+            return Ok(Some(url));
+        }
+        direct_stream_url(source).await
 }

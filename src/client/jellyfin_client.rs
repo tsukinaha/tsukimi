@@ -405,30 +405,25 @@ impl JellyfinClient {
     }
 
     pub async fn get_item_stream_url(
-        &self, container: &str, item_id: &str, media_source_id: Option<&str>,
-        play_session_id: Option<&str>, etag: Option<&str>,
-    ) -> String {
-        let mut url = self.url.lock().await.as_ref().unwrap().to_owned();
-        url.path_segments_mut().unwrap().pop();
-        let path = format!("Videos/{item_id}/stream.{container}");
-        let mut url = url.join(&path).unwrap();
+        &self,container: &str,item_id: &str,media_source_id: &str,
+    ) -> Result<String> {
+        let (mut url, _) = self.get_url_and_headers().await?;
+        url.path_segments_mut()
+            .map_err(|_| anyhow!("Failed to build item stream URL path"))?
+            .pop();
+        let path = format!("Videos/{}/stream.{}", item_id, container);
+        let mut url = url
+            .join(&path)
+            .map_err(|e| anyhow!("Failed to build item stream URL: {}", e))?;
         {
             let mut pairs = url.query_pairs_mut();
             pairs
                 .append_pair("Static", "true")
                 .append_pair("deviceId", &DEVICE_ID)
-                .append_pair("api_key", self.user_access_token.lock().await.as_str());
-            if let Some(media_source_id) = media_source_id.filter(|v| !v.is_empty()) {
-                pairs.append_pair("MediaSourceId", media_source_id);
-            }
-            if let Some(play_session_id) = play_session_id.filter(|v| !v.is_empty()) {
-                pairs.append_pair("PlaySessionId", play_session_id);
-            }
-            if let Some(etag) = etag.filter(|v| !v.is_empty()) {
-                pairs.append_pair("Tag", etag);
-            }
+                .append_pair("api_key", self.user_access_token.lock().await.as_str())
+                .append_pair("MediaSourceId", media_source_id);
         }
-        url.to_string()
+        Ok(url.to_string())
     }
 
     pub async fn search(

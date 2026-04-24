@@ -457,10 +457,9 @@ impl ItemPage {
             }
         };
 
-        self.set_dropdown(&intro_id, &playback).await;
-        self.set_play_session_id(playback.play_session_id.to_owned());
-
         self.set_current_item(Some(intro));
+        self.set_dropdown(&playback).await;
+        self.set_play_session_id(playback.play_session_id.to_owned());
 
         play_button.set_sensitive(true);
         spinner.set_visible(false);
@@ -694,9 +693,8 @@ impl ItemPage {
         }
     }
 
-    pub async fn set_dropdown(&self, item_id: &str, playbackinfo: &Media) {
+    pub async fn set_dropdown(&self, playbackinfo: &Media) {
         let playbackinfo = playbackinfo.to_owned();
-        let item_id = item_id.to_string();
         let imp = self.imp();
         let namedropdown = imp.namedropdown.get();
         let subdropdown = imp.subdropdown.get();
@@ -772,8 +770,13 @@ impl ItemPage {
                 .bit_rate
                 .map(|bit_rate| format!("{:.2} Kbps", bit_rate as f64 / 1_000.0))
                 .unwrap_or_default();
-            let play_url =
-                extract_url(&item_id, playbackinfo.play_session_id.as_deref(), media).await;
+            let play_url = match extract_url(media).await {
+                Ok(url) => url,
+                Err(e) => {
+                    self.toast(e.to_user_facing());
+                    None
+                }
+            };
             let Ok(dl) = DropdownListBuilder::default()
                 .line1(Some(media.name.to_owned()))
                 .line2(Some(line2))
