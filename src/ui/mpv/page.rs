@@ -653,13 +653,9 @@ impl MPVPage {
                 imp.suburl.replace(sub_url);
 
                 let video_url = match extract_url(media_source).await {
-                    Ok(Some(video_url)) => video_url,
-                    Ok(None) => {
+                    Some(video_url) => video_url,
+                    None => {
                         obj.toast(gettext("No media source found"));
-                        return;
-                    }
-                    Err(e) => {
-                        obj.toast(e.to_user_facing());
                         return;
                     }
                 };
@@ -1500,16 +1496,12 @@ impl MPVPage {
     }
 }
 
-pub async fn direct_stream_url(
-    source: &MediaSource,
-) -> Result<Option<String>> {
-    let Some(container) = source.container.as_deref() else {
-        return Ok(None);
-    };
+pub async fn direct_stream_url(source: &MediaSource) -> Option<String> {
+    let container = source.container.as_deref()?;
     JELLYFIN_CLIENT
         .get_item_stream_url(container, source.id.as_str(), &source.id.to_owned())
         .await
-        .map(Some)
+        .ok()
 }
 
 pub async fn media_source_stream_url(source: &MediaSource) -> Option<String> {
@@ -1522,11 +1514,9 @@ pub async fn media_source_stream_url(source: &MediaSource) -> Option<String> {
     )
 }
 
-pub async fn extract_url(
-    source: &MediaSource,
-) -> Result<Option<String>> {
-        if let Some(url) = media_source_stream_url(source).await {
-            return Ok(Some(url));
-        }
-        direct_stream_url(source).await
+pub async fn extract_url(source: &MediaSource) -> Option<String> {
+    if let Some(url) = media_source_stream_url(source).await {
+        return Some(url);
+    }
+    direct_stream_url(source).await
 }

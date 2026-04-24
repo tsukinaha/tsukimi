@@ -770,13 +770,7 @@ impl ItemPage {
                 .bit_rate
                 .map(|bit_rate| format!("{:.2} Kbps", bit_rate as f64 / 1_000.0))
                 .unwrap_or_default();
-            let play_url = match extract_url(media).await {
-                Ok(url) => url,
-                Err(e) => {
-                    self.toast(e.to_user_facing());
-                    None
-                }
-            };
+            let play_url = extract_url(media).await;
             let Ok(dl) = DropdownListBuilder::default()
                 .line1(Some(media.name.to_owned()))
                 .line2(Some(line2))

@@ -405,7 +405,7 @@ impl JellyfinClient {
     }
 
     pub async fn get_item_stream_url(
-        &self,container: &str,item_id: &str,media_source_id: &str,
+        &self, container: &str, item_id: &str, media_source_id: &str,
     ) -> Result<String> {
         let (mut url, _) = self.get_url_and_headers().await?;
         url.path_segments_mut()
