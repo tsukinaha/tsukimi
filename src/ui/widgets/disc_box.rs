@@ -8,11 +8,16 @@ use gtk::{
 };
 
 use super::song_widget::SongWidget;
-use crate::{client::structs::SongWidgetView, ui::provider::tu_item::TuItem};
+use crate::{
+    client::structs::SongWidgetView,
+    ui::provider::tu_item::TuItem,
+};
 
 mod imp {
-    use std::sync::OnceLock;
-    use std::cell::OnceCell;
+    use std::{
+        cell::OnceCell,
+        sync::OnceLock,
+    };
 
     use glib::subclass::{
         InitializingObject,
@@ -92,8 +97,7 @@ impl DiscBox {
         let view_type = self.view_type();
         if view_type == SongWidgetView::MusicAlbumItem {
             disc_label.set_text(&format!("{} {}", &gettext("Disc"), disc));
-        }
-        else {
+        } else {
             disc_label.set_visible(false);
         }
     }

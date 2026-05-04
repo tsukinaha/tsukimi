@@ -3,54 +3,29 @@ use std::cell::RefCell;
 use adw::prelude::*;
 use gettextrs::gettext;
 use glib::Object;
-use gtk::{
-    gio,
-    glib,
-    glib::subclass::types::ObjectSubclassIsExt,
-    template_callbacks,
-};
+use gtk::{gio, glib, glib::subclass::types::ObjectSubclassIsExt, template_callbacks};
 use imp::PosterType;
 use tracing::warn;
 
 use super::{
     tu_item::{
-        TuItemBasic,
-        TuItemMenuPrelude,
-        TuItemOverlay,
-        TuItemOverlayPrelude,
-        TuItemProgressbarAnimation,
-        TuItemProgressbarAnimationPrelude,
+        TuItemBasic, TuItemMenuPrelude, TuItemOverlay, TuItemOverlayPrelude,
+        TuItemProgressbarAnimation, TuItemProgressbarAnimationPrelude,
     },
-    utils::{
-        GlobalToast,
-        TU_ITEM_POST_SIZE,
-        TU_ITEM_SQUARE_SIZE,
-        TU_ITEM_VIDEO_SIZE,
-    },
+    utils::{GlobalToast, TU_ITEM_POST_SIZE, TU_ITEM_SQUARE_SIZE, TU_ITEM_VIDEO_SIZE},
 };
 use crate::ui::provider::tu_item::TuItem;
 
 pub mod imp {
-    use std::cell::{
-        Cell,
-        RefCell,
-    };
+    use std::cell::{Cell, RefCell};
 
     use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
-    use gtk::{
-        CompositeTemplate,
-        PopoverMenu,
-        glib,
-        prelude::*,
-    };
+    use gtk::{CompositeTemplate, PopoverMenu, glib, prelude::*};
 
     use crate::ui::{
         provider::tu_item::TuItem,
-        widgets::{
-            picture_loader::PictureLoader,
-            tu_item::TuItemAction,
-        },
+        widgets::{picture_loader::PictureLoader, tu_item::TuItemAction},
     };
 
     #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
@@ -437,6 +412,15 @@ impl TuListItem {
                 self.set_picture();
                 warn!("Unknown item type: {}", item_type)
             }
+        }
+
+        match item.prefer_size() {
+            // if the item has a prefer size, use it to override the default size
+            crate::ui::provider::tu_item::PreferSize::Video => {
+                imp.overlay
+                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+            }
+            _ => {}
         }
 
         self.set_tooltip_text(Some(&item.name()));

@@ -10,12 +10,14 @@ use gtk::{
 
 use crate::{
     client::structs::SongWidgetView,
-    ui::provider::{
-        actions::HasLikeAction,
-        core_song::CoreSong,
-        tu_item::TuItem,
+    ui::{
+        provider::{
+            actions::HasLikeAction,
+            core_song::CoreSong,
+            tu_item::TuItem,
+        },
+        widgets::picture_loader::PictureLoader,
     },
-    ui::widgets::picture_loader::PictureLoader,
     utils::spawn,
 };
 
@@ -199,8 +201,7 @@ impl SongWidget {
 
         if view_type == SongWidgetView::MusicAlbumItem {
             imp.cover_container.set_visible(false);
-        }
-        else {
+        } else {
             let picture_loader = if let Some(image_tags) = item.primary_image_item_id() {
                 PictureLoader::new(&image_tags, "Primary", None)
             } else {

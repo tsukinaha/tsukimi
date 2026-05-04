@@ -5,10 +5,7 @@ use gettextrs::gettext;
 use glib::DateTime;
 use gtk::{
     gio,
-    glib::{
-        self,
-        subclass::prelude::*,
-    },
+    glib::{self, subclass::prelude::*},
 };
 
 use crate::{
@@ -16,10 +13,7 @@ use crate::{
     client::{
         error::UserFacingError,
         jellyfin_client::JELLYFIN_CLIENT,
-        structs::{
-            SimpleListItem,
-            SongWidgetView
-        },
+        structs::{SimpleListItem, SongWidgetView},
     },
     ui::{
         GlobalToast,
@@ -29,26 +23,27 @@ use crate::{
             list::ListPage,
             music_album::AlbumPage,
             other::OtherPage,
-            single_grid::{
-                SingleGrid,
-                imp::ListType,
-            },
+            single_grid::{SingleGrid, imp::ListType},
             song_widget::SongWidget,
             window::Window,
         },
     },
-    utils::{
-        CachePolicy,
-        fetch_with_cache,
-        spawn,
-        spawn_tokio,
-    },
+    utils::{CachePolicy, fetch_with_cache, spawn, spawn_tokio},
 };
 
 #[derive(Default, Clone)]
 struct AlbumArtist {
     name: String,
     id: String,
+}
+
+#[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
+#[repr(u32)]
+#[enum_type(name = "PreferSize")]
+pub enum PreferSize {
+    #[default]
+    Auto,
+    Video,
 }
 
 pub mod imp {
@@ -96,6 +91,8 @@ pub mod imp {
         poster: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         image_tags: RefCell<Option<crate::ui::provider::image_tags::ImageTags>>,
+        #[property(get, set, builder(PreferSize::default()))]
+        prefer_size: RefCell<PreferSize>,
         #[property(get, set, nullable)]
         role: RefCell<Option<String>>,
         #[property(get, set, nullable)]
