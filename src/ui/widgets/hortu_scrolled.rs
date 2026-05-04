@@ -1,10 +1,21 @@
-use adw::{prelude::*, subclass::prelude::*};
-use gtk::{CompositeTemplate, gio, glib, template_callbacks};
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gtk::{
+    CompositeTemplate,
+    gio,
+    glib,
+    template_callbacks,
+};
 
 use crate::{
     client::structs::SimpleListItem,
     ui::{
-        provider::{tu_item::PreferSize, tu_object::TuObject},
+        provider::{
+            tu_item::PreferSize,
+            tu_object::TuObject,
+        },
         widgets::fix::ScrolledWindowFixExt,
     },
 };
@@ -12,13 +23,22 @@ use crate::{
 pub const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
 
 mod imp {
-    use std::cell::{OnceCell, RefCell};
+    use std::cell::{
+        OnceCell,
+        RefCell,
+    };
 
     use glib::subclass::InitializingObject;
-    use gtk::{SignalListItemFactory, gio};
+    use gtk::{
+        SignalListItemFactory,
+        gio,
+    };
 
     use super::*;
-    use crate::ui::widgets::{tu_list_item::imp::PosterType, utils::TuItemBuildExt};
+    use crate::ui::widgets::{
+        tu_list_item::imp::PosterType,
+        utils::TuItemBuildExt,
+    };
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/hortu_scrolled.ui")]
