@@ -200,6 +200,9 @@ impl HortuScrolled {
     }
 
     fn evaluate_prefer_size(&self, items: &[SimpleListItem]) -> PreferSize {
+        if !self.unify_size() {
+            return PreferSize::Auto;
+        }
         let primary_ratio: Vec<_> = items
             .iter()
             .filter_map(|i| i.primary_image_aspect_ratio)
