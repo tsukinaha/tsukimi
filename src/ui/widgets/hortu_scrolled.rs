@@ -1,10 +1,21 @@
-use adw::{prelude::*, subclass::prelude::*};
-use gtk::{CompositeTemplate, gio, glib, template_callbacks};
+use adw::{
+    prelude::*,
+    subclass::prelude::*,
+};
+use gtk::{
+    CompositeTemplate,
+    gio,
+    glib,
+    template_callbacks,
+};
 
 use crate::{
     client::structs::SimpleListItem,
     ui::{
-        provider::{tu_item::PreferSize, tu_object::TuObject},
+        provider::{
+            tu_item::PreferSize,
+            tu_object::TuObject,
+        },
         widgets::fix::ScrolledWindowFixExt,
     },
 };
@@ -12,13 +23,22 @@ use crate::{
 pub const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
 
 mod imp {
-    use std::cell::{OnceCell, RefCell};
+    use std::cell::{
+        OnceCell,
+        RefCell,
+    };
 
     use glib::subclass::InitializingObject;
-    use gtk::{SignalListItemFactory, gio};
+    use gtk::{
+        SignalListItemFactory,
+        gio,
+    };
 
     use super::*;
-    use crate::ui::widgets::{tu_list_item::imp::PosterType, utils::TuItemBuildExt};
+    use crate::ui::widgets::{
+        tu_list_item::imp::PosterType,
+        utils::TuItemBuildExt,
+    };
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/hortu_scrolled.ui")]
@@ -45,6 +65,9 @@ mod imp {
         pub moreview: RefCell<bool>,
         #[property(get, set)]
         pub title: RefCell<String>,
+
+        #[property(get, set, default_value = false)]
+        pub unify_size: RefCell<bool>,
 
         pub show_button_animation: OnceCell<adw::TimedAnimation>,
         pub hide_button_animation: OnceCell<adw::TimedAnimation>,
@@ -144,17 +167,21 @@ impl HortuScrolled {
 
         self.set_visible(true);
 
-        let primary_ratio: Vec<_> = items
-            .iter()
-            .filter_map(|i| i.primary_image_aspect_ratio)
-            .collect();
+        let prefer_size = if self.unify_size() {
+            let primary_ratio: Vec<_> = items
+                .iter()
+                .filter_map(|i| i.primary_image_aspect_ratio)
+                .collect();
 
-        let prefer_size = if !primary_ratio.is_empty()
-            && primary_ratio.iter().filter(|i| **i > 1.0).count() as f64
-                / primary_ratio.len() as f64
-                > 0.8
-        {
-            PreferSize::Video
+            if !primary_ratio.is_empty()
+                && primary_ratio.iter().filter(|i| **i > 1.0).count() as f64
+                    / primary_ratio.len() as f64
+                    > 0.8
+            {
+                PreferSize::Video
+            } else {
+                PreferSize::Auto
+            }
         } else {
             PreferSize::Auto
         };

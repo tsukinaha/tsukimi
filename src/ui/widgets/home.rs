@@ -226,6 +226,8 @@ impl HomePage {
 
         hortu.set_moreview(true);
 
+        hortu.set_unify_size(true);
+
         hortu.set_title(format!("{} {}", gettext("Latest"), view.name));
 
         hortu.set_items(&results);
