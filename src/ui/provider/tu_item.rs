@@ -5,10 +5,7 @@ use gettextrs::gettext;
 use glib::DateTime;
 use gtk::{
     gio,
-    glib::{
-        self,
-        subclass::prelude::*,
-    },
+    glib::{self, subclass::prelude::*},
 };
 
 use crate::{
@@ -16,10 +13,7 @@ use crate::{
     client::{
         error::UserFacingError,
         jellyfin_client::JELLYFIN_CLIENT,
-        structs::{
-            SimpleListItem,
-            SongWidgetView,
-        },
+        structs::{SimpleListItem, SongWidgetView},
     },
     ui::{
         GlobalToast,
@@ -29,20 +23,12 @@ use crate::{
             list::ListPage,
             music_album::AlbumPage,
             other::OtherPage,
-            single_grid::{
-                SingleGrid,
-                imp::ListType,
-            },
+            single_grid::{SingleGrid, imp::ListType},
             song_widget::SongWidget,
             window::Window,
         },
     },
-    utils::{
-        CachePolicy,
-        fetch_with_cache,
-        spawn,
-        spawn_tokio,
-    },
+    utils::{CachePolicy, fetch_with_cache, spawn, spawn_tokio},
 };
 
 #[derive(Default, Clone)]
@@ -58,6 +44,7 @@ pub enum PreferSize {
     #[default]
     Auto,
     Video,
+    Post,
 }
 
 pub mod imp {
