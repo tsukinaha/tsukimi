@@ -53,8 +53,8 @@ pub trait TuItemOverlayPrelude {
                 }
             }
         }
-
         match item.prefer_poster() {
+            // Continue Watching, use parent video poster if possible
             PreferPoster::ParentVideo => {
                 if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
                     ("Thumb", None, parent_thumb_item_id)
@@ -64,27 +64,24 @@ pub trait TuItemOverlayPrelude {
                     ("Backdrop", Some(0.to_string()), item.id())
                 }
             }
+            // Latest, use parent primary image if possible, this is for latest episodes
             PreferPoster::ParentPost
-                if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id()
-                    && item.series_primary_image_tag().is_some() =>
+                if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id() =>
             {
-                println!(
-                    "Using series primary image for item {} with id {}: primary image tag: {:?}, parent backdrop item id: {:?}",
-                    item.name(),
-                    item.id(),
-                    item.series_primary_image_tag(),
-                    item.parent_backdrop_item_id()
-                );
-                (
-                    "Primary",
-                    item.series_primary_image_tag(),
-                    parent_backdrop_item_id,
-                )
+                ("Primary", None, parent_backdrop_item_id)
             }
             _ => {
                 if let Some(img_tags) = item.primary_image_item_id() {
+                    // use primary image if possible
                     ("Primary", None, img_tags)
+                } else if item.image_tags().is_none_or(|t| t.all_none())
+                    && let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id()
+                {
+                    // fallback to parent backdrop if no image tags and parent backdrop exists, this
+                    // is for some season items that don't have image tags
+                    ("Primary", None, parent_backdrop_item_id)
                 } else {
+                    // finally fallback to primary image with item id
                     ("Primary", None, item.id())
                 }
             }

@@ -9,7 +9,10 @@ use gtk::{
 };
 
 use super::{
-    hortu_scrolled::HortuScrolled,
+    hortu_scrolled::{
+        HortuScrolled,
+        UnifySize,
+    },
     utils::GlobalToast,
 };
 use crate::{
@@ -229,7 +232,7 @@ impl HomePage {
 
         hortu.set_moreview(true);
 
-        hortu.set_unify_size(true);
+        hortu.set_unify_size(UnifySize::Majority);
 
         hortu.set_prefer_poster(PreferPoster::ParentPost);
 

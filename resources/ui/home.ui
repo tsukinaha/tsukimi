@@ -22,6 +22,7 @@
                     <property name="title" translatable="yes">Continue Watching</property>
                     <property name="isresume">True</property>
                     <property name="prefer-poster">ParentVideo</property>
+                    <property name="unify-size">ForceVideo</property>
                   </object>
                 </child>
                 <child>

@@ -50,4 +50,12 @@ impl ImageTags {
     pub fn new() -> ImageTags {
         glib::object::Object::new()
     }
+
+    pub fn all_none(&self) -> bool {
+        let imp = self.imp();
+        imp.backdrop.borrow().is_none()
+            && imp.primary.borrow().is_none()
+            && imp.thumb.borrow().is_none()
+            && imp.banner.borrow().is_none()
+    }
 }

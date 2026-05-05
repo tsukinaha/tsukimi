@@ -25,6 +25,17 @@ use crate::{
 
 pub const SHOW_BUTTON_ANIMATION_DURATION: u32 = 500;
 
+#[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
+#[repr(u32)]
+#[enum_type(name = "UnifySize")]
+pub enum UnifySize {
+    #[default]
+    Disable,
+    Majority,
+    ForceVideo,
+    ForcePost,
+}
+
 mod imp {
     use std::cell::{
         OnceCell,
@@ -69,8 +80,8 @@ mod imp {
         #[property(get, set)]
         pub title: RefCell<String>,
 
-        #[property(get, set, default_value = false)]
-        pub unify_size: RefCell<bool>,
+        #[property(get, set, builder(UnifySize::default()))]
+        pub unify_size: RefCell<UnifySize>,
 
         #[property(get, set, builder(PreferPoster::default()))]
         pub prefer_poster: RefCell<PreferPoster>,
@@ -207,23 +218,27 @@ impl HortuScrolled {
     }
 
     fn evaluate_prefer_size(&self, items: &[SimpleListItem]) -> PreferSize {
-        if !self.unify_size() {
-            return PreferSize::Auto;
-        }
-        let primary_ratio: Vec<_> = items
-            .iter()
-            .filter(|i| i.item_type != "Episode") // Episode uses parent poster, can be misleading, just ignore it
-            .filter_map(|i| i.primary_image_aspect_ratio)
-            .collect();
-        if primary_ratio.is_empty() {
-            return PreferSize::Auto;
-        }
-        let video_percentage =
-            primary_ratio.iter().filter(|i| **i > 1.0).count() as f64 / primary_ratio.len() as f64;
-        match video_percentage {
-            p if p > 0.8 => PreferSize::Video,
-            p if p < 0.2 => PreferSize::Post,
-            _ => PreferSize::Auto,
+        match self.unify_size() {
+            UnifySize::Disable => PreferSize::Auto,
+            UnifySize::ForceVideo => PreferSize::Video,
+            UnifySize::ForcePost => PreferSize::Post,
+            UnifySize::Majority => {
+                let primary_ratio: Vec<_> = items
+                    .iter()
+                    .filter(|i| i.item_type != "Episode") // Episode uses parent poster, can be misleading, just ignore it
+                    .filter_map(|i| i.primary_image_aspect_ratio)
+                    .collect();
+                if primary_ratio.is_empty() {
+                    return PreferSize::Auto;
+                }
+                let video_percentage = primary_ratio.iter().filter(|i| **i > 1.0).count() as f64
+                    / primary_ratio.len() as f64;
+                match video_percentage {
+                    p if p > 0.8 => PreferSize::Video,
+                    p if p < 0.2 => PreferSize::Post,
+                    _ => PreferSize::Auto,
+                }
+            }
         }
     }
 

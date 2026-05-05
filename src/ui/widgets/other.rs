@@ -339,7 +339,6 @@ impl OtherPage {
         for item in list.items {
             let tu_item = TuItem::from_simple(&item, None);
             tu_item.set_is_resume(true);
-            tu_item.set_prefer_poster(PreferPoster::ParentVideo);
             let tu_item = TuObject::new(&tu_item);
             store.append(&tu_item);
         }

@@ -28,7 +28,10 @@ use super::{
         TU_ITEM_VIDEO_SIZE,
     },
 };
-use crate::ui::provider::tu_item::TuItem;
+use crate::ui::provider::tu_item::{
+    PreferSize,
+    TuItem,
+};
 
 pub mod imp {
     use std::cell::{
@@ -236,7 +239,6 @@ impl TuListItem {
                 self.set_played();
                 if item.is_resume() {
                     self.set_progress(item.played_percentage());
-                    return;
                 }
             }
             "Video" | "MusicVideo" | "AdultVideo" => {
@@ -440,17 +442,16 @@ impl TuListItem {
         }
         // if the item has a prefer size, use it to override the default size
         match item.prefer_size() {
-            crate::ui::provider::tu_item::PreferSize::Video => {
+            PreferSize::Video => {
                 imp.overlay
                     .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
             }
-            crate::ui::provider::tu_item::PreferSize::Post => {
+            PreferSize::Post => {
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
             }
             _ => {}
         }
-
         self.set_tooltip_text(Some(&item.name()));
     }
 }
