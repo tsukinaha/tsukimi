@@ -300,13 +300,13 @@ impl TuItem {
             }
             "Tag" | "Genre" | "MusicGenre" => {
                 let page = SingleGrid::new();
+                page.set_unify_size(UnifySize::Majority);
                 let id = self.id();
                 let parent_id = parentid.to_owned();
                 let list_type = self.item_type();
                 page.connect_sort_changed_tokio(
                     false,
                     PreferPoster::Auto,
-                    UnifySize::Majority,
                     move |sort_by, sort_order, filters_list| {
                         let id = id.to_owned();
                         let parent_id = parent_id.to_owned();
@@ -354,11 +354,11 @@ impl TuItem {
             "Folder" => {
                 let page = SingleGrid::new();
                 page.set_list_type(ListType::Folder);
+                page.set_unify_size(UnifySize::Majority);
                 let id = self.id();
                 page.connect_sort_changed_tokio(
                     false,
                     PreferPoster::Auto,
-                    UnifySize::Majority,
                     move |sort_by, sort_order, filters_list| {
                         let id = id.to_owned();
                         async move {

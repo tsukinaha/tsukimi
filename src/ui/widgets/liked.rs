@@ -189,12 +189,12 @@ impl LikedPage {
             move |_| {
                 let tag = format!("{} {}", "Favourite", type_);
                 let page = crate::ui::widgets::single_grid::SingleGrid::new();
+                page.set_unify_size(UnifySize::Majority);
                 let type_clone1 = type_.to_owned();
                 let type_clone2 = type_.to_owned();
                 page.connect_sort_changed_tokio(
                     false,
                     PreferPoster::Auto,
-                    UnifySize::Majority,
                     move |sort_by, sort_order, filters_list| {
                         let type_clone1 = type_clone1.to_owned();
                         async move {

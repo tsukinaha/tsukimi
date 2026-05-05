@@ -106,12 +106,10 @@ impl ListPage {
 
         if &collection_type == "livetv" {
             let page = SingleGrid::new();
-            page.connect_sort_changed_tokio(
-                false,
-                PreferPoster::Auto,
-                UnifySize::Majority,
-                move |_, _, _| async move { JELLYFIN_CLIENT.get_channels_list(0).await },
-            );
+            page.set_unify_size(UnifySize::Majority);
+            page.connect_sort_changed_tokio(false, PreferPoster::Auto, move |_, _, _| async move {
+                JELLYFIN_CLIENT.get_channels_list(0).await
+            });
             page.connect_end_edge_overshot_tokio(move |_, _, n_items, _| async move {
                 JELLYFIN_CLIENT.get_channels_list(n_items).await
             });
@@ -134,6 +132,7 @@ impl ListPage {
         for (name, title, list_type) in pages {
             let page = SingleGrid::new();
             page.set_list_type(list_type);
+            page.set_unify_size(UnifySize::Majority);
             let id_clone1 = id.to_owned();
             let include_item_types_clone1 = include_item_types.to_owned();
             page.connect_sort_changed_tokio(
@@ -143,7 +142,6 @@ impl ListPage {
                 } else {
                     PreferPoster::Auto
                 },
-                UnifySize::Majority,
                 move |sort_by, sort_order, filters_list| {
                     let id_clone1 = id_clone1.to_owned();
                     let include_item_types_clone1 = include_item_types_clone1.to_owned();

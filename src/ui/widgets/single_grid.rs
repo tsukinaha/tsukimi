@@ -499,6 +499,10 @@ impl SingleGrid {
             .set_text(&format!("{} {}", n, gettextrs::gettext("Items")));
     }
 
+    pub fn set_unify_size(&self, unify_size: UnifySize) {
+        self.imp().scrolled.get().set_unify_size(unify_size);
+    }
+
     pub fn connect_sort_changed<F>(&self, f: F)
     where
         F: Fn(&Self) + 'static,
@@ -513,12 +517,11 @@ impl SingleGrid {
     }
 
     pub fn connect_sort_changed_tokio<F, Fut>(
-        &self, is_resume: bool, prefer_poster: PreferPoster, unify_size: UnifySize, f: F,
+        &self, is_resume: bool, prefer_poster: PreferPoster, f: F,
     ) where
         F: Fn(String, String, FiltersList) -> Fut + Send + Sync + 'static,
         Fut: Future<Output = Result<List>> + Send + 'static,
     {
-        self.imp().scrolled.get().set_unify_size(unify_size);
         self.connect_sort_changed(move |obj| {
             let sort_by = obj.sort_by().to_string();
             let sort_order = obj.sort_order().to_string();

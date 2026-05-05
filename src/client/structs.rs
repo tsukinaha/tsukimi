@@ -624,12 +624,12 @@ impl SGTitem {
         T: gtk::prelude::WidgetExt + glib::clone::Downgrade,
     {
         let page = SingleGrid::new();
+        page.set_unify_size(UnifySize::Majority);
         let id = self.id.to_string();
         let list_type_clone = list_type.to_owned();
         page.connect_sort_changed_tokio(
             false,
             PreferPoster::Auto,
-            UnifySize::Majority,
             move |sort_by, sort_order, filters_list| {
                 let id = id.to_owned();
                 let list_type_clone = list_type_clone.to_owned();
