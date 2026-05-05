@@ -13,7 +13,10 @@ use crate::{
     client::structs::SimpleListItem,
     ui::{
         provider::{
-            tu_item::PreferSize,
+            tu_item::{
+                PreferPoster,
+                PreferSize,
+            },
             tu_object::TuObject,
         },
         widgets::fix::ScrolledWindowFixExt,
@@ -68,6 +71,9 @@ mod imp {
 
         #[property(get, set, default_value = false)]
         pub unify_size: RefCell<bool>,
+
+        #[property(get, set, builder(PreferPoster::default()))]
+        pub prefer_poster: RefCell<PreferPoster>,
 
         pub show_button_animation: OnceCell<adw::TimedAnimation>,
         pub hide_button_animation: OnceCell<adw::TimedAnimation>,
@@ -175,6 +181,7 @@ impl HortuScrolled {
                 let object = TuObject::from_simple(item, None);
                 object.item().set_is_resume(self.isresume());
                 object.item().set_prefer_size(prefer_size);
+                object.item().set_prefer_poster(self.prefer_poster());
                 object
             })
             .collect::<Vec<_>>();
@@ -205,6 +212,7 @@ impl HortuScrolled {
         }
         let primary_ratio: Vec<_> = items
             .iter()
+            .filter(|i| i.item_type != "Episode") // Episode uses parent poster, can be misleading, just ignore it
             .filter_map(|i| i.primary_image_aspect_ratio)
             .collect();
         if primary_ratio.is_empty() {

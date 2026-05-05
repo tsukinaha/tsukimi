@@ -10,7 +10,10 @@ use super::single_grid::{
     SingleGrid,
     imp::ListType,
 };
-use crate::client::jellyfin_client::JELLYFIN_CLIENT;
+use crate::{
+    client::jellyfin_client::JELLYFIN_CLIENT,
+    ui::provider::tu_item::PreferPoster,
+};
 mod imp {
 
     use std::cell::OnceCell;
@@ -100,7 +103,7 @@ impl ListPage {
 
         if &collection_type == "livetv" {
             let page = SingleGrid::new();
-            page.connect_sort_changed_tokio(false, move |_, _, _| async move {
+            page.connect_sort_changed_tokio(false, PreferPoster::Auto, move |_, _, _| async move {
                 JELLYFIN_CLIENT.get_channels_list(0).await
             });
             page.connect_end_edge_overshot_tokio(move |_, _, n_items, _| async move {
@@ -129,6 +132,11 @@ impl ListPage {
             let include_item_types_clone1 = include_item_types.to_owned();
             page.connect_sort_changed_tokio(
                 list_type == ListType::Resume,
+                if list_type == ListType::Resume {
+                    PreferPoster::ParentVideo
+                } else {
+                    PreferPoster::Auto
+                },
                 move |sort_by, sort_order, filters_list| {
                     let id_clone1 = id_clone1.to_owned();
                     let include_item_types_clone1 = include_item_types_clone1.to_owned();

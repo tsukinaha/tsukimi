@@ -61,6 +61,16 @@ pub enum PreferSize {
     Post,
 }
 
+#[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
+#[repr(u32)]
+#[enum_type(name = "PreferPoster")]
+pub enum PreferPoster {
+    #[default]
+    Auto,
+    ParentPost,
+    ParentVideo,
+}
+
 pub mod imp {
     use glib::DateTime;
     use gtk::glib::Properties;
@@ -102,12 +112,16 @@ pub mod imp {
         parent_thumb_item_id: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         parent_backdrop_item_id: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        series_primary_image_tag: RefCell<Option<String>>,
         #[property(get, set)]
         poster: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         image_tags: RefCell<Option<crate::ui::provider::image_tags::ImageTags>>,
         #[property(get, set, builder(PreferSize::default()))]
         prefer_size: RefCell<PreferSize>,
+        #[property(get, set, builder(PreferPoster::default()))]
+        prefer_poster: RefCell<PreferPoster>,
         #[property(get, set, nullable)]
         role: RefCell<Option<String>>,
         #[property(get, set, nullable)]
@@ -209,6 +223,7 @@ impl TuItem {
         tu_item.set_parent_thumb_item_id(item.parent_thumb_item_id);
         tu_item.set_parent_backdrop_item_id(item.parent_backdrop_item_id);
         tu_item.set_series_name(item.series_name);
+        tu_item.set_series_primary_image_tag(item.series_primary_image_tag);
 
         if let Some(album_artist) = &item.album_artists {
             tu_item.set_albumartist_name(
@@ -287,24 +302,28 @@ impl TuItem {
                 let id = self.id();
                 let parent_id = parentid.to_owned();
                 let list_type = self.item_type();
-                page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
-                    let id = id.to_owned();
-                    let parent_id = parent_id.to_owned();
-                    let list_type = list_type.to_owned();
-                    async move {
-                        JELLYFIN_CLIENT
-                            .get_inlist(
-                                parent_id,
-                                0,
-                                &list_type,
-                                &id,
-                                &sort_order,
-                                &sort_by,
-                                &filters_list,
-                            )
-                            .await
-                    }
-                });
+                page.connect_sort_changed_tokio(
+                    false,
+                    PreferPoster::Auto,
+                    move |sort_by, sort_order, filters_list| {
+                        let id = id.to_owned();
+                        let parent_id = parent_id.to_owned();
+                        let list_type = list_type.to_owned();
+                        async move {
+                            JELLYFIN_CLIENT
+                                .get_inlist(
+                                    parent_id,
+                                    0,
+                                    &list_type,
+                                    &id,
+                                    &sort_order,
+                                    &sort_by,
+                                    &filters_list,
+                                )
+                                .await
+                        }
+                    },
+                );
                 let id = self.id();
                 let parent_id = parentid.to_owned();
                 let list_type = self.item_type();
@@ -334,14 +353,18 @@ impl TuItem {
                 let page = SingleGrid::new();
                 page.set_list_type(ListType::Folder);
                 let id = self.id();
-                page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
-                    let id = id.to_owned();
-                    async move {
-                        JELLYFIN_CLIENT
-                            .get_folder_include(&id, &sort_by, &sort_order, 0, &filters_list)
-                            .await
-                    }
-                });
+                page.connect_sort_changed_tokio(
+                    false,
+                    PreferPoster::Auto,
+                    move |sort_by, sort_order, filters_list| {
+                        let id = id.to_owned();
+                        async move {
+                            JELLYFIN_CLIENT
+                                .get_folder_include(&id, &sort_by, &sort_order, 0, &filters_list)
+                                .await
+                        }
+                    },
+                );
                 let id = self.id();
                 page.connect_end_edge_overshot_tokio(
                     move |sort_by, sort_order, n_items, filters_list| {

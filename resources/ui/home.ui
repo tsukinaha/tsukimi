@@ -21,6 +21,7 @@
                   <object class="HortuScrolled" id="hishortu">
                     <property name="title" translatable="yes">Continue Watching</property>
                     <property name="isresume">True</property>
+                    <property name="prefer-poster">ParentVideo</property>
                   </object>
                 </child>
                 <child>

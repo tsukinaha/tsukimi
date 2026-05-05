@@ -20,7 +20,10 @@ use crate::{
     },
     fraction,
     fraction_reset,
-    ui::provider::tu_item::TuItem,
+    ui::provider::tu_item::{
+        PreferPoster,
+        TuItem,
+    },
     utils::{
         CachePolicy,
         fetch_with_cache,
@@ -227,6 +230,8 @@ impl HomePage {
         hortu.set_moreview(true);
 
         hortu.set_unify_size(true);
+
+        hortu.set_prefer_poster(PreferPoster::ParentPost);
 
         hortu.set_title(format!("{} {}", gettext("Latest"), view.name));
 

@@ -30,7 +30,10 @@ use super::{
 use crate::{
     client::structs::SimpleListItem,
     ui::provider::{
-        tu_item::TuItem,
+        tu_item::{
+            PreferPoster,
+            TuItem,
+        },
         tu_object::TuObject,
     },
 };
@@ -109,7 +112,9 @@ impl TuViewScrolled {
         glib::Object::new()
     }
 
-    pub fn set_store<const C: bool>(&self, items: Vec<SimpleListItem>, is_resume: bool) {
+    pub fn set_store<const C: bool>(
+        &self, items: Vec<SimpleListItem>, is_resume: bool, prefer_poster: PreferPoster,
+    ) {
         let imp = self.imp();
         let Some(store) = imp.selection.model().and_downcast::<gio::ListStore>() else {
             return;
@@ -122,6 +127,7 @@ impl TuViewScrolled {
         for item in items {
             let tu_item = TuItem::from_simple(&item, None);
             tu_item.set_is_resume(is_resume);
+            tu_item.set_prefer_poster(prefer_poster);
             let tu_item = TuObject::new(&tu_item);
             store.append(&tu_item);
         }

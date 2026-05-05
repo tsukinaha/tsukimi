@@ -16,6 +16,7 @@ use crate::{
     },
     fraction,
     fraction_reset,
+    ui::provider::tu_item::PreferPoster,
     utils::{
         spawn,
         spawn_tokio,
@@ -187,21 +188,25 @@ impl LikedPage {
                 let page = crate::ui::widgets::single_grid::SingleGrid::new();
                 let type_clone1 = type_.to_owned();
                 let type_clone2 = type_.to_owned();
-                page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
-                    let type_clone1 = type_clone1.to_owned();
-                    async move {
-                        JELLYFIN_CLIENT
-                            .get_favourite(
-                                &type_clone1,
-                                0,
-                                50,
-                                &sort_by,
-                                &sort_order,
-                                &filters_list,
-                            )
-                            .await
-                    }
-                });
+                page.connect_sort_changed_tokio(
+                    false,
+                    PreferPoster::Auto,
+                    move |sort_by, sort_order, filters_list| {
+                        let type_clone1 = type_clone1.to_owned();
+                        async move {
+                            JELLYFIN_CLIENT
+                                .get_favourite(
+                                    &type_clone1,
+                                    0,
+                                    50,
+                                    &sort_by,
+                                    &sort_order,
+                                    &filters_list,
+                                )
+                                .await
+                        }
+                    },
+                );
                 page.connect_end_edge_overshot_tokio(
                     move |sort_by, sort_order, n_items, filters_list| {
                         let type_clone2 = type_clone2.to_owned();

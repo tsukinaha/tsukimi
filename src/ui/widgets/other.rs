@@ -13,7 +13,10 @@ use crate::{
     fraction,
     fraction_reset,
     ui::provider::{
-        tu_item::TuItem,
+        tu_item::{
+            PreferPoster,
+            TuItem,
+        },
         tu_object::TuObject,
     },
     utils::{
@@ -336,6 +339,7 @@ impl OtherPage {
         for item in list.items {
             let tu_item = TuItem::from_simple(&item, None);
             tu_item.set_is_resume(true);
+            tu_item.set_prefer_poster(PreferPoster::ParentVideo);
             let tu_item = TuObject::new(&tu_item);
             store.append(&tu_item);
         }
@@ -426,22 +430,26 @@ impl OtherPage {
                 let type_clone2 = type1_.to_owned();
                 let id_clone1 = id.to_owned();
                 let id_clone2 = id.to_owned();
-                page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
-                    let id_clone1 = id_clone1.to_owned();
-                    let type_clone1 = type_clone1.to_owned();
-                    async move {
-                        JELLYFIN_CLIENT
-                            .get_person_large_list(
-                                &id_clone1,
-                                &type_clone1,
-                                &sort_by,
-                                &sort_order,
-                                0,
-                                &filters_list,
-                            )
-                            .await
-                    }
-                });
+                page.connect_sort_changed_tokio(
+                    false,
+                    PreferPoster::Auto,
+                    move |sort_by, sort_order, filters_list| {
+                        let id_clone1 = id_clone1.to_owned();
+                        let type_clone1 = type_clone1.to_owned();
+                        async move {
+                            JELLYFIN_CLIENT
+                                .get_person_large_list(
+                                    &id_clone1,
+                                    &type_clone1,
+                                    &sort_by,
+                                    &sort_order,
+                                    0,
+                                    &filters_list,
+                                )
+                                .await
+                        }
+                    },
+                );
                 page.connect_end_edge_overshot_tokio(
                     move |sort_by, sort_order, n_items, filters_list| {
                         let id_clone2 = id_clone2.to_owned();

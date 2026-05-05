@@ -296,6 +296,8 @@ pub struct SimpleListItem {
     pub backdrop_image_tags: Option<Vec<String>>,
     #[serde(rename = "PrimaryImageAspectRatio")]
     pub primary_image_aspect_ratio: Option<f64>,
+    #[serde(rename = "SeriesPrimaryImageTag")]
+    pub series_primary_image_tag: Option<String>,
     #[serde(rename = "CommunityRating")]
     pub community_rating: Option<f32>,
     #[serde(rename = "CollectionType")]
@@ -607,9 +609,12 @@ use adw::prelude::*;
 use gtk::glib;
 
 use super::jellyfin_client::JELLYFIN_CLIENT;
-use crate::ui::widgets::{
-    single_grid::SingleGrid,
-    window::Window,
+use crate::ui::{
+    provider::tu_item::PreferPoster,
+    widgets::{
+        single_grid::SingleGrid,
+        window::Window,
+    },
 };
 
 impl SGTitem {
@@ -620,23 +625,27 @@ impl SGTitem {
         let page = SingleGrid::new();
         let id = self.id.to_string();
         let list_type_clone = list_type.to_owned();
-        page.connect_sort_changed_tokio(false, move |sort_by, sort_order, filters_list| {
-            let id = id.to_owned();
-            let list_type_clone = list_type_clone.to_owned();
-            async move {
-                JELLYFIN_CLIENT
-                    .get_inlist(
-                        None,
-                        0,
-                        &list_type_clone,
-                        &id,
-                        &sort_order,
-                        &sort_by,
-                        &filters_list,
-                    )
-                    .await
-            }
-        });
+        page.connect_sort_changed_tokio(
+            false,
+            PreferPoster::Auto,
+            move |sort_by, sort_order, filters_list| {
+                let id = id.to_owned();
+                let list_type_clone = list_type_clone.to_owned();
+                async move {
+                    JELLYFIN_CLIENT
+                        .get_inlist(
+                            None,
+                            0,
+                            &list_type_clone,
+                            &id,
+                            &sort_order,
+                            &sort_by,
+                            &filters_list,
+                        )
+                        .await
+                }
+            },
+        );
         let id = self.id.to_string();
         let list_type = list_type.to_owned();
         page.connect_end_edge_overshot_tokio(move |sort_by, sort_order, n_items, filters_list| {

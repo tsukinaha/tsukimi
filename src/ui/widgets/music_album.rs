@@ -191,7 +191,7 @@ impl AlbumPage {
             imp.artist_label.set_text("...");
 
             let duration = item.run_time_ticks();
-            let release = format!("{}", run_time_ticks_to_label(duration as u64));
+            let release = run_time_ticks_to_label(duration).to_string();
             imp.released_label.set_text(&release);
         }
 
