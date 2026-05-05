@@ -95,6 +95,7 @@ pub(crate) mod imp {
         }
     }
 
+    #[glib::derived_properties]
     impl ObjectImpl for TuViewScrolled {
         fn constructed(&self) {
             self.parent_constructed();
