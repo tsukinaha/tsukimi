@@ -1,7 +1,10 @@
 use super::{
     episode_switcher::EpisodeButton,
     fix::ScrolledWindowFixExt,
-    hortu_scrolled::SHOW_BUTTON_ANIMATION_DURATION,
+    hortu_scrolled::{
+        SHOW_BUTTON_ANIMATION_DURATION,
+        UnifySize,
+    },
     item_utils::*,
     song_widget::format_duration,
     utils::{
@@ -1181,6 +1184,8 @@ impl ItemPage {
                 List::default()
             }
         };
+
+        hortu.set_unify_size(UnifySize::Majority);
 
         hortu.set_items(&results.items);
     }

@@ -12,12 +12,15 @@ use crate::{
     },
     fraction,
     fraction_reset,
-    ui::provider::{
-        tu_item::{
-            PreferPoster,
-            TuItem,
+    ui::{
+        provider::{
+            tu_item::{
+                PreferPoster,
+                TuItem,
+            },
+            tu_object::TuObject,
         },
-        tu_object::TuObject,
+        widgets::hortu_scrolled::UnifySize,
     },
     utils::{
         CachePolicy,
@@ -432,6 +435,7 @@ impl OtherPage {
                 page.connect_sort_changed_tokio(
                     false,
                     PreferPoster::Auto,
+                    UnifySize::Disable,
                     move |sort_by, sort_order, filters_list| {
                         let id_clone1 = id_clone1.to_owned();
                         let type_clone1 = type_clone1.to_owned();

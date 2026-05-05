@@ -7,7 +7,10 @@ use gtk::{
     subclass::prelude::*,
 };
 
-use super::utils::GlobalToast;
+use super::{
+    hortu_scrolled::UnifySize,
+    utils::GlobalToast,
+};
 use crate::{
     client::{
         error::UserFacingError,
@@ -191,6 +194,7 @@ impl LikedPage {
                 page.connect_sort_changed_tokio(
                     false,
                     PreferPoster::Auto,
+                    UnifySize::Majority,
                     move |sort_by, sort_order, filters_list| {
                         let type_clone1 = type_clone1.to_owned();
                         async move {

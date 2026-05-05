@@ -25,6 +25,7 @@ use crate::{
         GlobalToast,
         provider::core_song::CoreSong,
         widgets::{
+            hortu_scrolled::UnifySize,
             item::ItemPage,
             list::ListPage,
             music_album::AlbumPage,
@@ -305,6 +306,7 @@ impl TuItem {
                 page.connect_sort_changed_tokio(
                     false,
                     PreferPoster::Auto,
+                    UnifySize::Majority,
                     move |sort_by, sort_order, filters_list| {
                         let id = id.to_owned();
                         let parent_id = parent_id.to_owned();
@@ -356,6 +358,7 @@ impl TuItem {
                 page.connect_sort_changed_tokio(
                     false,
                     PreferPoster::Auto,
+                    UnifySize::Majority,
                     move |sort_by, sort_order, filters_list| {
                         let id = id.to_owned();
                         async move {

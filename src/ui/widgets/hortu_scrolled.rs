@@ -36,6 +36,31 @@ pub enum UnifySize {
     ForcePost,
 }
 
+pub fn resolve_prefer_size(unify_size: UnifySize, items: &[SimpleListItem]) -> PreferSize {
+    match unify_size {
+        UnifySize::Disable => PreferSize::Auto,
+        UnifySize::ForceVideo => PreferSize::Video,
+        UnifySize::ForcePost => PreferSize::Post,
+        UnifySize::Majority => {
+            let primary_ratio: Vec<_> = items
+                .iter()
+                .filter(|i| i.item_type != "Episode")
+                .filter_map(|i| i.primary_image_aspect_ratio)
+                .collect();
+            if primary_ratio.is_empty() {
+                return PreferSize::Auto;
+            }
+            let video_percentage = primary_ratio.iter().filter(|i| **i > 1.0).count() as f64
+                / primary_ratio.len() as f64;
+            match video_percentage {
+                p if p > 0.8 => PreferSize::Video,
+                p if p < 0.2 => PreferSize::Post,
+                _ => PreferSize::Auto,
+            }
+        }
+    }
+}
+
 mod imp {
     use std::cell::{
         OnceCell,
@@ -184,7 +209,7 @@ impl HortuScrolled {
 
         self.set_visible(true);
 
-        let prefer_size = self.evaluate_prefer_size(items);
+        let prefer_size = resolve_prefer_size(self.unify_size(), items);
 
         let items = items
             .iter()
@@ -215,31 +240,6 @@ impl HortuScrolled {
 
         self.imp().left_button.opacity() >= 0.68
             || self.show_controls_animation().state() == adw::AnimationState::Playing
-    }
-
-    fn evaluate_prefer_size(&self, items: &[SimpleListItem]) -> PreferSize {
-        match self.unify_size() {
-            UnifySize::Disable => PreferSize::Auto,
-            UnifySize::ForceVideo => PreferSize::Video,
-            UnifySize::ForcePost => PreferSize::Post,
-            UnifySize::Majority => {
-                let primary_ratio: Vec<_> = items
-                    .iter()
-                    .filter(|i| i.item_type != "Episode") // Episode uses parent poster, can be misleading, just ignore it
-                    .filter_map(|i| i.primary_image_aspect_ratio)
-                    .collect();
-                if primary_ratio.is_empty() {
-                    return PreferSize::Auto;
-                }
-                let video_percentage = primary_ratio.iter().filter(|i| **i > 1.0).count() as f64
-                    / primary_ratio.len() as f64;
-                match video_percentage {
-                    p if p > 0.8 => PreferSize::Video,
-                    p if p < 0.2 => PreferSize::Post,
-                    _ => PreferSize::Auto,
-                }
-            }
-        }
     }
 
     fn show_controls_animation(&self) -> &adw::TimedAnimation {

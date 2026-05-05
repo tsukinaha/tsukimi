@@ -612,6 +612,7 @@ use super::jellyfin_client::JELLYFIN_CLIENT;
 use crate::ui::{
     provider::tu_item::PreferPoster,
     widgets::{
+        hortu_scrolled::UnifySize,
         single_grid::SingleGrid,
         window::Window,
     },
@@ -628,6 +629,7 @@ impl SGTitem {
         page.connect_sort_changed_tokio(
             false,
             PreferPoster::Auto,
+            UnifySize::Majority,
             move |sort_by, sort_order, filters_list| {
                 let id = id.to_owned();
                 let list_type_clone = list_type_clone.to_owned();

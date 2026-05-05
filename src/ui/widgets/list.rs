@@ -6,9 +6,12 @@ use gtk::{
     subclass::prelude::*,
 };
 
-use super::single_grid::{
-    SingleGrid,
-    imp::ListType,
+use super::{
+    hortu_scrolled::UnifySize,
+    single_grid::{
+        SingleGrid,
+        imp::ListType,
+    },
 };
 use crate::{
     client::jellyfin_client::JELLYFIN_CLIENT,
@@ -103,9 +106,12 @@ impl ListPage {
 
         if &collection_type == "livetv" {
             let page = SingleGrid::new();
-            page.connect_sort_changed_tokio(false, PreferPoster::Auto, move |_, _, _| async move {
-                JELLYFIN_CLIENT.get_channels_list(0).await
-            });
+            page.connect_sort_changed_tokio(
+                false,
+                PreferPoster::Auto,
+                UnifySize::Majority,
+                move |_, _, _| async move { JELLYFIN_CLIENT.get_channels_list(0).await },
+            );
             page.connect_end_edge_overshot_tokio(move |_, _, n_items, _| async move {
                 JELLYFIN_CLIENT.get_channels_list(n_items).await
             });
@@ -137,6 +143,7 @@ impl ListPage {
                 } else {
                     PreferPoster::Auto
                 },
+                UnifySize::Majority,
                 move |sort_by, sort_order, filters_list| {
                     let id_clone1 = id_clone1.to_owned();
                     let include_item_types_clone1 = include_item_types_clone1.to_owned();
