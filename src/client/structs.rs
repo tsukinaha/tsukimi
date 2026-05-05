@@ -296,8 +296,6 @@ pub struct SimpleListItem {
     pub backdrop_image_tags: Option<Vec<String>>,
     #[serde(rename = "PrimaryImageAspectRatio")]
     pub primary_image_aspect_ratio: Option<f64>,
-    #[serde(rename = "SeriesPrimaryImageTag")]
-    pub series_primary_image_tag: Option<String>,
     #[serde(rename = "CommunityRating")]
     pub community_rating: Option<f32>,
     #[serde(rename = "CollectionType")]

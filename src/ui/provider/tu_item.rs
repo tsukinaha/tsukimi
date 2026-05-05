@@ -113,8 +113,6 @@ pub mod imp {
         parent_thumb_item_id: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         parent_backdrop_item_id: RefCell<Option<String>>,
-        #[property(get, set, nullable)]
-        series_primary_image_tag: RefCell<Option<String>>,
         #[property(get, set)]
         poster: RefCell<Option<String>>,
         #[property(get, set, nullable)]
@@ -224,7 +222,6 @@ impl TuItem {
         tu_item.set_parent_thumb_item_id(item.parent_thumb_item_id);
         tu_item.set_parent_backdrop_item_id(item.parent_backdrop_item_id);
         tu_item.set_series_name(item.series_name);
-        tu_item.set_series_primary_image_tag(item.series_primary_image_tag);
 
         if let Some(album_artist) = &item.album_artists {
             tu_item.set_albumartist_name(
