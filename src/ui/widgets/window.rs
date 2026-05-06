@@ -342,14 +342,7 @@ impl Window {
 
         imp.popbutton.set_visible(false);
         imp.navipage.set_title("");
-        if imp.insidestack.visible_child_name() == Some("homepage".into()) && SETTINGS.is_refresh()
-        {
-            let binding = imp.homepage.child();
-            let Some(homepage) = binding.and_downcast_ref::<HomePage>() else {
-                return;
-            };
-            homepage.update(false);
-        }
+        self.refresh_homepage_if_needed();
     }
 
     pub async fn set_servers(&self) {
@@ -567,6 +560,16 @@ impl Window {
 
     pub fn mainpage(&self) {
         self.imp().stack.set_visible_child_name("main");
+    }
+
+    pub fn refresh_homepage_if_needed(&self) {
+        let imp = self.imp();
+        if imp.insidestack.visible_child_name() == Some("homepage".into()) && SETTINGS.is_refresh()
+        {
+            if let Some(homepage) = imp.homepage.child().and_downcast_ref::<HomePage>() {
+                homepage.update(false);
+            }
+        }
     }
 
     fn placeholder(&self) {

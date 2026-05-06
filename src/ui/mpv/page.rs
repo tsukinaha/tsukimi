@@ -1180,6 +1180,7 @@ impl MPVPage {
             .unwrap();
         window.imp().stack.set_visible_child_name("main");
         window.allow_suspend();
+        window.refresh_homepage_if_needed();
 
         spawn_g_timeout(glib::clone!(
             #[weak(rename_to = obj)]
