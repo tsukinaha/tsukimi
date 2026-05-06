@@ -31,6 +31,7 @@ use crate::{
         CachePolicy,
         fetch_with_cache,
         spawn,
+        spawn_g_timeout,
     },
 };
 mod imp {
@@ -126,7 +127,7 @@ impl HomePage {
     }
 
     pub fn update(&self, enable_cache: bool) {
-        spawn(glib::clone!(
+        spawn_g_timeout(glib::clone!(
             #[weak(rename_to = obj)]
             self,
             async move {
