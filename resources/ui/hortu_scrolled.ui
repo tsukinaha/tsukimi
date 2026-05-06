@@ -62,12 +62,11 @@
                     <property name="hscrollbar-policy">external</property>
                     <property name="margin-bottom">3</property>
                     <child>
-                      <object class="GtkListView" id="list">
+                      <object class="GtkBox" id="list">
                         <property name="orientation">horizontal</property>
-                        <property name="single-click-activate">True</property>
-                        <style>
-                          <class name="horizontal-listview" />
-                        </style>
+                        <property name="spacing">0</property>
+                        <property name="hexpand">True</property>
+                        <property name="overflow">visible</property>
                       </object>
                     </child>
                     <style>

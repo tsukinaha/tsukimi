@@ -36,6 +36,8 @@ use crate::{
 };
 mod imp {
 
+    use std::collections::HashMap;
+
     use glib::subclass::InitializingObject;
     use gtk::{
         CompositeTemplate,
@@ -47,7 +49,7 @@ mod imp {
     use crate::ui::widgets::hortu_scrolled::HortuScrolled;
 
     // Object holding the state
-    #[derive(CompositeTemplate, Default)]
+    #[derive(CompositeTemplate)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/home.ui")]
     pub struct HomePage {
         #[template_child]
@@ -59,6 +61,21 @@ mod imp {
         #[template_child]
         pub libhortu: TemplateChild<HortuScrolled>,
         pub selection: gtk::SingleSelection,
+        /// Keeps track of HortuScrolled widgets in libsbox keyed by library view ID.
+        pub libs_hortu_map: std::cell::RefCell<HashMap<String, HortuScrolled>>,
+    }
+
+    impl Default for HomePage {
+        fn default() -> Self {
+            Self {
+                root: TemplateChild::default(),
+                libsbox: TemplateChild::default(),
+                hishortu: TemplateChild::default(),
+                libhortu: TemplateChild::default(),
+                selection: gtk::SingleSelection::default(),
+                libs_hortu_map: std::cell::RefCell::new(HashMap::new()),
+            }
+        }
     }
 
     #[glib::object_subclass]
@@ -212,33 +229,62 @@ impl HomePage {
     }
 
     pub async fn setup_libsview(&self, items: Vec<SimpleListItem>, enable_cache: bool) {
-        let libsbox = &self.imp().libsbox;
-        for _ in 0..libsbox.observe_children().n_items() {
-            libsbox.remove(&libsbox.last_child().unwrap());
-        }
+        let imp = self.imp();
+        let libsbox = &imp.libsbox;
+
+        // Collect new view IDs for tracking what to keep
+        let new_ids: std::collections::HashSet<String> =
+            items.iter().map(|v| v.id.clone()).collect();
+
+        // Remove HortuScrolled widgets whose view ID is no longer present
+        let mut map = imp.libs_hortu_map.borrow_mut();
+        map.retain(|id, hortu| {
+            if new_ids.contains(id) {
+                true
+            } else {
+                libsbox.remove(hortu);
+                false
+            }
+        });
+        drop(map);
 
         for view in items {
-            spawn(glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                async move {
-                    obj.setup_libview(view, enable_cache).await;
-                }
-            ));
+            let view_id = view.id.clone();
+
+            // Reuse existing HortuScrolled if available, otherwise create new
+            if let Some(hortu) = imp.libs_hortu_map.borrow().get(&view_id) {
+                let hortu = hortu.clone();
+                // Update title in case the view name changed
+                hortu.set_title(format!("{} {}", gettext("Latest"), view.name));
+
+                spawn(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    async move {
+                        obj.refresh_libview(hortu, view, enable_cache).await;
+                    }
+                ));
+            } else {
+                spawn(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    async move {
+                        obj.setup_libview(view, enable_cache).await;
+                    }
+                ));
+            }
         }
     }
 
     async fn setup_libview(&self, view: SimpleListItem, enable_cache: bool) {
         let ac_view = view.to_owned();
+        let view_id = view.id.clone();
 
         let hortu = HortuScrolled::new();
 
         hortu.set_moreview(true);
-
         hortu.set_unify_size(UnifySize::Majority);
-
         hortu.set_prefer_poster(PreferPoster::ParentPost);
-
         hortu.set_title(format!("{} {}", gettext("Latest"), view.name));
 
         hortu.connect_morebutton(glib::clone!(
@@ -256,6 +302,28 @@ impl HomePage {
 
         self.imp().libsbox.append(&hortu);
 
+        // Register so subsequent refreshes can reuse this widget
+        self.imp()
+            .libs_hortu_map
+            .borrow_mut()
+            .insert(view_id.clone(), hortu.clone());
+
+        self.fetch_and_fill_libview(&hortu, view, enable_cache)
+            .await;
+    }
+
+    /// Refreshes an existing HortuScrolled with new data (warm path – diff animations).
+    async fn refresh_libview(
+        &self, hortu: HortuScrolled, view: SimpleListItem, enable_cache: bool,
+    ) {
+        self.fetch_and_fill_libview(&hortu, view, enable_cache)
+            .await;
+    }
+
+    /// Shared helper: fetches data for a library view and calls set_items.
+    async fn fetch_and_fill_libview(
+        &self, hortu: &HortuScrolled, view: SimpleListItem, enable_cache: bool,
+    ) {
         let view_id = view.id.clone();
         let collection_type = view.collection_type.clone();
 
