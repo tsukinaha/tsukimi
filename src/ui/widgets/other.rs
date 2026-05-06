@@ -202,7 +202,7 @@ impl OtherPage {
             &format!("list_{id}"),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_item_info(&id).await },
-            None,
+            None::<fn(_)>,
         )
         .await
         {
@@ -319,7 +319,7 @@ impl OtherPage {
             &format!("season_{id}"),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_episodes_all(&series_id, &id).await },
-            None,
+            None::<fn(_)>,
         )
         .await
         {
@@ -376,7 +376,7 @@ impl OtherPage {
             &format!("boxset_{id}"),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_includedby(&id).await },
-            None,
+            None::<fn(_)>,
         )
         .await
         {
@@ -482,7 +482,7 @@ impl OtherPage {
             &format!("other_{}_{}", type_, &id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_actor_item_list(&id, &type_).await },
-            None,
+            None::<fn(_)>,
         )
         .await
         {

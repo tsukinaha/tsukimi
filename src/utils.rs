@@ -86,7 +86,7 @@ pub enum CachePolicy {
 
 pub async fn fetch_with_cache<T, F>(
     cache_key: &str, cache_policy: CachePolicy, future: F,
-    on_refresh: Option<Box<dyn FnOnce(T) + 'static>>,
+    on_refresh: Option<impl FnOnce(T) + 'static>,
 ) -> Result<T>
 where
     T: for<'de> Deserialize<'de> + Serialize + Send + 'static,

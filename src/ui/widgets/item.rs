@@ -857,7 +857,7 @@ impl ItemPage {
             &format!("season_{}", &id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_season_list(&id).await },
-            None,
+            None::<fn(_)>,
         )
         .await
         {
@@ -901,7 +901,7 @@ impl ItemPage {
             &format!("item_{}", &id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_item_info(&id).await },
-            None,
+            None::<fn(_)>,
         )
         .await
         {
@@ -1177,7 +1177,7 @@ impl ItemPage {
                     _ => Ok(List::default()),
                 }
             },
-            None,
+            None::<fn(_)>,
         )
         .await
         {

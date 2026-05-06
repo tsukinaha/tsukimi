@@ -144,18 +144,17 @@ impl HomePage {
     pub async fn setup_history(&self, enable_cache: bool) {
         let hortu = self.imp().hishortu.get();
 
-        let (cache_policy, on_refresh): (CachePolicy, Option<Box<dyn FnOnce(List)>>) =
-            if enable_cache {
-                let hortu_ref = hortu.clone();
-                (
-                    CachePolicy::ReadCacheAndRefresh,
-                    Some(Box::new(move |data: List| {
-                        hortu_ref.set_items(&data.items);
-                    })),
-                )
-            } else {
-                (CachePolicy::RefreshCache, None)
-            };
+        let (cache_policy, on_refresh): (CachePolicy, Option<_>) = if enable_cache {
+            let hortu_ref = hortu.clone();
+            (
+                CachePolicy::ReadCacheAndRefresh,
+                Some(move |data: List| {
+                    hortu_ref.set_items(&data.items);
+                }),
+            )
+        } else {
+            (CachePolicy::RefreshCache, None)
+        };
 
         let results = match fetch_with_cache(
             "history",
@@ -178,18 +177,17 @@ impl HomePage {
     pub async fn setup_library(&self, enable_cache: bool) {
         let hortu = self.imp().libhortu.get();
 
-        let (cache_policy, on_refresh): (CachePolicy, Option<Box<dyn FnOnce(List)>>) =
-            if enable_cache {
-                let hortu_ref = hortu.clone();
-                (
-                    CachePolicy::ReadCacheAndRefresh,
-                    Some(Box::new(move |data: List| {
-                        hortu_ref.set_items(&data.items);
-                    })),
-                )
-            } else {
-                (CachePolicy::RefreshCache, None)
-            };
+        let (cache_policy, on_refresh): (CachePolicy, Option<_>) = if enable_cache {
+            let hortu_ref = hortu.clone();
+            (
+                CachePolicy::ReadCacheAndRefresh,
+                Some(move |data: List| {
+                    hortu_ref.set_items(&data.items);
+                }),
+            )
+        } else {
+            (CachePolicy::RefreshCache, None)
+        };
 
         let results = match fetch_with_cache(
             "library",
@@ -261,16 +259,13 @@ impl HomePage {
         let view_id = view.id.clone();
         let collection_type = view.collection_type.clone();
 
-        let (cache_policy, on_refresh): (
-            CachePolicy,
-            Option<Box<dyn FnOnce(Vec<SimpleListItem>)>>,
-        ) = if enable_cache {
+        let (cache_policy, on_refresh): (CachePolicy, Option<_>) = if enable_cache {
             let hortu_ref = hortu.clone();
             (
                 CachePolicy::ReadCacheAndRefresh,
-                Some(Box::new(move |data: Vec<SimpleListItem>| {
+                Some(move |data: Vec<SimpleListItem>| {
                     hortu_ref.set_items(&data);
-                })),
+                }),
             )
         } else {
             (CachePolicy::RefreshCache, None)

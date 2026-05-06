@@ -420,7 +420,7 @@ impl TuItem {
             &format!("audio_{}", &id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_songs(&id).await },
-            None,
+            None::<fn(_)>,
         )
         .await
         {

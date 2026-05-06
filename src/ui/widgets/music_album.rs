@@ -231,7 +231,7 @@ impl AlbumPage {
             &format!("audio_{}", item.id()),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_songs(&id).await },
-            None,
+            None::<fn(_)>,
         )
         .await
         {
@@ -355,7 +355,7 @@ impl AlbumPage {
                     _ => Ok(List::default()),
                 }
             },
-            None,
+            None::<fn(_)>,
         )
         .await
         {
