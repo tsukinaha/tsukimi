@@ -120,8 +120,6 @@ impl HomePage {
             self,
             async move {
                 obj.setup(true).await;
-                gtk::glib::timeout_future_seconds(1).await;
-                obj.setup_history(false).await;
             }
         ));
     }
@@ -139,22 +137,32 @@ impl HomePage {
     pub async fn setup(&self, enable_cache: bool) {
         fraction_reset!(self);
         self.setup_history(enable_cache).await;
-        self.setup_library().await;
+        self.setup_library(enable_cache).await;
         fraction!(self);
     }
 
     pub async fn setup_history(&self, enable_cache: bool) {
         let hortu = self.imp().hishortu.get();
 
-        let cache_policy = if enable_cache {
-            CachePolicy::UseCacheIfAvailable
-        } else {
-            CachePolicy::RefreshCache
-        };
+        let (cache_policy, on_refresh): (CachePolicy, Option<Box<dyn FnOnce(List)>>) =
+            if enable_cache {
+                let hortu_ref = hortu.clone();
+                (
+                    CachePolicy::ReadCacheAndRefresh,
+                    Some(Box::new(move |data: List| {
+                        hortu_ref.set_items(&data.items);
+                    })),
+                )
+            } else {
+                (CachePolicy::RefreshCache, None)
+            };
 
-        let results = match fetch_with_cache("history", cache_policy, async {
-            JELLYFIN_CLIENT.get_resume().await
-        })
+        let results = match fetch_with_cache(
+            "history",
+            cache_policy,
+            async { JELLYFIN_CLIENT.get_resume().await },
+            on_refresh,
+        )
         .await
         {
             Ok(history) => history,
@@ -167,12 +175,28 @@ impl HomePage {
         hortu.set_items(&results.items);
     }
 
-    pub async fn setup_library(&self) {
+    pub async fn setup_library(&self, enable_cache: bool) {
         let hortu = self.imp().libhortu.get();
 
-        let results = match fetch_with_cache("library", CachePolicy::ReadCacheAndRefresh, async {
-            JELLYFIN_CLIENT.get_library().await
-        })
+        let (cache_policy, on_refresh): (CachePolicy, Option<Box<dyn FnOnce(List)>>) =
+            if enable_cache {
+                let hortu_ref = hortu.clone();
+                (
+                    CachePolicy::ReadCacheAndRefresh,
+                    Some(Box::new(move |data: List| {
+                        hortu_ref.set_items(&data.items);
+                    })),
+                )
+            } else {
+                (CachePolicy::RefreshCache, None)
+            };
+
+        let results = match fetch_with_cache(
+            "library",
+            cache_policy,
+            async { JELLYFIN_CLIENT.get_library().await },
+            on_refresh,
+        )
         .await
         {
             Ok(history) => history,
@@ -186,10 +210,10 @@ impl HomePage {
 
         hortu.set_items(&results);
 
-        self.setup_libsview(results).await;
+        self.setup_libsview(results, enable_cache).await;
     }
 
-    pub async fn setup_libsview(&self, items: Vec<SimpleListItem>) {
+    pub async fn setup_libsview(&self, items: Vec<SimpleListItem>, enable_cache: bool) {
         let libsbox = &self.imp().libsbox;
         for _ in 0..libsbox.observe_children().n_items() {
             libsbox.remove(&libsbox.last_child().unwrap());
@@ -200,34 +224,14 @@ impl HomePage {
                 #[weak(rename_to = obj)]
                 self,
                 async move {
-                    obj.setup_libview(view).await;
+                    obj.setup_libview(view, enable_cache).await;
                 }
             ));
         }
     }
 
-    async fn setup_libview(&self, view: SimpleListItem) {
+    async fn setup_libview(&self, view: SimpleListItem, enable_cache: bool) {
         let ac_view = view.to_owned();
-
-        let results = match fetch_with_cache(
-            &format!("library_{}", view.id),
-            CachePolicy::ReadCacheAndRefresh,
-            async move {
-                if view.collection_type.as_deref() == Some("livetv") {
-                    JELLYFIN_CLIENT.get_channels().await.map(|x| x.items)
-                } else {
-                    JELLYFIN_CLIENT.get_latest(&view.id).await
-                }
-            },
-        )
-        .await
-        {
-            Ok(history) => history,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                return;
-            }
-        };
 
         let hortu = HortuScrolled::new();
 
@@ -238,8 +242,6 @@ impl HomePage {
         hortu.set_prefer_poster(PreferPoster::ParentPost);
 
         hortu.set_title(format!("{} {}", gettext("Latest"), view.name));
-
-        hortu.set_items(&results);
 
         hortu.connect_morebutton(glib::clone!(
             #[weak(rename_to = obj)]
@@ -255,5 +257,46 @@ impl HomePage {
         ));
 
         self.imp().libsbox.append(&hortu);
+
+        let view_id = view.id.clone();
+        let collection_type = view.collection_type.clone();
+
+        let (cache_policy, on_refresh): (
+            CachePolicy,
+            Option<Box<dyn FnOnce(Vec<SimpleListItem>)>>,
+        ) = if enable_cache {
+            let hortu_ref = hortu.clone();
+            (
+                CachePolicy::ReadCacheAndRefresh,
+                Some(Box::new(move |data: Vec<SimpleListItem>| {
+                    hortu_ref.set_items(&data);
+                })),
+            )
+        } else {
+            (CachePolicy::RefreshCache, None)
+        };
+
+        let results = match fetch_with_cache(
+            &format!("library_{}", view_id),
+            cache_policy,
+            async move {
+                if collection_type.as_deref() == Some("livetv") {
+                    JELLYFIN_CLIENT.get_channels().await.map(|x| x.items)
+                } else {
+                    JELLYFIN_CLIENT.get_latest(&view_id).await
+                }
+            },
+            on_refresh,
+        )
+        .await
+        {
+            Ok(history) => history,
+            Err(e) => {
+                self.toast(e.to_user_facing());
+                return;
+            }
+        };
+
+        hortu.set_items(&results);
     }
 }

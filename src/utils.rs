@@ -76,6 +76,7 @@ where
 }
 
 pub enum CachePolicy {
+    #[allow(dead_code)]
     UseCacheIfAvailable,
     RefreshCache,
     #[allow(dead_code)]
@@ -85,6 +86,7 @@ pub enum CachePolicy {
 
 pub async fn fetch_with_cache<T, F>(
     cache_key: &str, cache_policy: CachePolicy, future: F,
+    on_refresh: Option<Box<dyn FnOnce(T) + 'static>>,
 ) -> Result<T>
 where
     T: for<'de> Deserialize<'de> + Serialize + Send + 'static,
@@ -108,13 +110,27 @@ where
     if read_cache {
         if let Some(data) = read_from_cache(&path) {
             if update_in_background {
-                let future = future;
                 let path = path.to_owned();
-                runtime().spawn(async move {
-                    if let Ok(data) = future.await {
-                        let _ = write_to_cache(&path, &data);
-                    }
-                });
+                if let Some(callback) = on_refresh {
+                    let (tx, rx) = tokio::sync::oneshot::channel();
+                    runtime().spawn(async move {
+                        if let Ok(data) = future.await {
+                            let _ = write_to_cache(&path, &data);
+                            let _ = tx.send(data);
+                        }
+                    });
+                    spawn(async move {
+                        if let Ok(data) = rx.await {
+                            callback(data);
+                        }
+                    });
+                } else {
+                    runtime().spawn(async move {
+                        if let Ok(data) = future.await {
+                            let _ = write_to_cache(&path, &data);
+                        }
+                    });
+                }
             }
             return Ok(data);
         }
