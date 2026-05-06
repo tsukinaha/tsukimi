@@ -151,7 +151,7 @@ mod imp {
             //
             // https://github.com/mpv-player/mpv/blob/86e12929aa0bbc61946d3804982acf887786a7cb/include/mpv/render_gl.h#L91
             #[cfg(target_os = "linux")]
-            if let Some(display_wrapper) = display.clone().downcast::<X11Display>().ok() {
+            if let Ok(display_wrapper) = display.clone().downcast::<X11Display>() {
                 render_params.push(RenderParam::X11Display(
                     unsafe { display_wrapper.xdisplay() } as *const c_void,
                 ));
