@@ -505,7 +505,7 @@ impl MPVPage {
 
     pub fn play(
         &self, selected: Option<SelectedVideoSubInfo>, item: TuItem, episode_list: Vec<TuItem>,
-        video_matcher: Option<String>, per: f64,
+        video_matcher: Option<String>, start_seconds: f64,
     ) {
         let (title1, title2) = if let Some(series_name) = item.series_name() {
             let episode_info = format!(
@@ -660,7 +660,7 @@ impl MPVPage {
                     }
                 };
 
-                imp.video.play(&video_url, per);
+                imp.video.play(&video_url, start_seconds);
 
                 if SETTINGS.is_danmaku_enabled() {
                     obj.imp().danmaku_area.clear_danmaku();

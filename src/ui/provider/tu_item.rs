@@ -459,7 +459,13 @@ impl TuItem {
         &self, obj: &impl IsA<gtk::Widget>, video: TuItem, episode_list: Vec<TuItem>,
     ) {
         if let Some(window) = obj.root().and_downcast_ref::<Window>() {
-            window.play_media(None, video, episode_list, None, self.played_percentage())
+            window.play_media(
+                None,
+                video,
+                episode_list,
+                None,
+                self.playback_position_ticks() as f64 / 10_000_000.0,
+            )
         }
     }
 

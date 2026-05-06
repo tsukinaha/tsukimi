@@ -207,7 +207,7 @@ impl MPVGLArea {
         Object::builder().build()
     }
 
-    pub fn play(&self, url: &str, percentage: f64) {
+    pub fn play(&self, url: &str, start_seconds: f64) {
         let url = url.to_owned();
 
         spawn(glib::clone!(
@@ -225,7 +225,7 @@ impl MPVGLArea {
                 info!("Now Playing: {}", url);
                 mpv.load_video(&url);
 
-                mpv.set_start(percentage);
+                mpv.set_start(start_seconds);
 
                 mpv.pause(false);
             }

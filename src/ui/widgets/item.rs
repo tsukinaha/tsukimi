@@ -1259,7 +1259,7 @@ impl ItemPage {
         };
 
         let item = self.current_item().unwrap_or(self.item());
-        let played_percentage = item.played_percentage();
+        let start_seconds = item.playback_position_ticks() as f64 / 10_000_000.0;
 
         let episode_list = self.imp().episode_list_vec.borrow();
         let episode_list: Vec<TuItem> = episode_list
@@ -1270,7 +1270,7 @@ impl ItemPage {
         let matcher = self.imp().video_version_matcher.borrow().to_owned();
 
         self.window()
-            .play_media(Some(info), item, episode_list, matcher, played_percentage);
+            .play_media(Some(info), item, episode_list, matcher, start_seconds);
     }
 
     fn set_control_opacity(&self, opacity: f64) {
