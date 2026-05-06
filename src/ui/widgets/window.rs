@@ -125,6 +125,9 @@ mod imp {
         pub mpv_playlist_selection: gtk::SingleSelection,
 
         pub suspend_cookie: RefCell<Option<u32>>,
+
+        #[template_child]
+        pub sidebar_breakpoint: TemplateChild<adw::Breakpoint>,
     }
 
     #[glib::object_subclass]
@@ -198,11 +201,22 @@ mod imp {
 
             let obj = self.obj();
 
-            self.split_view.connect_collapsed_notify(move |split_view| {
-                if !split_view.is_collapsed() && SETTINGS.is_overlay() {
-                    split_view.set_collapsed(true);
+            self.sidebar_breakpoint.connect_apply(glib::clone!(
+                #[weak]
+                obj,
+                move |_breakpoint| {
+                    obj.imp().split_view.set_collapsed(true);
                 }
-            });
+            ));
+            self.sidebar_breakpoint.connect_unapply(glib::clone!(
+                #[weak]
+                obj,
+                move |_breakpoint| {
+                    if !SETTINGS.is_overlay() {
+                        obj.imp().split_view.set_collapsed(false);
+                    }
+                }
+            ));
 
             obj.bind_about_action();
 
