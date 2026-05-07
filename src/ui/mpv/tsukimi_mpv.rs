@@ -243,9 +243,7 @@ impl TsukimiMPV {
     }
 
     pub fn set_start(&self, start_seconds: f64) {
-        if start_seconds > 0.0 {
-            self.set_property("start", format!("{:.2}", start_seconds));
-        }
+        self.set_property("start", format!("{:.2}", start_seconds));
     }
 
     pub fn set_volume(&self, volume: i64) {
