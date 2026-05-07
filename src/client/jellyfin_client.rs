@@ -1,7 +1,4 @@
-use std::{
-    hash::Hasher,
-    sync::Arc,
-};
+use std::hash::Hasher;
 
 use anyhow::{
     Result,

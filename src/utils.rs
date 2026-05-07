@@ -17,32 +17,12 @@ use crate::{
     ui::jellyfin_cache_path,
 };
 
-pub fn _spawn_tokio_blocking<F>(fut: F) -> F::Output
-where
-    F: std::future::Future + Send + 'static,
-    F::Output: Send + 'static,
-{
-    let (sender, receiver) = tokio::sync::oneshot::channel();
-
-    runtime().spawn(async {
-        let response = fut.await;
-        sender.send(response)
-    });
-    receiver.blocking_recv().unwrap()
-}
-
 pub async fn spawn_tokio<F>(fut: F) -> F::Output
 where
     F: std::future::Future + Send + 'static,
     F::Output: Send + 'static,
 {
-    let (sender, receiver) = tokio::sync::oneshot::channel();
-
-    runtime().spawn(async {
-        let response = fut.await;
-        sender.send(response)
-    });
-    receiver.await.unwrap()
+    runtime().spawn(fut).await.unwrap()
 }
 
 pub fn spawn_tokio_without_await<F>(fut: F)
