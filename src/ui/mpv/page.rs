@@ -600,7 +600,7 @@ impl MPVPage {
                     id: id.to_owned(),
                     playsessionid: play_session_id.to_owned(),
                     mediasourceid: media_source.id.to_owned(),
-                    tick: media_source.run_time_ticks.unwrap_or(0),
+                    tick: (start_seconds * 10_000_000.0) as u64,
                     start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
                 };
 
@@ -1213,9 +1213,12 @@ impl MPVPage {
         }
 
         if let Some(back) = back.as_ref() {
-            let duration = *position as u64 * 10000000;
             let mut back = back.to_owned();
-            back.tick = duration;
+            if backtype != BackType::Start {
+                // Start happens when a new file starts, at which point position is 0.
+                // Skip the overwrite so the initial tick (from start_seconds) is used.
+                back.tick = *position as u64 * 10000000;
+            }
             crate::utils::spawn_tokio_without_await(async move {
                 let _ = JELLYFIN_CLIENT.position_back(&back, backtype).await;
             });
