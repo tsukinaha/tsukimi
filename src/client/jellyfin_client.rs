@@ -103,7 +103,6 @@ pub enum BackType {
 pub struct JellyfinClient {
     pub url: Mutex<Option<Url>>,
     pub client: Client,
-    pub semaphore: Arc<tokio::sync::Semaphore>,
     pub headers: Mutex<reqwest::header::HeaderMap>,
     pub user_id: Mutex<String>,
     pub user_name: Mutex<String>,
@@ -145,7 +144,6 @@ impl Default for JellyfinClient {
         Self {
             url: Mutex::new(None),
             client: ReqClient::build(),
-            semaphore: Arc::new(tokio::sync::Semaphore::new(SETTINGS.threads() as usize)),
             headers: Mutex::new(headers),
             user_id: Mutex::new(String::new()),
             user_name: Mutex::new(String::new()),
@@ -357,12 +355,10 @@ impl JellyfinClient {
     }
 
     async fn send_request(&self, request: RequestBuilder) -> Result<Response> {
-        let permit = self.semaphore.acquire().await?;
         let res = match request.send().await {
             Ok(r) => r,
             Err(e) => return Err(anyhow!(e.to_user_facing())),
         };
-        drop(permit);
         Ok(res)
     }
 
