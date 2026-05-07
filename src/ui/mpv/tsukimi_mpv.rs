@@ -188,7 +188,7 @@ pub enum ListenEvent {
     Seek,
     PlaybackRestart,
     Eof(u32),
-    StartFile,
+    FileLoaded,
     Duration(f64),
     Pause(bool),
     CacheSpeed(i64),
@@ -468,8 +468,8 @@ impl TsukimiMPV {
                             Event::EndFile(r) => {
                                 let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Eof(r));
                             }
-                            Event::StartFile => {
-                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile);
+                            Event::FileLoaded => {
+                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::FileLoaded);
                             }
                             Event::Shutdown => {
                                 let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Shutdown);

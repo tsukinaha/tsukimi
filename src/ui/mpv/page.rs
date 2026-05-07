@@ -600,7 +600,7 @@ impl MPVPage {
                     id: id.to_owned(),
                     playsessionid: play_session_id.to_owned(),
                     mediasourceid: media_source.id.to_owned(),
-                    tick: (start_seconds * 10_000_000.0) as u64,
+                    tick: media_source.run_time_ticks.unwrap_or(0),
                     start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
                 };
 
@@ -852,8 +852,8 @@ impl MPVPage {
                         ListenEvent::CacheSpeed(value) => {
                             obj.on_cache_speed_update(value);
                         }
-                        ListenEvent::StartFile => {
-                            obj.on_start_file();
+                        ListenEvent::FileLoaded => {
+                            obj.on_file_loaded();
                         }
                         ListenEvent::TrackList(value) => {
                             obj.set_audio_and_video_tracks_dropdown(value);
@@ -936,7 +936,7 @@ impl MPVPage {
         imp.video.set_volume(btn.value() as i64);
     }
 
-    fn on_start_file(&self) {
+    fn on_file_loaded(&self) {
         let imp = self.imp();
         if let Some(suburl) = imp.suburl.borrow().as_ref() {
             imp.video.add_sub(suburl);
@@ -1214,11 +1214,7 @@ impl MPVPage {
 
         if let Some(back) = back.as_ref() {
             let mut back = back.to_owned();
-            if backtype != BackType::Start {
-                // Start happens when a new file starts, at which point position is 0.
-                // Skip the overwrite so the initial tick (from start_seconds) is used.
-                back.tick = *position as u64 * 10000000;
-            }
+            back.tick = *position as u64 * 10000000;
             crate::utils::spawn_tokio_without_await(async move {
                 let _ = JELLYFIN_CLIENT.position_back(&back, backtype).await;
             });
