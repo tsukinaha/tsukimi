@@ -223,9 +223,9 @@ impl MPVGLArea {
                 let url = JELLYFIN_CLIENT.get_streaming_url(&url).await;
 
                 info!("Now Playing: {}", url);
-                mpv.load_video(&url);
-
                 mpv.set_start(start_seconds);
+
+                mpv.load_video(&url);
 
                 mpv.pause(false);
             }

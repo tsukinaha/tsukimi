@@ -188,7 +188,7 @@ pub enum ListenEvent {
     Seek,
     PlaybackRestart,
     Eof(u32),
-    StartFile,
+    FileLoaded,
     Duration(f64),
     Pause(bool),
     CacheSpeed(i64),
@@ -243,9 +243,7 @@ impl TsukimiMPV {
     }
 
     pub fn set_start(&self, start_seconds: f64) {
-        if start_seconds > 0.0 {
-            self.set_property("start", format!("{:.2}", start_seconds));
-        }
+        self.set_property("start", format!("{:.2}", start_seconds));
     }
 
     pub fn set_volume(&self, volume: i64) {
@@ -470,8 +468,8 @@ impl TsukimiMPV {
                             Event::EndFile(r) => {
                                 let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Eof(r));
                             }
-                            Event::StartFile => {
-                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile);
+                            Event::FileLoaded => {
+                                let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::FileLoaded);
                             }
                             Event::Shutdown => {
                                 let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Shutdown);

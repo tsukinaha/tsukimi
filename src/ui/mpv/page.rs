@@ -852,8 +852,8 @@ impl MPVPage {
                         ListenEvent::CacheSpeed(value) => {
                             obj.on_cache_speed_update(value);
                         }
-                        ListenEvent::StartFile => {
-                            obj.on_start_file();
+                        ListenEvent::FileLoaded => {
+                            obj.on_file_loaded();
                         }
                         ListenEvent::TrackList(value) => {
                             obj.set_audio_and_video_tracks_dropdown(value);
@@ -936,7 +936,7 @@ impl MPVPage {
         imp.video.set_volume(btn.value() as i64);
     }
 
-    fn on_start_file(&self) {
+    fn on_file_loaded(&self) {
         let imp = self.imp();
         if let Some(suburl) = imp.suburl.borrow().as_ref() {
             imp.video.add_sub(suburl);
