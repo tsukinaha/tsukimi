@@ -1213,8 +1213,9 @@ impl MPVPage {
         }
 
         if let Some(back) = back.as_ref() {
+            let duration = *position as u64 * 10000000;
             let mut back = back.to_owned();
-            back.tick = *position as u64 * 10000000;
+            back.tick = duration;
             crate::utils::spawn_tokio_without_await(async move {
                 let _ = JELLYFIN_CLIENT.position_back(&back, backtype).await;
             });
