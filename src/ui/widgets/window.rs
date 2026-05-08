@@ -374,7 +374,7 @@ impl Window {
         for account in &accounts {
             if SETTINGS.auto_select_server()
                 && account.servername == SETTINGS.preferred_server()
-                && JELLYFIN_CLIENT.user_id.lock().await.is_empty()
+                && JELLYFIN_CLIENT.session().account.user_id.is_empty()
             {
                 let _ = JELLYFIN_CLIENT.init(account).await;
                 self.reset();
@@ -522,10 +522,9 @@ impl Window {
 
     pub async fn account_setup(&self) {
         let imp = self.imp();
-        imp.namerow
-            .set_title(&JELLYFIN_CLIENT.user_name.lock().await);
-        imp.namerow
-            .set_subtitle(&JELLYFIN_CLIENT.server_name.lock().await);
+        let s = JELLYFIN_CLIENT.session();
+        imp.namerow.set_title(&s.account.username);
+        imp.namerow.set_subtitle(&s.account.servername);
     }
 
     pub fn account_settings(&self) {

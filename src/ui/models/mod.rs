@@ -13,7 +13,7 @@ pub static CACHE_PATH: Lazy<std::path::PathBuf> = Lazy::new(|| {
 });
 
 pub async fn jellyfin_cache_path() -> std::path::PathBuf {
-    let path = CACHE_PATH.join(JELLYFIN_CLIENT.server_name_hash.lock().await.as_str());
+    let path = CACHE_PATH.join(&JELLYFIN_CLIENT.session().server_name_hash);
     if !path.exists() {
         std::fs::create_dir_all(&path).expect("Failed to create directory");
     }
