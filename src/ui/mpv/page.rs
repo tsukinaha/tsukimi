@@ -164,6 +164,7 @@ mod imp {
         pub timeout: RefCell<Option<glib::source::SourceId>>,
         pub back_timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
+        pub seeking: RefCell<bool>,
         pub x: RefCell<f64>,
         pub y: RefCell<f64>,
         pub last_motion_time: RefCell<i64>,
@@ -837,8 +838,12 @@ impl MPVPage {
                             obj.update_seeking(true);
                         }
                         ListenEvent::PausedForCache(false) | ListenEvent::PlaybackRestart => {
+                            let was_seeking = obj.get_seeking();
                             obj.imp().resume_danmaku();
                             obj.update_seeking(false);
+                            if was_seeking {
+                                obj.handle_callback(BackType::Back);
+                            }
                         }
                         ListenEvent::Eof(value) => {
                             obj.on_end_file(value);
@@ -946,6 +951,7 @@ impl MPVPage {
     }
 
     fn update_seeking(&self, seeking: bool) {
+        self.imp().seeking.replace(seeking);
         let spinner = &self.imp().spinner;
         let loading_box = &self.imp().loading_box;
         if seeking {
@@ -955,6 +961,10 @@ impl MPVPage {
             loading_box.set_visible(false);
             spinner.set_visible(false);
         }
+    }
+
+    fn get_seeking(&self) -> bool {
+        *self.imp().seeking.borrow()
     }
 
     fn on_end_file(&self, value: u32) {
@@ -1204,16 +1214,11 @@ impl MPVPage {
     }
 
     fn handle_callback(&self, backtype: BackType) {
-        let position = &self.imp().video.position();
+        let position = self.imp().video_scale.value();
         let back = self.imp().back.borrow();
 
-        // close window when vo=gpu-next will set position to 0, so we need to ignore it
-        if position < &20.0 && (backtype != BackType::Start && backtype != BackType::Stop) {
-            return;
-        }
-
         if let Some(back) = back.as_ref() {
-            let duration = *position as u64 * 10000000;
+            let duration = position as u64 * 10000000;
             let mut back = back.to_owned();
             back.tick = duration;
             crate::utils::spawn_tokio_without_await(async move {
