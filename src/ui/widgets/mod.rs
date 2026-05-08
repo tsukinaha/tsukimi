@@ -1,3 +1,5 @@
+use gtk::glib::prelude::StaticTypeExt;
+
 pub mod account_add;
 pub mod account_settings;
 pub mod action_row;
@@ -18,6 +20,7 @@ pub mod item;
 pub mod item_actionbox;
 pub mod item_carousel;
 pub mod item_utils;
+pub mod lazy_diff_view;
 pub mod liked;
 pub mod list;
 pub mod list_dropdown;
@@ -50,3 +53,7 @@ pub mod window;
 
 pub use episode_switcher::EpisodeSwitcher;
 pub use utils::GlobalToast;
+
+pub fn init() {
+    lazy_diff_view::LazyDiffView::ensure_type();
+}

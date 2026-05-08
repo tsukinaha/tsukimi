@@ -36,12 +36,18 @@ use crate::{
 };
 mod imp {
 
-    use std::{cell::RefCell, collections::HashMap};
+    use std::{
+        cell::RefCell,
+        collections::HashMap,
+    };
 
-use glib::subclass::InitializingObject;
+    use glib::subclass::InitializingObject;
     use gtk::{
         CompositeTemplate,
-        glib::{self, WeakRef},
+        glib::{
+            self,
+            WeakRef,
+        },
         prelude::StaticTypeExt,
         subclass::prelude::*,
     };
@@ -255,7 +261,10 @@ impl HomePage {
 
         self.imp().libsbox.append(&hortu);
 
-        self.imp().libs_hortu.borrow_mut().insert(view.id.to_owned(), hortu.downgrade());
+        self.imp()
+            .libs_hortu
+            .borrow_mut()
+            .insert(view.id.to_owned(), hortu.downgrade());
 
         hortu
     }

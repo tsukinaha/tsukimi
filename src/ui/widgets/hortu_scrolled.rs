@@ -4,7 +4,6 @@ use adw::{
 };
 use gtk::{
     CompositeTemplate,
-    gio,
     glib,
     template_callbacks,
 };
@@ -19,7 +18,14 @@ use crate::{
             },
             tu_object::TuObject,
         },
-        widgets::fix::ScrolledWindowFixExt,
+        widgets::{
+            fix::ScrolledWindowFixExt,
+            lazy_diff_view::LazyDiffView,
+            tu_list_item::{
+                TuListItem,
+                imp::PosterType,
+            },
+        },
     },
 };
 
@@ -62,22 +68,18 @@ pub fn resolve_prefer_size(unify_size: UnifySize, items: &[SimpleListItem]) -> P
 }
 
 mod imp {
-    use std::cell::{
-        OnceCell,
-        RefCell,
+    use std::{
+        cell::{
+            OnceCell,
+            RefCell,
+        },
+        collections::HashMap,
     };
 
     use glib::subclass::InitializingObject;
-    use gtk::{
-        SignalListItemFactory,
-        gio,
-    };
+    use gtk::prelude::Cast;
 
     use super::*;
-    use crate::ui::widgets::{
-        tu_list_item::imp::PosterType,
-        utils::TuItemBuildExt,
-    };
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/hortu_scrolled.ui")]
@@ -88,9 +90,7 @@ mod imp {
         #[template_child]
         pub label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub scrolled: TemplateChild<gtk::ScrolledWindow>,
-        #[template_child]
-        pub list: TemplateChild<gtk::ListView>,
+        pub diffview: TemplateChild<LazyDiffView>,
         #[template_child]
         pub revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
@@ -113,8 +113,7 @@ mod imp {
 
         pub show_button_animation: OnceCell<adw::TimedAnimation>,
         pub hide_button_animation: OnceCell<adw::TimedAnimation>,
-
-        pub selection: gtk::SingleSelection,
+        pub item_cache: RefCell<HashMap<String, TuObject>>,
     }
 
     #[glib::object_subclass]
@@ -124,6 +123,7 @@ mod imp {
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
+            LazyDiffView::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }
@@ -136,29 +136,40 @@ mod imp {
     #[glib::derived_properties]
     impl ObjectImpl for HortuScrolled {
         fn constructed(&self) {
-            self.selection.set_autoselect(false);
-
             self.parent_constructed();
 
-            self.scrolled.fix();
+            self.diffview.set_orientation(gtk::Orientation::Horizontal);
+            self.diffview
+                .scroll()
+                .fix()
+                .set_hscrollbar_policy(gtk::PolicyType::Never);
+            self.diffview.configure(
+                |tu_obj: &TuObject| tu_obj.item().id(),
+                |_tu_obj: &TuObject| {
+                    let tu_item = TuListItem::default();
+                    tu_item.set_poster_type(PosterType::default());
 
-            let store = gio::ListStore::new::<TuObject>();
+                    let gesture = gtk::GestureClick::new();
+                    gesture.set_button(1);
+                    gesture.connect_released(glib::clone!(
+                        #[weak]
+                        tu_item,
+                        move |gesture, _, _, _| {
+                            gesture.set_state(gtk::EventSequenceState::Claimed);
+                            tu_item.item().activate(&tu_item, None);
+                        }
+                    ));
+                    tu_item.add_controller(gesture);
 
-            self.selection.set_model(Some(&store));
-
-            let selection = gtk::NoSelection::new(Some(store));
-
-            self.list.set_model(Some(&selection));
-
-            self.list.set_factory(Some(
-                SignalListItemFactory::new().tu_item(PosterType::default()),
-            ));
-
-            self.list.connect_activate(move |listview, position| {
-                let model = listview.model().unwrap();
-                let tu_obj = model.item(position).and_downcast::<TuObject>().unwrap();
-                tu_obj.activate(listview);
-            });
+                    tu_item.upcast::<gtk::Widget>()
+                },
+                |widget, tu_obj: &TuObject| {
+                    let tu_item = widget
+                        .downcast_ref::<TuListItem>()
+                        .expect("LazyDiffView row must be a TuListItem");
+                    tu_item.set_item(tu_obj.item());
+                },
+            );
         }
     }
 
@@ -193,16 +204,8 @@ impl HortuScrolled {
     pub fn set_items(&self, items: &[SimpleListItem]) {
         let imp = self.imp();
 
-        let store = imp
-            .selection
-            .model()
-            .unwrap()
-            .downcast::<gio::ListStore>()
-            .unwrap();
-
-        store.remove_all();
-
         if items.is_empty() {
+            imp.diffview.set_items(Vec::<TuObject>::new());
             self.set_visible(false);
             return;
         }
@@ -210,19 +213,31 @@ impl HortuScrolled {
         self.set_visible(true);
 
         let prefer_size = resolve_prefer_size(self.unify_size(), items);
+        let visible_ids = items
+            .iter()
+            .map(|item| item.id.clone())
+            .collect::<std::collections::HashSet<_>>();
+        imp.item_cache
+            .borrow_mut()
+            .retain(|id, _| visible_ids.contains(id));
 
         let items = items
             .iter()
             .map(|item| {
-                let object = TuObject::from_simple(item, None);
-                object.item().set_is_resume(self.isresume());
-                object.item().set_prefer_size(prefer_size);
-                object.item().set_prefer_poster(self.prefer_poster());
+                let mut cache = imp.item_cache.borrow_mut();
+                let object = cache
+                    .entry(item.id.clone())
+                    .or_insert_with(|| TuObject::from_simple(item, None))
+                    .clone();
+                let tu_item = object.item();
+                tu_item.set_is_resume(self.isresume());
+                tu_item.set_prefer_size(prefer_size);
+                tu_item.set_prefer_poster(self.prefer_poster());
                 object
             })
             .collect::<Vec<_>>();
 
-        store.extend_from_slice(&items);
+        imp.diffview.set_items(items);
 
         imp.revealer.set_reveal_child(true);
     }
@@ -252,7 +267,7 @@ impl HortuScrolled {
 
             adw::TimedAnimation::builder()
                 .duration(SHOW_BUTTON_ANIMATION_DURATION)
-                .widget(&self.imp().scrolled.get())
+                .widget(&self.imp().diffview.get())
                 .target(&target)
                 .value_to(0.7)
                 .build()
@@ -269,7 +284,7 @@ impl HortuScrolled {
 
             adw::TimedAnimation::builder()
                 .duration(SHOW_BUTTON_ANIMATION_DURATION)
-                .widget(&self.imp().scrolled.get())
+                .widget(&self.imp().diffview.get())
                 .target(&target)
                 .value_to(0.)
                 .build()
@@ -318,7 +333,7 @@ impl HortuScrolled {
     }
 
     fn anime<const R: bool>(&self) {
-        let scrolled = self.imp().scrolled.get();
+        let scrolled = self.imp().diffview.scroll();
         let adj = scrolled.hadjustment();
 
         let Some(clock) = scrolled.frame_clock() else {

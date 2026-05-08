@@ -30,6 +30,8 @@ pub use ui::Window;
 
 pub use app::TsukimiApplication as Application;
 
+use crate::ui::widgets;
+
 pub static USER_AGENT: LazyLock<String> =
     LazyLock::new(|| format!("{}/{} - {}", CLIENT_ID, VERSION, env::consts::OS));
 
@@ -78,6 +80,7 @@ pub fn run() -> gtk::glib::ExitCode {
         .expect("Failed to register resources.");
 
     danmakw::init();
+    widgets::init();
 
     // Initialize the GTK application
     gtk::glib::set_application_name(CLIENT_ID);
