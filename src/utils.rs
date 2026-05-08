@@ -25,14 +25,6 @@ where
     runtime().spawn(fut).await.unwrap()
 }
 
-pub async fn spawn_tokio_blocking<F, R>(f: F) -> R
-where
-    F: FnOnce() -> R + Send + 'static,
-    R: Send + 'static,
-{
-    runtime().spawn_blocking(f).await.unwrap()
-}
-
 pub fn spawn_tokio_without_await<F>(fut: F)
 where
     F: std::future::Future + Send + 'static,
@@ -96,14 +88,14 @@ where
     let update_in_background = matches!(cache_policy, CachePolicy::ReadCacheAndRefresh);
 
     if read_cache {
-        if let Some(data) = read_from_cache(path.to_owned()).await {
+        if let Some(data) = read_from_cache(&path) {
             if update_in_background {
                 let path = path.to_owned();
                 if let Some(callback) = on_refresh {
                     let (tx, rx) = tokio::sync::oneshot::channel();
                     runtime().spawn(async move {
                         if let Ok(data) = future.await {
-                            let _ = write_to_cache(path, &data);
+                            let _ = write_to_cache(&path, &data);
                             let _ = tx.send(data);
                         }
                     });
@@ -115,7 +107,7 @@ where
                 } else {
                     runtime().spawn(async move {
                         if let Ok(data) = future.await {
-                            let _ = write_to_cache(path, &data);
+                            let _ = write_to_cache(&path, &data);
                         }
                     });
                 }
@@ -127,28 +119,27 @@ where
     let data = spawn_tokio(future).await?;
 
     if write_cache {
-        write_to_cache(path, &data).await?;
+        write_to_cache(&path, &data)?;
     }
 
     Ok(data)
 }
 
-async fn read_from_cache<T>(path: PathBuf) -> Option<T>
+fn read_from_cache<T>(path: &PathBuf) -> Option<T>
 where
     T: for<'de> Deserialize<'de>,
 {
-    spawn_tokio_blocking(move || std::fs::read_to_string(path))
-        .await
+    std::fs::read_to_string(path)
         .ok()
         .and_then(|contents| serde_json::from_str(&contents).ok())
 }
 
-async fn write_to_cache<T>(path: PathBuf, data: &T) -> Result<()>
+fn write_to_cache<T>(path: &PathBuf, data: &T) -> Result<()>
 where
     T: Serialize,
 {
     let serialized = serde_json::to_string(data)?;
-    spawn_tokio_blocking(move || std::fs::write(path, serialized)).await?;
+    std::fs::write(path, serialized)?;
     Ok(())
 }
 
