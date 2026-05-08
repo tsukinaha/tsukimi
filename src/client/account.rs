@@ -5,7 +5,7 @@ use serde::{
 
 use crate::ui::provider::descriptor::VecSerialize;
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Default)]
 pub struct Account {
     pub servername: String,
     pub server: String,

@@ -149,8 +149,8 @@ impl AccountWindow {
 
         let server = format!("{protocol}{server}");
 
-        let _ = JELLYFIN_CLIENT.header_change_url(&server, &port).await;
-        let _ = JELLYFIN_CLIENT.header_change_token(&servername).await;
+        let _ = JELLYFIN_CLIENT.header_change_url(&server, &port);
+        let _ = JELLYFIN_CLIENT.header_change_token(&servername);
         let un = username.to_string();
         let pw = password.to_string();
         let res =
@@ -188,8 +188,8 @@ impl AccountWindow {
         };
 
         let account = Account {
-            servername: servername.to_string(),
-            server: server.to_string(),
+            servername: servername,
+            server: server,
             username: un,
             password: pw,
             port: port.to_string(),
