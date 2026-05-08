@@ -854,7 +854,7 @@ impl ItemPage {
         };
 
         let season_list = match fetch_with_cache(
-            &format!("season_{}", &id),
+            &format!("season_{}", id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_season_list(&id).await },
             None::<fn(_)>,
@@ -898,7 +898,7 @@ impl ItemPage {
         let id = id.to_string();
 
         let item = match fetch_with_cache(
-            &format!("item_{}", &id),
+            &format!("item_{}", id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_item_info(&id).await },
             None::<fn(_)>,

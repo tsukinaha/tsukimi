@@ -188,8 +188,8 @@ impl AccountWindow {
         };
 
         let account = Account {
-            servername: servername,
-            server: server,
+            servername,
+            server,
             username: un,
             password: pw,
             port: port.to_string(),

@@ -96,7 +96,7 @@ impl DiscBox {
         let disc_label = self.imp().disc_label.get();
         let view_type = self.view_type();
         if view_type == SongWidgetView::MusicAlbumItem {
-            disc_label.set_text(&format!("{} {}", &gettext("Disc"), disc));
+            disc_label.set_text(&format!("{} {}", gettext("Disc"), disc));
         } else {
             disc_label.set_visible(false);
         }

@@ -417,7 +417,7 @@ impl TuItem {
         let id = self.id();
 
         let songs = match fetch_with_cache(
-            &format!("audio_{}", &id),
+            &format!("audio_{}", id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_songs(&id).await },
             None::<fn(_)>,
