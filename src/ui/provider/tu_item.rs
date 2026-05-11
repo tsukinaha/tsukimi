@@ -699,7 +699,8 @@ impl TuItem {
         }
 
         match self.item_type().as_str() {
-            TV_CHANNEL | COLLECTION_FOLDER | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | SEASON | BOX_SET | MUSIC_ALBUM => Some(name),
+            TV_CHANNEL | COLLECTION_FOLDER | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER
+            | GUEST_STAR | SEASON | BOX_SET | MUSIC_ALBUM => Some(name),
             EPISODE if self.series_name().is_some() => Some(self.fmt_subtitle()),
             MOVIE if self.is_resume() => Some(self.fmt_title()),
             _ => None,

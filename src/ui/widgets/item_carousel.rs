@@ -7,7 +7,7 @@ use gtk::{
 pub mod imp {
     use std::cell::Cell;
 
-use adw::subclass::prelude::*;
+    use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{
         CompositeTemplate,
@@ -16,7 +16,6 @@ use adw::subclass::prelude::*;
         graphene,
         prelude::*,
     };
-    
 
     use super::CUBIC_POINTS;
 
