@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="MenuInfo" parent="AdwBin">
+    <property name="child">
+      <object class="GtkBox" id="box">
+        <property name="orientation">vertical</property>
+        <property name="spacing">8</property>
+        <child>
+          <object class="GtkLabel" id="title">
+            <property name="label" bind-source="MenuInfo" bind-property="title" bind-flags="sync-create"/>
+            <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="margin-top">6</property>
+            <property name="margin-start">12</property>
+            <property name="margin-end">12</property>
+            <style>
+              <class name="title-4" />
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="subtitle">
+            <property name="label" bind-source="MenuInfo" bind-property="subtitle" bind-flags="sync-create"/>
+            <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="margin-start">12</property>
+            <property name="margin-end">12</property>
+            <style>
+              <class name="subtitle-1" />
+              <class name="dimmed" />
+            </style>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

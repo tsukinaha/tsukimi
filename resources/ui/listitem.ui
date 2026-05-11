@@ -6,40 +6,14 @@
         <property name="orientation">vertical</property>
         <property name="spacing">8</property>
         <property name="valign">start</property>
+        <property name="overflow">visible</property>
         <child>
           <object class="GtkOverlay" id="overlay">
             <property name="valign">fill</property>
             <property name="width-request">100</property>
             <property name="height-request">100</property>
             <property name="halign">center</property>
-            <child type="overlay">
-              <object class="AdwBin">
-                <child>
-                  <object class="GtkButton">
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="width-request">50</property>
-                    <property name="height-request">50</property>
-                    <property name="visible" bind-source="TuListItem" bind-property="can-direct-play" bind-flags="sync-create"/>
-                    <signal name="clicked" handler="on_play_clicked" swapped="yes"/>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="icon-name">media-playback-start-symbolic</property>
-                        <property name="icon-size">2</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="circular"/>
-                      <class name="tulistitempic-button"/>
-                      <class name="suggested-action"/>
-                    </style>
-                  </object>
-                </child>
-                <style>
-                  <class name="tulistitem-pic"/>
-                </style>
-              </object>
-            </child>
+            <property name="overflow">visible</property>
             <child type="overlay">
               <object class="GtkBox" id="overlay_button_box">
                 <property name="orientation">horizontal</property>
@@ -56,22 +30,11 @@
           <object class="GtkLabel" id="listlabel">
             <property name="justify">center</property>
             <property name="ellipsize">middle</property>
+            <property name="visible">false</property>
             <attributes>
               <attribute name="scale" value="0.9"/>
               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
             </attributes>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label2">
-            <property name="justify">center</property>
-            <property name="ellipsize">middle</property>
-            <attributes>
-              <attribute name="scale" value="0.8"/>
-            </attributes>
-            <style>
-              <class name="dimmed"/>
-            </style>
           </object>
         </child>
         <style>

@@ -22,7 +22,6 @@ use super::{
         TuItemProgressbarAnimationPrelude,
     },
     utils::{
-        GlobalToast,
         TU_ITEM_POST_SIZE,
         TU_ITEM_SQUARE_SIZE,
         TU_ITEM_VIDEO_SIZE,
@@ -76,13 +75,7 @@ pub mod imp {
         pub item: RefCell<TuItem>,
         #[property(get, set, builder(PosterType::default()))]
         pub poster_type: Cell<PosterType>,
-        #[property(get, set, default = false)]
-        pub can_direct_play: Cell<bool>,
         pub popover: RefCell<Option<PopoverMenu>>,
-        #[template_child]
-        pub listlabel: TemplateChild<gtk::Label>,
-        #[template_child]
-        pub label2: TemplateChild<gtk::Label>,
         #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
         #[template_child]
@@ -187,35 +180,6 @@ impl TuListItem {
         Object::new()
     }
 
-    #[template_callback]
-    async fn on_play_clicked(&self) {
-        let item = self.item();
-        let item_type = item.item_type();
-        match item_type.as_str() {
-            "TvChannel" => {
-                item.play_tvchannel(self);
-            }
-            "Audio" => {
-                item.play_single_audio(self);
-            }
-            "Video" | "MusicVideo" | "AdultVideo" | "Movie" | "Episode" => {
-                self.toast(gettext("Waiting for mediasource ..."));
-                item.play_video(self).await;
-            }
-            "Series" => {
-                self.toast(gettext("Waiting for mediasource ..."));
-                item.play_series(self).await;
-            }
-            "MusicAlbum" | "Playlist" => {
-                self.toast(gettext("Waiting for mediasource ..."));
-                item.play_album(self).await;
-            }
-            _ => {
-                self.toast(gettext("Not implemented"));
-            }
-        }
-    }
-
     pub fn set_up(&self) {
         // FIXME: This shit function should be refactored
         let imp = self.imp();
@@ -223,18 +187,8 @@ impl TuListItem {
         let item_type = item.item_type();
         match item_type.as_str() {
             "Movie" => {
-                imp.listlabel.set_text(&item.name());
-                let year = if item.production_year() != 0 {
-                    item.production_year().to_string()
-                } else {
-                    imp.label2.set_visible(false);
-                    String::default()
-                };
-                imp.label2.set_text(&year);
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
-                self.set_rating();
-                self.set_can_direct_play(true);
                 self.set_picture();
                 self.set_played();
                 if item.is_resume() {
@@ -242,200 +196,86 @@ impl TuListItem {
                 }
             }
             "Video" | "MusicVideo" | "AdultVideo" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
                 imp.overlay
                     .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
-                self.set_rating();
-                self.set_can_direct_play(true);
                 self.set_picture();
             }
             "TvChannel" => {
-                imp.listlabel.set_text(&format!(
-                    "{} - {}",
-                    item.name(),
-                    item.program_name().unwrap_or_default()
-                ));
                 imp.overlay
                     .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
-                self.set_rating();
-                self.set_can_direct_play(true);
                 self.set_picture();
 
-                let Some(program_start_time) = item.program_start_time() else {
-                    return;
-                };
-
-                let program_start_time = program_start_time.to_local().unwrap();
-
-                let Some(program_end_time) = item.program_end_time() else {
-                    return;
-                };
-
-                let program_end_time = program_end_time.to_local().unwrap();
-
-                let now = glib::DateTime::now_local().unwrap();
-
-                let progress = (now.to_unix() - program_start_time.to_unix()) as f64
-                    / (program_end_time.to_unix() - program_start_time.to_unix()) as f64;
-
-                self.set_progress(progress * 100.0);
-                imp.label2.set_text(&format!(
-                    "{} - {}",
-                    program_start_time.format("%H:%M").unwrap(),
-                    program_end_time.format("%H:%M").unwrap()
-                ));
+                let (progress, _) = item
+                    .fmt_tv_progress_and_start_end_time();
+                self.set_progress(progress);
             }
             "CollectionFolder" | "UserView" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
                 imp.overlay
                     .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
-                self.set_rating();
                 self.set_animated_picture();
             }
             "Series" => {
-                let year = if item.production_year() != 0 {
-                    item.production_year().to_string()
-                } else {
-                    String::from("")
-                };
-                imp.listlabel.set_text(&item.name());
-                let fmt_year = if let Some(status) = item.status() {
-                    if status == "Continuing" {
-                        format!("{} - {}", year, gettext("Present"))
-                    } else if status == "Ended" {
-                        if let Some(end_date) = item.end_date() {
-                            let end_year = end_date.year();
-                            if end_year != year.parse::<i32>().unwrap_or_default() {
-                                format!("{} - {}", year, end_date.year())
-                            } else {
-                                format!("{end_year}")
-                            }
-                        } else {
-                            format!("{year} - Unknown")
-                        }
-                    } else {
-                        year
-                    }
-                } else {
-                    year
-                };
-                imp.label2.set_text(&fmt_year);
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
-                self.set_can_direct_play(true);
-                self.set_rating();
                 self.set_picture();
-                self.set_count();
                 self.set_played();
             }
             "BoxSet" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
-                self.set_rating();
                 self.set_picture();
             }
             "Tag" | "Genre" | "MusicGenre" => {
                 imp.overlay
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                self.set_rating();
                 self.set_picture();
             }
             "Episode" => {
-                if let Some(series_name) = item.series_name() {
-                    imp.listlabel.set_text(&series_name);
-                    imp.label2.set_text(&format!(
-                        "S{}E{}: {}",
-                        item.parent_index_number(),
-                        item.index_number(),
-                        item.name()
-                    ));
-                } else {
-                    imp.listlabel.set_text(&item.name());
-                    imp.label2.set_visible(false);
-                }
                 imp.overlay
                     .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
-                self.set_can_direct_play(true);
-                self.set_rating();
                 self.set_picture();
                 self.set_played();
                 self.set_progress(item.played_percentage());
             }
             "Views" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                self.set_rating();
                 self.set_picture();
             }
             "MusicAlbum" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_text(&item.albumartist_name());
                 imp.overlay
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
-                self.set_rating();
-                self.set_can_direct_play(true);
                 self.set_picture();
             }
             "Actor" | "Person" | "Director" | "Writer" | "Producer" | "GuestStar" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_text(&item.role().unwrap_or("".to_string()));
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
-                self.set_rating();
                 self.set_picture();
             }
             "MusicArtist" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_text(&item.role().unwrap_or("".to_string()));
                 imp.overlay
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
-                self.set_rating();
                 self.set_picture();
             }
             "Audio" | "Playlist" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
                 imp.overlay
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
-                self.set_can_direct_play(true);
-                self.set_rating();
                 self.set_picture();
             }
             "Folder" => {
                 imp.overlay
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                self.set_rating();
                 self.set_picture();
                 self.set_folder();
             }
             "Season" => {
-                imp.listlabel.set_text(&item.name());
-                let premiere_date = item
-                    .premiere_date()
-                    .and_then(|premiere_date| premiere_date.format("%Y-%m-%d").ok())
-                    .unwrap_or_default();
-                imp.label2.set_text(&premiere_date);
+
                 imp.overlay
                     .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
-                self.set_rating();
                 self.set_picture();
-                self.set_count();
                 self.set_played();
             }
             _ => {
                 imp.overlay
                     .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                self.set_rating();
                 self.set_picture();
                 warn!("Unknown item type: {}", item_type)
             }

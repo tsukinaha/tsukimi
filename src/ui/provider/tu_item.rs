@@ -11,6 +11,37 @@ use gtk::{
     },
 };
 
+pub mod item_type {
+    pub const MOVIE: &str = "Movie";
+    pub const VIDEO: &str = "Video";
+    pub const MUSIC_VIDEO: &str = "MusicVideo";
+    pub const ADULT_VIDEO: &str = "AdultVideo";
+    pub const TV_CHANNEL: &str = "TvChannel";
+    pub const COLLECTION_FOLDER: &str = "CollectionFolder";
+    pub const USER_VIEW: &str = "UserView";
+    pub const SERIES: &str = "Series";
+    pub const BOX_SET: &str = "BoxSet";
+    pub const TAG: &str = "Tag";
+    pub const GENRE: &str = "Genre";
+    pub const MUSIC_GENRE: &str = "MusicGenre";
+    pub const EPISODE: &str = "Episode";
+    pub const VIEWS: &str = "Views";
+    pub const MUSIC_ALBUM: &str = "MusicAlbum";
+    pub const ACTOR: &str = "Actor";
+    pub const PERSON: &str = "Person";
+    pub const DIRECTOR: &str = "Director";
+    pub const WRITER: &str = "Writer";
+    pub const PRODUCER: &str = "Producer";
+    pub const GUEST_STAR: &str = "GuestStar";
+    pub const MUSIC_ARTIST: &str = "MusicArtist";
+    pub const AUDIO: &str = "Audio";
+    pub const PLAYLIST: &str = "Playlist";
+    pub const FOLDER: &str = "Folder";
+    pub const SEASON: &str = "Season";
+}
+
+pub use item_type::*;
+
 use crate::{
     bing_song_model,
     client::{
@@ -23,7 +54,14 @@ use crate::{
     },
     ui::{
         GlobalToast,
-        provider::core_song::CoreSong,
+        provider::{
+            core_song::CoreSong,
+            tu_item::item_type::{
+                EPISODE,
+                SERIES,
+                TV_CHANNEL,
+            },
+        },
         widgets::{
             hortu_scrolled::UnifySize,
             item::ItemPage,
@@ -496,6 +534,125 @@ impl TuItem {
                 .collect(),
         )
         .await;
+    }
+
+    pub fn fmt_period(&self) -> String {
+        // '2022' '2022 - 2023' '2022 - Present' '2022 - Unknown'
+        let production_year = self.production_year();
+
+        if production_year == 0 {
+            return String::new();
+        }
+
+        let Some(status) = self.status() else {
+            return production_year.to_string();
+        };
+
+        if status.as_str() == "Continuing" {
+            return format!("{production_year} - {}", gettext("Present"));
+        }
+
+        if status.as_str() != "Ended" {
+            return production_year.to_string();
+        }
+
+        let Some(end_date) = self.end_date() else {
+            return format!("{production_year} - {}", gettext("Unknown"));
+        };
+
+        let end_year = end_date.year();
+
+        if end_year != production_year as i32 {
+            format!("{production_year} - {end_year}")
+        } else {
+            format!("{end_year}")
+        }
+    }
+
+    pub fn fmt_production_year(&self) -> String {
+        let production_year = self.production_year();
+
+        if production_year != 0 {
+            production_year.to_string()
+        } else {
+            gettext("Unknown")
+        }
+    }
+
+    pub fn fmt_tv_name(&self) -> String {
+        let Some(program_name) = self.program_name() else {
+            return self.name();
+        };
+
+        format!("{} - {program_name})", self.name())
+    }
+
+    pub fn fmt_episode_detail(&self) -> String {
+        format!(
+            "S{}E{}: {}",
+            self.parent_index_number(),
+            self.index_number(),
+            self.name()
+        )
+    }
+
+    pub fn fmt_tv_progress_and_start_end_time(&self) -> (f64, String) {
+        fn default() -> (f64, String) {
+            (0.0, gettext("Unknown").to_string())
+        }
+
+        let Some(Ok(program_start_time)) = self.program_start_time().map(|t| t.to_local()) else {
+            return default();
+        };
+
+        let Some(Ok(program_end_time)) = self.program_end_time().map(|t| t.to_local()) else {
+            return default();
+        };
+
+        let Ok(now) = glib::DateTime::now_local() else {
+            return default();
+        };
+
+        let progress = ((now.to_unix() - program_start_time.to_unix()) as f64
+            / (program_end_time.to_unix() - program_start_time.to_unix()) as f64)
+            * 100.0;
+
+        let start_end_time = format!(
+            "{} - {}",
+            program_start_time
+                .format("%H:%M")
+                .unwrap_or_else(|_| gettext("Unknown").into()),
+            program_end_time
+                .format("%H:%M")
+                .unwrap_or_else(|_| gettext("Unknown").into())
+        );
+
+        (progress, start_end_time)
+    }
+
+    pub fn fmt_season_premiere_date(&self) -> String {
+        self.premiere_date()
+            .and_then(|premiere_date| premiere_date.format("%Y-%m-%d").ok())
+            .unwrap_or_default().into()
+    }
+
+    pub fn fmt_title(&self) -> String {
+        match self.item_type().as_str() {
+            TV_CHANNEL => self.fmt_tv_name(),
+            EPISODE if let Some(series_name) = self.series_name() => series_name,
+            _ => self.name(),
+        }
+    }
+
+    pub fn fmt_subtitle(&self) -> String {
+        match self.item_type().as_str() {
+            TV_CHANNEL => self.fmt_tv_progress_and_start_end_time().1,
+            MOVIE => self.fmt_production_year(),
+            EPISODE if self.series_name().is_some() => self.fmt_episode_detail(),
+            SEASON => self.fmt_season_premiere_date(),
+            SERIES => self.fmt_period(),
+            _ => String::new(),
+        }
     }
 }
 

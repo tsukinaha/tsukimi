@@ -48,6 +48,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/account.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/listitem.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/pop-menu.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/right_menu_info.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/dropdown.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/account_settings.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/album_widget.ui</file>

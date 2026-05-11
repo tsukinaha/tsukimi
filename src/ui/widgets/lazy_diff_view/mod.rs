@@ -77,25 +77,27 @@ mod imp {
     use super::*;
 
     pub struct LazyDiffView {
-        pub(super) scroll: RefCell<Option<ScrolledWindow>>,
-        pub(super) viewport: RefCell<Option<VirtualViewport>>,
         pub(super) items: RefCell<Vec<RowData>>,
         pub(super) rows: RefCell<HashMap<String, Rc<VirtualRow>>>,
         pub(super) removing_rows: RefCell<Vec<Rc<VirtualRow>>>,
         pub(super) recycled_rows: RefCell<Vec<Rc<VirtualRow>>>,
         pub(super) visible_anchor: Cell<VisibleAnchor>,
         pub(super) pending_items: RefCell<Option<Vec<RowData>>>,
-        pub(super) is_animating: Cell<bool>,
-        pub(super) item_extent: Cell<i32>,
-        pub(super) item_cross_extent: Cell<i32>,
-        pub(super) spacing: Cell<i32>,
-        pub(super) item_extent_measured: Cell<bool>,
-        pub(super) allocated_width: Cell<i32>,
-        pub(super) allocated_height: Cell<i32>,
-        pub(super) orientation: Cell<Orientation>,
-        pub(super) key_factory: RefCell<Option<KeyFactory>>,
-        pub(super) widget_factory: RefCell<Option<WidgetFactory>>,
-        pub(super) widget_binder: RefCell<Option<WidgetBinder>>,
+
+        pub scroll: RefCell<Option<ScrolledWindow>>,
+        pub viewport: RefCell<Option<VirtualViewport>>,
+
+        pub is_animating: Cell<bool>,
+        pub item_extent: Cell<i32>,
+        pub item_cross_extent: Cell<i32>,
+        pub spacing: Cell<i32>,
+        pub item_extent_measured: Cell<bool>,
+        pub allocated_width: Cell<i32>,
+        pub allocated_height: Cell<i32>,
+        pub orientation: Cell<Orientation>,
+        pub key_factory: RefCell<Option<KeyFactory>>,
+        pub widget_factory: RefCell<Option<WidgetFactory>>,
+        pub widget_binder: RefCell<Option<WidgetBinder>>,
     }
 
     impl Default for LazyDiffView {

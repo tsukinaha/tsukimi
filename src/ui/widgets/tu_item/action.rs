@@ -7,6 +7,7 @@ use crate::{
     ui::{
         provider::IS_ADMIN,
         widgets::{
+            menu_info::MenuInfo,
             missing_episodes_dialog::MissingEpisodesDialog,
             window::Window,
         },
@@ -146,6 +147,12 @@ where
                     .halign(gtk::Align::Start)
                     .has_arrow(false)
                     .build();
+
+                let menu_info = MenuInfo::new();
+                menu_info.set_title(self.item().fmt_title());
+                menu_info.set_subtitle(self.item().fmt_subtitle());
+                new_popover.add_child(&menu_info, "menu-info");
+
                 if let Some(popover) = self.popover().borrow_mut().take() {
                     popover.unparent();
                 }

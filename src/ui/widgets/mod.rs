@@ -13,6 +13,7 @@ pub mod fix;
 pub mod home;
 pub mod horbu_scrolled;
 pub mod hortu_scrolled;
+pub mod hover_scale;
 pub mod identify;
 pub mod image_dialog;
 pub mod image_paintable;
@@ -27,6 +28,7 @@ pub mod list_dropdown;
 pub mod listexpand_row;
 pub mod logo;
 pub mod media_viewer;
+pub mod menu_info;
 pub mod metadata_dialog;
 pub mod missing_episodes_dialog;
 pub mod music_album;
@@ -56,4 +58,5 @@ pub use utils::GlobalToast;
 
 pub fn init() {
     lazy_diff_view::LazyDiffView::ensure_type();
+    menu_info::MenuInfo::ensure_type();
 }

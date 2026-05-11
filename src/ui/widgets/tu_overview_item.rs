@@ -273,7 +273,6 @@ impl TuOverviewItem {
                 if let Some(tagline) = item.tagline() {
                     imp.time_label.set_text(&tagline);
                 }
-                self.set_count();
             }
         }
         self.set_picture();

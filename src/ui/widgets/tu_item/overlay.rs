@@ -1,3 +1,4 @@
+use adw::prelude::BinExt;
 use gtk::prelude::*;
 
 use crate::ui::{
@@ -6,6 +7,7 @@ use crate::ui::{
         TuItem,
     },
     widgets::{
+        hover_scale::HoverScale,
         picture_loader::PictureLoader,
         tu_list_item::imp::PosterType,
         utils::*,
@@ -102,11 +104,7 @@ pub trait TuItemOverlay: TuItemBasic + TuItemOverlayPrelude {
 
     fn set_played(&self);
 
-    fn set_count(&self);
-
     fn set_folder(&self);
-
-    fn set_rating(&self);
 }
 
 impl<T> TuItemOverlay for T
@@ -117,14 +115,18 @@ where
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
         let picture_loader = PictureLoader::new(&id, image_type, tag);
-        self.overlay().set_child(Some(&picture_loader));
+        let hover_scale = HoverScale::new();
+        hover_scale.set_child(Some(&picture_loader));
+        self.overlay().set_child(Some(&hover_scale));
     }
 
     fn set_animated_picture(&self) {
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
         let picture_loader = PictureLoader::new_animated(&id, image_type, tag);
-        self.overlay().set_child(Some(&picture_loader));
+        let hover_scale = HoverScale::new();
+        hover_scale.set_child(Some(&picture_loader));
+        self.overlay().set_child(Some(&hover_scale));
     }
 
     fn set_played(&self) {
@@ -140,39 +142,6 @@ where
             mark.add_css_class("accent");
             mark.add_css_class("played-mark");
             self.overlay_button_box().append(&mark);
-        }
-    }
-
-    fn set_count(&self) {
-        let item = self.item();
-        let count = item.unplayed_item_count();
-        if count > 0 {
-            let mark = gtk::Button::builder()
-                .label(count.to_string())
-                .halign(gtk::Align::End)
-                .valign(gtk::Align::Start)
-                .build();
-            mark.add_css_class("pill");
-            mark.add_css_class("small");
-            mark.add_css_class("suggested-action");
-            mark.add_css_class("count");
-            self.overlay_button_box().append(&mark);
-        }
-    }
-
-    fn set_rating(&self) {
-        let item = self.item();
-        if let Some(rating) = item.rating() {
-            let rating = gtk::Button::builder()
-                .label(rating.to_string())
-                .halign(gtk::Align::Start)
-                .valign(gtk::Align::Start)
-                .build();
-            rating.add_css_class("pill");
-            rating.add_css_class("small");
-            rating.add_css_class("suggested-action");
-            rating.add_css_class("rating");
-            self.overlay_button_box().append(&rating);
         }
     }
 
