@@ -342,10 +342,9 @@ impl TuListItem {
 
         self.set_tooltip_text(Some(&item.name()));
 
-        let name = item.name();
-        if item.need_title() && !name.is_empty() {
+        if let Some(title) = item.list_item_title() {
+            imp.title.set_text(&title);
             imp.title.set_visible(true);
-            imp.title.set_label(&name);
         }
     }
 }

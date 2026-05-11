@@ -691,8 +691,19 @@ impl TuItem {
         }
     }
 
-    pub fn need_title(&self) -> bool {
-        matches!(self.item_type().as_str(), TV_CHANNEL | COLLECTION_FOLDER | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | SEASON | BOX_SET | MUSIC_ALBUM)
+    pub fn list_item_title(&self) -> Option<String> {
+        let name = self.name();
+
+        if name.is_empty() {
+            return None;
+        }
+
+        match self.item_type().as_str() {
+            TV_CHANNEL | COLLECTION_FOLDER | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | SEASON | BOX_SET | MUSIC_ALBUM => Some(name),
+            EPISODE if self.series_name().is_some() => Some(self.fmt_subtitle()),
+            MOVIE if self.is_resume() => Some(self.fmt_title()),
+            _ => None,
+        }
     }
 
     pub fn need_animated_picture(&self) -> bool {
