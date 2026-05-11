@@ -5,7 +5,9 @@ use gtk::{
 };
 
 pub mod imp {
-    use adw::subclass::prelude::*;
+    use std::cell::Cell;
+
+use adw::subclass::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{
         CompositeTemplate,
@@ -14,20 +16,9 @@ pub mod imp {
         graphene,
         prelude::*,
     };
-    use once_cell::sync::Lazy;
+    
 
     use super::CUBIC_POINTS;
-
-    static MASK: Lazy<gdk::RGBA> = Lazy::new(|| {
-        if gtk::Settings::default()
-            .map(|s| s.is_gtk_application_prefer_dark_theme())
-            .unwrap_or(false)
-        {
-            gdk::RGBA::new(0.0, 0.0, 0.0, 0.4)
-        } else {
-            gdk::RGBA::new(1.0, 1.0, 1.0, 0.2)
-        }
-    });
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -39,6 +30,8 @@ pub mod imp {
         pub carousel: TemplateChild<adw::Carousel>,
         #[template_child]
         pub backrevealer: TemplateChild<gtk::Revealer>,
+
+        pub is_dark: Cell<bool>,
     }
 
     #[glib::object_subclass]
@@ -59,6 +52,17 @@ pub mod imp {
     impl ObjectImpl for ItemCarousel {
         fn constructed(&self) {
             self.parent_constructed();
+
+            let style_manager = adw::StyleManager::default();
+            self.is_dark.set(style_manager.is_dark());
+
+            let obj = self.obj().downgrade();
+            style_manager.connect_dark_notify(move |sm| {
+                if let Some(obj) = obj.upgrade() {
+                    obj.imp().is_dark.set(sm.is_dark());
+                    obj.queue_draw();
+                }
+            });
         }
     }
 
@@ -106,7 +110,13 @@ pub mod imp {
             self.parent_snapshot(snapshot);
             snapshot.pop();
 
-            snapshot.append_color(&MASK, &graphene::Rect::new(0.0, upper_height, width, 300.0));
+            let mask = if self.is_dark.get() {
+                gdk::RGBA::new(0.0, 0.0, 0.0, 0.4)
+            } else {
+                gdk::RGBA::new(1.0, 1.0, 1.0, 0.2)
+            };
+
+            snapshot.append_color(&mask, &graphene::Rect::new(0.0, upper_height, width, 300.0));
 
             snapshot.pop();
             snapshot.restore();

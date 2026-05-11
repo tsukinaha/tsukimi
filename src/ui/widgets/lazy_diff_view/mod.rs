@@ -632,10 +632,9 @@ impl LazyDiffView {
             .recycled_rows
             .borrow_mut()
             .pop()
-            .map(|row| {
+            .inspect(|row| {
                 row.reset_for_reuse();
                 row.bind_item(row_data.item.clone());
-                row
             })
             .unwrap_or_else(|| {
                 VirtualRow::new(
@@ -1058,11 +1057,8 @@ fn active_indices(items: &[RowData], active_keys: &HashSet<String>) -> HashMap<S
     items
         .iter()
         .enumerate()
-        .filter_map(|(index, row)| {
-            active_keys
-                .contains(&row.key)
-                .then(|| (row.key.clone(), index))
-        })
+        .filter(|&(_index, row)| active_keys
+                .contains(&row.key)).map(|(index, row)| (row.key.clone(), index))
         .collect()
 }
 

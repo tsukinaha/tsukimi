@@ -11,6 +11,7 @@ use gtk::{
     },
 };
 
+#[allow(dead_code)] //FIXME: refactor with this
 pub mod item_type {
     pub const MOVIE: &str = "Movie";
     pub const VIDEO: &str = "Video";
@@ -73,6 +74,7 @@ use crate::{
                 imp::ListType,
             },
             song_widget::SongWidget,
+            utils::*,
             window::Window,
         },
     },
@@ -633,7 +635,8 @@ impl TuItem {
     pub fn fmt_season_premiere_date(&self) -> String {
         self.premiere_date()
             .and_then(|premiere_date| premiere_date.format("%Y-%m-%d").ok())
-            .unwrap_or_default().into()
+            .unwrap_or_default()
+            .into()
     }
 
     pub fn fmt_title(&self) -> String {
@@ -653,6 +656,47 @@ impl TuItem {
             SERIES => self.fmt_period(),
             _ => String::new(),
         }
+    }
+
+    pub fn fmt_percentage(&self) -> Option<f64> {
+        match self.item_type().as_str() {
+            TV_CHANNEL => Some(self.fmt_tv_progress_and_start_end_time().0),
+            MOVIE if self.is_resume() => Some(self.played_percentage()),
+            EPISODE => Some(self.played_percentage()),
+            _ => None,
+        }
+    }
+
+    pub fn has_played_mark(&self) -> bool {
+        matches!(self.item_type().as_str(), MOVIE | SERIES | EPISODE | SEASON)
+    }
+
+    pub fn has_folder_mark(&self) -> bool {
+        matches!(self.item_type().as_str(), FOLDER)
+    }
+
+    pub fn size_hint(&self) -> (i32, i32) {
+        match self.prefer_size() {
+            PreferSize::Video => return TU_ITEM_VIDEO_SIZE,
+            PreferSize::Post => return TU_ITEM_POST_SIZE,
+            _ => (),
+        }
+
+        match self.item_type().as_str() {
+            MOVIE | SERIES | BOX_SET | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER
+            | GUEST_STAR | SEASON => TU_ITEM_POST_SIZE,
+            VIDEO | MUSIC_VIDEO | ADULT_VIDEO | TV_CHANNEL | COLLECTION_FOLDER | EPISODE
+            | USER_VIEW => TU_ITEM_VIDEO_SIZE,
+            _ => TU_ITEM_SQUARE_SIZE,
+        }
+    }
+
+    pub fn need_title(&self) -> bool {
+        matches!(self.item_type().as_str(), TV_CHANNEL | COLLECTION_FOLDER | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | SEASON | BOX_SET | MUSIC_ALBUM)
+    }
+
+    pub fn need_animated_picture(&self) -> bool {
+        matches!(self.item_type().as_str(), VIEWS)
     }
 }
 

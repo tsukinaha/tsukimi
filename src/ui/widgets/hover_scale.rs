@@ -7,7 +7,7 @@ use gtk::{
     graphene,
 };
 
-const MAX_SCALE: f32 = 1.08;
+pub const MAX_SCALE: f32 = 1.08;
 const ANIMATION_DURATION: u32 = 250;
 
 mod imp {
@@ -45,8 +45,7 @@ mod imp {
                 }
             ));
 
-            let animation =
-                adw::TimedAnimation::new(&*obj, 0.0, 1.0, ANIMATION_DURATION, target);
+            let animation = adw::TimedAnimation::new(&*obj, 0.0, 1.0, ANIMATION_DURATION, target);
             animation.set_easing(adw::Easing::EaseOutCubic);
             _ = self.animation.set(animation);
 
@@ -121,6 +120,16 @@ glib::wrapper! {
 impl HoverScale {
     pub fn new() -> Self {
         glib::Object::new()
+    }
+
+    /// Returns the current animation progress (0.0 = idle, 1.0 = fully hovered).
+    /// Used by parent widgets that need to replicate the same scale transform.
+    pub fn animation_progress(&self) -> f32 {
+        self.imp()
+            .animation
+            .get()
+            .map(|a| a.value() as f32)
+            .unwrap_or(0.0)
     }
 }
 

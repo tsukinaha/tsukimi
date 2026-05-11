@@ -59,4 +59,5 @@ pub use utils::GlobalToast;
 pub fn init() {
     lazy_diff_view::LazyDiffView::ensure_type();
     menu_info::MenuInfo::ensure_type();
+    hover_scale::HoverScale::ensure_type();
 }

@@ -275,7 +275,7 @@ impl TuOverviewItem {
                 }
             }
         }
-        self.set_picture();
+        self.set_picture_with_hover_scale();
         self.set_played();
         self.set_tooltip_text(Some(&item.name()));
     }

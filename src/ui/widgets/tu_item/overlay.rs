@@ -100,6 +100,8 @@ pub trait TuItemOverlayPrelude {
 pub trait TuItemOverlay: TuItemBasic + TuItemOverlayPrelude {
     fn set_picture(&self);
 
+    fn set_picture_with_hover_scale(&self);
+
     fn set_animated_picture(&self);
 
     fn set_played(&self);
@@ -115,6 +117,13 @@ where
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
         let picture_loader = PictureLoader::new(&id, image_type, tag);
+        self.overlay().set_child(Some(&picture_loader));
+    }
+
+    fn set_picture_with_hover_scale(&self) {
+        let item = self.item();
+        let (image_type, tag, id) = self.get_image_type_and_tag(&item);
+        let picture_loader = PictureLoader::new(&id, image_type, tag);
         let hover_scale = HoverScale::new();
         hover_scale.set_child(Some(&picture_loader));
         self.overlay().set_child(Some(&hover_scale));
@@ -124,9 +133,7 @@ where
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
         let picture_loader = PictureLoader::new_animated(&id, image_type, tag);
-        let hover_scale = HoverScale::new();
-        hover_scale.set_child(Some(&picture_loader));
-        self.overlay().set_child(Some(&hover_scale));
+        self.overlay().set_child(Some(&picture_loader));
     }
 
     fn set_played(&self) {
