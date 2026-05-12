@@ -85,7 +85,7 @@ where
     T: for<'de> Deserialize<'de> + Serialize + Send + 'static,
     F: Future<Output = Result<T>> + Send + 'static,
 {
-    let (tx, rx) = tokio::sync::mpsc::channel(4);
+    let (tx, rx) = tokio::sync::mpsc::channel(2);
     let mut path = jellyfin_cache_path().await;
     path.push(format!("{cache_key}.json"));
 
@@ -99,39 +99,19 @@ where
             | CachePolicy::RefreshCache
             | CachePolicy::ReadCacheAndRefresh
     );
-    let update_in_background = matches!(cache_policy, CachePolicy::ReadCacheAndRefresh);
-
-    if read_cache {
-        if let Some(data) = read_from_cache(&path) {
+    let cache_hit = read_cache
+        && read_from_cache(&path).is_some_and(|data| {
             let _ = tx.try_send(CacheEvent::Data {
                 source: CacheSource::Cache,
                 data,
             });
+            true
+        });
 
-            if update_in_background {
-                let path = path.to_owned();
-                runtime().spawn(async move {
-                    match future.await {
-                        Ok(data) => {
-                            if let Err(e) = write_to_cache(&path, &data) {
-                                let _ = tx.send(CacheEvent::Error(e)).await;
-                                return;
-                            }
-                            let _ = tx
-                                .send(CacheEvent::Data {
-                                    source: CacheSource::Network,
-                                    data,
-                                })
-                                .await;
-                        }
-                        Err(e) => {
-                            let _ = tx.send(CacheEvent::Error(e)).await;
-                        }
-                    }
-                });
-            }
-            return rx;
-        }
+    let fetch_network = !cache_hit || matches!(cache_policy, CachePolicy::ReadCacheAndRefresh);
+
+    if !fetch_network {
+        return rx;
     }
 
     runtime().spawn(async move {
