@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <interface>
   <template parent="AdwBin" class="TuListItem">
+    <property name="halign">center</property>
     <child>
-      <object class="HoverScale">
+      <object class="HoverScale" id="hover_scale">
         <child>
             <object class="GtkBox">
             <property name="orientation">vertical</property>
@@ -11,21 +12,53 @@
             <property name="overflow">visible</property>
             <child>
                 <object class="GtkOverlay" id="overlay">
-                <property name="valign">fill</property>
-                <property name="width-request">100</property>
-                <property name="height-request">100</property>
-                <property name="halign">center</property>
-                <property name="overflow">visible</property>
-                <child type="overlay">
-                    <object class="GtkBox" id="overlay_button_box">
-                    <property name="orientation">horizontal</property>
-                    <property name="spacing">12</property>
-                    <property name="halign">end</property>
-                    <property name="valign">start</property>
-                    <property name="margin-end">8</property>
-                    <property name="margin-top">8</property>
-                    </object>
-                </child>
+                    <property name="valign">fill</property>
+                    <property name="width-request">100</property>
+                    <property name="height-request">100</property>
+                    <property name="halign">center</property>
+                    <property name="overflow">visible</property>
+                    <child type="overlay">
+                        <object class="GtkButton" id="played_mark">
+                            <property name="halign">end</property>
+                            <property name="valign">start</property>
+                            <property name="margin-end">8</property>
+                            <property name="margin-top">8</property>
+                            <property name="icon-name">checkmark-small-symbolic</property>
+                            <property name="visible">false</property>
+                            <style>
+                                <class name="circular" />
+                                <class name="osd" />
+                            </style>
+                        </object>
+                    </child>
+                    <child type="overlay">
+                        <object class="GtkButton" id="folder_mark">
+                            <property name="halign">end</property>
+                            <property name="valign">start</property>
+                            <property name="margin-end">8</property>
+                            <property name="margin-top">8</property>
+                            <property name="icon-name">folder-visiting-symbolic</property>
+                            <property name="visible">false</property>
+                            <style>
+                                <class name="circular" />
+                                <class name="osd" />
+                            </style>
+                        </object>
+                    </child>
+                    <child type="overlay">
+                        <object class="GtkButton" id="direct_play_button">
+                            <property name="halign">start</property>
+                            <property name="valign">end</property>
+                            <property name="margin-start">8</property>
+                            <property name="margin-bottom">8</property>
+                            <property name="icon-name">media-playback-start-symbolic</property>
+                            <property name="visible">false</property>
+                            <style>
+                                <class name="circular" />
+                                <class name="osd" />
+                            </style>
+                        </object>
+                    </child>
                 </object>
             </child>
             <child>

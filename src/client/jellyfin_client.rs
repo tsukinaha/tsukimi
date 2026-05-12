@@ -54,17 +54,14 @@ use super::{
     },
 };
 use crate::{
-    CLIENT_ID,
-    config::VERSION,
-    ui::{
+    CLIENT_ID, config::version, ui::{
         SETTINGS,
         jellyfin_cache_path,
         widgets::{
             filter_panel::FiltersList,
             single_grid::imp::ListType,
         },
-    },
-    utils::spawn_tokio_without_await,
+    }, utils::spawn_tokio_without_await
 };
 
 pub static JELLYFIN_CLIENT: Lazy<JellyfinClient> = Lazy::new(JellyfinClient::default);
@@ -114,7 +111,7 @@ impl Session {
                 CLIENT_ID,
                 &DEVICE_NAME,
                 &DEVICE_ID,
-                VERSION,
+                version(),
             ))
             .unwrap(),
         );
@@ -181,7 +178,7 @@ impl JellyfinClient {
                 CLIENT_ID,
                 &DEVICE_NAME,
                 &DEVICE_ID,
-                VERSION,
+                version(),
             ))?,
         );
 

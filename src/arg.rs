@@ -27,7 +27,7 @@ pub struct Args {
     #[clap(long, short = 'f')]
     log_file: Option<String>,
 
-    /// Log level. Possible values are: error, warn, info, debug, trace.    
+    /// Log level. Possible values are: error, warn, info, debug, trace.
     #[clap(long, short)]
     log_level: Option<String>,
 
@@ -159,7 +159,7 @@ impl Args {
 
         info!(
             "Application Version: {}, Platform: {} {}, CPU Architecture: {}",
-            crate::config::VERSION,
+            crate::config::version(),
             env::consts::OS,
             env::consts::FAMILY,
             env::consts::ARCH

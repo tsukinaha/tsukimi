@@ -674,10 +674,20 @@ impl TuItem {
     }
 
     pub fn has_played_mark(&self) -> bool {
-        match self.item_type().as_str() {
+        let may_has = match self.item_type().as_str() {
             SERIES | SEASON => true,
             MOVIE if !self.is_resume() => true,
             EPISODE if !self.is_resume() => true,
+            _ => false,
+        };
+
+        may_has && self.played()
+    }
+
+    pub fn has_direct_play_mark(&self) -> bool {
+        match self.item_type().as_str() {
+            MOVIE if self.is_resume() => true,
+            EPISODE if self.is_resume() => true,
             _ => false,
         }
     }
@@ -710,7 +720,7 @@ impl TuItem {
         }
 
         let title = match self.item_type().as_str() {
-            TV_CHANNEL | COLLECTION_FOLDER | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER
+            TV_CHANNEL | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER
             | GUEST_STAR | SEASON | BOX_SET | MUSIC_ALBUM => name,
             EPISODE if self.series_name().is_some() => self.fmt_subtitle(),
             MOVIE if self.is_resume() => self.fmt_title(),
@@ -721,7 +731,7 @@ impl TuItem {
     }
 
     pub fn need_animated_picture(&self) -> bool {
-        matches!(self.item_type().as_str(), VIEWS)
+        matches!(self.item_type().as_str(), COLLECTION_FOLDER)
     }
 }
 

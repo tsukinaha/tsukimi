@@ -55,6 +55,8 @@
             <child>
               <object class="GtkOverlay">
                 <property name="margin-top">6</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
                 <child>
                   <object class="LazyDiffView" id="diffview">
                     <property name="spacing">20</property>

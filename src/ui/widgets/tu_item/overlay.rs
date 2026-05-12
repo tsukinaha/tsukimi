@@ -92,8 +92,6 @@ pub trait TuItemOverlayPrelude {
 
     fn overlay(&self) -> gtk::Overlay;
 
-    fn overlay_button_box(&self) -> gtk::Box;
-
     fn poster_type_ext(&self) -> PosterType;
 }
 
@@ -103,10 +101,6 @@ pub trait TuItemOverlay: TuItemBasic + TuItemOverlayPrelude {
     fn set_picture_with_hover_scale(&self);
 
     fn set_animated_picture(&self);
-
-    fn set_played(&self);
-
-    fn set_folder(&self);
 }
 
 impl<T> TuItemOverlay for T
@@ -117,6 +111,7 @@ where
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
         let picture_loader = PictureLoader::new(&id, image_type, tag);
+        picture_loader.add_css_class("inbox");
         self.overlay().set_child(Some(&picture_loader));
     }
 
@@ -133,35 +128,7 @@ where
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
         let picture_loader = PictureLoader::new_animated(&id, image_type, tag);
+        picture_loader.add_css_class("inbox");
         self.overlay().set_child(Some(&picture_loader));
-    }
-
-    fn set_played(&self) {
-        let item = self.item();
-        if item.played() {
-            let mark = gtk::Button::builder()
-                .icon_name("checkmark-small-symbolic")
-                .halign(gtk::Align::End)
-                .valign(gtk::Align::Start)
-                .build();
-            mark.add_css_class("circular");
-            mark.add_css_class("small");
-            mark.add_css_class("accent");
-            mark.add_css_class("played-mark");
-            self.overlay_button_box().append(&mark);
-        }
-    }
-
-    fn set_folder(&self) {
-        let mark = gtk::Button::builder()
-            .icon_name("folder-symbolic")
-            .halign(gtk::Align::End)
-            .valign(gtk::Align::Start)
-            .build();
-        mark.add_css_class("pill");
-        mark.add_css_class("small");
-        mark.add_css_class("suggested-action");
-        mark.add_css_class("folder");
-        self.overlay_button_box().append(&mark);
     }
 }

@@ -11,14 +11,16 @@ use gtk::{
 use imp::PosterType;
 
 use super::tu_item::{
+    PROGRESSBAR_ANIMATION_DURATION,
     TuItemBasic,
     TuItemMenuPrelude,
     TuItemOverlay,
     TuItemOverlayPrelude,
-    TuItemProgressbarAnimation,
-    TuItemProgressbarAnimationPrelude,
 };
-use crate::ui::provider::tu_item::TuItem;
+use crate::{
+    ui::provider::tu_item::TuItem,
+    utils::spawn,
+};
 
 pub mod imp {
     use std::cell::{
@@ -41,6 +43,7 @@ pub mod imp {
     };
 
     use crate::ui::{
+        SETTINGS,
         provider::tu_item::TuItem,
         widgets::{
             hover_scale::{
@@ -63,6 +66,15 @@ pub mod imp {
         NoRequest,
     }
 
+    pub struct BackdropNodeCache {
+        node: gsk::RenderNode,
+        backdrop_y: f32,
+        backdrop_h: f32,
+        widget_w: f32,
+        /// Validity key: (width_px, height_px, is_dark, paintable_ptr)
+        key: (i32, i32, bool, usize),
+    }
+
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/listitem.ui")]
@@ -77,9 +89,20 @@ pub mod imp {
         pub title: TemplateChild<gtk::Label>,
         #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
+        #[property(get, set = Self::set_progress)]
+        pub progress: Cell<f64>,
         #[template_child]
-        pub overlay_button_box: TemplateChild<gtk::Box>,
+        pub played_mark: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub folder_mark: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub direct_play_button: TemplateChild<gtk::Button>,
 
+        #[template_child]
+        pub hover_scale: TemplateChild<HoverScale>,
+
+        pub hover_scale_progress: Cell<f32>,
+        pub backdrop_cache: RefCell<Option<BackdropNodeCache>>,
         pub is_dark: Cell<bool>,
     }
 
@@ -115,6 +138,15 @@ pub mod imp {
                     obj.queue_draw();
                 }
             });
+
+            if let Some(animation) = self.hover_scale.imp().animation.get() {
+                let obj = self.obj().downgrade();
+                animation.connect_value_notify(move |a| {
+                    if let Some(this) = obj.upgrade() {
+                        this.imp().hover_scale_progress.set(a.value() as f32);
+                    }
+                });
+            }
         }
 
         fn dispose(&self) {
@@ -126,30 +158,59 @@ pub mod imp {
 
     impl WidgetImpl for TuListItem {
         fn snapshot(&self, snapshot: &gtk::Snapshot) {
-            if self.title.is_visible() {
-                if let Some((paintable, pic_bounds)) = self.compute_blur_info() {
-                    let hover_progress = self
-                        .obj()
-                        .child()
-                        .and_then(|c| c.downcast::<HoverScale>().ok())
-                        .map(|hs| hs.animation_progress())
-                        .unwrap_or(0.0);
+            if !self.title.is_visible() {
+                self.parent_snapshot(snapshot);
+                return;
+            }
 
-                    if hover_progress > 0.0 {
-                        let scale = 1.0 + (MAX_SCALE - 1.0) * hover_progress;
-                        let w = self.obj().width() as f32;
-                        let h = self.obj().height() as f32;
-                        snapshot.save();
-                        snapshot.translate(&graphene::Point::new(w / 2.0, h / 2.0));
-                        snapshot.scale(scale, scale);
-                        snapshot.translate(&graphene::Point::new(-w / 2.0, -h / 2.0));
-                        self.draw_blur_backdrop(snapshot, &paintable, &pic_bounds);
-                        snapshot.restore();
-                    } else {
-                        self.draw_blur_backdrop(snapshot, &paintable, &pic_bounds);
-                    }
+            let Some((paintable, pic_bounds)) = self.compute_blur_info() else {
+                self.parent_snapshot(snapshot);
+                return;
+            };
+
+            let obj = self.obj();
+            let w = obj.width();
+            let h = obj.height();
+
+            let key = (w, h, self.is_dark.get(), paintable.as_ptr() as usize);
+            let stale = self
+                .backdrop_cache
+                .borrow()
+                .as_ref()
+                .map_or(true, |c| c.key != key);
+            if stale {
+                *self.backdrop_cache.borrow_mut() =
+                    self.build_backdrop_node(&paintable, &pic_bounds, w as f32, h as f32);
+            }
+
+            let cache_ref = self.backdrop_cache.borrow();
+            if let Some(cache) = cache_ref.as_ref() {
+                let hover_progress = self.hover_scale_progress.get();
+                let progress = self.progress.get() as f32;
+
+                let alpha = if self.is_dark.get() {
+                    0.2
+                } else {
+                    0.4
+                };
+
+                if hover_progress > 0.0 {
+                    let scale = 1.0 + (MAX_SCALE - 1.0) * hover_progress;
+                    let wf = w as f32;
+                    let hf = h as f32;
+                    snapshot.save();
+                    snapshot.translate(&graphene::Point::new(wf / 2.0, hf / 2.0));
+                    snapshot.scale(scale, scale);
+                    snapshot.translate(&graphene::Point::new(-wf / 2.0, -hf / 2.0));
+                    snapshot.append_node(&cache.node);
+                    Self::draw_progress_fill(snapshot, cache, progress, alpha);
+                    snapshot.restore();
+                } else {
+                    snapshot.append_node(&cache.node);
+                    Self::draw_progress_fill(snapshot, cache, progress, alpha);
                 }
             }
+
             self.parent_snapshot(snapshot);
         }
     }
@@ -167,32 +228,22 @@ pub mod imp {
             Some((paintable, pic_bounds))
         }
 
-        fn draw_blur_backdrop(
-            &self, snapshot: &gtk::Snapshot, paintable: &gdk::Paintable,
-            pic_bounds: &graphene::Rect,
-        ) {
+        fn build_backdrop_node(
+            &self, paintable: &gdk::Paintable, pic_bounds: &graphene::Rect, widget_w: f32,
+            widget_h: f32,
+        ) -> Option<BackdropNodeCache> {
             const CORNER_RADIUS: f32 = 10.0;
             const BLUR_RADIUS: f64 = 20.0;
-
-            let obj = self.obj();
-            let widget_w = obj.width() as f32;
-            let widget_h = obj.height() as f32;
-
-            if widget_w <= 0.0 || widget_h <= 0.0 {
-                return;
-            }
 
             let pic_bottom = pic_bounds.y() + pic_bounds.height();
             let backdrop_y = pic_bottom - CORNER_RADIUS;
             let backdrop_h = widget_h - backdrop_y;
 
             if backdrop_h <= 0.0 {
-                return;
+                return None;
             }
 
             let backdrop_rect = graphene::Rect::new(0.0, backdrop_y, widget_w, backdrop_h);
-
-            // Sharp top corners -> fills the picture's bottom rounded cutouts.
             let rounded = gsk::RoundedRect::new(
                 backdrop_rect,
                 graphene::Size::new(0.0, 0.0),
@@ -200,29 +251,26 @@ pub mod imp {
                 graphene::Size::new(CORNER_RADIUS, CORNER_RADIUS),
                 graphene::Size::new(CORNER_RADIUS, CORNER_RADIUS),
             );
-            snapshot.push_rounded_clip(&rounded);
 
-            snapshot.push_blur(BLUR_RADIUS);
+            let sub = gtk::Snapshot::new();
+            sub.push_rounded_clip(&rounded);
+            sub.push_blur(BLUR_RADIUS);
 
             let pic_w = pic_bounds.width();
             let pic_h = pic_bounds.height();
-
             let scale = if pic_w > 0.0 { widget_w / pic_w } else { 1.0 };
-            let scaled_h = pic_h * scale;
+            let draw_y = widget_h - pic_h * scale;
 
-            let draw_y = widget_h - scaled_h;
-
-            snapshot.save();
-            snapshot.translate(&graphene::Point::new(0.0, draw_y));
-            snapshot.scale(scale, scale);
+            sub.save();
+            sub.translate(&graphene::Point::new(0.0, draw_y));
+            sub.scale(scale, scale);
             paintable.snapshot(
-                snapshot.upcast_ref::<gdk::Snapshot>(),
+                sub.upcast_ref::<gdk::Snapshot>(),
                 pic_w as f64,
                 pic_h as f64,
             );
-            snapshot.restore();
-
-            snapshot.pop(); // blur
+            sub.restore();
+            sub.pop(); // blur
 
             let stops = if self.is_dark.get() {
                 [
@@ -235,15 +283,56 @@ pub mod imp {
                     gsk::ColorStop::new(1.0, gdk::RGBA::new(1.0, 1.0, 1.0, 0.35)),
                 ]
             };
-
-            snapshot.append_linear_gradient(
+            sub.append_linear_gradient(
                 &backdrop_rect,
                 &graphene::Point::new(0.0, backdrop_y),
                 &graphene::Point::new(0.0, backdrop_y + backdrop_h),
                 &stops,
             );
+            sub.pop(); // rounded clip
 
-            snapshot.pop(); // rounded clip
+            let node = sub.to_node()?;
+            let key = (
+                widget_w as i32,
+                widget_h as i32,
+                self.is_dark.get(),
+                paintable.as_ptr() as usize,
+            );
+            Some(BackdropNodeCache {
+                node,
+                backdrop_y,
+                backdrop_h,
+                widget_w,
+                key,
+            })
+        }
+
+        fn draw_progress_fill(snapshot: &gtk::Snapshot, cache: &BackdropNodeCache, progress: f32, alpha: f32) {
+            if progress <= 0.0 {
+                return;
+            }
+
+            let Ok(base) = gdk::RGBA::parse(SETTINGS.accent_color_code()) else {
+                return;
+            };
+
+            const CR: f32 = 10.0;
+            let fill_w = (cache.widget_w * progress).min(cache.widget_w);
+            let fill_rect = graphene::Rect::new(0.0, cache.backdrop_y, fill_w, cache.backdrop_h);
+            let fill_clip = gsk::RoundedRect::new(
+                graphene::Rect::new(0.0, cache.backdrop_y, cache.widget_w, cache.backdrop_h),
+                graphene::Size::new(0.0, 0.0),
+                graphene::Size::new(0.0, 0.0),
+                graphene::Size::new(CR, CR),
+                graphene::Size::new(CR, CR),
+            );
+
+            snapshot.push_rounded_clip(&fill_clip);
+            snapshot.append_color(
+                &gdk::RGBA::new(base.red(), base.green(), base.blue(), alpha),
+                &fill_rect,
+            );
+            snapshot.pop();
         }
     }
 
@@ -254,12 +343,13 @@ pub mod imp {
             self.item.replace(item);
             let obj = self.obj();
 
-            while let Some(child) = self.overlay_button_box.first_child() {
-                self.overlay_button_box.remove(&child);
-            }
-
             obj.set_up();
             obj.gesture();
+        }
+
+        pub fn set_progress(&self, progress: f64) {
+            self.progress.set(progress);
+            self.obj().set_progress_anim(progress);
         }
     }
 }
@@ -285,21 +375,11 @@ impl TuItemOverlayPrelude for TuListItem {
     fn poster_type_ext(&self) -> PosterType {
         self.poster_type()
     }
-
-    fn overlay_button_box(&self) -> gtk::Box {
-        self.imp().overlay_button_box.get()
-    }
 }
 
 impl TuItemMenuPrelude for TuListItem {
     fn popover(&self) -> &RefCell<Option<gtk::PopoverMenu>> {
         &self.imp().popover
-    }
-}
-
-impl TuItemProgressbarAnimationPrelude for TuListItem {
-    fn overlay(&self) -> gtk::Overlay {
-        self.imp().overlay.get()
     }
 }
 
@@ -313,12 +393,37 @@ impl TuListItem {
         Object::new()
     }
 
+    fn set_progress_anim(&self, percentage: f64) {
+        let weak = self.downgrade();
+        let target = adw::CallbackAnimationTarget::new(move |_| {
+            if let Some(this) = weak.upgrade() {
+                this.queue_draw();
+            }
+        });
+
+        let animation = adw::TimedAnimation::builder()
+            .duration(PROGRESSBAR_ANIMATION_DURATION)
+            .widget(self)
+            .target(&target)
+            .easing(adw::Easing::EaseOutQuart)
+            .value_from(0.)
+            .value_to(percentage)
+            .build();
+
+        spawn(glib::clone!(
+            #[weak]
+            animation,
+            async move {
+                animation.play();
+            }
+        ));
+    }
+
     pub fn set_up(&self) {
         let imp = self.imp();
         let item = self.item();
 
         if item.need_animated_picture() {
-            println!("need animated picture");
             self.set_animated_picture();
         } else {
             self.set_picture();
@@ -329,15 +434,19 @@ impl TuListItem {
         imp.overlay.set_size_request(w, h);
 
         if let Some(p) = item.fmt_percentage() {
-            self.set_progress(p);
+            self.set_progress(p / 100.);
         }
 
         if item.has_played_mark() {
-            self.set_played();
+            imp.played_mark.set_visible(true);
         }
 
         if item.has_folder_mark() {
-            self.set_folder();
+            imp.folder_mark.set_visible(true);
+        }
+
+        if item.has_direct_play_mark() {
+            imp.direct_play_button.set_visible(true);
         }
 
         self.set_tooltip_text(Some(&item.name()));

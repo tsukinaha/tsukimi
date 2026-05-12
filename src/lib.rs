@@ -19,7 +19,7 @@ pub use arg::Args;
 pub use config::GETTEXT_PACKAGE;
 #[cfg(target_os = "linux")]
 use config::LOCALEDIR;
-use config::VERSION;
+use config::version;
 use once_cell::sync::OnceCell;
 
 use clap::Parser;
@@ -33,7 +33,7 @@ pub use app::TsukimiApplication as Application;
 use crate::ui::widgets;
 
 pub static USER_AGENT: LazyLock<String> =
-    LazyLock::new(|| format!("{}/{} - {}", CLIENT_ID, VERSION, env::consts::OS));
+    LazyLock::new(|| format!("{}/{} - {}", CLIENT_ID, version(), env::consts::OS));
 
 pub const APP_ID: &str = "moe.tsuna.tsukimi";
 pub const CLIENT_ID: &str = "Tsukimi";

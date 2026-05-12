@@ -587,6 +587,8 @@ impl Window {
         if imp.insidestack.visible_child_name() == Some("homepage".into()) && SETTINGS.is_refresh()
         {
             if let Some(homepage) = imp.homepage.child().and_downcast_ref::<HomePage>() {
+
+
                 homepage.update(false);
             }
         }
@@ -1048,7 +1050,7 @@ impl Window {
             .activate(|window, _, _| {
                 let about = adw::AboutDialog::builder()
                     .application_name("Tsukimi")
-                    .version(crate::config::VERSION)
+                    .version(crate::config::version())
                     .comments("A simple third-party Jellyfin client.")
                     // TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
                     .translator_credits(gettext("translator-credits"))
@@ -1058,7 +1060,7 @@ impl Window {
                     .build();
                 about.set_debug_info(&format!(
                     "Version: {}\nArchitecture: {}\nGTK Version: {}.{}.{}\nADW Version: {}.{}.{}\nOS: {}\n",
-                    crate::config::VERSION,
+                    crate::config::version(),
                     std::env::consts::ARCH,
                     gtk::major_version(),
                     gtk::minor_version(),

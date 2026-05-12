@@ -196,9 +196,10 @@ scrolledwindow>viewport>box>box>box {
   border-radius: 10px;
 }
 
-@define-color accent_bg_color #AEB5FA;
-@define-color accent_fg_color #FFFFFF;
-@define-color accent_color #AEB5FA;
+:root {
+  --accent-bg-color: #AEB5FA;
+  --accent-color: #AEB5FA;
+}
 
 placessidebar {
   background-color: transparent;
@@ -301,7 +302,7 @@ checkbutton.theme-selector radio:checked {
   color: rgb(125, 210, 227);
 }
 
-.pgb>trough {
+progressbar.accent > trough {
   min-height: 4px;
 }
 
@@ -334,12 +335,17 @@ checkbutton.theme-selector radio:checked {
 	background-color: rgba(255, 255, 255, 0.5);
 }
 
-.tulistitem > overlay > widget > .picture-loader {
+.picture-loader.inbox {
     box-shadow: none;
 }
 
 .picture-loader {
     background-color: transparent;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.tulistitem {
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
 }
