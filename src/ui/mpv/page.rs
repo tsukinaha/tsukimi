@@ -104,8 +104,6 @@ mod imp {
         },
     };
 
-
-
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/mpvpage.ui")]
     #[properties(wrapper_type = super::MPVPage)]
@@ -1188,7 +1186,6 @@ impl MPVPage {
         self.imp().video.imp().mpv()
     }
 
-
     pub fn notify_has_chapters(&self, has_chapters: bool) {
         #[cfg(target_os = "linux")]
         self.notify_mpris_has_chapters(has_chapters);
@@ -1217,9 +1214,12 @@ impl MPVPage {
 
 pub async fn direct_stream_url(source: &MediaSource) -> Option<String> {
     let container = source.container.as_deref()?;
-    println!("{}", source.id.as_str());
     JELLYFIN_CLIENT
-        .get_item_stream_url(container, &source.item_id, &source.id.to_owned())
+        .get_item_stream_url(
+            container,
+            source.item_id.as_ref().unwrap_or(&source.id),
+            &source.id.to_owned(),
+        )
         .await
         .ok()
 }
