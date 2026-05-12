@@ -20,15 +20,14 @@ use crate::{
         structs::*,
     },
     ui::{
-        mpv::page::extract_url,
-        provider::{
+        mpv::page::media_source_stream_url, provider::{
             dropdown_factory::{
                 DropdownList,
                 DropdownListBuilder,
             },
             tu_item::TuItem,
             tu_object::TuObject,
-        },
+        }
     },
     utils::{
         CachePolicy,
@@ -773,7 +772,7 @@ impl ItemPage {
                 .bit_rate
                 .map(|bit_rate| format!("{:.2} Kbps", bit_rate as f64 / 1_000.0))
                 .unwrap_or_default();
-            let play_url = extract_url(media).await;
+            let play_url = media_source_stream_url(media).await;
             let Ok(dl) = DropdownListBuilder::default()
                 .line1(Some(media.name.to_owned()))
                 .line2(Some(line2))

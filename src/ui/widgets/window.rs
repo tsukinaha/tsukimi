@@ -367,10 +367,8 @@ impl Window {
     }
 
     pub fn now_page_tag(&self) -> Option<String> {
-        let imp = self.imp();
-        let Some(now_page) = imp.mainview.visible_page() else {
-            return None;
-        };
+        let now_page = self.imp().mainview.visible_page()?;
+
         now_page.tag().map(|s| s.to_string())
     }
 

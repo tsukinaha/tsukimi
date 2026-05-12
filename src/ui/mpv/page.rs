@@ -62,7 +62,6 @@ use crate::{
         spawn_tokio,
     },
 };
-use anyhow::Result;
 
 const MIN_MOTION_TIME: i64 = 100000;
 const PREV_CHAPTER_KEYVAL: u32 = 65366;
@@ -105,7 +104,7 @@ mod imp {
         },
     };
 
-    use super::*;
+    
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/mpvpage.ui")]
@@ -506,7 +505,7 @@ impl MPVPage {
 
                 imp.suburl.replace(sub_url);
 
-                let video_url = match extract_url(media_source).await {
+                let video_url = match media_source_stream_url(media_source).await {
                     Some(video_url) => video_url,
                     None => {
                         obj.toast(gettext("No media source found"));
@@ -1217,25 +1216,21 @@ impl MPVPage {
 
 pub async fn direct_stream_url(source: &MediaSource) -> Option<String> {
     let container = source.container.as_deref()?;
+    println!("{}", source.id.as_str());
     JELLYFIN_CLIENT
-        .get_item_stream_url(container, source.id.as_str(), &source.id.to_owned())
+        .get_item_stream_url(container, &source.item_id, &source.id.to_owned())
         .await
         .ok()
 }
 
 pub async fn media_source_stream_url(source: &MediaSource) -> Option<String> {
-    let container = source.container.to_owned()?;
-    let etag = source.etag.to_owned()?;
-    Some(
-        JELLYFIN_CLIENT
-            .get_direct_stream_url(&container, &source.id.to_owned(), &etag)
-            .await,
-    )
-}
-
-pub async fn extract_url(source: &MediaSource) -> Option<String> {
-    if let Some(url) = media_source_stream_url(source).await {
-        return Some(url);
+    if let Some(direct_url) = source.direct_stream_url.to_owned() {
+        return Some(direct_url);
     }
+
+    if let Some(transcoding_url) = source.transcoding_url.to_owned() {
+        return Some(transcoding_url);
+    }
+
     direct_stream_url(source).await
 }

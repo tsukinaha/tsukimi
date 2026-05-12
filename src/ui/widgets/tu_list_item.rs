@@ -178,7 +178,7 @@ pub mod imp {
                 .backdrop_cache
                 .borrow()
                 .as_ref()
-                .map_or(true, |c| c.key != key);
+                .is_none_or(|c| c.key != key);
             if stale {
                 *self.backdrop_cache.borrow_mut() =
                     self.build_backdrop_node(&paintable, &pic_bounds, w as f32, h as f32);
