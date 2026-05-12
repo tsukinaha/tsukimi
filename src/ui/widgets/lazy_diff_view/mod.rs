@@ -138,6 +138,7 @@ mod imp {
             self.parent_constructed();
 
             let obj = self.obj();
+
             let viewport = VirtualViewport::new();
             viewport.set_hexpand(true);
             viewport.set_overflow(gtk::Overflow::Visible);
@@ -690,10 +691,6 @@ impl LazyDiffView {
             Orientation::Horizontal => HORIZONTAL_MIN_CONTENT_HEIGHT,
             _ => VERTICAL_MIN_CONTENT_HEIGHT,
         });
-
-        if let Some(viewport) = self.imp().viewport.borrow().as_ref() {
-            viewport.set_vexpand(matches!(orientation, Orientation::Horizontal));
-        }
     }
 
     fn resize_viewport(&self) {

@@ -646,7 +646,7 @@ impl TuItem {
             _ => self.name(),
         };
 
-        if self.has_played_mark() && self.unplayed_item_count() > 0 {
+        if self.has_unplayed_item() && self.unplayed_item_count() > 0 {
             format!("{} ({})", title, self.unplayed_item_count())
         } else {
             title
@@ -660,6 +660,7 @@ impl TuItem {
             EPISODE if self.series_name().is_some() => self.fmt_episode_detail(),
             SEASON => self.fmt_season_premiere_date(),
             SERIES => self.fmt_period(),
+            ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR => self.role().unwrap_or_default(),
             _ => String::new(),
         }
     }
@@ -673,15 +674,17 @@ impl TuItem {
         }
     }
 
-    pub fn has_played_mark(&self) -> bool {
-        let may_has = match self.item_type().as_str() {
+    pub fn has_unplayed_item(&self) -> bool {
+        match self.item_type().as_str() {
             SERIES | SEASON => true,
             MOVIE if !self.is_resume() => true,
             EPISODE if !self.is_resume() => true,
             _ => false,
-        };
+        }
+    }
 
-        may_has && self.played()
+    pub fn has_played_mark(&self) -> bool {
+        self.has_unplayed_item() && self.played()
     }
 
     pub fn has_direct_play_mark(&self) -> bool {
@@ -720,14 +723,25 @@ impl TuItem {
         }
 
         let title = match self.item_type().as_str() {
-            TV_CHANNEL | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER
-            | GUEST_STAR | SEASON | BOX_SET | MUSIC_ALBUM => name,
+            TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER => name,
             EPISODE if self.series_name().is_some() => self.fmt_subtitle(),
             MOVIE if self.is_resume() => self.fmt_title(),
+            PERSON | DIRECTOR | WRITER | PRODUCER
+            | GUEST_STAR | ACTOR => {
+                if let Some(role) = self.role() {
+                    format!("{name} / {role}")
+                } else {
+                    name
+                }
+            },
             _ => return None,
         };
 
         Some(title)
+    }
+
+    pub fn fmt_rating(&self) -> Option<String> {
+        self.rating()
     }
 
     pub fn need_animated_picture(&self) -> bool {

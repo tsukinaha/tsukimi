@@ -22,8 +22,15 @@ mod imp {
     pub struct MenuInfo {
         #[property(get, set)]
         pub title: RefCell<String>,
-        #[property(get, set)]
+        #[property(get, set = Self::set_subtitle)]
         pub subtitle: RefCell<String>,
+        #[property(get, set)]
+        pub rating: RefCell<String>,
+
+        #[template_child]
+        pub subtitle_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub star_box: TemplateChild<gtk::Box>,
     }
 
     #[glib::object_subclass]
@@ -51,6 +58,26 @@ mod imp {
     impl WidgetImpl for MenuInfo {}
 
     impl BinImpl for MenuInfo {}
+
+    impl MenuInfo {
+        pub fn set_subtitle(&self, subtitle: String) {
+            if subtitle.is_empty() {
+                return;
+            }
+
+            self.subtitle_label.set_visible(true);
+            self.subtitle.replace(subtitle);
+        }
+
+        pub fn set_rating(&self, rating: String) {
+            if rating.is_empty() {
+                return;
+            }
+
+            self.star_box.set_visible(true);
+            self.rating.replace(rating);
+        }
+    }
 }
 
 glib::wrapper! {

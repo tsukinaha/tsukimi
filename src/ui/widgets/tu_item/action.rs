@@ -151,6 +151,11 @@ where
                 let menu_info = MenuInfo::new();
                 menu_info.set_title(self.item().fmt_title());
                 menu_info.set_subtitle(self.item().fmt_subtitle());
+
+                if let Some(rating) = self.item().fmt_rating() {
+                    menu_info.set_rating(rating);
+                }
+
                 new_popover.add_child(&menu_info, "menu-info");
 
                 if let Some(popover) = self.popover().borrow_mut().take() {

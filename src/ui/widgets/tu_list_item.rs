@@ -395,6 +395,8 @@ impl TuListItem {
 
     fn set_progress_anim(&self, percentage: f64) {
         let weak = self.downgrade();
+        let start_value = self.imp().progress.get();
+
         let target = adw::CallbackAnimationTarget::new(move |_| {
             if let Some(this) = weak.upgrade() {
                 this.queue_draw();
@@ -406,7 +408,7 @@ impl TuListItem {
             .widget(self)
             .target(&target)
             .easing(adw::Easing::EaseOutQuart)
-            .value_from(0.)
+            .value_from(start_value)
             .value_to(percentage)
             .build();
 
