@@ -104,7 +104,7 @@ mod imp {
         },
     };
 
-    
+
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/mpvpage.ui")]
@@ -682,6 +682,7 @@ impl MPVPage {
                             obj.update_seeking(true);
                         }
                         ListenEvent::PausedForCache(false) | ListenEvent::PlaybackRestart => {
+                            let was_seeking = obj.get_seeking();
                             obj.update_seeking(false);
                             if was_seeking {
                                 obj.handle_callback(BackType::Back);
