@@ -20,16 +20,18 @@ use crate::{
         structs::*,
     },
     ui::{
-        mpv::page::media_source_stream_url, provider::{
+        mpv::page::media_source_stream_url,
+        provider::{
             dropdown_factory::{
                 DropdownList,
                 DropdownListBuilder,
             },
             tu_item::TuItem,
             tu_object::TuObject,
-        }
+        },
     },
     utils::{
+        CacheEvent,
         CachePolicy,
         fetch_with_cache,
         get_image_with_cache,
@@ -852,29 +854,32 @@ impl ItemPage {
             return;
         };
 
-        let season_list = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             &format!("season_{}", id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_season_list(&id).await },
-            None::<fn(_)>,
         )
-        .await
-        {
-            Ok(season_list) => season_list.items,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                return;
+        .await;
+
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, .. } => {
+                    let season_list = data.items;
+                    let names = season_list
+                        .iter()
+                        .map(|season| season.name.as_str())
+                        .collect::<Vec<_>>();
+                    season_list_store.splice(0, season_list_store.n_items(), &names);
+                    imp.seasonshortu.set_items(&season_list);
+                    imp.season_list_vec.replace(season_list);
+                    self.on_season_selected(None, imp.seasonlist.get()).await;
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
+                }
             }
-        };
-
-        for season in &season_list {
-            season_list_store.append(&season.name);
         }
-
-        imp.seasonshortu.set_items(&season_list);
-
-        imp.season_list_vec.replace(season_list);
-        self.on_season_selected(None, imp.seasonlist.get()).await;
     }
 
     #[template_callback]
@@ -896,97 +901,97 @@ impl ItemPage {
     pub async fn set_overview(&self, id: &str) {
         let id = id.to_string();
 
-        let item = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             &format!("item_{}", id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_item_info(&id).await },
-            None::<fn(_)>,
         )
-        .await
-        {
-            Ok(item) => item,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                return;
-            }
-        };
+        .await;
 
-        spawn(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            async move {
-                {
-                    let mut str = String::new();
-                    if let Some(communityrating) = item.community_rating {
-                        let formatted_rating = format!("{communityrating:.1}");
-                        let crating = obj.imp().crating.get();
-                        crating.set_text(&formatted_rating);
-                        crating.set_visible(true);
-                        obj.imp().star.get().set_visible(true);
-                    }
-                    if let Some(rating) = item.official_rating {
-                        let orating = obj.imp().orating.get();
-                        orating.set_text(&rating);
-                        orating.set_visible(true);
-                    }
-                    if let Some(year) = item.production_year {
-                        str.push_str(&year.to_string());
-                        str.push_str("  ");
-                    }
-                    if let Some(runtime) = item.run_time_ticks {
-                        let time_string = run_time_ticks_to_label(runtime);
-                        str.push_str(&time_string);
-                        str.push_str("  ");
-                    }
-                    if let Some(genres) = &item.genres {
-                        for genre in genres {
-                            str.push_str(&genre.name);
-                            str.push(',');
-                        }
-                        str.pop();
-                    }
-                    obj.imp().line2.get().set_text(&str);
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data: item, .. } => spawn(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    async move {
+                        {
+                            let mut str = String::new();
+                            if let Some(communityrating) = item.community_rating {
+                                let formatted_rating = format!("{communityrating:.1}");
+                                let crating = obj.imp().crating.get();
+                                crating.set_text(&formatted_rating);
+                                crating.set_visible(true);
+                                obj.imp().star.get().set_visible(true);
+                            }
+                            if let Some(rating) = item.official_rating {
+                                let orating = obj.imp().orating.get();
+                                orating.set_text(&rating);
+                                orating.set_visible(true);
+                            }
+                            if let Some(year) = item.production_year {
+                                str.push_str(&year.to_string());
+                                str.push_str("  ");
+                            }
+                            if let Some(runtime) = item.run_time_ticks {
+                                let time_string = run_time_ticks_to_label(runtime);
+                                str.push_str(&time_string);
+                                str.push_str("  ");
+                            }
+                            if let Some(genres) = &item.genres {
+                                for genre in genres {
+                                    str.push_str(&genre.name);
+                                    str.push(',');
+                                }
+                                str.pop();
+                            }
+                            obj.imp().line2.get().set_text(&str);
 
-                    if let Some(taglines) = item.taglines {
-                        if let Some(tagline) = taglines.first() {
-                            obj.imp().tagline.set_text(tagline);
-                            obj.imp().tagline.set_visible(true);
+                            if let Some(taglines) = item.taglines {
+                                if let Some(tagline) = taglines.first() {
+                                    obj.imp().tagline.set_text(tagline);
+                                    obj.imp().tagline.set_visible(true);
+                                }
+                            }
+                        }
+                        if let Some(links) = item.external_urls {
+                            obj.set_flowlinks(links);
+                        }
+                        if let Some(actor) = item.people {
+                            obj.setactorscrolled(actor).await;
+                        }
+                        if let Some(studios) = item.studios {
+                            obj.set_flowbuttons(studios, "Studios");
+                        }
+                        if let Some(tags) = item.tags {
+                            obj.set_flowbuttons(tags, "Tags");
+                        }
+                        if let Some(genres) = item.genres {
+                            obj.set_flowbuttons(genres, "Genres");
+                        }
+                        if let Some(image_tags) = item.backdrop_image_tags {
+                            obj.add_backdrops(image_tags, &item.id).await;
+                        }
+                        if let Some(part_count) = item.part_count {
+                            if part_count > 1 {
+                                obj.sets("Additional Parts", &item.id).await;
+                            }
+                        }
+                        if let Some(ref user_data) = item.user_data {
+                            let imp = obj.imp();
+                            if let Some(is_favourite) = user_data.is_favorite {
+                                imp.actionbox.set_btn_active(is_favourite);
+                            }
+                            imp.actionbox.set_played(user_data.played);
+                            imp.actionbox.bind_edit();
                         }
                     }
-                }
-                if let Some(links) = item.external_urls {
-                    obj.set_flowlinks(links);
-                }
-                if let Some(actor) = item.people {
-                    obj.setactorscrolled(actor).await;
-                }
-                if let Some(studios) = item.studios {
-                    obj.set_flowbuttons(studios, "Studios");
-                }
-                if let Some(tags) = item.tags {
-                    obj.set_flowbuttons(tags, "Tags");
-                }
-                if let Some(genres) = item.genres {
-                    obj.set_flowbuttons(genres, "Genres");
-                }
-                if let Some(image_tags) = item.backdrop_image_tags {
-                    obj.add_backdrops(image_tags, &item.id).await;
-                }
-                if let Some(part_count) = item.part_count {
-                    if part_count > 1 {
-                        obj.sets("Additional Parts", &item.id).await;
-                    }
-                }
-                if let Some(ref user_data) = item.user_data {
-                    let imp = obj.imp();
-                    if let Some(is_favourite) = user_data.is_favorite {
-                        imp.actionbox.set_btn_active(is_favourite);
-                    }
-                    imp.actionbox.set_played(user_data.played);
-                    imp.actionbox.bind_edit();
+                )),
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
                 }
             }
-        ));
+        }
     }
 
     pub async fn createmediabox(
@@ -1165,7 +1170,7 @@ impl ItemPage {
         let id = id.to_string();
         let types = types.to_string();
 
-        let results = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             &format!("item_{types}_{id}"),
             CachePolicy::ReadCacheAndRefresh,
             async move {
@@ -1176,20 +1181,21 @@ impl ItemPage {
                     _ => Ok(List::default()),
                 }
             },
-            None::<fn(_)>,
         )
-        .await
-        {
-            Ok(history) => history,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                List::default()
-            }
-        };
+        .await;
 
         hortu.set_unify_size(UnifySize::Majority);
 
-        hortu.set_items(&results.items);
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, .. } => {
+                    hortu.set_items(&data.items);
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                }
+            }
+        }
     }
 
     pub fn set_flowbuttons(&self, infos: Vec<SGTitem>, type_: &str) {

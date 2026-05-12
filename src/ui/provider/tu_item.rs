@@ -79,6 +79,7 @@ use crate::{
         },
     },
     utils::{
+        CacheEvent,
         CachePolicy,
         fetch_with_cache,
         spawn,
@@ -456,18 +457,21 @@ impl TuItem {
     pub async fn play_album(&self, obj: &impl IsA<gtk::Widget>) {
         let id = self.id();
 
-        let songs = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             &format!("audio_{}", id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_songs(&id).await },
-            None::<fn(_)>,
         )
-        .await
-        {
-            Ok(songs) => songs,
-            Err(e) => {
-                obj.toast(e.to_user_facing());
-                return;
+        .await;
+
+        let songs = loop {
+            match events.recv().await {
+                Some(CacheEvent::Data { data, .. }) => break data,
+                Some(CacheEvent::Error(e)) => {
+                    obj.toast(e.to_user_facing());
+                    return;
+                }
+                None => return,
             }
         };
 
@@ -660,7 +664,9 @@ impl TuItem {
             EPISODE if self.series_name().is_some() => self.fmt_episode_detail(),
             SEASON => self.fmt_season_premiere_date(),
             SERIES => self.fmt_period(),
-            ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR => self.role().unwrap_or_default(),
+            ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR => {
+                self.role().unwrap_or_default()
+            }
             _ => String::new(),
         }
     }
@@ -726,14 +732,13 @@ impl TuItem {
             TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER => name,
             EPISODE if self.series_name().is_some() => self.fmt_subtitle(),
             MOVIE if self.is_resume() => self.fmt_title(),
-            PERSON | DIRECTOR | WRITER | PRODUCER
-            | GUEST_STAR | ACTOR => {
+            PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR => {
                 if let Some(role) = self.role() {
                     format!("{name} / {role}")
                 } else {
                     name
                 }
-            },
+            }
             _ => return None,
         };
 

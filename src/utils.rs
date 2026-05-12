@@ -64,14 +64,28 @@ pub enum CachePolicy {
     ReadCacheAndRefresh,
 }
 
+pub enum CacheSource {
+    Cache,
+    Network,
+}
+
+pub enum CacheEvent<T> {
+    Data {
+        #[allow(dead_code)]
+        source: CacheSource,
+        data: T,
+    },
+    Error(anyhow::Error),
+}
+
 pub async fn fetch_with_cache<T, F>(
     cache_key: &str, cache_policy: CachePolicy, future: F,
-    on_refresh: Option<impl FnOnce(T) + 'static>,
-) -> Result<T>
+) -> tokio::sync::mpsc::Receiver<CacheEvent<T>>
 where
     T: for<'de> Deserialize<'de> + Serialize + Send + 'static,
     F: Future<Output = Result<T>> + Send + 'static,
 {
+    let (tx, rx) = tokio::sync::mpsc::channel(4);
     let mut path = jellyfin_cache_path().await;
     path.push(format!("{cache_key}.json"));
 
@@ -89,40 +103,60 @@ where
 
     if read_cache {
         if let Some(data) = read_from_cache(&path) {
+            let _ = tx.try_send(CacheEvent::Data {
+                source: CacheSource::Cache,
+                data,
+            });
+
             if update_in_background {
                 let path = path.to_owned();
-                if let Some(callback) = on_refresh {
-                    let (tx, rx) = tokio::sync::oneshot::channel();
-                    runtime().spawn(async move {
-                        if let Ok(data) = future.await {
-                            let _ = write_to_cache(&path, &data);
-                            let _ = tx.send(data);
+                runtime().spawn(async move {
+                    match future.await {
+                        Ok(data) => {
+                            if let Err(e) = write_to_cache(&path, &data) {
+                                let _ = tx.send(CacheEvent::Error(e)).await;
+                                return;
+                            }
+                            let _ = tx
+                                .send(CacheEvent::Data {
+                                    source: CacheSource::Network,
+                                    data,
+                                })
+                                .await;
                         }
-                    });
-                    spawn(async move {
-                        if let Ok(data) = rx.await {
-                            callback(data);
+                        Err(e) => {
+                            let _ = tx.send(CacheEvent::Error(e)).await;
                         }
-                    });
-                } else {
-                    runtime().spawn(async move {
-                        if let Ok(data) = future.await {
-                            let _ = write_to_cache(&path, &data);
-                        }
-                    });
-                }
+                    }
+                });
             }
-            return Ok(data);
+            return rx;
         }
     }
 
-    let data = spawn_tokio(future).await?;
+    runtime().spawn(async move {
+        match future.await {
+            Ok(data) => {
+                if write_cache {
+                    if let Err(e) = write_to_cache(&path, &data) {
+                        let _ = tx.send(CacheEvent::Error(e)).await;
+                        return;
+                    }
+                }
+                let _ = tx
+                    .send(CacheEvent::Data {
+                        source: CacheSource::Network,
+                        data,
+                    })
+                    .await;
+            }
+            Err(e) => {
+                let _ = tx.send(CacheEvent::Error(e)).await;
+            }
+        }
+    });
 
-    if write_cache {
-        write_to_cache(&path, &data)?;
-    }
-
-    Ok(data)
+    rx
 }
 
 fn read_from_cache<T>(path: &PathBuf) -> Option<T>

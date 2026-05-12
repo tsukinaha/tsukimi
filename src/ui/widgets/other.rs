@@ -20,6 +20,7 @@ use crate::{
         tu_object::TuObject,
     },
     utils::{
+        CacheEvent,
         CachePolicy,
         fetch_with_cache,
     },
@@ -198,23 +199,25 @@ impl OtherPage {
         let id = self.item().id();
 
         fraction_reset!(self);
-        let item = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             &format!("list_{id}"),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_item_info(&id).await },
-            None::<fn(_)>,
         )
-        .await
-        {
-            Ok(item) => item,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                return;
-            }
-        };
+        .await;
 
-        self.set_list(item).await;
-        fraction!(self);
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, .. } => {
+                    self.set_list(data).await;
+                    fraction!(self);
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
+                }
+            }
+        }
     }
 
     pub async fn set_list(&self, item: SimpleListItem) {
@@ -315,38 +318,41 @@ impl OtherPage {
         let Some(series_id) = self.item().series_id() else {
             return;
         };
-        let list = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             &format!("season_{id}"),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_episodes_all(&series_id, &id).await },
-            None::<fn(_)>,
         )
-        .await
-        {
-            Ok(history) => history,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                return;
+        .await;
+
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, .. } => {
+                    let store = self
+                        .imp()
+                        .selection
+                        .model()
+                        .unwrap()
+                        .downcast::<gio::ListStore>()
+                        .unwrap();
+                    store.remove_all();
+
+                    for item in data.items {
+                        let tu_item = TuItem::from_simple(&item, None);
+                        tu_item.set_is_resume(true);
+                        let tu_item = TuObject::new(&tu_item);
+                        store.append(&tu_item);
+                    }
+
+                    self.imp().episode_list_revealer.set_vexpand(true);
+                    self.imp().episode_list_revealer.set_reveal_child(true);
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
+                }
             }
-        };
-
-        let store = self
-            .imp()
-            .selection
-            .model()
-            .unwrap()
-            .downcast::<gio::ListStore>()
-            .unwrap();
-
-        for item in list.items {
-            let tu_item = TuItem::from_simple(&item, None);
-            tu_item.set_is_resume(true);
-            let tu_item = TuObject::new(&tu_item);
-            store.append(&tu_item);
         }
-
-        self.imp().episode_list_revealer.set_vexpand(true);
-        self.imp().episode_list_revealer.set_reveal_child(true);
     }
 
     pub fn add_external_link_horbu(&self, links: &[Urls]) {
@@ -372,22 +378,24 @@ impl OtherPage {
 
     async fn hortu_set_boxset_list(&self) {
         let id = self.item().id();
-        let results = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             &format!("boxset_{id}"),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_includedby(&id).await },
-            None::<fn(_)>,
         )
-        .await
-        {
-            Ok(history) => history,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                return;
-            }
-        };
+        .await;
 
-        self.load_list_items(results.items);
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, .. } => {
+                    self.load_list_items(data.items);
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
+                }
+            }
+        }
     }
 
     fn load_list_items(&self, items: Vec<SimpleListItem>) {
@@ -478,21 +486,22 @@ impl OtherPage {
 
         let id = self.item().id();
 
-        let results = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             &format!("other_{}_{}", type_, id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_actor_item_list(&id, &type_).await },
-            None::<fn(_)>,
         )
-        .await
-        {
-            Ok(history) => history,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                List::default()
-            }
-        };
+        .await;
 
-        hortu.set_items(&results.items);
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, .. } => {
+                    hortu.set_items(&data.items);
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                }
+            }
+        }
     }
 }

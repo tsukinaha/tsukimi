@@ -54,14 +54,17 @@ use super::{
     },
 };
 use crate::{
-    CLIENT_ID, config::version, ui::{
+    CLIENT_ID,
+    config::version,
+    ui::{
         SETTINGS,
         jellyfin_cache_path,
         widgets::{
             filter_panel::FiltersList,
             single_grid::imp::ListType,
         },
-    }, utils::spawn_tokio_without_await
+    },
+    utils::spawn_tokio_without_await,
 };
 
 pub static JELLYFIN_CLIENT: Lazy<JellyfinClient> = Lazy::new(JellyfinClient::default);
