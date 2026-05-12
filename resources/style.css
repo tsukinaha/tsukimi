@@ -162,6 +162,13 @@ gridview {
   background-color: transparent;
 }
 
+gridview > child:hover,
+gridview > child:selected {
+    background-color: transparent;
+    outline: none;
+    box-shadow: none;
+}
+
 gridview>child box {
   margin: 0px;
 }
