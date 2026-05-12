@@ -1,6 +1,7 @@
 use std::cell::RefCell;
 
 use adw::prelude::*;
+use gettextrs::gettext;
 use glib::Object;
 use gtk::{
     gio,
@@ -18,7 +19,7 @@ use super::tu_item::{
     TuItemOverlayPrelude,
 };
 use crate::{
-    ui::provider::tu_item::TuItem,
+    ui::{GlobalToast, provider::tu_item::TuItem},
     utils::spawn,
 };
 
@@ -188,11 +189,7 @@ pub mod imp {
                 let hover_progress = self.hover_scale_progress.get();
                 let progress = self.progress.get() as f32;
 
-                let alpha = if self.is_dark.get() {
-                    0.2
-                } else {
-                    0.4
-                };
+                let alpha = if self.is_dark.get() { 0.2 } else { 0.4 };
 
                 if hover_progress > 0.0 {
                     let scale = 1.0 + (MAX_SCALE - 1.0) * hover_progress;
@@ -307,7 +304,9 @@ pub mod imp {
             })
         }
 
-        fn draw_progress_fill(snapshot: &gtk::Snapshot, cache: &BackdropNodeCache, progress: f32, alpha: f32) {
+        fn draw_progress_fill(
+            snapshot: &gtk::Snapshot, cache: &BackdropNodeCache, progress: f32, alpha: f32,
+        ) {
             if progress <= 0.0 {
                 return;
             }
@@ -457,5 +456,17 @@ impl TuListItem {
             imp.title.set_text(&title);
             imp.title.set_visible(true);
         }
+    }
+
+    #[template_callback]
+    async fn on_play_clicked(&self) {
+        let item = self.item();
+
+        if !item.can_direct_play() {
+            return;
+        }
+
+        self.toast(gettext("Waiting for mediasource ..."));
+        item.play_video(self).await;
     }
 }

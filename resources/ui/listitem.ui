@@ -53,6 +53,7 @@
                             <property name="margin-bottom">8</property>
                             <property name="icon-name">media-playback-start-symbolic</property>
                             <property name="visible">false</property>
+                            <signal name="clicked" handler="on_play_clicked" swapped="yes"/>
                             <style>
                                 <class name="circular" />
                                 <class name="osd" />
