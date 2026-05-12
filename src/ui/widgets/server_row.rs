@@ -86,7 +86,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct ServerRow(ObjectSubclass<imp::ServerRow>)
-        @extends gtk::Widget, gtk::ListBoxRow, @implements gtk::Accessible;
+        @extends gtk::Widget, gtk::ListBoxRow, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Actionable;
 }
 
 impl ServerRow {

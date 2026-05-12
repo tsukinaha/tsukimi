@@ -102,7 +102,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct ServerActionRow(ObjectSubclass<imp::ServerActionRow>)
-        @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Accessible;
+        @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Actionable;
 }
 
 #[template_callbacks]

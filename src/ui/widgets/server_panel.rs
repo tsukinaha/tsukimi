@@ -83,7 +83,7 @@ pub(crate) mod imp {
 
 glib::wrapper! {
     pub struct ServerPanel(ObjectSubclass<imp::ServerPanel>)
-        @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl Default for ServerPanel {

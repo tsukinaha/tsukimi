@@ -142,7 +142,7 @@ pub(crate) mod imp {
 glib::wrapper! {
     /// A page for displaying an album.
     pub struct AlbumPage(ObjectSubclass<imp::AlbumPage>)
-        @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 use crate::ui::widgets::disc_box::DiscBox;

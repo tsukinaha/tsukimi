@@ -84,7 +84,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct VideoScale(ObjectSubclass<imp::VideoScale>)
-        @extends gtk::Widget, gtk::Scale, gtk::Range;
+        @extends gtk::Widget, gtk::Scale, gtk::Range, @implements gtk::Accessible, gtk::Buildable, gtk::Orientable, gtk::ConstraintTarget;
 }
 
 impl Default for VideoScale {

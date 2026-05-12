@@ -58,6 +58,19 @@ pub(crate) mod imp {
     use super::*;
     use crate::ui::provider::tu_object::TuObject;
 
+    pub struct NoSelectionWrap(pub gtk::NoSelection);
+
+    impl Default for NoSelectionWrap {
+        fn default() -> Self {
+            Self(gtk::NoSelection::new(Some(gio::ListStore::new::<TuObject>())))
+        }
+    }
+
+    impl std::ops::Deref for NoSelectionWrap {
+        type Target = gtk::NoSelection;
+        fn deref(&self) -> &Self::Target { &self.0 }
+    }
+
     #[derive(CompositeTemplate, Default, Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/tuview_scrolled.ui")]
     #[properties(wrapper_type = super::TuViewScrolled)]
@@ -71,7 +84,7 @@ pub(crate) mod imp {
         #[template_child]
         pub spinner_revealer: TemplateChild<gtk::Revealer>,
 
-        pub selection: gtk::SingleSelection,
+        pub selection: NoSelectionWrap,
         pub lock: Arc<AtomicBool>,
 
         #[property(get, set, builder(UnifySize::default()))]
@@ -99,8 +112,6 @@ pub(crate) mod imp {
     impl ObjectImpl for TuViewScrolled {
         fn constructed(&self) {
             self.parent_constructed();
-            let store = gio::ListStore::new::<TuObject>();
-            self.selection.set_model(Some(&store));
             self.obj().set_view_type(ViewType::GridView);
         }
     }
@@ -111,7 +122,7 @@ pub(crate) mod imp {
 
 glib::wrapper! {
     pub struct TuViewScrolled(ObjectSubclass<imp::TuViewScrolled>)
-        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl Default for TuViewScrolled {
@@ -160,13 +171,13 @@ impl TuViewScrolled {
                 imp.scrolled_window.set_child(Some(&imp.grid.get()));
                 imp.grid
                     .set_factory(Some(factory.tu_item(PosterType::default())));
-                imp.grid.set_model(Some(&imp.selection));
+                imp.grid.set_model(Some(&imp.selection.0));
             }
             ViewType::ListView => {
                 imp.scrolled_window.set_child(Some(&imp.list.get()));
                 imp.list
                     .set_factory(Some(factory.tu_overview_item(ViewGroup::ListView)));
-                imp.list.set_model(Some(&imp.selection));
+                imp.list.set_model(Some(&imp.selection.0));
             }
         }
     }

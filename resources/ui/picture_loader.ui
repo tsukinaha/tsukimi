@@ -2,7 +2,7 @@
 <interface>
   <template parent="AdwBin" class="PictureLoader">
     <style>
-      <class name="boxshadow" />
+      <class name="picture-loader" />
     </style>
     <child>
       <object class="GtkOverlay" id="overlay">

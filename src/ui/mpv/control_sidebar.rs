@@ -153,7 +153,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct MPVControlSidebar(ObjectSubclass<imp::MPVControlSidebar>)
-        @extends gtk::Widget, gtk::ListBoxRow, adw::NavigationPage, @implements gtk::Accessible;
+        @extends gtk::Widget, gtk::ListBoxRow, adw::NavigationPage, @implements gtk::Accessible , gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl Default for MPVControlSidebar {

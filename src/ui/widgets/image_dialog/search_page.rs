@@ -109,7 +109,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct ImageDialogSearchPage(ObjectSubclass<imp::ImageDialogSearchPage>)
-        @extends gtk::Widget, adw::NavigationPage, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::NavigationPage, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 #[template_callbacks]

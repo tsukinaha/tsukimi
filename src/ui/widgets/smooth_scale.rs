@@ -99,7 +99,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct SmoothScale(ObjectSubclass<imp::SmoothScale>)
-        @extends gtk::Widget, gtk::Scale, gtk::Range;
+        @extends gtk::Widget, gtk::Scale, gtk::Range, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Orientable;
 }
 
 impl Default for SmoothScale {

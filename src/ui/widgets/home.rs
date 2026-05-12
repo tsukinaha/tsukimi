@@ -36,10 +36,18 @@ use crate::{
 };
 mod imp {
 
+    use std::{
+        cell::RefCell,
+        collections::HashMap,
+    };
+
     use glib::subclass::InitializingObject;
     use gtk::{
         CompositeTemplate,
-        glib,
+        glib::{
+            self,
+            WeakRef,
+        },
         prelude::StaticTypeExt,
         subclass::prelude::*,
     };
@@ -59,6 +67,8 @@ mod imp {
         #[template_child]
         pub libhortu: TemplateChild<HortuScrolled>,
         pub selection: gtk::SingleSelection,
+
+        pub libs_hortu: RefCell<HashMap<String, WeakRef<HortuScrolled>>>,
     }
 
     #[glib::object_subclass]
@@ -212,11 +222,6 @@ impl HomePage {
     }
 
     pub async fn setup_libsview(&self, items: Vec<SimpleListItem>, enable_cache: bool) {
-        let libsbox = &self.imp().libsbox;
-        for _ in 0..libsbox.observe_children().n_items() {
-            libsbox.remove(&libsbox.last_child().unwrap());
-        }
-
         for view in items {
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
@@ -228,7 +233,7 @@ impl HomePage {
         }
     }
 
-    async fn setup_libview(&self, view: SimpleListItem, enable_cache: bool) {
+    fn setup_hortu(&self, view: &SimpleListItem) -> HortuScrolled {
         let ac_view = view.to_owned();
 
         let hortu = HortuScrolled::new();
@@ -255,6 +260,24 @@ impl HomePage {
         ));
 
         self.imp().libsbox.append(&hortu);
+
+        self.imp()
+            .libs_hortu
+            .borrow_mut()
+            .insert(view.id.to_owned(), hortu.downgrade());
+
+        hortu
+    }
+
+    async fn setup_libview(&self, view: SimpleListItem, enable_cache: bool) {
+        let hortu = self
+            .imp()
+            .libs_hortu
+            .borrow()
+            .get(&view.id)
+            .and_then(|w| w.upgrade());
+
+        let hortu = hortu.unwrap_or_else(|| self.setup_hortu(&view));
 
         let view_id = view.id.clone();
         let collection_type = view.collection_type.clone();

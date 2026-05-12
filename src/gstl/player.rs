@@ -229,8 +229,6 @@ pub mod imp {
         type Type = super::MusicPlayer;
     }
 
-    impl WidgetImpl for MusicPlayer {}
-
     impl MusicPlayer {
         fn pipeline(&self) -> &gst::Element {
             self.pipeline.get().unwrap()

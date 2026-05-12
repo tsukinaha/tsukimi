@@ -479,7 +479,7 @@ impl OtherPage {
         let id = self.item().id();
 
         let results = match fetch_with_cache(
-            &format!("other_{}_{}", type_, &id),
+            &format!("other_{}_{}", type_, id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_actor_item_list(&id, &type_).await },
             None::<fn(_)>,

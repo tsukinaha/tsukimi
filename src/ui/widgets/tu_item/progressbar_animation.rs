@@ -5,7 +5,7 @@ use gtk::glib;
 pub const PROGRESSBAR_ANIMATION_DURATION: u32 = 2000;
 
 pub trait TuItemProgressbarAnimationPrelude {
-    fn overlay(&self) -> gtk::Overlay;
+    fn progress_bar(&self) -> gtk::ProgressBar;
 }
 
 pub trait TuItemProgressbarAnimation {
@@ -17,30 +17,22 @@ where
     T: TuItemProgressbarAnimationPrelude,
 {
     fn set_progress(&self, percentage: f64) {
-        let progress = gtk::ProgressBar::builder()
-            .fraction(0.)
-            .margin_end(3)
-            .margin_start(3)
-            .valign(gtk::Align::End)
-            .build();
-
-        progress.add_css_class("pgb");
-
-        self.overlay().add_overlay(&progress);
+        let bar = self.progress_bar();
+        bar.set_visible(true);
 
         spawn(glib::clone!(
             #[weak]
-            progress,
+            bar,
             async move {
                 let target = adw::CallbackAnimationTarget::new(glib::clone!(
                     #[weak]
-                    progress,
-                    move |process| progress.set_fraction(process)
+                    bar,
+                    move |v| bar.set_fraction(v)
                 ));
 
                 let animation = adw::TimedAnimation::builder()
                     .duration(PROGRESSBAR_ANIMATION_DURATION)
-                    .widget(&progress)
+                    .widget(&bar)
                     .target(&target)
                     .easing(adw::Easing::EaseOutQuart)
                     .value_from(0.)

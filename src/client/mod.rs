@@ -1,5 +1,4 @@
 pub mod account;
-pub mod dandan;
 pub mod error;
 pub mod jellyfin_client;
 pub mod proxy;
@@ -9,5 +8,4 @@ pub mod structs;
 pub mod windows_compat;
 
 pub use account::Account;
-pub use dandan::*;
 pub use proxy::ReqClient;

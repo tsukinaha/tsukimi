@@ -54,17 +54,14 @@ use super::{
     },
 };
 use crate::{
-    CLIENT_ID,
-    config::VERSION,
-    ui::{
+    CLIENT_ID, config::version, ui::{
         SETTINGS,
         jellyfin_cache_path,
         widgets::{
             filter_panel::FiltersList,
             single_grid::imp::ListType,
         },
-    },
-    utils::spawn_tokio_without_await,
+    }, utils::spawn_tokio_without_await
 };
 
 pub static JELLYFIN_CLIENT: Lazy<JellyfinClient> = Lazy::new(JellyfinClient::default);
@@ -114,7 +111,7 @@ impl Session {
                 CLIENT_ID,
                 &DEVICE_NAME,
                 &DEVICE_ID,
-                VERSION,
+                version(),
             ))
             .unwrap(),
         );
@@ -181,7 +178,7 @@ impl JellyfinClient {
                 CLIENT_ID,
                 &DEVICE_NAME,
                 &DEVICE_ID,
-                VERSION,
+                version(),
             ))?,
         );
 
@@ -770,14 +767,14 @@ impl JellyfinClient {
     pub async fn get_library(&self) -> Result<List> {
         let s = self.session();
 
-        let path = format!("Users/{}/Views", &s.account.user_id);
+        let path = format!("Users/{}/Views", s.account.user_id);
         self.request(&path, &[]).await
     }
 
     pub async fn get_latest(&self, id: &str) -> Result<Vec<SimpleListItem>> {
         let s = self.session();
 
-        let path = format!("Users/{}/Items/Latest", &s.account.user_id);
+        let path = format!("Users/{}/Items/Latest", s.account.user_id);
         let params = [
             ("Limit", "16"),
             (
@@ -887,7 +884,7 @@ impl JellyfinClient {
     ) -> Result<List> {
         let s = self.session();
 
-        let path = format!("Users/{}/Items", &s.account.user_id);
+        let path = format!("Users/{}/Items", s.account.user_id);
         let start_string = start.to_string();
         let mut params = vec![
             ("Limit", "50"),
@@ -926,7 +923,7 @@ impl JellyfinClient {
     pub async fn like(&self, id: &str) -> Result<()> {
         let s = self.session();
 
-        let path = format!("Users/{}/FavoriteItems/{}", &s.account.user_id, id);
+        let path = format!("Users/{}/FavoriteItems/{}", s.account.user_id, id);
         self.post(&path, &[], json!({})).await?;
         Ok(())
     }
@@ -934,7 +931,7 @@ impl JellyfinClient {
     pub async fn unlike(&self, id: &str) -> Result<()> {
         let s = self.session();
 
-        let path = format!("Users/{}/FavoriteItems/{}/Delete", &s.account.user_id, id);
+        let path = format!("Users/{}/FavoriteItems/{}/Delete", s.account.user_id, id);
         self.post(&path, &[], json!({})).await?;
         Ok(())
     }
@@ -942,7 +939,7 @@ impl JellyfinClient {
     pub async fn set_as_played(&self, id: &str) -> Result<()> {
         let s = self.session();
 
-        let path = format!("Users/{}/PlayedItems/{}", &s.account.user_id, id);
+        let path = format!("Users/{}/PlayedItems/{}", s.account.user_id, id);
         self.post(&path, &[], json!({})).await?;
         Ok(())
     }
@@ -950,7 +947,7 @@ impl JellyfinClient {
     pub async fn set_as_unplayed(&self, id: &str) -> Result<()> {
         let s = self.session();
 
-        let path = format!("Users/{}/PlayedItems/{}/Delete", &s.account.user_id, id);
+        let path = format!("Users/{}/PlayedItems/{}/Delete", s.account.user_id, id);
         self.post(&path, &[], json!({})).await?;
         Ok(())
     }
@@ -986,7 +983,7 @@ impl JellyfinClient {
     pub async fn get_actor_item_list(&self, id: &str, types: &str) -> Result<List> {
         let s = self.session();
 
-        let path = format!("Users/{}/Items", &s.account.user_id);
+        let path = format!("Users/{}/Items", s.account.user_id);
         let params = [
             (
                 "Fields",
@@ -1011,7 +1008,7 @@ impl JellyfinClient {
         let s = self.session();
 
         let start_string = start_index.to_string();
-        let path = format!("Users/{}/Items", &s.account.user_id);
+        let path = format!("Users/{}/Items", s.account.user_id);
         let mut params = vec![
             (
                 "Fields",
@@ -1071,7 +1068,7 @@ impl JellyfinClient {
     pub async fn get_search_recommend(&self) -> Result<List> {
         let s = self.session();
 
-        let path = format!("Users/{}/Items", &s.account.user_id);
+        let path = format!("Users/{}/Items", s.account.user_id);
         let params = [
             ("Limit", "20"),
             ("Fields", "Overview"),
@@ -1130,7 +1127,7 @@ impl JellyfinClient {
     pub async fn get_included(&self, id: &str) -> Result<List> {
         let s = self.session();
 
-        let path = format!("Users/{}/Items", &s.account.user_id);
+        let path = format!("Users/{}/Items", s.account.user_id);
         let params = [
             (
                 "Fields",
@@ -1149,7 +1146,7 @@ impl JellyfinClient {
     pub async fn get_includedby(&self, parent_id: &str) -> Result<List> {
         let s = self.session();
 
-        let path = format!("Users/{}/Items", &s.account.user_id);
+        let path = format!("Users/{}/Items", s.account.user_id);
         let params = [
             (
                 "Fields",
@@ -1170,7 +1167,7 @@ impl JellyfinClient {
     ) -> Result<List> {
         let s = self.session();
 
-        let path = format!("Users/{}/Items", &s.account.user_id);
+        let path = format!("Users/{}/Items", s.account.user_id);
         let start_index_string = start_index.to_string();
         let sort_by = format!("IsFolder,{sort_by}");
         let mut params = vec![
@@ -1213,7 +1210,7 @@ impl JellyfinClient {
     pub async fn hide_from_resume(&self, id: &str) -> Result<()> {
         let s = self.session();
 
-        let path = format!("Users/{}/Items/{}/HideFromResume", &s.account.user_id, id);
+        let path = format!("Users/{}/Items/{}/HideFromResume", s.account.user_id, id);
         let params = [("Hide", "true")];
         self.post(&path, &params, json!({})).await?;
         Ok(())
@@ -1222,7 +1219,7 @@ impl JellyfinClient {
     pub async fn get_songs(&self, parent_id: &str) -> Result<List> {
         let s = self.session();
 
-        let path = format!("Users/{}/Items", &s.account.user_id);
+        let path = format!("Users/{}/Items", s.account.user_id);
         let params = [
             (
                 "Fields",
@@ -1239,7 +1236,7 @@ impl JellyfinClient {
         let s = self.session();
 
         s.url.as_ref().expect("URL not set").join(&format!("Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
-        id, &s.account.user_id, &DEVICE_ID.to_string(), &s.account.access_token, )).unwrap().to_string()
+        id, s.account.user_id, *DEVICE_ID, s.account.access_token, )).unwrap().to_string()
     }
 
     pub async fn get_additional(&self, id: &str) -> Result<List> {
@@ -1311,7 +1308,7 @@ impl JellyfinClient {
     }
 
     pub async fn run_scheduled_task(&self, id: String) -> Result<()> {
-        let path = format!("ScheduledTasks/Running/{}", &id);
+        let path = format!("ScheduledTasks/Running/{}", id);
         self.post(&path, &[], json!({})).await?;
         Ok(())
     }

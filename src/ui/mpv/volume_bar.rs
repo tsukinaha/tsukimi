@@ -107,7 +107,7 @@ mod imp {
 glib::wrapper! {
     /// A widget displaying a `VolumeBar`.
     pub struct VolumeBar(ObjectSubclass<imp::VolumeBar>)
-        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::ConstraintTarget, gtk::Buildable;
 }
 
 impl VolumeBar {

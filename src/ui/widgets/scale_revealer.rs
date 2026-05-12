@@ -220,7 +220,7 @@ mod imp {
 glib::wrapper! {
     /// A widget to reveal a child with a scaling animation.
     pub struct ScaleRevealer(ObjectSubclass<imp::ScaleRevealer>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl ScaleRevealer {

@@ -80,6 +80,8 @@ pub mod imp {
         #[template_child]
         pub label2: TemplateChild<gtk::Label>,
         #[template_child]
+        pub progress_bar: TemplateChild<gtk::ProgressBar>,
+        #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
         #[template_child]
         pub time_label: TemplateChild<gtk::Label>,
@@ -162,10 +164,6 @@ impl TuItemOverlayPrelude for TuOverviewItem {
             ViewGroup::ListView => PosterType::Poster,
         }
     }
-
-    fn overlay_button_box(&self) -> gtk::Box {
-        self.imp().overlay_button_box.get()
-    }
 }
 
 impl TuItemMenuPrelude for TuOverviewItem {
@@ -175,8 +173,8 @@ impl TuItemMenuPrelude for TuOverviewItem {
 }
 
 impl TuItemProgressbarAnimationPrelude for TuOverviewItem {
-    fn overlay(&self) -> gtk::Overlay {
-        self.imp().overlay.get()
+    fn progress_bar(&self) -> gtk::ProgressBar {
+        self.imp().progress_bar.get()
     }
 }
 
@@ -273,11 +271,9 @@ impl TuOverviewItem {
                 if let Some(tagline) = item.tagline() {
                     imp.time_label.set_text(&tagline);
                 }
-                self.set_count();
             }
         }
-        self.set_picture();
-        self.set_played();
+        self.set_picture_with_hover_scale();
         self.set_tooltip_text(Some(&item.name()));
     }
 }

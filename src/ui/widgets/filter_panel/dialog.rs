@@ -83,7 +83,7 @@ mod imp {
 glib::wrapper! {
 
     pub struct FilterPanelDialog(ObjectSubclass<imp::FilterPanelDialog>)
-        @extends gtk::Widget, adw::Dialog, adw::PreferencesDialog, @implements gtk::Accessible, gtk::Root;
+        @extends gtk::Widget, adw::Dialog, adw::PreferencesDialog, @implements gtk::Accessible, gtk::Root, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl Default for FilterPanelDialog {

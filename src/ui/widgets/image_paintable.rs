@@ -134,9 +134,9 @@ mod imp {
 
         fn flags(&self) -> gdk::PaintableFlags {
             if self.obj().is_animation() {
-                gdk::PaintableFlags::SIZE
+                gdk::PaintableFlags::STATIC_SIZE
             } else {
-                gdk::PaintableFlags::SIZE | gdk::PaintableFlags::CONTENTS
+                gdk::PaintableFlags::STATIC_SIZE | gdk::PaintableFlags::STATIC_CONTENTS
             }
         }
 

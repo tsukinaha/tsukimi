@@ -10,27 +10,17 @@ use gtk::{
     template_callbacks,
 };
 use imp::PosterType;
-use tracing::warn;
 
-use super::{
-    tu_item::{
-        TuItemBasic,
-        TuItemMenuPrelude,
-        TuItemOverlay,
-        TuItemOverlayPrelude,
-        TuItemProgressbarAnimation,
-        TuItemProgressbarAnimationPrelude,
-    },
-    utils::{
-        GlobalToast,
-        TU_ITEM_POST_SIZE,
-        TU_ITEM_SQUARE_SIZE,
-        TU_ITEM_VIDEO_SIZE,
-    },
+use super::tu_item::{
+    PROGRESSBAR_ANIMATION_DURATION,
+    TuItemBasic,
+    TuItemMenuPrelude,
+    TuItemOverlay,
+    TuItemOverlayPrelude,
 };
-use crate::ui::provider::tu_item::{
-    PreferSize,
-    TuItem,
+use crate::{
+    ui::{GlobalToast, provider::tu_item::TuItem},
+    utils::spawn,
 };
 
 pub mod imp {
@@ -39,18 +29,28 @@ pub mod imp {
         RefCell,
     };
 
-    use adw::subclass::prelude::*;
+    use adw::{
+        prelude::*,
+        subclass::prelude::*,
+    };
     use glib::subclass::InitializingObject;
     use gtk::{
         CompositeTemplate,
         PopoverMenu,
+        gdk,
         glib,
-        prelude::*,
+        graphene,
+        gsk,
     };
 
     use crate::ui::{
+        SETTINGS,
         provider::tu_item::TuItem,
         widgets::{
+            hover_scale::{
+                HoverScale,
+                MAX_SCALE,
+            },
             picture_loader::PictureLoader,
             tu_item::TuItemAction,
         },
@@ -67,6 +67,15 @@ pub mod imp {
         NoRequest,
     }
 
+    pub struct BackdropNodeCache {
+        node: gsk::RenderNode,
+        backdrop_y: f32,
+        backdrop_h: f32,
+        widget_w: f32,
+        /// Validity key: (width_px, height_px, is_dark, paintable_ptr)
+        key: (i32, i32, bool, usize),
+    }
+
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/listitem.ui")]
@@ -76,17 +85,26 @@ pub mod imp {
         pub item: RefCell<TuItem>,
         #[property(get, set, builder(PosterType::default()))]
         pub poster_type: Cell<PosterType>,
-        #[property(get, set, default = false)]
-        pub can_direct_play: Cell<bool>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
-        pub listlabel: TemplateChild<gtk::Label>,
-        #[template_child]
-        pub label2: TemplateChild<gtk::Label>,
+        pub title: TemplateChild<gtk::Label>,
         #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
+        #[property(get, set = Self::set_progress)]
+        pub progress: Cell<f64>,
         #[template_child]
-        pub overlay_button_box: TemplateChild<gtk::Box>,
+        pub played_mark: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub folder_mark: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub direct_play_button: TemplateChild<gtk::Button>,
+
+        #[template_child]
+        pub hover_scale: TemplateChild<HoverScale>,
+
+        pub hover_scale_progress: Cell<f32>,
+        pub backdrop_cache: RefCell<Option<BackdropNodeCache>>,
+        pub is_dark: Cell<bool>,
     }
 
     #[glib::object_subclass]
@@ -110,6 +128,26 @@ pub mod imp {
     impl ObjectImpl for TuListItem {
         fn constructed(&self) {
             self.parent_constructed();
+
+            let style_manager = adw::StyleManager::default();
+            self.is_dark.set(style_manager.is_dark());
+
+            let obj = self.obj().downgrade();
+            style_manager.connect_dark_notify(move |sm| {
+                if let Some(obj) = obj.upgrade() {
+                    obj.imp().is_dark.set(sm.is_dark());
+                    obj.queue_draw();
+                }
+            });
+
+            if let Some(animation) = self.hover_scale.imp().animation.get() {
+                let obj = self.obj().downgrade();
+                animation.connect_value_notify(move |a| {
+                    if let Some(this) = obj.upgrade() {
+                        this.imp().hover_scale_progress.set(a.value() as f32);
+                    }
+                });
+            }
         }
 
         fn dispose(&self) {
@@ -119,7 +157,183 @@ pub mod imp {
         }
     }
 
-    impl WidgetImpl for TuListItem {}
+    impl WidgetImpl for TuListItem {
+        fn snapshot(&self, snapshot: &gtk::Snapshot) {
+            if !self.title.is_visible() {
+                self.parent_snapshot(snapshot);
+                return;
+            }
+
+            let Some((paintable, pic_bounds)) = self.compute_blur_info() else {
+                self.parent_snapshot(snapshot);
+                return;
+            };
+
+            let obj = self.obj();
+            let w = obj.width();
+            let h = obj.height();
+
+            let key = (w, h, self.is_dark.get(), paintable.as_ptr() as usize);
+            let stale = self
+                .backdrop_cache
+                .borrow()
+                .as_ref()
+                .map_or(true, |c| c.key != key);
+            if stale {
+                *self.backdrop_cache.borrow_mut() =
+                    self.build_backdrop_node(&paintable, &pic_bounds, w as f32, h as f32);
+            }
+
+            let cache_ref = self.backdrop_cache.borrow();
+            if let Some(cache) = cache_ref.as_ref() {
+                let hover_progress = self.hover_scale_progress.get();
+                let progress = self.progress.get() as f32;
+
+                let alpha = if self.is_dark.get() { 0.2 } else { 0.4 };
+
+                if hover_progress > 0.0 {
+                    let scale = 1.0 + (MAX_SCALE - 1.0) * hover_progress;
+                    let wf = w as f32;
+                    let hf = h as f32;
+                    snapshot.save();
+                    snapshot.translate(&graphene::Point::new(wf / 2.0, hf / 2.0));
+                    snapshot.scale(scale, scale);
+                    snapshot.translate(&graphene::Point::new(-wf / 2.0, -hf / 2.0));
+                    snapshot.append_node(&cache.node);
+                    Self::draw_progress_fill(snapshot, cache, progress, alpha);
+                    snapshot.restore();
+                } else {
+                    snapshot.append_node(&cache.node);
+                    Self::draw_progress_fill(snapshot, cache, progress, alpha);
+                }
+            }
+
+            self.parent_snapshot(snapshot);
+        }
+    }
+
+    impl TuListItem {
+        fn compute_blur_info(&self) -> Option<(gdk::Paintable, graphene::Rect)> {
+            let obj = self.obj();
+
+            let picture_loader = self.overlay.child()?.downcast::<PictureLoader>().ok()?;
+
+            let paintable = picture_loader.imp().picture.paintable()?;
+
+            let pic_bounds = picture_loader.compute_bounds(&*obj)?;
+
+            Some((paintable, pic_bounds))
+        }
+
+        fn build_backdrop_node(
+            &self, paintable: &gdk::Paintable, pic_bounds: &graphene::Rect, widget_w: f32,
+            widget_h: f32,
+        ) -> Option<BackdropNodeCache> {
+            const CORNER_RADIUS: f32 = 10.0;
+            const BLUR_RADIUS: f64 = 20.0;
+
+            let pic_bottom = pic_bounds.y() + pic_bounds.height();
+            let backdrop_y = pic_bottom - CORNER_RADIUS;
+            let backdrop_h = widget_h - backdrop_y;
+
+            if backdrop_h <= 0.0 {
+                return None;
+            }
+
+            let backdrop_rect = graphene::Rect::new(0.0, backdrop_y, widget_w, backdrop_h);
+            let rounded = gsk::RoundedRect::new(
+                backdrop_rect,
+                graphene::Size::new(0.0, 0.0),
+                graphene::Size::new(0.0, 0.0),
+                graphene::Size::new(CORNER_RADIUS, CORNER_RADIUS),
+                graphene::Size::new(CORNER_RADIUS, CORNER_RADIUS),
+            );
+
+            let sub = gtk::Snapshot::new();
+            sub.push_rounded_clip(&rounded);
+            sub.push_blur(BLUR_RADIUS);
+
+            let pic_w = pic_bounds.width();
+            let pic_h = pic_bounds.height();
+            let scale = if pic_w > 0.0 { widget_w / pic_w } else { 1.0 };
+            let draw_y = widget_h - pic_h * scale;
+
+            sub.save();
+            sub.translate(&graphene::Point::new(0.0, draw_y));
+            sub.scale(scale, scale);
+            paintable.snapshot(
+                sub.upcast_ref::<gdk::Snapshot>(),
+                pic_w as f64,
+                pic_h as f64,
+            );
+            sub.restore();
+            sub.pop(); // blur
+
+            let stops = if self.is_dark.get() {
+                [
+                    gsk::ColorStop::new(0.0, gdk::RGBA::new(0.0, 0.0, 0.0, 0.55)),
+                    gsk::ColorStop::new(1.0, gdk::RGBA::new(0.0, 0.0, 0.0, 0.75)),
+                ]
+            } else {
+                [
+                    gsk::ColorStop::new(0.0, gdk::RGBA::new(1.0, 1.0, 1.0, 0.15)),
+                    gsk::ColorStop::new(1.0, gdk::RGBA::new(1.0, 1.0, 1.0, 0.35)),
+                ]
+            };
+            sub.append_linear_gradient(
+                &backdrop_rect,
+                &graphene::Point::new(0.0, backdrop_y),
+                &graphene::Point::new(0.0, backdrop_y + backdrop_h),
+                &stops,
+            );
+            sub.pop(); // rounded clip
+
+            let node = sub.to_node()?;
+            let key = (
+                widget_w as i32,
+                widget_h as i32,
+                self.is_dark.get(),
+                paintable.as_ptr() as usize,
+            );
+            Some(BackdropNodeCache {
+                node,
+                backdrop_y,
+                backdrop_h,
+                widget_w,
+                key,
+            })
+        }
+
+        fn draw_progress_fill(
+            snapshot: &gtk::Snapshot, cache: &BackdropNodeCache, progress: f32, alpha: f32,
+        ) {
+            if progress <= 0.0 {
+                return;
+            }
+
+            let Ok(base) = gdk::RGBA::parse(SETTINGS.accent_color_code()) else {
+                return;
+            };
+
+            const CR: f32 = 10.0;
+            let fill_w = (cache.widget_w * progress).min(cache.widget_w);
+            let fill_rect = graphene::Rect::new(0.0, cache.backdrop_y, fill_w, cache.backdrop_h);
+            let fill_clip = gsk::RoundedRect::new(
+                graphene::Rect::new(0.0, cache.backdrop_y, cache.widget_w, cache.backdrop_h),
+                graphene::Size::new(0.0, 0.0),
+                graphene::Size::new(0.0, 0.0),
+                graphene::Size::new(CR, CR),
+                graphene::Size::new(CR, CR),
+            );
+
+            snapshot.push_rounded_clip(&fill_clip);
+            snapshot.append_color(
+                &gdk::RGBA::new(base.red(), base.green(), base.blue(), alpha),
+                &fill_rect,
+            );
+            snapshot.pop();
+        }
+    }
 
     impl BinImpl for TuListItem {}
 
@@ -128,19 +342,20 @@ pub mod imp {
             self.item.replace(item);
             let obj = self.obj();
 
-            while let Some(child) = self.overlay_button_box.first_child() {
-                self.overlay_button_box.remove(&child);
-            }
-
             obj.set_up();
             obj.gesture();
+        }
+
+        pub fn set_progress(&self, progress: f64) {
+            self.progress.set(progress);
+            self.obj().set_progress_anim(progress);
         }
     }
 }
 
 glib::wrapper! {
     pub struct TuListItem(ObjectSubclass<imp::TuListItem>)
-        @extends gtk::ApplicationWindow, gtk::Window, adw::Bin, gtk::Widget ,adw::NavigationPage,
+        @extends adw::Bin, gtk::Widget,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
@@ -159,21 +374,11 @@ impl TuItemOverlayPrelude for TuListItem {
     fn poster_type_ext(&self) -> PosterType {
         self.poster_type()
     }
-
-    fn overlay_button_box(&self) -> gtk::Box {
-        self.imp().overlay_button_box.get()
-    }
 }
 
 impl TuItemMenuPrelude for TuListItem {
     fn popover(&self) -> &RefCell<Option<gtk::PopoverMenu>> {
         &self.imp().popover
-    }
-}
-
-impl TuItemProgressbarAnimationPrelude for TuListItem {
-    fn overlay(&self) -> gtk::Overlay {
-        self.imp().overlay.get()
     }
 }
 
@@ -187,271 +392,81 @@ impl TuListItem {
         Object::new()
     }
 
-    #[template_callback]
-    async fn on_play_clicked(&self) {
-        let item = self.item();
-        let item_type = item.item_type();
-        match item_type.as_str() {
-            "TvChannel" => {
-                item.play_tvchannel(self);
+    fn set_progress_anim(&self, percentage: f64) {
+        let weak = self.downgrade();
+        let start_value = self.imp().progress.get();
+
+        let target = adw::CallbackAnimationTarget::new(move |_| {
+            if let Some(this) = weak.upgrade() {
+                this.queue_draw();
             }
-            "Audio" => {
-                item.play_single_audio(self);
+        });
+
+        let animation = adw::TimedAnimation::builder()
+            .duration(PROGRESSBAR_ANIMATION_DURATION)
+            .widget(self)
+            .target(&target)
+            .easing(adw::Easing::EaseOutQuart)
+            .value_from(start_value)
+            .value_to(percentage)
+            .build();
+
+        spawn(glib::clone!(
+            #[weak]
+            animation,
+            async move {
+                animation.play();
             }
-            "Video" | "MusicVideo" | "AdultVideo" | "Movie" | "Episode" => {
-                self.toast(gettext("Waiting for mediasource ..."));
-                item.play_video(self).await;
-            }
-            "Series" => {
-                self.toast(gettext("Waiting for mediasource ..."));
-                item.play_series(self).await;
-            }
-            "MusicAlbum" | "Playlist" => {
-                self.toast(gettext("Waiting for mediasource ..."));
-                item.play_album(self).await;
-            }
-            _ => {
-                self.toast(gettext("Not implemented"));
-            }
-        }
+        ));
     }
 
     pub fn set_up(&self) {
-        // FIXME: This shit function should be refactored
         let imp = self.imp();
         let item = self.item();
-        let item_type = item.item_type();
-        match item_type.as_str() {
-            "Movie" => {
-                imp.listlabel.set_text(&item.name());
-                let year = if item.production_year() != 0 {
-                    item.production_year().to_string()
-                } else {
-                    imp.label2.set_visible(false);
-                    String::default()
-                };
-                imp.label2.set_text(&year);
-                imp.overlay
-                    .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
-                self.set_rating();
-                self.set_can_direct_play(true);
-                self.set_picture();
-                self.set_played();
-                if item.is_resume() {
-                    self.set_progress(item.played_percentage());
-                }
-            }
-            "Video" | "MusicVideo" | "AdultVideo" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                imp.overlay
-                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
-                self.set_rating();
-                self.set_can_direct_play(true);
-                self.set_picture();
-            }
-            "TvChannel" => {
-                imp.listlabel.set_text(&format!(
-                    "{} - {}",
-                    item.name(),
-                    item.program_name().unwrap_or_default()
-                ));
-                imp.overlay
-                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
-                self.set_rating();
-                self.set_can_direct_play(true);
-                self.set_picture();
 
-                let Some(program_start_time) = item.program_start_time() else {
-                    return;
-                };
-
-                let program_start_time = program_start_time.to_local().unwrap();
-
-                let Some(program_end_time) = item.program_end_time() else {
-                    return;
-                };
-
-                let program_end_time = program_end_time.to_local().unwrap();
-
-                let now = glib::DateTime::now_local().unwrap();
-
-                let progress = (now.to_unix() - program_start_time.to_unix()) as f64
-                    / (program_end_time.to_unix() - program_start_time.to_unix()) as f64;
-
-                self.set_progress(progress * 100.0);
-                imp.label2.set_text(&format!(
-                    "{} - {}",
-                    program_start_time.format("%H:%M").unwrap(),
-                    program_end_time.format("%H:%M").unwrap()
-                ));
-            }
-            "CollectionFolder" | "UserView" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                imp.overlay
-                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
-                self.set_rating();
-                self.set_animated_picture();
-            }
-            "Series" => {
-                let year = if item.production_year() != 0 {
-                    item.production_year().to_string()
-                } else {
-                    String::from("")
-                };
-                imp.listlabel.set_text(&item.name());
-                let fmt_year = if let Some(status) = item.status() {
-                    if status == "Continuing" {
-                        format!("{} - {}", year, gettext("Present"))
-                    } else if status == "Ended" {
-                        if let Some(end_date) = item.end_date() {
-                            let end_year = end_date.year();
-                            if end_year != year.parse::<i32>().unwrap_or_default() {
-                                format!("{} - {}", year, end_date.year())
-                            } else {
-                                format!("{end_year}")
-                            }
-                        } else {
-                            format!("{year} - Unknown")
-                        }
-                    } else {
-                        year
-                    }
-                } else {
-                    year
-                };
-                imp.label2.set_text(&fmt_year);
-                imp.overlay
-                    .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
-                self.set_can_direct_play(true);
-                self.set_rating();
-                self.set_picture();
-                self.set_count();
-                self.set_played();
-            }
-            "BoxSet" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                imp.overlay
-                    .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
-                self.set_rating();
-                self.set_picture();
-            }
-            "Tag" | "Genre" | "MusicGenre" => {
-                imp.overlay
-                    .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                self.set_rating();
-                self.set_picture();
-            }
-            "Episode" => {
-                if let Some(series_name) = item.series_name() {
-                    imp.listlabel.set_text(&series_name);
-                    imp.label2.set_text(&format!(
-                        "S{}E{}: {}",
-                        item.parent_index_number(),
-                        item.index_number(),
-                        item.name()
-                    ));
-                } else {
-                    imp.listlabel.set_text(&item.name());
-                    imp.label2.set_visible(false);
-                }
-                imp.overlay
-                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
-                self.set_can_direct_play(true);
-                self.set_rating();
-                self.set_picture();
-                self.set_played();
-                self.set_progress(item.played_percentage());
-            }
-            "Views" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                self.set_rating();
-                self.set_picture();
-            }
-            "MusicAlbum" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_text(&item.albumartist_name());
-                imp.overlay
-                    .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
-                self.set_rating();
-                self.set_can_direct_play(true);
-                self.set_picture();
-            }
-            "Actor" | "Person" | "Director" | "Writer" | "Producer" | "GuestStar" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_text(&item.role().unwrap_or("".to_string()));
-                imp.overlay
-                    .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
-                self.set_rating();
-                self.set_picture();
-            }
-            "MusicArtist" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_text(&item.role().unwrap_or("".to_string()));
-                imp.overlay
-                    .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
-                self.set_rating();
-                self.set_picture();
-            }
-            "Audio" | "Playlist" => {
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                imp.overlay
-                    .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
-                self.set_can_direct_play(true);
-                self.set_rating();
-                self.set_picture();
-            }
-            "Folder" => {
-                imp.overlay
-                    .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                self.set_rating();
-                self.set_picture();
-                self.set_folder();
-            }
-            "Season" => {
-                imp.listlabel.set_text(&item.name());
-                let premiere_date = item
-                    .premiere_date()
-                    .and_then(|premiere_date| premiere_date.format("%Y-%m-%d").ok())
-                    .unwrap_or_default();
-                imp.label2.set_text(&premiere_date);
-                imp.overlay
-                    .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
-                self.set_rating();
-                self.set_picture();
-                self.set_count();
-                self.set_played();
-            }
-            _ => {
-                imp.overlay
-                    .set_size_request(TU_ITEM_SQUARE_SIZE.0, TU_ITEM_SQUARE_SIZE.1);
-                imp.listlabel.set_text(&item.name());
-                imp.label2.set_visible(false);
-                self.set_rating();
-                self.set_picture();
-                warn!("Unknown item type: {}", item_type)
-            }
+        if item.need_animated_picture() {
+            self.set_animated_picture();
+        } else {
+            self.set_picture();
         }
-        // if the item has a prefer size, use it to override the default size
-        match item.prefer_size() {
-            PreferSize::Video => {
-                imp.overlay
-                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
-            }
-            PreferSize::Post => {
-                imp.overlay
-                    .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
-            }
-            _ => {}
+
+        let (w, h) = item.size_hint();
+
+        imp.overlay.set_size_request(w, h);
+
+        if let Some(p) = item.fmt_percentage() {
+            self.set_progress(p / 100.);
         }
+
+        if item.has_played_mark() {
+            imp.played_mark.set_visible(true);
+        }
+
+        if item.has_folder_mark() {
+            imp.folder_mark.set_visible(true);
+        }
+
+        if item.has_direct_play_mark() {
+            imp.direct_play_button.set_visible(true);
+        }
+
         self.set_tooltip_text(Some(&item.name()));
+
+        if let Some(title) = item.list_item_title() {
+            imp.title.set_text(&title);
+            imp.title.set_visible(true);
+        }
+    }
+
+    #[template_callback]
+    async fn on_play_clicked(&self) {
+        let item = self.item();
+
+        if !item.can_direct_play() {
+            return;
+        }
+
+        self.toast(gettext("Waiting for mediasource ..."));
+        item.play_video(self).await;
     }
 }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="MenuInfo" parent="AdwBin">
+    <property name="child">
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">8</property>
+        <property name="margin-top">8</property>
+        <property name="margin-bottom">6</property>
+        <property name="margin-start">12</property>
+        <property name="margin-end">12</property>
+        <child>
+          <object class="GtkLabel" id="title">
+            <property name="label" bind-source="MenuInfo" bind-property="title" bind-flags="sync-create"/>
+            <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="wrap">true</property>
+            <property name="max-width-chars">14</property>
+            <style>
+              <class name="title-4" />
+            </style>
+          </object>
+        </child>
+        <child>
+            <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">8</property>
+                <child>
+                    <object class="GtkLabel" id="subtitle_label">
+                        <property name="label" bind-source="MenuInfo" bind-property="subtitle" bind-flags="sync-create"/>
+                        <property name="halign">start</property>
+                        <property name="hexpand">true</property>
+                        <property name="valign">center</property>
+                        <property name="visible">False</property>
+                        <property name="margin-end">6</property>
+                        <property name="max-width-chars">14</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox" id="star_box">
+                        <property name="orientation">horizontal</property>
+                        <property name="visible">False</property>
+                        <property name="valign">end</property>
+                        <child>
+                            <object class="GtkImage">
+                                <property name="icon-name">starred-symbolic</property>
+                                <property name="valign">center</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label" bind-source="MenuInfo" bind-property="rating" bind-flags="sync-create"/>
+                                <property name="valign">center</property>
+                                <property name="margin-start">6</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <style>
+                    <class name="subtitle-1" />
+                    <class name="dimmed" />
+                </style>
+            </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

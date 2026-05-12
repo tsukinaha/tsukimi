@@ -2,6 +2,11 @@
   <menu id="rightmenu">
     <section>
       <item>
+        <attribute name="custom">menu-info</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">Remove</attribute>
         <attribute name="action">item.remove</attribute>
         <attribute name="hidden-when">action-disabled</attribute>

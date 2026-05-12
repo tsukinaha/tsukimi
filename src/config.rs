@@ -1,4 +1,6 @@
-pub const VERSION: &str = "25.05-danmaku-test-alpha05";
+pub fn version() -> &'static str {
+    env!("CARGO_PKG_VERSION")
+}
 pub const GETTEXT_PACKAGE: &str = "tsukimi";
 
 // If you are using meson, this will be replaced with the correct path.

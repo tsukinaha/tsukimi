@@ -5,6 +5,7 @@
     <property name="margin-start">18</property>
     <property name="margin-end">18</property>
     <property name="margin-top">12</property>
+    <property name="margin-bottom">12</property>
     <child>
       <object class="GtkEventControllerMotion">
         <signal name="enter" handler="on_enter_focus" swapped="yes"/>
@@ -55,25 +56,11 @@
             <child>
               <object class="GtkOverlay">
                 <property name="margin-top">6</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
                 <child>
-                  <object class="GtkScrolledWindow" id="scrolled">
-                    <property name="overlay-scrolling">true</property>
-                    <property name="vscrollbar-policy">never</property>
-                    <property name="hscrollbar-policy">external</property>
-                    <property name="margin-bottom">3</property>
-                    <child>
-                      <object class="GtkListView" id="list">
-                        <property name="orientation">horizontal</property>
-                        <property name="single-click-activate">True</property>
-                        <style>
-                          <class name="horizontal-listview" />
-                        </style>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="undershoot-start" />
-                      <class name="undershoot-end" />
-                    </style>
+                  <object class="LazyDiffView" id="diffview">
+                    <property name="spacing">20</property>
                   </object>
                 </child>
                 <child type="overlay">

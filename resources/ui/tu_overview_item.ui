@@ -29,6 +29,17 @@
                     <property name="margin-top">8</property>
                   </object>
                 </child>
+                <child type="overlay">
+                  <object class="GtkProgressBar" id="progress_bar">
+                    <property name="visible">false</property>
+                    <property name="valign">end</property>
+                    <property name="margin-start">3</property>
+                    <property name="margin-end">3</property>
+                    <style>
+                      <class name="accent" />
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
             <child>

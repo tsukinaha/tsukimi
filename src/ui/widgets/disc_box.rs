@@ -75,7 +75,7 @@ mod imp {
 glib::wrapper! {
 
     pub struct DiscBox(ObjectSubclass<imp::DiscBox>)
-        @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
+        @extends gtk::Widget, gtk::Box, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Orientable;
 }
 
 impl Default for DiscBox {
@@ -96,7 +96,7 @@ impl DiscBox {
         let disc_label = self.imp().disc_label.get();
         let view_type = self.view_type();
         if view_type == SongWidgetView::MusicAlbumItem {
-            disc_label.set_text(&format!("{} {}", &gettext("Disc"), disc));
+            disc_label.set_text(&format!("{} {}", gettext("Disc"), disc));
         } else {
             disc_label.set_visible(false);
         }

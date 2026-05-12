@@ -108,7 +108,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct FilterDialogSearchPage(ObjectSubclass<imp::FilterDialogSearchPage>)
-        @extends gtk::Widget, adw::NavigationPage, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::NavigationPage, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 use super::{
