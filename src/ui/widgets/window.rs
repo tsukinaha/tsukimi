@@ -366,6 +366,14 @@ impl Window {
         self.refresh_homepage_if_needed();
     }
 
+    pub fn now_page_tag(&self) -> Option<String> {
+        let imp = self.imp();
+        let Some(now_page) = imp.mainview.visible_page() else {
+            return None;
+        };
+        now_page.tag().map(|s| s.to_string())
+    }
+
     pub async fn set_servers(&self) {
         let imp = self.imp();
         let listbox = &imp.serversbox;
@@ -583,12 +591,9 @@ impl Window {
     }
 
     pub fn refresh_homepage_if_needed(&self) {
-        let imp = self.imp();
-        if imp.insidestack.visible_child_name() == Some("homepage".into()) && SETTINGS.is_refresh()
+        if self.now_page_tag() == Some("mainpage".into()) && SETTINGS.is_refresh()
         {
-            if let Some(homepage) = imp.homepage.child().and_downcast_ref::<HomePage>() {
-
-
+            if let Some(homepage) = self.imp().homepage.child().and_downcast_ref::<HomePage>() {
                 homepage.update(false);
             }
         }

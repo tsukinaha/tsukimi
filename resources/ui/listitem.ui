@@ -2,6 +2,7 @@
 <interface>
   <template parent="AdwBin" class="TuListItem">
     <property name="halign">center</property>
+    <property name="valign">start</property>
     <child>
       <object class="HoverScale" id="hover_scale">
         <child>
@@ -15,7 +16,7 @@
                     <property name="valign">fill</property>
                     <property name="width-request">100</property>
                     <property name="height-request">100</property>
-                    <property name="halign">center</property>
+                    <property name="halign">fill</property>
                     <property name="overflow">visible</property>
                     <child type="overlay">
                         <object class="GtkButton" id="played_mark">
@@ -66,6 +67,7 @@
                 <object class="GtkLabel" id="title">
                 <property name="justify">center</property>
                 <property name="wrap">true</property>
+                <property name="max-width-chars">1</property>
                 <property name="visible">false</property>
                 <property name="margin-bottom">10</property>
                 <property name="margin-start">10</property>

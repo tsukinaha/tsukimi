@@ -35,6 +35,7 @@ mod imp {
 
             let obj = self.obj();
 
+            obj.set_halign(gtk::Align::Center);
             obj.set_overflow(gtk::Overflow::Visible);
 
             let target = adw::CallbackAnimationTarget::new(clone!(
