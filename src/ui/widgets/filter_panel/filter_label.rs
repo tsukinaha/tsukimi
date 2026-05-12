@@ -64,7 +64,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct FilterLabel(ObjectSubclass<imp::FilterLabel>)
-        @extends gtk::Widget, gtk::Button, adw::Bin, @implements gtk::Actionable, gtk::Accessible;
+        @extends gtk::Widget, gtk::Button, adw::Bin, @implements gtk::Actionable, gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl Default for FilterLabel {

@@ -45,7 +45,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct CheckRow(ObjectSubclass<imp::CheckRow>)
-        @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Accessible;
+        @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Actionable;
 }
 
 impl Default for CheckRow {

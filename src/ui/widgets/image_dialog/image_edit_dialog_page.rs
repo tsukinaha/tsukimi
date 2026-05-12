@@ -89,7 +89,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct ImageDialogEditPage(ObjectSubclass<imp::ImageDialogEditPage>)
-        @extends gtk::Widget, adw::NavigationPage, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::NavigationPage, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 use anyhow::{

@@ -46,7 +46,7 @@ mod imp {
 glib::wrapper! {
     /// A widget displaying a `MenuActions`.
     pub struct MenuActions(ObjectSubclass<imp::MenuActions>)
-        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::ConstraintTarget, gtk::Buildable;
 }
 
 impl MenuActions {

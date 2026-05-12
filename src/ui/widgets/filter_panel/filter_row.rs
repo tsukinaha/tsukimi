@@ -60,7 +60,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct FilterRow(ObjectSubclass<imp::FilterRow>)
-        @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Accessible;
+        @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Actionable;
 }
 
 #[gtk::template_callbacks]

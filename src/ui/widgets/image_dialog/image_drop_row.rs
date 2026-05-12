@@ -68,7 +68,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct ImageDropRow(ObjectSubclass<imp::ImageDropRow>)
-        @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Actionable, gtk::Accessible;
+        @extends gtk::Widget, gtk::ListBoxRow, adw::ActionRow, adw::PreferencesRow, @implements gtk::Actionable, gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl Default for ImageDropRow {

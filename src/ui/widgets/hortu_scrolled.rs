@@ -181,7 +181,7 @@ mod imp {
 glib::wrapper! {
     /// A scrolled list of items.
     pub struct HortuScrolled(ObjectSubclass<imp::HortuScrolled>)
-        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl Default for HortuScrolled {

@@ -174,7 +174,7 @@ pub(crate) mod imp {
 
 glib::wrapper! {
     pub struct SongWidget(ObjectSubclass<imp::SongWidget>)
-        @extends gtk::Widget, adw::Dialog, adw::NavigationPage, @implements gtk::Accessible;
+        @extends gtk::Widget, gtk::ListBoxRow, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Actionable;
 }
 
 impl SongWidget {

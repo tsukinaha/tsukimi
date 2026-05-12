@@ -56,7 +56,7 @@ mod imp {
 glib::wrapper! {
     /// A widget displaying a `MenuInfo`.
     pub struct MenuInfo(ObjectSubclass<imp::MenuInfo>)
-        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl MenuInfo {

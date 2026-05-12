@@ -232,7 +232,7 @@ mod imp {
 glib::wrapper! {
 
     pub struct MetadataDialog(ObjectSubclass<imp::MetadataDialog>)
-        @extends gtk::Widget, adw::Dialog, adw::PreferencesDialog, @implements gtk::Accessible, gtk::Root;
+        @extends gtk::Widget, adw::Dialog, adw::PreferencesDialog, @implements gtk::Accessible, gtk::Root, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 #[template_callbacks]

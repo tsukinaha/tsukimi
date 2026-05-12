@@ -67,7 +67,7 @@ mod imp {
 glib::wrapper! {
     /// Widget to view any media file.
     pub struct MediaContentViewer(ObjectSubclass<imp::MediaContentViewer>)
-        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl MediaContentViewer {

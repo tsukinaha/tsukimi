@@ -1,5 +1,4 @@
 pub mod control_sidebar;
-pub mod danmaku_timer;
 pub mod menu_actions;
 #[cfg(target_os = "linux")]
 pub mod mpris;
@@ -10,5 +9,4 @@ pub mod tsukimi_mpv;
 pub mod video_scale;
 pub mod volume_bar;
 
-pub use danmaku_timer::MpvTimer;
 pub use volume_bar::VolumeBar;

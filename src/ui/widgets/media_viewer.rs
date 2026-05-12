@@ -266,7 +266,7 @@ mod imp {
 glib::wrapper! {
     /// A widget allowing to view a media file.
     pub struct MediaViewer(ObjectSubclass<imp::MediaViewer>)
-        @extends gtk::Widget, @implements gtk::Accessible, adw::Swipeable;
+        @extends gtk::Widget, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, adw::Swipeable;
 }
 
 impl Default for MediaViewer {

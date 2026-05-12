@@ -88,7 +88,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct EuListItem(ObjectSubclass<imp::EuListItem>)
-        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl Default for EuListItem {

@@ -50,7 +50,7 @@ mod imp {
 glib::wrapper! {
     /// A widget displaying a `EpisodeSwitcher`.
     pub struct EpisodeSwitcher(ObjectSubclass<imp::EpisodeSwitcher>)
-        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 #[gtk::template_callbacks]

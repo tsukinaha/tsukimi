@@ -48,7 +48,7 @@ mod imp {
 glib::wrapper! {
     /// A widget displaying a `ThemeSwitcher`.
     pub struct ThemeSwitcher(ObjectSubclass<imp::ThemeSwitcher>)
-        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl ThemeSwitcher {

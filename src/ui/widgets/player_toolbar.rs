@@ -129,7 +129,7 @@ mod imp {
 glib::wrapper! {
 
     pub struct PlayerToolbarBox(ObjectSubclass<imp::PlayerToolbarBox>)
-        @extends gtk::Widget, adw::Bin, gtk::ToggleButton, gtk::Button;
+        @extends gtk::Widget, adw::Bin, gtk::ToggleButton, gtk::Button, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Actionable;
 }
 
 impl Default for PlayerToolbarBox {

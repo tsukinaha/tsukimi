@@ -640,10 +640,16 @@ impl TuItem {
     }
 
     pub fn fmt_title(&self) -> String {
-        match self.item_type().as_str() {
+        let title = match self.item_type().as_str() {
             TV_CHANNEL => self.fmt_tv_name(),
             EPISODE if let Some(series_name) = self.series_name() => series_name,
             _ => self.name(),
+        };
+
+        if self.has_played_mark() && self.unplayed_item_count() > 0 {
+            format!("{} ({})", title, self.unplayed_item_count())
+        } else {
+            title
         }
     }
 
@@ -668,7 +674,12 @@ impl TuItem {
     }
 
     pub fn has_played_mark(&self) -> bool {
-        matches!(self.item_type().as_str(), MOVIE | SERIES | EPISODE | SEASON)
+        match self.item_type().as_str() {
+            SERIES | SEASON => true,
+            MOVIE if !self.is_resume() => true,
+            EPISODE if !self.is_resume() => true,
+            _ => false,
+        }
     }
 
     pub fn has_folder_mark(&self) -> bool {
@@ -698,13 +709,15 @@ impl TuItem {
             return None;
         }
 
-        match self.item_type().as_str() {
+        let title = match self.item_type().as_str() {
             TV_CHANNEL | COLLECTION_FOLDER | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER
-            | GUEST_STAR | SEASON | BOX_SET | MUSIC_ALBUM => Some(name),
-            EPISODE if self.series_name().is_some() => Some(self.fmt_subtitle()),
-            MOVIE if self.is_resume() => Some(self.fmt_title()),
-            _ => None,
-        }
+            | GUEST_STAR | SEASON | BOX_SET | MUSIC_ALBUM => name,
+            EPISODE if self.series_name().is_some() => self.fmt_subtitle(),
+            MOVIE if self.is_resume() => self.fmt_title(),
+            _ => return None,
+        };
+
+        Some(title)
     }
 
     pub fn need_animated_picture(&self) -> bool {

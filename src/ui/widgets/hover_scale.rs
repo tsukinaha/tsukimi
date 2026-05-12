@@ -114,7 +114,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct HoverScale(ObjectSubclass<imp::HoverScale>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl HoverScale {

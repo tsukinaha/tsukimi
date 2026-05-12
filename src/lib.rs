@@ -79,7 +79,6 @@ pub fn run() -> gtk::glib::ExitCode {
     gtk::gio::resources_register_include!("tsukimi.gresource")
         .expect("Failed to register resources.");
 
-    danmakw::init();
     widgets::init();
 
     // Initialize the GTK application
