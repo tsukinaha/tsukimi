@@ -30,6 +30,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <property name="height-request">1000</property>
+                    <property name="margin-bottom">18</property>
                   </object>
                 </child>
               </object>
