@@ -8,6 +8,7 @@ use serde::{
     Deserialize,
     Serialize,
 };
+use xxhash_rust::xxh3::xxh3_64;
 
 use crate::{
     client::{
@@ -78,6 +79,18 @@ pub enum CacheEvent<T> {
     Error(anyhow::Error),
 }
 
+type CacheHash = u64;
+
+struct Cached<T> {
+    data: T,
+    hash: CacheHash,
+}
+
+enum CacheWrite {
+    Written,
+    Unchanged,
+}
+
 pub async fn fetch_with_cache<T, F>(
     cache_key: &str, cache_policy: CachePolicy, future: F,
 ) -> tokio::sync::mpsc::Receiver<CacheEvent<T>>
@@ -99,17 +112,19 @@ where
             | CachePolicy::RefreshCache
             | CachePolicy::ReadCacheAndRefresh
     );
+
+    let mut cache_hash = None;
     let cache_hit = read_cache
-        && read_from_cache(&path).is_some_and(|data| {
+        && read_from_cache(&path).is_some_and(|cached| {
+            cache_hash = Some(cached.hash);
             let _ = tx.try_send(CacheEvent::Data {
                 source: CacheSource::Cache,
-                data,
+                data: cached.data,
             });
             true
         });
 
     let fetch_network = !cache_hit || matches!(cache_policy, CachePolicy::ReadCacheAndRefresh);
-
     if !fetch_network {
         return rx;
     }
@@ -118,9 +133,18 @@ where
         match future.await {
             Ok(data) => {
                 if write_cache {
-                    if let Err(e) = write_to_cache(&path, &data) {
-                        let _ = tx.send(CacheEvent::Error(e)).await;
-                        return;
+                    match write_to_cache_if_changed(&path, &data, cache_hash) {
+                        Ok(CacheWrite::Unchanged) => {
+                            println!("Cache unchanged, not writing to disk");
+                            return;
+                        }
+                        Ok(CacheWrite::Written) => {
+                            println!("Cache updated");
+                        }
+                        Err(e) => {
+                            let _ = tx.send(CacheEvent::Error(e)).await;
+                            return;
+                        }
                     }
                 }
                 let _ = tx
@@ -139,22 +163,33 @@ where
     rx
 }
 
-fn read_from_cache<T>(path: &PathBuf) -> Option<T>
+fn read_from_cache<T>(path: &PathBuf) -> Option<Cached<T>>
 where
     T: for<'de> Deserialize<'de>,
 {
-    std::fs::read_to_string(path)
-        .ok()
-        .and_then(|contents| serde_json::from_str(&contents).ok())
+    std::fs::read_to_string(path).ok().and_then(|contents| {
+        Some(Cached {
+            data: serde_json::from_str(&contents).ok()?,
+            hash: xxh3_64(contents.as_bytes()),
+        })
+    })
 }
 
-fn write_to_cache<T>(path: &PathBuf, data: &T) -> Result<()>
+fn write_to_cache_if_changed<T>(
+    path: &PathBuf, data: &T, old_hash: Option<CacheHash>,
+) -> Result<CacheWrite>
 where
     T: Serialize,
 {
     let serialized = serde_json::to_string(data)?;
+    let new_hash = xxh3_64(serialized.as_bytes());
+
+    if old_hash.is_some_and(|h| h == new_hash) {
+        return Ok(CacheWrite::Unchanged);
+    }
+
     std::fs::write(path, serialized)?;
-    Ok(())
+    Ok(CacheWrite::Written)
 }
 
 pub async fn get_image_with_cache(id: String, img_type: String, tag: Option<u8>) -> Result<String> {
