@@ -84,6 +84,8 @@ pub struct MediaSource {
     pub direct_stream_url: Option<String>,
     #[serde(rename = "TranscodingUrl")]
     pub transcoding_url: Option<String>,
+    #[serde(rename = "LiveStreamId")]
+    pub live_stream_id: Option<String>,
     #[serde(rename = "MediaStreams")]
     pub media_streams: Vec<MediaStream>,
     #[serde(rename = "ItemId")]
@@ -510,6 +512,8 @@ pub struct Back {
     pub id: String,
     pub playsessionid: Option<String>,
     pub mediasourceid: String,
+    pub livestreamid: Option<String>,
+    pub playmethod: String,
     pub tick: u64,
     pub start_tick: u64,
 }

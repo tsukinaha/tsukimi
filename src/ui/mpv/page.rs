@@ -451,8 +451,10 @@ impl MPVPage {
                     id: id.to_owned(),
                     playsessionid: play_session_id.to_owned(),
                     mediasourceid: media_source.id.to_owned(),
+                    livestreamid: media_source.live_stream_id.to_owned(),
+                    playmethod: media_source_play_method(media_source),
                     tick: media_source.run_time_ticks.unwrap_or(0),
-                    start_tick: glib::DateTime::now_local().unwrap().to_unix() as u64,
+                    start_tick: glib::real_time() as u64 * 10,
                 };
 
                 imp.back.replace(Some(back));
@@ -1224,6 +1226,28 @@ pub async fn direct_stream_url(source: &MediaSource) -> Option<String> {
         .ok()
 }
 
+fn playable_media_source_path(source: &MediaSource) -> Option<String> {
+    let path = source.path.as_deref()?;
+
+    if path.starts_with("http://") || path.starts_with("https://") {
+        return Some(path.to_owned());
+    }
+
+    None
+}
+
+fn media_source_play_method(source: &MediaSource) -> String {
+    if source.transcoding_url.is_some() {
+        return "Transcode".to_string();
+    }
+
+    if playable_media_source_path(source).is_some() {
+        return "DirectPlay".to_string();
+    }
+
+    "DirectStream".to_string()
+}
+
 pub async fn media_source_stream_url(source: &MediaSource) -> Option<String> {
     if let Some(direct_url) = source.direct_stream_url.to_owned() {
         return Some(direct_url);
@@ -1231,6 +1255,10 @@ pub async fn media_source_stream_url(source: &MediaSource) -> Option<String> {
 
     if let Some(transcoding_url) = source.transcoding_url.to_owned() {
         return Some(transcoding_url);
+    }
+
+    if let Some(path) = playable_media_source_path(source) {
+        return Some(path);
     }
 
     direct_stream_url(source).await
