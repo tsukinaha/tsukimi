@@ -164,7 +164,6 @@ where
                 if write_cache {
                     match write_to_cache_if_changed(&path, &data, cache_hash) {
                         Ok(CacheWrite::Unchanged) => {
-                            println!("Cache unchanged, not writing to disk");
                             if let (CachePolicy::RefreshAndEmitLatest, Some(data)) =
                                 (cache_policy, cached_data)
                             {
@@ -177,9 +176,7 @@ where
                             }
                             return;
                         }
-                        Ok(CacheWrite::Written) => {
-                            println!("Cache updated");
-                        }
+                        Ok(CacheWrite::Written) => {}
                         Err(e) => {
                             let _ = tx.send(CacheEvent::Error(e)).await;
                             return;

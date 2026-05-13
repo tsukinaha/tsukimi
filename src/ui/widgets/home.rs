@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use gettextrs::gettext;
 use glib::Object;
 use gtk::{
@@ -211,6 +213,27 @@ impl HomePage {
     }
 
     pub async fn setup_libsview(&self, items: Vec<SimpleListItem>, enable_cache: bool) {
+        let current_ids = items
+            .iter()
+            .map(|view| view.id.as_str())
+            .collect::<HashSet<_>>();
+        let removed_ids = self
+            .imp()
+            .libs_hortu
+            .borrow()
+            .keys()
+            .filter(|id| !current_ids.contains(id.as_str()))
+            .cloned()
+            .collect::<Vec<_>>();
+
+        for id in removed_ids {
+            if let Some(hortu) = self.imp().libs_hortu.borrow_mut().remove(&id) {
+                if let Some(hortu) = hortu.upgrade() {
+                    self.imp().libsbox.remove(&hortu);
+                }
+            }
+        }
+
         for view in items {
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
