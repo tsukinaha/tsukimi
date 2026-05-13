@@ -1424,7 +1424,7 @@ pub fn dt(date: Option<chrono::DateTime<Utc>>) -> String {
 #[derive(Debug, Clone)]
 pub struct SelectedVideoSubInfo {
     pub sub_lang: String,
-    pub sub_index: u64,
-    pub video_index: u64,
+    pub sub_index: i64,
+    pub video_index: i64,
     pub media_source_id: String,
 }

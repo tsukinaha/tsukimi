@@ -5,6 +5,7 @@ use chrono::{
 use derive_builder::Builder;
 use serde::{
     Deserialize,
+    Deserializer,
     Serialize,
 };
 
@@ -60,14 +61,14 @@ pub struct MediaStream {
     #[serde(rename = "ChannelLayout")]
     pub channel_layout: Option<String>,
     #[serde(rename = "Index")]
-    pub index: u64,
+    pub index: i64,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MediaSource {
     #[serde(rename = "Id")]
     pub id: String,
-    #[serde(rename = "Name")]
+    #[serde(rename = "Name", default)]
     pub name: String,
     #[serde(rename = "Size")]
     pub size: Option<u64>,

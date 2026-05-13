@@ -682,7 +682,7 @@ impl JellyfinClient {
     }
 
     pub async fn get_playbackinfo(
-        &self, id: &str, sub_stream_index: Option<u64>, media_source_id: Option<String>,
+        &self, id: &str, sub_stream_index: Option<i64>, media_source_id: Option<String>,
         is_playback: bool,
     ) -> Result<Media> {
         let s = self.session();
