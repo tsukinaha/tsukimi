@@ -30,6 +30,7 @@ use crate::{
     utils::{
         CacheEvent,
         CachePolicy,
+        CacheSource,
         fetch_with_cache,
         spawn,
         spawn_g_timeout,
@@ -160,7 +161,7 @@ impl HomePage {
             if enable_cache {
                 CachePolicy::ReadCacheAndRefresh
             } else {
-                CachePolicy::RefreshCache
+                CachePolicy::RefreshIfChanged
             },
             async { JELLYFIN_CLIENT.get_resume().await },
         )
@@ -187,7 +188,7 @@ impl HomePage {
             if enable_cache {
                 CachePolicy::ReadCacheAndRefresh
             } else {
-                CachePolicy::RefreshCache
+                CachePolicy::RefreshAndEmitLatest
             },
             async { JELLYFIN_CLIENT.get_library().await },
         )
@@ -195,8 +196,10 @@ impl HomePage {
 
         while let Some(event) = events.recv().await {
             match event {
-                CacheEvent::Data { data, .. } => {
-                    hortu.set_items(&data.items);
+                CacheEvent::Data { data, source } => {
+                    if enable_cache || matches!(source, CacheSource::Network) {
+                        hortu.set_items(&data.items);
+                    }
                     self.setup_libsview(data.items, enable_cache).await;
                 }
                 CacheEvent::Error(e) => {
@@ -273,7 +276,7 @@ impl HomePage {
             if enable_cache {
                 CachePolicy::ReadCacheAndRefresh
             } else {
-                CachePolicy::RefreshCache
+                CachePolicy::RefreshIfChanged
             },
             async move {
                 if collection_type.as_deref() == Some("livetv") {

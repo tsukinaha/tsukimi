@@ -57,11 +57,21 @@ where
 }
 
 pub enum CachePolicy {
+    // If cache exists: emit Cache and skip network. Otherwise: fetch network, write cache, emit
+    // Network.
     #[allow(dead_code)]
     UseCacheIfAvailable,
-    RefreshCache,
+    // Fetch network and emit exactly one latest result.
+    // If cache exists and network is unchanged: emit Cache.
+    // If cache misses or network changed: write cache and emit Network.
+    RefreshAndEmitLatest,
+    // Fetch network; only write cache and emit Network when cache misses or content changed.
+    RefreshIfChanged,
+    // Always skip cache read/write. Fetch network and emit Network.
     #[allow(dead_code)]
     IgnoreCache,
+    // If cache exists: emit Cache, then fetch network; if changed, write cache and emit Network.
+    // If cache misses: fetch network, write cache, emit Network.
     ReadCacheAndRefresh,
 }
 
@@ -102,29 +112,48 @@ where
     let mut path = jellyfin_cache_path().await;
     path.push(format!("{cache_key}.json"));
 
-    let read_cache = matches!(
+    let read_cache_data = matches!(
         cache_policy,
         CachePolicy::UseCacheIfAvailable | CachePolicy::ReadCacheAndRefresh
+    );
+    let read_cache_hash = matches!(
+        cache_policy,
+        CachePolicy::UseCacheIfAvailable
+            | CachePolicy::ReadCacheAndRefresh
+            | CachePolicy::RefreshAndEmitLatest
+            | CachePolicy::RefreshIfChanged
     );
     let write_cache = matches!(
         cache_policy,
         CachePolicy::UseCacheIfAvailable
-            | CachePolicy::RefreshCache
+            | CachePolicy::RefreshAndEmitLatest
+            | CachePolicy::RefreshIfChanged
             | CachePolicy::ReadCacheAndRefresh
     );
 
     let mut cache_hash = None;
-    let cache_hit = read_cache
+    let mut cached_data = None;
+    let cache_hit = read_cache_hash
         && read_from_cache(&path).is_some_and(|cached| {
             cache_hash = Some(cached.hash);
-            let _ = tx.try_send(CacheEvent::Data {
-                source: CacheSource::Cache,
-                data: cached.data,
-            });
+            if read_cache_data {
+                let _ = tx.try_send(CacheEvent::Data {
+                    source: CacheSource::Cache,
+                    data: cached.data,
+                });
+            } else {
+                cached_data = Some(cached.data);
+            }
             true
         });
 
-    let fetch_network = !cache_hit || matches!(cache_policy, CachePolicy::ReadCacheAndRefresh);
+    let fetch_network = !cache_hit
+        || matches!(
+            cache_policy,
+            CachePolicy::ReadCacheAndRefresh
+                | CachePolicy::RefreshAndEmitLatest
+                | CachePolicy::RefreshIfChanged
+        );
     if !fetch_network {
         return rx;
     }
@@ -136,6 +165,16 @@ where
                     match write_to_cache_if_changed(&path, &data, cache_hash) {
                         Ok(CacheWrite::Unchanged) => {
                             println!("Cache unchanged, not writing to disk");
+                            if let (CachePolicy::RefreshAndEmitLatest, Some(data)) =
+                                (cache_policy, cached_data)
+                            {
+                                let _ = tx
+                                    .send(CacheEvent::Data {
+                                        source: CacheSource::Cache,
+                                        data,
+                                    })
+                                    .await;
+                            }
                             return;
                         }
                         Ok(CacheWrite::Written) => {
