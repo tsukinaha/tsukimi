@@ -3,17 +3,24 @@ name: Process Artifacts
 on:
   workflow_call:
 
+env:
+  TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+  TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+
 jobs:
     telegram:
       name: Upload
       runs-on: ubuntu-latest
-      if:  ${{ github.repository == 'tsukinaha/tsukimi' }}
+      if:  ${{ github.env.TELEGRAM_API_ID != '' && github.env.TELEGRAM_API_HASH != '' }}
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       services:
         docker:
           image: aiogram/telegram-bot-api
           env:
-            TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
-            TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+            TELEGRAM_API_ID: ${{ env.TELEGRAM_API_ID }}
+            TELEGRAM_API_HASH: ${{ env.TELEGRAM_API_HASH }}
           ports:
             - 8081:8081
           
@@ -27,10 +34,11 @@ jobs:
 
         - name: Upload to Telegram
           uses: MutsukiC/telegram-files@v1
+          if: ${{ env.TELEGRAM_BOT_TOKEN != '' && env.TELEGRAM_CHAT_ID != '' }}
           with:
             api-url: "http://localhost:8081"
-            token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-            chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+            token: ${{ env.TELEGRAM_BOT_TOKEN }}
+            chat-id: ${{ env.TELEGRAM_CHAT_ID }}
             files: artifacts/*
             body: |
               Tsukimi CI
@@ -45,12 +53,13 @@ jobs:
         - name: Download artifact
           uses: actions/download-artifact@v8
           with:
-            pattern: '**-linux'
-            path: artifacts-linux/*
+            pattern: "*-linux"
+            path: artifacts
             skip-decompress: true
+            merge-multiple: true
         
         - name: Create release
-          uses: softprops/action-gh-release@v2
+          uses: softprops/action-gh-release@v3
           with:
-            files: artifacts-linux
+            files: artifacts/*
             prerelease: ${{ github.ref_type == 'tag' && contains(github.ref_name, 'rc') }}
