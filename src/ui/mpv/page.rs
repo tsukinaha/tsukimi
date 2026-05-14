@@ -1266,8 +1266,7 @@ fn media_source_http_headers(source: &MediaSource) -> (Option<String>, Option<St
         .collect::<Vec<_>>();
 
     header_fields.sort();
-    let http_header_fields =
-        (!header_fields.is_empty()).then(|| header_fields.join(","));
+    let http_header_fields = (!header_fields.is_empty()).then(|| header_fields.join(","));
 
     (user_agent, http_header_fields)
 }

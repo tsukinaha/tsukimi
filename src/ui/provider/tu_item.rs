@@ -660,7 +660,9 @@ impl TuItem {
             EPISODE if self.series_name().is_some() => self.fmt_episode_detail(),
             SEASON => self.fmt_season_premiere_date(),
             SERIES => self.fmt_period(),
-            ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR => self.role().unwrap_or_default(),
+            ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR => {
+                self.role().unwrap_or_default()
+            }
             _ => String::new(),
         }
     }
@@ -726,14 +728,13 @@ impl TuItem {
             TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER => name,
             EPISODE if self.series_name().is_some() => self.fmt_subtitle(),
             MOVIE if self.is_resume() => self.fmt_title(),
-            PERSON | DIRECTOR | WRITER | PRODUCER
-            | GUEST_STAR | ACTOR => {
+            PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR => {
                 if let Some(role) = self.role() {
                     format!("{name} / {role}")
                 } else {
                     name
                 }
-            },
+            }
             _ => return None,
         };
 

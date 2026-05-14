@@ -207,7 +207,10 @@ impl MPVGLArea {
         Object::builder().build()
     }
 
-    pub fn play(&self, url: &str, start_seconds: f64, user_agent: Option<String>, http_header_fields: Option<String>) {
+    pub fn play(
+        &self, url: &str, start_seconds: f64, user_agent: Option<String>,
+        http_header_fields: Option<String>,
+    ) {
         let url = url.to_owned();
 
         spawn(glib::clone!(

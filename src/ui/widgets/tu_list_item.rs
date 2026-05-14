@@ -19,7 +19,10 @@ use super::tu_item::{
     TuItemOverlayPrelude,
 };
 use crate::{
-    ui::{GlobalToast, provider::tu_item::TuItem},
+    ui::{
+        GlobalToast,
+        provider::tu_item::TuItem,
+    },
     utils::spawn,
 };
 

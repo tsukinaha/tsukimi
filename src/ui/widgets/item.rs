@@ -20,14 +20,15 @@ use crate::{
         structs::*,
     },
     ui::{
-        mpv::page::media_source_stream_url, provider::{
+        mpv::page::media_source_stream_url,
+        provider::{
             dropdown_factory::{
                 DropdownList,
                 DropdownListBuilder,
             },
             tu_item::TuItem,
             tu_object::TuObject,
-        }
+        },
     },
     utils::{
         CachePolicy,
