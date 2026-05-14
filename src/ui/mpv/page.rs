@@ -98,10 +98,7 @@ impl PlaybackDirectMode {
                 enable_direct_stream: false,
             }),
             (false, false) => None,
-            (true, false) => Some(Self {
-                enable_direct_play: false,
-                enable_direct_stream: false,
-            }),
+            _ => unreachable!(),
         }
     }
 }
