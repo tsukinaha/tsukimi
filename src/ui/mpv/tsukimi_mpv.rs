@@ -242,6 +242,14 @@ impl TsukimiMPV {
         self.command("loadfile", &[url, "replace"]);
     }
 
+    pub fn set_user_agent(&self, value: &str) {
+        self.set_property("user-agent", value.to_string());
+    }
+
+    pub fn set_http_header_fields(&self, value: &str) {
+        self.set_property("http-header-fields", value.to_string());
+    }
+
     pub fn set_start(&self, start_seconds: f64) {
         self.set_property("start", format!("{:.2}", start_seconds));
     }
