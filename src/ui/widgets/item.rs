@@ -448,7 +448,7 @@ impl ItemPage {
         let intro_id_clone = intro_id.to_owned();
         let playback = match spawn_tokio(async move {
             JELLYFIN_CLIENT
-                .get_playbackinfo(&intro_id_clone, None, None, false)
+                .get_playbackinfo(&intro_id_clone, None, None, false, true, true)
                 .await
         })
         .await
