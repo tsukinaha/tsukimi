@@ -29,7 +29,7 @@ impl UserFacingError for reqwest::Error {
 
 impl UserFacingError for std::boxed::Box<dyn std::error::Error> {
     fn to_user_facing(&self) -> String {
-        warn!("Unknown Error: {:#}", self);
+        warn!("Unknown Error: {}", self);
         self.to_string()
     }
 }
