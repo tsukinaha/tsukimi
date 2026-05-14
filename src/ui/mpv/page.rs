@@ -513,9 +513,7 @@ impl MPVPage {
                     }
                 };
 
-                let (user_agent, http_header_fields) = media_source_http_headers(media_source);
-                imp.video
-                    .play(&video_url, start_seconds, user_agent, http_header_fields);
+                imp.video.play(&video_url, start_seconds);
             }
         ));
         self.notify_playing();
@@ -1246,27 +1244,6 @@ fn media_source_play_method(source: &MediaSource) -> String {
         return "Transcode".to_string();
     }
     "DirectPlay".to_string()
-}
-
-fn media_source_http_headers(source: &MediaSource) -> (Option<String>, Option<String>) {
-    let Some(headers) = source.required_http_headers.as_ref() else {
-        return (None, None);
-    };
-
-    let user_agent = headers.get("User-Agent").cloned().flatten();
-    let mut header_fields = headers
-        .iter()
-        .filter_map(|(name, value)| match (name.as_str(), value.as_deref()) {
-            ("User-Agent", _) | (_, None) => None,
-            (_, Some(value)) if value.is_empty() => None,
-            (_, Some(value)) => Some(format!("{name}: {value}")),
-        })
-        .collect::<Vec<_>>();
-
-    header_fields.sort();
-    let http_header_fields = (!header_fields.is_empty()).then(|| header_fields.join(","));
-
-    (user_agent, http_header_fields)
 }
 
 pub async fn media_source_stream_url(source: &MediaSource) -> Option<String> {

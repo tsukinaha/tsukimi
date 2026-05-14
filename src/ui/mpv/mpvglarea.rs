@@ -207,10 +207,7 @@ impl MPVGLArea {
         Object::builder().build()
     }
 
-    pub fn play(
-        &self, url: &str, start_seconds: f64, user_agent: Option<String>,
-        http_header_fields: Option<String>,
-    ) {
+    pub fn play(&self, url: &str, start_seconds: f64) {
         let url = url.to_owned();
 
         spawn(glib::clone!(
@@ -227,17 +224,6 @@ impl MPVGLArea {
 
                 info!("Now Playing: {}", url);
                 mpv.set_start(start_seconds);
-                if let Some(user_agent) = user_agent {
-                    mpv.set_user_agent(&user_agent);
-                } else {
-                    mpv.set_user_agent(crate::USER_AGENT.as_str());
-                }
-
-                if let Some(http_header_fields) = http_header_fields {
-                    mpv.set_http_header_fields(&http_header_fields);
-                } else {
-                    mpv.set_http_header_fields("");
-                }
 
                 mpv.load_video(&url);
 
