@@ -962,7 +962,27 @@ impl JellyfinClient {
             BackType::Back => "Sessions/Playing/Progress".to_string(),
         };
         let params = [("reqformat", "json")];
-        let body = json!({"VolumeLevel":100,"NowPlayingQueue":[],"IsMuted":false,"IsPaused":false,"MaxStreamingBitrate":2147483647,"RepeatMode":"RepeatNone","PlaybackStartTimeTicks":back.start_tick,"SubtitleOffset":0,"PlaybackRate":1,"PositionTicks":back.tick,"PlayMethod":back.playmethod,"PlaySessionId":back.playsessionid,"LiveStreamId":back.livestreamid,"MediaSourceId":back.mediasourceid,"PlaylistIndex":0,"PlaylistLength":1,"CanSeek":true,"ItemId":back.id,"Shuffle":false});
+        let body = json!({
+            "VolumeLevel":100,
+            "NowPlayingQueue":[],
+            "IsMuted":false,
+            "IsPaused":false,
+            "MaxStreamingBitrate":2147483647,
+            "RepeatMode":"RepeatNone",
+            "PlaybackStartTimeTicks":back.start_tick,
+            "SubtitleOffset":0,
+            "PlaybackRate":1,
+            "PositionTicks":back.tick,
+            "PlayMethod":back.playmethod,
+            "PlaySessionId":back.playsessionid,
+            "LiveStreamId":back.livestreamid,
+            "MediaSourceId":back.mediasourceid,
+            "PlaylistIndex":0,
+            "PlaylistLength":1,
+            "CanSeek":true,
+            "ItemId":back.id,
+            "Shuffle":false
+        });
         self.post(&path, &params, body).await?;
         Ok(())
     }

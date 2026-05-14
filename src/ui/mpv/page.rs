@@ -1239,15 +1239,13 @@ fn playable_media_source_path(source: &MediaSource) -> Option<String> {
 }
 
 fn media_source_play_method(source: &MediaSource) -> String {
+    if source.direct_stream_url.is_some() {
+        return "DirectStream".to_string();
+    }
     if source.transcoding_url.is_some() {
         return "Transcode".to_string();
     }
-
-    if playable_media_source_path(source).is_some() {
-        return "DirectPlay".to_string();
-    }
-
-    "DirectStream".to_string()
+    "DirectPlay".to_string()
 }
 
 fn media_source_http_headers(source: &MediaSource) -> (Option<String>, Option<String>) {
