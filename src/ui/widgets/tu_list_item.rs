@@ -22,6 +22,10 @@ use crate::{
     ui::{
         GlobalToast,
         provider::tu_item::TuItem,
+        widgets::utils::{
+            TU_ITEM_BANNER_SIZE,
+            TU_ITEM_VIDEO_SIZE,
+        },
     },
     utils::spawn,
 };
@@ -433,7 +437,7 @@ impl TuListItem {
             self.set_picture();
         }
 
-        let (w, h) = item.size_hint();
+        let (w, h) = self.size_hint();
 
         imp.overlay.set_size_request(w, h);
 
@@ -458,6 +462,14 @@ impl TuListItem {
         if let Some(title) = item.list_item_title() {
             imp.title.set_text(&title);
             imp.title.set_visible(true);
+        }
+    }
+
+    fn size_hint(&self) -> (i32, i32) {
+        match self.poster_type() {
+            PosterType::Banner => TU_ITEM_BANNER_SIZE,
+            PosterType::Backdrop => TU_ITEM_VIDEO_SIZE,
+            _ => self.item().size_hint(),
         }
     }
 
