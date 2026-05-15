@@ -3,16 +3,12 @@ name: Build
 on:
   workflow_dispatch:
   push:
-    branches:
-      - "*"
     paths-ignore:
       - "docs/**"
       - "**/.gitignore"
       - "**/.dockerignore"
-      - LICENSE
+      - "LICENSE"
       - "**/*.md"
-    tags:
-      - "*"
   pull_request:
     branches:
       - "main"
@@ -20,7 +16,7 @@ on:
       - "docs/**"
       - "**/.gitignore"
       - "**/.dockerignore"
-      - LICENSE
+      - "LICENSE"
       - "**/*.md"
 
 permissions:

@@ -18,7 +18,7 @@ jobs:
           apt-get install -y git
           apt-get install -y --no-install-recommends build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
           libadwaita-1-dev libmpv-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev \
-          libgstreamer-plugins-base1.0-dev libgstreamer-plugins-extra1.0-dev gstreamer1.0-libav
+          libgstreamer-plugins-base1.0-dev libgstreamer-plugins-extra1.0-dev gstreamer1.0-libav clang lld
 
       - name: Checkout
         uses: actions/checkout@v6
@@ -26,9 +26,9 @@ jobs:
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          toolchain: nightly
           components: clippy
           cache: false
+          rustflags: "-Clinker=clang -Clink-arg=-fuse-ld=lld"
 
       - name: Run Clippy
         run: |
