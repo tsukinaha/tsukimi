@@ -37,7 +37,6 @@ jobs:
           cache: false
           install: >-
             mingw-w64-${{ matrix.env }}-pkgconf
-            mingw-w64-${{ matrix.env }}-gcc
             mingw-w64-${{ matrix.env }}-libadwaita
             mingw-w64-${{ matrix.env }}-gstreamer
             mingw-w64-${{ matrix.env }}-glib2
@@ -46,6 +45,8 @@ jobs:
             mingw-w64-${{ matrix.env }}-gst-plugins-bad
             mingw-w64-${{ matrix.env }}-gst-plugins-ugly
             mingw-w64-${{ matrix.env }}-gst-libav
+            mingw-w64-${{ matrix.env }}-clang
+            mingw-w64-${{ matrix.env }}-lld
             curl
 
       - name: Setup Rust
@@ -53,7 +54,7 @@ jobs:
         with:
           target: ${{ matrix.target }}
           rustflags: ""
-          toolchain: nightly-${{ matrix.target }}
+          toolchain: stable-${{ matrix.target }}
   
       - name: Install nsis
         run: choco install nsis

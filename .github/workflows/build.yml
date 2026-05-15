@@ -3,16 +3,12 @@ name: Build
 on:
   workflow_dispatch:
   push:
-    branches:
-      - "*"
     paths-ignore:
       - "docs/**"
       - "**/.gitignore"
       - "**/.dockerignore"
-      - LICENSE
+      - "LICENSE"
       - "**/*.md"
-    tags:
-      - "*"
   pull_request:
     branches:
       - "main"
@@ -20,16 +16,16 @@ on:
       - "docs/**"
       - "**/.gitignore"
       - "**/.dockerignore"
-      - LICENSE
+      - "LICENSE"
       - "**/*.md"
 
 permissions:
   contents: write
 
 jobs:
-  clippy_check:
-    name: Check
-    uses: ./.github/workflows/cargo_clippy_check.yaml
+  lint:
+    name: Lint
+    uses: ./.github/workflows/lint.yaml
     secrets: inherit
 
   linux:
