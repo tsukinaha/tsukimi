@@ -14,7 +14,6 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           apt-get update
-          apt-get upgrade -y
           apt-get install -y git
           apt-get install -y --no-install-recommends build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
           libadwaita-1-dev libmpv-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev \
