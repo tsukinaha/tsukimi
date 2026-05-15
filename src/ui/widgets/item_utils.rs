@@ -46,7 +46,7 @@ pub fn make_video_version_choice_from_matcher(
     best_match_index
 }
 
-pub fn make_subtitle_version_choice(lang_list: Vec<(u64, String)>) -> Option<(u64, usize)> {
+pub fn make_subtitle_version_choice(lang_list: Vec<(i64, String)>) -> Option<(i64, usize)> {
     let lang = match SETTINGS.mpv_subtitle_preferred_lang() {
         1 => "English",
         2 => "Chinese Simplified",

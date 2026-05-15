@@ -7,10 +7,9 @@ jobs:
     telegram:
       name: Upload
       runs-on: ubuntu-latest
-      if:  ${{ github.repository == 'tsukinaha/tsukimi' }}
       services:
         docker:
-          image: aiogram/telegram-bot-api
+          image: aiogram/telegram-bot-api:latest
           env:
             TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
             TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
@@ -45,12 +44,13 @@ jobs:
         - name: Download artifact
           uses: actions/download-artifact@v8
           with:
-            pattern: '**-linux'
-            path: artifacts-linux/*
+            pattern: "*-linux"
+            path: artifacts
             skip-decompress: true
+            merge-multiple: true
         
         - name: Create release
-          uses: softprops/action-gh-release@v2
+          uses: softprops/action-gh-release@v3
           with:
-            files: artifacts-linux
+            files: artifacts/*
             prerelease: ${{ github.ref_type == 'tag' && contains(github.ref_name, 'rc') }}

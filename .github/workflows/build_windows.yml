@@ -89,26 +89,26 @@ jobs:
           cp -v /${{ matrix.msystem }}/bin/gdbus.exe bin/
 
           cp -rv /${{ matrix.msystem }}/lib/gdk-pixbuf-2.0 lib/
-          find lib/gdk-pixbuf-2.0/2.10.0/loaders -type f ! -name "*.dll" -exec rm -f "{}" \;
+          find lib/gdk-pixbuf-2.0/2.10.0/loaders -type f ! -name "*.dll" -exec rm -vf "{}" \;
 
           cp -rv /${{ matrix.msystem }}/lib/gio lib/
 
-          cp -rv /${{ matrix.msystem }}/lib/gstreamer-1.0 lib/ && find lib/gstreamer-1.0 -type f ! -name "*.dll" -exec rm -f "{}" \;
+          cp -rv /${{ matrix.msystem }}/lib/gstreamer-1.0 lib/ && find lib/gstreamer-1.0 -type f ! -name "*.dll" -exec rm -vf "{}" \;
 
           cp -rv $GITHUB_WORKSPACE/i18n/locale share/
 
           cp -rv /${{ matrix.msystem }}/share/glib-2.0 share/
-          find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rf "{}" \;
+          find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rfv "{}" \;
           mv -v $GITHUB_WORKSPACE/resources/moe.tsuna.tsukimi.gschema.xml share/glib-2.0/schemas/
           glib-compile-schemas.exe share/glib-2.0/schemas/
-          find share/glib-2.0/ -type f ! -name "*.compiled" -exec rm -f "{}" \;
+          find share/glib-2.0/ -type f ! -name "*.compiled" -exec rm -vf "{}" \;
 
-          cp -r /${{ matrix.msystem }}/share/icons share/
+          cp -rv /${{ matrix.msystem }}/share/icons share/
           cp -v $GITHUB_WORKSPACE/resources/icons/moe.tsuna.tsukimi.png share/icons/
-          rm -rfv share/icons/hicolor && rm -rf share/icons/AdwaitaLegacy && rm -rf share/icons/Adwaita/scalable && rm -rf share/icons/Adwaita/cursors
+          rm -rfv share/icons/hicolor && rm -rfv share/icons/AdwaitaLegacy && rm -rfv share/icons/Adwaita/scalable && rm -rfv share/icons/Adwaita/cursors
           rm -rfv share/icons/Adwaita/16x16 && rm -rf share/icons/Adwaita/symbolic-up-to-32
 
-          find . -type d -empty -delete
+          find . -type d -empty -delete -print
 
           cd lib/gstreamer-1.0 
           rm -fv \
@@ -120,8 +120,8 @@ jobs:
             libgstxingmux.dll libgsty4menc.dll libgstzbar.dll
 
           cd $GITHUB_WORKSPACE/artifact/tsukimi-x86_64-windows-gnu
-          ldd bin/tsukimi.exe | grep '\/${{ matrix.msystem }}.*\.dll' -o | xargs -I{} cp -n "{}" bin/
-          find lib/ -type f -name "*.dll" -exec ldd "{}" \; | grep '\/${{ matrix.msystem }}.*\.dll' -o | xargs -I{} cp -n "{}" bin/
+          ldd bin/tsukimi.exe | grep '\/${{ matrix.msystem }}.*\.dll' -o | xargs -I{} cp -vn "{}" bin/
+          find lib/ -type f -name "*.dll" -exec ldd "{}" \; | grep '\/${{ matrix.msystem }}.*\.dll' -o | xargs -I{} cp -vn "{}" bin/
 
       - name: Create NSIS installer
         shell: powershell
