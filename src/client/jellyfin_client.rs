@@ -1,5 +1,6 @@
 use std::hash::Hasher;
 
+use crate::ui::PlaybackDirectMode;
 use anyhow::{
     Result,
     anyhow,
@@ -54,14 +55,17 @@ use super::{
     },
 };
 use crate::{
-    CLIENT_ID, config::version, ui::{
+    CLIENT_ID,
+    config::version,
+    ui::{
         SETTINGS,
         jellyfin_cache_path,
         widgets::{
             filter_panel::FiltersList,
             single_grid::imp::ListType,
         },
-    }, utils::spawn_tokio_without_await
+    },
+    utils::spawn_tokio_without_await,
 };
 
 pub static JELLYFIN_CLIENT: Lazy<JellyfinClient> = Lazy::new(JellyfinClient::default);
@@ -682,8 +686,8 @@ impl JellyfinClient {
     }
 
     pub async fn get_playbackinfo(
-        &self, id: &str, sub_stream_index: Option<u64>, media_source_id: Option<String>,
-        is_playback: bool,
+        &self, id: &str, sub_stream_index: Option<i64>, media_source_id: Option<String>,
+        is_playback: bool, direct_mode: PlaybackDirectMode,
     ) -> Result<Media> {
         let s = self.session();
 
@@ -697,6 +701,14 @@ impl JellyfinClient {
             ("MediaSourceId", &media_source_id.unwrap_or_default()),
             ("SubtitleStreamIndex", &subtitle_stream_index),
             ("MaxStreamingBitrate", "2147483647"),
+            (
+                "EnableDirectPlay",
+                &direct_mode.enable_direct_play.to_string(),
+            ),
+            (
+                "EnableDirectStream",
+                &direct_mode.enable_direct_stream.to_string(),
+            ),
         ];
         let profile: Value = serde_json::from_str(PROFILE).expect("Failed to parse profile");
         self.post_json(&path, &params, profile).await
@@ -959,7 +971,27 @@ impl JellyfinClient {
             BackType::Back => "Sessions/Playing/Progress".to_string(),
         };
         let params = [("reqformat", "json")];
-        let body = json!({"VolumeLevel":100,"NowPlayingQueue":[],"IsMuted":false,"IsPaused":false,"MaxStreamingBitrate":2147483647,"RepeatMode":"RepeatNone","PlaybackStartTimeTicks":back.start_tick,"SubtitleOffset":0,"PlaybackRate":1,"PositionTicks":back.tick,"PlayMethod":"DirectStream","PlaySessionId":back.playsessionid,"MediaSourceId":back.mediasourceid,"PlaylistIndex":0,"PlaylistLength":1,"CanSeek":true,"ItemId":back.id,"Shuffle":false});
+        let body = json!({
+            "VolumeLevel":100,
+            "NowPlayingQueue":[],
+            "IsMuted":false,
+            "IsPaused":false,
+            "MaxStreamingBitrate":2147483647,
+            "RepeatMode":"RepeatNone",
+            "PlaybackStartTimeTicks":back.start_tick,
+            "SubtitleOffset":0,
+            "PlaybackRate":1,
+            "PositionTicks":back.tick,
+            "PlayMethod":back.playmethod,
+            "PlaySessionId":back.playsessionid,
+            "LiveStreamId":back.livestreamid,
+            "MediaSourceId":back.mediasourceid,
+            "PlaylistIndex":0,
+            "PlaylistLength":1,
+            "CanSeek":true,
+            "ItemId":back.id,
+            "Shuffle":false
+        });
         self.post(&path, &params, body).await?;
         Ok(())
     }

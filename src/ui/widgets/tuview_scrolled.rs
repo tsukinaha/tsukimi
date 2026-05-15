@@ -62,13 +62,17 @@ pub(crate) mod imp {
 
     impl Default for NoSelectionWrap {
         fn default() -> Self {
-            Self(gtk::NoSelection::new(Some(gio::ListStore::new::<TuObject>())))
+            Self(gtk::NoSelection::new(Some(
+                gio::ListStore::new::<TuObject>(),
+            )))
         }
     }
 
     impl std::ops::Deref for NoSelectionWrap {
         type Target = gtk::NoSelection;
-        fn deref(&self) -> &Self::Target { &self.0 }
+        fn deref(&self) -> &Self::Target {
+            &self.0
+        }
     }
 
     #[derive(CompositeTemplate, Default, Properties)]

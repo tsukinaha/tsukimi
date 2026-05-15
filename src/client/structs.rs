@@ -7,6 +7,10 @@ use serde::{
     Deserialize,
     Serialize,
 };
+use std::{
+    collections::HashMap,
+    fmt,
+};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct AuthenticateResponse {
@@ -60,14 +64,14 @@ pub struct MediaStream {
     #[serde(rename = "ChannelLayout")]
     pub channel_layout: Option<String>,
     #[serde(rename = "Index")]
-    pub index: u64,
+    pub index: i64,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MediaSource {
     #[serde(rename = "Id")]
     pub id: String,
-    #[serde(rename = "Name")]
+    #[serde(rename = "Name", default)]
     pub name: String,
     #[serde(rename = "Size")]
     pub size: Option<u64>,
@@ -83,6 +87,8 @@ pub struct MediaSource {
     pub direct_stream_url: Option<String>,
     #[serde(rename = "TranscodingUrl")]
     pub transcoding_url: Option<String>,
+    #[serde(rename = "LiveStreamId")]
+    pub live_stream_id: Option<String>,
     #[serde(rename = "MediaStreams")]
     pub media_streams: Vec<MediaStream>,
     #[serde(rename = "ItemId")]
@@ -176,11 +182,6 @@ impl Default for IdType {
         IdType::String(String::default())
     }
 }
-
-use std::{
-    collections::HashMap,
-    fmt,
-};
 
 impl fmt::Display for IdType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -509,6 +510,8 @@ pub struct Back {
     pub id: String,
     pub playsessionid: Option<String>,
     pub mediasourceid: String,
+    pub livestreamid: Option<String>,
+    pub playmethod: String,
     pub tick: u64,
     pub start_tick: u64,
 }

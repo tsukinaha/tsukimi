@@ -10,7 +10,7 @@ pub struct DropdownList {
     pub line1: Option<String>,
     pub line2: Option<String>,
     pub sub_lang: Option<String>,
-    pub index: Option<u64>,
+    pub index: Option<i64>,
     pub id: Option<String>,
     pub url: Option<String>,
     pub is_external: Option<bool>,

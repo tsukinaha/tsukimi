@@ -589,8 +589,7 @@ impl Window {
     }
 
     pub fn refresh_homepage_if_needed(&self) {
-        if self.now_page_tag() == Some("mainpage".into()) && SETTINGS.is_refresh()
-        {
+        if self.now_page_tag() == Some("mainpage".into()) && SETTINGS.is_refresh() {
             if let Some(homepage) = self.imp().homepage.child().and_downcast_ref::<HomePage>() {
                 homepage.update(false);
             }

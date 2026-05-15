@@ -83,7 +83,7 @@ fn mpv_error_to_string(error: i32) -> &'static str {
 
 impl UserFacingError for anyhow::Error {
     fn to_user_facing(&self) -> String {
-        warn!("Unknown Error: {}", self);
+        warn!("Unknown Error: {:#}", self);
         self.to_string()
     }
 }
