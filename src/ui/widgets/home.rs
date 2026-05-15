@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use gettextrs::gettext;
 use glib::Object;
 use gtk::{
@@ -28,7 +30,9 @@ use crate::{
         TuItem,
     },
     utils::{
+        CacheEvent,
         CachePolicy,
+        CacheSource,
         fetch_with_cache,
         spawn,
         spawn_g_timeout,
@@ -154,74 +158,82 @@ impl HomePage {
     pub async fn setup_history(&self, enable_cache: bool) {
         let hortu = self.imp().hishortu.get();
 
-        let (cache_policy, on_refresh): (CachePolicy, Option<_>) = if enable_cache {
-            let hortu_ref = hortu.clone();
-            (
-                CachePolicy::ReadCacheAndRefresh,
-                Some(move |data: List| {
-                    hortu_ref.set_items(&data.items);
-                }),
-            )
-        } else {
-            (CachePolicy::RefreshCache, None)
-        };
-
-        let results = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             "history",
-            cache_policy,
+            if enable_cache {
+                CachePolicy::ReadCacheAndRefresh
+            } else {
+                CachePolicy::RefreshIfChanged
+            },
             async { JELLYFIN_CLIENT.get_resume().await },
-            on_refresh,
         )
-        .await
-        {
-            Ok(history) => history,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                return;
-            }
-        };
+        .await;
 
-        hortu.set_items(&results.items);
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, .. } => {
+                    hortu.set_items(&data.items);
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
+                }
+            }
+        }
     }
 
     pub async fn setup_library(&self, enable_cache: bool) {
         let hortu = self.imp().libhortu.get();
 
-        let (cache_policy, on_refresh): (CachePolicy, Option<_>) = if enable_cache {
-            let hortu_ref = hortu.clone();
-            (
-                CachePolicy::ReadCacheAndRefresh,
-                Some(move |data: List| {
-                    hortu_ref.set_items(&data.items);
-                }),
-            )
-        } else {
-            (CachePolicy::RefreshCache, None)
-        };
-
-        let results = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             "library",
-            cache_policy,
+            if enable_cache {
+                CachePolicy::ReadCacheAndRefresh
+            } else {
+                CachePolicy::RefreshAndEmitLatest
+            },
             async { JELLYFIN_CLIENT.get_library().await },
-            on_refresh,
         )
-        .await
-        {
-            Ok(history) => history,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                return;
+        .await;
+
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, source } => {
+                    if enable_cache || matches!(source, CacheSource::Network) {
+                        hortu.set_items(&data.items);
+                    }
+                    self.setup_libsview(data.items, enable_cache).await;
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
+                }
             }
-        };
-
-        let results = results.items;
-
-        hortu.set_items(&results);
-
-        self.setup_libsview(results, enable_cache).await;
+        }
     }
 
     pub async fn setup_libsview(&self, items: Vec<SimpleListItem>, enable_cache: bool) {
+        let current_ids = items
+            .iter()
+            .map(|view| view.id.as_str())
+            .collect::<HashSet<_>>();
+        let removed_ids = self
+            .imp()
+            .libs_hortu
+            .borrow()
+            .keys()
+            .filter(|id| !current_ids.contains(id.as_str()))
+            .cloned()
+            .collect::<Vec<_>>();
+
+        for id in removed_ids {
+            if let Some(hortu) = self.imp().libs_hortu.borrow_mut().remove(&id) {
+                if let Some(hortu) = hortu.upgrade() {
+                    self.imp().libsbox.remove(&hortu);
+                }
+            }
+        }
+
         for view in items {
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
@@ -282,21 +294,13 @@ impl HomePage {
         let view_id = view.id.clone();
         let collection_type = view.collection_type.clone();
 
-        let (cache_policy, on_refresh): (CachePolicy, Option<_>) = if enable_cache {
-            let hortu_ref = hortu.clone();
-            (
-                CachePolicy::ReadCacheAndRefresh,
-                Some(move |data: Vec<SimpleListItem>| {
-                    hortu_ref.set_items(&data);
-                }),
-            )
-        } else {
-            (CachePolicy::RefreshCache, None)
-        };
-
-        let results = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             &format!("library_{}", view_id),
-            cache_policy,
+            if enable_cache {
+                CachePolicy::ReadCacheAndRefresh
+            } else {
+                CachePolicy::RefreshIfChanged
+            },
             async move {
                 if collection_type.as_deref() == Some("livetv") {
                     JELLYFIN_CLIENT.get_channels().await.map(|x| x.items)
@@ -304,17 +308,19 @@ impl HomePage {
                     JELLYFIN_CLIENT.get_latest(&view_id).await
                 }
             },
-            on_refresh,
         )
-        .await
-        {
-            Ok(history) => history,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                return;
-            }
-        };
+        .await;
 
-        hortu.set_items(&results);
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, .. } => {
+                    hortu.set_items(&data);
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
+                }
+            }
+        }
     }
 }

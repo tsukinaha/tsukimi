@@ -79,6 +79,7 @@ use crate::{
         },
     },
     utils::{
+        CacheEvent,
         CachePolicy,
         fetch_with_cache,
         spawn,
@@ -456,18 +457,21 @@ impl TuItem {
     pub async fn play_album(&self, obj: &impl IsA<gtk::Widget>) {
         let id = self.id();
 
-        let songs = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             &format!("audio_{}", id),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_songs(&id).await },
-            None::<fn(_)>,
         )
-        .await
-        {
-            Ok(songs) => songs,
-            Err(e) => {
-                obj.toast(e.to_user_facing());
-                return;
+        .await;
+
+        let songs = loop {
+            match events.recv().await {
+                Some(CacheEvent::Data { data, .. }) => break data,
+                Some(CacheEvent::Error(e)) => {
+                    obj.toast(e.to_user_facing());
+                    return;
+                }
+                None => return,
             }
         };
 

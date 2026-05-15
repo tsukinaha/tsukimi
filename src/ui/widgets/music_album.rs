@@ -41,6 +41,7 @@ use crate::{
         },
     },
     utils::{
+        CacheEvent,
         CachePolicy,
         fetch_with_cache,
         get_image_with_cache,
@@ -227,63 +228,74 @@ impl AlbumPage {
         let view_type = self.view_type();
         let id = item.id();
 
-        let mut songs = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             &format!("audio_{}", item.id()),
             CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_songs(&id).await },
-            None::<fn(_)>,
         )
-        .await
-        {
-            Ok(songs) => songs,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                return;
+        .await;
+
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data {
+                    data: mut songs, ..
+                } => {
+                    if view_type == SongWidgetView::PlaylistItem {
+                        self.imp().artist_label.set_text(&format!(
+                            "{} {}",
+                            songs.items.len(),
+                            gettext("Songs")
+                        ));
+                    }
+
+                    let listbox = self.imp().listbox.get();
+                    while let Some(child) = listbox.last_child() {
+                        listbox.remove(&child);
+                    }
+
+                    let mut disc_boxes: BTreeMap<u32, super::disc_box::DiscBox> = BTreeMap::new();
+
+                    if view_type == SongWidgetView::MusicAlbumItem {
+                        songs.items.sort_by_key(|song| song.index_number);
+                    }
+                    for song in songs.items {
+                        let item = TuItem::from_simple(&song, None);
+                        let parent_index_number = if view_type == SongWidgetView::MusicAlbumItem {
+                            item.parent_index_number()
+                        } else {
+                            0
+                        };
+
+                        let song_widget =
+                            disc_boxes.entry(parent_index_number).or_insert_with(|| {
+                                let new_disc_box =
+                                    super::disc_box::DiscBox::new(view_type.to_owned());
+                                new_disc_box.set_disc(parent_index_number);
+                                new_disc_box.connect_closure(
+                                    "song-activated",
+                                    true,
+                                    glib::closure_local!(
+                                        #[watch(rename_to = obj)]
+                                        self,
+                                        move |_: DiscBox, song_widget| {
+                                            obj.song_activated(song_widget);
+                                        }
+                                    ),
+                                );
+                                new_disc_box
+                            });
+                        song_widget.add_song(item);
+                    }
+
+                    for disc_box in disc_boxes.values() {
+                        self.imp().listbox.append(disc_box);
+                    }
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
+                }
             }
-        };
-
-        if view_type == SongWidgetView::PlaylistItem {
-            self.imp().artist_label.set_text(&format!(
-                "{} {}",
-                songs.items.len(),
-                gettext("Songs")
-            ));
-        }
-
-        let mut disc_boxes: BTreeMap<u32, super::disc_box::DiscBox> = BTreeMap::new();
-
-        if view_type == SongWidgetView::MusicAlbumItem {
-            songs.items.sort_by_key(|song| song.index_number);
-        }
-        for song in songs.items {
-            let item = TuItem::from_simple(&song, None);
-            let parent_index_number = if view_type == SongWidgetView::MusicAlbumItem {
-                item.parent_index_number()
-            } else {
-                0
-            };
-
-            let song_widget = disc_boxes.entry(parent_index_number).or_insert_with(|| {
-                let new_disc_box = super::disc_box::DiscBox::new(view_type.to_owned());
-                new_disc_box.set_disc(parent_index_number);
-                new_disc_box.connect_closure(
-                    "song-activated",
-                    true,
-                    glib::closure_local!(
-                        #[watch(rename_to = obj)]
-                        self,
-                        move |_: DiscBox, song_widget| {
-                            obj.song_activated(song_widget);
-                        }
-                    ),
-                );
-                new_disc_box
-            });
-            song_widget.add_song(item);
-        }
-
-        for disc_box in disc_boxes.values() {
-            self.imp().listbox.append(disc_box);
         }
     }
 
@@ -345,7 +357,7 @@ impl AlbumPage {
         let artist_id = self.item().albumartist_id();
         let types = types.to_string();
 
-        let results = match fetch_with_cache(
+        let mut events = fetch_with_cache(
             &format!("item_{types}_{id}"),
             CachePolicy::ReadCacheAndRefresh,
             async move {
@@ -355,23 +367,25 @@ impl AlbumPage {
                     _ => Ok(List::default()),
                 }
             },
-            None::<fn(_)>,
         )
-        .await
-        {
-            Ok(history) => history,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                List::default()
+        .await;
+
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, .. } => {
+                    if data.items.is_empty() {
+                        hortu.set_visible(false);
+                        continue;
+                    }
+
+                    hortu.set_visible(true);
+                    hortu.set_items(&data.items);
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                }
             }
-        };
-
-        if results.items.is_empty() {
-            hortu.set_visible(false);
-            return;
         }
-
-        hortu.set_items(&results.items);
     }
 
     #[template_callback]
