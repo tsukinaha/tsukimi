@@ -4,7 +4,7 @@ on:
 
 jobs:
   clippy_check:
-    name: Clippy
+    name: Lint
     runs-on: ubuntu-latest
     container:
       image: ubuntu:resolute
@@ -30,7 +30,11 @@ jobs:
           cache: false
           rustflags: "-Clinker=clang -Clink-arg=-fuse-ld=lld"
 
-      - name: Run Clippy
+      - name: Install nightly toolchain
+        run: rustup toolchain install nightly --component rustfmt
+
+      - name: Lint
         run: |
           echo "testing" > secret/key
-          cargo clippy --fix --allow-dirty --no-deps --release --all-targets
+          cargo +nightly fmt --check
+          cargo clippy --no-deps --release --all-targets
