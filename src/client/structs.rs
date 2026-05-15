@@ -89,8 +89,6 @@ pub struct MediaSource {
     pub transcoding_url: Option<String>,
     #[serde(rename = "LiveStreamId")]
     pub live_stream_id: Option<String>,
-    #[serde(rename = "RequiredHttpHeaders")]
-    pub required_http_headers: Option<HashMap<String, Option<String>>>,
     #[serde(rename = "MediaStreams")]
     pub media_streams: Vec<MediaStream>,
     #[serde(rename = "ItemId")]
