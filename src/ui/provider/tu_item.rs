@@ -464,14 +464,15 @@ impl TuItem {
         )
         .await;
 
-        let songs = loop {
-            match events.recv().await {
-                Some(CacheEvent::Data { data, .. }) => break data,
-                Some(CacheEvent::Error(e)) => {
-                    obj.toast(e.to_user_facing());
-                    return;
-                }
-                None => return,
+        let Some(event) = events.recv().await else {
+            return;
+        };
+
+        let songs = match event {
+            CacheEvent::Data { data, .. } => data,
+            CacheEvent::Error(e) => {
+                obj.toast(e.to_user_facing());
+                return;
             }
         };
 
