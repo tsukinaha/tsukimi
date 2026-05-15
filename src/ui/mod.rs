@@ -11,3 +11,5 @@ pub use widgets::{
     GlobalToast,
     window::Window,
 };
+
+pub use mpv::page::PlaybackDirectMode;

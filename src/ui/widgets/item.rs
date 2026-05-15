@@ -20,7 +20,10 @@ use crate::{
         structs::*,
     },
     ui::{
-        mpv::page::media_source_stream_url,
+        mpv::page::{
+            PlaybackDirectMode,
+            media_source_stream_url,
+        },
         provider::{
             dropdown_factory::{
                 DropdownList,
@@ -448,7 +451,13 @@ impl ItemPage {
         let intro_id_clone = intro_id.to_owned();
         let playback = match spawn_tokio(async move {
             JELLYFIN_CLIENT
-                .get_playbackinfo(&intro_id_clone, None, None, false, true, true)
+                .get_playbackinfo(
+                    &intro_id_clone,
+                    None,
+                    None,
+                    false,
+                    PlaybackDirectMode::direct(),
+                )
                 .await
         })
         .await

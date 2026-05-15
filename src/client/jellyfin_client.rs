@@ -1,5 +1,6 @@
 use std::hash::Hasher;
 
+use crate::ui::PlaybackDirectMode;
 use anyhow::{
     Result,
     anyhow,
@@ -686,7 +687,7 @@ impl JellyfinClient {
 
     pub async fn get_playbackinfo(
         &self, id: &str, sub_stream_index: Option<i64>, media_source_id: Option<String>,
-        is_playback: bool, enable_direct_play: bool, enable_direct_stream: bool,
+        is_playback: bool, direct_mode: PlaybackDirectMode,
     ) -> Result<Media> {
         let s = self.session();
 
@@ -700,8 +701,14 @@ impl JellyfinClient {
             ("MediaSourceId", &media_source_id.unwrap_or_default()),
             ("SubtitleStreamIndex", &subtitle_stream_index),
             ("MaxStreamingBitrate", "2147483647"),
-            ("EnableDirectPlay", &enable_direct_play.to_string()),
-            ("EnableDirectStream", &enable_direct_stream.to_string()),
+            (
+                "EnableDirectPlay",
+                &direct_mode.enable_direct_play.to_string(),
+            ),
+            (
+                "EnableDirectStream",
+                &direct_mode.enable_direct_stream.to_string(),
+            ),
         ];
         let profile: Value = serde_json::from_str(PROFILE).expect("Failed to parse profile");
         self.post_json(&path, &params, profile).await

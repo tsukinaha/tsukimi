@@ -69,8 +69,8 @@ const NEXT_CHAPTER_KEYVAL: u32 = 65365;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct PlaybackDirectMode {
-    enable_direct_play: bool,
-    enable_direct_stream: bool,
+    pub enable_direct_play: bool,
+    pub enable_direct_stream: bool,
 }
 
 impl Default for PlaybackDirectMode {
@@ -80,7 +80,7 @@ impl Default for PlaybackDirectMode {
 }
 
 impl PlaybackDirectMode {
-    const fn direct() -> Self {
+    pub const fn direct() -> Self {
         Self {
             enable_direct_play: true,
             enable_direct_stream: true,
@@ -538,8 +538,7 @@ impl MPVPage {
                             sub_stream_index,
                             media_source_id,
                             true,
-                            direct_mode.enable_direct_play,
-                            direct_mode.enable_direct_stream,
+                            direct_mode,
                         )
                         .await
                 })
@@ -665,8 +664,7 @@ impl MPVPage {
                     Some(stream_index),
                     Some(media_source_id),
                     true,
-                    direct_mode.enable_direct_play,
-                    direct_mode.enable_direct_stream,
+                    direct_mode,
                 )
                 .await
         })
