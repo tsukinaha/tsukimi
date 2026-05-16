@@ -10,27 +10,17 @@ use crate::ui::{
         hover_scale::HoverScale,
         picture_loader::PictureLoader,
         tu_list_item::imp::PosterType,
-        utils::*,
     },
 };
 
 use super::TuItemBasic;
 
 pub trait TuItemOverlayPrelude {
-    fn set_overlay_size(overlay: &gtk::Overlay, width: i32, height: i32) {
-        overlay.set_size_request(width, height);
-    }
-
     fn get_image_type_and_tag(&self, item: &TuItem) -> (&str, Option<String>, String) {
         if self.poster_type_ext() != PosterType::Poster {
             if let Some(imag_tags) = item.image_tags() {
                 match self.poster_type_ext() {
                     PosterType::Banner => {
-                        Self::set_overlay_size(
-                            &self.overlay(),
-                            TU_ITEM_BANNER_SIZE.0,
-                            TU_ITEM_BANNER_SIZE.1,
-                        );
                         if imag_tags.banner().is_some() {
                             return ("Banner", None, item.id());
                         } else if imag_tags.thumb().is_some() {
@@ -40,11 +30,6 @@ pub trait TuItemOverlayPrelude {
                         }
                     }
                     PosterType::Backdrop => {
-                        Self::set_overlay_size(
-                            &self.overlay(),
-                            TU_ITEM_VIDEO_SIZE.0,
-                            TU_ITEM_VIDEO_SIZE.1,
-                        );
                         if imag_tags.backdrop().is_some() {
                             return ("Backdrop", Some(0.to_string()), item.id());
                         } else if imag_tags.thumb().is_some() {
