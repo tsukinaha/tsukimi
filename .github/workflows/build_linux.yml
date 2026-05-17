@@ -28,7 +28,8 @@ jobs:
           apt-get install -y git
           apt-get install -y --no-install-recommends build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
           libadwaita-1-dev libmpv-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev \
-          libgstreamer-plugins-base1.0-dev libgstreamer-plugins-extra1.0-dev gstreamer1.0-libav clang-22 lld-22
+          libgstreamer-plugins-base1.0-dev libgstreamer-plugins-extra1.0-dev gstreamer1.0-libav
+          bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
 
       - name: Checkout
         uses: actions/checkout@v6
@@ -39,6 +40,14 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           rustflags: "-Clinker-plugin-lto -Clinker=clang -Clink-arg=-fuse-ld=lld"
+      
+      - name: Setup clang
+        run: |
+          RUSTC_LLVM_VER=$(rustc -vV | sed -n 's/^LLVM version: \([0-9]*\).*/\1/p')
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh $RUSTC_LLVM_VER
+          git clean -fdx
 
       - name: Build tsukimi for ${{ matrix.platform }}
         env:

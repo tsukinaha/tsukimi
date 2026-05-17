@@ -53,7 +53,7 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           target: ${{ matrix.target }}
-          rustflags: "-Clinker-plugin-lto -Clinker=clang -Clink-arg=-fuse-ld=lld"
+          rustflags: "-Clinker=clang -Clink-arg=-fuse-ld=lld"
           toolchain: stable-${{ matrix.target }}
   
       - name: Install nsis
