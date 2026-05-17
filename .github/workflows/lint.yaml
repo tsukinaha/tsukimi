@@ -27,7 +27,6 @@ jobs:
         with:
           components: clippy
           cache: false
-          rustflags: "-Clinker=clang -Clink-arg=-fuse-ld=lld"
 
       - name: Install nightly toolchain
         run: rustup toolchain install nightly --component rustfmt
