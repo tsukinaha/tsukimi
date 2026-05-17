@@ -394,8 +394,7 @@ impl JellyfinClient {
 
         let mut url = s.url.clone().expect("URL not set");
         url.path_segments_mut()
-            .map_err(|_| anyhow!("Failed to build item stream URL path"))?
-            .pop();
+            .map_err(|_| anyhow!("Failed to build item stream URL path"))?;
         let path = format!("Videos/{}/stream.{}", item_id, container);
         let mut url = url
             .join(&path)
