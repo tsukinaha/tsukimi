@@ -24,7 +24,7 @@ mod imp {
         pub title: RefCell<String>,
         #[property(get, set = Self::set_subtitle)]
         pub subtitle: RefCell<String>,
-        #[property(get, set)]
+        #[property(get, set = Self::set_rating)]
         pub rating: RefCell<String>,
 
         #[template_child]
