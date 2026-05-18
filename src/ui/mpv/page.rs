@@ -755,19 +755,20 @@ impl MPVPage {
             return;
         };
 
-        let video_list = self.imp().current_episode_list.borrow().to_owned();
-
-        let next_item = video_list.iter().enumerate().find_map(|(i, item)| {
-            // Don't use id() here, because the same video maybe have different id
-            if item.index_number() == current_video.index_number()
-                && item.parent_index_number() == current_video.parent_index_number()
-            {
-                let new_index = (i as isize + offset) as usize;
-                video_list.get(new_index).cloned()
-            } else {
-                None
-            }
-        });
+        let next_item = {
+            let video_list = self.imp().current_episode_list.borrow();
+            video_list.iter().enumerate().find_map(|(i, item)| {
+                // Don't use id() here, because the same video maybe have different id
+                if item.index_number() == current_video.index_number()
+                    && item.parent_index_number() == current_video.parent_index_number()
+                {
+                    let new_index = (i as isize + offset) as usize;
+                    video_list.get(new_index).cloned()
+                } else {
+                    None
+                }
+            })
+        };
 
         let Some(next_item) = next_item else {
             self.toast(gettext("No more video found"));
@@ -1365,7 +1366,7 @@ pub async fn direct_stream_url(source: &MediaSource) -> Option<String> {
         .get_item_stream_url(
             container,
             source.item_id.as_ref().unwrap_or(&source.id),
-            &source.id.to_owned(),
+            &source.id,
         )
         .await
         .ok()

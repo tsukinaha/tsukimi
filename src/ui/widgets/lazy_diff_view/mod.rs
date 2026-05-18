@@ -534,11 +534,15 @@ impl LazyDiffView {
     fn visible_inserted_keys(&self, old_items: &[RowData]) -> HashSet<String> {
         let old_keys = old_items
             .iter()
-            .map(|row| row.key.clone())
+            .map(|row| row.key.as_str())
             .collect::<HashSet<_>>();
-        self.visible_range()
-            .map(|index| self.imp().items.borrow()[index].key.clone())
-            .filter(|key| !old_keys.contains(key))
+        let visiable_range = self.visible_range();
+        let items = self.imp().items.borrow();
+        visiable_range
+            .filter_map(|index| {
+                let key = items.get(index)?.key.as_str();
+                (!old_keys.contains(key)).then(|| key.to_string())
+            })
             .collect()
     }
 
@@ -834,20 +838,8 @@ impl LazyDiffView {
     }
 
     fn reposition_active_rows(&self) {
-        let indices = self
-            .imp()
-            .items
-            .borrow()
-            .iter()
-            .enumerate()
-            .map(|(index, row)| (row.key.clone(), index))
-            .collect::<HashMap<_, _>>();
-
-        for row_data in self.imp().items.borrow().iter() {
+        for (index, row_data) in self.imp().items.borrow().iter().enumerate() {
             let Some(row) = self.imp().rows.borrow().get(&row_data.key).cloned() else {
-                continue;
-            };
-            let Some(index) = indices.get(&row_data.key).copied() else {
                 continue;
             };
             self.position_row(&row, index);
