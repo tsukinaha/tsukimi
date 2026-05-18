@@ -904,9 +904,9 @@ impl JellyfinClient {
 
     pub async fn position_back(&self, back: &Back, backtype: BackType) -> Result<()> {
         let path = match backtype {
-            BackType::Start => "Sessions/Playing".to_string(),
-            BackType::Stop => "Sessions/Playing/Stopped".to_string(),
-            BackType::Back => "Sessions/Playing/Progress".to_string(),
+            BackType::Start => "Sessions/Playing",
+            BackType::Stop => "Sessions/Playing/Stopped",
+            BackType::Back => "Sessions/Playing/Progress",
         };
         let params = [("reqformat", "json")];
         let body = json!({
@@ -930,7 +930,7 @@ impl JellyfinClient {
             "ItemId":back.id,
             "Shuffle":false
         });
-        self.post(&path, &params, body).await?;
+        self.post(path, &params, body).await?;
         Ok(())
     }
 
