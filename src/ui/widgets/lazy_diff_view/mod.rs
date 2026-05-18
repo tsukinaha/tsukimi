@@ -482,14 +482,13 @@ impl LazyDiffView {
 
     fn apply_items(&self, new_items: Vec<RowData>) {
         let imp = self.imp();
-        let old_items = imp.items.borrow().clone();
         let active_keys = imp.rows.borrow().keys().cloned().collect::<HashSet<_>>();
-        let old_indices = active_indices(&old_items, &active_keys);
+        let old_indices = active_indices(&imp.items.borrow(), &active_keys);
         let new_indices = active_indices(&new_items, &active_keys);
 
         self.animate_removed_rows(&active_keys, &old_indices, &new_indices);
         let reorder_offsets = self.reorder_offsets(&old_indices, &new_indices);
-        *imp.items.borrow_mut() = new_items;
+        let old_items = imp.items.replace(new_items);
         self.reset_item_extent();
         self.resize_viewport();
 
