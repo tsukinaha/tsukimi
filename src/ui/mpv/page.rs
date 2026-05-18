@@ -1384,14 +1384,14 @@ fn playable_media_source_path(source: &MediaSource) -> Option<String> {
     None
 }
 
-fn media_source_play_method(source: &MediaSource) -> String {
+fn media_source_play_method(source: &MediaSource) -> &'static str {
     if source.direct_stream_url.is_some() {
-        return "DirectStream".to_string();
+        return "DirectStream";
     }
     if source.transcoding_url.is_some() {
-        return "Transcode".to_string();
+        return "Transcode";
     }
-    "DirectPlay".to_string()
+    "DirectPlay"
 }
 
 pub async fn media_source_stream_url(source: &MediaSource) -> Option<String> {
