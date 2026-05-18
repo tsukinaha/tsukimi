@@ -49,6 +49,7 @@ base64 = "0.22.1"
 libmpv2 = "4.1.0"
 glow = "0.17"
 xxhash-rust = { version = "0.8.15", features = ["xxh3"] }
+futures-util = "0.3.31"
 
 [build-dependencies]
 embed-resource = "3.0"

@@ -3649,6 +3649,7 @@ dependencies = [
  "epoxy",
  "flume",
  "fnv",
+ "futures-util",
  "gdk4-wayland",
  "gdk4-x11",
  "gettext-rs",
