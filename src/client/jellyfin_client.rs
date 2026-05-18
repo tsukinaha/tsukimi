@@ -2,8 +2,10 @@ use std::hash::Hasher;
 
 use crate::ui::PlaybackDirectMode;
 use anyhow::{
+    Context,
     Result,
     anyhow,
+    bail,
 };
 use arc_swap::ArcSwap;
 use once_cell::sync::Lazy;
@@ -230,21 +232,11 @@ impl JellyfinClient {
         Ok(())
     }
 
-    pub fn get_url_and_headers(&self) -> Result<(Url, reqwest::header::HeaderMap)> {
-        let s = self.session();
-        let url = s
-            .url
-            .as_ref()
-            .ok_or_else(|| anyhow!("URL is not set"))?
-            .clone();
-        Ok((url, s.headers.clone()))
-    }
-
     pub async fn request<T>(&self, path: &str, params: &[(&str, &str)]) -> Result<T>
     where
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
-        let request = self.prepare_request(Method::GET, path, params).await?;
+        let request = self.prepare_request(Method::GET, path, params)?;
         let res = self.send_request(request).await?;
 
         let res = match res.error_for_status() {
@@ -273,8 +265,7 @@ impl JellyfinClient {
         &self, path: &str, params: &[(&str, &str)], etag: Option<String>,
     ) -> Result<Response> {
         let request = self
-            .prepare_request(Method::GET, path, params)
-            .await?
+            .prepare_request(Method::GET, path, params)?
             .header("If-None-Match", etag.unwrap_or_default());
         let res = request.send().await?;
         Ok(res)
@@ -285,8 +276,7 @@ impl JellyfinClient {
         B: Serialize,
     {
         let request = self
-            .prepare_request(Method::POST, path, params)
-            .await?
+            .prepare_request(Method::POST, path, params)?
             .json(&body);
         let res = self.send_request(request).await?;
         Ok(res)
@@ -297,8 +287,7 @@ impl JellyfinClient {
         reqwest::Body: From<B>,
     {
         let request = self
-            .prepare_request_headers(Method::POST, path, &[], content_type)
-            .await?
+            .prepare_request_headers(Method::POST, path, &[], content_type)?
             .body(body);
         let res = self.send_request(request).await?;
         Ok(res)
@@ -316,23 +305,24 @@ impl JellyfinClient {
         Ok(parsed)
     }
 
-    async fn prepare_request(
+    fn prepare_request(
         &self, method: Method, path: &str, params: &[(&str, &str)],
     ) -> Result<RequestBuilder> {
-        let (mut url, headers) = self.get_url_and_headers()?;
-        url = url.join(path)?;
+        let s = self.session();
+        let url = s.url.as_ref().context("URL is not set")?.join(path)?;
         Ok(self
             .client
             .request(method, url)
             .query(params)
-            .headers(headers))
+            .headers(s.headers.clone()))
     }
 
-    async fn prepare_request_headers(
+    fn prepare_request_headers(
         &self, method: Method, path: &str, params: &[(&str, &str)], content_type: &str,
     ) -> Result<RequestBuilder> {
-        let (mut url, mut headers) = self.get_url_and_headers()?;
-        url = url.join(path)?;
+        let s = self.session();
+        let url = s.url.as_ref().context("URL is not set")?.join(path)?;
+        let mut headers = s.headers.clone();
         headers.insert(
             reqwest::header::CONTENT_TYPE,
             HeaderValue::from_str(content_type)?,
@@ -345,16 +335,14 @@ impl JellyfinClient {
     }
 
     async fn send_request(&self, request: RequestBuilder) -> Result<Response> {
-        let res = match request.send().await {
-            Ok(r) => r,
-            Err(e) => return Err(anyhow!(e.to_user_facing())),
-        };
-        Ok(res)
+        request
+            .send()
+            .await
+            .map_err(|e| anyhow!(e.to_user_facing()))
     }
 
     pub async fn authenticate_admin(&self) -> Result<AuthenticateResponse> {
         let s = self.session();
-
         let path = format!("Users/{}", s.account.user_id);
         let res = self.request(&path, &[]).await?;
         Ok(res)
@@ -368,45 +356,20 @@ impl JellyfinClient {
         self.post_json("Users/authenticatebyname", &[], body).await
     }
 
-    // jellyfin
-    pub async fn get_direct_stream_url(
-        &self, continer: &str, media_source_id: &str, etag: &str,
-    ) -> String {
-        let s = self.session();
-
-        let mut url = s.url.clone().expect("URL not set");
-        url.path_segments_mut().unwrap().pop();
-        let path = format!("Videos/{media_source_id}/stream.{continer}");
-        let mut url = url.join(&path).unwrap();
-        url.query_pairs_mut()
-            .append_pair("Static", "true")
-            .append_pair("mediaSourceId", media_source_id)
-            .append_pair("deviceId", &DEVICE_ID)
-            .append_pair("api_key", &s.account.access_token)
-            .append_pair("Tag", etag);
-        url.to_string()
-    }
-
     pub async fn get_item_stream_url(
         &self, container: &str, item_id: &str, media_source_id: &str,
     ) -> Result<String> {
         let s = self.session();
-
-        let mut url = s.url.clone().expect("URL not set");
-        url.path_segments_mut()
-            .map_err(|_| anyhow!("Failed to build item stream URL path"))?;
+        let Some(url) = s.url.as_ref() else {
+            bail!("URL is not set");
+        };
         let path = format!("Videos/{}/stream.{}", item_id, container);
-        let mut url = url
-            .join(&path)
-            .map_err(|e| anyhow!("Failed to build item stream URL: {}", e))?;
-        {
-            let mut pairs = url.query_pairs_mut();
-            pairs
-                .append_pair("Static", "true")
-                .append_pair("deviceId", &DEVICE_ID)
-                .append_pair("api_key", &s.account.access_token)
-                .append_pair("MediaSourceId", media_source_id);
-        }
+        let mut url = url.join(&path).context("Failed to build item stream URL")?;
+        url.query_pairs_mut()
+            .append_pair("Static", "true")
+            .append_pair("deviceId", &DEVICE_ID)
+            .append_pair("api_key", &s.account.access_token)
+            .append_pair("MediaSourceId", media_source_id);
         Ok(url.to_string())
     }
 
@@ -414,7 +377,6 @@ impl JellyfinClient {
         &self, query: &str, filter: &[&str], start_index: &str, filters_list: &FiltersList,
     ) -> Result<List> {
         let s = self.session();
-
         let filter_str = filter.join(",");
         let path = format!("Users/{}/Items", s.account.user_id);
         let mut params = vec![
@@ -434,18 +396,15 @@ impl JellyfinClient {
             ("GroupProgramsBySeries", "true"),
             ("Limit", "50"),
         ];
-
         let kv = filters_list.to_kv();
         kv.iter().for_each(|(k, v)| {
             params.push((k.as_str(), v.as_str()));
         });
-
         self.request(&path, &params).await
     }
 
     pub async fn get_episodes(&self, id: &str, season_id: &str, start_index: u32) -> Result<List> {
         let s = self.session();
-
         let path = format!("Shows/{id}/Episodes");
         let params = [
             (
@@ -463,7 +422,6 @@ impl JellyfinClient {
 
     pub async fn get_episodes_all(&self, id: &str, season_id: &str) -> Result<List> {
         let s = self.session();
-
         let path = format!("Shows/{id}/Episodes");
         let params = [
             (
@@ -479,7 +437,6 @@ impl JellyfinClient {
 
     pub async fn get_item_info(&self, id: &str) -> Result<SimpleListItem> {
         let s = self.session();
-
         let path = format!("Users/{}/Items/{}", s.account.user_id, id);
         let params = [("Fields", "ShareLevel")];
         self.request(&path, &params).await
@@ -487,7 +444,6 @@ impl JellyfinClient {
 
     pub async fn get_edit_info(&self, id: &str) -> Result<Value> {
         let s = self.session();
-
         let path = format!("Users/{}/Items/{}", s.account.user_id, id);
         let params = [("Fields", "ChannelMappingInfo")];
         self.request(&path, &params).await
@@ -500,7 +456,6 @@ impl JellyfinClient {
 
     pub async fn get_resume(&self) -> Result<List> {
         let s = self.session();
-
         let path = format!("Users/{}/Items/Resume", s.account.user_id);
         let params = [
             ("Recursive", "true"),
@@ -650,7 +605,6 @@ impl JellyfinClient {
 
     pub async fn get_artist_albums(&self, id: &str, artist_id: &str) -> Result<List> {
         let s = self.session();
-
         let path = format!("Users/{}/Items", s.account.user_id);
         let params = [
             ("IncludeItemTypes", "MusicAlbum"),
@@ -672,7 +626,6 @@ impl JellyfinClient {
 
     pub async fn get_shows_next_up(&self, series_id: &str) -> Result<List> {
         let s = self.session();
-
         let path = "Shows/NextUp".to_string();
         let params = [
             ("Fields", "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio"),
@@ -689,7 +642,6 @@ impl JellyfinClient {
         is_playback: bool, direct_mode: PlaybackDirectMode,
     ) -> Result<Media> {
         let s = self.session();
-
         let path = format!("Items/{id}/PlaybackInfo");
         let subtitle_stream_index = sub_stream_index.map(|s| s.to_string()).unwrap_or_default();
         let params = [
@@ -754,7 +706,6 @@ impl JellyfinClient {
 
     pub async fn get_user_avatar(&self) -> Result<String> {
         let s = self.session();
-
         let path = format!("Users/{}/Images/Primary", s.account.user_id);
         let params = [("maxHeight", "50"), ("maxWidth", "50")];
         let response = self.request_picture(&path, &params, None).await?;
@@ -777,14 +728,12 @@ impl JellyfinClient {
 
     pub async fn get_library(&self) -> Result<List> {
         let s = self.session();
-
         let path = format!("Users/{}/Views", s.account.user_id);
         self.request(&path, &[]).await
     }
 
     pub async fn get_latest(&self, id: &str) -> Result<Vec<SimpleListItem>> {
         let s = self.session();
-
         let path = format!("Users/{}/Items/Latest", s.account.user_id);
         let params = [
             ("Limit", "16"),
@@ -801,8 +750,7 @@ impl JellyfinClient {
 
     pub async fn get_streaming_url(&self, path: &str) -> String {
         let s = self.session();
-
-        let url = s.url.clone().expect("URL not set");
+        let url = s.url.as_ref().expect("URL not set");
         url.join(path.trim_start_matches('/')).unwrap().to_string()
     }
 
@@ -812,7 +760,6 @@ impl JellyfinClient {
         sort_order: &str, sortby: &str, filters_list: &FiltersList,
     ) -> Result<List> {
         let s = self.session();
-
         let user_id = &s.account.user_id;
         let path = match list_type {
             ListType::All => format!("Users/{user_id}/Items"),
@@ -894,7 +841,6 @@ impl JellyfinClient {
         sortby: &str, filters_list: &FiltersList,
     ) -> Result<List> {
         let s = self.session();
-
         let path = format!("Users/{}/Items", s.account.user_id);
         let start_string = start.to_string();
         let mut params = vec![
@@ -918,12 +864,9 @@ impl JellyfinClient {
                 ("TagIds", parentid)
             },
         ];
-        let id_clone;
-        if let Some(id) = id {
-            id_clone = id.to_owned();
-            params.push(("ParentId", &id_clone));
+        if let Some(id) = id.as_deref() {
+            params.push(("ParentId", id));
         }
-
         let kv = filters_list.to_kv();
         kv.iter().for_each(|(k, v)| {
             params.push((k.as_str(), v.as_str()));
@@ -933,7 +876,6 @@ impl JellyfinClient {
 
     pub async fn like(&self, id: &str) -> Result<()> {
         let s = self.session();
-
         let path = format!("Users/{}/FavoriteItems/{}", s.account.user_id, id);
         self.post(&path, &[], json!({})).await?;
         Ok(())
@@ -941,7 +883,6 @@ impl JellyfinClient {
 
     pub async fn unlike(&self, id: &str) -> Result<()> {
         let s = self.session();
-
         let path = format!("Users/{}/FavoriteItems/{}/Delete", s.account.user_id, id);
         self.post(&path, &[], json!({})).await?;
         Ok(())
@@ -949,7 +890,6 @@ impl JellyfinClient {
 
     pub async fn set_as_played(&self, id: &str) -> Result<()> {
         let s = self.session();
-
         let path = format!("Users/{}/PlayedItems/{}", s.account.user_id, id);
         self.post(&path, &[], json!({})).await?;
         Ok(())
@@ -957,7 +897,6 @@ impl JellyfinClient {
 
     pub async fn set_as_unplayed(&self, id: &str) -> Result<()> {
         let s = self.session();
-
         let path = format!("Users/{}/PlayedItems/{}/Delete", s.account.user_id, id);
         self.post(&path, &[], json!({})).await?;
         Ok(())
@@ -997,7 +936,6 @@ impl JellyfinClient {
 
     pub async fn get_similar(&self, id: &str) -> Result<List> {
         let s = self.session();
-
         let path = format!("Items/{id}/Similar");
         let params = [
             (
@@ -1013,7 +951,6 @@ impl JellyfinClient {
 
     pub async fn get_actor_item_list(&self, id: &str, types: &str) -> Result<List> {
         let s = self.session();
-
         let path = format!("Users/{}/Items", s.account.user_id);
         let params = [
             (
@@ -1037,7 +974,6 @@ impl JellyfinClient {
         filters_list: &FiltersList,
     ) -> Result<List> {
         let s = self.session();
-
         let start_string = start_index.to_string();
         let path = format!("Users/{}/Items", s.account.user_id);
         let mut params = vec![
@@ -1055,19 +991,15 @@ impl JellyfinClient {
             ("ImageTypeLimit", "1"),
             ("Limit", "50"),
         ];
-
         let kv = filters_list.to_kv();
         kv.iter().for_each(|(k, v)| {
             params.push((k.as_str(), v.as_str()));
         });
-
         self.request(&path, &params).await
     }
 
     pub async fn get_continue_play_list(&self, parent_id: &str) -> Result<List> {
         let s = self.session();
-
-        let path = "Shows/NextUp".to_string();
         let params = [
             (
                 "Fields",
@@ -1078,12 +1010,11 @@ impl JellyfinClient {
             ("SeriesId", parent_id),
             ("UserId", &s.account.user_id),
         ];
-        self.request(&path, &params).await
+        self.request("Shows/NextUp", &params).await
     }
 
     pub async fn get_season_list(&self, parent_id: &str) -> Result<List> {
         let s = self.session();
-
         let path = format!("Shows/{parent_id}/Seasons");
         let params = [
             (
@@ -1098,7 +1029,6 @@ impl JellyfinClient {
 
     pub async fn get_search_recommend(&self) -> Result<List> {
         let s = self.session();
-
         let path = format!("Users/{}/Items", s.account.user_id);
         let params = [
             ("Limit", "20"),
@@ -1118,7 +1048,6 @@ impl JellyfinClient {
         filters_list: &FiltersList,
     ) -> Result<List> {
         let s = self.session();
-
         let user_id = &s.account.user_id;
         let path = if types == "People" {
             "Persons".to_string()
@@ -1140,24 +1069,19 @@ impl JellyfinClient {
             ("IncludeItemTypes", types),
             ("Limit", &limit_string),
             ("StartIndex", &start_string),
-            if types == "People" {
-                ("UserId", user_id)
-            } else {
-                ("", "")
-            },
         ];
-
+        if types == "People" {
+            params.push(("UserId", user_id));
+        }
         let kv = filters_list.to_kv();
         kv.iter().for_each(|(k, v)| {
             params.push((k.as_str(), v.as_str()));
         });
-
         self.request(&path, &params).await
     }
 
     pub async fn get_included(&self, id: &str) -> Result<List> {
         let s = self.session();
-
         let path = format!("Users/{}/Items", s.account.user_id);
         let params = [
             (
@@ -1176,7 +1100,6 @@ impl JellyfinClient {
 
     pub async fn get_includedby(&self, parent_id: &str) -> Result<List> {
         let s = self.session();
-
         let path = format!("Users/{}/Items", s.account.user_id);
         let params = [
             (
@@ -1197,7 +1120,6 @@ impl JellyfinClient {
         filters_list: &FiltersList,
     ) -> Result<List> {
         let s = self.session();
-
         let path = format!("Users/{}/Items", s.account.user_id);
         let start_index_string = start_index.to_string();
         let sort_by = format!("IsFolder,{sort_by}");
@@ -1214,7 +1136,6 @@ impl JellyfinClient {
             ("SortOrder", sort_order),
             ("EnableTotalRecordCount", "true"),
         ];
-
         let kv = filters_list.to_kv();
         kv.iter().for_each(|(k, v)| {
             params.push((k.as_str(), v.as_str()));
@@ -1224,23 +1145,18 @@ impl JellyfinClient {
 
     pub async fn change_password(&self, new_password: &str) -> Result<()> {
         let s = self.session();
-
         let path = format!("Users/{}/Password", s.account.user_id);
-
         let old_password = s.account.password.as_str();
-
         let body = json!({
             "CurrentPw": old_password,
             "NewPw": new_password
         });
-
         self.post(&path, &[], body).await?;
         Ok(())
     }
 
     pub async fn hide_from_resume(&self, id: &str) -> Result<()> {
         let s = self.session();
-
         let path = format!("Users/{}/Items/{}/HideFromResume", s.account.user_id, id);
         let params = [("Hide", "true")];
         self.post(&path, &params, json!({})).await?;
@@ -1249,7 +1165,6 @@ impl JellyfinClient {
 
     pub async fn get_songs(&self, parent_id: &str) -> Result<List> {
         let s = self.session();
-
         let path = format!("Users/{}/Items", s.account.user_id);
         let params = [
             (
@@ -1265,14 +1180,12 @@ impl JellyfinClient {
 
     pub async fn get_song_streaming_uri(&self, id: &str) -> String {
         let s = self.session();
-
         s.url.as_ref().expect("URL not set").join(&format!("Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
         id, s.account.user_id, *DEVICE_ID, s.account.access_token, )).unwrap().to_string()
     }
 
     pub async fn get_additional(&self, id: &str) -> Result<List> {
         let s = self.session();
-
         let path = format!("Videos/{id}/AdditionalParts");
         let params: [(&str, &str); 1] = [("UserId", &s.account.user_id)];
         self.request(&path, &params).await
@@ -1280,7 +1193,6 @@ impl JellyfinClient {
 
     pub async fn get_channels(&self) -> Result<List> {
         let s = self.session();
-
         let params = [
             ("IsAiring", "true"),
             ("userId", &s.account.user_id),
@@ -1295,7 +1207,6 @@ impl JellyfinClient {
 
     pub async fn get_channels_list(&self, start_index: u32) -> Result<List> {
         let s = self.session();
-
         let params = [
             ("IsAiring", "true"),
             ("userId", &s.account.user_id),
@@ -1348,7 +1259,6 @@ impl JellyfinClient {
         &self, id: &str, image_type: &str, image_index: Option<u32>,
     ) -> String {
         let s = self.session();
-
         let path = format!("Items/{id}/Images/{image_type}/");
         let url = s.url.as_ref().expect("URL not set").join(&path).unwrap();
         match image_index {
@@ -1370,7 +1280,6 @@ impl JellyfinClient {
             ("IncludeAllLanguages", &include_all_languages.to_string()),
             ("ProviderName", provider_name),
         ];
-
         self.request(&path, &params).await
     }
 
@@ -1401,7 +1310,6 @@ impl JellyfinClient {
         &self, id: &str, include_specials: bool, upcoming: bool,
     ) -> Result<MissingEpisodesList> {
         let s = self.session();
-
         let params = [
             ("Fields", "Overview"),
             ("UserId", &s.account.user_id),
@@ -1419,7 +1327,6 @@ impl JellyfinClient {
 
     pub async fn filters(&self, type_: &str) -> Result<FilterList> {
         let s = self.session();
-
         let params = [
             ("SortBy", "SortName"),
             ("SortOrder", "Ascending"),
