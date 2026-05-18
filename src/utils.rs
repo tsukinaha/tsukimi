@@ -81,11 +81,7 @@ pub enum CacheSource {
 }
 
 pub enum CacheEvent<T> {
-    Data {
-        #[allow(dead_code)]
-        source: CacheSource,
-        data: T,
-    },
+    Data { source: CacheSource, data: T },
     Error(anyhow::Error),
 }
 

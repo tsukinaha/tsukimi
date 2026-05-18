@@ -163,6 +163,12 @@ impl PictureLoader {
                             move |r| match r {
                                 Ok(pixbuf) => {
                                     obj.imp().picture.set_paintable(Some(
+                                        #[allow(deprecated)]
+                                        // FIXME: `Texture::for_pixbuf` is deprecated since GTK 4.20.
+                                        // GTK recommends libglycin for loading images into `GdkTexture`, but
+                                        // glycin currently only works on Linux, so keep this fallback for now.
+                                        // https://docs.gtk.org/gdk4/ctor.Texture.new_for_pixbuf.html
+                                        // https://docs.rs/crate/glycin/latest
                                         &gtk::gdk::Texture::for_pixbuf(&pixbuf),
                                     ));
                                     obj.imp().spinner.set_visible(false);

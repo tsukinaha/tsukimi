@@ -248,6 +248,12 @@ impl ImageInfoCard {
                             None::<&gio::Cancellable>,
                             move |r| match r {
                                 Ok(pixbuf) => {
+                                    #[allow(deprecated)]
+                                    // FIXME: `Texture::for_pixbuf` is deprecated since GTK 4.20.
+                                    // GTK recommends libglycin for loading images into `GdkTexture`, but
+                                    // glycin currently only works on Linux, so keep this fallback for now.
+                                    // https://docs.gtk.org/gdk4/ctor.Texture.new_for_pixbuf.html
+                                    // https://docs.rs/crate/glycin/latest
                                     picture.set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(
                                         &pixbuf,
                                     )));
