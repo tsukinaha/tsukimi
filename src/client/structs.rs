@@ -511,7 +511,7 @@ pub struct Back {
     pub playsessionid: Option<String>,
     pub mediasourceid: String,
     pub livestreamid: Option<String>,
-    pub playmethod: String,
+    pub playmethod: &'static str,
     pub tick: u64,
     pub start_tick: u64,
 }

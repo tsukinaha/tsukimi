@@ -519,8 +519,6 @@ impl MPVPage {
         spawn_g_timeout(glib::clone!(
             #[weak(rename_to = obj)]
             self,
-            #[strong]
-            selected,
             async move {
                 let imp = obj.imp();
                 imp.spinner.set_visible(true);
@@ -528,8 +526,8 @@ impl MPVPage {
                 imp.network_speed_label
                     .set_text(&gettext("Initializing..."));
 
-                let sub_stream_index = selected.to_owned().map(|s| s.sub_index);
-                let media_source_id = selected.to_owned().map(|s| s.media_source_id);
+                let sub_stream_index = selected.as_ref().map(|s| s.sub_index);
+                let media_source_id = selected.as_ref().map(|s| s.media_source_id.clone());
                 let id_clone = id.to_owned();
                 let playback_info = match spawn_tokio(async move {
                     JELLYFIN_CLIENT
@@ -553,7 +551,7 @@ impl MPVPage {
                 };
 
                 let media_source =
-                    if let Some(video_stream_index) = selected.to_owned().map(|s| s.video_index) {
+                    if let Some(video_stream_index) = selected.as_ref().map(|s| s.video_index) {
                         playback_info.media_sources.get(video_stream_index as usize)
                     } else {
                         let video_version_list: Vec<_> = playback_info
@@ -576,10 +574,9 @@ impl MPVPage {
                     return;
                 };
 
-                let play_session_id = playback_info.play_session_id.to_owned();
                 let back = Back {
                     id: id.to_owned(),
-                    playsessionid: play_session_id.to_owned(),
+                    playsessionid: playback_info.play_session_id.to_owned(),
                     mediasourceid: media_source.id.to_owned(),
                     livestreamid: media_source.live_stream_id.to_owned(),
                     playmethod: media_source_play_method(media_source),
@@ -590,7 +587,7 @@ impl MPVPage {
                 imp.back.replace(Some(back));
 
                 let media_stream =
-                    if let Some(sub_stream_index) = selected.to_owned().map(|s| s.sub_index) {
+                    if let Some(sub_stream_index) = selected.as_ref().map(|s| s.sub_index) {
                         media_source.media_streams.get(sub_stream_index as usize)
                     } else {
                         let sub_version_list: Vec<_> = media_source
@@ -609,7 +606,7 @@ impl MPVPage {
                             .and_then(|index| media_source.media_streams.get(index.0 as usize))
                     };
 
-                if let Some(slang) = selected.to_owned().map(|s| s.sub_lang) {
+                if let Some(slang) = selected.map(|s| s.sub_lang) {
                     imp.video.set_slang(slang);
                 } else {
                     imp.video
@@ -1384,14 +1381,14 @@ fn playable_media_source_path(source: &MediaSource) -> Option<String> {
     None
 }
 
-fn media_source_play_method(source: &MediaSource) -> String {
+fn media_source_play_method(source: &MediaSource) -> &'static str {
     if source.direct_stream_url.is_some() {
-        return "DirectStream".to_string();
+        return "DirectStream";
     }
     if source.transcoding_url.is_some() {
-        return "Transcode".to_string();
+        return "Transcode";
     }
-    "DirectPlay".to_string()
+    "DirectPlay"
 }
 
 pub async fn media_source_stream_url(source: &MediaSource) -> Option<String> {
