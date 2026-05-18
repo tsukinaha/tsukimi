@@ -181,7 +181,7 @@ impl LikedPage {
             return;
         }
 
-        hortu.set_items(&results.items);
+        hortu.set_items(results.items);
 
         hortu.connect_morebutton(glib::clone!(
             #[weak(rename_to = obj)]

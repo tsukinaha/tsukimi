@@ -246,9 +246,8 @@ impl MetadataDialog {
         match spawn_tokio(async move { JELLYFIN_CLIENT.get_edit_info(&id).await }).await {
             Ok(metadata) => {
                 self.imp().stack.set_visible_child_name("page");
-                let value = metadata.to_owned();
-                let _ = self.imp().value.set(value);
-                let Ok(item) = serde_json::from_value::<SimpleListItem>(metadata.to_owned()) else {
+                let _ = self.imp().value.set(metadata.to_owned());
+                let Ok(item) = serde_json::from_value::<SimpleListItem>(metadata) else {
                     return;
                 };
                 self.imp().load_data(item);

@@ -3,4 +3,4 @@ comment_width = 100
 format_code_in_doc_comments = true
 imports_granularity = "Crate"
 imports_layout = "Vertical"
-wrap_comments = true
+wrap_comments = false

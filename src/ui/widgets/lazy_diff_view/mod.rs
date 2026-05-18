@@ -482,14 +482,13 @@ impl LazyDiffView {
 
     fn apply_items(&self, new_items: Vec<RowData>) {
         let imp = self.imp();
-        let old_items = imp.items.borrow().clone();
         let active_keys = imp.rows.borrow().keys().cloned().collect::<HashSet<_>>();
-        let old_indices = active_indices(&old_items, &active_keys);
+        let old_indices = active_indices(&imp.items.borrow(), &active_keys);
         let new_indices = active_indices(&new_items, &active_keys);
 
         self.animate_removed_rows(&active_keys, &old_indices, &new_indices);
         let reorder_offsets = self.reorder_offsets(&old_indices, &new_indices);
-        *imp.items.borrow_mut() = new_items;
+        let old_items = imp.items.replace(new_items);
         self.reset_item_extent();
         self.resize_viewport();
 
@@ -535,11 +534,15 @@ impl LazyDiffView {
     fn visible_inserted_keys(&self, old_items: &[RowData]) -> HashSet<String> {
         let old_keys = old_items
             .iter()
-            .map(|row| row.key.clone())
+            .map(|row| row.key.as_str())
             .collect::<HashSet<_>>();
-        self.visible_range()
-            .map(|index| self.imp().items.borrow()[index].key.clone())
-            .filter(|key| !old_keys.contains(key))
+        let visiable_range = self.visible_range();
+        let items = self.imp().items.borrow();
+        visiable_range
+            .filter_map(|index| {
+                let key = items.get(index)?.key.as_str();
+                (!old_keys.contains(key)).then(|| key.to_string())
+            })
             .collect()
     }
 
@@ -835,20 +838,8 @@ impl LazyDiffView {
     }
 
     fn reposition_active_rows(&self) {
-        let indices = self
-            .imp()
-            .items
-            .borrow()
-            .iter()
-            .enumerate()
-            .map(|(index, row)| (row.key.clone(), index))
-            .collect::<HashMap<_, _>>();
-
-        for row_data in self.imp().items.borrow().iter() {
+        for (index, row_data) in self.imp().items.borrow().iter().enumerate() {
             let Some(row) = self.imp().rows.borrow().get(&row_data.key).cloned() else {
-                continue;
-            };
-            let Some(index) = indices.get(&row_data.key).copied() else {
                 continue;
             };
             self.position_row(&row, index);

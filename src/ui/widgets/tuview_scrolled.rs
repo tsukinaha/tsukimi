@@ -158,7 +158,7 @@ impl TuViewScrolled {
         let prefer_size = *self.imp().prefer_size_cache.borrow();
 
         for item in items {
-            let tu_item = TuItem::from_simple(&item, None);
+            let tu_item = TuItem::from_simple_owned(item, None);
             tu_item.set_is_resume(is_resume);
             tu_item.set_prefer_poster(prefer_poster);
             tu_item.set_prefer_size(prefer_size);

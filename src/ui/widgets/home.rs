@@ -174,7 +174,7 @@ impl HomePage {
         while let Some(event) = events.recv().await {
             match event {
                 CacheEvent::Data { data, .. } => {
-                    hortu.set_items(&data.items);
+                    hortu.set_items(data.items);
                 }
                 CacheEvent::Error(e) => {
                     self.toast(e.to_user_facing());
@@ -202,9 +202,9 @@ impl HomePage {
             match event {
                 CacheEvent::Data { data, source } => {
                     if enable_cache || matches!(source, CacheSource::Network) {
-                        hortu.set_items(&data.items);
+                        hortu.set_items(data.items.clone());
                     }
-                    self.setup_libsview(data.items, enable_cache).await;
+                    self.setup_libsview(data.items, enable_cache);
                 }
                 CacheEvent::Error(e) => {
                     self.toast(e.to_user_facing());
@@ -214,7 +214,7 @@ impl HomePage {
         }
     }
 
-    pub async fn setup_libsview(&self, items: Vec<SimpleListItem>, enable_cache: bool) {
+    pub fn setup_libsview(&self, items: Vec<SimpleListItem>, enable_cache: bool) {
         let current_ids = items
             .iter()
             .map(|view| view.id.as_str())
@@ -247,9 +247,7 @@ impl HomePage {
         }
     }
 
-    fn setup_hortu(&self, view: &SimpleListItem) -> HortuScrolled {
-        let ac_view = view.to_owned();
-
+    fn setup_hortu(&self, ac_view: SimpleListItem) -> HortuScrolled {
         let hortu = HortuScrolled::new();
 
         hortu.set_moreview(true);
@@ -258,7 +256,9 @@ impl HomePage {
 
         hortu.set_prefer_poster(PreferPoster::ParentPost);
 
-        hortu.set_title(format!("{} {}", gettext("Latest"), view.name));
+        hortu.set_title(format!("{} {}", gettext("Latest"), ac_view.name));
+
+        let ac_view_id = ac_view.id.to_owned();
 
         hortu.connect_morebutton(glib::clone!(
             #[weak(rename_to = obj)]
@@ -278,7 +278,7 @@ impl HomePage {
         self.imp()
             .libs_hortu
             .borrow_mut()
-            .insert(view.id.to_owned(), hortu.downgrade());
+            .insert(ac_view_id, hortu.downgrade());
 
         hortu
     }
@@ -291,10 +291,10 @@ impl HomePage {
             .get(&view.id)
             .and_then(|w| w.upgrade());
 
-        let hortu = hortu.unwrap_or_else(|| self.setup_hortu(&view));
-
         let view_id = view.id.clone();
         let collection_type = view.collection_type.clone();
+
+        let hortu = hortu.unwrap_or_else(|| self.setup_hortu(view));
 
         let mut events = fetch_with_cache(
             &format!("library_{}", view_id),
@@ -316,7 +316,7 @@ impl HomePage {
         while let Some(event) = events.recv().await {
             match event {
                 CacheEvent::Data { data, .. } => {
-                    hortu.set_items(&data);
+                    hortu.set_items(data);
                 }
                 CacheEvent::Error(e) => {
                     self.toast(e.to_user_facing());

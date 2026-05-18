@@ -410,7 +410,7 @@ impl ItemPage {
                     match spawn_tokio(async move { JELLYFIN_CLIENT.get_item_info(&id).await }).await
                     {
                         Ok(item) => {
-                            obj.set_intro::<true>(&TuItem::from_simple(&item, None))
+                            obj.set_intro::<true>(&TuItem::from_simple_owned(item, None))
                                 .await;
                         }
                         Err(e) => {
@@ -564,14 +564,15 @@ impl ItemPage {
             }
         };
 
-        self.set_episode_list(&list.items);
+        let index = list
+            .items
+            .iter()
+            .position(|item| item.index_number == Some(self.item().index_number()))
+            .unwrap_or(0);
+
+        self.set_episode_list(list.items);
 
         if position == 0 {
-            let index = list
-                .items
-                .iter()
-                .position(|item| item.index_number == Some(self.item().index_number()))
-                .unwrap_or(0);
             // itemlist need wait for property binding to scroll
             spawn_g_timeout(glib::clone!(
                 #[weak]
@@ -603,7 +604,7 @@ impl ItemPage {
         }
     }
 
-    fn set_episode_list(&self, list: &[SimpleListItem]) {
+    fn set_episode_list(&self, list: Vec<SimpleListItem>) {
         let imp = self.imp();
         let store_model = imp.selection.model();
         let Some(store) = store_model.and_downcast_ref::<gio::ListStore>() else {
@@ -624,7 +625,7 @@ impl ItemPage {
 
         store.extend_from_slice(&items);
 
-        imp.episode_list_vec.replace(list.to_owned());
+        imp.episode_list_vec.replace(list);
         imp.episode_stack.set_visible_child_name("view");
     }
 
@@ -659,7 +660,7 @@ impl ItemPage {
             }
         };
 
-        self.set_episode_list(&list.items);
+        self.set_episode_list(list.items);
     }
 
     async fn set_shows_next_up(&self, id: &str) -> Option<TuItem> {
@@ -673,11 +674,13 @@ impl ItemPage {
                 }
             };
 
-        let next_up_item = next_up.items.first()?;
+        let next_up_item = next_up.items.into_iter().next()?;
 
-        self.set_now_item::<false>(&TuItem::from_simple(next_up_item, None));
+        let tu_item = TuItem::from_simple_owned(next_up_item, None);
 
-        Some(TuItem::from_simple(next_up_item, None))
+        self.set_now_item::<false>(&tu_item);
+
+        Some(tu_item)
     }
 
     fn set_now_item<const IS_VIDEO: bool>(&self, item: &TuItem) {
@@ -707,7 +710,6 @@ impl ItemPage {
     }
 
     pub async fn set_dropdown(&self, playbackinfo: &Media) {
-        let playbackinfo = playbackinfo.to_owned();
         let imp = self.imp();
         let namedropdown = imp.namedropdown.get();
         let subdropdown = imp.subdropdown.get();
@@ -744,7 +746,7 @@ impl ItemPage {
                     sstore.remove(0);
                 }
                 for media in &media_sources {
-                    if &Some(media.id.to_owned()) == selected {
+                    if selected.as_deref().is_some_and(|s| s == media.id) {
                         let mut lang_list = Vec::new();
                         for stream in &media.media_streams {
                             if stream.stream_type == "Subtitle" {
@@ -879,7 +881,7 @@ impl ItemPage {
                         .map(|season| season.name.as_str())
                         .collect::<Vec<_>>();
                     season_list_store.splice(0, season_list_store.n_items(), &names);
-                    imp.seasonshortu.set_items(&season_list);
+                    imp.seasonshortu.set_items(season_list.to_owned());
                     imp.season_list_vec.replace(season_list);
                     self.on_season_selected(None, imp.seasonlist.get()).await;
                 }
@@ -1160,7 +1162,7 @@ impl ItemPage {
 
     pub async fn setactorscrolled(&self, actors: Vec<SimpleListItem>) {
         let hortu = self.imp().actorhortu.get();
-        hortu.set_items(&actors);
+        hortu.set_items(actors);
     }
 
     pub async fn set_lists(&self, id: &str) {
@@ -1198,7 +1200,7 @@ impl ItemPage {
         while let Some(event) = events.recv().await {
             match event {
                 CacheEvent::Data { data, .. } => {
-                    hortu.set_items(&data.items);
+                    hortu.set_items(data.items);
                 }
                 CacheEvent::Error(e) => {
                     self.toast(e.to_user_facing());

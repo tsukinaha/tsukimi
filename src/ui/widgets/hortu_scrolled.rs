@@ -201,7 +201,7 @@ impl HortuScrolled {
         imp.morebutton.set_visible(true);
     }
 
-    pub fn set_items(&self, items: &[SimpleListItem]) {
+    pub fn set_items(&self, items: Vec<SimpleListItem>) {
         let imp = self.imp();
 
         if items.is_empty() {
@@ -212,23 +212,27 @@ impl HortuScrolled {
 
         self.set_visible(true);
 
-        let prefer_size = resolve_prefer_size(self.unify_size(), items);
+        let prefer_size = resolve_prefer_size(self.unify_size(), &items);
         let visible_ids = items
             .iter()
-            .map(|item| item.id.clone())
+            .map(|item| item.id.as_str())
             .collect::<std::collections::HashSet<_>>();
         imp.item_cache
             .borrow_mut()
-            .retain(|id, _| visible_ids.contains(id));
+            .retain(|id, _| visible_ids.contains(id.as_str()));
 
         let items = items
-            .iter()
+            .into_iter()
             .map(|item| {
                 let mut cache = imp.item_cache.borrow_mut();
-                let object = cache
-                    .entry(item.id.clone())
-                    .or_insert_with(|| TuObject::from_simple(item, None))
-                    .clone();
+                let object = if let Some(object) = cache.get(&item.id) {
+                    object.clone()
+                } else {
+                    let id = item.id.clone();
+                    let object = TuObject::from_simple_owned(item, None);
+                    cache.insert(id, object.clone());
+                    object
+                };
                 let tu_item = object.item();
                 tu_item.set_is_resume(self.isresume());
                 tu_item.set_prefer_size(prefer_size);

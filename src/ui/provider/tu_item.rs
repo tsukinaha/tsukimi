@@ -235,9 +235,12 @@ impl Default for TuItem {
 }
 
 impl TuItem {
-    pub fn from_simple(latest: &SimpleListItem, poster: Option<&str>) -> Self {
+    pub fn from_simple(item: &SimpleListItem, poster: Option<&str>) -> Self {
+        Self::from_simple_owned(item.to_owned(), poster)
+    }
+
+    pub fn from_simple_owned(item: SimpleListItem, poster: Option<&str>) -> Self {
         let tu_item: TuItem = glib::object::Object::new();
-        let item = latest.to_owned();
         tu_item.set_id(item.id);
         tu_item.set_name(item.name);
         tu_item.set_item_type(item.item_type);
@@ -478,9 +481,9 @@ impl TuItem {
 
         let song_widgets = songs
             .items
-            .iter()
+            .into_iter()
             .map(|song| {
-                let item = TuItem::from_simple(song, None);
+                let item = TuItem::from_simple_owned(song, None);
                 let song_widget = SongWidget::new(item, SongWidgetView::MusicAlbumItem);
                 song_widget.coresong()
             })
@@ -536,8 +539,8 @@ impl TuItem {
             TuItem::from_simple(nextup_item, None),
             nextup_list
                 .items
-                .iter()
-                .map(|item| TuItem::from_simple(item, None))
+                .into_iter()
+                .map(|item| TuItem::from_simple_owned(item, None))
                 .collect(),
         )
         .await;
