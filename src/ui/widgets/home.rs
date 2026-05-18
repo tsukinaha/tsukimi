@@ -150,8 +150,10 @@ impl HomePage {
 
     pub async fn setup(&self, enable_cache: bool) {
         fraction_reset!(self);
-        self.setup_history(enable_cache).await;
-        self.setup_library(enable_cache).await;
+        futures_util::join!(
+            self.setup_history(enable_cache),
+            self.setup_library(enable_cache)
+        );
         fraction!(self);
     }
 
