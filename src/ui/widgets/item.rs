@@ -707,7 +707,6 @@ impl ItemPage {
     }
 
     pub async fn set_dropdown(&self, playbackinfo: &Media) {
-        let playbackinfo = playbackinfo.to_owned();
         let imp = self.imp();
         let namedropdown = imp.namedropdown.get();
         let subdropdown = imp.subdropdown.get();
@@ -744,7 +743,7 @@ impl ItemPage {
                     sstore.remove(0);
                 }
                 for media in &media_sources {
-                    if &Some(media.id.to_owned()) == selected {
+                    if selected.as_deref().is_some_and(|s| s == media.id) {
                         let mut lang_list = Vec::new();
                         for stream in &media.media_streams {
                             if stream.stream_type == "Subtitle" {
