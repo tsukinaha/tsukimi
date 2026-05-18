@@ -881,7 +881,7 @@ impl ItemPage {
                         .map(|season| season.name.as_str())
                         .collect::<Vec<_>>();
                     season_list_store.splice(0, season_list_store.n_items(), &names);
-                    imp.seasonshortu.set_items(&season_list);
+                    imp.seasonshortu.set_items(season_list.to_owned());
                     imp.season_list_vec.replace(season_list);
                     self.on_season_selected(None, imp.seasonlist.get()).await;
                 }
@@ -1162,7 +1162,7 @@ impl ItemPage {
 
     pub async fn setactorscrolled(&self, actors: Vec<SimpleListItem>) {
         let hortu = self.imp().actorhortu.get();
-        hortu.set_items(&actors);
+        hortu.set_items(actors);
     }
 
     pub async fn set_lists(&self, id: &str) {
@@ -1200,7 +1200,7 @@ impl ItemPage {
         while let Some(event) = events.recv().await {
             match event {
                 CacheEvent::Data { data, .. } => {
-                    hortu.set_items(&data.items);
+                    hortu.set_items(data.items);
                 }
                 CacheEvent::Error(e) => {
                     self.toast(e.to_user_facing());

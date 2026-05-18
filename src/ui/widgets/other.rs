@@ -231,7 +231,7 @@ impl OtherPage {
             self.add_external_link_horbu(&links);
         }
         if let Some(actors) = item.people {
-            self.add_actor_item_hortu(&actors);
+            self.add_actor_item_hortu(actors);
         }
         if let Some(studios) = item.studios {
             self.add_sgt_item_horbu(&self.imp().studioshorbu, &studios, "Studios");
@@ -371,7 +371,7 @@ impl OtherPage {
         tu_obj.activate(view);
     }
 
-    pub fn add_actor_item_hortu(&self, items: &[SimpleListItem]) {
+    pub fn add_actor_item_hortu(&self, items: Vec<SimpleListItem>) {
         let hortu = self.imp().actorhortu.get();
         hortu.set_items(items);
     }
@@ -412,9 +412,9 @@ impl OtherPage {
                 _ => {}
             });
 
-        imp.moviehortu.set_items(&movies);
-        imp.serieshortu.set_items(&series);
-        imp.episodehortu.set_items(&episodes);
+        imp.moviehortu.set_items(movies);
+        imp.serieshortu.set_items(series);
+        imp.episodehortu.set_items(episodes);
     }
 
     async fn hortu_set_actor_list(&self, type_: &str) {
@@ -496,7 +496,7 @@ impl OtherPage {
         while let Some(event) = events.recv().await {
             match event {
                 CacheEvent::Data { data, .. } => {
-                    hortu.set_items(&data.items);
+                    hortu.set_items(data.items);
                 }
                 CacheEvent::Error(e) => {
                     self.toast(e.to_user_facing());

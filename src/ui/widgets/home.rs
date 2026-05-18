@@ -174,7 +174,7 @@ impl HomePage {
         while let Some(event) = events.recv().await {
             match event {
                 CacheEvent::Data { data, .. } => {
-                    hortu.set_items(&data.items);
+                    hortu.set_items(data.items);
                 }
                 CacheEvent::Error(e) => {
                     self.toast(e.to_user_facing());
@@ -202,9 +202,9 @@ impl HomePage {
             match event {
                 CacheEvent::Data { data, source } => {
                     if enable_cache || matches!(source, CacheSource::Network) {
-                        hortu.set_items(&data.items);
+                        hortu.set_items(data.items.clone());
                     }
-                    self.setup_libsview(data.items, enable_cache).await;
+                    self.setup_libsview(data.items, enable_cache);
                 }
                 CacheEvent::Error(e) => {
                     self.toast(e.to_user_facing());
@@ -214,7 +214,7 @@ impl HomePage {
         }
     }
 
-    pub async fn setup_libsview(&self, items: Vec<SimpleListItem>, enable_cache: bool) {
+    pub fn setup_libsview(&self, items: Vec<SimpleListItem>, enable_cache: bool) {
         let current_ids = items
             .iter()
             .map(|view| view.id.as_str())
@@ -316,7 +316,7 @@ impl HomePage {
         while let Some(event) = events.recv().await {
             match event {
                 CacheEvent::Data { data, .. } => {
-                    hortu.set_items(&data);
+                    hortu.set_items(data);
                 }
                 CacheEvent::Error(e) => {
                     self.toast(e.to_user_facing());

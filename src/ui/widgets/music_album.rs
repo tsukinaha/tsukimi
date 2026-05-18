@@ -379,7 +379,7 @@ impl AlbumPage {
                     }
 
                     hortu.set_visible(true);
-                    hortu.set_items(&data.items);
+                    hortu.set_items(data.items);
                 }
                 CacheEvent::Error(e) => {
                     self.toast(e.to_user_facing());
