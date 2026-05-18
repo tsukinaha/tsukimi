@@ -45,6 +45,11 @@ impl TuObject {
         glib::Object::builder().property("item", item).build()
     }
 
+    pub fn from_simple_owned(latest: SimpleListItem, poster: Option<&str>) -> Self {
+        let tu_item = TuItem::from_simple_owned(latest, poster);
+        TuObject::new(&tu_item)
+    }
+
     pub fn from_simple(latest: &SimpleListItem, poster: Option<&str>) -> Self {
         let tu_item = TuItem::from_simple(latest, poster);
         TuObject::new(&tu_item)

@@ -259,7 +259,7 @@ impl AlbumPage {
                         songs.items.sort_by_key(|song| song.index_number);
                     }
                     for song in songs.items {
-                        let item = TuItem::from_simple(&song, None);
+                        let item = TuItem::from_simple_owned(song, None);
                         let parent_index_number = if view_type == SongWidgetView::MusicAlbumItem {
                             item.parent_index_number()
                         } else {
