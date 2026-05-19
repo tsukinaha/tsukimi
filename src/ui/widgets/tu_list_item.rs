@@ -22,10 +22,10 @@ use crate::{
     ui::{
         GlobalToast,
         provider::tu_item::TuItem,
-        widgets::utils::{
+        widgets::{tu_item::TuItemAction, utils::{
             TU_ITEM_BANNER_SIZE,
             TU_ITEM_VIDEO_SIZE,
-        },
+        }},
     },
     utils::spawn,
 };
@@ -59,7 +59,6 @@ pub mod imp {
                 MAX_SCALE,
             },
             picture_loader::PictureLoader,
-            tu_item::TuItemAction,
         },
     };
 
@@ -350,7 +349,6 @@ pub mod imp {
             self.item.replace(item);
 
             obj.item_setted();
-            obj.gesture();
         }
 
         pub fn set_progress(&self, progress: f64) {
@@ -444,6 +442,12 @@ impl TuListItem {
 
             item.set_loaded_picture_loader(picture_loader);
         }
+
+        let gesture_click = item.gesture_click().unwrap_or_else(|| {
+            self.gesture_click()
+        });
+
+        self.add_controller(gesture_click);
 
         let (w, h) = self.size_hint();
 

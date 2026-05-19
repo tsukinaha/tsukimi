@@ -131,7 +131,7 @@ pub mod imp {
             self.item.replace(item);
             let obj = self.obj();
             obj.set_up();
-            obj.gesture();
+            obj.gesture_click();
         }
 
         fn set_view_group(&self, view_group: ViewGroup) {

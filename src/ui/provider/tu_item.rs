@@ -4,11 +4,10 @@ use adw::prelude::*;
 use gettextrs::gettext;
 use glib::DateTime;
 use gtk::{
-    gio,
-    glib::{
+    GestureClick, gio, glib::{
         self,
         subclass::prelude::*,
-    },
+    }
 };
 
 #[allow(dead_code)] //FIXME: refactor with this
@@ -116,7 +115,7 @@ pub enum PreferPoster {
 
 pub mod imp {
     use glib::DateTime;
-    use gtk::glib::Properties;
+    use gtk::{GestureClick, glib::Properties};
 use once_cell::sync::OnceCell;
 
     use crate::ui::widgets::picture_loader::PictureLoader;
@@ -205,6 +204,7 @@ use once_cell::sync::OnceCell;
         playback_position_ticks: RefCell<u64>,
 
         pub loaded_picture_loader: OnceCell<PictureLoader>,
+        pub gesture_click: OnceCell<GestureClick>,
     }
 
     #[glib::derived_properties]
@@ -773,6 +773,14 @@ impl TuItem {
 
     pub fn loaded_picture_loader(&self) -> Option<PictureLoader> {
         self.imp().loaded_picture_loader.get().cloned()
+    }
+
+    pub fn set_gesture_click(&self, gesture_click: GestureClick) {
+        let _ = self.imp().gesture_click.set(gesture_click);
+    }
+
+    pub fn gesture_click(&self) -> Option<GestureClick> {
+        self.imp().gesture_click.get().cloned()
     }
 }
 

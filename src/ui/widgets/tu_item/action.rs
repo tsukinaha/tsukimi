@@ -53,7 +53,7 @@ pub trait TuItemAction {
 
     fn update_state(&self, action: &Action);
 
-    fn gesture(&self);
+    fn gesture_click(&self) -> gtk::GestureClick;
 
     fn set_action(&self) -> Option<gio::SimpleActionGroup>;
 
@@ -137,7 +137,7 @@ where
         }
     }
 
-    fn gesture(&self) {
+    fn gesture_click(&self) -> gtk::GestureClick {
         let builder = Builder::from_resource("/moe/tsuna/tsukimi/ui/pop-menu.ui");
         let menu = builder.object::<MenuModel>("rightmenu");
         match menu {
@@ -181,7 +181,7 @@ where
             }
         ));
 
-        self.add_controller(gesture);
+        gesture
     }
 
     fn set_action(&self) -> Option<gio::SimpleActionGroup> {
