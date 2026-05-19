@@ -138,40 +138,41 @@ where
     }
 
     fn gesture_click(&self) -> gtk::GestureClick {
-        let builder = Builder::from_resource("/moe/tsuna/tsukimi/ui/pop-menu.ui");
-        let menu = builder.object::<MenuModel>("rightmenu");
-        match menu {
-            Some(popover) => {
-                let new_popover = PopoverMenu::builder()
-                    .menu_model(&popover)
-                    .halign(gtk::Align::Start)
-                    .has_arrow(false)
-                    .build();
-
-                let menu_info = MenuInfo::new();
-                menu_info.set_title(self.item().fmt_title());
-                menu_info.set_subtitle(self.item().fmt_subtitle());
-
-                if let Some(rating) = self.item().fmt_rating() {
-                    menu_info.set_rating(rating);
-                }
-
-                new_popover.add_child(&menu_info, "menu-info");
-
-                if let Some(popover) = self.popover().borrow_mut().take() {
-                    popover.unparent();
-                }
-                new_popover.set_parent(self);
-                self.popover().replace(Some(new_popover));
-            }
-            None => eprintln!("Failed to load popover"),
-        }
         let gesture = gtk::GestureClick::new();
         gesture.set_button(3);
         gesture.connect_released(glib::clone!(
             #[weak(rename_to = obj)]
             self,
             move |gesture, _n, x, y| {
+                let builder = Builder::from_resource("/moe/tsuna/tsukimi/ui/pop-menu.ui");
+                let menu = builder.object::<MenuModel>("rightmenu");
+                match menu {
+                    Some(popover) => {
+                        let new_popover = PopoverMenu::builder()
+                            .menu_model(&popover)
+                            .halign(gtk::Align::Start)
+                            .has_arrow(false)
+                            .build();
+
+                        let menu_info = MenuInfo::new();
+                        menu_info.set_title(obj.item().fmt_title());
+                        menu_info.set_subtitle(obj.item().fmt_subtitle());
+
+                        if let Some(rating) = obj.item().fmt_rating() {
+                            menu_info.set_rating(rating);
+                        }
+
+                        new_popover.add_child(&menu_info, "menu-info");
+
+                        if let Some(popover) = obj.popover().borrow_mut().take() {
+                            popover.unparent();
+                        }
+                        new_popover.set_parent(&obj);
+                        obj.popover().replace(Some(new_popover));
+                    }
+                    None => eprintln!("Failed to load popover"),
+                }
+
                 gesture.set_state(gtk::EventSequenceState::Claimed);
                 obj.insert_action_group("item", obj.set_action().as_ref());
                 if let Some(popover) = obj.popover().borrow().as_ref() {

@@ -443,11 +443,7 @@ impl TuListItem {
             item.set_loaded_picture_loader(picture_loader);
         }
 
-        let gesture_click = item.gesture_click().unwrap_or_else(|| {
-            self.gesture_click()
-        });
-
-        self.add_controller(gesture_click);
+        self.add_controller(self.gesture_click());
 
         let (w, h) = self.size_hint();
 
