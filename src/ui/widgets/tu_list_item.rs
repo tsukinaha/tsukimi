@@ -22,10 +22,13 @@ use crate::{
     ui::{
         GlobalToast,
         provider::tu_item::TuItem,
-        widgets::{tu_item::TuItemAction, utils::{
-            TU_ITEM_BANNER_SIZE,
-            TU_ITEM_VIDEO_SIZE,
-        }},
+        widgets::{
+            tu_item::TuItemAction,
+            utils::{
+                TU_ITEM_BANNER_SIZE,
+                TU_ITEM_VIDEO_SIZE,
+            },
+        },
     },
     utils::spawn,
 };
@@ -459,7 +462,8 @@ impl TuListItem {
 
         imp.folder_mark.set_visible(item.has_folder_mark());
 
-        imp.direct_play_button.set_visible(item.has_direct_play_mark());
+        imp.direct_play_button
+            .set_visible(item.has_direct_play_mark());
 
         self.set_tooltip_text(Some(&item.name()));
 

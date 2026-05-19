@@ -111,7 +111,7 @@ where
         hover_scale
     }
 
-    fn set_animated_picture(&self)  -> PictureLoader {
+    fn set_animated_picture(&self) -> PictureLoader {
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
         let picture_loader = PictureLoader::new_animated(&id, image_type, tag);
