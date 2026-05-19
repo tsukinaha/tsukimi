@@ -346,7 +346,9 @@ pub mod imp {
 
         pub fn set_progress(&self, progress: f64) {
             self.progress.set(progress);
-            self.obj().set_progress_anim(progress);
+            if progress > 0.0 {
+                self.obj().set_progress_anim(progress);
+            }
         }
     }
 }
