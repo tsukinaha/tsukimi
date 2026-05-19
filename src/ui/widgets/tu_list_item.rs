@@ -177,7 +177,7 @@ pub mod imp {
             };
 
             let obj = self.obj();
-            let w = obj.width();
+            let w = pic_bounds.width() as i32; // Use picture width for caching, so that the cache can be reused when the widget is resized within the same picture size
             let h = obj.height();
 
             let key = (w, h, self.is_dark.get(), paintable.as_ptr() as usize);
