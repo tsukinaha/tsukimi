@@ -1,8 +1,11 @@
 use std::{
     path::PathBuf,
-    sync::atomic::{
-        AtomicUsize,
-        Ordering,
+    sync::{
+        LazyLock,
+        atomic::{
+            AtomicUsize,
+            Ordering,
+        },
     },
 };
 
@@ -44,8 +47,7 @@ use crate::{
 
 const IMAGE_LOAD_DELAY: std::time::Duration = std::time::Duration::from_millis(80);
 const IMAGE_DECODE_RETRY_DELAY: std::time::Duration = std::time::Duration::from_millis(120);
-const MAX_IMAGE_DECODE_TASKS: usize = 10;
-
+static MAX_IMAGE_DECODE_TASKS: LazyLock<usize> = LazyLock::new(|| rayon::current_num_threads());
 static IMAGE_DECODE_TASKS: AtomicUsize = AtomicUsize::new(0);
 
 enum LoadedImage {
@@ -64,7 +66,7 @@ impl Drop for DecodePermit {
 fn try_acquire_decode_permit() -> Option<DecodePermit> {
     let mut current = IMAGE_DECODE_TASKS.load(Ordering::Relaxed);
     loop {
-        if current >= MAX_IMAGE_DECODE_TASKS {
+        if current >= *MAX_IMAGE_DECODE_TASKS {
             return None;
         }
 
