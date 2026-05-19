@@ -4,10 +4,11 @@ use adw::prelude::*;
 use gettextrs::gettext;
 use glib::DateTime;
 use gtk::{
-    GestureClick, gio, glib::{
+    gio,
+    glib::{
         self,
         subclass::prelude::*,
-    }
+    },
 };
 
 #[allow(dead_code)] //FIXME: refactor with this
@@ -115,8 +116,8 @@ pub enum PreferPoster {
 
 pub mod imp {
     use glib::DateTime;
-    use gtk::{GestureClick, glib::Properties};
-use once_cell::sync::OnceCell;
+    use gtk::glib::Properties;
+    use once_cell::sync::OnceCell;
 
     use crate::ui::widgets::picture_loader::PictureLoader;
 

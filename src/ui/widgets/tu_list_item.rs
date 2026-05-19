@@ -22,10 +22,13 @@ use crate::{
     ui::{
         GlobalToast,
         provider::tu_item::TuItem,
-        widgets::{tu_item::TuItemAction, utils::{
-            TU_ITEM_BANNER_SIZE,
-            TU_ITEM_VIDEO_SIZE,
-        }},
+        widgets::{
+            tu_item::TuItemAction,
+            utils::{
+                TU_ITEM_BANNER_SIZE,
+                TU_ITEM_VIDEO_SIZE,
+            },
+        },
     },
     utils::spawn,
 };
@@ -54,10 +57,7 @@ pub mod imp {
         SETTINGS,
         provider::tu_item::TuItem,
         widgets::{
-            hover_scale::{
-                HoverScale,
-                MAX_SCALE,
-            },
+            hover_scale::HoverScale,
             picture_loader::PictureLoader,
         },
     };
@@ -108,7 +108,6 @@ pub mod imp {
         #[template_child]
         pub hover_scale: TemplateChild<HoverScale>,
 
-        pub hover_scale_progress: Cell<f32>,
         pub backdrop_cache: RefCell<Option<BackdropNodeCache>>,
         pub is_dark: Cell<bool>,
     }
@@ -146,14 +145,12 @@ pub mod imp {
                 }
             });
 
-            if let Some(animation) = self.hover_scale.imp().animation.get() {
-                let obj = self.obj().downgrade();
-                animation.connect_value_notify(move |a| {
-                    if let Some(this) = obj.upgrade() {
-                        this.imp().hover_scale_progress.set(a.value() as f32);
-                    }
-                });
-            }
+            let obj = self.obj().downgrade();
+            self.hover_scale.set_underlay(move |snapshot| {
+                if let Some(this) = obj.upgrade() {
+                    this.imp().draw_backdrop_and_progress(snapshot);
+                }
+            });
         }
 
         fn dispose(&self) {
@@ -163,20 +160,22 @@ pub mod imp {
         }
     }
 
-    impl WidgetImpl for TuListItem {
-        fn snapshot(&self, snapshot: &gtk::Snapshot) {
+    impl WidgetImpl for TuListItem {}
+
+    impl TuListItem {
+        fn draw_backdrop_and_progress(&self, snapshot: &gtk::Snapshot) {
             if !self.title.is_visible() {
-                self.parent_snapshot(snapshot);
                 return;
             }
 
             let Some((paintable, pic_bounds)) = self.compute_blur_info() else {
-                self.parent_snapshot(snapshot);
                 return;
             };
 
             let obj = self.obj();
-            let w = pic_bounds.width() as i32; // Use picture width for caching, so that the cache can be reused when the widget is resized within the same picture size
+            // Use picture width for the cache key so it can be reused across
+            // minor widget resizes that don't change the picture dimensions.
+            let w = pic_bounds.width() as i32;
             let h = obj.height();
 
             let key = (w, h, self.is_dark.get(), paintable.as_ptr() as usize);
@@ -192,33 +191,13 @@ pub mod imp {
 
             let cache_ref = self.backdrop_cache.borrow();
             if let Some(cache) = cache_ref.as_ref() {
-                let hover_progress = self.hover_scale_progress.get();
                 let progress = self.progress.get() as f32;
-
                 let alpha = if self.is_dark.get() { 0.2 } else { 0.4 };
-
-                if hover_progress > 0.0 {
-                    let scale = 1.0 + (MAX_SCALE - 1.0) * hover_progress;
-                    let wf = w as f32;
-                    let hf = h as f32;
-                    snapshot.save();
-                    snapshot.translate(&graphene::Point::new(wf / 2.0, hf / 2.0));
-                    snapshot.scale(scale, scale);
-                    snapshot.translate(&graphene::Point::new(-wf / 2.0, -hf / 2.0));
-                    snapshot.append_node(&cache.node);
-                    Self::draw_progress_fill(snapshot, cache, progress, alpha);
-                    snapshot.restore();
-                } else {
-                    snapshot.append_node(&cache.node);
-                    Self::draw_progress_fill(snapshot, cache, progress, alpha);
-                }
+                snapshot.append_node(&cache.node);
+                Self::draw_progress_fill(snapshot, cache, progress, alpha);
             }
-
-            self.parent_snapshot(snapshot);
         }
-    }
 
-    impl TuListItem {
         fn compute_blur_info(&self) -> Option<(gdk::Paintable, graphene::Rect)> {
             let obj = self.obj();
 
@@ -459,7 +438,8 @@ impl TuListItem {
 
         imp.folder_mark.set_visible(item.has_folder_mark());
 
-        imp.direct_play_button.set_visible(item.has_direct_play_mark());
+        imp.direct_play_button
+            .set_visible(item.has_direct_play_mark());
 
         self.set_tooltip_text(Some(&item.name()));
 
