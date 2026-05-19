@@ -1,4 +1,10 @@
-use std::path::PathBuf;
+use std::{
+    path::PathBuf,
+    sync::atomic::{
+        AtomicUsize,
+        Ordering,
+    },
+};
 
 use adw::{
     prelude::*,
@@ -37,10 +43,41 @@ use crate::{
 };
 
 const IMAGE_LOAD_DELAY: std::time::Duration = std::time::Duration::from_millis(80);
+const IMAGE_DECODE_RETRY_DELAY: std::time::Duration = std::time::Duration::from_millis(120);
+const MAX_IMAGE_DECODE_TASKS: usize = 10;
+
+static IMAGE_DECODE_TASKS: AtomicUsize = AtomicUsize::new(0);
 
 enum LoadedImage {
     Texture(gtk::gdk::Texture),
     Decoded(DecodedPaintable),
+}
+
+struct DecodePermit;
+
+impl Drop for DecodePermit {
+    fn drop(&mut self) {
+        IMAGE_DECODE_TASKS.fetch_sub(1, Ordering::Release);
+    }
+}
+
+fn try_acquire_decode_permit() -> Option<DecodePermit> {
+    let mut current = IMAGE_DECODE_TASKS.load(Ordering::Relaxed);
+    loop {
+        if current >= MAX_IMAGE_DECODE_TASKS {
+            return None;
+        }
+
+        match IMAGE_DECODE_TASKS.compare_exchange_weak(
+            current,
+            current + 1,
+            Ordering::Acquire,
+            Ordering::Relaxed,
+        ) {
+            Ok(_) => return Some(DecodePermit),
+            Err(next) => current = next,
+        }
+    }
 }
 
 pub(crate) mod imp {
@@ -317,7 +354,6 @@ impl PictureLoader {
 
         let weak_self: glib::SendWeakRef<Self> = self.downgrade().into();
         let read_cancellable = cancellable.clone();
-
         file.load_bytes_async(Some(&cancellable), move |res| {
             let cancellable = read_cancellable;
 
@@ -358,38 +394,76 @@ impl PictureLoader {
                 obj.animated()
             };
 
-            rayon::spawn(move || {
-                let decoded = Self::decode_bytes(bytes, animated);
-                glib::idle_add_once(move || {
-                    let weak_self = weak_self.into_weak_ref();
-                    let Some(obj) = weak_self.upgrade() else {
-                        return;
-                    };
+            Self::try_spawn_decode(
+                weak_self,
+                bytes,
+                animated,
+                cache_file_path,
+                cancellable,
+                generation,
+                fetch_on_error,
+            );
+        });
+    }
 
-                    if !obj.is_current(&cancellable, generation) {
-                        return;
-                    }
+    fn try_spawn_decode(
+        weak_self: glib::SendWeakRef<Self>, bytes: glib::Bytes, animated: bool,
+        cache_file_path: Option<PathBuf>, cancellable: gio::Cancellable, generation: u64,
+        fetch_on_error: bool,
+    ) {
+        let Some(decode_permit) = try_acquire_decode_permit() else {
+            glib::timeout_add_local_once(IMAGE_DECODE_RETRY_DELAY, move || {
+                let weak_ref = weak_self.clone().into_weak_ref();
+                let Some(obj) = weak_ref.upgrade() else {
+                    return;
+                };
+                if obj.is_current(&cancellable, generation) {
+                    Self::try_spawn_decode(
+                        weak_self,
+                        bytes,
+                        animated,
+                        cache_file_path,
+                        cancellable,
+                        generation,
+                        fetch_on_error,
+                    );
+                }
+            });
+            return;
+        };
 
-                    match decoded {
-                        Ok(LoadedImage::Texture(texture)) => {
-                            obj.imp().picture.set_paintable(Some(&texture));
-                            obj.set_picture_visible(cancellable, generation);
-                        }
-                        Ok(LoadedImage::Decoded(decoded)) => {
-                            let paintable = ImagePaintable::from_decoded(decoded);
-                            obj.imp().picture.set_paintable(Some(&paintable));
-                            obj.set_picture_visible(cancellable, generation);
-                        }
-                        Err(_) if fetch_on_error => {
-                            if let Some(path) = cache_file_path {
-                                obj.get_file(path, cancellable, generation);
-                            } else {
-                                obj.set_broken(cancellable, generation);
-                            }
-                        }
-                        Err(_) => obj.set_broken(cancellable, generation),
+        rayon::spawn(move || {
+            let decoded = Self::decode_bytes(bytes, animated);
+            drop(decode_permit);
+            glib::idle_add_once(move || {
+                let weak_self = weak_self.into_weak_ref();
+                let Some(obj) = weak_self.upgrade() else {
+                    return;
+                };
+
+                if !obj.is_current(&cancellable, generation) {
+                    return;
+                }
+
+                match decoded {
+                    Ok(LoadedImage::Texture(texture)) => {
+                        obj.imp().picture.set_paintable(Some(&texture));
+                        obj.set_picture_visible(cancellable, generation);
                     }
-                });
+                    Ok(LoadedImage::Decoded(decoded)) => {
+                        let paintable = ImagePaintable::from_decoded(decoded);
+                        obj.imp().picture.set_paintable(Some(&paintable));
+                        obj.set_picture_visible(cancellable, generation);
+                    }
+                    Err(_) if fetch_on_error => {
+                        if let Some(path) = cache_file_path {
+                            obj.get_file(path, cancellable, generation);
+                        } else {
+                            obj.set_broken(cancellable, generation);
+                        }
+                    }
+                    Err(_) => obj.set_broken(cancellable, generation),
+                }
             });
         });
     }
