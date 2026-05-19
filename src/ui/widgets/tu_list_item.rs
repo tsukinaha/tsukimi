@@ -470,7 +470,11 @@ impl TuListItem {
     }
 
     pub fn unbind_item(&self) {
-        self.imp().overlay.set_child(None::<&gtk::Widget>);
+        let imp = self.imp();
+
+        if let Some(child) = imp.overlay.child() {
+            super::picture_loader::PictureLoader::reset_in(&child);
+        }
     }
 
     fn size_hint(&self) -> (i32, i32) {

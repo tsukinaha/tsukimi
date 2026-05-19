@@ -18,7 +18,10 @@ use tracing::{
 };
 
 use super::{
-    image_paintable::ImagePaintable,
+    image_paintable::{
+        DecodedPaintable,
+        ImagePaintable,
+    },
     utils::{
         TU_ITEM_POST_SIZE,
         TU_ITEM_VIDEO_SIZE,
@@ -33,9 +36,14 @@ use crate::{
     },
 };
 
+enum LoadedImage {
+    Texture(gtk::gdk::Texture),
+    Decoded(DecodedPaintable),
+}
+
 pub(crate) mod imp {
     use std::cell::{
-        OnceCell,
+        Cell,
         RefCell,
     };
 
@@ -47,13 +55,13 @@ pub(crate) mod imp {
     #[template(resource = "/moe/tsuna/tsukimi/ui/picture_loader.ui")]
     #[properties(wrapper_type = super::PictureLoader)]
     pub struct PictureLoader {
-        #[property(get, set, construct_only)]
-        pub id: OnceCell<String>,
-        #[property(get, set, construct_only)]
-        pub imagetype: OnceCell<String>,
-        #[property(get, set, nullable, construct_only)]
+        #[property(get, set)]
+        pub id: RefCell<String>,
+        #[property(get, set)]
+        pub imagetype: RefCell<String>,
+        #[property(get, set, nullable)]
         pub tag: RefCell<Option<String>>,
-        #[property(get, set, nullable, construct_only)]
+        #[property(get, set, nullable)]
         pub url: RefCell<Option<String>>,
         #[template_child]
         pub revealer: TemplateChild<gtk::Revealer>,
@@ -63,8 +71,10 @@ pub(crate) mod imp {
         pub spinner: TemplateChild<adw::Spinner>,
         #[template_child]
         pub broken: TemplateChild<gtk::Box>,
-        #[property(get, set, default = false, construct_only)]
-        pub animated: std::cell::Cell<bool>,
+        #[property(get, set, default = false)]
+        pub animated: Cell<bool>,
+        pub cancellable: RefCell<Option<gio::Cancellable>>,
+        pub generation: Cell<u64>,
     }
 
     #[glib::object_subclass]
@@ -90,16 +100,14 @@ pub(crate) mod imp {
             let obj = self.obj();
 
             if let Some(url) = obj.url() {
-                obj.load_pic_for_url(url);
+                obj.start_url_loading(url);
             } else {
-                spawn(clone!(
-                    #[weak]
-                    obj,
-                    async move {
-                        obj.load_pic().await;
-                    }
-                ));
+                obj.start_loading();
             }
+        }
+
+        fn dispose(&self) {
+            self.obj().cancel_loading();
         }
     }
 
@@ -138,8 +146,79 @@ impl PictureLoader {
             .build()
     }
 
+    pub fn reload(&self, id: &str, image_type: &str, tag: Option<String>, animated: bool) {
+        self.reset();
+        self.set_id(id);
+        self.set_imagetype(image_type);
+        self.set_tag(tag);
+        self.set_url(None::<String>);
+        self.set_animated(animated);
+        self.start_loading();
+    }
+
+    pub fn reset(&self) {
+        self.cancel_loading();
+    }
+
+    pub fn reset_in(widget: &gtk::Widget) {
+        if let Some(picture_loader) = widget.downcast_ref::<Self>() {
+            picture_loader.reset();
+            return;
+        }
+
+        if let Some(bin) = widget.downcast_ref::<adw::Bin>()
+            && let Some(child) = bin.child()
+        {
+            Self::reset_in(&child);
+        }
+    }
+
+    fn start_loading(&self) {
+        let (cancellable, generation) = self.new_request();
+        spawn(clone!(
+            #[weak(rename_to = obj)]
+            self,
+            #[strong]
+            cancellable,
+            async move {
+                obj.load_pic(cancellable, generation).await;
+            }
+        ));
+    }
+
+    fn start_url_loading(&self, url: String) {
+        let (cancellable, generation) = self.new_request();
+        self.load_pic_for_url(url, cancellable, generation);
+    }
+
+    fn new_request(&self) -> (gio::Cancellable, u64) {
+        if let Some(cancellable) = self.imp().cancellable.borrow_mut().take() {
+            cancellable.cancel();
+        }
+
+        let generation = self.imp().generation.get().wrapping_add(1);
+        self.imp().generation.set(generation);
+
+        let cancellable = gio::Cancellable::new();
+        self.imp().cancellable.replace(Some(cancellable.clone()));
+        (cancellable, generation)
+    }
+
+    pub fn cancel_loading(&self) {
+        if let Some(cancellable) = self.imp().cancellable.borrow_mut().take() {
+            cancellable.cancel();
+        }
+
+        let generation = self.imp().generation.get().wrapping_add(1);
+        self.imp().generation.set(generation);
+    }
+
+    fn is_current(&self, cancellable: &gio::Cancellable, generation: u64) -> bool {
+        !cancellable.is_cancelled() && self.imp().generation.get() == generation
+    }
+
     // for EuListItem
-    pub fn load_pic_for_url(&self, url: String) {
+    pub fn load_pic_for_url(&self, url: String, cancellable: gio::Cancellable, generation: u64) {
         let size = match self.imagetype().as_str() {
             "Primary" => &TU_ITEM_POST_SIZE,
             _ => &TU_ITEM_VIDEO_SIZE,
@@ -149,75 +228,179 @@ impl PictureLoader {
         self.imp().picture.set_height_request(size.1);
         self.imp().picture.set_content_fit(gtk::ContentFit::Contain);
 
-        gio::File::for_uri(&url).read_async(
-            glib::Priority::LOW,
-            None::<&gio::Cancellable>,
-            glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                move |res| {
-                    if let Ok(stream) = res {
-                        gtk::gdk_pixbuf::Pixbuf::from_stream_async(
-                            &stream,
-                            None::<&gio::Cancellable>,
-                            move |r| match r {
-                                Ok(pixbuf) => {
-                                    obj.imp().picture.set_paintable(Some(
-                                        #[allow(deprecated)]
-                                        // FIXME: `Texture::for_pixbuf` is deprecated since GTK 4.20.
-                                        // GTK recommends libglycin for loading images into `GdkTexture`, but
-                                        // glycin currently only works on Linux, so keep this fallback for now.
-                                        // https://docs.gtk.org/gdk4/ctor.Texture.new_for_pixbuf.html
-                                        // https://docs.rs/crate/glycin/latest
-                                        &gtk::gdk::Texture::for_pixbuf(&pixbuf),
-                                    ));
-                                    obj.imp().spinner.set_visible(false);
-                                    obj.imp().revealer.set_reveal_child(true);
-                                }
-                                Err(_) => {
-                                    obj.imp().broken.set_visible(true);
-                                }
-                            },
-                        );
-                    }
-                }
-            ),
+        let file = gio::File::for_uri(&url);
+        self.load_file_bytes(file, None, cancellable, generation, false);
+    }
+
+    pub async fn load_pic(&self, cancellable: gio::Cancellable, generation: u64) {
+        if !self.is_current(&cancellable, generation) {
+            return;
+        }
+
+        let cache_file_path = self.cache_file().await;
+        self.reveal_picture(cache_file_path, cancellable, generation, true);
+    }
+
+    pub fn reveal_picture(
+        &self, cache_file_path: PathBuf, cancellable: gio::Cancellable, generation: u64,
+        fetch_on_error: bool,
+    ) {
+        let file = gio::File::for_path(&cache_file_path);
+        self.load_file_bytes(
+            file,
+            Some(cache_file_path),
+            cancellable,
+            generation,
+            fetch_on_error,
         );
     }
 
-    pub async fn load_pic(&self) {
-        let cache_file_path = self.cache_file().await;
-        self.reveal_picture::<true>(&cache_file_path);
-        self.get_file(cache_file_path);
-    }
-
-    pub fn reveal_picture<const R: bool>(&self, cache_file_path: &PathBuf) {
-        let imp = self.imp();
-
-        if cache_file_path.exists() {
-            let file = gio::File::for_path(cache_file_path);
-            if self.animated() {
-                let paintable = ImagePaintable::from_file(&file);
-                imp.picture.set_paintable(paintable.ok().as_ref());
-            } else {
-                imp.picture.set_file(Some(&file));
-            }
-        } else {
-            if R {
-                return;
-            }
-            imp.broken.set_visible(true);
+    fn set_picture_visible(&self, cancellable: gio::Cancellable, generation: u64) {
+        if !self.is_current(&cancellable, generation) {
+            return;
         }
 
+        let imp = self.imp();
         imp.spinner.set_visible(false);
-
         spawn(clone!(
             #[weak]
             imp,
+            #[strong]
+            cancellable,
             async move {
+                if cancellable.is_cancelled() {
+                    return;
+                }
                 imp.revealer.set_reveal_child(true);
             }
         ));
+    }
+
+    fn set_broken(&self, cancellable: gio::Cancellable, generation: u64) {
+        if !self.is_current(&cancellable, generation) {
+            return;
+        }
+
+        let imp = self.imp();
+        imp.broken.set_visible(true);
+        imp.spinner.set_visible(false);
+        spawn(clone!(
+            #[weak]
+            imp,
+            #[strong]
+            cancellable,
+            async move {
+                if cancellable.is_cancelled() {
+                    return;
+                }
+                imp.revealer.set_reveal_child(true);
+            }
+        ));
+    }
+
+    fn load_file_bytes(
+        &self, file: gio::File, cache_file_path: Option<PathBuf>, cancellable: gio::Cancellable,
+        generation: u64, fetch_on_error: bool,
+    ) {
+        if !self.is_current(&cancellable, generation) {
+            return;
+        }
+
+        let weak_self: glib::SendWeakRef<Self> = self.downgrade().into();
+        let read_cancellable = cancellable.clone();
+
+        file.load_bytes_async(Some(&cancellable), move |res| {
+            let cancellable = read_cancellable;
+
+            if cancellable.is_cancelled() {
+                return;
+            }
+
+            let Ok((bytes, _etag)) = res else {
+                let weak_self = weak_self.into_weak_ref();
+                let Some(obj) = weak_self.upgrade() else {
+                    return;
+                };
+
+                if !obj.is_current(&cancellable, generation) {
+                    return;
+                }
+
+                if fetch_on_error {
+                    if let Some(path) = cache_file_path {
+                        obj.get_file(path, cancellable, generation);
+                    }
+                } else {
+                    obj.set_broken(cancellable, generation);
+                }
+                return;
+            };
+
+            let animated = {
+                let weak_self = weak_self.clone().into_weak_ref();
+                let Some(obj) = weak_self.upgrade() else {
+                    return;
+                };
+
+                if !obj.is_current(&cancellable, generation) {
+                    return;
+                }
+
+                obj.animated()
+            };
+
+            rayon::spawn(move || {
+                let decoded = Self::decode_bytes(bytes, animated);
+
+                glib::idle_add_once(move || {
+                    let weak_self = weak_self.into_weak_ref();
+                    let Some(obj) = weak_self.upgrade() else {
+                        return;
+                    };
+
+                    if !obj.is_current(&cancellable, generation) {
+                        return;
+                    }
+
+                    match decoded {
+                        Ok(LoadedImage::Texture(texture)) => {
+                            obj.imp().picture.set_paintable(Some(&texture));
+                            obj.set_picture_visible(cancellable, generation);
+                        }
+                        Ok(LoadedImage::Decoded(decoded)) => {
+                            let paintable = ImagePaintable::from_decoded(decoded);
+                            obj.imp().picture.set_paintable(Some(&paintable));
+                            obj.set_picture_visible(cancellable, generation);
+                        }
+                        Err(_) if fetch_on_error => {
+                            println!("Failed to decode image bytes, fetching from network...");
+                            if let Some(path) = cache_file_path {
+                                obj.get_file(path, cancellable, generation);
+                            } else {
+                                obj.set_broken(cancellable, generation);
+                            }
+                        }
+                        Err(_) => {
+                            println!("Failed to decode image bytes, not fetching from network.");
+                            obj.set_broken(cancellable, generation)
+                        }
+                    }
+                });
+            });
+        });
+    }
+
+    fn decode_bytes(
+        bytes: glib::Bytes, animated: bool,
+    ) -> Result<LoadedImage, Box<dyn std::error::Error + Send + Sync>> {
+        if animated {
+            return ImagePaintable::decode_bytes(bytes).map(LoadedImage::Decoded);
+        }
+
+        match gtk::gdk::Texture::from_bytes(&bytes) {
+            Ok(texture) => Ok(LoadedImage::Texture(texture)),
+            Err(_) => ImagePaintable::decode_bytes(bytes).map(LoadedImage::Decoded),
+        }
     }
 
     pub async fn cache_file(&self) -> PathBuf {
@@ -226,32 +409,40 @@ impl PictureLoader {
             "{}-{}-{}",
             self.id(),
             self.imagetype(),
-            self.tag().unwrap_or("0".to_string())
+            self.tag().as_deref().unwrap_or("0")
         );
         cache_path.join(path)
     }
 
-    pub fn get_file(&self, pathbuf: PathBuf) {
+    pub fn get_file(&self, pathbuf: PathBuf, cancellable: gio::Cancellable, generation: u64) {
         let id = self.id();
         let image_type = self.imagetype();
         let tag = self.tag();
-        spawn(clone!(
-            #[weak(rename_to = obj)]
-            self,
-            async move {
-                spawn_tokio(async move {
-                    let tag = tag.to_owned();
-                    if let Err(e) = JELLYFIN_CLIENT
-                        .get_image(&id, &image_type, tag.and_then(|s| s.parse::<u8>().ok()))
-                        .await
-                    {
-                        warn!("{}: {}-{}", e, id, image_type);
-                    }
-                })
-                .await;
-                debug!("Setting image: {}", &pathbuf.display());
-                obj.reveal_picture::<false>(&pathbuf);
+        let weak_self = self.downgrade();
+        spawn(async move {
+            if cancellable.is_cancelled() {
+                return;
             }
-        ));
+
+            spawn_tokio(async move {
+                let tag = tag.to_owned();
+                if let Err(e) = JELLYFIN_CLIENT
+                    .get_image(&id, &image_type, tag.and_then(|s| s.parse::<u8>().ok()))
+                    .await
+                {
+                    warn!("{}: {}-{}", e, id, image_type);
+                }
+            })
+            .await;
+
+            let Some(obj) = weak_self.upgrade() else {
+                return;
+            };
+
+            if obj.is_current(&cancellable, generation) {
+                debug!("Setting image: {}", &pathbuf.display());
+                obj.reveal_picture(pathbuf, cancellable, generation, false);
+            }
+        });
     }
 }

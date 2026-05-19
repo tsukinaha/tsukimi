@@ -95,25 +95,48 @@ where
     fn set_picture(&self) {
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
+        let overlay = self.overlay();
+
+        if let Some(picture_loader) = overlay.child().and_downcast::<PictureLoader>() {
+            picture_loader.reload(&id, image_type, tag, false);
+            return;
+        }
+
         let picture_loader = PictureLoader::new(&id, image_type, tag);
         picture_loader.add_css_class("inbox");
-        self.overlay().set_child(Some(&picture_loader));
+        overlay.set_child(Some(&picture_loader));
     }
 
     fn set_picture_with_hover_scale(&self) {
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
+        let overlay = self.overlay();
+
+        if let Some(hover_scale) = overlay.child().and_downcast::<HoverScale>()
+            && let Some(picture_loader) = hover_scale.child().and_downcast::<PictureLoader>()
+        {
+            picture_loader.reload(&id, image_type, tag, false);
+            return;
+        }
+
         let picture_loader = PictureLoader::new(&id, image_type, tag);
         let hover_scale = HoverScale::new();
         hover_scale.set_child(Some(&picture_loader));
-        self.overlay().set_child(Some(&hover_scale));
+        overlay.set_child(Some(&hover_scale));
     }
 
     fn set_animated_picture(&self) {
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
+        let overlay = self.overlay();
+
+        if let Some(picture_loader) = overlay.child().and_downcast::<PictureLoader>() {
+            picture_loader.reload(&id, image_type, tag, true);
+            return;
+        }
+
         let picture_loader = PictureLoader::new_animated(&id, image_type, tag);
         picture_loader.add_css_class("inbox");
-        self.overlay().set_child(Some(&picture_loader));
+        overlay.set_child(Some(&picture_loader));
     }
 }

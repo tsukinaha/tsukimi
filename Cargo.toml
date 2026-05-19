@@ -30,6 +30,7 @@ tracing = "0.1"
 gst = { version = "0.25", package = "gstreamer" }
 url = "2.5.8"
 image = "0.25"
+rayon = "1.12.0"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
 hostname = "0.4.2"
 epoxy = "0.1.0"
