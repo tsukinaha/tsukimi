@@ -81,42 +81,39 @@ pub trait TuItemOverlayPrelude {
 }
 
 pub trait TuItemOverlay: TuItemBasic + TuItemOverlayPrelude {
-    fn set_picture(&self) -> PictureLoader;
+    fn set_picture(&self);
 
-    fn set_picture_with_hover_scale(&self) -> HoverScale;
+    fn set_picture_with_hover_scale(&self);
 
-    fn set_animated_picture(&self) -> PictureLoader;
+    fn set_animated_picture(&self);
 }
 
 impl<T> TuItemOverlay for T
 where
     T: TuItemBasic + TuItemOverlayPrelude,
 {
-    fn set_picture(&self) -> PictureLoader {
+    fn set_picture(&self) {
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
         let picture_loader = PictureLoader::new(&id, image_type, tag);
         picture_loader.add_css_class("inbox");
         self.overlay().set_child(Some(&picture_loader));
-        picture_loader
     }
 
-    fn set_picture_with_hover_scale(&self) -> HoverScale {
+    fn set_picture_with_hover_scale(&self) {
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
         let picture_loader = PictureLoader::new(&id, image_type, tag);
         let hover_scale = HoverScale::new();
         hover_scale.set_child(Some(&picture_loader));
         self.overlay().set_child(Some(&hover_scale));
-        hover_scale
     }
 
-    fn set_animated_picture(&self) -> PictureLoader {
+    fn set_animated_picture(&self) {
         let item = self.item();
         let (image_type, tag, id) = self.get_image_type_and_tag(&item);
         let picture_loader = PictureLoader::new_animated(&id, image_type, tag);
         picture_loader.add_css_class("inbox");
         self.overlay().set_child(Some(&picture_loader));
-        picture_loader
     }
 }

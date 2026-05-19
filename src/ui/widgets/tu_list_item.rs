@@ -434,17 +434,11 @@ impl TuListItem {
         let imp = self.imp();
         let item = self.item();
 
-        if let Some(picture_loader) = item.loaded_picture_loader() {
-            imp.overlay.set_child(Some(&picture_loader));
+        if item.need_animated_picture() {
+            self.set_animated_picture()
         } else {
-            let picture_loader = if item.need_animated_picture() {
-                self.set_animated_picture()
-            } else {
-                self.set_picture()
-            };
-
-            item.set_loaded_picture_loader(picture_loader);
-        }
+            self.set_picture()
+        };
 
         self.add_controller(self.gesture_click());
 
