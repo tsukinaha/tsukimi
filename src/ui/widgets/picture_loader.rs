@@ -36,6 +36,8 @@ use crate::{
     },
 };
 
+const IMAGE_LOAD_DELAY: std::time::Duration = std::time::Duration::from_millis(80);
+
 enum LoadedImage {
     Texture(gtk::gdk::Texture),
     Decoded(DecodedPaintable),
@@ -158,6 +160,9 @@ impl PictureLoader {
 
     pub fn reset(&self) {
         self.cancel_loading();
+        self.imp()
+            .picture
+            .set_paintable(None::<&gtk::gdk::Paintable>);
     }
 
     pub fn reset_in(widget: &gtk::Widget) {
@@ -181,6 +186,10 @@ impl PictureLoader {
             #[strong]
             cancellable,
             async move {
+                glib::timeout_future(IMAGE_LOAD_DELAY).await;
+                if !obj.is_current(&cancellable, generation) {
+                    return;
+                }
                 obj.load_pic(cancellable, generation).await;
             }
         ));
@@ -351,7 +360,6 @@ impl PictureLoader {
 
             rayon::spawn(move || {
                 let decoded = Self::decode_bytes(bytes, animated);
-
                 glib::idle_add_once(move || {
                     let weak_self = weak_self.into_weak_ref();
                     let Some(obj) = weak_self.upgrade() else {
