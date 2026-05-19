@@ -12,6 +12,7 @@ mod macros;
 mod mpris_common;
 mod ui;
 mod utils;
+mod process;
 
 pub mod client;
 

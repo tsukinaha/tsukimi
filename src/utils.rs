@@ -89,14 +89,14 @@ pub enum CacheEvent<T> {
     Error(anyhow::Error),
 }
 
-type CacheHash = u64;
+pub(crate) type CacheHash = u64;
 
-struct Cached<T> {
-    data: T,
-    hash: CacheHash,
+pub(crate) struct Cached<T> {
+    pub(crate) data: T,
+    pub(crate) hash: CacheHash,
 }
 
-enum CacheWrite {
+pub(crate) enum CacheWrite {
     Written,
     Unchanged,
 }
@@ -199,7 +199,7 @@ where
     rx
 }
 
-fn read_from_cache<T>(path: &PathBuf) -> Option<Cached<T>>
+pub(crate) fn read_from_cache<T>(path: &PathBuf) -> Option<Cached<T>>
 where
     T: for<'de> Deserialize<'de>,
 {
@@ -211,7 +211,7 @@ where
     })
 }
 
-fn write_to_cache_if_changed<T>(
+pub(crate) fn write_to_cache_if_changed<T>(
     path: &PathBuf, data: &T, old_hash: Option<CacheHash>,
 ) -> Result<CacheWrite>
 where
