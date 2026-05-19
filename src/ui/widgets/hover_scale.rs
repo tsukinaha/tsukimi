@@ -162,10 +162,16 @@ mod imp {
             let tilt_x_deg = -ny * super::MAX_TILT_ANGLE * progress; // pitch (cursor up/down)
 
             let child_snapshot = gtk::Snapshot::new();
-            child_snapshot.push_blur(0.5);
+            // push_opacity with a value strictly below 1.0 forces the GPU renderer
+            // to composite the entire subtree into a single offscreen FBO before
+            // the 3-D transform is applied.  This prevents inter-node seam
+            // artifacts (black horizontal line, flickering) that appear when
+            // individual render nodes are each transformed independently in 3-D.
+            // 0.9999 is visually indistinguishable from 1.0.
+            child_snapshot.push_opacity(0.9999);
+
             self.call_underlay(&child_snapshot);
             obj.snapshot_child(&child, &child_snapshot);
-            child_snapshot.pop();
 
             // Steam-card lighting: cursor above centre → bright overlay that
             // fades downward; cursor below centre → dark overlay that fades upward.
@@ -205,6 +211,8 @@ mod imp {
                 );
                 child_snapshot.pop();
             }
+
+            child_snapshot.pop(); // closes push_opacity
 
             let Some(node) = child_snapshot.to_node() else {
                 return;
