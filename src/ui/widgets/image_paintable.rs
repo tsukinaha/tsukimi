@@ -124,7 +124,13 @@ mod imp {
     }
 
     #[glib::derived_properties]
-    impl ObjectImpl for ImagePaintable {}
+    impl ObjectImpl for ImagePaintable {
+        fn dispose(&self) {
+            if let Some(source_id) = self.timeout_source_id.borrow_mut().take() {
+                source_id.remove();
+            }
+        }
+    }
 
     impl PaintableImpl for ImagePaintable {
         fn intrinsic_height(&self) -> i32 {

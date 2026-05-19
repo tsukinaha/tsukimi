@@ -112,6 +112,8 @@ pub mod imp {
     impl ObjectImpl for TuOverviewItem {
         fn constructed(&self) {
             self.parent_constructed();
+            let obj = self.obj();
+            obj.add_controller(obj.gesture_click());
         }
 
         fn dispose(&self) {
@@ -129,9 +131,7 @@ pub mod imp {
     impl TuOverviewItem {
         pub fn set_item(&self, item: TuItem) {
             self.item.replace(item);
-            let obj = self.obj();
-            obj.set_up();
-            obj.gesture_click();
+            self.obj().set_up();
         }
 
         fn set_view_group(&self, view_group: ViewGroup) {

@@ -22,12 +22,9 @@ use crate::{
     ui::{
         GlobalToast,
         provider::tu_item::TuItem,
-        widgets::{
-            tu_item::TuItemAction,
-            utils::{
-                TU_ITEM_BANNER_SIZE,
-                TU_ITEM_VIDEO_SIZE,
-            },
+        widgets::utils::{
+            TU_ITEM_BANNER_SIZE,
+            TU_ITEM_VIDEO_SIZE,
         },
     },
     utils::spawn,
@@ -62,6 +59,7 @@ pub mod imp {
                 MAX_SCALE,
             },
             picture_loader::PictureLoader,
+            tu_item::TuItemAction,
         },
     };
 
@@ -157,6 +155,9 @@ pub mod imp {
                     }
                 });
             }
+
+            let obj = self.obj();
+            obj.add_controller(obj.gesture_click());
         }
 
         fn dispose(&self) {
@@ -439,8 +440,6 @@ impl TuListItem {
         } else {
             self.set_picture()
         };
-
-        self.add_controller(self.gesture_click());
 
         let (w, h) = self.size_hint();
 

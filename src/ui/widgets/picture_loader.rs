@@ -373,17 +373,13 @@ impl PictureLoader {
                             obj.set_picture_visible(cancellable, generation);
                         }
                         Err(_) if fetch_on_error => {
-                            println!("Failed to decode image bytes, fetching from network...");
                             if let Some(path) = cache_file_path {
                                 obj.get_file(path, cancellable, generation);
                             } else {
                                 obj.set_broken(cancellable, generation);
                             }
                         }
-                        Err(_) => {
-                            println!("Failed to decode image bytes, not fetching from network.");
-                            obj.set_broken(cancellable, generation)
-                        }
+                        Err(_) => obj.set_broken(cancellable, generation),
                     }
                 });
             });
