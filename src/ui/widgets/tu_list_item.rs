@@ -346,10 +346,10 @@ pub mod imp {
 
     impl TuListItem {
         pub fn set_item(&self, item: TuItem) {
-            self.item.replace(item);
             let obj = self.obj();
+            self.item.replace(item);
 
-            obj.set_up();
+            obj.item_setted();
             obj.gesture();
         }
 
@@ -389,14 +389,16 @@ impl TuItemMenuPrelude for TuListItem {
     }
 }
 
+impl Default for TuListItem {
+    fn default() -> Self {
+        Self::new(TuItem::default())
+    }
+}
+
 #[template_callbacks]
 impl TuListItem {
     pub fn new(item: TuItem) -> Self {
         Object::builder().property("item", item).build()
-    }
-
-    pub fn default() -> Self {
-        Object::new()
     }
 
     fn set_progress_anim(&self, percentage: f64) {
@@ -427,14 +429,20 @@ impl TuListItem {
         ));
     }
 
-    pub fn set_up(&self) {
+    pub fn item_setted(&self) {
         let imp = self.imp();
         let item = self.item();
 
-        if item.need_animated_picture() {
-            self.set_animated_picture();
+        if let Some(picture_loader) = item.loaded_picture_loader() {
+            imp.overlay.set_child(Some(&picture_loader));
         } else {
-            self.set_picture();
+            let picture_loader = if item.need_animated_picture() {
+                self.set_animated_picture()
+            } else {
+                self.set_picture()
+            };
+
+            item.set_loaded_picture_loader(picture_loader);
         }
 
         let (w, h) = self.size_hint();
@@ -443,26 +451,28 @@ impl TuListItem {
 
         if let Some(p) = item.fmt_percentage() {
             self.set_progress(p / 100.);
+        } else {
+            self.set_progress(0.);
         }
 
-        if item.has_played_mark() {
-            imp.played_mark.set_visible(true);
-        }
+        imp.played_mark.set_visible(item.has_played_mark());
 
-        if item.has_folder_mark() {
-            imp.folder_mark.set_visible(true);
-        }
+        imp.folder_mark.set_visible(item.has_folder_mark());
 
-        if item.has_direct_play_mark() {
-            imp.direct_play_button.set_visible(true);
-        }
+        imp.direct_play_button.set_visible(item.has_direct_play_mark());
 
         self.set_tooltip_text(Some(&item.name()));
 
         if let Some(title) = item.list_item_title() {
             imp.title.set_text(&title);
             imp.title.set_visible(true);
+        } else {
+            imp.title.set_visible(false);
         }
+    }
+
+    pub fn unbind_item(&self) {
+        self.imp().overlay.set_child(None::<&gtk::Widget>);
     }
 
     fn size_hint(&self) -> (i32, i32) {

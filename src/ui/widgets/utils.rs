@@ -39,6 +39,17 @@ impl TuItemBuildExt for SignalListItemFactory {
                 .chain_property::<TuObject>("item")
                 .bind(&tu_item, "item", gtk::Widget::NONE);
         });
+
+        self.connect_unbind(|_, item| {
+            let list_item = item
+                .downcast_ref::<gtk::ListItem>()
+                .expect("Needs to be ListItem");
+
+            if let Some(tu_item) = list_item.child().and_downcast::<TuListItem>() {
+                tu_item.unbind_item();
+            }
+        });
+
         self
     }
 
