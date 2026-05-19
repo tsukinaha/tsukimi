@@ -1,5 +1,3 @@
-use std::cell::RefCell;
-
 use adw::prelude::*;
 use gettextrs::gettext;
 use glib::Object;
@@ -14,7 +12,6 @@ use imp::PosterType;
 use super::tu_item::{
     PROGRESSBAR_ANIMATION_DURATION,
     TuItemBasic,
-    TuItemMenuPrelude,
     TuItemOverlay,
     TuItemOverlayPrelude,
 };
@@ -43,7 +40,6 @@ pub mod imp {
     use glib::subclass::InitializingObject;
     use gtk::{
         CompositeTemplate,
-        PopoverMenu,
         gdk,
         glib,
         graphene,
@@ -92,7 +88,6 @@ pub mod imp {
         pub item: RefCell<TuItem>,
         #[property(get, set, builder(PosterType::default()))]
         pub poster_type: Cell<PosterType>,
-        pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub title: TemplateChild<gtk::Label>,
         #[template_child]
@@ -158,12 +153,6 @@ pub mod imp {
 
             let obj = self.obj();
             obj.add_controller(obj.gesture_click());
-        }
-
-        fn dispose(&self) {
-            if let Some(popover) = self.popover.borrow().as_ref() {
-                popover.unparent();
-            };
         }
     }
 
@@ -382,12 +371,6 @@ impl TuItemOverlayPrelude for TuListItem {
 
     fn poster_type_ext(&self) -> PosterType {
         self.poster_type()
-    }
-}
-
-impl TuItemMenuPrelude for TuListItem {
-    fn popover(&self) -> &RefCell<Option<gtk::PopoverMenu>> {
-        &self.imp().popover
     }
 }
 
