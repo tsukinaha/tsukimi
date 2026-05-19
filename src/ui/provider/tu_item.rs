@@ -204,7 +204,6 @@ use once_cell::sync::OnceCell;
         playback_position_ticks: RefCell<u64>,
 
         pub loaded_picture_loader: OnceCell<PictureLoader>,
-        pub gesture_click: OnceCell<GestureClick>,
     }
 
     #[glib::derived_properties]
@@ -773,14 +772,6 @@ impl TuItem {
 
     pub fn loaded_picture_loader(&self) -> Option<PictureLoader> {
         self.imp().loaded_picture_loader.get().cloned()
-    }
-
-    pub fn set_gesture_click(&self, gesture_click: GestureClick) {
-        let _ = self.imp().gesture_click.set(gesture_click);
-    }
-
-    pub fn gesture_click(&self) -> Option<GestureClick> {
-        self.imp().gesture_click.get().cloned()
     }
 }
 
