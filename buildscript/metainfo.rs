@@ -42,6 +42,6 @@ fn validate() {
     match status {
         Ok(s) if s.success() => println!("appstreamcli validate: OK"),
         Ok(s) => println!("cargo:warning=appstreamcli validate exited with {s}"),
-        Err(_) => {} // tool not installed, skip silently
+        Err(_) => println!("cargo:warning=appstreamcli not found, skipping metainfo validation"),
     }
 }
