@@ -1,6 +1,9 @@
 use std::hash::Hasher;
 
-use crate::ui::PlaybackDirectMode;
+use crate::{
+    client::account::ServerType,
+    ui::PlaybackDirectMode,
+};
 use anyhow::{
     Context,
     Result,
@@ -165,6 +168,10 @@ impl JellyfinClient {
         self.session.load()
     }
 
+    fn server_type(&self) -> ServerType {
+        self.session.load().account.server_type.unwrap_or_default()
+    }
+
     pub async fn init(&self, account: &Account) -> Result<(), Box<dyn std::error::Error>> {
         let url = {
             let mut url = Url::parse(&account.server)?;
@@ -273,6 +280,11 @@ impl JellyfinClient {
         Ok(res)
     }
 
+    pub async fn delete(&self, path: &str, params: &[(&str, &str)]) -> Result<Response> {
+        let request = self.prepare_request(Method::DELETE, path, params)?;
+        self.send_request(request).await
+    }
+
     pub async fn post<B>(&self, path: &str, params: &[(&str, &str)], body: B) -> Result<Response>
     where
         B: Serialize,
@@ -280,8 +292,7 @@ impl JellyfinClient {
         let request = self
             .prepare_request(Method::POST, path, params)?
             .json(&body);
-        let res = self.send_request(request).await?;
-        Ok(res)
+        self.send_request(request).await
     }
 
     pub async fn post_raw<B>(&self, path: &str, body: B, content_type: &str) -> Result<Response>
@@ -291,8 +302,7 @@ impl JellyfinClient {
         let request = self
             .prepare_request_headers(Method::POST, path, &[], content_type)?
             .body(body);
-        let res = self.send_request(request).await?;
-        Ok(res)
+        self.send_request(request).await
     }
 
     pub async fn post_json<B, T>(
@@ -886,8 +896,16 @@ impl JellyfinClient {
 
     pub async fn unlike(&self, id: &str) -> Result<()> {
         let s = self.session();
-        let path = format!("Users/{}/FavoriteItems/{}/Delete", s.account.user_id, id);
-        self.post(&path, &[], json!({})).await?;
+        match self.server_type() {
+            ServerType::Emby => {
+                let path = format!("Users/{}/FavoriteItems/{}/Delete", s.account.user_id, id);
+                self.post(&path, &[], json!({})).await?;
+            }
+            ServerType::Jellyfin => {
+                let path = format!("Users/{}/FavoriteItems/{}", s.account.user_id, id);
+                self.delete(&path, &[]).await?;
+            }
+        }
         Ok(())
     }
 
@@ -900,8 +918,16 @@ impl JellyfinClient {
 
     pub async fn set_as_unplayed(&self, id: &str) -> Result<()> {
         let s = self.session();
-        let path = format!("Users/{}/PlayedItems/{}/Delete", s.account.user_id, id);
-        self.post(&path, &[], json!({})).await?;
+        match self.server_type() {
+            ServerType::Emby => {
+                let path = format!("Users/{}/PlayedItems/{}/Delete", s.account.user_id, id);
+                self.post(&path, &[], json!({})).await?;
+            }
+            ServerType::Jellyfin => {
+                let path = format!("Users/{}/PlayedItems/{}", s.account.user_id, id);
+                self.delete(&path, &[]).await?;
+            }
+        }
         Ok(())
     }
 
@@ -1291,7 +1317,7 @@ impl JellyfinClient {
         self.request(&path, &[]).await
     }
 
-    pub async fn delete(&self, ids: &str) -> Result<Response> {
+    pub async fn delete_item(&self, ids: &str) -> Result<Response> {
         let params = [("Ids", ids)];
         self.post("Items/Delete", &params, json!({})).await
     }
@@ -1349,7 +1375,10 @@ impl JellyfinClient {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::client::error::UserFacingError;
+    use crate::client::{
+        account::ServerType,
+        error::UserFacingError,
+    };
 
     #[tokio::test]
     async fn search() {
@@ -1366,7 +1395,7 @@ mod tests {
                     port: "443".to_string(),
                     user_id: response.user.id,
                     access_token: response.access_token,
-                    server_type: Some("Jellyfin".to_string()),
+                    server_type: Some(ServerType::Jellyfin),
                 };
                 let _ = JELLYFIN_CLIENT.init(&account).await;
             }
@@ -1415,7 +1444,7 @@ mod tests {
                     port: "8096".to_string(),
                     user_id: response.user.id,
                     access_token: response.access_token,
-                    server_type: Some("Jellyfin".to_string()),
+                    server_type: Some(ServerType::Jellyfin),
                 };
                 let _ = JELLYFIN_CLIENT.init(&account).await;
             }

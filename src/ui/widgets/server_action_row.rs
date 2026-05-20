@@ -13,7 +13,10 @@ use super::{
     window::Window,
 };
 use crate::{
-    client::Account,
+    client::{
+        Account,
+        account::ServerType,
+    },
     ui::{
         models::SETTINGS,
         provider::account_item::AccountItem,
@@ -71,7 +74,10 @@ mod imp {
             let obj = self.obj();
             obj.set_title(&obj.item().servername());
             obj.set_subtitle(&obj.item().username());
-            if obj.item().server_type() == Some("Jellyfin".to_string()) {
+            if matches!(
+                ServerType::from_index(obj.item().server_type()),
+                ServerType::Jellyfin
+            ) {
                 self.server_image.set_icon_name(Some("jellyfin-symbolic"));
             }
         }
@@ -140,13 +146,10 @@ impl ServerActionRow {
             .set_text(&account.servername);
         account_window.imp().port_entry.set_text(&account.port);
         account_window.imp().server_entry.set_text(&account.server);
-        account_window.imp().server_type.set_selected(
-            if account.server_type == Some("Jellyfin".to_string()) {
-                1
-            } else {
-                0
-            },
-        );
+        account_window
+            .imp()
+            .server_type
+            .set_selected(account.server_type.unwrap_or_default().index());
         account_window.present(self.root().as_ref());
     }
 

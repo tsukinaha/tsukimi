@@ -13,6 +13,7 @@ use super::utils::GlobalToast;
 use crate::{
     client::{
         Account,
+        account::ServerType,
         error::UserFacingError,
         jellyfin_client::JELLYFIN_CLIENT,
     },
@@ -181,11 +182,7 @@ impl AccountWindow {
             servername = res.server_name;
         }
 
-        let server_type = if imp.server_type.selected() == 0 {
-            "Emby"
-        } else {
-            "Jellyfin"
-        };
+        let server_type = ServerType::from_index(imp.server_type.selected());
 
         let account = Account {
             servername,
@@ -195,7 +192,7 @@ impl AccountWindow {
             port: port.to_string(),
             user_id: res.user.id,
             access_token: res.access_token,
-            server_type: Some(server_type.to_string()),
+            server_type: Some(server_type),
         };
 
         let action_type = imp.action_type.get();
