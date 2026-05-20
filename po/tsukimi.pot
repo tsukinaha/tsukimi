@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-20 22:04+0800\n"
+"POT-Creation-Date: 2026-05-20 22:56+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,15 +88,15 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:144
+#: src/ui/widgets/account_add.rs:145
 msgid "Fields must be filled in"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:209
+#: src/ui/widgets/account_add.rs:206
 msgid "Server edited successfully"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:214
+#: src/ui/widgets/account_add.rs:211
 msgid "Server added successfully"
 msgstr ""
 
@@ -344,7 +344,7 @@ msgstr ""
 msgid "No overview"
 msgstr ""
 
-#: src/ui/widgets/server_action_row.rs:123
+#: src/ui/widgets/server_action_row.rs:129
 msgid "Edit Server"
 msgstr ""
 

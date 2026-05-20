@@ -1,6 +1,9 @@
 use std::hash::Hasher;
 
-use crate::ui::PlaybackDirectMode;
+use crate::{
+    client::account::ServerType,
+    ui::PlaybackDirectMode,
+};
 use anyhow::{
     Context,
     Result,
@@ -163,6 +166,10 @@ impl Default for JellyfinClient {
 impl JellyfinClient {
     pub fn session(&self) -> arc_swap::Guard<Arc<Session>> {
         self.session.load()
+    }
+
+    fn server_type(&self) -> ServerType {
+        self.session.load().account.server_type.unwrap_or_default()
     }
 
     pub async fn init(&self, account: &Account) -> Result<(), Box<dyn std::error::Error>> {
@@ -889,8 +896,16 @@ impl JellyfinClient {
 
     pub async fn unlike(&self, id: &str) -> Result<()> {
         let s = self.session();
-        let path = format!("Users/{}/FavoriteItems/{}/Delete", s.account.user_id, id);
-        self.post(&path, &[], json!({})).await?;
+        match self.server_type() {
+            ServerType::Emby => {
+                let path = format!("Users/{}/FavoriteItems/{}/Delete", s.account.user_id, id);
+                self.post(&path, &[], json!({})).await?;
+            }
+            ServerType::Jellyfin => {
+                let path = format!("Users/{}/FavoriteItems/{}", s.account.user_id, id);
+                self.delete(&path, &[]).await?;
+            }
+        }
         Ok(())
     }
 
@@ -903,8 +918,16 @@ impl JellyfinClient {
 
     pub async fn set_as_unplayed(&self, id: &str) -> Result<()> {
         let s = self.session();
-        let path = format!("Users/{}/PlayedItems/{}/Delete", s.account.user_id, id);
-        self.post(&path, &[], json!({})).await?;
+        match self.server_type() {
+            ServerType::Emby => {
+                let path = format!("Users/{}/PlayedItems/{}/Delete", s.account.user_id, id);
+                self.post(&path, &[], json!({})).await?;
+            }
+            ServerType::Jellyfin => {
+                let path = format!("Users/{}/PlayedItems/{}", s.account.user_id, id);
+                self.delete(&path, &[]).await?;
+            }
+        }
         Ok(())
     }
 
