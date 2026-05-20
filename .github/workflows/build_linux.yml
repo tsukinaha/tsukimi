@@ -53,5 +53,5 @@ jobs:
           name: tsukimi-${{ matrix.platform }}-linux
           path: |
             target/release/tsukimi
-            i18n/locale
+            target/i18n/locale
             resources/moe*.xml
