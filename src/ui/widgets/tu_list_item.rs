@@ -153,6 +153,15 @@ pub mod imp {
 
             let obj = self.obj();
             obj.add_controller(obj.gesture_click());
+            obj.set_has_tooltip(true);
+            obj.connect_query_tooltip(|obj, _, _, _, tooltip| {
+                let name = obj.item().name();
+                if name.is_empty() {
+                    return false;
+                }
+                tooltip.set_text(Some(&name));
+                true
+            });
         }
     }
 
@@ -442,8 +451,6 @@ impl TuListItem {
 
         imp.direct_play_button
             .set_visible(item.has_direct_play_mark());
-
-        self.set_tooltip_text(Some(&item.name()));
 
         if let Some(title) = item.list_item_title() {
             imp.title.set_text(&title);
