@@ -3652,7 +3652,6 @@ dependencies = [
  "clap",
  "derive_builder",
  "dirs",
- "embed-resource",
  "epoxy",
  "flume",
  "fnv",
@@ -3660,7 +3659,6 @@ dependencies = [
  "gdk4-wayland",
  "gdk4-x11",
  "gettext-rs",
- "glib-build-tools",
  "glow",
  "gstreamer",
  "gtk4",
@@ -3683,11 +3681,20 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-subscriber",
+ "tsukimi-buildscript",
  "url",
  "uuid",
  "windows",
  "xattr",
  "xxhash-rust",
+]
+
+[[package]]
+name = "tsukimi-buildscript"
+version = "26.5.3"
+dependencies = [
+ "embed-resource",
+ "glib-build-tools",
 ]
 
 [[package]]

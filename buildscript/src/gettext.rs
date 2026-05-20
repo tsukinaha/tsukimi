@@ -4,7 +4,7 @@ use std::{
     time::SystemTime,
 };
 
-const LINGUAS: &str = include_str!("../po/LINGUAS");
+const LINGUAS: &str = include_str!("../../po/LINGUAS");
 
 fn mtime(path: &str) -> Option<SystemTime> {
     std::fs::metadata(path).ok()?.modified().ok()
@@ -15,6 +15,7 @@ fn any_newer(sources: &[&str], target: &str) -> bool {
         Some(t) => t,
         None => return true,
     };
+
     sources
         .iter()
         .any(|s| mtime(s).is_some_and(|t| t > target_time))
@@ -52,7 +53,6 @@ pub fn update_pot(files: &[String]) {
             &format!("--package-version={pkg_version}"),
             "--from-code=UTF-8",
             "--add-comments",
-            // gettextrs function names
             "-kgettext",
             "-kngettext:1,2",
             "-kpgettext:1c,2",

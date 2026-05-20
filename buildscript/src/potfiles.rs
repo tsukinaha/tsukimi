@@ -41,6 +41,7 @@ fn collect_by_ext(dir: &Path, ext: &str, out: &mut Vec<String>) {
     let Ok(entries) = fs::read_dir(dir) else {
         return;
     };
+
     for entry in entries.flatten() {
         let path = entry.path();
         if path.is_dir() {

@@ -17,9 +17,12 @@ pub mod client;
 
 pub use arg::Args;
 pub use config::GETTEXT_PACKAGE;
-#[cfg(target_os = "linux")]
-use config::LOCALEDIR;
 use config::version;
+#[cfg(target_os = "linux")]
+use config::{
+    LOCALEDIR,
+    PKGDATADIR,
+};
 use once_cell::sync::OnceCell;
 
 use clap::Parser;
@@ -38,6 +41,8 @@ pub static USER_AGENT: LazyLock<String> =
 pub const APP_ID: &str = "moe.tsuna.tsukimi";
 pub const CLIENT_ID: &str = "Tsukimi";
 const APP_RESOURCE_PATH: &str = "/moe/tsuna/tsukimi";
+#[cfg(target_os = "linux")]
+const GRESOURCE_FILE: &str = "tsukimi.gresource";
 
 #[cfg(target_os = "windows")]
 const WINDOWS_LOCALEDIR: &str = "share\\locale";
@@ -75,9 +80,7 @@ pub fn run() -> gtk::glib::ExitCode {
     textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
 
     adw::init().expect("Failed to initialize Adwaita");
-    // Register and include resources
-    gtk::gio::resources_register_include!("tsukimi.gresource")
-        .expect("Failed to register resources.");
+    register_gio_resources();
 
     widgets::init();
 
@@ -85,4 +88,19 @@ pub fn run() -> gtk::glib::ExitCode {
     gtk::glib::set_application_name(CLIENT_ID);
 
     Application::new().run_with_args::<&str>(&[])
+}
+
+fn register_gio_resources() {
+    // Linux: Meson installs resources as a bundle.
+    #[cfg(target_os = "linux")]
+    {
+        let path = std::path::Path::new(PKGDATADIR).join(GRESOURCE_FILE);
+        let resources = gtk::gio::Resource::load(path).expect("Failed to load resources.");
+        gtk::gio::resources_register(&resources);
+    }
+
+    // Windows: Cargo embeds resources.
+    #[cfg(target_os = "windows")]
+    gtk::gio::resources_register_include!("tsukimi.gresource")
+        .expect("Failed to register resources.");
 }

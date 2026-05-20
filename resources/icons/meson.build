@@ -4,7 +4,4 @@ scalable_dir = join_paths('scalable', 'actions')
 
 icondir = join_paths(get_option('datadir'), 'icons/hicolor')
 
-install_data(
-  'moe.tsuna.tsukimi.svg',
-  install_dir: join_paths(icondir, '256x256/apps')
-)
+install_data('moe.tsuna.tsukimi.svg', install_dir: join_paths(icondir, 'scalable/apps'))
