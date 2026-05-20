@@ -1,45 +1,28 @@
-#[path = "buildscript/resources.rs"]
-mod resources;
-
-#[path = "buildscript/potfiles.rs"]
-mod potfiles;
-
-#[path = "buildscript/gschema.rs"]
-mod gschema;
-
-#[path = "buildscript/desktop.rs"]
-mod desktop;
-
-#[path = "buildscript/metainfo.rs"]
-mod metainfo;
-
-#[path = "buildscript/icons.rs"]
-mod icons;
-
-#[cfg(any(target_os = "linux", target_os = "windows"))]
-#[path = "buildscript/gettext.rs"]
-mod gettext;
-
 #[cfg(windows)]
-#[path = "buildscript/windows.rs"]
-mod windows;
+use tsukimi_buildscript::{
+    gettext,
+    potfiles,
+    resources,
+    windows,
+};
 
 fn main() {
-    resources::compile();
-    gschema::compile();
-    desktop::generate();
-    metainfo::generate();
-    icons::copy();
-
-    let translatable_files = potfiles::collect();
-    potfiles::write(&translatable_files);
-
-    #[cfg(any(target_os = "linux", target_os = "windows"))]
-    {
-        gettext::update_pot(&translatable_files);
-        gettext::compile_po();
-    }
+    // These variables are passed by Meson, see src/config.rs.
+    // We track them here to ensure Meson and direct Cargo calls can share the
+    // same target directory safely.
+    println!("cargo:rerun-if-env-changed=TSUKIMI_VERSION");
+    println!("cargo:rerun-if-env-changed=TSUKIMI_LOCALEDIR");
+    println!("cargo:rerun-if-env-changed=TSUKIMI_PKGDATADIR");
 
     #[cfg(windows)]
-    windows::embed_manifest();
+    {
+        resources::compile();
+
+        let translatable_files = potfiles::collect();
+        potfiles::write(&translatable_files);
+        gettext::update_pot(&translatable_files);
+        gettext::compile_po();
+
+        windows::embed_manifest();
+    }
 }

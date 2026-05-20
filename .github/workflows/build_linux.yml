@@ -26,9 +26,28 @@ jobs:
         run: |
           apt-get update
           apt-get install -y git
-          apt-get install -y --no-install-recommends build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
-          libadwaita-1-dev libmpv-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev \
-          libgstreamer-plugins-base1.0-dev libgstreamer-plugins-extra1.0-dev gstreamer1.0-libav clang lld
+          apt-get install -y --no-install-recommends \
+            appstream \
+            build-essential \
+            clang \
+            curl \
+            desktop-file-utils \
+            gettext \
+            gstreamer1.0-libav \
+            libxml2-utils \
+            lld \
+            meson \
+            ninja-build \
+            pkg-config \
+            libadwaita-1-dev \
+            libdbus-1-dev \
+            libgstreamer1.0-dev \
+            libgstreamer-plugins-bad1.0-dev \
+            libgstreamer-plugins-base1.0-dev \
+            libgstreamer-plugins-extra1.0-dev \
+            libgtk-4-dev \
+            libmpv-dev \
+            libssl-dev
 
       - name: Checkout
         uses: actions/checkout@v6
@@ -45,13 +64,14 @@ jobs:
           DANDANAPI_SECRET_KEY: ${{ secrets.DANDANAPI_SECRET_KEY }}
         run: |
           echo $DANDANAPI_SECRET_KEY > secret/key
-          cargo build --release --locked
+          meson setup build --prefix=/usr
+          meson compile -C build
+          meson install -C build --destdir "$PWD/artifact/tsukimi-${{ matrix.platform }}-linux"
+          tar -czf tsukimi-${{ matrix.platform }}-linux.tar.gz -C artifact tsukimi-${{ matrix.platform }}-linux
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: tsukimi-${{ matrix.platform }}-linux
-          path: |
-            target/release/tsukimi
-            target/i18n/locale
-            resources/moe*.xml
+          path: tsukimi-${{ matrix.platform }}-linux.tar.gz
+          archive: false

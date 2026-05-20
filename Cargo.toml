@@ -1,3 +1,9 @@
+[workspace]
+members = [
+    ".",
+    "buildscript"
+]
+
 [package]
 name = "tsukimi"
 version = "26.5.3"
@@ -5,7 +11,6 @@ edition = "2024"
 rust-version = "1.85"
 description = "A simple Jellyfin Client written by GTK4-RS"
 license = "GPL-3.0"
-
 
 [dependencies]
 gtk = { version = "0.11", package = "gtk4", features = ["v4_22"] }
@@ -56,8 +61,7 @@ futures-util = "0.3.31"
 cargo-husky = { version = "1", default-features = false, features = ["user-hooks"] }
 
 [build-dependencies]
-embed-resource = "3.0"
-glib-build-tools = "0.22"
+tsukimi-buildscript = { path = "buildscript" }
 
 [features]
 console = []                      # Enable console logging

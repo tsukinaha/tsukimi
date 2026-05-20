@@ -6,3 +6,11 @@ option(
                'When that is the case, cargo will not be able to download the dependencies during' +
                'the build so they are assumed to be in `{meson.project_source_root()}/cargo`.'
 )
+
+option(
+  'rust-target',
+  type: 'combo',
+  choices: ['debug', 'release'],
+  value: 'release',
+  description: 'Cargo profile to build.',
+)

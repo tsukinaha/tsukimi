@@ -1,30 +1,17 @@
-global_conf = configuration_data()
-global_conf.set_quoted('APP_ID', application_id)
-global_conf.set_quoted('GETTEXT_PACKAGE', gettext_package)
-global_conf.set_quoted('LOCALEDIR', localedir)
-global_conf.set_quoted('PKGDATADIR', pkgdatadir)
-global_conf.set('PROFILE', profile)
-global_conf.set_quoted('VERSION', full_version)
-config = configure_file(input: 'config.rs.in', output: 'config.rs', configuration: global_conf)
-# Copy the config.rs output to the source directory.
-run_command(
-    'cp',
-    meson.project_build_root() / 'src' / 'config.rs',
-    meson.project_source_root() / 'src' / 'config.rs',
-    check: true,
-)
-
 cargo_options = ['--manifest-path', meson.project_source_root() / 'Cargo.toml']
-cargo_options += ['--target-dir', meson.project_build_root() / 'src']
+cargo_target_dir = meson.project_source_root() / 'target'
+cargo_options += ['--target-dir', cargo_target_dir]
+pkgdatadir = datadir / meson.project_name()
 
-if profile == 'Devel'
-    rust_target = 'debug'
-    message('Building in debug mode')
-else
+rust_target = get_option('rust-target')
+if rust_target == 'release'
     cargo_options += ['--release']
-    rust_target = 'release'
     message('Building in release mode')
+else
+    message('Building in debug mode')
 endif
+
+cargo_bin = cargo_target_dir / rust_target / meson.project_name()
 
 if get_option('sandboxed-build')
     # This is the path used by flatpak-cargo-generator in flatpak-builder-tools
@@ -33,21 +20,28 @@ else
     cargo_env = ['CARGO_HOME=' + meson.project_build_root() / 'cargo-home']
 endif
 
-rustdoc_flags = ' '.join(
-    [
-        '-Zunstable-options',
-        '--enable-index-page',
-        '--extern-html-root-url=gio=https://gtk-rs.org/gtk-rs-core/stable/latest/docs/',
-        '--extern-html-root-url=glib=https://gtk-rs.org/gtk-rs-core/stable/latest/docs/',
-        '--extern-html-root-url=gsk4=https://gtk-rs.org/gtk4-rs/stable/latest/docs/',
-        '--extern-html-root-url=gdk4=https://gtk-rs.org/gtk4-rs/stable/latest/docs/',
-        '--extern-html-root-url=gtk4=https://gtk-rs.org/gtk4-rs/stable/latest/docs/',
-        '--extern-html-root-url=libadwaita=https://world.pages.gitlab.gnome.org/Rust/libadwaita-rs/stable/latest/docs/',
-        '--cfg=docsrs',
-        '-Dwarnings',
-    ],
-)
-doc_env = ['RUSTDOCFLAGS=' + rustdoc_flags]
+rust_env = cargo_env + [
+    'TSUKIMI_VERSION=' + version,
+    'TSUKIMI_LOCALEDIR=' + localedir,
+    'TSUKIMI_PKGDATADIR=' + pkgdatadir,
+]
+
+# We currently don't have rustdoc wiring.
+# rustdoc_flags = ' '.join(
+#     [
+#         '-Zunstable-options',
+#         '--enable-index-page',
+#         '--extern-html-root-url=gio=https://gtk-rs.org/gtk-rs-core/stable/latest/docs/',
+#         '--extern-html-root-url=glib=https://gtk-rs.org/gtk-rs-core/stable/latest/docs/',
+#         '--extern-html-root-url=gsk4=https://gtk-rs.org/gtk4-rs/stable/latest/docs/',
+#         '--extern-html-root-url=gdk4=https://gtk-rs.org/gtk4-rs/stable/latest/docs/',
+#         '--extern-html-root-url=gtk4=https://gtk-rs.org/gtk4-rs/stable/latest/docs/',
+#         '--extern-html-root-url=libadwaita=https://world.pages.gitlab.gnome.org/Rust/libadwaita-rs/stable/latest/docs/',
+#         '--cfg=docsrs',
+#         '-Dwarnings',
+#     ],
+# )
+# doc_env = ['RUSTDOCFLAGS=' + rustdoc_flags]
 
 custom_target(
     'cargo-build',
@@ -55,17 +49,18 @@ custom_target(
     build_always_stale: true,
     output: meson.project_name(),
     console: true,
+    env: rust_env,
     install: true,
     install_dir: bindir,
     command: [
-        'env',
-        cargo_env,
         cargo,
         'build',
-        cargo_options,
+    ]
+    + cargo_options
+    + [
         '&&',
         'cp',
-        'src' / rust_target / meson.project_name(),
+        cargo_bin,
         '@OUTPUT@',
     ],
 )

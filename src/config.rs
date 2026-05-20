@@ -1,11 +1,20 @@
-pub fn version() -> &'static str {
-    env!("CARGO_PKG_VERSION")
-}
 pub const GETTEXT_PACKAGE: &str = "tsukimi";
 
-// If you are using meson, this will be replaced with the correct path.
-// Otherwise, you can set it to the correct path where the locale files are installed.
-//
-// This value is reserved for build.rs.
-#[cfg(target_os = "linux")]
-pub const LOCALEDIR: &str = "/usr/share/locale";
+pub const VERSION: &str = match option_env!("TSUKIMI_VERSION") {
+    Some(version) => version,
+    None => env!("CARGO_PKG_VERSION"),
+};
+
+pub const LOCALEDIR: &str = match option_env!("TSUKIMI_LOCALEDIR") {
+    Some(path) => path,
+    None => "/usr/share/locale",
+};
+
+pub const PKGDATADIR: &str = match option_env!("TSUKIMI_PKGDATADIR") {
+    Some(path) => path,
+    None => "/usr/share/tsukimi",
+};
+
+pub fn version() -> &'static str {
+    VERSION
+}
