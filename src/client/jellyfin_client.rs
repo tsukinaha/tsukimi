@@ -1352,7 +1352,10 @@ impl JellyfinClient {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::client::error::UserFacingError;
+    use crate::client::{
+        account::ServerType,
+        error::UserFacingError,
+    };
 
     #[tokio::test]
     async fn search() {
@@ -1369,7 +1372,7 @@ mod tests {
                     port: "443".to_string(),
                     user_id: response.user.id,
                     access_token: response.access_token,
-                    server_type: Some("Jellyfin".to_string()),
+                    server_type: Some(ServerType::Jellyfin),
                 };
                 let _ = JELLYFIN_CLIENT.init(&account).await;
             }
@@ -1418,7 +1421,7 @@ mod tests {
                     port: "8096".to_string(),
                     user_id: response.user.id,
                     access_token: response.access_token,
-                    server_type: Some("Jellyfin".to_string()),
+                    server_type: Some(ServerType::Jellyfin),
                 };
                 let _ = JELLYFIN_CLIENT.init(&account).await;
             }
