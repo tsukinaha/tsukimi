@@ -1,13 +1,14 @@
-use std::{path::Path, process::Command};
+use std::{
+    path::Path,
+    process::Command,
+};
 
 const LINGUAS: &str = include_str!("../po/LINGUAS");
-
 
 pub fn update_pot(files: &[String]) {
     println!("cargo:rerun-if-changed=po/POTFILES");
 
-    let pkg_version =
-        std::env::var("CARGO_PKG_VERSION").unwrap_or_default();
+    let pkg_version = std::env::var("CARGO_PKG_VERSION").unwrap_or_default();
 
     let rs_files: Vec<&str> = files
         .iter()

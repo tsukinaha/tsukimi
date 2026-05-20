@@ -1,4 +1,8 @@
-use std::{fs, io::Write, path::Path};
+use std::{
+    fs,
+    io::Write,
+    path::Path,
+};
 
 pub fn collect() -> Vec<String> {
     let mut rs_files: Vec<String> = Vec::new();
@@ -26,8 +30,7 @@ pub fn write(files: &[String]) {
         return;
     }
 
-    let mut out =
-        fs::File::create("po/POTFILES").expect("Failed to create po/POTFILES");
+    let mut out = fs::File::create("po/POTFILES").expect("Failed to create po/POTFILES");
     out.write_all(content.as_bytes())
         .expect("Failed to write po/POTFILES");
 

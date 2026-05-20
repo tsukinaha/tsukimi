@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+set -e
+
+echo "Running cargo fmt..."
+cargo fmt
+
+echo "Running cargo clippy --fix..."
+cargo clippy --fix --allow-dirty --allow-no-vcs --allow-staged
+
+echo "Re-staging modified files..."
+git diff --name-only | xargs -r git add
+
+echo "Pre-commit checks passed."
