@@ -9,8 +9,8 @@ A simple third-party Jellyfin client for Linux.
 ## About
 A simple third-party Jellyfin client written in GTK4-RS, uses MPV as the video player, and GStreamer as the music player.
 
-It’s also partially compatible with Emby.    
-All of basic functions and most of admin functions are supported.    
+It’s also partially compatible with Emby.
+All of basic functions and most of admin functions are supported.
 
 You can play music and albums, as well as videos with more advanced settings.
 
@@ -64,19 +64,19 @@ sudo emerge --ask media-video/tsukimi
 ```
 
 ### Nix
-`tsukimi` is available in nixpkgs since 24.11. 
+`tsukimi` is available in nixpkgs since 24.11.
 
 ### Source code
 [Build on Linux](./docs/build_on_linux.md)
 
 ## MPV Config
-[MPV-manual#files](https://mpv.io/manual/master/#files) 
+[MPV-manual#files](https://mpv.io/manual/master/#files)
 
 ## Contributing
 
 ### Translations
 
-If you'd like to help translating **Tsukimi** into your language, please head over to [Weblate](https://hosted.weblate.org/projects/tsukimi/).   
+If you'd like to help translating **Tsukimi** into your language, please head over to [Weblate](https://hosted.weblate.org/projects/tsukimi/).
 
 <a href="https://hosted.weblate.org/engage/tsukimi/">
 <img src="https://hosted.weblate.org/widget/tsukimi/main/multi-auto.svg" alt="翻译状态" />
@@ -96,8 +96,7 @@ Thanks to open-source projects like GNOME Music, Fractal, and Clapper—we refer
 - [Adwaita](https://gitlab.gnome.org/GNOME/libadwaita/)
 
 <sup>
-Fonts used in screenshots: <a href="https://github.com/lxgw/LxgwWenKai-Screen">LXGW WenKai Screen</a> 
+Fonts used in screenshots: <a href="https://github.com/lxgw/LxgwWenKai-Screen">LXGW WenKai Screen</a>
 <br />
 Anime in screenshots: <a href="https://www.fate-zero.jp/">Fate/Zero</a>
 </sup>
-
