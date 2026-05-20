@@ -199,9 +199,11 @@ impl PictureLoader {
 
     pub fn reset(&self) {
         self.cancel_loading();
-        self.imp()
-            .picture
-            .set_paintable(None::<&gtk::gdk::Paintable>);
+        let imp = self.imp();
+        imp.revealer.set_reveal_child(false);
+        imp.broken.set_visible(false);
+        imp.spinner.set_visible(true);
+        imp.picture.set_paintable(None::<&gtk::gdk::Paintable>);
     }
 
     pub fn reset_in(widget: &gtk::Widget) {
