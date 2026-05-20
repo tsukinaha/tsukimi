@@ -44,6 +44,8 @@ dependency(
     default_options: ['tests=false', 'examples=false', 'vapi=false'],
 )
 
+find_program('xmllint', required: false)
+dependency('epoxy')
 dependency('mpv', version: '>=0.38')
 
 dependency('gstreamer-1.0', version: '>= 1.16')
