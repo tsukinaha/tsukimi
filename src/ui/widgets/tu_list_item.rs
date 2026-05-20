@@ -325,8 +325,7 @@ pub mod imp {
         pub fn set_item(&self, item: TuItem) {
             let obj = self.obj();
             self.item.replace(item);
-
-            obj.item_setted();
+            obj.refresh_item();
         }
 
         pub fn set_progress(&self, progress: f64) {
@@ -401,7 +400,7 @@ impl TuListItem {
         ));
     }
 
-    pub fn item_setted(&self) {
+    pub fn refresh_item(&self) {
         let imp = self.imp();
         let item = self.item();
 
