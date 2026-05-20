@@ -7,13 +7,14 @@
 # Inaha <sakuovds@gmail.com>, 2024, 2025.
 # Gracealina  clover <zhiweishuisheng@gmail.com>, 2024, 2025.
 # HLiang Shao <792332448@qq.com>, 2024, 2025.
+# 雲の中を漂う船 <nogamenolife_zero@qq.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-03 21:25+0800\n"
-"PO-Revision-Date: 2025-05-22 05:09+0000\n"
-"Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
+"PO-Revision-Date: 2025-10-28 11:02+0000\n"
+"Last-Translator: 雲の中を漂う船 <nogamenolife_zero@qq.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -21,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.14.1-dev\n"
 
 #: src/client/error.rs:19
 msgid "Timeout Error, Check your internet connection"
@@ -231,7 +232,7 @@ msgstr "项目"
 
 #: src/ui/widgets/music_album.rs:246
 msgid "Songs"
-msgstr ""
+msgstr "歌曲"
 
 #: src/ui/widgets/item.rs:687 src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
@@ -387,7 +388,7 @@ msgstr "关闭"
 #: src/ui/widgets/window.rs:1028
 msgid "translator-credits"
 msgstr ""
-"Gracealina  clover <zhiweishuisheng@gmail.com>\n"
+"Gracealina clover <zhiweishuisheng@gmail.com>\n"
 "dyphire <qimoge@gmail.com>"
 
 #: src/ui/widgets/tu_overview_item.rs:255 src/ui/widgets/tu_list_item.rs:304
@@ -1409,12 +1410,10 @@ msgid "Scroll danmaku max lines"
 msgstr "滚动弹幕最大显示行数"
 
 #: resources/ui/mpvpage.ui:567
-#, fuzzy
 msgid "Topcenter danmaku max lines"
 msgstr "顶部居中弹幕最大显示行数"
 
 #: resources/ui/mpvpage.ui:580
-#, fuzzy
 msgid "Bottomcenter danmaku max lines"
 msgstr "底部居中弹幕最大显示行数"
 
