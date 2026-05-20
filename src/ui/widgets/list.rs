@@ -132,7 +132,11 @@ impl ListPage {
         for (name, title, list_type) in pages {
             let page = SingleGrid::new();
             page.set_list_type(list_type);
-            page.set_unify_size(UnifySize::Majority);
+            page.set_unify_size(if list_type == ListType::Resume {
+                UnifySize::ForceVideo
+            } else {
+                UnifySize::Majority
+            });
             let id_clone1 = id.to_owned();
             let include_item_types_clone1 = include_item_types.to_owned();
             page.connect_sort_changed_tokio(
