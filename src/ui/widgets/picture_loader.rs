@@ -47,7 +47,7 @@ use crate::{
 
 const IMAGE_LOAD_DELAY: std::time::Duration = std::time::Duration::from_millis(80);
 const IMAGE_DECODE_RETRY_DELAY: std::time::Duration = std::time::Duration::from_millis(120);
-static MAX_IMAGE_DECODE_TASKS: LazyLock<usize> = LazyLock::new(|| rayon::current_num_threads());
+static MAX_IMAGE_DECODE_TASKS: LazyLock<usize> = LazyLock::new(rayon::current_num_threads);
 static IMAGE_DECODE_TASKS: AtomicUsize = AtomicUsize::new(0);
 
 enum LoadedImage {
