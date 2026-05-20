@@ -1,36 +1,40 @@
 ## Build on Linux
 
 ### Dependencies
-- gtk >= 4.14
-- mpv >= 0.37
-- libadwaita >= 0.5
-- gstreamer
-- cargo
 
-### With `build.rs`
+Prefer your distribution's packaged `tsukimi` build when it is available. Distro
+packages should already provide correct runtime dependencies and resource
+installation.
 
-1. clone repo
-```
-git clone https://github.com/tsukinaha/tsukimi.git
-git submodule update --init --recursive
-```
-2. compile gschemas
-```
-mkdir -p $HOME/.local/share/glib-2.0/schemas
-cp moe.tsuna.tsukimi.gschema.xml $HOME/.local/share/glib-2.0/schemas/
-glib-compile-schemas $HOME/.local/share/glib-2.0/schemas/
-```
-3. `cargo build --release`
-4. install i18n files
-```
-cp -r "i18n/locale" "${pkgdir}/usr/share/locale"
+If you want to build Tsukimi from source, see `meson.build` for dependency
+requirements. Tsukimi needs relatively new GTK4 and libadwaita releases.
+
+### Development
+
+The repository includes a `justfile` with the common Meson workflows:
+
+```sh
+just setup
+just build
 ```
 
+`just setup` configures the local `build/` directory with a development install
+prefix under `build/dev-prefix/`. `just build` compiles the GUI program through
+Meson.
 
-### With Meson
+To run the GUI from the build directory:
+
+```sh
+just run
 ```
-meson build
-cd build
-ninja
-ninja install
+
+The `run` recipe installs into `build/dev-prefix/` first, then launches
+`build/src/tsukimi` with `GSETTINGS_SCHEMA_DIR` and `XDG_DATA_DIRS` pointed at
+that local install tree so schemas, icons, and bundled resources are found.
+
+To specify debug/release build, run:
+
+```sh
+meson setup build --prefix=/usr -Drust-target={debug,release}
+meson compile -C build
 ```
