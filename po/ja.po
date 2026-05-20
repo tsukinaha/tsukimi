@@ -1,15 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Braden DeForest <btdefores@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-03 21:25+0800\n"
-"PO-Revision-Date: 2024-09-26 10:41+0000\n"
-"Last-Translator: Flowensity <flowensity@proton.me>\n"
+"PO-Revision-Date: 2025-11-29 21:00+0000\n"
+"Last-Translator: Braden DeForest <btdefores@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/tsukimi/main/ja/"
 ">\n"
 "Language: ja\n"
@@ -17,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: src/client/error.rs:19
 msgid "Timeout Error, Check your internet connection"
@@ -86,7 +85,7 @@ msgstr "最新"
 
 #: src/ui/widgets/liked.rs:155
 msgid "Favourite"
-msgstr ""
+msgstr "最高"
 
 #: src/ui/widgets/list.rs:109
 msgid "Channels"
@@ -94,7 +93,7 @@ msgstr "チャンネル"
 
 #: src/ui/widgets/list.rs:116
 msgid "All"
-msgstr ""
+msgstr "全て"
 
 #: src/ui/widgets/list.rs:117 src/ui/widgets/item.rs:683
 msgid "Resume"
@@ -107,7 +106,7 @@ msgstr ""
 #: src/ui/widgets/list.rs:119 resources/ui/other.ui:150
 #: resources/ui/item.ui:483 resources/ui/filter.ui:85
 msgid "Tags"
-msgstr ""
+msgstr "名札"
 
 #: src/ui/widgets/list.rs:120 resources/ui/other.ui:155
 #: resources/ui/item.ui:478 resources/ui/filter.ui:78
@@ -121,7 +120,7 @@ msgstr "好き"
 
 #: src/ui/widgets/list.rs:122
 msgid "Folder"
-msgstr ""
+msgstr "フォルダ"
 
 #: src/ui/widgets/media_viewer.rs:349
 #: src/ui/widgets/image_dialog/image_infocard.rs:173
@@ -152,7 +151,7 @@ msgstr "キャンセル"
 #: src/ui/widgets/image_dialog/search_page.rs:152
 #: src/ui/widgets/identify/search_page.rs:130
 msgid "Ok"
-msgstr ""
+msgstr "はい"
 
 #: src/ui/widgets/music_album.rs:296
 #, fuzzy
@@ -165,11 +164,11 @@ msgstr "スキャン..."
 
 #: src/ui/widgets/server_panel.rs:119
 msgid "Shut down server"
-msgstr ""
+msgstr "サーバを潰す"
 
 #: src/ui/widgets/server_panel.rs:120
 msgid "Are you sure you want to shut down the server?"
-msgstr ""
+msgstr "このサーバを潰しますか？"
 
 #: src/ui/widgets/server_panel.rs:151
 msgid "Restart server"
@@ -190,7 +189,7 @@ msgstr "パスワードの確認"
 
 #: src/ui/widgets/server_panel.rs:192
 msgid "Server is shutting down"
-msgstr ""
+msgstr "サーバは潰っている"
 
 #: src/ui/widgets/server_panel.rs:204
 msgid "Server is restarting"
@@ -202,7 +201,7 @@ msgstr ""
 
 #: src/ui/widgets/server_panel.rs:296
 msgid "Duration: "
-msgstr ""
+msgstr "時の: "
 
 #: src/ui/widgets/server_panel.rs:301
 msgid "Result: "
@@ -232,7 +231,7 @@ msgstr "アイテム"
 
 #: src/ui/widgets/music_album.rs:246
 msgid "Songs"
-msgstr ""
+msgstr "歌"
 
 #: src/ui/widgets/item.rs:687 src/ui/mpv/page.rs:303 src/ui/mpv/page.rs:305
 #: resources/ui/album_widget.ui:94 resources/ui/player_toolbar.ui:90
