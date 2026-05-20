@@ -132,6 +132,7 @@ impl Session {
 
 pub struct JellyfinClient {
     pub session: ArcSwap<Session>,
+    pub semaphore: tokio::sync::Semaphore,
     pub client: Client,
 }
 
@@ -153,6 +154,7 @@ impl Default for JellyfinClient {
     fn default() -> Self {
         Self {
             session: ArcSwap::from_pointee(Session::empty()),
+            semaphore: tokio::sync::Semaphore::new(SETTINGS.threads() as usize),
             client: ReqClient::build(),
         }
     }
@@ -335,6 +337,7 @@ impl JellyfinClient {
     }
 
     async fn send_request(&self, request: RequestBuilder) -> Result<Response> {
+        let _permit = self.semaphore.acquire().await?;
         request
             .send()
             .await
