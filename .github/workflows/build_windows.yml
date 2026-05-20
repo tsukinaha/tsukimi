@@ -45,15 +45,14 @@ jobs:
             mingw-w64-${{ matrix.env }}-gst-plugins-bad
             mingw-w64-${{ matrix.env }}-gst-plugins-ugly
             mingw-w64-${{ matrix.env }}-gst-libav
-            mingw-w64-${{ matrix.env }}-clang
-            mingw-w64-${{ matrix.env }}-lld
+            mingw-w64-${{ matrix.env }}-gcc
             curl
 
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           target: ${{ matrix.target }}
-          rustflags: "-Clinker=clang -Clink-arg=-fuse-ld=lld"
+          rustflags: ""
           toolchain: stable-${{ matrix.target }}
   
       - name: Install nsis
