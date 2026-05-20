@@ -60,15 +60,13 @@ pub fn update_pot(files: &[String]) {
 pub fn compile_po() {
     for lang in LINGUAS.lines().filter(|l| !l.is_empty()) {
         let po_file = format!("po/{lang}.po");
-        let mo_file = format!("i18n/locale/{lang}/LC_MESSAGES/tsukimi.mo");
+        let mo_file = format!("target/i18n/locale/{lang}/LC_MESSAGES/tsukimi.mo");
 
         println!("cargo:rerun-if-changed={po_file}");
 
         let mo_path = Path::new(&mo_file);
-        if !mo_path.exists() {
-            std::fs::create_dir_all(mo_path.parent().unwrap())
-                .expect("Failed to create locale directory");
-        }
+        std::fs::create_dir_all(mo_path.parent().unwrap())
+            .expect("Failed to create locale directory");
 
         let status = Command::new("msgfmt")
             .args([&po_file, "-o", &mo_file])

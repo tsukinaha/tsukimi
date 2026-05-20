@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-20 20:35+0800\n"
+"POT-Creation-Date: 2026-05-20 21:17+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,7 +78,7 @@ msgstr ""
 msgid "No next up video found"
 msgstr ""
 
-#: src/ui/provider/tu_item.rs:562 src/ui/widgets/tu_overview_item.rs:240
+#: src/ui/provider/tu_item.rs:562 src/ui/widgets/tu_overview_item.rs:254
 msgid "Present"
 msgstr ""
 
@@ -156,14 +156,14 @@ msgstr ""
 
 #: src/ui/widgets/identify/search_page.rs:126
 #: src/ui/widgets/image_dialog/search_page.rs:148
-#: src/ui/widgets/metadata_dialog.rs:290 src/ui/widgets/tu_item/action.rs:475
+#: src/ui/widgets/metadata_dialog.rs:290 src/ui/widgets/tu_item/action.rs:479
 msgid "Are you sure you wish to continue?"
 msgstr ""
 
 #: src/ui/widgets/identify/search_page.rs:129
 #: src/ui/widgets/image_dialog/search_page.rs:151
-#: src/ui/widgets/metadata_dialog.rs:293 src/ui/widgets/tu_item/action.rs:479
-#: src/ui/widgets/tu_item/action.rs:539 resources/ui/account_settings.ui:508
+#: src/ui/widgets/metadata_dialog.rs:293 src/ui/widgets/tu_item/action.rs:483
+#: src/ui/widgets/tu_item/action.rs:543 resources/ui/account_settings.ui:508
 #: resources/ui/account_settings.ui:618
 msgid "Cancel"
 msgstr ""
@@ -408,36 +408,36 @@ msgstr ""
 msgid "Add to favorites"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:91
+#: src/ui/widgets/tu_item/action.rs:92
 msgid "Success"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:469
+#: src/ui/widgets/tu_item/action.rs:473
 msgid "Delete Item"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:473
+#: src/ui/widgets/tu_item/action.rs:477
 msgid ""
 "Deleting this item will delete it from both the file system and your media "
 "library.\n"
 "The following files and folders will be deleted:"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:480 resources/ui/image_info_card.ui:139
+#: src/ui/widgets/tu_item/action.rs:484 resources/ui/image_info_card.ui:139
 #: resources/ui/pop-menu.ui:92 resources/ui/server_action_row.ui:52
 msgid "Delete"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:534 src/ui/widgets/tu_item/action.rs:535
-#: src/ui/widgets/tu_item/action.rs:540 resources/ui/pop-menu.ui:62
+#: src/ui/widgets/tu_item/action.rs:538 src/ui/widgets/tu_item/action.rs:539
+#: src/ui/widgets/tu_item/action.rs:544 resources/ui/pop-menu.ui:62
 msgid "Remove Identification"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:536
+#: src/ui/widgets/tu_item/action.rs:540
 msgid "Are you sure you wish to reset all metadata?"
 msgstr ""
 
-#: src/ui/widgets/tu_list_item.rs:462
+#: src/ui/widgets/tu_list_item.rs:479
 msgid "Waiting for mediasource ..."
 msgstr ""
 
