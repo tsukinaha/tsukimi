@@ -70,6 +70,7 @@ pub fn resolve_prefer_size(unify_size: UnifySize, items: &[SimpleListItem]) -> P
 mod imp {
     use std::{
         cell::{
+            Cell,
             OnceCell,
             RefCell,
         },
@@ -111,8 +112,11 @@ mod imp {
         #[property(get, set, builder(PreferPoster::default()))]
         pub prefer_poster: RefCell<PreferPoster>,
 
-        pub show_button_animation: OnceCell<adw::TimedAnimation>,
-        pub hide_button_animation: OnceCell<adw::TimedAnimation>,
+        pub show_left_animation: OnceCell<adw::TimedAnimation>,
+        pub hide_left_animation: OnceCell<adw::TimedAnimation>,
+        pub show_right_animation: OnceCell<adw::TimedAnimation>,
+        pub hide_right_animation: OnceCell<adw::TimedAnimation>,
+        pub is_hovering: Cell<bool>,
         pub item_cache: RefCell<HashMap<String, TuObject>>,
     }
 
@@ -144,7 +148,7 @@ mod imp {
                 .fix()
                 .set_hscrollbar_policy(gtk::PolicyType::Never);
             self.diffview.configure(
-                |tu_obj: &TuObject| tu_obj.item().id(),
+                |tu_obj: &TuObject| tu_obj.item().key(),
                 |_tu_obj: &TuObject| {
                     let tu_item = TuListItem::default();
                     tu_item.set_poster_type(PosterType::default());
@@ -170,6 +174,16 @@ mod imp {
                     tu_item.set_item(tu_obj.item());
                 },
             );
+
+            let adj = self.diffview.scroll().hadjustment();
+            adj.connect_value_changed(glib::clone!(
+                #[weak(rename_to = obj)]
+                self.obj(),
+                move |_| {
+                    obj.update_left_button(true);
+                    obj.update_right_button(true);
+                }
+            ));
         }
     }
 
@@ -246,29 +260,44 @@ impl HortuScrolled {
         imp.revealer.set_reveal_child(true);
     }
 
-    fn set_control_opacity(&self, opacity: f64) {
-        let imp = self.imp();
-        imp.left_button.set_opacity(opacity);
-        imp.right_button.set_opacity(opacity);
+    fn set_left_opacity(&self, opacity: f64) {
+        let btn = &self.imp().left_button;
+        btn.set_visible(opacity > 0.);
+        btn.set_opacity(opacity);
     }
 
-    fn are_controls_visible(&self) -> bool {
-        if self.hide_controls_animation().state() == adw::AnimationState::Playing {
-            return false;
-        }
-
-        self.imp().left_button.opacity() >= 0.68
-            || self.show_controls_animation().state() == adw::AnimationState::Playing
+    fn set_right_opacity(&self, opacity: f64) {
+        let btn = &self.imp().right_button;
+        btn.set_visible(opacity > 0.);
+        btn.set_opacity(opacity);
     }
 
-    fn show_controls_animation(&self) -> &adw::TimedAnimation {
-        self.imp().show_button_animation.get_or_init(|| {
+    fn left_opacity(&self) -> f64 {
+        self.imp().left_button.opacity()
+    }
+
+    fn right_opacity(&self) -> f64 {
+        self.imp().right_button.opacity()
+    }
+
+    fn is_at_lower(&self) -> bool {
+        let adj = self.imp().diffview.scroll().hadjustment();
+        adj.value() <= adj.lower() + f64::EPSILON
+    }
+
+    fn is_at_upper(&self) -> bool {
+        let adj = self.imp().diffview.scroll().hadjustment();
+        let max_value = adj.upper() - adj.page_size();
+        adj.value() >= max_value - f64::EPSILON
+    }
+
+    fn show_left_animation(&self) -> &adw::TimedAnimation {
+        self.imp().show_left_animation.get_or_init(|| {
             let target = adw::CallbackAnimationTarget::new(glib::clone!(
                 #[weak(rename_to = obj)]
                 self,
-                move |opacity| obj.set_control_opacity(opacity)
+                move |opacity| obj.set_left_opacity(opacity)
             ));
-
             adw::TimedAnimation::builder()
                 .duration(SHOW_BUTTON_ANIMATION_DURATION)
                 .widget(&self.imp().diffview.get())
@@ -278,14 +307,13 @@ impl HortuScrolled {
         })
     }
 
-    fn hide_controls_animation(&self) -> &adw::TimedAnimation {
-        self.imp().hide_button_animation.get_or_init(|| {
+    fn hide_left_animation(&self) -> &adw::TimedAnimation {
+        self.imp().hide_left_animation.get_or_init(|| {
             let target = adw::CallbackAnimationTarget::new(glib::clone!(
                 #[weak(rename_to = obj)]
                 self,
-                move |opacity| obj.set_control_opacity(opacity)
+                move |opacity| obj.set_left_opacity(opacity)
             ));
-
             adw::TimedAnimation::builder()
                 .duration(SHOW_BUTTON_ANIMATION_DURATION)
                 .widget(&self.imp().diffview.get())
@@ -295,32 +323,102 @@ impl HortuScrolled {
         })
     }
 
+    fn show_right_animation(&self) -> &adw::TimedAnimation {
+        self.imp().show_right_animation.get_or_init(|| {
+            let target = adw::CallbackAnimationTarget::new(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |opacity| obj.set_right_opacity(opacity)
+            ));
+            adw::TimedAnimation::builder()
+                .duration(SHOW_BUTTON_ANIMATION_DURATION)
+                .widget(&self.imp().diffview.get())
+                .target(&target)
+                .value_to(0.7)
+                .build()
+        })
+    }
+
+    fn hide_right_animation(&self) -> &adw::TimedAnimation {
+        self.imp().hide_right_animation.get_or_init(|| {
+            let target = adw::CallbackAnimationTarget::new(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |opacity| obj.set_right_opacity(opacity)
+            ));
+            adw::TimedAnimation::builder()
+                .duration(SHOW_BUTTON_ANIMATION_DURATION)
+                .widget(&self.imp().diffview.get())
+                .target(&target)
+                .value_to(0.)
+                .build()
+        })
+    }
+
+    fn update_left_button(&self, animate: bool) {
+        let should_show = self.imp().is_hovering.get() && !self.is_at_lower();
+        let current = self.left_opacity();
+        if should_show && current < 0.7 {
+            self.hide_left_animation().pause();
+            self.show_left_animation().set_value_from(current);
+            self.show_left_animation().play();
+        } else if !should_show && current > 0. {
+            if animate {
+                self.show_left_animation().pause();
+                self.hide_left_animation().set_value_from(current);
+                self.hide_left_animation().play();
+            } else {
+                self.show_left_animation().pause();
+                self.set_left_opacity(0.);
+            }
+        }
+    }
+
+    fn update_right_button(&self, animate: bool) {
+        let should_show = self.imp().is_hovering.get() && !self.is_at_upper();
+        let current = self.right_opacity();
+        if should_show && current < 0.7 {
+            self.hide_right_animation().pause();
+            self.show_right_animation().set_value_from(current);
+            self.show_right_animation().play();
+        } else if !should_show && current > 0. {
+            if animate {
+                self.show_right_animation().pause();
+                self.hide_right_animation().set_value_from(current);
+                self.hide_right_animation().play();
+            } else {
+                self.show_right_animation().pause();
+                self.set_right_opacity(0.);
+            }
+        }
+    }
+
     #[template_callback]
     fn on_rightbutton_clicked(&self) {
         self.anime::<true>();
     }
 
-    fn controls_opacity(&self) -> f64 {
-        self.imp().left_button.opacity()
-    }
-
     #[template_callback]
     fn on_enter_focus(&self) {
-        if !self.are_controls_visible() {
-            self.hide_controls_animation().pause();
-            self.show_controls_animation()
-                .set_value_from(self.controls_opacity());
-            self.show_controls_animation().play();
-        }
+        self.imp().is_hovering.set(true);
+        self.update_left_button(true);
+        self.update_right_button(true);
     }
 
     #[template_callback]
     fn on_leave_focus(&self) {
-        if self.are_controls_visible() {
-            self.show_controls_animation().pause();
-            self.hide_controls_animation()
-                .set_value_from(self.controls_opacity());
-            self.hide_controls_animation().play();
+        self.imp().is_hovering.set(false);
+        let left = self.left_opacity();
+        if left > 0. {
+            self.show_left_animation().pause();
+            self.hide_left_animation().set_value_from(left);
+            self.hide_left_animation().play();
+        }
+        let right = self.right_opacity();
+        if right > 0. {
+            self.show_right_animation().pause();
+            self.hide_right_animation().set_value_from(right);
+            self.hide_right_animation().play();
         }
     }
 

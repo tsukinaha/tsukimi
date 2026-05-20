@@ -1,6 +1,6 @@
 [package]
 name = "tsukimi"
-version = "26.5.0"
+version = "26.5.3"
 edition = "2024"
 rust-version = "1.85"
 description = "A simple Jellyfin Client written by GTK4-RS"
@@ -8,7 +8,7 @@ license = "GPL-3.0"
 
 
 [dependencies]
-gtk = { version = "0.11", package = "gtk4", features = ["v4_20"] }
+gtk = { version = "0.11", package = "gtk4", features = ["v4_22"] }
 adw = { version = "0.9", package = "libadwaita", features = ["v1_8"] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0"

@@ -760,6 +760,10 @@ impl TuItem {
     pub fn can_direct_play(&self) -> bool {
         matches!(self.item_type().as_str(), MOVIE | EPISODE) && self.is_resume()
     }
+
+    pub fn key(&self) -> String {
+        format!("{}-{}-{}", self.name(), self.id(), self.item_type())
+    }
 }
 
 fn chrono_to_glib(datetime: &chrono::DateTime<chrono::Utc>) -> DateTime {
