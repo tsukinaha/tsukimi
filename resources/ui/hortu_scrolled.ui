@@ -72,6 +72,7 @@
                     <property name="margin-end">6</property>
                     <property name="icon-name">go-next-symbolic</property>
                     <property name="opacity">0</property>
+                    <property name="visible">False</property>
                     <signal name="clicked" handler="on_rightbutton_clicked" swapped="yes" />
                     <style>
                       <class name="osd" />
@@ -87,6 +88,7 @@
                     <property name="margin-start">6</property>
                     <property name="icon-name">go-previous-symbolic</property>
                     <property name="opacity">0</property>
+                    <property name="visible">False</property>
                     <signal name="clicked" handler="on_leftbutton_clicked" swapped="yes" />
                     <style>
                       <class name="osd" />
