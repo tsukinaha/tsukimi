@@ -20,6 +20,7 @@ use crate::{
 
 use crate::ui::GlobalToast;
 
+use super::prelude::TuItemMenuPrelude;
 use adw::prelude::AlertDialogExt;
 use gettextrs::gettext;
 use gtk::{
@@ -69,7 +70,7 @@ pub trait TuItemAction {
 
 impl<T> TuItemAction for T
 where
-    T: TuItemBasic + IsA<gtk::Widget> + glib::clone::Downgrade,
+    T: TuItemBasic + TuItemMenuPrelude + IsA<gtk::Widget> + glib::clone::Downgrade,
     <T as glib::clone::Downgrade>::Weak: glib::clone::Upgrade<Strong = T>,
 {
     async fn perform_action_inner(id: &str, action: &Action) -> Result<()> {
@@ -143,9 +144,6 @@ where
             #[weak(rename_to = obj)]
             self,
             move |gesture, _n, x, y| {
-                gesture.set_state(gtk::EventSequenceState::Claimed);
-                obj.insert_action_group("item", obj.set_action().as_ref());
-
                 let builder = Builder::from_resource("/moe/tsuna/tsukimi/ui/pop-menu.ui");
                 let menu = builder.object::<MenuModel>("rightmenu");
                 match menu {
@@ -166,18 +164,24 @@ where
 
                         new_popover.add_child(&menu_info, "menu-info");
 
-                        new_popover.set_parent(&obj);
-                        new_popover.connect_closed(|popover| {
+                        if let Some(popover) = obj.popover().borrow_mut().take() {
                             popover.unparent();
-                        });
-                        new_popover
-                            .set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
-                        new_popover.popup();
+                        }
+                        new_popover.set_parent(&obj);
+                        obj.popover().replace(Some(new_popover));
                     }
                     None => eprintln!("Failed to load popover"),
                 }
+
+                gesture.set_state(gtk::EventSequenceState::Claimed);
+                obj.insert_action_group("item", obj.set_action().as_ref());
+                if let Some(popover) = obj.popover().borrow().as_ref() {
+                    popover.set_pointing_to(Some(&Rectangle::new(x as i32, y as i32, 0, 0)));
+                    popover.popup();
+                };
             }
         ));
+
         gesture
     }
 

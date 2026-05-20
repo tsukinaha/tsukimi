@@ -8,7 +8,10 @@ pub use overlay::{
     TuItemOverlay,
     TuItemOverlayPrelude,
 };
-pub use prelude::TuItemBasic;
+pub use prelude::{
+    TuItemBasic,
+    TuItemMenuPrelude,
+};
 pub use progressbar_animation::{
     PROGRESSBAR_ANIMATION_DURATION,
     TuItemProgressbarAnimation,
