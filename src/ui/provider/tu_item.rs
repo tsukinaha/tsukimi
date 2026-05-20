@@ -774,6 +774,10 @@ impl TuItem {
     pub fn loaded_picture_loader(&self) -> Option<PictureLoader> {
         self.imp().loaded_picture_loader.get().cloned()
     }
+
+    pub fn key(&self) -> String {
+        format!("{}-{}-{}", self.name(), self.id(), self.item_type())
+    }
 }
 
 fn chrono_to_glib(datetime: &chrono::DateTime<chrono::Utc>) -> DateTime {

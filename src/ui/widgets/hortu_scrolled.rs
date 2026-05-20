@@ -144,7 +144,7 @@ mod imp {
                 .fix()
                 .set_hscrollbar_policy(gtk::PolicyType::Never);
             self.diffview.configure(
-                |tu_obj: &TuObject| tu_obj.item().id(),
+                |tu_obj: &TuObject| tu_obj.item().key(),
                 |_tu_obj: &TuObject| {
                     let tu_item = TuListItem::default();
                     tu_item.set_poster_type(PosterType::default());
