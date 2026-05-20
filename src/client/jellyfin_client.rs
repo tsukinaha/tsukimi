@@ -273,6 +273,11 @@ impl JellyfinClient {
         Ok(res)
     }
 
+    pub async fn delete(&self, path: &str, params: &[(&str, &str)]) -> Result<Response> {
+        let request = self.prepare_request(Method::DELETE, path, params)?;
+        self.send_request(request).await
+    }
+
     pub async fn post<B>(&self, path: &str, params: &[(&str, &str)], body: B) -> Result<Response>
     where
         B: Serialize,
@@ -280,8 +285,7 @@ impl JellyfinClient {
         let request = self
             .prepare_request(Method::POST, path, params)?
             .json(&body);
-        let res = self.send_request(request).await?;
-        Ok(res)
+        self.send_request(request).await
     }
 
     pub async fn post_raw<B>(&self, path: &str, body: B, content_type: &str) -> Result<Response>
@@ -291,8 +295,7 @@ impl JellyfinClient {
         let request = self
             .prepare_request_headers(Method::POST, path, &[], content_type)?
             .body(body);
-        let res = self.send_request(request).await?;
-        Ok(res)
+        self.send_request(request).await
     }
 
     pub async fn post_json<B, T>(
@@ -1291,7 +1294,7 @@ impl JellyfinClient {
         self.request(&path, &[]).await
     }
 
-    pub async fn delete(&self, ids: &str) -> Result<Response> {
+    pub async fn delete_item(&self, ids: &str) -> Result<Response> {
         let params = [("Ids", ids)];
         self.post("Items/Delete", &params, json!({})).await
     }

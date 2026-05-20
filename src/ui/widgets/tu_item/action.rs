@@ -496,9 +496,9 @@ where
                         #[weak]
                         obj,
                         async move {
-                            match spawn_tokio(
-                                async move { JELLYFIN_CLIENT.delete(&id_clone).await },
-                            )
+                            match spawn_tokio(async move {
+                                JELLYFIN_CLIENT.delete_item(&id_clone).await
+                            })
                             .await
                             .and_then(|r| r.error_for_status().map_err(|e| e.into()))
                             {
