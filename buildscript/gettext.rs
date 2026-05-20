@@ -1,12 +1,35 @@
 use std::{
     path::Path,
     process::Command,
+    time::SystemTime,
 };
 
 const LINGUAS: &str = include_str!("../po/LINGUAS");
 
+fn mtime(path: &str) -> Option<SystemTime> {
+    std::fs::metadata(path).ok()?.modified().ok()
+}
+
+fn any_newer(sources: &[&str], target: &str) -> bool {
+    let target_time = match mtime(target) {
+        Some(t) => t,
+        None => return true,
+    };
+    sources
+        .iter()
+        .any(|s| mtime(s).is_some_and(|t| t > target_time))
+}
+
 pub fn update_pot(files: &[String]) {
     println!("cargo:rerun-if-changed=po/POTFILES");
+
+    let pot_file = "po/tsukimi.pot";
+    let file_strs: Vec<&str> = files.iter().map(String::as_str).collect();
+
+    if !any_newer(&file_strs, pot_file) {
+        println!("{pot_file}: up to date, skipping xgettext");
+        return;
+    }
 
     let pkg_version = std::env::var("CARGO_PKG_VERSION").unwrap_or_default();
 
@@ -35,7 +58,7 @@ pub fn update_pot(files: &[String]) {
             "-kpgettext:1c,2",
             "-knpgettext:1c,2,3",
             "-o",
-            "po/tsukimi.pot",
+            pot_file,
         ])
         .args(&rs_files);
 
@@ -49,7 +72,7 @@ pub fn update_pot(files: &[String]) {
             "--from-code=UTF-8",
             "--join-existing",
             "-o",
-            "po/tsukimi.pot",
+            pot_file,
         ])
         .args(&ui_files);
 
@@ -63,6 +86,11 @@ pub fn compile_po() {
         let mo_file = format!("target/i18n/locale/{lang}/LC_MESSAGES/tsukimi.mo");
 
         println!("cargo:rerun-if-changed={po_file}");
+
+        if !any_newer(&[po_file.as_str()], &mo_file) {
+            println!("{po_file}: up to date, skipping msgfmt");
+            continue;
+        }
 
         let mo_path = Path::new(&mo_file);
         std::fs::create_dir_all(mo_path.parent().unwrap())
