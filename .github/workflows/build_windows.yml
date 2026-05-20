@@ -95,7 +95,7 @@ jobs:
 
           cp -rv /${{ matrix.msystem }}/lib/gstreamer-1.0 lib/ && find lib/gstreamer-1.0 -type f ! -name "*.dll" -exec rm -vf "{}" \;
 
-          cp -rv $GITHUB_WORKSPACE/i18n/locale share/
+          cp -rv $GITHUB_WORKSPACE/target/i18n/locale share/
 
           cp -rv /${{ matrix.msystem }}/share/glib-2.0 share/
           find share/glib-2.0/* -maxdepth 0 -type d ! -name "*schemas*" -exec rm -rfv "{}" \;
