@@ -143,6 +143,9 @@ where
             #[weak(rename_to = obj)]
             self,
             move |gesture, _n, x, y| {
+                gesture.set_state(gtk::EventSequenceState::Claimed);
+                obj.insert_action_group("item", obj.set_action().as_ref());
+
                 let builder = Builder::from_resource("/moe/tsuna/tsukimi/ui/pop-menu.ui");
                 let menu = builder.object::<MenuModel>("rightmenu");
                 match menu {
@@ -173,12 +176,8 @@ where
                     }
                     None => eprintln!("Failed to load popover"),
                 }
-
-                gesture.set_state(gtk::EventSequenceState::Claimed);
-                obj.insert_action_group("item", obj.set_action().as_ref());
             }
         ));
-
         gesture
     }
 
