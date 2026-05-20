@@ -3,6 +3,8 @@ use std::{
         BufRead,
         BufReader,
         Cursor,
+        Error as IoError,
+        ErrorKind,
         Seek,
     },
     time::Duration,
@@ -20,6 +22,7 @@ use image::{
     AnimationDecoder,
     DynamicImage,
     ImageFormat,
+    ImageReader,
     codecs::{
         gif::GifDecoder,
         png::PngDecoder,
@@ -31,32 +34,12 @@ use tracing::error;
 
 /// A single frame of an animation.
 pub struct Frame {
-    pub texture: gdk::Texture,
-    pub duration: Duration,
+    texture: gdk::Texture,
+    duration: Duration,
 }
 
-impl From<image::Frame> for Frame {
-    fn from(f: image::Frame) -> Self {
-        let mut duration = Duration::from(f.delay());
-
-        // The convention is to use 100 milliseconds duration if it is defined as 0.
-        if duration.is_zero() {
-            duration = Duration::from_millis(100);
-        }
-
-        let sample = f.into_buffer().into_flat_samples();
-        let texture = texture_from_data(
-            &sample.samples,
-            sample.layout,
-            gdk::MemoryFormat::R8g8b8a8,
-            image::ColorType::Rgba8.bytes_per_pixel(),
-        );
-
-        Frame {
-            texture: texture.upcast(),
-            duration,
-        }
-    }
+pub struct DecodedPaintable {
+    frames: Vec<Frame>,
 }
 
 mod imp {
@@ -101,7 +84,13 @@ mod imp {
     }
 
     #[glib::derived_properties]
-    impl ObjectImpl for ImagePaintable {}
+    impl ObjectImpl for ImagePaintable {
+        fn dispose(&self) {
+            if let Some(source_id) = self.timeout_source_id.borrow_mut().take() {
+                source_id.remove();
+            }
+        }
+    }
 
     impl PaintableImpl for ImagePaintable {
         fn intrinsic_height(&self) -> i32 {
@@ -173,6 +162,71 @@ glib::wrapper! {
 }
 
 impl ImagePaintable {
+    pub fn decode_bytes(
+        bytes: glib::Bytes,
+    ) -> Result<DecodedPaintable, Box<dyn std::error::Error + Send + Sync>> {
+        let reader = Cursor::new(bytes);
+        let reader = ImageReader::new(reader).with_guessed_format()?;
+        Self::decode_reader(reader)
+    }
+
+    pub fn from_decoded(decoded: DecodedPaintable) -> Self {
+        let obj = glib::Object::new::<Self>();
+        obj.load_decoded(decoded);
+        obj
+    }
+
+    fn decode_reader<R: BufRead + Seek>(
+        reader: ImageReader<R>,
+    ) -> Result<DecodedPaintable, Box<dyn std::error::Error + Send + Sync>> {
+        let format = reader
+            .format()
+            .ok_or_else(|| IoError::new(ErrorKind::InvalidData, "Could not detect image format"))?;
+
+        let read = reader.into_inner();
+        let frames = match format {
+            image::ImageFormat::Gif => {
+                let decoder = GifDecoder::new(read)?;
+                decoder
+                    .into_frames()
+                    .collect_frames()?
+                    .into_iter()
+                    .map(Frame::from)
+                    .collect()
+            }
+            image::ImageFormat::Png => {
+                let decoder = PngDecoder::new(read)?;
+                if decoder.is_apng().unwrap_or_default() {
+                    decoder
+                        .apng()?
+                        .into_frames()
+                        .collect_frames()?
+                        .into_iter()
+                        .map(Frame::from)
+                        .collect()
+                } else {
+                    vec![Frame::from(DynamicImage::from_decoder(decoder)?)]
+                }
+            }
+            image::ImageFormat::WebP => {
+                let decoder = WebPDecoder::new(read)?;
+                if decoder.has_animation() {
+                    decoder
+                        .into_frames()
+                        .collect_frames()?
+                        .into_iter()
+                        .map(Frame::from)
+                        .collect()
+                } else {
+                    vec![Frame::from(DynamicImage::from_decoder(decoder)?)]
+                }
+            }
+            _ => vec![Frame::from(image::load(read, format)?)],
+        };
+
+        Ok(DecodedPaintable { frames })
+    }
+
     /// Load an image from the given reader in the optional format.
     ///
     /// The actual format will try to be guessed from the content.
@@ -189,169 +243,25 @@ impl ImagePaintable {
 
         let reader = reader.with_guessed_format()?;
 
-        obj.load_inner(reader)?;
+        let decoded =
+            Self::decode_reader(reader).map_err(|error| -> Box<dyn std::error::Error> { error })?;
+        obj.load_decoded(decoded);
 
         Ok(obj)
     }
 
-    /// Load an image or animation from the given reader.
-    fn load_inner<R: BufRead + Seek>(
-        &self, reader: image::ImageReader<R>,
-    ) -> Result<(), Box<dyn std::error::Error>> {
+    fn load_decoded(&self, decoded: DecodedPaintable) {
         let imp = self.imp();
-        let format = reader.format().ok_or("Could not detect image format")?;
+        let frames = decoded.frames;
 
-        let read = reader.into_inner();
-
-        // Handle animations.
-        match format {
-            image::ImageFormat::Gif => {
-                let decoder = GifDecoder::new(read)?;
-
-                let frames = decoder
-                    .into_frames()
-                    .collect_frames()?
-                    .into_iter()
-                    .map(Frame::from)
-                    .collect::<Vec<_>>();
-
-                if frames.len() == 1 {
-                    if let Some(frame) = frames.into_iter().next() {
-                        imp.frame.replace(Some(frame.texture));
-                    }
-                } else {
-                    imp.frames.replace(Some(frames));
-                    self.update_frame();
-                }
+        if frames.len() == 1 {
+            if let Some(frame) = frames.into_iter().next() {
+                imp.frame.replace(Some(frame.texture));
             }
-            image::ImageFormat::Png => {
-                let decoder = PngDecoder::new(read)?;
-
-                if decoder.is_apng().unwrap_or_default() {
-                    let decoder = decoder.apng()?;
-                    let frames = decoder
-                        .into_frames()
-                        .collect_frames()?
-                        .into_iter()
-                        .map(Frame::from)
-                        .collect::<Vec<_>>();
-                    imp.frames.replace(Some(frames));
-                    self.update_frame();
-                } else {
-                    let image = DynamicImage::from_decoder(decoder)?;
-                    self.set_image(image);
-                }
-            }
-            image::ImageFormat::WebP => {
-                let decoder = WebPDecoder::new(read)?;
-
-                if decoder.has_animation() {
-                    let frames = decoder
-                        .into_frames()
-                        .collect_frames()?
-                        .into_iter()
-                        .map(Frame::from)
-                        .collect::<Vec<_>>();
-                    imp.frames.replace(Some(frames));
-                    self.update_frame();
-                } else {
-                    let image = DynamicImage::from_decoder(decoder)?;
-                    self.set_image(image);
-                }
-            }
-            _ => {
-                let image = image::load(read, format)?;
-                self.set_image(image);
-            }
+        } else {
+            imp.frames.replace(Some(frames));
+            self.update_frame();
         }
-
-        Ok(())
-    }
-
-    /// Set the image that is displayed by this paintable.
-    fn set_image(&self, image: DynamicImage) {
-        let texture = match image.color() {
-            image::ColorType::L8 | image::ColorType::Rgb8 => {
-                let sample = image.into_rgb8().into_flat_samples();
-                texture_from_data(
-                    &sample.samples,
-                    sample.layout,
-                    gdk::MemoryFormat::R8g8b8,
-                    image::ColorType::Rgb8.bytes_per_pixel(),
-                )
-            }
-            image::ColorType::La8 | image::ColorType::Rgba8 => {
-                let sample = image.into_rgba8().into_flat_samples();
-                texture_from_data(
-                    &sample.samples,
-                    sample.layout,
-                    gdk::MemoryFormat::R8g8b8a8,
-                    image::ColorType::Rgba8.bytes_per_pixel(),
-                )
-            }
-            image::ColorType::L16 | image::ColorType::Rgb16 => {
-                let sample = image.into_rgb16().into_flat_samples();
-                let bytes = sample
-                    .samples
-                    .into_iter()
-                    .flat_map(|b| b.to_ne_bytes())
-                    .collect::<Vec<_>>();
-                texture_from_data(
-                    &bytes,
-                    sample.layout,
-                    gdk::MemoryFormat::R16g16b16,
-                    image::ColorType::Rgb16.bytes_per_pixel(),
-                )
-            }
-            image::ColorType::La16 | image::ColorType::Rgba16 => {
-                let sample = image.into_rgba16().into_flat_samples();
-                let bytes = sample
-                    .samples
-                    .into_iter()
-                    .flat_map(|b| b.to_ne_bytes())
-                    .collect::<Vec<_>>();
-                texture_from_data(
-                    &bytes,
-                    sample.layout,
-                    gdk::MemoryFormat::R16g16b16a16,
-                    image::ColorType::Rgba16.bytes_per_pixel(),
-                )
-            }
-            image::ColorType::Rgb32F => {
-                let sample = image.into_rgb32f().into_flat_samples();
-                let bytes = sample
-                    .samples
-                    .into_iter()
-                    .flat_map(|b| b.to_ne_bytes())
-                    .collect::<Vec<_>>();
-                texture_from_data(
-                    &bytes,
-                    sample.layout,
-                    gdk::MemoryFormat::R32g32b32Float,
-                    image::ColorType::Rgb32F.bytes_per_pixel(),
-                )
-            }
-            image::ColorType::Rgba32F => {
-                let sample = image.into_rgb32f().into_flat_samples();
-                let bytes = sample
-                    .samples
-                    .into_iter()
-                    .flat_map(|b| b.to_ne_bytes())
-                    .collect::<Vec<_>>();
-                texture_from_data(
-                    &bytes,
-                    sample.layout,
-                    gdk::MemoryFormat::R32g32b32Float,
-                    image::ColorType::Rgb32F.bytes_per_pixel(),
-                )
-            }
-            c => {
-                error!("Received image of unsupported color format: {c:?}");
-                return;
-            }
-        };
-
-        self.imp().frame.replace(Some(texture.upcast()));
     }
 
     /// Creates a new paintable by loading an image from the given file.
@@ -416,6 +326,124 @@ impl ImagePaintable {
     /// Get the current frame of this `ImagePaintable`, if any.
     pub fn current_frame(&self) -> Option<gdk::Texture> {
         self.imp().frame.borrow().to_owned()
+    }
+}
+
+impl From<image::Frame> for Frame {
+    fn from(frame: image::Frame) -> Self {
+        let mut duration = Duration::from(frame.delay());
+
+        if duration.is_zero() {
+            duration = Duration::from_millis(100);
+        }
+
+        let sample = frame.into_buffer().into_flat_samples();
+        Self {
+            texture: texture_from_data(
+                &sample.samples,
+                sample.layout,
+                gdk::MemoryFormat::R8g8b8a8,
+                image::ColorType::Rgba8.bytes_per_pixel(),
+            )
+            .upcast(),
+            duration,
+        }
+    }
+}
+
+impl From<DynamicImage> for Frame {
+    fn from(image: DynamicImage) -> Self {
+        let texture = match image.color() {
+            image::ColorType::L8 | image::ColorType::Rgb8 => {
+                let sample = image.into_rgb8().into_flat_samples();
+                texture_from_data(
+                    &sample.samples,
+                    sample.layout,
+                    gdk::MemoryFormat::R8g8b8,
+                    image::ColorType::Rgb8.bytes_per_pixel(),
+                )
+            }
+            image::ColorType::La8 | image::ColorType::Rgba8 => {
+                let sample = image.into_rgba8().into_flat_samples();
+                texture_from_data(
+                    &sample.samples,
+                    sample.layout,
+                    gdk::MemoryFormat::R8g8b8a8,
+                    image::ColorType::Rgba8.bytes_per_pixel(),
+                )
+            }
+            image::ColorType::L16 | image::ColorType::Rgb16 => {
+                let sample = image.into_rgb16().into_flat_samples();
+                let bytes = sample
+                    .samples
+                    .into_iter()
+                    .flat_map(|b| b.to_ne_bytes())
+                    .collect::<Vec<_>>();
+                texture_from_data(
+                    &bytes,
+                    sample.layout,
+                    gdk::MemoryFormat::R16g16b16,
+                    image::ColorType::Rgb16.bytes_per_pixel(),
+                )
+            }
+            image::ColorType::La16 | image::ColorType::Rgba16 => {
+                let sample = image.into_rgba16().into_flat_samples();
+                let bytes = sample
+                    .samples
+                    .into_iter()
+                    .flat_map(|b| b.to_ne_bytes())
+                    .collect::<Vec<_>>();
+                texture_from_data(
+                    &bytes,
+                    sample.layout,
+                    gdk::MemoryFormat::R16g16b16a16,
+                    image::ColorType::Rgba16.bytes_per_pixel(),
+                )
+            }
+            image::ColorType::Rgb32F => {
+                let sample = image.into_rgb32f().into_flat_samples();
+                let bytes = sample
+                    .samples
+                    .into_iter()
+                    .flat_map(|b| b.to_ne_bytes())
+                    .collect::<Vec<_>>();
+                texture_from_data(
+                    &bytes,
+                    sample.layout,
+                    gdk::MemoryFormat::R32g32b32Float,
+                    image::ColorType::Rgb32F.bytes_per_pixel(),
+                )
+            }
+            image::ColorType::Rgba32F => {
+                let sample = image.into_rgba32f().into_flat_samples();
+                let bytes = sample
+                    .samples
+                    .into_iter()
+                    .flat_map(|b| b.to_ne_bytes())
+                    .collect::<Vec<_>>();
+                texture_from_data(
+                    &bytes,
+                    sample.layout,
+                    gdk::MemoryFormat::R32g32b32a32Float,
+                    image::ColorType::Rgba32F.bytes_per_pixel(),
+                )
+            }
+            color => {
+                error!("Received image of unsupported color format: {color:?}");
+                let sample = image.into_rgba8().into_flat_samples();
+                texture_from_data(
+                    &sample.samples,
+                    sample.layout,
+                    gdk::MemoryFormat::R8g8b8a8,
+                    image::ColorType::Rgba8.bytes_per_pixel(),
+                )
+            }
+        };
+
+        Self {
+            texture: texture.upcast(),
+            duration: Duration::ZERO,
+        }
     }
 }
 

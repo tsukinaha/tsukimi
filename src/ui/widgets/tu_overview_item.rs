@@ -1,5 +1,3 @@
-use std::cell::RefCell;
-
 use adw::prelude::*;
 use gettextrs::gettext;
 use glib::Object;
@@ -14,7 +12,6 @@ use imp::ViewGroup;
 use super::{
     tu_item::{
         TuItemBasic,
-        TuItemMenuPrelude,
         TuItemOverlay,
         TuItemOverlayPrelude,
         TuItemProgressbarAnimation,
@@ -39,7 +36,6 @@ pub mod imp {
     use glib::subclass::InitializingObject;
     use gtk::{
         CompositeTemplate,
-        PopoverMenu,
         glib,
         prelude::*,
     };
@@ -74,7 +70,6 @@ pub mod imp {
         pub inline_overview: TemplateChild<gtk::Label>,
         #[property(get, set = Self::set_view_group, builder(ViewGroup::default()))]
         pub view_group: Cell<ViewGroup>,
-        pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub listlabel: TemplateChild<gtk::Label>,
         #[template_child]
@@ -112,13 +107,12 @@ pub mod imp {
     impl ObjectImpl for TuOverviewItem {
         fn constructed(&self) {
             self.parent_constructed();
+            let obj = self.obj();
+            obj.add_controller(obj.gesture_click());
         }
 
         fn dispose(&self) {
             self.dispose_template();
-            if let Some(popover) = self.popover.borrow().as_ref() {
-                popover.unparent();
-            };
         }
     }
 
@@ -129,9 +123,7 @@ pub mod imp {
     impl TuOverviewItem {
         pub fn set_item(&self, item: TuItem) {
             self.item.replace(item);
-            let obj = self.obj();
-            obj.set_up();
-            obj.gesture_click();
+            self.obj().set_up();
         }
 
         fn set_view_group(&self, view_group: ViewGroup) {
@@ -163,12 +155,6 @@ impl TuItemOverlayPrelude for TuOverviewItem {
             ViewGroup::EpisodesView => PosterType::NoRequest,
             ViewGroup::ListView => PosterType::Poster,
         }
-    }
-}
-
-impl TuItemMenuPrelude for TuOverviewItem {
-    fn popover(&self) -> &RefCell<Option<gtk::PopoverMenu>> {
-        &self.imp().popover
     }
 }
 

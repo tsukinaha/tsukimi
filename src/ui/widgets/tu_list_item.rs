@@ -1,5 +1,3 @@
-use std::cell::RefCell;
-
 use adw::prelude::*;
 use gettextrs::gettext;
 use glib::Object;
@@ -14,7 +12,6 @@ use imp::PosterType;
 use super::tu_item::{
     PROGRESSBAR_ANIMATION_DURATION,
     TuItemBasic,
-    TuItemMenuPrelude,
     TuItemOverlay,
     TuItemOverlayPrelude,
 };
@@ -22,12 +19,9 @@ use crate::{
     ui::{
         GlobalToast,
         provider::tu_item::TuItem,
-        widgets::{
-            tu_item::TuItemAction,
-            utils::{
-                TU_ITEM_BANNER_SIZE,
-                TU_ITEM_VIDEO_SIZE,
-            },
+        widgets::utils::{
+            TU_ITEM_BANNER_SIZE,
+            TU_ITEM_VIDEO_SIZE,
         },
     },
     utils::spawn,
@@ -46,7 +40,6 @@ pub mod imp {
     use glib::subclass::InitializingObject;
     use gtk::{
         CompositeTemplate,
-        PopoverMenu,
         gdk,
         glib,
         graphene,
@@ -59,6 +52,7 @@ pub mod imp {
         widgets::{
             hover_scale::HoverScale,
             picture_loader::PictureLoader,
+            tu_item::TuItemAction,
         },
     };
 
@@ -91,7 +85,6 @@ pub mod imp {
         pub item: RefCell<TuItem>,
         #[property(get, set, builder(PosterType::default()))]
         pub poster_type: Cell<PosterType>,
-        pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub title: TemplateChild<gtk::Label>,
         #[template_child]
@@ -151,12 +144,18 @@ pub mod imp {
                     this.imp().draw_backdrop_and_progress(snapshot);
                 }
             });
-        }
 
-        fn dispose(&self) {
-            if let Some(popover) = self.popover.borrow().as_ref() {
-                popover.unparent();
-            };
+            let obj = self.obj();
+            obj.add_controller(obj.gesture_click());
+            obj.set_has_tooltip(true);
+            obj.connect_query_tooltip(|obj, _, _, _, tooltip| {
+                let name = obj.item().name();
+                if name.is_empty() {
+                    return false;
+                }
+                tooltip.set_text(Some(&name));
+                true
+            });
         }
     }
 
@@ -326,13 +325,14 @@ pub mod imp {
         pub fn set_item(&self, item: TuItem) {
             let obj = self.obj();
             self.item.replace(item);
-
-            obj.item_setted();
+            obj.refresh_item();
         }
 
         pub fn set_progress(&self, progress: f64) {
             self.progress.set(progress);
-            self.obj().set_progress_anim(progress);
+            if progress > 0.0 {
+                self.obj().set_progress_anim(progress);
+            }
         }
     }
 }
@@ -357,12 +357,6 @@ impl TuItemOverlayPrelude for TuListItem {
 
     fn poster_type_ext(&self) -> PosterType {
         self.poster_type()
-    }
-}
-
-impl TuItemMenuPrelude for TuListItem {
-    fn popover(&self) -> &RefCell<Option<gtk::PopoverMenu>> {
-        &self.imp().popover
     }
 }
 
@@ -406,23 +400,15 @@ impl TuListItem {
         ));
     }
 
-    pub fn item_setted(&self) {
+    pub fn refresh_item(&self) {
         let imp = self.imp();
         let item = self.item();
 
-        if let Some(picture_loader) = item.loaded_picture_loader() {
-            imp.overlay.set_child(Some(&picture_loader));
+        if item.need_animated_picture() {
+            self.set_animated_picture()
         } else {
-            let picture_loader = if item.need_animated_picture() {
-                self.set_animated_picture()
-            } else {
-                self.set_picture()
-            };
-
-            item.set_loaded_picture_loader(picture_loader);
-        }
-
-        self.add_controller(self.gesture_click());
+            self.set_picture()
+        };
 
         let (w, h) = self.size_hint();
 
@@ -441,8 +427,6 @@ impl TuListItem {
         imp.direct_play_button
             .set_visible(item.has_direct_play_mark());
 
-        self.set_tooltip_text(Some(&item.name()));
-
         if let Some(title) = item.list_item_title() {
             imp.title.set_text(&title);
             imp.title.set_visible(true);
@@ -452,7 +436,11 @@ impl TuListItem {
     }
 
     pub fn unbind_item(&self) {
-        self.imp().overlay.set_child(None::<&gtk::Widget>);
+        let imp = self.imp();
+
+        if let Some(child) = imp.overlay.child() {
+            super::picture_loader::PictureLoader::reset_in(&child);
+        }
     }
 
     fn size_hint(&self) -> (i32, i32) {

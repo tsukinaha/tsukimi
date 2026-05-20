@@ -69,7 +69,6 @@ use crate::{
             list::ListPage,
             music_album::AlbumPage,
             other::OtherPage,
-            picture_loader::PictureLoader,
             single_grid::{
                 SingleGrid,
                 imp::ListType,
@@ -117,9 +116,6 @@ pub enum PreferPoster {
 pub mod imp {
     use glib::DateTime;
     use gtk::glib::Properties;
-    use once_cell::sync::OnceCell;
-
-    use crate::ui::widgets::picture_loader::PictureLoader;
 
     use super::*;
 
@@ -203,8 +199,6 @@ pub mod imp {
         path: RefCell<Option<String>>,
         #[property(get, set)]
         playback_position_ticks: RefCell<u64>,
-
-        pub loaded_picture_loader: OnceCell<PictureLoader>,
     }
 
     #[glib::derived_properties]
@@ -765,14 +759,6 @@ impl TuItem {
 
     pub fn can_direct_play(&self) -> bool {
         matches!(self.item_type().as_str(), MOVIE | EPISODE) && self.is_resume()
-    }
-
-    pub fn set_loaded_picture_loader(&self, picture_loader: PictureLoader) {
-        let _ = self.imp().loaded_picture_loader.set(picture_loader);
-    }
-
-    pub fn loaded_picture_loader(&self) -> Option<PictureLoader> {
-        self.imp().loaded_picture_loader.get().cloned()
     }
 
     pub fn key(&self) -> String {

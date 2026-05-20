@@ -26,6 +26,14 @@ where
     runtime().spawn(fut).await.unwrap()
 }
 
+pub async fn spawn_tokio_blocking<F, R>(fut: F) -> R
+where
+    F: FnOnce() -> R + Send + 'static,
+    R: Send + 'static,
+{
+    runtime().spawn_blocking(fut).await.unwrap()
+}
+
 pub fn spawn_tokio_without_await<F>(fut: F)
 where
     F: std::future::Future + Send + 'static,
