@@ -3,8 +3,8 @@ use std::{
     path::Path,
 };
 
-const SRC: &str = "resources/icons/moe.tsuna.tsukimi.png";
-const DEST: &str = "target/icons/hicolor/256x256/apps/moe.tsuna.tsukimi.png";
+const SRC: &str = "resources/icons/moe.tsuna.tsukimi.svg";
+const DEST: &str = "target/icons/hicolor/256x256/apps/moe.tsuna.tsukimi.svg";
 
 pub fn copy() {
     println!("cargo:rerun-if-changed={SRC}");

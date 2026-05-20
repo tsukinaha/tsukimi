@@ -54,7 +54,7 @@ jobs:
           target: ${{ matrix.target }}
           rustflags: ""
           toolchain: stable-${{ matrix.target }}
-  
+
       - name: Install nsis
         run: choco install nsis
 
@@ -104,13 +104,13 @@ jobs:
           find share/glib-2.0/ -type f ! -name "*.compiled" -exec rm -vf "{}" \;
 
           cp -rv /${{ matrix.msystem }}/share/icons share/
-          cp -v $GITHUB_WORKSPACE/resources/icons/moe.tsuna.tsukimi.png share/icons/
+          cp -v $GITHUB_WORKSPACE/resources/icons/moe.tsuna.tsukimi.svg share/icons/
           rm -rfv share/icons/hicolor && rm -rfv share/icons/AdwaitaLegacy && rm -rfv share/icons/Adwaita/scalable && rm -rfv share/icons/Adwaita/cursors
           rm -rfv share/icons/Adwaita/16x16 && rm -rf share/icons/Adwaita/symbolic-up-to-32
 
           find . -type d -empty -delete -print
 
-          cd lib/gstreamer-1.0 
+          cd lib/gstreamer-1.0
           rm -fv \
             libgstadpcmenc.dll libgstamfcodec.dll libgstdvbsubenc.dll libgstencoding.dll \
             libgstfrei0r.dll libgstinter.dll libgstlame.dll libgstldac.dll libgstmpeg2enc.dll \
