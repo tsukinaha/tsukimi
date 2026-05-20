@@ -1,9 +1,6 @@
 #!/usr/bin/env sh
 set -e
 
-echo "Running cargo fmt..."
-cargo +nightly fmt
-
 echo "Running cargo clippy --fix..."
 cargo clippy --fix --allow-dirty --allow-no-vcs --allow-staged
 
