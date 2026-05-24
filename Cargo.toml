@@ -6,7 +6,7 @@ members = [
 
 [package]
 name = "tsukimi"
-version = "26.5.3"
+version = "26.6.1"
 edition = "2024"
 rust-version = "1.85"
 description = "A simple Jellyfin Client written by GTK4-RS"
