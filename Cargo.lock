@@ -3691,7 +3691,7 @@ dependencies = [
 
 [[package]]
 name = "tsukimi-buildscript"
-version = "26.6.1"
+version = "0.1.0"
 dependencies = [
  "embed-resource",
  "glib-build-tools",
