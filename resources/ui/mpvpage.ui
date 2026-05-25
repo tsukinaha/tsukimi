@@ -77,6 +77,25 @@
               </object>
             </child>
             <child type="overlay">
+              <object class="GtkRevealer" id="skip_segment_revealer">
+                <property name="transition-type">crossfade</property>
+                <property name="transition-duration">200</property>
+                <property name="reveal-child">false</property>
+                <property name="halign">end</property>
+                <property name="valign">end</property>
+                <property name="margin-end">24</property>
+                <property name="margin-bottom">90</property>
+                <child>
+                  <object class="GtkButton" id="skip_segment_button">
+                    <signal name="clicked" handler="on_skip_segment_clicked" swapped="yes" />
+                    <style>
+                      <class name="osd" />
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="overlay">
               <object class="GtkRevealer" id="top_revealer">
                 <property name="transition-type">crossfade</property>
                 <property name="transition-duration">800</property>
