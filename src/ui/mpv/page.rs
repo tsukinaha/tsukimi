@@ -196,6 +196,8 @@ mod imp {
         #[template_child]
         pub title_label2: TemplateChild<gtk::Label>,
         #[template_child]
+        pub episode_title_box: TemplateChild<gtk::Box>,
+        #[template_child]
         pub speed_spin: TemplateChild<gtk::SpinButton>,
         #[template_child]
         pub volume_spin: TemplateChild<gtk::SpinButton>,
@@ -494,6 +496,7 @@ impl MPVPage {
         self.imp()
             .title_label2
             .set_text(title2.as_deref().unwrap_or_default());
+        self.imp().episode_title_box.set_visible(title2.is_some());
 
         let media_title = title2
             .map(|t| format!("{title1} - {t}"))
