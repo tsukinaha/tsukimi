@@ -34,22 +34,30 @@ msgstr ""
 msgid "Failed to get GLContext"
 msgstr ""
 
-#: src/ui/mpv/page.rs:371 src/ui/mpv/page.rs:373 src/ui/widgets/item.rs:708
+#: src/ui/mpv/page.rs:382 src/ui/mpv/page.rs:384 src/ui/widgets/item.rs:708
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/player_toolbar.ui:90
 msgid "Play"
 msgstr ""
 
-#: src/ui/mpv/page.rs:376 src/ui/mpv/page.rs:378 resources/ui/mpvpage.ui:215
+#: src/ui/mpv/page.rs:387 src/ui/mpv/page.rs:389 resources/ui/mpvpage.ui:234
 msgid "Pause"
 msgstr ""
 
-#: src/ui/mpv/page.rs:774
+#: src/ui/mpv/page.rs:727
+msgid "Skip Intro"
+msgstr ""
+
+#: src/ui/mpv/page.rs:728
+msgid "Skip Outro"
+msgstr ""
+
+#: src/ui/mpv/page.rs:878
 msgid "No more video found"
 msgstr ""
 
-#: src/ui/mpv/page.rs:873
+#: src/ui/mpv/page.rs:977
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -997,13 +1005,13 @@ msgid "Media Menu"
 msgstr ""
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/mpvpage.ui:284 resources/ui/mpvpage.ui:286
+#: resources/ui/mpvpage.ui:303 resources/ui/mpvpage.ui:305
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
 msgstr ""
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:295 resources/ui/mpvpage.ui:297
+#: resources/ui/mpvpage.ui:314 resources/ui/mpvpage.ui:316
 msgid "Exit Fullscreen"
 msgstr ""
 
@@ -1101,8 +1109,8 @@ msgstr ""
 msgid "Cache Time"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:378
-#: resources/ui/mpvpage.ui:397
+#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:397
+#: resources/ui/mpvpage.ui:416
 msgid "Subtitle"
 msgstr ""
 
@@ -1197,8 +1205,8 @@ msgstr ""
 msgid "Speed"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:370
-#: resources/ui/mpvpage.ui:430 resources/ui/search.ui:78
+#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:389
+#: resources/ui/mpvpage.ui:449 resources/ui/search.ui:78
 msgid "Audio"
 msgstr ""
 
@@ -1343,7 +1351,7 @@ msgstr ""
 msgid "Previous chapter"
 msgstr ""
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:151
+#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:170
 #: resources/ui/window.ui:559 resources/ui/window.ui:581
 msgid "Playlist"
 msgstr ""
@@ -1381,24 +1389,24 @@ msgstr ""
 msgid "Reset playback speed to normal"
 msgstr ""
 
-#: resources/ui/mpvpage.ui:108
+#: resources/ui/mpvpage.ui:127
 msgid "Stop and quit"
 msgstr ""
 
-#: resources/ui/mpvpage.ui:163
+#: resources/ui/mpvpage.ui:182
 msgid "Media info (MPV)"
 msgstr ""
 
-#: resources/ui/mpvpage.ui:326 resources/ui/window.ui:25
+#: resources/ui/mpvpage.ui:345 resources/ui/window.ui:25
 #: resources/ui/window.ui:54
 msgid "Preferences"
 msgstr ""
 
-#: resources/ui/mpvpage.ui:343
+#: resources/ui/mpvpage.ui:362
 msgid "Playback speed"
 msgstr ""
 
-#: resources/ui/mpvpage.ui:357
+#: resources/ui/mpvpage.ui:376
 msgid "Volume"
 msgstr ""
 

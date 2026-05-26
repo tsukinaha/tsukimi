@@ -3664,6 +3664,7 @@ dependencies = [
  "gtk4",
  "hostname",
  "image",
+ "itertools",
  "libadwaita",
  "libc",
  "libloading 0.9.0",

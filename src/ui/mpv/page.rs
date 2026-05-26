@@ -12,6 +12,7 @@ use gtk::{
     glib,
     subclass::prelude::*,
 };
+use itertools::Itertools;
 
 use super::{
     mpvglarea::MPVGLArea,
@@ -36,6 +37,7 @@ use crate::{
         },
         structs::{
             Back,
+            MediaSegmentType,
             MediaSource,
             MediaStream,
         },
@@ -132,7 +134,10 @@ mod imp {
 
     use crate::{
         APP_ID,
-        client::structs::Back,
+        client::structs::{
+            Back,
+            MediaSegment,
+        },
         ui::{
             models::SETTINGS,
             mpv::{
@@ -175,6 +180,10 @@ mod imp {
         #[template_child]
         pub loading_box: TemplateChild<gtk::Box>,
         #[template_child]
+        pub skip_segment_revealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub skip_segment_button: TemplateChild<gtk::Button>,
+        #[template_child]
         pub network_speed_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub network_speed_label_2: TemplateChild<gtk::Label>,
@@ -202,6 +211,8 @@ mod imp {
         pub y: RefCell<f64>,
         pub last_motion_time: RefCell<i64>,
         pub suburl: RefCell<Option<String>>,
+        pub skippable_segments: RefCell<Option<Vec<MediaSegment>>>,
+        pub current_segment_end: Cell<Option<f64>>,
         pub popover: RefCell<Option<PopoverMenu>>,
         pub menu_actions: MenuActions,
         pub shortcuts_window: RefCell<Option<ShortcutsWindow>>,
@@ -483,6 +494,7 @@ impl MPVPage {
         self.imp()
             .title_label2
             .set_text(title2.as_deref().unwrap_or_default());
+        self.imp().title_label2.set_visible(title2.is_some());
 
         let media_title = title2
             .map(|t| format!("{title1} - {t}"))
@@ -492,6 +504,7 @@ impl MPVPage {
 
         let id = item.id();
         self.imp().video_scale.reset_scale();
+        self.reset_skippable_segments();
 
         // If the video_matcher is None, field wont be updated
         if let Some(video_matcher) = video_matcher {
@@ -500,7 +513,7 @@ impl MPVPage {
                 .replace(Some(video_matcher));
         }
 
-        self.set_current_video(Some(item.clone()));
+        self.set_current_video(Some(item));
         self.imp().current_episode_list.replace(episode_list);
         self.imp().fallback_context.replace(Some(FallbackContext {
             selected: selected.to_owned(),
@@ -515,6 +528,8 @@ impl MPVPage {
         self.imp().playback_direct_mode.replace(direct_mode);
         self.imp().retrying_playback.set(false);
         self.imp().allow_fallback.set(true);
+
+        self.load_skippable_segments(id.to_owned());
 
         spawn_g_timeout(glib::clone!(
             #[weak(rename_to = obj)]
@@ -646,6 +661,96 @@ impl MPVPage {
             }
         ));
         self.notify_playing();
+    }
+
+    fn reset_skippable_segments(&self) {
+        let imp = self.imp();
+        imp.skippable_segments.replace(None);
+        imp.current_segment_end.set(None);
+        imp.skip_segment_revealer.set_reveal_child(false);
+    }
+
+    fn load_skippable_segments(&self, id: String) {
+        spawn_g_timeout(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                let request_id = id.to_owned();
+                let Ok(segments) = spawn_tokio(async move {
+                    JELLYFIN_CLIENT.get_skippable_segments(&request_id).await
+                })
+                .await
+                else {
+                    return;
+                };
+                let segments = segments
+                    .items
+                    .into_iter()
+                    .filter(|s| {
+                        s.end_ticks > s.start_ticks
+                            && matches!(
+                                s.segment_type,
+                                MediaSegmentType::Intro | MediaSegmentType::Outro
+                            )
+                    })
+                    .sorted_by_key(|s| s.start_ticks)
+                    .collect::<Vec<_>>();
+                if obj
+                    .current_video()
+                    .as_ref()
+                    .is_none_or(|item| item.id() != id)
+                {
+                    return;
+                }
+                let imp = obj.imp();
+                imp.skippable_segments.replace(Some(segments));
+                obj.update_skip_segment_button(imp.video.position());
+            }
+        ));
+    }
+
+    fn update_skip_segment_button(&self, position: f64) {
+        let current_segment =
+            self.imp()
+                .skippable_segments
+                .borrow()
+                .as_ref()
+                .and_then(|segments| {
+                    segments.iter().find_map(|segment| {
+                        let start = segment.start_seconds();
+                        let end = segment.end_seconds();
+                        (position >= start && position + 0.5 < end)
+                            .then_some((segment.segment_type, end))
+                    })
+                });
+        if let Some((kind, _)) = current_segment {
+            let label = match kind {
+                MediaSegmentType::Intro => gettext("Skip Intro"),
+                MediaSegmentType::Outro => gettext("Skip Outro"),
+                _ => unreachable!(),
+            };
+            self.imp().skip_segment_button.set_label(&label);
+            self.imp()
+                .skip_segment_button
+                .set_tooltip_text(Some(&label));
+        }
+        let segment_end = current_segment.map(|(_, end)| end);
+        self.imp().current_segment_end.set(segment_end);
+        self.imp()
+            .skip_segment_revealer
+            .set_reveal_child(segment_end.is_some());
+    }
+
+    #[template_callback]
+    fn on_skip_segment_clicked(&self) {
+        let Some(end) = self.imp().current_segment_end.get() else {
+            return;
+        };
+
+        self.imp().video.set_position(end);
+        self.imp().video_scale.set_value(end);
+        self.imp().skip_segment_revealer.set_reveal_child(false);
+        self.handle_callback(BackType::Back);
     }
 
     async fn external_sub_url_without_selected_source(
@@ -901,6 +1006,7 @@ impl MPVPage {
 
     fn scale_cb(&self, value: i64) {
         self.imp().video_scale.set_value(value as f64);
+        self.update_skip_segment_button(value as f64);
     }
 
     #[template_callback]
@@ -1162,6 +1268,7 @@ impl MPVPage {
     fn on_stop_clicked(&self) {
         self.handle_callback(BackType::Stop);
         self.remove_timeout();
+        self.reset_skippable_segments();
 
         let mpv = self.mpv();
         mpv.pause(true);

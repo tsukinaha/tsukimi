@@ -51,6 +51,7 @@ use super::{
         List,
         LoginResponse,
         Media,
+        MediaSegmentList,
         MissingEpisodesList,
         PublicServerInfo,
         RemoteSearchInfo,
@@ -677,6 +678,19 @@ impl JellyfinClient {
         let profile: Value = serde_json::from_str(PROFILE).expect("Failed to parse profile");
         self.post_json(&path, &params, profile).await
     }
+
+    pub async fn get_skippable_segments(&self, id: &str) -> Result<MediaSegmentList> {
+        if matches!(self.server_type(), ServerType::Emby) {
+            bail!("Skippable segments are not supported on Emby");
+        }
+        let path = format!("MediaSegments/{id}");
+        let params = [
+            ("includeSegmentTypes", "Intro"),
+            ("includeSegmentTypes", "Outro"),
+        ];
+        self.request(&path, &params).await
+    }
+
     pub async fn scan(&self, id: &str) -> Result<Response> {
         let path = format!("Items/{id}/Refresh");
         let params = [

@@ -107,6 +107,44 @@ pub struct Media {
     pub play_session_id: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+pub struct MediaSegmentList {
+    #[serde(rename = "Items")]
+    pub items: Vec<MediaSegment>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct MediaSegment {
+    #[serde(rename = "Type")]
+    pub segment_type: MediaSegmentType,
+    #[serde(rename = "StartTicks")]
+    pub start_ticks: i64,
+    #[serde(rename = "EndTicks")]
+    pub end_ticks: i64,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MediaSegmentType {
+    Unknown,
+    Commercial,
+    Preview,
+    Recap,
+    Outro,
+    Intro,
+    #[serde(other)]
+    Other,
+}
+
+impl MediaSegment {
+    pub fn start_seconds(&self) -> f64 {
+        self.start_ticks as f64 / 10_000_000.0
+    }
+
+    pub fn end_seconds(&self) -> f64 {
+        self.end_ticks as f64 / 10_000_000.0
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LiveMedia {
     #[serde(rename = "MediaSources")]
