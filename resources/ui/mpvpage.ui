@@ -90,9 +90,11 @@
                     <property name="hexpand">True</property>
                     <child>
                       <object class="GtkCenterBox">
+                        <property name="height-request">48</property>
                         <child type="start">
                           <object class="GtkBox">
                             <property name="orientation">horizontal</property>
+                            <property name="valign">center</property>
                             <property name="margin-end">20</property>
                             <property name="spacing">10</property>
                             <child>
@@ -122,6 +124,7 @@
                         <child type="end">
                           <object class="GtkBox">
                             <property name="orientation">horizontal</property>
+                            <property name="valign">center</property>
                             <child>
                               <object class="GtkLabel" id="network_speed_label_2">
                                 <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create" />
@@ -215,7 +218,7 @@
                                 <child>
                                   <object class="GtkImage" id="play_pause_image">
                                     <property name="icon_name">media-playback-pause-symbolic</property>
-                                    <property name="pixel-size">24</property>
+                                    <property name="pixel-size">32</property>
                                     <property name="halign">center</property>
                                     <property name="valign">center</property>
                                   </object>
