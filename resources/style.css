@@ -102,11 +102,6 @@ button.pill.ultrasmall {
   min-width: 44px;
 }
 
-.mpv-top-bar windowcontrols button {
-  background: transparent;
-  box-shadow: none;
-}
-
 .playing-song-label {
   font-weight: bold;
 }

@@ -171,6 +171,9 @@
                         <child>
                           <object class="GtkWindowControls">
                             <property name="side">end</property>
+                            <style>
+                              <class name="flat" />
+                            </style>
                           </object>
                         </child>
                       </object>
