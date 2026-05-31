@@ -1,7 +1,6 @@
 use gtk::{
     glib,
     prelude::*,
-    subclass::prelude::*,
 };
 
 use super::tsukimi_mpv::ChapterList;
@@ -104,6 +103,7 @@ mod imp {
 
         fn on_seek_finished(&self, value: f64) {
             self.player.upgrade().unwrap().set_position(value);
+            self.obj().notify_seeked(value as i64);
         }
     }
 }
@@ -132,14 +132,6 @@ impl VideoScale {
         glib::ControlFlow::Continue
     }
 
-    pub fn on_smooth_scale_value_changed(&self) {
-        let value = self.value();
-        let position = value / 60.0;
-        if let Some(player) = self.imp().player.upgrade() {
-            player.set_position(position);
-        }
-    }
-
     pub fn set_cache_end_time(&self, end_time: i64) {
         self.set_fill_level(end_time as f64);
     }
@@ -155,5 +147,16 @@ impl VideoScale {
         for chapter in chapter_list {
             self.add_mark(chapter.time, gtk::PositionType::Top, None);
         }
+    }
+
+    fn notify_seeked(&self, position: i64) {
+        let Some(page) = self
+            .ancestor(crate::ui::mpv::page::MPVPage::static_type())
+            .and_downcast::<crate::ui::mpv::page::MPVPage>()
+        else {
+            return;
+        };
+
+        page.notify_seeked(position);
     }
 }

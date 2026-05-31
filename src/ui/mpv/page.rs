@@ -234,6 +234,7 @@ mod imp {
 
         pub video_version_matcher: RefCell<Option<String>>,
         pub fallback_context: RefCell<Option<super::FallbackContext>>,
+        pub pending_start_seconds: Cell<Option<f64>>,
         pub playback_direct_mode: RefCell<super::PlaybackDirectMode>,
         pub queued_playback_direct_mode: RefCell<Option<super::PlaybackDirectMode>>,
         pub retrying_playback: Cell<bool>,
@@ -520,6 +521,7 @@ impl MPVPage {
             selected: selected.to_owned(),
             start_seconds,
         }));
+        self.imp().pending_start_seconds.set(Some(start_seconds));
         let direct_mode = self
             .imp()
             .queued_playback_direct_mode
@@ -751,6 +753,7 @@ impl MPVPage {
         self.imp().video_scale.set_value(end);
         self.imp().skip_segment_revealer.set_reveal_child(false);
         self.handle_callback(BackType::Back);
+        self.notify_seeked(end as i64);
     }
 
     async fn external_sub_url_without_selected_source(
@@ -1030,6 +1033,11 @@ impl MPVPage {
         imp.allow_fallback.set(false);
         if let Some(suburl) = imp.suburl.borrow().as_ref() {
             imp.video.add_sub(suburl);
+        }
+        if let Some(start_seconds) = imp.pending_start_seconds.take()
+            && start_seconds > 0.0
+        {
+            self.notify_seeked(start_seconds as i64);
         }
         self.update_timeout();
         self.handle_callback(BackType::Start);
