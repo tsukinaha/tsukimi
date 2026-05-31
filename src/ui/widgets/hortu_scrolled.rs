@@ -243,11 +243,12 @@ impl HortuScrolled {
                     object.clone()
                 } else {
                     let id = item.id.clone();
-                    let object = TuObject::from_simple(item);
+                    let object = TuObject::from_simple(item.to_owned());
                     cache.insert(id, object.clone());
                     object
                 };
                 let tu_item = object.item();
+                tu_item.update_user_data(&item.user_data);
                 tu_item.set_is_resume(self.isresume());
                 tu_item.set_prefer_size(prefer_size);
                 tu_item.set_prefer_poster(self.prefer_poster());

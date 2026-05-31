@@ -50,7 +50,7 @@ use crate::{
         jellyfin_client::JELLYFIN_CLIENT,
         structs::{
             SimpleListItem,
-            SongWidgetView,
+            SongWidgetView, UserData,
         },
     },
     ui::{
@@ -307,6 +307,19 @@ impl From<SimpleListItem> for TuItem {
 impl TuItem {
     pub fn from_simple(item: SimpleListItem) -> Self {
         Self::from(item)
+    }
+
+    pub fn update_user_data(&self, user_data: &Option<UserData>) {
+        let Some(userdata) = user_data else{
+            return;
+        };
+
+        self.set_played(userdata.played);
+        self.set_played_percentage(userdata.played_percentage.unwrap_or_default());
+        self.set_unplayed_item_count(userdata.unplayed_item_count.unwrap_or_default());
+        self
+            .set_playback_position_ticks(userdata.playback_position_ticks.unwrap_or_default());
+        self.set_is_favorite(userdata.is_favorite.unwrap_or(false));
     }
 
     pub fn activate<T>(&self, widget: &T)
