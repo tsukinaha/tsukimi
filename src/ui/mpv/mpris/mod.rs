@@ -111,6 +111,18 @@ impl MPVPage {
         self.notify_mpris_art_changed();
     }
 
+    pub fn notify_mpris_track_changed(&self) {
+        self.mpris_properties_changed([
+            Property::Metadata(self.metadata().clone()),
+            Property::CanPlay(true),
+            Property::CanPause(true),
+            Property::CanSeek(true),
+            Property::CanGoNext(self.has_next_video()),
+            Property::CanGoPrevious(self.has_previous_video()),
+        ]);
+        self.notify_mpris_art_changed();
+    }
+
     pub fn notify_mpris_paused(&self) {
         self.mpris_properties_changed([Property::PlaybackStatus(PlaybackStatus::Paused)]);
     }

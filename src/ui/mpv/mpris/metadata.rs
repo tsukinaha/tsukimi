@@ -51,17 +51,17 @@ impl MPVPage {
     }
 
     pub(super) fn notify_mpris_art_changed(&self) {
-        let mut metadata = self.metadata().clone();
+        let Some(video) = self.current_video() else {
+            return;
+        };
+        let video_id = video.id();
+        let image_id = video.primary_image_item_id().unwrap_or_else(|| video.id());
+
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
             self,
             async move {
-                let Some(video) = obj.current_video() else {
-                    return;
-                };
-
-                let id = video.primary_image_item_id().unwrap_or_else(|| video.id());
-                let path = get_image_with_cache(id, "Primary".to_string(), None)
+                let path = get_image_with_cache(image_id, "Primary".to_string(), None)
                     .await
                     .unwrap_or_default();
 
@@ -69,6 +69,10 @@ impl MPVPage {
                     return;
                 }
 
+                let Some(video) = obj.current_video().filter(|video| video.id() == video_id) else {
+                    return;
+                };
+                let mut metadata = obj.metadata_for_video(&video);
                 metadata.set_art_url(Some(format!("file://{path}")));
                 obj.mpris_properties_changed([Property::Metadata(metadata)]);
             }

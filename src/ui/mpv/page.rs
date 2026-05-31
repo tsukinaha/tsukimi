@@ -517,6 +517,7 @@ impl MPVPage {
         self.set_current_video(Some(item));
         self.imp().current_episode_list.replace(episode_list);
         self.notify_track_list_replaced();
+        self.notify_track_changed();
         self.imp().fallback_context.replace(Some(FallbackContext {
             selected: selected.to_owned(),
             start_seconds,
@@ -564,6 +565,7 @@ impl MPVPage {
                     Err(e) => {
                         obj.mark_stream_failed();
                         obj.toast(e.to_user_facing());
+                        obj.notify_stopped();
                         return;
                     }
                 };
@@ -589,6 +591,7 @@ impl MPVPage {
                 let Some(media_source) = media_source else {
                     obj.mark_stream_failed();
                     obj.toast(gettext("No media source found"));
+                    obj.notify_stopped();
                     return;
                 };
 
@@ -656,6 +659,7 @@ impl MPVPage {
                     None => {
                         obj.mark_stream_failed();
                         obj.toast(gettext("No media source found"));
+                        obj.notify_stopped();
                         return;
                     }
                 };
@@ -1034,6 +1038,7 @@ impl MPVPage {
         if let Some(suburl) = imp.suburl.borrow().as_ref() {
             imp.video.add_sub(suburl);
         }
+        self.notify_playing();
         if let Some(start_seconds) = imp.pending_start_seconds.take()
             && start_seconds > 0.0
         {
@@ -1086,6 +1091,7 @@ impl MPVPage {
 
         self.mark_stream_failed();
         self.toast(value);
+        self.notify_stopped();
     }
 
     pub fn on_pause_update(&self, value: bool) {
@@ -1450,6 +1456,11 @@ impl MPVPage {
     pub fn notify_playing(&self) {
         #[cfg(target_os = "linux")]
         self.notify_mpris_playing();
+    }
+
+    pub fn notify_track_changed(&self) {
+        #[cfg(target_os = "linux")]
+        self.notify_mpris_track_changed();
     }
 
     pub fn notify_player_paused(&self) {
