@@ -160,7 +160,7 @@ mod imp {
                         tu_item,
                         move |gesture, _, _, _| {
                             gesture.set_state(gtk::EventSequenceState::Claimed);
-                            tu_item.item().activate(&tu_item, None);
+                            tu_item.item().activate(&tu_item);
                         }
                     ));
                     tu_item.add_controller(gesture);
@@ -243,7 +243,7 @@ impl HortuScrolled {
                     object.clone()
                 } else {
                     let id = item.id.clone();
-                    let object = TuObject::from_simple_owned(item, None);
+                    let object = TuObject::from_simple(item);
                     cache.insert(id, object.clone());
                     object
                 };

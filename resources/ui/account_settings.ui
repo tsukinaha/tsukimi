@@ -134,7 +134,6 @@
                 <property name="margin-end">12</property>
               </object>
             </property>
-            <property name="description" translatable="yes">This feature may cause significant lag. Please enable it with caution.</property>
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Default</property>
@@ -174,17 +173,12 @@
             </child>
             <child>
               <object class="AdwSwitchRow" id="backgroundblurcontrol">
-                <property name="title" translatable="yes">Blur (Experimental)</property>
-                <property name="subtitle" translatable="yes">Warning: High GPU usage</property>
-                <style>
-                  <class name="warning"/>
-                </style>
+                <property name="title" translatable="yes">Blur</property>
               </object>
             </child>
             <child>
               <object class="AdwSpinRow" id="backgroundblurspinrow">
-                <property name="title" translatable="yes">Blur Radius (Experimental)</property>
-                <property name="subtitle" translatable="yes">Warning: High GPU usage</property>
+                <property name="title" translatable="yes">Blur Radius</property>
                 <property name="adjustment">
                   <object class="GtkAdjustment">
                     <property name="lower">0</property>
@@ -194,9 +188,6 @@
                     <property name="step-increment">1</property>
                   </object>
                 </property>
-                <style>
-                  <class name="warning"/>
-                </style>
               </object>
             </child>
           </object>

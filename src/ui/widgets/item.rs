@@ -410,7 +410,7 @@ impl ItemPage {
                     match spawn_tokio(async move { JELLYFIN_CLIENT.get_item_info(&id).await }).await
                     {
                         Ok(item) => {
-                            obj.set_intro::<true>(&TuItem::from_simple_owned(item, None))
+                            obj.set_intro::<true>(&TuItem::from_simple(item))
                                 .await;
                         }
                         Err(e) => {
@@ -620,7 +620,7 @@ impl ItemPage {
 
         let items = list
             .iter()
-            .map(|item| TuObject::from_simple(item, None))
+            .map(|item| TuObject::from_simple(item.to_owned()))
             .collect::<Vec<_>>();
 
         store.extend_from_slice(&items);
@@ -676,7 +676,7 @@ impl ItemPage {
 
         let next_up_item = next_up.items.into_iter().next()?;
 
-        let tu_item = TuItem::from_simple_owned(next_up_item, None);
+        let tu_item = TuItem::from_simple(next_up_item);
 
         self.set_now_item::<false>(&tu_item);
 
@@ -1280,7 +1280,7 @@ impl ItemPage {
         let episode_list = self.imp().episode_list_vec.borrow();
         let episode_list: Vec<TuItem> = episode_list
             .iter()
-            .map(|item| TuItem::from_simple(item, None))
+            .map(|item| TuItem::from_simple(item.to_owned()))
             .collect();
 
         let matcher = self.imp().video_version_matcher.borrow().to_owned();
@@ -1389,8 +1389,8 @@ impl ItemPage {
             return;
         };
 
-        let item = TuItem::from_simple(season, None);
-        item.activate(self, None);
+        let item = TuItem::from_simple(season.to_owned());
+        item.activate(self);
     }
 
     fn anime<const R: bool>(&self) {

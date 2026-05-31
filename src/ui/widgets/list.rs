@@ -15,7 +15,7 @@ use super::{
 };
 use crate::{
     client::jellyfin_client::JELLYFIN_CLIENT,
-    ui::provider::tu_item::PreferPoster,
+    ui::provider::tu_item::{PreferPoster, TuItem},
 };
 mod imp {
 
@@ -29,7 +29,7 @@ mod imp {
         subclass::prelude::*,
     };
 
-    use crate::utils::spawn_g_timeout;
+    use crate::{ui::provider::tu_item::TuItem, utils::spawn_g_timeout};
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -37,9 +37,7 @@ mod imp {
     #[properties(wrapper_type = super::ListPage)]
     pub struct ListPage {
         #[property(get, set, construct_only)]
-        pub id: OnceCell<String>,
-        #[property(get, set, construct_only)]
-        pub collectiontype: OnceCell<String>,
+        pub item: OnceCell<TuItem>,
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
     }
@@ -91,17 +89,23 @@ glib::wrapper! {
 }
 
 impl ListPage {
-    pub fn new(id: String, collection_type: String) -> Self {
+    pub fn new(item: TuItem) -> Self {
         Object::builder()
-            .property("id", id)
-            .property("collectiontype", collection_type)
+            .property("item", item)
             .build()
     }
 
     pub async fn set_pages(&self) {
         let imp = self.imp();
-        let id = self.id();
-        let collection_type = self.collectiontype();
+
+        let item = self.item();
+
+        let id = item.id();
+
+        let Some(collection_type) = item.collection_type() else {
+            return;
+        };
+
         let stack = imp.stack.get();
 
         if &collection_type == "livetv" {

@@ -234,13 +234,9 @@ impl Default for TuItem {
     }
 }
 
-impl TuItem {
-    pub fn from_simple(item: &SimpleListItem, poster: Option<&str>) -> Self {
-        Self::from_simple_owned(item.to_owned(), poster)
-    }
-
-    pub fn from_simple_owned(item: SimpleListItem, poster: Option<&str>) -> Self {
-        let tu_item: TuItem = glib::object::Object::new();
+impl From<SimpleListItem> for TuItem {
+    fn from(item: SimpleListItem) -> Self {
+        let tu_item: TuItem = glib::Object::new();
         tu_item.set_id(item.id);
         tu_item.set_name(item.name);
         tu_item.set_item_type(item.item_type);
@@ -256,10 +252,6 @@ impl TuItem {
             tu_item
                 .set_playback_position_ticks(userdata.playback_position_ticks.unwrap_or_default());
             tu_item.set_is_favorite(userdata.is_favorite.unwrap_or(false));
-        }
-
-        if let Some(poster) = poster {
-            tu_item.set_poster(poster);
         }
 
         tu_item.imp().set_image_tags(item.image_tags);
@@ -310,12 +302,20 @@ impl TuItem {
 
         tu_item
     }
+}
 
-    pub fn activate<T>(&self, widget: &T, parentid: Option<String>)
+impl TuItem {
+    pub fn from_simple(item: SimpleListItem) -> Self {
+        Self::from(item)
+    }
+
+    pub fn activate<T>(&self, widget: &T)
     where
         T: gtk::prelude::WidgetExt + glib::clone::Downgrade,
     {
-        let window = widget.root().and_downcast::<Window>().unwrap();
+        let Some(window) = widget.root().and_downcast::<Window>() else {
+            return;
+        };
 
         match self.item_type().as_str() {
             "Series" | "Movie" | "Video" | "MusicVideo" | "AdultVideo" => {
@@ -336,14 +336,21 @@ impl TuItem {
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
             "CollectionFolder" | "UserView" => {
-                let page = ListPage::new(self.id(), self.collection_type().unwrap_or_default());
+                let page = ListPage::new(self.to_owned());
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
             "Tag" | "Genre" | "MusicGenre" => {
                 let page = SingleGrid::new();
                 page.set_unify_size(UnifySize::Majority);
                 let id = self.id();
-                let parent_id = parentid.to_owned();
+
+                let mut parent_id = None;
+                if let Some(list_page) = widget.ancestor(ListPage::static_type()).and_downcast_ref::<ListPage>() {
+                    parent_id = Some(list_page.item().id());
+                }
+
+                let parent_id_clone = parent_id.to_owned();
+
                 let list_type = self.item_type();
                 page.connect_sort_changed_tokio(
                     false,
@@ -368,12 +375,11 @@ impl TuItem {
                     },
                 );
                 let id = self.id();
-                let parent_id = parentid.to_owned();
                 let list_type = self.item_type();
                 page.connect_end_edge_overshot_tokio(
                     move |sort_by, sort_order, n_items, filters_list| {
                         let id = id.to_owned();
-                        let parent_id = parent_id.to_owned();
+                        let parent_id = parent_id_clone.to_owned();
                         let list_type = list_type.to_owned();
                         async move {
                             JELLYFIN_CLIENT
@@ -483,7 +489,7 @@ impl TuItem {
             .items
             .into_iter()
             .map(|song| {
-                let item = TuItem::from_simple_owned(song, None);
+                let item = TuItem::from_simple(song);
                 let song_widget = SongWidget::new(item, SongWidgetView::MusicAlbumItem);
                 song_widget.coresong()
             })
@@ -536,11 +542,11 @@ impl TuItem {
 
         self.direct_play_video_id(
             obj,
-            TuItem::from_simple(nextup_item, None),
+            TuItem::from_simple(nextup_item.to_owned()),
             nextup_list
                 .items
                 .into_iter()
-                .map(|item| TuItem::from_simple_owned(item, None))
+                .map(TuItem::from_simple)
                 .collect(),
         )
         .await;

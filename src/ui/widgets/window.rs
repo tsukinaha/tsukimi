@@ -917,7 +917,7 @@ impl Window {
         store.remove_all();
 
         for item in episode_list {
-            let object = TuObject::new(item);
+            let object = TuObject::new(item.to_owned());
             store.append(&object);
         }
     }
@@ -1072,10 +1072,10 @@ impl Window {
                     adw::micro_version(),
                     std::env::consts::OS
                 ));
-                about.add_acknowledgement_section(Some("Code"), &["Inaha", "Kosette"]);
+                about.add_acknowledgement_section(Some("Code"), &["Inaha", "amtoaer", "Kosette"]);
                 about.add_acknowledgement_section(
                     Some("Special Thanks"),
-                    &["Qound", "Eikano", "amtoaer"],
+                    &["Qound", "Eikano"],
                 );
                 about.present(Some(window));
             })

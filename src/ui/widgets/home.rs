@@ -269,7 +269,7 @@ impl HomePage {
                 list_item.set_name(ac_view.name.to_owned());
                 list_item.set_item_type(ac_view.item_type.to_owned());
                 list_item.set_collection_type(ac_view.collection_type.to_owned());
-                list_item.activate(&obj, None);
+                list_item.activate(&obj);
             }
         ));
 

@@ -266,13 +266,13 @@ pub mod imp {
 
             let stops = if self.is_dark.get() {
                 [
-                    gsk::ColorStop::new(0.0, gdk::RGBA::new(0.0, 0.0, 0.0, 0.55)),
-                    gsk::ColorStop::new(1.0, gdk::RGBA::new(0.0, 0.0, 0.0, 0.75)),
+                    gsk::ColorStop::new(0.0, gdk::RGBA::new(0.0, 0.0, 0.0, 0.35)),
+                    gsk::ColorStop::new(1.0, gdk::RGBA::new(0.0, 0.0, 0.0, 0.45)),
                 ]
             } else {
                 [
                     gsk::ColorStop::new(0.0, gdk::RGBA::new(1.0, 1.0, 1.0, 0.15)),
-                    gsk::ColorStop::new(1.0, gdk::RGBA::new(1.0, 1.0, 1.0, 0.35)),
+                    gsk::ColorStop::new(1.0, gdk::RGBA::new(1.0, 1.0, 1.0, 0.25)),
                 ]
             };
             sub.append_linear_gradient(

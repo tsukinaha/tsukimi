@@ -338,9 +338,9 @@ impl OtherPage {
                     store.remove_all();
 
                     for item in data.items {
-                        let tu_item = TuItem::from_simple_owned(item, None);
+                        let tu_item = TuItem::from_simple(item);
                         tu_item.set_is_resume(true);
-                        let tu_item = TuObject::new(&tu_item);
+                        let tu_item = TuObject::new(tu_item);
                         store.append(&tu_item);
                     }
 

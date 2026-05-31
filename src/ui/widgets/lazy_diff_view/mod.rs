@@ -45,6 +45,10 @@ const VIRTUAL_COLUMN_EXTENT: i32 = 186;
 const VIRTUAL_ROW_BUFFER: usize = 4;
 const VIRTUAL_RECYCLE_LIMIT: usize = 64;
 
+pub trait OnSameKey {
+    fn on_same_key(&self, _widget: &Widget) {}
+}
+
 type KeyFactory = Rc<dyn Fn(&dyn Any) -> String>;
 type WidgetFactory = Rc<dyn Fn(&dyn Any) -> Widget>;
 type WidgetBinder = Rc<dyn Fn(&Widget, &dyn Any)>;
@@ -98,6 +102,7 @@ mod imp {
         pub key_factory: RefCell<Option<KeyFactory>>,
         pub widget_factory: RefCell<Option<WidgetFactory>>,
         pub widget_binder: RefCell<Option<WidgetBinder>>,
+        pub same_key_binder: RefCell<Option<WidgetBinder>>,
     }
 
     impl Default for LazyDiffView {
@@ -122,6 +127,7 @@ mod imp {
                 key_factory: RefCell::new(None),
                 widget_factory: RefCell::new(None),
                 widget_binder: RefCell::new(None),
+                same_key_binder: RefCell::new(None),
             }
         }
     }
@@ -270,7 +276,7 @@ impl LazyDiffView {
             .clone()
     }
 
-    pub fn with_factories<T: Clone + 'static>(
+    pub fn with_factories<T: Clone + OnSameKey + 'static>(
         orientation: Orientation, key_factory: impl Fn(&T) -> String + 'static,
         widget_factory: impl Fn(&T) -> Widget + 'static,
         widget_binder: impl Fn(&Widget, &T) + 'static,
@@ -281,7 +287,7 @@ impl LazyDiffView {
         view
     }
 
-    pub fn configure<T: Clone + 'static>(
+    pub fn configure<T: Clone + OnSameKey + 'static>(
         &self, key_factory: impl Fn(&T) -> String + 'static,
         widget_factory: impl Fn(&T) -> Widget + 'static,
         widget_binder: impl Fn(&Widget, &T) + 'static,
@@ -305,6 +311,11 @@ impl LazyDiffView {
                 item.downcast_ref::<T>()
                     .expect("LazyDiffView item type mismatch"),
             )
+        }));
+        *imp.same_key_binder.borrow_mut() = Some(Rc::new(move |widget, item| {
+            item.downcast_ref::<T>()
+                .expect("LazyDiffView item type mismatch")
+                .on_same_key(widget);
         }));
     }
 
@@ -629,6 +640,13 @@ impl LazyDiffView {
     ) -> Rc<VirtualRow> {
         let imp = self.imp();
         if let Some(row) = imp.rows.borrow().get(&row_data.key) {
+            let item_changed = !Rc::ptr_eq(&row.item.borrow(), &row_data.item);
+            *row.item.borrow_mut() = row_data.item.clone();
+            if item_changed {
+                if let Some(cb) = imp.same_key_binder.borrow().as_ref() {
+                    cb(&row.child, row_data.item.as_ref());
+                }
+            }
             return row.clone();
         }
 

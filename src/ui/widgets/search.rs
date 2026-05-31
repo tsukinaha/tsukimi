@@ -229,8 +229,8 @@ impl SearchPage {
                 #[weak(rename_to = obj)]
                 self,
                 move |_| {
-                    let tu_item = TuItem::from_simple(&item, None);
-                    tu_item.activate(&obj, None);
+                    let tu_item = TuItem::from_simple(item.to_owned());
+                    tu_item.activate(&obj);
                 }
             ));
 

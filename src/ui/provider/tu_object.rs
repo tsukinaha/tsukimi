@@ -1,15 +1,21 @@
 use std::cell::RefCell;
 
 use gtk::{
-    glib,
     glib::{
+        self,
         prelude::*,
         subclass::prelude::*,
     },
 };
 
 use super::tu_item::TuItem;
-use crate::client::structs::SimpleListItem;
+use crate::{
+    client::structs::SimpleListItem,
+    ui::widgets::{
+        lazy_diff_view::OnSameKey,
+        tu_list_item::TuListItem,
+    },
+};
 
 pub mod imp {
     use gtk::glib::Properties;
@@ -40,19 +46,28 @@ glib::wrapper! {
     pub struct TuObject(ObjectSubclass<imp::TuObject>);
 }
 
+impl OnSameKey for TuObject {
+    fn on_same_key(&self, widget: &gtk::Widget) {
+        let Some(list_item) = widget.downcast_ref::<TuListItem>() else {
+            tracing::error!("Failed to downcast to TuListItem");
+            return;
+        };
+
+        let Some(percentage) = self.item().fmt_percentage() else {
+            return;
+        };
+
+        list_item.set_progress(percentage / 100.);
+    }
+}
+
 impl TuObject {
-    pub fn new(item: &TuItem) -> Self {
+    pub fn new(item: TuItem) -> Self {
         glib::Object::builder().property("item", item).build()
     }
 
-    pub fn from_simple_owned(latest: SimpleListItem, poster: Option<&str>) -> Self {
-        let tu_item = TuItem::from_simple_owned(latest, poster);
-        TuObject::new(&tu_item)
-    }
-
-    pub fn from_simple(latest: &SimpleListItem, poster: Option<&str>) -> Self {
-        let tu_item = TuItem::from_simple(latest, poster);
-        TuObject::new(&tu_item)
+    pub fn from_simple(item: SimpleListItem) -> Self {
+        TuObject::new(TuItem::from_simple(item))
     }
 
     pub fn activate<T>(&self, listview: &T)
@@ -60,7 +75,6 @@ impl TuObject {
         T: glib::clone::Downgrade + gtk::prelude::IsA<gtk::Widget>,
     {
         let item = self.item();
-        let poster = self.poster();
-        item.activate(listview, poster);
+        item.activate(listview);
     }
 }
