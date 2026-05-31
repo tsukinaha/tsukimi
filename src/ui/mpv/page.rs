@@ -515,6 +515,7 @@ impl MPVPage {
 
         self.set_current_video(Some(item));
         self.imp().current_episode_list.replace(episode_list);
+        self.notify_track_list_replaced();
         self.imp().fallback_context.replace(Some(FallbackContext {
             selected: selected.to_owned(),
             start_seconds,
@@ -660,7 +661,6 @@ impl MPVPage {
                 imp.video.play(&video_url, start_seconds);
             }
         ));
-        self.notify_playing();
     }
 
     fn reset_skippable_segments(&self) {
@@ -984,9 +984,7 @@ impl MPVPage {
     }
 
     fn on_chapter_list(&self, value: ChapterList) {
-        let chapter_len = value.0.len();
         self.imp().video_scale.set_chapter_list(value);
-        self.notify_has_chapters(chapter_len > 0);
     }
 
     fn update_duration(&self, value: f64) {
@@ -1265,7 +1263,7 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn on_stop_clicked(&self) {
+    pub fn on_stop_clicked(&self) {
         self.handle_callback(BackType::Stop);
         self.remove_timeout();
         self.reset_skippable_segments();
@@ -1419,14 +1417,14 @@ impl MPVPage {
         let video = &self.imp().video;
         let step = SETTINGS.mpv_seek_backward_step() as i64;
         video.seek_backward(step);
-        self.notify_seeked(step);
+        self.notify_seeked((video.position() as i64 - step).max(0));
     }
 
     pub fn on_forward(&self) {
         let video = &self.imp().video;
         let step = SETTINGS.mpv_seek_forward_step() as i64;
         video.seek_forward(step);
-        self.notify_seeked(step);
+        self.notify_seeked(video.position() as i64 + step);
     }
 
     pub fn chapter_prev(&self) {
@@ -1439,11 +1437,6 @@ impl MPVPage {
 
     pub fn mpv(&self) -> &TsukimiMPV {
         self.imp().video.imp().mpv()
-    }
-
-    pub fn notify_has_chapters(&self, has_chapters: bool) {
-        #[cfg(target_os = "linux")]
-        self.notify_mpris_has_chapters(has_chapters);
     }
 
     pub fn notify_playing(&self) {
@@ -1464,6 +1457,11 @@ impl MPVPage {
     pub fn notify_seeked(&self, position: i64) {
         #[cfg(target_os = "linux")]
         self.notify_mpris_seeked(position);
+    }
+
+    pub fn notify_track_list_replaced(&self) {
+        #[cfg(target_os = "linux")]
+        self.notify_mpris_track_list_replaced();
     }
 }
 
