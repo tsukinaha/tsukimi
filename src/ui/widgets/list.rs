@@ -102,9 +102,7 @@ impl ListPage {
 
         let id = item.id();
 
-        let Some(collection_type) = item.collection_type() else {
-            return;
-        };
+        let collection_type = item.collection_type().unwrap_or_default();
 
         let stack = imp.stack.get();
 

@@ -18,17 +18,14 @@ use super::tu_item::{
     TuItemOverlay,
     TuItemOverlayPrelude,
 };
-use crate::{
-    ui::{
+use crate::ui::{
         GlobalToast,
         provider::tu_item::TuItem,
         widgets::utils::{
             TU_ITEM_BANNER_SIZE,
             TU_ITEM_VIDEO_SIZE,
         },
-    },
-    utils::spawn,
-};
+    };
 
 pub mod imp {
     use std::cell::{
@@ -106,6 +103,7 @@ pub mod imp {
         #[template_child]
         pub hover_scale: TemplateChild<HoverScale>,
 
+        pub progress_inside: Cell<f64>,
         pub backdrop_cache: RefCell<Option<BackdropNodeCache>>,
         pub is_dark: Cell<bool>,
     }
@@ -201,7 +199,7 @@ pub mod imp {
 
             let cache_ref = self.backdrop_cache.borrow();
             if let Some(cache) = cache_ref.as_ref() {
-                let progress = self.progress.get() as f32;
+                let progress = self.progress_inside.get() as f32;
                 let alpha = if self.is_dark.get() { 0.2 } else { 0.4 };
                 snapshot.append_node(&cache.node);
                 Self::draw_progress_fill(snapshot, cache, progress, alpha);
@@ -341,9 +339,7 @@ pub mod imp {
 
         pub fn set_progress(&self, progress: f64) {
             self.progress.set(progress);
-            if progress > 0.0 {
-                self.obj().set_progress_anim(progress);
-            }
+            self.obj().set_progress_anim(progress);
         }
     }
 }
@@ -390,14 +386,16 @@ impl TuListItem {
     }
 
     fn set_progress_anim(&self, percentage: f64) {
-        let weak = self.downgrade();
-        let start_value = self.imp().progress.get();
+        let start_value = self.imp().progress_inside.get();
 
-        let target = adw::CallbackAnimationTarget::new(move |_| {
-            if let Some(this) = weak.upgrade() {
+        let target = adw::CallbackAnimationTarget::new(glib::clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |p| {
+                this.imp().progress_inside.set(p);
                 this.queue_draw();
             }
-        });
+        ));
 
         let animation = adw::TimedAnimation::builder()
             .duration(PROGRESSBAR_ANIMATION_DURATION)
@@ -408,13 +406,7 @@ impl TuListItem {
             .value_to(percentage)
             .build();
 
-        spawn(glib::clone!(
-            #[weak]
-            animation,
-            async move {
-                animation.play();
-            }
-        ));
+        animation.play();
     }
 
     pub fn refresh_item(&self) {
