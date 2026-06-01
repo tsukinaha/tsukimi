@@ -69,6 +69,8 @@ mod imp {
         #[template_child]
         pub hishortu: TemplateChild<HortuScrolled>,
         #[template_child]
+        pub nextuphortu: TemplateChild<HortuScrolled>,
+        #[template_child]
         pub libhortu: TemplateChild<HortuScrolled>,
         pub selection: gtk::SingleSelection,
 
@@ -152,6 +154,7 @@ impl HomePage {
         fraction_reset!(self);
         futures_util::join!(
             self.setup_history(enable_cache),
+            self.setup_next_up(enable_cache),
             self.setup_library(enable_cache)
         );
         fraction!(self);
@@ -168,6 +171,38 @@ impl HomePage {
                 CachePolicy::RefreshIfChanged
             },
             async { JELLYFIN_CLIENT.get_resume().await },
+        )
+        .await;
+
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, .. } => {
+                    hortu.set_items(data.items);
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
+                }
+            }
+        }
+    }
+
+    pub async fn setup_next_up(&self, enable_cache: bool) {
+        let hortu = self.imp().nextuphortu.get();
+
+        if !JELLYFIN_CLIENT.is_jellyfin() {
+            hortu.set_visible(false);
+            return;
+        }
+
+        let mut events = fetch_with_cache(
+            "next_up",
+            if enable_cache {
+                CachePolicy::ReadCacheAndRefresh
+            } else {
+                CachePolicy::RefreshIfChanged
+            },
+            async { JELLYFIN_CLIENT.get_next_up().await },
         )
         .await;
 
