@@ -410,8 +410,7 @@ impl ItemPage {
                     match spawn_tokio(async move { JELLYFIN_CLIENT.get_item_info(&id).await }).await
                     {
                         Ok(item) => {
-                            obj.set_intro::<true>(&TuItem::from_simple(item))
-                                .await;
+                            obj.set_intro::<true>(&TuItem::from_simple(item)).await;
                         }
                         Err(e) => {
                             obj.toast(e.to_user_facing());

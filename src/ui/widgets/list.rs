@@ -15,7 +15,10 @@ use super::{
 };
 use crate::{
     client::jellyfin_client::JELLYFIN_CLIENT,
-    ui::provider::tu_item::{PreferPoster, TuItem},
+    ui::provider::tu_item::{
+        PreferPoster,
+        TuItem,
+    },
 };
 mod imp {
 
@@ -29,7 +32,10 @@ mod imp {
         subclass::prelude::*,
     };
 
-    use crate::{ui::provider::tu_item::TuItem, utils::spawn_g_timeout};
+    use crate::{
+        ui::provider::tu_item::TuItem,
+        utils::spawn_g_timeout,
+    };
 
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -90,9 +96,7 @@ glib::wrapper! {
 
 impl ListPage {
     pub fn new(item: TuItem) -> Self {
-        Object::builder()
-            .property("item", item)
-            .build()
+        Object::builder().property("item", item).build()
     }
 
     pub async fn set_pages(&self) {

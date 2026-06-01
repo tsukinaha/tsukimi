@@ -1,11 +1,9 @@
 use std::cell::RefCell;
 
-use gtk::{
-    glib::{
-        self,
-        prelude::*,
-        subclass::prelude::*,
-    },
+use gtk::glib::{
+    self,
+    prelude::*,
+    subclass::prelude::*,
 };
 
 use super::tu_item::TuItem;

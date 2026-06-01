@@ -19,13 +19,13 @@ use super::tu_item::{
     TuItemOverlayPrelude,
 };
 use crate::ui::{
-        GlobalToast,
-        provider::tu_item::TuItem,
-        widgets::utils::{
-            TU_ITEM_BANNER_SIZE,
-            TU_ITEM_VIDEO_SIZE,
-        },
-    };
+    GlobalToast,
+    provider::tu_item::TuItem,
+    widgets::utils::{
+        TU_ITEM_BANNER_SIZE,
+        TU_ITEM_VIDEO_SIZE,
+    },
+};
 
 pub mod imp {
     use std::cell::{

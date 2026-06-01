@@ -4,6 +4,9 @@ set -e
 echo "Running cargo clippy --fix..."
 cargo clippy --fix --allow-dirty --allow-no-vcs --allow-staged
 
+echo "Running cargo fmt"
+cargo fmt
+
 echo "Re-staging modified files..."
 git diff --name-only | xargs -r git add
 

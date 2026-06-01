@@ -9,7 +9,7 @@ use super::tsukimi_mpv::ChapterList;
 mod imp {
     use std::cell::Cell;
 
-use gtk::{
+    use gtk::{
         glib,
         prelude::*,
         subclass::prelude::*,
