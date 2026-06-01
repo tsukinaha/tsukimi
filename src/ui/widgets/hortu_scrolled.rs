@@ -242,9 +242,8 @@ impl HortuScrolled {
                 let object = if let Some(object) = cache.get(&item.id) {
                     object.clone()
                 } else {
-                    let id = item.id.clone();
                     let object = TuObject::from_simple(item.to_owned());
-                    cache.insert(id, object.clone());
+                    cache.insert(object.item().key(), object.clone());
                     object
                 };
                 let tu_item = object.item();
