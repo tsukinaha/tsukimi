@@ -45,7 +45,6 @@ jobs:
         - name: Download artifact
           uses: actions/download-artifact@v8
           with:
-            pattern: "*-linux"
             path: artifacts
             skip-decompress: true
             merge-multiple: true
