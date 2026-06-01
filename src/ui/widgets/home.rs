@@ -15,7 +15,12 @@ use super::{
         HortuScrolled,
         UnifySize,
     },
+    single_grid::{
+        SingleGrid,
+        imp::ListType,
+    },
     utils::GlobalToast,
+    window::Window,
 };
 use crate::{
     client::{
@@ -38,6 +43,7 @@ use crate::{
         spawn_g_timeout,
     },
 };
+
 mod imp {
 
     use std::{
@@ -75,6 +81,7 @@ mod imp {
         pub selection: gtk::SingleSelection,
 
         pub libs_hortu: RefCell<HashMap<String, WeakRef<HortuScrolled>>>,
+        pub next_up_date_cutoff: RefCell<String>,
     }
 
     #[glib::object_subclass]
@@ -98,6 +105,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
+            obj.setup_next_up_morebutton();
             obj.init_load();
         }
     }
@@ -195,6 +203,11 @@ impl HomePage {
             return;
         }
 
+        let next_up_date_cutoff = JELLYFIN_CLIENT.next_up_date_cutoff();
+        self.imp()
+            .next_up_date_cutoff
+            .replace(next_up_date_cutoff.clone());
+
         let mut events = fetch_with_cache(
             "next_up",
             if enable_cache {
@@ -202,7 +215,11 @@ impl HomePage {
             } else {
                 CachePolicy::RefreshIfChanged
             },
-            async { JELLYFIN_CLIENT.get_next_up().await },
+            async move {
+                JELLYFIN_CLIENT
+                    .get_next_up(0, 24, &next_up_date_cutoff)
+                    .await
+            },
         )
         .await;
 
@@ -217,6 +234,51 @@ impl HomePage {
                 }
             }
         }
+    }
+
+    fn setup_next_up_morebutton(&self) {
+        let hortu = self.imp().nextuphortu.get();
+        hortu.set_moreview(true);
+        hortu.connect_morebutton(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |_| {
+                let Some(window) = obj.root().and_downcast::<Window>() else {
+                    return;
+                };
+
+                let title = gettext("Next Up");
+                let next_up_date_cutoff = obj.imp().next_up_date_cutoff.borrow().clone();
+                let page = SingleGrid::new();
+                page.set_list_type(ListType::NextUp);
+                page.set_unify_size(UnifySize::ForceVideo);
+                let next_up_date_cutoff_initial = next_up_date_cutoff.clone();
+                page.connect_sort_changed_tokio(
+                    false,
+                    PreferPoster::ParentVideo,
+                    move |_, _, _| {
+                        let next_up_date_cutoff_initial = next_up_date_cutoff_initial.clone();
+                        async move {
+                            JELLYFIN_CLIENT
+                                .get_next_up(0, 50, &next_up_date_cutoff_initial)
+                                .await
+                        }
+                    },
+                );
+                page.connect_end_edge_overshot_tokio_with_poster(
+                    PreferPoster::ParentVideo,
+                    move |_, _, n_items, _| {
+                        let next_up_date_cutoff = next_up_date_cutoff.clone();
+                        async move {
+                            JELLYFIN_CLIENT
+                                .get_next_up(n_items, 50, &next_up_date_cutoff)
+                                .await
+                        }
+                    },
+                );
+                window.push_page(&page, "next_up", &title);
+            }
+        ));
     }
 
     pub async fn setup_library(&self, enable_cache: bool) {

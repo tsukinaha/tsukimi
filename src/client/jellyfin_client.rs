@@ -251,8 +251,6 @@ impl JellyfinClient {
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
         let request = self.prepare_request(Method::GET, path, params)?;
-        println!("Requesting: {}", request.build()?.url());
-        let request = self.prepare_request(Method::GET, path, params)?;
         let res = self.send_request(request).await?;
 
         let res = match res.error_for_status() {
@@ -490,15 +488,22 @@ impl JellyfinClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_next_up(&self) -> Result<List> {
+    pub fn next_up_date_cutoff(&self) -> String {
+        (chrono::Utc::now() - chrono::Duration::days(365))
+            .to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+    }
+
+    pub async fn get_next_up(
+        &self, start: u32, limit: u32, next_up_date_cutoff: &str,
+    ) -> Result<List> {
         if !self.is_jellyfin() {
             bail!("Next up is not supported on Emby");
         }
         let s = self.session();
-        let next_up_date_cutoff = (chrono::Utc::now() - chrono::Duration::days(365))
-            .to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
+        let limit = limit.to_string();
+        let start = start.to_string();
         let params = [
-            ("Limit", "24"),
+            ("Limit", limit.as_str()),
             (
                 "Fields",
                 "PrimaryImageAspectRatio,DateCreated,Path,MediaSourceCount",
@@ -506,11 +511,12 @@ impl JellyfinClient {
             ("UserId", &s.account.user_id),
             ("ImageTypeLimit", "1"),
             ("EnableImageTypes", "Primary,Backdrop,Banner,Thumb"),
-            ("EnableTotalRecordCount", "false"),
+            ("EnableTotalRecordCount", "true"),
             ("DisableFirstEpisode", "false"),
-            ("NextUpDateCutoff", &next_up_date_cutoff),
+            ("NextUpDateCutoff", next_up_date_cutoff),
             ("EnableResumable", "false"),
             ("EnableRewatching", "false"),
+            ("StartIndex", start.as_str()),
         ];
         self.request("Shows/NextUp", &params).await
     }

@@ -84,6 +84,7 @@ pub mod imp {
     pub enum ListType {
         All,
         Resume,
+        NextUp,
         BoxSet,
         Tags,
         Genres,
@@ -424,7 +425,7 @@ impl SingleGrid {
             ListType::All => {
                 imp.postmenu.set_visible(true);
             }
-            ListType::Resume => {
+            ListType::Resume | ListType::NextUp => {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
                 imp.adgroup.set_visible(false);
@@ -563,6 +564,15 @@ impl SingleGrid {
         F: Fn(String, String, u32, FiltersList) -> Fut + Send + Sync + 'static,
         Fut: Future<Output = Result<List>> + Send + 'static,
     {
+        self.connect_end_edge_overshot_tokio_with_poster(PreferPoster::Auto, f);
+    }
+
+    pub fn connect_end_edge_overshot_tokio_with_poster<F, Fut>(
+        &self, prefer_poster: PreferPoster, f: F,
+    ) where
+        F: Fn(String, String, u32, FiltersList) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = Result<List>> + Send + 'static,
+    {
         self.imp().scrolled.connect_end_edge_reached(glib::clone!(
             #[weak(rename_to = obj)]
             self,
@@ -588,18 +598,18 @@ impl SingleGrid {
                     #[weak]
                     scrolled,
                     async move {
+                        println!("End edge reached, loading more items...");
                         scrolled.reveal_spinner(true);
 
                         match spawn_tokio(future).await {
-                            Ok(item) => {
-                                obj.add_items::<false>(item.items, false, PreferPoster::Auto)
-                            }
+                            Ok(item) => obj.add_items::<false>(item.items, false, prefer_poster),
                             Err(e) => {
                                 obj.toast(e.to_user_facing());
                             }
                         }
 
                         scrolled.reveal_spinner(false);
+                        println!("Finished loading more items.");
 
                         lock.store(false, std::sync::atomic::Ordering::Relaxed);
                     }
