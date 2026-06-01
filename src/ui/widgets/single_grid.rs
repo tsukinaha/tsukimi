@@ -598,7 +598,6 @@ impl SingleGrid {
                     #[weak]
                     scrolled,
                     async move {
-                        println!("End edge reached, loading more items...");
                         scrolled.reveal_spinner(true);
 
                         match spawn_tokio(future).await {
@@ -609,7 +608,6 @@ impl SingleGrid {
                         }
 
                         scrolled.reveal_spinner(false);
-                        println!("Finished loading more items.");
 
                         lock.store(false, std::sync::atomic::Ordering::Relaxed);
                     }
