@@ -839,7 +839,6 @@ impl JellyfinClient {
                             _ => include_item_type,
                         },
                     ),
-                    ("Limit", "30"),
                 ]
             }
             ListType::Genres => vec![

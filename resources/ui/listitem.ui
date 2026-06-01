@@ -5,11 +5,12 @@
     <property name="valign">start</property>
     <child>
       <object class="HoverScale" id="hover_scale">
+        <property name="valign">start</property>
         <child>
             <object class="GtkBox">
             <property name="orientation">vertical</property>
             <property name="spacing">8</property>
-            <property name="valign">start</property>
+            <property name="valign">fill</property>
             <property name="overflow">visible</property>
             <child>
                 <object class="GtkOverlay" id="overlay">

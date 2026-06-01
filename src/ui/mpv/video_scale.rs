@@ -75,7 +75,6 @@ mod imp {
     impl RangeImpl for VideoScale {
         fn change_value(&self, scroll_type: gtk::ScrollType, new_value: f64) -> glib::Propagation {
             if self.is_dragging.get() {
-                self.on_seek_finished(new_value);
                 glib::Propagation::Stop
             } else {
                 self.parent_change_value(scroll_type, new_value);
