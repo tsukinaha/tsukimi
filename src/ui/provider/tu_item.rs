@@ -368,28 +368,24 @@ impl TuItem {
                 let parent_id_clone = parent_id.to_owned();
 
                 let list_type = self.item_type();
-                page.connect_sort_changed_tokio(
-                    false,
-                    PreferPoster::Auto,
-                    move |sort_by, sort_order, filters_list| {
-                        let id = id.to_owned();
-                        let parent_id = parent_id.to_owned();
-                        let list_type = list_type.to_owned();
-                        async move {
-                            JELLYFIN_CLIENT
-                                .get_inlist(
-                                    parent_id,
-                                    0,
-                                    &list_type,
-                                    &id,
-                                    &sort_order,
-                                    &sort_by,
-                                    &filters_list,
-                                )
-                                .await
-                        }
-                    },
-                );
+                page.connect_sort_changed_tokio(move |sort_by, sort_order, filters_list| {
+                    let id = id.to_owned();
+                    let parent_id = parent_id.to_owned();
+                    let list_type = list_type.to_owned();
+                    async move {
+                        JELLYFIN_CLIENT
+                            .get_inlist(
+                                parent_id,
+                                0,
+                                &list_type,
+                                &id,
+                                &sort_order,
+                                &sort_by,
+                                &filters_list,
+                            )
+                            .await
+                    }
+                });
                 let id = self.id();
                 let list_type = self.item_type();
                 page.connect_end_edge_overshot_tokio(
@@ -419,18 +415,14 @@ impl TuItem {
                 page.set_list_type(ListType::Folder);
                 page.set_unify_size(UnifySize::Majority);
                 let id = self.id();
-                page.connect_sort_changed_tokio(
-                    false,
-                    PreferPoster::Auto,
-                    move |sort_by, sort_order, filters_list| {
-                        let id = id.to_owned();
-                        async move {
-                            JELLYFIN_CLIENT
-                                .get_folder_include(&id, &sort_by, &sort_order, 0, &filters_list)
-                                .await
-                        }
-                    },
-                );
+                page.connect_sort_changed_tokio(move |sort_by, sort_order, filters_list| {
+                    let id = id.to_owned();
+                    async move {
+                        JELLYFIN_CLIENT
+                            .get_folder_include(&id, &sort_by, &sort_order, 0, &filters_list)
+                            .await
+                    }
+                });
                 let id = self.id();
                 page.connect_end_edge_overshot_tokio(
                     move |sort_by, sort_order, n_items, filters_list| {

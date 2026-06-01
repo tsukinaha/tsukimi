@@ -113,7 +113,7 @@ impl ListPage {
         if &collection_type == "livetv" {
             let page = SingleGrid::new();
             page.set_unify_size(UnifySize::Majority);
-            page.connect_sort_changed_tokio(false, PreferPoster::Auto, move |_, _, _| async move {
+            page.connect_sort_changed_tokio(move |_, _, _| async move {
                 JELLYFIN_CLIENT.get_channels_list(0).await
             });
             page.connect_end_edge_overshot_tokio(move |_, _, n_items, _| async move {
@@ -143,45 +143,37 @@ impl ListPage {
             } else {
                 UnifySize::Majority
             });
+            page.set_prefer_poster(if list_type == ListType::Resume {
+                PreferPoster::ParentVideo
+            } else {
+                PreferPoster::Auto
+            });
+            page.set_is_resume(list_type == ListType::Resume);
             let id_clone1 = id.to_owned();
             let include_item_types_clone1 = include_item_types.to_owned();
-            page.connect_sort_changed_tokio(
-                list_type == ListType::Resume,
-                if list_type == ListType::Resume {
-                    PreferPoster::ParentVideo
-                } else {
-                    PreferPoster::Auto
-                },
-                move |sort_by, sort_order, filters_list| {
-                    let id_clone1 = id_clone1.to_owned();
-                    let include_item_types_clone1 = include_item_types_clone1.to_owned();
-                    async move {
-                        if list_type == ListType::Folder {
-                            JELLYFIN_CLIENT
-                                .get_folder_include(
-                                    &id_clone1,
-                                    &sort_by,
-                                    &sort_order,
-                                    0,
-                                    &filters_list,
-                                )
-                                .await
-                        } else {
-                            JELLYFIN_CLIENT
-                                .get_list(
-                                    &id_clone1,
-                                    0,
-                                    &include_item_types_clone1,
-                                    list_type,
-                                    &sort_order,
-                                    &sort_by,
-                                    &filters_list,
-                                )
-                                .await
-                        }
+            page.connect_sort_changed_tokio(move |sort_by, sort_order, filters_list| {
+                let id_clone1 = id_clone1.to_owned();
+                let include_item_types_clone1 = include_item_types_clone1.to_owned();
+                async move {
+                    if list_type == ListType::Folder {
+                        JELLYFIN_CLIENT
+                            .get_folder_include(&id_clone1, &sort_by, &sort_order, 0, &filters_list)
+                            .await
+                    } else {
+                        JELLYFIN_CLIENT
+                            .get_list(
+                                &id_clone1,
+                                0,
+                                &include_item_types_clone1,
+                                list_type,
+                                &sort_order,
+                                &sort_by,
+                                &filters_list,
+                            )
+                            .await
                     }
-                },
-            );
+                }
+            });
             let id_clone2 = id.to_owned();
             let include_item_types_clone2 = include_item_types.to_owned();
 

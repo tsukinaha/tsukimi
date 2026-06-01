@@ -252,30 +252,24 @@ impl HomePage {
                 let page = SingleGrid::new();
                 page.set_list_type(ListType::NextUp);
                 page.set_unify_size(UnifySize::ForceVideo);
+                page.set_prefer_poster(PreferPoster::ParentVideo);
                 let next_up_date_cutoff_initial = next_up_date_cutoff.clone();
-                page.connect_sort_changed_tokio(
-                    false,
-                    PreferPoster::ParentVideo,
-                    move |_, _, _| {
-                        let next_up_date_cutoff_initial = next_up_date_cutoff_initial.clone();
-                        async move {
-                            JELLYFIN_CLIENT
-                                .get_next_up(0, 50, &next_up_date_cutoff_initial)
-                                .await
-                        }
-                    },
-                );
-                page.connect_end_edge_overshot_tokio_with_poster(
-                    PreferPoster::ParentVideo,
-                    move |_, _, n_items, _| {
-                        let next_up_date_cutoff = next_up_date_cutoff.clone();
-                        async move {
-                            JELLYFIN_CLIENT
-                                .get_next_up(n_items, 50, &next_up_date_cutoff)
-                                .await
-                        }
-                    },
-                );
+                page.connect_sort_changed_tokio(move |_, _, _| {
+                    let next_up_date_cutoff_initial = next_up_date_cutoff_initial.clone();
+                    async move {
+                        JELLYFIN_CLIENT
+                            .get_next_up(0, 50, &next_up_date_cutoff_initial)
+                            .await
+                    }
+                });
+                page.connect_end_edge_overshot_tokio(move |_, _, n_items, _| {
+                    let next_up_date_cutoff = next_up_date_cutoff.clone();
+                    async move {
+                        JELLYFIN_CLIENT
+                            .get_next_up(n_items, 50, &next_up_date_cutoff)
+                            .await
+                    }
+                });
                 window.push_page(&page, "next_up", &title);
             }
         ));
