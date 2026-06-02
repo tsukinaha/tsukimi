@@ -592,7 +592,7 @@ impl JellyfinClient {
                 let path = if bytes.len() > 1000 {
                     self.save_image(id, image_type, tag, &bytes, etag).await
                 } else {
-                    bail!("Image data is too small, likely an error response");
+                    String::new()
                 };
 
                 Ok(path)
