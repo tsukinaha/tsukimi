@@ -1,7 +1,4 @@
-use adw::subclass::prelude::{
-    ObjectSubclassExt,
-    ObjectSubclassIsExt,
-};
+use adw::subclass::prelude::ObjectSubclassIsExt;
 use gtk::glib;
 use mpris_server::{
     Metadata,
@@ -22,11 +19,14 @@ use crate::{
 
 impl MPVPage {
     pub(super) fn metadata(&self) -> Metadata {
-        self.imp()
-            .obj()
-            .current_video()
-            .as_ref()
-            .map_or_else(Metadata::new, |video| self.metadata_for_video(video))
+        let Some(video) = self.current_video() else {
+            return Metadata::new();
+        };
+        let mut metadata = self.metadata_for_video(&video);
+        if let Some(art_url) = self.imp().mpris_art_url.borrow().as_ref() {
+            metadata.set_art_url(Some(art_url.clone()));
+        }
+        metadata
     }
 
     pub(super) fn metadata_for_video(&self, video: &TuItem) -> Metadata {
@@ -49,7 +49,6 @@ impl MPVPage {
     pub(super) fn notify_mpris_art_changed(&self, video: TuItem, mut metadata: Metadata) {
         let video_id = video.id();
         let image_id = video.primary_image_item_id().unwrap_or_else(|| video.id());
-
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
             self,
@@ -64,7 +63,9 @@ impl MPVPage {
                 {
                     return;
                 }
-                metadata.set_art_url(Some(format!("file://{path}")));
+                let art_url = format!("file://{path}");
+                obj.imp().mpris_art_url.replace(Some(art_url.clone()));
+                metadata.set_art_url(Some(art_url));
                 obj.mpris_properties_changed([Property::Metadata(metadata)]);
             }
         ));

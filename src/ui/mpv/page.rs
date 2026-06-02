@@ -218,6 +218,8 @@ mod imp {
         pub shortcuts_window: RefCell<Option<ShortcutsWindow>>,
         #[cfg(target_os = "linux")]
         pub mpris_server: OnceCell<LocalServer<super::MPVPage>>,
+        #[cfg(target_os = "linux")]
+        pub mpris_art_url: RefCell<Option<String>>,
 
         #[template_child]
         pub volume_adj: TemplateChild<gtk::Adjustment>,
@@ -515,6 +517,8 @@ impl MPVPage {
         }
 
         self.set_current_video(Some(item));
+        #[cfg(target_os = "linux")]
+        self.imp().mpris_art_url.take();
         self.imp().current_episode_list.replace(episode_list);
         self.notify_track_list_replaced();
         self.notify_track_changed();
