@@ -236,7 +236,6 @@ mod imp {
 
         pub video_version_matcher: RefCell<Option<String>>,
         pub fallback_context: RefCell<Option<super::FallbackContext>>,
-        pub pending_start_seconds: Cell<Option<f64>>,
         pub playback_direct_mode: RefCell<super::PlaybackDirectMode>,
         pub queued_playback_direct_mode: RefCell<Option<super::PlaybackDirectMode>>,
         pub retrying_playback: Cell<bool>,
@@ -526,7 +525,6 @@ impl MPVPage {
             selected: selected.to_owned(),
             start_seconds,
         }));
-        self.imp().pending_start_seconds.set(Some(start_seconds));
         let direct_mode = self
             .imp()
             .queued_playback_direct_mode
