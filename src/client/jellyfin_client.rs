@@ -592,7 +592,7 @@ impl JellyfinClient {
                 let path = if bytes.len() > 1000 {
                     self.save_image(id, image_type, tag, &bytes, etag).await
                 } else {
-                    String::new()
+                    bail!("Image data is too small, likely an error response");
                 };
 
                 Ok(path)
@@ -640,7 +640,7 @@ impl JellyfinClient {
         let cache_path = jellyfin_cache_path().await;
         let path = format!("{}-{}-{}", id, image_type, tag.unwrap_or(0));
         let path = cache_path.join(path);
-        std::fs::write(&path, bytes).unwrap();
+        tokio::fs::write(&path, bytes).await.unwrap();
         if let Some(etag) = etag {
             #[cfg(target_os = "linux")]
             xattr::set(&path, "user.etag", etag.as_bytes()).unwrap_or_else(|e| {
