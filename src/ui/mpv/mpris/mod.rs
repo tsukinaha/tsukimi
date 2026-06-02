@@ -111,6 +111,10 @@ impl MPVPage {
         self.mpris_properties_changed([Property::PlaybackStatus(PlaybackStatus::Paused)]);
     }
 
+    pub fn notify_mpris_volume(&self, volume: Volume) {
+        self.mpris_properties_changed([Property::Volume(volume.clamp(0.0, 1.0))]);
+    }
+
     pub fn notify_mpris_stopped(&self) {
         self.mpris_properties_changed([
             Property::Metadata(Metadata::new()),
@@ -277,12 +281,13 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn volume(&self) -> fdo::Result<Volume> {
-        Ok(self.imp().volume_spin.value() / 100.0)
+        Ok(self.imp().volume_bar.level().clamp(0.0, 1.0))
     }
 
     async fn set_volume(&self, volume: Volume) -> zbus::Result<()> {
-        self.mpv()
-            .set_volume((volume.clamp(0.0, 1.0) * 100.0).round() as i64);
+        self.imp()
+            .volume_spin
+            .set_value((volume.clamp(0.0, 1.0) * 100.0).round());
         Ok(())
     }
 

@@ -1017,6 +1017,7 @@ impl MPVPage {
     fn volume_cb(&self, value: i64) {
         self.imp().volume_spin.set_value(value as f64);
         self.imp().volume_bar.set_level(value as f64 / 100.0);
+        self.notify_volume_changed(value as f64 / 100.0);
     }
 
     fn scale_cb(&self, value: i64) {
@@ -1469,6 +1470,11 @@ impl MPVPage {
     pub fn notify_player_paused(&self) {
         #[cfg(target_os = "linux")]
         self.notify_mpris_paused();
+    }
+
+    pub fn notify_volume_changed(&self, volume: f64) {
+        #[cfg(target_os = "linux")]
+        self.notify_mpris_volume(volume);
     }
 
     pub fn notify_stopped(&self) {
