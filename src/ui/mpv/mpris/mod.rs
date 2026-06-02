@@ -34,10 +34,7 @@ use crate::{
     ui::mpv::page::MPVPage,
     utils::spawn,
 };
-use tracing::{
-    info,
-    warn,
-};
+use tracing::warn;
 
 mod metadata;
 mod track_list;
@@ -62,15 +59,11 @@ impl MPVPage {
             #[weak(rename_to=imp)]
             self,
             async move {
-                match imp.mpris_server() {
-                    Some(server) => {
-                        if let Err(err) = server.properties_changed(property).await {
-                            warn!("Failed to emit properties changed: {}", err);
-                        }
-                    }
-                    None => {
-                        info!("Failed to get MPRIS server.");
-                    }
+                let Some(server) = imp.mpris_server() else {
+                    return;
+                };
+                if let Err(err) = server.properties_changed(property).await {
+                    warn!("Failed to emit properties changed: {}", err);
                 }
             }
         ));
@@ -81,18 +74,14 @@ impl MPVPage {
             #[weak(rename_to=obj)]
             self,
             async move {
-                match obj.mpris_server() {
-                    Some(server) => {
-                        let signal = Signal::Seeked {
-                            position: Time::from_secs(position),
-                        };
-                        if let Err(err) = server.emit(signal).await {
-                            warn!("Failed to emit mpris_seeked: {}", err);
-                        }
-                    }
-                    None => {
-                        info!("Failed to get MPRIS server.");
-                    }
+                let Some(server) = obj.mpris_server() else {
+                    return;
+                };
+                let signal = Signal::Seeked {
+                    position: Time::from_secs(position),
+                };
+                if let Err(err) = server.emit(signal).await {
+                    warn!("Failed to emit mpris_seeked: {}", err);
                 }
             }
         ));

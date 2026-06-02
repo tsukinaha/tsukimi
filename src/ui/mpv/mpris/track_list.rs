@@ -8,10 +8,7 @@ use mpris_server::{
     Uri,
     zbus::fdo,
 };
-use tracing::{
-    info,
-    warn,
-};
+use tracing::warn;
 
 use crate::{
     ui::{
@@ -38,19 +35,15 @@ impl MPVPage {
             #[weak(rename_to=obj)]
             self,
             async move {
-                match obj.mpris_server() {
-                    Some(server) => {
-                        let signal = TrackListSignal::TrackListReplaced {
-                            tracks: obj.track_ids(),
-                            current_track: obj.current_track_id(),
-                        };
-                        if let Err(err) = server.track_list_emit(signal).await {
-                            warn!("Failed to emit mpris track list replaced: {}", err);
-                        }
-                    }
-                    None => {
-                        info!("Failed to get MPRIS server.");
-                    }
+                let Some(server) = obj.mpris_server() else {
+                    return;
+                };
+                let signal = TrackListSignal::TrackListReplaced {
+                    tracks: obj.track_ids(),
+                    current_track: obj.current_track_id(),
+                };
+                if let Err(err) = server.track_list_emit(signal).await {
+                    warn!("Failed to emit mpris track list replaced: {}", err);
                 }
             }
         ));
