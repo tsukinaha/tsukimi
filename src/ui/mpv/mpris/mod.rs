@@ -232,15 +232,12 @@ impl LocalPlayerInterface for MPVPage {
         } else {
             self.imp().video.seek_backward(offset_seconds);
         }
-        let position = (self.imp().video.position() as i64 + offset.as_secs()).max(0);
-        self.notify_mpris_seeked(position);
         Ok(())
     }
 
     async fn set_position(&self, _track_id: TrackId, position: Time) -> fdo::Result<()> {
         let position = position.as_secs();
         self.mpv().set_position(position as f64);
-        self.notify_mpris_seeked(position);
         Ok(())
     }
 

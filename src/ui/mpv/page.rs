@@ -761,7 +761,6 @@ impl MPVPage {
         self.imp().video_scale.set_value(end);
         self.imp().skip_segment_revealer.set_reveal_child(false);
         self.handle_callback(BackType::Back);
-        self.notify_seeked(end as i64);
     }
 
     async fn external_sub_url_without_selected_source(
@@ -939,6 +938,7 @@ impl MPVPage {
                             obj.update_seeking(false);
                             if was_seeking {
                                 obj.handle_callback(BackType::Back);
+                                obj.notify_seeked(obj.imp().video.position() as i64);
                             }
                         }
                         ListenEvent::Eof(value) => {
@@ -1043,11 +1043,6 @@ impl MPVPage {
             imp.video.add_sub(suburl);
         }
         self.notify_playing();
-        if let Some(start_seconds) = imp.pending_start_seconds.take()
-            && start_seconds > 0.0
-        {
-            self.notify_seeked(start_seconds as i64);
-        }
         self.update_timeout();
         self.handle_callback(BackType::Start);
     }
@@ -1435,14 +1430,12 @@ impl MPVPage {
         let video = &self.imp().video;
         let step = SETTINGS.mpv_seek_backward_step() as i64;
         video.seek_backward(step);
-        self.notify_seeked((video.position() as i64 - step).max(0));
     }
 
     pub fn on_forward(&self) {
         let video = &self.imp().video;
         let step = SETTINGS.mpv_seek_forward_step() as i64;
         video.seek_forward(step);
-        self.notify_seeked(video.position() as i64 + step);
     }
 
     pub fn chapter_prev(&self) {

@@ -103,7 +103,6 @@ mod imp {
 
         fn on_seek_finished(&self, value: f64) {
             self.player.upgrade().unwrap().set_position(value);
-            self.obj().notify_seeked(value as i64);
         }
     }
 }
@@ -147,16 +146,5 @@ impl VideoScale {
         for chapter in chapter_list {
             self.add_mark(chapter.time, gtk::PositionType::Top, None);
         }
-    }
-
-    fn notify_seeked(&self, position: i64) {
-        let Some(page) = self
-            .ancestor(crate::ui::mpv::page::MPVPage::static_type())
-            .and_downcast::<crate::ui::mpv::page::MPVPage>()
-        else {
-            return;
-        };
-
-        page.notify_seeked(position);
     }
 }
