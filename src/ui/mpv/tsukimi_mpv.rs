@@ -579,7 +579,9 @@ fn node_to_chapter_list(node: MpvNode) -> ChapterList {
 fn get_full_keystr(key: u32, state: gtk::gdk::ModifierType) -> Option<String> {
     let modstr = get_modstr(state);
     let keystr = keyval_to_keystr(key);
-    if let Some(keystr) = keystr {
+    if let Some(keystr) = keystr
+        && !keystr.is_empty()
+    {
         return Some(format!("{modstr}{keystr}"));
     }
     None
@@ -679,6 +681,8 @@ const KEYSTRING_MAP: &[(&str, &str)] = &[
     ("", "Alt_R"),
     ("", "Meta_L"),
     ("", "Meta_R"),
+    ("", "Super_L"),
+    ("", "Super_R"),
     ("", "Shift_L"),
     ("", "Shift_R"),
     ("", "grave"),
