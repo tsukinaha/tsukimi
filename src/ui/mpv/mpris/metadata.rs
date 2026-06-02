@@ -30,15 +30,22 @@ impl MPVPage {
     }
 
     pub(super) fn metadata_for_video(&self, video: &TuItem) -> Metadata {
-        let mut builder = Metadata::builder()
-            .trackid(self.track_id_for_video(video))
-            .title(Self::video_title(video));
+        let mut builder = Metadata::builder().trackid(self.track_id_for_video(video));
         let duration = video.run_time_ticks() / 10_000_000;
         if duration > 0 {
             builder = builder.length(Time::from_secs(duration as i64));
         }
         if let Some(series_name) = video.series_name() {
-            builder = builder.album(series_name);
+            builder = builder
+                .title(format!(
+                    "S{}E{}: {}",
+                    video.parent_index_number(),
+                    video.index_number(),
+                    video.name()
+                ))
+                .album(series_name);
+        } else {
+            builder = builder.title(video.name());
         }
         if let Some(artists) = video.artists() {
             builder = builder.artist([artists]);
@@ -69,19 +76,5 @@ impl MPVPage {
                 obj.mpris_properties_changed([Property::Metadata(metadata)]);
             }
         ));
-    }
-
-    fn video_title(video: &TuItem) -> String {
-        if let Some(series_name) = video.series_name() {
-            format!(
-                "{} - S{}E{}: {}",
-                series_name,
-                video.parent_index_number(),
-                video.index_number(),
-                video.name()
-            )
-        } else {
-            video.name()
-        }
     }
 }
