@@ -81,7 +81,7 @@ impl MPVPage {
     }
 
     fn track_id(index: usize) -> TrackId {
-        TrackId::try_from(format!("{TRACK_ID_PREFIX}{index}")).expect("valid MPRIS track id")
+        TrackId::try_from(format!("{TRACK_ID_PREFIX}{index}")).expect("invalid MPRIS track id")
     }
 
     fn track_index(track_id: &TrackId) -> Option<usize> {
