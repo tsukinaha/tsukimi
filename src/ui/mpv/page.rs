@@ -515,11 +515,19 @@ impl MPVPage {
                 .replace(Some(video_matcher));
         }
 
-        self.set_current_video(Some(item));
         #[cfg(target_os = "linux")]
-        self.imp().mpris_art_url.take();
+        let track_list_changed = self.mpris_track_list_changed(&episode_list);
+
+        self.set_current_video(Some(item));
         self.imp().current_episode_list.replace(episode_list);
-        self.notify_track_list_replaced();
+
+        #[cfg(target_os = "linux")]
+        {
+            self.imp().mpris_art_url.take();
+            if track_list_changed {
+                self.notify_track_list_replaced();
+            }
+        }
         self.notify_track_changed();
         self.imp().fallback_context.replace(Some(FallbackContext {
             selected: selected.to_owned(),
@@ -893,7 +901,7 @@ impl MPVPage {
     }
 
     pub async fn in_play_item(&self, item: TuItem) {
-        let episode_list = self.imp().current_episode_list.take();
+        let episode_list = self.imp().current_episode_list.borrow().clone();
         self.play(None, item, episode_list, None, 0.0);
     }
 

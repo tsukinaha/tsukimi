@@ -24,6 +24,15 @@ use crate::{
 const TRACK_ID_PREFIX: &str = "/moe/tsuna/Tsukimi/TrackList/track_";
 
 impl MPVPage {
+    pub fn mpris_track_list_changed(&self, episode_list: &[TuItem]) -> bool {
+        let current_episode_list = self.imp().current_episode_list.borrow();
+        current_episode_list.len() != episode_list.len()
+            || current_episode_list
+                .iter()
+                .zip(episode_list)
+                .any(|(current, new)| current.id() != new.id())
+    }
+
     pub(crate) fn notify_mpris_track_list_replaced(&self) {
         spawn(glib::clone!(
             #[weak(rename_to=obj)]
