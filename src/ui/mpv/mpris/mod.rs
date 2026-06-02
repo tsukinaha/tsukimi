@@ -236,8 +236,7 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn set_position(&self, _track_id: TrackId, position: Time) -> fdo::Result<()> {
-        let position = position.as_secs();
-        self.mpv().set_position(position as f64);
+        self.mpv().set_position(position.as_secs() as f64);
         Ok(())
     }
 
@@ -246,15 +245,13 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn playback_status(&self) -> fdo::Result<PlaybackStatus> {
-        if self.current_video().is_none() {
-            return Ok(PlaybackStatus::Stopped);
-        }
-
-        if self.imp().video.paused() {
-            Ok(PlaybackStatus::Paused)
+        Ok(if self.current_video().is_none() {
+            PlaybackStatus::Stopped
+        } else if self.imp().video.paused() {
+            PlaybackStatus::Paused
         } else {
-            Ok(PlaybackStatus::Playing)
-        }
+            PlaybackStatus::Playing
+        })
     }
 
     async fn loop_status(&self) -> fdo::Result<LoopStatus> {
@@ -262,7 +259,9 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn set_loop_status(&self, _status: LoopStatus) -> zbus::Result<()> {
-        Ok(())
+        Err(zbus::Error::from(fdo::Error::NotSupported(
+            "SetLoopStatus is not supported".into(),
+        )))
     }
 
     async fn rate(&self) -> fdo::Result<PlaybackRate> {
