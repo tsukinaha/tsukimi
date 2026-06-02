@@ -98,29 +98,24 @@ impl MPVPage {
         ));
     }
 
-    pub fn notify_mpris_playing(&self) {
+    pub fn notify_mpris_track_changed(&self) {
+        let Some(current_video) = self.current_video() else {
+            return;
+        };
+        let metadata = self.metadata_for_video(&current_video);
         self.mpris_properties_changed([
-            Property::Metadata(self.metadata().clone()),
+            Property::Metadata(metadata.clone()),
             Property::CanPlay(true),
             Property::CanPause(true),
             Property::CanSeek(true),
             Property::CanGoNext(self.has_next_video()),
             Property::CanGoPrevious(self.has_previous_video()),
-            Property::PlaybackStatus(PlaybackStatus::Playing),
         ]);
-        self.notify_mpris_art_changed();
+        self.notify_mpris_art_changed(current_video, metadata);
     }
 
-    pub fn notify_mpris_track_changed(&self) {
-        self.mpris_properties_changed([
-            Property::Metadata(self.metadata().clone()),
-            Property::CanPlay(true),
-            Property::CanPause(true),
-            Property::CanSeek(true),
-            Property::CanGoNext(self.has_next_video()),
-            Property::CanGoPrevious(self.has_previous_video()),
-        ]);
-        self.notify_mpris_art_changed();
+    pub fn notify_mpris_playing(&self) {
+        self.mpris_properties_changed([Property::PlaybackStatus(PlaybackStatus::Playing)]);
     }
 
     pub fn notify_mpris_paused(&self) {
