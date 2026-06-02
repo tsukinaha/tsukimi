@@ -1,7 +1,6 @@
 use gtk::{
     glib,
     prelude::*,
-    subclass::prelude::*,
 };
 
 use super::tsukimi_mpv::ChapterList;
@@ -130,14 +129,6 @@ impl VideoScale {
             self.set_value(*position);
         }
         glib::ControlFlow::Continue
-    }
-
-    pub fn on_smooth_scale_value_changed(&self) {
-        let value = self.value();
-        let position = value / 60.0;
-        if let Some(player) = self.imp().player.upgrade() {
-            player.set_position(position);
-        }
     }
 
     pub fn set_cache_end_time(&self, end_time: i64) {

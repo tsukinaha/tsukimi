@@ -218,6 +218,8 @@ mod imp {
         pub shortcuts_window: RefCell<Option<ShortcutsWindow>>,
         #[cfg(target_os = "linux")]
         pub mpris_server: OnceCell<LocalServer<super::MPVPage>>,
+        #[cfg(target_os = "linux")]
+        pub mpris_art_url: RefCell<Option<String>>,
 
         #[template_child]
         pub volume_adj: TemplateChild<gtk::Adjustment>,
@@ -513,8 +515,20 @@ impl MPVPage {
                 .replace(Some(video_matcher));
         }
 
+        #[cfg(target_os = "linux")]
+        let track_list_changed = self.mpris_track_list_changed(&episode_list);
+
         self.set_current_video(Some(item));
         self.imp().current_episode_list.replace(episode_list);
+
+        #[cfg(target_os = "linux")]
+        {
+            self.imp().mpris_art_url.take();
+            if track_list_changed {
+                self.notify_track_list_replaced();
+            }
+        }
+        self.notify_track_changed();
         self.imp().fallback_context.replace(Some(FallbackContext {
             selected: selected.to_owned(),
             start_seconds,
@@ -561,6 +575,7 @@ impl MPVPage {
                     Err(e) => {
                         obj.mark_stream_failed();
                         obj.toast(e.to_user_facing());
+                        obj.notify_stopped();
                         return;
                     }
                 };
@@ -586,6 +601,7 @@ impl MPVPage {
                 let Some(media_source) = media_source else {
                     obj.mark_stream_failed();
                     obj.toast(gettext("No media source found"));
+                    obj.notify_stopped();
                     return;
                 };
 
@@ -653,6 +669,7 @@ impl MPVPage {
                     None => {
                         obj.mark_stream_failed();
                         obj.toast(gettext("No media source found"));
+                        obj.notify_stopped();
                         return;
                     }
                 };
@@ -660,7 +677,6 @@ impl MPVPage {
                 imp.video.play(&video_url, start_seconds);
             }
         ));
-        self.notify_playing();
     }
 
     fn reset_skippable_segments(&self) {
@@ -885,7 +901,7 @@ impl MPVPage {
     }
 
     pub async fn in_play_item(&self, item: TuItem) {
-        let episode_list = self.imp().current_episode_list.take();
+        let episode_list = self.imp().current_episode_list.borrow().clone();
         self.play(None, item, episode_list, None, 0.0);
     }
 
@@ -928,6 +944,7 @@ impl MPVPage {
                             obj.update_seeking(false);
                             if was_seeking {
                                 obj.handle_callback(BackType::Back);
+                                obj.notify_seeked(obj.imp().video.position() as i64);
                             }
                         }
                         ListenEvent::Eof(value) => {
@@ -984,9 +1001,7 @@ impl MPVPage {
     }
 
     fn on_chapter_list(&self, value: ChapterList) {
-        let chapter_len = value.0.len();
         self.imp().video_scale.set_chapter_list(value);
-        self.notify_has_chapters(chapter_len > 0);
     }
 
     fn update_duration(&self, value: f64) {
@@ -1002,6 +1017,7 @@ impl MPVPage {
     fn volume_cb(&self, value: i64) {
         self.imp().volume_spin.set_value(value as f64);
         self.imp().volume_bar.set_level(value as f64 / 100.0);
+        self.notify_volume_changed(value as f64 / 100.0);
     }
 
     fn scale_cb(&self, value: i64) {
@@ -1033,6 +1049,7 @@ impl MPVPage {
         if let Some(suburl) = imp.suburl.borrow().as_ref() {
             imp.video.add_sub(suburl);
         }
+        self.notify_playing();
         self.update_timeout();
         self.handle_callback(BackType::Start);
     }
@@ -1080,6 +1097,7 @@ impl MPVPage {
 
         self.mark_stream_failed();
         self.toast(value);
+        self.notify_stopped();
     }
 
     pub fn on_pause_update(&self, value: bool) {
@@ -1265,7 +1283,7 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn on_stop_clicked(&self) {
+    pub fn on_stop_clicked(&self) {
         self.handle_callback(BackType::Stop);
         self.remove_timeout();
         self.reset_skippable_segments();
@@ -1419,14 +1437,12 @@ impl MPVPage {
         let video = &self.imp().video;
         let step = SETTINGS.mpv_seek_backward_step() as i64;
         video.seek_backward(step);
-        self.notify_seeked(step);
     }
 
     pub fn on_forward(&self) {
         let video = &self.imp().video;
         let step = SETTINGS.mpv_seek_forward_step() as i64;
         video.seek_forward(step);
-        self.notify_seeked(step);
     }
 
     pub fn chapter_prev(&self) {
@@ -1441,19 +1457,24 @@ impl MPVPage {
         self.imp().video.imp().mpv()
     }
 
-    pub fn notify_has_chapters(&self, has_chapters: bool) {
-        #[cfg(target_os = "linux")]
-        self.notify_mpris_has_chapters(has_chapters);
-    }
-
     pub fn notify_playing(&self) {
         #[cfg(target_os = "linux")]
         self.notify_mpris_playing();
     }
 
+    pub fn notify_track_changed(&self) {
+        #[cfg(target_os = "linux")]
+        self.notify_mpris_track_changed();
+    }
+
     pub fn notify_player_paused(&self) {
         #[cfg(target_os = "linux")]
         self.notify_mpris_paused();
+    }
+
+    pub fn notify_volume_changed(&self, volume: f64) {
+        #[cfg(target_os = "linux")]
+        self.notify_mpris_volume(volume);
     }
 
     pub fn notify_stopped(&self) {
@@ -1464,6 +1485,11 @@ impl MPVPage {
     pub fn notify_seeked(&self, position: i64) {
         #[cfg(target_os = "linux")]
         self.notify_mpris_seeked(position);
+    }
+
+    pub fn notify_track_list_replaced(&self) {
+        #[cfg(target_os = "linux")]
+        self.notify_mpris_track_list_replaced();
     }
 }
 
