@@ -84,6 +84,7 @@ pub mod imp {
     pub enum ListType {
         All,
         Resume,
+        NextUp,
         BoxSet,
         Tags,
         Genres,
@@ -424,7 +425,7 @@ impl SingleGrid {
             ListType::All => {
                 imp.postmenu.set_visible(true);
             }
-            ListType::Resume => {
+            ListType::Resume | ListType::NextUp => {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
                 imp.adgroup.set_visible(false);
@@ -480,12 +481,10 @@ impl SingleGrid {
         };
     }
 
-    pub fn add_items<const C: bool>(
-        &self, items: Vec<SimpleListItem>, is_resume: bool, prefer_poster: PreferPoster,
-    ) {
+    pub fn add_items<const C: bool>(&self, items: Vec<SimpleListItem>) {
         let imp = self.imp();
         let scrolled = imp.scrolled.get();
-        scrolled.set_store::<C>(items, is_resume, prefer_poster);
+        scrolled.set_store::<C>(items);
         if scrolled.n_items() == 0 {
             imp.stack.set_visible_child_name("fallback");
         } else {
@@ -503,6 +502,14 @@ impl SingleGrid {
         self.imp().scrolled.get().set_unify_size(unify_size);
     }
 
+    pub fn set_prefer_poster(&self, prefer_poster: PreferPoster) {
+        self.imp().scrolled.get().set_prefer_poster(prefer_poster);
+    }
+
+    pub fn set_is_resume(&self, is_resume: bool) {
+        self.imp().scrolled.get().set_is_resume(is_resume);
+    }
+
     pub fn connect_sort_changed<F>(&self, f: F)
     where
         F: Fn(&Self) + 'static,
@@ -516,9 +523,8 @@ impl SingleGrid {
         );
     }
 
-    pub fn connect_sort_changed_tokio<F, Fut>(
-        &self, is_resume: bool, prefer_poster: PreferPoster, f: F,
-    ) where
+    pub fn connect_sort_changed_tokio<F, Fut>(&self, f: F)
+    where
         F: Fn(String, String, FiltersList) -> Fut + Send + Sync + 'static,
         Fut: Future<Output = Result<List>> + Send + 'static,
     {
@@ -544,7 +550,7 @@ impl SingleGrid {
                     obj.imp().stack.set_visible_child_name("loading");
                     match spawn_tokio(future).await {
                         Ok(item) => {
-                            obj.add_items::<true>(item.items, is_resume, prefer_poster);
+                            obj.add_items::<true>(item.items);
                             obj.imp()
                                 .count
                                 .set_text(&format!("{} Items", item.total_record_count));
@@ -591,9 +597,7 @@ impl SingleGrid {
                         scrolled.reveal_spinner(true);
 
                         match spawn_tokio(future).await {
-                            Ok(item) => {
-                                obj.add_items::<false>(item.items, false, PreferPoster::Auto)
-                            }
+                            Ok(item) => obj.add_items::<false>(item.items),
                             Err(e) => {
                                 obj.toast(e.to_user_facing());
                             }

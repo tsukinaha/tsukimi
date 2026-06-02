@@ -15,7 +15,12 @@ use super::{
         HortuScrolled,
         UnifySize,
     },
+    single_grid::{
+        SingleGrid,
+        imp::ListType,
+    },
     utils::GlobalToast,
+    window::Window,
 };
 use crate::{
     client::{
@@ -38,6 +43,7 @@ use crate::{
         spawn_g_timeout,
     },
 };
+
 mod imp {
 
     use std::{
@@ -69,10 +75,13 @@ mod imp {
         #[template_child]
         pub hishortu: TemplateChild<HortuScrolled>,
         #[template_child]
+        pub nextuphortu: TemplateChild<HortuScrolled>,
+        #[template_child]
         pub libhortu: TemplateChild<HortuScrolled>,
         pub selection: gtk::SingleSelection,
 
         pub libs_hortu: RefCell<HashMap<String, WeakRef<HortuScrolled>>>,
+        pub next_up_date_cutoff: RefCell<String>,
     }
 
     #[glib::object_subclass]
@@ -96,6 +105,7 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
             let obj = self.obj();
+            obj.setup_next_up_morebutton();
             obj.init_load();
         }
     }
@@ -152,6 +162,7 @@ impl HomePage {
         fraction_reset!(self);
         futures_util::join!(
             self.setup_history(enable_cache),
+            self.setup_next_up(enable_cache),
             self.setup_library(enable_cache)
         );
         fraction!(self);
@@ -182,6 +193,86 @@ impl HomePage {
                 }
             }
         }
+    }
+
+    pub async fn setup_next_up(&self, enable_cache: bool) {
+        let hortu = self.imp().nextuphortu.get();
+
+        if !JELLYFIN_CLIENT.is_jellyfin() {
+            hortu.set_visible(false);
+            return;
+        }
+
+        let next_up_date_cutoff = JELLYFIN_CLIENT.next_up_date_cutoff();
+        self.imp()
+            .next_up_date_cutoff
+            .replace(next_up_date_cutoff.clone());
+
+        let mut events = fetch_with_cache(
+            "next_up",
+            if enable_cache {
+                CachePolicy::ReadCacheAndRefresh
+            } else {
+                CachePolicy::RefreshIfChanged
+            },
+            async move {
+                JELLYFIN_CLIENT
+                    .get_next_up(0, 24, &next_up_date_cutoff)
+                    .await
+            },
+        )
+        .await;
+
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, .. } => {
+                    hortu.set_items(data.items);
+                }
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
+                }
+            }
+        }
+    }
+
+    fn setup_next_up_morebutton(&self) {
+        let hortu = self.imp().nextuphortu.get();
+        hortu.set_moreview(true);
+        hortu.connect_morebutton(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |_| {
+                let Some(window) = obj.root().and_downcast::<Window>() else {
+                    return;
+                };
+
+                let title = gettext("Next Up");
+                let next_up_date_cutoff = obj.imp().next_up_date_cutoff.borrow().clone();
+                let page = SingleGrid::new();
+                page.set_list_type(ListType::NextUp);
+                page.set_unify_size(UnifySize::ForceVideo);
+                page.set_prefer_poster(PreferPoster::ParentVideo);
+                let next_up_date_cutoff_initial = next_up_date_cutoff.clone();
+                page.connect_sort_changed_tokio(move |_, _, _| {
+                    let next_up_date_cutoff_initial = next_up_date_cutoff_initial.clone();
+                    async move {
+                        JELLYFIN_CLIENT
+                            .get_next_up(0, 50, &next_up_date_cutoff_initial)
+                            .await
+                    }
+                });
+                page.connect_end_edge_overshot_tokio(move |_, _, n_items, _| {
+                    let next_up_date_cutoff = next_up_date_cutoff.clone();
+                    async move {
+                        JELLYFIN_CLIENT
+                            .get_next_up(n_items, 50, &next_up_date_cutoff)
+                            .await
+                    }
+                });
+                window.push_page(&page, "next_up", &title);
+            }
+        ));
     }
 
     pub async fn setup_library(&self, enable_cache: bool) {

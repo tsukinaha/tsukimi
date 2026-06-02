@@ -173,6 +173,10 @@ impl JellyfinClient {
         self.session.load().account.server_type.unwrap_or_default()
     }
 
+    pub fn is_jellyfin(&self) -> bool {
+        matches!(self.server_type(), ServerType::Jellyfin)
+    }
+
     pub async fn init(&self, account: &Account) -> Result<(), Box<dyn std::error::Error>> {
         let url = {
             let mut url = Url::parse(&account.server)?;
@@ -484,6 +488,39 @@ impl JellyfinClient {
         self.request(&path, &params).await
     }
 
+    pub fn next_up_date_cutoff(&self) -> String {
+        (chrono::Utc::now() - chrono::Duration::days(365))
+            .to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+    }
+
+    pub async fn get_next_up(
+        &self, start: u32, limit: u32, next_up_date_cutoff: &str,
+    ) -> Result<List> {
+        if !self.is_jellyfin() {
+            bail!("Next up is not supported on Emby");
+        }
+        let s = self.session();
+        let limit = limit.to_string();
+        let start = start.to_string();
+        let params = [
+            ("Limit", limit.as_str()),
+            (
+                "Fields",
+                "PrimaryImageAspectRatio,DateCreated,Path,MediaSourceCount",
+            ),
+            ("UserId", &s.account.user_id),
+            ("ImageTypeLimit", "1"),
+            ("EnableImageTypes", "Primary,Backdrop,Banner,Thumb"),
+            ("EnableTotalRecordCount", "true"),
+            ("DisableFirstEpisode", "false"),
+            ("NextUpDateCutoff", next_up_date_cutoff),
+            ("EnableResumable", "false"),
+            ("EnableRewatching", "false"),
+            ("StartIndex", start.as_str()),
+        ];
+        self.request("Shows/NextUp", &params).await
+    }
+
     pub async fn get_image_items(&self, id: &str) -> Result<Vec<ImageItem>> {
         let path = format!("Items/{id}/Images");
         self.request(&path, &[]).await
@@ -680,7 +717,7 @@ impl JellyfinClient {
     }
 
     pub async fn get_skippable_segments(&self, id: &str) -> Result<MediaSegmentList> {
-        if matches!(self.server_type(), ServerType::Emby) {
+        if !self.is_jellyfin() {
             bail!("Skippable segments are not supported on Emby");
         }
         let path = format!("MediaSegments/{id}");

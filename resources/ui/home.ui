@@ -26,6 +26,13 @@
                   </object>
                 </child>
                 <child>
+                  <object class="HortuScrolled" id="nextuphortu">
+                    <property name="title" translatable="yes">Next Up</property>
+                    <property name="prefer-poster">ParentVideo</property>
+                    <property name="unify-size">ForceVideo</property>
+                  </object>
+                </child>
+                <child>
                   <object class="GtkBox" id="libsbox">
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>

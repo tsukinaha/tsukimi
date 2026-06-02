@@ -15,10 +15,7 @@ use crate::{
         jellyfin_client::JELLYFIN_CLIENT,
         structs::*,
     },
-    ui::provider::tu_item::{
-        PreferPoster,
-        TuItem,
-    },
+    ui::provider::tu_item::TuItem,
     utils::{
         spawn,
         spawn_tokio,
@@ -47,13 +44,10 @@ mod imp {
     use gtk::prelude::*;
 
     use crate::{
-        ui::{
-            provider::tu_item::PreferPoster,
-            widgets::{
-                filter_panel::FilterPanelDialog,
-                hortu_scrolled::UnifySize,
-                tuview_scrolled::TuViewScrolled,
-            },
+        ui::widgets::{
+            filter_panel::FilterPanelDialog,
+            hortu_scrolled::UnifySize,
+            tuview_scrolled::TuViewScrolled,
         },
         utils::spawn,
     };
@@ -132,11 +126,7 @@ mod imp {
 
                             let search_results = obj.get_search_results::<true>().await;
 
-                            scrolled.set_store::<false>(
-                                search_results.items,
-                                false,
-                                PreferPoster::Auto,
-                            );
+                            scrolled.set_store::<false>(search_results.items);
 
                             scrolled.reveal_spinner(false);
 
@@ -251,8 +241,7 @@ impl SearchPage {
             return;
         };
 
-        imp.searchscrolled
-            .set_store::<true>(search_results.items, false, PreferPoster::Auto);
+        imp.searchscrolled.set_store::<true>(search_results.items);
 
         imp.stack.set_visible_child_name("result");
     }
