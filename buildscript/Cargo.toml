@@ -1,8 +1,0 @@
-[package]
-name = "tsukimi-buildscript"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-embed-resource = "3.0"
-glib-build-tools = "0.22"

@@ -25,7 +25,6 @@ IF FLOWING CONTENTS DELETED WITH NO REASON, YOUR ISSUE MIGHT BE LOCKED
 <summary>To get the log</summary>
 
 Run `tsukimi -f /path/to/log` in your terminal    
-If you use Windows, use your PowerShell and run `.\tsukimi.exe -f log.txt`      
 Paste the log at the bottom
 
 </details>
