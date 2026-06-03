@@ -9,10 +9,11 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
-"PO-Revision-Date: 2026-06-02 12:25+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
-">\n"
+"PO-Revision-Date: 2026-06-03 03:28+0000\n"
+"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>"
+"\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,10 +51,8 @@ msgid "Deband settings cleared."
 msgstr "Paramètres de retrait des bandes de couleurs réinitialisés."
 
 #: src/ui/mpv/mpvglarea.rs:88
-#, fuzzy
-#| msgid "Failed to get GLContext"
 msgid "Failed to realize GLArea"
-msgstr "Erreur lors de la récupération de GLContext"
+msgstr "Erreur lors de la réalisation de GLArea"
 
 #: src/ui/mpv/mpvglarea.rs:94
 msgid "Failed to get GLContext"
@@ -72,11 +71,11 @@ msgstr "Mettre en pause"
 
 #: src/ui/mpv/page.rs:728
 msgid "Skip Intro"
-msgstr ""
+msgstr "Passer l'intro"
 
 #: src/ui/mpv/page.rs:729
 msgid "Skip Outro"
-msgstr ""
+msgstr "Passer l'outro"
 
 #: src/ui/mpv/page.rs:879
 msgid "No more video found"
@@ -102,7 +101,7 @@ msgstr "Présent"
 #: src/ui/provider/tu_item.rs:633 src/ui/provider/tu_item.rs:656
 #: src/ui/provider/tu_item.rs:659
 msgid "Unknown"
-msgstr ""
+msgstr "Inconnu"
 
 #: src/ui/widgets/account_add.rs:145
 msgid "Fields must be filled in"
@@ -188,7 +187,7 @@ msgstr "Annuler"
 #: src/ui/widgets/image_dialog/search_page.rs:152
 #: src/ui/widgets/metadata_dialog.rs:294
 msgid "Ok"
-msgstr "OK"
+msgstr "Ok"
 
 #: src/ui/widgets/identify/search_page.rs:133
 msgid "Replace existing images"
@@ -357,10 +356,8 @@ msgid "Scanning..."
 msgstr "Scan..."
 
 #: src/ui/widgets/search.rs:209
-#, fuzzy
-#| msgid "Overview"
 msgid "No overview"
-msgstr "Vue d'ensemble"
+msgstr "Pas d'aperçu"
 
 #: src/ui/widgets/server_action_row.rs:129
 msgid "Edit Server"
@@ -631,11 +628,11 @@ msgstr "Opacité"
 
 #: resources/ui/account_settings.ui:176
 msgid "Blur"
-msgstr ""
+msgstr "Flou"
 
 #: resources/ui/account_settings.ui:181
 msgid "Blur Radius"
-msgstr ""
+msgstr "Rayon de flou"
 
 #: resources/ui/account_settings.ui:197 resources/ui/mpv_control_sidebar.ui:63
 msgid "Cache"
@@ -875,10 +872,8 @@ msgid "Continue Watching"
 msgstr "Continuer de regarder"
 
 #: resources/ui/home.ui:30
-#, fuzzy
-#| msgid "Next"
 msgid "Next Up"
-msgstr "Suivant"
+msgstr "À suivre"
 
 #: resources/ui/identify_dialog.ui:57
 msgid ""
