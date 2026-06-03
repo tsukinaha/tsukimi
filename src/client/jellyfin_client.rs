@@ -1,6 +1,7 @@
 use std::{
     cmp::Reverse,
     collections::HashMap,
+    future,
     hash::Hasher,
     time::Duration,
 };
@@ -20,7 +21,10 @@ use chrono::{
     DateTime,
     Utc,
 };
-use futures_util::future;
+use futures_util::{
+    StreamExt,
+    stream::FuturesUnordered,
+};
 use moka::future::Cache;
 use once_cell::sync::Lazy;
 use reqwest::{
@@ -545,19 +549,21 @@ impl JellyfinClient {
         if !self.is_jellyfin() {
             bail!("Next up is not supported on Emby");
         }
-        let resume = self.get_resume(limit).await?;
-        let next_up = self.get_next_up(limit, next_up_date_cutoff).await?;
+        let (resume, next_up) = tokio::try_join!(
+            self.get_resume(limit),
+            self.get_next_up(limit, next_up_date_cutoff)
+        )?;
 
         let date_futures = next_up
             .items
             .iter()
-            .map(|item| async move { (item.id.clone(), self.get_next_up_date(item).await) });
+            .map(|item| async move { (item.id.clone(), self.get_next_up_date(item).await) })
+            .collect::<FuturesUnordered<_>>();
 
-        let next_up_dates = future::join_all(date_futures)
-            .await
-            .into_iter()
-            .filter_map(|(id, date)| Some((id, date?)))
-            .collect::<HashMap<_, _>>();
+        let next_up_dates = date_futures
+            .filter_map(|(id, date)| future::ready(date.map(|d| (id, d))))
+            .collect::<HashMap<_, _>>()
+            .await;
 
         let mut items = resume.items;
         items.extend(next_up.items);
