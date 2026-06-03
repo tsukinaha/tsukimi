@@ -49,7 +49,7 @@ regex = "1.12.3"
 strsim = "0.11.1"
 clap = { version = "4", features = ["derive"] }
 fnv = "1.0.7"
-rand = "0.9.4"
+rand = "0.10.1"
 base64 = "0.22.1"
 libmpv2 = "4.1.0"
 glow = "0.17"
