@@ -550,10 +550,16 @@ impl SingleGrid {
                     obj.imp().stack.set_visible_child_name("loading");
                     match spawn_tokio(future).await {
                         Ok(item) => {
+                            let total_record_count = item.total_record_count;
                             obj.add_items::<true>(item.items);
-                            obj.imp()
-                                .count
-                                .set_text(&format!("{} Items", item.total_record_count));
+                            let item_number =
+                                if matches!(obj.list_type(), ListType::Resume | ListType::NextUp) {
+                                    // Scroll loading is disabled for Resume and NextUp, so we use the number of items instead of total_record_count
+                                    obj.imp().scrolled.get().n_items()
+                                } else {
+                                    total_record_count
+                                };
+                            obj.set_item_number(item_number);
                         }
                         Err(e) => {
                             obj.toast(e.to_user_facing());

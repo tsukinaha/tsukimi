@@ -217,7 +217,7 @@ impl HomePage {
             },
             async move {
                 JELLYFIN_CLIENT
-                    .get_next_up(0, 24, &next_up_date_cutoff)
+                    .get_next_up(0, 12, &next_up_date_cutoff)
                     .await
             },
         )
@@ -258,15 +258,7 @@ impl HomePage {
                     let next_up_date_cutoff_initial = next_up_date_cutoff_initial.clone();
                     async move {
                         JELLYFIN_CLIENT
-                            .get_next_up(0, 50, &next_up_date_cutoff_initial)
-                            .await
-                    }
-                });
-                page.connect_end_edge_overshot_tokio(move |_, _, n_items, _| {
-                    let next_up_date_cutoff = next_up_date_cutoff.clone();
-                    async move {
-                        JELLYFIN_CLIENT
-                            .get_next_up(n_items, 50, &next_up_date_cutoff)
+                            .get_next_up(0, 100, &next_up_date_cutoff_initial)
                             .await
                     }
                 });
