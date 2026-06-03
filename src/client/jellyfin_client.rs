@@ -470,7 +470,7 @@ impl JellyfinClient {
         self.post(&path, &[], body).await
     }
 
-    pub async fn get_resume(&self) -> Result<List> {
+    pub async fn get_resume(&self, limit: u32) -> Result<List> {
         let s = self.session();
         let path = format!("Users/{}/Items/Resume", s.account.user_id);
         let params = [
@@ -482,6 +482,7 @@ impl JellyfinClient {
             ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
             ("ImageTypeLimit", "1"),
             ("MediaTypes", "Video"),
+            ("Limit", &limit.to_string()),
         ];
         self.request(&path, &params).await
     }
@@ -491,15 +492,12 @@ impl JellyfinClient {
             .to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
     }
 
-    pub async fn get_next_up(
-        &self, start: u32, limit: u32, next_up_date_cutoff: &str,
-    ) -> Result<List> {
+    pub async fn get_next_up(&self, limit: u32, next_up_date_cutoff: &str) -> Result<List> {
         if !self.is_jellyfin() {
             bail!("Next up is not supported on Emby");
         }
         let s = self.session();
         let limit = limit.to_string();
-        let start = start.to_string();
         let params = [
             ("Limit", limit.as_str()),
             (
@@ -514,7 +512,6 @@ impl JellyfinClient {
             ("NextUpDateCutoff", next_up_date_cutoff),
             ("EnableResumable", "false"),
             ("EnableRewatching", "false"),
-            ("StartIndex", start.as_str()),
         ];
         self.request("Shows/NextUp", &params).await
     }

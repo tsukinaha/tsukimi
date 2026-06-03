@@ -178,7 +178,7 @@ impl HomePage {
             } else {
                 CachePolicy::RefreshIfChanged
             },
-            async { JELLYFIN_CLIENT.get_resume().await },
+            async { JELLYFIN_CLIENT.get_resume(12).await },
         )
         .await;
 
@@ -215,11 +215,7 @@ impl HomePage {
             } else {
                 CachePolicy::RefreshIfChanged
             },
-            async move {
-                JELLYFIN_CLIENT
-                    .get_next_up(0, 12, &next_up_date_cutoff)
-                    .await
-            },
+            async move { JELLYFIN_CLIENT.get_next_up(12, &next_up_date_cutoff).await },
         )
         .await;
 
@@ -258,7 +254,7 @@ impl HomePage {
                     let next_up_date_cutoff_initial = next_up_date_cutoff_initial.clone();
                     async move {
                         JELLYFIN_CLIENT
-                            .get_next_up(0, 100, &next_up_date_cutoff_initial)
+                            .get_next_up(100, &next_up_date_cutoff_initial)
                             .await
                     }
                 });
