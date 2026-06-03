@@ -50,7 +50,10 @@ use crate::{
 mod imp {
 
     use std::{
-        cell::RefCell,
+        cell::{
+            Cell,
+            RefCell,
+        },
         collections::HashMap,
     };
 
@@ -85,6 +88,7 @@ mod imp {
 
         pub libs_hortu: RefCell<HashMap<String, WeakRef<HortuScrolled>>>,
         pub next_up_date_cutoff: RefCell<String>,
+        pub last_merge_resume_and_next_up: Cell<Option<bool>>,
     }
 
     #[glib::object_subclass]
@@ -163,15 +167,21 @@ impl HomePage {
 
     pub async fn setup(&self, enable_cache: bool) {
         fraction_reset!(self);
+        let merge_resume_and_next_up = SETTINGS.merge_resume_and_next_up();
+        let merge_resume_and_next_up_changed = self
+            .imp()
+            .last_merge_resume_and_next_up
+            .replace(Some(merge_resume_and_next_up))
+            .is_some_and(|previous| previous != merge_resume_and_next_up);
         futures_util::join!(
-            self.setup_history(enable_cache),
-            self.setup_next_up(enable_cache),
+            self.setup_history(enable_cache, merge_resume_and_next_up_changed),
+            self.setup_next_up(enable_cache, merge_resume_and_next_up_changed),
             self.setup_library(enable_cache)
         );
         fraction!(self);
     }
 
-    pub async fn setup_history(&self, enable_cache: bool) {
+    pub async fn setup_history(&self, enable_cache: bool, force_cache_emit: bool) {
         let hortu = self.imp().hishortu.get();
 
         if SETTINGS.merge_resume_and_next_up() && JELLYFIN_CLIENT.is_jellyfin() {
@@ -185,6 +195,8 @@ impl HomePage {
             "history",
             if enable_cache {
                 CachePolicy::ReadCacheAndRefresh
+            } else if force_cache_emit {
+                CachePolicy::RefreshAndEmitLatest
             } else {
                 CachePolicy::RefreshIfChanged
             },
@@ -205,7 +217,7 @@ impl HomePage {
         }
     }
 
-    pub async fn setup_next_up(&self, enable_cache: bool) {
+    pub async fn setup_next_up(&self, enable_cache: bool, force_cache_emit: bool) {
         let hortu = self.imp().nextuphortu.get();
 
         if !JELLYFIN_CLIENT.is_jellyfin() {
@@ -229,6 +241,8 @@ impl HomePage {
 
         let cache_policy = if enable_cache {
             CachePolicy::ReadCacheAndRefresh
+        } else if force_cache_emit {
+            CachePolicy::RefreshAndEmitLatest
         } else {
             CachePolicy::RefreshIfChanged
         };
