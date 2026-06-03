@@ -9,13 +9,14 @@
 # HLiang Shao <792332448@qq.com>, 2024, 2025, 2026.
 # 雲の中を漂う船 <nogamenolife_zero@qq.com>, 2025.
 # Mon3tr <nogamenolife_zero@qq.com>, 2026.
+# ᴀᴍᴛᴏᴀᴇʀ <amtoaer@outlook.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
-"PO-Revision-Date: 2026-06-02 12:24+0000\n"
-"Last-Translator: Mon3tr <nogamenolife_zero@qq.com>\n"
+"PO-Revision-Date: 2026-06-03 03:28+0000\n"
+"Last-Translator: ᴀᴍᴛᴏᴀᴇʀ <amtoaer@outlook.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -54,10 +55,8 @@ msgid "Deband settings cleared."
 msgstr "去色带设置已清除。"
 
 #: src/ui/mpv/mpvglarea.rs:88
-#, fuzzy
-#| msgid "Failed to get GLContext"
 msgid "Failed to realize GLArea"
-msgstr "获取 GLContext 失败"
+msgstr "无法初始化 GLArea"
 
 #: src/ui/mpv/mpvglarea.rs:94
 msgid "Failed to get GLContext"
@@ -76,11 +75,11 @@ msgstr "暂停"
 
 #: src/ui/mpv/page.rs:728
 msgid "Skip Intro"
-msgstr ""
+msgstr "跳过片头"
 
 #: src/ui/mpv/page.rs:729
 msgid "Skip Outro"
-msgstr ""
+msgstr "跳过片尾"
 
 #: src/ui/mpv/page.rs:879
 msgid "No more video found"
@@ -106,7 +105,7 @@ msgstr "现在"
 #: src/ui/provider/tu_item.rs:633 src/ui/provider/tu_item.rs:656
 #: src/ui/provider/tu_item.rs:659
 msgid "Unknown"
-msgstr ""
+msgstr "未知"
 
 #: src/ui/widgets/account_add.rs:145
 msgid "Fields must be filled in"
@@ -361,10 +360,8 @@ msgid "Scanning..."
 msgstr "正在扫描..."
 
 #: src/ui/widgets/search.rs:209
-#, fuzzy
-#| msgid "Overview"
 msgid "No overview"
-msgstr "概览"
+msgstr "无概览"
 
 #: src/ui/widgets/server_action_row.rs:129
 msgid "Edit Server"
@@ -631,11 +628,11 @@ msgstr "不透明度"
 
 #: resources/ui/account_settings.ui:176
 msgid "Blur"
-msgstr ""
+msgstr "模糊"
 
 #: resources/ui/account_settings.ui:181
 msgid "Blur Radius"
-msgstr ""
+msgstr "模糊半径"
 
 #: resources/ui/account_settings.ui:197 resources/ui/mpv_control_sidebar.ui:63
 msgid "Cache"
@@ -873,10 +870,8 @@ msgid "Continue Watching"
 msgstr "继续观看"
 
 #: resources/ui/home.ui:30
-#, fuzzy
-#| msgid "Next"
 msgid "Next Up"
-msgstr "下一个"
+msgstr "接下来"
 
 #: resources/ui/identify_dialog.ui:57
 msgid ""
@@ -1084,7 +1079,7 @@ msgstr "概览"
 
 #: resources/ui/metadata_dialog.ui:196
 msgid "External Ids"
-msgstr "外部ID"
+msgstr "外部 ID"
 
 #: resources/ui/metadata_dialog.ui:202
 msgid "TheMovieDb Id"
