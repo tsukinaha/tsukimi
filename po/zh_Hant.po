@@ -4,13 +4,14 @@
 # dyphire <qimoge@gmail.com>, 2024, 2026.
 # Gracealina  clover <zhiweishuisheng@gmail.com>, 2024, 2025, 2026.
 # Sheng <shengchi2@gmail.com>, 2026.
+# Inaha <sakuovds@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Last-Translator: Inaha <sakuovds@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
 "Language: zh_Hant\n"
