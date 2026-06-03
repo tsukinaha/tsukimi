@@ -45,19 +45,19 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: src/ui/mpv/page.rs:744
+#: src/ui/mpv/page.rs:746
 msgid "Skip Intro"
 msgstr ""
 
-#: src/ui/mpv/page.rs:745
+#: src/ui/mpv/page.rs:747
 msgid "Skip Outro"
 msgstr ""
 
-#: src/ui/mpv/page.rs:895
+#: src/ui/mpv/page.rs:897
 msgid "No more video found"
 msgstr ""
 
-#: src/ui/mpv/page.rs:995
+#: src/ui/mpv/page.rs:998
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -130,15 +130,15 @@ msgid "Disc"
 msgstr ""
 
 #. if merged, next up will contain resume items, so change title to continue watching
-#: src/ui/widgets/home.rs:218 resources/ui/home.ui:25 resources/ui/item.ui:294
+#: src/ui/widgets/home.rs:230 resources/ui/home.ui:25 resources/ui/item.ui:294
 msgid "Continue Watching"
 msgstr ""
 
-#: src/ui/widgets/home.rs:220 resources/ui/home.ui:33
+#: src/ui/widgets/home.rs:232 resources/ui/home.ui:33
 msgid "Next Up"
 msgstr ""
 
-#: src/ui/widgets/home.rs:381
+#: src/ui/widgets/home.rs:395
 msgid "Latest"
 msgstr ""
 
@@ -154,14 +154,14 @@ msgstr ""
 
 #: src/ui/widgets/identify/search_page.rs:126
 #: src/ui/widgets/image_dialog/search_page.rs:148
-#: src/ui/widgets/metadata_dialog.rs:290 src/ui/widgets/tu_item/action.rs:479
+#: src/ui/widgets/metadata_dialog.rs:290 src/ui/widgets/tu_item/action.rs:485
 msgid "Are you sure you wish to continue?"
 msgstr ""
 
 #: src/ui/widgets/identify/search_page.rs:129
 #: src/ui/widgets/image_dialog/search_page.rs:151
-#: src/ui/widgets/metadata_dialog.rs:293 src/ui/widgets/tu_item/action.rs:483
-#: src/ui/widgets/tu_item/action.rs:543 resources/ui/account_settings.ui:510
+#: src/ui/widgets/metadata_dialog.rs:293 src/ui/widgets/tu_item/action.rs:489
+#: src/ui/widgets/tu_item/action.rs:549 resources/ui/account_settings.ui:510
 #: resources/ui/account_settings.ui:620
 msgid "Cancel"
 msgstr ""
@@ -406,32 +406,32 @@ msgstr ""
 msgid "Add to favorites"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:92
+#: src/ui/widgets/tu_item/action.rs:98
 msgid "Success"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:473
+#: src/ui/widgets/tu_item/action.rs:479
 msgid "Delete Item"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:477
+#: src/ui/widgets/tu_item/action.rs:483
 msgid ""
 "Deleting this item will delete it from both the file system and your media "
 "library.\n"
 "The following files and folders will be deleted:"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:484 resources/ui/image_info_card.ui:139
+#: src/ui/widgets/tu_item/action.rs:490 resources/ui/image_info_card.ui:139
 #: resources/ui/pop-menu.ui:92 resources/ui/server_action_row.ui:52
 msgid "Delete"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:538 src/ui/widgets/tu_item/action.rs:539
-#: src/ui/widgets/tu_item/action.rs:544 resources/ui/pop-menu.ui:62
+#: src/ui/widgets/tu_item/action.rs:544 src/ui/widgets/tu_item/action.rs:545
+#: src/ui/widgets/tu_item/action.rs:550 resources/ui/pop-menu.ui:62
 msgid "Remove Identification"
 msgstr ""
 
-#: src/ui/widgets/tu_item/action.rs:540
+#: src/ui/widgets/tu_item/action.rs:546
 msgid "Are you sure you wish to reset all metadata?"
 msgstr ""
 
