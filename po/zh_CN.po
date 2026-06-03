@@ -3,7 +3,7 @@
 # Copyright (C) 2024 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # <tsukimi@tutanota.com>, 2024.
-# dyphire <qimoge@gmail.com>, 2024.
+# dyphire <qimoge@gmail.com>, 2024, 2026.
 # Inaha <sakuovds@gmail.com>, 2024, 2025, 2026.
 # Gracealina  clover <zhiweishuisheng@gmail.com>, 2024, 2025.
 # HLiang Shao <792332448@qq.com>, 2024, 2025.
@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
-"Last-Translator: Inaha <sakuovds@gmail.com>\n"
+"Last-Translator: dyphire <qimoge@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -729,8 +729,7 @@ msgstr "首选版本"
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
-msgstr ""
-"权重从高到低排序，直到匹配到特定版本，或在清除匹配列表前获得最高匹配版本为止"
+msgstr "权重从高到低排序，直到匹配到特定版本，或在清除匹配列表前获得最高匹配版本为止"
 
 #: resources/ui/account_settings.ui:435
 msgid "Descriptors"
