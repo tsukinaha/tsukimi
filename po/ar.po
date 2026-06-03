@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Abdulrahman <2140398@uj.edu.sa>, 2024, 2026.
-# Abdullah SAM <aalmutairi22@gmail.com>, 2025.
+# Abdullah SAM <aalmutairi22@gmail.com>, 2025, 2026.
 # Adam Ibrahim Elkenany <adam.shams108@gmail.com>, 2026.
 msgid ""
 msgstr ""
@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
-"Last-Translator: Abdulrahman <2140398@uj.edu.sa>\n"
+"Last-Translator: Abdullah SAM <aalmutairi22@gmail.com>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/tsukimi/main/ar/>"
 "\n"
 "Language: ar\n"
@@ -494,12 +494,11 @@ msgid ""
 "and fill in all required fields without any omissions."
 msgstr ""
 "يبدو أنك تستخدم Tsukimi على نظام ويندوز. يُرجى ملاحظة أن مكتبة GTK المستخدمة "
-"في هذا التطبيق مصممة لنظام لينكس، ولا يمكن ضمان عمل أي من الوظائف على "
-"ويندوز، بما في ذلك — على سبيل المثال لا الحصر — عرض الفيديو، تشغيل الصوت، "
-"الاتصالات الشبكية، والروابط الخارجية. بالإضافة إلى ذلك، هناك مشاكل معروفة لا "
-"يمكن إصلاحها، مثل الحواف السوداء، عرض الصور، عرض الخطوط، تحجيم DPI، عرض "
-"الفيديو، معالج الرسوميات (GL)، وضع ملء الشاشة، دعم HDR، واكتشاف الإعدادات "
-"المحلية (Locale).\n"
+"في هذا التطبيق مصممة لنظام لينكس، ولا يمكن ضمان عمل أي من الوظائف على ويندوز، "
+"بما في ذلك — على سبيل المثال لا الحصر — عرض الفيديو، تشغيل الصوت، الاتصالات "
+"الشبكية، والروابط الخارجية. بالإضافة إلى ذلك، هناك مشاكل معروفة لا يمكن إصلاحها"
+"، مثل الحواف السوداء، عرض الصور، عرض الخطوط، تحجيم DPI، عرض الفيديو، معالج "
+"الرسوميات (GL)، وضع ملء الشاشة، دعم HDR، واكتشاف الإعدادات المحلية (Locale).\n"
 "إذا كنت ترغب في فتح بلاغ (Issue)، تأكد من أن المشكلة تتعلق بهذا البرنامج "
 "تحديدًا وليست من مشكلات المصدر (Upstream). الرجاء اختيار نموذج البلاغ المناسب "
 "وملء جميع الحقول المطلوبة دون إغفال أي منها."
@@ -875,8 +874,7 @@ msgstr "متابعة المشاهدة"
 msgid ""
 "Enter one or more search criteria. Remove criteria to increase search "
 "results."
-msgstr ""
-"أدخل معيار بحث واحد أو أكثر. قم بإزالة بعض المعايير لزيادة نتائج البحث."
+msgstr "أدخل معيار بحث واحد أو أكثر. قم بإزالة بعض المعايير لزيادة نتائج البحث."
 
 #: resources/ui/identify_dialog.ui:60 resources/ui/metadata_dialog.ui:80
 msgid "Path"
