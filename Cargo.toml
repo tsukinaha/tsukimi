@@ -1,7 +1,6 @@
 [workspace]
 members = [
-    ".",
-    "buildscript"
+    "."
 ]
 
 [package]
@@ -61,9 +60,6 @@ itertools = "0.14.0"
 [dev-dependencies]
 cargo-husky = { version = "1", default-features = false, features = ["user-hooks"] }
 
-[build-dependencies]
-tsukimi-buildscript = { path = "buildscript" }
-
 [features]
 console = []                      # Enable console logging
 default = ["protocols", "render"]
@@ -81,16 +77,6 @@ gdk-x11 = { version = "0.11", package = "gdk4-x11", features = [
 gdk-wayland = { version = "0.11", package = "gdk4-wayland", features = [
   "v4_18",
   "wayland_crate",
-] }
-
-[target.'cfg(target_os = "windows")'.dependencies]
-libproxy = { version = "0.1.1" }
-windows = { version = "0.62.2", features = [
-  "Win32_Foundation",
-  "Win32_Storage_FileSystem",
-  "Win32_Security",
-  "Win32_System_IO",
-  "Win32_System_Power",
 ] }
 
 [profile.release]

@@ -33,14 +33,9 @@ jobs:
     uses: ./.github/workflows/build_linux.yml
     secrets: inherit
 
-  windows:
-    name: Windows
-    uses: ./.github/workflows/build_windows.yml
-    secrets: inherit
-
   artifacts:
     name: Artifacts
     if: ${{ github.event_name != 'pull_request' }}
     uses: ./.github/workflows/artifacts.yml
-    needs: [linux, windows]
+    needs: [linux]
     secrets: inherit

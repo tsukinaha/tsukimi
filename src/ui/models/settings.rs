@@ -61,19 +61,6 @@ impl Settings {
     const KEY_IS_MAXIMIZED: &'static str = "is-maximized"; // bool
     const KEY_IS_FULLSCREEN: &'static str = "is-fullscreen"; // bool
 
-    #[cfg(target_os = "windows")]
-    const KEY_IS_FIRST_RUN: &'static str = "is-first-run"; // bool
-
-    #[cfg(target_os = "windows")]
-    pub fn is_first_run(&self) -> bool {
-        self.boolean(Self::KEY_IS_FIRST_RUN)
-    }
-
-    #[cfg(target_os = "windows")]
-    pub fn set_is_first_run(&self, is_first_run: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_IS_FIRST_RUN, is_first_run)
-    }
-
     pub fn is_overlay(&self) -> bool {
         self.boolean(Self::KEY_IS_OVERLAY)
     }
