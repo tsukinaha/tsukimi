@@ -38,3 +38,31 @@ To specify debug/release build, run:
 meson setup build --prefix=/usr -Drust-target={debug,release}
 meson compile -C build
 ```
+
+### Fedora COPR
+
+This project is not a good fit for a plain COPR SCM build that only consumes
+`tsukimi.spec`, because Fedora may not ship every Rust crate dependency needed
+by this application.
+
+For COPR, use the SCM source type together with the `make srpm` method. The
+repository provides `.copr/Makefile`, which:
+
+- creates the main source tarball from the Git checkout
+- runs `cargo vendor --locked`
+- creates a second tarball containing `.cargo/config.toml` and the vendored
+  crates
+- builds an SRPM that matches `tsukimi.spec`
+
+Recommended COPR settings:
+
+- Source Type: `SCM`
+- SCM Method: `make srpm`
+- Spec File: `tsukimi.spec`
+- Clone URL: this Git repository
+- Chroot: Fedora 44+ (`gtk4 >= 4.22`, `libadwaita >= 1.8`)
+
+When the selected SCM checkout points at an exact Git tag such as `v26.6.1`,
+`.copr/Makefile` automatically converts that tag into the RPM version
+`26.6.1`. If the checkout is not exactly on a tag, it falls back to the
+version declared in `Cargo.toml`.
