@@ -47,7 +47,9 @@ pub enum Action {
 }
 
 pub trait TuItemAction {
-    async fn perform_action_inner(id: &str, action: &Action) -> Result<()>;
+    async fn perform_action_inner(
+        id: String, series_id: Option<String>, action: &Action,
+    ) -> Result<()>;
 
     async fn perform_action(&self, action: Action);
 
@@ -73,20 +75,24 @@ where
     T: TuItemBasic + TuItemMenuPrelude + IsA<gtk::Widget> + glib::clone::Downgrade,
     <T as glib::clone::Downgrade>::Weak: glib::clone::Upgrade<Strong = T>,
 {
-    async fn perform_action_inner(id: &str, action: &Action) -> Result<()> {
+    async fn perform_action_inner(
+        id: String, series_id: Option<String>, action: &Action,
+    ) -> Result<()> {
         match action {
-            Action::Like => JELLYFIN_CLIENT.like(id).await,
-            Action::Unlike => JELLYFIN_CLIENT.unlike(id).await,
-            Action::Played => JELLYFIN_CLIENT.set_as_played(id).await,
-            Action::Unplayed => JELLYFIN_CLIENT.set_as_unplayed(id).await,
-            Action::Remove => JELLYFIN_CLIENT.hide_from_resume(id).await,
+            Action::Like => JELLYFIN_CLIENT.like(&id).await,
+            Action::Unlike => JELLYFIN_CLIENT.unlike(&id).await,
+            Action::Played => JELLYFIN_CLIENT.set_as_played(&id, series_id).await,
+            Action::Unplayed => JELLYFIN_CLIENT.set_as_unplayed(&id, series_id).await,
+            Action::Remove => JELLYFIN_CLIENT.hide_from_resume(&id, series_id).await,
         }
     }
 
     async fn perform_action(&self, action: Action) {
-        let id = self.item().id().to_owned();
+        let id = self.item().id();
+        let series_id = self.item().series_id();
         self.update_state(&action);
-        let result = spawn_tokio(async move { Self::perform_action_inner(&id, &action).await });
+        let result =
+            spawn_tokio(async move { Self::perform_action_inner(id, series_id, &action).await });
 
         match result.await {
             Ok(_) => self.toast(gettext("Success")),

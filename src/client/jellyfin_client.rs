@@ -2,6 +2,7 @@ use std::{
     cmp::Reverse,
     collections::HashMap,
     hash::Hasher,
+    time::Duration,
 };
 
 use crate::{
@@ -20,6 +21,7 @@ use chrono::{
     Utc,
 };
 use futures_util::future;
+use moka::future::Cache;
 use once_cell::sync::Lazy;
 use reqwest::{
     Client,
@@ -145,6 +147,13 @@ pub struct JellyfinClient {
     pub session: ArcSwap<Session>,
     pub semaphore: tokio::sync::Semaphore,
     pub client: Client,
+    next_up_date_cache: Cache<NextUpDateKey, Option<DateTime<Utc>>>,
+}
+
+#[derive(Hash, PartialEq, Eq)]
+struct NextUpDateKey {
+    series_id: String,
+    item_id: String,
 }
 
 fn generate_jellyfin_authorization(
@@ -167,6 +176,11 @@ impl Default for JellyfinClient {
             session: ArcSwap::from_pointee(Session::empty()),
             semaphore: tokio::sync::Semaphore::new(SETTINGS.threads() as usize),
             client: ReqClient::build(),
+            next_up_date_cache: Cache::builder()
+                .max_capacity(256)
+                .time_to_live(Duration::from_hours(2))
+                .support_invalidation_closures()
+                .build(),
         }
     }
 }
@@ -215,6 +229,7 @@ impl JellyfinClient {
             headers,
             server_name_hash: generate_hash(&account.servername),
         }));
+        self.next_up_date_cache.invalidate_all();
 
         crate::ui::provider::set_admin(false);
         spawn_tokio_without_await(async move {
@@ -530,26 +545,25 @@ impl JellyfinClient {
         if !self.is_jellyfin() {
             bail!("Next up is not supported on Emby");
         }
-
         let resume = self.get_resume(limit).await?;
         let next_up = self.get_next_up(limit, next_up_date_cutoff).await?;
 
-        let last_play_time_futures = next_up.items.iter().map(|item| async move {
-            let last_play_time = self.get_next_up_last_play_time(item).await.ok().flatten();
-            (item.id.clone(), last_play_time)
-        });
+        let date_futures = next_up
+            .items
+            .iter()
+            .map(|item| async move { (item.id.clone(), self.get_next_up_date(item).await) });
 
-        let next_up_last_play_times = future::join_all(last_play_time_futures)
+        let next_up_dates = future::join_all(date_futures)
             .await
             .into_iter()
-            .filter_map(|(id, last_play_time)| Some((id, last_play_time?)))
+            .filter_map(|(id, date)| Some((id, date?)))
             .collect::<HashMap<_, _>>();
 
         let mut items = resume.items;
         items.extend(next_up.items);
         items.sort_by_key(|item| {
             Reverse(
-                next_up_last_play_times
+                next_up_dates
                     .get(&item.id)
                     .copied()
                     .or_else(|| {
@@ -568,27 +582,43 @@ impl JellyfinClient {
         })
     }
 
-    async fn get_next_up_last_play_time(
-        &self, item: &SimpleListItem,
-    ) -> Result<Option<DateTime<Utc>>> {
-        let Some(series_id) = item.series_id.as_deref() else {
-            return Ok(None);
+    async fn get_next_up_date(&self, item: &SimpleListItem) -> Option<DateTime<Utc>> {
+        let series_id = item.series_id.as_ref()?;
+        let user_id = &self.session().account.user_id;
+        let item_id = &item.id;
+        let key = NextUpDateKey {
+            series_id: series_id.to_owned(),
+            item_id: item_id.to_owned(),
         };
-        let s = self.session();
-        let path = format!("Shows/{series_id}/Episodes");
-        let params = [
-            ("UserId", s.account.user_id.as_str()),
-            ("AdjacentTo", item.id.as_str()),
-            ("Limit", "1"),
-            ("EnableUserData", "true"),
-        ];
-        let list: List = self.request(&path, &params).await?;
-        Ok(list.items.first().and_then(|episode| {
-            episode
-                .user_data
-                .as_ref()
-                .and_then(|user_data| user_data.last_played_date)
-        }))
+        self.next_up_date_cache
+            .get_with(key, async move {
+                let path = format!("Shows/{series_id}/Episodes");
+                let params = [
+                    ("UserId", user_id.as_str()),
+                    ("AdjacentTo", item_id.as_str()),
+                    ("Limit", "1"),
+                ];
+                let list: Result<List> = self.request(&path, &params).await;
+                list.inspect_err(|e| {
+                    warn!("Failed to get next up last played time: {}", e);
+                })
+                .ok()
+                .and_then(|list| {
+                    list.items.first().and_then(|episode| {
+                        episode
+                            .user_data
+                            .as_ref()
+                            .and_then(|user_data| user_data.last_played_date)
+                    })
+                })
+            })
+            .await
+    }
+
+    fn invalidate_next_up_date(&self, series_id: String) {
+        let _ = self
+            .next_up_date_cache
+            .invalidate_entries_if(move |key, _| key.series_id == series_id);
     }
 
     pub async fn get_image_items(&self, id: &str) -> Result<Vec<ImageItem>> {
@@ -1017,14 +1047,21 @@ impl JellyfinClient {
         Ok(())
     }
 
-    pub async fn set_as_played(&self, id: &str) -> Result<()> {
+    pub async fn set_as_played<T: Into<String>>(
+        &self, id: &str, series_id: Option<T>,
+    ) -> Result<()> {
         let s = self.session();
         let path = format!("Users/{}/PlayedItems/{}", s.account.user_id, id);
         self.post(&path, &[], json!({})).await?;
+        if let Some(series_id) = series_id {
+            self.invalidate_next_up_date(series_id.into());
+        }
         Ok(())
     }
 
-    pub async fn set_as_unplayed(&self, id: &str) -> Result<()> {
+    pub async fn set_as_unplayed<T: Into<String>>(
+        &self, id: &str, series_id: Option<T>,
+    ) -> Result<()> {
         let s = self.session();
         match self.server_type() {
             ServerType::Emby => {
@@ -1035,6 +1072,9 @@ impl JellyfinClient {
                 let path = format!("Users/{}/PlayedItems/{}", s.account.user_id, id);
                 self.delete(&path, &[]).await?;
             }
+        }
+        if let Some(series_id) = series_id {
+            self.invalidate_next_up_date(series_id.into());
         }
         Ok(())
     }
@@ -1068,6 +1108,11 @@ impl JellyfinClient {
             "Shuffle":false
         });
         self.post(path, &params, body).await?;
+        if matches!(backtype, BackType::Stop)
+            && let Some(series_id) = back.series_id.as_deref()
+        {
+            self.invalidate_next_up_date(series_id.to_owned());
+        }
         Ok(())
     }
 
@@ -1292,11 +1337,16 @@ impl JellyfinClient {
         Ok(())
     }
 
-    pub async fn hide_from_resume(&self, id: &str) -> Result<()> {
+    pub async fn hide_from_resume<T: Into<String>>(
+        &self, id: &str, series_id: Option<T>,
+    ) -> Result<()> {
         let s = self.session();
         let path = format!("Users/{}/Items/{}/HideFromResume", s.account.user_id, id);
         let params = [("Hide", "true")];
         self.post(&path, &params, json!({})).await?;
+        if let Some(series_id) = series_id {
+            self.invalidate_next_up_date(series_id.into());
+        }
         Ok(())
     }
 

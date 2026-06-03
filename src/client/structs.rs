@@ -548,6 +548,7 @@ pub struct ActivityLogs {
 #[derive(Deserialize, Debug, Clone, Builder)]
 pub struct Back {
     pub id: String,
+    pub series_id: Option<String>,
     pub playsessionid: Option<String>,
     pub mediasourceid: String,
     pub livestreamid: Option<String>,
