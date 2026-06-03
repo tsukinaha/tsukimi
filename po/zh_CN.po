@@ -8,13 +8,14 @@
 # Gracealina  clover <zhiweishuisheng@gmail.com>, 2024, 2025, 2026.
 # HLiang Shao <792332448@qq.com>, 2024, 2025, 2026.
 # 雲の中を漂う船 <nogamenolife_zero@qq.com>, 2025.
+# Mon3tr <nogamenolife_zero@qq.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
-"Last-Translator: HLiang Shao <792332448@qq.com>\n"
+"Last-Translator: Mon3tr <nogamenolife_zero@qq.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
