@@ -180,10 +180,10 @@ impl TuItemProgressbarAnimationPrelude for TuOverviewItem {
 
 #[template_callbacks]
 impl TuOverviewItem {
-    pub fn new(item: TuItem, isresume: bool) -> Self {
+    pub fn new(item: TuItem, is_resume: bool) -> Self {
         Object::builder()
             .property("item", item)
-            .property("isresume", isresume)
+            .property("is_resume", is_resume)
             .build()
     }
 

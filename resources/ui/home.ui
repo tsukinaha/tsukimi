@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <interface>
   <template parent="AdwNavigationPage" class="HomePage">
     <property name="title">Tsukimi</property>
@@ -19,8 +19,11 @@
                 </child>
                 <child>
                   <object class="HortuScrolled" id="hishortu">
-                    <property name="title" translatable="yes">Continue Watching</property>
-                    <property name="isresume">True</property>
+                    <property
+                                            name="title"
+                                            translatable="yes"
+                                        >Continue Watching</property>
+                    <property name="is-resume">True</property>
                     <property name="prefer-poster">ParentVideo</property>
                     <property name="unify-size">ForceVideo</property>
                   </object>
@@ -28,6 +31,7 @@
                 <child>
                   <object class="HortuScrolled" id="nextuphortu">
                     <property name="title" translatable="yes">Next Up</property>
+                    <property name="is-resume">True</property>
                     <property name="prefer-poster">ParentVideo</property>
                     <property name="unify-size">ForceVideo</property>
                   </object>

@@ -115,7 +115,6 @@ impl Settings {
         self.boolean(Self::KEY_IS_REFRESH)
     }
 
-    #[allow(dead_code)]
     pub fn merge_resume_and_next_up(&self) -> bool {
         self.boolean(Self::KEY_MERGE_RESUME_AND_NEXT_UP)
     }

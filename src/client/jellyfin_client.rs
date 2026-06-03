@@ -1,4 +1,8 @@
-use std::hash::Hasher;
+use std::{
+    cmp::Reverse,
+    collections::HashMap,
+    hash::Hasher,
+};
 
 use crate::{
     client::account::ServerType,
@@ -11,6 +15,11 @@ use anyhow::{
     bail,
 };
 use arc_swap::ArcSwap;
+use chrono::{
+    DateTime,
+    Utc,
+};
+use futures_util::future;
 use once_cell::sync::Lazy;
 use reqwest::{
     Client,
@@ -507,13 +516,79 @@ impl JellyfinClient {
             ("UserId", &s.account.user_id),
             ("ImageTypeLimit", "1"),
             ("EnableImageTypes", "Primary,Backdrop,Banner,Thumb"),
-            ("EnableTotalRecordCount", "true"),
-            ("DisableFirstEpisode", "false"),
+            ("EnableTotalRecordCount", "false"),
+            ("DisableFirstEpisode", "true"),
             ("NextUpDateCutoff", next_up_date_cutoff),
             ("EnableResumable", "false"),
             ("EnableRewatching", "false"),
         ];
         self.request("Shows/NextUp", &params).await
+    }
+
+    /// Get next up and resume items, merge them and sort by last played date in client side.
+    pub async fn get_next_up_merged(&self, limit: u32, next_up_date_cutoff: &str) -> Result<List> {
+        if !self.is_jellyfin() {
+            bail!("Next up is not supported on Emby");
+        }
+
+        let resume = self.get_resume(limit).await?;
+        let next_up = self.get_next_up(limit, next_up_date_cutoff).await?;
+
+        let last_play_time_futures = next_up.items.iter().map(|item| async move {
+            let last_play_time = self.get_next_up_last_play_time(item).await.ok().flatten();
+            (item.id.clone(), last_play_time)
+        });
+
+        let next_up_last_play_times = future::join_all(last_play_time_futures)
+            .await
+            .into_iter()
+            .filter_map(|(id, last_play_time)| Some((id, last_play_time?)))
+            .collect::<HashMap<_, _>>();
+
+        let mut items = resume.items;
+        items.extend(next_up.items);
+        items.sort_by_key(|item| {
+            Reverse(
+                next_up_last_play_times
+                    .get(&item.id)
+                    .copied()
+                    .or_else(|| {
+                        item.user_data
+                            .as_ref()
+                            .and_then(|user_data| user_data.last_played_date)
+                    })
+                    .unwrap_or(DateTime::<Utc>::MIN_UTC),
+            )
+        });
+        items.truncate(limit as usize);
+
+        Ok(List {
+            total_record_count: items.len() as u32,
+            items,
+        })
+    }
+
+    async fn get_next_up_last_play_time(
+        &self, item: &SimpleListItem,
+    ) -> Result<Option<DateTime<Utc>>> {
+        let Some(series_id) = item.series_id.as_deref() else {
+            return Ok(None);
+        };
+        let s = self.session();
+        let path = format!("Shows/{series_id}/Episodes");
+        let params = [
+            ("UserId", s.account.user_id.as_str()),
+            ("AdjacentTo", item.id.as_str()),
+            ("Limit", "1"),
+            ("EnableUserData", "true"),
+        ];
+        let list: List = self.request(&path, &params).await?;
+        Ok(list.items.first().and_then(|episode| {
+            episode
+                .user_data
+                .as_ref()
+                .and_then(|user_data| user_data.last_played_date)
+        }))
     }
 
     pub async fn get_image_items(&self, id: &str) -> Result<Vec<ImageItem>> {
