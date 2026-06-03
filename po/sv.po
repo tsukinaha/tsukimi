@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Niklas Andersson <niklas770524@gmail.com>, 2025.
+# Niklas Andersson <niklas770524@gmail.com>, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Last-Translator: Niklas Andersson <niklas770524@gmail.com>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/tsukimi/main/sv/>"
 "\n"
 "Language: sv\n"
