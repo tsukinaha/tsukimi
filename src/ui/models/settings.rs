@@ -54,7 +54,6 @@ impl Settings {
     const KEY_MPV_VIDEO_SCALE: &'static str = "mpv-video-scale"; // i32
     const KEY_MPV_CONFIG_DIR: &'static str = "mpv-config-path"; // String
     const KEY_IS_REFRESH: &'static str = "is-refresh"; // bool
-    #[allow(dead_code)]
     const KEY_MERGE_RESUME_AND_NEXT_UP: &'static str = "merge-resume-and-next-up"; // bool
     const KEY_DEVICE_UUID: &'static str = "device-uuid"; // String
     const KEY_MAIN_THEME: &'static str = "main-theme"; // i32
@@ -117,13 +116,6 @@ impl Settings {
 
     pub fn merge_resume_and_next_up(&self) -> bool {
         self.boolean(Self::KEY_MERGE_RESUME_AND_NEXT_UP)
-    }
-
-    #[allow(dead_code)]
-    pub fn set_merge_resume_and_next_up(
-        &self, merge_resume_and_next_up: bool,
-    ) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_MERGE_RESUME_AND_NEXT_UP, merge_resume_and_next_up)
     }
 
     pub fn mpv_config_dir(&self) -> String {
