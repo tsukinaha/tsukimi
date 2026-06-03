@@ -4,13 +4,14 @@
 # Abdulrahman <2140398@uj.edu.sa>, 2024, 2026.
 # Abdullah SAM <aalmutairi22@gmail.com>, 2025, 2026.
 # Adam Ibrahim Elkenany <adam.shams108@gmail.com>, 2026.
+# Inaha <sakuovds@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
-"Last-Translator: Adam Ibrahim Elkenany <adam.shams108@gmail.com>\n"
+"Last-Translator: Inaha <sakuovds@gmail.com>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/tsukimi/main/ar/>"
 "\n"
 "Language: ar\n"
