@@ -10,8 +10,8 @@ msgstr ""
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
 "Last-Translator: Yurt Page <yurtpage@gmail.com>\n"
-"Language-Team: Russian <https://hosted.weblate.org/projects/tsukimi/main/ru/>"
-"\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/tsukimi/main/ru/"
+">\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -58,22 +58,30 @@ msgstr "Не удалось получить GLContext"
 msgid "Failed to get GLContext"
 msgstr "Не удалось получить GLContext"
 
-#: src/ui/mpv/page.rs:371 src/ui/mpv/page.rs:373 src/ui/widgets/item.rs:708
+#: src/ui/mpv/page.rs:382 src/ui/mpv/page.rs:384 src/ui/widgets/item.rs:707
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/player_toolbar.ui:90
 msgid "Play"
 msgstr "Воспроизвести"
 
-#: src/ui/mpv/page.rs:376 src/ui/mpv/page.rs:378 resources/ui/mpvpage.ui:215
+#: src/ui/mpv/page.rs:387 src/ui/mpv/page.rs:389 resources/ui/mpvpage.ui:227
 msgid "Pause"
 msgstr "Пауза"
 
-#: src/ui/mpv/page.rs:774
+#: src/ui/mpv/page.rs:728
+msgid "Skip Intro"
+msgstr ""
+
+#: src/ui/mpv/page.rs:729
+msgid "Skip Outro"
+msgstr ""
+
+#: src/ui/mpv/page.rs:879
 msgid "No more video found"
 msgstr "Больше видео не найдено"
 
-#: src/ui/mpv/page.rs:873
+#: src/ui/mpv/page.rs:978
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -81,29 +89,29 @@ msgstr ""
 "MPV был выключен, приложение будет закрыто.\n"
 "Tsukimi не может перезапустить MPV."
 
-#: src/ui/provider/tu_item.rs:533
+#: src/ui/provider/tu_item.rs:555
 msgid "No next up video found"
 msgstr "Следующее видео не найдено"
 
-#: src/ui/provider/tu_item.rs:562 src/ui/widgets/tu_overview_item.rs:240
+#: src/ui/provider/tu_item.rs:584 src/ui/widgets/tu_overview_item.rs:254
 msgid "Present"
 msgstr "Текущий"
 
-#: src/ui/provider/tu_item.rs:570 src/ui/provider/tu_item.rs:588
-#: src/ui/provider/tu_item.rs:611 src/ui/provider/tu_item.rs:634
-#: src/ui/provider/tu_item.rs:637
+#: src/ui/provider/tu_item.rs:592 src/ui/provider/tu_item.rs:610
+#: src/ui/provider/tu_item.rs:633 src/ui/provider/tu_item.rs:656
+#: src/ui/provider/tu_item.rs:659
 msgid "Unknown"
 msgstr ""
 
-#: src/ui/widgets/account_add.rs:144
+#: src/ui/widgets/account_add.rs:145
 msgid "Fields must be filled in"
 msgstr "Поля должны быть заполнены"
 
-#: src/ui/widgets/account_add.rs:209
+#: src/ui/widgets/account_add.rs:206
 msgid "Server edited successfully"
 msgstr "Сервер успешно изменен"
 
-#: src/ui/widgets/account_add.rs:214
+#: src/ui/widgets/account_add.rs:211
 msgid "Server added successfully"
 msgstr "Сервер успешно добавлен"
 
@@ -147,7 +155,7 @@ msgstr "Некорректное регулярное выражение"
 msgid "Disc"
 msgstr "Диск"
 
-#: src/ui/widgets/home.rs:259
+#: src/ui/widgets/home.rs:356
 msgid "Latest"
 msgstr "Последние"
 
@@ -163,15 +171,15 @@ msgstr "Идентифицировать"
 
 #: src/ui/widgets/identify/search_page.rs:126
 #: src/ui/widgets/image_dialog/search_page.rs:148
-#: src/ui/widgets/metadata_dialog.rs:290 src/ui/widgets/tu_item/action.rs:475
+#: src/ui/widgets/metadata_dialog.rs:290 src/ui/widgets/tu_item/action.rs:479
 msgid "Are you sure you wish to continue?"
 msgstr "Вы уверены, что хотите продолжить?"
 
 #: src/ui/widgets/identify/search_page.rs:129
 #: src/ui/widgets/image_dialog/search_page.rs:151
-#: src/ui/widgets/metadata_dialog.rs:293 src/ui/widgets/tu_item/action.rs:479
-#: src/ui/widgets/tu_item/action.rs:539 resources/ui/account_settings.ui:508
-#: resources/ui/account_settings.ui:618
+#: src/ui/widgets/metadata_dialog.rs:293 src/ui/widgets/tu_item/action.rs:483
+#: src/ui/widgets/tu_item/action.rs:543 resources/ui/account_settings.ui:499
+#: resources/ui/account_settings.ui:609
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -224,72 +232,72 @@ msgstr "Ошибка удаления изображения"
 msgid "Replace Image"
 msgstr "Заменить изображение"
 
-#: src/ui/widgets/item.rs:704 src/ui/widgets/list.rs:124
+#: src/ui/widgets/item.rs:703 src/ui/widgets/list.rs:130
 msgid "Resume"
 msgstr "Продолжить"
 
-#: src/ui/widgets/item.rs:1089
+#: src/ui/widgets/item.rs:1088
 msgid "Codec"
 msgstr "Кодек"
 
-#: src/ui/widgets/item.rs:1092
+#: src/ui/widgets/item.rs:1091
 msgid "Language"
 msgstr "Язык"
 
-#: src/ui/widgets/item.rs:1095 resources/ui/metadata_dialog.ui:90
+#: src/ui/widgets/item.rs:1094 resources/ui/metadata_dialog.ui:90
 #: resources/ui/single_grid.ui:108
 msgid "Title"
 msgstr "Название"
 
-#: src/ui/widgets/item.rs:1099 resources/ui/single_grid.ui:109
+#: src/ui/widgets/item.rs:1098 resources/ui/single_grid.ui:109
 msgid "Bitrate"
 msgstr "Битрейт"
 
-#: src/ui/widgets/item.rs:1104
+#: src/ui/widgets/item.rs:1103
 msgid "BitDepth"
 msgstr "Глубина цвета"
 
-#: src/ui/widgets/item.rs:1108
+#: src/ui/widgets/item.rs:1107
 msgid "SampleRate"
 msgstr "Частота дискретизации"
 
-#: src/ui/widgets/item.rs:1112
+#: src/ui/widgets/item.rs:1111
 msgid "Height"
 msgstr "Высота"
 
-#: src/ui/widgets/item.rs:1115
+#: src/ui/widgets/item.rs:1114
 msgid "Width"
 msgstr "Ширина"
 
-#: src/ui/widgets/item.rs:1118
+#: src/ui/widgets/item.rs:1117
 msgid "ColorSpace"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1122
+#: src/ui/widgets/item.rs:1121
 msgid "DisplayTitle"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1126
+#: src/ui/widgets/item.rs:1125
 msgid "Channel"
 msgstr "Канал"
 
-#: src/ui/widgets/item.rs:1130
+#: src/ui/widgets/item.rs:1129
 msgid "ChannelLayout"
 msgstr "Схема каналов"
 
-#: src/ui/widgets/item.rs:1135
+#: src/ui/widgets/item.rs:1134
 msgid "AverageFrameRate"
 msgstr "Средний фреймрейт"
 
-#: src/ui/widgets/item.rs:1139
+#: src/ui/widgets/item.rs:1138
 msgid "PixelFormat"
 msgstr "Формат пикселей"
 
-#: src/ui/widgets/item.rs:1251
+#: src/ui/widgets/item.rs:1250
 msgid "No video source found"
 msgstr "Не найден источник видео"
 
-#: src/ui/widgets/item.rs:1387
+#: src/ui/widgets/item.rs:1386
 msgid "Season not found. Is this a continue watching list?"
 msgstr ""
 
@@ -297,34 +305,34 @@ msgstr ""
 msgid "Favourite"
 msgstr "Любимое"
 
-#: src/ui/widgets/list.rs:116
+#: src/ui/widgets/list.rs:122
 msgid "Channels"
 msgstr "Каналы"
 
-#: src/ui/widgets/list.rs:123
+#: src/ui/widgets/list.rs:129
 msgid "All"
 msgstr "Все"
 
-#: src/ui/widgets/list.rs:125 resources/ui/search.ui:60
+#: src/ui/widgets/list.rs:131 resources/ui/search.ui:60
 msgid "BoxSet"
 msgstr ""
 
-#: src/ui/widgets/list.rs:126 resources/ui/filter.ui:85
+#: src/ui/widgets/list.rs:132 resources/ui/filter.ui:85
 #: resources/ui/item.ui:483 resources/ui/other.ui:150
 msgid "Tags"
 msgstr "Теги"
 
-#: src/ui/widgets/list.rs:127 resources/ui/filter.ui:78
+#: src/ui/widgets/list.rs:133 resources/ui/filter.ui:78
 #: resources/ui/item.ui:478 resources/ui/other.ui:155
 msgid "Genres"
 msgstr "Жанры"
 
-#: src/ui/widgets/list.rs:128 src/ui/widgets/window.rs:330
+#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:330
 #: resources/ui/window.ui:350
 msgid "Liked"
 msgstr "Понравившееся"
 
-#: src/ui/widgets/list.rs:129
+#: src/ui/widgets/list.rs:135
 msgid "Folder"
 msgstr "Папка"
 
@@ -355,7 +363,7 @@ msgstr "Сканирование..."
 msgid "No overview"
 msgstr "Обзор"
 
-#: src/ui/widgets/server_action_row.rs:123
+#: src/ui/widgets/server_action_row.rs:129
 #, fuzzy
 #| msgid "Add Server"
 msgid "Edit Server"
@@ -409,7 +417,7 @@ msgstr "Результат: "
 msgid "Task started"
 msgstr "Задание начато"
 
-#: src/ui/widgets/single_grid.rs:499
+#: src/ui/widgets/single_grid.rs:500
 msgid "Items"
 msgstr "Объектов"
 
@@ -421,15 +429,15 @@ msgstr "Удалить из любимых"
 msgid "Add to favorites"
 msgstr "Добавить в любимые"
 
-#: src/ui/widgets/tu_item/action.rs:91
+#: src/ui/widgets/tu_item/action.rs:92
 msgid "Success"
 msgstr "Успешно"
 
-#: src/ui/widgets/tu_item/action.rs:469
+#: src/ui/widgets/tu_item/action.rs:473
 msgid "Delete Item"
 msgstr "Удалить позицию"
 
-#: src/ui/widgets/tu_item/action.rs:473
+#: src/ui/widgets/tu_item/action.rs:477
 msgid ""
 "Deleting this item will delete it from both the file system and your media "
 "library.\n"
@@ -439,21 +447,21 @@ msgstr ""
 "и из медиатеки.\n"
 "Следующие файлы и директории будут удалены:"
 
-#: src/ui/widgets/tu_item/action.rs:480 resources/ui/image_info_card.ui:139
+#: src/ui/widgets/tu_item/action.rs:484 resources/ui/image_info_card.ui:139
 #: resources/ui/pop-menu.ui:92 resources/ui/server_action_row.ui:52
 msgid "Delete"
 msgstr "Удалить"
 
-#: src/ui/widgets/tu_item/action.rs:534 src/ui/widgets/tu_item/action.rs:535
-#: src/ui/widgets/tu_item/action.rs:540 resources/ui/pop-menu.ui:62
+#: src/ui/widgets/tu_item/action.rs:538 src/ui/widgets/tu_item/action.rs:539
+#: src/ui/widgets/tu_item/action.rs:544 resources/ui/pop-menu.ui:62
 msgid "Remove Identification"
 msgstr "Удалить идентификацию"
 
-#: src/ui/widgets/tu_item/action.rs:536
+#: src/ui/widgets/tu_item/action.rs:540
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "Вы действительно хотите сбросить все метаданные?"
 
-#: src/ui/widgets/tu_list_item.rs:462
+#: src/ui/widgets/tu_list_item.rs:471
 msgid "Waiting for mediasource ..."
 msgstr "Ожидание источника медиа ..."
 
@@ -547,7 +555,7 @@ msgstr "Логин"
 msgid "Password"
 msgstr "Пароль"
 
-#: resources/ui/account.ui:108 resources/ui/account_settings.ui:514
+#: resources/ui/account.ui:108 resources/ui/account_settings.ui:505
 msgid "Add"
 msgstr "Добавить"
 
@@ -572,7 +580,7 @@ msgid "Preferred Audio Language"
 msgstr "Предпочтительный язык аудио"
 
 #: resources/ui/account_settings.ui:30 resources/ui/account_settings.ui:55
-#: resources/ui/account_settings.ui:140
+#: resources/ui/account_settings.ui:139
 msgid "Default"
 msgstr "По умолчанию"
 
@@ -620,185 +628,175 @@ msgstr "Обновить при возвращении на домашнюю с�
 msgid "Background"
 msgstr "Фон"
 
-#: resources/ui/account_settings.ui:137
-msgid "This feature may cause significant lag. Please enable it with caution."
-msgstr ""
-"Эта функция может вызвать значительные задержки. Включайте её с "
-"осторожностью."
-
-#: resources/ui/account_settings.ui:163
+#: resources/ui/account_settings.ui:162
 msgid "Opacity"
 msgstr "Непрозрачность"
 
-#: resources/ui/account_settings.ui:177
-msgid "Blur (Experimental)"
-msgstr "Размытие (эксперементально)"
+#: resources/ui/account_settings.ui:176
+msgid "Blur"
+msgstr ""
 
-#: resources/ui/account_settings.ui:178 resources/ui/account_settings.ui:187
-msgid "Warning: High GPU usage"
-msgstr "Предупреждение: высокая нагрузка на GPU"
+#: resources/ui/account_settings.ui:181
+msgid "Blur Radius"
+msgstr ""
 
-#: resources/ui/account_settings.ui:186
-msgid "Blur Radius (Experimental)"
-msgstr "Радиус размытия (эксперементально)"
-
-#: resources/ui/account_settings.ui:206 resources/ui/mpv_control_sidebar.ui:63
+#: resources/ui/account_settings.ui:197 resources/ui/mpv_control_sidebar.ui:63
 msgid "Cache"
 msgstr "Кэш"
 
-#: resources/ui/account_settings.ui:209
+#: resources/ui/account_settings.ui:200
 msgid "Clear Cache"
 msgstr "Очистить кэш"
 
-#: resources/ui/account_settings.ui:224 resources/ui/account_settings.ui:343
+#: resources/ui/account_settings.ui:215 resources/ui/account_settings.ui:334
 msgid "Others"
 msgstr "Другое"
 
-#: resources/ui/account_settings.ui:227 resources/ui/account_settings.ui:419
+#: resources/ui/account_settings.ui:218 resources/ui/account_settings.ui:410
 msgid "Preferred Video Version"
 msgstr "Предпочтительная версия видео"
 
-#: resources/ui/account_settings.ui:239
+#: resources/ui/account_settings.ui:230
 msgid "Account"
 msgstr "Аккаунт"
 
-#: resources/ui/account_settings.ui:252 resources/ui/account_settings.ui:269
+#: resources/ui/account_settings.ui:243 resources/ui/account_settings.ui:260
 msgid "Change Password"
 msgstr "Изменить пароль"
 
-#: resources/ui/account_settings.ui:255
+#: resources/ui/account_settings.ui:246
 msgid "New Password"
 msgstr "Новый пароль"
 
-#: resources/ui/account_settings.ui:260
+#: resources/ui/account_settings.ui:251
 msgid "Confirm Password"
 msgstr "Подтвердите пароль"
 
-#: resources/ui/account_settings.ui:283
+#: resources/ui/account_settings.ui:274
 msgid "Media"
 msgstr "Медиа"
 
-#: resources/ui/account_settings.ui:288
+#: resources/ui/account_settings.ui:279
 msgid "Music Player"
 msgstr "Музыкальный проигрыватель"
 
-#: resources/ui/account_settings.ui:291 resources/ui/player_toolbar.ui:197
+#: resources/ui/account_settings.ui:282 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
 msgstr "Режим повторения"
 
-#: resources/ui/account_settings.ui:295 resources/ui/player_toolbar.ui:231
+#: resources/ui/account_settings.ui:286 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
 msgstr "Повторить один"
 
-#: resources/ui/account_settings.ui:296 resources/ui/player_toolbar.ui:235
+#: resources/ui/account_settings.ui:287 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
 msgstr "Повторить все"
 
-#: resources/ui/account_settings.ui:297 resources/ui/account_settings.ui:325
+#: resources/ui/account_settings.ui:288 resources/ui/account_settings.ui:316
 #: resources/ui/player_toolbar.ui:239
 msgid "None"
 msgstr "Ничего"
 
-#: resources/ui/account_settings.ui:307
+#: resources/ui/account_settings.ui:298
 msgid "Video Player"
 msgstr "Видео проигрыватель"
 
-#: resources/ui/account_settings.ui:308
+#: resources/ui/account_settings.ui:299
 msgid "Requires restart"
 msgstr "Требуется перезапуск"
 
-#: resources/ui/account_settings.ui:311
+#: resources/ui/account_settings.ui:302
 msgid "Enable external config"
 msgstr "Включить внешнюю конфигурацию"
 
-#: resources/ui/account_settings.ui:316
+#: resources/ui/account_settings.ui:307
 msgid "Config dir"
 msgstr "Директория конфигурации"
 
-#: resources/ui/account_settings.ui:348
+#: resources/ui/account_settings.ui:339
 msgid "Video Output"
 msgstr "Вывод видео"
 
-#: resources/ui/account_settings.ui:349
+#: resources/ui/account_settings.ui:340
 msgid "Only for debugging"
 msgstr "Только для дебага"
 
-#: resources/ui/account_settings.ui:352
+#: resources/ui/account_settings.ui:343
 msgid "libmpv (default)"
 msgstr "libmpv (по умолчанию)"
 
-#: resources/ui/account_settings.ui:397
+#: resources/ui/account_settings.ui:388
 msgid "Preferred Version"
 msgstr "Предпочтительная версия"
 
-#: resources/ui/account_settings.ui:420
+#: resources/ui/account_settings.ui:411
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:435
+#: resources/ui/account_settings.ui:426
 msgid "Descriptors"
 msgstr "Дескрипторы"
 
-#: resources/ui/account_settings.ui:457
+#: resources/ui/account_settings.ui:448
 msgid "It is recommended to set no more than 3 lines"
 msgstr "Рекомендуется использовать не более 3 строк"
 
-#: resources/ui/account_settings.ui:478
+#: resources/ui/account_settings.ui:469
 msgid "No Descriptors"
 msgstr "Нет дескрипторов"
 
-#: resources/ui/account_settings.ui:497
+#: resources/ui/account_settings.ui:488
 msgid "Add a descriptor"
 msgstr "Добавить дексриптор"
 
-#: resources/ui/account_settings.ui:539 resources/ui/account_settings.ui:649
+#: resources/ui/account_settings.ui:530 resources/ui/account_settings.ui:640
 msgid "This will use exact matching to obtain a list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:542 resources/ui/account_settings.ui:652
+#: resources/ui/account_settings.ui:533 resources/ui/account_settings.ui:643
 msgid "Descriptor Type"
 msgstr "Тип дескриптора"
 
-#: resources/ui/account_settings.ui:547 resources/ui/account_settings.ui:657
+#: resources/ui/account_settings.ui:538 resources/ui/account_settings.ui:648
 msgid "String"
 msgstr "Строка"
 
-#: resources/ui/account_settings.ui:548 resources/ui/account_settings.ui:658
+#: resources/ui/account_settings.ui:539 resources/ui/account_settings.ui:649
 msgid "Regular Expression"
 msgstr "Регулярное выражение"
 
-#: resources/ui/account_settings.ui:560 resources/ui/account_settings.ui:670
+#: resources/ui/account_settings.ui:551 resources/ui/account_settings.ui:661
 msgid "Descriptor"
 msgstr "Дескриптор"
 
-#: resources/ui/account_settings.ui:565 resources/ui/account_settings.ui:675
+#: resources/ui/account_settings.ui:556 resources/ui/account_settings.ui:666
 msgid "Descriptor should not be too long"
 msgstr "Дескриптор не должен быть слишком длинным"
 
-#: resources/ui/account_settings.ui:576 resources/ui/account_settings.ui:686
+#: resources/ui/account_settings.ui:567 resources/ui/account_settings.ui:677
 msgid "eg. 1080p"
 msgstr "Например, 1080p"
 
-#: resources/ui/account_settings.ui:587 resources/ui/account_settings.ui:697
+#: resources/ui/account_settings.ui:578 resources/ui/account_settings.ui:688
 msgid "eg. 1080p.*WebDL"
 msgstr "Например, 1080p.*WebDL"
 
-#: resources/ui/account_settings.ui:607
+#: resources/ui/account_settings.ui:598
 msgid "Edit descriptor"
 msgstr "Редактировать дескриптор"
 
-#: resources/ui/account_settings.ui:624
+#: resources/ui/account_settings.ui:615
 #: resources/ui/image_dialog_edit_page.ui:37
 msgid "Save"
 msgstr "Сохранить"
 
-#: resources/ui/account_settings.ui:717
+#: resources/ui/account_settings.ui:708
 msgid "Change folder"
 msgstr "Изменить директорию"
 
-#: resources/ui/account_settings.ui:719
+#: resources/ui/account_settings.ui:710
 msgid "Select new mpv config folder"
 msgstr "Выберите новую директорию конфигурации mpv"
 
@@ -875,6 +873,12 @@ msgstr "Библиотека"
 #: resources/ui/home.ui:22 resources/ui/item.ui:294
 msgid "Continue Watching"
 msgstr "Продолжить просмотр"
+
+#: resources/ui/home.ui:30
+#, fuzzy
+#| msgid "Next"
+msgid "Next Up"
+msgstr "Следующий"
 
 #: resources/ui/identify_dialog.ui:57
 msgid ""
@@ -1050,13 +1054,13 @@ msgid "Media Menu"
 msgstr "Медиа-меню"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/mpvpage.ui:284 resources/ui/mpvpage.ui:286
+#: resources/ui/mpvpage.ui:272 resources/ui/mpvpage.ui:274
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
 msgstr "Полноэкранный режим"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:295 resources/ui/mpvpage.ui:297
+#: resources/ui/mpvpage.ui:286 resources/ui/mpvpage.ui:288
 msgid "Exit Fullscreen"
 msgstr "Выйти из полноэкранного режима"
 
@@ -1154,8 +1158,8 @@ msgstr "В мегабайтах"
 msgid "Cache Time"
 msgstr "Время кэширования"
 
-#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:378
-#: resources/ui/mpvpage.ui:397
+#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:434
+#: resources/ui/mpvpage.ui:453
 msgid "Subtitle"
 msgstr "Субтитры"
 
@@ -1252,8 +1256,8 @@ msgstr "В миллисекундах"
 msgid "Speed"
 msgstr "Скорость"
 
-#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:370
-#: resources/ui/mpvpage.ui:430 resources/ui/search.ui:78
+#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:426
+#: resources/ui/mpvpage.ui:486 resources/ui/search.ui:78
 msgid "Audio"
 msgstr "Аудио"
 
@@ -1398,7 +1402,7 @@ msgstr "Следующая глава"
 msgid "Previous chapter"
 msgstr "Предыдущая глава"
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:151
+#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:152
 #: resources/ui/window.ui:559 resources/ui/window.ui:581
 msgid "Playlist"
 msgstr "Плейлист"
@@ -1436,24 +1440,24 @@ msgstr "Уменьшить/увеличить текущую скорость в
 msgid "Reset playback speed to normal"
 msgstr "Сбросить скорость воспроизведения к нормальной"
 
-#: resources/ui/mpvpage.ui:108
+#: resources/ui/mpvpage.ui:101
 msgid "Stop and quit"
 msgstr "Остановить и выйти"
 
-#: resources/ui/mpvpage.ui:163
+#: resources/ui/mpvpage.ui:164
 msgid "Media info (MPV)"
 msgstr "Медиа инфо (MPV)"
 
-#: resources/ui/mpvpage.ui:326 resources/ui/window.ui:25
+#: resources/ui/mpvpage.ui:382 resources/ui/window.ui:25
 #: resources/ui/window.ui:54
 msgid "Preferences"
 msgstr "Параметры"
 
-#: resources/ui/mpvpage.ui:343
+#: resources/ui/mpvpage.ui:399
 msgid "Playback speed"
 msgstr "Скорость воспроизведения"
 
-#: resources/ui/mpvpage.ui:357
+#: resources/ui/mpvpage.ui:413
 msgid "Volume"
 msgstr "Громкость"
 
@@ -1676,6 +1680,21 @@ msgstr "Содержание"
 #: resources/ui/window.ui:411
 msgid "Servers"
 msgstr "Сервера"
+
+#~ msgid ""
+#~ "This feature may cause significant lag. Please enable it with caution."
+#~ msgstr ""
+#~ "Эта функция может вызвать значительные задержки. Включайте её с "
+#~ "осторожностью."
+
+#~ msgid "Blur (Experimental)"
+#~ msgstr "Размытие (эксперементально)"
+
+#~ msgid "Warning: High GPU usage"
+#~ msgstr "Предупреждение: высокая нагрузка на GPU"
+
+#~ msgid "Blur Radius (Experimental)"
+#~ msgstr "Радиус размытия (эксперементально)"
 
 #~ msgid "Not implemented"
 #~ msgstr "Не реализовано"
