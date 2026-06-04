@@ -207,6 +207,7 @@ mod imp {
         pub back_timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
         pub seeking: RefCell<bool>,
+        pub last_playback_position: Cell<f64>,
         pub x: RefCell<f64>,
         pub y: RefCell<f64>,
         pub last_motion_time: RefCell<i64>,
@@ -507,6 +508,7 @@ impl MPVPage {
         let id = item.id();
         let series_id = item.series_id();
         self.imp().video_scale.reset_scale();
+        self.imp().last_playback_position.set(start_seconds);
         self.reset_skippable_segments();
 
         // If the video_matcher is None, field wont be updated
@@ -748,9 +750,6 @@ impl MPVPage {
                 _ => unreachable!(),
             };
             self.imp().skip_segment_button.set_label(&label);
-            self.imp()
-                .skip_segment_button
-                .set_tooltip_text(Some(&label));
         }
         let segment_end = current_segment.map(|(_, end)| end);
         self.imp().current_segment_end.set(segment_end);
@@ -767,6 +766,7 @@ impl MPVPage {
 
         self.imp().video.set_position(end);
         self.imp().video_scale.set_value(end);
+        self.imp().last_playback_position.set(end);
         self.imp().skip_segment_revealer.set_reveal_child(false);
         self.handle_callback(BackType::Back);
     }
@@ -1024,7 +1024,10 @@ impl MPVPage {
     }
 
     fn scale_cb(&self, value: i64) {
-        self.imp().video_scale.set_value(value as f64);
+        self.imp().last_playback_position.set(value as f64);
+        if !self.imp().video_scale.is_dragging() {
+            self.imp().video_scale.set_value(value as f64);
+        }
         self.update_skip_segment_button(value as f64);
     }
 
@@ -1326,7 +1329,7 @@ impl MPVPage {
     }
 
     fn handle_callback(&self, backtype: BackType) {
-        let position = self.imp().video_scale.value();
+        let position = self.imp().last_playback_position.get();
         let back = self.imp().back.borrow();
 
         if let Some(back) = back.as_ref() {
