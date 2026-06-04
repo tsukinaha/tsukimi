@@ -50,14 +50,12 @@ impl OnSameKey for TuObject {
             tracing::error!("Failed to downcast to TuListItem");
             return;
         };
-
-        let playback_position_ticks = self.item().playback_position_ticks();
-        let played_percentage = self.item().played_percentage();
-
-        list_item.set_progress(played_percentage);
+        if let Some(played_percentage) = self.item().fmt_percentage() {
+            list_item.set_progress(played_percentage / 100.);
+        }
         list_item
             .item()
-            .set_playback_position_ticks(playback_position_ticks);
+            .set_playback_position_ticks(self.item().playback_position_ticks());
     }
 }
 
