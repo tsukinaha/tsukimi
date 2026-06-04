@@ -8,12 +8,7 @@ srpm:
 	if [ -n "$$tag" ]; then \
 		version="$${tag#v}"; \
 	else \
-		version="$$(python3 - <<'PY'
-import tomllib
-with open("Cargo.toml", "rb") as f:
-    print(tomllib.load(f)["package"]["version"])
-PY
-		)"; \
+		version="$$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["package"]["version"])')"; \
 	fi; \
 	workdir="$$(mktemp -d)"; \
 	mkdir -p "$$workdir/.cargo"; \
