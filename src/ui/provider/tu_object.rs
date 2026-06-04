@@ -51,11 +51,13 @@ impl OnSameKey for TuObject {
             return;
         };
 
-        let Some(percentage) = self.item().fmt_percentage() else {
-            return;
-        };
+        let playback_position_ticks = self.item().playback_position_ticks();
+        let played_percentage = self.item().played_percentage();
 
-        list_item.set_progress(percentage / 100.);
+        list_item.set_progress(played_percentage);
+        list_item
+            .item()
+            .set_playback_position_ticks(playback_position_ticks);
     }
 }
 
