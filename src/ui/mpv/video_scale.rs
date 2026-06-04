@@ -1,6 +1,7 @@
 use gtk::{
     glib,
     prelude::*,
+    subclass::prelude::*,
 };
 
 use super::tsukimi_mpv::ChapterList;
@@ -71,16 +72,7 @@ mod imp {
         }
     }
     impl WidgetImpl for VideoScale {}
-    impl RangeImpl for VideoScale {
-        fn change_value(&self, scroll_type: gtk::ScrollType, new_value: f64) -> glib::Propagation {
-            if self.is_dragging.get() {
-                glib::Propagation::Stop
-            } else {
-                self.parent_change_value(scroll_type, new_value);
-                glib::Propagation::Proceed
-            }
-        }
-    }
+    impl RangeImpl for VideoScale {}
     impl ScaleImpl for VideoScale {}
 
     impl VideoScale {
@@ -138,6 +130,10 @@ impl VideoScale {
     pub fn reset_scale(&self) {
         self.set_value(0.0);
         self.set_fill_level(0.0);
+    }
+
+    pub fn is_dragging(&self) -> bool {
+        self.imp().is_dragging.get()
     }
 
     pub fn set_chapter_list(&self, chapter_list: ChapterList) {
