@@ -125,24 +125,24 @@ mod imp {
             return "#000000";
         };
 
-        let luminance = relative_luminance(color.red(), color.green(), color.blue());
+        // Calculate WCAG relative luminance from sRGB channels.
+        let srgb_to_linear = |channel: f32| {
+            if channel <= 0.04045 {
+                channel / 12.92
+            } else {
+                ((channel + 0.055) / 1.055).powf(2.4)
+            }
+        };
 
+        let luminance = 0.2126 * srgb_to_linear(color.red())
+            + 0.7152 * srgb_to_linear(color.green())
+            + 0.0722 * srgb_to_linear(color.blue());
+
+        // 0.179 is the contrast crossover where black becomes more readable than white.
         if luminance >= 0.179 {
             "#000000"
         } else {
             "#ffffff"
-        }
-    }
-
-    fn relative_luminance(red: f32, green: f32, blue: f32) -> f32 {
-        0.2126 * linear_srgb(red) + 0.7152 * linear_srgb(green) + 0.0722 * linear_srgb(blue)
-    }
-
-    fn linear_srgb(channel: f32) -> f32 {
-        if channel <= 0.04045 {
-            channel / 12.92
-        } else {
-            ((channel + 0.055) / 1.055).powf(2.4)
         }
     }
 }
