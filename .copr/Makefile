@@ -14,6 +14,7 @@ srpm:
 	mkdir -p "$$workdir/.cargo"; \
 	git archive --format=tar.gz --prefix="$$name-$$version/" -o "$(outdir)/$$name-$$version.tar.gz" HEAD; \
 	cargo vendor --locked "$$workdir/vendor" > "$$workdir/.cargo/config.toml"; \
+	sed -i 's|^directory = \".*\"|directory = \"vendor\"|' "$$workdir/.cargo/config.toml"; \
 	tar --zstd -cf "$(outdir)/$$name-$$version-vendor.tar.zst" -C "$$workdir" .cargo vendor; \
 	rpmbuild -bs "$(SPEC)" --define "version_from_tag $$version" --define "_sourcedir $(outdir)" --define "_srcrpmdir $(outdir)"; \
 	rm -rf "$$workdir"
