@@ -100,9 +100,11 @@
                           <object class="GtkButton" id="_back_button">
                             <property name="tooltip_text" translatable="yes">Stop and quit</property>
                             <property name="icon-name">arrow4-left-symbolic</property>
+                            <property name="valign">center</property>
                             <signal name="clicked" handler="on_stop_clicked" swapped="yes" />
                             <style>
                               <class name="flat" />
+                              <class name="circular" />
                             </style>
                           </object>
                         </child>
@@ -146,6 +148,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="_playlist_button">
+                            <property name="valign">center</property>
                             <property name="icon-name">view-dual-symbolic</property>
                             <property name="focusable">True</property>
                             <property name="receives_default">True</property>
@@ -153,11 +156,13 @@
                             <signal name="clicked" handler="on_playlist_clicked" swapped="yes" />
                             <style>
                               <class name="flat" />
+                              <class name="circular" />
                             </style>
                           </object>
                         </child>
                         <child>
                           <object class="GtkButton" id="_media_info_button">
+                            <property name="valign">center</property>
                             <property name="icon-name">help-about-symbolic</property>
                             <property name="focusable">True</property>
                             <property name="receives_default">True</property>
@@ -165,6 +170,7 @@
                             <signal name="clicked" handler="on_info_clicked" swapped="yes" />
                             <style>
                               <class name="flat" />
+                              <class name="circular" />
                             </style>
                           </object>
                         </child>
@@ -213,8 +219,10 @@
                               <object class="GtkButton" id="_previous_button">
                                 <property name="icon-name">media-skip-backward-symbolic</property>
                                 <property name="action-name">mpv.previous-video</property>
+                                <property name="valign">center</property>
                                 <style>
                                   <class name="flat" />
+                                  <class name="circular" />
                                 </style>
                               </object>
                             </child>
@@ -224,6 +232,7 @@
                                 <property name="width-request">48</property>
                                 <property name="focusable">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="valign">center</property>
                                 <property name="tooltip_text" translatable="yes">Pause</property>
                                 <signal name="clicked" handler="on_play_pause_clicked" swapped="yes" />
                                 <child>
@@ -237,6 +246,7 @@
                                 <style>
                                   <class name="flat" />
                                   <class name="mpv-play-button" />
+                                  <class name="circular" />
                                 </style>
                               </object>
                             </child>
@@ -244,8 +254,10 @@
                               <object class="GtkButton" id="_next_button">
                                 <property name="icon-name">media-skip-forward-symbolic</property>
                                 <property name="action-name">mpv.next-video</property>
+                                <property name="valign">center</property>
                                 <style>
                                   <class name="flat" />
+                                  <class name="circular" />
                                 </style>
                               </object>
                             </child>
@@ -255,12 +267,15 @@
                           <object class="GtkBox">
                             <property name="orientation">horizontal</property>
                             <property name="spacing">4</property>
+                            <property name="valign">center</property>
                             <child>
                               <object class="GtkMenuButton" id="menu_button">
                                 <property name="popover">menu_popover</property>
                                 <property name="icon-name">emblem-system-symbolic</property>
+                                <property name="valign">center</property>
                                 <style>
                                   <class name="flat" />
+                                  <class name="circular" />
                                 </style>
                               </object>
                             </child>
@@ -270,11 +285,13 @@
                                 <property name="icon-name">view-fullscreen-symbolic</property>
                                 <property name="action-name">win.toggle-fullscreen</property>
                                 <property name="tooltip-text" translatable="yes">Fullscreen</property>
+                                <property name="valign">center</property>
                                 <accessibility>
                                   <property name="label" translatable="yes">Fullscreen</property>
                                 </accessibility>
                                 <style>
                                   <class name="flat" />
+                                  <class name="circular" />
                                 </style>
                               </object>
                             </child>
@@ -283,12 +300,14 @@
                                 <property name="visible" bind-source="MPVPage" bind-property="fullscreened" bind-flags="sync-create"/>
                                 <property name="icon-name">view-restore-symbolic</property>
                                 <property name="action-name">win.toggle-fullscreen</property>
+                                <property name="valign">center</property>
                                 <property name="tooltip-text" translatable="yes">Exit Fullscreen</property>
                                 <accessibility>
                                   <property name="label" translatable="yes">Exit Fullscreen</property>
                                 </accessibility>
                                 <style>
                                   <class name="flat" />
+                                  <class name="circular" />
                                 </style>
                               </object>
                             </child>
