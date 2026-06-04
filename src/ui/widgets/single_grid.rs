@@ -1,4 +1,7 @@
-use std::future::Future;
+use std::{
+    future::Future,
+    sync::atomic::Ordering,
+};
 
 use adw::prelude::*;
 use anyhow::Result;
@@ -252,6 +255,7 @@ pub mod imp {
         pub sort_order: Cell<SortOrder>,
         #[property(get, set = Self::set_sort_by, builder(SortBy::default()))]
         pub sort_by: Cell<SortBy>,
+        pub total_item_count: Cell<Option<u32>>,
         pub lock: Arc<AtomicBool>,
 
         pub filter_panel: OnceCell<FilterPanelDialog>,
@@ -493,9 +497,21 @@ impl SingleGrid {
     }
 
     pub fn set_item_number(&self, n: u32) {
+        self.update_total_item_count(n);
         self.imp()
             .count
             .set_text(&format!("{} {}", n, gettextrs::gettext("Items")));
+    }
+
+    fn update_total_item_count(&self, n: u32) {
+        self.imp().total_item_count.set(Some(n));
+    }
+
+    fn has_loaded_all_items(&self, n_items: u32) -> bool {
+        self.imp()
+            .total_item_count
+            .get()
+            .is_some_and(|total_item_count| n_items >= total_item_count)
     }
 
     pub fn set_unify_size(&self, unify_size: UnifySize) {
@@ -582,6 +598,10 @@ impl SingleGrid {
                 let sort_by = obj.sort_by().to_string();
                 let sort_order = obj.sort_order().to_string();
                 let n_items = scrolled.n_items();
+                if obj.has_loaded_all_items(n_items) {
+                    lock.store(false, Ordering::Relaxed);
+                    return;
+                }
                 let filters_list = obj
                     .imp()
                     .filter_panel
@@ -603,7 +623,10 @@ impl SingleGrid {
                         scrolled.reveal_spinner(true);
 
                         match spawn_tokio(future).await {
-                            Ok(item) => obj.add_items::<false>(item.items),
+                            Ok(item) => {
+                                obj.update_total_item_count(item.total_record_count);
+                                obj.add_items::<false>(item.items);
+                            }
                             Err(e) => {
                                 obj.toast(e.to_user_facing());
                             }
@@ -611,7 +634,7 @@ impl SingleGrid {
 
                         scrolled.reveal_spinner(false);
 
-                        lock.store(false, std::sync::atomic::Ordering::Relaxed);
+                        lock.store(false, Ordering::Relaxed);
                     }
                 ));
             }
