@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
-"PO-Revision-Date: 2026-06-02 12:24+0000\n"
-"Last-Translator: Inaha <sakuovds@gmail.com>\n"
+"PO-Revision-Date: 2026-06-04 06:16+0000\n"
+"Last-Translator: Sheng <shengchi2@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
 "Language: zh_Hant\n"
@@ -70,11 +70,11 @@ msgstr "暫停"
 
 #: src/ui/mpv/page.rs:728
 msgid "Skip Intro"
-msgstr ""
+msgstr "跳過片頭"
 
 #: src/ui/mpv/page.rs:729
 msgid "Skip Outro"
-msgstr ""
+msgstr "跳過片尾"
 
 #: src/ui/mpv/page.rs:879
 msgid "No more video found"
@@ -623,11 +623,11 @@ msgstr "不透明度"
 
 #: resources/ui/account_settings.ui:176
 msgid "Blur"
-msgstr ""
+msgstr "模糊"
 
 #: resources/ui/account_settings.ui:181
 msgid "Blur Radius"
-msgstr ""
+msgstr "模糊程度"
 
 #: resources/ui/account_settings.ui:197 resources/ui/mpv_control_sidebar.ui:63
 msgid "Cache"
@@ -865,10 +865,8 @@ msgid "Continue Watching"
 msgstr "繼續觀看"
 
 #: resources/ui/home.ui:30
-#, fuzzy
-#| msgid "Next"
 msgid "Next Up"
-msgstr "下一個"
+msgstr "下一部"
 
 #: resources/ui/identify_dialog.ui:57
 msgid ""
