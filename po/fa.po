@@ -56,30 +56,30 @@ msgstr "ناکامی در دریافت GLContext"
 msgid "Failed to get GLContext"
 msgstr "ناکامی در دریافت GLContext"
 
-#: src/ui/mpv/page.rs:382 src/ui/mpv/page.rs:384 src/ui/widgets/item.rs:707
+#: src/ui/mpv/page.rs:384 src/ui/mpv/page.rs:386 src/ui/widgets/item.rs:707
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/player_toolbar.ui:90
 msgid "Play"
 msgstr "پخش"
 
-#: src/ui/mpv/page.rs:387 src/ui/mpv/page.rs:389 resources/ui/mpvpage.ui:227
+#: src/ui/mpv/page.rs:389 src/ui/mpv/page.rs:391 resources/ui/mpvpage.ui:227
 msgid "Pause"
 msgstr "توقف"
 
-#: src/ui/mpv/page.rs:728
+#: src/ui/mpv/page.rs:746
 msgid "Skip Intro"
 msgstr ""
 
-#: src/ui/mpv/page.rs:729
+#: src/ui/mpv/page.rs:747
 msgid "Skip Outro"
 msgstr ""
 
-#: src/ui/mpv/page.rs:879
+#: src/ui/mpv/page.rs:897
 msgid "No more video found"
 msgstr "ویدیوی دیگری پیدا نشد"
 
-#: src/ui/mpv/page.rs:978
+#: src/ui/mpv/page.rs:998
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -87,17 +87,17 @@ msgstr ""
 "MPV خاموش شده است، برنامه بسته خواهد شد.\n"
 "سوکیمی نمی‌تواند MPV را مجدد راه‌اندازی کند."
 
-#: src/ui/provider/tu_item.rs:555
+#: src/ui/provider/tu_item.rs:547
 msgid "No next up video found"
 msgstr "هیچ ویدیوی بعدی پیدا نشد"
 
-#: src/ui/provider/tu_item.rs:584 src/ui/widgets/tu_overview_item.rs:254
+#: src/ui/provider/tu_item.rs:576 src/ui/widgets/tu_overview_item.rs:254
 msgid "Present"
 msgstr "حاضر"
 
-#: src/ui/provider/tu_item.rs:592 src/ui/provider/tu_item.rs:610
-#: src/ui/provider/tu_item.rs:633 src/ui/provider/tu_item.rs:656
-#: src/ui/provider/tu_item.rs:659
+#: src/ui/provider/tu_item.rs:584 src/ui/provider/tu_item.rs:602
+#: src/ui/provider/tu_item.rs:625 src/ui/provider/tu_item.rs:648
+#: src/ui/provider/tu_item.rs:651
 msgid "Unknown"
 msgstr ""
 
@@ -113,39 +113,39 @@ msgstr "سرور با موفقیت ویرایش شد"
 msgid "Server added successfully"
 msgstr "سرور با موفقیت افزوده شد"
 
-#: src/ui/widgets/account_settings.rs:225
+#: src/ui/widgets/account_settings.rs:229
 msgid "Password cannot be empty!"
 msgstr "رمز عبور نمی‌تواند خالی باشد!"
 
-#: src/ui/widgets/account_settings.rs:229
+#: src/ui/widgets/account_settings.rs:233
 msgid "Passwords do not match!"
 msgstr "رمز عبورها یکی نیستند!"
 
-#: src/ui/widgets/account_settings.rs:236
+#: src/ui/widgets/account_settings.rs:240
 msgid "Password changed successfully! Please login again."
 msgstr "رمز عبور با موفقیت تغییر یافت! لطفاً دوباره وارد شوید."
 
-#: src/ui/widgets/account_settings.rs:240
+#: src/ui/widgets/account_settings.rs:244
 msgid "Failed to change password"
 msgstr "ناکامی در تغییر رمز عبور"
 
-#: src/ui/widgets/account_settings.rs:276
+#: src/ui/widgets/account_settings.rs:280
 msgid "Cache Cleared"
 msgstr "کش پاک شد"
 
-#: src/ui/widgets/account_settings.rs:297
+#: src/ui/widgets/account_settings.rs:301
 msgid "No file selected"
 msgstr "هیچ فایلی انتخاب نشده است"
 
-#: src/ui/widgets/account_settings.rs:515
-#: src/ui/widgets/account_settings.rs:524
-#: src/ui/widgets/account_settings.rs:558
-#: src/ui/widgets/account_settings.rs:567
+#: src/ui/widgets/account_settings.rs:536
+#: src/ui/widgets/account_settings.rs:545
+#: src/ui/widgets/account_settings.rs:579
+#: src/ui/widgets/account_settings.rs:588
 msgid "Descriptor cannot be empty!"
 msgstr "توضیح دهنده نمی‌تواند خالی باشد!"
 
-#: src/ui/widgets/account_settings.rs:529
-#: src/ui/widgets/account_settings.rs:572
+#: src/ui/widgets/account_settings.rs:550
+#: src/ui/widgets/account_settings.rs:593
 msgid "Invalid regex"
 msgstr "ریجکس بی اعتبار"
 
@@ -153,7 +153,18 @@ msgstr "ریجکس بی اعتبار"
 msgid "Disc"
 msgstr "دیسک"
 
-#: src/ui/widgets/home.rs:356
+#. if merged, next up will contain resume items, so change title to continue watching
+#: src/ui/widgets/home.rs:230 resources/ui/home.ui:25 resources/ui/item.ui:294
+msgid "Continue Watching"
+msgstr ""
+
+#: src/ui/widgets/home.rs:232 resources/ui/home.ui:33
+#, fuzzy
+#| msgid "Next"
+msgid "Next Up"
+msgstr "پسین"
+
+#: src/ui/widgets/home.rs:395
 msgid "Latest"
 msgstr "آخرین"
 
@@ -169,15 +180,15 @@ msgstr "شناسایی"
 
 #: src/ui/widgets/identify/search_page.rs:126
 #: src/ui/widgets/image_dialog/search_page.rs:148
-#: src/ui/widgets/metadata_dialog.rs:290 src/ui/widgets/tu_item/action.rs:479
+#: src/ui/widgets/metadata_dialog.rs:290 src/ui/widgets/tu_item/action.rs:485
 msgid "Are you sure you wish to continue?"
 msgstr "آیا مطمئنید که می‌خواهید ادامه دهید؟"
 
 #: src/ui/widgets/identify/search_page.rs:129
 #: src/ui/widgets/image_dialog/search_page.rs:151
-#: src/ui/widgets/metadata_dialog.rs:293 src/ui/widgets/tu_item/action.rs:483
-#: src/ui/widgets/tu_item/action.rs:543 resources/ui/account_settings.ui:499
-#: resources/ui/account_settings.ui:609
+#: src/ui/widgets/metadata_dialog.rs:293 src/ui/widgets/tu_item/action.rs:489
+#: src/ui/widgets/tu_item/action.rs:549 resources/ui/account_settings.ui:515
+#: resources/ui/account_settings.ui:625
 msgid "Cancel"
 msgstr "لغو"
 
@@ -299,7 +310,7 @@ msgstr "هیچ منبع ویدیویی پیدا نشد"
 msgid "Season not found. Is this a continue watching list?"
 msgstr "فصل پیدا نشد. آیا این یک ادامه لیست پخش است؟"
 
-#: src/ui/widgets/liked.rs:159
+#: src/ui/widgets/liked.rs:158
 msgid "Favourite"
 msgstr "مورد علاقه"
 
@@ -325,7 +336,7 @@ msgstr "تگ‌ها"
 msgid "Genres"
 msgstr "ژانرها"
 
-#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:330
+#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:323
 #: resources/ui/window.ui:350
 msgid "Liked"
 msgstr "پسندیده"
@@ -355,7 +366,7 @@ msgstr "بیشتر از"
 msgid "Scanning..."
 msgstr "در حال بررسی..."
 
-#: src/ui/widgets/search.rs:209
+#: src/ui/widgets/search.rs:199
 msgid "No overview"
 msgstr ""
 
@@ -413,7 +424,7 @@ msgstr "نتیجه: "
 msgid "Task started"
 msgstr "وظیفه آغاز شد"
 
-#: src/ui/widgets/single_grid.rs:500
+#: src/ui/widgets/single_grid.rs:498
 msgid "Items"
 msgstr "آیتم‌ها"
 
@@ -425,15 +436,15 @@ msgstr "حذف از مورد علاقه‌ها"
 msgid "Add to favorites"
 msgstr "افزودن به مورد علاقه‌ها"
 
-#: src/ui/widgets/tu_item/action.rs:92
+#: src/ui/widgets/tu_item/action.rs:98
 msgid "Success"
 msgstr "موفقیت‌آمیز بود"
 
-#: src/ui/widgets/tu_item/action.rs:473
+#: src/ui/widgets/tu_item/action.rs:479
 msgid "Delete Item"
 msgstr "حذف آیتم"
 
-#: src/ui/widgets/tu_item/action.rs:477
+#: src/ui/widgets/tu_item/action.rs:483
 msgid ""
 "Deleting this item will delete it from both the file system and your media "
 "library.\n"
@@ -443,17 +454,17 @@ msgstr ""
 "می‌شود.\n"
 "فایل‌ها و پوشه‌های ذیل پاک خواهند شد:"
 
-#: src/ui/widgets/tu_item/action.rs:484 resources/ui/image_info_card.ui:139
+#: src/ui/widgets/tu_item/action.rs:490 resources/ui/image_info_card.ui:139
 #: resources/ui/pop-menu.ui:92 resources/ui/server_action_row.ui:52
 msgid "Delete"
 msgstr "حذف"
 
-#: src/ui/widgets/tu_item/action.rs:538 src/ui/widgets/tu_item/action.rs:539
-#: src/ui/widgets/tu_item/action.rs:544 resources/ui/pop-menu.ui:62
+#: src/ui/widgets/tu_item/action.rs:544 src/ui/widgets/tu_item/action.rs:545
+#: src/ui/widgets/tu_item/action.rs:550 resources/ui/pop-menu.ui:62
 msgid "Remove Identification"
 msgstr "حذف شناسایی"
 
-#: src/ui/widgets/tu_item/action.rs:540
+#: src/ui/widgets/tu_item/action.rs:546
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "آیا مطمئنید که می‌خواهید همه‌ی فراداده‌ها را بازنشانی کنید؟"
 
@@ -461,62 +472,30 @@ msgstr "آیا مطمئنید که می‌خواهید همه‌ی فراداد�
 msgid "Waiting for mediasource ..."
 msgstr "متنظر منبع رسانه..."
 
-#: src/ui/widgets/window.rs:318 resources/ui/window.ui:304
+#: src/ui/widgets/window.rs:311 resources/ui/window.ui:304
 msgid "Home"
 msgstr "خانه"
 
-#: src/ui/widgets/window.rs:342 resources/ui/identify_dialog.ui:94
+#: src/ui/widgets/window.rs:335 resources/ui/identify_dialog.ui:94
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
 #: resources/ui/window.ui:21 resources/ui/window.ui:396
 msgid "Search"
 msgstr "جستجو"
 
-#: src/ui/widgets/window.rs:831
+#: src/ui/widgets/window.rs:824
 msgid "Server Panel"
 msgstr "پنل سرور"
 
-#: src/ui/widgets/window.rs:1006
+#: src/ui/widgets/window.rs:973
 msgid "Fatal Error"
 msgstr "خطای مهلک"
 
-#: src/ui/widgets/window.rs:1009
+#: src/ui/widgets/window.rs:976
 msgid "Copy Error & Close"
 msgstr "کپی کردن خطا و بستن"
 
-#: src/ui/widgets/window.rs:1034
-msgid "Windows Alert"
-msgstr "هشدار ویندوز"
-
-#: src/ui/widgets/window.rs:1035
-msgid ""
-"It seems you're using Tsukimi on Windows. Please note that GTK used by this "
-"application is designed for Linux, and no functionality is guaranteed to "
-"work on Windows, including but not limited to video rendering, audio "
-"playback, network connections, and external links. Additionally, there are "
-"known issues that cannot be fixed, such as black borders, image rendering, "
-"font rendering, DPI scaling, video rendering, GL renderer, fullscreen mode, "
-"HDR, and locale detection. \n"
-"If you wish to open an issue, please ensure that it is related to this "
-"software and not an upstream issue. Choose the appropriate issue template "
-"and fill in all required fields without any omissions."
-msgstr ""
-"به نظر می‌رسد که شما سوکیمی را در ویندوز استفاده می‌کنید. لطفاً توجه کنید به "
-"طور پیش‌فرض GTK استفاده شده در این برنامه برای لینوکس طراحی شده است و هیچ "
-"تضمینی برای کارکرد آن‌ها در ویندوز نیست، از جمله اما نه محدود به پخش ویدئو، "
-"پخش صدا، اتصالات شبکه و لینک‌های خارجی. علاوه بر این، مشکلات شناخته شده‌ای "
-"وجود دارند که قابل رفع نیستند، مانند حاشیه‌های سیاه، رندر تصاویر، رندر "
-"فونت‌ها، مقیاس‌بندی DPI، رندر ویدئو، رندر GL، حالت تمام صفحه، HDR و تشخیص "
-"محل.\n"
-"اگر قصد دارید مشکلی گزارش کنید، لطفاً مطمئن شوید که مربوط به این نرم‌افزار است "
-"و به مسائل اصلی GTK مربوط نمی‌شود. قالب مناسب مسئله را انتخاب کنید و تمام "
-"فیلدهای مورد نیاز را بدون هیچ کم و کاستی پر کنید."
-
-#: src/ui/widgets/window.rs:1037
-msgid "Close"
-msgstr "بستن"
-
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1058
+#: src/ui/widgets/window.rs:1005
 msgid "translator-credits"
 msgstr "xhopeter <xhopeter@proton.me>"
 
@@ -549,7 +528,7 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: resources/ui/account.ui:108 resources/ui/account_settings.ui:505
+#: resources/ui/account.ui:108 resources/ui/account_settings.ui:521
 msgid "Add"
 msgstr ""
 
@@ -574,7 +553,7 @@ msgid "Preferred Audio Language"
 msgstr ""
 
 #: resources/ui/account_settings.ui:30 resources/ui/account_settings.ui:55
-#: resources/ui/account_settings.ui:139
+#: resources/ui/account_settings.ui:155
 msgid "Default"
 msgstr ""
 
@@ -587,210 +566,228 @@ msgid "Appearence"
 msgstr ""
 
 #: resources/ui/account_settings.ui:76
-msgid "Accent Color"
+msgid "Use Custom Accent Color"
 msgstr ""
 
 #: resources/ui/account_settings.ui:77
-msgid "Restart App To Take Effect"
+msgid "Disable to follow the system accent color"
 msgstr ""
 
-#: resources/ui/account_settings.ui:93
-msgid "Hide Sidebar"
+#: resources/ui/account_settings.ui:82
+msgid "Accent Color"
 msgstr ""
 
 #: resources/ui/account_settings.ui:98
+msgid "Hide Sidebar"
+msgstr ""
+
+#: resources/ui/account_settings.ui:103
 msgid "Auto Select Last Server"
 msgstr ""
 
-#: resources/ui/account_settings.ui:105
-msgid "Network"
-msgstr ""
+#: resources/ui/account_settings.ui:110
+#, fuzzy
+#| msgid "Home"
+msgid "Home Page"
+msgstr "خانه"
 
-#: resources/ui/account_settings.ui:108
-msgid "Threads"
-msgstr ""
-
-#: resources/ui/account_settings.ui:109
-msgid "Excessive thread counts may exhaust the system's connection pool"
-msgstr ""
-
-#: resources/ui/account_settings.ui:123
+#: resources/ui/account_settings.ui:113
 msgid "Refresh when returning to home page"
 msgstr ""
 
-#: resources/ui/account_settings.ui:130 resources/ui/mpv_control_sidebar.ui:378
+#: resources/ui/account_settings.ui:118
+msgid "Merge Continue Watching and Next Up"
+msgstr ""
+
+#: resources/ui/account_settings.ui:119
+msgid "Jellyfin only"
+msgstr ""
+
+#: resources/ui/account_settings.ui:126
+msgid "Network"
+msgstr ""
+
+#: resources/ui/account_settings.ui:129
+msgid "Threads"
+msgstr ""
+
+#: resources/ui/account_settings.ui:130
+msgid "Excessive thread counts may exhaust the system's connection pool"
+msgstr ""
+
+#: resources/ui/account_settings.ui:146 resources/ui/mpv_control_sidebar.ui:378
 msgid "Background"
 msgstr "پس‌زمینه"
 
-#: resources/ui/account_settings.ui:162
+#: resources/ui/account_settings.ui:178
 msgid "Opacity"
 msgstr ""
 
-#: resources/ui/account_settings.ui:176
+#: resources/ui/account_settings.ui:192
 msgid "Blur"
 msgstr ""
 
-#: resources/ui/account_settings.ui:181
+#: resources/ui/account_settings.ui:197
 msgid "Blur Radius"
 msgstr ""
 
-#: resources/ui/account_settings.ui:197 resources/ui/mpv_control_sidebar.ui:63
+#: resources/ui/account_settings.ui:213 resources/ui/mpv_control_sidebar.ui:63
 msgid "Cache"
 msgstr "کش"
 
-#: resources/ui/account_settings.ui:200
+#: resources/ui/account_settings.ui:216
 msgid "Clear Cache"
 msgstr ""
 
-#: resources/ui/account_settings.ui:215 resources/ui/account_settings.ui:334
+#: resources/ui/account_settings.ui:231 resources/ui/account_settings.ui:350
 msgid "Others"
 msgstr ""
 
-#: resources/ui/account_settings.ui:218 resources/ui/account_settings.ui:410
+#: resources/ui/account_settings.ui:234 resources/ui/account_settings.ui:426
 msgid "Preferred Video Version"
 msgstr ""
 
-#: resources/ui/account_settings.ui:230
+#: resources/ui/account_settings.ui:246
 msgid "Account"
 msgstr ""
 
-#: resources/ui/account_settings.ui:243 resources/ui/account_settings.ui:260
+#: resources/ui/account_settings.ui:259 resources/ui/account_settings.ui:276
 msgid "Change Password"
 msgstr ""
 
-#: resources/ui/account_settings.ui:246
+#: resources/ui/account_settings.ui:262
 msgid "New Password"
 msgstr ""
 
-#: resources/ui/account_settings.ui:251
+#: resources/ui/account_settings.ui:267
 msgid "Confirm Password"
 msgstr ""
 
-#: resources/ui/account_settings.ui:274
+#: resources/ui/account_settings.ui:290
 msgid "Media"
 msgstr ""
 
-#: resources/ui/account_settings.ui:279
+#: resources/ui/account_settings.ui:295
 msgid "Music Player"
 msgstr ""
 
-#: resources/ui/account_settings.ui:282 resources/ui/player_toolbar.ui:197
+#: resources/ui/account_settings.ui:298 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
 msgstr "حالت تکرار"
 
-#: resources/ui/account_settings.ui:286 resources/ui/player_toolbar.ui:231
+#: resources/ui/account_settings.ui:302 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
 msgstr "یک بار تکرار"
 
-#: resources/ui/account_settings.ui:287 resources/ui/player_toolbar.ui:235
+#: resources/ui/account_settings.ui:303 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
 msgstr "تکرار همه"
 
-#: resources/ui/account_settings.ui:288 resources/ui/account_settings.ui:316
+#: resources/ui/account_settings.ui:304 resources/ui/account_settings.ui:332
 #: resources/ui/player_toolbar.ui:239
 msgid "None"
 msgstr "هیچ کدام"
 
-#: resources/ui/account_settings.ui:298
+#: resources/ui/account_settings.ui:314
 msgid "Video Player"
 msgstr ""
 
-#: resources/ui/account_settings.ui:299
+#: resources/ui/account_settings.ui:315
 msgid "Requires restart"
 msgstr ""
 
-#: resources/ui/account_settings.ui:302
+#: resources/ui/account_settings.ui:318
 msgid "Enable external config"
 msgstr ""
 
-#: resources/ui/account_settings.ui:307
+#: resources/ui/account_settings.ui:323
 msgid "Config dir"
 msgstr ""
 
-#: resources/ui/account_settings.ui:339
+#: resources/ui/account_settings.ui:355
 msgid "Video Output"
 msgstr ""
 
-#: resources/ui/account_settings.ui:340
+#: resources/ui/account_settings.ui:356
 msgid "Only for debugging"
 msgstr ""
 
-#: resources/ui/account_settings.ui:343
+#: resources/ui/account_settings.ui:359
 msgid "libmpv (default)"
 msgstr ""
 
-#: resources/ui/account_settings.ui:388
+#: resources/ui/account_settings.ui:404
 msgid "Preferred Version"
 msgstr ""
 
-#: resources/ui/account_settings.ui:411
+#: resources/ui/account_settings.ui:427
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:426
+#: resources/ui/account_settings.ui:442
 msgid "Descriptors"
 msgstr ""
 
-#: resources/ui/account_settings.ui:448
+#: resources/ui/account_settings.ui:464
 msgid "It is recommended to set no more than 3 lines"
 msgstr ""
 
-#: resources/ui/account_settings.ui:469
+#: resources/ui/account_settings.ui:485
 msgid "No Descriptors"
 msgstr ""
 
-#: resources/ui/account_settings.ui:488
+#: resources/ui/account_settings.ui:504
 msgid "Add a descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:530 resources/ui/account_settings.ui:640
+#: resources/ui/account_settings.ui:546 resources/ui/account_settings.ui:656
 msgid "This will use exact matching to obtain a list"
 msgstr ""
 
-#: resources/ui/account_settings.ui:533 resources/ui/account_settings.ui:643
+#: resources/ui/account_settings.ui:549 resources/ui/account_settings.ui:659
 msgid "Descriptor Type"
 msgstr ""
 
-#: resources/ui/account_settings.ui:538 resources/ui/account_settings.ui:648
+#: resources/ui/account_settings.ui:554 resources/ui/account_settings.ui:664
 msgid "String"
 msgstr ""
 
-#: resources/ui/account_settings.ui:539 resources/ui/account_settings.ui:649
+#: resources/ui/account_settings.ui:555 resources/ui/account_settings.ui:665
 msgid "Regular Expression"
 msgstr ""
 
-#: resources/ui/account_settings.ui:551 resources/ui/account_settings.ui:661
+#: resources/ui/account_settings.ui:567 resources/ui/account_settings.ui:677
 msgid "Descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:556 resources/ui/account_settings.ui:666
+#: resources/ui/account_settings.ui:572 resources/ui/account_settings.ui:682
 msgid "Descriptor should not be too long"
 msgstr ""
 
-#: resources/ui/account_settings.ui:567 resources/ui/account_settings.ui:677
+#: resources/ui/account_settings.ui:583 resources/ui/account_settings.ui:693
 msgid "eg. 1080p"
 msgstr ""
 
-#: resources/ui/account_settings.ui:578 resources/ui/account_settings.ui:688
+#: resources/ui/account_settings.ui:594 resources/ui/account_settings.ui:704
 msgid "eg. 1080p.*WebDL"
 msgstr ""
 
-#: resources/ui/account_settings.ui:598
+#: resources/ui/account_settings.ui:614
 msgid "Edit descriptor"
 msgstr ""
 
-#: resources/ui/account_settings.ui:615
+#: resources/ui/account_settings.ui:631
 #: resources/ui/image_dialog_edit_page.ui:37
 msgid "Save"
 msgstr ""
 
-#: resources/ui/account_settings.ui:708
+#: resources/ui/account_settings.ui:724
 msgid "Change folder"
 msgstr ""
 
-#: resources/ui/account_settings.ui:710
+#: resources/ui/account_settings.ui:726
 msgid "Select new mpv config folder"
 msgstr ""
 
@@ -863,16 +860,6 @@ msgstr ""
 #: resources/ui/home.ui:17
 msgid "Library"
 msgstr ""
-
-#: resources/ui/home.ui:22 resources/ui/item.ui:294
-msgid "Continue Watching"
-msgstr ""
-
-#: resources/ui/home.ui:30
-#, fuzzy
-#| msgid "Next"
-msgid "Next Up"
-msgstr "پسین"
 
 #: resources/ui/identify_dialog.ui:57
 msgid ""
@@ -1668,6 +1655,35 @@ msgstr ""
 #: resources/ui/window.ui:411
 msgid "Servers"
 msgstr ""
+
+#~ msgid "Windows Alert"
+#~ msgstr "هشدار ویندوز"
+
+#~ msgid ""
+#~ "It seems you're using Tsukimi on Windows. Please note that GTK used by "
+#~ "this application is designed for Linux, and no functionality is "
+#~ "guaranteed to work on Windows, including but not limited to video "
+#~ "rendering, audio playback, network connections, and external links. "
+#~ "Additionally, there are known issues that cannot be fixed, such as black "
+#~ "borders, image rendering, font rendering, DPI scaling, video rendering, "
+#~ "GL renderer, fullscreen mode, HDR, and locale detection. \n"
+#~ "If you wish to open an issue, please ensure that it is related to this "
+#~ "software and not an upstream issue. Choose the appropriate issue template "
+#~ "and fill in all required fields without any omissions."
+#~ msgstr ""
+#~ "به نظر می‌رسد که شما سوکیمی را در ویندوز استفاده می‌کنید. لطفاً توجه کنید به "
+#~ "طور پیش‌فرض GTK استفاده شده در این برنامه برای لینوکس طراحی شده است و هیچ "
+#~ "تضمینی برای کارکرد آن‌ها در ویندوز نیست، از جمله اما نه محدود به پخش "
+#~ "ویدئو، پخش صدا، اتصالات شبکه و لینک‌های خارجی. علاوه بر این، مشکلات شناخته "
+#~ "شده‌ای وجود دارند که قابل رفع نیستند، مانند حاشیه‌های سیاه، رندر تصاویر، "
+#~ "رندر فونت‌ها، مقیاس‌بندی DPI، رندر ویدئو، رندر GL، حالت تمام صفحه، HDR و "
+#~ "تشخیص محل.\n"
+#~ "اگر قصد دارید مشکلی گزارش کنید، لطفاً مطمئن شوید که مربوط به این نرم‌افزار "
+#~ "است و به مسائل اصلی GTK مربوط نمی‌شود. قالب مناسب مسئله را انتخاب کنید و "
+#~ "تمام فیلدهای مورد نیاز را بدون هیچ کم و کاستی پر کنید."
+
+#~ msgid "Close"
+#~ msgstr "بستن"
 
 #~ msgid "Not implemented"
 #~ msgstr "پیاده‌سازی نشده است"
