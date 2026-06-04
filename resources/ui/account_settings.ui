@@ -72,9 +72,14 @@
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Appearence</property>
             <child>
+              <object class="AdwSwitchRow" id="custom_accent_color_control">
+                <property name="title" translatable="yes">Use Custom Accent Color</property>
+                <property name="subtitle" translatable="yes">Disable to follow the system accent color</property>
+              </object>
+            </child>
+            <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Accent Color</property>
-                <property name="subtitle" translatable="yes">Restart App To Take Effect</property>
                 <child type="suffix">
                   <object class="GtkColorDialogButton" id="color">
                     <property name="valign">center</property>

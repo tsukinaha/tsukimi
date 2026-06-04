@@ -70,6 +70,8 @@ mod imp {
         #[template_child]
         pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
+        pub custom_accent_color_control: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub backgroundblurspinrow: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub backgroundblurcontrol: TemplateChild<adw::SwitchRow>,
@@ -377,6 +379,16 @@ impl AccountSettings {
                 &imp.selectlastcontrol.get(),
                 "active",
             )
+            .build();
+        SETTINGS
+            .bind(
+                "use-custom-accent-color",
+                &imp.custom_accent_color_control.get(),
+                "active",
+            )
+            .build();
+        SETTINGS
+            .bind("use-custom-accent-color", &imp.color.get(), "sensitive")
             .build();
         SETTINGS
             .bind("mpv-config-path", &imp.folder_button_content.get(), "label")

@@ -32,6 +32,7 @@ impl Settings {
     const KEY_LIST_SORT_BY: &'static str = "list-sort-by";
     const KEY_LIST_SORT_ORDER: &'static str = "list-sort-order";
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
+    const KEY_USE_CUSTOM_ACCENT_COLOR: &'static str = "use-custom-accent-color";
     const KEY_MUSIC_REPEAT_MODE: &'static str = "music-repeat-mode";
     const KEY_MPV_SEEK_FORWARD_STEP: &'static str = "mpv-seek-forward-step";
     const KEY_MPV_SEEK_BACKWARD_STEP: &'static str = "mpv-seek-backward-step";
@@ -345,6 +346,10 @@ impl Settings {
 
     pub fn accent_color_code(&self) -> String {
         self.string(Self::KEY_ACCENT_COLOR_CODE).to_string()
+    }
+
+    pub fn use_custom_accent_color(&self) -> bool {
+        self.boolean(Self::KEY_USE_CUSTOM_ACCENT_COLOR)
     }
 
     pub fn set_list_sort_by(&self, list_sort: i32) -> Result<(), glib::BoolError> {

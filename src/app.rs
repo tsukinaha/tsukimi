@@ -5,10 +5,17 @@ use adw::{
 use gtk::glib;
 
 mod imp {
+    use std::cell::{
+        Cell,
+        OnceCell,
+    };
 
     use gtk::{
         CssProvider,
-        gdk::Display,
+        gdk::{
+            Display,
+            RGBA,
+        },
     };
 
     use crate::ui::SETTINGS;
@@ -16,7 +23,10 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default)]
-    pub struct TsukimiApplication;
+    pub struct TsukimiApplication {
+        accent_provider: OnceCell<CssProvider>,
+        accent_provider_added: Cell<bool>,
+    }
 
     #[glib::object_subclass]
     impl ObjectSubclass for TsukimiApplication {
@@ -28,8 +38,24 @@ mod imp {
     impl ObjectImpl for TsukimiApplication {
         fn constructed(&self) {
             self.parent_constructed();
-            self.load_style_sheet();
+            self.update_accent_provider();
 
+            SETTINGS.connect_changed(
+                Some("use-custom-accent-color"),
+                glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self.obj(),
+                    move |_, _| obj.imp().update_accent_provider()
+                ),
+            );
+            SETTINGS.connect_changed(
+                Some("accent-color-code"),
+                glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self.obj(),
+                    move |_, _| obj.imp().update_accent_provider()
+                ),
+            );
             let obj = self.obj();
             obj.set_application_id(Some(crate::APP_ID));
             obj.set_resource_base_path(Some(crate::APP_RESOURCE_PATH));
@@ -53,27 +79,70 @@ mod imp {
     impl AdwApplicationImpl for TsukimiApplication {}
 
     impl TsukimiApplication {
-        fn load_style_sheet(&self) {
-            let provider = CssProvider::new();
+        fn update_accent_provider(&self) {
+            let display = Display::default().expect("Could not connect to a display.");
 
+            if !SETTINGS.use_custom_accent_color() {
+                if let Some(provider) = self.accent_provider.get()
+                    && self.accent_provider_added.get()
+                {
+                    gtk::style_context_remove_provider_for_display(&display, provider);
+                    self.accent_provider_added.set(false);
+                }
+                return;
+            }
+
+            let provider = self.accent_provider.get_or_init(CssProvider::new);
             let accent_color = SETTINGS.accent_color_code();
+            let accent_fg_color = readable_foreground_color(&accent_color);
 
             provider.load_from_string(&format!(
                 "
-                :root {{
-                    --accent-color:{accent_color};
-                }}
+                @define-color accent_color {accent_color};
+                @define-color accent_bg_color {accent_color};
+                @define-color accent_fg_color {accent_fg_color};
 
                 :root {{
+                    --accent-color:{accent_color};
                     --accent-bg-color:{accent_color};
+                    --accent-fg-color:{accent_fg_color};
                 }}",
             ));
 
-            gtk::style_context_add_provider_for_display(
-                &Display::default().expect("Could not connect to a display."),
-                &provider,
-                gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
-            );
+            if !self.accent_provider_added.get() {
+                gtk::style_context_add_provider_for_display(
+                    &display,
+                    provider,
+                    gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+                );
+                self.accent_provider_added.set(true);
+            }
+        }
+    }
+
+    fn readable_foreground_color(color: &str) -> &'static str {
+        let Ok(color) = color.parse::<RGBA>() else {
+            return "#000000";
+        };
+
+        let luminance = relative_luminance(color.red(), color.green(), color.blue());
+
+        if luminance >= 0.179 {
+            "#000000"
+        } else {
+            "#ffffff"
+        }
+    }
+
+    fn relative_luminance(red: f32, green: f32, blue: f32) -> f32 {
+        0.2126 * linear_srgb(red) + 0.7152 * linear_srgb(green) + 0.0722 * linear_srgb(blue)
+    }
+
+    fn linear_srgb(channel: f32) -> f32 {
+        if channel <= 0.04045 {
+            channel / 12.92
+        } else {
+            ((channel + 0.055) / 1.055).powf(2.4)
         }
     }
 }
