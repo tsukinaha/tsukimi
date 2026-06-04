@@ -102,6 +102,22 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Home Page</property>
+            <child>
+              <object class="AdwSwitchRow" id="refresh_control">
+                <property name="title" translatable="yes">Refresh when returning to home page</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="merge_resume_next_up_control">
+                <property name="title" translatable="yes">Merge Continue Watching and Next Up</property>
+                <property name="subtitle" translatable="yes">Jellyfin only</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Network</property>
             <child>
               <object class="AdwSpinRow" id="threadspinrow">
@@ -116,11 +132,6 @@
                     <property name="step-increment">1</property>
                   </object>
                 </property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwSwitchRow" id="refresh_control">
-                <property name="title" translatable="yes">Refresh when returning to home page</property>
               </object>
             </child>
           </object>

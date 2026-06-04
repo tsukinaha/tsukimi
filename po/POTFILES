@@ -7,7 +7,6 @@ src/client/mod.rs
 src/client/proxy.rs
 src/client/runtime.rs
 src/client/structs.rs
-src/client/windows_compat.rs
 src/config.rs
 src/gstl/mod.rs
 src/gstl/mpris.rs
@@ -22,7 +21,9 @@ src/ui/models/settings.rs
 src/ui/mpv/control_sidebar.rs
 src/ui/mpv/menu_actions.rs
 src/ui/mpv/mod.rs
-src/ui/mpv/mpris.rs
+src/ui/mpv/mpris/metadata.rs
+src/ui/mpv/mpris/mod.rs
+src/ui/mpv/mpris/track_list.rs
 src/ui/mpv/mpvglarea.rs
 src/ui/mpv/options_matcher.rs
 src/ui/mpv/page.rs

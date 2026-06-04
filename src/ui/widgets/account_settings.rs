@@ -66,6 +66,8 @@ mod imp {
         #[template_child]
         pub refresh_control: TemplateChild<adw::SwitchRow>,
         #[template_child]
+        pub merge_resume_next_up_control: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub backgroundblurspinrow: TemplateChild<adw::SpinRow>,
@@ -384,6 +386,13 @@ impl AccountSettings {
             .build();
         SETTINGS
             .bind("is-refresh", &imp.refresh_control.get(), "active")
+            .build();
+        SETTINGS
+            .bind(
+                "merge-resume-and-next-up",
+                &imp.merge_resume_next_up_control.get(),
+                "active",
+            )
             .build();
 
         let action_group = gio::SimpleActionGroup::new();

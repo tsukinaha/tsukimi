@@ -505,6 +505,7 @@ impl MPVPage {
         self.mpv().set_property("force-media-title", media_title);
 
         let id = item.id();
+        let series_id = item.series_id();
         self.imp().video_scale.reset_scale();
         self.reset_skippable_segments();
 
@@ -607,6 +608,7 @@ impl MPVPage {
 
                 let back = Back {
                     id: id.to_owned(),
+                    series_id,
                     playsessionid: playback_info.play_session_id.to_owned(),
                     mediasourceid: media_source.id.to_owned(),
                     livestreamid: media_source.live_stream_id.to_owned(),
@@ -901,6 +903,7 @@ impl MPVPage {
     }
 
     pub async fn in_play_item(&self, item: TuItem) {
+        self.handle_callback(BackType::Stop);
         let episode_list = self.imp().current_episode_list.borrow().clone();
         self.play(None, item, episode_list, None, 0.0);
     }

@@ -275,6 +275,8 @@ pub struct UserData {
     pub played_percentage: Option<f64>,
     #[serde(rename = "PlaybackPositionTicks")]
     pub playback_position_ticks: Option<u64>,
+    #[serde(rename = "LastPlayedDate")]
+    pub last_played_date: Option<DateTime<Utc>>,
     #[serde(rename = "Played")]
     pub played: bool,
     #[serde(rename = "UnplayedItemCount")]
@@ -546,6 +548,7 @@ pub struct ActivityLogs {
 #[derive(Deserialize, Debug, Clone, Builder)]
 pub struct Back {
     pub id: String,
+    pub series_id: Option<String>,
     pub playsessionid: Option<String>,
     pub mediasourceid: String,
     pub livestreamid: Option<String>,

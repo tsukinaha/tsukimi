@@ -21,6 +21,7 @@ use crate::{
         spawn_tokio,
     },
 };
+
 mod imp {
     use std::cell::RefCell;
 
@@ -37,6 +38,8 @@ mod imp {
         pub favourite_button: TemplateChild<StarToggle>,
         #[property(get, set, nullable)]
         pub id: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        pub series_id: RefCell<Option<String>>,
         #[property(get, set, construct, default = false)]
         pub is_playable: RefCell<bool>,
         #[property(get, set, default = false)]
@@ -89,12 +92,17 @@ impl ItemActionsBox {
     pub fn new() -> Self {
         glib::Object::builder()
             .property("id", None::<String>)
+            .property("series-id", None::<String>)
             .build()
+    }
+
+    fn target_id(&self) -> Option<String> {
+        self.id().or_else(|| self.series_id())
     }
 
     #[template_callback]
     pub async fn on_favourite_button_toggled(&self, btn: &StarToggle) {
-        let id = self.id();
+        let id = self.target_id();
 
         if let Some(id) = id {
             let result = if btn.is_active() {
@@ -125,7 +133,7 @@ impl ItemActionsBox {
                         insert_editm_dialog,
                         ui::widgets::metadata_dialog::MetadataDialog,
                     };
-                    let id = obj.id();
+                    let id = obj.target_id();
                     if let Some(id) = id {
                         let dialog = MetadataDialog::new(&id);
                         insert_editm_dialog!(obj, dialog);
@@ -142,7 +150,7 @@ impl ItemActionsBox {
                         insert_editm_dialog,
                         ui::widgets::image_dialog::ImageDialog,
                     };
-                    let id = obj.id();
+                    let id = obj.target_id();
                     if let Some(id) = id {
                         let dialog = ImageDialog::new(&id);
                         insert_editm_dialog!(obj, dialog);
@@ -157,14 +165,15 @@ impl ItemActionsBox {
                         #[weak(rename_to = obj)]
                         self,
                         move |_, _, _| {
-                            let id = obj.id();
+                            let id = obj.target_id();
+                            let series_id = obj.series_id();
                             if let Some(id) = id {
                                 spawn(glib::clone!(
                                     #[weak]
                                     obj,
                                     async move {
                                         match spawn_tokio(async move {
-                                            JELLYFIN_CLIENT.set_as_unplayed(&id).await
+                                            JELLYFIN_CLIENT.set_as_unplayed(&id, series_id).await
                                         })
                                         .await
                                         {
@@ -189,14 +198,15 @@ impl ItemActionsBox {
                         #[weak(rename_to = obj)]
                         self,
                         move |_, _, _| {
-                            let id = obj.id();
+                            let id = obj.target_id();
+                            let series_id = obj.series_id();
                             if let Some(id) = id {
                                 spawn(glib::clone!(
                                     #[weak]
                                     obj,
                                     async move {
                                         match spawn_tokio(async move {
-                                            JELLYFIN_CLIENT.set_as_played(&id).await
+                                            JELLYFIN_CLIENT.set_as_played(&id, series_id).await
                                         })
                                         .await
                                         {
