@@ -132,42 +132,54 @@ pub mod imp {
 
             let style_manager = adw::StyleManager::default();
             self.is_dark.set(style_manager.is_dark());
+            let obj = self.obj();
 
-            let obj = self.obj().downgrade();
-            style_manager.connect_dark_notify(move |sm| {
-                if let Some(obj) = obj.upgrade() {
+            style_manager.connect_dark_notify(glib::clone!(
+                #[weak]
+                obj,
+                move |sm| {
                     obj.imp().is_dark.set(sm.is_dark());
                     obj.queue_draw();
                 }
-            });
+            ));
 
-            let obj = self.obj().downgrade();
-            style_manager.connect_accent_color_rgba_notify(move |_| {
-                if let Some(obj) = obj.upgrade() {
+            style_manager.connect_accent_color_rgba_notify(glib::clone!(
+                #[weak]
+                obj,
+                move |_| {
                     obj.queue_draw();
                 }
-            });
+            ));
 
-            let obj = self.obj().downgrade();
-            SETTINGS.connect_changed(Some("use-custom-accent-color"), move |_, _| {
-                if let Some(obj) = obj.upgrade() {
-                    obj.queue_draw();
-                }
-            });
+            SETTINGS.connect_changed(
+                Some("use-custom-accent-color"),
+                glib::clone!(
+                    #[weak]
+                    obj,
+                    move |_, _| {
+                        obj.queue_draw();
+                    }
+                ),
+            );
 
-            let obj = self.obj().downgrade();
-            SETTINGS.connect_changed(Some("accent-color-code"), move |_, _| {
-                if let Some(obj) = obj.upgrade() {
-                    obj.queue_draw();
-                }
-            });
+            SETTINGS.connect_changed(
+                Some("accent-color-code"),
+                glib::clone!(
+                    #[weak]
+                    obj,
+                    move |_, _| {
+                        obj.queue_draw();
+                    }
+                ),
+            );
 
-            let obj = self.obj().downgrade();
-            self.hover_scale.set_underlay(move |snapshot| {
-                if let Some(this) = obj.upgrade() {
-                    this.imp().draw_backdrop_and_progress(snapshot);
+            self.hover_scale.set_underlay(glib::clone!(
+                #[weak]
+                obj,
+                move |snapshot| {
+                    obj.imp().draw_backdrop_and_progress(snapshot);
                 }
-            });
+            ));
 
             let obj = self.obj();
             obj.add_controller(obj.gesture_click());
