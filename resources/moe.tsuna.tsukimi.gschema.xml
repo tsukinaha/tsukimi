@@ -53,9 +53,9 @@
       <default>"#AEB5FA"</default>
       <summary>Software Accent Color</summary>
     </key>
-    <key name="accent-fg-color-code" type="s">
-      <default>"#3C0090"</default>
-      <summary>Software Accent FG Color</summary>
+    <key name="use-custom-accent-color" type="b">
+      <default>true</default>
+      <summary>Whether to override the system accent color</summary>
     </key>
     <key name="root-pic" type="s">
       <default>""</default>
