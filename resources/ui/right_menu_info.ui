@@ -33,7 +33,11 @@
                         <property name="valign">center</property>
                         <property name="visible">False</property>
                         <property name="margin-end">6</property>
-                        <property name="max-width-chars">14</property>
+                        <property name="wrap">true</property>
+                        <property name="max-width-chars">12</property>
+                        <style>
+                            <class name="dimmed" />
+                        </style>
                     </object>
                 </child>
                 <child>
@@ -45,6 +49,9 @@
                             <object class="GtkImage">
                                 <property name="icon-name">starred-symbolic</property>
                                 <property name="valign">center</property>
+                                <style>
+                                    <class name="accent" />
+                                </style>
                             </object>
                         </child>
                         <child>
@@ -52,13 +59,15 @@
                                 <property name="label" bind-source="MenuInfo" bind-property="rating" bind-flags="sync-create"/>
                                 <property name="valign">center</property>
                                 <property name="margin-start">6</property>
+                                <style>
+                                    <class name="dimmed" />
+                                </style>
                             </object>
                         </child>
                     </object>
                 </child>
                 <style>
                     <class name="subtitle-1" />
-                    <class name="dimmed" />
                 </style>
             </object>
         </child>
