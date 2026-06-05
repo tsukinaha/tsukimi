@@ -264,7 +264,7 @@ mod imp {
         pub queued_playback_direct_mode: RefCell<Option<super::PlaybackDirectMode>>,
         pub retrying_playback: Cell<bool>,
         pub allow_fallback: Cell<bool>,
-        pub muted: Cell<bool>,
+        pub last_nonzero_volume: Cell<i64>,
     }
 
     #[glib::object_subclass]
@@ -1054,8 +1054,13 @@ impl MPVPage {
     }
 
     fn volume_cb(&self, value: i64) {
-        self.imp().volume_adj.set_value(value as f64);
-        self.imp().volume_bar.set_level(value as f64 / 100.0);
+        let imp = self.imp();
+        imp.volume_adj.set_value(value as f64);
+        imp.volume_bar.set_level(value as f64 / 100.0);
+        if value > 0 {
+            imp.last_nonzero_volume.set(value);
+        }
+        self.update_volume_button(value);
         self.notify_volume_changed(value as f64 / 100.0);
     }
 
@@ -1081,20 +1086,27 @@ impl MPVPage {
 
     #[template_callback]
     fn on_volume_button_clicked(&self) {
-        self.set_muted(!self.imp().muted.get());
+        let imp = self.imp();
+        let volume = imp.volume_adj.value().round() as i64;
+        if volume > 0 {
+            imp.last_nonzero_volume.set(volume);
+            imp.video.set_volume(0);
+        } else {
+            imp.video.set_volume(imp.last_nonzero_volume.get().max(1));
+        }
     }
 
-    fn set_muted(&self, muted: bool) {
+    fn update_volume_button(&self, value: i64) {
         let imp = self.imp();
-        imp.muted.set(muted);
-        imp.video.set_property("mute", muted);
-        imp.volume_button_image.set_icon_name(Some(if muted {
-            "audio-volume-muted-symbolic"
-        } else {
-            "audio-volume-high-symbolic"
-        }));
+        let icon_name = match value {
+            0 => "audio-volume-muted-symbolic",
+            value if value < 33 => "audio-volume-low-symbolic",
+            value if value < 66 => "audio-volume-medium-symbolic",
+            _ => "audio-volume-high-symbolic",
+        };
+        imp.volume_button_image.set_icon_name(Some(icon_name));
         imp.volume_button
-            .set_tooltip_text(Some(&gettext(if muted { "Unmute" } else { "Mute" })));
+            .set_tooltip_text(Some(&gettext(if value == 0 { "Unmute" } else { "Mute" })));
     }
 
     fn on_file_loaded(&self) {
