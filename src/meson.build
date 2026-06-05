@@ -13,18 +13,18 @@ endif
 
 cargo_bin = cargo_target_dir / rust_target / meson.project_name()
 
+env = environment()
+
 if get_option('sandboxed-build')
     # This is the path used by flatpak-cargo-generator in flatpak-builder-tools
-    cargo_env = ['CARGO_HOME=' + meson.project_source_root() / 'cargo']
+    env.set('CARGO_HOME', meson.project_source_root() / 'cargo')
 else
-    cargo_env = ['CARGO_HOME=' + meson.project_build_root() / 'cargo-home']
+    env.set('CARGO_HOME', meson.project_build_root() / 'cargo-home')
 endif
 
-rust_env = cargo_env + [
-    'TSUKIMI_VERSION=' + version,
-    'TSUKIMI_LOCALEDIR=' + localedir,
-    'TSUKIMI_PKGDATADIR=' + pkgdatadir,
-]
+env.set('TSUKIMI_VERSION', version)
+env.set('TSUKIMI_LOCALEDIR', localedir)
+env.set('TSUKIMI_PKGDATADIR', pkgdatadir)
 
 # We currently don't have rustdoc wiring.
 # rustdoc_flags = ' '.join(
@@ -49,7 +49,7 @@ custom_target(
     build_always_stale: true,
     output: meson.project_name(),
     console: true,
-    env: rust_env,
+    env: env,
     install: true,
     install_dir: bindir,
     command: [

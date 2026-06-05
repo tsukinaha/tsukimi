@@ -87,7 +87,7 @@ mod imp {
     #[properties(wrapper_type = super::HortuScrolled)]
     pub struct HortuScrolled {
         #[property(get, set, construct_only, default_value = false)]
-        pub isresume: OnceCell<bool>,
+        pub is_resume: OnceCell<bool>,
         #[template_child]
         pub label: TemplateChild<gtk::Label>,
         #[template_child]
@@ -248,7 +248,7 @@ impl HortuScrolled {
                 };
                 let tu_item = object.item();
                 tu_item.update_user_data(&item.user_data);
-                tu_item.set_is_resume(self.isresume());
+                tu_item.set_is_resume(self.is_resume());
                 tu_item.set_prefer_size(prefer_size);
                 tu_item.set_prefer_poster(self.prefer_poster());
                 object

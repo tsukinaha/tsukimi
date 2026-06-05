@@ -35,8 +35,7 @@ pub struct Args {
     #[clap(long, short)]
     gsk_renderer: Option<String>,
 
-    /// XDG_CACHE_HOME. If not set, it will be set to %LOCALAPPDATA% on *Windows*. Never set on
-    /// *Linux*.
+    /// XDG_CACHE_HOME override.
     #[clap(long)]
     xdg_cache_home: Option<String>,
 }
@@ -122,27 +121,10 @@ impl Args {
         info!("Glib logging redirected to tracing");
     }
 
-    #[cfg(target_os = "windows")]
-    fn init_config_dirs(&self) {
-        if let Some(xdg_cache_home) = self.xdg_cache_home.as_deref() {
-            info!("Windows: Setting XDG_CACHE_HOME to {}", xdg_cache_home);
-            unsafe { std::env::set_var("XDG_CACHE_HOME", xdg_cache_home) };
-        }
-
-        if std::env::var("XDG_CACHE_HOME").is_err() {
-            info!("Windows: Falling back to default XDG_CACHE_HOME: %LOCALAPPDATA%");
-            let config_local_dir = dirs::config_local_dir().expect("Failed to get %LOCALAPPDATA%");
-            unsafe { std::env::set_var("XDG_CACHE_HOME", config_local_dir) };
-        }
-    }
-
     pub fn init(&self) {
         self.init_tracing_subscriber();
         self.init_gsk_renderer();
         self.init_glib_to_tracing();
-
-        #[cfg(target_os = "windows")]
-        self.init_config_dirs();
 
         std::panic::set_hook(Box::new(|info| {
             if let Some(s) = info.payload().downcast_ref::<&str>() {

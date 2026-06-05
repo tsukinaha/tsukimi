@@ -158,13 +158,8 @@ mod imp {
 
             // Tilt angles in degrees, modulated by progress so they ease in/out
             // with the hover animation rather than jumping when the cursor enters.
-            // Windows GSK does not support 3-D transforms, so tilt is omitted there.
-            #[cfg(not(windows))]
             let tilt_y_deg = nx * super::MAX_TILT_ANGLE * progress; // yaw  (cursor left/right)
-            #[cfg(not(windows))]
             let tilt_x_deg = -ny * super::MAX_TILT_ANGLE * progress; // pitch (cursor up/down)
-            #[cfg(windows)]
-            let _ = nx; // nx is only used for tilt on non-Windows
 
             let child_snapshot = gtk::Snapshot::new();
             // push_opacity with a value strictly below 1.0 forces the GPU renderer
@@ -223,7 +218,6 @@ mod imp {
                 return;
             };
 
-            #[cfg(not(windows))]
             let transform = gsk::Transform::new()
                 .translate_3d(&graphene::Point3D::new(w / 2.0, h / 2.0, 0.0))
                 .perspective(super::PERSPECTIVE_DEPTH)
@@ -231,13 +225,6 @@ mod imp {
                 .rotate_3d(tilt_x_deg, &graphene::Vec3::x_axis())
                 .scale(scale, scale)
                 .translate_3d(&graphene::Point3D::new(-w / 2.0, -h / 2.0, 0.0));
-
-            // Windows does not support 3-D GSK nodes
-            #[cfg(windows)]
-            let transform = gsk::Transform::new()
-                .translate(&graphene::Point::new(w / 2.0, h / 2.0))
-                .scale(scale, scale)
-                .translate(&graphene::Point::new(-w / 2.0, -h / 2.0));
 
             snapshot.append_node(gsk::TransformNode::new(&node, Some(&transform)));
         }

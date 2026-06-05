@@ -32,6 +32,7 @@ impl Settings {
     const KEY_LIST_SORT_BY: &'static str = "list-sort-by";
     const KEY_LIST_SORT_ORDER: &'static str = "list-sort-order";
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
+    const KEY_USE_CUSTOM_ACCENT_COLOR: &'static str = "use-custom-accent-color";
     const KEY_MUSIC_REPEAT_MODE: &'static str = "music-repeat-mode";
     const KEY_MPV_SEEK_FORWARD_STEP: &'static str = "mpv-seek-forward-step";
     const KEY_MPV_SEEK_BACKWARD_STEP: &'static str = "mpv-seek-backward-step";
@@ -54,25 +55,13 @@ impl Settings {
     const KEY_MPV_VIDEO_SCALE: &'static str = "mpv-video-scale"; // i32
     const KEY_MPV_CONFIG_DIR: &'static str = "mpv-config-path"; // String
     const KEY_IS_REFRESH: &'static str = "is-refresh"; // bool
+    const KEY_MERGE_RESUME_AND_NEXT_UP: &'static str = "merge-resume-and-next-up"; // bool
     const KEY_DEVICE_UUID: &'static str = "device-uuid"; // String
     const KEY_MAIN_THEME: &'static str = "main-theme"; // i32
     const KEY_WINDOW_WIDTH: &'static str = "window-width"; // i32
     const KEY_WINDOW_HEIGHT: &'static str = "window-height"; // i32
     const KEY_IS_MAXIMIZED: &'static str = "is-maximized"; // bool
     const KEY_IS_FULLSCREEN: &'static str = "is-fullscreen"; // bool
-
-    #[cfg(target_os = "windows")]
-    const KEY_IS_FIRST_RUN: &'static str = "is-first-run"; // bool
-
-    #[cfg(target_os = "windows")]
-    pub fn is_first_run(&self) -> bool {
-        self.boolean(Self::KEY_IS_FIRST_RUN)
-    }
-
-    #[cfg(target_os = "windows")]
-    pub fn set_is_first_run(&self, is_first_run: bool) -> Result<(), glib::BoolError> {
-        self.set_boolean(Self::KEY_IS_FIRST_RUN, is_first_run)
-    }
 
     pub fn is_overlay(&self) -> bool {
         self.boolean(Self::KEY_IS_OVERLAY)
@@ -124,6 +113,10 @@ impl Settings {
 
     pub fn is_refresh(&self) -> bool {
         self.boolean(Self::KEY_IS_REFRESH)
+    }
+
+    pub fn merge_resume_and_next_up(&self) -> bool {
+        self.boolean(Self::KEY_MERGE_RESUME_AND_NEXT_UP)
     }
 
     pub fn mpv_config_dir(&self) -> String {
@@ -353,6 +346,10 @@ impl Settings {
 
     pub fn accent_color_code(&self) -> String {
         self.string(Self::KEY_ACCENT_COLOR_CODE).to_string()
+    }
+
+    pub fn use_custom_accent_color(&self) -> bool {
+        self.boolean(Self::KEY_USE_CUSTOM_ACCENT_COLOR)
     }
 
     pub fn set_list_sort_by(&self, list_sort: i32) -> Result<(), glib::BoolError> {

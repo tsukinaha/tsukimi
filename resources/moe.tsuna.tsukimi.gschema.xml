@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <schemalist>
   <schema id="moe.tsuna.tsukimi" path="/moe/tsukimi/">
     <key name="window-width" type="i">
@@ -53,9 +53,9 @@
       <default>"#AEB5FA"</default>
       <summary>Software Accent Color</summary>
     </key>
-    <key name="accent-fg-color-code" type="s">
-      <default>"#3C0090"</default>
-      <summary>Software Accent FG Color</summary>
+    <key name="use-custom-accent-color" type="b">
+      <default>true</default>
+      <summary>Whether to override the system accent color</summary>
     </key>
     <key name="root-pic" type="s">
       <default>""</default>
@@ -170,7 +170,8 @@
     </key>
     <key name="mpv-video-scale" type="i">
       <summary>Video Upscale Method</summary>
-      <description>0: lanczos, 1: bilinear, 2: ewa_lanczos, 3: mitchell, 4: hermite, 5: oversample, 6: linear, 7: ewa_hanning, 8: ewa_lanczossharp</description>
+      <description
+            >0: lanczos, 1: bilinear, 2: ewa_lanczos, 3: mitchell, 4: hermite, 5: oversample, 6: linear, 7: ewa_hanning, 8: ewa_lanczossharp</description>
       <default>0</default>
     </key>
     <key name="mpv-force-stereo" type="b">
@@ -214,9 +215,9 @@
       <summary>Frefresh when returning to home page</summary>
       <default>false</default>
     </key>
-    <key name="is-first-run" type="b">
-      <summary>Whether the app is first run</summary>
-      <default>true</default>
+    <key name="merge-resume-and-next-up" type="b">
+      <summary>Merge Continue Watching and Next Up on Jellyfin</summary>
+      <default>false</default>
     </key>
     <key name="is-danmaku-enabled" type="b">
       <summary>Whether the danmaku is enabled</summary>

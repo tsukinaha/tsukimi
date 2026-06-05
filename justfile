@@ -21,3 +21,6 @@ run *ARGS: install
             GSETTINGS_SCHEMA_DIR="$PWD/dev-prefix/share/glib-2.0/schemas" \
             XDG_DATA_DIRS="$PWD/dev-prefix/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}" \
             ./src/tsukimi {{ ARGS }}
+
+update-i18n:
+    meson compile -C {{ builddir }} tsukimi-pot

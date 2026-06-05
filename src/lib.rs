@@ -17,11 +17,10 @@ pub mod client;
 
 pub use arg::Args;
 pub use config::GETTEXT_PACKAGE;
-use config::version;
-#[cfg(target_os = "linux")]
 use config::{
     LOCALEDIR,
     PKGDATADIR,
+    version,
 };
 use once_cell::sync::OnceCell;
 
@@ -41,32 +40,11 @@ pub static USER_AGENT: LazyLock<String> =
 pub const APP_ID: &str = "moe.tsuna.tsukimi";
 pub const CLIENT_ID: &str = "Tsukimi";
 const APP_RESOURCE_PATH: &str = "/moe/tsuna/tsukimi";
-#[cfg(target_os = "linux")]
 const GRESOURCE_FILE: &str = "tsukimi.gresource";
-
-#[cfg(target_os = "windows")]
-const WINDOWS_LOCALEDIR: &str = "share\\locale";
 
 pub fn locale_dir() -> &'static str {
     static FLOCALEDIR: OnceCell<&'static str> = OnceCell::new();
-    FLOCALEDIR.get_or_init(|| {
-        #[cfg(target_os = "linux")]
-        {
-            LOCALEDIR
-        }
-        #[cfg(target_os = "windows")]
-        {
-            let exe_path = std::env::current_exe().expect("Can not get locale dir");
-            let locale_path = exe_path
-                .ancestors()
-                .nth(2)
-                .expect("Can not get locale dir")
-                .join(WINDOWS_LOCALEDIR);
-            Box::leak(locale_path.into_boxed_path())
-                .to_str()
-                .expect("Can not get locale dir")
-        }
-    })
+    FLOCALEDIR.get_or_init(|| LOCALEDIR)
 }
 
 pub fn run() -> gtk::glib::ExitCode {
@@ -91,16 +69,7 @@ pub fn run() -> gtk::glib::ExitCode {
 }
 
 fn register_gio_resources() {
-    // Linux: Meson installs resources as a bundle.
-    #[cfg(target_os = "linux")]
-    {
-        let path = std::path::Path::new(PKGDATADIR).join(GRESOURCE_FILE);
-        let resources = gtk::gio::Resource::load(path).expect("Failed to load resources.");
-        gtk::gio::resources_register(&resources);
-    }
-
-    // Windows: Cargo embeds resources.
-    #[cfg(target_os = "windows")]
-    gtk::gio::resources_register_include!("tsukimi.gresource")
-        .expect("Failed to register resources.");
+    let path = std::path::Path::new(PKGDATADIR).join(GRESOURCE_FILE);
+    let resources = gtk::gio::Resource::load(path).expect("Failed to load resources.");
+    gtk::gio::resources_register(&resources);
 }

@@ -20,7 +20,7 @@ use libmpv2::{
     render::RenderContext,
 };
 use tracing::{
-    info,
+    debug,
     warn,
 };
 
@@ -78,10 +78,6 @@ impl Default for TsukimiMPV {
         let library = unsafe { libloading::os::unix::Library::new("libepoxy.0.dylib") }.unwrap();
         #[cfg(all(unix, not(target_os = "macos")))]
         let library = unsafe { libloading::os::unix::Library::new("libepoxy.so.0") }.unwrap();
-        #[cfg(windows)]
-        let library = libloading::os::windows::Library::open_already_loaded("libepoxy-0.dll")
-            .or_else(|_| libloading::os::windows::Library::open_already_loaded("epoxy-0.dll"))
-            .unwrap();
 
         epoxy::load_with(|name| {
             unsafe { library.get::<_>(name.as_bytes()) }
@@ -277,7 +273,7 @@ impl TsukimiMPV {
     pub fn press_key(&self, key: u32, state: gtk::gdk::ModifierType) {
         let keystr = get_full_keystr(key, state);
         if let Some(keystr) = keystr {
-            info!("MPV Catch Key pressed: {}", keystr);
+            debug!("MPV Catch Key pressed: {}", keystr);
             self.command("keypress", &[&keystr]);
         }
     }
@@ -285,7 +281,7 @@ impl TsukimiMPV {
     pub fn release_key(&self, key: u32, state: gtk::gdk::ModifierType) {
         let keystr = get_full_keystr(key, state);
         if let Some(keystr) = keystr {
-            info!("MPV Catch Key released: {}", keystr);
+            debug!("MPV Catch Key released: {}", keystr);
             self.command("keyup", &[&keystr]);
         }
     }
@@ -327,10 +323,10 @@ impl TsukimiMPV {
         let mpv = Arc::clone(&self.mpv);
         let cmd = cmd.to_string();
         let args = args.iter().map(|&arg| arg.to_string()).collect::<Vec<_>>();
-        spawn_tokio_without_await(async move {
+        spawn_tokio_blocking_without_await(move || {
             let args_ref: Vec<&str> = args.iter().map(|arg| arg.as_str()).collect();
             mpv.command(&cmd, &args_ref)
-                .map_err(|e| warn!("MPV command Error: {}, Command: {}", e, cmd))
+                .map_err(|e| warn!("MPV command Error: {}, Command: {} {:?}", e, cmd, args_ref))
                 .ok();
         });
     }
@@ -579,7 +575,9 @@ fn node_to_chapter_list(node: MpvNode) -> ChapterList {
 fn get_full_keystr(key: u32, state: gtk::gdk::ModifierType) -> Option<String> {
     let modstr = get_modstr(state);
     let keystr = keyval_to_keystr(key);
-    if let Some(keystr) = keystr {
+    if let Some(keystr) = keystr
+        && !keystr.is_empty()
+    {
         return Some(format!("{modstr}{keystr}"));
     }
     None
@@ -632,7 +630,10 @@ use super::options_matcher::{
 use crate::{
     client::error::UserFacingError,
     ui::models::SETTINGS,
-    utils::spawn_tokio_without_await,
+    utils::{
+        spawn_tokio_blocking_without_await,
+        spawn_tokio_without_await,
+    },
 };
 
 const KEYSTRING_MAP: &[(&str, &str)] = &[
@@ -676,6 +677,8 @@ const KEYSTRING_MAP: &[(&str, &str)] = &[
     ("", "Alt_R"),
     ("", "Meta_L"),
     ("", "Meta_R"),
+    ("", "Super_L"),
+    ("", "Super_R"),
     ("", "Shift_L"),
     ("", "Shift_R"),
     ("", "grave"),

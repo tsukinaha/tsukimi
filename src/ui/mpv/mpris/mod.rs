@@ -34,14 +34,14 @@ use crate::{
     ui::mpv::page::MPVPage,
     utils::spawn,
 };
-use tracing::{
-    info,
-    warn,
-};
+use tracing::warn;
+
+mod metadata;
+mod track_list;
 
 impl MPVPage {
     pub async fn initialize_mpris(&self, app_id: &str) -> Result<()> {
-        let server = LocalServer::new(app_id, self.imp().obj().clone()).await?;
+        let server = LocalServer::new_with_track_list(app_id, self.imp().obj().clone()).await?;
         spawn(server.run());
         self.imp()
             .mpris_server
@@ -59,15 +59,11 @@ impl MPVPage {
             #[weak(rename_to=imp)]
             self,
             async move {
-                match imp.mpris_server() {
-                    Some(server) => {
-                        if let Err(err) = server.properties_changed(property).await {
-                            warn!("Failed to emit properties changed: {}", err);
-                        }
-                    }
-                    None => {
-                        info!("Failed to get MPRIS server.");
-                    }
+                let Some(server) = imp.mpris_server() else {
+                    return;
+                };
+                if let Err(err) = server.properties_changed(property).await {
+                    warn!("Failed to emit properties changed: {}", err);
                 }
             }
         ));
@@ -78,74 +74,61 @@ impl MPVPage {
             #[weak(rename_to=obj)]
             self,
             async move {
-                match obj.mpris_server() {
-                    Some(server) => {
-                        let signal = Signal::Seeked {
-                            position: Time::from_millis(position),
-                        };
-                        if let Err(err) = server.emit(signal).await {
-                            warn!("Failed to emit mpris_seeked: {}", err);
-                        }
-                    }
-                    None => {
-                        info!("Failed to get MPRIS server.");
-                    }
+                let Some(server) = obj.mpris_server() else {
+                    return;
+                };
+                let signal = Signal::Seeked {
+                    position: Time::from_secs(position),
+                };
+                if let Err(err) = server.emit(signal).await {
+                    warn!("Failed to emit mpris_seeked: {}", err);
                 }
             }
         ));
     }
 
-    pub fn notify_mpris_playing(&self) {
+    pub fn notify_mpris_track_changed(&self) {
+        let Some(current_video) = self.current_video() else {
+            return;
+        };
+        let metadata = self.metadata_for_video(&current_video);
         self.mpris_properties_changed([
-            Property::Metadata(self.metadata().clone()),
+            Property::Metadata(metadata.clone()),
             Property::CanPlay(true),
             Property::CanPause(true),
             Property::CanSeek(true),
-            Property::PlaybackStatus(PlaybackStatus::Playing),
+            Property::CanGoNext(self.has_next_video()),
+            Property::CanGoPrevious(self.has_previous_video()),
         ]);
+        self.notify_mpris_art_changed(current_video, metadata);
+    }
+
+    pub fn notify_mpris_playing(&self) {
+        self.mpris_properties_changed([Property::PlaybackStatus(PlaybackStatus::Playing)]);
     }
 
     pub fn notify_mpris_paused(&self) {
-        self.mpris_properties_changed([
-            Property::Metadata(self.metadata().clone()),
-            Property::CanPlay(true),
-            Property::CanPause(false),
-            Property::CanSeek(true),
-            Property::PlaybackStatus(PlaybackStatus::Paused),
-        ]);
+        self.mpris_properties_changed([Property::PlaybackStatus(PlaybackStatus::Paused)]);
+    }
+
+    pub fn notify_mpris_volume(&self, volume: Volume) {
+        self.mpris_properties_changed([Property::Volume(volume.clamp(0.0, 1.0))]);
     }
 
     pub fn notify_mpris_stopped(&self) {
         self.mpris_properties_changed([
-            Property::Metadata(self.metadata().clone()),
-            Property::CanPlay(true),
+            Property::Metadata(Metadata::new()),
+            Property::CanPlay(false),
             Property::CanPause(false),
             Property::CanSeek(false),
+            Property::CanGoNext(false),
+            Property::CanGoPrevious(false),
             Property::PlaybackStatus(PlaybackStatus::Stopped),
         ]);
     }
 
     pub fn notify_mpris_loop_status(&self, status: ListRepeatMode) {
         self.mpris_properties_changed([Property::LoopStatus(status.into())]);
-    }
-
-    pub fn notify_mpris_has_chapters(&self, has_chapters: bool) {
-        self.mpris_properties_changed([
-            Property::CanGoNext(has_chapters),
-            Property::CanGoPrevious(has_chapters),
-        ]);
-    }
-
-    pub fn notify_mpris_art_changed(&self) {}
-
-    pub fn metadata(&self) -> Metadata {
-        self.imp()
-            .obj()
-            .current_video()
-            .as_ref()
-            .map_or_else(Metadata::new, |video| {
-                Metadata::builder().title(video.name()).build()
-            })
     }
 }
 
@@ -202,12 +185,12 @@ impl LocalRootInterface for MPVPage {
 
 impl LocalPlayerInterface for MPVPage {
     async fn next(&self) -> fdo::Result<()> {
-        self.chapter_next();
+        self.on_next_video().await;
         Ok(())
     }
 
     async fn previous(&self) -> fdo::Result<()> {
-        self.chapter_next();
+        self.on_previous_video().await;
         Ok(())
     }
 
@@ -225,9 +208,7 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn stop(&self) -> fdo::Result<()> {
-        // same as pause
-        self.on_pause_update(true);
-        self.mpv().pause(true);
+        self.on_stop_clicked();
         Ok(())
     }
 
@@ -238,10 +219,11 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn seek(&self, offset: Time) -> fdo::Result<()> {
+        let offset_seconds = offset.abs().as_secs();
         if offset.is_positive() {
-            self.imp().video.seek_forward(offset.as_secs());
+            self.imp().video.seek_forward(offset_seconds);
         } else {
-            self.imp().video.seek_backward(offset.as_secs());
+            self.imp().video.seek_backward(offset_seconds);
         }
         Ok(())
     }
@@ -256,7 +238,13 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn playback_status(&self) -> fdo::Result<PlaybackStatus> {
-        Ok(PlaybackStatus::Stopped)
+        Ok(if self.current_video().is_none() {
+            PlaybackStatus::Stopped
+        } else if self.imp().video.paused() {
+            PlaybackStatus::Paused
+        } else {
+            PlaybackStatus::Playing
+        })
     }
 
     async fn loop_status(&self) -> fdo::Result<LoopStatus> {
@@ -264,11 +252,13 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn set_loop_status(&self, _status: LoopStatus) -> zbus::Result<()> {
-        Ok(())
+        Err(zbus::Error::from(fdo::Error::NotSupported(
+            "SetLoopStatus is not supported".into(),
+        )))
     }
 
     async fn rate(&self) -> fdo::Result<PlaybackRate> {
-        Ok(1.0)
+        Ok(self.imp().speed_spin.value())
     }
 
     async fn set_rate(&self, rate: PlaybackRate) -> zbus::Result<()> {
@@ -291,17 +281,18 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn volume(&self) -> fdo::Result<Volume> {
-        Ok(1.0)
+        Ok(self.imp().volume_bar.level().clamp(0.0, 1.0))
     }
 
     async fn set_volume(&self, volume: Volume) -> zbus::Result<()> {
-        self.mpv().set_volume(volume as i64);
+        self.imp()
+            .volume_spin
+            .set_value((volume.clamp(0.0, 1.0) * 100.0).round());
         Ok(())
     }
 
     async fn position(&self) -> fdo::Result<Time> {
-        let position = Time::from_micros(self.imp().video.position() as i64);
-        Ok(position)
+        Ok(Time::from_secs(self.imp().video.position() as i64))
     }
 
     async fn minimum_rate(&self) -> fdo::Result<PlaybackRate> {
@@ -313,11 +304,11 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn can_go_next(&self) -> fdo::Result<bool> {
-        Ok(self.current_video().is_some())
+        Ok(self.has_next_video())
     }
 
     async fn can_go_previous(&self) -> fdo::Result<bool> {
-        Ok(self.current_video().is_some())
+        Ok(self.has_previous_video())
     }
 
     async fn can_play(&self) -> fdo::Result<bool> {

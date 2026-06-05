@@ -1,4 +1,7 @@
-use std::future::Future;
+use std::{
+    future::Future,
+    sync::atomic::Ordering,
+};
 
 use adw::prelude::*;
 use anyhow::Result;
@@ -84,6 +87,7 @@ pub mod imp {
     pub enum ListType {
         All,
         Resume,
+        NextUp,
         BoxSet,
         Tags,
         Genres,
@@ -251,6 +255,7 @@ pub mod imp {
         pub sort_order: Cell<SortOrder>,
         #[property(get, set = Self::set_sort_by, builder(SortBy::default()))]
         pub sort_by: Cell<SortBy>,
+        pub total_item_count: Cell<Option<u32>>,
         pub lock: Arc<AtomicBool>,
 
         pub filter_panel: OnceCell<FilterPanelDialog>,
@@ -424,7 +429,7 @@ impl SingleGrid {
             ListType::All => {
                 imp.postmenu.set_visible(true);
             }
-            ListType::Resume => {
+            ListType::Resume | ListType::NextUp => {
                 imp.postmenu.set_visible(false);
                 imp.dropdown.set_visible(false);
                 imp.adgroup.set_visible(false);
@@ -480,12 +485,10 @@ impl SingleGrid {
         };
     }
 
-    pub fn add_items<const C: bool>(
-        &self, items: Vec<SimpleListItem>, is_resume: bool, prefer_poster: PreferPoster,
-    ) {
+    pub fn add_items<const C: bool>(&self, items: Vec<SimpleListItem>) {
         let imp = self.imp();
         let scrolled = imp.scrolled.get();
-        scrolled.set_store::<C>(items, is_resume, prefer_poster);
+        scrolled.set_store::<C>(items);
         if scrolled.n_items() == 0 {
             imp.stack.set_visible_child_name("fallback");
         } else {
@@ -494,13 +497,33 @@ impl SingleGrid {
     }
 
     pub fn set_item_number(&self, n: u32) {
+        self.update_total_item_count(n);
         self.imp()
             .count
             .set_text(&format!("{} {}", n, gettextrs::gettext("Items")));
     }
 
+    fn update_total_item_count(&self, n: u32) {
+        self.imp().total_item_count.set(Some(n));
+    }
+
+    fn has_loaded_all_items(&self, n_items: u32) -> bool {
+        self.imp()
+            .total_item_count
+            .get()
+            .is_some_and(|total_item_count| n_items >= total_item_count)
+    }
+
     pub fn set_unify_size(&self, unify_size: UnifySize) {
         self.imp().scrolled.get().set_unify_size(unify_size);
+    }
+
+    pub fn set_prefer_poster(&self, prefer_poster: PreferPoster) {
+        self.imp().scrolled.get().set_prefer_poster(prefer_poster);
+    }
+
+    pub fn set_is_resume(&self, is_resume: bool) {
+        self.imp().scrolled.get().set_is_resume(is_resume);
     }
 
     pub fn connect_sort_changed<F>(&self, f: F)
@@ -516,9 +539,8 @@ impl SingleGrid {
         );
     }
 
-    pub fn connect_sort_changed_tokio<F, Fut>(
-        &self, is_resume: bool, prefer_poster: PreferPoster, f: F,
-    ) where
+    pub fn connect_sort_changed_tokio<F, Fut>(&self, f: F)
+    where
         F: Fn(String, String, FiltersList) -> Fut + Send + Sync + 'static,
         Fut: Future<Output = Result<List>> + Send + 'static,
     {
@@ -544,10 +566,16 @@ impl SingleGrid {
                     obj.imp().stack.set_visible_child_name("loading");
                     match spawn_tokio(future).await {
                         Ok(item) => {
-                            obj.add_items::<true>(item.items, is_resume, prefer_poster);
-                            obj.imp()
-                                .count
-                                .set_text(&format!("{} Items", item.total_record_count));
+                            let total_record_count = item.total_record_count;
+                            obj.add_items::<true>(item.items);
+                            let item_number =
+                                if matches!(obj.list_type(), ListType::Resume | ListType::NextUp) {
+                                    // Scroll loading is disabled for Resume and NextUp, so we use the number of items instead of total_record_count
+                                    obj.imp().scrolled.get().n_items()
+                                } else {
+                                    total_record_count
+                                };
+                            obj.set_item_number(item_number);
                         }
                         Err(e) => {
                             obj.toast(e.to_user_facing());
@@ -570,6 +598,10 @@ impl SingleGrid {
                 let sort_by = obj.sort_by().to_string();
                 let sort_order = obj.sort_order().to_string();
                 let n_items = scrolled.n_items();
+                if obj.has_loaded_all_items(n_items) {
+                    lock.store(false, Ordering::Relaxed);
+                    return;
+                }
                 let filters_list = obj
                     .imp()
                     .filter_panel
@@ -592,7 +624,8 @@ impl SingleGrid {
 
                         match spawn_tokio(future).await {
                             Ok(item) => {
-                                obj.add_items::<false>(item.items, false, PreferPoster::Auto)
+                                obj.update_total_item_count(item.total_record_count);
+                                obj.add_items::<false>(item.items);
                             }
                             Err(e) => {
                                 obj.toast(e.to_user_facing());
@@ -601,7 +634,7 @@ impl SingleGrid {
 
                         scrolled.reveal_spinner(false);
 
-                        lock.store(false, std::sync::atomic::Ordering::Relaxed);
+                        lock.store(false, Ordering::Relaxed);
                     }
                 ));
             }

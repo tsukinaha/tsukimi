@@ -228,7 +228,6 @@ mod imp {
                     obj.set_servers().await;
                     obj.set_nav_servers();
                     obj.set_shortcuts();
-                    obj.alert_windows();
                 },
             ));
         }
@@ -251,18 +250,6 @@ mod imp {
     impl ApplicationWindowImpl for Window {}
     impl AdwApplicationWindowImpl for Window {}
 }
-
-use glib::Object;
-use gtk::{
-    gio,
-    glib,
-    template_callbacks,
-};
-#[cfg(target_os = "windows")]
-use windows::Win32::System::Power::{
-    EXECUTION_STATE,
-    SetThreadExecutionState,
-};
 
 use super::{
     home::HomePage,
@@ -297,6 +284,12 @@ use crate::{
         spawn,
         spawn_tokio,
     },
+};
+use glib::Object;
+use gtk::{
+    gio,
+    glib,
+    template_callbacks,
 };
 
 glib::wrapper! {
@@ -947,31 +940,6 @@ impl Window {
         self.imp().mpvnav.in_play_item(item.item()).await;
     }
 
-    #[cfg(target_os = "windows")]
-    fn prevent_suspend(&self) {
-        let state = unsafe {
-            SetThreadExecutionState(
-                EXECUTION_STATE(2u32) | EXECUTION_STATE(1u32) | EXECUTION_STATE(2147483648u32),
-            )
-        }; // ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED | ES_CONTINUOUS
-        if state == EXECUTION_STATE(2147483651u32) {
-            println!("System suspend inhibited");
-        } else {
-            eprintln!("Failed to set thread execution state");
-        }
-    }
-
-    #[cfg(target_os = "windows")]
-    pub fn allow_suspend(&self) {
-        let state = unsafe { SetThreadExecutionState(EXECUTION_STATE(2147483648u32)) }; // ES_CONTINUOUS
-        if state == EXECUTION_STATE(2147483648u32) {
-            println!("System suspend uninhibited");
-        } else {
-            eprintln!("Failed to reset thread execution state");
-        }
-    }
-
-    #[cfg(target_os = "linux")]
     fn prevent_suspend(&self) {
         let app = self.application().expect("No application found");
         let cookie = app.inhibit(
@@ -984,7 +952,6 @@ impl Window {
         self.imp().suspend_cookie.replace(Some(cookie));
     }
 
-    #[cfg(target_os = "linux")]
     pub fn allow_suspend(&self) {
         let app = self.application().expect("No application found");
         if let Some(cookie) = self.imp().suspend_cookie.take() {
@@ -1021,26 +988,6 @@ impl Window {
             ),
         );
         alert_dialog.present(Some(self));
-    }
-
-    pub fn alert_windows(&self) {
-        #[cfg(target_os = "windows")]
-        {
-            if !SETTINGS.is_first_run() {
-                return;
-            }
-
-            let alert_dialog = adw::AlertDialog::builder()
-                .heading(gettext("Windows Alert"))
-                .body(gettext("It seems you're using Tsukimi on Windows. Please note that GTK used by this application is designed for Linux, and no functionality is guaranteed to work on Windows, including but not limited to video rendering, audio playback, network connections, and external links. Additionally, there are known issues that cannot be fixed, such as black borders, image rendering, font rendering, DPI scaling, video rendering, GL renderer, fullscreen mode, HDR, and locale detection. \nIf you wish to open an issue, please ensure that it is related to this software and not an upstream issue. Choose the appropriate issue template and fill in all required fields without any omissions."))
-                .build();
-            alert_dialog.add_response("close", &gettext("Close"));
-            alert_dialog.present(Some(self));
-
-            SETTINGS
-                .set_is_first_run(false)
-                .expect("Failed to set first run");
-        }
     }
 
     pub fn alert_dialog(&self, alert_dialog: adw::AlertDialog) {

@@ -132,21 +132,54 @@ pub mod imp {
 
             let style_manager = adw::StyleManager::default();
             self.is_dark.set(style_manager.is_dark());
+            let obj = self.obj();
 
-            let obj = self.obj().downgrade();
-            style_manager.connect_dark_notify(move |sm| {
-                if let Some(obj) = obj.upgrade() {
+            style_manager.connect_dark_notify(glib::clone!(
+                #[weak]
+                obj,
+                move |sm| {
                     obj.imp().is_dark.set(sm.is_dark());
                     obj.queue_draw();
                 }
-            });
+            ));
 
-            let obj = self.obj().downgrade();
-            self.hover_scale.set_underlay(move |snapshot| {
-                if let Some(this) = obj.upgrade() {
-                    this.imp().draw_backdrop_and_progress(snapshot);
+            style_manager.connect_accent_color_rgba_notify(glib::clone!(
+                #[weak]
+                obj,
+                move |_| {
+                    obj.queue_draw();
                 }
-            });
+            ));
+
+            SETTINGS.connect_changed(
+                Some("use-custom-accent-color"),
+                glib::clone!(
+                    #[weak]
+                    obj,
+                    move |_, _| {
+                        obj.queue_draw();
+                    }
+                ),
+            );
+
+            SETTINGS.connect_changed(
+                Some("accent-color-code"),
+                glib::clone!(
+                    #[weak]
+                    obj,
+                    move |_, _| {
+                        obj.queue_draw();
+                    }
+                ),
+            );
+
+            self.hover_scale.set_underlay(glib::clone!(
+                #[weak]
+                obj,
+                move |snapshot| {
+                    obj.imp().draw_backdrop_and_progress(snapshot);
+                }
+            ));
 
             let obj = self.obj();
             obj.add_controller(obj.gesture_click());
@@ -202,7 +235,17 @@ pub mod imp {
                 let progress = self.progress_inside.get() as f32;
                 let alpha = if self.is_dark.get() { 0.2 } else { 0.4 };
                 snapshot.append_node(&cache.node);
-                Self::draw_progress_fill(snapshot, cache, progress, alpha);
+                if let Some(base) = self.progress_fill_color() {
+                    Self::draw_progress_fill(snapshot, cache, progress, alpha, base);
+                }
+            }
+        }
+
+        fn progress_fill_color(&self) -> Option<gdk::RGBA> {
+            if SETTINGS.use_custom_accent_color() {
+                gdk::RGBA::parse(SETTINGS.accent_color_code()).ok()
+            } else {
+                Some(adw::StyleManager::default().accent_color_rgba())
             }
         }
 
@@ -299,14 +342,11 @@ pub mod imp {
 
         fn draw_progress_fill(
             snapshot: &gtk::Snapshot, cache: &BackdropNodeCache, progress: f32, alpha: f32,
+            base: gdk::RGBA,
         ) {
             if progress <= 0.0 {
                 return;
             }
-
-            let Ok(base) = gdk::RGBA::parse(SETTINGS.accent_color_code()) else {
-                return;
-            };
 
             const CR: f32 = 10.0;
             let fill_w = (cache.widget_w * progress).min(cache.widget_w);

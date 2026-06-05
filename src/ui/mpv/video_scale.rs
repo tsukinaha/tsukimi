@@ -72,17 +72,7 @@ mod imp {
         }
     }
     impl WidgetImpl for VideoScale {}
-    impl RangeImpl for VideoScale {
-        fn change_value(&self, scroll_type: gtk::ScrollType, new_value: f64) -> glib::Propagation {
-            if self.is_dragging.get() {
-                self.on_seek_finished(new_value);
-                glib::Propagation::Stop
-            } else {
-                self.parent_change_value(scroll_type, new_value);
-                glib::Propagation::Proceed
-            }
-        }
-    }
+    impl RangeImpl for VideoScale {}
     impl ScaleImpl for VideoScale {}
 
     impl VideoScale {
@@ -133,14 +123,6 @@ impl VideoScale {
         glib::ControlFlow::Continue
     }
 
-    pub fn on_smooth_scale_value_changed(&self) {
-        let value = self.value();
-        let position = value / 60.0;
-        if let Some(player) = self.imp().player.upgrade() {
-            player.set_position(position);
-        }
-    }
-
     pub fn set_cache_end_time(&self, end_time: i64) {
         self.set_fill_level(end_time as f64);
     }
@@ -148,6 +130,10 @@ impl VideoScale {
     pub fn reset_scale(&self) {
         self.set_value(0.0);
         self.set_fill_level(0.0);
+    }
+
+    pub fn is_dragging(&self) -> bool {
+        self.imp().is_dragging.get()
     }
 
     pub fn set_chapter_list(&self, chapter_list: ChapterList) {

@@ -1,12 +1,11 @@
 [workspace]
 members = [
-    ".",
-    "buildscript"
+    "."
 ]
 
 [package]
 name = "tsukimi"
-version = "26.6.1"
+version = "26.6.2"
 edition = "2024"
 rust-version = "1.85"
 description = "A simple Jellyfin Client written by GTK4-RS"
@@ -50,19 +49,17 @@ regex = "1.12.3"
 strsim = "0.11.1"
 clap = { version = "4", features = ["derive"] }
 fnv = "1.0.7"
-rand = "0.9.4"
+rand = "0.10.1"
 base64 = "0.22.1"
 libmpv2 = "4.1.0"
 glow = "0.17"
 xxhash-rust = { version = "0.8.15", features = ["xxh3"] }
 futures-util = "0.3.31"
 itertools = "0.14.0"
+moka = { version = "0.12.15", features = ["future"] }
 
 [dev-dependencies]
 cargo-husky = { version = "1", default-features = false, features = ["user-hooks"] }
-
-[build-dependencies]
-tsukimi-buildscript = { path = "buildscript" }
 
 [features]
 console = []                      # Enable console logging
@@ -81,16 +78,6 @@ gdk-x11 = { version = "0.11", package = "gdk4-x11", features = [
 gdk-wayland = { version = "0.11", package = "gdk4-wayland", features = [
   "v4_18",
   "wayland_crate",
-] }
-
-[target.'cfg(target_os = "windows")'.dependencies]
-libproxy = { version = "0.1.1" }
-windows = { version = "0.62.2", features = [
-  "Win32_Foundation",
-  "Win32_Storage_FileSystem",
-  "Win32_Security",
-  "Win32_System_IO",
-  "Win32_System_Power",
 ] }
 
 [profile.release]

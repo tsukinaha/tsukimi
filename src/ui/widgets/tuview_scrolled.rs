@@ -50,7 +50,10 @@ pub(crate) mod imp {
         atomic::AtomicBool,
     };
 
-    use std::cell::RefCell;
+    use std::cell::{
+        Cell,
+        RefCell,
+    };
 
     use glib::subclass::InitializingObject;
     use gtk::glib::Properties;
@@ -93,6 +96,10 @@ pub(crate) mod imp {
 
         #[property(get, set, builder(UnifySize::default()))]
         pub unify_size: RefCell<UnifySize>,
+        #[property(get, set, builder(PreferPoster::default()))]
+        pub prefer_poster: RefCell<PreferPoster>,
+        #[property(get, set, default = false)]
+        pub is_resume: Cell<bool>,
         pub prefer_size_cache: RefCell<PreferSize>,
     }
 
@@ -141,9 +148,7 @@ impl TuViewScrolled {
         glib::Object::new()
     }
 
-    pub fn set_store<const C: bool>(
-        &self, items: Vec<SimpleListItem>, is_resume: bool, prefer_poster: PreferPoster,
-    ) {
+    pub fn set_store<const C: bool>(&self, items: Vec<SimpleListItem>) {
         let imp = self.imp();
         let Some(store) = imp.selection.model().and_downcast::<gio::ListStore>() else {
             return;
@@ -156,6 +161,8 @@ impl TuViewScrolled {
         }
 
         let prefer_size = *self.imp().prefer_size_cache.borrow();
+        let prefer_poster = self.prefer_poster();
+        let is_resume = self.is_resume();
 
         for item in items {
             let tu_item = TuItem::from_simple(item);

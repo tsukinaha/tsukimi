@@ -43,6 +43,13 @@ where
     });
 }
 
+pub fn spawn_tokio_blocking_without_await<F>(fut: F)
+where
+    F: FnOnce() + Send + 'static,
+{
+    runtime().spawn_blocking(fut);
+}
+
 pub fn spawn<F>(fut: F)
 where
     F: std::future::Future + 'static,

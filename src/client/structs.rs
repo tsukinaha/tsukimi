@@ -275,6 +275,8 @@ pub struct UserData {
     pub played_percentage: Option<f64>,
     #[serde(rename = "PlaybackPositionTicks")]
     pub playback_position_ticks: Option<u64>,
+    #[serde(rename = "LastPlayedDate")]
+    pub last_played_date: Option<DateTime<Utc>>,
     #[serde(rename = "Played")]
     pub played: bool,
     #[serde(rename = "UnplayedItemCount")]
@@ -546,6 +548,7 @@ pub struct ActivityLogs {
 #[derive(Deserialize, Debug, Clone, Builder)]
 pub struct Back {
     pub id: String,
+    pub series_id: Option<String>,
     pub playsessionid: Option<String>,
     pub mediasourceid: String,
     pub livestreamid: Option<String>,
@@ -650,13 +653,10 @@ use adw::prelude::*;
 use gtk::glib;
 
 use super::jellyfin_client::JELLYFIN_CLIENT;
-use crate::ui::{
-    provider::tu_item::PreferPoster,
-    widgets::{
-        hortu_scrolled::UnifySize,
-        single_grid::SingleGrid,
-        window::Window,
-    },
+use crate::ui::widgets::{
+    hortu_scrolled::UnifySize,
+    single_grid::SingleGrid,
+    window::Window,
 };
 
 impl SGTitem {
@@ -668,27 +668,23 @@ impl SGTitem {
         page.set_unify_size(UnifySize::Majority);
         let id = self.id.to_string();
         let list_type_clone = list_type.to_owned();
-        page.connect_sort_changed_tokio(
-            false,
-            PreferPoster::Auto,
-            move |sort_by, sort_order, filters_list| {
-                let id = id.to_owned();
-                let list_type_clone = list_type_clone.to_owned();
-                async move {
-                    JELLYFIN_CLIENT
-                        .get_inlist(
-                            None,
-                            0,
-                            &list_type_clone,
-                            &id,
-                            &sort_order,
-                            &sort_by,
-                            &filters_list,
-                        )
-                        .await
-                }
-            },
-        );
+        page.connect_sort_changed_tokio(move |sort_by, sort_order, filters_list| {
+            let id = id.to_owned();
+            let list_type_clone = list_type_clone.to_owned();
+            async move {
+                JELLYFIN_CLIENT
+                    .get_inlist(
+                        None,
+                        0,
+                        &list_type_clone,
+                        &id,
+                        &sort_order,
+                        &sort_by,
+                        &filters_list,
+                    )
+                    .await
+            }
+        });
         let id = self.id.to_string();
         let list_type = list_type.to_owned();
         page.connect_end_edge_overshot_tokio(move |sort_by, sort_order, n_items, filters_list| {
