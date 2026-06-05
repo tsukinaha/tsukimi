@@ -79,7 +79,6 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/mpv_menu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/mpv_menu_actions.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/mpv_shortcuts_window.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/listexpand_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/tu_overview_item.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/item_carousel.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/mpv_control_sidebar.ui</file>

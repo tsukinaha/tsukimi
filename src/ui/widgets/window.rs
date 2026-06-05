@@ -7,7 +7,6 @@ use adw::prelude::*;
 use gettextrs::gettext;
 use gio::Settings;
 use gtk::{
-    ListBoxRow,
     Widget,
     subclass::prelude::*,
 };
@@ -40,7 +39,6 @@ mod imp {
                 image_dialog::ImageDialog,
                 item_actionbox::ItemActionsBox,
                 liked::LikedPage,
-                listexpand_row::ListExpandRow,
                 media_viewer::MediaViewer,
                 player_toolbar::PlayerToolbarBox,
                 search::SearchPage,
@@ -59,7 +57,7 @@ mod imp {
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
         #[template_child]
-        pub selectlist: TemplateChild<gtk::ListBox>,
+        pub selectlist: TemplateChild<adw::Sidebar>,
         #[template_child]
         pub insidestack: TemplateChild<gtk::Stack>,
         #[template_child]
@@ -89,9 +87,9 @@ mod imp {
         #[template_child]
         pub mpvnav: TemplateChild<MPVPage>,
         #[template_child]
-        pub serverselectlist: TemplateChild<gtk::ListBox>,
-        #[template_child]
         pub media_viewer: TemplateChild<MediaViewer>,
+        #[template_child]
+        pub servers_section: TemplateChild<adw::SidebarSection>,
         pub selection: gtk::SingleSelection,
 
         #[template_child]
@@ -146,7 +144,6 @@ mod imp {
             SearchPage::ensure_type();
             LikedPage::ensure_type();
             MPVPage::ensure_type();
-            ListExpandRow::ensure_type();
             MPVControlSidebar::ensure_type();
             ThemeSwitcher::ensure_type();
             klass.bind_template();
@@ -261,7 +258,6 @@ use super::{
     search::SearchPage,
     server_action_row,
     server_panel::ServerPanel,
-    server_row::ServerRow,
     tu_item::PROGRESSBAR_ANIMATION_DURATION,
     utils::GlobalToast,
 };
@@ -465,22 +461,19 @@ impl Window {
     }
 
     pub fn set_nav_servers(&self) {
-        let listbox = &self.imp().serverselectlist;
-        listbox.remove_all();
+        let imp = self.imp();
+        imp.servers_section.remove_all();
         let accounts = SETTINGS.accounts();
         for account in accounts {
-            listbox.append(&ServerRow::new(account));
+            let item = adw::SidebarItem::new(&account.servername);
+            item.set_icon_name(Some("network-server-symbolic"));
+            imp.servers_section.append(item);
         }
-    }
-
-    #[template_callback]
-    pub fn account_activated(&self, account_row: &ServerRow) {
-        account_row.activate();
     }
 
     pub fn reset(&self) {
         self.mainpage();
-        self.imp().selectlist.unselect_all();
+        self.imp().selectlist.set_selected(0);
 
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
@@ -569,7 +562,6 @@ impl Window {
     }
 
     pub fn new(app: &crate::Application) -> Self {
-        // Create new window
         Object::builder().property("application", app).build()
     }
 
@@ -851,25 +843,39 @@ impl Window {
     }
 
     #[template_callback]
-    fn on_listboxrow_activated(&self, row: &ListBoxRow) {
-        row.activate();
-    }
-
-    #[template_callback]
-    fn on_contentsrow_selected(&self, row: Option<&ListBoxRow>) {
-        let Some(row) = row else {
+    fn on_sidebar_activated(&self, index: u32) {
+        let imp = self.imp();
+        let sidebar = imp.selectlist.get();
+        let Some(item) = sidebar.item(index) else {
+            return;
+        };
+        let Some(section) = item.section() else {
             return;
         };
 
-        let pos = row.index();
+        if section == *imp.servers_section {
+            let section_idx = item.section_index() as usize;
+            let accounts = SETTINGS.accounts();
+            if let Some(account) = accounts.get(section_idx).cloned() {
+                spawn(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    async move {
+                        SETTINGS.set_preferred_server(&account.servername).unwrap();
+                        let _ = JELLYFIN_CLIENT.init(&account).await;
+                        obj.reset();
+                    }
+                ));
+            }
+            return;
+        }
 
-        let last_pos = *self.imp().last_content_list_selection.borrow();
-
+        let pos = item.section_index() as i32;
+        let last_pos = *imp.last_content_list_selection.borrow();
         if last_pos == Some(pos) {
             self.update_view(pos);
             return;
         }
-
         self.select_view(pos);
     }
 
