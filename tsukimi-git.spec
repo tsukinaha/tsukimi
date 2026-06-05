@@ -1,4 +1,4 @@
-%global fallback_version 26.6.1
+%global fallback_version 26.6.2
 %global pkg_version %{?version_from_git:%{version_from_git}}%{!?version_from_git:%{fallback_version}}
 %global snapshot_release %{?git_snapshot:%{git_snapshot}}%{!?git_snapshot:1}
 

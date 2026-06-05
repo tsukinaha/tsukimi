@@ -12,6 +12,7 @@ srpm:
 		tag="$$(git describe --tags --exact-match HEAD 2>/dev/null || true)"; \
 		if [ -n "$$tag" ]; then \
 			version="$${tag#v}"; \
+			version="$${version%-copr}"; \
 		else \
 			version="$$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["package"]["version"])')"; \
 		fi; \
