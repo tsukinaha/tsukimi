@@ -477,10 +477,9 @@
         <child>
           <object class="GtkListBox" id="sub_listbox">
             <property name="selection-mode">single</property>
+            <property name="valign">start</property>
             <style>
-              <class name="boxed-list" />
-              <class name="osd" />
-              <class name="logo" />
+              <class name="boxed-list-separate" />
             </style>
           </object>
         </child>
@@ -497,10 +496,9 @@
         <child>
           <object class="GtkListBox" id="audio_listbox">
             <property name="selection-mode">single</property>
+            <property name="valign">start</property>
             <style>
-              <class name="boxed-list" />
-              <class name="osd" />
-              <class name="logo" />
+              <class name="boxed-list-separate" />
             </style>
           </object>
         </child>
