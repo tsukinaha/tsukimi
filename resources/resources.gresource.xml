@@ -5,6 +5,7 @@
     <file preprocess="xml-stripblanks" alias="settings-symbolic.svg">icons/scalable/actions/settings-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="arrow-pointing-at-line-down-symbolic.svg">icons/scalable/actions/arrow-pointing-at-line-down-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="large-brush-symbolic.svg">icons/scalable/actions/large-brush-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playback-options-symbolic.svg">icons/scalable/actions/playback-options-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="speed-svgrepo-com-symbolic.svg">icons/scalable/actions/speed-svgrepo-com-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="text-bold-symbolic.svg">icons/scalable/actions/text-bold-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="text-italic-symbolic.svg">icons/scalable/actions/text-italic-symbolic.svg</file>

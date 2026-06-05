@@ -22,7 +22,7 @@
                     <signal name="notify::value" handler="on_playback_speed" swapped="yes" />
                     <child type="prefix">
                       <object class="GtkImage">
-                        <property name="icon-name">speed-svgrepo-com-symbolic</property>
+                        <property name="icon-name">playback-options-symbolic</property>
                       </object>
                     </child>
                     <property name="adjustment">
@@ -87,7 +87,7 @@
                     <signal name="notify::active" handler="on_buffer_speed" swapped="yes" />
                     <child type="prefix">
                       <object class="GtkImage">
-                        <property name="icon-name">speed-svgrepo-com-symbolic</property>
+                        <property name="icon-name">playback-options-symbolic</property>
                       </object>
                     </child>
                     <property name="title" translatable="yes">Show Buffer Speed</property>

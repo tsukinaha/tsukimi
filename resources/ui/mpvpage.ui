@@ -271,15 +271,9 @@
                             <child>
                               <object class="GtkBox" id="playback_speed_indicator">
                                 <property name="orientation">horizontal</property>
-                                <property name="spacing">2</property>
                                 <property name="valign">center</property>
                                 <property name="margin-end">6</property>
                                 <property name="visible">false</property>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="icon-name">speed-svgrepo-com-symbolic</property>
-                                  </object>
-                                </child>
                                 <child>
                                   <object class="GtkLabel" id="playback_speed_label">
                                     <property name="label">1.00x</property>
