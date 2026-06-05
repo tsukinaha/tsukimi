@@ -214,7 +214,7 @@
                         <child type="start">
                           <object class="GtkBox">
                             <property name="orientation">horizontal</property>
-                            <property name="spacing">4</property>
+                            <property name="spacing">10</property>
                             <child>
                               <object class="GtkButton" id="_previous_button">
                                 <property name="icon-name">media-skip-backward-symbolic</property>
@@ -266,12 +266,96 @@
                         <child type="end">
                           <object class="GtkBox">
                             <property name="orientation">horizontal</property>
-                            <property name="spacing">4</property>
+                            <property name="spacing">6</property>
                             <property name="valign">center</property>
                             <child>
-                              <object class="GtkMenuButton" id="menu_button">
-                                <property name="popover">menu_popover</property>
-                                <property name="icon-name">emblem-system-symbolic</property>
+                              <object class="GtkBox" id="playback_speed_indicator">
+                                <property name="orientation">horizontal</property>
+                                <property name="spacing">2</property>
+                                <property name="valign">center</property>
+                                <property name="margin-end">6</property>
+                                <property name="visible">false</property>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">speed-svgrepo-com-symbolic</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="playback_speed_label">
+                                    <property name="label">1.00x</property>
+                                    <attributes>
+                                      <attribute name="font-features" value="tnum=1" />
+                                    </attributes>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkMenuButton" id="audio_tracks_menu_button">
+                                <property name="popover">audio_tracks_popover</property>
+                                <property name="icon-name">audio-x-generic-symbolic</property>
+                                <property name="tooltip-text" translatable="yes">Audio</property>
+                                <property name="valign">center</property>
+                                <style>
+                                  <class name="flat" />
+                                  <class name="circular" />
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkMenuButton" id="subtitle_tracks_menu_button">
+                                <property name="popover">subtitle_tracks_popover</property>
+                                <property name="icon-name">media-view-subtitles-symbolic</property>
+                                <property name="tooltip-text" translatable="yes">Subtitle</property>
+                                <property name="valign">center</property>
+                                <style>
+                                  <class name="flat" />
+                                  <class name="circular" />
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <property name="spacing">2</property>
+                                <property name="valign">center</property>
+                                <child>
+                                  <object class="GtkButton" id="volume_button">
+                                    <property name="tooltip-text" translatable="yes">Mute</property>
+                                    <property name="valign">center</property>
+                                    <property name="margin-start">8</property>
+                                    <signal name="clicked" handler="on_volume_button_clicked" swapped="yes" />
+                                    <child>
+                                      <object class="GtkImage" id="volume_button_image">
+                                        <property name="icon-name">audio-volume-high-symbolic</property>
+                                      </object>
+                                    </child>
+                                    <style>
+                                      <class name="flat" />
+                                      <class name="circular" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkScale" id="volume_scale">
+                                    <property name="adjustment">volume_adj</property>
+                                    <property name="width-request">120</property>
+                                    <property name="valign">center</property>
+                                    <property name="margin-end">6</property>
+                                    <property name="draw-value">false</property>
+                                    <signal name="value-changed" handler="on_volume_scale_value_changed" swapped="yes" />
+                                    <style>
+                                      <class name="accent" />
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="menu_button">
+                                <property name="icon-name">settings-symbolic</property>
+                                <property name="action-name">mpv.show-settings</property>
+                                <property name="tooltip-text" translatable="yes">Advanced settings</property>
                                 <property name="valign">center</property>
                                 <style>
                                   <class name="flat" />
@@ -389,154 +473,46 @@
       </object>
     </child>
   </template>
-  <object class="GtkPopover" id="menu_popover">
+  <object class="GtkPopover" id="subtitle_tracks_popover">
     <property name="height-request">300</property>
-    <property name="width-request">400</property>
+    <property name="width-request">320</property>
     <property name="position">top</property>
-    <property name="cascade-popdown">True</property>
+    <property name="has-arrow">false</property>
     <child>
-      <object class="AdwNavigationView">
+      <object class="GtkScrolledWindow">
         <child>
-          <object class="AdwNavigationPage">
-            <property name="title" translatable="yes">Preferences</property>
-            <property name="child">
-              <object class="AdwToolbarView">
-                <child type="top">
-                  <object class="AdwHeaderBar">
-                    <property name="show-start-title-buttons">false</property>
-                    <property name="show-end-title-buttons">false</property>
-                    <style>
-                      <class name="flat" />
-                    </style>
-                  </object>
-                </child>
-                <property name="content">
-                  <object class="GtkListBox">
-                    <property name="selection-mode">none</property>
-                    <child>
-                      <object class="AdwActionRow">
-                        <property name="title" translatable="yes">Playback speed</property>
-                        <child type="suffix">
-                          <object class="GtkSpinButton" id="speed_spin">
-                            <property name="width-request">150</property>
-                            <property name="valign">center</property>
-                            <property name="adjustment">playback_speed_adj</property>
-                            <property name="digits">2</property>
-                            <signal name="value-changed" handler="on_speed_value_changed" swapped="yes" />
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwActionRow">
-                        <property name="title" translatable="yes">Volume</property>
-                        <child type="suffix">
-                          <object class="GtkSpinButton" id="volume_spin">
-                            <property name="width-request">150</property>
-                            <property name="valign">center</property>
-                            <property name="adjustment">volume_adj</property>
-                            <signal name="value-changed" handler="on_volume_value_changed" swapped="yes" />
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AActionRow" id="audio_tracks_action_row">
-                        <property name="title" translatable="yes">Audio</property>
-                        <property name="action-name">navigation.push</property>
-                        <property name="action-target">'page-3'</property>
-                        <property name="show-arrow">true</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AActionRow" id="subtitle_tracks_action_row">
-                        <property name="title" translatable="yes">Subtitle</property>
-                        <property name="action-name">navigation.push</property>
-                        <property name="action-target">'page-2'</property>
-                        <property name="show-arrow">true</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="boxed-list" />
-                      <class name="osd" />
-                      <class name="logo" />
-                    </style>
-                  </object>
-                </property>
-              </object>
-            </property>
-          </object>
-        </child>
-        <child>
-          <object class="AdwNavigationPage">
-            <property name="title" translatable="yes">Subtitle</property>
-            <property name="tag">page-2</property>
-            <property name="child">
-              <object class="AdwToolbarView">
-                <child type="top">
-                  <object class="AdwHeaderBar">
-                    <property name="show-start-title-buttons">false</property>
-                    <property name="show-end-title-buttons">false</property>
-                    <style>
-                      <class name="flat" />
-                    </style>
-                  </object>
-                </child>
-                <property name="content">
-                  <object class="GtkScrolledWindow">
-                    <child>
-                      <object class="GtkListBox" id="sub_listbox">
-                        <property name="selection-mode">single</property>
-                        <style>
-                          <class name="boxed-list" />
-                          <class name="osd" />
-                          <class name="logo" />
-                        </style>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </property>
-          </object>
-        </child>
-        <child>
-          <object class="AdwNavigationPage">
-            <property name="title" translatable="yes">Audio</property>
-            <property name="tag">page-3</property>
-            <property name="child">
-              <object class="AdwToolbarView">
-                <child type="top">
-                  <object class="AdwHeaderBar">
-                    <property name="show-start-title-buttons">false</property>
-                    <property name="show-end-title-buttons">false</property>
-                    <style>
-                      <class name="flat" />
-                    </style>
-                  </object>
-                </child>
-                <property name="content">
-                  <object class="GtkScrolledWindow">
-                    <child>
-                      <object class="GtkListBox" id="audio_listbox">
-                        <property name="selection-mode">single</property>
-                        <style>
-                          <class name="boxed-list" />
-                          <class name="osd" />
-                          <class name="logo" />
-                        </style>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </property>
+          <object class="GtkListBox" id="sub_listbox">
+            <property name="selection-mode">single</property>
+            <style>
+              <class name="boxed-list" />
+              <class name="osd" />
+              <class name="logo" />
+            </style>
           </object>
         </child>
       </object>
     </child>
   </object>
-
+  <object class="GtkPopover" id="audio_tracks_popover">
+    <property name="height-request">300</property>
+    <property name="width-request">320</property>
+    <property name="position">top</property>
+    <property name="has-arrow">false</property>
+    <child>
+      <object class="GtkScrolledWindow">
+        <child>
+          <object class="GtkListBox" id="audio_listbox">
+            <property name="selection-mode">single</property>
+            <style>
+              <class name="boxed-list" />
+              <class name="osd" />
+              <class name="logo" />
+            </style>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkAdjustment" id="danmaku_top_padding_adj">
     <property name="lower">0</property>
     <property name="upper">50</property>
@@ -610,7 +586,7 @@
   </object>
   <object class="GtkAdjustment" id="volume_adj">
     <property name="lower">0</property>
-    <property name="upper">150</property>
+    <property name="upper">100</property>
     <property name="value">75</property>
     <property name="step_increment">1</property>
     <property name="page_increment">4</property>

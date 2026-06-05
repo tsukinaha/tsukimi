@@ -7,6 +7,7 @@ use adw::subclass::prelude::{
 use gtk::{
     self,
     glib,
+    prelude::*,
 };
 use mpris_server::{
     LocalPlayerInterface,
@@ -258,7 +259,7 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn rate(&self) -> fdo::Result<PlaybackRate> {
-        Ok(self.imp().speed_spin.value())
+        Ok(self.imp().playback_speed_adj.value())
     }
 
     async fn set_rate(&self, rate: PlaybackRate) -> zbus::Result<()> {
@@ -285,9 +286,9 @@ impl LocalPlayerInterface for MPVPage {
     }
 
     async fn set_volume(&self, volume: Volume) -> zbus::Result<()> {
-        self.imp()
-            .volume_spin
-            .set_value((volume.clamp(0.0, 1.0) * 100.0).round());
+        let volume = (volume.clamp(0.0, 1.0) * 100.0).round();
+        self.imp().volume_adj.set_value(volume);
+        self.imp().video.set_volume(volume as i64);
         Ok(())
     }
 

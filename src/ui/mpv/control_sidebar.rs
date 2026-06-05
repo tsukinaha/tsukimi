@@ -37,6 +37,8 @@ mod imp {
         pub player: glib::WeakRef<MPVGLArea>,
 
         #[template_child]
+        pub playback_speed_adj: TemplateChild<gtk::Adjustment>,
+        #[template_child]
         pub seek_forward_adj: TemplateChild<gtk::Adjustment>,
         #[template_child]
         pub seek_backward_adj: TemplateChild<gtk::Adjustment>,
@@ -297,6 +299,20 @@ impl MPVControlSidebar {
     {
         if let Some(player) = self.player() {
             player.set_property(property, value)
+        }
+    }
+
+    pub fn set_playback_speed(&self, value: f64) {
+        let adj = &self.imp().playback_speed_adj;
+        if (adj.value() - value).abs() > f64::EPSILON {
+            adj.set_value(value);
+        }
+    }
+
+    #[template_callback]
+    pub fn on_playback_speed(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
+        if let Some(player) = self.player() {
+            player.set_speed(spin.value());
         }
     }
 

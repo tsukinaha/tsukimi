@@ -24,6 +24,8 @@ use tracing::{
     warn,
 };
 
+const MAX_VOLUME: i64 = 100;
+
 #[derive(Debug)]
 pub struct MpvTrack {
     pub id: i64,
@@ -110,6 +112,7 @@ impl Default for TsukimiMPV {
                 format!("{}MiB", SETTINGS.mpv_cache_size()),
             )?;
             init.set_property("cache-secs", (SETTINGS.mpv_cache_time()) as i64)?;
+            init.set_property("volume-max", MAX_VOLUME)?;
             init.set_property("volume", SETTINGS.mpv_default_volume() as i64)?;
             init.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64)?;
             init.set_property("sub-font", SETTINGS.mpv_subtitle_font())?;
@@ -370,6 +373,9 @@ impl TsukimiMPV {
             .unwrap();
         event_context
             .observe_property("chapter-list", libmpv2::Format::Node, 8)
+            .unwrap();
+        event_context
+            .observe_property("speed", libmpv2::Format::Double, 9)
             .unwrap();
         let event_thread_alive = self.event_thread_alive.to_owned();
         let handle = std::thread::Builder::new()

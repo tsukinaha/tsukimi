@@ -111,6 +111,21 @@ pub struct FallbackContext {
     start_seconds: f64,
 }
 
+#[derive(Clone, Copy)]
+enum MpvTrackKind {
+    Audio,
+    Subtitle,
+}
+
+impl MpvTrackKind {
+    fn property(self) -> &'static str {
+        match self {
+            Self::Audio => "aid",
+            Self::Subtitle => "sid",
+        }
+    }
+}
+
 mod imp {
 
     use std::cell::{
@@ -147,7 +162,6 @@ mod imp {
                 video_scale::VideoScale,
             },
             provider::tu_item::TuItem,
-            widgets::action_row::AActionRow,
         },
     };
 
@@ -188,17 +202,17 @@ mod imp {
         #[template_child]
         pub network_speed_label_2: TemplateChild<gtk::Label>,
         #[template_child]
-        pub menu_button: TemplateChild<gtk::MenuButton>,
+        pub playback_speed_indicator: TemplateChild<gtk::Box>,
         #[template_child]
-        pub menu_popover: TemplateChild<gtk::Popover>,
+        pub playback_speed_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub audio_tracks_menu_button: TemplateChild<gtk::MenuButton>,
+        #[template_child]
+        pub subtitle_tracks_menu_button: TemplateChild<gtk::MenuButton>,
         #[template_child]
         pub title_label1: TemplateChild<gtk::Label>,
         #[template_child]
         pub title_label2: TemplateChild<gtk::Label>,
-        #[template_child]
-        pub speed_spin: TemplateChild<gtk::SpinButton>,
-        #[template_child]
-        pub volume_spin: TemplateChild<gtk::SpinButton>,
         #[template_child]
         pub sub_listbox: TemplateChild<gtk::ListBox>,
         #[template_child]
@@ -223,7 +237,16 @@ mod imp {
         pub mpris_art_url: RefCell<Option<String>>,
 
         #[template_child]
+        pub playback_speed_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
         pub volume_adj: TemplateChild<gtk::Adjustment>,
+
+        #[template_child]
+        pub volume_button: TemplateChild<gtk::Button>,
+
+        #[template_child]
+        pub volume_button_image: TemplateChild<gtk::Image>,
 
         #[template_child]
         pub volume_bar: TemplateChild<VolumeBar>,
@@ -241,6 +264,7 @@ mod imp {
         pub queued_playback_direct_mode: RefCell<Option<super::PlaybackDirectMode>>,
         pub retrying_playback: Cell<bool>,
         pub allow_fallback: Cell<bool>,
+        pub muted: Cell<bool>,
     }
 
     #[glib::object_subclass]
@@ -252,7 +276,6 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             MPVGLArea::ensure_type();
             VideoScale::ensure_type();
-            AActionRow::ensure_type();
             VolumeBar::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
@@ -807,17 +830,25 @@ impl MPVPage {
 
     fn set_audio_and_video_tracks_dropdown(&self, value: MpvTracks) {
         let imp = self.imp();
-        self.bind_tracks::<true>(value.audio_tracks, &imp.audio_listbox.get());
-        self.bind_tracks::<false>(value.sub_tracks, &imp.sub_listbox.get());
+        self.bind_tracks(
+            value.audio_tracks,
+            &imp.audio_listbox.get(),
+            MpvTrackKind::Audio,
+        );
+        self.bind_tracks(
+            value.sub_tracks,
+            &imp.sub_listbox.get(),
+            MpvTrackKind::Subtitle,
+        );
     }
 
     // TODO: Use GAction instead of listening to each button
-    fn bind_tracks<const A: bool>(&self, tracks: Vec<MpvTrack>, listbox: &gtk::ListBox) {
+    fn bind_tracks(&self, tracks: Vec<MpvTrack>, listbox: &gtk::ListBox, kind: MpvTrackKind) {
         while let Some(row) = listbox.first_child() {
             listbox.remove(&row);
         }
 
-        let track_id = self.imp().video.get_track_id(if A { "aid" } else { "sid" });
+        let track_id = self.imp().video.get_track_id(kind.property());
 
         let row = CheckRow::new();
         row.set_title("None");
@@ -829,7 +860,7 @@ impl MPVPage {
             #[weak(rename_to = obj)]
             self,
             move |_| {
-                obj.set_vsid::<A>(0);
+                obj.set_track(kind, 0);
             }
         ));
         listbox.append(&row);
@@ -848,25 +879,23 @@ impl MPVPage {
                 #[weak(rename_to = obj)]
                 self,
                 move |_| {
-                    obj.set_vsid::<A>(track.id);
+                    obj.set_track(kind, track.id);
                 }
             ));
             listbox.append(&row);
         }
     }
 
-    fn set_vsid<const A: bool>(&self, track_id: i64) {
+    fn set_track(&self, kind: MpvTrackKind, track_id: i64) {
         let track = if track_id == 0 {
             TrackSelection::None
         } else {
             TrackSelection::Track(track_id)
         };
 
-        if A {
-            self.imp().video.set_aid(track);
-        } else {
-            self.imp().video.set_sid(track);
-        }
+        self.imp()
+            .video
+            .set_property(kind.property(), track.to_string());
     }
 
     async fn load_video(&self, offset: isize) {
@@ -1014,11 +1043,18 @@ impl MPVPage {
     }
 
     fn speed_cb(&self, value: f64) {
-        self.imp().speed_spin.set_value(value);
+        let imp = self.imp();
+        imp.playback_speed_adj.set_value(value);
+        imp.playback_speed_label.set_text(&format!("{value:.2}x"));
+        imp.playback_speed_indicator
+            .set_visible((value * 100.0).round() as i64 != 100);
+        if let Some(window) = self.root().and_downcast_ref::<Window>() {
+            window.imp().mpv_control_sidebar.set_playback_speed(value);
+        }
     }
 
     fn volume_cb(&self, value: i64) {
-        self.imp().volume_spin.set_value(value as f64);
+        self.imp().volume_adj.set_value(value as f64);
         self.imp().volume_bar.set_level(value as f64 / 100.0);
         self.notify_volume_changed(value as f64 / 100.0);
     }
@@ -1038,15 +1074,27 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn on_speed_value_changed(&self, btn: &gtk::SpinButton) {
+    fn on_volume_scale_value_changed(&self, btn: &gtk::Scale) {
         let imp = self.imp();
-        imp.video.set_speed(btn.value());
+        imp.video.set_volume(btn.value() as i64);
     }
 
     #[template_callback]
-    fn on_volume_value_changed(&self, btn: &gtk::SpinButton) {
+    fn on_volume_button_clicked(&self) {
+        self.set_muted(!self.imp().muted.get());
+    }
+
+    fn set_muted(&self, muted: bool) {
         let imp = self.imp();
-        imp.video.set_volume(btn.value() as i64);
+        imp.muted.set(muted);
+        imp.video.set_property("mute", muted);
+        imp.volume_button_image.set_icon_name(Some(if muted {
+            "audio-volume-muted-symbolic"
+        } else {
+            "audio-volume-high-symbolic"
+        }));
+        imp.volume_button
+            .set_tooltip_text(Some(&gettext(if muted { "Unmute" } else { "Mute" })));
     }
 
     fn on_file_loaded(&self) {
@@ -1243,7 +1291,8 @@ impl MPVPage {
             }
         }
 
-        if self.imp().menu_button.is_active() {
+        let imp = self.imp();
+        if imp.audio_tracks_menu_button.is_active() || imp.subtitle_tracks_menu_button.is_active() {
             return false;
         }
 
