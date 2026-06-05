@@ -59,7 +59,6 @@ mod imp {
         fn set_level(&self, level: f64) {
             self.level.replace(level);
             self.progress.set_fraction(level);
-            self.progress.remove_css_class("warning");
 
             match level {
                 0.0 => self.icon.set_icon_name(Some("audio-volume-muted-symbolic")),
@@ -67,14 +66,7 @@ mod imp {
                 level if level < 0.66 => self
                     .icon
                     .set_icon_name(Some("audio-volume-medium-symbolic")),
-                level if level <= 1.0 => {
-                    self.icon.set_icon_name(Some("audio-volume-high-symbolic"))
-                }
-                _ => {
-                    self.icon
-                        .set_icon_name(Some("audio-volume-overamplified-symbolic"));
-                    self.progress.add_css_class("warning");
-                }
+                _ => self.icon.set_icon_name(Some("audio-volume-high-symbolic")),
             }
 
             self.revealer.set_reveal_child(true);
