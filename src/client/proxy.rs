@@ -12,7 +12,7 @@ impl ReqClient {
             .timeout(std::time::Duration::from_secs(10))
             .pool_max_idle_per_host(settings.int("threads") as usize)
             .build()
-            .expect("failed to initialize client")
+            .expect("Failed to initialize client")
     }
 }
 
