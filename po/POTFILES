@@ -85,7 +85,6 @@ src/ui/widgets/lazy_diff_view/virtual_viewport.rs
 src/ui/widgets/liked.rs
 src/ui/widgets/list.rs
 src/ui/widgets/list_dropdown.rs
-src/ui/widgets/listexpand_row.rs
 src/ui/widgets/logo.rs
 src/ui/widgets/media_viewer.rs
 src/ui/widgets/menu_info.rs
@@ -101,7 +100,6 @@ src/ui/widgets/scale_revealer.rs
 src/ui/widgets/search.rs
 src/ui/widgets/server_action_row.rs
 src/ui/widgets/server_panel.rs
-src/ui/widgets/server_row.rs
 src/ui/widgets/single_grid.rs
 src/ui/widgets/smooth_scale.rs
 src/ui/widgets/song_widget.rs
@@ -150,7 +148,6 @@ resources/ui/item_actions.ui
 resources/ui/item_carousel.ui
 resources/ui/liked.ui
 resources/ui/list.ui
-resources/ui/listexpand_row.ui
 resources/ui/listitem.ui
 resources/ui/media_viewer.ui
 resources/ui/metadata_dialog.ui
@@ -169,7 +166,6 @@ resources/ui/right_menu_info.ui
 resources/ui/search.ui
 resources/ui/server_action_row.ui
 resources/ui/server_panel.ui
-resources/ui/server_row.ui
 resources/ui/single_grid.ui
 resources/ui/song_widget.ui
 resources/ui/theme_switcher.ui
