@@ -1009,8 +1009,12 @@ impl MPVPage {
 
     fn update_duration(&self, value: f64) {
         let imp = self.imp();
+        let duration = format_duration(value as i64);
+        let width_chars = duration.chars().count() as i32;
         imp.video_scale.set_range(0.0, value);
-        imp.duration_label.set_text(&format_duration(value as i64));
+        imp.progress_time_label.set_width_chars(width_chars);
+        imp.duration_label.set_width_chars(width_chars);
+        imp.duration_label.set_text(&duration);
     }
 
     fn speed_cb(&self, value: f64) {
