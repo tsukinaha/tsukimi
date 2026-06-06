@@ -39,6 +39,12 @@ You can play music and albums, as well as videos with more advanced settings.
 ### Native Packages
 [![Packaging status](https://repology.org/badge/vertical-allrepos/tsukimi.svg)](https://repology.org/project/tsukimi/versions)
 
+### Fedora
+```bash
+sudo dnf copr enable walker874/tsukimi
+sudo dnf install tsukimi
+```
+
 ### Arch Linux
 ```bash
 # AUR release (https://aur.archlinux.org/packages/tsukimi-bin)
