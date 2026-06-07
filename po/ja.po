@@ -56,22 +56,22 @@ msgstr ""
 msgid "Failed to get GLContext"
 msgstr ""
 
-#: src/ui/mpv/page.rs:384 src/ui/mpv/page.rs:386 src/ui/widgets/item.rs:707
+#: src/ui/mpv/page.rs:385 src/ui/mpv/page.rs:387 src/ui/widgets/item.rs:707
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/player_toolbar.ui:90
 msgid "Play"
 msgstr "再生"
 
-#: src/ui/mpv/page.rs:389 src/ui/mpv/page.rs:391 resources/ui/mpvpage.ui:227
+#: src/ui/mpv/page.rs:390 src/ui/mpv/page.rs:392 resources/ui/mpvpage.ui:236
 msgid "Pause"
 msgstr "一時停止"
 
-#: src/ui/mpv/page.rs:746
+#: src/ui/mpv/page.rs:748
 msgid "Skip Intro"
 msgstr ""
 
-#: src/ui/mpv/page.rs:747
+#: src/ui/mpv/page.rs:749
 msgid "Skip Outro"
 msgstr ""
 
@@ -335,8 +335,8 @@ msgstr "名札"
 msgid "Genres"
 msgstr ""
 
-#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:323
-#: resources/ui/window.ui:350
+#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:319
+#: resources/ui/window.ui:256
 msgid "Liked"
 msgstr "好き"
 
@@ -426,7 +426,7 @@ msgstr ""
 msgid "Task started"
 msgstr ""
 
-#: src/ui/widgets/single_grid.rs:498
+#: src/ui/widgets/single_grid.rs:503
 msgid "Items"
 msgstr "アイテム"
 
@@ -467,34 +467,34 @@ msgstr ""
 msgid "Are you sure you wish to reset all metadata?"
 msgstr ""
 
-#: src/ui/widgets/tu_list_item.rs:471
+#: src/ui/widgets/tu_list_item.rs:511
 msgid "Waiting for mediasource ..."
 msgstr ""
 
-#: src/ui/widgets/window.rs:311 resources/ui/window.ui:304
+#: src/ui/widgets/window.rs:307 resources/ui/window.ui:250
 msgid "Home"
 msgstr "ホーム"
 
-#: src/ui/widgets/window.rs:335 resources/ui/identify_dialog.ui:94
+#: src/ui/widgets/window.rs:331 resources/ui/identify_dialog.ui:94
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
-#: resources/ui/window.ui:21 resources/ui/window.ui:396
+#: resources/ui/window.ui:21 resources/ui/window.ui:262
 msgid "Search"
 msgstr "検索"
 
-#: src/ui/widgets/window.rs:824
+#: src/ui/widgets/window.rs:816
 msgid "Server Panel"
 msgstr ""
 
-#: src/ui/widgets/window.rs:973
+#: src/ui/widgets/window.rs:979
 msgid "Fatal Error"
 msgstr ""
 
-#: src/ui/widgets/window.rs:976
+#: src/ui/widgets/window.rs:982
 msgid "Copy Error & Close"
 msgstr ""
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1005
+#: src/ui/widgets/window.rs:1011
 msgid "translator-credits"
 msgstr "Flowensity <flowensity@proton.me>"
 
@@ -986,7 +986,8 @@ msgstr "字幕 "
 msgid "View this season"
 msgstr ""
 
-#: resources/ui/item.ui:416 resources/ui/single_grid.ui:167
+#: resources/ui/item.ui:416 resources/ui/liked.ui:69
+#: resources/ui/single_grid.ui:167
 msgid "Nothing Here"
 msgstr ""
 
@@ -1032,6 +1033,10 @@ msgstr "未視聴としてマーク"
 msgid "Edit Metadata"
 msgstr ""
 
+#: resources/ui/liked.ui:70
+msgid "Your favorite items will be placed here"
+msgstr ""
+
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
 msgstr "画像をコピー"
@@ -1045,13 +1050,13 @@ msgid "Media Menu"
 msgstr "メディアメニュー"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/mpvpage.ui:272 resources/ui/mpvpage.ui:274
+#: resources/ui/mpvpage.ui:287 resources/ui/mpvpage.ui:290
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
 msgstr "フルスクリーン"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:286 resources/ui/mpvpage.ui:288
+#: resources/ui/mpvpage.ui:304 resources/ui/mpvpage.ui:306
 msgid "Exit Fullscreen"
 msgstr "フルスクリーンの終了"
 
@@ -1111,7 +1116,7 @@ msgstr ""
 msgid "Upcoming"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:610
+#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:445
 #, fuzzy
 msgid "Advanced Settings"
 msgstr "ビデオ設定の詳細"
@@ -1151,8 +1156,8 @@ msgstr "単位: MB"
 msgid "Cache Time"
 msgstr "キャッシュの時間"
 
-#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:434
-#: resources/ui/mpvpage.ui:453
+#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:453
+#: resources/ui/mpvpage.ui:472
 msgid "Subtitle"
 msgstr "字幕"
 
@@ -1254,8 +1259,8 @@ msgstr "単位: MB"
 msgid "Speed"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:426
-#: resources/ui/mpvpage.ui:486 resources/ui/search.ui:78
+#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:445
+#: resources/ui/mpvpage.ui:505 resources/ui/search.ui:78
 msgid "Audio"
 msgstr "オーディオ"
 
@@ -1411,8 +1416,8 @@ msgstr "前のページ"
 msgid "Previous chapter"
 msgstr "前のページ"
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:152
-#: resources/ui/window.ui:559 resources/ui/window.ui:581
+#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:155
+#: resources/ui/window.ui:394 resources/ui/window.ui:416
 msgid "Playlist"
 msgstr "プレイリスト"
 
@@ -1457,20 +1462,20 @@ msgstr ""
 msgid "Stop and quit"
 msgstr "停止して終了"
 
-#: resources/ui/mpvpage.ui:164
+#: resources/ui/mpvpage.ui:169
 msgid "Media info (MPV)"
 msgstr "メディア情報（MPV）"
 
-#: resources/ui/mpvpage.ui:382 resources/ui/window.ui:25
+#: resources/ui/mpvpage.ui:401 resources/ui/window.ui:25
 #: resources/ui/window.ui:54
 msgid "Preferences"
 msgstr "好み"
 
-#: resources/ui/mpvpage.ui:399
+#: resources/ui/mpvpage.ui:418
 msgid "Playback speed"
 msgstr "再生速度"
 
-#: resources/ui/mpvpage.ui:413
+#: resources/ui/mpvpage.ui:432
 msgid "Volume"
 msgstr "ボリューム"
 
@@ -1693,11 +1698,11 @@ msgstr "サーバーの追加"
 msgid "Log Out"
 msgstr "ログアウト"
 
-#: resources/ui/window.ui:253
+#: resources/ui/window.ui:247
 msgid "Contents"
 msgstr "内容"
 
-#: resources/ui/window.ui:411
+#: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "サーバー"
 

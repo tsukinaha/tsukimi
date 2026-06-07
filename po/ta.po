@@ -56,22 +56,22 @@ msgstr "Glcontext ஐப் பெறுவதில் தோல்வி"
 msgid "Failed to get GLContext"
 msgstr "Glcontext ஐப் பெறுவதில் தோல்வி"
 
-#: src/ui/mpv/page.rs:384 src/ui/mpv/page.rs:386 src/ui/widgets/item.rs:707
+#: src/ui/mpv/page.rs:385 src/ui/mpv/page.rs:387 src/ui/widgets/item.rs:707
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/player_toolbar.ui:90
 msgid "Play"
 msgstr "விளையாடுங்கள்"
 
-#: src/ui/mpv/page.rs:389 src/ui/mpv/page.rs:391 resources/ui/mpvpage.ui:227
+#: src/ui/mpv/page.rs:390 src/ui/mpv/page.rs:392 resources/ui/mpvpage.ui:236
 msgid "Pause"
 msgstr "இடைநிறுத்தம்"
 
-#: src/ui/mpv/page.rs:746
+#: src/ui/mpv/page.rs:748
 msgid "Skip Intro"
 msgstr ""
 
-#: src/ui/mpv/page.rs:747
+#: src/ui/mpv/page.rs:749
 msgid "Skip Outro"
 msgstr ""
 
@@ -336,8 +336,8 @@ msgstr "குறிச்சொற்கள்"
 msgid "Genres"
 msgstr "வகைகள்"
 
-#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:323
-#: resources/ui/window.ui:350
+#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:319
+#: resources/ui/window.ui:256
 msgid "Liked"
 msgstr "பிடித்திருந்தது"
 
@@ -426,7 +426,7 @@ msgstr "முடிவு: "
 msgid "Task started"
 msgstr "பணி தொடங்கியது"
 
-#: src/ui/widgets/single_grid.rs:498
+#: src/ui/widgets/single_grid.rs:503
 msgid "Items"
 msgstr "உருப்படிகள்"
 
@@ -470,34 +470,34 @@ msgstr "அடையாளத்தை அகற்று"
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "எல்லா மெட்டாடேட்டாவையும் மீட்டமைக்க விரும்புகிறீர்களா?"
 
-#: src/ui/widgets/tu_list_item.rs:471
+#: src/ui/widgets/tu_list_item.rs:511
 msgid "Waiting for mediasource ..."
 msgstr "மீடியாசோர்சுக்காக காத்திருக்கிறது ..."
 
-#: src/ui/widgets/window.rs:311 resources/ui/window.ui:304
+#: src/ui/widgets/window.rs:307 resources/ui/window.ui:250
 msgid "Home"
 msgstr "வீடு"
 
-#: src/ui/widgets/window.rs:335 resources/ui/identify_dialog.ui:94
+#: src/ui/widgets/window.rs:331 resources/ui/identify_dialog.ui:94
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
-#: resources/ui/window.ui:21 resources/ui/window.ui:396
+#: resources/ui/window.ui:21 resources/ui/window.ui:262
 msgid "Search"
 msgstr "தேடல்"
 
-#: src/ui/widgets/window.rs:824
+#: src/ui/widgets/window.rs:816
 msgid "Server Panel"
 msgstr "சேவையக குழு"
 
-#: src/ui/widgets/window.rs:973
+#: src/ui/widgets/window.rs:979
 msgid "Fatal Error"
 msgstr "அபாயகரமான பிழை"
 
-#: src/ui/widgets/window.rs:976
+#: src/ui/widgets/window.rs:982
 msgid "Copy Error & Close"
 msgstr "பிழை மற்றும் மூடு"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1005
+#: src/ui/widgets/window.rs:1011
 msgid "translator-credits"
 msgstr "மொழிபெயர்ப்பாளர்-வரவு"
 
@@ -983,7 +983,8 @@ msgstr "வசன வரிகள்: "
 msgid "View this season"
 msgstr "இந்த பருவத்தைக் காண்க"
 
-#: resources/ui/item.ui:416 resources/ui/single_grid.ui:167
+#: resources/ui/item.ui:416 resources/ui/liked.ui:69
+#: resources/ui/single_grid.ui:167
 msgid "Nothing Here"
 msgstr "இங்கே எதுவும் இல்லை"
 
@@ -1029,6 +1030,10 @@ msgstr "விளையாடப்படாததைக் குறிக்�
 msgid "Edit Metadata"
 msgstr "மெட்டாடேட்டாவைத் திருத்து"
 
+#: resources/ui/liked.ui:70
+msgid "Your favorite items will be placed here"
+msgstr ""
+
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
 msgstr "_ கோபி படம்"
@@ -1042,13 +1047,13 @@ msgid "Media Menu"
 msgstr "மீடியா பட்டியல்"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/mpvpage.ui:272 resources/ui/mpvpage.ui:274
+#: resources/ui/mpvpage.ui:287 resources/ui/mpvpage.ui:290
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
 msgstr "முழு திரை"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:286 resources/ui/mpvpage.ui:288
+#: resources/ui/mpvpage.ui:304 resources/ui/mpvpage.ui:306
 msgid "Exit Fullscreen"
 msgstr "முழுத்திரை வெளியேறவும்"
 
@@ -1108,7 +1113,7 @@ msgstr "சிறப்பு"
 msgid "Upcoming"
 msgstr "வரவிருக்கும்"
 
-#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:610
+#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:445
 msgid "Advanced Settings"
 msgstr "மேம்பட்ட அமைப்புகள்"
 
@@ -1146,8 +1151,8 @@ msgstr "அலகு: எம்பி"
 msgid "Cache Time"
 msgstr "கேச் நேரம்"
 
-#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:434
-#: resources/ui/mpvpage.ui:453
+#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:453
+#: resources/ui/mpvpage.ui:472
 msgid "Subtitle"
 msgstr "வசன வரிகள்"
 
@@ -1244,8 +1249,8 @@ msgstr "அலகு: எம்.எச்"
 msgid "Speed"
 msgstr "வேகம்"
 
-#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:426
-#: resources/ui/mpvpage.ui:486 resources/ui/search.ui:78
+#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:445
+#: resources/ui/mpvpage.ui:505 resources/ui/search.ui:78
 msgid "Audio"
 msgstr "ஆடியோ"
 
@@ -1390,8 +1395,8 @@ msgstr "அடுத்த அத்தியாயம்"
 msgid "Previous chapter"
 msgstr "முந்தைய அத்தியாயம்"
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:152
-#: resources/ui/window.ui:559 resources/ui/window.ui:581
+#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:155
+#: resources/ui/window.ui:394 resources/ui/window.ui:416
 msgid "Playlist"
 msgstr "பிளேலிச்ட்"
 
@@ -1432,20 +1437,20 @@ msgstr "பிளேபேக் வேகத்தை இயல்புநி�
 msgid "Stop and quit"
 msgstr "நிறுத்தி வெளியேறவும்"
 
-#: resources/ui/mpvpage.ui:164
+#: resources/ui/mpvpage.ui:169
 msgid "Media info (MPV)"
 msgstr "மீடியா செய்தி (எம்.பி.வி)"
 
-#: resources/ui/mpvpage.ui:382 resources/ui/window.ui:25
+#: resources/ui/mpvpage.ui:401 resources/ui/window.ui:25
 #: resources/ui/window.ui:54
 msgid "Preferences"
 msgstr "விருப்பத்தேர்வுகள்"
 
-#: resources/ui/mpvpage.ui:399
+#: resources/ui/mpvpage.ui:418
 msgid "Playback speed"
 msgstr "பின்னணி விரைவு"
 
-#: resources/ui/mpvpage.ui:413
+#: resources/ui/mpvpage.ui:432
 msgid "Volume"
 msgstr "தொகுதி"
 
@@ -1661,11 +1666,11 @@ msgstr "சேவையகத்தைச் சேர்க்கவும்"
 msgid "Log Out"
 msgstr "விடுபதிகை"
 
-#: resources/ui/window.ui:253
+#: resources/ui/window.ui:247
 msgid "Contents"
 msgstr "உள்ளடக்கங்கள்"
 
-#: resources/ui/window.ui:411
+#: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "சேவையகங்கள்"
 

@@ -58,22 +58,22 @@ msgstr "Gescheitert GLContext zu bekommen"
 msgid "Failed to get GLContext"
 msgstr "Gescheitert GLContext zu bekommen"
 
-#: src/ui/mpv/page.rs:384 src/ui/mpv/page.rs:386 src/ui/widgets/item.rs:707
+#: src/ui/mpv/page.rs:385 src/ui/mpv/page.rs:387 src/ui/widgets/item.rs:707
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/player_toolbar.ui:90
 msgid "Play"
 msgstr "Abspielen"
 
-#: src/ui/mpv/page.rs:389 src/ui/mpv/page.rs:391 resources/ui/mpvpage.ui:227
+#: src/ui/mpv/page.rs:390 src/ui/mpv/page.rs:392 resources/ui/mpvpage.ui:236
 msgid "Pause"
 msgstr "Pause"
 
-#: src/ui/mpv/page.rs:746
+#: src/ui/mpv/page.rs:748
 msgid "Skip Intro"
 msgstr ""
 
-#: src/ui/mpv/page.rs:747
+#: src/ui/mpv/page.rs:749
 msgid "Skip Outro"
 msgstr ""
 
@@ -338,8 +338,8 @@ msgstr "Tags"
 msgid "Genres"
 msgstr "Genres"
 
-#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:323
-#: resources/ui/window.ui:350
+#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:319
+#: resources/ui/window.ui:256
 msgid "Liked"
 msgstr "Favoriten"
 
@@ -426,7 +426,7 @@ msgstr "Ergebnis: "
 msgid "Task started"
 msgstr "Aufgabe gestartet"
 
-#: src/ui/widgets/single_grid.rs:498
+#: src/ui/widgets/single_grid.rs:503
 msgid "Items"
 msgstr "Inhalte"
 
@@ -470,34 +470,34 @@ msgstr "Entfernen der Identifizierung"
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "Sind Sie sicher, dass Sie alle Metadaten zurücksetzen möchten?"
 
-#: src/ui/widgets/tu_list_item.rs:471
+#: src/ui/widgets/tu_list_item.rs:511
 msgid "Waiting for mediasource ..."
 msgstr "Auf Medienquelle warten..."
 
-#: src/ui/widgets/window.rs:311 resources/ui/window.ui:304
+#: src/ui/widgets/window.rs:307 resources/ui/window.ui:250
 msgid "Home"
 msgstr "Startseite"
 
-#: src/ui/widgets/window.rs:335 resources/ui/identify_dialog.ui:94
+#: src/ui/widgets/window.rs:331 resources/ui/identify_dialog.ui:94
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
-#: resources/ui/window.ui:21 resources/ui/window.ui:396
+#: resources/ui/window.ui:21 resources/ui/window.ui:262
 msgid "Search"
 msgstr "Suche"
 
-#: src/ui/widgets/window.rs:824
+#: src/ui/widgets/window.rs:816
 msgid "Server Panel"
 msgstr "Server-Panel"
 
-#: src/ui/widgets/window.rs:973
+#: src/ui/widgets/window.rs:979
 msgid "Fatal Error"
 msgstr "Fataler Fehler"
 
-#: src/ui/widgets/window.rs:976
+#: src/ui/widgets/window.rs:982
 msgid "Copy Error & Close"
 msgstr "Fehler kopieren und schließen"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1005
+#: src/ui/widgets/window.rs:1011
 msgid "translator-credits"
 msgstr "Skrido <zkrido@proton.me>"
 
@@ -986,7 +986,8 @@ msgstr "Untertitel: "
 msgid "View this season"
 msgstr "Diese Staffel anschauen"
 
-#: resources/ui/item.ui:416 resources/ui/single_grid.ui:167
+#: resources/ui/item.ui:416 resources/ui/liked.ui:69
+#: resources/ui/single_grid.ui:167
 msgid "Nothing Here"
 msgstr "Nichts hier"
 
@@ -1032,6 +1033,10 @@ msgstr "Als ungespielt markieren"
 msgid "Edit Metadata"
 msgstr "Metadaten bearbeiten"
 
+#: resources/ui/liked.ui:70
+msgid "Your favorite items will be placed here"
+msgstr ""
+
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
 msgstr "_Bild kopieren"
@@ -1045,13 +1050,13 @@ msgid "Media Menu"
 msgstr "Medienmenü"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/mpvpage.ui:272 resources/ui/mpvpage.ui:274
+#: resources/ui/mpvpage.ui:287 resources/ui/mpvpage.ui:290
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
 msgstr "Vollbild"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:286 resources/ui/mpvpage.ui:288
+#: resources/ui/mpvpage.ui:304 resources/ui/mpvpage.ui:306
 msgid "Exit Fullscreen"
 msgstr "Vollbild schließen"
 
@@ -1111,7 +1116,7 @@ msgstr "Speziale"
 msgid "Upcoming"
 msgstr "Aufkommen"
 
-#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:610
+#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:445
 msgid "Advanced Settings"
 msgstr "Erweiterte Einstellungen"
 
@@ -1149,8 +1154,8 @@ msgstr "Einheit: MB"
 msgid "Cache Time"
 msgstr "Cachezeit"
 
-#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:434
-#: resources/ui/mpvpage.ui:453
+#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:453
+#: resources/ui/mpvpage.ui:472
 msgid "Subtitle"
 msgstr "Untertitel"
 
@@ -1247,8 +1252,8 @@ msgstr "Einheit: ms"
 msgid "Speed"
 msgstr "Geschwindigkeit"
 
-#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:426
-#: resources/ui/mpvpage.ui:486 resources/ui/search.ui:78
+#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:445
+#: resources/ui/mpvpage.ui:505 resources/ui/search.ui:78
 msgid "Audio"
 msgstr "Audio"
 
@@ -1393,8 +1398,8 @@ msgstr "Nächstes Kapitel"
 msgid "Previous chapter"
 msgstr "Vorheriges Kapitel"
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:152
-#: resources/ui/window.ui:559 resources/ui/window.ui:581
+#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:155
+#: resources/ui/window.ui:394 resources/ui/window.ui:416
 msgid "Playlist"
 msgstr "Playlist"
 
@@ -1435,20 +1440,20 @@ msgstr "Setzte die Wiedergabegeschwindigkeit zurück auf Normal"
 msgid "Stop and quit"
 msgstr "Stoppen und verlassen"
 
-#: resources/ui/mpvpage.ui:164
+#: resources/ui/mpvpage.ui:169
 msgid "Media info (MPV)"
 msgstr "Medieninfo (MPV)"
 
-#: resources/ui/mpvpage.ui:382 resources/ui/window.ui:25
+#: resources/ui/mpvpage.ui:401 resources/ui/window.ui:25
 #: resources/ui/window.ui:54
 msgid "Preferences"
 msgstr "Präferenzen"
 
-#: resources/ui/mpvpage.ui:399
+#: resources/ui/mpvpage.ui:418
 msgid "Playback speed"
 msgstr "Wiedergabegeschwindigkeit"
 
-#: resources/ui/mpvpage.ui:413
+#: resources/ui/mpvpage.ui:432
 msgid "Volume"
 msgstr "Lautstärke"
 
@@ -1664,11 +1669,11 @@ msgstr "Server hinzufügen"
 msgid "Log Out"
 msgstr "Abmelden"
 
-#: resources/ui/window.ui:253
+#: resources/ui/window.ui:247
 msgid "Contents"
 msgstr "Inhalte"
 
-#: resources/ui/window.ui:411
+#: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "Server"
 
