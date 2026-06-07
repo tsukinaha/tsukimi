@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
-"PO-Revision-Date: 2026-06-04 14:01+0000\n"
+"PO-Revision-Date: 2026-06-07 05:01+0000\n"
 "Last-Translator: Sheng <shengchi2@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
@@ -1016,7 +1016,7 @@ msgstr "編輯元資料"
 
 #: resources/ui/liked.ui:70
 msgid "Your favorite items will be placed here"
-msgstr ""
+msgstr "我的收藏"
 
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
