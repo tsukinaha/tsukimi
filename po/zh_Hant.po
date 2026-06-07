@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
-"PO-Revision-Date: 2026-06-04 11:41+0000\n"
-"Last-Translator: Inaha <sakuovds@gmail.com>\n"
+"PO-Revision-Date: 2026-06-04 14:01+0000\n"
+"Last-Translator: Sheng <shengchi2@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hant/>\n"
 "Language: zh_Hant\n"
@@ -567,7 +567,7 @@ msgstr "應用強調色"
 
 #: resources/ui/account_settings.ui:77
 msgid "Disable to follow the system accent color"
-msgstr ""
+msgstr "取消跟隨系統強調色"
 
 #: resources/ui/account_settings.ui:82
 msgid "Accent Color"
@@ -582,8 +582,6 @@ msgid "Auto Select Last Server"
 msgstr "自動啟動上次使用的媒體庫"
 
 #: resources/ui/account_settings.ui:110
-#, fuzzy
-#| msgid "Home"
 msgid "Home Page"
 msgstr "首頁"
 
@@ -592,14 +590,12 @@ msgid "Refresh when returning to home page"
 msgstr "返回首頁時重新整理"
 
 #: resources/ui/account_settings.ui:118
-#, fuzzy
-#| msgid "Continue Watching"
 msgid "Merge Continue Watching and Next Up"
 msgstr "繼續觀看"
 
 #: resources/ui/account_settings.ui:119
 msgid "Jellyfin only"
-msgstr ""
+msgstr "只限 Jellyfin"
 
 #: resources/ui/account_settings.ui:126
 msgid "Network"
