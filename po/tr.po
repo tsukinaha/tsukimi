@@ -1,11 +1,13 @@
 # Taha <mtbayin@gmail.com>, 2026.
+# Hosted Weblate user 135666 <xmtaha@users.noreply.hosted.weblate.org>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-06 12:32+0200\n"
-"PO-Revision-Date: 2026-06-06 11:09+0000\n"
-"Last-Translator: Taha <mtbayin@gmail.com>\n"
+"PO-Revision-Date: 2026-06-06 11:18+0000\n"
+"Last-Translator: Hosted Weblate user 135666 "
+"<xmtaha@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/tsukimi/main/tr/>"
 "\n"
 "Language: tr\n"
@@ -21,27 +23,27 @@ msgstr "Zaman Aşımı Hatası, İnternet bağlantınızı kontrol edin"
 
 #: src/client/error.rs:22
 msgid "Connection Error, Check your internet connection"
-msgstr "Bağlantı hatası, İnternet bağlantınızı kontrol edin"
+msgstr "Bağlantı Hatası, İnternet bağlantınızı kontrol edin"
 
 #: src/ui/mpv/control_sidebar.rs:452
 msgid "Video filter settings cleared."
-msgstr "Video filtresi ayarları sıfırlandı."
+msgstr "Video filtresi ayarları temizlendi."
 
 #: src/ui/mpv/control_sidebar.rs:475
 msgid "Subtitle settings cleared."
-msgstr "Altyazı ayarları sıfırlandı."
+msgstr "Altyazı ayarları temizlendi."
 
 #: src/ui/mpv/control_sidebar.rs:488
 msgid "Subtitle color settings cleared."
-msgstr "Altyazı renk ayarları sıfırlandı."
+msgstr "Altyazı renk ayarları temizlendi."
 
 #: src/ui/mpv/control_sidebar.rs:497
 msgid "Subtitle offset settings cleared."
-msgstr "Altyazı kaydırma ayarları sıfırlandı."
+msgstr "Altyazı gecikme (offset) ayarları temizlendi."
 
 #: src/ui/mpv/control_sidebar.rs:539
 msgid "Deband settings cleared."
-msgstr "Bant ayarları sıfırlandı."
+msgstr "Bantlanma giderme (deband) ayarları temizlendi."
 
 #: src/ui/mpv/mpvglarea.rs:88
 msgid "Failed to realize GLArea"
@@ -79,8 +81,8 @@ msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
 msgstr ""
-"MPV kapatıldı, uygulama kapanacak.\n"
-"Tsukimi, MPV'yi yeniden başlatamıyor."
+"MPV kapatıldı, uygulama sonlandırılacak.\n"
+"Tsukimi MPV'yi yeniden başlatamaz."
 
 #: src/ui/provider/tu_item.rs:547
 msgid "No next up video found"
@@ -88,13 +90,13 @@ msgstr "Sıradaki video bulunamadı"
 
 #: src/ui/provider/tu_item.rs:576 src/ui/widgets/tu_overview_item.rs:254
 msgid "Present"
-msgstr "Şu an"
+msgstr "Mevcut"
 
 #: src/ui/provider/tu_item.rs:584 src/ui/provider/tu_item.rs:602
 #: src/ui/provider/tu_item.rs:625 src/ui/provider/tu_item.rs:648
 #: src/ui/provider/tu_item.rs:651
 msgid "Unknown"
-msgstr "Bilinmiyor"
+msgstr "Bilinmeyen"
 
 #: src/ui/widgets/account_add.rs:145
 msgid "Fields must be filled in"
@@ -110,19 +112,19 @@ msgstr "Sunucu başarıyla eklendi"
 
 #: src/ui/widgets/account_settings.rs:229
 msgid "Password cannot be empty!"
-msgstr "Şifre boş bırakılamaz!"
+msgstr "Parola boş olamaz!"
 
 #: src/ui/widgets/account_settings.rs:233
 msgid "Passwords do not match!"
-msgstr "Şifreler uyuşmuyor!"
+msgstr "Parolalar eşleşmiyor!"
 
 #: src/ui/widgets/account_settings.rs:240
 msgid "Password changed successfully! Please login again."
-msgstr "Şifreniz başarıyla değiştirildi! Lütfen tekrar giriş yapın."
+msgstr "Parola başarıyla değiştirildi! Lütfen tekrar giriş yapın."
 
 #: src/ui/widgets/account_settings.rs:244
 msgid "Failed to change password"
-msgstr "Şifre değiştirilemedi"
+msgstr "Parola değiştirilemedi"
 
 #: src/ui/widgets/account_settings.rs:280
 msgid "Cache Cleared"
@@ -130,19 +132,19 @@ msgstr "Önbellek Temizlendi"
 
 #: src/ui/widgets/account_settings.rs:301
 msgid "No file selected"
-msgstr "Seçilen dosya yok"
+msgstr "Dosya seçilmedi"
 
 #: src/ui/widgets/account_settings.rs:536
 #: src/ui/widgets/account_settings.rs:545
 #: src/ui/widgets/account_settings.rs:579
 #: src/ui/widgets/account_settings.rs:588
 msgid "Descriptor cannot be empty!"
-msgstr "Tanımlayıcı boş bırakılamaz!"
+msgstr "Tanımlayıcı boş olamaz!"
 
 #: src/ui/widgets/account_settings.rs:550
 #: src/ui/widgets/account_settings.rs:593
 msgid "Invalid regex"
-msgstr "Geçersiz regex"
+msgstr "Geçersiz düzenli ifade (regex)"
 
 #: src/ui/widgets/disc_box.rs:99 resources/ui/disc_box.ui:9
 msgid "Disc"
@@ -159,11 +161,11 @@ msgstr "Sıradaki"
 
 #: src/ui/widgets/home.rs:395
 msgid "Latest"
-msgstr "En son"
+msgstr "En Son"
 
 #: src/ui/widgets/identify/dialog.rs:140
 msgid "Failed to get path"
-msgstr "Yol alınamadı"
+msgstr "Dizin yolu alınamadı"
 
 #: src/ui/widgets/identify/search_page.rs:124 resources/ui/identify_dialog.ui:6
 #: resources/ui/identify_dialog.ui:14
@@ -175,7 +177,7 @@ msgstr "Tanımla"
 #: src/ui/widgets/image_dialog/search_page.rs:148
 #: src/ui/widgets/metadata_dialog.rs:290 src/ui/widgets/tu_item/action.rs:485
 msgid "Are you sure you wish to continue?"
-msgstr "Devam etmek istediğinizden emin misiniz?"
+msgstr "Devam etmek istediğinize emin misiniz?"
 
 #: src/ui/widgets/identify/search_page.rs:129
 #: src/ui/widgets/image_dialog/search_page.rs:151
@@ -193,48 +195,48 @@ msgstr "Tamam"
 
 #: src/ui/widgets/identify/search_page.rs:133
 msgid "Replace existing images"
-msgstr "Mevcut resimleri değiştir"
+msgstr "Mevcut görselleri değiştir"
 
 #: src/ui/widgets/image_dialog/image_adw_dialog.rs:126
 msgid "View Images"
-msgstr "Resimleri Görüntüle"
+msgstr "Görselleri Görüntüle"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:184
 msgid "Image saved"
-msgstr "Resim kaydedildi"
+msgstr "Görsel kaydedildi"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:189
 msgid "Failed to load image"
-msgstr "Resim yüklenemedi"
+msgstr "Görsel yüklenemedi"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:153
 msgid "No image to view"
-msgstr "Görüntülenecek resim yok"
+msgstr "Görüntülenecek görsel yok"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:169
 msgid "No image to copy"
-msgstr "Kopyalanacak resim yok"
+msgstr "Kopyalanacak görsel yok"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:173
 #: src/ui/widgets/media_viewer.rs:349
 msgid "Image copied to clipboard"
-msgstr "Resim panoya kopyalandı"
+msgstr "Görsel panoya kopyalandı"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:206
 msgid "Image deleted"
-msgstr "Resim silindi"
+msgstr "Görsel silindi"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:211
 msgid "Error deleting image"
-msgstr "Resim silinirken hata oluştu"
+msgstr "Görsel silinirken hata oluştu"
 
 #: src/ui/widgets/image_dialog/search_page.rs:146
 msgid "Replace Image"
-msgstr "Resmi Değiştir"
+msgstr "Görseli Değiştir"
 
 #: src/ui/widgets/item.rs:703 src/ui/widgets/list.rs:130
 msgid "Resume"
-msgstr "Devam et"
+msgstr "Devam Et"
 
 #: src/ui/widgets/item.rs:1088
 msgid "Codec"
@@ -271,11 +273,11 @@ msgstr "Genişlik"
 
 #: src/ui/widgets/item.rs:1117
 msgid "ColorSpace"
-msgstr "Renk Alanı"
+msgstr "Renk Uzayı"
 
 #: src/ui/widgets/item.rs:1121
 msgid "DisplayTitle"
-msgstr "Ekran Başlığı"
+msgstr "Görüntüleme Başlığı"
 
 #: src/ui/widgets/item.rs:1125
 msgid "Channel"
@@ -291,7 +293,7 @@ msgstr "Ortalama Kare Hızı"
 
 #: src/ui/widgets/item.rs:1138
 msgid "PixelFormat"
-msgstr "Piksel Biçimi"
+msgstr "Piksel Formatı"
 
 #: src/ui/widgets/item.rs:1250
 msgid "No video source found"
@@ -299,7 +301,7 @@ msgstr "Video kaynağı bulunamadı"
 
 #: src/ui/widgets/item.rs:1386
 msgid "Season not found. Is this a continue watching list?"
-msgstr "Sezon bulunamadı. Bu, izlemeye devam listesi mi?"
+msgstr "Sezon bulunamadı. Bu bir izlemeye devam et listesi mi?"
 
 #: src/ui/widgets/liked.rs:158
 msgid "Favourite"
@@ -315,7 +317,7 @@ msgstr "Tümü"
 
 #: src/ui/widgets/list.rs:131 resources/ui/search.ui:60
 msgid "BoxSet"
-msgstr "Boxset"
+msgstr "Koleksiyon"
 
 #: src/ui/widgets/list.rs:132 resources/ui/filter.ui:85
 #: resources/ui/item.ui:483 resources/ui/other.ui:150
@@ -343,7 +345,7 @@ msgstr "Uygula"
 
 #: src/ui/widgets/missing_episodes_dialog.rs:148
 msgid "Special"
-msgstr "Özel"
+msgstr "Özel Bölüm"
 
 #: src/ui/widgets/music_album.rs:247
 msgid "Songs"
@@ -351,7 +353,7 @@ msgstr "Şarkılar"
 
 #: src/ui/widgets/music_album.rs:349
 msgid "More From"
-msgstr "Daha Fazlası"
+msgstr "Sanatçının Diğer Eserleri"
 
 #: src/ui/widgets/refresh_dialog.rs:94
 msgid "Scanning..."
@@ -359,7 +361,7 @@ msgstr "Taranıyor..."
 
 #: src/ui/widgets/search.rs:199
 msgid "No overview"
-msgstr "Genel bakış yok"
+msgstr "Özet yok"
 
 #: src/ui/widgets/server_action_row.rs:129
 msgid "Edit Server"
@@ -371,7 +373,7 @@ msgstr "Sunucuyu kapat"
 
 #: src/ui/widgets/server_panel.rs:120
 msgid "Are you sure you want to shut down the server?"
-msgstr "Sunucuyu kapatmak istediğinizden emin misiniz?"
+msgstr "Sunucuyu kapatmak istediğinize emin misiniz?"
 
 #: src/ui/widgets/server_panel.rs:151
 msgid "Restart server"
@@ -379,11 +381,11 @@ msgstr "Sunucuyu yeniden başlat"
 
 #: src/ui/widgets/server_panel.rs:152
 msgid "Are you sure you want to restart the server?"
-msgstr "Sunucuyu yeniden başlatmak istediğinizden emin misiniz?"
+msgstr "Sunucuyu yeniden başlatmak istediğinize emin misiniz?"
 
 #: src/ui/widgets/server_panel.rs:155
 msgid "Revert"
-msgstr "Geri al"
+msgstr "Geri Al"
 
 #: src/ui/widgets/server_panel.rs:156
 msgid "Confirm"
@@ -399,7 +401,7 @@ msgstr "Sunucu yeniden başlatılıyor"
 
 #: src/ui/widgets/server_panel.rs:291
 msgid "Last execute: "
-msgstr "Son yürütme: "
+msgstr "Son çalıştırma: "
 
 #: src/ui/widgets/server_panel.rs:296
 msgid "Duration: "
@@ -419,11 +421,11 @@ msgstr "Öğeler"
 
 #: src/ui/widgets/star_toggle.rs:65
 msgid "Remove from favorites"
-msgstr "Sık kullanılanlardan kaldır"
+msgstr "Favorilerden çıkar"
 
 #: src/ui/widgets/star_toggle.rs:70
 msgid "Add to favorites"
-msgstr "Sık kullanılanlara ekle"
+msgstr "Favorilere ekle"
 
 #: src/ui/widgets/tu_item/action.rs:98
 msgid "Success"
@@ -440,7 +442,8 @@ msgid ""
 "The following files and folders will be deleted:"
 msgstr ""
 "Bu öğeyi silmek, onu hem dosya sisteminden hem de medya kitaplığınızdan "
-"silecektir:"
+"silecektir.\n"
+"Aşağıdaki dosya ve klasörler silinecek:"
 
 #: src/ui/widgets/tu_item/action.rs:490 resources/ui/image_info_card.ui:139
 #: resources/ui/pop-menu.ui:92 resources/ui/server_action_row.ui:52
@@ -454,11 +457,11 @@ msgstr "Tanımlamayı Kaldır"
 
 #: src/ui/widgets/tu_item/action.rs:546
 msgid "Are you sure you wish to reset all metadata?"
-msgstr "Tüm meta verileri sıfırlamak istediğinizden emin misiniz?"
+msgstr "Tüm üst verileri (metadata) sıfırlamak istediğinize emin misiniz?"
 
 #: src/ui/widgets/tu_list_item.rs:511
 msgid "Waiting for mediasource ..."
-msgstr "Mediasource bekleniyor ..."
+msgstr "Medya kaynağı bekleniyor..."
 
 #: src/ui/widgets/window.rs:307 resources/ui/window.ui:250
 msgid "Home"
@@ -468,7 +471,7 @@ msgstr "Ana Sayfa"
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
 #: resources/ui/window.ui:21 resources/ui/window.ui:262
 msgid "Search"
-msgstr "Arama"
+msgstr "Ara"
 
 #: src/ui/widgets/window.rs:816
 msgid "Server Panel"
@@ -476,7 +479,7 @@ msgstr "Sunucu Paneli"
 
 #: src/ui/widgets/window.rs:979
 msgid "Fatal Error"
-msgstr "Önemli Hata"
+msgstr "Kritik Hata"
 
 #: src/ui/widgets/window.rs:982
 msgid "Copy Error & Close"
@@ -485,7 +488,7 @@ msgstr "Hatayı Kopyala ve Kapat"
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
 #: src/ui/widgets/window.rs:1011
 msgid "translator-credits"
-msgstr "çevirmen-kredileri"
+msgstr "Çevirmen Katkıları"
 
 #: resources/ui/account.ui:6 resources/ui/account.ui:14
 msgid "Add a New Server"
@@ -498,7 +501,7 @@ msgstr "Aşağıya sunucu bilgilerini girin."
 #: resources/ui/account.ui:48 resources/ui/identify_dialog.ui:74
 #: resources/ui/other.ui:54
 msgid "Name"
-msgstr "Ad"
+msgstr "İsim"
 
 #: resources/ui/account.ui:66
 msgid "Server Address"
@@ -506,7 +509,7 @@ msgstr "Sunucu Adresi"
 
 #: resources/ui/account.ui:85
 msgid "Port"
-msgstr "Bağlantı Noktası"
+msgstr "Port"
 
 #: resources/ui/account.ui:92
 msgid "Username"
@@ -514,7 +517,7 @@ msgstr "Kullanıcı Adı"
 
 #: resources/ui/account.ui:97
 msgid "Password"
-msgstr "Şifre"
+msgstr "Parola"
 
 #: resources/ui/account.ui:108 resources/ui/account_settings.ui:521
 msgid "Add"
@@ -534,7 +537,7 @@ msgstr "Tercih Edilen Dil"
 
 #: resources/ui/account_settings.ui:18
 msgid "This is globally effective"
-msgstr "Bu ayar tüm sistemde geçerlidir"
+msgstr "Bu genel olarak geçerlidir"
 
 #: resources/ui/account_settings.ui:21
 msgid "Preferred Audio Language"
@@ -559,7 +562,7 @@ msgstr "Özel Vurgu Rengi Kullan"
 
 #: resources/ui/account_settings.ui:77
 msgid "Disable to follow the system accent color"
-msgstr "Sistem vurgu rengini takip etmek için devre dışı bırak"
+msgstr "Sistem vurgu rengini kullanmak için devre dışı bırakın"
 
 #: resources/ui/account_settings.ui:82
 msgid "Accent Color"
@@ -571,7 +574,7 @@ msgstr "Kenar Çubuğunu Gizle"
 
 #: resources/ui/account_settings.ui:103
 msgid "Auto Select Last Server"
-msgstr "Son Sunucuyu Otomatik Olarak Seç"
+msgstr "Son Sunucuyu Otomatik Seç"
 
 #: resources/ui/account_settings.ui:110
 msgid "Home Page"
@@ -579,11 +582,11 @@ msgstr "Ana Sayfa"
 
 #: resources/ui/account_settings.ui:113
 msgid "Refresh when returning to home page"
-msgstr "Ana sayfaya geri döndüğünde sayfayı yenile"
+msgstr "Ana sayfaya dönüldüğünde yenile"
 
 #: resources/ui/account_settings.ui:118
 msgid "Merge Continue Watching and Next Up"
-msgstr "“İzlemeye Devam Et” ile “Sıradaki” seçeneklerini birleştir"
+msgstr "İzlemeye Devam Et ve Sıradaki Listelerini Birleştir"
 
 #: resources/ui/account_settings.ui:119
 msgid "Jellyfin only"
@@ -595,15 +598,15 @@ msgstr "Ağ"
 
 #: resources/ui/account_settings.ui:129
 msgid "Threads"
-msgstr "İş parçacıkları"
+msgstr "İş Parçacıkları (Threads)"
 
 #: resources/ui/account_settings.ui:130
 msgid "Excessive thread counts may exhaust the system's connection pool"
-msgstr "Aşırı iş parçacığı sayısı, sistemin bağlantı havuzunu tüketebilir"
+msgstr "Aşırı iş parçacığı sayısı sistem bağlantı havuzunu tüketebilir"
 
 #: resources/ui/account_settings.ui:146 resources/ui/mpv_control_sidebar.ui:378
 msgid "Background"
-msgstr "Arka plan"
+msgstr "Arka Plan"
 
 #: resources/ui/account_settings.ui:178
 msgid "Opacity"
@@ -639,15 +642,15 @@ msgstr "Hesap"
 
 #: resources/ui/account_settings.ui:259 resources/ui/account_settings.ui:276
 msgid "Change Password"
-msgstr "Şifreyi Değiştir"
+msgstr "Parola Değiştir"
 
 #: resources/ui/account_settings.ui:262
 msgid "New Password"
-msgstr "Yeni Şifre"
+msgstr "Yeni Parola"
 
 #: resources/ui/account_settings.ui:267
 msgid "Confirm Password"
-msgstr "Şifreyi Onayla"
+msgstr "Parolayı Onayla"
 
 #: resources/ui/account_settings.ui:290
 msgid "Media"
@@ -659,11 +662,11 @@ msgstr "Müzik Çalar"
 
 #: resources/ui/account_settings.ui:298 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
-msgstr "Tekrar Modu"
+msgstr "Tekrarlama Modu"
 
 #: resources/ui/account_settings.ui:302 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
-msgstr "Tek Parçayı Tekrarla"
+msgstr "Geçerli Olanı Tekrarla"
 
 #: resources/ui/account_settings.ui:303 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
@@ -672,7 +675,7 @@ msgstr "Tümünü Tekrarla"
 #: resources/ui/account_settings.ui:304 resources/ui/account_settings.ui:332
 #: resources/ui/player_toolbar.ui:239
 msgid "None"
-msgstr "Yok"
+msgstr "Hiçbiri"
 
 #: resources/ui/account_settings.ui:314
 msgid "Video Player"
@@ -696,7 +699,7 @@ msgstr "Video Çıkışı"
 
 #: resources/ui/account_settings.ui:356
 msgid "Only for debugging"
-msgstr "Yalnızca hata ayıklama için"
+msgstr "Yalnızca hata ayıklama içindir"
 
 #: resources/ui/account_settings.ui:359
 msgid "libmpv (default)"
@@ -711,8 +714,9 @@ msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
-"Ağırlık, belirli bir sürüm eşleşene kadar yüksekten düşüğe doğru sıralanır "
-"veya eşleşme listesi temizlenmeden önce en yüksek eşleşen sürüm elde edilir"
+"Ağırlık; belirli bir sürüm eşleşene kadar veya eşleşme listesi temizlenmeden "
+"önce en yüksek eşleşen sürüm elde edilene dek yüksekten düşüğe doğru "
+"sıralanır"
 
 #: resources/ui/account_settings.ui:442
 msgid "Descriptors"
@@ -720,7 +724,7 @@ msgstr "Tanımlayıcılar"
 
 #: resources/ui/account_settings.ui:464
 msgid "It is recommended to set no more than 3 lines"
-msgstr "En fazla 3 satır girilmesi önerilir"
+msgstr "3 satırdan fazla ayarlanmaması önerilir"
 
 #: resources/ui/account_settings.ui:485
 msgid "No Descriptors"
@@ -728,11 +732,11 @@ msgstr "Tanımlayıcı Yok"
 
 #: resources/ui/account_settings.ui:504
 msgid "Add a descriptor"
-msgstr "Tanımlayıcı ekle"
+msgstr "Bir tanımlayıcı ekle"
 
 #: resources/ui/account_settings.ui:546 resources/ui/account_settings.ui:656
 msgid "This will use exact matching to obtain a list"
-msgstr "Bu, listeyi elde etmek için tam eşleştirme kullanır"
+msgstr "Bu, bir liste elde etmek için tam eşleşme kullanacaktır"
 
 #: resources/ui/account_settings.ui:549 resources/ui/account_settings.ui:659
 msgid "Descriptor Type"
@@ -740,7 +744,7 @@ msgstr "Tanımlayıcı Türü"
 
 #: resources/ui/account_settings.ui:554 resources/ui/account_settings.ui:664
 msgid "String"
-msgstr "Dize"
+msgstr "Dize (String)"
 
 #: resources/ui/account_settings.ui:555 resources/ui/account_settings.ui:665
 msgid "Regular Expression"
@@ -777,7 +781,7 @@ msgstr "Klasörü değiştir"
 
 #: resources/ui/account_settings.ui:726
 msgid "Select new mpv config folder"
-msgstr "Yeni mpv yapılandırma klasörünü seçin"
+msgstr "Yeni mpv yapılandırma klasörü seçin"
 
 #: resources/ui/filter.ui:6 resources/ui/filter.ui:21 resources/ui/search.ui:31
 #: resources/ui/single_grid.ui:47
@@ -794,15 +798,15 @@ msgstr "Oynatma Durumu"
 
 #: resources/ui/filter.ui:50 resources/ui/filter.ui:149
 msgid "Any"
-msgstr "Herhangi"
+msgstr "Herhangi Biri"
 
 #: resources/ui/filter.ui:51
 msgid "Played"
-msgstr "Oynatıldı"
+msgstr "İzlendi"
 
 #: resources/ui/filter.ui:52
 msgid "Unplayed"
-msgstr "Oynatılmamış"
+msgstr "İzlenmedi"
 
 #: resources/ui/filter.ui:53
 msgid "Continue Play"
@@ -814,7 +818,7 @@ msgstr "Yıllar"
 
 #: resources/ui/filter.ui:99
 msgid "Official Ratings"
-msgstr "Resmi Puanlamalar"
+msgstr "Resmi Değerlendirmeler"
 
 #: resources/ui/filter.ui:106 resources/ui/item.ui:473
 #: resources/ui/other.ui:145
@@ -823,11 +827,11 @@ msgstr "Stüdyolar"
 
 #: resources/ui/filter.ui:115
 msgid "Media Info"
-msgstr "Medya Bilgileri"
+msgstr "Medya Bilgisi"
 
 #: resources/ui/filter.ui:118
 msgid "Containers"
-msgstr "Konteynerler"
+msgstr "Kapsayıcılar"
 
 #: resources/ui/filter.ui:125
 msgid "Encoders"
@@ -843,11 +847,11 @@ msgstr "Çözünürlük"
 
 #: resources/ui/filter.ui:165
 msgid "Clear"
-msgstr "Temizlemek"
+msgstr "Temizle"
 
 #: resources/ui/home.ui:17
 msgid "Library"
-msgstr "Kütüphane"
+msgstr "Kitaplık"
 
 #: resources/ui/identify_dialog.ui:57
 msgid ""
@@ -877,19 +881,19 @@ msgstr "Harici"
 
 #: resources/ui/image_dialog_edit_page.ui:4
 msgid "Edit Image"
-msgstr "Resmi Düzenle"
+msgstr "Görseli Düzenle"
 
 #: resources/ui/image_dialog_edit_page.ui:19
 msgid "Upload Image"
-msgstr "Resim Yükle"
+msgstr "Görsel Yükle"
 
 #: resources/ui/image_dialog_edit_page.ui:24
 msgid "External Url"
-msgstr "Harici URL"
+msgstr "Harici Url"
 
 #: resources/ui/image_dialog_search_page.ui:4
 msgid "Choose Image"
-msgstr "Görüntü Seç"
+msgstr "Görsel Seç"
 
 #: resources/ui/image_dialog_search_page.ui:15
 msgid "Provider:"
@@ -905,11 +909,11 @@ msgstr "Tüm Diller"
 
 #: resources/ui/image_drop_row.ui:49
 msgid "Open"
-msgstr "Açık"
+msgstr "Aç"
 
 #: resources/ui/image_drop_row.ui:109
 msgid "Pick Image"
-msgstr "Görüntü Seç"
+msgstr "Görsel Seç"
 
 #: resources/ui/image_drop_row.ui:113 resources/ui/images_dialog.ui:69
 msgid "Images"
@@ -917,34 +921,34 @@ msgstr "Görseller"
 
 #: resources/ui/image_drop_row.ui:119
 msgid "Pick image to upload"
-msgstr "Yüklemek istediğiniz resmi seçin"
+msgstr "Yüklenecek görseli seçin"
 
 #: resources/ui/image_info_card.ui:86
 msgid "Copy Image To Clipboard"
-msgstr "Resmi Panoya Kopyala"
+msgstr "Görseli Panoya Kopyala"
 
 #: resources/ui/image_info_card.ui:98
 msgid "View Image"
-msgstr "Resmi Görüntüle"
+msgstr "Görseli Görüntüle"
 
 #: resources/ui/image_info_card.ui:109 resources/ui/image_info_card.ui:133
 #: resources/ui/server_action_row.ui:30
 msgid "Edit"
-msgstr "Düzenlemek"
+msgstr "Düzenle"
 
 #: resources/ui/images_dialog.ui:6 resources/ui/images_dialog.ui:36
 #: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:48
 #: resources/ui/song_widget.ui:161
 msgid "Edit Images"
-msgstr "Görüntüleri Düzenle"
+msgstr "Görselleri Düzenle"
 
 #: resources/ui/images_dialog.ui:59 resources/ui/metadata_dialog.ui:70
 msgid "Not Available"
-msgstr "Müsait değil"
+msgstr "Kullanılamıyor"
 
 #: resources/ui/images_dialog.ui:60 resources/ui/metadata_dialog.ui:71
 msgid "This page is READ-ONLY, because you have no permission to modify it."
-msgstr "Bu sayfa salt okunur durumdadır, çünkü onu değiştirme izniniz yoktur."
+msgstr "Değişiklik yapma izniniz olmadığı için bu sayfa SALT OKUNUR durumdadır."
 
 #: resources/ui/images_dialog.ui:157
 msgid "BackDrops"
@@ -965,11 +969,11 @@ msgstr "Bu sezonu görüntüle"
 #: resources/ui/item.ui:416 resources/ui/liked.ui:69
 #: resources/ui/single_grid.ui:167
 msgid "Nothing Here"
-msgstr "Burada hiçbir şey yok"
+msgstr "Burada Hiçbir Şey Yok"
 
 #: resources/ui/item.ui:443
 msgid "Included In"
-msgstr "Dahil Olanlar"
+msgstr "Dahil Olduğu Yerler"
 
 #: resources/ui/item.ui:448
 msgid "Additional Parts"
@@ -981,11 +985,11 @@ msgstr "Sezonlar"
 
 #: resources/ui/item.ui:458 resources/ui/other.ui:140
 msgid "Actors"
-msgstr "Aktörler"
+msgstr "Oyuncular"
 
 #: resources/ui/item.ui:463
 msgid "Recommend"
-msgstr "Tavsiye edilenler"
+msgstr "Önerilenler"
 
 #: resources/ui/item.ui:468 resources/ui/other.ui:160
 msgid "Links"
@@ -997,25 +1001,25 @@ msgstr "Medya Bilgisi"
 
 #: resources/ui/item_actions.ui:40 resources/ui/pop-menu.ui:28
 msgid "Mark as Played"
-msgstr "Oynatıldı olarak işaretle"
+msgstr "İzlendi Olarak İşaretle"
 
 #: resources/ui/item_actions.ui:46 resources/ui/pop-menu.ui:34
 msgid "Mark as Unplayed"
-msgstr "Oynanmamış olarak işaretle"
+msgstr "İzlenmedi Olarak İşaretle"
 
 #: resources/ui/item_actions.ui:53 resources/ui/metadata_dialog.ui:18
 #: resources/ui/metadata_dialog.ui:26 resources/ui/pop-menu.ui:42
 #: resources/ui/song_widget.ui:156
 msgid "Edit Metadata"
-msgstr "Meta Verileri Düzenle"
+msgstr "Üst Verileri Düzenle"
 
 #: resources/ui/liked.ui:70
 msgid "Your favorite items will be placed here"
-msgstr "Favori ürünleriniz buraya yerleştirilecektir"
+msgstr "Favori öğeleriniz burada yer alacak"
 
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
-msgstr "_Görüntüyü Kopyala"
+msgstr "_Görseli Kopyala"
 
 #: resources/ui/media_viewer.ui:36 resources/ui/media_viewer.ui:38
 msgid "Back"
@@ -1029,12 +1033,12 @@ msgstr "Medya Menüsü"
 #: resources/ui/mpvpage.ui:287 resources/ui/mpvpage.ui:290
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
-msgstr "Tam ekran"
+msgstr "Tam Ekran"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
 #: resources/ui/mpvpage.ui:304 resources/ui/mpvpage.ui:306
 msgid "Exit Fullscreen"
-msgstr "Tam ekrandan çık"
+msgstr "Tam Ekrandan Çık"
 
 #: resources/ui/metadata_dialog.ui:81
 msgid "No data."
@@ -1050,15 +1054,15 @@ msgstr "Oluşturulma Tarihi"
 
 #: resources/ui/metadata_dialog.ui:106
 msgid "Pick Date"
-msgstr "Tarih Seçin"
+msgstr "Tarih Seç"
 
 #: resources/ui/metadata_dialog.ui:126
 msgid "Pick Time"
-msgstr "Seçim Zamanı"
+msgstr "Saat Seç"
 
 #: resources/ui/metadata_dialog.ui:179
 msgid "Overview"
-msgstr "Genel Bakış"
+msgstr "Özet"
 
 #: resources/ui/metadata_dialog.ui:196
 msgid "External Ids"
@@ -1070,7 +1074,7 @@ msgstr "TheMovieDb Kimliği"
 
 #: resources/ui/metadata_dialog.ui:207
 msgid "TheTVDb Id"
-msgstr "TheTVDb İD"
+msgstr "TheTVDb Kimliği"
 
 #: resources/ui/metadata_dialog.ui:212
 msgid "IMDb Id"
@@ -1082,15 +1086,15 @@ msgstr "Öğeyi Kilitle"
 
 #: resources/ui/missing_episodes.ui:6 resources/ui/missing_episodes.ui:36
 msgid "Missing Episodes"
-msgstr "Kayıp Bölümler"
+msgstr "Eksik Bölümler"
 
 #: resources/ui/missing_episodes.ui:60
 msgid "Specials"
-msgstr "Özel Ürünler"
+msgstr "Özel Bölümler"
 
 #: resources/ui/missing_episodes.ui:72
 msgid "Upcoming"
-msgstr "Yakında"
+msgstr "Yaklaşan"
 
 #: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:445
 msgid "Advanced Settings"
@@ -1098,11 +1102,11 @@ msgstr "Gelişmiş Ayarlar"
 
 #: resources/ui/mpv_control_sidebar.ui:18
 msgid "Seek Action"
-msgstr "Harekete Geçin"
+msgstr "Atlama Eylemi"
 
 #: resources/ui/mpv_control_sidebar.ui:21
 msgid "Seek Backward"
-msgstr "Geriye doğru bak"
+msgstr "Geriye Atla"
 
 #: resources/ui/mpv_control_sidebar.ui:22
 #: resources/ui/mpv_control_sidebar.ui:42
@@ -1112,11 +1116,11 @@ msgstr "Birim: Saniye"
 
 #: resources/ui/mpv_control_sidebar.ui:41
 msgid "Seek Forward"
-msgstr "İleriye Bak"
+msgstr "İleriye Atla"
 
 #: resources/ui/mpv_control_sidebar.ui:72
 msgid "Show Buffer Speed"
-msgstr "Tampon Hızını Göster"
+msgstr "Arabellek Hızını Göster"
 
 #: resources/ui/mpv_control_sidebar.ui:77
 msgid "Cache Size"
@@ -1137,7 +1141,7 @@ msgstr "Altyazı"
 
 #: resources/ui/mpv_control_sidebar.ui:114
 msgid "Subtitle Composing"
-msgstr "Altyazı Oluşturma"
+msgstr "Altyazı Oluşturma (Composing)"
 
 #: resources/ui/mpv_control_sidebar.ui:186
 msgid "Position"
@@ -1153,500 +1157,502 @@ msgstr "Bu seçenek yalnızca srt altyazıları için geçerlidir"
 
 #: resources/ui/mpv_control_sidebar.ui:227
 msgid "Subtitle Text Scale"
-msgstr "Altyazı Metni Ölçeği"
+msgstr "Altyazı Metin Ölçeği"
 
 #: resources/ui/mpv_control_sidebar.ui:228
 msgid "This affects ASS subtitles as well"
-msgstr ""
+msgstr "Bu, ASS altyazılarını da etkiler"
 
 #: resources/ui/mpv_control_sidebar.ui:249
 msgid "Subtitle Text Font"
-msgstr ""
+msgstr "Altyazı Metin Tipi"
 
 #: resources/ui/mpv_control_sidebar.ui:251
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
 msgstr ""
+"Belirli bir yazı tipi belirtmeyen altyazılar için kullanılacak yazı tipini "
+"belirleyin"
 
 #: resources/ui/mpv_control_sidebar.ui:276
 msgid "Border Style"
-msgstr ""
+msgstr "Kenarlık Stili"
 
 #: resources/ui/mpv_control_sidebar.ui:281
 msgid "Outline and shadow"
-msgstr ""
+msgstr "Dış çizgi ve gölge"
 
 #: resources/ui/mpv_control_sidebar.ui:282
 msgid "Opaque box"
-msgstr ""
+msgstr "Opak kutu"
 
 #: resources/ui/mpv_control_sidebar.ui:283
 msgid "Background box"
-msgstr ""
+msgstr "Arka plan kutusu"
 
 #: resources/ui/mpv_control_sidebar.ui:291
 msgid "Border Size"
-msgstr ""
+msgstr "Kenarlık Boyutu"
 
 #: resources/ui/mpv_control_sidebar.ui:306
 msgid "Shadow Offset"
-msgstr ""
+msgstr "Gölge Uzaklığı"
 
 #: resources/ui/mpv_control_sidebar.ui:322
 msgid "Stretch Image Subtitles to Screen"
-msgstr ""
+msgstr "Görsel Altyazıları Ekrana Sığdır"
 
 #: resources/ui/mpv_control_sidebar.ui:329
 msgid "Subtitle Color"
-msgstr ""
+msgstr "Altyazı Rengi"
 
 #: resources/ui/mpv_control_sidebar.ui:342
 msgid "Text"
-msgstr ""
+msgstr "Metin"
 
 #: resources/ui/mpv_control_sidebar.ui:360
 msgid "Border"
-msgstr ""
+msgstr "Kenarlık"
 
 #: resources/ui/mpv_control_sidebar.ui:398
 msgid "Subtitle Offset"
-msgstr ""
+msgstr "Altyazı Gecikmesi"
 
 #: resources/ui/mpv_control_sidebar.ui:411
 msgid "Offset"
-msgstr ""
+msgstr "Gecikme (Offset)"
 
 #: resources/ui/mpv_control_sidebar.ui:412
 #: resources/ui/mpv_control_sidebar.ui:461
 msgid "Unit: ms"
-msgstr ""
+msgstr "Birim: ms"
 
 #: resources/ui/mpv_control_sidebar.ui:427
 msgid "Speed"
-msgstr ""
+msgstr "Hız"
 
 #: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:445
 #: resources/ui/mpvpage.ui:505 resources/ui/search.ui:78
 msgid "Audio"
-msgstr ""
+msgstr "Ses"
 
 #: resources/ui/mpv_control_sidebar.ui:460
 msgid "Audio Offset"
-msgstr ""
+msgstr "Ses Gecikmesi"
 
 #: resources/ui/mpv_control_sidebar.ui:476
 msgid "Audio Channel"
-msgstr ""
+msgstr "Ses Kanalı"
 
 #: resources/ui/mpv_control_sidebar.ui:481
 msgid "Auto"
-msgstr ""
+msgstr "Otomatik"
 
 #: resources/ui/mpv_control_sidebar.ui:482
 msgid "Auto (Safety)"
-msgstr ""
+msgstr "Otomatik (Güvenli)"
 
 #: resources/ui/mpv_control_sidebar.ui:483
 msgid "Mono"
-msgstr ""
+msgstr "Mono"
 
 #: resources/ui/mpv_control_sidebar.ui:484
 msgid "Dual Channel"
-msgstr ""
+msgstr "Çift Kanal"
 
 #: resources/ui/mpv_control_sidebar.ui:485
 msgid "Dual Channel (Invert)"
-msgstr ""
+msgstr "Çift Kanal (Ters)"
 
 #: resources/ui/mpv_control_sidebar.ui:495 resources/ui/other.ui:134
 #: resources/ui/search.ui:84
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: resources/ui/mpv_control_sidebar.ui:498
 msgid "Video Aspect"
-msgstr ""
+msgstr "Video En Boy Oranı"
 
 #: resources/ui/mpv_control_sidebar.ui:503
 msgid "Fit"
-msgstr ""
+msgstr "Sığdır"
 
 #: resources/ui/mpv_control_sidebar.ui:504
 msgid "Crop"
-msgstr ""
+msgstr "Kırp"
 
 #: resources/ui/mpv_control_sidebar.ui:512
 msgid "Video color grading"
-msgstr ""
+msgstr "Video renk derecelendirme"
 
 #: resources/ui/mpv_control_sidebar.ui:525
 msgid "Brightness"
-msgstr ""
+msgstr "Parlaklık"
 
 #: resources/ui/mpv_control_sidebar.ui:540
 msgid "Contrast"
-msgstr ""
+msgstr "Kontrast"
 
 #: resources/ui/mpv_control_sidebar.ui:555
 msgid "Saturation"
-msgstr ""
+msgstr "Doygunluk"
 
 #: resources/ui/mpv_control_sidebar.ui:570
 msgid "Hue"
-msgstr ""
+msgstr "Ton"
 
 #: resources/ui/mpv_control_sidebar.ui:585
 msgid "Gamma"
-msgstr ""
+msgstr "Gama"
 
 #: resources/ui/mpv_control_sidebar.ui:602
 msgid "Video Deband"
-msgstr ""
+msgstr "Video Deband (Bantlanma Giderme)"
 
 #: resources/ui/mpv_control_sidebar.ui:625
 msgid "Deband Iterations"
-msgstr ""
+msgstr "Deband Yinelemeleri"
 
 #: resources/ui/mpv_control_sidebar.ui:640
 msgid "Deband Threshold"
-msgstr ""
+msgstr "Deband Eşiği"
 
 #: resources/ui/mpv_control_sidebar.ui:655
 msgid "Deband Range"
-msgstr ""
+msgstr "Deband Aralığı"
 
 #: resources/ui/mpv_control_sidebar.ui:670
 msgid "Deband Grain"
-msgstr ""
+msgstr "Deband Greni"
 
 #: resources/ui/mpv_control_sidebar.ui:688
 msgid "Video Deinterlace"
-msgstr ""
+msgstr "Titreşim Giderme (Deinterlace)"
 
 #: resources/ui/mpv_control_sidebar.ui:693
 msgid "Video Upscale"
-msgstr ""
+msgstr "Video Yükseltme (Upscale)"
 
 #: resources/ui/mpv_control_sidebar.ui:716
 msgid "Action after video ends"
-msgstr ""
+msgstr "Video bittikten sonraki eylem"
 
 #: resources/ui/mpv_control_sidebar.ui:719
 msgid "Play Next"
-msgstr ""
+msgstr "Sıradakini Oynat"
 
 #: resources/ui/mpv_control_sidebar.ui:732
 msgid "Loop Playback"
-msgstr ""
+msgstr "Oynatmayı Döngüye Al"
 
 #: resources/ui/mpv_control_sidebar.ui:746
 msgid "Stop"
-msgstr ""
+msgstr "Durdur"
 
 #: resources/ui/mpv_control_sidebar.ui:762
 msgid "Hardware decoding"
-msgstr ""
+msgstr "Donanımsal kod çözme"
 
 #: resources/ui/mpv_control_sidebar.ui:766
 msgid "no (default)"
-msgstr ""
+msgstr "hayır (varsayılan)"
 
 #: resources/ui/mpv_control_sidebar.ui:810
 msgid "Not all settings will be saved"
-msgstr ""
+msgstr "Tüm ayarlar kaydedilmeyecek"
 
 #: resources/ui/mpv_menu.ui:11
 msgid "_Next"
-msgstr ""
+msgstr "_Sonraki"
 
 #: resources/ui/mpv_menu.ui:16
 msgid "_Previous"
-msgstr ""
+msgstr "_Önceki"
 
 #: resources/ui/mpv_menu.ui:23
 msgid "Next chapter"
-msgstr ""
+msgstr "Sonraki bölüm"
 
 #: resources/ui/mpv_menu.ui:28
 msgid "Previous chapter"
-msgstr ""
+msgstr "Önceki bölüm"
 
 #: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:155
 #: resources/ui/window.ui:394 resources/ui/window.ui:416
 msgid "Playlist"
-msgstr ""
+msgstr "Oynatma Listesi"
 
 #: resources/ui/mpv_menu.ui:40
 msgid "Advanced settings"
-msgstr ""
+msgstr "Gelişmiş ayarlar"
 
 #: resources/ui/mpv_menu.ui:47
 msgid "Media info"
-msgstr ""
+msgstr "Medya bilgisi"
 
 #: resources/ui/mpv_menu.ui:54 resources/ui/window.ui:35
 #: resources/ui/window.ui:64
 msgid "_Keyboard shortcuts"
-msgstr ""
+msgstr "_Klavye kısayolları"
 
 #: resources/ui/mpv_menu_actions.ui:12
 msgid "Backward"
-msgstr ""
+msgstr "Geri"
 
 #: resources/ui/mpv_menu_actions.ui:42
 msgid "Forward"
-msgstr ""
+msgstr "İleri"
 
 #: resources/ui/mpv_shortcuts_window.ui:15
 msgid "Decrease/increase playback speed by 10%"
-msgstr ""
+msgstr "Oynatma hızını %10 azalt/artır"
 
 #: resources/ui/mpv_shortcuts_window.ui:21
 msgid "Halve/double current playback speed"
-msgstr ""
+msgstr "Mevcut oynatma hızını yarıya indir/iki katına çıkar"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
 msgid "Reset playback speed to normal"
-msgstr ""
+msgstr "Oynatma hızını normale sıfırla"
 
 #: resources/ui/mpvpage.ui:101
 msgid "Stop and quit"
-msgstr ""
+msgstr "Durdur ve çık"
 
 #: resources/ui/mpvpage.ui:169
 msgid "Media info (MPV)"
-msgstr ""
+msgstr "Medya bilgisi (MPV)"
 
 #: resources/ui/mpvpage.ui:401 resources/ui/window.ui:25
 #: resources/ui/window.ui:54
 msgid "Preferences"
-msgstr ""
+msgstr "Tercihler"
 
 #: resources/ui/mpvpage.ui:418
 msgid "Playback speed"
-msgstr ""
+msgstr "Oynatma hızı"
 
 #: resources/ui/mpvpage.ui:432
 msgid "Volume"
-msgstr ""
+msgstr "Ses Seviyesi"
 
 #: resources/ui/other.ui:94
 msgid "No Inscriptions"
-msgstr ""
+msgstr "Yazı Yok"
 
 #: resources/ui/other.ui:116 resources/ui/search.ui:54
 msgid "Movie"
-msgstr ""
+msgstr "Film"
 
 #: resources/ui/other.ui:122 resources/ui/search.ui:48
 msgid "Series"
-msgstr ""
+msgstr "Dizi"
 
 #: resources/ui/other.ui:128 resources/ui/search.ui:90
 msgid "Episode"
-msgstr ""
+msgstr "Bölüm"
 
 #: resources/ui/player_toolbar.ui:78
 msgid "Previous"
-msgstr ""
+msgstr "Önceki"
 
 #: resources/ui/player_toolbar.ui:108
 msgid "Next"
-msgstr ""
+msgstr "Sonraki"
 
 #: resources/ui/player_toolbar.ui:180
 msgid "Stop And Hide PlayerBar"
-msgstr ""
+msgstr "Durdur ve Oynatıcı Çubuğunu Gizle"
 
 #: resources/ui/pop-menu.ui:10
 msgid "Remove"
-msgstr ""
+msgstr "Kaldır"
 
 #: resources/ui/pop-menu.ui:16
 msgid "Like"
-msgstr ""
+msgstr "Beğen"
 
 #: resources/ui/pop-menu.ui:22
 msgid "Unlike"
-msgstr ""
+msgstr "Beğenmekten Vazgeç"
 
 #: resources/ui/pop-menu.ui:70
 msgid "View Missing Episodes"
-msgstr ""
+msgstr "Eksik Bölümleri Görüntüle"
 
 #: resources/ui/pop-menu.ui:78 resources/ui/refresh_dialog.ui:8
 msgid "Refresh Metadata"
-msgstr ""
+msgstr "Üst Verileri Yenile"
 
 #: resources/ui/pop-menu.ui:84
 msgid "Scan"
-msgstr ""
+msgstr "Tara"
 
 #: resources/ui/refresh_dialog.ui:30
 msgid "Replace All Metadata"
-msgstr ""
+msgstr "Tüm Üst Verileri Değiştir"
 
 #: resources/ui/refresh_dialog.ui:39
 msgid "Replace All Images"
-msgstr ""
+msgstr "Tüm Görselleri Değiştir"
 
 #: resources/ui/refresh_dialog.ui:49 resources/ui/server_action_row.ui:41
 msgid "Refresh"
-msgstr ""
+msgstr "Yenile"
 
 #: resources/ui/search.ui:66
 msgid "Person"
-msgstr ""
+msgstr "Kişi"
 
 #: resources/ui/search.ui:72
 msgid "Music Album"
-msgstr ""
+msgstr "Müzik Albümü"
 
 #: resources/ui/search.ui:166
 msgid "Nothing Here or No type selected"
-msgstr ""
+msgstr "Burada Hiçbir Şey Yok veya Tür Seçilmedi"
 
 #: resources/ui/search.ui:167
 msgid "Maybe you should try using different search terms"
-msgstr ""
+msgstr "Belki farklı arama terimleri kullanmayı denemelisiniz"
 
 #: resources/ui/server_action_row.ui:23
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Yeniden sıralamak için sürükleyin"
 
 #: resources/ui/server_panel.ui:47
 msgid "Restart Server"
-msgstr ""
+msgstr "Sunucuyu Yeniden Başlat"
 
 #: resources/ui/server_panel.ui:58
 msgid "Shutdown Server"
-msgstr ""
+msgstr "Sunucuyu Kapat"
 
 #: resources/ui/server_panel.ui:78
 msgid "System Logs"
-msgstr ""
+msgstr "Sistem Günlükleri"
 
 #: resources/ui/server_panel.ui:83
 msgid "Activity Logs"
-msgstr ""
+msgstr "Etkinlik Günlükleri"
 
 #: resources/ui/server_panel.ui:103
 msgid "Tasks"
-msgstr ""
+msgstr "Görevler"
 
 #: resources/ui/single_grid.ui:32
 msgid "Change Poster"
-msgstr ""
+msgstr "Afişi Değiştir"
 
 #: resources/ui/single_grid.ui:38
 msgid "View"
-msgstr ""
+msgstr "Görünüm"
 
 #: resources/ui/single_grid.ui:65
 msgid "Grid View"
-msgstr ""
+msgstr "Izgara Görünümü"
 
 #: resources/ui/single_grid.ui:72
 msgid "List View"
-msgstr ""
+msgstr "Liste Görünümü"
 
 #: resources/ui/single_grid.ui:85
 msgid "Ascending"
-msgstr ""
+msgstr "Artan"
 
 #: resources/ui/single_grid.ui:92
 msgid "Descending"
-msgstr ""
+msgstr "Azalan"
 
 #: resources/ui/single_grid.ui:103
 msgid "Sort By"
-msgstr ""
+msgstr "Göre Sırala"
 
 #: resources/ui/single_grid.ui:111
 msgid "Imdb Rate"
-msgstr ""
+msgstr "IMDb Puanı"
 
 #: resources/ui/single_grid.ui:112
 msgid "Critic Rating"
-msgstr ""
+msgstr "Eleştirmen Puanı"
 
 #: resources/ui/single_grid.ui:113
 msgid "Premiere Date"
-msgstr ""
+msgstr "Prömiyer Tarihi"
 
 #: resources/ui/single_grid.ui:114
 msgid "Offical Rating"
-msgstr ""
+msgstr "Resmi Değerlendirme"
 
 #: resources/ui/single_grid.ui:115
 msgid "Production Year"
-msgstr ""
+msgstr "Yapım Yılı"
 
 #: resources/ui/single_grid.ui:116
 msgid "Date Played"
-msgstr ""
+msgstr "Oynatılma Tarihi"
 
 #: resources/ui/single_grid.ui:117
 msgid "Runtime"
-msgstr ""
+msgstr "Süre"
 
 #: resources/ui/single_grid.ui:118
 msgid "Updated At"
-msgstr ""
+msgstr "Güncellenme Tarihi"
 
 #: resources/ui/single_grid.ui:182
 msgid "Poster"
-msgstr ""
+msgstr "Afiş"
 
 #: resources/ui/single_grid.ui:186
 msgid "Backdrop"
-msgstr ""
+msgstr "Arka Plan"
 
 #: resources/ui/single_grid.ui:190
 msgid "Banner"
-msgstr ""
+msgstr "Afiş/Pankart"
 
 #: resources/ui/theme_switcher.ui:24 resources/ui/theme_switcher.ui:26
 msgid "Follow system style"
-msgstr ""
+msgstr "Sistem stilini izle"
 
 #: resources/ui/theme_switcher.ui:42 resources/ui/theme_switcher.ui:44
 msgid "Light style"
-msgstr ""
+msgstr "Açık tema"
 
 #: resources/ui/theme_switcher.ui:60 resources/ui/theme_switcher.ui:62
 msgid "Dark style"
-msgstr ""
+msgstr "Koyu tema"
 
 #: resources/ui/window.ui:11
 msgid "Sign out"
-msgstr ""
+msgstr "Oturumu kapat"
 
 #: resources/ui/window.ui:31 resources/ui/window.ui:60
 msgid "About"
-msgstr ""
+msgstr "Hakkında"
 
 #: resources/ui/window.ui:44
 msgid "Add server"
-msgstr ""
+msgstr "Sunucu ekle"
 
 #: resources/ui/window.ui:163
 msgid "No Server"
-msgstr ""
+msgstr "Sunucu Yok"
 
 #: resources/ui/window.ui:166
 msgid "Add Server"
-msgstr ""
+msgstr "Sunucu Ekle"
 
 #: resources/ui/window.ui:206
 msgid "Log Out"
-msgstr ""
+msgstr "Çıkış Yap"
 
 #: resources/ui/window.ui:247
 msgid "Contents"
-msgstr ""
+msgstr "İçerikler"
 
 #: resources/ui/window.ui:270
 msgid "Servers"
-msgstr ""
+msgstr "Sunucular"
