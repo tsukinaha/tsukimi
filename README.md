@@ -1,7 +1,7 @@
 # tsukimi
 A simple third-party Jellyfin client for Linux.
 
-[![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/tsukimi_frying_crab) ![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Flathub Version](https://img.shields.io/flathub/v/moe.tsuna.tsukimi?color=white)](https://flathub.org/apps/details/moe.tsuna.tsukimi) [![Wiki](https://img.shields.io/badge/-Wiki-red?color=blue&logo=github&logoColor=white)](https://github.com/tsukinaha/tsukimi/wiki)
+[![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/tsukimi_frying_crab) ![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Flathub Version](https://img.shields.io/flathub/v/moe.tsuna.tsukimi?color=white)](https://flathub.org/apps/details/moe.tsuna.tsukimi) [![Wiki](https://img.shields.io/badge/-Wiki-red?color=blue&logo=github&logoColor=white)](https://github.com/tsukinaha/tsukimi/wiki) [![Translate Status](https://hosted.weblate.org/widget/tsukimi/language-badge.svg)](https://hosted.weblate.org/engage/tsukimi)
 
 
 ![Alt](https://repobeats.axiom.co/api/embed/82b1088ba840d89c50e1b5b3c1c40f4575b321a6.svg "Repobeats analytics image")
@@ -85,7 +85,7 @@ sudo emerge --ask media-video/tsukimi
 If you'd like to help translating **Tsukimi** into your language, please head over to [Weblate](https://hosted.weblate.org/projects/tsukimi/).
 
 <a href="https://hosted.weblate.org/engage/tsukimi/">
-<img src="https://hosted.weblate.org/widget/tsukimi/main/multi-auto.svg" alt="翻译状态" />
+    <img src="https://hosted.weblate.org/widget/tsukimi/horizontal-auto.svg?threshold=0" alt="翻译状态">
 </a>
 
 ## Disclaimer
