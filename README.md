@@ -101,6 +101,10 @@ Thanks to open-source projects like GNOME Music, Fractal, and Clapper—we refer
 - [MPV](https://github.com/mpv-player/mpv)
 - [Adwaita](https://gitlab.gnome.org/GNOME/libadwaita/)
 
+<a href="https://github.com/tsukinaha/tsukimi/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=tsukinaha/tsukimi" />
+</a>
+
 <sup>
 Fonts used in screenshots: <a href="https://github.com/lxgw/LxgwWenKai-Screen">LXGW WenKai Screen</a>
 <br />
