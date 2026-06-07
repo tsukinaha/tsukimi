@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
-"PO-Revision-Date: 2026-06-04 11:41+0000\n"
-"Last-Translator: Inaha <sakuovds@gmail.com>\n"
+"PO-Revision-Date: 2026-06-05 19:01+0000\n"
+"Last-Translator: ᴀᴍᴛᴏᴀᴇʀ <amtoaer@outlook.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -1021,7 +1021,7 @@ msgstr "编辑元数据"
 
 #: resources/ui/liked.ui:70
 msgid "Your favorite items will be placed here"
-msgstr ""
+msgstr "您收藏的项目将显示在这里"
 
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
