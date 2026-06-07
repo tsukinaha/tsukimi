@@ -57,22 +57,22 @@ msgstr "無法建立 GLArea"
 msgid "Failed to get GLContext"
 msgstr "無法取得 GLContext"
 
-#: src/ui/mpv/page.rs:384 src/ui/mpv/page.rs:386 src/ui/widgets/item.rs:707
+#: src/ui/mpv/page.rs:385 src/ui/mpv/page.rs:387 src/ui/widgets/item.rs:707
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/player_toolbar.ui:90
 msgid "Play"
 msgstr "播放"
 
-#: src/ui/mpv/page.rs:389 src/ui/mpv/page.rs:391 resources/ui/mpvpage.ui:227
+#: src/ui/mpv/page.rs:390 src/ui/mpv/page.rs:392 resources/ui/mpvpage.ui:236
 msgid "Pause"
 msgstr "暫停"
 
-#: src/ui/mpv/page.rs:746
+#: src/ui/mpv/page.rs:748
 msgid "Skip Intro"
 msgstr "跳過片頭"
 
-#: src/ui/mpv/page.rs:747
+#: src/ui/mpv/page.rs:749
 msgid "Skip Outro"
 msgstr "跳過片尾"
 
@@ -333,8 +333,8 @@ msgstr "標籤"
 msgid "Genres"
 msgstr "片單"
 
-#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:323
-#: resources/ui/window.ui:350
+#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:319
+#: resources/ui/window.ui:256
 msgid "Liked"
 msgstr "收藏"
 
@@ -419,7 +419,7 @@ msgstr "結果: "
 msgid "Task started"
 msgstr "任務已開始"
 
-#: src/ui/widgets/single_grid.rs:498
+#: src/ui/widgets/single_grid.rs:503
 msgid "Items"
 msgstr "項目"
 
@@ -462,34 +462,34 @@ msgstr "移除識別"
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "您確定要重設所有中介資料嗎？"
 
-#: src/ui/widgets/tu_list_item.rs:471
+#: src/ui/widgets/tu_list_item.rs:511
 msgid "Waiting for mediasource ..."
 msgstr "正在等待媒體源..."
 
-#: src/ui/widgets/window.rs:311 resources/ui/window.ui:304
+#: src/ui/widgets/window.rs:307 resources/ui/window.ui:250
 msgid "Home"
 msgstr "首頁"
 
-#: src/ui/widgets/window.rs:335 resources/ui/identify_dialog.ui:94
+#: src/ui/widgets/window.rs:331 resources/ui/identify_dialog.ui:94
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
-#: resources/ui/window.ui:21 resources/ui/window.ui:396
+#: resources/ui/window.ui:21 resources/ui/window.ui:262
 msgid "Search"
 msgstr "搜尋"
 
-#: src/ui/widgets/window.rs:824
+#: src/ui/widgets/window.rs:816
 msgid "Server Panel"
 msgstr "伺服器面板"
 
-#: src/ui/widgets/window.rs:973
+#: src/ui/widgets/window.rs:979
 msgid "Fatal Error"
 msgstr "致命錯誤"
 
-#: src/ui/widgets/window.rs:976
+#: src/ui/widgets/window.rs:982
 msgid "Copy Error & Close"
 msgstr "複製錯誤並關閉"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1005
+#: src/ui/widgets/window.rs:1011
 msgid "translator-credits"
 msgstr ""
 "Gracealina  clover <zhiweishuisheng@gmail.com>\n"
@@ -967,7 +967,8 @@ msgstr "字幕： "
 msgid "View this season"
 msgstr "查看本季"
 
-#: resources/ui/item.ui:416 resources/ui/single_grid.ui:167
+#: resources/ui/item.ui:416 resources/ui/liked.ui:69
+#: resources/ui/single_grid.ui:167
 msgid "Nothing Here"
 msgstr "空空如也"
 
@@ -1013,6 +1014,10 @@ msgstr "標記為未觀看"
 msgid "Edit Metadata"
 msgstr "編輯元資料"
 
+#: resources/ui/liked.ui:70
+msgid "Your favorite items will be placed here"
+msgstr ""
+
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
 msgstr "複製圖像"
@@ -1026,13 +1031,13 @@ msgid "Media Menu"
 msgstr "媒體選單"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/mpvpage.ui:272 resources/ui/mpvpage.ui:274
+#: resources/ui/mpvpage.ui:287 resources/ui/mpvpage.ui:290
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
 msgstr "全螢幕"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:286 resources/ui/mpvpage.ui:288
+#: resources/ui/mpvpage.ui:304 resources/ui/mpvpage.ui:306
 msgid "Exit Fullscreen"
 msgstr "退出全螢幕"
 
@@ -1092,7 +1097,7 @@ msgstr "特別節目"
 msgid "Upcoming"
 msgstr "即將推出"
 
-#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:610
+#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:445
 msgid "Advanced Settings"
 msgstr "高級設定"
 
@@ -1130,8 +1135,8 @@ msgstr "單位：MB"
 msgid "Cache Time"
 msgstr "快取時間"
 
-#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:434
-#: resources/ui/mpvpage.ui:453
+#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:453
+#: resources/ui/mpvpage.ui:472
 msgid "Subtitle"
 msgstr "字幕"
 
@@ -1226,8 +1231,8 @@ msgstr "單位：ms"
 msgid "Speed"
 msgstr "速度"
 
-#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:426
-#: resources/ui/mpvpage.ui:486 resources/ui/search.ui:78
+#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:445
+#: resources/ui/mpvpage.ui:505 resources/ui/search.ui:78
 msgid "Audio"
 msgstr "音軌"
 
@@ -1372,8 +1377,8 @@ msgstr "下一章"
 msgid "Previous chapter"
 msgstr "上一章"
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:152
-#: resources/ui/window.ui:559 resources/ui/window.ui:581
+#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:155
+#: resources/ui/window.ui:394 resources/ui/window.ui:416
 msgid "Playlist"
 msgstr "播放列表"
 
@@ -1414,20 +1419,20 @@ msgstr "重置播放速度"
 msgid "Stop and quit"
 msgstr "停止並退出"
 
-#: resources/ui/mpvpage.ui:164
+#: resources/ui/mpvpage.ui:169
 msgid "Media info (MPV)"
 msgstr "媒體訊息（MPV）"
 
-#: resources/ui/mpvpage.ui:382 resources/ui/window.ui:25
+#: resources/ui/mpvpage.ui:401 resources/ui/window.ui:25
 #: resources/ui/window.ui:54
 msgid "Preferences"
 msgstr "偏好設定"
 
-#: resources/ui/mpvpage.ui:399
+#: resources/ui/mpvpage.ui:418
 msgid "Playback speed"
 msgstr "播放速度"
 
-#: resources/ui/mpvpage.ui:413
+#: resources/ui/mpvpage.ui:432
 msgid "Volume"
 msgstr "音量"
 
@@ -1643,11 +1648,11 @@ msgstr "新增伺服器"
 msgid "Log Out"
 msgstr "登出"
 
-#: resources/ui/window.ui:253
+#: resources/ui/window.ui:247
 msgid "Contents"
 msgstr "目錄"
 
-#: resources/ui/window.ui:411
+#: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "伺服器"
 
