@@ -109,39 +109,39 @@ msgstr "Sunucu başarıyla düzenlendi"
 msgid "Server added successfully"
 msgstr "Sunucu başarıyla eklendi"
 
-#: src/ui/widgets/account_settings.rs:230
+#: src/ui/widgets/account_settings.rs:233
 msgid "Password cannot be empty!"
 msgstr "Parola boş olamaz!"
 
-#: src/ui/widgets/account_settings.rs:234
+#: src/ui/widgets/account_settings.rs:237
 msgid "Passwords do not match!"
 msgstr "Parolalar eşleşmiyor!"
 
-#: src/ui/widgets/account_settings.rs:241
+#: src/ui/widgets/account_settings.rs:244
 msgid "Password changed successfully! Please login again."
 msgstr "Parola başarıyla değiştirildi! Lütfen tekrar giriş yapın."
 
-#: src/ui/widgets/account_settings.rs:245
+#: src/ui/widgets/account_settings.rs:248
 msgid "Failed to change password"
 msgstr "Parola değiştirilemedi"
 
-#: src/ui/widgets/account_settings.rs:281
+#: src/ui/widgets/account_settings.rs:284
 msgid "Cache Cleared"
 msgstr "Önbellek Temizlendi"
 
-#: src/ui/widgets/account_settings.rs:302
+#: src/ui/widgets/account_settings.rs:305
 msgid "No file selected"
 msgstr "Dosya seçilmedi"
 
-#: src/ui/widgets/account_settings.rs:537
-#: src/ui/widgets/account_settings.rs:546
-#: src/ui/widgets/account_settings.rs:580
-#: src/ui/widgets/account_settings.rs:589
+#: src/ui/widgets/account_settings.rs:540
+#: src/ui/widgets/account_settings.rs:549
+#: src/ui/widgets/account_settings.rs:583
+#: src/ui/widgets/account_settings.rs:592
 msgid "Descriptor cannot be empty!"
 msgstr "Tanımlayıcı boş olamaz!"
 
-#: src/ui/widgets/account_settings.rs:551
-#: src/ui/widgets/account_settings.rs:594
+#: src/ui/widgets/account_settings.rs:554
+#: src/ui/widgets/account_settings.rs:597
 msgid "Invalid regex"
 msgstr "Geçersiz düzenli ifade (regex)"
 
@@ -472,20 +472,20 @@ msgstr "Ana Sayfa"
 msgid "Search"
 msgstr "Ara"
 
-#: src/ui/widgets/window.rs:813
+#: src/ui/widgets/window.rs:814
 msgid "Server Panel"
 msgstr "Sunucu Paneli"
 
-#: src/ui/widgets/window.rs:989
+#: src/ui/widgets/window.rs:990
 msgid "Fatal Error"
 msgstr "Kritik Hata"
 
-#: src/ui/widgets/window.rs:992
+#: src/ui/widgets/window.rs:993
 msgid "Copy Error & Close"
 msgstr "Hatayı Kopyala ve Kapat"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1021
+#: src/ui/widgets/window.rs:1022
 msgid "translator-credits"
 msgstr "Çevirmen Katkıları"
 
@@ -1030,13 +1030,13 @@ msgid "Media Menu"
 msgstr "Medya Menüsü"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/mpvpage.ui:402 resources/ui/mpvpage.ui:405
+#: resources/ui/mpvpage.ui:401 resources/ui/mpvpage.ui:404
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
 msgstr "Tam Ekran"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:419 resources/ui/mpvpage.ui:421
+#: resources/ui/mpvpage.ui:418 resources/ui/mpvpage.ui:420
 msgid "Exit Fullscreen"
 msgstr "Tam Ekrandan Çık"
 
@@ -1138,7 +1138,7 @@ msgstr "Birim: MB"
 msgid "Cache Time"
 msgstr "Önbellek Süresi"
 
-#: resources/ui/mpv_control_sidebar.ui:132 resources/ui/mpvpage.ui:365
+#: resources/ui/mpv_control_sidebar.ui:132 resources/ui/mpvpage.ui:364
 msgid "Subtitle"
 msgstr "Altyazı"
 
@@ -1235,7 +1235,7 @@ msgstr "Birim: ms"
 msgid "Speed"
 msgstr "Hız"
 
-#: resources/ui/mpv_control_sidebar.ui:468 resources/ui/mpvpage.ui:353
+#: resources/ui/mpv_control_sidebar.ui:468 resources/ui/mpvpage.ui:352
 #: resources/ui/search.ui:78
 msgid "Audio"
 msgstr "Ses"
@@ -1386,7 +1386,7 @@ msgstr "Önceki bölüm"
 msgid "Playlist"
 msgstr "Oynatma Listesi"
 
-#: resources/ui/mpv_menu.ui:40 resources/ui/mpvpage.ui:389
+#: resources/ui/mpv_menu.ui:40 resources/ui/mpvpage.ui:388
 msgid "Advanced settings"
 msgstr "Gelişmiş ayarlar"
 
@@ -1641,11 +1641,7 @@ msgstr ""
 msgid "Media info (MPV)"
 msgstr "Medya bilgisi (MPV)"
 
-#: resources/ui/mpvpage.ui:335
-msgid "1.00x"
-msgstr ""
-
-#: resources/ui/mpvpage.ui:377
+#: resources/ui/mpvpage.ui:376
 #, fuzzy
 #| msgid "Volume"
 msgid "Adjust Volume"

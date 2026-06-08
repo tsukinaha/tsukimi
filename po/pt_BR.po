@@ -115,39 +115,39 @@ msgstr "Servidor editado com sucesso"
 msgid "Server added successfully"
 msgstr "Servidor adicionado com sucesso"
 
-#: src/ui/widgets/account_settings.rs:230
+#: src/ui/widgets/account_settings.rs:233
 msgid "Password cannot be empty!"
 msgstr "A senha não pode estar vazia!"
 
-#: src/ui/widgets/account_settings.rs:234
+#: src/ui/widgets/account_settings.rs:237
 msgid "Passwords do not match!"
 msgstr "As senhas não coincidem!"
 
-#: src/ui/widgets/account_settings.rs:241
+#: src/ui/widgets/account_settings.rs:244
 msgid "Password changed successfully! Please login again."
 msgstr "A senha mudou com sucesso! Faça login novamente."
 
-#: src/ui/widgets/account_settings.rs:245
+#: src/ui/widgets/account_settings.rs:248
 msgid "Failed to change password"
 msgstr "Falhado para mudar a senha"
 
-#: src/ui/widgets/account_settings.rs:281
+#: src/ui/widgets/account_settings.rs:284
 msgid "Cache Cleared"
 msgstr "Cache Limpou"
 
-#: src/ui/widgets/account_settings.rs:302
+#: src/ui/widgets/account_settings.rs:305
 msgid "No file selected"
 msgstr "Nenhum arquivo selecionado"
 
-#: src/ui/widgets/account_settings.rs:537
-#: src/ui/widgets/account_settings.rs:546
-#: src/ui/widgets/account_settings.rs:580
-#: src/ui/widgets/account_settings.rs:589
+#: src/ui/widgets/account_settings.rs:540
+#: src/ui/widgets/account_settings.rs:549
+#: src/ui/widgets/account_settings.rs:583
+#: src/ui/widgets/account_settings.rs:592
 msgid "Descriptor cannot be empty!"
 msgstr "A descrição não pode estar vazia!"
 
-#: src/ui/widgets/account_settings.rs:551
-#: src/ui/widgets/account_settings.rs:594
+#: src/ui/widgets/account_settings.rs:554
+#: src/ui/widgets/account_settings.rs:597
 msgid "Invalid regex"
 msgstr "Regex inválido"
 
@@ -482,20 +482,20 @@ msgstr "Home"
 msgid "Search"
 msgstr "Pesquisar"
 
-#: src/ui/widgets/window.rs:813
+#: src/ui/widgets/window.rs:814
 msgid "Server Panel"
 msgstr "Painel do servidor"
 
-#: src/ui/widgets/window.rs:989
+#: src/ui/widgets/window.rs:990
 msgid "Fatal Error"
 msgstr "Erro fatal"
 
-#: src/ui/widgets/window.rs:992
+#: src/ui/widgets/window.rs:993
 msgid "Copy Error & Close"
 msgstr "Erro de cópia e fechar"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1021
+#: src/ui/widgets/window.rs:1022
 msgid "translator-credits"
 msgstr "créditos do tradutor"
 
@@ -1048,13 +1048,13 @@ msgid "Media Menu"
 msgstr "Menu de mídia"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/mpvpage.ui:402 resources/ui/mpvpage.ui:405
+#: resources/ui/mpvpage.ui:401 resources/ui/mpvpage.ui:404
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
 msgstr "Tela Cheia"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:419 resources/ui/mpvpage.ui:421
+#: resources/ui/mpvpage.ui:418 resources/ui/mpvpage.ui:420
 msgid "Exit Fullscreen"
 msgstr "Sair da Tela Cheia"
 
@@ -1156,7 +1156,7 @@ msgstr "Unidade: MB"
 msgid "Cache Time"
 msgstr "Tempo de Cache"
 
-#: resources/ui/mpv_control_sidebar.ui:132 resources/ui/mpvpage.ui:365
+#: resources/ui/mpv_control_sidebar.ui:132 resources/ui/mpvpage.ui:364
 msgid "Subtitle"
 msgstr "Legenda"
 
@@ -1253,7 +1253,7 @@ msgstr "Unidade: ms"
 msgid "Speed"
 msgstr "Velocidade"
 
-#: resources/ui/mpv_control_sidebar.ui:468 resources/ui/mpvpage.ui:353
+#: resources/ui/mpv_control_sidebar.ui:468 resources/ui/mpvpage.ui:352
 #: resources/ui/search.ui:78
 msgid "Audio"
 msgstr "Áudio"
@@ -1404,7 +1404,7 @@ msgstr "Capítulo anterior"
 msgid "Playlist"
 msgstr "Lista de Reprodução"
 
-#: resources/ui/mpv_menu.ui:40 resources/ui/mpvpage.ui:389
+#: resources/ui/mpv_menu.ui:40 resources/ui/mpvpage.ui:388
 msgid "Advanced settings"
 msgstr "Configurações avançadas"
 
@@ -1663,11 +1663,7 @@ msgstr ""
 msgid "Media info (MPV)"
 msgstr "Informações de Mídia (MPV)"
 
-#: resources/ui/mpvpage.ui:335
-msgid "1.00x"
-msgstr ""
-
-#: resources/ui/mpvpage.ui:377
+#: resources/ui/mpvpage.ui:376
 #, fuzzy
 #| msgid "Default Volume"
 msgid "Adjust Volume"
