@@ -7,7 +7,7 @@ members = [
 name = "tsukimi"
 version = "26.6.2"
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.91"
 description = "A simple Jellyfin Client written by GTK4-RS"
 license = "GPL-3.0"
 

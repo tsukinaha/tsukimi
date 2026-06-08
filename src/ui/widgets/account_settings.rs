@@ -43,7 +43,10 @@ mod imp {
 
     use glib::subclass::InitializingObject;
 
-    use crate::{Window, ui::widgets::action_row::AActionRow};
+    use crate::{
+        Window,
+        ui::widgets::action_row::AActionRow,
+    };
 
     use super::*;
 
