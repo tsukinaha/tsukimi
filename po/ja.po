@@ -28,23 +28,23 @@ msgstr ""
 msgid "Connection Error, Check your internet connection"
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:452
+#: src/ui/mpv/control_sidebar.rs:468
 msgid "Video filter settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:475
+#: src/ui/mpv/control_sidebar.rs:491
 msgid "Subtitle settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:488
+#: src/ui/mpv/control_sidebar.rs:504
 msgid "Subtitle color settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:497
+#: src/ui/mpv/control_sidebar.rs:513
 msgid "Subtitle offset settings cleared."
 msgstr ""
 
-#: src/ui/mpv/control_sidebar.rs:539
+#: src/ui/mpv/control_sidebar.rs:555
 msgid "Deband settings cleared."
 msgstr ""
 
@@ -56,30 +56,30 @@ msgstr ""
 msgid "Failed to get GLContext"
 msgstr ""
 
-#: src/ui/mpv/page.rs:385 src/ui/mpv/page.rs:387 src/ui/widgets/item.rs:707
+#: src/ui/mpv/page.rs:407 src/ui/mpv/page.rs:409 src/ui/widgets/item.rs:707
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/player_toolbar.ui:90
 msgid "Play"
 msgstr "再生"
 
-#: src/ui/mpv/page.rs:390 src/ui/mpv/page.rs:392 resources/ui/mpvpage.ui:236
+#: src/ui/mpv/page.rs:412 src/ui/mpv/page.rs:414 resources/ui/mpvpage.ui:272
 msgid "Pause"
 msgstr "一時停止"
 
-#: src/ui/mpv/page.rs:748
+#: src/ui/mpv/page.rs:770
 msgid "Skip Intro"
 msgstr ""
 
-#: src/ui/mpv/page.rs:749
+#: src/ui/mpv/page.rs:771
 msgid "Skip Outro"
 msgstr ""
 
-#: src/ui/mpv/page.rs:897
+#: src/ui/mpv/page.rs:925
 msgid "No more video found"
 msgstr ""
 
-#: src/ui/mpv/page.rs:998
+#: src/ui/mpv/page.rs:1026
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -113,40 +113,40 @@ msgstr "アカウントが正常に追加されました"
 msgid "Server added successfully"
 msgstr "アカウントが正常に追加されました"
 
-#: src/ui/widgets/account_settings.rs:229
+#: src/ui/widgets/account_settings.rs:230
 msgid "Password cannot be empty!"
 msgstr "パスワードは空にできません！"
 
-#: src/ui/widgets/account_settings.rs:233
+#: src/ui/widgets/account_settings.rs:234
 msgid "Passwords do not match!"
 msgstr "パスワードが一致しない！"
 
-#: src/ui/widgets/account_settings.rs:240
+#: src/ui/widgets/account_settings.rs:241
 msgid "Password changed successfully! Please login again."
 msgstr "パスワードの変更に成功しました！もう一度ログインしてください。"
 
-#: src/ui/widgets/account_settings.rs:244
+#: src/ui/widgets/account_settings.rs:245
 msgid "Failed to change password"
 msgstr "パスワードの変更に失敗しました"
 
-#: src/ui/widgets/account_settings.rs:280
+#: src/ui/widgets/account_settings.rs:281
 msgid "Cache Cleared"
 msgstr "キャッシュがクリアされました"
 
-#: src/ui/widgets/account_settings.rs:301
+#: src/ui/widgets/account_settings.rs:302
 msgid "No file selected"
 msgstr "ファイルが選択されていない"
 
-#: src/ui/widgets/account_settings.rs:536
-#: src/ui/widgets/account_settings.rs:545
-#: src/ui/widgets/account_settings.rs:579
-#: src/ui/widgets/account_settings.rs:588
+#: src/ui/widgets/account_settings.rs:537
+#: src/ui/widgets/account_settings.rs:546
+#: src/ui/widgets/account_settings.rs:580
+#: src/ui/widgets/account_settings.rs:589
 #, fuzzy
 msgid "Descriptor cannot be empty!"
 msgstr "パスワードは空にできません！"
 
-#: src/ui/widgets/account_settings.rs:550
-#: src/ui/widgets/account_settings.rs:593
+#: src/ui/widgets/account_settings.rs:551
+#: src/ui/widgets/account_settings.rs:594
 msgid "Invalid regex"
 msgstr ""
 
@@ -335,7 +335,7 @@ msgstr "名札"
 msgid "Genres"
 msgstr ""
 
-#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:319
+#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:316
 #: resources/ui/window.ui:256
 msgid "Liked"
 msgstr "好き"
@@ -471,30 +471,30 @@ msgstr ""
 msgid "Waiting for mediasource ..."
 msgstr ""
 
-#: src/ui/widgets/window.rs:307 resources/ui/window.ui:250
+#: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
 msgid "Home"
 msgstr "ホーム"
 
-#: src/ui/widgets/window.rs:331 resources/ui/identify_dialog.ui:94
+#: src/ui/widgets/window.rs:328 resources/ui/identify_dialog.ui:94
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
 #: resources/ui/window.ui:21 resources/ui/window.ui:262
 msgid "Search"
 msgstr "検索"
 
-#: src/ui/widgets/window.rs:816
+#: src/ui/widgets/window.rs:813
 msgid "Server Panel"
 msgstr ""
 
-#: src/ui/widgets/window.rs:979
+#: src/ui/widgets/window.rs:989
 msgid "Fatal Error"
 msgstr ""
 
-#: src/ui/widgets/window.rs:982
+#: src/ui/widgets/window.rs:992
 msgid "Copy Error & Close"
 msgstr ""
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1011
+#: src/ui/widgets/window.rs:1021
 msgid "translator-credits"
 msgstr "Flowensity <flowensity@proton.me>"
 
@@ -536,7 +536,7 @@ msgstr "追加"
 msgid "Settings"
 msgstr "設定"
 
-#: resources/ui/account_settings.ui:12 resources/ui/mpv_shortcuts_window.ui:11
+#: resources/ui/account_settings.ui:12 resources/ui/mpv_shortcuts_window.ui:228
 msgid "General"
 msgstr "一般"
 
@@ -620,7 +620,7 @@ msgstr "スレッド"
 msgid "Excessive thread counts may exhaust the system's connection pool"
 msgstr ""
 
-#: resources/ui/account_settings.ui:146 resources/ui/mpv_control_sidebar.ui:378
+#: resources/ui/account_settings.ui:146 resources/ui/mpv_control_sidebar.ui:399
 msgid "Background"
 msgstr "背景"
 
@@ -636,7 +636,7 @@ msgstr ""
 msgid "Blur Radius"
 msgstr ""
 
-#: resources/ui/account_settings.ui:213 resources/ui/mpv_control_sidebar.ui:63
+#: resources/ui/account_settings.ui:213 resources/ui/mpv_control_sidebar.ui:84
 msgid "Cache"
 msgstr "キャッシュ"
 
@@ -1050,13 +1050,13 @@ msgid "Media Menu"
 msgstr "メディアメニュー"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/mpvpage.ui:287 resources/ui/mpvpage.ui:290
+#: resources/ui/mpvpage.ui:402 resources/ui/mpvpage.ui:405
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
 msgstr "フルスクリーン"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:304 resources/ui/mpvpage.ui:306
+#: resources/ui/mpvpage.ui:419 resources/ui/mpvpage.ui:421
 msgid "Exit Fullscreen"
 msgstr "フルスクリーンの終了"
 
@@ -1126,273 +1126,276 @@ msgid "Seek Action"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:21
+msgid "Playback speed"
+msgstr "再生速度"
+
+#: resources/ui/mpv_control_sidebar.ui:42
 msgid "Seek Backward"
 msgstr "シーク・バックワード"
 
-#: resources/ui/mpv_control_sidebar.ui:22
-#: resources/ui/mpv_control_sidebar.ui:42
-#: resources/ui/mpv_control_sidebar.ui:94
+#: resources/ui/mpv_control_sidebar.ui:43
+#: resources/ui/mpv_control_sidebar.ui:63
+#: resources/ui/mpv_control_sidebar.ui:115
 msgid "Unit: Seconds"
 msgstr "単位 秒"
 
-#: resources/ui/mpv_control_sidebar.ui:41
+#: resources/ui/mpv_control_sidebar.ui:62
 msgid "Seek Forward"
 msgstr "シーク・フォワード"
 
-#: resources/ui/mpv_control_sidebar.ui:72
+#: resources/ui/mpv_control_sidebar.ui:93
 msgid "Show Buffer Speed"
 msgstr "バッファ速度を表示"
 
-#: resources/ui/mpv_control_sidebar.ui:77
+#: resources/ui/mpv_control_sidebar.ui:98
 msgid "Cache Size"
 msgstr "キャッシュサイズ"
 
-#: resources/ui/mpv_control_sidebar.ui:78
+#: resources/ui/mpv_control_sidebar.ui:99
 #, fuzzy
 msgid "Unit: MB"
 msgstr "単位: MB"
 
-#: resources/ui/mpv_control_sidebar.ui:93
+#: resources/ui/mpv_control_sidebar.ui:114
 msgid "Cache Time"
 msgstr "キャッシュの時間"
 
-#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:453
-#: resources/ui/mpvpage.ui:472
+#: resources/ui/mpv_control_sidebar.ui:132 resources/ui/mpvpage.ui:365
 msgid "Subtitle"
 msgstr "字幕"
 
-#: resources/ui/mpv_control_sidebar.ui:114
+#: resources/ui/mpv_control_sidebar.ui:135
 #, fuzzy
 msgid "Subtitle Composing"
 msgstr "字幕 "
 
-#: resources/ui/mpv_control_sidebar.ui:186
+#: resources/ui/mpv_control_sidebar.ui:207
 #, fuzzy
 msgid "Position"
 msgstr "記載なし"
 
-#: resources/ui/mpv_control_sidebar.ui:206
+#: resources/ui/mpv_control_sidebar.ui:227
 msgid "Subtitle Text Size"
 msgstr "字幕の文字サイズ"
 
-#: resources/ui/mpv_control_sidebar.ui:207
+#: resources/ui/mpv_control_sidebar.ui:228
 msgid "This option only takes effect for srt subtitles"
 msgstr "このオプションはsrt字幕にのみ有効です"
 
-#: resources/ui/mpv_control_sidebar.ui:227
+#: resources/ui/mpv_control_sidebar.ui:248
 #, fuzzy
 msgid "Subtitle Text Scale"
 msgstr "字幕の文字サイズ"
 
-#: resources/ui/mpv_control_sidebar.ui:228
+#: resources/ui/mpv_control_sidebar.ui:249
 msgid "This affects ASS subtitles as well"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:249
+#: resources/ui/mpv_control_sidebar.ui:270
 msgid "Subtitle Text Font"
 msgstr "字幕テキストフォント"
 
-#: resources/ui/mpv_control_sidebar.ui:251
+#: resources/ui/mpv_control_sidebar.ui:272
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
 msgstr "特定のフォントを指定していない字幕に使用するフォントを指定する"
 
-#: resources/ui/mpv_control_sidebar.ui:276
+#: resources/ui/mpv_control_sidebar.ui:297
 msgid "Border Style"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:281
+#: resources/ui/mpv_control_sidebar.ui:302
 msgid "Outline and shadow"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:282
+#: resources/ui/mpv_control_sidebar.ui:303
 msgid "Opaque box"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:283
+#: resources/ui/mpv_control_sidebar.ui:304
 #, fuzzy
 msgid "Background box"
 msgstr "背景"
 
-#: resources/ui/mpv_control_sidebar.ui:291
+#: resources/ui/mpv_control_sidebar.ui:312
 msgid "Border Size"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:306
+#: resources/ui/mpv_control_sidebar.ui:327
 msgid "Shadow Offset"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:322
+#: resources/ui/mpv_control_sidebar.ui:343
 msgid "Stretch Image Subtitles to Screen"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:329
+#: resources/ui/mpv_control_sidebar.ui:350
 #, fuzzy
 msgid "Subtitle Color"
 msgstr "字幕 "
 
-#: resources/ui/mpv_control_sidebar.ui:342
+#: resources/ui/mpv_control_sidebar.ui:363
 msgid "Text"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:360
+#: resources/ui/mpv_control_sidebar.ui:381
 msgid "Border"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:398
+#: resources/ui/mpv_control_sidebar.ui:419
 #, fuzzy
 msgid "Subtitle Offset"
 msgstr "字幕 "
 
-#: resources/ui/mpv_control_sidebar.ui:411
+#: resources/ui/mpv_control_sidebar.ui:432
 msgid "Offset"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:412
-#: resources/ui/mpv_control_sidebar.ui:461
+#: resources/ui/mpv_control_sidebar.ui:433
+#: resources/ui/mpv_control_sidebar.ui:482
 #, fuzzy
 msgid "Unit: ms"
 msgstr "単位: MB"
 
-#: resources/ui/mpv_control_sidebar.ui:427
+#: resources/ui/mpv_control_sidebar.ui:448
 msgid "Speed"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:445
-#: resources/ui/mpvpage.ui:505 resources/ui/search.ui:78
+#: resources/ui/mpv_control_sidebar.ui:468 resources/ui/mpvpage.ui:353
+#: resources/ui/search.ui:78
 msgid "Audio"
 msgstr "オーディオ"
 
-#: resources/ui/mpv_control_sidebar.ui:460
+#: resources/ui/mpv_control_sidebar.ui:481
 msgid "Audio Offset"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:476
+#: resources/ui/mpv_control_sidebar.ui:497
 #, fuzzy
 msgid "Audio Channel"
 msgstr "チャンネル"
 
-#: resources/ui/mpv_control_sidebar.ui:481
+#: resources/ui/mpv_control_sidebar.ui:502
 msgid "Auto"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:482
+#: resources/ui/mpv_control_sidebar.ui:503
 msgid "Auto (Safety)"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:483
+#: resources/ui/mpv_control_sidebar.ui:504
 msgid "Mono"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:484
+#: resources/ui/mpv_control_sidebar.ui:505
 #, fuzzy
 msgid "Dual Channel"
 msgstr "チャンネル"
 
-#: resources/ui/mpv_control_sidebar.ui:485
+#: resources/ui/mpv_control_sidebar.ui:506
 msgid "Dual Channel (Invert)"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:495 resources/ui/other.ui:134
+#: resources/ui/mpv_control_sidebar.ui:516 resources/ui/other.ui:134
 #: resources/ui/search.ui:84
 msgid "Video"
 msgstr "ビデオ"
 
-#: resources/ui/mpv_control_sidebar.ui:498
+#: resources/ui/mpv_control_sidebar.ui:519
 #, fuzzy
 msgid "Video Aspect"
 msgstr "ビデオ出力"
 
-#: resources/ui/mpv_control_sidebar.ui:503
+#: resources/ui/mpv_control_sidebar.ui:524
 msgid "Fit"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:504
+#: resources/ui/mpv_control_sidebar.ui:525
 msgid "Crop"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:512
+#: resources/ui/mpv_control_sidebar.ui:533
 msgid "Video color grading"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:525
+#: resources/ui/mpv_control_sidebar.ui:546
 msgid "Brightness"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:540
+#: resources/ui/mpv_control_sidebar.ui:561
 #, fuzzy
 msgid "Contrast"
 msgstr "内容"
 
-#: resources/ui/mpv_control_sidebar.ui:555
+#: resources/ui/mpv_control_sidebar.ui:576
 msgid "Saturation"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:570
+#: resources/ui/mpv_control_sidebar.ui:591
 msgid "Hue"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:585
+#: resources/ui/mpv_control_sidebar.ui:606
 msgid "Gamma"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:602
+#: resources/ui/mpv_control_sidebar.ui:623
 #, fuzzy
 msgid "Video Deband"
 msgstr "ビデオ "
 
-#: resources/ui/mpv_control_sidebar.ui:625
+#: resources/ui/mpv_control_sidebar.ui:646
 msgid "Deband Iterations"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:640
+#: resources/ui/mpv_control_sidebar.ui:661
 msgid "Deband Threshold"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:655
+#: resources/ui/mpv_control_sidebar.ui:676
 msgid "Deband Range"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:670
+#: resources/ui/mpv_control_sidebar.ui:691
 msgid "Deband Grain"
 msgstr ""
 
-#: resources/ui/mpv_control_sidebar.ui:688
+#: resources/ui/mpv_control_sidebar.ui:709
 #, fuzzy
 msgid "Video Deinterlace"
 msgstr "ビデオ "
 
-#: resources/ui/mpv_control_sidebar.ui:693
+#: resources/ui/mpv_control_sidebar.ui:714
 #, fuzzy
 msgid "Video Upscale"
 msgstr "ビデオ "
 
-#: resources/ui/mpv_control_sidebar.ui:716
+#: resources/ui/mpv_control_sidebar.ui:737
 msgid "Action after video ends"
 msgstr "ビデオ終了後のアクション"
 
-#: resources/ui/mpv_control_sidebar.ui:719
+#: resources/ui/mpv_control_sidebar.ui:740
 msgid "Play Next"
 msgstr "次へ"
 
-#: resources/ui/mpv_control_sidebar.ui:732
+#: resources/ui/mpv_control_sidebar.ui:753
 msgid "Loop Playback"
 msgstr "ループ再生"
 
-#: resources/ui/mpv_control_sidebar.ui:746
+#: resources/ui/mpv_control_sidebar.ui:767
 msgid "Stop"
 msgstr "ストップ"
 
-#: resources/ui/mpv_control_sidebar.ui:762
+#: resources/ui/mpv_control_sidebar.ui:783
 msgid "Hardware decoding"
 msgstr "ハードウェアデコード"
 
-#: resources/ui/mpv_control_sidebar.ui:766
+#: resources/ui/mpv_control_sidebar.ui:787
 msgid "no (default)"
 msgstr "いいえ（デフォルト）"
 
-#: resources/ui/mpv_control_sidebar.ui:810
+#: resources/ui/mpv_control_sidebar.ui:831
 msgid "Not all settings will be saved"
 msgstr ""
 
@@ -1416,12 +1419,12 @@ msgstr "前のページ"
 msgid "Previous chapter"
 msgstr "前のページ"
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:155
+#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:172
 #: resources/ui/window.ui:394 resources/ui/window.ui:416
 msgid "Playlist"
 msgstr "プレイリスト"
 
-#: resources/ui/mpv_menu.ui:40
+#: resources/ui/mpv_menu.ui:40 resources/ui/mpvpage.ui:389
 #, fuzzy
 msgid "Advanced settings"
 msgstr "ビデオ設定の詳細"
@@ -1436,48 +1439,254 @@ msgstr "メディア情報"
 msgid "_Keyboard shortcuts"
 msgstr ""
 
-#: resources/ui/mpv_menu_actions.ui:12
+#: resources/ui/mpv_menu_actions.ui:12 resources/ui/mpvpage.ui:248
 #, fuzzy
 msgid "Backward"
 msgstr "シーク・バックワード"
 
-#: resources/ui/mpv_menu_actions.ui:42
+#: resources/ui/mpv_menu_actions.ui:42 resources/ui/mpvpage.ui:291
 #, fuzzy
 msgid "Forward"
 msgstr "シーク・フォワード"
 
+#: resources/ui/mpv_shortcuts_window.ui:6
+#, fuzzy
+#| msgid "Loop Playback"
+msgid "Playback"
+msgstr "ループ再生"
+
+#: resources/ui/mpv_shortcuts_window.ui:9
+#, fuzzy
+#| msgid "Resume"
+msgid "Pause / Resume"
+msgstr "再開"
+
 #: resources/ui/mpv_shortcuts_window.ui:15
-msgid "Decrease/increase playback speed by 10%"
-msgstr ""
+#, fuzzy
+#| msgid "Seek Forward"
+msgid "Seek Forward 5 Seconds"
+msgstr "シーク・フォワード"
 
 #: resources/ui/mpv_shortcuts_window.ui:21
-msgid "Halve/double current playback speed"
-msgstr ""
+#, fuzzy
+#| msgid "Seek Backward"
+msgid "Seek Backward 5 Seconds"
+msgstr "シーク・バックワード"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
-msgid "Reset playback speed to normal"
+#, fuzzy
+#| msgid "Seek Forward"
+msgid "Seek Forward 60 Seconds"
+msgstr "シーク・フォワード"
+
+#: resources/ui/mpv_shortcuts_window.ui:33
+#, fuzzy
+#| msgid "Seek Backward"
+msgid "Seek Backward 60 Seconds"
+msgstr "シーク・バックワード"
+
+#: resources/ui/mpv_shortcuts_window.ui:39
+msgid "Seek Forward 1 Second (Exact)"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:45
+#, fuzzy
+#| msgid "Seek Backward"
+msgid "Seek Backward 1 Second (Exact)"
+msgstr "シーク・バックワード"
+
+#: resources/ui/mpv_shortcuts_window.ui:51
+#, fuzzy
+#| msgid "Seek Forward"
+msgid "Step One Frame Forward"
+msgstr "シーク・フォワード"
+
+#: resources/ui/mpv_shortcuts_window.ui:57
+#, fuzzy
+#| msgid "Seek Backward"
+msgid "Step One Frame Backward"
+msgstr "シーク・バックワード"
+
+#: resources/ui/mpv_shortcuts_window.ui:65
+#, fuzzy
+#| msgid "Playback speed"
+msgid "Playback Speed"
+msgstr "再生速度"
+
+#: resources/ui/mpv_shortcuts_window.ui:68
+msgid "Decrease Speed by 10%"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:74
+msgid "Increase Speed by 10%"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:80
+#, fuzzy
+#| msgid "Playback speed"
+msgid "Halve Playback Speed"
+msgstr "再生速度"
+
+#: resources/ui/mpv_shortcuts_window.ui:86
+#, fuzzy
+#| msgid "Playback speed"
+msgid "Double Playback Speed"
+msgstr "再生速度"
+
+#: resources/ui/mpv_shortcuts_window.ui:92
+#, fuzzy
+#| msgid "Playback speed"
+msgid "Reset Playback Speed"
+msgstr "再生速度"
+
+#: resources/ui/mpv_shortcuts_window.ui:100
+msgid "Volume"
+msgstr "ボリューム"
+
+#: resources/ui/mpv_shortcuts_window.ui:103
+#, fuzzy
+#| msgid "Default Volume"
+msgid "Increase Volume"
+msgstr "デフォルト音量"
+
+#: resources/ui/mpv_shortcuts_window.ui:109
+#, fuzzy
+#| msgid "Default Volume"
+msgid "Decrease Volume"
+msgstr "デフォルト音量"
+
+#: resources/ui/mpv_shortcuts_window.ui:115
+msgid "Mute / Unmute"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:121
+msgid "Increase Volume (Numpad)"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:127
+msgid "Decrease Volume (Numpad)"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:135
+#, fuzzy
+#| msgid "Subtitle"
+msgid "Subtitles"
+msgstr "字幕"
+
+#: resources/ui/mpv_shortcuts_window.ui:138
+msgid "Cycle Subtitle Tracks Forward"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:144
+msgid "Cycle Subtitle Tracks Backward"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:150
+msgid "Toggle Subtitle Visibility"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:156
+msgid "Decrease Subtitle Delay"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:162
+msgid "Increase Subtitle Delay"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:168
+#, fuzzy
+#| msgid "Subtitle Text Size"
+msgid "Increase Subtitle Font Size"
+msgstr "字幕の文字サイズ"
+
+#: resources/ui/mpv_shortcuts_window.ui:174
+#, fuzzy
+#| msgid "Subtitle Text Size"
+msgid "Decrease Subtitle Font Size"
+msgstr "字幕の文字サイズ"
+
+#: resources/ui/mpv_shortcuts_window.ui:182
+msgid "Tracks"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:185
+msgid "Cycle Audio Tracks"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:191
+msgid "Cycle Video Tracks"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:199
+msgid "Chapters and Playlist"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:202
+#, fuzzy
+msgid "Previous Chapter"
+msgstr "前のページ"
+
+#: resources/ui/mpv_shortcuts_window.ui:208
+#, fuzzy
+msgid "Next Chapter"
+msgstr "前のページ"
+
+#: resources/ui/mpv_shortcuts_window.ui:214
+#, fuzzy
+msgid "Previous Playlist Entry"
+msgstr "前のページ"
+
+#: resources/ui/mpv_shortcuts_window.ui:220
+msgid "Next Playlist Entry"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:231
+#, fuzzy
+#| msgid "Fullscreen"
+msgid "Toggle Fullscreen"
+msgstr "フルスクリーン"
+
+#: resources/ui/mpv_shortcuts_window.ui:237
+msgid "Set / Clear A-B Loop Points"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:243
+msgid "Toggle Infinite Loop"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:249
+msgid "Display Statistics"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:255
+msgid "Quit"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:261
+msgid "Quit and Save Position"
 msgstr ""
 
 #: resources/ui/mpvpage.ui:101
 msgid "Stop and quit"
 msgstr "停止して終了"
 
-#: resources/ui/mpvpage.ui:169
+#: resources/ui/mpvpage.ui:158
+msgid "Shortcuts"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:186
 msgid "Media info (MPV)"
 msgstr "メディア情報（MPV）"
 
-#: resources/ui/mpvpage.ui:401 resources/ui/window.ui:25
-#: resources/ui/window.ui:54
-msgid "Preferences"
-msgstr "好み"
+#: resources/ui/mpvpage.ui:335
+msgid "1.00x"
+msgstr ""
 
-#: resources/ui/mpvpage.ui:418
-msgid "Playback speed"
-msgstr "再生速度"
-
-#: resources/ui/mpvpage.ui:432
-msgid "Volume"
-msgstr "ボリューム"
+#: resources/ui/mpvpage.ui:377
+#, fuzzy
+#| msgid "Default Volume"
+msgid "Adjust Volume"
+msgstr "デフォルト音量"
 
 #: resources/ui/other.ui:94
 msgid "No Inscriptions"
@@ -1677,6 +1886,10 @@ msgstr ""
 msgid "Sign out"
 msgstr "サインアウト"
 
+#: resources/ui/window.ui:25 resources/ui/window.ui:54
+msgid "Preferences"
+msgstr "好み"
+
 #: resources/ui/window.ui:31 resources/ui/window.ui:60
 msgid "About"
 msgstr "について"
@@ -1812,9 +2025,6 @@ msgstr "サーバー"
 #, fuzzy
 #~ msgid "Video Settings"
 #~ msgstr "ビデオ設定の詳細"
-
-#~ msgid "Default Volume"
-#~ msgstr "デフォルト音量"
 
 #~ msgid "Force Stereo"
 #~ msgstr "フォースステレオ"

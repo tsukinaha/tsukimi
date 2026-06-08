@@ -34,23 +34,23 @@ msgstr "连接超时，请检查您的网络"
 msgid "Connection Error, Check your internet connection"
 msgstr "连接错误, 请检查您的网络"
 
-#: src/ui/mpv/control_sidebar.rs:452
+#: src/ui/mpv/control_sidebar.rs:468
 msgid "Video filter settings cleared."
 msgstr "视频滤镜设置已清除。"
 
-#: src/ui/mpv/control_sidebar.rs:475
+#: src/ui/mpv/control_sidebar.rs:491
 msgid "Subtitle settings cleared."
 msgstr "字幕设置已清除。"
 
-#: src/ui/mpv/control_sidebar.rs:488
+#: src/ui/mpv/control_sidebar.rs:504
 msgid "Subtitle color settings cleared."
 msgstr "字幕颜色设置已清除。"
 
-#: src/ui/mpv/control_sidebar.rs:497
+#: src/ui/mpv/control_sidebar.rs:513
 msgid "Subtitle offset settings cleared."
 msgstr "字幕偏移设置已清除。"
 
-#: src/ui/mpv/control_sidebar.rs:539
+#: src/ui/mpv/control_sidebar.rs:555
 msgid "Deband settings cleared."
 msgstr "去色带设置已清除。"
 
@@ -62,30 +62,30 @@ msgstr "无法初始化 GLArea"
 msgid "Failed to get GLContext"
 msgstr "获取 GLContext 失败"
 
-#: src/ui/mpv/page.rs:385 src/ui/mpv/page.rs:387 src/ui/widgets/item.rs:707
+#: src/ui/mpv/page.rs:407 src/ui/mpv/page.rs:409 src/ui/widgets/item.rs:707
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/player_toolbar.ui:90
 msgid "Play"
 msgstr "播放"
 
-#: src/ui/mpv/page.rs:390 src/ui/mpv/page.rs:392 resources/ui/mpvpage.ui:236
+#: src/ui/mpv/page.rs:412 src/ui/mpv/page.rs:414 resources/ui/mpvpage.ui:272
 msgid "Pause"
 msgstr "暂停"
 
-#: src/ui/mpv/page.rs:748
+#: src/ui/mpv/page.rs:770
 msgid "Skip Intro"
 msgstr "跳过片头"
 
-#: src/ui/mpv/page.rs:749
+#: src/ui/mpv/page.rs:771
 msgid "Skip Outro"
 msgstr "跳过片尾"
 
-#: src/ui/mpv/page.rs:897
+#: src/ui/mpv/page.rs:925
 msgid "No more video found"
 msgstr "未找到更多视频"
 
-#: src/ui/mpv/page.rs:998
+#: src/ui/mpv/page.rs:1026
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -119,39 +119,39 @@ msgstr "服务器编辑成功"
 msgid "Server added successfully"
 msgstr "服务器添加成功"
 
-#: src/ui/widgets/account_settings.rs:229
+#: src/ui/widgets/account_settings.rs:230
 msgid "Password cannot be empty!"
 msgstr "密码不能为空！"
 
-#: src/ui/widgets/account_settings.rs:233
+#: src/ui/widgets/account_settings.rs:234
 msgid "Passwords do not match!"
 msgstr "密码不匹配！"
 
-#: src/ui/widgets/account_settings.rs:240
+#: src/ui/widgets/account_settings.rs:241
 msgid "Password changed successfully! Please login again."
 msgstr "密码修改成功！请重新登录。"
 
-#: src/ui/widgets/account_settings.rs:244
+#: src/ui/widgets/account_settings.rs:245
 msgid "Failed to change password"
 msgstr "更改密码失败"
 
-#: src/ui/widgets/account_settings.rs:280
+#: src/ui/widgets/account_settings.rs:281
 msgid "Cache Cleared"
 msgstr "缓存已清除"
 
-#: src/ui/widgets/account_settings.rs:301
+#: src/ui/widgets/account_settings.rs:302
 msgid "No file selected"
 msgstr "未选择文件"
 
-#: src/ui/widgets/account_settings.rs:536
-#: src/ui/widgets/account_settings.rs:545
-#: src/ui/widgets/account_settings.rs:579
-#: src/ui/widgets/account_settings.rs:588
+#: src/ui/widgets/account_settings.rs:537
+#: src/ui/widgets/account_settings.rs:546
+#: src/ui/widgets/account_settings.rs:580
+#: src/ui/widgets/account_settings.rs:589
 msgid "Descriptor cannot be empty!"
 msgstr "描述符不能为空！"
 
-#: src/ui/widgets/account_settings.rs:550
-#: src/ui/widgets/account_settings.rs:593
+#: src/ui/widgets/account_settings.rs:551
+#: src/ui/widgets/account_settings.rs:594
 msgid "Invalid regex"
 msgstr "正则表达式无效"
 
@@ -338,7 +338,7 @@ msgstr "标签"
 msgid "Genres"
 msgstr "片单"
 
-#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:319
+#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:316
 #: resources/ui/window.ui:256
 msgid "Liked"
 msgstr "收藏"
@@ -471,30 +471,30 @@ msgstr "您确定要重置所有元数据吗？"
 msgid "Waiting for mediasource ..."
 msgstr "正在等待媒体源..."
 
-#: src/ui/widgets/window.rs:307 resources/ui/window.ui:250
+#: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
 msgid "Home"
 msgstr "首页"
 
-#: src/ui/widgets/window.rs:331 resources/ui/identify_dialog.ui:94
+#: src/ui/widgets/window.rs:328 resources/ui/identify_dialog.ui:94
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
 #: resources/ui/window.ui:21 resources/ui/window.ui:262
 msgid "Search"
 msgstr "搜索"
 
-#: src/ui/widgets/window.rs:816
+#: src/ui/widgets/window.rs:813
 msgid "Server Panel"
 msgstr "服务器面板"
 
-#: src/ui/widgets/window.rs:979
+#: src/ui/widgets/window.rs:989
 msgid "Fatal Error"
 msgstr "致命错误"
 
-#: src/ui/widgets/window.rs:982
+#: src/ui/widgets/window.rs:992
 msgid "Copy Error & Close"
 msgstr "复制错误并关闭"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1011
+#: src/ui/widgets/window.rs:1021
 msgid "translator-credits"
 msgstr ""
 "Gracealina clover <zhiweishuisheng@gmail.com>\n"
@@ -537,7 +537,7 @@ msgstr "添加"
 msgid "Settings"
 msgstr "设置"
 
-#: resources/ui/account_settings.ui:12 resources/ui/mpv_shortcuts_window.ui:11
+#: resources/ui/account_settings.ui:12 resources/ui/mpv_shortcuts_window.ui:228
 msgid "General"
 msgstr "常规"
 
@@ -614,7 +614,7 @@ msgstr "线程"
 msgid "Excessive thread counts may exhaust the system's connection pool"
 msgstr "过多的线程数可能会耗尽系统的连接池"
 
-#: resources/ui/account_settings.ui:146 resources/ui/mpv_control_sidebar.ui:378
+#: resources/ui/account_settings.ui:146 resources/ui/mpv_control_sidebar.ui:399
 msgid "Background"
 msgstr "背景"
 
@@ -630,7 +630,7 @@ msgstr "模糊"
 msgid "Blur Radius"
 msgstr "模糊半径"
 
-#: resources/ui/account_settings.ui:213 resources/ui/mpv_control_sidebar.ui:63
+#: resources/ui/account_settings.ui:213 resources/ui/mpv_control_sidebar.ui:84
 msgid "Cache"
 msgstr "缓存"
 
@@ -1036,13 +1036,13 @@ msgid "Media Menu"
 msgstr "媒体菜单"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/mpvpage.ui:287 resources/ui/mpvpage.ui:290
+#: resources/ui/mpvpage.ui:402 resources/ui/mpvpage.ui:405
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
 msgstr "全屏"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:304 resources/ui/mpvpage.ui:306
+#: resources/ui/mpvpage.ui:419 resources/ui/mpvpage.ui:421
 msgid "Exit Fullscreen"
 msgstr "退出全屏"
 
@@ -1111,258 +1111,261 @@ msgid "Seek Action"
 msgstr "进度"
 
 #: resources/ui/mpv_control_sidebar.ui:21
+msgid "Playback speed"
+msgstr "播放速度"
+
+#: resources/ui/mpv_control_sidebar.ui:42
 msgid "Seek Backward"
 msgstr "向后跳转"
 
-#: resources/ui/mpv_control_sidebar.ui:22
-#: resources/ui/mpv_control_sidebar.ui:42
-#: resources/ui/mpv_control_sidebar.ui:94
+#: resources/ui/mpv_control_sidebar.ui:43
+#: resources/ui/mpv_control_sidebar.ui:63
+#: resources/ui/mpv_control_sidebar.ui:115
 msgid "Unit: Seconds"
 msgstr "单位: 秒"
 
-#: resources/ui/mpv_control_sidebar.ui:41
+#: resources/ui/mpv_control_sidebar.ui:62
 msgid "Seek Forward"
 msgstr "向前跳转"
 
-#: resources/ui/mpv_control_sidebar.ui:72
+#: resources/ui/mpv_control_sidebar.ui:93
 msgid "Show Buffer Speed"
 msgstr "显示缓冲速度"
 
-#: resources/ui/mpv_control_sidebar.ui:77
+#: resources/ui/mpv_control_sidebar.ui:98
 msgid "Cache Size"
 msgstr "缓存大小"
 
-#: resources/ui/mpv_control_sidebar.ui:78
+#: resources/ui/mpv_control_sidebar.ui:99
 msgid "Unit: MB"
 msgstr "单位: MB"
 
-#: resources/ui/mpv_control_sidebar.ui:93
+#: resources/ui/mpv_control_sidebar.ui:114
 msgid "Cache Time"
 msgstr "缓存时间"
 
-#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:453
-#: resources/ui/mpvpage.ui:472
+#: resources/ui/mpv_control_sidebar.ui:132 resources/ui/mpvpage.ui:365
 msgid "Subtitle"
 msgstr "字幕"
 
-#: resources/ui/mpv_control_sidebar.ui:114
+#: resources/ui/mpv_control_sidebar.ui:135
 msgid "Subtitle Composing"
 msgstr "字幕编排"
 
-#: resources/ui/mpv_control_sidebar.ui:186
+#: resources/ui/mpv_control_sidebar.ui:207
 msgid "Position"
 msgstr "位置"
 
-#: resources/ui/mpv_control_sidebar.ui:206
+#: resources/ui/mpv_control_sidebar.ui:227
 msgid "Subtitle Text Size"
 msgstr "字幕文本大小"
 
-#: resources/ui/mpv_control_sidebar.ui:207
+#: resources/ui/mpv_control_sidebar.ui:228
 msgid "This option only takes effect for srt subtitles"
 msgstr "此选项仅对 SRT 字幕生效"
 
-#: resources/ui/mpv_control_sidebar.ui:227
+#: resources/ui/mpv_control_sidebar.ui:248
 msgid "Subtitle Text Scale"
 msgstr "字幕文本比例"
 
-#: resources/ui/mpv_control_sidebar.ui:228
+#: resources/ui/mpv_control_sidebar.ui:249
 msgid "This affects ASS subtitles as well"
 msgstr "这也会影响 ASS 字幕"
 
-#: resources/ui/mpv_control_sidebar.ui:249
+#: resources/ui/mpv_control_sidebar.ui:270
 msgid "Subtitle Text Font"
 msgstr "字幕文本字体"
 
-#: resources/ui/mpv_control_sidebar.ui:251
+#: resources/ui/mpv_control_sidebar.ui:272
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
 msgstr "指定不指定特定字体的字幕使用的字体"
 
-#: resources/ui/mpv_control_sidebar.ui:276
+#: resources/ui/mpv_control_sidebar.ui:297
 msgid "Border Style"
 msgstr "边框样式"
 
-#: resources/ui/mpv_control_sidebar.ui:281
+#: resources/ui/mpv_control_sidebar.ui:302
 msgid "Outline and shadow"
 msgstr "轮廓和阴影"
 
-#: resources/ui/mpv_control_sidebar.ui:282
+#: resources/ui/mpv_control_sidebar.ui:303
 msgid "Opaque box"
 msgstr "不透明框"
 
-#: resources/ui/mpv_control_sidebar.ui:283
+#: resources/ui/mpv_control_sidebar.ui:304
 msgid "Background box"
 msgstr "背景框"
 
-#: resources/ui/mpv_control_sidebar.ui:291
+#: resources/ui/mpv_control_sidebar.ui:312
 msgid "Border Size"
 msgstr "边框大小"
 
-#: resources/ui/mpv_control_sidebar.ui:306
+#: resources/ui/mpv_control_sidebar.ui:327
 msgid "Shadow Offset"
 msgstr "阴影偏移"
 
-#: resources/ui/mpv_control_sidebar.ui:322
+#: resources/ui/mpv_control_sidebar.ui:343
 msgid "Stretch Image Subtitles to Screen"
 msgstr "将图像字幕拉伸至全屏"
 
-#: resources/ui/mpv_control_sidebar.ui:329
+#: resources/ui/mpv_control_sidebar.ui:350
 msgid "Subtitle Color"
 msgstr "字幕颜色"
 
-#: resources/ui/mpv_control_sidebar.ui:342
+#: resources/ui/mpv_control_sidebar.ui:363
 msgid "Text"
 msgstr "文本"
 
-#: resources/ui/mpv_control_sidebar.ui:360
+#: resources/ui/mpv_control_sidebar.ui:381
 msgid "Border"
 msgstr "边框"
 
-#: resources/ui/mpv_control_sidebar.ui:398
+#: resources/ui/mpv_control_sidebar.ui:419
 msgid "Subtitle Offset"
 msgstr "字幕偏移"
 
-#: resources/ui/mpv_control_sidebar.ui:411
+#: resources/ui/mpv_control_sidebar.ui:432
 msgid "Offset"
 msgstr "偏移"
 
-#: resources/ui/mpv_control_sidebar.ui:412
-#: resources/ui/mpv_control_sidebar.ui:461
+#: resources/ui/mpv_control_sidebar.ui:433
+#: resources/ui/mpv_control_sidebar.ui:482
 msgid "Unit: ms"
 msgstr "单位: ms"
 
-#: resources/ui/mpv_control_sidebar.ui:427
+#: resources/ui/mpv_control_sidebar.ui:448
 msgid "Speed"
 msgstr "速度"
 
-#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:445
-#: resources/ui/mpvpage.ui:505 resources/ui/search.ui:78
+#: resources/ui/mpv_control_sidebar.ui:468 resources/ui/mpvpage.ui:353
+#: resources/ui/search.ui:78
 msgid "Audio"
 msgstr "音频"
 
-#: resources/ui/mpv_control_sidebar.ui:460
+#: resources/ui/mpv_control_sidebar.ui:481
 msgid "Audio Offset"
 msgstr "音频偏移"
 
-#: resources/ui/mpv_control_sidebar.ui:476
+#: resources/ui/mpv_control_sidebar.ui:497
 msgid "Audio Channel"
 msgstr "音频通道"
 
-#: resources/ui/mpv_control_sidebar.ui:481
+#: resources/ui/mpv_control_sidebar.ui:502
 msgid "Auto"
 msgstr "自动"
 
-#: resources/ui/mpv_control_sidebar.ui:482
+#: resources/ui/mpv_control_sidebar.ui:503
 msgid "Auto (Safety)"
 msgstr "自动(安全)"
 
-#: resources/ui/mpv_control_sidebar.ui:483
+#: resources/ui/mpv_control_sidebar.ui:504
 msgid "Mono"
 msgstr "单声道"
 
-#: resources/ui/mpv_control_sidebar.ui:484
+#: resources/ui/mpv_control_sidebar.ui:505
 msgid "Dual Channel"
 msgstr "双声道"
 
-#: resources/ui/mpv_control_sidebar.ui:485
+#: resources/ui/mpv_control_sidebar.ui:506
 msgid "Dual Channel (Invert)"
 msgstr "双声道(反转)"
 
-#: resources/ui/mpv_control_sidebar.ui:495 resources/ui/other.ui:134
+#: resources/ui/mpv_control_sidebar.ui:516 resources/ui/other.ui:134
 #: resources/ui/search.ui:84
 msgid "Video"
 msgstr "视频"
 
-#: resources/ui/mpv_control_sidebar.ui:498
+#: resources/ui/mpv_control_sidebar.ui:519
 msgid "Video Aspect"
 msgstr "视频长宽比"
 
-#: resources/ui/mpv_control_sidebar.ui:503
+#: resources/ui/mpv_control_sidebar.ui:524
 msgid "Fit"
 msgstr "适应"
 
-#: resources/ui/mpv_control_sidebar.ui:504
+#: resources/ui/mpv_control_sidebar.ui:525
 msgid "Crop"
 msgstr "裁剪"
 
-#: resources/ui/mpv_control_sidebar.ui:512
+#: resources/ui/mpv_control_sidebar.ui:533
 msgid "Video color grading"
 msgstr "视频调色"
 
-#: resources/ui/mpv_control_sidebar.ui:525
+#: resources/ui/mpv_control_sidebar.ui:546
 msgid "Brightness"
 msgstr "亮度"
 
-#: resources/ui/mpv_control_sidebar.ui:540
+#: resources/ui/mpv_control_sidebar.ui:561
 msgid "Contrast"
 msgstr "对比度"
 
-#: resources/ui/mpv_control_sidebar.ui:555
+#: resources/ui/mpv_control_sidebar.ui:576
 msgid "Saturation"
 msgstr "饱和度"
 
-#: resources/ui/mpv_control_sidebar.ui:570
+#: resources/ui/mpv_control_sidebar.ui:591
 msgid "Hue"
 msgstr "色调"
 
-#: resources/ui/mpv_control_sidebar.ui:585
+#: resources/ui/mpv_control_sidebar.ui:606
 msgid "Gamma"
 msgstr "伽马"
 
-#: resources/ui/mpv_control_sidebar.ui:602
+#: resources/ui/mpv_control_sidebar.ui:623
 msgid "Video Deband"
 msgstr "视频去色带"
 
-#: resources/ui/mpv_control_sidebar.ui:625
+#: resources/ui/mpv_control_sidebar.ui:646
 msgid "Deband Iterations"
 msgstr "去色带迭代次数"
 
-#: resources/ui/mpv_control_sidebar.ui:640
+#: resources/ui/mpv_control_sidebar.ui:661
 msgid "Deband Threshold"
 msgstr "去色带阈值"
 
-#: resources/ui/mpv_control_sidebar.ui:655
+#: resources/ui/mpv_control_sidebar.ui:676
 msgid "Deband Range"
 msgstr "去色带范围"
 
-#: resources/ui/mpv_control_sidebar.ui:670
+#: resources/ui/mpv_control_sidebar.ui:691
 msgid "Deband Grain"
 msgstr "去色带颗粒"
 
-#: resources/ui/mpv_control_sidebar.ui:688
+#: resources/ui/mpv_control_sidebar.ui:709
 msgid "Video Deinterlace"
 msgstr "视频反交错"
 
-#: resources/ui/mpv_control_sidebar.ui:693
+#: resources/ui/mpv_control_sidebar.ui:714
 msgid "Video Upscale"
 msgstr "视频升频算法"
 
-#: resources/ui/mpv_control_sidebar.ui:716
+#: resources/ui/mpv_control_sidebar.ui:737
 msgid "Action after video ends"
 msgstr "视频结束后的动作"
 
-#: resources/ui/mpv_control_sidebar.ui:719
+#: resources/ui/mpv_control_sidebar.ui:740
 msgid "Play Next"
 msgstr "自动连播"
 
-#: resources/ui/mpv_control_sidebar.ui:732
+#: resources/ui/mpv_control_sidebar.ui:753
 msgid "Loop Playback"
 msgstr "循环播放"
 
-#: resources/ui/mpv_control_sidebar.ui:746
+#: resources/ui/mpv_control_sidebar.ui:767
 msgid "Stop"
 msgstr "播完暂停"
 
-#: resources/ui/mpv_control_sidebar.ui:762
+#: resources/ui/mpv_control_sidebar.ui:783
 msgid "Hardware decoding"
 msgstr "硬件解码"
 
-#: resources/ui/mpv_control_sidebar.ui:766
+#: resources/ui/mpv_control_sidebar.ui:787
 msgid "no (default)"
 msgstr "无 (默认)"
 
-#: resources/ui/mpv_control_sidebar.ui:810
+#: resources/ui/mpv_control_sidebar.ui:831
 msgid "Not all settings will be saved"
 msgstr "不是所有的设置都会被保存"
 
@@ -1382,12 +1385,12 @@ msgstr "下一章"
 msgid "Previous chapter"
 msgstr "上一章"
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:155
+#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:172
 #: resources/ui/window.ui:394 resources/ui/window.ui:416
 msgid "Playlist"
 msgstr "播放列表"
 
-#: resources/ui/mpv_menu.ui:40
+#: resources/ui/mpv_menu.ui:40 resources/ui/mpvpage.ui:389
 msgid "Advanced settings"
 msgstr "高级设置"
 
@@ -1400,46 +1403,261 @@ msgstr "媒体信息"
 msgid "_Keyboard shortcuts"
 msgstr "快捷键"
 
-#: resources/ui/mpv_menu_actions.ui:12
+#: resources/ui/mpv_menu_actions.ui:12 resources/ui/mpvpage.ui:248
 msgid "Backward"
 msgstr "快退"
 
-#: resources/ui/mpv_menu_actions.ui:42
+#: resources/ui/mpv_menu_actions.ui:42 resources/ui/mpvpage.ui:291
 msgid "Forward"
 msgstr "快进"
 
+#: resources/ui/mpv_shortcuts_window.ui:6
+#, fuzzy
+#| msgid "Loop Playback"
+msgid "Playback"
+msgstr "循环播放"
+
+#: resources/ui/mpv_shortcuts_window.ui:9
+#, fuzzy
+#| msgid "Resume"
+msgid "Pause / Resume"
+msgstr "续播"
+
 #: resources/ui/mpv_shortcuts_window.ui:15
-msgid "Decrease/increase playback speed by 10%"
-msgstr "将播放速度降低/提高 10%"
+#, fuzzy
+#| msgid "Seek Forward"
+msgid "Seek Forward 5 Seconds"
+msgstr "向前跳转"
 
 #: resources/ui/mpv_shortcuts_window.ui:21
-msgid "Halve/double current playback speed"
-msgstr "将当前播放速度减半/加倍"
+#, fuzzy
+#| msgid "Seek Backward"
+msgid "Seek Backward 5 Seconds"
+msgstr "向后跳转"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
-msgid "Reset playback speed to normal"
-msgstr "重置播放速度"
+#, fuzzy
+#| msgid "Seek Forward"
+msgid "Seek Forward 60 Seconds"
+msgstr "向前跳转"
+
+#: resources/ui/mpv_shortcuts_window.ui:33
+#, fuzzy
+#| msgid "Seek Backward"
+msgid "Seek Backward 60 Seconds"
+msgstr "向后跳转"
+
+#: resources/ui/mpv_shortcuts_window.ui:39
+msgid "Seek Forward 1 Second (Exact)"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:45
+#, fuzzy
+#| msgid "Seek Backward"
+msgid "Seek Backward 1 Second (Exact)"
+msgstr "向后跳转"
+
+#: resources/ui/mpv_shortcuts_window.ui:51
+#, fuzzy
+#| msgid "Seek Forward"
+msgid "Step One Frame Forward"
+msgstr "向前跳转"
+
+#: resources/ui/mpv_shortcuts_window.ui:57
+#, fuzzy
+#| msgid "Seek Backward"
+msgid "Step One Frame Backward"
+msgstr "向后跳转"
+
+#: resources/ui/mpv_shortcuts_window.ui:65
+#, fuzzy
+#| msgid "Playback speed"
+msgid "Playback Speed"
+msgstr "播放速度"
+
+#: resources/ui/mpv_shortcuts_window.ui:68
+#, fuzzy
+#| msgid "Decrease/increase playback speed by 10%"
+msgid "Decrease Speed by 10%"
+msgstr "将播放速度降低/提高 10%"
+
+#: resources/ui/mpv_shortcuts_window.ui:74
+#, fuzzy
+#| msgid "Decrease/increase playback speed by 10%"
+msgid "Increase Speed by 10%"
+msgstr "将播放速度降低/提高 10%"
+
+#: resources/ui/mpv_shortcuts_window.ui:80
+#, fuzzy
+#| msgid "Playback speed"
+msgid "Halve Playback Speed"
+msgstr "播放速度"
+
+#: resources/ui/mpv_shortcuts_window.ui:86
+#, fuzzy
+#| msgid "Playback speed"
+msgid "Double Playback Speed"
+msgstr "播放速度"
+
+#: resources/ui/mpv_shortcuts_window.ui:92
+#, fuzzy
+#| msgid "Playback speed"
+msgid "Reset Playback Speed"
+msgstr "播放速度"
+
+#: resources/ui/mpv_shortcuts_window.ui:100
+msgid "Volume"
+msgstr "音量"
+
+#: resources/ui/mpv_shortcuts_window.ui:103
+#, fuzzy
+#| msgid "Default Volume"
+msgid "Increase Volume"
+msgstr "默认音量"
+
+#: resources/ui/mpv_shortcuts_window.ui:109
+#, fuzzy
+#| msgid "Default Volume"
+msgid "Decrease Volume"
+msgstr "默认音量"
+
+#: resources/ui/mpv_shortcuts_window.ui:115
+msgid "Mute / Unmute"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:121
+msgid "Increase Volume (Numpad)"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:127
+msgid "Decrease Volume (Numpad)"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:135
+#, fuzzy
+#| msgid "Subtitle"
+msgid "Subtitles"
+msgstr "字幕"
+
+#: resources/ui/mpv_shortcuts_window.ui:138
+msgid "Cycle Subtitle Tracks Forward"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:144
+msgid "Cycle Subtitle Tracks Backward"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:150
+msgid "Toggle Subtitle Visibility"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:156
+msgid "Decrease Subtitle Delay"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:162
+msgid "Increase Subtitle Delay"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:168
+#, fuzzy
+#| msgid "Subtitle Text Size"
+msgid "Increase Subtitle Font Size"
+msgstr "字幕文本大小"
+
+#: resources/ui/mpv_shortcuts_window.ui:174
+#, fuzzy
+#| msgid "Subtitle Text Size"
+msgid "Decrease Subtitle Font Size"
+msgstr "字幕文本大小"
+
+#: resources/ui/mpv_shortcuts_window.ui:182
+msgid "Tracks"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:185
+msgid "Cycle Audio Tracks"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:191
+msgid "Cycle Video Tracks"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:199
+msgid "Chapters and Playlist"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:202
+#, fuzzy
+#| msgid "Previous chapter"
+msgid "Previous Chapter"
+msgstr "上一章"
+
+#: resources/ui/mpv_shortcuts_window.ui:208
+#, fuzzy
+#| msgid "Next chapter"
+msgid "Next Chapter"
+msgstr "下一章"
+
+#: resources/ui/mpv_shortcuts_window.ui:214
+#, fuzzy
+#| msgid "Previous chapter"
+msgid "Previous Playlist Entry"
+msgstr "上一章"
+
+#: resources/ui/mpv_shortcuts_window.ui:220
+msgid "Next Playlist Entry"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:231
+#, fuzzy
+#| msgid "Fullscreen"
+msgid "Toggle Fullscreen"
+msgstr "全屏"
+
+#: resources/ui/mpv_shortcuts_window.ui:237
+msgid "Set / Clear A-B Loop Points"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:243
+msgid "Toggle Infinite Loop"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:249
+#, fuzzy
+#| msgid "DisplayTitle"
+msgid "Display Statistics"
+msgstr "显示标题"
+
+#: resources/ui/mpv_shortcuts_window.ui:255
+msgid "Quit"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:261
+msgid "Quit and Save Position"
+msgstr ""
 
 #: resources/ui/mpvpage.ui:101
 msgid "Stop and quit"
 msgstr "停止并退出"
 
-#: resources/ui/mpvpage.ui:169
+#: resources/ui/mpvpage.ui:158
+msgid "Shortcuts"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:186
 msgid "Media info (MPV)"
 msgstr "媒体信息 (MPV)"
 
-#: resources/ui/mpvpage.ui:401 resources/ui/window.ui:25
-#: resources/ui/window.ui:54
-msgid "Preferences"
-msgstr "首选项"
+#: resources/ui/mpvpage.ui:335
+msgid "1.00x"
+msgstr ""
 
-#: resources/ui/mpvpage.ui:418
-msgid "Playback speed"
-msgstr "播放速度"
-
-#: resources/ui/mpvpage.ui:432
-msgid "Volume"
-msgstr "音量"
+#: resources/ui/mpvpage.ui:377
+#, fuzzy
+#| msgid "Default Volume"
+msgid "Adjust Volume"
+msgstr "默认音量"
 
 #: resources/ui/other.ui:94
 msgid "No Inscriptions"
@@ -1633,6 +1851,10 @@ msgstr "深色风格"
 msgid "Sign out"
 msgstr "登出"
 
+#: resources/ui/window.ui:25 resources/ui/window.ui:54
+msgid "Preferences"
+msgstr "首选项"
+
 #: resources/ui/window.ui:31 resources/ui/window.ui:60
 msgid "About"
 msgstr "关于"
@@ -1660,6 +1882,12 @@ msgstr "目录"
 #: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "服务器"
+
+#~ msgid "Halve/double current playback speed"
+#~ msgstr "将当前播放速度减半/加倍"
+
+#~ msgid "Reset playback speed to normal"
+#~ msgstr "重置播放速度"
 
 #~ msgid "Restart App To Take Effect"
 #~ msgstr "重启应用程序生效"
@@ -1894,9 +2122,6 @@ msgstr "服务器"
 
 #~ msgid "Video Settings"
 #~ msgstr "视频设置"
-
-#~ msgid "Default Volume"
-#~ msgstr "默认音量"
 
 #~ msgid "Force Stereo"
 #~ msgstr "强制立体声"
