@@ -18,6 +18,27 @@
                 <property name="title" translatable="yes">Seek Action</property>
                 <child>
                   <object class="AdwSpinRow">
+                    <property name="title" translatable="yes">Playback speed</property>
+                    <signal name="notify::value" handler="on_playback_speed" swapped="yes" />
+                    <child type="prefix">
+                      <object class="GtkImage">
+                        <property name="icon-name">playback-options-symbolic</property>
+                      </object>
+                    </child>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="playback_speed_adj">
+                        <property name="lower">0.10</property>
+                        <property name="upper">5.00</property>
+                        <property name="value">1.00</property>
+                        <property name="step-increment">0.05</property>
+                        <property name="page-increment">0.2</property>
+                      </object>
+                    </property>
+                    <property name="digits">2</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwSpinRow">
                     <property name="title" translatable="yes">Seek Backward</property>
                     <property name="subtitle" translatable="yes">Unit: Seconds</property>
                     <child type="prefix">
@@ -66,7 +87,7 @@
                     <signal name="notify::active" handler="on_buffer_speed" swapped="yes" />
                     <child type="prefix">
                       <object class="GtkImage">
-                        <property name="icon-name">speed-svgrepo-com-symbolic</property>
+                        <property name="icon-name">speedometer5-symbolic</property>
                       </object>
                     </child>
                     <property name="title" translatable="yes">Show Buffer Speed</property>
