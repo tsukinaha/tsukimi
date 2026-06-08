@@ -332,7 +332,6 @@
                                 <property name="child">
                                   <object class="AdwButtonContent" id="playback_speed_button_content">
                                     <property name="icon-name">playback-options-symbolic</property>
-                                    <property name="label" translatable="yes">1.00x</property>
                                   </object>
                                 </property>
                                 <style>
