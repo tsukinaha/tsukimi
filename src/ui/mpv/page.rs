@@ -1044,7 +1044,8 @@ impl MPVPage {
     fn speed_cb(&self, value: f64) {
         let imp = self.imp();
         imp.playback_speed_adj.set_value(value);
-        imp.playback_speed_button_content.set_label(&format!("{value:.2}x"));
+        imp.playback_speed_button_content
+            .set_label(&format!("{value:.2}x"));
         imp.playback_speed_indicator
             .set_visible((value * 100.0).round() as i64 != 100);
         if let Some(window) = self.root().and_downcast_ref::<Window>() {
@@ -1110,8 +1111,6 @@ impl MPVPage {
             _ => "audio-volume-high-symbolic",
         };
         imp.volume_button.set_icon_name(icon_name);
-        imp.volume_button
-            .set_tooltip_text(Some(&gettext(if value == 0 { "Unmute" } else { "Mute" })));
     }
 
     fn on_file_loaded(&self) {
@@ -1309,7 +1308,11 @@ impl MPVPage {
         }
 
         let imp = self.imp();
-        if imp.audio_tracks_menu_button.is_active() || imp.subtitle_tracks_menu_button.is_active() || imp.volume_button.is_active() || !self.can_fade_cursor_set() {
+        if imp.audio_tracks_menu_button.is_active()
+            || imp.subtitle_tracks_menu_button.is_active()
+            || imp.volume_button.is_active()
+            || !self.can_fade_cursor_set()
+        {
             return false;
         }
 
