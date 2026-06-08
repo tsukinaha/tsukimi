@@ -12,6 +12,8 @@ fn main() {
         PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is not set"));
 
     println!("cargo:rerun-if-changed=build.rs");
+    // Link against casilda-1.0 for the mpv-subcompositor backend
+    println!("cargo:rustc-link-lib=casilda-1.0");
     println!(
         "cargo:rerun-if-changed={}",
         project_root.join("src").display()

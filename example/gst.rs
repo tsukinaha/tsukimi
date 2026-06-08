@@ -20,7 +20,7 @@ fn main() {
             .default_height(540)
             .build();
 
-        let video = MutsumiVideoPlayer::new("gst").expect("Failed to initialize gst backend");
+        let video = MutsumiVideoPlayer::new("gst");
 
         let vbox = GtkBox::new(Orientation::Vertical, 6);
 

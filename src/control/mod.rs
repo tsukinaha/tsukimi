@@ -1,7 +1,7 @@
 // mod sidebar;
 mod menu;
 pub mod overlay;
-pub mod player;
+//pub mod player;
 pub mod scale;
 pub mod toast;
 pub mod volume_bar;

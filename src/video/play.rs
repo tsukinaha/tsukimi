@@ -1,9 +1,13 @@
 use std::path::Path;
 
-pub struct Play {
+pub struct PlayParams<P>
+where
+    P: AsRef<Path>,
+{
     pub title: Option<String>,
     pub subtitle: Option<String>,
-    pub url: String,
+    pub url: PlaySource<P>,
+    pub start_time: Option<f64>,
 }
 
 pub enum PlaySource<P>

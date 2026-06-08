@@ -31,9 +31,8 @@ mod imp {
     #[properties(wrapper_type = super::MutsumiVideoPlayer)]
     pub struct MutsumiVideoPlayer {
         #[property(get, set, construct_only)]
-        pub child: OnceCell<gtk::Widget>,
+        pub backend_name: OnceCell<String>,
 
-        #[property(get, set, construct_only)]
         pub backend: OnceCell<BackendHandle>,
     }
 
@@ -55,17 +54,18 @@ mod imp {
             obj.set_hexpand(true);
             obj.set_vexpand(true);
 
-            let child = self
-                .child
-                .get()
-                .expect("VideoPlayer child must be provided during construction");
-
-            obj.append(child);
-        }
-
-        fn dispose(&self) {
-            if let Some(child) = self.child.get() {
-                self.obj().remove(child);
+            match obj.backend_name().as_str() {
+                "mpvgl" => {
+                    let player = MPVGLArea::new();
+                    obj.append(&player);
+                    let _ = self.backend.set(BackendHandle(Rc::new(player)));
+                }
+                "gst" => {
+                    let player = GstVideo::new().expect("Failed to create GstVideo");
+                    obj.append(&player);
+                    let _ = self.backend.set(BackendHandle(Rc::new(player)));
+                }
+                _ => panic!("Invalid backend name: {}", obj.backend_name()),
             }
         }
     }
@@ -81,40 +81,8 @@ glib::wrapper! {
 }
 
 impl MutsumiVideoPlayer {
-    pub fn new(backend: &str) -> Result<Self, VideoPlayerNewError> {
-        match backend {
-            "mpvgl" => Ok(Self::from_mpv(MPVGLArea::new())),
-            "gst" => Ok(Self::from_gst(
-                GstVideo::new().map_err(VideoPlayerNewError::from)?,
-            )),
-            _ => Err(VideoPlayerNewError::InvalidBackend(backend.to_string())),
-        }
-    }
-
-    fn with_backend(child: gtk::Widget, backend: BackendHandle) -> Self {
-        Object::builder()
-            .property("child", child)
-            .property("backend", backend)
-            .build()
-    }
-
-    pub fn from_mpv(player: MPVGLArea) -> Self {
-        let child = player.clone().upcast::<gtk::Widget>();
-        let backend = BackendHandle(Rc::new(player));
-        Self::with_backend(child, backend)
-    }
-
-    pub fn from_gst(player: GstVideo) -> Self {
-        let child = player.clone().upcast::<gtk::Widget>();
-        let backend = BackendHandle(Rc::new(player));
-        Self::with_backend(child, backend)
-    }
-
-    pub fn child_widget(&self) -> &gtk::Widget {
-        self.imp()
-            .child
-            .get()
-            .expect("VideoPlayer child must be initialized during construction")
+    pub fn new(backend: &str) -> Self {
+        Object::builder().property("backend-name", backend).build()
     }
 
     pub fn backend_handle(&self) -> &BackendHandle {

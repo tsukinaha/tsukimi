@@ -11,9 +11,10 @@ use super::RENDER_UPDATE;
 
 mod imp {
     use crate::video::{
-        MPV_CTRL, MpvMessage, MutsumiMpvError, SendableFn, mpv::contexted::ContextedMPV,
+        MPV_CTRL, MpvMessage, MutsumiMpvError, mpv::contexted::ContextedMPV,
     };
-    use std::{ffi::c_void, sync::OnceLock};
+    use std::{ffi::c_void, sync::{Arc, OnceLock}};
+    use libmpv2::Mpv;
 
     use super::*;
 
@@ -37,7 +38,7 @@ mod imp {
     #[derive(Default)]
     pub struct MPVGLArea {
         pub mpv: ContextedMPV,
-        pub mpv_ctx: OnceCell<RenderContext>,
+        pub mpv_ctx: OnceCell<RenderContext<'static>>,
         pub gl_ctx: OnceCell<glow::Context>,
     }
 
@@ -151,34 +152,28 @@ mod imp {
                 ));
             }
 
-            let (ctx_tx, ctx_rx) = bounded::<SendableHandle>(1);
-
-            //SAFETY: This struct is only used to send the RenderContext across a channel, and the RenderContext is never accessed from multiple threads simultaneously. The MPV render context is created and used entirely within the GLArea's render callback, which is called from the GTK main thread. The channel is only used to transfer ownership of the RenderContext from the MPV initialization closure to the GLArea instance, and there are no concurrent accesses to the RenderContext from multiple threads.
-            struct SendableHandle(*mut libmpv2_sys::mpv_handle);
-            unsafe impl Send for SendableHandle {}
+            let (arc_tx, arc_rx) = bounded::<Arc<Mpv>>(1);
 
             MPV_CTRL
                 .tx
-                .send(MpvMessage::InitRenderContext(SendableFn::new(
-                    move |handle| {
-                        _ = ctx_tx.send(SendableHandle(handle));
-                    },
-                )))
+                .send(MpvMessage::InitRenderContext(arc_tx))
                 .expect("Init render context failed");
 
             glib::spawn_future_local(glib::clone!(
                 #[weak(rename_to = imp)]
                 self,
                 async move {
-                    let handle = ctx_rx.recv_async().await.expect("Actor dropped sender");
-                    let mut ctx = RenderContext::new(
-                        unsafe { handle.0.as_mut().expect("mpv_handle is pointed to null???") },
-                        render_params,
-                    )
-                    .expect("Failed creating render context");
+                    let mpv = arc_rx.recv_async().await.expect("Actor dropped sender");
+                    let mut ctx = mpv
+                        .create_render_context(render_params)
+                        .expect("Failed creating render context");
                     ctx.set_update_callback(|| {
                         let _ = RENDER_UPDATE.tx.send(true);
                     });
+                    //SAFETY: Mpv is kept alive by the actor's Arc for the program lifetime
+                    let ctx = unsafe {
+                        std::mem::transmute::<RenderContext<'_>, RenderContext<'static>>(ctx)
+                    };
                     imp.mpv_ctx
                         .set(ctx)
                         .ok()

@@ -6,7 +6,7 @@ use mutsumi::video::{MutsumiVideoPlayer, VideoBackend};
 fn main() {
     gtk::init().expect("Failed to initialize GTK");
 
-    let player = MutsumiVideoPlayer::new("mpvgl").expect("Failed to initialize mpvgl backend");
+    let player = MutsumiVideoPlayer::new("mpvgl");
     let player_clone = player.clone();
 
     glib::spawn_future_local(async move {

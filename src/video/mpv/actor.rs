@@ -1,4 +1,4 @@
-use std::ops::{Deref, DerefMut};
+use std::{ops::Deref, sync::Arc};
 
 use super::*;
 use flume::{Receiver, Sender, unbounded};
@@ -10,8 +10,7 @@ use once_cell::sync::Lazy;
 use serde_json::Value;
 use tsutils::spawn_tokio_blocking;
 
-//SAFETY: Mpv command context is generally fully thread-safe
-struct SendMpv(Mpv);
+struct SendMpv(Arc<Mpv>);
 unsafe impl Send for SendMpv {}
 
 #[derive(Debug, Clone)]
@@ -65,19 +64,6 @@ impl MpvValue {
     }
 }
 
-//SAFETY: FnOnce is only called once and won't be sent across threads after being called
-pub struct SendableFn(Box<dyn FnOnce(*mut libmpv2_sys::mpv_handle)>);
-unsafe impl Send for SendableFn {}
-
-impl SendableFn {
-    pub fn new(f: impl FnOnce(*mut libmpv2_sys::mpv_handle) + 'static) -> Self {
-        Self(Box::new(f))
-    }
-    fn call(self, handle: *mut libmpv2_sys::mpv_handle) {
-        (self.0)(handle)
-    }
-}
-
 pub enum MpvMessage {
     Command {
         cmd: String,
@@ -92,7 +78,7 @@ pub enum MpvMessage {
         value_type: MpvValueType,
         rx: Sender<MpvValue>,
     },
-    InitRenderContext(SendableFn),
+    InitRenderContext(Sender<Arc<Mpv>>),
     WakeUp,
     Shutdown,
 }
@@ -110,12 +96,6 @@ pub struct MpvCtrl {
 
 #[derive(Clone, Copy)]
 pub struct MpvActor;
-
-impl DerefMut for SendMpv {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
 
 impl Deref for SendMpv {
     type Target = Mpv;
@@ -148,7 +128,7 @@ impl MpvActor {
             let _ = MPV_CTRL.tx.send(MpvMessage::WakeUp);
         });
 
-        let mut mpv = SendMpv(mpv);
+        let mut mpv = SendMpv(Arc::new(mpv));
 
         spawn_tokio_blocking(move || {
             loop {
@@ -177,8 +157,8 @@ impl MpvActor {
 
                         let _ = rx.send(result);
                     }
-                    MpvMessage::InitRenderContext(f) => {
-                        f.call(mpv.ctx.as_ptr());
+                    MpvMessage::InitRenderContext(tx) => {
+                        let _ = tx.send(Arc::clone(&mpv.0));
                     }
                     MpvMessage::WakeUp => 'l: loop {
                         if !mpv.handle_event() {
