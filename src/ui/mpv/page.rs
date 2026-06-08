@@ -200,7 +200,7 @@ mod imp {
         #[template_child]
         pub network_speed_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub network_speed_label_2: TemplateChild<gtk::Label>,
+        pub network_speed_label_2: TemplateChild<gtk::Button>,
         #[template_child]
         pub playback_speed_indicator: TemplateChild<gtk::Button>,
         #[template_child]

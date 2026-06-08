@@ -136,13 +136,30 @@
                     <child type="end">
                       <object class="GtkBox">
                         <property name="orientation">horizontal</property>
+                        <property name="spacing">6</property>
                         <child>
-                          <object class="GtkLabel" id="network_speed_label_2">
-                            <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create" />
-                            <property name="width-request">130</property>
-                            <property name="margin-end">10</property>
+                            <object class="GtkButton" id="network_speed_label_2">
+                            <property name="valign">center</property>
+                            <property name="child">
+                                <object class="AdwButtonContent">
+                                <property name="icon-name">speedometer5-symbolic</property>
+                                <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create" />
+                                </object>
+                            </property>
                             <style>
-                              <class name="dimmed" />
+                                <class name="accent" />
+                            </style>
+                            </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="valign">center</property>
+                            <property name="icon-name">keyboard-shortcuts-symbolic</property>
+                            <property name="tooltip_text" translatable="yes">Shortcuts</property>
+                            <property name="action-name">win.show-help-overlay</property>
+                            <style>
+                              <class name="flat" />
+                              <class name="circular" />
                             </style>
                           </object>
                         </child>
@@ -227,6 +244,25 @@
                               </object>
                             </child>
                             <child>
+                              <object class="GtkButton">
+                                <property name="tooltip-text" translatable="yes">Backward</property>
+                                <property name="action_name">mpv.backward</property>
+                                <property name="valign">center</property>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon_name">seek-backward-large-symbolic</property>
+                                    <property name="pixel-size">24</property>
+                                    <property name="halign">center</property>
+                                    <property name="valign">center</property>
+                                  </object>
+                                </child>
+                                <style>
+                                  <class name="circular" />
+                                  <class name="flat" />
+                                </style>
+                              </object>
+                            </child>
+                            <child>
                               <object class="GtkButton" id="_play_button">
                                 <property name="height-request">48</property>
                                 <property name="width-request">48</property>
@@ -247,6 +283,25 @@
                                   <class name="flat" />
                                   <class name="mpv-play-button" />
                                   <class name="circular" />
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton">
+                                <property name="tooltip-text" translatable="yes">Forward</property>
+                                <property name="action_name">mpv.forward</property>
+                                <property name="valign">center</property>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon_name">seek-forward-large-symbolic</property>
+                                    <property name="pixel-size">24</property>
+                                    <property name="halign">center</property>
+                                    <property name="valign">center</property>
+                                  </object>
+                                </child>
+                                <style>
+                                  <class name="circular" />
+                                  <class name="flat" />
                                 </style>
                               </object>
                             </child>
@@ -346,13 +401,13 @@
                                     <property name="action-name">win.toggle-fullscreen</property>
                                     <property name="tooltip-text" translatable="yes">Fullscreen</property>
                                     <property name="valign">center</property>
-                                        <accessibility>
-                                            <property name="label" translatable="yes">Fullscreen</property>
-                                        </accessibility>
-                                        <style>
+                                    <accessibility>
+                                        <property name="label" translatable="yes">Fullscreen</property>
+                                    </accessibility>
+                                    <style>
                                         <class name="flat" />
                                         <class name="circular" />
-                                        </style>
+                                    </style>
                                   </object>
                                 </child>
                                 <child>
@@ -591,9 +646,7 @@
   <object class="GtkSizeGroup">
     <property name="mode">vertical</property>
     <widgets>
-      <widget name="_previous_button" />
       <widget name="_play_button" />
-      <widget name="_next_button" />
       <widget name="progress_time_label" />
       <widget name="video_scale" />
       <widget name="duration_label" />

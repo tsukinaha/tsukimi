@@ -87,7 +87,7 @@
                     <signal name="notify::active" handler="on_buffer_speed" swapped="yes" />
                     <child type="prefix">
                       <object class="GtkImage">
-                        <property name="icon-name">playback-options-symbolic</property>
+                        <property name="icon-name">speedometer5-symbolic</property>
                       </object>
                     </child>
                     <property name="title" translatable="yes">Show Buffer Speed</property>
