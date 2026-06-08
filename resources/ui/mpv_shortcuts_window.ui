@@ -1,32 +1,265 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <object class="GtkShortcutsWindow" id="mpv_shortcuts">
-    <property name="modal">True</property>
+  <object class="AdwShortcutsDialog" id="shortcuts_dialog">
     <child>
-      <object class="GtkShortcutsSection">
-        <property name="section-name">shortcuts</property>
-        <property name="max-height">10</property>
+      <object class="AdwShortcutsSection">
+        <property name="title" translatable="yes">Playback</property>
         <child>
-          <object class="GtkShortcutsGroup">
-            <property name="title" translatable="yes">General</property>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="accelerator">bracketleft bracketright</property>
-                <property name="title" translatable="yes">Decrease/increase playback speed by 10%</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="accelerator">braceleft braceright</property>
-                <property name="title" translatable="yes">Halve/double current playback speed</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="accelerator">BackSpace</property>
-                <property name="title" translatable="yes">Reset playback speed to normal</property>
-              </object>
-            </child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Pause / Resume</property>
+            <property name="accelerator">space</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Seek Forward 5 Seconds</property>
+            <property name="accelerator">Right</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Seek Backward 5 Seconds</property>
+            <property name="accelerator">Left</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Seek Forward 60 Seconds</property>
+            <property name="accelerator">Up</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Seek Backward 60 Seconds</property>
+            <property name="accelerator">Down</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Seek Forward 1 Second (Exact)</property>
+            <property name="accelerator">&lt;Shift&gt;Right</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Seek Backward 1 Second (Exact)</property>
+            <property name="accelerator">&lt;Shift&gt;Left</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Step One Frame Forward</property>
+            <property name="accelerator">period</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Step One Frame Backward</property>
+            <property name="accelerator">comma</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwShortcutsSection">
+        <property name="title" translatable="yes">Playback Speed</property>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Decrease Speed by 10%</property>
+            <property name="accelerator">bracketleft</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Increase Speed by 10%</property>
+            <property name="accelerator">bracketright</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Halve Playback Speed</property>
+            <property name="accelerator">braceleft</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Double Playback Speed</property>
+            <property name="accelerator">braceright</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Reset Playback Speed</property>
+            <property name="accelerator">BackSpace</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwShortcutsSection">
+        <property name="title" translatable="yes">Volume</property>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Increase Volume</property>
+            <property name="accelerator">0</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Decrease Volume</property>
+            <property name="accelerator">9</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Mute / Unmute</property>
+            <property name="accelerator">m</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Increase Volume (Numpad)</property>
+            <property name="accelerator">asterisk</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Decrease Volume (Numpad)</property>
+            <property name="accelerator">slash</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwShortcutsSection">
+        <property name="title" translatable="yes">Subtitles</property>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Cycle Subtitle Tracks Forward</property>
+            <property name="accelerator">j</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Cycle Subtitle Tracks Backward</property>
+            <property name="accelerator">&lt;Shift&gt;j</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Toggle Subtitle Visibility</property>
+            <property name="accelerator">v</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Decrease Subtitle Delay</property>
+            <property name="accelerator">z</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Increase Subtitle Delay</property>
+            <property name="accelerator">x</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Increase Subtitle Font Size</property>
+            <property name="accelerator">&lt;Shift&gt;g</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Decrease Subtitle Font Size</property>
+            <property name="accelerator">&lt;Shift&gt;f</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwShortcutsSection">
+        <property name="title" translatable="yes">Tracks</property>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Cycle Audio Tracks</property>
+            <property name="accelerator">numbersign</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Cycle Video Tracks</property>
+            <property name="accelerator">underscore</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwShortcutsSection">
+        <property name="title" translatable="yes">Chapters and Playlist</property>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Previous Chapter</property>
+            <property name="accelerator">Page_Up</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Next Chapter</property>
+            <property name="accelerator">Page_Down</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Previous Playlist Entry</property>
+            <property name="accelerator">less</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Next Playlist Entry</property>
+            <property name="accelerator">greater</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwShortcutsSection">
+        <property name="title" translatable="yes">General</property>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Toggle Fullscreen</property>
+            <property name="accelerator">f</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Set / Clear A-B Loop Points</property>
+            <property name="accelerator">l</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Toggle Infinite Loop</property>
+            <property name="accelerator">&lt;Shift&gt;l</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Display Statistics</property>
+            <property name="accelerator">i</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Quit</property>
+            <property name="accelerator">q</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Quit and Save Position</property>
+            <property name="accelerator">&lt;Shift&gt;q</property>
           </object>
         </child>
       </object>

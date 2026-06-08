@@ -139,7 +139,6 @@ mod imp {
     use gtk::{
         CompositeTemplate,
         PopoverMenu,
-        ShortcutsWindow,
         glib,
         subclass::prelude::*,
     };
@@ -230,7 +229,6 @@ mod imp {
         pub current_segment_end: Cell<Option<f64>>,
         pub popover: RefCell<Option<PopoverMenu>>,
         pub menu_actions: MenuActions,
-        pub shortcuts_window: RefCell<Option<ShortcutsWindow>>,
         #[cfg(target_os = "linux")]
         pub mpris_server: OnceCell<LocalServer<super::MPVPage>>,
         #[cfg(target_os = "linux")]
@@ -262,6 +260,9 @@ mod imp {
         pub retrying_playback: Cell<bool>,
         pub allow_fallback: Cell<bool>,
         pub last_nonzero_volume: Cell<i64>,
+
+        #[property(get, set, default_value = true)]
+        pub can_fade_cursor_set: Cell<bool>,
     }
 
     #[glib::object_subclass]
@@ -333,6 +334,7 @@ mod imp {
     impl ObjectImpl for MPVPage {
         fn constructed(&self) {
             self.parent_constructed();
+            self.can_fade_cursor_set.set(true);
 
             SETTINGS
                 .bind(
@@ -1307,7 +1309,7 @@ impl MPVPage {
         }
 
         let imp = self.imp();
-        if imp.audio_tracks_menu_button.is_active() || imp.subtitle_tracks_menu_button.is_active() {
+        if imp.audio_tracks_menu_button.is_active() || imp.subtitle_tracks_menu_button.is_active() || imp.volume_button.is_active() || !self.can_fade_cursor_set() {
             return false;
         }
 

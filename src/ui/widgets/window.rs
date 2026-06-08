@@ -1,6 +1,3 @@
-#![allow(deprecated)]
-// FIXME: replace GtkShortcutsWindow when the replacement is appeared on libadwaita
-
 use std::path::PathBuf;
 
 use adw::prelude::*;
@@ -897,14 +894,27 @@ impl Window {
     }
 
     pub fn set_shortcuts(&self) {
-        let Some(window) =
-            gtk::Builder::from_resource("/moe/tsuna/tsukimi/ui/mpv_shortcuts_window.ui")
-                .object::<gtk::ShortcutsWindow>("mpv_shortcuts")
-        else {
-            eprintln!("Failed to load shortcuts window");
-            return;
-        };
-        self.set_help_overlay(Some(&window));
+        let shortcuts_action = gtk::gio::ActionEntry::builder("show-help-overlay")
+            .activate(|window: &Window, _, _| {
+                window.imp().mpvnav.set_can_fade_cursor_set(false);
+                let Some(dialog) =
+                    gtk::Builder::from_resource("/moe/tsuna/tsukimi/ui/mpv_shortcuts_window.ui")
+                        .object::<adw::ShortcutsDialog>("shortcuts_dialog")
+                else {
+                    eprintln!("Failed to load shortcuts dialog");
+                    return;
+                };
+                dialog.connect_closed(glib::clone!(
+                    #[weak]
+                    window,
+                    move |_| {
+                        window.imp().mpvnav.set_can_fade_cursor_set(true);
+                    }
+                ));
+                dialog.present(Some(window));
+            })
+            .build();
+        self.add_action_entries([shortcuts_action]);
     }
 
     pub fn set_mpv_playlist(&self, episode_list: &Vec<TuItem>) {

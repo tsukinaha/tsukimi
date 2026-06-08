@@ -152,7 +152,7 @@
                             </object>
                         </child>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkToggleButton">
                             <property name="valign">center</property>
                             <property name="icon-name">keyboard-shortcuts-symbolic</property>
                             <property name="tooltip_text" translatable="yes">Shortcuts</property>
