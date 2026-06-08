@@ -84,11 +84,10 @@ impl MediaContentViewer {
             .child()
             .and_downcast::<gtk::Video>()
             .and_then(|v| v.media_stream())
+            && stream.is_playing()
         {
-            if stream.is_playing() {
-                stream.pause();
-                stream.seek(0);
-            }
+            stream.pause();
+            stream.seek(0);
         }
     }
 

@@ -365,10 +365,10 @@ impl HomePage {
             .collect::<Vec<_>>();
 
         for id in removed_ids {
-            if let Some(hortu) = self.imp().libs_hortu.borrow_mut().remove(&id) {
-                if let Some(hortu) = hortu.upgrade() {
-                    self.imp().libsbox.remove(&hortu);
-                }
+            if let Some(hortu) = self.imp().libs_hortu.borrow_mut().remove(&id)
+                && let Some(hortu) = hortu.upgrade()
+            {
+                self.imp().libsbox.remove(&hortu);
             }
         }
 

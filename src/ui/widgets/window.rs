@@ -571,10 +571,11 @@ impl Window {
     }
 
     pub fn refresh_homepage_if_needed(&self) {
-        if self.now_page_tag() == Some("mainpage".into()) && SETTINGS.is_refresh() {
-            if let Some(homepage) = self.imp().homepage.child().and_downcast_ref::<HomePage>() {
-                homepage.update(false);
-            }
+        if self.now_page_tag() == Some("mainpage".into())
+            && SETTINGS.is_refresh()
+            && let Some(homepage) = self.imp().homepage.child().and_downcast_ref::<HomePage>()
+        {
+            homepage.update(false);
         }
     }
 
@@ -643,10 +644,10 @@ impl Window {
         backgroundstack.add_child(&pic);
         backgroundstack.set_visible_child(&pic);
 
-        if backgroundstack.observe_children().n_items() > 2 {
-            if let Some(child) = backgroundstack.first_child() {
-                backgroundstack.remove(&child);
-            }
+        if backgroundstack.observe_children().n_items() > 2
+            && let Some(child) = backgroundstack.first_child()
+        {
+            backgroundstack.remove(&child);
         }
     }
 

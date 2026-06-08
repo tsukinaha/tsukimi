@@ -5,13 +5,12 @@ use gtk::{
 use mpris_server::zbus::fdo;
 
 pub async fn raise_window() -> fdo::Result<()> {
-    if let Some(app) = gio::Application::default() {
-        if let Ok(gtk_app) = app.downcast::<gtk::Application>() {
-            if let Some(window) = gtk_app.active_window() {
-                window.present();
-                return Ok(());
-            }
-        }
+    if let Some(app) = gio::Application::default()
+        && let Ok(gtk_app) = app.downcast::<gtk::Application>()
+        && let Some(window) = gtk_app.active_window()
+    {
+        window.present();
+        return Ok(());
     }
     Err(fdo::Error::Failed("Failed to raise window".to_string()))
 }
