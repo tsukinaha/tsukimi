@@ -1,4 +1,3 @@
-# Taha <mtbayin@gmail.com>, 2026.
 # Hosted Weblate user 135666 <xmtaha@users.noreply.hosted.weblate.org>, 2026.
 msgid ""
 msgstr ""
