@@ -956,11 +956,11 @@ impl ItemPage {
                             }
                             obj.imp().line2.get().set_text(&str);
 
-                            if let Some(taglines) = item.taglines {
-                                if let Some(tagline) = taglines.first() {
-                                    obj.imp().tagline.set_text(tagline);
-                                    obj.imp().tagline.set_visible(true);
-                                }
+                            if let Some(taglines) = item.taglines
+                                && let Some(tagline) = taglines.first()
+                            {
+                                obj.imp().tagline.set_text(tagline);
+                                obj.imp().tagline.set_visible(true);
                             }
                         }
                         if let Some(links) = item.external_urls {
@@ -981,10 +981,10 @@ impl ItemPage {
                         if let Some(image_tags) = item.backdrop_image_tags {
                             obj.add_backdrops(image_tags, &item.id).await;
                         }
-                        if let Some(part_count) = item.part_count {
-                            if part_count > 1 {
-                                obj.sets("Additional Parts", &item.id).await;
-                            }
+                        if let Some(part_count) = item.part_count
+                            && part_count > 1
+                        {
+                            obj.sets("Additional Parts", &item.id).await;
                         }
                         if let Some(ref user_data) = item.user_data {
                             let imp = obj.imp();

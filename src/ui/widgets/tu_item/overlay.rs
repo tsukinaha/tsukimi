@@ -17,27 +17,27 @@ use super::TuItemBasic;
 
 pub trait TuItemOverlayPrelude {
     fn get_image_type_and_tag(&self, item: &TuItem) -> (&str, Option<String>, String) {
-        if self.poster_type_ext() != PosterType::Poster {
-            if let Some(imag_tags) = item.image_tags() {
-                match self.poster_type_ext() {
-                    PosterType::Banner => {
-                        if imag_tags.banner().is_some() {
-                            return ("Banner", None, item.id());
-                        } else if imag_tags.thumb().is_some() {
-                            return ("Thumb", None, item.id());
-                        } else if imag_tags.backdrop().is_some() {
-                            return ("Backdrop", Some(0.to_string()), item.id());
-                        }
+        if self.poster_type_ext() != PosterType::Poster
+            && let Some(imag_tags) = item.image_tags()
+        {
+            match self.poster_type_ext() {
+                PosterType::Banner => {
+                    if imag_tags.banner().is_some() {
+                        return ("Banner", None, item.id());
+                    } else if imag_tags.thumb().is_some() {
+                        return ("Thumb", None, item.id());
+                    } else if imag_tags.backdrop().is_some() {
+                        return ("Backdrop", Some(0.to_string()), item.id());
                     }
-                    PosterType::Backdrop => {
-                        if imag_tags.backdrop().is_some() {
-                            return ("Backdrop", Some(0.to_string()), item.id());
-                        } else if imag_tags.thumb().is_some() {
-                            return ("Thumb", None, item.id());
-                        }
-                    }
-                    _ => {}
                 }
+                PosterType::Backdrop => {
+                    if imag_tags.backdrop().is_some() {
+                        return ("Backdrop", Some(0.to_string()), item.id());
+                    } else if imag_tags.thumb().is_some() {
+                        return ("Thumb", None, item.id());
+                    }
+                }
+                _ => {}
             }
         }
         match item.prefer_poster() {

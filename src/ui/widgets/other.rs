@@ -242,10 +242,10 @@ impl OtherPage {
         if let Some(media_source) = item.media_sources {
             self.add_media_source(media_source, item.date_created);
         }
-        if let Some(userdata) = item.user_data {
-            if let Some(is_favorite) = userdata.is_favorite {
-                imp.actionbox.set_btn_active(is_favorite);
-            }
+        if let Some(userdata) = item.user_data
+            && let Some(is_favorite) = userdata.is_favorite
+        {
+            imp.actionbox.set_btn_active(is_favorite);
         }
 
         match self.item().item_type().as_str() {

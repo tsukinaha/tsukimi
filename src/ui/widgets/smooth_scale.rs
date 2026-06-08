@@ -43,10 +43,10 @@ mod imp {
                 .observe_controllers()
                 .into_iter()
                 .for_each(|collection| {
-                    if let Ok(event) = collection {
-                        if event.type_() == gtk::GestureClick::static_type() {
-                            gesture = event.downcast::<gtk::GestureClick>().unwrap();
-                        }
+                    if let Ok(event) = collection
+                        && event.type_() == gtk::GestureClick::static_type()
+                    {
+                        gesture = event.downcast::<gtk::GestureClick>().unwrap();
                     }
                 });
 

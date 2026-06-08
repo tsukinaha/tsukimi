@@ -1304,10 +1304,10 @@ impl MPVPage {
         let y = *self.y();
         if x >= 0.0 && y >= 0.0 {
             let widget = self.pick(x, y, gtk::PickFlags::DEFAULT);
-            if let Some(widget) = widget {
-                if !widget.is::<MPVGLArea>() {
-                    return false;
-                }
+            if let Some(widget) = widget
+                && !widget.is::<MPVGLArea>()
+            {
+                return false;
             }
         }
 

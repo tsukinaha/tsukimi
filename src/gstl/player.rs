@@ -198,11 +198,11 @@ pub mod imp {
                                     return;
                                 };
                                 imp.stop();
-                                if obj.gapless() {
-                                    if let Some(core_song) = imp.obj().active_core_song() {
-                                        imp.play(&core_song).await;
-                                    };
-                                }
+                                if obj.gapless()
+                                    && let Some(core_song) = imp.obj().active_core_song()
+                                {
+                                    imp.play(&core_song).await;
+                                };
                                 obj.set_gapless(false);
                             }
                         }
@@ -260,10 +260,10 @@ pub mod imp {
 
         pub async fn play(&self, core_song: &CoreSong) {
             core_song.set_state(State::Playing);
-            if let Some(core_song_old) = self.active_core_song.borrow().as_ref() {
-                if core_song_old != core_song {
-                    core_song_old.set_state(State::Played);
-                }
+            if let Some(core_song_old) = self.active_core_song.borrow().as_ref()
+                && core_song_old != core_song
+            {
+                core_song_old.set_state(State::Played);
             }
 
             self.stop();

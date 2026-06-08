@@ -642,10 +642,8 @@ impl LazyDiffView {
         if let Some(row) = imp.rows.borrow().get(&row_data.key) {
             let item_changed = !Rc::ptr_eq(&row.item.borrow(), &row_data.item);
             *row.item.borrow_mut() = row_data.item.clone();
-            if item_changed {
-                if let Some(cb) = imp.same_key_binder.borrow().as_ref() {
-                    cb(&row.child, row_data.item.as_ref());
-                }
+            if item_changed && let Some(cb) = imp.same_key_binder.borrow().as_ref() {
+                cb(&row.child, row_data.item.as_ref());
             }
             return row.clone();
         }
