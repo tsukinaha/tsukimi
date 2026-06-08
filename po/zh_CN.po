@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
-"PO-Revision-Date: 2026-06-05 19:01+0000\n"
+"PO-Revision-Date: 2026-06-08 16:50+0000\n"
 "Last-Translator: ᴀᴍᴛᴏᴀᴇʀ <amtoaer@outlook.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
@@ -1412,230 +1412,180 @@ msgid "Forward"
 msgstr "快进"
 
 #: resources/ui/mpv_shortcuts_window.ui:6
-#, fuzzy
-#| msgid "Loop Playback"
 msgid "Playback"
-msgstr "循环播放"
+msgstr "播放"
 
 #: resources/ui/mpv_shortcuts_window.ui:9
-#, fuzzy
-#| msgid "Resume"
 msgid "Pause / Resume"
-msgstr "续播"
+msgstr "暂停 / 继续"
 
 #: resources/ui/mpv_shortcuts_window.ui:15
-#, fuzzy
-#| msgid "Seek Forward"
 msgid "Seek Forward 5 Seconds"
-msgstr "向前跳转"
+msgstr "向前跳转 5 秒"
 
 #: resources/ui/mpv_shortcuts_window.ui:21
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Seek Backward 5 Seconds"
-msgstr "向后跳转"
+msgstr "向后跳转 5 秒"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
-#, fuzzy
-#| msgid "Seek Forward"
 msgid "Seek Forward 60 Seconds"
-msgstr "向前跳转"
+msgstr "向前跳转 60 秒"
 
 #: resources/ui/mpv_shortcuts_window.ui:33
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Seek Backward 60 Seconds"
-msgstr "向后跳转"
+msgstr "向后跳转 60 秒"
 
 #: resources/ui/mpv_shortcuts_window.ui:39
 msgid "Seek Forward 1 Second (Exact)"
-msgstr ""
+msgstr "向前跳转 1 秒（精确）"
 
 #: resources/ui/mpv_shortcuts_window.ui:45
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Seek Backward 1 Second (Exact)"
-msgstr "向后跳转"
+msgstr "向后跳转 1 秒（精确）"
 
 #: resources/ui/mpv_shortcuts_window.ui:51
-#, fuzzy
-#| msgid "Seek Forward"
 msgid "Step One Frame Forward"
-msgstr "向前跳转"
+msgstr "向前步进一帧"
 
 #: resources/ui/mpv_shortcuts_window.ui:57
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Step One Frame Backward"
-msgstr "向后跳转"
+msgstr "向后步进一帧"
 
 #: resources/ui/mpv_shortcuts_window.ui:65
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Playback Speed"
 msgstr "播放速度"
 
 #: resources/ui/mpv_shortcuts_window.ui:68
-#, fuzzy
-#| msgid "Decrease/increase playback speed by 10%"
 msgid "Decrease Speed by 10%"
-msgstr "将播放速度降低/提高 10%"
+msgstr "将播放速度降低 10%"
 
 #: resources/ui/mpv_shortcuts_window.ui:74
-#, fuzzy
-#| msgid "Decrease/increase playback speed by 10%"
 msgid "Increase Speed by 10%"
-msgstr "将播放速度降低/提高 10%"
+msgstr "将播放速度提高 10%"
 
 #: resources/ui/mpv_shortcuts_window.ui:80
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Halve Playback Speed"
-msgstr "播放速度"
+msgstr "播放速度减半"
 
 #: resources/ui/mpv_shortcuts_window.ui:86
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Double Playback Speed"
-msgstr "播放速度"
+msgstr "播放速度翻倍"
 
 #: resources/ui/mpv_shortcuts_window.ui:92
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Reset Playback Speed"
-msgstr "播放速度"
+msgstr "重置播放速度"
 
 #: resources/ui/mpv_shortcuts_window.ui:100
 msgid "Volume"
 msgstr "音量"
 
 #: resources/ui/mpv_shortcuts_window.ui:103
-#, fuzzy
-#| msgid "Default Volume"
 msgid "Increase Volume"
-msgstr "默认音量"
+msgstr "增加音量"
 
 #: resources/ui/mpv_shortcuts_window.ui:109
-#, fuzzy
-#| msgid "Default Volume"
 msgid "Decrease Volume"
-msgstr "默认音量"
+msgstr "降低音量"
 
 #: resources/ui/mpv_shortcuts_window.ui:115
 msgid "Mute / Unmute"
-msgstr ""
+msgstr "静音 / 解除静音"
 
 #: resources/ui/mpv_shortcuts_window.ui:121
 msgid "Increase Volume (Numpad)"
-msgstr ""
+msgstr "增加音量（小键盘）"
 
 #: resources/ui/mpv_shortcuts_window.ui:127
 msgid "Decrease Volume (Numpad)"
-msgstr ""
+msgstr "降低音量（小键盘）"
 
 #: resources/ui/mpv_shortcuts_window.ui:135
-#, fuzzy
-#| msgid "Subtitle"
 msgid "Subtitles"
 msgstr "字幕"
 
 #: resources/ui/mpv_shortcuts_window.ui:138
 msgid "Cycle Subtitle Tracks Forward"
-msgstr ""
+msgstr "切换到下一字幕轨"
 
 #: resources/ui/mpv_shortcuts_window.ui:144
 msgid "Cycle Subtitle Tracks Backward"
-msgstr ""
+msgstr "切换到上一字幕轨"
 
 #: resources/ui/mpv_shortcuts_window.ui:150
 msgid "Toggle Subtitle Visibility"
-msgstr ""
+msgstr "切换字幕可见性"
 
 #: resources/ui/mpv_shortcuts_window.ui:156
 msgid "Decrease Subtitle Delay"
-msgstr ""
+msgstr "降低字幕偏移"
 
 #: resources/ui/mpv_shortcuts_window.ui:162
 msgid "Increase Subtitle Delay"
-msgstr ""
+msgstr "增加字幕偏移"
 
 #: resources/ui/mpv_shortcuts_window.ui:168
-#, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Increase Subtitle Font Size"
-msgstr "字幕文本大小"
+msgstr "增大字幕字体"
 
 #: resources/ui/mpv_shortcuts_window.ui:174
-#, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Decrease Subtitle Font Size"
-msgstr "字幕文本大小"
+msgstr "减小字幕字体"
 
 #: resources/ui/mpv_shortcuts_window.ui:182
 msgid "Tracks"
-msgstr ""
+msgstr "音视频轨"
 
 #: resources/ui/mpv_shortcuts_window.ui:185
 msgid "Cycle Audio Tracks"
-msgstr ""
+msgstr "切换音频轨"
 
 #: resources/ui/mpv_shortcuts_window.ui:191
 msgid "Cycle Video Tracks"
-msgstr ""
+msgstr "切换视频轨"
 
 #: resources/ui/mpv_shortcuts_window.ui:199
 msgid "Chapters and Playlist"
-msgstr ""
+msgstr "章节与播放列表"
 
 #: resources/ui/mpv_shortcuts_window.ui:202
-#, fuzzy
-#| msgid "Previous chapter"
 msgid "Previous Chapter"
 msgstr "上一章"
 
 #: resources/ui/mpv_shortcuts_window.ui:208
-#, fuzzy
-#| msgid "Next chapter"
 msgid "Next Chapter"
 msgstr "下一章"
 
 #: resources/ui/mpv_shortcuts_window.ui:214
-#, fuzzy
-#| msgid "Previous chapter"
 msgid "Previous Playlist Entry"
-msgstr "上一章"
+msgstr "上一播放列表项"
 
 #: resources/ui/mpv_shortcuts_window.ui:220
 msgid "Next Playlist Entry"
-msgstr ""
+msgstr "下一播放列表项"
 
 #: resources/ui/mpv_shortcuts_window.ui:231
-#, fuzzy
-#| msgid "Fullscreen"
 msgid "Toggle Fullscreen"
-msgstr "全屏"
+msgstr "切换全屏"
 
 #: resources/ui/mpv_shortcuts_window.ui:237
 msgid "Set / Clear A-B Loop Points"
-msgstr ""
+msgstr "设置 / 清除 A-B 循环点"
 
 #: resources/ui/mpv_shortcuts_window.ui:243
 msgid "Toggle Infinite Loop"
-msgstr ""
+msgstr "切换循环播放"
 
 #: resources/ui/mpv_shortcuts_window.ui:249
-#, fuzzy
-#| msgid "DisplayTitle"
 msgid "Display Statistics"
-msgstr "显示标题"
+msgstr "显示统计信息"
 
 #: resources/ui/mpv_shortcuts_window.ui:255
 msgid "Quit"
-msgstr ""
+msgstr "退出"
 
 #: resources/ui/mpv_shortcuts_window.ui:261
 msgid "Quit and Save Position"
-msgstr ""
+msgstr "退出并保存位置"
 
 #: resources/ui/mpvpage.ui:101
 msgid "Stop and quit"
@@ -1643,7 +1593,7 @@ msgstr "停止并退出"
 
 #: resources/ui/mpvpage.ui:158
 msgid "Shortcuts"
-msgstr ""
+msgstr "快捷键"
 
 #: resources/ui/mpvpage.ui:186
 msgid "Media info (MPV)"
@@ -1654,10 +1604,8 @@ msgid "1.00x"
 msgstr ""
 
 #: resources/ui/mpvpage.ui:377
-#, fuzzy
-#| msgid "Default Volume"
 msgid "Adjust Volume"
-msgstr "默认音量"
+msgstr "调整音量"
 
 #: resources/ui/other.ui:94
 msgid "No Inscriptions"
