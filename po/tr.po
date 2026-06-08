@@ -7,8 +7,8 @@ msgstr ""
 "PO-Revision-Date: 2026-06-06 11:18+0000\n"
 "Last-Translator: Hosted Weblate user 135666 "
 "<xmtaha@users.noreply.hosted.weblate.org>\n"
-"Language-Team: Turkish <https://hosted.weblate.org/projects/tsukimi/main/tr/>"
-"\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/tsukimi/main/tr/"
+">\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,23 +24,23 @@ msgstr "Zaman Aşımı Hatası, İnternet bağlantınızı kontrol edin"
 msgid "Connection Error, Check your internet connection"
 msgstr "Bağlantı Hatası, İnternet bağlantınızı kontrol edin"
 
-#: src/ui/mpv/control_sidebar.rs:452
+#: src/ui/mpv/control_sidebar.rs:468
 msgid "Video filter settings cleared."
 msgstr "Video filtresi ayarları temizlendi."
 
-#: src/ui/mpv/control_sidebar.rs:475
+#: src/ui/mpv/control_sidebar.rs:491
 msgid "Subtitle settings cleared."
 msgstr "Altyazı ayarları temizlendi."
 
-#: src/ui/mpv/control_sidebar.rs:488
+#: src/ui/mpv/control_sidebar.rs:504
 msgid "Subtitle color settings cleared."
 msgstr "Altyazı renk ayarları temizlendi."
 
-#: src/ui/mpv/control_sidebar.rs:497
+#: src/ui/mpv/control_sidebar.rs:513
 msgid "Subtitle offset settings cleared."
 msgstr "Altyazı gecikme (offset) ayarları temizlendi."
 
-#: src/ui/mpv/control_sidebar.rs:539
+#: src/ui/mpv/control_sidebar.rs:555
 msgid "Deband settings cleared."
 msgstr "Bantlanma giderme (deband) ayarları temizlendi."
 
@@ -52,30 +52,30 @@ msgstr "GLArea oluşturulamadı"
 msgid "Failed to get GLContext"
 msgstr "GLContext alınamadı"
 
-#: src/ui/mpv/page.rs:385 src/ui/mpv/page.rs:387 src/ui/widgets/item.rs:707
+#: src/ui/mpv/page.rs:407 src/ui/mpv/page.rs:409 src/ui/widgets/item.rs:707
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:76
 #: resources/ui/player_toolbar.ui:90
 msgid "Play"
 msgstr "Oynat"
 
-#: src/ui/mpv/page.rs:390 src/ui/mpv/page.rs:392 resources/ui/mpvpage.ui:236
+#: src/ui/mpv/page.rs:412 src/ui/mpv/page.rs:414 resources/ui/mpvpage.ui:272
 msgid "Pause"
 msgstr "Duraklat"
 
-#: src/ui/mpv/page.rs:748
+#: src/ui/mpv/page.rs:770
 msgid "Skip Intro"
 msgstr "İntroyu Atla"
 
-#: src/ui/mpv/page.rs:749
+#: src/ui/mpv/page.rs:771
 msgid "Skip Outro"
 msgstr "Kapanışı Atla"
 
-#: src/ui/mpv/page.rs:897
+#: src/ui/mpv/page.rs:925
 msgid "No more video found"
 msgstr "Başka video bulunamadı"
 
-#: src/ui/mpv/page.rs:998
+#: src/ui/mpv/page.rs:1026
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -109,39 +109,39 @@ msgstr "Sunucu başarıyla düzenlendi"
 msgid "Server added successfully"
 msgstr "Sunucu başarıyla eklendi"
 
-#: src/ui/widgets/account_settings.rs:229
+#: src/ui/widgets/account_settings.rs:230
 msgid "Password cannot be empty!"
 msgstr "Parola boş olamaz!"
 
-#: src/ui/widgets/account_settings.rs:233
+#: src/ui/widgets/account_settings.rs:234
 msgid "Passwords do not match!"
 msgstr "Parolalar eşleşmiyor!"
 
-#: src/ui/widgets/account_settings.rs:240
+#: src/ui/widgets/account_settings.rs:241
 msgid "Password changed successfully! Please login again."
 msgstr "Parola başarıyla değiştirildi! Lütfen tekrar giriş yapın."
 
-#: src/ui/widgets/account_settings.rs:244
+#: src/ui/widgets/account_settings.rs:245
 msgid "Failed to change password"
 msgstr "Parola değiştirilemedi"
 
-#: src/ui/widgets/account_settings.rs:280
+#: src/ui/widgets/account_settings.rs:281
 msgid "Cache Cleared"
 msgstr "Önbellek Temizlendi"
 
-#: src/ui/widgets/account_settings.rs:301
+#: src/ui/widgets/account_settings.rs:302
 msgid "No file selected"
 msgstr "Dosya seçilmedi"
 
-#: src/ui/widgets/account_settings.rs:536
-#: src/ui/widgets/account_settings.rs:545
-#: src/ui/widgets/account_settings.rs:579
-#: src/ui/widgets/account_settings.rs:588
+#: src/ui/widgets/account_settings.rs:537
+#: src/ui/widgets/account_settings.rs:546
+#: src/ui/widgets/account_settings.rs:580
+#: src/ui/widgets/account_settings.rs:589
 msgid "Descriptor cannot be empty!"
 msgstr "Tanımlayıcı boş olamaz!"
 
-#: src/ui/widgets/account_settings.rs:550
-#: src/ui/widgets/account_settings.rs:593
+#: src/ui/widgets/account_settings.rs:551
+#: src/ui/widgets/account_settings.rs:594
 msgid "Invalid regex"
 msgstr "Geçersiz düzenli ifade (regex)"
 
@@ -328,7 +328,7 @@ msgstr "Etiketler"
 msgid "Genres"
 msgstr "Türler"
 
-#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:319
+#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:316
 #: resources/ui/window.ui:256
 msgid "Liked"
 msgstr "Beğenilenler"
@@ -462,30 +462,30 @@ msgstr "Tüm üst verileri (metadata) sıfırlamak istediğinize emin misiniz?"
 msgid "Waiting for mediasource ..."
 msgstr "Medya kaynağı bekleniyor..."
 
-#: src/ui/widgets/window.rs:307 resources/ui/window.ui:250
+#: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
 msgid "Home"
 msgstr "Ana Sayfa"
 
-#: src/ui/widgets/window.rs:331 resources/ui/identify_dialog.ui:94
+#: src/ui/widgets/window.rs:328 resources/ui/identify_dialog.ui:94
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
 #: resources/ui/window.ui:21 resources/ui/window.ui:262
 msgid "Search"
 msgstr "Ara"
 
-#: src/ui/widgets/window.rs:816
+#: src/ui/widgets/window.rs:813
 msgid "Server Panel"
 msgstr "Sunucu Paneli"
 
-#: src/ui/widgets/window.rs:979
+#: src/ui/widgets/window.rs:989
 msgid "Fatal Error"
 msgstr "Kritik Hata"
 
-#: src/ui/widgets/window.rs:982
+#: src/ui/widgets/window.rs:992
 msgid "Copy Error & Close"
 msgstr "Hatayı Kopyala ve Kapat"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1011
+#: src/ui/widgets/window.rs:1021
 msgid "translator-credits"
 msgstr "Çevirmen Katkıları"
 
@@ -526,7 +526,7 @@ msgstr "Ekle"
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: resources/ui/account_settings.ui:12 resources/ui/mpv_shortcuts_window.ui:11
+#: resources/ui/account_settings.ui:12 resources/ui/mpv_shortcuts_window.ui:228
 msgid "General"
 msgstr "Genel"
 
@@ -603,7 +603,7 @@ msgstr "İş Parçacıkları (Threads)"
 msgid "Excessive thread counts may exhaust the system's connection pool"
 msgstr "Aşırı iş parçacığı sayısı sistem bağlantı havuzunu tüketebilir"
 
-#: resources/ui/account_settings.ui:146 resources/ui/mpv_control_sidebar.ui:378
+#: resources/ui/account_settings.ui:146 resources/ui/mpv_control_sidebar.ui:399
 msgid "Background"
 msgstr "Arka Plan"
 
@@ -619,7 +619,7 @@ msgstr "Bulanıklık"
 msgid "Blur Radius"
 msgstr "Bulanıklık Yarıçapı"
 
-#: resources/ui/account_settings.ui:213 resources/ui/mpv_control_sidebar.ui:63
+#: resources/ui/account_settings.ui:213 resources/ui/mpv_control_sidebar.ui:84
 msgid "Cache"
 msgstr "Önbellek"
 
@@ -947,7 +947,8 @@ msgstr "Kullanılamıyor"
 
 #: resources/ui/images_dialog.ui:60 resources/ui/metadata_dialog.ui:71
 msgid "This page is READ-ONLY, because you have no permission to modify it."
-msgstr "Değişiklik yapma izniniz olmadığı için bu sayfa SALT OKUNUR durumdadır."
+msgstr ""
+"Değişiklik yapma izniniz olmadığı için bu sayfa SALT OKUNUR durumdadır."
 
 #: resources/ui/images_dialog.ui:157
 msgid "BackDrops"
@@ -1029,13 +1030,13 @@ msgid "Media Menu"
 msgstr "Medya Menüsü"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/mpvpage.ui:287 resources/ui/mpvpage.ui:290
+#: resources/ui/mpvpage.ui:402 resources/ui/mpvpage.ui:405
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
 msgstr "Tam Ekran"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:304 resources/ui/mpvpage.ui:306
+#: resources/ui/mpvpage.ui:419 resources/ui/mpvpage.ui:421
 msgid "Exit Fullscreen"
 msgstr "Tam Ekrandan Çık"
 
@@ -1104,69 +1105,72 @@ msgid "Seek Action"
 msgstr "Atlama Eylemi"
 
 #: resources/ui/mpv_control_sidebar.ui:21
+msgid "Playback speed"
+msgstr "Oynatma hızı"
+
+#: resources/ui/mpv_control_sidebar.ui:42
 msgid "Seek Backward"
 msgstr "Geriye Atla"
 
-#: resources/ui/mpv_control_sidebar.ui:22
-#: resources/ui/mpv_control_sidebar.ui:42
-#: resources/ui/mpv_control_sidebar.ui:94
+#: resources/ui/mpv_control_sidebar.ui:43
+#: resources/ui/mpv_control_sidebar.ui:63
+#: resources/ui/mpv_control_sidebar.ui:115
 msgid "Unit: Seconds"
 msgstr "Birim: Saniye"
 
-#: resources/ui/mpv_control_sidebar.ui:41
+#: resources/ui/mpv_control_sidebar.ui:62
 msgid "Seek Forward"
 msgstr "İleriye Atla"
 
-#: resources/ui/mpv_control_sidebar.ui:72
+#: resources/ui/mpv_control_sidebar.ui:93
 msgid "Show Buffer Speed"
 msgstr "Arabellek Hızını Göster"
 
-#: resources/ui/mpv_control_sidebar.ui:77
+#: resources/ui/mpv_control_sidebar.ui:98
 msgid "Cache Size"
 msgstr "Önbellek Boyutu"
 
-#: resources/ui/mpv_control_sidebar.ui:78
+#: resources/ui/mpv_control_sidebar.ui:99
 msgid "Unit: MB"
 msgstr "Birim: MB"
 
-#: resources/ui/mpv_control_sidebar.ui:93
+#: resources/ui/mpv_control_sidebar.ui:114
 msgid "Cache Time"
 msgstr "Önbellek Süresi"
 
-#: resources/ui/mpv_control_sidebar.ui:111 resources/ui/mpvpage.ui:453
-#: resources/ui/mpvpage.ui:472
+#: resources/ui/mpv_control_sidebar.ui:132 resources/ui/mpvpage.ui:365
 msgid "Subtitle"
 msgstr "Altyazı"
 
-#: resources/ui/mpv_control_sidebar.ui:114
+#: resources/ui/mpv_control_sidebar.ui:135
 msgid "Subtitle Composing"
 msgstr "Altyazı Oluşturma (Composing)"
 
-#: resources/ui/mpv_control_sidebar.ui:186
+#: resources/ui/mpv_control_sidebar.ui:207
 msgid "Position"
 msgstr "Konum"
 
-#: resources/ui/mpv_control_sidebar.ui:206
+#: resources/ui/mpv_control_sidebar.ui:227
 msgid "Subtitle Text Size"
 msgstr "Altyazı Metin Boyutu"
 
-#: resources/ui/mpv_control_sidebar.ui:207
+#: resources/ui/mpv_control_sidebar.ui:228
 msgid "This option only takes effect for srt subtitles"
 msgstr "Bu seçenek yalnızca srt altyazıları için geçerlidir"
 
-#: resources/ui/mpv_control_sidebar.ui:227
+#: resources/ui/mpv_control_sidebar.ui:248
 msgid "Subtitle Text Scale"
 msgstr "Altyazı Metin Ölçeği"
 
-#: resources/ui/mpv_control_sidebar.ui:228
+#: resources/ui/mpv_control_sidebar.ui:249
 msgid "This affects ASS subtitles as well"
 msgstr "Bu, ASS altyazılarını da etkiler"
 
-#: resources/ui/mpv_control_sidebar.ui:249
+#: resources/ui/mpv_control_sidebar.ui:270
 msgid "Subtitle Text Font"
 msgstr "Altyazı Metin Tipi"
 
-#: resources/ui/mpv_control_sidebar.ui:251
+#: resources/ui/mpv_control_sidebar.ui:272
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
@@ -1174,190 +1178,190 @@ msgstr ""
 "Belirli bir yazı tipi belirtmeyen altyazılar için kullanılacak yazı tipini "
 "belirleyin"
 
-#: resources/ui/mpv_control_sidebar.ui:276
+#: resources/ui/mpv_control_sidebar.ui:297
 msgid "Border Style"
 msgstr "Kenarlık Stili"
 
-#: resources/ui/mpv_control_sidebar.ui:281
+#: resources/ui/mpv_control_sidebar.ui:302
 msgid "Outline and shadow"
 msgstr "Dış çizgi ve gölge"
 
-#: resources/ui/mpv_control_sidebar.ui:282
+#: resources/ui/mpv_control_sidebar.ui:303
 msgid "Opaque box"
 msgstr "Opak kutu"
 
-#: resources/ui/mpv_control_sidebar.ui:283
+#: resources/ui/mpv_control_sidebar.ui:304
 msgid "Background box"
 msgstr "Arka plan kutusu"
 
-#: resources/ui/mpv_control_sidebar.ui:291
+#: resources/ui/mpv_control_sidebar.ui:312
 msgid "Border Size"
 msgstr "Kenarlık Boyutu"
 
-#: resources/ui/mpv_control_sidebar.ui:306
+#: resources/ui/mpv_control_sidebar.ui:327
 msgid "Shadow Offset"
 msgstr "Gölge Uzaklığı"
 
-#: resources/ui/mpv_control_sidebar.ui:322
+#: resources/ui/mpv_control_sidebar.ui:343
 msgid "Stretch Image Subtitles to Screen"
 msgstr "Görsel Altyazıları Ekrana Sığdır"
 
-#: resources/ui/mpv_control_sidebar.ui:329
+#: resources/ui/mpv_control_sidebar.ui:350
 msgid "Subtitle Color"
 msgstr "Altyazı Rengi"
 
-#: resources/ui/mpv_control_sidebar.ui:342
+#: resources/ui/mpv_control_sidebar.ui:363
 msgid "Text"
 msgstr "Metin"
 
-#: resources/ui/mpv_control_sidebar.ui:360
+#: resources/ui/mpv_control_sidebar.ui:381
 msgid "Border"
 msgstr "Kenarlık"
 
-#: resources/ui/mpv_control_sidebar.ui:398
+#: resources/ui/mpv_control_sidebar.ui:419
 msgid "Subtitle Offset"
 msgstr "Altyazı Gecikmesi"
 
-#: resources/ui/mpv_control_sidebar.ui:411
+#: resources/ui/mpv_control_sidebar.ui:432
 msgid "Offset"
 msgstr "Gecikme (Offset)"
 
-#: resources/ui/mpv_control_sidebar.ui:412
-#: resources/ui/mpv_control_sidebar.ui:461
+#: resources/ui/mpv_control_sidebar.ui:433
+#: resources/ui/mpv_control_sidebar.ui:482
 msgid "Unit: ms"
 msgstr "Birim: ms"
 
-#: resources/ui/mpv_control_sidebar.ui:427
+#: resources/ui/mpv_control_sidebar.ui:448
 msgid "Speed"
 msgstr "Hız"
 
-#: resources/ui/mpv_control_sidebar.ui:447 resources/ui/mpvpage.ui:445
-#: resources/ui/mpvpage.ui:505 resources/ui/search.ui:78
+#: resources/ui/mpv_control_sidebar.ui:468 resources/ui/mpvpage.ui:353
+#: resources/ui/search.ui:78
 msgid "Audio"
 msgstr "Ses"
 
-#: resources/ui/mpv_control_sidebar.ui:460
+#: resources/ui/mpv_control_sidebar.ui:481
 msgid "Audio Offset"
 msgstr "Ses Gecikmesi"
 
-#: resources/ui/mpv_control_sidebar.ui:476
+#: resources/ui/mpv_control_sidebar.ui:497
 msgid "Audio Channel"
 msgstr "Ses Kanalı"
 
-#: resources/ui/mpv_control_sidebar.ui:481
+#: resources/ui/mpv_control_sidebar.ui:502
 msgid "Auto"
 msgstr "Otomatik"
 
-#: resources/ui/mpv_control_sidebar.ui:482
+#: resources/ui/mpv_control_sidebar.ui:503
 msgid "Auto (Safety)"
 msgstr "Otomatik (Güvenli)"
 
-#: resources/ui/mpv_control_sidebar.ui:483
+#: resources/ui/mpv_control_sidebar.ui:504
 msgid "Mono"
 msgstr "Mono"
 
-#: resources/ui/mpv_control_sidebar.ui:484
+#: resources/ui/mpv_control_sidebar.ui:505
 msgid "Dual Channel"
 msgstr "Çift Kanal"
 
-#: resources/ui/mpv_control_sidebar.ui:485
+#: resources/ui/mpv_control_sidebar.ui:506
 msgid "Dual Channel (Invert)"
 msgstr "Çift Kanal (Ters)"
 
-#: resources/ui/mpv_control_sidebar.ui:495 resources/ui/other.ui:134
+#: resources/ui/mpv_control_sidebar.ui:516 resources/ui/other.ui:134
 #: resources/ui/search.ui:84
 msgid "Video"
 msgstr "Video"
 
-#: resources/ui/mpv_control_sidebar.ui:498
+#: resources/ui/mpv_control_sidebar.ui:519
 msgid "Video Aspect"
 msgstr "Video En Boy Oranı"
 
-#: resources/ui/mpv_control_sidebar.ui:503
+#: resources/ui/mpv_control_sidebar.ui:524
 msgid "Fit"
 msgstr "Sığdır"
 
-#: resources/ui/mpv_control_sidebar.ui:504
+#: resources/ui/mpv_control_sidebar.ui:525
 msgid "Crop"
 msgstr "Kırp"
 
-#: resources/ui/mpv_control_sidebar.ui:512
+#: resources/ui/mpv_control_sidebar.ui:533
 msgid "Video color grading"
 msgstr "Video renk derecelendirme"
 
-#: resources/ui/mpv_control_sidebar.ui:525
+#: resources/ui/mpv_control_sidebar.ui:546
 msgid "Brightness"
 msgstr "Parlaklık"
 
-#: resources/ui/mpv_control_sidebar.ui:540
+#: resources/ui/mpv_control_sidebar.ui:561
 msgid "Contrast"
 msgstr "Kontrast"
 
-#: resources/ui/mpv_control_sidebar.ui:555
+#: resources/ui/mpv_control_sidebar.ui:576
 msgid "Saturation"
 msgstr "Doygunluk"
 
-#: resources/ui/mpv_control_sidebar.ui:570
+#: resources/ui/mpv_control_sidebar.ui:591
 msgid "Hue"
 msgstr "Ton"
 
-#: resources/ui/mpv_control_sidebar.ui:585
+#: resources/ui/mpv_control_sidebar.ui:606
 msgid "Gamma"
 msgstr "Gama"
 
-#: resources/ui/mpv_control_sidebar.ui:602
+#: resources/ui/mpv_control_sidebar.ui:623
 msgid "Video Deband"
 msgstr "Video Deband (Bantlanma Giderme)"
 
-#: resources/ui/mpv_control_sidebar.ui:625
+#: resources/ui/mpv_control_sidebar.ui:646
 msgid "Deband Iterations"
 msgstr "Deband Yinelemeleri"
 
-#: resources/ui/mpv_control_sidebar.ui:640
+#: resources/ui/mpv_control_sidebar.ui:661
 msgid "Deband Threshold"
 msgstr "Deband Eşiği"
 
-#: resources/ui/mpv_control_sidebar.ui:655
+#: resources/ui/mpv_control_sidebar.ui:676
 msgid "Deband Range"
 msgstr "Deband Aralığı"
 
-#: resources/ui/mpv_control_sidebar.ui:670
+#: resources/ui/mpv_control_sidebar.ui:691
 msgid "Deband Grain"
 msgstr "Deband Greni"
 
-#: resources/ui/mpv_control_sidebar.ui:688
+#: resources/ui/mpv_control_sidebar.ui:709
 msgid "Video Deinterlace"
 msgstr "Titreşim Giderme (Deinterlace)"
 
-#: resources/ui/mpv_control_sidebar.ui:693
+#: resources/ui/mpv_control_sidebar.ui:714
 msgid "Video Upscale"
 msgstr "Video Yükseltme (Upscale)"
 
-#: resources/ui/mpv_control_sidebar.ui:716
+#: resources/ui/mpv_control_sidebar.ui:737
 msgid "Action after video ends"
 msgstr "Video bittikten sonraki eylem"
 
-#: resources/ui/mpv_control_sidebar.ui:719
+#: resources/ui/mpv_control_sidebar.ui:740
 msgid "Play Next"
 msgstr "Sıradakini Oynat"
 
-#: resources/ui/mpv_control_sidebar.ui:732
+#: resources/ui/mpv_control_sidebar.ui:753
 msgid "Loop Playback"
 msgstr "Oynatmayı Döngüye Al"
 
-#: resources/ui/mpv_control_sidebar.ui:746
+#: resources/ui/mpv_control_sidebar.ui:767
 msgid "Stop"
 msgstr "Durdur"
 
-#: resources/ui/mpv_control_sidebar.ui:762
+#: resources/ui/mpv_control_sidebar.ui:783
 msgid "Hardware decoding"
 msgstr "Donanımsal kod çözme"
 
-#: resources/ui/mpv_control_sidebar.ui:766
+#: resources/ui/mpv_control_sidebar.ui:787
 msgid "no (default)"
 msgstr "hayır (varsayılan)"
 
-#: resources/ui/mpv_control_sidebar.ui:810
+#: resources/ui/mpv_control_sidebar.ui:831
 msgid "Not all settings will be saved"
 msgstr "Tüm ayarlar kaydedilmeyecek"
 
@@ -1377,12 +1381,12 @@ msgstr "Sonraki bölüm"
 msgid "Previous chapter"
 msgstr "Önceki bölüm"
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:155
+#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:172
 #: resources/ui/window.ui:394 resources/ui/window.ui:416
 msgid "Playlist"
 msgstr "Oynatma Listesi"
 
-#: resources/ui/mpv_menu.ui:40
+#: resources/ui/mpv_menu.ui:40 resources/ui/mpvpage.ui:389
 msgid "Advanced settings"
 msgstr "Gelişmiş ayarlar"
 
@@ -1395,45 +1399,256 @@ msgstr "Medya bilgisi"
 msgid "_Keyboard shortcuts"
 msgstr "_Klavye kısayolları"
 
-#: resources/ui/mpv_menu_actions.ui:12
+#: resources/ui/mpv_menu_actions.ui:12 resources/ui/mpvpage.ui:248
 msgid "Backward"
 msgstr "Geri"
 
-#: resources/ui/mpv_menu_actions.ui:42
+#: resources/ui/mpv_menu_actions.ui:42 resources/ui/mpvpage.ui:291
 msgid "Forward"
 msgstr "İleri"
 
+#: resources/ui/mpv_shortcuts_window.ui:6
+#, fuzzy
+#| msgid "Loop Playback"
+msgid "Playback"
+msgstr "Oynatmayı Döngüye Al"
+
+#: resources/ui/mpv_shortcuts_window.ui:9
+#, fuzzy
+#| msgid "Resume"
+msgid "Pause / Resume"
+msgstr "Devam Et"
+
 #: resources/ui/mpv_shortcuts_window.ui:15
-msgid "Decrease/increase playback speed by 10%"
-msgstr "Oynatma hızını %10 azalt/artır"
+#, fuzzy
+#| msgid "Seek Forward"
+msgid "Seek Forward 5 Seconds"
+msgstr "İleriye Atla"
 
 #: resources/ui/mpv_shortcuts_window.ui:21
-msgid "Halve/double current playback speed"
-msgstr "Mevcut oynatma hızını yarıya indir/iki katına çıkar"
+#, fuzzy
+#| msgid "Seek Backward"
+msgid "Seek Backward 5 Seconds"
+msgstr "Geriye Atla"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
-msgid "Reset playback speed to normal"
-msgstr "Oynatma hızını normale sıfırla"
+#, fuzzy
+#| msgid "Seek Forward"
+msgid "Seek Forward 60 Seconds"
+msgstr "İleriye Atla"
+
+#: resources/ui/mpv_shortcuts_window.ui:33
+#, fuzzy
+#| msgid "Seek Backward"
+msgid "Seek Backward 60 Seconds"
+msgstr "Geriye Atla"
+
+#: resources/ui/mpv_shortcuts_window.ui:39
+msgid "Seek Forward 1 Second (Exact)"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:45
+#, fuzzy
+#| msgid "Seek Backward"
+msgid "Seek Backward 1 Second (Exact)"
+msgstr "Geriye Atla"
+
+#: resources/ui/mpv_shortcuts_window.ui:51
+#, fuzzy
+#| msgid "Seek Forward"
+msgid "Step One Frame Forward"
+msgstr "İleriye Atla"
+
+#: resources/ui/mpv_shortcuts_window.ui:57
+#, fuzzy
+#| msgid "Seek Backward"
+msgid "Step One Frame Backward"
+msgstr "Geriye Atla"
+
+#: resources/ui/mpv_shortcuts_window.ui:65
+#, fuzzy
+#| msgid "Playback speed"
+msgid "Playback Speed"
+msgstr "Oynatma hızı"
+
+#: resources/ui/mpv_shortcuts_window.ui:68
+#, fuzzy
+#| msgid "Decrease/increase playback speed by 10%"
+msgid "Decrease Speed by 10%"
+msgstr "Oynatma hızını %10 azalt/artır"
+
+#: resources/ui/mpv_shortcuts_window.ui:74
+#, fuzzy
+#| msgid "Decrease/increase playback speed by 10%"
+msgid "Increase Speed by 10%"
+msgstr "Oynatma hızını %10 azalt/artır"
+
+#: resources/ui/mpv_shortcuts_window.ui:80
+#, fuzzy
+#| msgid "Playback speed"
+msgid "Halve Playback Speed"
+msgstr "Oynatma hızı"
+
+#: resources/ui/mpv_shortcuts_window.ui:86
+#, fuzzy
+#| msgid "Playback speed"
+msgid "Double Playback Speed"
+msgstr "Oynatma hızı"
+
+#: resources/ui/mpv_shortcuts_window.ui:92
+#, fuzzy
+#| msgid "Playback speed"
+msgid "Reset Playback Speed"
+msgstr "Oynatma hızı"
+
+#: resources/ui/mpv_shortcuts_window.ui:100
+msgid "Volume"
+msgstr "Ses Seviyesi"
+
+#: resources/ui/mpv_shortcuts_window.ui:103
+msgid "Increase Volume"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:109
+msgid "Decrease Volume"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:115
+msgid "Mute / Unmute"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:121
+msgid "Increase Volume (Numpad)"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:127
+msgid "Decrease Volume (Numpad)"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:135
+#, fuzzy
+#| msgid "Subtitle"
+msgid "Subtitles"
+msgstr "Altyazı"
+
+#: resources/ui/mpv_shortcuts_window.ui:138
+msgid "Cycle Subtitle Tracks Forward"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:144
+msgid "Cycle Subtitle Tracks Backward"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:150
+msgid "Toggle Subtitle Visibility"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:156
+msgid "Decrease Subtitle Delay"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:162
+msgid "Increase Subtitle Delay"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:168
+#, fuzzy
+#| msgid "Subtitle Text Size"
+msgid "Increase Subtitle Font Size"
+msgstr "Altyazı Metin Boyutu"
+
+#: resources/ui/mpv_shortcuts_window.ui:174
+#, fuzzy
+#| msgid "Subtitle Text Size"
+msgid "Decrease Subtitle Font Size"
+msgstr "Altyazı Metin Boyutu"
+
+#: resources/ui/mpv_shortcuts_window.ui:182
+msgid "Tracks"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:185
+msgid "Cycle Audio Tracks"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:191
+msgid "Cycle Video Tracks"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:199
+msgid "Chapters and Playlist"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:202
+#, fuzzy
+#| msgid "Previous chapter"
+msgid "Previous Chapter"
+msgstr "Önceki bölüm"
+
+#: resources/ui/mpv_shortcuts_window.ui:208
+#, fuzzy
+#| msgid "Next chapter"
+msgid "Next Chapter"
+msgstr "Sonraki bölüm"
+
+#: resources/ui/mpv_shortcuts_window.ui:214
+#, fuzzy
+#| msgid "Previous chapter"
+msgid "Previous Playlist Entry"
+msgstr "Önceki bölüm"
+
+#: resources/ui/mpv_shortcuts_window.ui:220
+msgid "Next Playlist Entry"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:231
+#, fuzzy
+#| msgid "Fullscreen"
+msgid "Toggle Fullscreen"
+msgstr "Tam Ekran"
+
+#: resources/ui/mpv_shortcuts_window.ui:237
+msgid "Set / Clear A-B Loop Points"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:243
+msgid "Toggle Infinite Loop"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:249
+#, fuzzy
+#| msgid "DisplayTitle"
+msgid "Display Statistics"
+msgstr "Görüntüleme Başlığı"
+
+#: resources/ui/mpv_shortcuts_window.ui:255
+msgid "Quit"
+msgstr ""
+
+#: resources/ui/mpv_shortcuts_window.ui:261
+msgid "Quit and Save Position"
+msgstr ""
 
 #: resources/ui/mpvpage.ui:101
 msgid "Stop and quit"
 msgstr "Durdur ve çık"
 
-#: resources/ui/mpvpage.ui:169
+#: resources/ui/mpvpage.ui:158
+msgid "Shortcuts"
+msgstr ""
+
+#: resources/ui/mpvpage.ui:186
 msgid "Media info (MPV)"
 msgstr "Medya bilgisi (MPV)"
 
-#: resources/ui/mpvpage.ui:401 resources/ui/window.ui:25
-#: resources/ui/window.ui:54
-msgid "Preferences"
-msgstr "Tercihler"
+#: resources/ui/mpvpage.ui:335
+msgid "1.00x"
+msgstr ""
 
-#: resources/ui/mpvpage.ui:418
-msgid "Playback speed"
-msgstr "Oynatma hızı"
-
-#: resources/ui/mpvpage.ui:432
-msgid "Volume"
+#: resources/ui/mpvpage.ui:377
+#, fuzzy
+#| msgid "Volume"
+msgid "Adjust Volume"
 msgstr "Ses Seviyesi"
 
 #: resources/ui/other.ui:94
@@ -1628,6 +1843,10 @@ msgstr "Koyu tema"
 msgid "Sign out"
 msgstr "Oturumu kapat"
 
+#: resources/ui/window.ui:25 resources/ui/window.ui:54
+msgid "Preferences"
+msgstr "Tercihler"
+
 #: resources/ui/window.ui:31 resources/ui/window.ui:60
 msgid "About"
 msgstr "Hakkında"
@@ -1655,3 +1874,9 @@ msgstr "İçerikler"
 #: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "Sunucular"
+
+#~ msgid "Halve/double current playback speed"
+#~ msgstr "Mevcut oynatma hızını yarıya indir/iki katına çıkar"
+
+#~ msgid "Reset playback speed to normal"
+#~ msgstr "Oynatma hızını normale sıfırla"
