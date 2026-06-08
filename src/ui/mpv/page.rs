@@ -202,9 +202,9 @@ mod imp {
         #[template_child]
         pub network_speed_label_2: TemplateChild<gtk::Label>,
         #[template_child]
-        pub playback_speed_indicator: TemplateChild<gtk::Box>,
+        pub playback_speed_indicator: TemplateChild<gtk::Button>,
         #[template_child]
-        pub playback_speed_label: TemplateChild<gtk::Label>,
+        pub playback_speed_button_content: TemplateChild<adw::ButtonContent>,
         #[template_child]
         pub audio_tracks_menu_button: TemplateChild<gtk::MenuButton>,
         #[template_child]
@@ -243,10 +243,7 @@ mod imp {
         pub volume_adj: TemplateChild<gtk::Adjustment>,
 
         #[template_child]
-        pub volume_button: TemplateChild<gtk::Button>,
-
-        #[template_child]
-        pub volume_button_image: TemplateChild<gtk::Image>,
+        pub volume_button: TemplateChild<gtk::MenuButton>,
 
         #[template_child]
         pub volume_bar: TemplateChild<VolumeBar>,
@@ -1045,7 +1042,7 @@ impl MPVPage {
     fn speed_cb(&self, value: f64) {
         let imp = self.imp();
         imp.playback_speed_adj.set_value(value);
-        imp.playback_speed_label.set_text(&format!("{value:.2}x"));
+        imp.playback_speed_button_content.set_label(&format!("{value:.2}x"));
         imp.playback_speed_indicator
             .set_visible((value * 100.0).round() as i64 != 100);
         if let Some(window) = self.root().and_downcast_ref::<Window>() {
@@ -1096,6 +1093,12 @@ impl MPVPage {
         }
     }
 
+    #[template_callback]
+    fn playback_speed_indicator_cb(&self, _: &gtk::Button) {
+        let imp = self.imp();
+        imp.video.set_speed(1.0);
+    }
+
     fn update_volume_button(&self, value: i64) {
         let imp = self.imp();
         let icon_name = match value {
@@ -1104,7 +1107,7 @@ impl MPVPage {
             value if value < 66 => "audio-volume-medium-symbolic",
             _ => "audio-volume-high-symbolic",
         };
-        imp.volume_button_image.set_icon_name(Some(icon_name));
+        imp.volume_button.set_icon_name(icon_name);
         imp.volume_button
             .set_tooltip_text(Some(&gettext(if value == 0 { "Unmute" } else { "Mute" })));
     }

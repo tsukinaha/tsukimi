@@ -269,42 +269,20 @@
                             <property name="spacing">6</property>
                             <property name="valign">center</property>
                             <child>
-                              <object class="GtkBox" id="playback_speed_indicator">
-                                <property name="orientation">horizontal</property>
-                                <property name="valign">center</property>
-                                <property name="margin-end">6</property>
-                                <property name="visible">false</property>
-                                <child>
-                                  <object class="GtkLabel" id="playback_speed_label">
-                                    <property name="label">1.00x</property>
-                                    <attributes>
-                                      <attribute name="font-features" value="tnum=1" />
-                                    </attributes>
+                              <object class="GtkButton" id="playback_speed_indicator">
+                              <property name="valign">center</property>
+                              <property name="margin-end">6</property>
+                              <property name="visible">false</property>
+                                <signal name="clicked" handler="playback_speed_indicator_cb" swapped="yes"/>
+                                <property name="child">
+                                  <object class="AdwButtonContent" id="playback_speed_button_content">
+                                    <property name="icon-name">playback-options-symbolic</property>
+                                    <property name="label" translatable="yes">1.00x</property>
                                   </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkMenuButton" id="audio_tracks_menu_button">
-                                <property name="popover">audio_tracks_popover</property>
-                                <property name="icon-name">audio-x-generic-symbolic</property>
-                                <property name="tooltip-text" translatable="yes">Audio</property>
-                                <property name="valign">center</property>
+                                </property>
                                 <style>
-                                  <class name="flat" />
-                                  <class name="circular" />
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkMenuButton" id="subtitle_tracks_menu_button">
-                                <property name="popover">subtitle_tracks_popover</property>
-                                <property name="icon-name">media-view-subtitles-symbolic</property>
-                                <property name="tooltip-text" translatable="yes">Subtitle</property>
-                                <property name="valign">center</property>
-                                <style>
-                                  <class name="flat" />
-                                  <class name="circular" />
+                                  <class name="accent" />
+                                  <class name="monospace" />
                                 </style>
                               </object>
                             </child>
@@ -314,16 +292,11 @@
                                 <property name="spacing">2</property>
                                 <property name="valign">center</property>
                                 <child>
-                                  <object class="GtkButton" id="volume_button">
-                                    <property name="tooltip-text" translatable="yes">Mute</property>
+                                  <object class="GtkMenuButton" id="audio_tracks_menu_button">
+                                    <property name="popover">audio_tracks_popover</property>
+                                    <property name="icon-name">audio-x-generic-symbolic</property>
+                                    <property name="tooltip-text" translatable="yes">Audio</property>
                                     <property name="valign">center</property>
-                                    <property name="margin-start">8</property>
-                                    <signal name="clicked" handler="on_volume_button_clicked" swapped="yes" />
-                                    <child>
-                                      <object class="GtkImage" id="volume_button_image">
-                                        <property name="icon-name">audio-volume-high-symbolic</property>
-                                      </object>
-                                    </child>
                                     <style>
                                       <class name="flat" />
                                       <class name="circular" />
@@ -331,62 +304,73 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkScale" id="volume_scale">
-                                    <property name="adjustment">volume_adj</property>
-                                    <property name="width-request">120</property>
+                                  <object class="GtkMenuButton" id="subtitle_tracks_menu_button">
+                                    <property name="popover">subtitle_tracks_popover</property>
+                                    <property name="icon-name">media-view-subtitles-symbolic</property>
+                                    <property name="tooltip-text" translatable="yes">Subtitle</property>
                                     <property name="valign">center</property>
-                                    <property name="margin-end">6</property>
-                                    <property name="draw-value">false</property>
-                                    <signal name="value-changed" handler="on_volume_scale_value_changed" swapped="yes" />
                                     <style>
-                                      <class name="accent" />
+                                      <class name="flat" />
+                                      <class name="circular" />
                                     </style>
                                   </object>
                                 </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="menu_button">
-                                <property name="icon-name">settings-symbolic</property>
-                                <property name="action-name">mpv.show-settings</property>
-                                <property name="tooltip-text" translatable="yes">Advanced settings</property>
-                                <property name="valign">center</property>
-                                <style>
-                                  <class name="flat" />
-                                  <class name="circular" />
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkButton">
-                                <property name="visible" bind-source="MPVPage" bind-property="fullscreened" bind-flags="sync-create|invert-boolean"/>
-                                <property name="icon-name">view-fullscreen-symbolic</property>
-                                <property name="action-name">win.toggle-fullscreen</property>
-                                <property name="tooltip-text" translatable="yes">Fullscreen</property>
-                                <property name="valign">center</property>
-                                <accessibility>
-                                  <property name="label" translatable="yes">Fullscreen</property>
-                                </accessibility>
-                                <style>
-                                  <class name="flat" />
-                                  <class name="circular" />
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkButton">
-                                <property name="visible" bind-source="MPVPage" bind-property="fullscreened" bind-flags="sync-create"/>
-                                <property name="icon-name">view-restore-symbolic</property>
-                                <property name="action-name">win.toggle-fullscreen</property>
-                                <property name="valign">center</property>
-                                <property name="tooltip-text" translatable="yes">Exit Fullscreen</property>
-                                <accessibility>
-                                  <property name="label" translatable="yes">Exit Fullscreen</property>
-                                </accessibility>
-                                <style>
-                                  <class name="flat" />
-                                  <class name="circular" />
-                                </style>
+                                <child>
+                                    <object class="GtkMenuButton" id="volume_button">
+                                        <property name="popover">volume_adj_popover</property>
+                                        <property name="icon-name">audio-volume-high-symbolic</property>
+                                        <property name="tooltip-text" translatable="yes">Adjust Volume</property>
+                                        <property name="valign">center</property>
+                                        <style>
+                                            <class name="flat" />
+                                            <class name="circular" />
+                                        </style>
+                                    </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton">
+                                    <property name="icon-name">settings-symbolic</property>
+                                    <property name="action-name">mpv.show-settings</property>
+                                    <property name="tooltip-text" translatable="yes">Advanced settings</property>
+                                    <property name="valign">center</property>
+                                    <style>
+                                      <class name="flat" />
+                                      <class name="circular" />
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton">
+                                    <property name="visible" bind-source="MPVPage" bind-property="fullscreened" bind-flags="sync-create|invert-boolean"/>
+                                    <property name="icon-name">view-fullscreen-symbolic</property>
+                                    <property name="action-name">win.toggle-fullscreen</property>
+                                    <property name="tooltip-text" translatable="yes">Fullscreen</property>
+                                    <property name="valign">center</property>
+                                        <accessibility>
+                                            <property name="label" translatable="yes">Fullscreen</property>
+                                        </accessibility>
+                                        <style>
+                                        <class name="flat" />
+                                        <class name="circular" />
+                                        </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton">
+                                    <property name="visible" bind-source="MPVPage" bind-property="fullscreened" bind-flags="sync-create"/>
+                                    <property name="icon-name">view-restore-symbolic</property>
+                                    <property name="action-name">win.toggle-fullscreen</property>
+                                    <property name="valign">center</property>
+                                    <property name="tooltip-text" translatable="yes">Exit Fullscreen</property>
+                                    <accessibility>
+                                      <property name="label" translatable="yes">Exit Fullscreen</property>
+                                    </accessibility>
+                                    <style>
+                                      <class name="flat" />
+                                      <class name="circular" />
+                                    </style>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                           </object>
@@ -505,6 +489,27 @@
       </object>
     </child>
   </object>
+
+  <object class="GtkPopover" id="volume_adj_popover">
+    <property name="position">top</property>
+    <property name="has-arrow">true</property>
+    <child>
+    <object class="GtkScale" id="volume_scale">
+      <property name="adjustment">volume_adj</property>
+      <property name="height-request">180</property>
+      <property name="halign">center</property>
+      <property name="margin-end">6</property>
+      <property name="draw-value">false</property>
+      <property name="orientation">vertical</property>
+      <property name="inverted">true</property>
+      <signal name="value-changed" handler="on_volume_scale_value_changed" swapped="yes" />
+      <style>
+        <class name="accent" />
+      </style>
+    </object>
+    </child>
+  </object>
+
   <object class="GtkAdjustment" id="danmaku_top_padding_adj">
     <property name="lower">0</property>
     <property name="upper">50</property>
@@ -592,7 +597,6 @@
       <widget name="progress_time_label" />
       <widget name="video_scale" />
       <widget name="duration_label" />
-      <widget name="menu_button" />
     </widgets>
   </object>
   <object class="GtkSizeGroup">
