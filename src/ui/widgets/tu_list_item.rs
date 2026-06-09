@@ -503,12 +503,9 @@ impl TuListItem {
     #[template_callback]
     async fn on_play_clicked(&self) {
         let item = self.item();
-
         if !item.can_direct_play() {
             return;
         }
-
-        self.toast(gettext("Waiting for mediasource ..."));
         item.play_video(self).await;
     }
 }
