@@ -1,7 +1,7 @@
 project(
     'tsukimi',
     'rust',
-    version: '26.6.2',
+    version: '26.6.3',
     meson_version: '>= 1.1',
     default_options: ['warning_level=2', 'werror=false', 'buildtype=release'],
 )
