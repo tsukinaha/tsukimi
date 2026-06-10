@@ -879,7 +879,7 @@ impl ItemPage {
                         .iter()
                         .map(|season| season.name.as_str())
                         .collect::<Vec<_>>();
-                    season_list_store.splice(0, season_list_store.n_items(), &names);
+                    season_list_store.splice(1, season_list_store.n_items().saturating_sub(1), &names);
                     imp.seasonshortu.set_items(season_list.to_owned());
                     imp.season_list_vec.replace(season_list);
                     self.on_season_selected(None, imp.seasonlist.get()).await;
