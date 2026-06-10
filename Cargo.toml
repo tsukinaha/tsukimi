@@ -9,8 +9,8 @@ libc = "0.2"
 libloading = "0.9"
 libmpv2 = "6.0"
 once_cell = "1.21"
-gtk = { version = "0.11", package = "gtk4", features = ["v4_20"] }
-adw = { version = "0.9", package = "libadwaita", features = ["v1_8"] }
+gtk = { version = "0.11", package = "gtk4", features = ["v4_22"] }
+adw = { version = "0.9", package = "libadwaita", features = ["v1_9"] }
 tracing = "0.1.44"
 epoxy = "0.1.0"
 atomic-wait = "1.1.0"
@@ -40,6 +40,11 @@ gdk-wayland = { version = "0.11", package = "gdk4-wayland", features = [
   "v4_10",
   "wayland_crate",
 ] }
+wl-proxy = { version = "0.1", features = [
+  "protocol-linux_dmabuf_v1",
+  "protocol-xdg_shell",
+  "protocol-viewporter",
+] }
 
 [[example]]
 name = "mpv"
@@ -50,5 +55,5 @@ name = "gst"
 path = "example/gst.rs"
 
 [[example]]
-name = "mpv_subcompositor"
-path = "example/mpv_subcompositor.rs"
+name = "proxy"
+path = "example/proxy/main.rs"

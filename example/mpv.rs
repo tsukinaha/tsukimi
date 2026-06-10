@@ -1,17 +1,19 @@
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow, Box as GtkBox, Button, Entry, Orientation};
-use mutsumi::video::{MutsumiVideoPlayer, VideoBackend};
+use mutsumi::video::{MutsumiVideoPlayer};
 
 fn main() {
     gtk::init().expect("Failed to initialize GTK");
 
-    let player = MutsumiVideoPlayer::new("mpvgl");
+    let player = MutsumiVideoPlayer::new();
+
+    player.backend_ref().mpv().mpv.command("script-binding", &["stats/display-stats-toggle"]);
     let player_clone = player.clone();
 
     glib::spawn_future_local(async move {
-        glib::timeout_future(std::time::Duration::from_secs(5)).await;
-        player_clone.play("https://www.youtube.com/watch?v=IalBrXP3LVU", 0.0);
+        glib::timeout_future(std::time::Duration::from_secs(2)).await;
+        player_clone.play("https://www.youtube.com/watch?v=Np9rzX6wPe4", 0.0);
     });
 
     let app = Application::builder()

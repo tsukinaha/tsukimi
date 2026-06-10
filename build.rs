@@ -8,12 +8,20 @@ use std::process::Command;
 const APP_RESOURCE_PREFIX: &str = "/io/github/mutsumi";
 
 fn main() {
+    // on_build();
+    //
+    glib_build_tools::compile_resources(
+        &["resources"],
+        "resources/resources.gresource.xml",
+        "mutsumi.gresource",
+    );
+}
+
+fn on_build() {
     let project_root =
         PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is not set"));
 
     println!("cargo:rerun-if-changed=build.rs");
-    // Link against casilda-1.0 for the mpv-subcompositor backend
-    println!("cargo:rustc-link-lib=casilda-1.0");
     println!(
         "cargo:rerun-if-changed={}",
         project_root.join("src").display()
@@ -34,12 +42,6 @@ fn main() {
     }
 
     generate_gresource_xml(&project_root, &blueprint_inputs, &icon_inputs);
-
-    glib_build_tools::compile_resources(
-        &["resources"],
-        "resources/resources.gresource.xml",
-        "mutsumi.gresource",
-    );
 }
 
 fn discover_files_with_extension(root: &Path, extension: &str) -> Vec<PathBuf> {

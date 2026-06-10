@@ -1,4 +1,4 @@
-use crate::{ChapterList, MutsumiVideoPlayer, VideoBackend};
+use crate::{ChapterList, MutsumiVideoPlayer};
 use gtk::{glib, prelude::*, subclass::prelude::*};
 
 mod imp {

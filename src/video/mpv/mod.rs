@@ -1,10 +1,15 @@
 mod actor;
 mod area;
 mod contexted;
+mod proxy;
+mod paintable;
 
 pub use actor::*;
 pub use area::*;
 pub use contexted::*;
+pub use proxy::*;
+pub use paintable::*;
+
 use flume::{Receiver, Sender, unbounded};
 use once_cell::sync::Lazy;
 

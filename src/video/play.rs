@@ -6,7 +6,7 @@ where
 {
     pub title: Option<String>,
     pub subtitle: Option<String>,
-    pub url: PlaySource<P>,
+    pub source: PlaySource<P>,
     pub start_time: Option<f64>,
 }
 

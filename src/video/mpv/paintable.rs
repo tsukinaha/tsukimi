@@ -1,5 +1,5 @@
 use glib::Object;
-use gtk::{gio, glib, subclass::prelude::*};
+use gtk::{glib, subclass::prelude::*};
 use tracing::info;
 
 use crate::video::{
@@ -7,52 +7,84 @@ use crate::video::{
     mpv::contexted::ContextedMPV,
 };
 
-use super::RENDER_UPDATE;
+use gtk::gdk;
 
 mod imp {
-    use crate::video::{
-        MPV_CTRL, MpvMessage, MutsumiMpvError, mpv::contexted::ContextedMPV,
+    use crate::{
+        FRAME_CHANNEL, create_mpv_proxy,
+        video::{MutsumiMpvError, mpv::contexted::ContextedMPV},
     };
-    use std::{ffi::c_void, sync::{Arc, OnceLock}};
-    use libmpv2::Mpv;
+    use std::{
+        cell::RefCell,
+        os::fd::{AsRawFd, IntoRawFd},
+        sync::OnceLock,
+    };
 
     use super::*;
 
-    use flume::bounded;
-    use gdk_wayland::{WaylandDisplay, wayland_client::Proxy};
-
-    use gdk_x11::X11Display;
-
     use glib::subclass::Signal;
-    use glow::HasContext;
-    use gtk::{
-        gdk::{Display, GLContext},
-        glib,
-        prelude::*,
-    };
-    use libmpv2::render::{OpenGLInitParams, RenderContext, RenderParam, RenderParamApiType};
-    use once_cell::sync::OnceCell;
+    use gtk::{glib, prelude::*};
 
     #[derive(Default)]
-    pub struct MPVGLArea {
+    pub struct MutsumiVideoSink {
         pub mpv: ContextedMPV,
-        pub mpv_ctx: OnceCell<RenderContext<'static>>,
-        pub gl_ctx: OnceCell<glow::Context>,
+        pub texture: RefCell<Option<gdk::Texture>>,
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for MPVGLArea {
-        const NAME: &'static str = "MPVGLArea";
-        type Type = super::MPVGLArea;
-        type ParentType = gtk::GLArea;
+    impl ObjectSubclass for MutsumiVideoSink {
+        const NAME: &'static str = "MutsumiVideoSink";
+        type Type = super::MutsumiVideoSink;
+        type Interfaces = (gdk::Paintable,);
     }
 
-    impl ObjectImpl for MPVGLArea {
+    impl ObjectImpl for MutsumiVideoSink {
         fn constructed(&self) {
             self.parent_constructed();
 
-            self.obj().set_hexpand(true);
-            self.obj().set_vexpand(true);
+            let obj = self.obj();
+
+            self.setup_mpv();
+
+            glib::spawn_future_local(glib::clone!(
+                #[weak]
+                obj,
+                async move {
+                    while let Ok(frame) = FRAME_CHANNEL.rx.recv_async().await {
+                        let mut builder = gdk::DmabufTextureBuilder::new()
+                            .set_display(&gdk::Display::default().unwrap())
+                            .set_width(frame.width)
+                            .set_height(frame.height)
+                            .set_fourcc(frame.format)
+                            .set_modifier(frame.modifier)
+                            .set_n_planes(frame.planes.len() as u32);
+
+                        for (i, plane) in frame.planes.iter().enumerate() {
+                            builder = unsafe { builder.set_fd(i as u32, plane.fd.as_raw_fd()) }
+                                .set_offset(i as u32, plane.offset)
+                                .set_stride(i as u32, plane.stride);
+                        }
+
+                        match unsafe { builder.build_with_release_func(move || drop(frame)) } {
+                            Ok(texture) => {
+                                let size_changed =
+                                    obj.imp().texture.borrow().as_ref().is_none_or(|old| {
+                                        (old.width(), old.height())
+                                            != (texture.width(), texture.height())
+                                    });
+                                obj.imp().texture.replace(Some(texture));
+                                if size_changed {
+                                    obj.invalidate_size();
+                                }
+                                obj.invalidate_contents();
+                            }
+                            Err(e) => {
+                                tracing::error!("dmabuf build failed: {e}");
+                            }
+                        }
+                    }
+                }
+            ));
         }
 
         fn dispose(&self) {
@@ -71,138 +103,52 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for MPVGLArea {
-        fn realize(&self) {
-            self.parent_realize();
-
-            let obj = self.obj();
-            if obj.error().is_some() {
-                self.throw_error(MutsumiMpvError::AreaNotInitialized);
-                return;
-            }
-
-            obj.make_current();
-            let Some(gl_context) = obj.context() else {
-                self.throw_error(MutsumiMpvError::ContextNotInitialized);
-                return;
-            };
-
-            self.setup_mpv(gl_context, obj.display());
-
-            glib::spawn_future_local(glib::clone!(
-                #[weak]
-                obj,
-                async move {
-                    while RENDER_UPDATE.rx.recv_async().await.is_ok() {
-                        obj.queue_render();
-                    }
-                }
-            ));
+    impl PaintableImpl for MutsumiVideoSink {
+        fn intrinsic_width(&self) -> i32 {
+            self.texture.borrow().as_ref().map_or(0, |t| t.width())
         }
 
-        fn unrealize(&self) {
-            self.parent_unrealize();
+        fn intrinsic_height(&self) -> i32 {
+            self.texture.borrow().as_ref().map_or(0, |t| t.height())
+        }
+
+        fn snapshot(&self, snapshot: &gdk::Snapshot, width: f64, height: f64) {
+            if let Some(texture) = self.texture.borrow().as_ref() {
+                snapshot.append_texture(
+                    texture,
+                    &gtk::graphene::Rect::new(0.0, 0.0, width as f32, height as f32),
+                );
+            }
         }
     }
 
-    impl GLAreaImpl for MPVGLArea {
-        fn render(&self, _context: &GLContext) -> glib::Propagation {
-            let Some(ctx) = self.mpv_ctx.get() else {
-                return glib::Propagation::Stop;
-            };
+    impl MutsumiVideoSink {
+        fn setup_mpv(&self) {
+            let socket = create_mpv_proxy().expect("Failed to create Wayland proxy");
 
-            let factor = self.obj().scale_factor();
-            let width = self.obj().width() * factor;
-            let height = self.obj().height() * factor;
+            unsafe { std::env::set_var("WAYLAND_SOCKET", socket.into_raw_fd().to_string()) };
 
-            unsafe {
-                let fbo = self.glow_cxt().get_parameter_i32(glow::FRAMEBUFFER_BINDING);
-                ctx.render::<GLContext>(fbo, width, height, true).ok();
-            }
-            glib::Propagation::Stop
-        }
-    }
-
-    impl MPVGLArea {
-        fn setup_mpv(&self, gl_context: GLContext, display: Display) {
-            let mut render_params = vec![
-                RenderParam::ApiType(RenderParamApiType::OpenGl),
-                RenderParam::InitParams(OpenGLInitParams {
-                    get_proc_address,
-                    ctx: gl_context,
-                }),
-            ];
-
-            // MPV render params to enable hardware decoding on X11 and Wayland
-            // displays.
-            //
-            // https://github.com/mpv-player/mpv/blob/86e12929aa0bbc61946d3804982acf887786a7cb/include/mpv/render_gl.h#L91
-            if let Ok(display_wrapper) = display.clone().downcast::<X11Display>() {
-                render_params.push(RenderParam::X11Display(
-                    unsafe { display_wrapper.xdisplay() } as *const c_void,
-                ));
-            }
-
-            let (arc_tx, arc_rx) = bounded::<Arc<Mpv>>(1);
-
-            MPV_CTRL
-                .tx
-                .send(MpvMessage::InitRenderContext(arc_tx))
-                .expect("Init render context failed");
-
-            glib::spawn_future_local(glib::clone!(
-                #[weak(rename_to = imp)]
-                self,
-                async move {
-                    let mpv = arc_rx.recv_async().await.expect("Actor dropped sender");
-                    let mut ctx = mpv
-                        .create_render_context(render_params)
-                        .expect("Failed creating render context");
-                    ctx.set_update_callback(|| {
-                        let _ = RENDER_UPDATE.tx.send(true);
-                    });
-                    //SAFETY: Mpv is kept alive by the actor's Arc for the program lifetime
-                    let ctx = unsafe {
-                        std::mem::transmute::<RenderContext<'_>, RenderContext<'static>>(ctx)
-                    };
-                    imp.mpv_ctx
-                        .set(ctx)
-                        .ok()
-                        .expect("MPV render context already set???");
-                }
-            ));
-        }
-
-        fn glow_cxt(&self) -> &glow::Context {
-            self.gl_ctx.get_or_init(|| unsafe {
-                glow::Context::from_loader_function(epoxy::get_proc_addr)
-            })
+            self.mpv.mpv.set_property("vo", "gpu-next".to_owned());
         }
 
         fn throw_error(&self, code: MutsumiMpvError) {
             self.obj().emit_by_name::<()>("mutsumi-error", &[&code]);
         }
     }
-
-    fn get_proc_address(_ctx: &GLContext, name: &str) -> *mut c_void {
-        epoxy::get_proc_addr(name) as *mut c_void
-    }
 }
 
 glib::wrapper! {
-    pub struct MPVGLArea(ObjectSubclass<imp::MPVGLArea>)
-        @extends gtk::Widget ,gtk::GLArea,
-        @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
-                    gtk::ConstraintTarget, gtk::Native, gtk::ShortcutManager;
+    pub struct MutsumiVideoSink(ObjectSubclass<imp::MutsumiVideoSink>)
+        @implements gdk::Paintable;
 }
 
-impl Default for MPVGLArea {
+impl Default for MutsumiVideoSink {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl MPVGLArea {
+impl MutsumiVideoSink {
     pub fn new() -> Self {
         Object::builder().build()
     }
