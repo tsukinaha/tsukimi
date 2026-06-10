@@ -11,7 +11,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
-    #[template(resource = "/moe/tsuna/tsukimi/ui/volume_bar.ui")]
+    #[template(resource = "/io/github/mutsumi/ui/volume_bar.ui")]
     #[properties(wrapper_type = super::VolumeBar)]
     pub struct VolumeBar {
         #[property(get, set = Self::set_level, default_value = 100.0)]

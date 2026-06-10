@@ -17,7 +17,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
           <object class="GtkButton">
             <property name="tooltip-text" translatable="yes">Backward</property>
             <property name="icon-name">media-seek-backward-symbolic</property>
-            <property name="action-name">video.backward</property>
+            <property name="action-name">mpv.backward</property>
             <layout>
               <property name="column">0</property>
               <property name="row">0</property>
@@ -32,7 +32,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
           <object class="GtkButton" id="play_pause_button">
             <property name="tooltip-text" translatable="yes">Play</property>
             <property name="icon-name">media-playback-start-symbolic</property>
-            <property name="action-name">video.play-pause</property>
+            <property name="action-name">mpv.play-pause</property>
             <layout>
               <property name="column">1</property>
               <property name="row">0</property>

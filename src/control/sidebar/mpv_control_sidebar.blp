@@ -19,6 +19,26 @@ template $MPVControlSidebar: Adw.NavigationPage {
                 title: _("Seek Action");
 
                 Adw.SpinRow {
+                    title: _("Playback speed");
+                    notify::value => $on_playback_speed() swapped;
+
+                    [prefix]
+                    Image {
+                        icon-name: "playback-options-symbolic";
+                    }
+
+                    adjustment: Adjustment playback_speed_adj {
+                        lower: 0.10;
+                        upper: 5.00;
+                        value: 1.00;
+                        step-increment: 0.05;
+                        page-increment: 0.2;
+                    };
+
+                    digits: 2;
+                }
+
+                Adw.SpinRow {
                     title: _("Seek Backward");
                     subtitle: _("Unit: Seconds");
 

@@ -1,16 +1,19 @@
-use std::{ops::Deref, sync::Arc};
+use std::{collections::HashMap, ops::Deref, sync::Arc};
 
 use super::*;
 use flume::{Receiver, Sender, unbounded};
 use libmpv2::{
-    Mpv,
-    events::{Event, PropertyData},
+    Format, Mpv,
+    events::{Event, EventContext, PropertyData},
+    mpv_node::MpvNode,
 };
 use once_cell::sync::Lazy;
-use serde_json::Value;
 use tsutils::spawn_tokio_blocking;
 
-struct SendMpv(Arc<Mpv>);
+struct SendMpv {
+    mpv: Arc<Mpv>,
+    event_context: EventContext,
+}
 unsafe impl Send for SendMpv {}
 
 #[derive(Debug, Clone)]
@@ -50,6 +53,12 @@ impl From<f64> for MpvValue {
 impl From<String> for MpvValue {
     fn from(val: String) -> Self {
         MpvValue::String(val)
+    }
+}
+
+impl From<&str> for MpvValue {
+    fn from(val: &str) -> Self {
+        MpvValue::String(val.to_string())
     }
 }
 
@@ -101,7 +110,7 @@ impl Deref for SendMpv {
     type Target = Mpv;
 
     fn deref(&self) -> &Self::Target {
-        &self.0
+        &self.mpv
     }
 }
 
@@ -122,13 +131,28 @@ impl MpvActor {
     where
         F: FnOnce(libmpv2::MpvInitializer) -> libmpv2::Result<()>,
     {
-        let mut mpv = Mpv::with_initializer(initializer)?;
+        let mpv = Mpv::with_initializer(initializer)?;
 
-        mpv.set_wakeup_callback(move || {
+        let mut event_context = EventContext::new(mpv.ctx);
+        event_context.disable_deprecated_events()?;
+        event_context.observe_property("duration", Format::Double, 0)?;
+        event_context.observe_property("pause", Format::Flag, 1)?;
+        event_context.observe_property("cache-speed", Format::Int64, 2)?;
+        event_context.observe_property("track-list", Format::Node, 3)?;
+        event_context.observe_property("paused-for-cache", Format::Flag, 4)?;
+        event_context.observe_property("demuxer-cache-time", Format::Int64, 5)?;
+        event_context.observe_property("time-pos", Format::Int64, 6)?;
+        event_context.observe_property("volume", Format::Int64, 7)?;
+        event_context.observe_property("chapter-list", Format::Node, 8)?;
+        event_context.observe_property("speed", Format::Double, 9)?;
+        event_context.set_wakeup_callback(move || {
             let _ = MPV_CTRL.tx.send(MpvMessage::WakeUp);
         });
 
-        let mut mpv = SendMpv(Arc::new(mpv));
+        let mut mpv = SendMpv {
+            mpv: Arc::new(mpv),
+            event_context,
+        };
 
         spawn_tokio_blocking(move || {
             loop {
@@ -158,7 +182,7 @@ impl MpvActor {
                         let _ = rx.send(result);
                     }
                     MpvMessage::InitRenderContext(tx) => {
-                        let _ = tx.send(Arc::clone(&mpv.0));
+                        let _ = tx.send(Arc::clone(&mpv.mpv));
                     }
                     MpvMessage::WakeUp => 'l: loop {
                         if !mpv.handle_event() {
@@ -212,7 +236,7 @@ impl MpvActor {
 impl SendMpv {
     //If returns false, events are drained and caller should wait for next wakeup
     fn handle_event(&mut self) -> bool {
-        let Some(event) = self.wait_event(0.0) else {
+        let Some(event) = self.event_context.wait_event(0.0) else {
             return false;
         };
 
@@ -235,14 +259,14 @@ impl SendMpv {
                         }
                     }
                     "track-list" => {
-                        if let PropertyData::Str(node) = change {
+                        if let PropertyData::Node(node) = change {
                             let _ = MPV_EVENT_CHANNEL
                                 .tx
                                 .send(ListenEvent::TrackList(node_to_tracks(node)));
                         }
                     }
                     "chapter-list" => {
-                        if let PropertyData::Str(node) = change {
+                        if let PropertyData::Node(node) = change {
                             let _ = MPV_EVENT_CHANNEL
                                 .tx
                                 .send(ListenEvent::ChapterList(node_to_chapter_list(node)));
@@ -289,8 +313,8 @@ impl SendMpv {
                 Event::EndFile(r) => {
                     let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Eof(r));
                 }
-                Event::StartFile => {
-                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::StartFile);
+                Event::FileLoaded => {
+                    let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::FileLoaded);
                 }
                 Event::Shutdown => {
                     let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Shutdown);
@@ -318,32 +342,23 @@ impl SendMpv {
     }
 }
 
-fn node_to_chapter_list(value: &str) -> ChapterList {
+fn node_to_chapter_list(node: MpvNode) -> ChapterList {
     let mut chapters = Vec::new();
-
-    let Ok(json) = serde_json::from_str::<Value>(value) else {
-        return ChapterList(chapters);
-    };
-    let Some(array) = json.as_array() else {
+    let Some(array) = node.array() else {
         return ChapterList(chapters);
     };
 
     for node in array {
-        let Some(obj) = node.as_object() else {
+        let Some(range) = node.map() else {
             continue;
         };
-
-        let title = obj
+        let range = range.collect::<HashMap<_, _>>();
+        let title = range
             .get("title")
-            .and_then(Value::as_str)
+            .and_then(|v| v.str())
             .unwrap_or("unknown")
             .to_string();
-        let time = obj
-            .get("time")
-            .and_then(Value::as_f64)
-            .or_else(|| obj.get("time").and_then(Value::as_i64).map(|v| v as f64))
-            .unwrap_or(0.0);
-
+        let time = range.get("time").and_then(|v| v.f64()).unwrap_or(0.0);
         chapters.push(Chapter { title, time });
     }
 
@@ -372,6 +387,7 @@ pub struct MpvTrack {
     pub title: String,
     pub lang: String,
     pub type_: String,
+    pub selected: bool,
 }
 
 pub struct MpvTracks {
@@ -379,17 +395,10 @@ pub struct MpvTracks {
     pub sub_tracks: Vec<MpvTrack>,
 }
 
-fn node_to_tracks(value: &str) -> MpvTracks {
+fn node_to_tracks(node: MpvNode) -> MpvTracks {
     let mut audio_tracks = Vec::new();
     let mut sub_tracks = Vec::new();
-
-    let Ok(json) = serde_json::from_str::<Value>(value) else {
-        return MpvTracks {
-            audio_tracks,
-            sub_tracks,
-        };
-    };
-    let Some(array) = json.as_array() else {
+    let Some(array) = node.array() else {
         return MpvTracks {
             audio_tracks,
             sub_tracks,
@@ -397,32 +406,37 @@ fn node_to_tracks(value: &str) -> MpvTracks {
     };
 
     for node in array {
-        let Some(obj) = node.as_object() else {
+        let Some(range) = node.map() else {
             continue;
         };
-
-        let id = obj.get("id").and_then(Value::as_i64).unwrap_or(0);
-        let title = obj
+        let range = range.collect::<HashMap<_, _>>();
+        let id = range.get("id").and_then(|v| v.i64()).unwrap_or(0);
+        let title = range
             .get("title")
-            .and_then(Value::as_str)
+            .and_then(|v| v.str())
             .unwrap_or("unknown")
             .to_string();
-        let lang = obj
+        let lang = range
             .get("lang")
-            .and_then(Value::as_str)
+            .and_then(|v| v.str())
             .unwrap_or("unknown")
             .to_string();
-        let type_ = obj
+        let type_ = range
             .get("type")
-            .and_then(Value::as_str)
+            .and_then(|v| v.str())
             .unwrap_or("unknown")
             .to_string();
+        let selected = range
+            .get("selected")
+            .and_then(|v| v.bool())
+            .unwrap_or(false);
 
         let track = MpvTrack {
             id,
             title,
             lang,
             type_,
+            selected,
         };
         if track.type_ == "audio" {
             audio_tracks.push(track);

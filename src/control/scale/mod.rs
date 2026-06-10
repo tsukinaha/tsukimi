@@ -2,6 +2,8 @@ use crate::{ChapterList, MutsumiVideoPlayer};
 use gtk::{glib, prelude::*, subclass::prelude::*};
 
 mod imp {
+    use std::cell::Cell;
+
     use super::*;
 
     #[derive(Default, glib::Properties)]
@@ -9,6 +11,7 @@ mod imp {
     pub struct VideoScale {
         #[property(get, set = Self::set_player, explicit_notify, nullable)]
         pub player: glib::WeakRef<MutsumiVideoPlayer>,
+        pub is_dragging: Cell<bool>,
     }
 
     #[glib::object_subclass]
@@ -39,6 +42,14 @@ mod imp {
                     }
                 });
 
+            gesture.connect_pressed(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                move |_, _, _, _| {
+                    imp.on_click_pressed();
+                }
+            ));
+
             gesture.connect_released(glib::clone!(
                 #[weak(rename_to = imp)]
                 self,
@@ -61,9 +72,14 @@ mod imp {
             self.player.set(player.as_ref());
         }
 
+        fn on_click_pressed(&self) {
+            self.is_dragging.set(true);
+        }
+
         fn on_click_released(&self) {
             let obj = self.obj();
             self.on_seek_finished(obj.value());
+            self.is_dragging.set(false);
         }
 
         fn on_seek_finished(&self, value: f64) {
@@ -100,6 +116,23 @@ impl VideoScale {
         }
     }
 
+    pub fn update_position_callback(&self) -> glib::ControlFlow {
+        let Some(player) = self.player() else {
+            return glib::ControlFlow::Continue;
+        };
+        glib::MainContext::default().spawn_local(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                let position = player.position().await;
+                if position > 0.0 {
+                    obj.set_value(position);
+                }
+            }
+        ));
+        glib::ControlFlow::Continue
+    }
+
     pub fn set_cache_end_time(&self, end_time: i64) {
         self.set_fill_level(end_time as f64);
     }
@@ -107,6 +140,10 @@ impl VideoScale {
     pub fn reset_scale(&self) {
         self.set_value(0.0);
         self.set_fill_level(0.0);
+    }
+
+    pub fn is_dragging(&self) -> bool {
+        self.imp().is_dragging.get()
     }
 
     pub fn set_chapter_list(&self, chapter_list: ChapterList) {

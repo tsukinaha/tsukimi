@@ -1,21 +1,16 @@
-use std::{cell::OnceCell, rc::Rc};
-
 use glib::Object;
-use gtk::{gdk::ModifierType, glib, prelude::*, subclass::prelude::*};
+use gtk::{gdk::ModifierType, glib, subclass::prelude::*};
 
-use crate::MutsumiVideoSink;
+use crate::{MpvValue, MutsumiVideoSink};
 
-use super::{
-    MPVGLArea,
-    backend::{BoxedFuture, TrackKind, TrackSelection},
-};
+use super::backend::{BoxedFuture, TrackKind, TrackSelection};
 
 mod imp {
     use std::cell::Cell;
 
     use adw::prelude::*;
     use adw::subclass::prelude::*;
-    use gtk::{CssProvider, prelude::*};
+    use gtk::CssProvider;
 
     use crate::{MutsumiVideoSink, SIZE_CHANNEL};
 
@@ -104,11 +99,18 @@ impl MutsumiVideoPlayer {
         let imp = self.imp();
         &imp.backend
     }
+
+    pub fn set_property<V>(&self, property: &str, value: V)
+    where
+        V: Into<MpvValue>,
+    {
+        self.backend_ref().mpv().mpv.set_property(property, value);
+    }
 }
 
 impl MutsumiVideoPlayer {
-    pub fn play(&self, url: &str, percentage: f64) {
-        self.backend_ref().play(url, percentage);
+    pub fn play(&self, url: &str, start_seconds: f64) {
+        self.backend_ref().play(url, start_seconds);
     }
 
     pub fn shutdown(&self) {
@@ -143,8 +145,8 @@ impl MutsumiVideoPlayer {
         self.backend_ref().set_percent_position(value);
     }
 
-    pub fn set_start(&self, percentage: f64) {
-        self.backend_ref().set_start(percentage);
+    pub fn set_start(&self, start_seconds: f64) {
+        self.backend_ref().set_start(start_seconds);
     }
 
     pub fn set_volume(&self, value: i64) {

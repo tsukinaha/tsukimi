@@ -1,11 +1,13 @@
 mod backend;
-mod conf;
+pub mod conf;
 mod error;
 mod mpv;
-mod play;
+pub mod play;
 mod player;
 
 pub use backend::*;
+pub use conf::*;
 pub use error::*;
 pub use mpv::*;
+pub use play::*;
 pub use player::*;

@@ -10,18 +10,17 @@ use crate::video::{
 use super::RENDER_UPDATE;
 
 mod imp {
-    use crate::video::{
-        MPV_CTRL, MpvMessage, MutsumiMpvError, mpv::contexted::ContextedMPV,
-    };
-    use std::{ffi::c_void, sync::{Arc, OnceLock}};
+    use crate::video::{MPV_CTRL, MpvMessage, MutsumiMpvError, mpv::contexted::ContextedMPV};
     use libmpv2::Mpv;
+    use std::{
+        ffi::c_void,
+        sync::{Arc, OnceLock},
+    };
 
     use super::*;
 
     use flume::bounded;
     use gdk_wayland::{WaylandDisplay, wayland_client::Proxy};
-
-    use gdk_x11::X11Display;
 
     use glib::subclass::Signal;
     use glow::HasContext;
@@ -36,7 +35,7 @@ mod imp {
     #[derive(Default)]
     pub struct MPVGLArea {
         pub mpv: ContextedMPV,
-        pub mpv_ctx: OnceCell<RenderContext<'static>>,
+        pub mpv_ctx: OnceCell<RenderContext>,
         pub gl_ctx: OnceCell<glow::Context>,
     }
 
@@ -133,13 +132,14 @@ mod imp {
                 }),
             ];
 
-            // MPV render params to enable hardware decoding on X11 and Wayland
-            // displays.
+            // MPV render params to enable hardware decoding on Wayland displays.
             //
             // https://github.com/mpv-player/mpv/blob/86e12929aa0bbc61946d3804982acf887786a7cb/include/mpv/render_gl.h#L91
-            if let Ok(display_wrapper) = display.clone().downcast::<X11Display>() {
-                render_params.push(RenderParam::X11Display(
-                    unsafe { display_wrapper.xdisplay() } as *const c_void,
+            if let Some(display_wrapper) = display.downcast::<WaylandDisplay>().ok()
+                && let Some(wl_display) = display_wrapper.wl_display()
+            {
+                render_params.push(RenderParam::WaylandDisplay(
+                    wl_display.id().as_ptr() as *const c_void
                 ));
             }
 
@@ -155,16 +155,12 @@ mod imp {
                 self,
                 async move {
                     let mpv = arc_rx.recv_async().await.expect("Actor dropped sender");
-                    let mut ctx = mpv
-                        .create_render_context(render_params)
+                    let mut handle = mpv.ctx;
+                    let mut ctx = RenderContext::new(unsafe { handle.as_mut() }, render_params)
                         .expect("Failed creating render context");
                     ctx.set_update_callback(|| {
                         let _ = RENDER_UPDATE.tx.send(true);
                     });
-                    //SAFETY: Mpv is kept alive by the actor's Arc for the program lifetime
-                    let ctx = unsafe {
-                        std::mem::transmute::<RenderContext<'_>, RenderContext<'static>>(ctx)
-                    };
                     imp.mpv_ctx
                         .set(ctx)
                         .ok()
@@ -211,7 +207,7 @@ impl MPVGLArea {
         &self.imp().mpv
     }
 
-    pub fn play(&self, url: &str, percentage: f64) {
+    pub fn play(&self, url: &str, start_seconds: f64) {
         let url = url.to_owned();
 
         glib::spawn_future_local(glib::clone!(
@@ -223,7 +219,7 @@ impl MPVGLArea {
                 info!("Now Playing: {}", url);
                 mpv.load_video(&url);
 
-                mpv.set_start(percentage);
+                mpv.set_start(start_seconds);
                 mpv.pause(false);
             }
         ));
@@ -269,8 +265,8 @@ impl MPVGLArea {
         self.mpv().set_percent_position(value);
     }
 
-    pub fn set_start(&self, percentage: f64) {
-        self.mpv().set_start(percentage);
+    pub fn set_start(&self, start_seconds: f64) {
+        self.mpv().set_start(start_seconds);
     }
 
     pub fn set_aid(&self, value: TrackSelection) {
@@ -450,7 +446,7 @@ impl MPVGLArea {
     }
 
     pub fn set_position(&self, position: f64) {
-        self.mpv().set_percent_position(position);
+        self.mpv().set_position(position);
     }
 
     pub fn set_volume(&self, volume: i64) {

@@ -1,32 +1,30 @@
-use adw::{
-    prelude::*,
-    subclass::prelude::*,
-};
-use gettextrs::gettext;
-use gtk::{
-    CompositeTemplate,
-    gio,
-    glib,
-    template_callbacks,
-};
-use libmpv2::SetData;
-
-use super::GlobalToast;
+use crate::{MpvValue, MutsumiVideoPlayer, control::toast::GlobalToast};
+use adw::{prelude::*, subclass::prelude::*};
+use gtk::{CompositeTemplate, gio, glib, template_callbacks};
 
 mod imp {
+    use std::cell::Cell;
+
     use glib::subclass::InitializingObject;
     use gtk::glib;
 
     use super::*;
-    use crate::ui::mpv::mpvglarea::MPVGLArea;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/io/github/mutsumi/ui/mpv_control_sidebar.ui")]
     #[properties(wrapper_type = super::MPVControlSidebar)]
     pub struct MPVControlSidebar {
         #[property(get, set = Self::set_player, explicit_notify, nullable)]
-        pub player: glib::WeakRef<MPVGLArea>,
+        pub player: glib::WeakRef<MutsumiVideoPlayer>,
+        #[property(get, set = Self::set_show_buffer_speed, explicit_notify)]
+        pub show_buffer_speed: Cell<bool>,
+        #[property(get, set = Self::set_hwdec, explicit_notify)]
+        pub hwdec: Cell<i32>,
+        #[property(get, set = Self::set_action_after_video_end, explicit_notify)]
+        pub action_after_video_end: Cell<i32>,
 
+        #[template_child]
+        pub playback_speed_adj: TemplateChild<gtk::Adjustment>,
         #[template_child]
         pub seek_forward_adj: TemplateChild<gtk::Adjustment>,
         #[template_child]
@@ -133,18 +131,41 @@ mod imp {
     impl NavigationPageImpl for MPVControlSidebar {}
 
     impl MPVControlSidebar {
-        fn set_player(&self, player: Option<MPVGLArea>) {
+        fn set_player(&self, player: Option<MutsumiVideoPlayer>) {
             if self.player.upgrade() == player {
                 return;
             }
             self.player.set(player.as_ref());
+        }
+
+        fn set_show_buffer_speed(&self, show: bool) {
+            if self.show_buffer_speed.replace(show) == show {
+                return;
+            }
+            self.buffer_switchrow.set_active(show);
+            self.obj().notify_show_buffer_speed();
+        }
+
+        fn set_hwdec(&self, hwdec: i32) {
+            if self.hwdec.replace(hwdec) == hwdec {
+                return;
+            }
+            self.obj().notify_hwdec();
+        }
+
+        fn set_action_after_video_end(&self, action: i32) {
+            if self.action_after_video_end.replace(action) == action {
+                return;
+            }
+            self.obj().notify_action_after_video_end();
         }
     }
 }
 
 glib::wrapper! {
     pub struct MPVControlSidebar(ObjectSubclass<imp::MPVControlSidebar>)
-        @extends gtk::Widget, gtk::ListBoxRow, adw::NavigationPage, @implements gtk::Accessible;
+        @extends gtk::Widget, adw::NavigationPage,
+        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl Default for MPVControlSidebar {
@@ -185,24 +206,9 @@ impl MPVControlSidebar {
             ))
             .build();
 
-        let action_video_end = gio::ActionEntry::builder("video-end")
-            .parameter_type(Some(&i32::static_variant_type()))
-            .state(SETTINGS.mpv_action_after_video_end().to_variant())
-            .activate(move |_, action, parameter| {
-                let parameter = parameter
-                    .expect("Could not get parameter.")
-                    .get::<i32>()
-                    .expect("The variant needs to be of type `i32`.");
-
-                SETTINGS.set_mpv_action_after_video_end(parameter).unwrap();
-
-                action.set_state(&parameter.to_variant());
-            })
-            .build();
-
         let action_hwdec = gio::ActionEntry::builder("hwdec")
             .parameter_type(Some(&i32::static_variant_type()))
-            .state(SETTINGS.mpv_hwdec().to_variant())
+            .state(self.hwdec().to_variant())
             .activate(glib::clone!(
                 #[weak(rename_to = obj)]
                 self,
@@ -214,80 +220,62 @@ impl MPVControlSidebar {
 
                     let option = match_hwdec_interop(parameter);
                     obj.set_mpv_property("hwdec", option);
-
-                    SETTINGS.set_mpv_hwdec(parameter).unwrap();
+                    obj.set_hwdec(parameter);
 
                     action.set_state(&parameter.to_variant());
                 }
             ))
             .build();
 
-        action_group.add_action_entries([action_text, action_video_end, action_hwdec]);
+        let action_video_end = gio::ActionEntry::builder("video-end")
+            .parameter_type(Some(&i32::static_variant_type()))
+            .state(self.action_after_video_end().to_variant())
+            .activate(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |_, action, parameter| {
+                    let parameter = parameter
+                        .expect("Could not get parameter.")
+                        .get::<i32>()
+                        .expect("The variant needs to be of type `i32`.");
+
+                    obj.set_mpv_property("loop", if parameter == 1 { "inf" } else { "no" });
+                    obj.set_action_after_video_end(parameter);
+
+                    action.set_state(&parameter.to_variant());
+                }
+            ))
+            .build();
+
+        action_group.add_action_entries([action_text, action_hwdec, action_video_end]);
         self.insert_action_group("mpv", Some(&action_group));
 
         let imp = self.imp();
-
-        SETTINGS
-            .bind(
-                "mpv-seek-backward-step",
-                &imp.seek_backward_adj.get(),
-                "value",
-            )
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-seek-forward-step",
-                &imp.seek_forward_adj.get(),
-                "value",
-            )
-            .build();
-        imp.buffer_switchrow
-            .set_active(SETTINGS.mpv_show_buffer_speed());
+        imp.buffer_switchrow.set_active(self.show_buffer_speed());
         imp.sub_font_button
-            .set_font_desc(&gtk::pango::FontDescription::from_string(
-                &SETTINGS.mpv_subtitle_font(),
-            ));
-        SETTINGS
-            .bind(
-                "mpv-show-buffer-speed",
-                &imp.buffer_switchrow.get(),
-                "active",
-            )
-            .build();
-        SETTINGS
-            .bind("mpv-cache-size", &imp.cache_size_adj.get(), "value")
-            .build();
-        SETTINGS
-            .bind("mpv-cache-time", &imp.cache_time_adj.get(), "value")
-            .build();
-        SETTINGS
-            .bind("mpv-deband", &imp.deband_switch.get(), "active")
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-audio-channel",
-                &imp.audio_channel_combo.get(),
-                "selected",
-            )
-            .build();
-        SETTINGS
-            .bind("mpv-subtitle-scale", &imp.sub_scale_adj.get(), "value")
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-video-scale",
-                &imp.video_upsacle_filter_combo.get(),
-                "selected",
-            )
-            .build();
+            .set_font_desc(&gtk::pango::FontDescription::from_string(""));
     }
 
     pub fn set_mpv_property<V>(&self, property: &str, value: V)
     where
-        V: SetData + Send + 'static,
+        V: Into<MpvValue> + 'static,
     {
         if let Some(player) = self.player() {
             player.set_property(property, value)
+        }
+    }
+
+    pub fn set_playback_speed(&self, value: f64) {
+        let adj = &self.imp().playback_speed_adj;
+        if (adj.value() - value).abs() > f64::EPSILON {
+            adj.set_value(value);
+        }
+    }
+
+    #[template_callback]
+    pub fn on_playback_speed(&self, _param: glib::ParamSpec, spin: adw::SpinRow) {
+        if let Some(player) = self.player() {
+            player.set_speed(spin.value());
         }
     }
 
@@ -349,9 +337,7 @@ impl MPVControlSidebar {
 
     #[template_callback]
     pub fn on_buffer_speed(&self, _param: glib::ParamSpec, switch: adw::SwitchRow) {
-        SETTINGS
-            .set_mpv_show_buffer_speed(switch.is_active())
-            .unwrap();
+        self.set_show_buffer_speed(switch.is_active());
     }
 
     #[template_callback]
@@ -382,9 +368,6 @@ impl MPVControlSidebar {
     #[template_callback]
     pub fn on_sub_font(&self, _param: glib::ParamSpec, button: gtk::FontDialogButton) {
         let font_desc = button.font_desc().unwrap();
-        SETTINGS
-            .set_mpv_subtitle_font(font_desc.to_string())
-            .unwrap();
         self.set_mpv_property("sub-font", font_desc.to_string());
     }
 
@@ -440,7 +423,7 @@ impl MPVControlSidebar {
         imp.hue_adj.set_value(0.0);
         imp.saturation_adj.set_value(0.0);
 
-        self.toast(gettext("Video filter settings cleared."));
+        self.toast("Video filter settings cleared.");
     }
 
     #[template_callback]
@@ -463,7 +446,7 @@ impl MPVControlSidebar {
         imp.sub_shadow_offset_adj.set_value(0.0);
         imp.stretch_image_subs_to_screen_switchrow.set_active(false);
 
-        self.toast(gettext("Subtitle settings cleared."));
+        self.toast("Subtitle settings cleared.");
     }
 
     #[template_callback]
@@ -476,7 +459,7 @@ impl MPVControlSidebar {
         imp.sub_background_color
             .set_rgba(&gtk::gdk::RGBA::new(0.0, 0.0, 0.0, 0.0));
 
-        self.toast(gettext("Subtitle color settings cleared."));
+        self.toast("Subtitle color settings cleared.");
     }
 
     #[template_callback]
@@ -485,7 +468,7 @@ impl MPVControlSidebar {
         imp.sub_offset_adj.set_value(0.0);
         imp.sub_speed_adj.set_value(0.0);
 
-        self.toast(gettext("Subtitle offset settings cleared."));
+        self.toast("Subtitle offset settings cleared.");
     }
 
     #[template_callback]
@@ -527,7 +510,7 @@ impl MPVControlSidebar {
         imp.deband_range_adj.set_value(16.0);
         imp.deband_grain_adj.set_value(32.0);
 
-        self.toast(gettext("Deband settings cleared."));
+        self.toast("Deband settings cleared.");
     }
 
     #[template_callback]

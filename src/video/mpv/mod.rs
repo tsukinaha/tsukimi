@@ -1,14 +1,14 @@
 mod actor;
 mod area;
 mod contexted;
-mod proxy;
 mod paintable;
+mod proxy;
 
 pub use actor::*;
 pub use area::*;
 pub use contexted::*;
-pub use proxy::*;
 pub use paintable::*;
+pub use proxy::*;
 
 use flume::{Receiver, Sender, unbounded};
 use once_cell::sync::Lazy;
@@ -17,7 +17,7 @@ pub enum ListenEvent {
     Seek,
     PlaybackRestart,
     Eof(u32),
-    StartFile,
+    FileLoaded,
     Duration(f64),
     Pause(bool),
     CacheSpeed(i64),

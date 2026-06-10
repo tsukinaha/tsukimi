@@ -34,7 +34,7 @@
     <file preprocess="xml-stripblanks" alias="video-reel-symbolic.svg">icons/scalable/actions/video-reel-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="video-reel2-symbolic.svg">icons/scalable/actions/video-reel2-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/io/github/mutsumi/ui/">
+  <gresource prefix="/io/github/mutsumi">
     <file compressed="true" preprocess="xml-stripblanks">ui/menu.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/menu_actions.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/player.ui</file>

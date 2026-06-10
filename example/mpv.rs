@@ -1,14 +1,18 @@
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow, Box as GtkBox, Button, Entry, Orientation};
-use mutsumi::video::{MutsumiVideoPlayer};
+use mutsumi::video::MutsumiVideoPlayer;
 
 fn main() {
     gtk::init().expect("Failed to initialize GTK");
 
     let player = MutsumiVideoPlayer::new();
 
-    player.backend_ref().mpv().mpv.command("script-binding", &["stats/display-stats-toggle"]);
+    player
+        .backend_ref()
+        .mpv()
+        .mpv
+        .command("script-binding", &["stats/display-stats-toggle"]);
     let player_clone = player.clone();
 
     glib::spawn_future_local(async move {
@@ -25,7 +29,7 @@ fn main() {
     app.connect_activate(move |app| {
         let window = ApplicationWindow::builder()
             .application(app)
-            .title("mutsumi MPVGLArea example")
+            .title("mutsumi video player example")
             .default_width(960)
             .default_height(540)
             .build();

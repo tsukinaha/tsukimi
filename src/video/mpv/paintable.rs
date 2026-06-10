@@ -10,10 +10,7 @@ use crate::video::{
 use gtk::gdk;
 
 mod imp {
-    use crate::{
-        FRAME_CHANNEL, create_mpv_proxy,
-        video::{MutsumiMpvError, mpv::contexted::ContextedMPV},
-    };
+    use crate::{FRAME_CHANNEL, create_mpv_proxy, video::mpv::contexted::ContextedMPV};
     use std::{
         cell::RefCell,
         os::fd::{AsRawFd, IntoRawFd},
@@ -130,10 +127,6 @@ mod imp {
 
             self.mpv.mpv.set_property("vo", "gpu-next".to_owned());
         }
-
-        fn throw_error(&self, code: MutsumiMpvError) {
-            self.obj().emit_by_name::<()>("mutsumi-error", &[&code]);
-        }
     }
 }
 
@@ -157,7 +150,7 @@ impl MutsumiVideoSink {
         &self.imp().mpv
     }
 
-    pub fn play(&self, url: &str, percentage: f64) {
+    pub fn play(&self, url: &str, start_seconds: f64) {
         let url = url.to_owned();
 
         glib::spawn_future_local(glib::clone!(
@@ -169,7 +162,7 @@ impl MutsumiVideoSink {
                 info!("Now Playing: {}", url);
                 mpv.load_video(&url);
 
-                mpv.set_start(percentage);
+                mpv.set_start(start_seconds);
                 mpv.pause(false);
             }
         ));
@@ -215,8 +208,8 @@ impl MutsumiVideoSink {
         self.mpv().set_percent_position(value);
     }
 
-    pub fn set_start(&self, percentage: f64) {
-        self.mpv().set_start(percentage);
+    pub fn set_start(&self, start_seconds: f64) {
+        self.mpv().set_start(start_seconds);
     }
 
     pub fn set_aid(&self, value: TrackSelection) {
@@ -396,7 +389,7 @@ impl MutsumiVideoSink {
     }
 
     pub fn set_position(&self, position: f64) {
-        self.mpv().set_percent_position(position);
+        self.mpv().set_position(position);
     }
 
     pub fn set_volume(&self, volume: i64) {

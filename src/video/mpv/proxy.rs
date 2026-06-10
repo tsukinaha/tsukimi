@@ -89,7 +89,7 @@ struct StoredPlane {
 }
 
 struct BufferInfo {
-    buffer: Rc<WlBuffer>,
+    _buffer: Rc<WlBuffer>,
     planes: Vec<StoredPlane>,
     width: u32,
     height: u32,
@@ -448,7 +448,7 @@ impl ZwpLinuxBufferParamsV1Handler for BufferParamsHandler {
         });
 
         let info = BufferInfo {
-            buffer: Rc::clone(buffer_id),
+            _buffer: Rc::clone(buffer_id),
             planes: std::mem::take(&mut self.planes),
             width: width as u32,
             height: height as u32,

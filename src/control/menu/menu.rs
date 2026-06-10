@@ -1,5 +1,5 @@
 use adw::subclass::prelude::*;
-use gtk::{CompositeTemplate, glib};
+use gtk::{CompositeTemplate, glib, prelude::*};
 
 mod imp {
 
@@ -49,6 +49,17 @@ glib::wrapper! {
 impl MenuActions {
     pub fn new() -> Self {
         glib::Object::new()
+    }
+
+    pub fn set_paused(&self, paused: bool, play_tooltip: &str, pause_tooltip: &str) {
+        let play_pause_button = self.imp().play_pause_button.get();
+        if paused {
+            play_pause_button.set_icon_name("media-playback-start-symbolic");
+            play_pause_button.set_tooltip_text(Some(play_tooltip));
+        } else {
+            play_pause_button.set_icon_name("media-playback-pause-symbolic");
+            play_pause_button.set_tooltip_text(Some(pause_tooltip));
+        }
     }
 }
 

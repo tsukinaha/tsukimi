@@ -1,3 +1,5 @@
+#![allow(dead_code, unused_variables)]
+
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::env;
 use std::ffi::OsStr;
@@ -274,7 +276,7 @@ fn write_ui_gresource(
     blp_inputs: &[PathBuf],
 ) {
     xml.push_str(&format!(
-        "  <gresource prefix=\"{}/ui/\">\n",
+        "  <gresource prefix=\"{}\">\n",
         APP_RESOURCE_PREFIX
     ));
 
