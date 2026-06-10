@@ -8,7 +8,6 @@ mod arg;
 mod config;
 mod gstl;
 mod macros;
-#[cfg(target_os = "linux")]
 mod mpris_common;
 mod ui;
 mod utils;
@@ -72,4 +71,20 @@ fn register_gio_resources() {
     let path = std::path::Path::new(PKGDATADIR).join(GRESOURCE_FILE);
     let resources = gtk::gio::Resource::load(path).expect("Failed to load resources.");
     gtk::gio::resources_register(&resources);
+}
+
+#[cfg(test)]
+mod tests {
+    use gtk::gio;
+
+    #[test]
+    fn registers_embedded_mutsumi_templates() {
+        mutsumi::register_resources();
+
+        gio::resources_lookup_data(
+            "/io/github/mutsumi/ui/mpv_control_sidebar.ui",
+            gio::ResourceLookupFlags::NONE,
+        )
+        .expect("mutsumi MPVControlSidebar template should be registered");
+    }
 }

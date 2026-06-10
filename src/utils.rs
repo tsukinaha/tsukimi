@@ -43,6 +43,7 @@ where
     });
 }
 
+#[allow(dead_code)]
 pub fn spawn_tokio_blocking_without_await<F>(fut: F)
 where
     F: FnOnce() + Send + 'static,

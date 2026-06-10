@@ -197,14 +197,14 @@ impl LocalPlayerInterface for MPVPage {
 
     async fn pause(&self) -> fdo::Result<()> {
         self.on_pause_update(true);
-        self.mpv().pause(true);
+        self.mpv().set_paused(true);
         Ok(())
     }
 
     async fn play_pause(&self) -> fdo::Result<()> {
         let paused = self.imp().video.paused();
         self.on_pause_update(!paused);
-        self.mpv().pause(!paused);
+        self.mpv().set_paused(!paused);
         Ok(())
     }
 
@@ -215,7 +215,7 @@ impl LocalPlayerInterface for MPVPage {
 
     async fn play(&self) -> fdo::Result<()> {
         self.on_pause_update(false);
-        self.mpv().pause(false);
+        self.mpv().set_paused(false);
         Ok(())
     }
 

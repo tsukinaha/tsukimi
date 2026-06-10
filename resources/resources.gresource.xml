@@ -81,11 +81,9 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/action_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/check_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/mpv_menu.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/mpv_menu_actions.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/mpv_shortcuts_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/tu_overview_item.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/item_carousel.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/mpv_control_sidebar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/server_action_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/image_drop_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/image_dialog_search_page.ui</file>
@@ -97,7 +95,6 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/filters_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/filter_label.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/filter_search_page.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/volume_bar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/episode_switcher.ui</file>
   </gresource>
 </gresources>

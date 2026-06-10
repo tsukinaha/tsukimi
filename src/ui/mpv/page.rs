@@ -13,21 +13,17 @@ use gtk::{
     subclass::prelude::*,
 };
 use itertools::Itertools;
-
-use super::{
-    mpvglarea::MPVGLArea,
-    tsukimi_mpv::{
-        ChapterList,
-        ListenEvent,
-        MPV_EVENT_CHANNEL,
-        MpvTrack,
-        MpvTracks,
-        PAUSED,
-        TrackSelection,
-        TsukimiMPV,
-    },
-    video_scale::VideoScale,
+use mutsumi::{
+    ChapterList,
+    ListenEvent,
+    MPV_EVENT_CHANNEL,
+    MpvTrack,
+    MpvTracks,
+    TrackSelection,
+    VideoScale,
 };
+
+use super::mpvglarea::MPVGLArea;
 use crate::{
     client::{
         error::UserFacingError,
@@ -142,7 +138,6 @@ mod imp {
         glib,
         subclass::prelude::*,
     };
-    #[cfg(target_os = "linux")]
     use mpris_server::LocalServer;
     use once_cell::sync::OnceCell;
 
@@ -154,14 +149,14 @@ mod imp {
         },
         ui::{
             models::SETTINGS,
-            mpv::{
-                VolumeBar,
-                menu_actions::MenuActions,
-                mpvglarea::MPVGLArea,
-                video_scale::VideoScale,
-            },
+            mpv::mpvglarea::MPVGLArea,
             provider::tu_item::TuItem,
         },
+    };
+    use mutsumi::{
+        MenuActions,
+        VideoScale,
+        VolumeBar,
     };
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
@@ -229,9 +224,7 @@ mod imp {
         pub current_segment_end: Cell<Option<f64>>,
         pub popover: RefCell<Option<PopoverMenu>>,
         pub menu_actions: MenuActions,
-        #[cfg(target_os = "linux")]
         pub mpris_server: OnceCell<LocalServer<super::MPVPage>>,
-        #[cfg(target_os = "linux")]
         pub mpris_art_url: RefCell<Option<String>>,
 
         #[template_child]
@@ -272,7 +265,9 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
+            mutsumi::register_resources();
             MPVGLArea::ensure_type();
+            MenuActions::ensure_type();
             VideoScale::ensure_type();
             VolumeBar::ensure_type();
             klass.bind_template();
@@ -348,7 +343,7 @@ mod imp {
                 .bind("mpv-default-volume", &self.volume_adj.get(), "value")
                 .build();
 
-            self.video_scale.set_player(Some(&self.video.get()));
+            self.video_scale.set_player(Some(self.video.get().player()));
 
             let obj = self.obj();
 
@@ -366,7 +361,6 @@ mod imp {
             obj.listen_events();
 
             // Initialize MPRIS server
-            #[cfg(target_os = "linux")]
             glib::spawn_future_local(glib::clone!(
                 #[weak(rename_to = imp)]
                 self,
@@ -401,18 +395,15 @@ mod imp {
 
         fn set_paused(&self, paused: bool) {
             let play_pause_image = self.play_pause_image.get();
-            let menu_actions_play_pause_button = self.menu_actions.imp().play_pause_button.get();
             if paused {
                 play_pause_image.set_icon_name(Some("media-playback-start-symbolic"));
                 play_pause_image.set_tooltip_text(Some(&gettext("Play")));
-                menu_actions_play_pause_button.set_icon_name("media-playback-start-symbolic");
-                menu_actions_play_pause_button.set_tooltip_text(Some(&gettext("Play")));
             } else {
                 play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
                 play_pause_image.set_tooltip_text(Some(&gettext("Pause")));
-                menu_actions_play_pause_button.set_icon_name("media-playback-pause-symbolic");
-                menu_actions_play_pause_button.set_tooltip_text(Some(&gettext("Pause")));
             }
+            self.menu_actions
+                .set_paused(paused, &gettext("Play"), &gettext("Pause"));
             self.paused.set(paused);
         }
     }
@@ -539,14 +530,10 @@ impl MPVPage {
                 .video_version_matcher
                 .replace(Some(video_matcher));
         }
-
-        #[cfg(target_os = "linux")]
         let track_list_changed = self.mpris_track_list_changed(&episode_list);
 
         self.set_current_video(Some(item));
         self.imp().current_episode_list.replace(episode_list);
-
-        #[cfg(target_os = "linux")]
         {
             self.imp().mpris_art_url.take();
             if track_list_changed {
@@ -847,11 +834,14 @@ impl MPVPage {
             listbox.remove(&row);
         }
 
-        let track_id = self.imp().video.get_track_id(kind.property());
+        let selected_track_id = tracks
+            .iter()
+            .find_map(|track| track.selected.then_some(track.id))
+            .unwrap_or(0);
 
         let row = CheckRow::new();
         row.set_title("None");
-        if track_id == 0 {
+        if selected_track_id == 0 {
             row.imp().check.get().set_active(true);
         }
         let none_check = &row.imp().check.get();
@@ -871,7 +861,7 @@ impl MPVPage {
             row.imp().track_id.replace(track.id);
             let check = &row.imp().check.get();
             check.set_group(Some(none_check));
-            if track.id == track_id {
+            if track.id == selected_track_id {
                 check.set_active(true);
             }
             row.connect_activated(glib::clone!(
@@ -899,7 +889,7 @@ impl MPVPage {
 
     async fn load_video(&self, offset: isize) {
         if self.paused() {
-            self.imp().video.pause();
+            self.imp().video.command_pause();
         }
 
         let Some(current_video) = self.imp().current_video.borrow().to_owned() else {
@@ -1070,6 +1060,7 @@ impl MPVPage {
 
     fn scale_cb(&self, value: i64) {
         self.imp().last_playback_position.set(value as f64);
+        self.imp().video.set_cached_position(value as f64);
         if !self.imp().video_scale.is_dragging() {
             self.imp().video_scale.set_value(value as f64);
         }
@@ -1183,6 +1174,7 @@ impl MPVPage {
             self.notify_player_paused();
         }
 
+        self.imp().video.set_cached_paused(value);
         self.set_paused(value);
     }
 
@@ -1358,7 +1350,7 @@ impl MPVPage {
     #[template_callback]
     fn on_play_pause_clicked(&self) {
         let video = &self.imp().video;
-        video.pause();
+        video.command_pause();
     }
 
     #[template_callback]
@@ -1367,11 +1359,9 @@ impl MPVPage {
         self.remove_timeout();
         self.reset_skippable_segments();
 
-        let mpv = self.mpv();
-        mpv.pause(true);
-        mpv.stop();
-        mpv.event_thread_alive
-            .store(PAUSED, std::sync::atomic::Ordering::SeqCst);
+        let video = self.imp().video.get();
+        video.set_paused(true);
+        video.stop();
         let root = self.root();
         let window = root
             .and_downcast_ref::<crate::ui::widgets::window::Window>()
@@ -1447,7 +1437,7 @@ impl MPVPage {
 
     #[template_callback]
     fn left_click_cb(&self) {
-        self.imp().video.pause();
+        self.imp().video.command_pause();
     }
 
     #[template_callback]
@@ -1532,42 +1522,35 @@ impl MPVPage {
         self.key_pressed_cb(NEXT_CHAPTER_KEYVAL, gtk::gdk::ModifierType::empty());
     }
 
-    pub fn mpv(&self) -> &TsukimiMPV {
-        self.imp().video.imp().mpv()
+    pub fn mpv(&self) -> MPVGLArea {
+        self.imp().video.get()
     }
 
     pub fn notify_playing(&self) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_playing();
     }
 
     pub fn notify_track_changed(&self) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_track_changed();
     }
 
     pub fn notify_player_paused(&self) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_paused();
     }
 
     pub fn notify_volume_changed(&self, volume: f64) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_volume(volume);
     }
 
     pub fn notify_stopped(&self) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_stopped();
     }
 
     pub fn notify_seeked(&self, position: i64) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_seeked(position);
     }
 
     pub fn notify_track_list_replaced(&self) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_track_list_replaced();
     }
 }

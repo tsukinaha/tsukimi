@@ -25,10 +25,7 @@ mod imp {
     use crate::{
         ui::{
             SETTINGS,
-            mpv::{
-                control_sidebar::MPVControlSidebar,
-                page::MPVPage,
-            },
+            mpv::page::MPVPage,
             provider::tu_object::TuObject,
             widgets::{
                 content_viewer::MediaContentViewer,
@@ -46,6 +43,7 @@ mod imp {
         },
         utils::spawn,
     };
+    use mutsumi::MPVControlSidebar;
 
     // Object holding the state
     #[derive(CompositeTemplate, Default)]
@@ -141,6 +139,7 @@ mod imp {
             SearchPage::ensure_type();
             LikedPage::ensure_type();
             MPVPage::ensure_type();
+            mutsumi::register_resources();
             MPVControlSidebar::ensure_type();
             ThemeSwitcher::ensure_type();
             klass.bind_template();
@@ -191,7 +190,24 @@ mod imp {
                 gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
             ));
             self.mpv_control_sidebar
-                .set_player(Some(&self.mpvnav.imp().video.get()));
+                .set_player(Some(&self.mpvnav.imp().video.get().player()));
+            self.mpv_control_sidebar
+                .set_show_buffer_speed(SETTINGS.mpv_show_buffer_speed());
+            self.mpv_control_sidebar
+                .connect_show_buffer_speed_notify(|sidebar| {
+                    let _ = SETTINGS.set_mpv_show_buffer_speed(sidebar.show_buffer_speed());
+                });
+            self.mpv_control_sidebar.set_hwdec(SETTINGS.mpv_hwdec());
+            self.mpv_control_sidebar.connect_hwdec_notify(|sidebar| {
+                let _ = SETTINGS.set_mpv_hwdec(sidebar.hwdec());
+            });
+            self.mpv_control_sidebar
+                .set_action_after_video_end(SETTINGS.mpv_action_after_video_end());
+            self.mpv_control_sidebar
+                .connect_action_after_video_end_notify(|sidebar| {
+                    let _ =
+                        SETTINGS.set_mpv_action_after_video_end(sidebar.action_after_video_end());
+                });
 
             let obj = self.obj();
 
