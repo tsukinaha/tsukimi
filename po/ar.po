@@ -470,10 +470,6 @@ msgstr "إزالة التعريف"
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "هل أنت متأكد أنك تريد إعادة تعيين جميع البيانات الوصفية؟"
 
-#: src/ui/widgets/tu_list_item.rs:511
-msgid "Waiting for mediasource ..."
-msgstr "في انتظار مصدر الوسائط ..."
-
 #: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
 msgid "Home"
 msgstr "الرئيسية"
@@ -1887,6 +1883,9 @@ msgstr "المحتويات"
 #: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "الخوادم"
+
+#~ msgid "Waiting for mediasource ..."
+#~ msgstr "في انتظار مصدر الوسائط ..."
 
 #~ msgid "Halve/double current playback speed"
 #~ msgstr "نصف/مضاعفة سرعة التشغيل الحالية"
