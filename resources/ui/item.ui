@@ -266,15 +266,21 @@
                           </object>
                         </child>
                         <child type="overlay">
-                          <object class="GtkBox" id="logobox">
+                          <object class="AdwClamp">
+                            <property name="maximum-size">400</property>
+                            <property name="tightening-threshold">400</property>
                             <property name="margin-start">30</property>
                             <property name="margin-top">15</property>
-                            <property name="height-request">150</property>
-                            <property name="valign">start</property>
                             <property name="halign">start</property>
-                            <style>
-                              <class name="logo" />
-                            </style>
+                            <property name="valign">start</property>
+                            <child>
+                              <object class="GtkBox" id="logobox">
+                                <property name="height-request">150</property>
+                                <style>
+                                  <class name="logo" />
+                                </style>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>

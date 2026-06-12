@@ -1,7 +1,6 @@
 use std::cell::RefCell;
 
 use adw::prelude::*;
-use gettextrs::gettext;
 use glib::Object;
 use gtk::{
     gio,
@@ -19,7 +18,6 @@ use super::tu_item::{
     TuItemOverlayPrelude,
 };
 use crate::ui::{
-    GlobalToast,
     provider::tu_item::TuItem,
     widgets::utils::{
         TU_ITEM_BANNER_SIZE,
