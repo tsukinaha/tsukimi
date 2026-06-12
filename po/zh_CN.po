@@ -467,10 +467,6 @@ msgstr "删除标识"
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "您确定要重置所有元数据吗？"
 
-#: src/ui/widgets/tu_list_item.rs:511
-msgid "Waiting for mediasource ..."
-msgstr "正在等待媒体源..."
-
 #: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
 msgid "Home"
 msgstr "首页"
@@ -1826,6 +1822,9 @@ msgstr "目录"
 #: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "服务器"
+
+#~ msgid "Waiting for mediasource ..."
+#~ msgstr "正在等待媒体源..."
 
 #~ msgid "Halve/double current playback speed"
 #~ msgstr "将当前播放速度减半/加倍"

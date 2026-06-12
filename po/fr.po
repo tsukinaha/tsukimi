@@ -9,11 +9,11 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
-"PO-Revision-Date: 2026-06-03 03:28+0000\n"
-"Last-Translator: MarioSwitch "
-"<58565980+MarioSwitch@users.noreply.github.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
-">\n"
+"PO-Revision-Date: 2026-06-11 08:01+0000\n"
+"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>"
+"\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -464,10 +464,6 @@ msgstr "Supprimer l'identification"
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "Êtes-vous sûr de vouloir réinitialiser toutes les métadonnées ?"
 
-#: src/ui/widgets/tu_list_item.rs:511
-msgid "Waiting for mediasource ..."
-msgstr "En attente d'une source de média..."
-
 #: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
 msgid "Home"
 msgstr "Accueil"
@@ -562,14 +558,12 @@ msgid "Appearence"
 msgstr "Apparence"
 
 #: resources/ui/account_settings.ui:76
-#, fuzzy
-#| msgid "Accent Color"
 msgid "Use Custom Accent Color"
-msgstr "Couleur d'accentuation"
+msgstr "Utiliser une couleur d'accentuation personnalisée"
 
 #: resources/ui/account_settings.ui:77
 msgid "Disable to follow the system accent color"
-msgstr ""
+msgstr "Désactiver pour utiliser la couleur d'accentuation du système"
 
 #: resources/ui/account_settings.ui:82
 msgid "Accent Color"
@@ -584,24 +578,20 @@ msgid "Auto Select Last Server"
 msgstr "Sélectionner automatiquement le dernier serveur"
 
 #: resources/ui/account_settings.ui:110
-#, fuzzy
-#| msgid "Home"
 msgid "Home Page"
-msgstr "Accueil"
+msgstr "Page d'accueil"
 
 #: resources/ui/account_settings.ui:113
 msgid "Refresh when returning to home page"
 msgstr "Rafraîchir lors du retour à la page d'accueil"
 
 #: resources/ui/account_settings.ui:118
-#, fuzzy
-#| msgid "Continue Watching"
 msgid "Merge Continue Watching and Next Up"
-msgstr "Continuer de regarder"
+msgstr "Fusionner « Continuer de regarder » et « À suivre »"
 
 #: resources/ui/account_settings.ui:119
 msgid "Jellyfin only"
-msgstr ""
+msgstr "Jellyfin seulement"
 
 #: resources/ui/account_settings.ui:126
 msgid "Network"
@@ -1029,7 +1019,7 @@ msgstr "Modifier les métadonnées"
 
 #: resources/ui/liked.ui:70
 msgid "Your favorite items will be placed here"
-msgstr ""
+msgstr "Vos éléments favoris seront placés ici"
 
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
@@ -1154,7 +1144,7 @@ msgstr "Temps du cache"
 
 #: resources/ui/mpv_control_sidebar.ui:132 resources/ui/mpvpage.ui:364
 msgid "Subtitle"
-msgstr "Sous-titres"
+msgstr "Sous-titre"
 
 #: resources/ui/mpv_control_sidebar.ui:135
 msgid "Subtitle Composing"
@@ -1422,98 +1412,68 @@ msgid "Forward"
 msgstr "Saut en avant"
 
 #: resources/ui/mpv_shortcuts_window.ui:6
-#, fuzzy
-#| msgid "Loop Playback"
 msgid "Playback"
-msgstr "Lire en boucle"
+msgstr "Lecture"
 
 #: resources/ui/mpv_shortcuts_window.ui:9
-#, fuzzy
-#| msgid "Resume"
 msgid "Pause / Resume"
-msgstr "Reprendre"
+msgstr "Mettre en pause / Reprendre"
 
 #: resources/ui/mpv_shortcuts_window.ui:15
-#, fuzzy
-#| msgid "Seek Forward"
 msgid "Seek Forward 5 Seconds"
-msgstr "Action de saut en avant"
+msgstr "Avancer de 5 secondes"
 
 #: resources/ui/mpv_shortcuts_window.ui:21
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Seek Backward 5 Seconds"
-msgstr "Action de retour arrière"
+msgstr "Reculer de 5 secondes"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
-#, fuzzy
-#| msgid "Seek Forward"
 msgid "Seek Forward 60 Seconds"
-msgstr "Action de saut en avant"
+msgstr "Avancer de 60 secondes"
 
 #: resources/ui/mpv_shortcuts_window.ui:33
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Seek Backward 60 Seconds"
-msgstr "Action de retour arrière"
+msgstr "Reculer de 60 secondes"
 
 #: resources/ui/mpv_shortcuts_window.ui:39
 msgid "Seek Forward 1 Second (Exact)"
-msgstr ""
+msgstr "Avancer de 1 seconde (exact)"
 
 #: resources/ui/mpv_shortcuts_window.ui:45
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Seek Backward 1 Second (Exact)"
-msgstr "Action de retour arrière"
+msgstr "Reculer de 1 seconde (exact)"
 
 #: resources/ui/mpv_shortcuts_window.ui:51
-#, fuzzy
-#| msgid "Seek Forward"
 msgid "Step One Frame Forward"
-msgstr "Action de saut en avant"
+msgstr "Avancer de 1 image"
 
 #: resources/ui/mpv_shortcuts_window.ui:57
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Step One Frame Backward"
-msgstr "Action de retour arrière"
+msgstr "Reculer de 1 image"
 
 #: resources/ui/mpv_shortcuts_window.ui:65
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Playback Speed"
 msgstr "Vitesse de lecture"
 
 #: resources/ui/mpv_shortcuts_window.ui:68
-#, fuzzy
-#| msgid "Decrease/increase playback speed by 10%"
 msgid "Decrease Speed by 10%"
-msgstr "Diminuer / augmenter la vitesse de lecture de 10 %"
+msgstr "Diminuer la vitesse de 10 %"
 
 #: resources/ui/mpv_shortcuts_window.ui:74
-#, fuzzy
-#| msgid "Decrease/increase playback speed by 10%"
 msgid "Increase Speed by 10%"
-msgstr "Diminuer / augmenter la vitesse de lecture de 10 %"
+msgstr "Augmenter la vitesse de 10 %"
 
 #: resources/ui/mpv_shortcuts_window.ui:80
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Halve Playback Speed"
-msgstr "Vitesse de lecture"
+msgstr "Diviser par 2 la vitesse de lecture"
 
 #: resources/ui/mpv_shortcuts_window.ui:86
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Double Playback Speed"
-msgstr "Vitesse de lecture"
+msgstr "Multiplier par 2 la vitesse de lecture"
 
 #: resources/ui/mpv_shortcuts_window.ui:92
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Reset Playback Speed"
-msgstr "Vitesse de lecture"
+msgstr "Réinitialiser la vitesse de lecture"
 
 #: resources/ui/mpv_shortcuts_window.ui:100
 msgid "Volume"
@@ -1521,127 +1481,111 @@ msgstr "Volume"
 
 #: resources/ui/mpv_shortcuts_window.ui:103
 msgid "Increase Volume"
-msgstr ""
+msgstr "Augmenter le volume"
 
 #: resources/ui/mpv_shortcuts_window.ui:109
 msgid "Decrease Volume"
-msgstr ""
+msgstr "Diminuer le volume"
 
 #: resources/ui/mpv_shortcuts_window.ui:115
 msgid "Mute / Unmute"
-msgstr ""
+msgstr "Couper / Rétablir le son"
 
 #: resources/ui/mpv_shortcuts_window.ui:121
 msgid "Increase Volume (Numpad)"
-msgstr ""
+msgstr "Augmenter le volume (pavé numérique)"
 
 #: resources/ui/mpv_shortcuts_window.ui:127
 msgid "Decrease Volume (Numpad)"
-msgstr ""
+msgstr "Diminuer le volume (pavé numérique)"
 
 #: resources/ui/mpv_shortcuts_window.ui:135
-#, fuzzy
-#| msgid "Subtitle"
 msgid "Subtitles"
 msgstr "Sous-titres"
 
 #: resources/ui/mpv_shortcuts_window.ui:138
 msgid "Cycle Subtitle Tracks Forward"
-msgstr ""
+msgstr "Utiliser la piste de sous-titres suivante"
 
 #: resources/ui/mpv_shortcuts_window.ui:144
 msgid "Cycle Subtitle Tracks Backward"
-msgstr ""
+msgstr "Utiliser la piste de sous-titres précédente"
 
 #: resources/ui/mpv_shortcuts_window.ui:150
 msgid "Toggle Subtitle Visibility"
-msgstr ""
+msgstr "Afficher/masquer les sous-titres"
 
 #: resources/ui/mpv_shortcuts_window.ui:156
 msgid "Decrease Subtitle Delay"
-msgstr ""
+msgstr "Diminuer le délai des sous-titres"
 
 #: resources/ui/mpv_shortcuts_window.ui:162
 msgid "Increase Subtitle Delay"
-msgstr ""
+msgstr "Augmenter le délai des sous-titres"
 
 #: resources/ui/mpv_shortcuts_window.ui:168
-#, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Increase Subtitle Font Size"
-msgstr "Taille du texte des sous-titres"
+msgstr "Augmenter la taille des sous-titres"
 
 #: resources/ui/mpv_shortcuts_window.ui:174
-#, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Decrease Subtitle Font Size"
-msgstr "Taille du texte des sous-titres"
+msgstr "Diminuer la taille des sous-titres"
 
 #: resources/ui/mpv_shortcuts_window.ui:182
 msgid "Tracks"
-msgstr ""
+msgstr "Pistes"
 
 #: resources/ui/mpv_shortcuts_window.ui:185
 msgid "Cycle Audio Tracks"
-msgstr ""
+msgstr "Cycler entre les pistes audio"
 
 #: resources/ui/mpv_shortcuts_window.ui:191
 msgid "Cycle Video Tracks"
-msgstr ""
+msgstr "Cycler entre les pistes vidéo"
 
 #: resources/ui/mpv_shortcuts_window.ui:199
 msgid "Chapters and Playlist"
-msgstr ""
+msgstr "Chapitres et liste de lecture"
 
 #: resources/ui/mpv_shortcuts_window.ui:202
-#, fuzzy
-#| msgid "Previous chapter"
 msgid "Previous Chapter"
 msgstr "Chapitre précédent"
 
 #: resources/ui/mpv_shortcuts_window.ui:208
-#, fuzzy
-#| msgid "Next chapter"
 msgid "Next Chapter"
 msgstr "Chapitre suivant"
 
 #: resources/ui/mpv_shortcuts_window.ui:214
-#, fuzzy
-#| msgid "Previous chapter"
 msgid "Previous Playlist Entry"
-msgstr "Chapitre précédent"
+msgstr "Entrée précédente de la liste de lecture"
 
 #: resources/ui/mpv_shortcuts_window.ui:220
 msgid "Next Playlist Entry"
-msgstr ""
+msgstr "Entrée suivante de la liste de lecture"
 
 #: resources/ui/mpv_shortcuts_window.ui:231
-#, fuzzy
-#| msgid "Fullscreen"
 msgid "Toggle Fullscreen"
-msgstr "Plein écran"
+msgstr "(Dés)activer le plein écran"
 
 #: resources/ui/mpv_shortcuts_window.ui:237
 msgid "Set / Clear A-B Loop Points"
-msgstr ""
+msgstr "Paramétrer / Effacer les bornes A-B permettant de boucler"
 
 #: resources/ui/mpv_shortcuts_window.ui:243
 msgid "Toggle Infinite Loop"
-msgstr ""
+msgstr "(Dés)activer le bouclage infini"
 
 #: resources/ui/mpv_shortcuts_window.ui:249
-#, fuzzy
-#| msgid "DisplayTitle"
 msgid "Display Statistics"
-msgstr "Titre d'affichage"
+msgstr "Afficher les statistiques"
 
 #: resources/ui/mpv_shortcuts_window.ui:255
 msgid "Quit"
-msgstr ""
+msgstr "Quitter"
 
 #: resources/ui/mpv_shortcuts_window.ui:261
 msgid "Quit and Save Position"
-msgstr ""
+msgstr "Quitter et sauvegarder la position"
 
 #: resources/ui/mpvpage.ui:101
 msgid "Stop and quit"
@@ -1649,17 +1593,15 @@ msgstr "Arrêter et quitter"
 
 #: resources/ui/mpvpage.ui:158
 msgid "Shortcuts"
-msgstr ""
+msgstr "Raccourcis"
 
 #: resources/ui/mpvpage.ui:186
 msgid "Media info (MPV)"
 msgstr "Informations du média (MPV)"
 
 #: resources/ui/mpvpage.ui:376
-#, fuzzy
-#| msgid "Volume"
 msgid "Adjust Volume"
-msgstr "Volume"
+msgstr "Ajuster le volume"
 
 #: resources/ui/other.ui:94
 msgid "No Inscriptions"
@@ -1885,6 +1827,9 @@ msgstr "Contenu"
 #: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "Serveurs"
+
+#~ msgid "Waiting for mediasource ..."
+#~ msgstr "En attente d'une source de média..."
 
 #~ msgid "Halve/double current playback speed"
 #~ msgstr "Diminuer de moitié / doubler la vitesse de lecture actuelle"

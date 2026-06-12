@@ -1,14 +1,14 @@
 # Hosted Weblate user 135666 <xmtaha@users.noreply.hosted.weblate.org>, 2026.
+# Taha <xmtaha@users.noreply.hosted.weblate.org>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-06 12:32+0200\n"
-"PO-Revision-Date: 2026-06-06 11:18+0000\n"
-"Last-Translator: Hosted Weblate user 135666 "
-"<xmtaha@users.noreply.hosted.weblate.org>\n"
-"Language-Team: Turkish <https://hosted.weblate.org/projects/tsukimi/main/tr/"
-">\n"
+"PO-Revision-Date: 2026-06-11 09:01+0000\n"
+"Last-Translator: Taha <xmtaha@users.noreply.hosted.weblate.org>\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/tsukimi/main/tr/>"
+"\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -457,10 +457,6 @@ msgstr "Tanımlamayı Kaldır"
 #: src/ui/widgets/tu_item/action.rs:546
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "Tüm üst verileri (metadata) sıfırlamak istediğinize emin misiniz?"
-
-#: src/ui/widgets/tu_list_item.rs:511
-msgid "Waiting for mediasource ..."
-msgstr "Medya kaynağı bekleniyor..."
 
 #: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
 msgid "Home"
@@ -1408,98 +1404,68 @@ msgid "Forward"
 msgstr "İleri"
 
 #: resources/ui/mpv_shortcuts_window.ui:6
-#, fuzzy
-#| msgid "Loop Playback"
 msgid "Playback"
-msgstr "Oynatmayı Döngüye Al"
+msgstr "Oynatma"
 
 #: resources/ui/mpv_shortcuts_window.ui:9
-#, fuzzy
-#| msgid "Resume"
 msgid "Pause / Resume"
-msgstr "Devam Et"
+msgstr "Duraklat / Devam Et"
 
 #: resources/ui/mpv_shortcuts_window.ui:15
-#, fuzzy
-#| msgid "Seek Forward"
 msgid "Seek Forward 5 Seconds"
-msgstr "İleriye Atla"
+msgstr "5 Saniye İleri Sar"
 
 #: resources/ui/mpv_shortcuts_window.ui:21
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Seek Backward 5 Seconds"
-msgstr "Geriye Atla"
+msgstr "5 Saniye Geri Sar"
 
 #: resources/ui/mpv_shortcuts_window.ui:27
-#, fuzzy
-#| msgid "Seek Forward"
 msgid "Seek Forward 60 Seconds"
-msgstr "İleriye Atla"
+msgstr "60 Saniye İleri Sar"
 
 #: resources/ui/mpv_shortcuts_window.ui:33
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Seek Backward 60 Seconds"
-msgstr "Geriye Atla"
+msgstr "60 Saniye Geri Sar"
 
 #: resources/ui/mpv_shortcuts_window.ui:39
 msgid "Seek Forward 1 Second (Exact)"
-msgstr ""
+msgstr "1 Saniye İleri Sar (Tam Zamanlı)"
 
 #: resources/ui/mpv_shortcuts_window.ui:45
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Seek Backward 1 Second (Exact)"
-msgstr "Geriye Atla"
+msgstr "1 Saniye Geri Sar (Tam Zamanlı)"
 
 #: resources/ui/mpv_shortcuts_window.ui:51
-#, fuzzy
-#| msgid "Seek Forward"
 msgid "Step One Frame Forward"
-msgstr "İleriye Atla"
+msgstr "Bir Kare İleri Git"
 
 #: resources/ui/mpv_shortcuts_window.ui:57
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Step One Frame Backward"
-msgstr "Geriye Atla"
+msgstr "Bir Kare Geri Git"
 
 #: resources/ui/mpv_shortcuts_window.ui:65
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Playback Speed"
-msgstr "Oynatma hızı"
+msgstr "Oynatma Hızı"
 
 #: resources/ui/mpv_shortcuts_window.ui:68
-#, fuzzy
-#| msgid "Decrease/increase playback speed by 10%"
 msgid "Decrease Speed by 10%"
-msgstr "Oynatma hızını %10 azalt/artır"
+msgstr "Hızı %10 Azalt"
 
 #: resources/ui/mpv_shortcuts_window.ui:74
-#, fuzzy
-#| msgid "Decrease/increase playback speed by 10%"
 msgid "Increase Speed by 10%"
-msgstr "Oynatma hızını %10 azalt/artır"
+msgstr "Hızı %10 Artır"
 
 #: resources/ui/mpv_shortcuts_window.ui:80
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Halve Playback Speed"
-msgstr "Oynatma hızı"
+msgstr "Oynatma Hızını Yarıya İndir"
 
 #: resources/ui/mpv_shortcuts_window.ui:86
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Double Playback Speed"
-msgstr "Oynatma hızı"
+msgstr "Oynatma Hızını İki Katına Çıkar"
 
 #: resources/ui/mpv_shortcuts_window.ui:92
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Reset Playback Speed"
-msgstr "Oynatma hızı"
+msgstr "Oynatma Hızını Sıfırla"
 
 #: resources/ui/mpv_shortcuts_window.ui:100
 msgid "Volume"
@@ -1507,127 +1473,111 @@ msgstr "Ses Seviyesi"
 
 #: resources/ui/mpv_shortcuts_window.ui:103
 msgid "Increase Volume"
-msgstr ""
+msgstr "Sesi Artır"
 
 #: resources/ui/mpv_shortcuts_window.ui:109
 msgid "Decrease Volume"
-msgstr ""
+msgstr "Sesi Azalt"
 
 #: resources/ui/mpv_shortcuts_window.ui:115
 msgid "Mute / Unmute"
-msgstr ""
+msgstr "Sesi Sessize Al / Sesi Aç"
 
 #: resources/ui/mpv_shortcuts_window.ui:121
 msgid "Increase Volume (Numpad)"
-msgstr ""
+msgstr "Sesi Artır (Numpad)"
 
 #: resources/ui/mpv_shortcuts_window.ui:127
 msgid "Decrease Volume (Numpad)"
-msgstr ""
+msgstr "Sesi Azalt (Numpad)"
 
 #: resources/ui/mpv_shortcuts_window.ui:135
-#, fuzzy
-#| msgid "Subtitle"
 msgid "Subtitles"
-msgstr "Altyazı"
+msgstr "Altyazılar"
 
 #: resources/ui/mpv_shortcuts_window.ui:138
 msgid "Cycle Subtitle Tracks Forward"
-msgstr ""
+msgstr "Altyazı İzleri Arasında İleriye Doğru Geçiş Yap"
 
 #: resources/ui/mpv_shortcuts_window.ui:144
 msgid "Cycle Subtitle Tracks Backward"
-msgstr ""
+msgstr "Altyazı İzleri Arasında Geriye Doğru Geçiş Yap"
 
 #: resources/ui/mpv_shortcuts_window.ui:150
 msgid "Toggle Subtitle Visibility"
-msgstr ""
+msgstr "Altyazı Görünürlüğünü Aç/Kapat"
 
 #: resources/ui/mpv_shortcuts_window.ui:156
 msgid "Decrease Subtitle Delay"
-msgstr ""
+msgstr "Altyazı Gecikmesini Azalt"
 
 #: resources/ui/mpv_shortcuts_window.ui:162
 msgid "Increase Subtitle Delay"
-msgstr ""
+msgstr "Altyazı Gecikmesini Artır"
 
 #: resources/ui/mpv_shortcuts_window.ui:168
-#, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Increase Subtitle Font Size"
-msgstr "Altyazı Metin Boyutu"
+msgstr "Altyazı Yazı Tipi Boyutunu Artır"
 
 #: resources/ui/mpv_shortcuts_window.ui:174
-#, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Decrease Subtitle Font Size"
-msgstr "Altyazı Metin Boyutu"
+msgstr "Altyazı Yazı Tipi Boyutunu Azalt"
 
 #: resources/ui/mpv_shortcuts_window.ui:182
 msgid "Tracks"
-msgstr ""
+msgstr "İzler"
 
 #: resources/ui/mpv_shortcuts_window.ui:185
 msgid "Cycle Audio Tracks"
-msgstr ""
+msgstr "Ses İzleri Arasında Geçiş Yap"
 
 #: resources/ui/mpv_shortcuts_window.ui:191
 msgid "Cycle Video Tracks"
-msgstr ""
+msgstr "Video İzleri Arasında Geçiş Yap"
 
 #: resources/ui/mpv_shortcuts_window.ui:199
 msgid "Chapters and Playlist"
-msgstr ""
+msgstr "Bölümler ve Oynatma Listesi"
 
 #: resources/ui/mpv_shortcuts_window.ui:202
-#, fuzzy
-#| msgid "Previous chapter"
 msgid "Previous Chapter"
-msgstr "Önceki bölüm"
+msgstr "Önceki Bölüm"
 
 #: resources/ui/mpv_shortcuts_window.ui:208
-#, fuzzy
-#| msgid "Next chapter"
 msgid "Next Chapter"
-msgstr "Sonraki bölüm"
+msgstr "Sonraki Bölüm"
 
 #: resources/ui/mpv_shortcuts_window.ui:214
-#, fuzzy
-#| msgid "Previous chapter"
 msgid "Previous Playlist Entry"
-msgstr "Önceki bölüm"
+msgstr "Önceki Oynatma Listesi Ögesi"
 
 #: resources/ui/mpv_shortcuts_window.ui:220
 msgid "Next Playlist Entry"
-msgstr ""
+msgstr "Sonraki Oynatma Listesi Ögesi"
 
 #: resources/ui/mpv_shortcuts_window.ui:231
-#, fuzzy
-#| msgid "Fullscreen"
 msgid "Toggle Fullscreen"
-msgstr "Tam Ekran"
+msgstr "Tam Ekranı Aç/Kapat"
 
 #: resources/ui/mpv_shortcuts_window.ui:237
 msgid "Set / Clear A-B Loop Points"
-msgstr ""
+msgstr "A-B Döngü Noktalarını Ayarla / Temizle"
 
 #: resources/ui/mpv_shortcuts_window.ui:243
 msgid "Toggle Infinite Loop"
-msgstr ""
+msgstr "Sonsuz Döngüyü Aç/Kapat"
 
 #: resources/ui/mpv_shortcuts_window.ui:249
-#, fuzzy
-#| msgid "DisplayTitle"
 msgid "Display Statistics"
-msgstr "Görüntüleme Başlığı"
+msgstr "İstatistikleri Göster"
 
 #: resources/ui/mpv_shortcuts_window.ui:255
 msgid "Quit"
-msgstr ""
+msgstr "Çık"
 
 #: resources/ui/mpv_shortcuts_window.ui:261
 msgid "Quit and Save Position"
-msgstr ""
+msgstr "Çık ve Konumu Kaydet"
 
 #: resources/ui/mpvpage.ui:101
 msgid "Stop and quit"
@@ -1635,17 +1585,15 @@ msgstr "Durdur ve çık"
 
 #: resources/ui/mpvpage.ui:158
 msgid "Shortcuts"
-msgstr ""
+msgstr "Kısayollar"
 
 #: resources/ui/mpvpage.ui:186
 msgid "Media info (MPV)"
 msgstr "Medya bilgisi (MPV)"
 
 #: resources/ui/mpvpage.ui:376
-#, fuzzy
-#| msgid "Volume"
 msgid "Adjust Volume"
-msgstr "Ses Seviyesi"
+msgstr "Ses Seviyesini Ayarla"
 
 #: resources/ui/other.ui:94
 msgid "No Inscriptions"
@@ -1870,6 +1818,9 @@ msgstr "İçerikler"
 #: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "Sunucular"
+
+#~ msgid "Waiting for mediasource ..."
+#~ msgstr "Medya kaynağı bekleniyor..."
 
 #~ msgid "Halve/double current playback speed"
 #~ msgstr "Mevcut oynatma hızını yarıya indir/iki katına çıkar"

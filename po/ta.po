@@ -470,10 +470,6 @@ msgstr "அடையாளத்தை அகற்று"
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "எல்லா மெட்டாடேட்டாவையும் மீட்டமைக்க விரும்புகிறீர்களா?"
 
-#: src/ui/widgets/tu_list_item.rs:511
-msgid "Waiting for mediasource ..."
-msgstr "மீடியாசோர்சுக்காக காத்திருக்கிறது ..."
-
 #: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
 msgid "Home"
 msgstr "வீடு"
@@ -1887,6 +1883,9 @@ msgstr "உள்ளடக்கங்கள்"
 #: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "சேவையகங்கள்"
+
+#~ msgid "Waiting for mediasource ..."
+#~ msgstr "மீடியாசோர்சுக்காக காத்திருக்கிறது ..."
 
 #~ msgid "Halve/double current playback speed"
 #~ msgstr "பாதி/இரட்டை தற்போதைய பின்னணி விரைவு"
