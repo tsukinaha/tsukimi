@@ -341,7 +341,6 @@ impl OtherPage {
                         store.append(&tu_item);
                     }
 
-                    self.imp().episode_list_revealer.set_vexpand(true);
                     self.imp().episode_list_revealer.set_reveal_child(true);
                 }
                 CacheEvent::Error(e) => {
