@@ -106,6 +106,10 @@ pub(crate) mod imp {
         pub play_button: TemplateChild<gtk::Button>,
 
         #[template_child]
+        pub main_carousel: TemplateChild<adw::Carousel>,
+        #[template_child]
+        pub episode_page: TemplateChild<gtk::ScrolledWindow>,
+        #[template_child]
         pub information_box: TemplateChild<gtk::Box>,
 
         #[template_child]
@@ -113,6 +117,7 @@ pub(crate) mod imp {
         #[template_child]
         pub episode_list_revealer: TemplateChild<gtk::Revealer>,
 
+        pub episode_page_holder: OnceCell<gtk::ScrolledWindow>,
         pub selection: gtk::SingleSelection,
     }
 
@@ -141,6 +146,12 @@ pub(crate) mod imp {
             self.parent_constructed();
             let obj = self.obj();
             let store = gio::ListStore::new::<TuObject>();
+
+            let episode_page = self.episode_page.get();
+            self.episode_page_holder
+                .set(episode_page.clone())
+                .expect("episode page should only be stored once");
+            self.main_carousel.remove(&episode_page);
 
             spawn_g_timeout(glib::clone!(
                 #[weak]
@@ -341,7 +352,15 @@ impl OtherPage {
                         store.append(&tu_item);
                     }
 
-                    self.imp().episode_list_revealer.set_vexpand(true);
+                    let episode_page = self
+                        .imp()
+                        .episode_page_holder
+                        .get()
+                        .expect("episode page should be stored during construction")
+                        .clone();
+                    if episode_page.parent().is_none() {
+                        self.imp().main_carousel.append(&episode_page);
+                    }
                     self.imp().episode_list_revealer.set_reveal_child(true);
                 }
                 CacheEvent::Error(e) => {
