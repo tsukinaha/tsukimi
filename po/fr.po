@@ -464,10 +464,6 @@ msgstr "Supprimer l'identification"
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "Êtes-vous sûr de vouloir réinitialiser toutes les métadonnées ?"
 
-#: src/ui/widgets/tu_list_item.rs:511
-msgid "Waiting for mediasource ..."
-msgstr "En attente d'une source de média..."
-
 #: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
 msgid "Home"
 msgstr "Accueil"
@@ -1885,6 +1881,9 @@ msgstr "Contenu"
 #: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "Serveurs"
+
+#~ msgid "Waiting for mediasource ..."
+#~ msgstr "En attente d'une source de média..."
 
 #~ msgid "Halve/double current playback speed"
 #~ msgstr "Diminuer de moitié / doubler la vitesse de lecture actuelle"

@@ -458,10 +458,6 @@ msgstr "Tanımlamayı Kaldır"
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "Tüm üst verileri (metadata) sıfırlamak istediğinize emin misiniz?"
 
-#: src/ui/widgets/tu_list_item.rs:511
-msgid "Waiting for mediasource ..."
-msgstr "Medya kaynağı bekleniyor..."
-
 #: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
 msgid "Home"
 msgstr "Ana Sayfa"
@@ -1870,6 +1866,9 @@ msgstr "İçerikler"
 #: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "Sunucular"
+
+#~ msgid "Waiting for mediasource ..."
+#~ msgstr "Medya kaynağı bekleniyor..."
 
 #~ msgid "Halve/double current playback speed"
 #~ msgstr "Mevcut oynatma hızını yarıya indir/iki katına çıkar"
