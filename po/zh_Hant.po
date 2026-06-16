@@ -462,10 +462,6 @@ msgstr "移除識別"
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "您確定要重設所有中介資料嗎？"
 
-#: src/ui/widgets/tu_list_item.rs:511
-msgid "Waiting for mediasource ..."
-msgstr "正在等待媒體源..."
-
 #: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
 msgid "Home"
 msgstr "首頁"
@@ -1821,6 +1817,9 @@ msgstr "目錄"
 #: resources/ui/window.ui:270
 msgid "Servers"
 msgstr "伺服器"
+
+#~ msgid "Waiting for mediasource ..."
+#~ msgstr "正在等待媒體源..."
 
 #~ msgid "Halve/double current playback speed"
 #~ msgstr "減半/加倍當前播放速度"
