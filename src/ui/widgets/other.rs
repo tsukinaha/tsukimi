@@ -361,7 +361,6 @@ impl OtherPage {
                     if episode_page.parent().is_none() {
                         self.imp().main_carousel.append(&episode_page);
                     }
-                    self.imp().episode_list_revealer.set_vexpand(true);
                     self.imp().episode_list_revealer.set_reveal_child(true);
                 }
                 CacheEvent::Error(e) => {
