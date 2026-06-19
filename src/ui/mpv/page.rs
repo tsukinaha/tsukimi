@@ -146,10 +146,10 @@ mod imp {
     use mpris_server::LocalServer;
     #[cfg(target_os = "linux")]
     use once_cell::sync::OnceCell;
+    #[cfg(target_os = "linux")]
+    use crate::APP_ID;
 
     use crate::{
-        #[cfg(target_os = "linux")]
-        APP_ID,
         client::structs::{
             Back,
             MediaSegment,
