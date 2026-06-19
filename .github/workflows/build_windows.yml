@@ -51,6 +51,9 @@ jobs:
           PKG_CONFIG_PATH: /ucrt64/lib/pkgconfig:/ucrt64/share/pkgconfig
           PATH: /c/Users/runneradmin/.cargo/bin:/ucrt64/bin:${{ env.PATH }}
         run: |
+          export PATH="$(cygpath -u "$USERPROFILE")/.cargo/bin:/ucrt64/bin:$PATH"
+          which cargo
+          cargo --version
           mkdir -p secret
           echo "${{ secrets.DANDANAPI_SECRET_KEY || 'testing' }}" > secret/key
           cargo build --release --locked
