@@ -137,8 +137,12 @@ mod imp {
             &self.mpv
         }
 
-        fn setup_mpv(&self, gl_context: GLContext, display: Display) {
-            let mut render_params = vec![
+        fn setup_mpv(
+            &self,
+            gl_context: GLContext,
+            #[cfg_attr(not(target_os = "linux"), allow(unused_variables))] display: Display,
+        ) {
+            let render_params = vec![
                 RenderParam::ApiType(RenderParamApiType::OpenGl),
                 RenderParam::InitParams(OpenGLInitParams {
                     get_proc_address,
@@ -150,6 +154,8 @@ mod imp {
             // displays.
             //
             // https://github.com/mpv-player/mpv/blob/86e12929aa0bbc61946d3804982acf887786a7cb/include/mpv/render_gl.h#L91
+            #[cfg(target_os = "linux")]
+            let mut render_params = render_params;
             #[cfg(target_os = "linux")]
             if let Ok(display_wrapper) = display.clone().downcast::<X11Display>() {
                 render_params.push(RenderParam::X11Display(

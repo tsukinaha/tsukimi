@@ -35,10 +35,9 @@ pub mod imp {
     #[cfg(target_os = "linux")]
     use mpris_server::LocalServer;
     use once_cell::sync::*;
-    use tracing::{
-        debug,
-        warn,
-    };
+    use tracing::debug;
+    #[cfg(target_os = "linux")]
+    use tracing::warn;
 
     use super::*;
     use crate::ui::widgets::song_widget::State;
@@ -448,10 +447,14 @@ pub mod imp {
         }
 
         pub fn notify_song_changed(&self) {
-            let has_prev = self.prev_song().is_some();
-            let has_next = self.next_song().is_some();
+            #[cfg(not(target_os = "linux"))]
+            let _ = self;
             #[cfg(target_os = "linux")]
-            self.obj().notify_mpris_song_changed(has_prev, has_next);
+            {
+                let has_prev = self.prev_song().is_some();
+                let has_next = self.next_song().is_some();
+                self.obj().notify_mpris_song_changed(has_prev, has_next);
+            }
         }
 
         pub fn notify_playing(&self) {
@@ -469,7 +472,10 @@ pub mod imp {
             self.obj().notify_mpris_stopped();
         }
 
-        pub fn notify_seeked(&self, position: i64) {
+        pub fn notify_seeked(
+            &self,
+            #[cfg_attr(not(target_os = "linux"), allow(unused_variables))] position: i64,
+        ) {
             #[cfg(target_os = "linux")]
             self.obj().notify_mpris_seeked(position);
         }
