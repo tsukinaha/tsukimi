@@ -40,7 +40,7 @@ jobs:
 
   artifacts:
     name: Artifacts
-    if: ${{ github.event_name != 'pull_request' }}
+    if: ${{ github.event_name != 'pull_request' && (github.repository == 'tsukinaha/tsukimi' || github.ref_type == 'tag') }}
     uses: ./.github/workflows/artifacts.yml
     needs: [linux, windows]
     secrets: inherit
