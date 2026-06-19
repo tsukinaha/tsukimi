@@ -24,7 +24,7 @@ jobs:
           update: true
           install: >-
             git
-            pkgconf
+            mingw-w64-pkgconf
             mingw-w64-ucrt-x86_64-gcc
             mingw-w64-ucrt-x86_64-gtk4
             mingw-w64-ucrt-x86_64-libadwaita
@@ -53,6 +53,7 @@ jobs:
         run: |
           export PATH="$(cygpath -u "$USERPROFILE")/.cargo/bin:/ucrt64/bin:$PATH"
           export PKG_CONFIG_PATH="/ucrt64/lib/pkgconfig:/ucrt64/share/pkgconfig"
+          export PKG_CONFIG="/ucrt64/bin/pkg-config.exe"
           export PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1
           export PKG_CONFIG_ALLOW_CROSS=1
           export CARGO_BUILD_TARGET="x86_64-pc-windows-gnu"
