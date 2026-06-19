@@ -67,22 +67,24 @@ jobs:
 
       - name: Compile resources
         run: |
-          mkdir -p target/release/share/tsukimi
+          RELEASE_DIR=target/x86_64-pc-windows-gnu/release
+          mkdir -p "$RELEASE_DIR/share/tsukimi"
           glib-compile-resources \
             --sourcedir=resources \
-            --target=target/release/share/tsukimi/tsukimi.gresource \
+            --target="$RELEASE_DIR/share/tsukimi/tsukimi.gresource" \
             resources/resources.gresource.xml
-          mkdir -p target/release/share/glib-2.0/schemas
-          cp resources/moe.tsuna.tsukimi.gschema.xml target/release/share/glib-2.0/schemas/
-          glib-compile-schemas target/release/share/glib-2.0/schemas
+          mkdir -p "$RELEASE_DIR/share/glib-2.0/schemas"
+          cp resources/moe.tsuna.tsukimi.gschema.xml "$RELEASE_DIR/share/glib-2.0/schemas/"
+          glib-compile-schemas "$RELEASE_DIR/share/glib-2.0/schemas"
 
       - name: Bundle runtime
         run: |
+          RELEASE_DIR=target/x86_64-pc-windows-gnu/release
           mkdir -p artifact/tsukimi-x86_64-windows
-          cp target/release/tsukimi.exe artifact/tsukimi-x86_64-windows/
-          cp -r target/release/share artifact/tsukimi-x86_64-windows/
+          cp "$RELEASE_DIR/tsukimi.exe" artifact/tsukimi-x86_64-windows/
+          cp -r "$RELEASE_DIR/share" artifact/tsukimi-x86_64-windows/
 
-          ldd target/release/tsukimi.exe \
+          ldd "$RELEASE_DIR/tsukimi.exe" \
             | awk '/mingw64|ucrt64/ {print $3}' \
             | sort -u \
             | xargs -r -I{} cp -n "{}" artifact/tsukimi-x86_64-windows/
