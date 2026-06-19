@@ -157,10 +157,10 @@ mod imp {
         ui::{
             models::SETTINGS,
             mpv::{
-                VolumeBar,
                 menu_actions::MenuActions,
                 mpvglarea::MPVGLArea,
                 video_scale::VideoScale,
+                volume_bar::VolumeBar,
             },
             provider::tu_item::TuItem,
         },
