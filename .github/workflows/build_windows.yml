@@ -24,30 +24,32 @@ jobs:
           update: true
           install: >-
             git
-            mingw-w64-ucrt-x86_64-cargo
-            mingw-w64-ucrt-x86_64-rust
-            mingw-w64-ucrt-x86_64-pkgconf
-            mingw-w64-ucrt-x86_64-gtk4
-            mingw-w64-ucrt-x86_64-libadwaita
-            mingw-w64-ucrt-x86_64-gstreamer
-            mingw-w64-ucrt-x86_64-gst-plugins-base
-            mingw-w64-ucrt-x86_64-gst-plugins-good
-            mingw-w64-ucrt-x86_64-gst-plugins-bad
-            mingw-w64-ucrt-x86_64-gst-plugins-ugly
-            mingw-w64-ucrt-x86_64-gst-libav
-            mingw-w64-ucrt-x86_64-mpv
-            mingw-w64-ucrt-x86_64-libepoxy
-            mingw-w64-ucrt-x86_64-gettext
-            mingw-w64-ucrt-x86_64-glib2
-            mingw-w64-ucrt-x86_64-cc
-            mingw-w64-ucrt-x86_64-lld
-            mingw-w64-ucrt-x86_64-ninja
-            mingw-w64-ucrt-x86_64-meson
+            pkgconf
+            gcc
+            gtk4
+            libadwaita
+            gstreamer
+            gst-plugins-base
+            gst-plugins-good
+            gst-plugins-bad
+            gst-plugins-ugly
+            gst-libav
+            mpv
+            libepoxy
+            gettext
+            glib2
             zip
+
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: 1.91
 
       - name: Build
         env:
           CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+          PKG_CONFIG_PATH: /ucrt64/lib/pkgconfig:/ucrt64/share/pkgconfig
+          PATH: /ucrt64/bin:${{ env.PATH }}
         run: |
           mkdir -p secret
           echo "${{ secrets.DANDANAPI_SECRET_KEY || 'testing' }}" > secret/key
