@@ -44,16 +44,21 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
+          target: x86_64-pc-windows-gnu
 
       - name: Build
         env:
           CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
-          PKG_CONFIG_PATH: /ucrt64/lib/pkgconfig:/ucrt64/share/pkgconfig
           PATH: /c/Users/runneradmin/.cargo/bin:/ucrt64/bin:${{ env.PATH }}
         run: |
           export PATH="$(cygpath -u "$USERPROFILE")/.cargo/bin:/ucrt64/bin:$PATH"
+          export PKG_CONFIG_PATH="/ucrt64/lib/pkgconfig:/ucrt64/share/pkgconfig"
+          export PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1
+          export CARGO_BUILD_TARGET="x86_64-pc-windows-gnu"
+          export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="/ucrt64/bin/gcc.exe"
           which cargo
           cargo --version
+          pkg-config --modversion glib-2.0
           mkdir -p secret
           echo "${{ secrets.DANDANAPI_SECRET_KEY || 'testing' }}" > secret/key
           cargo build --release --locked
