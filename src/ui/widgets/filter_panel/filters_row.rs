@@ -24,7 +24,6 @@ mod imp {
     };
 
     use glib::subclass::InitializingObject;
-    use gtk::prelude::*;
 
     use crate::ui::widgets::filter_panel::FilterDialogSearchPage;
 

@@ -42,13 +42,15 @@ mod track_list;
 
 impl MPVPage {
     pub async fn initialize_mpris(&self, app_id: &str) -> Result<()> {
-        let server = LocalServer::new_with_track_list(app_id, self.imp().obj().clone()).await?;
-        self.imp()
-            .mpris_server
-            .set(server)
-            .map_err(|_| anyhow::anyhow!("Mpris server already initialized"))?;
+        if self.imp().mpris_server.get().is_some() {
+            return Err(anyhow::anyhow!("Mpris server already initialized"));
+        }
 
-        spawn(self.imp().mpris_server.get().expect("Mpris server not initialized???").run());
+        let server = LocalServer::new_with_track_list(app_id, self.imp().obj().clone()).await?;
+
+        // It cant panic here
+        self.imp().mpris_server.set(server).unwrap();
+        spawn(self.imp().mpris_server.get().unwrap().run());
         Ok(())
     }
 

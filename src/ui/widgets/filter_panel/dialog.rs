@@ -12,7 +12,7 @@ use gtk::{
 };
 
 mod imp {
-    use adw::prelude::*;
+
     use glib::subclass::InitializingObject;
     use gtk::{
         CompositeTemplate,

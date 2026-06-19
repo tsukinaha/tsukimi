@@ -16,7 +16,6 @@ mod imp {
         Properties,
         subclass::InitializingObject,
     };
-    use gtk::prelude::*;
 
     use super::*;
 

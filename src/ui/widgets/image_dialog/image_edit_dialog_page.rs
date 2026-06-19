@@ -29,7 +29,6 @@ mod imp {
         Properties,
         subclass::InitializingObject,
     };
-    use gtk::prelude::*;
 
     use crate::ui::widgets::image_dialog::ImageDropRow;
 

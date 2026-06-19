@@ -38,10 +38,7 @@ mod imp {
         Properties,
         subclass::InitializingObject,
     };
-    use gtk::{
-        gio,
-        prelude::*,
-    };
+    use gtk::gio;
 
     use crate::ui::widgets::eu_item::EuObject;
 
