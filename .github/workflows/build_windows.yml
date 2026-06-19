@@ -1,0 +1,113 @@
+name: Windows
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build (x86_64-windows)
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            git
+            mingw-w64-ucrt-x86_64-cargo
+            mingw-w64-ucrt-x86_64-rust
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-gtk4
+            mingw-w64-ucrt-x86_64-libadwaita
+            mingw-w64-ucrt-x86_64-gstreamer
+            mingw-w64-ucrt-x86_64-gst-plugins-base
+            mingw-w64-ucrt-x86_64-gst-plugins-good
+            mingw-w64-ucrt-x86_64-gst-plugins-bad
+            mingw-w64-ucrt-x86_64-gst-plugins-ugly
+            mingw-w64-ucrt-x86_64-gst-libav
+            mingw-w64-ucrt-x86_64-mpv
+            mingw-w64-ucrt-x86_64-libepoxy
+            mingw-w64-ucrt-x86_64-gettext
+            mingw-w64-ucrt-x86_64-glib2
+            mingw-w64-ucrt-x86_64-cc
+            mingw-w64-ucrt-x86_64-lld
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-meson
+            zip
+
+      - name: Build
+        env:
+          CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+        run: |
+          mkdir -p secret
+          echo "${{ secrets.DANDANAPI_SECRET_KEY || 'testing' }}" > secret/key
+          cargo build --release --locked
+
+      - name: Compile resources
+        run: |
+          mkdir -p target/release/share/tsukimi
+          glib-compile-resources \
+            --sourcedir=resources \
+            --target=target/release/share/tsukimi/tsukimi.gresource \
+            resources/resources.gresource.xml
+          mkdir -p target/release/share/glib-2.0/schemas
+          cp resources/moe.tsuna.tsukimi.gschema.xml target/release/share/glib-2.0/schemas/
+          glib-compile-schemas target/release/share/glib-2.0/schemas
+
+      - name: Bundle runtime
+        run: |
+          mkdir -p artifact/tsukimi-x86_64-windows
+          cp target/release/tsukimi.exe artifact/tsukimi-x86_64-windows/
+          cp -r target/release/share artifact/tsukimi-x86_64-windows/
+
+          ldd target/release/tsukimi.exe \
+            | awk '/mingw64|ucrt64/ {print $3}' \
+            | sort -u \
+            | xargs -r -I{} cp -n "{}" artifact/tsukimi-x86_64-windows/
+
+          for dll in /ucrt64/bin/*.dll; do
+            case "$(basename "$dll")" in
+              libgst*|libgdk*|libgtk*|libadwaita*|libgio*|libglib*|libgobject*|libgmodule*|libgstreamer*|libmpv*|libepoxy*|libintl*|libpango*|libcairo*|libgdk_pixbuf*|libgraphene*|libharfbuzz*|libfontconfig*|libfreetype*|libfribidi*|libthai*|libjpeg*|libpng*|libtiff*|libwebp*|libxml*|libsoup*|libssl*|libcrypto*|zlib*)
+                cp -n "$dll" artifact/tsukimi-x86_64-windows/
+                ;;
+            esac
+          done
+
+          mkdir -p artifact/tsukimi-x86_64-windows/lib/gstreamer-1.0
+          cp -n /ucrt64/lib/gstreamer-1.0/*.dll artifact/tsukimi-x86_64-windows/lib/gstreamer-1.0/
+
+          mkdir -p artifact/tsukimi-x86_64-windows/lib/gdk-pixbuf-2.0
+          if [ -d /ucrt64/lib/gdk-pixbuf-2.0 ]; then
+            cp -r /ucrt64/lib/gdk-pixbuf-2.0/* artifact/tsukimi-x86_64-windows/lib/gdk-pixbuf-2.0/
+          fi
+
+          {
+            printf '@echo off\r\n'
+            printf 'setlocal\r\n'
+            printf 'set "APPDIR=%%~dp0"\r\n'
+            printf 'set "PATH=%%APPDIR%%;%%PATH%%"\r\n'
+            printf 'set "GSETTINGS_SCHEMA_DIR=%%APPDIR%%share\\glib-2.0\\schemas"\r\n'
+            printf 'set "XDG_DATA_DIRS=%%APPDIR%%share"\r\n'
+            printf 'set "GST_PLUGIN_PATH=%%APPDIR%%lib\\gstreamer-1.0"\r\n'
+            printf 'start "" "%%APPDIR%%tsukimi.exe" %%*\r\n'
+          } > artifact/tsukimi-x86_64-windows/tsukimi.cmd
+
+          cd artifact
+          zip -r tsukimi-x86_64-windows.zip tsukimi-x86_64-windows
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: tsukimi-x86_64-windows
+          path: artifact/tsukimi-x86_64-windows.zip
+          archive: false

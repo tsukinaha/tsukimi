@@ -48,6 +48,7 @@ pub fn locale_dir() -> &'static str {
 }
 
 pub fn run() -> gtk::glib::ExitCode {
+    init_portable_runtime_paths();
     Args::parse().init();
     // Initialize gettext
     setlocale(LocaleCategory::LcAll, String::new());
@@ -68,8 +69,54 @@ pub fn run() -> gtk::glib::ExitCode {
     Application::new().run_with_args::<&str>(&[])
 }
 
+fn init_portable_runtime_paths() {
+    let Ok(exe_path) = env::current_exe() else {
+        return;
+    };
+    let Some(exe_dir) = exe_path.parent() else {
+        return;
+    };
+
+    let schemas_dir = exe_dir.join("share").join("glib-2.0").join("schemas");
+    if schemas_dir.exists() && env::var_os("GSETTINGS_SCHEMA_DIR").is_none() {
+        unsafe { env::set_var("GSETTINGS_SCHEMA_DIR", schemas_dir) };
+    }
+
+    let data_dir = exe_dir.join("share");
+    if data_dir.exists() && env::var_os("XDG_DATA_DIRS").is_none() {
+        unsafe { env::set_var("XDG_DATA_DIRS", data_dir) };
+    }
+}
+
 fn register_gio_resources() {
-    let path = std::path::Path::new(PKGDATADIR).join(GRESOURCE_FILE);
-    let resources = gtk::gio::Resource::load(path).expect("Failed to load resources.");
+    let path = resource_file_path();
+    let resources = gtk::gio::Resource::load(&path).unwrap_or_else(|error| {
+        panic!(
+            "Failed to load resources from {}: {}",
+            path.display(),
+            error
+        )
+    });
     gtk::gio::resources_register(&resources);
+}
+
+fn resource_file_path() -> std::path::PathBuf {
+    let system_path = std::path::Path::new(PKGDATADIR).join(GRESOURCE_FILE);
+    if system_path.exists() {
+        return system_path;
+    }
+
+    if let Ok(exe_path) = env::current_exe()
+        && let Some(exe_dir) = exe_path.parent()
+    {
+        let portable_path = exe_dir
+            .join("share")
+            .join(env!("CARGO_PKG_NAME"))
+            .join(GRESOURCE_FILE);
+        if portable_path.exists() {
+            return portable_path;
+        }
+    }
+
+    system_path
 }

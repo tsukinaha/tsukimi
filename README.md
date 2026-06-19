@@ -1,5 +1,5 @@
 # tsukimi
-A simple third-party Jellyfin client for Linux.
+A simple third-party Jellyfin/Emby client for Linux and Windows 11.
 
 [![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/tsukimi_frying_crab) ![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Flathub Version](https://img.shields.io/flathub/v/moe.tsuna.tsukimi?color=white)](https://flathub.org/apps/details/moe.tsuna.tsukimi) [![Wiki](https://img.shields.io/badge/-Wiki-red?color=blue&logo=github&logoColor=white)](https://github.com/tsukinaha/tsukimi/wiki) [![Translate Status](https://hosted.weblate.org/widget/tsukimi/language-badge.svg)](https://hosted.weblate.org/engage/tsukimi)
 
@@ -7,7 +7,7 @@ A simple third-party Jellyfin client for Linux.
 ![Alt](https://repobeats.axiom.co/api/embed/82b1088ba840d89c50e1b5b3c1c40f4575b321a6.svg "Repobeats analytics image")
 
 ## About
-A simple third-party Jellyfin client written in GTK4-RS, uses MPV as the video player, and GStreamer as the music player.
+A simple third-party Jellyfin/Emby client written in GTK4-RS, uses MPV as the video player, and GStreamer as the music player.
 
 It’s also partially compatible with Emby.
 All of basic functions and most of admin functions are supported.
@@ -73,7 +73,7 @@ sudo emerge --ask media-video/tsukimi
 `tsukimi` is available in nixpkgs since 24.11.
 
 ### Source code
-[Build on Linux](./docs/build_on_linux.md)
+[Build on Linux](./docs/build_on_linux.md) | [Build on Windows 11](./docs/build_on_windows.md)
 
 ## MPV Config
 [MPV-manual#files](https://mpv.io/manual/master/#files)

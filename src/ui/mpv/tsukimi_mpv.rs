@@ -76,16 +76,7 @@ impl Default for TsukimiMPV {
             setlocale(LC_NUMERIC, c"C".as_ptr() as *const _);
         }
 
-        #[cfg(target_os = "macos")]
-        let library = unsafe { libloading::os::unix::Library::new("libepoxy.0.dylib") }.unwrap();
-        #[cfg(all(unix, not(target_os = "macos")))]
-        let library = unsafe { libloading::os::unix::Library::new("libepoxy.so.0") }.unwrap();
-
-        epoxy::load_with(|name| {
-            unsafe { library.get::<_>(name.as_bytes()) }
-                .map(|symbol| *symbol)
-                .unwrap_or(std::ptr::null())
-        });
+        load_epoxy();
 
         let mpv = Mpv::with_initializer(|init| {
             if SETTINGS.mpv_config() {
@@ -97,7 +88,7 @@ impl Default for TsukimiMPV {
             init.set_property("user-agent", crate::USER_AGENT.as_str())?;
             init.set_property("video-timing-offset", 0)?;
             init.set_property("video-sync", "audio")?;
-            match SETTINGS.mpv_video_output() {
+            match mpv_video_output() {
                 0 => {
                     init.set_property("vo", "libmpv")?;
                     init.set_property("osc", false)?;
@@ -156,6 +147,49 @@ impl Default for TsukimiMPV {
             event_handle: RefCell::new(None),
         }
     }
+}
+
+#[cfg(target_os = "macos")]
+fn load_epoxy() {
+    let library = unsafe { libloading::os::unix::Library::new("libepoxy.0.dylib") }.unwrap();
+    epoxy::load_with(|name| {
+        unsafe { library.get::<_>(name.as_bytes()) }
+            .map(|symbol| *symbol)
+            .unwrap_or(std::ptr::null())
+    });
+    std::mem::forget(library);
+}
+
+#[cfg(all(unix, not(target_os = "macos")))]
+fn load_epoxy() {
+    let library = unsafe { libloading::os::unix::Library::new("libepoxy.so.0") }.unwrap();
+    epoxy::load_with(|name| {
+        unsafe { library.get::<_>(name.as_bytes()) }
+            .map(|symbol| *symbol)
+            .unwrap_or(std::ptr::null())
+    });
+    std::mem::forget(library);
+}
+
+#[cfg(target_os = "windows")]
+fn load_epoxy() {
+    let library = unsafe { libloading::os::windows::Library::new("epoxy-0.dll") }.unwrap();
+    epoxy::load_with(|name| {
+        unsafe { library.get::<_>(name.as_bytes()) }
+            .map(|symbol| *symbol)
+            .unwrap_or(std::ptr::null())
+    });
+    std::mem::forget(library);
+}
+
+fn mpv_video_output() -> i32 {
+    let output = SETTINGS.mpv_video_output();
+
+    if cfg!(target_os = "linux") || output != 2 {
+        return output;
+    }
+
+    0
 }
 
 use flume::{

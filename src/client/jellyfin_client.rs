@@ -75,6 +75,7 @@ use super::{
 };
 use crate::{
     CLIENT_ID,
+    client::cache_metadata,
     config::version,
     ui::{
         SETTINGS,
@@ -667,10 +668,7 @@ impl JellyfinClient {
         let mut etag: Option<String> = None;
 
         if path.exists() {
-            etag = xattr::get(&path, "user.etag")
-                .ok()
-                .flatten()
-                .and_then(|v| String::from_utf8(v).ok());
+            etag = cache_metadata::get_etag(&path);
         }
 
         match self.image_request(id, image_type, tag, etag).await {
@@ -741,8 +739,8 @@ impl JellyfinClient {
         let path = cache_path.join(path);
         tokio::fs::write(&path, bytes).await.unwrap();
         if let Some(etag) = etag {
-            xattr::set(&path, "user.etag", etag.as_bytes()).unwrap_or_else(|e| {
-                tracing::warn!("Failed to set etag xattr: {}", e);
+            cache_metadata::set_etag(&path, &etag).unwrap_or_else(|e| {
+                tracing::warn!("Failed to set image cache etag: {}", e);
             });
         }
         path.to_string_lossy().to_string()

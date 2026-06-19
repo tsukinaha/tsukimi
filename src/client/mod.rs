@@ -1,4 +1,5 @@
 pub mod account;
+pub mod cache_metadata;
 pub mod error;
 pub mod jellyfin_client;
 pub mod proxy;
