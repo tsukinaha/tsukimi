@@ -49,7 +49,7 @@ jobs:
         env:
           CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
           PKG_CONFIG_PATH: /ucrt64/lib/pkgconfig:/ucrt64/share/pkgconfig
-          PATH: /ucrt64/bin:${{ env.PATH }}
+          PATH: /c/Users/runneradmin/.cargo/bin:/ucrt64/bin:${{ env.PATH }}
         run: |
           mkdir -p secret
           echo "${{ secrets.DANDANAPI_SECRET_KEY || 'testing' }}" > secret/key
