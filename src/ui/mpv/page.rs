@@ -133,6 +133,8 @@ mod imp {
         RefCell,
     };
 
+    #[cfg(target_os = "linux")]
+    use crate::APP_ID;
     use adw::prelude::*;
     use gettextrs::gettext;
     use glib::subclass::InitializingObject;
@@ -146,8 +148,6 @@ mod imp {
     use mpris_server::LocalServer;
     #[cfg(target_os = "linux")]
     use once_cell::sync::OnceCell;
-    #[cfg(target_os = "linux")]
-    use crate::APP_ID;
 
     use crate::{
         client::structs::{
@@ -1554,8 +1554,7 @@ impl MPVPage {
     }
 
     pub fn notify_volume_changed(
-        &self,
-        #[cfg_attr(not(target_os = "linux"), allow(unused_variables))] volume: f64,
+        &self, #[cfg_attr(not(target_os = "linux"), allow(unused_variables))] volume: f64,
     ) {
         #[cfg(target_os = "linux")]
         self.notify_mpris_volume(volume);
@@ -1567,8 +1566,7 @@ impl MPVPage {
     }
 
     pub fn notify_seeked(
-        &self,
-        #[cfg_attr(not(target_os = "linux"), allow(unused_variables))] position: i64,
+        &self, #[cfg_attr(not(target_os = "linux"), allow(unused_variables))] position: i64,
     ) {
         #[cfg(target_os = "linux")]
         self.notify_mpris_seeked(position);

@@ -138,8 +138,7 @@ mod imp {
         }
 
         fn setup_mpv(
-            &self,
-            gl_context: GLContext,
+            &self, gl_context: GLContext,
             #[cfg_attr(not(target_os = "linux"), allow(unused_variables))] display: Display,
         ) {
             let render_params = vec![

@@ -473,8 +473,7 @@ pub mod imp {
         }
 
         pub fn notify_seeked(
-            &self,
-            #[cfg_attr(not(target_os = "linux"), allow(unused_variables))] position: i64,
+            &self, #[cfg_attr(not(target_os = "linux"), allow(unused_variables))] position: i64,
         ) {
             #[cfg(target_os = "linux")]
             self.obj().notify_mpris_seeked(position);
