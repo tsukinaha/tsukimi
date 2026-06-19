@@ -25,19 +25,19 @@ jobs:
           install: >-
             git
             pkgconf
-            gcc
-            gtk4
-            libadwaita
-            gstreamer
-            gst-plugins-base
-            gst-plugins-good
-            gst-plugins-bad
-            gst-plugins-ugly
-            gst-libav
-            mpv
-            libepoxy
-            gettext
-            glib2
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-gtk4
+            mingw-w64-ucrt-x86_64-libadwaita
+            mingw-w64-ucrt-x86_64-gstreamer
+            mingw-w64-ucrt-x86_64-gst-plugins-base
+            mingw-w64-ucrt-x86_64-gst-plugins-good
+            mingw-w64-ucrt-x86_64-gst-plugins-bad
+            mingw-w64-ucrt-x86_64-gst-plugins-ugly
+            mingw-w64-ucrt-x86_64-gst-libav
+            mingw-w64-ucrt-x86_64-mpv
+            mingw-w64-ucrt-x86_64-libepoxy
+            mingw-w64-ucrt-x86_64-gettext
+            mingw-w64-ucrt-x86_64-glib2
             zip
 
       - name: Setup Rust
