@@ -143,6 +143,7 @@ impl Default for TsukimiMPV {
                 6 => init.set_property("alang", "nob")?,
                 7 => init.set_property("alang", "por")?,
                 8 => init.set_property("alang", "fre")?,
+                9 => init.set_property("alang", "rus")?,
                 _ => unreachable!(),
             }
             Ok(())

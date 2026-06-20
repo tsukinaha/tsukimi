@@ -272,6 +272,7 @@ impl Settings {
             6 => "nob",
             7 => "por",
             8 => "fre",
+            9 => "rus",
             _ => "",
         }
         .to_string()
