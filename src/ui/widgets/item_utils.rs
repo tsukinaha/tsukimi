@@ -56,6 +56,7 @@ pub fn make_subtitle_version_choice(lang_list: Vec<(i64, String)>) -> Option<(i6
         6 => "Norwegian Bokmål",
         7 => "Portuguese",
         8 => "French",
+        9 => "Russian",
         _ => return None,
     };
 
