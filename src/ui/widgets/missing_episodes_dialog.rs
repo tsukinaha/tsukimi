@@ -19,7 +19,6 @@ use crate::{
 mod imp {
     use std::cell::OnceCell;
 
-    use adw::prelude::*;
     use glib::subclass::InitializingObject;
     use gtk::{
         CompositeTemplate,
