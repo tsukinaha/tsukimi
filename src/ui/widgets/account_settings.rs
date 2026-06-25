@@ -431,6 +431,10 @@ impl AccountSettings {
         action_group.add_action_entries([action_vo]);
         self.insert_action_group("setting", Some(&action_group));
 
+        if JELLYFIN_CLIENT.session().account.user_id.is_empty() {
+            return;
+        }
+
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
             self,
