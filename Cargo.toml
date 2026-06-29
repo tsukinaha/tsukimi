@@ -55,7 +55,7 @@ libmpv2 = "4.1.0"
 glow = "0.17"
 xxhash-rust = { version = "0.8.15", features = ["xxh3"] }
 futures-util = "0.3.31"
-itertools = "0.14.0"
+itertools = "0.15.0"
 moka = { version = "0.12.15", features = ["future"] }
 
 [dev-dependencies]
