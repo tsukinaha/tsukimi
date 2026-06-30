@@ -663,16 +663,10 @@ impl TuItem {
     }
 
     pub fn fmt_title(&self) -> String {
-        let title = match self.item_type().as_str() {
+        match self.item_type().as_str() {
             TV_CHANNEL => self.fmt_tv_name(),
             EPISODE if let Some(series_name) = self.series_name() => series_name,
             _ => self.name(),
-        };
-
-        if self.has_unplayed_item() && self.unplayed_item_count() > 0 {
-            format!("{} ({})", title, self.unplayed_item_count())
-        } else {
-            title
         }
     }
 
