@@ -82,6 +82,7 @@
           <object class="GtkLabel" id="title">
             <property name="justify">center</property>
             <property name="wrap">true</property>
+            <property name="wrap-mode">word-char</property>
             <property name="max-width-chars">1</property>
             <property name="visible">false</property>
             <property name="margin-bottom">10</property>
