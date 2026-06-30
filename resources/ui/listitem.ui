@@ -92,6 +92,8 @@
                 <property name="wrap">true</property>
                 <property name="wrap-mode">word-char</property>
                 <property name="max-width-chars">1</property>
+                <property name="lines">1</property>
+                <property name="ellipsize">middle</property>
                 <property name="opacity">0.9</property>
                 <attributes>
                   <attribute name="scale" value="0.9" />
@@ -105,6 +107,8 @@
                 <property name="wrap">true</property>
                 <property name="wrap-mode">word-char</property>
                 <property name="max-width-chars">1</property>
+                <property name="lines">1</property>
+                <property name="ellipsize">middle</property>
                 <property name="visible">false</property>
                 <property name="opacity">0.65</property>
                 <attributes>

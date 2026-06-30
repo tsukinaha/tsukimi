@@ -19,7 +19,6 @@ use super::tu_item::{
     TuItemProgressbarAnimationPrelude,
 };
 use crate::ui::{
-    SETTINGS,
     provider::tu_item::TuItem,
     widgets::utils::{
         TU_ITEM_BANNER_SIZE,
@@ -210,18 +209,6 @@ impl TuListItem {
 
     fn update_title(&self) {
         let imp = self.imp();
-        let full_display_mode = SETTINGS.full_item_display_mode();
-        let lines = if full_display_mode { 1 } else { -1 };
-        let ellipsize = if full_display_mode {
-            gtk::pango::EllipsizeMode::End
-        } else {
-            gtk::pango::EllipsizeMode::None
-        };
-        imp.title.set_lines(lines);
-        imp.title.set_ellipsize(ellipsize);
-        imp.subtitle.set_lines(lines);
-        imp.subtitle.set_ellipsize(ellipsize);
-
         if let Some((title, subtitle)) = self.item().list_item_text() {
             imp.title.set_text(&title);
             if let Some(subtitle) = subtitle {
