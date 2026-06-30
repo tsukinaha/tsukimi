@@ -19,6 +19,7 @@ use super::tu_item::{
     TuItemProgressbarAnimationPrelude,
 };
 use crate::ui::{
+    SETTINGS,
     provider::tu_item::TuItem,
     widgets::utils::{
         TU_ITEM_BANNER_SIZE,
@@ -75,7 +76,11 @@ pub mod imp {
         pub poster_type: Cell<PosterType>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
+        pub title_box: TemplateChild<gtk::Box>,
+        #[template_child]
         pub title: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub subtitle: TemplateChild<gtk::Label>,
         #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
         #[template_child]
@@ -205,11 +210,30 @@ impl TuListItem {
 
     fn update_title(&self) {
         let imp = self.imp();
-        if let Some(title) = self.item().list_item_title() {
-            imp.title.set_text(&title);
-            imp.title.set_visible(true);
+        let full_display_mode = SETTINGS.full_item_display_mode();
+        let lines = if full_display_mode { 1 } else { -1 };
+        let ellipsize = if full_display_mode {
+            gtk::pango::EllipsizeMode::End
         } else {
-            imp.title.set_visible(false);
+            gtk::pango::EllipsizeMode::None
+        };
+        imp.title.set_lines(lines);
+        imp.title.set_ellipsize(ellipsize);
+        imp.subtitle.set_lines(lines);
+        imp.subtitle.set_ellipsize(ellipsize);
+
+        if let Some((title, subtitle)) = self.item().list_item_text() {
+            imp.title.set_text(&title);
+            if let Some(subtitle) = subtitle {
+                imp.subtitle.set_text(&subtitle);
+                imp.subtitle.set_visible(true);
+            } else {
+                imp.subtitle.set_visible(false);
+            }
+            imp.title_box.set_visible(true);
+        } else {
+            imp.title_box.set_visible(false);
+            imp.subtitle.set_visible(false);
         }
     }
 

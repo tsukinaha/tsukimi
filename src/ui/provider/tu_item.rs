@@ -740,40 +740,33 @@ impl TuItem {
         }
     }
 
-    pub fn list_item_title(&self) -> Option<String> {
+    pub fn list_item_text(&self) -> Option<(String, Option<String>)> {
         let name = self.name();
 
         if name.is_empty() {
             return None;
         }
 
-        let title = if SETTINGS.full_item_display_mode() {
-            match self.item_type().as_str() {
-                EPISODE => self.fmt_subtitle(),
-                PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR
-                    if let Some(role) = self.role() =>
-                {
+        if SETTINGS.full_item_display_mode() {
+            let subtitle = self.fmt_subtitle();
+            return Some((self.fmt_title(), (!subtitle.is_empty()).then_some(subtitle)));
+        }
+
+        let title = match self.item_type().as_str() {
+            TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER => name,
+            EPISODE if self.series_name().is_some() && self.is_resume() => self.fmt_subtitle(),
+            MOVIE if self.is_resume() => self.fmt_title(),
+            PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR => {
+                if let Some(role) = self.role() {
                     format!("{name} / {role}")
+                } else {
+                    name
                 }
-                _ => name,
             }
-        } else {
-            match self.item_type().as_str() {
-                TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER => name,
-                EPISODE if self.series_name().is_some() && self.is_resume() => self.fmt_subtitle(),
-                MOVIE if self.is_resume() => self.fmt_title(),
-                PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR => {
-                    if let Some(role) = self.role() {
-                        format!("{name} / {role}")
-                    } else {
-                        name
-                    }
-                }
-                _ => return None,
-            }
+            _ => return None,
         };
 
-        Some(title)
+        Some((title, None))
     }
 
     pub fn fmt_rating(&self) -> Option<String> {
