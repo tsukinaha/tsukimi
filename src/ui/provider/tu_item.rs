@@ -747,7 +747,7 @@ impl TuItem {
             return None;
         }
 
-        if SETTINGS.full_item_display_mode() {
+        if SETTINGS.item_text_display() == "full" {
             let subtitle = self.fmt_subtitle();
             return Some((self.fmt_title(), (!subtitle.is_empty()).then_some(subtitle)));
         }

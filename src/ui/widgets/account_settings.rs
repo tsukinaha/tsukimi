@@ -73,7 +73,9 @@ mod imp {
         #[template_child]
         pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
-        pub full_item_display_mode_control: TemplateChild<adw::SwitchRow>,
+        pub text_display_group: TemplateChild<adw::ToggleGroup>,
+        #[template_child]
+        pub card_style_group: TemplateChild<adw::ToggleGroup>,
         #[template_child]
         pub custom_accent_color_control: TemplateChild<adw::SwitchRow>,
         #[template_child]
@@ -393,13 +395,20 @@ impl AccountSettings {
                 "active",
             )
             .build();
-        SETTINGS
-            .bind(
-                "full-item-display-mode",
-                &imp.full_item_display_mode_control.get(),
-                "active",
-            )
-            .build();
+        imp.text_display_group
+            .set_active_name(Some(SETTINGS.item_text_display().as_str()));
+        imp.card_style_group
+            .set_active_name(Some(SETTINGS.item_card_style().as_str()));
+        imp.text_display_group.connect_active_name_notify(|group| {
+            if let Some(active_name) = group.active_name() {
+                SETTINGS.set_item_text_display(&active_name).unwrap();
+            }
+        });
+        imp.card_style_group.connect_active_name_notify(|group| {
+            if let Some(active_name) = group.active_name() {
+                SETTINGS.set_item_card_style(&active_name).unwrap();
+            }
+        });
         SETTINGS
             .bind("use-custom-accent-color", &imp.color.get(), "sensitive")
             .build();

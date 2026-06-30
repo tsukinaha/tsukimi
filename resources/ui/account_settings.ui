@@ -106,9 +106,47 @@
 	              </object>
 	            </child>
 	            <child>
-	              <object class="AdwSwitchRow" id="full_item_display_mode_control">
-	                <property name="title" translatable="yes">Full Display Mode</property>
-	                <property name="subtitle" translatable="yes">Show item titles on all cards, turn off for compact mode</property>
+	              <object class="AdwActionRow">
+	                <property name="title" translatable="yes">Text Display</property>
+	                <child type="suffix">
+	                  <object class="AdwToggleGroup" id="text_display_group">
+	                    <property name="valign">center</property>
+	                    <child>
+	                      <object class="AdwToggle">
+	                        <property name="label" translatable="yes">Compact</property>
+	                        <property name="name">compact</property>
+	                      </object>
+	                    </child>
+	                    <child>
+	                      <object class="AdwToggle">
+	                        <property name="label" translatable="yes">Full</property>
+	                        <property name="name">full</property>
+	                      </object>
+	                    </child>
+	                  </object>
+	                </child>
+	              </object>
+	            </child>
+	            <child>
+	              <object class="AdwActionRow">
+	                <property name="title" translatable="yes">Card Style</property>
+	                <child type="suffix">
+	                  <object class="AdwToggleGroup" id="card_style_group">
+	                    <property name="valign">center</property>
+	                    <child>
+	                      <object class="AdwToggle">
+	                        <property name="label" translatable="yes">Integrated</property>
+	                        <property name="name">integrated</property>
+	                      </object>
+	                    </child>
+	                    <child>
+	                      <object class="AdwToggle">
+	                        <property name="label" translatable="yes">Separated</property>
+	                        <property name="name">separated</property>
+	                      </object>
+	                    </child>
+	                  </object>
+	                </child>
 	              </object>
 	            </child>
 	          </object>

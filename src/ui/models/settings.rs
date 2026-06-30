@@ -33,7 +33,8 @@ impl Settings {
     const KEY_LIST_SORT_ORDER: &'static str = "list-sort-order";
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
     const KEY_USE_CUSTOM_ACCENT_COLOR: &'static str = "use-custom-accent-color";
-    const KEY_FULL_ITEM_DISPLAY_MODE: &'static str = "full-item-display-mode";
+    const KEY_ITEM_TEXT_DISPLAY: &'static str = "item-text-display";
+    const KEY_ITEM_CARD_STYLE: &'static str = "item-card-style";
     const KEY_MUSIC_REPEAT_MODE: &'static str = "music-repeat-mode";
     const KEY_MPV_SEEK_FORWARD_STEP: &'static str = "mpv-seek-forward-step";
     const KEY_MPV_SEEK_BACKWARD_STEP: &'static str = "mpv-seek-backward-step";
@@ -120,8 +121,32 @@ impl Settings {
         self.boolean(Self::KEY_MERGE_RESUME_AND_NEXT_UP)
     }
 
-    pub fn full_item_display_mode(&self) -> bool {
-        self.boolean(Self::KEY_FULL_ITEM_DISPLAY_MODE)
+    pub fn item_text_display(&self) -> String {
+        match self.string(Self::KEY_ITEM_TEXT_DISPLAY).as_str() {
+            "full" => "full",
+            _ => "compact",
+        }
+        .to_string()
+    }
+
+    pub fn set_item_text_display(&self, item_text_display: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_ITEM_TEXT_DISPLAY, item_text_display)
+    }
+
+    pub fn item_card_style(&self) -> String {
+        match self.string(Self::KEY_ITEM_CARD_STYLE).as_str() {
+            "separated" => "separated",
+            _ => "integrated",
+        }
+        .to_string()
+    }
+
+    pub fn set_item_card_style(&self, item_card_style: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_ITEM_CARD_STYLE, item_card_style)
+    }
+
+    pub fn item_card_style_is_integrated(&self) -> bool {
+        self.item_card_style() == "integrated"
     }
 
     pub fn mpv_config_dir(&self) -> String {

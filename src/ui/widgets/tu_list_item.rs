@@ -84,6 +84,12 @@ pub mod imp {
         pub poster_type: Cell<PosterType>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
+        pub content_box: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub scaled_title_slot: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub plain_title_slot: TemplateChild<gtk::Box>,
+        #[template_child]
         pub title_box: TemplateChild<gtk::Box>,
         #[template_child]
         pub title: TemplateChild<gtk::Label>,
@@ -133,6 +139,8 @@ pub mod imp {
             self.is_dark.set(style_manager.is_dark());
             let obj = self.obj();
 
+            self.update_item_card_style();
+
             style_manager.connect_dark_notify(glib::clone!(
                 #[weak]
                 obj,
@@ -162,11 +170,23 @@ pub mod imp {
             });
 
             SETTINGS.connect_changed(
-                Some("full-item-display-mode"),
+                Some("item-text-display"),
                 glib::clone!(
                     #[weak]
                     obj,
                     move |_, _| obj.update_title()
+                ),
+            );
+
+            SETTINGS.connect_changed(
+                Some("item-card-style"),
+                glib::clone!(
+                    #[weak]
+                    obj,
+                    move |_, _| {
+                        obj.imp().update_item_card_style();
+                        obj.queue_draw();
+                    }
                 ),
             );
         }
@@ -181,8 +201,36 @@ pub mod imp {
     impl WidgetImpl for TuListItem {}
 
     impl TuListItem {
+        fn update_item_card_style(&self) {
+            let integrated = SETTINGS.item_card_style_is_integrated();
+            let title_box = self.title_box.get();
+            let target = if integrated {
+                self.scaled_title_slot.get()
+            } else {
+                self.plain_title_slot.get()
+            };
+
+            if title_box.parent().as_ref() != Some(target.upcast_ref()) {
+                if let Some(parent) = title_box.parent()
+                    && let Ok(parent) = parent.downcast::<gtk::Box>()
+                {
+                    parent.remove(&title_box);
+                }
+                target.append(&title_box);
+            }
+
+            if integrated {
+                self.content_box.add_css_class("tulistitem");
+            } else {
+                self.content_box.remove_css_class("tulistitem");
+            }
+
+            self.scaled_title_slot.set_visible(integrated);
+            self.plain_title_slot.set_visible(!integrated);
+        }
+
         fn draw_backdrop(&self, snapshot: &gtk::Snapshot) {
-            if !self.title_box.is_visible() {
+            if !SETTINGS.item_card_style_is_integrated() || !self.title_box.is_visible() {
                 return;
             }
 
@@ -354,16 +402,18 @@ impl TuListItem {
     fn update_title(&self) {
         let imp = self.imp();
         if let Some((title, subtitle)) = self.item().list_item_text() {
+            imp.title_box.set_visible(true);
             imp.title.set_text(&title);
+            imp.title.set_visible(true);
             if let Some(subtitle) = subtitle {
                 imp.subtitle.set_text(&subtitle);
                 imp.subtitle.set_visible(true);
             } else {
                 imp.subtitle.set_visible(false);
             }
-            imp.title_box.set_visible(true);
         } else {
             imp.title_box.set_visible(false);
+            imp.title.set_visible(false);
             imp.subtitle.set_visible(false);
         }
     }
