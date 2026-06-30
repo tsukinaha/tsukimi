@@ -554,7 +554,7 @@ msgid "Preferred Subtitle Language"
 msgstr "首選字幕語言"
 
 #: resources/ui/account_settings.ui:73
-msgid "Appearence"
+msgid "Appearance"
 msgstr "外觀"
 
 #: resources/ui/account_settings.ui:76

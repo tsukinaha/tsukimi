@@ -558,7 +558,7 @@ msgid "Preferred Subtitle Language"
 msgstr ""
 
 #: resources/ui/account_settings.ui:73
-msgid "Appearence"
+msgid "Appearance"
 msgstr ""
 
 #: resources/ui/account_settings.ui:76
