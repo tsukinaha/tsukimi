@@ -317,7 +317,7 @@ pub mod imp {
                 pic_h as f64,
             );
             sub.restore();
-            sub.pop();
+            sub.pop(); // blur
 
             let stops = if self.is_dark.get() {
                 [
@@ -336,7 +336,7 @@ pub mod imp {
                 &graphene::Point::new(0.0, backdrop_y + backdrop_h),
                 &stops,
             );
-            sub.pop();
+            sub.pop(); // rounded clip
 
             let node = sub.to_node()?;
             let key = (
