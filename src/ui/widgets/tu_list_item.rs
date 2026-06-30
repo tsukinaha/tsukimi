@@ -409,10 +409,11 @@ impl TuListItem {
 
     fn update_title(&self) {
         let imp = self.imp();
-        if let Some((title, subtitle)) = self.item().list_item_text() {
+        let item = self.item();
+        if let Some(title) = item.list_item_title() {
             imp.title.set_text(&title);
             imp.title.set_visible(true);
-            if let Some(subtitle) = subtitle {
+            if let Some(subtitle) = item.list_item_subtitle() {
                 imp.subtitle.set_text(&subtitle);
                 imp.subtitle.set_visible(true);
             } else {

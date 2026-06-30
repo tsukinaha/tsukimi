@@ -734,7 +734,7 @@ impl TuItem {
         }
     }
 
-    pub fn list_item_text(&self) -> Option<(String, Option<String>)> {
+    pub fn list_item_title(&self) -> Option<String> {
         let name = self.name();
 
         if name.is_empty() {
@@ -742,11 +742,10 @@ impl TuItem {
         }
 
         if SETTINGS.item_text_display() == "full" {
-            let subtitle = self.fmt_subtitle();
-            return Some((self.fmt_title(), (!subtitle.is_empty()).then_some(subtitle)));
+            return Some(self.fmt_title());
         }
 
-        let title = match self.item_type().as_str() {
+        Some(match self.item_type().as_str() {
             TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER => name,
             EPISODE if self.series_name().is_some() && self.is_resume() => self.fmt_subtitle(),
             MOVIE if self.is_resume() => self.fmt_title(),
@@ -758,9 +757,16 @@ impl TuItem {
                 }
             }
             _ => return None,
-        };
+        })
+    }
 
-        Some((title, None))
+    pub fn list_item_subtitle(&self) -> Option<String> {
+        if self.name().is_empty() || SETTINGS.item_text_display() != "full" {
+            return None;
+        }
+
+        let subtitle = self.fmt_subtitle();
+        (!subtitle.is_empty()).then_some(subtitle)
     }
 
     pub fn fmt_rating(&self) -> Option<String> {
