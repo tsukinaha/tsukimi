@@ -40,7 +40,10 @@ pub mod imp {
     use gtk::{
         CompositeTemplate,
         PopoverMenu,
+        gdk,
         glib,
+        graphene,
+        gsk,
     };
 
     use crate::ui::{
@@ -62,6 +65,12 @@ pub mod imp {
         #[default]
         Poster,
         NoRequest,
+    }
+
+    pub struct BackdropNodeCache {
+        node: gsk::RenderNode,
+        /// Validity key: (width_px, height_px, is_dark, paintable_ptr)
+        key: (i32, i32, bool, usize),
     }
 
     // Object holding the state
@@ -93,6 +102,9 @@ pub mod imp {
 
         #[template_child]
         pub hover_scale: TemplateChild<HoverScale>,
+
+        pub backdrop_cache: RefCell<Option<BackdropNodeCache>>,
+        pub is_dark: Cell<bool>,
     }
 
     #[glib::object_subclass]
@@ -117,7 +129,26 @@ pub mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
+            let style_manager = adw::StyleManager::default();
+            self.is_dark.set(style_manager.is_dark());
             let obj = self.obj();
+
+            style_manager.connect_dark_notify(glib::clone!(
+                #[weak]
+                obj,
+                move |sm| {
+                    obj.imp().is_dark.set(sm.is_dark());
+                    obj.queue_draw();
+                }
+            ));
+
+            self.hover_scale.set_underlay(glib::clone!(
+                #[weak]
+                obj,
+                move |snapshot| {
+                    obj.imp().draw_backdrop(snapshot);
+                }
+            ));
 
             obj.add_controller(obj.gesture_click());
             obj.set_has_tooltip(true);
@@ -148,6 +179,119 @@ pub mod imp {
     }
 
     impl WidgetImpl for TuListItem {}
+
+    impl TuListItem {
+        fn draw_backdrop(&self, snapshot: &gtk::Snapshot) {
+            if !self.title_box.is_visible() {
+                return;
+            }
+
+            let Some((paintable, pic_bounds)) = self.compute_blur_info() else {
+                return;
+            };
+
+            let hover_scale = self.hover_scale.get();
+            let w = pic_bounds.width() as i32;
+            let h = hover_scale.height();
+            let key = (w, h, self.is_dark.get(), paintable.as_ptr() as usize);
+
+            let stale = self
+                .backdrop_cache
+                .borrow()
+                .as_ref()
+                .is_none_or(|c| c.key != key);
+            if stale {
+                *self.backdrop_cache.borrow_mut() =
+                    self.build_backdrop_node(&paintable, &pic_bounds, w as f32, h as f32);
+            }
+
+            if let Some(cache) = self.backdrop_cache.borrow().as_ref() {
+                snapshot.append_node(&cache.node);
+            }
+        }
+
+        fn compute_blur_info(&self) -> Option<(gdk::Paintable, graphene::Rect)> {
+            let hover_scale = self.hover_scale.get();
+            let picture_loader = self.overlay.child()?.downcast::<PictureLoader>().ok()?;
+            let paintable = picture_loader.imp().picture.paintable()?;
+            let pic_bounds = picture_loader.compute_bounds(&hover_scale)?;
+
+            Some((paintable, pic_bounds))
+        }
+
+        fn build_backdrop_node(
+            &self, paintable: &gdk::Paintable, pic_bounds: &graphene::Rect, widget_w: f32,
+            widget_h: f32,
+        ) -> Option<BackdropNodeCache> {
+            const CORNER_RADIUS: f32 = 10.0;
+            const BLUR_RADIUS: f64 = 20.0;
+
+            let pic_bottom = pic_bounds.y() + pic_bounds.height();
+            let backdrop_y = pic_bottom - CORNER_RADIUS;
+            let backdrop_h = widget_h - backdrop_y;
+
+            if backdrop_h <= 0.0 {
+                return None;
+            }
+
+            let backdrop_rect = graphene::Rect::new(0.0, backdrop_y, widget_w, backdrop_h);
+            let rounded = gsk::RoundedRect::new(
+                backdrop_rect,
+                graphene::Size::new(0.0, 0.0),
+                graphene::Size::new(0.0, 0.0),
+                graphene::Size::new(CORNER_RADIUS, CORNER_RADIUS),
+                graphene::Size::new(CORNER_RADIUS, CORNER_RADIUS),
+            );
+
+            let sub = gtk::Snapshot::new();
+            sub.push_rounded_clip(&rounded);
+            sub.push_blur(BLUR_RADIUS);
+
+            let pic_w = pic_bounds.width();
+            let pic_h = pic_bounds.height();
+            let scale = if pic_w > 0.0 { widget_w / pic_w } else { 1.0 };
+            let draw_y = widget_h - pic_h * scale;
+
+            sub.save();
+            sub.translate(&graphene::Point::new(0.0, draw_y));
+            sub.scale(scale, scale);
+            paintable.snapshot(
+                sub.upcast_ref::<gdk::Snapshot>(),
+                pic_w as f64,
+                pic_h as f64,
+            );
+            sub.restore();
+            sub.pop();
+
+            let stops = if self.is_dark.get() {
+                [
+                    gsk::ColorStop::new(0.0, gdk::RGBA::new(0.0, 0.0, 0.0, 0.35)),
+                    gsk::ColorStop::new(1.0, gdk::RGBA::new(0.0, 0.0, 0.0, 0.45)),
+                ]
+            } else {
+                [
+                    gsk::ColorStop::new(0.0, gdk::RGBA::new(1.0, 1.0, 1.0, 0.15)),
+                    gsk::ColorStop::new(1.0, gdk::RGBA::new(1.0, 1.0, 1.0, 0.25)),
+                ]
+            };
+            sub.append_linear_gradient(
+                &backdrop_rect,
+                &graphene::Point::new(0.0, backdrop_y),
+                &graphene::Point::new(0.0, backdrop_y + backdrop_h),
+                &stops,
+            );
+            sub.pop();
+
+            let node = sub.to_node()?;
+            let key = (
+                widget_w as i32,
+                widget_h as i32,
+                self.is_dark.get(),
+                paintable.as_ptr() as usize,
+            );
+            Some(BackdropNodeCache { node, key })
+        }
+    }
 
     impl BinImpl for TuListItem {}
 

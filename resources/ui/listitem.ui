@@ -4,14 +4,14 @@
     <property name="halign">center</property>
     <property name="valign">start</property>
     <child>
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
-        <property name="spacing">12</property>
-        <property name="valign">fill</property>
-        <property name="overflow">visible</property>
+      <object class="HoverScale" id="hover_scale">
+        <property name="valign">start</property>
         <child>
-          <object class="HoverScale" id="hover_scale">
-            <property name="valign">start</property>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">12</property>
+            <property name="valign">fill</property>
+            <property name="overflow">visible</property>
             <child>
               <object class="GtkOverlay" id="overlay">
                 <property name="valign">fill</property>
@@ -76,46 +76,49 @@
                 </child>
               </object>
             </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox" id="title_box">
-            <property name="orientation">vertical</property>
-            <property name="spacing">2</property>
-            <property name="visible">false</property>
-            <property name="margin-bottom">10</property>
-            <property name="margin-start">10</property>
-            <property name="margin-end">10</property>
             <child>
-              <object class="GtkLabel" id="title">
-                <property name="justify">center</property>
-                <property name="wrap">true</property>
-                <property name="wrap-mode">word-char</property>
-                <property name="max-width-chars">1</property>
-                <property name="lines">1</property>
-                <property name="ellipsize">middle</property>
-                <property name="opacity">0.9</property>
-                <attributes>
-                  <attribute name="scale" value="0.9" />
-                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                </attributes>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel" id="subtitle">
-                <property name="justify">center</property>
-                <property name="wrap">true</property>
-                <property name="wrap-mode">word-char</property>
-                <property name="max-width-chars">1</property>
-                <property name="lines">1</property>
-                <property name="ellipsize">middle</property>
+              <object class="GtkBox" id="title_box">
+                <property name="orientation">vertical</property>
+                <property name="spacing">2</property>
                 <property name="visible">false</property>
-                <property name="opacity">0.65</property>
-                <attributes>
-                  <attribute name="scale" value="0.82" />
-                </attributes>
+                <property name="margin-bottom">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <child>
+                  <object class="GtkLabel" id="title">
+                    <property name="justify">center</property>
+                    <property name="wrap">true</property>
+                    <property name="wrap-mode">word-char</property>
+                    <property name="max-width-chars">1</property>
+                    <property name="lines">1</property>
+                    <property name="ellipsize">middle</property>
+                    <property name="opacity">0.9</property>
+                    <attributes>
+                      <attribute name="scale" value="0.9" />
+                      <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="subtitle">
+                    <property name="justify">center</property>
+                    <property name="wrap">true</property>
+                    <property name="wrap-mode">word-char</property>
+                    <property name="max-width-chars">1</property>
+                    <property name="lines">1</property>
+                    <property name="ellipsize">middle</property>
+                    <property name="visible">false</property>
+                    <property name="opacity">0.65</property>
+                    <attributes>
+                      <attribute name="scale" value="0.82" />
+                    </attributes>
+                  </object>
+                </child>
               </object>
             </child>
+            <style>
+              <class name="tulistitem" />
+            </style>
           </object>
         </child>
       </object>
