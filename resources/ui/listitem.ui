@@ -4,98 +4,95 @@
     <property name="halign">center</property>
     <property name="valign">start</property>
     <child>
-      <object class="HoverScale" id="hover_scale">
-        <property name="valign">start</property>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">12</property>
+        <property name="valign">fill</property>
+        <property name="overflow">visible</property>
         <child>
-            <object class="GtkBox">
-            <property name="orientation">vertical</property>
-            <property name="spacing">8</property>
-            <property name="valign">fill</property>
-            <property name="overflow">visible</property>
+          <object class="HoverScale" id="hover_scale">
+            <property name="valign">start</property>
             <child>
-	                <object class="GtkOverlay" id="overlay">
-	                    <property name="valign">fill</property>
-	                    <property name="width-request">100</property>
-	                    <property name="height-request">100</property>
-	                    <property name="halign">fill</property>
-	                    <property name="overflow">hidden</property>
-	                    <style>
-	                        <class name="cover-progress-frame" />
-	                    </style>
-	                    <child type="overlay">
-	                        <object class="GtkProgressBar" id="progress_bar">
-	                            <property name="visible">false</property>
-	                            <property name="valign">end</property>
-	                            <style>
-	                                <class name="accent" />
-	                            </style>
-                        </object>
-                    </child>
-                    <child type="overlay">
-                        <object class="GtkButton" id="played_mark">
-                            <property name="halign">end</property>
-                            <property name="valign">start</property>
-                            <property name="margin-end">8</property>
-                            <property name="margin-top">8</property>
-                            <property name="icon-name">checkmark-small-symbolic</property>
-                            <property name="visible">false</property>
-                            <style>
-                                <class name="circular" />
-                                <class name="osd" />
-                            </style>
-                        </object>
-                    </child>
-                    <child type="overlay">
-                        <object class="GtkButton" id="folder_mark">
-                            <property name="halign">end</property>
-                            <property name="valign">start</property>
-                            <property name="margin-end">8</property>
-                            <property name="margin-top">8</property>
-                            <property name="icon-name">folder-visiting-symbolic</property>
-                            <property name="visible">false</property>
-                            <style>
-                                <class name="circular" />
-                                <class name="osd" />
-                            </style>
-                        </object>
-                    </child>
-                    <child type="overlay">
-                        <object class="GtkButton" id="direct_play_button">
-	                            <property name="halign">start</property>
-	                            <property name="valign">end</property>
-	                            <property name="margin-start">8</property>
-	                            <property name="margin-bottom">11</property>
-	                            <property name="icon-name">media-playback-start-symbolic</property>
-                            <property name="visible">false</property>
-                            <signal name="clicked" handler="on_play_clicked" swapped="yes"/>
-                            <style>
-                                <class name="circular" />
-                                <class name="osd" />
-                            </style>
-                        </object>
-                    </child>
-                </object>
+              <object class="GtkOverlay" id="overlay">
+                <property name="valign">fill</property>
+                <property name="width-request">100</property>
+                <property name="height-request">100</property>
+                <property name="halign">fill</property>
+                <property name="overflow">hidden</property>
+                <style>
+                  <class name="cover-progress-frame" />
+                </style>
+                <child type="overlay">
+                  <object class="GtkProgressBar" id="progress_bar">
+                    <property name="visible">false</property>
+                    <property name="valign">end</property>
+                    <style>
+                      <class name="accent" />
+                    </style>
+                  </object>
+                </child>
+                <child type="overlay">
+                  <object class="GtkButton" id="played_mark">
+                    <property name="halign">end</property>
+                    <property name="valign">start</property>
+                    <property name="margin-end">8</property>
+                    <property name="margin-top">8</property>
+                    <property name="icon-name">checkmark-small-symbolic</property>
+                    <property name="visible">false</property>
+                    <style>
+                      <class name="circular" />
+                      <class name="osd" />
+                    </style>
+                  </object>
+                </child>
+                <child type="overlay">
+                  <object class="GtkButton" id="folder_mark">
+                    <property name="halign">end</property>
+                    <property name="valign">start</property>
+                    <property name="margin-end">8</property>
+                    <property name="margin-top">8</property>
+                    <property name="icon-name">folder-visiting-symbolic</property>
+                    <property name="visible">false</property>
+                    <style>
+                      <class name="circular" />
+                      <class name="osd" />
+                    </style>
+                  </object>
+                </child>
+                <child type="overlay">
+                  <object class="GtkButton" id="direct_play_button">
+                    <property name="halign">start</property>
+                    <property name="valign">end</property>
+                    <property name="margin-start">8</property>
+                    <property name="margin-bottom">11</property>
+                    <property name="icon-name">media-playback-start-symbolic</property>
+                    <property name="visible">false</property>
+                    <signal name="clicked" handler="on_play_clicked" swapped="yes"/>
+                    <style>
+                      <class name="circular" />
+                      <class name="osd" />
+                    </style>
+                  </object>
+                </child>
+              </object>
             </child>
-            <child>
-                <object class="GtkLabel" id="title">
-                <property name="justify">center</property>
-                <property name="wrap">true</property>
-                <property name="max-width-chars">1</property>
-                <property name="visible">false</property>
-                <property name="margin-bottom">10</property>
-                <property name="margin-start">10</property>
-                <property name="margin-end">10</property>
-                <property name="opacity">0.9</property>
-                <attributes>
-                    <attribute name="scale" value="0.9" />
-                    <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                </attributes>
-	                </object>
-	            </child>
-	            <style>
-	                <class name="tulistitem" />
-	            </style>
-            </object>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="title">
+            <property name="justify">center</property>
+            <property name="wrap">true</property>
+            <property name="max-width-chars">1</property>
+            <property name="visible">false</property>
+            <property name="margin-bottom">10</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <property name="opacity">0.9</property>
+            <attributes>
+              <attribute name="scale" value="0.9" />
+              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+            </attributes>
+          </object>
         </child>
       </object>
     </child>
