@@ -747,7 +747,7 @@ impl TuItem {
             return None;
         }
 
-        let title = if SETTINGS.always_show_item_title() {
+        let title = if SETTINGS.full_item_display_mode() {
             match self.item_type().as_str() {
                 EPISODE => self.fmt_subtitle(),
                 PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR

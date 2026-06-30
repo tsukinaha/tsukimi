@@ -549,11 +549,11 @@ msgid "Auto Select Last Server"
 msgstr ""
 
 #: resources/ui/account_settings.ui:110
-msgid "Always Show Item Titles"
+msgid "Full Display Mode"
 msgstr ""
 
 #: resources/ui/account_settings.ui:111
-msgid "Show titles on all item cards"
+msgid "Show item titles on all cards, turn off for compact mode"
 msgstr ""
 
 #: resources/ui/account_settings.ui:118

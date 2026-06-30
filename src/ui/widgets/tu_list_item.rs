@@ -127,7 +127,7 @@ pub mod imp {
             });
 
             SETTINGS.connect_changed(
-                Some("always-show-item-title"),
+                Some("full-item-display-mode"),
                 glib::clone!(
                     #[weak]
                     obj,

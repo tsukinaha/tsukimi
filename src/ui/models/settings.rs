@@ -33,7 +33,7 @@ impl Settings {
     const KEY_LIST_SORT_ORDER: &'static str = "list-sort-order";
     const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
     const KEY_USE_CUSTOM_ACCENT_COLOR: &'static str = "use-custom-accent-color";
-    const KEY_ALWAYS_SHOW_ITEM_TITLE: &'static str = "always-show-item-title";
+    const KEY_FULL_ITEM_DISPLAY_MODE: &'static str = "full-item-display-mode";
     const KEY_MUSIC_REPEAT_MODE: &'static str = "music-repeat-mode";
     const KEY_MPV_SEEK_FORWARD_STEP: &'static str = "mpv-seek-forward-step";
     const KEY_MPV_SEEK_BACKWARD_STEP: &'static str = "mpv-seek-backward-step";
@@ -120,8 +120,8 @@ impl Settings {
         self.boolean(Self::KEY_MERGE_RESUME_AND_NEXT_UP)
     }
 
-    pub fn always_show_item_title(&self) -> bool {
-        self.boolean(Self::KEY_ALWAYS_SHOW_ITEM_TITLE)
+    pub fn full_item_display_mode(&self) -> bool {
+        self.boolean(Self::KEY_FULL_ITEM_DISPLAY_MODE)
     }
 
     pub fn mpv_config_dir(&self) -> String {

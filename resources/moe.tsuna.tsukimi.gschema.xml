@@ -57,9 +57,9 @@
       <default>true</default>
       <summary>Whether to override the system accent color</summary>
     </key>
-    <key name="always-show-item-title" type="b">
+    <key name="full-item-display-mode" type="b">
       <default>false</default>
-      <summary>Whether to always show item titles on cards</summary>
+      <summary>Whether to use full item display mode</summary>
     </key>
     <key name="root-pic" type="s">
       <default>""</default>

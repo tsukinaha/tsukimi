@@ -73,7 +73,7 @@ mod imp {
         #[template_child]
         pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
-        pub always_show_item_title_control: TemplateChild<adw::SwitchRow>,
+        pub full_item_display_mode_control: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub custom_accent_color_control: TemplateChild<adw::SwitchRow>,
         #[template_child]
@@ -395,8 +395,8 @@ impl AccountSettings {
             .build();
         SETTINGS
             .bind(
-                "always-show-item-title",
-                &imp.always_show_item_title_control.get(),
+                "full-item-display-mode",
+                &imp.full_item_display_mode_control.get(),
                 "active",
             )
             .build();
