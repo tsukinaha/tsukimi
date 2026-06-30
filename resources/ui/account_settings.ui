@@ -100,13 +100,19 @@
                 <property name="title" translatable="yes">Hide Sidebar</property>
               </object>
             </child>
-            <child>
-              <object class="AdwSwitchRow" id="selectlastcontrol">
-                <property name="title" translatable="yes">Auto Select Last Server</property>
-              </object>
-            </child>
-          </object>
-        </child>
+	            <child>
+	              <object class="AdwSwitchRow" id="selectlastcontrol">
+	                <property name="title" translatable="yes">Auto Select Last Server</property>
+	              </object>
+	            </child>
+	            <child>
+	              <object class="AdwSwitchRow" id="always_show_item_title_control">
+	                <property name="title" translatable="yes">Always Show Item Titles</property>
+	                <property name="subtitle" translatable="yes">Show titles on all item cards</property>
+	              </object>
+	            </child>
+	          </object>
+	        </child>
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Home Page</property>

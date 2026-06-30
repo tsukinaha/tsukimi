@@ -44,6 +44,7 @@ pub mod imp {
     };
 
     use crate::ui::{
+        SETTINGS,
         provider::tu_item::TuItem,
         widgets::{
             hover_scale::HoverScale,
@@ -124,6 +125,15 @@ pub mod imp {
                 tooltip.set_text(Some(&name));
                 true
             });
+
+            SETTINGS.connect_changed(
+                Some("always-show-item-title"),
+                glib::clone!(
+                    #[weak]
+                    obj,
+                    move |_, _| obj.update_title()
+                ),
+            );
         }
 
         fn dispose(&self) {
@@ -193,6 +203,16 @@ impl TuListItem {
         Object::builder().property("item", item).build()
     }
 
+    fn update_title(&self) {
+        let imp = self.imp();
+        if let Some(title) = self.item().list_item_title() {
+            imp.title.set_text(&title);
+            imp.title.set_visible(true);
+        } else {
+            imp.title.set_visible(false);
+        }
+    }
+
     pub fn refresh_item(&self) {
         let imp = self.imp();
         let item = self.item();
@@ -220,12 +240,7 @@ impl TuListItem {
         imp.direct_play_button
             .set_visible(item.has_direct_play_mark());
 
-        if let Some(title) = item.list_item_title() {
-            imp.title.set_text(&title);
-            imp.title.set_visible(true);
-        } else {
-            imp.title.set_visible(false);
-        }
+        self.update_title();
     }
 
     pub fn unbind_item(&self) {

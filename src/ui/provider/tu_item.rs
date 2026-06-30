@@ -56,6 +56,7 @@ use crate::{
     },
     ui::{
         GlobalToast,
+        SETTINGS,
         provider::{
             core_song::CoreSong,
             tu_item::item_type::{
@@ -746,20 +747,34 @@ impl TuItem {
             return None;
         }
 
-        let title = match self.item_type().as_str() {
-            TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER => name,
-            EPISODE if self.series_name().is_some() && self.prefer_size() != PreferSize::Post => {
-                self.fmt_subtitle()
-            }
-            MOVIE if self.is_resume() => self.fmt_title(),
-            PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR => {
-                if let Some(role) = self.role() {
+        let title = if SETTINGS.always_show_item_title() {
+            match self.item_type().as_str() {
+                EPISODE => self.fmt_subtitle(),
+                PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR
+                    if let Some(role) = self.role() =>
+                {
                     format!("{name} / {role}")
-                } else {
-                    name
                 }
+                _ => name,
             }
-            _ => return None,
+        } else {
+            match self.item_type().as_str() {
+                TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER => name,
+                EPISODE
+                    if self.series_name().is_some() && self.prefer_size() != PreferSize::Post =>
+                {
+                    self.fmt_subtitle()
+                }
+                MOVIE if self.is_resume() => self.fmt_title(),
+                PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR => {
+                    if let Some(role) = self.role() {
+                        format!("{name} / {role}")
+                    } else {
+                        name
+                    }
+                }
+                _ => return None,
+            }
         };
 
         Some(title)

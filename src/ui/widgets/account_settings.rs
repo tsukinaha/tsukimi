@@ -73,6 +73,8 @@ mod imp {
         #[template_child]
         pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
+        pub always_show_item_title_control: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub custom_accent_color_control: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub backgroundblurspinrow: TemplateChild<adw::SpinRow>,
@@ -388,6 +390,13 @@ impl AccountSettings {
             .bind(
                 "use-custom-accent-color",
                 &imp.custom_accent_color_control.get(),
+                "active",
+            )
+            .build();
+        SETTINGS
+            .bind(
+                "always-show-item-title",
+                &imp.always_show_item_title_control.get(),
                 "active",
             )
             .build();
