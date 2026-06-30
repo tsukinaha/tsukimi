@@ -560,7 +560,7 @@ msgid "Preferred Subtitle Language"
 msgstr "விருப்பமான வசன மொழி"
 
 #: resources/ui/account_settings.ui:73
-msgid "Appearence"
+msgid "Appearance"
 msgstr "தோற்றம்"
 
 #: resources/ui/account_settings.ui:76

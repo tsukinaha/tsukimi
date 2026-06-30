@@ -72,7 +72,7 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Appearence</property>
+            <property name="title" translatable="yes">Appearance</property>
             <child>
               <object class="AdwSwitchRow" id="custom_accent_color_control">
                 <property name="title" translatable="yes">Use Custom Accent Color</property>

@@ -562,7 +562,7 @@ msgid "Preferred Subtitle Language"
 msgstr "Предпочтительный язык субтитров"
 
 #: resources/ui/account_settings.ui:73
-msgid "Appearence"
+msgid "Appearance"
 msgstr "Внешний вид"
 
 #: resources/ui/account_settings.ui:76

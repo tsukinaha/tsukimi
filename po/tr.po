@@ -548,7 +548,7 @@ msgid "Preferred Subtitle Language"
 msgstr "Tercih Edilen Altyazı Dili"
 
 #: resources/ui/account_settings.ui:73
-msgid "Appearence"
+msgid "Appearance"
 msgstr "Görünüm"
 
 #: resources/ui/account_settings.ui:76
