@@ -330,7 +330,11 @@ checkbutton.theme-selector radio:checked {
 }
 
 progressbar.accent > trough {
-  min-height: 4px;
+  min-height: 6px;
+}
+
+progressbar.accent > trough > progress {
+  border-radius: 0;
 }
 
 .mpv-seekbar>trough {
@@ -369,6 +373,10 @@ progressbar.accent > trough {
 .picture-loader {
     background-color: transparent;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.cover-progress-frame {
     border-radius: 10px;
 }
 

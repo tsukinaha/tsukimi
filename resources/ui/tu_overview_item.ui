@@ -17,13 +17,17 @@
               <object class="HoverScale" id="hover_scale">
                 <property name="valign">fill</property>
                 <child>
-                  <object class="GtkOverlay" id="overlay">
-                    <property name="valign">fill</property>
-                    <property name="width-request">250</property>
-                    <property name="height-request">141</property>
-                    <property name="halign">center</property>
-                    <child type="overlay">
-                      <object class="GtkBox" id="overlay_button_box">
+	                  <object class="GtkOverlay" id="overlay">
+	                    <property name="valign">fill</property>
+	                    <property name="width-request">250</property>
+	                    <property name="height-request">141</property>
+	                    <property name="halign">center</property>
+	                    <property name="overflow">hidden</property>
+	                    <style>
+	                      <class name="cover-progress-frame" />
+	                    </style>
+	                    <child type="overlay">
+	                      <object class="GtkBox" id="overlay_button_box">
                         <property name="orientation">horizontal</property>
                         <property name="spacing">12</property>
                         <property name="halign">end</property>
@@ -34,13 +38,11 @@
                     </child>
                     <child type="overlay">
                       <object class="GtkProgressBar" id="progress_bar">
-                        <property name="visible">false</property>
-                        <property name="valign">end</property>
-                        <property name="margin-start">3</property>
-                        <property name="margin-end">3</property>
-                        <style>
-                          <class name="accent" />
-                        </style>
+	                        <property name="visible">false</property>
+	                        <property name="valign">end</property>
+	                        <style>
+	                          <class name="accent" />
+	                        </style>
                       </object>
                     </child>
                   </object>

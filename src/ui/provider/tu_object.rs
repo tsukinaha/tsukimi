@@ -11,6 +11,7 @@ use crate::{
     client::structs::SimpleListItem,
     ui::widgets::{
         lazy_diff_view::OnSameKey,
+        tu_item::TuItemProgressbarAnimation,
         tu_list_item::TuListItem,
     },
 };
@@ -51,7 +52,7 @@ impl OnSameKey for TuObject {
             return;
         };
         if let Some(played_percentage) = self.item().fmt_percentage() {
-            list_item.set_progress(played_percentage / 100.);
+            list_item.set_progress(played_percentage);
         }
         list_item
             .item()
