@@ -89,7 +89,6 @@
                       <object class="GtkBox" id="title_box">
                         <property name="orientation">vertical</property>
                         <property name="spacing">2</property>
-                        <property name="visible">false</property>
                         <property name="margin-bottom">10</property>
                         <property name="margin-start">10</property>
                         <property name="margin-end">10</property>

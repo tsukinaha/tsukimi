@@ -19,6 +19,7 @@ use super::tu_item::{
     TuItemProgressbarAnimationPrelude,
 };
 use crate::ui::{
+    SETTINGS,
     provider::tu_item::TuItem,
     widgets::utils::{
         TU_ITEM_BANNER_SIZE,
@@ -224,15 +225,10 @@ pub mod imp {
             } else {
                 self.content_box.remove_css_class("tulistitem");
             }
-
-            self.update_item_card_style_title_visibility();
+            self.update_title_slot_visibility(integrated, self.title.get_visible());
         }
 
-        pub(super) fn update_item_card_style_title_visibility(&self) {
-            let integrated = SETTINGS.item_card_style_is_integrated();
-            let has_title = !self.title.text().is_empty();
-
-            self.title_box.set_visible(has_title);
+        pub(super) fn update_title_slot_visibility(&self, integrated: bool, has_title: bool) {
             self.scaled_title_slot.set_visible(integrated && has_title);
             self.plain_title_slot.set_visible(!integrated && has_title);
         }
@@ -410,7 +406,7 @@ impl TuListItem {
     fn update_title(&self) {
         let imp = self.imp();
         let item = self.item();
-        if let Some(title) = item.list_item_title() {
+        let has_title = if let Some(title) = item.list_item_title() {
             imp.title.set_text(&title);
             imp.title.set_visible(true);
             if let Some(subtitle) = item.list_item_subtitle() {
@@ -419,16 +415,14 @@ impl TuListItem {
             } else {
                 imp.subtitle.set_visible(false);
             }
+            true
         } else {
-            imp.title.set_text("");
             imp.title.set_visible(false);
-            imp.subtitle.set_text("");
             imp.subtitle.set_visible(false);
-            imp.title_box.set_visible(false);
-            imp.scaled_title_slot.set_visible(false);
-            imp.plain_title_slot.set_visible(false);
-        }
-        imp.update_item_card_style_title_visibility();
+            false
+        };
+
+        imp.update_title_slot_visibility(SETTINGS.item_card_style_is_integrated(), has_title);
     }
 
     pub fn refresh_item(&self) {
