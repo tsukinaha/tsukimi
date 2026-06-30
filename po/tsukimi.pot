@@ -105,23 +105,23 @@ msgstr ""
 msgid "Failed to change password"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:288
+#: src/ui/widgets/account_settings.rs:286
 msgid "Cache Cleared"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:309
+#: src/ui/widgets/account_settings.rs:307
 msgid "No file selected"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:562
-#: src/ui/widgets/account_settings.rs:571
-#: src/ui/widgets/account_settings.rs:605
-#: src/ui/widgets/account_settings.rs:614
+#: src/ui/widgets/account_settings.rs:556
+#: src/ui/widgets/account_settings.rs:565
+#: src/ui/widgets/account_settings.rs:599
+#: src/ui/widgets/account_settings.rs:608
 msgid "Descriptor cannot be empty!"
 msgstr ""
 
-#: src/ui/widgets/account_settings.rs:576
-#: src/ui/widgets/account_settings.rs:619
+#: src/ui/widgets/account_settings.rs:570
+#: src/ui/widgets/account_settings.rs:613
 msgid "Invalid regex"
 msgstr ""
 
