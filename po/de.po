@@ -560,7 +560,7 @@ msgid "Preferred Subtitle Language"
 msgstr "Bevorzugte Untertitelsprache"
 
 #: resources/ui/account_settings.ui:73
-msgid "Appearence"
+msgid "Appearance"
 msgstr "Erscheinungsbild"
 
 #: resources/ui/account_settings.ui:76
