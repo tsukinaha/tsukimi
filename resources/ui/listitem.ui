@@ -6,6 +6,7 @@
     <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>
+        <property name="spacing">12</property>
         <property name="valign">fill</property>
         <property name="overflow">visible</property>
         <child>
@@ -14,6 +15,7 @@
             <child>
               <object class="GtkBox" id="content_box">
                 <property name="orientation">vertical</property>
+                <property name="spacing">12</property>
                 <property name="valign">fill</property>
                 <property name="overflow">visible</property>
                 <child>
@@ -88,7 +90,6 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">2</property>
                         <property name="visible">false</property>
-                        <property name="margin-top">12</property>
                         <property name="margin-bottom">10</property>
                         <property name="margin-start">10</property>
                         <property name="margin-end">10</property>

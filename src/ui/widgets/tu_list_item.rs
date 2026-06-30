@@ -225,8 +225,16 @@ pub mod imp {
                 self.content_box.remove_css_class("tulistitem");
             }
 
-            self.scaled_title_slot.set_visible(integrated);
-            self.plain_title_slot.set_visible(!integrated);
+            self.update_item_card_style_title_visibility();
+        }
+
+        pub(super) fn update_item_card_style_title_visibility(&self) {
+            let integrated = SETTINGS.item_card_style_is_integrated();
+            let has_title = !self.title.text().is_empty();
+
+            self.title_box.set_visible(has_title);
+            self.scaled_title_slot.set_visible(integrated && has_title);
+            self.plain_title_slot.set_visible(!integrated && has_title);
         }
 
         fn draw_backdrop(&self, snapshot: &gtk::Snapshot) {
@@ -402,7 +410,6 @@ impl TuListItem {
     fn update_title(&self) {
         let imp = self.imp();
         if let Some((title, subtitle)) = self.item().list_item_text() {
-            imp.title_box.set_visible(true);
             imp.title.set_text(&title);
             imp.title.set_visible(true);
             if let Some(subtitle) = subtitle {
@@ -412,10 +419,15 @@ impl TuListItem {
                 imp.subtitle.set_visible(false);
             }
         } else {
-            imp.title_box.set_visible(false);
+            imp.title.set_text("");
             imp.title.set_visible(false);
+            imp.subtitle.set_text("");
             imp.subtitle.set_visible(false);
+            imp.title_box.set_visible(false);
+            imp.scaled_title_slot.set_visible(false);
+            imp.plain_title_slot.set_visible(false);
         }
+        imp.update_item_card_style_title_visibility();
     }
 
     pub fn refresh_item(&self) {
