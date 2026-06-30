@@ -760,11 +760,7 @@ impl TuItem {
         } else {
             match self.item_type().as_str() {
                 TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER => name,
-                EPISODE
-                    if self.series_name().is_some() && self.prefer_size() != PreferSize::Post =>
-                {
-                    self.fmt_subtitle()
-                }
+                EPISODE if self.series_name().is_some() && self.is_resume() => self.fmt_subtitle(),
                 MOVIE if self.is_resume() => self.fmt_title(),
                 PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR => {
                     if let Some(role) = self.role() {
