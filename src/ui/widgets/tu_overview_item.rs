@@ -56,6 +56,7 @@ pub mod imp {
     use crate::ui::{
         provider::tu_item::TuItem,
         widgets::{
+            hover_scale::HoverScale,
             picture_loader::PictureLoader,
             tu_item::TuItemAction,
         },
@@ -98,6 +99,7 @@ pub mod imp {
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
+            HoverScale::ensure_type();
             PictureLoader::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
@@ -273,7 +275,7 @@ impl TuOverviewItem {
                 }
             }
         }
-        self.set_picture_with_hover_scale();
+        self.set_picture();
         self.set_tooltip_text(Some(&item.name()));
     }
 }
