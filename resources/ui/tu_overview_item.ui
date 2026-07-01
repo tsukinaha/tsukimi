@@ -16,10 +16,9 @@
             <child>
 	              <object class="HoverScale" id="hover_scale">
 	                <property name="valign">fill</property>
-	                <property name="margin-start">20</property>
-					<property name="margin-end">8</property>
-	                <property name="margin-top">12</property>
-					<property name="margin-bottom">8</property>
+	                <property name="max-scale">1.00</property>
+	                <property name="margin-start">8</property>
+	                <property name="margin-top">8</property>
 	                <child>
 		                  <object class="GtkOverlay" id="overlay">
 	                    <property name="valign">fill</property>
