@@ -131,6 +131,7 @@
         </child>
         <child>
           <object class="GtkInscription" id="overview">
+            <property name="margin-start">8</property>
             <property name="min-lines">3</property>
             <property name="tooltip-text" bind-source="overview" bind-property="text" bind-flags="sync-create"/>
             <property name="text-overflow">ellipsize-end</property>
