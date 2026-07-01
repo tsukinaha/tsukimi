@@ -746,16 +746,10 @@ impl TuItem {
         }
 
         Some(match self.item_type().as_str() {
-            TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER => name,
+            TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER | PERSON
+            | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR => name,
             EPISODE if self.series_name().is_some() && self.is_resume() => self.fmt_subtitle(),
             MOVIE if self.is_resume() => self.fmt_title(),
-            PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR => {
-                if let Some(role) = self.role() {
-                    format!("{name} / {role}")
-                } else {
-                    name
-                }
-            }
             _ => return None,
         })
     }
