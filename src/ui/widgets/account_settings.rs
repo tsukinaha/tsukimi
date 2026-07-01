@@ -73,6 +73,10 @@ mod imp {
         #[template_child]
         pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
+        pub text_display_group: TemplateChild<adw::ToggleGroup>,
+        #[template_child]
+        pub card_style_group: TemplateChild<adw::ToggleGroup>,
+        #[template_child]
         pub custom_accent_color_control: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub backgroundblurspinrow: TemplateChild<adw::SpinRow>,
@@ -259,7 +263,7 @@ impl AccountSettings {
             move |control| {
                 let window = obj.window();
                 window.overlay_sidebar(control.is_active());
-                SETTINGS.set_overlay(control.is_active()).unwrap();
+                let _ = SETTINGS.set_overlay(control.is_active());
             }
         ));
     }
@@ -270,9 +274,7 @@ impl AccountSettings {
         imp.color
             .set_rgba(&RGBA::from_str(&SETTINGS.accent_color_code()).unwrap());
         imp.color.connect_rgba_notify(move |control| {
-            SETTINGS
-                .set_accent_color_code(&control.rgba().to_string())
-                .unwrap();
+            let _ = SETTINGS.set_accent_color_code(&control.rgba().to_string());
         });
     }
 
@@ -299,7 +301,7 @@ impl AccountSettings {
         match filedialog.open_future(Some(&window)).await {
             Ok(file) => {
                 let file_path = file.path().unwrap().display().to_string();
-                SETTINGS.set_root_pic(&file_path).unwrap();
+                let _ = SETTINGS.set_root_pic(&file_path);
                 window.set_rootpic(file);
             }
             Err(_) => self.toast(gettext("No file selected")),
@@ -314,7 +316,7 @@ impl AccountSettings {
             #[weak(rename_to = obj)]
             self,
             move |control| {
-                SETTINGS.set_pic_opacity(control.value() as i32).unwrap();
+                let _ = SETTINGS.set_pic_opacity(control.value() as i32);
                 let window = obj.window();
                 window.set_picopacity(control.value() as i32);
             }
@@ -329,9 +331,7 @@ impl AccountSettings {
             #[weak(rename_to = obj)]
             self,
             move |control| {
-                SETTINGS
-                    .set_background_enabled(control.is_active())
-                    .unwrap();
+                let _ = SETTINGS.set_background_enabled(control.is_active());
                 if !control.is_active() {
                     let window = obj.window();
                     window.clear_pic();
@@ -349,7 +349,7 @@ impl AccountSettings {
                 window.clear_pic();
             }
         ));
-        SETTINGS.set_root_pic("").unwrap();
+        let _ = SETTINGS.set_root_pic("");
     }
 
     pub fn bind_settings(&self) {
@@ -391,6 +391,20 @@ impl AccountSettings {
                 "active",
             )
             .build();
+        imp.text_display_group
+            .set_active_name(Some(SETTINGS.item_text_display().as_str()));
+        imp.card_style_group
+            .set_active_name(Some(SETTINGS.item_card_style().as_str()));
+        imp.text_display_group.connect_active_name_notify(|group| {
+            if let Some(active_name) = group.active_name() {
+                let _ = SETTINGS.set_item_text_display(&active_name);
+            }
+        });
+        imp.card_style_group.connect_active_name_notify(|group| {
+            if let Some(active_name) = group.active_name() {
+                let _ = SETTINGS.set_item_card_style(&active_name);
+            }
+        });
         SETTINGS
             .bind("use-custom-accent-color", &imp.color.get(), "sensitive")
             .build();
@@ -422,7 +436,7 @@ impl AccountSettings {
                     .get::<i32>()
                     .expect("The variant needs to be of type `i32`.");
 
-                SETTINGS.set_mpv_video_output(parameter).unwrap();
+                let _ = SETTINGS.set_mpv_video_output(parameter);
 
                 action.set_state(&parameter.to_variant());
             })
@@ -481,9 +495,7 @@ impl AccountSettings {
         &self, _param: glib::ParamSpec, button: gtk::FontDialogButton,
     ) {
         let font_desc = button.font_desc().unwrap();
-        SETTINGS
-            .set_mpv_subtitle_font(gtk::pango::FontDescription::to_string(&font_desc))
-            .unwrap();
+        let _ = SETTINGS.set_mpv_subtitle_font(gtk::pango::FontDescription::to_string(&font_desc));
     }
 
     #[template_callback]
@@ -750,9 +762,7 @@ impl AccountSettings {
                         .unwrap();
                     descriptors.remove(lr_index);
                     descriptors.insert(index, lr_descriptor.to_owned());
-                    SETTINGS
-                        .set_preferred_version_descriptors(descriptors)
-                        .expect("Failed to set descriptors");
+                    let _ = SETTINGS.set_preferred_version_descriptors(descriptors);
                     obj.refersh_descriptors();
 
                     true

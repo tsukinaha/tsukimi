@@ -56,6 +56,7 @@ use crate::{
     },
     ui::{
         GlobalToast,
+        SETTINGS,
         provider::{
             core_song::CoreSong,
             tu_item::item_type::{
@@ -662,16 +663,10 @@ impl TuItem {
     }
 
     pub fn fmt_title(&self) -> String {
-        let title = match self.item_type().as_str() {
+        match self.item_type().as_str() {
             TV_CHANNEL => self.fmt_tv_name(),
             EPISODE if let Some(series_name) = self.series_name() => series_name,
             _ => self.name(),
-        };
-
-        if self.has_unplayed_item() && self.unplayed_item_count() > 0 {
-            format!("{} ({})", title, self.unplayed_item_count())
-        } else {
-            title
         }
     }
 
@@ -746,23 +741,26 @@ impl TuItem {
             return None;
         }
 
-        let title = match self.item_type().as_str() {
-            TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER => name,
-            EPISODE if self.series_name().is_some() && self.prefer_size() != PreferSize::Post => {
-                self.fmt_subtitle()
-            }
-            MOVIE if self.is_resume() => self.fmt_title(),
-            PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR => {
-                if let Some(role) = self.role() {
-                    format!("{name} / {role}")
-                } else {
-                    name
-                }
-            }
-            _ => return None,
-        };
+        if SETTINGS.item_text_display() == "full" {
+            return Some(self.fmt_title());
+        }
 
-        Some(title)
+        Some(match self.item_type().as_str() {
+            TV_CHANNEL | SEASON | BOX_SET | MUSIC_ALBUM | GENRE | TAG | FOLDER | PERSON
+            | DIRECTOR | WRITER | PRODUCER | GUEST_STAR | ACTOR => name,
+            EPISODE if self.series_name().is_some() && self.is_resume() => self.fmt_subtitle(),
+            MOVIE if self.is_resume() => self.fmt_title(),
+            _ => return None,
+        })
+    }
+
+    pub fn list_item_subtitle(&self) -> Option<String> {
+        if self.name().is_empty() || SETTINGS.item_text_display() != "full" {
+            return None;
+        }
+
+        let subtitle = self.fmt_subtitle();
+        (!subtitle.is_empty()).then_some(subtitle)
     }
 
     pub fn fmt_rating(&self) -> Option<String> {

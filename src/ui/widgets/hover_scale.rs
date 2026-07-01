@@ -31,8 +31,11 @@ mod imp {
 
     type UnderlaySnapshotCallback = Box<dyn Fn(&gtk::Snapshot) + 'static>;
 
-    #[derive(Default)]
+    #[derive(Default, glib::Properties)]
+    #[properties(wrapper_type = super::HoverScale)]
     pub struct HoverScale {
+        #[property(get, set, construct, default = MAX_SCALE)]
+        pub max_scale: Cell<f32>,
         pub animation: OnceCell<adw::TimedAnimation>,
         /// Optional closure rendered inside the scale transform, before the child.
         pub underlay: RefCell<Option<UnderlaySnapshotCallback>>,
@@ -48,6 +51,7 @@ mod imp {
         type ParentType = adw::Bin;
     }
 
+    #[glib::derived_properties]
     impl ObjectImpl for HoverScale {
         fn constructed(&self) {
             self.parent_constructed();
@@ -152,7 +156,7 @@ mod imp {
                 return;
             }
 
-            let scale = 1.0 + (super::MAX_SCALE - 1.0) * progress;
+            let scale = 1.0 + (self.max_scale.get() - 1.0) * progress;
             let nx = self.cursor_nx.get();
             let ny = self.cursor_ny.get();
 

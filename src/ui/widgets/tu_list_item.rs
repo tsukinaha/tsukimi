@@ -11,13 +11,15 @@ use gtk::{
 use imp::PosterType;
 
 use super::tu_item::{
-    PROGRESSBAR_ANIMATION_DURATION,
     TuItemBasic,
     TuItemMenuPrelude,
     TuItemOverlay,
     TuItemOverlayPrelude,
+    TuItemProgressbarAnimation,
+    TuItemProgressbarAnimationPrelude,
 };
 use crate::ui::{
+    SETTINGS,
     provider::tu_item::TuItem,
     widgets::utils::{
         TU_ITEM_BANNER_SIZE,
@@ -68,9 +70,6 @@ pub mod imp {
 
     pub struct BackdropNodeCache {
         node: gsk::RenderNode,
-        backdrop_y: f32,
-        backdrop_h: f32,
-        widget_w: f32,
         /// Validity key: (width_px, height_px, is_dark, paintable_ptr)
         key: (i32, i32, bool, usize),
     }
@@ -86,11 +85,21 @@ pub mod imp {
         pub poster_type: Cell<PosterType>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
+        pub content_box: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub scaled_title_slot: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub plain_title_slot: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub title_box: TemplateChild<gtk::Box>,
+        #[template_child]
         pub title: TemplateChild<gtk::Label>,
         #[template_child]
+        pub subtitle: TemplateChild<gtk::Label>,
+        #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
-        #[property(get, set = Self::set_progress)]
-        pub progress: Cell<f64>,
+        #[template_child]
+        pub progress_bar: TemplateChild<gtk::ProgressBar>,
         #[template_child]
         pub played_mark: TemplateChild<gtk::Button>,
         #[template_child]
@@ -101,7 +110,6 @@ pub mod imp {
         #[template_child]
         pub hover_scale: TemplateChild<HoverScale>,
 
-        pub progress_inside: Cell<f64>,
         pub backdrop_cache: RefCell<Option<BackdropNodeCache>>,
         pub is_dark: Cell<bool>,
     }
@@ -132,6 +140,8 @@ pub mod imp {
             self.is_dark.set(style_manager.is_dark());
             let obj = self.obj();
 
+            self.update_item_card_style();
+
             style_manager.connect_dark_notify(glib::clone!(
                 #[weak]
                 obj,
@@ -141,45 +151,14 @@ pub mod imp {
                 }
             ));
 
-            style_manager.connect_accent_color_rgba_notify(glib::clone!(
-                #[weak]
-                obj,
-                move |_| {
-                    obj.queue_draw();
-                }
-            ));
-
-            SETTINGS.connect_changed(
-                Some("use-custom-accent-color"),
-                glib::clone!(
-                    #[weak]
-                    obj,
-                    move |_, _| {
-                        obj.queue_draw();
-                    }
-                ),
-            );
-
-            SETTINGS.connect_changed(
-                Some("accent-color-code"),
-                glib::clone!(
-                    #[weak]
-                    obj,
-                    move |_, _| {
-                        obj.queue_draw();
-                    }
-                ),
-            );
-
             self.hover_scale.set_underlay(glib::clone!(
                 #[weak]
                 obj,
                 move |snapshot| {
-                    obj.imp().draw_backdrop_and_progress(snapshot);
+                    obj.imp().draw_backdrop(snapshot);
                 }
             ));
 
-            let obj = self.obj();
             obj.add_controller(obj.gesture_click());
             obj.set_has_tooltip(true);
             obj.connect_query_tooltip(|obj, _, _, _, tooltip| {
@@ -190,6 +169,27 @@ pub mod imp {
                 tooltip.set_text(Some(&name));
                 true
             });
+
+            SETTINGS.connect_changed(
+                Some("item-text-display"),
+                glib::clone!(
+                    #[weak]
+                    obj,
+                    move |_, _| obj.update_title()
+                ),
+            );
+
+            SETTINGS.connect_changed(
+                Some("item-card-style"),
+                glib::clone!(
+                    #[weak]
+                    obj,
+                    move |_, _| {
+                        obj.imp().update_item_card_style();
+                        obj.queue_draw();
+                    }
+                ),
+            );
         }
 
         fn dispose(&self) {
@@ -202,8 +202,39 @@ pub mod imp {
     impl WidgetImpl for TuListItem {}
 
     impl TuListItem {
-        fn draw_backdrop_and_progress(&self, snapshot: &gtk::Snapshot) {
-            if !self.title.is_visible() {
+        fn update_item_card_style(&self) {
+            let integrated = SETTINGS.item_card_style_is_integrated();
+            let title_box = self.title_box.get();
+            let target = if integrated {
+                self.scaled_title_slot.get()
+            } else {
+                self.plain_title_slot.get()
+            };
+
+            if title_box.parent().as_ref() != Some(target.upcast_ref()) {
+                if let Some(parent) = title_box.parent()
+                    && let Ok(parent) = parent.downcast::<gtk::Box>()
+                {
+                    parent.remove(&title_box);
+                }
+                target.append(&title_box);
+            }
+
+            if integrated {
+                self.content_box.add_css_class("tulistitem");
+            } else {
+                self.content_box.remove_css_class("tulistitem");
+            }
+            self.update_title_slot_visibility(integrated, self.title.get_visible());
+        }
+
+        pub(super) fn update_title_slot_visibility(&self, integrated: bool, has_title: bool) {
+            self.scaled_title_slot.set_visible(integrated && has_title);
+            self.plain_title_slot.set_visible(!integrated && has_title);
+        }
+
+        fn draw_backdrop(&self, snapshot: &gtk::Snapshot) {
+            if !SETTINGS.item_card_style_is_integrated() || !self.title_box.is_visible() {
                 return;
             }
 
@@ -211,13 +242,11 @@ pub mod imp {
                 return;
             };
 
-            let obj = self.obj();
-            // Use picture width for the cache key so it can be reused across
-            // minor widget resizes that don't change the picture dimensions.
+            let hover_scale = self.hover_scale.get();
             let w = pic_bounds.width() as i32;
-            let h = obj.height();
-
+            let h = hover_scale.height();
             let key = (w, h, self.is_dark.get(), paintable.as_ptr() as usize);
+
             let stale = self
                 .backdrop_cache
                 .borrow()
@@ -228,33 +257,16 @@ pub mod imp {
                     self.build_backdrop_node(&paintable, &pic_bounds, w as f32, h as f32);
             }
 
-            let cache_ref = self.backdrop_cache.borrow();
-            if let Some(cache) = cache_ref.as_ref() {
-                let progress = self.progress_inside.get() as f32;
-                let alpha = if self.is_dark.get() { 0.2 } else { 0.4 };
+            if let Some(cache) = self.backdrop_cache.borrow().as_ref() {
                 snapshot.append_node(&cache.node);
-                if let Some(base) = self.progress_fill_color() {
-                    Self::draw_progress_fill(snapshot, cache, progress, alpha, base);
-                }
-            }
-        }
-
-        fn progress_fill_color(&self) -> Option<gdk::RGBA> {
-            if SETTINGS.use_custom_accent_color() {
-                gdk::RGBA::parse(SETTINGS.accent_color_code()).ok()
-            } else {
-                Some(adw::StyleManager::default().accent_color_rgba())
             }
         }
 
         fn compute_blur_info(&self) -> Option<(gdk::Paintable, graphene::Rect)> {
-            let obj = self.obj();
-
+            let hover_scale = self.hover_scale.get();
             let picture_loader = self.overlay.child()?.downcast::<PictureLoader>().ok()?;
-
             let paintable = picture_loader.imp().picture.paintable()?;
-
-            let pic_bounds = picture_loader.compute_bounds(&*obj)?;
+            let pic_bounds = picture_loader.compute_bounds(&hover_scale)?;
 
             Some((paintable, pic_bounds))
         }
@@ -329,40 +341,7 @@ pub mod imp {
                 self.is_dark.get(),
                 paintable.as_ptr() as usize,
             );
-            Some(BackdropNodeCache {
-                node,
-                backdrop_y,
-                backdrop_h,
-                widget_w,
-                key,
-            })
-        }
-
-        fn draw_progress_fill(
-            snapshot: &gtk::Snapshot, cache: &BackdropNodeCache, progress: f32, alpha: f32,
-            base: gdk::RGBA,
-        ) {
-            if progress <= 0.0 {
-                return;
-            }
-
-            const CR: f32 = 10.0;
-            let fill_w = (cache.widget_w * progress).min(cache.widget_w);
-            let fill_rect = graphene::Rect::new(0.0, cache.backdrop_y, fill_w, cache.backdrop_h);
-            let fill_clip = gsk::RoundedRect::new(
-                graphene::Rect::new(0.0, cache.backdrop_y, cache.widget_w, cache.backdrop_h),
-                graphene::Size::new(0.0, 0.0),
-                graphene::Size::new(0.0, 0.0),
-                graphene::Size::new(CR, CR),
-                graphene::Size::new(CR, CR),
-            );
-
-            snapshot.push_rounded_clip(&fill_clip);
-            snapshot.append_color(
-                &gdk::RGBA::new(base.red(), base.green(), base.blue(), alpha),
-                &fill_rect,
-            );
-            snapshot.pop();
+            Some(BackdropNodeCache { node, key })
         }
     }
 
@@ -373,11 +352,6 @@ pub mod imp {
             let obj = self.obj();
             self.item.replace(item);
             obj.refresh_item();
-        }
-
-        pub fn set_progress(&self, progress: f64) {
-            self.progress.set(progress);
-            self.obj().set_progress_anim(progress);
         }
     }
 }
@@ -411,6 +385,12 @@ impl TuItemMenuPrelude for TuListItem {
     }
 }
 
+impl TuItemProgressbarAnimationPrelude for TuListItem {
+    fn progress_bar(&self) -> gtk::ProgressBar {
+        self.imp().progress_bar.get()
+    }
+}
+
 impl Default for TuListItem {
     fn default() -> Self {
         Self::new(TuItem::default())
@@ -423,28 +403,26 @@ impl TuListItem {
         Object::builder().property("item", item).build()
     }
 
-    fn set_progress_anim(&self, percentage: f64) {
-        let start_value = self.imp().progress_inside.get();
-
-        let target = adw::CallbackAnimationTarget::new(glib::clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |p| {
-                this.imp().progress_inside.set(p);
-                this.queue_draw();
+    fn update_title(&self) {
+        let imp = self.imp();
+        let item = self.item();
+        let has_title = if let Some(title) = item.list_item_title() {
+            imp.title.set_text(&title);
+            imp.title.set_visible(true);
+            if let Some(subtitle) = item.list_item_subtitle() {
+                imp.subtitle.set_text(&subtitle);
+                imp.subtitle.set_visible(true);
+            } else {
+                imp.subtitle.set_visible(false);
             }
-        ));
+            true
+        } else {
+            imp.title.set_visible(false);
+            imp.subtitle.set_visible(false);
+            false
+        };
 
-        let animation = adw::TimedAnimation::builder()
-            .duration(PROGRESSBAR_ANIMATION_DURATION)
-            .widget(self)
-            .target(&target)
-            .easing(adw::Easing::EaseOutQuart)
-            .value_from(start_value)
-            .value_to(percentage)
-            .build();
-
-        animation.play();
+        imp.update_title_slot_visibility(SETTINGS.item_card_style_is_integrated(), has_title);
     }
 
     pub fn refresh_item(&self) {
@@ -462,9 +440,9 @@ impl TuListItem {
         imp.overlay.set_size_request(w, h);
 
         if let Some(p) = item.fmt_percentage() {
-            self.set_progress(p / 100.);
+            self.set_progress(p);
         } else {
-            self.set_progress(0.);
+            self.clear_progress();
         }
 
         imp.played_mark.set_visible(item.has_played_mark());
@@ -474,12 +452,7 @@ impl TuListItem {
         imp.direct_play_button
             .set_visible(item.has_direct_play_mark());
 
-        if let Some(title) = item.list_item_title() {
-            imp.title.set_text(&title);
-            imp.title.set_visible(true);
-        } else {
-            imp.title.set_visible(false);
-        }
+        self.update_title();
     }
 
     pub fn unbind_item(&self) {
