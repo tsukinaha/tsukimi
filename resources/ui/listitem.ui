@@ -95,8 +95,6 @@
                         <child>
                           <object class="GtkLabel" id="title">
                             <property name="justify">center</property>
-                            <property name="wrap">true</property>
-                            <property name="wrap-mode">word-char</property>
                             <property name="max-width-chars">1</property>
                             <property name="lines">1</property>
                             <property name="ellipsize">middle</property>
@@ -110,8 +108,6 @@
                         <child>
                           <object class="GtkLabel" id="subtitle">
                             <property name="justify">center</property>
-                            <property name="wrap">true</property>
-                            <property name="wrap-mode">word-char</property>
                             <property name="max-width-chars">1</property>
                             <property name="lines">1</property>
                             <property name="ellipsize">middle</property>
