@@ -55,7 +55,7 @@ glib::wrapper! {
 
 #[gtk::template_callbacks]
 impl EpisodeSwitcher {
-    const EPISODES_PER_GROUP: usize = 50;
+    pub const EPISODES_PER_GROUP: usize = 50;
 
     pub fn new() -> Self {
         glib::Object::new()
@@ -78,15 +78,15 @@ impl EpisodeSwitcher {
         self.add_button(&button);
     }
 
-    pub fn load_from_n_items<F>(&self, n_items: usize, callback: F)
+    pub fn load_from_range<F>(&self, max_index: usize, callback: F)
     where
         F: Fn(&EpisodeButton) + 'static + Clone,
     {
         self.clear();
 
-        for i in (0..n_items).step_by(Self::EPISODES_PER_GROUP) {
+        for i in (0..max_index).step_by(Self::EPISODES_PER_GROUP) {
             let start = i;
-            let end = (i + Self::EPISODES_PER_GROUP).min(n_items);
+            let end = (i + Self::EPISODES_PER_GROUP).min(max_index);
 
             let callback = callback.to_owned();
             let cb = move |btn: &EpisodeButton| {

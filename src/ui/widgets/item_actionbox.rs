@@ -1,4 +1,5 @@
 use adw::subclass::prelude::*;
+use gettextrs::gettext;
 use gtk::{
     CompositeTemplate,
     gio,
@@ -113,7 +114,7 @@ impl ItemActionsBox {
 
             match result {
                 Ok(_) => {
-                    self.toast("Success");
+                    self.toast(gettext("Success"));
                 }
                 Err(e) => {
                     self.toast(e.to_user_facing());
@@ -179,7 +180,7 @@ impl ItemActionsBox {
                                         {
                                             Ok(_) => {
                                                 obj.set_played(false);
-                                                obj.toast("Success");
+                                                obj.toast(gettext("Success"));
                                                 obj.bind_edit();
                                             }
                                             Err(e) => {
@@ -212,7 +213,7 @@ impl ItemActionsBox {
                                         {
                                             Ok(_) => {
                                                 obj.set_played(true);
-                                                obj.toast("Success");
+                                                obj.toast(gettext("Success"));
                                                 obj.bind_edit();
                                             }
                                             Err(e) => {

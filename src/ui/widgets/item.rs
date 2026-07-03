@@ -1,5 +1,8 @@
 use super::{
-    episode_switcher::EpisodeButton,
+    episode_switcher::{
+        EpisodeButton,
+        EpisodeSwitcher,
+    },
     fix::ScrolledWindowFixExt,
     hortu_scrolled::{
         SHOW_BUTTON_ANIMATION_DURATION,
@@ -39,7 +42,6 @@ use crate::{
         fetch_with_cache,
         get_image_with_cache,
         spawn,
-        spawn_g_timeout,
         spawn_tokio,
     },
 };
@@ -209,8 +211,6 @@ pub(crate) mod imp {
         pub show_button_animation: OnceCell<adw::TimedAnimation>,
         pub hide_button_animation: OnceCell<adw::TimedAnimation>,
 
-        pub season_id: RefCell<Option<String>>,
-
         #[property(get, set, nullable)]
         pub current_item: RefCell<Option<TuItem>>,
 
@@ -328,28 +328,30 @@ impl ItemPage {
         if type_ == "Series" {
             let series_id = item.id();
 
-            spawn(glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                #[strong]
-                series_id,
-                async move {
-                    let Some(intro) = obj.set_shows_next_up(&series_id).await else {
-                        obj.imp()
-                            .buttoncontent
-                            .set_label(&gettext("Select an episode"));
-                        return;
-                    };
-                    obj.set_intro::<false>(&intro).await;
-                }
-            ));
+            if let Some(item) = self.set_shows_next_up(&series_id).await {
+                // ensure current_item available before season episodes load
+                self.set_current_item(Some(&item));
+                spawn(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    #[strong]
+                    item,
+                    async move {
+                        obj.set_intro::<false>(&item).await;
+                    }
+                ));
+            } else {
+                let imp = self.imp();
+                imp.episode_line.set_text(&gettext("No episode selected"));
+                imp.buttoncontent.set_label(&gettext("Select an episode"));
+            }
 
             self.imp().actionbox.set_id(Some(series_id.to_owned()));
             self.setup_item(&series_id).await;
             self.setup_seasons(&series_id).await;
         } else if type_ == "Episode" && item.series_name().is_some() {
             let series_id = item.series_id().unwrap_or(item.id());
-
+            self.set_current_item(Some(&item));
             spawn(glib::clone!(
                 #[weak(rename_to = obj)]
                 self,
@@ -379,45 +381,27 @@ impl ItemPage {
         }
     }
 
-    pub async fn update_intro(&self) {
+    pub async fn update_intro(&self, current_item: TuItem) {
         let item = self.item();
 
-        if item.item_type() == "Series" || item.item_type() == "Episode" {
-            let series_id = item.series_id().unwrap_or(item.id());
-
-            spawn(glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                #[strong]
-                series_id,
-                async move {
-                    let Some(intro) = obj.set_shows_next_up(&series_id).await else {
-                        return;
-                    };
-                    obj.set_intro::<false>(&intro).await;
+        let id = current_item.id();
+        let current_item =
+            match spawn_tokio(async move { JELLYFIN_CLIENT.get_item_info(&id).await }).await {
+                Ok(item) => TuItem::from_simple(item),
+                Err(e) => {
+                    self.toast(e.to_user_facing());
+                    current_item
                 }
-            ));
+            };
+
+        if item.item_type() == "Series" || item.item_type() == "Episode" {
+            self.set_intro::<false>(&current_item).await;
+            self.on_season_selected(None, self.imp().seasonlist.get())
+                .await;
         }
 
         if item.item_type() == "Video" || item.item_type() == "Movie" {
-            spawn(glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                #[weak]
-                item,
-                async move {
-                    let id = item.id();
-                    match spawn_tokio(async move { JELLYFIN_CLIENT.get_item_info(&id).await }).await
-                    {
-                        Ok(item) => {
-                            obj.set_intro::<true>(&TuItem::from_simple(item)).await;
-                        }
-                        Err(e) => {
-                            obj.toast(e.to_user_facing());
-                        }
-                    }
-                }
-            ));
+            self.set_intro::<true>(&current_item).await;
         }
     }
 
@@ -482,55 +466,32 @@ impl ItemPage {
     #[template_callback]
     async fn on_season_selected(&self, _param: Option<glib::ParamSpec>, dropdown: gtk::DropDown) {
         let item = self.item();
-
         let item_type = item.item_type();
-
         if item_type != "Series" && item_type != "Episode" {
             return;
         }
-
-        let object = dropdown.selected_item();
-        let Some(season_name) = object.and_downcast_ref::<gtk::StringObject>() else {
-            return;
-        };
-
-        let season_name = season_name.string().to_string();
 
         let imp = self.imp();
         imp.episode_stack.set_visible_child_name("loading");
 
         let series_id = item.series_id().unwrap_or(item.id());
-
         let position = dropdown.selected();
-        let season_id = item.season_id();
 
-        let list = match (position, season_id.to_owned()) {
+        let current_item = self.current_item();
+        let current_season_id = current_item.as_ref().and_then(|item| item.season_id());
+
+        let items = match (position, current_season_id) {
+            (0, None) => vec![],
             (0, Some(season_id)) => {
-                let season_id_clone = season_id.to_owned();
+                self.set_current_season(Some(season_id.to_owned()));
                 match spawn_tokio(async move {
                     JELLYFIN_CLIENT
-                        .get_episodes(&series_id, &season_id.to_string(), 0)
+                        .get_episodes_all(&series_id, &season_id)
                         .await
                 })
                 .await
                 {
-                    Ok(item) => {
-                        self.set_current_season(Some(season_id_clone));
-                        item
-                    }
-                    Err(e) => {
-                        self.toast(e.to_user_facing());
-                        return;
-                    }
-                }
-            }
-            (0, None) => {
-                match spawn_tokio(async move {
-                    JELLYFIN_CLIENT.get_continue_play_list(&series_id).await
-                })
-                .await
-                {
-                    Ok(item) => item,
+                    Ok(res) => res.items,
                     Err(e) => {
                         self.toast(e.to_user_facing());
                         return;
@@ -540,21 +501,20 @@ impl ItemPage {
             _ => {
                 let season_id = {
                     let season_list = imp.season_list_vec.borrow();
-                    let Some(season) = season_list.iter().find(|s| s.name == season_name) else {
+                    let Some(season) = season_list.get(position.saturating_sub(1) as usize) else {
                         return;
                     };
-                    self.imp().season_id.replace(Some(season.id.to_owned()));
+                    self.set_current_season(Some(season.id.to_owned()));
                     season.id.to_owned()
                 };
-
                 match spawn_tokio(async move {
                     JELLYFIN_CLIENT
-                        .get_episodes(&series_id, &season_id, 0)
+                        .get_episodes_all(&series_id, &season_id)
                         .await
                 })
                 .await
                 {
-                    Ok(list) => list,
+                    Ok(res) => res.items,
                     Err(e) => {
                         self.toast(e.to_user_facing());
                         return;
@@ -563,103 +523,124 @@ impl ItemPage {
             }
         };
 
-        let index = list
-            .items
-            .iter()
-            .position(|item| item.index_number == Some(self.item().index_number()))
-            .unwrap_or(0);
-
-        self.set_episode_list(list.items);
-
-        if position == 0 {
-            // itemlist need wait for property binding to scroll
-            spawn_g_timeout(glib::clone!(
-                #[weak]
-                imp,
-                async move {
-                    imp.itemlist
-                        .scroll_to(index as u32, ListScrollFlags::all(), None);
-                },
-            ));
+        let start_idx = if let Some(current_item) = current_item
+            && self.current_season() == current_item.season_id()
+        {
+            Self::search_episode_index(&items, &current_item)
+                .map(|_| {
+                    current_item.index_number().saturating_sub(1) as usize
+                        / EpisodeSwitcher::EPISODES_PER_GROUP
+                        * EpisodeSwitcher::EPISODES_PER_GROUP
+                })
+                .unwrap_or_default()
         } else {
-            self.imp().episode_switcher.load_from_n_items(
-                list.total_record_count as usize,
-                glib::clone!(
-                    #[weak(rename_to = obj)]
-                    self,
-                    move |btn| {
-                        spawn(glib::clone!(
-                            #[weak]
-                            obj,
-                            #[weak]
-                            btn,
-                            async move {
-                                obj.on_episode_switcher_clicked(&btn).await;
-                            }
-                        ))
-                    }
-                ),
-            );
-        }
+            0
+        };
+
+        let max_episode_number = items
+            .last()
+            .and_then(|item| item.index_number)
+            .unwrap_or_default() as usize;
+
+        self.set_episode_list(items, start_idx);
+        self.imp().episode_switcher.load_from_range(
+            max_episode_number,
+            glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |btn| {
+                    spawn(glib::clone!(
+                        #[weak]
+                        obj,
+                        #[weak]
+                        btn,
+                        async move {
+                            obj.on_episode_switcher_clicked(&btn).await;
+                        }
+                    ))
+                }
+            ),
+        );
     }
 
-    fn set_episode_list(&self, list: Vec<SimpleListItem>) {
+    fn set_episode_list(&self, list: Vec<SimpleListItem>, start_index: usize) {
+        let imp = self.imp();
+        imp.episode_list_vec.replace(list);
+        self.set_episode_list_range(start_index);
+    }
+
+    fn set_episode_list_range(&self, start_index: usize) {
         let imp = self.imp();
         let store_model = imp.selection.model();
         let Some(store) = store_model.and_downcast_ref::<gio::ListStore>() else {
             return;
         };
-
-        store.remove_all();
-
+        let list = imp.episode_list_vec.borrow();
         if list.is_empty() {
             imp.episode_stack.set_visible_child_name("fallback");
             return;
         }
+        let (start_episode, end_episode) = (
+            start_index as u32 + 1,
+            start_index as u32 + EpisodeSwitcher::EPISODES_PER_GROUP as u32,
+        );
+        let (left, right) = (
+            list.partition_point(|item| {
+                item.index_number
+                    .expect("index_number should be present in SimpleListItem")
+                    < start_episode
+            }),
+            list.partition_point(|item| {
+                item.index_number
+                    .expect("index_number should be present in SimpleListItem")
+                    <= end_episode
+            }),
+        );
+        let slice = &list[left..right];
+        let scroll_to = match self.current_item() {
+            None => None,
+            Some(item) => {
+                let (season_id, index_number) = (item.season_id(), item.index_number());
+                if self.current_season() != season_id
+                    || index_number < start_episode
+                    || index_number > end_episode
+                {
+                    None
+                } else {
+                    Self::search_episode_index(slice, &item)
+                }
+            }
+        };
 
-        let items = list
+        let items = slice
             .iter()
             .map(|item| TuObject::from_simple(item.to_owned()))
             .collect::<Vec<_>>();
 
+        store.remove_all();
         store.extend_from_slice(&items);
 
-        imp.episode_list_vec.replace(list);
         imp.episode_stack.set_visible_child_name("view");
+        if let Some(scroll_index) = scroll_to {
+            let itemlist = imp.itemlist.get();
+            glib::idle_add_local_once(move || {
+                itemlist.scroll_to(scroll_index as u32, ListScrollFlags::all(), None);
+            });
+        }
+    }
+
+    fn search_episode_index(list: &[SimpleListItem], current_item: &TuItem) -> Option<usize> {
+        let index_number = current_item.index_number();
+        list.binary_search_by_key(&index_number, |item| {
+            item.index_number
+                .expect("index_number should be present in SimpleListItem")
+        })
+        .ok()
     }
 
     async fn on_episode_switcher_clicked(&self, btn: &EpisodeButton) {
-        let imp = self.imp();
-
         let start_index = btn.start_index();
-        let item = self.item();
-        let series_id = item.series_id().unwrap_or(item.id());
-
-        let Some(season_id) =
-            self.current_season().or(item
-                .season_id()
-                .or(self.imp().season_id.borrow().to_owned()))
-        else {
-            return;
-        };
-
-        imp.episode_stack.set_visible_child_name("loading");
-
-        let list = match spawn_tokio(async move {
-            JELLYFIN_CLIENT
-                .get_episodes(&series_id, &season_id, start_index)
-                .await
-        })
-        .await
-        {
-            Ok(list) => list,
-            Err(e) => {
-                self.toast(e.to_user_facing());
-                return;
-            }
-        };
-
-        self.set_episode_list(list.items);
+        self.set_episode_list_range(start_index as usize);
     }
 
     async fn set_shows_next_up(&self, id: &str) -> Option<TuItem> {

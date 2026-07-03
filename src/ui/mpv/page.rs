@@ -1363,9 +1363,9 @@ impl MPVPage {
 
     #[template_callback]
     pub fn on_stop_clicked(&self) {
-        self.handle_callback(BackType::Stop);
         self.remove_timeout();
         self.reset_skippable_segments();
+        let current_video = self.current_video();
 
         let mpv = self.mpv();
         mpv.pause(true);
@@ -1390,7 +1390,11 @@ impl MPVPage {
                     glib::source::SourceId::remove(timeout);
                 }
                 obj.set_reveal_overlay(true);
-                window.update_item_page().await;
+                // Wait for stop progress to land before refreshing item state
+                obj.handle_callback_sync(BackType::Stop).await;
+                if let Some(current_video) = current_video {
+                    window.update_item_page(current_video).await;
+                }
             }
         ));
         self.notify_stopped();
@@ -1401,17 +1405,26 @@ impl MPVPage {
         glib::ControlFlow::Continue
     }
 
-    fn handle_callback(&self, backtype: BackType) {
+    fn position_back(&self) -> Option<Back> {
         let position = self.imp().last_playback_position.get();
-        let back = self.imp().back.borrow();
+        let mut back = self.imp().back.borrow().as_ref()?.to_owned();
+        back.tick = position as u64 * 10000000;
+        Some(back)
+    }
 
-        if let Some(back) = back.as_ref() {
-            let duration = position as u64 * 10000000;
-            let mut back = back.to_owned();
-            back.tick = duration;
+    fn handle_callback(&self, backtype: BackType) {
+        if let Some(back) = self.position_back() {
             crate::utils::spawn_tokio_without_await(async move {
                 let _ = JELLYFIN_CLIENT.position_back(&back, backtype).await;
             });
+        }
+    }
+
+    async fn handle_callback_sync(&self, backtype: BackType) {
+        if let Some(back) = self.position_back() {
+            let _ =
+                spawn_tokio(async move { JELLYFIN_CLIENT.position_back(&back, backtype).await })
+                    .await;
         }
     }
 

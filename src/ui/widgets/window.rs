@@ -976,13 +976,12 @@ impl Window {
         }
     }
 
-    pub async fn update_item_page(&self) {
+    pub async fn update_item_page(&self, current_item: TuItem) {
         let nav = self.imp().mainview.visible_page();
         let Some(now_page) = nav.and_downcast_ref::<ItemPage>() else {
             return;
         };
-
-        now_page.update_intro().await;
+        now_page.update_intro(current_item).await;
     }
 
     pub fn close_on_error(&self, description: String) {
