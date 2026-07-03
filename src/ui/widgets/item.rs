@@ -614,7 +614,13 @@ impl ItemPage {
                     Self::search_episode_index(slice, &item)
                 }
             }
-        };
+        }
+        .or_else(|| {
+            // If the current item is not in this range, reset any horizontal offset
+            let adj = imp.itemlist.hadjustment();
+            adj.filter(|adj| adj.value() > adj.lower() + f64::EPSILON)
+                .map(|_| 0)
+        });
 
         let items = slice
             .iter()
