@@ -483,7 +483,7 @@ impl ItemPage {
         let items = match (position, current_season_id) {
             (0, None) => vec![],
             (0, Some(season_id)) => {
-                let season_id_clone = season_id.to_owned();
+                self.set_current_season(Some(season_id.to_owned()));
                 match spawn_tokio(async move {
                     JELLYFIN_CLIENT
                         .get_episodes_all(&series_id, &season_id)
@@ -491,10 +491,7 @@ impl ItemPage {
                 })
                 .await
                 {
-                    Ok(res) => {
-                        self.set_current_season(Some(season_id_clone));
-                        res.items
-                    }
+                    Ok(res) => res.items,
                     Err(e) => {
                         self.toast(e.to_user_facing());
                         return;
