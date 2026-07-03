@@ -58,7 +58,7 @@ msgstr "Falha ao obter GLContext"
 msgid "Failed to get GLContext"
 msgstr "Falha ao obter GLContext"
 
-#: src/ui/mpv/page.rs:407 src/ui/mpv/page.rs:409 src/ui/widgets/item.rs:707
+#: src/ui/mpv/page.rs:407 src/ui/mpv/page.rs:409 src/ui/widgets/item.rs:689
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:95
 #: resources/ui/player_toolbar.ui:90
@@ -241,74 +241,88 @@ msgstr "Erro em deletar a imagem"
 msgid "Replace Image"
 msgstr "Substituir imagem"
 
-#: src/ui/widgets/item.rs:703 src/ui/widgets/list.rs:130
+#: src/ui/widgets/item.rs:345
+#, fuzzy
+#| msgid "No file selected"
+msgid "No episode selected"
+msgstr "Nenhum arquivo selecionado"
+
+#: src/ui/widgets/item.rs:346
+msgid "Select an episode"
+msgstr "Selecione um episódio"
+
+#: src/ui/widgets/item.rs:685 src/ui/widgets/list.rs:130
 msgid "Resume"
 msgstr "Resumo"
 
-#: src/ui/widgets/item.rs:1092
+#: src/ui/widgets/item.rs:1074
 msgid "Codec"
 msgstr "Codec"
 
-#: src/ui/widgets/item.rs:1095
+#: src/ui/widgets/item.rs:1077
 msgid "Language"
 msgstr "Idioma"
 
-#: src/ui/widgets/item.rs:1098 resources/ui/metadata_dialog.ui:90
+#: src/ui/widgets/item.rs:1080 resources/ui/metadata_dialog.ui:90
 #: resources/ui/single_grid.ui:108
 msgid "Title"
 msgstr "Título"
 
-#: src/ui/widgets/item.rs:1102 resources/ui/single_grid.ui:109
+#: src/ui/widgets/item.rs:1084 resources/ui/single_grid.ui:109
 msgid "Bitrate"
 msgstr "Bitrate"
 
-#: src/ui/widgets/item.rs:1107
+#: src/ui/widgets/item.rs:1089
 msgid "BitDepth"
 msgstr "Profundidade de bits"
 
-#: src/ui/widgets/item.rs:1111
+#: src/ui/widgets/item.rs:1093
 msgid "SampleRate"
 msgstr "Taxa de amostragem"
 
-#: src/ui/widgets/item.rs:1115
+#: src/ui/widgets/item.rs:1097
 msgid "Height"
 msgstr "Altura"
 
-#: src/ui/widgets/item.rs:1118
+#: src/ui/widgets/item.rs:1100
 msgid "Width"
 msgstr "Largura"
 
-#: src/ui/widgets/item.rs:1121
+#: src/ui/widgets/item.rs:1103
 msgid "ColorSpace"
 msgstr "Paleta de cores"
 
-#: src/ui/widgets/item.rs:1125
+#: src/ui/widgets/item.rs:1107
 msgid "DisplayTitle"
 msgstr "Exibir título"
 
-#: src/ui/widgets/item.rs:1129
+#: src/ui/widgets/item.rs:1111
 msgid "Channel"
 msgstr "Canal"
 
-#: src/ui/widgets/item.rs:1133
+#: src/ui/widgets/item.rs:1115
 msgid "ChannelLayout"
 msgstr "Layout do canal"
 
-#: src/ui/widgets/item.rs:1138
+#: src/ui/widgets/item.rs:1120
 msgid "AverageFrameRate"
 msgstr "Média de frames"
 
-#: src/ui/widgets/item.rs:1142
+#: src/ui/widgets/item.rs:1124
 msgid "PixelFormat"
 msgstr "Formato de pixel"
 
-#: src/ui/widgets/item.rs:1254
+#: src/ui/widgets/item.rs:1236
 msgid "No video source found"
 msgstr "Nenhuma fonte de vídeo encontrada"
 
-#: src/ui/widgets/item.rs:1390
+#: src/ui/widgets/item.rs:1372
 msgid "Season not found. Is this a continue watching list?"
 msgstr "Temporada não encontrada. Esta é uma lista de continuar assistindo?"
+
+#: src/ui/widgets/item_actionbox.rs:117 src/ui/widgets/tu_item/action.rs:98
+msgid "Success"
+msgstr "Sucesso"
 
 #: src/ui/widgets/liked.rs:158
 msgid "Favourite"
@@ -436,10 +450,6 @@ msgstr "Remover dos favoritos"
 msgid "Add to favorites"
 msgstr "Adicionar aos favoritos"
 
-#: src/ui/widgets/tu_item/action.rs:98
-msgid "Success"
-msgstr "Sucesso"
-
 #: src/ui/widgets/tu_item/action.rs:479
 msgid "Delete Item"
 msgstr "Deletar item"
@@ -482,16 +492,16 @@ msgstr "Pesquisar"
 msgid "Server Panel"
 msgstr "Painel do servidor"
 
-#: src/ui/widgets/window.rs:990
+#: src/ui/widgets/window.rs:989
 msgid "Fatal Error"
 msgstr "Erro fatal"
 
-#: src/ui/widgets/window.rs:993
+#: src/ui/widgets/window.rs:992
 msgid "Copy Error & Close"
 msgstr "Erro de cópia e fechar"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1022
+#: src/ui/widgets/window.rs:1021
 msgid "translator-credits"
 msgstr "créditos do tradutor"
 
@@ -1980,9 +1990,6 @@ msgstr "Servidores"
 
 #~ msgid "Font Cleared, Restart to take effect."
 #~ msgstr "Fonte Limpa, reinicie para que a alteração tenha efeito."
-
-#~ msgid "Select an episode"
-#~ msgstr "Selecione um episódio"
 
 #~ msgid "Error loading image"
 #~ msgstr "Erro carregando a imagem"

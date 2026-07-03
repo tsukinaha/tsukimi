@@ -57,7 +57,7 @@ msgstr "無法建立 GLArea"
 msgid "Failed to get GLContext"
 msgstr "無法取得 GLContext"
 
-#: src/ui/mpv/page.rs:407 src/ui/mpv/page.rs:409 src/ui/widgets/item.rs:707
+#: src/ui/mpv/page.rs:407 src/ui/mpv/page.rs:409 src/ui/widgets/item.rs:689
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:95
 #: resources/ui/player_toolbar.ui:90
@@ -238,74 +238,88 @@ msgstr "刪除圖片時發生錯誤"
 msgid "Replace Image"
 msgstr "取代圖片"
 
-#: src/ui/widgets/item.rs:703 src/ui/widgets/list.rs:130
+#: src/ui/widgets/item.rs:345
+#, fuzzy
+#| msgid "No file selected"
+msgid "No episode selected"
+msgstr "未選擇檔案"
+
+#: src/ui/widgets/item.rs:346
+msgid "Select an episode"
+msgstr "選擇一集"
+
+#: src/ui/widgets/item.rs:685 src/ui/widgets/list.rs:130
 msgid "Resume"
 msgstr "繼續"
 
-#: src/ui/widgets/item.rs:1092
+#: src/ui/widgets/item.rs:1074
 msgid "Codec"
 msgstr "編解碼器"
 
-#: src/ui/widgets/item.rs:1095
+#: src/ui/widgets/item.rs:1077
 msgid "Language"
 msgstr "語言"
 
-#: src/ui/widgets/item.rs:1098 resources/ui/metadata_dialog.ui:90
+#: src/ui/widgets/item.rs:1080 resources/ui/metadata_dialog.ui:90
 #: resources/ui/single_grid.ui:108
 msgid "Title"
 msgstr "標題"
 
-#: src/ui/widgets/item.rs:1102 resources/ui/single_grid.ui:109
+#: src/ui/widgets/item.rs:1084 resources/ui/single_grid.ui:109
 msgid "Bitrate"
 msgstr "比特率"
 
-#: src/ui/widgets/item.rs:1107
+#: src/ui/widgets/item.rs:1089
 msgid "BitDepth"
 msgstr "位深度"
 
-#: src/ui/widgets/item.rs:1111
+#: src/ui/widgets/item.rs:1093
 msgid "SampleRate"
 msgstr "取樣率"
 
-#: src/ui/widgets/item.rs:1115
+#: src/ui/widgets/item.rs:1097
 msgid "Height"
 msgstr "高度"
 
-#: src/ui/widgets/item.rs:1118
+#: src/ui/widgets/item.rs:1100
 msgid "Width"
 msgstr "寬度"
 
-#: src/ui/widgets/item.rs:1121
+#: src/ui/widgets/item.rs:1103
 msgid "ColorSpace"
 msgstr "色彩空間"
 
-#: src/ui/widgets/item.rs:1125
+#: src/ui/widgets/item.rs:1107
 msgid "DisplayTitle"
 msgstr "展示標題"
 
-#: src/ui/widgets/item.rs:1129
+#: src/ui/widgets/item.rs:1111
 msgid "Channel"
 msgstr "聲道"
 
-#: src/ui/widgets/item.rs:1133
+#: src/ui/widgets/item.rs:1115
 msgid "ChannelLayout"
 msgstr "聲道配置"
 
-#: src/ui/widgets/item.rs:1138
+#: src/ui/widgets/item.rs:1120
 msgid "AverageFrameRate"
 msgstr "平均幀率"
 
-#: src/ui/widgets/item.rs:1142
+#: src/ui/widgets/item.rs:1124
 msgid "PixelFormat"
 msgstr "像素格式"
 
-#: src/ui/widgets/item.rs:1254
+#: src/ui/widgets/item.rs:1236
 msgid "No video source found"
 msgstr "找不到影片來源"
 
-#: src/ui/widgets/item.rs:1390
+#: src/ui/widgets/item.rs:1372
 msgid "Season not found. Is this a continue watching list?"
 msgstr "找不到季度。這是「繼續觀看」清單嗎？"
+
+#: src/ui/widgets/item_actionbox.rs:117 src/ui/widgets/tu_item/action.rs:98
+msgid "Success"
+msgstr "成功"
 
 #: src/ui/widgets/liked.rs:158
 msgid "Favourite"
@@ -431,10 +445,6 @@ msgstr "從我的最愛移除"
 msgid "Add to favorites"
 msgstr "加入我的最愛"
 
-#: src/ui/widgets/tu_item/action.rs:98
-msgid "Success"
-msgstr "成功"
-
 #: src/ui/widgets/tu_item/action.rs:479
 msgid "Delete Item"
 msgstr "刪除項目"
@@ -476,16 +486,16 @@ msgstr "搜尋"
 msgid "Server Panel"
 msgstr "伺服器面板"
 
-#: src/ui/widgets/window.rs:990
+#: src/ui/widgets/window.rs:989
 msgid "Fatal Error"
 msgstr "致命錯誤"
 
-#: src/ui/widgets/window.rs:993
+#: src/ui/widgets/window.rs:992
 msgid "Copy Error & Close"
 msgstr "複製錯誤並關閉"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1022
+#: src/ui/widgets/window.rs:1021
 msgid "translator-credits"
 msgstr ""
 "Gracealina  clover <zhiweishuisheng@gmail.com>\n"
@@ -1902,9 +1912,6 @@ msgstr "伺服器"
 
 #~ msgid "Font Cleared, Restart to take effect."
 #~ msgstr "已清除字體，重啟程式生效。"
-
-#~ msgid "Select an episode"
-#~ msgstr "選擇一集"
 
 #~ msgid "Error loading image"
 #~ msgstr "圖像載入錯誤"

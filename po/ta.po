@@ -56,7 +56,7 @@ msgstr "Glcontext ஐப் பெறுவதில் தோல்வி"
 msgid "Failed to get GLContext"
 msgstr "Glcontext ஐப் பெறுவதில் தோல்வி"
 
-#: src/ui/mpv/page.rs:407 src/ui/mpv/page.rs:409 src/ui/widgets/item.rs:707
+#: src/ui/mpv/page.rs:407 src/ui/mpv/page.rs:409 src/ui/widgets/item.rs:689
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:95
 #: resources/ui/player_toolbar.ui:90
@@ -241,74 +241,90 @@ msgstr "படத்தை நீக்குவதில் பிழை"
 msgid "Replace Image"
 msgstr "படத்தை மாற்றவும்"
 
-#: src/ui/widgets/item.rs:703 src/ui/widgets/list.rs:130
+#: src/ui/widgets/item.rs:345
+#, fuzzy
+#| msgid "No file selected"
+msgid "No episode selected"
+msgstr "எந்த கோப்பும் தேர்ந்தெடுக்கப்படவில்லை"
+
+#: src/ui/widgets/item.rs:346
+#, fuzzy
+#| msgid "Select new mpv config folder"
+msgid "Select an episode"
+msgstr "புதிய MPV கட்டமைப்பு கோப்புறையைத் தேர்ந்தெடுக்கவும்"
+
+#: src/ui/widgets/item.rs:685 src/ui/widgets/list.rs:130
 msgid "Resume"
 msgstr "மீண்டும் தொடங்குங்கள்"
 
-#: src/ui/widgets/item.rs:1092
+#: src/ui/widgets/item.rs:1074
 msgid "Codec"
 msgstr "புரிப்பு"
 
-#: src/ui/widgets/item.rs:1095
+#: src/ui/widgets/item.rs:1077
 msgid "Language"
 msgstr "மொழி"
 
-#: src/ui/widgets/item.rs:1098 resources/ui/metadata_dialog.ui:90
+#: src/ui/widgets/item.rs:1080 resources/ui/metadata_dialog.ui:90
 #: resources/ui/single_grid.ui:108
 msgid "Title"
 msgstr "தலைப்பு"
 
-#: src/ui/widgets/item.rs:1102 resources/ui/single_grid.ui:109
+#: src/ui/widgets/item.rs:1084 resources/ui/single_grid.ui:109
 msgid "Bitrate"
 msgstr "பிட்ரேட்"
 
-#: src/ui/widgets/item.rs:1107
+#: src/ui/widgets/item.rs:1089
 msgid "BitDepth"
 msgstr "பிட்டெப்ட்"
 
-#: src/ui/widgets/item.rs:1111
+#: src/ui/widgets/item.rs:1093
 msgid "SampleRate"
 msgstr "மாதிரி"
 
-#: src/ui/widgets/item.rs:1115
+#: src/ui/widgets/item.rs:1097
 msgid "Height"
 msgstr "உயரம்"
 
-#: src/ui/widgets/item.rs:1118
+#: src/ui/widgets/item.rs:1100
 msgid "Width"
 msgstr "அகலம்"
 
-#: src/ui/widgets/item.rs:1121
+#: src/ui/widgets/item.rs:1103
 msgid "ColorSpace"
 msgstr "வண்ணங்கள்"
 
-#: src/ui/widgets/item.rs:1125
+#: src/ui/widgets/item.rs:1107
 msgid "DisplayTitle"
 msgstr "டிச்ப்ளே டிடில்"
 
-#: src/ui/widgets/item.rs:1129
+#: src/ui/widgets/item.rs:1111
 msgid "Channel"
 msgstr "வாய்க்கால்"
 
-#: src/ui/widgets/item.rs:1133
+#: src/ui/widgets/item.rs:1115
 msgid "ChannelLayout"
 msgstr "சேன்லேஅவுட்"
 
-#: src/ui/widgets/item.rs:1138
+#: src/ui/widgets/item.rs:1120
 msgid "AverageFrameRate"
 msgstr "சராசரி ஃபிரமரேட்"
 
-#: src/ui/widgets/item.rs:1142
+#: src/ui/widgets/item.rs:1124
 msgid "PixelFormat"
 msgstr "பிக்சல்ஃபார்மட்"
 
-#: src/ui/widgets/item.rs:1254
+#: src/ui/widgets/item.rs:1236
 msgid "No video source found"
 msgstr "வீடியோ மூலமும் கிடைக்கவில்லை"
 
-#: src/ui/widgets/item.rs:1390
+#: src/ui/widgets/item.rs:1372
 msgid "Season not found. Is this a continue watching list?"
 msgstr "சீசன் கிடைக்கவில்லை. இது தொடர்ந்து பார்க்கும் பட்டியலா?"
+
+#: src/ui/widgets/item_actionbox.rs:117 src/ui/widgets/tu_item/action.rs:98
+msgid "Success"
+msgstr "செய்"
 
 #: src/ui/widgets/liked.rs:158
 msgid "Favourite"
@@ -438,10 +454,6 @@ msgstr "பிடித்தவைகளிலிருந்து அகற�
 msgid "Add to favorites"
 msgstr "பிடித்தவைகளில் சேர்க்கவும்"
 
-#: src/ui/widgets/tu_item/action.rs:98
-msgid "Success"
-msgstr "செய்"
-
 #: src/ui/widgets/tu_item/action.rs:479
 msgid "Delete Item"
 msgstr "உருப்படியை நீக்கு"
@@ -484,16 +496,16 @@ msgstr "தேடல்"
 msgid "Server Panel"
 msgstr "சேவையக குழு"
 
-#: src/ui/widgets/window.rs:990
+#: src/ui/widgets/window.rs:989
 msgid "Fatal Error"
 msgstr "அபாயகரமான பிழை"
 
-#: src/ui/widgets/window.rs:993
+#: src/ui/widgets/window.rs:992
 msgid "Copy Error & Close"
 msgstr "பிழை மற்றும் மூடு"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1022
+#: src/ui/widgets/window.rs:1021
 msgid "translator-credits"
 msgstr "மொழிபெயர்ப்பாளர்-வரவு"
 
