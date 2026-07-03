@@ -659,7 +659,6 @@ impl ItemPage {
         let tu_item = TuItem::from_simple(next_up_item);
 
         self.set_now_item::<false>(&tu_item);
-        self.set_current_item(Some(&tu_item));
 
         Some(tu_item)
     }
@@ -848,7 +847,7 @@ impl ItemPage {
 
         let mut events = fetch_with_cache(
             &format!("season_{}", id),
-            CachePolicy::IgnoreCache,
+            CachePolicy::ReadCacheAndRefresh,
             async move { JELLYFIN_CLIENT.get_season_list(&id).await },
         )
         .await;
