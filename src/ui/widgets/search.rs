@@ -192,18 +192,19 @@ impl SearchPage {
 
         for item in recommend.items {
             let action_row = adw::ActionRow::builder()
-                .title(&item.name)
-                .subtitle(
-                    item.overview
-                        .to_owned()
-                        .unwrap_or_else(|| gettextrs::gettext("No overview"))
-                        .replace("\n", " ")
-                        .replace("&", "&amp;"),
-                )
-                .subtitle_lines(2)
                 .use_markup(false)
+                .subtitle_lines(2)
                 .activatable(true)
                 .build();
+
+            action_row.set_title(&item.name);
+            action_row.set_subtitle(
+                &item
+                    .overview
+                    .to_owned()
+                    .unwrap_or_else(|| gettextrs::gettext("No overview"))
+                    .replace("\n", " "),
+            );
 
             let icon = gtk::Image::new();
 

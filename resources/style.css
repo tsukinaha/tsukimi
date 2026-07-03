@@ -366,6 +366,16 @@ progressbar.accent > trough > progress {
 	background-color: rgba(255, 255, 255, 0.5);
 }
 
+@media (prefers-color-scheme: dark) {
+  .scroll-spinner {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .played-mark {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
 .picture-loader.inbox {
     box-shadow: none;
 }

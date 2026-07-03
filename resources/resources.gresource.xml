@@ -42,7 +42,6 @@
   </gresource>
   <gresource prefix="/moe/tsuna/tsukimi/">
     <file compressed="true">style.css</file>
-    <file compressed="true">style-dark.css</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/search.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/item.ui</file>

@@ -164,7 +164,7 @@ impl FilterDialogSearchPage {
                 let listbox = &obj.imp().listbox;
                 filters.items.iter().for_each(|filter| {
                     let filter_row = FilterRow::new(&filter.name, filter.id.to_owned());
-                    filter_row.set_title(&filter.name.to_owned().replace("&", "&amp;"));
+                    filter_row.set_title(&filter.name.to_owned());
 
                     listbox.append(&filter_row);
                 });
