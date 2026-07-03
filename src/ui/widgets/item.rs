@@ -528,7 +528,8 @@ impl ItemPage {
         {
             Self::search_episode_index(&items, &current_item)
                 .map(|_| {
-                    current_item.index_number() as usize / EpisodeSwitcher::EPISODES_PER_GROUP
+                    current_item.index_number().saturating_sub(1) as usize
+                        / EpisodeSwitcher::EPISODES_PER_GROUP
                         * EpisodeSwitcher::EPISODES_PER_GROUP
                 })
                 .unwrap_or_default()
