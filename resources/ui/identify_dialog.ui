@@ -57,6 +57,7 @@
                                             <property name="description" translatable="yes">Enter one or more search criteria. Remove criteria to increase search results.</property>
                                             <child>
                                               <object class="AdwActionRow" id="path_row">
+                                                <property name="use-markup">False</property>
                                                 <property name="title" translatable="yes">Path</property>
                                                 <property name="subtitle" translatable="yes">Loading...</property>
                                                 <property name="subtitle-selectable">True</property>

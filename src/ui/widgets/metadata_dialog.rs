@@ -137,12 +137,8 @@ mod imp {
         }
 
         pub fn load_data(&self, metadata: SimpleListItem) {
-            self.path_entry.set_subtitle(
-                &metadata
-                    .path
-                    .unwrap_or("No Data".to_string())
-                    .replace('&', "&amp;"),
-            );
+            self.path_entry
+                .set_subtitle(&metadata.path.unwrap_or("No Data".to_string()));
             self.title_entry.set_text(&metadata.name);
             self.sorttitle_entry
                 .set_text(&metadata.sort_name.unwrap_or_default());

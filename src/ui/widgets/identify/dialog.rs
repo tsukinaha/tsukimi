@@ -132,7 +132,7 @@ impl IdentifyDialog {
             Ok(item) => {
                 self.imp()
                     .path_row
-                    .set_subtitle(&item.path.unwrap_or_default().replace("&", "&amp;"));
+                    .set_subtitle(&item.path.unwrap_or_default());
             }
             Err(_) => {
                 self.imp()

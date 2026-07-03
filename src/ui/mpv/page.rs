@@ -866,8 +866,8 @@ impl MPVPage {
 
         for track in tracks {
             let row = CheckRow::new();
-            row.set_title(&track.title.replace('&', "&amp;"));
-            row.set_subtitle(&track.lang.replace('&', "&amp;"));
+            row.set_title(&track.title);
+            row.set_subtitle(&track.lang);
             row.imp().track_id.replace(track.id);
             let check = &row.imp().check.get();
             check.set_group(Some(none_check));
