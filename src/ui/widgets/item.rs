@@ -616,15 +616,18 @@ impl ItemPage {
             .iter()
             .map(|item| TuObject::from_simple(item.to_owned()))
             .collect::<Vec<_>>();
-
-        store.remove_all();
-        store.extend_from_slice(&items);
-
+        store.splice(0, store.n_items(), &items);
         imp.episode_stack.set_visible_child_name("view");
+
         if let Some(scroll_index) = scroll_to {
             let itemlist = imp.itemlist.get();
-            glib::idle_add_local_once(move || {
-                itemlist.scroll_to(scroll_index as u32, ListScrollFlags::all(), None);
+            // Wait one frame so GtkListView can allocate rows before scrolling
+            itemlist.add_tick_callback(move |itemlist, _| {
+                let itemlist = itemlist.clone();
+                glib::idle_add_local_once(move || {
+                    itemlist.scroll_to(scroll_index as u32, ListScrollFlags::all(), None);
+                });
+                glib::ControlFlow::Break
             });
         }
     }
