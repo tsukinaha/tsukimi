@@ -1,9 +1,3 @@
-use gtk::{
-    glib,
-    prelude::*,
-    subclass::prelude::ObjectSubclassIsExt,
-};
-
 use crate::{
     client::{
         error::UserFacingError,
@@ -20,6 +14,12 @@ use crate::{
         spawn,
         spawn_tokio,
     },
+};
+use gettextrs::gettext;
+use gtk::{
+    glib,
+    prelude::*,
+    subclass::prelude::ObjectSubclassIsExt,
 };
 
 pub trait HasLikeAction {
@@ -53,7 +53,7 @@ macro_rules! impl_has_likeaction {
 
                                     match result {
                                         Ok(_) => {
-                                            obj.toast("Success");
+                                            obj.toast(gettext("Success"));
                                         }
                                         Err(e) => {
                                             obj.toast(e.to_user_facing());
