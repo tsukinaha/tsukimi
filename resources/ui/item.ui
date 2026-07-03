@@ -327,6 +327,7 @@
                     <child>
                       <object class="AdwBin" id="episode_list_bin">
                         <property name="vexpand-set">True</property>
+                        <property name="height-request">240</property>
                         <property name="visible">False</property>
                         <child>
                           <object class="GtkStack" id="episode_stack">
