@@ -616,8 +616,8 @@ impl ItemPage {
             }
         }
         .or_else(|| {
-            // If the current item is not in this range, reset any horizontal offset
-            (!self.is_at_lower()).then_some(0)
+            // If the current item is not in this range, reset the list to its first item.
+            (!self.is_at_lower() || imp.selection.selected() != 0).then_some(0)
         });
 
         let items = slice
