@@ -4,10 +4,8 @@ use super::{
         EpisodeSwitcher,
     },
     fix::ScrolledWindowFixExt,
-    hortu_scrolled::{
-        SHOW_BUTTON_ANIMATION_DURATION,
-        UnifySize,
-    },
+    hor_controls::HorControlsExt,
+    hortu_scrolled::UnifySize,
     item_utils::*,
     song_widget::format_duration,
     utils::{
@@ -67,6 +65,7 @@ use gtk::{
 
 pub(crate) mod imp {
     use std::cell::{
+        Cell,
         OnceCell,
         RefCell,
     };
@@ -90,6 +89,7 @@ pub(crate) mod imp {
             widgets::{
                 EpisodeSwitcher,
                 fix::ScrolledWindowFixExt,
+                hor_controls::HorControlsExt,
                 horbu_scrolled::HorbuScrolled,
                 hortu_scrolled::HortuScrolled,
                 item_actionbox::ItemActionsBox,
@@ -208,8 +208,11 @@ pub(crate) mod imp {
         #[template_child]
         pub episode_switcher: TemplateChild<EpisodeSwitcher>,
 
-        pub show_button_animation: OnceCell<adw::TimedAnimation>,
-        pub hide_button_animation: OnceCell<adw::TimedAnimation>,
+        pub show_left_animation: OnceCell<adw::TimedAnimation>,
+        pub hide_left_animation: OnceCell<adw::TimedAnimation>,
+        pub show_right_animation: OnceCell<adw::TimedAnimation>,
+        pub hide_right_animation: OnceCell<adw::TimedAnimation>,
+        pub is_hovering: Cell<bool>,
 
         #[property(get, set, nullable)]
         pub current_item: RefCell<Option<TuItem>>,
@@ -270,6 +273,7 @@ pub(crate) mod imp {
             self.itemlist.set_factory(Some(
                 gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
             ));
+            self.obj().connect_scroll_controls();
 
             let item = self.obj().item();
 
@@ -1276,87 +1280,24 @@ impl ItemPage {
             .play_media(Some(info), item, episode_list, matcher, start_seconds);
     }
 
-    fn set_control_opacity(&self, opacity: f64) {
-        let imp = self.imp();
-        imp.left_button.set_opacity(opacity);
-        imp.right_button.set_opacity(opacity);
-    }
-
-    fn are_controls_visible(&self) -> bool {
-        if self.hide_controls_animation().state() == adw::AnimationState::Playing {
-            return false;
-        }
-
-        self.imp().left_button.opacity() >= 0.68
-            || self.show_controls_animation().state() == adw::AnimationState::Playing
-    }
-
-    fn show_controls_animation(&self) -> &adw::TimedAnimation {
-        self.imp().show_button_animation.get_or_init(|| {
-            let target = adw::CallbackAnimationTarget::new(glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                move |opacity| obj.set_control_opacity(opacity)
-            ));
-
-            adw::TimedAnimation::builder()
-                .duration(SHOW_BUTTON_ANIMATION_DURATION)
-                .widget(&self.imp().scrolled.get())
-                .target(&target)
-                .value_to(0.7)
-                .build()
-        })
-    }
-
-    fn hide_controls_animation(&self) -> &adw::TimedAnimation {
-        self.imp().hide_button_animation.get_or_init(|| {
-            let target = adw::CallbackAnimationTarget::new(glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                move |opacity| obj.set_control_opacity(opacity)
-            ));
-
-            adw::TimedAnimation::builder()
-                .duration(SHOW_BUTTON_ANIMATION_DURATION)
-                .widget(&self.imp().scrolled.get())
-                .target(&target)
-                .value_to(0.)
-                .build()
-        })
-    }
-
     #[template_callback]
     fn on_rightbutton_clicked(&self) {
-        self.anime::<true>();
-    }
-
-    fn controls_opacity(&self) -> f64 {
-        self.imp().left_button.opacity()
+        self.scroll_controls_anime::<true>();
     }
 
     #[template_callback]
     fn on_enter_focus(&self) {
-        if !self.are_controls_visible() {
-            self.hide_controls_animation().pause();
-            self.show_controls_animation()
-                .set_value_from(self.controls_opacity());
-            self.show_controls_animation().play();
-        }
+        self.on_enter_scroll_controls();
     }
 
     #[template_callback]
     fn on_leave_focus(&self) {
-        if self.are_controls_visible() {
-            self.show_controls_animation().pause();
-            self.hide_controls_animation()
-                .set_value_from(self.controls_opacity());
-            self.hide_controls_animation().play();
-        }
+        self.on_leave_scroll_controls();
     }
 
     #[template_callback]
     fn on_leftbutton_clicked(&self) {
-        self.anime::<false>();
+        self.scroll_controls_anime::<false>();
     }
 
     #[template_callback]
@@ -1379,42 +1320,39 @@ impl ItemPage {
         let item = TuItem::from_simple(season.to_owned());
         item.activate(self);
     }
+}
 
-    fn anime<const R: bool>(&self) {
-        let scrolled = self.imp().scrolled.get();
-        let adj = scrolled.hadjustment();
-
-        let Some(clock) = scrolled.frame_clock() else {
-            return;
-        };
-
-        let start = adj.value();
-        let end = if R { start + 800.0 } else { start - 800.0 };
-
-        let start_time = clock.frame_time();
-        let end_time = start_time + 1000 * 400;
-
-        scrolled.add_tick_callback(move |_view, clock| {
-            let now = clock.frame_time();
-            if now < end_time && adj.value() != end {
-                let mut t = (now - start_time) as f64 / (end_time - start_time) as f64;
-                t = Self::ease_in_out_cubic(t);
-                adj.set_value(start + t * (end - start));
-                glib::ControlFlow::Continue
-            } else {
-                adj.set_value(end);
-                glib::ControlFlow::Break
-            }
-        });
+impl HorControlsExt for ItemPage {
+    fn scroll_widget(&self) -> gtk::ScrolledWindow {
+        self.imp().scrolled.get()
     }
 
-    fn ease_in_out_cubic(t: f64) -> f64 {
-        if t < 0.5 {
-            4.0 * t * t * t
-        } else {
-            let t = 2.0 * t - 2.0;
-            0.5 * t * t * t + 1.0
-        }
+    fn left_button(&self) -> gtk::Button {
+        self.imp().left_button.get()
+    }
+
+    fn right_button(&self) -> gtk::Button {
+        self.imp().right_button.get()
+    }
+
+    fn show_left_animation_cell(&self) -> &std::cell::OnceCell<adw::TimedAnimation> {
+        &self.imp().show_left_animation
+    }
+
+    fn hide_left_animation_cell(&self) -> &std::cell::OnceCell<adw::TimedAnimation> {
+        &self.imp().hide_left_animation
+    }
+
+    fn show_right_animation_cell(&self) -> &std::cell::OnceCell<adw::TimedAnimation> {
+        &self.imp().show_right_animation
+    }
+
+    fn hide_right_animation_cell(&self) -> &std::cell::OnceCell<adw::TimedAnimation> {
+        &self.imp().hide_right_animation
+    }
+
+    fn is_hovering(&self) -> &std::cell::Cell<bool> {
+        &self.imp().is_hovering
     }
 }
 
