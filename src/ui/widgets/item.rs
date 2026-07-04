@@ -67,6 +67,7 @@ use gtk::{
 
 pub(crate) mod imp {
     use std::cell::{
+        Cell,
         OnceCell,
         RefCell,
     };
@@ -208,8 +209,11 @@ pub(crate) mod imp {
         #[template_child]
         pub episode_switcher: TemplateChild<EpisodeSwitcher>,
 
-        pub show_button_animation: OnceCell<adw::TimedAnimation>,
-        pub hide_button_animation: OnceCell<adw::TimedAnimation>,
+        pub show_left_animation: OnceCell<adw::TimedAnimation>,
+        pub hide_left_animation: OnceCell<adw::TimedAnimation>,
+        pub show_right_animation: OnceCell<adw::TimedAnimation>,
+        pub hide_right_animation: OnceCell<adw::TimedAnimation>,
+        pub is_hovering: Cell<bool>,
 
         #[property(get, set, nullable)]
         pub current_item: RefCell<Option<TuItem>>,
@@ -269,6 +273,31 @@ pub(crate) mod imp {
             self.itemlist.set_model(Some(&self.selection));
             self.itemlist.set_factory(Some(
                 gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
+            ));
+            let adj = self.scrolled.hadjustment();
+            adj.connect_value_changed(glib::clone!(
+                #[weak(rename_to = obj)]
+                self.obj(),
+                move |_| {
+                    obj.update_left_button(true);
+                    obj.update_right_button(true);
+                }
+            ));
+            adj.connect_upper_notify(glib::clone!(
+                #[weak(rename_to = obj)]
+                self.obj(),
+                move |_| {
+                    obj.update_left_button(false);
+                    obj.update_right_button(false);
+                }
+            ));
+            adj.connect_page_size_notify(glib::clone!(
+                #[weak(rename_to = obj)]
+                self.obj(),
+                move |_| {
+                    obj.update_left_button(false);
+                    obj.update_right_button(false);
+                }
             ));
 
             let item = self.obj().item();
@@ -1276,27 +1305,39 @@ impl ItemPage {
             .play_media(Some(info), item, episode_list, matcher, start_seconds);
     }
 
-    fn set_control_opacity(&self, opacity: f64) {
-        let imp = self.imp();
-        imp.left_button.set_opacity(opacity);
-        imp.right_button.set_opacity(opacity);
+    fn set_left_opacity(&self, opacity: f64) {
+        self.imp().left_button.set_opacity(opacity);
     }
 
-    fn are_controls_visible(&self) -> bool {
-        if self.hide_controls_animation().state() == adw::AnimationState::Playing {
-            return false;
-        }
-
-        self.imp().left_button.opacity() >= 0.68
-            || self.show_controls_animation().state() == adw::AnimationState::Playing
+    fn set_right_opacity(&self, opacity: f64) {
+        self.imp().right_button.set_opacity(opacity);
     }
 
-    fn show_controls_animation(&self) -> &adw::TimedAnimation {
-        self.imp().show_button_animation.get_or_init(|| {
+    fn left_opacity(&self) -> f64 {
+        self.imp().left_button.opacity()
+    }
+
+    fn right_opacity(&self) -> f64 {
+        self.imp().right_button.opacity()
+    }
+
+    fn is_itemlist_at_start(&self) -> bool {
+        let adj = self.imp().scrolled.hadjustment();
+        adj.value() <= adj.lower() + f64::EPSILON
+    }
+
+    fn is_itemlist_at_end(&self) -> bool {
+        let adj = self.imp().scrolled.hadjustment();
+        let max_value = (adj.upper() - adj.page_size()).max(adj.lower());
+        adj.value() >= max_value - f64::EPSILON
+    }
+
+    fn show_left_animation(&self) -> &adw::TimedAnimation {
+        self.imp().show_left_animation.get_or_init(|| {
             let target = adw::CallbackAnimationTarget::new(glib::clone!(
                 #[weak(rename_to = obj)]
                 self,
-                move |opacity| obj.set_control_opacity(opacity)
+                move |opacity| obj.set_left_opacity(opacity)
             ));
 
             adw::TimedAnimation::builder()
@@ -1308,12 +1349,12 @@ impl ItemPage {
         })
     }
 
-    fn hide_controls_animation(&self) -> &adw::TimedAnimation {
-        self.imp().hide_button_animation.get_or_init(|| {
+    fn hide_left_animation(&self) -> &adw::TimedAnimation {
+        self.imp().hide_left_animation.get_or_init(|| {
             let target = adw::CallbackAnimationTarget::new(glib::clone!(
                 #[weak(rename_to = obj)]
                 self,
-                move |opacity| obj.set_control_opacity(opacity)
+                move |opacity| obj.set_left_opacity(opacity)
             ));
 
             adw::TimedAnimation::builder()
@@ -1325,33 +1366,95 @@ impl ItemPage {
         })
     }
 
+    fn show_right_animation(&self) -> &adw::TimedAnimation {
+        self.imp().show_right_animation.get_or_init(|| {
+            let target = adw::CallbackAnimationTarget::new(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |opacity| obj.set_right_opacity(opacity)
+            ));
+
+            adw::TimedAnimation::builder()
+                .duration(SHOW_BUTTON_ANIMATION_DURATION)
+                .widget(&self.imp().scrolled.get())
+                .target(&target)
+                .value_to(0.7)
+                .build()
+        })
+    }
+
+    fn hide_right_animation(&self) -> &adw::TimedAnimation {
+        self.imp().hide_right_animation.get_or_init(|| {
+            let target = adw::CallbackAnimationTarget::new(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                move |opacity| obj.set_right_opacity(opacity)
+            ));
+
+            adw::TimedAnimation::builder()
+                .duration(SHOW_BUTTON_ANIMATION_DURATION)
+                .widget(&self.imp().scrolled.get())
+                .target(&target)
+                .value_to(0.)
+                .build()
+        })
+    }
+
+    fn update_left_button(&self, animate: bool) {
+        let should_show = self.imp().is_hovering.get() && !self.is_itemlist_at_start();
+        let current = self.left_opacity();
+        if should_show && current < 0.7 {
+            self.hide_left_animation().pause();
+            self.show_left_animation().set_value_from(current);
+            self.show_left_animation().play();
+        } else if !should_show && current > 0. {
+            if animate {
+                self.show_left_animation().pause();
+                self.hide_left_animation().set_value_from(current);
+                self.hide_left_animation().play();
+            } else {
+                self.show_left_animation().pause();
+                self.set_left_opacity(0.);
+            }
+        }
+    }
+
+    fn update_right_button(&self, animate: bool) {
+        let should_show = self.imp().is_hovering.get() && !self.is_itemlist_at_end();
+        let current = self.right_opacity();
+        if should_show && current < 0.7 {
+            self.hide_right_animation().pause();
+            self.show_right_animation().set_value_from(current);
+            self.show_right_animation().play();
+        } else if !should_show && current > 0. {
+            if animate {
+                self.show_right_animation().pause();
+                self.hide_right_animation().set_value_from(current);
+                self.hide_right_animation().play();
+            } else {
+                self.show_right_animation().pause();
+                self.set_right_opacity(0.);
+            }
+        }
+    }
+
     #[template_callback]
     fn on_rightbutton_clicked(&self) {
         self.anime::<true>();
     }
 
-    fn controls_opacity(&self) -> f64 {
-        self.imp().left_button.opacity()
-    }
-
     #[template_callback]
     fn on_enter_focus(&self) {
-        if !self.are_controls_visible() {
-            self.hide_controls_animation().pause();
-            self.show_controls_animation()
-                .set_value_from(self.controls_opacity());
-            self.show_controls_animation().play();
-        }
+        self.imp().is_hovering.set(true);
+        self.update_left_button(true);
+        self.update_right_button(true);
     }
 
     #[template_callback]
     fn on_leave_focus(&self) {
-        if self.are_controls_visible() {
-            self.show_controls_animation().pause();
-            self.hide_controls_animation()
-                .set_value_from(self.controls_opacity());
-            self.hide_controls_animation().play();
-        }
+        self.imp().is_hovering.set(false);
+        self.update_left_button(true);
+        self.update_right_button(true);
     }
 
     #[template_callback]
