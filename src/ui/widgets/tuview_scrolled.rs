@@ -154,23 +154,32 @@ impl TuViewScrolled {
             return;
         };
 
-        if C {
-            store.remove_all();
+        let prefer_size = if C {
             let size = resolve_prefer_size(self.unify_size(), &items);
             self.imp().prefer_size_cache.replace(size);
-        }
+            size
+        } else {
+            *self.imp().prefer_size_cache.borrow()
+        };
 
-        let prefer_size = *self.imp().prefer_size_cache.borrow();
         let prefer_poster = self.prefer_poster();
         let is_resume = self.is_resume();
 
-        for item in items {
-            let tu_item = TuItem::from_simple(item);
-            tu_item.set_is_resume(is_resume);
-            tu_item.set_prefer_poster(prefer_poster);
-            tu_item.set_prefer_size(prefer_size);
-            let tu_item = TuObject::new(tu_item);
-            store.append(&tu_item);
+        let items = items
+            .into_iter()
+            .map(|item| {
+                let tu_item = TuItem::from_simple(item);
+                tu_item.set_is_resume(is_resume);
+                tu_item.set_prefer_poster(prefer_poster);
+                tu_item.set_prefer_size(prefer_size);
+                TuObject::new(tu_item)
+            })
+            .collect::<Vec<_>>();
+
+        if C {
+            store.splice(0, store.n_items(), &items);
+        } else {
+            store.extend_from_slice(&items);
         }
     }
 
