@@ -617,9 +617,7 @@ impl ItemPage {
         }
         .or_else(|| {
             // If the current item is not in this range, reset any horizontal offset
-            let adj = imp.itemlist.hadjustment();
-            adj.filter(|adj| adj.value() > adj.lower() + f64::EPSILON)
-                .map(|_| 0)
+            (!self.is_at_lower()).then_some(0)
         });
 
         let items = slice
