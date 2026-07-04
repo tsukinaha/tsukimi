@@ -11,6 +11,7 @@ pub mod eu_item;
 pub mod filter_panel;
 pub mod fix;
 pub mod home;
+mod hor_controls;
 pub mod horbu_scrolled;
 pub mod hortu_scrolled;
 pub mod hover_scale;
