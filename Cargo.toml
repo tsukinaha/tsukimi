@@ -42,7 +42,7 @@ atomic-wait = "1.1.0"
 flume = "0.12.0"
 derive_builder = "0.20.2"
 anyhow = "1.0"
-tracing-subscriber = { version = "0.3", features = ["chrono"] }
+tracing-subscriber = { version = "0.3", features = ["chrono", "env-filter"] }
 regex = "1.12.3"
 strsim = "0.11.1"
 clap = { version = "4", features = ["derive"] }
