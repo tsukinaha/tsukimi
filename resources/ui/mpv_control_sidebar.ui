@@ -101,7 +101,7 @@
                     <property name="adjustment">
                       <object class="GtkAdjustment" id="cache_size_adj">
                         <property name="lower">50</property>
-                        <property name="upper">1000</property>
+                        <property name="upper">3000</property>
                         <property name="value">100</property>
                         <property name="page-increment">50</property>
                         <property name="step-increment">50</property>
@@ -117,7 +117,7 @@
                     <property name="adjustment">
                       <object class="GtkAdjustment" id="cache_time_adj">
                         <property name="lower">30</property>
-                        <property name="upper">1000</property>
+                        <property name="upper">3000</property>
                         <property name="value">300</property>
                         <property name="page-increment">30</property>
                         <property name="step-increment">30</property>
