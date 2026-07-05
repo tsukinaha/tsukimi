@@ -116,8 +116,14 @@ pub(crate) mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            let obj = self.obj();
-            obj.load_source(obj.image_source());
+            // Wait until builder properties are applied before reading the image source
+            glib::idle_add_local_once(glib::clone!(
+                #[weak(rename_to = obj)]
+                self.obj(),
+                move || {
+                    obj.load_source(obj.image_source());
+                }
+            ));
         }
 
         fn dispose(&self) {
