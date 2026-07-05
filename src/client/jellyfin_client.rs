@@ -675,8 +675,10 @@ impl JellyfinClient {
 
         match self.image_request(id, image_type, tag, etag).await {
             Ok(response) => {
-                if response.status().is_redirection() {
+                if response.status() == reqwest::StatusCode::NOT_MODIFIED {
                     return Ok(path.to_string_lossy().to_string());
+                } else if response.status() == reqwest::StatusCode::NOT_FOUND {
+                    return Ok(String::new());
                 } else if !response.status().is_success() {
                     return Err(anyhow!("Failed to get image: {}", response.status()));
                 }
