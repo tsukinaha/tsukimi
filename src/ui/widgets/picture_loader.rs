@@ -1,4 +1,7 @@
-use std::path::PathBuf;
+use std::{
+    path::PathBuf,
+    sync::LazyLock,
+};
 
 use super::{
     image_paintable::paintable_from_file,
@@ -32,6 +35,13 @@ use gtk::{
 use tracing::warn;
 
 const IMAGE_LOAD_DELAY: std::time::Duration = std::time::Duration::from_millis(80);
+static IMAGE_LOAD_SEMAPHORE: LazyLock<tokio::sync::Semaphore> = LazyLock::new(|| {
+    tokio::sync::Semaphore::new(
+        std::thread::available_parallelism()
+            .map(|p| p.get())
+            .unwrap_or(4),
+    )
+});
 
 #[derive(Clone)]
 struct LoadToken {
@@ -274,6 +284,7 @@ impl PictureLoader {
     }
 
     async fn load_file(file: gio::File, load_token: &LoadToken) -> Result<gdk::Paintable> {
+        let _permit = IMAGE_LOAD_SEMAPHORE.acquire().await?;
         paintable_from_file(file, Some(load_token.cancellable.clone())).await
     }
 
