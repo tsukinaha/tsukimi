@@ -3,7 +3,10 @@ use std::{
     time::Duration,
 };
 
-use anyhow::Result;
+use anyhow::{
+    Result,
+    bail,
+};
 use gtk::{
     gdk,
     gio,
@@ -113,7 +116,7 @@ pub async fn paintable_from_file(
     file: gio::File, cancellable: Option<gio::Cancellable>,
 ) -> Result<gdk::Paintable> {
     if cancellable.as_ref().is_some_and(|c| c.is_cancelled()) {
-        anyhow::bail!("image load cancelled");
+        bail!("image load cancelled");
     }
 
     let mut loader = glycin::Loader::new(file);
