@@ -10,7 +10,7 @@ use gtk::{
 };
 use tracing::warn;
 
-use super::image_paintable::ImagePaintable;
+use super::image_paintable::paintable_from_file;
 use crate::utils::spawn;
 
 mod imp {
@@ -150,17 +150,13 @@ impl MediaContentViewer {
     }
 
     async fn view_file_inner(&self, file: gio::File) {
-        match ImagePaintable::from_file(&file) {
-            Ok(texture) => {
-                self.view_image(&texture);
-                return;
-            }
+        match paintable_from_file(file, None).await {
+            Ok(paintable) => self.view_image(&paintable),
             Err(error) => {
-                warn!("Could not load GdkTexture from file: {error}");
+                warn!("Could not load image with glycin: {error}");
+                self.show_fallback();
             }
         }
-
-        self.show_fallback();
     }
 
     /// Get the texture displayed by this widget, if any.

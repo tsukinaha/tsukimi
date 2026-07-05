@@ -1,7 +1,4 @@
-use std::{
-    future::Future,
-    path::PathBuf,
-};
+use std::path::PathBuf;
 
 use anyhow::Result;
 use serde::{

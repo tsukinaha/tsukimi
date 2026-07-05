@@ -429,11 +429,7 @@ impl TuListItem {
         let imp = self.imp();
         let item = self.item();
 
-        if item.need_animated_picture() {
-            self.set_animated_picture()
-        } else {
-            self.set_picture()
-        };
+        self.set_picture();
 
         let (w, h) = self.size_hint();
 

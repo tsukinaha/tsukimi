@@ -32,7 +32,10 @@ pub use ui::Window;
 
 pub use app::TsukimiApplication as Application;
 
-use crate::ui::widgets;
+use crate::{
+    client::runtime::runtime,
+    ui::widgets,
+};
 
 pub static USER_AGENT: LazyLock<String> =
     LazyLock::new(|| format!("{}/{} - {}", CLIENT_ID, version(), env::consts::OS));
@@ -65,6 +68,7 @@ pub fn run() -> gtk::glib::ExitCode {
     // Initialize the GTK application
     gtk::glib::set_application_name(CLIENT_ID);
 
+    let _tokio_guard = runtime().enter();
     Application::new().run_with_args::<&str>(&[])
 }
 
