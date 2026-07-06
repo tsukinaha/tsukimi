@@ -9,9 +9,11 @@ use clap::Parser;
 use tracing::{
     error,
     info,
-    level_filters::LevelFilter,
 };
-use tracing_subscriber::fmt::time::ChronoLocal;
+use tracing_subscriber::{
+    EnvFilter,
+    fmt::time::ChronoLocal,
+};
 
 use crate::dyn_event;
 
@@ -48,16 +50,14 @@ impl Args {
     ///
     /// Panics if the log file cannot be opened.
     fn init_tracing_subscriber(&self) {
-        let builder = tracing_subscriber::fmt().with_timer(ChronoLocal::rfc_3339());
-
-        let builder = match self.log_level.as_deref() {
-            Some("error") => builder.with_max_level(LevelFilter::ERROR),
-            Some("warn") => builder.with_max_level(LevelFilter::WARN),
-            Some("info") => builder.with_max_level(LevelFilter::INFO),
-            Some("debug") => builder.with_max_level(LevelFilter::DEBUG),
-            Some("trace") => builder.with_max_level(LevelFilter::TRACE),
-            _ => builder.with_max_level(LevelFilter::INFO),
+        let level = match self.log_level.as_deref() {
+            Some(level) if ["error", "warn", "info", "debug", "trace"].contains(&level) => level,
+            _ => "info",
         };
+        let filter = EnvFilter::builder().parse_lossy(format!("{level},glycin=error"));
+        let builder = tracing_subscriber::fmt()
+            .with_timer(ChronoLocal::rfc_3339())
+            .with_env_filter(filter);
 
         match &self.log_file {
             None => builder.with_writer(io::stderr).init(),

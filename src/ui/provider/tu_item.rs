@@ -767,10 +767,6 @@ impl TuItem {
         self.rating()
     }
 
-    pub fn need_animated_picture(&self) -> bool {
-        matches!(self.item_type().as_str(), COLLECTION_FOLDER)
-    }
-
     pub fn can_direct_play(&self) -> bool {
         matches!(self.item_type().as_str(), MOVIE | EPISODE) && self.is_resume()
     }

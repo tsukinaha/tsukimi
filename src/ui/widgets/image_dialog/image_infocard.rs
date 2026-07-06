@@ -12,7 +12,10 @@ use crate::{
     client::jellyfin_client::JELLYFIN_CLIENT,
     ui::{
         GlobalToast,
-        widgets::window::Window,
+        widgets::{
+            image_paintable::paintable_from_file,
+            window::Window,
+        },
     },
     utils::spawn_tokio,
 };
@@ -235,40 +238,13 @@ impl ImageInfoCard {
 
         let picture = self.imp().picture.get();
 
-        gio::File::for_uri(&path).read_async(
-            glib::Priority::LOW,
-            None::<&gio::Cancellable>,
-            glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                move |res| {
-                    if let Ok(stream) = res {
-                        gtk::gdk_pixbuf::Pixbuf::from_stream_async(
-                            &stream,
-                            None::<&gio::Cancellable>,
-                            move |r| match r {
-                                Ok(pixbuf) => {
-                                    #[allow(deprecated)]
-                                    // FIXME: `Texture::for_pixbuf` is deprecated since GTK 4.20.
-                                    // GTK recommends libglycin for loading images into `GdkTexture`, but
-                                    // glycin currently only works on Linux, so keep this fallback for now.
-                                    // https://docs.gtk.org/gdk4/ctor.Texture.new_for_pixbuf.html
-                                    // https://docs.rs/crate/glycin/latest
-                                    picture.set_paintable(Some(&gtk::gdk::Texture::for_pixbuf(
-                                        &pixbuf,
-                                    )));
-                                    obj.set_picture_visible();
-                                }
-                                Err(_) => {
-                                    obj.toast(gettext("Error loading image"));
-                                    obj.set_fallback_visible();
-                                }
-                            },
-                        );
-                    }
-                }
-            ),
-        );
+        if let Ok(paintable) = paintable_from_file(gio::File::for_uri(&path), None).await {
+            picture.set_paintable(Some(&paintable));
+            self.set_picture_visible();
+        } else {
+            self.toast(gettext("Error loading image"));
+            self.set_fallback_visible();
+        }
     }
 
     pub fn set_picture_visible(&self) {

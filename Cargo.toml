@@ -33,8 +33,6 @@ chrono = { version = "0.4", features = ["serde"] }
 tracing = "0.1"
 gst = { version = "0.25", package = "gstreamer" }
 url = "2.5.8"
-image = "0.25"
-rayon = "1.12.0"
 gettext-rs = { version = "~0.7", features = ["gettext-system"] }
 hostname = "0.4.2"
 epoxy = "0.1.0"
@@ -44,7 +42,7 @@ atomic-wait = "1.1.0"
 flume = "0.12.0"
 derive_builder = "0.20.2"
 anyhow = "1.0"
-tracing-subscriber = { version = "0.3", features = ["chrono"] }
+tracing-subscriber = { version = "0.3", features = ["chrono", "env-filter"] }
 regex = "1.12.3"
 strsim = "0.11.1"
 clap = { version = "4", features = ["derive"] }
@@ -57,6 +55,7 @@ xxhash-rust = { version = "0.8.15", features = ["xxh3"] }
 futures-util = "0.3.31"
 itertools = "0.15.0"
 moka = { version = "0.12.15", features = ["future"] }
+glycin = { version = "3.1.0", default-features = false, features = ["gdk4", "tokio"] }
 
 [dev-dependencies]
 cargo-husky = { version = "1", default-features = false, features = ["user-hooks"] }
