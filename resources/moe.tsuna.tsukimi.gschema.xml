@@ -135,10 +135,6 @@
       <default>false</default>
       <summary>Auto Select Last Server</summary>
     </key>
-    <key name="mpv-subtitle-size" type="i">
-      <default>55</default>
-      <summary>MPV Subtitle Size</summary>
-    </key>
     <key name="mpv-audio-preferred-lang" type="i">
       <default>0</default>
       <summary>Preferred audio language</summary>
@@ -192,9 +188,63 @@
       <summary>Whether to show buffer speed label on left-top</summary>
       <default>true</default>
     </key>
+    <key name="mpv-subtitle-bold" type="b">
+      <summary>MPV subtitle bold</summary>
+      <default>false</default>
+    </key>
+    <key name="mpv-subtitle-italic" type="b">
+      <summary>MPV subtitle italic</summary>
+      <default>false</default>
+    </key>
+    <key name="mpv-subtitle-justify" type="i">
+      <summary>MPV subtitle text justification</summary>
+      <description>0: left, 1: center, 2: right</description>
+      <default>1</default>
+    </key>
+    <key name="mpv-subtitle-position" type="i">
+      <summary>MPV subtitle position</summary>
+      <default>100</default>
+    </key>
+    <key name="mpv-subtitle-size" type="i">
+      <default>55</default>
+      <summary>MPV Subtitle Size</summary>
+    </key>
+    <key type="d" name="mpv-subtitle-scale">
+      <summary>MPV subtitle scale</summary>
+      <default>1.0</default>
+    </key>
     <key name="mpv-subtitle-font" type="s">
       <summary>MPV subtitle font</summary>
       <default>""</default>
+    </key>
+    <key name="mpv-subtitle-border-style" type="i">
+      <summary>MPV subtitle border style</summary>
+      <description>0: outline and shadow, 1: opaque box, 2: background box</description>
+      <default>0</default>
+    </key>
+    <key name="mpv-subtitle-border-size" type="i">
+      <summary>MPV subtitle border size</summary>
+      <default>3</default>
+    </key>
+    <key name="mpv-subtitle-shadow-offset" type="i">
+      <summary>MPV subtitle shadow offset</summary>
+      <default>0</default>
+    </key>
+    <key name="mpv-subtitle-stretch-image-subs-to-screen" type="b">
+      <summary>Whether to stretch image subtitles to screen</summary>
+      <default>false</default>
+    </key>
+    <key name="mpv-subtitle-text-color" type="s">
+      <summary>MPV subtitle text color</summary>
+      <default>"rgb(255,255,255)"</default>
+    </key>
+    <key name="mpv-subtitle-border-color" type="s">
+      <summary>MPV subtitle border color</summary>
+      <default>"rgb(0,0,0)"</default>
+    </key>
+    <key name="mpv-subtitle-background-color" type="s">
+      <summary>MPV subtitle background color</summary>
+      <default>"rgba(0,0,0,0)"</default>
     </key>
     <key name="device-uuid" type="s">
       <summary>Device UUID</summary>
@@ -212,10 +262,6 @@
     <key type="s" name="accounts">
       <summary>List of the accounts</summary>
       <default>'[]'</default>
-    </key>
-    <key type="d" name="mpv-subtitle-scale">
-      <summary>MPV subtitle scale</summary>
-      <default>1.0</default>
     </key>
     <key type="d" name="danmaku-opacity">
       <summary>Danmaku opacity</summary>

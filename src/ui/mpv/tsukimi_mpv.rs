@@ -114,9 +114,51 @@ impl Default for TsukimiMPV {
             init.set_property("cache-secs", (SETTINGS.mpv_cache_time()) as i64)?;
             init.set_property("volume-max", MAX_VOLUME)?;
             init.set_property("volume", SETTINGS.mpv_default_volume() as i64)?;
+            init.set_property("sub-bold", SETTINGS.mpv_subtitle_bold())?;
+            init.set_property("sub-italic", SETTINGS.mpv_subtitle_italic())?;
+            init.set_property(
+                "sub-justify",
+                match SETTINGS.mpv_subtitle_justify() {
+                    0 => "left",
+                    2 => "right",
+                    _ => "center",
+                },
+            )?;
+            init.set_property("sub-pos", SETTINGS.mpv_subtitle_position() as i64)?;
             init.set_property("sub-font-size", SETTINGS.mpv_subtitle_size() as i64)?;
-            init.set_property("sub-font", SETTINGS.mpv_subtitle_font())?;
             init.set_property("sub-scale", SETTINGS.mpv_subtitle_scale())?;
+            init.set_property("sub-font", SETTINGS.mpv_subtitle_font())?;
+            init.set_property(
+                "sub-border-style",
+                match_sub_border_style(SETTINGS.mpv_subtitle_border_style()),
+            )?;
+            init.set_property(
+                "sub-border-size",
+                SETTINGS.mpv_subtitle_border_size() as i64,
+            )?;
+            init.set_property(
+                "sub-shadow-offset",
+                SETTINGS.mpv_subtitle_shadow_offset() as i64,
+            )?;
+            init.set_property(
+                "stretch-image-subs-to-screen",
+                SETTINGS.mpv_subtitle_stretch_image_subs_to_screen(),
+            )?;
+            init.set_property(
+                "sub-color",
+                settings_color_to_mpv(SETTINGS.mpv_subtitle_text_color(), (1.0, 1.0, 1.0, 1.0)),
+            )?;
+            init.set_property(
+                "sub-border-color",
+                settings_color_to_mpv(SETTINGS.mpv_subtitle_border_color(), (0.0, 0.0, 0.0, 1.0)),
+            )?;
+            init.set_property(
+                "sub-back-color",
+                settings_color_to_mpv(
+                    SETTINGS.mpv_subtitle_background_color(),
+                    (0.0, 0.0, 0.0, 0.0),
+                ),
+            )?;
             init.set_property("hwdec", match_hwdec_interop(SETTINGS.mpv_hwdec()))?;
             init.set_property("scale", match_video_upscale(SETTINGS.mpv_video_scale()))?;
             if SETTINGS.mpv_action_after_video_end() == 1 {
@@ -632,6 +674,7 @@ use url::Url;
 use super::options_matcher::{
     match_audio_channels,
     match_hwdec_interop,
+    match_sub_border_style,
     match_video_upscale,
 };
 use crate::{
@@ -642,6 +685,19 @@ use crate::{
         spawn_tokio_without_await,
     },
 };
+
+fn settings_color_to_mpv(value: String, default: (f32, f32, f32, f32)) -> String {
+    let rgba = gtk::gdk::RGBA::parse(&value)
+        .unwrap_or_else(|_| gtk::gdk::RGBA::new(default.0, default.1, default.2, default.3));
+
+    format!(
+        "{}/{}/{}/{}",
+        rgba.red(),
+        rgba.green(),
+        rgba.blue(),
+        rgba.alpha()
+    )
+}
 
 const KEYSTRING_MAP: &[(&str, &str)] = &[
     ("PGUP", "Page_Up"),
