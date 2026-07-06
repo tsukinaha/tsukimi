@@ -193,13 +193,9 @@ impl ImageDialogSearchPage {
     pub async fn init<const FIRST_INIT: bool>(&self) {
         let id = self.id();
         let type_ = self.image_type();
+        let imp = self.imp();
 
-        let Some(store) = self
-            .imp()
-            .selection
-            .model()
-            .and_downcast::<gio::ListStore>()
-        else {
+        let Some(store) = imp.selection.model().and_downcast::<gio::ListStore>() else {
             return;
         };
 
@@ -211,7 +207,7 @@ impl ImageDialogSearchPage {
 
         dialog.loading_page();
 
-        let if_all_language = self.imp().all_languages_check.is_active();
+        let if_all_language = imp.all_languages_check.is_active();
         let providers = self.providers();
 
         let remote_image_list = match spawn_tokio(async move {
@@ -230,35 +226,45 @@ impl ImageDialogSearchPage {
 
         dialog.view_page();
 
-        self.imp()
-            .items_count_label
+        imp.items_count_label
             .set_text(&format!("{} Items", remote_image_list.total_record_count));
 
         if FIRST_INIT {
-            for provider in remote_image_list.providers {
-                self.imp().dropdown_string_list.append(&provider);
-            }
+            imp.dropdown_string_list.splice(
+                0,
+                imp.dropdown_string_list.n_items(),
+                &remote_image_list
+                    .providers
+                    .iter()
+                    .map(String::as_str)
+                    .collect::<Vec<_>>(),
+            );
         }
 
-        for item in remote_image_list.images {
-            let line2 = format!(
-                "{}x{} - {}",
-                item.width.unwrap_or(0),
-                item.height.unwrap_or(0),
-                item.language.unwrap_or_default()
-            );
-            let eu_item = eu_item::EuItem::new(
-                item.thumbnail_url,
-                Some(item.url),
-                Some(item.provider_name),
-                Some(line2),
-                item.community_rating.map(|x| x.to_string()),
-                Some(self.image_type().to_string()),
-                None,
-            );
-            let eu_object = eu_item::EuObject::new(&eu_item);
-            store.append(&eu_object);
-        }
+        let items = remote_image_list
+            .images
+            .iter()
+            .map(|item| {
+                let line2 = format!(
+                    "{}x{} - {}",
+                    item.width.unwrap_or(0),
+                    item.height.unwrap_or(0),
+                    item.language.clone().unwrap_or_default()
+                );
+                let eu_item = eu_item::EuItem::new(
+                    item.thumbnail_url.clone(),
+                    Some(item.url.clone()),
+                    Some(item.provider_name.clone()),
+                    Some(line2),
+                    item.community_rating.map(|x| x.to_string()),
+                    Some(self.image_type().to_string()),
+                    None,
+                );
+                eu_item::EuObject::new(&eu_item)
+            })
+            .collect::<Vec<_>>();
+
+        store.extend_from_slice(&items);
     }
 
     fn providers(&self) -> String {
