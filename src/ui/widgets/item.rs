@@ -733,9 +733,9 @@ impl ItemPage {
 
                 let dl: std::cell::Ref<DropdownList> = entry.borrow();
                 let selected = &dl.id;
-                for _i in 0..sstore.n_items() {
-                    sstore.remove(0);
-                }
+
+                let mut objects = Vec::new();
+                let mut subtitle_choice = None;
                 for media in &media_sources {
                     if selected.as_deref().is_some_and(|s| s == media.id) {
                         let mut lang_list = Vec::new();
@@ -755,22 +755,24 @@ impl ItemPage {
 
                                 lang_list
                                     .push((stream.index, dl.line1.to_owned().unwrap_or_default()));
-                                let object = glib::BoxedAnyObject::new(dl);
-                                sstore.append(&object);
+                                objects.push(glib::BoxedAnyObject::new(dl));
                             }
                         }
 
-                        if let Some(u) = make_subtitle_version_choice(lang_list) {
-                            subdropdown.set_selected(u.1 as u32);
-                        }
+                        subtitle_choice = make_subtitle_version_choice(lang_list);
                         break;
                     }
+                }
+                sstore.splice(0, sstore.n_items(), &objects);
+                if let Some(u) = subtitle_choice {
+                    subdropdown.set_selected(u.1 as u32);
                 }
 
                 imp.video_version_matcher.replace(dl.line1.to_owned());
             }
         ));
 
+        let mut objects = Vec::new();
         for media in &playbackinfo.media_sources {
             let line2 = media
                 .bit_rate
@@ -788,9 +790,10 @@ impl ItemPage {
             };
 
             v_dl.push(dl.line1.to_owned().unwrap_or_default());
-            let object = glib::BoxedAnyObject::new(dl);
-            vstore.append(&object);
+            objects.push(glib::BoxedAnyObject::new(dl));
         }
+
+        vstore.extend_from_slice(&objects);
 
         if let Some(matcher) = matcher {
             if let Some(p) = make_video_version_choice_from_matcher(v_dl, &matcher) {

@@ -918,18 +918,17 @@ impl Window {
         self.add_action_entries([shortcuts_action]);
     }
 
-    pub fn set_mpv_playlist(&self, episode_list: &Vec<TuItem>) {
+    pub fn set_mpv_playlist(&self, episode_list: &[TuItem]) {
         let model = self.imp().mpv_playlist_selection.model();
         let Some(store) = model.and_downcast_ref::<gio::ListStore>() else {
             return;
         };
+        let items = episode_list
+            .iter()
+            .map(|item| TuObject::new(item.to_owned()))
+            .collect::<Vec<_>>();
 
-        store.remove_all();
-
-        for item in episode_list {
-            let object = TuObject::new(item.to_owned());
-            store.append(&object);
-        }
+        store.splice(0, store.n_items(), &items);
     }
 
     pub fn view_playlist(&self) {

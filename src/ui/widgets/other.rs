@@ -343,14 +343,18 @@ impl OtherPage {
                         .unwrap()
                         .downcast::<gio::ListStore>()
                         .unwrap();
-                    store.remove_all();
 
-                    for item in data.items {
-                        let tu_item = TuItem::from_simple(item);
-                        tu_item.set_is_resume(true);
-                        let tu_item = TuObject::new(tu_item);
-                        store.append(&tu_item);
-                    }
+                    let items = data
+                        .items
+                        .into_iter()
+                        .map(|item| {
+                            let tu_item = TuItem::from_simple(item);
+                            tu_item.set_is_resume(true);
+                            TuObject::new(tu_item)
+                        })
+                        .collect::<Vec<_>>();
+
+                    store.splice(0, store.n_items(), &items);
 
                     let episode_page = self
                         .imp()

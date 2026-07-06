@@ -10,6 +10,7 @@ use gtk::{
 };
 
 use gtk::template_callbacks;
+use serde::Deserialize;
 use serde_json::Value;
 
 use crate::{
@@ -174,7 +175,7 @@ impl IdentifyDialogSearchPage {
     }
 
     pub fn extend_item(&self, items: Value, item_type: String) {
-        let Value::Array(ref items) = items else {
+        let Value::Array(items) = items else {
             return;
         };
 
@@ -186,22 +187,24 @@ impl IdentifyDialogSearchPage {
         else {
             return;
         };
-        for item_value in items {
-            let Ok(item) = serde_json::from_value::<RemoteSearchResult>(item_value.to_owned())
-            else {
-                continue;
-            };
-            let eu_item = EuItem::new(
-                item.image_url,
-                None,
-                Some(item.name),
-                item.production_year.map(|p| p.to_string()),
-                None,
-                Some(item_type.to_owned()),
-                Some(item_value.to_string()),
-            );
-            let eu_object = EuObject::new(&eu_item);
-            store.append(&eu_object);
-        }
+
+        let items = items
+            .into_iter()
+            .filter_map(|item_value| {
+                let item = RemoteSearchResult::deserialize(&item_value).ok()?;
+                let eu_item = EuItem::new(
+                    item.image_url,
+                    None,
+                    Some(item.name),
+                    item.production_year.map(|p| p.to_string()),
+                    None,
+                    Some(item_type.to_owned()),
+                    Some(item_value.to_string()),
+                );
+                Some(EuObject::new(&eu_item))
+            })
+            .collect::<Vec<_>>();
+
+        store.extend_from_slice(&items);
     }
 }
