@@ -1,9 +1,10 @@
+use gtk::prelude::*;
+
 use gettextrs::gettext;
 use glib::Object;
 use gtk::{
     gio,
     glib,
-    prelude::*,
     subclass::prelude::*,
 };
 
@@ -104,6 +105,22 @@ impl Default for LikedPage {
 impl LikedPage {
     pub fn new() -> Self {
         Object::builder().build()
+    }
+
+    pub fn focus_hortu_rows(&self) -> Vec<crate::ui::widgets::hortu_scrolled::HortuScrolled> {
+        let imp = self.imp();
+        vec![
+            imp.moviehortu.get(),
+            imp.serieshortu.get(),
+            imp.episodehortu.get(),
+            imp.peoplehortu.get(),
+            imp.albumhortu.get(),
+            imp.boxsethortu.get(),
+            imp.tvhortu.get(),
+        ]
+        .into_iter()
+        .filter(|row| row.is_visible() && row.item_count() > 0)
+        .collect()
     }
 
     pub fn update(&self) {

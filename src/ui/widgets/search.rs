@@ -109,6 +109,7 @@ mod imp {
         fn constructed(&self) {
             let obj = self.obj();
             self.parent_constructed();
+            crate::tv::osk::attach_on_screen_keyboard(&self.searchentry.get());
             self.searchscrolled
                 .get()
                 .set_unify_size(UnifySize::Majority);
@@ -245,6 +246,35 @@ impl SearchPage {
         imp.searchscrolled.set_store::<true>(search_results.items);
 
         imp.stack.set_visible_child_name("result");
+    }
+
+    pub fn trigger_search(&self) {
+        let this = self.clone();
+        crate::utils::spawn(async move {
+            this.on_search_activate().await;
+        });
+    }
+
+    pub fn search_scrolled(&self) -> crate::ui::widgets::tuview_scrolled::TuViewScrolled {
+        self.imp().searchscrolled.get()
+    }
+
+    pub fn search_entry(&self) -> gtk::SearchEntry {
+        self.imp().searchentry.get()
+    }
+
+    pub fn filter_rows(&self) -> Vec<adw::SwitchRow> {
+        let imp = self.imp();
+        vec![
+            imp.movie.get(),
+            imp.series.get(),
+            imp.boxset.get(),
+            imp.person.get(),
+            imp.music.get(),
+            imp.audio.get(),
+            imp.video.get(),
+            imp.episode.get(),
+        ]
     }
 
     pub async fn get_search_results<const F: bool>(&self) -> List {

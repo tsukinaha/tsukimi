@@ -30,6 +30,8 @@ use gtk::{
 mod animated_bin;
 mod virtual_viewport;
 
+use crate::ui::widgets::tu_list_item::TuListItem;
+
 use animated_bin::AnimatedBin;
 use virtual_viewport::VirtualViewport;
 
@@ -358,6 +360,50 @@ impl LazyDiffView {
 
     pub fn len(&self) -> usize {
         self.imp().items.borrow().len()
+    }
+
+    pub fn key_at(&self, index: usize) -> Option<String> {
+        self.imp()
+            .items
+            .borrow()
+            .get(index)
+            .map(|row| row.key.clone())
+    }
+
+    pub fn scroll_to_index(&self, index: usize) {
+        let len = self.len();
+        if len == 0 {
+            return;
+        }
+        let index = index.min(len - 1);
+        let adj = match self.orientation() {
+            Orientation::Horizontal => self.scroll().hadjustment(),
+            _ => self.scroll().vadjustment(),
+        };
+        let pitch = self.item_pitch() as f64;
+        let target = index as f64 * pitch;
+        let page = adj.page_size();
+        let upper = (adj.upper() - page).max(0.0);
+        let value = (target + pitch * 0.5 - page * 0.5).clamp(0.0, upper);
+        adj.set_value(value);
+    }
+
+    pub fn row_widget_for_key(&self, key: &str) -> Option<gtk::Widget> {
+        self.imp()
+            .rows
+            .borrow()
+            .get(key)
+            .map(|row| row.child.clone())
+    }
+
+    pub fn rebind_active_rows(&self) {
+        let binder = self.imp().widget_binder.borrow().clone();
+        let Some(binder) = binder else {
+            return;
+        };
+        for row in self.imp().rows.borrow().values() {
+            row.rebind(&binder);
+        }
     }
 
     pub fn is_empty(&self) -> bool {
@@ -940,6 +986,10 @@ impl VirtualRow {
         (self.widget_binder)(&self.child, self.item.borrow().as_ref());
     }
 
+    fn rebind(&self, binder: &WidgetBinder) {
+        binder(&self.child, self.item.borrow().as_ref());
+    }
+
     fn set_orientation(&self, orientation: Orientation) {
         self.orientation.set(orientation);
         self.apply_orientation();
@@ -969,6 +1019,9 @@ impl VirtualRow {
 
     fn reset_for_reuse(&self) {
         self.container.set_sensitive(true);
+        if let Ok(tu_item) = self.child.clone().downcast::<TuListItem>() {
+            tu_item.set_poster_focused(false);
+        }
         self.reset_animation_state();
     }
 

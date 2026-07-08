@@ -7,7 +7,10 @@ use gtk::{
 use super::tsukimi_mpv::ChapterList;
 
 mod imp {
-    use std::cell::Cell;
+    use std::cell::{
+        Cell,
+        RefCell,
+    };
 
     use gtk::{
         glib,
@@ -17,6 +20,8 @@ mod imp {
 
     use crate::ui::mpv::mpvglarea::MPVGLArea;
 
+    type ScrubCallback = Box<dyn Fn(f64)>;
+
     #[derive(Default, glib::Properties)]
     #[properties(wrapper_type = super::VideoScale)]
     pub struct VideoScale {
@@ -24,6 +29,8 @@ mod imp {
         pub player: glib::WeakRef<MPVGLArea>,
 
         pub is_dragging: Cell<bool>,
+        pub scrub_callback: RefCell<Option<ScrubCallback>>,
+        pub scrub_finished_callback: RefCell<Option<Box<dyn Fn()>>>,
     }
 
     #[glib::object_subclass]
@@ -38,10 +45,6 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            // new GestureClick with add_controller is doesn't work for connect_released
-            //
-            // so we need to iterate through the controllers to get the GestureClick
-            // and then connect the signals
             let mut gesture = gtk::GestureClick::new();
             self.obj()
                 .observe_controllers()
@@ -69,6 +72,18 @@ mod imp {
                     imp.on_click_released();
                 }
             ));
+
+            self.obj().connect_value_changed(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                move |scale| {
+                    if imp.is_dragging.get()
+                        && let Some(callback) = imp.scrub_callback.borrow().as_ref()
+                    {
+                        callback(scale.value());
+                    }
+                }
+            ));
         }
     }
     impl WidgetImpl for VideoScale {}
@@ -85,12 +100,19 @@ mod imp {
 
         fn on_click_pressed(&self) {
             self.is_dragging.set(true);
+            let value = self.obj().value();
+            if let Some(callback) = self.scrub_callback.borrow().as_ref() {
+                callback(value);
+            }
         }
 
         fn on_click_released(&self) {
             let obj = self.obj();
             self.on_seek_finished(obj.value());
             self.is_dragging.set(false);
+            if let Some(callback) = self.scrub_finished_callback.borrow().as_ref() {
+                callback();
+            }
         }
 
         fn on_seek_finished(&self, value: f64) {
@@ -113,6 +135,20 @@ impl Default for VideoScale {
 impl VideoScale {
     pub fn new() -> Self {
         glib::Object::builder().build()
+    }
+
+    pub fn connect_scrub_position_changed<F>(&self, callback: F)
+    where
+        F: Fn(f64) + 'static,
+    {
+        *self.imp().scrub_callback.borrow_mut() = Some(Box::new(callback));
+    }
+
+    pub fn connect_scrub_finished<F>(&self, callback: F)
+    where
+        F: Fn() + 'static,
+    {
+        *self.imp().scrub_finished_callback.borrow_mut() = Some(Box::new(callback));
     }
 
     pub fn update_position_callback(&self) -> glib::ControlFlow {

@@ -13,11 +13,15 @@ use crate::{
         SGTitem,
         Urls,
     },
+    ui::widgets::fix::scroll_widget_to_row_center,
     utils::spawn,
 };
 
 mod imp {
-    use std::cell::RefCell;
+    use std::cell::{
+        Cell,
+        RefCell,
+    };
 
     use glib::subclass::InitializingObject;
 
@@ -38,6 +42,7 @@ mod imp {
         pub title: RefCell<String>,
 
         pub selection: gtk::SingleSelection,
+        pub selected_index: Cell<Option<usize>>,
     }
 
     #[glib::object_subclass]
@@ -176,5 +181,85 @@ impl HorbuScrolled {
                 }
             }
         ));
+    }
+
+    fn wrapbox_buttons(&self) -> Vec<gtk::Button> {
+        let wrapbox = self.imp().wrapbox.get();
+        let mut buttons = Vec::new();
+        let mut child = wrapbox.first_child();
+        while let Some(widget) = child {
+            if let Ok(button) = widget.clone().downcast::<gtk::Button>() {
+                buttons.push(button);
+            }
+            child = widget.next_sibling();
+        }
+        buttons
+    }
+
+    pub fn button_count(&self) -> usize {
+        self.wrapbox_buttons().len()
+    }
+
+    pub fn ensure_selection(&self) {
+        if self.button_count() == 0 {
+            return;
+        }
+        if self.imp().selected_index.get().is_none() {
+            self.set_selection_index(0);
+        }
+    }
+
+    pub fn clear_selection(&self) {
+        let buttons = self.wrapbox_buttons();
+        if let Some(index) = self.imp().selected_index.get()
+            && let Some(button) = buttons.get(index)
+        {
+            crate::tv::set_tv_focused(button, false);
+        }
+        self.imp().selected_index.set(None);
+    }
+
+    pub fn move_selection(&self, delta: i32) {
+        let count = self.button_count();
+        if count == 0 {
+            return;
+        }
+        let current = self.imp().selected_index.get().unwrap_or(0);
+        let next = (current as i32 + delta).clamp(0, count as i32 - 1) as usize;
+        self.set_selection_index(next);
+    }
+
+    fn set_selection_index(&self, index: usize) {
+        let buttons = self.wrapbox_buttons();
+        if buttons.is_empty() {
+            return;
+        }
+        let index = index.min(buttons.len() - 1);
+        let prev = self.imp().selected_index.get();
+        if prev == Some(index) {
+            return;
+        }
+        if let Some(prev_index) = prev
+            && let Some(button) = buttons.get(prev_index)
+        {
+            crate::tv::set_tv_focused(button, false);
+        }
+        if let Some(button) = buttons.get(index) {
+            crate::tv::set_tv_focused(button, true);
+        }
+        self.imp().selected_index.set(Some(index));
+    }
+
+    pub fn activate_selected(&self) {
+        let buttons = self.wrapbox_buttons();
+        if let Some(index) = self.imp().selected_index.get()
+            && let Some(button) = buttons.get(index)
+        {
+            button.emit_clicked();
+        }
+    }
+
+    pub fn scroll_into_parent_viewport(&self) {
+        scroll_widget_to_row_center(self);
     }
 }

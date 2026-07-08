@@ -7,6 +7,7 @@ use gtk::{
     Widget,
     subclass::prelude::*,
 };
+
 mod imp {
     use std::cell::{
         OnceCell,
@@ -25,6 +26,19 @@ mod imp {
     use crate::{
         ui::{
             SETTINGS,
+            input::{
+                FocusManager,
+                GamepadManager,
+                GridNavigator,
+                ItemPageNavigator,
+                LikedNavigator,
+                MediaViewerNavigator,
+                MpvNavigator,
+                PlaceholderNavigator,
+                PushedNavigator,
+                SearchNavigator,
+                SettingsNavigator,
+            },
             mpv::{
                 control_sidebar::MPVControlSidebar,
                 page::MPVPage,
@@ -74,6 +88,8 @@ mod imp {
         #[template_child]
         pub login_stack: TemplateChild<gtk::Stack>,
         #[template_child]
+        pub add_server: TemplateChild<gtk::Button>,
+        #[template_child]
         pub namerow: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub player_toolbar_box: TemplateChild<PlayerToolbarBox>,
@@ -120,6 +136,26 @@ mod imp {
         pub mpv_playlist_selection: gtk::SingleSelection,
 
         pub suspend_cookie: RefCell<Option<u32>>,
+
+        pub focus_manager: RefCell<FocusManager>,
+        pub gamepad_manager: RefCell<GamepadManager>,
+        pub placeholder_navigator: RefCell<PlaceholderNavigator>,
+        pub liked_navigator: RefCell<LikedNavigator>,
+        pub search_navigator: RefCell<SearchNavigator>,
+        pub mpv_navigator: RefCell<MpvNavigator>,
+        pub settings_navigator: RefCell<SettingsNavigator>,
+        pub item_navigator: RefCell<ItemPageNavigator>,
+        pub grid_navigator: RefCell<GridNavigator>,
+        pub pushed_navigator: RefCell<PushedNavigator>,
+        pub media_viewer_navigator: RefCell<MediaViewerNavigator>,
+        pub home_focus_snapshot: RefCell<Option<crate::ui::input::HomeFocusSnapshot>>,
+        pub active_settings: RefCell<Option<crate::ui::widgets::account_settings::AccountSettings>>,
+        pub active_account_dialog: RefCell<Option<crate::ui::widgets::account_add::AccountWindow>>,
+        pub tv_hints_revealer: RefCell<Option<gtk::Revealer>>,
+        pub tv_hints_label: RefCell<Option<gtk::Label>>,
+        pub tv_hints_hide_source: RefCell<Option<glib::SourceId>>,
+        pub tv_preferences_section: RefCell<Option<adw::SidebarSection>>,
+        pub tv_session_section: RefCell<Option<adw::SidebarSection>>,
 
         #[template_child]
         pub sidebar_breakpoint: TemplateChild<adw::Breakpoint>,
@@ -171,6 +207,11 @@ mod imp {
             klass.install_action("win.add-server", None, |obj, _, _| {
                 obj.new_account();
             });
+            klass.install_action("win.quit", None, |window, _, _| {
+                if let Some(app) = window.application() {
+                    app.quit();
+                }
+            });
         }
 
         fn instance_init(obj: &InitializingObject<Self>) {
@@ -206,6 +247,12 @@ mod imp {
                 #[weak]
                 obj,
                 move |_breakpoint| {
+                    if crate::tv::is_tv_mode_active() && SETTINGS.tv_hide_sidebar() {
+                        let split_view = obj.imp().split_view.get();
+                        split_view.set_collapsed(true);
+                        split_view.set_show_sidebar(false);
+                        return;
+                    }
                     if !SETTINGS.is_overlay() {
                         obj.imp().split_view.set_collapsed(false);
                     }
@@ -255,6 +302,7 @@ use super::{
     search::SearchPage,
     server_action_row,
     server_panel::ServerPanel,
+    single_grid::SingleGrid,
     tu_item::PROGRESSBAR_ANIMATION_DURATION,
     utils::GlobalToast,
 };
@@ -265,6 +313,13 @@ use crate::{
         jellyfin_client::JELLYFIN_CLIENT,
     },
     ui::{
+        input::{
+            InputAction,
+            MainTab,
+            NavigationContext,
+            PushedPageKind,
+            key_to_action,
+        },
         models::SETTINGS,
         provider::{
             IS_ADMIN,
@@ -306,6 +361,9 @@ impl Window {
         imp.insidestack.set_visible_child_name("homepage");
         imp.popbutton.set_visible(false);
         imp.last_content_list_selection.replace(Some(0));
+        if let Some(home) = imp.homepage.child().and_downcast::<HomePage>() {
+            imp.focus_manager.borrow().register_home(&home);
+        }
     }
 
     pub fn likedpage(&self) {
@@ -318,6 +376,9 @@ impl Window {
         imp.insidestack.set_visible_child_name("likedpage");
         imp.popbutton.set_visible(false);
         imp.last_content_list_selection.replace(Some(1));
+        if let Some(liked) = imp.likedpage.child().and_downcast::<LikedPage>() {
+            imp.liked_navigator.borrow().register(&liked);
+        }
     }
 
     pub fn searchpage(&self) {
@@ -349,6 +410,16 @@ impl Window {
 
         imp.popbutton.set_visible(false);
         imp.navipage.set_title("");
+        if imp.insidestack.visible_child_name().as_deref() == Some("homepage")
+            && let Some(home) = imp.homepage.child().and_downcast::<HomePage>()
+        {
+            let fm = imp.focus_manager.borrow();
+            if let Some(snapshot) = imp.home_focus_snapshot.borrow_mut().take() {
+                fm.restore_home_focus(&home, snapshot);
+            } else {
+                fm.refresh_home_rows(&home);
+            }
+        }
         self.refresh_homepage_if_needed();
     }
 
@@ -374,10 +445,19 @@ impl Window {
         }
         if accounts.is_empty() {
             imp.login_stack.set_visible_child_name("no-server");
+            imp.placeholder_navigator.borrow().reset();
+            if crate::tv::focus::tv_focus_enabled() {
+                let add_button = self.imp().add_server.get();
+                self.imp()
+                    .placeholder_navigator
+                    .borrow()
+                    .focus_add_server(&add_button);
+            }
             return;
         } else {
             imp.login_stack.set_visible_child_name("servers");
         }
+        imp.placeholder_navigator.borrow().reset();
         for (index, account) in accounts.iter().enumerate() {
             let server_action_row = server_action_row::ServerActionRow::new(account.to_owned());
 
@@ -455,6 +535,17 @@ impl Window {
 
             listbox.append(&server_action_row);
         }
+
+        if accounts.len() == 1 {
+            if let Some(row) = listbox.row_at_index(0) {
+                listbox.select_row(Some(&row));
+            }
+        } else if crate::tv::focus::tv_focus_enabled() {
+            self.imp()
+                .placeholder_navigator
+                .borrow()
+                .select_initial(listbox);
+        }
     }
 
     pub fn set_nav_servers(&self) {
@@ -521,6 +612,14 @@ impl Window {
         let ac = crate::ui::widgets::account_settings::AccountSettings::new(window_clone);
         ac.set_transient_for(Some(self));
         ac.set_application(Some(&self.application().unwrap()));
+        if crate::tv::is_tv_mode_active() {
+            ac.set_decorated(false);
+        }
+        *self.imp().active_settings.borrow_mut() = Some(ac.clone());
+        self.imp()
+            .settings_navigator
+            .borrow()
+            .reset_for_preferences(&ac);
         ac.present();
     }
 
@@ -568,6 +667,7 @@ impl Window {
 
     pub fn mainpage(&self) {
         self.imp().stack.set_visible_child_name("main");
+        self.sync_tv_button_hints();
     }
 
     pub fn refresh_homepage_if_needed(&self) {
@@ -591,6 +691,23 @@ impl Window {
 
     pub fn overlay_sidebar(&self, overlay: bool) {
         self.imp().split_view.set_collapsed(overlay);
+    }
+
+    /// In TV mode with a collapsed sidebar, show or hide the overlay panel.
+    pub fn set_sidebar_panel_visible(&self, visible: bool) {
+        let split_view = self.imp().split_view.get();
+        if crate::tv::is_tv_mode_active() && SETTINGS.tv_hide_sidebar() {
+            split_view.set_collapsed(true);
+            split_view.set_show_sidebar(visible);
+            return;
+        }
+        if visible != split_view.shows_sidebar() {
+            gtk::prelude::ActionGroupExt::activate_action(self, "win.sidebar", None);
+        }
+    }
+
+    pub fn tv_sidebar_collapsed(&self) -> bool {
+        crate::tv::is_tv_mode_active() && SETTINGS.tv_hide_sidebar()
     }
 
     pub fn add_toast(&self, toast: adw::Toast) {
@@ -677,6 +794,7 @@ impl Window {
 
     pub fn new_account(&self) {
         let dialog = crate::ui::widgets::account_add::AccountWindow::new();
+        *self.imp().active_account_dialog.borrow_mut() = Some(dialog.clone());
         dialog.present(Some(self));
     }
 
@@ -755,12 +873,14 @@ impl Window {
 
     pub fn play_media(
         &self, selected: Option<SelectedVideoSubInfo>, item: TuItem, episode_list: Vec<TuItem>,
-        matcher: Option<String>, start_seconds: f64,
+        matcher: Option<String>, start_seconds: f64, external_sub: Option<String>,
     ) {
         let imp = self.imp();
         imp.stack.set_visible_child_name("mpv");
+        self.sync_tv_button_hints();
         self.prevent_suspend();
         self.set_mpv_playlist(&episode_list);
+        imp.mpvnav.set_external_sub_override(external_sub);
         imp.mpvnav
             .play(selected, item, episode_list, matcher, start_seconds);
     }
@@ -769,6 +889,16 @@ impl Window {
     where
         T: NavigationPageExt,
     {
+        if self.now_page_tag().as_deref() == Some("mainpage")
+            && self.imp().insidestack.visible_child_name().as_deref() == Some("homepage")
+            && let Some(home) = self.imp().homepage.child().and_downcast::<HomePage>()
+        {
+            let snapshot = self.imp().focus_manager.borrow().snapshot_home_focus();
+            *self.imp().home_focus_snapshot.borrow_mut() = Some(snapshot);
+            self.imp().focus_manager.borrow().clear_all_row_selections();
+            let _ = home;
+        }
+
         let imp = self.imp();
         page.set_title(name);
         imp.navipage.set_title(name);
@@ -820,14 +950,30 @@ impl Window {
         self.imp().stack.visible_child_name() == Some("mpv".into())
     }
 
+    pub fn is_on_mpv_stack_pub(&self) -> bool {
+        self.is_on_mpv_stack()
+    }
+
     #[template_callback]
     fn key_pressed_cb(&self, key: u32, _code: u32, state: gtk::gdk::ModifierType) -> bool {
+        if state.contains(gtk::gdk::ModifierType::CONTROL_MASK)
+            || state.contains(gtk::gdk::ModifierType::ALT_MASK)
+        {
+            return false;
+        }
+
         if self.is_on_mpv_stack() {
             self.imp().mpvnav.key_pressed_cb(key, state);
             if self.imp().mpv_view.shows_sidebar() {
                 return false;
             }
             return true;
+        }
+
+        if crate::tv::controller_navigation_enabled()
+            && let Some(action) = key_to_action(key)
+        {
+            return self.handle_input_action(action);
         }
 
         false
@@ -850,6 +996,28 @@ impl Window {
         let Some(section) = item.section() else {
             return;
         };
+
+        if let Some(prefs) = imp.tv_preferences_section.borrow().as_ref()
+            && prefs == &section
+        {
+            self.account_settings();
+            return;
+        }
+
+        if let Some(session) = imp.tv_session_section.borrow().as_ref()
+            && session == &section
+        {
+            match item.section_index() {
+                0 => {
+                    let _ = gtk::prelude::WidgetExt::activate_action(self, "win.relogin", None);
+                }
+                1 => {
+                    let _ = gtk::prelude::WidgetExt::activate_action(self, "win.quit", None);
+                }
+                _ => {}
+            }
+            return;
+        }
 
         if section == *imp.servers_section {
             let section_idx = item.section_index() as usize;
@@ -892,6 +1060,424 @@ impl Window {
             1 => self.on_liked_update(),
             _ => {}
         }
+    }
+
+    pub fn setup_input(&self) {
+        crate::tv::cursor::register_window(self);
+        let window = self.clone();
+        glib::timeout_add_local(std::time::Duration::from_millis(16), move || {
+            let actions = {
+                let mut mgr = window.imp().gamepad_manager.borrow_mut();
+                mgr.poll(&window)
+            };
+            if !actions.is_empty() {
+                crate::tv::cursor::on_gamepad_activity();
+                glib::idle_add_local_once(crate::tv::cursor::on_gamepad_activity);
+            }
+            for action in actions {
+                window.handle_input_action(action);
+            }
+            glib::ControlFlow::Continue
+        });
+
+        let pointer = gtk::GestureClick::new();
+        pointer.connect_pressed(|_, _, _, _| crate::tv::osk::mark_pointer_input());
+        self.add_controller(pointer);
+
+        let motion = gtk::EventControllerMotion::new();
+        motion.connect_motion(|_, _, _| crate::tv::osk::mark_pointer_input());
+        self.add_controller(motion);
+
+        let keys = gtk::EventControllerKey::new();
+        keys.connect_key_pressed(|_, _, _, _| {
+            crate::tv::osk::mark_keyboard_input();
+            glib::Propagation::Proceed
+        });
+        self.add_controller(keys);
+
+        self.sync_tv_button_hints();
+    }
+
+    pub fn refresh_focus_manager(&self) {
+        if let Some(home) = self.imp().homepage.child().and_downcast::<HomePage>() {
+            self.imp().focus_manager.borrow().refresh_home_rows(&home);
+        }
+    }
+
+    pub fn activate_sidebar_selection(&self) {
+        let sidebar = self.imp().selectlist.get();
+        self.on_sidebar_activated(sidebar.selected());
+    }
+
+    pub fn is_on_placeholder(&self) -> bool {
+        self.imp().stack.visible_child_name().as_deref() == Some("placeholder")
+    }
+
+    pub fn enable_tv_mode_ui(&self, cli_fullscreen: bool) {
+        self.add_css_class("tv-mode");
+        self.set_decorated(false);
+
+        if self.imp().tv_hints_revealer.borrow().is_none() {
+            self.setup_tv_hints();
+        }
+        self.sync_tv_button_hints();
+
+        let start_fullscreen = cli_fullscreen
+            || SETTINGS.tv_start_fullscreen()
+            || crate::steam::is_steam_big_picture();
+        if start_fullscreen {
+            self.fullscreen();
+        }
+
+        if SETTINGS.tv_hide_sidebar() {
+            self.set_sidebar_panel_visible(false);
+            let window = self.clone();
+            glib::idle_add_local_once(move || {
+                window.set_sidebar_panel_visible(false);
+            });
+        }
+
+        self.setup_tv_preferences_sidebar();
+        self.setup_tv_session_sidebar();
+    }
+
+    fn setup_tv_preferences_sidebar(&self) {
+        if self.imp().tv_preferences_section.borrow().is_some() {
+            return;
+        }
+        let section = adw::SidebarSection::new();
+        section.set_title(Some(&gettext("Settings")));
+        let item = adw::SidebarItem::new(&gettext("Preferences"));
+        item.set_icon_name(Some("applications-system-symbolic"));
+        section.append(item);
+        let stored = section.clone();
+        self.imp().selectlist.get().append(section);
+        *self.imp().tv_preferences_section.borrow_mut() = Some(stored);
+    }
+
+    fn setup_tv_session_sidebar(&self) {
+        if self.imp().tv_session_section.borrow().is_some() {
+            return;
+        }
+        let section = adw::SidebarSection::new();
+        section.set_title(Some(&gettext("Session")));
+        let logout = adw::SidebarItem::new(&gettext("Log Out"));
+        logout.set_icon_name(Some("system-log-out-symbolic"));
+        let quit = adw::SidebarItem::new(&gettext("Quit"));
+        quit.set_icon_name(Some("application-exit-symbolic"));
+        section.append(logout);
+        section.append(quit);
+        let stored = section.clone();
+        self.imp().selectlist.get().append(section);
+        *self.imp().tv_session_section.borrow_mut() = Some(stored);
+    }
+
+    fn remove_tv_session_sidebar(&self) {
+        if let Some(section) = self.imp().tv_session_section.borrow_mut().take() {
+            self.imp().selectlist.get().remove(&section);
+        }
+    }
+
+    fn remove_tv_preferences_sidebar(&self) {
+        if let Some(section) = self.imp().tv_preferences_section.borrow_mut().take() {
+            self.imp().selectlist.get().remove(&section);
+        }
+    }
+
+    pub fn disable_tv_mode_ui(&self) {
+        self.remove_tv_preferences_sidebar();
+        self.remove_tv_session_sidebar();
+        self.remove_css_class("tv-mode");
+        crate::tv::cursor::restore();
+        self.set_decorated(true);
+        if let Some(revealer) = self.imp().tv_hints_revealer.borrow().as_ref() {
+            revealer.set_visible(false);
+            revealer.set_reveal_child(false);
+        }
+        if self.is_fullscreen() && !SETTINGS.is_fullscreen() && !SETTINGS.tv_start_fullscreen() {
+            self.unfullscreen();
+        }
+        self.overlay_sidebar(SETTINGS.overlay());
+    }
+
+    pub fn handle_input_action(&self, action: InputAction) -> bool {
+        if crate::tv::osk::handle_input(action) {
+            return true;
+        }
+        if self.is_on_mpv_stack() && SETTINGS.tv_show_button_hints() {
+            self.flash_tv_button_hints();
+        }
+        if crate::subtitles::dialog::handle_active_input(action) {
+            return true;
+        }
+        if crate::ui::input::popover_navigator::handle(self, action) {
+            return true;
+        }
+        if crate::playback::rule_editor::handle_active_input(action) {
+            return true;
+        }
+        if crate::ui::input::dialog_navigator::handle(self, action) {
+            return true;
+        }
+
+        match self.resolve_navigation_context() {
+            NavigationContext::Mpv => {
+                self.imp()
+                    .mpv_navigator
+                    .borrow()
+                    .handle(self, &self.imp().mpvnav, action)
+            }
+            NavigationContext::Placeholder => {
+                let imp = self.imp();
+                imp.placeholder_navigator.borrow().handle(
+                    self,
+                    &imp.login_stack.get(),
+                    &imp.serversbox.get(),
+                    action,
+                )
+            }
+            NavigationContext::MediaViewer => self.imp().media_viewer_navigator.borrow().handle(
+                self,
+                &self.imp().media_viewer.get(),
+                action,
+            ),
+            NavigationContext::Modal => self.handle_modal_input(action),
+            NavigationContext::Pushed(PushedPageKind::Item) => {
+                if let Some(page) = self
+                    .imp()
+                    .mainview
+                    .visible_page()
+                    .and_downcast::<ItemPage>()
+                {
+                    return self
+                        .imp()
+                        .item_navigator
+                        .borrow()
+                        .handle(self, &page, action);
+                }
+                false
+            }
+            NavigationContext::Pushed(PushedPageKind::Grid) => {
+                if let Some(page) = self
+                    .imp()
+                    .mainview
+                    .visible_page()
+                    .and_downcast::<SingleGrid>()
+                {
+                    return self
+                        .imp()
+                        .grid_navigator
+                        .borrow()
+                        .handle(self, &page, action);
+                }
+                false
+            }
+            NavigationContext::Pushed(PushedPageKind::Other) => {
+                self.imp().pushed_navigator.borrow().handle(self, action)
+            }
+            NavigationContext::Main(MainTab::Home) => match action {
+                InputAction::ToggleHints => {
+                    self.toggle_tv_hints();
+                    true
+                }
+                InputAction::SwitchGamepad => {
+                    let enabled = !crate::ui::SETTINGS.gamepad_enabled();
+                    let _ = crate::ui::SETTINGS.set_gamepad_enabled(enabled);
+                    if !enabled {
+                        crate::tv::cursor::restore();
+                    }
+                    let mgr = self.imp().gamepad_manager.borrow();
+                    self.toast(if enabled {
+                        format!(
+                            "{} — {} ({})",
+                            gettext("Controller navigation enabled"),
+                            mgr.active_name(),
+                            match mgr.active_profile() {
+                                crate::ui::input::GamepadProfile::Xbox => "Xbox",
+                                crate::ui::input::GamepadProfile::PlayStation => "PlayStation",
+                                crate::ui::input::GamepadProfile::SteamDeck => "Steam Deck",
+                                crate::ui::input::GamepadProfile::Nintendo => "Nintendo",
+                                crate::ui::input::GamepadProfile::Generic => "Generic",
+                            }
+                        )
+                    } else {
+                        gettext("Controller navigation disabled").to_string()
+                    });
+                    true
+                }
+                InputAction::PlayPause => {
+                    self.imp().player_toolbar_box.toggle_playback();
+                    true
+                }
+                _ => self.imp().focus_manager.borrow().handle(self, action),
+            },
+            NavigationContext::Main(MainTab::Liked) => {
+                if let Some(liked) = self.imp().likedpage.child().and_downcast::<LikedPage>() {
+                    self.imp()
+                        .liked_navigator
+                        .borrow()
+                        .handle(self, &liked, action)
+                } else {
+                    false
+                }
+            }
+            NavigationContext::Main(MainTab::Search) => {
+                if let Some(search) = self.imp().searchpage.child().and_downcast::<SearchPage>() {
+                    self.imp()
+                        .search_navigator
+                        .borrow()
+                        .handle(self, &search, action)
+                } else {
+                    false
+                }
+            }
+        }
+    }
+
+    fn handle_modal_input(&self, action: InputAction) -> bool {
+        if let Some(settings) = self.imp().active_settings.borrow().clone() {
+            if settings.is_visible() {
+                return self
+                    .imp()
+                    .settings_navigator
+                    .borrow()
+                    .handle_window(&settings, action);
+            }
+            *self.imp().active_settings.borrow_mut() = None;
+        }
+        if let Some(account) = self.imp().active_account_dialog.borrow().clone() {
+            if account.is_visible() {
+                return self
+                    .imp()
+                    .settings_navigator
+                    .borrow()
+                    .handle_account_window(&account, action);
+            }
+            *self.imp().active_account_dialog.borrow_mut() = None;
+        }
+        false
+    }
+
+    fn setup_tv_hints(&self) {
+        if !crate::tv::is_tv_mode_active() {
+            return;
+        }
+        if self.imp().tv_hints_revealer.borrow().is_some() {
+            return;
+        }
+        let revealer = gtk::Revealer::builder()
+            .valign(gtk::Align::End)
+            .halign(gtk::Align::Center)
+            .transition_type(gtk::RevealerTransitionType::SlideUp)
+            .reveal_child(false)
+            .visible(false)
+            .build();
+
+        let bar = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .build();
+        bar.add_css_class("tv-hints-bar");
+
+        let label = gtk::Label::new(None);
+        label.set_wrap(false);
+        bar.append(&label);
+        revealer.set_child(Some(&bar));
+
+        let toast = self.imp().toast.get();
+        if let Some(overlay) = toast.parent().and_downcast::<gtk::Overlay>() {
+            overlay.add_overlay(&revealer);
+        }
+
+        *self.imp().tv_hints_revealer.borrow_mut() = Some(revealer);
+        *self.imp().tv_hints_label.borrow_mut() = Some(label);
+    }
+
+    pub fn sync_tv_button_hints(&self) {
+        if !crate::tv::is_tv_mode_active() {
+            if let Some(revealer) = self.imp().tv_hints_revealer.borrow().as_ref() {
+                revealer.set_visible(false);
+                revealer.set_reveal_child(false);
+            }
+            return;
+        }
+
+        if self.imp().tv_hints_revealer.borrow().is_none() {
+            self.setup_tv_hints();
+        }
+
+        let Some(revealer) = self.imp().tv_hints_revealer.borrow().clone() else {
+            return;
+        };
+
+        if !SETTINGS.tv_show_button_hints() {
+            if let Some(id) = self.imp().tv_hints_hide_source.borrow_mut().take() {
+                id.remove();
+            }
+            revealer.set_visible(false);
+            revealer.set_reveal_child(false);
+            return;
+        }
+
+        revealer.set_visible(true);
+        self.update_tv_hints_label();
+
+        let show = self.imp().stack.visible_child_name().as_deref() == Some("main")
+            && !self.is_on_mpv_stack();
+
+        revealer.set_reveal_child(show);
+    }
+
+    pub fn flash_tv_button_hints(&self) {
+        if !crate::tv::is_tv_mode_active() || !SETTINGS.tv_show_button_hints() {
+            return;
+        }
+
+        if self.imp().tv_hints_revealer.borrow().is_none() {
+            self.setup_tv_hints();
+        }
+        let Some(revealer) = self.imp().tv_hints_revealer.borrow().clone() else {
+            return;
+        };
+
+        revealer.set_visible(true);
+        self.update_tv_hints_label();
+        revealer.set_reveal_child(true);
+
+        if let Some(id) = self.imp().tv_hints_hide_source.borrow_mut().take() {
+            id.remove();
+        }
+        let window = self.clone();
+        let id = glib::timeout_add_local(std::time::Duration::from_secs(4), move || {
+            if window.is_on_mpv_stack() {
+                if let Some(revealer) = window.imp().tv_hints_revealer.borrow().as_ref() {
+                    revealer.set_reveal_child(false);
+                }
+            } else {
+                window.sync_tv_button_hints();
+            }
+            window.imp().tv_hints_hide_source.borrow_mut().take();
+            glib::ControlFlow::Break
+        });
+        *self.imp().tv_hints_hide_source.borrow_mut() = Some(id);
+    }
+
+    fn update_tv_hints_label(&self) {
+        let Some(label) = self.imp().tv_hints_label.borrow().clone() else {
+            return;
+        };
+        let profile = self.imp().gamepad_manager.borrow().active_profile();
+        label.set_text(&format!(
+            "{}: Navigate   {}: Select   {}: Back   Menu: Sidebar",
+            "D-pad",
+            profile.activate_label(),
+            profile.back_label(),
+        ));
+    }
+
+    fn toggle_tv_hints(&self) {
+        let enabled = !SETTINGS.tv_show_button_hints();
+        let _ = SETTINGS.set_tv_show_button_hints(enabled);
+        self.sync_tv_button_hints();
     }
 
     pub fn set_shortcuts(&self) {

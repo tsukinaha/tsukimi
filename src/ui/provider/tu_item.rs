@@ -461,7 +461,7 @@ impl TuItem {
             #[weak]
             window,
             async move {
-                window.play_media(None, item, vec![], None, 0.0);
+                window.play_media(None, item, vec![], None, 0.0, None);
             }
         ));
     }
@@ -528,6 +528,7 @@ impl TuItem {
                 episode_list,
                 None,
                 self.playback_position_ticks() as f64 / 10_000_000.0,
+                None,
             )
         }
     }
@@ -720,17 +721,17 @@ impl TuItem {
 
     pub fn size_hint(&self) -> (i32, i32) {
         match self.prefer_size() {
-            PreferSize::Video => return TU_ITEM_VIDEO_SIZE,
-            PreferSize::Post => return TU_ITEM_POST_SIZE,
+            PreferSize::Video => return tu_item_video_size(),
+            PreferSize::Post => return tu_item_post_size(),
             _ => (),
         }
 
         match self.item_type().as_str() {
             MOVIE | SERIES | BOX_SET | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER
-            | GUEST_STAR | SEASON => TU_ITEM_POST_SIZE,
+            | GUEST_STAR | SEASON => tu_item_post_size(),
             VIDEO | MUSIC_VIDEO | ADULT_VIDEO | TV_CHANNEL | COLLECTION_FOLDER | EPISODE
-            | USER_VIEW => TU_ITEM_VIDEO_SIZE,
-            _ => TU_ITEM_SQUARE_SIZE,
+            | USER_VIEW => tu_item_video_size(),
+            _ => tu_item_square_size(),
         }
     }
 

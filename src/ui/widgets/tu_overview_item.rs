@@ -22,9 +22,9 @@ use super::{
     },
     tu_list_item::imp::PosterType,
     utils::{
-        TU_ITEM_POST_SIZE,
-        TU_ITEM_VIDEO_SIZE,
         run_time_ticks_to_label,
+        tu_item_post_size,
+        tu_item_video_size,
     },
 };
 use crate::ui::provider::tu_item::TuItem;
@@ -205,7 +205,7 @@ impl TuOverviewItem {
                     item.name()
                 ));
                 imp.overlay
-                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                    .set_size_request(tu_item_video_size().0, tu_item_video_size().1);
                 if let Some(premiere_date) = item.premiere_date() {
                     imp.time_label.set_visible(true);
                     imp.time_label
@@ -239,11 +239,11 @@ impl TuOverviewItem {
                         item.name()
                     ));
                     imp.overlay
-                        .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                        .set_size_request(tu_item_video_size().0, tu_item_video_size().1);
                 } else {
                     imp.listlabel.set_text(&item.name());
                     imp.overlay
-                        .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                        .set_size_request(tu_item_post_size().0, tu_item_post_size().1);
                 }
                 let year = if item.production_year() != 0 {
                     item.production_year().to_string()

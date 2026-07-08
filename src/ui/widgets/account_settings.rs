@@ -23,6 +23,7 @@ use adw::{
     subclass::prelude::*,
 };
 use gettextrs::gettext;
+use glib::translate::IntoGlib;
 use gtk::{
     CompositeTemplate,
     gdk::{
@@ -141,6 +142,8 @@ mod imp {
 
         pub descriptor_grab_x: Cell<f64>,
         pub descriptor_grab_y: Cell<f64>,
+
+        pub preference_pages: RefCell<Vec<adw::PreferencesPage>>,
     }
 
     #[glib::object_subclass]
@@ -205,7 +208,12 @@ mod imp {
             obj.set_pic();
             obj.set_color();
             obj.bind_settings();
+            obj.setup_htpc_settings();
+            obj.setup_playback_and_subtitle_settings();
+            obj.setup_osk_entries();
             obj.refersh_descriptors();
+            obj.cache_preference_pages();
+            obj.setup_tv_controller_navigation();
         }
     }
 
@@ -227,6 +235,56 @@ glib::wrapper! {
 impl AccountSettings {
     pub fn new(window: crate::Window) -> Self {
         glib::Object::builder().property("window", window).build()
+    }
+
+    pub fn preference_pages(&self) -> Vec<adw::PreferencesPage> {
+        self.imp().preference_pages.borrow().clone()
+    }
+
+    fn cache_preference_pages(&self) {
+        *self.imp().preference_pages.borrow_mut() =
+            crate::ui::input::settings_navigator::find_view_stack_pages(
+                self.upcast_ref::<adw::PreferencesWindow>(),
+            );
+    }
+
+    fn setup_tv_controller_navigation(&self) {
+        if !crate::tv::focus::tv_focus_enabled() {
+            return;
+        }
+        let settings = self.clone();
+        let parent = self.window();
+        let keys = gtk::EventControllerKey::new();
+        keys.connect_key_pressed(move |_, keyval, _, _| {
+            if !crate::tv::controller_navigation_enabled() {
+                return glib::Propagation::Proceed;
+            }
+            let Some(action) = crate::ui::input::key_to_action(keyval.into_glib()) else {
+                return glib::Propagation::Proceed;
+            };
+            if parent
+                .imp()
+                .settings_navigator
+                .borrow()
+                .handle_window(&settings, action)
+            {
+                return glib::Propagation::Stop;
+            }
+            glib::Propagation::Proceed
+        });
+        self.add_controller(keys);
+
+        let pointer = gtk::EventControllerLegacy::new();
+        pointer.connect_event(move |_, event| {
+            if event.event_type() == gtk::gdk::EventType::ButtonPress
+                || event.event_type() == gtk::gdk::EventType::ButtonRelease
+                || event.event_type() == gtk::gdk::EventType::MotionNotify
+            {
+                crate::tv::osk::mark_pointer_input();
+            }
+            glib::Propagation::Proceed
+        });
+        self.add_controller(pointer);
     }
 
     #[template_callback]
@@ -252,6 +310,443 @@ impl AccountSettings {
                 self.toast(format!("{}: {}", gettext("Failed to change password"), e));
             }
         };
+    }
+
+    pub fn setup_osk_entries(&self) {
+        let imp = self.imp();
+        crate::tv::osk::attach_on_screen_keyboard(&imp.password_entry.get());
+        crate::tv::osk::attach_on_screen_keyboard(&imp.password_second_entry.get());
+    }
+
+    pub fn setup_htpc_settings(&self) {
+        let page = adw::PreferencesPage::new();
+        page.set_title(&gettext("TV / HTPC"));
+        page.set_name(Some("tv-htpc"));
+        page.set_icon_name(Some("preferences-desktop-remote-desktop-symbolic"));
+
+        let controls = adw::PreferencesGroup::new();
+        controls.set_title(&gettext("Controls"));
+
+        let gamepad_row = adw::SwitchRow::new();
+        gamepad_row.set_title(&gettext("Enable Gamepad"));
+        gamepad_row.set_subtitle(&gettext(
+            "Xbox, PlayStation, Steam Deck, and other controllers",
+        ));
+        gamepad_row.set_active(SETTINGS.gamepad_enabled());
+        gamepad_row.connect_active_notify(|row| {
+            let _ = SETTINGS.set_gamepad_enabled(row.is_active());
+            if !row.is_active() {
+                crate::tv::cursor::restore();
+            }
+        });
+        controls.add(&gamepad_row);
+
+        let tv_group = adw::PreferencesGroup::new();
+        tv_group.set_title(&gettext("TV / HTPC"));
+
+        let tv_mode_row = adw::SwitchRow::new();
+        tv_mode_row.set_title(&gettext("TV Mode"));
+        tv_mode_row.set_subtitle(&gettext("Larger UI scaled for couch viewing"));
+        tv_mode_row.set_active(SETTINGS.tv_mode());
+        tv_mode_row.connect_active_notify(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |row| {
+                let active = row.is_active();
+                let _ = SETTINGS.set_tv_mode(active);
+                crate::tv::set_tv_mode_active(active);
+                let window = obj.window();
+                if active {
+                    crate::tv::apply_to_window(&window, false);
+                } else {
+                    crate::tv::remove_from_window(&window);
+                }
+            }
+        ));
+        tv_group.add(&tv_mode_row);
+
+        let tv_scale_adjustment =
+            gtk::Adjustment::new(SETTINGS.tv_ui_scale(), 1.0, 2.0, 0.05, 0.1, 0.0);
+        let tv_scale_row = adw::SpinRow::new(Some(&tv_scale_adjustment), 0.05, 2);
+        tv_scale_row.set_title(&gettext("TV UI Scale"));
+        tv_scale_row.set_subtitle(&gettext("Multiplier for poster and control sizes"));
+        tv_scale_row.set_range(1.0, 2.0);
+        tv_scale_row.set_value(SETTINGS.tv_ui_scale());
+        tv_scale_row.connect_value_notify(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |row| {
+                let _ = SETTINGS.set_tv_ui_scale(row.value());
+                if crate::tv::is_tv_mode_active() {
+                    crate::tv::sync_tv_style();
+                    let window = obj.window();
+                    window.enable_tv_mode_ui(false);
+                }
+            }
+        ));
+        tv_group.add(&tv_scale_row);
+
+        let tv_fullscreen_row = adw::SwitchRow::new();
+        tv_fullscreen_row.set_title(&gettext("Start Fullscreen in TV Mode"));
+        tv_fullscreen_row.set_active(SETTINGS.tv_start_fullscreen());
+        tv_fullscreen_row.connect_active_notify(|row| {
+            let _ = SETTINGS.set_tv_start_fullscreen(row.is_active());
+        });
+        tv_group.add(&tv_fullscreen_row);
+
+        let tv_sidebar_row = adw::SwitchRow::new();
+        tv_sidebar_row.set_title(&gettext("Hide Sidebar in TV Mode"));
+        tv_sidebar_row.set_active(SETTINGS.tv_hide_sidebar());
+        tv_sidebar_row.connect_active_notify(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |row| {
+                let _ = SETTINGS.set_tv_hide_sidebar(row.is_active());
+                if crate::tv::is_tv_mode_active() {
+                    let window = obj.window();
+                    if row.is_active() {
+                        window.set_sidebar_panel_visible(false);
+                    } else {
+                        window.overlay_sidebar(SETTINGS.overlay());
+                        window.imp().split_view.set_show_sidebar(true);
+                    }
+                }
+            }
+        ));
+        tv_group.add(&tv_sidebar_row);
+
+        let tv_hints_row = adw::SwitchRow::new();
+        tv_hints_row.set_title(&gettext("Show Controller Hints"));
+        tv_hints_row.set_active(SETTINGS.tv_show_button_hints());
+        tv_hints_row.connect_active_notify(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |row| {
+                let _ = SETTINGS.set_tv_show_button_hints(row.is_active());
+                obj.window().sync_tv_button_hints();
+            }
+        ));
+        tv_group.add(&tv_hints_row);
+
+        let steam_group = adw::PreferencesGroup::new();
+        steam_group.set_title(&gettext("Steam"));
+
+        let steam_row = adw::ActionRow::new();
+        steam_row.set_title(&gettext("Add to Steam"));
+        steam_row.set_subtitle(&gettext(
+            "Add Tsukimi to your Steam library for Big Picture launch",
+        ));
+        let steam_button = gtk::Button::with_label(&gettext("Add"));
+        steam_button.set_valign(gtk::Align::Center);
+        steam_row.add_suffix(&steam_button);
+        steam_button.connect_clicked(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |_| {
+                let window = obj.window();
+                match crate::steam::shortcuts::add_tsukimi_to_steam(&window) {
+                    Ok(()) => {}
+                    Err(e) => obj.toast(e),
+                }
+            }
+        ));
+        steam_group.add(&steam_row);
+
+        page.add(&controls);
+        page.add(&tv_group);
+        page.add(&steam_group);
+        self.add(&page);
+    }
+
+    pub fn setup_playback_and_subtitle_settings(&self) {
+        use crate::{
+            playback::{
+                PlaybackRuleEditor,
+                rules::{
+                    LanguageCondition,
+                    PlaybackRule,
+                    PlaybackRulesConfig,
+                    SubtitleOutcome,
+                },
+            },
+            tv::osk,
+        };
+
+        fn rule_summary(rule: &PlaybackRule) -> String {
+            let subtitles = match &rule.then.subtitles {
+                SubtitleOutcome::Off => gettext("Subs: off"),
+                SubtitleOutcome::Forced { language } if language.is_empty() => {
+                    gettext("Subs: forced")
+                }
+                SubtitleOutcome::Forced { language } => {
+                    format!("{} {language}", gettext("Subs: forced"))
+                }
+                SubtitleOutcome::Full { language } if language.is_empty() => gettext("Subs: full"),
+                SubtitleOutcome::Full { language } => {
+                    format!("{} {language}", gettext("Subs: full"))
+                }
+                SubtitleOutcome::PreferLanguage { language } => {
+                    format!("{} {language}", gettext("Subs:"))
+                }
+            };
+            let when = match &rule.when.audio_language {
+                LanguageCondition::Any => gettext("When audio: any"),
+                LanguageCondition::Equals(language) => {
+                    format!("{} = {language}", gettext("When audio"))
+                }
+                LanguageCondition::NotEquals(language) => {
+                    format!("{} ≠ {language}", gettext("When audio"))
+                }
+            };
+            format!("{when} → {subtitles}")
+        }
+
+        let page = adw::PreferencesPage::new();
+        page.set_title(&gettext("Playback Rules"));
+        page.set_name(Some("playback-rules"));
+        page.set_icon_name(Some("media-playlist-repeat-symbolic"));
+
+        let rules_group = adw::PreferencesGroup::new();
+        rules_group.set_title(&gettext("Conditional Tracks"));
+
+        let enable_row = adw::SwitchRow::new();
+        enable_row.set_title(&gettext("Enable Playback Rules"));
+        enable_row.set_subtitle(&gettext(
+            "Choose subtitle tracks based on the audio language",
+        ));
+
+        let rules_list = gtk::ListBox::new();
+        rules_list.set_selection_mode(gtk::SelectionMode::None);
+        rules_list.add_css_class("boxed-list");
+
+        let config = SETTINGS.playback_conditional_rules();
+        enable_row.set_active(config.enabled);
+
+        let settings = self.clone();
+        let refresh_rules_for_init = std::rc::Rc::new(std::cell::RefCell::new(
+            None::<std::rc::Rc<dyn Fn(&PlaybackRulesConfig)>>,
+        ));
+        let rebuild = {
+            let rules_list = rules_list.clone();
+            let enable_row = enable_row.clone();
+            let refresh_rules_for_init = refresh_rules_for_init.clone();
+            let settings = settings.clone();
+            std::rc::Rc::new(move |config: &PlaybackRulesConfig| {
+                while let Some(child) = rules_list.first_child() {
+                    rules_list.remove(&child);
+                }
+                let mut rules = config.rules.clone();
+                rules.sort_by_key(|rule| rule.priority);
+                for rule in rules {
+                    let row = adw::ActionRow::new();
+                    row.set_title(&rule_summary(&rule));
+                    row.set_subtitle(&format!("{} {}", gettext("Priority"), rule.priority));
+                    row.set_activatable(true);
+
+                    let edit_button = gtk::Button::from_icon_name("document-edit-symbolic");
+                    edit_button.set_valign(gtk::Align::Center);
+                    edit_button.add_css_class("flat");
+                    edit_button.set_tooltip_text(Some(&gettext("Edit")));
+
+                    let remove_button = gtk::Button::from_icon_name("user-trash-symbolic");
+                    remove_button.set_valign(gtk::Align::Center);
+                    remove_button.add_css_class("flat");
+                    remove_button.set_tooltip_text(Some(&gettext("Remove")));
+                    row.add_suffix(&edit_button);
+                    row.add_suffix(&remove_button);
+                    rules_list.append(&row);
+
+                    let priority = rule.priority;
+                    let rule_snapshot = rule.clone();
+                    let enable_row_for_edit = enable_row.clone();
+                    let rebuild_for_edit = refresh_rules_for_init.borrow().clone();
+                    edit_button.connect_clicked(glib::clone!(
+                        #[weak]
+                        settings,
+                        #[strong]
+                        rule_snapshot,
+                        move |_| {
+                            let editor = PlaybackRuleEditor::edit_rule_dialog(&rule_snapshot);
+                            editor.present(Some(&settings));
+                            let priority = rule_snapshot.priority;
+                            let enable_row = enable_row_for_edit.clone();
+                            let rebuild = rebuild_for_edit.clone();
+                            editor.connect_save(move |updated| {
+                                let mut config = SETTINGS.playback_conditional_rules();
+                                if let Some(entry) = config
+                                    .rules
+                                    .iter_mut()
+                                    .find(|entry| entry.priority == priority)
+                                {
+                                    *entry = updated;
+                                }
+                                let _ = SETTINGS.set_playback_conditional_rules(&config);
+                                enable_row.set_active(config.enabled);
+                                if let Some(rebuild) = rebuild.as_ref() {
+                                    rebuild(&config);
+                                }
+                            });
+                        }
+                    ));
+
+                    let enable_row_for_remove = enable_row.clone();
+                    let rebuild_for_remove = refresh_rules_for_init.borrow().clone();
+                    remove_button.connect_clicked(move |_| {
+                        let mut updated = SETTINGS.playback_conditional_rules();
+                        updated.rules.retain(|entry| entry.priority != priority);
+                        let _ = SETTINGS.set_playback_conditional_rules(&updated);
+                        enable_row_for_remove.set_active(updated.enabled);
+                        if let Some(rebuild) = rebuild_for_remove.as_ref() {
+                            rebuild(&updated);
+                        }
+                    });
+                }
+            })
+        };
+        *refresh_rules_for_init.borrow_mut() = Some(rebuild.clone());
+        rebuild(&config);
+
+        rules_group.add(&enable_row);
+        rules_group.add(&rules_list);
+
+        let add_row = adw::ButtonRow::new();
+        add_row.set_title(&gettext("Add Rule"));
+        let rebuild_for_add = rebuild.clone();
+        let settings_for_add = self.clone();
+        let settings_weak = settings_for_add.downgrade();
+        let enable_weak = enable_row.downgrade();
+        add_row.connect_activated(move |_| {
+            let Some(settings) = settings_weak.upgrade() else {
+                return;
+            };
+            let updated = SETTINGS.playback_conditional_rules();
+            let next_priority = updated
+                .rules
+                .iter()
+                .map(|rule| rule.priority)
+                .max()
+                .unwrap_or(0)
+                + 1;
+            let editor = PlaybackRuleEditor::new_rule_dialog(next_priority);
+            editor.present(Some(&settings));
+            let rebuild_for_add = rebuild_for_add.clone();
+            let enable_weak = enable_weak.clone();
+            editor.connect_save(move |rule| {
+                let mut config = SETTINGS.playback_conditional_rules();
+                config.rules.push(rule);
+                let _ = SETTINGS.set_playback_conditional_rules(&config);
+                if let Some(enable_row) = enable_weak.upgrade() {
+                    enable_row.set_active(config.enabled);
+                }
+                rebuild_for_add(&config);
+            });
+        });
+        rules_group.add(&add_row);
+
+        let default_row = adw::ActionRow::new();
+        default_row.set_title(&gettext("Edit Default Outcome"));
+        default_row.set_subtitle(&gettext("Used when no rule matches"));
+        default_row.set_activatable(true);
+        let rebuild_for_default = rebuild.clone();
+        let settings_for_default = self.clone();
+        let settings_weak = settings_for_default.downgrade();
+        default_row.connect_activated(move |_| {
+            let Some(settings) = settings_weak.upgrade() else {
+                return;
+            };
+            let config = SETTINGS.playback_conditional_rules();
+            let editor = PlaybackRuleEditor::default_outcome_dialog(&config);
+            editor.present(Some(&settings));
+            let rebuild_for_default = rebuild_for_default.clone();
+            editor.connect_save(move |rule| {
+                let mut config = SETTINGS.playback_conditional_rules();
+                config.default = rule.then;
+                let _ = SETTINGS.set_playback_conditional_rules(&config);
+                rebuild_for_default(&config);
+            });
+        });
+        rules_group.add(&default_row);
+
+        enable_row.connect_active_notify(|row| {
+            let mut updated = SETTINGS.playback_conditional_rules();
+            updated.enabled = row.is_active();
+            let _ = SETTINGS.set_playback_conditional_rules(&updated);
+        });
+
+        let subtitle_page = adw::PreferencesPage::new();
+        subtitle_page.set_title(&gettext("Subtitle Providers"));
+        subtitle_page.set_name(Some("subtitle-providers"));
+        subtitle_page.set_icon_name(Some("text-x-generic-symbolic"));
+
+        let provider_group = adw::PreferencesGroup::new();
+        provider_group.set_title(&gettext("Online Subtitles"));
+
+        let opensubtitles_row = adw::PasswordEntryRow::new();
+        opensubtitles_row.set_title(&gettext("OpenSubtitles API Key"));
+        opensubtitles_row.set_text(&SETTINGS.opensubtitles_api_key());
+        osk::attach_on_screen_keyboard(&opensubtitles_row);
+        opensubtitles_row.connect_changed(|row| {
+            let _ = SETTINGS.set_opensubtitles_api_key(row.text().as_ref());
+        });
+        provider_group.add(&opensubtitles_row);
+
+        let subdl_row = adw::PasswordEntryRow::new();
+        subdl_row.set_title(&gettext("SubDL API Key"));
+        subdl_row.set_text(&SETTINGS.subdl_api_key());
+        osk::attach_on_screen_keyboard(&subdl_row);
+        subdl_row.connect_changed(|row| {
+            let _ = SETTINGS.set_subdl_api_key(row.text().as_ref());
+        });
+        provider_group.add(&subdl_row);
+
+        let opensubtitles_switch = adw::SwitchRow::new();
+        opensubtitles_switch.set_title(&gettext("Enable OpenSubtitles"));
+        opensubtitles_switch.set_active(SETTINGS.subtitle_provider_enabled("opensubtitles"));
+        opensubtitles_switch.connect_active_notify(|row| {
+            let mut providers = SETTINGS
+                .string("subtitle-providers-enabled")
+                .split(',')
+                .map(str::trim)
+                .filter(|entry| !entry.is_empty())
+                .map(str::to_string)
+                .collect::<Vec<_>>();
+            if row.is_active() {
+                if !providers.iter().any(|entry| entry == "opensubtitles") {
+                    providers.push("opensubtitles".into());
+                }
+            } else {
+                providers.retain(|entry| entry != "opensubtitles");
+            }
+            let _ = SETTINGS.set_string("subtitle-providers-enabled", &providers.join(","));
+        });
+        provider_group.add(&opensubtitles_switch);
+
+        let subdl_switch = adw::SwitchRow::new();
+        subdl_switch.set_title(&gettext("Enable SubDL"));
+        subdl_switch.set_active(SETTINGS.subtitle_provider_enabled("subdl"));
+        subdl_switch.connect_active_notify(|row| {
+            let mut providers = SETTINGS
+                .string("subtitle-providers-enabled")
+                .split(',')
+                .map(str::trim)
+                .filter(|entry| !entry.is_empty())
+                .map(str::to_string)
+                .collect::<Vec<_>>();
+            if row.is_active() {
+                if !providers.iter().any(|entry| entry == "subdl") {
+                    providers.push("subdl".into());
+                }
+            } else {
+                providers.retain(|entry| entry != "subdl");
+            }
+            let _ = SETTINGS.set_string("subtitle-providers-enabled", &providers.join(","));
+        });
+        provider_group.add(&subdl_switch);
+
+        page.add(&rules_group);
+        subtitle_page.add(&provider_group);
+        self.add(&page);
+        self.add(&subtitle_page);
     }
 
     pub fn set_sidebar(&self) {

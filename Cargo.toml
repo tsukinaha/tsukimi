@@ -42,6 +42,7 @@ atomic-wait = "1.1.0"
 flume = "0.12.0"
 derive_builder = "0.20.2"
 anyhow = "1.0"
+async-trait = "0.1"
 tracing-subscriber = { version = "0.3", features = ["chrono", "env-filter"] }
 regex = "1.12.3"
 strsim = "0.11.1"
@@ -56,6 +57,8 @@ futures-util = "0.3.31"
 itertools = "0.15.0"
 moka = { version = "0.12.15", features = ["future"] }
 glycin = { version = "3.1.0", default-features = false, features = ["gdk4", "tokio"] }
+gilrs = "0.11"
+steam_shortcuts_util = "1.1.7"
 
 [dev-dependencies]
 cargo-husky = { version = "1", default-features = false, features = ["user-hooks"] }

@@ -6,8 +6,8 @@ use std::{
 use super::{
     image_paintable::paintable_from_file,
     utils::{
-        TU_ITEM_POST_SIZE,
-        TU_ITEM_VIDEO_SIZE,
+        tu_item_post_size,
+        tu_item_video_size,
     },
 };
 use crate::{
@@ -34,14 +34,9 @@ use gtk::{
 };
 use tracing::warn;
 
-const IMAGE_LOAD_DELAY: std::time::Duration = std::time::Duration::from_millis(80);
-static IMAGE_LOAD_SEMAPHORE: LazyLock<tokio::sync::Semaphore> = LazyLock::new(|| {
-    tokio::sync::Semaphore::new(
-        std::thread::available_parallelism()
-            .map(|p| p.get())
-            .unwrap_or(4),
-    )
-});
+const IMAGE_LOAD_DELAY: std::time::Duration = std::time::Duration::from_millis(150);
+static IMAGE_LOAD_SEMAPHORE: LazyLock<tokio::sync::Semaphore> =
+    LazyLock::new(|| tokio::sync::Semaphore::new(4));
 
 #[derive(Clone)]
 struct LoadToken {
@@ -245,8 +240,8 @@ impl PictureLoader {
 
     fn configure_picture_size(&self, image_type: &str) {
         let size = match image_type {
-            "Primary" => &TU_ITEM_POST_SIZE,
-            _ => &TU_ITEM_VIDEO_SIZE,
+            "Primary" => tu_item_post_size(),
+            _ => tu_item_video_size(),
         };
         self.imp().picture.set_width_request(size.0);
         self.imp().picture.set_height_request(size.1);

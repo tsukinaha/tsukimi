@@ -222,16 +222,19 @@ impl PlayerToolbarBox {
         imp.toolbar.set_revealed(false);
     }
 
+    pub fn toggle_playback(&self) {
+        self.on_play_button_clicked();
+    }
+
     #[template_callback]
     fn on_play_button_clicked(&self) {
         let player = &self.imp().player;
         let play_pause_image = &self.imp().play_pause_image.get();
+        player.imp().play_pause();
         if player.imp().state() == gst::State::Playing {
-            player.imp().pause();
-            play_pause_image.set_icon_name(Some("media-playback-start-symbolic"));
-        } else {
-            player.imp().unpause();
             play_pause_image.set_icon_name(Some("media-playback-pause-symbolic"));
+        } else {
+            play_pause_image.set_icon_name(Some("media-playback-start-symbolic"));
         }
     }
 

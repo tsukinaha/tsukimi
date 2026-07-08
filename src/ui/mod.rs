@@ -1,3 +1,4 @@
+pub mod input;
 mod models;
 mod mpv;
 pub mod provider;

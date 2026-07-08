@@ -145,6 +145,24 @@ impl HomePage {
         Object::builder().build()
     }
 
+    pub fn focus_hortu_rows(&self) -> Vec<HortuScrolled> {
+        let imp = self.imp();
+        let mut rows = vec![
+            imp.libhortu.get(),
+            imp.hishortu.get(),
+            imp.nextuphortu.get(),
+        ];
+        // Preserve visual order from libsbox — HashMap iteration order is arbitrary.
+        let mut child = imp.libsbox.first_child();
+        while let Some(widget) = child {
+            if let Some(hortu) = widget.downcast_ref::<HortuScrolled>() {
+                rows.push(hortu.clone());
+            }
+            child = widget.next_sibling();
+        }
+        rows
+    }
+
     pub fn init_load(&self) {
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
@@ -179,6 +197,9 @@ impl HomePage {
             self.setup_library(enable_cache)
         );
         fraction!(self);
+        if let Some(window) = self.root().and_downcast::<crate::Window>() {
+            window.refresh_focus_manager();
+        }
     }
 
     pub async fn setup_history(&self, enable_cache: bool, force_cache_emit: bool) {

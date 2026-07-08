@@ -48,6 +48,11 @@
       <attribute name="hidden-when">action-disabled</attribute>
       <attribute name="accel">&lt;Control&gt;F2</attribute>
     </item>
+    <item>
+      <attribute name="label" translatable="yes">Download Subtitles</attribute>
+      <attribute name="action">item.subtitles</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+    </item>
     <section>
       <item>
         <attribute name="label" translatable="yes">Edit Metadata</attribute>

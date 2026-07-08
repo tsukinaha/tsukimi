@@ -367,16 +367,22 @@ pub mod imp {
         }
 
         pub fn pause(&self) {
-            self.pipeline()
-                .set_state(gst::State::Paused)
-                .expect("Unable to set the pipeline to the `Paused` state");
+            if let Err(error) = self.pipeline().set_state(gst::State::Paused) {
+                tracing::warn!("Unable to pause playback: {error:?}");
+                return;
+            }
             self.notify_paused();
         }
 
         pub fn unpause(&self) {
-            self.pipeline()
-                .set_state(gst::State::Playing)
-                .expect("Unable to set the pipeline to the `Playing` state");
+            if self.state() != gst::State::Paused {
+                tracing::debug!("unpause ignored in state {:?}", self.state());
+                return;
+            }
+            if let Err(error) = self.pipeline().set_state(gst::State::Playing) {
+                tracing::warn!("Unable to resume playback: {error:?}");
+                return;
+            }
             self.notify_playing();
         }
 

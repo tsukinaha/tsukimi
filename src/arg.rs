@@ -2,7 +2,10 @@ use std::{
     env,
     fs::File,
     io,
-    sync::Mutex,
+    sync::{
+        Mutex,
+        OnceLock,
+    },
 };
 
 use clap::Parser;
@@ -21,7 +24,9 @@ use crate::dyn_event;
 /// vulkan renderer has poor performance
 const DEFAULT_RENDERER: &str = "ngl";
 
-#[derive(Parser, Debug)]
+static PARSED_ARGS: OnceLock<Args> = OnceLock::new();
+
+#[derive(Parser, Debug, Clone)]
 #[command(version, about, long_about = None)]
 pub struct Args {
     /// File to write the log to. If not specified, logs will be written to
@@ -40,9 +45,28 @@ pub struct Args {
     /// XDG_CACHE_HOME override.
     #[clap(long)]
     xdg_cache_home: Option<String>,
+
+    /// Enable TV / HTPC visual mode (larger UI, fullscreen-friendly startup).
+    #[clap(long)]
+    tv_mode: bool,
+
+    /// Start in fullscreen (implies TV-friendly startup).
+    #[clap(long)]
+    fullscreen: bool,
 }
 
 impl Args {
+    pub fn global() -> &'static Args {
+        PARSED_ARGS.get_or_init(Args::parse)
+    }
+
+    pub fn tv_mode(&self) -> bool {
+        self.tv_mode
+    }
+
+    pub fn fullscreen(&self) -> bool {
+        self.fullscreen
+    }
     /// Build the tracing subscriber using parameters from the command line
     /// arguments
     ///
@@ -122,6 +146,7 @@ impl Args {
     }
 
     pub fn init(&self) {
+        let _ = PARSED_ARGS.set(self.clone());
         self.init_tracing_subscriber();
         self.init_gsk_renderer();
         self.init_glib_to_tracing();

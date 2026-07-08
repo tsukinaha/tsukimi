@@ -65,6 +65,20 @@ pub struct MediaStream {
     pub channel_layout: Option<String>,
     #[serde(rename = "Index")]
     pub index: i64,
+    #[serde(rename = "IsForced", default)]
+    pub is_forced: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct TrickplayInfo {
+    #[serde(rename = "Width", default)]
+    pub width: Option<u32>,
+    #[serde(rename = "Height", default)]
+    pub height: Option<u32>,
+    #[serde(rename = "Interval", default)]
+    pub interval: Option<u32>,
+    #[serde(rename = "UrlTemplate", default)]
+    pub url_template: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -97,6 +111,8 @@ pub struct MediaSource {
     // jellyfin
     #[serde(rename = "ETag")]
     pub etag: Option<String>,
+    #[serde(rename = "Trickplay", default)]
+    pub trickplay: Option<Vec<TrickplayInfo>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

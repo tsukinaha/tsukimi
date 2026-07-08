@@ -1,0 +1,87 @@
+/* Tsukimi TV mode — scaled extension of style.css (same look, larger targets) */
+
+window.tv-mode {
+  font-size: calc(1em * var(--tv-scale, 1.25));
+}
+
+window.tv-mode .server-action-row,
+window.tv-mode .placeholder-page {
+  font-size: calc(1.1em * var(--tv-scale, 1.25));
+}
+
+.poster-focused,
+.tv-focused {
+  box-shadow:
+    0 0 0 calc(3px * var(--tv-scale, 1.25)) var(--accent-color),
+    0 0 calc(12px * var(--tv-scale, 1.25)) alpha(var(--accent-color), 0.45);
+  border-radius: 10px;
+}
+
+.tv-focused-scale {
+  transform: scale(1.04);
+  transition: transform 120ms ease-out;
+}
+
+window.tv-mode gridview > child:selected {
+  outline: none;
+  box-shadow: none;
+}
+
+.tv-poster-focus-title {
+  padding: calc(10px * var(--tv-scale, 1.25)) calc(12px * var(--tv-scale, 1.25));
+  background: alpha(black, 0.72);
+  border-radius: 0 0 10px 10px;
+}
+
+.tv-poster-focus-title label {
+  color: white;
+  font-size: calc(0.95em * var(--tv-scale, 1.25));
+}
+
+window.tv-mode .server-action-row.tv-focused,
+window.tv-mode button.tv-focused,
+window.tv-mode .preferences row.tv-focused,
+window.tv-mode gridview item:selected,
+window.tv-mode listview row:selected {
+  outline: calc(3px * var(--tv-scale, 1.25)) solid var(--accent-color);
+  outline-offset: calc(2px * var(--tv-scale, 1.25));
+}
+
+.tulistitem:focus-visible {
+  outline: calc(2px * var(--tv-scale, 1.25)) solid var(--accent-color);
+  outline-offset: calc(2px * var(--tv-scale, 1.25));
+}
+
+window.tv-mode .sidebar row {
+  min-height: calc(48px * var(--tv-scale, 1.25));
+}
+
+window.tv-mode .sidebar row:selected {
+  font-size: calc(1em * var(--tv-scale, 1.25));
+}
+
+window.tv-mode .circular.smaller {
+  min-height: calc(28px * var(--tv-scale, 1.25));
+  min-width: calc(28px * var(--tv-scale, 1.25));
+}
+
+.player-toolbar {
+  padding: calc(5px * var(--tv-scale, 1.25));
+}
+
+.volume-bar {
+  padding: calc(10px * var(--tv-scale, 1.25));
+}
+
+.tv-hints-bar {
+  padding: calc(12px * var(--tv-scale, 1.25)) calc(24px * var(--tv-scale, 1.25));
+  background: alpha(@window_bg_color, 0.85);
+  border-radius: calc(12px * var(--tv-scale, 1.25));
+  margin: calc(16px * var(--tv-scale, 1.25));
+}
+
+.tv-hints-bar label {
+  font-size: calc(1.1em * var(--tv-scale, 1.25));
+  color: @window_fg_color;
+  background: transparent;
+}

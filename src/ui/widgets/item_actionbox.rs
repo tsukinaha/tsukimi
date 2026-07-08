@@ -37,6 +37,8 @@ mod imp {
     pub struct ItemActionsBox {
         #[template_child]
         pub favourite_button: TemplateChild<StarToggle>,
+        #[template_child]
+        pub menu_button: TemplateChild<gtk::MenuButton>,
         #[property(get, set, nullable)]
         pub id: RefCell<Option<String>>,
         #[property(get, set, nullable)]
@@ -160,6 +162,20 @@ impl ItemActionsBox {
             ))
             .build()]);
         if self.is_playable() {
+            action_group.add_action_entries([gio::ActionEntry::builder("subtitles")
+                .activate(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_, _, _| {
+                        if let Some(page) = obj
+                            .root()
+                            .and_downcast::<crate::ui::widgets::item::ItemPage>()
+                        {
+                            page.open_subtitle_search();
+                        }
+                    }
+                ))
+                .build()]);
             if self.played() {
                 action_group.add_action_entries([gio::ActionEntry::builder("unplayed")
                     .activate(glib::clone!(
@@ -237,5 +253,13 @@ impl ItemActionsBox {
 
     pub fn set_btn_active(&self, active: bool) {
         self.imp().favourite_button.set_active(active);
+    }
+
+    pub fn favourite_button(&self) -> StarToggle {
+        self.imp().favourite_button.get()
+    }
+
+    pub fn menu_button(&self) -> gtk::MenuButton {
+        self.imp().menu_button.get()
     }
 }

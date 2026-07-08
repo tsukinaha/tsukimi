@@ -70,6 +70,8 @@ mod imp {
 
             let window = crate::Window::new(&self.obj());
             window.load_window_state();
+            crate::tv::apply_tv_startup(&window, crate::Args::global().fullscreen());
+            window.setup_input();
             window.present();
         }
     }

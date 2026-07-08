@@ -74,6 +74,17 @@
                     </style>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkLabel" id="finishes_at_label">
+                    <property name="halign">center</property>
+                    <property name="margin_bottom">8</property>
+                    <property name="visible">false</property>
+                    <style>
+                      <class name="accent" />
+                      <class name="speed-label" />
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
             <child type="overlay">

@@ -2,3 +2,5 @@
 /i18n
 /.idea
 /backup
+/.cargo-home
+*.log

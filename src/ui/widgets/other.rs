@@ -520,4 +520,152 @@ impl OtherPage {
             }
         }
     }
+
+    pub fn focus_hortu_rows(&self) -> Vec<super::hortu_scrolled::HortuScrolled> {
+        let imp = self.imp();
+        [
+            imp.actorhortu.get(),
+            imp.moviehortu.get(),
+            imp.serieshortu.get(),
+            imp.episodehortu.get(),
+            imp.videohortu.get(),
+        ]
+        .into_iter()
+        .filter(|row| row.is_visible() && row.item_count() > 0)
+        .collect()
+    }
+
+    pub fn carousel_page_count(&self) -> u32 {
+        self.imp().main_carousel.n_pages()
+    }
+
+    pub fn navigate_carousel(&self, delta: i32) {
+        let carousel = self.imp().main_carousel.get();
+        let count = carousel.n_pages() as i32;
+        if count <= 1 {
+            return;
+        }
+        let current = carousel.position() as i32;
+        let next = (current + delta).clamp(0, count - 1) as u32;
+        let page = carousel.nth_page(next);
+        carousel.scroll_to(&page, true);
+    }
+
+    pub fn has_episode_list(&self) -> bool {
+        self.imp().selection.n_items() > 0 && self.imp().episode_list_revealer.get().reveals_child()
+    }
+
+    pub fn focus_default_action(&self) {
+        if self.imp().play_button.is_visible() {
+            crate::tv::set_tv_focused(&self.imp().play_button.get(), true);
+        } else {
+            crate::tv::set_tv_focused(
+                &self
+                    .imp()
+                    .actionbox
+                    .favourite_button()
+                    .upcast::<gtk::Widget>(),
+                true,
+            );
+        }
+    }
+
+    pub fn clear_action_focus(&self) {
+        crate::tv::set_tv_focused(&self.imp().play_button.get(), false);
+        crate::tv::set_tv_focused(
+            &self
+                .imp()
+                .actionbox
+                .favourite_button()
+                .upcast::<gtk::Widget>(),
+            false,
+        );
+        crate::tv::set_tv_focused(
+            &self.imp().actionbox.menu_button().upcast::<gtk::Widget>(),
+            false,
+        );
+    }
+
+    pub fn navigate_actions(&self, delta: i32) {
+        let mut widgets = Vec::new();
+        if self.imp().play_button.is_visible() {
+            widgets.push(self.imp().play_button.get().upcast::<gtk::Widget>());
+        }
+        widgets.push(
+            self.imp()
+                .actionbox
+                .favourite_button()
+                .upcast::<gtk::Widget>(),
+        );
+        widgets.push(self.imp().actionbox.menu_button().upcast::<gtk::Widget>());
+        let current = widgets
+            .iter()
+            .position(|widget| widget.has_css_class("tv-focused"))
+            .unwrap_or(0) as i32;
+        let next = (current + delta).clamp(0, widgets.len() as i32 - 1) as usize;
+        self.clear_action_focus();
+        crate::tv::set_tv_focused(&widgets[next], true);
+    }
+
+    pub fn activate_focused_action(&self) {
+        if self.imp().play_button.is_visible() && self.imp().play_button.has_css_class("tv-focused")
+        {
+            self.imp().play_button.emit_clicked();
+            return;
+        }
+        if self
+            .imp()
+            .actionbox
+            .favourite_button()
+            .has_css_class("tv-focused")
+        {
+            self.imp().actionbox.favourite_button().emit_clicked();
+        } else if self
+            .imp()
+            .actionbox
+            .menu_button()
+            .has_css_class("tv-focused")
+        {
+            self.imp().actionbox.menu_button().popup();
+        }
+    }
+
+    pub fn focus_default_episode(&self) {
+        if self.imp().selection.n_items() > 0 {
+            self.imp().selection.set_selected(0);
+        }
+    }
+
+    pub fn clear_episode_focus(&self) {
+        self.imp()
+            .selection
+            .set_selected(gtk::INVALID_LIST_POSITION);
+    }
+
+    pub fn navigate_episodes(&self, delta: i32) {
+        let count = self.imp().selection.n_items() as i32;
+        if count == 0 {
+            return;
+        }
+        let current = if self.imp().selection.selected() == gtk::INVALID_LIST_POSITION {
+            0
+        } else {
+            self.imp().selection.selected() as i32
+        };
+        let next = (current + delta).clamp(0, count - 1) as u32;
+        self.imp().selection.set_selected(next);
+        self.imp()
+            .episode_list
+            .scroll_to(next, gtk::ListScrollFlags::NONE, None);
+    }
+
+    pub fn activate_focused_episode(&self) {
+        let index = self.imp().selection.selected();
+        if index == gtk::INVALID_LIST_POSITION {
+            return;
+        }
+        if let Some(tu_obj) = self.imp().selection.item(index).and_downcast::<TuObject>() {
+            tu_obj.item().activate(self);
+        }
+    }
 }

@@ -299,6 +299,10 @@ impl MediaViewer {
         animation.play();
     }
 
+    pub fn dismiss(&self) {
+        self.close();
+    }
+
     fn close(&self) {
         if self.fullscreened() {
             self.activate_action("win.toggle-fullscreen", None).unwrap();
@@ -316,6 +320,18 @@ impl MediaViewer {
 
     pub fn view_image(&self, image: gtk::gdk::Paintable) {
         self.imp().media.view_image(&image);
+    }
+
+    pub fn is_revealed(&self) -> bool {
+        self.is_visible() && self.imp().revealer.get().reveal_child()
+    }
+
+    pub fn focus_menu(&self) {
+        self.imp().menu.grab_focus();
+    }
+
+    pub fn reveal_header_for_tv(&self, reveal: bool) {
+        self.reveal_headerbar(reveal);
     }
 
     fn reveal_headerbar(&self, reveal: bool) {

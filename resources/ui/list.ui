@@ -13,7 +13,7 @@
             <property name="margin-top">10</property>
             <property name="margin-bottom">10</property>
             <child>
-              <object class="GtkStackSwitcher">
+              <object class="GtkStackSwitcher" id="stack_switcher">
                 <property name="halign">center</property>
                 <property name="stack">stack</property>
               </object>

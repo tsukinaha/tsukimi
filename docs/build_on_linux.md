@@ -81,3 +81,27 @@ generator injects:
 
 This keeps tagged releases and development snapshots separate while still
 allowing both packages to live in the same COPR project.
+
+### Immutable Fedora hosts (Bazzite, etc.)
+
+Do not `dnf install` on the host. Use distrobox for dev builds; use
+[Flathub](https://flathub.org/apps/moe.tsuna.tsukimi) for a normal install.
+
+- **Standard** (`just build`, `just run`) — host has build deps installed.
+- **Distrobox** (`just distrobox-init`, `just dev`) — local dev only; not for releases.
+
+```sh
+just distrobox-init   # once
+just distrobox-build  # after changes
+just dev              # build, install, run
+```
+
+If compile hangs on `Blocking waiting for file lock`, run `just distrobox-compile`
+again (it kills stale cargo processes).
+
+For daily use, install from Flathub instead:
+
+```sh
+flatpak install flathub moe.tsuna.tsukimi
+flatpak run moe.tsuna.tsukimi
+```

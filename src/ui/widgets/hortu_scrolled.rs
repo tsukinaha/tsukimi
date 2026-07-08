@@ -19,7 +19,10 @@ use crate::{
             tu_object::TuObject,
         },
         widgets::{
-            fix::ScrolledWindowFixExt,
+            fix::{
+                ScrolledWindowFixExt,
+                scroll_widget_to_row_center,
+            },
             hor_controls::HorControlsExt,
             lazy_diff_view::LazyDiffView,
             tu_list_item::{
@@ -116,6 +119,9 @@ mod imp {
         pub show_right_animation: OnceCell<adw::TimedAnimation>,
         pub hide_right_animation: OnceCell<adw::TimedAnimation>,
         pub is_hovering: Cell<bool>,
+        pub keyboard_focused: Cell<bool>,
+        pub header_focused: Cell<bool>,
+        pub selected_index: Cell<Option<usize>>,
         pub item_cache: RefCell<HashMap<String, TuObject>>,
     }
 
@@ -166,12 +172,27 @@ mod imp {
 
                     tu_item.upcast::<gtk::Widget>()
                 },
-                |widget, tu_obj: &TuObject| {
-                    let tu_item = widget
-                        .downcast_ref::<TuListItem>()
-                        .expect("LazyDiffView row must be a TuListItem");
-                    tu_item.set_item(tu_obj.item());
-                },
+                glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self.obj(),
+                    move |widget, tu_obj: &TuObject| {
+                        let tu_item = widget
+                            .downcast_ref::<TuListItem>()
+                            .expect("LazyDiffView row must be a TuListItem");
+                        let key = tu_obj.item().key();
+                        let selected = obj
+                            .imp()
+                            .selected_index
+                            .get()
+                            .and_then(|index| obj.imp().diffview.key_at(index))
+                            .as_deref()
+                            == Some(key.as_str());
+                        if tu_item.item().key() != key {
+                            tu_item.set_item(tu_obj.item());
+                        }
+                        tu_item.set_poster_focused(selected);
+                    }
+                ),
             );
 
             self.obj().connect_scroll_controls();
@@ -263,6 +284,9 @@ impl HortuScrolled {
 
     #[template_callback]
     fn on_leave_focus(&self) {
+        if self.imp().keyboard_focused.get() {
+            return;
+        }
         self.on_leave_scroll_controls();
     }
 
@@ -276,6 +300,169 @@ impl HortuScrolled {
         F: Fn(&gtk::Button) + 'static,
     {
         self.imp().morebutton.connect_clicked(cb);
+    }
+
+    pub fn item_count(&self) -> usize {
+        self.imp().diffview.len()
+    }
+
+    pub fn ensure_selection(&self) {
+        if self.item_count() == 0 {
+            return;
+        }
+        if self.imp().selected_index.get().is_none() {
+            self.set_selection_index(0);
+        }
+    }
+
+    pub fn clear_selection(&self) {
+        let prev_key = self
+            .imp()
+            .selected_index
+            .get()
+            .and_then(|index| self.imp().diffview.key_at(index));
+        self.imp().selected_index.set(None);
+        self.imp().header_focused.set(false);
+        self.clear_keyboard_focus();
+        crate::tv::set_tv_focused(&self.imp().morebutton.get(), false);
+        if let Some(key) = prev_key {
+            self.set_focus_for_key(&key, false);
+        }
+    }
+
+    pub fn clear_keyboard_focus(&self) {
+        self.imp().keyboard_focused.set(false);
+        self.on_leave_scroll_controls();
+    }
+
+    pub fn move_selection(&self, delta: i32) {
+        let count = self.item_count();
+        if count == 0 {
+            return;
+        }
+        if self.imp().header_focused.get() {
+            if delta > 0 {
+                self.leave_header_focus();
+            }
+            return;
+        }
+        let current = self.imp().selected_index.get().unwrap_or(0);
+        if delta < 0 && current == 0 && self.imp().morebutton.is_visible() {
+            self.focus_header();
+            return;
+        }
+        let next = (current as i32 + delta).clamp(0, count as i32 - 1) as usize;
+        self.set_selection_index(next);
+    }
+
+    pub fn is_header_focused(&self) -> bool {
+        self.imp().header_focused.get()
+    }
+
+    pub fn focus_header(&self) {
+        if !self.imp().morebutton.is_visible() {
+            return;
+        }
+        let prev_key = self
+            .imp()
+            .selected_index
+            .get()
+            .and_then(|index| self.imp().diffview.key_at(index));
+        self.imp().selected_index.set(None);
+        self.imp().header_focused.set(true);
+        if let Some(key) = prev_key {
+            self.set_focus_for_key(&key, false);
+        }
+        self.clear_keyboard_focus();
+        crate::tv::set_tv_focused(&self.imp().morebutton.get(), true);
+        self.imp().morebutton.grab_focus();
+    }
+
+    fn leave_header_focus(&self) {
+        self.imp().header_focused.set(false);
+        crate::tv::set_tv_focused(&self.imp().morebutton.get(), false);
+        self.ensure_selection();
+    }
+
+    pub fn selection_at_start(&self) -> bool {
+        self.imp().selected_index.get().unwrap_or(0) == 0
+    }
+
+    fn set_selection_index(&self, index: usize) {
+        let count = self.item_count();
+        if count == 0 {
+            return;
+        }
+        let index = index.min(count - 1);
+        let prev_key = self
+            .imp()
+            .selected_index
+            .get()
+            .and_then(|idx| self.imp().diffview.key_at(idx));
+        let new_key = self.imp().diffview.key_at(index);
+        self.imp().selected_index.set(Some(index));
+        self.imp().diffview.scroll_to_index(index);
+        self.update_selection_focus(prev_key.as_deref(), new_key.as_deref());
+        self.show_scroll_controls_for_focus();
+    }
+
+    fn update_selection_focus(&self, prev_key: Option<&str>, new_key: Option<&str>) {
+        if let Some(key) = prev_key.filter(|k| Some(*k) != new_key) {
+            self.set_focus_for_key(key, false);
+        }
+        if let Some(key) = new_key {
+            self.set_focus_for_key(key, true);
+        }
+    }
+
+    fn set_focus_for_key(&self, key: &str, focused: bool) {
+        if let Some(widget) = self.imp().diffview.row_widget_for_key(key)
+            && let Some(item) = widget.downcast_ref::<TuListItem>()
+        {
+            item.set_poster_focused(focused);
+        }
+    }
+
+    pub fn activate_selected(&self, window: &crate::Window) {
+        let imp = self.imp();
+        if imp.header_focused.get() {
+            imp.morebutton.emit_clicked();
+            return;
+        }
+        let Some(index) = imp.selected_index.get() else {
+            return;
+        };
+        let items = imp.diffview.len();
+        if index >= items {
+            return;
+        }
+        if let Some(key) = imp
+            .selected_index
+            .get()
+            .and_then(|idx| imp.diffview.key_at(idx))
+            && let Some(obj) = imp.item_cache.borrow().get(&key)
+        {
+            obj.item().activate(window);
+        }
+    }
+
+    pub fn show_scroll_controls_for_focus(&self) {
+        self.imp().header_focused.set(false);
+        crate::tv::set_tv_focused(&self.imp().morebutton.get(), false);
+        self.imp().keyboard_focused.set(true);
+        self.on_enter_scroll_controls();
+    }
+
+    pub fn scroll_into_parent_viewport(&self) {
+        scroll_widget_to_row_center(self);
+    }
+
+    pub fn scroll_page_left(&self) {
+        self.scroll_controls_anime::<false>();
+    }
+
+    pub fn scroll_page_right(&self) {
+        self.scroll_controls_anime::<true>();
     }
 }
 

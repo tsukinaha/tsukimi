@@ -5,9 +5,68 @@ use adw::{
 use gtk::{
     gdk,
     glib,
+    glib::WeakRef,
     graphene,
     gsk,
 };
+
+use std::{
+    cell::RefCell,
+    sync::atomic::{
+        AtomicBool,
+        Ordering,
+    },
+};
+
+thread_local! {
+    static HOVER_SCALES: RefCell<Vec<WeakRef<HoverScale>>> = const { RefCell::new(Vec::new()) };
+}
+
+static PENDING_POINTER_TARGETING_SYNC: AtomicBool = AtomicBool::new(false);
+
+fn register_hover_scale(scale: &HoverScale) {
+    HOVER_SCALES.with(|scales| {
+        let mut scales = scales.borrow_mut();
+        scales.retain(|weak| weak.upgrade().is_some());
+        scales.push(scale.downgrade());
+    });
+    apply_pointer_targeting(scale);
+}
+
+fn apply_pointer_targeting(scale: &HoverScale) {
+    let enabled = pointer_hover_enabled();
+    scale.set_can_target(enabled);
+    if !enabled {
+        scale.clear_pointer_hover();
+    }
+}
+
+pub fn sync_all_pointer_targeting() {
+    HOVER_SCALES.with(|scales| {
+        scales.borrow_mut().retain(|weak| {
+            if let Some(scale) = weak.upgrade() {
+                apply_pointer_targeting(&scale);
+                true
+            } else {
+                false
+            }
+        });
+    });
+}
+
+pub fn request_pointer_targeting_sync() {
+    if PENDING_POINTER_TARGETING_SYNC.swap(true, Ordering::Relaxed) {
+        return;
+    }
+    glib::idle_add_local_once(|| {
+        PENDING_POINTER_TARGETING_SYNC.store(false, Ordering::Relaxed);
+        sync_all_pointer_targeting();
+    });
+}
+
+fn pointer_hover_enabled() -> bool {
+    !crate::tv::cursor::suppress_pointer_hover()
+}
 
 pub const MAX_SCALE: f32 = 1.10;
 const ANIMATION_DURATION: u32 = 250;
@@ -42,6 +101,7 @@ mod imp {
 
         pub cursor_nx: Cell<f32>,
         pub cursor_ny: Cell<f32>,
+        pub focus_highlighted: Cell<bool>,
     }
 
     #[glib::object_subclass]
@@ -57,6 +117,7 @@ mod imp {
             self.parent_constructed();
 
             let obj = self.obj();
+            register_hover_scale(&obj);
 
             obj.set_halign(gtk::Align::Center);
             obj.set_overflow(gtk::Overflow::Visible);
@@ -79,6 +140,9 @@ mod imp {
                 #[weak]
                 obj,
                 move |_, x, y| {
+                    if !pointer_hover_enabled() {
+                        return;
+                    }
                     let imp = obj.imp();
                     let w = obj.width() as f64;
                     let h = obj.height() as f64;
@@ -100,6 +164,9 @@ mod imp {
                 #[weak]
                 obj,
                 move |_, x, y| {
+                    if !pointer_hover_enabled() {
+                        return;
+                    }
                     let imp = obj.imp();
                     let w = obj.width() as f64;
                     let h = obj.height() as f64;
@@ -115,6 +182,9 @@ mod imp {
                 #[weak]
                 obj,
                 move |_| {
+                    if !pointer_hover_enabled() {
+                        return;
+                    }
                     let Some(animation) = obj.imp().animation() else {
                         return;
                     };
@@ -273,6 +343,49 @@ impl HoverScale {
 
     pub fn set_underlay(&self, f: impl Fn(&gtk::Snapshot) + 'static) {
         self.imp().underlay.replace(Some(Box::new(f)));
+    }
+
+    /// Gamepad/TV focus ring — same scale animation as pointer hover, without tilt.
+    pub fn set_highlighted(&self, highlighted: bool) {
+        let imp = self.imp();
+        imp.focus_highlighted.set(highlighted);
+        let Some(animation) = imp.animation.get() else {
+            return;
+        };
+        let at_target = if highlighted {
+            animation.value() >= 1.0
+        } else {
+            animation.value() <= 0.0
+        };
+        if at_target {
+            return;
+        }
+        if highlighted {
+            imp.cursor_nx.set(0.0);
+            imp.cursor_ny.set(0.0);
+        }
+        animation.set_value_from(animation.value());
+        animation.set_value_to(if highlighted { 1.0 } else { 0.0 });
+        animation.play();
+    }
+
+    /// Drop pointer-driven hover without clearing gamepad focus highlight.
+    pub fn clear_pointer_hover(&self) {
+        if self.imp().focus_highlighted.get() {
+            return;
+        }
+        let imp = self.imp();
+        let Some(animation) = imp.animation.get() else {
+            return;
+        };
+        if animation.value() <= 0.0 {
+            return;
+        }
+        imp.cursor_nx.set(0.0);
+        imp.cursor_ny.set(0.0);
+        animation.set_value_from(animation.value());
+        animation.set_value_to(0.0);
+        animation.play();
     }
 }
 

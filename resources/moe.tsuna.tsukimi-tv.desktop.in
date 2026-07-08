@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Tsukimi (TV Mode)
+Comment=A third-party Jellyfin client for Linux — TV / HTPC mode
+Exec=tsukimi --tv-mode --fullscreen
+Icon=moe.tsuna.tsukimi
+Terminal=false
+Type=Application
+Categories=AudioVideo;Video;Player;
+StartupNotify=true

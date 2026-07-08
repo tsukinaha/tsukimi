@@ -22,8 +22,8 @@ use crate::ui::{
     SETTINGS,
     provider::tu_item::TuItem,
     widgets::utils::{
-        TU_ITEM_BANNER_SIZE,
-        TU_ITEM_VIDEO_SIZE,
+        tu_item_banner_size,
+        tu_item_video_size,
     },
 };
 
@@ -109,6 +109,10 @@ pub mod imp {
 
         #[template_child]
         pub hover_scale: TemplateChild<HoverScale>,
+        #[template_child]
+        pub focus_title_revealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub focus_title: TemplateChild<gtk::Label>,
 
         pub backdrop_cache: RefCell<Option<BackdropNodeCache>>,
         pub is_dark: Cell<bool>,
@@ -459,10 +463,34 @@ impl TuListItem {
         }
     }
 
+    pub fn set_poster_focused(&self, focused: bool) {
+        let imp = self.imp();
+        let focused_now = imp.content_box.has_css_class("poster-focused");
+        if focused == focused_now {
+            return;
+        }
+        if focused {
+            imp.content_box.add_css_class("poster-focused");
+            imp.hover_scale.set_highlighted(true);
+            if crate::tv::is_tv_mode_active() {
+                let title = self
+                    .item()
+                    .list_item_title()
+                    .unwrap_or_else(|| self.item().name());
+                imp.focus_title.set_text(&title);
+                imp.focus_title_revealer.set_reveal_child(true);
+            }
+        } else {
+            imp.content_box.remove_css_class("poster-focused");
+            imp.hover_scale.set_highlighted(false);
+            imp.focus_title_revealer.set_reveal_child(false);
+        }
+    }
+
     fn size_hint(&self) -> (i32, i32) {
         match self.poster_type() {
-            PosterType::Banner => TU_ITEM_BANNER_SIZE,
-            PosterType::Backdrop => TU_ITEM_VIDEO_SIZE,
+            PosterType::Banner => tu_item_banner_size(),
+            PosterType::Backdrop => tu_item_video_size(),
             _ => self.item().size_hint(),
         }
     }

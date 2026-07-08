@@ -21,6 +21,7 @@ use crate::{
         structs::*,
     },
     ui::{
+        SETTINGS,
         mpv::page::{
             PlaybackDirectMode,
             media_source_stream_url,
@@ -136,6 +137,8 @@ pub(crate) mod imp {
         pub logobox: TemplateChild<gtk::Box>,
         #[template_child]
         pub seasonlist: TemplateChild<gtk::DropDown>,
+        #[template_child]
+        pub season_view_more: TemplateChild<gtk::Button>,
 
         #[template_child]
         pub mediainfobox: TemplateChild<gtk::Box>,
@@ -228,6 +231,11 @@ pub(crate) mod imp {
         pub episode_list_vec: RefCell<Vec<SimpleListItem>>,
 
         pub video_version_matcher: RefCell<Option<String>>,
+        pub pending_external_sub: RefCell<Option<String>>,
+        pub imdb_id: RefCell<Option<String>>,
+        pub tv_subtitle_btn: RefCell<Option<gtk::Button>>,
+        pub mediainfo_selected: Cell<Option<usize>>,
+        pub episode_subzone: Cell<u8>,
     }
 
     #[glib::object_subclass]
@@ -977,6 +985,9 @@ impl ItemPage {
                         if let Some(genres) = item.genres {
                             obj.set_flowbuttons(genres, "Genres");
                         }
+                        if let Some(provider_ids) = item.provider_ids {
+                            obj.imp().imdb_id.replace(provider_ids.imdb);
+                        }
                         if let Some(image_tags) = item.backdrop_image_tags {
                             obj.add_backdrops(image_tags, &item.id).await;
                         }
@@ -1282,9 +1293,16 @@ impl ItemPage {
             .collect();
 
         let matcher = self.imp().video_version_matcher.borrow().to_owned();
+        let external_sub = self.imp().pending_external_sub.borrow_mut().take();
 
-        self.window()
-            .play_media(Some(info), item, episode_list, matcher, start_seconds);
+        self.window().play_media(
+            Some(info),
+            item,
+            episode_list,
+            matcher,
+            start_seconds,
+            external_sub,
+        );
     }
 
     #[template_callback]
@@ -1326,6 +1344,695 @@ impl ItemPage {
 
         let item = TuItem::from_simple(season.to_owned());
         item.activate(self);
+    }
+
+    pub fn focus_hortu_rows(&self) -> Vec<super::hortu_scrolled::HortuScrolled> {
+        let imp = self.imp();
+        vec![
+            imp.includehortu.get(),
+            imp.additionalhortu.get(),
+            imp.seasonshortu.get(),
+            imp.actorhortu.get(),
+            imp.recommendhortu.get(),
+        ]
+    }
+
+    pub fn focus_horbu_rows(&self) -> Vec<super::horbu_scrolled::HorbuScrolled> {
+        let imp = self.imp();
+        vec![
+            imp.linkshorbu.get(),
+            imp.studioshorbu.get(),
+            imp.genreshorbu.get(),
+            imp.tagshorbu.get(),
+        ]
+    }
+
+    pub fn scroll_to_hero_page(&self) {
+        let carousel = self.imp().main_carousel.get();
+        if carousel.n_pages() > 0 {
+            carousel.scroll_to(&carousel.nth_page(0), true);
+        }
+    }
+
+    pub fn scroll_to_details_page(&self) {
+        let carousel = self.imp().main_carousel.get();
+        if carousel.n_pages() > 1 {
+            carousel.scroll_to(&carousel.nth_page(1), true);
+        }
+    }
+
+    pub fn focus_details_row(&self, focus: impl FnOnce() + 'static) {
+        self.scroll_to_details_page();
+        glib::idle_add_local_once(focus);
+    }
+
+    pub fn has_dropdowns(&self) -> bool {
+        let imp = self.imp();
+        imp.namedropdown.get().is_visible() || imp.subdropdown.get().is_visible()
+    }
+
+    pub fn has_episode_toolbar(&self) -> bool {
+        self.imp().toolbar.get().is_visible()
+    }
+
+    pub fn episode_toolbar_widgets(&self) -> Vec<gtk::Widget> {
+        let imp = self.imp();
+        if !imp.toolbar.get().is_visible() {
+            return Vec::new();
+        }
+        vec![
+            imp.seasonlist.get().upcast(),
+            imp.season_view_more.get().upcast(),
+        ]
+    }
+
+    pub fn clear_episode_toolbar_focus(&self) {
+        for widget in self.episode_toolbar_widgets() {
+            crate::tv::set_tv_focused(&widget, false);
+        }
+    }
+
+    pub fn focus_episode_toolbar(&self, index: usize) {
+        self.clear_episode_toolbar_focus();
+        self.clear_episode_focus();
+        if let Some(widget) = self.episode_toolbar_widgets().get(index) {
+            crate::tv::set_tv_focused(widget, true);
+        }
+        self.imp().episode_subzone.set(0);
+    }
+
+    pub fn focus_episode_list(&self) {
+        self.clear_episode_toolbar_focus();
+        self.focus_default_episode();
+        self.imp().episode_subzone.set(1);
+    }
+
+    pub fn is_episode_toolbar_focused(&self) -> bool {
+        self.imp().episode_subzone.get() == 0
+    }
+
+    pub fn navigate_episode_toolbar(&self, delta: i32) {
+        let widgets = self.episode_toolbar_widgets();
+        if widgets.is_empty() {
+            return;
+        }
+        let current = widgets
+            .iter()
+            .position(|widget| widget.has_css_class("tv-focused"))
+            .unwrap_or(0) as i32;
+        let next = (current + delta).clamp(0, widgets.len() as i32 - 1) as usize;
+        self.focus_episode_toolbar(next);
+    }
+
+    pub fn activate_episode_toolbar(&self) {
+        let widgets = self.episode_toolbar_widgets();
+        let index = widgets
+            .iter()
+            .position(|widget| widget.has_css_class("tv-focused"))
+            .unwrap_or(0);
+        let imp = self.imp();
+        if index == 0 {
+            let dropdown = imp.seasonlist.get();
+            dropdown.grab_focus();
+            gtk::prelude::WidgetExt::activate(&dropdown);
+        } else if index == 1 {
+            imp.season_view_more.get().emit_clicked();
+        }
+    }
+
+    pub fn has_episode_list(&self) -> bool {
+        let imp = self.imp();
+        imp.episode_list_bin.get().is_visible()
+            && imp.episode_stack.visible_child_name().as_deref() == Some("view")
+            && imp.selection.n_items() > 0
+    }
+
+    pub fn focus_default_action(&self) {
+        self.set_action_focus(0);
+    }
+
+    pub fn clear_action_focus(&self) {
+        for widget in self.action_focus_widgets() {
+            crate::tv::set_tv_focused(&widget, false);
+        }
+    }
+
+    pub fn action_focus_widgets(&self) -> Vec<gtk::Widget> {
+        let imp = self.imp();
+        vec![
+            imp.playbutton.get().upcast(),
+            imp.actionbox.favourite_button().upcast(),
+            imp.actionbox.menu_button().upcast(),
+        ]
+    }
+
+    pub fn top_bar_action_widgets(&self) -> Vec<gtk::Widget> {
+        let mut widgets = self.action_focus_widgets();
+        if let Some(btn) = self.ensure_tv_subtitle_button() {
+            widgets.push(btn.upcast());
+        }
+        widgets
+    }
+
+    pub fn media_focus_widgets(&self) -> Vec<gtk::Widget> {
+        let imp = self.imp();
+        let mut widgets = Vec::new();
+        if imp.namedropdown.get().is_visible() {
+            widgets.push(imp.namedropdown.get().upcast());
+        }
+        if imp.subdropdown.get().is_visible() {
+            widgets.push(imp.subdropdown.get().upcast());
+        }
+        widgets
+    }
+
+    pub fn clear_media_focus(&self) {
+        for widget in self.media_focus_widgets() {
+            crate::tv::set_tv_focused(&widget, false);
+        }
+    }
+
+    pub fn set_media_focus(&self, index: usize) {
+        self.clear_media_focus();
+        if let Some(widget) = self.media_focus_widgets().get(index) {
+            crate::tv::set_tv_focused(widget, true);
+        }
+    }
+
+    pub fn top_bar_spatial_widgets(&self) -> Vec<gtk::Widget> {
+        self.top_bar_focus_widgets()
+    }
+
+    pub fn focused_top_bar_widget(&self) -> Option<gtk::Widget> {
+        self.top_bar_spatial_widgets()
+            .into_iter()
+            .find(|widget| widget.has_css_class("tv-focused"))
+    }
+
+    pub fn set_top_bar_widget_focus(&self, widget: &gtk::Widget) {
+        self.clear_top_bar_focus();
+        crate::tv::set_tv_focused(widget, true);
+    }
+
+    pub fn navigate_top_bar_spatial(&self, dx: i32, dy: i32) -> bool {
+        let actions = self.top_bar_action_widgets();
+        let media = self.media_focus_widgets();
+        if actions.is_empty() && media.is_empty() {
+            return false;
+        }
+
+        let current = self.focused_top_bar_widget().unwrap_or_else(|| {
+            actions
+                .first()
+                .or_else(|| media.first())
+                .cloned()
+                .expect("top bar widgets exist")
+        });
+
+        let in_actions = actions.iter().any(|widget| widget == &current);
+        let in_media = media.iter().any(|widget| widget == &current);
+
+        if dy != 0 {
+            if in_media {
+                let imp = self.imp();
+                let video = imp.namedropdown.get().upcast::<gtk::Widget>();
+                let sub = imp.subdropdown.get().upcast::<gtk::Widget>();
+                if current == video && dy > 0 && sub.is_visible() {
+                    self.set_top_bar_widget_focus(&sub);
+                    return true;
+                }
+                if current == sub && dy < 0 && video.is_visible() {
+                    self.set_top_bar_widget_focus(&video);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        if dx == 0 {
+            return false;
+        }
+
+        if in_media {
+            let pos = media.iter().position(|widget| widget == &current);
+            if let Some(index) = pos {
+                let next = (index as i32 + dx).clamp(0, media.len() as i32 - 1) as usize;
+                if next != index {
+                    self.set_top_bar_widget_focus(&media[next]);
+                    return true;
+                }
+            }
+            if dx < 0
+                && let Some(widget) = actions.last()
+            {
+                self.set_top_bar_widget_focus(widget);
+                return true;
+            }
+            return false;
+        }
+
+        if in_actions {
+            let pos = actions.iter().position(|widget| widget == &current);
+            if let Some(index) = pos {
+                let next = (index as i32 + dx).clamp(0, actions.len() as i32 - 1) as usize;
+                if next != index {
+                    self.set_top_bar_widget_focus(&actions[next]);
+                    return true;
+                }
+            }
+            if dx > 0
+                && let Some(widget) = media.first()
+            {
+                self.set_top_bar_widget_focus(widget);
+                return true;
+            }
+        }
+
+        false
+    }
+
+    pub fn activate_focused_top_bar(&self) {
+        let Some(widget) = self.focused_top_bar_widget() else {
+            return;
+        };
+        let imp = self.imp();
+        let play = imp.playbutton.get().upcast::<gtk::Widget>();
+        let fav = imp.actionbox.favourite_button().upcast::<gtk::Widget>();
+        let menu = imp.actionbox.menu_button().upcast::<gtk::Widget>();
+        let video = imp.namedropdown.get().upcast::<gtk::Widget>();
+        let sub = imp.subdropdown.get().upcast::<gtk::Widget>();
+        if widget == play {
+            imp.playbutton.emit_clicked();
+        } else if widget == fav {
+            imp.actionbox.favourite_button().emit_clicked();
+        } else if widget == menu {
+            let btn = imp.actionbox.menu_button();
+            btn.grab_focus();
+            btn.popup();
+        } else if imp
+            .tv_subtitle_btn
+            .borrow()
+            .as_ref()
+            .is_some_and(|btn| widget == btn.clone().upcast::<gtk::Widget>())
+        {
+            self.open_subtitle_search();
+        } else if widget == video || widget == sub {
+            widget.grab_focus();
+            gtk::prelude::WidgetExt::activate(&widget);
+        }
+    }
+
+    pub fn focus_default_top_bar_spatial(&self) {
+        if let Some(widget) = self.top_bar_spatial_widgets().first() {
+            self.set_top_bar_widget_focus(widget);
+        }
+    }
+
+    pub fn top_bar_focus_widgets(&self) -> Vec<gtk::Widget> {
+        let mut widgets = self.top_bar_action_widgets();
+        widgets.extend(self.media_focus_widgets());
+        widgets
+    }
+
+    pub fn subtitle_search_available(&self) -> bool {
+        if !crate::tv::is_tv_mode_active() {
+            return false;
+        }
+        if !(SETTINGS.subtitle_provider_enabled("opensubtitles")
+            || SETTINGS.subtitle_provider_enabled("subdl"))
+        {
+            return false;
+        }
+        let item = self.item();
+        matches!(
+            item.item_type().as_str(),
+            "Movie" | "Episode" | "Video" | "Series"
+        )
+    }
+
+    pub fn ensure_tv_subtitle_button(&self) -> Option<gtk::Button> {
+        if !self.subtitle_search_available() {
+            return None;
+        }
+        let imp = self.imp();
+        if let Some(btn) = imp.tv_subtitle_btn.borrow().clone() {
+            btn.set_visible(true);
+            return Some(btn);
+        }
+        let btn = gtk::Button::with_label(&gettext("Find Subtitles"));
+        btn.add_css_class("pill");
+        btn.set_valign(gtk::Align::Center);
+        let obj = self.clone();
+        btn.connect_clicked(move |_| obj.open_subtitle_search());
+        if let Some(parent) = imp
+            .playbutton
+            .get()
+            .parent()
+            .and_then(|widget| widget.downcast::<gtk::Box>().ok())
+        {
+            parent.insert_child_after(&btn, Some(&imp.actionbox.get()));
+        }
+        *imp.tv_subtitle_btn.borrow_mut() = Some(btn.clone());
+        Some(btn)
+    }
+
+    pub fn clear_top_bar_focus(&self) {
+        for widget in self.top_bar_focus_widgets() {
+            crate::tv::set_tv_focused(&widget, false);
+        }
+    }
+
+    pub fn set_top_bar_focus(&self, index: usize) {
+        self.clear_top_bar_focus();
+        if let Some(widget) = self.top_bar_focus_widgets().get(index) {
+            crate::tv::set_tv_focused(widget, true);
+        }
+    }
+
+    pub fn focus_default_top_bar(&self) {
+        self.set_top_bar_focus(0);
+    }
+
+    pub fn navigate_top_bar(&self, delta: i32) {
+        let count = self.top_bar_focus_widgets().len() as i32;
+        if count == 0 {
+            return;
+        }
+        let current = self
+            .top_bar_focus_widgets()
+            .iter()
+            .position(|widget| widget.has_css_class("tv-focused"))
+            .unwrap_or(0) as i32;
+        let next = (current + delta).clamp(0, count - 1) as usize;
+        self.set_top_bar_focus(next);
+    }
+
+    pub fn activate_top_bar_action_at(&self, index: usize) {
+        let imp = self.imp();
+        let widgets = self.top_bar_action_widgets();
+        let Some(widget) = widgets.get(index) else {
+            return;
+        };
+        if widget == &imp.playbutton.get().upcast::<gtk::Widget>() {
+            imp.playbutton.emit_clicked();
+        } else if widget == &imp.actionbox.favourite_button().upcast::<gtk::Widget>() {
+            imp.actionbox.favourite_button().emit_clicked();
+        } else if widget == &imp.actionbox.menu_button().upcast::<gtk::Widget>() {
+            imp.actionbox.menu_button().popup();
+        } else if imp
+            .tv_subtitle_btn
+            .borrow()
+            .as_ref()
+            .is_some_and(|btn| widget == &btn.clone().upcast::<gtk::Widget>())
+        {
+            self.open_subtitle_search();
+        }
+    }
+
+    pub fn activate_media_at(&self, index: usize) {
+        let widgets = self.media_focus_widgets();
+        let Some(widget) = widgets.get(index) else {
+            return;
+        };
+        widget.grab_focus();
+        gtk::prelude::WidgetExt::activate(widget);
+    }
+
+    pub fn activate_top_bar_at(&self, index: usize) {
+        let imp = self.imp();
+        let widgets = self.top_bar_focus_widgets();
+        let Some(widget) = widgets.get(index) else {
+            return;
+        };
+        if widget == &imp.playbutton.get().upcast::<gtk::Widget>() {
+            imp.playbutton.emit_clicked();
+        } else if widget == &imp.actionbox.favourite_button().upcast::<gtk::Widget>() {
+            imp.actionbox.favourite_button().emit_clicked();
+        } else if widget == &imp.actionbox.menu_button().upcast::<gtk::Widget>() {
+            imp.actionbox.menu_button().popup();
+        } else if imp
+            .tv_subtitle_btn
+            .borrow()
+            .as_ref()
+            .is_some_and(|btn| widget == &btn.clone().upcast::<gtk::Widget>())
+        {
+            self.open_subtitle_search();
+        } else if widget == &imp.namedropdown.get().upcast::<gtk::Widget>()
+            || widget == &imp.subdropdown.get().upcast::<gtk::Widget>()
+        {
+            widget.grab_focus();
+            gtk::prelude::WidgetExt::activate(widget);
+        }
+    }
+
+    pub fn set_action_focus(&self, index: usize) {
+        self.clear_action_focus();
+        if let Some(widget) = self.action_focus_widgets().get(index) {
+            crate::tv::set_tv_focused(widget, true);
+        }
+    }
+
+    pub fn navigate_actions(&self, delta: i32) {
+        let count = self.action_focus_widgets().len() as i32;
+        if count == 0 {
+            return;
+        }
+        let current = self
+            .action_focus_widgets()
+            .iter()
+            .position(|widget| widget.has_css_class("tv-focused"))
+            .unwrap_or(0) as i32;
+        let next = (current + delta).clamp(0, count - 1) as usize;
+        self.set_action_focus(next);
+    }
+
+    pub fn activate_action_at(&self, index: usize) {
+        let imp = self.imp();
+        match index {
+            0 => imp.playbutton.emit_clicked(),
+            1 => imp.actionbox.favourite_button().emit_clicked(),
+            2 => imp.actionbox.menu_button().popup(),
+            _ => {}
+        }
+    }
+
+    pub fn activate_focused_action(&self) {
+        let index = self
+            .action_focus_widgets()
+            .iter()
+            .position(|widget| widget.has_css_class("tv-focused"))
+            .unwrap_or(0);
+        self.activate_action_at(index);
+    }
+
+    pub fn open_subtitle_search(&self) {
+        use crate::subtitles::{
+            SubtitleSearchDialog,
+            preferred_subtitle_language_code,
+        };
+
+        let title = self
+            .current_item()
+            .map(|item| item.name())
+            .or_else(|| self.name())
+            .unwrap_or_default();
+        let imdb_id = self.imp().imdb_id.borrow().clone();
+        let dialog = SubtitleSearchDialog::new(
+            &title,
+            &preferred_subtitle_language_code(),
+            imdb_id.as_deref(),
+        );
+        dialog.connect_subtitle_downloaded(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |path| {
+                obj.imp()
+                    .pending_external_sub
+                    .replace(Some(path.display().to_string()));
+                obj.toast(gettext("Subtitle will load on play"));
+            }
+        ));
+        dialog.present(self.root().as_ref());
+    }
+
+    pub fn focus_default_dropdown(&self) {
+        let imp = self.imp();
+        if imp.namedropdown.get().is_visible() {
+            crate::tv::set_tv_focused(&imp.namedropdown.get(), true);
+        } else if imp.subdropdown.get().is_visible() {
+            crate::tv::set_tv_focused(&imp.subdropdown.get(), true);
+        }
+    }
+
+    pub fn clear_dropdown_focus(&self) {
+        let imp = self.imp();
+        crate::tv::set_tv_focused(&imp.namedropdown.get(), false);
+        crate::tv::set_tv_focused(&imp.subdropdown.get(), false);
+    }
+
+    pub fn navigate_dropdowns(&self, delta: i32) {
+        let imp = self.imp();
+        if delta > 0 && imp.namedropdown.get().is_visible() && imp.subdropdown.get().is_visible() {
+            self.clear_dropdown_focus();
+            crate::tv::set_tv_focused(&imp.subdropdown.get(), true);
+        } else if delta < 0 && imp.subdropdown.get().is_visible() {
+            self.clear_dropdown_focus();
+            crate::tv::set_tv_focused(&imp.namedropdown.get(), true);
+        } else {
+            self.focus_default_dropdown();
+        }
+    }
+
+    pub fn activate_focused_dropdown(&self) {
+        let imp = self.imp();
+        let dropdown = if imp.subdropdown.get().has_css_class("tv-focused") {
+            imp.subdropdown.get()
+        } else {
+            imp.namedropdown.get()
+        };
+        dropdown.grab_focus();
+        gtk::prelude::WidgetExt::activate(&dropdown);
+    }
+
+    pub fn focus_default_episode(&self) {
+        let imp = self.imp();
+        if imp.selection.n_items() > 0 {
+            imp.selection.set_selected(0);
+            imp.itemlist.get().scroll_to(0, ListScrollFlags::NONE, None);
+        }
+        self.scroll_episode_list_into_view();
+    }
+
+    pub fn scroll_episode_list_into_view(&self) {
+        let imp = self.imp();
+        if !imp.episode_list_bin.get().is_visible() {
+            return;
+        }
+        self.scroll_to_hero_page();
+        super::fix::scroll_widget_to_row_center(&imp.episode_list_bin.get());
+    }
+
+    pub fn mediainfo_card_widgets(&self) -> Vec<gtk::Widget> {
+        let imp = self.imp();
+        if !imp.mediainforevealer.reveals_child() {
+            return Vec::new();
+        }
+        let mut cards = Vec::new();
+        let mut source = imp.mediainfobox.first_child();
+        while let Some(singlebox) = source {
+            let mut child = singlebox.first_child();
+            while let Some(widget) = child {
+                if widget.is::<gtk::ScrolledWindow>()
+                    && let Some(row) = widget.first_child()
+                {
+                    let mut card = row.first_child();
+                    while let Some(card_widget) = card {
+                        if card_widget.has_css_class("card") {
+                            cards.push(card_widget.clone());
+                        }
+                        card = card_widget.next_sibling();
+                    }
+                }
+                child = widget.next_sibling();
+            }
+            source = singlebox.next_sibling();
+        }
+        cards
+    }
+
+    pub fn mediainfo_card_count(&self) -> usize {
+        self.mediainfo_card_widgets().len()
+    }
+
+    pub fn clear_mediainfo_focus(&self) {
+        for widget in self.mediainfo_card_widgets() {
+            crate::tv::set_tv_focused(&widget, false);
+        }
+        self.imp().mediainfo_selected.set(None);
+    }
+
+    pub fn ensure_mediainfo_selection(&self) {
+        if self.mediainfo_card_count() == 0 {
+            return;
+        }
+        if self.imp().mediainfo_selected.get().is_none() {
+            self.set_mediainfo_selection(0);
+        }
+    }
+
+    fn set_mediainfo_selection(&self, index: usize) {
+        let cards = self.mediainfo_card_widgets();
+        if cards.is_empty() {
+            return;
+        }
+        let index = index.min(cards.len() - 1);
+        let prev = self.imp().mediainfo_selected.get();
+        if prev == Some(index) {
+            return;
+        }
+        if let Some(prev_index) = prev
+            && let Some(widget) = cards.get(prev_index)
+        {
+            crate::tv::set_tv_focused(widget, false);
+        }
+        if let Some(widget) = cards.get(index) {
+            crate::tv::set_tv_focused(widget, true);
+            super::fix::scroll_widget_to_column_center(widget);
+        }
+        self.imp().mediainfo_selected.set(Some(index));
+    }
+
+    pub fn move_mediainfo_selection(&self, delta: i32) {
+        let count = self.mediainfo_card_count();
+        if count == 0 {
+            return;
+        }
+        let current = self.imp().mediainfo_selected.get().unwrap_or(0);
+        let next = (current as i32 + delta).clamp(0, count as i32 - 1) as usize;
+        self.set_mediainfo_selection(next);
+    }
+
+    pub fn scroll_mediainfo_into_view(&self) {
+        let obj = self.clone();
+        self.focus_details_row(move || {
+            super::fix::scroll_widget_to_row_center(&obj.imp().mediainforevealer.get());
+            obj.ensure_mediainfo_selection();
+        });
+    }
+
+    pub fn clear_episode_focus(&self) {
+        self.imp()
+            .selection
+            .set_selected(gtk::INVALID_LIST_POSITION);
+    }
+
+    pub fn navigate_episodes(&self, delta: i32) {
+        let imp = self.imp();
+        let count = imp.selection.n_items() as i32;
+        if count == 0 {
+            return;
+        }
+        let current = if imp.selection.selected() == gtk::INVALID_LIST_POSITION {
+            0
+        } else {
+            imp.selection.selected() as i32
+        };
+        let next = (current + delta).clamp(0, count - 1) as u32;
+        imp.selection.set_selected(next);
+        imp.itemlist
+            .get()
+            .scroll_to(next, ListScrollFlags::NONE, None);
+    }
+
+    pub fn activate_focused_episode(&self) {
+        let imp = self.imp();
+        let index = imp.selection.selected();
+        if index == gtk::INVALID_LIST_POSITION {
+            return;
+        }
+        if let Some(item) = imp.selection.item(index).and_downcast::<TuObject>() {
+            item.item().activate(self);
+        }
     }
 }
 

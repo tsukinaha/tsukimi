@@ -279,5 +279,45 @@
       <summary>Whether the danmaku is enabled</summary>
       <default>false</default>
     </key>
+    <key name="gamepad-enabled" type="b">
+      <summary>Enable gamepad/controller input</summary>
+      <default>false</default>
+    </key>
+    <key name="tv-mode" type="b">
+      <summary>TV / HTPC visual mode</summary>
+      <default>false</default>
+    </key>
+    <key type="d" name="tv-ui-scale">
+      <summary>TV mode UI scale factor</summary>
+      <default>1.25</default>
+    </key>
+    <key name="tv-start-fullscreen" type="b">
+      <summary>Start fullscreen when TV mode is active</summary>
+      <default>true</default>
+    </key>
+    <key name="tv-hide-sidebar" type="b">
+      <summary>Collapse sidebar by default in TV mode</summary>
+      <default>true</default>
+    </key>
+    <key name="tv-show-button-hints" type="b">
+      <summary>Show on-screen controller hints in TV mode</summary>
+      <default>false</default>
+    </key>
+    <key name="playback-conditional-rules" type="s">
+      <summary>App-wide conditional audio/subtitle playback rules (JSON)</summary>
+      <default>"{\"enabled\":false,\"rules\":[],\"default\":{\"audio\":{\"mode\":\"no_override\"},\"subtitles\":{\"mode\":\"off\"}}}"</default>
+    </key>
+    <key name="opensubtitles-api-key" type="s">
+      <summary>OpenSubtitles API key</summary>
+      <default>""</default>
+    </key>
+    <key name="subdl-api-key" type="s">
+      <summary>SubDL API key</summary>
+      <default>""</default>
+    </key>
+    <key name="subtitle-providers-enabled" type="s">
+      <summary>Comma-separated enabled subtitle provider ids</summary>
+      <default>"opensubtitles,subdl"</default>
+    </key>
   </schema>
 </schemalist>

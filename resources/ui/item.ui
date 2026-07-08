@@ -307,7 +307,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="season_view_more">
                             <property name="icon-name">view-more-horizontal-symbolic</property>
                             <property name="halign">start</property>
                             <signal name="clicked" handler="on_season_view_more_clicked" swapped="yes"/>

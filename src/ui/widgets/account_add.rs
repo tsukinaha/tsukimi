@@ -103,6 +103,13 @@ pub mod imp {
     impl ObjectImpl for AccountWindow {
         fn constructed(&self) {
             self.parent_constructed();
+            let obj = self.obj();
+            let imp = obj.imp();
+            crate::tv::osk::attach_on_screen_keyboard(&imp.servername_entry.get());
+            crate::tv::osk::attach_on_screen_keyboard(&imp.server_entry.get());
+            crate::tv::osk::attach_on_screen_keyboard(&imp.username_entry.get());
+            crate::tv::osk::attach_on_screen_keyboard(&imp.password_entry.get());
+            crate::tv::osk::attach_on_screen_keyboard(&imp.port_entry.get());
         }
     }
 
@@ -125,6 +132,18 @@ impl Default for AccountWindow {
 impl AccountWindow {
     pub fn new() -> Self {
         Object::builder().build()
+    }
+
+    pub fn focus_widgets(&self) -> Vec<gtk::Widget> {
+        let imp = self.imp();
+        vec![
+            imp.servername_entry.get().upcast(),
+            imp.server_entry.get().upcast(),
+            imp.port_entry.get().upcast(),
+            imp.username_entry.get().upcast(),
+            imp.password_entry.get().upcast(),
+            imp.nav.get().upcast(),
+        ]
     }
 
     #[template_callback]

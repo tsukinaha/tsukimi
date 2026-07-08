@@ -344,6 +344,10 @@ impl TsukimiMPV {
         self.set_property("slang", value);
     }
 
+    pub fn set_alang(&self, value: String) {
+        self.set_property("alang", value);
+    }
+
     pub fn set_property<V>(&self, property: &str, value: V)
     where
         V: SetData + Send + 'static,

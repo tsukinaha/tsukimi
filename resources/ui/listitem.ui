@@ -66,6 +66,37 @@
                       </object>
                     </child>
                     <child type="overlay">
+                      <object class="GtkRevealer" id="focus_title_revealer">
+                        <property name="valign">end</property>
+                        <property name="halign">fill</property>
+                        <property name="hexpand">true</property>
+                        <property name="reveal-child">false</property>
+                        <property name="transition-type">crossfade</property>
+                        <child>
+                          <object class="GtkBox" id="focus_title_box">
+                            <property name="orientation">vertical</property>
+                            <property name="halign">fill</property>
+                            <property name="hexpand">true</property>
+                            <child>
+                              <object class="GtkLabel" id="focus_title">
+                                <property name="justify">center</property>
+                                <property name="ellipsize">end</property>
+                                <property name="lines">2</property>
+                                <property name="wrap">true</property>
+                                <property name="wrap-mode">word-char</property>
+                                <attributes>
+                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                                </attributes>
+                              </object>
+                            </child>
+                            <style>
+                              <class name="tv-poster-focus-title" />
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="overlay">
                       <object class="GtkButton" id="direct_play_button">
                         <property name="halign">start</property>
                         <property name="valign">end</property>

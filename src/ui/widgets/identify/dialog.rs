@@ -143,8 +143,12 @@ impl IdentifyDialog {
     }
 
     fn load_data(&self, data: Vec<ExternalIdInfo>) {
+        let imp = self.imp();
+        crate::tv::osk::attach_on_screen_keyboard(&imp.name_entry.get());
+        crate::tv::osk::attach_on_screen_keyboard(&imp.year_entry.get());
         for info in data {
             let entry = adw::EntryRow::builder().title(&info.name).build();
+            crate::tv::osk::attach_on_screen_keyboard(&entry);
 
             if let Some(url) = &info.website {
                 let button = gtk::Button::builder()

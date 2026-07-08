@@ -43,6 +43,13 @@ use crate::{
         },
     },
     close_on_error,
+    playback::resolver::{
+        detect_default_audio_language,
+        pick_subtitle_stream,
+        resolve_alang,
+        resolve_playback_tracks,
+        resolve_slang,
+    },
     ui::{
         GlobalToast,
         models::SETTINGS,
@@ -199,6 +206,8 @@ mod imp {
         #[template_child]
         pub network_speed_label: TemplateChild<gtk::Label>,
         #[template_child]
+        pub finishes_at_label: TemplateChild<gtk::Label>,
+        #[template_child]
         pub network_speed_label_2: TemplateChild<gtk::Button>,
         #[template_child]
         pub playback_speed_indicator: TemplateChild<gtk::Button>,
@@ -225,6 +234,8 @@ mod imp {
         pub y: RefCell<f64>,
         pub last_motion_time: RefCell<i64>,
         pub suburl: RefCell<Option<String>>,
+        pub external_sub_override: RefCell<Option<String>>,
+        pub imdb_id: RefCell<Option<String>>,
         pub skippable_segments: RefCell<Option<Vec<MediaSegment>>>,
         pub current_segment_end: Cell<Option<f64>>,
         pub popover: RefCell<Option<PopoverMenu>>,
@@ -257,8 +268,13 @@ mod imp {
         pub fallback_context: RefCell<Option<super::FallbackContext>>,
         pub playback_direct_mode: RefCell<super::PlaybackDirectMode>,
         pub queued_playback_direct_mode: RefCell<Option<super::PlaybackDirectMode>>,
+        pub trickplay_manifest: RefCell<Option<crate::ui::mpv::trickplay::TrickplayManifest>>,
+        pub trickplay_cache: RefCell<crate::ui::mpv::trickplay::TrickplayCache>,
+        pub trickplay_preview: RefCell<Option<gtk::Popover>>,
+        pub trickplay_picture: RefCell<Option<gtk::Picture>>,
         pub retrying_playback: Cell<bool>,
         pub allow_fallback: Cell<bool>,
+        pub was_fullscreen_before_play: Cell<bool>,
         pub last_nonzero_volume: Cell<i64>,
 
         #[property(get, set, default_value = true)]
@@ -349,6 +365,23 @@ mod imp {
                 .build();
 
             self.video_scale.set_player(Some(&self.video.get()));
+            self.video_scale
+                .connect_scrub_position_changed(glib::clone!(
+                    #[weak(rename_to = imp)]
+                    self,
+                    move |position| {
+                        imp.obj().update_trickplay_preview(position);
+                    }
+                ));
+            self.video_scale.connect_scrub_finished(glib::clone!(
+                #[weak(rename_to = imp)]
+                self,
+                move || {
+                    if let Some(popover) = imp.trickplay_preview.borrow().as_ref() {
+                        popover.popdown();
+                    }
+                }
+            ));
 
             let obj = self.obj();
 
@@ -499,6 +532,10 @@ impl MPVPage {
         true
     }
 
+    pub fn set_external_sub_override(&self, path: Option<String>) {
+        self.imp().external_sub_override.replace(path);
+    }
+
     pub fn play(
         &self, selected: Option<SelectedVideoSubInfo>, item: TuItem, episode_list: Vec<TuItem>,
         video_matcher: Option<String>, start_seconds: f64,
@@ -528,6 +565,7 @@ impl MPVPage {
         self.mpv().set_property("force-media-title", media_title);
 
         let id = item.id();
+        let id_for_info = id.clone();
         let series_id = item.series_id();
         self.imp().video_scale.reset_scale();
         self.imp().last_playback_position.set(start_seconds);
@@ -543,8 +581,24 @@ impl MPVPage {
         #[cfg(target_os = "linux")]
         let track_list_changed = self.mpris_track_list_changed(&episode_list);
 
-        self.set_current_video(Some(item));
+        self.set_current_video(Some(item.clone()));
         self.imp().current_episode_list.replace(episode_list);
+        self.imp().imdb_id.replace(None);
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                if let Ok(info) = crate::utils::spawn_tokio(async move {
+                    JELLYFIN_CLIENT.get_item_info(&id_for_info).await
+                })
+                .await
+                {
+                    obj.imp()
+                        .imdb_id
+                        .replace(info.provider_ids.and_then(|ids| ids.imdb));
+                }
+            }
+        ));
 
         #[cfg(target_os = "linux")]
         {
@@ -568,6 +622,12 @@ impl MPVPage {
         self.imp().retrying_playback.set(false);
         self.imp().allow_fallback.set(true);
 
+        if let Some(window) = self.root().and_downcast::<Window>() {
+            self.imp()
+                .was_fullscreen_before_play
+                .set(window.is_fullscreen());
+        }
+
         self.load_skippable_segments(id.to_owned());
 
         spawn_g_timeout(glib::clone!(
@@ -580,7 +640,12 @@ impl MPVPage {
                 imp.network_speed_label
                     .set_text(&gettext("Initializing..."));
 
-                let sub_stream_index = selected.as_ref().map(|s| s.sub_index);
+                let rules_active = crate::playback::rules::PlaybackRules::load().enabled;
+                let sub_stream_index = if rules_active {
+                    None
+                } else {
+                    selected.as_ref().map(|s| s.sub_index)
+                };
                 let media_source_id = selected.as_ref().map(|s| s.media_source_id.clone());
                 let id_clone = id.to_owned();
                 let playback_info = match spawn_tokio(async move {
@@ -643,32 +708,58 @@ impl MPVPage {
 
                 imp.back.replace(Some(back));
 
-                let media_stream =
-                    if let Some(sub_stream_index) = selected.as_ref().map(|s| s.sub_index) {
-                        media_source.media_streams.get(sub_stream_index as usize)
-                    } else {
-                        let sub_version_list: Vec<_> = media_source
-                            .media_streams
-                            .iter()
-                            .filter(|stream| stream.stream_type == "Subtitle")
-                            .map(|stream| {
-                                (
-                                    stream.index,
-                                    stream.display_title.to_owned().unwrap_or_default(),
-                                )
-                            })
-                            .collect();
-
-                        make_subtitle_version_choice(sub_version_list)
-                            .and_then(|index| media_source.media_streams.get(index.0 as usize))
-                    };
-
-                if let Some(slang) = selected.map(|s| s.sub_lang) {
-                    imp.video.set_slang(slang);
+                if let Some(manifest) = super::trickplay::manifest_from_media_source(media_source) {
+                    imp.trickplay_manifest.replace(Some(manifest));
                 } else {
-                    imp.video
-                        .set_slang(SETTINGS.mpv_subtitle_preferred_lang_str());
+                    imp.trickplay_manifest.take();
                 }
+                imp.trickplay_cache.borrow_mut().clear();
+
+                let audio_lang = detect_default_audio_language(&media_source.media_streams);
+                let resolved = resolve_playback_tracks(audio_lang.as_deref());
+
+                let media_stream = if resolved.subtitles_off {
+                    None
+                } else if !rules_active
+                    && let Some(sub_stream_index) = selected.as_ref().map(|s| s.sub_index)
+                {
+                    media_source.media_streams.get(sub_stream_index as usize)
+                } else if let Some(stream) =
+                    pick_subtitle_stream(&media_source.media_streams, &resolved)
+                {
+                    Some(stream)
+                } else if !rules_active {
+                    let sub_version_list: Vec<_> = media_source
+                        .media_streams
+                        .iter()
+                        .filter(|stream| stream.stream_type == "Subtitle")
+                        .map(|stream| {
+                            (
+                                stream.index,
+                                stream.display_title.to_owned().unwrap_or_default(),
+                            )
+                        })
+                        .collect();
+
+                    make_subtitle_version_choice(sub_version_list)
+                        .and_then(|index| media_source.media_streams.get(index.0 as usize))
+                } else {
+                    None
+                };
+
+                if resolved.subtitles_off {
+                    imp.video.set_slang(String::new());
+                    imp.video
+                        .set_sid(crate::ui::mpv::tsukimi_mpv::TrackSelection::None);
+                } else if !rules_active
+                    && let Some(selected) = selected.as_ref()
+                    && !selected.sub_lang.is_empty()
+                {
+                    imp.video.set_slang(selected.sub_lang.clone());
+                } else {
+                    imp.video.set_slang(resolve_slang(&resolved));
+                }
+                imp.video.set_alang(resolve_alang(&resolved));
 
                 let sub_url = match media_stream {
                     Some(stream) if stream.is_external => match &stream.delivery_url {
@@ -1043,6 +1134,7 @@ impl MPVPage {
         imp.progress_time_label.set_width_chars(width_chars);
         imp.duration_label.set_width_chars(width_chars);
         imp.duration_label.set_text(&duration);
+        self.update_finishes_at();
     }
 
     fn speed_cb(&self, value: f64) {
@@ -1074,6 +1166,26 @@ impl MPVPage {
             self.imp().video_scale.set_value(value as f64);
         }
         self.update_skip_segment_button(value as f64);
+        self.update_finishes_at();
+    }
+
+    fn update_finishes_at(&self) {
+        let imp = self.imp();
+        let scale = imp.video_scale.get();
+        let duration = scale.adjustment().upper();
+        if duration <= 0.0 {
+            imp.finishes_at_label.set_visible(false);
+            return;
+        }
+        let position = scale.value();
+        let remaining = (duration - position).max(0.0) as i64;
+        let finish = chrono::Local::now() + chrono::Duration::seconds(remaining);
+        imp.finishes_at_label.set_text(&format!(
+            "{} {}",
+            gettext("Finishes at"),
+            finish.format("%-I:%M %p")
+        ));
+        imp.finishes_at_label.set_visible(true);
     }
 
     #[template_callback]
@@ -1356,9 +1468,111 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn on_play_pause_clicked(&self) {
+    pub fn on_play_pause_clicked(&self) {
         let video = &self.imp().video;
         video.pause();
+    }
+
+    pub fn seek_relative(&self, seconds: f64) {
+        let video = &self.imp().video;
+        if seconds < 0.0 {
+            video.seek_backward((-seconds).round() as i64);
+        } else {
+            video.seek_forward(seconds.round() as i64);
+        }
+    }
+
+    pub fn adjust_volume(&self, delta: i32) {
+        let imp = self.imp();
+        let vol = (imp.volume_adj.value() as i64 + i64::from(delta)).clamp(0, 100);
+        imp.video.set_volume(vol);
+    }
+
+    pub fn open_subtitle_search(&self) {
+        use crate::subtitles::{
+            SubtitleSearchDialog,
+            preferred_subtitle_language_code,
+        };
+
+        let title = self
+            .current_video()
+            .map(|item| item.name())
+            .unwrap_or_default();
+        let imdb_id = self.imp().imdb_id.borrow().clone();
+        let dialog = SubtitleSearchDialog::new(
+            &title,
+            &preferred_subtitle_language_code(),
+            imdb_id.as_deref(),
+        );
+        dialog.connect_subtitle_downloaded(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |path| {
+                let path = path.display().to_string();
+                obj.imp().video.add_sub(&path);
+                obj.toast(gettext("Subtitle loaded"));
+            }
+        ));
+        dialog.present(self.root().as_ref());
+    }
+
+    fn update_trickplay_preview(&self, seconds: f64) {
+        let imp = self.imp();
+        let Some(manifest) = imp.trickplay_manifest.borrow().clone() else {
+            return;
+        };
+
+        if let Some(bytes) = imp.trickplay_cache.borrow().cached_tile(&manifest, seconds) {
+            self.show_trickplay_preview(bytes, &manifest);
+            return;
+        }
+
+        let url_path = imp.trickplay_cache.borrow().preview_url(&manifest, seconds);
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                let bytes = match super::trickplay::fetch_trickplay_tile(&url_path).await {
+                    Ok(bytes) => bytes,
+                    Err(_) => return,
+                };
+                obj.imp().trickplay_cache.borrow_mut().store_tile(
+                    &manifest,
+                    seconds,
+                    bytes.clone(),
+                );
+                obj.show_trickplay_preview(&bytes, &manifest);
+            }
+        ));
+    }
+
+    fn show_trickplay_preview(&self, bytes: &[u8], manifest: &super::trickplay::TrickplayManifest) {
+        let imp = self.imp();
+        let loader = gtk::gdk_pixbuf::PixbufLoader::new();
+        if loader.write(bytes).is_err() || loader.close().is_err() {
+            return;
+        }
+        let Some(pixbuf) = loader.pixbuf() else {
+            return;
+        };
+
+        let popover = imp.trickplay_preview.borrow().clone().unwrap_or_else(|| {
+            let popover = gtk::Popover::new();
+            popover.set_has_arrow(true);
+            let picture = gtk::Picture::new();
+            popover.set_child(Some(&picture));
+            imp.trickplay_picture.replace(Some(picture));
+            imp.trickplay_preview.replace(Some(popover.clone()));
+            popover
+        });
+
+        if let Some(picture) = imp.trickplay_picture.borrow().as_ref() {
+            picture.set_pixbuf(Some(&pixbuf));
+            picture.set_size_request(manifest.tile_width as i32, manifest.tile_height as i32);
+        }
+
+        popover.set_parent(&imp.video_scale.get());
+        popover.popup();
     }
 
     #[template_callback]
@@ -1377,7 +1591,17 @@ impl MPVPage {
             .and_downcast_ref::<crate::ui::widgets::window::Window>()
             .unwrap();
         window.imp().stack.set_visible_child_name("main");
+        window.sync_tv_button_hints();
         window.allow_suspend();
+
+        let global_fullscreen = SETTINGS.is_fullscreen() || SETTINGS.tv_start_fullscreen();
+        if window.is_fullscreen()
+            && !global_fullscreen
+            && !self.imp().was_fullscreen_before_play.get()
+        {
+            window.unfullscreen();
+        }
+
         window.refresh_homepage_if_needed();
 
         spawn_g_timeout(glib::clone!(

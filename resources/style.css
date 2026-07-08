@@ -394,3 +394,8 @@ progressbar.accent > trough > progress {
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
 }
+
+.tulistitem:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}

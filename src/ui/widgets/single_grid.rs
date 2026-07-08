@@ -38,6 +38,7 @@ use crate::{
             SimpleListItem,
         },
     },
+    tv::set_tv_focused,
     ui::provider::tu_item::PreferPoster,
     utils::{
         spawn,
@@ -394,6 +395,10 @@ impl SingleGrid {
         Object::new()
     }
 
+    pub fn tuview_scrolled(&self) -> super::tuview_scrolled::TuViewScrolled {
+        self.imp().scrolled.get()
+    }
+
     #[template_callback]
     fn on_view_changed_cb(&self, _param: Option<glib::ParamSpec>, group: &adw::ToggleGroup) {
         let view_type = if group.active_name() == Some(glib::GString::from("grid")) {
@@ -639,5 +644,86 @@ impl SingleGrid {
                 ));
             }
         ));
+    }
+
+    pub fn toolbar_widget_count(&self) -> usize {
+        7
+    }
+
+    pub fn clear_toolbar_focus(&self) {
+        let imp = self.imp();
+        set_tv_focused(&imp.postmenu.get(), false);
+        set_tv_focused(&imp.filter.get(), false);
+        set_tv_focused(&imp.glgroup.get(), false);
+        set_tv_focused(&imp.adgroup.get(), false);
+        set_tv_focused(&imp.dropdown.get(), false);
+    }
+
+    pub fn focus_toolbar_index(&self, index: usize) {
+        self.clear_toolbar_focus();
+        let imp = self.imp();
+        match index {
+            0 => {
+                let widget = imp.postmenu.get();
+                set_tv_focused(&widget, true);
+                widget.grab_focus();
+            }
+            1 => {
+                let widget = imp.filter.get();
+                set_tv_focused(&widget, true);
+                widget.grab_focus();
+            }
+            2 | 3 => {
+                let widget = imp.glgroup.get();
+                set_tv_focused(&widget, true);
+                widget.grab_focus();
+            }
+            4 | 5 => {
+                let widget = imp.adgroup.get();
+                set_tv_focused(&widget, true);
+                widget.grab_focus();
+            }
+            6 => {
+                let widget = imp.dropdown.get();
+                set_tv_focused(&widget, true);
+                widget.grab_focus();
+            }
+            _ => {}
+        }
+    }
+
+    pub fn activate_toolbar_index(&self, index: usize) -> bool {
+        let imp = self.imp();
+        match index {
+            0 => {
+                imp.postmenu.get().popup();
+                true
+            }
+            1 => {
+                imp.filter.get().emit_clicked();
+                true
+            }
+            2 => {
+                imp.glgroup.get().set_active_name(Some("grid"));
+                true
+            }
+            3 => {
+                imp.glgroup.get().set_active_name(Some("list"));
+                true
+            }
+            4 => {
+                imp.adgroup.get().set_active_name(Some("asce"));
+                true
+            }
+            5 => {
+                imp.adgroup.get().set_active_name(Some("desc"));
+                true
+            }
+            6 => {
+                gtk::prelude::WidgetExt::activate(&imp.dropdown.get());
+                true
+            }
+            _ => false,
+        }
     }
 }

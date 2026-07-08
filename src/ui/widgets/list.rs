@@ -3,6 +3,7 @@ use glib::Object;
 use gtk::{
     gio,
     glib,
+    prelude::*,
     subclass::prelude::*,
 };
 
@@ -46,6 +47,8 @@ mod imp {
         pub item: OnceCell<TuItem>,
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,
+        #[template_child]
+        pub stack_switcher: TemplateChild<gtk::StackSwitcher>,
     }
 
     #[glib::object_subclass]
@@ -212,6 +215,56 @@ impl ListPage {
             };
 
             stack.add_titled(&page, Some(name), title);
+        }
+    }
+
+    pub fn tab_count(&self) -> usize {
+        let stack = self.imp().stack.get();
+        let mut count = 0usize;
+        let mut child = stack.first_child();
+        while child.is_some() {
+            count += 1;
+            child = child.and_then(|widget| widget.next_sibling());
+        }
+        count
+    }
+
+    pub fn visible_grid(&self) -> Option<SingleGrid> {
+        self.imp()
+            .stack
+            .visible_child()
+            .and_downcast::<SingleGrid>()
+    }
+
+    pub fn switch_tab(&self, delta: i32) {
+        let stack = self.imp().stack.get();
+        let mut names = Vec::new();
+        let mut child = stack.first_child();
+        while let Some(widget) = child {
+            let page = stack.page(&widget);
+            if let Some(name) = page.name() {
+                names.push(name.to_string());
+            }
+            child = widget.next_sibling();
+        }
+        if names.is_empty() {
+            return;
+        }
+        let current = stack.visible_child_name().unwrap_or_default().to_string();
+        let pos = names.iter().position(|name| name == &current).unwrap_or(0) as i32;
+        let next = (pos + delta).clamp(0, names.len() as i32 - 1) as usize;
+        stack.set_visible_child_name(&names[next]);
+        self.focus_current_tab();
+    }
+
+    pub fn focus_current_tab(&self) {
+        let switcher = self.imp().stack_switcher.get();
+        let mut child = switcher.first_child();
+        while let Some(widget) = child {
+            if let Ok(button) = widget.clone().downcast::<gtk::ToggleButton>() {
+                crate::tv::set_tv_focused(&button, button.is_active());
+            }
+            child = widget.next_sibling();
         }
     }
 }

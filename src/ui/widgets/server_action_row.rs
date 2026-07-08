@@ -47,6 +47,10 @@ mod imp {
         pub item: OnceCell<AccountItem>,
         #[template_child]
         pub server_image: TemplateChild<gtk::Image>,
+        #[template_child]
+        pub edit_button: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub delete_button: TemplateChild<gtk::Button>,
     }
 
     #[glib::object_subclass]
@@ -116,6 +120,38 @@ impl ServerActionRow {
         glib::Object::builder()
             .property("item", AccountItem::from_simple(&account))
             .build()
+    }
+
+    pub fn set_tv_focused(&self, focused: bool) {
+        crate::tv::set_tv_focused(self, focused);
+    }
+
+    pub fn tv_focus_widgets(&self) -> Vec<gtk::Widget> {
+        vec![
+            self.clone().upcast::<gtk::Widget>(),
+            self.imp().edit_button.get().upcast(),
+            self.imp().delete_button.get().upcast(),
+        ]
+    }
+
+    pub fn set_tv_column_focus(&self, column: usize) {
+        for (index, widget) in self.tv_focus_widgets().into_iter().enumerate() {
+            crate::tv::set_tv_focused(&widget, index == column);
+        }
+    }
+
+    pub fn clear_tv_column_focus(&self) {
+        for widget in self.tv_focus_widgets() {
+            crate::tv::set_tv_focused(&widget, false);
+        }
+    }
+
+    pub fn activate_column(&self, column: u32) {
+        match column {
+            1 => self.imp().edit_button.get().emit_clicked(),
+            2 => self.imp().delete_button.get().emit_clicked(),
+            _ => adw::prelude::ActionRowExt::activate(self),
+        }
     }
 
     #[template_callback]

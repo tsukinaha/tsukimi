@@ -76,6 +76,16 @@ impl Settings {
     const KEY_WINDOW_HEIGHT: &'static str = "window-height"; // i32
     const KEY_IS_MAXIMIZED: &'static str = "is-maximized"; // bool
     const KEY_IS_FULLSCREEN: &'static str = "is-fullscreen"; // bool
+    const KEY_GAMEPAD_ENABLED: &'static str = "gamepad-enabled";
+    const KEY_TV_MODE: &'static str = "tv-mode";
+    const KEY_TV_UI_SCALE: &'static str = "tv-ui-scale";
+    const KEY_TV_START_FULLSCREEN: &'static str = "tv-start-fullscreen";
+    const KEY_TV_HIDE_SIDEBAR: &'static str = "tv-hide-sidebar";
+    const KEY_TV_SHOW_BUTTON_HINTS: &'static str = "tv-show-button-hints";
+    const KEY_PLAYBACK_CONDITIONAL_RULES: &'static str = "playback-conditional-rules";
+    const KEY_OPENSUBTITLES_API_KEY: &'static str = "opensubtitles-api-key";
+    const KEY_SUBDL_API_KEY: &'static str = "subdl-api-key";
+    const KEY_SUBTITLE_PROVIDERS_ENABLED: &'static str = "subtitle-providers-enabled";
 
     pub fn is_overlay(&self) -> bool {
         self.boolean(Self::KEY_IS_OVERLAY)
@@ -361,6 +371,22 @@ impl Settings {
         self.int(Self::KEY_MPV_SUBTITLE_PREFERRED_LANG)
     }
 
+    pub fn mpv_audio_preferred_lang_str(&self) -> String {
+        match self.mpv_audio_preferred_lang() {
+            1 => "eng",
+            2 => "chs",
+            3 => "jpn",
+            4 => "chi",
+            5 => "ara",
+            6 => "nob",
+            7 => "por",
+            8 => "fre",
+            9 => "rus",
+            _ => "",
+        }
+        .to_string()
+    }
+
     pub fn mpv_subtitle_preferred_lang_str(&self) -> String {
         match self.mpv_subtitle_preferred_lang() {
             1 => "eng",
@@ -509,6 +535,90 @@ impl Settings {
 
     pub fn background_enabled(&self) -> bool {
         self.boolean(Self::KEY_IS_BACKGROUND_ENABLED)
+    }
+
+    pub fn gamepad_enabled(&self) -> bool {
+        self.boolean(Self::KEY_GAMEPAD_ENABLED)
+    }
+
+    pub fn set_gamepad_enabled(&self, enabled: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_GAMEPAD_ENABLED, enabled)
+    }
+
+    pub fn tv_mode(&self) -> bool {
+        self.boolean(Self::KEY_TV_MODE)
+    }
+
+    pub fn set_tv_mode(&self, enabled: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_TV_MODE, enabled)
+    }
+
+    pub fn tv_ui_scale(&self) -> f64 {
+        let scale = self.double(Self::KEY_TV_UI_SCALE);
+        if scale < 1.0 { 1.0 } else { scale }
+    }
+
+    pub fn set_tv_ui_scale(&self, scale: f64) -> Result<(), glib::BoolError> {
+        self.set_double(Self::KEY_TV_UI_SCALE, scale)
+    }
+
+    pub fn tv_start_fullscreen(&self) -> bool {
+        self.boolean(Self::KEY_TV_START_FULLSCREEN)
+    }
+
+    pub fn set_tv_start_fullscreen(&self, enabled: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_TV_START_FULLSCREEN, enabled)
+    }
+
+    pub fn tv_hide_sidebar(&self) -> bool {
+        self.boolean(Self::KEY_TV_HIDE_SIDEBAR)
+    }
+
+    pub fn set_tv_hide_sidebar(&self, enabled: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_TV_HIDE_SIDEBAR, enabled)
+    }
+
+    pub fn tv_show_button_hints(&self) -> bool {
+        self.boolean(Self::KEY_TV_SHOW_BUTTON_HINTS)
+    }
+
+    pub fn playback_conditional_rules(&self) -> crate::playback::rules::PlaybackRulesConfig {
+        let raw = self.string(Self::KEY_PLAYBACK_CONDITIONAL_RULES);
+        serde_json::from_str(&raw).unwrap_or_default()
+    }
+
+    pub fn set_playback_conditional_rules(
+        &self, config: &crate::playback::rules::PlaybackRulesConfig,
+    ) -> Result<(), glib::BoolError> {
+        let raw = serde_json::to_string(config)
+            .map_err(|_| glib::bool_error!("Failed to serialize playback rules"))?;
+        self.set_string(Self::KEY_PLAYBACK_CONDITIONAL_RULES, &raw)
+    }
+
+    pub fn opensubtitles_api_key(&self) -> String {
+        self.string(Self::KEY_OPENSUBTITLES_API_KEY).to_string()
+    }
+
+    pub fn set_opensubtitles_api_key(&self, key: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_OPENSUBTITLES_API_KEY, key)
+    }
+
+    pub fn subdl_api_key(&self) -> String {
+        self.string(Self::KEY_SUBDL_API_KEY).to_string()
+    }
+
+    pub fn set_subdl_api_key(&self, key: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_SUBDL_API_KEY, key)
+    }
+
+    pub fn subtitle_provider_enabled(&self, id: &str) -> bool {
+        self.string(Self::KEY_SUBTITLE_PROVIDERS_ENABLED)
+            .split(',')
+            .any(|entry| entry.trim() == id)
+    }
+
+    pub fn set_tv_show_button_hints(&self, enabled: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_TV_SHOW_BUTTON_HINTS, enabled)
     }
 }
 

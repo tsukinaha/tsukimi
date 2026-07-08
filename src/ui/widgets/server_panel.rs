@@ -32,6 +32,11 @@ use crate::{
 
 use super::utils::GlobalToast;
 
+#[derive(Clone)]
+pub struct ServerFocusGroup {
+    pub rows: Vec<gtk::Widget>,
+}
+
 pub(crate) mod imp {
     use glib::subclass::InitializingObject;
 
@@ -345,6 +350,48 @@ impl ServerPanel {
         };
 
         self.toast(gettext("Task started"));
+    }
+
+    pub fn focus_groups(&self) -> Vec<ServerFocusGroup> {
+        let imp = self.imp();
+        [
+            imp.system_log_group.get(),
+            imp.activity_log_group.get(),
+            imp.task_group.get(),
+        ]
+        .into_iter()
+        .map(|group| {
+            let mut rows = Vec::new();
+            let mut child = group.first_child();
+            while let Some(row) = child {
+                let next = row.next_sibling();
+                rows.push(row.upcast());
+                child = next;
+            }
+            ServerFocusGroup { rows }
+        })
+        .filter(|group| !group.rows.is_empty())
+        .collect()
+    }
+
+    pub fn activate_focused_row(
+        &self, groups: &[ServerFocusGroup], group_index: usize, row_index: usize,
+    ) -> bool {
+        let Some(group) = groups.get(group_index) else {
+            return false;
+        };
+        let Some(row) = group.rows.get(row_index) else {
+            return false;
+        };
+        if let Ok(action_row) = row.clone().downcast::<adw::ActionRow>()
+            && let Some(button) = action_row
+                .last_child()
+                .and_then(|child| child.downcast::<gtk::Button>().ok())
+        {
+            button.emit_clicked();
+            return true;
+        }
+        false
     }
 }
 

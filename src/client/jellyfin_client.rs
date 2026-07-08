@@ -276,8 +276,9 @@ impl JellyfinClient {
     where
         T: for<'de> Deserialize<'de> + Send + 'static,
     {
-        let request = self.prepare_request(Method::GET, path, params)?;
-        let res = self.send_request(request).await?;
+        let res = self
+            .send_get_with_retry(|| self.prepare_request(Method::GET, path, params))
+            .await?;
 
         let res = match res.error_for_status() {
             Ok(r) => r,
@@ -304,15 +305,17 @@ impl JellyfinClient {
     pub async fn request_picture(
         &self, path: &str, params: &[(&str, &str)], etag: Option<String>,
     ) -> Result<Response> {
-        let request = self
-            .prepare_request(Method::GET, path, params)?
-            .header("If-None-Match", etag.unwrap_or_default());
-        let res = self.send_request(request).await?;
-        Ok(res)
+        self.send_get_with_retry(|| {
+            Ok(self
+                .prepare_request(Method::GET, path, params)?
+                .header("If-None-Match", etag.clone().unwrap_or_default()))
+        })
+        .await
     }
 
     pub async fn delete(&self, path: &str, params: &[(&str, &str)]) -> Result<Response> {
         let request = self.prepare_request(Method::DELETE, path, params)?;
+        let _permit = self.semaphore.acquire().await?;
         self.send_request(request).await
     }
 
@@ -323,6 +326,7 @@ impl JellyfinClient {
         let request = self
             .prepare_request(Method::POST, path, params)?
             .json(&body);
+        let _permit = self.semaphore.acquire().await?;
         self.send_request(request).await
     }
 
@@ -333,6 +337,7 @@ impl JellyfinClient {
         let request = self
             .prepare_request_headers(Method::POST, path, &[], content_type)?
             .body(body);
+        let _permit = self.semaphore.acquire().await?;
         self.send_request(request).await
     }
 
@@ -377,8 +382,37 @@ impl JellyfinClient {
             .headers(headers))
     }
 
-    async fn send_request(&self, request: RequestBuilder) -> Result<Response> {
+    async fn send_get_with_retry(
+        &self, build: impl Fn() -> Result<RequestBuilder>,
+    ) -> Result<Response> {
+        const MAX_ATTEMPTS: u32 = 3;
         let _permit = self.semaphore.acquire().await?;
+        let mut last_error = None;
+
+        for attempt in 0..MAX_ATTEMPTS {
+            match build()?.send().await {
+                Ok(response) => return Ok(response),
+                Err(error) if error.is_timeout() && attempt + 1 < MAX_ATTEMPTS => {
+                    warn!(
+                        "Request timed out (attempt {} of {}), retrying",
+                        attempt + 1,
+                        MAX_ATTEMPTS
+                    );
+                    last_error = Some(error);
+                    tokio::time::sleep(Duration::from_millis(750 * (attempt + 1) as u64)).await;
+                }
+                Err(error) => return Err(anyhow!(error.to_user_facing())),
+            }
+        }
+
+        Err(anyhow!(
+            last_error
+                .expect("retry loop exits early on success")
+                .to_user_facing()
+        ))
+    }
+
+    async fn send_request(&self, request: RequestBuilder) -> Result<Response> {
         request
             .send()
             .await
@@ -914,6 +948,15 @@ impl JellyfinClient {
         url.join(path.trim_start_matches('/')).unwrap().to_string()
     }
 
+    pub async fn fetch_bytes(&self, path: &str) -> Result<Vec<u8>> {
+        let response = self
+            .send_get_with_retry(|| {
+                self.prepare_request(Method::GET, path.trim_start_matches('/'), &[])
+            })
+            .await?;
+        Ok(response.bytes().await?.to_vec())
+    }
+
     #[allow(clippy::too_many_arguments)]
     pub async fn get_list(
         &self, id: &str, start: u32, include_item_types: &str, list_type: ListType,
@@ -948,6 +991,7 @@ impl JellyfinClient {
                     ("IncludeItemTypes", include_item_type),
                     ("SortBy", sortby),
                     ("SortOrder", sort_order),
+                    ("EnableTotalRecordCount", "true"),
                     ("EnableImageTypes", "Primary,Backdrop,Thumb,Banner"),
                     if list_type == ListType::Liked {
                         ("Filters", "IsFavorite")

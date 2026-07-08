@@ -75,6 +75,22 @@ pub const TU_ITEM_VIDEO_SIZE: (i32, i32) = (250, 141);
 pub const TU_ITEM_SQUARE_SIZE: (i32, i32) = (190, 190);
 pub const TU_ITEM_BANNER_SIZE: (i32, i32) = (375, 70);
 
+pub fn tu_item_post_size() -> (i32, i32) {
+    crate::tv::scale_pair(TU_ITEM_POST_SIZE)
+}
+
+pub fn tu_item_video_size() -> (i32, i32) {
+    crate::tv::scale_pair(TU_ITEM_VIDEO_SIZE)
+}
+
+pub fn tu_item_square_size() -> (i32, i32) {
+    crate::tv::scale_pair(TU_ITEM_SQUARE_SIZE)
+}
+
+pub fn tu_item_banner_size() -> (i32, i32) {
+    crate::tv::scale_pair(TU_ITEM_BANNER_SIZE)
+}
+
 pub trait GlobalToast {
     fn toast(&self, message: impl Into<String>);
 

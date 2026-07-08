@@ -97,7 +97,10 @@ pub(crate) mod imp {
         pub artisthortu: TemplateChild<HortuScrolled>,
         #[template_child]
         pub actionbox: TemplateChild<ItemActionsBox>,
+        #[template_child]
+        pub play_button: TemplateChild<gtk::Button>,
         pub signal_id: RefCell<Option<SignalHandlerId>>,
+        pub song_focus_index: RefCell<usize>,
     }
 
     #[glib::object_subclass]
@@ -406,5 +409,126 @@ impl AlbumPage {
         };
         let active_core_song = widget.downcast::<SongWidget>().unwrap().coresong();
         bing_song_model!(self, active_model, active_core_song);
+    }
+
+    pub fn focus_hortu_rows(&self) -> Vec<super::hortu_scrolled::HortuScrolled> {
+        let imp = self.imp();
+        [imp.recommendhortu.get(), imp.artisthortu.get()]
+            .into_iter()
+            .filter(|row| row.is_visible() && row.item_count() > 0)
+            .collect()
+    }
+
+    pub fn song_widgets(&self) -> Vec<SongWidget> {
+        let mut songs = Vec::new();
+        let listbox = self.imp().listbox.get();
+        let mut child = listbox.first_child();
+        while let Some(disc) = child {
+            if let Some(discbox) = disc.downcast_ref::<DiscBox>() {
+                let mut song_child = discbox.imp().listbox.first_child();
+                while let Some(widget) = song_child {
+                    if let Some(song) = widget.downcast_ref::<SongWidget>() {
+                        songs.push(song.clone());
+                    }
+                    song_child = widget.next_sibling();
+                }
+            }
+            child = disc.next_sibling();
+        }
+        songs
+    }
+
+    pub fn focus_default_action(&self) {
+        crate::tv::set_tv_focused(&self.imp().play_button.get(), true);
+    }
+
+    pub fn clear_action_focus(&self) {
+        crate::tv::set_tv_focused(&self.imp().play_button.get(), false);
+        crate::tv::set_tv_focused(
+            &self
+                .imp()
+                .actionbox
+                .favourite_button()
+                .upcast::<gtk::Widget>(),
+            false,
+        );
+        crate::tv::set_tv_focused(
+            &self.imp().actionbox.menu_button().upcast::<gtk::Widget>(),
+            false,
+        );
+    }
+
+    pub fn navigate_actions(&self, delta: i32) {
+        let widgets = [
+            self.imp().play_button.get().upcast::<gtk::Widget>(),
+            self.imp()
+                .actionbox
+                .favourite_button()
+                .upcast::<gtk::Widget>(),
+            self.imp().actionbox.menu_button().upcast::<gtk::Widget>(),
+        ];
+        let current = widgets
+            .iter()
+            .position(|widget| widget.has_css_class("tv-focused"))
+            .unwrap_or(0) as i32;
+        let next = (current + delta).clamp(0, widgets.len() as i32 - 1) as usize;
+        self.clear_action_focus();
+        crate::tv::set_tv_focused(&widgets[next], true);
+    }
+
+    pub fn activate_focused_action(&self) {
+        let widgets = [
+            self.imp().play_button.get().upcast::<gtk::Widget>(),
+            self.imp()
+                .actionbox
+                .favourite_button()
+                .upcast::<gtk::Widget>(),
+            self.imp().actionbox.menu_button().upcast::<gtk::Widget>(),
+        ];
+        let index = widgets
+            .iter()
+            .position(|widget| widget.has_css_class("tv-focused"))
+            .unwrap_or(0);
+        match index {
+            0 => self.imp().play_button.emit_clicked(),
+            1 => self.imp().actionbox.favourite_button().emit_clicked(),
+            2 => self.imp().actionbox.menu_button().popup(),
+            _ => {}
+        }
+    }
+
+    pub fn focus_default_song(&self) {
+        if let Some(song) = self.song_widgets().first() {
+            crate::tv::set_tv_focused(song, true);
+            *self.imp().song_focus_index.borrow_mut() = 0;
+        }
+    }
+
+    pub fn clear_song_focus(&self) {
+        for song in self.song_widgets() {
+            crate::tv::set_tv_focused(&song, false);
+        }
+    }
+
+    pub fn navigate_songs(&self, delta: i32) {
+        let songs = self.song_widgets();
+        if songs.is_empty() {
+            return;
+        }
+        let current = *self.imp().song_focus_index.borrow() as i32;
+        let next = (current + delta).clamp(0, songs.len() as i32 - 1) as usize;
+        self.clear_song_focus();
+        *self.imp().song_focus_index.borrow_mut() = next;
+        if let Some(song) = songs.get(next) {
+            crate::tv::set_tv_focused(song, true);
+        }
+    }
+
+    pub fn activate_focused_song(&self) {
+        let songs = self.song_widgets();
+        let index = *self.imp().song_focus_index.borrow();
+        if let Some(song) = songs.get(index) {
+            self.song_activated(song.clone());
+        }
     }
 }
