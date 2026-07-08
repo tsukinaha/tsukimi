@@ -1228,7 +1228,6 @@ impl JellyfinClient {
             ("Recursive", "true"),
             ("IncludeItemTypes", "Movie,Series"),
             ("SortBy", "IsFavoriteOrLiked,Random"),
-            ("Recursive", "true"),
         ];
         self.request(&path, &params).await
     }
