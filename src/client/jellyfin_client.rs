@@ -1283,7 +1283,6 @@ impl JellyfinClient {
             ("Recursive", "true"),
             ("IncludeItemTypes", "Playlist,BoxSet"),
             ("SortBy", "SortName"),
-            ("Recursive", "true"),
         ];
         self.request(&path, &params).await
     }
