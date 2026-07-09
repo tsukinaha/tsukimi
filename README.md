@@ -80,13 +80,9 @@ sudo emerge --ask media-video/tsukimi
 
 ## Contributing
 
-### Translations
+###
 
-If you'd like to help translating **Tsukimi** into your language, please head over to [Weblate](https://hosted.weblate.org/projects/tsukimi/).
 
-<a href="https://hosted.weblate.org/engage/tsukimi/">
-    <img src="https://hosted.weblate.org/widget/tsukimi/main/multi-auto.svg" alt="Translate Status" />
-</a>
 
 ## Disclaimer
 The developers of this application does not have any affiliation with the content providers available.
