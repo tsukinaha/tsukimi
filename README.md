@@ -72,17 +72,12 @@ sudo emerge --ask media-video/tsukimi
 ### Nix
 `tsukimi` is available in nixpkgs since 24.11.
 
-### Source code
-[Build on Linux](./docs/build_on_linux.md)
-
 ## MPV Config
 [MPV-manual#files](https://mpv.io/manual/master/#files)
 
 ## Contributing
-
-###
-
-
+Please, follow the [contribution guide](./CONTRIBUTING.md) to know how to
+start contributing to Tsukimi.
 
 ## Disclaimer
 The developers of this application does not have any affiliation with the content providers available.
