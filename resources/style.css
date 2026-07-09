@@ -175,6 +175,11 @@ button.star.interacted:not(.starred) image {
   border-radius: 10px;
 }
 
+.vertical-listview .playlist-current {
+  background-color: alpha(@accent_bg_color, 0.16);
+  border-radius: 10px;
+}
+
 picture {
   border-radius: 10px;
 }

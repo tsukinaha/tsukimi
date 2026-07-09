@@ -40,7 +40,10 @@ mod imp {
                 player_toolbar::PlayerToolbarBox,
                 search::SearchPage,
                 theme_switcher::ThemeSwitcher,
-                tu_overview_item::imp::ViewGroup,
+                tu_overview_item::{
+                    TuOverviewItem,
+                    imp::ViewGroup,
+                },
                 utils::TuItemBuildExt,
             },
         },
@@ -187,13 +190,40 @@ mod imp {
             self.mpv_playlist_selection.set_model(Some(&store));
             self.mpv_playlist
                 .set_model(Some(&self.mpv_playlist_selection));
-            self.mpv_playlist.set_factory(Some(
-                gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
+            let mpvnav = self.mpvnav.get();
+            let playlist_factory = gtk::SignalListItemFactory::new();
+            playlist_factory.tu_overview_item(ViewGroup::EpisodesView);
+            playlist_factory.connect_setup(glib::clone!(
+                #[weak]
+                mpvnav,
+                move |_, item| {
+                    let Some(list_item) = item.downcast_ref::<gtk::ListItem>() else {
+                        return;
+                    };
+                    let Some(tu_item) = list_item.child().and_downcast::<TuOverviewItem>() else {
+                        return;
+                    };
+                    mpvnav
+                        .bind_property("current-video", &tu_item, "current-video")
+                        .sync_create()
+                        .build();
+                }
             ));
+            self.mpv_playlist.set_factory(Some(&playlist_factory));
             self.mpv_control_sidebar
                 .set_player(Some(&self.mpvnav.imp().video.get()));
 
             let obj = self.obj();
+            self.mpvnav.connect_notify_local(
+                Some("current-video"),
+                glib::clone!(
+                    #[weak]
+                    obj,
+                    move |_, _| {
+                        obj.sync_playlist_selection_to_current();
+                    }
+                ),
+            );
 
             self.sidebar_breakpoint.connect_apply(glib::clone!(
                 #[weak]
@@ -256,6 +286,7 @@ use super::{
     server_action_row,
     server_panel::ServerPanel,
     tu_item::PROGRESSBAR_ANIMATION_DURATION,
+    tu_overview_item::TuOverviewItem,
     utils::GlobalToast,
 };
 use crate::{
@@ -935,6 +966,38 @@ impl Window {
         let imp = self.imp();
         imp.mpv_view.set_show_sidebar(!imp.mpv_view.shows_sidebar());
         imp.mpv_view_stack.set_visible_child_name("playlist");
+        self.scroll_playlist_to_current();
+    }
+
+    fn sync_playlist_selection_to_current(&self) -> Option<u32> {
+        let current_video = self.imp().mpvnav.current_video()?;
+        let model = self.imp().mpv_playlist_selection.model()?;
+        let store = model.downcast::<gio::ListStore>().ok()?;
+        let index = (0..store.n_items()).find(|index| {
+            store
+                .item(*index)
+                .and_downcast_ref::<TuObject>()
+                .is_some_and(|object| {
+                    TuOverviewItem::matches_current_video(&object.item(), Some(&current_video))
+                })
+        })?;
+        self.imp().mpv_playlist_selection.set_selected(index);
+        Some(index)
+    }
+
+    fn scroll_playlist_to_current(&self) {
+        let Some(index) = self.sync_playlist_selection_to_current() else {
+            return;
+        };
+
+        let playlist = self.imp().mpv_playlist.get();
+        playlist.add_tick_callback(move |playlist, _| {
+            let playlist = playlist.clone();
+            glib::idle_add_local_once(move || {
+                playlist.scroll_to(index, gtk::ListScrollFlags::all(), None);
+            });
+            glib::ControlFlow::Break
+        });
     }
 
     pub fn view_control_sidebar(&self) {

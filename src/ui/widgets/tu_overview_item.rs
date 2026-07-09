@@ -69,6 +69,8 @@ pub mod imp {
     pub struct TuOverviewItem {
         #[property(get, set = Self::set_item)]
         pub item: RefCell<TuItem>,
+        #[property(get, set = Self::set_current_video, nullable)]
+        pub current_video: RefCell<Option<TuItem>>,
         #[template_child]
         pub overview: TemplateChild<gtk::Inscription>,
         #[template_child]
@@ -136,6 +138,11 @@ pub mod imp {
             self.obj().set_up();
         }
 
+        fn set_current_video(&self, current_video: Option<TuItem>) {
+            self.current_video.replace(current_video);
+            self.obj().sync_current_video_style();
+        }
+
         fn set_view_group(&self, view_group: ViewGroup) {
             self.view_group.set(view_group);
         }
@@ -191,6 +198,29 @@ impl TuOverviewItem {
 
     pub fn default() -> Self {
         Object::new()
+    }
+
+    pub(crate) fn matches_current_video(item: &TuItem, current_video: Option<&TuItem>) -> bool {
+        let Some(current_video) = current_video else {
+            return false;
+        };
+
+        let has_episode_number = item.index_number() != 0 || item.parent_index_number() != 0;
+
+        item.id() == current_video.id()
+            || (has_episode_number
+                && item.index_number() == current_video.index_number()
+                && item.parent_index_number() == current_video.parent_index_number())
+    }
+
+    fn sync_current_video_style(&self) {
+        let current_video = self.current_video();
+        let is_current = Self::matches_current_video(&self.item(), current_video.as_ref());
+        if is_current {
+            self.add_css_class("playlist-current");
+        } else {
+            self.remove_css_class("playlist-current");
+        }
     }
 
     pub fn set_up(&self) {
@@ -277,5 +307,41 @@ impl TuOverviewItem {
         }
         self.set_picture();
         self.set_tooltip_text(Some(&item.name()));
+        self.sync_current_video_style();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn video(id: &str, season: u32, episode: u32) -> TuItem {
+        let item = TuItem::default();
+        item.set_id(id);
+        item.set_parent_index_number(season);
+        item.set_index_number(episode);
+        item
+    }
+
+    #[test]
+    fn current_video_match_falls_back_to_episode_numbers_when_id_differs() {
+        let playlist_item = video("playlist-id", 1, 2);
+        let current_video = video("current-id", 1, 2);
+
+        assert!(TuOverviewItem::matches_current_video(
+            &playlist_item,
+            Some(&current_video)
+        ));
+    }
+
+    #[test]
+    fn current_video_match_does_not_fall_back_to_empty_episode_numbers() {
+        let playlist_item = video("playlist-id", 0, 0);
+        let current_video = video("current-id", 0, 0);
+
+        assert!(!TuOverviewItem::matches_current_video(
+            &playlist_item,
+            Some(&current_video)
+        ));
     }
 }
