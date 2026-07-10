@@ -16,8 +16,8 @@ mod utils;
 pub mod client;
 
 pub use arg::Args;
-pub use config::*;
 use clap::Parser;
+pub use config::*;
 use gettextrs::*;
 use gtk::prelude::*;
 
@@ -44,8 +44,7 @@ pub fn run() -> gtk::glib::ExitCode {
     // Initialize gettext
     setlocale(LocaleCategory::LcAll, String::new());
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8").expect("Failed to set textdomain codeset");
-    bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR)
-        .expect("Invalid argument passed to bindtextdomain");
+    bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR).expect("Invalid argument passed to bindtextdomain");
 
     textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
 
