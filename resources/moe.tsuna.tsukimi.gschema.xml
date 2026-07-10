@@ -275,6 +275,10 @@
       <summary>Merge Continue Watching and Next Up on Jellyfin</summary>
       <default>false</default>
     </key>
+    <key name="auto-skip-intro-outro" type="b">
+      <summary>Automatically skip intro and outro segments</summary>
+      <default>false</default>
+    </key>
     <key name="is-danmaku-enabled" type="b">
       <summary>Whether the danmaku is enabled</summary>
       <default>false</default>

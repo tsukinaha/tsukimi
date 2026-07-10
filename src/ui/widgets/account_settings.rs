@@ -71,6 +71,8 @@ mod imp {
         #[template_child]
         pub merge_resume_next_up_control: TemplateChild<adw::SwitchRow>,
         #[template_child]
+        pub auto_skip_intro_outro_control: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub selectlastcontrol: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub text_display_group: TemplateChild<adw::ToggleGroup>,
@@ -421,6 +423,13 @@ impl AccountSettings {
             .bind(
                 "merge-resume-and-next-up",
                 &imp.merge_resume_next_up_control.get(),
+                "active",
+            )
+            .build();
+        SETTINGS
+            .bind(
+                "auto-skip-intro-outro",
+                &imp.auto_skip_intro_outro_control.get(),
                 "active",
             )
             .build();
