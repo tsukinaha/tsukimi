@@ -70,6 +70,7 @@ impl Settings {
     const KEY_MPV_CONFIG_DIR: &'static str = "mpv-config-path"; // String
     const KEY_IS_REFRESH: &'static str = "is-refresh"; // bool
     const KEY_MERGE_RESUME_AND_NEXT_UP: &'static str = "merge-resume-and-next-up"; // bool
+    const KEY_AUTO_SKIP_INTRO_OUTRO: &'static str = "auto-skip-intro-outro"; // bool
     const KEY_DEVICE_UUID: &'static str = "device-uuid"; // String
     const KEY_MAIN_THEME: &'static str = "main-theme"; // i32
     const KEY_WINDOW_WIDTH: &'static str = "window-width"; // i32
@@ -131,6 +132,10 @@ impl Settings {
 
     pub fn merge_resume_and_next_up(&self) -> bool {
         self.boolean(Self::KEY_MERGE_RESUME_AND_NEXT_UP)
+    }
+
+    pub fn auto_skip_intro_outro(&self) -> bool {
+        self.boolean(Self::KEY_AUTO_SKIP_INTRO_OUTRO)
     }
 
     pub fn item_text_display(&self) -> String {

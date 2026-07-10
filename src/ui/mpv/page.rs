@@ -765,6 +765,13 @@ impl MPVPage {
                             .then_some((segment.segment_type, end))
                     })
                 });
+        let segment_end = current_segment.map(|(_, end)| end);
+        self.imp().current_segment_end.set(segment_end);
+
+        if segment_end.is_some() && SETTINGS.auto_skip_intro_outro() {
+            return self.on_skip_segment_clicked();
+        }
+
         if let Some((kind, _)) = current_segment {
             let label = match kind {
                 MediaSegmentType::Intro => gettext("Skip Intro"),
@@ -773,8 +780,6 @@ impl MPVPage {
             };
             self.imp().skip_segment_button.set_label(&label);
         }
-        let segment_end = current_segment.map(|(_, end)| end);
-        self.imp().current_segment_end.set(segment_end);
         self.imp()
             .skip_segment_revealer
             .set_reveal_child(segment_end.is_some());

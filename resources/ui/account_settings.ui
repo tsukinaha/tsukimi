@@ -72,6 +72,17 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Playback</property>
+            <child>
+              <object class="AdwSwitchRow" id="auto_skip_intro_outro_control">
+                <property name="title" translatable="yes">Automatically Skip Intros and Outros</property>
+                <property name="subtitle" translatable="yes">Jellyfin only</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Appearance</property>
             <child>
               <object class="AdwSwitchRow" id="custom_accent_color_control">
