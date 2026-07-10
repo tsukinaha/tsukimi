@@ -69,7 +69,7 @@ dependency(
 find_program('xmllint', required: false)
 dependency('epoxy')
 dependency('mpv', version: '>=0.38')
-dependency('glycin', version: '>=2.0')
+dependency('glycin-2', version: '>=2.0')
 
 dependency('gstreamer-1.0', version: '>= 1.16')
 dependency('gstreamer-base-1.0', version: '>= 1.16')
