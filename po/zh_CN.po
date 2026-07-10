@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
-"PO-Revision-Date: 2026-07-03 08:01+0000\n"
+"PO-Revision-Date: 2026-07-10 13:01+0000\n"
 "Last-Translator: ᴀᴍᴛᴏᴀᴇʀ <amtoaer@outlook.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
@@ -576,7 +576,7 @@ msgstr "播放"
 
 #: resources/ui/account_settings.ui:78
 msgid "Automatically Skip Intros and Outros"
-msgstr ""
+msgstr "自动跳过片头片尾"
 
 #: resources/ui/account_settings.ui:79 resources/ui/account_settings.ui:176
 msgid "Jellyfin only"
