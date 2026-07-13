@@ -1021,6 +1021,8 @@ impl Window {
                     .website("https://github.com/tsukinaha/tsukimi")
                     .application_icon("moe.tsuna.tsukimi")
                     .license_type(gtk::License::Gpl30)
+                    .copyright("© MutsumiUniverse")
+                    .issue_url("https://github.com/tsukinaha/tsukimi/issues")
                     .build();
                 about.set_debug_info(&format!(
                     "Version: {}\nArchitecture: {}\nGTK Version: {}.{}.{}\nADW Version: {}.{}.{}\nOS: {}\n",
@@ -1039,6 +1041,7 @@ impl Window {
                     Some("Special Thanks"),
                     &["Qound", "Eikano"],
                 );
+                about.add_other_app("io.github.mutsumiuniverse.fughetta", "Fughetta", "A GTK4 frontend for MPV, embedded by wl-proxy, written in Rust.");
                 about.present(Some(window));
             })
             .build();
