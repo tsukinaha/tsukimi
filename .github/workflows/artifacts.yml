@@ -54,4 +54,4 @@ jobs:
           uses: softprops/action-gh-release@v3
           with:
             files: artifacts/*
-            prerelease: ${{ github.ref_type == 'tag' && contains(github.ref_name, 'rc') }}
+            prerelease: ${{ contains(github.ref_name, 'rc') }}
