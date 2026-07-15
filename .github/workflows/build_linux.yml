@@ -39,6 +39,7 @@ jobs:
             libgstreamer-plugins-extra1.0-dev \
             libgtk-4-dev \
             libmpv-dev \
+            blueprint-compiler \
             libssl-dev
 
       - name: Checkout
