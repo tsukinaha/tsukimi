@@ -510,6 +510,8 @@
     <property name="width-request">320</property>
     <property name="position">top</property>
     <property name="has-arrow">true</property>
+    <signal name="map" handler="on_popover_opened" swapped="yes" />
+    <signal name="unmap" handler="on_popover_closed" swapped="yes" />
     <child>
       <object class="GtkScrolledWindow">
         <child>
@@ -529,6 +531,8 @@
     <property name="width-request">320</property>
     <property name="position">top</property>
     <property name="has-arrow">true</property>
+    <signal name="map" handler="on_popover_opened" swapped="yes" />
+    <signal name="unmap" handler="on_popover_closed" swapped="yes" />
     <child>
       <object class="GtkScrolledWindow">
         <child>
@@ -547,6 +551,8 @@
   <object class="GtkPopover" id="volume_adj_popover">
     <property name="position">top</property>
     <property name="has-arrow">true</property>
+    <signal name="map" handler="on_popover_opened" swapped="yes" />
+    <signal name="unmap" handler="on_popover_closed" swapped="yes" />
     <child>
     <object class="GtkScale" id="volume_scale">
       <property name="adjustment">volume_adj</property>

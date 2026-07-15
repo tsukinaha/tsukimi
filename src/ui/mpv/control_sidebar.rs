@@ -9,7 +9,6 @@ use gtk::{
     glib,
     template_callbacks,
 };
-use libmpv2::SetData;
 
 use super::options_matcher::{
     match_audio_channels,
@@ -356,7 +355,7 @@ impl MPVControlSidebar {
 
     pub fn set_mpv_property<V>(&self, property: &str, value: V)
     where
-        V: SetData + Send + 'static,
+        V: Into<mutsumi::MpvValue>,
     {
         if let Some(player) = self.player() {
             player.set_property(property, value)

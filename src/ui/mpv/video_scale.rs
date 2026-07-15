@@ -4,7 +4,7 @@ use gtk::{
     subclass::prelude::*,
 };
 
-use super::tsukimi_mpv::ChapterList;
+use mutsumi::*;
 
 mod imp {
     use std::cell::Cell;
