@@ -1,190 +1,180 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# Braden DeForest <btdefores@gmail.com>, 2025, 2026.
-# Flowensity <flowensity@proton.me>, 2026.
-# Inaha <sakuovds@gmail.com>, 2026.
 # Ornifex <persoon@outlook.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-20 20:35+0800\n"
-"PO-Revision-Date: 2026-07-15 22:01+0000\n"
+"POT-Creation-Date: 2026-07-15 18:26+0200\n"
+"PO-Revision-Date: 2026-07-15 23:01+0000\n"
 "Last-Translator: Ornifex <persoon@outlook.com>\n"
-"Language-Team: Japanese <https://hosted.weblate.org/projects/tsukimi/main/"
-"ja/>\n"
-"Language: ja\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/tsukimi/main/nl/>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 2026.8.dev0\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: src/client/error.rs:19
 msgid "Timeout Error, Check your internet connection"
-msgstr ""
+msgstr "Time-outfout, Controleer je internetverbinding"
 
 #: src/client/error.rs:22
 msgid "Connection Error, Check your internet connection"
-msgstr ""
+msgstr "Verbindingsfout, Controleer je internetverbinding"
 
 #: src/ui/mpv/control_sidebar.rs:532
 msgid "Video filter settings cleared."
-msgstr ""
+msgstr "Videofilterinstellingen gewist."
 
 #: src/ui/mpv/control_sidebar.rs:556
 msgid "Subtitle settings cleared."
-msgstr ""
+msgstr "Ondertitelingsinstellingen gewist."
 
 #: src/ui/mpv/control_sidebar.rs:569
 msgid "Subtitle color settings cleared."
-msgstr ""
+msgstr "Instellingen voor ondertitelkleur gewist."
 
 #: src/ui/mpv/control_sidebar.rs:578
 msgid "Subtitle offset settings cleared."
-msgstr ""
+msgstr "Instellingen voor ondertitelverschuiving gewist."
 
 #: src/ui/mpv/control_sidebar.rs:620
 msgid "Deband settings cleared."
-msgstr ""
+msgstr "Deband-instellingen gewist."
 
 #: src/ui/mpv/mpvglarea.rs:88
 msgid "Failed to realize GLArea"
-msgstr ""
+msgstr "Kan GLArea niet initialiseren"
 
 #: src/ui/mpv/mpvglarea.rs:94
 msgid "Failed to get GLContext"
-msgstr ""
+msgstr "Kan GLContext niet ophalen"
 
 #: src/ui/mpv/page.rs:407 src/ui/mpv/page.rs:409 src/ui/widgets/item.rs:699
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:95
 #: resources/ui/player_toolbar.ui:90
 msgid "Play"
-msgstr "再生"
+msgstr "Afspelen"
 
 #: src/ui/mpv/page.rs:412 src/ui/mpv/page.rs:414 resources/ui/mpvpage.ui:272
 msgid "Pause"
-msgstr "一時停止"
+msgstr "Pauzeren"
 
 #: src/ui/mpv/page.rs:777
 msgid "Skip Intro"
-msgstr ""
+msgstr "Intro Overslaan"
 
 #: src/ui/mpv/page.rs:778
 msgid "Skip Outro"
-msgstr ""
+msgstr "Outro Overslaan"
 
 #: src/ui/mpv/page.rs:930
 msgid "No more video found"
-msgstr ""
+msgstr "Geen video's meer gevonden"
 
 #: src/ui/mpv/page.rs:1031
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
 msgstr ""
+"MPV is afgesloten, Applicatie wordt nu beëindigd.\n"
+"Tsukimi kan MPV niet herstarten."
 
 #: src/ui/provider/tu_item.rs:548
 msgid "No next up video found"
-msgstr ""
+msgstr "Geen volgende video gevonden"
 
 #: src/ui/provider/tu_item.rs:577 src/ui/widgets/tu_overview_item.rs:256
 msgid "Present"
-msgstr "現在"
+msgstr "Huidig"
 
 #: src/ui/provider/tu_item.rs:585 src/ui/provider/tu_item.rs:603
 #: src/ui/provider/tu_item.rs:626 src/ui/provider/tu_item.rs:649
 #: src/ui/provider/tu_item.rs:652
 msgid "Unknown"
-msgstr ""
+msgstr "Onbekend"
 
 #: src/ui/widgets/account_add.rs:145
 msgid "Fields must be filled in"
-msgstr "すべてのフィールドを入力してください"
+msgstr "Velden zijn verplicht"
 
 #: src/ui/widgets/account_add.rs:206
-#, fuzzy
 msgid "Server edited successfully"
-msgstr "アカウントが正常に追加されました"
+msgstr "Server aangepast"
 
 #: src/ui/widgets/account_add.rs:211
-#, fuzzy
 msgid "Server added successfully"
-msgstr "アカウントが正常に追加されました"
+msgstr "Server toegevoegd"
 
 #: src/ui/widgets/account_settings.rs:239
 msgid "Password cannot be empty!"
-msgstr "パスワードは空にできません！"
+msgstr "Wachtwoord mag niet leeg zijn!"
 
 #: src/ui/widgets/account_settings.rs:243
 msgid "Passwords do not match!"
-msgstr "パスワードが一致しない！"
+msgstr "Wachtwoorden komen niet overeen!"
 
 #: src/ui/widgets/account_settings.rs:250
 msgid "Password changed successfully! Please login again."
-msgstr "パスワードの変更に成功しました！もう一度ログインしてください。"
+msgstr "Wachtwoord veranderd! Log alsjeblieft opnieuw in."
 
 #: src/ui/widgets/account_settings.rs:254
 msgid "Failed to change password"
-msgstr "パスワードの変更に失敗しました"
+msgstr "Wachtwoord kon niet gewijzigd worden"
 
 #: src/ui/widgets/account_settings.rs:288
 msgid "Cache Cleared"
-msgstr "キャッシュがクリアされました"
+msgstr "Cache Gewist"
 
 #: src/ui/widgets/account_settings.rs:309
 msgid "No file selected"
-msgstr "ファイルが選択されていない"
+msgstr "Geen bestand geselecteerd"
 
 #: src/ui/widgets/account_settings.rs:565
 #: src/ui/widgets/account_settings.rs:574
 #: src/ui/widgets/account_settings.rs:608
 #: src/ui/widgets/account_settings.rs:617
-#, fuzzy
 msgid "Descriptor cannot be empty!"
-msgstr "パスワードは空にできません！"
+msgstr "Descriptor kan niet leeg zijn!"
 
 #: src/ui/widgets/account_settings.rs:579
 #: src/ui/widgets/account_settings.rs:622
 msgid "Invalid regex"
-msgstr ""
+msgstr "Ongeldige regex"
 
 #: src/ui/widgets/disc_box.rs:99 resources/ui/disc_box.ui:9
 msgid "Disc"
-msgstr "ディスク"
+msgstr "Disc"
 
 #. if merged, next up will contain resume items, so change title to continue watching
 #: src/ui/widgets/home.rs:230 resources/ui/home.ui:25 resources/ui/item.ui:300
 msgid "Continue Watching"
-msgstr "視聴を続ける"
+msgstr "Doorgaan met Kijken"
 
 #: src/ui/widgets/home.rs:232 resources/ui/home.ui:33
-#, fuzzy
-#| msgid "Next"
 msgid "Next Up"
-msgstr "次のページ"
+msgstr "Volgende"
 
 #: src/ui/widgets/home.rs:395
 msgid "Latest"
-msgstr "最新"
+msgstr "Nieuwste"
 
 #: src/ui/widgets/identify/dialog.rs:140
 msgid "Failed to get path"
-msgstr ""
+msgstr "Kon het pad niet vinden"
 
 #: src/ui/widgets/identify/search_page.rs:125 resources/ui/identify_dialog.ui:6
 #: resources/ui/identify_dialog.ui:14
 #: resources/ui/identify_dialog_search_page.ui:4 resources/ui/pop-menu.ui:56
 msgid "Identify"
-msgstr "特定する"
+msgstr "Identificeren"
 
 #: src/ui/widgets/identify/search_page.rs:127
 #: src/ui/widgets/image_dialog/search_page.rs:145
 #: src/ui/widgets/metadata_dialog.rs:286 src/ui/widgets/tu_item/action.rs:485
 msgid "Are you sure you wish to continue?"
-msgstr ""
+msgstr "Weet je zeker dat je door wilt gaan?"
 
 #: src/ui/widgets/identify/search_page.rs:130
 #: src/ui/widgets/image_dialog/search_page.rs:148
@@ -192,90 +182,87 @@ msgstr ""
 #: src/ui/widgets/tu_item/action.rs:549 resources/ui/account_settings.ui:572
 #: resources/ui/account_settings.ui:682
 msgid "Cancel"
-msgstr "キャンセル"
+msgstr "Annuleren"
 
 #: src/ui/widgets/identify/search_page.rs:131
 #: src/ui/widgets/image_dialog/search_page.rs:149
 #: src/ui/widgets/metadata_dialog.rs:290
 msgid "Ok"
-msgstr "はい"
+msgstr "Ok"
 
 #: src/ui/widgets/identify/search_page.rs:134
 msgid "Replace existing images"
-msgstr ""
+msgstr "Bestaande afbeeldingen vervangen"
 
 #: src/ui/widgets/image_dialog/image_adw_dialog.rs:126
 msgid "View Images"
-msgstr "画像を見る"
+msgstr "Afbeeldingen Bekijken"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:183
 msgid "Image saved"
-msgstr ""
+msgstr "Afbeelding opgeslagen"
 
 #: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:188
 msgid "Failed to load image"
-msgstr ""
+msgstr "Kon afbeelding niet laden"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:156
 msgid "No image to view"
-msgstr "画像なし"
+msgstr "Geen afbeelding om te bekijken"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:172
 msgid "No image to copy"
-msgstr "コピーする画像がない"
+msgstr "Geen afbeelding om te kopiëren"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:176
 #: src/ui/widgets/media_viewer.rs:349
 msgid "Image copied to clipboard"
-msgstr "クリップボードにコピーされた画像"
+msgstr "Afbeelding naar klembord gekopieerd"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:209
 msgid "Image deleted"
-msgstr ""
+msgstr "Afbeelding verwijderd"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:214
 msgid "Error deleting image"
-msgstr ""
+msgstr "Fout bij het verwijderen van de afbeelding"
 
 #: src/ui/widgets/image_dialog/image_infocard.rs:245
 msgid "Error loading image"
-msgstr "画像の読み込みエラー"
+msgstr "Fout bij het laden van de afbeelding"
 
 #: src/ui/widgets/image_dialog/search_page.rs:143
 msgid "Replace Image"
-msgstr ""
+msgstr "Afbeelding Verwijderen"
 
 #: src/ui/widgets/item.rs:349
-#, fuzzy
-#| msgid "No file selected"
 msgid "No episode selected"
-msgstr "ファイルが選択されていない"
+msgstr "Geen aflevering geselecteerd"
 
 #: src/ui/widgets/item.rs:350
-#, fuzzy
 msgid "Select an episode"
-msgstr "mpv設定ディレクトリから読み込む"
+msgstr "Aflevering selecteren"
 
 #: src/ui/widgets/item.rs:695 src/ui/widgets/list.rs:130
 msgid "Resume"
-msgstr "再開"
+msgstr "Hervatten"
 
 #: src/ui/widgets/item.rs:1087
 msgid "Codec"
-msgstr ""
+msgstr "Codec"
 
 #: src/ui/widgets/item.rs:1090
 msgid "Language"
-msgstr ""
+msgstr "Taal"
 
 #: src/ui/widgets/item.rs:1093 resources/ui/metadata_dialog.ui:91
 #: resources/ui/single_grid.ui:108
 msgid "Title"
-msgstr "タイトル"
+msgstr "Titel"
 
 #: src/ui/widgets/item.rs:1097 resources/ui/single_grid.ui:109
 msgid "Bitrate"
-msgstr "ビットレート"
+msgstr "Bitrate"
 
 #: src/ui/widgets/item.rs:1102
 msgid "BitDepth"
@@ -287,11 +274,11 @@ msgstr ""
 
 #: src/ui/widgets/item.rs:1110
 msgid "Height"
-msgstr ""
+msgstr "Hoogte"
 
 #: src/ui/widgets/item.rs:1113
 msgid "Width"
-msgstr ""
+msgstr "Breedte"
 
 #: src/ui/widgets/item.rs:1116
 msgid "ColorSpace"
@@ -299,15 +286,15 @@ msgstr ""
 
 #: src/ui/widgets/item.rs:1120
 msgid "DisplayTitle"
-msgstr ""
+msgstr "Weergavetitel"
 
 #: src/ui/widgets/item.rs:1124
 msgid "Channel"
-msgstr ""
+msgstr "Kanaal"
 
 #: src/ui/widgets/item.rs:1128
 msgid "ChannelLayout"
-msgstr ""
+msgstr "Kanaalindeling"
 
 #: src/ui/widgets/item.rs:1133
 msgid "AverageFrameRate"
@@ -319,27 +306,27 @@ msgstr ""
 
 #: src/ui/widgets/item.rs:1249
 msgid "No video source found"
-msgstr ""
+msgstr "Geen videobron gevonden"
 
 #: src/ui/widgets/item.rs:1322
 msgid "Season not found. Is this a continue watching list?"
-msgstr ""
+msgstr "Seizeoen niet gevonden. Is dit een verder kijken lijst?"
 
 #: src/ui/widgets/item_actionbox.rs:117 src/ui/widgets/tu_item/action.rs:98
 msgid "Success"
-msgstr "成功"
+msgstr "Succes"
 
 #: src/ui/widgets/liked.rs:158
 msgid "Favourite"
-msgstr "最高"
+msgstr "Favoriet"
 
 #: src/ui/widgets/list.rs:122
 msgid "Channels"
-msgstr "チャンネル"
+msgstr "Kanalen"
 
 #: src/ui/widgets/list.rs:129
 msgid "All"
-msgstr "全て"
+msgstr "Alles"
 
 #: src/ui/widgets/list.rs:131 resources/ui/search.ui:60
 msgid "BoxSet"
@@ -348,119 +335,114 @@ msgstr ""
 #: src/ui/widgets/list.rs:132 resources/ui/filter.ui:85
 #: resources/ui/item.ui:490 resources/ui/other.ui:168
 msgid "Tags"
-msgstr "名札"
+msgstr "Tags"
 
 #: src/ui/widgets/list.rs:133 resources/ui/filter.ui:78
 #: resources/ui/item.ui:485 resources/ui/other.ui:173
 msgid "Genres"
-msgstr ""
+msgstr "Genres"
 
 #: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:316
 #: resources/ui/window.ui:256
 msgid "Liked"
-msgstr "好き"
+msgstr "Favorieten"
 
 #: src/ui/widgets/list.rs:135
 msgid "Folder"
-msgstr "フォルダ"
+msgstr "Map"
 
 #: src/ui/widgets/metadata_dialog.rs:284 resources/ui/filter.ui:179
 #: resources/ui/metadata_dialog.ui:231
 msgid "Apply"
-msgstr ""
+msgstr "Toepassen"
 
 #: src/ui/widgets/missing_episodes_dialog.rs:147
 msgid "Special"
-msgstr ""
+msgstr "Special"
 
 #: src/ui/widgets/music_album.rs:247
 msgid "Songs"
-msgstr "歌"
+msgstr "Liedjes"
 
 #: src/ui/widgets/music_album.rs:349
-#, fuzzy
 msgid "More From"
-msgstr "もっと見る"
+msgstr "Meer Van"
 
 #: src/ui/widgets/refresh_dialog.rs:94
 msgid "Scanning..."
-msgstr "スキャン..."
+msgstr "Scannen..."
 
 #: src/ui/widgets/search.rs:205
-#, fuzzy
-#| msgid "Overview"
 msgid "No overview"
-msgstr "概要"
+msgstr "Geen overzicht"
 
 #: src/ui/widgets/server_action_row.rs:128
-#, fuzzy
 msgid "Edit Server"
-msgstr "サーバーの追加"
+msgstr "Server aanpassen"
 
 #: src/ui/widgets/server_panel.rs:119
 msgid "Shut down server"
-msgstr "サーバを潰す"
+msgstr "Server Uitschakelen"
 
 #: src/ui/widgets/server_panel.rs:120
 msgid "Are you sure you want to shut down the server?"
-msgstr "このサーバを潰しますか？"
+msgstr "Weet je zeker dat je de server wilt uitschakelen?"
 
 #: src/ui/widgets/server_panel.rs:151
 msgid "Restart server"
-msgstr ""
+msgstr "Server herstarten"
 
 #: src/ui/widgets/server_panel.rs:152
 msgid "Are you sure you want to restart the server?"
-msgstr ""
+msgstr "Weet je zeker dat je de server wilt herstarten?"
 
 #: src/ui/widgets/server_panel.rs:155
 msgid "Revert"
-msgstr ""
+msgstr "Terugdraaien"
 
 #: src/ui/widgets/server_panel.rs:156
-#, fuzzy
 msgid "Confirm"
-msgstr "パスワードの確認"
+msgstr "Bevestig"
 
 #: src/ui/widgets/server_panel.rs:192
 msgid "Server is shutting down"
-msgstr "サーバは潰っている"
+msgstr "Server wordt uitgeschakeld"
 
 #: src/ui/widgets/server_panel.rs:204
 msgid "Server is restarting"
-msgstr ""
+msgstr "Server is aan het herstarten"
 
 #: src/ui/widgets/server_panel.rs:291
 msgid "Last execute: "
-msgstr ""
+msgstr "Laatst uitgevoerd:- "
 
 #: src/ui/widgets/server_panel.rs:296
 msgid "Duration: "
-msgstr "時の: "
+msgstr "Tijdsduur:- "
 
 #: src/ui/widgets/server_panel.rs:301
 msgid "Result: "
-msgstr ""
+msgstr "Resultaat:- "
 
 #: src/ui/widgets/server_panel.rs:347
 msgid "Task started"
-msgstr ""
+msgstr "Taak gestart"
 
 #: src/ui/widgets/single_grid.rs:503
 msgid "Items"
-msgstr "アイテム"
+msgstr "Items"
 
 #: src/ui/widgets/star_toggle.rs:65
 msgid "Remove from favorites"
-msgstr "お気に入りから削除"
+msgstr "Uit favorieten verwijderen"
 
 #: src/ui/widgets/star_toggle.rs:70
 msgid "Add to favorites"
-msgstr "お気に入りに追加"
+msgstr "Aan favorieten toevoegen"
 
 #: src/ui/widgets/tu_item/action.rs:479
 msgid "Delete Item"
-msgstr ""
+msgstr "Item Verwijderen"
 
 #: src/ui/widgets/tu_item/action.rs:483
 msgid ""
@@ -468,134 +450,132 @@ msgid ""
 "library.\n"
 "The following files and folders will be deleted:"
 msgstr ""
+"Als dit item verwijdert wordt, wordt het uit zowel het bestandssysteem als "
+"de mediabibliotheek verwijderd.\n"
+"De volgende bestanden en mappen zouden verwijderd worden:"
 
 #: src/ui/widgets/tu_item/action.rs:490 resources/ui/image_info_card.ui:139
 #: resources/ui/pop-menu.ui:92 resources/ui/server_action_row.ui:52
 msgid "Delete"
-msgstr ""
+msgstr "Verwijderen"
 
 #: src/ui/widgets/tu_item/action.rs:544 src/ui/widgets/tu_item/action.rs:545
 #: src/ui/widgets/tu_item/action.rs:550 resources/ui/pop-menu.ui:62
 msgid "Remove Identification"
-msgstr ""
+msgstr "Identificatie Verwijderen"
 
 #: src/ui/widgets/tu_item/action.rs:546
 msgid "Are you sure you wish to reset all metadata?"
-msgstr ""
+msgstr "Weet je zeker dat je alle metadata wilt resetten?"
 
 #: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
 msgid "Home"
-msgstr "ホーム"
+msgstr "Start"
 
 #: src/ui/widgets/window.rs:328 resources/ui/identify_dialog.ui:95
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
 #: resources/ui/window.ui:21 resources/ui/window.ui:262
 msgid "Search"
-msgstr "検索"
+msgstr "Zoeken"
 
 #: src/ui/widgets/window.rs:814
 msgid "Server Panel"
-msgstr ""
+msgstr "Serverpaneel"
 
 #: src/ui/widgets/window.rs:988
 msgid "Fatal Error"
-msgstr ""
+msgstr "Onherstelbare Fout"
 
 #: src/ui/widgets/window.rs:991
 msgid "Copy Error & Close"
-msgstr ""
+msgstr "Foutmelding kopiëren & sluiten"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
 #: src/ui/widgets/window.rs:1020
 msgid "translator-credits"
-msgstr "Flowensity <flowensity@proton.me>"
+msgstr ""
 
 #: resources/ui/account.ui:6 resources/ui/account.ui:14
 msgid "Add a New Server"
-msgstr "新しいサーバーの追加"
+msgstr "Nieuwe Server Toevoegen"
 
 #: resources/ui/account.ui:45
 msgid "Enter the server details below."
-msgstr ""
+msgstr "Voer hieronder de servergegevens in."
 
 #: resources/ui/account.ui:48 resources/ui/identify_dialog.ui:75
 #: resources/ui/other.ui:73
 msgid "Name"
-msgstr "名前"
+msgstr "Naam"
 
 #: resources/ui/account.ui:66
 msgid "Server Address"
-msgstr ""
+msgstr "Serveradres"
 
 #: resources/ui/account.ui:85
 msgid "Port"
-msgstr "ポート"
+msgstr "Poort"
 
 #: resources/ui/account.ui:92
 msgid "Username"
-msgstr "ユーザー名"
+msgstr "Gebruikersnaam"
 
 #: resources/ui/account.ui:97
 msgid "Password"
-msgstr "パスワード"
+msgstr "Wachtwoord"
 
 #: resources/ui/account.ui:108 resources/ui/account_settings.ui:578
-#, fuzzy
 msgid "Add"
-msgstr "追加"
+msgstr "Toevoegen"
 
 #: resources/ui/account_settings.ui:4
 msgid "Settings"
-msgstr "設定"
+msgstr "Instellingen"
 
 #: resources/ui/account_settings.ui:12 resources/ui/mpv_shortcuts_window.ui:228
 msgid "General"
-msgstr "一般"
+msgstr "Algemeen"
 
 #: resources/ui/account_settings.ui:17
 msgid "Preferred Language"
-msgstr "優先言語"
+msgstr "Taalvoorkeur"
 
 #: resources/ui/account_settings.ui:18
 msgid "This is globally effective"
-msgstr ""
+msgstr "Dit geldt globaal"
 
 #: resources/ui/account_settings.ui:21
 msgid "Preferred Audio Language"
-msgstr "優先音声言語"
+msgstr "Taalvoorkeur voor Audio"
 
 #: resources/ui/account_settings.ui:30 resources/ui/account_settings.ui:56
 #: resources/ui/account_settings.ui:212
 msgid "Default"
-msgstr "デフォルト"
+msgstr "Standaardinstelling"
 
 #: resources/ui/account_settings.ui:47
 msgid "Preferred Subtitle Language"
-msgstr "優先字幕言語"
+msgstr "Toolvoorkeur voor Ondertiteling"
 
 #: resources/ui/account_settings.ui:75 resources/ui/mpv_shortcuts_window.ui:6
-#, fuzzy
-#| msgid "Loop Playback"
 msgid "Playback"
-msgstr "ループ再生"
+msgstr "Afspelen"
 
 #: resources/ui/account_settings.ui:78
 msgid "Automatically Skip Intros and Outros"
-msgstr ""
+msgstr "Automatisch Intros en Outros Overslaan"
 
 #: resources/ui/account_settings.ui:79 resources/ui/account_settings.ui:176
 msgid "Jellyfin only"
-msgstr ""
+msgstr "Alleen Jellyfin"
 
 #: resources/ui/account_settings.ui:86
 msgid "Appearance"
-msgstr "外観"
+msgstr "Weergave"
 
 #: resources/ui/account_settings.ui:89
-#, fuzzy
-#| msgid "Accent Color"
 msgid "Use Custom Accent Color"
-msgstr "アクセントカラー"
+msgstr ""
 
 #: resources/ui/account_settings.ui:90
 msgid "Disable to follow the system accent color"
@@ -603,66 +583,59 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:95
 msgid "Accent Color"
-msgstr "アクセントカラー"
+msgstr "Accentkleur"
 
 #: resources/ui/account_settings.ui:111
-#, fuzzy
 msgid "Hide Sidebar"
-msgstr "サイドバーを表示する"
+msgstr "Zijbalk verbergen"
 
 #: resources/ui/account_settings.ui:116
 msgid "Auto Select Last Server"
-msgstr "最後のサーバーを自動選択"
+msgstr "Laatste Server Automatisch Selecteren"
 
 #: resources/ui/account_settings.ui:121
 msgid "Text Display"
-msgstr ""
+msgstr "Tekstweergave"
 
 #: resources/ui/account_settings.ui:127
 msgid "Compact"
-msgstr ""
+msgstr "Compact"
 
 #: resources/ui/account_settings.ui:133
 msgid "Full"
-msgstr ""
+msgstr "Vol"
 
 #: resources/ui/account_settings.ui:143
 msgid "Card Style"
-msgstr ""
+msgstr "Kaartweergave"
 
 #: resources/ui/account_settings.ui:149
-#, fuzzy
-#| msgid "Date Created"
 msgid "Integrated"
-msgstr "作成日"
+msgstr "Geïntegreerd"
 
 #: resources/ui/account_settings.ui:155
 msgid "Separated"
-msgstr ""
+msgstr "Gescheiden"
 
 #: resources/ui/account_settings.ui:167
-#, fuzzy
-#| msgid "Home"
 msgid "Home Page"
-msgstr "ホーム"
+msgstr "Startpagina"
 
 #: resources/ui/account_settings.ui:170
 msgid "Refresh when returning to home page"
-msgstr ""
+msgstr "Verversen bij terugkeren naar startpagina"
 
 #: resources/ui/account_settings.ui:175
-#, fuzzy
-#| msgid "Continue Watching"
 msgid "Merge Continue Watching and Next Up"
-msgstr "視聴を続ける"
+msgstr ""
 
 #: resources/ui/account_settings.ui:183
 msgid "Network"
-msgstr "ネットワーク"
+msgstr "Netwerk"
 
 #: resources/ui/account_settings.ui:186
 msgid "Threads"
-msgstr "スレッド"
+msgstr ""
 
 #: resources/ui/account_settings.ui:187
 msgid "Excessive thread counts may exhaust the system's connection pool"
@@ -670,11 +643,11 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:203 resources/ui/mpv_control_sidebar.ui:399
 msgid "Background"
-msgstr "背景"
+msgstr "Achtergrond"
 
 #: resources/ui/account_settings.ui:235
 msgid "Opacity"
-msgstr "不透明度"
+msgstr ""
 
 #: resources/ui/account_settings.ui:249
 msgid "Blur"
@@ -686,11 +659,11 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:270 resources/ui/mpv_control_sidebar.ui:84
 msgid "Cache"
-msgstr "キャッシュ"
+msgstr "Cache"
 
 #: resources/ui/account_settings.ui:273
 msgid "Clear Cache"
-msgstr "キャッシュをクリア"
+msgstr "Cache Wissen"
 
 #: resources/ui/account_settings.ui:288 resources/ui/account_settings.ui:407
 msgid "Others"
@@ -702,23 +675,23 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:303
 msgid "Account"
-msgstr "アカウント"
+msgstr "Account"
 
 #: resources/ui/account_settings.ui:316 resources/ui/account_settings.ui:333
 msgid "Change Password"
-msgstr "パスワードの変更"
+msgstr "Wachtwoord Veranderen"
 
 #: resources/ui/account_settings.ui:319
 msgid "New Password"
-msgstr "新しいパスワード"
+msgstr "Nieuw Wachtwoord"
 
 #: resources/ui/account_settings.ui:324
 msgid "Confirm Password"
-msgstr "パスワードの確認"
+msgstr "Wachtwoord Bevestigen"
 
 #: resources/ui/account_settings.ui:347
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 #: resources/ui/account_settings.ui:352
 msgid "Music Player"
@@ -726,20 +699,20 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:355 resources/ui/player_toolbar.ui:197
 msgid "Repeat Mode"
-msgstr "リピートモード"
+msgstr ""
 
 #: resources/ui/account_settings.ui:359 resources/ui/player_toolbar.ui:231
 msgid "Repeat One"
-msgstr "リピート・ワン"
+msgstr ""
 
 #: resources/ui/account_settings.ui:360 resources/ui/player_toolbar.ui:235
 msgid "Repeat All"
-msgstr "リピート・オール"
+msgstr ""
 
 #: resources/ui/account_settings.ui:361 resources/ui/account_settings.ui:389
 #: resources/ui/player_toolbar.ui:239
 msgid "None"
-msgstr "なし"
+msgstr ""
 
 #: resources/ui/account_settings.ui:371
 msgid "Video Player"
@@ -750,18 +723,16 @@ msgid "Requires restart"
 msgstr ""
 
 #: resources/ui/account_settings.ui:375
-#, fuzzy
 msgid "Enable external config"
-msgstr "外部mpv設定を読み込む"
+msgstr ""
 
 #: resources/ui/account_settings.ui:380
-#, fuzzy
 msgid "Config dir"
-msgstr "パスワードの確認"
+msgstr ""
 
 #: resources/ui/account_settings.ui:412
 msgid "Video Output"
-msgstr "ビデオ出力"
+msgstr ""
 
 #: resources/ui/account_settings.ui:413
 msgid "Only for debugging"
@@ -769,12 +740,11 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:416
 msgid "libmpv (default)"
-msgstr "libmpv (デフォルト)"
+msgstr "libmpv (standaardinstelling)"
 
 #: resources/ui/account_settings.ui:461
-#, fuzzy
 msgid "Preferred Version"
-msgstr "好み"
+msgstr ""
 
 #: resources/ui/account_settings.ui:484
 msgid ""
@@ -783,18 +753,16 @@ msgid ""
 msgstr ""
 
 #: resources/ui/account_settings.ui:499
-#, fuzzy
 msgid "Descriptors"
-msgstr "記載なし"
+msgstr ""
 
 #: resources/ui/account_settings.ui:521
 msgid "It is recommended to set no more than 3 lines"
 msgstr ""
 
 #: resources/ui/account_settings.ui:542
-#, fuzzy
 msgid "No Descriptors"
-msgstr "記載なし"
+msgstr ""
 
 #: resources/ui/account_settings.ui:561
 msgid "Add a descriptor"
@@ -822,61 +790,57 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:629 resources/ui/account_settings.ui:739
 msgid "Descriptor should not be too long"
-msgstr ""
+msgstr "Descriptor mag niet te lang zijn"
 
 #: resources/ui/account_settings.ui:640 resources/ui/account_settings.ui:750
 msgid "eg. 1080p"
-msgstr ""
+msgstr "bijv. 1080p"
 
 #: resources/ui/account_settings.ui:651 resources/ui/account_settings.ui:761
 msgid "eg. 1080p.*WebDL"
-msgstr ""
+msgstr "bijv. 1080p.*WebDL"
 
 #: resources/ui/account_settings.ui:671
-#, fuzzy
 msgid "Edit descriptor"
-msgstr "記載なし"
+msgstr "Descriptor aanpassen"
 
 #: resources/ui/account_settings.ui:688
 #: resources/ui/image_dialog_edit_page.ui:37
-#, fuzzy
 msgid "Save"
-msgstr "_保存する"
+msgstr "Opslaan"
 
 #: resources/ui/account_settings.ui:781
-#, fuzzy
 msgid "Change folder"
-msgstr "パスワードの変更"
+msgstr "Map veranderen"
 
 #: resources/ui/account_settings.ui:783
-#, fuzzy
 msgid "Select new mpv config folder"
-msgstr "mpv設定ディレクトリから読み込む"
+msgstr ""
 
 #: resources/ui/filter.ui:6 resources/ui/filter.ui:21 resources/ui/search.ui:31
 #: resources/ui/single_grid.ui:47
 msgid "Filter Panel"
-msgstr "フィルターパネル"
+msgstr "Filterpaneel"
 
 #: resources/ui/filter.ui:42
 msgid "Filters"
-msgstr ""
+msgstr "Filters"
 
 #: resources/ui/filter.ui:45
 msgid "Playback Status"
-msgstr ""
+msgstr "Afspeelstatus"
 
 #: resources/ui/filter.ui:50 resources/ui/filter.ui:149
 msgid "Any"
-msgstr ""
+msgstr "Alle"
 
 #: resources/ui/filter.ui:51
 msgid "Played"
-msgstr ""
+msgstr "Afgespeeld"
 
 #: resources/ui/filter.ui:52
 msgid "Unplayed"
-msgstr ""
+msgstr "Niet Afgespeeld"
 
 #: resources/ui/filter.ui:53
 msgid "Continue Play"
@@ -884,7 +848,7 @@ msgstr ""
 
 #: resources/ui/filter.ui:92
 msgid "Years"
-msgstr ""
+msgstr "Jaren"
 
 #: resources/ui/filter.ui:99
 msgid "Official Ratings"
@@ -893,35 +857,35 @@ msgstr ""
 #: resources/ui/filter.ui:106 resources/ui/item.ui:480
 #: resources/ui/other.ui:163
 msgid "Studios"
-msgstr ""
+msgstr "Studio's"
 
 #: resources/ui/filter.ui:115
 msgid "Media Info"
-msgstr ""
+msgstr "Media-informatie"
 
 #: resources/ui/filter.ui:118
 msgid "Containers"
-msgstr ""
+msgstr "Containers"
 
 #: resources/ui/filter.ui:125
 msgid "Encoders"
-msgstr ""
+msgstr "Encoders"
 
 #: resources/ui/filter.ui:132
 msgid "Video Types"
-msgstr ""
+msgstr "Videosoorten"
 
 #: resources/ui/filter.ui:139
 msgid "Resolution"
-msgstr ""
+msgstr "Resolutie"
 
 #: resources/ui/filter.ui:165
 msgid "Clear"
-msgstr ""
+msgstr "Wissen"
 
 #: resources/ui/home.ui:17
 msgid "Library"
-msgstr "図書館"
+msgstr "Bibliotheek"
 
 #: resources/ui/identify_dialog.ui:57
 msgid ""
@@ -931,37 +895,37 @@ msgstr ""
 
 #: resources/ui/identify_dialog.ui:61 resources/ui/metadata_dialog.ui:81
 msgid "Path"
-msgstr "パス"
+msgstr "Pad"
 
 #: resources/ui/identify_dialog.ui:62
 #: resources/ui/image_dialog_search_page.ui:54 resources/ui/item.ui:110
 #: resources/ui/item.ui:158
 msgid "Loading..."
-msgstr "読み込み中..."
+msgstr "Laden..."
 
 #: resources/ui/identify_dialog.ui:80
 msgid "Year"
-msgstr ""
+msgstr "Jaar"
 
 #: resources/ui/identify_dialog.ui:87
 msgid "External"
-msgstr ""
+msgstr "Extern"
 
 #: resources/ui/image_dialog_edit_page.ui:4
 msgid "Edit Image"
-msgstr ""
+msgstr "Afbeelding Aanpassen"
 
 #: resources/ui/image_dialog_edit_page.ui:19
 msgid "Upload Image"
-msgstr ""
+msgstr "Afbeelding Uploaden"
 
 #: resources/ui/image_dialog_edit_page.ui:24
 msgid "External Url"
-msgstr ""
+msgstr "Externe URL"
 
 #: resources/ui/image_dialog_search_page.ui:4
 msgid "Choose Image"
-msgstr ""
+msgstr "Afbeelding Kiezen"
 
 #: resources/ui/image_dialog_search_page.ui:15
 msgid "Provider:"
@@ -973,23 +937,23 @@ msgstr ""
 
 #: resources/ui/image_dialog_search_page.ui:64
 msgid "All Languages"
-msgstr ""
+msgstr "Alle Talen"
 
 #: resources/ui/image_drop_row.ui:49
 msgid "Open"
-msgstr ""
+msgstr "Openen"
 
 #: resources/ui/image_drop_row.ui:109
 msgid "Pick Image"
-msgstr ""
+msgstr "Afbeelding Kiezen"
 
 #: resources/ui/image_drop_row.ui:113 resources/ui/images_dialog.ui:69
 msgid "Images"
-msgstr "画像"
+msgstr "Afbeeldingen"
 
 #: resources/ui/image_drop_row.ui:119
 msgid "Pick image to upload"
-msgstr ""
+msgstr "Kies afbeelding om up te loaden"
 
 #: resources/ui/image_info_card.ui:86
 msgid "Copy Image To Clipboard"
@@ -997,145 +961,144 @@ msgstr ""
 
 #: resources/ui/image_info_card.ui:98
 msgid "View Image"
-msgstr ""
+msgstr "Afbeelding Bekijken"
 
 #: resources/ui/image_info_card.ui:109 resources/ui/image_info_card.ui:133
 #: resources/ui/server_action_row.ui:30
 msgid "Edit"
-msgstr ""
+msgstr "Aanpassen"
 
 #: resources/ui/images_dialog.ui:6 resources/ui/images_dialog.ui:36
 #: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:48
 #: resources/ui/song_widget.ui:161
 msgid "Edit Images"
-msgstr ""
+msgstr "Afbeeldingen Aanpassen"
 
 #: resources/ui/images_dialog.ui:59 resources/ui/metadata_dialog.ui:70
 msgid "Not Available"
-msgstr "入手不可"
+msgstr "Niet Beschikbaar"
 
 #: resources/ui/images_dialog.ui:60 resources/ui/metadata_dialog.ui:71
 msgid "This page is READ-ONLY, because you have no permission to modify it."
-msgstr "このページはREAD-ONLYで、あなたには修正する権限がないからです。"
+msgstr ""
 
 #: resources/ui/images_dialog.ui:157
 msgid "BackDrops"
-msgstr "バックグラウンド"
+msgstr "Achtergronden"
 
 #: resources/ui/item.ui:220
 msgid "Video: "
-msgstr "ビデオ "
+msgstr "Video:- "
 
 #: resources/ui/item.ui:240
 msgid "Subtitle: "
-msgstr "字幕 "
+msgstr "Ondertiteling:- "
 
 #: resources/ui/item.ui:314
 msgid "View this season"
-msgstr ""
+msgstr "Dit seizoen bekijken"
 
 #: resources/ui/item.ui:423 resources/ui/liked.ui:69
 #: resources/ui/single_grid.ui:167
 msgid "Nothing Here"
-msgstr ""
+msgstr "Niks Hier"
 
 #: resources/ui/item.ui:450
 msgid "Included In"
-msgstr ""
+msgstr "Onderdeel Van"
 
 #: resources/ui/item.ui:455
 msgid "Additional Parts"
-msgstr ""
+msgstr "Extra Delen"
 
 #: resources/ui/item.ui:460
 msgid "Seasons"
-msgstr ""
+msgstr "Seizoenen"
 
 #: resources/ui/item.ui:465 resources/ui/other.ui:158
 msgid "Actors"
-msgstr ""
+msgstr "Acteurs"
 
 #: resources/ui/item.ui:470
 msgid "Recommend"
-msgstr ""
+msgstr "Aanbevelen"
 
 #: resources/ui/item.ui:475 resources/ui/other.ui:178
-#, fuzzy
 msgid "Links"
-msgstr "いいね"
+msgstr "Links"
 
 #: resources/ui/item.ui:508
 msgid "MediaInfo"
-msgstr "メディア情報"
+msgstr "Mediainformatie"
 
 #: resources/ui/item_actions.ui:40 resources/ui/pop-menu.ui:28
 msgid "Mark as Played"
-msgstr "視聴済みとしてマーク"
+msgstr ""
 
 #: resources/ui/item_actions.ui:46 resources/ui/pop-menu.ui:34
 msgid "Mark as Unplayed"
-msgstr "未視聴としてマーク"
+msgstr ""
 
 #: resources/ui/item_actions.ui:53 resources/ui/metadata_dialog.ui:18
 #: resources/ui/metadata_dialog.ui:26 resources/ui/pop-menu.ui:42
 #: resources/ui/song_widget.ui:156
 msgid "Edit Metadata"
-msgstr ""
+msgstr "Metadata Aanpassen"
 
 #: resources/ui/liked.ui:70
 msgid "Your favorite items will be placed here"
-msgstr ""
+msgstr "Je favorieten worden hier geplaatst"
 
 #: resources/ui/media_viewer.ui:6
 msgid "_Copy Image"
-msgstr "画像をコピー"
+msgstr ""
 
 #: resources/ui/media_viewer.ui:36 resources/ui/media_viewer.ui:38
 msgid "Back"
-msgstr "バック"
+msgstr "Terug"
 
 #: resources/ui/media_viewer.ui:46 resources/ui/media_viewer.ui:48
 msgid "Media Menu"
-msgstr "メディアメニュー"
+msgstr "Mediamenu"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
 #: resources/ui/mpvpage.ui:401 resources/ui/mpvpage.ui:404
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
-msgstr "フルスクリーン"
+msgstr "Volledig scherm"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
 #: resources/ui/mpvpage.ui:418 resources/ui/mpvpage.ui:420
 msgid "Exit Fullscreen"
-msgstr "フルスクリーンの終了"
+msgstr "Volledig scherm sluiten"
 
 #: resources/ui/metadata_dialog.ui:82
 msgid "No data."
-msgstr "データはない。"
+msgstr "Geen data."
 
 #: resources/ui/metadata_dialog.ui:96
 msgid "Sort Title"
-msgstr "ソートタイトル"
+msgstr ""
 
 #: resources/ui/metadata_dialog.ui:101 resources/ui/single_grid.ui:110
 msgid "Date Created"
-msgstr "作成日"
+msgstr ""
 
 #: resources/ui/metadata_dialog.ui:107
 msgid "Pick Date"
-msgstr "ピック日"
+msgstr "Datum Kiezen"
 
 #: resources/ui/metadata_dialog.ui:127
 msgid "Pick Time"
-msgstr "ピックタイム"
+msgstr "Tijd Kiezen"
 
 #: resources/ui/metadata_dialog.ui:180
 msgid "Overview"
-msgstr "概要"
+msgstr "Overzicht"
 
 #: resources/ui/metadata_dialog.ui:197
 msgid "External Ids"
-msgstr ""
+msgstr "Externe IDs"
 
 #: resources/ui/metadata_dialog.ui:203
 msgid "TheMovieDb Id"
@@ -1151,24 +1114,23 @@ msgstr "IMDb ID"
 
 #: resources/ui/metadata_dialog.ui:221
 msgid "Lock The Item"
-msgstr "アイテムをロック"
+msgstr "Item vergrendelen"
 
 #: resources/ui/missing_episodes.ui:6 resources/ui/missing_episodes.ui:36
 msgid "Missing Episodes"
-msgstr ""
+msgstr "Ontbrekende Afleveringen"
 
 #: resources/ui/missing_episodes.ui:60
 msgid "Specials"
-msgstr ""
+msgstr "Specials"
 
 #: resources/ui/missing_episodes.ui:72
 msgid "Upcoming"
-msgstr ""
+msgstr "Binnenkort"
 
 #: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:445
-#, fuzzy
 msgid "Advanced Settings"
-msgstr "ビデオ設定の詳細"
+msgstr "Geavanceerde Instellingen"
 
 #: resources/ui/mpv_control_sidebar.ui:18
 msgid "Seek Action"
@@ -1176,65 +1138,61 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:21
 msgid "Playback speed"
-msgstr "再生速度"
+msgstr "Afspeelsnelheid"
 
 #: resources/ui/mpv_control_sidebar.ui:42
 msgid "Seek Backward"
-msgstr "シーク・バックワード"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:43
 #: resources/ui/mpv_control_sidebar.ui:63
 #: resources/ui/mpv_control_sidebar.ui:115
 msgid "Unit: Seconds"
-msgstr "単位 秒"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:62
 msgid "Seek Forward"
-msgstr "シーク・フォワード"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:93
 msgid "Show Buffer Speed"
-msgstr "バッファ速度を表示"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:98
 msgid "Cache Size"
-msgstr "キャッシュサイズ"
+msgstr "Cachegrootte"
 
 #: resources/ui/mpv_control_sidebar.ui:99
-#, fuzzy
 msgid "Unit: MB"
-msgstr "単位: MB"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:114
 msgid "Cache Time"
-msgstr "キャッシュの時間"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:132 resources/ui/mpvpage.ui:364
 msgid "Subtitle"
-msgstr "字幕"
+msgstr "Ondertiteling"
 
 #: resources/ui/mpv_control_sidebar.ui:135
-#, fuzzy
 msgid "Subtitle Composing"
-msgstr "字幕 "
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:207
-#, fuzzy
 msgid "Position"
-msgstr "記載なし"
+msgstr "Positie"
 
 #: resources/ui/mpv_control_sidebar.ui:227
 msgid "Subtitle Text Size"
-msgstr "字幕の文字サイズ"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:228
 msgid "This option only takes effect for srt subtitles"
-msgstr "このオプションはsrt字幕にのみ有効です"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:248
-#, fuzzy
 msgid "Subtitle Text Scale"
-msgstr "字幕の文字サイズ"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:249
 msgid "This affects ASS subtitles as well"
@@ -1242,13 +1200,13 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:270
 msgid "Subtitle Text Font"
-msgstr "字幕テキストフォント"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:272
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
-msgstr "特定のフォントを指定していない字幕に使用するフォントを指定する"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:297
 msgid "Border Style"
@@ -1263,9 +1221,8 @@ msgid "Opaque box"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:304
-#, fuzzy
 msgid "Background box"
-msgstr "背景"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:312
 msgid "Border Size"
@@ -1280,22 +1237,20 @@ msgid "Stretch Image Subtitles to Screen"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:350
-#, fuzzy
 msgid "Subtitle Color"
-msgstr "字幕 "
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:363
 msgid "Text"
-msgstr ""
+msgstr "Tekst"
 
 #: resources/ui/mpv_control_sidebar.ui:381
 msgid "Border"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:419
-#, fuzzy
 msgid "Subtitle Offset"
-msgstr "字幕 "
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:432
 msgid "Offset"
@@ -1303,27 +1258,25 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:433
 #: resources/ui/mpv_control_sidebar.ui:482
-#, fuzzy
 msgid "Unit: ms"
-msgstr "単位: MB"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:448
 msgid "Speed"
-msgstr ""
+msgstr "Snelheid"
 
 #: resources/ui/mpv_control_sidebar.ui:468 resources/ui/mpvpage.ui:352
 #: resources/ui/search.ui:78
 msgid "Audio"
-msgstr "オーディオ"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:481
 msgid "Audio Offset"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:497
-#, fuzzy
 msgid "Audio Channel"
-msgstr "チャンネル"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:502
 msgid "Auto"
@@ -1338,9 +1291,8 @@ msgid "Mono"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:505
-#, fuzzy
 msgid "Dual Channel"
-msgstr "チャンネル"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:506
 msgid "Dual Channel (Invert)"
@@ -1349,12 +1301,11 @@ msgstr ""
 #: resources/ui/mpv_control_sidebar.ui:516 resources/ui/other.ui:152
 #: resources/ui/search.ui:84
 msgid "Video"
-msgstr "ビデオ"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:519
-#, fuzzy
 msgid "Video Aspect"
-msgstr "ビデオ出力"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:524
 msgid "Fit"
@@ -1370,29 +1321,27 @@ msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:546
 msgid "Brightness"
-msgstr ""
+msgstr "Helderheid"
 
 #: resources/ui/mpv_control_sidebar.ui:561
-#, fuzzy
 msgid "Contrast"
-msgstr "内容"
+msgstr "Contrast"
 
 #: resources/ui/mpv_control_sidebar.ui:576
 msgid "Saturation"
-msgstr ""
+msgstr "Verzadiging"
 
 #: resources/ui/mpv_control_sidebar.ui:591
 msgid "Hue"
-msgstr ""
+msgstr "Tint"
 
 #: resources/ui/mpv_control_sidebar.ui:606
 msgid "Gamma"
-msgstr ""
+msgstr "Gamma"
 
 #: resources/ui/mpv_control_sidebar.ui:623
-#, fuzzy
 msgid "Video Deband"
-msgstr "ビデオ "
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:646
 msgid "Deband Iterations"
@@ -1411,77 +1360,69 @@ msgid "Deband Grain"
 msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:709
-#, fuzzy
 msgid "Video Deinterlace"
-msgstr "ビデオ "
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:714
-#, fuzzy
 msgid "Video Upscale"
-msgstr "ビデオ "
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:737
 msgid "Action after video ends"
-msgstr "ビデオ終了後のアクション"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:740
 msgid "Play Next"
-msgstr "次へ"
+msgstr "Volgende Afspelen"
 
 #: resources/ui/mpv_control_sidebar.ui:753
 msgid "Loop Playback"
-msgstr "ループ再生"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:767
 msgid "Stop"
-msgstr "ストップ"
+msgstr "Stoppen"
 
 #: resources/ui/mpv_control_sidebar.ui:783
 msgid "Hardware decoding"
-msgstr "ハードウェアデコード"
+msgstr ""
 
 #: resources/ui/mpv_control_sidebar.ui:787
 msgid "no (default)"
-msgstr "いいえ（デフォルト）"
+msgstr "nee (standaardinstelling)"
 
 #: resources/ui/mpv_control_sidebar.ui:831
 msgid "Not all settings will be saved"
 msgstr ""
 
 #: resources/ui/mpv_menu.ui:11
-#, fuzzy
 msgid "_Next"
-msgstr "次のページ"
+msgstr ""
 
 #: resources/ui/mpv_menu.ui:16
-#, fuzzy
 msgid "_Previous"
-msgstr "前のページ"
+msgstr ""
 
 #: resources/ui/mpv_menu.ui:23
-#, fuzzy
 msgid "Next chapter"
-msgstr "前のページ"
+msgstr ""
 
 #: resources/ui/mpv_menu.ui:28
-#, fuzzy
 msgid "Previous chapter"
-msgstr "前のページ"
+msgstr ""
 
 #: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:172
 #: resources/ui/window.ui:394 resources/ui/window.ui:416
 msgid "Playlist"
-msgstr "プレイリスト"
+msgstr ""
 
 #: resources/ui/mpv_menu.ui:40 resources/ui/mpvpage.ui:388
-#, fuzzy
 msgid "Advanced settings"
-msgstr "ビデオ設定の詳細"
+msgstr "Geavanceerde instellingen"
 
 #: resources/ui/mpv_menu.ui:47
-#, fuzzy
 msgid "Media info"
-msgstr "メディア情報"
+msgstr ""
 
 #: resources/ui/mpv_menu.ui:54 resources/ui/window.ui:35
 #: resources/ui/window.ui:64
@@ -1489,72 +1430,52 @@ msgid "_Keyboard shortcuts"
 msgstr ""
 
 #: resources/ui/mpv_menu_actions.ui:12 resources/ui/mpvpage.ui:248
-#, fuzzy
 msgid "Backward"
-msgstr "シーク・バックワード"
+msgstr "Achterwaarts"
 
 #: resources/ui/mpv_menu_actions.ui:42 resources/ui/mpvpage.ui:291
-#, fuzzy
 msgid "Forward"
-msgstr "シーク・フォワード"
+msgstr "Voorwaarts"
 
 #: resources/ui/mpv_shortcuts_window.ui:9
-#, fuzzy
-#| msgid "Resume"
 msgid "Pause / Resume"
-msgstr "再開"
+msgstr "Pauzeren / Hervatten"
 
 #: resources/ui/mpv_shortcuts_window.ui:15
-#, fuzzy
-#| msgid "Seek Forward"
 msgid "Seek Forward 5 Seconds"
-msgstr "シーク・フォワード"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:21
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Seek Backward 5 Seconds"
-msgstr "シーク・バックワード"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:27
-#, fuzzy
-#| msgid "Seek Forward"
 msgid "Seek Forward 60 Seconds"
-msgstr "シーク・フォワード"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:33
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Seek Backward 60 Seconds"
-msgstr "シーク・バックワード"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:39
 msgid "Seek Forward 1 Second (Exact)"
 msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:45
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Seek Backward 1 Second (Exact)"
-msgstr "シーク・バックワード"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:51
-#, fuzzy
-#| msgid "Seek Forward"
 msgid "Step One Frame Forward"
-msgstr "シーク・フォワード"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:57
-#, fuzzy
-#| msgid "Seek Backward"
 msgid "Step One Frame Backward"
-msgstr "シーク・バックワード"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:65
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Playback Speed"
-msgstr "再生速度"
+msgstr "Afspeelsnelheid"
 
 #: resources/ui/mpv_shortcuts_window.ui:68
 msgid "Decrease Speed by 10%"
@@ -1565,38 +1486,28 @@ msgid "Increase Speed by 10%"
 msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:80
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Halve Playback Speed"
-msgstr "再生速度"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:86
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Double Playback Speed"
-msgstr "再生速度"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:92
-#, fuzzy
-#| msgid "Playback speed"
 msgid "Reset Playback Speed"
-msgstr "再生速度"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:100
 msgid "Volume"
-msgstr "ボリューム"
+msgstr "Volume"
 
 #: resources/ui/mpv_shortcuts_window.ui:103
-#, fuzzy
-#| msgid "Default Volume"
 msgid "Increase Volume"
-msgstr "デフォルト音量"
+msgstr "Volume Verhogen"
 
 #: resources/ui/mpv_shortcuts_window.ui:109
-#, fuzzy
-#| msgid "Default Volume"
 msgid "Decrease Volume"
-msgstr "デフォルト音量"
+msgstr "Volume Verlagen"
 
 #: resources/ui/mpv_shortcuts_window.ui:115
 msgid "Mute / Unmute"
@@ -1611,10 +1522,8 @@ msgid "Decrease Volume (Numpad)"
 msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:135
-#, fuzzy
-#| msgid "Subtitle"
 msgid "Subtitles"
-msgstr "字幕"
+msgstr "Ondertiteling"
 
 #: resources/ui/mpv_shortcuts_window.ui:138
 msgid "Cycle Subtitle Tracks Forward"
@@ -1637,16 +1546,12 @@ msgid "Increase Subtitle Delay"
 msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:168
-#, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Increase Subtitle Font Size"
-msgstr "字幕の文字サイズ"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:174
-#, fuzzy
-#| msgid "Subtitle Text Size"
 msgid "Decrease Subtitle Font Size"
-msgstr "字幕の文字サイズ"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:182
 msgid "Tracks"
@@ -1662,32 +1567,27 @@ msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:199
 msgid "Chapters and Playlist"
-msgstr ""
+msgstr "Hoofdstukken en Afspeellijst"
 
 #: resources/ui/mpv_shortcuts_window.ui:202
-#, fuzzy
 msgid "Previous Chapter"
-msgstr "前のページ"
+msgstr "Vorig Hoofdstuk"
 
 #: resources/ui/mpv_shortcuts_window.ui:208
-#, fuzzy
 msgid "Next Chapter"
-msgstr "前のページ"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:214
-#, fuzzy
 msgid "Previous Playlist Entry"
-msgstr "前のページ"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:220
 msgid "Next Playlist Entry"
 msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:231
-#, fuzzy
-#| msgid "Fullscreen"
 msgid "Toggle Fullscreen"
-msgstr "フルスクリーン"
+msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:237
 msgid "Set / Clear A-B Loop Points"
@@ -1699,19 +1599,19 @@ msgstr ""
 
 #: resources/ui/mpv_shortcuts_window.ui:249
 msgid "Display Statistics"
-msgstr ""
+msgstr "Statistieken Weergeven"
 
 #: resources/ui/mpv_shortcuts_window.ui:255
 msgid "Quit"
-msgstr ""
+msgstr "Afsluiten"
 
 #: resources/ui/mpv_shortcuts_window.ui:261
 msgid "Quit and Save Position"
-msgstr ""
+msgstr "Afsluiten en Plek Onthouden"
 
 #: resources/ui/mpvpage.ui:101
 msgid "Stop and quit"
-msgstr "停止して終了"
+msgstr "Stoppen en afsluiten"
 
 #: resources/ui/mpvpage.ui:158
 msgid "Shortcuts"
@@ -1719,385 +1619,232 @@ msgstr ""
 
 #: resources/ui/mpvpage.ui:186
 msgid "Media info (MPV)"
-msgstr "メディア情報（MPV）"
+msgstr ""
 
 #: resources/ui/mpvpage.ui:376
-#, fuzzy
-#| msgid "Default Volume"
 msgid "Adjust Volume"
-msgstr "デフォルト音量"
+msgstr "Volume Aanpassen"
 
 #: resources/ui/other.ui:113
 msgid "No Inscriptions"
-msgstr "記載なし"
+msgstr ""
 
 #: resources/ui/other.ui:134 resources/ui/search.ui:54
 msgid "Movie"
-msgstr "映画"
+msgstr "Film"
 
 #: resources/ui/other.ui:140 resources/ui/search.ui:48
 msgid "Series"
-msgstr "シリーズ"
+msgstr ""
 
 #: resources/ui/other.ui:146 resources/ui/search.ui:90
 msgid "Episode"
-msgstr ""
+msgstr "Aflevering"
 
 #: resources/ui/player_toolbar.ui:78
 msgid "Previous"
-msgstr "前のページ"
+msgstr "Vorige"
 
 #: resources/ui/player_toolbar.ui:108
 msgid "Next"
-msgstr "次のページ"
+msgstr "Volgende"
 
 #: resources/ui/player_toolbar.ui:180
 msgid "Stop And Hide PlayerBar"
-msgstr "プレイヤーバーの停止と非表示"
+msgstr ""
 
 #: resources/ui/pop-menu.ui:10
 msgid "Remove"
-msgstr "削除"
+msgstr "Verwijderen"
 
 #: resources/ui/pop-menu.ui:16
 msgid "Like"
-msgstr "好き"
+msgstr ""
 
 #: resources/ui/pop-menu.ui:22
 msgid "Unlike"
-msgstr "いいねを取り消す"
+msgstr ""
 
 #: resources/ui/pop-menu.ui:70
 msgid "View Missing Episodes"
-msgstr ""
+msgstr "Missende Afleveringen Bekijken"
 
 #: resources/ui/pop-menu.ui:78 resources/ui/refresh_dialog.ui:8
 msgid "Refresh Metadata"
-msgstr "メタデータの更新"
+msgstr "Metadata Verversen"
 
 #: resources/ui/pop-menu.ui:84
 msgid "Scan"
-msgstr "スキャン"
+msgstr "Scannen"
 
 #: resources/ui/refresh_dialog.ui:30
 msgid "Replace All Metadata"
-msgstr ""
+msgstr "Alle Metadata Vervangen"
 
 #: resources/ui/refresh_dialog.ui:39
 msgid "Replace All Images"
-msgstr ""
+msgstr "Alle Afbeeldingen Vervangen"
 
 #: resources/ui/refresh_dialog.ui:49 resources/ui/server_action_row.ui:41
-#, fuzzy
 msgid "Refresh"
-msgstr "メタデータの更新"
+msgstr "Verversen"
 
 #: resources/ui/search.ui:66
 msgid "Person"
-msgstr "人物"
+msgstr "Persoon"
 
 #: resources/ui/search.ui:72
 msgid "Music Album"
-msgstr "音楽アルバム"
+msgstr "Muziekalbum"
 
 #: resources/ui/search.ui:166
 msgid "Nothing Here or No type selected"
-msgstr ""
+msgstr "Niks Hier of Geen soort geselecteerd"
 
 #: resources/ui/search.ui:167
 msgid "Maybe you should try using different search terms"
-msgstr ""
+msgstr "Misschien moet je wat andere zoektermen proberen"
 
 #: resources/ui/server_action_row.ui:23
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Slepen om de volgorde te wijzigen"
 
 #: resources/ui/server_panel.ui:47
-#, fuzzy
 msgid "Restart Server"
-msgstr "サーバーなし"
+msgstr "Server Herstarten"
 
 #: resources/ui/server_panel.ui:58
-#, fuzzy
 msgid "Shutdown Server"
-msgstr "サーバーなし"
+msgstr "Server Afsluiten"
 
 #: resources/ui/server_panel.ui:78
 msgid "System Logs"
-msgstr ""
+msgstr "Systeemlogs"
 
 #: resources/ui/server_panel.ui:83
 msgid "Activity Logs"
-msgstr ""
+msgstr "Activiteitlogs"
 
 #: resources/ui/server_panel.ui:103
 msgid "Tasks"
-msgstr ""
+msgstr "Taken"
 
 #: resources/ui/single_grid.ui:32
-#, fuzzy
 msgid "Change Poster"
-msgstr "パスワードの変更"
+msgstr "Poster Wijzigen"
 
 #: resources/ui/single_grid.ui:38
 msgid "View"
-msgstr "表示"
+msgstr "Weergave"
 
 #: resources/ui/single_grid.ui:65
-#, fuzzy
 msgid "Grid View"
-msgstr "表示"
+msgstr "Rasterweergave"
 
 #: resources/ui/single_grid.ui:72
-#, fuzzy
 msgid "List View"
-msgstr "表示"
+msgstr "Lijstweergave"
 
 #: resources/ui/single_grid.ui:85
 msgid "Ascending"
-msgstr ""
+msgstr "Oplopend"
 
 #: resources/ui/single_grid.ui:92
 msgid "Descending"
-msgstr ""
+msgstr "Aflopend"
 
 #: resources/ui/single_grid.ui:103
 msgid "Sort By"
-msgstr ""
+msgstr "Sorteren Op"
 
 #: resources/ui/single_grid.ui:111
 msgid "Imdb Rate"
-msgstr "IMDb評価"
+msgstr ""
 
 #: resources/ui/single_grid.ui:112
 msgid "Critic Rating"
-msgstr "批評家評価"
+msgstr ""
 
 #: resources/ui/single_grid.ui:113
 msgid "Premiere Date"
-msgstr "初演日"
+msgstr "Premièredatum"
 
 #: resources/ui/single_grid.ui:114
 msgid "Offical Rating"
-msgstr "公式評価"
+msgstr ""
 
 #: resources/ui/single_grid.ui:115
 msgid "Production Year"
-msgstr "生産年"
+msgstr "Productiejaar"
 
 #: resources/ui/single_grid.ui:116
 msgid "Date Played"
-msgstr "プレー日"
+msgstr ""
 
 #: resources/ui/single_grid.ui:117
 msgid "Runtime"
-msgstr "ランタイム"
+msgstr "Speelduur"
 
 #: resources/ui/single_grid.ui:118
 msgid "Updated At"
-msgstr ""
+msgstr "Bijgewerkt Op"
 
 #: resources/ui/single_grid.ui:182
 msgid "Poster"
-msgstr "ポスター"
+msgstr "Poster"
 
 #: resources/ui/single_grid.ui:186
 msgid "Backdrop"
-msgstr "バックドロップ"
+msgstr "Achtergrond"
 
 #: resources/ui/single_grid.ui:190
 msgid "Banner"
-msgstr "バナー"
+msgstr "Banner"
 
 #: resources/ui/theme_switcher.ui:24 resources/ui/theme_switcher.ui:26
 msgid "Follow system style"
-msgstr ""
+msgstr "Systeem"
 
 #: resources/ui/theme_switcher.ui:42 resources/ui/theme_switcher.ui:44
 msgid "Light style"
-msgstr ""
+msgstr "Licht"
 
 #: resources/ui/theme_switcher.ui:60 resources/ui/theme_switcher.ui:62
 msgid "Dark style"
-msgstr ""
+msgstr "Donker"
 
 #: resources/ui/window.ui:11
 msgid "Sign out"
-msgstr "サインアウト"
+msgstr "Afmelden"
 
 #: resources/ui/window.ui:25 resources/ui/window.ui:54
 msgid "Preferences"
-msgstr "好み"
+msgstr "Voorkeuren"
 
 #: resources/ui/window.ui:31 resources/ui/window.ui:60
 msgid "About"
-msgstr "について"
+msgstr "Over"
 
 #: resources/ui/window.ui:44
-#, fuzzy
 msgid "Add server"
-msgstr "サーバーの追加"
+msgstr "Server toevoegen"
 
 #: resources/ui/window.ui:163
 msgid "No Server"
-msgstr "サーバーなし"
+msgstr "Geen Server"
 
 #: resources/ui/window.ui:166
 msgid "Add Server"
-msgstr "サーバーの追加"
+msgstr "Server Toevoegen"
 
 #: resources/ui/window.ui:206
 msgid "Log Out"
-msgstr "ログアウト"
+msgstr "Uitloggen"
 
 #: resources/ui/window.ui:247
 msgid "Contents"
-msgstr "内容"
+msgstr "Inhoud"
 
 #: resources/ui/window.ui:270
 msgid "Servers"
-msgstr "サーバー"
-
-#~ msgid "Restart App To Take Effect"
-#~ msgstr "アプリを再起動して効果を得るために"
-
-#~ msgid ""
-#~ "This feature may cause significant lag. Please enable it with caution."
-#~ msgstr ""
-#~ "この機能は大きなラグを引き起こす可能性があります。注意して有効にしてくださ"
-#~ "い。"
-
-#~ msgid "Blur (Experimental)"
-#~ msgstr "ブラー（実験的）"
-
-#~ msgid "Warning: High GPU usage"
-#~ msgstr "警告: GPU使用率が高い"
-
-#~ msgid "Blur Radius (Experimental)"
-#~ msgstr "ブラー半径（実験的）"
-
-#, fuzzy
-#~ msgid "Danmaku Settings"
-#~ msgstr "ビデオ設定の詳細"
-
-#~ msgid "Font Cleared, Restart to take effect."
-#~ msgstr "フォントがクリアされ、再起動すると有効になります。"
-
-#~ msgid "Font Scale"
-#~ msgstr "フォントスケール"
-
-#~ msgid "Font Family"
-#~ msgstr "フォントファミリー"
-
-#, fuzzy
-#~ msgid "Loading Video..."
-#~ msgstr "読み込み中..."
-
-#~ msgid "View Metadata"
-#~ msgstr "メタデータを見る"
-
-#~ msgid "Accent Foreground Color"
-#~ msgstr "アクセントの前景色"
-
-#~ msgid "Music"
-#~ msgstr "音楽"
-
-#~ msgid "Player"
-#~ msgstr "プレーヤー"
-
-#~ msgid ""
-#~ "Warning: Do NOT use any method other than the software's own controls to "
-#~ "control the window. Restart to take effect"
-#~ msgstr ""
-#~ "警告：ウィンドウを操作するために、ソフトウェア自身のコントロール以外の方法"
-#~ "を使用しないでください。再起動が必要です"
-
-#~ msgid "Load external mpv config"
-#~ msgstr "外部mpv設定を読み込む"
-
-#~ msgid "_Add"
-#~ msgstr "追加"
-
-#, fuzzy
-#~ msgid "Server Address (Auto parse)"
-#~ msgstr "サーバーアドレス"
-
-#~ msgid "_Save"
-#~ msgstr "_保存する"
-
-#~ msgid "Artists"
-#~ msgstr "アーティスト"
-
-#~ msgid "Album Artists"
-#~ msgstr "アルバム・アーティスト"
-
-#~ msgid "Album"
-#~ msgstr "アルバム"
-
-#~ msgid "Track Number"
-#~ msgstr "トラック番号"
-
-#~ msgid "View Metadata (Read Only)"
-#~ msgstr "メタデータを見る（読み取り専用）"
-
-#~ msgid "This only effects on getting images"
-#~ msgstr "これは画像取得にのみ影響する"
-
-#, fuzzy
-#~ msgid "Shutdown"
-#~ msgstr "サーバーなし"
-
-#, fuzzy
-#~| msgid "Video: "
-#~ msgid "Video Filters"
-#~ msgstr "ビデオ "
-
-#~ msgid "Daily Recommend"
-#~ msgstr "毎日のおすすめ"
-
-#~ msgid "HTTP Proxy"
-#~ msgstr "HTTPプロキシ"
-
-#, fuzzy
-#~ msgid "Video Settings"
-#~ msgstr "ビデオ設定の詳細"
-
-#~ msgid "Force Stereo"
-#~ msgstr "フォースステレオ"
-
-#~ msgid "More"
-#~ msgstr "もっと見る"
-
-#~ msgid "More Video Settings"
-#~ msgstr "ビデオ設定の詳細"
-
-#, fuzzy
-#~| msgid "Playlist"
-#~ msgid "_Playlist"
-#~ msgstr "プレイリスト"
-
-#, fuzzy
-#~ msgid "Font Cleared"
-#~ msgstr "キャッシュがクリアされました"
-
-#~ msgid "This currently only applies to the player"
-#~ msgstr "これは現在、プレーヤーにのみ適用されます"
-
-#~ msgid "Estimate Frame Rate"
-#~ msgstr "推定フレームレート"
-
-#~ msgid ""
-#~ "Use vf filter to interpolate frames to improve the smoothness of resizing "
-#~ "and menus."
-#~ msgstr ""
-#~ "vfフィルターを使用してフレームを補間し、リサイズやメニューの滑らかさを改善"
-#~ "します。"
-
-#~ msgid "Recommended setting value: Current display frame rate"
-#~ msgstr "推奨設定値：現在の表示フレームレート"
-
-#~ msgid "Box Set"
-#~ msgstr "ボックスセット"
-
-#~ msgid "config=true"
-#~ msgstr "設定=true"
+msgstr "Servers"
