@@ -3,24 +3,19 @@ on:
   workflow_call:
 
 jobs:
-  clippy_check:
+  check:
     name: Lint
-    runs-on: ubuntu-latest
-    container:
-      image: ubuntu:resolute
+    runs-on: ubuntu-26.04
     steps:
-      - name: Setup Environment
-        env:
-          DEBIAN_FRONTEND: noninteractive
+      - name: Install dependencies
         run: |
-          apt-get update
-          apt-get install -y git
-          apt-get install -y --no-install-recommends build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
           libadwaita-1-dev libmpv-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev \
-          libgstreamer-plugins-base1.0-dev libgstreamer-plugins-extra1.0-dev gstreamer1.0-libav
+          libgstreamer-plugins-base1.0-dev libgstreamer-plugins-extra1.0-dev gstreamer1.0-libav blueprint-compiler
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1

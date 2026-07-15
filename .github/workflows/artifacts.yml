@@ -1,4 +1,4 @@
-name: Process Artifacts
+name: Artifacts
 
 on:
   workflow_call:
@@ -36,11 +36,12 @@ jobs:
               Commit Message: ${{ github.event.head_commit.message}}
               Commit URL: ${{ github.event.head_commit.url }}
               Branch: ${{ github.ref }}
+          continue-on-error: true
 
     release:
       name: Release
       runs-on: ubuntu-latest
-      if: github.ref_type == 'tag'
+      if: ${{ github.ref_type == 'tag' }}
       steps:
         - name: Download artifact
           uses: actions/download-artifact@v8
@@ -53,4 +54,4 @@ jobs:
           uses: softprops/action-gh-release@v3
           with:
             files: artifacts/*
-            prerelease: ${{ github.ref_type == 'tag' && contains(github.ref_name, 'rc') }}
+            prerelease: ${{ contains(github.ref_name, 'rc') }}
