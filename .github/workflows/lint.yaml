@@ -12,7 +12,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends build-essential curl gettext pkg-config libssl-dev libgtk-4-dev \
           libadwaita-1-dev libmpv-dev libgstreamer1.0-dev libgstreamer-plugins-bad1.0-dev \
-          libgstreamer-plugins-base1.0-dev libgstreamer-plugins-extra1.0-dev gstreamer1.0-libav
+          libgstreamer-plugins-base1.0-dev libgstreamer-plugins-extra1.0-dev gstreamer1.0-libav blueprint-compiler
 
       - name: Checkout
         uses: actions/checkout@v7
