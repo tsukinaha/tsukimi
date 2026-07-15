@@ -13,7 +13,7 @@ use itertools::Itertools;
 use mutsumi::*;
 
 use super::{
-    mpvglarea::MPVGLArea,
+    sink::MPVPlaySink,
     video_scale::VideoScale,
 };
 use crate::{
@@ -152,7 +152,7 @@ mod imp {
             mpv::{
                 VolumeBar,
                 menu_actions::MenuActions,
-                mpvglarea::MPVGLArea,
+                sink::MPVPlaySink,
                 video_scale::VideoScale,
             },
             provider::tu_item::TuItem,
@@ -170,7 +170,7 @@ mod imp {
         #[property(get, set = Self::set_paused)]
         pub paused: Cell<bool>,
         #[template_child]
-        pub video: TemplateChild<MPVGLArea>,
+        pub video: TemplateChild<MPVPlaySink>,
         #[template_child]
         pub bottom_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
@@ -265,7 +265,7 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
-            MPVGLArea::ensure_type();
+            MPVPlaySink::ensure_type();
             VideoScale::ensure_type();
             VolumeBar::ensure_type();
             klass.bind_template();
@@ -1302,8 +1302,8 @@ impl MPVPage {
         let y = imp.y.get();
 
         if let Some(widget) = self.pick(x, y, gtk::PickFlags::DEFAULT)
-            && !widget.is::<MPVGLArea>()
-            && widget.ancestor(MPVGLArea::static_type()).is_none()
+            && !widget.is::<MPVPlaySink>()
+            && widget.ancestor(MPVPlaySink::static_type()).is_none()
         {
             return false;
         }

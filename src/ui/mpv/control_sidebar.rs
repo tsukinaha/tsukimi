@@ -26,14 +26,14 @@ mod imp {
     use gtk::glib;
 
     use super::*;
-    use crate::ui::mpv::mpvglarea::MPVGLArea;
+    use crate::ui::mpv::sink::MPVPlaySink;
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/mpv_control_sidebar.ui")]
     #[properties(wrapper_type = super::MPVControlSidebar)]
     pub struct MPVControlSidebar {
         #[property(get, set = Self::set_player, explicit_notify, nullable)]
-        pub player: glib::WeakRef<MPVGLArea>,
+        pub player: glib::WeakRef<MPVPlaySink>,
 
         #[template_child]
         pub playback_speed_adj: TemplateChild<gtk::Adjustment>,
@@ -143,7 +143,7 @@ mod imp {
     impl NavigationPageImpl for MPVControlSidebar {}
 
     impl MPVControlSidebar {
-        fn set_player(&self, player: Option<MPVGLArea>) {
+        fn set_player(&self, player: Option<MPVPlaySink>) {
             if self.player.upgrade() == player {
                 return;
             }

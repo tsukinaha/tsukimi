@@ -38,13 +38,13 @@ const MAX_VOLUME: i64 = 100;
 mod imp {
     use super::*;
 
-    pub struct MPVGLArea {
+    pub struct MPVPlaySink {
         pub player: MutsumiVideoPlayer,
         pub position: Cell<f64>,
         pub paused: Cell<bool>,
     }
 
-    impl Default for MPVGLArea {
+    impl Default for MPVPlaySink {
         fn default() -> Self {
             Self {
                 player: MutsumiVideoPlayer::new(),
@@ -55,13 +55,13 @@ mod imp {
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for MPVGLArea {
+    impl ObjectSubclass for MPVPlaySink {
         const NAME: &'static str = "MPVGLArea";
-        type Type = super::MPVGLArea;
+        type Type = super::MPVPlaySink;
         type ParentType = adw::Bin;
     }
 
-    impl ObjectImpl for MPVGLArea {
+    impl ObjectImpl for MPVPlaySink {
         fn constructed(&self) {
             self.parent_constructed();
 
@@ -78,24 +78,24 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for MPVGLArea {}
-    impl BinImpl for MPVGLArea {}
+    impl WidgetImpl for MPVPlaySink {}
+    impl BinImpl for MPVPlaySink {}
 }
 
 glib::wrapper! {
-    pub struct MPVGLArea(ObjectSubclass<imp::MPVGLArea>)
+    pub struct MPVPlaySink(ObjectSubclass<imp::MPVPlaySink>)
         @extends adw::Bin, gtk::Widget,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget;
 }
 
-impl Default for MPVGLArea {
+impl Default for MPVPlaySink {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl MPVGLArea {
+impl MPVPlaySink {
     pub fn new() -> Self {
         Object::builder().build()
     }
