@@ -40,7 +40,7 @@ where
     });
 }
 
-pub fn spawn_tokio_blocking_without_await<F>(fut: F)
+pub fn _spawn_tokio_blocking_without_await<F>(fut: F)
 where
     F: FnOnce() + Send + 'static,
 {

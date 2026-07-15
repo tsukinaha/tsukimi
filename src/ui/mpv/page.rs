@@ -1,6 +1,3 @@
-#![allow(deprecated)]
-// FIXME: replace GtkShortcutsWindow when the replacement is appeared on libadwaita
-
 use adw::prelude::*;
 use gettextrs::gettext;
 use glib::Object;
@@ -13,19 +10,10 @@ use gtk::{
     subclass::prelude::*,
 };
 use itertools::Itertools;
+use mutsumi::*;
 
 use super::{
-    mpvglarea::MPVGLArea,
-    tsukimi_mpv::{
-        ChapterList,
-        ListenEvent,
-        MPV_EVENT_CHANNEL,
-        MpvTrack,
-        MpvTracks,
-        PAUSED,
-        TrackSelection,
-        TsukimiMPV,
-    },
+    sink::MPVPlaySink,
     video_scale::VideoScale,
 };
 use crate::{
@@ -118,6 +106,13 @@ enum MpvTrackKind {
 }
 
 impl MpvTrackKind {
+    fn track_kind(self) -> TrackKind {
+        match self {
+            Self::Audio => TrackKind::Audio,
+            Self::Subtitle => TrackKind::Subtitle,
+        }
+    }
+
     fn property(self) -> &'static str {
         match self {
             Self::Audio => "aid",
@@ -157,7 +152,7 @@ mod imp {
             mpv::{
                 VolumeBar,
                 menu_actions::MenuActions,
-                mpvglarea::MPVGLArea,
+                sink::MPVPlaySink,
                 video_scale::VideoScale,
             },
             provider::tu_item::TuItem,
@@ -175,7 +170,7 @@ mod imp {
         #[property(get, set = Self::set_paused)]
         pub paused: Cell<bool>,
         #[template_child]
-        pub video: TemplateChild<MPVGLArea>,
+        pub video: TemplateChild<MPVPlaySink>,
         #[template_child]
         pub bottom_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
@@ -219,15 +214,16 @@ mod imp {
         pub timeout: RefCell<Option<glib::source::SourceId>>,
         pub back_timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
-        pub seeking: RefCell<bool>,
+        pub seeking: Cell<bool>,
         pub last_playback_position: Cell<f64>,
-        pub x: RefCell<f64>,
-        pub y: RefCell<f64>,
-        pub last_motion_time: RefCell<i64>,
+        pub x: Cell<f64>,
+        pub y: Cell<f64>,
+        pub last_motion_time: Cell<i64>,
         pub suburl: RefCell<Option<String>>,
         pub skippable_segments: RefCell<Option<Vec<MediaSegment>>>,
         pub current_segment_end: Cell<Option<f64>>,
         pub popover: RefCell<Option<PopoverMenu>>,
+        pub popover_count: Cell<u32>,
         pub menu_actions: MenuActions,
         #[cfg(target_os = "linux")]
         pub mpris_server: OnceCell<LocalServer<super::MPVPage>>,
@@ -251,7 +247,7 @@ mod imp {
         pub current_episode_list: RefCell<Vec<TuItem>>,
 
         #[property(get, set, default_value = true)]
-        pub key_vaild: RefCell<bool>,
+        pub key_vaild: Cell<bool>,
 
         pub video_version_matcher: RefCell<Option<String>>,
         pub fallback_context: RefCell<Option<super::FallbackContext>>,
@@ -260,9 +256,6 @@ mod imp {
         pub retrying_playback: Cell<bool>,
         pub allow_fallback: Cell<bool>,
         pub last_nonzero_volume: Cell<i64>,
-
-        #[property(get, set, default_value = true)]
-        pub can_fade_cursor_set: Cell<bool>,
     }
 
     #[glib::object_subclass]
@@ -272,7 +265,7 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
-            MPVGLArea::ensure_type();
+            MPVPlaySink::ensure_type();
             VideoScale::ensure_type();
             VolumeBar::ensure_type();
             klass.bind_template();
@@ -334,7 +327,6 @@ mod imp {
     impl ObjectImpl for MPVPage {
         fn constructed(&self) {
             self.parent_constructed();
-            self.can_fade_cursor_set.set(true);
 
             SETTINGS
                 .bind(
@@ -525,7 +517,9 @@ impl MPVPage {
             .map(|t| format!("{title1} - {t}"))
             .unwrap_or_else(|| title1);
 
-        self.mpv().set_property("force-media-title", media_title);
+        self.imp()
+            .video
+            .set_property("force-media-title", media_title);
 
         let id = item.id();
         let series_id = item.series_id();
@@ -832,27 +826,29 @@ impl MPVPage {
         Some(JELLYFIN_CLIENT.get_streaming_url(&url).await)
     }
 
-    fn set_audio_and_video_tracks_dropdown(&self, value: MpvTracks) {
+    async fn set_audio_and_video_tracks_dropdown(&self, value: MpvTracks) {
         let imp = self.imp();
         self.bind_tracks(
             value.audio_tracks,
             &imp.audio_listbox.get(),
             MpvTrackKind::Audio,
-        );
+        )
+        .await;
         self.bind_tracks(
             value.sub_tracks,
             &imp.sub_listbox.get(),
             MpvTrackKind::Subtitle,
-        );
+        )
+        .await;
     }
 
     // TODO: Use GAction instead of listening to each button
-    fn bind_tracks(&self, tracks: Vec<MpvTrack>, listbox: &gtk::ListBox, kind: MpvTrackKind) {
+    async fn bind_tracks(&self, tracks: Vec<MpvTrack>, listbox: &gtk::ListBox, kind: MpvTrackKind) {
         while let Some(row) = listbox.first_child() {
             listbox.remove(&row);
         }
 
-        let track_id = self.imp().video.get_track_id(kind.property());
+        let track_id = self.imp().video.get_track_id(kind.track_kind()).await;
 
         let row = CheckRow::new();
         row.set_title("None");
@@ -972,10 +968,10 @@ impl MPVPage {
                         ListenEvent::Duration(value) => {
                             obj.update_duration(value);
                         }
-                        ListenEvent::PausedForCache(true) | ListenEvent::Seek => {
+                        ListenEvent::PausedForCache(true, _) | ListenEvent::Seek(_) => {
                             obj.update_seeking(true);
                         }
-                        ListenEvent::PausedForCache(false) | ListenEvent::PlaybackRestart => {
+                        ListenEvent::PausedForCache(false, _) | ListenEvent::PlaybackRestart(_) => {
                             let was_seeking = obj.get_seeking();
                             obj.update_seeking(false);
                             if was_seeking {
@@ -990,6 +986,7 @@ impl MPVPage {
                             obj.on_error(&value);
                         }
                         ListenEvent::Pause(value) => {
+                            obj.imp().video.update_paused(value);
                             obj.on_pause_update(value);
                         }
                         ListenEvent::CacheSpeed(value) => {
@@ -998,8 +995,9 @@ impl MPVPage {
                         ListenEvent::FileLoaded => {
                             obj.on_file_loaded();
                         }
+                        ListenEvent::StartFile => {}
                         ListenEvent::TrackList(value) => {
-                            obj.set_audio_and_video_tracks_dropdown(value);
+                            obj.set_audio_and_video_tracks_dropdown(value).await;
                         }
                         ListenEvent::Volume(value) => {
                             obj.volume_cb(value);
@@ -1019,6 +1017,7 @@ impl MPVPage {
                         ListenEvent::ChapterList(value) => {
                             obj.on_chapter_list(value);
                         }
+                        ListenEvent::Playlist(_) => {}
                     }
                 }
             }
@@ -1074,6 +1073,7 @@ impl MPVPage {
     }
 
     fn scale_cb(&self, value: i64) {
+        self.imp().video.update_position(value as f64);
         self.imp().last_playback_position.set(value as f64);
         if !self.imp().video_scale.is_dragging() {
             self.imp().video_scale.set_value(value as f64);
@@ -1134,7 +1134,7 @@ impl MPVPage {
     }
 
     fn update_seeking(&self, seeking: bool) {
-        self.imp().seeking.replace(seeking);
+        self.imp().seeking.set(seeking);
         let spinner = &self.imp().spinner;
         let loading_box = &self.imp().loading_box;
         if seeking {
@@ -1147,7 +1147,7 @@ impl MPVPage {
     }
 
     fn get_seeking(&self) -> bool {
-        *self.imp().seeking.borrow()
+        self.imp().seeking.get()
     }
 
     fn on_end_file(&self, value: u32) {
@@ -1202,21 +1202,20 @@ impl MPVPage {
 
     #[template_callback]
     fn on_motion(&self, x: f64, y: f64) {
-        let old_x = *self.x();
-        let old_y = *self.y();
+        let imp = self.imp();
+        let old_x = imp.x.get();
+        let old_y = imp.y.get();
 
         if old_x == x && old_y == y {
             return;
         }
 
-        let imp = self.imp();
-
-        *imp.x.borrow_mut() = x;
-        *imp.y.borrow_mut() = y;
+        imp.x.set(x);
+        imp.y.set(y);
 
         let now = glib::monotonic_time();
 
-        if now - *self.last_motion_time() < MIN_MOTION_TIME {
+        if now - imp.last_motion_time.get() < MIN_MOTION_TIME {
             return;
         }
 
@@ -1229,15 +1228,15 @@ impl MPVPage {
 
             self.reset_fade_timeout();
 
-            *imp.last_motion_time.borrow_mut() = now;
+            imp.last_motion_time.set(now);
         }
     }
 
     #[template_callback]
     fn on_leave(&self) {
         let imp = self.imp();
-        *imp.x.borrow_mut() = -1.0;
-        *imp.y.borrow_mut() = -1.0;
+        imp.x.set(-1.0);
+        imp.y.set(-1.0);
 
         if self.toolbar_revealed() && imp.timeout.borrow().is_none() {
             self.reset_fade_timeout();
@@ -1271,18 +1270,6 @@ impl MPVPage {
         *imp.timeout.borrow_mut() = Some(timeout);
     }
 
-    fn x(&self) -> impl std::ops::Deref<Target = f64> + '_ {
-        self.imp().x.borrow()
-    }
-
-    fn y(&self) -> impl std::ops::Deref<Target = f64> + '_ {
-        self.imp().y.borrow()
-    }
-
-    fn last_motion_time(&self) -> impl std::ops::Deref<Target = i64> + '_ {
-        self.imp().last_motion_time.borrow()
-    }
-
     fn toolbar_revealed(&self) -> bool {
         self.imp().bottom_revealer.is_child_revealed()
     }
@@ -1305,22 +1292,25 @@ impl MPVPage {
     }
 
     fn can_fade_overlay(&self) -> bool {
-        let x = *self.x();
-        let y = *self.y();
-        if x >= 0.0 && y >= 0.0 {
-            let widget = self.pick(x, y, gtk::PickFlags::DEFAULT);
-            if let Some(widget) = widget
-                && !widget.is::<MPVGLArea>()
-            {
-                return false;
-            }
+        let imp = self.imp();
+
+        if imp.popover_count.get() > 0 {
+            return false;
         }
 
-        let imp = self.imp();
-        if imp.audio_tracks_menu_button.is_active()
-            || imp.subtitle_tracks_menu_button.is_active()
-            || imp.volume_button.is_active()
-            || !self.can_fade_cursor_set()
+        let x = imp.x.get();
+        let y = imp.y.get();
+
+        if let Some(widget) = self.pick(x, y, gtk::PickFlags::DEFAULT)
+            && !widget.is::<MPVPlaySink>()
+            && widget.ancestor(MPVPlaySink::static_type()).is_none()
+        {
+            return false;
+        }
+
+        if let Some(window) = self.root().and_downcast::<gtk::Window>()
+            && let Some(focus) = gtk::prelude::GtkWindowExt::focus(&window)
+            && focus.ancestor(adw::Dialog::static_type()).is_some()
         {
             return false;
         }
@@ -1341,20 +1331,14 @@ impl MPVPage {
         let imp = self.imp();
         imp.bottom_revealer.set_reveal_child(reveal);
         imp.top_revealer.set_reveal_child(reveal);
+
         let Some(surface) = self.native().and_then(|f| f.surface()) else {
             return;
         };
         let cursor = if reveal {
             gtk::gdk::Cursor::from_name("default", None)
         } else {
-            let Some(pixbuf) =
-                gtk::gdk_pixbuf::Pixbuf::new(gtk::gdk_pixbuf::Colorspace::Rgb, true, 8, 1, 1)
-            else {
-                return;
-            };
-            pixbuf.fill(0);
-            let texture = gtk::gdk::Texture::for_pixbuf(&pixbuf);
-            Some(gtk::gdk::Cursor::from_texture(&texture, 0, 0, None))
+            gtk::gdk::Cursor::from_name("none", None)
         };
 
         surface.set_cursor(cursor.as_ref());
@@ -1372,11 +1356,9 @@ impl MPVPage {
         self.reset_skippable_segments();
         let current_video = self.current_video();
 
-        let mpv = self.mpv();
-        mpv.pause(true);
-        mpv.stop();
-        mpv.event_thread_alive
-            .store(PAUSED, std::sync::atomic::Ordering::SeqCst);
+        let video = &self.imp().video;
+        video.player().pause(true);
+        video.stop();
         let root = self.root();
         let window = root
             .and_downcast_ref::<crate::ui::widgets::window::Window>()
@@ -1522,12 +1504,34 @@ impl MPVPage {
                     .halign(gtk::Align::Start)
                     .has_arrow(false)
                     .build();
+                popover.connect_map(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_| obj.on_popover_opened()
+                ));
+                popover.connect_unmap(glib::clone!(
+                    #[weak(rename_to = obj)]
+                    self,
+                    move |_| obj.on_popover_closed()
+                ));
                 popover.set_parent(self);
                 popover.add_child(&imp.menu_actions, "menu-actions");
                 let _ = imp.popover.replace(Some(popover));
             }
             None => eprintln!("Failed to load popover"),
         }
+    }
+
+    #[template_callback]
+    fn on_popover_opened(&self) {
+        let count = self.imp().popover_count.get();
+        self.imp().popover_count.set(count.saturating_add(1));
+    }
+
+    #[template_callback]
+    fn on_popover_closed(&self) {
+        let count = self.imp().popover_count.get();
+        self.imp().popover_count.set(count.saturating_sub(1));
     }
 
     pub fn on_backward(&self) {
@@ -1550,8 +1554,8 @@ impl MPVPage {
         self.key_pressed_cb(NEXT_CHAPTER_KEYVAL, gtk::gdk::ModifierType::empty());
     }
 
-    pub fn mpv(&self) -> &TsukimiMPV {
-        self.imp().video.imp().mpv()
+    pub fn mpv(&self) -> &mutsumi::ContextedMPV {
+        self.imp().video.mpv()
     }
 
     pub fn notify_playing(&self) {

@@ -897,7 +897,6 @@ impl Window {
     pub fn set_shortcuts(&self) {
         let shortcuts_action = gtk::gio::ActionEntry::builder("show-help-overlay")
             .activate(|window: &Window, _, _| {
-                window.imp().mpvnav.set_can_fade_cursor_set(false);
                 let Some(dialog) =
                     gtk::Builder::from_resource("/moe/tsuna/tsukimi/ui/mpv_shortcuts_window.ui")
                         .object::<adw::ShortcutsDialog>("shortcuts_dialog")
@@ -905,13 +904,6 @@ impl Window {
                     eprintln!("Failed to load shortcuts dialog");
                     return;
                 };
-                dialog.connect_closed(glib::clone!(
-                    #[weak]
-                    window,
-                    move |_| {
-                        window.imp().mpvnav.set_can_fade_cursor_set(true);
-                    }
-                ));
                 dialog.present(Some(window));
             })
             .build();
