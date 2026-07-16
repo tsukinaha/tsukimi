@@ -122,6 +122,7 @@ impl MPVPlaySink {
                 obj.imp().paused.set(false);
 
                 obj.player().set_start(start_seconds);
+                obj.player().push_an_empty_texture();
                 obj.player().load_video(&url);
                 obj.player().pause(false);
             }
