@@ -1151,6 +1151,8 @@ impl MPVPage {
     }
 
     fn on_end_file(&self, value: u32) {
+        self.imp().video.player().push_an_empty_texture();
+
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
             self,

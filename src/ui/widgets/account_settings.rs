@@ -434,7 +434,6 @@ impl AccountSettings {
             )
             .build();
 
-
         if JELLYFIN_CLIENT.session().account.user_id.is_empty() {
             return;
         }
