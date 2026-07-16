@@ -402,60 +402,6 @@
         </child>
       </object>
     </child>
-    <child>
-      <object class="AdwPreferencesPage">
-        <property name="title" translatable="yes">Others</property>
-        <property name="name">Others</property>
-        <property name="icon-name">preferences-other-symbolic</property>
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Video Output</property>
-            <property name="description" translatable="yes">Only for debugging</property>
-            <child>
-              <object class="AdwActionRow">
-                <property name="title" translatable="yes">libmpv (default)</property>
-                <property name="activatable-widget">vo_group</property>
-                <child type="prefix">
-                  <object class="GtkCheckButton" id="vo_group">
-                    <property name="valign">center</property>
-                    <property name="action-name">setting.video-output</property>
-                    <property name="action-target">0</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="AdwActionRow">
-                <property name="title">gpu-next</property>
-                <property name="activatable-widget">vo_group2</property>
-                <child type="prefix">
-                  <object class="GtkCheckButton" id="vo_group2">
-                    <property name="valign">center</property>
-                    <property name="group">vo_group</property>
-                    <property name="action-name">setting.video-output</property>
-                    <property name="action-target">1</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="AdwActionRow">
-                <property name="title">dmabuf-wayland</property>
-                <property name="activatable-widget">vo_group3</property>
-                <child type="prefix">
-                  <object class="GtkCheckButton" id="vo_group3">
-                    <property name="valign">center</property>
-                    <property name="group">vo_group</property>
-                    <property name="action-name">setting.video-output</property>
-                    <property name="action-target">2</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-          </object>
-        </child>
-      </object>
-    </child>
   </template>
   <object class="AdwNavigationPage" id="preferred_version_subpage">
     <property name="title" translatable="yes">Preferred Version</property>

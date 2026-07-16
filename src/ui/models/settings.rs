@@ -60,7 +60,6 @@ impl Settings {
     const KEY_MPV_SUBTITLE_PREFERRED_LANG: &'static str = "mpv-subtitle-preferred-lang"; // i32
     const KEY_MPV_DEFAULT_VOLUME: &'static str = "mpv-default-volume"; // i32
     const KEY_MPV_SHOW_BUFFER_SPEED: &'static str = "mpv-show-buffer-speed"; // bool
-    const KEY_MPV_VIDEO_OUTPUT: &'static str = "mpv-video-output"; // i32
     const KEY_MPV_ACTION_AFTER_VIDEO_END: &'static str = "mpv-action-after-video-end"; // i32
     const KEY_MPV_HWDEC: &'static str = "mpv-hwdec"; // i32
     const PREFERRED_VERSION_DESCRIPTORS: &'static str = "video-version-descriptors"; // String
@@ -394,14 +393,6 @@ impl Settings {
         &self, mpv_show_buffer_speed: bool,
     ) -> Result<(), glib::BoolError> {
         self.set_boolean(Self::KEY_MPV_SHOW_BUFFER_SPEED, mpv_show_buffer_speed)
-    }
-
-    pub fn set_mpv_video_output(&self, mpv_video_output: i32) -> Result<(), glib::BoolError> {
-        self.set_int(Self::KEY_MPV_VIDEO_OUTPUT, mpv_video_output)
-    }
-
-    pub fn mpv_video_output(&self) -> i32 {
-        self.int(Self::KEY_MPV_VIDEO_OUTPUT)
     }
 
     pub fn set_mpv_action_after_video_end(

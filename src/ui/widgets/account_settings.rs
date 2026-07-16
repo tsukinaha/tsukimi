@@ -434,25 +434,6 @@ impl AccountSettings {
             )
             .build();
 
-        let action_group = gio::SimpleActionGroup::new();
-
-        let action_vo = gio::ActionEntry::builder("video-output")
-            .parameter_type(Some(&i32::static_variant_type()))
-            .state(SETTINGS.mpv_video_output().to_variant())
-            .activate(move |_, action, parameter| {
-                let parameter = parameter
-                    .expect("Could not get parameter.")
-                    .get::<i32>()
-                    .expect("The variant needs to be of type `i32`.");
-
-                let _ = SETTINGS.set_mpv_video_output(parameter);
-
-                action.set_state(&parameter.to_variant());
-            })
-            .build();
-
-        action_group.add_action_entries([action_vo]);
-        self.insert_action_group("setting", Some(&action_group));
 
         if JELLYFIN_CLIENT.session().account.user_id.is_empty() {
             return;

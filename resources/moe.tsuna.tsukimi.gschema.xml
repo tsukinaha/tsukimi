@@ -144,11 +144,6 @@
       <default>75</default>
       <summary>Default volume</summary>
     </key>
-    <key name="mpv-video-output" type="i">
-      <default>0</default>
-      <summary>MPV Video output</summary>
-      <description>0: libmpv, 1: gpu-next, 2: dmabuf-wayland</description>
-    </key>
     <key name="mpv-hwdec" type="i">
       <default>0</default>
       <summary>Hardware Decoding</summary>
