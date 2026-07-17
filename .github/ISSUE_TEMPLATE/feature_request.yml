@@ -1,0 +1,24 @@
+name: Feature request
+description: Suggest an idea for this project
+title: ""
+labels:
+  - enhancement
+  - pending
+assignees:
+  - tsukinaha
+body:
+  - type: checkboxes
+    id: request-type
+    attributes:
+      label: Request type
+      options:
+        - label: I confirm that this is a feature request, not a bug report.
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the feature you would like to see and the problem it would solve.
+    validations:
+      required: true
