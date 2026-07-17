@@ -33,6 +33,7 @@ Paste the log at the bottom
  - OS: [e.g. NixOS 24.11]
  - Architecture: [e.g. x86_64]
  - GPU: [e.g. NVIDIA GTX 690]
+ - Compositor: [e.g. Kwin Wayland]
  - Version [e.g. 0.11.4]
 
 **Describe the bug**
