@@ -176,6 +176,12 @@
                 <property name="subtitle" translatable="yes">Jellyfin only</property>
               </object>
             </child>
+        <child>
+          <object class="AdwSwitchRow" id="hide_libraries_control">
+            <property name="title" translatable="yes">Hide Libraries</property>
+            <property name="subtitle" translatable="yes">Hide the library row at the top of the home page</property>
+          </object>
+        </child>
           </object>
         </child>
         <child>

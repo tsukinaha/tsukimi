@@ -113,6 +113,7 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             obj.setup_next_up_morebutton();
+            obj.bind_hide_libraries();
             obj.init_load();
         }
     }
@@ -163,6 +164,14 @@ impl HomePage {
                 obj.setup(enable_cache).await;
             }
         ));
+    }
+
+    pub fn bind_hide_libraries(&self) {
+        let hortu = self.imp().libhortu.get();
+        SETTINGS
+            .bind("hide-libraries", &hortu, "visible")
+            .flags(gio::SettingsBindFlags::GET | gio::SettingsBindFlags::INVERT_BOOLEAN)
+            .build();
     }
 
     pub async fn setup(&self, enable_cache: bool) {

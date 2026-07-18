@@ -69,6 +69,8 @@ mod imp {
         #[template_child]
         pub refresh_control: TemplateChild<adw::SwitchRow>,
         #[template_child]
+        pub hide_libraries_control: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub merge_resume_next_up_control: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub auto_skip_intro_outro_control: TemplateChild<adw::SwitchRow>,
@@ -423,6 +425,13 @@ impl AccountSettings {
             .bind(
                 "merge-resume-and-next-up",
                 &imp.merge_resume_next_up_control.get(),
+                "active",
+            )
+            .build();
+        SETTINGS
+            .bind(
+                "hide-libraries",
+                &imp.hide_libraries_control.get(),
                 "active",
             )
             .build();
