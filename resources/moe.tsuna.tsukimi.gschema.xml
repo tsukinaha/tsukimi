@@ -278,5 +278,9 @@
       <summary>Whether the danmaku is enabled</summary>
       <default>false</default>
     </key>
+    <key name="hide-libraries" type="b">
+      <summary>Whether to hide libraries</summary>
+      <default>false</default>
+      </key>
   </schema>
 </schemalist>
