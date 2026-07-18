@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwBin" class="HortuScrolled">
-    <property name="visible">False</property>
-    <property name="margin-start">18</property>
-    <property name="margin-end">18</property>
-    <property name="margin-top">12</property>
-    <property name="margin-bottom">12</property>
     <child>
       <object class="GtkEventControllerMotion">
         <signal name="enter" handler="on_enter_focus" swapped="yes"/>
@@ -19,6 +14,10 @@
           <object class="GtkBox">
             <property name="orientation">vertical</property>
             <property name="spacing">5</property>
+            <property name="margin-start">18</property>
+            <property name="margin-end">18</property>
+            <property name="margin-top">18</property>
+            <property name="margin-bottom">18</property>
             <child>
               <object class="GtkBox">
                 <property name="orientation">horizontal</property>
