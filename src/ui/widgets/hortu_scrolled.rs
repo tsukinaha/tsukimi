@@ -211,11 +211,9 @@ impl HortuScrolled {
 
         if items.is_empty() {
             imp.diffview.set_items(Vec::<TuObject>::new());
-            self.set_visible(false);
+            imp.revealer.set_reveal_child(false);
             return;
         }
-
-        self.set_visible(true);
 
         let prefer_size = resolve_prefer_size(self.unify_size(), &items);
         let visible_ids = items

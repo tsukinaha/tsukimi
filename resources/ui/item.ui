@@ -443,7 +443,6 @@
                     <child>
                       <object class="GtkBox">
                         <property name="orientation">vertical</property>
-                        <property name="spacing">9</property>
                         <property name="margin-bottom">18</property>
                         <child>
                           <object class="HortuScrolled" id="includehortu">
