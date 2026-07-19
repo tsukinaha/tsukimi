@@ -44,7 +44,8 @@ clap = { version = "4", features = ["derive"] }
 fnv = "1.0.7"
 rand = "0.10.1"
 base64 = "0.22.1"
-mutsumi = "0.2"
+# mutsumi = "0.2"
+mutsumi = { git = "https://github.com/MutsumiUniverse/mutsumi.git" }
 xxhash-rust = { version = "0.8.15", features = ["xxh3"] }
 futures-util = "0.3.31"
 itertools = "0.15.0"
