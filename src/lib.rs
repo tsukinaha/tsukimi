@@ -56,6 +56,7 @@ pub fn run() -> gtk::glib::ExitCode {
     gtk::glib::set_application_name(CLIENT_ID);
 
     let _tokio_guard = runtime().enter();
+    let _profiling_guard = mutsumi::start_proxy_profiling();
     Application::new().run_with_args::<&str>(&[])
 }
 
