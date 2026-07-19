@@ -2372,7 +2372,7 @@ checksum = "956787520e75e9bd233246045d19f42fb73242759cc57fba9611d940ae96d4b0"
 [[package]]
 name = "mutsumi"
 version = "0.3.0"
-source = "git+https://github.com/MutsumiUniverse/mutsumi.git#79095fa11e15a2333a6c55babc45a8dc56384d4b"
+source = "git+https://github.com/MutsumiUniverse/mutsumi.git#6ce249665cadde9e598f0b007d8e12787f084214"
 dependencies = [
  "ash",
  "atomic-wait",
