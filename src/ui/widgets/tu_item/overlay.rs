@@ -79,6 +79,57 @@ pub trait TuItemOverlayPrelude {
     fn overlay(&self) -> gtk::Overlay;
 
     fn poster_type_ext(&self) -> PosterType;
+
+    fn fallback_sources(&self, item: &TuItem, image_type: &str, id: &str) -> Vec<PictureSource> {
+        let mut fallbacks = Vec::new();
+        if let Some(image_tags) = item.image_tags() {
+            let mut candidates: Vec<(&str, Option<String>)> = Vec::new();
+            match image_type {
+                "Primary" => {
+                    if image_tags.thumb().is_some() {
+                        candidates.push(("Thumb", None));
+                    }
+                    if image_tags.backdrop().is_some() {
+                        candidates.push(("Backdrop", Some("0".to_string())));
+                    }
+                    if image_tags.banner().is_some() {
+                        candidates.push(("Banner", None));
+                    }
+                }
+                "Thumb" => {
+                    if image_tags.primary().is_some() {
+                        candidates.push(("Primary", None));
+                    }
+                    if image_tags.backdrop().is_some() {
+                        candidates.push(("Backdrop", Some("0".to_string())));
+                    }
+                }
+                "Backdrop" => {
+                    if image_tags.thumb().is_some() {
+                        candidates.push(("Thumb", None));
+                    }
+                    if image_tags.primary().is_some() {
+                        candidates.push(("Primary", None));
+                    }
+                }
+                "Banner" => {
+                    if image_tags.thumb().is_some() {
+                        candidates.push(("Thumb", None));
+                    }
+                    if image_tags.backdrop().is_some() {
+                        candidates.push(("Backdrop", Some("0".to_string())));
+                    }
+                }
+                _ => {}
+            }
+            for (fallback_type, fallback_tag) in candidates {
+                if fallback_type != image_type {
+                    fallbacks.push(PictureSource::item(id, fallback_type, fallback_tag));
+                }
+            }
+        }
+        fallbacks
+    }
 }
 
 pub trait TuItemOverlay: TuItemBasic + TuItemOverlayPrelude {
@@ -91,27 +142,35 @@ where
 {
     fn set_picture(&self) {
         let item = self.item();
-        let source = if let Some(url) = item.image_url().filter(|url| !url.trim().is_empty()) {
-            PictureSource::Url {
-                image_type: "Primary".to_string(),
-                url,
-            }
-        } else {
-            let (image_type, tag, id) = self.get_image_type_and_tag(&item);
-            PictureSource::Item {
-                id,
-                image_type: image_type.to_string(),
-                tag,
-            }
-        };
+        let (source, fallbacks) =
+            if let Some(url) = item.image_url().filter(|url| !url.trim().is_empty()) {
+                (
+                    PictureSource::Url {
+                        image_type: "Primary".to_string(),
+                        url,
+                    },
+                    Vec::new(),
+                )
+            } else {
+                let (image_type, tag, id) = self.get_image_type_and_tag(&item);
+                let fallbacks = self.fallback_sources(&item, image_type, &id);
+                (
+                    PictureSource::Item {
+                        id,
+                        image_type: image_type.to_string(),
+                        tag,
+                    },
+                    fallbacks,
+                )
+            };
         let overlay = self.overlay();
 
         if let Some(picture_loader) = overlay.child().and_downcast::<PictureLoader>() {
-            picture_loader.reload_source(source);
+            picture_loader.reload_source_with_fallbacks(source, fallbacks);
             return;
         }
 
-        let picture_loader = PictureLoader::new_for_source(source);
+        let picture_loader = PictureLoader::new_for_source_with_fallbacks(source, fallbacks);
         picture_loader.add_css_class("inbox");
         overlay.set_child(Some(&picture_loader));
     }

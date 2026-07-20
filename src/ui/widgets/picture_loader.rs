@@ -72,6 +72,16 @@ pub enum PictureSource {
     },
 }
 
+impl PictureSource {
+    pub fn item(id: &str, image_type: &str, tag: Option<String>) -> Self {
+        Self::Item {
+            id: id.to_string(),
+            image_type: image_type.to_string(),
+            tag,
+        }
+    }
+}
+
 pub mod imp {
     use std::cell::{
         Cell,
@@ -94,6 +104,7 @@ pub mod imp {
         pub tag: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         pub url: RefCell<Option<String>>,
+        pub fallbacks: RefCell<Vec<PictureSource>>,
         #[template_child]
         pub revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
@@ -152,11 +163,13 @@ glib::wrapper! {
 
 impl PictureLoader {
     pub fn new(id: &str, image_type: &str, tag: Option<String>) -> Self {
-        Self::new_for_source(PictureSource::Item {
-            id: id.to_string(),
-            image_type: image_type.to_string(),
-            tag,
-        })
+        Self::new_with_fallbacks(id, image_type, tag, Vec::new())
+    }
+
+    pub fn new_with_fallbacks(
+        id: &str, image_type: &str, tag: Option<String>, fallbacks: Vec<PictureSource>,
+    ) -> Self {
+        Self::new_for_source_with_fallbacks(PictureSource::item(id, image_type, tag), fallbacks)
     }
 
     pub fn new_for_url(image_type: &str, url: &str) -> Self {
@@ -167,7 +180,13 @@ impl PictureLoader {
     }
 
     pub(crate) fn new_for_source(source: PictureSource) -> Self {
-        match source {
+        Self::new_for_source_with_fallbacks(source, Vec::new())
+    }
+
+    pub(crate) fn new_for_source_with_fallbacks(
+        source: PictureSource, fallbacks: Vec<PictureSource>,
+    ) -> Self {
+        let obj: Self = match source {
             PictureSource::Item {
                 id,
                 image_type,
@@ -182,15 +201,19 @@ impl PictureLoader {
                 .property("imagetype", image_type)
                 .property("url", url)
                 .build(),
-        }
+        };
+        obj.imp().fallbacks.replace(fallbacks);
+        obj
     }
 
     pub fn reload(&self, id: &str, image_type: &str, tag: Option<String>) {
-        self.reload_source(PictureSource::Item {
-            id: id.to_string(),
-            image_type: image_type.to_string(),
-            tag,
-        });
+        self.reload_with_fallbacks(id, image_type, tag, Vec::new());
+    }
+
+    pub fn reload_with_fallbacks(
+        &self, id: &str, image_type: &str, tag: Option<String>, fallbacks: Vec<PictureSource>,
+    ) {
+        self.reload_source_with_fallbacks(PictureSource::item(id, image_type, tag), fallbacks);
     }
 
     pub fn reload_for_url(&self, image_type: &str, url: &str) {
@@ -201,6 +224,12 @@ impl PictureLoader {
     }
 
     pub fn reload_source(&self, source: PictureSource) {
+        self.reload_source_with_fallbacks(source, Vec::new());
+    }
+
+    pub(crate) fn reload_source_with_fallbacks(
+        &self, source: PictureSource, fallbacks: Vec<PictureSource>,
+    ) {
         self.reset_view();
         match &source {
             PictureSource::Item {
@@ -220,6 +249,7 @@ impl PictureLoader {
                 self.set_url(Some(url.as_str()));
             }
         }
+        self.imp().fallbacks.replace(fallbacks);
         self.load_source(source);
     }
 
@@ -254,9 +284,12 @@ impl PictureLoader {
         if let PictureSource::Url { image_type, .. } = &source {
             self.configure_picture_size(image_type);
         }
+        let fallbacks = self.imp().fallbacks.borrow().clone();
         let weak_self = self.downgrade();
         spawn(async move {
-            let paintable = Self::load_paintable(load_token.clone(), source).await;
+            let mut candidates = vec![source];
+            candidates.extend(fallbacks);
+            let paintable = Self::load_paintable(load_token.clone(), candidates).await;
             let Some(obj) = weak_self.upgrade() else {
                 return;
             };
@@ -300,35 +333,47 @@ impl PictureLoader {
     }
 
     async fn load_paintable(
-        load_token: LoadToken, source: PictureSource,
+        load_token: LoadToken, candidates: Vec<PictureSource>,
     ) -> Result<gdk::Paintable> {
-        match source {
-            PictureSource::Url { url, .. } => {
-                Self::load_file(gio::File::for_uri(&url), &load_token).await
+        for source in candidates {
+            if load_token.is_cancelled() {
+                bail!("image load cancelled");
             }
-            PictureSource::Item {
-                id,
-                image_type,
-                tag,
-            } => {
-                glib::timeout_future(IMAGE_LOAD_DELAY).await;
-                if load_token.is_cancelled() {
-                    bail!("image load cancelled");
+            match source {
+                PictureSource::Url { url, .. } => {
+                    if let Ok(paintable) =
+                        Self::load_file(gio::File::for_uri(&url), &load_token).await
+                    {
+                        return Ok(paintable);
+                    }
                 }
-                let cache_path = Self::cache_file(&id, &image_type, tag.as_deref()).await;
-                let file = gio::File::for_path(&cache_path);
-
-                if let Ok(paintable) = Self::load_file(file.clone(), &load_token).await {
-                    Ok(paintable)
-                } else {
-                    Self::download_image(&id, &image_type, tag.as_deref()).await;
+                PictureSource::Item {
+                    id,
+                    image_type,
+                    tag,
+                } => {
+                    glib::timeout_future(IMAGE_LOAD_DELAY).await;
                     if load_token.is_cancelled() {
                         bail!("image load cancelled");
                     }
-                    Self::load_file(file, &load_token).await
+                    let cache_path = Self::cache_file(&id, &image_type, tag.as_deref()).await;
+                    let file = gio::File::for_path(&cache_path);
+
+                    if let Ok(paintable) = Self::load_file(file.clone(), &load_token).await {
+                        return Ok(paintable);
+                    } else {
+                        Self::download_image(&id, &image_type, tag.as_deref()).await;
+                        if load_token.is_cancelled() {
+                            bail!("image load cancelled");
+                        }
+                        if let Ok(paintable) = Self::load_file(file, &load_token).await {
+                            return Ok(paintable);
+                        }
+                    }
                 }
             }
         }
+        bail!("all image sources failed to load")
     }
 
     async fn load_file(file: gio::File, load_token: &LoadToken) -> Result<gdk::Paintable> {
@@ -349,12 +394,9 @@ impl PictureLoader {
         let warn_id = id.clone();
         let warn_image_type = image_type.clone();
 
-        let result = spawn_tokio(async move {
-            JELLYFIN_CLIENT
-                .get_image(&id, &image_type, tag.and_then(|s| s.parse::<u8>().ok()))
-                .await
-        })
-        .await;
+        let result =
+            spawn_tokio(async move { JELLYFIN_CLIENT.get_image(&id, &image_type, tag).await })
+                .await;
 
         if let Err(error) = result {
             warn!("{}: {}-{}", error, warn_id, warn_image_type);
