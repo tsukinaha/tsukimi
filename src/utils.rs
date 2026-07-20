@@ -236,7 +236,7 @@ where
     Ok(CacheWrite::Written)
 }
 
-pub async fn get_image_with_cache(id: String, img_type: String, tag: Option<u8>) -> Result<String> {
+pub async fn get_image_with_cache(id: String, img_type: String, tag: Option<String>) -> Result<String> {
     runtime()
         .spawn(async move { JELLYFIN_CLIENT.get_image(&id, &img_type, tag).await })
         .await?

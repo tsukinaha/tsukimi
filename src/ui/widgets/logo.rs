@@ -17,7 +17,7 @@ use crate::{
     },
 };
 
-pub async fn set_logo(id: String, image_type: &str, tag: Option<u8>) -> Revealer {
+pub async fn set_logo(id: String, image_type: &str, tag: Option<String>) -> Revealer {
     let image = gtk::Picture::new();
     image.set_halign(gtk::Align::Fill);
     image.set_content_fit(gtk::ContentFit::Contain);
@@ -30,7 +30,12 @@ pub async fn set_logo(id: String, image_type: &str, tag: Option<u8>) -> Revealer
         .build();
 
     let cache_path = jellyfin_cache_path().await;
-    let path = format!("{}-{}-{}", id, image_type, tag.unwrap_or(0));
+    let path = format!(
+        "{}-{}-{}",
+        id,
+        image_type,
+        tag.clone().unwrap_or_else(|| "0".into())
+    );
 
     let id = id.to_string();
 

@@ -166,7 +166,7 @@ impl ImageDialogEditPage {
 
             spawn_tokio(async move {
                 JELLYFIN_CLIENT
-                    .post_image_url(&id, &image_type, image_tag, &url)
+                    .post_image_url(&id, &image_type, image_tag.to_string(), &url)
                     .await
             })
             .await
