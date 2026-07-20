@@ -19,7 +19,7 @@ use crate::dyn_event;
 
 /// gl renderer will glitch on fractional scaling
 /// vulkan renderer has poor performance
-const DEFAULT_RENDERER: &str = "ngl";
+const DEFAULT_RENDERER: &str = "gl";
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
