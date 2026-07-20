@@ -808,7 +808,7 @@ impl ItemPage {
         let imp = self.imp();
 
         let backdrop = imp.carousel.imp().backdrop.get();
-        let path = get_image_with_cache(id.to_string(), "Backdrop".to_string(), Some(0))
+        let path = get_image_with_cache(id.to_string(), "Backdrop".to_string(), Some("0".to_string()))
             .await
             .unwrap_or_default();
         let file = gtk::gio::File::for_path(&path);
@@ -836,7 +836,7 @@ impl ItemPage {
         let carousel = imp.carousel.imp().carousel.get();
         for tag_num in 1..tags {
             let path =
-                get_image_with_cache(id.to_string(), "Backdrop".to_string(), Some(tag_num as u8))
+                get_image_with_cache(id.to_string(), "Backdrop".to_string(), Some(tag_num.to_string()))
                     .await
                     .unwrap_or_default();
             let file = gtk::gio::File::for_path(&path);

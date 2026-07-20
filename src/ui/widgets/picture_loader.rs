@@ -60,7 +60,7 @@ impl LoadToken {
 }
 
 #[derive(Clone)]
-enum ImageSource {
+pub enum ImageSource {
     Item {
         id: String,
         image_type: String,
@@ -70,6 +70,16 @@ enum ImageSource {
         image_type: String,
         url: String,
     },
+}
+
+impl ImageSource {
+    pub fn item(id: &str, image_type: &str, tag: Option<String>) -> Self {
+        ImageSource::Item {
+            id: id.to_string(),
+            image_type: image_type.to_string(),
+            tag,
+        }
+    }
 }
 
 pub(crate) mod imp {
@@ -94,6 +104,7 @@ pub(crate) mod imp {
         pub tag: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         pub url: RefCell<Option<String>>,
+        pub fallbacks: RefCell<Vec<ImageSource>>,
         #[template_child]
         pub revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
@@ -152,11 +163,19 @@ glib::wrapper! {
 
 impl PictureLoader {
     pub fn new(id: &str, image_type: &str, tag: Option<String>) -> Self {
-        glib::Object::builder()
+        Self::new_with_fallbacks(id, image_type, tag, Vec::new())
+    }
+
+    pub fn new_with_fallbacks(
+        id: &str, image_type: &str, tag: Option<String>, fallbacks: Vec<ImageSource>,
+    ) -> Self {
+        let obj: Self = glib::Object::builder()
             .property("id", id)
             .property("imagetype", image_type)
             .property("tag", tag)
-            .build()
+            .build();
+        obj.imp().fallbacks.replace(fallbacks);
+        obj
     }
 
     pub fn new_for_url(image_type: &str, url: &str) -> Self {
@@ -168,11 +187,18 @@ impl PictureLoader {
     }
 
     pub fn reload(&self, id: &str, image_type: &str, tag: Option<String>) {
+        self.reload_with_fallbacks(id, image_type, tag, Vec::new());
+    }
+
+    pub fn reload_with_fallbacks(
+        &self, id: &str, image_type: &str, tag: Option<String>, fallbacks: Vec<ImageSource>,
+    ) {
         self.reset_view();
         self.set_id(id);
         self.set_imagetype(image_type);
         self.set_tag(tag);
         self.set_url(None::<String>);
+        self.imp().fallbacks.replace(fallbacks);
         self.load_source(self.image_source());
     }
 
@@ -207,9 +233,12 @@ impl PictureLoader {
         if let ImageSource::Url { image_type, .. } = &source {
             self.configure_picture_size(image_type);
         }
+        let fallbacks = self.imp().fallbacks.borrow().clone();
         let weak_self = self.downgrade();
         spawn(async move {
-            let paintable = Self::load_paintable(load_token.clone(), source).await;
+            let mut candidates = vec![source];
+            candidates.extend(fallbacks);
+            let paintable = Self::load_paintable(load_token.clone(), candidates).await;
             let Some(obj) = weak_self.upgrade() else {
                 return;
             };
@@ -253,34 +282,48 @@ impl PictureLoader {
         self.imp().picture.set_content_fit(gtk::ContentFit::Contain);
     }
 
-    async fn load_paintable(load_token: LoadToken, source: ImageSource) -> Result<gdk::Paintable> {
-        match source {
-            ImageSource::Url { url, .. } => {
-                Self::load_file(gio::File::for_uri(&url), &load_token).await
+    async fn load_paintable(
+        load_token: LoadToken, candidates: Vec<ImageSource>,
+    ) -> Result<gdk::Paintable> {
+        for source in candidates {
+            if load_token.is_cancelled() {
+                bail!("image load cancelled");
             }
-            ImageSource::Item {
-                id,
-                image_type,
-                tag,
-            } => {
-                glib::timeout_future(IMAGE_LOAD_DELAY).await;
-                if load_token.is_cancelled() {
-                    bail!("image load cancelled");
+            match source {
+                ImageSource::Url { url, .. } => {
+                    if let Ok(paintable) =
+                        Self::load_file(gio::File::for_uri(&url), &load_token).await
+                    {
+                        return Ok(paintable);
+                    }
                 }
-                let cache_path = Self::cache_file(&id, &image_type, tag.as_deref()).await;
-                let file = gio::File::for_path(&cache_path);
-
-                if let Ok(paintable) = Self::load_file(file.clone(), &load_token).await {
-                    Ok(paintable)
-                } else {
-                    Self::download_image(&id, &image_type, tag.as_deref()).await;
+                ImageSource::Item {
+                    id,
+                    image_type,
+                    tag,
+                } => {
+                    glib::timeout_future(IMAGE_LOAD_DELAY).await;
                     if load_token.is_cancelled() {
                         bail!("image load cancelled");
                     }
-                    Self::load_file(file, &load_token).await
+                    let cache_path = Self::cache_file(&id, &image_type, tag.as_deref()).await;
+                    let file = gio::File::for_path(&cache_path);
+
+                    if let Ok(paintable) = Self::load_file(file.clone(), &load_token).await {
+                        return Ok(paintable);
+                    } else {
+                        Self::download_image(&id, &image_type, tag.as_deref()).await;
+                        if load_token.is_cancelled() {
+                            bail!("image load cancelled");
+                        }
+                        if let Ok(paintable) = Self::load_file(file, &load_token).await {
+                            return Ok(paintable);
+                        }
+                    }
                 }
             }
         }
+        bail!("all image sources failed to load")
     }
 
     async fn load_file(file: gio::File, load_token: &LoadToken) -> Result<gdk::Paintable> {
@@ -303,7 +346,7 @@ impl PictureLoader {
 
         let result = spawn_tokio(async move {
             JELLYFIN_CLIENT
-                .get_image(&id, &image_type, tag.and_then(|s| s.parse::<u8>().ok()))
+                .get_image(&id, &image_type, tag)
                 .await
         })
         .await;
