@@ -980,7 +980,6 @@ impl MPVPage {
                                 obj.notify_seeked(obj.imp().video.position() as i64);
                             }
                         }
-                        ListenEvent::DemuxerCacheIdle(_) => {}
                         ListenEvent::Eof(value) => {
                             obj.on_end_file(value);
                         }

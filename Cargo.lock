@@ -1243,9 +1243,9 @@ dependencies = [
 
 [[package]]
 name = "glow"
-version = "0.17.0"
+version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "29038e1c483364cc6bb3cf78feee1816002e127c331a1eec55a4d202b9e1adb5"
+checksum = "263218b0ba2b0715c3370fb04674f5f8aa331594b521c94ff0a8e4a8472d1386"
 dependencies = [
  "js-sys",
  "slotmap",
@@ -2223,8 +2223,8 @@ checksum = "956787520e75e9bd233246045d19f42fb73242759cc57fba9611d940ae96d4b0"
 [[package]]
 name = "mutsumi"
 version = "0.3.0"
-source = "git+https://github.com/MutsumiUniverse/mutsumi.git#47f9907b2726478db88b7dda57036959a43938e2"
-
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "360185345d92491f3a32bd44ccc22e1c7ac9fe384bb970bf1369c0352cd298fa"
 dependencies = [
  "ash",
  "atomic-wait",
