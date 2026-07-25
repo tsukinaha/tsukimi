@@ -968,6 +968,7 @@ impl MPVPage {
                         ListenEvent::Duration(value) => {
                             obj.update_duration(value);
                         }
+                        ListenEvent::DemuxerCacheIdle(_) => {}
                         ListenEvent::PausedForCache(true, _) | ListenEvent::Seek(_) => {
                             obj.update_seeking(true);
                         }

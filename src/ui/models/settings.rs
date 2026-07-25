@@ -62,6 +62,7 @@ impl Settings {
     const KEY_MPV_SHOW_BUFFER_SPEED: &'static str = "mpv-show-buffer-speed"; // bool
     const KEY_MPV_ACTION_AFTER_VIDEO_END: &'static str = "mpv-action-after-video-end"; // i32
     const KEY_MPV_HWDEC: &'static str = "mpv-hwdec"; // i32
+    const KEY_MPV_GPU_CONTEXT: &'static str = "gpu-context"; // i32
     const PREFERRED_VERSION_DESCRIPTORS: &'static str = "video-version-descriptors"; // String
     const ACCOUNTS: &'static str = "accounts"; // String
     const KEY_MPV_AUDIO_CHANNEL: &'static str = "mpv-audio-channel"; // i32
@@ -76,6 +77,10 @@ impl Settings {
     const KEY_WINDOW_HEIGHT: &'static str = "window-height"; // i32
     const KEY_IS_MAXIMIZED: &'static str = "is-maximized"; // bool
     const KEY_IS_FULLSCREEN: &'static str = "is-fullscreen"; // bool
+
+    pub fn gpu_context(&self) -> i32 {
+        self.int(Self::KEY_MPV_GPU_CONTEXT)
+    }
 
     pub fn is_overlay(&self) -> bool {
         self.boolean(Self::KEY_IS_OVERLAY)
