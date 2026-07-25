@@ -372,7 +372,7 @@
             <property name="description" translatable="yes">Requires restart</property>
             <child>
               <object class="AdwPreferencesGroup">
-                <property name="margin-top">12</property>
+                <property name="margin-top">24</property>
                 <property name="description" translatable="yes">GPU Context</property>
                 <child>
                   <object class="AdwActionRow">
