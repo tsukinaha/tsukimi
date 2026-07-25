@@ -149,6 +149,12 @@ mod imp {
                 init.set_option("config-dir", SETTINGS.mpv_config_dir().as_str())?;
             }
 
+            if SETTINGS.gpu_context() == 1 {
+                init.set_option("gpu-context", "waylandvk")?;
+            } else if SETTINGS.gpu_context() == 2 {
+                init.set_option("gpu-context", "wayland")?;
+            }
+
             init.set_option("input-vo-keyboard", true)?;
             init.set_option("input-default-bindings", true)?;
             init.set_option("user-agent", crate::USER_AGENT.as_str())?;

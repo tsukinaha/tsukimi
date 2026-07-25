@@ -274,6 +274,11 @@
       <summary>Automatically skip intro and outro segments</summary>
       <default>false</default>
     </key>
+    <key name="gpu-context" type="i">
+      <summary>GPU context</summary>
+      <description>0:auto, 1: waylandvk, 2: wayland</description>
+      <default>0</default>
+    </key>
     <key name="is-danmaku-enabled" type="b">
       <summary>Whether the danmaku is enabled</summary>
       <default>false</default>
