@@ -44,7 +44,7 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for MPVPlaySink {
-        const NAME: &'static str = "MPVGLArea";
+        const NAME: &'static str = "MPVPlaySink";
         type Type = super::MPVPlaySink;
         type ParentType = adw::Bin;
     }
