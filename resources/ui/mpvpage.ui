@@ -14,7 +14,7 @@
         <property name="content">
           <object class="GtkOverlay">
           <child>
-            <object class="MPVGLArea" id="video">
+            <object class="MPVPlaySink" id="video">
               <property name="hexpand">true</property>
               <property name="vexpand">true</property>
             </object>
