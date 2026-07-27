@@ -279,6 +279,10 @@
       <description>0:auto, 1: waylandvk, 2: wayland</description>
       <default>0</default>
     </key>
+    <key name="mpv-dmabuf-wayland" type="b">
+      <summary>Whether to use the dmabuf-wayland video output</summary>
+      <default>false</default>
+    </key>
     <key name="is-danmaku-enabled" type="b">
       <summary>Whether the danmaku is enabled</summary>
       <default>false</default>

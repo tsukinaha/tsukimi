@@ -371,53 +371,6 @@
             <property name="title" translatable="yes">Video Player</property>
             <property name="description" translatable="yes">Requires restart</property>
             <child>
-              <object class="AdwPreferencesGroup">
-                <property name="margin-top">24</property>
-                <property name="description" translatable="yes">GPU Context</property>
-                <child>
-                  <object class="AdwActionRow">
-                    <property name="title" translatable="yes">Auto</property>
-                    <property name="activatable-widget">gpu_context_group</property>
-                    <child type="prefix">
-                      <object class="GtkCheckButton" id="gpu_context_group">
-                        <property name="valign">center</property>
-                        <property name="action-name">mpv.gpu-context</property>
-                        <property name="action-target">0</property>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwActionRow">
-                    <property name="title">waylandvk</property>
-                    <property name="activatable-widget">gpu_context_group2</property>
-                    <child type="prefix">
-                      <object class="GtkCheckButton" id="gpu_context_group2">
-                        <property name="valign">center</property>
-                        <property name="group">gpu_context_group</property>
-                        <property name="action-name">mpv.gpu-context</property>
-                        <property name="action-target">1</property>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwActionRow">
-                    <property name="title">wayland (DRM_PRIME buffer)</property>
-                    <property name="activatable-widget">gpu_context_group3</property>
-                    <child type="prefix">
-                      <object class="GtkCheckButton" id="gpu_context_group3">
-                        <property name="valign">center</property>
-                        <property name="group">gpu_context_group</property>
-                        <property name="action-name">mpv.gpu-context</property>
-                        <property name="action-target">2</property>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
               <object class="AdwSwitchRow" id="config_switchrow">
                 <property name="title" translatable="yes">Enable external config</property>
               </object>
@@ -443,6 +396,62 @@
                     </style>
                   </object>
                 </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="description" translatable="yes">GPU Context</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Auto</property>
+                <property name="activatable-widget">gpu_context_group</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="gpu_context_group">
+                    <property name="valign">center</property>
+                    <property name="action-name">mpv.gpu-context</property>
+                    <property name="action-target">0</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">waylandvk</property>
+                <property name="activatable-widget">gpu_context_group2</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="gpu_context_group2">
+                    <property name="valign">center</property>
+                    <property name="group">gpu_context_group</property>
+                    <property name="action-name">mpv.gpu-context</property>
+                    <property name="action-target">1</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">wayland (DRM_PRIME buffer)</property>
+                <property name="activatable-widget">gpu_context_group3</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="gpu_context_group3">
+                    <property name="valign">center</property>
+                    <property name="group">gpu_context_group</property>
+                    <property name="action-name">mpv.gpu-context</property>
+                    <property name="action-target">2</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="description" translatable="yes">Enable dmabuf-wayland vo</property>
+            <child>
+              <object class="AdwSwitchRow" id="dmabuf_wayland_control">
+                <property name="title">--vo=dmabuf-wayland</property>
               </object>
             </child>
           </object>
