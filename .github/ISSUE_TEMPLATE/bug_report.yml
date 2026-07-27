@@ -12,8 +12,6 @@ body:
       value: |
         ## Important
 
-        请遵守 Issue Template，并完整填写以下内容，否则提交的 Issue 可能会被视为无效。
-
         如果日志包含敏感信息，可以将日志作为附件发送至 `tkmreport@notalium.co`。
 
         To collect a log, run `tsukimi -f /path/to/log` in your terminal.
@@ -26,6 +24,8 @@ body:
         - label: I have searched the existing issues and found no duplicate.
           required: true
         - label: I have obtained the complete log.
+          required: true
+        - label: I have read the [Wiki](https://github.com/tsukinaha/tsukimi/wiki).
           required: true
 
   - type: input
