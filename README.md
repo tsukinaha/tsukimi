@@ -4,7 +4,7 @@ A simple third-party Jellyfin client for Linux.
 > We use wl-proxy for mpv gpu-next vo embedding, you can find the embedder [here](https://github.com/MutsumiUniverse/Mutsumi). We also made a local player [Fughetta](https://github.com/MutsumiUniverse/Fughetta) by this embedder.
 
 
-[![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/tsukimi_frying_crab) ![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Flathub Version](https://img.shields.io/flathub/v/moe.tsuna.tsukimi?color=white)](https://flathub.org/apps/details/moe.tsuna.tsukimi) [![Wiki](https://img.shields.io/badge/-Wiki-red?color=blue&logo=github&logoColor=white)](https://github.com/tsukinaha/tsukimi/wiki) [![Translate Status](https://hosted.weblate.org/widget/tsukimi/language-badge.svg)](https://hosted.weblate.org/engage/tsukimi)
+![Matrix](https://img.shields.io/matrix/tsukimi%3Amatrix.org?label=Matrix)[![Telegram](https://img.shields.io/badge/-Telegram_Group-red?color=blue&logo=telegram&logoColor=white)](https://t.me/tsukimi_frying_crab) ![Commit Activity](https://img.shields.io/github/commit-activity/m/tsukinaha/Tsukimi/main) ![Top Language](https://img.shields.io/github/languages/top/tsukinaha/Tsukimi) ![Github License](https://img.shields.io/github/license/tsukinaha/Tsukimi) [![Linux CI](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml/badge.svg)](https://github.com/tsukinaha/tsukimi/actions/workflows/build_linux.yml) [![Flathub Version](https://img.shields.io/flathub/v/moe.tsuna.tsukimi?color=white)](https://flathub.org/apps/details/moe.tsuna.tsukimi) [![Wiki](https://img.shields.io/badge/-Wiki-red?color=blue&logo=github&logoColor=white)](https://github.com/tsukinaha/tsukimi/wiki) [![Translate Status](https://hosted.weblate.org/widget/tsukimi/language-badge.svg)](https://hosted.weblate.org/engage/tsukimi)
 
 
 ![Alt](https://repobeats.axiom.co/api/embed/82b1088ba840d89c50e1b5b3c1c40f4575b321a6.svg "Repobeats analytics image")
@@ -98,5 +98,5 @@ Thanks to open-source projects like GNOME Music, Fractal, and Clapper—we refer
 <sup>
 Fonts used in screenshots: <a href="https://github.com/lxgw/LxgwWenKai-Screen">LXGW WenKai Screen</a>
 <br />
-Anime in screenshots: <a href="https://www.fate-zero.jp/">Fate/Zero</a>
+Anime in screenshots: <a href="https://yurucamp-v.com/">ゆるキャン△</a>
 </sup>
