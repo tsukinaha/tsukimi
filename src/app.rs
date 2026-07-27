@@ -155,6 +155,10 @@ mod imp {
                 init.set_option("gpu-context", "wayland")?;
             }
 
+            if SETTINGS.mpv_dmabuf_wayland() {
+                init.set_option("vo", "dmabuf-wayland")?;
+            }
+
             init.set_option("input-vo-keyboard", true)?;
             init.set_option("input-default-bindings", true)?;
             init.set_option("user-agent", crate::USER_AGENT.as_str())?;

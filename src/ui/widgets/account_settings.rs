@@ -90,6 +90,8 @@ mod imp {
         pub color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
         pub config_switchrow: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub dmabuf_wayland_control: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub preferred_audio_language_comborow: TemplateChild<adw::ComboRow>,
@@ -364,6 +366,13 @@ impl AccountSettings {
             .build();
         SETTINGS
             .bind("mpv-config", &imp.config_switchrow.get(), "active")
+            .build();
+        SETTINGS
+            .bind(
+                "mpv-dmabuf-wayland",
+                &imp.dmabuf_wayland_control.get(),
+                "active",
+            )
             .build();
         SETTINGS
             .bind(
