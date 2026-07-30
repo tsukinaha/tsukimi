@@ -259,6 +259,7 @@ mod imp {
         #[property(get, set, nullable)]
         pub current_video: RefCell<Option<TuItem>>,
         pub current_episode_list: RefCell<Vec<TuItem>>,
+        pub current_episode_index: Cell<Option<u32>>,
 
         #[property(get, set, default_value = true)]
         pub key_vaild: Cell<bool>,
@@ -836,6 +837,11 @@ impl MPVPage {
 
         let track_list_changed = self.mpris_track_list_changed(&episode_list);
 
+        let episode_index = episode_list
+            .iter()
+            .position(|ep| ep.id() == item.id())
+            .map(|i| i as u32);
+        self.imp().current_episode_index.set(episode_index);
         self.set_current_video(Some(item.clone()));
         self.imp().current_episode_list.replace(episode_list);
 
@@ -1242,7 +1248,17 @@ impl MPVPage {
     pub async fn in_play_item(&self, item: TuItem) {
         self.handle_callback(BackType::Stop);
         let episode_list = self.imp().current_episode_list.borrow().clone();
+        let item_index = episode_list
+            .iter()
+            .position(|ep| ep.id() == item.id())
+            .map(|i| i as u32);
+        self.imp().current_episode_index.set(item_index);
         self.play(None, item, episode_list, None, 0.0);
+        if let Some(idx) = item_index {
+            if let Some(window) = self.root().and_downcast_ref::<Window>() {
+                window.select_mpv_playlist_index(idx);
+            }
+        }
     }
 
     pub async fn on_next_video(&self) {

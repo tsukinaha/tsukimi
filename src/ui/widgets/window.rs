@@ -257,6 +257,7 @@ use crate::{
 };
 use glib::Object;
 use gtk::{
+    ListScrollFlags,
     gio,
     glib,
     template_callbacks,
@@ -738,6 +739,13 @@ impl Window {
         imp.stack.set_visible_child_name("mpv");
         self.prevent_suspend();
         self.set_mpv_playlist(&episode_list);
+        if let Some(idx) = episode_list
+            .iter()
+            .position(|ep| ep.id() == item.id())
+            .map(|i| i as u32)
+        {
+            imp.mpv_playlist_selection.set_selected(idx);
+        }
         imp.mpvnav
             .play(selected, item, episode_list, matcher, start_seconds);
     }
@@ -906,10 +914,22 @@ impl Window {
         store.splice(0, store.n_items(), &items);
     }
 
+    pub fn select_mpv_playlist_index(&self, index: u32) {
+        let imp = self.imp();
+        imp.mpv_playlist_selection.set_selected(index);
+        imp.mpv_playlist
+            .scroll_to(index, ListScrollFlags::all(), None);
+    }
+
     pub fn view_playlist(&self) {
         let imp = self.imp();
         imp.mpv_view.set_show_sidebar(!imp.mpv_view.shows_sidebar());
         imp.mpv_view_stack.set_visible_child_name("playlist");
+        if imp.mpv_view.shows_sidebar() {
+            let selected = imp.mpv_playlist_selection.selected();
+            imp.mpv_playlist
+                .scroll_to(selected, ListScrollFlags::all(), None);
+        }
     }
 
     pub fn view_control_sidebar(&self) {
@@ -924,11 +944,12 @@ impl Window {
             return;
         };
 
-        let Some(item) = model.item(position).and_downcast::<TuObject>() else {
+        let Some(obj) = model.item(position).and_downcast::<TuObject>() else {
             return;
         };
 
-        self.imp().mpvnav.in_play_item(item.item()).await;
+        self.imp().mpv_playlist_selection.set_selected(position);
+        self.imp().mpvnav.in_play_item(obj.item()).await;
     }
 
     fn prevent_suspend(&self) {
