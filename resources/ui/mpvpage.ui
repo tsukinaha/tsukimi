@@ -594,7 +594,13 @@
     <signal name="map" handler="on_popover_opened" swapped="yes"/>
     <signal name="unmap" handler="on_popover_closed" swapped="yes"/>
     <child>
-      <object class="DanmakuPopover" id="danmaku_popover_content"/>
+      <object class="AdwClamp">
+        <property name="maximum-size">400</property>
+        <property name="tightening-threshold">400</property>
+        <child>
+          <object class="DanmakuPopover" id="danmaku_popover_content"/>
+        </child>
+      </object>
     </child>
   </object>
   <object class="GtkAdjustment" id="danmaku_top_padding_adj">

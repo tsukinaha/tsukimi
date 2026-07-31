@@ -10,7 +10,10 @@ use gtk::{
 
 use crate::ui::{
     models::SETTINGS,
-    mpv::page::MPVPage,
+    mpv::{
+        danmaku_search_dialog::DanmakuSearchDialog,
+        page::MPVPage,
+    },
 };
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, glib::Boxed)]
@@ -286,6 +289,14 @@ impl DanmakuPopover {
 
     pub fn is_enabled(&self) -> bool {
         self.imp().danmaku_switch.is_active()
+    }
+
+    #[template_callback]
+    fn on_manual_search(&self) {
+        let Some(page) = self.imp().page.upgrade() else {
+            return;
+        };
+        DanmakuSearchDialog::new(&page).present(Some(self));
     }
 
     #[template_callback]

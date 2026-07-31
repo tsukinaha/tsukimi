@@ -15,8 +15,10 @@ use gtk::{
 use crate::{
     client::structs::SimpleListItem,
     ui::{
+        mpv::page::MPVPage,
         provider::tu_item::{
             DANMAKU_ANIME,
+            MOVIE,
             TuItem,
         },
         widgets::{
@@ -61,6 +63,8 @@ mod imp {
         pub search_stack: TemplateChild<gtk::Stack>,
         #[template_child]
         pub toast: TemplateChild<adw::ToastOverlay>,
+
+        pub page: glib::WeakRef<MPVPage>,
     }
 
     #[glib::object_subclass]
@@ -105,8 +109,29 @@ glib::wrapper! {
 
 #[template_callbacks]
 impl DanmakuSearchDialog {
-    pub fn new() -> Self {
-        glib::Object::new()
+    pub fn new(page: &MPVPage) -> Self {
+        let dialog: Self = glib::Object::new();
+        dialog.imp().page.set(Some(page));
+        dialog.prefill_from_current_video();
+        dialog
+    }
+
+    fn prefill_from_current_video(&self) {
+        let Some(item) = self
+            .imp()
+            .page
+            .upgrade()
+            .and_then(|page| page.current_video())
+        else {
+            return;
+        };
+
+        self.imp()
+            .title_entry
+            .set_text(&item.series_name().unwrap_or_else(|| item.name()));
+        if item.item_type() == MOVIE {
+            self.imp().anime_type_dropdown.set_selected(3);
+        }
     }
 
     #[template_callback]
@@ -202,6 +227,39 @@ impl DanmakuSearchDialog {
         }
     }
 
+    pub fn apply_episode(&self, item: TuItem) {
+        let Ok(episode_id) = item.id().parse::<i64>() else {
+            self.show_toast(gettext("Invalid episode ID"));
+            return;
+        };
+        let Some(page) = self.imp().page.upgrade() else {
+            self.close();
+            return;
+        };
+
+        let item_name = if let Some(series_name) = item.series_name() {
+            format!("{} - {series_name}", series_name)
+        } else {
+            item.name()
+        };
+
+        spawn(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                match page.apply_manual_danmaku(episode_id, item_name).await {
+                    Ok(true) => {
+                        obj.close();
+                    }
+                    Ok(false) => obj.show_toast(gettext("No danmaku found")),
+                    Err(error) => {
+                        obj.show_toast(format!("{}: {error}", gettext("Failed to load danmaku")))
+                    }
+                }
+            }
+        ));
+    }
+
     pub fn open_anime(&self, item: TuItem) {
         if item.item_type() != DANMAKU_ANIME {
             return;
@@ -215,6 +273,7 @@ impl DanmakuSearchDialog {
 
         let anime_id = item.id();
         let anime_title = item.name();
+        let episode_series_name = anime_title.clone();
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
             self,
@@ -244,7 +303,11 @@ impl DanmakuSearchDialog {
                             .and_then(|anime| anime.episodes)
                             .unwrap_or_default()
                             .into_iter()
-                            .map(SimpleListItem::from)
+                            .map(|episode| {
+                                let mut item = SimpleListItem::from(episode);
+                                item.series_name = Some(episode_series_name.clone());
+                                item
+                            })
                             .collect::<Vec<_>>();
                         let is_empty = episodes.is_empty();
                         obj.set_episode_items(episodes);

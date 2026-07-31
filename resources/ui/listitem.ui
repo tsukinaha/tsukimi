@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <interface>
   <template parent="AdwBin" class="TuListItem">
     <property name="halign">center</property>
@@ -26,14 +26,14 @@
                     <property name="halign">fill</property>
                     <property name="overflow">hidden</property>
                     <style>
-                      <class name="cover-progress-frame"/>
+                      <class name="cover-progress-frame" />
                     </style>
                     <child type="overlay">
                       <object class="GtkProgressBar" id="progress_bar">
                         <property name="visible">false</property>
                         <property name="valign">end</property>
                         <style>
-                          <class name="accent"/>
+                          <class name="accent" />
                         </style>
                       </object>
                     </child>
@@ -46,8 +46,8 @@
                         <property name="icon-name">checkmark-small-symbolic</property>
                         <property name="visible">false</property>
                         <style>
-                          <class name="circular"/>
-                          <class name="osd"/>
+                          <class name="circular" />
+                          <class name="osd" />
                         </style>
                       </object>
                     </child>
@@ -60,8 +60,8 @@
                         <property name="icon-name">folder-visiting-symbolic</property>
                         <property name="visible">false</property>
                         <style>
-                          <class name="circular"/>
-                          <class name="osd"/>
+                          <class name="circular" />
+                          <class name="osd" />
                         </style>
                       </object>
                     </child>
@@ -75,8 +75,8 @@
                         <property name="visible">false</property>
                         <signal name="clicked" handler="on_play_clicked" swapped="yes"/>
                         <style>
-                          <class name="circular"/>
-                          <class name="osd"/>
+                          <class name="circular" />
+                          <class name="osd" />
                         </style>
                       </object>
                     </child>
@@ -95,28 +95,24 @@
                         <child>
                           <object class="GtkLabel" id="title">
                             <property name="justify">center</property>
-                            <property name="max-width-chars">1</property>
-                            <property name="lines">2</property>
-                            <property name="ellipsize">end</property>
+                            <property name="lines">1</property>
+                            <property name="ellipsize">middle</property>
                             <property name="opacity">0.9</property>
-                            <property name="wrap">true</property>
-                            <property name="yalign">0.0</property>
                             <attributes>
-                              <attribute name="scale" value="0.9"/>
-                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                              <attribute name="scale" value="0.9" />
+                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
                             </attributes>
                           </object>
                         </child>
                         <child>
                           <object class="GtkLabel" id="subtitle">
                             <property name="justify">center</property>
-                            <property name="max-width-chars">1</property>
                             <property name="lines">1</property>
                             <property name="ellipsize">middle</property>
                             <property name="visible">false</property>
                             <property name="opacity">0.65</property>
                             <attributes>
-                              <attribute name="scale" value="0.82"/>
+                              <attribute name="scale" value="0.82" />
                             </attributes>
                           </object>
                         </child>

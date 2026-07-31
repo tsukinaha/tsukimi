@@ -31,6 +31,7 @@
                         <child>
                           <object class="AdwActionRow" id="danmaku_status_row">
                             <property name="title" translatable="yes">Danmaku unavailable</property>
+                            <property name="subtitle-lines">2</property>
                             <property name="subtitle-selectable">True</property>
                             <child type="prefix">
                               <object class="GtkStack" id="danmaku_status_stack">
@@ -70,6 +71,7 @@
                           <object class="AdwButtonRow">
                             <property name="start-icon-name">edit-find-symbolic</property>
                             <property name="title" translatable="yes">Search Manually</property>
+                            <signal name="activated" handler="on_manual_search" swapped="yes"/>
                             <style>
                               <class name="suggested-action"/>
                             </style>

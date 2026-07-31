@@ -534,7 +534,7 @@ impl MPVPage {
 
                 match comments_result {
                     Ok(Some(danmaku)) if !danmaku.is_empty() => {
-                        obj.apply_danmaku(danmaku, item_name)
+                        obj.apply_danmaku(danmaku, item_name, false)
                     }
                     Ok(_) => obj.clear_danmaku_result(DanmakuPopoverStatus::NoMatching),
                     Err(error) => {
@@ -546,14 +546,60 @@ impl MPVPage {
         ));
     }
 
-    fn apply_danmaku(&self, danmaku: Vec<Danmaku>, item_name: String) {
+    fn apply_danmaku(&self, danmaku: Vec<Danmaku>, item_name: String, manual: bool) {
         let imp = self.imp();
         let count = danmaku.len();
         imp.danmakw.load_danmaku(danmaku);
+        imp.danmakw.preroll_seek(imp.video.position() * 1000.0);
         imp.danmaku_count.set(count);
-        imp.danmaku_popover_content
-            .set_status(DanmakuPopoverStatus::Loaded(count, item_name));
+        let status = if manual {
+            DanmakuPopoverStatus::ManualLoaded(count, item_name)
+        } else {
+            DanmakuPopoverStatus::Loaded(count, item_name)
+        };
+        imp.danmaku_popover_content.set_status(status);
         self.set_danmaku_enabled(true);
+    }
+
+    pub async fn apply_manual_danmaku(
+        &self, episode_id: i64, item_name: String,
+    ) -> anyhow::Result<bool> {
+        let Some(current_item) = self.current_video() else {
+            anyhow::bail!("No video is currently playing");
+        };
+        let item_id = current_item.id();
+        let generation = self.next_danmaku_generation();
+        let imp = self.imp();
+        imp.danmaku_count.set(0);
+        imp.danmakw.stop_rendering();
+        imp.danmakw.clear_danmaku();
+        imp.danmaku_popover_content
+            .set_status(DanmakuPopoverStatus::Loading);
+
+        let comments_result = spawn_tokio(async move {
+            let client = DanmakuClient::new()?;
+            client.get_comments(episode_id).await
+        })
+        .await;
+
+        if !self.is_current_danmaku_request(generation, &item_id) {
+            anyhow::bail!("The current video changed while loading danmaku");
+        }
+
+        match comments_result {
+            Ok(Some(danmaku)) if !danmaku.is_empty() => {
+                self.apply_danmaku(danmaku, item_name, true);
+                Ok(true)
+            }
+            Ok(_) => {
+                self.clear_danmaku_result(DanmakuPopoverStatus::NoMatching);
+                Ok(false)
+            }
+            Err(error) => {
+                self.clear_danmaku_result(DanmakuPopoverStatus::Unavailable);
+                Err(error)
+            }
+        }
     }
 
     fn clear_danmaku_result(&self, status: DanmakuPopoverStatus) {

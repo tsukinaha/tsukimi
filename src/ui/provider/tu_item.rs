@@ -400,11 +400,11 @@ impl TuItem {
         };
 
         match self.item_type().as_str() {
-            "Series" | "Movie" | "Video" | "MusicVideo" | "AdultVideo" => {
+            SERIES | MOVIE | VIDEO | MUSIC_VIDEO | ADULT_VIDEO => {
                 let page = ItemPage::new(self);
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
-            "Episode" => {
+            EPISODE => {
                 let page = ItemPage::new(self);
                 push_page_with_tag(
                     window,
@@ -413,15 +413,15 @@ impl TuItem {
                     &self.series_name().unwrap_or_default(),
                 );
             }
-            "MusicAlbum" | "Playlist" => {
+            MUSIC_ALBUM | PLAYLIST => {
                 let page = AlbumPage::new(self.to_owned());
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
-            "CollectionFolder" | "UserView" => {
+            COLLECTION_FOLDER | USER_VIEW => {
                 let page = ListPage::new(self.to_owned());
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
-            "Tag" | "Genre" | "MusicGenre" => {
+            TAG | GENRE | MUSIC_GENRE => {
                 let page = SingleGrid::new();
                 page.set_unify_size(UnifySize::Majority);
                 let id = self.id();
@@ -479,7 +479,7 @@ impl TuItem {
                 );
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
-            "Folder" => {
+            FOLDER => {
                 let page = SingleGrid::new();
                 page.set_list_type(ListType::Folder);
                 page.set_unify_size(UnifySize::Majority);
@@ -519,7 +519,14 @@ impl TuItem {
                     dialog.open_anime(self.to_owned());
                 }
             }
-            DANMAKU_EPISODE => (),
+            DANMAKU_EPISODE => {
+                if let Some(dialog) = widget
+                    .ancestor(DanmakuSearchDialog::static_type())
+                    .and_downcast::<DanmakuSearchDialog>()
+                {
+                    dialog.apply_episode(self.to_owned());
+                }
+            }
             _ => {
                 let page = OtherPage::new(self);
                 push_page_with_tag(window, page, self.id(), &self.name());

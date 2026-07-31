@@ -23,12 +23,10 @@ mod imp {
     };
 
     use crate::{
-        insert_editm_dialog,
         ui::{
             SETTINGS,
             mpv::{
                 control_sidebar::MPVControlSidebar,
-                danmaku_search_dialog::DanmakuSearchDialog,
                 page::MPVPage,
             },
             provider::tu_object::TuObject,
@@ -206,8 +204,6 @@ mod imp {
                     obj.set_servers().await;
                     obj.set_nav_servers();
                     obj.set_shortcuts();
-
-                    insert_editm_dialog!(obj, DanmakuSearchDialog::new());
                 },
             ));
         }
