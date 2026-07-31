@@ -94,7 +94,6 @@ pub(crate) mod imp {
                 hortu_scrolled::HortuScrolled,
                 item_actionbox::ItemActionsBox,
                 item_carousel::ItemCarousel,
-                star_toggle::StarToggle,
                 tu_overview_item::imp::ViewGroup,
                 utils::TuItemBuildExt,
             },
@@ -237,11 +236,6 @@ pub(crate) mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
-            ItemCarousel::ensure_type();
-            StarToggle::ensure_type();
-            HortuScrolled::ensure_type();
-            HorbuScrolled::ensure_type();
-            EpisodeSwitcher::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }

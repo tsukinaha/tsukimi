@@ -25,10 +25,7 @@ pub use ui::Window;
 
 pub use app::TsukimiApplication as Application;
 
-use crate::{
-    client::runtime::runtime,
-    ui::widgets,
-};
+use crate::client::runtime::runtime;
 
 pub static USER_AGENT: LazyLock<String> =
     LazyLock::new(|| format!("{}/{} - {}", CLIENT_ID, version(), env::consts::OS));
@@ -51,7 +48,7 @@ pub fn run() -> gtk::glib::ExitCode {
     adw::init().expect("Failed to initialize Adwaita");
     register_gio_resources();
 
-    widgets::init();
+    ui::init();
 
     gtk::glib::set_application_name(CLIENT_ID);
 

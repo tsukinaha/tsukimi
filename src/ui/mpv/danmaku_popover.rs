@@ -140,7 +140,6 @@ pub mod imp {
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
-            crate::ui::mpv::DanmakuScaleRow::ensure_type();
             Self::bind_template(klass);
             klass.bind_template_instance_callbacks();
         }

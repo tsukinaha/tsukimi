@@ -268,7 +268,6 @@ pub mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
-            TuViewScrolled::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action_async("poster", None, |window, _action, _parameter| async move {

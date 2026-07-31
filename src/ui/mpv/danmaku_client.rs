@@ -48,13 +48,38 @@ impl Deref for DanmakuClient {
 }
 
 impl DanmakuClient {
+    pub async fn search_anime_details(
+        &self, keyword: String, anime_type: AnimeType,
+    ) -> anyhow::Result<Vec<SearchAnimeDetails>> {
+        Ok(self
+            .route(SearchSearchAnime {
+                params: SearchSearchAnimeParams {
+                    keyword,
+                    r#type: anime_type,
+                    v2: true,
+                },
+            })
+            .await?
+            .animes
+            .unwrap_or_default())
+    }
+
+    pub async fn search_animes(
+        &self, params: SearchSearchEpisodesParams,
+    ) -> anyhow::Result<Vec<SearchEpisodesAnime>> {
+        Ok(self
+            .route(SearchSearchEpisodes { params })
+            .await?
+            .animes
+            .unwrap_or_default())
+    }
+
     pub async fn search_episode(
         &self, params: SearchSearchEpisodesParams,
     ) -> anyhow::Result<Option<i64>> {
-        let anime = self.route(SearchSearchEpisodes { params }).await?.animes;
+        let anime = self.search_animes(params).await?;
 
         Ok(anime
-            .unwrap_or_default()
             .into_iter()
             .flat_map(|anime| anime.episodes.unwrap_or_default())
             .find_map(|episode| episode.episode_id))

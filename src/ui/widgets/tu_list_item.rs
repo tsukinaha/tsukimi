@@ -121,7 +121,6 @@ pub mod imp {
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
-            PictureLoader::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }

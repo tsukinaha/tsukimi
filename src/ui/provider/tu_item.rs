@@ -1,6 +1,11 @@
 use std::cell::RefCell;
 
 use adw::prelude::*;
+use dandanapi_client::{
+    SearchAnimeDetails,
+    SearchEpisodeDetails,
+    SearchEpisodesAnime,
+};
 use gettextrs::gettext;
 use glib::DateTime;
 use gtk::{
@@ -39,6 +44,8 @@ pub mod item_type {
     pub const PLAYLIST: &str = "Playlist";
     pub const FOLDER: &str = "Folder";
     pub const SEASON: &str = "Season";
+    pub const DANMAKU_ANIME: &str = "DanmakuAnime";
+    pub const DANMAKU_EPISODE: &str = "DanmakuEpisode";
 }
 
 pub use item_type::*;
@@ -57,6 +64,7 @@ use crate::{
     ui::{
         GlobalToast,
         SETTINGS,
+        mpv::danmaku_search_dialog::DanmakuSearchDialog,
         provider::{
             core_song::CoreSong,
             tu_item::item_type::{
@@ -159,6 +167,8 @@ pub mod imp {
         #[property(get, set)]
         poster: RefCell<Option<String>>,
         #[property(get, set, nullable)]
+        image_url: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
         image_tags: RefCell<Option<crate::ui::provider::image_tags::ImageTags>>,
         #[property(get, set, builder(PreferSize::default()))]
         prefer_size: RefCell<PreferSize>,
@@ -246,6 +256,7 @@ impl From<SimpleListItem> for TuItem {
         tu_item.set_index_number(item.index_number.unwrap_or_default());
         tu_item.set_parent_index_number(item.parent_index_number.unwrap_or_default());
         tu_item.set_path(item.path);
+        tu_item.set_image_url(item.image_url);
 
         if let Some(userdata) = &item.user_data {
             tu_item.set_played(userdata.played);
@@ -303,6 +314,63 @@ impl From<SimpleListItem> for TuItem {
         tu_item.set_season_id(item.season_id);
 
         tu_item
+    }
+}
+
+impl From<SearchAnimeDetails> for SimpleListItem {
+    fn from(anime: SearchAnimeDetails) -> Self {
+        Self {
+            id: anime.anime_id.map(|id| id.to_string()).unwrap_or_default(),
+            name: anime.anime_title.unwrap_or_default(),
+            item_type: DANMAKU_ANIME.to_string(),
+            overview: anime.type_description,
+            image_url: anime.image_url,
+            ..Default::default()
+        }
+    }
+}
+
+impl From<SearchAnimeDetails> for TuItem {
+    fn from(anime: SearchAnimeDetails) -> Self {
+        Self::from_simple(SimpleListItem::from(anime))
+    }
+}
+
+impl From<SearchEpisodesAnime> for SimpleListItem {
+    fn from(anime: SearchEpisodesAnime) -> Self {
+        Self {
+            id: anime.anime_id.map(|id| id.to_string()).unwrap_or_default(),
+            name: anime.anime_title.unwrap_or_default(),
+            item_type: DANMAKU_ANIME.to_string(),
+            overview: anime.type_description,
+            ..Default::default()
+        }
+    }
+}
+
+impl From<SearchEpisodesAnime> for TuItem {
+    fn from(anime: SearchEpisodesAnime) -> Self {
+        Self::from_simple(SimpleListItem::from(anime))
+    }
+}
+
+impl From<SearchEpisodeDetails> for SimpleListItem {
+    fn from(episode: SearchEpisodeDetails) -> Self {
+        Self {
+            id: episode
+                .episode_id
+                .map(|id| id.to_string())
+                .unwrap_or_default(),
+            name: episode.episode_title.unwrap_or_default(),
+            item_type: DANMAKU_EPISODE.to_string(),
+            ..Default::default()
+        }
+    }
+}
+
+impl From<SearchEpisodeDetails> for TuItem {
+    fn from(episode: SearchEpisodeDetails) -> Self {
+        Self::from_simple(SimpleListItem::from(episode))
     }
 }
 
@@ -443,6 +511,15 @@ impl TuItem {
                 );
                 push_page_with_tag(window, page, self.id(), &self.name());
             }
+            DANMAKU_ANIME => {
+                if let Some(dialog) = widget
+                    .ancestor(DanmakuSearchDialog::static_type())
+                    .and_downcast::<DanmakuSearchDialog>()
+                {
+                    dialog.open_anime(self.to_owned());
+                }
+            }
+            DANMAKU_EPISODE => (),
             _ => {
                 let page = OtherPage::new(self);
                 push_page_with_tag(window, page, self.id(), &self.name());

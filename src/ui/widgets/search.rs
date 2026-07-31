@@ -41,8 +41,6 @@ mod imp {
         subclass::prelude::*,
     };
 
-    use gtk::prelude::*;
-
     use crate::{
         ui::widgets::{
             filter_panel::FilterPanelDialog,
@@ -95,7 +93,6 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
-            TuViewScrolled::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }

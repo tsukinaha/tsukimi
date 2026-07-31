@@ -43,10 +43,7 @@ mod imp {
 
     use glib::subclass::InitializingObject;
 
-    use crate::{
-        Window,
-        ui::widgets::action_row::AActionRow,
-    };
+    use crate::Window;
 
     use super::*;
 
@@ -152,7 +149,6 @@ mod imp {
         type ParentType = adw::PreferencesWindow;
 
         fn class_init(klass: &mut Self::Class) {
-            AActionRow::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action_async(

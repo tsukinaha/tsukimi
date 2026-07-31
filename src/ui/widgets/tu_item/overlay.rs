@@ -6,7 +6,10 @@ use crate::ui::{
         TuItem,
     },
     widgets::{
-        picture_loader::PictureLoader,
+        picture_loader::{
+            PictureLoader,
+            PictureSource,
+        },
         tu_list_item::imp::PosterType,
     },
 };
@@ -88,15 +91,27 @@ where
 {
     fn set_picture(&self) {
         let item = self.item();
-        let (image_type, tag, id) = self.get_image_type_and_tag(&item);
+        let source = if let Some(url) = item.image_url().filter(|url| !url.trim().is_empty()) {
+            PictureSource::Url {
+                image_type: "Primary".to_string(),
+                url,
+            }
+        } else {
+            let (image_type, tag, id) = self.get_image_type_and_tag(&item);
+            PictureSource::Item {
+                id,
+                image_type: image_type.to_string(),
+                tag,
+            }
+        };
         let overlay = self.overlay();
 
         if let Some(picture_loader) = overlay.child().and_downcast::<PictureLoader>() {
-            picture_loader.reload(&id, image_type, tag);
+            picture_loader.reload_source(source);
             return;
         }
 
-        let picture_loader = PictureLoader::new(&id, image_type, tag);
+        let picture_loader = PictureLoader::new_for_source(source);
         picture_loader.add_css_class("inbox");
         overlay.set_child(Some(&picture_loader));
     }

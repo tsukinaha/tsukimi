@@ -96,9 +96,11 @@
                           <object class="GtkLabel" id="title">
                             <property name="justify">center</property>
                             <property name="max-width-chars">1</property>
-                            <property name="lines">1</property>
-                            <property name="ellipsize">middle</property>
+                            <property name="lines">2</property>
+                            <property name="ellipsize">end</property>
                             <property name="opacity">0.9</property>
+                            <property name="wrap">true</property>
+                            <property name="yalign">0.0</property>
                             <attributes>
                               <attribute name="scale" value="0.9"/>
                               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>

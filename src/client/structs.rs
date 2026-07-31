@@ -317,6 +317,8 @@ pub struct SimpleListItem {
     pub parent_thumb_item_id: Option<String>,
     #[serde(rename = "PlayedPercentage")]
     pub played_percentage: Option<f64>,
+    #[serde(rename = "ImageUrl")]
+    pub image_url: Option<String>,
     #[serde(rename = "ImageTags")]
     pub image_tags: Option<ImageTags>,
     #[serde(rename = "SeriesId")]

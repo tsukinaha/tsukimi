@@ -275,11 +275,6 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
-            MPVPlaySink::ensure_type();
-            VideoScale::ensure_type();
-            VolumeBar::ensure_type();
-            DanmakuPopover::ensure_type();
-            mutsumi::Danmakw::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("mpv.play-pause", None, move |mpv, _action, _parameter| {

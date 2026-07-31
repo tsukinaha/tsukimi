@@ -103,5 +103,6 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/episode_switcher.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/danmaku_popover.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/danmaku_scale_row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/danmaku_search_dialog.ui</file>
   </gresource>
 </gresources>
