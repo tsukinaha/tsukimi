@@ -7,7 +7,7 @@
       <object class="GtkLabel" id="secondary_label">
         <property name="valign">center</property>
         <property name="ellipsize">end</property>
-        <property name="selectable" bind-source="AActionRow" bind-property="activatable" bind-flags="sync-create|invert-boolean" />
+        <property name="selectable" bind-source="AActionRow" bind-property="activatable" bind-flags="sync-create|invert-boolean"/>
         <style>
           <class name="dimmed"/>
         </style>

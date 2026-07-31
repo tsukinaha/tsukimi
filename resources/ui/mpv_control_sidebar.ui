@@ -19,7 +19,7 @@
                 <child>
                   <object class="AdwSpinRow">
                     <property name="title" translatable="yes">Playback speed</property>
-                    <signal name="notify::value" handler="on_playback_speed" swapped="yes" />
+                    <signal name="notify::value" handler="on_playback_speed" swapped="yes"/>
                     <child type="prefix">
                       <object class="GtkImage">
                         <property name="icon-name">playback-options-symbolic</property>
@@ -84,7 +84,7 @@
                 <property name="title" translatable="yes">Cache</property>
                 <child>
                   <object class="AdwSwitchRow" id="buffer_switchrow">
-                    <signal name="notify::active" handler="on_buffer_speed" swapped="yes" />
+                    <signal name="notify::active" handler="on_buffer_speed" swapped="yes"/>
                     <child type="prefix">
                       <object class="GtkImage">
                         <property name="icon-name">speedometer5-symbolic</property>
@@ -97,7 +97,7 @@
                   <object class="AdwSpinRow">
                     <property name="title" translatable="yes">Cache Size</property>
                     <property name="subtitle" translatable="yes">Unit: MB</property>
-                    <signal name="notify::value" handler="on_cache_size" swapped="yes" />
+                    <signal name="notify::value" handler="on_cache_size" swapped="yes"/>
                     <property name="adjustment">
                       <object class="GtkAdjustment" id="cache_size_adj">
                         <property name="lower">50</property>
@@ -113,7 +113,7 @@
                   <object class="AdwSpinRow">
                     <property name="title" translatable="yes">Cache Time</property>
                     <property name="subtitle" translatable="yes">Unit: Seconds</property>
-                    <signal name="notify::value" handler="on_cache_time" swapped="yes" />
+                    <signal name="notify::value" handler="on_cache_time" swapped="yes"/>
                     <property name="adjustment">
                       <object class="GtkAdjustment" id="cache_time_adj">
                         <property name="lower">30</property>
@@ -137,7 +137,7 @@
                       <object class="GtkToggleButton">
                         <property name="icon-name">large-brush-symbolic</property>
                         <property name="valign">3</property>
-                        <signal name="toggled" handler="on_sub_clear" swapped="yes" />
+                        <signal name="toggled" handler="on_sub_clear" swapped="yes"/>
                         <style>
                           <class name="flat"/>
                         </style>
@@ -149,7 +149,7 @@
                           <object class="GtkToggleButton" id="sub_bold_toggle">
                             <property name="icon-name">text-bold-symbolic</property>
                             <property name="valign">3</property>
-                            <signal name="toggled" handler="on_sub_bold" swapped="yes" />
+                            <signal name="toggled" handler="on_sub_bold" swapped="yes"/>
                             <style>
                               <class name="flat"/>
                             </style>
@@ -159,7 +159,7 @@
                           <object class="GtkToggleButton" id="sub_italic_toggle">
                             <property name="icon-name">text-italic-symbolic</property>
                             <property name="valign">3</property>
-                            <signal name="toggled" handler="on_sub_italic" swapped="yes" />
+                            <signal name="toggled" handler="on_sub_italic" swapped="yes"/>
                             <style>
                               <class name="flat"/>
                             </style>
@@ -198,14 +198,13 @@
                               </object>
                             </child>
                           </object>
-
                         </child>
                       </object>
                     </child>
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Position</property>
-                        <signal name="notify::value" handler="on_sub_position" swapped="yes" />
+                        <signal name="notify::value" handler="on_sub_position" swapped="yes"/>
                         <child type="prefix">
                           <object class="GtkImage">
                             <property name="icon-name">arrow-pointing-at-line-down-symbolic</property>
@@ -226,7 +225,7 @@
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Subtitle Text Size</property>
                         <property name="subtitle" translatable="yes">This option only takes effect for srt subtitles</property>
-                        <signal name="notify::value" handler="on_sub_size" swapped="yes" />
+                        <signal name="notify::value" handler="on_sub_size" swapped="yes"/>
                         <child type="prefix">
                           <object class="GtkImage">
                             <property name="icon-name">media-view-subtitles-symbolic</property>
@@ -247,7 +246,7 @@
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Subtitle Text Scale</property>
                         <property name="subtitle" translatable="yes">This affects ASS subtitles as well</property>
-                        <signal name="notify::value" handler="on_sub_scale" swapped="yes" />
+                        <signal name="notify::value" handler="on_sub_scale" swapped="yes"/>
                         <child type="prefix">
                           <object class="GtkImage">
                             <property name="icon-name">media-view-subtitles-symbolic</property>
@@ -281,9 +280,9 @@
                             <property name="level">0</property>
                             <property name="valign">3</property>
                             <property name="level">family</property>
-                            <signal name="notify::font-desc" handler="on_sub_font" swapped="yes" />
+                            <signal name="notify::font-desc" handler="on_sub_font" swapped="yes"/>
                             <property name="dialog">
-                              <object class="GtkFontDialog"></object>
+                              <object class="GtkFontDialog"/>
                             </property>
                             <style>
                               <class name="flat"/>
@@ -295,7 +294,7 @@
                     <child>
                       <object class="AdwComboRow" id="sub_border_style_combo">
                         <property name="title" translatable="yes">Border Style</property>
-                        <signal name="notify::selected" handler="on_border_style" swapped="yes" />
+                        <signal name="notify::selected" handler="on_border_style" swapped="yes"/>
                         <property name="model">
                           <object class="GtkStringList">
                             <items>
@@ -310,7 +309,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Border Size</property>
-                        <signal name="notify::value" handler="on_border_size" swapped="yes" />
+                        <signal name="notify::value" handler="on_border_size" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="sub_border_size_adj">
                             <property name="lower">0</property>
@@ -325,7 +324,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Shadow Offset</property>
-                        <signal name="notify::value" handler="on_shadow_offset" swapped="yes" />
+                        <signal name="notify::value" handler="on_shadow_offset" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="sub_shadow_offset_adj">
                             <property name="lower">0</property>
@@ -339,7 +338,7 @@
                     </child>
                     <child>
                       <object class="AdwSwitchRow" id="stretch_image_subs_to_screen_switchrow">
-                        <signal name="notify::active" handler="on_stretch_image_subs_to_screen" swapped="yes" />
+                        <signal name="notify::active" handler="on_stretch_image_subs_to_screen" swapped="yes"/>
                         <property name="title" translatable="yes">Stretch Image Subtitles to Screen</property>
                       </object>
                     </child>
@@ -352,7 +351,7 @@
                       <object class="GtkButton">
                         <property name="icon-name">large-brush-symbolic</property>
                         <property name="valign">3</property>
-                        <signal name="clicked" handler="on_sub_color_clear" swapped="yes" />
+                        <signal name="clicked" handler="on_sub_color_clear" swapped="yes"/>
                         <style>
                           <class name="flat"/>
                         </style>
@@ -365,7 +364,7 @@
                           <object class="GtkColorDialogButton" id="sub_text_color">
                             <property name="valign">center</property>
                             <property name="rgba">rgba(255,255,255,255)</property>
-                            <signal name="notify::rgba" handler="on_sub_text_color" swapped="yes" />
+                            <signal name="notify::rgba" handler="on_sub_text_color" swapped="yes"/>
                             <property name="dialog">
                               <object class="GtkColorDialog"/>
                             </property>
@@ -383,7 +382,7 @@
                           <object class="GtkColorDialogButton" id="sub_border_color">
                             <property name="valign">center</property>
                             <property name="rgba">rgba(0,0,0,255)</property>
-                            <signal name="notify::rgba" handler="on_sub_border_color" swapped="yes" />
+                            <signal name="notify::rgba" handler="on_sub_border_color" swapped="yes"/>
                             <property name="dialog">
                               <object class="GtkColorDialog"/>
                             </property>
@@ -401,7 +400,7 @@
                           <object class="GtkColorDialogButton" id="sub_background_color">
                             <property name="valign">center</property>
                             <property name="rgba">rgba(0,0,0,0)</property>
-                            <signal name="notify::rgba" handler="on_sub_background_color" swapped="yes" />
+                            <signal name="notify::rgba" handler="on_sub_background_color" swapped="yes"/>
                             <property name="dialog">
                               <object class="GtkColorDialog"/>
                             </property>
@@ -421,7 +420,7 @@
                       <object class="GtkButton">
                         <property name="icon-name">large-brush-symbolic</property>
                         <property name="valign">3</property>
-                        <signal name="clicked" handler="on_sub_offset_clear" swapped="yes" />
+                        <signal name="clicked" handler="on_sub_offset_clear" swapped="yes"/>
                         <style>
                           <class name="flat"/>
                         </style>
@@ -431,7 +430,7 @@
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Offset</property>
                         <property name="subtitle" translatable="yes">Unit: ms</property>
-                        <signal name="notify::value" handler="on_sub_offset" swapped="yes" />
+                        <signal name="notify::value" handler="on_sub_offset" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="sub_offset_adj">
                             <property name="lower">-10000</property>
@@ -447,7 +446,7 @@
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Speed</property>
                         <property name="digits">2</property>
-                        <signal name="notify::value" handler="on_sub_speed" swapped="yes" />
+                        <signal name="notify::value" handler="on_sub_speed" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="sub_speed_adj">
                             <property name="lower">0.10</property>
@@ -470,7 +469,7 @@
                   <object class="GtkButton">
                     <property name="icon-name">large-brush-symbolic</property>
                     <property name="valign">3</property>
-                    <signal name="clicked" handler="on_audio_clear" swapped="yes" />
+                    <signal name="clicked" handler="on_audio_clear" swapped="yes"/>
                     <style>
                       <class name="flat"/>
                     </style>
@@ -480,7 +479,7 @@
                   <object class="AdwSpinRow">
                     <property name="title" translatable="yes">Audio Offset</property>
                     <property name="subtitle" translatable="yes">Unit: ms</property>
-                    <signal name="notify::value" handler="on_audio_offset" swapped="yes" />
+                    <signal name="notify::value" handler="on_audio_offset" swapped="yes"/>
                     <property name="adjustment">
                       <object class="GtkAdjustment" id="audio_offset_adj">
                         <property name="lower">-10000</property>
@@ -495,7 +494,7 @@
                 <child>
                   <object class="AdwComboRow" id="audio_channel_combo">
                     <property name="title" translatable="yes">Audio Channel</property>
-                    <signal name="notify::selected" handler="on_audio_channel" swapped="yes" />
+                    <signal name="notify::selected" handler="on_audio_channel" swapped="yes"/>
                     <property name="model">
                       <object class="GtkStringList">
                         <items>
@@ -517,7 +516,7 @@
                 <child>
                   <object class="AdwComboRow" id="panscan_combo">
                     <property name="title" translatable="yes">Video Aspect</property>
-                    <signal name="notify::selected" handler="on_video_aspect" swapped="yes" />
+                    <signal name="notify::selected" handler="on_video_aspect" swapped="yes"/>
                     <property name="model">
                       <object class="GtkStringList">
                         <items>
@@ -535,7 +534,7 @@
                       <object class="GtkButton">
                         <property name="icon-name">large-brush-symbolic</property>
                         <property name="valign">3</property>
-                        <signal name="clicked" handler="on_video_filter_clear" swapped="yes" />
+                        <signal name="clicked" handler="on_video_filter_clear" swapped="yes"/>
                         <style>
                           <class name="flat"/>
                         </style>
@@ -544,7 +543,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Brightness</property>
-                        <signal name="notify::value" handler="on_brightness_spinrow" swapped="yes" />
+                        <signal name="notify::value" handler="on_brightness_spinrow" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="brightness_adj">
                             <property name="lower">-100</property>
@@ -559,7 +558,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Contrast</property>
-                        <signal name="notify::value" handler="on_contrast_spinrow" swapped="yes" />
+                        <signal name="notify::value" handler="on_contrast_spinrow" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="contrast_adj">
                             <property name="lower">-100</property>
@@ -574,7 +573,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Saturation</property>
-                        <signal name="notify::value" handler="on_saturation_spinrow" swapped="yes" />
+                        <signal name="notify::value" handler="on_saturation_spinrow" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="saturation_adj">
                             <property name="lower">-100</property>
@@ -589,7 +588,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Hue</property>
-                        <signal name="notify::value" handler="on_hue_spinrow" swapped="yes" />
+                        <signal name="notify::value" handler="on_hue_spinrow" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="hue_adj">
                             <property name="lower">-100</property>
@@ -604,7 +603,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Gamma</property>
-                        <signal name="notify::value" handler="on_gamma_spinrow" swapped="yes" />
+                        <signal name="notify::value" handler="on_gamma_spinrow" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="gamma_adj">
                             <property name="lower">-100</property>
@@ -626,7 +625,7 @@
                       <object class="GtkButton">
                         <property name="icon-name">large-brush-symbolic</property>
                         <property name="valign">3</property>
-                        <signal name="clicked" handler="on_video_deband_clear" swapped="yes" />
+                        <signal name="clicked" handler="on_video_deband_clear" swapped="yes"/>
                         <style>
                           <class name="flat"/>
                         </style>
@@ -635,7 +634,7 @@
                     <child type="suffix">
                       <object class="GtkSwitch" id="deband_switch">
                         <property name="valign">3</property>
-                        <signal name="notify::active" handler="on_video_deband" swapped="yes" />
+                        <signal name="notify::active" handler="on_video_deband" swapped="yes"/>
                         <style>
                           <class name="flat"/>
                         </style>
@@ -644,7 +643,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Deband Iterations</property>
-                        <signal name="notify::value" handler="on_deband_iterations_spinrow" swapped="yes" />
+                        <signal name="notify::value" handler="on_deband_iterations_spinrow" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="deband_iterations_adj">
                             <property name="lower">0</property>
@@ -659,7 +658,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Deband Threshold</property>
-                        <signal name="notify::value" handler="on_deband_threshold_spinrow" swapped="yes" />
+                        <signal name="notify::value" handler="on_deband_threshold_spinrow" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="deband_threshold_adj">
                             <property name="lower">0</property>
@@ -674,7 +673,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Deband Range</property>
-                        <signal name="notify::value" handler="on_deband_range_spinrow" swapped="yes" />
+                        <signal name="notify::value" handler="on_deband_range_spinrow" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="deband_range_adj">
                             <property name="lower">1</property>
@@ -689,7 +688,7 @@
                     <child>
                       <object class="AdwSpinRow">
                         <property name="title" translatable="yes">Deband Grain</property>
-                        <signal name="notify::value" handler="on_deband_grain_spinrow" swapped="yes" />
+                        <signal name="notify::value" handler="on_deband_grain_spinrow" swapped="yes"/>
                         <property name="adjustment">
                           <object class="GtkAdjustment" id="deband_grain_adj">
                             <property name="lower">0</property>
@@ -705,14 +704,14 @@
                 </child>
                 <child>
                   <object class="AdwSwitchRow" id="video_deinterlace_switchrow">
-                    <signal name="notify::active" handler="on_video_deinterlace" swapped="yes" />
+                    <signal name="notify::active" handler="on_video_deinterlace" swapped="yes"/>
                     <property name="title" translatable="yes">Video Deinterlace</property>
                   </object>
                 </child>
                 <child>
                   <object class="AdwComboRow" id="video_upsacle_filter_combo">
                     <property name="title" translatable="yes">Video Upscale</property>
-                    <signal name="notify::selected" handler="on_video_upscale" swapped="yes" />
+                    <signal name="notify::selected" handler="on_video_upscale" swapped="yes"/>
                     <property name="model">
                       <object class="GtkStringList">
                         <items>
@@ -834,7 +833,7 @@
                 <property name="justify">left</property>
                 <property name="halign">start</property>
                 <style>
-                  <class name="dimmed" />
+                  <class name="dimmed"/>
                 </style>
               </object>
             </child>

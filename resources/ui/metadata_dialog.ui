@@ -70,7 +70,7 @@
                                             <property name="title" translatable="yes">Not Available</property>
                                             <property name="subtitle" translatable="yes">This page is READ-ONLY, because you have no permission to modify it.</property>
                                             <style>
-                                              <class name="property" />
+                                              <class name="property"/>
                                               <class name="error"/>
                                             </style>
                                           </object>
@@ -82,7 +82,7 @@
                                             <property name="subtitle" translatable="yes">No data.</property>
                                             <property name="subtitle-selectable">true</property>
                                             <style>
-                                              <class name="property" />
+                                              <class name="property"/>
                                             </style>
                                           </object>
                                         </child>
@@ -115,7 +115,7 @@
                                                   </object>
                                                 </property>
                                                 <style>
-                                                  <class name="flat" />
+                                                  <class name="flat"/>
                                                 </style>
                                               </object>
                                             </child>
@@ -166,12 +166,12 @@
                                                   </object>
                                                 </property>
                                                 <style>
-                                                  <class name="flat" />
+                                                  <class name="flat"/>
                                                 </style>
                                               </object>
                                             </child>
                                             <style>
-                                              <class name="property" />
+                                              <class name="property"/>
                                             </style>
                                           </object>
                                         </child>
@@ -186,7 +186,7 @@
                                                 <property name="height-request">150</property>
                                                 <property name="valign">start</property>
                                                 <style>
-                                                  <class name="card" />
+                                                  <class name="card"/>
                                                 </style>
                                               </object>
                                             </child>
@@ -220,7 +220,7 @@
                                             <property name="margin-start">12</property>
                                             <property name="label" translatable="yes">Lock The Item</property>
                                             <style>
-                                              <class name="accent" />
+                                              <class name="accent"/>
                                             </style>
                                           </object>
                                         </child>
@@ -233,7 +233,7 @@
                                                 <property name="sensitive">False</property>
                                                 <signal name="activated" handler="on_apply_button_clicked" swapped="yes"/>
                                                 <style>
-                                                  <class name="suggested-action" />
+                                                  <class name="suggested-action"/>
                                                 </style>
                                               </object>
                                             </child>

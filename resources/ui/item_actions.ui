@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk" version="4.0" />
+  <requires lib="gtk" version="4.0"/>
   <template parent="GtkBox" class="ItemActionsBox">
     <property name="orientation">horizontal</property>
     <property name="spacing">12</property>
@@ -11,10 +11,10 @@
         <property name="height-request">35</property>
         <property name="icon-name">non-starred-symbolic</property>
         <property name="valign">center</property>
-        <signal name="clicked" handler="on_favourite_button_toggled" swapped="yes" />
+        <signal name="clicked" handler="on_favourite_button_toggled" swapped="yes"/>
         <style>
-          <class name="circular" />
-          <class name="suggested-action" />
+          <class name="circular"/>
+          <class name="suggested-action"/>
         </style>
       </object>
     </child>
@@ -29,8 +29,8 @@
         <property name="direction">none</property>
         <property name="icon_name">view-more-symbolic</property>
         <style>
-          <class name="circular" />
-          <class name="flat" />
+          <class name="circular"/>
+          <class name="flat"/>
         </style>
       </object>
     </child>

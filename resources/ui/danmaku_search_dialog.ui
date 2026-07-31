@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template parent="AdwDialog" class="MetadataDialog">
+    <property name="content-width">800</property>
+    <property name="content-height">1000</property>
+    <property name="title" translatable="yes">Edit Metadata</property>
+    <child>
+      <object class="AdwToastOverlay" id="toast">
+        <child>
+          <object class="AdwNavigationView" id="navigation_view">
+            <child>
+              <object class="AdwNavigationPage" id="page">
+                <property name="tag">main</property>
+                <property name="title" translatable="yes">Search Danmaku</property>
+                <property name="child">
+                  <object class="AdwToolbarView">
+                    <child type="top">
+                      <object class="AdwHeaderBar"/>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">1</property>
+                        <child>
+                          <object class="AdwClamp">
+                            <property name="margin-bottom">12</property>
+                            <property name="vexpand">true</property>
+                            <child>
+                              <object class="GtkListBox">
+                                <property name="valign">1</property>
+                                <child>
+                                  <object class="AdwEntryRow" id="title_entry">
+                                    <property name="title" translatable="yes">Title</property>
+                                    <child type="suffix">
+                                      <object class="GtkButton">
+                                        <property name="valign">3</property>
+                                        <property name="icon-name">edit-find-symbolic</property>
+                                        <style>
+                                          <class name="accent"/>
+                                          <class name="circular"/>
+                                        </style>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <style>
+                                  <class name="boxed-list-separate"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

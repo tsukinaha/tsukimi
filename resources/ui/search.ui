@@ -30,7 +30,7 @@
                     <property name="icon-name">funnel-outline-symbolic</property>
                     <property name="tooltip-text" translatable="yes">Filter Panel</property>
                     <property name="valign">center</property>
-                    <signal name="clicked" handler="filter_panel_cb" swapped="yes" />
+                    <signal name="clicked" handler="filter_panel_cb" swapped="yes"/>
                   </object>
                 </child>
                 <child>
@@ -98,7 +98,7 @@
                   </object>
                 </child>
                 <style>
-                  <class name="linked" />
+                  <class name="linked"/>
                 </style>
               </object>
             </child>

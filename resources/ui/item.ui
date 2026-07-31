@@ -3,7 +3,6 @@
   <template parent="AdwNavigationPage" class="ItemPage">
     <property name="title">Item Page</property>
     <child>
-
       <object class="GtkOverlay">
         <property name="overflow">hidden</property>
         <child type="overlay">
@@ -32,7 +31,7 @@
                       <object class="GtkOverlay">
                         <property name="overflow">hidden</property>
                         <style>
-                          <class name="boxshadow" />
+                          <class name="boxshadow"/>
                         </style>
                         <child>
                           <object class="ItemCarousel" id="carousel">
@@ -54,7 +53,6 @@
                                 <property name="orientation">vertical</property>
                                 <property name="valign">end</property>
                                 <property name="hexpand">true</property>
-
                                 <child>
                                   <object class="GtkBox">
                                     <property name="orientation">horizontal</property>
@@ -80,8 +78,8 @@
                                                 <property name="halign">start</property>
                                                 <property name="wrap">true</property>
                                                 <attributes>
-                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                                                  <attribute name="scale" value="1.4" />
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                  <attribute name="scale" value="1.4"/>
                                                 </attributes>
                                               </object>
                                             </child>
@@ -98,8 +96,8 @@
                                             <property name="visible">False</property>
                                             <property name="ellipsize">end</property>
                                             <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                                              <attribute name="scale" value="1.2" />
+                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                              <attribute name="scale" value="1.2"/>
                                             </attributes>
                                           </object>
                                         </child>
@@ -110,8 +108,8 @@
                                             <property name="label" translatable="yes">Loading...</property>
                                             <property name="ellipsize">end</property>
                                             <attributes>
-                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                                              <attribute name="scale" value="1.2" />
+                                              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                              <attribute name="scale" value="1.2"/>
                                             </attributes>
                                           </object>
                                         </child>
@@ -129,26 +127,26 @@
                                             </child>
                                             <child>
                                               <object class="GtkLabel" id="crating">
-                                                <property name="label" translatable="yes"></property>
+                                                <property name="label" translatable="yes"/>
                                                 <property name="visible">False</property>
                                                 <property name="margin-end">15</property>
                                                 <attributes>
-                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                                                  <attribute name="scale" value="1.1" />
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                  <attribute name="scale" value="1.1"/>
                                                 </attributes>
                                               </object>
                                             </child>
                                             <child>
                                               <object class="GtkLabel" id="orating">
-                                                <property name="label" translatable="yes"></property>
+                                                <property name="label" translatable="yes"/>
                                                 <property name="visible">False</property>
                                                 <property name="margin-end">15</property>
                                                 <attributes>
-                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                                                  <attribute name="scale" value="1.1" />
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                  <attribute name="scale" value="1.1"/>
                                                 </attributes>
                                                 <style>
-                                                  <class name="frame" />
+                                                  <class name="frame"/>
                                                 </style>
                                               </object>
                                             </child>
@@ -158,13 +156,13 @@
                                                 <property name="label" translatable="yes">Loading...</property>
                                                 <property name="ellipsize">end</property>
                                                 <attributes>
-                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
-                                                  <attribute name="scale" value="1.1" />
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                  <attribute name="scale" value="1.1"/>
                                                 </attributes>
                                               </object>
                                             </child>
                                             <style>
-                                              <class name="title-5" />
+                                              <class name="title-5"/>
                                             </style>
                                           </object>
                                         </child>
@@ -188,8 +186,8 @@
                                                   </object>
                                                 </property>
                                                 <style>
-                                                  <class name="suggested-action" />
-                                                  <class name="pill" />
+                                                  <class name="suggested-action"/>
+                                                  <class name="pill"/>
                                                 </style>
                                               </object>
                                             </child>
@@ -219,7 +217,7 @@
                                               <object class="GtkLabel">
                                                 <property name="label" translatable="yes">Video: </property>
                                                 <attributes>
-                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                                                 </attributes>
                                               </object>
                                             </child>
@@ -239,7 +237,7 @@
                                               <object class="GtkLabel">
                                                 <property name="label" translatable="yes">Subtitle: </property>
                                                 <attributes>
-                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                                                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                                                 </attributes>
                                               </object>
                                             </child>
@@ -277,7 +275,7 @@
                               <object class="GtkBox" id="logobox">
                                 <property name="height-request">150</property>
                                 <style>
-                                  <class name="logo" />
+                                  <class name="logo"/>
                                 </style>
                               </object>
                             </child>
@@ -320,7 +318,7 @@
                           </object>
                         </child>
                         <style>
-                          <class name="toolbar" />
+                          <class name="toolbar"/>
                         </style>
                       </object>
                     </child>
@@ -370,13 +368,13 @@
                                             <property name="single-click-activate">True</property>
                                             <signal name="activate" handler="on_item_activated" swapped="yes"/>
                                             <style>
-                                              <class name="horizontal-listview" />
+                                              <class name="horizontal-listview"/>
                                             </style>
                                           </object>
                                         </child>
                                         <style>
-                                          <class name="undershoot-start" />
-                                          <class name="undershoot-end" />
+                                          <class name="undershoot-start"/>
+                                          <class name="undershoot-end"/>
                                         </style>
                                       </object>
                                     </child>
@@ -389,9 +387,9 @@
                                         <property name="margin-end">6</property>
                                         <property name="icon-name">go-next-symbolic</property>
                                         <property name="opacity">0</property>
-                                        <signal name="clicked" handler="on_rightbutton_clicked" swapped="yes" />
+                                        <signal name="clicked" handler="on_rightbutton_clicked" swapped="yes"/>
                                         <style>
-                                          <class name="osd" />
+                                          <class name="osd"/>
                                         </style>
                                       </object>
                                     </child>
@@ -404,9 +402,9 @@
                                         <property name="margin-start">6</property>
                                         <property name="icon-name">go-previous-symbolic</property>
                                         <property name="opacity">0</property>
-                                        <signal name="clicked" handler="on_leftbutton_clicked" swapped="yes" />
+                                        <signal name="clicked" handler="on_leftbutton_clicked" swapped="yes"/>
                                         <style>
-                                          <class name="osd" />
+                                          <class name="osd"/>
                                         </style>
                                       </object>
                                     </child>
@@ -424,7 +422,7 @@
                                     <property name="vexpand">True</property>
                                     <property name="icon-name">document-open-symbolic</property>
                                     <style>
-                                      <class name="compact" />
+                                      <class name="compact"/>
                                     </style>
                                   </object>
                                 </property>

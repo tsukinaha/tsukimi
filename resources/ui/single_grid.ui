@@ -16,10 +16,10 @@
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="count">
-                    <property name="label" translatable="yes"></property>
+                    <property name="label" translatable="yes"/>
                     <property name="ellipsize">end</property>
                     <attributes>
-                      <attribute name="weight" value="PANGO_WEIGHT_BOLD" />
+                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                     </attributes>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
@@ -46,7 +46,7 @@
                     <property name="icon-name">funnel-outline-symbolic</property>
                     <property name="tooltip-text" translatable="yes">Filter Panel</property>
                     <property name="valign">center</property>
-                    <signal name="clicked" handler="filter_panel_cb" swapped="yes" />
+                    <signal name="clicked" handler="filter_panel_cb" swapped="yes"/>
                   </object>
                 </child>
               </object>
@@ -76,7 +76,6 @@
                     <signal name="notify::active" handler="on_view_changed_cb" swapped="yes"/>
                   </object>
                 </child>
-
                 <child>
                   <object class="AdwToggleGroup" id="adgroup">
                     <child>
@@ -93,7 +92,6 @@
                         <property name="name">desc</property>
                       </object>
                     </child>
-                    
                   </object>
                 </child>
                 <child>
@@ -101,7 +99,6 @@
                     <property name="halign">end</property>
                     <property name="valign">center</property>
                     <property name="tooltip-text" translatable="yes">Sort By</property>
-                    
                     <property name="model">
                       <object class="GtkStringList">
                         <items>
@@ -122,7 +119,7 @@
                   </object>
                 </child>
                 <style>
-                  <class name="flat" />
+                  <class name="flat"/>
                 </style>
               </object>
             </child>

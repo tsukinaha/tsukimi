@@ -1,4 +1,5 @@
 use adw::prelude::*;
+use dandanapi_client::SearchSearchEpisodesParams;
 use gettextrs::gettext;
 use glib::Object;
 use gtk::{
@@ -13,6 +14,8 @@ use itertools::Itertools;
 use mutsumi::*;
 
 use super::{
+    DanmakuPopoverStatus,
+    danmaku_client::DanmakuClient,
     sink::MPVPlaySink,
     video_scale::VideoScale,
 };
@@ -150,6 +153,7 @@ mod imp {
         ui::{
             models::SETTINGS,
             mpv::{
+                DanmakuPopover,
                 VolumeBar,
                 menu_actions::MenuActions,
                 sink::MPVPlaySink,
@@ -171,6 +175,10 @@ mod imp {
         pub paused: Cell<bool>,
         #[template_child]
         pub video: TemplateChild<MPVPlaySink>,
+        #[template_child]
+        pub danmakw: TemplateChild<mutsumi::Danmakw>,
+        #[template_child]
+        pub danmaku_popover_content: TemplateChild<DanmakuPopover>,
         #[template_child]
         pub bottom_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
@@ -256,6 +264,8 @@ mod imp {
         pub retrying_playback: Cell<bool>,
         pub allow_fallback: Cell<bool>,
         pub last_nonzero_volume: Cell<i64>,
+        pub danmaku_count: Cell<usize>,
+        pub danmaku_generation: Cell<u64>,
     }
 
     #[glib::object_subclass]
@@ -268,6 +278,8 @@ mod imp {
             MPVPlaySink::ensure_type();
             VideoScale::ensure_type();
             VolumeBar::ensure_type();
+            DanmakuPopover::ensure_type();
+            mutsumi::Danmakw::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("mpv.play-pause", None, move |mpv, _action, _parameter| {
@@ -344,6 +356,7 @@ mod imp {
 
             let obj = self.obj();
 
+            self.danmaku_popover_content.set_page(&obj);
             obj.set_popover();
 
             obj.connect_root_notify(|obj| {
@@ -406,6 +419,10 @@ mod imp {
                 menu_actions_play_pause_button.set_tooltip_text(Some(&gettext("Pause")));
             }
             self.paused.set(paused);
+
+            if !self.loading_box.is_visible() && self.danmaku_popover_content.is_enabled() {
+                self.danmakw.set_paused(paused);
+            }
         }
     }
 }
@@ -427,6 +444,164 @@ impl Default for MPVPage {
 impl MPVPage {
     pub fn new() -> Self {
         Object::new()
+    }
+
+    fn next_danmaku_generation(&self) -> u64 {
+        let generation = self.imp().danmaku_generation.get().wrapping_add(1);
+        self.imp().danmaku_generation.set(generation);
+        generation
+    }
+
+    fn is_current_danmaku_request(&self, generation: u64, item_id: &str) -> bool {
+        self.imp().danmaku_generation.get() == generation
+            && self
+                .current_video()
+                .as_ref()
+                .is_some_and(|item| item.id() == item_id)
+    }
+
+    fn auto_search_danmaku(&self, item: &TuItem) {
+        let generation = self.next_danmaku_generation();
+        let item_id = item.id();
+        let is_episode = item.series_name().is_some();
+        let anime = item.series_name().unwrap_or_else(|| item.name());
+        let item_name = item.series_name().map_or_else(
+            || item.name(),
+            |series_name| format!("{} - {series_name}", item.name()),
+        );
+        let episode = is_episode
+            .then(|| item.index_number())
+            .filter(|episode| *episode > 0)
+            .map(|episode| episode.to_string());
+        let params = SearchSearchEpisodesParams {
+            anime: Some(anime),
+            tmdb_id: None,
+            tmdb_id_type: if is_episode { 0 } else { 1 },
+            episode,
+            v2: true,
+        };
+
+        let imp = self.imp();
+        imp.danmaku_count.set(0);
+        imp.danmakw.stop_rendering();
+        imp.danmakw.clear_danmaku();
+        imp.danmaku_popover_content
+            .set_status(DanmakuPopoverStatus::Searching);
+
+        spawn_g_timeout(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            async move {
+                let client = match spawn_tokio(async { DanmakuClient::new() }).await {
+                    Ok(client) => client,
+                    Err(error) => {
+                        tracing::warn!("Failed to initialize danmaku client: {error}");
+                        obj.clear_danmaku_result(DanmakuPopoverStatus::SecretNotExist);
+                        return;
+                    }
+                };
+
+                if !obj.is_current_danmaku_request(generation, &item_id) {
+                    return;
+                }
+
+                let search_client = client.clone();
+                let search_result =
+                    spawn_tokio(async move { search_client.search_episode(params).await }).await;
+
+                if !obj.is_current_danmaku_request(generation, &item_id) {
+                    return;
+                }
+
+                let episode_id = match search_result {
+                    Ok(Some(episode_id)) => episode_id,
+                    Ok(None) => {
+                        obj.clear_danmaku_result(DanmakuPopoverStatus::NoMatching);
+                        return;
+                    }
+                    Err(error) => {
+                        tracing::warn!("Failed to search danmaku episode: {error}");
+                        obj.clear_danmaku_result(DanmakuPopoverStatus::Unavailable);
+                        return;
+                    }
+                };
+
+                obj.imp()
+                    .danmaku_popover_content
+                    .set_status(DanmakuPopoverStatus::Loading);
+
+                let comments_result =
+                    spawn_tokio(async move { client.get_comments(episode_id).await }).await;
+
+                if !obj.is_current_danmaku_request(generation, &item_id) {
+                    return;
+                }
+
+                match comments_result {
+                    Ok(Some(danmaku)) if !danmaku.is_empty() => {
+                        obj.apply_danmaku(danmaku, item_name)
+                    }
+                    Ok(_) => obj.clear_danmaku_result(DanmakuPopoverStatus::NoMatching),
+                    Err(error) => {
+                        tracing::warn!("Failed to load danmaku comments: {error}");
+                        obj.clear_danmaku_result(DanmakuPopoverStatus::Unavailable);
+                    }
+                }
+            }
+        ));
+    }
+
+    fn apply_danmaku(&self, danmaku: Vec<Danmaku>, item_name: String) {
+        let imp = self.imp();
+        let count = danmaku.len();
+        imp.danmakw.load_danmaku(danmaku);
+        imp.danmaku_count.set(count);
+        imp.danmaku_popover_content
+            .set_status(DanmakuPopoverStatus::Loaded(count, item_name));
+        self.set_danmaku_enabled(true);
+    }
+
+    fn clear_danmaku_result(&self, status: DanmakuPopoverStatus) {
+        let imp = self.imp();
+        imp.danmaku_count.set(0);
+        imp.danmakw.clear_danmaku();
+        imp.danmakw.stop_rendering();
+        imp.danmaku_popover_content.set_status(status);
+    }
+
+    fn clear_danmaku(&self) {
+        self.next_danmaku_generation();
+        self.clear_danmaku_result(DanmakuPopoverStatus::Unavailable);
+    }
+
+    pub fn set_danmaku_enabled(&self, enabled: bool) {
+        let imp = self.imp();
+        let enabled = enabled && self.has_danmaku();
+        imp.danmaku_popover_content
+            .set_switch_sensitive(self.has_danmaku());
+        imp.danmaku_popover_content.set_enabled(enabled);
+        if !enabled {
+            imp.danmakw.stop_rendering();
+        } else if !self.paused() && !imp.loading_box.is_visible() {
+            imp.danmakw.start_rendering();
+        }
+    }
+
+    pub fn on_danmaku_switch_state_set(&self, state: bool) {
+        let imp = self.imp();
+        if state && self.has_danmaku() && !self.paused() && !imp.loading_box.is_visible() {
+            imp.danmakw.start_rendering();
+        } else {
+            imp.danmakw.stop_rendering();
+        }
+    }
+
+    fn has_danmaku(&self) -> bool {
+        self.imp().danmaku_count.get() > 0
+    }
+
+    pub fn danmakw(&self) -> Danmakw {
+        self.imp().danmakw.get()
     }
 
     fn mark_stream_failed(&self) {
@@ -495,6 +670,10 @@ impl MPVPage {
         &self, selected: Option<SelectedVideoSubInfo>, item: TuItem, episode_list: Vec<TuItem>,
         video_matcher: Option<String>, start_seconds: f64,
     ) {
+        let should_search_danmaku = self
+            .current_video()
+            .as_ref()
+            .is_none_or(|current| current.id() != item.id());
         let (title1, title2) = if let Some(series_name) = item.series_name() {
             let episode_info = format!(
                 "S{}E{}: {}",
@@ -537,7 +716,7 @@ impl MPVPage {
         #[cfg(target_os = "linux")]
         let track_list_changed = self.mpris_track_list_changed(&episode_list);
 
-        self.set_current_video(Some(item));
+        self.set_current_video(Some(item.clone()));
         self.imp().current_episode_list.replace(episode_list);
 
         #[cfg(target_os = "linux")]
@@ -548,6 +727,9 @@ impl MPVPage {
             }
         }
         self.notify_track_changed();
+        if should_search_danmaku {
+            self.auto_search_danmaku(&item);
+        }
         self.imp().fallback_context.replace(Some(FallbackContext {
             selected: selected.to_owned(),
             start_seconds,
@@ -1138,15 +1320,24 @@ impl MPVPage {
     }
 
     fn update_seeking(&self, seeking: bool) {
-        self.imp().seeking.set(seeking);
-        let spinner = &self.imp().spinner;
-        let loading_box = &self.imp().loading_box;
+        let imp = self.imp();
+        imp.seeking.set(seeking);
+        imp.loading_box.set_visible(seeking);
+        imp.spinner.set_visible(seeking);
+
+        if !imp.danmaku_popover_content.is_enabled() {
+            return;
+        }
+
         if seeking {
-            loading_box.set_visible(true);
-            spinner.set_visible(true);
-        } else {
-            loading_box.set_visible(false);
-            spinner.set_visible(false);
+            imp.danmakw.set_paused(true);
+            return;
+        }
+
+        imp.danmakw.preroll_seek(imp.video.position() * 1000.0);
+
+        if !self.paused() {
+            imp.danmakw.set_paused(false);
         }
     }
 
@@ -1307,7 +1498,9 @@ impl MPVPage {
 
         if let Some(widget) = self.pick(x, y, gtk::PickFlags::DEFAULT)
             && !widget.is::<MPVPlaySink>()
+            && !widget.is::<Danmakw>()
             && widget.ancestor(MPVPlaySink::static_type()).is_none()
+            && widget.ancestor(Danmakw::static_type()).is_none()
         {
             return false;
         }
@@ -1358,6 +1551,7 @@ impl MPVPage {
     pub fn on_stop_clicked(&self) {
         self.remove_timeout();
         self.reset_skippable_segments();
+        self.clear_danmaku();
         let current_video = self.current_video();
 
         let video = &self.imp().video;

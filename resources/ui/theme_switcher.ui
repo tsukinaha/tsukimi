@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="ThemeSwitcher" parent="AdwBin">

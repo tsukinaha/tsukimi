@@ -5,7 +5,7 @@ members = [
 
 [package]
 name = "tsukimi"
-version = "26.8.1"
+version = "26.8.2"
 edition = "2024"
 rust-version = "1.91"
 description = "A simple Jellyfin Client written by GTK4-RS"
@@ -44,12 +44,14 @@ clap = { version = "4", features = ["derive"] }
 fnv = "1.0.7"
 rand = "0.10.1"
 base64 = "0.22.1"
-mutsumi = "0.3"
 xxhash-rust = { version = "0.8.15", features = ["xxh3"] }
 futures-util = "0.3.31"
 itertools = "0.15.0"
 moka = { version = "0.12.15", features = ["future"] }
 glycin = { version = "3.1.0", default-features = false, features = ["gdk4", "tokio"] }
+
+mutsumi = "0.4"
+dandanapi-client = "0.1"
 
 [dev-dependencies]
 cargo-husky = { version = "1", default-features = false, features = ["user-hooks"] }

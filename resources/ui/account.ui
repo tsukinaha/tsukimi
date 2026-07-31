@@ -64,7 +64,7 @@
                                             <child>
                                               <object class="AdwEntryRow" id="server_entry">
                                                 <property name="title" translatable="yes">Server Address</property>
-                                                <signal name="changed" handler="on_server_entry_changed" swapped="yes" />
+                                                <signal name="changed" handler="on_server_entry_changed" swapped="yes"/>
                                                 <child type="prefix">
                                                   <object class="GtkDropDown" id="protocol">
                                                     <property name="valign">center</property>
@@ -109,7 +109,7 @@
                                                 <property name="start-icon-name">list-add-symbolic</property>
                                                 <property name="action-name">account.add</property>
                                                 <style>
-                                                  <class name="suggested-action" />
+                                                  <class name="suggested-action"/>
                                                 </style>
                                               </object>
                                             </child>
