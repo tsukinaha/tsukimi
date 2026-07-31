@@ -6,7 +6,10 @@ use gtk::{
     PopoverMenu,
     gdk::Rectangle,
     gio,
-    glib,
+    glib::{
+        self,
+        translate::IntoGlib,
+    },
     subclass::prelude::*,
 };
 use itertools::Itertools;
@@ -54,8 +57,8 @@ use crate::{
 };
 
 const MIN_MOTION_TIME: i64 = 100000;
-const PREV_CHAPTER_KEYVAL: u32 = 65366;
-const NEXT_CHAPTER_KEYVAL: u32 = 65365;
+const PREV_CHAPTER_KEY: gtk::gdk::Key = gtk::gdk::Key::Page_Down;
+const NEXT_CHAPTER_KEY: gtk::gdk::Key = gtk::gdk::Key::Page_Up;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct PlaybackDirectMode {
@@ -1471,30 +1474,66 @@ impl MPVPage {
         window.view_control_sidebar();
     }
 
-    pub fn key_pressed_cb(&self, key: u32, state: gtk::gdk::ModifierType) {
-        let binding = self.ancestor(adw::OverlaySplitView::static_type());
-        let Some(view) = binding.and_downcast_ref::<adw::OverlaySplitView>() else {
-            return;
-        };
-
-        if view.shows_sidebar() {
-            return;
-        }
-
-        self.imp().video.press_key(key, state)
+    fn view(&self) -> Option<adw::OverlaySplitView> {
+        self.ancestor(adw::OverlaySplitView::static_type())
+            .and_downcast()
     }
 
-    pub fn key_released_cb(&self, key: u32, state: gtk::gdk::ModifierType) {
-        let binding = self.ancestor(adw::OverlaySplitView::static_type());
-        let Some(view) = binding.and_downcast_ref::<adw::OverlaySplitView>() else {
+    fn window(&self) -> Option<Window> {
+        self.root().and_downcast()
+    }
+
+    fn toggle_fullscreen(&self) {
+        if let Some(window) = self.window() {
+            window.toggle_fullscreen();
+        }
+    }
+
+    pub fn key_pressed_cb(
+        &self, key: gtk::gdk::Key, state: gtk::gdk::ModifierType,
+    ) -> bool {
+        if key.to_lower() == gtk::gdk::Key::f || key == gtk::gdk::Key::Escape {
+            return true;
+        }
+
+        let Some(view) = self.view() else {
+            return false;
+        };
+
+        if view.shows_sidebar() {
+            return false;
+        }
+
+        self.imp().video.press_key(key.into_glib(), state);
+        true
+    }
+
+    pub fn key_released_cb(&self, key: gtk::gdk::Key, state: gtk::gdk::ModifierType) {
+        let Some(view) = self.view() else {
             return;
         };
+
+        if key == gtk::gdk::Key::Escape {
+            if view.shows_sidebar() {
+                view.set_show_sidebar(false);
+            } else if let Some(window) = self.window()
+                && window.is_fullscreen()
+            {
+                window.toggle_fullscreen();
+            }
+            return;
+        }
+
+        if key.to_lower() == gtk::gdk::Key::f {
+            self.toggle_fullscreen();
+            return;
+        }
 
         if view.shows_sidebar() {
             return;
         }
 
-        self.imp().video.release_key(key, state)
+        self.imp().video.release_key(key.into_glib(), state)
     }
 
     pub fn set_popover(&self) {
@@ -1551,11 +1590,11 @@ impl MPVPage {
     }
 
     pub fn chapter_prev(&self) {
-        self.key_pressed_cb(PREV_CHAPTER_KEYVAL, gtk::gdk::ModifierType::empty());
+        self.key_pressed_cb(PREV_CHAPTER_KEY, gtk::gdk::ModifierType::empty());
     }
 
     pub fn chapter_next(&self) {
-        self.key_pressed_cb(NEXT_CHAPTER_KEYVAL, gtk::gdk::ModifierType::empty());
+        self.key_pressed_cb(NEXT_CHAPTER_KEY, gtk::gdk::ModifierType::empty());
     }
 
     pub fn mpv(&self) -> &mutsumi::ContextedMPV {
