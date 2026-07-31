@@ -15,6 +15,7 @@ use mutsumi::*;
 
 use super::{
     DanmakuPopoverStatus,
+    danmaku_cache_map::DanmakuCacheMap,
     danmaku_client::DanmakuClient,
     sink::MPVPlaySink,
     video_scale::VideoScale,
@@ -140,7 +141,7 @@ mod imp {
         glib,
         subclass::prelude::*,
     };
-    #[cfg(target_os = "linux")]
+
     use mpris_server::LocalServer;
     use once_cell::sync::OnceCell;
 
@@ -233,9 +234,9 @@ mod imp {
         pub popover: RefCell<Option<PopoverMenu>>,
         pub popover_count: Cell<u32>,
         pub menu_actions: MenuActions,
-        #[cfg(target_os = "linux")]
+
         pub mpris_server: OnceCell<LocalServer<super::MPVPage>>,
-        #[cfg(target_os = "linux")]
+
         pub mpris_art_url: RefCell<Option<String>>,
 
         #[template_child]
@@ -366,7 +367,7 @@ mod imp {
             obj.listen_events();
 
             // Initialize MPRIS server
-            #[cfg(target_os = "linux")]
+
             glib::spawn_future_local(glib::clone!(
                 #[weak(rename_to = imp)]
                 self,
@@ -456,6 +457,22 @@ impl MPVPage {
     }
 
     fn auto_search_danmaku(&self, item: &TuItem) {
+        if let Some(cached) = DanmakuCacheMap::load().cached_danmaku(item) {
+            spawn_g_timeout(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                async move {
+                    if let Err(error) = obj
+                        .apply_manual_danmaku(cached.episode_id, cached.item_name)
+                        .await
+                    {
+                        tracing::warn!("Failed to apply cached danmaku: {error}");
+                    }
+                }
+            ));
+            return;
+        }
+
         let generation = self.next_danmaku_generation();
         let item_id = item.id();
         let is_episode = item.series_name().is_some();
@@ -754,13 +771,11 @@ impl MPVPage {
                 .replace(Some(video_matcher));
         }
 
-        #[cfg(target_os = "linux")]
         let track_list_changed = self.mpris_track_list_changed(&episode_list);
 
         self.set_current_video(Some(item.clone()));
         self.imp().current_episode_list.replace(episode_list);
 
-        #[cfg(target_os = "linux")]
         {
             self.imp().mpris_art_url.take();
             if track_list_changed {
@@ -1798,37 +1813,30 @@ impl MPVPage {
     }
 
     pub fn notify_playing(&self) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_playing();
     }
 
     pub fn notify_track_changed(&self) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_track_changed();
     }
 
     pub fn notify_player_paused(&self) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_paused();
     }
 
     pub fn notify_volume_changed(&self, volume: f64) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_volume(volume);
     }
 
     pub fn notify_stopped(&self) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_stopped();
     }
 
     pub fn notify_seeked(&self, position: i64) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_seeked(position);
     }
 
     pub fn notify_track_list_replaced(&self) {
-        #[cfg(target_os = "linux")]
         self.notify_mpris_track_list_replaced();
     }
 }

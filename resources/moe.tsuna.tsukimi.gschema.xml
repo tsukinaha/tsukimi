@@ -292,6 +292,10 @@
       <summary>List of the accounts</summary>
       <default>'[]'</default>
     </key>
+    <key type="s" name="danmaku-cache-map">
+      <summary>Cached manual danmaku matches</summary>
+      <default>'{}'</default>
+    </key>
     <key type="d" name="danmaku-opacity">
       <summary>Danmaku opacity</summary>
       <default>1.0</default>

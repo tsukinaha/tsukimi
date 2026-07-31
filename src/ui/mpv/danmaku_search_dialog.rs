@@ -1,3 +1,5 @@
+use std::cell::RefCell;
+
 use adw::{
     prelude::*,
     subclass::prelude::*,
@@ -15,7 +17,10 @@ use gtk::{
 use crate::{
     client::structs::SimpleListItem,
     ui::{
-        mpv::page::MPVPage,
+        mpv::{
+            danmaku_cache_map::DanmakuCacheMap,
+            page::MPVPage,
+        },
         provider::tu_item::{
             DANMAKU_ANIME,
             MOVIE,
@@ -65,6 +70,7 @@ mod imp {
         pub toast: TemplateChild<adw::ToastOverlay>,
 
         pub page: glib::WeakRef<MPVPage>,
+        pub episodes: RefCell<Vec<TuItem>>,
     }
 
     #[glib::object_subclass]
@@ -212,8 +218,11 @@ impl DanmakuSearchDialog {
             self.imp().episode_list.remove(&child);
         }
 
-        for simple_item in items {
-            let item = TuItem::from_simple(simple_item);
+        let items = items
+            .into_iter()
+            .map(TuItem::from_simple)
+            .collect::<Vec<_>>();
+        for item in &items {
             let row = adw::ActionRow::builder()
                 .title(item.name())
                 .activatable(true)
@@ -225,6 +234,7 @@ impl DanmakuSearchDialog {
             ));
             self.imp().episode_list.append(&row);
         }
+        self.imp().episodes.replace(items);
     }
 
     pub fn apply_episode(&self, item: TuItem) {
@@ -237,11 +247,15 @@ impl DanmakuSearchDialog {
             return;
         };
 
-        let item_name = if let Some(series_name) = item.series_name() {
-            format!("{} - {series_name}", series_name)
-        } else {
-            item.name()
+        let Some(current_item) = page.current_video() else {
+            self.close();
+            return;
         };
+        let available_episodes = self.imp().episodes.borrow().clone();
+        let item_name = item.series_name().map_or_else(
+            || item.name(),
+            |series_name| format!("{} - {series_name}", item.name()),
+        );
 
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
@@ -249,6 +263,14 @@ impl DanmakuSearchDialog {
             async move {
                 match page.apply_manual_danmaku(episode_id, item_name).await {
                     Ok(true) => {
+                        let mut cache = DanmakuCacheMap::load();
+                        if let Err(error) = cache.remember_manual_selection(
+                            &current_item,
+                            &item,
+                            &available_episodes,
+                        ) {
+                            tracing::warn!("Failed to cache manual danmaku match: {error}");
+                        }
                         obj.close();
                     }
                     Ok(false) => obj.show_toast(gettext("No danmaku found")),
@@ -303,8 +325,10 @@ impl DanmakuSearchDialog {
                             .and_then(|anime| anime.episodes)
                             .unwrap_or_default()
                             .into_iter()
-                            .map(|episode| {
+                            .enumerate()
+                            .map(|(index, episode)| {
                                 let mut item = SimpleListItem::from(episode);
+                                item.index_number = u32::try_from(index + 1).ok();
                                 item.series_name = Some(episode_series_name.clone());
                                 item
                             })
