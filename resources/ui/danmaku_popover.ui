@@ -30,7 +30,7 @@
                         </child>
                         <child>
                           <object class="AdwActionRow" id="danmaku_status_row">
-                            <property name="title" translatable="yes">Danmaku unavailable</property>
+                            <property name="subtitle" translatable="yes">Danmaku disabled</property>
                             <property name="subtitle-lines">2</property>
                             <property name="subtitle-selectable">True</property>
                             <child type="prefix">
@@ -39,20 +39,20 @@
                                 <property name="transition-type">crossfade</property>
                                 <child>
                                   <object class="GtkStackPage">
-                                    <property name="name">loading</property>
+                                    <property name="name">icon</property>
                                     <property name="child">
-                                      <object class="AdwSpinner"/>
+                                      <object class="GtkImage" id="danmaku_status_icon">
+                                        <property name="pixel-size">24</property>
+                                        <property name="icon-name">minus-circle-outline-symbolic</property>
+                                      </object>
                                     </property>
                                   </object>
                                 </child>
                                 <child>
                                   <object class="GtkStackPage">
-                                    <property name="name">icon</property>
+                                    <property name="name">loading</property>
                                     <property name="child">
-                                      <object class="GtkImage" id="danmaku_status_icon">
-                                        <property name="pixel-size">24</property>
-                                        <property name="icon-name">question-round-outline-symbolic</property>
-                                      </object>
+                                      <object class="AdwSpinner"/>
                                     </property>
                                   </object>
                                 </child>

@@ -26,6 +26,7 @@ pub enum DanmakuPopoverStatus {
     ManualLoaded(usize, String),
     SecretNotExist,
     #[default]
+    Disabled,
     Unavailable,
 }
 
@@ -47,6 +48,7 @@ impl DanmakuPopoverStatus {
             | DanmakuPopoverStatus::ManualLoaded(_, item_name) => item_name.clone(),
             DanmakuPopoverStatus::NoMatching => gettext("No danmaku found"),
             DanmakuPopoverStatus::SecretNotExist => gettext("This feature needs a official build"),
+            DanmakuPopoverStatus::Disabled => gettext("Disabled"),
             DanmakuPopoverStatus::Unavailable => gettext("Maybe there is something wrong"),
         }
     }
@@ -68,7 +70,9 @@ impl DanmakuPopoverStatus {
             DanmakuPopoverStatus::Loaded(..) | DanmakuPopoverStatus::ManualLoaded(..) => {
                 "check-round-outline-symbolic"
             }
-            DanmakuPopoverStatus::NoMatching => "minus-circle-outline-symbolic",
+            DanmakuPopoverStatus::NoMatching | DanmakuPopoverStatus::Disabled => {
+                "minus-circle-outline-symbolic"
+            }
             DanmakuPopoverStatus::SecretNotExist => "cross-small-circle-outline-symbolic",
             DanmakuPopoverStatus::Unavailable => "question-round-outline-symbolic",
         }
@@ -89,7 +93,7 @@ impl DanmakuPopoverStatus {
             DanmakuPopoverStatus::ManualLoaded(..) => &["success"],
             DanmakuPopoverStatus::NoMatching => &["warning"],
             DanmakuPopoverStatus::SecretNotExist => &["error"],
-            DanmakuPopoverStatus::Unavailable => &[],
+            DanmakuPopoverStatus::Disabled | DanmakuPopoverStatus::Unavailable => &[],
         }
     }
 }
@@ -198,51 +202,16 @@ impl DanmakuPopover {
         let danmakw = page.danmakw();
         let imp = self.imp();
 
-        SETTINGS
-            .bind(
-                "mpv-danmaku-opacity",
-                &imp.danmaku_opacity_spin.get(),
-                "value",
-            )
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-danmaku-speed-factor",
-                &imp.danmaku_speed_spin.get(),
-                "value",
-            )
-            .build();
-        SETTINGS
-            .bind("mpv-danmaku-font-size", &imp.font_size_spin.get(), "value")
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-danmaku-font-weight",
-                &imp.font_weight_row.get(),
-                "value",
-            )
-            .build();
-        SETTINGS
-            .bind("mpv-danmaku-intensity", &imp.intensity_row.get(), "value")
-            .build();
-        SETTINGS
-            .bind(
-                "mpv-danmaku-spacing-factor",
-                &imp.spacing_spin.get(),
-                "value",
-            )
-            .build();
-        SETTINGS
-            .bind("mpv-danmaku-outline-size", &imp.outline_spin.get(), "value")
-            .build();
-        SETTINGS
-            .bind("mpv-danmaku-shadow-offset", &imp.shadow_spin.get(), "value")
-            .build();
+        SETTINGS.bind_mpv_danmaku_enabled(&imp.danmaku_switch.get(), "active");
+        SETTINGS.bind_mpv_danmaku_opacity(&imp.danmaku_opacity_spin.get(), "value");
+        SETTINGS.bind_mpv_danmaku_speed_factor(&imp.danmaku_speed_spin.get(), "value");
+        SETTINGS.bind_mpv_danmaku_font_size(&imp.font_size_spin.get(), "value");
+        SETTINGS.bind_mpv_danmaku_font_weight(&imp.font_weight_row.get(), "value");
+        SETTINGS.bind_mpv_danmaku_intensity(&imp.intensity_row.get(), "value");
+        SETTINGS.bind_mpv_danmaku_spacing_factor(&imp.spacing_spin.get(), "value");
+        SETTINGS.bind_mpv_danmaku_outline_size(&imp.outline_spin.get(), "value");
+        SETTINGS.bind_mpv_danmaku_shadow_offset(&imp.shadow_spin.get(), "value");
 
-        imp.danmaku_switch
-            .bind_property("active", &danmakw, "visible")
-            .flags(glib::BindingFlags::SYNC_CREATE)
-            .build();
         imp.danmaku_opacity_spin
             .bind_property("value", &danmakw, "opacity")
             .flags(glib::BindingFlags::SYNC_CREATE)

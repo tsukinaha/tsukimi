@@ -267,6 +267,7 @@ mod imp {
         pub last_nonzero_volume: Cell<i64>,
         pub danmaku_count: Cell<usize>,
         pub danmaku_generation: Cell<u64>,
+        pub file_loaded: Cell<bool>,
     }
 
     #[glib::object_subclass]
@@ -416,7 +417,10 @@ mod imp {
             }
             self.paused.set(paused);
 
-            if !self.loading_box.is_visible() && self.danmaku_popover_content.is_enabled() {
+            if self.file_loaded.get()
+                && !self.loading_box.is_visible()
+                && self.danmaku_popover_content.is_enabled()
+            {
                 self.danmakw.set_paused(paused);
             }
         }
@@ -462,6 +466,9 @@ impl MPVPage {
                 #[weak(rename_to = obj)]
                 self,
                 async move {
+                    if !obj.imp().danmaku_popover_content.is_enabled() {
+                        return;
+                    }
                     if let Err(error) = obj
                         .apply_manual_danmaku(cached.episode_id, cached.item_name)
                         .await
@@ -563,11 +570,19 @@ impl MPVPage {
         ));
     }
 
+    fn sync_danmaku_position(&self, time_millis: f64) {
+        let imp = self.imp();
+        imp.danmakw.start_clock();
+        imp.danmakw.preroll_seek(time_millis);
+        if self.paused() || imp.loading_box.is_visible() {
+            imp.danmakw.pause_clock();
+        }
+    }
+
     fn apply_danmaku(&self, danmaku: Vec<Danmaku>, item_name: String, manual: bool) {
         let imp = self.imp();
         let count = danmaku.len();
         imp.danmakw.load_danmaku(danmaku);
-        imp.danmakw.preroll_seek(imp.video.position() * 1000.0);
         imp.danmaku_count.set(count);
         let status = if manual {
             DanmakuPopoverStatus::ManualLoaded(count, item_name)
@@ -575,7 +590,7 @@ impl MPVPage {
             DanmakuPopoverStatus::Loaded(count, item_name)
         };
         imp.danmaku_popover_content.set_status(status);
-        self.set_danmaku_enabled(true);
+        self.set_danmaku_enabled(imp.danmaku_popover_content.is_enabled());
     }
 
     pub async fn apply_manual_danmaku(
@@ -629,7 +644,7 @@ impl MPVPage {
 
     fn clear_danmaku(&self) {
         self.next_danmaku_generation();
-        self.clear_danmaku_result(DanmakuPopoverStatus::Unavailable);
+        self.clear_danmaku_result(DanmakuPopoverStatus::Disabled);
     }
 
     pub fn set_danmaku_enabled(&self, enabled: bool) {
@@ -638,16 +653,37 @@ impl MPVPage {
         imp.danmaku_popover_content
             .set_switch_sensitive(self.has_danmaku());
         imp.danmaku_popover_content.set_enabled(enabled);
-        if !enabled {
+        imp.danmakw.set_visible(enabled && imp.file_loaded.get());
+        if !enabled || !imp.file_loaded.get() {
             imp.danmakw.stop_rendering();
-        } else if !self.paused() && !imp.loading_box.is_visible() {
-            imp.danmakw.start_rendering();
+        } else {
+            self.sync_danmaku_position(imp.last_playback_position.get() * 1000.0);
+            if !self.paused() && !imp.loading_box.is_visible() {
+                imp.danmakw.start_rendering();
+            }
         }
     }
 
     pub fn on_danmaku_switch_state_set(&self, state: bool) {
         let imp = self.imp();
-        if state && self.has_danmaku() && !self.paused() && !imp.loading_box.is_visible() {
+
+        if state && !self.has_danmaku() {
+            if let Some(item) = self.current_video() {
+                self.auto_search_danmaku(&item);
+            }
+            return;
+        }
+
+        if !state && !self.has_danmaku() {
+            self.clear_danmaku();
+        }
+
+        let ready = state && self.has_danmaku() && imp.file_loaded.get();
+        imp.danmakw.set_visible(ready);
+        if ready {
+            self.sync_danmaku_position(imp.last_playback_position.get() * 1000.0);
+        }
+        if ready && !self.paused() && !imp.loading_box.is_visible() {
             imp.danmakw.start_rendering();
         } else {
             imp.danmakw.stop_rendering();
@@ -664,6 +700,9 @@ impl MPVPage {
 
     fn mark_stream_failed(&self) {
         let imp = self.imp();
+        imp.file_loaded.set(false);
+        imp.danmakw.stop_rendering();
+        imp.danmakw.set_visible(false);
         imp.allow_fallback.set(false);
         imp.loading_box.set_visible(false);
         imp.spinner.set_visible(false);
@@ -732,6 +771,10 @@ impl MPVPage {
             .current_video()
             .as_ref()
             .is_none_or(|current| current.id() != item.id());
+        let imp = self.imp();
+        imp.file_loaded.set(false);
+        imp.danmakw.stop_rendering();
+        imp.danmakw.set_visible(false);
         let (title1, title2) = if let Some(series_name) = item.series_name() {
             let episode_info = format!(
                 "S{}E{}: {}",
@@ -784,7 +827,14 @@ impl MPVPage {
         }
         self.notify_track_changed();
         if should_search_danmaku {
-            self.auto_search_danmaku(&item);
+            self.imp()
+                .danmaku_popover_content
+                .set_switch_sensitive(true);
+            if SETTINGS.mpv_danmaku_enabled() {
+                self.auto_search_danmaku(&item);
+            } else {
+                self.clear_danmaku();
+            }
         }
         self.imp().fallback_context.replace(Some(FallbackContext {
             selected: selected.to_owned(),
@@ -1207,15 +1257,17 @@ impl MPVPage {
                             obj.update_duration(value);
                         }
                         ListenEvent::DemuxerCacheIdle(_) => {}
-                        ListenEvent::PausedForCache(true, _) | ListenEvent::Seek(_) => {
-                            obj.update_seeking(true);
+                        ListenEvent::PausedForCache(true, time_millis)
+                        | ListenEvent::Seek(time_millis) => {
+                            obj.update_seeking(true, time_millis);
                         }
-                        ListenEvent::PausedForCache(false, _) | ListenEvent::PlaybackRestart(_) => {
+                        ListenEvent::PausedForCache(false, time_millis)
+                        | ListenEvent::PlaybackRestart(time_millis) => {
                             let was_seeking = obj.get_seeking();
-                            obj.update_seeking(false);
+                            obj.update_seeking(false, time_millis);
                             if was_seeking {
                                 obj.handle_callback(BackType::Back);
-                                obj.notify_seeked(obj.imp().video.position() as i64);
+                                obj.notify_seeked((time_millis / 1000.0) as i64);
                             }
                         }
                         ListenEvent::Eof(value) => {
@@ -1366,6 +1418,12 @@ impl MPVPage {
 
     fn on_file_loaded(&self) {
         let imp = self.imp();
+        imp.file_loaded.set(true);
+
+        if imp.danmaku_popover_content.is_enabled() && self.has_danmaku() {
+            imp.danmakw.set_visible(true);
+        }
+
         imp.allow_fallback.set(false);
         if let Some(suburl) = imp.suburl.borrow().as_ref() {
             imp.video.add_sub(suburl);
@@ -1375,13 +1433,13 @@ impl MPVPage {
         self.handle_callback(BackType::Start);
     }
 
-    fn update_seeking(&self, seeking: bool) {
+    fn update_seeking(&self, seeking: bool, time_millis: f64) {
         let imp = self.imp();
         imp.seeking.set(seeking);
         imp.loading_box.set_visible(seeking);
         imp.spinner.set_visible(seeking);
 
-        if !imp.danmaku_popover_content.is_enabled() {
+        if !imp.file_loaded.get() || !imp.danmaku_popover_content.is_enabled() {
             return;
         }
 
@@ -1390,10 +1448,10 @@ impl MPVPage {
             return;
         }
 
-        imp.danmakw.preroll_seek(imp.video.position() * 1000.0);
+        self.sync_danmaku_position(time_millis);
 
         if !self.paused() {
-            imp.danmakw.set_paused(false);
+            imp.danmakw.start_rendering();
         }
     }
 
@@ -1605,6 +1663,8 @@ impl MPVPage {
 
     #[template_callback]
     pub fn on_stop_clicked(&self) {
+        self.imp().file_loaded.set(false);
+        self.imp().danmakw.set_visible(false);
         self.remove_timeout();
         self.reset_skippable_segments();
         self.clear_danmaku();

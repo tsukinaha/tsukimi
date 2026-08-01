@@ -50,7 +50,7 @@ itertools = "0.15.0"
 moka = { version = "0.12.15", features = ["future"] }
 glycin = { version = "3.1.0", default-features = false, features = ["gdk4", "tokio"] }
 
-mutsumi = "0.4"
+mutsumi = "0.5"
 dandanapi-client = "0.1"
 
 [dev-dependencies]

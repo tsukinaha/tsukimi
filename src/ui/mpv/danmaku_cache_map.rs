@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 
-use gtk::gio::prelude::SettingsExt;
 use serde::{
     Deserialize,
     Serialize,
@@ -10,8 +9,6 @@ use crate::ui::{
     models::SETTINGS,
     provider::tu_item::TuItem,
 };
-
-const SETTINGS_KEY: &str = "danmaku-cache-map";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CachedDanmaku {
@@ -39,7 +36,7 @@ pub struct DanmakuCacheMap {
 
 impl DanmakuCacheMap {
     pub fn load() -> Self {
-        serde_json::from_str(SETTINGS.string(SETTINGS_KEY).as_str()).unwrap_or_default()
+        serde_json::from_str(&SETTINGS.danmaku_cache_map()).unwrap_or_default()
     }
 
     pub fn cached_danmaku(&self, item: &TuItem) -> Option<CachedDanmaku> {
@@ -111,7 +108,7 @@ impl DanmakuCacheMap {
 
     fn save(&self) -> anyhow::Result<()> {
         let value = serde_json::to_string(self)?;
-        SETTINGS.set_string(SETTINGS_KEY, &value)?;
+        SETTINGS.set_danmaku_cache_map(&value)?;
         Ok(())
     }
 

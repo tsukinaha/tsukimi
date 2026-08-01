@@ -917,9 +917,9 @@ dependencies = [
 
 [[package]]
 name = "danmakw"
-version = "0.2.0"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f764d9b0b838eed7009a188d08d39109b41db1c02dcd5ec424a113ef6c9eb00e"
+checksum = "cb73f6048a9d8b5ad397ca2702358878b3797840cfac58e1624d7983bfd774d0"
 dependencies = [
  "glib",
  "gtk4",
@@ -3011,9 +3011,9 @@ checksum = "956787520e75e9bd233246045d19f42fb73242759cc57fba9611d940ae96d4b0"
 
 [[package]]
 name = "mutsumi"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "443698e2ec4f6445cb8687add872f3323e99de3c35facef7030e1b55b6afe60a"
+checksum = "63e79d49e3da6aaee2bf1eaa5ee95cd5372d4f909bacdbcbfce02022e8e1554c"
 dependencies = [
  "ash",
  "atomic-wait",
