@@ -3,7 +3,7 @@ A simple third-party Jellyfin client for Linux.
 
 > We use wl-proxy for mpv gpu-next vo embedding, you can find the embedder [here](https://github.com/MutsumiUniverse/Mutsumi). We also made a local player [Fughetta](https://github.com/MutsumiUniverse/Fughetta) by this embedder.
 
-<p align="center">
+<p align="left">
     <a href="https://matrix.to/#/#tsukimi:matrix.org">
         <img alt="Matrix" src="https://img.shields.io/badge/Matrix-%23tsukimi-7aa2f7?style=flat&logo=matrix&logoColor=white">
     </a>
@@ -11,13 +11,13 @@ A simple third-party Jellyfin client for Linux.
         <img alt="Telegram" src="https://img.shields.io/badge/Telegram-Group-7dcfff?style=flat&logo=telegram&logoColor=white">
     </a>
     <a href="https://github.com/tsukinaha/tsukimi/wiki">
-        <img alt="Wiki" src="https://img.shields.io/badge/Wiki-bb9af7?style=flat&logo=github&logoColor=white">
+        <img alt="Wiki" src="https://img.shields.io/badge/GitHub-Wiki-bb9af7?style=flat&logo=github&logoColor=white">
     </a>
 </p>
 
-<p align="center">
+<p align="left">
     <a href="https://hosted.weblate.org/engage/tsukimi">
-        <img alt="Translations" src="https://img.shields.io/badge/Translations-9ece6a?style=flat&logo=weblate&logoColor=white">
+        <img alt="Translations" src="https://img.shields.io/badge/Weblate-Translations-9ece6a?style=flat&logo=weblate&logoColor=white">
     </a>
     <a href="https://github.com/tsukinaha/tsukimi/blob/main/LICENSE">
         <img alt="License" src="https://img.shields.io/badge/License-GPL--3.0-f7768e?style=flat&logo=gnu&logoColor=white">
@@ -26,7 +26,7 @@ A simple third-party Jellyfin client for Linux.
         <img alt="Flathub" src="https://img.shields.io/badge/Flathub-Release-7aa2f7?style=flat&logo=flathub&logoColor=white">
     </a>
     <a href="https://github.com/tsukinaha/tsukimi/releases">
-        <img alt="Release" src="https://img.shields.io/badge/Release-GitHub-bb9af7?style=flat&logo=github&logoColor=white">
+        <img alt="Release" src="https://img.shields.io/badge/GitHub-Release-bb9af7?style=flat&logo=github&logoColor=white">
     </a>
 </p>
 
