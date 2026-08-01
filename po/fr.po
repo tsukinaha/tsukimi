@@ -10,531 +10,16 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
 "PO-Revision-Date: 2026-07-16 13:01+0000\n"
-"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>"
-"\n"
-"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/>"
-"\n"
+"Last-Translator: MarioSwitch "
+"<58565980+MarioSwitch@users.noreply.github.com>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
+">\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.8.dev0\n"
-
-#: src/client/error.rs:19
-msgid "Timeout Error, Check your internet connection"
-msgstr ""
-"Erreur : tentative de connexion expirée. Vérifiez votre connexion Internet"
-
-#: src/client/error.rs:22
-msgid "Connection Error, Check your internet connection"
-msgstr "Erreur de connexion, vérifiez votre connexion Internet"
-
-#: src/ui/mpv/control_sidebar.rs:532
-msgid "Video filter settings cleared."
-msgstr "Paramètres de filtres vidéo réinitialisés."
-
-#: src/ui/mpv/control_sidebar.rs:556
-msgid "Subtitle settings cleared."
-msgstr "Paramètres des sous-titres réinitialisés."
-
-#: src/ui/mpv/control_sidebar.rs:569
-msgid "Subtitle color settings cleared."
-msgstr "Paramètres de la couleur des sous-titres réinitialisés."
-
-#: src/ui/mpv/control_sidebar.rs:578
-msgid "Subtitle offset settings cleared."
-msgstr "Paramètres du décalage des sous-titres réinitialisés."
-
-#: src/ui/mpv/control_sidebar.rs:620
-msgid "Deband settings cleared."
-msgstr "Paramètres de retrait des bandes de couleurs réinitialisés."
-
-#: src/ui/mpv/mpvglarea.rs:88
-msgid "Failed to realize GLArea"
-msgstr "Erreur lors de la réalisation de GLArea"
-
-#: src/ui/mpv/mpvglarea.rs:94
-msgid "Failed to get GLContext"
-msgstr "Erreur lors de la récupération de GLContext"
-
-#: src/ui/mpv/page.rs:407 src/ui/mpv/page.rs:409 src/ui/widgets/item.rs:699
-#: resources/ui/album_widget.ui:94 resources/ui/item.ui:186
-#: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:95
-#: resources/ui/player_toolbar.ui:90
-msgid "Play"
-msgstr "Démarrer / Reprendre"
-
-#: src/ui/mpv/page.rs:412 src/ui/mpv/page.rs:414 resources/ui/mpvpage.ui:272
-msgid "Pause"
-msgstr "Mettre en pause"
-
-#: src/ui/mpv/page.rs:777
-msgid "Skip Intro"
-msgstr "Passer l'intro"
-
-#: src/ui/mpv/page.rs:778
-msgid "Skip Outro"
-msgstr "Passer l'outro"
-
-#: src/ui/mpv/page.rs:930
-msgid "No more video found"
-msgstr "Aucune vidéo supplémentaire trouvée"
-
-#: src/ui/mpv/page.rs:1031
-msgid ""
-"MPV has been shutdown, Application will exit.\n"
-"Tsukimi can't restart MPV."
-msgstr ""
-"MPV a été arrêté, l'application va s'arrêter.\n"
-"Tsukimi ne peut pas redémarrer MPV."
-
-#: src/ui/provider/tu_item.rs:548
-msgid "No next up video found"
-msgstr "Aucune vidéo suivante trouvée"
-
-#: src/ui/provider/tu_item.rs:577 src/ui/widgets/tu_overview_item.rs:256
-msgid "Present"
-msgstr "Présent"
-
-#: src/ui/provider/tu_item.rs:585 src/ui/provider/tu_item.rs:603
-#: src/ui/provider/tu_item.rs:626 src/ui/provider/tu_item.rs:649
-#: src/ui/provider/tu_item.rs:652
-msgid "Unknown"
-msgstr "Inconnu"
-
-#: src/ui/widgets/account_add.rs:145
-msgid "Fields must be filled in"
-msgstr "Les champs doivent être remplis"
-
-#: src/ui/widgets/account_add.rs:206
-msgid "Server edited successfully"
-msgstr "Serveur modifié avec succès"
-
-#: src/ui/widgets/account_add.rs:211
-msgid "Server added successfully"
-msgstr "Serveur ajouté avec succès"
-
-#: src/ui/widgets/account_settings.rs:239
-msgid "Password cannot be empty!"
-msgstr "Le mot de passe ne peut pas être vide !"
-
-#: src/ui/widgets/account_settings.rs:243
-msgid "Passwords do not match!"
-msgstr "Les mots de passe ne correspondent pas !"
-
-#: src/ui/widgets/account_settings.rs:250
-msgid "Password changed successfully! Please login again."
-msgstr "Mot de passe modifié avec succès ! Veuillez vous reconnecter."
-
-#: src/ui/widgets/account_settings.rs:254
-msgid "Failed to change password"
-msgstr "Échec du changement de mot de passe"
-
-#: src/ui/widgets/account_settings.rs:288
-msgid "Cache Cleared"
-msgstr "Cache vidé"
-
-#: src/ui/widgets/account_settings.rs:309
-msgid "No file selected"
-msgstr "Aucun fichier sélectionné"
-
-#: src/ui/widgets/account_settings.rs:565
-#: src/ui/widgets/account_settings.rs:574
-#: src/ui/widgets/account_settings.rs:608
-#: src/ui/widgets/account_settings.rs:617
-msgid "Descriptor cannot be empty!"
-msgstr "Le descripteur ne peut pas être vide !"
-
-#: src/ui/widgets/account_settings.rs:579
-#: src/ui/widgets/account_settings.rs:622
-msgid "Invalid regex"
-msgstr "Expression régulière invalide"
-
-#: src/ui/widgets/disc_box.rs:99 resources/ui/disc_box.ui:9
-msgid "Disc"
-msgstr "Disque"
-
-#. if merged, next up will contain resume items, so change title to continue watching
-#: src/ui/widgets/home.rs:230 resources/ui/home.ui:25 resources/ui/item.ui:300
-msgid "Continue Watching"
-msgstr "Continuer de regarder"
-
-#: src/ui/widgets/home.rs:232 resources/ui/home.ui:33
-msgid "Next Up"
-msgstr "À suivre"
-
-#: src/ui/widgets/home.rs:395
-msgid "Latest"
-msgstr "Les plus récents"
-
-#: src/ui/widgets/identify/dialog.rs:140
-msgid "Failed to get path"
-msgstr "Erreur lors de la récupération du chemin d'accès"
-
-#: src/ui/widgets/identify/search_page.rs:125 resources/ui/identify_dialog.ui:6
-#: resources/ui/identify_dialog.ui:14
-#: resources/ui/identify_dialog_search_page.ui:4 resources/ui/pop-menu.ui:56
-msgid "Identify"
-msgstr "Identifier"
-
-#: src/ui/widgets/identify/search_page.rs:127
-#: src/ui/widgets/image_dialog/search_page.rs:145
-#: src/ui/widgets/metadata_dialog.rs:286 src/ui/widgets/tu_item/action.rs:485
-msgid "Are you sure you wish to continue?"
-msgstr "Êtes-vous sûr de vouloir continuer ?"
-
-#: src/ui/widgets/identify/search_page.rs:130
-#: src/ui/widgets/image_dialog/search_page.rs:148
-#: src/ui/widgets/metadata_dialog.rs:289 src/ui/widgets/tu_item/action.rs:489
-#: src/ui/widgets/tu_item/action.rs:549 resources/ui/account_settings.ui:572
-#: resources/ui/account_settings.ui:682
-msgid "Cancel"
-msgstr "Annuler"
-
-#: src/ui/widgets/identify/search_page.rs:131
-#: src/ui/widgets/image_dialog/search_page.rs:149
-#: src/ui/widgets/metadata_dialog.rs:290
-msgid "Ok"
-msgstr "Ok"
-
-#: src/ui/widgets/identify/search_page.rs:134
-msgid "Replace existing images"
-msgstr "Remplacer les images existantes"
-
-#: src/ui/widgets/image_dialog/image_adw_dialog.rs:126
-msgid "View Images"
-msgstr "Voir images"
-
-#: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:183
-msgid "Image saved"
-msgstr "Image sauvegardée"
-
-#: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:188
-msgid "Failed to load image"
-msgstr "Échec du chargement de l'image"
-
-#: src/ui/widgets/image_dialog/image_infocard.rs:156
-msgid "No image to view"
-msgstr "Aucune image à voir"
-
-#: src/ui/widgets/image_dialog/image_infocard.rs:172
-msgid "No image to copy"
-msgstr "Aucune image à copier"
-
-#: src/ui/widgets/image_dialog/image_infocard.rs:176
-#: src/ui/widgets/media_viewer.rs:349
-msgid "Image copied to clipboard"
-msgstr "Image copiée dans le presse-papiers"
-
-#: src/ui/widgets/image_dialog/image_infocard.rs:209
-msgid "Image deleted"
-msgstr "Image supprimée"
-
-#: src/ui/widgets/image_dialog/image_infocard.rs:214
-msgid "Error deleting image"
-msgstr "Erreur lors de la suppression de l'image"
-
-#: src/ui/widgets/image_dialog/image_infocard.rs:245
-msgid "Error loading image"
-msgstr "Erreur de chargement de l'image"
-
-#: src/ui/widgets/image_dialog/search_page.rs:143
-msgid "Replace Image"
-msgstr "Remplacer l'image"
-
-#: src/ui/widgets/item.rs:349
-msgid "No episode selected"
-msgstr "Aucun épisode sélectionné"
-
-#: src/ui/widgets/item.rs:350
-msgid "Select an episode"
-msgstr "Sélectionnez un épisode"
-
-#: src/ui/widgets/item.rs:695 src/ui/widgets/list.rs:130
-msgid "Resume"
-msgstr "Reprendre"
-
-#: src/ui/widgets/item.rs:1087
-msgid "Codec"
-msgstr "Codec"
-
-#: src/ui/widgets/item.rs:1090
-msgid "Language"
-msgstr "Langue"
-
-#: src/ui/widgets/item.rs:1093 resources/ui/metadata_dialog.ui:91
-#: resources/ui/single_grid.ui:108
-msgid "Title"
-msgstr "Titre"
-
-#: src/ui/widgets/item.rs:1097 resources/ui/single_grid.ui:109
-msgid "Bitrate"
-msgstr "Débit binaire"
-
-#: src/ui/widgets/item.rs:1102
-msgid "BitDepth"
-msgstr "Profondeur de bit"
-
-#: src/ui/widgets/item.rs:1106
-msgid "SampleRate"
-msgstr "Fréquence d'échantillonnage"
-
-#: src/ui/widgets/item.rs:1110
-msgid "Height"
-msgstr "Hauteur"
-
-#: src/ui/widgets/item.rs:1113
-msgid "Width"
-msgstr "Largeur"
-
-#: src/ui/widgets/item.rs:1116
-msgid "ColorSpace"
-msgstr "Espace de couleurs"
-
-#: src/ui/widgets/item.rs:1120
-msgid "DisplayTitle"
-msgstr "Titre d'affichage"
-
-#: src/ui/widgets/item.rs:1124
-msgid "Channel"
-msgstr "Canal"
-
-#: src/ui/widgets/item.rs:1128
-msgid "ChannelLayout"
-msgstr "Disposition des canaux"
-
-#: src/ui/widgets/item.rs:1133
-msgid "AverageFrameRate"
-msgstr "Fréquence d'images moyen"
-
-#: src/ui/widgets/item.rs:1137
-msgid "PixelFormat"
-msgstr "Format de pixel"
-
-#: src/ui/widgets/item.rs:1249
-msgid "No video source found"
-msgstr "Aucune source vidéo trouvée"
-
-#: src/ui/widgets/item.rs:1322
-msgid "Season not found. Is this a continue watching list?"
-msgstr "Saison introuvable. Est-ce une liste de lecture continue ?"
-
-#: src/ui/widgets/item_actionbox.rs:117 src/ui/widgets/tu_item/action.rs:98
-msgid "Success"
-msgstr "Succès"
-
-#: src/ui/widgets/liked.rs:158
-msgid "Favourite"
-msgstr "Favori"
-
-#: src/ui/widgets/list.rs:122
-msgid "Channels"
-msgstr "Chaînes"
-
-#: src/ui/widgets/list.rs:129
-msgid "All"
-msgstr "Tout"
-
-#: src/ui/widgets/list.rs:131 resources/ui/search.ui:60
-msgid "BoxSet"
-msgstr "Compilation"
-
-#: src/ui/widgets/list.rs:132 resources/ui/filter.ui:85
-#: resources/ui/item.ui:490 resources/ui/other.ui:168
-msgid "Tags"
-msgstr "Étiquettes"
-
-#: src/ui/widgets/list.rs:133 resources/ui/filter.ui:78
-#: resources/ui/item.ui:485 resources/ui/other.ui:173
-msgid "Genres"
-msgstr "Genres"
-
-#: src/ui/widgets/list.rs:134 src/ui/widgets/window.rs:316
-#: resources/ui/window.ui:256
-msgid "Liked"
-msgstr "Aimé"
-
-#: src/ui/widgets/list.rs:135
-msgid "Folder"
-msgstr "Dossier"
-
-#: src/ui/widgets/metadata_dialog.rs:284 resources/ui/filter.ui:179
-#: resources/ui/metadata_dialog.ui:231
-msgid "Apply"
-msgstr "Appliquer"
-
-#: src/ui/widgets/missing_episodes_dialog.rs:147
-msgid "Special"
-msgstr "Spécial"
-
-#: src/ui/widgets/music_album.rs:247
-msgid "Songs"
-msgstr "Chansons"
-
-#: src/ui/widgets/music_album.rs:349
-msgid "More From"
-msgstr "Plus de"
-
-#: src/ui/widgets/refresh_dialog.rs:94
-msgid "Scanning..."
-msgstr "Scan..."
-
-#: src/ui/widgets/search.rs:205
-msgid "No overview"
-msgstr "Pas d'aperçu"
-
-#: src/ui/widgets/server_action_row.rs:128
-msgid "Edit Server"
-msgstr "Modifier le serveur"
-
-#: src/ui/widgets/server_panel.rs:119
-msgid "Shut down server"
-msgstr "Arrêter le serveur"
-
-#: src/ui/widgets/server_panel.rs:120
-msgid "Are you sure you want to shut down the server?"
-msgstr "Êtes-vous sûrs de vouloir arrêter le serveur ?"
-
-#: src/ui/widgets/server_panel.rs:151
-msgid "Restart server"
-msgstr "Redémarrer le serveur"
-
-#: src/ui/widgets/server_panel.rs:152
-msgid "Are you sure you want to restart the server?"
-msgstr "Êtes-vous sûrs de vouloir redémarrer le serveur ?"
-
-#: src/ui/widgets/server_panel.rs:155
-msgid "Revert"
-msgstr "Annuler"
-
-#: src/ui/widgets/server_panel.rs:156
-msgid "Confirm"
-msgstr "Confirmer"
-
-#: src/ui/widgets/server_panel.rs:192
-msgid "Server is shutting down"
-msgstr "Arrêt du serveur"
-
-#: src/ui/widgets/server_panel.rs:204
-msgid "Server is restarting"
-msgstr "Redémarrage du serveur"
-
-#: src/ui/widgets/server_panel.rs:291
-msgid "Last execute: "
-msgstr "Dernière exécution : "
-
-#: src/ui/widgets/server_panel.rs:296
-msgid "Duration: "
-msgstr "Durée : "
-
-#: src/ui/widgets/server_panel.rs:301
-msgid "Result: "
-msgstr "Résultat : "
-
-#: src/ui/widgets/server_panel.rs:347
-msgid "Task started"
-msgstr "Tâche démarrée"
-
-#: src/ui/widgets/single_grid.rs:503
-msgid "Items"
-msgstr "Éléments"
-
-#: src/ui/widgets/star_toggle.rs:65
-msgid "Remove from favorites"
-msgstr "Retirer des favoris"
-
-#: src/ui/widgets/star_toggle.rs:70
-msgid "Add to favorites"
-msgstr "Ajouter aux favoris"
-
-#: src/ui/widgets/tu_item/action.rs:479
-msgid "Delete Item"
-msgstr "Supprimer l'élément"
-
-#: src/ui/widgets/tu_item/action.rs:483
-msgid ""
-"Deleting this item will delete it from both the file system and your media "
-"library.\n"
-"The following files and folders will be deleted:"
-msgstr ""
-"Supprimer cet élément le supprimera à la fois du système de fichiers et de "
-"votre bibliothèque.\n"
-"Les fichiers et dossiers suivants seront supprimés :"
-
-#: src/ui/widgets/tu_item/action.rs:490 resources/ui/image_info_card.ui:139
-#: resources/ui/pop-menu.ui:92 resources/ui/server_action_row.ui:52
-msgid "Delete"
-msgstr "Supprimer"
-
-#: src/ui/widgets/tu_item/action.rs:544 src/ui/widgets/tu_item/action.rs:545
-#: src/ui/widgets/tu_item/action.rs:550 resources/ui/pop-menu.ui:62
-msgid "Remove Identification"
-msgstr "Supprimer l'identification"
-
-#: src/ui/widgets/tu_item/action.rs:546
-msgid "Are you sure you wish to reset all metadata?"
-msgstr "Êtes-vous sûr de vouloir réinitialiser toutes les métadonnées ?"
-
-#: src/ui/widgets/window.rs:304 resources/ui/window.ui:250
-msgid "Home"
-msgstr "Accueil"
-
-#: src/ui/widgets/window.rs:328 resources/ui/identify_dialog.ui:95
-#: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
-#: resources/ui/window.ui:21 resources/ui/window.ui:262
-msgid "Search"
-msgstr "Rechercher"
-
-#: src/ui/widgets/window.rs:814
-msgid "Server Panel"
-msgstr "Panel du serveur"
-
-#: src/ui/widgets/window.rs:988
-msgid "Fatal Error"
-msgstr "Erreur fatale"
-
-#: src/ui/widgets/window.rs:991
-msgid "Copy Error & Close"
-msgstr "Copier l'erreur et fermer"
-
-#. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:1020
-msgid "translator-credits"
-msgstr "MarioSwitch https://marioswitch.fr/"
-
-#: resources/ui/account.ui:6 resources/ui/account.ui:14
-msgid "Add a New Server"
-msgstr "Ajouter un nouveau serveur"
-
-#: resources/ui/account.ui:45
-msgid "Enter the server details below."
-msgstr "Entrez les détails du serveur ci-dessous."
-
-#: resources/ui/account.ui:48 resources/ui/identify_dialog.ui:75
-#: resources/ui/other.ui:73
-msgid "Name"
-msgstr "Nom"
-
-#: resources/ui/account.ui:66
-msgid "Server Address"
-msgstr "Adresse du serveur"
-
-#: resources/ui/account.ui:85
-msgid "Port"
-msgstr "Port"
-
-#: resources/ui/account.ui:92
-msgid "Username"
-msgstr "Nom d'utilisateur"
-
-#: resources/ui/account.ui:97
-msgid "Password"
-msgstr "Mot de passe"
-
-#: resources/ui/account.ui:108 resources/ui/account_settings.ui:578
-msgid "Add"
-msgstr "Ajouter"
 
 #: resources/ui/account_settings.ui:4
 msgid "Settings"
@@ -609,7 +94,7 @@ msgstr "Affichage du texte"
 msgid "Compact"
 msgstr "Compact"
 
-#: resources/ui/account_settings.ui:133
+#: resources/ui/account_settings.ui:133 resources/ui/danmaku_popover.ui:200
 msgid "Full"
 msgstr "Espacé"
 
@@ -650,11 +135,11 @@ msgid "Excessive thread counts may exhaust the system's connection pool"
 msgstr ""
 "Un nombre excessif de threads peut épuiser le pool de connexions du système"
 
-#: resources/ui/account_settings.ui:203 resources/ui/mpv_control_sidebar.ui:399
+#: resources/ui/account_settings.ui:203 resources/ui/mpv_control_sidebar.ui:398
 msgid "Background"
 msgstr "Arrière-plan"
 
-#: resources/ui/account_settings.ui:235
+#: resources/ui/account_settings.ui:235 resources/ui/danmaku_popover.ui:124
 msgid "Opacity"
 msgstr "Opacité"
 
@@ -674,11 +159,11 @@ msgstr "Cache"
 msgid "Clear Cache"
 msgstr "Vider le cache"
 
-#: resources/ui/account_settings.ui:288 resources/ui/account_settings.ui:407
+#: resources/ui/account_settings.ui:288
 msgid "Others"
 msgstr "Autres"
 
-#: resources/ui/account_settings.ui:291 resources/ui/account_settings.ui:483
+#: resources/ui/account_settings.ui:291 resources/ui/account_settings.ui:476
 msgid "Preferred Video Version"
 msgstr "Version vidéo préférée"
 
@@ -718,7 +203,7 @@ msgstr "Répéter un seul élément"
 msgid "Repeat All"
 msgstr "Répéter toute la liste"
 
-#: resources/ui/account_settings.ui:361 resources/ui/account_settings.ui:389
+#: resources/ui/account_settings.ui:361 resources/ui/account_settings.ui:436
 #: resources/ui/player_toolbar.ui:239
 msgid "None"
 msgstr "Aucun"
@@ -731,31 +216,29 @@ msgstr "Lecteur de vidéo"
 msgid "Requires restart"
 msgstr "Nécessite un redémarrage"
 
-#: resources/ui/account_settings.ui:375
+#: resources/ui/account_settings.ui:376
+#, fuzzy
+#| msgid "Contents"
+msgid "GPU Context"
+msgstr "Contenu"
+
+#: resources/ui/account_settings.ui:379 resources/ui/mpv_control_sidebar.ui:501
+msgid "Auto"
+msgstr "Automatique"
+
+#: resources/ui/account_settings.ui:422
 msgid "Enable external config"
 msgstr "Activer une configuration externe"
 
-#: resources/ui/account_settings.ui:380
+#: resources/ui/account_settings.ui:427
 msgid "Config dir"
 msgstr "Configurer le répertoire"
 
-#: resources/ui/account_settings.ui:412
-msgid "Video Output"
-msgstr "Sortie vidéo"
-
-#: resources/ui/account_settings.ui:413
-msgid "Only for debugging"
-msgstr "Seulement pour le débogage"
-
-#: resources/ui/account_settings.ui:416
-msgid "libmpv (default)"
-msgstr "libmpv (par défaut)"
-
-#: resources/ui/account_settings.ui:461
+#: resources/ui/account_settings.ui:454
 msgid "Preferred Version"
 msgstr "Version préférée"
 
-#: resources/ui/account_settings.ui:484
+#: resources/ui/account_settings.ui:477
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
@@ -764,70 +247,344 @@ msgstr ""
 "spécifique corresponde, ou la version correspondante la plus élevée est "
 "obtenue avant de vider la liste des correspondances"
 
-#: resources/ui/account_settings.ui:499
+#: resources/ui/account_settings.ui:492
 msgid "Descriptors"
 msgstr "Descripteurs"
 
-#: resources/ui/account_settings.ui:521
+#: resources/ui/account_settings.ui:514
 msgid "It is recommended to set no more than 3 lines"
 msgstr "Il est recommandé de ne paramétrer pas plus de 3 lignes"
 
-#: resources/ui/account_settings.ui:542
+#: resources/ui/account_settings.ui:534
 msgid "No Descriptors"
 msgstr "Pas de descripteurs"
 
-#: resources/ui/account_settings.ui:561
+#: resources/ui/account_settings.ui:553
 msgid "Add a descriptor"
 msgstr "Ajouter un descripteur"
 
-#: resources/ui/account_settings.ui:603 resources/ui/account_settings.ui:713
+#: resources/ui/account_settings.ui:564 resources/ui/account_settings.ui:674
+#: src/ui/widgets/identify/search_page.rs:130
+#: src/ui/widgets/image_dialog/search_page.rs:148
+#: src/ui/widgets/metadata_dialog.rs:289 src/ui/widgets/tu_item/action.rs:489
+#: src/ui/widgets/tu_item/action.rs:549
+msgid "Cancel"
+msgstr "Annuler"
+
+#: resources/ui/account_settings.ui:570 resources/ui/account.ui:108
+msgid "Add"
+msgstr "Ajouter"
+
+#: resources/ui/account_settings.ui:595 resources/ui/account_settings.ui:705
 msgid "This will use exact matching to obtain a list"
 msgstr "Ceci utilisera des correspondances exactes pour obtenir une liste"
 
-#: resources/ui/account_settings.ui:606 resources/ui/account_settings.ui:716
+#: resources/ui/account_settings.ui:598 resources/ui/account_settings.ui:708
 msgid "Descriptor Type"
 msgstr "Type de descripteur"
 
-#: resources/ui/account_settings.ui:611 resources/ui/account_settings.ui:721
+#: resources/ui/account_settings.ui:603 resources/ui/account_settings.ui:713
 msgid "String"
 msgstr "Chaîne"
 
-#: resources/ui/account_settings.ui:612 resources/ui/account_settings.ui:722
+#: resources/ui/account_settings.ui:604 resources/ui/account_settings.ui:714
 msgid "Regular Expression"
 msgstr "Expression régulière"
 
-#: resources/ui/account_settings.ui:624 resources/ui/account_settings.ui:734
+#: resources/ui/account_settings.ui:616 resources/ui/account_settings.ui:726
 msgid "Descriptor"
 msgstr "Descripteur"
 
-#: resources/ui/account_settings.ui:629 resources/ui/account_settings.ui:739
+#: resources/ui/account_settings.ui:621 resources/ui/account_settings.ui:731
 msgid "Descriptor should not be too long"
 msgstr "Le descripteur ne doit pas être trop long"
 
-#: resources/ui/account_settings.ui:640 resources/ui/account_settings.ui:750
+#: resources/ui/account_settings.ui:632 resources/ui/account_settings.ui:742
 msgid "eg. 1080p"
 msgstr "ex. 1080p"
 
-#: resources/ui/account_settings.ui:651 resources/ui/account_settings.ui:761
+#: resources/ui/account_settings.ui:643 resources/ui/account_settings.ui:753
 msgid "eg. 1080p.*WebDL"
 msgstr "ex. 1080p.*WebDL"
 
-#: resources/ui/account_settings.ui:671
+#: resources/ui/account_settings.ui:663
 msgid "Edit descriptor"
 msgstr "Modifier le descripteur"
 
-#: resources/ui/account_settings.ui:688
+#: resources/ui/account_settings.ui:680
 #: resources/ui/image_dialog_edit_page.ui:37
 msgid "Save"
 msgstr "Sauvegarder"
 
-#: resources/ui/account_settings.ui:781
+#: resources/ui/account_settings.ui:773
 msgid "Change folder"
 msgstr "Changer de dossier"
 
-#: resources/ui/account_settings.ui:783
+#: resources/ui/account_settings.ui:775
 msgid "Select new mpv config folder"
 msgstr "Sélectionnez le nouveau dossier de configuration mpv"
+
+#: resources/ui/account.ui:6 resources/ui/account.ui:14
+msgid "Add a New Server"
+msgstr "Ajouter un nouveau serveur"
+
+#: resources/ui/account.ui:45
+msgid "Enter the server details below."
+msgstr "Entrez les détails du serveur ci-dessous."
+
+#: resources/ui/account.ui:48 resources/ui/identify_dialog.ui:75
+#: resources/ui/other.ui:73
+msgid "Name"
+msgstr "Nom"
+
+#: resources/ui/account.ui:66
+msgid "Server Address"
+msgstr "Adresse du serveur"
+
+#: resources/ui/account.ui:85
+msgid "Port"
+msgstr "Port"
+
+#: resources/ui/account.ui:92
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: resources/ui/account.ui:97
+msgid "Password"
+msgstr "Mot de passe"
+
+#: resources/ui/album_widget.ui:94 resources/ui/item.ui:184
+#: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:95
+#: resources/ui/player_toolbar.ui:90 src/ui/mpv/page.rs:409
+#: src/ui/mpv/page.rs:411 src/ui/widgets/item.rs:693
+msgid "Play"
+msgstr "Démarrer / Reprendre"
+
+#: resources/ui/danmaku_popover.ui:13 resources/ui/danmaku_popover.ui:22
+#: resources/ui/mpvpage.ui:395 src/ui/mpv/danmaku_popover.rs:39
+msgid "Danmaku"
+msgstr "Sous-titres mouvants"
+
+#: resources/ui/danmaku_popover.ui:33
+#, fuzzy
+#| msgid "Danmaku speed"
+msgid "Danmaku disabled"
+msgstr "Vitesse des sous-titres mouvants"
+
+#: resources/ui/danmaku_popover.ui:73
+msgid "Search Manually"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:91 resources/ui/danmaku_popover.ui:110
+msgid "Danmaku Settings"
+msgstr "Paramètres Danmaku"
+
+#: resources/ui/danmaku_popover.ui:139 resources/ui/mpv_control_sidebar.ui:447
+msgid "Speed"
+msgstr "Vitesse"
+
+#: resources/ui/danmaku_popover.ui:154
+#, fuzzy
+#| msgid "Font size"
+msgid "Font Size"
+msgstr "Taille de police"
+
+#: resources/ui/danmaku_popover.ui:169
+#, fuzzy
+#| msgid "Font size"
+msgid "Font Weight"
+msgstr "Taille de police"
+
+#: resources/ui/danmaku_popover.ui:174
+msgid "Thin"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:175
+msgid "Ultralight"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:176
+#, fuzzy
+#| msgid "Height"
+msgid "Light"
+msgstr "Hauteur"
+
+#: resources/ui/danmaku_popover.ui:177
+#, fuzzy
+#| msgid "Height"
+msgid "Semilight"
+msgstr "Hauteur"
+
+#: resources/ui/danmaku_popover.ui:178
+msgid "Book"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:179
+msgid "Normal"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:180
+#, fuzzy
+#| msgid "Media"
+msgid "Medium"
+msgstr "Média"
+
+#: resources/ui/danmaku_popover.ui:181
+msgid "Semibold"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:182
+msgid "Bold"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:183
+msgid "Ultrabold"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:184
+msgid "Heavy"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:185
+msgid "Ultraheavy"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:193
+#, fuzzy
+#| msgid "Danmaku Settings"
+msgid "Danmaku Intensity"
+msgstr "Paramètres Danmaku"
+
+#: resources/ui/danmaku_popover.ui:198
+msgid "Quarter"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:199
+msgid "Half"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:201
+msgid "Allow Overlay"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:209
+msgid "Spacing"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:210
+#, fuzzy
+#| msgid "Font size"
+msgid "N x Font Size"
+msgstr "Taille de police"
+
+#: resources/ui/danmaku_popover.ui:225
+#, fuzzy
+#| msgid "Border Size"
+msgid "Stroke Size"
+msgstr "Taille de la bordure"
+
+#: resources/ui/danmaku_popover.ui:226 resources/ui/danmaku_popover.ui:242
+msgid "px"
+msgstr ""
+
+#: resources/ui/danmaku_popover.ui:241 resources/ui/mpv_control_sidebar.ui:326
+msgid "Shadow Offset"
+msgstr "Décalage de l'ombre"
+
+#: resources/ui/danmaku_popover.ui:261 resources/ui/media_viewer.ui:36
+#: resources/ui/media_viewer.ui:38
+msgid "Back"
+msgstr "Retour"
+
+#: resources/ui/danmaku_search_dialog.ui:7
+#: resources/ui/danmaku_search_dialog.ui:15
+#, fuzzy
+#| msgid "Danmaku"
+msgid "Search Danmaku"
+msgstr "Sous-titres mouvants"
+
+#: resources/ui/danmaku_search_dialog.ui:32 resources/ui/metadata_dialog.ui:91
+#: resources/ui/single_grid.ui:105 src/ui/widgets/item.rs:1087
+msgid "Title"
+msgstr "Titre"
+
+#: resources/ui/danmaku_search_dialog.ui:38
+#, fuzzy
+#| msgid "Video Types"
+msgid "Anime Type"
+msgstr "Types de vidéo"
+
+#: resources/ui/danmaku_search_dialog.ui:42
+#, fuzzy
+#| msgid "Series"
+msgid "TV Series"
+msgstr "Série"
+
+#: resources/ui/danmaku_search_dialog.ui:43
+#, fuzzy
+#| msgid "Special"
+msgid "TV Special"
+msgstr "Spécial"
+
+#: resources/ui/danmaku_search_dialog.ui:44
+msgid "OVA"
+msgstr ""
+
+#: resources/ui/danmaku_search_dialog.ui:45 resources/ui/other.ui:134
+#: resources/ui/search.ui:54
+msgid "Movie"
+msgstr "Film"
+
+#: resources/ui/danmaku_search_dialog.ui:46
+#, fuzzy
+#| msgid "Video"
+msgid "Music Video"
+msgstr "Vidéo"
+
+#: resources/ui/danmaku_search_dialog.ui:47
+msgid "Web"
+msgstr ""
+
+#: resources/ui/danmaku_search_dialog.ui:48
+#, fuzzy
+#| msgid "Others"
+msgid "Other"
+msgstr "Autres"
+
+#: resources/ui/danmaku_search_dialog.ui:49
+msgid "Japanese Movie"
+msgstr ""
+
+#: resources/ui/danmaku_search_dialog.ui:50
+msgid "Japanese Drama"
+msgstr ""
+
+#: resources/ui/danmaku_search_dialog.ui:51
+msgid "TMDB TV"
+msgstr ""
+
+#: resources/ui/danmaku_search_dialog.ui:52
+#, fuzzy
+#| msgid "Movie"
+msgid "TMDB Movie"
+msgstr "Film"
+
+#: resources/ui/danmaku_search_dialog.ui:70 resources/ui/identify_dialog.ui:95
+#: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
+#: resources/ui/window.ui:21 resources/ui/window.ui:261
+#: src/ui/widgets/window.rs:310
+msgid "Search"
+msgstr "Rechercher"
+
+#: resources/ui/danmaku_search_dialog.ui:113
+#, fuzzy
+#| msgid "Episode"
+msgid "Episodes"
+msgstr "Épisode"
+
+#: resources/ui/disc_box.ui:9 src/ui/widgets/disc_box.rs:99
+msgid "Disc"
+msgstr "Disque"
 
 #: resources/ui/filter.ui:6 resources/ui/filter.ui:21 resources/ui/search.ui:31
 #: resources/ui/single_grid.ui:47
@@ -858,6 +615,16 @@ msgstr "Non regardé"
 msgid "Continue Play"
 msgstr "Reprendre la lecture"
 
+#: resources/ui/filter.ui:78 resources/ui/item.ui:482 resources/ui/other.ui:173
+#: src/ui/widgets/list.rs:133
+msgid "Genres"
+msgstr "Genres"
+
+#: resources/ui/filter.ui:85 resources/ui/item.ui:487 resources/ui/other.ui:168
+#: src/ui/widgets/list.rs:132
+msgid "Tags"
+msgstr "Étiquettes"
+
 #: resources/ui/filter.ui:92
 msgid "Years"
 msgstr "Années"
@@ -866,7 +633,7 @@ msgstr "Années"
 msgid "Official Ratings"
 msgstr "Évaluations officielles"
 
-#: resources/ui/filter.ui:106 resources/ui/item.ui:480
+#: resources/ui/filter.ui:106 resources/ui/item.ui:477
 #: resources/ui/other.ui:163
 msgid "Studios"
 msgstr "Studios"
@@ -895,9 +662,29 @@ msgstr "Résolution"
 msgid "Clear"
 msgstr "Effacer"
 
-#: resources/ui/home.ui:17
+#: resources/ui/filter.ui:179 resources/ui/metadata_dialog.ui:231
+#: src/ui/widgets/metadata_dialog.rs:284
+msgid "Apply"
+msgstr "Appliquer"
+
+#: resources/ui/home.ui:16
 msgid "Library"
 msgstr "Bibliothèque"
+
+#. if merged, next up will contain resume items, so change title to continue watching
+#: resources/ui/home.ui:21 resources/ui/item.ui:298 src/ui/widgets/home.rs:228
+msgid "Continue Watching"
+msgstr "Continuer de regarder"
+
+#: resources/ui/home.ui:29 src/ui/widgets/home.rs:230
+msgid "Next Up"
+msgstr "À suivre"
+
+#: resources/ui/identify_dialog_search_page.ui:4
+#: resources/ui/identify_dialog.ui:6 resources/ui/identify_dialog.ui:14
+#: resources/ui/pop-menu.ui:57 src/ui/widgets/identify/search_page.rs:125
+msgid "Identify"
+msgstr "Identifier"
 
 #: resources/ui/identify_dialog.ui:57
 msgid ""
@@ -912,8 +699,8 @@ msgid "Path"
 msgstr "Chemin"
 
 #: resources/ui/identify_dialog.ui:62
-#: resources/ui/image_dialog_search_page.ui:54 resources/ui/item.ui:110
-#: resources/ui/item.ui:158
+#: resources/ui/image_dialog_search_page.ui:54 resources/ui/item.ui:108
+#: resources/ui/item.ui:156
 msgid "Loading..."
 msgstr "Chargement..."
 
@@ -982,8 +769,13 @@ msgstr "Voir l'image"
 msgid "Edit"
 msgstr "Modifier"
 
+#: resources/ui/image_info_card.ui:139 resources/ui/pop-menu.ui:93
+#: resources/ui/server_action_row.ui:52 src/ui/widgets/tu_item/action.rs:490
+msgid "Delete"
+msgstr "Supprimer"
+
 #: resources/ui/images_dialog.ui:6 resources/ui/images_dialog.ui:36
-#: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:48
+#: resources/ui/item_actions.ui:59 resources/ui/pop-menu.ui:49
 #: resources/ui/song_widget.ui:161
 msgid "Edit Images"
 msgstr "Modifier les images"
@@ -1002,64 +794,64 @@ msgstr ""
 msgid "BackDrops"
 msgstr "Images de fond"
 
-#: resources/ui/item.ui:220
-msgid "Video: "
-msgstr "Vidéo : "
-
-#: resources/ui/item.ui:240
-msgid "Subtitle: "
-msgstr "Sous-titres : "
-
-#: resources/ui/item.ui:314
-msgid "View this season"
-msgstr "Voir cette saison"
-
-#: resources/ui/item.ui:423 resources/ui/liked.ui:69
-#: resources/ui/single_grid.ui:167
-msgid "Nothing Here"
-msgstr "Rien ici"
-
-#: resources/ui/item.ui:450
-msgid "Included In"
-msgstr "Inclus dans"
-
-#: resources/ui/item.ui:455
-msgid "Additional Parts"
-msgstr "Parties additionnelles"
-
-#: resources/ui/item.ui:460
-msgid "Seasons"
-msgstr "Saisons"
-
-#: resources/ui/item.ui:465 resources/ui/other.ui:158
-msgid "Actors"
-msgstr "Acteurs"
-
-#: resources/ui/item.ui:470
-msgid "Recommend"
-msgstr "Recommander"
-
-#: resources/ui/item.ui:475 resources/ui/other.ui:178
-msgid "Links"
-msgstr "Liens"
-
-#: resources/ui/item.ui:508
-msgid "MediaInfo"
-msgstr "Informations du média"
-
-#: resources/ui/item_actions.ui:40 resources/ui/pop-menu.ui:28
+#: resources/ui/item_actions.ui:40 resources/ui/pop-menu.ui:29
 msgid "Mark as Played"
 msgstr "Marquer comme regardé"
 
-#: resources/ui/item_actions.ui:46 resources/ui/pop-menu.ui:34
+#: resources/ui/item_actions.ui:46 resources/ui/pop-menu.ui:35
 msgid "Mark as Unplayed"
 msgstr "Marquer comme non regardé"
 
 #: resources/ui/item_actions.ui:53 resources/ui/metadata_dialog.ui:18
-#: resources/ui/metadata_dialog.ui:26 resources/ui/pop-menu.ui:42
+#: resources/ui/metadata_dialog.ui:26 resources/ui/pop-menu.ui:43
 #: resources/ui/song_widget.ui:156
 msgid "Edit Metadata"
 msgstr "Modifier les métadonnées"
+
+#: resources/ui/item.ui:218
+msgid "Video: "
+msgstr "Vidéo : "
+
+#: resources/ui/item.ui:238
+msgid "Subtitle: "
+msgstr "Sous-titres : "
+
+#: resources/ui/item.ui:312
+msgid "View this season"
+msgstr "Voir cette saison"
+
+#: resources/ui/item.ui:421 resources/ui/liked.ui:69
+#: resources/ui/single_grid.ui:164
+msgid "Nothing Here"
+msgstr "Rien ici"
+
+#: resources/ui/item.ui:447
+msgid "Included In"
+msgstr "Inclus dans"
+
+#: resources/ui/item.ui:452
+msgid "Additional Parts"
+msgstr "Parties additionnelles"
+
+#: resources/ui/item.ui:457
+msgid "Seasons"
+msgstr "Saisons"
+
+#: resources/ui/item.ui:462 resources/ui/other.ui:158
+msgid "Actors"
+msgstr "Acteurs"
+
+#: resources/ui/item.ui:467
+msgid "Recommend"
+msgstr "Recommander"
+
+#: resources/ui/item.ui:472 resources/ui/other.ui:178
+msgid "Links"
+msgstr "Liens"
+
+#: resources/ui/item.ui:505
+msgid "MediaInfo"
+msgstr "Informations du média"
 
 #: resources/ui/liked.ui:70
 msgid "Your favorite items will be placed here"
@@ -1069,22 +861,18 @@ msgstr "Vos éléments favoris seront placés ici"
 msgid "_Copy Image"
 msgstr "_Copier l'image"
 
-#: resources/ui/media_viewer.ui:36 resources/ui/media_viewer.ui:38
-msgid "Back"
-msgstr "Retour"
-
 #: resources/ui/media_viewer.ui:46 resources/ui/media_viewer.ui:48
 msgid "Media Menu"
 msgstr "Menu du média"
 
 #: resources/ui/media_viewer.ui:58 resources/ui/media_viewer.ui:60
-#: resources/ui/mpvpage.ui:401 resources/ui/mpvpage.ui:404
+#: resources/ui/mpvpage.ui:420 resources/ui/mpvpage.ui:423
 #: resources/ui/window.ui:17 resources/ui/window.ui:50
 msgid "Fullscreen"
 msgstr "Plein écran"
 
 #: resources/ui/media_viewer.ui:69 resources/ui/media_viewer.ui:71
-#: resources/ui/mpvpage.ui:418 resources/ui/mpvpage.ui:420
+#: resources/ui/mpvpage.ui:437 resources/ui/mpvpage.ui:439
 msgid "Exit Fullscreen"
 msgstr "Quitter le plein écran"
 
@@ -1096,7 +884,7 @@ msgstr "Pas de données."
 msgid "Sort Title"
 msgstr "Trier par titre"
 
-#: resources/ui/metadata_dialog.ui:101 resources/ui/single_grid.ui:110
+#: resources/ui/metadata_dialog.ui:101 resources/ui/single_grid.ui:107
 msgid "Date Created"
 msgstr "Date de création"
 
@@ -1144,7 +932,7 @@ msgstr "Spéciaux"
 msgid "Upcoming"
 msgstr "À venir"
 
-#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:445
+#: resources/ui/mpv_control_sidebar.ui:5 resources/ui/window.ui:444
 msgid "Advanced Settings"
 msgstr "Paramètres avancés"
 
@@ -1186,7 +974,7 @@ msgstr "Unité : Mo"
 msgid "Cache Time"
 msgstr "Temps du cache"
 
-#: resources/ui/mpv_control_sidebar.ui:132 resources/ui/mpvpage.ui:364
+#: resources/ui/mpv_control_sidebar.ui:132 resources/ui/mpvpage.ui:371
 msgid "Subtitle"
 msgstr "Sous-titre"
 
@@ -1194,31 +982,31 @@ msgstr "Sous-titre"
 msgid "Subtitle Composing"
 msgstr "Composition des sous-titres"
 
-#: resources/ui/mpv_control_sidebar.ui:207
+#: resources/ui/mpv_control_sidebar.ui:206
 msgid "Position"
 msgstr "Position"
 
-#: resources/ui/mpv_control_sidebar.ui:227
+#: resources/ui/mpv_control_sidebar.ui:226
 msgid "Subtitle Text Size"
 msgstr "Taille du texte des sous-titres"
 
-#: resources/ui/mpv_control_sidebar.ui:228
+#: resources/ui/mpv_control_sidebar.ui:227
 msgid "This option only takes effect for srt subtitles"
 msgstr "Cette option ne s'applique qu'aux sous-titres SRT"
 
-#: resources/ui/mpv_control_sidebar.ui:248
+#: resources/ui/mpv_control_sidebar.ui:247
 msgid "Subtitle Text Scale"
 msgstr "Échelle du texte des sous-titres"
 
-#: resources/ui/mpv_control_sidebar.ui:249
+#: resources/ui/mpv_control_sidebar.ui:248
 msgid "This affects ASS subtitles as well"
 msgstr "Ceci affecte également les sous-titres ASS"
 
-#: resources/ui/mpv_control_sidebar.ui:270
+#: resources/ui/mpv_control_sidebar.ui:269
 msgid "Subtitle Text Font"
 msgstr "Police du texte des sous-titres"
 
-#: resources/ui/mpv_control_sidebar.ui:272
+#: resources/ui/mpv_control_sidebar.ui:271
 msgid ""
 "Specify font to use for subtitles that do not themselves specify a "
 "particular font"
@@ -1226,192 +1014,188 @@ msgstr ""
 "Spécifiez une police à utiliser pour les sous-titres qui ne spécifient pas "
 "eux-mêmes une police particulière"
 
-#: resources/ui/mpv_control_sidebar.ui:297
+#: resources/ui/mpv_control_sidebar.ui:296
 msgid "Border Style"
 msgstr "Style de bordure"
 
-#: resources/ui/mpv_control_sidebar.ui:302
+#: resources/ui/mpv_control_sidebar.ui:301
 msgid "Outline and shadow"
 msgstr "Contour et ombre"
 
-#: resources/ui/mpv_control_sidebar.ui:303
+#: resources/ui/mpv_control_sidebar.ui:302
 msgid "Opaque box"
 msgstr "Boîte opaque"
 
-#: resources/ui/mpv_control_sidebar.ui:304
+#: resources/ui/mpv_control_sidebar.ui:303
 msgid "Background box"
 msgstr "Boîte de fond"
 
-#: resources/ui/mpv_control_sidebar.ui:312
+#: resources/ui/mpv_control_sidebar.ui:311
 msgid "Border Size"
 msgstr "Taille de la bordure"
 
-#: resources/ui/mpv_control_sidebar.ui:327
-msgid "Shadow Offset"
-msgstr "Décalage de l'ombre"
-
-#: resources/ui/mpv_control_sidebar.ui:343
+#: resources/ui/mpv_control_sidebar.ui:342
 msgid "Stretch Image Subtitles to Screen"
 msgstr "Étirer les sous-titres de l'image à l'écran"
 
-#: resources/ui/mpv_control_sidebar.ui:350
+#: resources/ui/mpv_control_sidebar.ui:349
 msgid "Subtitle Color"
 msgstr "Couleur des sous-titres"
 
-#: resources/ui/mpv_control_sidebar.ui:363
+#: resources/ui/mpv_control_sidebar.ui:362
 msgid "Text"
 msgstr "Texte"
 
-#: resources/ui/mpv_control_sidebar.ui:381
+#: resources/ui/mpv_control_sidebar.ui:380
 msgid "Border"
 msgstr "Bordure"
 
-#: resources/ui/mpv_control_sidebar.ui:419
+#: resources/ui/mpv_control_sidebar.ui:418
 msgid "Subtitle Offset"
 msgstr "Décalage des sous-titres"
 
-#: resources/ui/mpv_control_sidebar.ui:432
+#: resources/ui/mpv_control_sidebar.ui:431
 msgid "Offset"
 msgstr "Décalage"
 
-#: resources/ui/mpv_control_sidebar.ui:433
-#: resources/ui/mpv_control_sidebar.ui:482
+#: resources/ui/mpv_control_sidebar.ui:432
+#: resources/ui/mpv_control_sidebar.ui:481
 msgid "Unit: ms"
 msgstr "Unité : ms"
 
-#: resources/ui/mpv_control_sidebar.ui:448
-msgid "Speed"
-msgstr "Vitesse"
-
-#: resources/ui/mpv_control_sidebar.ui:468 resources/ui/mpvpage.ui:352
+#: resources/ui/mpv_control_sidebar.ui:467 resources/ui/mpvpage.ui:359
 #: resources/ui/search.ui:78
 msgid "Audio"
 msgstr "Audio"
 
-#: resources/ui/mpv_control_sidebar.ui:481
+#: resources/ui/mpv_control_sidebar.ui:480
 msgid "Audio Offset"
 msgstr "Décalage de l'audio"
 
-#: resources/ui/mpv_control_sidebar.ui:497
+#: resources/ui/mpv_control_sidebar.ui:496
 msgid "Audio Channel"
 msgstr "Canal de l'audio"
 
 #: resources/ui/mpv_control_sidebar.ui:502
-msgid "Auto"
-msgstr "Automatique"
-
-#: resources/ui/mpv_control_sidebar.ui:503
 msgid "Auto (Safety)"
 msgstr "Automatique (Sécurité)"
 
-#: resources/ui/mpv_control_sidebar.ui:504
+#: resources/ui/mpv_control_sidebar.ui:503
 msgid "Mono"
 msgstr "Mono"
 
-#: resources/ui/mpv_control_sidebar.ui:505
+#: resources/ui/mpv_control_sidebar.ui:504
 msgid "Dual Channel"
 msgstr "Deux canaux"
 
-#: resources/ui/mpv_control_sidebar.ui:506
+#: resources/ui/mpv_control_sidebar.ui:505
 msgid "Dual Channel (Invert)"
 msgstr "Deux canaux (inversé)"
 
-#: resources/ui/mpv_control_sidebar.ui:516 resources/ui/other.ui:152
+#: resources/ui/mpv_control_sidebar.ui:515 resources/ui/other.ui:152
 #: resources/ui/search.ui:84
 msgid "Video"
 msgstr "Vidéo"
 
-#: resources/ui/mpv_control_sidebar.ui:519
+#: resources/ui/mpv_control_sidebar.ui:518
 msgid "Video Aspect"
 msgstr "Aspect de la vidéo"
 
-#: resources/ui/mpv_control_sidebar.ui:524
+#: resources/ui/mpv_control_sidebar.ui:523
 msgid "Fit"
 msgstr "Adapter"
 
-#: resources/ui/mpv_control_sidebar.ui:525
+#: resources/ui/mpv_control_sidebar.ui:524
 msgid "Crop"
 msgstr "Rogner"
 
-#: resources/ui/mpv_control_sidebar.ui:533
+#: resources/ui/mpv_control_sidebar.ui:532
 msgid "Video color grading"
 msgstr "Étalonnage des couleurs de la vidéo"
 
-#: resources/ui/mpv_control_sidebar.ui:546
+#: resources/ui/mpv_control_sidebar.ui:545
 msgid "Brightness"
 msgstr "Luminosité"
 
-#: resources/ui/mpv_control_sidebar.ui:561
+#: resources/ui/mpv_control_sidebar.ui:560
 msgid "Contrast"
 msgstr "Contraste"
 
-#: resources/ui/mpv_control_sidebar.ui:576
+#: resources/ui/mpv_control_sidebar.ui:575
 msgid "Saturation"
 msgstr "Saturation"
 
-#: resources/ui/mpv_control_sidebar.ui:591
+#: resources/ui/mpv_control_sidebar.ui:590
 msgid "Hue"
 msgstr "Teinte"
 
-#: resources/ui/mpv_control_sidebar.ui:606
+#: resources/ui/mpv_control_sidebar.ui:605
 msgid "Gamma"
 msgstr "Gamma"
 
-#: resources/ui/mpv_control_sidebar.ui:623
+#: resources/ui/mpv_control_sidebar.ui:622
 msgid "Video Deband"
 msgstr "Retrait des bandes de couleur"
 
-#: resources/ui/mpv_control_sidebar.ui:646
+#: resources/ui/mpv_control_sidebar.ui:645
 msgid "Deband Iterations"
 msgstr "Nombre d'itérations de retrait des bandes de couleur"
 
-#: resources/ui/mpv_control_sidebar.ui:661
+#: resources/ui/mpv_control_sidebar.ui:660
 msgid "Deband Threshold"
 msgstr "Seuil de retrait des bandes de couleur"
 
-#: resources/ui/mpv_control_sidebar.ui:676
+#: resources/ui/mpv_control_sidebar.ui:675
 msgid "Deband Range"
 msgstr "Plage de retrait des bandes de couleur"
 
-#: resources/ui/mpv_control_sidebar.ui:691
+#: resources/ui/mpv_control_sidebar.ui:690
 msgid "Deband Grain"
 msgstr "Grain de retrait des bandes de couleur"
 
-#: resources/ui/mpv_control_sidebar.ui:709
+#: resources/ui/mpv_control_sidebar.ui:708
 msgid "Video Deinterlace"
 msgstr "Désentrelacer"
 
-#: resources/ui/mpv_control_sidebar.ui:714
+#: resources/ui/mpv_control_sidebar.ui:713
 msgid "Video Upscale"
 msgstr "Agrandissement vidéo"
 
-#: resources/ui/mpv_control_sidebar.ui:737
+#: resources/ui/mpv_control_sidebar.ui:736
 msgid "Action after video ends"
 msgstr "Action après que la vidéo se termine"
 
-#: resources/ui/mpv_control_sidebar.ui:740
+#: resources/ui/mpv_control_sidebar.ui:739
 msgid "Play Next"
 msgstr "Démarrer la suivante"
 
-#: resources/ui/mpv_control_sidebar.ui:753
+#: resources/ui/mpv_control_sidebar.ui:752
 msgid "Loop Playback"
 msgstr "Lire en boucle"
 
-#: resources/ui/mpv_control_sidebar.ui:767
+#: resources/ui/mpv_control_sidebar.ui:766
 msgid "Stop"
 msgstr "Arrêter"
 
-#: resources/ui/mpv_control_sidebar.ui:783
+#: resources/ui/mpv_control_sidebar.ui:782
 msgid "Hardware decoding"
 msgstr "Décodage matériel"
 
-#: resources/ui/mpv_control_sidebar.ui:787
+#: resources/ui/mpv_control_sidebar.ui:786
 msgid "no (default)"
 msgstr "Non (par défaut)"
 
-#: resources/ui/mpv_control_sidebar.ui:831
+#: resources/ui/mpv_control_sidebar.ui:830
 msgid "Not all settings will be saved"
 msgstr "Certains paramètres ne seront pas sauvegardés"
+
+#: resources/ui/mpv_menu_actions.ui:12 resources/ui/mpvpage.ui:255
+msgid "Backward"
+msgstr "Retour arrière"
+
+#: resources/ui/mpv_menu_actions.ui:42 resources/ui/mpvpage.ui:298
+msgid "Forward"
+msgstr "Saut en avant"
 
 #: resources/ui/mpv_menu.ui:11
 msgid "_Next"
@@ -1429,12 +1213,12 @@ msgstr "Chapitre suivant"
 msgid "Previous chapter"
 msgstr "Chapitre précédent"
 
-#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:172
-#: resources/ui/window.ui:394 resources/ui/window.ui:416
+#: resources/ui/mpv_menu.ui:35 resources/ui/mpvpage.ui:179
+#: resources/ui/window.ui:393 resources/ui/window.ui:415
 msgid "Playlist"
 msgstr "Liste de lecture"
 
-#: resources/ui/mpv_menu.ui:40 resources/ui/mpvpage.ui:388
+#: resources/ui/mpv_menu.ui:40 resources/ui/mpvpage.ui:407
 msgid "Advanced settings"
 msgstr "Paramètres avancés"
 
@@ -1447,13 +1231,25 @@ msgstr "Informations du média"
 msgid "_Keyboard shortcuts"
 msgstr "_Raccourcis clavier"
 
-#: resources/ui/mpv_menu_actions.ui:12 resources/ui/mpvpage.ui:248
-msgid "Backward"
-msgstr "Retour arrière"
+#: resources/ui/mpvpage.ui:108
+msgid "Stop and quit"
+msgstr "Arrêter et quitter"
 
-#: resources/ui/mpv_menu_actions.ui:42 resources/ui/mpvpage.ui:291
-msgid "Forward"
-msgstr "Saut en avant"
+#: resources/ui/mpvpage.ui:165
+msgid "Shortcuts"
+msgstr "Raccourcis"
+
+#: resources/ui/mpvpage.ui:193
+msgid "Media info (MPV)"
+msgstr "Informations du média (MPV)"
+
+#: resources/ui/mpvpage.ui:279 src/ui/mpv/page.rs:414 src/ui/mpv/page.rs:416
+msgid "Pause"
+msgstr "Mettre en pause"
+
+#: resources/ui/mpvpage.ui:383
+msgid "Adjust Volume"
+msgstr "Ajuster le volume"
 
 #: resources/ui/mpv_shortcuts_window.ui:9
 msgid "Pause / Resume"
@@ -1627,29 +1423,9 @@ msgstr "Quitter"
 msgid "Quit and Save Position"
 msgstr "Quitter et sauvegarder la position"
 
-#: resources/ui/mpvpage.ui:101
-msgid "Stop and quit"
-msgstr "Arrêter et quitter"
-
-#: resources/ui/mpvpage.ui:158
-msgid "Shortcuts"
-msgstr "Raccourcis"
-
-#: resources/ui/mpvpage.ui:186
-msgid "Media info (MPV)"
-msgstr "Informations du média (MPV)"
-
-#: resources/ui/mpvpage.ui:376
-msgid "Adjust Volume"
-msgstr "Ajuster le volume"
-
 #: resources/ui/other.ui:113
 msgid "No Inscriptions"
 msgstr "Pas d'inscriptions"
-
-#: resources/ui/other.ui:134 resources/ui/search.ui:54
-msgid "Movie"
-msgstr "Film"
 
 #: resources/ui/other.ui:140 resources/ui/search.ui:48
 msgid "Series"
@@ -1671,27 +1447,32 @@ msgstr "Suivant"
 msgid "Stop And Hide PlayerBar"
 msgstr "Arrêter et masquer la barre de lecture"
 
-#: resources/ui/pop-menu.ui:10
+#: resources/ui/pop-menu.ui:11
 msgid "Remove"
 msgstr "Supprimer"
 
-#: resources/ui/pop-menu.ui:16
+#: resources/ui/pop-menu.ui:17
 msgid "Like"
 msgstr "Aimer"
 
-#: resources/ui/pop-menu.ui:22
+#: resources/ui/pop-menu.ui:23
 msgid "Unlike"
 msgstr "N'aime pas"
 
-#: resources/ui/pop-menu.ui:70
+#: resources/ui/pop-menu.ui:63 src/ui/widgets/tu_item/action.rs:544
+#: src/ui/widgets/tu_item/action.rs:545 src/ui/widgets/tu_item/action.rs:550
+msgid "Remove Identification"
+msgstr "Supprimer l'identification"
+
+#: resources/ui/pop-menu.ui:71
 msgid "View Missing Episodes"
 msgstr "Voir les épisodes manquants"
 
-#: resources/ui/pop-menu.ui:78 resources/ui/refresh_dialog.ui:8
+#: resources/ui/pop-menu.ui:79 resources/ui/refresh_dialog.ui:8
 msgid "Refresh Metadata"
 msgstr "Rafraîchir les métadonnées"
 
-#: resources/ui/pop-menu.ui:84
+#: resources/ui/pop-menu.ui:85
 msgid "Scan"
 msgstr "Scanner"
 
@@ -1706,6 +1487,10 @@ msgstr "Remplacer toutes les images"
 #: resources/ui/refresh_dialog.ui:49 resources/ui/server_action_row.ui:41
 msgid "Refresh"
 msgstr "Rafraîchir"
+
+#: resources/ui/search.ui:60 src/ui/widgets/list.rs:131
+msgid "BoxSet"
+msgstr "Compilation"
 
 #: resources/ui/search.ui:66
 msgid "Person"
@@ -1764,71 +1549,75 @@ msgstr "Vue en grille"
 msgid "List View"
 msgstr "Vue en liste"
 
-#: resources/ui/single_grid.ui:85
+#: resources/ui/single_grid.ui:84
 msgid "Ascending"
 msgstr "Du plus petit au plus grand"
 
-#: resources/ui/single_grid.ui:92
+#: resources/ui/single_grid.ui:91
 msgid "Descending"
 msgstr "Du plus grand au plus petit"
 
-#: resources/ui/single_grid.ui:103
+#: resources/ui/single_grid.ui:101
 msgid "Sort By"
 msgstr "Trier par"
 
-#: resources/ui/single_grid.ui:111
+#: resources/ui/single_grid.ui:106 src/ui/widgets/item.rs:1091
+msgid "Bitrate"
+msgstr "Débit binaire"
+
+#: resources/ui/single_grid.ui:108
 msgid "Imdb Rate"
 msgstr "Évaluation IMDb"
 
-#: resources/ui/single_grid.ui:112
+#: resources/ui/single_grid.ui:109
 msgid "Critic Rating"
 msgstr "Évaluation Critic"
 
-#: resources/ui/single_grid.ui:113
+#: resources/ui/single_grid.ui:110
 msgid "Premiere Date"
 msgstr "Date de l'avant-première"
 
-#: resources/ui/single_grid.ui:114
+#: resources/ui/single_grid.ui:111
 msgid "Offical Rating"
 msgstr "Évaluation Offical"
 
-#: resources/ui/single_grid.ui:115
+#: resources/ui/single_grid.ui:112
 msgid "Production Year"
 msgstr "Année de production"
 
-#: resources/ui/single_grid.ui:116
+#: resources/ui/single_grid.ui:113
 msgid "Date Played"
 msgstr "Date lue"
 
-#: resources/ui/single_grid.ui:117
+#: resources/ui/single_grid.ui:114
 msgid "Runtime"
 msgstr "Durée"
 
-#: resources/ui/single_grid.ui:118
+#: resources/ui/single_grid.ui:115
 msgid "Updated At"
 msgstr "Mis à jour à"
 
-#: resources/ui/single_grid.ui:182
+#: resources/ui/single_grid.ui:179
 msgid "Poster"
 msgstr "Affiche"
 
-#: resources/ui/single_grid.ui:186
+#: resources/ui/single_grid.ui:183
 msgid "Backdrop"
 msgstr "Image de fond"
 
-#: resources/ui/single_grid.ui:190
+#: resources/ui/single_grid.ui:187
 msgid "Banner"
 msgstr "Bannière"
 
-#: resources/ui/theme_switcher.ui:24 resources/ui/theme_switcher.ui:26
+#: resources/ui/theme_switcher.ui:25 resources/ui/theme_switcher.ui:27
 msgid "Follow system style"
 msgstr "Suivre le style du système"
 
-#: resources/ui/theme_switcher.ui:42 resources/ui/theme_switcher.ui:44
+#: resources/ui/theme_switcher.ui:43 resources/ui/theme_switcher.ui:45
 msgid "Light style"
 msgstr "Style clair"
 
-#: resources/ui/theme_switcher.ui:60 resources/ui/theme_switcher.ui:62
+#: resources/ui/theme_switcher.ui:61 resources/ui/theme_switcher.ui:63
 msgid "Dark style"
 msgstr "Style sombre"
 
@@ -1856,17 +1645,490 @@ msgstr "Pas de serveur"
 msgid "Add Server"
 msgstr "Ajouter un serveur"
 
-#: resources/ui/window.ui:206
+#: resources/ui/window.ui:205
 msgid "Log Out"
 msgstr "Se déconnecter"
 
-#: resources/ui/window.ui:247
+#: resources/ui/window.ui:246
 msgid "Contents"
 msgstr "Contenu"
 
-#: resources/ui/window.ui:270
+#: resources/ui/window.ui:249 src/ui/widgets/window.rs:286
+msgid "Home"
+msgstr "Accueil"
+
+#: resources/ui/window.ui:255 src/ui/widgets/list.rs:134
+#: src/ui/widgets/window.rs:298
+msgid "Liked"
+msgstr "Aimé"
+
+#: resources/ui/window.ui:269
 msgid "Servers"
 msgstr "Serveurs"
+
+#: src/client/error.rs:19
+msgid "Timeout Error, Check your internet connection"
+msgstr ""
+"Erreur : tentative de connexion expirée. Vérifiez votre connexion Internet"
+
+#: src/client/error.rs:22
+msgid "Connection Error, Check your internet connection"
+msgstr "Erreur de connexion, vérifiez votre connexion Internet"
+
+#: src/ui/mpv/control_sidebar.rs:531
+msgid "Video filter settings cleared."
+msgstr "Paramètres de filtres vidéo réinitialisés."
+
+#: src/ui/mpv/control_sidebar.rs:555
+msgid "Subtitle settings cleared."
+msgstr "Paramètres des sous-titres réinitialisés."
+
+#: src/ui/mpv/control_sidebar.rs:568
+msgid "Subtitle color settings cleared."
+msgstr "Paramètres de la couleur des sous-titres réinitialisés."
+
+#: src/ui/mpv/control_sidebar.rs:577
+msgid "Subtitle offset settings cleared."
+msgstr "Paramètres du décalage des sous-titres réinitialisés."
+
+#: src/ui/mpv/control_sidebar.rs:619
+msgid "Deband settings cleared."
+msgstr "Paramètres de retrait des bandes de couleurs réinitialisés."
+
+#: src/ui/mpv/danmaku_popover.rs:37
+#, fuzzy
+#| msgid "No danmakus loaded"
+msgid "{count} Danmaku Loaded"
+msgstr "Aucun sous-titre mouvant chargé"
+
+#: src/ui/mpv/danmaku_popover.rs:45
+#, fuzzy
+#| msgid "Search"
+msgid "Searching"
+msgstr "Rechercher"
+
+#: src/ui/mpv/danmaku_popover.rs:46
+#, fuzzy
+#| msgid "Loading..."
+msgid "Loading"
+msgstr "Chargement..."
+
+#: src/ui/mpv/danmaku_popover.rs:49
+#, fuzzy
+#| msgid "No danmakus loaded"
+msgid "No danmaku found"
+msgstr "Aucun sous-titre mouvant chargé"
+
+#: src/ui/mpv/danmaku_popover.rs:50
+msgid "This feature needs a official build"
+msgstr ""
+
+#: src/ui/mpv/danmaku_popover.rs:51
+msgid "Disabled"
+msgstr ""
+
+#: src/ui/mpv/danmaku_popover.rs:52
+msgid "Maybe there is something wrong"
+msgstr ""
+
+#: src/ui/mpv/danmaku_popover.rs:58
+msgid "From play (Auto Matched)"
+msgstr ""
+
+#: src/ui/mpv/danmaku_popover.rs:60
+msgid "From play (Manually Matched)"
+msgstr ""
+
+#: src/ui/mpv/danmaku_search_dialog.rs:185
+msgid "Enter at least two characters"
+msgstr ""
+
+#: src/ui/mpv/danmaku_search_dialog.rs:207
+#, fuzzy
+#| msgid "No transcoding url found"
+msgid "No matching anime found"
+msgstr "Aucun URL de transcodage trouvé"
+
+#: src/ui/mpv/danmaku_search_dialog.rs:211
+#, fuzzy
+#| msgid "Search"
+msgid "Search failed"
+msgstr "Rechercher"
+
+#: src/ui/mpv/danmaku_search_dialog.rs:242
+#, fuzzy
+#| msgid "Invalid regex"
+msgid "Invalid episode ID"
+msgstr "Expression régulière invalide"
+
+#: src/ui/mpv/page.rs:1059
+msgid "Skip Intro"
+msgstr "Passer l'intro"
+
+#: src/ui/mpv/page.rs:1060
+msgid "Skip Outro"
+msgstr "Passer l'outro"
+
+#: src/ui/mpv/page.rs:1214
+msgid "No more video found"
+msgstr "Aucune vidéo supplémentaire trouvée"
+
+#: src/ui/mpv/page.rs:1324
+msgid ""
+"MPV has been shutdown, Application will exit.\n"
+"Tsukimi can't restart MPV."
+msgstr ""
+"MPV a été arrêté, l'application va s'arrêter.\n"
+"Tsukimi ne peut pas redémarrer MPV."
+
+#: src/ui/provider/tu_item.rs:632
+msgid "No next up video found"
+msgstr "Aucune vidéo suivante trouvée"
+
+#: src/ui/provider/tu_item.rs:661 src/ui/widgets/tu_overview_item.rs:250
+msgid "Present"
+msgstr "Présent"
+
+#: src/ui/provider/tu_item.rs:669 src/ui/provider/tu_item.rs:687
+#: src/ui/provider/tu_item.rs:710 src/ui/provider/tu_item.rs:733
+#: src/ui/provider/tu_item.rs:736
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: src/ui/widgets/account_add.rs:145
+msgid "Fields must be filled in"
+msgstr "Les champs doivent être remplis"
+
+#: src/ui/widgets/account_add.rs:206
+msgid "Server edited successfully"
+msgstr "Serveur modifié avec succès"
+
+#: src/ui/widgets/account_add.rs:211
+msgid "Server added successfully"
+msgstr "Serveur ajouté avec succès"
+
+#: src/ui/widgets/account_settings.rs:235
+msgid "Password cannot be empty!"
+msgstr "Le mot de passe ne peut pas être vide !"
+
+#: src/ui/widgets/account_settings.rs:239
+msgid "Passwords do not match!"
+msgstr "Les mots de passe ne correspondent pas !"
+
+#: src/ui/widgets/account_settings.rs:246
+msgid "Password changed successfully! Please login again."
+msgstr "Mot de passe modifié avec succès ! Veuillez vous reconnecter."
+
+#: src/ui/widgets/account_settings.rs:250
+msgid "Failed to change password"
+msgstr "Échec du changement de mot de passe"
+
+#: src/ui/widgets/account_settings.rs:284
+msgid "Cache Cleared"
+msgstr "Cache vidé"
+
+#: src/ui/widgets/account_settings.rs:305
+msgid "No file selected"
+msgstr "Aucun fichier sélectionné"
+
+#: src/ui/widgets/account_settings.rs:561
+#: src/ui/widgets/account_settings.rs:570
+#: src/ui/widgets/account_settings.rs:604
+#: src/ui/widgets/account_settings.rs:613
+msgid "Descriptor cannot be empty!"
+msgstr "Le descripteur ne peut pas être vide !"
+
+#: src/ui/widgets/account_settings.rs:575
+#: src/ui/widgets/account_settings.rs:618
+msgid "Invalid regex"
+msgstr "Expression régulière invalide"
+
+#: src/ui/widgets/home.rs:393
+msgid "Latest"
+msgstr "Les plus récents"
+
+#: src/ui/widgets/identify/dialog.rs:140
+msgid "Failed to get path"
+msgstr "Erreur lors de la récupération du chemin d'accès"
+
+#: src/ui/widgets/identify/search_page.rs:127
+#: src/ui/widgets/image_dialog/search_page.rs:145
+#: src/ui/widgets/metadata_dialog.rs:286 src/ui/widgets/tu_item/action.rs:485
+msgid "Are you sure you wish to continue?"
+msgstr "Êtes-vous sûr de vouloir continuer ?"
+
+#: src/ui/widgets/identify/search_page.rs:131
+#: src/ui/widgets/image_dialog/search_page.rs:149
+#: src/ui/widgets/metadata_dialog.rs:290
+msgid "Ok"
+msgstr "Ok"
+
+#: src/ui/widgets/identify/search_page.rs:134
+msgid "Replace existing images"
+msgstr "Remplacer les images existantes"
+
+#: src/ui/widgets/image_dialog/image_adw_dialog.rs:125
+msgid "View Images"
+msgstr "Voir images"
+
+#: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:182
+msgid "Image saved"
+msgstr "Image sauvegardée"
+
+#: src/ui/widgets/image_dialog/image_edit_dialog_page.rs:187
+msgid "Failed to load image"
+msgstr "Échec du chargement de l'image"
+
+#: src/ui/widgets/image_dialog/image_infocard.rs:156
+msgid "No image to view"
+msgstr "Aucune image à voir"
+
+#: src/ui/widgets/image_dialog/image_infocard.rs:172
+msgid "No image to copy"
+msgstr "Aucune image à copier"
+
+#: src/ui/widgets/image_dialog/image_infocard.rs:176
+#: src/ui/widgets/media_viewer.rs:349
+msgid "Image copied to clipboard"
+msgstr "Image copiée dans le presse-papiers"
+
+#: src/ui/widgets/image_dialog/image_infocard.rs:209
+msgid "Image deleted"
+msgstr "Image supprimée"
+
+#: src/ui/widgets/image_dialog/image_infocard.rs:214
+msgid "Error deleting image"
+msgstr "Erreur lors de la suppression de l'image"
+
+#: src/ui/widgets/image_dialog/image_infocard.rs:245
+msgid "Error loading image"
+msgstr "Erreur de chargement de l'image"
+
+#: src/ui/widgets/image_dialog/search_page.rs:143
+msgid "Replace Image"
+msgstr "Remplacer l'image"
+
+#: src/ui/widgets/item_actionbox.rs:116 src/ui/widgets/tu_item/action.rs:98
+msgid "Success"
+msgstr "Succès"
+
+#: src/ui/widgets/item.rs:343
+msgid "No episode selected"
+msgstr "Aucun épisode sélectionné"
+
+#: src/ui/widgets/item.rs:344
+msgid "Select an episode"
+msgstr "Sélectionnez un épisode"
+
+#: src/ui/widgets/item.rs:689 src/ui/widgets/list.rs:130
+msgid "Resume"
+msgstr "Reprendre"
+
+#: src/ui/widgets/item.rs:1081
+msgid "Codec"
+msgstr "Codec"
+
+#: src/ui/widgets/item.rs:1084
+msgid "Language"
+msgstr "Langue"
+
+#: src/ui/widgets/item.rs:1096
+msgid "BitDepth"
+msgstr "Profondeur de bit"
+
+#: src/ui/widgets/item.rs:1100
+msgid "SampleRate"
+msgstr "Fréquence d'échantillonnage"
+
+#: src/ui/widgets/item.rs:1104
+msgid "Height"
+msgstr "Hauteur"
+
+#: src/ui/widgets/item.rs:1107
+msgid "Width"
+msgstr "Largeur"
+
+#: src/ui/widgets/item.rs:1110
+msgid "ColorSpace"
+msgstr "Espace de couleurs"
+
+#: src/ui/widgets/item.rs:1114
+msgid "DisplayTitle"
+msgstr "Titre d'affichage"
+
+#: src/ui/widgets/item.rs:1118
+msgid "Channel"
+msgstr "Canal"
+
+#: src/ui/widgets/item.rs:1122
+msgid "ChannelLayout"
+msgstr "Disposition des canaux"
+
+#: src/ui/widgets/item.rs:1127
+msgid "AverageFrameRate"
+msgstr "Fréquence d'images moyen"
+
+#: src/ui/widgets/item.rs:1131
+msgid "PixelFormat"
+msgstr "Format de pixel"
+
+#: src/ui/widgets/item.rs:1243
+msgid "No video source found"
+msgstr "Aucune source vidéo trouvée"
+
+#: src/ui/widgets/item.rs:1316
+msgid "Season not found. Is this a continue watching list?"
+msgstr "Saison introuvable. Est-ce une liste de lecture continue ?"
+
+#: src/ui/widgets/liked.rs:158
+msgid "Favourite"
+msgstr "Favori"
+
+#: src/ui/widgets/list.rs:122
+msgid "Channels"
+msgstr "Chaînes"
+
+#: src/ui/widgets/list.rs:129
+msgid "All"
+msgstr "Tout"
+
+#: src/ui/widgets/list.rs:135
+msgid "Folder"
+msgstr "Dossier"
+
+#: src/ui/widgets/missing_episodes_dialog.rs:147
+msgid "Special"
+msgstr "Spécial"
+
+#: src/ui/widgets/music_album.rs:245
+msgid "Songs"
+msgstr "Chansons"
+
+#: src/ui/widgets/music_album.rs:347
+msgid "More From"
+msgstr "Plus de"
+
+#: src/ui/widgets/refresh_dialog.rs:94
+msgid "Scanning..."
+msgstr "Scan..."
+
+#: src/ui/widgets/search.rs:202
+msgid "No overview"
+msgstr "Pas d'aperçu"
+
+#: src/ui/widgets/server_action_row.rs:128
+msgid "Edit Server"
+msgstr "Modifier le serveur"
+
+#: src/ui/widgets/server_panel.rs:119
+msgid "Shut down server"
+msgstr "Arrêter le serveur"
+
+#: src/ui/widgets/server_panel.rs:120
+msgid "Are you sure you want to shut down the server?"
+msgstr "Êtes-vous sûrs de vouloir arrêter le serveur ?"
+
+#: src/ui/widgets/server_panel.rs:151
+msgid "Restart server"
+msgstr "Redémarrer le serveur"
+
+#: src/ui/widgets/server_panel.rs:152
+msgid "Are you sure you want to restart the server?"
+msgstr "Êtes-vous sûrs de vouloir redémarrer le serveur ?"
+
+#: src/ui/widgets/server_panel.rs:155
+msgid "Revert"
+msgstr "Annuler"
+
+#: src/ui/widgets/server_panel.rs:156
+msgid "Confirm"
+msgstr "Confirmer"
+
+#: src/ui/widgets/server_panel.rs:192
+msgid "Server is shutting down"
+msgstr "Arrêt du serveur"
+
+#: src/ui/widgets/server_panel.rs:204
+msgid "Server is restarting"
+msgstr "Redémarrage du serveur"
+
+#: src/ui/widgets/server_panel.rs:291
+msgid "Last execute: "
+msgstr "Dernière exécution : "
+
+#: src/ui/widgets/server_panel.rs:296
+msgid "Duration: "
+msgstr "Durée : "
+
+#: src/ui/widgets/server_panel.rs:301
+msgid "Result: "
+msgstr "Résultat : "
+
+#: src/ui/widgets/server_panel.rs:347
+msgid "Task started"
+msgstr "Tâche démarrée"
+
+#: src/ui/widgets/single_grid.rs:502
+msgid "Items"
+msgstr "Éléments"
+
+#: src/ui/widgets/star_toggle.rs:65
+msgid "Remove from favorites"
+msgstr "Retirer des favoris"
+
+#: src/ui/widgets/star_toggle.rs:70
+msgid "Add to favorites"
+msgstr "Ajouter aux favoris"
+
+#: src/ui/widgets/tu_item/action.rs:479
+msgid "Delete Item"
+msgstr "Supprimer l'élément"
+
+#: src/ui/widgets/tu_item/action.rs:483
+msgid ""
+"Deleting this item will delete it from both the file system and your media "
+"library.\n"
+"The following files and folders will be deleted:"
+msgstr ""
+"Supprimer cet élément le supprimera à la fois du système de fichiers et de "
+"votre bibliothèque.\n"
+"Les fichiers et dossiers suivants seront supprimés :"
+
+#: src/ui/widgets/tu_item/action.rs:546
+msgid "Are you sure you wish to reset all metadata?"
+msgstr "Êtes-vous sûr de vouloir réinitialiser toutes les métadonnées ?"
+
+#: src/ui/widgets/window.rs:796
+msgid "Server Panel"
+msgstr "Panel du serveur"
+
+#: src/ui/widgets/window.rs:962
+msgid "Fatal Error"
+msgstr "Erreur fatale"
+
+#: src/ui/widgets/window.rs:965
+msgid "Copy Error & Close"
+msgstr "Copier l'erreur et fermer"
+
+#. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
+#: src/ui/widgets/window.rs:994
+msgid "translator-credits"
+msgstr "MarioSwitch https://marioswitch.fr/"
+
+#~ msgid "Failed to realize GLArea"
+#~ msgstr "Erreur lors de la réalisation de GLArea"
+
+#~ msgid "Failed to get GLContext"
+#~ msgstr "Erreur lors de la récupération de GLContext"
+
+#~ msgid "Video Output"
+#~ msgstr "Sortie vidéo"
+
+#~ msgid "Only for debugging"
+#~ msgstr "Seulement pour le débogage"
+
+#~ msgid "libmpv (default)"
+#~ msgstr "libmpv (par défaut)"
 
 #~ msgid "Waiting for mediasource ..."
 #~ msgstr "En attente d'une source de média..."
@@ -1928,12 +2190,6 @@ msgstr "Serveurs"
 #~ msgid "Not implemented"
 #~ msgstr "Non implémenté"
 
-#~ msgid "Danmaku"
-#~ msgstr "Sous-titres mouvants"
-
-#~ msgid "No danmakus loaded"
-#~ msgstr "Aucun sous-titre mouvant chargé"
-
 #~ msgid "Margin &amp; Size"
 #~ msgstr "Marge &amp; Taille"
 
@@ -1942,9 +2198,6 @@ msgstr "Serveurs"
 
 #~ msgid "Font family"
 #~ msgstr "Famille de police"
-
-#~ msgid "Font size"
-#~ msgstr "Taille de police"
 
 #~ msgid "Scroll danmaku max lines"
 #~ msgstr "Lignes max. défilement sous-titres mouvants"
@@ -1955,14 +2208,8 @@ msgstr "Serveurs"
 #~ msgid "Bottomcenter danmaku max lines"
 #~ msgstr "Lignes max. centre-bas sous-titres mouvants"
 
-#~ msgid "Danmaku speed"
-#~ msgstr "Vitesse des sous-titres mouvants"
-
 #~ msgid "API from DanDanPlay"
 #~ msgstr "API de DanDanPlay"
-
-#~ msgid "Danmaku Settings"
-#~ msgstr "Paramètres Danmaku"
 
 #~ msgid "Font Cleared, Restart to take effect."
 #~ msgstr "Police réinitialisée, redémarrez pour appliquer."
@@ -1995,9 +2242,6 @@ msgstr "Serveurs"
 
 #~ msgid "Processing..."
 #~ msgstr "Traitement..."
-
-#~ msgid "No transcoding url found"
-#~ msgstr "Aucun URL de transcodage trouvé"
 
 #~ msgid "No mediasource found"
 #~ msgstr "Aucun URL de source média trouvé"
