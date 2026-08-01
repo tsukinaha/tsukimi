@@ -13,9 +13,6 @@ A simple third-party Jellyfin client for Linux.
     <a href="https://github.com/tsukinaha/tsukimi/wiki">
         <img alt="Wiki" src="https://img.shields.io/badge/GitHub-Wiki-bb9af7?style=flat&logo=github&logoColor=white">
     </a>
-</p>
-
-<p align="left">
     <a href="https://hosted.weblate.org/engage/tsukimi">
         <img alt="Translations" src="https://img.shields.io/badge/Weblate-Translations-9ece6a?style=flat&logo=weblate&logoColor=white">
     </a>
@@ -25,12 +22,7 @@ A simple third-party Jellyfin client for Linux.
     <a href="https://flathub.org/apps/details/moe.tsuna.tsukimi">
         <img alt="Flathub" src="https://img.shields.io/badge/Flathub-Release-7aa2f7?style=flat&logo=flathub&logoColor=white">
     </a>
-    <a href="https://github.com/tsukinaha/tsukimi/releases">
-        <img alt="Release" src="https://img.shields.io/badge/GitHub-Release-bb9af7?style=flat&logo=github&logoColor=white">
-    </a>
 </p>
-
-![Alt](https://repobeats.axiom.co/api/embed/82b1088ba840d89c50e1b5b3c1c40f4575b321a6.svg "Repobeats analytics image")
 
 ## Screenshots
 <div align="center">
